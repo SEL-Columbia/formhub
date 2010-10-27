@@ -1,1 +1,7 @@
 NMIS Project Wrapper Initial Commit
+-----------------------------------
+
+Install Directions:
+* easy_install fabric
+* from within nmis, run "fab git_clone"
+* copy the file "custom_settings_example.py" to "custom_settings.py" and change this file to match your system info
