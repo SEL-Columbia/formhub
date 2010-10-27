@@ -1,0 +1,6 @@
+django_eav
+nmis_analysis
+odk_dropbox
+
+tmp/*
+*.pyc
