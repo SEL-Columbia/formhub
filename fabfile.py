@@ -1,8 +1,10 @@
 from fabric.api import run, settings
 
 def git_clone():
-    odk_repo = "git@github.com:mvpdev/ODK_Dropbox.git"
-    nmis_analysis_repo = "git@github.com:mvpdev/NMIS_analysis.git"
+    "Clones the repositories"
+    
+    odk_repo = "git@github.com:mvpdev/odk_dropbox.git"
+    nmis_analysis_repo = "git@github.com:mvpdev/nmis_analysis.git"
     django_eav_repo = "git@github.com:mvpdev/django-eav.git"
     
     run("git clone %s odk_dropbox" % odk_repo)
@@ -17,6 +19,6 @@ def git_pull():
     
     with('cd nmis_analysis'):
         run('git pull origin master')
-        
+    
     with('cd django_eav'):
         run('git pull origin master')
