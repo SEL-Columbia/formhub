@@ -1,5 +1,6 @@
 # EXAMPLE VALUES--
 # Change these for your environment
+# then copy then to "custom_settings.py"
 
 MEDIA_URL   = 'http://localhost/site_media/'
 MEDIA_ROOT  = '/path/to/project/site_media/'
