@@ -6,3 +6,4 @@ odk_dropbox
 
 tmp/*
 *.pyc
+.DS_Store
