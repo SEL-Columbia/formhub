@@ -3,7 +3,8 @@
 # then copy then to "custom_settings.py"
 
 MEDIA_URL   = 'http://localhost/site_media/'
-MEDIA_ROOT  = '/path/to/project/site_media/'
+PROJECT_ROOT = '/path/to/project'
+MEDIA_ROOT  = '%s/site_media/' % PROJECT_ROOT
 
 DATABASES = {
     'default': {
