@@ -4,19 +4,31 @@ NMIS Project
 Installation
 ------------
 1. Install virtualenv and pip
+
     $ sudo apt-get install python-virtualenv python-pip
+
 2. Create a virtual environment
+
     $ virtualenv --no-site-packages nmis_env
+
 3. Activate the virtual environment
+
     $ source nmis_env/bin/activate
+
 4. Clone this git repository
+
     $ git clone git@github.com:dorey/nmis.git
+
 5. Install fabric (as I'm writing this pip install won't work:
    https://github.com/robey/paramiko/issues#issue/3)
+
     $ pip install fabric
+
 6. Run fab file within nmis directory
+
     $ cd nmis
     $ fab setup
+
 7. Copy the file "custom_settings_example.py" to "custom_settings.py"
    and change this file to match your system info.
 
