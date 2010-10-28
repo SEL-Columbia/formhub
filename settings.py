@@ -40,7 +40,7 @@ INSTALLED_APPS = (
     
     'odk_dropbox',
     'nmis_analysis',
-    'django_eav',
+    'eav',
     
     'django.contrib.admin',
 )
