@@ -21,3 +21,10 @@ Another way to test that 1 + 1 is equal to 2.
 True
 """}
 
+# I was using this to test add_to_eav visually
+# from controller.models import add_to_eav
+# from odk_dropbox.models import Submission
+# from eav.models import Value
+# Value.objects.all().delete()
+# s = Submission.objects.all()[0]
+# add_to_eav(s)
