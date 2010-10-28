@@ -24,11 +24,11 @@ Installation
 
     $ pip install fabric
 
+   Also install Django (we might want to specify version numbers).
+
+    $ pip install django
+
 6. Run fab file within nmis directory
 
     $ cd nmis
     $ fab setup
-
-7. Copy the file "custom_settings_example.py" to "custom_settings.py"
-   and change this file to match your system info.
-
