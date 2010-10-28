@@ -3,16 +3,21 @@ from fabric.api import run, settings, local
 #from fabric.operations import local
 
 #@hosts('localhost')
-def git_clone():
+def setup():
     "Clones the repositories"
     
-    odk_repo = "git@github.com:mvpdev/odk_dropbox.git"
-    nmis_analysis_repo = "git@github.com:mvpdev/nmis_analysis.git"
-    django_eav_repo = "git@github.com:mvpdev/django-eav.git"
-    
-    local('git clone %s odk_dropbox' % odk_repo, capture=True)
-    local("git clone %s nmis_analysis" % nmis_analysis_repo, capture=True)
-    local("git clone %s django_eav" % django_eav_repo, capture=True)
+    repos = ["git@github.com:mvpdev/odk_dropbox.git",
+             "git@github.com:mvpdev/nmis_analysis.git",
+             "git@github.com:mvpdev/django-eav.git",]
+    for repo in repos:
+        local("git clone %s" % repo, capture=True)
+
+    # Here are some comments on virtualenv, pip, and fabric, for right
+    # now I'm going to kludge something together with a sym link
+    #http://stackoverflow.com/questions/1180411/activate-a-virtualenv-via-fabric-as-deploy-user
+    # "pip install -e git+git://github.com/mvpdev/django-eav.git#egg=django-eav"
+    local("ln -s django-eav/eav eav", capture=True)
+
 
 def git_pull_all():
     "Updates all the repositories"

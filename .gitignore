@@ -1,6 +1,7 @@
 custom_settings.py
 
-django_eav
+django-eav
+eav
 nmis_analysis
 odk_dropbox
 
