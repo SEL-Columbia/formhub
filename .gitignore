@@ -4,7 +4,9 @@ django-eav
 eav
 nmis_analysis
 odk_dropbox
+site_media/odk-images
 
 tmp/*
 *.pyc
+*~
 .DS_Store
