@@ -18,7 +18,7 @@ def setup():
     # "pip install -e git+git://github.com/mvpdev/django-eav.git#egg=django-eav"
     local("ln -s django-eav/eav eav", capture=True)
 
-    local("cp custom_settings_example.py custom_settins.py", capture=True)
+    local("cp custom_settings_example.py custom_settings.py", capture=True)
 
 
 def git_pull_all():
