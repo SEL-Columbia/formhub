@@ -9,7 +9,7 @@ MEDIA_ROOT  = '%s/site_media/' % PROJECT_ROOT
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'tmp/db.sqlite3',
+        'NAME': 'db.sqlite3',
     }
 }
 
