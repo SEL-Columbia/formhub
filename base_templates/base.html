@@ -5,10 +5,33 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>NMIS {% block title %}{% endblock %}</title>
-	<script type="text/javascript" src="/site_media/js/jquery-1.4.3.js"></script>
-	<link rel="stylesheet" href="/site_media/css/sitewide.css" type="text/css" media="screen" title="Sitewide" charset="utf-8" />
+	<script type="text/javascript" src="/site-media/js/jquery-1.4.3.js"></script>
+	<script type="text/javascript" src="/site-media/jquery-ui/jquery-ui-1.8.5.custom.min.js"></script>
+	<script type="text/javascript" src="/site-media/js/jquery.buildin.js"></script>
+	<link rel="stylesheet" href="/site-media/css/sitewide.css" type="text/css" media="screen" title="Sitewide" charset="utf-8" />
+	<link rel="stylesheet" href="/site-media/jquery-ui/jquery-ui-1.8.5.custom.css" type="text/css" media="screen" title="Sitewide" charset="utf-8" />
 </head>
 <body>
+	<div id="header">
+		<div class="fwidth">
+			<a href="/" id="logo"><span>NMIS</span></a>
+			<h1 id="title">NMIS Pilot<br />{% block htitle %}{% endblock %}</h1>
+		<div class="account_links">
+			<a href="/admin">Admin</a>
+		</div>
+		</div>
+	</div>
+	<ul id="menu">
+		<div class="fwidth">
+		<li><a href="/">Dashboard</a></li>
+		<li><a href="/forms">Forms</a></li>
+		<li><a href="/submissions">submissions</a></li>
+		</div>
+	</ul>
+	<div id="content">
+		<div class="fwidth">
 {% block content %}{% endblock %}
+	</div>
+	</div>
 </body>
 </html>

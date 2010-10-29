@@ -1,1 +1,81 @@
-body { font-family: Arial; color: #333; }
+#header h1#title {
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 7px;
+    left: 140px;
+    font-weight: normal;
+    color: #878787;
+    font-size: 21px;
+}
+.half {
+	width: 50%;
+}
+.lfloat {
+	float: left;
+}
+
+body {
+  font-family: Tahoma;
+  font-size: 13px;
+  padding: 0;
+  margin: 0; }
+  body .fwidth {
+    margin: 0 auto;
+    position: relative;
+    padding: 0 40px; }
+
+div#header {
+  position: relative;
+  height: 72px;
+  background-image: url("../images/header_repeat.png"); }
+  div#header #logo {
+    width: 313px;
+    height: 60px;
+    display: block;
+    background-image: url("../images/nmis_pilot.png");
+    background-repeat: no-repeat; }
+    div#header #logo span {
+      display: block;
+      text-indent: -9999em; }
+  div#header .language_select, div#header .account_links {
+    position: absolute;
+    right: 25px;
+    color: #ededed; }
+    div#header .language_select a, div#header .account_links a {
+      color: #dddddd; }
+  div#header .language_select {
+    bottom: 0px; }
+  div#header .account_links {
+    top: 5px; }
+
+ul#menu {
+  margin: 0;
+  padding: 0;
+  background-image: url("../images/menu_grad.png");
+  background-repeat: repeat-x;
+  height: 39px; }
+  ul#menu li {
+    display: inline;
+    line-height: 39px; }
+    ul#menu li a {
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      text-decoration: none;
+      padding: 3px 10px;
+      margin: 1px 5px;
+      -moz-border-radius: 6px;
+      -webkit-border-radius: 6px;
+      border: 2px solid transparent;
+      line-height: 37px; }
+      ul#menu li a:hover {
+        background-image: url("../images/button_repeat.png");
+        background-repeat: repeat-x;
+        border: 2px solid #2d2d2d; }
+
+div#body {
+  position: relative; }
+
+div#footer {
+  position: relative; }
