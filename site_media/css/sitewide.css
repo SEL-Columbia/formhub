@@ -8,6 +8,11 @@
     color: #878787;
     font-size: 21px;
 }
+#header h1#title span.top {
+    font-size: 18px;
+    text-transform: uppercase;
+    text-decoration: underline;
+}
 .half {
 	width: 50%;
 }
