@@ -15,7 +15,7 @@
 	<div id="header">
 		<div class="fwidth">
 			<a href="/" id="logo"><span>NMIS</span></a>
-			<h1 id="title">NMIS Pilot<br />{% block htitle %}{% endblock %}</h1>
+			<h1 id="title"><span class="top">NMIS Pilot</span><br />{% block htitle %}{% endblock %}</h1>
 		<div class="account_links">
 			<a href="/admin">Admin</a>
 		</div>
@@ -33,5 +33,12 @@
 {% block content %}{% endblock %}
 	</div>
 	</div>
+	<script type="text/javascript">
+	<!--
+	if($('a.b')) {
+		$('a.b');
+	}
+	-->
+	</script>
 </body>
 </html>

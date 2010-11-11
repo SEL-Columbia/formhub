@@ -19,8 +19,11 @@ Installation
 
     $ git clone git@github.com:dorey/nmis.git
 
-5. Install fabric (as I'm writing this pip install won't work:
-   https://github.com/robey/paramiko/issues#issue/3)
+5. Before installing fabric I had to install header files for Python:
+
+    $ sudo apt-get install python-dev
+
+   Install fabric
 
     $ pip install fabric
 
