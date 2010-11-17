@@ -26,4 +26,4 @@ def git_pull_all():
     
     local('cd odk_dropbox && git pull origin master', capture=True)
     local('cd nmis_analysis && git pull origin master', capture=True)
-    local('cd django_eav && git pull origin master', capture=True)
+    local('cd django-eav && git pull origin master', capture=True)
