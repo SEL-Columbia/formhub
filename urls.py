@@ -4,7 +4,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 from settings import MEDIA_ROOT
-from controller.views import dashboard
+from odk_dashboard.views import dashboard
 
 urlpatterns = patterns('',
     # odk dropbox urls
