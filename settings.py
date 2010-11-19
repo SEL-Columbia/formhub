@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
 
-    'controller',
+    'odk_dashboard',
     'odk_dropbox',
     'nmis_analysis',
     'eav',
