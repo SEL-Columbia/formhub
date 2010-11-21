@@ -1,27 +1,62 @@
+from datetime import datetime
+from django.db import models
 from django.db.models.signals import post_save
-from odk_dropbox import utils, models
+from odk_dropbox.models import Submission
+from odk_dropbox import utils
 
-def add_to_eav(submission):
-    handler = utils.parse(submission)
-    doc = handler.get_dict()
-    keys = doc.keys()
+class GPS(models.Model):
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    altitude = models.FloatField()
+    accuracy = models.FloatField()
+
+class ParsedSubmission(models.Model):
+    submission = models.ForeignKey(Submission)
+    survey_type = models.CharField(max_length=32)
+    device_id = models.CharField(max_length=32)
+    phone_number = models.CharField(max_length=32, null=True, blank=True)
+    start = models.DateTimeField()
+    end = models.DateTimeField()
+    gps = models.ForeignKey(GPS, null=True, blank=True)
+
+def parse(submission):
+    handler = utils.parse_submission(submission)
+    d = handler.get_dict()
+    keys = d.keys()
     assert len(keys)==1, "There should be a single root node."
-    doc = doc[keys[0]]
-    doc["doc_type"] = keys[0]
-    doc["form_id_string"] = handler.get_form_id()
+    d = d[keys[0]]
 
-    doc["xml"] = submission.xml
-    doc["saved"] = submission.saved.isoformat()
-    doc["posted"] = submission.posted.isoformat()
-    doc["form_id"] = submission.form.id
+    # create parsed submission object
+    kwargs = {"submission" : submission,
+              "survey_type" : keys[0]}
+    kwargs["device_id"] = d.pop("device_id")
+    kwargs["phone_number"] = d.pop("phone_number","")
+    for key in ["start", "end"]:
+        s = d.pop(key)
+        kwargs[key] = datetime.strptime(s, "%Y-%m-%dT%H:%M:%S.%f")
+        assert kwargs[key].isoformat().startswith(s), "The datetime object we created doesn't recreate the string we're parsing."
+    s = d.pop("geopoint","")
+    if s:
+        values = s.split(" ")
+        keys = ["latitude", "longitude", "altitude", "accuracy"]
+        items = zip(keys, values)
+        gps = GPS.objects.create(**dict(items))
+        kwargs["gps"] = gps
+    ps = ParsedSubmission.objects.create(**kwargs)
 
-    # save doc to couchdb, should think more about the doc id
-    # for registration the device id should be unique
-    # odk_surveys[str(submission.id)] = doc
+    # go through d and add each leaf node to the eav
+    print d
+    
+def _flatten_dict(d, path='', sep='/'):
+    if isinstance(d, dict):
+        if path: path += sep
+        return [_flatten_dict(v, path+k, sep) for k, v in d.iteritems()]
+    else:
+        return (path, d)
 
-def _add_to_eav(sender, **kwargs):
-    # if this is a new submission add it to the eav
+def _parse(sender, **kwargs):
     if kwargs["created"]:
-        add_to_eav(kwargs["instance"])
+        pass
+    parse(kwargs["instance"])
 
-# post_save.connect(_add_to_couch, sender=models.Submission)
+post_save.connect(_parse, sender=Submission)
