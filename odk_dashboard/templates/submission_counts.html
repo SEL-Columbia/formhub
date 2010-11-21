@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if submission_counts %}
+  {% for d in submission_counts %}
+    <a href="{{ d.survey_type }}.csv">{{ d.survey_type }}</a>: {{ d.survey_type__count }}
+  {% endfor %}
+{% endif %}
+{% endblock %}
