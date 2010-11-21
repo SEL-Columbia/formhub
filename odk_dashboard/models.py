@@ -44,16 +44,6 @@ def parse(submission):
         kwargs["gps"] = gps
     ps = ParsedSubmission.objects.create(**kwargs)
 
-    # go through d and add each leaf node to the eav
-    print d
-    
-def _flatten_dict(d, path='', sep='/'):
-    if isinstance(d, dict):
-        if path: path += sep
-        return [_flatten_dict(v, path+k, sep) for k, v in d.iteritems()]
-    else:
-        return (path, d)
-
 def _parse(sender, **kwargs):
     if kwargs["created"]:
         pass
