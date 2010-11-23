@@ -8,4 +8,5 @@ urlpatterns = patterns('',
     url(r"^/?$", views.dashboard),
     url(r"^submission-counts$", views.submission_counts),
     url(r"^(?P<survey_type>.*)\.csv$", views.csv),
+    url(r"^map$", views.map_submissions),
 )

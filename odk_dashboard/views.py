@@ -1,3 +1,4 @@
+from django.utils import simplejson
 from django.shortcuts import render_to_response
 from django.db.models import Avg, Max, Min, Count
 from django.http import HttpResponse
@@ -20,3 +21,18 @@ def csv(request, survey_type):
     flattened_dicts = [dict(items) for items in itemss]    
     table = utils.table(flattened_dicts)
     return HttpResponse(utils.csv(table), mimetype="application/csv")
+
+def map_submissions(request):
+    latlongs = []
+
+    for loc in ParsedSubmission.objects.exclude(gps=None):
+        gps = loc.gps
+        title = loc.__str__()
+        latlongs.append({
+            'lat':gps.latitude,
+            'lng': gps.longitude,
+            'title': title,
+            'survey_type':loc.survey_type
+        })
+
+    return render_to_response("map.html", {'coords':simplejson.dumps(latlongs)})
