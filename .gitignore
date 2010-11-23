@@ -4,10 +4,11 @@ django-eav
 eav
 nmis_analysis
 odk_dropbox
-site_media/odk-images
+site_media/odk
 
 tmp/*
 *.pyc
 *~
 .DS_Store
 db.sqlite3
+error.log

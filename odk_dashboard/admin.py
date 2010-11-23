@@ -3,3 +3,4 @@ from . import models
 
 admin.site.register(models.GPS)
 admin.site.register(models.ParsedSubmission)
+admin.site.register(models.Surveyor)
