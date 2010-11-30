@@ -24,9 +24,20 @@ class ParsedSubmission(models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField()
     gps = models.ForeignKey(GPS, null=True, blank=True)
+    surveyor = models.ForeignKey("Surveyor", null=True, blank=True, related_name="submissions")
+
+    def link_surveyor(self):
+        qs = Surveyor.objects.filter(registration__device_id=self.device_id)
+        if qs.count()==0:
+            self.surveyor = None
+        elif qs.count()==1:
+            self.surveyor = qs[0]
+        else:
+            raise Exception("Multiple surveyors with the same device id.")
 
 class Surveyor(User):
-    registration = models.ForeignKey(ParsedSubmission)
+    registration = models.ForeignKey(ParsedSubmission, related_name="not_meant_to_be_used")
+    # I need to require that registration.device_id is unique
 
 def parse(submission):
     handler = utils.parse_submission(submission)
@@ -61,7 +72,9 @@ def parse(submission):
                   "first_name" : " ".join(names),
                   "registration" : ps}
         Surveyor.objects.create(**kwargs)
-                  
+
+    ps.link_surveyor()
+    ps.save()
 
 def _parse(sender, **kwargs):
     # make sure we haven't parsed this submission before
