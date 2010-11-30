@@ -40,7 +40,6 @@ INSTALLED_APPS = (
 
     'odk_dashboard',
     'odk_dropbox',
-    'eav',
     
     'django.contrib.admin',
 )
