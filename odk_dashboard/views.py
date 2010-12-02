@@ -18,12 +18,12 @@ def dashboard(request):
     return render_to_response('dashboard.html')
 
 def submission_counts(request):
-    s = ParsedSubmission.objects.values("survey_type").annotate(Count("survey_type"))
+    s = ParsedSubmission.objects.values("survey_type__name").annotate(Count("survey_type"))
     return render_to_response("submission_counts.html",
                               {"submission_counts" : s})
 
-def csv(request, survey_type):
-    pss = ParsedSubmission.objects.filter(survey_type=survey_type)
+def csv(request, name):
+    pss = ParsedSubmission.objects.filter(survey_type__name=name)
     handlers = [utils.parse_submission(ps.submission) for ps in pss]
     dicts = [handler.get_dict() for handler in handlers]
     itemss = [utils.flatten_dict(d) for d in dicts]

@@ -9,35 +9,36 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from odk_dropbox.models import Submission
 from odk_dropbox import utils
-     
+
+class Phone(models.Model):
+    device_id = models.CharField(max_length=32)
+    most_recent_surveyor = models.ForeignKey("Surveyor", null=True, blank=True)
+    most_recent_number = models.CharField(max_length=32, null=True, blank=True)
+
+    def __unicode__(self):
+        return self.device_id
+
 class GPS(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     altitude = models.FloatField()
     accuracy = models.FloatField()
 
+class SurveyType(models.Model):
+    name = models.CharField(max_length=32)
+
 class ParsedSubmission(models.Model):
     submission = models.ForeignKey(Submission)
-    survey_type = models.CharField(max_length=32)
-    device_id = models.CharField(max_length=32)
-    phone_number = models.CharField(max_length=32, null=True, blank=True)
+    survey_type = models.ForeignKey(SurveyType)
     start = models.DateTimeField()
     end = models.DateTimeField()
     gps = models.ForeignKey(GPS, null=True, blank=True)
     surveyor = models.ForeignKey("Surveyor", null=True, blank=True, related_name="submissions")
-
-    def link_surveyor(self):
-        qs = Surveyor.objects.filter(registration__device_id=self.device_id)
-        if qs.count()==0:
-            self.surveyor = None
-        elif qs.count()==1:
-            self.surveyor = qs[0]
-        else:
-            raise Exception("Multiple surveyors with the same device id.")
+    phone = models.ForeignKey(Phone)
 
 class Surveyor(User):
     registration = models.ForeignKey(ParsedSubmission, related_name="not_meant_to_be_used")
-    # I need to require that registration.device_id is unique
+    # for now every new registration creates a new surveyor, we need a smart way to combine surveyors
 
 def parse(submission):
     handler = utils.parse_submission(submission)
@@ -47,33 +48,33 @@ def parse(submission):
     d = d[keys[0]]
 
     # create parsed submission object
-    kwargs = {"submission" : submission,
-              "survey_type" : keys[0]}
-    kwargs["device_id"] = d["device_id"]
-    kwargs["phone_number"] = d.get("phone_number","")
+    kwargs = {"submission" : submission}
+    survey_type, created = SurveyType.objects.get_or_create(name=keys[0])
+    kwargs["survey_type"] = survey_type
     for key in ["start", "end"]:
         s = d[key]
         kwargs[key] = datetime.strptime(s, "%Y-%m-%dT%H:%M:%S.%f")
         assert kwargs[key].isoformat().startswith(s), "The datetime object we created doesn't recreate the string we're parsing."
-    s = d.get("geopoint","")
-    if s:
-        values = s.split(" ")
+    gps_str = d.get("geopoint","")
+    if gps_str:
+        values = gps_str.split(" ")
         keys = ["latitude", "longitude", "altitude", "accuracy"]
         items = zip(keys, values)
         gps = GPS.objects.create(**dict(items))
         kwargs["gps"] = gps
+    phone, created = Phone.objects.get_or_create(device_id=d["device_id"])
+    kwargs["phone"] = phone
     ps = ParsedSubmission.objects.create(**kwargs)
 
-    if ps.survey_type=="registration":
+    if ps.survey_type.name=="registration":
         names = d["name"].split()
-        kwargs = {"username" : d["device_id"],
+        # how are we going to merge users? I'm going to ignore that right now
+        kwargs = {"username" : str(Surveyor.objects.all().count()),
                   "password" : "none",
                   "last_name" : names.pop(),
                   "first_name" : " ".join(names),
                   "registration" : ps}
         Surveyor.objects.create(**kwargs)
-
-    ps.link_surveyor()
     ps.save()
 
 def _parse(sender, **kwargs):
