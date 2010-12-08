@@ -24,7 +24,7 @@ $(function(){
 			title: this.title
 		});
 		var infowindow = new google.maps.InfoWindow({
-			content: "<h3>"+this.survey_type.toUpperCase() + " Survey<br />" + this.title+"</h3>"
+			content: "<h3>"+this.title+"</h3>"
 		});
 		marker.setMap(map);
 		google.maps.event.addListener(marker, 'click', function(){
