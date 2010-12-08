@@ -41,7 +41,7 @@ def map_submissions(request):
             'lat':gps.latitude,
             'lng': gps.longitude,
             'title': title,
-            'survey_type':loc.survey_type
+#            'survey_type':loc.survey_type
         })
 
     return render_to_response("map.html", {'coords':simplejson.dumps(latlongs)})
