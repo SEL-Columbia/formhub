@@ -87,9 +87,11 @@ def _parse(sender, **kwargs):
             # catch any exceptions and print them to the error log
             # it'd be good to add more info to these error logs
             e = sys.exc_info()[1]
-            f = open(os.path.join(settings.PROJECT_ROOT, "error.log"), "a")
-            f.write(e.__unicode__())
-            f.close()
+            utils.report_exception(
+                "problem parsing submission",
+                e.__unicode__(),
+                sys.exc_info()
+                )
 
 post_save.connect(_parse, sender=Submission)
 
