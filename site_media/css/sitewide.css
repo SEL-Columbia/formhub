@@ -24,6 +24,7 @@ body {
   font-family: Tahoma;
   font-size: 13px;
   padding: 0;
+  background-image: url('../images/bg-shade-repeat.png');
   margin: 0; }
   body .fwidth {
     margin: 0 auto;
