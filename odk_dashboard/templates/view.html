@@ -45,8 +45,9 @@
 </div>
 <script type="text/javascript" charset="utf-8">
 <!--
-var Map,
+var MapActions,
 	Center = [8.950110375881215, 7.691971957683561],
+	Tabs,
 	ResizeMap = (function(){
 	var mapBox = $('.map-tab'),
 		offset = mapBox.offset().top,
@@ -61,30 +62,40 @@ var Map,
 		if(sh>100) {mapBox.css({'height':sh})}
 	}
 })();
+MapActions = (function(){
+	var Map,
+		PointData = {{point_data|safe}};
+	
+	function ShowPoints(clickedTab){
+//		console.log("Points ", PointData[clickedTab]);
+	}
+	function StartMap(elem, options) {
+		Map = new google.maps.Map(elem, options)
+	}
+	return {
+		showPoints: ShowPoints,
+		start: StartMap
+	}
+})()
 ResizeMap();
 $(window).resize(ResizeMap);
 
-var points = {
-	'all': [],
-	'surveyor': [],
-	'survey': [],
-	'activity': []
-}
-
-$('#map-tabnav').tabs({
+Tabs = $('#map-tabnav').tabs({
 	select: function(ui, clck){
 		var clickType = clck.tab.hash.replace('#','');
-		console.log(clickType);
-//		console.log(this, arguments);
+		MapActions.showPoints(clickType);
 	}
 });
+var openingTab = $('.ui-tabs-nav .ui-tabs-selected a').get(0).hash.replace('#','');
+
 $(function(){
 	var options = {
 		zoom: 6,
 		center: new google.maps.LatLng(Center[0], Center[1]),
 		mapTypeId: google.maps.MapTypeId.TERRAIN
 	};
-	Map = new google.maps.Map($('.map-tab').get(0), options)
+	MapActions.start($('.map-tab').get(0), options);
+	MapActions.showPoints(openingTab);
 })
 -->
 </script>

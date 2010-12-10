@@ -53,6 +53,10 @@ def data_section(request):
 
 def view_section(request):
     info = {'sectionname':'view'}
+    pass_to_map = {'all':[],'surveyors':[], \
+        'survey':[],'recent':[]}
+    
+    info['point_data'] = simplejson.dumps(pass_to_map)
     return render_to_response("view.html", info)
 
 def analysis_section(request):
