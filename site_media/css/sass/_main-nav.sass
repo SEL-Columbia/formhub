@@ -3,6 +3,7 @@
 div.left-side-nav
   :width 29%
   :float left
+  :background-color #fff
   h1.sn-title
     :padding 2px 25px
     :font-weight normal
@@ -25,6 +26,8 @@ div.left-side-nav
         :margin 0
         :padding 0
         :border-bottom 1px solid #bbb
+        &:last-child
+          :border-bottom 0 none
       ul
         li
           :padding-left 12px
@@ -33,3 +36,7 @@ div.left-side-nav
 div.right-content
   :width 69%
   :float right
+  div.iwrap
+    :background-color #fff
+    :border 1px solid #999
+    :padding 12px 20px
