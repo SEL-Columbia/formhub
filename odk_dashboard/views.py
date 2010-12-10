@@ -5,15 +5,6 @@ from django.http import HttpResponse
 from odk_dropbox import utils
 from .models import ParsedSubmission
 
-def performance_table(request):
-    """
-    As a first draft I want the rows of this table to be the surveyor
-    name, the columns to be the survey name, and the cells to be the
-    number of those surveys submitted by the given surveyor.
-    """
-    s = ParsedSubmission.objects.values("survey_type, surveyor").annotate(Count("survey_type"))
-    print s
-
 def dashboard(request):
     return render_to_response('dashboard.html')
 
@@ -41,7 +32,8 @@ def submission_counts(request):
     for row in rows:
         t.append([row] + [str(table[row].get(col, 0)) for col in cols])
     return render_to_response("submission_counts.html",
-                              {"submission_counts" : t})
+                              {"submission_counts" : t,
+                               'sectionname':'data'})
 
 def csv(request, name):
     pss = ParsedSubmission.objects.filter(survey_type__name=name)
