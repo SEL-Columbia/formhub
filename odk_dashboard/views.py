@@ -31,9 +31,22 @@ def csv(request, name):
     table = utils.table(flattened_dicts)
     return HttpResponse(utils.csv(table), mimetype="application/csv")
 
+def profiles_section(request):
+    info = {'sectionname':'profiles'}
+    return render_to_response("profiles.html", info)
+
+def data_section(request):
+    info = {'sectionname':'data'}
+    return render_to_response("data.html", info)
+
 def view_section(request):
     info = {'sectionname':'view'}
     return render_to_response("view.html", info)
+
+def analysis_section(request):
+    info = {'sectionname':'analysis'}
+    return render_to_response("analysis.html", info)
+
 
 def map_submissions(request):
     latlongs = []
