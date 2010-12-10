@@ -23,7 +23,7 @@ def setup():
 
 def git_pull_all():
     "Updates all the repositories"
-    
+    local('git pull origin master', capture=True)
     local('cd odk_dropbox && git pull origin master', capture=True)
     local('cd nmis_analysis && git pull origin master', capture=True)
     local('cd django-eav && git pull origin master', capture=True)
