@@ -27,11 +27,12 @@ def submission_counts(request):
             cols.append(survey)
         rows.sort()
         cols.sort()
-    t = [[""] + cols]
+    t = []
     for row in rows:
         t.append([row] + [str(table[row].get(col, 0)) for col in cols])
     return render_to_response("submission_counts.html",
                               {"submission_counts" : t,
+                               'columns': cols,
                                'sectionname':'data'})
 
 def csv(request, name):
