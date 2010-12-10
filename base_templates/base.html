@@ -6,10 +6,11 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>NMIS Pilot : {% block title %}{% endblock %}</title>
 	<script type="text/javascript" src="/site-media/js/jquery-1.4.4-min.js"></script>
-	<script type="text/javascript" src="/site-media/jquery-ui/jquery-ui-1.8.5.custom.min.js"></script>
+	<script type="text/javascript" src="/site-media/jquery-ui/jquery-ui-1.8.7.custom.min.js"></script>
 	<script type="text/javascript" src="/site-media/js/jquery.buildin.js"></script>
-	<link rel="stylesheet" href="/site-media/css/sitewide.css" type="text/css" media="screen" title="Sitewide" charset="utf-8" />
-	<link rel="stylesheet" href="/site-media/jquery-ui/jquery-ui-1.8.5.custom.css" type="text/css" media="screen" title="Sitewide" charset="utf-8" />
+	<link rel="stylesheet" href="/site-media/css/sitewide.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
+	<link rel="stylesheet" href="/site-media/css/generated-donotedit.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
+	<link rel="stylesheet" href="/site-media/jquery-ui/jquery-ui-1.8.7.custom.css" type="text/css" media="screen" title="Sitewide" charset="utf-8" />
 </head>
 <body class="nmis">
 	<div id="header">
@@ -37,7 +38,7 @@
 	{% if sectionname %}
 	<script type="text/javascript">
 	<!--
-	$('body').addClass('{{sectionname}}')
+	$('body').addClass('{{sectionname}}');
 	-->
 	</script>
 	{% endif %}
