@@ -13,7 +13,7 @@ $(function(){
 		minLat = Math.min.apply(this, lats),
 		minLng = Math.min.apply(this, lngs),
 		options = {
-		zoom: 11,
+		zoom: 6,
 		center: new google.maps.LatLng((maxLat-minLat)/2+minLat, (maxLng-minLng)/2+minLng),
 		mapTypeId: google.maps.MapTypeId.TERRAIN
 	}
