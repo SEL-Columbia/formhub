@@ -4,14 +4,14 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>NMIS {% block title %}{% endblock %}</title>
-	<script type="text/javascript" src="/site-media/js/jquery-1.4.3.js"></script>
+	<title>NMIS Pilot : {% block title %}{% endblock %}</title>
+	<script type="text/javascript" src="/site-media/js/jquery-1.4.4-min.js"></script>
 	<script type="text/javascript" src="/site-media/jquery-ui/jquery-ui-1.8.5.custom.min.js"></script>
 	<script type="text/javascript" src="/site-media/js/jquery.buildin.js"></script>
 	<link rel="stylesheet" href="/site-media/css/sitewide.css" type="text/css" media="screen" title="Sitewide" charset="utf-8" />
 	<link rel="stylesheet" href="/site-media/jquery-ui/jquery-ui-1.8.5.custom.css" type="text/css" media="screen" title="Sitewide" charset="utf-8" />
 </head>
-<body>
+<body class="nmis">
 	<div id="header">
 		<div class="fwidth">
 			<a href="/" id="logo"><span>NMIS</span></a>
@@ -23,22 +23,23 @@
 	</div>
 	<ul id="menu">
 		<div class="fwidth">
-		<li><a href="/">Dashboard</a></li>
-		<li><a href="/forms">Forms</a></li>
-		<li><a href="/submissions">Submissions</a></li>
+			<li class="profiles"><a href="/profiles">Profiles</a></li>
+			<li class="data"><a href="/data">Data</a></li>
+			<li class="view"><a href="/view">View</a></li>
+			<li class="analysis"><a href="/analysis">Analysis</a></li>
 		</div>
 	</ul>
 	<div id="content">
 		<div class="fwidth">
 {% block content %}{% endblock %}
+		</div>
 	</div>
-	</div>
+	{% if sectionname %}
 	<script type="text/javascript">
 	<!--
-	if($('a.b')) {
-		$('a.b');
-	}
+	$('body').addClass('{{sectionname}}')
 	-->
 	</script>
+	{% endif %}
 </body>
 </html>

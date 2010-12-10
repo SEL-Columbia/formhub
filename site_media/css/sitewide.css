@@ -65,20 +65,24 @@ ul#menu {
   background-repeat: repeat-x;
   height: 39px; }
   ul#menu li {
-    display: inline;
+    float: left;
+    text-align: center;
+    width: 25%;
+    display: block;
     line-height: 39px; }
     ul#menu li a {
+      display: block;
       color: white;
       font-size: 15px;
       font-weight: bold;
       text-decoration: none;
       padding: 3px 10px;
-      margin: 1px 5px;
+      margin: 5px;
       -moz-border-radius: 6px;
       -webkit-border-radius: 6px;
       border: 2px solid transparent;
-      line-height: 37px; }
-      ul#menu li a:hover {
+      line-height: 18px; }
+      body.profiles ul#menu li.profiles a, body.data ul#menu li.data a, body.view ul#menu li.view a, body.analysis ul#menu li.analysis a, ul#menu li a:hover {
         background-image: url("../images/button_repeat.png");
         background-repeat: repeat-x;
         border: 2px solid #2d2d2d; }
