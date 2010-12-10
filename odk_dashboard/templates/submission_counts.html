@@ -2,8 +2,14 @@
 
 {% block content %}
 {% if submission_counts %}
-  {% for d in submission_counts %}
-    <a href="{{ d.survey_type__name }}.csv">{{ d.survey_type__name }}</a>: {{ d.survey_type__count }}
+  <table>
+  {% for row in submission_counts %}
+    <tr>
+    {% for cell in row %}
+      <td>{{ cell }}</td>
+    {% endfor %}
+    </tr>
   {% endfor %}
+  </table>
 {% endif %}
 {% endblock %}

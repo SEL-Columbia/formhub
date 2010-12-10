@@ -18,9 +18,30 @@ def dashboard(request):
     return render_to_response('dashboard.html')
 
 def submission_counts(request):
-    s = ParsedSubmission.objects.values("survey_type__name").annotate(Count("survey_type"))
+    counts = ParsedSubmission.objects.values("survey_type__name", "phone__device_id").annotate(count=Count("survey_type"))
+    table = {}
+    rows = []
+    cols = []
+    for d in counts:
+        print d
+        phone = d["phone__device_id"]
+        survey = d["survey_type__name"]
+        if phone not in table:
+            table[phone] = {}
+        if survey not in table[phone]:
+            table[phone][survey] = {}
+        table[phone][survey] = d["count"]
+        if phone not in rows:
+            rows.append(phone)
+        if survey not in cols:
+            cols.append(survey)
+        rows.sort()
+        cols.sort()
+    t = [[""] + cols]
+    for row in rows:
+        t.append([row] + [str(table[row].get(col, 0)) for col in cols])
     return render_to_response("submission_counts.html",
-                              {"submission_counts" : s})
+                              {"submission_counts" : t})
 
 def csv(request, name):
     pss = ParsedSubmission.objects.filter(survey_type__name=name)
