@@ -62,23 +62,54 @@ var MapActions,
 		if(sh>100) {mapBox.css({'height':sh})}
 	}
 })();
+
 MapActions = (function(){
 	var Map,
-		PointData = {{point_data|safe}};
+		gmaps,
+		PointData = {{point_data|safe}},
+		MapPoints = {};
 	
-	function ShowPoints(clickedTab){
-//		console.log("Points ", PointData[clickedTab]);
+	
+	function ProcessMapPoints(tabId) {
+		var cur = {};
+		cur['noGps']=[];
+		cur['markers']=[];
+		if(tabId=='all') {
+			$(PointData['all']).each(function(){
+				var pData = {};
+				if(this.gps && this.gps.lat && this.gps.lng) {
+					pData.gpoint = new gmaps.LatLng(this.gps.lat, this.gps.lng);
+					pData.gmarker = new gmaps.Marker({position: pData.gpoint, title:'Awesome!'})
+//					gmaps.event.addListener(pData.gmarker, 'click', function(evt){})
+					cur.markers.push(pData.gmarker);
+				}
+			});
+		}
+		MapPoints[tabId] = cur;
 	}
-	function StartMap(elem, options) {
-		Map = new google.maps.Map(elem, options)
+	function ShowPoints(clickedTab){
+		if(typeof(MapPoints[clickedTab])=='undefined') {
+			ProcessMapPoints(clickedTab);
+		}
+		if(MapPoints[clickedTab] && MapPoints[clickedTab].markers) {
+			$(MapPoints[clickedTab].markers).each(function(){
+				this.setMap(Map);
+			})
+		}
+	}
+	function StartMap(googleMaps, elem, options) {
+		gmaps = googleMaps;
+		Map = new gmaps.Map(elem, options)
 	}
 	return {
 		showPoints: ShowPoints,
 		start: StartMap
 	}
 })()
-ResizeMap();
 $(window).resize(ResizeMap);
+$(function(){
+	$(window).trigger('resize');
+})
 
 Tabs = $('#map-tabnav').tabs({
 	select: function(ui, clck){
@@ -94,7 +125,7 @@ $(function(){
 		center: new google.maps.LatLng(Center[0], Center[1]),
 		mapTypeId: google.maps.MapTypeId.TERRAIN
 	};
-	MapActions.start($('.map-tab').get(0), options);
+	MapActions.start(google.maps, $('.map-tab').get(0), options);
 	MapActions.showPoints(openingTab);
 })
 -->

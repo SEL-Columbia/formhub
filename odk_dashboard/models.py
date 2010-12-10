@@ -23,6 +23,9 @@ class GPS(models.Model):
     longitude = models.FloatField()
     altitude = models.FloatField()
     accuracy = models.FloatField()
+    
+    def to_dict(self):
+        return {'lat':self.latitude, 'lng':self.longitude, 'acc':self.accuracy}
 
 class SurveyType(models.Model):
     name = models.CharField(max_length=32)

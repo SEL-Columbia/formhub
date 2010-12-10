@@ -57,6 +57,17 @@ def view_section(request):
     pass_to_map = {'all':[],'surveyors':[], \
         'survey':[],'recent':[]}
     
+    psubs = []
+    for ps in ParsedSubmission.objects.all():
+        pcur = {}
+        if ps.gps:
+            pcur['phone'] = ps.phone.__unicode__()
+            pcur['date'] = ps.submission.posted.strftime("%Y-%m-%d %H:%M")
+            pcur['survey_type'] = ps.survey_type.name
+            pcur['gps'] = ps.gps.to_dict()
+        psubs.append(pcur)
+    
+    pass_to_map['all'] = psubs
     info['point_data'] = simplejson.dumps(pass_to_map)
     return render_to_response("view.html", info)
 
