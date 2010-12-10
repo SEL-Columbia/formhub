@@ -14,7 +14,6 @@ def submission_counts(request):
     rows = []
     cols = []
     for d in counts:
-        print d
         phone = d["phone__device_id"]
         survey = d["survey_type__name"]
         if phone not in table:
