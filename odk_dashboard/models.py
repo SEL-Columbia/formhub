@@ -49,7 +49,7 @@ def parse(submission):
 
     # create parsed submission object
     kwargs = {"submission" : submission}
-    m = re.search(r"^([a-zA-Z])", submission.form.id_string)
+    m = re.search(r"^([a-zA-Z])", handler.get_form_id())
     survey_type, created = SurveyType.objects.get_or_create(name=m.group(1).lower())
     kwargs["survey_type"] = survey_type
     for key in ["start", "end"]:
