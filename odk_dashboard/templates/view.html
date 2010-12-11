@@ -2,5 +2,133 @@
 {% block htitle %}View{% endblock %}
 {% block title %}View{% endblock %}
 {% block content %}
-<h2 class="construction">This section is under construction</h2>
+<div class="left-side-nav">
+	<div class="navwrap">
+	<h1 class="sn-title">
+		View
+	</h1>
+	<ul>
+		<li><p class='notalink'>Map of Submitted Surveys</p></li>
+	</ul>
+	</div>
+</div>
+<div class="right-content">
+	<div id="map-tabnav">
+	<ul>
+		<li>
+			<a href="#all">All Submissions</a>
+		</li>
+		<li>
+			<a href="#surveyors">By Surveyor</a>
+		</li>
+		<li>
+			<a href="#survey">By Survey</a>
+		</li>
+		<li>
+			<a href="#recent">Recent Activity</a>
+		</li>
+	</ul>
+	<div id="all">
+		All
+	</div>
+	<div id="surveyors">
+		Surveyors
+	</div>
+	<div id="survey">
+		Survey
+	</div>
+	<div id="recent">
+		Recent
+	</div>
+	<div class="map-tab">&nbsp;</div>
+</div>
+</div>
+<script type="text/javascript" charset="utf-8">
+<!--
+var MapActions,
+	Center = [8.950110375881215, 7.691971957683561],
+	Tabs,
+	ResizeMap = (function(){
+	var mapBox = $('.map-tab'),
+		offset = mapBox.offset().top,
+		wh = $(window).height(),
+		padding = 10,
+		sh = wh - (offset + padding);
+	
+	return function(){
+		offset = mapBox.offset().top;
+		wh = $(window).height();
+		sh = wh - (offset + padding);
+		if(sh>100) {mapBox.css({'height':sh})}
+	}
+})();
+
+MapActions = (function(){
+	var Map,
+		gmaps,
+		PointData = {{point_data|safe}},
+		MapPoints = {};
+	
+	
+	function ProcessMapPoints(tabId) {
+		var cur = {};
+		cur['noGps']=[];
+		cur['markers']=[];
+		if(tabId=='all') {
+			$(PointData['all']).each(function(){
+				var pData = {};
+				if(this.gps && this.gps.lat && this.gps.lng) {
+					pData.gpoint = new gmaps.LatLng(this.gps.lat, this.gps.lng);
+					pData.gmarker = new gmaps.Marker({position: pData.gpoint, title:'Awesome!'})
+//					gmaps.event.addListener(pData.gmarker, 'click', function(evt){})
+					cur.markers.push(pData.gmarker);
+				}
+			});
+		}
+		MapPoints[tabId] = cur;
+	}
+	function ShowPoints(clickedTab){
+		if(typeof(MapPoints[clickedTab])=='undefined') {
+			ProcessMapPoints(clickedTab);
+		}
+		if(MapPoints[clickedTab] && MapPoints[clickedTab].markers) {
+			$(MapPoints[clickedTab].markers).each(function(){
+				this.setMap(Map);
+			})
+		}
+	}
+	function StartMap(googleMaps, elem, options) {
+		gmaps = googleMaps;
+		Map = new gmaps.Map(elem, options)
+	}
+	return {
+		showPoints: ShowPoints,
+		start: StartMap
+	}
+})()
+$(window).resize(ResizeMap);
+$(function(){
+	$(window).trigger('resize');
+})
+
+Tabs = $('#map-tabnav').tabs({
+	select: function(ui, clck){
+		var clickType = clck.tab.hash.replace('#','');
+		MapActions.showPoints(clickType);
+	}
+});
+var openingTab = $('.ui-tabs-nav .ui-tabs-selected a').get(0).hash.replace('#','');
+
+$(function(){
+	var options = {
+		zoom: 6,
+		center: new google.maps.LatLng(Center[0], Center[1]),
+		mapTypeId: google.maps.MapTypeId.TERRAIN
+	};
+	MapActions.start(google.maps, $('.map-tab').get(0), options);
+	MapActions.showPoints(openingTab);
+})
+-->
+</script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 {% endblock %}

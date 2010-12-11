@@ -1,15 +1,41 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% if submission_counts %}
-  <table>
-  {% for row in submission_counts %}
-    <tr>
-    {% for cell in row %}
-      <td>{{ cell }}</td>
-    {% endfor %}
-    </tr>
-  {% endfor %}
-  </table>
-{% endif %}
+
+<div class="left-side-nav">
+	<div class="navwrap">
+	<h1 class="sn-title">
+		Data
+	</h1>
+	<ul>
+		<li><p class='notalink'>Submissions</p></li>
+	</ul>
+	</div>
+</div>
+<div class="right-content">
+	<div class="iwrap">
+	{% if submission_counts %}
+	  <table class="shade-alternate">
+	  <tr>
+		<th></th>
+		{% for col in columns %}
+	  	<th class="col-top"><div class="tab">{{col}}</div></th>
+	    {% endfor %}
+	  </tr>
+	  {% for row in submission_counts %}
+	    <tr>
+	    {% for cell in row %}
+			{% if forloop.first %}
+	      	<td class="ltab"><div class="tab">{{ cell }}</div></td>
+			{% else %}
+	      	<td class="centered">{{ cell }}</td>
+			{% endif %}
+	    {% endfor %}
+	    </tr>
+	  {% endfor %}
+	  </table>
+	{% endif %}
+	</div>
+</div>
+</div>
 {% endblock %}
