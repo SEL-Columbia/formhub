@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response
 from django.db.models import Avg, Max, Min, Count
 from django.http import HttpResponse
 from odk_dropbox import utils
+from odk_dropbox.models import Form
 from .models import ParsedSubmission
 
 def dashboard(request):
@@ -35,9 +36,9 @@ def submission_counts(request):
                                'sectionname':'data'})
 
 def csv(request, name):
-    pss = ParsedSubmission.objects.filter(survey_type__name=name, submission__form__active=True)
-    handlers = [utils.parse_submission(ps.submission) for ps in pss]
-    dicts = [handler.get_dict() for handler in handlers]
+    form = Form.objects.get(id_string__startswith=name.title(), active=True)
+    handlers = [utils.parse_submission(s) for s in form.submissions.all()]
+    dicts = [h.get_dict() for h in handlers]
     table = utils.table(dicts)
     return HttpResponse(utils.csv(table), mimetype="application/csv")
 
