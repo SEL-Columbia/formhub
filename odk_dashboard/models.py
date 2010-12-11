@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
-import os, sys
+import os, re, sys
 from datetime import datetime
 from django.db import models
 from django.db.models.signals import post_save
@@ -46,13 +46,11 @@ class Surveyor(User):
 def parse(submission):
     handler = utils.parse_submission(submission)
     d = handler.get_dict()
-    keys = d.keys()
-    assert len(keys)==1, "There should be a single root node."
-    d = d[keys[0]]
 
     # create parsed submission object
     kwargs = {"submission" : submission}
-    survey_type, created = SurveyType.objects.get_or_create(name=keys[0])
+    m = re.search(r"^([a-zA-Z])", submission.form.id_string)
+    survey_type, created = SurveyType.objects.get_or_create(name=m.group(1).lower())
     kwargs["survey_type"] = survey_type
     for key in ["start", "end"]:
         s = d[key]
