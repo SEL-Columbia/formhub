@@ -35,12 +35,10 @@ def submission_counts(request):
                                'sectionname':'data'})
 
 def csv(request, name):
-    pss = ParsedSubmission.objects.filter(survey_type__name=name)
+    pss = ParsedSubmission.objects.filter(survey_type__name=name, submission__form__active=True)
     handlers = [utils.parse_submission(ps.submission) for ps in pss]
     dicts = [handler.get_dict() for handler in handlers]
-    itemss = [utils.flatten_dict(d) for d in dicts]
-    flattened_dicts = [dict(items) for items in itemss]    
-    table = utils.table(flattened_dicts)
+    table = utils.table(dicts)
     return HttpResponse(utils.csv(table), mimetype="application/csv")
 
 def profiles_section(request):
