@@ -1,3 +1,4 @@
+import re
 from django.utils import simplejson
 from django.shortcuts import render_to_response
 from django.db.models import Avg, Max, Min, Count
@@ -9,6 +10,15 @@ from .models import ParsedSubmission
 def dashboard(request):
     return render_to_response('dashboard.html')
 
+def csv_list():
+    list = []
+    for f in Form.objects.filter(active=True):
+        m = re.search(r"^([a-zA-Z]+)", f.id_string)
+        name = m.group(1)
+        if name!="Bug": list.append(name)
+    list.sort()
+    return list
+
 def submission_counts(request):
     counts = ParsedSubmission.objects.values("survey_type__name", "phone__device_id").annotate(count=Count("survey_type"))
     table = {}
@@ -17,24 +27,26 @@ def submission_counts(request):
     for d in counts:
         phone = d["phone__device_id"]
         survey = d["survey_type__name"]
-        if phone not in table:
-            table[phone] = {}
-        if survey not in table[phone]:
-            table[phone][survey] = {}
-        table[phone][survey] = d["count"]
-        if phone not in rows:
-            rows.append(phone)
-        if survey not in cols:
-            cols.append(survey)
-        rows.sort()
-        cols.sort()
+        if survey!="bug_report":
+            if phone not in table:
+                table[phone] = {}
+            if survey not in table[phone]:
+                table[phone][survey] = {}
+            table[phone][survey] = d["count"]
+            if phone not in rows:
+                rows.append(phone)
+            if survey not in cols:
+                cols.append(survey)
+    rows.sort()
+    cols.sort()
     t = []
     for row in rows:
         t.append([row] + [str(table[row].get(col, 0)) for col in cols])
     return render_to_response("submission_counts.html",
                               {"submission_counts" : t,
                                'columns': cols,
-                               'sectionname':'data'})
+                               'sectionname':'data',
+                               'csvs' : csv_list()})
 
 def csv(request, name):
     form = Form.objects.get(id_string__startswith=name.title(), active=True)

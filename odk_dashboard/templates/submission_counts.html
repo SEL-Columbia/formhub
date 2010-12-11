@@ -5,15 +5,21 @@
 <div class="left-side-nav">
 	<div class="navwrap">
 	<h1 class="sn-title">
-		Data
+		CSV Files
 	</h1>
 	<ul>
-		<li><p class='notalink'>Submissions</p></li>
+		{% for name in csvs %}
+		  <li><a href="{{name}}.csv">{{name}}</a></li>
+		{% endfor %}
 	</ul>
 	</div>
 </div>
 <div class="right-content">
 	<div class="iwrap">
+	<h1 class="sn-title">
+	  Submission Counts by Phone and Survey
+	</h1>
+
 	{% if submission_counts %}
 	  <table class="shade-alternate">
 	  <tr>
