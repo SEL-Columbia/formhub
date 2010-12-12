@@ -62,7 +62,7 @@ $(function(){
 	map.load();
 	points = new SubmissionList({{point_data|safe}}['all']);
 	points.prepare();
-	map.addPoints(points.points);
+	points.addToMap(map);
 });
 </script>
 <script type="text/javascript" charset="utf-8" src="/site-media/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
