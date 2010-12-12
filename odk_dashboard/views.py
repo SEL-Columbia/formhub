@@ -73,13 +73,15 @@ def view_section(request):
         'survey':[],'recent':[]}
     
     psubs = []
-    for ps in ParsedSubmission.objects.all():
+    for ps in ParsedSubmission.objects.exclude(gps=None):
         pcur = {}
         if ps.gps:
+            pcur['images'] = [x.image.url for x in ps.submission.images.all()]
             pcur['phone'] = ps.phone.__unicode__()
             pcur['date'] = ps.submission.posted.strftime("%Y-%m-%d %H:%M")
             pcur['survey_type'] = ps.survey_type.name
             pcur['gps'] = ps.gps.to_dict()
+            pcur['title'] = ps.survey_type.name
         psubs.append(pcur)
     
     pass_to_map['all'] = psubs
@@ -89,19 +91,3 @@ def view_section(request):
 def analysis_section(request):
     info = {'sectionname':'analysis'}
     return render_to_response("analysis.html", info)
-
-
-def map_submissions(request):
-    latlongs = []
-
-    for loc in ParsedSubmission.objects.exclude(gps=None):
-        gps = loc.gps
-        title = loc.__str__()
-        latlongs.append({
-            'lat':gps.latitude,
-            'lng': gps.longitude,
-            'title': title,
-#            'survey_type':loc.survey_type
-        })
-
-    return render_to_response("map.html", {'coords':simplejson.dumps(latlongs)})
