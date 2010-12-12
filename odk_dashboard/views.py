@@ -5,7 +5,7 @@ from django.db.models import Avg, Max, Min, Count
 from django.http import HttpResponse
 from odk_dropbox import utils
 from odk_dropbox.models import Form
-from .models import ParsedSubmission
+from .models import ParsedSubmission, Phone
 
 def dashboard(request):
     return render_to_response('dashboard.html')
@@ -25,23 +25,27 @@ def submission_counts(request):
     rows = []
     cols = []
     for d in counts:
-        phone = d["phone__device_id"]
+        device_id = d["phone__device_id"]
+        phone = Phone.objects.get(device_id=device_id)
         survey = d["survey_type__name"]
-        if survey!="bug_report":
-            if phone not in table:
-                table[phone] = {}
-            if survey not in table[phone]:
-                table[phone][survey] = {}
-            table[phone][survey] = d["count"]
-            if phone not in rows:
-                rows.append(phone)
+        if survey!="bug":
+            if device_id not in table:
+                table[device_id] = {}
+            if survey not in table[device_id]:
+                table[device_id][survey] = {}
+            table[device_id][survey] = d["count"]
+            name = ""
+            if phone.most_recent_surveyor:
+                name = phone.most_recent_surveyor.name()
+            if (device_id, name) not in rows:
+                rows.append((device_id, name))
             if survey not in cols:
                 cols.append(survey)
     rows.sort()
     cols.sort()
     t = []
     for row in rows:
-        t.append([row] + [str(table[row].get(col, 0)) for col in cols])
+        t.append([row[0] if not row[1] else row[1]] + [str(table[row[0]].get(col, 0)) for col in cols])
     return render_to_response("submission_counts.html",
                               {"submission_counts" : t,
                                'columns': cols,
