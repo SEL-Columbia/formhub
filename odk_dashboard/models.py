@@ -43,14 +43,22 @@ class Surveyor(User):
     registration = models.ForeignKey(ParsedSubmission, related_name="not_meant_to_be_used")
     # for now every new registration creates a new surveyor, we need a smart way to combine surveyors
 
+    def name(self):
+        return (self.first_name + " " + self.last_name).title()
+
 def parse(submission):
     handler = utils.parse_submission(submission)
     d = handler.get_dict()
 
+    for k in ["start", "end", "device_id"]:
+        if k not in d:
+            return
+
     # create parsed submission object
     kwargs = {"submission" : submission}
     m = re.search(r"^([a-zA-Z]+)", handler.get_form_id())
-    survey_type, created = SurveyType.objects.get_or_create(name=m.group(1).lower())
+    type = m.group(1).lower()
+    survey_type, created = SurveyType.objects.get_or_create(name=type)
     kwargs["survey_type"] = survey_type
     for key in ["start", "end"]:
         s = d[key]
@@ -75,7 +83,9 @@ def parse(submission):
                   "last_name" : names.pop(),
                   "first_name" : " ".join(names),
                   "registration" : ps}
-        Surveyor.objects.create(**kwargs)
+        surveyor = Surveyor.objects.create(**kwargs)
+        phone.most_recent_surveyor = surveyor
+        phone.save()
     ps.save()
 
 def _parse(sender, **kwargs):
