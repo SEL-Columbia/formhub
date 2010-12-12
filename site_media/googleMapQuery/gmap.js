@@ -1,36 +1,4 @@
-/*--
-(function(surveyorDiv){
-	//a tangent that doesn't really do what it needs to...
-	var tbod = ['tbody', {}], group,
-		ph, grouped = points.groupBy('phone');
-	for(ph in grouped) {
-		group=grouped[ph];
-		var htd = ["td", {'rowspan':group.length}, ph];
-		if(ph=="undefined") {
-			continue;
-		}
-		for(var tt = 0; tt<group.length; tt++) {
-			var qq = ['td', {}, String(group[tt].date)];
-			var qtype = ['td', {}, String(group[tt].survey_type)]
-			if(tt==0) {
-				tbod.push(['tr', {}, htd, qtype, qq]);
-			} else {
-				tbod.push(['tr', {}, qtype, qq]);
-			}
-		}
-	}
-	surveyorDiv.buildIn(['table', {'class':'shade-alternate fullw align-top padded'}, tbod]);
-})//($('#surveyors'))
---*/
-
-var markerImages = {
-	water: 'blue',
-	school: 'green',
-	health: 'red'
-};
-
-var ResizeMap;
-
+//Resize the map window...
 $(function(){
     $(window).resize(function(){
         var mapBox = $('.map-tab'),
@@ -40,20 +8,29 @@ $(function(){
     	offset = mapBox.offset().top;
     	wh = $(window).height();
     	sh = wh - (offset + padding);
-    	if(sh>100) {mapBox.css({'height':sh})}
+     	if(sh>100) {mapBox.css({'height':sh})}
     });
     $(function(){$(window).trigger('resize')})
 })
- 
+
+//colors to match up marker flags
+var markerImages = {
+	water: 'blue',
+	school: 'green',
+	health: 'red'
+};
+
 /*-- 
-- I don't like this structure. Will re-do soon.
+- This structure works, for now.
 --*/
-var SubmissionList = (function($){
-	function Slist(arr){
-		this.points = arr;
+var SubmissionList, SubmissionPoint;
+
+(function($){
+	function _SubmissionList(arr){
+	    this.points = $(arr).map(function(){return new _SubmissionPoint(this)});
 		this.length = this.points.length;
 	}
-	$.extend(Slist.prototype, {
+	$.extend(_SubmissionList.prototype, {
 		sortBy: function(q){
 			return this.points.sort(function(a, b){
 				return a[q] < b[q] ? -1 : a[q] > b[q] ? 1 : 0
@@ -71,96 +48,104 @@ var SubmissionList = (function($){
 		toString: function(){
 			return "" + this.points.length + " submissions";
 		},
+		addToMap: function(map){
+		    $(this.points).each(function(){
+		        this.addToMap(map);
+		    })
+		},
 		prepare: function(){
-		    this.gatherGpoints();
-            this.gatherGmarkers();
+		    $(this.points).each(function(){this.prepareForGoogleMaps()})
             return this;
-		},
-		gatherGpoints: function(){
-			$(this.points).each(function(){
-				if(!this.gpoint) {
-					if(this.gps) {
-						this.gpoint = new google.maps.LatLng(this.gps.lat, this.gps.lng);
-					}
-				}
-			})
-		},
-		gatherGmarkers: function() {
-			for(var pi in this.points) {
-				if(this.points[pi].gpoint){
-					
-					// Origins, anchor positions and coordinates of the marker
-				  // increase in the X direction to the right and in
-				  // the Y direction down.
-				var mrk, st= this.points[pi].survey_type;
-				if(typeof(st)=='undefined') {
-					st='orange';
-				}
-				  var image = new google.maps.MarkerImage('/site-media/images/geosilk/flag_'+markerImages[st]+'.png',
-				      // This marker is 20 pixels wide by 32 pixels tall.
-				      new google.maps.Size(16,16),
-				      // The origin for this image is 0,0.
-				      new google.maps.Point(0,0),
-				      // The anchor for this image is the base of the flagpole at 0,32.
-				      new google.maps.Point(11,15));
-
-					var gmarker = new google.maps.Marker({
-						'position':this.points[pi].gpoint,
-						'title': this.points[pi].title,
-						'icon': image
-					});
-					gmarker.xpoint = this.points[pi];
-					
-					var contentString = "<div class='popup-image'><img src='"+this.points[pi].images[0]+"' /></div>";
-					this.points[pi].infowindow = new google.maps.InfoWindow({
-					    content: contentString
-					});
-
-					this.points[pi].gmarker = gmarker;
-				}
-			}
 		}
 	})
-	return Slist;
+
+    function _SubmissionPoint(options){
+        this.images=[];
+        $.extend(this, options);
+    }
+    $.extend(_SubmissionPoint.prototype, {
+        prepareForGoogleMaps: function(){
+            if(this.gps) {
+                this.gpoint = new google.maps.LatLng(this.gps.lat, this.gps.lng);
+                this.gmarker = new google.maps.Marker({
+                    position: this.gpoint,
+                    icon: this.icon(),
+                    title: this.title
+                })
+            }
+        },
+        icon: function(){
+            return '/site-media/images/geosilk/flag_'+markerImages[this.survey_type]+'.png';
+        },
+        hasGps: function() {
+            return "undefined"!==typeof this.gmarker
+        },
+        hasImage: function() {
+            return this.images.length > 0
+        },
+        addToMap: function(map) {
+            if(this.hasGps() && map._) {
+                this.gmarker.setMap(map._)
+                var _image = this.images[0],
+                    _title = this.title;
+                google.maps.event.addListener(this.gmarker, 'click', function(){
+                    $.fancybox({
+                        padding: 5,
+                        href: _image,
+                        title: _title,
+                        transitionIn: 'elastic',
+                        transitionOut: 'elastic'
+                    })
+                })
+            }
+        },
+        popupImage: function(){
+            console.log(this, arguments);
+            if(this.hasImage()) {
+                $.fancybox({
+        			'padding'		: 5,
+        			'href'			: this.images[0],
+        			'title'   		: this.title,
+        			'transitionIn'	: 'elastic',
+        			'transitionOut'	: 'elastic'
+        		});
+            }
+        }
+    });
+    
+    
+    window.SubmissionList = _SubmissionList;
+    window.SubmissionPoint = _SubmissionPoint;
 })(jQuery);
 
-
+/*-
+- jQuery plugin which instantiates a Gmap wrap for a google map on the
+- first element.
+-*/
 (function($){
-    function Gmap(elem, options) {this.elem=elem;this.opts=$.extend({
+    function Gmap(elem, options) {
+        if($(elem).data('gmap')) {
+            return $(elem).data('gmap');
+        }
+        this.elem=elem;
+        this._=false;
+        this.opts=$.extend({
             mapType: 'terrain',
             center: [0,0],
             zoom: 6
         }, options);
     }
     $.extend(Gmap.prototype, {
-        load: function(options){
-            var options = {
+        load: function(){
+            if(this._) {
+                return;
+            }
+            this._ = new google.maps.Map(this.elem, $.extend(this.opts, {
                 mapTypeId: google.maps.MapTypeId[this.opts.mapType.toUpperCase()],
                 center: new google.maps.LatLng(this.opts.center[0], this.opts.center[1])
-            }
-            this._ = new google.maps.Map(this.elem, $.extend(this.opts, options))
-        },
-        addPoints: function(points){
-            for(var xi in points) {
-                var x = points[xi];
-                if(x.gmarker) {
-                    var mapp = this._;
-                    x.gmarker.setMap(mapp)
-                    google.maps.event.addListener(x.gmarker, 'click', function(){
-                        if(this.xpoint.images.length > 0) {
-                            $.fancybox({
-                    			'padding'		: 10,
-                    			'href'			: this.xpoint.images[0],
-                    			'title'   		: this.title,
-                    			'transitionIn'	: 'elastic',
-                    			'transitionOut'	: 'elastic'
-                    		});
-                        }
-                    })
-                }
-            }
+            }))
         }
-    })
+    });
     function $gmap(options) {
         var elem = this.get(0);
         if(elem) {
@@ -173,97 +158,3 @@ var SubmissionList = (function($){
         gmap: $gmap
     });
 })(jQuery)
-
-/*--
-var $map = (function(){
-    function GoogleMap(){
-        this.site="google.com";
-    }
-    $.extend(GoogleMap.prototype, {
-        load: function(){
-            
-        }
-    });
-    return GoogleMap
-})();
-
-(function($){
-    var googmap = google.maps,
-        elem,
-        Map;
-    
-    function AddPoint(ll, options) {
-        if(!this.isAgmap) {return false;}
-        if(!ll.lat || !ll.lng || !ll instanceof Array) {return false;}
-        var latlng, marker;
-        if(ll instanceof Array) { latlng = new googmap.LatLng(ll[0], ll[1]);
-        } else { latlng = new googmap.LatLng(ll.lat, ll.lng);}
-        
-        var opts = $.extend({
-            title: 'Mapped Point'
-        }, options);
-        marker = new googmap.Marker({position: latlng, title: opts.title});
-        
-        marker.setMap(Map);
-        return marker;
-    }
-    function MapLayer($map) {this.$map=$map;$map.layers.push(this);this.points=[];}
-    $.extend(MapLayer.prototype, {
-        show: function() {
-            
-        },
-        hide: function(){
-    //        console.log('hides everything')
-        },
-        addPoint: function(pt, options){
-    //        this.$map
-        },
-        removePoint: function(pt){
-            console.log("removing point", pt);
-        }
-    })
-    function CreateLayer(options) {
-        var layer = new MapLayer(options);
-    }
-    function addLayer() {
-    }
-    function CreateMap(options){
-//        this.$map = new $map.apply(this, arguments);
-        this.isAgmap=true;
-        this.layers = [];
-        
-        var opts = $.extend({
-            center: [0,0],
-            mapType: "terrain",
-            zoom: 6
-        }, options);
-        
-///        var center = new googmap.LatLng(opts.center[0], opts.center[1])
-        elem = this.get(0);
-        
-  //      Map = new googmap.Map(elem, {
-    //        center: center,
-//            mapTypeId: google.maps.MapTypeId[opts.mapType.toUpperCase()],
-  //          zoom: opts.zoom
-    //    })
-        return this
-    }
-    function GetMapObject() {return Map;}
-
-
-    function CreateView(options) {
-        this.layers.push('a')
-        console.log(this.layers);
-    }
-    function ActivateView(options) {
-        console.log(this.layers);
-    }
-    $.extend($.fn, {
-//        gmap: CreateMap,
-  //      addPoint: AddPoint,
- //       getMapObject: GetMapObject,
- //       createView: CreateView,
- //       activateView: ActivateView
-    });
-})(jQuery)
---*/
