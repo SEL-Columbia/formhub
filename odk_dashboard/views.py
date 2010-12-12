@@ -72,10 +72,12 @@ def view_section(request):
     for ps in ParsedSubmission.objects.all():
         pcur = {}
         if ps.gps:
+            pcur['images'] = [x.image.url for x in ps.submission.images.all()]
             pcur['phone'] = ps.phone.__unicode__()
             pcur['date'] = ps.submission.posted.strftime("%Y-%m-%d %H:%M")
             pcur['survey_type'] = ps.survey_type.name
             pcur['gps'] = ps.gps.to_dict()
+            pcur['title'] = ps.survey_type.name
         psubs.append(pcur)
     
     pass_to_map['all'] = psubs

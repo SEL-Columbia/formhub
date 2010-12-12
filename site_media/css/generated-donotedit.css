@@ -2,6 +2,10 @@
   padding: 0 12px;
   height: 200px; }
 
+.map-nav-bar {
+  height: 23px;
+  overflow: auto; }
+
 div.left-side-nav {
   width: 29%;
   float: left;
@@ -40,6 +44,15 @@ div.right-content {
     background-color: white;
     border: 1px solid #999999;
     padding: 12px 20px; }
+
+body.wide-content #content {
+  position: relative; }
+  body.wide-content #content .fwidth {
+    padding: 0; }
+    body.wide-content #content .fwidth div.left-side-nav {
+      display: none; }
+  body.wide-content #content .right-content {
+    width: 100%; }
 
 th.col-top {
   text-transform: uppercase; }
@@ -81,3 +94,12 @@ table.shade-alternate {
       background-color: transparent; }
     table.shade-alternate tr:nth-child(odd) td:last-child {
       border-right: 1px solid #cccccc; }
+
+table.fullw {
+  width: 100%; }
+
+table.align-top td {
+  vertical-align: top; }
+
+table.padded td {
+  padding: 7px; }
