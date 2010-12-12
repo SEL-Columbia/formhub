@@ -69,7 +69,7 @@ def view_section(request):
         'survey':[],'recent':[]}
     
     psubs = []
-    for ps in ParsedSubmission.objects.all():
+    for ps in ParsedSubmission.objects.exclude(gps=None):
         pcur = {}
         if ps.gps:
             pcur['images'] = [x.image.url for x in ps.submission.images.all()]
@@ -87,19 +87,3 @@ def view_section(request):
 def analysis_section(request):
     info = {'sectionname':'analysis'}
     return render_to_response("analysis.html", info)
-
-
-def map_submissions(request):
-    latlongs = []
-
-    for loc in ParsedSubmission.objects.exclude(gps=None):
-        gps = loc.gps
-        title = loc.__str__()
-        latlongs.append({
-            'lat':gps.latitude,
-            'lng': gps.longitude,
-            'title': title,
-#            'survey_type':loc.survey_type
-        })
-
-    return render_to_response("map.html", {'coords':simplejson.dumps(latlongs)})
