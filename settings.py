@@ -40,6 +40,6 @@ INSTALLED_APPS = (
 
     'odk_dashboard',
     'odk_dropbox',
-    
+    'nmis_analysis',
     'django.contrib.admin',
 )

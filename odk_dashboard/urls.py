@@ -11,7 +11,6 @@ urlpatterns = patterns('',
     url(r"^(?P<name>.*)\.csv$", views.csv),
     url(r"^map/?", redirect_to, {'url': '/view'}),
     #4 main sections:
-    url(r"^profiles/?$", views.profiles_section),
     url(r"^data/?$", views.submission_counts),
     url(r"^view/?$", views.view_section),
     url(r"^analysis/?$", views.analysis_section),
