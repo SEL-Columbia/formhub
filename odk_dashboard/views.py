@@ -88,6 +88,46 @@ def view_section(request):
     info['point_data'] = simplejson.dumps(pass_to_map)
     return render_to_response("view.html", info)
 
+def survey_times(request):
+    """
+    Get the average time spent on each survey type. It looks like we
+    need to add a field to ParsedSubmission model to keep track of end
+    minus start times.
+    """
+    times = {}
+    for ps in ParsedSubmission.objects.all():
+        name = ps.survey_type.name
+        if name not in times:
+            times[name] = []
+        times[name].append(ps.end - ps.start)
+    for k, v in times.items():
+        v.sort()
+        times[k] = v[len(v)/2]
+    return render_to_response("dict.html", {"dict":times})
+
+def date_tuple(t):
+    return (t.year, t.month, t.day)
+
+def median_time_between_surveys(request):
+    """
+    Get the average time spent between surveys.
+    """
+    times = {}
+    for ps in ParsedSubmission.objects.all():
+        date = date_tuple(ps.start)
+        if date==date_tuple(ps.end):
+            k = (ps.phone.device_id, date[0], date[1], date[2])
+            if k not in times: times[k] = []
+            times[k].append((ps.start, ps.end))
+    diffs = []
+    for k, v in times.items():
+        v.sort()
+        if len(v)>1:
+            diffs.extend( [v[i+1][0] - v[i][1] for i in range(len(v)-1)] )
+    diffs.sort()
+    d = {"median time between surveys" : diffs[len(diffs)/2]}
+    return render_to_response("dict.html", {"dict" : d})
+
 def analysis_section(request):
     info = {'sectionname':'analysis'}
     return render_to_response("analysis.html", info)
