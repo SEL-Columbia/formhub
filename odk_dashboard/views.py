@@ -115,6 +115,13 @@ def average(l):
         result = result + x/len(l)
     return result
 
+def remove_saved_later(l):
+    for i in range(len(l)-1):
+        # end of this one > start of next one
+        if l[i][1] > l[i+1][0]:
+            return l.pop(i)
+    return None
+
 def median_time_between_surveys(request):
     """
     Get the average time spent between surveys.
@@ -126,6 +133,11 @@ def median_time_between_surveys(request):
             k = (ps.phone.device_id, date[0], date[1], date[2])
             if k not in times: times[k] = []
             times[k].append((ps.start, ps.end))
+    for k, v in times.items():
+        v.sort()
+        saved_later = remove_saved_later(v)
+        while saved_later:
+            saved_later = remove_saved_later(v)
     diffs = []
     for k, v in times.items():
         v.sort()
