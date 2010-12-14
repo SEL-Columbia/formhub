@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from odk_dropbox import utils
 from odk_dropbox.models import Form
 from .models import ParsedSubmission, Phone
+import datetime
 
 def dashboard(request):
     return render_to_response('dashboard.html')
@@ -108,6 +109,12 @@ def survey_times(request):
 def date_tuple(t):
     return (t.year, t.month, t.day)
 
+def average(l):
+    result = datetime.timedelta(0)
+    for x in l:
+        result = result + x/len(l)
+    return result
+
 def median_time_between_surveys(request):
     """
     Get the average time spent between surveys.
@@ -125,7 +132,8 @@ def median_time_between_surveys(request):
         if len(v)>1:
             diffs.extend( [v[i+1][0] - v[i][1] for i in range(len(v)-1)] )
     diffs.sort()
-    d = {"median time between surveys" : diffs[len(diffs)/2]}
+    d = {"median time between surveys" : diffs[len(diffs)/2],
+         "average time between surveys" : average(diffs)}
     return render_to_response("dict.html", {"dict" : d})
 
 def analysis_section(request):
