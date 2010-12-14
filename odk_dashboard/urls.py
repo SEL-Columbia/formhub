@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r"^map/?", redirect_to, {'url': '/view'}),
     url(r"^median-survey-times/?", views.survey_times),
     url(r"^median-time-between-surveys/?", views.median_time_between_surveys),
+    url(r"^counts-by-date/?", views.counts_by_date),
     #4 main sections:
     url(r"^profiles/?$", views.profiles_section),
     url(r"^data/?$", views.submission_counts),
