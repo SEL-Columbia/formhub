@@ -8,7 +8,7 @@ from settings import MEDIA_ROOT
 urlpatterns = patterns('',
     (r'', include('nmis.odk_dropbox.urls')),
     (r'', include('nmis.odk_dashboard.urls')),
-    (r'', include('nmis.nmis_analysis.urls')),
+#    (r'', include('nmis.nmis_analysis.urls')),
     (r'^admin/', include(admin.site.urls)),
     # static serve site media / only for development
     (r'^site-media/(?P<path>.+)$', 'django.views.static.serve', {'document_root' : MEDIA_ROOT}),
