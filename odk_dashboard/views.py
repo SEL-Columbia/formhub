@@ -55,7 +55,10 @@ def submission_counts(request):
 
 def counts_by_date(request):
     # http://stackoverflow.com/questions/722325/django-group-by-strftime-date-format
-    select_data = {"date": "strftime('%%Y/%%m/%%d', end)"}
+    # this version works with sqlite
+    # select_data = {"date": "strftime('%%Y/%%m/%%d', end)"}
+    # this version works with mysql
+    select_data = {"date" : "date(end)"}
     counts = ParsedSubmission.objects.extra(select=select_data).values("date", "survey_type__name").annotate(count=Count("survey_type")).order_by()
 
     table = {}
