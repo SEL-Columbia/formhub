@@ -4,11 +4,10 @@ from fabric.api import run, settings, local
 
 #@hosts('localhost')
 def setup():
-    "Clones the repositories"
+    "Clones inner repository"
     
-    repos = ["git@github.com:mvpdev/odk_dropbox.git",
-             "git@github.com:mvpdev/nmis_analysis.git",
-             "git@github.com:mvpdev/django-eav.git",]
+    repos = ["git@github.com:mvpdev/django-eav.git",]
+    
     for repo in repos:
         local("git clone %s" % repo, capture=True)
 
@@ -22,8 +21,6 @@ def setup():
 
 
 def git_pull_all():
-    "Updates all the repositories"
+    "Merges master from repository & django-eav."
     local('git pull origin master', capture=True)
-    local('cd odk_dropbox && git pull origin master', capture=True)
-    local('cd nmis_analysis && git pull origin master', capture=True)
     local('cd django-eav && git pull origin master', capture=True)
