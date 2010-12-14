@@ -16,5 +16,6 @@ urlpatterns = patterns('',
     #4 main sections:
     url(r"^data/?$", views.submission_counts),
     url(r"^view/?$", views.view_section),
+    url(r"^profiles/?$", views.profiles_section),
     url(r"^analysis/?$", views.analysis_section),
 )
