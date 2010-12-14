@@ -100,7 +100,6 @@ var SubmissionList, SubmissionPoint;
             }
         },
         popupImage: function(){
-            console.log(this, arguments);
             if(this.hasImage()) {
                 $.fancybox({
         			'padding'		: 5,
