@@ -2,7 +2,6 @@ custom_settings.py
 
 django-eav
 eav
-nmis_analysis
 odk_dropbox
 site_media/odk
 
