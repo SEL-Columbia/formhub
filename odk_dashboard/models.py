@@ -54,6 +54,8 @@ class ParsedInstance(models.Model):
     phone = models.ForeignKey(Phone)
     location = models.ForeignKey(Location)
 
+    def survey_length(self):
+        return self.end - self.start
 
 # For now every new registration creates a new surveyor, we need a
 # smart way to combine surveyors.

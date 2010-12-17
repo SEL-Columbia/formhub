@@ -20,14 +20,19 @@ def csv_list():
     list.sort()
     return list
 
-def frequency_tables(request):
-    dimensions = {
-        "Form" : "survey_type__name",
-        "Surveyor" : "surveyor__name",
-        "Date" : "date",
-        "Location" : "location__name",
-        }
-                  
+def recent_activity(request):
+    info={}
+    info['submissions'] = ParsedSubmission.objects.all().order_by('-end')[0:50]
+    return render_to_response("activity.html", info)
+
+def submission_counts(request):
+    # def frequency_tables(request):
+    #     dimensions = {
+    #         "Form" : "survey_type__name",
+    #         "Surveyor" : "surveyor__name",
+    #         "Date" : "date",
+    #         "Location" : "location__name",
+    #         }
     counts = ParsedSubmission.objects.values("survey_type__name", "phone__device_id").annotate(count=Count("survey_type"))
     table = {}
     rows = []
