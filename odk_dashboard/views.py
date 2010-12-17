@@ -20,6 +20,11 @@ def csv_list():
     list.sort()
     return list
 
+def recent_activity(request):
+    info={}
+    info['submissions'] = ParsedSubmission.objects.all().order_by('-end')[0:50]
+    return render_to_response("activity.html", info)
+
 def submission_counts(request):
     counts = ParsedSubmission.objects.values("survey_type__name", "phone__device_id").annotate(count=Count("survey_type"))
     table = {}

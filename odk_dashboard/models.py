@@ -39,6 +39,9 @@ class ParsedSubmission(models.Model):
     surveyor = models.ForeignKey("Surveyor", null=True, blank=True, related_name="submissions")
     phone = models.ForeignKey(Phone)
 
+    def survey_length(self):
+        return self.end - self.start
+
 class Surveyor(User):
     registration = models.ForeignKey(ParsedSubmission, related_name="not_meant_to_be_used")
     # for now every new registration creates a new surveyor, we need a smart way to combine surveyors

@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r"^median-time-between-surveys/?", views.median_time_between_surveys),
     #4 main sections:
     url(r"^data/?$", views.submission_counts),
+    url(r"^data/activity$", views.recent_activity),
     url(r"^view/?$", views.view_section),
     url(r"^analysis/?$", views.analysis_section),
 )
