@@ -58,6 +58,41 @@ def submission_counts(request):
                                'sectionname':'data',
                                'csvs' : csv_list()})
 
+def counts_by_date(request):
+    # http://stackoverflow.com/questions/722325/django-group-by-strftime-date-format
+    # this version works with sqlite
+    # select_data = {"date": "strftime('%%Y/%%m/%%d', end)"}
+    # this version works with mysql
+    select_data = {"date" : "date(end)"}
+    counts = ParsedSubmission.objects.extra(select=select_data).values("date", "survey_type__name").annotate(count=Count("survey_type")).order_by()
+
+    table = {}
+    rows = []
+    cols = []
+    for d in counts:
+        date = d["date"]
+        survey = d["survey_type__name"]
+        if survey!="bug":
+            if date not in table:
+                table[date] = {}
+            if survey not in table[date]:
+                table[date][survey] = {}
+            table[date][survey] = d["count"]
+            if date not in rows:
+                rows.append(date)
+            if survey not in cols:
+                cols.append(survey)
+    rows.sort()
+    cols.sort()
+    t = []
+    for row in rows:
+        t.append([row] + [str(table[row].get(col, 0)) for col in cols])
+    return render_to_response("submission_counts.html",
+                              {"submission_counts" : t,
+                               'columns': cols,
+                               'sectionname':'data',
+                               'csvs' : csv_list()})
+
 def csv(request, name):
     form = Form.objects.get(id_string__startswith=name.title(), active=True)
     handlers = [utils.parse_submission(s) for s in form.submissions.all()]
