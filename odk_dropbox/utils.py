@@ -10,9 +10,10 @@ class ODKHandler(ContentHandler):
         self._dict = {}
         self._stack = []
         self._form_id = ""
-        self._repeated_tags = []
 
     def get_dict(self):
+        # Note: we're only using the xml tag in our dictionary, not
+        # the whole xpath.
         return self._dict
 
     def get_form_id(self):
@@ -27,47 +28,64 @@ class ODKHandler(ContentHandler):
         # there should only be a single attribute in this document
         # an id on the root node
         if attrs:
-            assert len(self._stack)==1, "Attributes should be associated with the root node only."
-            for key in attrs.keys():
-                assert key=="id", "The only attribute we should see is an 'id'."
-                self._form_id = attrs.get(key)
+            assert len(self._stack)==1, \
+                "Attributes should only be on the root node."
+            keys = attrs.keys()
+            assert keys==["id"], \
+                "The only attribute we should see is an 'id'."
+            self._form_id = attrs.get("id")
 
     def characters(self, content):
         # ignore whitespace
         s = content.strip()
-        if s:
-            tag = self._stack[-1]
-            if tag not in self._dict:
-                self._dict[tag] = s
+        if not s: return
+
+        # get the last tag we saw
+        tag = self._stack[-1]
+        if tag not in self._dict:
+            # if we haven't seen this tag before just add this key
+            # value pair to the dictionary
+            self._dict[tag] = s
+        else:
+            # if we have seen this tag before we need to append this
+            # value to a list of all the values we've seen before
+            if type(self._dict[tag])==list:
+                self._dict[tag].append(s)
             else:
-                self._repeated_tags.append( "/".join(self._stack) )
+                self._dict[tag] = [self._dict[tag], s]
 
     def endElement(self, name):
         top = self._stack.pop()
-        assert top==name, "start element %(top)s doesn't match end element %(name)s" % {"top" : top, "name" : name}
+        assert top==name, \
+            "start %(top)s doesn't match end %(name)s" % \
+            {"top" : top, "name" : name} 
 
 
 def parse(xml):
     handler = ODKHandler()
-    repeats = handler.get_repeated_tags()
-    if repeats:
-        report_exception(
-            "XML tags should be unique",
-            "\n".join(handler.get_repeated_tags())
-            )
     byte_string = xml.encode("utf-8")
     parseString(byte_string, handler)
+
+    d = handler.get_dict()
+    repeats = [(k,v) for k, v in d.items() if type(v)==list]
+    if repeats: report_exception("Repeated XML tags", str(repeats))
+
     return handler
 
 def text(file):
+    """
+    Return the string contents of the passed file.
+    """
     file.open()
     text = file.read()
     file.close()
     return text
 
-def parse_submission(submission):
-    return parse(text(submission.xml_file))
-
+def parse_instance(instance):
+    """
+    Return the ODKHandler from parsing the xml_file of this instance.
+    """
+    return parse(text(instance.xml_file))
 
 def table(dicts):
     """Turn a list of dicts into a table."""
@@ -100,13 +118,9 @@ from django.core.mail import mail_admins
 import traceback
 def report_exception(subject, info, exc_info=None):
     if exc_info:
-        try:
-            cls, err = exc_info[:2]
-            info += "Exception in request: %s: %s" % (cls.__name__, err)
-            info += "".join(traceback.format_exception(*exc_info))
-        except:
-            report_exception("problem reporting exception",
-                             "i'll test this late at night.")
+        cls, err = exc_info[:2]
+        info += "Exception in request: %s: %s" % (cls.__name__, err)
+        info += "".join(traceback.format_exception(*exc_info))
 
     # fail silently is good for development settings
     mail_admins(subject=subject, message=info, fail_silently=True)
