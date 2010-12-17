@@ -1,44 +1,49 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
+import os, re, sys
+from xml.dom.minidom import parseString, Element
 from django.db import models
 from django.db.models.signals import pre_save
-from xml.dom.minidom import parseString, Element
-import os, re, sys
-
 from . import utils
 
 FORM_PATH = "odk/forms"
 INSTANCE_PATH = "odk/instances"
 
-def _drop_xml_extension(str):
-    m = re.search(r"(.*)\.xml$", str)
+def _drop_xml_extension(filename):
+    """
+    Return the filename having dropped the 'xml' extension. If the
+    filename didn't end with '.xml' raise an exception.
+    """    
+    m = re.search(r"(.*)\.xml$", filename)
     if m:
         return m.group(1)
     else:
-        raise Exception("This string doesn't end with .xml. " + str)
+        raise Exception("Filename must end with '.xml'", filename)
 
 class Form(models.Model):
     xml_file = models.FileField(upload_to=FORM_PATH)
-    id_string = models.CharField(unique=True, blank=True, max_length=32)
+    id_string = models.CharField(
+        unique=True, blank=True, max_length=32
+        )
     active = models.BooleanField()
 
     def __unicode__(self):
         return getattr(self, "id_string", "")
 
     def name(self):
-        head, tail = os.path.split(self.xml_file.name)
-        return _drop_xml_extension(tail)
+        folder, filename = os.path.split(self.xml_file.name)
+        return _drop_xml_extension(filename)
 
     def url(self):
         return self.xml_file.url
 
     def _set_id_from_xml(self):
-        """Find the single child of h:head/model/instance and return
-        the attribute 'id'."""
-        self.xml_file.open()
-        xml = self.xml_file.read()
-        self.xml_file.close()
+        """
+        Find the single child of h:head/model/instance and return the
+        attribute 'id'.
+        """
+        xml = utils.text(self.xml_file)
         dom = parseString(xml)
         element = dom.documentElement
         path = ["h:head", "model", "instance"]
@@ -67,14 +72,21 @@ pre_save.connect(_set_form_id, sender=Form)
 
     
 # http://docs.djangoproject.com/en/dev/ref/models/fields/#django.db.models.FileField.upload_to
-def _upload_submission(instance, filename):
+def _upload_xml_file(instance, filename):
     folder_name = _drop_xml_extension(filename)
     return os.path.join(INSTANCE_PATH, folder_name, filename)
 
-class Submission(models.Model):
-    xml_file = models.FileField(upload_to=_upload_submission)
-    form = models.ForeignKey(Form, blank=True, null=True, related_name="submissions")
-    posted = models.DateTimeField(auto_now_add=True)
+def hash_contents(f):
+    """
+    Return a hash code of the contents of the file f.
+    """
+    s = utils.text(f)
+    return s.__hash__()
+
+class Instance(models.Model):
+    xml_file = models.FileField(upload_to=_upload_xml_file)
+    form = models.ForeignKey(Form, blank=True, null=True, related_name="instances")
+    hash = models.IntegerField(blank=True, null=True)
 
     def __unicode__(self):
         if self.form:
@@ -82,39 +94,60 @@ class Submission(models.Model):
         else:
             return "no link"
 
+    def _set_hash(self):
+        self.hash = hash_contents(self.xml_file)
+
     def _link(self):
-        """Link this submission to the form with same id field."""
-        self.xml_file.open()
-        xml = self.xml_file.read()
-        self.xml_file.close()
+        """Link this instance to the form with same id field."""
         try:
-            handler = utils.parse(xml)
+            handler = utils.parse_instance(self)
             id_string = handler.get_form_id()
             self.form = Form.objects.get(id_string=id_string)
         except Form.DoesNotExist:
             utils.report_exception(
                 "missing original form",
-                "This submission cannot be linked to the original form because we no longer have %s." % id_string
+                "This instance cannot be linked to the original form because we no longer have %s." % id_string
                 )
         except:
             utils.report_exception(
-                "problem linking submission",
-                "This is probably a problem parsing the submission.",
+                "problem linking instance",
+                "This is probably a problem parsing the instance.",
                 sys.exc_info()
                 )
 
-
-def _link_submission(sender, **kwargs):
+def _setup_instance(sender, **kwargs):
+    kwargs["instance"]._set_hash()
     kwargs["instance"]._link()
 
-pre_save.connect(_link_submission, sender=Submission)
+pre_save.connect(_setup_instance, sender=Instance)
 
     
 def _upload_image(instance, filename):
-    """Save this image in the same folder as its submission."""
-    head, tail = os.path.split(instance.submission.xml_file.name)
-    return os.path.join(head, filename)
+    """
+    Save this image in the same folder as its instance.
+    """
+    folder, xml_filename = os.path.split(instance.instance.xml_file.name)
+    return os.path.join(folder, filename)
 
-class SubmissionImage(models.Model):
-    submission = models.ForeignKey(Submission, related_name="images")
+class InstanceImage(models.Model):
+    instance = models.ForeignKey(Instance, related_name="images")
     image = models.FileField(upload_to=_upload_image)
+
+class Submission(models.Model):
+    posted = models.DateTimeField(auto_now_add=True)
+    instance = models.ForeignKey(Instance, related_name="submissions")
+
+def make_submission(xml_file):
+    """
+    If this XML file is already in the database log that this file has
+    been submitted a second time and return the submission
+    object. Otherwise save this file to the database and return the
+    submission object.
+    """
+    matches = Instance.objects.filter(hash=hash_contents(xml_file))
+    text = utils.text(xml_file)
+    for match in matches:
+        if utils.text(match.xml_file)==text:
+            return Submission.objects.create(instance=match)
+    instance = Instance.objects.create(xml_file=xml_file)
+    return Submission.objects.create(instance=instance)
