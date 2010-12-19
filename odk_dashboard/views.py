@@ -5,7 +5,7 @@ from django.db.models import Avg, Max, Min, Count
 from django.http import HttpResponse
 from odk_dropbox import utils
 from odk_dropbox.models import Form
-from .models import ParsedSubmission, Phone
+from .models import ParsedInstance, Phone
 import datetime
 
 def dashboard(request):
@@ -22,7 +22,7 @@ def csv_list():
 
 def recent_activity(request):
     info={}
-    info['submissions'] = ParsedSubmission.objects.all().order_by('-end')[0:50]
+    info['submissions'] = ParsedInstance.objects.all().order_by('-end')[0:50]
     return render_to_response("activity.html", info)
 
 def submission_counts(request):
@@ -33,7 +33,7 @@ def submission_counts(request):
     #         "Date" : "date",
     #         "Location" : "location__name",
     #         }
-    counts = ParsedSubmission.objects.values("survey_type__name", "phone__device_id").annotate(count=Count("survey_type"))
+    counts = ParsedInstance.objects.values("survey_type__name", "phone__device_id").annotate(count=Count("survey_type"))
     table = {}
     rows = []
     cols = []
@@ -71,7 +71,7 @@ def counts_by_date(request):
     # select_data = {"date": "strftime('%%Y/%%m/%%d', end)"}
     # this version works with mysql
     select_data = {"date" : "date(end)"}
-    counts = ParsedSubmission.objects.extra(select=select_data).values("date", "survey_type__name").annotate(count=Count("survey_type")).order_by()
+    counts = ParsedInstance.objects.extra(select=select_data).values("date", "survey_type__name").annotate(count=Count("survey_type")).order_by()
 
     table = {}
     rows = []
@@ -102,7 +102,7 @@ def counts_by_date(request):
 
 def csv(request, name):
     form = Form.objects.get(id_string__startswith=name.title(), active=True)
-    handlers = [utils.parse_submission(s) for s in form.submissions.all()]
+    handlers = [utils.parse_instance(s) for s in form.instances.all()]
     dicts = [h.get_dict() for h in handlers]
     table = utils.table(dicts)
     return HttpResponse(utils.csv(table), mimetype="application/csv")
@@ -121,12 +121,12 @@ def view_section(request):
         'survey':[],'recent':[]}
     
     psubs = []
-    for ps in ParsedSubmission.objects.exclude(gps=None):
+    for ps in ParsedInstance.objects.exclude(gps=None):
         pcur = {}
         if ps.gps:
-            pcur['images'] = [x.image.url for x in ps.submission.images.all()]
+            pcur['images'] = [x.image.url for x in ps.instance.images.all()]
             pcur['phone'] = ps.phone.__unicode__()
-            pcur['date'] = ps.submission.posted.strftime("%Y-%m-%d %H:%M")
+            pcur['date'] = ps.end.strftime("%Y-%m-%d %H:%M")
             pcur['survey_type'] = ps.survey_type.name
             pcur['gps'] = ps.gps.to_dict()
             pcur['title'] = ps.survey_type.name
@@ -139,11 +139,11 @@ def view_section(request):
 def survey_times(request):
     """
     Get the average time spent on each survey type. It looks like we
-    need to add a field to ParsedSubmission model to keep track of end
+    need to add a field to ParsedInstance model to keep track of end
     minus start times.
     """
     times = {}
-    for ps in ParsedSubmission.objects.all():
+    for ps in ParsedInstance.objects.all():
         name = ps.survey_type.name
         if name not in times:
             times[name] = []
@@ -174,7 +174,7 @@ def median_time_between_surveys(request):
     Get the average time spent between surveys.
     """
     times = {}
-    for ps in ParsedSubmission.objects.all():
+    for ps in ParsedInstance.objects.all():
         date = date_tuple(ps.start)
         if date==date_tuple(ps.end):
             k = (ps.phone.device_id, date[0], date[1], date[2])
