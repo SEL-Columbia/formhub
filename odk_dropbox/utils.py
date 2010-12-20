@@ -114,6 +114,7 @@ def csv(table):
         csv += "\n"
     return csv
 
+from django.conf import settings
 from django.core.mail import mail_admins
 import traceback
 def report_exception(subject, info, exc_info=None):
@@ -122,5 +123,8 @@ def report_exception(subject, info, exc_info=None):
         info += "Exception in request: %s: %s" % (cls.__name__, err)
         info += "".join(traceback.format_exception(*exc_info))
 
-    # fail silently is good for development settings
-    mail_admins(subject=subject, message=info, fail_silently=True)
+    if settings.DEBUG:
+        print subject
+        print info
+    else:
+        mail_admins(subject=subject, message=info)
