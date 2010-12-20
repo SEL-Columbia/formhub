@@ -121,14 +121,14 @@ def view_section(request):
         'survey':[],'recent':[]}
     
     psubs = []
-    for ps in ParsedInstance.objects.exclude(gps=None):
+    for ps in ParsedInstance.objects.exclude(location__gps=None):
         pcur = {}
-        if ps.gps:
+        if ps.location.gps:
             pcur['images'] = [x.image.url for x in ps.instance.images.all()]
             pcur['phone'] = ps.phone.__unicode__()
             pcur['date'] = ps.end.strftime("%Y-%m-%d %H:%M")
             pcur['survey_type'] = ps.survey_type.name
-            pcur['gps'] = ps.gps.to_dict()
+            pcur['gps'] = ps.location.gps.to_dict()
             pcur['title'] = ps.survey_type.name
         psubs.append(pcur)
     
