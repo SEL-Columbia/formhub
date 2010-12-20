@@ -23,15 +23,15 @@ def submission(request):
     xml_file_list = request.FILES.pop("xml_submission_file")
     assert len(xml_file_list)==1, \
         "There should be a single xml file in this submission."
-    s = make_submission(xml_file_list[0])
 
     # save the rest of the files to the filesystem
     # these should all be images
+    images = []
     for key in request.FILES.keys():
         for image in request.FILES.getlist(key):
-            InstanceImage.objects.create(
-                instance=s.instance, image=image
-                )
+            images.append(image)
+
+    make_submission(xml_file_list[0], images)
 
     # ODK needs two things for a form to be considered successful
     # 1) the status code needs to be 201 (created)
