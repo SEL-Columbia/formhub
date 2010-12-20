@@ -22,11 +22,17 @@ def _drop_xml_extension(filename):
         raise Exception("Filename must end with '.xml'", filename)
 
 class Form(models.Model):
-    xml_file = models.FileField(upload_to=FORM_PATH)
+    xml_file = models.FileField(
+        upload_to=FORM_PATH, verbose_name="XML File"
+        )
     id_string = models.CharField(
-        unique=True, blank=True, max_length=32
+        unique=True, blank=True, max_length=32, verbose_name="ID String"
         )
     active = models.BooleanField()
+
+    class Meta:
+        verbose_name = "XForm for ODK"
+        verbose_name_plural = "XForms for ODK"
 
     def __unicode__(self):
         return getattr(self, "id_string", "")
