@@ -137,7 +137,7 @@ class Submission(models.Model):
     posted = models.DateTimeField(auto_now_add=True)
     instance = models.ForeignKey(Instance, related_name="submissions")
 
-def make_submission(xml_file):
+def make_submission(xml_file, images):
     """
     If this XML file is already in the database log that this file has
     been submitted a second time and return the submission
@@ -150,4 +150,6 @@ def make_submission(xml_file):
         if utils.text(match.xml_file)==text:
             return Submission.objects.create(instance=match)
     instance = Instance.objects.create(xml_file=xml_file)
+    for image in images:
+        InstanceImage.objects.create(instance=instance, image=image)
     return Submission.objects.create(instance=instance)
