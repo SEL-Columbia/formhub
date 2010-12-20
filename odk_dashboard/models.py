@@ -12,7 +12,6 @@ from django.conf import settings
 from odk_dropbox.models import Instance
 from odk_dropbox import utils
 
-
 class Phone(models.Model):
     device_id = models.CharField(max_length=32)
     most_recent_surveyor = \
@@ -20,7 +19,6 @@ class Phone(models.Model):
 
     def __unicode__(self):
         return self.device_id
-
 
 class GPS(models.Model):
     latitude = models.FloatField()
@@ -32,14 +30,15 @@ class GPS(models.Model):
     def to_dict(self):
         return {'lat':self.latitude, 'lng':self.longitude, 'acc':self.accuracy}
 
-
 class SurveyType(models.Model):
     name = models.CharField(max_length=32)
 
+    def __unicode__(self):
+        return self.name
 
 class Location(models.Model):
     name = models.CharField(max_length=32)
-
+    gps = models.ForeignKey(GPS, null=True, blank=True)
 
 class ParsedInstance(models.Model):
     instance = models.ForeignKey(Instance)
@@ -47,12 +46,11 @@ class ParsedInstance(models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField()
     date = models.DateField()
-    gps = models.ForeignKey(GPS, null=True, blank=True)
     surveyor = models.ForeignKey(
         "Surveyor", null=True, blank=True, related_name="submissions"
         )
     phone = models.ForeignKey(Phone)
-    location = models.ForeignKey(Location)
+    location = models.ForeignKey(Location, null=True, blank=True)
 
     def survey_length(self):
         return self.end - self.start
@@ -61,12 +59,11 @@ class ParsedInstance(models.Model):
 # smart way to combine surveyors.
 class Surveyor(User):
     registration = models.ForeignKey(
-        ParsedInstance, related_name="not_meant_to_be_used"
+        ParsedInstance, related_name="surveyor registration"
         )
 
     def name(self):
         return (self.first_name + " " + self.last_name).title()
-
 
 def matching_keys(d, regexp):
     """
@@ -81,8 +78,12 @@ def matching_key(d, regexp):
     regular expression and return it.
     """
     l = matching_keys(d, regexp)
-    assert len(l)==1, "There should be exactly one match: " + str(l)
-    return l[0]
+    if len(l)==1:
+        return l[0]
+    elif len(l)==0:
+        return ""
+    else:
+        raise Exception("There should be at most one match", l)
 
 def parse(instance):
     handler = utils.parse_instance(instance)
@@ -112,21 +113,23 @@ def parse(instance):
                 )
     kwargs["date"] = kwargs["end"].date()
 
-    gps_str = d.get("geopoint","")
-    if gps_str:
-        values = gps_str.split(" ")
-        keys = ["latitude", "longitude", "altitude", "accuracy"]
-        items = zip(keys, values)
-        gps = GPS.objects.create(**dict(items))
-        kwargs["gps"] = gps
+    lga = matching_key(d, r"^lga")
+    if lga:
+        gps_str = d.get("geopoint","")
+        gps = None
+        if gps_str:
+            values = gps_str.split(" ")
+            keys = ["latitude", "longitude", "altitude", "accuracy"]
+            items = zip(keys, values)
+            gps, created = GPS.objects.get_or_create(**dict(items))
+        location, created = Location.objects.get_or_create(
+            name=d[lga], gps=gps
+            )
+        kwargs["location"] = location
 
     phone, created = \
         Phone.objects.get_or_create(device_id=d["device_id"])
     kwargs["phone"] = phone
-
-    lga = matching_key(d, r"^lga")
-    location, created = Location.objects.get_or_create(name=d[lga])
-    kwargs["location"] = location
 
     ps = ParsedInstance.objects.create(**kwargs)
 
@@ -141,7 +144,6 @@ def parse(instance):
         phone.most_recent_surveyor = surveyor
         phone.save()
     ps.save()
-
 
 def _parse(sender, **kwargs):
     # make sure we haven't parsed this instance before
