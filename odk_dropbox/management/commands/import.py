@@ -26,20 +26,16 @@ class Command(BaseCommand):
         for instance in glob.glob( os.path.join(path, "*") ):
             xml_files = glob.glob( os.path.join(instance, "*.xml") )
             if len(xml_files)<1: continue
-            # if len(xml_files)>1: raise Exception(
-            #     "Figure out how to handle multiple XML files",
-            #     xml_files
-            #     )
-            if len(xml_files)>1: print xml_files
-            f = django_file(xml_files[0],
-                            field_name="xml_file",
-                            content_type="text/xml")
-            s = make_submission(f)
-
-            for jpg in glob.glob( os.path.join(instance, "*.jpg") ):
-                f = django_file(jpg,
+            # we need to figure out what to do if there are multiple
+            # xml files in the same folder.
+            xml_file = django_file(xml_files[0],
+                                   field_name="xml_file",
+                                   content_type="text/xml")
+            images = []
+            for jpg in glob.glob(os.path.join(instance, "*.jpg")):
+                images.append(
+                    django_file(jpg,
                                 field_name="image",
                                 content_type="image/jpeg")
-                InstanceImage.objects.get_or_create(
-                    instance=s.instance, image=f
                     )
+            make_submission(xml_file, images)
