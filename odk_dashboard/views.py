@@ -102,9 +102,7 @@ def counts_by_date(request):
 
 def csv(request, name):
     form = Form.objects.get(id_string__startswith=name.title(), active=True)
-    handlers = [utils.parse_instance(s) for s in form.instances.all()]
-    dicts = [h.get_dict() for h in handlers]
-    table = utils.table(dicts)
+    table = utils.table(form)
     return HttpResponse(utils.csv(table), mimetype="application/csv")
 
 def profiles_section(request):

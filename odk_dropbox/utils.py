@@ -3,6 +3,7 @@
 
 from xml.sax.handler import ContentHandler
 from xml.sax import parseString
+import xml
 
 class ODKHandler(ContentHandler):
 
@@ -49,10 +50,7 @@ class ODKHandler(ContentHandler):
         else:
             # if we have seen this tag before we need to append this
             # value to a list of all the values we've seen before
-            if type(self._dict[tag])==list:
-                self._dict[tag].append(s)
-            else:
-                self._dict[tag] = [self._dict[tag], s]
+            self._dict[tag] += u" " + s
 
     def endElement(self, name):
         top = self._stack.pop()
@@ -87,24 +85,43 @@ def parse_instance(instance):
     """
     return parse(text(instance.xml_file))
 
-def table(dicts):
+
+## PARSING OF XFORMS
+# at each text node we grab the nodeValue
+# and parentNode.nodeName
+def get_text_nodes(node):
+    if node.nodeType == node.TEXT_NODE:
+        return [node]
+    else:
+        result = []
+        for n in node.childNodes:
+            result += get_text_nodes(n)
+        return result
+
+def get_variable_name(binding):
+    return binding.getAttribute("nodeset").split("/")[-1]
+
+class XMLParser(object):
+    def __init__(self, path):
+        self.doc = xml.dom.minidom.parse(path)
+
+class FormParser(XMLParser):
+    def get_bindings(self):
+        return self.doc.getElementsByTagName("bind")
+
+    def get_variable_list(self):
+        return [get_variable_name(b) for b in self.get_bindings()]
+
+
+def table(form):
     """Turn a list of dicts into a table."""
-    # Note: we're doing everything in memory because it's easier.
-    headers = []
-    for dict in dicts:
-        for key in dict.keys():
-            if key not in headers:
-                headers.append(key)
-    headers.sort()
+    form_parser = FormParser(form.path())
+    headers = form_parser.get_variable_list()
+
     table = [headers]
-    for dict in dicts:
-        row = []
-        for header in headers:
-            if header in dict:
-                row.append(dict[header])
-            else:
-                row.append("")
-        table.append(row)
+    for i in form.instances.all():
+        d = parse_instance(i).get_dict()
+        table.append( [d.get(header, u".") for header in headers] )
     return table
 
 def csv(table):

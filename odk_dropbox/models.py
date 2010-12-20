@@ -5,6 +5,7 @@ import os, re, sys
 from xml.dom.minidom import parseString, Element
 from django.db import models
 from django.db.models.signals import pre_save
+from django.conf import settings
 from . import utils
 
 FORM_PATH = "odk/forms"
@@ -37,8 +38,11 @@ class Form(models.Model):
     def __unicode__(self):
         return getattr(self, "id_string", "")
 
+    def path(self):
+        return settings.MEDIA_ROOT + self.xml_file.name
+
     def name(self):
-        folder, filename = os.path.split(self.xml_file.name)
+        folder, filename = os.path.split(self.path())
         return _drop_xml_extension(filename)
 
     def url(self):
