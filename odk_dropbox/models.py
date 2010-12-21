@@ -49,6 +49,10 @@ class Form(models.Model):
     def url(self):
         return self.xml_file.url
 
+    def instances_count(self):
+        return self.instances.all().count()
+    instances_count.short_description = "Submission Count"
+
     def _set_id_from_xml(self):
         form_parser = utils.FormParser(self.xml_file)
         self.id_string = form_parser.get_id_string()

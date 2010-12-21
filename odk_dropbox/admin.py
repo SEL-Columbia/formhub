@@ -17,7 +17,7 @@ make_inactive.short_description = "Mark selected XForms as inactive"
 
 class FormAdmin(admin.ModelAdmin):
     form = XFormInput
-    list_display = ("id_string", "active")
+    list_display = ("id_string", "instances_count", "active")
     actions = [make_active, make_inactive]
 
     # http://stackoverflow.com/questions/1618728/disable-link-to-edit-object-in-djangos-admin-display-list-only
