@@ -10,6 +10,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         models.ParsedInstance.objects.all().delete()
+        print "Reparsings all instances"
         for i in Instance.objects.all():
-            print i.xml_file.name
             models.parse(i)
