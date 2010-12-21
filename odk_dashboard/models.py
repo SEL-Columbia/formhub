@@ -85,6 +85,11 @@ def matching_key(d, regexp):
     else:
         raise Exception("There should be at most one match", l)
 
+def starts_with(x,y):
+    if len(x) < len(y):
+        return y.startswith(x)
+    return x.startswith(y)
+
 def parse(instance):
     handler = utils.parse_instance(instance)
     d = handler.get_dict()
@@ -105,7 +110,7 @@ def parse(instance):
     for key in ["start", "end"]:
         s = d[key]
         kwargs[key] = datetime.strptime(s, "%Y-%m-%dT%H:%M:%S.%f")
-        if not kwargs[key].isoformat().startswith(s):
+        if not starts_with(kwargs[key].isoformat(), s):
             utils.report_exception(
                 "datetime object doesn't recreate original string",
                 "orginal: %(original)s datetime object: %(parsed)s" %
@@ -113,7 +118,7 @@ def parse(instance):
                 )
     kwargs["date"] = kwargs["end"].date()
 
-    lga = matching_key(d, r"^lga")
+    lga = matching_key(d, r"^lga\d*$")
     if lga:
         gps_str = d.get("geopoint","")
         gps = None
