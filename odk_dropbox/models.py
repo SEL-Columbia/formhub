@@ -35,6 +35,8 @@ class Form(models.Model):
         verbose_name = "XForm"
         verbose_name_plural = "XForms"
         ordering = ("id_string",)
+        app_label = "ODK"
+        db_table = "odk_dropbox_form"
 
     def __unicode__(self):
         return getattr(self, "id_string", "")
