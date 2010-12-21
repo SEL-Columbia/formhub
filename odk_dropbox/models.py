@@ -32,8 +32,8 @@ class Form(models.Model):
     active = models.BooleanField()
 
     class Meta:
-        verbose_name = "XForm for ODK"
-        verbose_name_plural = "XForms for ODK"
+        verbose_name = "XForm"
+        verbose_name_plural = "XForms"
         ordering = ("id_string",)
 
     def __unicode__(self):
