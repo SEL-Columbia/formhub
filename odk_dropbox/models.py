@@ -50,29 +50,8 @@ class Form(models.Model):
         return self.xml_file.url
 
     def _set_id_from_xml(self):
-        """
-        Find the single child of h:head/model/instance and return the
-        attribute 'id'.
-        """
-        xml = utils.text(self.xml_file)
-        dom = parseString(xml)
-        element = dom.documentElement
-        path = ["h:head", "model", "instance"]
-        count = {}
-        for name in path:
-            count[name] = 0
-            for child in element.childNodes:
-                if isinstance(child, Element) and child.tagName==name:
-                    count[name] += 1
-                    element = child
-            assert count[name]==1
-        count["id"] = 0
-        for child in element.childNodes:
-            if isinstance(child, Element):
-                count["id"] += 1
-                element = child
-        assert count["id"]==1
-        self.id_string = element.getAttribute("id")
+        form_parser = FormParser(self.path())
+        self.id_string = form_parser.get_id_string()
 
 # before a form is saved to the database set the form's id string by
 # looking through it's xml.

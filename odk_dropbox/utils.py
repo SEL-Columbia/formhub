@@ -4,6 +4,8 @@
 from xml.sax.handler import ContentHandler
 from xml.sax import parseString
 import xml
+from xml.dom.minidom import Element
+import os
 
 class ODKHandler(ContentHandler):
 
@@ -105,6 +107,23 @@ class XMLParser(object):
     def __init__(self, path):
         self.doc = xml.dom.minidom.parse(path)
 
+    def follow(self, path):
+        """
+        Path is an array of node names. Starting at the document
+        element we follow the path, returning the final node in the
+        path.
+        """
+        element = self.doc.documentElement
+        count = {}
+        for name in path:
+            count[name] = 0
+            for child in element.childNodes:
+                if isinstance(child, Element) and child.tagName==name:
+                    count[name] += 1
+                    element = child
+            assert count[name]==1
+        return element
+
 class FormParser(XMLParser):
     def get_bindings(self):
         return self.doc.getElementsByTagName("bind")
@@ -112,6 +131,20 @@ class FormParser(XMLParser):
     def get_variable_list(self):
         return [get_variable_name(b) for b in self.get_bindings()]
 
+    def get_id_string(self):
+        """
+        Find the single child of h:head/model/instance and return the
+        attribute 'id'.
+        """
+        instance = self.follow(["h:head", "model", "instance"])
+        count = 0
+        element = None
+        for child in instance.childNodes:
+            if isinstance(child, Element):
+                count += 1
+                element = child
+        assert count==1
+        return element.getAttribute("id")
 
 def table(form):
     """Turn a list of dicts into a table."""
@@ -145,3 +178,16 @@ def report_exception(subject, info, exc_info=None):
         print info
     else:
         mail_admins(subject=subject, message=info)
+        
+from django.core.files.uploadedfile import InMemoryUploadedFile
+def django_file(path, field_name, content_type):
+    # adapted from here: http://groups.google.com/group/django-users/browse_thread/thread/834f988876ff3c45/
+    f = open(path)
+    return InMemoryUploadedFile(
+        file=f,
+        field_name=field_name,
+        name=f.name,
+        content_type=content_type,
+        size=os.path.getsize(path),
+        charset=None
+        )
