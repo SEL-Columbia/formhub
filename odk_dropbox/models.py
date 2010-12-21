@@ -50,7 +50,7 @@ class Form(models.Model):
         return self.xml_file.url
 
     def _set_id_from_xml(self):
-        form_parser = FormParser(self.path())
+        form_parser = utils.FormParser(self.xml_file)
         self.id_string = form_parser.get_id_string()
 
 # before a form is saved to the database set the form's id string by

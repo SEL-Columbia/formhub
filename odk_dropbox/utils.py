@@ -104,8 +104,14 @@ def get_variable_name(binding):
     return binding.getAttribute("nodeset").split("/")[-1]
 
 class XMLParser(object):
-    def __init__(self, path):
-        self.doc = xml.dom.minidom.parse(path)
+    def __init__(self, x):
+        """
+        x is either a path to a file, or a file object.
+        """
+        if hasattr(x, "open") and hasattr(x, "read") and hasattr(x, "close"):
+            self.doc = xml.dom.minidom.parseString(text(x))
+        else:
+            self.doc = xml.dom.minidom.parse(x)
 
     def follow(self, path):
         """
