@@ -4,19 +4,7 @@
 import os, glob
 from django.core.management.base import BaseCommand
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from ...models import make_submission, InstanceImage
-
-def django_file(path, field_name, content_type):
-    # adapted from here: http://groups.google.com/group/django-users/browse_thread/thread/834f988876ff3c45/
-    f = open(path)
-    return InMemoryUploadedFile(
-        file=f,
-        field_name=field_name,
-        name=f.name,
-        content_type=content_type,
-        size=os.path.getsize(path),
-        charset=None
-        )
+from ... import models, utils
 
 class Command(BaseCommand):
     help = "Import a folder of ODK instances."
@@ -28,14 +16,14 @@ class Command(BaseCommand):
             if len(xml_files)<1: continue
             # we need to figure out what to do if there are multiple
             # xml files in the same folder.
-            xml_file = django_file(xml_files[0],
-                                   field_name="xml_file",
-                                   content_type="text/xml")
+            xml_file = utils.django_file(xml_files[0],
+                                         field_name="xml_file",
+                                         content_type="text/xml")
             images = []
             for jpg in glob.glob(os.path.join(instance, "*.jpg")):
                 images.append(
-                    django_file(jpg,
-                                field_name="image",
-                                content_type="image/jpeg")
+                    utils.django_file(jpg,
+                                      field_name="image",
+                                      content_type="image/jpeg")
                     )
-            make_submission(xml_file, images)
+            models.make_submission(xml_file, images)
