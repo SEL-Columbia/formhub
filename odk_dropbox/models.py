@@ -11,23 +11,12 @@ from . import utils
 FORM_PATH = "odk/forms"
 INSTANCE_PATH = "odk/instances"
 
-def _drop_xml_extension(filename):
-    """
-    Return the filename having dropped the 'xml' extension. If the
-    filename didn't end with '.xml' raise an exception.
-    """    
-    m = re.search(r"(.*)\.xml$", filename)
-    if m:
-        return m.group(1)
-    else:
-        raise Exception("Filename must end with '.xml'", filename)
-
 class Form(models.Model):
     xml_file = models.FileField(
         upload_to=FORM_PATH, verbose_name="XML File"
         )
     active = models.BooleanField()
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True, default="")
     id_string = models.TextField(
         unique=True, editable=False, verbose_name="ID String"
         )
@@ -38,38 +27,43 @@ class Form(models.Model):
         verbose_name_plural = "XForms"
         ordering = ("id_string",)
 
+    def save(self, *args, **kwargs):
+        form_parser = utils.FormParser(self.xml_file)
+        self.id_string = form_parser.get_id_string()
+        self.title = form_parser.get_title()
+        super(Form, self).save(*args, **kwargs)
+
     def __unicode__(self):
         return getattr(self, "id_string", "")
 
     def path(self):
         return settings.MEDIA_ROOT + self.xml_file.name
 
-    def name(self):
-        folder, filename = os.path.split(self.path())
-        return _drop_xml_extension(filename)
-
     def url(self):
         return self.xml_file.url
 
-    def instances_count(self):
+    def slug(self):
+        return self.id_string
+        return utils.sluggify(self.id_string)
+
+    def submission_count(self):
         return self.instances.all().count()
-    instances_count.short_description = "Submission Count"
+    submission_count.short_description = "Submission Count"
 
-    def _set_fields_from_xml(self):
-        form_parser = utils.FormParser(self.xml_file)
-        self.id_string = form_parser.get_id_string()
-        self.title = form_parser.get_title()
+    def date_of_last_submission(self):
+        qs = Submission.objects.filter(instance__form=self).order_by("-posted")
+        if qs.count()>0:
+            return qs[0].posted
 
-# before a form is saved to the database set the form's id string by
-# looking through it's xml.
-def _set_fields(sender, **kwargs):
-    kwargs["instance"]._set_fields_from_xml()
 
-pre_save.connect(_set_fields, sender=Form)
-
-    
 # http://docs.djangoproject.com/en/dev/ref/models/fields/#django.db.models.FileField.upload_to
 def _upload_xml_file(instance, filename):
+    def _drop_xml_extension(filename):
+        m = re.search(r"^(.*)\.xml$", filename)
+        if m:
+            return m.group(1)
+        else:
+            raise Exception("Filename must end with '.xml'", filename)
     folder_name = _drop_xml_extension(filename)
     return os.path.join(INSTANCE_PATH, folder_name, filename)
 
@@ -133,6 +127,9 @@ class InstanceImage(models.Model):
 class Submission(models.Model):
     posted = models.DateTimeField(auto_now_add=True)
     instance = models.ForeignKey(Instance, related_name="submissions")
+
+    class Meta:
+        ordering = ("posted",)
 
 def make_submission(xml_file, images):
     """

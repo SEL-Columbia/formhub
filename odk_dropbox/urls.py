@@ -9,4 +9,5 @@ urlpatterns = patterns('',
     url(r"^formList$", views.formList),
     # url where ODK Collect submits data
     url(r"^submission$", views.submission),
+    url(r"^survey-list/?$", views.survey_list),
 )
