@@ -15,6 +15,7 @@ def setup():
     # now I'm going to kludge something together with a sym link
     #http://stackoverflow.com/questions/1180411/activate-a-virtualenv-via-fabric-as-deploy-user
     # "pip install -e git+git://github.com/mvpdev/django-eav.git#egg=django-eav"
+    # "pip install django-mako"
     local("ln -s django-eav/eav eav", capture=True)
 
     local("cp custom_settings_example.py custom_settings.py", capture=True)
