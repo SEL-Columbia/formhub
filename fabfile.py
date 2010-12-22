@@ -1,32 +1,90 @@
-from fabric.api import run, settings, local
-#from fabric.decorators import hosts
-#from fabric.operations import local
+import os
 
-#@hosts('localhost')
-def setup():
-    "Clones inner repository"
-    
-    repos = ["git@github.com:mvpdev/django-eav.git",]
-    
-    for repo in repos:
-        local("git clone %s" % repo, capture=True)
+from fabric.api import *
+from fabric.contrib import files, console
+from fabric import utils
+from fabric.decorators import hosts
 
-    # Here are some comments on virtualenv, pip, and fabric, for right
-    # now I'm going to kludge something together with a sym link
-    #http://stackoverflow.com/questions/1180411/activate-a-virtualenv-via-fabric-as-deploy-user
-    # "pip install -e git+git://github.com/mvpdev/django-eav.git#egg=django-eav"
-    # "pip install django-mako"
-    local("ln -s django-eav/eav eav", capture=True)
+from datetime import datetime
 
-    local("cp custom_settings_example.py custom_settings.py", capture=True)
+env.home = '/home/wsgi/'
+env.project = 'nmis'
 
+# modified this script from caktus 
+# https://bitbucket.org/copelco/caktus-deployment/src/tip/example-django-project/caktus_website/fabfile.py#cl-144
 
-def git_pull_all():
-    "Merges master from repository & django-eav."
-    local('git pull origin master', capture=True)
-    local('cd django-eav && git pull origin master', capture=True)
+def _setup_path():
+    env.root = os.path.join(env.home, 'srv', env.code_directory)
+    env.code_root = os.path.join(env.root, env.project)
+    env.apache_dir = os.path.join(env.root, "apache")
+    env.settings = '%(project)s.settings' % env
+    env.backup_dir = os.path.join(env.root, "backups")
 
-def update_staging():
-    local('git pull origin develop', capture=True)
-    local('chown -R www-data:www-data .', capture=True)
-    local('apache2ctl restart', capture=True)
+def staging_env():
+    """ use staging environment on remote host"""
+    env.code_directory = 'nmis-staging'
+    env.environment = 'staging'
+    env.branch_name = 'develop'
+    _setup_path()
+
+def production_env():
+    """ use production environment on remote host"""
+    env.code_directory = 'nmis-production'
+    env.environment = 'production'
+    env.branch_name = 'master'
+    env.db_name = 'nmispilot'
+    _setup_path()
+
+@hosts('wsgi@staging.mvpafrica.org')
+def deploy_staging():
+    staging_env()
+    deploy()
+    restart_wsgi()
+
+@hosts('wsgi@staging.mvpafrica.org')
+def deploy_production():
+    production_env()
+    deploy()
+    restart_wsgi()
+
+@hosts('wsgi@staging.mvpafrica.org')
+def backup_production():
+    production_env()
+    backup_code_and_database()
+
+def bootstrap():
+    """ initialize remote host environment (virtualenv, deploy, update) """
+    require('root', provided_by=('staging', 'production'))
+
+def backup_code_and_database():
+    cur_timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+    backup_directory_path = os.path.join(env.backup_dir, cur_timestamp)
+    tarball_path = os.path.join(backup_directory_path, env.project)
+    run("mkdir -p %s" % backup_directory_path)
+
+    with cd(env.root):
+        run("tar -cvf %s.tar %s" % (tarball_path, env.project))
+
+    with cd(backup_directory_path):
+        run("mysqldump -u nmis -p$MYSQL_NMIS_PW %(db_name)s > %(db_name)s.sql" % env)
+
+def deploy():
+    """ git pull (branch) """
+    require('root', provided_by=('staging', 'production'))
+    if env.environment == 'production':
+        if not console.confirm('Are you sure you want to deploy production?',
+                               default=False):
+            utils.abort('Production deployment aborted.')
+
+    with cd(env.code_root):
+        run("git pull origin %(branch_name)s" % env)
+
+def restart_wsgi():
+    """ touch wsgi file to trigger reload """
+    with cd(env.apache_dir):
+        run("touch environment.wsgi")
+
+def apache_restart():
+    """ restart Apache on remote host """
+    require('root', provided_by=('staging', 'production'))
+    run('sudo apache2ctl restart')
