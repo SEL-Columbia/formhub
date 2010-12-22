@@ -24,3 +24,8 @@ def git_pull_all():
     "Merges master from repository & django-eav."
     local('git pull origin master', capture=True)
     local('cd django-eav && git pull origin master', capture=True)
+
+def update_staging():
+    local('git pull origin develop', capture=True)
+    local('chown -R www-data:www-data .', capture=True)
+    local('apache2ctl restart', capture=True)
