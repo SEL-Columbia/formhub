@@ -5,20 +5,18 @@ from . import models
 class XFormInput(ModelForm):
     class Meta:
         model = models.Form
-        exclude = ("id_string",)
+        exclude = ("id_string","title")
 
-def make_active(modeladmin, request, queryset):
-    queryset.update(active=True)
-make_active.short_description = "Mark selected XForms as active"
-
-def make_inactive(modeladmin, request, queryset):
-    queryset.update(active=False)
-make_inactive.short_description = "Mark selected XForms as inactive"
+def toggle(modeladmin, request, queryset):
+    for form in queryset:
+        form.active = not form.active
+        form.save()
+toggle.short_description = "Toggle active status of selected XForms"
 
 class FormAdmin(admin.ModelAdmin):
     form = XFormInput
-    list_display = ("id_string", "instances_count", "active")
-    actions = [make_active, make_inactive]
+    list_display = ("title", "id_string", "description", "instances_count", "active")
+    actions = [toggle]
 
     # http://stackoverflow.com/questions/1618728/disable-link-to-edit-object-in-djangos-admin-display-list-only
     def __init__(self, *args, **kwargs):
