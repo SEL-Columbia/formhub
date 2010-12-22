@@ -25,14 +25,14 @@
 		<table border="0" cellspacing="5" cellpadding="5" class="fullw logger ptable">
 			<tr>
 				<th>Submission</th>
-				<th>Phone</th>
+				<th>Surveyor</th>
 				<th>Submission Time</th>
 				<th>Survey Length</th>
 			</tr>
 			{% for submission in submissions %}
 			<tr>
 				<td class="centered">{{submission.survey_type.name}}</td>
-				<td class="centered">{{submission.phone}}</td>
+				<td class="centered">{{submission.surveyor_identifier}}</td>
 				<td class="centered">{{submission.end}}</td>
 				<td class="centered">{{submission.survey_length}}</td>
 			</tr>
