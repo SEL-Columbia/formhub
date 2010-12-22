@@ -17,10 +17,10 @@ class Form(models.Model):
         )
     active = models.BooleanField()
     description = models.TextField(blank=True, null=True, default="")
-    id_string = models.TextField(
-        unique=True, editable=False, verbose_name="ID String"
+    id_string = models.CharField(
+        unique=True, editable=False, verbose_name="ID String", max_length=64
         )
-    title = models.TextField(editable=False)
+    title = models.CharField(editable=False, max_length=64)
 
     class Meta:
         verbose_name = "XForm"
