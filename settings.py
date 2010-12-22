@@ -23,6 +23,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'djangomako.middleware.MakoMiddleware',
 )
 
 ROOT_URLCONF = 'nmis.urls'
