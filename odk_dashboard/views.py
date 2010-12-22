@@ -71,7 +71,7 @@ def frequency_table(request, rows, columns):
     return shortcuts.render_to_response("table.html", info)
 
 def csv(request, name):
-    form = Form.objects.get(id_string__startswith=name.title(), active=True)
+    form = Form.objects.get(id_string=name)
     table = utils.table(form)
     return HttpResponse(utils.csv(table), mimetype="application/csv")
 
