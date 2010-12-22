@@ -25,80 +25,47 @@ def recent_activity(request):
     info['submissions'] = ParsedInstance.objects.all().order_by('-end')[0:50]
     return render_to_response("activity.html", info)
 
-def submission_counts(request):
-    # def frequency_tables(request):
-    #     dimensions = {
-    #         "Form" : "survey_type__name",
-    #         "Surveyor" : "surveyor__name",
-    #         "Date" : "date",
-    #         "Location" : "location__name",
-    #         }
-    counts = ParsedInstance.objects.values("survey_type__name", "phone__device_id").annotate(count=Count("survey_type"))
-    table = {}
-    rows = []
-    cols = []
-    for d in counts:
-        device_id = d["phone__device_id"]
-        phone = Phone.objects.get(device_id=device_id)
-        survey = d["survey_type__name"]
-        if survey!="bug":
-            if device_id not in table:
-                table[device_id] = {}
-            if survey not in table[device_id]:
-                table[device_id][survey] = {}
-            table[device_id][survey] = d["count"]
-            name = ""
-            if phone.most_recent_surveyor:
-                name = phone.most_recent_surveyor.name()
-            if (device_id, name) not in rows:
-                rows.append((device_id, name))
-            if survey not in cols:
-                cols.append(survey)
-    rows.sort()
-    cols.sort()
-    t = []
-    for row in rows:
-        t.append([row[0] if not row[1] else row[1]] + [str(table[row[0]].get(col, 0)) for col in cols])
-    return render_to_response("submission_counts.html",
-                              {"submission_counts" : t,
-                               'columns': cols,
-                               'sectionname':'data',
-                               'csvs' : csv_list()})
+dimensions = {
+    "survey" : "survey_type__name",
+    "surveyor" : "phone__most_recent_surveyor__first_name",
+    "date" : "date",
+    "location" : "location__name",
+    }
 
-def counts_by_date(request):
-    # http://stackoverflow.com/questions/722325/django-group-by-strftime-date-format
-    # this version works with sqlite
-    # select_data = {"date": "strftime('%%Y/%%m/%%d', end)"}
-    # this version works with mysql
-    select_data = {"date" : "date(end)"}
-    counts = ParsedInstance.objects.extra(select=select_data).values("date", "survey_type__name").annotate(count=Count("survey_type")).order_by()
+def frequency_table_urls(request):
+    info = {"urls" : []}
+    keys = dimensions.keys()
+    for i in range(0,len(keys)):
+        for j in range(i+1,len(keys)):
+            info["urls"].append(
+                "submission-counts-by-%(row)s-and-%(column)s" % {
+                    "row" : keys[i],
+                    "column" : keys[j]
+                    }
+                )
+    print info
+    return render_to_response("url_list.html", info)
 
-    table = {}
-    rows = []
-    cols = []
-    for d in counts:
-        date = d["date"]
-        survey = d["survey_type__name"]
-        if survey!="bug":
-            if date not in table:
-                table[date] = {}
-            if survey not in table[date]:
-                table[date][survey] = {}
-            table[date][survey] = d["count"]
-            if date not in rows:
-                rows.append(date)
-            if survey not in cols:
-                cols.append(survey)
-    rows.sort()
-    cols.sort()
-    t = []
-    for row in rows:
-        t.append([row] + [str(table[row].get(col, 0)) for col in cols])
-    return render_to_response("submission_counts.html",
-                              {"submission_counts" : t,
-                               'columns': cols,
-                               'sectionname':'data',
-                               'csvs' : csv_list()})
+def frequency_table(request, rows, columns):
+    r = dimensions[rows]
+    c = dimensions[columns]
+
+    info = {"cells" : 
+            ParsedInstance.objects.values(r, c).annotate(count=Count("id"))}
+        
+    row_headers = []
+    column_headers = []
+    for d in info["cells"]:
+        if d[r] not in row_headers: row_headers.append(d[r])
+        if d[c] not in column_headers: column_headers.append(d[c])
+
+    row_headers.sort()
+    column_headers.sort()
+
+    info["row_headers"] = row_headers
+    info["column_headers"] = column_headers
+
+    return render_to_response("table.html", info)
 
 def csv(request, name):
     form = Form.objects.get(id_string__startswith=name.title(), active=True)
