@@ -54,6 +54,13 @@ class ParsedInstance(models.Model):
 
     def survey_length(self):
         return self.end - self.start
+        
+    def surveyor_identifier(self):
+        try:
+            ident = self.phone.most_recent_surveyor.name()
+        except:
+            ident = self.phone.device_id
+        return ident
 
 # For now every new registration creates a new surveyor, we need a
 # smart way to combine surveyors.
