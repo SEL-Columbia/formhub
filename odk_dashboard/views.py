@@ -1,6 +1,7 @@
 import re
 from django.utils import simplejson
 from django.shortcuts import render_to_response
+from djangomako import shortcuts
 from django.db.models import Avg, Max, Min, Count
 from django.http import HttpResponse
 from odk_dropbox import utils
@@ -50,12 +51,12 @@ def frequency_table(request, rows, columns):
     r = dimensions[rows]
     c = dimensions[columns]
 
-    info = {"cells" : 
-            ParsedInstance.objects.values(r, c).annotate(count=Count("id"))}
+    dicts = ParsedInstance.objects.values(r, c).annotate(count=Count("id"))
+    info = {"cells" : dict( [((d[r], d[c]), d["count"]) for d in dicts] )}
         
     row_headers = []
     column_headers = []
-    for d in info["cells"]:
+    for d in dicts:
         if d[r] not in row_headers: row_headers.append(d[r])
         if d[c] not in column_headers: column_headers.append(d[c])
 
@@ -65,7 +66,7 @@ def frequency_table(request, rows, columns):
     info["row_headers"] = row_headers
     info["column_headers"] = column_headers
 
-    return render_to_response("table.html", info)
+    return shortcuts.render_to_response("table.html", info)
 
 def csv(request, name):
     form = Form.objects.get(id_string__startswith=name.title(), active=True)
