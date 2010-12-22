@@ -8,5 +8,75 @@ Dashboard
 {% endblock %}
 
 {% block content %}
-<h2 class="construction">This section is under construction</h2>
+<div class="right-content">
+	<div class="iwrap">
+	<h1 class="sn-title">
+	  Dashboard
+	</h1>
+	<div class="content-wrap">
+		<p>Select rows and columns for the frequency table:</p>
+		<div id="freq-table-selector">
+			<table border="0" cellspacing="5" cellpadding="5">
+				<tr>
+					<th>Rows</th>
+					<th>Columns</th>
+				</tr>
+				<tr>
+					<td><select id="freq-rows"></select></td>
+					<td><select id="freq-cols"></select></td>
+					<td><input type="submit" id="freq-submit" /></td>
+				</tr>
+			</table>
+			<div id="freq-table"></div>
+		</div>
+	</div>
+	<script type="text/javascript" charset="utf-8">
+
+		function getFrequencyTable(row, col) {
+			var freqTable = $("#freq-table");
+			$.get("/submission-counts-by-"+row+"-and-"+col, function(html){
+				var table = $(html);
+				table.addClass('ptable');
+				$('tr td', table).each(function(ct, elm){
+					var td = $(elm);
+					if(td.index()==0) {
+						td.addClass('rname');
+					} else {
+						td.addClass('centered data');
+						if(td.text()!=="") {
+							td.wrapInner("<div class='dwrap' />")
+						}
+					}
+				});
+				$('tr td:first-child', table).removeClass('centered').addClass('rname');
+				freqTable.html(table);
+			})
+		}
+		
+		(function($, rowSelect, colSelect, submit, tableTypes){
+			$.each(tableTypes, function(count, str){
+				var _opt = $("<option />").html(str)
+				rowSelect.append(_opt.clone());
+				colSelect.append(_opt.clone());
+			});
+			colSelect.attr('disabled', true)
+			rowSelect.change(function(){
+				var selected = this.value;
+				colSelect.empty();
+				$.each(tableTypes, function(ct, str){
+					if(str!==selected) {
+						colSelect.append($("<option />").html(str));
+					}
+				})
+				colSelect.attr('disabled', false);
+			});
+			submit.click(function(){
+				if(!colSelect.attr('disabled')) {
+					getFrequencyTable(rowSelect.val(), colSelect.val());
+				}
+			});
+		})(jQuery, $('#freq-rows'), $('#freq-cols'), $('#freq-submit'), {{table_types|safe}})
+		
+	</script>
+</div>
 {% endblock %}
