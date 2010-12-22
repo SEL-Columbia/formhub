@@ -26,10 +26,12 @@ class Form(models.Model):
     xml_file = models.FileField(
         upload_to=FORM_PATH, verbose_name="XML File"
         )
-    id_string = models.CharField(
-        unique=True, blank=True, max_length=32, verbose_name="ID String"
-        )
     active = models.BooleanField()
+    description = models.TextField(blank=True, null=True)
+    id_string = models.TextField(
+        unique=True, editable=False, verbose_name="ID String"
+        )
+    title = models.TextField(editable=False)
 
     class Meta:
         verbose_name = "XForm"
@@ -53,16 +55,17 @@ class Form(models.Model):
         return self.instances.all().count()
     instances_count.short_description = "Submission Count"
 
-    def _set_id_from_xml(self):
+    def _set_fields_from_xml(self):
         form_parser = utils.FormParser(self.xml_file)
         self.id_string = form_parser.get_id_string()
+        self.title = form_parser.get_title()
 
 # before a form is saved to the database set the form's id string by
 # looking through it's xml.
-def _set_form_id(sender, **kwargs):
-    kwargs["instance"]._set_id_from_xml()
+def _set_fields(sender, **kwargs):
+    kwargs["instance"]._set_fields_from_xml()
 
-pre_save.connect(_set_form_id, sender=Form)
+pre_save.connect(_set_fields, sender=Form)
 
     
 # http://docs.djangoproject.com/en/dev/ref/models/fields/#django.db.models.FileField.upload_to

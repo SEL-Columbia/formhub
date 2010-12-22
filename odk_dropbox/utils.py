@@ -121,7 +121,7 @@ class XMLParser(object):
         """
         element = self.doc.documentElement
         count = {}
-        for name in path:
+        for name in path.split("/"):
             count[name] = 0
             for child in element.childNodes:
                 if isinstance(child, Element) and child.tagName==name:
@@ -129,6 +129,10 @@ class XMLParser(object):
                     element = child
             assert count[name]==1
         return element
+
+def get_text(node_list):
+    text_nodes = [node for node in node_list if node.nodeType==node.TEXT_NODE]
+    return " ".join([node.data for node in text_nodes])
 
 class FormParser(XMLParser):
     def get_bindings(self):
@@ -142,15 +146,15 @@ class FormParser(XMLParser):
         Find the single child of h:head/model/instance and return the
         attribute 'id'.
         """
-        instance = self.follow(["h:head", "model", "instance"])
-        count = 0
-        element = None
-        for child in instance.childNodes:
-            if isinstance(child, Element):
-                count += 1
-                element = child
-        assert count==1
-        return element.getAttribute("id")
+        instance = self.follow("h:head/model/instance")
+        children = [child for child in instance.childNodes \
+                        if isinstance(child, Element)]
+        assert len(children)==1
+        return children[0].getAttribute("id")
+
+    def get_title(self):
+        title = self.follow("h:head/h:title")
+        return get_text(title.childNodes)
 
 def table(form):
     """Turn a list of dicts into a table."""
