@@ -1,7 +1,7 @@
-<p>The Django Template language is fucking ridiculous.</p>
-
-<p>{{ column_headers }}</p>
-
-<p>{{ row_headers }}</p>
-
-<p>{{ cells }}</p>
+<table>
+  <tr>
+  % for r in row_headers:
+    <td>${r}</td>
+  % endfor
+  </tr>
+</table>
