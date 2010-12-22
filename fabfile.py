@@ -88,4 +88,3 @@ def apache_restart():
     """ restart Apache on remote host """
     require('root', provided_by=('staging', 'production'))
     run('sudo apache2ctl restart')
-
