@@ -1,0 +1,25 @@
+table.ptable {
+    border-spacing: 0;
+}
+table.ptable th {
+    padding: 2px 6px;
+}
+table.ptable td {
+    border-bottom: 1px solid #eaeaea;
+    padding: 3px 6px;
+}
+table.ptable td.rname {
+    border: 0 none;
+}
+table.ptable td.centered {
+    text-align: center;
+}
+table.ptable td.data {
+    border-right: 1px solid #f2f2f2;
+}
+table.ptable td div.dwrap {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    margin: -3px -6px;
+    padding: 3px 8px;
+}
