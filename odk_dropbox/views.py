@@ -4,6 +4,7 @@
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response
+from djangomako.shortcuts import render_to_response as mako_to_response
 from django.http import HttpResponse
 
 from .models import Form, InstanceImage, make_submission
@@ -40,3 +41,20 @@ def submission(request):
     response.status_code = 201
     response['Location'] = "http://%s/submission" % request.get_host()
     return response
+
+def survey_list(request):
+    rows = [["Title", "Submission Count", "Last Submission", "Export"]]
+    counts = {}
+    for form in Form.objects.all():
+        if form.title in counts:
+            counts[form.title] += 1
+        else:
+            counts[form.title] = 1
+    for form in Form.objects.all():
+        rows.append([
+                form.title if counts[form.title]==1 else form.id_string,
+                form.submission_count(),
+                form.date_of_last_submission(),
+                '<a href="%s.csv">csv</a>' % form.slug(),
+                ])
+    return mako_to_response("table2.html", {"rows" : rows})

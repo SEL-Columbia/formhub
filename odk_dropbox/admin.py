@@ -15,7 +15,7 @@ toggle.short_description = "Toggle active status of selected XForms"
 
 class FormAdmin(admin.ModelAdmin):
     form = XFormInput
-    list_display = ("title", "id_string", "description", "instances_count", "active")
+    list_display = ("title", "id_string", "description", "submission_count", "active")
     actions = [toggle]
 
     # http://stackoverflow.com/questions/1618728/disable-link-to-edit-object-in-djangos-admin-display-list-only

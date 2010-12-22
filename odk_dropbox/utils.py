@@ -5,7 +5,7 @@ from xml.sax.handler import ContentHandler
 from xml.sax import parseString
 import xml
 from xml.dom.minidom import Element
-import os
+import re, os
 
 class ODKHandler(ContentHandler):
 
@@ -87,6 +87,8 @@ def parse_instance(instance):
     """
     return parse(text(instance.xml_file))
 
+def sluggify(text, delimiter=u"_"):
+    return re.sub(r"\W+", delimiter, text.lower())
 
 ## PARSING OF XFORMS
 # at each text node we grab the nodeValue
