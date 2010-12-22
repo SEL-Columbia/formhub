@@ -8,7 +8,7 @@ Dashboard
 {% endblock %}
 
 {% block content %}
-<div class="right-content">
+<div class="right-content" id="main">
 	<div class="iwrap">
 	<h1 class="sn-title">
 	  Dashboard
@@ -24,33 +24,50 @@ Dashboard
 				<tr>
 					<td><select id="freq-rows"></select></td>
 					<td><select id="freq-cols"></select></td>
-					<td><input type="submit" id="freq-submit" /></td>
+					<td><a href="#/" class="button" id="get-table">Submit</a></td>
 				</tr>
 			</table>
 			<div id="freq-table"></div>
 		</div>
 	</div>
 	<script type="text/javascript" charset="utf-8">
+		$('.button').button();
+		var app = $.sammy('#main', function(){
+			this.get("#/", function(){
+			});
+			this.get('#/frequency/:row/:col', function(context){
+				var row = this.params['row'],
+					col = this.params['col'],
+					freqTable = $("#freq-table");
+				
+				$.get("/submission-counts-by-"+row+"-and-"+col, function(html){
+					var table = $(html);
+					table.addClass('ptable');
+					$('tr td', table).each(function(ct, elm){
+						var td = $(elm);
+						if(td.index()==0) {
+							td.addClass('rname');
+						} else {
+							td.addClass('centered data');
+							if(td.text()!=="") {
+								td.wrapInner("<div class='dwrap' />")
+							}
+						}
+					});
+					$('tr td:first-child', table).removeClass('centered').addClass('rname');
+					freqTable.html(table);
+				});
+				return false;
+			});
+		});
+		
+		$(function(){
+			app.run("#/");
+		})
 
 		function getFrequencyTable(row, col) {
-			var freqTable = $("#freq-table");
-			$.get("/submission-counts-by-"+row+"-and-"+col, function(html){
-				var table = $(html);
-				table.addClass('ptable');
-				$('tr td', table).each(function(ct, elm){
-					var td = $(elm);
-					if(td.index()==0) {
-						td.addClass('rname');
-					} else {
-						td.addClass('centered data');
-						if(td.text()!=="") {
-							td.wrapInner("<div class='dwrap' />")
-						}
-					}
-				});
-				$('tr td:first-child', table).removeClass('centered').addClass('rname');
-				freqTable.html(table);
-			})
+			console.log(row, col);
+			app.redirect("#/frequency/"+row+"/"+col);
 		}
 		
 		(function($, rowSelect, colSelect, submit, tableTypes){
@@ -67,14 +84,15 @@ Dashboard
 					if(str!==selected) {
 						colSelect.append($("<option />").html(str));
 					}
-				})
+				});
 				colSelect.attr('disabled', false);
 			});
-			submit.click(function(){
-				if(!colSelect.attr('disabled')) {
-					getFrequencyTable(rowSelect.val(), colSelect.val());
-				}
-			});
+			colSelect.change(function(){
+				var sCol = this.value;
+				var sRow = rowSelect.val();
+				
+				$('#get-table').attr('href', '#/frequency/'+sRow+'/'+sCol);
+			})
 		})(jQuery, $('#freq-rows'), $('#freq-cols'), $('#freq-submit'), {{table_types|safe}})
 		
 	</script>
