@@ -1,7 +1,16 @@
 <table>
   <tr>
-  % for r in row_headers:
-    <td>${r}</td>
-  % endfor
+    <td></td>
+    % for c in column_headers:
+      <td>${c}</td>
+    % endfor
   </tr>
+
+  % for r in row_headers:
+    <tr><td>${r}</td>
+      % for c in column_headers:
+        <td>${cells.get((r,c), "")}</td>
+      % endfor
+    </tr>
+  % endfor
 </table>
