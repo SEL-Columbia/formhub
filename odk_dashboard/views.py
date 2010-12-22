@@ -10,7 +10,9 @@ from .models import ParsedInstance, Phone
 import datetime
 
 def dashboard(request):
-    return render_to_response('dashboard.html')
+    info = {}
+    info['table_types'] = simplejson.dumps(dimensions.keys())
+    return render_to_response('dashboard.html', info)
 
 def csv_list():
     list = []
