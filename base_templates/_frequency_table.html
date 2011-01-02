@@ -1,0 +1,24 @@
+<div id="frequency-tables">
+<p>Select rows and columns for the frequency table:</p>
+<div id="freq-table-selector">
+	<table border="0" cellspacing="5" cellpadding="5">
+		<tr>
+			<th>Rows</th>
+			<th>Columns</th>
+		</tr>
+		<tr>
+			<td><select id="freq-rows"></select></td>
+			<td><select id="freq-cols"></select></td>
+			<td><a href="#/" class="button" id="get-table">Submit</a></td>
+		</tr>
+	</table>
+	<div id="freq-table"></div>
+</div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+	dashboard.get(urls.freqTables, function(context){
+        context.$element().html($('#frequency-tables').html());
+        this.title("Frequency Tables");
+    });
+</script>

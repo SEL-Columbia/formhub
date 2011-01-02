@@ -32,38 +32,26 @@
 	</ul>
 	<div id="content">
 		<div class="fwidth">
-			<div class="right-content" id="main">
+			<div class="full-content" id="main">
 				<div class="iwrap">
-				<h1 class="sn-title">
-				  Dashboard
-				</h1>
 				<div class="content-wrap" id="main-content">
-					<p>Select rows and columns for the frequency table:</p>
-					<div id="freq-table-selector">
-						<table border="0" cellspacing="5" cellpadding="5">
-							<tr>
-								<th>Rows</th>
-								<th>Columns</th>
-							</tr>
-							<tr>
-								<td><select id="freq-rows"></select></td>
-								<td><select id="freq-cols"></select></td>
-								<td><a href="#/" class="button" id="get-table">Submit</a></td>
-							</tr>
-						</table>
-						<div id="freq-table"></div>
-					</div>
 				</div>
-				<script type="text/javascript" charset="utf-8">
-					$('.button').button();
-				</script>
 			</div>
 		</div>
 		<div id="sammy-subsections" style="display:none">
 			<div class="subsection">
-				
+			{% include '_frequency_table.html' %}
+			</div>
+			<div class="subsection">
+			{% include '_map.html' %}
+			</div>
+			<div class="subsection">
+			{% include '_activity.html' %}
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript" charset="utf-8">
+		$('.button').button();
+	</script>
 </body>
 </html>

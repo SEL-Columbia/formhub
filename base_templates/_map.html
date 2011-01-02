@@ -1,0 +1,10 @@
+<div id="map">
+<p>Map:</p>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+	dashboard.get(urls.map, function(context){
+        context.$element().html($('#map').html());
+        this.title("Map");
+    });
+</script>

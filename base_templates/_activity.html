@@ -1,0 +1,10 @@
+<div id="activity">
+<p>Activity:</p>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+	dashboard.get(urls.activity, function(context){
+        context.$element().html($('#activity').html());
+        this.title("Activity");
+    });
+</script>

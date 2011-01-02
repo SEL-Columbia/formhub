@@ -44,23 +44,6 @@ var dashboard = (function($){
         this.setTitle(function(title){
             return ["Baseline Data Collection: ", title].join("");
         })
-//        this.store('mystore', {type: 'cookie'});
-        this.get(urls.activity, function(context){
-            context.app.swap('');
-            context.$element().append("<h1>Activity</h1>");
-            this.title("Activity");
-//            console.log(this.store('mystore'));
-        });
-        this.get(urls.freqTables, function(context){
-            context.app.swap('');
-            context.$element().append("<h2>Frequency Tables</h1>");
-            this.title("Frequency Tables");
-        });
-        this.get(urls.map, function(context){
-            context.app.swap('');
-            context.$element().append($('#map').html());
-            this.title("Map");
-        });
     });
     $(function(){
         dashboard.run();
