@@ -23,6 +23,26 @@
 })(jQuery);
 
 
+var SetResizer = (function($, resizeSelector, excludeSelector, extraPadding){
+	var resizeElem = $(resizeSelector),
+		excludeElem = $(excludeSelector);
+	
+	function ResizePage(){
+		var windowHeight = $(window).height(),
+			totalHeight = windowHeight - extraPadding;
+		
+		excludeElem.each(function(){
+			totalHeight -= $(this).height();
+		});
+		resizeElem.css({'height':totalHeight})
+	}
+	$(window).resize(ResizePage);
+	$(function(){
+		resizeElem.css({'overflow':'auto'});
+		$(document.body).css({'overflow':'hidden'})
+		$(window).trigger('resize')
+	});
+});
 
 var urls = {
     activity: '#/activity',
@@ -39,8 +59,6 @@ var dashboard = (function($){
     
     var dashboard = $.sammy("#main-content", function(){
         this.use(Sammy.Title);
-//        this.use('Storage');
-//        var store = new Sammy.Store({name: 'mystore', element: '#element', type: 'local'});
         this.setTitle(function(title){
             return ["Baseline Data Collection: ", title].join("");
         })
