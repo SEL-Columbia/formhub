@@ -64,13 +64,13 @@ ul#menu {
   padding: 0;
   background-image: url("../images/menu_grad.png");
   background-repeat: repeat-x;
-  height: 39px; }
+  height: 33px; }
   ul#menu li {
     float: left;
     text-align: center;
     width: 25%;
     display: block;
-    line-height: 39px; }
+    line-height: 33px; }
     ul#menu li a {
       display: block;
       color: white;
@@ -78,7 +78,7 @@ ul#menu {
       font-weight: bold;
       text-decoration: none;
       padding: 3px 10px;
-      margin: 5px;
+      margin: 2px 5px;
       -moz-border-radius: 6px;
       -webkit-border-radius: 6px;
       border: 2px solid transparent;
