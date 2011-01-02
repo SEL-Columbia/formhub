@@ -58,13 +58,18 @@ var dashboard = (function($){
     })
     
     var dashboard = $.sammy("#main-content", function(){
+        this.use(Sammy.Storage);
+        this.store('mystore', {type: 'cookie'});
         this.use(Sammy.Title);
         this.setTitle(function(title){
             return ["Baseline Data Collection: ", title].join("");
+        });
+        this.get("#/", function(context){
+            this.$element().html($('#dashboard').html());
         })
     });
     $(function(){
-        dashboard.run();
+        dashboard.run("#/");
     });
     return dashboard;
 })(jQuery)
