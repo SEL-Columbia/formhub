@@ -37,6 +37,13 @@ div.left-side-nav {
       div.left-side-nav div.navwrap ul ul li {
         padding-left: 12px; }
 
+div.full-content {
+  padding: 0px; }
+  div.full-content div.iwrap {
+    background-color: white;
+    border: 1px solid #999999;
+    padding: 12px 20px; }
+
 div.right-content {
   width: 69%;
   float: right; }
