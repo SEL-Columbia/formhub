@@ -9,6 +9,7 @@
 	<script type="text/javascript" src="/site-media/jquery-ui/jquery-ui-1.8.7.custom.min.js"></script>
 	<script type="text/javascript" src="/site-media/js/jquery.buildin.js"></script>
 	<script type="text/javascript" src="/site-media/js/sammy-latest.min.js"></script>
+	<script type="text/javascript" src="/site-media/js/sammy.extensions.js"></script>
 	<script type="text/javascript" src="/site-media/js/nmis.dashboard.sammy.js"></script>
 	<link rel="stylesheet" href="/site-media/css/sitewide.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
 	<link rel="stylesheet" href="/site-media/css/tables.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
@@ -36,7 +37,7 @@
 				<h1 class="sn-title">
 				  Dashboard
 				</h1>
-				<div class="content-wrap">
+				<div class="content-wrap" id="main-content">
 					<p>Select rows and columns for the frequency table:</p>
 					<div id="freq-table-selector">
 						<table border="0" cellspacing="5" cellpadding="5">
@@ -55,70 +56,12 @@
 				</div>
 				<script type="text/javascript" charset="utf-8">
 					$('.button').button();
-					var app = $.sammy('#main', function(){
-						this.get("#/", function(){
-						});
-						this.get('#/frequency/:row/:col', function(context){
-							var row = this.params['row'],
-								col = this.params['col'],
-								freqTable = $("#freq-table");
-
-							$.get("/submission-counts-by-"+row+"-and-"+col, function(html){
-								var table = $(html);
-								table.addClass('ptable');
-								$('tr td', table).each(function(ct, elm){
-									var td = $(elm);
-									if(td.index()==0) {
-										td.addClass('rname');
-									} else {
-										td.addClass('centered data');
-										if(td.text()!=="") {
-											td.wrapInner("<div class='dwrap' />")
-										}
-									}
-								});
-								$('tr td:first-child', table).removeClass('centered').addClass('rname');
-								freqTable.html(table);
-							});
-							return false;
-						});
-					});
-
-					$(function(){
-						app.run("#/");
-					})
-
-					function getFrequencyTable(row, col) {
-						console.log(row, col);
-						app.redirect("#/frequency/"+row+"/"+col);
-					}
-
-					(function($, rowSelect, colSelect, submit, tableTypes){
-						$.each(tableTypes, function(count, str){
-							var _opt = $("<option />").html(str)
-							rowSelect.append(_opt.clone());
-							colSelect.append(_opt.clone());
-						});
-						colSelect.attr('disabled', true)
-						rowSelect.change(function(){
-							var selected = this.value;
-							colSelect.empty();
-							$.each(tableTypes, function(ct, str){
-								if(str!==selected) {
-									colSelect.append($("<option />").html(str));
-								}
-							});
-							colSelect.attr('disabled', false);
-						});
-						colSelect.change(function(){
-							var sCol = this.value;
-							var sRow = rowSelect.val();
-
-							$('#get-table').attr('href', '#/frequency/'+sRow+'/'+sCol);
-						})
-					})(jQuery, $('#freq-rows'), $('#freq-cols'), $('#freq-submit'), {{table_types|safe}})
-
 				</script>
+			</div>
+		</div>
+		<div id="sammy-subsections" style="display:none">
+			<div class="subsection">
+				
 			</div>
 		</div>
 	</div>

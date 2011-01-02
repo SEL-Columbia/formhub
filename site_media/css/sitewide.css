@@ -57,7 +57,7 @@ div#header {
   div#header .language_select {
     bottom: 0px; }
   div#header .account_links {
-    top: 5px; }
+    top: 5px; margin: 5px 0; }
 
 ul#menu {
   margin: 0;
