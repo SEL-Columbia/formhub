@@ -1,100 +1,126 @@
-{% extends 'base.html' %}
-{% block title %}
-Dashboard
-{% endblock %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
 
-{% block htitle %}
-Dashboard
-{% endblock %}
-
-{% block content %}
-<div class="right-content" id="main">
-	<div class="iwrap">
-	<h1 class="sn-title">
-	  Dashboard
-	</h1>
-	<div class="content-wrap">
-		<p>Select rows and columns for the frequency table:</p>
-		<div id="freq-table-selector">
-			<table border="0" cellspacing="5" cellpadding="5">
-				<tr>
-					<th>Rows</th>
-					<th>Columns</th>
-				</tr>
-				<tr>
-					<td><select id="freq-rows"></select></td>
-					<td><select id="freq-cols"></select></td>
-					<td><a href="#/" class="button" id="get-table">Submit</a></td>
-				</tr>
-			</table>
-			<div id="freq-table"></div>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Baseline Data Collection : {% block title %}{% endblock %}</title>
+	<script type="text/javascript" src="/site-media/js/jquery-1.4.4-min.js"></script>
+	<script type="text/javascript" src="/site-media/jquery-ui/jquery-ui-1.8.7.custom.min.js"></script>
+	<script type="text/javascript" src="/site-media/js/jquery.buildin.js"></script>
+	<script type="text/javascript" src="/site-media/js/sammy-latest.min.js"></script>
+	<script type="text/javascript" src="/site-media/js/nmis.dashboard.sammy.js"></script>
+	<link rel="stylesheet" href="/site-media/css/sitewide.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
+	<link rel="stylesheet" href="/site-media/css/tables.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
+	<link rel="stylesheet" href="/site-media/css/generated-donotedit.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
+	<link rel="stylesheet" href="/site-media/jquery-ui/jquery-ui-1.8.7.custom.css" type="text/css" media="screen" title="Sitewide" charset="utf-8" />
+</head>
+<body class="nmis">
+	<div id="header">
+		<div class="fwidth">
+			<a href="/#/" id="hlogo"><img src="/site-media/images/nmis_pilot.png" /></a>
+			<h2 class="title">Baseline Data Collection &raquo; <span id="page-title">Dashboard</span></h2>
+		<div class="account_links">
+			<a href="/admin">Admin</a>
+		</div>
 		</div>
 	</div>
-	<script type="text/javascript" charset="utf-8">
-		$('.button').button();
-		var app = $.sammy('#main', function(){
-			this.get("#/", function(){
-			});
-			this.get('#/frequency/:row/:col', function(context){
-				var row = this.params['row'],
-					col = this.params['col'],
-					freqTable = $("#freq-table");
-				
-				$.get("/submission-counts-by-"+row+"-and-"+col, function(html){
-					var table = $(html);
-					table.addClass('ptable');
-					$('tr td', table).each(function(ct, elm){
-						var td = $(elm);
-						if(td.index()==0) {
-							td.addClass('rname');
-						} else {
-							td.addClass('centered data');
-							if(td.text()!=="") {
-								td.wrapInner("<div class='dwrap' />")
-							}
-						}
-					});
-					$('tr td:first-child', table).removeClass('centered').addClass('rname');
-					freqTable.html(table);
-				});
-				return false;
-			});
-		});
-		
-		$(function(){
-			app.run("#/");
-		})
+	<ul id="menu">
+		<div class="fwidth">
+		</div>
+	</ul>
+	<div id="content">
+		<div class="fwidth">
+			<div class="right-content" id="main">
+				<div class="iwrap">
+				<h1 class="sn-title">
+				  Dashboard
+				</h1>
+				<div class="content-wrap">
+					<p>Select rows and columns for the frequency table:</p>
+					<div id="freq-table-selector">
+						<table border="0" cellspacing="5" cellpadding="5">
+							<tr>
+								<th>Rows</th>
+								<th>Columns</th>
+							</tr>
+							<tr>
+								<td><select id="freq-rows"></select></td>
+								<td><select id="freq-cols"></select></td>
+								<td><a href="#/" class="button" id="get-table">Submit</a></td>
+							</tr>
+						</table>
+						<div id="freq-table"></div>
+					</div>
+				</div>
+				<script type="text/javascript" charset="utf-8">
+					$('.button').button();
+					var app = $.sammy('#main', function(){
+						this.get("#/", function(){
+						});
+						this.get('#/frequency/:row/:col', function(context){
+							var row = this.params['row'],
+								col = this.params['col'],
+								freqTable = $("#freq-table");
 
-		function getFrequencyTable(row, col) {
-			console.log(row, col);
-			app.redirect("#/frequency/"+row+"/"+col);
-		}
-		
-		(function($, rowSelect, colSelect, submit, tableTypes){
-			$.each(tableTypes, function(count, str){
-				var _opt = $("<option />").html(str)
-				rowSelect.append(_opt.clone());
-				colSelect.append(_opt.clone());
-			});
-			colSelect.attr('disabled', true)
-			rowSelect.change(function(){
-				var selected = this.value;
-				colSelect.empty();
-				$.each(tableTypes, function(ct, str){
-					if(str!==selected) {
-						colSelect.append($("<option />").html(str));
+							$.get("/submission-counts-by-"+row+"-and-"+col, function(html){
+								var table = $(html);
+								table.addClass('ptable');
+								$('tr td', table).each(function(ct, elm){
+									var td = $(elm);
+									if(td.index()==0) {
+										td.addClass('rname');
+									} else {
+										td.addClass('centered data');
+										if(td.text()!=="") {
+											td.wrapInner("<div class='dwrap' />")
+										}
+									}
+								});
+								$('tr td:first-child', table).removeClass('centered').addClass('rname');
+								freqTable.html(table);
+							});
+							return false;
+						});
+					});
+
+					$(function(){
+						app.run("#/");
+					})
+
+					function getFrequencyTable(row, col) {
+						console.log(row, col);
+						app.redirect("#/frequency/"+row+"/"+col);
 					}
-				});
-				colSelect.attr('disabled', false);
-			});
-			colSelect.change(function(){
-				var sCol = this.value;
-				var sRow = rowSelect.val();
-				
-				$('#get-table').attr('href', '#/frequency/'+sRow+'/'+sCol);
-			})
-		})(jQuery, $('#freq-rows'), $('#freq-cols'), $('#freq-submit'), {{table_types|safe}})
-		
-	</script>
-</div>
-{% endblock %}
+
+					(function($, rowSelect, colSelect, submit, tableTypes){
+						$.each(tableTypes, function(count, str){
+							var _opt = $("<option />").html(str)
+							rowSelect.append(_opt.clone());
+							colSelect.append(_opt.clone());
+						});
+						colSelect.attr('disabled', true)
+						rowSelect.change(function(){
+							var selected = this.value;
+							colSelect.empty();
+							$.each(tableTypes, function(ct, str){
+								if(str!==selected) {
+									colSelect.append($("<option />").html(str));
+								}
+							});
+							colSelect.attr('disabled', false);
+						});
+						colSelect.change(function(){
+							var sCol = this.value;
+							var sRow = rowSelect.val();
+
+							$('#get-table').attr('href', '#/frequency/'+sRow+'/'+sCol);
+						})
+					})(jQuery, $('#freq-rows'), $('#freq-cols'), $('#freq-submit'), {{table_types|safe}})
+
+				</script>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

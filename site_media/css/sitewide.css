@@ -97,3 +97,25 @@ div#footer {
 div.icontent {
     padding: 4px 12px;
 }
+
+#hlogo {
+	display: block;
+}
+#hlogo img {
+	border: 0 none;
+	height: 40px;
+}
+h2.title {
+	position: absolute;
+	left: 100px;
+	top: 8px;
+	margin: 0;
+	color: #aaa;
+	font-weight: normal;
+}
+body #header {
+	height: 45px;
+}
+.subsection {
+	display: none;
+}
