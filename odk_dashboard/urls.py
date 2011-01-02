@@ -4,7 +4,8 @@
 from django.conf.urls.defaults import *
 from django.views.generic.simple import redirect_to
 
-from . import views
+import views
+import data_sync
 
 urlpatterns = patterns('',
     url(r"^/?$", views.dashboard),
@@ -19,4 +20,5 @@ urlpatterns = patterns('',
     url(r"^view/?$", views.view_section),
     url(r"^profiles/?$", views.profiles_section),
     url(r"^analysis/?$", views.analysis_section),
+    url(r"^data/map/(?P<stamp>\S*)$", data_sync.map_data),
 )

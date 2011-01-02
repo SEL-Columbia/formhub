@@ -6,18 +6,39 @@
 	var map = false,
 		mapsScriptLoaded=false,
 		googleMapsLoaded;
+	
 	(function(){
-		var z = false;
+		var mapStorage = new Sammy.Store({name:'mapStorage',element:'#map',type:'local'}),
+			empty = (null==mapStorage.get('first'));
+		
+		function switchContext() {
+			dashboard.$element().html($('#map').html());
+		}
 		googleMapsLoaded=function(){
 			mapsScriptLoaded=true;
+			switchContext();
 		}
 		function loadGoogleMap(){
-			$.getScript('http://maps.google.com/maps/api/js?sensor=false&callback=googleMapsLoaded');
-			mapLoaded=true;
+//			$.getScript('http://maps.google.com/maps/api/js?sensor=false&callback=googleMapsLoaded');
+			
+			//for debugging
+			mapsScriptLoaded=true;
 		}
 		dashboard.get(urls.map, function(context){
+			if(empty) {
+				$.getJSON("/data/map/", function(data){
+					if(data.flush) {
+						mapStorage.clear('data');
+					}
+					mapStorage.set('data', data.data);
+					mapStorage.set('stamp', data.stamp);
+					console.log(mapStorage.get('data'));
+				});
+			}
 			if(!mapsScriptLoaded) {
 				loadGoogleMap();
+			} else {
+				switchContext();
 			}
 	        context.$element().html($('#map').html());
 	        this.title("Map");
