@@ -1,47 +1,214 @@
-<div id="map">
-<p>Map:</p>
+<div class="map-wrap">
 </div>
 
 <script type="text/javascript" charset="utf-8">
-	var map = false,
-		mapsScriptLoaded=false,
-		googleMapsLoaded;
+	var NigeriaVals = (function(){
+		return {
+			mainLat: 9.64407696490791,
+			mainLng: 6.74560546875
+		}
+	})()
+	var MapKey = (function(){
+		var mapKeyElem,
+			mapPar;
+		return {
+			create: function(par){
+				mapPar = par;
+				var oDiv = $('<div />');
+				var iDiv = $('<div />', {id: 'idiv', 'class': 'ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix'});
+				iDiv.css({
+					'border': '2px solid #fff',
+					'margin': '6px 8px 0 80px',
+					'padding': '3px 9px',
+					'background-color': '#fff'
+				}).html('Hi')
+				
+				oDiv.css({'width':'100%',
+					'height':'40px','position':'absolute',
+					'top':0,'left':0,
+					'z-index':999
+				}).append(iDiv);
+				mapPar.append(oDiv);
+				console.log(oDiv);
+			},
+			showSelection: function(pType) {
+//				console.log("make selection for ", pType);
+			},
+			getOpts: function(){
+				return {
+					lga: "LGA",
+					surveyor: "Surveyor",
+					survey_type: "Survey Type"
+				}
+			}
+		}
+	})();
+	
 	
 	(function(){
 		var mapStorage = new Sammy.Store({name:'mapStorage',element:'#map',type:'local'}),
+			mapWrap = false,
 			empty = (null==mapStorage.get('first'));
 		
-		function switchContext() {
-			dashboard.$element().html($('#map').html());
-		}
-		googleMapsLoaded=function(){
-			mapsScriptLoaded=true;
-			switchContext();
-		}
-		function loadGoogleMap(){
-//			$.getScript('http://maps.google.com/maps/api/js?sensor=false&callback=googleMapsLoaded');
-			
-			//for debugging
-			mapsScriptLoaded=true;
-		}
+		mapByOpts = MapKey.getOpts();
+		var defaultOpts = "{zoom:8,center:new google.maps.LatLng(0,0),mapTypeId:'terrain'}"
 		dashboard.get(urls.map, function(context){
-			if(empty) {
-				$.getJSON("/data/map/", function(data){
-					if(data.flush) {
-						mapStorage.clear('data');
-					}
-					mapStorage.set('data', data.data);
-					mapStorage.set('stamp', data.stamp);
-					console.log(mapStorage.get('data'));
-				});
-			}
-			if(!mapsScriptLoaded) {
-				loadGoogleMap();
-			} else {
-				switchContext();
-			}
-	        context.$element().html($('#map').html());
+			var cur = this.switchTo("map"),
+				mapDiv = $(">div", cur);
+			this.ensureMapScriptLoaded();
+			this.ensureMap(mapDiv, defaultOpts, function(cmap){
+				cmap.setCenter(new google.maps.LatLng(NigeriaVals.mainLat, NigeriaVals.mainLng), 6);
+				MapKey.create(mapDiv);
+			});
+//			console.log(mapDiv);
 	        this.title("Map");
 	    });
-	})()
+		dashboard.get(urls.mapBy, function(){
+			try {
+				var ps=this.params.splat[0].split("/");
+				var _mainParam = ps[0].split(":")[0];
+				var pType = mapByOpts[ps[0].split(":")[0]];
+				var pVal = ps[0].split(":")[1];
+				if("undefined"==typeof pType) {
+					throw("Error: Bad Value for Map Option");
+				}
+				this.ensureMapScriptLoaded();
+				var cur = this.switchTo("map");
+				this.ensureMap($(">div", cur), defaultOpts, function(cmap){
+					cmap.setCenter(new google.maps.LatLng(NigeriaVals.mainLat, NigeriaVals.mainLng), 6);
+				});
+				this.title("Map by "+pType);
+//				MapKey.showSelection(pType);
+//				MapKey.create(cur);
+			} catch(e) {
+				this.redirect("#/map")
+			}
+		})
+	})();
+</script>
+
+<script type="text/javascript" charset="utf-8">
+/*-- 
+- This structure works, for now.
+--*/
+var SubmissionList, SubmissionPoint;
+(function($){
+	function _SubmissionList(arr){
+		this.addPoints(arr)
+	}
+	_SubmissionList.prototype = new Array();
+	$.extend(_SubmissionList.prototype, {
+		addPoint: function(point){
+			if(point instanceof _SubmissionPoint) { this.push(point)
+			} else {
+				this.push(new _SubmissionPoint(point))
+			}
+		},
+		addPoints: function(points){
+			var _Sl = this;
+			$(points).each(function(){_Sl.addPoint(this)})
+		}
+	})
+	
+	function _SubmissionPoint(o){$.extend(this, o)}
+//	$.extend(_SubmissionPoint.prototype, {})
+	window.SubmissionList = _SubmissionList;
+})(jQuery);
+
+var AverageGPSInList = (function(Sl){
+	
+})
+/*--
+(function($){
+	function _SubmissionList(arr){
+	    this.points = $(arr).map(function(){return new _SubmissionPoint(this)});
+		this.length = this.points.length;
+	}
+	$.extend(_SubmissionList.prototype, {
+		sortBy: function(q){
+			return this.points.sort(function(a, b){
+				return a[q] < b[q] ? -1 : a[q] > b[q] ? 1 : 0
+			})
+		},
+		groupBy: function(q){
+			var _k, _output = {};
+			$(this.points).each(function(){
+				_k = String(this[q]);
+				if(typeof(_output[_k])=='undefined') {_output[_k]=[]}
+				_output[_k].push(this);
+			});
+			return _output;
+		},
+		toString: function(){
+			return "" + this.points.length + " submissions";
+		},
+		addToMap: function(map){
+		    $(this.points).each(function(){
+		        this.addToMap(map);
+		    })
+		},
+		prepare: function(){
+		    $(this.points).each(function(){this.prepareForGoogleMaps()})
+            return this;
+		}
+	})
+
+    function _SubmissionPoint(options){
+        this.images=[];
+        $.extend(this, options);
+    }
+    $.extend(_SubmissionPoint.prototype, {
+        prepareForGoogleMaps: function(){
+            if(this.gps) {
+                this.gpoint = new google.maps.LatLng(this.gps.lat, this.gps.lng);
+                this.gmarker = new google.maps.Marker({
+                    position: this.gpoint,
+                    icon: this.icon(),
+                    title: this.title
+                })
+            }
+        },
+        icon: function(){
+            return '/site-media/images/geosilk/flag_'+markerImages[this.survey_type]+'.png';
+        },
+        hasGps: function() {
+            return "undefined"!==typeof this.gmarker
+        },
+        hasImage: function() {
+            return this.images.length > 0
+        },
+        addToMap: function(map) {
+            if(this.hasGps() && map._) {
+                this.gmarker.setMap(map._)
+                var _image = this.images[0],
+                    _title = this.title;
+                google.maps.event.addListener(this.gmarker, 'click', function(){
+                    $.fancybox({
+                        padding: 5,
+                        href: _image,
+                        title: _title,
+                        transitionIn: 'elastic',
+                        transitionOut: 'elastic'
+                    })
+                })
+            }
+        },
+        popupImage: function(){
+            if(this.hasImage()) {
+                $.fancybox({
+        			'padding'		: 5,
+        			'href'			: this.images[0],
+        			'title'   		: this.title,
+        			'transitionIn'	: 'elastic',
+        			'transitionOut'	: 'elastic'
+        		});
+            }
+        }
+    });
+
+
+    window.SubmissionList = _SubmissionList;
+    window.SubmissionPoint = _SubmissionPoint;
+})(jQuery);
+--*/
 </script>

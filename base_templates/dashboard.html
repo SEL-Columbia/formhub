@@ -32,31 +32,106 @@
 	</ul>
 	<div id="content">
 		<div class="fwidth">
-			<div class="full-content" id="main">
-				<div class="iwrap" id="main-content">
-				</div>
-			</div>
-		</div>
-		<div id="sammy-subsections" style="display:none">
-			<div class="subsection">
-				<div id="dashboard">
+			<div class="full-content sliding" id="main">
+				<div class="iwrap" id="dashboard">
+					<div class="iiwrap">
 					<p>Dashboard</p>
+					<ul>
+						<li><a href="#/map/by/lga">Map By LGA</a></li>
+						<li><a href="#/map/by/surveyor">Map By Surveyor</a></li>
+						<li><a href="#/map/by/survey_type">Map By Survey Type</a></li>
+					</ul>
+					<ul class="dashboard_stats"></ul>
+					</div>
 				</div>
-			</div>
-			<div class="subsection">
-			{% include '_frequency_table.html' %}
-			</div>
-			<div class="subsection">
-			{% include '_map.html' %}
-			</div>
-			<div class="subsection">
-			{% include '_activity.html' %}
+				<div class="iwrap" id="activity">
+					<div class="iiwrap">
+						{% include '_activity.html' %}
+					</div>
+				</div>
+				<div class="iwrap" id="frequency-tables">
+					<div class="iiwrap">
+						{% include '_frequency_table.html' %}
+					</div>
+				</div>
+				<div class="iwrap" id="map">
+					<div class="iiwrap">
+						{% include '_map.html' %}
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 	<script type="text/javascript" charset="utf-8">
+	dashboard.activateSwitchTo(".full-content.sliding");
+
+	var DashboardDebug = (function(){
+		return {
+			listInfo: function(list){
+				var li = $("<li />").html("There are "+list.length+" entries.")
+				$('.dashboard_stats').append(li)
+			}
+		}
+	})()
+	
+	var ActivityList, ActivityPoint;
+	(function($){
+		function _ActivityList(arr){
+			this.addPoints(arr)
+		}
+		_ActivityList.prototype = new Array();
+		$.extend(_ActivityList.prototype, {
+			addPoint: function(point){
+				if(point instanceof _ActivityPoint) { this.push(point)
+				} else {
+					this.push(new _ActivityPoint(point))
+				}
+			},
+			addPoints: function(points){
+				var _Sl = this;
+				$(points).each(function(){_Sl.addPoint(this)})
+				DashboardDebug.listInfo(this);
+			}
+		})
+
+		function _ActivityPoint(o){$.extend(this, o)}
+		window.ActivityList = _ActivityList;
+	})(jQuery);
+	
+//		var ActivityStorage = (function(){
+			var storage = new Sammy.Store({name:'activity',element:'#content',type:'local'});
+			var _stamp = false;
+			
+			var _list;
+			
+			function fetchActivity(stamp){
+				var stamp = (typeof(stamp)=='undefined') ? "" : stamp;
+							 
+				var url = "/data/activity/"+stamp;
+				$.getJSON(url, function(data){
+					storage.set('activity', data);
+					storage.set('activity_stamp', [data.stamp]);
+					_list = new ActivityList(data.data);
+				});
+			}
+			var clearStorageLink = $("<a />", {href:'#'}).html("Clear Storage");
+			clearStorageLink.click(function(evt){
+				storage.clear('activity');
+				storage.clear('activity_stamp');
+				evt.preventDefault();
+			})
+			$('.account_links').append(clearStorageLink)
+//			storage.clear('activity_stamp');
+//			storage.clear('activity');
+			if(!storage.exists('activity')) {
+				fetchActivity();
+			} else {
+				storage.get('activity')
+//				fetchActivity(storage.get('activity_stamp'))
+			}
+//		})()
 		$('.button').button();
-		SetResizer(jQuery, ".iwrap", "#header, #menu", (16+24))
+		SetResizer(jQuery, ".iiwrap", "#header, #menu", (16+24))
 	</script>
 </body>
 </html>

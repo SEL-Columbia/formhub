@@ -16,9 +16,10 @@ urlpatterns = patterns('',
     url(r"^submission-counts/?$", views.frequency_table_urls),
     url(r"^submission-counts-by-(\w+)-and-(\w+)/?$", views.frequency_table),
     #4 main sections:
-    url(r"^data/activity$", views.recent_activity),
+#    url(r"^data/activity$", views.recent_activity),
     url(r"^view/?$", views.view_section),
     url(r"^profiles/?$", views.profiles_section),
     url(r"^analysis/?$", views.analysis_section),
     url(r"^data/map/(?P<stamp>\S*)$", data_sync.map_data),
+    url(r"^data/activity/(?P<stamp>\S*)$", data_sync.activity_list),
 )

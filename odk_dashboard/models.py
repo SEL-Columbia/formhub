@@ -61,6 +61,21 @@ class ParsedInstance(models.Model):
         except:
             ident = self.phone.device_id
         return ident
+    
+    def title(self):
+        return "Title: %s" % self.survey_type.name
+    
+    def to_dict(self):
+        try:
+            gps = self.location.gps.to_dict()
+        except:
+            gps = False
+        
+        return {'images':[x.image.url for x in self.instance.images.all()], \
+                'phone': self.phone.__unicode__(), \
+                'date': self.end.strftime("%Y-%m-%d %H:%M"), \
+                'survey_type': self.survey_type.name, \
+                'gps': gps, 'id': self.id, 'title': self.title() }
 
 # For now every new registration creates a new surveyor, we need a
 # smart way to combine surveyors.

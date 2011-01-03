@@ -1,4 +1,3 @@
-<div id="frequency-tables">
 <p>Select rows and columns for the frequency table:</p>
 <div id="freq-table-selector">
 	<table border="0" cellspacing="5" cellpadding="5">
@@ -14,11 +13,10 @@
 	</table>
 	<div id="freq-table"></div>
 </div>
-</div>
 
 <script type="text/javascript" charset="utf-8">
 	dashboard.get(urls.freqTables, function(context){
-        context.$element().html($('#frequency-tables').html());
+		this.switchTo("frequency-tables");
         this.title("Frequency Tables");
     });
 </script>

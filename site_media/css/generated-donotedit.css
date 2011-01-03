@@ -38,11 +38,13 @@ div.left-side-nav {
         padding-left: 12px; }
 
 div.full-content {
-  padding: 0px; }
-  div.full-content div.iwrap {
+  padding: 0px;
+  position: absolute; }
+  div.full-content div.iiwrap {
     background-color: white;
     border: 1px solid #999999;
-    padding: 12px 20px; }
+    padding: 12px 20px;
+    margin: 8px; }
 
 div.right-content {
   width: 69%;

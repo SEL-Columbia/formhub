@@ -32,7 +32,7 @@ body {
     padding: 0 40px; }
 
 div#content .fwidth {
-    padding: 8px;
+    padding: 0px;
 }
 ul#menu .fwidth > li:first-child {
     margin-left: -10px;
