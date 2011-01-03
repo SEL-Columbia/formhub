@@ -78,7 +78,6 @@ var SammyMapLoaded;
             gmapElem = false;
         this.helper('ensureMapScriptLoaded', function(cb){
             if(!loadStarted) {
-                console.log("Loading Map Script");
                 $.getScript('http://maps.google.com/maps/api/js?sensor=false&callback=SammyMapLoaded');
                 loadStarted = true;
             }
@@ -97,9 +96,7 @@ var SammyMapLoaded;
                 var sammyObj = this;
                 gmapElem.bind('gmapLoaded', function(){
                     //make the map and call the callback with the first argument as the map object
-                    console.log("Script just Loaded", typeof(cb))
                     eval("var opts="+optsString);
-                    console.log("Opts, ", opts);
                     gmap = new google.maps.Map($(elem).get(0), opts);
                     cb.call(sammyObj, gmap);
                 })
@@ -116,7 +113,6 @@ var SammyMapLoaded;
             if(gmapElem) {
                 $(gmapElem).trigger('gmapLoaded');
             }
-            console.log("Map script is oadeded", google.maps)
         }
     }
 })()

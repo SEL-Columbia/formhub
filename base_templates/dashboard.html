@@ -121,13 +121,10 @@
 				evt.preventDefault();
 			})
 			$('.account_links').append(clearStorageLink)
-//			storage.clear('activity_stamp');
-//			storage.clear('activity');
 			if(!storage.exists('activity')) {
 				fetchActivity();
 			} else {
 				storage.get('activity')
-//				fetchActivity(storage.get('activity_stamp'))
 			}
 //		})()
 		$('.button').button();

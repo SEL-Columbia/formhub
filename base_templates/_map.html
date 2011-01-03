@@ -29,7 +29,6 @@
 					'z-index':999
 				}).append(iDiv);
 				mapPar.append(oDiv);
-				console.log(oDiv);
 			},
 			showSelection: function(pType) {
 //				console.log("make selection for ", pType);
@@ -60,7 +59,6 @@
 				cmap.setCenter(new google.maps.LatLng(NigeriaVals.mainLat, NigeriaVals.mainLng), 6);
 				MapKey.create(mapDiv);
 			});
-//			console.log(mapDiv);
 	        this.title("Map");
 	    });
 		dashboard.get(urls.mapBy, function(){
