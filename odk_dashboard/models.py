@@ -45,7 +45,7 @@ class District(MP_Node):
         if not self.kml_present:
             return None
         else:
-            return "/site-media/kml/%d.kml" % self.id
+            return "%skml/%d.kml" % (settings.MEDIA_URL, self.id)
     
     def to_dict(self):
         return {'name':self.name, 'state':self.get_parent().name, \
