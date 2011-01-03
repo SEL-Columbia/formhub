@@ -6,12 +6,14 @@ from django.db.models import Avg, Max, Min, Count
 from django.http import HttpResponse
 from odk_dropbox import utils
 from odk_dropbox.models import Form
-from .models import ParsedInstance, Phone
+from .models import ParsedInstance, Phone, District
 import datetime
 
 def dashboard(request):
     info = {}
     info['table_types'] = simplejson.dumps(dimensions.keys())
+    districts = District.objects.filter(active=True)
+    info['districts'] = simplejson.dumps([x.to_dict() for x in districts])
     return render_to_response('dashboard.html', info)
 
 def csv_list():

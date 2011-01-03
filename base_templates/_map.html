@@ -2,6 +2,16 @@
 </div>
 
 <script type="text/javascript" charset="utf-8">
+	var District = (function(){
+		function _District(data) {
+			$.extend(this, data);
+		}
+
+		return _District;
+	})(jQuery)
+	
+	var districts = $({{districts|safe}}).each(function(){return new District(this)})
+	
 	var NigeriaVals = (function(){
 		return {
 			mainLat: 9.64407696490791,
