@@ -31,8 +31,8 @@
 					'margin': '6px 8px 0 80px',
 					'padding': '3px 9px',
 					'background-color': '#fff'
-				}).html('Hi')
-				
+				}).html($('.mapkey').html())
+								
 				oDiv.css({'width':'100%',
 					'height':'40px','position':'absolute',
 					'top':0,'left':0,
@@ -68,6 +68,13 @@
 			this.ensureMap(mapDiv, defaultOpts, function(cmap){
 				cmap.setCenter(new google.maps.LatLng(NigeriaVals.mainLat, NigeriaVals.mainLng), 6);
 				MapKey.create(mapDiv);
+				$('.loadDistricts').click(function(){
+					var distKmls = $(districts).map(function(){return this.kml});
+					$(distKmls).each(function(){
+						var kml = new google.maps.KmlLayer(this);
+						kml.setMap(cmap);
+					})
+				})
 			});
 	        this.title("Map");
 	    });

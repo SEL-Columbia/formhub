@@ -59,10 +59,16 @@
 						{% include '_map.html' %}
 					</div>
 				</div>
+				<div style="display:none" class="mapkey">
+					<a href="#" class="dontChangePage loadDistricts">Load LGA District Files</a>
+				</div>
 			</div>
 		</div>
 	</div>
 	<script type="text/javascript" charset="utf-8">
+	$('body').delegate('.dontChangePage', 'click', function(evt){
+		evt.preventDefault();
+	})
 	dashboard.activateSwitchTo(".full-content.sliding");
 
 	var DashboardDebug = (function(){
