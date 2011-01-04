@@ -28,8 +28,6 @@ def map_data(request, stamp):
     psubs = []
     return stamped_json_output(cur_stamp, psubs, True)
 
-from ipdb import set_trace as debug
-
 def activity_list(request, stamp):
     if stamp_up_to_date(ParsedInstance, stamp):
         return HttpResponse(simplejson.dumps("OK"))
