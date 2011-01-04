@@ -88,3 +88,6 @@ def apache_restart():
     """ restart Apache on remote host """
     require('root', provided_by=('staging', 'production'))
     run('sudo apache2ctl restart')
+
+# I need to import all the phase one data
+# find /home/amarder/host/Desktop/Phone\ Data\ Phase\ I/ -name "???" -exec python manage.py import_instances '{}' \;
