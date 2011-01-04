@@ -15,8 +15,64 @@
 </div>
 
 <script type="text/javascript" charset="utf-8">
+	var tableTypes = {{table_types|safe}};
+	
 	dashboard.get(urls.freqTables, function(context){
 		this.switchTo("frequency-tables");
         this.title("Frequency Tables");
     });
+
+/*--
+	dashboard.get(urls.freqTables+"/:row/:col", function(context){
+		this.switchTo("frequency-tables");
+        this.title("Frequency Tables");
+		var row = this.params['row'],
+			col = this.params['col'],
+			freqTable = $("#freq-table");
+		
+		$.get("/submission-counts-by-"+row+"-and-"+col, function(html){
+			var table = $(html);
+			table.addClass('ptable');
+			$('tr td', table).each(function(ct, elm){
+				var td = $(elm);
+				if(td.index()==0) {
+					td.addClass('rname');
+				} else {
+					td.addClass('centered data');
+					if(td.text()!=="") {
+						td.wrapInner("<div class='dwrap' />")
+					}
+				}
+			});
+			$('tr td:first-child', table).removeClass('centered').addClass('rname');
+			freqTable.html(table);
+		
+    });
+	
+	(function($, rowSelect, colSelect, submit, tableTypes){
+		$.each(tableTypes, function(count, str){
+			var _opt = $("<option />").html(str)
+			rowSelect.append(_opt.clone());
+			colSelect.append(_opt.clone());
+		});
+		colSelect.attr('disabled', true)
+		rowSelect.change(function(){
+			var selected = this.value;
+			colSelect.empty();
+			$.each(tableTypes, function(ct, str){
+				if(str!==selected) {
+					colSelect.append($("<option />").html(str));
+				}
+			});
+			colSelect.attr('disabled', false);
+		});
+		colSelect.change(function(){
+			var sCol = this.value;
+			var sRow = rowSelect.val();
+			
+			$('#get-table').attr('href', '#/frequency/'+sRow+'/'+sCol);
+		});
+	})(jQuery, $('#freq-rows'), $('#freq-cols'), $('#freq-submit'), tableTypes)
+--*/
+
 </script>
