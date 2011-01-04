@@ -21,15 +21,13 @@
 		this.switchTo("frequency-tables");
         this.title("Frequency Tables");
     });
-
-/*--
 	dashboard.get(urls.freqTables+"/:row/:col", function(context){
 		this.switchTo("frequency-tables");
         this.title("Frequency Tables");
+
 		var row = this.params['row'],
 			col = this.params['col'],
 			freqTable = $("#freq-table");
-		
 		$.get("/submission-counts-by-"+row+"-and-"+col, function(html){
 			var table = $(html);
 			table.addClass('ptable');
@@ -46,8 +44,8 @@
 			});
 			$('tr td:first-child', table).removeClass('centered').addClass('rname');
 			freqTable.html(table);
-		
-    });
+		});
+	});
 	
 	(function($, rowSelect, colSelect, submit, tableTypes){
 		$.each(tableTypes, function(count, str){
@@ -70,9 +68,8 @@
 			var sCol = this.value;
 			var sRow = rowSelect.val();
 			
-			$('#get-table').attr('href', '#/frequency/'+sRow+'/'+sCol);
+			$('#get-table').attr('href', '#/frequency-tables/'+sRow+'/'+sCol);
 		});
 	})(jQuery, $('#freq-rows'), $('#freq-cols'), $('#freq-submit'), tableTypes)
---*/
 
 </script>
