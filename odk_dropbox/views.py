@@ -52,9 +52,9 @@ def survey_list(request):
             counts[form.title] = 1
     for form in Form.objects.all():
         rows.append([
-                form.title if counts[form.title]==1 else form.id_string,
+                form.id_string,
                 form.submission_count(),
                 form.date_of_last_submission(),
-                '<a href="%s.csv">csv</a>' % form.slug(),
+                '<a href="/%s.csv">csv</a>' % form.id_string,
                 ])
     return mako_to_response("table2.html", {"rows" : rows})
