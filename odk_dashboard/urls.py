@@ -13,7 +13,7 @@ urlpatterns = patterns('',
     url(r"^median-survey-times/?", views.survey_times),
     url(r"^median-time-between-surveys/?", views.median_time_between_surveys),
     url(r"^submission-counts/?$", views.frequency_table_urls),
-    url(r"^submission-counts-by-(\w+)-and-(\w+)/?$", views.frequency_table),
+    url(r"^submission-counts/(\w+)/(\w+)$", views.frequency_table),
     #4 main sections:
     url(r"^data/activity$", views.recent_activity),
     url(r"^view/?$", views.view_section),

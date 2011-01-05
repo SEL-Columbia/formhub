@@ -41,7 +41,7 @@ def frequency_table_urls(request):
     for i in range(0,len(keys)):
         for j in range(i+1,len(keys)):
             info["urls"].append(
-                "submission-counts-by-%(row)s-and-%(column)s" % {
+                "submission-counts/%(row)s/%(column)s" % {
                     "row" : keys[i],
                     "column" : keys[j]
                     }
