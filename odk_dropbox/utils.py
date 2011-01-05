@@ -28,6 +28,8 @@ class ODKHandler(ContentHandler):
     def startElement(self, name, attrs):
         self._stack.append(name)
 
+        if name not in self._dict: self._dict[name] = u""
+
         # there should only be a single attribute in this document
         # an id on the root node
         if attrs:
@@ -45,9 +47,8 @@ class ODKHandler(ContentHandler):
 
         # get the last tag we saw
         tag = self._stack[-1]
-        if tag not in self._dict:
-            # if we haven't seen this tag before just add this key
-            # value pair to the dictionary
+        if not self._dict[tag]:
+            # if we haven't seen a value for this tag yet
             self._dict[tag] = s
         else:
             # if we have seen this tag before we need to append this
@@ -166,8 +167,30 @@ def table(form):
     table = [headers]
     for i in form.instances.all():
         d = parse_instance(i).get_dict()
-        table.append( [d.get(header, u".") for header in headers] )
+        table.append( [d.get(header, u"n/a") for header in headers] )
     return table
+
+def collapse_columns(table, root):
+    columns = []
+    headers = []
+    for i in range(len(table[0])):
+        header = table[0][i]
+        if not header.startswith(root):
+            headers.append(header)
+        else:
+            columns.append(i)
+            if root not in headers:
+                headers.append(root)
+    result = [headers]
+    for row in table[1:]:
+        result.append([])
+        for i in range(len(row)):
+            if i not in columns:
+                result[-1].append(row[i])
+            elif headers[i]==root:
+                result[-1].append(
+                    u" ".join([row[j] for j in columns if row[j]!=u"n/a"])
+                    )
 
 def csv(table):
     csv = ""
