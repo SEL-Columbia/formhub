@@ -8,13 +8,25 @@
 	<script type="text/javascript" src="/site-media/js/jquery-1.4.4-min.js"></script>
 	<script type="text/javascript" src="/site-media/jquery-ui/jquery-ui-1.8.7.custom.min.js"></script>
 	<script type="text/javascript" src="/site-media/js/jquery.buildin.js"></script>
+	<script type="text/javascript" src="/site-media/js/jquery.tmpl.min.js"></script>
 	<script type="text/javascript" src="/site-media/js/sammy-latest.min.js"></script>
 	<script type="text/javascript" src="/site-media/js/sammy.extensions.js"></script>
 	<script type="text/javascript" src="/site-media/js/nmis.dashboard.sammy.js"></script>
 	<link rel="stylesheet" href="/site-media/css/sitewide.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
+	<link rel="stylesheet" href="/site-media/css/map-key.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
 	<link rel="stylesheet" href="/site-media/css/tables.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
 	<link rel="stylesheet" href="/site-media/css/generated-donotedit.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
 	<link rel="stylesheet" href="/site-media/jquery-ui/jquery-ui-1.8.7.custom.css" type="text/css" media="screen" title="Sitewide" charset="utf-8" />
+	<style type="text/css" media="screen">
+		table.fullw {
+			width: 100%;
+		}
+		.table-spacer {
+			height: 16px;
+			width:1px;
+			border-left: 1px dotted #888;
+		}
+	</style>
 </head>
 <body class="nmis">
 	<div id="header">
@@ -37,9 +49,6 @@
 					<div class="iiwrap">
 					<p>Dashboard</p>
 					<ul>
-						<li><a href="#/map/by/lga">Map By LGA</a></li>
-						<li><a href="#/map/by/surveyor">Map By Surveyor</a></li>
-						<li><a href="#/map/by/survey_type">Map By Survey Type</a></li>
 					</ul>
 					<ul class="dashboard_stats"></ul>
 					</div>

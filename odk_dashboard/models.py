@@ -49,7 +49,8 @@ class District(MP_Node):
     
     def to_dict(self):
         return {'name':self.name, 'state':self.get_parent().name, \
-                'coords':self.latlng_string, 'kml':self.kml_uri() }
+                'coords':self.latlng_string, 'kml':self.kml_uri(), \
+                'id':self.id }
 
 class SurveyType(models.Model):
     name = models.CharField(max_length=32)

@@ -1,105 +1,403 @@
 <div class="map-wrap">
 </div>
-
 <script type="text/javascript" charset="utf-8">
+	
+	var objs = {};
+	
+	objs.surveyor = [
+		{
+			name: 'bob',
+			id: 1
+		},
+		{
+			name: 'sven',
+			id: 2
+		}
+		]
+	
+	objs.survey = [
+		{
+			name: 'bob',
+			id: 1
+		},
+		{
+			name: 'steve',
+			id: 2
+		}
+		];
+	
+	objs.date = [
+		{
+			name: "10",
+			id: 1
+		},
+		{
+			name: "12-23-10",
+			id: 2
+		}
+		]
+	
+	function findObj(objType, obj) {
+		var result;
+		$(objs[objType]).each(function(){
+			if(this.id==obj) {
+				result = this
+			}
+		});
+		if(!result) {return null;}
+		return result;
+	}
+	
+	function filterPoints(district, objType, obj) {
+		return []
+	}
+	
 	var District = (function(){
 		function _District(data) {
 			$.extend(this, data);
 		}
-
+		_District.prototype.GLatLng = function(){
+			var ll = this.coords.split(",");
+			return new google.maps.LatLng(ll[0],ll[1]);
+		}
 		return _District;
 	})(jQuery)
 	
-	var districts = $({{districts|safe}}).each(function(){return new District(this)})
+	var districts = $({{districts|safe}}).map(function(){return new District(this)})
+	function findDistrict(did) {var result; $(districts).each(function(){if(did==this.id){result=this}}); return result;}
 	
-	var NigeriaVals = (function(){
-		return {
-			mainLat: 9.64407696490791,
-			mainLng: 6.74560546875
-		}
-	})()
-	var MapKey = (function(){
-		var mapKeyElem,
-			mapPar;
-		return {
-			create: function(par){
-				mapPar = par;
-				var oDiv = $('<div />');
-				var iDiv = $('<div />', {id: 'idiv', 'class': 'ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix'});
-				iDiv.css({
-					'border': '2px solid #fff',
-					'margin': '6px 8px 0 80px',
-					'padding': '3px 9px',
-					'background-color': '#fff'
-				}).html($('.mapkey').html())
-								
-				oDiv.css({'width':'100%',
-					'height':'40px','position':'absolute',
-					'top':0,'left':0,
-					'z-index':999
-				}).append(iDiv);
-				mapPar.append(oDiv);
-			},
-			showSelection: function(pType) {
-//				console.log("make selection for ", pType);
-			},
-			getOpts: function(){
-				return {
-					lga: "LGA",
-					surveyor: "Surveyor",
-					survey_type: "Survey Type"
-				}
+	var _map;
+	var filters = "survey surveyor date".split(" ")
+	var mapByOpts = {
+		lga: "LGA",
+		surveyor: "Surveyor",
+		survey_type: "Survey Type"
+	};
+	
+	function urlForMapState(hsh) {
+		var str = "#/map";
+		if(hsh.district) {
+			if(hsh.district.id) {
+				str+= "/"+hsh.district.id;
+			} else {
+				str+= "/"+hsh.district;
 			}
+		} else {
+			return str;
 		}
-	})();
-	
+		if(hsh.filter) {
+			str += "/by/"+hsh.filter
+		} else {
+			return str;
+		}
+		if(hsh.obj) {
+			str += "/"+hsh.obj;
+		}
+		return str;
+	}
 	
 	(function(){
 		var mapStorage = new Sammy.Store({name:'mapStorage',element:'#map',type:'local'}),
 			mapWrap = false,
+			mapState = {},
 			empty = (null==mapStorage.get('first'));
 		
-		mapByOpts = MapKey.getOpts();
-		var defaultOpts = "{zoom:8,center:new google.maps.LatLng(0,0),mapTypeId:'terrain'}"
-		dashboard.get(urls.map, function(context){
-			var cur = this.switchTo("map"),
-				mapDiv = $(">div", cur);
-			this.ensureMapScriptLoaded();
-			this.ensureMap(mapDiv, defaultOpts, function(cmap){
-				cmap.setCenter(new google.maps.LatLng(NigeriaVals.mainLat, NigeriaVals.mainLng), 6);
-				MapKey.create(mapDiv);
-				$('.loadDistricts').click(function(){
-					var distKmls = $(districts).map(function(){return this.kml});
-					$(distKmls).each(function(){
-						var kml = new google.maps.KmlLayer(this);
-						kml.setMap(cmap);
+		function changeMapState(ms, opts) {
+			//temp
+			return $.extend(ms, opts);
+		}
+		
+		dashboard.setMapElem("#map > div");
+		
+		dashboard.get("#/map", function(context){			
+	        this.title("Map");
+			this.switchTo("map");
+			mapState = changeMapState(mapState, {
+				scale: 'country',
+				district: null,
+				filter: null
+			})
+			this.Map(function(){
+				this.nigeriaCenter();
+
+				this.key({clear:true});
+				this.addSelector([], function(selector){
+					var main = $("<option />", {value:'all'}).html("Nigeria");
+					var big = $("<optgroup />", {'label':"Selector"}).html(main);
+					
+					var subdistricts = $("<optgroup />", {'label':"LGA"});
+					$(districts).each(function(){
+                        var opt = $("<option />", {value: this.id}).html(this.name)
+	                    subdistricts.append(opt);
+	                })
+	                selector.append(big);
+					selector.append(subdistricts);
+					
+					selector.val('all');
+					selector.change(function(){
+						if($(this).val()=='all') {
+							dashboard.setLocation("#/map");
+						} else {
+							dashboard.setLocation(urlForMapState({district: $(this).val()}));
+						}
+					});
+				});
+								
+				this.debug(mapState);
+			})
+	    });
+		
+		dashboard.get("#/map/:district", function(){
+			var district = findDistrict(this.params['district']);
+			
+			this.title("Map "+district.name);
+			this.switchTo("map");
+			
+			mapState = changeMapState(mapState, {
+				scale: 'district',
+				district: district.name,
+				filter: null
+			});
+
+			this.Map(function(){
+				this.mapCenter(district.GLatLng(), 8)
+				this.key({clear:true});
+				
+				this.addSelector([], function(selector){
+					var main = $("<option />", {value:'all'}).html("Nigeria");
+					var big = $("<optgroup />", {'label':"Selector"}).html(main);
+					
+					var subdistricts = $("<optgroup />", {'label':"LGA"});
+					$(districts).each(function(){
+                        var opt = $("<option />", {value: this.id}).html(this.name)
+	                    subdistricts.append(opt);
+	                })
+	                selector.append(big);
+					selector.append(subdistricts);
+					
+					selector.val(district.id);
+					selector.change(function(){
+						if($(this).val()=='all') {
+							dashboard.setLocation("#/map");
+						} else {
+							dashboard.setLocation(urlForMapState({district: $(this).val()}));
+						}
+					});
+				});
+				this.divider();
+				this.addSelector(filters, function(selector){
+					selector.change(function(){
+						dashboard.setLocation(urlForMapState({
+							district: district,
+							filter: $(this).val()
+						}));
 					})
 				})
-			});
-	        this.title("Map");
-	    });
-		dashboard.get(urls.mapBy, function(){
-			try {
-				var ps=this.params.splat[0].split("/");
-				var _mainParam = ps[0].split(":")[0];
-				var pType = mapByOpts[ps[0].split(":")[0]];
-				var pVal = ps[0].split(":")[1];
-				if("undefined"==typeof pType) {
-					throw("Error: Bad Value for Map Option");
-				}
-				this.ensureMapScriptLoaded();
-				var cur = this.switchTo("map");
-				this.ensureMap($(">div", cur), defaultOpts, function(cmap){
-					cmap.setCenter(new google.maps.LatLng(NigeriaVals.mainLat, NigeriaVals.mainLng), 6);
-				});
-				this.title("Map by "+pType);
-//				MapKey.showSelection(pType);
-//				MapKey.create(cur);
-			} catch(e) {
-				this.redirect("#/map")
+				this.debug(mapState);
+			})
+		})
+		
+		
+		dashboard.get("#/map/:district/by/surveyor/?(:obj)?", function(){
+			var district = findDistrict(this.params['district']),
+				obj = this.params['obj'],
+				surveyor = findObj('surveyor', obj);
+
+			this.switchTo("map");
+			if(!surveyor) {
+				this.title("Map "+district.name+" by Surveyor")
+			} else {
+				this.title("Map "+district.name+" by Surveyor: "+surveyor)
 			}
+			mapState = changeMapState(mapState, {
+				scale: 'district',
+				district: district.name,
+				filter: 'surveyor',
+				xyz: surveyor
+			});
+			this.Map(function(){
+				this.mapCenter(district.GLatLng(), 8)
+				this.key({clear:true});
+				
+				this.addSelector([], function(selector){
+					var main = $("<option />", {value:'all'}).html("Nigeria");
+					var big = $("<optgroup />", {'label':"Selector"}).html(main);
+					
+					var subdistricts = $("<optgroup />", {'label':"LGA"});
+					$(districts).each(function(){
+                        var opt = $("<option />", {value: this.id}).html(this.name)
+	                    subdistricts.append(opt);
+	                })
+	                selector.append(big);
+					selector.append(subdistricts);
+					
+					selector.val(district.id);
+					selector.change(function(){
+						if($(this).val()=='all') {
+							dashboard.setLocation("#/map");
+						} else {
+							dashboard.setLocation(urlForMapState({district: $(this).val()}));
+						}
+					});
+				});
+				this.divider();
+				
+				this.addSelector(filters, function(selector){
+					selector.val(mapState.filter)
+					selector.change(function(){
+						dashboard.setLocation(urlForMapState({
+							district: district,
+							filter: $(this).val()
+						}));
+					})
+				});
+				
+				this.debug(mapState);
+			})
+		});
+		
+
+		dashboard.get("#/map/:district/by/survey/?(:obj)?", function(){
+			var district = findDistrict(this.params['district']),
+				obj = this.params['obj'],
+				survey = findObj('survey', obj);
+
+			this.switchTo("map");
+			if(!survey) {
+				this.title("Map "+district.name+" by Survey")
+			} else {
+				this.title("Map "+district.name+" by Survey: "+surveyor)
+			}
+			mapState = changeMapState(mapState, {
+				scale: 'district',
+				district: district.name,
+				filter: "survey",
+				xyz: survey
+			})
+			this.Map(function(){
+				this.mapCenter(district.GLatLng(), 8)
+				this.key({clear:true});
+				
+				
+				this.addSelector([], function(selector){
+					var main = $("<option />", {value:'all'}).html("Nigeria");
+					var big = $("<optgroup />", {'label':"Selector"}).html(main);
+					
+					var subdistricts = $("<optgroup />", {'label':"LGA"});
+					$(districts).each(function(){
+                        var opt = $("<option />", {value: this.id}).html(this.name)
+	                    subdistricts.append(opt);
+	                })
+	                selector.append(big);
+					selector.append(subdistricts);
+					
+					selector.val(district.id);
+					selector.change(function(){
+						if($(this).val()=='all') {
+							dashboard.setLocation("#/map");
+						} else {
+							dashboard.setLocation(urlForMapState({district: $(this).val()}));
+						}
+					});
+				});
+				this.divider();
+				
+				this.addSelector(filters, function(selector){
+					selector.val(mapState.filter)
+					
+					selector.change(function(){
+						dashboard.setLocation(urlForMapState({
+							district: district,
+							filter: $(this).val()
+						}));
+					})
+				});
+				
+				this.debug(mapState);
+				
+			})
+		});
+
+
+		dashboard.get("#/map/:district/by/date/?(:obj)?", function(){
+			var district = findDistrict(this.params['district']),
+				obj = this.params['obj'],
+				date = findObj('date', obj);
+
+			this.switchTo("map");
+			
+			if(!date) {
+				this.title("Map "+district.name+" by Date")
+			} else {
+				this.title("Map "+district.name+" by Date: "+surveyor)
+			}
+			
+			mapState = changeMapState(mapState, {
+				scale: 'district',
+				district: district.name,
+				filter: "date",
+				xyz: date
+			})
+			this.Map(function(){
+				this.mapCenter(district.GLatLng(), 8)
+				this.key({clear:true});
+				
+				this.addSelector([], function(selector){
+					var main = $("<option />", {value:'all'}).html("Republic of Nigeria");
+					var big = $("<optgroup />", {'label':"State View"}).html(main);
+					
+					var subdistricts = $("<optgroup />", {'label':"LGA View"});
+					$(districts).each(function(){
+                        var opt = $("<option />", {value: this.id}).html(this.name)
+	                    subdistricts.append(opt);
+	                })
+	                selector.append(big);
+					selector.append(subdistricts);
+					
+					selector.val(district.id);
+					selector.change(function(){
+						if($(this).val()=='all') {
+							dashboard.setLocation("#/map");
+						} else {
+							dashboard.setLocation(urlForMapState({district: $(this).val()}));
+						}
+					});
+				});
+				this.divider();
+				
+				this.addSelector(filters, function(selector){
+					selector.val(mapState.filter)
+					
+					selector.change(function(){
+						dashboard.setLocation(urlForMapState({
+							district: district,
+							filter: $(this).val()
+						}));
+					})
+				})
+				
+				
+				this.debug(mapState);
+			})
+		});
+
+
+
+
+		dashboard.get("#/map/survey/:survey_id", function(){
+			this.Map(function(){
+//				this.map.setCenter();
+			})
 		})
 	})();
+	function findActivityById(aid) {
+		var activityData = storage.get('activity').data;
+		for(var i in activityData) {
+			if(activityData[i].id==aid) {
+				return activityData[i];
+			}
+		}
+	}
 </script>
 
 <script type="text/javascript" charset="utf-8">
@@ -126,20 +424,10 @@ var SubmissionList, SubmissionPoint;
 	})
 	
 	function _SubmissionPoint(o){$.extend(this, o)}
-//	$.extend(_SubmissionPoint.prototype, {})
 	window.SubmissionList = _SubmissionList;
 })(jQuery);
 
-var AverageGPSInList = (function(Sl){
-	
-})
 /*--
-(function($){
-	function _SubmissionList(arr){
-	    this.points = $(arr).map(function(){return new _SubmissionPoint(this)});
-		this.length = this.points.length;
-	}
-	$.extend(_SubmissionList.prototype, {
 		sortBy: function(q){
 			return this.points.sort(function(a, b){
 				return a[q] < b[q] ? -1 : a[q] > b[q] ? 1 : 0
@@ -154,26 +442,6 @@ var AverageGPSInList = (function(Sl){
 			});
 			return _output;
 		},
-		toString: function(){
-			return "" + this.points.length + " submissions";
-		},
-		addToMap: function(map){
-		    $(this.points).each(function(){
-		        this.addToMap(map);
-		    })
-		},
-		prepare: function(){
-		    $(this.points).each(function(){this.prepareForGoogleMaps()})
-            return this;
-		}
-	})
-
-    function _SubmissionPoint(options){
-        this.images=[];
-        $.extend(this, options);
-    }
-    $.extend(_SubmissionPoint.prototype, {
-        prepareForGoogleMaps: function(){
             if(this.gps) {
                 this.gpoint = new google.maps.LatLng(this.gps.lat, this.gps.lng);
                 this.gmarker = new google.maps.Marker({
@@ -182,21 +450,9 @@ var AverageGPSInList = (function(Sl){
                     title: this.title
                 })
             }
-        },
         icon: function(){
             return '/site-media/images/geosilk/flag_'+markerImages[this.survey_type]+'.png';
-        },
-        hasGps: function() {
-            return "undefined"!==typeof this.gmarker
-        },
-        hasImage: function() {
-            return this.images.length > 0
-        },
-        addToMap: function(map) {
-            if(this.hasGps() && map._) {
-                this.gmarker.setMap(map._)
-                var _image = this.images[0],
-                    _title = this.title;
+
                 google.maps.event.addListener(this.gmarker, 'click', function(){
                     $.fancybox({
                         padding: 5,
@@ -205,9 +461,7 @@ var AverageGPSInList = (function(Sl){
                         transitionIn: 'elastic',
                         transitionOut: 'elastic'
                     })
-                })
-            }
-        },
+
         popupImage: function(){
             if(this.hasImage()) {
                 $.fancybox({
@@ -217,13 +471,6 @@ var AverageGPSInList = (function(Sl){
         			'transitionIn'	: 'elastic',
         			'transitionOut'	: 'elastic'
         		});
-            }
-        }
-    });
 
-
-    window.SubmissionList = _SubmissionList;
-    window.SubmissionPoint = _SubmissionPoint;
-})(jQuery);
 --*/
 </script>
