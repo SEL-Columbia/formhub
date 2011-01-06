@@ -1,0 +1,17 @@
+Why are there multiple spreadsheets for the same survey? Each
+spreadsheet comes from a different version of the survey. We are
+working towards combining these versions into the single spreadsheet.
+
+The first sheet in the spreadsheet contains the data collected, the
+second sheet gives the question text as it appeared on the phone for
+each variable.
+
+Why are there a bunch of columns for state and LGA? ODK Collect does
+not have a table lookup function, so we use a series of multiple
+choice questions to collect location information. The downside is we
+end up with a variable explosion. If we continue with this approach we
+will collapse these variables into a single column.
+
+We used the registration survey to keep track of which surveyor used
+which phone, and the bug report survey to keep track of any technical
+difficulties.
