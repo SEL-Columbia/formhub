@@ -2,3 +2,4 @@ Django==1.2.3
 Fabric==0.9.2
 django-mako==0.1.4pre
 xlwt==0.7.2
+Markdown==2.0.3

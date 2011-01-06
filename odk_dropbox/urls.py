@@ -11,4 +11,5 @@ urlpatterns = patterns('',
     url(r"^submission$", views.submission),
     url(r"^survey-list/?$", views.survey_list),
     url(r"^(?P<id_string>[^/]*)\.xls$", views.xls),
+    url(r"^content/(?P<topic>\w*)/?$", views.content),
 )

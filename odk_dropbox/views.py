@@ -8,6 +8,9 @@ from djangomako.shortcuts import render_to_response as mako_to_response
 from django.http import HttpResponse
 import xlwt
 import re
+from markdown import markdown
+import os
+import codecs
 from . import utils
 
 from .models import Form, InstanceImage, make_submission
@@ -87,3 +90,10 @@ def xls(request, id_string):
             ws.write(r, c, table[r][c])
 
     return xls_to_response(wb, re.sub("\s+", "_", id_string + ".xls"))
+
+def content(request, topic):
+    filedir = os.path.dirname(__file__)
+    filepath = os.path.join(filedir, "content", topic + ".mkdn")
+    f = codecs.open(filepath, mode="r", encoding="utf8")
+    text = f.read()
+    return HttpResponse(markdown(text))
