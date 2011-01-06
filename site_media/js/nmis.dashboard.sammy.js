@@ -369,7 +369,6 @@ var SammyMapLoaded,
         
         this.helper('SetMapElem', function(elem){gmapElem = $(elem)})
         this.helper('Map', function(cb){
-            var pointz = false;
             if(!loadFinished) {
                 var sammyObj = this;
                 gmapElem.bind('gmapLoaded', function(){
@@ -378,19 +377,6 @@ var SammyMapLoaded,
                     _map = gmap;
                     map.map = gmap;
                     cb.call(map);
-                    if(!pointz) {
-                        $(storage.get('activity').data).each(function(){
-                            if(this.gps && this.gps.lat) {
-                                var ll = new google.maps.LatLng(this.gps.lat, this.gps.lng);
-                                var pt = new google.maps.Marker({
-                                    position: ll,
-                                    title: "Title",
-                                    map: _map
-                                });
-                            }
-                        });
-                        pointz = true;
-                    }
                 });
             } else {
                 if(!gmap) {
@@ -399,19 +385,6 @@ var SammyMapLoaded,
                     _map = gmap;
                 }
                 cb.call(map);
-                if(!pointz) {
-                    $(storage.get('activity').data).each(function(){
-                        if(this.gps && this.gps.lat) {
-                            var ll = new google.maps.LatLng(this.gps.lat, this.gps.lng);
-                            var pt = new google.maps.Marker({
-                                position: ll,
-                                title: "Title",
-                                map: _map
-                            });
-                        }
-                    });
-                    pointz = true;
-                }
             }
             if(!loadStarted) {
                 $.getScript('http://maps.google.com/maps/api/js?sensor=false&callback=SammyMapLoaded');
