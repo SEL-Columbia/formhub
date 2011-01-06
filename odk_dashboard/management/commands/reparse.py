@@ -12,4 +12,5 @@ class Command(BaseCommand):
         models.ParsedInstance.objects.all().delete()
         print "Reparsings all instances"
         for i in Instance.objects.all():
-            models.parse(i)
+            models._parse("sent from reparse command",
+                          instance=i)
