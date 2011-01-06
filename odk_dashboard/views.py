@@ -14,15 +14,6 @@ def dashboard(request):
     info['table_types'] = simplejson.dumps(dimensions.keys())
     return render_to_response('dashboard.html', info)
 
-def csv_list():
-    list = []
-    for f in Form.objects.filter(active=True):
-        m = re.search(r"^([a-zA-Z]+)", f.id_string)
-        name = m.group(1)
-        if name!="Bug": list.append(name)
-    list.sort()
-    return list
-
 def recent_activity(request):
     info={}
     info['submissions'] = ParsedInstance.objects.all().order_by('-end')[0:50]
@@ -69,11 +60,6 @@ def frequency_table(request, rows, columns):
     info["column_headers"] = column_headers
 
     return shortcuts.render_to_response("table.html", info)
-
-def csv(request, name):
-    form = Form.objects.get(id_string=name)
-    table = utils.table(form)
-    return HttpResponse(utils.csv(table), mimetype="application/csv")
 
 def profiles_section(request):
     info = {'sectionname':'profiles'}
