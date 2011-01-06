@@ -13,6 +13,7 @@ from odk_dropbox.models import Instance
 from odk_dropbox import utils
 
 from treebeard.mp_tree import MP_Node
+import math
 
 class Phone(models.Model):
     device_id = models.CharField(max_length=32)
@@ -31,6 +32,22 @@ class GPS(models.Model):
     # might consider using self.__dict__
     def to_dict(self):
         return {'lat':self.latitude, 'lng':self.longitude, 'acc':self.accuracy}
+    
+    def closest_district(self):
+        districts = District.objects.filter(active=True)
+        min_val = None
+        district = None
+        for x in range(len(districts)):
+            if not district:
+                district = districts[x]
+                min_val = districts[x].ll_diff(self)
+            else:
+                mv = districts[x].ll_diff(self)
+                if min_val > mv:
+                    min_val = mv
+                    district = districts[x]
+        return district
+            
 
 class District(MP_Node):
     name = models.CharField(max_length=50)
@@ -41,6 +58,21 @@ class District(MP_Node):
     latlng_string = models.CharField(max_length=50)
     gps = models.ForeignKey(GPS, null=True, blank=True)
     
+    def ll_diff(self, gps):
+        ll = self.latlng()
+        lat_delta = ll['lat'] - gps.latitude
+        lng_delta = ll['lng'] - gps.longitude
+        return float(math.fabs(lat_delta) + math.fabs(lng_delta))
+    
+    def latlng(self):
+        try:
+            lat, lng = self.latlng_string.split(",")
+            o = {'lat': float(lat), 'lng': float(lng) }
+        except:
+            o = None
+        
+        return o
+        
     def kml_uri(self):
         if not self.kml_present:
             return None
