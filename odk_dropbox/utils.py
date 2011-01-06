@@ -103,8 +103,21 @@ def get_text_nodes(node):
             result += get_text_nodes(n)
         return result
 
-def get_variable_name(binding):
-    return binding.getAttribute("nodeset").split("/")[-1]
+def follow(element, path):
+    """
+    Path is an array of node names. Starting at the document
+    element we follow the path, returning the final node in the
+    path.
+    """
+    count = {}
+    for name in path.split("/"):
+        count[name] = 0
+        for child in element.childNodes:
+            if isinstance(child, Element) and child.tagName==name:
+                count[name] += 1
+                element = child
+        assert count[name]==1
+    return element
 
 class XMLParser(object):
     def __init__(self, x):
@@ -117,32 +130,24 @@ class XMLParser(object):
             self.doc = xml.dom.minidom.parse(x)
 
     def follow(self, path):
-        """
-        Path is an array of node names. Starting at the document
-        element we follow the path, returning the final node in the
-        path.
-        """
-        element = self.doc.documentElement
-        count = {}
-        for name in path.split("/"):
-            count[name] = 0
-            for child in element.childNodes:
-                if isinstance(child, Element) and child.tagName==name:
-                    count[name] += 1
-                    element = child
-            assert count[name]==1
-        return element
+        return follow(self.doc.documentElement, path)
 
 def get_text(node_list):
     text_nodes = [node for node in node_list if node.nodeType==node.TEXT_NODE]
     return " ".join([node.data for node in text_nodes])
+
+def get_nodeset(binding):
+    return binding.getAttribute("nodeset")
+
+def get_name(binding):
+    return get_nodeset(binding).split("/")[-1]
 
 class FormParser(XMLParser):
     def get_bindings(self):
         return self.doc.getElementsByTagName("bind")
 
     def get_variable_list(self):
-        return [get_variable_name(b) for b in self.get_bindings()]
+        return [get_name(b) for b in self.get_bindings()]
 
     def get_id_string(self):
         """
@@ -158,6 +163,26 @@ class FormParser(XMLParser):
     def get_title(self):
         title = self.follow("h:head/h:title")
         return get_text(title.childNodes)
+
+    supported_controls = ["input", "select1", "select", "upload"]
+
+    def get_control_dict(self):
+        def get_pairs(e):
+            result = []
+            if hasattr(e, "tagName") and e.tagName in self.supported_controls:
+                result.append( (e.getAttribute("ref"),
+                                get_text(follow(e, "label").childNodes)) )
+            if e.hasChildNodes:
+                for child in e.childNodes:
+                    result.extend(get_pairs(child))
+            return result
+        return dict(get_pairs(self.follow("h:body")))
+
+    def get_dictionary(self):
+        d = self.get_control_dict()
+        return [(get_name(b), d.get(get_nodeset(b),"")) for b in self.get_bindings()]
+
+
 
 def table(form):
     """Turn a list of dicts into a table."""
@@ -191,13 +216,6 @@ def collapse_columns(table, root):
                 result[-1].append(
                     u" ".join([row[j] for j in columns if row[j]!=u"n/a"])
                     )
-
-def csv(table):
-    csv = ""
-    for row in table:
-        csv += ",".join(['"' + cell + '"' for cell in row])
-        csv += "\n"
-    return csv
 
 from django.conf import settings
 from django.core.mail import mail_admins

@@ -6,6 +6,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response
 from djangomako.shortcuts import render_to_response as mako_to_response
 from django.http import HttpResponse
+import xlwt
+import re
+from . import utils
 
 from .models import Form, InstanceImage, make_submission
 
@@ -55,6 +58,32 @@ def survey_list(request):
                 form.id_string,
                 form.submission_count(),
                 form.date_of_last_submission(),
-                '<a href="/%s.csv">csv</a>' % form.id_string,
+                '<a href="/%s.xls">xls</a>' % form.id_string,
                 ])
     return mako_to_response("table2.html", {"rows" : rows})
+
+def xls_to_response(xls, fname):
+    response = HttpResponse(mimetype="application/ms-excel")
+    response['Content-Disposition'] = 'attachment; filename=%s' % fname
+    xls.save(response)
+    return response
+
+def xls(request, id_string):
+    form = Form.objects.get(id_string=id_string)
+    table = utils.table(form)
+
+    wb = xlwt.Workbook()
+    ws = wb.add_sheet("Data")
+    for r in range(len(table)):
+        for c in range(len(table[r])):
+            ws.write(r, c, table[r][c])
+
+    ws = wb.add_sheet("Dictionary")
+    parser = utils.FormParser(form.xml_file)
+    table = [("Variable Name", "Question Text")]
+    table.extend(parser.get_dictionary())
+    for r in range(len(table)):
+        for c in range(len(table[r])):
+            ws.write(r, c, table[r][c])
+
+    return xls_to_response(wb, re.sub("\s+", "_", id_string + ".xls"))
