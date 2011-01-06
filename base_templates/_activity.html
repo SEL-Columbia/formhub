@@ -1,8 +1,59 @@
 <p>Activity:</p>
+<table id="activity-list" class="fullw">
+	<thead>
+		<th>
+			Date
+		</th>
+		<th>
+			Title
+		</th>
+		<th>
+			Survey Type
+		</th>
+		<th>
+			Phone
+		</th>
+	</thead>
+</table>
+
+<script id="activityRow" type="text/x-jquery-tmpl">
+    <tr>
+		<td>
+			<a href="#/map/survey/${id}" title="View on map">
+				${date}
+			</a>
+		</td>
+		<td>${title}</td>
+		<td>${survey_type}</td>
+		<td>${phone}</td>
+	</tr>
+</script>
 
 <script type="text/javascript" charset="utf-8">
-	dashboard.get(urls.activity, function(context){
+	var activityTemplate = $('#activityRow').template();
+	$(function(){
+		$.tmpl(activityTemplate, storage.get('activity').data).appendTo('#activity-list')
+	})
+
+	dashboard.get("#/activity", function(context){
 		this.switchTo("activity");
         this.title("Activity");
     });
+
+
+	var Activities = (function(){
+		var activity = false;
+		function getActivity(){
+			if(!activity) {
+				activity = storage.get('activity').data;
+			}
+		}
+		
+		return {
+			bySite: function(){
+				
+			}
+		}
+	})()
+
 </script>
