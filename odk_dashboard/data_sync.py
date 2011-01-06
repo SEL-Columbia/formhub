@@ -9,25 +9,6 @@ from odk_dropbox.models import Form
 from .models import ParsedInstance, Phone
 import datetime
 
-def map_data(request, stamp):
-    """
-    Returns JSON with a stamp to ensure most recent data is sent.
-    pis = ParsedInstance.objects.exclude(location__gps=None)
-    for ps in pis:
-        pcur = {}
-        if ps.location.gps:
-            pcur['images'] = [x.image.url for x in ps.instance.images.all()]
-            pcur['phone'] = ps.phone.__unicode__()
-            pcur['date'] = ps.end.strftime("%Y-%m-%d %H:%M")
-            pcur['survey_type'] = ps.survey_type.name
-            pcur['gps'] = ps.location.gps.to_dict()
-            pcur['title'] = ps.survey_type.name
-        psubs.append(pcur)
-    cur_stamp = model_stamp(ParsedInstance)
-    """
-    psubs = []
-    return stamped_json_output(cur_stamp, psubs, True)
-
 def activity_list(request, stamp):
     if stamp_up_to_date(ParsedInstance, stamp):
         return HttpResponse(simplejson.dumps("OK"))
