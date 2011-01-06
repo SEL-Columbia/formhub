@@ -28,7 +28,7 @@
 		var row = this.params['row'],
 			col = this.params['col'],
 			freqTable = $("#freq-table");
-		$.get("/submission-counts-by-"+row+"-and-"+col, function(html){
+		$.get("/submission-counts/"+row+"/"+col, function(html){
 			var table = $(html);
 			table.addClass('ptable');
 			$('tr td', table).each(function(ct, elm){
