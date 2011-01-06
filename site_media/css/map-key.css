@@ -1,0 +1,17 @@
+.map-key-ww {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+.map-key-w {
+    margin: 8px;
+    padding: 8px 8px 8px 100px;
+}
+.map-key {
+    
+}
+
+td.empty-spacer div {
+    height: 25px;
+}

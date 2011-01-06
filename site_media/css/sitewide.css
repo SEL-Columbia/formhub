@@ -32,12 +32,14 @@ body {
     padding: 0 40px; }
 
 div#content .fwidth {
-    padding: 17px 40px;
+    padding: 0px;
 }
-
+ul#menu .fwidth > li:first-child {
+    margin-left: -10px;
+}
 div#header {
   position: relative;
-  height: 72px;
+  height: 30px;
   background-image: url("../images/header_repeat.png"); }
   div#header #logo {
     width: 313px;
@@ -57,33 +59,35 @@ div#header {
   div#header .language_select {
     bottom: 0px; }
   div#header .account_links {
-    top: 5px; }
+    top: 5px; margin: 0; }
 
 ul#menu {
   margin: 0;
   padding: 0;
   background-image: url("../images/menu_grad.png");
   background-repeat: repeat-x;
-  height: 39px; }
+  height: 30px; }
   ul#menu li {
     float: left;
     text-align: center;
-    width: 25%;
     display: block;
-    line-height: 39px; }
+    padding: 0 4px;
+    line-height: 30px; }
     ul#menu li a {
       display: block;
-      color: white;
-      font-size: 15px;
-      font-weight: bold;
+      color: #eee;
+      font-size: 14px;
+      font-weight: normal;
       text-decoration: none;
-      padding: 3px 10px;
-      margin: 5px;
+      padding: 1px 20px 2px;
+      margin: 2px 5px;
       -moz-border-radius: 6px;
       -webkit-border-radius: 6px;
       border: 2px solid transparent;
+      opacity: 0.85;
       line-height: 18px; }
-      body.profiles ul#menu li.profiles a, body.data ul#menu li.data a, body.view ul#menu li.view a, body.analysis ul#menu li.analysis a, ul#menu li a:hover {
+      ul#menu li.selected a, ul#menu li a:hover {
+        opacity: 1;
         background-image: url("../images/button_repeat.png");
         background-repeat: repeat-x;
         border: 2px solid #2d2d2d; }
@@ -96,4 +100,25 @@ div#footer {
 
 div.icontent {
     padding: 4px 12px;
+}
+
+#hlogo {
+	display: block;
+}
+#hlogo img {
+	border: 0 none;
+	margin: -3px 0;
+	height: 34px;
+}
+h2.title {
+	position: absolute;
+	left: 100px;
+	top: 4px;
+	font-size: 15px;
+	margin: 0;
+	color: #aaa;
+	font-weight: normal;
+}
+.subsection {
+	display: none;
 }

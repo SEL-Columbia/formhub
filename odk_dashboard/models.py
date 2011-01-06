@@ -12,6 +12,8 @@ from django.conf import settings
 from odk_dropbox.models import Instance
 from odk_dropbox import utils
 
+from treebeard.mp_tree import MP_Node
+
 class Phone(models.Model):
     device_id = models.CharField(max_length=32)
     most_recent_surveyor = \
@@ -29,6 +31,26 @@ class GPS(models.Model):
     # might consider using self.__dict__
     def to_dict(self):
         return {'lat':self.latitude, 'lng':self.longitude, 'acc':self.accuracy}
+
+class District(MP_Node):
+    name = models.CharField(max_length=50)
+    node_order_by = ['name']
+    nickname = models.CharField(max_length=50)
+    kml_present = models.BooleanField()
+    active = models.BooleanField()
+    latlng_string = models.CharField(max_length=50)
+    gps = models.ForeignKey(GPS, null=True, blank=True)
+    
+    def kml_uri(self):
+        if not self.kml_present:
+            return None
+        else:
+            return "%skml/%d.kml" % (settings.MEDIA_URL, self.id)
+    
+    def to_dict(self):
+        return {'name':self.name, 'state':self.get_parent().name, \
+                'coords':self.latlng_string, 'kml':self.kml_uri(), \
+                'id':self.id }
 
 class SurveyType(models.Model):
     name = models.CharField(max_length=32)
@@ -61,6 +83,21 @@ class ParsedInstance(models.Model):
         except:
             ident = self.phone.device_id
         return ident
+    
+    def title(self):
+        return "Title: %s" % self.survey_type.name
+    
+    def to_dict(self):
+        try:
+            gps = self.location.gps.to_dict()
+        except:
+            gps = False
+        
+        return {'images':[x.image.url for x in self.instance.images.all()], \
+                'phone': self.phone.__unicode__(), \
+                'date': self.end.strftime("%Y-%m-%d %H:%M"), \
+                'survey_type': self.survey_type.name, \
+                'gps': gps, 'id': self.id, 'title': self.title() }
 
 # For now every new registration creates a new surveyor, we need a
 # smart way to combine surveyors.

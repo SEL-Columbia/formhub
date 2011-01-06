@@ -1,0 +1,476 @@
+<div class="map-wrap">
+</div>
+<script type="text/javascript" charset="utf-8">
+	
+	var objs = {};
+	
+	objs.surveyor = [
+		{
+			name: 'bob',
+			id: 1
+		},
+		{
+			name: 'sven',
+			id: 2
+		}
+		]
+	
+	objs.survey = [
+		{
+			name: 'bob',
+			id: 1
+		},
+		{
+			name: 'steve',
+			id: 2
+		}
+		];
+	
+	objs.date = [
+		{
+			name: "10",
+			id: 1
+		},
+		{
+			name: "12-23-10",
+			id: 2
+		}
+		]
+	
+	function findObj(objType, obj) {
+		var result;
+		$(objs[objType]).each(function(){
+			if(this.id==obj) {
+				result = this
+			}
+		});
+		if(!result) {return null;}
+		return result;
+	}
+	
+	function filterPoints(district, objType, obj) {
+		return []
+	}
+	
+	var District = (function(){
+		function _District(data) {
+			$.extend(this, data);
+		}
+		_District.prototype.GLatLng = function(){
+			var ll = this.coords.split(",");
+			return new google.maps.LatLng(ll[0],ll[1]);
+		}
+		return _District;
+	})(jQuery)
+	
+	var districts = $({{districts|safe}}).map(function(){return new District(this)})
+	function findDistrict(did) {var result; $(districts).each(function(){if(did==this.id){result=this}}); return result;}
+	
+	var _map;
+	var filters = "survey surveyor date".split(" ")
+	var mapByOpts = {
+		lga: "LGA",
+		surveyor: "Surveyor",
+		survey_type: "Survey Type"
+	};
+	
+	function urlForMapState(hsh) {
+		var str = "#/map";
+		if(hsh.district) {
+			if(hsh.district.id) {
+				str+= "/"+hsh.district.id;
+			} else {
+				str+= "/"+hsh.district;
+			}
+		} else {
+			return str;
+		}
+		if(hsh.filter) {
+			str += "/by/"+hsh.filter
+		} else {
+			return str;
+		}
+		if(hsh.obj) {
+			str += "/"+hsh.obj;
+		}
+		return str;
+	}
+	
+	(function(){
+		var mapStorage = new Sammy.Store({name:'mapStorage',element:'#map',type:'local'}),
+			mapWrap = false,
+			mapState = {},
+			empty = (null==mapStorage.get('first'));
+		
+		function changeMapState(ms, opts) {
+			//temp
+			return $.extend(ms, opts);
+		}
+		
+		dashboard.setMapElem("#map > div");
+		
+		dashboard.get("#/map", function(context){			
+	        this.title("Map");
+			this.switchTo("map");
+			mapState = changeMapState(mapState, {
+				scale: 'country',
+				district: null,
+				filter: null
+			})
+			this.Map(function(){
+				this.nigeriaCenter();
+
+				this.key({clear:true});
+				this.addSelector([], function(selector){
+					var main = $("<option />", {value:'all'}).html("Nigeria");
+					var big = $("<optgroup />", {'label':"Selector"}).html(main);
+					
+					var subdistricts = $("<optgroup />", {'label':"LGA"});
+					$(districts).each(function(){
+                        var opt = $("<option />", {value: this.id}).html(this.name)
+	                    subdistricts.append(opt);
+	                })
+	                selector.append(big);
+					selector.append(subdistricts);
+					
+					selector.val('all');
+					selector.change(function(){
+						if($(this).val()=='all') {
+							dashboard.setLocation("#/map");
+						} else {
+							dashboard.setLocation(urlForMapState({district: $(this).val()}));
+						}
+					});
+				});
+								
+				this.debug(mapState);
+			})
+	    });
+		
+		dashboard.get("#/map/:district", function(){
+			var district = findDistrict(this.params['district']);
+			
+			this.title("Map "+district.name);
+			this.switchTo("map");
+			
+			mapState = changeMapState(mapState, {
+				scale: 'district',
+				district: district.name,
+				filter: null
+			});
+
+			this.Map(function(){
+				this.mapCenter(district.GLatLng(), 8)
+				this.key({clear:true});
+				
+				this.addSelector([], function(selector){
+					var main = $("<option />", {value:'all'}).html("Nigeria");
+					var big = $("<optgroup />", {'label':"Selector"}).html(main);
+					
+					var subdistricts = $("<optgroup />", {'label':"LGA"});
+					$(districts).each(function(){
+                        var opt = $("<option />", {value: this.id}).html(this.name)
+	                    subdistricts.append(opt);
+	                })
+	                selector.append(big);
+					selector.append(subdistricts);
+					
+					selector.val(district.id);
+					selector.change(function(){
+						if($(this).val()=='all') {
+							dashboard.setLocation("#/map");
+						} else {
+							dashboard.setLocation(urlForMapState({district: $(this).val()}));
+						}
+					});
+				});
+				this.divider();
+				this.addSelector(filters, function(selector){
+					selector.change(function(){
+						dashboard.setLocation(urlForMapState({
+							district: district,
+							filter: $(this).val()
+						}));
+					})
+				})
+				this.debug(mapState);
+			})
+		})
+		
+		
+		dashboard.get("#/map/:district/by/surveyor/?(:obj)?", function(){
+			var district = findDistrict(this.params['district']),
+				obj = this.params['obj'],
+				surveyor = findObj('surveyor', obj);
+
+			this.switchTo("map");
+			if(!surveyor) {
+				this.title("Map "+district.name+" by Surveyor")
+			} else {
+				this.title("Map "+district.name+" by Surveyor: "+surveyor)
+			}
+			mapState = changeMapState(mapState, {
+				scale: 'district',
+				district: district.name,
+				filter: 'surveyor',
+				xyz: surveyor
+			});
+			this.Map(function(){
+				this.mapCenter(district.GLatLng(), 8)
+				this.key({clear:true});
+				
+				this.addSelector([], function(selector){
+					var main = $("<option />", {value:'all'}).html("Nigeria");
+					var big = $("<optgroup />", {'label':"Selector"}).html(main);
+					
+					var subdistricts = $("<optgroup />", {'label':"LGA"});
+					$(districts).each(function(){
+                        var opt = $("<option />", {value: this.id}).html(this.name)
+	                    subdistricts.append(opt);
+	                })
+	                selector.append(big);
+					selector.append(subdistricts);
+					
+					selector.val(district.id);
+					selector.change(function(){
+						if($(this).val()=='all') {
+							dashboard.setLocation("#/map");
+						} else {
+							dashboard.setLocation(urlForMapState({district: $(this).val()}));
+						}
+					});
+				});
+				this.divider();
+				
+				this.addSelector(filters, function(selector){
+					selector.val(mapState.filter)
+					selector.change(function(){
+						dashboard.setLocation(urlForMapState({
+							district: district,
+							filter: $(this).val()
+						}));
+					})
+				});
+				
+				this.debug(mapState);
+			})
+		});
+		
+
+		dashboard.get("#/map/:district/by/survey/?(:obj)?", function(){
+			var district = findDistrict(this.params['district']),
+				obj = this.params['obj'],
+				survey = findObj('survey', obj);
+
+			this.switchTo("map");
+			if(!survey) {
+				this.title("Map "+district.name+" by Survey")
+			} else {
+				this.title("Map "+district.name+" by Survey: "+surveyor)
+			}
+			mapState = changeMapState(mapState, {
+				scale: 'district',
+				district: district.name,
+				filter: "survey",
+				xyz: survey
+			})
+			this.Map(function(){
+				this.mapCenter(district.GLatLng(), 8)
+				this.key({clear:true});
+				
+				
+				this.addSelector([], function(selector){
+					var main = $("<option />", {value:'all'}).html("Nigeria");
+					var big = $("<optgroup />", {'label':"Selector"}).html(main);
+					
+					var subdistricts = $("<optgroup />", {'label':"LGA"});
+					$(districts).each(function(){
+                        var opt = $("<option />", {value: this.id}).html(this.name)
+	                    subdistricts.append(opt);
+	                })
+	                selector.append(big);
+					selector.append(subdistricts);
+					
+					selector.val(district.id);
+					selector.change(function(){
+						if($(this).val()=='all') {
+							dashboard.setLocation("#/map");
+						} else {
+							dashboard.setLocation(urlForMapState({district: $(this).val()}));
+						}
+					});
+				});
+				this.divider();
+				
+				this.addSelector(filters, function(selector){
+					selector.val(mapState.filter)
+					
+					selector.change(function(){
+						dashboard.setLocation(urlForMapState({
+							district: district,
+							filter: $(this).val()
+						}));
+					})
+				});
+				
+				this.debug(mapState);
+				
+			})
+		});
+
+
+		dashboard.get("#/map/:district/by/date/?(:obj)?", function(){
+			var district = findDistrict(this.params['district']),
+				obj = this.params['obj'],
+				date = findObj('date', obj);
+
+			this.switchTo("map");
+			
+			if(!date) {
+				this.title("Map "+district.name+" by Date")
+			} else {
+				this.title("Map "+district.name+" by Date: "+surveyor)
+			}
+			
+			mapState = changeMapState(mapState, {
+				scale: 'district',
+				district: district.name,
+				filter: "date",
+				xyz: date
+			})
+			this.Map(function(){
+				this.mapCenter(district.GLatLng(), 8)
+				this.key({clear:true});
+				
+				this.addSelector([], function(selector){
+					var main = $("<option />", {value:'all'}).html("Republic of Nigeria");
+					var big = $("<optgroup />", {'label':"State View"}).html(main);
+					
+					var subdistricts = $("<optgroup />", {'label':"LGA View"});
+					$(districts).each(function(){
+                        var opt = $("<option />", {value: this.id}).html(this.name)
+	                    subdistricts.append(opt);
+	                })
+	                selector.append(big);
+					selector.append(subdistricts);
+					
+					selector.val(district.id);
+					selector.change(function(){
+						if($(this).val()=='all') {
+							dashboard.setLocation("#/map");
+						} else {
+							dashboard.setLocation(urlForMapState({district: $(this).val()}));
+						}
+					});
+				});
+				this.divider();
+				
+				this.addSelector(filters, function(selector){
+					selector.val(mapState.filter)
+					
+					selector.change(function(){
+						dashboard.setLocation(urlForMapState({
+							district: district,
+							filter: $(this).val()
+						}));
+					})
+				})
+				
+				
+				this.debug(mapState);
+			})
+		});
+
+
+
+
+		dashboard.get("#/map/survey/:survey_id", function(){
+			this.Map(function(){
+//				this.map.setCenter();
+			})
+		})
+	})();
+	function findActivityById(aid) {
+		var activityData = storage.get('activity').data;
+		for(var i in activityData) {
+			if(activityData[i].id==aid) {
+				return activityData[i];
+			}
+		}
+	}
+</script>
+
+<script type="text/javascript" charset="utf-8">
+/*-- 
+- This structure works, for now.
+--*/
+var SubmissionList, SubmissionPoint;
+(function($){
+	function _SubmissionList(arr){
+		this.addPoints(arr)
+	}
+	_SubmissionList.prototype = new Array();
+	$.extend(_SubmissionList.prototype, {
+		addPoint: function(point){
+			if(point instanceof _SubmissionPoint) { this.push(point)
+			} else {
+				this.push(new _SubmissionPoint(point))
+			}
+		},
+		addPoints: function(points){
+			var _Sl = this;
+			$(points).each(function(){_Sl.addPoint(this)})
+		}
+	})
+	
+	function _SubmissionPoint(o){$.extend(this, o)}
+	window.SubmissionList = _SubmissionList;
+})(jQuery);
+
+/*--
+		sortBy: function(q){
+			return this.points.sort(function(a, b){
+				return a[q] < b[q] ? -1 : a[q] > b[q] ? 1 : 0
+			})
+		},
+		groupBy: function(q){
+			var _k, _output = {};
+			$(this.points).each(function(){
+				_k = String(this[q]);
+				if(typeof(_output[_k])=='undefined') {_output[_k]=[]}
+				_output[_k].push(this);
+			});
+			return _output;
+		},
+            if(this.gps) {
+                this.gpoint = new google.maps.LatLng(this.gps.lat, this.gps.lng);
+                this.gmarker = new google.maps.Marker({
+                    position: this.gpoint,
+                    icon: this.icon(),
+                    title: this.title
+                })
+            }
+        icon: function(){
+            return '/site-media/images/geosilk/flag_'+markerImages[this.survey_type]+'.png';
+
+                google.maps.event.addListener(this.gmarker, 'click', function(){
+                    $.fancybox({
+                        padding: 5,
+                        href: _image,
+                        title: _title,
+                        transitionIn: 'elastic',
+                        transitionOut: 'elastic'
+                    })
+
+        popupImage: function(){
+            if(this.hasImage()) {
+                $.fancybox({
+        			'padding'		: 5,
+        			'href'			: this.images[0],
+        			'title'   		: this.title,
+        			'transitionIn'	: 'elastic',
+        			'transitionOut'	: 'elastic'
+        		});
+
+--*/
+</script>

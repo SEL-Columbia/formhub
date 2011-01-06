@@ -1,100 +1,149 @@
-{% extends 'base.html' %}
-{% block title %}
-Dashboard
-{% endblock %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
 
-{% block htitle %}
-Dashboard
-{% endblock %}
-
-{% block content %}
-<div class="right-content" id="main">
-	<div class="iwrap">
-	<h1 class="sn-title">
-	  Dashboard
-	</h1>
-	<div class="content-wrap">
-		<p>Select rows and columns for the frequency table:</p>
-		<div id="freq-table-selector">
-			<table border="0" cellspacing="5" cellpadding="5">
-				<tr>
-					<th>Rows</th>
-					<th>Columns</th>
-				</tr>
-				<tr>
-					<td><select id="freq-rows"></select></td>
-					<td><select id="freq-cols"></select></td>
-					<td><a href="#/" class="button" id="get-table">Submit</a></td>
-				</tr>
-			</table>
-			<div id="freq-table"></div>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Baseline Data Collection : {% block title %}{% endblock %}</title>
+	<script type="text/javascript" src="/site-media/js/jquery-1.4.4-min.js"></script>
+	<script type="text/javascript" src="/site-media/jquery-ui/jquery-ui-1.8.7.custom.min.js"></script>
+	<script type="text/javascript" src="/site-media/js/jquery.buildin.js"></script>
+	<script type="text/javascript" src="/site-media/js/jquery.tmpl.min.js"></script>
+	<script type="text/javascript" src="/site-media/js/sammy-latest.min.js"></script>
+	<script type="text/javascript" src="/site-media/js/sammy.extensions.js"></script>
+	<script type="text/javascript" src="/site-media/js/nmis.dashboard.sammy.js"></script>
+	<link rel="stylesheet" href="/site-media/css/sitewide.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
+	<link rel="stylesheet" href="/site-media/css/map-key.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
+	<link rel="stylesheet" href="/site-media/css/tables.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
+	<link rel="stylesheet" href="/site-media/css/generated-donotedit.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
+	<link rel="stylesheet" href="/site-media/jquery-ui/jquery-ui-1.8.7.custom.css" type="text/css" media="screen" title="Sitewide" charset="utf-8" />
+	<style type="text/css" media="screen">
+		table.fullw {
+			width: 100%;
+		}
+		.table-spacer {
+			height: 16px;
+			width:1px;
+			border-left: 1px dotted #888;
+		}
+	</style>
+</head>
+<body class="nmis">
+	<div id="header">
+		<div class="fwidth">
+			<a href="/#/" id="hlogo"><img src="/site-media/images/nmis_pilot.png" /></a>
+			<h2 class="title">Baseline Data Collection &raquo; <span id="page-title">Dashboard</span></h2>
+		<div class="account_links">
+			<a href="/admin">Admin</a>
+		</div>
+		</div>
+	</div>
+	<ul id="menu">
+		<div class="fwidth">
+		</div>
+	</ul>
+	<div id="content">
+		<div class="fwidth">
+			<div class="full-content sliding" id="main">
+				<div class="iwrap" id="dashboard">
+					<div class="iiwrap">
+					<p>Dashboard</p>
+					<ul>
+					</ul>
+					<ul class="dashboard_stats"></ul>
+					</div>
+				</div>
+				<div class="iwrap" id="activity">
+					<div class="iiwrap">
+						{% include '_activity.html' %}
+					</div>
+				</div>
+				<div class="iwrap" id="frequency-tables">
+					<div class="iiwrap">
+						{% include '_frequency_table.html' %}
+					</div>
+				</div>
+				<div class="iwrap" id="map">
+					<div class="iiwrap">
+						{% include '_map.html' %}
+					</div>
+				</div>
+				<div style="display:none" class="mapkey">
+					<a href="#" class="dontChangePage loadDistricts">Load LGA District Files</a>
+				</div>
+			</div>
 		</div>
 	</div>
 	<script type="text/javascript" charset="utf-8">
-		$('.button').button();
-		var app = $.sammy('#main', function(){
-			this.get("#/", function(){
-			});
-			this.get('#/frequency/:row/:col', function(context){
-				var row = this.params['row'],
-					col = this.params['col'],
-					freqTable = $("#freq-table");
-				
-				$.get("/submission-counts/"+row+"/"+col, function(html){
-					var table = $(html);
-					table.addClass('ptable');
-					$('tr td', table).each(function(ct, elm){
-						var td = $(elm);
-						if(td.index()==0) {
-							td.addClass('rname');
-						} else {
-							td.addClass('centered data');
-							if(td.text()!=="") {
-								td.wrapInner("<div class='dwrap' />")
-							}
-						}
-					});
-					$('tr td:first-child', table).removeClass('centered').addClass('rname');
-					freqTable.html(table);
-				});
-				return false;
-			});
-		});
-		
-		$(function(){
-			app.run("#/");
+	$('body').delegate('.dontChangePage', 'click', function(evt){
+		evt.preventDefault();
+	})
+	dashboard.activateSwitchTo(".full-content.sliding");
+
+	var DashboardDebug = (function(){
+		return {
+			listInfo: function(list){
+				var li = $("<li />").html("There are "+list.length+" entries.")
+				$('.dashboard_stats').append(li)
+			}
+		}
+	})()
+	
+	var ActivityList, ActivityPoint;
+	(function($){
+		function _ActivityList(arr){
+			this.addPoints(arr)
+		}
+		_ActivityList.prototype = new Array();
+		$.extend(_ActivityList.prototype, {
+			addPoint: function(point){
+				if(point instanceof _ActivityPoint) { this.push(point)
+				} else {
+					this.push(new _ActivityPoint(point))
+				}
+			},
+			addPoints: function(points){
+				var _Sl = this;
+				$(points).each(function(){_Sl.addPoint(this)})
+				DashboardDebug.listInfo(this);
+			}
 		})
 
-		function getFrequencyTable(row, col) {
-			console.log(row, col);
-			app.redirect("#/frequency/"+row+"/"+col);
-		}
-		
-		(function($, rowSelect, colSelect, submit, tableTypes){
-			$.each(tableTypes, function(count, str){
-				var _opt = $("<option />").html(str)
-				rowSelect.append(_opt.clone());
-				colSelect.append(_opt.clone());
-			});
-			colSelect.attr('disabled', true)
-			rowSelect.change(function(){
-				var selected = this.value;
-				colSelect.empty();
-				$.each(tableTypes, function(ct, str){
-					if(str!==selected) {
-						colSelect.append($("<option />").html(str));
-					}
+		function _ActivityPoint(o){$.extend(this, o)}
+		window.ActivityList = _ActivityList;
+	})(jQuery);
+	
+//		var ActivityStorage = (function(){
+			var storage = new Sammy.Store({name:'activity',element:'#content',type:'local'});
+			var _stamp = false;
+			
+			var _list;
+			
+			function fetchActivity(stamp){
+				var stamp = (typeof(stamp)=='undefined') ? "" : stamp;
+							 
+				var url = "/data/activity/"+stamp;
+				$.getJSON(url, function(data){
+					storage.set('activity', data);
+					storage.set('activity_stamp', [data.stamp]);
+					_list = new ActivityList(data.data);
 				});
-				colSelect.attr('disabled', false);
-			});
-			colSelect.change(function(){
-				var sCol = this.value;
-				var sRow = rowSelect.val();
-				
-				$('#get-table').attr('href', '#/frequency/'+sRow+'/'+sCol);
+			}
+			var clearStorageLink = $("<a />", {href:'#'}).html("Clear Storage");
+			clearStorageLink.click(function(evt){
+				storage.clear('activity');
+				storage.clear('activity_stamp');
+				evt.preventDefault();
 			})
-		})(jQuery, $('#freq-rows'), $('#freq-cols'), $('#freq-submit'), {{table_types|safe}})
-		
+			$('.account_links').append(clearStorageLink)
+			if(!storage.exists('activity')) {
+				fetchActivity();
+			} else {
+				storage.get('activity')
+			}
+//		})()
+		$('.button').button();
+		SetResizer(jQuery, ".iiwrap", "#header, #menu", (16+24))
 	</script>
-</div>
-{% endblock %}
+</body>
+</html>
