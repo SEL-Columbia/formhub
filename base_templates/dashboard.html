@@ -127,6 +127,7 @@
 					storage.set('activity', data);
 					storage.set('activity_stamp', [data.stamp]);
 					_list = new ActivityList(data.data);
+					$('#main').trigger('activity-data-load');
 				});
 			}
 			var clearStorageLink = $("<a />", {href:'#'}).html("Clear Storage");
@@ -139,6 +140,7 @@
 			if(!storage.exists('activity')) {
 				fetchActivity();
 			} else {
+				$('#main').trigger('activity-data-load');
 				storage.get('activity')
 			}
 //		})()

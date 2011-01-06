@@ -31,7 +31,8 @@
 
 <script type="text/javascript" charset="utf-8">
 	var activityTemplate = $('#activityRow').template();
-	$(function(){
+	
+	$('#main').bind('activity-data-load', function(){
 		$.tmpl(activityTemplate, storage.get('activity').data).appendTo('#activity-list')
 	})
 
