@@ -4,3 +4,4 @@ django-mako==0.1.4pre
 xlwt==0.7.2
 Markdown==2.0.3
 django-treebeard==1.61
+South==0.7.3
