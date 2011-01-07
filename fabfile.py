@@ -75,9 +75,14 @@ def deploy():
         if not console.confirm('Are you sure you want to deploy production?',
                                default=False):
             utils.abort('Production deployment aborted.')
-
+    
+    install_pip_requirements()
     with cd(env.code_root):
         run("git pull origin %(branch_name)s" % env)
+
+def install_pip_requirements():
+    with cd(env.code_root):
+        run("pip install -r requirements.txt")
 
 def restart_wsgi():
     """ touch wsgi file to trigger reload """
