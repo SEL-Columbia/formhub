@@ -96,4 +96,5 @@ def content(request, topic):
     filepath = os.path.join(filedir, "content", topic + ".mkdn")
     f = codecs.open(filepath, mode="r", encoding="utf8")
     text = f.read()
+    f.close()
     return HttpResponse(markdown(text))
