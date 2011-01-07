@@ -23,15 +23,10 @@ Installation
 
     $ sudo apt-get install python-dev
 
-   Install fabric
+6. Install all the requirements including fabric
 
-    $ pip install fabric
+    $ pip install -r requirements.txt
 
-   Also install Django (we might want to specify version numbers).
+7. Copy example settings and edit them appropriately
 
-    $ pip install django
-
-6. Run fab file within nmis directory
-
-    $ cd nmis
-    $ fab setup
+    $ cp custom_settings_example.py custom_settings.py
