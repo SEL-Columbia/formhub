@@ -1,3 +1,4 @@
+import os
 from custom_settings import *
 
 MANAGERS = ADMINS
@@ -27,6 +28,9 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'nmis.urls'
+
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+MEDIA_ROOT  = '%s/site_media/' % PROJECT_ROOT
 
 TEMPLATE_DIRS = (
     "%s/base_templates/" % PROJECT_ROOT
