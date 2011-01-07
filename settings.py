@@ -42,10 +42,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
+    'django.contrib.admin',
+    'south',
+    'eav',
 
     'odk_dashboard',
     'odk_dropbox',
-#    'nmis_analysis',
-    'django.contrib.admin',
-    'south',
 )
