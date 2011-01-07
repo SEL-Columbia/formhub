@@ -10,6 +10,10 @@ USE_L10N = True
 
 ADMIN_MEDIA_PREFIX = '/media/'
 
+# settings for user authentication
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'f6h^bz8&0+ad@+qsntr)_onhx2(y^^u%$434byw3l^q!*n078v'
 
