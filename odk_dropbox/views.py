@@ -3,6 +3,7 @@
 
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render_to_response
 from djangomako.shortcuts import render_to_response as mako_to_response
 from django.http import HttpResponse
@@ -71,6 +72,7 @@ def xls_to_response(xls, fname):
     xls.save(response)
     return response
 
+@permission_required("auth.read_all_data")
 def xls(request, id_string):
     form = Form.objects.get(id_string=id_string)
     table = utils.table(form)
@@ -96,4 +98,5 @@ def content(request, topic):
     filepath = os.path.join(filedir, "content", topic + ".mkdn")
     f = codecs.open(filepath, mode="r", encoding="utf8")
     text = f.read()
+    f.close()
     return HttpResponse(markdown(text))

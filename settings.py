@@ -1,3 +1,4 @@
+import os
 from custom_settings import *
 
 MANAGERS = ADMINS
@@ -8,6 +9,13 @@ USE_I18N = True
 USE_L10N = True
 
 ADMIN_MEDIA_PREFIX = '/media/'
+
+# settings for user authentication
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+
+# user registration settings
+ACCOUNT_ACTIVATION_DAYS = 1
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'f6h^bz8&0+ad@+qsntr)_onhx2(y^^u%$434byw3l^q!*n078v'
@@ -28,6 +36,9 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'nmis.urls'
 
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+MEDIA_ROOT  = '%s/site_media/' % PROJECT_ROOT
+
 TEMPLATE_DIRS = (
     "%s/base_templates/" % PROJECT_ROOT
 )
@@ -38,9 +49,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
+    'django.contrib.admin',
+    'south',
+    'eav',
+    'registration',
 
     'odk_dashboard',
     'odk_dropbox',
-#    'nmis_analysis',
-    'django.contrib.admin',
 )

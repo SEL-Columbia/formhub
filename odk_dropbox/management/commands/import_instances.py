@@ -27,3 +27,7 @@ class Command(BaseCommand):
                                       content_type="image/jpeg")
                     )
             models.make_submission(xml_file, images)
+
+            # close the files
+            # xml_file.close()
+            for i in images: i.close()

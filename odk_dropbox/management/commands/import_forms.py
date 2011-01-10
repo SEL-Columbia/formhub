@@ -22,3 +22,4 @@ class Command(BaseCommand):
                     content_type="text/xml"
                     )
                 models.Form.objects.create(xml_file=xml_file, active=True)
+                xml_file.close()

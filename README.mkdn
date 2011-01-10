@@ -23,15 +23,12 @@ Installation
 
     $ sudo apt-get install python-dev
 
-   Install fabric
+   sudo apt-get install sendmail
 
-    $ pip install fabric
+6. Install all the requirements including fabric
 
-   Also install Django (we might want to specify version numbers).
+    $ pip install -r requirements.txt
 
-    $ pip install django
+7. Copy example settings and edit them appropriately
 
-6. Run fab file within nmis directory
-
-    $ cd nmis
-    $ fab setup
+    $ cp custom_settings_example.py custom_settings.py
