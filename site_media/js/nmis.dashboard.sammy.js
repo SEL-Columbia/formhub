@@ -1,3 +1,53 @@
+function Mappable(){}
+Mappable.prototype.showMapPoint = function() {
+	if(!this.mapPoint) {
+		var ll = new google.maps.LatLng(this.gps.lat, this.gps.lng)
+		this.mapPoint = new google.maps.Marker({
+			title: this.title,
+			position: ll,
+			map: _map,
+			icon: this.icon()
+		});
+	}
+	this.mapPoint.setVisible(true)
+}
+Mappable.prototype.flagColor = 'blue';
+var flagColors = "blue green orange pink purple red yellow".split(" ");
+Mappable.prototype.icon = function(){
+    var flagImage = "/site-media/images/geosilk/flag_"+this.flagColor+".png";
+//    console.log(flagImage);
+    return flagImage;
+	return "http://thydzik.com/thydzikGoogleMap/markerlink.php?text="+this.iconText+"&color="+this.iconColor;
+}
+Mappable.prototype.setFlagColor = function(color) {
+    if(this.flagColor==color) {
+        return;
+    }
+    if(flagColors.indexOf(color)!==-1) {
+        this.flagColor = color;
+    } else {
+        this.flagColor = "yellow"
+    }
+    this.updateIcon();
+//    if(!this.flagColor) {
+//        console.log("No flag color "+color)
+//        this.flagColor = "yellow";
+//    }
+}
+Mappable.prototype.updateIcon = function(){
+    if(this.mapPoint) {
+        this.mapPoint.setIcon(this.icon())
+    }
+}
+Mappable.prototype.iconText = "1";
+Mappable.prototype.iconColor = "ff0000";
+Mappable.prototype.hideMapPoint = function(){
+    if(this.mapPoint) {
+    	this.mapPoint.setVisible(false)
+    }
+}
+
+
 var SetResizer = (function($, resizeSelector, excludeSelector, extraPadding){
 	var resizeElem = $(resizeSelector),
 		excludeElem = $(excludeSelector);
@@ -138,7 +188,6 @@ var SetResizer = (function($, resizeSelector, excludeSelector, extraPadding){
 
 })(jQuery);
 
-
 (function($) {
   Sammy = Sammy || {};
   Sammy.Title = function() {
@@ -214,6 +263,8 @@ var SetResizer = (function($, resizeSelector, excludeSelector, extraPadding){
 
 var MapKey = (function(){
 	var mapKeyElem,
+	    mapKeySelectors,
+	    mapTypeSelectors,
 		mapPar;
 	return {
 		create: function(){
@@ -228,8 +279,40 @@ var MapKey = (function(){
 		    
 		    this.tr = $("<tr />");
 		    this.tr.append($("<td />", {'class':'empty-spacer'}).html("<div />"));
+
+		    mapKeySelectors=$('<td />', {'class':'selectors'});
+	        this.tr.append(mapKeySelectors);
+	        
+	        this.appendMapTypeSelector();
+            
 		    $("tbody", odiv).append(this.tr);
 			return odiv;
+		},
+		appendMapTypeSelector: function(){
+		    mapTypeSelectors = $("<td />", {'id':'map-type-choices'})
+		    var terrainButton = $("<a href='#'>Terrain</a>");
+            terrainButton.click(function(evt){
+                _map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+                evt.preventDefault();
+            });
+            var satelliteButton = $("<a href='#'>Satellite</a>");
+            satelliteButton.click(function(evt){
+                _map.setMapTypeId("satellite")
+                evt.preventDefault();
+            });
+            var mapButton = $("<a href='#'>Map</a>");
+            mapButton.click(function(evt){
+                _map.setMapTypeId('roadmap')
+                evt.preventDefault();
+            });
+            var tDiv = $("<div />").css({'float':'right'});
+            tDiv.append(terrainButton).append(satelliteButton).append(mapButton);
+            mapTypeSelectors.append(tDiv);
+            $('a', mapTypeSelectors).button().find('span.ui-button-text').css({'padding':'1px 5px'});
+            this.tr.append(mapTypeSelectors);
+		},
+		selectors: function(){
+		    return mapKeySelectors;
 		},
 		empty: function(){
 		    this.tr.empty();
@@ -282,6 +365,8 @@ var MapKey = (function(){
 
 var SammyMapLoaded,
     _map;
+    
+var zz;
 
 (function(){
     Sammy.GoogleMaps = function(){
@@ -301,11 +386,26 @@ var SammyMapLoaded,
             test: function(){
                 console.log("Hello", this);
             },
-            mapCenter: function(center, zoom){
+            mapCenter: function(center, opts){
+                var zoom = opts.zoom;
+                if(opts.bounds) {
+                    var ne = new google.maps.LatLng(opts.bounds.lat.min, opts.bounds.lng.min);
+                    var sw = new google.maps.LatLng(opts.bounds.lat.max, opts.bounds.lng.max);
+                    var bounds = new google.maps.LatLngBounds(sw, ne);
+                }
                 this.map.setCenter(center);
                 if(zoom) {
                     this.map.setZoom(zoom)
                 }
+            },
+            displayPoints: function(arr){
+                $(_list).each(function(){
+                    if(arr.indexOf(this)==-1) {
+                        this.hideMapPoint();
+                    } else {
+                        this.showMapPoint();
+                    }
+                });
             },
             key: function(opts){
                 if(!this.mapKey) {
@@ -313,10 +413,12 @@ var SammyMapLoaded,
                     gmapElem.parent().append(this.mapKey)
                 }
                 if(opts && opts.clear) {
-                    MapKey.empty();
+                    MapKey.selectors().empty();
                 }
             },
-            addSelector: function(choices, fn){
+            addSelector: function(opts, fn){
+                var choices = opts.list;
+                var text = opts.text;
                 var selector = $("<select />");
                 $(choices).each(function(){
                     if(this.name) {
@@ -326,7 +428,9 @@ var SammyMapLoaded,
                     }
                     selector.append(opt);
                 })
-                MapKey.insert(selector);
+                var selectorDiv = $("<div />", {'class':'selector-wrap'}).html(text);
+                selectorDiv.append(selector);
+                MapKey.selectors().append(selectorDiv);
                 fn.call(this, selector);
             },
             divider: function(){
@@ -353,6 +457,17 @@ var SammyMapLoaded,
                 }
 //                MapKey.insert(str);
             },
+            setMapCenter: function(lat, lng, opts){
+                var opts = opts || {};
+                var zoom = opts.zoom;
+                this.map.setCenter(new google.maps.LatLng(lat, lng))
+                if(opts.range) {
+                    var ne = new google.maps.LatLng(opts.range.lat.min, opts.range.lng.max);
+                    var sw = new google.maps.LatLng(opts.range.lat.max, opts.range.lng.min);
+                    var bounds = new google.maps.LatLngBounds(sw, ne);
+                    this.map.fitBounds(bounds);
+                }
+            },
             nigeriaCenter: function(){
                 this.map.setZoom(6);
                 this.map.setCenter(new google.maps.LatLng(9.243092645104804, 7.9156494140625))
@@ -373,14 +488,14 @@ var SammyMapLoaded,
                 var sammyObj = this;
                 gmapElem.bind('gmapLoaded', function(){
                     //make the map and call the callback with the first argument as the map object
-                    gmap = new google.maps.Map(gmapElem.get(0), {zoom:6,center:new google.maps.LatLng(9.243092645104804, 7.9156494140625), mapTypeId:'terrain'});
+                    gmap = new google.maps.Map(gmapElem.get(0), {zoom:6,center:new google.maps.LatLng(9.243092645104804, 7.9156494140625), mapTypeId:'terrain', mapTypeControl: false});
                     _map = gmap;
                     map.map = gmap;
                     cb.call(map);
                 });
             } else {
                 if(!gmap) {
-                    gmap = new google.maps.Map(gmapElem.get(0), {zoom:6,center:new google.maps.LatLng(9.243092645104804, 7.9156494140625), mapTypeId:'terrain'});
+                    gmap = new google.maps.Map(gmapElem.get(0), {zoom:6,center:new google.maps.LatLng(9.243092645104804, 7.9156494140625), mapTypeId:'terrain', mapTypeControl: false });
                     map.map = gmap;
                     _map = gmap;
                 }

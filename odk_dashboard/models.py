@@ -28,10 +28,12 @@ class GPS(models.Model):
     longitude = models.FloatField()
     altitude = models.FloatField()
     accuracy = models.FloatField()
+    district = models.ForeignKey("District", null=True, blank=True)
 
     # might consider using self.__dict__
     def to_dict(self):
-        return {'lat':self.latitude, 'lng':self.longitude, 'acc':self.accuracy}
+        return {'lat':self.latitude, 'lng':self.longitude, \
+                'acc':self.accuracy, 'district_id': self.district.id }
     
     def closest_district(self):
         districts = District.objects.filter(active=True)
@@ -56,7 +58,7 @@ class District(MP_Node):
     kml_present = models.BooleanField()
     active = models.BooleanField()
     latlng_string = models.CharField(max_length=50)
-    gps = models.ForeignKey(GPS, null=True, blank=True)
+#    gps = models.ForeignKey(GPS, null=True, blank=True)
     
     def ll_diff(self, gps):
         ll = self.latlng()
@@ -127,7 +129,8 @@ class ParsedInstance(models.Model):
         
         return {'images':[x.image.url for x in self.instance.images.all()], \
                 'phone': self.phone.__unicode__(), \
-                'date': self.end.strftime("%Y-%m-%d %H:%M"), \
+                'surveyor': self.surveyor_identifier(), \
+                'datetime': self.end.strftime("%Y-%m-%d %H:%M"), \
                 'survey_type': self.survey_type.name, \
                 'gps': gps, 'id': self.id, 'title': self.title() }
 
