@@ -23,6 +23,7 @@ class Form(models.Model):
     title = models.CharField(editable=False, max_length=64)
 
     class Meta:
+        unique_together = (("title", "active"),)
         verbose_name = "XForm"
         verbose_name_plural = "XForms"
         ordering = ("id_string",)
