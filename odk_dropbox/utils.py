@@ -182,41 +182,6 @@ class FormParser(XMLParser):
         d = self.get_control_dict()
         return [(get_name(b), d.get(get_nodeset(b),"")) for b in self.get_bindings()]
 
-
-
-def table(form):
-    """Turn a list of dicts into a table."""
-    form_parser = FormParser(form.path())
-    headers = form_parser.get_variable_list()
-
-    table = [headers]
-    for i in form.instances.all():
-        d = parse_instance(i).get_dict()
-        table.append( [d.get(header, u"n/a") for header in headers] )
-    return table
-
-def collapse_columns(table, root):
-    columns = []
-    headers = []
-    for i in range(len(table[0])):
-        header = table[0][i]
-        if not header.startswith(root):
-            headers.append(header)
-        else:
-            columns.append(i)
-            if root not in headers:
-                headers.append(root)
-    result = [headers]
-    for row in table[1:]:
-        result.append([])
-        for i in range(len(row)):
-            if i not in columns:
-                result[-1].append(row[i])
-            elif headers[i]==root:
-                result[-1].append(
-                    u" ".join([row[j] for j in columns if row[j]!=u"n/a"])
-                    )
-
 from django.conf import settings
 from django.core.mail import mail_admins
 import traceback

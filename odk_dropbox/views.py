@@ -14,7 +14,7 @@ import os
 import codecs
 from . import utils
 
-from .models import Form, InstanceImage, make_submission
+from .models import Form, Instance, InstanceImage, make_submission
 
 @require_GET
 def formList(request):
@@ -52,18 +52,12 @@ def submission(request):
 @permission_required("auth.read_all_data")
 def survey_list(request):
     rows = [["Title", "Submission Count", "Last Submission", "Export"]]
-    counts = {}
-    for form in Form.objects.all():
-        if form.title in counts:
-            counts[form.title] += 1
-        else:
-            counts[form.title] = 1
-    for form in Form.objects.all():
+    for form in Form.objects.filter(active=True):
         rows.append([
-                form.id_string,
-                form.submission_count(),
+                form.title,
+                Instance.objects.filter(form__title=form.title).count(),
                 form.date_of_last_submission(),
-                '<a href="/%s.xls">xls</a>' % form.id_string,
+                '<a href="/%s.xls">xls</a>' % form.title,
                 ])
     return mako_to_response("table2.html", {"rows" : rows})
 
@@ -74,9 +68,15 @@ def xls_to_response(xls, fname):
     return response
 
 @permission_required("auth.read_all_data")
-def xls(request, id_string):
-    form = Form.objects.get(id_string=id_string)
-    table = utils.table(form)
+def xls(request, title):
+    form = Form.objects.get(title=title, active=True)
+    form_parser = utils.FormParser(form.path())
+    headers = form_parser.get_variable_list()
+
+    table = [headers]
+    for i in Instance.objects.filter(form__title=form.title):
+        d = utils.parse_instance(i).get_dict()
+        table.append( [d.get(header, u"n/a") for header in headers] )
 
     wb = xlwt.Workbook()
     ws = wb.add_sheet("Data")
@@ -92,7 +92,7 @@ def xls(request, id_string):
         for c in range(len(table[r])):
             ws.write(r, c, table[r][c])
 
-    return xls_to_response(wb, re.sub("\s+", "_", id_string + ".xls"))
+    return xls_to_response(wb, form.title + ".xls")
 
 def content(request, topic):
     filedir = os.path.dirname(__file__)
