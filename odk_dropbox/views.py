@@ -49,6 +49,7 @@ def submission(request):
     response['Location'] = "http://%s/submission" % request.get_host()
     return response
 
+@permission_required("auth.read_all_data")
 def survey_list(request):
     rows = [["Title", "Submission Count", "Last Submission", "Export"]]
     counts = {}
