@@ -1,24 +1,26 @@
-<p>Activity:</p>
+<h2>
+	Activities
+</h2>
 <table id="activity-list" class="shade-alternate fullw padded">
 	<thead>
-		<th>Date</th>
-		<th>Surveyor</th>
-		<th>Title</th>
-		<th>Survey Type
-		</th>
+		<tr>
+			<th>Date</th>
+			<th>Surveyor</th>
+			<th>Title</th>
+			<th>Survey Type
+			</th>
+		</tr>
 	</thead>
 </table>
 
 <script id="activityRow" type="text/x-jquery-tmpl">
     <tr>
-		<td>
-			<a href="#/map/${district_id}/show/${id}" title="View on map">
-				${date}
-			</a>
+		<td class='date'>
+			<span class="dt">${datetime}</span>
 		</td>
-		<td>${surveyor}</td>
-		<td>${title}</td>
-		<td>${survey_type}</td>
+		<td class='surveyor'>${surveyor}</td>
+		<td class='title'>${title}</td>
+		<td class='survey_type ${survey_type}'>${survey_type}</td>
 	</tr>
 </script>
 
@@ -29,10 +31,10 @@
 	WithActivityList(function(list){
 		var templateList = [],
 			templ = $('#activityRow').template();
+
 		//for some reason, the activity-list cannot be run through the $.tmpl()
-		$(list).each(function(){templateList.push(this)});
+		$(list.sort(function(a, b){return a.dateObj < b.dateObj})).each(function(){templateList.push(this)});
 		$.tmpl(templ, templateList).appendTo($("#activity-list"))
-		
 		delete(templateList)
 	});
 	

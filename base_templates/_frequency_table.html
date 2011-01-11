@@ -1,3 +1,6 @@
+<h2>
+	Survey Frequency Tables
+</h2>
 <div id="freq-table-selector" style="position:relative">
 	<div class="map-key-ww"><div class="map-key-w" style="padding:8px">
 		<div id="m-key" class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
@@ -71,18 +74,18 @@
 			
 			(function sumRows(tab){
 				var rows = $("tbody tr", tab);
+				$('thead tr th:first-child', tab).after($("<th />", {'class':'sum-header'}).html('&nbsp;'));
 				rows.each(function(){
-					var sumTd = $("<td />", {'class':'row sum'});
-					$(sumTd).attr('style','border-width:0 0 0 2px;border-color:#ccc;font-size:11px;color:#999')
+					var sumTd = $("<td />", {'class':'row sum centered'});
 					var sum = 0;
 					
 					$("td.data", this).each(function(){
 						if($(this).text()) {
 							sum += parseInt($(this).text())
 						}
-					})
-					$(this).append(sumTd);
+					});
 					sumTd.html(sum);
+					$(this).find('td:first-child').after(sumTd);
 				})
 			})(table);
 			
@@ -111,11 +114,11 @@
 						});
 						td.text(sumVals);
 						td.addClass('centered');
-						td.attr('style','border-width:2px 0 0 0;border-color:#ccc;font-size:11px;color:#999')
+						td.addClass('totals');
 					}
 					sumRow.append(td)
 				});
-				tab.append(sumRow);
+				$("thead", tab).append(sumRow);
 			})(table);
 			$('.data').css({'width':75})
 			freqTable.html(table);

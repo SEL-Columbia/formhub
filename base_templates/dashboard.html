@@ -43,6 +43,11 @@
 		</div>
 	</ul>
 	<div id="content">
+		<script src="/site-media/js/activity-list.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" charset="utf-8">
+			var storage = new Sammy.Store({name:'activity',element:'#content',type:'local'});
+		</script>
+		
 		<div class="fwidth">
 			<div class="full-content sliding" id="main">
 				<div class="iwrap" id="dashboard">
@@ -87,163 +92,18 @@
 	})
 	dashboard.activateSwitchTo(".full-content.sliding");
 
-	var DashboardDebug = (function(){
-		return {
-			listInfo: function(list){
-				var li = $("<li />").html("There are "+list.length+" entries.")
-				$('.dashboard_stats').append(li)
-			}
-		}
-	})()
-	
-	var ActivityList, ActivityPoint;
-	(function($){
-		function _ActivityList(arr){
-			if(arr){
-				this.addPoints(arr)
-			}
-		}
-		_ActivityList.prototype = new Array();
-		$.extend(_ActivityList.prototype, {
-			find: function(id){
-				var i = 0; l = this.length;
-				for(;i<l;i++) {
-					if(id==this[i].id) {
-						return this[i];
-					}
-				}
-			},
-			filter: function(k, v){
-				var subList = new _ActivityList([]);
-				if($.type(v)=='string') {
-					v=v.toLowerCase();
-				}
-				$(this).each(function(){
-					if($.type(this[k])=='string') {
-						if(this[k].toLowerCase()==v) {
-							subList.addPoint(this);
-						}
-					} else {
-						if(this[k]==v) {
-							subList.addPoint(this)
-						}
-					}
-				});
-				return subList;
-			},
-			addPoint: function(point){
-				if(point instanceof _ActivityPoint) {
-					this.push(point)
-				} else {
-					this.push(new _ActivityPoint(point))
-				}
-			},
-			addPoints: function(points){
-				var _Sl = this;
-				$(points).each(function(){_Sl.addPoint(this)})
-				DashboardDebug.listInfo(this);
-			},
-			latLngWindow: function(){
-				var lats = [], lngs = [];
-				$.each(this, function(){
-					if(this.gps && this.gps.lat) {
-						lats.push(this.gps.lat);
-						lngs.push(this.gps.lng);
-					}
-				});
-				if(lats.length == 0 || lngs.length==0) {
-					return null
-				}
-				var llRange = {
-					lat: {
-						min: Math.min.apply(this, lats),
-						max: Math.max.apply(this, lats)
-					},
-					lng: {
-						min: Math.min.apply(this, lngs),
-						max: Math.max.apply(this, lngs)
-					}
-				}
-				llRange.lat.avg = (llRange.lat.min + llRange.lat.max)/2
-				llRange.lng.avg = (llRange.lng.min + llRange.lng.max)/2
-				return {
-					lat: llRange.lat.avg,
-					lng: llRange.lng.avg,
-					range: llRange
-				}
-			},
-			getVarieties: function(){
-				var survey_types = [], dates = [], surveyors = [];
-				$(this).each(function(){
-					if(survey_types.indexOf(this.survey_type)==-1) { survey_types.push(this.survey_type); }
-					if(dates.indexOf(this.date)==-1) { dates.push(this.date); }
-					if(surveyors.indexOf(this.surveyor)==-1) { surveyors.push(this.surveyor); }
-				});
-				return {
-					surveyor: surveyors,
-					date: dates,
-					survey: survey_types
-				}
-			}
+	$(function(){
+		var clearStorageLink = $("<a />", {href:'#'}).html("Clear Storage");
+		clearStorageLink.click(function(evt){
+			storage.clear('activity');
+			storage.clear('activity_stamp');
+			evt.preventDefault();
 		})
+	})
 
-		function _ActivityPoint(o){
-			if(o instanceof _ActivityPoint) {return o}
-			$.extend(this, o);
-			if(this.gps && this.gps.district_id) {
-				this.district_id=this.gps.district_id
-			}
-			try {
-				this.date = this.datetime.split(" ")[0]
-				this.time = this.datetime.split(" ")[1]
-			} catch(e) {
-				this.date = null; this.time = null;
-			}
-			this.survey = this.survey_type; //can't pick a consistent name here...
-			
-		}
-		_ActivityPoint.prototype = new Mappable();
-		_ActivityPoint.prototype.district=function(){
-			var result, district_id = this.district_id;
-			if(this.district_id) {
-				$(districts).each(function(){ if(this.id==district_id) {result = this} })
-			}
-			return result;
-		}
-		window.ActivityList = _ActivityList;
-	})(jQuery);
-	
-//		var ActivityStorage = (function(){
-			var storage = new Sammy.Store({name:'activity',element:'#content',type:'local'});
-			var _stamp = false;
-			
-			var _list;
-			
-			function fetchActivity(stamp){
-				var stamp = (typeof(stamp)=='undefined') ? "" : stamp;
-							 
-				var url = "/data/activity/"+stamp;
-				$.getJSON(url, function(data){
-					storage.set('activity', data);
-					storage.set('activity_stamp', [data.stamp]);
-					$('#main').trigger('activity-data-load');
-				});
-			}
-			var clearStorageLink = $("<a />", {href:'#'}).html("Clear Storage");
-			clearStorageLink.click(function(evt){
-				storage.clear('activity');
-				storage.clear('activity_stamp');
-				evt.preventDefault();
-			})
-			$('.account_links').append(clearStorageLink)
-			if(!storage.exists('activity')) {
-				fetchActivity();
-			} else {
-				$('#main').trigger('activity-data-load');
-			}
-//		})()
 		$('.button').button();
-		SetResizer(jQuery, ".iiwrap", "#header, #menu", (16+24))
+		SetResizer(jQuery, ".iiwrap", "#header, #menu", (16+24));
+
 	</script>
 </body>
 </html>
