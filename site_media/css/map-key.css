@@ -12,6 +12,21 @@
     
 }
 
+.map-key-w table {
+    width: 100%;
+}
+td.right-align div {
+    text-align: right;
+}
 td.empty-spacer div {
     height: 25px;
+}
+.selector-wrap {
+    -moz-border-radius: 2px;
+    border:1px solid #aaa;float:left; padding: 1px 4px; margin: 0 2px;
+    font-weight: normal;
+    color: #888;
+}
+.selector-wrap select {
+    margin-left: 8px;
 }

@@ -31,8 +31,18 @@
 
 <script type="text/javascript" charset="utf-8">
 	var activityTemplate = $('#activityRow').template();
-	$(function(){
-		$.tmpl(activityTemplate, storage.get('activity').data).appendTo('#activity-list')
+	
+	$('#main').bind('activity-data-load', function(){
+		_list = new ActivityList(storage.get('activity').data);
+		$.tmpl(activityTemplate, _list).appendTo('#activity-list')
+		var surveyColors = {
+			'water': 'blue',
+			'education': 'green',
+			'health': 'red'
+		}
+		$(_list).each(function(){
+			this.setFlagColor(surveyColors[this.survey])
+		})
 	})
 
 	dashboard.get("#/activity", function(context){

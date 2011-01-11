@@ -15,16 +15,8 @@
 		}
 		]
 	
-	objs.survey = [
-		{
-			name: 'bob',
-			id: 1
-		},
-		{
-			name: 'steve',
-			id: 2
-		}
-		];
+	var surveys = {{surveys|safe}}
+	objs.survey = surveys;
 	
 	objs.date = [
 		{
@@ -55,7 +47,13 @@
 	var District = (function(){
 		function _District(data) {
 			$.extend(this, data);
+			var c = this.coords.split(",");
+			this.gps = {
+				lat: c[0],
+				lng: c[1]
+			}
 		}
+		_District.prototype = new Mappable();
 		_District.prototype.GLatLng = function(){
 			var ll = this.coords.split(",");
 			return new google.maps.LatLng(ll[0],ll[1]);
@@ -68,6 +66,22 @@
 	
 	var _map;
 	var filters = "survey surveyor date".split(" ")
+	
+	var _filters, _values;
+	function getFilters() {
+		if(!_filters) {
+			_values = _list.getVarieties();
+			_filters = [];
+			$.each(_values, function(k, v) {
+				_filters.push(k);
+			})
+		}
+		return {
+			'filters': _filters,
+			'values': _values
+		}
+	}
+	
 	var mapByOpts = {
 		lga: "LGA",
 		surveyor: "Surveyor",
@@ -121,7 +135,7 @@
 				this.nigeriaCenter();
 
 				this.key({clear:true});
-				this.addSelector([], function(selector){
+				this.addSelector({list:[],text:"Select District"}, function(selector){
 					var main = $("<option />", {value:'all'}).html("Nigeria");
 					var big = $("<optgroup />", {'label':"Selector"}).html(main);
 					
@@ -142,7 +156,10 @@
 						}
 					});
 				});
-								
+				
+//				this.displayPoints()
+//				this.addMapTypeSelector();
+				
 				this.debug(mapState);
 			})
 	    });
@@ -160,10 +177,10 @@
 			});
 
 			this.Map(function(){
-				this.mapCenter(district.GLatLng(), 8)
+				this.mapCenter(district.GLatLng(), {'zoom': 8})
 				this.key({clear:true});
 				
-				this.addSelector([], function(selector){
+				this.addSelector({list:[],text:"District"}, function(selector){
 					var main = $("<option />", {value:'all'}).html("Nigeria");
 					var big = $("<optgroup />", {'label':"Selector"}).html(main);
 					
@@ -184,15 +201,30 @@
 						}
 					});
 				});
-				this.divider();
-				this.addSelector(filters, function(selector){
+				// this.divider();
+				this.addSelector({list:getFilters().filters,text:"Filter"}, function(selector){
+					selector.prepend("<option />", {'value':'all'});
+					selector.val('all');
 					selector.change(function(){
+						var cval = $(this).val();
+						if(cval=='all'){cval=null;}
+						
 						dashboard.setLocation(urlForMapState({
 							district: district,
-							filter: $(this).val()
+							filter: cval
 						}));
 					})
 				})
+//				this.addMapTypeSelector();
+				
+				
+				var showMe = _list.filter('district_id', district.id);
+				this.displayPoints(showMe)
+				var curWindow = showMe.latLngWindow();
+				if(curWindow) {
+					this.setMapCenter(curWindow.lat, curWindow.lng, curWindow)
+				}
+				
 				this.debug(mapState);
 			})
 		})
@@ -201,7 +233,7 @@
 		dashboard.get("#/map/:district/by/surveyor/?(:obj)?", function(){
 			var district = findDistrict(this.params['district']),
 				obj = this.params['obj'],
-				surveyor = findObj('surveyor', obj);
+				surveyor = obj;
 
 			this.switchTo("map");
 			if(!surveyor) {
@@ -216,10 +248,10 @@
 				xyz: surveyor
 			});
 			this.Map(function(){
-				this.mapCenter(district.GLatLng(), 8)
+				this.mapCenter(district.GLatLng(), {'zoom': 8})
 				this.key({clear:true});
 				
-				this.addSelector([], function(selector){
+				this.addSelector({list:[],text:"District"}, function(selector){
 					var main = $("<option />", {value:'all'}).html("Nigeria");
 					var big = $("<optgroup />", {'label':"Selector"}).html(main);
 					
@@ -240,17 +272,59 @@
 						}
 					});
 				});
-				this.divider();
+//				this.divider();
 				
-				this.addSelector(filters, function(selector){
-					selector.val(mapState.filter)
+				this.addSelector({list:getFilters().filters,text:"Filter"}, function(selector){
+					var all = $("<option />", {value: 'all'});
+					selector.prepend(all);
+					if(!mapState.filter){selector.val('all')}else{selector.val(mapState.filter)}
 					selector.change(function(){
+						var cval = $(this).val();
+						if(cval=='all'){cval=null;}
+						
 						dashboard.setLocation(urlForMapState({
 							district: district,
-							filter: $(this).val()
+							filter: cval
 						}));
 					})
 				});
+				
+				
+//				this.divider();
+				
+				var showMe = _list.filter('district_id', district.id);
+				var surveyorList = showMe.getVarieties()['surveyor']
+				
+				this.addSelector({list:[],text:"Surveyor"}, function(selector){
+					var all = $("<option />", {value: 'all'});
+					var filterGroup = $("<optgroup />", {label:'Filter'})
+					$(surveyorList).each(function(){
+						filterGroup.append($("<option />").html(String(this)))
+					})
+					selector.append(all);
+					selector.append(filterGroup);
+					selector.val(surveyor);
+					selector.change(function(){
+						var objec = $(this).val();
+						if(objec=="all") {
+							objec=false
+						}
+						dashboard.setLocation(urlForMapState({
+							district: district,
+							filter: 'surveyor',
+							obj: objec
+						}));
+					})
+				});
+				
+				if(surveyor && surveyor!=="undefined") {
+					showMe = showMe.filter('surveyor', surveyor);
+				}
+				this.displayPoints(showMe)
+				var curWindow = showMe.latLngWindow();
+				if(curWindow) {
+					this.setMapCenter(curWindow.lat, curWindow.lng, curWindow)
+				}
 				
 				this.debug(mapState);
 			})
@@ -260,13 +334,13 @@
 		dashboard.get("#/map/:district/by/survey/?(:obj)?", function(){
 			var district = findDistrict(this.params['district']),
 				obj = this.params['obj'],
-				survey = findObj('survey', obj);
+				survey = obj;
 
 			this.switchTo("map");
 			if(!survey) {
 				this.title("Map "+district.name+" by Survey")
 			} else {
-				this.title("Map "+district.name+" by Survey: "+surveyor)
+				this.title("Map "+district.name+" by Survey: "+survey.toUpperCase())
 			}
 			mapState = changeMapState(mapState, {
 				scale: 'district',
@@ -275,11 +349,11 @@
 				xyz: survey
 			})
 			this.Map(function(){
-				this.mapCenter(district.GLatLng(), 8)
+				this.mapCenter(district.GLatLng(), {'zoom': 8})
 				this.key({clear:true});
 				
 				
-				this.addSelector([], function(selector){
+				this.addSelector({list:[],text:"District"}, function(selector){
 					var main = $("<option />", {value:'all'}).html("Nigeria");
 					var big = $("<optgroup />", {'label':"Selector"}).html(main);
 					
@@ -300,21 +374,53 @@
 						}
 					});
 				});
-				this.divider();
+//				this.divider();
 				
-				this.addSelector(filters, function(selector){
-					selector.val(mapState.filter)
+				this.addSelector({list:getFilters().filters,text:"Filter"}, function(selector){
+					var all = $("<option />", {value: 'all'});
+					selector.prepend(all);
+					
+					if(!mapState.filter){selector.val('all')}else{selector.val(mapState.filter)}
 					
 					selector.change(function(){
+						var cval = $(this).val();
+						if(cval=='all'){cval=null;}
+						
 						dashboard.setLocation(urlForMapState({
 							district: district,
-							filter: $(this).val()
+							filter: cval
 						}));
 					})
 				});
 				
-				this.debug(mapState);
+//				this.divider();
+				var showMe = _list.filter('district_id', district.id);
+				var surveyList = showMe.getVarieties()['survey']
 				
+				this.addSelector({list:surveyList,text:"Survey"}, function(selector){
+					selector.prepend($("<option />", {'value':'all'}))
+					selector.val(survey);
+					selector.change(function(){
+						var oVal = $(this).val();
+						if(oVal=='all') {oVal=null;}
+						dashboard.setLocation(urlForMapState({
+							district: district,
+							filter: 'survey',
+							obj: oVal
+						}));
+					})
+				});
+				
+				if(survey && survey!=="undefined") {
+					showMe = showMe.filter('survey', survey);
+				}
+				this.displayPoints(showMe)
+				var curWindow = showMe.latLngWindow();
+				if(curWindow) {
+					this.setMapCenter(curWindow.lat, curWindow.lng, curWindow)
+				}
+
+				this.debug(mapState);
 			})
 		});
 
@@ -322,14 +428,14 @@
 		dashboard.get("#/map/:district/by/date/?(:obj)?", function(){
 			var district = findDistrict(this.params['district']),
 				obj = this.params['obj'],
-				date = findObj('date', obj);
+				date = this.params['obj'];
 
 			this.switchTo("map");
 			
 			if(!date) {
 				this.title("Map "+district.name+" by Date")
 			} else {
-				this.title("Map "+district.name+" by Date: "+surveyor)
+				this.title("Map "+district.name+" by Date: "+date)
 			}
 			
 			mapState = changeMapState(mapState, {
@@ -339,10 +445,10 @@
 				xyz: date
 			})
 			this.Map(function(){
-				this.mapCenter(district.GLatLng(), 8)
+				this.mapCenter(district.GLatLng(), {'zoom': 8})
 				this.key({clear:true});
 				
-				this.addSelector([], function(selector){
+				this.addSelector({list:[],text:"District"}, function(selector){
 					var main = $("<option />", {value:'all'}).html("Republic of Nigeria");
 					var big = $("<optgroup />", {'label':"State View"}).html(main);
 					
@@ -363,19 +469,52 @@
 						}
 					});
 				});
-				this.divider();
+//				this.divider();
 				
-				this.addSelector(filters, function(selector){
-					selector.val(mapState.filter)
+				this.addSelector({list:getFilters().filters,text:"Filter"}, function(selector){
+					
+					selector.prepend($("<option />", {value: 'all'}));
+					
+					if(!mapState.filter){selector.val('all')}else{selector.val(mapState.filter)}
 					
 					selector.change(function(){
+						var cval = $(this).val();
+						if(cval=='all'){cval=null;}
 						dashboard.setLocation(urlForMapState({
 							district: district,
-							filter: $(this).val()
+							filter: cval
 						}));
 					})
 				})
 				
+				
+				var showMe = _list.filter('district_id', district.id);
+				this.addSelector({list:showMe.getVarieties().date,text:"Date"}, function(selector){
+
+					selector.prepend($("<option />", {value: 'all'}));
+					selector.val(date);
+					selector.change(function(){
+						var thisVal = $(this).val();
+						if(thisVal=="all") {
+							thisVal=false;
+						}
+						dashboard.setLocation(urlForMapState({
+							district: district,
+							filter: 'date',
+							obj: thisVal
+						}));
+					})
+				});
+
+				if(date && date!=='undefined') {
+					showMe = showMe.filter('date', date);
+				}
+				
+				this.displayPoints(showMe)
+				var curWindow = showMe.latLngWindow();
+				if(curWindow) {
+					this.setMapCenter(curWindow.lat, curWindow.lng, curWindow)
+				}
 				
 				this.debug(mapState);
 			})
@@ -391,8 +530,7 @@
 		})
 	})();
 	function findActivityById(aid) {
-		var activityData = storage.get('activity').data;
-		for(var i in activityData) {
+		for(var i in _list) {
 			if(activityData[i].id==aid) {
 				return activityData[i];
 			}

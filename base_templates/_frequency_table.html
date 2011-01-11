@@ -1,20 +1,42 @@
-<p>Select rows and columns for the frequency table:</p>
-<div id="freq-table-selector">
-	<table border="0" cellspacing="5" cellpadding="5">
-		<tr>
-			<th>Rows</th>
-			<th>Columns</th>
-		</tr>
-		<tr>
-			<td><select id="freq-rows"></select></td>
-			<td><select id="freq-cols"></select></td>
-			<td><a href="#/" class="button" id="get-table">Submit</a></td>
-		</tr>
-	</table>
-	<div id="freq-table"></div>
+<div id="freq-table-selector" style="position:relative">
+	<div class="map-key-ww"><div class="map-key-w" style="padding:8px">
+		<div id="m-key" class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
+			<table>
+				<tbody>
+					<tr>
+						<td class="selectors">
+							<div class="selector-wrap">Rows
+								<select id="freq-rows"></select>
+							</div>
+							<div class="selector-wrap">Columns
+								<select id="freq-cols"></select>
+							</div>
+							<a href="#" style="margin-left:20px" id="get-table">Get Graph</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div></div>
 </div>
+<div id="freq-table" style="padding:65px 15px 10px 15px;"></div>
 
 <script type="text/javascript" charset="utf-8">
+
+	(function($){
+		$.fn.thinButton = function(){
+			this.button();
+			$('span.ui-button-text', this).css({'padding':'1px 5px'});
+			return this;
+		}
+	})(jQuery);
+	
+	$(function(){
+		$('#get-table').thinButton();
+		$('#get-table').click(function(evt){
+			evt.preventDefault();
+		})
+	})
 	var tableTypes = {{table_types|safe}};
 	
 	dashboard.get(urls.freqTables, function(context){
@@ -28,6 +50,9 @@
 		var row = this.params['row'],
 			col = this.params['col'],
 			freqTable = $("#freq-table");
+			
+		$('#freq-rows').val(row);
+		$('#freq-cols').val(col);
 		$.get("/submission-counts/"+row+"/"+col, function(html){
 			var table = $(html);
 			table.addClass('ptable');
@@ -43,6 +68,56 @@
 				}
 			});
 			$('tr td:first-child', table).removeClass('centered').addClass('rname');
+			
+			(function sumRows(tab){
+				var rows = $("tbody tr", tab);
+				rows.each(function(){
+					var sumTd = $("<td />", {'class':'row sum'});
+					$(sumTd).attr('style','border-width:0 0 0 2px;border-color:#ccc;font-size:11px;color:#999')
+					var sum = 0;
+					
+					$("td.data", this).each(function(){
+						if($(this).text()) {
+							sum += parseInt($(this).text())
+						}
+					})
+					$(this).append(sumTd);
+					sumTd.html(sum);
+				})
+			})(table);
+			
+			(function sumCols(tab){
+				var columnsWithData=[];
+				var rows = $("tbody tr", tab);
+				rows.find('td.data').each(function(){
+					if(!columnsWithData[$(this).index()]) {
+						columnsWithData[$(this).index()]=true;
+					}
+				});
+				var sumRow = $("<tr />", {'class':'sum-row'});
+				$.each(columnsWithData, function(ct, tf){
+					var td = $("<td />");
+					if(ct==0) {
+						td.addClass("rname");
+					}
+					if(tf) {
+						var sumVals = 0;
+						rows.each(function(){
+							var txtVal = $($(this).children()[ct]).text(),
+								nmVal = parseInt(txtVal);
+							if(!isNaN(nmVal)) {
+								sumVals += parseInt(nmVal);
+							}
+						});
+						td.text(sumVals);
+						td.addClass('centered');
+						td.attr('style','border-width:2px 0 0 0;border-color:#ccc;font-size:11px;color:#999')
+					}
+					sumRow.append(td)
+				});
+				tab.append(sumRow);
+			})(table);
+			$('.data').css({'width':75})
 			freqTable.html(table);
 		});
 	});
@@ -55,21 +130,24 @@
 		});
 		colSelect.attr('disabled', true)
 		rowSelect.change(function(){
-			var selected = this.value;
-			colSelect.empty();
-			$.each(tableTypes, function(ct, str){
-				if(str!==selected) {
-					colSelect.append($("<option />").html(str));
-				}
-			});
 			colSelect.attr('disabled', false);
-		});
-		colSelect.change(function(){
-			var sCol = this.value;
-			var sRow = rowSelect.val();
+			var selected = this.value;
 			
-			$('#get-table').attr('href', '#/frequency-tables/'+sRow+'/'+sCol);
+			$(colSelect.find('option')).each(function(){
+				if($(this).val()==selected) {
+					$(this).attr('disabled', true);
+				} else {
+					$(this).attr('disabled', false);
+				}
+			})
 		});
+		function redirectToSelectedTable() {
+			dashboard.setLocation("#/frequency-tables/"+rowSelect.val()+"/"+colSelect.val());
+		}
+		$('#get-table').click(function(evt){
+			redirectToSelectedTable()
+			evt.preventDefault();
+		})
 	})(jQuery, $('#freq-rows'), $('#freq-cols'), $('#freq-submit'), tableTypes)
 
 </script>

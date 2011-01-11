@@ -48,6 +48,12 @@
 				<div class="iwrap" id="dashboard">
 					<div class="iiwrap">
 					<p>Dashboard</p>
+					
+					<hr />
+					<h3>Timing Stuff</h3>
+					<br />
+					
+					<hr />
 					<ul>
 					</ul>
 					<ul class="dashboard_stats"></ul>
@@ -75,6 +81,7 @@
 		</div>
 	</div>
 	<script type="text/javascript" charset="utf-8">
+	
 	$('body').delegate('.dontChangePage', 'click', function(evt){
 		evt.preventDefault();
 	})
@@ -92,12 +99,41 @@
 	var ActivityList, ActivityPoint;
 	(function($){
 		function _ActivityList(arr){
-			this.addPoints(arr)
+			if(arr){
+				this.addPoints(arr)
+			}
 		}
 		_ActivityList.prototype = new Array();
 		$.extend(_ActivityList.prototype, {
+			find: function(id){
+				var i = 0; l = this.length;
+				for(;i<l;i++) {
+					if(id==this[i].id) {
+						return this[i];
+					}
+				}
+			},
+			filter: function(k, v){
+				var subList = new _ActivityList([]);
+				if($.type(v)=='string') {
+					v=v.toLowerCase();
+				}
+				$(this).each(function(){
+					if($.type(this[k])=='string') {
+						if(this[k].toLowerCase()==v) {
+							subList.addPoint(this);
+						}
+					} else {
+						if(this[k]==v) {
+							subList.addPoint(this)
+						}
+					}
+				});
+				return subList;
+			},
 			addPoint: function(point){
-				if(point instanceof _ActivityPoint) { this.push(point)
+				if(point instanceof _ActivityPoint) {
+					this.push(point)
 				} else {
 					this.push(new _ActivityPoint(point))
 				}
@@ -106,10 +142,74 @@
 				var _Sl = this;
 				$(points).each(function(){_Sl.addPoint(this)})
 				DashboardDebug.listInfo(this);
+			},
+			latLngWindow: function(){
+				var lats = [], lngs = [];
+				$.each(this, function(){
+					if(this.gps && this.gps.lat) {
+						lats.push(this.gps.lat);
+						lngs.push(this.gps.lng);
+					}
+				});
+				if(lats.length == 0 || lngs.length==0) {
+					return null
+				}
+				var llRange = {
+					lat: {
+						min: Math.min.apply(this, lats),
+						max: Math.max.apply(this, lats)
+					},
+					lng: {
+						min: Math.min.apply(this, lngs),
+						max: Math.max.apply(this, lngs)
+					}
+				}
+				llRange.lat.avg = (llRange.lat.min + llRange.lat.max)/2
+				llRange.lng.avg = (llRange.lng.min + llRange.lng.max)/2
+				return {
+					lat: llRange.lat.avg,
+					lng: llRange.lng.avg,
+					range: llRange
+				}
+			},
+			getVarieties: function(){
+				var survey_types = [], dates = [], surveyors = [];
+				$(this).each(function(){
+					if(survey_types.indexOf(this.survey_type)==-1) { survey_types.push(this.survey_type); }
+					if(dates.indexOf(this.date)==-1) { dates.push(this.date); }
+					if(surveyors.indexOf(this.surveyor)==-1) { surveyors.push(this.surveyor); }
+				});
+				return {
+					surveyor: surveyors,
+					date: dates,
+					survey: survey_types
+				}
 			}
 		})
 
-		function _ActivityPoint(o){$.extend(this, o)}
+		function _ActivityPoint(o){
+			if(o instanceof _ActivityPoint) {return o}
+			$.extend(this, o);
+			if(this.gps && this.gps.district_id) {
+				this.district_id=this.gps.district_id
+			}
+			try {
+				this.date = this.datetime.split(" ")[0]
+				this.time = this.datetime.split(" ")[1]
+			} catch(e) {
+				this.date = null; this.time = null;
+			}
+			this.survey = this.survey_type; //can't pick a consistent name here...
+			
+		}
+		_ActivityPoint.prototype = new Mappable();
+		_ActivityPoint.prototype.district=function(){
+			var result, district_id = this.district_id;
+			if(this.district_id) {
+				$(districts).each(function(){ if(this.id==district_id) {result = this} })
+			}
+			return result;
+		}
 		window.ActivityList = _ActivityList;
 	})(jQuery);
 	
@@ -126,7 +226,7 @@
 				$.getJSON(url, function(data){
 					storage.set('activity', data);
 					storage.set('activity_stamp', [data.stamp]);
-					_list = new ActivityList(data.data);
+					$('#main').trigger('activity-data-load');
 				});
 			}
 			var clearStorageLink = $("<a />", {href:'#'}).html("Clear Storage");
@@ -139,7 +239,7 @@
 			if(!storage.exists('activity')) {
 				fetchActivity();
 			} else {
-				storage.get('activity')
+				$('#main').trigger('activity-data-load');
 			}
 //		})()
 		$('.button').button();

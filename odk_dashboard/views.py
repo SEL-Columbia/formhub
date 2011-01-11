@@ -14,6 +14,8 @@ def dashboard(request):
     info['table_types'] = simplejson.dumps(dimensions.keys())
     districts = District.objects.filter(active=True)
     info['districts'] = simplejson.dumps([x.to_dict() for x in districts])
+    forms = Form.objects.all()
+    info['surveys'] = simplejson.dumps(list(set([x.title for x in forms])))
     return render_to_response('dashboard.html', info)
 
 def recent_activity(request):

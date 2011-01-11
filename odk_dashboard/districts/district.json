@@ -521,13 +521,13 @@
         "pk": 38,
         "model": "odk_dashboard.district",
         "fields": {
-            "name": "Song, Nigeria",
+            "name": "Song",
             "numchild": 0,
             "kml_present": true,
             "depth": 3,
             "active": true,
             "path": "00010002000I",
-            "nickname": "song_nigeria",
+            "nickname": "song",
             "latlng_string": "12.75578250027894,9.778852016529155"
         }
     },
@@ -5029,13 +5029,13 @@
         "pk": 360,
         "model": "odk_dashboard.district",
         "fields": {
-            "name": "Miga, Nigeria",
+            "name": "Miga",
             "numchild": 0,
             "kml_present": true,
             "depth": 3,
             "active": true,
             "path": "0001000I000M",
-            "nickname": "miga_nigeria",
+            "nickname": "miga",
             "latlng_string": "9.669849517420284,12.1910885044137"
         }
     },
