@@ -34,7 +34,7 @@
 		}
 		_District.prototype.ensureKmlLoaded = function(map){
 			if(!this.kmlLayer) {
-				this.kmlLayer = new google.maps.KmlLayer(this.kml, {
+				this.kmlLayer = new google.maps.KmlLayer(this.kml+"?x", {
 					map: map,
 					preserveViewport: true,
 					suppressInfoWindows: true
