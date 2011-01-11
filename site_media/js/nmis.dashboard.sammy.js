@@ -11,7 +11,7 @@ Mappable.prototype.showMapPoint = function() {
 	}
 	this.mapPoint.setVisible(true)
 }
-Mappable.prototype.flagColor = 'blue';
+Mappable.prototype.flagColor = 'green';
 var flagColors = "blue green orange pink purple red yellow".split(" ");
 Mappable.prototype.icon = function(){
     var flagImage = "/site-media/images/geosilk/flag_"+this.flagColor+".png";
@@ -398,14 +398,33 @@ var zz;
                     this.map.setZoom(zoom)
                 }
             },
-            displayPoints: function(arr){
-                $(_list).each(function(){
-                    if(arr.indexOf(this)==-1) {
-                        this.hideMapPoint();
-                    } else {
+            ensureDistrictKmls: function(){
+                var _map = this.map;
+                $(districts).each(function(){
+                    this.ensureKmlLoaded(_map);
+                })
+            },
+            display: function(list, opts){
+                if(!opts){var opts={}}
+                if(opts.hideList) {
+                    $(opts.hideList).each(function(){
+                        if(list.indexOf(this)==-1) {
+                            this.hideMapPoint();
+                        } else {
+                            this.showMapPoint();
+                        }
+                    })
+                } else {
+                    $(arr).each(function(){
                         this.showMapPoint();
-                    }
-                });
+                    });
+                }
+                if(opts.boundWindow) {
+                    var curWindow = list.latLngWindow();
+					if(curWindow) {
+						this.setMapCenter(curWindow.lat, curWindow.lng, curWindow)
+					}
+                }
             },
             key: function(opts){
                 if(!this.mapKey) {
@@ -417,9 +436,10 @@ var zz;
                 }
             },
             addSelector: function(opts, fn){
-                var choices = opts.list;
-                var text = opts.text;
-                var selector = $("<select />");
+                var choices = opts.list || [],
+                    text = opts.text,
+                    selector = $("<select />");
+                
                 $(choices).each(function(){
                     if(this.name) {
                         var opt = $("<option />", {value: this.id}).html(this.name)
@@ -427,7 +447,8 @@ var zz;
                         var opt = $("<option />").html(String(this));
                     }
                     selector.append(opt);
-                })
+                });
+
                 var selectorDiv = $("<div />", {'class':'selector-wrap'}).html(text);
                 selectorDiv.append(selector);
                 MapKey.selectors().append(selectorDiv);
@@ -482,8 +503,11 @@ var zz;
         });
         map = new mapObj();
         
-        this.helper('SetMapElem', function(elem){gmapElem = $(elem)})
+        this.helper('SetMapElem', function(elem){gmapElem = $(elem)});
+        var mapLoadCallbacks = [];
+        this.helper('addMapLoadCallback', function(cb){mapLoadCallbacks.push(cb);})
         this.helper('Map', function(cb){
+            mapLoadCallbacks.push(cb);
             if(!loadFinished) {
                 var sammyObj = this;
                 gmapElem.bind('gmapLoaded', function(){
@@ -491,7 +515,10 @@ var zz;
                     gmap = new google.maps.Map(gmapElem.get(0), {zoom:6,center:new google.maps.LatLng(9.243092645104804, 7.9156494140625), mapTypeId:'terrain', mapTypeControl: false});
                     _map = gmap;
                     map.map = gmap;
-                    cb.call(map);
+//                    cb.call(map);
+                    $(mapLoadCallbacks).each(function(){
+                        this.call(map);
+                    })
                 });
             } else {
                 if(!gmap) {
@@ -499,7 +526,10 @@ var zz;
                     map.map = gmap;
                     _map = gmap;
                 }
-                cb.call(map);
+                // cb.call(map);
+                $(mapLoadCallbacks).each(function(){
+                    this.call(map);
+                })
             }
             if(!loadStarted) {
                 $.getScript('http://maps.google.com/maps/api/js?sensor=false&callback=SammyMapLoaded');

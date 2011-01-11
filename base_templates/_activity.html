@@ -1,69 +1,46 @@
-<p>Activity:</p>
-<table id="activity-list" class="fullw">
+<h2>
+	Activities
+</h2>
+<table id="activity-list" class="shade-alternate fullw padded">
 	<thead>
-		<th>
-			Date
-		</th>
-		<th>
-			Title
-		</th>
-		<th>
-			Survey Type
-		</th>
-		<th>
-			Phone
-		</th>
+		<tr>
+			<th>Date</th>
+			<th>Surveyor</th>
+			<th>Title</th>
+			<th>Survey Type
+			</th>
+		</tr>
 	</thead>
 </table>
 
 <script id="activityRow" type="text/x-jquery-tmpl">
     <tr>
-		<td>
-			<a href="#/map/survey/${id}" title="View on map">
-				${date}
-			</a>
+		<td class='date'>
+			<span class="dt">${datetime}</span>
 		</td>
-		<td>${title}</td>
-		<td>${survey_type}</td>
-		<td>${phone}</td>
+		<td class='surveyor'>${surveyor}</td>
+		<td class='title'>${title}</td>
+		<td class='survey_type ${survey_type}'>${survey_type}</td>
 	</tr>
 </script>
 
 <script type="text/javascript" charset="utf-8">
-	var activityTemplate = $('#activityRow').template();
-	
-	$('#main').bind('activity-data-load', function(){
-		_list = new ActivityList(storage.get('activity').data);
-		$.tmpl(activityTemplate, _list).appendTo('#activity-list')
-		var surveyColors = {
-			'water': 'blue',
-			'education': 'green',
-			'health': 'red'
-		}
-		$(_list).each(function(){
-			this.setFlagColor(surveyColors[this.survey])
-		})
-	})
+	/*- Uses jQuery $.tmpl to project activity-list onto table.
+	- 
+	-*/
+	WithActivityList(function(list){
+		var templateList = [],
+			templ = $('#activityRow').template();
 
+		//for some reason, the activity-list cannot be run through the $.tmpl()
+		$(list.sort(function(a, b){return a.dateObj < b.dateObj})).each(function(){templateList.push(this)});
+		$.tmpl(templ, templateList).appendTo($("#activity-list"))
+		delete(templateList)
+	});
+	
 	dashboard.get("#/activity", function(context){
 		this.switchTo("activity");
         this.title("Activity");
     });
-
-
-	var Activities = (function(){
-		var activity = false;
-		function getActivity(){
-			if(!activity) {
-				activity = storage.get('activity').data;
-			}
-		}
-		
-		return {
-			bySite: function(){
-				
-			}
-		}
-	})()
 
 </script>
