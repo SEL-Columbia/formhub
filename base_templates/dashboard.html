@@ -17,6 +17,7 @@
 	<link rel="stylesheet" href="/site-media/css/tables.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
 	<link rel="stylesheet" href="/site-media/css/generated-donotedit.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
 	<link rel="stylesheet" href="/site-media/jquery-ui/jquery-ui-1.8.7.custom.css" type="text/css" media="screen" title="Sitewide" charset="utf-8" />
+	{% load i18n %}
 	<style type="text/css" media="screen">
 		table.fullw {
 			width: 100%;
@@ -34,14 +35,22 @@
 			<a href="/#/" id="hlogo"><img src="/site-media/images/nmis_pilot.png" /></a>
 			<h2 class="title">Baseline Data Collection &raquo; <span id="page-title">Dashboard</span></h2>
 		<div class="account_links">
-			<a href="/admin">Admin</a>
+			{% if user.is_authenticated %}
+			{% trans "Logged in" %}: {{ user.username }} 
+			(<a href="{% url auth_logout %}">{% trans "Log out" %}</a> | 
+			<a href="{% url auth_password_change %}">{% trans "Change password" %}</a>)
+			{% else %}
+			<a href="{% url auth_login %}">{% trans "Log in" %}</a>
+			{% endif %}
 		</div>
 		</div>
 	</div>
+	{% if user.is_authenticated %}
 	<ul id="menu">
 		<div class="fwidth">
 		</div>
 	</ul>
+	{% endif %}
 	<div id="content">
 		<script src="/site-media/js/activity-list.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" charset="utf-8">
@@ -49,6 +58,8 @@
 		</script>
 		
 		<div class="fwidth">
+			{% if user.is_authenticated %}
+			
 			<div class="full-content sliding" id="main">
 				<div class="iwrap" id="dashboard">
 					<div class="iiwrap">
@@ -83,8 +94,12 @@
 					<a href="#" class="dontChangePage loadDistricts">Load LGA District Files</a>
 				</div>
 			</div>
+			{% endif %}
+			
 		</div>
 	</div>
+	{% if user.is_authenticated %}
+	
 	<script type="text/javascript" charset="utf-8">
 	
 	$('body').delegate('.dontChangePage', 'click', function(evt){
@@ -105,5 +120,7 @@
 		SetResizer(jQuery, ".iiwrap", "#header, #menu", (16+24));
 
 	</script>
+	{% endif %}
+	
 </body>
 </html>
