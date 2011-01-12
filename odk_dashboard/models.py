@@ -49,7 +49,10 @@ class GPS(models.Model):
                     min_val = mv
                     district = districts[x]
         return district
-            
+
+    def save(self, *args, **kwargs):
+        self.district = self.closest_district()
+        super(GPS, self).save(*args, **kwargs)
 
 class District(MP_Node):
     name = models.CharField(max_length=50)
