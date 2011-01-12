@@ -49,6 +49,11 @@ def submission(request):
     response['Location'] = "http://%s/submission" % request.get_host()
     return response
 
+read_all_data, created = Permission.objects.get_or_create(
+    name = "Can read all data",
+    content_type = ContentType.objects.get_for_model(Permission),
+    codename = "read_all_data"
+    )
 @permission_required("auth.read_all_data")
 def survey_list(request):
     rows = [["Title", "Submission Count", "Last Submission", "Export"]]
