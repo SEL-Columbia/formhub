@@ -97,7 +97,7 @@ class Location(models.Model):
     gps = models.ForeignKey(GPS, null=True, blank=True)
 
 class ParsedInstance(models.Model):
-    instance = models.ForeignKey(Instance)
+    instance = models.OneToOneField(Instance)
     survey_type = models.ForeignKey(SurveyType)
     start = models.DateTimeField()
     end = models.DateTimeField()
