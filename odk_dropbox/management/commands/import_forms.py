@@ -21,5 +21,5 @@ class Command(BaseCommand):
                     field_name="xml_file",
                     content_type="text/xml"
                     )
-                models.Form.objects.create(xml_file=xml_file, active=True)
+                models.Form.objects.create(xml_file=xml_file, active=False)
                 xml_file.close()

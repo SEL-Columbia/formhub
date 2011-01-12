@@ -23,7 +23,6 @@ class Form(models.Model):
     title = models.CharField(editable=False, max_length=64)
 
     class Meta:
-        unique_together = (("title", "active"),)
         verbose_name = "XForm"
         verbose_name_plural = "XForms"
         ordering = ("id_string",)
@@ -32,6 +31,8 @@ class Form(models.Model):
         form_parser = utils.FormParser(self.xml_file)
         self.id_string = form_parser.get_id_string()
         self.title = form_parser.get_title()
+        if Form.objects.filter(title=self.title, active=True).count()>0:
+            raise Exception("We can only have a single active form with a particular title")
         super(Form, self).save(*args, **kwargs)
 
     def __unicode__(self):
