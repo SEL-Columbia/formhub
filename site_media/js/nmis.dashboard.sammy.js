@@ -575,8 +575,13 @@ var dashboard = (function($){
         this.use(Sammy.Template);
         
         this.get("#/", function(context){
-            this.switchTo("dashboard");
+            var dashbElem = this.switchTo("dashboard");
             this.title("Dashboard");
+            $.get("/survey-list", function(htResponse){
+                var surveyList = $(htResponse);
+                $('a', surveyList).button();
+                $('.iiwrap', dashbElem).html(surveyList);
+            })
         })
     });
     $(function(){
