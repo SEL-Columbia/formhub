@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+
+
+{% block page-id %}edit-report{% endblock %}
+
+
+{% block title %}Edit report{% endblock %}
+
+{% block content %}
+
+<!-- this is redondant with the browser back button but is necessary
+as non advanced user get easily lost in a complex app -->
+<p><a href="{% url dashboard %}">&lt; Back to report list</a></p>
+
+<h2>Edit report: "{{ report.name }}"</h2>
+
+<!-- Basic report edit form. Nothing complicated, calls a generic django_view -->
+{{ form.errors }}
+
+<form method="post" action=".">
+<label>Name: <label>{{ form.name }}
+<input value="Save" type="submit" />
+{% csrf_token %}
+</form>
+
+<!-- If there is more than one view for the report, display the list of the
+views. The user will be able to choose the one he wants to edit. 
+If there is only ONE view (the defaul one), the user may probably don't even
+know you can add a view. To simplify his life, we display links to actions he can
+perform on the default view, to let him think he is acting directly on the report 
+level hiding the complexity of views. Power users always add a view if the want. -->
+{% with report.views.all as views %}
+{% if views %}
+    {% if views.count > 1 %}
+    <p>Report views:</p>
+    <ul>
+        {% for view in views %}
+            <li>
+                <a class='edit-view-link' href="{% url edit-view-settings view.pk %}">
+                    {{ view.name }}
+                </a>
+                <span class='delete'>
+                    <a  href="{% url delete-view view.pk %}">
+                        delete
+                    </a>
+                </span>
+             </li>
+        {% endfor  %}
+    </ul>
+    {% else %}
+   
+    {% with views.0 as view %}
+    <ul>
+        <li>
+            <a class='edit-view-link' href="{% url edit-view-indicators view.pk %}">
+                Choose the data for this report
+            </a>
+         </li>
+        <li>
+            <a class='edit-view-link' href="{% url edit-view-aggregators view.pk %}">
+                Group the data by values
+            </a>
+         </li>
+        <li>
+            <a class='edit-view-link' href="{% url edit-view-data-display view.pk %}">
+                Organize the data display
+            </a>
+         </li>
+    </ul>
+    {% endwith %}
+    {% endif %}
+
+{% else %}
+<!-- Again, fallback in the improbable, but yet possible case of a report
+with no view -->
+<p>This report has no view.</p>
+{% endif %}
+<p><a href="{% url add-view-to-report report.pk %}">Add a view to this report</a></p>
+{% endwith %}
+
+
+{% endblock %}

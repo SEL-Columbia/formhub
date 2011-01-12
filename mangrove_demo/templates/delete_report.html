@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+
+
+{% block page-id %}delete-report{% endblock %}
+
+
+{% block title %}Delete report{% endblock %}
+
+{% block content %}
+
+<h2> Delete report: "{{ report.name }}"</h2>
+
+<p>Are you sure you want to delete this report ?</p>
+
+<!-- .
+You won't find any python view for this template cause it uses a django generic_view
+as it doesn't do anything complicated (deleting a report is just calling report.delete()).
+You'll find the django generic_view in the urls.py.
+
+This is a standard template for the django generic_view to delete something with
+a confirmation: it will display confirmation on GET, but delete on POST, hence
+this form.
+
+It's very nice for interacting with AJAX, as you can just POST to the generic view
+to delete the object.
+ -->
+
+<form method="post" action=".">
+    <p class="confirm">
+    <a href="{% url dashboard %}">Cancel</a>
+    <input value="yes, Delete" type="submit" />
+    </p>
+    {% csrf_token %}
+</form>
+
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+
+<!-- 
+Where you edit the view object property: name, date format, etc.
+Just a genric_view and a django ModelForm.
+-->
+
+
+{% block content %}
+
+<h3>Add a view to report "{{ report.name }}"</h3>
+
+<!-- Basic creation form. Can't use a generic view since we create from another -->
+{{ form.errors }}
+
+<form method="post" action=".">
+<p><label>Name: </label>{{ form.name }}</p>
+<input value="Add" type="submit" />
+{% csrf_token %}
+</form>
+
+{% endblock %}
+

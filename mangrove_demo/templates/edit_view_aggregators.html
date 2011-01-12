@@ -1,0 +1,42 @@
+{% extends "edit_view_base.html" %}
+
+<!-- 
+Where you add/remove/edit aggregators in a view. One form to choose the
+data to aggregate, one to choose how to aggregate it.
+-->
+
+
+{% block view-settings %}
+
+<h3>Group the data by values</h3>
+
+<!-- This form is generated dynamically from the view, creating as many options
+as there are indicators in the report, selecting the current one
+that is aggregated, and providing aggregation options if needed.
+There are only two possible field so it's easier to style than other dynamic
+forms.
+is a safe bet. -->
+{{ form.errors }}
+
+{% if view.report.indicators.exists %}
+    <form method="post" action="." id="aggregation-form">
+    <p>Group data by:<br/>
+    {{ form.aggregate_by }}
+    
+    {% if form.options %}
+    <!-- some aggregators have options, a subform is automatically generated if 
+    needed -->
+    {{ form.options.as_p }}
+    {% endif %}
+    
+    </p>
+    <p><input value="Save" type="submit" /></p>
+    {% csrf_token %}
+    </form>
+{% else %}
+    <p>You must <a href="{% url edit-view-indicators view.pk %}">choose the data</a>
+       for this report before grouping them</p>
+{% endif %}
+
+{% endblock %}
+

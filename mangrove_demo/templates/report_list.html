@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+
+
+{% block title %}Report List{% endblock %}
+
+{% block page-id %}report-list{% endblock %}
+
+{% block content %}
+
+    <h2>Reports</h2>
+
+    <!-- Just a report list with basic management actions -->
+
+    {% if report_list %}
+    <ul>
+        {% for report in report_list %}
+            <li>
+                <a class='report-link' href="{% url report-results id=report.pk %}">
+                    {{ report }}
+                </a>
+                <span class='edit'>
+                    <a  href="{% url edit-report report.pk %}">
+                        edit
+                    </a>
+                </span>
+                
+                <!-- A simple AJAX improvement would be to delete this report
+                by sending a POST request to the delete adress (no param required) 
+                and remove the report from the list without reloading the page.
+                Of course, you need a confirmation pop up when you click on the delete link.
+                 -->
+                
+                <span class='delete'>
+                    <a  href="{% url delete-report report.pk %}">
+                        delete
+                    </a>
+                </span>
+             </li>
+        {% endfor  %}
+    </ul>
+    {% endif %}
+    <p><a href="{% url create-report %}">Create a new report</a></p>
+
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+
+
+{% block page-id %}create-report{% endblock %}
+
+{% block title %}Create report{% endblock %}
+
+{% block content %}
+
+<h2> Create a new report</h2>
+
+<!-- Very basic form created from the model.
+You won't find any python view for this template cause it uses a django generic_view
+as it doesn't do anything complicated (creating a report is just providing a 
+name a redirecting to the default ReportView, which is created by the form automatically).
+
+You'll find the django generic_view in the urls.py.
+ -->
+
+{{ form.errors }}
+
+<form method="post" action=".">
+    <label>Name: <label>{{ form.name }}
+    <input value="Create" type="submit" />
+    {% csrf_token %}
+</form>
+
+
+{% endblock %}

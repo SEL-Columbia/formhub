@@ -1,0 +1,89 @@
+{% extends "edit_view_base.html" %}
+
+
+<!-- 
+Where set which indicators to display and in which order
+-->
+
+
+{% block view-settings %}
+
+<h3>Organize the data display</h3>
+
+{% if view.selected_indicators.exists %}
+
+     <!-- This method returns a mapping between the indicators of the report
+          and whether they are displayed in this view or not.
+          
+          e.g: {indicator_x: True, indicator_z: False}
+     -->
+
+    {% with view.get_report_indicators_user_choices as indicators_status %}
+
+    <form id="data-display-form" method="post" action=".">
+    <table>
+    
+        <thead>
+        <tr>
+            <th></th>
+            {% for indicator, checked in indicators_status.iteritems %}
+
+                <th>
+
+                <!-- You can easily make an AJAX GET request
+                     instead of that and reorder using drag and drop -->                
+                {% if not forloop.first and checked %}
+                    <a href="{% url edit-view-data-display view.pk %}?decrease-order={{ indicator.pk }}">&lt;</a>
+                {% endif %}
+                
+                <span>{{ indicator.name }}</span>
+                
+                {% if not forloop.last and checked %}
+                    <a href="{% url edit-view-data-display view.pk %}?increase-order={{ indicator.pk }}">&gt;</a>
+                {% endif %}
+                
+                </th>
+                
+
+            {% endfor %}
+        <tr>
+        </thead>
+        
+        <tbody>
+        <tr>
+            <td>Display: </td>
+            {% for indicator, checked in indicators_status.iteritems %}
+
+                <!-- You can easily make an AJAX POST request
+                     instead of that put remember to exclude the indicator colum
+                     from ordering it the user uncheck the box -->                 
+                <td>
+                    <input type="checkbox" {{ checked|yesno:'checked="checked",' }} name="{{ indicator.pk }}" />               
+                </td>
+                
+
+            {% endfor %}
+        <tr>
+        </tbody>
+        
+    </table>
+    <p><input type="submit" value="Save" />{% csrf_token %}</p>
+    </form>
+    
+    {% endwith %}
+    
+{% else %}
+
+    <p>You don't have data to display yet.</p>
+    <p>
+        <a href="{% url edit-view-indicators view.pk %}">
+        Choose the data first
+        </a>
+    </p>
+
+{% endif %}
+
+
+{% endblock %}
+
+

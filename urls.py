@@ -13,4 +13,5 @@ urlpatterns = patterns('',
     (r'^accounts/', include('registration.urls')),
     # static serve site media / only for development
     (r'^site-media/(?P<path>.+)$', 'django.views.static.serve', {'document_root' : MEDIA_ROOT}),
+    url(r'^mangrove/', include('mangrove_demo.urls'), name='mangrove-dashboard'),
 )
