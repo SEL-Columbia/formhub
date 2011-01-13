@@ -13,9 +13,14 @@ import datetime
 def ensure_logged_in(request):
     resp = "OK"
     if request.user.is_authenticated():
-        return HttpResponseRedirect("/rapid_odk/")
+        return HttpResponseRedirect("/main/")
     else:
-        return HttpResponseRedirect("/login")
+        return HttpResponseRedirect("/accounts/login")
+
+def main_index(request):
+    info={}
+    info['user'] = request.user
+    return render_to_response("index.html", info)
 
 def dashboard(request):
     info = {}
