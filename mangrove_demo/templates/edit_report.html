@@ -9,9 +9,7 @@
 
 {% block content %}
 
-<!-- this is redondant with the browser back button but is necessary
-as non advanced user get easily lost in a complex app -->
-<p><a href="{% url dashboard %}">&lt; Back to report list</a></p>
+<p><a href="{% url reports-list %}">&lt; Back to report list</a></p>
 
 <h2>Edit report: "{{ report.name }}"</h2>
 

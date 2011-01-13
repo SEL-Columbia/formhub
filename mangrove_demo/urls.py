@@ -26,7 +26,7 @@ urlpatterns = patterns("",
   
     url(r'report/delete/(?P<object_id>\d+)/$',  
         "django.views.generic.create_update.delete_object",
-        {"model": Report, "post_delete_redirect": 'dashboard',
+        {"model": Report, "post_delete_redirect": 'reports-list',
          "login_required": True, "template_name": "delete_report.html",
          'template_object_name': 'report'},
         name='delete-report'),
@@ -42,7 +42,7 @@ urlpatterns = patterns("",
         "mangrove_demo.views.display_report", 
         name='report-results'),          
 
-    url(r'reports/manage/$', 
+    url(r'reports/manage/?$', 
         object_list, {'queryset': Report.objects.all(),
                        'template_name': 'report_list.html', 
                        'template_object_name': 'report'}, 
@@ -83,7 +83,6 @@ urlpatterns = patterns("",
         name='edit-view-data-display'), 
    
         
-    url(r'$',  redirect_to, { 'url': "/reports/manage/" }, name='dashboard')
 )
 
 
