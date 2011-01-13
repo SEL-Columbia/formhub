@@ -2,6 +2,27 @@
 </div>
 <script type="text/javascript" charset="utf-8">
 	
+	
+	var MapPopup = (function(){
+		var showing = false;
+		var wrapElem;
+		function show(elem){
+			if(!wrapElem) {
+				wrapElem = $("#map #m-key");
+			}
+			if(showing) {
+				$(showing).dialog('close');
+				$(showing).remove();
+			}
+			$(elem).dialog({
+				resizable: false,
+				width: 600
+			});
+			showing = elem;
+		}
+		return show;
+	})()
+	
 	var objs = {};
 	
 	var surveys = {{surveys|safe}}
@@ -315,7 +336,7 @@
 			var district = findDistrict(this.params['district']),
 				obj = this.params['obj'],
 				survey = obj;
-
+			
 			this.switchTo("map");
 			if(survey && survey !== 'undefined') {
 				this.title("Map "+district.name+" by Survey")
@@ -511,20 +532,37 @@
 //					this.setCenter()
 					var survey = list.find(surveyId);
 					var hheight = $($('.iiwrap')[0]).height();
-					$.tmpl(surveyViewTemplate, survey).appendTo('#map #m-key');
+					var t = $.tmpl(surveyViewTemplate, survey);
+					var dest = $('.survey-content', t);
+					$.get('/embed/survey_instance_data/'+survey.id, function(data){
+						dest.append(data);
+					})
+					MapPopup(t);
+//					$("#map #m-key").append(t);
 				})
 			});
-			
 		});
 	})();
 	
 	var __map;
 </script>
 <script id="survey-view" type="text/x-jquery-tmpl">
-   	<div class="survey-view" style="position:absolute;margin:0 20px;background-color:#fff;width:700px;top:80px;padding:8px 18px;">
-<a href="#" class="dontChangePage">[X]</a>
-		<h3>${title}</h3>
-		<h3>${id}</h3>
+   	<div class="survey-view" title="${title}">
+	<table>
+		<tr>
+			<td style="width:48%">
+				<div class='im-wrap'>
+					<img src="${image_url}" width="100%" />
+					<p class='im-caption'>
+						${title}
+					</p>
+				</div>
+			</td>
+			<td style="width:48%;vertical-align:top">
+				<div class="survey-content"></div>
+			</td>
+		</tr>
+	</table>
 	</div>
 </script>
 <script type="text/javascript" charset="utf-8">

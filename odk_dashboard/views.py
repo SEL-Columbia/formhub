@@ -166,3 +166,7 @@ def median_time_between_surveys(request):
 def analysis_section(request):
     info = {'sectionname':'analysis'}
     return render_to_response("analysis.html", info)
+
+def embed_survey_instance_data(request, survey_id):
+    info = {'survey_id':survey_id}
+    return render_to_response("survey_instance_data.html", info)

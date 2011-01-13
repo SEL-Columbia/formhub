@@ -95,6 +95,9 @@ var ActivityList, ActivityPoint;
 		if(this.gps && this.gps.district_id) {
 			this.district_id=this.gps.district_id
 		}
+		if(this.images) {
+		    this.image_url = this.images[0]
+		}
 		if(this.datetime) {
 		  this.processDateTime();
 		}
@@ -102,6 +105,9 @@ var ActivityList, ActivityPoint;
 		
 	}
 	_ActivityPoint.prototype = new Mappable();
+    _ActivityPoint.prototype.mapPointListener = function(){
+        dashboard.setLocation("#/map/survey/"+this.id)
+    }
 	_ActivityPoint.prototype.district=function(){
 		var result, district_id = this.district_id;
 		if(this.district_id) {

@@ -8,6 +8,12 @@ Mappable.prototype.showMapPoint = function() {
 			map: _map,
 			icon: this.icon()
 		});
+		if(this.mapPointListener) {
+		    var _pt = this;
+    		google.maps.event.addListener(this.mapPoint, 'click', function(){
+    		    _pt.mapPointListener();
+    		});
+		}
 	}
 	this.mapPoint.setVisible(true)
 }
