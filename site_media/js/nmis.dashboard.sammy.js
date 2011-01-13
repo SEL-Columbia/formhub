@@ -545,19 +545,12 @@ var zz;
     }
 })()
 
-var urls = {
-    dashboard: "#/",
-    activity: '#/activity',
-    freqTables: '#/frequency-tables',
-    map: '#/map',
-    mapBy: '#/map/by/(.*)'
-}
 var dashboard = (function($){
     $(function(){
         var menu = $('#menu .fwidth').empty();
-        menu.append($('<li />').html($("<a />", {href:urls.activity}).html("Activity")))
-        menu.append($('<li />').html($("<a />", {href:urls.freqTables}).html("Frequency Tables")))
-        menu.append($('<li />').html($("<a />", {href:urls.map}).html("Map")))
+        menu.append($('<li />').html($("<a />", {href:"#/activity"}).html("Activity")))
+        menu.append($('<li />').html($("<a />", {href:"#/frequency-tables"}).html("Frequency Tables")))
+        menu.append($('<li />').html($("<a />", {href:"#/map"}).html("Map")))
     })
     
     var dashboard = $.sammy("#main", function(){
