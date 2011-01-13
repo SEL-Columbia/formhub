@@ -59,5 +59,5 @@ INSTALLED_APPS = (
     "generic_report",
     "generic_report_admin",
     "mangrove_demo",
-    "simple_locations",
+    # "simple_locations",
 )

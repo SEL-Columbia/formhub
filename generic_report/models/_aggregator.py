@@ -16,7 +16,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.utils.datastructures import SortedDict
 
-from simple_locations.models import AreaType
+try:
+    from simple_locations.models import AreaType
+except:
+    AreaType = None
 
 
 class Aggregator(models.Model):
