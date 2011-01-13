@@ -145,7 +145,6 @@ var ActivityList, ActivityPoint;
               storage.set('activity_stamp', [data.stamp]);
               storage.set('activity', data.data);
               activityCaller.list = new ActivityList(data.data);
-              console.log(activityCaller.list)
               window.__list = activityCaller.list;
               $(callbacks).each(function(){
                   this.call(activityCaller, activityCaller.list);
@@ -166,7 +165,6 @@ var ActivityList, ActivityPoint;
                 storage.set('activity_stamp', [data.stamp]);
                 storage.set('activity', data.data);
                 activityCaller.list = new ActivityList(data.data);
-                console.log(activityCaller.list)
                 window.__list = activityCaller.list;
                 $(callbacks).each(function(){
                     this.call(activityCaller, activityCaller.list);
