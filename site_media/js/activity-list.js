@@ -115,6 +115,16 @@ var ActivityList, ActivityPoint;
 		}
 		return result;
 	}
+	_ActivityPoint.prototype.prepForTemplate = function(){
+	    if(!this.dateObj) {this.processDateTime();}
+	    var months = "January February March April May June July August September October November December".split(" ")
+	    var _ds = "[";
+	    _ds += this.dateObj.getDate();
+	    _ds += " " + months[this.dateObj.getMonth()];
+	    _ds += ", " + (1900+this.dateObj.getYear());
+	    _ds += "]";
+	    this.photoContextString = _ds;
+	}
 	_ActivityPoint.prototype.processDateTime = function(){
 	    this.dateObj = (function(dt){
 	        var date = dt.split(" ")[0];

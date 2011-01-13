@@ -530,6 +530,7 @@
 					this.key({clear:true});
 //					this.setCenter()
 					var survey = list.find(surveyId);
+					survey.prepForTemplate();
 					var hheight = $($('.iiwrap')[0]).height();
 					var t = $.tmpl(surveyViewTemplate, survey);
 					var dest = $('.survey-content', t);
@@ -553,7 +554,7 @@
 				<div class='im-wrap'>
 					<img src="${image_url}" width="100%" />
 					<p class='im-caption'>
-						${title}
+						${photoContextString}
 					</p>
 				</div>
 			</td>
