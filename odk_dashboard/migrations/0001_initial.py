@@ -23,6 +23,7 @@ class Migration(SchemaMigration):
             ('longitude', self.gf('django.db.models.fields.FloatField')()),
             ('altitude', self.gf('django.db.models.fields.FloatField')()),
             ('accuracy', self.gf('django.db.models.fields.FloatField')()),
+            ('district', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['odk_dashboard.District'], null=True, blank=True)),
         ))
         db.send_create_signal('odk_dashboard', ['GPS'])
 
@@ -37,7 +38,6 @@ class Migration(SchemaMigration):
             ('kml_present', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('active', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('latlng_string', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('gps', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['odk_dashboard.GPS'], null=True, blank=True)),
         ))
         db.send_create_signal('odk_dashboard', ['District'])
 
@@ -59,7 +59,7 @@ class Migration(SchemaMigration):
         # Adding model 'ParsedInstance'
         db.create_table('odk_dashboard_parsedinstance', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('instance', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['odk_dropbox.Instance'])),
+            ('instance', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['odk_dropbox.Instance'], unique=True)),
             ('survey_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['odk_dashboard.SurveyType'])),
             ('start', self.gf('django.db.models.fields.DateTimeField')()),
             ('end', self.gf('django.db.models.fields.DateTimeField')()),
@@ -143,7 +143,6 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'District'},
             'active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'depth': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'gps': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['odk_dashboard.GPS']", 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'kml_present': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'latlng_string': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
@@ -156,6 +155,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'GPS'},
             'accuracy': ('django.db.models.fields.FloatField', [], {}),
             'altitude': ('django.db.models.fields.FloatField', [], {}),
+            'district': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['odk_dashboard.District']", 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'latitude': ('django.db.models.fields.FloatField', [], {}),
             'longitude': ('django.db.models.fields.FloatField', [], {})
@@ -171,7 +171,7 @@ class Migration(SchemaMigration):
             'date': ('django.db.models.fields.DateField', [], {}),
             'end': ('django.db.models.fields.DateTimeField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'instance': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['odk_dropbox.Instance']"}),
+            'instance': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['odk_dropbox.Instance']", 'unique': 'True'}),
             'location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['odk_dashboard.Location']", 'null': 'True', 'blank': 'True'}),
             'phone': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['odk_dashboard.Phone']"}),
             'start': ('django.db.models.fields.DateTimeField', [], {}),

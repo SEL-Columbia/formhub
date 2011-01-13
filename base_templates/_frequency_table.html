@@ -42,11 +42,11 @@
 	})
 	var tableTypes = {{table_types|safe}};
 	
-	dashboard.get(urls.freqTables, function(context){
+	dashboard.get("#/frequency-tables", function(context){
 		this.switchTo("frequency-tables");
         this.title("Frequency Tables");
     });
-	dashboard.get(urls.freqTables+"/:row/:col", function(context){
+	dashboard.get("#/frequency-tables/:row/:col", function(context){
 		this.switchTo("frequency-tables");
         this.title("Frequency Tables");
 

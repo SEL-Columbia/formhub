@@ -8,6 +8,12 @@ Mappable.prototype.showMapPoint = function() {
 			map: _map,
 			icon: this.icon()
 		});
+		if(this.mapPointListener) {
+		    var _pt = this;
+    		google.maps.event.addListener(this.mapPoint, 'click', function(){
+    		    _pt.mapPointListener();
+    		});
+		}
 	}
 	this.mapPoint.setVisible(true)
 }
@@ -545,19 +551,12 @@ var zz;
     }
 })()
 
-var urls = {
-    dashboard: "#/",
-    activity: '#/activity',
-    freqTables: '#/frequency-tables',
-    map: '#/map',
-    mapBy: '#/map/by/(.*)'
-}
 var dashboard = (function($){
     $(function(){
         var menu = $('#menu .fwidth').empty();
-        menu.append($('<li />').html($("<a />", {href:urls.activity}).html("Activity")))
-        menu.append($('<li />').html($("<a />", {href:urls.freqTables}).html("Frequency Tables")))
-        menu.append($('<li />').html($("<a />", {href:urls.map}).html("Map")))
+        menu.append($('<li />').html($("<a />", {href:"#/activity"}).html("Activity")))
+        menu.append($('<li />').html($("<a />", {href:"#/frequency-tables"}).html("Frequency Tables")))
+        menu.append($('<li />').html($("<a />", {href:"#/map"}).html("Map")))
     })
     
     var dashboard = $.sammy("#main", function(){
@@ -575,8 +574,13 @@ var dashboard = (function($){
         this.use(Sammy.Template);
         
         this.get("#/", function(context){
-            this.switchTo("dashboard");
+            var dashbElem = this.switchTo("dashboard");
             this.title("Dashboard");
+            $.get("/survey-list", function(htResponse){
+                var surveyList = $(htResponse);
+                $('a', surveyList).button();
+                $('.iiwrap', dashbElem).html(surveyList);
+            })
         })
     });
     $(function(){

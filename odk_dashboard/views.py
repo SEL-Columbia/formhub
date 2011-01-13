@@ -3,11 +3,19 @@ from django.utils import simplejson
 from django.shortcuts import render_to_response
 from djangomako import shortcuts
 from django.db.models import Avg, Max, Min, Count
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from odk_dropbox import utils
 from odk_dropbox.models import Form
 from .models import ParsedInstance, Phone, District
 import datetime
+
+
+def ensure_logged_in(request):
+    resp = "OK"
+    if request.user.is_authenticated():
+        return HttpResponseRedirect("/rapid_odk/")
+    else:
+        return HttpResponseRedirect("/login")
 
 def dashboard(request):
     info = {}
@@ -16,6 +24,8 @@ def dashboard(request):
     info['districts'] = simplejson.dumps([x.to_dict() for x in districts])
     forms = Form.objects.all()
     info['surveys'] = simplejson.dumps(list(set([x.title for x in forms])))
+    info['user'] = request.user
+#    return HttpResponse(request.user)
     return render_to_response('dashboard.html', info)
 
 def recent_activity(request):
@@ -156,3 +166,7 @@ def median_time_between_surveys(request):
 def analysis_section(request):
     info = {'sectionname':'analysis'}
     return render_to_response("analysis.html", info)
+
+def embed_survey_instance_data(request, survey_id):
+    info = {'survey_id':survey_id}
+    return render_to_response("survey_instance_data.html", info)

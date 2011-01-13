@@ -49,7 +49,10 @@ class GPS(models.Model):
                     min_val = mv
                     district = districts[x]
         return district
-            
+
+    def save(self, *args, **kwargs):
+        self.district = self.closest_district()
+        super(GPS, self).save(*args, **kwargs)
 
 class District(MP_Node):
     name = models.CharField(max_length=50)
@@ -97,7 +100,7 @@ class Location(models.Model):
     gps = models.ForeignKey(GPS, null=True, blank=True)
 
 class ParsedInstance(models.Model):
-    instance = models.ForeignKey(Instance)
+    instance = models.OneToOneField(Instance)
     survey_type = models.ForeignKey(SurveyType)
     start = models.DateTimeField()
     end = models.DateTimeField()

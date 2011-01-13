@@ -4,6 +4,8 @@
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render_to_response
 from djangomako.shortcuts import render_to_response as mako_to_response
 from django.http import HttpResponse
@@ -49,6 +51,11 @@ def submission(request):
     response['Location'] = "http://%s/submission" % request.get_host()
     return response
 
+read_all_data, created = Permission.objects.get_or_create(
+    name = "Can read all data",
+    content_type = ContentType.objects.get_for_model(Permission),
+    codename = "read_all_data"
+    )
 @permission_required("auth.read_all_data")
 def survey_list(request):
     rows = [["Title", "Submission Count", "Last Submission", "Export"]]
@@ -71,12 +78,28 @@ def xls_to_response(xls, fname):
 def xls(request, title):
     form = Form.objects.get(title=title, active=True)
     form_parser = utils.FormParser(form.path())
-    headers = form_parser.get_variable_list()
-
+    LGA = "lga"
+    headers = [LGA]
+    for h in form_parser.get_variable_list():
+        if not (h.startswith(LGA) or h.startswith("state") or h=="zone"):
+            headers.append(h)
     table = [headers]
     for i in Instance.objects.filter(form__title=form.title):
         d = utils.parse_instance(i).get_dict()
-        table.append( [d.get(header, u"n/a") for header in headers] )
+        row = []
+        for h in headers:
+            if h==LGA:
+                try:
+                    row.append(i.parsedinstance.location.gps.district.name)
+                except:
+                    found = False
+                    for k in d.keys():
+                        if k.startswith(LGA):
+                            row.append(d[k])
+                            found = True
+                    if not found: row.append("n/a")
+            else: row.append(d.get(h, u"n/a"))
+        table.append(row)
 
     wb = xlwt.Workbook()
     ws = wb.add_sheet("Data")
