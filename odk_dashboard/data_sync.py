@@ -9,6 +9,14 @@ from odk_dropbox.models import Form
 from .models import ParsedInstance, Phone
 import datetime
 
+def survey_values(request, survey_id):
+    """This function returns values that populate the survey view for an individual profile"""
+    dummy_data = [{'question':'Average Height of Student', 'id':0, 'answer':'1.2m', 'code':'0a'}, \
+        {'question':'School attendance rate (males):', 'id':1, 'answer':'85%', 'code': '2a'}, \
+        {'question':'School attendance rate (females):', 'id':2, 'answer':'25%', 'code': '2b'}
+    ]
+    return simplejson.dumps(dummy_data)
+
 def activity_list(request, stamp):
     if stamp_up_to_date(ParsedInstance, stamp):
         return HttpResponse(simplejson.dumps("OK"))
