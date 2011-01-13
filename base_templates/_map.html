@@ -94,10 +94,7 @@
 	}
 	
 	(function(){
-		var mapStorage = new Sammy.Store({name:'mapStorage',element:'#map',type:'local'}),
-			mapWrap = false,
-			mapState = {},
-			empty = (null==mapStorage.get('first'));
+		var mapState = {};
 		
 		function changeMapState(ms, opts) {
 			return $.extend(ms, opts);
@@ -117,6 +114,7 @@
 				this.ensureDistrictKmls();
 			})
 			this.Map(function(){
+				__map = this.map;
 				this.nigeriaCenter();
 
 				this.key({clear:true});
@@ -498,8 +496,39 @@
 			})
 		});
 		//end #/map/district/by/date/*
-
+		dashboard.get("#/map/survey/:survey_id", function(list){
+			this.switchTo("map");
+			this.title("View Survey");
+			if(!this.params['survey_id']) {
+				console.log("Redirect ", this.setLocation)
+			}
+			var surveyId = this.params['survey_id'];
+			var _dash = this;
+			WithActivityList(function(list){
+				_dash.Map(function(){
+					var _mapObject = this;
+					this.key({clear:true});
+//					this.setCenter()
+					var survey = list.find(surveyId);
+					var hheight = $($('.iiwrap')[0]).height();
+					$.tmpl(surveyViewTemplate, survey).appendTo('#map #m-key');
+				})
+			});
+			
+		});
 	})();
+	
+	var __map;
+</script>
+<script id="survey-view" type="text/x-jquery-tmpl">
+   	<div class="survey-view" style="position:absolute;margin:0 20px;background-color:#fff;width:700px;top:80px;padding:8px 18px;">
+<a href="#" class="dontChangePage">[X]</a>
+		<h3>${title}</h3>
+		<h3>${id}</h3>
+	</div>
+</script>
+<script type="text/javascript" charset="utf-8">
+	var surveyViewTemplate = $('#survey-view').template();
 </script>
 
 <script type="text/javascript" charset="utf-8">
