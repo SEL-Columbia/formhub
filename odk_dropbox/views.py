@@ -4,6 +4,8 @@
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render_to_response
 from djangomako.shortcuts import render_to_response as mako_to_response
 from django.http import HttpResponse
