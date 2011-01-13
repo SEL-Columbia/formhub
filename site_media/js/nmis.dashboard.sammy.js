@@ -255,7 +255,10 @@ var SetResizer = (function($, resizeSelector, excludeSelector, extraPadding){
                 })
             });
         }
-        this.helper('switchTo', function(dest){
+        this.helper('switchTo', function(dest, opts){
+            if(opts && opts.title) {
+                this.title(opts.title);
+            }
             if(dests.indexOf(dest)!==-1) {
                 destElems[dest].trigger('switchTo');
                 return destElems[dest];

@@ -124,8 +124,7 @@
 		dashboard.setMapElem("#map > div");
 		
 		dashboard.get("#/map", function(context){			
-	        this.title("Map");
-			this.switchTo("map");
+			this.switchTo("map", {title: 'Map'});
 			mapState = changeMapState(mapState, {
 				scale: 'country',
 				district: null,
@@ -172,8 +171,7 @@
 		dashboard.get("#/map/:district", function(){
 			var district = findDistrict(this.params['district']);
 			
-			this.title("Map "+district.name);
-			this.switchTo("map");
+			this.switchTo("map", {title:"Map "+district.name});
 			
 			mapState = changeMapState(mapState, {
 				scale: 'district',
@@ -240,12 +238,13 @@
 				filterItem = this.params.obj,
 				surveyor = this.params.obj;
 
-			this.switchTo("map");
+			var title;
 			if(surveyor && surveyor !=='undefined') {
-				this.title("Map "+district.name+" by Surveyor")
+				title = "Map "+district.name+" by Surveyor";
 			} else {
-				this.title("Map "+district.name+" by Surveyor: "+surveyor)
+				title = "Map "+district.name+" by Surveyor: "+surveyor;
 			}
+			this.switchTo("map", {title: title});
 			mapState = changeMapState(mapState, {
 				scale: 'district',
 				district: district.name,
@@ -337,12 +336,13 @@
 				obj = this.params['obj'],
 				survey = obj;
 			
-			this.switchTo("map");
+			var title;
 			if(survey && survey !== 'undefined') {
-				this.title("Map "+district.name+" by Survey")
+				title = "Map "+district.name+" by Survey"
 			} else {
-				this.title("Map "+district.name+" by Survey: "+survey.toUpperCase())
+				title = "Map "+district.name+" by Survey: "+survey.toUpperCase();
 			}
+			this.switchTo("map", {title:title});
 			mapState = changeMapState(mapState, {
 				scale: 'district',
 				district: district.name,
@@ -430,13 +430,13 @@
 				filterItem = this.params['obj'],
 				date = filterItem;
 
-			this.switchTo("map");
-			
+			var title;
 			if(date && date!=='undefined') {
-				this.title("Map "+district.name+" by Date")
+				title = "Map "+district.name+" by Date"
 			} else {
-				this.title("Map "+district.name+" by Date: "+date)
+				title = "Map "+district.name+" by Date: "+date;
 			}
+			this.switchTo("map", {title:title});
 			
 			mapState = changeMapState(mapState, {
 				scale: 'district',
@@ -518,8 +518,7 @@
 		});
 		//end #/map/district/by/date/*
 		dashboard.get("#/map/survey/:survey_id", function(list){
-			this.switchTo("map");
-			this.title("View Survey");
+			this.switchTo("map", {title: "View Survey"});
 			if(!this.params['survey_id']) {
 				console.log("Redirect ", this.setLocation)
 			}
