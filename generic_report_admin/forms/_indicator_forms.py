@@ -99,9 +99,8 @@ class IndicatorCreationForm(forms.Form):
         the rest is set by default and expect later edition.
     """
 
-
-    TYPES_CHOICES = (("strings", "Letters and words (e.g: 'Steven' or 'X3Y')"),
-                    ("integer", "Numbers (e.g: '34' or '1')"),
+    TYPES_CHOICES = (("string", "Letters and words (e.g: 'Steven' or 'X3Y')"),
+                    ("number", "Numbers (e.g: '34' or '1')"),
                     ("location", "Location (e.g: 'Nigeria' or 'Paris')"),
                     ("ratio", "Ratio between two numbers (e.g: 3 / 5)"),
                     ("rate", "Rate between two numbers (e.g: '80%')"),
