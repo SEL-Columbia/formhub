@@ -15,7 +15,7 @@ def ensure_logged_in(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect("/rapid_odk/")
     else:
-        return HttpResponseRedirect("/admin")
+        return HttpResponseRedirect("/login")
 
 def dashboard(request):
     info = {}
