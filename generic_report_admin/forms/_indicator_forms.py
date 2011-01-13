@@ -14,7 +14,10 @@ from django.forms import ValidationError
 
 import eav
 
-from simple_locations.models import AreaType
+try:
+    from simple_locations.models import AreaType
+except:
+    AreaType = None
 
 from generic_report.models import (Indicator, ValueIndicator,
                                     LocationIndicator,

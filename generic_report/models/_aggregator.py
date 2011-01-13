@@ -19,7 +19,8 @@ from django.utils.datastructures import SortedDict
 try:
     from simple_locations.models import AreaType
 except:
-    AreaType = None
+    # super hack to get things running without simple_locations
+    AreaType = ContentType
 
 
 class Aggregator(models.Model):

@@ -19,8 +19,11 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.db.models import F
 
-from simple_locations.models import AreaType
-
+try:
+    from simple_locations.models import AreaType
+except:
+    # super hack to get things running without simple_locations
+    AreaType = ContentType
 
 # todo: refactor selected_indictor to use the through param
 class SelectedIndicator(models.Model):

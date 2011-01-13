@@ -9,7 +9,10 @@
 from django import forms
 from django.template.defaultfilters import slugify
 
-from simple_locations.models import Area
+try:
+    from simple_locations.models import Area
+except:
+    Area = None
 
 from generic_report.models import Record, ValueIndicator, Report, ReportView
 

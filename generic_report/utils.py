@@ -16,7 +16,10 @@ from django.utils.translation import ugettext as _
 
 from rapidsms.contrib.handlers.exceptions import ExitHandle
 
-from simple_locations.models import Area
+try:
+    from simple_locations.models import Area
+except:
+    Area = None
 
 from report_parts.models import Report
 from models import Results
