@@ -78,12 +78,28 @@ def xls_to_response(xls, fname):
 def xls(request, title):
     form = Form.objects.get(title=title, active=True)
     form_parser = utils.FormParser(form.path())
-    headers = form_parser.get_variable_list()
-
+    LGA = "lga"
+    headers = [LGA]
+    for h in form_parser.get_variable_list():
+        if not (h.startswith(LGA) or h.startswith("state") or h=="zone"):
+            headers.append(h)
     table = [headers]
     for i in Instance.objects.filter(form__title=form.title):
         d = utils.parse_instance(i).get_dict()
-        table.append( [d.get(header, u"n/a") for header in headers] )
+        row = []
+        for h in headers:
+            if h==LGA:
+                try:
+                    row.append(i.parsedinstance.location.gps.district.name)
+                except:
+                    found = False
+                    for k in d.keys():
+                        if k.startswith(LGA):
+                            row.append(d[k])
+                            found = True
+                    if not found: row.append("n/a")
+            else: row.append(d.get(h, u"n/a"))
+        table.append(row)
 
     wb = xlwt.Workbook()
     ws = wb.add_sheet("Data")
