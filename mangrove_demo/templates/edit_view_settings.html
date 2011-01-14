@@ -1,0 +1,24 @@
+{% extends "edit_view_base.html" %}
+
+
+<!-- 
+Where you edit the view object property: name, date format, etc.
+Just a genric_view and a django ModelForm.
+-->
+
+
+{% block view-settings %}
+
+<h3>Customize this view</h3>
+
+<!-- Basic view edit form. Nothing complicated, calls a generic django_view -->
+{{ form.errors }}
+
+<form method="post" action=".">
+{{ form.as_p }}
+<p><input value="Save" type="submit" /></p>
+{% csrf_token %}
+</form>
+
+{% endblock %}
+

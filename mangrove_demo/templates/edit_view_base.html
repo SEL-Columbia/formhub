@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+
+
+{% block page-id %}edit-view{% endblock %}
+
+{% block title %}Edit report view{% endblock %}
+
+<!-- 
+Base templates for all template that we use to modify the view.
+You don't have to do it that way, it's just convenient to have a common
+header -->
+
+
+{% block content %}
+
+<!-- again, hide the complexity of views if there is only one -->
+{% with view.report as report %}
+    {% if report.views.count > 1 %}
+        <p>
+            <a href="{% url edit-report report.pk %}">&lt; Back to report edition</a>
+            | <a href="{% url report-results report.pk %}">Go to report</a>
+        </p>
+        <h2>Edit view: "{{ view.name }}" of report "{{ report.name }}"</h2>
+    {% else %}
+        <p>
+            <a href="{% url edit-report report.pk %}">&lt; Back to report menu</a>
+            | <a href="{% url report-results report.pk %}">Go to report</a>
+        </p>
+        <h2>Edit settings of report "{{ report.name }}"</h2>
+    {% endif %}
+{% endwith %}
+
+<ul id="edit-view-nav" class="span-24">
+    
+    {% if 'update' not in request.view_name %}
+        <li><a href="{% url edit-view-settings view.pk %}">Customize the view</a></li>
+    {% else %}
+        <li>Customize the view</li>
+    {% endif %}
+    
+    {% if 'indicators' not in request.view_name %}
+        <li><a href="{% url edit-view-indicators view.pk %}">Choose the data</a></li>
+    {% else %}
+        <li>Choose the data</li>
+    {% endif %}
+    
+    {% if 'aggregators' not in request.view_name %}
+        <li><a href="{% url edit-view-aggregators view.pk %}">Group the data by values</a></li>
+    {% else %}
+        <li>Group the data by values</li>
+    {% endif %}
+    
+    {% if 'display' not in request.view_name %}
+        <li><a href="{% url edit-view-data-display view.pk %}">Organize the data display</a></li>
+    {% else %}
+        <li>Organize the data display</li>
+    {% endif %}
+</ul>
+
+{% block view-settings %}
+
+{% endblock %}
+
+{% endblock %}

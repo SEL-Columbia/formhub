@@ -1,0 +1,80 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+
+    <head>
+        <title>{% block title %}{% endblock %} - Mangrove</title>
+        
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="{{ MEDIA_URL }}static/mangrove_demo/stylesheets/blueprint/screen.css" type="text/css" media="screen"  />
+        <link rel="stylesheet" href="{{ MEDIA_URL }}static/mangrove_demo/stylesheets/style.css" type="text/css" media="screen"  />
+    </head>
+    
+    <body id='mangrove'>
+        
+        
+        
+        <!-- 
+            This is a basic base.html page and doesn't contains anything specific to Mangrove.
+            
+            I use the blueprint CSS framework for the design. I'm not enforcing it,
+            but I do think we should at least use ONE framework for CSS.
+            
+            No JS at all, everything works with pure HTTP. We can use AJAX
+            for progressive enhancement on the top of it.
+        -->
+        
+        <div id="{% block page-id %}{% endblock %}" > 
+        
+            <div id='header'>
+            
+                <div id='header-top' />
+                
+                    <p class='logout-link'>
+                        <a href="{% url ntd-logout %}">Logout</a>
+                     </p>
+                
+                    <h1>Malaria management tool</h1>
+            
+                </div>
+            
+                <ul id="menu">
+                    
+                    <!-- Don't use my menu as an example, it's messy, I made it in a rush -->
+                    <li {% if 'list' in request.view_name %}class='selected'{% endif %} >
+                        <a href="{% url reports-list %}">Report list</a>
+                    </li>
+                    <li {% if 'create' in request.view_name %}class='selected'{% endif %} >
+                        <a href="{% url create-report %}">Add report</a>
+                    </li>
+
+                    {% if user.is_superuser %}
+                    <li>
+                        <a href="{% url rapidsms-dashboard %}">
+                        RapidSMS admin
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url admin:index %}">
+                        Django admin
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url xforms %}">
+                        Xforms admin
+                        </a>
+                    </li>
+                    {% endif %}
+                
+                </ul>
+            
+            </div>
+        
+            <div id='content' class="container">
+            {% block content %}{% endblock %}
+            </div>
+        </div>
+        
+    </body>
+    
+</html>

@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+
+
+{% block page-id %}dashboard{% endblock %}
+
+
+{% block title %}Report results{% endblock %}
+
+{% block content %}
+
+<div id="dashboard-header" class="span-24 last">
+
+    <h2 id="title-prefix" class="span-24 last">
+        Report: {{ report.name }}
+    </h2>
+    
+    <div id="pagination" class="span-24 last" >
+    
+    <!-- if there is more than one view, we display the pagination link,
+         else, we don't because a basic user will not understand easily
+         view and will probably just want make a report with one view.
+         By working with the default view transparently, we provide
+         a feeling of simplicity -->
+    {% if report.views.count > 1 %}
+    
+    {% if page.has_previous %}
+         <p  class="previous" >
+            <a href="?page={{ page.previous_page_number }}">
+                &lt; Previous
+            </a>
+         </p>
+    {% endif %}
+    
+    <h3 title={{ report.code }}>
+        View: <a href="#">{{ view.name|title }}</a>
+    </h3> 
+     
+    {% if page.has_next %}
+        <p  class="next" >
+            <a href="?page={{ page.next_page_number }}">
+                Next &gt;
+            </a>
+        </p>
+    {% endif %}
+    
+     </div>
+    
+    {% else %}
+             <!-- This should rarely be displayed but can happen if accidently a 
+            user create a report then don't create any view. This situation should
+            be avoided by a good UI but since you can never be sure, we provide
+            a fallback by giving direction to the user to solve his problem. -->
+        {% if not view %}
+            <p>
+               No view declared for this report. You must create a view
+               to describe how you want to display the report.
+            </p>
+            <p><a href="{% url add-view-to-report report.pk %}">Add a view</a></p>
+        {% endif %}
+    {% endif %}
+
+</div>
+
+
+<div class="span-24 last">
+
+<!-- without indicators, their will be no headers, so it won't be displayed -->
+{% if header %}
+   
+    <table>
+
+        <!-- header is provided by the view, and is something you can get
+        automatically from the report. It's the list of the names, in order, 
+        of all indicators the user wish to display.
+        
+        e.g: header = ['Woman', 'Man', 'Total']
+        -->
+        
+        <thead>
+        <tr>
+            {% for cell in header %}
+            <th>{{ cell }}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        
+        <tbody>
+        
+        <!-- header is provided by the view, and is something you can get
+        automatically from the report. It's a list of dictionaries, each of
+        them containing one entry in the report. Dictionaries are in fact
+        instances of SortedDict, so iterating on them will display the data
+        in the same order than the header.
+        
+        e.g: body = ['woman': 15, 'man': 25, 'Total': 40},
+                    {'woman': 10, 'man': 20, 'Total': 30},
+                    ...]
+        
+         -->
+        {% if body %}
+                
+        {% for row in body %}
+            <tr>
+            {% for cell in row.itervalues %}
+                <td>{{ cell }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+        
+        {% else %}
+            <!-- This is perfectly valid and will happens everytime a new
+            report is created but no one entered data yet. If you have a 
+            data entry form on another page, you should provide a link to 
+            it here -->
+            <tr><td  colspan="{{ header|length }}" >Nothing in this report yet.</td></tr>
+        {% endif %}
+        
+        </tbody>
+
+    </table>
+
+    <!-- You'll probably want to display error in a more beautiful way, but 
+    this basic way works out of the box -->
+    {{ form.errors }}
+
+    <!-- form is the form to fill the report with data. See the view to understand
+    of to create one automatically from a report. You don't have to put it in the same 
+    view, I did it just for the demo purpose.
+
+    Because of the dymamic nature of the tool, it's very difficul to know in advance 
+    wich kind of data is going to be displayed. So creating a custom HTML is going to 
+    be pretty hard. Using as_p is safe and can be style in CSS, but forbid some
+    nice tweaks.
+    -->
+    <form method="post" action="{{ url }}">
+        {{ form.as_p }}
+        <input type='submit' value='Add'>
+        {% csrf_token %}
+    </form>
+
+{% else %}
+
+    {% if view %}
+         <!-- This should rarely be displayed but can happen if accidently a 
+            user create a a view and don't add any indicator. This situation should
+            be avoided by a good UI but since you can never be sure, we provide
+            a fallback by giving direction to the user to solve his problem. -->
+        <p>
+            There is nothing telling this report what kind of data to display.
+        </p>
+        <p><a href="{% url edit-view-indicators view.pk %}">Choose data to display</a></p>
+    {% endif %}
+
+{% endif %}
+    
+</div>
+
+{% endblock %}
