@@ -106,7 +106,13 @@ var ActivityList, ActivityPoint;
 	}
 	_ActivityPoint.prototype = new Mappable();
     _ActivityPoint.prototype.mapPointListener = function(){
-        dashboard.setLocation("#/map/survey/"+this.id)
+        this.prepForTemplate();
+        var t = $.tmpl(surveyViewTemplate, this);
+		var dest = $('.survey-content', t);
+		$.get('/embed/survey_instance_data/'+this.id, function(data){
+			dest.append(data);
+		})
+		MapPopup(t);
     }
 	_ActivityPoint.prototype.district=function(){
 		var result, district_id = this.district_id;
@@ -139,7 +145,6 @@ var ActivityList, ActivityPoint;
 	    this.date = this.datetime.split(" ")[0]
 	    this.time = this.datetime.split(" ")[0]
 	}
-	
 	window.ActivityList = _ActivityList;
 })(jQuery);
 
@@ -191,7 +196,7 @@ var ActivityList, ActivityPoint;
     }
     ActivityCaller.prototype.list = false; //defaults to false to ensure ActivityList loaded
     
-    function WithActivityList(cb){
+    function WithActivityList(cb, opts){
         if(!activityCaller) {activityCaller = new ActivityCaller();}
         if(!alreadyCalledBack) {
             callbacks.push(cb);
