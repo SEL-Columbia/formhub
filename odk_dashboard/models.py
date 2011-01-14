@@ -124,7 +124,10 @@ class ParsedInstance(models.Model):
     def title(self):
         district = self.location.gps.district.name
         timestamp = self.end.strftime("%d-%b-%Y")
-        form_name = self.instance.form.title
+        try:
+            form_name = self.instance.form.title
+        except:
+            form_name = ""
         return "%s - %s - %s" % (district, form_name, timestamp)
     
     def to_dict(self):
