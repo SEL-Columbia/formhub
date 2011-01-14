@@ -574,7 +574,7 @@ var zz;
 var dashboard = (function($){
     $(function(){
         var menu = $('#menu .fwidth').empty();
-        menu.append($('<li />').html($("<a />", {href:"#/"}).html("Downloads"))); //why is this not loading in the page?
+        menu.append($('<li />').html($("<a />", {href:"#/"}).html("Data"))); //why is this not loading in the page?
         menu.append($('<li />').html($("<a />", {href:"#/activity"}).html("Activity")))
         menu.append($('<li />').html($("<a />", {href:"#/frequency-tables"}).html("Frequency Tables")))
         menu.append($('<li />').html($("<a />", {href:"#/map"}).html("Map")))
@@ -595,7 +595,7 @@ var dashboard = (function($){
         this.use(Sammy.Template);
         
         this.get("#/", function(context){
-            var dashbElem = this.switchTo("dashboard", {title: "Downloads"});
+            var dashbElem = this.switchTo("dashboard", {title: "Data"});
             $.get("/survey-list", function(htResponse){
                 var surveyList = $(htResponse);
                 $('a', surveyList).button();
