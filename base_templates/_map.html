@@ -57,8 +57,8 @@
 			if(!this.kmlLayer) {
 				this.kmlLayer = new google.maps.KmlLayer(this.kml+"?a", {
 					map: map,
-					preserveViewport: true,
-					suppressInfoWindows: true
+//					suppressInfoWindows: true,
+					preserveViewport: true
 				});
 			}
 		}
@@ -124,8 +124,7 @@
 		dashboard.setMapElem("#map > div");
 		
 		dashboard.get("#/map", function(context){			
-	        this.title("Map");
-			this.switchTo("map");
+			this.switchTo("map", {title: 'Map'});
 			mapState = changeMapState(mapState, {
 				scale: 'country',
 				district: null,
@@ -172,8 +171,7 @@
 		dashboard.get("#/map/:district", function(){
 			var district = findDistrict(this.params['district']);
 			
-			this.title("Map "+district.name);
-			this.switchTo("map");
+			this.switchTo("map", {title:"Map "+district.name});
 			
 			mapState = changeMapState(mapState, {
 				scale: 'district',
@@ -240,12 +238,13 @@
 				filterItem = this.params.obj,
 				surveyor = this.params.obj;
 
-			this.switchTo("map");
+			var title;
 			if(surveyor && surveyor !=='undefined') {
-				this.title("Map "+district.name+" by Surveyor")
+				title = "Map "+district.name+" by Surveyor";
 			} else {
-				this.title("Map "+district.name+" by Surveyor: "+surveyor)
+				title = "Map "+district.name+" by Surveyor: "+surveyor;
 			}
+			this.switchTo("map", {title: title});
 			mapState = changeMapState(mapState, {
 				scale: 'district',
 				district: district.name,
@@ -337,12 +336,13 @@
 				obj = this.params['obj'],
 				survey = obj;
 			
-			this.switchTo("map");
+			var title;
 			if(survey && survey !== 'undefined') {
-				this.title("Map "+district.name+" by Survey")
+				title = "Map "+district.name+" by Survey"
 			} else {
-				this.title("Map "+district.name+" by Survey: "+survey.toUpperCase())
+				title = "Map "+district.name+" by Survey: "+survey.toUpperCase();
 			}
+			this.switchTo("map", {title:title});
 			mapState = changeMapState(mapState, {
 				scale: 'district',
 				district: district.name,
@@ -430,13 +430,13 @@
 				filterItem = this.params['obj'],
 				date = filterItem;
 
-			this.switchTo("map");
-			
+			var title;
 			if(date && date!=='undefined') {
-				this.title("Map "+district.name+" by Date")
+				title = "Map "+district.name+" by Date"
 			} else {
-				this.title("Map "+district.name+" by Date: "+date)
+				title = "Map "+district.name+" by Date: "+date;
 			}
+			this.switchTo("map", {title:title});
 			
 			mapState = changeMapState(mapState, {
 				scale: 'district',
@@ -518,8 +518,7 @@
 		});
 		//end #/map/district/by/date/*
 		dashboard.get("#/map/survey/:survey_id", function(list){
-			this.switchTo("map");
-			this.title("View Survey");
+			this.switchTo("map", {title: "View Survey"});
 			if(!this.params['survey_id']) {
 				console.log("Redirect ", this.setLocation)
 			}
@@ -531,6 +530,7 @@
 					this.key({clear:true});
 //					this.setCenter()
 					var survey = list.find(surveyId);
+					survey.prepForTemplate();
 					var hheight = $($('.iiwrap')[0]).height();
 					var t = $.tmpl(surveyViewTemplate, survey);
 					var dest = $('.survey-content', t);
@@ -554,7 +554,7 @@
 				<div class='im-wrap'>
 					<img src="${image_url}" width="100%" />
 					<p class='im-caption'>
-						${title}
+						${photoContextString}
 					</p>
 				</div>
 			</td>
@@ -567,79 +567,4 @@
 </script>
 <script type="text/javascript" charset="utf-8">
 	var surveyViewTemplate = $('#survey-view').template();
-</script>
-
-<script type="text/javascript" charset="utf-8">
-/*-- 
-- This structure works, for now.
---*/
-var SubmissionList, SubmissionPoint;
-(function($){
-	function _SubmissionList(arr){
-		this.addPoints(arr)
-	}
-	_SubmissionList.prototype = new Array();
-	$.extend(_SubmissionList.prototype, {
-		addPoint: function(point){
-			if(point instanceof _SubmissionPoint) { this.push(point)
-			} else {
-				this.push(new _SubmissionPoint(point))
-			}
-		},
-		addPoints: function(points){
-			var _Sl = this;
-			$(points).each(function(){_Sl.addPoint(this)})
-		}
-	})
-	
-	function _SubmissionPoint(o){$.extend(this, o)}
-	window.SubmissionList = _SubmissionList;
-})(jQuery);
-
-/*--
-		sortBy: function(q){
-			return this.points.sort(function(a, b){
-				return a[q] < b[q] ? -1 : a[q] > b[q] ? 1 : 0
-			})
-		},
-		groupBy: function(q){
-			var _k, _output = {};
-			$(this.points).each(function(){
-				_k = String(this[q]);
-				if(typeof(_output[_k])=='undefined') {_output[_k]=[]}
-				_output[_k].push(this);
-			});
-			return _output;
-		},
-            if(this.gps) {
-                this.gpoint = new google.maps.LatLng(this.gps.lat, this.gps.lng);
-                this.gmarker = new google.maps.Marker({
-                    position: this.gpoint,
-                    icon: this.icon(),
-                    title: this.title
-                })
-            }
-        icon: function(){
-            return '/site-media/images/geosilk/flag_'+markerImages[this.survey_type]+'.png';
-
-                google.maps.event.addListener(this.gmarker, 'click', function(){
-                    $.fancybox({
-                        padding: 5,
-                        href: _image,
-                        title: _title,
-                        transitionIn: 'elastic',
-                        transitionOut: 'elastic'
-                    })
-
-        popupImage: function(){
-            if(this.hasImage()) {
-                $.fancybox({
-        			'padding'		: 5,
-        			'href'			: this.images[0],
-        			'title'   		: this.title,
-        			'transitionIn'	: 'elastic',
-        			'transitionOut'	: 'elastic'
-        		});
-
---*/
 </script>

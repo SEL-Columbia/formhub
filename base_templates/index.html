@@ -1,6 +1,30 @@
 {% extends "base.html" %}
-{% load i18n %}
 
 {% block content %}
-Index page
+<div class="page-nav">
+<!--	<a href="/data">Survey Data Table</a> -->
+	<a href="/rapid_odk">Survey Data Results</a>
+</div>
+<style type="text/css" media="screen">
+	.page-nav a {
+		display: block;
+		width: 25%;
+		border: 1px solid #777;
+		border-radius: 4px;
+		-moz-border-radius: 5px;
+		padding: 5px 16px;
+		margin: 2px 12px;
+		float: left;
+		background-color: #ddd;
+		text-decoration: none;
+		color: #333;
+	}
+	.page-nav a:hover {
+		background-color: #ccc;
+	}
+	.page-nav {
+		clear: both;
+	}
+</style>
+<br style="clear:both" />
 {% endblock %}

@@ -81,7 +81,9 @@ def deploy():
         run("git pull origin %(branch_name)s" % env)
 
 def install_pip_requirements():
+    """ deleting django-eav from the virtualenv in order to force a new download and avoid a pip error. """
     with cd(env.code_root):
+        run("rm -r /home/wsgi/virtualenvs/django_odk/src/django-eav")
         run("pip install -r requirements.txt")
 
 def restart_wsgi():

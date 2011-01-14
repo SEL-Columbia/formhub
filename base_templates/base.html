@@ -29,7 +29,7 @@
 <body class="nmis">
 	<div id="header">
 		<div class="fwidth">
-			<a href="/#/" id="hlogo"><img src="/site-media/images/nmis_pilot.png" /></a>
+			<a href="/main/" id="hlogo"><img src="/site-media/images/nmis_pilot.png" /></a>
 			<h2 class="title">Baseline Data Collection &raquo; <span id="page-title">Dashboard</span></h2>
 		<div class="account_links">
 			{% if user.is_authenticated %}
@@ -53,5 +53,10 @@
 			{% block content %}{% endblock %}
 		</div>
 	</div>
+	<script type="text/javascript" charset="utf-8">
+		if($('#content .fwidth').find('.iwrap').length==0) {
+			$('#content .fwidth').wrapInner("<div style='background-color:#fff;border:1px solid #666;padding:6px;margin:6px' />"); //real hacky
+		}
+	</script>
 </body>
 </html>
