@@ -599,6 +599,7 @@ var dashboard = (function($){
             $.get("/survey-list", function(htResponse){
                 var surveyList = $(htResponse);
                 $('a', surveyList).button();
+                $('tr td:nth-child(2)', surveyList).css({'text-align':'center'})
                 $('.iiwrap', dashbElem).html(surveyList);
             });
         });
