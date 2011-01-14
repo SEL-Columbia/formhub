@@ -1,3 +1,6 @@
+function capitalizeString(str) {
+    return str.slice(0,1).toUpperCase() + str.slice(1);
+}
 function Mappable(){}
 Mappable.prototype.showMapPoint = function() {
 	if(!this.mapPoint) {
@@ -465,9 +468,9 @@ var zz;
                 
                 $(choices).each(function(){
                     if(this.name) {
-                        var opt = $("<option />", {value: this.id}).html(this.name)
+                        var opt = $("<option />", {value: this.id}).html(capitalizeString(this.name))
                     } else {
-                        var opt = $("<option />").html(String(this));
+                        var opt = $("<option />", {value: String(this)}).html(capitalizeString(String(this)));
                     }
                     selector.append(opt);
                 });
