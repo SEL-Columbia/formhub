@@ -330,7 +330,7 @@
 			})
 		});
 		//end #/map/district/by/surveyor/*
-
+		
 		dashboard.get("#/map/:district/by/survey/?(:obj)?", function(){
 			var district = findDistrict(this.params['district']),
 				obj = this.params['obj'],
@@ -432,7 +432,7 @@
 
 			var title;
 			if(date && date!=='undefined') {
-				title = "Map "+district.name+" by Date"
+				title = "Map "+district.name+" by Date";
 			} else {
 				title = "Map "+district.name+" by Date: "+date;
 			}
@@ -517,38 +517,13 @@
 			})
 		});
 		//end #/map/district/by/date/*
-		dashboard.get("#/map/survey/:survey_id", function(list){
-			this.switchTo("map", {title: "View Survey"});
-			if(!this.params['survey_id']) {
-				console.log("Redirect ", this.setLocation)
-			}
-			var surveyId = this.params['survey_id'];
-			var _dash = this;
-			WithActivityList(function(list){
-				_dash.Map(function(){
-					var _mapObject = this;
-					this.key({clear:true});
-//					this.setCenter()
-					var survey = list.find(surveyId);
-					survey.prepForTemplate();
-					var hheight = $($('.iiwrap')[0]).height();
-					var t = $.tmpl(surveyViewTemplate, survey);
-					var dest = $('.survey-content', t);
-					$.get('/embed/survey_instance_data/'+survey.id, function(data){
-						dest.append(data);
-					})
-					MapPopup(t);
-//					$("#map #m-key").append(t);
-				})
-			});
-		});
 	})();
 	
 	var __map;
 </script>
 <script id="survey-view" type="text/x-jquery-tmpl">
    	<div class="survey-view" title="${title}">
-	<table>
+	<table class="fullw">
 		<tr>
 			<td style="width:48%">
 				<div class='im-wrap'>
@@ -559,7 +534,7 @@
 				</div>
 			</td>
 			<td style="width:48%;vertical-align:top">
-				<div class="survey-content"></div>
+				<div class="survey-content" style="overflow:auto;max-height:340px"></div>
 			</td>
 		</tr>
 	</table>

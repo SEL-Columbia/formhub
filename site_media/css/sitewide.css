@@ -39,7 +39,7 @@ ul#menu .fwidth > li:first-child {
 }
 div#header {
   position: relative;
-  height: 30px;
+  height: 36px;
   background-image: url("../images/header_repeat.png"); }
   div#header #logo {
     width: 313px;
@@ -113,8 +113,8 @@ div.icontent {
 h2.title {
 	position: absolute;
 	left: 100px;
-	top: 4px;
-	font-size: 15px;
+	top: 5px;
+	font-size: 16px;
 	margin: 0;
 	color: #aaa;
 	font-weight: normal;

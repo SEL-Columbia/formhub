@@ -6,7 +6,8 @@ Mappable.prototype.showMapPoint = function() {
 			title: this.title,
 			position: ll,
 			map: _map,
-			icon: this.icon()
+			icon: this.icon(),
+			shadow: this.shadow()
 		});
 		if(this.mapPointListener) {
 		    var _pt = this;
@@ -19,11 +20,28 @@ Mappable.prototype.showMapPoint = function() {
 }
 Mappable.prototype.flagColor = 'green';
 var flagColors = "blue green orange pink purple red yellow".split(" ");
+Mappable.prototype.shadow = function(){
+    var shadow = new google.maps.MarkerImage("/site-media/images/gmap-icons/shadow-s.png", new google.maps.Size(25, 25),
+        new google.maps.Point(0,0), new google.maps.Point(11,22));
+    return shadow;
+};
 Mappable.prototype.icon = function(){
-    var flagImage = "/site-media/images/geosilk/flag_"+this.flagColor+".png";
-//    console.log(flagImage);
-    return flagImage;
-	return "http://thydzik.com/thydzikGoogleMap/markerlink.php?text="+this.iconText+"&color="+this.iconColor;
+    var color = "grey";
+    switch(this.survey_type) {
+        case 'water':
+        color = "blue";
+        break;
+        case 'education':
+        color = 'green';
+        break;
+        case 'health':
+        color = 'red';
+        break;
+    }
+    var icon = new google.maps.MarkerImage("/site-media/images/gmap-icons/"+color+"-pointer-s.png", new google.maps.Size(25, 25),
+        new google.maps.Point(0,0), new google.maps.Point(11,22));
+    return icon;
+//	return "http://thydzik.com/thydzikGoogleMap/markerlink.php?text="+this.iconText+"&color="+this.iconColor;
 }
 Mappable.prototype.setFlagColor = function(color) {
     if(this.flagColor==color) {
@@ -35,10 +53,6 @@ Mappable.prototype.setFlagColor = function(color) {
         this.flagColor = "yellow"
     }
     this.updateIcon();
-//    if(!this.flagColor) {
-//        console.log("No flag color "+color)
-//        this.flagColor = "yellow";
-//    }
 }
 Mappable.prototype.updateIcon = function(){
     if(this.mapPoint) {
