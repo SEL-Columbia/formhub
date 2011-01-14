@@ -1,0 +1,77 @@
+{% if item %}
+<form method="post" class="form" action="/simple_locations/edit/{{ item.pk }}/">
+    {% else %}
+    <form method="post" class="form" action="/simple_locations/add/">
+        {% endif %}
+        {% csrf_token %}
+        <table border="0" width="100%" class="form_table">
+            <tr>
+
+                <td>Name:</td>
+                <td>{{ form.name }}{{ form.pk }}</td>
+                <td class="errors">{{form.name.errors}}</td>
+            </tr>
+            <tr>
+                <td>Code:</td>
+                <td>{{ form.code }}</td>
+                <td class="errors">{{ form.code.errors }}</td>
+            </tr>
+            <tr>
+                <td>Lat:</td>
+                <td id="lat">{{ form.lat }}</td>
+                <td class="errors">{{ form.lat.errors }}</td>
+            </tr>
+            <tr>
+                <td>Lon:</td>
+                <td id="lon">{{ form.lon }}</td>
+                <td class="errors">
+                    {{ form.lon.errors }}
+
+                </td>
+                <script language="javascript">
+                    $('#lat input,#lon input').change(
+                            function() {
+                                var lat = parseFloat($('#lat input')[0].value);
+                                var lon = parseFloat($('#lon input')[0].value);
+                                if ((lat <= 90 && lat >= -90) && (lon <= 180 && lon >= -180 )) {
+                                    var point = new GLatLng(lat, lon);
+                                    map.setCenter(point, 4);
+                                    map_marker.setLatLng(point);
+                                }
+                            }
+                            );
+                </script>
+            </tr>
+            <tr>
+                <td>Kind:</td>
+                <td>{{form.kind}}</td>
+                <td class="errors">{{form.kind.errors}}</td>
+            </tr>
+            {% if not nodes|length_is:"0" %}
+            <tr>
+                <td>{{ form.move_choice }}Move:
+                <td>{{ form.position }} &nbsp;&nbsp;&nbsp;Of:{{ form.target }}</td>
+                <td class="errors">{{form.position.errors}}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td colspan="3">
+                    <div class="buttons">
+                        {% if item %}
+                        <a href="javascript:void(0)" onclick="save_location(this);" id="save_{{ item.pk }}"
+                           class="positive">
+                            <img border="0" src="{{ MEDIA_URL }}rapidsms_xforms/icons/silk/bullet_disk.png" alt=""/>Update
+                        </a>
+                        <a href="javascript:void(0)" onclick="load_add_location();" class="negative">
+                            <img src="{{ MEDIA_URL }}rapidsms/icons/silk/decline.png" alt="" border="0"/>Cancel
+                        </a>
+                        {% else %}
+                        <a onclick="add_location(this);" href="javascript:void(0);" id="save_new" class="positive">
+                            <img border="0" src="{{ MEDIA_URL }}rapidsms/icons/silk/add.png" alt=""/>Add
+                        </a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>

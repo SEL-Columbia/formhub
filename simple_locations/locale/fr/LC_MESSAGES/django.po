@@ -1,0 +1,55 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-09-24 07:17+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
+
+#: models.py:16
+msgid "Point"
+msgstr "Point"
+
+#: models.py:17
+msgid "Points"
+msgstr "Points"
+
+#: models.py:23
+#, python-format
+msgid "%(lat)s, %(lon)s"
+msgstr "%(lat)s, %(lon)s"
+
+#: models.py:30
+msgid "Area Type"
+msgstr "Type de zone"
+
+#: models.py:31
+msgid "Area Types"
+msgstr "Types de zone"
+
+#: models.py:44
+msgid "Area"
+msgstr "Zone"
+
+#: models.py:45
+msgid "Areas"
+msgstr "Zones"
+
+#: models.py:65
+#, python-format
+msgid "%(type)s of %(area)s"
+msgstr "%(type)s de %(area)s"
+
+msgid "country"
+msgstr "pays"

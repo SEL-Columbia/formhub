@@ -1,0 +1,38 @@
+{% extends "simple_locations/layout-3-panel.html" %}
+{% block title %}
+    Locations - {{ block.super }}
+{% endblock %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{{ MEDIA_URL }}simple_locations/css/tree.css" type="text/css"/>
+{% endblock %}
+
+{% block javascripts %}
+    {{ block.super }}
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key={{map_key}}"
+            type="text/javascript">
+    </script>
+    <script src="{{MEDIA_URL}}simple_locations/javascripts/simple_locations.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block left %}
+    <div class="module">
+        <h2>All Locations</h2>
+        <div class="scrollable" id="tree">
+        </div>
+    </div>
+{% endblock %}
+{% block right %}
+    <div class="module">
+        <h2>Location Details</h2>
+        <div id="edit_location">
+        </div>
+    </div>
+{% endblock %}
+{% block bottom %}
+  <div class="module" style="width:100%;margin-top:10px;padding-top:20px">
+    <h2>Map</h2>
+    {% include 'simple_locations/map.html' %}
+  </div>
+{% endblock %}

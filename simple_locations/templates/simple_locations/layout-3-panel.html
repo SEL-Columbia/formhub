@@ -1,0 +1,7 @@
+{% extends "layout-split-2.html" %}
+{% block content %}
+    {{ block.super }}
+    <div style="width:100%">
+      {% block bottom %}{% endblock %}
+    </div>
+{% endblock %}

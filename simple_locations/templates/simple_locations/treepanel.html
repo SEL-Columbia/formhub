@@ -1,0 +1,53 @@
+{% load mptt_tags %}
+<script language="javascript">
+    function expand_collapse(id) {
+        img_tag = $('#expand_' + id);
+        if (img_tag.attr('src') == '/static/simple_locations/images/plus.gif') {
+            img_tag.parent().next().show();
+            img_tag.attr('src', '/static/simple_locations/images/minus.gif');
+        }
+        else if (img_tag.attr('src') == '/static/simple_locations/images/minus.gif') {
+            img_tag.parent().next().hide();
+            img_tag.attr('src', '/static/simple_locations/images/plus.gif');
+        }
+    }
+</script>
+<ul class="root" id="tree">
+    {% recursetree nodes %}
+    <li>
+      <span id="span_{{ node.id }}">
+          <img id="expand_{{ node.id }}" src="/static/simple_locations/images/plus.gif"
+               onclick="expand_collapse({{ node.id }})" class="add_delete"/>
+          <a id="anchor_{{ node.id }}"
+             style="padding-left:5px;" onClick="load_edit_location({{ node.id }})" href='javascript:void(0)'
+             class="node_level_{{node.get_level}}">
+              {{ node.name }}
+          </a>
+          <img style="display:none;cursor:pointer;" border='0'
+               onclick="delete_location({{ node.id }})" src='/static/simple_locations/images/delete.png'
+               class="delete"/>
+      </span>
+        <script type="text/javascript">
+            $('#span_{{ node.id }}').hover(
+                    function() {
+                        $(this).find('img[class=delete]').show();
+                    },
+                    function() {
+                        $(this).find('img[class=delete]').hide();
+                    }
+                    );
+        </script>
+
+        <ul class="children" style="display:none;">
+            {{ children }}
+            <li>
+                <a style="font-size:10px;padding-left:5px;"
+                   href="javascript:load_add_location_child({{ node.id }})" id="add_{{ node.id }}">
+                    Add New
+                </a>
+            </li>
+
+        </ul>
+    </li>
+    {% endrecursetree %}
+</ul>

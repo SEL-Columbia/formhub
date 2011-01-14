@@ -7,3 +7,4 @@ django-treebeard==1.61
 South==0.7.3
 -e git://github.com/mvpdev/django-eav.git@e8b5849de23cd266284fd0f40150a41a34654e29#egg=django_eav-0.9.2-py2.6-dev
 django-registration==0.7
+django-mptt==0.4.2
