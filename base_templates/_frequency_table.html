@@ -121,13 +121,14 @@
 				$("thead", tab).append(sumRow);
 			})(table);
 			$('.data').css({'width':75})
-			freqTable.html(table);
+			var ftWrap = $("<div />", {'class':'ft-wrap'}).html(table);
+			freqTable.html(ftWrap);
 		});
 	});
 	
 	(function($, rowSelect, colSelect, submit, tableTypes){
 		$.each(tableTypes, function(count, str){
-			var _opt = $("<option />").html(str)
+			var _opt = $("<option />", {value: str}).html(capitalizeString(str))
 			rowSelect.append(_opt.clone());
 			colSelect.append(_opt.clone());
 		});

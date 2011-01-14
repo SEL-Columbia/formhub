@@ -454,7 +454,7 @@
 					
 					var subdistricts = $("<optgroup />", {'label':"LGA View"});
 					$(districts).each(function(){
-                        var opt = $("<option />", {value: this.id}).html(this.name)
+                        var opt = $("<option />", {value: this.id}).html(capitalizeString(this.name))
 	                    subdistricts.append(opt);
 	                })
 	                selector.append(big);

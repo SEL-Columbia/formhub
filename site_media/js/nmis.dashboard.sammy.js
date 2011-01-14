@@ -1,3 +1,6 @@
+function capitalizeString(str) {
+    return str.slice(0,1).toUpperCase() + str.slice(1);
+}
 function Mappable(){}
 Mappable.prototype.showMapPoint = function() {
 	if(!this.mapPoint) {
@@ -465,9 +468,9 @@ var zz;
                 
                 $(choices).each(function(){
                     if(this.name) {
-                        var opt = $("<option />", {value: this.id}).html(this.name)
+                        var opt = $("<option />", {value: this.id}).html(capitalizeString(this.name))
                     } else {
-                        var opt = $("<option />").html(String(this));
+                        var opt = $("<option />", {value: String(this)}).html(capitalizeString(String(this)));
                     }
                     selector.append(opt);
                 });
@@ -571,6 +574,7 @@ var zz;
 var dashboard = (function($){
     $(function(){
         var menu = $('#menu .fwidth').empty();
+        menu.append($('<li />').html($("<a />", {href:"#/"}).html("Data"))); //why is this not loading in the page?
         menu.append($('<li />').html($("<a />", {href:"#/activity"}).html("Activity")))
         menu.append($('<li />').html($("<a />", {href:"#/frequency-tables"}).html("Frequency Tables")))
         menu.append($('<li />').html($("<a />", {href:"#/map"}).html("Map")))
@@ -591,14 +595,13 @@ var dashboard = (function($){
         this.use(Sammy.Template);
         
         this.get("#/", function(context){
-            var dashbElem = this.switchTo("dashboard");
-            this.title("Dashboard");
+            var dashbElem = this.switchTo("dashboard", {title: "Data"});
             $.get("/survey-list", function(htResponse){
                 var surveyList = $(htResponse);
                 $('a', surveyList).button();
                 $('.iiwrap', dashbElem).html(surveyList);
-            })
-        })
+            });
+        });
     });
     $(function(){
         dashboard.run("#/");
