@@ -121,7 +121,8 @@
 				$("thead", tab).append(sumRow);
 			})(table);
 			$('.data').css({'width':75})
-			freqTable.html(table);
+			var ftWrap = $("<div />", {'class':'ft-wrap'}).html(table);
+			freqTable.html(ftWrap);
 		});
 	});
 	
