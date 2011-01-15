@@ -1,5 +1,9 @@
 <table class="fullw shade-alternate">
+  <tr>
+	<th style="border-bottom:1px solid #ddd">Attribute</th>
+	<th style="border-bottom:1px solid #ddd">Value</th>
+  </tr>
   {% for key, value in data.items %}
-  <tr><td>{{ key }}</td><td>:</td><td>{{ value }}</td></tr>
+  <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
   {% endfor %}
 </table>

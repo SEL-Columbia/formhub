@@ -58,7 +58,7 @@ read_all_data, created = Permission.objects.get_or_create(
     )
 @permission_required("auth.read_all_data")
 def survey_list(request):
-    rows = [["Title", "Submission Count", "Last Submission", "Export"]]
+    rows = [["Survey", "Submissions", "Last Submission", "Export"]]
     for form in Form.objects.filter(active=True):
         rows.append([
                 form.title,

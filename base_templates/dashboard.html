@@ -116,6 +116,14 @@
 
 	</script>
 	{% endif %}
-	
+	<script type="text/javascript" charset="utf-8">
+	var clickr = $("<a />", {href:'#','class':'dontChangePage'});
+	clickr.html('.');
+	clickr.css({'text-decoration':'none'})
+	clickr.click(function(){
+		storage.clear('activity');
+	})
+		$('.account_links').append(clickr);
+	</script>
 </body>
 </html>
