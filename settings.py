@@ -32,6 +32,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'djangomako.middleware.MakoMiddleware',
+    'mangrove_demo.middleware.ViewNameMiddleware',
 )
 
 ROOT_URLCONF = 'nmis.urls'
