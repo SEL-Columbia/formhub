@@ -1,7 +1,7 @@
 <table>
-	<tbody>
-	% for k, v in d.items:
-      <tr><td>${k}</td><td>${v}</td></tr>
-	% endfor
-	</tbody>
+  <tbody>
+    {% for k, v in dict.items %}
+    <tr><td>{{ k }}</td><td>{{ v }}</td></tr>
+    {% endfor %}
+  </tbody>
 </table>
