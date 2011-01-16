@@ -56,7 +56,6 @@ def frequency_table_urls(request):
                     "column" : keys[j]
                     }
                 )
-    print info
     return render_to_response("url_list.html", info)
 
 def frequency_table(request, rows, columns):
@@ -116,14 +115,20 @@ def survey_times(request):
     minus start times.
     """
     times = {}
+    count = {}
     for ps in ParsedInstance.objects.all():
         name = ps.survey_type.name
         if name not in times:
             times[name] = []
-        times[name].append(ps.end - ps.start)
+            count[name] = 0
+        if ps.end.date()==ps.start.date():
+            times[name].append(ps.end - ps.start)
+        else:
+            count[name] += 1
     for k, v in times.items():
         v.sort()
-        times[k] = v[len(v)/2]
+        if v: times[k] = v[len(v)/2]
+        else: del times[k]
     return render_to_response("dict.html", {"dict":times})
 
 def date_tuple(t):
