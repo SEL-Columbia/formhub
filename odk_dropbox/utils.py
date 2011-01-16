@@ -1,65 +1,61 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
-from xml.sax.handler import ContentHandler
-from xml.sax import parseString
-import xml
-from xml.dom.minidom import Element
-import re, os
+from xml.dom import minidom
+import json
+# json.dumps(doc, indent=4)
+# import ipdb; ipdb.set_trace()
 
-class ODKHandler(ContentHandler):
+import re, os, sys
 
-    def __init__ (self):
-        self._dict = {}
-        self._stack = []
-        self._form_id = ""
+def parse_odk_xml(f):
+    """
+    'f' may be a file object or a path to a file. Return a python
+    object representation of this XML file.
+    """
+    dom = minidom.parse(f)
+    doc = {}
+    attributes = _all_attributes(dom.documentElement)
+    assert len(attributes)==1 and attributes[0]==u"id", \
+        "Expected a single id attribute for the whole document."
+    _build(dom.documentElement, doc)
+    return attributes[1], doc
 
-    def get_dict(self):
-        # Note: we're only using the xml tag in our dictionary, not
-        # the whole xpath.
-        return self._dict
+def _build(node, parent):
+    """
+    Using a depth first traversal of the xml nodes build up a python
+    object in parent that holds the tree structure of the data.
+    """
+    if node.nodeName in parent:
+        raise Exception("We aren't equipped to do repeating nodes.")
 
-    def get_form_id(self):
-        return self._form_id
+    if len(node.childNodes)==0:
+        # there's no data for this leaf node
+        parent[node.nodeName] = None
+    elif len(node.childNodes)==1 and \
+            node.childNodes[0].nodeType==node.TEXT_NODE:
+        # there is data for this leaf node
+        parent[node.nodeName] = node.childNodes[0].nodeValue
+    else:
+        # this is an internal node
+        parent[node.nodeName] = {}
+        for child in node.childNodes:
+            _build(child, parent[node.nodeName])
 
-    def get_repeated_tags(self):
-        return self._repeated_tags
+def _all_attributes(node):
+    """
+    Go through an XML document returning all the attributes we see.
+    """
+    if hasattr(node, "hasAttributes") and node.hasAttributes():
+        for key in node.attributes.keys():
+            yield key, node.getAttribute(key)
+    for child in node.childNodes:
+        for pair in _all_attributes(child):
+            yield pair
+        
 
-    def startElement(self, name, attrs):
-        self._stack.append(name)
-
-        if name not in self._dict: self._dict[name] = u""
-
-        # there should only be a single attribute in this document
-        # an id on the root node
-        if attrs:
-            assert len(self._stack)==1, \
-                "Attributes should only be on the root node."
-            keys = attrs.keys()
-            assert keys==["id"], \
-                "The only attribute we should see is an 'id'."
-            self._form_id = attrs.get("id")
-
-    def characters(self, content):
-        # ignore whitespace
-        s = content.strip()
-        if not s: return
-
-        # get the last tag we saw
-        tag = self._stack[-1]
-        if not self._dict[tag]:
-            # if we haven't seen a value for this tag yet
-            self._dict[tag] = s
-        else:
-            # if we have seen this tag before we need to append this
-            # value to a list of all the values we've seen before
-            self._dict[tag] += u" " + s
-
-    def endElement(self, name):
-        top = self._stack.pop()
-        assert top==name, \
-            "start %(top)s doesn't match end %(name)s" % \
-            {"top" : top, "name" : name} 
+        
+parse_odk_xml(sys.argv[1])
 
 
 def parse(xml):
@@ -81,12 +77,6 @@ def text(file):
     text = file.read()
     file.close()
     return text
-
-def parse_instance(instance):
-    """
-    Return the ODKHandler from parsing the xml_file of this instance.
-    """
-    return parse(text(instance.xml_file))
 
 def sluggify(text, delimiter=u"_"):
     return re.sub(r"\W+", delimiter, text.lower())

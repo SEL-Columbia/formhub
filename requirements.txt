@@ -9,3 +9,5 @@ South==0.7.3
 django-registration==0.7
 django-mptt==0.4.2
 ipython==0.10.1
+ipdb==0.2
+couchdbkit==0.5.1
