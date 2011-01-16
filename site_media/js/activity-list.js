@@ -158,7 +158,7 @@ var ActivityList, ActivityPoint;
         alreadyCalledBack = false,
         activityCaller;
     function ActivityCaller(){
-        if(!storage) {console.err("Storage object can't be found.");}
+        if(!storage) {return false; console.err("Storage object can't be found.");}
         
         if(!storage.exists('activity')){
           var url = "/data/activity/";

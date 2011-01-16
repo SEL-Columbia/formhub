@@ -409,9 +409,9 @@ var zz;
             this.sammyMap=true;
         }
         $.extend(mapObj.prototype, {
-            test: function(){
-                console.log("Hello", this);
-            },
+            // test: function(){
+            //     console.log("Hello", this);
+            // },
             mapCenter: function(center, opts){
                 var zoom = opts.zoom;
                 if(opts.bounds) {
@@ -520,11 +520,11 @@ var zz;
                 this.map.setCenter(new google.maps.LatLng(9.243092645104804, 7.9156494140625))
             },
             clearPoints: function(){
-                console.log(this.map, "clearing points");
+                // console.log(this.map, "clearing points");
             },
             getMapElem: function(){return gmapElem},
             addPoints: function(pts){
-                console.log(pts, "added");
+                // console.log(pts, "added");
             }
         });
         map = new mapObj();
