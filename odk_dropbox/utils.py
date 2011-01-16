@@ -2,8 +2,6 @@
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 from xml.dom import minidom
-import json
-# json.dumps(doc, indent=4)
 # import ipdb; ipdb.set_trace()
 
 import re, os, sys
@@ -13,13 +11,15 @@ def parse_odk_xml(f):
     'f' may be a file object or a path to a file. Return a python
     object representation of this XML file.
     """
-    dom = minidom.parse(f)
-    doc = {}
-    attributes = _all_attributes(dom.documentElement)
-    assert len(attributes)==1 and attributes[0]==u"id", \
-        "Expected a single id attribute for the whole document."
-    _build(dom.documentElement, doc)
-    return attributes[1], doc
+    root_node = minidom.parse(f).documentElement
+    # go through the xml object creating a corresponding python object
+    survey_data = {}
+    _build(root_node, survey_data)
+    assert len(list(_all_attributes(root_node)))==1, \
+        u"There should be exactly one attribute in this document."
+    # return the document id, and the newly constructing python object
+    return {"form_id" : root_node.getAttribute(u"id"),
+            "survey_data" : survey_data}
 
 def _build(node, parent):
     """
@@ -52,10 +52,9 @@ def _all_attributes(node):
     for child in node.childNodes:
         for pair in _all_attributes(child):
             yield pair
-        
 
-        
-parse_odk_xml(sys.argv[1])
+
+# import json ; print json.dumps(parse_odk_xml(sys.argv[1]), indent=4)
 
 
 def parse(xml):

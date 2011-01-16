@@ -24,6 +24,7 @@ Installation
     $ sudo apt-get install python-dev
 
    sudo apt-get install sendmail
+   sudo apt-get install couchdb
 
 6. Install all the requirements including fabric
 

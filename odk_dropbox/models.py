@@ -133,19 +133,19 @@ class Submission(models.Model):
     class Meta:
         ordering = ("posted",)
 
-def make_submission(xml_file, images):
+from couchdbkit import Document
+
+def make_submission(xml_file, media_files):
     """
-    If this XML file is already in the database log that this file has
-    been submitted a second time and return the submission
-    object. Otherwise save this file to the database and return the
-    submission object.
+    I used to check if this file had been submitted already, I've
+    taken this out because it was too slow. Now we're going to create
+    a way for an admin to mark duplicate submissions. This should
+    simplify things a bit.
     """
-    matches = Instance.objects.filter(hash=hash_contents(xml_file))
-    text = utils.text(xml_file)
-    for match in matches:
-        if utils.text(match.xml_file)==text:
-            return Submission.objects.create(instance=match)
-    instance = Instance.objects.create(xml_file=xml_file)
-    for image in images:
-        InstanceImage.objects.create(instance=instance, image=image)
-    return Submission.objects.create(instance=instance)
+    d = Document()
+
+    # attach all the files
+    for f in [xml_file] + media_files: d.put_attachment(f)
+
+    # add the parsed xml
+    d.parsed_xml = utils.parse_odk_xml(xml_file)
