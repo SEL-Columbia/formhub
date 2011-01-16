@@ -8,7 +8,6 @@ from odk_dropbox import utils
 from odk_dropbox.models import Form
 from .models import ParsedInstance, Phone, District
 import datetime
-import random
 
 
 def ensure_logged_in(request):
@@ -176,8 +175,7 @@ def analysis_section(request):
 def embed_survey_instance_data(request, survey_id):
     ps = ParsedInstance.objects.get(pk=survey_id)
     d = utils.parse_instance(ps.instance).get_dict()
-    keys = d.keys()
-    five_keys = [random.choice(keys) for i in range(5)]
+    keys = ["community", "ward", "name"]
     info = {'survey_id':survey_id,
-            'data': dict([(k, d[k]) for k in five_keys])}
+            'data': [(k.title(), d[k].title()) for k in keys]}
     return render_to_response("survey_instance_data.html", info)
