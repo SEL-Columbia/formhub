@@ -177,5 +177,5 @@ def embed_survey_instance_data(request, survey_id):
     d = utils.parse_instance(ps.instance).get_dict()
     keys = ["community", "ward", "name"]
     info = {'survey_id':survey_id,
-            'data': [(k.title(), d[k].title()) for k in keys]}
+            'data': [(k.title(), d.get(k,"").title()) for k in keys]}
     return render_to_response("survey_instance_data.html", info)
