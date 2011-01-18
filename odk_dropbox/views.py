@@ -15,6 +15,7 @@ from markdown import markdown
 import os
 import codecs
 from . import utils
+import itertools
 
 from .models import Form, Instance, InstanceImage, make_submission
 
@@ -34,14 +35,11 @@ def submission(request):
     assert len(xml_file_list)==1, \
         "There should be a single xml file in this submission."
 
-    # save the rest of the files to the filesystem
-    # these should all be images
-    images = []
-    for key in request.FILES.keys():
-        for image in request.FILES.getlist(key):
-            images.append(image)
-
-    make_submission(xml_file_list[0], images)
+    # save this XML file and media files as attachments
+    make_submission(
+        xml_file_list[0],
+        list(itertools.chain(*request.FILES.values()))
+        )
 
     # ODK needs two things for a form to be considered successful
     # 1) the status code needs to be 201 (created)
