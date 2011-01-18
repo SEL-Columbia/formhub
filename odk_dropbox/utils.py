@@ -11,15 +11,19 @@ def parse_odk_xml(f):
     'f' may be a file object or a path to a file. Return a python
     object representation of this XML file.
     """
-    root_node = minidom.parse(f).documentElement
+    xml_obj = minidom.parse(f)
+    root_node = xml_obj.documentElement
     # go through the xml object creating a corresponding python object
     survey_data = {}
     _build(root_node, survey_data)
+    keys = survey_data.keys()
+    assert len(keys)==1, "There should be a single root node."
     assert len(list(_all_attributes(root_node)))==1, \
         u"There should be exactly one attribute in this document."
     # return the document id, and the newly constructing python object
     return {"form_id" : root_node.getAttribute(u"id"),
-            "survey_data" : survey_data}
+            "survey_type" : keys[0],
+            "survey_data" : survey_data[keys[0]],}
 
 def _build(node, parent):
     """

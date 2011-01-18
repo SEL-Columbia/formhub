@@ -133,7 +133,16 @@ class Submission(models.Model):
     class Meta:
         ordering = ("posted",)
 
-from couchdbkit import Document
+# COUCHDBKIT STUFF
+
+import couchdbkit
+
+class ODKInstance(couchdbkit.Document):
+    pass
+
+server = couchdbkit.Server()
+odk_db = server.get_or_create_db("odk")
+ODKInstance.set_db(odk_db)
 
 def make_submission(xml_file, media_files):
     """
@@ -142,10 +151,16 @@ def make_submission(xml_file, media_files):
     a way for an admin to mark duplicate submissions. This should
     simplify things a bit.
     """
-    d = Document()
+    doc = ODKInstance()
+    doc.save()
 
     # attach all the files
-    for f in [xml_file] + media_files: d.put_attachment(f)
+    for f in [xml_file] + media_files: doc.put_attachment(f)
+
+    # putting the xml_file up as an attachment reads the file
+    xml_file.seek(0)
 
     # add the parsed xml
-    d.parsed_xml = utils.parse_odk_xml(xml_file)
+    data = utils.parse_odk_xml(xml_file)
+    doc.parsed_xml = data
+    doc.save()
