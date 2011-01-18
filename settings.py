@@ -61,4 +61,5 @@ INSTALLED_APPS = (
     "generic_report_admin",
     "mangrove_demo",
     "simple_locations",
+    "mptt",
 )
