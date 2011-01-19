@@ -7,14 +7,38 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.conf import settings
 from . import utils
+import datetime
 
 FORM_PATH = "odk/forms"
 INSTANCE_PATH = "odk/instances"
 
-class Form(models.Model):
-    xml_file = models.FileField(
-        upload_to=FORM_PATH, verbose_name="XML File"
-        )
+cleaner = {
+    u'binary': None,
+    u'string': None,
+    u'int': None,
+    u'geopoint': lambda(x): dict(zip(
+            ["latitude", "longitude", "altitude", "accuracy"],
+            x.split()
+            )),
+    u'dateTime': lambda(x): datetime.datetime.strptime(
+        x.split(".")[0],
+        '%Y-%m-%dT%H:%M:%S'
+        ),
+    u'select1': None,
+    u'select': None,
+    }
+
+def _recursive_clean(data, variables):
+    for k in data.keys():
+        if type(data[k])==dict:
+            _recursive_clean(data[k], variables[k])                
+        elif data[k] and cleaner[variables[k]["type"]]:
+            data[k] = cleaner[variables[k]["type"]](data[k])
+        elif variables[k]["type"]==u'dateTime':
+            print data[k]
+
+class XForm(models.Model):
+    xml = models.TextField()
     active = models.BooleanField()
     description = models.TextField(blank=True, null=True, default="")
     id_string = models.CharField(
@@ -27,13 +51,22 @@ class Form(models.Model):
         verbose_name_plural = "XForms"
         ordering = ("id_string",)
 
+    def guarantee_parser(self):
+        # there must be a better way than this solution
+        if not hasattr(self, "parser"):
+            self.parser = utils.XFormParser(self.xml)
+
     def save(self, *args, **kwargs):
-        form_parser = utils.FormParser(self.xml_file)
-        self.id_string = form_parser.get_id_string()
-        self.title = form_parser.get_title()
-        if Form.objects.filter(title=self.title, active=True).count()>0:
+        self.guarantee_parser()
+        self.id_string = self.parser.get_id_string()
+        self.title = self.parser.get_title()
+        if XForm.objects.filter(title=self.title, active=True).count()>0:
             raise Exception("We can only have a single active form with a particular title")
-        super(Form, self).save(*args, **kwargs)
+        super(XForm, self).save(*args, **kwargs)
+
+    def clean_instance(self, data):
+        self.guarantee_parser()
+        _recursive_clean(data, self.parser.get_variable_dictionary())
 
     def __unicode__(self):
         return getattr(self, "id_string", "")
@@ -58,91 +91,50 @@ class Form(models.Model):
             return qs[0].posted
 
 
-# http://docs.djangoproject.com/en/dev/ref/models/fields/#django.db.models.FileField.upload_to
-def _upload_xml_file(instance, filename):
-    def _drop_xml_extension(filename):
-        m = re.search(r"^(.*)\.xml$", filename)
-        if m:
-            return m.group(1)
-        else:
-            raise Exception("Filename must end with '.xml'", filename)
-    folder_name = _drop_xml_extension(filename)
-    return os.path.join(INSTANCE_PATH, folder_name, filename)
 
-def hash_contents(f):
-    """
-    Return a hash code of the contents of the file f.
-    """
-    s = utils.text(f)
-    return s.__hash__()
+    supported_controls = ["input", "select1", "select", "upload"]
 
-class Instance(models.Model):
-    xml_file = models.FileField(upload_to=_upload_xml_file)
-    form = models.ForeignKey(Form, blank=True, null=True, related_name="instances")
-    hash = models.IntegerField(blank=True, null=True)
+    def get_control_dict(self):
+        def get_pairs(e):
+            result = []
+            if hasattr(e, "tagName") and e.tagName in self.supported_controls:
+                result.append( (e.getAttribute("ref"),
+                                get_text(follow(e, "label").childNodes)) )
+            if e.hasChildNodes:
+                for child in e.childNodes:
+                    result.extend(get_pairs(child))
+            return result
+        return dict(get_pairs(self.follow("h:body")))
 
-    def __unicode__(self):
-        if self.form:
-            return self.form.__unicode__()
-        else:
-            return "no link"
+    def get_dictionary(self):
+        d = self.get_control_dict()
+        return [(get_name(b), d.get(get_nodeset(b),"")) for b in self.get_bindings()]
 
-    def _set_hash(self):
-        self.hash = hash_contents(self.xml_file)
 
-    def _link(self):
-        """Link this instance to the form with same id field."""
-        try:
-            handler = utils.parse_instance(self)
-            id_string = handler.get_form_id()
-            self.form = Form.objects.get(id_string=id_string)
-        except Form.DoesNotExist:
-            utils.report_exception(
-                "missing original form",
-                "This instance cannot be linked to the original form because we no longer have %s." % id_string
-                )
-        except:
-            utils.report_exception(
-                "problem linking instance",
-                "This is probably a problem parsing the instance.",
-                sys.exc_info()
-                )
+from couchdbkit.ext.django.schema import *
 
-def _setup_instance(sender, **kwargs):
-    kwargs["instance"]._set_hash()
-    kwargs["instance"]._link()
+# class GPS(DocumentSchema):
+#     latitude = FloatProperty()
+#     longitude = FloatProperty()
+#     altitude = FloatProperty()
+#     accuracy = FloatProperty()
 
-pre_save.connect(_setup_instance, sender=Instance)
+# class Location(DocumentSchema):
+#     gps = SchemaProperty(GPS)
+#     lga = IntegerProperty()
 
-    
-def _upload_image(instance, filename):
-    """
-    Save this image in the same folder as its instance.
-    """
-    folder, xml_filename = os.path.split(instance.instance.xml_file.name)
-    return os.path.join(folder, filename)
+# class SurveyData(DocumentSchema):
+#     device_id = StringProperty()
+#     start = DateTimeProperty()
+#     end = DateTimeProperty()
+#     location = SchemaProperty(Location)
+#     picture = StringProperty()
 
-class InstanceImage(models.Model):
-    instance = models.ForeignKey(Instance, related_name="images")
-    image = models.FileField(upload_to=_upload_image)
-
-class Submission(models.Model):
-    posted = models.DateTimeField(auto_now_add=True)
-    instance = models.ForeignKey(Instance, related_name="submissions")
-
-    class Meta:
-        ordering = ("posted",)
-
-# COUCHDBKIT STUFF
-
-import couchdbkit
-
-class ODKInstance(couchdbkit.Document):
+class Instance(Document):
     pass
-
-server = couchdbkit.Server()
-odk_db = server.get_or_create_db("odk")
-ODKInstance.set_db(odk_db)
+    # form_id = StringProperty()
+    # survey_type = StringProperty()
+    # survey_data = SchemaProperty(SurveyData)
 
 def make_submission(xml_file, media_files):
     """
@@ -151,16 +143,23 @@ def make_submission(xml_file, media_files):
     a way for an admin to mark duplicate submissions. This should
     simplify things a bit.
     """
-    doc = ODKInstance()
+    # add the parsed xml
+    data = utils.parse_odk_xml(xml_file)
+
+    try:
+        xform = XForm.objects.get(id_string=data["form_id"])
+    except XForm.DoesNotExist:
+        utils.report_exception("missing form", data["form_id"])
+        return None
+
+    xform.clean_instance(data["survey_data"])
+
+    doc = Instance(data)
+        # form_id=data["form_id"],
+        # survey_type=data["survey_type"],
+        # survey_data=SurveyData(data["survey_data"])
+        # )        
     doc.save()
 
     # attach all the files
     for f in [xml_file] + media_files: doc.put_attachment(f)
-
-    # putting the xml_file up as an attachment reads the file
-    xml_file.seek(0)
-
-    # add the parsed xml
-    data = utils.parse_odk_xml(xml_file)
-    doc.parsed_xml = data
-    doc.save()
