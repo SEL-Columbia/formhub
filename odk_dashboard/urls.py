@@ -10,6 +10,7 @@ import data_sync
 urlpatterns = patterns('',
     url(r"^/?$", views.ensure_logged_in),
     url(r"^main/?$", views.main_index),
+    url(r"^couchly/(?P<survey_id>.*)$", views.couchly),
     url(r"^embed/survey_instance_data/(?P<survey_id>.*)$", views.embed_survey_instance_data),
     url(r"^rapid_odk/$", views.dashboard),
     url(r"^map/?", redirect_to, {'url': '/view'}),

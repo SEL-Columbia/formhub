@@ -10,6 +10,7 @@
 	<script type="text/javascript" src="/site-media/jquery-ui/jquery-ui-1.8.7.custom.min.js"></script>
 	<script type="text/javascript" src="/site-media/js/jquery.buildin.js"></script>
 	<script type="text/javascript" src="/site-media/js/sammy-latest.min.js"></script>
+	<script src="/site-media/js/json2table.js" type="text/javascript" charset="utf-8"></script>
 	<link rel="stylesheet" href="/site-media/css/sitewide.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
 	<link rel="stylesheet" href="/site-media/css/tables.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
 	<link rel="stylesheet" href="/site-media/css/generated-donotedit.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
@@ -58,5 +59,6 @@
 			$('#content .fwidth').wrapInner("<div style='background-color:#fff;border:1px solid #666;padding:6px;margin:6px' />"); //real hacky
 		}
 	</script>
+	{% block footer %}{% endblock %}
 </body>
 </html>
