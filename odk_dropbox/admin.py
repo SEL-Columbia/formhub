@@ -4,7 +4,7 @@ from . import models
 
 class XFormInput(ModelForm):
     class Meta:
-        model = models.Form
+        model = models.XForm
         exclude = ("id_string","title")
 
 def toggle(modeladmin, request, queryset):
@@ -13,7 +13,7 @@ def toggle(modeladmin, request, queryset):
         form.save()
 toggle.short_description = "Toggle active status of selected XForms"
 
-class FormAdmin(admin.ModelAdmin):
+class XFormAdmin(admin.ModelAdmin):
     form = XFormInput
     list_display = ("title", "id_string", "description", "submission_count", "active")
     actions = [toggle]
@@ -23,4 +23,4 @@ class FormAdmin(admin.ModelAdmin):
         admin.ModelAdmin.__init__(self, *args, **kwargs)
         self.list_display_links = (None, )
 
-admin.site.register(models.Form, FormAdmin)
+admin.site.register(models.XForm, XFormAdmin)
