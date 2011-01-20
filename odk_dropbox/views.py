@@ -7,21 +7,17 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render_to_response
-from djangomako.shortcuts import render_to_response as mako_to_response
 from django.http import HttpResponse
-import xlwt
-import re
-from markdown import markdown
-import os
-import codecs
-from . import utils
+from bson.code import Code
 import itertools
-
-from .models import XForm, make_submission
+import xlwt
+from . import utils
+from .models import XForm, make_instance, odk
 
 @require_GET
 def formList(request):
-    forms = [(f.name(), f.url()) for f in XForm.objects.filter(active=True)]
+    """This is where ODK Collect gets its download list."""
+    forms = [f.id_string for f in XForm.objects.filter(active=True)]
     return render_to_response("formList.xml",
                               {"forms": forms},
                               mimetype="application/xml")
@@ -36,7 +32,7 @@ def submission(request):
         "There should be a single xml file in this submission."
 
     # save this XML file and media files as attachments
-    make_submission(
+    make_instance(
         xml_file_list[0],
         list(itertools.chain(*request.FILES.values()))
         )
@@ -54,17 +50,40 @@ read_all_data, created = Permission.objects.get_or_create(
     content_type = ContentType.objects.get_for_model(Permission),
     codename = "read_all_data"
     )
-@permission_required("auth.read_all_data")
+# @permission_required("auth.read_all_data")
 def survey_list(request):
     rows = [["Survey", "Submissions", "Last Submission", "Export"]]
-    for xform in XForm.objects.filter(active=True):
-        rows.append([
-                xform.title,
-                Instance.objects.filter(xform__title=xform.title).count(),
-                xform.date_of_last_submission(),
-                '<a href="/%s.xls">xls</a>' % xform.title,
-                ])
-    return mako_to_response("table2.html", {"rows" : rows})
+
+    map_one = Code("function () {"
+                   "  emit(this.form_id, {"
+                   "    'count' : 1,"
+                   "    'date' : this.survey_data.end"
+                   "  });"
+                   "}")
+    # seems like there should be a cleaner way to sum
+    reduce_sum = Code("function (key, values) {"
+                      "  var total = 0;"
+                      "  var last_submission=NaN;"
+                      "  for (var i = 0; i < values.length; i++) {"
+                      "    total += values[i][0];"
+                      "    if(last_submission==NaN | values[i][1] > last_submission){"
+                      "      last_submission = values[i][1];"
+                      "    }"
+                      "  }"
+                      "  return [total, last_submission];"
+                      "}")
+    result = odk.instances.map_reduce(map_one, reduce_sum)
+    for doc in result.find():
+        print doc
+
+    # for xform in XForm.objects.filter(active=True):
+    #     rows.append([
+    #             xform.title,
+    #             Instance.objects.filter(xform__title=xform.title).count(),
+    #             xform.date_of_last_submission(),
+    #             '<a href="/%s.xls">xls</a>' % xform.title,
+    #             ])
+    # return mako_to_response("table2.html", {"rows" : rows})
 
 def xls_to_response(xls, fname):
     response = HttpResponse(mimetype="application/ms-excel")
@@ -114,11 +133,3 @@ def xls(request, title):
             ws.write(r, c, table[r][c])
 
     return xls_to_response(wb, form.title + ".xls")
-
-def content(request, topic):
-    filedir = os.path.dirname(__file__)
-    filepath = os.path.join(filedir, "content", topic + ".mkdn")
-    f = codecs.open(filepath, mode="r", encoding="utf8")
-    text = f.read()
-    f.close()
-    return HttpResponse(markdown(text))

@@ -17,12 +17,6 @@ LOGIN_REDIRECT_URL = '/'
 # user registration settings
 ACCOUNT_ACTIVATION_DAYS = 1
 
-# couchdbkit settings #
-COUCHDB_DATABASES = (
-    ("nmis.odk_dropbox", "http://127.0.0.1:5984/odk"),
-)
-#######################
-
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'f6h^bz8&0+ad@+qsntr)_onhx2(y^^u%$434byw3l^q!*n078v'
 
@@ -38,7 +32,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'djangomako.middleware.MakoMiddleware',
-    'mangrove_demo.middleware.ViewNameMiddleware',
 )
 
 ROOT_URLCONF = 'nmis.urls'
@@ -58,14 +51,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     # 'south',
-    'eav',
     'registration',
-    'couchdbkit.ext.django',
 
     'odk_dropbox',
-    "generic_report",
-    "generic_report_admin",
-    "mangrove_demo",
-    "simple_locations",
-    "mptt",
 )

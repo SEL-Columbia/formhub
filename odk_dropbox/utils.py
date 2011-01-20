@@ -4,6 +4,9 @@
 
 from xml.dom import minidom
 import os, sys
+from . import tag
+
+SLASH = u"/"
 
 def parse_odk_xml(f):
     """
@@ -13,37 +16,42 @@ def parse_odk_xml(f):
     xml_obj = minidom.parse(f)
     root_node = xml_obj.documentElement
     # go through the xml object creating a corresponding python object
-    survey_data = {}
-    _build(root_node, survey_data)
-    keys = survey_data.keys()
-    assert len(keys)==1, "There should be a single root node."
+    # NOTE: THIS WILL DESTROY ANY DATA COLLECTED WITH REPEATABLE NODES
+    # THIS IS OKAY FOR OUR USE CASE, BUT OTHER USERS SHOULD BEWARE.
+    survey_data = dict(_path_value_pairs(root_node))
     assert len(list(_all_attributes(root_node)))==1, \
         u"There should be exactly one attribute in this document."
-    # return the document id, and the newly constructing python object
-    return {"form_id" : root_node.getAttribute(u"id"),
-            "survey_type" : keys[0],
-            "survey_data" : survey_data[keys[0]],}
+    survey_data.update({
+            tag.FORM_ID : root_node.getAttribute(u"id"),
+            tag.SURVEY_TYPE : root_node.nodeName,
+            })
+    return survey_data
 
-def _build(node, parent):
+def _path(node):
+    n = node
+    levels = []
+    while n.nodeType!=n.DOCUMENT_NODE:
+        levels = [n.nodeName] + levels
+        n = n.parentNode
+    return SLASH.join(levels[1:])
+
+def _path_value_pairs(node):
     """
     Using a depth first traversal of the xml nodes build up a python
     object in parent that holds the tree structure of the data.
     """
-    if node.nodeName in parent:
-        raise Exception("We aren't equipped to do repeating nodes.")
-
     if len(node.childNodes)==0:
         # there's no data for this leaf node
-        parent[node.nodeName] = None
+        yield _path(node), None
     elif len(node.childNodes)==1 and \
             node.childNodes[0].nodeType==node.TEXT_NODE:
         # there is data for this leaf node
-        parent[node.nodeName] = node.childNodes[0].nodeValue
+        yield _path(node), node.childNodes[0].nodeValue
     else:
         # this is an internal node
-        parent[node.nodeName] = {}
         for child in node.childNodes:
-            _build(child, parent[node.nodeName])
+            for pair in _path_value_pairs(child):
+                yield pair
 
 def _all_attributes(node):
     """
@@ -57,33 +65,13 @@ def _all_attributes(node):
             yield pair
 
 
-# import json ; print json.dumps(parse_odk_xml(sys.argv[1]), indent=4)
-
-
-class VariableDictionary(object):
-    def __init__(self, d):
-        """
-        The keys of this dictionary are paths to variables and the
-        values are a bunch of attributes
-        """
-        self._d = d
-
-    def __getitem__(self, key):
-        if key in self._d: return self._d[key]
-        # otherwise
-        result = {}
-        for k in self._d.keys():
-            if k.startswith(key + "/"):
-                result[k[len(key)+1:]] = self._d[k]
-        return VariableDictionary(result)
-
 # test = {"one/two" : 1, "one/three" : 3, "two" : 2}
 # vardict = VariableDictionary(test)
 # print vardict["one"]._d, vardict["two"]
 
 class XFormParser(object):
     def __init__(self, xml):
-        """'f' is either a path to a file, or a file object."""
+        assert type(xml)==str or type(xml)==unicode, u"xml must be a string"
         self.doc = minidom.parseString(xml)
         self.root_node = self.doc.documentElement
 
@@ -91,18 +79,17 @@ class XFormParser(object):
         """
         Return a list of pairs [(path to variable1, attributes of variable1), ...].
         """
-        bindings = self.doc.getElementsByTagName("bind")
+        bindings = self.doc.getElementsByTagName(u"bind")
         attributes = [dict(_all_attributes(b)) for b in bindings]
-        # note: nodesets look like /water/source/blah we're returning ['source', 'blah']
-        return [(d.pop("nodeset").split("/")[2:], d) for d in attributes]
+        # note: nodesets look like /water/source/blah we're returning source/blah
+        return [(SLASH.join(d.pop(u"nodeset").split(SLASH)[2:]), d) for d in attributes]
 
     def get_variable_dictionary(self):
         d = {}
         for path, attributes in self.get_variable_list():
-            path = "/".join(path)
-            assert path not in d, "Paths should be unique."
+            assert path not in d, u"Paths should be unique."
             d[path] = attributes
-        return VariableDictionary(d)
+        return d
 
     def follow(self, path):
         """
@@ -112,7 +99,7 @@ class XFormParser(object):
         """
         element = self.doc.documentElement
         count = {}
-        for name in path.split("/"):
+        for name in path.split(SLASH):
             count[name] = 0
             for child in element.childNodes:
                 if isinstance(child, minidom.Element) and child.tagName==name:
@@ -126,31 +113,36 @@ class XFormParser(object):
         Find the single child of h:head/model/instance and return the
         attribute 'id'.
         """
-        instance = self.follow("h:head/model/instance")
+        instance = self.follow(u"h:head/model/instance")
         children = [child for child in instance.childNodes \
                         if isinstance(child, minidom.Element)]
         assert len(children)==1
-        return children[0].getAttribute("id")
+        return children[0].getAttribute(u"id")
 
     def get_title(self):
-        title = self.follow("h:head/h:title")
-        assert len(title.childNodes)==1, "There should be a single title"
+        title = self.follow(u"h:head/h:title")
+        assert len(title.childNodes)==1, u"There should be a single title"
         return title.childNodes[0].nodeValue
 
+    supported_controls = ["input", "select1", "select", "upload"]
 
-def json_value(x, path):
-    """
-    Assuming that x is a Python representation of a JSON object,
-    follow the key path to return a value. Raise an exception if the
-    value isn't found.
-    https://github.com/dimagi/couchforms/blob/master/couchforms/safe_index.py
-    """
-    if len(path)>1: return json_value(x[path[0]], path[1:])
-    return x[path[0]]
+    def get_control_dict(self):
+        def get_pairs(e):
+            result = []
+            if hasattr(e, "tagName") and e.tagName in self.supported_controls:
+                result.append( (e.getAttribute("ref"),
+                                get_text(follow(e, "label").childNodes)) )
+            if e.hasChildNodes:
+                for child in e.childNodes:
+                    result.extend(get_pairs(child))
+            return result
+        return dict(get_pairs(self.follow("h:body")))
 
 
-# xform = XFormDocument(sys.argv[1])
-# import json ; print json.dumps(xform.get_variables(), indent=4)
+# f = open(sys.argv[1])
+# xform = XFormParser(f.read())
+# f.close()
+# import json ; print json.dumps(xform.get_variable_dictionary(), indent=4)
 
 
 from django.conf import settings
@@ -159,8 +151,8 @@ import traceback
 def report_exception(subject, info, exc_info=None):
     if exc_info:
         cls, err = exc_info[:2]
-        info += "Exception in request: %s: %s" % (cls.__name__, err)
-        info += "".join(traceback.format_exception(*exc_info))
+        info += u"Exception in request: %s: %s" % (cls.__name__, err)
+        info += u"".join(traceback.format_exception(*exc_info))
 
     if settings.DEBUG:
         print subject
