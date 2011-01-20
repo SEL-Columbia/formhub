@@ -32,3 +32,9 @@ Installation
 7. Copy example settings and edit them appropriately
 
     $ cp custom_settings_example.py custom_settings.py
+
+8. Install couchdb:
+    $ sudo apt-get update
+    $ sudo apt-get install xulrunner-dev
+    $ sudo apt-get install build-essential erlang libicu-dev libcurl4-openssl-dev
+    $ sudo apt-get install couchdb

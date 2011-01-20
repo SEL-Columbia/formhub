@@ -15,12 +15,13 @@ from markdown import markdown
 import os
 import codecs
 from . import utils
+import itertools
 
-from .models import Form, Instance, InstanceImage, make_submission
+from .models import XForm, make_submission
 
 @require_GET
 def formList(request):
-    forms = [(f.name(), f.url()) for f in Form.objects.filter(active=True)]
+    forms = [(f.name(), f.url()) for f in XForm.objects.filter(active=True)]
     return render_to_response("formList.xml",
                               {"forms": forms},
                               mimetype="application/xml")
@@ -34,14 +35,11 @@ def submission(request):
     assert len(xml_file_list)==1, \
         "There should be a single xml file in this submission."
 
-    # save the rest of the files to the filesystem
-    # these should all be images
-    images = []
-    for key in request.FILES.keys():
-        for image in request.FILES.getlist(key):
-            images.append(image)
-
-    make_submission(xml_file_list[0], images)
+    # save this XML file and media files as attachments
+    make_submission(
+        xml_file_list[0],
+        list(itertools.chain(*request.FILES.values()))
+        )
 
     # ODK needs two things for a form to be considered successful
     # 1) the status code needs to be 201 (created)
@@ -59,12 +57,12 @@ read_all_data, created = Permission.objects.get_or_create(
 @permission_required("auth.read_all_data")
 def survey_list(request):
     rows = [["Survey", "Submissions", "Last Submission", "Export"]]
-    for form in Form.objects.filter(active=True):
+    for xform in XForm.objects.filter(active=True):
         rows.append([
-                form.title,
-                Instance.objects.filter(form__title=form.title).count(),
-                form.date_of_last_submission(),
-                '<a href="/%s.xls">xls</a>' % form.title,
+                xform.title,
+                Instance.objects.filter(xform__title=xform.title).count(),
+                xform.date_of_last_submission(),
+                '<a href="/%s.xls">xls</a>' % xform.title,
                 ])
     return mako_to_response("table2.html", {"rows" : rows})
 
@@ -76,8 +74,8 @@ def xls_to_response(xls, fname):
 
 @permission_required("auth.read_all_data")
 def xls(request, title):
-    form = Form.objects.get(title=title, active=True)
-    form_parser = utils.FormParser(form.path())
+    xform = XForm.objects.get(title=title, active=True)
+    xform_parser = utils.FormParser(xform.path())
     LGA = "lga"
     headers = [LGA]
     for h in form_parser.get_variable_list():

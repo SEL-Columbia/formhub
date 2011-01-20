@@ -6,6 +6,7 @@ from django.db.models import Avg, Max, Min, Count
 from django.http import HttpResponse, HttpResponseRedirect
 from odk_dropbox import utils
 from odk_dropbox.models import Form
+from odk_dropbox.models import Form, odk_db
 from .models import ParsedInstance, Phone, District
 import datetime
 
@@ -107,6 +108,21 @@ def view_section(request):
     pass_to_map['all'] = psubs
     info['point_data'] = simplejson.dumps(pass_to_map)
     return render_to_response("view.html", info)
+
+def couchly(request, survey_id):
+    info = {}
+    if survey_id != '':
+        info['survey_id'] = survey_id
+        info['display_dictionary'] = {'teachers_and_staff':'Teachers and Staff', \
+            'geopoint':'GPS Coordinates', 'name': 'Name', 'community': 'Community', \
+            'survey_data':'Survey Data'}
+        info['survey_data'] = simplejson.dumps(odk_db.get(survey_id)['parsed_xml'])
+    else:
+        info['survey_list'] = [{'name':'Education 1', 'id':'#'}, \
+                {'name':'Health 1', 'id': '#'}, \
+                {'name':'Water 1', 'id': '#'}]
+    
+    return render_to_response("couchly.html", info)
 
 def survey_times(request):
     """
