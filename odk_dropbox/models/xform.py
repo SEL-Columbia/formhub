@@ -3,14 +3,8 @@
 
 import datetime
 from django.db import models
-from pymongo import Connection
-from . import utils, tag
-
-_connection = Connection()
-odk = _connection.odk
-
-# odk.instances is a collection, a group of documents that's
-# equivalent to a table in a SQL database
+from .. import utils, tag
+from .instance import odk_instances
 
 # these cleaners will be used when saving data
 cleaner = {
@@ -39,6 +33,7 @@ class XForm(models.Model):
     title = models.CharField(editable=False, max_length=64)
 
     class Meta:
+        app_label = 'odk_dropbox'
         verbose_name = "XForm"
         verbose_name_plural = "XForms"
         ordering = ("id_string",)
@@ -67,7 +62,7 @@ class XForm(models.Model):
         return getattr(self, "id_string", "")
 
     def instances(self):
-        odk.instances.find({tag.FORM_ID : self.id_string})
+        return odk_instances.find({tag.FORM_ID : self.id_string})
 
     def submission_count(self):
         return self.instances().count()
@@ -77,27 +72,3 @@ class XForm(models.Model):
         newest_instance = self.instances().sort(tag.TIME_END)[0]
         if newest_instance: return newest_instance[tag.TIME_END]
         return None
-
-
-def make_instance(xml_file, media_files):
-    """
-    I used to check if this file had been submitted already, I've
-    taken this out because it was too slow. Now we're going to create
-    a way for an admin to mark duplicate submissions. This should
-    simplify things a bit.
-    """
-    data = utils.parse_odk_xml(xml_file)
-
-    try:
-        xform = XForm.objects.get(id_string=data[tag.FORM_ID])
-    except XForm.DoesNotExist:
-        utils.report_exception("missing form", data[tag.FORM_ID])
-        return None
-
-    xform.clean_instance(data)
-
-    doc_id = odk.instances.insert(data)
-    print doc_id
-
-    # attach all the files
-    # for f in [xml_file] + media_files: doc.put_attachment(f)
