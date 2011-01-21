@@ -10,7 +10,9 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponse
 import itertools
 import xlwt
-from . import utils
+import json
+from bson import json_util
+from . import utils, tag
 from .models import XForm, make_instance, odk
 
 @require_GET
@@ -49,11 +51,20 @@ read_all_data, created = Permission.objects.get_or_create(
     content_type = ContentType.objects.get_for_model(Permission),
     codename = "read_all_data"
     )
-# @permission_required("auth.read_all_data")
+@permission_required("auth.read_all_data")
 def export_list(request):
     return render_to_response(
         "export_list.html",
         {"xforms" : XForm.objects.filter(active=True)}
+        )
+
+def map_points(request):
+    return json.dumps(
+        list(odk.instances.find(
+            spec={tag.GPS : {"$exists" : True}},
+            fields=[tag.GPS, tag.SURVEY_TYPE]
+            )),
+        default=json_util.default
         )
 
 def xls_to_response(xls, fname):
@@ -63,8 +74,9 @@ def xls_to_response(xls, fname):
     return response
 
 @permission_required("auth.read_all_data")
-def xls(request, title):
-    xform = XForm.objects.get(title=title, active=True)
+def xls(request, id_string):
+    xform = XForm.objects.get(id_string=id_string)
+    xform.guarantee_parser()
     xform_parser = utils.FormParser(xform.path())
     LGA = "lga"
     headers = [LGA]
@@ -72,7 +84,7 @@ def xls(request, title):
         if not (h.startswith(LGA) or h.startswith("state") or h=="zone"):
             headers.append(h)
     table = [headers]
-    for i in Instance.objects.filter(form__title=form.title):
+    for i in Instance.objects.filter(form__id_string=form.id_string):
         d = utils.parse_instance(i).get_dict()
         row = []
         for h in headers:
@@ -103,4 +115,4 @@ def xls(request, title):
         for c in range(len(table[r])):
             ws.write(r, c, table[r][c])
 
-    return xls_to_response(wb, form.title + ".xls")
+    return xls_to_response(wb, form.id_string + ".xls")
