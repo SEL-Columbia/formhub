@@ -66,13 +66,17 @@ class XForm(models.Model):
     def __unicode__(self):
         return getattr(self, "id_string", "")
 
+    def instances(self):
+        odk.instances.find({tag.FORM_ID : self.id_string})
+
     def submission_count(self):
-        return odk.instances.find({tag.FORM_ID : self.id_string}).count()
+        return self.instances().count()
     submission_count.short_description = "Submission Count"
 
     def date_of_last_submission(self):
-        newest_instance = odk.instances.find({tag.FORM_ID : self.id_string}).sort(tag.TIME_END)[0]
-        return None if not newest_instance else newest_instance[tag.TIME_END]
+        newest_instance = self.instances().sort(tag.TIME_END)[0]
+        if newest_instance: return newest_instance[tag.TIME_END]
+        return None
 
 
 def make_instance(xml_file, media_files):
