@@ -1,0 +1,10 @@
+<table>
+{% for xform in xforms %}
+<tr>
+  <td>{{ xform.title }}</td>
+  <td>{{ xform.submission_count }}</td>
+  <td>{{ xform.date_of_last_submission }}</td>
+  <td><a href="/{{ xform.id_string }}.xls">xls</a></td>
+</tr>
+{% endfor %}
+</table>

@@ -37,7 +37,6 @@ class XForm(models.Model):
         unique=True, editable=False, verbose_name="ID String", max_length=64
         )
     title = models.CharField(editable=False, max_length=64)
-    filename = models.CharField(editable=False, max_length=64)
 
     class Meta:
         verbose_name = "XForm"

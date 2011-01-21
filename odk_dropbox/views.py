@@ -8,7 +8,6 @@ from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
-from bson.code import Code
 import itertools
 import xlwt
 from . import utils
@@ -51,39 +50,11 @@ read_all_data, created = Permission.objects.get_or_create(
     codename = "read_all_data"
     )
 # @permission_required("auth.read_all_data")
-def survey_list(request):
-    rows = [["Survey", "Submissions", "Last Submission", "Export"]]
-
-    map_one = Code("function () {"
-                   "  emit(this.form_id, {"
-                   "    'count' : 1,"
-                   "    'date' : this.survey_data.end"
-                   "  });"
-                   "}")
-    # seems like there should be a cleaner way to sum
-    reduce_sum = Code("function (key, values) {"
-                      "  var total = 0;"
-                      "  var last_submission=NaN;"
-                      "  for (var i = 0; i < values.length; i++) {"
-                      "    total += values[i][0];"
-                      "    if(last_submission==NaN | values[i][1] > last_submission){"
-                      "      last_submission = values[i][1];"
-                      "    }"
-                      "  }"
-                      "  return [total, last_submission];"
-                      "}")
-    result = odk.instances.map_reduce(map_one, reduce_sum)
-    for doc in result.find():
-        print doc
-
-    # for xform in XForm.objects.filter(active=True):
-    #     rows.append([
-    #             xform.title,
-    #             Instance.objects.filter(xform__title=xform.title).count(),
-    #             xform.date_of_last_submission(),
-    #             '<a href="/%s.xls">xls</a>' % xform.title,
-    #             ])
-    # return mako_to_response("table2.html", {"rows" : rows})
+def export_list(request):
+    return render_to_response(
+        "export_list.html",
+        {"xforms" : XForm.objects.filter(active=True)}
+        )
 
 def xls_to_response(xls, fname):
     response = HttpResponse(mimetype="application/ms-excel")

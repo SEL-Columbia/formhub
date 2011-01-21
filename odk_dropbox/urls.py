@@ -9,7 +9,6 @@ urlpatterns = patterns('',
     url(r"^formList$", views.formList),
     # url where ODK Collect submits data
     url(r"^submission$", views.submission),
-    url(r"^survey-list/?$", views.survey_list),
+    url(r"^survey-list/?$", views.export_list),
     url(r"^(?P<title>[^/]*)\.xls$", views.xls),
-    url(r"^content/(?P<topic>\w*)/?$", views.content),
 )
