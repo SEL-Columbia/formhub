@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render_to_response
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 import itertools
 import xlwt
 import json
@@ -28,9 +28,12 @@ def formList(request):
 def submission(request):
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
-    xml_file_list = request.FILES.pop("xml_submission_file")
-    assert len(xml_file_list)==1, \
-        "There should be a single xml file in this submission."
+    xml_file_list = request.FILES.pop("xml_submission_file", [])
+
+    if len(xml_file_list)!=1:
+        return HttpResponseBadRequest(
+            "Request must contain exactly one XML file"
+            )
 
     # save this XML file and media files as attachments
     make_instance(
