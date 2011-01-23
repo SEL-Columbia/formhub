@@ -1,168 +1,128 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
+# import ipdb; ipdb.set_trace()
 
-from xml.sax.handler import ContentHandler
-from xml.sax import parseString
-import xml
-from xml.dom.minidom import Element
-import re, os
+from xml.dom import minidom
+import os, sys
+from . import tag
 
-class ODKHandler(ContentHandler):
+SLASH = u"/"
 
-    def __init__ (self):
-        self._dict = {}
-        self._stack = []
-        self._form_id = ""
-
-    def get_dict(self):
-        # Note: we're only using the xml tag in our dictionary, not
-        # the whole xpath.
-        return self._dict
-
-    def get_form_id(self):
-        return self._form_id
-
-    def get_repeated_tags(self):
-        return self._repeated_tags
-
-    def startElement(self, name, attrs):
-        self._stack.append(name)
-
-        if name not in self._dict: self._dict[name] = u""
-
-        # there should only be a single attribute in this document
-        # an id on the root node
-        if attrs:
-            assert len(self._stack)==1, \
-                "Attributes should only be on the root node."
-            keys = attrs.keys()
-            assert keys==["id"], \
-                "The only attribute we should see is an 'id'."
-            self._form_id = attrs.get("id")
-
-    def characters(self, content):
-        # ignore whitespace
-        s = content.strip()
-        if not s: return
-
-        # get the last tag we saw
-        tag = self._stack[-1]
-        if not self._dict[tag]:
-            # if we haven't seen a value for this tag yet
-            self._dict[tag] = s
-        else:
-            # if we have seen this tag before we need to append this
-            # value to a list of all the values we've seen before
-            self._dict[tag] += u" " + s
-
-    def endElement(self, name):
-        top = self._stack.pop()
-        assert top==name, \
-            "start %(top)s doesn't match end %(name)s" % \
-            {"top" : top, "name" : name} 
-
-
-def parse(xml):
-    handler = ODKHandler()
-    byte_string = xml.encode("utf-8")
-    parseString(byte_string, handler)
-
-    d = handler.get_dict()
-    repeats = [(k,v) for k, v in d.items() if type(v)==list]
-    if repeats: report_exception("Repeated XML tags", str(repeats))
-
-    return handler
-
-def text(file):
+def parse_odk_xml(f):
     """
-    Return the string contents of the passed file.
+    'f' may be a file object or a path to a file. Return a python
+    object representation of this XML file.
     """
-    file.open()
-    text = file.read()
-    file.close()
-    return text
+    xml_obj = minidom.parse(f)
+    root_node = xml_obj.documentElement
+    # go through the xml object creating a corresponding python object
+    # NOTE: THIS WILL DESTROY ANY DATA COLLECTED WITH REPEATABLE NODES
+    # THIS IS OKAY FOR OUR USE CASE, BUT OTHER USERS SHOULD BEWARE.
+    survey_data = dict(_path_value_pairs(root_node))
+    assert len(list(_all_attributes(root_node)))==1, \
+        u"There should be exactly one attribute in this document."
+    survey_data.update({
+            tag.FORM_ID : root_node.getAttribute(u"id"),
+            tag.SURVEY_TYPE : root_node.nodeName,
+            })
+    return survey_data
 
-def parse_instance(instance):
+def _path(node):
+    n = node
+    levels = []
+    while n.nodeType!=n.DOCUMENT_NODE:
+        levels = [n.nodeName] + levels
+        n = n.parentNode
+    return SLASH.join(levels[1:])
+
+def _path_value_pairs(node):
     """
-    Return the ODKHandler from parsing the xml_file of this instance.
+    Using a depth first traversal of the xml nodes build up a python
+    object in parent that holds the tree structure of the data.
     """
-    return parse(text(instance.xml_file))
-
-def sluggify(text, delimiter=u"_"):
-    return re.sub(r"\W+", delimiter, text.lower())
-
-## PARSING OF XFORMS
-# at each text node we grab the nodeValue
-# and parentNode.nodeName
-def get_text_nodes(node):
-    if node.nodeType == node.TEXT_NODE:
-        return [node]
+    if len(node.childNodes)==0:
+        # there's no data for this leaf node
+        yield _path(node), None
+    elif len(node.childNodes)==1 and \
+            node.childNodes[0].nodeType==node.TEXT_NODE:
+        # there is data for this leaf node
+        yield _path(node), node.childNodes[0].nodeValue
     else:
-        result = []
-        for n in node.childNodes:
-            result += get_text_nodes(n)
-        return result
+        # this is an internal node
+        for child in node.childNodes:
+            for pair in _path_value_pairs(child):
+                yield pair
 
-def follow(element, path):
+def _all_attributes(node):
     """
-    Path is an array of node names. Starting at the document
-    element we follow the path, returning the final node in the
-    path.
+    Go through an XML document returning all the attributes we see.
     """
-    count = {}
-    for name in path.split("/"):
-        count[name] = 0
-        for child in element.childNodes:
-            if isinstance(child, Element) and child.tagName==name:
-                count[name] += 1
-                element = child
-        assert count[name]==1
-    return element
+    if hasattr(node, "hasAttributes") and node.hasAttributes():
+        for key in node.attributes.keys():
+            yield key, node.getAttribute(key)
+    for child in node.childNodes:
+        for pair in _all_attributes(child):
+            yield pair
 
-class XMLParser(object):
-    def __init__(self, x):
-        """
-        x is either a path to a file, or a file object.
-        """
-        if hasattr(x, "open") and hasattr(x, "read") and hasattr(x, "close"):
-            self.doc = xml.dom.minidom.parseString(text(x))
-        else:
-            self.doc = xml.dom.minidom.parse(x)
 
-    def follow(self, path):
-        return follow(self.doc.documentElement, path)
+# test = {"one/two" : 1, "one/three" : 3, "two" : 2}
+# vardict = VariableDictionary(test)
+# print vardict["one"]._d, vardict["two"]
 
-def get_text(node_list):
-    text_nodes = [node for node in node_list if node.nodeType==node.TEXT_NODE]
-    return " ".join([node.data for node in text_nodes])
-
-def get_nodeset(binding):
-    return binding.getAttribute("nodeset")
-
-def get_name(binding):
-    return get_nodeset(binding).split("/")[-1]
-
-class FormParser(XMLParser):
-    def get_bindings(self):
-        return self.doc.getElementsByTagName("bind")
+class XFormParser(object):
+    def __init__(self, xml):
+        assert type(xml)==str or type(xml)==unicode, u"xml must be a string"
+        self.doc = minidom.parseString(xml)
+        self.root_node = self.doc.documentElement
 
     def get_variable_list(self):
-        return [get_name(b) for b in self.get_bindings()]
+        """
+        Return a list of pairs [(path to variable1, attributes of variable1), ...].
+        """
+        bindings = self.doc.getElementsByTagName(u"bind")
+        attributes = [dict(_all_attributes(b)) for b in bindings]
+        # note: nodesets look like /water/source/blah we're returning source/blah
+        return [(SLASH.join(d.pop(u"nodeset").split(SLASH)[2:]), d) for d in attributes]
+
+    def get_variable_dictionary(self):
+        d = {}
+        for path, attributes in self.get_variable_list():
+            assert path not in d, u"Paths should be unique."
+            d[path] = attributes
+        return d
+
+    def follow(self, path):
+        """
+        Path is an array of node names. Starting at the document
+        element we follow the path, returning the final node in the
+        path.
+        """
+        element = self.doc.documentElement
+        count = {}
+        for name in path.split(SLASH):
+            count[name] = 0
+            for child in element.childNodes:
+                if isinstance(child, minidom.Element) and child.tagName==name:
+                    count[name] += 1
+                    element = child
+            assert count[name]==1
+        return element
 
     def get_id_string(self):
         """
         Find the single child of h:head/model/instance and return the
         attribute 'id'.
         """
-        instance = self.follow("h:head/model/instance")
+        instance = self.follow(u"h:head/model/instance")
         children = [child for child in instance.childNodes \
-                        if isinstance(child, Element)]
+                        if isinstance(child, minidom.Element)]
         assert len(children)==1
-        return children[0].getAttribute("id")
+        return children[0].getAttribute(u"id")
 
     def get_title(self):
-        title = self.follow("h:head/h:title")
-        return get_text(title.childNodes)
+        title = self.follow(u"h:head/h:title")
+        assert len(title.childNodes)==1, u"There should be a single title"
+        return title.childNodes[0].nodeValue
 
     supported_controls = ["input", "select1", "select", "upload"]
 
@@ -178,9 +138,12 @@ class FormParser(XMLParser):
             return result
         return dict(get_pairs(self.follow("h:body")))
 
-    def get_dictionary(self):
-        d = self.get_control_dict()
-        return [(get_name(b), d.get(get_nodeset(b),"")) for b in self.get_bindings()]
+
+# f = open(sys.argv[1])
+# xform = XFormParser(f.read())
+# f.close()
+# import json ; print json.dumps(xform.get_variable_dictionary(), indent=4)
+
 
 from django.conf import settings
 from django.core.mail import mail_admins
@@ -188,8 +151,8 @@ import traceback
 def report_exception(subject, info, exc_info=None):
     if exc_info:
         cls, err = exc_info[:2]
-        info += "Exception in request: %s: %s" % (cls.__name__, err)
-        info += "".join(traceback.format_exception(*exc_info))
+        info += u"Exception in request: %s: %s" % (cls.__name__, err)
+        info += u"".join(traceback.format_exception(*exc_info))
 
     if settings.DEBUG:
         print subject

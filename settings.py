@@ -32,7 +32,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'djangomako.middleware.MakoMiddleware',
-    'mangrove_demo.middleware.ViewNameMiddleware',
 )
 
 ROOT_URLCONF = 'nmis.urls'
@@ -51,15 +50,8 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.admin',
-    'south',
-    'eav',
+    # 'south',
     'registration',
 
-    'odk_dashboard',
     'odk_dropbox',
-    "generic_report",
-    "generic_report_admin",
-    "mangrove_demo",
-    "simple_locations",
-    "mptt",
 )

@@ -32,3 +32,6 @@ Installation
 7. Copy example settings and edit them appropriately
 
     $ cp custom_settings_example.py custom_settings.py
+
+8. Install mongodb:
+sudo apt-get install mongodb

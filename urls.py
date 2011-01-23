@@ -7,8 +7,6 @@ from settings import MEDIA_ROOT
 
 urlpatterns = patterns('',
     (r'^', include('nmis.odk_dropbox.urls')),
-    (r'^', include('nmis.odk_dashboard.urls')),
-    url(r'^', include('mangrove_demo.urls'), name='mangrove-dashboard'),
     (r'^admin/', include(admin.site.urls)),
     (r'^accounts/', include('registration.urls')),
     # static serve site media / only for development

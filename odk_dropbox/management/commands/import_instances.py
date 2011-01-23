@@ -26,7 +26,7 @@ class Command(BaseCommand):
                                       field_name="image",
                                       content_type="image/jpeg")
                     )
-            models.make_submission(xml_file, images)
+            models.make_instance(xml_file, images)
 
             # close the files
             # xml_file.close()
