@@ -1,6 +1,5 @@
 Django==1.2.3
 Fabric==0.9.2
-django-mako==0.1.4pre
 xlwt==0.7.2
 Markdown==2.0.3
 django-treebeard==1.61
@@ -10,3 +9,5 @@ django-mptt==0.4.2
 ipython==0.10.1
 ipdb==0.2
 pymongo==1.9
+mongokit==0.5.13.1
+django-mongokit==0.1.7

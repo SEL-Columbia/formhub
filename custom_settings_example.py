@@ -8,7 +8,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'db.sqlite3',
-    }
+    },
+    'mongodb': {
+        'ENGINE': 'django_mongokit.mongodb',
+        'NAME': 'odk',
+    },
 }
 
 ADMINS = (

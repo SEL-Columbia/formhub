@@ -1,11 +1,6 @@
-from pymongo import Connection
-
-_connection = Connection()
-_odk = _connection.odk
-odk_instances = _odk.instances
-
-# odk.instances is a collection, a group of documents that's
-# equivalent to a table in a SQL database
+from django_mongokit import get_database
+db = get_database()
+odk_instances = db.instances
 
 def make_instance(xml_file, media_files):
     """
