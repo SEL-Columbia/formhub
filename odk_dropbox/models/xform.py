@@ -5,6 +5,7 @@ import datetime
 from django.db import models
 from .. import utils, tag
 from .instance import xform_instances
+from district import District
 
 # these cleaners will be used when saving data
 # All cleaned types should be in this list
@@ -62,6 +63,20 @@ class XForm(models.Model):
                     print "variable %s does not exist in vardict" % path
                 elif vardict[path][u"type"] in cleaner:
                     data[path] = cleaner[vardict[path][u"type"]](data[path])
+        
+        data[u'district_id'] = self.calculate_district_id(data)
+        
+    def calculate_district_id(self, data):
+        """one way to calculate the closest district.
+        data dict must be in format: "{'lat': a, 'lng': b}"
+        """
+        try:
+            latlng = {'lat': float(data[u'geopoint'][u'latitude']), \
+                    'lng': float(data[u'geopoint'][u'longitude'])}
+            district_id = District.closest_district(latlng).id
+        except:
+            district_id = False
+        return district_id
 
     def __unicode__(self):
         return getattr(self, "id_string", "")
