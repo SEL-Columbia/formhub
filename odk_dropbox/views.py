@@ -16,7 +16,7 @@ import xlwt
 import json
 from bson import json_util
 from . import utils, tag
-from .models import XForm, make_instance, xform_instances
+from .models import XForm, get_or_create_instance, xform_instances
 
 @require_GET
 def formList(request):
@@ -39,7 +39,7 @@ def submission(request):
             )
 
     # save this XML file and media files as attachments
-    make_instance(
+    get_or_create_instance(
         xml_file_list[0],
         list(itertools.chain(*request.FILES.values()))
         )
@@ -108,40 +108,18 @@ def xls_to_response(xls, fname):
 def xls(request, id_string):
     xform = XForm.objects.get(id_string=id_string)
     xform.guarantee_parser()
-    xform_parser = utils.FormParser(xform.path())
-    LGA = "lga"
-    headers = [LGA]
-    for h in form_parser.get_variable_list():
-        if not (h.startswith(LGA) or h.startswith("state") or h=="zone"):
-            headers.append(h)
+    headers = []
+    for path, attributes in xform.parser.get_variable_list():
+        headers.append(path)
     table = [headers]
-    for i in Instance.objects.filter(form__id_string=form.id_string):
-        d = utils.parse_instance(i).get_dict()
+    for i in xform.instances():
         row = []
         for h in headers:
-            if h==LGA:
-                try:
-                    row.append(i.parsedinstance.location.gps.district.name)
-                except:
-                    found = False
-                    for k in d.keys():
-                        if k.startswith(LGA):
-                            row.append(d[k])
-                            found = True
-                    if not found: row.append("n/a")
-            else: row.append(d.get(h, u"n/a"))
+            row.append(d.get(h, u"n/a"))
         table.append(row)
 
     wb = xlwt.Workbook()
     ws = wb.add_sheet("Data")
-    for r in range(len(table)):
-        for c in range(len(table[r])):
-            ws.write(r, c, table[r][c])
-
-    ws = wb.add_sheet("Dictionary")
-    parser = utils.FormParser(form.xml_file)
-    table = [("Variable Name", "Question Text")]
-    table.extend(parser.get_dictionary())
     for r in range(len(table)):
         for c in range(len(table[r])):
             ws.write(r, c, table[r][c])

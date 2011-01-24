@@ -1,33 +1,61 @@
 from django_mongokit import get_database
 db = get_database()
-
 xform_instances = db.instances
-from .. import utils, tag
-from xform import XForm
 
-def make_instance(xml_file, media_files):
+from django.db import models
+from xform import XForm
+from .. import utils, tag
+
+class Instance(models.Model):
+    xml = models.TextField()
+    xform = models.ForeignKey(XForm, related_name="instances")
+
+    class Meta:
+        app_label = 'odk_dropbox'
+
+    def _link(self):
+        """Link this instance with its corresponding form."""
+        data = utils.parse_xform_instance(self.xml)
+        self.xform = XForm.objects.get(id_string=data[tag.FORM_ID])
+
+    def _sync_mongo(self):
+        data = utils.parse_xform_instance(self.xml)
+        self.xform.clean_instance(data)
+        data["_id"] = self.id
+        xform_instances.save(data)
+
+    def save(self, *args, **kwargs):
+        self._link()
+        super(Instance, self).save(*args, **kwargs)
+        self._sync_mongo()
+
+class Attachment(models.Model):
+    instance = models.ForeignKey(Instance, related_name="attachments")
+    attachment = models.FileField(upload_to="attachments")
+
+    class Meta:
+        app_label = 'odk_dropbox'
+
+def get_or_create_instance(xml_file, media_files):
     """
     I used to check if this file had been submitted already, I've
     taken this out because it was too slow. Now we're going to create
-    a way for an admin to mark duplicate submissions. This should
+    a way for an admin to mark duplicate instances. This should
     simplify things a bit.
     """
-    data = utils.parse_xform_xml(xml_file)
+    xml_file.open()
+    xml = xml_file.read()
+    xml_file.close()
 
     try:
-        xform = XForm.objects.get(id_string=data[tag.FORM_ID])
+        instance, created = Instance.objects.get_or_create(xml=xml)
+        if created:
+            for f in media_files:
+                Attachment.objects.create(instance=instance, attachment=f)
+        return instance, created
     except XForm.DoesNotExist:
-        utils.report_exception("missing form", data[tag.FORM_ID])
-        return None
-
-    xform.clean_instance(data)
-
-    doc_id = xform_instances.insert(data)
-    print doc_id
-
-    # attach all the files
-    # for f in [xml_file] + media_files: doc.put_attachment(f)
-
+        utils.report_exception("Missing XForm", "TRY TO GET ID HERE")
+        
 
 # def parse(instance):
 #     handler = utils.parse_instance(instance)

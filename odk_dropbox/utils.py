@@ -8,12 +8,12 @@ from . import tag
 
 SLASH = u"/"
 
-def parse_xform_xml(f):
+def parse_xform_instance(xml_str):
     """
-    'f' may be a file object or a path to a file. Return a python
-    object representation of this XML file.
+    'xml_str' is a str object holding the XML of an XForm
+    instance. Return a python object representation of this XML file.
     """
-    xml_obj = minidom.parse(f)
+    xml_obj = minidom.parseString(xml_str)
     root_node = xml_obj.documentElement
     # go through the xml object creating a corresponding python object
     # NOTE: THIS WILL DESTROY ANY DATA COLLECTED WITH REPEATABLE NODES
