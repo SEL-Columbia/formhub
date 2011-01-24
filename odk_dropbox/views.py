@@ -78,7 +78,7 @@ def dashboard(request):
 def map_data_points(request):
     dict_list = list(xform_instances.find(
         spec={tag.GPS : {"$exists" : True}},
-        fields=[tag.GPS, tag.SURVEY_TYPE, tag.DISTRICT_ID]
+#        fields=[tag.GPS, tag.SURVEY_TYPE, tag.DISTRICT_ID]
         ))
     
     map_pt_list = []
@@ -90,9 +90,11 @@ def map_data_points(request):
         val['survey_type'] = mp['_survey_type']
         val['surveyor'] = 'bob'
         val['phone'] = "911"
-        val['title'] = 'title'
+        val['title'] = "Instance ID: %s" % val['id']
         val['datetime'] = '2010-12-21 09:34'
-        val['images'] = ['/site_media/odk/instances/LGA_2010-12-13_14-53-18/1292270049051.jpg']
+        val['form_id'] = mp['_form_id']
+        val['picture'] = mp['picture']
+#        from ipdb import set_trace as debug; debug() 
         if geopoint is not None:
             val['gps'] = {'lat':geopoint[u'latitude'], 'lng':geopoint[u'longitude']}
         map_pt_list.append(val)

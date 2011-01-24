@@ -89,6 +89,7 @@ var ActivityList, ActivityPoint;
 		}
 	})
 
+    var imageRoot = "/site_media/odk/instances";
 	function _ActivityPoint(o){
 		if(o instanceof _ActivityPoint) {return o}
 		$.extend(this, o);
@@ -102,8 +103,9 @@ var ActivityList, ActivityPoint;
     			this.district_id=this.gps.district_id
     		}
 		}
-		if(this.images) {
-		    this.image_url = this.images[0]
+		
+		if(this.picture) {
+		    this.image_url = [imageRoot, this.form_id, this.picture].join('/')
 		}
 		if(this.datetime) {
 		  this.processDateTime();
@@ -167,7 +169,7 @@ var __data;
     function ActivityCaller(){
         if(!storage) {return false; console.err("Storage object can't be found.");}
         
-        if(!storage.exists('activity')){
+        // if(!storage.exists('activity')){
         //   var url = "/data/map_data/";
         //   $.getJSON(url, function(data){
         //       // storage.set('activity_stamp', [data.stamp]);
