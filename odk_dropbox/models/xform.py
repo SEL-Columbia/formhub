@@ -43,9 +43,10 @@ class XForm(models.Model):
         self.guarantee_parser()
         self.id_string = self.parser.get_id_string()
         self.title = self.parser.get_title()
-        if XForm.objects.filter(title=self.title, active=True).count()>0:
-            raise Exception("We can only have a single active form with a particular title")
         super(XForm, self).save(*args, **kwargs)
+        # This is janky
+        if XForm.objects.filter(title=self.title, active=True).count()>1:
+            raise Exception("We can only have a single active form with a particular title")
 
     def clean_instance(self, data):
         """
