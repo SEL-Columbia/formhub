@@ -36,7 +36,7 @@ class Attachment(models.Model):
     class Meta:
         app_label = 'odk_dropbox'
 
-def make_instance(xml_file, media_files):
+def get_or_create_instance(xml_file, media_files):
     """
     I used to check if this file had been submitted already, I've
     taken this out because it was too slow. Now we're going to create
@@ -49,10 +49,10 @@ def make_instance(xml_file, media_files):
 
     try:
         instance, created = Instance.objects.get_or_create(xml=xml)
-        if instance.attachments.count()==0:
-            # attach all the files, this test could be more elaborate
+        if created:
             for f in media_files:
                 Attachment.objects.create(instance=instance, attachment=f)
+        return instance, created
     except XForm.DoesNotExist:
         utils.report_exception("Missing XForm", "TRY TO GET ID HERE")
         

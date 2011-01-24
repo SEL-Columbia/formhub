@@ -13,7 +13,7 @@ import xlwt
 import json
 from bson import json_util
 from . import utils, tag
-from .models import XForm, make_instance, xform_instances
+from .models import XForm, get_or_create_instance, xform_instances
 
 @require_GET
 def formList(request):
@@ -36,7 +36,7 @@ def submission(request):
             )
 
     # save this XML file and media files as attachments
-    make_instance(
+    get_or_create_instance(
         xml_file_list[0],
         list(itertools.chain(*request.FILES.values()))
         )
