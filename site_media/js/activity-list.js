@@ -92,8 +92,15 @@ var ActivityList, ActivityPoint;
 	function _ActivityPoint(o){
 		if(o instanceof _ActivityPoint) {return o}
 		$.extend(this, o);
-		if(this.gps && this.gps.district_id) {
-			this.district_id=this.gps.district_id
+		if($.type(this.id)==='object' && "$oid" in this.id) {
+		    //accepting mongo's id
+		    this.id = this.id['$oid'];
+		}
+		if(!this.district_id) {
+		    //mongo now passes district_id, so this should not be necessary
+		    if(this.gps && this.gps.district_id) {
+    			this.district_id=this.gps.district_id
+    		}
 		}
 		if(this.images) {
 		    this.image_url = this.images[0]
@@ -152,7 +159,7 @@ var ActivityList, ActivityPoint;
 -   the global "ActivityCaller" object, which has methods for handling the activity
 -   data.
 */
-
+var __data;
 (function($){
     var callbacks = [],
         alreadyCalledBack = false,
@@ -161,38 +168,39 @@ var ActivityList, ActivityPoint;
         if(!storage) {return false; console.err("Storage object can't be found.");}
         
         if(!storage.exists('activity')){
-          var url = "/data/activity/";
-          $.getJSON(url, function(data){
-              storage.set('activity_stamp', [data.stamp]);
-              storage.set('activity', data.data);
-              activityCaller.list = new ActivityList(data.data);
-              window.__list = activityCaller.list;
-              $(callbacks).each(function(){
-                  this.call(activityCaller, activityCaller.list);
-              });
-              alreadyCalledBack=true;
-          });
-        } else if(storage.get('activity').length && storage.get('activity').length > 0) {
-            this.list = new ActivityList(storage.get('activity'));
-            window.__list = this.list;
-            $(callbacks).each(function(){
-                this.call(activityCaller, activityCaller.list);
-            });
-            alreadyCalledBack=true;
-        } else {
+        //   var url = "/data/map_data/";
+        //   $.getJSON(url, function(data){
+        //       // storage.set('activity_stamp', [data.stamp]);
+        //       storage.set('activity', data);
+        //       activityCaller.list = new ActivityList(data);
+        //       window.__list = activityCaller.list;
+        //       __data=data;
+        //       $(callbacks).each(function(){
+        //           this.call(activityCaller, activityCaller.list);
+        //       });
+        //       alreadyCalledBack=true;
+        //   });
+        // } else if(storage.get('activity').length && storage.get('activity').length > 0) {
+        //     this.list = new ActivityList(storage.get('activity'));
+        //     window.__list = this.list;
+        //     $(callbacks).each(function(){
+        //         this.call(activityCaller, activityCaller.list);
+        //     });
+        //     alreadyCalledBack=true;
+        // } else {
             //temporary fix to the problem of no activities in the system.
-            var url = "/data/activity/";
+            var url = "/data/map_data/";
             $.getJSON(url, function(data){
-                storage.set('activity_stamp', [data.stamp]);
-                storage.set('activity', data.data);
-                activityCaller.list = new ActivityList(data.data);
+                // storage.set('activity_stamp', [data.stamp]);
+                storage.set('activity', data);
+                activityCaller.list = new ActivityList(data);
                 window.__list = activityCaller.list;
                 $(callbacks).each(function(){
                     this.call(activityCaller, activityCaller.list);
                 });
                 alreadyCalledBack=true;
             });
-        }
+        // }
     }
     ActivityCaller.prototype.list = false; //defaults to false to ensure ActivityList loaded
     
