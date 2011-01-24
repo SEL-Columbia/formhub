@@ -2,7 +2,7 @@ custom_settings.py
 
 django-eav
 eav
-site_media/odk
+site_media/attachments
 
 tmp/*
 *.pyc
