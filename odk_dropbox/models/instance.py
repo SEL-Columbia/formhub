@@ -1,6 +1,7 @@
 from django_mongokit import get_database
 db = get_database()
-odk_instances = db.instances
+
+xform_instances = db.instances
 from .. import utils, tag
 from xform import XForm
 
@@ -11,7 +12,7 @@ def make_instance(xml_file, media_files):
     a way for an admin to mark duplicate submissions. This should
     simplify things a bit.
     """
-    data = utils.parse_odk_xml(xml_file)
+    data = utils.parse_xform_xml(xml_file)
 
     try:
         xform = XForm.objects.get(id_string=data[tag.FORM_ID])
@@ -21,7 +22,7 @@ def make_instance(xml_file, media_files):
 
     xform.clean_instance(data)
 
-    doc_id = odk_instances.insert(data)
+    doc_id = xform_instances.insert(data)
     print doc_id
 
     # attach all the files
