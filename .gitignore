@@ -11,5 +11,5 @@ tmp/*
 db.sqlite3
 error.log
 site_media/css/sass/.sass-cache/*
-fixtures
 .sass-cache
+.odk

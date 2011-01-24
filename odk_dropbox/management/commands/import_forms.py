@@ -12,5 +12,5 @@ class Command(BaseCommand):
         path = args[0]
         for form in glob.glob( os.path.join(path, "*") ):
             f = open(form)
-            models.XForm.objects.create(xml=f.read(), active=False)
+            models.XForm.objects.get_or_create(xml=f.read(), active=False)
             f.close()

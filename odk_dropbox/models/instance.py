@@ -1,6 +1,9 @@
 from django_mongokit import get_database
 db = get_database()
+
 xform_instances = db.instances
+from .. import utils, tag
+from xform import XForm
 
 def make_instance(xml_file, media_files):
     """

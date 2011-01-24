@@ -7,10 +7,8 @@ from .. import utils, tag
 from .instance import xform_instances
 
 # these cleaners will be used when saving data
+# All cleaned types should be in this list
 cleaner = {
-    u'binary': None,
-    u'string': None,
-    u'int': None,
     u'geopoint': lambda(x): dict(zip(
             ["latitude", "longitude", "altitude", "accuracy"],
             x.split()
@@ -19,8 +17,6 @@ cleaner = {
         x.split(".")[0],
         '%Y-%m-%dT%H:%M:%S'
         ),
-    u'select1': None,
-    u'select': None,
     }
 
 class XForm(models.Model):
@@ -52,11 +48,20 @@ class XForm(models.Model):
         super(XForm, self).save(*args, **kwargs)
 
     def clean_instance(self, data):
+        """
+                1. variable doesn't start with _
+                2. if variable doesn't exist in vardict log message
+                3. if there is data and a cleaner, clean that data
+        """            
         self.guarantee_parser()
         vardict = self.parser.get_variable_dictionary()
         for path in data.keys():
-            if not path.startswith(u"_") and data[path] and cleaner[vardict[path][u"type"]]:
-                data[path] = cleaner[vardict[path][u"type"]](data[path])
+            if not path.startswith(u"_") and data[path]:
+                if path not in vardict:
+                    #logme
+                    print "variable %s does not exist in vardict" % path
+                elif vardict[path][u"type"] in cleaner:
+                    data[path] = cleaner[vardict[path][u"type"]](data[path])
 
     def __unicode__(self):
         return getattr(self, "id_string", "")
