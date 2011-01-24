@@ -64,7 +64,7 @@ class XForm(models.Model):
                 elif vardict[path][u"type"] in cleaner:
                     data[path] = cleaner[vardict[path][u"type"]](data[path])
         
-        data[u'district_id'] = self.calculate_district_id(data)
+        data[u'_district_id'] = self.calculate_district_id(data)
         
     def calculate_district_id(self, data):
         """one way to calculate the closest district.
