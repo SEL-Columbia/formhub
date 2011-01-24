@@ -8,6 +8,9 @@ from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseBadRequest
+
+from odk_dropbox.models import District, XForm
+
 import itertools
 import xlwt
 import json
@@ -56,19 +59,48 @@ read_all_data, created = Permission.objects.get_or_create(
     )
 @permission_required("auth.read_all_data")
 def export_list(request):
+    return HttpResponse("<blink>Survey List Goes Here</blink>")
     return render_to_response(
         "export_list.html",
         {"xforms" : XForm.objects.filter(active=True)}
         )
 
-def map_points(request):
-    return json.dumps(
-        list(xform_instances.find(
-            spec={tag.GPS : {"$exists" : True}},
-            fields=[tag.GPS, tag.SURVEY_TYPE]
-            )),
-        default=json_util.default
-        )
+def dashboard(request):
+    info = {}
+#    info['table_types'] = simplejson.dumps(dimensions.keys())
+    info['table_types'] = json.dumps(['a','b','c'])
+    info['districts'] = json.dumps([x.to_dict() for x in District.objects.filter(active=True)])
+    forms = XForm.objects.all()
+    info['surveys'] = json.dumps(list(set([x.title for x in forms])))
+    info['user'] = request.user
+    return render_to_response("dashboard.html", info)
+
+def map_data_points(request):
+    dict_list = list(xform_instances.find(
+        spec={tag.GPS : {"$exists" : True}},
+#        fields=[tag.GPS, tag.SURVEY_TYPE, tag.DISTRICT_ID]
+        ))
+    
+    map_pt_list = []
+    for mp in dict_list:
+        val = {}
+        geopoint = mp[u'geopoint']
+        val = {'id': mp['_id'], 'district_id': mp['_district_id'], \
+                'survey_type': mp['_survey_type'], 'picture': mp['picture']}
+        
+    #image_url is composed by combining "/site_media/instances/{form_id}/{picture}"
+        val['form_id'] = mp['_form_id']
+        
+    #need to get cleaned values for these:
+        val['surveyor'] = 'bob'
+        val['phone'] = "911"
+        val['title'] = "Instance ID: %s" % val['id']
+        val['datetime'] = '2010-12-21 09:34'
+#        from ipdb import set_trace as debug; debug() 
+        if geopoint is not None:
+            val['gps'] = {'lat':geopoint[u'latitude'], 'lng':geopoint[u'longitude']}
+        map_pt_list.append(val)
+    return HttpResponse(json.dumps(map_pt_list, default=json_util.default))
 
 def xls_to_response(xls, fname):
     response = HttpResponse(mimetype="application/ms-excel")
