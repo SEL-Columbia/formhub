@@ -13,7 +13,7 @@ import xlwt
 import json
 from bson import json_util
 from . import utils, tag
-from .models import XForm, make_instance, odk_instances
+from .models import XForm, make_instance, xform_instances
 
 @require_GET
 def formList(request):
@@ -63,7 +63,7 @@ def export_list(request):
 
 def map_points(request):
     return json.dumps(
-        list(odk_instances.find(
+        list(xform_instances.find(
             spec={tag.GPS : {"$exists" : True}},
             fields=[tag.GPS, tag.SURVEY_TYPE]
             )),
