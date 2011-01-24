@@ -4,7 +4,7 @@
 import datetime
 from django.db import models
 from .. import utils, tag
-from .instance import odk_instances
+from .instance import xform_instances
 
 # these cleaners will be used when saving data
 # All cleaned types should be in this list
@@ -67,7 +67,7 @@ class XForm(models.Model):
         return getattr(self, "id_string", "")
 
     def instances(self):
-        return odk_instances.find({tag.FORM_ID : self.id_string})
+        return xform_instances.find({tag.FORM_ID : self.id_string})
 
     def submission_count(self):
         return self.instances().count()
