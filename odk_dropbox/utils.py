@@ -8,7 +8,7 @@ from . import tag
 
 SLASH = u"/"
 
-def parse_odk_xml(f):
+def parse_xform_xml(f):
     """
     'f' may be a file object or a path to a file. Return a python
     object representation of this XML file.
