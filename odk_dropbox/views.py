@@ -8,6 +8,9 @@ from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseBadRequest
+
+from odk_dropbox.models import District, XForm
+
 import itertools
 import xlwt
 import json
@@ -62,14 +65,38 @@ def export_list(request):
         {"xforms" : XForm.objects.filter(active=True)}
         )
 
-def map_points(request):
-    return json.dumps(
-        list(xform_instances.find(
-            spec={tag.GPS : {"$exists" : True}},
-            fields=[tag.GPS, tag.SURVEY_TYPE]
-            )),
-        default=json_util.default
-        )
+def dashboard(request):
+    info = {}
+#    info['table_types'] = simplejson.dumps(dimensions.keys())
+    info['table_types'] = json.dumps(['a','b','c'])
+    info['districts'] = json.dumps([x.to_dict() for x in District.objects.filter(active=True)])
+    forms = XForm.objects.all()
+    info['surveys'] = json.dumps(list(set([x.title for x in forms])))
+    info['user'] = request.user
+    return render_to_response("dashboard.html", info)
+
+def map_data_points(request):
+    dict_list = list(xform_instances.find(
+        spec={tag.GPS : {"$exists" : True}},
+        fields=[tag.GPS, tag.SURVEY_TYPE, tag.DISTRICT_ID]
+        ))
+    
+    map_pt_list = []
+    for mp in dict_list:
+        val = {}
+        geopoint = mp[u'geopoint']
+        val['id'] = mp['_id']
+        val['district_id'] = mp['_district_id']
+        val['survey_type'] = mp['_survey_type']
+        val['surveyor'] = 'bob'
+        val['phone'] = "911"
+        val['title'] = 'title'
+        val['datetime'] = '2010-12-21 09:34'
+        val['images'] = ['/site_media/odk/instances/LGA_2010-12-13_14-53-18/1292270049051.jpg']
+        if geopoint is not None:
+            val['gps'] = {'lat':geopoint[u'latitude'], 'lng':geopoint[u'longitude']}
+        map_pt_list.append(val)
+    return HttpResponse(json.dumps(map_pt_list, default=json_util.default))
 
 def xls_to_response(xls, fname):
     response = HttpResponse(mimetype="application/ms-excel")
