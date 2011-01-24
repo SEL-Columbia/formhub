@@ -3,9 +3,9 @@ NMIS Project
 
 Installation
 ------------
-1. Install virtualenv and pip
+1. Install virtualenv, and mongodb if needed
 
-    $ sudo apt-get install python-virtualenv python-pip
+    $ sudo apt-get install python-virtualenv mongodb
 
 2. Create a virtual environment
 
@@ -17,13 +17,11 @@ Installation
 
 4. Clone this git repository
 
-    $ git clone git@github.com:dorey/nmis.git
+    $ git clone https://amarder@github.com/mvpdev/nmis.git
 
 5. Before installing fabric I had to install header files for Python:
 
     $ sudo apt-get install python-dev
-
-   sudo apt-get install sendmail
 
 6. Install all the requirements including fabric
 
@@ -32,6 +30,3 @@ Installation
 7. Copy example settings and edit them appropriately
 
     $ cp custom_settings_example.py custom_settings.py
-
-8. Install mongodb:
-sudo apt-get install mongodb
