@@ -2,6 +2,7 @@ from treebeard.mp_tree import MP_Node
 import math
 from django.db import models
 from django.conf import settings
+from math import fabs as absolute_value
 
 class District(MP_Node):
     name = models.CharField(max_length=50)
@@ -34,6 +35,24 @@ class District(MP_Node):
             return None
         else:
             return "%skml/%d.kml" % (settings.MEDIA_URL, self.id)
+    
+    @classmethod
+    def closest_district(self, lat_lng_coords):
+        #from odk_dropbox.models import District; District.closest_district({'lat':0,'lng':0})
+        active_districts = self.objects.filter(active=True)
+        min_distance = False
+        for district in active_districts:
+            gp = district.latlng()
+            diffs = absolute_value(lat_lng_coords['lat']-gp['lat']) + \
+                      absolute_value(lat_lng_coords['lng']-gp['lng'])
+            if not min_distance:
+                min_distance = diffs
+                closest = district
+            else:
+                if diffs < min_distance:
+                    min_distance = diffs
+                    closest = district
+        return closest
     
     def to_dict(self):
         return {'name':self.name, 'state':self.get_parent().name, \
