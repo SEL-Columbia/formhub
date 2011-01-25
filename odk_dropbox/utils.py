@@ -22,8 +22,8 @@ def parse_xform_instance(xml_str):
     assert len(list(_all_attributes(root_node)))==1, \
         u"There should be exactly one attribute in this document."
     survey_data.update({
-            tag.FORM_ID : root_node.getAttribute(u"id"),
-            tag.SURVEY_TYPE : root_node.nodeName,
+            tag.XFORM_ID_STRING : root_node.getAttribute(u"id"),
+            tag.INSTANCE_DOC_NAME : root_node.nodeName,
             })
     return survey_data
 

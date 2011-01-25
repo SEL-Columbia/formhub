@@ -78,7 +78,7 @@ def dashboard(request):
 def map_data_points(request):
     dict_list = list(xform_instances.find(
         spec={tag.GPS : {"$exists" : True}},
-#        fields=[tag.GPS, tag.SURVEY_TYPE, tag.DISTRICT_ID]
+#        fields=[tag.GPS, tag.DOC_NAME, tag.DISTRICT_ID]
         ))
     
     map_pt_list = []
