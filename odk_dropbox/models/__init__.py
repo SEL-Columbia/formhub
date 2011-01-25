@@ -4,6 +4,7 @@ from .surveyor import Surveyor
 from .phone import Phone
 from .district import District
 from .attachment import Attachment
+from .survey_type import SurveyType
 from .. import tag, utils
 
 def get_or_create_instance(xml_file, media_files):
