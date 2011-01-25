@@ -89,7 +89,7 @@ var ActivityList, ActivityPoint;
 		}
 	})
 
-    var imageRoot = "/site_media/odk/instances";
+    var imageRoot = "/site_media/attachments";
 	function _ActivityPoint(o){
 		if(o instanceof _ActivityPoint) {return o}
 		$.extend(this, o);
@@ -105,7 +105,7 @@ var ActivityList, ActivityPoint;
 		}
 		
 		if(this.picture) {
-		    this.image_url = [imageRoot, this.form_id, this.picture].join('/')
+		    this.image_url = [imageRoot, this.picture].join('/')
 		}
 		if(this.datetime) {
 		  this.processDateTime();
