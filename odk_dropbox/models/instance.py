@@ -42,7 +42,7 @@ class Instance(models.Model):
     def get_survey_owner(cls, instance):
         # get all registrations for this phone that happened before
         # this instance
-        qs = cls.objects.filter(doc_name=tag.REGISTRATION,
+        qs = cls.objects.filter(survey_type__slug=tag.REGISTRATION,
                                 phone=instance.phone,
                                 start_time__lte=instance.start_time)
         if qs.count()>0:
