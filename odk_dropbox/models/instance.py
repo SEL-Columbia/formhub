@@ -17,6 +17,7 @@ class Instance(models.Model):
     start_time = models.DateTimeField()
     surveyor = models.ForeignKey(Surveyor, null=True)
     district = models.ForeignKey(District, null=True)
+    doc_name = models.CharField(max_length=100)
 
     class Meta:
         app_label = 'odk_dropbox'
@@ -29,10 +30,26 @@ class Instance(models.Model):
             device_id=doc[tag.DEVICE_ID]
             )
 
+    def _set_doc_name(self, doc):
+        self.doc_name = doc[tag.INSTANCE_DOC_NAME]
+
     def _set_start_time(self, doc):
         self.start_time = doc[tag.DATE_TIME_START]
 
+    @classmethod
+    def get_survey_owner(cls, instance):
+        # get all registrations for this phone that happened before
+        # this instance
+        qs = cls.objects.filter(doc_name=tag.REGISTRATION,
+                                phone=instance.phone,
+                                start_time__lte=instance.start_time)
+        if qs.count()>0:
+            most_recent_registration = qs.order_by("-start_time")[0]
+            return most_recent_registration.surveyor
+        return None
+
     def _set_surveyor(self, doc):
+        print doc[tag.INSTANCE_DOC_NAME]
         if doc[tag.INSTANCE_DOC_NAME]==tag.REGISTRATION:
             names = doc[tag.REGISTRATION_NAME].title().split()
             kwargs = {"username" : str(Surveyor.objects.all().count()),
@@ -41,11 +58,8 @@ class Instance(models.Model):
                       "first_name" : " ".join(names),}
             self.surveyor = Surveyor.objects.create(**kwargs)
         else:
-            # I'M WORRIED ABOUT THIS IMPORT, PUTTING IT DOWN HERE TO
-            # AVOID A CIRCULAR IMPORT
-            from .registration import Registration
             # requires phone and start_time to be set
-            self.surveyor = Registration.get_survey_owner(self)
+            self.surveyor = Instance.get_survey_owner(self)
 
     def _set_district(self, doc):
         # I'll do this later
@@ -62,6 +76,7 @@ class Instance(models.Model):
         self.xform.clean_instance(doc)
         self._set_phone(doc)
         self._set_start_time(doc)
+        self._set_doc_name(doc)
         self._set_surveyor(doc)
         self._set_district(doc)
         super(Instance, self).save(*args, **kwargs)

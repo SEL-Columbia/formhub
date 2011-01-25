@@ -3,7 +3,6 @@ from .xform import XForm
 from .surveyor import Surveyor
 from .phone import Phone
 from .district import District
-from .registration import Registration
 from .attachment import Attachment
 from .. import tag, utils
 
