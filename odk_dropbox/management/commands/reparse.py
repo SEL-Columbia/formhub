@@ -2,15 +2,13 @@
 # vim: ai ts=4 sts=4 et sw=4 coding=utf-8
 
 from django.core.management.base import BaseCommand
-from odk_dashboard import models
-from odk_dropbox.models import Instance
+from ...models import xform_instances, Instance
 
 class Command(BaseCommand):
-    help = "Delete and recreate all parsed instances."
+    help = "Delete and recreate parsed instances."
 
     def handle(self, *args, **kwargs):
-        models.ParsedInstance.objects.all().delete()
-        print "Reparsings all instances"
+        xform_instances.remove()
         for i in Instance.objects.all():
-            models._parse("sent from reparse command",
-                          instance=i)
+            print "*"
+            i.save_to_mongo()

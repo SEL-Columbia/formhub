@@ -18,16 +18,16 @@ class Instance(models.Model):
         data = utils.parse_xform_instance(self.xml)
         self.xform = XForm.objects.get(id_string=data[tag.FORM_ID])
 
-    def _sync_mongo(self):
+    def save_to_mongo(self):
         data = utils.parse_xform_instance(self.xml)
         self.xform.clean_instance(data)
-        data["_id"] = self.id
+        data[tag.INSTANCE_ID] = self.id
         xform_instances.save(data)
 
     def save(self, *args, **kwargs):
         self._link()
         super(Instance, self).save(*args, **kwargs)
-        self._sync_mongo()
+        self.save_to_mongo()
 
 class Attachment(models.Model):
     instance = models.ForeignKey(Instance, related_name="attachments")
