@@ -89,7 +89,7 @@ var ActivityList, ActivityPoint;
 		}
 	})
 
-    var imageRoot = "/site_media/attachments";
+    var imageRoot = "/site-media/attachments";
 	function _ActivityPoint(o){
 		if(o instanceof _ActivityPoint) {return o}
 		$.extend(this, o);

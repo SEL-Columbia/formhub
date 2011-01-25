@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     url(r"^submission$", views.submission),
     url(r"^survey-list/?$", views.export_list),
     url(r"^(?P<title>[^/]*)\.xls$", views.xls),
-    url(r"^odk/", views.dashboard),
+    url(r"^odk/$", views.dashboard),
     url(r"^data/map_data/?$", views.map_data_points),
 )
 
