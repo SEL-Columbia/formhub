@@ -24,7 +24,13 @@ class Instance(models.Model):
         app_label = 'odk_dropbox'
 
     def _set_xform(self, doc):
-        self.xform = XForm.objects.get(id_string=doc[tag.XFORM_ID_STRING])
+        try:
+            self.xform = XForm.objects.get(id_string=doc[tag.XFORM_ID_STRING])
+        except XForm.DoesNotExist:
+            raise utils.MyError(
+                "Missing corresponding XForm: %s" % \
+                doc[tag.XFORM_ID_STRING]
+                )
 
     def _set_phone(self, doc):
         self.phone, created = Phone.objects.get_or_create(
@@ -51,13 +57,13 @@ class Instance(models.Model):
         return None
 
     def _set_surveyor(self, doc):
-        print doc[tag.INSTANCE_DOC_NAME]
         if doc[tag.INSTANCE_DOC_NAME]==tag.REGISTRATION:
-            names = doc[tag.REGISTRATION_NAME].title().split()
+            name = doc[tag.REGISTRATION_NAME]
+            if not name:
+                raise utils.MyError("Registration must have a non-empty name.")
             kwargs = {"username" : str(Surveyor.objects.all().count()),
                       "password" : "none",
-                      "last_name" : names.pop(),
-                      "first_name" : " ".join(names),}
+                      "first_name" : name,}
             self.surveyor = Surveyor.objects.create(**kwargs)
         else:
             # requires phone and start_time to be set

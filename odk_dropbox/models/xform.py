@@ -48,7 +48,7 @@ class XForm(models.Model):
         # This is janky
         if XForm.objects.filter(title=self.title, active=True).count()>1:
             raise utils.MyError(
-                "We can only have a single active form with a"
+                "We can only have a single active form with a "
                 "particular title"
                 )
 
@@ -64,10 +64,10 @@ class XForm(models.Model):
             if not path.startswith(u"_") and data[path]:
                 if path not in vardict:
                     raise utils.MyError(
-                        "The XForm %(id_string)s does not describe all"
+                        "The XForm %(id_string)s does not describe all "
                         "the variables seen in this instance. "
-                        "Specifically, there is no definition for"
-                        "%(path)s" % {
+                        "Specifically, there is no definition for "
+                        "%(path)s." % {
                             "id_string" : self.id_string,
                             "path" : path
                             }

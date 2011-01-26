@@ -26,8 +26,12 @@ class Command(BaseCommand):
                                       field_name="image",
                                       content_type="image/jpeg")
                     )
-            models.get_or_create_instance(xml_file, images)
+            try:
+                models.get_or_create_instance(xml_file, images)
+            except utils.MyError, e:
+                # print e
+                pass
 
             # close the files
-            # xml_file.close()
+            xml_file.close()
             for i in images: i.close()
