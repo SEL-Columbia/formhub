@@ -11,6 +11,8 @@ installation of lxml takes a couple steps.
 
 http://codespeak.net/lxml/installation.html#installation
 
+sudo apt-get install libxml2 libxslt1.1 libxslt1-dev
+
 To see a simple example of json2xform in action try it out:
 
     python json2xform.py
