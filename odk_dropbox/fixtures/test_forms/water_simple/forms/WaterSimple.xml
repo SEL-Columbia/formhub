@@ -7,6 +7,9 @@
           <name/>
           <users_per_month/>
           <geopoint/>
+		<start />
+		<end />
+		<device_id />
         </data>
       </instance>
       <itext>
@@ -31,7 +34,10 @@
           </text>
         </translation>
       </itext>
-      <bind nodeset="/data/name" type="string" required="true()"/>
+	<bind jr:preload="property" jr:preloadParams="device_id" nodeset="/data/device_id" required="true()" type="string"/>
+	<bind jr:preload="timestamp" jr:preloadParams="start" nodeset="/data/start" required="true()" type="dateTime"/>
+	<bind jr:preload="timestamp" jr:preloadParams="end" nodeset="/data/end" required="true()" type="dateTime"/>
+	<bind nodeset="/data/name" type="string" required="true()"/>
       <bind nodeset="/data/users_per_month" type="int" required="true()" constraint="(. &gt; 0 and . &lt; )"/>
       <bind nodeset="/data/geopoint" type="geopoint" required="true()"/>
     </model>
