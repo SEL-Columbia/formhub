@@ -47,7 +47,10 @@ class XForm(models.Model):
         super(XForm, self).save(*args, **kwargs)
         # This is janky
         if XForm.objects.filter(title=self.title, active=True).count()>1:
-            raise Exception("We can only have a single active form with a particular title")
+            raise utils.MyError(
+                "We can only have a single active form with a"
+                "particular title"
+                )
 
     def clean_instance(self, data):
         """
@@ -60,8 +63,15 @@ class XForm(models.Model):
         for path in data.keys():
             if not path.startswith(u"_") and data[path]:
                 if path not in vardict:
-                    #logme
-                    print "variable %s does not exist in vardict" % path
+                    raise utils.MyError(
+                        "The XForm %(id_string)s does not describe all"
+                        "the variables seen in this instance. "
+                        "Specifically, there is no definition for"
+                        "%(path)s" % {
+                            "id_string" : self.id_string,
+                            "path" : path
+                            }
+                        )
                 elif vardict[path][u"type"] in cleaner:
                     data[path] = cleaner[vardict[path][u"type"]](data[path])
         

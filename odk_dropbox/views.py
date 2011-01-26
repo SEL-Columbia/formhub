@@ -9,14 +9,12 @@ from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseBadRequest
 
-from odk_dropbox.models import District, XForm
-
 import itertools
 import xlwt
 import json
 from bson import json_util
 from . import utils, tag
-from .models import XForm, get_or_create_instance, xform_instances
+from .models import District, XForm, get_or_create_instance, xform_instances
 
 @require_GET
 def formList(request):
@@ -31,26 +29,28 @@ def formList(request):
 def submission(request):
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
-    xml_file_list = request.FILES.pop("xml_submission_file", [])
+    try:
+        xml_file_list = request.FILES.pop("xml_submission_file", [])
 
-    if len(xml_file_list)!=1:
-        return HttpResponseBadRequest(
-            "Request must contain exactly one XML file"
+        # save this XML file and media files as attachments
+        instance, created = get_or_create_instance(
+            xml_file_list[0],
+            list(itertools.chain(*request.FILES.values()))
             )
 
-    # save this XML file and media files as attachments
-    get_or_create_instance(
-        xml_file_list[0],
-        list(itertools.chain(*request.FILES.values()))
-        )
-
-    # ODK needs two things for a form to be considered successful
-    # 1) the status code needs to be 201 (created)
-    # 2) The location header needs to be set to the host it posted to
-    response = HttpResponse("Your ODK submission was successful.")
-    response.status_code = 201
-    response['Location'] = "http://%s/submission" % request.get_host()
-    return response
+        # ODK needs two things for a form to be considered successful
+        # 1) the status code needs to be 201 (created)
+        # 2) The location header needs to be set to the host it posted to
+        response = HttpResponse("Your ODK submission was successful.")
+        response.status_code = 201
+        response['Location'] = "http://%s/submission" % request.get_host()
+        return response
+    except:
+        # catch any exceptions and print them to the error log
+        # it'd be good to add more info to these error logs
+        return HttpResponseBadRequest(
+            "We need to improve our error messages and logging."
+            )
 
 read_all_data, created = Permission.objects.get_or_create(
     name = "Can read all data",

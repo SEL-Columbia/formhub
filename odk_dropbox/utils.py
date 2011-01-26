@@ -8,6 +8,9 @@ from . import tag
 
 SLASH = u"/"
 
+class MyError(Exception):
+    pass
+
 def parse_xform_instance(xml_str):
     """
     'xml_str' is a str object holding the XML of an XForm
