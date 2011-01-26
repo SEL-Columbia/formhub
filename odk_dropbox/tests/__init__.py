@@ -1,3 +1,2 @@
 from form_submission import TestFormSubmission
 from surveyor_registration import TestSurveyorRegistration
-from surveyor_name_assignment import TestRegistrationNames
