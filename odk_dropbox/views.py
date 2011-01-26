@@ -84,19 +84,18 @@ def map_data_points(request):
     map_pt_list = []
     for mp in dict_list:
         val = {}
-        geopoint = mp[u'geopoint']
+        geopoint = mp[tag.GPS]
         val = {'id': mp['_id'], 'district_id': mp['_district_id'], \
-                'survey_type': mp['_survey_type'], 'picture': mp['picture']}
+                'survey_type': 'school', 'picture': mp[tag.PICTURE]}
         
-    #image_url is composed by combining "/site_media/instances/{form_id}/{picture}"
-        val['form_id'] = mp['_form_id']
+    #image_url is composed by combining "/site-media/instances/{form_id}/{picture}"
+        val['form_id'] = mp[tag.XFORM_ID_STRING]
         
     #need to get cleaned values for these:
         val['surveyor'] = 'bob'
         val['phone'] = "911"
         val['title'] = "Instance ID: %s" % val['id']
         val['datetime'] = '2010-12-21 09:34'
-#        from ipdb import set_trace as debug; debug() 
         if geopoint is not None:
             val['gps'] = {'lat':geopoint[u'latitude'], 'lng':geopoint[u'longitude']}
         map_pt_list.append(val)

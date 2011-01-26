@@ -5,6 +5,7 @@ ID = u"_id"
 DATE_TIME_START = u"start"
 DATE_TIME_END = u"end"
 DEVICE_ID = u"device_id"
+PICTURE = u"picture"
 GPS = u"geopoint"
 LGA = u"lga"
 
