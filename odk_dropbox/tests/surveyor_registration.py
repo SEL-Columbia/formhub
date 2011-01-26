@@ -4,7 +4,6 @@ Testing POSTs to "/submission"
 from django.test import TestCase, Client
 
 from odk_dropbox.models import Instance, Surveyor, XForm
-from xml.dom import minidom
 from datetime import datetime
 
 class TestSurveyorRegistration(TestCase):
