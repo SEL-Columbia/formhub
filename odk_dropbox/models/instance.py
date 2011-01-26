@@ -7,6 +7,7 @@ from .xform import XForm
 from .phone import Phone
 from .surveyor import Surveyor
 from .district import District
+from .survey_type import SurveyType
 from .. import utils, tag
 
 class Instance(models.Model):
@@ -17,7 +18,7 @@ class Instance(models.Model):
     start_time = models.DateTimeField()
     surveyor = models.ForeignKey(Surveyor, null=True)
     district = models.ForeignKey(District, null=True)
-    doc_name = models.CharField(max_length=100)
+    survey_type = models.ForeignKey(SurveyType)
 
     class Meta:
         app_label = 'odk_dropbox'
@@ -30,8 +31,9 @@ class Instance(models.Model):
             device_id=doc[tag.DEVICE_ID]
             )
 
-    def _set_doc_name(self, doc):
-        self.doc_name = doc[tag.INSTANCE_DOC_NAME]
+    def _set_survey_type(self, doc):
+        self.survey_type, created = \
+            SurveyType.objects.get_or_create(slug=doc[tag.INSTANCE_DOC_NAME])
 
     def _set_start_time(self, doc):
         self.start_time = doc[tag.DATE_TIME_START]
@@ -40,7 +42,7 @@ class Instance(models.Model):
     def get_survey_owner(cls, instance):
         # get all registrations for this phone that happened before
         # this instance
-        qs = cls.objects.filter(doc_name=tag.REGISTRATION,
+        qs = cls.objects.filter(survey_type__slug=tag.REGISTRATION,
                                 phone=instance.phone,
                                 start_time__lte=instance.start_time)
         if qs.count()>0:
@@ -76,7 +78,7 @@ class Instance(models.Model):
         self.xform.clean_instance(doc)
         self._set_phone(doc)
         self._set_start_time(doc)
-        self._set_doc_name(doc)
+        self._set_survey_type(doc)
         self._set_surveyor(doc)
         self._set_district(doc)
         super(Instance, self).save(*args, **kwargs)
