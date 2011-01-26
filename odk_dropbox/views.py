@@ -84,12 +84,12 @@ def map_data_points(request):
     map_pt_list = []
     for mp in dict_list:
         val = {}
-        geopoint = mp[u'geopoint']
+        geopoint = mp[tag.GPS]
         val = {'id': mp['_id'], 'district_id': mp['_district_id'], \
-                'survey_type': mp['_survey_type'], 'picture': mp['picture']}
+                'survey_type': 'school', 'picture': mp[tag.PICTURE]}
         
     #image_url is composed by combining "/site-media/instances/{form_id}/{picture}"
-        val['form_id'] = mp['_form_id']
+        val['form_id'] = mp[tag.XFORM_ID_STRING]
         
     #need to get cleaned values for these:
         val['surveyor'] = 'bob'
