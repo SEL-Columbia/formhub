@@ -16,9 +16,8 @@ class TestSurveyorRegistration(TestCase):
     
     def test_registration_creates_surveyor(self):
         xf = load_xform_from_file("odk_dropbox/fixtures/test_forms/registration/forms/test_registration.xml")
-        form_id = xf.id_string
-        
-        registration_instance = load_registration_with_values({'form_id':form_id, \
+
+        registration_instance = load_registration_with_values({'form_id':xf.id_string, \
             'start_time': datetime.now(),
             'name': 'Steak Sauce',
             'device_id': '12345'
@@ -50,7 +49,7 @@ class TestSurveyorRegistration(TestCase):
             'birth_date': '1970-07-07', 'device_id': '12345'})
         first_registration.save()
         
-        second_registration = load_registration_with_values({'form_id':form_id, \
+        second_registration = load_registration_with_values({'form_id':xf.id_string, \
             'start_time': one_day_ago, \
             'name': 'Alex Adams', 'birth_date': '1986-08-15', \
             'device_id': '12345'})
