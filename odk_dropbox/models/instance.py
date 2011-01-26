@@ -70,7 +70,9 @@ class Instance(models.Model):
     def get_from_mongo(self):
         result = xform_instances.find_one(self.id)
         if result: return result
-        raise Exception("This instance hasn't been parsed into Mongo")
+        raise utils.MyError(
+            "This instance hasn't been parsed into Mongo"
+            )
 
     def save(self, *args, **kwargs):
         doc = utils.parse_xform_instance(self.xml)
