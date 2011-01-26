@@ -95,8 +95,6 @@ def load_simple_submission(custom_values):
     if 'end_time' in custom_values:
         custom_values['end_time'] = custom_values['end_time'].strftime(XFORM_TIME_FORMAT)
     
-    print custom_values['start_time']
-    
     values.update(custom_values)
     subm = open("odk_dropbox/fixtures/test_forms/water_simple/instances/blank.xml").read()
     for key in values.keys():
@@ -129,8 +127,6 @@ def load_registration_with_values(custom_values):
     
     if 'end_time' in custom_values:
         custom_values['end_time'] = custom_values['end_time'].strftime(XFORM_TIME_FORMAT)
-
-    print custom_values['start_time']
     
     values.update(custom_values)
     registration_xml_template = open('odk_dropbox/fixtures/test_forms/registration/instances/blank_registration.xml').read()
