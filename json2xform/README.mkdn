@@ -1,0 +1,16 @@
+json2xform requires lxml.
+
+> lxml is a Pythonic binding for the libxml2 and libxslt libraries. It
+> is unique in that it combines the speed and feature completeness of
+> these libraries with the simplicity of a native Python API, mostly
+> compatible but superior to the well-known ElementTree API.
+
+Translation: Having used xml.dom.minidom to construct XML documents in
+the past, using lxml is a breath of fresh air. Unfortunately, the
+installation of lxml takes a couple steps.
+
+http://codespeak.net/lxml/installation.html#installation
+
+To see a simple example of json2xform in action try it out:
+
+    python json2xform.py

@@ -1,0 +1,14 @@
+[lga] LGA (select one)
+{
+    "choices" : [
+        "Akoko North West",
+        "Kuje",
+        "Miga",
+        "Nwangele",
+        "Song"
+        ]
+    }
+
+[ward] Ward (string)
+
+[community] Community (string)
