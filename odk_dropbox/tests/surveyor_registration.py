@@ -24,7 +24,7 @@ class TestSurveyorRegistration(TestCase):
         registration_instance.save()
         
         self.assertTrue(Surveyor.objects.count(), 1)
-        self.assertEqual(Surveyor.objects.all()[0].name(), "Steak Sauce")
+        self.assertEqual(Surveyor.objects.all()[0].name, "Steak Sauce")
         
     def test_multiple_registrations_on_the_same_phone(self):
         """
@@ -61,7 +61,7 @@ class TestSurveyorRegistration(TestCase):
         submission.save()
 
         self.assertTrue(submission.surveyor is not None)
-        self.assertEqual(submission.surveyor.name(), 'Alex Adams')
+        self.assertEqual(submission.surveyor.name, 'Alex Adams')
         
     def test_multiple_submissions_out_of_order(self):
         """
@@ -106,8 +106,8 @@ class TestSurveyorRegistration(TestCase):
         submission_one = load_simple_submission({'start_time': ordered_times[1]})
         submission_one.save()
 
-        self.assertEqual(submission_one.surveyor.name(), 'Betty Bimbob')
-        self.assertEqual(submission_two.surveyor.name(), 'Alex Adams')
+        self.assertEqual(submission_one.surveyor.name, 'Betty Bimbob')
+        self.assertEqual(submission_two.surveyor.name, 'Alex Adams')
 
 """
 fix everything below this line some day
