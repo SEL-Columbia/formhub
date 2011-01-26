@@ -18,11 +18,8 @@ def get_or_create_instance(xml_file, media_files):
     xml = xml_file.read()
     xml_file.close()
 
-    try:
-        instance, created = Instance.objects.get_or_create(xml=xml)
-        if created:
-            for f in media_files:
-                Attachment.objects.create(instance=instance, attachment=f)
-        return instance, created
-    except XForm.DoesNotExist:
-        utils.report_exception("Missing XForm", "TRY TO GET ID HERE")
+    instance, created = Instance.objects.get_or_create(xml=xml)
+    if created:
+        for f in media_files:
+            Attachment.objects.create(instance=instance, attachment=f)
+    return instance, created
