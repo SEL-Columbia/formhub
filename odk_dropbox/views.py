@@ -59,10 +59,9 @@ read_all_data, created = Permission.objects.get_or_create(
     )
 @permission_required("auth.read_all_data")
 def export_list(request):
-    return HttpResponse("<blink>Survey List Goes Here</blink>")
     return render_to_response(
         "export_list.html",
-        {"xforms" : XForm.objects.filter(active=True)}
+        {"xforms" : XForm.objects.all()}
         )
 
 def dashboard(request):

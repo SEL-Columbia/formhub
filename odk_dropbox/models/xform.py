@@ -93,13 +93,14 @@ class XForm(models.Model):
         return getattr(self, "id_string", "")
 
     def instances(self):
-        return xform_instances.find({tag.FORM_ID : self.id_string})
+        return xform_instances.find({tag.XFORM_ID_STRING : self.id_string})
 
     def submission_count(self):
         return self.instances().count()
     submission_count.short_description = "Submission Count"
 
     def date_of_last_submission(self):
-        newest_instance = self.instances().sort(tag.TIME_END)[0]
-        if newest_instance: return newest_instance[tag.TIME_END]
-        return None
+        qs = self.instances().sort(tag.DATE_TIME_END)
+        if qs.count()==0: return None
+        # return the newest instance
+        return qs[0][tag.DATE_TIME_END]
