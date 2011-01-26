@@ -63,7 +63,7 @@ class Instance(models.Model):
                 raise utils.MyError("Registration must have a non-empty name.")
             kwargs = {"username" : str(Surveyor.objects.all().count()),
                       "password" : "none",
-                      "first_name" : name,}
+                      "name" : name,}
             self.surveyor = Surveyor.objects.create(**kwargs)
         else:
             # requires phone and start_time to be set
