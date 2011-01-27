@@ -76,29 +76,20 @@ def dashboard(request):
     return render_to_response("dashboard.html", info)
 
 def map_data_points(request):
-    dict_list = list(xform_instances.find(
-        spec={tag.GPS : {"$exists" : True}},
-#        fields=[tag.GPS, tag.DOC_NAME, tag.DISTRICT_ID]
-        ))
+    """
+    The map list needs these attributes for each survey to display
+    the map & dropdown filters.
     
+    * Submission/Instance/Mongo doc ID
+    * Date
+    * Surveyor name
+    * Survey Type
+    * District ID
+    * a URL to access the picture
+    * GPS coordinates
+    
+    """
     map_pt_list = []
-    for mp in dict_list:
-        val = {}
-        geopoint = mp[tag.GPS]
-        val = {'id': mp['_id'], 'district_id': mp['_district_id'], \
-                'survey_type': 'school', 'picture': mp[tag.PICTURE]}
-        
-    #image_url is composed by combining "/site-media/instances/{form_id}/{picture}"
-        val['form_id'] = mp[tag.XFORM_ID_STRING]
-        
-    #need to get cleaned values for these:
-        val['surveyor'] = 'bob'
-        val['phone'] = "911"
-        val['title'] = "Instance ID: %s" % val['id']
-        val['datetime'] = '2010-12-21 09:34'
-        if geopoint is not None:
-            val['gps'] = {'lat':geopoint[u'latitude'], 'lng':geopoint[u'longitude']}
-        map_pt_list.append(val)
     return HttpResponse(json.dumps(map_pt_list, default=json_util.default))
 
 def xls_to_response(xls, fname):
