@@ -8,13 +8,14 @@ from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseBadRequest
+from django.db.models import Avg, Max, Min, Count
 
 import itertools
 import xlwt
 import json
 from bson import json_util
 from . import utils, tag
-from .models import District, XForm, get_or_create_instance, xform_instances
+from .models import District, XForm, get_or_create_instance, xform_instances, Instance
 
 @require_GET
 def formList(request):
@@ -128,6 +129,65 @@ def xls(request, id_string):
 
     return xls_to_response(wb, form.id_string + ".xls")
 
+dimensions = {
+    "survey" : "survey_type__slug",
+    "surveyor" : "surveyor__name",
+    "date" : "start_time",
+    "location" : "district",
+    }
+
+def frequency_table(request, rows, columns):
+    r = dimensions[rows]
+    c = dimensions[columns]
+
+    dicts = Instance.objects.values(r, c).annotate(count=Count("id"))
+    for d in dicts:
+        for k in d.keys():
+            d[k] = str(d[k])
+
+    row_headers = []
+    column_headers = []
+    for d in dicts:
+        if d[r] not in row_headers: row_headers.append(d[r])
+        if d[c] not in column_headers: column_headers.append(d[c])
+
+    row_headers.sort()
+    column_headers.sort()
+
+    cells = {}
+    for d in dicts:
+        i = row_headers.index(d[r])
+        j = column_headers.index(d[c])
+        if i in cells: cells[i][j] = d["count"]
+        else: cells[i] = {j : d["count"]}
+
+    for i in range(len(row_headers)):
+        row_headers[i] = {"id" : i, "text" : row_headers[i]}
+    for i in range(len(column_headers)):
+        column_headers[i] = {"id" : i, "text" : column_headers[i]}
+
+    table = {
+        "row_headers" : row_headers,
+        "column_headers" : column_headers,
+        "cells" : cells
+        }
+    return HttpResponse(json.dumps(table, indent=4))
+
+def frequency_table_urls(request):
+    urls = []
+    keys = dimensions.keys()
+    for i in range(0, len(keys)):
+        for j in range(i+1, len(keys)):
+            urls.append(
+                "submission-counts/%(row)s/%(column)s" % {
+                    "row" : keys[i],
+                    "column" : keys[j]
+                    }
+                )
+    return render_to_response("url_list.html", {"urls" : urls})
+
+
+
 # import re
 # from django.utils import simplejson
 # from django.shortcuts import render_to_response
@@ -169,46 +229,6 @@ def xls(request, id_string):
 #     info['submissions'] = ParsedInstance.objects.all().order_by('-end')[0:50]
 #     return render_to_response("activity.html", info)
 
-# dimensions = {
-#     "survey" : "survey_type__name",
-#     "surveyor" : "phone__most_recent_surveyor__first_name",
-#     "date" : "date",
-#     "location" : "location__name",
-#     }
-
-# def frequency_table_urls(request):
-#     info = {"urls" : []}
-#     keys = dimensions.keys()
-#     for i in range(0,len(keys)):
-#         for j in range(i+1,len(keys)):
-#             info["urls"].append(
-#                 "submission-counts/%(row)s/%(column)s" % {
-#                     "row" : keys[i],
-#                     "column" : keys[j]
-#                     }
-#                 )
-#     return render_to_response("url_list.html", info)
-
-# def frequency_table(request, rows, columns):
-#     r = dimensions[rows]
-#     c = dimensions[columns]
-
-#     dicts = ParsedInstance.objects.values(r, c).annotate(count=Count("id"))
-#     info = {"cells" : dict( [((d[r], d[c]), d["count"]) for d in dicts] )}
-        
-#     row_headers = []
-#     column_headers = []
-#     for d in dicts:
-#         if d[r] not in row_headers: row_headers.append(d[r])
-#         if d[c] not in column_headers: column_headers.append(d[c])
-
-#     row_headers.sort()
-#     column_headers.sort()
-
-#     info["row_headers"] = row_headers
-#     info["column_headers"] = column_headers
-
-#     return shortcuts.render_to_response("table.html", info)
 
 # def profiles_section(request):
 #     info = {'sectionname':'profiles'}

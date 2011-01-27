@@ -13,6 +13,8 @@ urlpatterns = patterns('',
     url(r"^(?P<title>[^/]*)\.xls$", views.xls),
     url(r"^odk/$", views.dashboard),
     url(r"^data/map_data/?$", views.map_data_points),
+    url(r"^submission-counts/?$", views.frequency_table_urls),
+    url(r"^submission-counts/(\w+)/(\w+)$", views.frequency_table),
 )
 
 # from django.views.generic.simple import redirect_to
@@ -25,8 +27,6 @@ urlpatterns = patterns('',
 #     url(r"^map/?", redirect_to, {'url': '/view'}),
 #     url(r"^median-survey-times/?", views.survey_times),
 #     url(r"^median-time-between-surveys/?", views.median_time_between_surveys),
-#     url(r"^submission-counts/?$", views.frequency_table_urls),
-#     url(r"^submission-counts/(\w+)/(\w+)$", views.frequency_table),
 #     #4 main sections:
 # #    url(r"^data/activity$", views.recent_activity),
 #     url(r"^view/?$", views.view_section),
