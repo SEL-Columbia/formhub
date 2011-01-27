@@ -254,7 +254,7 @@ class Survey(object):
                    E(ns("h", "title"), self.title),
                    E("model",
                      E("instance", self.instance()),
-                     *self.bindings()
+#                     *self.bindings()
                      ),
                    ),
                  E(ns("h", "body"), *self.controls())
