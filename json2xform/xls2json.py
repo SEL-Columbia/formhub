@@ -12,6 +12,8 @@ CHOICE_LIST_NAME = "list name"
 TEXT = "text"
 TEXT_PREFACE = TEXT + ":"
 TYPE = "type"
+RESERVED_FIELDS = ["name", "text", "hint", "type", "choices", "attributes"]
+ATTRIBUTES = "attributes"
 
 def _step1(path):
     """
@@ -67,11 +69,22 @@ def _insert_choice_lists(pyobj):
             assert "choices" not in survey[i]
             survey[i]["choices"] = pyobj[CHOICES][list_name]
 
+def _group_extra_attributes(pyobj):
+    survey = pyobj[SURVEY]
+    for q in survey:
+        assert ATTRIBUTES not in q
+        q[ATTRIBUTES] = {}
+        for k in q.keys():
+            if k not in RESERVED_FIELDS:
+                q[ATTRIBUTES][k] = q[k]
+                del q[k]
+
 def xls2json(path):
     pyobj = _step1(path)
     _clean_text(pyobj)
     _clean_choice_lists(pyobj)
     _insert_choice_lists(pyobj)
+    _group_extra_attributes(pyobj)
     return json.dumps(pyobj[SURVEY], indent=4)
 
 if __name__ == '__main__':
