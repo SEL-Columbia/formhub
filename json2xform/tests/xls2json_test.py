@@ -1,9 +1,8 @@
 """
-Testing simple cases for JSON2XForm
+Testing simple cases for Xls2Json
 """
 import sys, os
 
-sys.path.append('/Users/alexdorey/Code/NMIS/mongo/nmis')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 from django.test import TestCase, Client
