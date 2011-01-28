@@ -22,6 +22,9 @@ nsmap = {
 
 E = ElementMaker(nsmap=nsmap)
 
+QUESTION_PREFIX = "q_"
+CHOICE_PREFIX = "c_"
+
 def ns(abbrev, text):
     return "{" + nsmap[abbrev] + "}" + text
 
@@ -44,7 +47,7 @@ class Question(object):
         self.hint = hint
 
     def label_element(self):
-        return E.label(ref="jr_itext('label_')")
+        return E.label(ref="jr:itext('%s')" % (QUESTION_PREFIX + self.name))
 
     def hint_element(self):
         if self.hint:
@@ -149,7 +152,10 @@ class Choice(object):
         self.text = text
 
     def xml(self):
-        return E.item( E.label(ref="jr:text"), E.value(self.value) )
+        return E.item(
+            E.label(ref="jr:itext('%s')" % (CHOICE_PREFIX + self.value)),
+            E.value(self.value)
+            )
 
 def choices(l):
     return [Choice(**d) for d in l]
@@ -201,6 +207,7 @@ question_class = {
     "gps" : GeopointQuestion,
     "phone number" : PhoneNumberQuestion,
     "integer" : IntegerQuestion,
+    "decimal" : DecimalQuestion,
     "percentage" : PercentageQuestion,
     "select one" : SelectOneQuestion,
     "select all that apply" : SelectMultipleQuestion,
@@ -253,8 +260,16 @@ class Survey(object):
             for k in q.text.keys():
                 if k not in dictionary: dictionary[k] = []
                 dictionary[k].append(
-                    E.text(E.value(q.text[k]), id=q.name)
+                    E.text(E.value(q.text[k]), id=(QUESTION_PREFIX + q.name))
                     )
+            if isinstance(q, MultipleChoiceQuestion):
+                for choice in q.choices:
+                    for k in choice.text.keys():
+                        if k not in dictionary: dictionary[k] = []
+                        dictionary[k].append(
+                            E.text(E.value(choice.text[k]), id=(CHOICE_PREFIX + choice.value))
+                            )
+
         return [E.translation(lang=lang, *dictionary[lang]) for lang in dictionary.keys()]
 
     def instance(self):
