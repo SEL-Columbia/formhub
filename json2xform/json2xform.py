@@ -239,12 +239,23 @@ class Survey(object):
                  E(ns("h", "head"),
                    E(ns("h", "title"), self.title),
                    E("model",
-                     E("instance", self.instance()),
-#                     *self.bindings()
+                     E.itext(*self.translations()),
+                     E.instance(self.instance()),
+                     *self.bindings()
                      ),
                    ),
                  E(ns("h", "body"), *self.controls())
                  )
+
+    def translations(self):
+        dictionary = {}
+        for q in self.questions:
+            for k in q.text.keys():
+                if k not in dictionary: dictionary[k] = []
+                dictionary[k].append(
+                    E.text(E.value(q.text[k]), id=q.name)
+                    )
+        return [E.translation(lang=lang, *dictionary[lang]) for lang in dictionary.keys()]
 
     def instance(self):
         slug = self._stack[0]
