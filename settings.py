@@ -51,6 +51,6 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # 'south',
     'registration',
-
+    'json2xform',
     'odk_dropbox',
 )
