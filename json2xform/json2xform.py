@@ -22,13 +22,14 @@ nsmap = {
 
 E = ElementMaker(nsmap=nsmap)
 
-QUESTION_PREFIX = "q_"
-CHOICE_PREFIX = "c_"
+QUESTION_PREFIX = "q"
+CHOICE_PREFIX = "c"
+SEP = "_"
 
 def ns(abbrev, text):
     return "{" + nsmap[abbrev] + "}" + text
 
-def sluggify(text, delimiter=u"_"):
+def sluggify(text, delimiter=SEP):
     return re.sub(ur"[^a-z]+", delimiter, text.lower())
 
 def json_dumps(obj):
@@ -47,14 +48,14 @@ class Question(object):
         self.hint = hint
 
     def label_element(self):
-        return E.label(ref="jr:itext('%s')" % (QUESTION_PREFIX + self.name))
+        return E.label(ref="jr:itext('%s')" % SEP.join([QUESTION_PREFIX, self.name]))
 
     def hint_element(self):
         if self.hint:
             return E.hint(self.hint)
 
     def label_and_hint(self):
-        if self.hint_element():
+        if self.hint:
             return [self.label_element(), self.hint_element()]
         return [self.label_element()]
 
@@ -151,9 +152,9 @@ class Choice(object):
         self.value = value
         self.text = text
 
-    def xml(self):
+    def xml(self, question_name):
         return E.item(
-            E.label(ref="jr:itext('%s')" % (CHOICE_PREFIX + self.value)),
+            E.label(ref="jr:itext('%s')" % SEP.join([CHOICE_PREFIX, question_name, self.value])),
             E.value(self.value)
             )
 
@@ -172,7 +173,7 @@ class MultipleChoiceQuestion(Question):
 
     def control(self, xpath):
         result = E(self._attributes[u"type"], {"ref" : xpath})
-        for element in self.label_and_hint() + [c.xml() for c in self.choices]:
+        for element in self.label_and_hint() + [c.xml(self.name) for c in self.choices]:
             result.append(element)
         return result        
 
@@ -260,14 +261,14 @@ class Survey(object):
             for k in q.text.keys():
                 if k not in dictionary: dictionary[k] = []
                 dictionary[k].append(
-                    E.text(E.value(q.text[k]), id=(QUESTION_PREFIX + q.name))
+                    E.text(E.value(q.text[k]), id=SEP.join([QUESTION_PREFIX, q.name]))
                     )
             if isinstance(q, MultipleChoiceQuestion):
                 for choice in q.choices:
                     for k in choice.text.keys():
                         if k not in dictionary: dictionary[k] = []
                         dictionary[k].append(
-                            E.text(E.value(choice.text[k]), id=(CHOICE_PREFIX + choice.value))
+                            E.text(E.value(choice.text[k]), id=SEP.join([CHOICE_PREFIX, q.name, choice.value]))
                             )
 
         return [E.translation(lang=lang, *dictionary[lang]) for lang in dictionary.keys()]
@@ -282,10 +283,10 @@ class Survey(object):
 
     def bindings(self):
         # we need to calculate the xpaths of each question
-        return [q.bind("xpath") for q in self.questions]
+        return [q.bind(self.xpath[q.name]) for q in self.questions]
 
     def controls(self):
-        return [q.control("xpath") for q in self.questions]
+        return [q.control(self.xpath[q.name]) for q in self.questions]
 
     def __unicode__(self):
         return etree.tostring(self.xml(), pretty_print=True)
