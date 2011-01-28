@@ -3,6 +3,8 @@
 # Binding: which needs a bunch of attributes.
 # Control: which is determined by the type of the question.
 
+#        import ipdb; ipdb.set_trace()        
+
 import json, re
 from datetime import datetime
 from copy import copy
@@ -42,14 +44,16 @@ class Question(object):
         self.hint = hint
 
     def label_element(self):
-        return E.label(self.text)
+        return E.label(ref="jr_itext('label_')")
 
     def hint_element(self):
         if self.hint:
             return E.hint(self.hint)
 
     def label_and_hint(self):
-        return [self.label_element()] + [self.hint_element()]
+        if self.hint_element():
+            return [self.label_element(), self.hint_element()]
+        return [self.label_element()]
 
     def slug(self):
         return sluggify(self.name)
@@ -140,15 +144,15 @@ class PictureQuestion(UploadQuestion):
         return UploadQuestion.control(self, xpath, "image/*")
 
 class Choice(object):
-    def __init__(self, label, value):
-        self.label = label
+    def __init__(self, value, text):
         self.value = value
+        self.text = text
 
     def xml(self):
-        return E.item( E.label(self.label), E.value(self.value) )
+        return E.item( E.label(ref="jr:text"), E.value(self.value) )
 
 def choices(l):
-    return [Choice(label=pair[0], value=pair[1]) for pair in tuples(l)]
+    return [Choice(**d) for d in l]
 
 class MultipleChoiceQuestion(Question):
     def __init__(self, **kwargs):
