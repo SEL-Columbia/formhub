@@ -89,3 +89,20 @@ def xls2json(path):
 
 if __name__ == '__main__':
     print xls2json(sys.argv[1])
+
+
+class XlsForm(object):
+    def __init__(self, path):
+        self.dict = None
+        self.pyobj = _step1(path)
+    
+    def to_dict(self):
+        if self.dict is None:
+            _clean_text(self.pyobj)
+            _clean_choice_lists(self.pyobj)
+            _insert_choice_lists(self.pyobj)
+            self.dict = self.pyobj[SURVEY]
+        return self.dict
+    
+    def to_json(self):
+        return json.dumps(self.to_dict(), indent=4)
