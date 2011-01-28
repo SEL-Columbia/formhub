@@ -8,6 +8,7 @@ from datetime import datetime
 from copy import copy
 from lxml import etree
 from lxml.builder import ElementMaker
+import sys
 
 nsmap = {
     None : "http://www.w3.org/2002/xforms",
@@ -34,9 +35,9 @@ class Question(object):
     """
     Abstract base class to build different question types on top of.
     """
-    def __init__(self, text, name=u"", attributes={}, hint=u""):
+    def __init__(self, name, text, hint={}, attributes={}):
+        self.name = name
         self.text = text
-        self.name = name if name else sluggify(text, u" ")
         self._attributes = attributes.copy()
         self.hint = hint
 
@@ -146,23 +147,6 @@ class Choice(object):
     def xml(self):
         return E.item( E.label(self.label), E.value(self.value) )
 
-def tuples(l):
-    """
-    This is a helper function to create lists of choices quickly. List
-    entries can be string labels that will be sluggified to create
-    values, or an entry can be a pair where one specifies the desired
-    value.
-    """
-    result = []
-    for entry in l:
-        if type(entry)==unicode:
-            result.append((entry, sluggify(entry)))
-        elif type(entry)==tuple and len(entry)==2:
-            result.append(entry)
-        else:
-            raise Exception("Expected unicode string or tuple", entry)
-    return result
-
 def choices(l):
     return [Choice(label=pair[0], value=pair[1]) for pair in tuples(l)]
 
@@ -210,6 +194,7 @@ class SelectMultipleQuestion(MultipleChoiceQuestion):
 # this when I have Internet
 question_class = {
     "string" : StringQuestion,
+    "gps" : GeopointQuestion,
     "phone number" : PhoneNumberQuestion,
     "integer" : IntegerQuestion,
     "percentage" : PercentageQuestion,
@@ -217,12 +202,9 @@ question_class = {
     "select all that apply" : SelectMultipleQuestion,
     "yes or no" : YesNoQuestion,
 }
-def q(text, question_type="integer", name=u"", attributes={}, choices=[]):
-    c = question_class[question_type]
-    if issubclass(c, MultipleChoiceQuestion):
-        return c(name=name, text=text, choices=choices)
-    else:
-        return c(name=name, text=text)
+def q(d):
+    c = question_class[d.pop("type")]
+    return c(**d)
 
 def table(rows, columns):
     result = []
@@ -327,5 +309,8 @@ class Survey(object):
 #     f.close()
 
 if __name__ == '__main__':
-    s = Survey(title="test", questions=[q("Is this working?", name=u"working", question_type="yes or no")])
+    f = open(sys.argv[1])
+    questions = json.load(f)
+    f.close()
+    s = Survey(title="Agriculture", questions=[q(d) for d in questions])
     print s.__unicode__()
