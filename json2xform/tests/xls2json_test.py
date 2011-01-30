@@ -39,3 +39,9 @@ class BasicXls2JsonApiTests(TestCase):
                             u'type': u'integer', u'name': u'your_age'}]
 
         self.assertEqual(x.to_dict(), expected_dict)
+
+    def test_two_questions_with_same_id_fails(self):
+        """
+        When loading in a form with two identical IDs, the form should not compile.
+        """
+        self.assertRaises(XlsForm("json2xform/surveys/super_simple/two_identical_ids.xls"), Exception)
