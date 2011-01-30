@@ -1,0 +1,3585 @@
+<h:html xmlns:h="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa" xmlns="http://www.w3.org/2002/xforms">
+  <h:head>
+    <h:title>Agriculture</h:title>
+    <model>
+      <itext>
+        <translation lang="Fran&#231;ais">
+          <text id="q_enumerator_name">
+            <value>Nom du travailleur agricole:</value>
+          </text>
+          <text id="q_enumerator_id">
+            <value>ID du travailleur agricole:</value>
+          </text>
+          <text id="q_enumerator_affiliation">
+            <value>Affiliation du travailleur agricole:</value>
+          </text>
+          <text id="c_enumerator_affiliation_catholic_relief">
+            <value>Catholic Relief Services</value>
+          </text>
+          <text id="c_enumerator_affiliation_envi_rehab">
+            <value>Organisation pout la R&#233;habilitation de l'Environnement</value>
+          </text>
+          <text id="c_enumerator_affiliation_earth_spark">
+            <value>EarthSpark</value>
+          </text>
+          <text id="c_enumerator_affiliation_earth_institute">
+            <value>Earth Institute</value>
+          </text>
+          <text id="c_enumerator_affiliation_united_nations">
+            <value>Programme des Nations Unies pour l'Environnement</value>
+          </text>
+          <text id="c_enumerator_affiliation_other">
+            <value>autre</value>
+          </text>
+          <text id="q_enumerator_affiliation_other">
+            <value>Quel est votre affiliation?</value>
+          </text>
+          <text id="q_enumerator_cell_phone">
+            <value>Quel est votre n&#250;mero de t&#233;l&#233;phone mobile?</value>
+          </text>
+          <text id="q_enumerator_email">
+            <value>Quel est votre adresse &#233;lectronique?</value>
+          </text>
+          <text id="q_exchange_haitian_to_gourdes">
+            <value>Combien de dollars ha&#239;tiens font une gourde aujourd'hui?</value>
+          </text>
+          <text id="q_exchange_gourde_to_us">
+            <value>Combien de gourdes font une dollar americaine aujourd'hui?</value>
+          </text>
+          <text id="q_field_id">
+            <value>ID de la parcelle:</value>
+          </text>
+          <text id="q_field_perimeter">
+            <value>S'il vous plait, suivez le p&#233;rim&#232;tre de la parcelle avec le GPS. Quelle trace ID a-il? </value>
+          </text>
+          <text id="q_plot_id">
+            <value>ID de la sous-parcelle:</value>
+          </text>
+          <text id="q_plot_perimeter">
+            <value>S'il vous plait, suivez le p&#233;rim&#232;tre de la sous-parcelle avec le GPS. Quelle trace ID a-il? </value>
+          </text>
+          <text id="q_ville">
+            <value>Nom de la ville:</value>
+          </text>
+          <text id="q_communal_section">
+            <value>Quelle section communale est-il?</value>
+          </text>
+          <text id="c_communal_section_1">
+            <value>1re Section Isle &#224; Vache</value>
+          </text>
+          <text id="c_communal_section_2">
+            <value>1re Section Barbois</value>
+          </text>
+          <text id="c_communal_section_3">
+            <value>2e Section Dumont</value>
+          </text>
+          <text id="c_communal_section_4">
+            <value>1re Section Tapion</value>
+          </text>
+          <text id="c_communal_section_5">
+            <value>2e Section D&#233;bouchette</value>
+          </text>
+          <text id="c_communal_section_6">
+            <value>3e Section Trichet</value>
+          </text>
+          <text id="c_communal_section_7">
+            <value>1re Section Lazarre</value>
+          </text>
+          <text id="c_communal_section_8">
+            <value>2e Section Anse &#224; Drick</value>
+          </text>
+          <text id="c_communal_section_9">
+            <value>3e Section d'Arniquet</value>
+          </text>
+          <text id="c_communal_section_10">
+            <value>1re Section Cond&#233;</value>
+          </text>
+          <text id="c_communal_section_11">
+            <value>2e Section Despas</value>
+          </text>
+          <text id="c_communal_section_12">
+            <value>3e Section Quentin</value>
+          </text>
+          <text id="c_communal_section_13">
+            <value>1re Section Paricot</value>
+          </text>
+          <text id="c_communal_section_14">
+            <value>2e Section Balais</value>
+          </text>
+          <text id="c_communal_section_15">
+            <value>1re Section Beaulieu</value>
+          </text>
+          <text id="c_communal_section_16">
+            <value>2e Section Renaudin</value>
+          </text>
+          <text id="c_communal_section_17">
+            <value>3e Section Beauclos</value>
+          </text>
+          <text id="c_communal_section_18">
+            <value>1re Section Randel</value>
+          </text>
+          <text id="c_communal_section_19">
+            <value>2e Section Dejoie</value>
+          </text>
+          <text id="c_communal_section_20">
+            <value>3e Section Bony</value>
+          </text>
+          <text id="c_communal_section_21">
+            <value>1re Section Verone</value>
+          </text>
+          <text id="c_communal_section_22">
+            <value>2e Section Edelin</value>
+          </text>
+          <text id="c_communal_section_23">
+            <value>3e Section Cosse</value>
+          </text>
+          <text id="c_communal_section_24">
+            <value>1re Section Blactote</value>
+          </text>
+          <text id="c_communal_section_25">
+            <value>2e Section Nan Sevre</value>
+          </text>
+          <text id="c_communal_section_26">
+            <value>3e Section Loby</value>
+          </text>
+          <text id="c_communal_section_27">
+            <value>4e Section Dalmette</value>
+          </text>
+          <text id="q_commune">
+            <value>Quelle commune est-il?</value>
+          </text>
+          <text id="c_commune_1">
+            <value>Isle &#224; Vache</value>
+          </text>
+          <text id="c_commune_2">
+            <value>Port Salut</value>
+          </text>
+          <text id="c_commune_3">
+            <value>Saint Jean du Sud</value>
+          </text>
+          <text id="c_commune_4">
+            <value>Arniquet</value>
+          </text>
+          <text id="c_commune_5">
+            <value>Coteaux</value>
+          </text>
+          <text id="c_commune_6">
+            <value>Port-&#224;-Piment</value>
+          </text>
+          <text id="c_commune_7">
+            <value>Roche &#224; Bateau</value>
+          </text>
+          <text id="c_commune_8">
+            <value>Chardonni&#232;res</value>
+          </text>
+          <text id="c_commune_9">
+            <value>Les Anglais</value>
+          </text>
+          <text id="c_commune_10">
+            <value>Tiburon </value>
+          </text>
+          <text id="q_fertilizer_type">
+            <value>Quel type des engrais ont &#233;t&#233; utilis&#233;s pour planter la sous-parcelle?</value>
+          </text>
+          <text id="q_fertilizer_how_much">
+            <value>Combien du engrais a &#233;t&#233; utilis&#233; dans la sous-parcelle?</value>
+          </text>
+          <text id="q_fertilizer_unit">
+            <value>Quell'est l'unit&#233; de mesure:</value>
+          </text>
+          <text id="c_fertilizer_unit_1">
+            <value>marmite</value>
+          </text>
+          <text id="c_fertilizer_unit_2">
+            <value>petite marmite</value>
+          </text>
+          <text id="c_fertilizer_unit_3">
+            <value>sac du 20 kg</value>
+          </text>
+          <text id="c_fertilizer_unit_4">
+            <value>sac du 50 kg</value>
+          </text>
+          <text id="c_fertilizer_unit_5">
+            <value>r&#233;cipient du 20 litres</value>
+          </text>
+          <text id="c_fertilizer_unit_6">
+            <value>kilogramme</value>
+          </text>
+          <text id="c_fertilizer_unit_7">
+            <value>gramme</value>
+          </text>
+          <text id="c_fertilizer_unit_8">
+            <value>gallon</value>
+          </text>
+          <text id="c_fertilizer_unit_9">
+            <value>livre</value>
+          </text>
+          <text id="q_fertilizer_cost">
+            <value>Quel est le c&#244;ut de  cet engrais? </value>
+          </text>
+          <text id="q_fertilizer_cost_currency">
+            <value>C'est en Gourdes ou c'est en dollars ha&#239;tiens?</value>
+          </text>
+          <text id="c_fertilizer_cost_currency_gourdes">
+            <value>Gourdes</value>
+          </text>
+          <text id="c_fertilizer_cost_currency_haitian_dollars">
+            <value>Dollars ha&#239;tiens</value>
+          </text>
+          <text id="q_irrigation">
+            <value>Quel type du syst&#232;me d'irrigation a &#233;t&#233; utilis&#233; dans la sous-parcelle?</value>
+          </text>
+          <text id="c_irrigation_1">
+            <value>l'eau courante</value>
+          </text>
+          <text id="c_irrigation_2">
+            <value>pomp&#233; de l'eau</value>
+          </text>
+          <text id="c_irrigation_3">
+            <value>pas du syst&#232;me d'irrigation (pluie)</value>
+          </text>
+          <text id="c_irrigation_4">
+            <value>autre</value>
+          </text>
+          <text id="q_irrigation_other">
+            <value>Quel autre?</value>
+          </text>
+          <text id="q_soil_moisture">
+            <value>Quel est le niveau d'humidit&#233; du sol dans la sous-parcelle? </value>
+          </text>
+          <text id="q_soil_moisture_unit">
+            <value>Quell'est l'unit&#233; de mesure:</value>
+          </text>
+          <text id="c_soil_moisture_unit_1">
+            <value>m3/ m</value>
+          </text>
+          <text id="c_soil_moisture_unit_2">
+            <value>litres/ m</value>
+          </text>
+          <text id="q_soil_texture">
+            <value>En g&#233;n&#233;rale, comment est la texture du terrain dans la sous-parcelle?</value>
+          </text>
+          <text id="c_soil_texture_sand">
+            <value>sable</value>
+          </text>
+          <text id="c_soil_texture_loamy_sand">
+            <value>sable loameux</value>
+          </text>
+          <text id="c_soil_texture_sandy_loam">
+            <value>loam sableux</value>
+          </text>
+          <text id="c_soil_texture_sandy_clay_loam">
+            <value>loam sablo-argileux</value>
+          </text>
+          <text id="c_soil_texture_sandy_clay">
+            <value>argile sableuse</value>
+          </text>
+          <text id="c_soil_texture_loam">
+            <value>loam</value>
+          </text>
+          <text id="c_soil_texture_clay_loam">
+            <value>loam argileux</value>
+          </text>
+          <text id="c_soil_texture_clay">
+            <value>argile</value>
+          </text>
+          <text id="c_soil_texture_silt_loam">
+            <value>loam limoneux</value>
+          </text>
+          <text id="c_soil_texture_silty_clay_loam">
+            <value>loam limono-argileux</value>
+          </text>
+          <text id="c_soil_texture_silty_clay">
+            <value>argile limoneuse</value>
+          </text>
+          <text id="q_soil_ribbon">
+            <value>Quelle est la profondeur du ruban sol sup&#233;rieur, dans la sous-parcelle?</value>
+          </text>
+          <text id="q_soil_ribbon_unit">
+            <value>Quell'est l'unit&#233; de mesure:</value>
+          </text>
+          <text id="c_soil_ribbon_unit_1">
+            <value>centim&#232;tre</value>
+          </text>
+          <text id="c_soil_ribbon_unit_2">
+            <value>m&#232;tre</value>
+          </text>
+          <text id="q_planting_method">
+            <value>Quelle est la m&#233;thode de plantation utilis&#233; dans la sous-parcelle?</value>
+          </text>
+          <text id="c_planting_method_ridges">
+            <value>cr&#234;te</value>
+          </text>
+          <text id="c_planting_method_flat">
+            <value>plaines</value>
+          </text>
+          <text id="c_planting_method_row">
+            <value>rangers</value>
+          </text>
+          <text id="c_planting_method_broadcast">
+            <value>diffus</value>
+          </text>
+          <text id="c_planting_method_other">
+            <value>autre</value>
+          </text>
+          <text id="q_planting_method_other">
+            <value>Quel autre?</value>
+          </text>
+          <text id="q_previous_crops">
+            <value>Quell' &#233;tait des cultures pr&#233;c&#233;dentes dans la sous-parcelle?</value>
+          </text>
+          <text id="c_previous_crops_1">
+            <value>ananas</value>
+          </text>
+          <text id="c_previous_crops_2">
+            <value>arbricotier</value>
+          </text>
+          <text id="c_previous_crops_3">
+            <value>aubergine</value>
+          </text>
+          <text id="c_previous_crops_4">
+            <value>avocatier</value>
+          </text>
+          <text id="c_previous_crops_5">
+            <value>bamboo</value>
+          </text>
+          <text id="c_previous_crops_6">
+            <value>bananier</value>
+          </text>
+          <text id="c_previous_crops_7">
+            <value>breadfruit</value>
+          </text>
+          <text id="c_previous_crops_8">
+            <value>cacao</value>
+          </text>
+          <text id="c_previous_crops_9">
+            <value>caf&#233;</value>
+          </text>
+          <text id="c_previous_crops_10">
+            <value>cajou</value>
+          </text>
+          <text id="c_previous_crops_11">
+            <value>cane</value>
+          </text>
+          <text id="c_previous_crops_12">
+            <value>carotte</value>
+          </text>
+          <text id="c_previous_crops_13">
+            <value>chou-fleur</value>
+          </text>
+          <text id="c_previous_crops_14">
+            <value>citron</value>
+          </text>
+          <text id="c_previous_crops_15">
+            <value>citrouille</value>
+          </text>
+          <text id="c_previous_crops_16">
+            <value>des haricots verts</value>
+          </text>
+          <text id="c_previous_crops_17">
+            <value>&#233;pinards</value>
+          </text>
+          <text id="c_previous_crops_18">
+            <value>figuier</value>
+          </text>
+          <text id="c_previous_crops_19">
+            <value>foug&#232;re</value>
+          </text>
+          <text id="c_previous_crops_20">
+            <value>gommier</value>
+          </text>
+          <text id="c_previous_crops_21">
+            <value>goyave</value>
+          </text>
+          <text id="c_previous_crops_22">
+            <value>igname</value>
+          </text>
+          <text id="c_previous_crops_23">
+            <value>karaibe</value>
+          </text>
+          <text id="c_previous_crops_24">
+            <value>kenep</value>
+          </text>
+          <text id="c_previous_crops_25">
+            <value>laitue</value>
+          </text>
+          <text id="c_previous_crops_26">
+            <value>lavandier</value>
+          </text>
+          <text id="c_previous_crops_27">
+            <value>ma&#239;s</value>
+          </text>
+          <text id="c_previous_crops_28">
+            <value>mangue</value>
+          </text>
+          <text id="c_previous_crops_29">
+            <value>manioc</value>
+          </text>
+          <text id="c_previous_crops_30">
+            <value>noix de coco</value>
+          </text>
+          <text id="c_previous_crops_31">
+            <value>oignon</value>
+          </text>
+          <text id="c_previous_crops_32">
+            <value>orange</value>
+          </text>
+          <text id="c_previous_crops_33">
+            <value>papaye</value>
+          </text>
+          <text id="c_previous_crops_34">
+            <value>pistache</value>
+          </text>
+          <text id="c_previous_crops_35">
+            <value>pois chus</value>
+          </text>
+          <text id="c_previous_crops_36">
+            <value>pois congo</value>
+          </text>
+          <text id="c_previous_crops_37">
+            <value>pois noir</value>
+          </text>
+          <text id="c_previous_crops_38">
+            <value>pomme de terre</value>
+          </text>
+          <text id="c_previous_crops_39">
+            <value>sorghum</value>
+          </text>
+          <text id="c_previous_crops_40">
+            <value>courge</value>
+          </text>
+          <text id="c_previous_crops_41">
+            <value>thym</value>
+          </text>
+          <text id="c_previous_crops_42">
+            <value>tomate</value>
+          </text>
+          <text id="c_previous_crops_43">
+            <value>vetiver</value>
+          </text>
+          <text id="c_previous_crops_44">
+            <value>autre</value>
+          </text>
+          <text id="q_previous_crops_other">
+            <value>Quel autre?</value>
+          </text>
+          <text id="q_conservation_structures_exist">
+            <value>Y-at il des structures de conservation du sol?</value>
+          </text>
+          <text id="c_conservation_structures_exist_yes">
+            <value>oui</value>
+          </text>
+          <text id="c_conservation_structures_exist_no">
+            <value>non</value>
+          </text>
+          <text id="c_conservation_structures_exist_dont_know">
+            <value>je ne sais pas</value>
+          </text>
+          <text id="q_conservation_structures_type">
+            <value>Pouvez vous d&#233;crire quels ils-sont?</value>
+          </text>
+          <text id="q_commercial_crop">
+            <value>Quelle est la culture la plus commerciale dans la sous-parcelle?</value>
+          </text>
+          <text id="c_commercial_crop_1">
+            <value>ananas</value>
+          </text>
+          <text id="c_commercial_crop_2">
+            <value>arbricotier</value>
+          </text>
+          <text id="c_commercial_crop_3">
+            <value>aubergine</value>
+          </text>
+          <text id="c_commercial_crop_4">
+            <value>avocatier</value>
+          </text>
+          <text id="c_commercial_crop_5">
+            <value>bamboo</value>
+          </text>
+          <text id="c_commercial_crop_6">
+            <value>bananier</value>
+          </text>
+          <text id="c_commercial_crop_7">
+            <value>breadfruit</value>
+          </text>
+          <text id="c_commercial_crop_8">
+            <value>cacao</value>
+          </text>
+          <text id="c_commercial_crop_9">
+            <value>caf&#233;</value>
+          </text>
+          <text id="c_commercial_crop_10">
+            <value>cajou</value>
+          </text>
+          <text id="c_commercial_crop_11">
+            <value>cane</value>
+          </text>
+          <text id="c_commercial_crop_12">
+            <value>carotte</value>
+          </text>
+          <text id="c_commercial_crop_13">
+            <value>chou-fleur</value>
+          </text>
+          <text id="c_commercial_crop_14">
+            <value>citron</value>
+          </text>
+          <text id="c_commercial_crop_15">
+            <value>citrouille</value>
+          </text>
+          <text id="c_commercial_crop_16">
+            <value>des haricots verts</value>
+          </text>
+          <text id="c_commercial_crop_17">
+            <value>&#233;pinards</value>
+          </text>
+          <text id="c_commercial_crop_18">
+            <value>figuier</value>
+          </text>
+          <text id="c_commercial_crop_19">
+            <value>foug&#232;re</value>
+          </text>
+          <text id="c_commercial_crop_20">
+            <value>gommier</value>
+          </text>
+          <text id="c_commercial_crop_21">
+            <value>goyave</value>
+          </text>
+          <text id="c_commercial_crop_22">
+            <value>igname</value>
+          </text>
+          <text id="c_commercial_crop_23">
+            <value>karaibe</value>
+          </text>
+          <text id="c_commercial_crop_24">
+            <value>kenep</value>
+          </text>
+          <text id="c_commercial_crop_25">
+            <value>laitue</value>
+          </text>
+          <text id="c_commercial_crop_26">
+            <value>lavandier</value>
+          </text>
+          <text id="c_commercial_crop_27">
+            <value>ma&#239;s</value>
+          </text>
+          <text id="c_commercial_crop_28">
+            <value>mangue</value>
+          </text>
+          <text id="c_commercial_crop_29">
+            <value>manioc</value>
+          </text>
+          <text id="c_commercial_crop_30">
+            <value>noix de coco</value>
+          </text>
+          <text id="c_commercial_crop_31">
+            <value>oignon</value>
+          </text>
+          <text id="c_commercial_crop_32">
+            <value>orange</value>
+          </text>
+          <text id="c_commercial_crop_33">
+            <value>papaye</value>
+          </text>
+          <text id="c_commercial_crop_34">
+            <value>pistache</value>
+          </text>
+          <text id="c_commercial_crop_35">
+            <value>pois chus</value>
+          </text>
+          <text id="c_commercial_crop_36">
+            <value>pois congo</value>
+          </text>
+          <text id="c_commercial_crop_37">
+            <value>pois noir</value>
+          </text>
+          <text id="c_commercial_crop_38">
+            <value>pomme de terre</value>
+          </text>
+          <text id="c_commercial_crop_39">
+            <value>sorghum</value>
+          </text>
+          <text id="c_commercial_crop_40">
+            <value>courge</value>
+          </text>
+          <text id="c_commercial_crop_41">
+            <value>thym</value>
+          </text>
+          <text id="c_commercial_crop_42">
+            <value>tomate</value>
+          </text>
+          <text id="c_commercial_crop_43">
+            <value>vetiver</value>
+          </text>
+          <text id="c_commercial_crop_44">
+            <value>autre</value>
+          </text>
+          <text id="q_commercial_crop_other">
+            <value>Quel autre?</value>
+          </text>
+          <text id="q_staple_crop">
+            <value>Quelle est la culture de base la plus importante dans la sous-parcelle?</value>
+          </text>
+          <text id="c_staple_crop_1">
+            <value>ananas</value>
+          </text>
+          <text id="c_staple_crop_2">
+            <value>arbricotier</value>
+          </text>
+          <text id="c_staple_crop_3">
+            <value>aubergine</value>
+          </text>
+          <text id="c_staple_crop_4">
+            <value>avocatier</value>
+          </text>
+          <text id="c_staple_crop_5">
+            <value>bamboo</value>
+          </text>
+          <text id="c_staple_crop_6">
+            <value>bananier</value>
+          </text>
+          <text id="c_staple_crop_7">
+            <value>breadfruit</value>
+          </text>
+          <text id="c_staple_crop_8">
+            <value>cacao</value>
+          </text>
+          <text id="c_staple_crop_9">
+            <value>caf&#233;</value>
+          </text>
+          <text id="c_staple_crop_10">
+            <value>cajou</value>
+          </text>
+          <text id="c_staple_crop_11">
+            <value>cane</value>
+          </text>
+          <text id="c_staple_crop_12">
+            <value>carotte</value>
+          </text>
+          <text id="c_staple_crop_13">
+            <value>chou-fleur</value>
+          </text>
+          <text id="c_staple_crop_14">
+            <value>citron</value>
+          </text>
+          <text id="c_staple_crop_15">
+            <value>citrouille</value>
+          </text>
+          <text id="c_staple_crop_16">
+            <value>des haricots verts</value>
+          </text>
+          <text id="c_staple_crop_17">
+            <value>&#233;pinards</value>
+          </text>
+          <text id="c_staple_crop_18">
+            <value>figuier</value>
+          </text>
+          <text id="c_staple_crop_19">
+            <value>foug&#232;re</value>
+          </text>
+          <text id="c_staple_crop_20">
+            <value>gommier</value>
+          </text>
+          <text id="c_staple_crop_21">
+            <value>goyave</value>
+          </text>
+          <text id="c_staple_crop_22">
+            <value>igname</value>
+          </text>
+          <text id="c_staple_crop_23">
+            <value>karaibe</value>
+          </text>
+          <text id="c_staple_crop_24">
+            <value>kenep</value>
+          </text>
+          <text id="c_staple_crop_25">
+            <value>laitue</value>
+          </text>
+          <text id="c_staple_crop_26">
+            <value>lavandier</value>
+          </text>
+          <text id="c_staple_crop_27">
+            <value>ma&#239;s</value>
+          </text>
+          <text id="c_staple_crop_28">
+            <value>mangue</value>
+          </text>
+          <text id="c_staple_crop_29">
+            <value>manioc</value>
+          </text>
+          <text id="c_staple_crop_30">
+            <value>noix de coco</value>
+          </text>
+          <text id="c_staple_crop_31">
+            <value>oignon</value>
+          </text>
+          <text id="c_staple_crop_32">
+            <value>orange</value>
+          </text>
+          <text id="c_staple_crop_33">
+            <value>papaye</value>
+          </text>
+          <text id="c_staple_crop_34">
+            <value>pistache</value>
+          </text>
+          <text id="c_staple_crop_35">
+            <value>pois chus</value>
+          </text>
+          <text id="c_staple_crop_36">
+            <value>pois congo</value>
+          </text>
+          <text id="c_staple_crop_37">
+            <value>pois noir</value>
+          </text>
+          <text id="c_staple_crop_38">
+            <value>pomme de terre</value>
+          </text>
+          <text id="c_staple_crop_39">
+            <value>sorghum</value>
+          </text>
+          <text id="c_staple_crop_40">
+            <value>courge</value>
+          </text>
+          <text id="c_staple_crop_41">
+            <value>thym</value>
+          </text>
+          <text id="c_staple_crop_42">
+            <value>tomate</value>
+          </text>
+          <text id="c_staple_crop_43">
+            <value>vetiver</value>
+          </text>
+          <text id="c_staple_crop_44">
+            <value>autre</value>
+          </text>
+          <text id="q_staple_crop_other">
+            <value>Quel autre?</value>
+          </text>
+          <text id="q_trees_exist">
+            <value>Est-ce que il y a des arbres dans la sous-parcelle?</value>
+          </text>
+          <text id="c_trees_exist_yes">
+            <value>oui</value>
+          </text>
+          <text id="c_trees_exist_no">
+            <value>non</value>
+          </text>
+          <text id="c_trees_exist_dont_know">
+            <value>je ne sais pas</value>
+          </text>
+          <text id="q_trees_how_many">
+            <value>Combien des arbres y-at il?</value>
+          </text>
+          <text id="q_trees_age">
+            <value>Plus ou moins, quel &#226;ge ont ils? (ann&#233;es)</value>
+          </text>
+          <text id="q_animal_traction_exist">
+            <value>Est-ce que il y a des animaux de travail dans la parcelle, comme des chevaux ou des &#226;nes?</value>
+          </text>
+          <text id="c_animal_traction_exist_yes">
+            <value>oui</value>
+          </text>
+          <text id="c_animal_traction_exist_no">
+            <value>non</value>
+          </text>
+          <text id="c_animal_traction_exist_dont_know">
+            <value>je ne sais pas</value>
+          </text>
+          <text id="q_organic_application_exist">
+            <value>Avez-vous appliqu&#233; des produits biologiques sur la sous-parcelle?</value>
+          </text>
+          <text id="c_organic_application_exist_yes">
+            <value>oui</value>
+          </text>
+          <text id="c_organic_application_exist_no">
+            <value>non</value>
+          </text>
+          <text id="c_organic_application_exist_dont_know">
+            <value>je ne sais pas</value>
+          </text>
+          <text id="q_organic_application_type">
+            <value>Quels sont les produits biologiques que vous avez appliqu&#233;? S'il vous plait, pr&#233;cisez</value>
+          </text>
+          <text id="q_organic_application_how_much">
+            <value>Combien des produits biologiques avez-vous appliqu&#233;?</value>
+          </text>
+          <text id="q_organic_application_unit">
+            <value>Quell'est l'unit&#233; de mesure:</value>
+          </text>
+          <text id="c_organic_application_unit_1">
+            <value>marmite</value>
+          </text>
+          <text id="c_organic_application_unit_2">
+            <value>petite marmite</value>
+          </text>
+          <text id="c_organic_application_unit_3">
+            <value>sac du 20 kg</value>
+          </text>
+          <text id="c_organic_application_unit_4">
+            <value>sac du 50 kg</value>
+          </text>
+          <text id="c_organic_application_unit_5">
+            <value>r&#233;cipient du 20 litres</value>
+          </text>
+          <text id="c_organic_application_unit_6">
+            <value>kilogramme</value>
+          </text>
+          <text id="c_organic_application_unit_7">
+            <value>gramme</value>
+          </text>
+          <text id="c_organic_application_unit_8">
+            <value>gallon</value>
+          </text>
+          <text id="c_organic_application_unit_9">
+            <value>livre</value>
+          </text>
+          <text id="q_organic_application_practice">
+            <value>Comment est-ce que les produits biologiques ont &#233;t&#233; appliqu&#233;s?</value>
+          </text>
+          <text id="c_organic_application_practice_surface_applied">
+            <value>en surface</value>
+          </text>
+          <text id="c_organic_application_practice_incorporated">
+            <value>incorpor&#233;</value>
+          </text>
+          <text id="c_organic_application_practice_other">
+            <value>autre</value>
+          </text>
+          <text id="q_organic_application_practice_other">
+            <value>Quel autre?</value>
+          </text>
+          <text id="q_crop">
+            <value>Quelles cultures ont &#233;t&#233; plant&#233;s dans la sous-parcelle?</value>
+          </text>
+          <text id="c_crop_1">
+            <value>ananas</value>
+          </text>
+          <text id="c_crop_2">
+            <value>arbricotier</value>
+          </text>
+          <text id="c_crop_3">
+            <value>aubergine</value>
+          </text>
+          <text id="c_crop_4">
+            <value>avocatier</value>
+          </text>
+          <text id="c_crop_5">
+            <value>bamboo</value>
+          </text>
+          <text id="c_crop_6">
+            <value>bananier</value>
+          </text>
+          <text id="c_crop_7">
+            <value>breadfruit</value>
+          </text>
+          <text id="c_crop_8">
+            <value>cacao</value>
+          </text>
+          <text id="c_crop_9">
+            <value>caf&#233;</value>
+          </text>
+          <text id="c_crop_10">
+            <value>cajou</value>
+          </text>
+          <text id="c_crop_11">
+            <value>cane</value>
+          </text>
+          <text id="c_crop_12">
+            <value>carotte</value>
+          </text>
+          <text id="c_crop_13">
+            <value>chou-fleur</value>
+          </text>
+          <text id="c_crop_14">
+            <value>citron</value>
+          </text>
+          <text id="c_crop_15">
+            <value>citrouille</value>
+          </text>
+          <text id="c_crop_16">
+            <value>des haricots verts</value>
+          </text>
+          <text id="c_crop_17">
+            <value>&#233;pinards</value>
+          </text>
+          <text id="c_crop_18">
+            <value>figuier</value>
+          </text>
+          <text id="c_crop_19">
+            <value>foug&#232;re</value>
+          </text>
+          <text id="c_crop_20">
+            <value>gommier</value>
+          </text>
+          <text id="c_crop_21">
+            <value>goyave</value>
+          </text>
+          <text id="c_crop_22">
+            <value>igname</value>
+          </text>
+          <text id="c_crop_23">
+            <value>karaibe</value>
+          </text>
+          <text id="c_crop_24">
+            <value>kenep</value>
+          </text>
+          <text id="c_crop_25">
+            <value>laitue</value>
+          </text>
+          <text id="c_crop_26">
+            <value>lavandier</value>
+          </text>
+          <text id="c_crop_27">
+            <value>ma&#239;s</value>
+          </text>
+          <text id="c_crop_28">
+            <value>mangue</value>
+          </text>
+          <text id="c_crop_29">
+            <value>manioc</value>
+          </text>
+          <text id="c_crop_30">
+            <value>noix de coco</value>
+          </text>
+          <text id="c_crop_31">
+            <value>oignon</value>
+          </text>
+          <text id="c_crop_32">
+            <value>orange</value>
+          </text>
+          <text id="c_crop_33">
+            <value>papaye</value>
+          </text>
+          <text id="c_crop_34">
+            <value>pistache</value>
+          </text>
+          <text id="c_crop_35">
+            <value>pois chus</value>
+          </text>
+          <text id="c_crop_36">
+            <value>pois congo</value>
+          </text>
+          <text id="c_crop_37">
+            <value>pois noir</value>
+          </text>
+          <text id="c_crop_38">
+            <value>pomme de terre</value>
+          </text>
+          <text id="c_crop_39">
+            <value>sorghum</value>
+          </text>
+          <text id="c_crop_40">
+            <value>courge</value>
+          </text>
+          <text id="c_crop_41">
+            <value>thym</value>
+          </text>
+          <text id="c_crop_42">
+            <value>tomate</value>
+          </text>
+          <text id="c_crop_43">
+            <value>vetiver</value>
+          </text>
+          <text id="c_crop_44">
+            <value>autre</value>
+          </text>
+          <text id="q_crop_planting_date">
+            <value>Quand est-ce que la/le/l' CROP a &#233;t&#233; plant&#233;?</value>
+          </text>
+          <text id="q_seed_type">
+            <value>Quel type des semences ont &#233;t&#233; utilis&#233;es pour planter la/le/l' CROP?</value>
+          </text>
+          <text id="q_seed_source_org">
+            <value>O&#249; avez-vous obtenu les semences pour planter la/le/l' CROP? S'il vous plait, donnez le nom du lieu/ de l'organisation</value>
+          </text>
+          <text id="q_seed_source_town">
+            <value>Quelle ville est-ce que SEED SOURCE est situ&#233;?</value>
+          </text>
+          <text id="q_seed_cost">
+            <value>Quel est le c&#244;ut des semences pour planter la/le/l' CROP?</value>
+          </text>
+          <text id="q_seed_cost_currency">
+            <value>C'est en Gourdes ou c'est en dollars ha&#239;tiens?</value>
+          </text>
+          <text id="c_seed_cost_currency_gourdes">
+            <value>Gourdes</value>
+          </text>
+          <text id="c_seed_cost_currency_haitian_dollars">
+            <value>Dollars ha&#239;tiens</value>
+          </text>
+          <text id="q_seed_quantity">
+            <value>Combien des semences de/du CROP ont &#233;t&#233; plant&#233;es?</value>
+          </text>
+          <text id="q_seed_variety">
+            <value>Quelle est la vari&#233;t&#233; de cette culture?</value>
+          </text>
+          <text id="q_crop_density">
+            <value>Combien de plants de cette culture on peut trouver dans un m&#232;tre carr&#233;?</value>
+          </text>
+          <text id="q_crop_harvest_date">
+            <value>Quand est-ce que la/le/l' CROP a &#233;t&#233; r&#233;colt&#233;?</value>
+          </text>
+          <text id="q_crop_harvest_quantity">
+            <value>Combien de/du CROP est-ce que vous avez r&#233;colt&#233; dans la sous-parcelle?</value>
+          </text>
+          <text id="q_post_harvest_exist">
+            <value>Apr&#232;s la r&#233;colte, est-ce que vous traiterez cette culture pour sa conservation ou transformation?</value>
+          </text>
+          <text id="c_post_harvest_exist_yes">
+            <value>oui</value>
+          </text>
+          <text id="c_post_harvest_exist_no">
+            <value>non</value>
+          </text>
+          <text id="c_post_harvest_exist_dont_know">
+            <value>je ne sais pas</value>
+          </text>
+          <text id="q_post_harvest_type">
+            <value>Qu'est ce que vous faites pour traiter cette culture? S'il vous plait, pr&#233;cisez.</value>
+          </text>
+          <text id="q_crop_market_price">
+            <value>Si vous vendez une unit&#233; de cette culture au march&#233;, combien d'argent pouvez vous obtenir? </value>
+          </text>
+          <text id="q_crop_market_price_currency">
+            <value>C'est en Gourdes ou c'est en dollars ha&#239;tiens?</value>
+          </text>
+          <text id="c_crop_market_price_currency_gourdes">
+            <value>Gourdes</value>
+          </text>
+          <text id="c_crop_market_price_currency_haitian_dollars">
+            <value>Dollars ha&#239;tiens</value>
+          </text>
+          <text id="q_crop_market_price_unit">
+            <value>Une unit&#233; de cette culture c'est &#233;gal &#224; quoi? S'il vous plait, pr&#233;cisez</value>
+          </text>
+          <text id="q_crop_market_location">
+            <value>Dans quelles march&#233;s est-ce que vous vendez cette culture? S'il vous plait, pr&#233;cisez</value>
+          </text>
+        </translation>
+        <translation lang="English">
+          <text id="q_enumerator_name">
+            <value>Name of Community Agricultural Worker</value>
+          </text>
+          <text id="q_enumerator_id">
+            <value>Unique Community Agricultural Worker ID</value>
+          </text>
+          <text id="q_enumerator_affiliation">
+            <value>Affiliation of Community Agricultural Worker</value>
+          </text>
+          <text id="c_enumerator_affiliation_catholic_relief">
+            <value>Catholic Relief Services</value>
+          </text>
+          <text id="c_enumerator_affiliation_envi_rehab">
+            <value>Organization for the Rehabilitation of the Environment</value>
+          </text>
+          <text id="c_enumerator_affiliation_earth_spark">
+            <value>EarthSpark</value>
+          </text>
+          <text id="c_enumerator_affiliation_earth_institute">
+            <value>Earth Institute</value>
+          </text>
+          <text id="c_enumerator_affiliation_united_nations">
+            <value>United Nations Program for the Environment</value>
+          </text>
+          <text id="c_enumerator_affiliation_other">
+            <value>Other</value>
+          </text>
+          <text id="q_enumerator_affiliation_other">
+            <value>What is your affiliation?</value>
+          </text>
+          <text id="q_enumerator_cell_phone">
+            <value>CAW cell phone no</value>
+          </text>
+          <text id="q_enumerator_email">
+            <value>CAW email addresss</value>
+          </text>
+          <text id="q_exchange_haitian_to_gourdes">
+            <value>Today's exchange rate of Haitian Dollar to Gourdes</value>
+          </text>
+          <text id="q_exchange_gourde_to_us">
+            <value>Today's exchange rate of gourdes to US</value>
+          </text>
+          <text id="q_field_id">
+            <value>Unique Farm ID</value>
+          </text>
+          <text id="q_field_perimeter">
+            <value>Field Permieter</value>
+          </text>
+          <text id="q_plot_id">
+            <value>Unique Plot ID</value>
+          </text>
+          <text id="q_plot_perimeter">
+            <value>Plot Perimeter</value>
+          </text>
+          <text id="q_ville">
+            <value>Name of the Village</value>
+          </text>
+          <text id="q_communal_section">
+            <value>Communal Section</value>
+          </text>
+          <text id="c_communal_section_1">
+            <value>1re Section Isle &#224; Vache</value>
+          </text>
+          <text id="c_communal_section_2">
+            <value>1re Section Barbois</value>
+          </text>
+          <text id="c_communal_section_3">
+            <value>2e Section Dumont</value>
+          </text>
+          <text id="c_communal_section_4">
+            <value>1re Section Tapion</value>
+          </text>
+          <text id="c_communal_section_5">
+            <value>2e Section D&#233;bouchette</value>
+          </text>
+          <text id="c_communal_section_6">
+            <value>3e Section Trichet</value>
+          </text>
+          <text id="c_communal_section_7">
+            <value>1re Section Lazarre</value>
+          </text>
+          <text id="c_communal_section_8">
+            <value>2e Section Anse &#224; Drick</value>
+          </text>
+          <text id="c_communal_section_9">
+            <value>3e Section d'Arniquet</value>
+          </text>
+          <text id="c_communal_section_10">
+            <value>1re Section Cond&#233;</value>
+          </text>
+          <text id="c_communal_section_11">
+            <value>2e Section Despas</value>
+          </text>
+          <text id="c_communal_section_12">
+            <value>3e Section Quentin</value>
+          </text>
+          <text id="c_communal_section_13">
+            <value>1re Section Paricot</value>
+          </text>
+          <text id="c_communal_section_14">
+            <value>2e Section Balais</value>
+          </text>
+          <text id="c_communal_section_15">
+            <value>1re Section Beaulieu</value>
+          </text>
+          <text id="c_communal_section_16">
+            <value>2e Section Renaudin</value>
+          </text>
+          <text id="c_communal_section_17">
+            <value>3e Section Beauclos</value>
+          </text>
+          <text id="c_communal_section_18">
+            <value>1re Section Randel</value>
+          </text>
+          <text id="c_communal_section_19">
+            <value>2e Section Dejoie</value>
+          </text>
+          <text id="c_communal_section_20">
+            <value>3e Section Bony</value>
+          </text>
+          <text id="c_communal_section_21">
+            <value>1re Section Verone</value>
+          </text>
+          <text id="c_communal_section_22">
+            <value>2e Section Edelin</value>
+          </text>
+          <text id="c_communal_section_23">
+            <value>3e Section Cosse</value>
+          </text>
+          <text id="c_communal_section_24">
+            <value>1re Section Blactote</value>
+          </text>
+          <text id="c_communal_section_25">
+            <value>2e Section Nan Sevre</value>
+          </text>
+          <text id="c_communal_section_26">
+            <value>3e Section Loby</value>
+          </text>
+          <text id="c_communal_section_27">
+            <value>4e Section Dalmette</value>
+          </text>
+          <text id="q_commune">
+            <value>Commune</value>
+          </text>
+          <text id="c_commune_1">
+            <value>Isle &#224; Vache</value>
+          </text>
+          <text id="c_commune_2">
+            <value>Port Salut</value>
+          </text>
+          <text id="c_commune_3">
+            <value>Saint Jean du Sud</value>
+          </text>
+          <text id="c_commune_4">
+            <value>Arniquet</value>
+          </text>
+          <text id="c_commune_5">
+            <value>Coteaux</value>
+          </text>
+          <text id="c_commune_6">
+            <value>Port-&#224;-Piment</value>
+          </text>
+          <text id="c_commune_7">
+            <value>Roche &#224; Bateau</value>
+          </text>
+          <text id="c_commune_8">
+            <value>Chardonni&#232;res</value>
+          </text>
+          <text id="c_commune_9">
+            <value>Les Anglais</value>
+          </text>
+          <text id="c_commune_10">
+            <value>Tiburon </value>
+          </text>
+          <text id="q_fertilizer_type">
+            <value>Type of fertilizer used in plot?</value>
+          </text>
+          <text id="q_fertilizer_how_much">
+            <value>How much fertilizer was it used in the plot?</value>
+          </text>
+          <text id="q_fertilizer_unit">
+            <value>What is the unit measure?</value>
+          </text>
+          <text id="c_fertilizer_unit_1">
+            <value>marmite</value>
+          </text>
+          <text id="c_fertilizer_unit_2">
+            <value>petite marmite</value>
+          </text>
+          <text id="c_fertilizer_unit_3">
+            <value>sac du 20 kg</value>
+          </text>
+          <text id="c_fertilizer_unit_4">
+            <value>sac du 50 kg</value>
+          </text>
+          <text id="c_fertilizer_unit_5">
+            <value>r&#233;cipient du 20 litres</value>
+          </text>
+          <text id="c_fertilizer_unit_6">
+            <value>kilogramme</value>
+          </text>
+          <text id="c_fertilizer_unit_7">
+            <value>gramme</value>
+          </text>
+          <text id="c_fertilizer_unit_8">
+            <value>gallon</value>
+          </text>
+          <text id="c_fertilizer_unit_9">
+            <value>pound</value>
+          </text>
+          <text id="q_fertilizer_cost">
+            <value>How much did the fertilizer cost?</value>
+          </text>
+          <text id="q_fertilizer_cost_currency">
+            <value>Is it gourds or Haitian dollars?</value>
+          </text>
+          <text id="c_fertilizer_cost_currency_gourdes">
+            <value>Gourdes</value>
+          </text>
+          <text id="c_fertilizer_cost_currency_haitian_dollars">
+            <value>Haitian dollars</value>
+          </text>
+          <text id="q_irrigation">
+            <value>Which irrigation system is it used in the plot?</value>
+          </text>
+          <text id="c_irrigation_1">
+            <value>piped water</value>
+          </text>
+          <text id="c_irrigation_2">
+            <value>pumped water</value>
+          </text>
+          <text id="c_irrigation_3">
+            <value>no irrigation system (rain)</value>
+          </text>
+          <text id="c_irrigation_4">
+            <value>other</value>
+          </text>
+          <text id="q_irrigation_other">
+            <value>Other?</value>
+          </text>
+          <text id="q_soil_moisture">
+            <value>What is the soil moisture level in the plot?</value>
+          </text>
+          <text id="q_soil_moisture_unit">
+            <value>Measurement unit?</value>
+          </text>
+          <text id="c_soil_moisture_unit_1">
+            <value>m3 / m</value>
+          </text>
+          <text id="c_soil_moisture_unit_2">
+            <value>liters / m</value>
+          </text>
+          <text id="q_soil_texture">
+            <value>How is the soil texture in the plot?</value>
+          </text>
+          <text id="c_soil_texture_sand">
+            <value>sand</value>
+          </text>
+          <text id="c_soil_texture_loamy_sand">
+            <value>loamy sand</value>
+          </text>
+          <text id="c_soil_texture_sandy_loam">
+            <value>sandy loam</value>
+          </text>
+          <text id="c_soil_texture_sandy_clay_loam">
+            <value>sandy clay loam</value>
+          </text>
+          <text id="c_soil_texture_sandy_clay">
+            <value>sandy clay</value>
+          </text>
+          <text id="c_soil_texture_loam">
+            <value>loam</value>
+          </text>
+          <text id="c_soil_texture_clay_loam">
+            <value>clay loam</value>
+          </text>
+          <text id="c_soil_texture_clay">
+            <value>clay</value>
+          </text>
+          <text id="c_soil_texture_silt_loam">
+            <value>silt loam</value>
+          </text>
+          <text id="c_soil_texture_silty_clay_loam">
+            <value>silty clay loam</value>
+          </text>
+          <text id="c_soil_texture_silty_clay">
+            <value>silty clay</value>
+          </text>
+          <text id="q_soil_ribbon">
+            <value>What is the top soil ribbon length?</value>
+          </text>
+          <text id="q_soil_ribbon_unit">
+            <value>Measurement unit?</value>
+          </text>
+          <text id="c_soil_ribbon_unit_1">
+            <value>Centimeter</value>
+          </text>
+          <text id="c_soil_ribbon_unit_2">
+            <value>Meter</value>
+          </text>
+          <text id="q_planting_method">
+            <value>What is the planting method used in this plot?</value>
+          </text>
+          <text id="c_planting_method_ridges">
+            <value>ridges</value>
+          </text>
+          <text id="c_planting_method_flat">
+            <value>flat</value>
+          </text>
+          <text id="c_planting_method_row">
+            <value>row</value>
+          </text>
+          <text id="c_planting_method_broadcast">
+            <value>broadcast</value>
+          </text>
+          <text id="c_planting_method_other">
+            <value>other</value>
+          </text>
+          <text id="q_planting_method_other">
+            <value>Other?</value>
+          </text>
+          <text id="q_previous_crops">
+            <value>Which are the previous crops in the plot?</value>
+          </text>
+          <text id="c_previous_crops_1">
+            <value>pineapple</value>
+          </text>
+          <text id="c_previous_crops_2">
+            <value>arbricotier</value>
+          </text>
+          <text id="c_previous_crops_3">
+            <value>eggplant</value>
+          </text>
+          <text id="c_previous_crops_4">
+            <value>avocado</value>
+          </text>
+          <text id="c_previous_crops_5">
+            <value>bamboo</value>
+          </text>
+          <text id="c_previous_crops_6">
+            <value>plantain</value>
+          </text>
+          <text id="c_previous_crops_7">
+            <value>breadfruit</value>
+          </text>
+          <text id="c_previous_crops_8">
+            <value>cacao</value>
+          </text>
+          <text id="c_previous_crops_9">
+            <value>coffee</value>
+          </text>
+          <text id="c_previous_crops_10">
+            <value>cajou</value>
+          </text>
+          <text id="c_previous_crops_11">
+            <value>sugar cane</value>
+          </text>
+          <text id="c_previous_crops_12">
+            <value>carrot</value>
+          </text>
+          <text id="c_previous_crops_13">
+            <value>cauliflower</value>
+          </text>
+          <text id="c_previous_crops_14">
+            <value>lemon</value>
+          </text>
+          <text id="c_previous_crops_15">
+            <value>pumpkin</value>
+          </text>
+          <text id="c_previous_crops_16">
+            <value>string beans</value>
+          </text>
+          <text id="c_previous_crops_17">
+            <value>spinach</value>
+          </text>
+          <text id="c_previous_crops_18">
+            <value>fig</value>
+          </text>
+          <text id="c_previous_crops_19">
+            <value>foug&#232;re</value>
+          </text>
+          <text id="c_previous_crops_20">
+            <value>gommier</value>
+          </text>
+          <text id="c_previous_crops_21">
+            <value>guava</value>
+          </text>
+          <text id="c_previous_crops_22">
+            <value>yam</value>
+          </text>
+          <text id="c_previous_crops_23">
+            <value>karaibe</value>
+          </text>
+          <text id="c_previous_crops_24">
+            <value>kenep</value>
+          </text>
+          <text id="c_previous_crops_25">
+            <value>lettuce</value>
+          </text>
+          <text id="c_previous_crops_26">
+            <value>lavander</value>
+          </text>
+          <text id="c_previous_crops_27">
+            <value>maize</value>
+          </text>
+          <text id="c_previous_crops_28">
+            <value>mango</value>
+          </text>
+          <text id="c_previous_crops_29">
+            <value>manioc</value>
+          </text>
+          <text id="c_previous_crops_30">
+            <value>coconut</value>
+          </text>
+          <text id="c_previous_crops_31">
+            <value>onion</value>
+          </text>
+          <text id="c_previous_crops_32">
+            <value>orange</value>
+          </text>
+          <text id="c_previous_crops_33">
+            <value>papaye</value>
+          </text>
+          <text id="c_previous_crops_34">
+            <value>peanuts</value>
+          </text>
+          <text id="c_previous_crops_35">
+            <value>pois chus</value>
+          </text>
+          <text id="c_previous_crops_36">
+            <value>pois congo</value>
+          </text>
+          <text id="c_previous_crops_37">
+            <value>black bean</value>
+          </text>
+          <text id="c_previous_crops_38">
+            <value>potato</value>
+          </text>
+          <text id="c_previous_crops_39">
+            <value>sorghum</value>
+          </text>
+          <text id="c_previous_crops_40">
+            <value>courge</value>
+          </text>
+          <text id="c_previous_crops_41">
+            <value>thyme</value>
+          </text>
+          <text id="c_previous_crops_42">
+            <value>tomato</value>
+          </text>
+          <text id="c_previous_crops_43">
+            <value>vetiver</value>
+          </text>
+          <text id="c_previous_crops_44">
+            <value>other</value>
+          </text>
+          <text id="q_previous_crops_other">
+            <value>Other?</value>
+          </text>
+          <text id="q_conservation_structures_exist">
+            <value>Are there any soil conservation measures?</value>
+          </text>
+          <text id="c_conservation_structures_exist_yes">
+            <value>Yes</value>
+          </text>
+          <text id="c_conservation_structures_exist_no">
+            <value>No</value>
+          </text>
+          <text id="c_conservation_structures_exist_dont_know">
+            <value>Don't know</value>
+          </text>
+          <text id="q_conservation_structures_type">
+            <value>Can you describe them?</value>
+          </text>
+          <text id="q_commercial_crop">
+            <value>Which is the main commercial crop in the plot?</value>
+          </text>
+          <text id="c_commercial_crop_1">
+            <value>pineapple</value>
+          </text>
+          <text id="c_commercial_crop_2">
+            <value>arbricotier</value>
+          </text>
+          <text id="c_commercial_crop_3">
+            <value>eggplant</value>
+          </text>
+          <text id="c_commercial_crop_4">
+            <value>avocado</value>
+          </text>
+          <text id="c_commercial_crop_5">
+            <value>bamboo</value>
+          </text>
+          <text id="c_commercial_crop_6">
+            <value>plantain</value>
+          </text>
+          <text id="c_commercial_crop_7">
+            <value>breadfruit</value>
+          </text>
+          <text id="c_commercial_crop_8">
+            <value>cacao</value>
+          </text>
+          <text id="c_commercial_crop_9">
+            <value>coffee</value>
+          </text>
+          <text id="c_commercial_crop_10">
+            <value>cajou</value>
+          </text>
+          <text id="c_commercial_crop_11">
+            <value>sugar cane</value>
+          </text>
+          <text id="c_commercial_crop_12">
+            <value>carrot</value>
+          </text>
+          <text id="c_commercial_crop_13">
+            <value>cauliflower</value>
+          </text>
+          <text id="c_commercial_crop_14">
+            <value>lemon</value>
+          </text>
+          <text id="c_commercial_crop_15">
+            <value>pumpkin</value>
+          </text>
+          <text id="c_commercial_crop_16">
+            <value>string beans</value>
+          </text>
+          <text id="c_commercial_crop_17">
+            <value>spinach</value>
+          </text>
+          <text id="c_commercial_crop_18">
+            <value>fig</value>
+          </text>
+          <text id="c_commercial_crop_19">
+            <value>foug&#232;re</value>
+          </text>
+          <text id="c_commercial_crop_20">
+            <value>gommier</value>
+          </text>
+          <text id="c_commercial_crop_21">
+            <value>guava</value>
+          </text>
+          <text id="c_commercial_crop_22">
+            <value>yam</value>
+          </text>
+          <text id="c_commercial_crop_23">
+            <value>karaibe</value>
+          </text>
+          <text id="c_commercial_crop_24">
+            <value>kenep</value>
+          </text>
+          <text id="c_commercial_crop_25">
+            <value>lettuce</value>
+          </text>
+          <text id="c_commercial_crop_26">
+            <value>lavander</value>
+          </text>
+          <text id="c_commercial_crop_27">
+            <value>maize</value>
+          </text>
+          <text id="c_commercial_crop_28">
+            <value>mango</value>
+          </text>
+          <text id="c_commercial_crop_29">
+            <value>manioc</value>
+          </text>
+          <text id="c_commercial_crop_30">
+            <value>coconut</value>
+          </text>
+          <text id="c_commercial_crop_31">
+            <value>onion</value>
+          </text>
+          <text id="c_commercial_crop_32">
+            <value>orange</value>
+          </text>
+          <text id="c_commercial_crop_33">
+            <value>papaye</value>
+          </text>
+          <text id="c_commercial_crop_34">
+            <value>peanuts</value>
+          </text>
+          <text id="c_commercial_crop_35">
+            <value>pois chus</value>
+          </text>
+          <text id="c_commercial_crop_36">
+            <value>pois congo</value>
+          </text>
+          <text id="c_commercial_crop_37">
+            <value>black bean</value>
+          </text>
+          <text id="c_commercial_crop_38">
+            <value>potato</value>
+          </text>
+          <text id="c_commercial_crop_39">
+            <value>sorghum</value>
+          </text>
+          <text id="c_commercial_crop_40">
+            <value>courge</value>
+          </text>
+          <text id="c_commercial_crop_41">
+            <value>thyme</value>
+          </text>
+          <text id="c_commercial_crop_42">
+            <value>tomato</value>
+          </text>
+          <text id="c_commercial_crop_43">
+            <value>vetiver</value>
+          </text>
+          <text id="c_commercial_crop_44">
+            <value>other</value>
+          </text>
+          <text id="q_commercial_crop_other">
+            <value>Other?</value>
+          </text>
+          <text id="q_staple_crop">
+            <value>Which is the main staple crop in the plot?</value>
+          </text>
+          <text id="c_staple_crop_1">
+            <value>pineapple</value>
+          </text>
+          <text id="c_staple_crop_2">
+            <value>arbricotier</value>
+          </text>
+          <text id="c_staple_crop_3">
+            <value>eggplant</value>
+          </text>
+          <text id="c_staple_crop_4">
+            <value>avocado</value>
+          </text>
+          <text id="c_staple_crop_5">
+            <value>bamboo</value>
+          </text>
+          <text id="c_staple_crop_6">
+            <value>plantain</value>
+          </text>
+          <text id="c_staple_crop_7">
+            <value>breadfruit</value>
+          </text>
+          <text id="c_staple_crop_8">
+            <value>cacao</value>
+          </text>
+          <text id="c_staple_crop_9">
+            <value>coffee</value>
+          </text>
+          <text id="c_staple_crop_10">
+            <value>cajou</value>
+          </text>
+          <text id="c_staple_crop_11">
+            <value>sugar cane</value>
+          </text>
+          <text id="c_staple_crop_12">
+            <value>carrot</value>
+          </text>
+          <text id="c_staple_crop_13">
+            <value>cauliflower</value>
+          </text>
+          <text id="c_staple_crop_14">
+            <value>lemon</value>
+          </text>
+          <text id="c_staple_crop_15">
+            <value>pumpkin</value>
+          </text>
+          <text id="c_staple_crop_16">
+            <value>string beans</value>
+          </text>
+          <text id="c_staple_crop_17">
+            <value>spinach</value>
+          </text>
+          <text id="c_staple_crop_18">
+            <value>fig</value>
+          </text>
+          <text id="c_staple_crop_19">
+            <value>foug&#232;re</value>
+          </text>
+          <text id="c_staple_crop_20">
+            <value>gommier</value>
+          </text>
+          <text id="c_staple_crop_21">
+            <value>guava</value>
+          </text>
+          <text id="c_staple_crop_22">
+            <value>yam</value>
+          </text>
+          <text id="c_staple_crop_23">
+            <value>karaibe</value>
+          </text>
+          <text id="c_staple_crop_24">
+            <value>kenep</value>
+          </text>
+          <text id="c_staple_crop_25">
+            <value>lettuce</value>
+          </text>
+          <text id="c_staple_crop_26">
+            <value>lavander</value>
+          </text>
+          <text id="c_staple_crop_27">
+            <value>maize</value>
+          </text>
+          <text id="c_staple_crop_28">
+            <value>mango</value>
+          </text>
+          <text id="c_staple_crop_29">
+            <value>manioc</value>
+          </text>
+          <text id="c_staple_crop_30">
+            <value>coconut</value>
+          </text>
+          <text id="c_staple_crop_31">
+            <value>onion</value>
+          </text>
+          <text id="c_staple_crop_32">
+            <value>orange</value>
+          </text>
+          <text id="c_staple_crop_33">
+            <value>papaye</value>
+          </text>
+          <text id="c_staple_crop_34">
+            <value>peanuts</value>
+          </text>
+          <text id="c_staple_crop_35">
+            <value>pois chus</value>
+          </text>
+          <text id="c_staple_crop_36">
+            <value>pois congo</value>
+          </text>
+          <text id="c_staple_crop_37">
+            <value>black bean</value>
+          </text>
+          <text id="c_staple_crop_38">
+            <value>potato</value>
+          </text>
+          <text id="c_staple_crop_39">
+            <value>sorghum</value>
+          </text>
+          <text id="c_staple_crop_40">
+            <value>courge</value>
+          </text>
+          <text id="c_staple_crop_41">
+            <value>thyme</value>
+          </text>
+          <text id="c_staple_crop_42">
+            <value>tomato</value>
+          </text>
+          <text id="c_staple_crop_43">
+            <value>vetiver</value>
+          </text>
+          <text id="c_staple_crop_44">
+            <value>other</value>
+          </text>
+          <text id="q_staple_crop_other">
+            <value>Other?</value>
+          </text>
+          <text id="q_trees_exist">
+            <value>Are there trees?</value>
+          </text>
+          <text id="c_trees_exist_yes">
+            <value>Yes</value>
+          </text>
+          <text id="c_trees_exist_no">
+            <value>No</value>
+          </text>
+          <text id="c_trees_exist_dont_know">
+            <value>Don't know</value>
+          </text>
+          <text id="q_trees_how_many">
+            <value>If there are trees, how many?</value>
+          </text>
+          <text id="q_trees_age">
+            <value>Age of tree</value>
+          </text>
+          <text id="q_animal_traction_exist">
+            <value>Is there any animal labor in the plot, like horses or donkeys?</value>
+          </text>
+          <text id="c_animal_traction_exist_yes">
+            <value>Yes</value>
+          </text>
+          <text id="c_animal_traction_exist_no">
+            <value>No</value>
+          </text>
+          <text id="c_animal_traction_exist_dont_know">
+            <value>Don't know</value>
+          </text>
+          <text id="q_organic_application_exist">
+            <value>Did you apply organic inputs to the plot?</value>
+          </text>
+          <text id="c_organic_application_exist_yes">
+            <value>Yes</value>
+          </text>
+          <text id="c_organic_application_exist_no">
+            <value>No</value>
+          </text>
+          <text id="c_organic_application_exist_dont_know">
+            <value>Don't know</value>
+          </text>
+          <text id="q_organic_application_type">
+            <value>Which organic inputs have you applied?</value>
+          </text>
+          <text id="q_organic_application_how_much">
+            <value>How much organic inputs have you applied?</value>
+          </text>
+          <text id="q_organic_application_unit">
+            <value>Measurement unit?</value>
+          </text>
+          <text id="c_organic_application_unit_1">
+            <value>marmite</value>
+          </text>
+          <text id="c_organic_application_unit_2">
+            <value>petite marmite</value>
+          </text>
+          <text id="c_organic_application_unit_3">
+            <value>sac du 20 kg</value>
+          </text>
+          <text id="c_organic_application_unit_4">
+            <value>sac du 50 kg</value>
+          </text>
+          <text id="c_organic_application_unit_5">
+            <value>r&#233;cipient du 20 litres</value>
+          </text>
+          <text id="c_organic_application_unit_6">
+            <value>kilogramme</value>
+          </text>
+          <text id="c_organic_application_unit_7">
+            <value>gramme</value>
+          </text>
+          <text id="c_organic_application_unit_8">
+            <value>gallon</value>
+          </text>
+          <text id="c_organic_application_unit_9">
+            <value>pound</value>
+          </text>
+          <text id="q_organic_application_practice">
+            <value>How has organic inputs being applied?</value>
+          </text>
+          <text id="c_organic_application_practice_surface_applied">
+            <value>surface applied</value>
+          </text>
+          <text id="c_organic_application_practice_incorporated">
+            <value>incorporated</value>
+          </text>
+          <text id="c_organic_application_practice_other">
+            <value>other</value>
+          </text>
+          <text id="q_organic_application_practice_other">
+            <value>Other?</value>
+          </text>
+          <text id="q_crop">
+            <value>What crop is planted in this plot?</value>
+          </text>
+          <text id="c_crop_1">
+            <value>pineapple</value>
+          </text>
+          <text id="c_crop_2">
+            <value>arbricotier</value>
+          </text>
+          <text id="c_crop_3">
+            <value>eggplant</value>
+          </text>
+          <text id="c_crop_4">
+            <value>avocado</value>
+          </text>
+          <text id="c_crop_5">
+            <value>bamboo</value>
+          </text>
+          <text id="c_crop_6">
+            <value>plantain</value>
+          </text>
+          <text id="c_crop_7">
+            <value>breadfruit</value>
+          </text>
+          <text id="c_crop_8">
+            <value>cacao</value>
+          </text>
+          <text id="c_crop_9">
+            <value>coffee</value>
+          </text>
+          <text id="c_crop_10">
+            <value>cajou</value>
+          </text>
+          <text id="c_crop_11">
+            <value>sugar cane</value>
+          </text>
+          <text id="c_crop_12">
+            <value>carrot</value>
+          </text>
+          <text id="c_crop_13">
+            <value>cauliflower</value>
+          </text>
+          <text id="c_crop_14">
+            <value>lemon</value>
+          </text>
+          <text id="c_crop_15">
+            <value>pumpkin</value>
+          </text>
+          <text id="c_crop_16">
+            <value>string beans</value>
+          </text>
+          <text id="c_crop_17">
+            <value>spinach</value>
+          </text>
+          <text id="c_crop_18">
+            <value>fig</value>
+          </text>
+          <text id="c_crop_19">
+            <value>foug&#232;re</value>
+          </text>
+          <text id="c_crop_20">
+            <value>gommier</value>
+          </text>
+          <text id="c_crop_21">
+            <value>guava</value>
+          </text>
+          <text id="c_crop_22">
+            <value>yam</value>
+          </text>
+          <text id="c_crop_23">
+            <value>karaibe</value>
+          </text>
+          <text id="c_crop_24">
+            <value>kenep</value>
+          </text>
+          <text id="c_crop_25">
+            <value>lettuce</value>
+          </text>
+          <text id="c_crop_26">
+            <value>lavander</value>
+          </text>
+          <text id="c_crop_27">
+            <value>maize</value>
+          </text>
+          <text id="c_crop_28">
+            <value>mango</value>
+          </text>
+          <text id="c_crop_29">
+            <value>manioc</value>
+          </text>
+          <text id="c_crop_30">
+            <value>coconut</value>
+          </text>
+          <text id="c_crop_31">
+            <value>onion</value>
+          </text>
+          <text id="c_crop_32">
+            <value>orange</value>
+          </text>
+          <text id="c_crop_33">
+            <value>papaye</value>
+          </text>
+          <text id="c_crop_34">
+            <value>peanuts</value>
+          </text>
+          <text id="c_crop_35">
+            <value>pois chus</value>
+          </text>
+          <text id="c_crop_36">
+            <value>pois congo</value>
+          </text>
+          <text id="c_crop_37">
+            <value>black bean</value>
+          </text>
+          <text id="c_crop_38">
+            <value>potato</value>
+          </text>
+          <text id="c_crop_39">
+            <value>sorghum</value>
+          </text>
+          <text id="c_crop_40">
+            <value>courge</value>
+          </text>
+          <text id="c_crop_41">
+            <value>thyme</value>
+          </text>
+          <text id="c_crop_42">
+            <value>tomato</value>
+          </text>
+          <text id="c_crop_43">
+            <value>vetiver</value>
+          </text>
+          <text id="c_crop_44">
+            <value>other</value>
+          </text>
+          <text id="q_crop_planting_date">
+            <value>When was the crop planted?</value>
+          </text>
+          <text id="q_seed_type">
+            <value>What type of seeds were used in the plot, for this crop?</value>
+          </text>
+          <text id="q_seed_source_org">
+            <value>Where did you obtain the seeds? Please give the name of the place or the organization's name</value>
+          </text>
+          <text id="q_seed_source_town">
+            <value>In which town is this place/ organization located?</value>
+          </text>
+          <text id="q_seed_cost">
+            <value>What is the price of the seeds for this crop?</value>
+          </text>
+          <text id="q_seed_cost_currency">
+            <value>Is it gourds or Haitian dollars?</value>
+          </text>
+          <text id="c_seed_cost_currency_gourdes">
+            <value>Gourdes</value>
+          </text>
+          <text id="c_seed_cost_currency_haitian_dollars">
+            <value>Haitian dollars</value>
+          </text>
+          <text id="q_seed_quantity">
+            <value>How many seeds were planted?</value>
+          </text>
+          <text id="q_seed_variety">
+            <value>What is this crop's variety?</value>
+          </text>
+          <text id="q_crop_density">
+            <value>How many plants from this crop can be found in 1 square meter?</value>
+          </text>
+          <text id="q_crop_harvest_date">
+            <value>When was the crop harvested?</value>
+          </text>
+          <text id="q_crop_harvest_quantity">
+            <value>How much of this crop did you harvest, in this plot?</value>
+          </text>
+          <text id="q_post_harvest_exist">
+            <value>After harvest, do you do any type of processing for its conservation or transformation?</value>
+          </text>
+          <text id="c_post_harvest_exist_yes">
+            <value>Yes</value>
+          </text>
+          <text id="c_post_harvest_exist_no">
+            <value>No</value>
+          </text>
+          <text id="c_post_harvest_exist_dont_know">
+            <value>Don't know</value>
+          </text>
+          <text id="q_post_harvest_type">
+            <value>What do you do for post-harvest processing?</value>
+          </text>
+          <text id="q_crop_market_price">
+            <value>If you sell one unit of this crop in the market, how much money do you get from it?</value>
+          </text>
+          <text id="q_crop_market_price_currency">
+            <value>Is it gourds or Haitian dollars?</value>
+          </text>
+          <text id="c_crop_market_price_currency_gourdes">
+            <value>Gourdes</value>
+          </text>
+          <text id="c_crop_market_price_currency_haitian_dollars">
+            <value>Haitian dollars</value>
+          </text>
+          <text id="q_crop_market_price_unit">
+            <value>What is one unit of this crop equal to?</value>
+          </text>
+          <text id="q_crop_market_location">
+            <value>In which markets do you sell this crop? Please specify</value>
+          </text>
+        </translation>
+      </itext>
+      <instance>
+        <Agriculture id="Agriculture_2011-01-30_03-16-18">
+          <enumerator_name/>
+          <enumerator_id/>
+          <enumerator_affiliation/>
+          <enumerator_affiliation_other/>
+          <enumerator_cell_phone/>
+          <enumerator_email/>
+          <exchange_haitian_to_gourdes/>
+          <exchange_gourde_to_us/>
+          <field_id/>
+          <field_perimeter/>
+          <plot_id/>
+          <plot_perimeter/>
+          <ville/>
+          <communal_section/>
+          <commune/>
+          <fertilizer_type/>
+          <fertilizer_how_much/>
+          <fertilizer_unit/>
+          <fertilizer_cost/>
+          <fertilizer_cost_currency/>
+          <irrigation/>
+          <irrigation_other/>
+          <soil_moisture/>
+          <soil_moisture_unit/>
+          <soil_texture/>
+          <soil_ribbon/>
+          <soil_ribbon_unit/>
+          <planting_method/>
+          <planting_method_other/>
+          <previous_crops/>
+          <previous_crops_other/>
+          <conservation_structures_exist/>
+          <conservation_structures_type/>
+          <commercial_crop/>
+          <commercial_crop_other/>
+          <staple_crop/>
+          <staple_crop_other/>
+          <trees_exist/>
+          <trees_how_many/>
+          <trees_age/>
+          <animal_traction_exist/>
+          <organic_application_exist/>
+          <organic_application_type/>
+          <organic_application_how_much/>
+          <organic_application_unit/>
+          <organic_application_practice/>
+          <organic_application_practice_other/>
+          <crop/>
+          <crop_planting_date/>
+          <seed_type/>
+          <seed_source_org/>
+          <seed_source_town/>
+          <seed_cost/>
+          <seed_cost_currency/>
+          <seed_quantity/>
+          <seed_variety/>
+          <crop_density/>
+          <crop_harvest_date/>
+          <crop_harvest_quantity/>
+          <post_harvest_exist/>
+          <post_harvest_type/>
+          <crop_market_price/>
+          <crop_market_price_currency/>
+          <crop_market_price_unit/>
+          <crop_market_location/>
+        </Agriculture>
+      </instance>
+      <bind nodeset="/Agriculture/enumerator_name" type="string"/>
+      <bind nodeset="/Agriculture/enumerator_id" type="string"/>
+      <bind nodeset="/Agriculture/enumerator_affiliation" type="select1"/>
+      <bind relevant="/Agriculture/enumerator_affiliation='other'" nodeset="/Agriculture/enumerator_affiliation_other" type="string"/>
+      <bind nodeset="/Agriculture/enumerator_cell_phone" type="int"/>
+      <bind nodeset="/Agriculture/enumerator_email" type="string"/>
+      <bind nodeset="/Agriculture/exchange_haitian_to_gourdes" type="decimal"/>
+      <bind nodeset="/Agriculture/exchange_gourde_to_us" type="decimal"/>
+      <bind nodeset="/Agriculture/field_id" type="string"/>
+      <bind nodeset="/Agriculture/field_perimeter" type="string"/>
+      <bind nodeset="/Agriculture/plot_id" type="string"/>
+      <bind nodeset="/Agriculture/plot_perimeter" type="string"/>
+      <bind nodeset="/Agriculture/ville" type="string"/>
+      <bind nodeset="/Agriculture/communal_section" type="select1"/>
+      <bind nodeset="/Agriculture/commune" type="select1"/>
+      <bind nodeset="/Agriculture/fertilizer_type" type="string"/>
+      <bind nodeset="/Agriculture/fertilizer_how_much" type="decimal"/>
+      <bind nodeset="/Agriculture/fertilizer_unit" type="select1"/>
+      <bind nodeset="/Agriculture/fertilizer_cost" type="decimal"/>
+      <bind nodeset="/Agriculture/fertilizer_cost_currency" type="select1"/>
+      <bind nodeset="/Agriculture/irrigation" type="select1"/>
+      <bind relevant="/Agriculture/irrigation='autre'" nodeset="/Agriculture/irrigation_other" type="string"/>
+      <bind nodeset="/Agriculture/soil_moisture" type="decimal"/>
+      <bind nodeset="/Agriculture/soil_moisture_unit" type="select1"/>
+      <bind nodeset="/Agriculture/soil_texture" type="select1"/>
+      <bind nodeset="/Agriculture/soil_ribbon" type="decimal"/>
+      <bind nodeset="/Agriculture/soil_ribbon_unit" type="select1"/>
+      <bind nodeset="/Agriculture/planting_method" type="select1"/>
+      <bind relevant="/Agriculture/planting_method='autre'" nodeset="/Agriculture/planting_method_other" type="string"/>
+      <bind nodeset="/Agriculture/previous_crops" type="select" required="false()"/>
+      <bind relevant="/Agriculture/crop='autre'" nodeset="/Agriculture/previous_crops_other" type="string"/>
+      <bind nodeset="/Agriculture/conservation_structures_exist" type="select1"/>
+      <bind relevant="/Agriculture/conservation_structures_exist='oui'" nodeset="/Agriculture/conservation_structures_type" type="string"/>
+      <bind nodeset="/Agriculture/commercial_crop" type="select1"/>
+      <bind relevant="/Agriculture/crop='autre'" nodeset="/Agriculture/commercial_crop_other" type="string"/>
+      <bind nodeset="/Agriculture/staple_crop" type="select1"/>
+      <bind relevant="/Agriculture/crop='autre'" nodeset="/Agriculture/staple_crop_other" type="string"/>
+      <bind nodeset="/Agriculture/trees_exist" type="select1"/>
+      <bind relevant="/Agriculture/trees_exist='oui'" nodeset="/Agriculture/trees_how_many" type="int"/>
+      <bind relevant="/Agriculture/trees_exist='oui'" nodeset="/Agriculture/trees_age" type="int"/>
+      <bind nodeset="/Agriculture/animal_traction_exist" type="select1"/>
+      <bind nodeset="/Agriculture/organic_application_exist" type="select1"/>
+      <bind relevant="/Agriculture/organic_application_exist='oui'" nodeset="/Agriculture/organic_application_type" type="string"/>
+      <bind relevant="/Agriculture/organic_application_exist='oui'" nodeset="/Agriculture/organic_application_how_much" type="int"/>
+      <bind relevant="/Agriculture/organic_application_exist='oui'" nodeset="/Agriculture/organic_application_unit" type="select1"/>
+      <bind relevant="/Agriculture/organic_application_exist='oui'" nodeset="/Agriculture/organic_application_practice" type="select1"/>
+      <bind relevant="/Agriculture/organic_application_practice='autre'" nodeset="/Agriculture/organic_application_practice_other" type="string"/>
+      <bind nodeset="/Agriculture/crop" type="select" required="false()"/>
+      <bind nodeset="/Agriculture/crop_planting_date" type="date"/>
+      <bind nodeset="/Agriculture/seed_type" type="string"/>
+      <bind nodeset="/Agriculture/seed_source_org" type="string"/>
+      <bind nodeset="/Agriculture/seed_source_town" type="string"/>
+      <bind nodeset="/Agriculture/seed_cost" type="int"/>
+      <bind nodeset="/Agriculture/seed_cost_currency" type="select1"/>
+      <bind nodeset="/Agriculture/seed_quantity" type="int"/>
+      <bind nodeset="/Agriculture/seed_variety" type="string"/>
+      <bind nodeset="/Agriculture/crop_density" type="decimal"/>
+      <bind nodeset="/Agriculture/crop_harvest_date" type="date"/>
+      <bind nodeset="/Agriculture/crop_harvest_quantity" type="int"/>
+      <bind nodeset="/Agriculture/post_harvest_exist" type="select1"/>
+      <bind relevant="/Agriculture/post_harvest_exist='oui'" nodeset="/Agriculture/post_harvest_type" type="string"/>
+      <bind nodeset="/Agriculture/crop_market_price" type="int"/>
+      <bind nodeset="/Agriculture/crop_market_price_currency" type="select1"/>
+      <bind nodeset="/Agriculture/crop_market_price_unit" type="string"/>
+      <bind nodeset="/Agriculture/crop_market_location" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/Agriculture/enumerator_name">
+      <label ref="jr:itext('q_enumerator_name')"/>
+    </input>
+    <input ref="/Agriculture/enumerator_id">
+      <label ref="jr:itext('q_enumerator_id')"/>
+    </input>
+    <select1 ref="/Agriculture/enumerator_affiliation">
+      <label ref="jr:itext('q_enumerator_affiliation')"/>
+      <item>
+        <label ref="jr:itext('c_enumerator_affiliation_catholic_relief')"/>
+        <value>catholic_relief</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_enumerator_affiliation_envi_rehab')"/>
+        <value>envi_rehab</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_enumerator_affiliation_earth_spark')"/>
+        <value>earth_spark</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_enumerator_affiliation_earth_institute')"/>
+        <value>earth_institute</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_enumerator_affiliation_united_nations')"/>
+        <value>united_nations</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_enumerator_affiliation_other')"/>
+        <value>other</value>
+      </item>
+    </select1>
+    <input ref="/Agriculture/enumerator_affiliation_other">
+      <label ref="jr:itext('q_enumerator_affiliation_other')"/>
+    </input>
+    <input ref="/Agriculture/enumerator_cell_phone">
+      <label ref="jr:itext('q_enumerator_cell_phone')"/>
+    </input>
+    <input ref="/Agriculture/enumerator_email">
+      <label ref="jr:itext('q_enumerator_email')"/>
+    </input>
+    <input ref="/Agriculture/exchange_haitian_to_gourdes">
+      <label ref="jr:itext('q_exchange_haitian_to_gourdes')"/>
+    </input>
+    <input ref="/Agriculture/exchange_gourde_to_us">
+      <label ref="jr:itext('q_exchange_gourde_to_us')"/>
+    </input>
+    <input ref="/Agriculture/field_id">
+      <label ref="jr:itext('q_field_id')"/>
+    </input>
+    <input ref="/Agriculture/field_perimeter">
+      <label ref="jr:itext('q_field_perimeter')"/>
+    </input>
+    <input ref="/Agriculture/plot_id">
+      <label ref="jr:itext('q_plot_id')"/>
+    </input>
+    <input ref="/Agriculture/plot_perimeter">
+      <label ref="jr:itext('q_plot_perimeter')"/>
+    </input>
+    <input ref="/Agriculture/ville">
+      <label ref="jr:itext('q_ville')"/>
+    </input>
+    <select1 ref="/Agriculture/communal_section">
+      <label ref="jr:itext('q_communal_section')"/>
+      <item>
+        <label ref="jr:itext('c_communal_section_1')"/>
+        <value>1</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_2')"/>
+        <value>2</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_3')"/>
+        <value>3</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_4')"/>
+        <value>4</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_5')"/>
+        <value>5</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_6')"/>
+        <value>6</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_7')"/>
+        <value>7</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_8')"/>
+        <value>8</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_9')"/>
+        <value>9</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_10')"/>
+        <value>10</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_11')"/>
+        <value>11</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_12')"/>
+        <value>12</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_13')"/>
+        <value>13</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_14')"/>
+        <value>14</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_15')"/>
+        <value>15</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_16')"/>
+        <value>16</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_17')"/>
+        <value>17</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_18')"/>
+        <value>18</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_19')"/>
+        <value>19</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_20')"/>
+        <value>20</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_21')"/>
+        <value>21</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_22')"/>
+        <value>22</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_23')"/>
+        <value>23</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_24')"/>
+        <value>24</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_25')"/>
+        <value>25</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_26')"/>
+        <value>26</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_communal_section_27')"/>
+        <value>27</value>
+      </item>
+    </select1>
+    <select1 ref="/Agriculture/commune">
+      <label ref="jr:itext('q_commune')"/>
+      <item>
+        <label ref="jr:itext('c_commune_1')"/>
+        <value>1</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commune_2')"/>
+        <value>2</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commune_3')"/>
+        <value>3</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commune_4')"/>
+        <value>4</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commune_5')"/>
+        <value>5</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commune_6')"/>
+        <value>6</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commune_7')"/>
+        <value>7</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commune_8')"/>
+        <value>8</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commune_9')"/>
+        <value>9</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commune_10')"/>
+        <value>10</value>
+      </item>
+    </select1>
+    <input ref="/Agriculture/fertilizer_type">
+      <label ref="jr:itext('q_fertilizer_type')"/>
+    </input>
+    <input ref="/Agriculture/fertilizer_how_much">
+      <label ref="jr:itext('q_fertilizer_how_much')"/>
+    </input>
+    <select1 ref="/Agriculture/fertilizer_unit">
+      <label ref="jr:itext('q_fertilizer_unit')"/>
+      <item>
+        <label ref="jr:itext('c_fertilizer_unit_1')"/>
+        <value>1</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_fertilizer_unit_2')"/>
+        <value>2</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_fertilizer_unit_3')"/>
+        <value>3</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_fertilizer_unit_4')"/>
+        <value>4</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_fertilizer_unit_5')"/>
+        <value>5</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_fertilizer_unit_6')"/>
+        <value>6</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_fertilizer_unit_7')"/>
+        <value>7</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_fertilizer_unit_8')"/>
+        <value>8</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_fertilizer_unit_9')"/>
+        <value>9</value>
+      </item>
+    </select1>
+    <input ref="/Agriculture/fertilizer_cost">
+      <label ref="jr:itext('q_fertilizer_cost')"/>
+    </input>
+    <select1 ref="/Agriculture/fertilizer_cost_currency">
+      <label ref="jr:itext('q_fertilizer_cost_currency')"/>
+      <item>
+        <label ref="jr:itext('c_fertilizer_cost_currency_gourdes')"/>
+        <value>gourdes</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_fertilizer_cost_currency_haitian_dollars')"/>
+        <value>haitian_dollars</value>
+      </item>
+    </select1>
+    <select1 ref="/Agriculture/irrigation">
+      <label ref="jr:itext('q_irrigation')"/>
+      <item>
+        <label ref="jr:itext('c_irrigation_1')"/>
+        <value>1</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_irrigation_2')"/>
+        <value>2</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_irrigation_3')"/>
+        <value>3</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_irrigation_4')"/>
+        <value>4</value>
+      </item>
+    </select1>
+    <input ref="/Agriculture/irrigation_other">
+      <label ref="jr:itext('q_irrigation_other')"/>
+    </input>
+    <input ref="/Agriculture/soil_moisture">
+      <label ref="jr:itext('q_soil_moisture')"/>
+    </input>
+    <select1 ref="/Agriculture/soil_moisture_unit">
+      <label ref="jr:itext('q_soil_moisture_unit')"/>
+      <item>
+        <label ref="jr:itext('c_soil_moisture_unit_1')"/>
+        <value>1</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_soil_moisture_unit_2')"/>
+        <value>2</value>
+      </item>
+    </select1>
+    <select1 ref="/Agriculture/soil_texture">
+      <label ref="jr:itext('q_soil_texture')"/>
+      <item>
+        <label ref="jr:itext('c_soil_texture_sand')"/>
+        <value>sand</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_soil_texture_loamy_sand')"/>
+        <value>loamy_sand</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_soil_texture_sandy_loam')"/>
+        <value>sandy_loam</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_soil_texture_sandy_clay_loam')"/>
+        <value>sandy_clay_loam</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_soil_texture_sandy_clay')"/>
+        <value>sandy_clay</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_soil_texture_loam')"/>
+        <value>loam</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_soil_texture_clay_loam')"/>
+        <value>clay_loam</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_soil_texture_clay')"/>
+        <value>clay</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_soil_texture_silt_loam')"/>
+        <value>silt_loam</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_soil_texture_silty_clay_loam')"/>
+        <value>silty_clay_loam</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_soil_texture_silty_clay')"/>
+        <value>silty_clay</value>
+      </item>
+    </select1>
+    <input ref="/Agriculture/soil_ribbon">
+      <label ref="jr:itext('q_soil_ribbon')"/>
+    </input>
+    <select1 ref="/Agriculture/soil_ribbon_unit">
+      <label ref="jr:itext('q_soil_ribbon_unit')"/>
+      <item>
+        <label ref="jr:itext('c_soil_ribbon_unit_1')"/>
+        <value>1</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_soil_ribbon_unit_2')"/>
+        <value>2</value>
+      </item>
+    </select1>
+    <select1 ref="/Agriculture/planting_method">
+      <label ref="jr:itext('q_planting_method')"/>
+      <item>
+        <label ref="jr:itext('c_planting_method_ridges')"/>
+        <value>ridges</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_planting_method_flat')"/>
+        <value>flat</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_planting_method_row')"/>
+        <value>row</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_planting_method_broadcast')"/>
+        <value>broadcast</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_planting_method_other')"/>
+        <value>other</value>
+      </item>
+    </select1>
+    <input ref="/Agriculture/planting_method_other">
+      <label ref="jr:itext('q_planting_method_other')"/>
+    </input>
+    <select ref="/Agriculture/previous_crops">
+      <label ref="jr:itext('q_previous_crops')"/>
+      <item>
+        <label ref="jr:itext('c_previous_crops_1')"/>
+        <value>1</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_2')"/>
+        <value>2</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_3')"/>
+        <value>3</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_4')"/>
+        <value>4</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_5')"/>
+        <value>5</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_6')"/>
+        <value>6</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_7')"/>
+        <value>7</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_8')"/>
+        <value>8</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_9')"/>
+        <value>9</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_10')"/>
+        <value>10</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_11')"/>
+        <value>11</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_12')"/>
+        <value>12</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_13')"/>
+        <value>13</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_14')"/>
+        <value>14</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_15')"/>
+        <value>15</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_16')"/>
+        <value>16</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_17')"/>
+        <value>17</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_18')"/>
+        <value>18</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_19')"/>
+        <value>19</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_20')"/>
+        <value>20</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_21')"/>
+        <value>21</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_22')"/>
+        <value>22</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_23')"/>
+        <value>23</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_24')"/>
+        <value>24</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_25')"/>
+        <value>25</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_26')"/>
+        <value>26</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_27')"/>
+        <value>27</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_28')"/>
+        <value>28</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_29')"/>
+        <value>29</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_30')"/>
+        <value>30</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_31')"/>
+        <value>31</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_32')"/>
+        <value>32</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_33')"/>
+        <value>33</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_34')"/>
+        <value>34</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_35')"/>
+        <value>35</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_36')"/>
+        <value>36</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_37')"/>
+        <value>37</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_38')"/>
+        <value>38</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_39')"/>
+        <value>39</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_40')"/>
+        <value>40</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_41')"/>
+        <value>41</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_42')"/>
+        <value>42</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_43')"/>
+        <value>43</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_previous_crops_44')"/>
+        <value>44</value>
+      </item>
+    </select>
+    <input ref="/Agriculture/previous_crops_other">
+      <label ref="jr:itext('q_previous_crops_other')"/>
+    </input>
+    <select1 ref="/Agriculture/conservation_structures_exist">
+      <label ref="jr:itext('q_conservation_structures_exist')"/>
+      <item>
+        <label ref="jr:itext('c_conservation_structures_exist_yes')"/>
+        <value>yes</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_conservation_structures_exist_no')"/>
+        <value>no</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_conservation_structures_exist_dont_know')"/>
+        <value>dont_know</value>
+      </item>
+    </select1>
+    <input ref="/Agriculture/conservation_structures_type">
+      <label ref="jr:itext('q_conservation_structures_type')"/>
+    </input>
+    <select1 ref="/Agriculture/commercial_crop">
+      <label ref="jr:itext('q_commercial_crop')"/>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_1')"/>
+        <value>1</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_2')"/>
+        <value>2</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_3')"/>
+        <value>3</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_4')"/>
+        <value>4</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_5')"/>
+        <value>5</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_6')"/>
+        <value>6</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_7')"/>
+        <value>7</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_8')"/>
+        <value>8</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_9')"/>
+        <value>9</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_10')"/>
+        <value>10</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_11')"/>
+        <value>11</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_12')"/>
+        <value>12</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_13')"/>
+        <value>13</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_14')"/>
+        <value>14</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_15')"/>
+        <value>15</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_16')"/>
+        <value>16</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_17')"/>
+        <value>17</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_18')"/>
+        <value>18</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_19')"/>
+        <value>19</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_20')"/>
+        <value>20</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_21')"/>
+        <value>21</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_22')"/>
+        <value>22</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_23')"/>
+        <value>23</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_24')"/>
+        <value>24</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_25')"/>
+        <value>25</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_26')"/>
+        <value>26</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_27')"/>
+        <value>27</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_28')"/>
+        <value>28</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_29')"/>
+        <value>29</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_30')"/>
+        <value>30</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_31')"/>
+        <value>31</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_32')"/>
+        <value>32</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_33')"/>
+        <value>33</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_34')"/>
+        <value>34</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_35')"/>
+        <value>35</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_36')"/>
+        <value>36</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_37')"/>
+        <value>37</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_38')"/>
+        <value>38</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_39')"/>
+        <value>39</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_40')"/>
+        <value>40</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_41')"/>
+        <value>41</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_42')"/>
+        <value>42</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_43')"/>
+        <value>43</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_commercial_crop_44')"/>
+        <value>44</value>
+      </item>
+    </select1>
+    <input ref="/Agriculture/commercial_crop_other">
+      <label ref="jr:itext('q_commercial_crop_other')"/>
+    </input>
+    <select1 ref="/Agriculture/staple_crop">
+      <label ref="jr:itext('q_staple_crop')"/>
+      <item>
+        <label ref="jr:itext('c_staple_crop_1')"/>
+        <value>1</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_2')"/>
+        <value>2</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_3')"/>
+        <value>3</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_4')"/>
+        <value>4</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_5')"/>
+        <value>5</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_6')"/>
+        <value>6</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_7')"/>
+        <value>7</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_8')"/>
+        <value>8</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_9')"/>
+        <value>9</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_10')"/>
+        <value>10</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_11')"/>
+        <value>11</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_12')"/>
+        <value>12</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_13')"/>
+        <value>13</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_14')"/>
+        <value>14</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_15')"/>
+        <value>15</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_16')"/>
+        <value>16</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_17')"/>
+        <value>17</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_18')"/>
+        <value>18</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_19')"/>
+        <value>19</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_20')"/>
+        <value>20</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_21')"/>
+        <value>21</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_22')"/>
+        <value>22</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_23')"/>
+        <value>23</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_24')"/>
+        <value>24</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_25')"/>
+        <value>25</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_26')"/>
+        <value>26</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_27')"/>
+        <value>27</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_28')"/>
+        <value>28</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_29')"/>
+        <value>29</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_30')"/>
+        <value>30</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_31')"/>
+        <value>31</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_32')"/>
+        <value>32</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_33')"/>
+        <value>33</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_34')"/>
+        <value>34</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_35')"/>
+        <value>35</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_36')"/>
+        <value>36</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_37')"/>
+        <value>37</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_38')"/>
+        <value>38</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_39')"/>
+        <value>39</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_40')"/>
+        <value>40</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_41')"/>
+        <value>41</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_42')"/>
+        <value>42</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_43')"/>
+        <value>43</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_staple_crop_44')"/>
+        <value>44</value>
+      </item>
+    </select1>
+    <input ref="/Agriculture/staple_crop_other">
+      <label ref="jr:itext('q_staple_crop_other')"/>
+    </input>
+    <select1 ref="/Agriculture/trees_exist">
+      <label ref="jr:itext('q_trees_exist')"/>
+      <item>
+        <label ref="jr:itext('c_trees_exist_yes')"/>
+        <value>yes</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_trees_exist_no')"/>
+        <value>no</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_trees_exist_dont_know')"/>
+        <value>dont_know</value>
+      </item>
+    </select1>
+    <input ref="/Agriculture/trees_how_many">
+      <label ref="jr:itext('q_trees_how_many')"/>
+    </input>
+    <input ref="/Agriculture/trees_age">
+      <label ref="jr:itext('q_trees_age')"/>
+    </input>
+    <select1 ref="/Agriculture/animal_traction_exist">
+      <label ref="jr:itext('q_animal_traction_exist')"/>
+      <item>
+        <label ref="jr:itext('c_animal_traction_exist_yes')"/>
+        <value>yes</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_animal_traction_exist_no')"/>
+        <value>no</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_animal_traction_exist_dont_know')"/>
+        <value>dont_know</value>
+      </item>
+    </select1>
+    <select1 ref="/Agriculture/organic_application_exist">
+      <label ref="jr:itext('q_organic_application_exist')"/>
+      <item>
+        <label ref="jr:itext('c_organic_application_exist_yes')"/>
+        <value>yes</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_organic_application_exist_no')"/>
+        <value>no</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_organic_application_exist_dont_know')"/>
+        <value>dont_know</value>
+      </item>
+    </select1>
+    <input ref="/Agriculture/organic_application_type">
+      <label ref="jr:itext('q_organic_application_type')"/>
+    </input>
+    <input ref="/Agriculture/organic_application_how_much">
+      <label ref="jr:itext('q_organic_application_how_much')"/>
+    </input>
+    <select1 ref="/Agriculture/organic_application_unit">
+      <label ref="jr:itext('q_organic_application_unit')"/>
+      <item>
+        <label ref="jr:itext('c_organic_application_unit_1')"/>
+        <value>1</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_organic_application_unit_2')"/>
+        <value>2</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_organic_application_unit_3')"/>
+        <value>3</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_organic_application_unit_4')"/>
+        <value>4</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_organic_application_unit_5')"/>
+        <value>5</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_organic_application_unit_6')"/>
+        <value>6</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_organic_application_unit_7')"/>
+        <value>7</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_organic_application_unit_8')"/>
+        <value>8</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_organic_application_unit_9')"/>
+        <value>9</value>
+      </item>
+    </select1>
+    <select1 ref="/Agriculture/organic_application_practice">
+      <label ref="jr:itext('q_organic_application_practice')"/>
+      <item>
+        <label ref="jr:itext('c_organic_application_practice_surface_applied')"/>
+        <value>surface_applied</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_organic_application_practice_incorporated')"/>
+        <value>incorporated</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_organic_application_practice_other')"/>
+        <value>other</value>
+      </item>
+    </select1>
+    <input ref="/Agriculture/organic_application_practice_other">
+      <label ref="jr:itext('q_organic_application_practice_other')"/>
+    </input>
+    <select ref="/Agriculture/crop">
+      <label ref="jr:itext('q_crop')"/>
+      <item>
+        <label ref="jr:itext('c_crop_1')"/>
+        <value>1</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_2')"/>
+        <value>2</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_3')"/>
+        <value>3</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_4')"/>
+        <value>4</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_5')"/>
+        <value>5</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_6')"/>
+        <value>6</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_7')"/>
+        <value>7</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_8')"/>
+        <value>8</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_9')"/>
+        <value>9</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_10')"/>
+        <value>10</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_11')"/>
+        <value>11</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_12')"/>
+        <value>12</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_13')"/>
+        <value>13</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_14')"/>
+        <value>14</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_15')"/>
+        <value>15</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_16')"/>
+        <value>16</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_17')"/>
+        <value>17</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_18')"/>
+        <value>18</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_19')"/>
+        <value>19</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_20')"/>
+        <value>20</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_21')"/>
+        <value>21</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_22')"/>
+        <value>22</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_23')"/>
+        <value>23</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_24')"/>
+        <value>24</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_25')"/>
+        <value>25</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_26')"/>
+        <value>26</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_27')"/>
+        <value>27</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_28')"/>
+        <value>28</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_29')"/>
+        <value>29</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_30')"/>
+        <value>30</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_31')"/>
+        <value>31</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_32')"/>
+        <value>32</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_33')"/>
+        <value>33</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_34')"/>
+        <value>34</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_35')"/>
+        <value>35</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_36')"/>
+        <value>36</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_37')"/>
+        <value>37</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_38')"/>
+        <value>38</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_39')"/>
+        <value>39</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_40')"/>
+        <value>40</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_41')"/>
+        <value>41</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_42')"/>
+        <value>42</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_43')"/>
+        <value>43</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_44')"/>
+        <value>44</value>
+      </item>
+    </select>
+    <input ref="/Agriculture/crop_planting_date">
+      <label ref="jr:itext('q_crop_planting_date')"/>
+    </input>
+    <input ref="/Agriculture/seed_type">
+      <label ref="jr:itext('q_seed_type')"/>
+    </input>
+    <input ref="/Agriculture/seed_source_org">
+      <label ref="jr:itext('q_seed_source_org')"/>
+    </input>
+    <input ref="/Agriculture/seed_source_town">
+      <label ref="jr:itext('q_seed_source_town')"/>
+    </input>
+    <input ref="/Agriculture/seed_cost">
+      <label ref="jr:itext('q_seed_cost')"/>
+    </input>
+    <select1 ref="/Agriculture/seed_cost_currency">
+      <label ref="jr:itext('q_seed_cost_currency')"/>
+      <item>
+        <label ref="jr:itext('c_seed_cost_currency_gourdes')"/>
+        <value>gourdes</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_seed_cost_currency_haitian_dollars')"/>
+        <value>haitian_dollars</value>
+      </item>
+    </select1>
+    <input ref="/Agriculture/seed_quantity">
+      <label ref="jr:itext('q_seed_quantity')"/>
+    </input>
+    <input ref="/Agriculture/seed_variety">
+      <label ref="jr:itext('q_seed_variety')"/>
+    </input>
+    <input ref="/Agriculture/crop_density">
+      <label ref="jr:itext('q_crop_density')"/>
+    </input>
+    <input ref="/Agriculture/crop_harvest_date">
+      <label ref="jr:itext('q_crop_harvest_date')"/>
+    </input>
+    <input ref="/Agriculture/crop_harvest_quantity">
+      <label ref="jr:itext('q_crop_harvest_quantity')"/>
+    </input>
+    <select1 ref="/Agriculture/post_harvest_exist">
+      <label ref="jr:itext('q_post_harvest_exist')"/>
+      <item>
+        <label ref="jr:itext('c_post_harvest_exist_yes')"/>
+        <value>yes</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_post_harvest_exist_no')"/>
+        <value>no</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_post_harvest_exist_dont_know')"/>
+        <value>dont_know</value>
+      </item>
+    </select1>
+    <input ref="/Agriculture/post_harvest_type">
+      <label ref="jr:itext('q_post_harvest_type')"/>
+    </input>
+    <input ref="/Agriculture/crop_market_price">
+      <label ref="jr:itext('q_crop_market_price')"/>
+    </input>
+    <select1 ref="/Agriculture/crop_market_price_currency">
+      <label ref="jr:itext('q_crop_market_price_currency')"/>
+      <item>
+        <label ref="jr:itext('c_crop_market_price_currency_gourdes')"/>
+        <value>gourdes</value>
+      </item>
+      <item>
+        <label ref="jr:itext('c_crop_market_price_currency_haitian_dollars')"/>
+        <value>haitian_dollars</value>
+      </item>
+    </select1>
+    <input ref="/Agriculture/crop_market_price_unit">
+      <label ref="jr:itext('q_crop_market_price_unit')"/>
+    </input>
+    <input ref="/Agriculture/crop_market_location">
+      <label ref="jr:itext('q_crop_market_location')"/>
+    </input>
+  </h:body>
+</h:html>
+

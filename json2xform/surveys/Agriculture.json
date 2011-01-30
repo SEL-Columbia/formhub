@@ -1,0 +1,2658 @@
+[
+    {
+        "text": {
+            "Fran\u00e7ais": "Nom du travailleur agricole:", 
+            "English": "Name of Community Agricultural Worker"
+        }, 
+        "type": "string", 
+        "name": "enumerator_name", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "ID du travailleur agricole:", 
+            "English": "Unique Community Agricultural Worker ID"
+        }, 
+        "type": "string", 
+        "name": "enumerator_id", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Affiliation du travailleur agricole:", 
+            "English": "Affiliation of Community Agricultural Worker"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "enumerator_affiliation", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "Catholic Relief Services", 
+                    "English": "Catholic Relief Services"
+                }, 
+                "value": "catholic_relief"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "Organisation pout la R\u00e9habilitation de l'Environnement", 
+                    "English": "Organization for the Rehabilitation of the Environment"
+                }, 
+                "value": "envi_rehab"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "EarthSpark", 
+                    "English": "EarthSpark"
+                }, 
+                "value": "earth_spark"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "Earth Institute", 
+                    "English": "Earth Institute"
+                }, 
+                "value": "earth_institute"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "Programme des Nations Unies pour l'Environnement", 
+                    "English": "United Nations Program for the Environment"
+                }, 
+                "value": "united_nations"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "autre", 
+                    "English": "Other"
+                }, 
+                "value": "other"
+            }
+        ]
+    }, 
+    {
+        "name": "enumerator_affiliation_other", 
+        "text": {
+            "Fran\u00e7ais": "Quel est votre affiliation?", 
+            "English": "What is your affiliation?"
+        }, 
+        "attributes": {
+            "relevant": "${enumerator_affiliation}='other'"
+        }, 
+        "type": "string"
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quel est votre n\u00famero de t\u00e9l\u00e9phone mobile?", 
+            "English": "CAW cell phone no"
+        }, 
+        "type": "integer", 
+        "name": "enumerator_cell_phone", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quel est votre adresse \u00e9lectronique?", 
+            "English": "CAW email addresss"
+        }, 
+        "type": "string", 
+        "name": "enumerator_email", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Combien de dollars ha\u00eftiens font une gourde aujourd'hui?", 
+            "English": "Today's exchange rate of Haitian Dollar to Gourdes"
+        }, 
+        "type": "decimal", 
+        "name": "exchange_haitian_to_gourdes", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Combien de gourdes font une dollar americaine aujourd'hui?", 
+            "English": "Today's exchange rate of gourdes to US"
+        }, 
+        "type": "decimal", 
+        "name": "exchange_gourde_to_us", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "ID de la parcelle:", 
+            "English": "Unique Farm ID"
+        }, 
+        "type": "string", 
+        "name": "field_id", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "S'il vous plait, suivez le p\u00e9rim\u00e8tre de la parcelle avec le GPS. Quelle trace ID a-il? ", 
+            "English": "Field Permieter"
+        }, 
+        "type": "string", 
+        "name": "field_perimeter", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "ID de la sous-parcelle:", 
+            "English": "Unique Plot ID"
+        }, 
+        "type": "string", 
+        "name": "plot_id", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "S'il vous plait, suivez le p\u00e9rim\u00e8tre de la sous-parcelle avec le GPS. Quelle trace ID a-il? ", 
+            "English": "Plot Perimeter"
+        }, 
+        "type": "string", 
+        "name": "plot_perimeter", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Nom de la ville:", 
+            "English": "Name of the Village"
+        }, 
+        "type": "string", 
+        "name": "ville", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quelle section communale est-il?", 
+            "English": "Communal Section"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "communal_section", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "1re Section Isle \u00e0 Vache", 
+                    "English": "1re Section Isle \u00e0 Vache"
+                }, 
+                "value": 1
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "1re Section Barbois", 
+                    "English": "1re Section Barbois"
+                }, 
+                "value": 2
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "2e Section Dumont", 
+                    "English": "2e Section Dumont"
+                }, 
+                "value": 3
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "1re Section Tapion", 
+                    "English": "1re Section Tapion"
+                }, 
+                "value": 4
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "2e Section D\u00e9bouchette", 
+                    "English": "2e Section D\u00e9bouchette"
+                }, 
+                "value": 5
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "3e Section Trichet", 
+                    "English": "3e Section Trichet"
+                }, 
+                "value": 6
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "1re Section Lazarre", 
+                    "English": "1re Section Lazarre"
+                }, 
+                "value": 7
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "2e Section Anse \u00e0 Drick", 
+                    "English": "2e Section Anse \u00e0 Drick"
+                }, 
+                "value": 8
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "3e Section d'Arniquet", 
+                    "English": "3e Section d'Arniquet"
+                }, 
+                "value": 9
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "1re Section Cond\u00e9", 
+                    "English": "1re Section Cond\u00e9"
+                }, 
+                "value": 10
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "2e Section Despas", 
+                    "English": "2e Section Despas"
+                }, 
+                "value": 11
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "3e Section Quentin", 
+                    "English": "3e Section Quentin"
+                }, 
+                "value": 12
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "1re Section Paricot", 
+                    "English": "1re Section Paricot"
+                }, 
+                "value": 13
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "2e Section Balais", 
+                    "English": "2e Section Balais"
+                }, 
+                "value": 14
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "1re Section Beaulieu", 
+                    "English": "1re Section Beaulieu"
+                }, 
+                "value": 15
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "2e Section Renaudin", 
+                    "English": "2e Section Renaudin"
+                }, 
+                "value": 16
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "3e Section Beauclos", 
+                    "English": "3e Section Beauclos"
+                }, 
+                "value": 17
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "1re Section Randel", 
+                    "English": "1re Section Randel"
+                }, 
+                "value": 18
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "2e Section Dejoie", 
+                    "English": "2e Section Dejoie"
+                }, 
+                "value": 19
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "3e Section Bony", 
+                    "English": "3e Section Bony"
+                }, 
+                "value": 20
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "1re Section Verone", 
+                    "English": "1re Section Verone"
+                }, 
+                "value": 21
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "2e Section Edelin", 
+                    "English": "2e Section Edelin"
+                }, 
+                "value": 22
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "3e Section Cosse", 
+                    "English": "3e Section Cosse"
+                }, 
+                "value": 23
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "1re Section Blactote", 
+                    "English": "1re Section Blactote"
+                }, 
+                "value": 24
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "2e Section Nan Sevre", 
+                    "English": "2e Section Nan Sevre"
+                }, 
+                "value": 25
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "3e Section Loby", 
+                    "English": "3e Section Loby"
+                }, 
+                "value": 26
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "4e Section Dalmette", 
+                    "English": "4e Section Dalmette"
+                }, 
+                "value": 27
+            }
+        ]
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quelle commune est-il?", 
+            "English": "Commune"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "commune", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "Isle \u00e0 Vache", 
+                    "English": "Isle \u00e0 Vache"
+                }, 
+                "value": 1
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "Port Salut", 
+                    "English": "Port Salut"
+                }, 
+                "value": 2
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "Saint Jean du Sud", 
+                    "English": "Saint Jean du Sud"
+                }, 
+                "value": 3
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "Arniquet", 
+                    "English": "Arniquet"
+                }, 
+                "value": 4
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "Coteaux", 
+                    "English": "Coteaux"
+                }, 
+                "value": 5
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "Port-\u00e0-Piment", 
+                    "English": "Port-\u00e0-Piment"
+                }, 
+                "value": 6
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "Roche \u00e0 Bateau", 
+                    "English": "Roche \u00e0 Bateau"
+                }, 
+                "value": 7
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "Chardonni\u00e8res", 
+                    "English": "Chardonni\u00e8res"
+                }, 
+                "value": 8
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "Les Anglais", 
+                    "English": "Les Anglais"
+                }, 
+                "value": 9
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "Tiburon ", 
+                    "English": "Tiburon "
+                }, 
+                "value": 10
+            }
+        ]
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quel type des engrais ont \u00e9t\u00e9 utilis\u00e9s pour planter la sous-parcelle?", 
+            "English": "Type of fertilizer used in plot?"
+        }, 
+        "type": "string", 
+        "name": "fertilizer_type", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Combien du engrais a \u00e9t\u00e9 utilis\u00e9 dans la sous-parcelle?", 
+            "English": "How much fertilizer was it used in the plot?"
+        }, 
+        "type": "decimal", 
+        "name": "fertilizer_how_much", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quell'est l'unit\u00e9 de mesure:", 
+            "English": "What is the unit measure?"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "fertilizer_unit", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "marmite", 
+                    "English": "marmite"
+                }, 
+                "value": 1
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "petite marmite", 
+                    "English": "petite marmite"
+                }, 
+                "value": 2
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "sac du 20 kg", 
+                    "English": "sac du 20 kg"
+                }, 
+                "value": 3
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "sac du 50 kg", 
+                    "English": "sac du 50 kg"
+                }, 
+                "value": 4
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "r\u00e9cipient du 20 litres", 
+                    "English": "r\u00e9cipient du 20 litres"
+                }, 
+                "value": 5
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "kilogramme", 
+                    "English": "kilogramme"
+                }, 
+                "value": 6
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "gramme", 
+                    "English": "gramme"
+                }, 
+                "value": 7
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "gallon", 
+                    "English": "gallon"
+                }, 
+                "value": 8
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "livre", 
+                    "English": "pound"
+                }, 
+                "value": 9
+            }
+        ]
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quel est le c\u00f4ut de  cet engrais? ", 
+            "English": "How much did the fertilizer cost?"
+        }, 
+        "type": "decimal", 
+        "name": "fertilizer_cost", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "C'est en Gourdes ou c'est en dollars ha\u00eftiens?", 
+            "English": "Is it gourds or Haitian dollars?"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "fertilizer_cost_currency", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "Gourdes", 
+                    "English": "Gourdes"
+                }, 
+                "value": "gourdes"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "Dollars ha\u00eftiens", 
+                    "English": "Haitian dollars"
+                }, 
+                "value": "haitian_dollars"
+            }
+        ]
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quel type du syst\u00e8me d'irrigation a \u00e9t\u00e9 utilis\u00e9 dans la sous-parcelle?", 
+            "English": "Which irrigation system is it used in the plot?"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "irrigation", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "l'eau courante", 
+                    "English": "piped water"
+                }, 
+                "value": 1
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pomp\u00e9 de l'eau", 
+                    "English": "pumped water"
+                }, 
+                "value": 2
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pas du syst\u00e8me d'irrigation (pluie)", 
+                    "English": "no irrigation system (rain)"
+                }, 
+                "value": 3
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "autre", 
+                    "English": "other"
+                }, 
+                "value": 4
+            }
+        ]
+    }, 
+    {
+        "name": "irrigation_other", 
+        "text": {
+            "Fran\u00e7ais": "Quel autre?", 
+            "English": "Other?"
+        }, 
+        "attributes": {
+            "relevant": "${irrigation}='autre'"
+        }, 
+        "type": "string"
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quel est le niveau d'humidit\u00e9 du sol dans la sous-parcelle? ", 
+            "English": "What is the soil moisture level in the plot?"
+        }, 
+        "type": "decimal", 
+        "name": "soil_moisture", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quell'est l'unit\u00e9 de mesure:", 
+            "English": "Measurement unit?"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "soil_moisture_unit", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "m3/ m", 
+                    "English": "m3 / m"
+                }, 
+                "value": 1
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "litres/ m", 
+                    "English": "liters / m"
+                }, 
+                "value": 2
+            }
+        ]
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "En g\u00e9n\u00e9rale, comment est la texture du terrain dans la sous-parcelle?", 
+            "English": "How is the soil texture in the plot?"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "soil_texture", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "sable", 
+                    "English": "sand"
+                }, 
+                "value": "sand"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "sable loameux", 
+                    "English": "loamy sand"
+                }, 
+                "value": "loamy_sand"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "loam sableux", 
+                    "English": "sandy loam"
+                }, 
+                "value": "sandy_loam"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "loam sablo-argileux", 
+                    "English": "sandy clay loam"
+                }, 
+                "value": "sandy_clay_loam"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "argile sableuse", 
+                    "English": "sandy clay"
+                }, 
+                "value": "sandy_clay"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "loam", 
+                    "English": "loam"
+                }, 
+                "value": "loam"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "loam argileux", 
+                    "English": "clay loam"
+                }, 
+                "value": "clay_loam"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "argile", 
+                    "English": "clay"
+                }, 
+                "value": "clay"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "loam limoneux", 
+                    "English": "silt loam"
+                }, 
+                "value": "silt_loam"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "loam limono-argileux", 
+                    "English": "silty clay loam"
+                }, 
+                "value": "silty_clay_loam"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "argile limoneuse", 
+                    "English": "silty clay"
+                }, 
+                "value": "silty_clay"
+            }
+        ]
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quelle est la profondeur du ruban sol sup\u00e9rieur, dans la sous-parcelle?", 
+            "English": "What is the top soil ribbon length?"
+        }, 
+        "type": "decimal", 
+        "name": "soil_ribbon", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quell'est l'unit\u00e9 de mesure:", 
+            "English": "Measurement unit?"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "soil_ribbon_unit", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "centim\u00e8tre", 
+                    "English": "Centimeter"
+                }, 
+                "value": 1
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "m\u00e8tre", 
+                    "English": "Meter"
+                }, 
+                "value": 2
+            }
+        ]
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quelle est la m\u00e9thode de plantation utilis\u00e9 dans la sous-parcelle?", 
+            "English": "What is the planting method used in this plot?"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "planting_method", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "cr\u00eate", 
+                    "English": "ridges"
+                }, 
+                "value": "ridges"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "plaines", 
+                    "English": "flat"
+                }, 
+                "value": "flat"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "rangers", 
+                    "English": "row"
+                }, 
+                "value": "row"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "diffus", 
+                    "English": "broadcast"
+                }, 
+                "value": "broadcast"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "autre", 
+                    "English": "other"
+                }, 
+                "value": "other"
+            }
+        ]
+    }, 
+    {
+        "name": "planting_method_other", 
+        "text": {
+            "Fran\u00e7ais": "Quel autre?", 
+            "English": "Other?"
+        }, 
+        "attributes": {
+            "relevant": "${planting_method}='autre'"
+        }, 
+        "type": "string"
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quell' \u00e9tait des cultures pr\u00e9c\u00e9dentes dans la sous-parcelle?", 
+            "English": "Which are the previous crops in the plot?"
+        }, 
+        "attributes": {}, 
+        "type": "select all that apply", 
+        "name": "previous_crops", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "ananas", 
+                    "English": "pineapple"
+                }, 
+                "value": 1
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "arbricotier", 
+                    "English": "arbricotier"
+                }, 
+                "value": 2
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "aubergine", 
+                    "English": "eggplant"
+                }, 
+                "value": 3
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "avocatier", 
+                    "English": "avocado"
+                }, 
+                "value": 4
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "bamboo", 
+                    "English": "bamboo"
+                }, 
+                "value": 5
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "bananier", 
+                    "English": "plantain"
+                }, 
+                "value": 6
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "breadfruit", 
+                    "English": "breadfruit"
+                }, 
+                "value": 7
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "cacao", 
+                    "English": "cacao"
+                }, 
+                "value": 8
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "caf\u00e9", 
+                    "English": "coffee"
+                }, 
+                "value": 9
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "cajou", 
+                    "English": "cajou"
+                }, 
+                "value": 10
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "cane", 
+                    "English": "sugar cane"
+                }, 
+                "value": 11
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "carotte", 
+                    "English": "carrot"
+                }, 
+                "value": 12
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "chou-fleur", 
+                    "English": "cauliflower"
+                }, 
+                "value": 13
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "citron", 
+                    "English": "lemon"
+                }, 
+                "value": 14
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "citrouille", 
+                    "English": "pumpkin"
+                }, 
+                "value": 15
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "des haricots verts", 
+                    "English": "string beans"
+                }, 
+                "value": 16
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "\u00e9pinards", 
+                    "English": "spinach"
+                }, 
+                "value": 17
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "figuier", 
+                    "English": "fig"
+                }, 
+                "value": 18
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "foug\u00e8re", 
+                    "English": "foug\u00e8re"
+                }, 
+                "value": 19
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "gommier", 
+                    "English": "gommier"
+                }, 
+                "value": 20
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "goyave", 
+                    "English": "guava"
+                }, 
+                "value": 21
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "igname", 
+                    "English": "yam"
+                }, 
+                "value": 22
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "karaibe", 
+                    "English": "karaibe"
+                }, 
+                "value": 23
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "kenep", 
+                    "English": "kenep"
+                }, 
+                "value": 24
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "laitue", 
+                    "English": "lettuce"
+                }, 
+                "value": 25
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "lavandier", 
+                    "English": "lavander"
+                }, 
+                "value": 26
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "ma\u00efs", 
+                    "English": "maize"
+                }, 
+                "value": 27
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "mangue", 
+                    "English": "mango"
+                }, 
+                "value": 28
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "manioc", 
+                    "English": "manioc"
+                }, 
+                "value": 29
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "noix de coco", 
+                    "English": "coconut"
+                }, 
+                "value": 30
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "oignon", 
+                    "English": "onion"
+                }, 
+                "value": 31
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "orange", 
+                    "English": "orange"
+                }, 
+                "value": 32
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "papaye", 
+                    "English": "papaye"
+                }, 
+                "value": 33
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pistache", 
+                    "English": "peanuts"
+                }, 
+                "value": 34
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pois chus", 
+                    "English": "pois chus"
+                }, 
+                "value": 35
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pois congo", 
+                    "English": "pois congo"
+                }, 
+                "value": 36
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pois noir", 
+                    "English": "black bean"
+                }, 
+                "value": 37
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pomme de terre", 
+                    "English": "potato"
+                }, 
+                "value": 38
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "sorghum", 
+                    "English": "sorghum"
+                }, 
+                "value": 39
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "courge", 
+                    "English": "courge"
+                }, 
+                "value": 40
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "thym", 
+                    "English": "thyme"
+                }, 
+                "value": 41
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "tomate", 
+                    "English": "tomato"
+                }, 
+                "value": 42
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "vetiver", 
+                    "English": "vetiver"
+                }, 
+                "value": 43
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "autre", 
+                    "English": "other"
+                }, 
+                "value": 44
+            }
+        ]
+    }, 
+    {
+        "name": "previous_crops_other", 
+        "text": {
+            "Fran\u00e7ais": "Quel autre?", 
+            "English": "Other?"
+        }, 
+        "attributes": {
+            "relevant": "${crop}='autre'"
+        }, 
+        "type": "string"
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Y-at il des structures de conservation du sol?", 
+            "English": "Are there any soil conservation measures?"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "conservation_structures_exist", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "oui", 
+                    "English": "Yes"
+                }, 
+                "value": "yes"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "non", 
+                    "English": "No"
+                }, 
+                "value": "no"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "je ne sais pas", 
+                    "English": "Don't know"
+                }, 
+                "value": "dont_know"
+            }
+        ]
+    }, 
+    {
+        "name": "conservation_structures_type", 
+        "text": {
+            "Fran\u00e7ais": "Pouvez vous d\u00e9crire quels ils-sont?", 
+            "English": "Can you describe them?"
+        }, 
+        "attributes": {
+            "relevant": "${conservation_structures_exist}='oui'"
+        }, 
+        "type": "string"
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quelle est la culture la plus commerciale dans la sous-parcelle?", 
+            "English": "Which is the main commercial crop in the plot?"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "commercial_crop", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "ananas", 
+                    "English": "pineapple"
+                }, 
+                "value": 1
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "arbricotier", 
+                    "English": "arbricotier"
+                }, 
+                "value": 2
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "aubergine", 
+                    "English": "eggplant"
+                }, 
+                "value": 3
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "avocatier", 
+                    "English": "avocado"
+                }, 
+                "value": 4
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "bamboo", 
+                    "English": "bamboo"
+                }, 
+                "value": 5
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "bananier", 
+                    "English": "plantain"
+                }, 
+                "value": 6
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "breadfruit", 
+                    "English": "breadfruit"
+                }, 
+                "value": 7
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "cacao", 
+                    "English": "cacao"
+                }, 
+                "value": 8
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "caf\u00e9", 
+                    "English": "coffee"
+                }, 
+                "value": 9
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "cajou", 
+                    "English": "cajou"
+                }, 
+                "value": 10
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "cane", 
+                    "English": "sugar cane"
+                }, 
+                "value": 11
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "carotte", 
+                    "English": "carrot"
+                }, 
+                "value": 12
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "chou-fleur", 
+                    "English": "cauliflower"
+                }, 
+                "value": 13
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "citron", 
+                    "English": "lemon"
+                }, 
+                "value": 14
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "citrouille", 
+                    "English": "pumpkin"
+                }, 
+                "value": 15
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "des haricots verts", 
+                    "English": "string beans"
+                }, 
+                "value": 16
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "\u00e9pinards", 
+                    "English": "spinach"
+                }, 
+                "value": 17
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "figuier", 
+                    "English": "fig"
+                }, 
+                "value": 18
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "foug\u00e8re", 
+                    "English": "foug\u00e8re"
+                }, 
+                "value": 19
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "gommier", 
+                    "English": "gommier"
+                }, 
+                "value": 20
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "goyave", 
+                    "English": "guava"
+                }, 
+                "value": 21
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "igname", 
+                    "English": "yam"
+                }, 
+                "value": 22
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "karaibe", 
+                    "English": "karaibe"
+                }, 
+                "value": 23
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "kenep", 
+                    "English": "kenep"
+                }, 
+                "value": 24
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "laitue", 
+                    "English": "lettuce"
+                }, 
+                "value": 25
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "lavandier", 
+                    "English": "lavander"
+                }, 
+                "value": 26
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "ma\u00efs", 
+                    "English": "maize"
+                }, 
+                "value": 27
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "mangue", 
+                    "English": "mango"
+                }, 
+                "value": 28
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "manioc", 
+                    "English": "manioc"
+                }, 
+                "value": 29
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "noix de coco", 
+                    "English": "coconut"
+                }, 
+                "value": 30
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "oignon", 
+                    "English": "onion"
+                }, 
+                "value": 31
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "orange", 
+                    "English": "orange"
+                }, 
+                "value": 32
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "papaye", 
+                    "English": "papaye"
+                }, 
+                "value": 33
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pistache", 
+                    "English": "peanuts"
+                }, 
+                "value": 34
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pois chus", 
+                    "English": "pois chus"
+                }, 
+                "value": 35
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pois congo", 
+                    "English": "pois congo"
+                }, 
+                "value": 36
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pois noir", 
+                    "English": "black bean"
+                }, 
+                "value": 37
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pomme de terre", 
+                    "English": "potato"
+                }, 
+                "value": 38
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "sorghum", 
+                    "English": "sorghum"
+                }, 
+                "value": 39
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "courge", 
+                    "English": "courge"
+                }, 
+                "value": 40
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "thym", 
+                    "English": "thyme"
+                }, 
+                "value": 41
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "tomate", 
+                    "English": "tomato"
+                }, 
+                "value": 42
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "vetiver", 
+                    "English": "vetiver"
+                }, 
+                "value": 43
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "autre", 
+                    "English": "other"
+                }, 
+                "value": 44
+            }
+        ]
+    }, 
+    {
+        "name": "commercial_crop_other", 
+        "text": {
+            "Fran\u00e7ais": "Quel autre?", 
+            "English": "Other?"
+        }, 
+        "attributes": {
+            "relevant": "${crop}='autre'"
+        }, 
+        "type": "string"
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quelle est la culture de base la plus importante dans la sous-parcelle?", 
+            "English": "Which is the main staple crop in the plot?"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "staple_crop", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "ananas", 
+                    "English": "pineapple"
+                }, 
+                "value": 1
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "arbricotier", 
+                    "English": "arbricotier"
+                }, 
+                "value": 2
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "aubergine", 
+                    "English": "eggplant"
+                }, 
+                "value": 3
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "avocatier", 
+                    "English": "avocado"
+                }, 
+                "value": 4
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "bamboo", 
+                    "English": "bamboo"
+                }, 
+                "value": 5
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "bananier", 
+                    "English": "plantain"
+                }, 
+                "value": 6
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "breadfruit", 
+                    "English": "breadfruit"
+                }, 
+                "value": 7
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "cacao", 
+                    "English": "cacao"
+                }, 
+                "value": 8
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "caf\u00e9", 
+                    "English": "coffee"
+                }, 
+                "value": 9
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "cajou", 
+                    "English": "cajou"
+                }, 
+                "value": 10
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "cane", 
+                    "English": "sugar cane"
+                }, 
+                "value": 11
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "carotte", 
+                    "English": "carrot"
+                }, 
+                "value": 12
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "chou-fleur", 
+                    "English": "cauliflower"
+                }, 
+                "value": 13
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "citron", 
+                    "English": "lemon"
+                }, 
+                "value": 14
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "citrouille", 
+                    "English": "pumpkin"
+                }, 
+                "value": 15
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "des haricots verts", 
+                    "English": "string beans"
+                }, 
+                "value": 16
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "\u00e9pinards", 
+                    "English": "spinach"
+                }, 
+                "value": 17
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "figuier", 
+                    "English": "fig"
+                }, 
+                "value": 18
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "foug\u00e8re", 
+                    "English": "foug\u00e8re"
+                }, 
+                "value": 19
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "gommier", 
+                    "English": "gommier"
+                }, 
+                "value": 20
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "goyave", 
+                    "English": "guava"
+                }, 
+                "value": 21
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "igname", 
+                    "English": "yam"
+                }, 
+                "value": 22
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "karaibe", 
+                    "English": "karaibe"
+                }, 
+                "value": 23
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "kenep", 
+                    "English": "kenep"
+                }, 
+                "value": 24
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "laitue", 
+                    "English": "lettuce"
+                }, 
+                "value": 25
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "lavandier", 
+                    "English": "lavander"
+                }, 
+                "value": 26
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "ma\u00efs", 
+                    "English": "maize"
+                }, 
+                "value": 27
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "mangue", 
+                    "English": "mango"
+                }, 
+                "value": 28
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "manioc", 
+                    "English": "manioc"
+                }, 
+                "value": 29
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "noix de coco", 
+                    "English": "coconut"
+                }, 
+                "value": 30
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "oignon", 
+                    "English": "onion"
+                }, 
+                "value": 31
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "orange", 
+                    "English": "orange"
+                }, 
+                "value": 32
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "papaye", 
+                    "English": "papaye"
+                }, 
+                "value": 33
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pistache", 
+                    "English": "peanuts"
+                }, 
+                "value": 34
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pois chus", 
+                    "English": "pois chus"
+                }, 
+                "value": 35
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pois congo", 
+                    "English": "pois congo"
+                }, 
+                "value": 36
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pois noir", 
+                    "English": "black bean"
+                }, 
+                "value": 37
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pomme de terre", 
+                    "English": "potato"
+                }, 
+                "value": 38
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "sorghum", 
+                    "English": "sorghum"
+                }, 
+                "value": 39
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "courge", 
+                    "English": "courge"
+                }, 
+                "value": 40
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "thym", 
+                    "English": "thyme"
+                }, 
+                "value": 41
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "tomate", 
+                    "English": "tomato"
+                }, 
+                "value": 42
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "vetiver", 
+                    "English": "vetiver"
+                }, 
+                "value": 43
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "autre", 
+                    "English": "other"
+                }, 
+                "value": 44
+            }
+        ]
+    }, 
+    {
+        "name": "staple_crop_other", 
+        "text": {
+            "Fran\u00e7ais": "Quel autre?", 
+            "English": "Other?"
+        }, 
+        "attributes": {
+            "relevant": "${crop}='autre'"
+        }, 
+        "type": "string"
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Est-ce que il y a des arbres dans la sous-parcelle?", 
+            "English": "Are there trees?"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "trees_exist", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "oui", 
+                    "English": "Yes"
+                }, 
+                "value": "yes"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "non", 
+                    "English": "No"
+                }, 
+                "value": "no"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "je ne sais pas", 
+                    "English": "Don't know"
+                }, 
+                "value": "dont_know"
+            }
+        ]
+    }, 
+    {
+        "name": "trees_how_many", 
+        "text": {
+            "Fran\u00e7ais": "Combien des arbres y-at il?", 
+            "English": "If there are trees, how many?"
+        }, 
+        "attributes": {
+            "relevant": "${trees_exist}='oui'"
+        }, 
+        "type": "integer"
+    }, 
+    {
+        "name": "trees_age", 
+        "text": {
+            "Fran\u00e7ais": "Plus ou moins, quel \u00e2ge ont ils? (ann\u00e9es)", 
+            "English": "Age of tree"
+        }, 
+        "attributes": {
+            "relevant": "${trees_exist}='oui'"
+        }, 
+        "type": "integer"
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Est-ce que il y a des animaux de travail dans la parcelle, comme des chevaux ou des \u00e2nes?", 
+            "English": "Is there any animal labor in the plot, like horses or donkeys?"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "animal_traction_exist", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "oui", 
+                    "English": "Yes"
+                }, 
+                "value": "yes"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "non", 
+                    "English": "No"
+                }, 
+                "value": "no"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "je ne sais pas", 
+                    "English": "Don't know"
+                }, 
+                "value": "dont_know"
+            }
+        ]
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Avez-vous appliqu\u00e9 des produits biologiques sur la sous-parcelle?", 
+            "English": "Did you apply organic inputs to the plot?"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "organic_application_exist", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "oui", 
+                    "English": "Yes"
+                }, 
+                "value": "yes"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "non", 
+                    "English": "No"
+                }, 
+                "value": "no"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "je ne sais pas", 
+                    "English": "Don't know"
+                }, 
+                "value": "dont_know"
+            }
+        ]
+    }, 
+    {
+        "name": "organic_application_type", 
+        "text": {
+            "Fran\u00e7ais": "Quels sont les produits biologiques que vous avez appliqu\u00e9? S'il vous plait, pr\u00e9cisez", 
+            "English": "Which organic inputs have you applied?"
+        }, 
+        "attributes": {
+            "relevant": "${organic_application_exist}='oui'"
+        }, 
+        "type": "string"
+    }, 
+    {
+        "name": "organic_application_how_much", 
+        "text": {
+            "Fran\u00e7ais": "Combien des produits biologiques avez-vous appliqu\u00e9?", 
+            "English": "How much organic inputs have you applied?"
+        }, 
+        "attributes": {
+            "relevant": "${organic_application_exist}='oui'"
+        }, 
+        "type": "integer"
+    }, 
+    {
+        "name": "organic_application_unit", 
+        "text": {
+            "Fran\u00e7ais": "Quell'est l'unit\u00e9 de mesure:", 
+            "English": "Measurement unit?"
+        }, 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "marmite", 
+                    "English": "marmite"
+                }, 
+                "value": 1
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "petite marmite", 
+                    "English": "petite marmite"
+                }, 
+                "value": 2
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "sac du 20 kg", 
+                    "English": "sac du 20 kg"
+                }, 
+                "value": 3
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "sac du 50 kg", 
+                    "English": "sac du 50 kg"
+                }, 
+                "value": 4
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "r\u00e9cipient du 20 litres", 
+                    "English": "r\u00e9cipient du 20 litres"
+                }, 
+                "value": 5
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "kilogramme", 
+                    "English": "kilogramme"
+                }, 
+                "value": 6
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "gramme", 
+                    "English": "gramme"
+                }, 
+                "value": 7
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "gallon", 
+                    "English": "gallon"
+                }, 
+                "value": 8
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "livre", 
+                    "English": "pound"
+                }, 
+                "value": 9
+            }
+        ], 
+        "attributes": {
+            "relevant": "${organic_application_exist}='oui'"
+        }, 
+        "type": "select one"
+    }, 
+    {
+        "name": "organic_application_practice", 
+        "text": {
+            "Fran\u00e7ais": "Comment est-ce que les produits biologiques ont \u00e9t\u00e9 appliqu\u00e9s?", 
+            "English": "How has organic inputs being applied?"
+        }, 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "en surface", 
+                    "English": "surface applied"
+                }, 
+                "value": "surface_applied"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "incorpor\u00e9", 
+                    "English": "incorporated"
+                }, 
+                "value": "incorporated"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "autre", 
+                    "English": "other"
+                }, 
+                "value": "other"
+            }
+        ], 
+        "attributes": {
+            "relevant": "${organic_application_exist}='oui'"
+        }, 
+        "type": "select one"
+    }, 
+    {
+        "name": "organic_application_practice_other", 
+        "text": {
+            "Fran\u00e7ais": "Quel autre?", 
+            "English": "Other?"
+        }, 
+        "attributes": {
+            "relevant": "${organic_application_practice}='autre'"
+        }, 
+        "type": "string"
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quelles cultures ont \u00e9t\u00e9 plant\u00e9s dans la sous-parcelle?", 
+            "English": "What crop is planted in this plot?"
+        }, 
+        "attributes": {}, 
+        "type": "select all that apply", 
+        "name": "crop", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "ananas", 
+                    "English": "pineapple"
+                }, 
+                "value": 1
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "arbricotier", 
+                    "English": "arbricotier"
+                }, 
+                "value": 2
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "aubergine", 
+                    "English": "eggplant"
+                }, 
+                "value": 3
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "avocatier", 
+                    "English": "avocado"
+                }, 
+                "value": 4
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "bamboo", 
+                    "English": "bamboo"
+                }, 
+                "value": 5
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "bananier", 
+                    "English": "plantain"
+                }, 
+                "value": 6
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "breadfruit", 
+                    "English": "breadfruit"
+                }, 
+                "value": 7
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "cacao", 
+                    "English": "cacao"
+                }, 
+                "value": 8
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "caf\u00e9", 
+                    "English": "coffee"
+                }, 
+                "value": 9
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "cajou", 
+                    "English": "cajou"
+                }, 
+                "value": 10
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "cane", 
+                    "English": "sugar cane"
+                }, 
+                "value": 11
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "carotte", 
+                    "English": "carrot"
+                }, 
+                "value": 12
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "chou-fleur", 
+                    "English": "cauliflower"
+                }, 
+                "value": 13
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "citron", 
+                    "English": "lemon"
+                }, 
+                "value": 14
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "citrouille", 
+                    "English": "pumpkin"
+                }, 
+                "value": 15
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "des haricots verts", 
+                    "English": "string beans"
+                }, 
+                "value": 16
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "\u00e9pinards", 
+                    "English": "spinach"
+                }, 
+                "value": 17
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "figuier", 
+                    "English": "fig"
+                }, 
+                "value": 18
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "foug\u00e8re", 
+                    "English": "foug\u00e8re"
+                }, 
+                "value": 19
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "gommier", 
+                    "English": "gommier"
+                }, 
+                "value": 20
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "goyave", 
+                    "English": "guava"
+                }, 
+                "value": 21
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "igname", 
+                    "English": "yam"
+                }, 
+                "value": 22
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "karaibe", 
+                    "English": "karaibe"
+                }, 
+                "value": 23
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "kenep", 
+                    "English": "kenep"
+                }, 
+                "value": 24
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "laitue", 
+                    "English": "lettuce"
+                }, 
+                "value": 25
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "lavandier", 
+                    "English": "lavander"
+                }, 
+                "value": 26
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "ma\u00efs", 
+                    "English": "maize"
+                }, 
+                "value": 27
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "mangue", 
+                    "English": "mango"
+                }, 
+                "value": 28
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "manioc", 
+                    "English": "manioc"
+                }, 
+                "value": 29
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "noix de coco", 
+                    "English": "coconut"
+                }, 
+                "value": 30
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "oignon", 
+                    "English": "onion"
+                }, 
+                "value": 31
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "orange", 
+                    "English": "orange"
+                }, 
+                "value": 32
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "papaye", 
+                    "English": "papaye"
+                }, 
+                "value": 33
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pistache", 
+                    "English": "peanuts"
+                }, 
+                "value": 34
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pois chus", 
+                    "English": "pois chus"
+                }, 
+                "value": 35
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pois congo", 
+                    "English": "pois congo"
+                }, 
+                "value": 36
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pois noir", 
+                    "English": "black bean"
+                }, 
+                "value": 37
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "pomme de terre", 
+                    "English": "potato"
+                }, 
+                "value": 38
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "sorghum", 
+                    "English": "sorghum"
+                }, 
+                "value": 39
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "courge", 
+                    "English": "courge"
+                }, 
+                "value": 40
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "thym", 
+                    "English": "thyme"
+                }, 
+                "value": 41
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "tomate", 
+                    "English": "tomato"
+                }, 
+                "value": 42
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "vetiver", 
+                    "English": "vetiver"
+                }, 
+                "value": 43
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "autre", 
+                    "English": "other"
+                }, 
+                "value": 44
+            }
+        ]
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quand est-ce que la/le/l' CROP a \u00e9t\u00e9 plant\u00e9?", 
+            "English": "When was the crop planted?"
+        }, 
+        "type": "date", 
+        "name": "crop_planting_date", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quel type des semences ont \u00e9t\u00e9 utilis\u00e9es pour planter la/le/l' CROP?", 
+            "English": "What type of seeds were used in the plot, for this crop?"
+        }, 
+        "type": "string", 
+        "name": "seed_type", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "O\u00f9 avez-vous obtenu les semences pour planter la/le/l' CROP? S'il vous plait, donnez le nom du lieu/ de l'organisation", 
+            "English": "Where did you obtain the seeds? Please give the name of the place or the organization's name"
+        }, 
+        "type": "string", 
+        "name": "seed_source_org", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quelle ville est-ce que SEED SOURCE est situ\u00e9?", 
+            "English": "In which town is this place/ organization located?"
+        }, 
+        "type": "string", 
+        "name": "seed_source_town", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quel est le c\u00f4ut des semences pour planter la/le/l' CROP?", 
+            "English": "What is the price of the seeds for this crop?"
+        }, 
+        "type": "integer", 
+        "name": "seed_cost", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "C'est en Gourdes ou c'est en dollars ha\u00eftiens?", 
+            "English": "Is it gourds or Haitian dollars?"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "seed_cost_currency", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "Gourdes", 
+                    "English": "Gourdes"
+                }, 
+                "value": "gourdes"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "Dollars ha\u00eftiens", 
+                    "English": "Haitian dollars"
+                }, 
+                "value": "haitian_dollars"
+            }
+        ]
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Combien des semences de/du CROP ont \u00e9t\u00e9 plant\u00e9es?", 
+            "English": "How many seeds were planted?"
+        }, 
+        "type": "integer", 
+        "name": "seed_quantity", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quelle est la vari\u00e9t\u00e9 de cette culture?", 
+            "English": "What is this crop's variety?"
+        }, 
+        "type": "string", 
+        "name": "seed_variety", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Combien de plants de cette culture on peut trouver dans un m\u00e8tre carr\u00e9?", 
+            "English": "How many plants from this crop can be found in 1 square meter?"
+        }, 
+        "type": "decimal", 
+        "name": "crop_density", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Quand est-ce que la/le/l' CROP a \u00e9t\u00e9 r\u00e9colt\u00e9?", 
+            "English": "When was the crop harvested?"
+        }, 
+        "type": "date", 
+        "name": "crop_harvest_date", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Combien de/du CROP est-ce que vous avez r\u00e9colt\u00e9 dans la sous-parcelle?", 
+            "English": "How much of this crop did you harvest, in this plot?"
+        }, 
+        "type": "integer", 
+        "name": "crop_harvest_quantity", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Apr\u00e8s la r\u00e9colte, est-ce que vous traiterez cette culture pour sa conservation ou transformation?", 
+            "English": "After harvest, do you do any type of processing for its conservation or transformation?"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "post_harvest_exist", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "oui", 
+                    "English": "Yes"
+                }, 
+                "value": "yes"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "non", 
+                    "English": "No"
+                }, 
+                "value": "no"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "je ne sais pas", 
+                    "English": "Don't know"
+                }, 
+                "value": "dont_know"
+            }
+        ]
+    }, 
+    {
+        "name": "post_harvest_type", 
+        "text": {
+            "Fran\u00e7ais": "Qu'est ce que vous faites pour traiter cette culture? S'il vous plait, pr\u00e9cisez.", 
+            "English": "What do you do for post-harvest processing?"
+        }, 
+        "attributes": {
+            "relevant": "${post_harvest_exist}='oui'"
+        }, 
+        "type": "string"
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Si vous vendez une unit\u00e9 de cette culture au march\u00e9, combien d'argent pouvez vous obtenir? ", 
+            "English": "If you sell one unit of this crop in the market, how much money do you get from it?"
+        }, 
+        "type": "integer", 
+        "name": "crop_market_price", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "C'est en Gourdes ou c'est en dollars ha\u00eftiens?", 
+            "English": "Is it gourds or Haitian dollars?"
+        }, 
+        "attributes": {}, 
+        "type": "select one", 
+        "name": "crop_market_price_currency", 
+        "choices": [
+            {
+                "text": {
+                    "Fran\u00e7ais": "Gourdes", 
+                    "English": "Gourdes"
+                }, 
+                "value": "gourdes"
+            }, 
+            {
+                "text": {
+                    "Fran\u00e7ais": "Dollars ha\u00eftiens", 
+                    "English": "Haitian dollars"
+                }, 
+                "value": "haitian_dollars"
+            }
+        ]
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Une unit\u00e9 de cette culture c'est \u00e9gal \u00e0 quoi? S'il vous plait, pr\u00e9cisez", 
+            "English": "What is one unit of this crop equal to?"
+        }, 
+        "type": "string", 
+        "name": "crop_market_price_unit", 
+        "attributes": {}
+    }, 
+    {
+        "text": {
+            "Fran\u00e7ais": "Dans quelles march\u00e9s est-ce que vous vendez cette culture? S'il vous plait, pr\u00e9cisez", 
+            "English": "In which markets do you sell this crop? Please specify"
+        }, 
+        "type": "string", 
+        "name": "crop_market_location", 
+        "attributes": {}
+    }
+]
