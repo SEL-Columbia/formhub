@@ -3,7 +3,7 @@
 # Binding: which needs a bunch of attributes.
 # Control: which is determined by the type of the question.
 
-#        import ipdb; ipdb.set_trace()        
+#        import ipdb; ipdb.set_trace()
 
 import json, re
 from datetime import datetime
@@ -26,6 +26,11 @@ QUESTION_PREFIX = "q"
 CHOICE_PREFIX = "c"
 SEP = "_"
 
+# http://www.w3.org/TR/REC-xml/
+TAG_START_CHAR = r"[a-zA-Z:_]"
+TAG_CHAR = r"[a-zA-Z:_0-9\-\.]"
+XFORM_TAG_REGEXP = "%(start)s%(char)s*" % {"start" : TAG_START_CHAR, "char" : TAG_CHAR}
+
 def ns(abbrev, text):
     return "{" + nsmap[abbrev] + "}" + text
 
@@ -37,11 +42,26 @@ def json_dumps(obj):
         return obj.__dict__
     return json.dumps(obj, indent=4, default=default_encode)
 
+def _var_repl_function(xpaths):
+    """
+    Given a dictionary of xpaths, return a function we can use to
+    replace ${varname} with the xpath to varname.
+    """
+    return lambda matchobj: xpaths[matchobj.group(1)]
+
+def insert_xpaths(xpaths, text):
+    """
+    Replace all instances of ${var} with the xpath to var.
+    """
+    bracketed_tag = r"\$\{(" + XFORM_TAG_REGEXP + r")\}"
+    return re.sub(bracketed_tag, _var_repl_function(xpaths), text)
+
 class Question(object):
     """
     Abstract base class to build different question types on top of.
     """
     def __init__(self, name, text, hint={}, attributes={}):
+        assert re.search(r"^" + XFORM_TAG_REGEXP + r"$", name)
         self.name = name
         self.text = text
         self._attributes = attributes.copy()
@@ -51,26 +71,25 @@ class Question(object):
         return E.label(ref="jr:itext('%s')" % SEP.join([QUESTION_PREFIX, self.name]))
 
     def hint_element(self):
+        # I need to fix this like label above
         if self.hint:
             return E.hint(self.hint)
 
     def label_and_hint(self):
-        if self.hint:
-            return [self.label_element(), self.hint_element()]
+        # if self.hint:
+        #     return [self.label_element(), self.hint_element()]
         return [self.label_element()]
 
-    def slug(self):
-        return sluggify(self.name)
-
     def instance(self):
-        return E(self.slug())
+        return E(self.name)
 
-    def bind(self, xpath):
+    def bind(self, xpaths):
         """
         Return an XML string representing the binding of this
         question.
         """
-        return E.bind(nodeset=xpath, **self._attributes)
+        d = dict([(k, insert_xpaths(xpaths, v)) for k, v in self._attributes.items()])
+        return E.bind(nodeset=xpaths[self.name], **d)
 
     def control(self, xpath):
         """
@@ -229,23 +248,20 @@ def table(rows, columns):
             result.append(q(**kwargs))
     return result    
 
-ODK_DATE_FORMAT = "%Y-%m-%d_%H-%M-%S"
-
 class Survey(object):
     def __init__(self, title, questions):
+        assert re.search(r"^" + XFORM_TAG_REGEXP + r"$", title)
         self.title = title
-        self._stack = [sluggify(self.title)]
+        self._stack = [self.title]
         self.questions = questions
         self._set_up_xpath_dictionary()
+        self.created = datetime.now()
 
     def _set_up_xpath_dictionary(self):
         self.xpath = {}
         for q in self.questions:
-            self.xpath[q.slug()] = u"/" + self._stack[0] + u"/" + q.slug()
+            self.xpath[q.name] = u"/" + self._stack[0] + u"/" + q.name
 
-    def _dollar_substitution(self):
-        pass
-        
     def xml(self):
         return E(ns("h", "html"),
                  E(ns("h", "head"),
@@ -277,17 +293,19 @@ class Survey(object):
 
         return [E.translation(lang=lang, *dictionary[lang]) for lang in dictionary.keys()]
 
+    def id_string(self):
+        return self.title + "_" + \
+            self.created.strftime("%Y-%m-%d_%H-%M-%S")
+
     def instance(self):
-        slug = self._stack[0]
-        id = self._stack[0] + u" " + \
-            datetime.now().strftime(ODK_DATE_FORMAT)
-        result = E(slug, {"id" : id})
+        root_node_name = self._stack[0]
+        result = E(root_node_name, {"id" : self.id_string()})
         for q in self.questions: result.append(q.instance())
         return result
 
     def bindings(self):
         # we need to calculate the xpaths of each question
-        return [q.bind(self.xpath[q.name]) for q in self.questions]
+        return [q.bind(self.xpath) for q in self.questions]
 
     def controls(self):
         return [q.control(self.xpath[q.name]) for q in self.questions]
