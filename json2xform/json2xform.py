@@ -149,7 +149,7 @@ class PictureQuestion(UploadQuestion):
 
 class Choice(object):
     def __init__(self, value, text):
-        self.value = value
+        self.value = str(value)
         self.text = text
 
     def xml(self, question_name):
@@ -213,6 +213,7 @@ question_class = {
     "select one" : SelectOneQuestion,
     "select all that apply" : SelectMultipleQuestion,
     "yes or no" : YesNoQuestion,
+    "date" : DateQuestion,
 }
 def q(d):
     c = question_class[d.pop("type")]
@@ -241,6 +242,9 @@ class Survey(object):
         self.xpath = {}
         for q in self.questions:
             self.xpath[q.slug()] = u"/" + self._stack[0] + u"/" + q.slug()
+
+    def _dollar_substitution(self):
+        pass
         
     def xml(self):
         return E(ns("h", "html"),

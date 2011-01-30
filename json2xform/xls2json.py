@@ -60,14 +60,21 @@ def _clean_choice_lists(pyobj):
         else: choices[list_name] = [choice]
     pyobj[CHOICES] = choices
 
+def _fix_int_values(pyobj):
+    for choice_list in pyobj[CHOICES].values():
+        for choice in choice_list:
+            v = choice["value"]
+            if type(v)==float and v==int(v):
+                choice["value"] = int(v)
+
 def _insert_choice_lists(pyobj):
     survey = pyobj[SURVEY]
     for i in range(len(survey)):
         if survey[i][TYPE].startswith("select"):
-            q_type, list_name = survey[i][TYPE].split(" from ")
-            survey[i][TYPE] = q_type
+            q_type, list_name = survey[i][TYPE].split("from")
+            survey[i][TYPE] = q_type.strip()
             assert "choices" not in survey[i]
-            survey[i]["choices"] = pyobj[CHOICES][list_name]
+            survey[i]["choices"] = pyobj[CHOICES][list_name.strip()]
 
 def _group_extra_attributes(pyobj):
     survey = pyobj[SURVEY]
@@ -83,6 +90,7 @@ def xls2json(path):
     pyobj = _step1(path)
     _clean_text(pyobj)
     _clean_choice_lists(pyobj)
+    _fix_int_values(pyobj)
     _insert_choice_lists(pyobj)
     _group_extra_attributes(pyobj)
     return json.dumps(pyobj[SURVEY], indent=4)
