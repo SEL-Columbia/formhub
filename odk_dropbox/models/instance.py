@@ -13,7 +13,7 @@ from .. import utils, tag
 class Instance(models.Model):
     # I should rename this model, maybe Survey
     xml = models.TextField()
-    xform = models.ForeignKey(XForm)
+    xform = models.ForeignKey(XForm, related_name="surveys")
     phone = models.ForeignKey(Phone)
     start_time = models.DateTimeField()
     surveyor = models.ForeignKey(Surveyor, null=True)

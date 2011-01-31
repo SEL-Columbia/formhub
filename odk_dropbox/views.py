@@ -13,6 +13,7 @@ from django.db.models import Avg, Max, Min, Count
 import itertools
 import xlwt
 import json
+import re
 from bson import json_util
 from . import utils, tag
 from .models import District, XForm, get_or_create_instance, xform_instances, Instance
@@ -120,10 +121,11 @@ def xls(request, id_string):
     for path, attributes in xform.parser.get_variable_list():
         headers.append(path)
     table = [headers]
-    for i in xform.instances():
+    for i in xform.surveys.all():
         row = []
+        d = i.get_from_mongo()
         for h in headers:
-            row.append(d.get(h, u"n/a"))
+            row.append(str(d.get(h, u"n/a")))
         table.append(row)
 
     wb = xlwt.Workbook()
@@ -132,7 +134,7 @@ def xls(request, id_string):
         for c in range(len(table[r])):
             ws.write(r, c, table[r][c])
 
-    return xls_to_response(wb, form.id_string + ".xls")
+    return xls_to_response(wb, re.sub(r"\s+", "_", id_string) + ".xls")
 
 dimensions = {
     "survey" : "survey_type__slug",
