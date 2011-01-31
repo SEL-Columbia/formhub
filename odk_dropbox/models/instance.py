@@ -128,4 +128,9 @@ class Instance(models.Model):
             )
         xform_instances.save(doc)
 
+# http://docs.djangoproject.com/en/dev/topics/db/models/#overriding-model-methods
+from django.db.models.signals import pre_delete
+def _remove_from_mongo(sender, **kwargs):
+    xform_instances.remove(kwargs["instance"].id)
 
+pre_delete.connect(_remove_from_mongo, sender=Instance)
