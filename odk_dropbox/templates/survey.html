@@ -1,3 +1,3 @@
 {% for a in instance.attachments.all %}
-<img src="{{ a.attachment.url }}" class="hack-resize-this" />
+<a href="{{a.attachment.url}}" target="_BLANK"><img src="{{ a.attachment.url }}" style="width:180px;border:0 none;" /></a>
 {% endfor %}
