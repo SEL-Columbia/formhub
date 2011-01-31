@@ -128,7 +128,18 @@ var ActivityList, ActivityPoint;
 		var dest = $('<div />', {'class':'survey-content'});
 		$.get('/survey/'+this.id+'/', function(data){
 			dest.append(data);
-		})
+		});
+		if($('.hack-resize-this', dest).length > 0) {
+		    var img = $('img', dest);
+		    if($(img).height() > $(img).width()) {
+		        //landscape photo
+		        $(img).css({'height':300})
+		        
+		    } else {
+		        //portrait photo
+                $(img).css({'width':'100%'})
+		    }
+		}
 		MapPopup(dest);
     }
 	_ActivityPoint.prototype.district=function(){
