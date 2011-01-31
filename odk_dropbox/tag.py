@@ -13,3 +13,8 @@ LGA = u"lga"
 REGISTRATION = u"registration"
 # keys that we'll look for in the registration form
 REGISTRATION_NAME = u"name"
+
+# extra fields that we're adding to our mongo doc
+SURVEYOR_NAME = u"_surveyor_name"
+DISTRICT_ID = u"_district_id"
+ATTACHMENTS = u"_attachments"

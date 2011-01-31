@@ -69,9 +69,34 @@ class Instance(models.Model):
             # requires phone and start_time to be set
             self.surveyor = Instance.get_survey_owner(self)
 
+    # This is a hack to fix some of the nastiness that I created in
+    # the field. Hoping the next round will be a lot cleaner.
+    lgas_by_state = {
+        u'lga2' : 38, # Song
+        u'lga15' : 296, # Kuje
+        u'lga17' : 325, # Nwangele
+        u'lga18' : 360, # Miga
+        u'lga29' : 615, # Akoko_North_West
+        }
+    lgas_by_name = {
+        u'Song' : 38,
+        u'Kuje' : 296,
+        u'Nwangele' : 325,
+        u'Miga' : 360,
+        u'Akoko_North_West' : 615,
+        u'song' : 38,
+        u'kuje' : 296,
+        u'nwangele' : 325,
+        u'miga' : 360,
+        u'akoko_north_west' : 615,
+        }
     def _set_district(self, doc):
-        # I'll do this later
         self.district = None
+        for k in doc.keys():
+            if k==u"lga":
+                self.district = District.objects.get(pk=self.lgas_by_name[doc[k]])
+            elif k in self.lgas_by_state.keys():
+                self.district = District.objects.get(pk=self.lgas_by_state[k])
 
     def get_from_mongo(self):
         result = xform_instances.find_one(self.id)
@@ -90,5 +115,17 @@ class Instance(models.Model):
         self._set_surveyor(doc)
         self._set_district(doc)
         super(Instance, self).save(*args, **kwargs)
-        doc[tag.ID] = self.id
+        doc.update(
+            {
+                tag.ID : self.id,
+                tag.SURVEYOR_NAME :
+                    None if not self.surveyor else self.surveyor.name,
+                tag.DISTRICT_ID :
+                    None if not self.district else self.district.id,
+                tag.ATTACHMENTS :
+                    [a.attachment.name for a in self.attachments.all()],
+                }
+            )
         xform_instances.save(doc)
+
+
