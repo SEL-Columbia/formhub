@@ -66,15 +66,25 @@ def export_list(request):
         )
 
 def dashboard(request):
-    info = {}
+    info = prep_info(request)
 #    info['table_types'] = simplejson.dumps(dimensions.keys())
     info['table_types'] = json.dumps(['a','b','c'])
     info['districts'] = json.dumps([x.to_dict() for x in District.objects.filter(active=True)])
     forms = XForm.objects.all()
     info['surveys'] = json.dumps(list(set([x.title for x in forms])))
-    info['user'] = request.user
     return render_to_response("dashboard.html", info)
 
+def prep_info(request):
+    """
+    This function is meant to be reused and provide the user object. If no user object, then
+    provide the login form.
+    
+    We might decide that this function is a lame attempt to have global variables passed
+    to django templates, and should be deleted.
+    """
+    info = {'user':request.user}
+    return info
+        
 def map_data_points(request):
     """
     The map list needs these attributes for each survey to display
@@ -180,7 +190,7 @@ def frequency_table_urls(request):
 def ensure_logged_in(request):
     resp = "OK"
     if request.user.is_authenticated():
-        return HttpResponseRedirect("/main/")
+        return HttpResponseRedirect("/odk/")
     else:
         return HttpResponseRedirect("/accounts/login")
 
