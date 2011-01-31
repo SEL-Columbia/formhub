@@ -99,8 +99,12 @@ def map_data_points(request):
     * GPS coordinates
     
     """
-    map_pt_list = []
-    return HttpResponse(json.dumps(map_pt_list, default=json_util.default))
+    dict_list = list(xform_instances.find(
+            spec={tag.GPS : {"$exists" : True}},
+            fields=[tag.DATE_TIME_START, tag.SURVEYOR_NAME, tag.INSTANCE_DOC_NAME, tag.DISTRICT_ID, tag.ATTACHMENTS, tag.GPS]
+            ))
+    
+    return HttpResponse(json.dumps(dict_list, default=json_util.default))
 
 def xls_to_response(xls, fname):
     response = HttpResponse(mimetype="application/ms-excel")
