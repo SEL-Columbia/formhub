@@ -124,13 +124,12 @@ var ActivityList, ActivityPoint;
 	}
 	_ActivityPoint.prototype = new Mappable();
     _ActivityPoint.prototype.mapPointListener = function(){
-        this.prepForTemplate();
-        var t = $.tmpl(surveyViewTemplate, this);
-		var dest = $('.survey-content', t);
-		$.get('/embed/survey_instance_data/'+this.id, function(data){
+//        this.prepForTemplate();
+		var dest = $('<div />', {'class':'survey-content'});
+		$.get('/survey/'+this.id+'/', function(data){
 			dest.append(data);
 		})
-		MapPopup(t);
+		MapPopup(dest);
     }
 	_ActivityPoint.prototype.district=function(){
 		var result, district_id = this.district_id;
