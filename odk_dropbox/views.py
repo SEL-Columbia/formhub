@@ -130,7 +130,7 @@ def xls(request, id_string):
 dimensions = {
     "survey" : "survey_type__slug",
     "surveyor" : "surveyor__name",
-    "date" : "start_time",
+    "date" : "date",
     "location" : "district",
     }
 

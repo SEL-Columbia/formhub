@@ -16,6 +16,7 @@ class Instance(models.Model):
     xform = models.ForeignKey(XForm, related_name="surveys")
     phone = models.ForeignKey(Phone)
     start_time = models.DateTimeField()
+    date = models.DateField()
     surveyor = models.ForeignKey(Surveyor, null=True)
     district = models.ForeignKey(District, null=True)
     survey_type = models.ForeignKey(SurveyType)
@@ -43,6 +44,9 @@ class Instance(models.Model):
 
     def _set_start_time(self, doc):
         self.start_time = doc[tag.DATE_TIME_START]
+
+    def _set_date(self, doc):
+        self.date = doc[tag.DATE_TIME_START].date()
 
     @classmethod
     def get_survey_owner(cls, instance):
@@ -93,7 +97,7 @@ class Instance(models.Model):
     def _set_district(self, doc):
         self.district = None
         for k in doc.keys():
-            if k==u"lga":
+            if k==u"lga" and doc[k] in self.lgas_by_name:
                 self.district = District.objects.get(pk=self.lgas_by_name[doc[k]])
             elif k in self.lgas_by_state.keys():
                 self.district = District.objects.get(pk=self.lgas_by_state[k])
@@ -111,6 +115,7 @@ class Instance(models.Model):
         self.xform.clean_instance(doc)
         self._set_phone(doc)
         self._set_start_time(doc)
+        self._set_date(doc)
         self._set_survey_type(doc)
         self._set_surveyor(doc)
         self._set_district(doc)

@@ -29,8 +29,7 @@ class Command(BaseCommand):
             try:
                 models.get_or_create_instance(xml_file, images)
             except utils.MyError, e:
-                # print e
-                pass
+                print e
 
             # close the files
             xml_file.close()
