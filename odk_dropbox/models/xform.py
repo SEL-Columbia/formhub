@@ -96,7 +96,7 @@ class XForm(models.Model):
         return xform_instances.find({tag.XFORM_ID_STRING : self.id_string})
 
     def submission_count(self):
-        return self.instances().count()
+        return self.surveys.count()
     submission_count.short_description = "Submission Count"
 
     def date_of_last_submission(self):
