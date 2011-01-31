@@ -11,4 +11,4 @@ class Command(BaseCommand):
         xform_instances.remove()
         for i in Instance.objects.all():
             print "*"
-            i.save_to_mongo()
+            i.save()
