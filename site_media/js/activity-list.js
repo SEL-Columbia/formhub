@@ -101,9 +101,7 @@ var ActivityList, ActivityPoint;
 		}
 
         this.o = o;
-        if(o._attachments && o._attachments.length) {
-            this.image_url = [imageRoot, o._attachments[0]].join("/")
-        }
+        this.image_url = "/survey/"+this.id+"/";
         
         if(o.geopoint) {
             this.gps = {
