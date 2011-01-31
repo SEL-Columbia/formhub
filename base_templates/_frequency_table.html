@@ -89,7 +89,7 @@ function parseFreqTable(data) {
 			
 		$('#freq-rows').val(row);
 		$('#freq-cols').val(col);
-		$.getJSON("/submission-counts/"+row+"/"+col, function(tableData){
+		$.retrieveJSON("/submission-counts/"+row+"/"+col, function(tableData){
 			var table = parseFreqTable(tableData);
 
 			table.addClass('ptable');
