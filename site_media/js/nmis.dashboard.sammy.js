@@ -30,13 +30,15 @@ Mappable.prototype.shadow = function(){
         new google.maps.Point(0,0), new google.maps.Point(11,22));
     return shadow;
 };
+
 Mappable.prototype.icon = function(){
     var color = "grey";
-    switch(this.survey_type) {
+    switch(this.survey_type.toLowerCase()) {
         case 'water':
         color = "blue";
         break;
         case 'education':
+        case 'school':
         color = 'green';
         break;
         case 'health':
