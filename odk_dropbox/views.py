@@ -93,7 +93,7 @@ def map_data_points(request):
     """
     dict_list = list(xform_instances.find(
             spec={tag.GPS : {"$exists" : True}},
-            fields=[tag.DATE_TIME_START, tag.SURVEYOR_NAME, tag.INSTANCE_DOC_NAME, tag.DISTRICT_ID, tag.ATTACHMENTS, tag.GPS]
+            fields=[tag.DATE_TIME_START, tag.SURVEYOR_NAME, tag.DEVICE_ID, tag.INSTANCE_DOC_NAME, tag.DISTRICT_ID, tag.ATTACHMENTS, tag.GPS]
             ))
     
     return HttpResponse(json.dumps(dict_list, default=json_util.default))

@@ -576,10 +576,10 @@ var zz;
 var dashboard = (function($){
     $(function(){
         var menu = $('#menu .fwidth').empty();
-        menu.append($('<li />').html($("<a />", {href:"#/"}).html("Data Export"))); //why is this not loading in the page?
-        menu.append($('<li />').html($("<a />", {href:"#/activity"}).html("Recent Surveys")))
-        menu.append($('<li />').html($("<a />", {href:"#/frequency-tables"}).html("Frequency Tables")))
-        menu.append($('<li />').html($("<a />", {href:"#/map"}).html("Map")))
+        menu.append($('<li />', {'class':'dashboard'}).html($("<a />", {href:"#/"}).html("Data Export"))); //why is this not loading in the page?
+        menu.append($('<li />', {'class':'activity'}).html($("<a />", {href:"#/activity"}).html("Recent Surveys")))
+        menu.append($('<li />', {'class':'frequency-tables'}).html($("<a />", {href:"#/frequency-tables"}).html("Frequency Tables")))
+        menu.append($('<li />', {'class':'map'}).html($("<a />", {href:"#/map"}).html("Map")))
     })
     
     var dashboard = $.sammy("#main", function(){

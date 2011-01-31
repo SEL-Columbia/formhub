@@ -96,6 +96,9 @@ var ActivityList, ActivityPoint;
 		this.id = o._id;
 		this.survey_type = o._instance_doc_name;
 		this.surveyor = o._surveyor_name;
+		if(this.surveyor===null) {
+		    this.surveyor = o.device_id;
+		}
 
         this.o = o;
         if(o._attachments && o._attachments.length) {
