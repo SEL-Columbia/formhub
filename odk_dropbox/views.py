@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render_to_response
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.db.models import Avg, Max, Min, Count
 
 import itertools
@@ -177,6 +177,19 @@ def frequency_table_urls(request):
                 )
     return render_to_response("url_list.html", {"urls" : urls})
 
+def ensure_logged_in(request):
+    resp = "OK"
+    if request.user.is_authenticated():
+        return HttpResponseRedirect("/main/")
+    else:
+        return HttpResponseRedirect("/accounts/login")
+
+def main_index(request):
+    info={}
+    info['user'] = request.user
+    return render_to_response("index.html", info)
+
+
 
 
 # import re
@@ -184,7 +197,7 @@ def frequency_table_urls(request):
 # from django.shortcuts import render_to_response
 # from djangomako import shortcuts
 # from django.db.models import Avg, Max, Min, Count
-# from django.http import HttpResponse, HttpResponseRedirect
+
 # from odk_dropbox import utils
 # from odk_dropbox.models import Form
 # from odk_dropbox.models import Form, odk_db
@@ -192,17 +205,6 @@ def frequency_table_urls(request):
 # import datetime
 
 
-# def ensure_logged_in(request):
-#     resp = "OK"
-#     if request.user.is_authenticated():
-#         return HttpResponseRedirect("/main/")
-#     else:
-#         return HttpResponseRedirect("/accounts/login")
-
-# def main_index(request):
-#     info={}
-#     info['user'] = request.user
-#     return render_to_response("index.html", info)
 
 # def dashboard(request):
 #     info = {}
