@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     url(r"^submission-counts/(\w+)/(\w+)$", views.frequency_table),
     url(r"^/?$", views.ensure_logged_in),
     url(r"^main/?$", views.main_index),
+    url(r"^survey/(?P<pk>\d+)/$", views.survey),
 )
 
 # from django.views.generic.simple import redirect_to

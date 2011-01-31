@@ -191,7 +191,10 @@ def main_index(request):
     info['user'] = request.user
     return render_to_response("index.html", info)
 
-
+def survey(request, pk):
+    return render_to_response("survey.html",
+                              {"instance" : Instance.objects.get(pk=pk)}
+                              )
 
 
 # import re
