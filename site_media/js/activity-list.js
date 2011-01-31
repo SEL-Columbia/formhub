@@ -116,7 +116,8 @@ var ActivityList, ActivityPoint;
             this.dateObj = new Date(o.start['$date']);
         }
         this.date = ""+this.dateObj.getDay()+"-"+months[this.dateObj.getMonth()]+"-"+(1900+this.dateObj.getYear());
-        this.time = ""+this.dateObj.getHours()+":"+this.dateObj.getMinutes();
+        this.time = ""+this.dateObj.getHours()+":"+ (this.dateObj.getMinutes() < 10 ? "0" : "") + this.dateObj.getMinutes();
+        this.datetime = this.time + "-" + this.date
         
 		this.survey = this.survey_type; //can't pick a consistent name here...
 	}
