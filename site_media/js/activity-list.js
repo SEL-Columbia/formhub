@@ -89,29 +89,36 @@ var ActivityList, ActivityPoint;
 		}
 	})
 
-    var imageRoot = "/site-media/attachments";
+    var imageRoot = "/site-media",
+        months = "Jan Feb Mar Apr May June July Aug Sept Oct Nov Dec".split(" ");
 	function _ActivityPoint(o){
 		if(o instanceof _ActivityPoint) {return o}
-		$.extend(this, o);
-		if($.type(this.id)==='object' && "$oid" in this.id) {
-		    //accepting mongo's id
-		    this.id = this.id['$oid'];
-		}
-		if(!this.district_id) {
-		    //mongo now passes district_id, so this should not be necessary
-		    if(this.gps && this.gps.district_id) {
-    			this.district_id=this.gps.district_id
-    		}
-		}
-		
-		if(this.picture) {
-		    this.image_url = [imageRoot, this.picture].join('/')
-		}
-		if(this.datetime) {
-		  this.processDateTime();
-		}
+		this.id = o._id;
+		this.survey_type = o._instance_doc_name;
+		this.surveyor = o._surveyor_name;
+
+        this.o = o;
+        if(o._attachments && o._attachments.length) {
+            this.image_url = [imageRoot, o._attachments[0]].join("/")
+        }
+        
+        if(o.geopoint) {
+            this.gps = {
+                'lat': o.geopoint.latitude,
+                'lng': o.geopoint.longitude,
+                'alt': o.geopoint.altitude,
+                'acc': o.geopoint.accuracy
+            }
+        }
+        
+        this.district_id = o._district_id;
+        if(o.start && o.start['$date']) {
+            this.dateObj = new Date(o.start['$date']);
+        }
+        this.date = ""+this.dateObj.getDay()+"-"+months[this.dateObj.getMonth()]+"-"+(1900+this.dateObj.getYear());
+        this.time = ""+this.dateObj.getHours()+":"+this.dateObj.getMinutes();
+        
 		this.survey = this.survey_type; //can't pick a consistent name here...
-		
 	}
 	_ActivityPoint.prototype = new Mappable();
     _ActivityPoint.prototype.mapPointListener = function(){
@@ -140,20 +147,20 @@ var ActivityList, ActivityPoint;
 	    _ds += "]";
 	    this.photoContextString = _ds;
 	}
-	_ActivityPoint.prototype.processDateTime = function(){
-	    this.dateObj = (function(dt){
-	        var date = dt.split(" ")[0];
-	        var time = dt.split(" ")[1];
-	        var year = +(date.split("-")[0]);
-	        var month = +(date.split("-")[1]);
-	        var day = +(date.split("-")[2]);
-	        var hour = +(time.split(":")[0]);
-	        var minute = +(time.split(":")[1]);
-	        return new Date(year, month-1, day, hour, minute);
-	    })(this.datetime);
-	    this.date = this.datetime.split(" ")[0]
-	    this.time = this.datetime.split(" ")[0]
-	}
+    // _ActivityPoint.prototype.processDateTime = function(){
+    //     this.dateObj = (function(dt){
+    //         var date = dt.split(" ")[0];
+    //         var time = dt.split(" ")[1];
+    //         var year = +(date.split("-")[0]);
+    //         var month = +(date.split("-")[1]);
+    //         var day = +(date.split("-")[2]);
+    //         var hour = +(time.split(":")[0]);
+    //         var minute = +(time.split(":")[1]);
+    //         return new Date(year, month-1, day, hour, minute);
+    //     })(this.datetime);
+    //     this.date = this.datetime.split(" ")[0]
+    //     this.time = this.datetime.split(" ")[0]
+    // }
 	window.ActivityList = _ActivityList;
 })(jQuery);
 

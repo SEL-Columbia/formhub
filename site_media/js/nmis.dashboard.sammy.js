@@ -3,23 +3,25 @@ function capitalizeString(str) {
 }
 function Mappable(){}
 Mappable.prototype.showMapPoint = function() {
-	if(!this.mapPoint) {
-		var ll = new google.maps.LatLng(this.gps.lat, this.gps.lng)
-		this.mapPoint = new google.maps.Marker({
-			title: this.title,
-			position: ll,
-			map: _map,
-			icon: this.icon(),
-			shadow: this.shadow()
-		});
-		if(this.mapPointListener) {
-		    var _pt = this;
-    		google.maps.event.addListener(this.mapPoint, 'click', function(){
-    		    _pt.mapPointListener();
+    if(this.gps && this.gps.lat) {
+    	if(!this.mapPoint) {
+    		var ll = new google.maps.LatLng(this.gps.lat, this.gps.lng)
+    		this.mapPoint = new google.maps.Marker({
+    			title: this.title,
+    			position: ll,
+    			map: _map,
+    			icon: this.icon(),
+    			shadow: this.shadow()
     		});
-		}
-	}
-	this.mapPoint.setVisible(true)
+    		if(this.mapPointListener) {
+    		    var _pt = this;
+        		google.maps.event.addListener(this.mapPoint, 'click', function(){
+        		    _pt.mapPointListener();
+        		});
+    		}
+    	}
+    	this.mapPoint.setVisible(true)
+    }
 }
 Mappable.prototype.flagColor = 'green';
 var flagColors = "blue green orange pink purple red yellow".split(" ");
