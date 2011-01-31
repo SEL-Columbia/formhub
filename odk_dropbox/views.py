@@ -66,15 +66,6 @@ def export_list(request):
         {"xforms" : XForm.objects.all()}
         )
 
-def dashboard(request):
-    info = prep_info(request)
-#    info['table_types'] = simplejson.dumps(dimensions.keys())
-    info['table_types'] = json.dumps(['a','b','c'])
-    info['districts'] = json.dumps([x.to_dict() for x in District.objects.filter(active=True)])
-    forms = XForm.objects.all()
-    info['surveys'] = json.dumps(list(set([x.title for x in forms])))
-    return render_to_response("dashboard.html", info)
-
 def prep_info(request):
     """
     This function is meant to be reused and provide the user object. If no user object, then
@@ -180,18 +171,13 @@ def frequency_table(request, rows, columns):
         }
     return HttpResponse(json.dumps(table, indent=4))
 
-def frequency_table_urls(request):
-    urls = []
-    keys = dimensions.keys()
-    for i in range(0, len(keys)):
-        for j in range(i+1, len(keys)):
-            urls.append(
-                "submission-counts/%(row)s/%(column)s" % {
-                    "row" : keys[i],
-                    "column" : keys[j]
-                    }
-                )
-    return render_to_response("url_list.html", {"urls" : urls})
+def dashboard(request):
+    info = prep_info(request)
+    info['table_types'] = json.dumps(dimensions.keys())
+    info['districts'] = json.dumps([x.to_dict() for x in District.objects.filter(active=True)])
+    forms = XForm.objects.all()
+    info['surveys'] = json.dumps(list(set([x.title for x in forms])))
+    return render_to_response("dashboard.html", info)
 
 def ensure_logged_in(request):
     resp = "OK"
