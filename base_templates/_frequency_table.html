@@ -23,6 +23,42 @@
 
 <script type="text/javascript" charset="utf-8">
 
+function parseFreqTable(data) {
+	var columns = data.column_headers,
+		rows = data.row_headers;
+	
+	var table = $("<table />");
+	var thead = $("<thead />"),
+		tbody = $("<tbody />");
+	var curRow = $("<tr />").html("<th />");
+	$.each(columns, function(k, v){
+		curRow.append($("<th />").html(v.text));
+	});
+	thead.append(curRow);
+	table.append(thead);
+
+	
+	$.each(rows, function(k, v){
+		curRow = $("<tr />");
+		var rowId = v.id,
+			rowData = data.cells[rowId],
+				rowHeader = $("<td />").html(v.text);
+		curRow.append(rowHeader);
+		$.each(columns, function(k, v){
+			var colId = v.id, text = "";
+			if($.type(rowData)!=='undefined' && rowData && rowData[colId]) {
+				text = rowData[colId];
+			}
+			curRow.append($("<td />", {'class':'data'}).html(text));
+		})
+		
+		tbody.append(curRow);
+	})
+	table.append(tbody);
+	return table;
+}
+
+
 	(function($){
 		$.fn.thinButton = function(){
 			this.button();
@@ -53,8 +89,9 @@
 			
 		$('#freq-rows').val(row);
 		$('#freq-cols').val(col);
-		$.get("/submission-counts/"+row+"/"+col, function(html){
-			var table = $(html);
+		$.getJSON("/submission-counts/"+row+"/"+col, function(tableData){
+			var table = parseFreqTable(tableData);
+
 			table.addClass('ptable');
 			$('tr td', table).each(function(ct, elm){
 				var td = $(elm);
@@ -68,7 +105,7 @@
 				}
 			});
 			$('tr td:first-child', table).removeClass('centered').addClass('rname');
-			
+			// 
 			(function sumRows(tab){
 				var rows = $("tbody tr", tab);
 				$('thead tr th:first-child', tab).after($("<th />", {'class':'sum-header'}).html('&nbsp;'));
@@ -85,7 +122,7 @@
 					$(this).find('td:first-child').after(sumTd);
 				})
 			})(table);
-			
+			// 
 			(function sumCols(tab){
 				var columnsWithData=[];
 				var rows = $("tbody tr", tab);
@@ -117,9 +154,8 @@
 				});
 				$("thead", tab).append(sumRow);
 			})(table);
-			$('.data').css({'width':75})
-			var ftWrap = $("<div />", {'class':'ft-wrap'}).html(table);
-			freqTable.html(ftWrap);
+//			$('.data', table).css({'width':50})
+			freqTable.html($("<div />", {'class':'ft-wrap'}).html(table));
 		});
 	});
 	
