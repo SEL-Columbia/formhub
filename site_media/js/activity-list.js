@@ -173,6 +173,7 @@ var ActivityList, ActivityPoint;
 -   data.
 */
 var __data;
+var times_called = 0;
 (function($){
     var callbacks = [],
         alreadyCalledBack = false,
@@ -203,15 +204,18 @@ var __data;
         // } else {
             //temporary fix to the problem of no activities in the system.
             var url = "/data/map_data/";
-            $.getJSON(url, function(data){
-                // storage.set('activity_stamp', [data.stamp]);
-                storage.set('activity', data);
-                activityCaller.list = new ActivityList(data);
-                window.__list = activityCaller.list;
-                $(callbacks).each(function(){
-                    this.call(activityCaller, activityCaller.list);
-                });
-                alreadyCalledBack=true;
+            $.retrieveJSON(url, function(data){
+                if(times_called===0) {
+                    // storage.set('activity_stamp', [data.stamp]);
+                    storage.set('activity', data);
+                    activityCaller.list = new ActivityList(data);
+                    window.__list = activityCaller.list;
+                    $(callbacks).each(function(){
+                        this.call(activityCaller, activityCaller.list);
+                    });
+                    alreadyCalledBack=true;
+                }
+                times_called++;
             });
         // }
     }
