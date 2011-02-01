@@ -141,7 +141,9 @@ class PhoneNumberQuestion(StringQuestion):
     def __init__(self, **kwargs):
         StringQuestion.__init__(self, **kwargs)
         self._attributes[u"constraint"] = u"regex(., '^\d*$')"
-        self._attributes[u"jr:constraintMsg"] = u"Please enter only numbers."
+        # this approach to constrain messages doesn't work with lxml,
+        # need to figure out how to do the name space thing correctly.
+        # self._attributes[u"jr:constraintMsg"] = u"Please enter only numbers."
         self.hint = u"'0' = respondent has no phone number\n" + \
             u"'1' = respondent prefers to skip this question."
 
@@ -168,7 +170,7 @@ class PictureQuestion(UploadQuestion):
 
 class Choice(object):
     def __init__(self, value, text):
-        self.value = str(value)
+        self.value = unicode(value)
         self.text = text
 
     def xml(self, question_name):
@@ -260,6 +262,8 @@ class Survey(object):
     def _set_up_xpath_dictionary(self):
         self.xpath = {}
         for q in self.questions:
+            if q.name in self.xpath:
+                raise Exception("Question names must be unique", q.name)
             self.xpath[q.name] = u"/" + self._stack[0] + u"/" + q.name
 
     def xml(self):
@@ -361,9 +365,12 @@ class Survey(object):
 #     f.write(xml_str)
 #     f.close()
 
-if __name__ == '__main__':
-    f = open(sys.argv[1])
+def survey_from_json(path):
+    f = open(path)
     questions = json.load(f)
     f.close()
-    s = Survey(title="Agriculture", questions=[q(d) for d in questions])
+    return Survey(title="Agriculture", questions=[q(d) for d in questions])
+
+if __name__ == '__main__':
+    s = survey_from_json(sys.argv[1])
     print s.__unicode__()
