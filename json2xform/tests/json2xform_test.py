@@ -6,7 +6,7 @@ import sys, os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 from django.test import TestCase, Client
-from json2xform.xls2json import XlsForm
+from ..json2xform import survey_from_json
 
 # TODO:
 #  * test_two_questions_with_same_id_fails
@@ -15,10 +15,8 @@ from json2xform.xls2json import XlsForm
 class BasicJson2XFormTests(TestCase):
 
     def test_two_questions_with_same_id_fails(self):
-        # we need to rewrite this test when we actually add this
-        # feature to json2xform
-        # self.assertRaises(XlsForm("json2xform/surveys/super_simple/two_identical_ids.json"), Exception)
         """
-        When loading in a form with two identical IDs, the form should not compile.
+        When loading in a form with two identical IDs, the form should
+        not compile. This is a really bad test right now.
         """
-        pass
+        self.assertRaises(Exception, survey_from_json, "json2xform/surveys/super_simple/two_identical_ids.json")
