@@ -1,5 +1,19 @@
 import os
+import sys
+from pymongo import Connection
+
 from custom_settings import *
+
+# set up the Mongo Database
+_c = Connection()
+MONGO_DB = None
+if sys.argv[1]=="test":
+    # if we're testing, clear the database out
+    # note: this only works when we run the tests at the command line
+    _c.drop_database(MONGO["test database name"])
+    MONGO_DB = _c[MONGO["test database name"]]
+else:
+    MONGO_DB = _c[MONGO["database name"]]
 
 MANAGERS = ADMINS
 

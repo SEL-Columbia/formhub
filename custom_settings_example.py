@@ -2,9 +2,6 @@
 # Change these for your environment
 # then copy then to "custom_settings.py"
 
-import sys
-from pymongo import Connection
-
 MEDIA_URL = 'http://127.0.0.1:8000/site-media/'
 
 DATABASES = {
@@ -14,14 +11,10 @@ DATABASES = {
     },
 }
 
-# set up the Mongo Database, if we're testing clear the database out
-_c = Connection()
-MONGO_DB = None
-if sys.argv[1]=="test":
-    _c.drop_database("odk_test") # drop the database to clean it out
-    MONGO_DB = _c.odk_test
-else:
-    MONGO_DB = _c.odk
+MONGO = {
+    "database name" : "odk",
+    "test database name" : "odk_test",
+    }
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
