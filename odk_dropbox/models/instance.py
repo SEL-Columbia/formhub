@@ -1,14 +1,16 @@
-from django_mongokit import get_database
-db = get_database()
-xform_instances = db.instances
-
 from django.db import models
+from django.conf import settings
+
 from .xform import XForm
 from .phone import Phone
 from .surveyor import Surveyor
 from .district import District
 from .survey_type import SurveyType
 from .. import utils, tag
+
+# this is Mongo Collection (SQL table equivalent) where we will store
+# the parsed submissions
+xform_instances = settings.MONGO_DB.instances
 
 class Instance(models.Model):
     # I should rename this model, maybe Survey

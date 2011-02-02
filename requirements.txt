@@ -9,5 +9,3 @@ django-mptt==0.4.2
 ipython==0.10.1
 ipdb==0.2
 pymongo==1.9
-mongokit==0.5.13.1
-django-mongokit==0.1.7
