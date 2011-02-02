@@ -24,3 +24,5 @@ TIME_ZONE = 'America/Chicago'
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+
+SOUTH_IGNORE_DATABASES = ['mongodb']
