@@ -96,11 +96,12 @@ var ActivityList, ActivityPoint;
 		this.id = o._id;
 		this.survey_type = o._instance_doc_name;
 		this.surveyor = o._surveyor_name;
+		if(this.surveyor===null) {
+		    this.surveyor = o.device_id;
+		}
 
         this.o = o;
-        if(o._attachments && o._attachments.length) {
-            this.image_url = [imageRoot, o._attachments[0]].join("/")
-        }
+        this.image_url = "/survey/"+this.id+"/";
         
         if(o.geopoint) {
             this.gps = {
@@ -123,13 +124,12 @@ var ActivityList, ActivityPoint;
 	}
 	_ActivityPoint.prototype = new Mappable();
     _ActivityPoint.prototype.mapPointListener = function(){
-        this.prepForTemplate();
-        var t = $.tmpl(surveyViewTemplate, this);
-		var dest = $('.survey-content', t);
-		$.get('/embed/survey_instance_data/'+this.id, function(data){
+//        this.prepForTemplate();
+		var dest = $('<div />', {'class':'survey-content'});
+		$.get('/survey/'+this.id+'/', function(data){
 			dest.append(data);
-		})
-		MapPopup(t);
+		});
+		MapPopup(dest);
     }
 	_ActivityPoint.prototype.district=function(){
 		var result, district_id = this.district_id;
@@ -169,57 +169,25 @@ var ActivityList, ActivityPoint;
 -   the global "ActivityCaller" object, which has methods for handling the activity
 -   data.
 */
-var __data;
 (function($){
     var callbacks = [],
-        alreadyCalledBack = false,
-        activityCaller;
-    function ActivityCaller(){
-        if(!storage) {return false; console.err("Storage object can't be found.");}
-        
-        // if(!storage.exists('activity')){
-        //   var url = "/data/map_data/";
-        //   $.getJSON(url, function(data){
-        //       // storage.set('activity_stamp', [data.stamp]);
-        //       storage.set('activity', data);
-        //       activityCaller.list = new ActivityList(data);
-        //       window.__list = activityCaller.list;
-        //       __data=data;
-        //       $(callbacks).each(function(){
-        //           this.call(activityCaller, activityCaller.list);
-        //       });
-        //       alreadyCalledBack=true;
-        //   });
-        // } else if(storage.get('activity').length && storage.get('activity').length > 0) {
-        //     this.list = new ActivityList(storage.get('activity'));
-        //     window.__list = this.list;
-        //     $(callbacks).each(function(){
-        //         this.call(activityCaller, activityCaller.list);
-        //     });
-        //     alreadyCalledBack=true;
-        // } else {
-            //temporary fix to the problem of no activities in the system.
-            var url = "/data/map_data/";
-            $.getJSON(url, function(data){
-                // storage.set('activity_stamp', [data.stamp]);
-                storage.set('activity', data);
-                activityCaller.list = new ActivityList(data);
-                window.__list = activityCaller.list;
-                $(callbacks).each(function(){
-                    this.call(activityCaller, activityCaller.list);
-                });
-                alreadyCalledBack=true;
-            });
-        // }
-    }
-    ActivityCaller.prototype.list = false; //defaults to false to ensure ActivityList loaded
+        activityList = [];
     
     function WithActivityList(cb, opts){
-        if(!activityCaller) {activityCaller = new ActivityCaller();}
-        if(!alreadyCalledBack) {
+        var url = "/data/map_data/";
+        if(activityList.length==0) {
+            $.retrieveJSON(url, function(data){
+                // storage.set('activity_stamp', [data.stamp]);
+                storage.set('activity', data);
+                window.__list = new ActivityList(data);
+                $(callbacks).each(function(){
+                    this.call({list:window.__list}, window.__list);
+                });
+                callbacks = [];
+            });
             callbacks.push(cb);
         } else {
-            cb.call(activityCaller, activityCaller.list);
+            cb.call({list:window.__list}, window.__list);
         }
     }
     window.WithActivityList = WithActivityList;
