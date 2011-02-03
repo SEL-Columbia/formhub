@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+Phone Manager Template
+<hr />
+<table border="0" cellspacing="5" cellpadding="5">
+	<thead>
+		<tr>
+			<th>
+				Phone management
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				Phone management data.
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" charset="utf-8">
+<!--
+$(function(){
+	$.getJSON('/phone_manager/phones.json', function(data){
+		if(data && data.message) {
+			$('table tbody td').html(data.message);
+		}
+	});
+});
+-->
+</script>
+{% endblock %}
