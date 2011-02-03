@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# vim: ai ts=4 sts=4 et sw=4
+
 import os
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -43,7 +47,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'nmis.urls'
 
 TEMPLATE_DIRS = (
-    os.path.join("/base_templates/", PROJECT_ROOT)
+    os.path.join(PROJECT_ROOT, "base_templates/" )
 )
 
 INSTALLED_APPS = (
@@ -61,7 +65,7 @@ INSTALLED_APPS = (
 )
 
 MEDIA_URL   = 'http://localhost/site_media/'
-MEDIA_ROOT  = os.path.join(PROJECT_ROOT, '/site_media/')
+MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'site_media/')
 
 DATABASES = {
     'default': {

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
+# -*- coding: utf-8 -*-
+# vim: ai ts=4 sts=4 et sw=4
 
 from django.db import models
 
@@ -27,7 +28,7 @@ class Phone(models.Model):
     # todo: checks on the phone number consistency ?
     phone_number = models.CharField(max_length=16, unique=True)
     
-    #surveyor = models.ForeignKey(Surveyor)
+    surveyor = models.ForeignKey(Surveyor)
 
     class Meta:
         app_label = 'odk_dropbox'
