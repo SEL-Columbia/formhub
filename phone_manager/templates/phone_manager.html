@@ -4,32 +4,59 @@
 
 Phone Manager Template
 <hr />
-<table border="0" cellspacing="5" cellpadding="5">
-	<thead>
-		<tr>
-			<th>
-				Phone management
-			</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>
-				Phone management data.
-			</td>
-		</tr>
-	</tbody>
-</table>
+
+<div id="manager-table-wrap"></div>
 
 {% endblock %}
 
 {% block footer %}
 <script type="text/javascript" charset="utf-8">
 <!--
+var ManagerTable = (function(){
+	var table, tbody, thead, theadRow, columnIds = [], curRow;
+	function CreateTable(data) {
+		table = $("<table />");
+		tbody = $("<tbody />");
+		theadRow = $("<tr />");
+		thead = $("<thead />").html(theadRow);
+		table.append(tbody).append(thead);
+		
+		$(data.columns).each(function(){
+			theadRow.append($("<th />").html(this.name));
+			columnIds.push(this.id);
+		});
+		
+		$(data.rows).each(function(){
+			curRow = $("<tr />");
+			var _row = this;
+			$(columnIds).each(function(){
+				if('undefined'!==typeof _row[this]) {
+					curRow.append($("<td />").html(_row[this]))
+				} else {
+					curRow.append($("<td />"));
+				}
+			});
+			tbody.append(curRow);
+		})
+		return table;
+	}
+	function processRetrieved() {
+		//jquery.offline has two callbacks that should act differently.
+
+		//do nothing for now...
+	}
+	return {
+		create: CreateTable,
+		processRetrieved: processRetrieved
+	}
+})()
+
 $(function(){
-	$.getJSON('/phone_manager/phones.json', function(data){
-		if(data && data.message) {
-			$('table tbody td').html(data.message);
+	$.retrieveJSON('/phone_manager/phones.json', function(data, status, cacheInfo){
+		if(cacheInfo && cacheInfo.retrievedAt) {
+			ManagerTable.processRetrieved(data);
+		} else {
+			ManagerTable.create(data).appendTo("#manager-table-wrap");
 		}
 	});
 });
