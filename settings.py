@@ -1,7 +1,14 @@
 import os
-from custom_settings import *
 
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+ADMINS = (
+    # ('Your Name', 'your_email@domain.com'),
+)
 MANAGERS = ADMINS
+
+# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+TIME_ZONE = 'America/Chicago'
 
 LANGUAGE_CODE = 'en-us'
 SITE_ID = 1
@@ -35,11 +42,8 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'nmis.urls'
 
-PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-MEDIA_ROOT  = '%s/site_media/' % PROJECT_ROOT
-
 TEMPLATE_DIRS = (
-    "%s/base_templates/" % PROJECT_ROOT
+    os.path.join("/base_templates/", PROJECT_ROOT)
 )
 
 INSTALLED_APPS = (
@@ -55,3 +59,29 @@ INSTALLED_APPS = (
     'odk_dropbox',
     'phone_manager'
 )
+
+MEDIA_URL   = 'http://localhost/site_media/'
+MEDIA_ROOT  = os.path.join(PROJECT_ROOT, '/site_media/')
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
+    },
+    'mongodb': {
+        'ENGINE': 'django_mongokit.mongodb',
+        'NAME': 'odk',
+    },
+}
+
+
+SOUTH_IGNORE_DATABASES = ['mongodb']
+
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
+
+
+try:
+    import custom_settings
+except ImportError:
+    pass
