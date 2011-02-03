@@ -35,7 +35,7 @@ class Instance(models.Model):
 
     def _set_phone(self, doc):
         self.phone, created = Phone.objects.get_or_create(
-            device_id=doc[tag.DEVICE_ID]
+            imei=doc[tag.DEVICE_ID]
             )
 
     def _set_survey_type(self, doc):
