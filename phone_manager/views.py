@@ -6,12 +6,14 @@ from django.shortcuts import render_to_response
 from django.http import (HttpResponse, HttpResponseBadRequest, 
                          HttpResponseRedirect)
                          
+from django.forms.models import model_to_dict
+
+from odk_dropbox.models import Phone, Surveyor
+                         
 try:
     import json
 except ImportError:
     from django.utils import simplejson as json
-
-from django.core import serializers
 
 
 def phone_manager(request):
@@ -26,18 +28,15 @@ def phone_manager_json(request):
 
     phonet = {}
 
-    phones = Phone.objects.all()
-    phones_json = serializers.serialize('json', phones,  ensure_ascii=False)
+    phones_dicts = []
+    for phone in Phone.objects.all():
+        phone = model_to_dict(phone)
+        phone['surveyor'] = Surveyor.objects.get(id=phone['surveyor']).name
+        phones_dicts.append(phone)
     
-    # replace the surveyor id by his name
-    for phone in phones_json:
-        phone['surveyor'] = Surveyor.object.get(id=phone['surveyor']).name
-
-    phonet['rows'] = phones_json
+    phonet['rows'] = phones_dicts
         
     # set a mapping to for the client side to match ids with the column name
-    
-    
     phonet['columns'] = [{'name': f.verbose_name, 
                          'id': f.attname} for f in Phone._meta.fields]
                     
