@@ -40,7 +40,7 @@ def phone_manager_json(request):
     else:
         phones = Phone.objects.all()
 
-    paginator = Paginator(phones, 50, orphans=10, 
+    paginator = Paginator(phones, 4, orphans=0, 
                           allow_empty_first_page=True)
 
     try:
