@@ -61,7 +61,8 @@ INSTALLED_APPS = (
     'registration',
     'json2xform',
     'odk_dropbox',
-    'phone_manager'
+    'phone_manager',
+    'haystack'
 )
 
 MEDIA_URL   = 'http://localhost/site_media/'
@@ -84,6 +85,11 @@ SOUTH_IGNORE_DATABASES = ['mongodb']
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
+# SEARCH ENGINE settings
+HAYSTACK_SITECONF = 'search_sites'
+HAYSTACK_SEARCH_ENGINE = 'whoosh'
+HAYSTACK_WHOOSH_PATH = os.path.join(PROJECT_ROOT, 'search_index')
+HAYSTACK_INCLUDE_SPELLING = True
 
 try:
     import custom_settings

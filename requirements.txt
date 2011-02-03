@@ -11,3 +11,5 @@ ipdb==0.2
 pymongo==1.9
 mongokit==0.5.13.1
 django-mongokit==0.1.7
+Whoosh==1.6.1
+django-haystack==1.1.0
