@@ -12,13 +12,47 @@ Phone Manager Template
 {% block footer %}
 <script type="text/javascript" charset="utf-8">
 <!--
+
+
 var ManagerTable = (function(){
-	var table, tbody, thead, theadRow, columnIds = [], curRow;
-	function CreateTable(data) {
-		table = $("<table />", {'class':'shade-odd fullw padded'});
-		tbody = $("<tbody />");
-		theadRow = $("<tr />");
-		thead = $("<thead />").html(theadRow);
+	function CreatePagination(_pag, destination) {
+		var paginateElem = $("<div />"), pagButton;
+		pagButton = $("<a />", {'href':'#/search:Wynonah/page:'+_pag.previous_page}).html("«");
+		if(_pag.previous_page===-1) {
+			pagButton.attr('href', '#/').addClass('disabled');
+		}
+		paginateElem.append(pagButton);
+		for(var p = 0; p<_pag.page_count; p++) {
+			pagButton = $("<a />", {'href':'#/search:Wynonah/page:'+(1+p)}).html(+p+1)
+			if(_pag.page===p+1) {
+				pagButton.addClass('selected');
+			}
+			paginateElem.append(pagButton);
+		}
+		
+		pagButton = $("<a />", {'href':'#/search:Wynonah/page:'+_pag.next_page}).html("»");
+		if(_pag.next_page===-1) {
+			pagButton.attr('href', '#/').addClass('disabled');
+		}
+		paginateElem.append(pagButton);
+		
+		destination.delegate('.pagination a', 'click', function(evt){
+			if($(this).hasClass('selected') || $(this).hasClass('disabled')) {
+				evt.preventDefault();
+			}
+			$(this).blur();
+		});
+		destination.append(paginateElem);
+	}
+	function CreateTable(data, dest) {
+		var columnIds = [],
+			destination = $(dest),
+			table = $("<table />", {'class':'shade-alternate fullw padded'}),
+			tbody = $("<tbody />"),
+			theadRow = $("<tr />"),
+			thead = $("<thead />").html(theadRow);
+		
+		destination.empty();
 		table.append(tbody).append(thead);
 		
 		$(data.columns).each(function(){
@@ -37,29 +71,49 @@ var ManagerTable = (function(){
 				}
 			});
 			tbody.append(curRow);
-		})
-		return table;
+		});
+		destination.append(table);
+		if(data.pagination) {
+			destination.prepend($("<div />", {'class':'pagination', 'style':'clear:both'}));
+			destination.append($("<div />", {'class':'pagination', 'style':'clear:both'}));
+			destination.append($("<br />", {'style':'clear:both'}));
+			
+			CreatePagination(data.pagination, $('.pagination', destination));
+		}
 	}
 	function processRetrieved() {
 		//jquery.offline has two callbacks that should act differently.
-
 		//do nothing for now...
 	}
 	return {
 		create: CreateTable,
 		processRetrieved: processRetrieved
 	}
-})()
+})();
 
-$(function(){
-	$.retrieveJSON('/phone_manager/phones.json', function(data, status, cacheInfo){
-		if(cacheInfo && cacheInfo.retrievedAt) {
-			ManagerTable.processRetrieved(data);
-		} else {
-			ManagerTable.create(data).appendTo("#manager-table-wrap");
-		}
+
+var dashboard = $.sammy("#content", function(){
+	this.get("#/", function(){
+		this.redirect("#/page:1");
 	});
+	this.get(new RegExp("#/(.+)$"), function(){
+		var vals = {}, matchVal;
+		$(this.params.splat[0].split("/")).each(function(){
+			if(matchVal = this.match(/^(\S+):(.*)/)) {
+				vals[matchVal[1]]=matchVal[2];
+			}
+		});
+		$.getJSON('/phone_manager/phones.json', vals, function(data, status, cacheInfo){
+			if(cacheInfo && cacheInfo.retrievedAt) {
+				ManagerTable.processRetrieved(data);
+			} else {
+				ManagerTable.create(data, "#manager-table-wrap");
+			}
+		});
+	});
+	this.run("#/");
 });
+
 -->
 </script>
 {% endblock %}
