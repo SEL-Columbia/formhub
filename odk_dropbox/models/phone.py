@@ -4,7 +4,7 @@
 from django.db import models
 
 class Phone(models.Model):
-    device_id = models.CharField(max_length=32, unique=True)
+    imei = models.CharField(max_length=32, unique=True)
 
     class Meta:
         app_label = 'odk_dropbox'
