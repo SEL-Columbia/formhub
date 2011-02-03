@@ -24,3 +24,4 @@ class XFormAdmin(admin.ModelAdmin):
         self.list_display_links = (None, )
 
 admin.site.register(models.XForm, XFormAdmin)
+admin.site.register(models.Phone)
