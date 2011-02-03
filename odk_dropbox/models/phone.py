@@ -27,7 +27,7 @@ class Phone(models.Model):
                                   verbose_name="Visible ID")
     
     # todo: checks on the phone number consistency ?
-    phone_number = models.CharField(max_length=16, unique=True, 
+    phone_number = models.CharField(max_length=16,
                                     verbose_name="Current phone number")
     
     surveyor = models.ForeignKey(Surveyor, null=True, verbose_name="Surveyor")
