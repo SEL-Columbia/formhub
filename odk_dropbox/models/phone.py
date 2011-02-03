@@ -15,20 +15,22 @@ class Phone(models.Model):
     STATUS_CHOICES = (('functional', 'Functional'), 
                       ('broken', 'Broken'))
 
-    imei = models.CharField(max_length=32, unique=True)
+    imei = models.CharField(max_length=32, unique=True, verbose_name='IMEI')
     
     status = models.CharField(max_length=16, choices=STATUS_CHOICES,
-                             default='functional')
+                             default='functional', verbose_name='Status')
                              
-    note = models.TextField(blank=True, null=True)
+    note = models.TextField(blank=True, null=True, verbose_name="Notes")
     
     # todo: replace this with a code field ?
-    visible_id = models.CharField(max_length=32, unique=True)
+    visible_id = models.CharField(max_length=32, unique=True, 
+                                  verbose_name="Visible ID")
     
     # todo: checks on the phone number consistency ?
-    phone_number = models.CharField(max_length=16, unique=True)
+    phone_number = models.CharField(max_length=16, unique=True, 
+                                    verbose_name="Current phone number")
     
-    surveyor = models.ForeignKey(Surveyor)
+    surveyor = models.ForeignKey(Surveyor,  verbose_name="Surveyor")
 
     class Meta:
         app_label = 'odk_dropbox'
