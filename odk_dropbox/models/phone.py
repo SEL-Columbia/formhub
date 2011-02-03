@@ -30,7 +30,7 @@ class Phone(models.Model):
     phone_number = models.CharField(max_length=16, unique=True, 
                                     verbose_name="Current phone number")
     
-    surveyor = models.ForeignKey(Surveyor,  verbose_name="Surveyor")
+    surveyor = models.ForeignKey(Surveyor, null=True, verbose_name="Surveyor")
 
     class Meta:
         app_label = 'odk_dropbox'
