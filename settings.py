@@ -53,4 +53,5 @@ INSTALLED_APPS = (
     'registration',
     'json2xform',
     'odk_dropbox',
+    'phone_manager'
 )
