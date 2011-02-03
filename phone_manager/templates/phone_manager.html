@@ -15,7 +15,7 @@ Phone Manager Template
 var ManagerTable = (function(){
 	var table, tbody, thead, theadRow, columnIds = [], curRow;
 	function CreateTable(data) {
-		table = $("<table />");
+		table = $("<table />", {'class':'shade-odd fullw padded'});
 		tbody = $("<tbody />");
 		theadRow = $("<tr />");
 		thead = $("<thead />").html(theadRow);
