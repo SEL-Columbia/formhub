@@ -65,8 +65,11 @@ def phone_manager_json(request):
     # turn phones into a dict with surveroy id replace by it's name
     phones_dicts = []
     for phone in phones_page.object_list:
-        phone = model_to_dict(phone.object)
-        phone['surveyor'] = Surveyor.objects.get(id=phone['surveyor']).name
+        phone = model_to_dict(phone)
+        try:
+            phone['surveyor_id'] = Surveyor.objects.get(id=phone['surveyor']).name
+        except:
+            phone['surveyor_id'] = "No Surveyor Found"
         phones_dicts.append(phone)
     
     phonet['rows'] = phones_dicts
