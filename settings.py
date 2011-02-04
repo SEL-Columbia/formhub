@@ -62,7 +62,6 @@ INSTALLED_APPS = (
     'json2xform',
     'odk_dropbox',
     'phone_manager',
-    'haystack'
 )
 
 MEDIA_URL   = 'http://localhost/site_media/'
