@@ -1,9 +1,0 @@
-IMEI: {{ object.imei }}
-ID: {{ object.visible_id }}
-Phone number: {{ object.phone_number }}
-Status: {{ object.status }}
-Surveyor: {{ object.surveyor.name }}
-
-Notes:
-
-{{ object.note }}
