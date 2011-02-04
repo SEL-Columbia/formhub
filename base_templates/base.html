@@ -11,6 +11,7 @@
 	<script type="text/javascript" src="/site-media/js/jquery.buildin.js"></script>
 	<script type="text/javascript" src="/site-media/js/sammy-latest.min.js"></script>
 	<script type="text/javascript" src="/site-media/js/jquery.offline.js"></script>
+	<script type="text/javascript" src="/site-media/js/jquery.tmpl.min.js"></script>
 	<script src="/site-media/js/json2table.js" type="text/javascript" charset="utf-8"></script>
 	<link rel="stylesheet" href="/site-media/css/sitewide.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
 	<link rel="stylesheet" href="/site-media/css/tables.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
@@ -52,12 +53,19 @@
 	{% endif %}
 	<div id="content">
 		<div class="fwidth">
+			<div class='content-inner-wrap'>
 			{% block content %}{% endblock %}
+			</div>
 		</div>
 	</div>
 	<script type="text/javascript" charset="utf-8">
 		if($('#content .fwidth').find('.iwrap').length==0) {
-			$('#content .fwidth').wrapInner("<div style='background-color:#fff;border:1px solid #666;padding:6px;margin:6px' />"); //real hacky
+			$('#content .fwidth > .content-inner-wrap').css({
+				'background-color':'#fff',
+				'border':'1px solid #666',
+				'padding': '6px',
+				'margin': '6px'
+			})
 		}
 	</script>
 	{% block footer %}{% endblock %}
