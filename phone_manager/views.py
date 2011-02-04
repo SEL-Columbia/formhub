@@ -62,6 +62,9 @@ def phone_manager_json(request):
                             'previous_page': prev,
                             'page': page}
     
+    #when there's a search query, pass it back to the page in the json
+    phonet['search_error'] = "We could not find the record you were looking for."
+    
     # turn phones into a dict with surveroy id replace by it's name
     phones_dicts = []
     for phone in phones_page.object_list:

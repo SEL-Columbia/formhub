@@ -101,6 +101,11 @@ var ManagerTable = (function(){
 		searchBox = $.tmpl(jqTemplates.search_form, {'query': dashboardEnvironment.search});
 		destination.append(searchBox);
 		
+		if('undefined'!==typeof data.search_error) {
+			var searchError = $.tmpl(jqTemplates.search_error, {'error': data.search_error});
+			destination.append(searchError);
+		}
+		
 		table.append(tbody).append(thead);
 		
 		$(data.columns).each(function(){
