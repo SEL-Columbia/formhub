@@ -9,8 +9,6 @@ from django.http import (HttpResponse, HttpResponseBadRequest,
                          
 from django.forms.models import model_to_dict
 
-from haystack.query import SearchQuerySet
-
 from odk_dropbox.models import Phone, Surveyor
 
                          
@@ -31,16 +29,16 @@ def phone_manager_json(request):
     """
 
     phonet = {}
+    
+    phones = Phone.objects.all()
 
-    query = request.GET.get('q', '')
-    if query:
-        phones = SearchQuerySet().auto_query(query).load_all()
-        phonet = {'from_search': True, 
-                  'did_you_mean': phones.spelling_suggestion()}
-    else:
-        phones = Phone.objects.all()
+    search = request.GET.get('search', '')
+    if search:
+        terms = search.split()
+        for term in terms:
+            phones = phones.filter(search_field__contains=term)
 
-    paginator = Paginator(phones, 4, orphans=0, 
+    paginator = Paginator(phones, 50, orphans=10, 
                           allow_empty_first_page=True)
 
     try:
