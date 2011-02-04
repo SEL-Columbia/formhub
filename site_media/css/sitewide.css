@@ -131,8 +131,9 @@ h2.title {
 
 .pagination {
     padding: 8px;
-            font-size: 80%;
-        }
+    font-size: 80%;
+    height: 30px;
+}
 
 .pagination a {
     text-decoration: none;

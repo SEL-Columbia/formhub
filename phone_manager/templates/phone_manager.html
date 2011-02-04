@@ -4,33 +4,76 @@
 
 Phone Manager Template
 <hr />
-
-<div id="manager-table-wrap"></div>
+<div id="manager-table-wrap">
+	<script id="search_form" type="text/x-jquery-tmpl">
+	<div class='search-row'>
+	<form>
+		<input type="text" value="${query}" name="search" />
+		<input type="submit" value="Search" />
+	</form>
+	</div>
+	</script>
+	
+	<script id="search_error" type="text/x-jquery-tmpl">
+	<div class='search-error-box'>
+		<h2>Il y avait une erreur.</h2>
+		<p>
+			<b>Attention!</b> <br />
+			${error}
+		</p>
+	</div>
+	</script>
+</div>
 
 {% endblock %}
 
 {% block footer %}
+
+<script type="text/javascript" charset="utf-8">
+	//this will be in an external script
+	
+	(function(){
+		$.fn.gatherTemplates = function(){
+			var templates = {};
+			$('script[type=text/x-jquery-tmpl]', this).each(function(){
+				templates[this.id] = $(this).template();
+			})
+			return templates;
+		}
+	})(jQuery)
+	
+</script>
+
+
 <script type="text/javascript" charset="utf-8">
 <!--
 
+var jqTemplates = $("#manager-table-wrap").gatherTemplates();
 
 var ManagerTable = (function(){
+	function hashUrlFor(obj) {
+		var url = "#";
+		$.each(obj, function(k, v){
+			url+="/"+k+":"+v;
+		});
+		return url;
+	}
 	function CreatePagination(_pag, destination) {
 		var paginateElem = $("<div />"), pagButton;
-		pagButton = $("<a />", {'href':'#/search:Wynonah/page:'+_pag.previous_page}).html("«");
+		pagButton = $("<a />", {'href':hashUrlFor({page:_pag.previous_page, search:dashboardEnvironment.search})}).html("«");
 		if(_pag.previous_page===-1) {
 			pagButton.attr('href', '#/').addClass('disabled');
 		}
 		paginateElem.append(pagButton);
 		for(var p = 0; p<_pag.page_count; p++) {
-			pagButton = $("<a />", {'href':'#/search:Wynonah/page:'+(1+p)}).html(+p+1)
+			pagButton = $("<a />", {'href':hashUrlFor({page:(1+p), search:dashboardEnvironment.search})}).html(+p+1)
 			if(_pag.page===p+1) {
 				pagButton.addClass('selected');
 			}
 			paginateElem.append(pagButton);
 		}
-		
-		pagButton = $("<a />", {'href':'#/search:Wynonah/page:'+_pag.next_page}).html("»");
+
+		pagButton = $("<a />", {'href':hashUrlFor({page:_pag.next_page, search:dashboardEnvironment.search})}).html("»");
 		if(_pag.next_page===-1) {
 			pagButton.attr('href', '#/').addClass('disabled');
 		}
@@ -50,9 +93,14 @@ var ManagerTable = (function(){
 			table = $("<table />", {'class':'shade-alternate fullw padded'}),
 			tbody = $("<tbody />"),
 			theadRow = $("<tr />"),
+			searchBox,
 			thead = $("<thead />").html(theadRow);
 		
 		destination.empty();
+		
+		searchBox = $.tmpl(jqTemplates.search_form, {'query': dashboardEnvironment.search});
+		destination.append(searchBox);
+		
 		table.append(tbody).append(thead);
 		
 		$(data.columns).each(function(){
@@ -92,7 +140,18 @@ var ManagerTable = (function(){
 })();
 
 
-var dashboard = $.sammy("#content", function(){
+var dashboardEnvironment = {},
+  dashboard = $.sammy("#content", function(){
+	function hashUrlForEnvironment() {
+		var hashUrl = "#";
+		if(dashboardEnvironment.page && $.type(dashboardEnvironment.page)==='string') {
+			hashUrl += "/page:"+dashboardEnvironment.page;
+		}
+		if(dashboardEnvironment.search && $.type(dashboardEnvironment.search)==='string') {
+			hashUrl += "/search:"+dashboardEnvironment.search;
+		}
+		return hashUrl;
+	}
 	this.get("#/", function(){
 		this.redirect("#/page:1");
 	});
@@ -102,12 +161,19 @@ var dashboard = $.sammy("#content", function(){
 			if(matchVal = this.match(/^(\S+):(.*)/)) {
 				vals[matchVal[1]]=matchVal[2];
 			}
+			$.extend(dashboardEnvironment, vals);
 		});
 		$.getJSON('/phone_manager/phones.json', vals, function(data, status, cacheInfo){
 			if(cacheInfo && cacheInfo.retrievedAt) {
 				ManagerTable.processRetrieved(data);
 			} else {
 				ManagerTable.create(data, "#manager-table-wrap");
+				$('.search-row form').submit(function(evt){
+					dashboardEnvironment.search = $('input[type=text]', $(this)).val();
+					dashboard.setLocation(hashUrlForEnvironment())
+					evt.preventDefault();
+					return false;
+				});
 			}
 		});
 	});
