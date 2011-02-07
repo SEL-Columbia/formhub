@@ -170,6 +170,12 @@ h2.title {
 	color: #fff;
 }
 
+.search-row {
+    padding: 4px 10px;
+    border: 1px solid #eee;
+    margin: 2px 20px;
+}
+
 .error-box {
 	background-color: #feecec;
 	border: 1px solid #fccece;
