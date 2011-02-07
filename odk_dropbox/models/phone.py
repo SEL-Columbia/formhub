@@ -31,9 +31,27 @@ class Phone(models.Model):
                                     verbose_name="Current phone number")
     
     surveyor = models.ForeignKey(Surveyor, null=True, verbose_name="Surveyor")
+    
+    search_field = models.TextField(blank=True, editable=False, null=True)
 
     class Meta:
         app_label = 'odk_dropbox'
+
+    def surveyor_name(self):
+        return self.surveyor.name if self.surveyor else u""
+
+    def update_search_field(self):
+        """
+        Rebuilt the search field we use to filter all the phones
+        """
+        self.search_field = ' '.join((self.imei, self.status, 
+                                      self.visible_id, self.phone_number,
+                                      self.surveyor_name()))        
+        
+    def save(self, *args, **kwargs):
+        self.update_search_field()
+        models.Model.save(self, *args, **kwargs)
+        
 
     def __unicode__(self):
         return self.imei

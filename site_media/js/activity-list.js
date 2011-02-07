@@ -169,25 +169,31 @@ var ActivityList, ActivityPoint;
 -   the global "ActivityCaller" object, which has methods for handling the activity
 -   data.
 */
+var cachedAt = false;
 (function($){
     var callbacks = [],
         activityList = [];
     
     function WithActivityList(cb, opts){
         var url = "/data/map_data/";
-        if(activityList.length==0) {
-            $.retrieveJSON(url, function(data){
-                // storage.set('activity_stamp', [data.stamp]);
-                storage.set('activity', data);
-                window.__list = new ActivityList(data);
-                $(callbacks).each(function(){
-                    this.call({list:window.__list}, window.__list);
-                });
-                callbacks = [];
+        if(!cachedAt) {
+            $.retrieveJSON(url, function(data, status, cacheStatus){
+                cachedAt = cacheStatus;
+                if(cacheStatus && cacheStatus.retrievedAt) {
+                    //bury
+                } else {
+                    // storage.set('activity_stamp', [data.stamp]);
+                    storage.set('activity', data);
+                    window.__list = new ActivityList(data);
+                    $(callbacks).each(function(){
+                        this.call({}, window.__list);
+                    });
+                    callbacks = [];
+                }
             });
             callbacks.push(cb);
         } else {
-            cb.call({list:window.__list}, window.__list);
+            cb.call({}, window.__list);
         }
     }
     window.WithActivityList = WithActivityList;

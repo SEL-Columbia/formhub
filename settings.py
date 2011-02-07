@@ -2,14 +2,21 @@
 # -*- coding: utf-8 -*-
 # vim: ai ts=4 sts=4 et sw=4
 
-import os
+from custom_settings import *
 
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+import sys
+from pymongo import Connection
 
-ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
-)
-MANAGERS = ADMINS
+# set up the Mongo Database
+_c = Connection()
+MONGO_DB = None
+if sys.argv[1]=="test":
+    # if we're testing, clear the database out
+    # note: this only works when we run the tests at the command line
+    _c.drop_database(MONGO["test database name"])
+    MONGO_DB = _c[MONGO["test database name"]]
+else:
+    MONGO_DB = _c[MONGO["database name"]]
 
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 TIME_ZONE = 'America/Chicago'
@@ -62,36 +69,10 @@ INSTALLED_APPS = (
     'json2xform',
     'odk_dropbox',
     'phone_manager',
-    'haystack'
 )
-
-MEDIA_URL   = 'http://localhost/site_media/'
-MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'site_media/')
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
-    },
-    'mongodb': {
-        'ENGINE': 'django_mongokit.mongodb',
-        'NAME': 'odk',
-    },
-}
-
-
-SOUTH_IGNORE_DATABASES = ['mongodb']
-
-DEBUG = False
-TEMPLATE_DEBUG = DEBUG
 
 # SEARCH ENGINE settings
 HAYSTACK_SITECONF = 'search_sites'
 HAYSTACK_SEARCH_ENGINE = 'whoosh'
 HAYSTACK_WHOOSH_PATH = os.path.join(PROJECT_ROOT, 'search_index')
 HAYSTACK_INCLUDE_SPELLING = True
-
-try:
-    import custom_settings
-except ImportError:
-    pass

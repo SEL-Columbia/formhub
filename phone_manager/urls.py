@@ -7,6 +7,7 @@ from . import views
 urlpatterns = patterns('',
     url(r"^$", views.phone_manager),
     url(r"^phones\.json$", views.phone_manager_json),
+    url(r"^update/(?P<phone_id>\d+)/$", views.update_phone),
 )
 
 # from django.views.generic.simple import redirect_to

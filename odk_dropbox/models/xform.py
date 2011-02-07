@@ -4,7 +4,6 @@
 import datetime
 from django.db import models
 from .. import utils, tag
-from .instance import xform_instances
 from district import District
 
 # these cleaners will be used when saving data
@@ -91,9 +90,6 @@ class XForm(models.Model):
 
     def __unicode__(self):
         return getattr(self, "id_string", "")
-
-    def instances(self):
-        return xform_instances.find({tag.XFORM_ID_STRING : self.id_string})
 
     def submission_count(self):
         return self.surveys.count()
