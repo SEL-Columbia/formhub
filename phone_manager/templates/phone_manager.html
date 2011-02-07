@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-
 Phone Manager Template
 <hr />
 <div id="manager-table-wrap">
@@ -15,7 +14,7 @@ Phone Manager Template
 	</script>
 	
 	<script id="search_error" type="text/x-jquery-tmpl">
-	<div class='search-error-box'>
+	<div class='search-error-box error-box'>
 		<h2>Il y avait une erreur.</h2>
 		<p>
 			<b>Attention!</b> <br />
@@ -35,9 +34,9 @@ Phone Manager Template
 	(function(){
 		$.fn.gatherTemplates = function(){
 			var templates = {};
-			$('script[type=text/x-jquery-tmpl]', this).each(function(){
+			$("script[type='text/x-jquery-tmpl']").each(function(){
 				templates[this.id] = $(this).template();
-			})
+			});
 			return templates;
 		}
 	})(jQuery)

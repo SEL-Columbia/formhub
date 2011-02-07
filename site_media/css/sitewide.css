@@ -169,3 +169,17 @@ h2.title {
 	background-color: #668fc9;
 	color: #fff;
 }
+
+.error-box {
+	background-color: #feecec;
+	border: 1px solid #fccece;
+	margin: 6px 20px;
+	padding: 5px 10px;
+	color: #511e1e;
+}
+.error-box h2 {
+	margin: 4px 0;
+}
+.error-box p {
+	margin: 4px 0;
+}
