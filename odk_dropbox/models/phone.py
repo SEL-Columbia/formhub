@@ -36,15 +36,17 @@ class Phone(models.Model):
 
     class Meta:
         app_label = 'odk_dropbox'
-        
-        
+
+    def surveyor_name(self):
+        return self.surveyor.name if self.surveyor else u""
+
     def update_search_field(self):
         """
         Rebuilt the search field we use to filter all the phones
         """
         self.search_field = ' '.join((self.imei, self.status, 
                                       self.visible_id, self.phone_number,
-                                      self.surveyor.name))        
+                                      self.surveyor_name()))        
         
     def save(self, *args, **kwargs):
         self.update_search_field()
