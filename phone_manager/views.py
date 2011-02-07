@@ -6,6 +6,10 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.shortcuts import render_to_response
 from django.http import (HttpResponse, HttpResponseBadRequest, 
                          HttpResponseRedirect)
+
+# update_object and ModelForm are used to update phone status
+from django.views.generic.create_update import update_object
+from django.forms import ModelForm
                          
 from django.forms.models import model_to_dict
 
@@ -84,3 +88,17 @@ def phone_manager_json(request):
                     
     return HttpResponse(json.dumps(phonet),
                         mimetype='application/json')
+
+class PhoneForm(ModelForm):
+    class Meta:
+        model = Phone
+        # we shouldn't allow the web user to change the imei
+        fields = ("visible_id", "status", "note", "phone_number", "surveyor")
+
+def update_phone(request, phone_id):
+    return update_object(
+        request=request,
+        object_id=phone_id,
+        form_class=PhoneForm,
+        template_name="phone_form.html",
+        )
