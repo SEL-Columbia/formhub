@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+Phone Manager Template
+<hr />
+<div id="manager-table-wrap">
+	<script id="search_form" type="text/x-jquery-tmpl">
+	<div class='search-row'>
+	<form>
+		<input type="text" value="${query}" name="search" />
+		<input type="submit" value="Search" />
+	</form>
+	</div>
+	</script>
+	
+	<script id="search_error" type="text/x-jquery-tmpl">
+	<div class='search-error-box'>
+		<h2>Il y avait une erreur.</h2>
+		<p>
+			<b>Attention!</b> <br />
+			${error}
+		</p>
+	</div>
+	</script>
+</div>
+
+{% endblock %}
+
+{% block footer %}
+
+<script type="text/javascript" charset="utf-8">
+	//this will be in an external script
+	
+	(function(){
+		$.fn.gatherTemplates = function(){
+			var templates = {};
+			$('script[type=text/x-jquery-tmpl]', this).each(function(){
+				templates[this.id] = $(this).template();
+			})
+			return templates;
+		}
+	})(jQuery)
+	
+</script>
+
+
+<script type="text/javascript" charset="utf-8">
+<!--
+
+var jqTemplates = $("#manager-table-wrap").gatherTemplates();
+
+var ManagerTable = (function(){
+	function hashUrlFor(obj) {
+		var url = "#";
+		$.each(obj, function(k, v){
+			url+="/"+k+":"+v;
+		});
+		return url;
+	}
+	function CreatePagination(_pag, destination) {
+		var paginateElem = $("<div />"), pagButton;
+		pagButton = $("<a />", {'href':hashUrlFor({page:_pag.previous_page, search:dashboardEnvironment.search})}).html("«");
+		if(_pag.previous_page===-1) {
+			pagButton.attr('href', '#/').addClass('disabled');
+		}
+		paginateElem.append(pagButton);
+		for(var p = 0; p<_pag.page_count; p++) {
+			pagButton = $("<a />", {'href':hashUrlFor({page:(1+p), search:dashboardEnvironment.search})}).html(+p+1)
+			if(_pag.page===p+1) {
+				pagButton.addClass('selected');
+			}
+			paginateElem.append(pagButton);
+		}
+
+		pagButton = $("<a />", {'href':hashUrlFor({page:_pag.next_page, search:dashboardEnvironment.search})}).html("»");
+		if(_pag.next_page===-1) {
+			pagButton.attr('href', '#/').addClass('disabled');
+		}
+		paginateElem.append(pagButton);
+		
+		destination.delegate('.pagination a', 'click', function(evt){
+			if($(this).hasClass('selected') || $(this).hasClass('disabled')) {
+				evt.preventDefault();
+			}
+			$(this).blur();
+		});
+		destination.append(paginateElem);
+	}
+	function CreateTable(data, dest) {
+		var columnIds = [],
+			destination = $(dest),
+			table = $("<table />", {'class':'shade-alternate fullw padded'}),
+			tbody = $("<tbody />"),
+			theadRow = $("<tr />"),
+			searchBox,
+			thead = $("<thead />").html(theadRow);
+		
+		destination.empty();
+		
+		searchBox = $.tmpl(jqTemplates.search_form, {'query': dashboardEnvironment.search});
+		destination.append(searchBox);
+		
+		if('undefined'!==typeof data.search_error) {
+			var searchError = $.tmpl(jqTemplates.search_error, {'error': data.search_error});
+			destination.append(searchError);
+		}
+		
+		table.append(tbody).append(thead);
+		
+		$(data.columns).each(function(){
+			theadRow.append($("<th />").html(this.name));
+			columnIds.push(this.id);
+		});
+		
+		$(data.rows).each(function(){
+			curRow = $("<tr />");
+			var _row = this;
+			$(columnIds).each(function(){
+				if('undefined'!==typeof _row[this]) {
+					curRow.append($("<td />").html(_row[this]))
+				} else {
+					curRow.append($("<td />"));
+				}
+			});
+			tbody.append(curRow);
+		});
+		destination.append(table);
+		if(data.pagination) {
+			destination.prepend($("<div />", {'class':'pagination', 'style':'clear:both'}));
+			destination.append($("<div />", {'class':'pagination', 'style':'clear:both'}));
+			destination.append($("<br />", {'style':'clear:both'}));
+			
+			CreatePagination(data.pagination, $('.pagination', destination));
+		}
+	}
+	function processRetrieved() {
+		//jquery.offline has two callbacks that should act differently.
+		//do nothing for now...
+	}
+	return {
+		create: CreateTable,
+		processRetrieved: processRetrieved
+	}
+})();
+
+
+var dashboardEnvironment = {},
+  dashboard = $.sammy("#content", function(){
+	function hashUrlForEnvironment() {
+		var hashUrl = "#";
+		if(dashboardEnvironment.page && $.type(dashboardEnvironment.page)==='string') {
+			hashUrl += "/page:"+dashboardEnvironment.page;
+		}
+		if(dashboardEnvironment.search && $.type(dashboardEnvironment.search)==='string') {
+			hashUrl += "/search:"+dashboardEnvironment.search;
+		}
+		return hashUrl;
+	}
+	this.get("#/", function(){
+		this.redirect("#/page:1");
+	});
+	this.get(new RegExp("#/(.+)$"), function(){
+		var vals = {}, matchVal;
+		$(this.params.splat[0].split("/")).each(function(){
+			if(matchVal = this.match(/^(\S+):(.*)/)) {
+				vals[matchVal[1]]=matchVal[2];
+			}
+			$.extend(dashboardEnvironment, vals);
+		});
+		$.getJSON('/phone_manager/phones.json', vals, function(data, status, cacheInfo){
+			if(cacheInfo && cacheInfo.retrievedAt) {
+				ManagerTable.processRetrieved(data);
+			} else {
+				ManagerTable.create(data, "#manager-table-wrap");
+				$('.search-row form').submit(function(evt){
+					dashboardEnvironment.search = $('input[type=text]', $(this)).val();
+					dashboard.setLocation(hashUrlForEnvironment())
+					evt.preventDefault();
+					return false;
+				});
+			}
+		});
+	});
+	this.run("#/");
+});
+
+-->
+</script>
+{% endblock %}

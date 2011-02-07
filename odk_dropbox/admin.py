@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# vim: ai ts=4 sts=4 et sw=4
+
 from django.contrib import admin
 from django.forms import ModelForm
 from . import models
@@ -24,3 +28,5 @@ class XFormAdmin(admin.ModelAdmin):
         self.list_display_links = (None, )
 
 admin.site.register(models.XForm, XFormAdmin)
+admin.site.register(models.Phone)
+admin.site.register(models.Surveyor)

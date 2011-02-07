@@ -1,8 +1,11 @@
-import os
-import sys
-from pymongo import Connection
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# vim: ai ts=4 sts=4 et sw=4
 
 from custom_settings import *
+
+import sys
+from pymongo import Connection
 
 # set up the Mongo Database
 _c = Connection()
@@ -15,7 +18,8 @@ if sys.argv[1]=="test":
 else:
     MONGO_DB = _c[MONGO["database name"]]
 
-MANAGERS = ADMINS
+# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+TIME_ZONE = 'America/Chicago'
 
 LANGUAGE_CODE = 'en-us'
 SITE_ID = 1
@@ -49,11 +53,8 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'nmis.urls'
 
-PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-MEDIA_ROOT  = '%s/site_media/' % PROJECT_ROOT
-
 TEMPLATE_DIRS = (
-    "%s/base_templates/" % PROJECT_ROOT
+    os.path.join(PROJECT_ROOT, "base_templates/" )
 )
 
 INSTALLED_APPS = (
@@ -67,4 +68,11 @@ INSTALLED_APPS = (
     'registration',
     'json2xform',
     'odk_dropbox',
+    'phone_manager',
 )
+
+# SEARCH ENGINE settings
+HAYSTACK_SITECONF = 'search_sites'
+HAYSTACK_SEARCH_ENGINE = 'whoosh'
+HAYSTACK_WHOOSH_PATH = os.path.join(PROJECT_ROOT, 'search_index')
+HAYSTACK_INCLUDE_SPELLING = True

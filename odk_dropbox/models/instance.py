@@ -36,9 +36,20 @@ class Instance(models.Model):
                 )
 
     def _set_phone(self, doc):
-        self.phone, created = Phone.objects.get_or_create(
-            device_id=doc[tag.DEVICE_ID]
-            )
+        self.phone, created = Phone.objects.get_or_create(imei=doc[tag.IMEI])
+
+        # when a phone update comes in update the information about the phone
+        if doc[tag.INSTANCE_DOC_NAME]==tag.PHONE_UPDATE:
+            d = {
+                "imei" : doc[tag.IMEI],
+                "status" : doc["status"],
+                "note" : doc["note"],
+                "visible_id" : doc["visible_id"],
+                "phone_number" : doc["phone_number"],
+                }
+            for k, v in d.items():
+                setattr(self.phone, k, v)
+            self.phone.save()
 
     def _set_survey_type(self, doc):
         self.survey_type, created = \

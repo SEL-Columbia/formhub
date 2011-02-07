@@ -13,3 +13,6 @@ error.log
 site_media/css/sass/.sass-cache/*
 .sass-cache
 .odk
+*orig
+.idea
+search_index

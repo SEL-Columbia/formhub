@@ -1,8 +1,21 @@
-# EXAMPLE VALUES--
-# Change these for your environment
-# then copy then to "custom_settings.py"
+# We have broken the standard settings.py into two files:
+# 1. settings.py: this contains settings that will not change across
+#    different deployments of this code.
+# 2. custom_settings.py: this contains settings that are likely to
+#    change across deployments.
+# If you are setting up this project for the first time, copy
+# custom_settings_example.py to custom_settings.py and modify these
+# custom settings as you needed for your environment.
+
+# Is this really going to help us over having a single settings.py
+# example? I think Alex has the answer to this question. -Andrew
+
+import os
+
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 MEDIA_URL = 'http://127.0.0.1:8000/site-media/'
+MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'site_media/')
 
 DATABASES = {
     'default': {
@@ -20,10 +33,5 @@ ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
 
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-TIME_ZONE = 'America/Chicago'
-
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-
-SOUTH_IGNORE_DATABASES = ['mongodb']
