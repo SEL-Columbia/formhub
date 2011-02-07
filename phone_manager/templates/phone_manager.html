@@ -54,7 +54,9 @@ var ManagerTable = (function(){
 	function hashUrlFor(obj) {
 		var url = "#";
 		$.each(obj, function(k, v){
-			url+="/"+k+":"+v;
+			if(v!==undefined) {
+				url+="/"+k+":"+v;
+			}
 		});
 		return url;
 	}
@@ -152,7 +154,7 @@ var dashboardEnvironment = {},
 		if(dashboardEnvironment.page && $.type(dashboardEnvironment.page)==='string') {
 			hashUrl += "/page:"+dashboardEnvironment.page;
 		}
-		if(dashboardEnvironment.search && $.type(dashboardEnvironment.search)==='string') {
+		if(dashboardEnvironment.search && dashboardEnvironment.search !==undefined && $.type(dashboardEnvironment.search)==='string') {
 			hashUrl += "/search:"+dashboardEnvironment.search;
 		}
 		return hashUrl;
@@ -166,7 +168,7 @@ var dashboardEnvironment = {},
 			if(matchVal = this.match(/^(\S+):(.*)/)) {
 				vals[matchVal[1]]=matchVal[2];
 			}
-			$.extend(dashboardEnvironment, vals);
+			dashboardEnvironment = vals;
 		});
 		$.getJSON('/phone_manager/phones.json', vals, function(data, status, cacheInfo){
 			if(cacheInfo && cacheInfo.retrievedAt) {
