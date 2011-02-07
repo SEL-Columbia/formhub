@@ -92,8 +92,7 @@ def phone_manager_json(request):
 class PhoneForm(ModelForm):
     class Meta:
         model = Phone
-        # we shouldn't allow the web user to change the imei
-        fields = ("visible_id", "status", "note", "phone_number", "surveyor")
+        exclude = ('imei',)
 
 def update_phone(request, phone_id):
     return update_object(
