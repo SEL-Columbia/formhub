@@ -1,9 +1,0 @@
-<?xml version='1.0' ?>
-<data id="#FORM_ID#">
-	<name>#NAME#</name>
-	<users_per_month>#VALUE#</users_per_month>
-	<geopoint>#GEOPOINT#</geopoint>
-	<device_id>#DEVICE_ID#</device_id>
-	<start>#START_TIME#</start>
-	<end>#END_TIME#</end>
-</data>

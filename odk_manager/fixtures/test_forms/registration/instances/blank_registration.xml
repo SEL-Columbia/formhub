@@ -1,1 +1,0 @@
-<?xml version='1.0' ?><registration id="#FORM_ID#"><device_id>#DEVICE_ID#</device_id><start>#START_TIME#</start><end>#END_TIME#</end><name>#NAME#</name><sex>#SEX#</sex><birth_date>#BIRTH_DATE#</birth_date><languages>#LANGUAGES#</languages><phone_id>#PHONE_ID#</phone_id></registration>
