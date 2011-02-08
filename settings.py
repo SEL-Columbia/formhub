@@ -67,9 +67,9 @@ INSTALLED_APPS = (
     'south',
     'registration',
     'json2xform',
-    'odk_dropbox',
     'phone_manager',
     'xform_manager',
+    'parsed_xforms',
 )
 
 # SEARCH ENGINE settings
