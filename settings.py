@@ -69,6 +69,7 @@ INSTALLED_APPS = (
     'json2xform',
     'odk_dropbox',
     'phone_manager',
+    'xform_manager',
 )
 
 # SEARCH ENGINE settings
