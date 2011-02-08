@@ -3,9 +3,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from django.db import models
-
-from .surveyor import Surveyor
-
+from surveyor_manager.models import Surveyor
 
 class Phone(models.Model):
     """
@@ -33,9 +31,6 @@ class Phone(models.Model):
     surveyor = models.ForeignKey(Surveyor, null=True, verbose_name="Surveyor")
     
     search_field = models.TextField(blank=True, editable=False, null=True)
-
-    class Meta:
-        app_label = 'odk_dropbox'
 
     def surveyor_name(self):
         return self.surveyor.name if self.surveyor else u""

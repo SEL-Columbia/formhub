@@ -12,9 +12,6 @@ class District(MP_Node):
     active = models.BooleanField()
     latlng_string = models.CharField(max_length=50)
 
-    class Meta: 
-        app_label = 'odk_dropbox'
-    
     def ll_diff(self, gps):
         ll = self.latlng()
         lat_delta = ll['lat'] - gps.latitude
