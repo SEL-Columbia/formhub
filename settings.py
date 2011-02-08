@@ -64,12 +64,15 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.admin',
-    'south',
+    # 'south',
     'registration',
+
     'json2xform',
-    'phone_manager',
-    'xform_manager',
+    'locations',
     'parsed_xforms',
+    'phone_manager',
+    'surveyor_manager',
+    'xform_manager',
 )
 
 # SEARCH ENGINE settings
