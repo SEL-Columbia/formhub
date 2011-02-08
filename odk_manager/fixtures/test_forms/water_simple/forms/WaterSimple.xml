@@ -1,0 +1,59 @@
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa">
+  <h:head>
+    <h:title>WaterSimple</h:title>
+    <model>
+      <instance>
+        <data id="build_WaterSimple_1295821382">
+          <name/>
+          <users_per_month/>
+          <geopoint/>
+		<start />
+		<end />
+		<device_id />
+        </data>
+      </instance>
+      <itext>
+        <translation lang="eng">
+          <text id="/data/name:label">
+            <value>Water Point Name</value>
+          </text>
+          <text id="/data/name:hint">
+            <value>What is this point named?</value>
+          </text>
+          <text id="/data/users_per_month:label">
+            <value>Monthly Usage</value>
+          </text>
+          <text id="/data/users_per_month:hint">
+            <value>How many people use this every month?</value>
+          </text>
+          <text id="/data/geopoint:label">
+            <value>Location</value>
+          </text>
+          <text id="/data/geopoint:hint">
+            <value></value>
+          </text>
+        </translation>
+      </itext>
+	<bind jr:preload="property" jr:preloadParams="device_id" nodeset="/data/device_id" required="true()" type="string"/>
+	<bind jr:preload="timestamp" jr:preloadParams="start" nodeset="/data/start" required="true()" type="dateTime"/>
+	<bind jr:preload="timestamp" jr:preloadParams="end" nodeset="/data/end" required="true()" type="dateTime"/>
+	<bind nodeset="/data/name" type="string" required="true()"/>
+      <bind nodeset="/data/users_per_month" type="int" required="true()" constraint="(. &gt; 0 and . &lt; )"/>
+      <bind nodeset="/data/geopoint" type="geopoint" required="true()"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/data/name">
+      <label ref="jr:itext('/data/name:label')"/>
+      <hint ref="jr:itext('/data/name:hint')"/>
+    </input>
+    <input ref="/data/users_per_month">
+      <label ref="jr:itext('/data/users_per_month:label')"/>
+      <hint ref="jr:itext('/data/users_per_month:hint')"/>
+    </input>
+    <input ref="/data/geopoint">
+      <label ref="jr:itext('/data/geopoint:label')"/>
+      <hint ref="jr:itext('/data/geopoint:hint')"/>
+    </input>
+  </h:body>
+</h:html>

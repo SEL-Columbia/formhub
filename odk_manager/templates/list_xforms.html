@@ -1,0 +1,14 @@
+<table>
+  <tr>
+    <td>Title</td>
+    <td>Number of Submissions</td>
+    <td>Date of Last Submission</td>
+  </tr>
+{% for xform in xforms %}
+<tr>
+  <td>{{ xform.title }}</td>
+  <td>{{ xform.submission_count }}</td>
+  <td>{{ xform.date_of_last_submission }}</td>
+</tr>
+{% endfor %}
+</table>
