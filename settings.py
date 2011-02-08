@@ -4,7 +4,7 @@
 
 from custom_settings import *
 
-import sys
+import sys, os
 from pymongo import Connection
 
 # set up the Mongo Database

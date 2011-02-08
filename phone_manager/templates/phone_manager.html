@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-
 Phone Manager Template
 <hr />
 <div id="manager-table-wrap">
@@ -15,7 +14,7 @@ Phone Manager Template
 	</script>
 	
 	<script id="search_error" type="text/x-jquery-tmpl">
-	<div class='search-error-box'>
+	<div class='search-error-box error-box'>
 		<h2>Il y avait une erreur.</h2>
 		<p>
 			<b>Attention!</b> <br />
@@ -35,9 +34,9 @@ Phone Manager Template
 	(function(){
 		$.fn.gatherTemplates = function(){
 			var templates = {};
-			$('script[type=text/x-jquery-tmpl]', this).each(function(){
+			$("script[type='text/x-jquery-tmpl']").each(function(){
 				templates[this.id] = $(this).template();
-			})
+			});
 			return templates;
 		}
 	})(jQuery)
@@ -54,7 +53,9 @@ var ManagerTable = (function(){
 	function hashUrlFor(obj) {
 		var url = "#";
 		$.each(obj, function(k, v){
-			url+="/"+k+":"+v;
+			if(v!==undefined) {
+				url+="/"+k+":"+v;
+			}
 		});
 		return url;
 	}
@@ -152,7 +153,7 @@ var dashboardEnvironment = {},
 		if(dashboardEnvironment.page && $.type(dashboardEnvironment.page)==='string') {
 			hashUrl += "/page:"+dashboardEnvironment.page;
 		}
-		if(dashboardEnvironment.search && $.type(dashboardEnvironment.search)==='string') {
+		if(dashboardEnvironment.search && dashboardEnvironment.search !==undefined && $.type(dashboardEnvironment.search)==='string') {
 			hashUrl += "/search:"+dashboardEnvironment.search;
 		}
 		return hashUrl;
@@ -166,7 +167,7 @@ var dashboardEnvironment = {},
 			if(matchVal = this.match(/^(\S+):(.*)/)) {
 				vals[matchVal[1]]=matchVal[2];
 			}
-			$.extend(dashboardEnvironment, vals);
+			dashboardEnvironment = vals;
 		});
 		$.getJSON('/phone_manager/phones.json', vals, function(data, status, cacheInfo){
 			if(cacheInfo && cacheInfo.retrievedAt) {
