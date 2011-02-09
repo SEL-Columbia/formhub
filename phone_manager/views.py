@@ -13,7 +13,8 @@ from django.forms import ModelForm
                          
 from django.forms.models import model_to_dict
 
-from odk_dropbox.models import Phone, Surveyor
+from phone_manager.models import Phone
+from surveyor_manager.models import Surveyor
 
                          
 try:
