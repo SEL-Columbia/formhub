@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 
 from django.contrib import admin
-# admin.autodiscover()
+admin.autodiscover()
 
 from settings import MEDIA_ROOT
 
