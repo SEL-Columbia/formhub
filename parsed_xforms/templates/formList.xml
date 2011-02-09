@@ -1,7 +1,0 @@
-<forms>
-{% if forms %}
-  {% for name, url in forms %}
-  <form url="{{ url }}">{{ name }}</form>
-  {% endfor %}
-{% endif %}
-</forms>
