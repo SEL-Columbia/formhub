@@ -1,7 +1,7 @@
 [
     {
         "pk": 1,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Federal Republic of Nigeria",
             "numchild": 37,
@@ -15,7 +15,7 @@
     },
     {
         "pk": 2,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Abia State",
             "numchild": 17,
@@ -29,7 +29,7 @@
     },
     {
         "pk": 3,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Aba North",
             "numchild": 0,
@@ -43,7 +43,7 @@
     },
     {
         "pk": 4,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Aba South",
             "numchild": 0,
@@ -57,7 +57,7 @@
     },
     {
         "pk": 5,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Arochukwu",
             "numchild": 0,
@@ -71,7 +71,7 @@
     },
     {
         "pk": 6,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bende, Nigeria",
             "numchild": 0,
@@ -85,7 +85,7 @@
     },
     {
         "pk": 7,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ikwuano",
             "numchild": 0,
@@ -99,7 +99,7 @@
     },
     {
         "pk": 8,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Isiala Ngwa North",
             "numchild": 0,
@@ -113,7 +113,7 @@
     },
     {
         "pk": 9,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Isiala Ngwa South",
             "numchild": 0,
@@ -127,7 +127,7 @@
     },
     {
         "pk": 10,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Isuikwuato",
             "numchild": 0,
@@ -141,7 +141,7 @@
     },
     {
         "pk": 11,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Obi Ngwa",
             "numchild": 0,
@@ -155,7 +155,7 @@
     },
     {
         "pk": 12,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ohafia",
             "numchild": 0,
@@ -169,7 +169,7 @@
     },
     {
         "pk": 13,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Osisioma",
             "numchild": 0,
@@ -183,7 +183,7 @@
     },
     {
         "pk": 14,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ugwunagbo",
             "numchild": 0,
@@ -197,7 +197,7 @@
     },
     {
         "pk": 15,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ukwa East",
             "numchild": 0,
@@ -211,7 +211,7 @@
     },
     {
         "pk": 16,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ukwa West",
             "numchild": 0,
@@ -225,7 +225,7 @@
     },
     {
         "pk": 17,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Umu Nneochi",
             "numchild": 0,
@@ -239,7 +239,7 @@
     },
     {
         "pk": 18,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Umuahia North",
             "numchild": 0,
@@ -253,7 +253,7 @@
     },
     {
         "pk": 19,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Umuahia South",
             "numchild": 0,
@@ -267,7 +267,7 @@
     },
     {
         "pk": 20,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Adamawa State",
             "numchild": 21,
@@ -281,7 +281,7 @@
     },
     {
         "pk": 21,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Demsa",
             "numchild": 0,
@@ -295,7 +295,7 @@
     },
     {
         "pk": 22,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Fufure",
             "numchild": 0,
@@ -309,7 +309,7 @@
     },
     {
         "pk": 23,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ganye",
             "numchild": 0,
@@ -323,7 +323,7 @@
     },
     {
         "pk": 24,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gayuk",
             "numchild": 0,
@@ -337,7 +337,7 @@
     },
     {
         "pk": 25,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gombi",
             "numchild": 0,
@@ -351,7 +351,7 @@
     },
     {
         "pk": 26,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Grie",
             "numchild": 0,
@@ -365,7 +365,7 @@
     },
     {
         "pk": 27,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Hong, Nigeria",
             "numchild": 0,
@@ -379,7 +379,7 @@
     },
     {
         "pk": 28,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Jada, Nigeria",
             "numchild": 0,
@@ -393,7 +393,7 @@
     },
     {
         "pk": 29,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Larmurde",
             "numchild": 0,
@@ -407,7 +407,7 @@
     },
     {
         "pk": 30,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Madagali",
             "numchild": 0,
@@ -421,7 +421,7 @@
     },
     {
         "pk": 31,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Maiha",
             "numchild": 0,
@@ -435,7 +435,7 @@
     },
     {
         "pk": 32,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mayo Belwa",
             "numchild": 0,
@@ -449,7 +449,7 @@
     },
     {
         "pk": 33,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Michika",
             "numchild": 0,
@@ -463,7 +463,7 @@
     },
     {
         "pk": 34,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mubi North",
             "numchild": 0,
@@ -477,7 +477,7 @@
     },
     {
         "pk": 35,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mubi South",
             "numchild": 0,
@@ -491,7 +491,7 @@
     },
     {
         "pk": 36,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Numan, Nigeria",
             "numchild": 0,
@@ -505,7 +505,7 @@
     },
     {
         "pk": 37,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Shelleng",
             "numchild": 0,
@@ -519,7 +519,7 @@
     },
     {
         "pk": 38,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Song",
             "numchild": 0,
@@ -533,7 +533,7 @@
     },
     {
         "pk": 39,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Toungo, Nigeria",
             "numchild": 0,
@@ -547,7 +547,7 @@
     },
     {
         "pk": 40,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Yola North",
             "numchild": 0,
@@ -561,7 +561,7 @@
     },
     {
         "pk": 41,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Yola South",
             "numchild": 0,
@@ -575,7 +575,7 @@
     },
     {
         "pk": 42,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Akwa Ibom State",
             "numchild": 31,
@@ -589,7 +589,7 @@
     },
     {
         "pk": 43,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Abak",
             "numchild": 0,
@@ -603,7 +603,7 @@
     },
     {
         "pk": 44,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Eastern Obolo",
             "numchild": 0,
@@ -617,7 +617,7 @@
     },
     {
         "pk": 45,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Eket",
             "numchild": 0,
@@ -631,7 +631,7 @@
     },
     {
         "pk": 46,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Esit Eket",
             "numchild": 0,
@@ -645,7 +645,7 @@
     },
     {
         "pk": 47,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Essien Udim",
             "numchild": 0,
@@ -659,7 +659,7 @@
     },
     {
         "pk": 48,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Etim Ekpo",
             "numchild": 0,
@@ -673,7 +673,7 @@
     },
     {
         "pk": 49,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Etinan",
             "numchild": 0,
@@ -687,7 +687,7 @@
     },
     {
         "pk": 50,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ibeno",
             "numchild": 0,
@@ -701,7 +701,7 @@
     },
     {
         "pk": 51,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ibesikpo Asutan",
             "numchild": 0,
@@ -715,7 +715,7 @@
     },
     {
         "pk": 52,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ibiono-Ibom",
             "numchild": 0,
@@ -729,7 +729,7 @@
     },
     {
         "pk": 53,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ika, Nigeria",
             "numchild": 0,
@@ -743,7 +743,7 @@
     },
     {
         "pk": 54,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ikono",
             "numchild": 0,
@@ -757,7 +757,7 @@
     },
     {
         "pk": 55,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ikot Abasi",
             "numchild": 0,
@@ -771,7 +771,7 @@
     },
     {
         "pk": 56,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ikot Ekpene",
             "numchild": 0,
@@ -785,7 +785,7 @@
     },
     {
         "pk": 57,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ini, Nigeria",
             "numchild": 0,
@@ -799,7 +799,7 @@
     },
     {
         "pk": 58,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Itu, Nigeria",
             "numchild": 0,
@@ -813,7 +813,7 @@
     },
     {
         "pk": 59,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mbo, Nigeria",
             "numchild": 0,
@@ -827,7 +827,7 @@
     },
     {
         "pk": 60,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mkpat-Enin",
             "numchild": 0,
@@ -841,7 +841,7 @@
     },
     {
         "pk": 61,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nsit-Atai",
             "numchild": 0,
@@ -855,7 +855,7 @@
     },
     {
         "pk": 62,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nsit-Ibom",
             "numchild": 0,
@@ -869,7 +869,7 @@
     },
     {
         "pk": 63,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nsit-Ubium",
             "numchild": 0,
@@ -883,7 +883,7 @@
     },
     {
         "pk": 64,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Obot Akara",
             "numchild": 0,
@@ -897,7 +897,7 @@
     },
     {
         "pk": 65,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Okobo, Nigeria",
             "numchild": 0,
@@ -911,7 +911,7 @@
     },
     {
         "pk": 66,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Onna",
             "numchild": 0,
@@ -925,7 +925,7 @@
     },
     {
         "pk": 67,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oron, Nigeria",
             "numchild": 0,
@@ -939,7 +939,7 @@
     },
     {
         "pk": 68,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oruk Anam",
             "numchild": 0,
@@ -953,7 +953,7 @@
     },
     {
         "pk": 69,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Udung-Uko",
             "numchild": 0,
@@ -967,7 +967,7 @@
     },
     {
         "pk": 70,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ukanafun",
             "numchild": 0,
@@ -981,7 +981,7 @@
     },
     {
         "pk": 71,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Uruan",
             "numchild": 0,
@@ -995,7 +995,7 @@
     },
     {
         "pk": 72,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Urue-Offong/Oruko",
             "numchild": 0,
@@ -1009,7 +1009,7 @@
     },
     {
         "pk": 73,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Uyo",
             "numchild": 0,
@@ -1023,7 +1023,7 @@
     },
     {
         "pk": 74,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Anambra State",
             "numchild": 21,
@@ -1037,7 +1037,7 @@
     },
     {
         "pk": 75,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Aguata",
             "numchild": 0,
@@ -1051,7 +1051,7 @@
     },
     {
         "pk": 76,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Anambra East",
             "numchild": 0,
@@ -1065,7 +1065,7 @@
     },
     {
         "pk": 77,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Anambra West",
             "numchild": 0,
@@ -1079,7 +1079,7 @@
     },
     {
         "pk": 78,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Anaocha",
             "numchild": 0,
@@ -1093,7 +1093,7 @@
     },
     {
         "pk": 79,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Awka North",
             "numchild": 0,
@@ -1107,7 +1107,7 @@
     },
     {
         "pk": 80,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Awka South",
             "numchild": 0,
@@ -1121,7 +1121,7 @@
     },
     {
         "pk": 81,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ayamelum",
             "numchild": 0,
@@ -1135,7 +1135,7 @@
     },
     {
         "pk": 82,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Dunukofia",
             "numchild": 0,
@@ -1149,7 +1149,7 @@
     },
     {
         "pk": 83,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ekwusigo",
             "numchild": 0,
@@ -1163,7 +1163,7 @@
     },
     {
         "pk": 84,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Idemili North",
             "numchild": 0,
@@ -1177,7 +1177,7 @@
     },
     {
         "pk": 85,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Idemili South",
             "numchild": 0,
@@ -1191,7 +1191,7 @@
     },
     {
         "pk": 86,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ihiala",
             "numchild": 0,
@@ -1205,7 +1205,7 @@
     },
     {
         "pk": 87,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Njikoka",
             "numchild": 0,
@@ -1219,7 +1219,7 @@
     },
     {
         "pk": 88,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nnewi North",
             "numchild": 0,
@@ -1233,7 +1233,7 @@
     },
     {
         "pk": 89,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nnewi South",
             "numchild": 0,
@@ -1247,7 +1247,7 @@
     },
     {
         "pk": 90,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ogbaru",
             "numchild": 0,
@@ -1261,7 +1261,7 @@
     },
     {
         "pk": 91,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Onitsha North",
             "numchild": 0,
@@ -1275,7 +1275,7 @@
     },
     {
         "pk": 92,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Onitsha South",
             "numchild": 0,
@@ -1289,7 +1289,7 @@
     },
     {
         "pk": 93,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Orumba North",
             "numchild": 0,
@@ -1303,7 +1303,7 @@
     },
     {
         "pk": 94,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Orumba South",
             "numchild": 0,
@@ -1317,7 +1317,7 @@
     },
     {
         "pk": 95,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oyi",
             "numchild": 0,
@@ -1331,7 +1331,7 @@
     },
     {
         "pk": 96,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bauchi State",
             "numchild": 20,
@@ -1345,7 +1345,7 @@
     },
     {
         "pk": 97,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Alkaleri",
             "numchild": 0,
@@ -1359,7 +1359,7 @@
     },
     {
         "pk": 98,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bauchi",
             "numchild": 0,
@@ -1373,7 +1373,7 @@
     },
     {
         "pk": 99,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bogoro",
             "numchild": 0,
@@ -1387,7 +1387,7 @@
     },
     {
         "pk": 100,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Damban",
             "numchild": 0,
@@ -1401,7 +1401,7 @@
     },
     {
         "pk": 101,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Darazo",
             "numchild": 0,
@@ -1415,7 +1415,7 @@
     },
     {
         "pk": 102,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Dass, Nigeria",
             "numchild": 0,
@@ -1429,7 +1429,7 @@
     },
     {
         "pk": 103,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gamawa",
             "numchild": 0,
@@ -1443,7 +1443,7 @@
     },
     {
         "pk": 104,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ganjuwa",
             "numchild": 0,
@@ -1457,7 +1457,7 @@
     },
     {
         "pk": 105,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Giade",
             "numchild": 0,
@@ -1471,7 +1471,7 @@
     },
     {
         "pk": 106,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Itas/Gadau",
             "numchild": 0,
@@ -1485,7 +1485,7 @@
     },
     {
         "pk": 107,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Jama'are",
             "numchild": 0,
@@ -1499,7 +1499,7 @@
     },
     {
         "pk": 108,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Katagum",
             "numchild": 0,
@@ -1513,7 +1513,7 @@
     },
     {
         "pk": 109,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kirfi",
             "numchild": 0,
@@ -1527,7 +1527,7 @@
     },
     {
         "pk": 110,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Misau",
             "numchild": 0,
@@ -1541,7 +1541,7 @@
     },
     {
         "pk": 111,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ningi, Nigeria",
             "numchild": 0,
@@ -1555,7 +1555,7 @@
     },
     {
         "pk": 112,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Shira, Nigeria",
             "numchild": 0,
@@ -1569,7 +1569,7 @@
     },
     {
         "pk": 113,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Tafawa Balewa",
             "numchild": 0,
@@ -1583,7 +1583,7 @@
     },
     {
         "pk": 114,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Toro, Nigeria",
             "numchild": 0,
@@ -1597,7 +1597,7 @@
     },
     {
         "pk": 115,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Warji",
             "numchild": 0,
@@ -1611,7 +1611,7 @@
     },
     {
         "pk": 116,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Zaki, Nigeria",
             "numchild": 0,
@@ -1625,7 +1625,7 @@
     },
     {
         "pk": 117,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bayelsa State",
             "numchild": 8,
@@ -1639,7 +1639,7 @@
     },
     {
         "pk": 118,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Brass, Nigeria",
             "numchild": 0,
@@ -1653,7 +1653,7 @@
     },
     {
         "pk": 119,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ekeremor",
             "numchild": 0,
@@ -1667,7 +1667,7 @@
     },
     {
         "pk": 120,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kolokuma/Opokuma",
             "numchild": 0,
@@ -1681,7 +1681,7 @@
     },
     {
         "pk": 121,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nembe",
             "numchild": 0,
@@ -1695,7 +1695,7 @@
     },
     {
         "pk": 122,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ogbia",
             "numchild": 0,
@@ -1709,7 +1709,7 @@
     },
     {
         "pk": 123,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Sagbama",
             "numchild": 0,
@@ -1723,7 +1723,7 @@
     },
     {
         "pk": 124,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Southern Ijaw",
             "numchild": 0,
@@ -1737,7 +1737,7 @@
     },
     {
         "pk": 125,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Yenagoa",
             "numchild": 0,
@@ -1751,7 +1751,7 @@
     },
     {
         "pk": 126,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Benue State",
             "numchild": 23,
@@ -1765,7 +1765,7 @@
     },
     {
         "pk": 127,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ado, Nigeria",
             "numchild": 0,
@@ -1779,7 +1779,7 @@
     },
     {
         "pk": 128,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Agatu",
             "numchild": 0,
@@ -1793,7 +1793,7 @@
     },
     {
         "pk": 129,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Apa, Nigeria",
             "numchild": 0,
@@ -1807,7 +1807,7 @@
     },
     {
         "pk": 130,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Buruku",
             "numchild": 0,
@@ -1821,7 +1821,7 @@
     },
     {
         "pk": 131,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gboko",
             "numchild": 0,
@@ -1835,7 +1835,7 @@
     },
     {
         "pk": 132,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Guma, Nigeria",
             "numchild": 0,
@@ -1849,7 +1849,7 @@
     },
     {
         "pk": 133,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gwer East",
             "numchild": 0,
@@ -1863,7 +1863,7 @@
     },
     {
         "pk": 134,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gwer West",
             "numchild": 0,
@@ -1877,7 +1877,7 @@
     },
     {
         "pk": 135,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Katsina-Ala",
             "numchild": 0,
@@ -1891,7 +1891,7 @@
     },
     {
         "pk": 136,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Konshisha",
             "numchild": 0,
@@ -1905,7 +1905,7 @@
     },
     {
         "pk": 137,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kwande",
             "numchild": 0,
@@ -1919,7 +1919,7 @@
     },
     {
         "pk": 138,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Logo, Nigeria",
             "numchild": 0,
@@ -1933,7 +1933,7 @@
     },
     {
         "pk": 139,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Makurdi",
             "numchild": 0,
@@ -1947,7 +1947,7 @@
     },
     {
         "pk": 140,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Obi, Nigeria",
             "numchild": 0,
@@ -1961,7 +1961,7 @@
     },
     {
         "pk": 141,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ogbadibo",
             "numchild": 0,
@@ -1975,7 +1975,7 @@
     },
     {
         "pk": 142,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ohimini",
             "numchild": 0,
@@ -1989,7 +1989,7 @@
     },
     {
         "pk": 143,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oju",
             "numchild": 0,
@@ -2003,7 +2003,7 @@
     },
     {
         "pk": 144,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Okpokwu",
             "numchild": 0,
@@ -2017,7 +2017,7 @@
     },
     {
         "pk": 145,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oturkpo",
             "numchild": 0,
@@ -2031,7 +2031,7 @@
     },
     {
         "pk": 146,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Tarka, Nigeria",
             "numchild": 0,
@@ -2045,7 +2045,7 @@
     },
     {
         "pk": 147,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ukum",
             "numchild": 0,
@@ -2059,7 +2059,7 @@
     },
     {
         "pk": 148,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ushongo",
             "numchild": 0,
@@ -2073,7 +2073,7 @@
     },
     {
         "pk": 149,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Vandeikya",
             "numchild": 0,
@@ -2087,7 +2087,7 @@
     },
     {
         "pk": 150,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Borno State",
             "numchild": 27,
@@ -2101,7 +2101,7 @@
     },
     {
         "pk": 151,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Abadam",
             "numchild": 0,
@@ -2115,7 +2115,7 @@
     },
     {
         "pk": 152,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Askira/Uba",
             "numchild": 0,
@@ -2129,7 +2129,7 @@
     },
     {
         "pk": 153,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bama, Nigeria",
             "numchild": 0,
@@ -2143,7 +2143,7 @@
     },
     {
         "pk": 154,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bayo, Nigeria",
             "numchild": 0,
@@ -2157,7 +2157,7 @@
     },
     {
         "pk": 155,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Biu, Nigeria",
             "numchild": 0,
@@ -2171,7 +2171,7 @@
     },
     {
         "pk": 156,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Chibok",
             "numchild": 0,
@@ -2185,7 +2185,7 @@
     },
     {
         "pk": 157,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Damboa",
             "numchild": 0,
@@ -2199,7 +2199,7 @@
     },
     {
         "pk": 158,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Dikwa",
             "numchild": 0,
@@ -2213,7 +2213,7 @@
     },
     {
         "pk": 159,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gubio",
             "numchild": 0,
@@ -2227,7 +2227,7 @@
     },
     {
         "pk": 160,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Guzamala",
             "numchild": 0,
@@ -2241,7 +2241,7 @@
     },
     {
         "pk": 161,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gwoza",
             "numchild": 0,
@@ -2255,7 +2255,7 @@
     },
     {
         "pk": 162,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Hawul",
             "numchild": 0,
@@ -2269,7 +2269,7 @@
     },
     {
         "pk": 163,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Jere, Nigeria",
             "numchild": 0,
@@ -2283,7 +2283,7 @@
     },
     {
         "pk": 164,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kaga, Nigeria",
             "numchild": 0,
@@ -2297,7 +2297,7 @@
     },
     {
         "pk": 165,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kala/Balge",
             "numchild": 0,
@@ -2311,7 +2311,7 @@
     },
     {
         "pk": 166,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Konduga",
             "numchild": 0,
@@ -2325,7 +2325,7 @@
     },
     {
         "pk": 167,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kukawa",
             "numchild": 0,
@@ -2339,7 +2339,7 @@
     },
     {
         "pk": 168,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kwaya Kusar",
             "numchild": 0,
@@ -2353,7 +2353,7 @@
     },
     {
         "pk": 169,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mafa",
             "numchild": 0,
@@ -2367,7 +2367,7 @@
     },
     {
         "pk": 170,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Magumeri",
             "numchild": 0,
@@ -2381,7 +2381,7 @@
     },
     {
         "pk": 171,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Maiduguri",
             "numchild": 0,
@@ -2395,7 +2395,7 @@
     },
     {
         "pk": 172,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Marte, Nigeria",
             "numchild": 0,
@@ -2409,7 +2409,7 @@
     },
     {
         "pk": 173,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mobbar",
             "numchild": 0,
@@ -2423,7 +2423,7 @@
     },
     {
         "pk": 174,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Monguno",
             "numchild": 0,
@@ -2437,7 +2437,7 @@
     },
     {
         "pk": 175,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ngala",
             "numchild": 0,
@@ -2451,7 +2451,7 @@
     },
     {
         "pk": 176,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nganzai",
             "numchild": 0,
@@ -2465,7 +2465,7 @@
     },
     {
         "pk": 177,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Shani, Nigeria",
             "numchild": 0,
@@ -2479,7 +2479,7 @@
     },
     {
         "pk": 178,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Cross River State",
             "numchild": 18,
@@ -2493,7 +2493,7 @@
     },
     {
         "pk": 179,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Abi, Nigeria",
             "numchild": 0,
@@ -2507,7 +2507,7 @@
     },
     {
         "pk": 180,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Akamkpa",
             "numchild": 0,
@@ -2521,7 +2521,7 @@
     },
     {
         "pk": 181,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Akpabuyo",
             "numchild": 0,
@@ -2535,7 +2535,7 @@
     },
     {
         "pk": 182,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bakassi",
             "numchild": 0,
@@ -2549,7 +2549,7 @@
     },
     {
         "pk": 183,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bekwarra",
             "numchild": 0,
@@ -2563,7 +2563,7 @@
     },
     {
         "pk": 184,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Biase",
             "numchild": 0,
@@ -2577,7 +2577,7 @@
     },
     {
         "pk": 185,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Boki, Nigeria",
             "numchild": 0,
@@ -2591,7 +2591,7 @@
     },
     {
         "pk": 186,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Calabar Municipal",
             "numchild": 0,
@@ -2605,7 +2605,7 @@
     },
     {
         "pk": 187,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Calabar South",
             "numchild": 0,
@@ -2619,7 +2619,7 @@
     },
     {
         "pk": 188,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Etung",
             "numchild": 0,
@@ -2633,7 +2633,7 @@
     },
     {
         "pk": 189,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ikom",
             "numchild": 0,
@@ -2647,7 +2647,7 @@
     },
     {
         "pk": 190,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Obanliku",
             "numchild": 0,
@@ -2661,7 +2661,7 @@
     },
     {
         "pk": 191,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Obubra",
             "numchild": 0,
@@ -2675,7 +2675,7 @@
     },
     {
         "pk": 192,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Obudu",
             "numchild": 0,
@@ -2689,7 +2689,7 @@
     },
     {
         "pk": 193,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Odukpani",
             "numchild": 0,
@@ -2703,7 +2703,7 @@
     },
     {
         "pk": 194,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ogoja",
             "numchild": 0,
@@ -2717,7 +2717,7 @@
     },
     {
         "pk": 195,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Yakuur",
             "numchild": 0,
@@ -2731,7 +2731,7 @@
     },
     {
         "pk": 196,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Yala, Nigeria",
             "numchild": 0,
@@ -2745,7 +2745,7 @@
     },
     {
         "pk": 197,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Delta State",
             "numchild": 25,
@@ -2759,7 +2759,7 @@
     },
     {
         "pk": 198,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Aniocha North",
             "numchild": 0,
@@ -2773,7 +2773,7 @@
     },
     {
         "pk": 199,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Aniocha South",
             "numchild": 0,
@@ -2787,7 +2787,7 @@
     },
     {
         "pk": 200,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bomadi",
             "numchild": 0,
@@ -2801,7 +2801,7 @@
     },
     {
         "pk": 201,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Burutu",
             "numchild": 0,
@@ -2815,7 +2815,7 @@
     },
     {
         "pk": 202,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ethiope East",
             "numchild": 0,
@@ -2829,7 +2829,7 @@
     },
     {
         "pk": 203,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ethiope West",
             "numchild": 0,
@@ -2843,7 +2843,7 @@
     },
     {
         "pk": 204,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ika North East",
             "numchild": 0,
@@ -2857,7 +2857,7 @@
     },
     {
         "pk": 205,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ika South",
             "numchild": 0,
@@ -2871,7 +2871,7 @@
     },
     {
         "pk": 206,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Isoko North",
             "numchild": 0,
@@ -2885,7 +2885,7 @@
     },
     {
         "pk": 207,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Isoko South",
             "numchild": 0,
@@ -2899,7 +2899,7 @@
     },
     {
         "pk": 208,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ndokwa East",
             "numchild": 0,
@@ -2913,7 +2913,7 @@
     },
     {
         "pk": 209,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ndokwa West",
             "numchild": 0,
@@ -2927,7 +2927,7 @@
     },
     {
         "pk": 210,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Okpe",
             "numchild": 0,
@@ -2941,7 +2941,7 @@
     },
     {
         "pk": 211,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oshimili North",
             "numchild": 0,
@@ -2955,7 +2955,7 @@
     },
     {
         "pk": 212,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oshimili South",
             "numchild": 0,
@@ -2969,7 +2969,7 @@
     },
     {
         "pk": 213,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Patani, Nigeria",
             "numchild": 0,
@@ -2983,7 +2983,7 @@
     },
     {
         "pk": 214,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Sapele",
             "numchild": 0,
@@ -2997,7 +2997,7 @@
     },
     {
         "pk": 215,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Udu, Nigeria",
             "numchild": 0,
@@ -3011,7 +3011,7 @@
     },
     {
         "pk": 216,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ughelli North",
             "numchild": 0,
@@ -3025,7 +3025,7 @@
     },
     {
         "pk": 217,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ughelli South",
             "numchild": 0,
@@ -3039,7 +3039,7 @@
     },
     {
         "pk": 218,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ukwuani",
             "numchild": 0,
@@ -3053,7 +3053,7 @@
     },
     {
         "pk": 219,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Uvwie",
             "numchild": 0,
@@ -3067,7 +3067,7 @@
     },
     {
         "pk": 220,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Warri North",
             "numchild": 0,
@@ -3081,7 +3081,7 @@
     },
     {
         "pk": 221,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Warri South",
             "numchild": 0,
@@ -3095,7 +3095,7 @@
     },
     {
         "pk": 222,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Warri South West",
             "numchild": 0,
@@ -3109,7 +3109,7 @@
     },
     {
         "pk": 223,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ebonyi State",
             "numchild": 13,
@@ -3123,7 +3123,7 @@
     },
     {
         "pk": 224,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Abakaliki",
             "numchild": 0,
@@ -3137,7 +3137,7 @@
     },
     {
         "pk": 225,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Afikpo North",
             "numchild": 0,
@@ -3151,7 +3151,7 @@
     },
     {
         "pk": 226,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Afikpo South",
             "numchild": 0,
@@ -3165,7 +3165,7 @@
     },
     {
         "pk": 227,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ebonyi, Ebonyi State",
             "numchild": 0,
@@ -3179,7 +3179,7 @@
     },
     {
         "pk": 228,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ezza North",
             "numchild": 0,
@@ -3193,7 +3193,7 @@
     },
     {
         "pk": 229,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ezza South",
             "numchild": 0,
@@ -3207,7 +3207,7 @@
     },
     {
         "pk": 230,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ikwo",
             "numchild": 0,
@@ -3221,7 +3221,7 @@
     },
     {
         "pk": 231,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ishielu",
             "numchild": 0,
@@ -3235,7 +3235,7 @@
     },
     {
         "pk": 232,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ivo, Nigeria",
             "numchild": 0,
@@ -3249,7 +3249,7 @@
     },
     {
         "pk": 233,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Izzi",
             "numchild": 0,
@@ -3263,7 +3263,7 @@
     },
     {
         "pk": 234,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ohaozara",
             "numchild": 0,
@@ -3277,7 +3277,7 @@
     },
     {
         "pk": 235,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ohaukwu",
             "numchild": 0,
@@ -3291,7 +3291,7 @@
     },
     {
         "pk": 236,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Onicha",
             "numchild": 0,
@@ -3305,7 +3305,7 @@
     },
     {
         "pk": 237,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Edo State",
             "numchild": 18,
@@ -3319,7 +3319,7 @@
     },
     {
         "pk": 238,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Akoko-Edo",
             "numchild": 0,
@@ -3333,7 +3333,7 @@
     },
     {
         "pk": 239,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Egor",
             "numchild": 0,
@@ -3347,7 +3347,7 @@
     },
     {
         "pk": 240,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Esan Central",
             "numchild": 0,
@@ -3361,7 +3361,7 @@
     },
     {
         "pk": 241,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Esan North-East",
             "numchild": 0,
@@ -3375,7 +3375,7 @@
     },
     {
         "pk": 242,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Esan South-East",
             "numchild": 0,
@@ -3389,7 +3389,7 @@
     },
     {
         "pk": 243,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Esan West",
             "numchild": 0,
@@ -3403,7 +3403,7 @@
     },
     {
         "pk": 244,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Etsako Central",
             "numchild": 0,
@@ -3417,7 +3417,7 @@
     },
     {
         "pk": 245,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Etsako East",
             "numchild": 0,
@@ -3431,7 +3431,7 @@
     },
     {
         "pk": 246,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Etsako West",
             "numchild": 0,
@@ -3445,7 +3445,7 @@
     },
     {
         "pk": 247,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Igueben",
             "numchild": 0,
@@ -3459,7 +3459,7 @@
     },
     {
         "pk": 248,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ikpoba Okha",
             "numchild": 0,
@@ -3473,7 +3473,7 @@
     },
     {
         "pk": 249,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oredo",
             "numchild": 0,
@@ -3487,7 +3487,7 @@
     },
     {
         "pk": 250,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Orhionmwon",
             "numchild": 0,
@@ -3501,7 +3501,7 @@
     },
     {
         "pk": 251,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ovia North-East",
             "numchild": 0,
@@ -3515,7 +3515,7 @@
     },
     {
         "pk": 252,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ovia South-West",
             "numchild": 0,
@@ -3529,7 +3529,7 @@
     },
     {
         "pk": 253,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Owan East",
             "numchild": 0,
@@ -3543,7 +3543,7 @@
     },
     {
         "pk": 254,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Owan West",
             "numchild": 0,
@@ -3557,7 +3557,7 @@
     },
     {
         "pk": 255,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Uhunmwonde",
             "numchild": 0,
@@ -3571,7 +3571,7 @@
     },
     {
         "pk": 256,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ekiti State",
             "numchild": 16,
@@ -3585,7 +3585,7 @@
     },
     {
         "pk": 257,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ado Ekiti",
             "numchild": 0,
@@ -3599,7 +3599,7 @@
     },
     {
         "pk": 258,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Efon",
             "numchild": 0,
@@ -3613,7 +3613,7 @@
     },
     {
         "pk": 259,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ekiti East",
             "numchild": 0,
@@ -3627,7 +3627,7 @@
     },
     {
         "pk": 260,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ekiti South-West",
             "numchild": 0,
@@ -3641,7 +3641,7 @@
     },
     {
         "pk": 261,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ekiti West",
             "numchild": 0,
@@ -3655,7 +3655,7 @@
     },
     {
         "pk": 262,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Emure",
             "numchild": 0,
@@ -3669,7 +3669,7 @@
     },
     {
         "pk": 263,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gbonyin",
             "numchild": 0,
@@ -3683,7 +3683,7 @@
     },
     {
         "pk": 264,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ido Osi",
             "numchild": 0,
@@ -3697,7 +3697,7 @@
     },
     {
         "pk": 265,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ijero",
             "numchild": 0,
@@ -3711,7 +3711,7 @@
     },
     {
         "pk": 266,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ikere",
             "numchild": 0,
@@ -3725,7 +3725,7 @@
     },
     {
         "pk": 267,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ikole",
             "numchild": 0,
@@ -3739,7 +3739,7 @@
     },
     {
         "pk": 268,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ilejemeje",
             "numchild": 0,
@@ -3753,7 +3753,7 @@
     },
     {
         "pk": 269,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Irepodun/Ifelodun",
             "numchild": 0,
@@ -3767,7 +3767,7 @@
     },
     {
         "pk": 270,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ise/Orun",
             "numchild": 0,
@@ -3781,7 +3781,7 @@
     },
     {
         "pk": 271,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Moba, Nigeria",
             "numchild": 0,
@@ -3795,7 +3795,7 @@
     },
     {
         "pk": 272,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oye, Nigeria",
             "numchild": 0,
@@ -3809,7 +3809,7 @@
     },
     {
         "pk": 273,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Enugu State",
             "numchild": 17,
@@ -3823,7 +3823,7 @@
     },
     {
         "pk": 274,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Aninri",
             "numchild": 0,
@@ -3837,7 +3837,7 @@
     },
     {
         "pk": 275,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Awgu",
             "numchild": 0,
@@ -3851,7 +3851,7 @@
     },
     {
         "pk": 276,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Enugu East",
             "numchild": 0,
@@ -3865,7 +3865,7 @@
     },
     {
         "pk": 277,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Enugu North",
             "numchild": 0,
@@ -3879,7 +3879,7 @@
     },
     {
         "pk": 278,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Enugu South",
             "numchild": 0,
@@ -3893,7 +3893,7 @@
     },
     {
         "pk": 279,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ezeagu",
             "numchild": 0,
@@ -3907,7 +3907,7 @@
     },
     {
         "pk": 280,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Igbo Etiti",
             "numchild": 0,
@@ -3921,7 +3921,7 @@
     },
     {
         "pk": 281,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Igbo Eze North",
             "numchild": 0,
@@ -3935,7 +3935,7 @@
     },
     {
         "pk": 282,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Igbo Eze South",
             "numchild": 0,
@@ -3949,7 +3949,7 @@
     },
     {
         "pk": 283,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Isi Uzo",
             "numchild": 0,
@@ -3963,7 +3963,7 @@
     },
     {
         "pk": 284,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nkanu East",
             "numchild": 0,
@@ -3977,7 +3977,7 @@
     },
     {
         "pk": 285,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nkanu West",
             "numchild": 0,
@@ -3991,7 +3991,7 @@
     },
     {
         "pk": 286,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nsukka",
             "numchild": 0,
@@ -4005,7 +4005,7 @@
     },
     {
         "pk": 287,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oji River",
             "numchild": 0,
@@ -4019,7 +4019,7 @@
     },
     {
         "pk": 288,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Udenu",
             "numchild": 0,
@@ -4033,7 +4033,7 @@
     },
     {
         "pk": 289,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Udi, Nigeria",
             "numchild": 0,
@@ -4047,7 +4047,7 @@
     },
     {
         "pk": 290,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Uzo Uwani",
             "numchild": 0,
@@ -4061,7 +4061,7 @@
     },
     {
         "pk": 291,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "FCT",
             "numchild": 6,
@@ -4075,7 +4075,7 @@
     },
     {
         "pk": 292,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Abaji",
             "numchild": 0,
@@ -4089,7 +4089,7 @@
     },
     {
         "pk": 293,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Abuja",
             "numchild": 0,
@@ -4103,7 +4103,7 @@
     },
     {
         "pk": 294,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bwari",
             "numchild": 0,
@@ -4117,7 +4117,7 @@
     },
     {
         "pk": 295,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gwagwalada",
             "numchild": 0,
@@ -4131,7 +4131,7 @@
     },
     {
         "pk": 296,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kuje",
             "numchild": 0,
@@ -4145,7 +4145,7 @@
     },
     {
         "pk": 297,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kwali",
             "numchild": 0,
@@ -4159,7 +4159,7 @@
     },
     {
         "pk": 298,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gombe State",
             "numchild": 11,
@@ -4173,7 +4173,7 @@
     },
     {
         "pk": 299,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Akko, Nigeria",
             "numchild": 0,
@@ -4187,7 +4187,7 @@
     },
     {
         "pk": 300,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Balanga, Nigeria",
             "numchild": 0,
@@ -4201,7 +4201,7 @@
     },
     {
         "pk": 301,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Billiri",
             "numchild": 0,
@@ -4215,7 +4215,7 @@
     },
     {
         "pk": 302,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Dukku",
             "numchild": 0,
@@ -4229,7 +4229,7 @@
     },
     {
         "pk": 303,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Funakaye",
             "numchild": 0,
@@ -4243,7 +4243,7 @@
     },
     {
         "pk": 304,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gombe, Nigeria",
             "numchild": 0,
@@ -4257,7 +4257,7 @@
     },
     {
         "pk": 305,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kaltungo",
             "numchild": 0,
@@ -4271,7 +4271,7 @@
     },
     {
         "pk": 306,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kwami",
             "numchild": 0,
@@ -4285,7 +4285,7 @@
     },
     {
         "pk": 307,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nafada",
             "numchild": 0,
@@ -4299,7 +4299,7 @@
     },
     {
         "pk": 308,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Shongom",
             "numchild": 0,
@@ -4313,7 +4313,7 @@
     },
     {
         "pk": 309,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Yamaltu/Deba",
             "numchild": 0,
@@ -4327,7 +4327,7 @@
     },
     {
         "pk": 310,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Imo State",
             "numchild": 27,
@@ -4341,7 +4341,7 @@
     },
     {
         "pk": 311,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Aboh Mbaise",
             "numchild": 0,
@@ -4355,7 +4355,7 @@
     },
     {
         "pk": 312,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ahiazu Mbaise",
             "numchild": 0,
@@ -4369,7 +4369,7 @@
     },
     {
         "pk": 313,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ehime Mbano",
             "numchild": 0,
@@ -4383,7 +4383,7 @@
     },
     {
         "pk": 314,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ezinihitte",
             "numchild": 0,
@@ -4397,7 +4397,7 @@
     },
     {
         "pk": 315,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ideato North",
             "numchild": 0,
@@ -4411,7 +4411,7 @@
     },
     {
         "pk": 316,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ideato South",
             "numchild": 0,
@@ -4425,7 +4425,7 @@
     },
     {
         "pk": 317,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ihitte/Uboma",
             "numchild": 0,
@@ -4439,7 +4439,7 @@
     },
     {
         "pk": 318,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ikeduru",
             "numchild": 0,
@@ -4453,7 +4453,7 @@
     },
     {
         "pk": 319,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Isiala Mbano",
             "numchild": 0,
@@ -4467,7 +4467,7 @@
     },
     {
         "pk": 320,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Isu, Nigeria",
             "numchild": 0,
@@ -4481,7 +4481,7 @@
     },
     {
         "pk": 321,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mbaitoli",
             "numchild": 0,
@@ -4495,7 +4495,7 @@
     },
     {
         "pk": 322,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ngor Okpala",
             "numchild": 0,
@@ -4509,7 +4509,7 @@
     },
     {
         "pk": 323,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Njaba",
             "numchild": 0,
@@ -4523,7 +4523,7 @@
     },
     {
         "pk": 324,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nkwerre",
             "numchild": 0,
@@ -4537,7 +4537,7 @@
     },
     {
         "pk": 325,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nwangele",
             "numchild": 0,
@@ -4551,7 +4551,7 @@
     },
     {
         "pk": 326,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Obowo",
             "numchild": 0,
@@ -4565,7 +4565,7 @@
     },
     {
         "pk": 327,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oguta",
             "numchild": 0,
@@ -4579,7 +4579,7 @@
     },
     {
         "pk": 328,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ohaji/Egbema",
             "numchild": 0,
@@ -4593,7 +4593,7 @@
     },
     {
         "pk": 329,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Okigwe",
             "numchild": 0,
@@ -4607,7 +4607,7 @@
     },
     {
         "pk": 330,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Orlu",
             "numchild": 0,
@@ -4621,7 +4621,7 @@
     },
     {
         "pk": 331,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Orsu",
             "numchild": 0,
@@ -4635,7 +4635,7 @@
     },
     {
         "pk": 332,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oru East",
             "numchild": 0,
@@ -4649,7 +4649,7 @@
     },
     {
         "pk": 333,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oru West",
             "numchild": 0,
@@ -4663,7 +4663,7 @@
     },
     {
         "pk": 334,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Owerri Municipal",
             "numchild": 0,
@@ -4677,7 +4677,7 @@
     },
     {
         "pk": 335,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Owerri North",
             "numchild": 0,
@@ -4691,7 +4691,7 @@
     },
     {
         "pk": 336,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Owerri West",
             "numchild": 0,
@@ -4705,7 +4705,7 @@
     },
     {
         "pk": 337,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Unuimo",
             "numchild": 0,
@@ -4719,7 +4719,7 @@
     },
     {
         "pk": 338,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Jigawa State",
             "numchild": 27,
@@ -4733,7 +4733,7 @@
     },
     {
         "pk": 339,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Auyo",
             "numchild": 0,
@@ -4747,7 +4747,7 @@
     },
     {
         "pk": 340,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Babura",
             "numchild": 0,
@@ -4761,7 +4761,7 @@
     },
     {
         "pk": 341,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Biriniwa",
             "numchild": 0,
@@ -4775,7 +4775,7 @@
     },
     {
         "pk": 342,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Birnin Kudu",
             "numchild": 0,
@@ -4789,7 +4789,7 @@
     },
     {
         "pk": 343,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Buji, Nigeria",
             "numchild": 0,
@@ -4803,7 +4803,7 @@
     },
     {
         "pk": 344,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Dutse",
             "numchild": 0,
@@ -4817,7 +4817,7 @@
     },
     {
         "pk": 345,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gagarawa",
             "numchild": 0,
@@ -4831,7 +4831,7 @@
     },
     {
         "pk": 346,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Garki, Nigeria",
             "numchild": 0,
@@ -4845,7 +4845,7 @@
     },
     {
         "pk": 347,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gumel",
             "numchild": 0,
@@ -4859,7 +4859,7 @@
     },
     {
         "pk": 348,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Guri, Nigeria",
             "numchild": 0,
@@ -4873,7 +4873,7 @@
     },
     {
         "pk": 349,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gwaram",
             "numchild": 0,
@@ -4887,7 +4887,7 @@
     },
     {
         "pk": 350,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gwiwa",
             "numchild": 0,
@@ -4901,7 +4901,7 @@
     },
     {
         "pk": 351,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Hadejia",
             "numchild": 0,
@@ -4915,7 +4915,7 @@
     },
     {
         "pk": 352,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Jahun",
             "numchild": 0,
@@ -4929,7 +4929,7 @@
     },
     {
         "pk": 353,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kafin Hausa",
             "numchild": 0,
@@ -4943,7 +4943,7 @@
     },
     {
         "pk": 354,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kaugama",
             "numchild": 0,
@@ -4957,7 +4957,7 @@
     },
     {
         "pk": 355,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kazaure",
             "numchild": 0,
@@ -4971,7 +4971,7 @@
     },
     {
         "pk": 356,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kiri Kasama",
             "numchild": 0,
@@ -4985,7 +4985,7 @@
     },
     {
         "pk": 357,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kiyawa",
             "numchild": 0,
@@ -4999,7 +4999,7 @@
     },
     {
         "pk": 358,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Maigatari",
             "numchild": 0,
@@ -5013,7 +5013,7 @@
     },
     {
         "pk": 359,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Malam Madori",
             "numchild": 0,
@@ -5027,7 +5027,7 @@
     },
     {
         "pk": 360,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Miga",
             "numchild": 0,
@@ -5041,7 +5041,7 @@
     },
     {
         "pk": 361,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ringim",
             "numchild": 0,
@@ -5055,7 +5055,7 @@
     },
     {
         "pk": 362,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Roni, Nigeria",
             "numchild": 0,
@@ -5069,7 +5069,7 @@
     },
     {
         "pk": 363,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Sule Tankarkar",
             "numchild": 0,
@@ -5083,7 +5083,7 @@
     },
     {
         "pk": 364,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Taura, Nigeria",
             "numchild": 0,
@@ -5097,7 +5097,7 @@
     },
     {
         "pk": 365,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Yankwashi",
             "numchild": 0,
@@ -5111,7 +5111,7 @@
     },
     {
         "pk": 366,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kaduna State",
             "numchild": 23,
@@ -5125,7 +5125,7 @@
     },
     {
         "pk": 367,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Birnin Gwari",
             "numchild": 0,
@@ -5139,7 +5139,7 @@
     },
     {
         "pk": 368,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Chikun",
             "numchild": 0,
@@ -5153,7 +5153,7 @@
     },
     {
         "pk": 369,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Giwa",
             "numchild": 0,
@@ -5167,7 +5167,7 @@
     },
     {
         "pk": 370,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Igabi",
             "numchild": 0,
@@ -5181,7 +5181,7 @@
     },
     {
         "pk": 371,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ikara",
             "numchild": 0,
@@ -5195,7 +5195,7 @@
     },
     {
         "pk": 372,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Jaba, Nigeria",
             "numchild": 0,
@@ -5209,7 +5209,7 @@
     },
     {
         "pk": 373,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Jema'a",
             "numchild": 0,
@@ -5223,7 +5223,7 @@
     },
     {
         "pk": 374,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kachia",
             "numchild": 0,
@@ -5237,7 +5237,7 @@
     },
     {
         "pk": 375,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kaduna North",
             "numchild": 0,
@@ -5251,7 +5251,7 @@
     },
     {
         "pk": 376,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kaduna South",
             "numchild": 0,
@@ -5265,7 +5265,7 @@
     },
     {
         "pk": 377,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kagarko",
             "numchild": 0,
@@ -5279,7 +5279,7 @@
     },
     {
         "pk": 378,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kajuru",
             "numchild": 0,
@@ -5293,7 +5293,7 @@
     },
     {
         "pk": 379,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kaura, Nigeria",
             "numchild": 0,
@@ -5307,7 +5307,7 @@
     },
     {
         "pk": 380,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kauru",
             "numchild": 0,
@@ -5321,7 +5321,7 @@
     },
     {
         "pk": 381,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kubau",
             "numchild": 0,
@@ -5335,7 +5335,7 @@
     },
     {
         "pk": 382,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kudan, Nigeria",
             "numchild": 0,
@@ -5349,7 +5349,7 @@
     },
     {
         "pk": 383,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Lere, Nigeria",
             "numchild": 0,
@@ -5363,7 +5363,7 @@
     },
     {
         "pk": 384,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Makarfi",
             "numchild": 0,
@@ -5377,7 +5377,7 @@
     },
     {
         "pk": 385,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Sabon Gari",
             "numchild": 0,
@@ -5391,7 +5391,7 @@
     },
     {
         "pk": 386,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Sanga, Nigeria",
             "numchild": 0,
@@ -5405,7 +5405,7 @@
     },
     {
         "pk": 387,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Soba, Nigeria",
             "numchild": 0,
@@ -5419,7 +5419,7 @@
     },
     {
         "pk": 388,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Zangon Kataf",
             "numchild": 0,
@@ -5433,7 +5433,7 @@
     },
     {
         "pk": 389,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Zaria",
             "numchild": 0,
@@ -5447,7 +5447,7 @@
     },
     {
         "pk": 390,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kano State",
             "numchild": 44,
@@ -5461,7 +5461,7 @@
     },
     {
         "pk": 391,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ajingi",
             "numchild": 0,
@@ -5475,7 +5475,7 @@
     },
     {
         "pk": 392,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Albasu",
             "numchild": 0,
@@ -5489,7 +5489,7 @@
     },
     {
         "pk": 393,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bagwai",
             "numchild": 0,
@@ -5503,7 +5503,7 @@
     },
     {
         "pk": 394,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bebeji",
             "numchild": 0,
@@ -5517,7 +5517,7 @@
     },
     {
         "pk": 395,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bichi",
             "numchild": 0,
@@ -5531,7 +5531,7 @@
     },
     {
         "pk": 396,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bunkure",
             "numchild": 0,
@@ -5545,7 +5545,7 @@
     },
     {
         "pk": 397,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Dala, Nigeria",
             "numchild": 0,
@@ -5559,7 +5559,7 @@
     },
     {
         "pk": 398,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Dambatta",
             "numchild": 0,
@@ -5573,7 +5573,7 @@
     },
     {
         "pk": 399,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Dawakin Kudu",
             "numchild": 0,
@@ -5587,7 +5587,7 @@
     },
     {
         "pk": 400,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Dawakin Tofa",
             "numchild": 0,
@@ -5601,7 +5601,7 @@
     },
     {
         "pk": 401,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Doguwa",
             "numchild": 0,
@@ -5615,7 +5615,7 @@
     },
     {
         "pk": 402,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Fagge",
             "numchild": 0,
@@ -5629,7 +5629,7 @@
     },
     {
         "pk": 403,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gabasawa",
             "numchild": 0,
@@ -5643,7 +5643,7 @@
     },
     {
         "pk": 404,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Garko, Nigeria",
             "numchild": 0,
@@ -5657,7 +5657,7 @@
     },
     {
         "pk": 405,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Garun Mallam",
             "numchild": 0,
@@ -5671,7 +5671,7 @@
     },
     {
         "pk": 406,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gaya, Nigeria",
             "numchild": 0,
@@ -5685,7 +5685,7 @@
     },
     {
         "pk": 407,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gezawa",
             "numchild": 0,
@@ -5699,7 +5699,7 @@
     },
     {
         "pk": 408,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gwale",
             "numchild": 0,
@@ -5713,7 +5713,7 @@
     },
     {
         "pk": 409,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gwarzo",
             "numchild": 0,
@@ -5727,7 +5727,7 @@
     },
     {
         "pk": 410,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kabo, Nigeria",
             "numchild": 0,
@@ -5741,7 +5741,7 @@
     },
     {
         "pk": 411,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kano Municipal",
             "numchild": 0,
@@ -5755,7 +5755,7 @@
     },
     {
         "pk": 412,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Karaye",
             "numchild": 0,
@@ -5769,7 +5769,7 @@
     },
     {
         "pk": 413,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kibiya",
             "numchild": 0,
@@ -5783,7 +5783,7 @@
     },
     {
         "pk": 414,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kiru, Nigeria",
             "numchild": 0,
@@ -5797,7 +5797,7 @@
     },
     {
         "pk": 415,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kumbotso",
             "numchild": 0,
@@ -5811,7 +5811,7 @@
     },
     {
         "pk": 416,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kunchi, Nigeria",
             "numchild": 0,
@@ -5825,7 +5825,7 @@
     },
     {
         "pk": 417,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kura, Nigeria",
             "numchild": 0,
@@ -5839,7 +5839,7 @@
     },
     {
         "pk": 418,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Madobi",
             "numchild": 0,
@@ -5853,7 +5853,7 @@
     },
     {
         "pk": 419,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Makoda",
             "numchild": 0,
@@ -5867,7 +5867,7 @@
     },
     {
         "pk": 420,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Minjibir",
             "numchild": 0,
@@ -5881,7 +5881,7 @@
     },
     {
         "pk": 421,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nasarawa, Kano State",
             "numchild": 0,
@@ -5895,7 +5895,7 @@
     },
     {
         "pk": 422,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Rano",
             "numchild": 0,
@@ -5909,7 +5909,7 @@
     },
     {
         "pk": 423,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Rimin Gado",
             "numchild": 0,
@@ -5923,7 +5923,7 @@
     },
     {
         "pk": 424,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Rogo",
             "numchild": 0,
@@ -5937,7 +5937,7 @@
     },
     {
         "pk": 425,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Shanono",
             "numchild": 0,
@@ -5951,7 +5951,7 @@
     },
     {
         "pk": 426,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Sumaila",
             "numchild": 0,
@@ -5965,7 +5965,7 @@
     },
     {
         "pk": 427,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Takai",
             "numchild": 0,
@@ -5979,7 +5979,7 @@
     },
     {
         "pk": 428,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Tarauni",
             "numchild": 0,
@@ -5993,7 +5993,7 @@
     },
     {
         "pk": 429,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Tofa, Nigeria",
             "numchild": 0,
@@ -6007,7 +6007,7 @@
     },
     {
         "pk": 430,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Tsanyawa",
             "numchild": 0,
@@ -6021,7 +6021,7 @@
     },
     {
         "pk": 431,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Tudun Wada",
             "numchild": 0,
@@ -6035,7 +6035,7 @@
     },
     {
         "pk": 432,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ungogo",
             "numchild": 0,
@@ -6049,7 +6049,7 @@
     },
     {
         "pk": 433,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Warawa",
             "numchild": 0,
@@ -6063,7 +6063,7 @@
     },
     {
         "pk": 434,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Wudil",
             "numchild": 0,
@@ -6077,7 +6077,7 @@
     },
     {
         "pk": 435,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Katsina State",
             "numchild": 34,
@@ -6091,7 +6091,7 @@
     },
     {
         "pk": 436,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bakori",
             "numchild": 0,
@@ -6105,7 +6105,7 @@
     },
     {
         "pk": 437,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Batagarawa",
             "numchild": 0,
@@ -6119,7 +6119,7 @@
     },
     {
         "pk": 438,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Batsari",
             "numchild": 0,
@@ -6133,7 +6133,7 @@
     },
     {
         "pk": 439,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Baure, Nigeria",
             "numchild": 0,
@@ -6147,7 +6147,7 @@
     },
     {
         "pk": 440,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bindawa",
             "numchild": 0,
@@ -6161,7 +6161,7 @@
     },
     {
         "pk": 441,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Charanchi",
             "numchild": 0,
@@ -6175,7 +6175,7 @@
     },
     {
         "pk": 442,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Dan Musa",
             "numchild": 0,
@@ -6189,7 +6189,7 @@
     },
     {
         "pk": 443,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Dandume",
             "numchild": 0,
@@ -6203,7 +6203,7 @@
     },
     {
         "pk": 444,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Danja, Nigeria",
             "numchild": 0,
@@ -6217,7 +6217,7 @@
     },
     {
         "pk": 445,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Daura",
             "numchild": 0,
@@ -6231,7 +6231,7 @@
     },
     {
         "pk": 446,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Dutsi, Nigeria",
             "numchild": 0,
@@ -6245,7 +6245,7 @@
     },
     {
         "pk": 447,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Dutsin Ma",
             "numchild": 0,
@@ -6259,7 +6259,7 @@
     },
     {
         "pk": 448,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Faskari",
             "numchild": 0,
@@ -6273,7 +6273,7 @@
     },
     {
         "pk": 449,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Funtua",
             "numchild": 0,
@@ -6287,7 +6287,7 @@
     },
     {
         "pk": 450,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ingawa",
             "numchild": 0,
@@ -6301,7 +6301,7 @@
     },
     {
         "pk": 451,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Jibia",
             "numchild": 0,
@@ -6315,7 +6315,7 @@
     },
     {
         "pk": 452,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kafur, Nigeria",
             "numchild": 0,
@@ -6329,7 +6329,7 @@
     },
     {
         "pk": 453,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kaita, Nigeria",
             "numchild": 0,
@@ -6343,7 +6343,7 @@
     },
     {
         "pk": 454,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kankara",
             "numchild": 0,
@@ -6357,7 +6357,7 @@
     },
     {
         "pk": 455,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kankia",
             "numchild": 0,
@@ -6371,7 +6371,7 @@
     },
     {
         "pk": 456,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Katsina",
             "numchild": 0,
@@ -6385,7 +6385,7 @@
     },
     {
         "pk": 457,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kurfi",
             "numchild": 0,
@@ -6399,7 +6399,7 @@
     },
     {
         "pk": 458,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kusada",
             "numchild": 0,
@@ -6413,7 +6413,7 @@
     },
     {
         "pk": 459,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mai'Adua",
             "numchild": 0,
@@ -6427,7 +6427,7 @@
     },
     {
         "pk": 460,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Malumfashi",
             "numchild": 0,
@@ -6441,7 +6441,7 @@
     },
     {
         "pk": 461,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mani, Nigeria",
             "numchild": 0,
@@ -6455,7 +6455,7 @@
     },
     {
         "pk": 462,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mashi",
             "numchild": 0,
@@ -6469,7 +6469,7 @@
     },
     {
         "pk": 463,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Matazu",
             "numchild": 0,
@@ -6483,7 +6483,7 @@
     },
     {
         "pk": 464,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Musawa",
             "numchild": 0,
@@ -6497,7 +6497,7 @@
     },
     {
         "pk": 465,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Rimi, Nigeria",
             "numchild": 0,
@@ -6511,7 +6511,7 @@
     },
     {
         "pk": 466,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Sabuwa",
             "numchild": 0,
@@ -6525,7 +6525,7 @@
     },
     {
         "pk": 467,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Safana",
             "numchild": 0,
@@ -6539,7 +6539,7 @@
     },
     {
         "pk": 468,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Sandamu",
             "numchild": 0,
@@ -6553,7 +6553,7 @@
     },
     {
         "pk": 469,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Zango, Nigeria",
             "numchild": 0,
@@ -6567,7 +6567,7 @@
     },
     {
         "pk": 470,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kebbi State",
             "numchild": 21,
@@ -6581,7 +6581,7 @@
     },
     {
         "pk": 471,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Aleiro",
             "numchild": 0,
@@ -6595,7 +6595,7 @@
     },
     {
         "pk": 472,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Arewa Dandi",
             "numchild": 0,
@@ -6609,7 +6609,7 @@
     },
     {
         "pk": 473,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Argungu",
             "numchild": 0,
@@ -6623,7 +6623,7 @@
     },
     {
         "pk": 474,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Augie",
             "numchild": 0,
@@ -6637,7 +6637,7 @@
     },
     {
         "pk": 475,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bagudo",
             "numchild": 0,
@@ -6651,7 +6651,7 @@
     },
     {
         "pk": 476,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Birnin Kebbi",
             "numchild": 0,
@@ -6665,7 +6665,7 @@
     },
     {
         "pk": 477,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bunza",
             "numchild": 0,
@@ -6679,7 +6679,7 @@
     },
     {
         "pk": 478,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Dandi, Nigeria",
             "numchild": 0,
@@ -6693,7 +6693,7 @@
     },
     {
         "pk": 479,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Fakai",
             "numchild": 0,
@@ -6707,7 +6707,7 @@
     },
     {
         "pk": 480,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gwandu",
             "numchild": 0,
@@ -6721,7 +6721,7 @@
     },
     {
         "pk": 481,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Jega, Nigeria",
             "numchild": 0,
@@ -6735,7 +6735,7 @@
     },
     {
         "pk": 482,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kalgo",
             "numchild": 0,
@@ -6749,7 +6749,7 @@
     },
     {
         "pk": 483,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Koko/Besse",
             "numchild": 0,
@@ -6763,7 +6763,7 @@
     },
     {
         "pk": 484,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Maiyama",
             "numchild": 0,
@@ -6777,7 +6777,7 @@
     },
     {
         "pk": 485,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ngaski",
             "numchild": 0,
@@ -6791,7 +6791,7 @@
     },
     {
         "pk": 486,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Sakaba",
             "numchild": 0,
@@ -6805,7 +6805,7 @@
     },
     {
         "pk": 487,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Shanga, Nigeria",
             "numchild": 0,
@@ -6819,7 +6819,7 @@
     },
     {
         "pk": 488,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Suru, Nigeria",
             "numchild": 0,
@@ -6833,7 +6833,7 @@
     },
     {
         "pk": 489,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Wasagu/Danko",
             "numchild": 0,
@@ -6847,7 +6847,7 @@
     },
     {
         "pk": 490,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Yauri, Nigeria",
             "numchild": 0,
@@ -6861,7 +6861,7 @@
     },
     {
         "pk": 491,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Zuru",
             "numchild": 0,
@@ -6875,7 +6875,7 @@
     },
     {
         "pk": 492,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kogi State",
             "numchild": 21,
@@ -6889,7 +6889,7 @@
     },
     {
         "pk": 493,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Adavi, Nigeria",
             "numchild": 0,
@@ -6903,7 +6903,7 @@
     },
     {
         "pk": 494,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ajaokuta",
             "numchild": 0,
@@ -6917,7 +6917,7 @@
     },
     {
         "pk": 495,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ankpa",
             "numchild": 0,
@@ -6931,7 +6931,7 @@
     },
     {
         "pk": 496,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bassa, Kogi State",
             "numchild": 0,
@@ -6945,7 +6945,7 @@
     },
     {
         "pk": 497,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Dekina",
             "numchild": 0,
@@ -6959,7 +6959,7 @@
     },
     {
         "pk": 498,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ibaji",
             "numchild": 0,
@@ -6973,7 +6973,7 @@
     },
     {
         "pk": 499,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Idah",
             "numchild": 0,
@@ -6987,7 +6987,7 @@
     },
     {
         "pk": 500,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Igalamela Odolu",
             "numchild": 0,
@@ -7001,7 +7001,7 @@
     },
     {
         "pk": 501,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ijumu",
             "numchild": 0,
@@ -7015,7 +7015,7 @@
     },
     {
         "pk": 502,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kabba/Bunu",
             "numchild": 0,
@@ -7029,7 +7029,7 @@
     },
     {
         "pk": 503,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kogi, Kogi State",
             "numchild": 0,
@@ -7043,7 +7043,7 @@
     },
     {
         "pk": 504,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Lokoja",
             "numchild": 0,
@@ -7057,7 +7057,7 @@
     },
     {
         "pk": 505,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mopa Muro",
             "numchild": 0,
@@ -7071,7 +7071,7 @@
     },
     {
         "pk": 506,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ofu",
             "numchild": 0,
@@ -7085,7 +7085,7 @@
     },
     {
         "pk": 507,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ogori/Magongo",
             "numchild": 0,
@@ -7099,7 +7099,7 @@
     },
     {
         "pk": 508,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Okehi",
             "numchild": 0,
@@ -7113,7 +7113,7 @@
     },
     {
         "pk": 509,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Okene",
             "numchild": 0,
@@ -7127,7 +7127,7 @@
     },
     {
         "pk": 510,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Olamaboro",
             "numchild": 0,
@@ -7141,7 +7141,7 @@
     },
     {
         "pk": 511,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Omala, Nigeria",
             "numchild": 0,
@@ -7155,7 +7155,7 @@
     },
     {
         "pk": 512,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Yagba East",
             "numchild": 0,
@@ -7169,7 +7169,7 @@
     },
     {
         "pk": 513,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Yagba West",
             "numchild": 0,
@@ -7183,7 +7183,7 @@
     },
     {
         "pk": 514,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kwara State",
             "numchild": 16,
@@ -7197,7 +7197,7 @@
     },
     {
         "pk": 515,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Asa, Nigeria",
             "numchild": 0,
@@ -7211,7 +7211,7 @@
     },
     {
         "pk": 516,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Baruten",
             "numchild": 0,
@@ -7225,7 +7225,7 @@
     },
     {
         "pk": 517,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Edu, Nigeria",
             "numchild": 0,
@@ -7239,7 +7239,7 @@
     },
     {
         "pk": 518,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ekiti, Kwara State",
             "numchild": 0,
@@ -7253,7 +7253,7 @@
     },
     {
         "pk": 519,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ifelodun, Kwara State",
             "numchild": 0,
@@ -7267,7 +7267,7 @@
     },
     {
         "pk": 520,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ilorin East",
             "numchild": 0,
@@ -7281,7 +7281,7 @@
     },
     {
         "pk": 521,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ilorin South",
             "numchild": 0,
@@ -7295,7 +7295,7 @@
     },
     {
         "pk": 522,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ilorin West",
             "numchild": 0,
@@ -7309,7 +7309,7 @@
     },
     {
         "pk": 523,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Irepodun, Kwara State",
             "numchild": 0,
@@ -7323,7 +7323,7 @@
     },
     {
         "pk": 524,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Isin, Nigeria",
             "numchild": 0,
@@ -7337,7 +7337,7 @@
     },
     {
         "pk": 525,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kaiama",
             "numchild": 0,
@@ -7351,7 +7351,7 @@
     },
     {
         "pk": 526,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Moro",
             "numchild": 0,
@@ -7365,7 +7365,7 @@
     },
     {
         "pk": 527,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Offa, Nigeria",
             "numchild": 0,
@@ -7379,7 +7379,7 @@
     },
     {
         "pk": 528,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oke Ero",
             "numchild": 0,
@@ -7393,7 +7393,7 @@
     },
     {
         "pk": 529,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oyun",
             "numchild": 0,
@@ -7407,7 +7407,7 @@
     },
     {
         "pk": 530,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Pategi",
             "numchild": 0,
@@ -7421,7 +7421,7 @@
     },
     {
         "pk": 531,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Lagos State",
             "numchild": 20,
@@ -7435,7 +7435,7 @@
     },
     {
         "pk": 532,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Agege",
             "numchild": 0,
@@ -7449,7 +7449,7 @@
     },
     {
         "pk": 533,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ajeromi-Ifelodun",
             "numchild": 0,
@@ -7463,7 +7463,7 @@
     },
     {
         "pk": 534,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Alimosho",
             "numchild": 0,
@@ -7477,7 +7477,7 @@
     },
     {
         "pk": 535,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Amuwo-Odofin",
             "numchild": 0,
@@ -7491,7 +7491,7 @@
     },
     {
         "pk": 536,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Apapa",
             "numchild": 0,
@@ -7505,7 +7505,7 @@
     },
     {
         "pk": 537,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Badagry",
             "numchild": 0,
@@ -7519,7 +7519,7 @@
     },
     {
         "pk": 538,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Epe, Nigeria",
             "numchild": 0,
@@ -7533,7 +7533,7 @@
     },
     {
         "pk": 539,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Eti Osa",
             "numchild": 0,
@@ -7547,7 +7547,7 @@
     },
     {
         "pk": 540,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ibeju-Lekki",
             "numchild": 0,
@@ -7561,7 +7561,7 @@
     },
     {
         "pk": 541,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ifako-Ijaiye",
             "numchild": 0,
@@ -7575,7 +7575,7 @@
     },
     {
         "pk": 542,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ikeja",
             "numchild": 0,
@@ -7589,7 +7589,7 @@
     },
     {
         "pk": 543,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ikorodu",
             "numchild": 0,
@@ -7603,7 +7603,7 @@
     },
     {
         "pk": 544,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kosofe",
             "numchild": 0,
@@ -7617,7 +7617,7 @@
     },
     {
         "pk": 545,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Lagos Island",
             "numchild": 0,
@@ -7631,7 +7631,7 @@
     },
     {
         "pk": 546,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Lagos Mainland",
             "numchild": 0,
@@ -7645,7 +7645,7 @@
     },
     {
         "pk": 547,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mushin, Nigeria",
             "numchild": 0,
@@ -7659,7 +7659,7 @@
     },
     {
         "pk": 548,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ojo",
             "numchild": 0,
@@ -7673,7 +7673,7 @@
     },
     {
         "pk": 549,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oshodi-Isolo",
             "numchild": 0,
@@ -7687,7 +7687,7 @@
     },
     {
         "pk": 550,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Shomolu",
             "numchild": 0,
@@ -7701,7 +7701,7 @@
     },
     {
         "pk": 551,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Surulere, Lagos State",
             "numchild": 0,
@@ -7715,7 +7715,7 @@
     },
     {
         "pk": 552,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nasarawa State",
             "numchild": 13,
@@ -7729,7 +7729,7 @@
     },
     {
         "pk": 553,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Akwanga",
             "numchild": 0,
@@ -7743,7 +7743,7 @@
     },
     {
         "pk": 554,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Awe, Nigeria",
             "numchild": 0,
@@ -7757,7 +7757,7 @@
     },
     {
         "pk": 555,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Doma, Nigeria",
             "numchild": 0,
@@ -7771,7 +7771,7 @@
     },
     {
         "pk": 556,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Karu",
             "numchild": 0,
@@ -7785,7 +7785,7 @@
     },
     {
         "pk": 557,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Keana",
             "numchild": 0,
@@ -7799,7 +7799,7 @@
     },
     {
         "pk": 558,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Keffi",
             "numchild": 0,
@@ -7813,7 +7813,7 @@
     },
     {
         "pk": 559,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kokona",
             "numchild": 0,
@@ -7827,7 +7827,7 @@
     },
     {
         "pk": 560,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Lafia",
             "numchild": 0,
@@ -7841,7 +7841,7 @@
     },
     {
         "pk": 561,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nasarawa Egon",
             "numchild": 0,
@@ -7855,7 +7855,7 @@
     },
     {
         "pk": 562,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nasarawa, Nasarawa State",
             "numchild": 0,
@@ -7869,7 +7869,7 @@
     },
     {
         "pk": 563,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Obi, Nasarawa State",
             "numchild": 0,
@@ -7883,7 +7883,7 @@
     },
     {
         "pk": 564,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Toto, Nigeria",
             "numchild": 0,
@@ -7897,7 +7897,7 @@
     },
     {
         "pk": 565,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Wamba, Nigeria",
             "numchild": 0,
@@ -7911,7 +7911,7 @@
     },
     {
         "pk": 566,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Niger State",
             "numchild": 25,
@@ -7925,7 +7925,7 @@
     },
     {
         "pk": 567,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Agaie",
             "numchild": 0,
@@ -7939,7 +7939,7 @@
     },
     {
         "pk": 568,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Agwara",
             "numchild": 0,
@@ -7953,7 +7953,7 @@
     },
     {
         "pk": 569,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bida",
             "numchild": 0,
@@ -7967,7 +7967,7 @@
     },
     {
         "pk": 570,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Borgu Local Government Area",
             "numchild": 0,
@@ -7981,7 +7981,7 @@
     },
     {
         "pk": 571,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bosso, Nigeria",
             "numchild": 0,
@@ -7995,7 +7995,7 @@
     },
     {
         "pk": 572,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Chanchaga",
             "numchild": 0,
@@ -8009,7 +8009,7 @@
     },
     {
         "pk": 573,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Edati",
             "numchild": 0,
@@ -8023,7 +8023,7 @@
     },
     {
         "pk": 574,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gbako",
             "numchild": 0,
@@ -8037,7 +8037,7 @@
     },
     {
         "pk": 575,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gurara",
             "numchild": 0,
@@ -8051,7 +8051,7 @@
     },
     {
         "pk": 576,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Katcha, Nigeria",
             "numchild": 0,
@@ -8065,7 +8065,7 @@
     },
     {
         "pk": 577,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kontagora",
             "numchild": 0,
@@ -8079,7 +8079,7 @@
     },
     {
         "pk": 578,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Lapai",
             "numchild": 0,
@@ -8093,7 +8093,7 @@
     },
     {
         "pk": 579,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Lavun",
             "numchild": 0,
@@ -8107,7 +8107,7 @@
     },
     {
         "pk": 580,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Magama",
             "numchild": 0,
@@ -8121,7 +8121,7 @@
     },
     {
         "pk": 581,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mariga, Nigeria",
             "numchild": 0,
@@ -8135,7 +8135,7 @@
     },
     {
         "pk": 582,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mashegu",
             "numchild": 0,
@@ -8149,7 +8149,7 @@
     },
     {
         "pk": 583,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mokwa",
             "numchild": 0,
@@ -8163,7 +8163,7 @@
     },
     {
         "pk": 584,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Moya, Nigeria",
             "numchild": 0,
@@ -8177,7 +8177,7 @@
     },
     {
         "pk": 585,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Paikoro",
             "numchild": 0,
@@ -8191,7 +8191,7 @@
     },
     {
         "pk": 586,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Rafi, Nigeria",
             "numchild": 0,
@@ -8205,7 +8205,7 @@
     },
     {
         "pk": 587,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Rijau",
             "numchild": 0,
@@ -8219,7 +8219,7 @@
     },
     {
         "pk": 588,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Shiroro",
             "numchild": 0,
@@ -8233,7 +8233,7 @@
     },
     {
         "pk": 589,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Suleja",
             "numchild": 0,
@@ -8247,7 +8247,7 @@
     },
     {
         "pk": 590,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Tafa",
             "numchild": 0,
@@ -8261,7 +8261,7 @@
     },
     {
         "pk": 591,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Wushishi",
             "numchild": 0,
@@ -8275,7 +8275,7 @@
     },
     {
         "pk": 592,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ogun State",
             "numchild": 20,
@@ -8289,7 +8289,7 @@
     },
     {
         "pk": 593,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Abeokuta North",
             "numchild": 0,
@@ -8303,7 +8303,7 @@
     },
     {
         "pk": 594,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Abeokuta South",
             "numchild": 0,
@@ -8317,7 +8317,7 @@
     },
     {
         "pk": 595,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ado-Odo/Ota",
             "numchild": 0,
@@ -8331,7 +8331,7 @@
     },
     {
         "pk": 596,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Egbado North",
             "numchild": 0,
@@ -8345,7 +8345,7 @@
     },
     {
         "pk": 597,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Egbado South",
             "numchild": 0,
@@ -8359,7 +8359,7 @@
     },
     {
         "pk": 598,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ewekoro",
             "numchild": 0,
@@ -8373,7 +8373,7 @@
     },
     {
         "pk": 599,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ifo",
             "numchild": 0,
@@ -8387,7 +8387,7 @@
     },
     {
         "pk": 600,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ijebu East",
             "numchild": 0,
@@ -8401,7 +8401,7 @@
     },
     {
         "pk": 601,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ijebu North",
             "numchild": 0,
@@ -8415,7 +8415,7 @@
     },
     {
         "pk": 602,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ijebu North East",
             "numchild": 0,
@@ -8429,7 +8429,7 @@
     },
     {
         "pk": 603,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ijebu Ode",
             "numchild": 0,
@@ -8443,7 +8443,7 @@
     },
     {
         "pk": 604,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ikenne",
             "numchild": 0,
@@ -8457,7 +8457,7 @@
     },
     {
         "pk": 605,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Imeko Afon",
             "numchild": 0,
@@ -8471,7 +8471,7 @@
     },
     {
         "pk": 606,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ipokia",
             "numchild": 0,
@@ -8485,7 +8485,7 @@
     },
     {
         "pk": 607,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Obafemi Owode",
             "numchild": 0,
@@ -8499,7 +8499,7 @@
     },
     {
         "pk": 608,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Odeda",
             "numchild": 0,
@@ -8513,7 +8513,7 @@
     },
     {
         "pk": 609,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Odogbolu",
             "numchild": 0,
@@ -8527,7 +8527,7 @@
     },
     {
         "pk": 610,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ogun Waterside",
             "numchild": 0,
@@ -8541,7 +8541,7 @@
     },
     {
         "pk": 611,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Remo North",
             "numchild": 0,
@@ -8555,7 +8555,7 @@
     },
     {
         "pk": 612,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Shagamu",
             "numchild": 0,
@@ -8569,7 +8569,7 @@
     },
     {
         "pk": 613,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ondo State",
             "numchild": 18,
@@ -8583,7 +8583,7 @@
     },
     {
         "pk": 614,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Akoko North-East",
             "numchild": 0,
@@ -8597,7 +8597,7 @@
     },
     {
         "pk": 615,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Akoko North-West",
             "numchild": 0,
@@ -8611,7 +8611,7 @@
     },
     {
         "pk": 616,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Akoko South-East",
             "numchild": 0,
@@ -8625,7 +8625,7 @@
     },
     {
         "pk": 617,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Akoko South-West",
             "numchild": 0,
@@ -8639,7 +8639,7 @@
     },
     {
         "pk": 618,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Akure North",
             "numchild": 0,
@@ -8653,7 +8653,7 @@
     },
     {
         "pk": 619,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Akure South",
             "numchild": 0,
@@ -8667,7 +8667,7 @@
     },
     {
         "pk": 620,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ese Odo",
             "numchild": 0,
@@ -8681,7 +8681,7 @@
     },
     {
         "pk": 621,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Idanre",
             "numchild": 0,
@@ -8695,7 +8695,7 @@
     },
     {
         "pk": 622,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ifedore",
             "numchild": 0,
@@ -8709,7 +8709,7 @@
     },
     {
         "pk": 623,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ilaje",
             "numchild": 0,
@@ -8723,7 +8723,7 @@
     },
     {
         "pk": 624,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ile Oluji/Okeigbo",
             "numchild": 0,
@@ -8737,7 +8737,7 @@
     },
     {
         "pk": 625,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Irele",
             "numchild": 0,
@@ -8751,7 +8751,7 @@
     },
     {
         "pk": 626,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Odigbo",
             "numchild": 0,
@@ -8765,7 +8765,7 @@
     },
     {
         "pk": 627,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Okitipupa",
             "numchild": 0,
@@ -8779,7 +8779,7 @@
     },
     {
         "pk": 628,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ondo East",
             "numchild": 0,
@@ -8793,7 +8793,7 @@
     },
     {
         "pk": 629,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ondo West",
             "numchild": 0,
@@ -8807,7 +8807,7 @@
     },
     {
         "pk": 630,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ose, Nigeria",
             "numchild": 0,
@@ -8821,7 +8821,7 @@
     },
     {
         "pk": 631,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Owo",
             "numchild": 0,
@@ -8835,7 +8835,7 @@
     },
     {
         "pk": 632,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Osun State",
             "numchild": 30,
@@ -8849,7 +8849,7 @@
     },
     {
         "pk": 633,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Aiyedaade",
             "numchild": 0,
@@ -8863,7 +8863,7 @@
     },
     {
         "pk": 634,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Aiyedire",
             "numchild": 0,
@@ -8877,7 +8877,7 @@
     },
     {
         "pk": 635,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Atakunmosa East",
             "numchild": 0,
@@ -8891,7 +8891,7 @@
     },
     {
         "pk": 636,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Atakunmosa West",
             "numchild": 0,
@@ -8905,7 +8905,7 @@
     },
     {
         "pk": 637,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Boluwaduro",
             "numchild": 0,
@@ -8919,7 +8919,7 @@
     },
     {
         "pk": 638,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Boripe",
             "numchild": 0,
@@ -8933,7 +8933,7 @@
     },
     {
         "pk": 639,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ede North",
             "numchild": 0,
@@ -8947,7 +8947,7 @@
     },
     {
         "pk": 640,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ede South",
             "numchild": 0,
@@ -8961,7 +8961,7 @@
     },
     {
         "pk": 641,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Egbedore",
             "numchild": 0,
@@ -8975,7 +8975,7 @@
     },
     {
         "pk": 642,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ejigbo",
             "numchild": 0,
@@ -8989,7 +8989,7 @@
     },
     {
         "pk": 643,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ife Central",
             "numchild": 0,
@@ -9003,7 +9003,7 @@
     },
     {
         "pk": 644,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ife East",
             "numchild": 0,
@@ -9017,7 +9017,7 @@
     },
     {
         "pk": 645,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ife North",
             "numchild": 0,
@@ -9031,7 +9031,7 @@
     },
     {
         "pk": 646,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ife South",
             "numchild": 0,
@@ -9045,7 +9045,7 @@
     },
     {
         "pk": 647,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ifedayo",
             "numchild": 0,
@@ -9059,7 +9059,7 @@
     },
     {
         "pk": 648,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ifelodun, Osun State",
             "numchild": 0,
@@ -9073,7 +9073,7 @@
     },
     {
         "pk": 649,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ila, Nigeria",
             "numchild": 0,
@@ -9087,7 +9087,7 @@
     },
     {
         "pk": 650,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ilesa East",
             "numchild": 0,
@@ -9101,7 +9101,7 @@
     },
     {
         "pk": 651,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ilesa West",
             "numchild": 0,
@@ -9115,7 +9115,7 @@
     },
     {
         "pk": 652,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Irepodun, Osun State",
             "numchild": 0,
@@ -9129,7 +9129,7 @@
     },
     {
         "pk": 653,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Irewole",
             "numchild": 0,
@@ -9143,7 +9143,7 @@
     },
     {
         "pk": 654,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Isokan",
             "numchild": 0,
@@ -9157,7 +9157,7 @@
     },
     {
         "pk": 655,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Iwo",
             "numchild": 0,
@@ -9171,7 +9171,7 @@
     },
     {
         "pk": 656,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Obokun",
             "numchild": 0,
@@ -9185,7 +9185,7 @@
     },
     {
         "pk": 657,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Odo Otin",
             "numchild": 0,
@@ -9199,7 +9199,7 @@
     },
     {
         "pk": 658,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ola Oluwa",
             "numchild": 0,
@@ -9213,7 +9213,7 @@
     },
     {
         "pk": 659,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Olorunda",
             "numchild": 0,
@@ -9227,7 +9227,7 @@
     },
     {
         "pk": 660,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oriade",
             "numchild": 0,
@@ -9241,7 +9241,7 @@
     },
     {
         "pk": 661,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Orolu",
             "numchild": 0,
@@ -9255,7 +9255,7 @@
     },
     {
         "pk": 662,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Osogbo",
             "numchild": 0,
@@ -9269,7 +9269,7 @@
     },
     {
         "pk": 663,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oyo State",
             "numchild": 33,
@@ -9283,7 +9283,7 @@
     },
     {
         "pk": 664,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Afijio",
             "numchild": 0,
@@ -9297,7 +9297,7 @@
     },
     {
         "pk": 665,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Akinyele",
             "numchild": 0,
@@ -9311,7 +9311,7 @@
     },
     {
         "pk": 666,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Atiba",
             "numchild": 0,
@@ -9325,7 +9325,7 @@
     },
     {
         "pk": 667,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Atigbo",
             "numchild": 0,
@@ -9339,7 +9339,7 @@
     },
     {
         "pk": 668,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Egbeda",
             "numchild": 0,
@@ -9353,7 +9353,7 @@
     },
     {
         "pk": 669,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ibadan North",
             "numchild": 0,
@@ -9367,7 +9367,7 @@
     },
     {
         "pk": 670,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ibadan North-East",
             "numchild": 0,
@@ -9381,7 +9381,7 @@
     },
     {
         "pk": 671,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ibadan North-West",
             "numchild": 0,
@@ -9395,7 +9395,7 @@
     },
     {
         "pk": 672,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ibadan South-East",
             "numchild": 0,
@@ -9409,7 +9409,7 @@
     },
     {
         "pk": 673,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ibadan South-West",
             "numchild": 0,
@@ -9423,7 +9423,7 @@
     },
     {
         "pk": 674,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ibarapa Central",
             "numchild": 0,
@@ -9437,7 +9437,7 @@
     },
     {
         "pk": 675,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ibarapa East",
             "numchild": 0,
@@ -9451,7 +9451,7 @@
     },
     {
         "pk": 676,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ibarapa North",
             "numchild": 0,
@@ -9465,7 +9465,7 @@
     },
     {
         "pk": 677,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ido, Nigeria",
             "numchild": 0,
@@ -9479,7 +9479,7 @@
     },
     {
         "pk": 678,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Irepo",
             "numchild": 0,
@@ -9493,7 +9493,7 @@
     },
     {
         "pk": 679,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Iseyin",
             "numchild": 0,
@@ -9507,7 +9507,7 @@
     },
     {
         "pk": 680,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Itesiwaju",
             "numchild": 0,
@@ -9521,7 +9521,7 @@
     },
     {
         "pk": 681,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Iwajowa",
             "numchild": 0,
@@ -9535,7 +9535,7 @@
     },
     {
         "pk": 682,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kajola",
             "numchild": 0,
@@ -9549,7 +9549,7 @@
     },
     {
         "pk": 683,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Lagelu, Nigeria",
             "numchild": 0,
@@ -9563,7 +9563,7 @@
     },
     {
         "pk": 684,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ogbomosho North",
             "numchild": 0,
@@ -9577,7 +9577,7 @@
     },
     {
         "pk": 685,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ogbomosho South",
             "numchild": 0,
@@ -9591,7 +9591,7 @@
     },
     {
         "pk": 686,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ogo Oluwa",
             "numchild": 0,
@@ -9605,7 +9605,7 @@
     },
     {
         "pk": 687,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Olorunsogo",
             "numchild": 0,
@@ -9619,7 +9619,7 @@
     },
     {
         "pk": 688,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oluyole",
             "numchild": 0,
@@ -9633,7 +9633,7 @@
     },
     {
         "pk": 689,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ona Ara",
             "numchild": 0,
@@ -9647,7 +9647,7 @@
     },
     {
         "pk": 690,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Orelope",
             "numchild": 0,
@@ -9661,7 +9661,7 @@
     },
     {
         "pk": 691,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ori Ire",
             "numchild": 0,
@@ -9675,7 +9675,7 @@
     },
     {
         "pk": 692,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oyo East",
             "numchild": 0,
@@ -9689,7 +9689,7 @@
     },
     {
         "pk": 693,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oyo, Nigeria",
             "numchild": 0,
@@ -9703,7 +9703,7 @@
     },
     {
         "pk": 694,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Saki East",
             "numchild": 0,
@@ -9717,7 +9717,7 @@
     },
     {
         "pk": 695,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Saki West",
             "numchild": 0,
@@ -9731,7 +9731,7 @@
     },
     {
         "pk": 696,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Surulere, Oyo State",
             "numchild": 0,
@@ -9745,7 +9745,7 @@
     },
     {
         "pk": 697,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Plateau State",
             "numchild": 17,
@@ -9759,7 +9759,7 @@
     },
     {
         "pk": 698,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Barkin Ladi",
             "numchild": 0,
@@ -9773,7 +9773,7 @@
     },
     {
         "pk": 699,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bassa, Plateau State",
             "numchild": 0,
@@ -9787,7 +9787,7 @@
     },
     {
         "pk": 700,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bokkos",
             "numchild": 0,
@@ -9801,7 +9801,7 @@
     },
     {
         "pk": 701,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Jos East",
             "numchild": 0,
@@ -9815,7 +9815,7 @@
     },
     {
         "pk": 702,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Jos North",
             "numchild": 0,
@@ -9829,7 +9829,7 @@
     },
     {
         "pk": 703,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Jos South",
             "numchild": 0,
@@ -9843,7 +9843,7 @@
     },
     {
         "pk": 704,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kanam, Nigeria",
             "numchild": 0,
@@ -9857,7 +9857,7 @@
     },
     {
         "pk": 705,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kanke, Nigeria",
             "numchild": 0,
@@ -9871,7 +9871,7 @@
     },
     {
         "pk": 706,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Langtang North",
             "numchild": 0,
@@ -9885,7 +9885,7 @@
     },
     {
         "pk": 707,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Langtang South",
             "numchild": 0,
@@ -9899,7 +9899,7 @@
     },
     {
         "pk": 708,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mangu, Nigeria",
             "numchild": 0,
@@ -9913,7 +9913,7 @@
     },
     {
         "pk": 709,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Mikang",
             "numchild": 0,
@@ -9927,7 +9927,7 @@
     },
     {
         "pk": 710,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Pankshin",
             "numchild": 0,
@@ -9941,7 +9941,7 @@
     },
     {
         "pk": 711,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Qua'an Pan",
             "numchild": 0,
@@ -9955,7 +9955,7 @@
     },
     {
         "pk": 712,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Riyom",
             "numchild": 0,
@@ -9969,7 +9969,7 @@
     },
     {
         "pk": 713,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Shendam",
             "numchild": 0,
@@ -9983,7 +9983,7 @@
     },
     {
         "pk": 714,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Wase, Nigeria",
             "numchild": 0,
@@ -9997,7 +9997,7 @@
     },
     {
         "pk": 715,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Rivers State",
             "numchild": 23,
@@ -10011,7 +10011,7 @@
     },
     {
         "pk": 716,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Abua/Odual",
             "numchild": 0,
@@ -10025,7 +10025,7 @@
     },
     {
         "pk": 717,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ahoada East",
             "numchild": 0,
@@ -10039,7 +10039,7 @@
     },
     {
         "pk": 718,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ahoada West",
             "numchild": 0,
@@ -10053,7 +10053,7 @@
     },
     {
         "pk": 719,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Akuku-Toru",
             "numchild": 0,
@@ -10067,7 +10067,7 @@
     },
     {
         "pk": 720,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Andoni",
             "numchild": 0,
@@ -10081,7 +10081,7 @@
     },
     {
         "pk": 721,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Asari-Toru",
             "numchild": 0,
@@ -10095,7 +10095,7 @@
     },
     {
         "pk": 722,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bonny",
             "numchild": 0,
@@ -10109,7 +10109,7 @@
     },
     {
         "pk": 723,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Degema, Nigeria",
             "numchild": 0,
@@ -10123,7 +10123,7 @@
     },
     {
         "pk": 724,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Eleme, Nigeria",
             "numchild": 0,
@@ -10137,7 +10137,7 @@
     },
     {
         "pk": 725,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Emuoha",
             "numchild": 0,
@@ -10151,7 +10151,7 @@
     },
     {
         "pk": 726,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Etche",
             "numchild": 0,
@@ -10165,7 +10165,7 @@
     },
     {
         "pk": 727,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gokana, Nigeria",
             "numchild": 0,
@@ -10179,7 +10179,7 @@
     },
     {
         "pk": 728,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ikwerre",
             "numchild": 0,
@@ -10193,7 +10193,7 @@
     },
     {
         "pk": 729,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Khana, Nigeria",
             "numchild": 0,
@@ -10207,7 +10207,7 @@
     },
     {
         "pk": 730,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Obio/Akpor",
             "numchild": 0,
@@ -10221,7 +10221,7 @@
     },
     {
         "pk": 731,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ogba/Egbema/Ndoni",
             "numchild": 0,
@@ -10235,7 +10235,7 @@
     },
     {
         "pk": 732,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ogu/Bolo",
             "numchild": 0,
@@ -10249,7 +10249,7 @@
     },
     {
         "pk": 733,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Okrika",
             "numchild": 0,
@@ -10263,7 +10263,7 @@
     },
     {
         "pk": 734,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Omuma",
             "numchild": 0,
@@ -10277,7 +10277,7 @@
     },
     {
         "pk": 735,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Opobo/Nkoro",
             "numchild": 0,
@@ -10291,7 +10291,7 @@
     },
     {
         "pk": 736,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Oyigbo",
             "numchild": 0,
@@ -10305,7 +10305,7 @@
     },
     {
         "pk": 737,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Port Harcourt",
             "numchild": 0,
@@ -10319,7 +10319,7 @@
     },
     {
         "pk": 738,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Tai, Nigeria",
             "numchild": 0,
@@ -10333,7 +10333,7 @@
     },
     {
         "pk": 739,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Sokoto State",
             "numchild": 23,
@@ -10347,7 +10347,7 @@
     },
     {
         "pk": 740,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Binji",
             "numchild": 0,
@@ -10361,7 +10361,7 @@
     },
     {
         "pk": 741,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bodinga",
             "numchild": 0,
@@ -10375,7 +10375,7 @@
     },
     {
         "pk": 742,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Dange Shuni",
             "numchild": 0,
@@ -10389,7 +10389,7 @@
     },
     {
         "pk": 743,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gada, Nigeria",
             "numchild": 0,
@@ -10403,7 +10403,7 @@
     },
     {
         "pk": 744,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Goronyo",
             "numchild": 0,
@@ -10417,7 +10417,7 @@
     },
     {
         "pk": 745,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gudu",
             "numchild": 0,
@@ -10431,7 +10431,7 @@
     },
     {
         "pk": 746,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gwadabawa",
             "numchild": 0,
@@ -10445,7 +10445,7 @@
     },
     {
         "pk": 747,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Illela, Nigeria",
             "numchild": 0,
@@ -10459,7 +10459,7 @@
     },
     {
         "pk": 748,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Isa, Nigeria",
             "numchild": 0,
@@ -10473,7 +10473,7 @@
     },
     {
         "pk": 749,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kebbe",
             "numchild": 0,
@@ -10487,7 +10487,7 @@
     },
     {
         "pk": 750,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kware",
             "numchild": 0,
@@ -10501,7 +10501,7 @@
     },
     {
         "pk": 751,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Rabah",
             "numchild": 0,
@@ -10515,7 +10515,7 @@
     },
     {
         "pk": 752,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Sabon Birni",
             "numchild": 0,
@@ -10529,7 +10529,7 @@
     },
     {
         "pk": 753,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Shagari, Nigeria",
             "numchild": 0,
@@ -10543,7 +10543,7 @@
     },
     {
         "pk": 754,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Silame",
             "numchild": 0,
@@ -10557,7 +10557,7 @@
     },
     {
         "pk": 755,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Sokoto North",
             "numchild": 0,
@@ -10571,7 +10571,7 @@
     },
     {
         "pk": 756,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Sokoto South",
             "numchild": 0,
@@ -10585,7 +10585,7 @@
     },
     {
         "pk": 757,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Tambuwal",
             "numchild": 0,
@@ -10599,7 +10599,7 @@
     },
     {
         "pk": 758,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Tangaza",
             "numchild": 0,
@@ -10613,7 +10613,7 @@
     },
     {
         "pk": 759,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Tureta",
             "numchild": 0,
@@ -10627,7 +10627,7 @@
     },
     {
         "pk": 760,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Wamako",
             "numchild": 0,
@@ -10641,7 +10641,7 @@
     },
     {
         "pk": 761,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Wurno",
             "numchild": 0,
@@ -10655,7 +10655,7 @@
     },
     {
         "pk": 762,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Yabo, Nigeria",
             "numchild": 0,
@@ -10669,7 +10669,7 @@
     },
     {
         "pk": 763,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Taraba State",
             "numchild": 16,
@@ -10683,7 +10683,7 @@
     },
     {
         "pk": 764,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ardo Kola",
             "numchild": 0,
@@ -10697,7 +10697,7 @@
     },
     {
         "pk": 765,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bali, Nigeria",
             "numchild": 0,
@@ -10711,7 +10711,7 @@
     },
     {
         "pk": 766,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Donga, Nigeria",
             "numchild": 0,
@@ -10725,7 +10725,7 @@
     },
     {
         "pk": 767,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gashaka",
             "numchild": 0,
@@ -10739,7 +10739,7 @@
     },
     {
         "pk": 768,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gassol",
             "numchild": 0,
@@ -10753,7 +10753,7 @@
     },
     {
         "pk": 769,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ibi, Nigeria",
             "numchild": 0,
@@ -10767,7 +10767,7 @@
     },
     {
         "pk": 770,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Jalingo",
             "numchild": 0,
@@ -10781,7 +10781,7 @@
     },
     {
         "pk": 771,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Karim Lamido",
             "numchild": 0,
@@ -10795,7 +10795,7 @@
     },
     {
         "pk": 772,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kurmi, Nigeria",
             "numchild": 0,
@@ -10809,7 +10809,7 @@
     },
     {
         "pk": 773,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Lau, Nigeria",
             "numchild": 0,
@@ -10823,7 +10823,7 @@
     },
     {
         "pk": 774,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Sardauna",
             "numchild": 0,
@@ -10837,7 +10837,7 @@
     },
     {
         "pk": 775,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Takum",
             "numchild": 0,
@@ -10851,7 +10851,7 @@
     },
     {
         "pk": 776,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Ussa",
             "numchild": 0,
@@ -10865,7 +10865,7 @@
     },
     {
         "pk": 777,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Wukari",
             "numchild": 0,
@@ -10879,7 +10879,7 @@
     },
     {
         "pk": 778,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Yorro",
             "numchild": 0,
@@ -10893,7 +10893,7 @@
     },
     {
         "pk": 779,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Zing, Nigeria",
             "numchild": 0,
@@ -10907,7 +10907,7 @@
     },
     {
         "pk": 780,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Yobe State",
             "numchild": 17,
@@ -10921,7 +10921,7 @@
     },
     {
         "pk": 781,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bade, Nigeria",
             "numchild": 0,
@@ -10935,7 +10935,7 @@
     },
     {
         "pk": 782,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bursari",
             "numchild": 0,
@@ -10949,7 +10949,7 @@
     },
     {
         "pk": 783,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Damaturu",
             "numchild": 0,
@@ -10963,7 +10963,7 @@
     },
     {
         "pk": 784,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Fika, Nigeria",
             "numchild": 0,
@@ -10977,7 +10977,7 @@
     },
     {
         "pk": 785,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Fune",
             "numchild": 0,
@@ -10991,7 +10991,7 @@
     },
     {
         "pk": 786,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Geidam",
             "numchild": 0,
@@ -11005,7 +11005,7 @@
     },
     {
         "pk": 787,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gujba",
             "numchild": 0,
@@ -11019,7 +11019,7 @@
     },
     {
         "pk": 788,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gulani",
             "numchild": 0,
@@ -11033,7 +11033,7 @@
     },
     {
         "pk": 789,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Jakusko",
             "numchild": 0,
@@ -11047,7 +11047,7 @@
     },
     {
         "pk": 790,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Karasuwa",
             "numchild": 0,
@@ -11061,7 +11061,7 @@
     },
     {
         "pk": 791,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Machina, Nigeria",
             "numchild": 0,
@@ -11075,7 +11075,7 @@
     },
     {
         "pk": 792,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nangere",
             "numchild": 0,
@@ -11089,7 +11089,7 @@
     },
     {
         "pk": 793,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Nguru, Nigeria",
             "numchild": 0,
@@ -11103,7 +11103,7 @@
     },
     {
         "pk": 794,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Potiskum",
             "numchild": 0,
@@ -11117,7 +11117,7 @@
     },
     {
         "pk": 795,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Tarmuwa",
             "numchild": 0,
@@ -11131,7 +11131,7 @@
     },
     {
         "pk": 796,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Yunusari",
             "numchild": 0,
@@ -11145,7 +11145,7 @@
     },
     {
         "pk": 797,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Yusufari",
             "numchild": 0,
@@ -11159,7 +11159,7 @@
     },
     {
         "pk": 798,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Zamfara State",
             "numchild": 14,
@@ -11173,7 +11173,7 @@
     },
     {
         "pk": 799,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Anka, Nigeria",
             "numchild": 0,
@@ -11187,7 +11187,7 @@
     },
     {
         "pk": 800,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bakura, Nigeria",
             "numchild": 0,
@@ -11201,7 +11201,7 @@
     },
     {
         "pk": 801,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Birnin Magaji/Kiyaw",
             "numchild": 0,
@@ -11215,7 +11215,7 @@
     },
     {
         "pk": 802,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bukkuyum",
             "numchild": 0,
@@ -11229,7 +11229,7 @@
     },
     {
         "pk": 803,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Bungudu",
             "numchild": 0,
@@ -11243,7 +11243,7 @@
     },
     {
         "pk": 804,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Chafe, Nigeria",
             "numchild": 0,
@@ -11257,7 +11257,7 @@
     },
     {
         "pk": 805,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gummi, Nigeria",
             "numchild": 0,
@@ -11271,7 +11271,7 @@
     },
     {
         "pk": 806,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Gusau",
             "numchild": 0,
@@ -11285,7 +11285,7 @@
     },
     {
         "pk": 807,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Kaura Namoda",
             "numchild": 0,
@@ -11299,7 +11299,7 @@
     },
     {
         "pk": 808,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Maradun",
             "numchild": 0,
@@ -11313,7 +11313,7 @@
     },
     {
         "pk": 809,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Maru, Nigeria",
             "numchild": 0,
@@ -11327,7 +11327,7 @@
     },
     {
         "pk": 810,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Shinkafi",
             "numchild": 0,
@@ -11341,7 +11341,7 @@
     },
     {
         "pk": 811,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Talata Mafara",
             "numchild": 0,
@@ -11355,7 +11355,7 @@
     },
     {
         "pk": 812,
-        "model": "odk_dropbox.district",
+        "model": "locations.district",
         "fields": {
             "name": "Zurmi",
             "numchild": 0,
