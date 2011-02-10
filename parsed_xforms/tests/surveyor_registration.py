@@ -3,18 +3,19 @@ Testing POSTs to "/submission"
 """
 from django.test import TestCase, Client
 
-from odk_dropbox.models import Instance, Surveyor, XForm
+from xform_manager.models import Instance, XForm
+from surveyor_manager.models import Surveyor
 from datetime import datetime
 
 class TestSurveyorRegistration(TestCase):
 
     def test_registration_form_loaded(self):
-        xf = load_xform_from_file("odk_dropbox/fixtures/test_forms/registration/forms/test_registration.xml")
+        xf = load_xform_from_file("parsed_xforms/fixtures/test_forms/registration/forms/test_registration.xml")
         registration_forms = XForm.objects.filter(title="Registration")
         self.assertTrue(len(registration_forms) > 0)
     
     def test_registration_creates_surveyor(self):
-        xf = load_xform_from_file("odk_dropbox/fixtures/test_forms/registration/forms/test_registration.xml")
+        xf = load_xform_from_file("parsed_xforms/fixtures/test_forms/registration/forms/test_registration.xml")
 
         registration_instance = load_registration_with_values({'form_id':xf.id_string, \
             'start_time': datetime.now(),
@@ -36,8 +37,8 @@ class TestSurveyorRegistration(TestCase):
 
         Submission should be attributed to "Alex Adams"
         """
-        xf = load_xform_from_file("odk_dropbox/fixtures/test_forms/registration/forms/test_registration.xml")
-        water =  load_xform_from_file("odk_dropbox/fixtures/test_forms/water_simple/forms/WaterSimple.xml")
+        xf = load_xform_from_file("parsed_xforms/fixtures/test_forms/registration/forms/test_registration.xml")
+        water =  load_xform_from_file("parsed_xforms/fixtures/test_forms/water_simple/forms/WaterSimple.xml")
         
         now = datetime.now()
         ordered_times = [datetime(now.year, now.month, now.day, 1), \
@@ -60,8 +61,8 @@ class TestSurveyorRegistration(TestCase):
         submission = load_simple_submission({'start_time': ordered_times[2]})
         submission.save()
 
-        self.assertTrue(submission.surveyor is not None)
-        self.assertEqual(submission.surveyor.name, 'Alex Adams')
+        self.assertTrue(submission.parsed_instance.surveyor is not None)
+        self.assertEqual(submission.parsed_instance.surveyor.name, 'Alex Adams')
         
     def test_multiple_submissions_out_of_order(self):
         """
@@ -76,8 +77,8 @@ class TestSurveyorRegistration(TestCase):
         Registrations performed in order,
         Submissions entered out of order.
         """
-        xf = load_xform_from_file("odk_dropbox/fixtures/test_forms/registration/forms/test_registration.xml")
-        water =  load_xform_from_file("odk_dropbox/fixtures/test_forms/water_simple/forms/WaterSimple.xml")
+        xf = load_xform_from_file("parsed_xforms/fixtures/test_forms/registration/forms/test_registration.xml")
+        water =  load_xform_from_file("parsed_xforms/fixtures/test_forms/water_simple/forms/WaterSimple.xml")
 
         now = datetime.now()
         ordered_times = [datetime(now.year, now.month, now.day, 1), \
@@ -106,8 +107,8 @@ class TestSurveyorRegistration(TestCase):
         submission_one = load_simple_submission({'start_time': ordered_times[1]})
         submission_one.save()
 
-        self.assertEqual(submission_one.surveyor.name, 'Betty Bimbob')
-        self.assertEqual(submission_two.surveyor.name, 'Alex Adams')
+        self.assertEqual(submission_one.parsed_instance.surveyor.name, 'Betty Bimbob')
+        self.assertEqual(submission_two.parsed_instance.surveyor.name, 'Alex Adams')
 
 """
 fix everything below this line some day
@@ -142,7 +143,7 @@ def load_simple_submission(custom_values):
         custom_values['end_time'] = custom_values['end_time'].strftime(XFORM_TIME_FORMAT)
     
     values.update(custom_values)
-    subm = open("odk_dropbox/fixtures/test_forms/water_simple/instances/blank.xml").read()
+    subm = open("parsed_xforms/fixtures/test_forms/water_simple/instances/blank.xml").read()
     for key in values.keys():
         pattern = "#%s#" % key.upper()
         subm = subm.replace(pattern, values[key])
@@ -175,7 +176,7 @@ def load_registration_with_values(custom_values):
         custom_values['end_time'] = custom_values['end_time'].strftime(XFORM_TIME_FORMAT)
     
     values.update(custom_values)
-    registration_xml_template = open('odk_dropbox/fixtures/test_forms/registration/instances/blank_registration.xml').read()
+    registration_xml_template = open('parsed_xforms/fixtures/test_forms/registration/instances/blank_registration.xml').read()
     for key in values.keys():
         pattern = "#%s#" % key.upper()
         registration_xml_template = registration_xml_template.replace(pattern, values[key])

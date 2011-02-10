@@ -1,5 +1,6 @@
 from django.test import TestCase
-from odk_dropbox.models import XForm, Instance, Phone
+from xform_manager.models import Instance, XForm
+from phone_manager.models import Phone
 
 def text(filename):
     f = open(filename)
@@ -10,11 +11,11 @@ def text(filename):
 class PhoneTestCase(TestCase):
     def setUp(self):
         self.xform, created = XForm.objects.get_or_create(xml=text(
-                "odk_dropbox/fixtures/test_forms/phone/"
+                "parsed_xforms/fixtures/test_forms/phone/"
                 "forms/Phone.xml"
                 ))
         self.instance, created = Instance.objects.get_or_create(xml=text(
-                "odk_dropbox/fixtures/test_forms/phone/"
+                "parsed_xforms/fixtures/test_forms/phone/"
                 "instances/Phone_2011-02-04_00-10-34.xml"
                 ))
 
