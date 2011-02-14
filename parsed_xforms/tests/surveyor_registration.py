@@ -118,7 +118,8 @@ fix everything below this line some day
 XFORM_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.000"
 
 def load_xform_from_xml_file(filename):
-    xf = XForm(xml=open(filename).read())
+    xf = XForm()
+    xf.xml = open(filename).read()
     xf.save()
     return xf
 
