@@ -3,9 +3,9 @@
 
 from factories import Factory, blueprint
 
-FIRST_NAMES = ["Alan", "Bob", "Charlie", "Dingo", "Ellen", "Fiona", "Gilbert", "Hewitt"]
+FIRST_NAMES = ["Alan", "Bob", "Charlie", "Dingo", "Ellen", "Fiona", "Gilbert", "Hewitt", "Ingrid", "Justin", "Keith", "Lawrence", "Mangrove"]
 MIDDLE_NAMES = ["Alex", "Bowie", "Chuck", "Dood", "Evelyn", "Farley", "Gabriella", "Howard"]
-LAST_NAMES = ["Arlington", "Billsworth", "ChileanMiner", "Dorothy", "Elephant", "Farthingtonsworth", "Gillette", "Hildason"]
+LAST_NAMES = ["Arlington", "Billsworth", "ChileanMiner", "Dorothy", "Elephant", "Farthingtonsworth", "Gillette", "Hildason", "Inkscape", "Janevich", "Klaus-Schlinger", "Lapdog"]
 
 import random, re
 
