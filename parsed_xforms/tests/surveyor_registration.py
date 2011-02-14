@@ -10,12 +10,12 @@ from datetime import datetime
 class TestSurveyorRegistration(TestCase):
 
     def test_registration_form_loaded(self):
-        xf = load_xform_from_file("parsed_xforms/fixtures/test_forms/registration/forms/test_registration.xml")
+        xf = load_xform_from_xml_file("parsed_xforms/fixtures/test_forms/registration/forms/test_registration.xml")
         registration_forms = XForm.objects.filter(title="Registration")
         self.assertTrue(len(registration_forms) > 0)
     
     def test_registration_creates_surveyor(self):
-        xf = load_xform_from_file("parsed_xforms/fixtures/test_forms/registration/forms/test_registration.xml")
+        xf = load_xform_from_xml_file("parsed_xforms/fixtures/test_forms/registration/forms/test_registration.xml")
 
         registration_instance = load_registration_with_values({'form_id':xf.id_string, \
             'start_time': datetime.now(),
@@ -37,8 +37,8 @@ class TestSurveyorRegistration(TestCase):
 
         Submission should be attributed to "Alex Adams"
         """
-        xf = load_xform_from_file("parsed_xforms/fixtures/test_forms/registration/forms/test_registration.xml")
-        water =  load_xform_from_file("parsed_xforms/fixtures/test_forms/water_simple/forms/WaterSimple.xml")
+        xf = load_xform_from_xml_file("parsed_xforms/fixtures/test_forms/registration/forms/test_registration.xml")
+        water =  load_xform_from_xml_file("parsed_xforms/fixtures/test_forms/water_simple/forms/WaterSimple.xml")
         
         now = datetime.now()
         ordered_times = [datetime(now.year, now.month, now.day, 1), \
@@ -77,8 +77,8 @@ class TestSurveyorRegistration(TestCase):
         Registrations performed in order,
         Submissions entered out of order.
         """
-        xf = load_xform_from_file("parsed_xforms/fixtures/test_forms/registration/forms/test_registration.xml")
-        water =  load_xform_from_file("parsed_xforms/fixtures/test_forms/water_simple/forms/WaterSimple.xml")
+        xf = load_xform_from_xml_file("parsed_xforms/fixtures/test_forms/registration/forms/test_registration.xml")
+        water =  load_xform_from_xml_file("parsed_xforms/fixtures/test_forms/water_simple/forms/WaterSimple.xml")
 
         now = datetime.now()
         ordered_times = [datetime(now.year, now.month, now.day, 1), \
@@ -117,7 +117,7 @@ fix everything below this line some day
 
 XFORM_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.000"
 
-def load_xform_from_file(filename):
+def load_xform_from_xml_file(filename):
     xf = XForm(xml=open(filename).read())
     xf.save()
     return xf
