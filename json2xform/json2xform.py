@@ -83,7 +83,7 @@ class Question(object):
     def instance(self):
         return E(self.name)
 
-    def bind(self, xpaths):
+    def bind(self):
         """
         Return an XML string representing the binding of this
         question.
@@ -91,7 +91,7 @@ class Question(object):
         d = dict([(k, insert_xpaths(xpaths, v)) for k, v in self._attributes.items()])
         return E.bind(nodeset=xpaths[self.name], **d)
 
-    def control(self, xpath):
+    def control(self):
         """
         The control depends on what type of question we're asking, it
         doesn't make sense to implement here in the base class.
@@ -103,70 +103,17 @@ class InputQuestion(Question):
     This control string is the same for: strings, integers, decimals,
     dates, geopoints, barcodes ...
     """
-    def control(self, xpath):
-        return E.input(ref=xpath, *self.label_and_hint())
+    def control(self):
+        return E.input(ref=self.xpath(), *self.label_and_hint())
 
-# The following code extends the class InputQuestion for a bunch of
-# different types of InputQuestions.
-def init_method(t):
-    def __init__(self, **kwargs):
-        InputQuestion.__init__(self, **kwargs)
-        self._attributes[u"type"] = t
-    return __init__
-
-types = {
-    "String" : u"string",
-    "Integer" : u"int",
-    "Geopoint" : u"geopoint",
-    "Decimal" : u"decimal",
-    "Date" : u"date",
-    "Barcode" : u"barcode",
-    }
-
-for k, v in types.items():
-    globals()[k + "Question"] = type(
-        k + "Question",
-        (InputQuestion,),
-        {"__init__" : init_method(v)}
-        )
-
-# StringQuestion is on the classes we created above.
-class Note(StringQuestion):
-    def __init__(self, **kwargs):
-        StringQuestion.__init__(self, **kwargs)
-        self._attributes[u"readonly"] = u"true()"
-        self._attributes[u"required"] = u"false()"
-
-class PhoneNumberQuestion(StringQuestion):    
-    def __init__(self, **kwargs):
-        StringQuestion.__init__(self, **kwargs)
-        self._attributes[u"constraint"] = u"regex(., '^\d*$')"
-        # this approach to constrain messages doesn't work with lxml,
-        # need to figure out how to do the name space thing correctly.
-        # self._attributes[u"jr:constraintMsg"] = u"Please enter only numbers."
-        self.hint = u"'0' = respondent has no phone number\n" + \
-            u"'1' = respondent prefers to skip this question."
-
-class PercentageQuestion(IntegerQuestion):
-    def __init__(self, **kwargs):
-        IntegerQuestion.__init__(self, **kwargs)
-        self._attributes[u"constraint"] = u"0 <= . and . <= 100"
-        self._attributes[u"jr:constraintMsg"] = \
-            u"Please enter an integer between zero and one hundred."
 
 class UploadQuestion(Question):
-    def __init__(self, **kwargs):
-        Question.__init__(self, **kwargs)
-        self._attributes[u"type"] = u"binary"
-
-    def control(self, xpath, mediatype):
-        return E.upload(ref=xpath, mediatype=mediatype,
+    def control(self):
+        return E.upload(ref=self.xpath(), mediatype=self.mediatype,
                         *self.label_and_hint())
 
+# picture: is an upload question with type=binary and mediatype=image/*
 
-class PictureQuestion(UploadQuestion):
-    def control(self, xpath):
-        return UploadQuestion.control(self, xpath, "image/*")
 
 class Choice(object):
     def __init__(self, value, text):
@@ -192,54 +139,14 @@ class MultipleChoiceQuestion(Question):
         self.choices = choices(kwargs.pop("choices"))
         Question.__init__(self, **kwargs)
 
-    def control(self, xpath):
-        result = E(self._attributes[u"type"], {"ref" : xpath})
+    def control(self):
+        assert self._attributes[u"type"] in [u"select", u"select1"]
+        result = E(self._attributes[u"type"], {"ref" : self.xpath()})
         for element in self.label_and_hint() + [c.xml(self.name) for c in self.choices]:
             result.append(element)
         return result        
 
-class SelectOneQuestion(MultipleChoiceQuestion):
-    def __init__(self, **kwargs):
-        MultipleChoiceQuestion.__init__(self, **kwargs)
-        self._attributes[u"type"] = u"select1"
-        self.hint = u"select one"
-
-class YesNoQuestion(SelectOneQuestion):
-    def __init__(self, **kwargs):
-        SelectOneQuestion.__init__(self, **kwargs)
-        self.choices = choices([u"Yes", u"No"])
-
-class YesNoDontKnowQuestion(SelectOneQuestion):
-    def __init__(self, **kwargs):
-        SelectOneQuestion.__init__(self, **kwargs)
-        self.choices = choices([u"Yes", u"No", (u"Don't Know", u"unknown")])
-
-class SelectMultipleQuestion(MultipleChoiceQuestion):
-    def __init__(self, **kwargs):
-        MultipleChoiceQuestion.__init__(self, **kwargs)
-        self._attributes[u"type"] = u"select"
-        self._attributes[u"required"] = u"false()"
-        self.hint = u"select all that apply"
-
-# Ideally, I'd like to make a bunch of functions with the prefix q and
-# the rest of the function name is the question type. I'll look into
-# this when I have Internet
-question_class = {
-    "string" : StringQuestion,
-    "gps" : GeopointQuestion,
-    "phone number" : PhoneNumberQuestion,
-    "integer" : IntegerQuestion,
-    "decimal" : DecimalQuestion,
-    "percentage" : PercentageQuestion,
-    "select one" : SelectOneQuestion,
-    "select all that apply" : SelectMultipleQuestion,
-    "yes or no" : YesNoQuestion,
-    "date" : DateQuestion,
-}
-def q(d):
-    c = question_class[d.pop("type")]
-    return c(**d)
-
+# I haven't figured out how to put tables into Excel.
 def table(rows, columns):
     result = []
     for row_text, row_name in tuples(rows):
@@ -248,10 +155,16 @@ def table(rows, columns):
             kwargs["text"] = row_text + u": " + kwargs["text"]
             kwargs["name"] = row_name + u" " + kwargs.get("name", sluggify(kwargs["text"]))
             result.append(q(**kwargs))
-    return result    
+    return result
 
-class Survey(object):
-    def __init__(self, title, questions):
+class Section(object):
+    # name is the xml tag name in the instance
+    # text is a dictionary of translations to label this group
+    def __init__(self, name, text, elements=[]):
+        self._elements = elements
+
+class Survey(Section):
+    def __init__(self, title):
         assert re.search(r"^" + XFORM_TAG_REGEXP + r"$", title)
         self.title = title
         self._stack = [self.title]
