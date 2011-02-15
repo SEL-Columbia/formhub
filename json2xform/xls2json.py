@@ -6,16 +6,19 @@ from xlrd import open_workbook
 import json
 import re
 import sys
+import codecs
 
-SURVEY = u"survey"
-CHOICES = u"choices"
+# the following are the three sheet names that this program expects
+SURVEY_SHEET = u"survey"
+CHOICES_SHEET = u"choices"
+TYPES_SHEET = u"question types"
+
 CHOICE_LIST_NAME = u"list name"
 DICT_CHAR = u":"
-TYPE = u"type"
-QUESTION_TYPES = u"question types"
 MULTIPLE_CHOICE_DELIMITER = r"\s+from\s+"
-ATTRIBUTES = u"attributes"
-RESERVED_FIELDS = [ATTRIBUTES, CHOICE_LIST_NAME, u"name", u"text", u"hint"]
+
+TYPE = u"type"
+CHOICES = u"choices"
 
 class ExcelToJsonConverter(object):
     def __init__(self, path):
@@ -23,19 +26,21 @@ class ExcelToJsonConverter(object):
         self._dict = None
         self._step1()
         sheet_names = self._dict.keys()
-        if len(sheet_names)==2 and SURVEY in sheet_names and CHOICES in sheet_names:
+        if len(sheet_names)==2 and SURVEY_SHEET in sheet_names and CHOICES_SHEET in sheet_names:
             self._fix_int_values()
             self._group_dictionaries()
             self._construct_choice_lists()
-            self._split_multiple_choice_types()
-        if sheet_names==[QUESTION_TYPES]:
+            self._insert_choice_lists()
+        if sheet_names==[TYPES_SHEET]:
             self._group_dictionaries()
 
     def to_dict(self):
         return self._dict
 
-    def get_json(self):
-        return json.dumps(self._dict, indent=4)
+    def print_json_to_file(self):
+        fp = codecs.open(self.path[:-4] + ".json", mode="w", encoding="utf-8")
+        json.dump(converter.to_dict(), fp=fp, ensure_ascii=False)
+        fp.close()
 
     def _step1(self):
         """
@@ -95,27 +100,29 @@ class ExcelToJsonConverter(object):
         Each choice has a list name associated with it. Go through the
         list of choices, grouping all the choices by their list name.
         """
-        choice_list = self._dict[CHOICES]
+        choice_list = self._dict[CHOICES_SHEET]
         choices = {}
         for choice in choice_list:
             list_name = choice.pop(CHOICE_LIST_NAME)
             if list_name in choices: choices[list_name].append(choice)
             else: choices[list_name] = [choice]
-        self._dict[CHOICES] = choices
+        self._dict[CHOICES_SHEET] = choices
 
-    def _split_multiple_choice_types(self):
+    def _insert_choice_lists(self):
         """
-        For each multiple choice question in the survey break up the
-        question type into two fields, one the multiple question type,
-        two the list name that we're selecting from.
+        For each multiple choice question in the survey find the
+        corresponding list of choices and add it to that
+        question. Finally, drop the choice lists and set the
+        underlying dict to be just the survey definition.
         """
-        for q in self._dict[SURVEY]:
+        for q in self._dict[SURVEY_SHEET]:
             l = re.split(MULTIPLE_CHOICE_DELIMITER, q[TYPE])
             if len(l) > 2: raise Exception("There should be at most one 'from' in a question type.")
             if len(l)==2:
-                assert CHOICE_LIST_NAME not in q
-                q[CHOICE_LIST_NAME] = l[1]
+                assert CHOICES not in q
+                q[CHOICES] = self._dict[CHOICES_SHEET][l[1]]
                 q[TYPE] = l[0]
+        self._dict = self._dict[SURVEY_SHEET]
 
 if __name__=="__main__":
     # Open the excel file that is the second argument to this python
@@ -123,7 +130,4 @@ if __name__=="__main__":
     path = sys.argv[1]
     assert path[-4:]==".xls"
     converter = ExcelToJsonConverter(path)
-    print converter.get_json()
-    # f = open(path[:-4] + ".json", "w")
-    # f.write(converter.get_json())
-    # f.close()
+    print json.dumps(converter.to_dict(), ensure_ascii=False, indent=4)
