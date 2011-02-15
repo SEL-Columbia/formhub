@@ -1,5 +1,5 @@
 import os
-from xls2json import ExcelReader
+from .xls2json import ExcelReader
 from . import utils
 
 def _var_repl_function(xpaths):

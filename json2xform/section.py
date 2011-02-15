@@ -1,4 +1,4 @@
-from question import SurveyElement
+from .question import SurveyElement
 
 class Section(SurveyElement):
     def __init__(self, name=u"", text={}, elements=[]):
