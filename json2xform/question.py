@@ -61,7 +61,7 @@ class MultipleChoiceQuestion(RootQuestion):
         option._set_parent(self)
         self._options.append(option)
 
-class InputText(RootQuestion):
+class InputQuestion(RootQuestion):
     pass
 
 

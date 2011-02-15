@@ -46,7 +46,7 @@ class Json2XformVerboseSurveyCreationTests(TestCase):
         self.assertRaises(Exception, q, 'validate')
     
     def test_one_section_cannot_have_two_conflicting_slugs(self):
-        q1 = InputText(name="YourName")
-        q2 = InputText(name="YourName")
+        q1 = InputQuestion(name="YourName")
+        q2 = InputQuestion(name="YourName")
         s = Survey(name="Roses are Red", elements=[q1, q2])
         self.assertRaises(Exception, s, 'validate')

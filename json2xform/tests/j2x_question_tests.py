@@ -22,5 +22,5 @@ class Json2XformQuestionValidationTests(TestCase):
         pass
         
     def test_question_type_is_loaded(self):
-        i = InputText(name="Gimme a decimal?", question_type="decimal")
+        i = InputQuestion(name="Gimme a decimal?", question_type="decimal")
         self.assertEqual(i._question_type, "decimal")

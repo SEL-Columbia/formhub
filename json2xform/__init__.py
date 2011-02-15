@@ -1,2 +1,2 @@
 from survey import Survey
-from question import MultipleChoiceQuestion, InputText
+from question import MultipleChoiceQuestion, InputQuestion
