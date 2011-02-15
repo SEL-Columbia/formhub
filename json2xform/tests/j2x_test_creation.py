@@ -31,10 +31,10 @@ class Json2XformVerboseSurveyCreationTests(TestCase):
             {'value': 'red', 'text':'Red'}, \
             {'value': 'blue', 'text': 'Blue'}]
         
-        q = MultipleChoiceQuestion(name="Favorite Color", options=option_dict_array)
+        q = MultipleChoiceQuestion(name="Favorite_Color", options=option_dict_array)
         s = Survey(name="Roses are Red", elements=[q])
         self.assertEqual(s.to_dict(), {'name': 'Roses are Red', \
-            'elements': [{'name': 'Favorite Color', \
+            'elements': [{'name': 'Favorite_Color', \
             'options': [{'text': 'Red','value': 'red'},{'text': 'Blue','value': 'blue'}] \
             }] \
         })
@@ -46,7 +46,7 @@ class Json2XformVerboseSurveyCreationTests(TestCase):
         self.assertRaises(Exception, q, 'validate')
     
     def test_one_section_cannot_have_two_conflicting_slugs(self):
-        q1 = InputText(name="YourName")
-        q2 = InputText(name="YourName")
+        q1 = InputQuestion(name="YourName")
+        q2 = InputQuestion(name="YourName")
         s = Survey(name="Roses are Red", elements=[q1, q2])
         self.assertRaises(Exception, s, 'validate')

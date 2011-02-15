@@ -1,4 +1,6 @@
-class Section(object):
+from question import SurveyElement
+
+class Section(SurveyElement):
     def __init__(self, name=u"", text={}, elements=[]):
         self._name = name
         self._text = text
