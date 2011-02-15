@@ -65,6 +65,7 @@ class InputQuestion(RootQuestion):
     pass
 
 
+
 class Option(object):
     def __init__(self, **kwargs):
         self._value = kwargs[u'value']
@@ -79,3 +80,41 @@ class Option(object):
         
     def to_dict(self):
         return {'value': self._value, 'text': self._text}
+
+
+from xls2json import ExcelReader
+import os
+
+# this is a list of all the question types we will use in creating XForms.
+file_path = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "question_types.xls"
+    )
+question_types = ExcelReader(file_path).to_dict()
+
+question_types_by_name = {}
+for question_type in question_types:
+    question_types_by_name[question_type.pop(u"name")] = question_type
+
+question_classes = {
+    "" : RootQuestion,
+    "input" : InputQuestion,
+    "select" : MultipleChoiceQuestion,
+    "select1" : MultipleChoiceQuestion,
+    "upload" : RootQuestion,
+    }
+
+def get_question_from_dict(d):
+    d_type = d.pop("type")
+    question_type = question_types_by_name[d_type]
+    question_class = question_classes[ question_type["control"].get("tag", "") ]
+    
+    #non-unicode strings fixes a problem with passing params to question_class
+    #d={'text': {'French': 'Combien?', 'English': 'How many?'}, 'name': 'exchange_rate', 'question_type': 'decimal', 'attributes': {}}
+    d[u'question_type'] = d_type
+    
+    question = question_class(**d)
+    question._question_type_data = question_type
+    
+    return question
+
