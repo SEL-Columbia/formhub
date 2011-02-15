@@ -11,6 +11,8 @@ from copy import copy
 from lxml import etree
 from lxml.builder import ElementMaker
 import sys
+from xls2json import ExcelReader
+import os
 
 nsmap = {
     None : "http://www.w3.org/2002/xforms",
@@ -67,6 +69,20 @@ class Question(object):
         self._attributes = attributes.copy()
         self.hint = hint
 
+    def set_question_type(self, d):
+        """
+        This is a little hacky. I think it would be cleaner to use a
+        meta class to create a new class for each question type.
+        """
+        for k, v in d["bind"].items():
+            if ":" in k:
+                # we need to handle namespacing of attributes
+                l = k.split(":")
+                assert len(l)==2
+                k = ns(l[0], l[1])
+            self._attributes[k] = v
+        self.hint = d.get("hint", {})
+
     def label_element(self):
         return E.label(ref="jr:itext('%s')" % SEP.join([QUESTION_PREFIX, self.name]))
 
@@ -106,54 +122,6 @@ class InputQuestion(Question):
     def control(self, xpath):
         return E.input(ref=xpath, *self.label_and_hint())
 
-# The following code extends the class InputQuestion for a bunch of
-# different types of InputQuestions.
-def init_method(t):
-    def __init__(self, **kwargs):
-        InputQuestion.__init__(self, **kwargs)
-        self._attributes[u"type"] = t
-    return __init__
-
-types = {
-    "String" : u"string",
-    "Integer" : u"int",
-    "Geopoint" : u"geopoint",
-    "Decimal" : u"decimal",
-    "Date" : u"date",
-    "Barcode" : u"barcode",
-    }
-
-for k, v in types.items():
-    globals()[k + "Question"] = type(
-        k + "Question",
-        (InputQuestion,),
-        {"__init__" : init_method(v)}
-        )
-
-# StringQuestion is on the classes we created above.
-class Note(StringQuestion):
-    def __init__(self, **kwargs):
-        StringQuestion.__init__(self, **kwargs)
-        self._attributes[u"readonly"] = u"true()"
-        self._attributes[u"required"] = u"false()"
-
-class PhoneNumberQuestion(StringQuestion):    
-    def __init__(self, **kwargs):
-        StringQuestion.__init__(self, **kwargs)
-        self._attributes[u"constraint"] = u"regex(., '^\d*$')"
-        # this approach to constrain messages doesn't work with lxml,
-        # need to figure out how to do the name space thing correctly.
-        # self._attributes[u"jr:constraintMsg"] = u"Please enter only numbers."
-        self.hint = u"'0' = respondent has no phone number\n" + \
-            u"'1' = respondent prefers to skip this question."
-
-class PercentageQuestion(IntegerQuestion):
-    def __init__(self, **kwargs):
-        IntegerQuestion.__init__(self, **kwargs)
-        self._attributes[u"constraint"] = u"0 <= . and . <= 100"
-        self._attributes[u"jr:constraintMsg"] = \
-            u"Please enter an integer between zero and one hundred."
-
 class UploadQuestion(Question):
     def __init__(self, **kwargs):
         Question.__init__(self, **kwargs)
@@ -162,11 +130,6 @@ class UploadQuestion(Question):
     def control(self, xpath, mediatype):
         return E.upload(ref=xpath, mediatype=mediatype,
                         *self.label_and_hint())
-
-
-class PictureQuestion(UploadQuestion):
-    def control(self, xpath):
-        return UploadQuestion.control(self, xpath, "image/*")
 
 class Choice(object):
     def __init__(self, value, text):
@@ -198,47 +161,31 @@ class MultipleChoiceQuestion(Question):
             result.append(element)
         return result        
 
-class SelectOneQuestion(MultipleChoiceQuestion):
-    def __init__(self, **kwargs):
-        MultipleChoiceQuestion.__init__(self, **kwargs)
-        self._attributes[u"type"] = u"select1"
-        self.hint = u"select one"
+# this is a list of all the question types we will use in creating XForms.
+file_path = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "question_types.xls"
+    )
+question_types = ExcelReader(file_path).to_dict()
 
-class YesNoQuestion(SelectOneQuestion):
-    def __init__(self, **kwargs):
-        SelectOneQuestion.__init__(self, **kwargs)
-        self.choices = choices([u"Yes", u"No"])
+question_types_by_name = {}
+for question_type in question_types:
+    question_types_by_name[question_type.pop(u"name")] = question_type
 
-class YesNoDontKnowQuestion(SelectOneQuestion):
-    def __init__(self, **kwargs):
-        SelectOneQuestion.__init__(self, **kwargs)
-        self.choices = choices([u"Yes", u"No", (u"Don't Know", u"unknown")])
+question_classes = {
+    "" : Question,
+    "input" : InputQuestion,
+    "select" : MultipleChoiceQuestion,
+    "select1" : MultipleChoiceQuestion,
+    "upload" : UploadQuestion,
+    }
 
-class SelectMultipleQuestion(MultipleChoiceQuestion):
-    def __init__(self, **kwargs):
-        MultipleChoiceQuestion.__init__(self, **kwargs)
-        self._attributes[u"type"] = u"select"
-        self._attributes[u"required"] = u"false()"
-        self.hint = u"select all that apply"
-
-# Ideally, I'd like to make a bunch of functions with the prefix q and
-# the rest of the function name is the question type. I'll look into
-# this when I have Internet
-question_class = {
-    "string" : StringQuestion,
-    "gps" : GeopointQuestion,
-    "phone number" : PhoneNumberQuestion,
-    "integer" : IntegerQuestion,
-    "decimal" : DecimalQuestion,
-    "percentage" : PercentageQuestion,
-    "select one" : SelectOneQuestion,
-    "select all that apply" : SelectMultipleQuestion,
-    "yes or no" : YesNoQuestion,
-    "date" : DateQuestion,
-}
 def q(d):
-    c = question_class[d.pop("type")]
-    return c(**d)
+    question_type = question_types_by_name[d.pop("type")]
+    question_class = question_classes[ question_type["control"].get("tag", "") ]
+    result = question_class(**d)
+    result.set_question_type(question_type)
+    return result
 
 def table(rows, columns):
     result = []
@@ -319,12 +266,6 @@ class Survey(object):
 
 
 
-
-#         "dateTime" : ["date and time"],
-
-#     supported_attributes = ["required", "relevant", "readonly", "constraint", "jr:constraintMsg","jr:preload","jr:preloadParams", "calculate"]
-
-# jr:preload questions dont have any control
 
 # def apply(function, survey):
 #     l = len(survey.elements)
