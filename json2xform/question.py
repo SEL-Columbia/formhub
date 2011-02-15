@@ -42,6 +42,7 @@ class SurveyElement(object):
         This is a little hacky. I think it would be cleaner to use a
         meta class to create a new class for each question type.
         """
+        
         for k, v in d["bind"].items():
             if ":" in k:
                 # we need to handle namespacing of attributes
@@ -191,9 +192,11 @@ question_classes = {
     "upload" : UploadQuestion,
     }
 
-def q(d):
-    question_type = question_types_by_name[d.pop("type")]
+def create_question_from_dict(d):
+    q_type_str = d.pop("type")
+    question_type = question_types_by_name[q_type_str]
     question_class = question_classes[ question_type["control"].get("tag", "") ]
+    d[u'question_type'] = q_type_str
     result = question_class(**d)
     result.set_question_type(question_type)
     return result

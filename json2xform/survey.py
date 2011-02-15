@@ -1,5 +1,7 @@
-from .question import MultipleChoiceQuestion
+from .question import MultipleChoiceQuestion, create_question_from_dict
 from .section import Section
+
+import json
 
 class Survey(Section):
     # def __init__(self, title):
@@ -68,6 +70,12 @@ class Survey(Section):
     def __unicode__(self):
         return etree.tostring(self.xml(), pretty_print=True)
     
+    def load_elements_from_json(self, json_text):
+        element_dict_list = json.loads(json_text)
+        for d in element_dict_list:
+            q = create_question_from_dict(d)
+            self._add_element(q)
+
     def _build_options_list_from_descendants(self):
         """
         used in preparation for exporting to XForm
@@ -77,4 +85,3 @@ class Survey(Section):
             element.add_options_to_list(self._options_list)
 
         return self._options_list
-    
