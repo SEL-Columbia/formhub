@@ -11,6 +11,8 @@ from copy import copy
 from lxml import etree
 from lxml.builder import ElementMaker
 import sys
+from xls2json import ExcelReader
+import os
 
 nsmap = {
     None : "http://www.w3.org/2002/xforms",
@@ -67,6 +69,20 @@ class Question(object):
         self._attributes = attributes.copy()
         self.hint = hint
 
+    def set_question_type(self, d):
+        """
+        This is a little hacky. I think it would be cleaner to use a
+        meta class to create a new class for each question type.
+        """
+        for k, v in d["bind"].items():
+            if ":" in k:
+                # we need to handle namespacing of attributes
+                l = k.split(":")
+                assert len(l)==2
+                k = ns(l[0], l[1])
+            self._attributes[k] = v
+        self.hint = d.get("hint", {})
+
     def label_element(self):
         return E.label(ref="jr:itext('%s')" % SEP.join([QUESTION_PREFIX, self.name]))
 
@@ -106,14 +122,10 @@ class InputQuestion(Question):
     def control(self):
         return E.input(ref=self.xpath(), *self.label_and_hint())
 
-
 class UploadQuestion(Question):
     def control(self):
         return E.upload(ref=self.xpath(), mediatype=self.mediatype,
                         *self.label_and_hint())
-
-# picture: is an upload question with type=binary and mediatype=image/*
-
 
 class Choice(object):
     def __init__(self, value, text):
@@ -145,6 +157,32 @@ class MultipleChoiceQuestion(Question):
         for element in self.label_and_hint() + [c.xml(self.name) for c in self.choices]:
             result.append(element)
         return result        
+
+# this is a list of all the question types we will use in creating XForms.
+file_path = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "question_types.xls"
+    )
+question_types = ExcelReader(file_path).to_dict()
+
+question_types_by_name = {}
+for question_type in question_types:
+    question_types_by_name[question_type.pop(u"name")] = question_type
+
+question_classes = {
+    "" : Question,
+    "input" : InputQuestion,
+    "select" : MultipleChoiceQuestion,
+    "select1" : MultipleChoiceQuestion,
+    "upload" : UploadQuestion,
+    }
+
+def q(d):
+    question_type = question_types_by_name[d.pop("type")]
+    question_class = question_classes[ question_type["control"].get("tag", "") ]
+    result = question_class(**d)
+    result.set_question_type(question_type)
+    return result
 
 # I haven't figured out how to put tables into Excel.
 def table(rows, columns):
@@ -232,12 +270,6 @@ class Survey(Section):
 
 
 
-
-#         "dateTime" : ["date and time"],
-
-#     supported_attributes = ["required", "relevant", "readonly", "constraint", "jr:constraintMsg","jr:preload","jr:preloadParams", "calculate"]
-
-# jr:preload questions dont have any control
 
 # def apply(function, survey):
 #     l = len(survey.elements)
