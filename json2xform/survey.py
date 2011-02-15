@@ -12,14 +12,15 @@ class Survey(Section):
     #     self._set_up_xpath_dictionary()
     #     self.created = datetime.now()
 
-    def _set_up_xpath_dictionary(self):
-        self.xpath = {}
-        for q in self.questions:
-            if q.name in self.xpath:
-                raise Exception("Question names must be unique", q.name)
-            self.xpath[q.name] = u"/" + self._stack[0] + u"/" + q.name
-
     def xml(self):
+        """
+        calls necessary preparation methods, then returns the xml.
+        """
+        self.validate()
+        
+        self._build_options_list_from_descendants()
+        self._set_up_xpath_dictionary()
+        
         return E(ns("h", "html"),
                  E(ns("h", "head"),
                    E(ns("h", "title"), self.title),
@@ -70,18 +71,38 @@ class Survey(Section):
     def __unicode__(self):
         return etree.tostring(self.xml(), pretty_print=True)
     
-    def load_elements_from_json(self, json_text):
-        element_dict_list = json.loads(json_text)
-        for d in element_dict_list:
-            q = create_question_from_dict(d)
-            self._add_element(q)
-
     def _build_options_list_from_descendants(self):
         """
-        used in preparation for exporting to XForm
+        used in preparation for exporting to XForm. Returns the list so that we can test it.
         """
         self._options_list = []
         for element in self._elements:
             element.add_options_to_list(self._options_list)
 
         return self._options_list
+    
+    
+    def _set_up_xpath_dictionary(self):
+        """
+        This method now returns self.xpath so that we can test it later on.
+        """
+        self.xpath = {}
+        for q in self.questions:
+            if q.name in self.xpath:
+                raise Exception("Question names must be unique", q.name)
+            self.xpath[q.name] = u"/" + self._stack[0] + u"/" + q.name
+        
+        return self.xpath
+        
+    def load_elements_from_json(self, json_text):
+        """
+        Called when importing from a json text file. This uses the create_question_from_dict method in
+        question.py.
+        """
+        element_dict_list = json.loads(json_text)
+        for d in element_dict_list:
+            q = create_question_from_dict(d)
+            self._add_element(q)
+
+
+
