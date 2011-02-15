@@ -20,7 +20,7 @@ MULTIPLE_CHOICE_DELIMITER = r"\s+from\s+"
 TYPE = u"type"
 CHOICES = u"choices"
 
-class ExcelToJsonConverter(object):
+class ExcelReader(object):
     def __init__(self, path):
         self._path = path
         self._dict = None
@@ -33,13 +33,14 @@ class ExcelToJsonConverter(object):
             self._insert_choice_lists()
         if sheet_names==[TYPES_SHEET]:
             self._group_dictionaries()
+            self._dict = self._dict[TYPES_SHEET]
 
     def to_dict(self):
         return self._dict
 
     def print_json_to_file(self):
-        fp = codecs.open(self.path[:-4] + ".json", mode="w", encoding="utf-8")
-        json.dump(converter.to_dict(), fp=fp, ensure_ascii=False)
+        fp = codecs.open(self._path[:-4] + ".json", mode="w", encoding="utf-8")
+        json.dump(converter.to_dict(), fp=fp, ensure_ascii=False, indent=4)
         fp.close()
 
     def _step1(self):
@@ -129,5 +130,6 @@ if __name__=="__main__":
     # call, convert that file to json and save that json to a file
     path = sys.argv[1]
     assert path[-4:]==".xls"
-    converter = ExcelToJsonConverter(path)
-    print json.dumps(converter.to_dict(), ensure_ascii=False, indent=4)
+    converter = ExcelReader(path)
+    converter.print_json_to_file()
+    # print json.dumps(converter.to_dict(), ensure_ascii=False, indent=4)
