@@ -101,7 +101,13 @@ class SurveyElement(object):
 
 
 class Question(SurveyElement):
-    pass
+    def _create_binding(self):
+        """
+        I don't know where this should go, but I wanted to test it and
+        it might be necessary for the xml output (?)
+        """
+        return utils.E.bind(nodeset=self.get_xpath(), \
+                    type="string") #type needs to be set
 
 
 class InputQuestion(Question):
