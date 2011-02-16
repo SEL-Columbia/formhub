@@ -18,9 +18,10 @@ def insert_xpaths(xpaths, text):
 
 class SurveyElement(object):
     def __init__(self, *args, **kwargs):
-        self._name = kwargs.get(u"name", "")
+        self._name = kwargs.get(u"name", u"")
         self._attributes = kwargs.get(u"attributes", {})
-        self._question_type = kwargs.get(u"question_type", None)
+        self._question_type = kwargs.get(u"question_type", u"")
+        self._text = kwargs.get(u"text", {})
 
     def validate(self):
         assert utils.is_valid_xml_tag(self._name)
@@ -28,38 +29,48 @@ class SurveyElement(object):
     def _set_parent(self, parent):
         self._parent = parent
 
+    def get_xpath(self):
+        """
+        Return the xpath of this survey element.
+        """
+        l = [self._name]
+        current_element = self._parent
+        while current_element:
+            l.append(current_element._name)
+            current_element = current_element._parent
+        # add an empty string to get a leading slash on the xpath
+        l.append(u"")
+        l.reverse()
+        return u"/".join(l)
+
     def to_dict(self):
         return {'name': self._name}
 
     def add_options_to_list(self, options_list):
-        return options_list
+        pass
         
-    def _load_question_type_data(self, source):
-        self._question_type_data = source
-
     def set_question_type(self, d):
         """
         This is a little hacky. I think it would be cleaner to use a
         meta class to create a new class for each question type.
         """
-        
         for k, v in d["bind"].items():
             if ":" in k:
                 # we need to handle namespacing of attributes
                 l = k.split(":")
                 assert len(l)==2
-                k = ns(l[0], l[1])
+                k = utils.ns(l[0], l[1])
             self._attributes[k] = v
         self.hint = d.get("hint", {})
 
     # XML generating functions, these probably need to be moved around.
     def label_element(self):
-        return E.label(ref="jr:itext('%s')" % SEP.join([QUESTION_PREFIX, self.name]))
+        return utils.E.label(ref="jr:itext('%s')" % utils.SEP.join([utils.QUESTION_PREFIX, self._name]))
 
     def hint_element(self):
         # I need to fix this like label above
         if self.hint:
-            return E.hint(self.hint)
+            return utils.E.hint(self.hint)
 
     def label_and_hint(self):
         # if self.hint:
@@ -67,15 +78,16 @@ class SurveyElement(object):
         return [self.label_element()]
 
     def instance(self):
-        return E(self.name)
+        return utils.E(self._name)
 
-    def bind(self):
+    def get_bindings(self, xpaths):
         """
-        Return an XML string representing the binding of this
-        question.
+        Return a list of XML nodes for the binding of this survey
+        element and all its descendants. Note: we have to pass in a
+        dictionary of xpaths to do xpath substitution here.
         """
         d = dict([(k, insert_xpaths(xpaths, v)) for k, v in self._attributes.items()])
-        return E.bind(nodeset=xpaths[self.name], **d)
+        return [ utils.E.bind(nodeset=xpaths[self._name], **d) ]
 
     def control(self):
         """
@@ -95,15 +107,16 @@ class InputQuestion(Question):
     dates, geopoints, barcodes ...
     """
     def control(self):
-        return E.input(ref=self.xpath(), *self.label_and_hint())
+        return utils.E.input(ref=self.get_xpath(), *self.label_and_hint())
 
 
 class UploadQuestion(Question):
     def control(self):
-        return E.upload(ref=self.xpath(), mediatype=self.mediatype,
+        return utils.E.upload(ref=self.get_xpath(), mediatype=self.mediatype,
                         *self.label_and_hint())
 
 
+# I'm thinking we probably want this to be a SurveyElement
 class Option(object):
     def __init__(self, **kwargs):
         self._value = kwargs[u'value']
@@ -120,9 +133,9 @@ class Option(object):
         return {'value': self._value, 'text': self._text}
 
     def xml(self, question_name):
-        return E.item(
-            E.label(ref="jr:itext('%s')" % SEP.join([CHOICE_PREFIX, question_name, self.value])),
-            E.value(self.value)
+        return utils.E.item(
+            utils.E.label(ref="jr:itext('%s')" % utils.SEP.join([CHOICE_PREFIX, question_name, self.value])),
+            utils.E.value(self.value)
             )
 
 
@@ -139,9 +152,6 @@ class MultipleChoiceQuestion(Question):
         if self._options not in options_list:
             options_list.append(self._options)
         self._option_list_index_number = options_list.index(self._options)
-
-        return options_list
-    
     
     def to_dict(self):
         base_dict = Question.to_dict(self)
@@ -167,8 +177,8 @@ class MultipleChoiceQuestion(Question):
 
     def control(self):
         assert self._attributes[u"type"] in [u"select", u"select1"]
-        result = E(self._attributes[u"type"], {"ref" : self.xpath()})
-        for element in self.label_and_hint() + [c.xml(self.name) for c in self.choices]:
+        result = utils.E(self._attributes[u"type"], {"ref" : self.get_xpath()})
+        for element in self.label_and_hint() + [c.xml(self._name) for c in self._options]:
             result.append(element)
         return result        
 
@@ -202,7 +212,12 @@ def create_question_from_dict(d):
     return result
 
 
-# I haven't figured out how to put tables into Excel.
+# we will need to write a helper function to create tables of questions
+# i'm thinking the excel syntax will look something like:
+# begin table with columns from ...
+# row1
+# row2 ...
+# end table
 def table(rows, columns):
     result = []
     for row_text, row_name in tuples(rows):

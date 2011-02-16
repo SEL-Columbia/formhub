@@ -1,12 +1,11 @@
 from .question import SurveyElement
 
 class Section(SurveyElement):
-    def __init__(self, name=u"", text={}, elements=[]):
-        self._name = name
-        self._text = text
+    def __init__(self, *args, **kwargs):
         self._elements = []
-        for element in elements:
+        for element in kwargs.get(u"elements", []):
             self._add_element(element)
+        SurveyElement.__init__(self, *args, **kwargs)
     
     def _add_element(self, element):
         element._set_parent(self)
@@ -23,9 +22,10 @@ class Section(SurveyElement):
     def validate(self):
         for element in self._elements:
             element.validate()
-        
         self._validate_uniqueness_of_element_names()
-        
+
+    # there's a stronger test of this when creating the xpath
+    # dictionary for a survey.
     def _validate_uniqueness_of_element_names(self):
         element_slugs = []
         for element in self._elements:
