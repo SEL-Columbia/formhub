@@ -22,6 +22,7 @@ class SurveyElement(object):
         self._attributes = kwargs.get(u"attributes", {})
         self._question_type = kwargs.get(u"question_type", u"")
         self._text = kwargs.get(u"text", {})
+        self._xpath = None
 
     def validate(self):
         assert utils.is_valid_xml_tag(self._name)
@@ -33,15 +34,17 @@ class SurveyElement(object):
         """
         Return the xpath of this survey element.
         """
-        l = [self._name]
-        current_element = self._parent
-        while current_element:
-            l.append(current_element._name)
-            current_element = current_element._parent
-        # add an empty string to get a leading slash on the xpath
-        l.append(u"")
-        l.reverse()
-        return u"/".join(l)
+        if self._xpath is None:
+            l = [self._name]
+            current_element = self._parent
+            while current_element:
+                l.append(current_element._name)
+                current_element = current_element._parent
+            # add an empty string to get a leading slash on the xpath
+            l.append(u"")
+            l.reverse()
+            self._xpath = u"/".join(l)
+        return self._xpath
 
     def to_dict(self):
         return {'name': self._name}
