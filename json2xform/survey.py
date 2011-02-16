@@ -73,7 +73,7 @@ class Survey(Section):
     def controls(self):
         return [q.control() for q in self._elements]
 
-    def __unicode__(self):
+    def to_xml(self):
         return etree.tostring(self.xml(), pretty_print=True)
     
     def _build_options_list_from_descendants(self):
