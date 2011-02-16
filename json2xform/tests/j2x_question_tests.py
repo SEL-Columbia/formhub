@@ -49,7 +49,7 @@ class Json2XformQuestionValidationTests(TestCase):
         self.assertEqual(ctw(q.control()), expected_string_control_xml)
         
         if TESTING_BINDINGS:
-            self.assertEqual(ctw(q._create_binding()), expected_string_binding_xml)
+            self.assertEqual(ctw(q.get_bindings()), expected_string_binding_xml)
     
     def test_select_one_question_multilingual(self):
         """
@@ -60,7 +60,7 @@ class Json2XformQuestionValidationTests(TestCase):
                 [{"text": {"f": "fa","e": "ea"},"value": "a"}, \
                 {"text": {"f": "fb","e": "eb"},"value": "b"}]}
         
-        expected_select_one_control_xml = """
+        expected_select_one_control_xml = """NOT CORRECT
         <select1 ref="/test/qname"><label ref="jr:itext('q_qname')"/></select1>
         """.strip()
         
@@ -73,7 +73,7 @@ class Json2XformQuestionValidationTests(TestCase):
         self.assertEqual(ctw(q.control()), expected_select_one_control_xml)
         
         if TESTING_BINDINGS:
-            self.assertEqual(ctw(q._create_binding()), expected_select_one_binding_xml)
+            self.assertEqual(ctw(q.get_bindings()), expected_select_one_binding_xml)
 
     def test_simple_integer_question_type_multilingual(self):
         """
@@ -86,7 +86,7 @@ class Json2XformQuestionValidationTests(TestCase):
         """.strip()
         
         expected_integer_binding_xml = """
-        <bind nodeset="/test/integer_q" type="string"/>
+        <bind nodeset="/test/integer_q" type="int"/>
         """.strip()
         
         q = create_question_from_dict(simple_integer_question)
@@ -96,7 +96,7 @@ class Json2XformQuestionValidationTests(TestCase):
         self.assertEqual(ctw(q.control()), expected_integer_control_xml)
         
         if TESTING_BINDINGS:
-            self.assertEqual(ctw(q._create_binding()), expected_integer_binding_xml)
+            self.assertEqual(ctw(q.get_bindings()), expected_integer_binding_xml)
 
 
     def test_simple_date_question_type_multilingual(self):
@@ -118,7 +118,7 @@ class Json2XformQuestionValidationTests(TestCase):
         self.assertEqual(ctw(q.control()), expected_date_control_xml)
         
         if TESTING_BINDINGS:
-            self.assertEqual(ctw(q._create_binding()), expected_date_binding_xml)
+            self.assertEqual(ctw(q.get_bindings()), expected_date_binding_xml)
     
     def test_simple_phone_number_question_type_multilingual(self):
         """
@@ -126,11 +126,11 @@ class Json2XformQuestionValidationTests(TestCase):
         """
         simple_phone_number_question = {"text": {"f": "fe", "e": "ee"}, "type": "phone number", "name": "phone_number_q", "attributes": {}}
 
-        expected_phone_number_control_xml = """
+        expected_phone_number_control_xml = """PROBABLY WANT A HINT IN HERE
         <input ref="/test/phone_number_q"><label ref="jr:itext('q_phone_number_q')"/></input>
         """.strip()
 
-        expected_phone_number_binding_xml = """
+        expected_phone_number_binding_xml = """MAYBE WANT A CONSTRAINT MESSAGE
         <bind nodeset="/test/phone_number_q" type="string" constraint="regex(., '^\d*$')"/>
         """.strip()
         
@@ -139,7 +139,7 @@ class Json2XformQuestionValidationTests(TestCase):
         self.assertEqual(ctw(q.control()), expected_phone_number_control_xml)
         
         if TESTING_BINDINGS:
-            self.assertEqual(ctw(q._create_binding()), expected_phone_number_binding_xml)
+            self.assertEqual(ctw(q.get_bindings()), expected_phone_number_binding_xml)
 
     def test_simple_select_all_question_multilingual(self):
         """
@@ -147,11 +147,11 @@ class Json2XformQuestionValidationTests(TestCase):
         """
         simple_select_all_question = {"text": {"f": "f choisit", "e": "e choose"}, "attributes": {}, "type": "select all that apply", "name": "select_all_q", "choices": [{"text": {"f": "ff", "e": "ef"}, "value": "f"}, {"text": {"f": "fg", "e": "eg"}, "value": "g"}, {"text": {"f": "fh", "e": "eh"}, "value": "h"}]}
 
-        expected_select_all_control_xml = """
+        expected_select_all_control_xml = """NEED ITEMS LIST HERE
         <select ref="/test/select_all_q"><label ref="jr:itext('q_select_all_q')"/></select>
         """.strip()
         
-        expected_select_all_binding_xml = """
+        expected_select_all_binding_xml = """DEFINITELY WANT TO MAKE THIS REQUIRED WITH A NONE OPTION AVAILABLE
         <bind nodeset="/test/select_all_q" type="select" required="false()"/>
         """.strip()
         
@@ -160,7 +160,7 @@ class Json2XformQuestionValidationTests(TestCase):
         self.assertEqual(ctw(q.control()), expected_select_all_control_xml)
         
         if TESTING_BINDINGS:
-            self.assertEqual(ctw(q._create_binding()), expected_select_all_binding_xml)
+            self.assertEqual(ctw(q.get_bindings()), expected_select_all_binding_xml)
 
     def test_simple_decimal_question_multilingual(self):
         """
@@ -181,4 +181,4 @@ class Json2XformQuestionValidationTests(TestCase):
         self.assertEqual(ctw(q.control()), expected_decimal_control_xml)
         
         if TESTING_BINDINGS:
-            self.assertEqual(ctw(q._create_binding()), expected_decimal_binding_xml)
+            self.assertEqual(ctw(q.get_bindings()), expected_decimal_binding_xml)

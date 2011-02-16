@@ -1,6 +1,7 @@
 import os
 from .xls2json import ExcelReader
 from . import utils
+import re
 
 def _var_repl_function(xpaths):
     """
@@ -13,7 +14,7 @@ def insert_xpaths(xpaths, text):
     """
     Replace all instances of ${var} with the xpath to var.
     """
-    bracketed_tag = r"\$\{(" + XFORM_TAG_REGEXP + r")\}"
+    bracketed_tag = r"\$\{(" + utils.XFORM_TAG_REGEXP + r")\}"
     return re.sub(bracketed_tag, _var_repl_function(xpaths), text)
 
 class SurveyElement(object):
@@ -29,6 +30,12 @@ class SurveyElement(object):
     
     def _set_parent(self, parent):
         self._parent = parent
+        
+    def get_root(self):
+        current_element = self
+        while current_element._parent:
+            current_element = current_element._parent
+        return current_element
 
     def get_xpath(self):
         """
@@ -82,13 +89,14 @@ class SurveyElement(object):
 
     def instance(self):
         return utils.E(self._name)
-
-    def get_bindings(self, xpaths):
+    
+    def get_bindings(self):
         """
         Return a list of XML nodes for the binding of this survey
         element and all its descendants. Note: we have to pass in a
         dictionary of xpaths to do xpath substitution here.
         """
+        xpaths = self.get_root()._xpath
         d = dict([(k, insert_xpaths(xpaths, v)) for k, v in self._attributes.items()])
         return [ utils.E.bind(nodeset=xpaths[self._name], **d) ]
 
@@ -101,15 +109,9 @@ class SurveyElement(object):
 
 
 class Question(SurveyElement):
-    def _create_binding(self):
-        """
-        I don't know where this should go, but I wanted to test it and
-        it might be necessary for the xml output (?)
-        """
-        return utils.E.bind(nodeset=self.get_xpath(), \
-                    type="string") #type needs to be set
+    pass
 
-
+   
 class InputQuestion(Question):
     """
     This control string is the same for: strings, integers, decimals,
@@ -216,7 +218,12 @@ def create_question_from_dict(d):
     question_type = question_types_by_name[q_type_str]
     question_class = question_classes[ question_type["control"].get("tag", "") ]
     d[u'question_type'] = q_type_str
-    result = question_class(**d)
+    
+    #this is because of a python2.6 issue w unicode strings as keys.
+    new_dict={}
+    for key in d: new_dict[str(key)] = d[key]
+    result = question_class(**new_dict)
+    
     result.set_question_type(question_type)
     return result
 
