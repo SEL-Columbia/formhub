@@ -600,7 +600,7 @@ var dashboard = (function($){
         
         this.get("#/", function(context){
             var dashbElem = this.switchTo("dashboard", {title: "Data"});
-            $.get("/survey-list", function(htResponse){
+            $.get(baseUrl + "survey-list", function(htResponse){
                 var surveyList = $(htResponse);
                 $('a', surveyList).button();
                 $('tr td:nth-child(2)', surveyList).css({'text-align':'center'})
