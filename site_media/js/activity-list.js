@@ -183,7 +183,6 @@ var cachedAt = false;
                     //bury
                 } else {
                     // storage.set('activity_stamp', [data.stamp]);
-                    storage.set('activity', data);
                     window.__list = new ActivityList(data);
                     $(callbacks).each(function(){
                         this.call({}, window.__list);
