@@ -76,6 +76,9 @@ class Survey(Section):
     def to_xml(self):
         return etree.tostring(self.xml(), pretty_print=True)
     
+    def __unicode__(self):
+        return "<survey name='%s' element_count='%s'>" % (self._name, len(self._elements))
+    
     def _build_options_list_from_descendants(self):
         """
         used in preparation for exporting to XForm. Returns the list so that we can test it.
