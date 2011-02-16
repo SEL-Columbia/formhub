@@ -16,7 +16,7 @@ import json
 import re
 from bson import json_util
 from . import utils, tag
-from .models import District, XForm, get_or_create_instance, xform_instances, Instance
+from .models import District, XForm, xform_instances, Instance
 
 @require_GET
 def formList(request):
