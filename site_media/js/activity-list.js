@@ -126,7 +126,7 @@ var ActivityList, ActivityPoint;
     _ActivityPoint.prototype.mapPointListener = function(){
 //        this.prepForTemplate();
 		var dest = $('<div />', {'class':'survey-content'});
-		$.get('/survey/'+this.id+'/', function(data){
+		$.get(baseUrl+'survey/'+this.id+'/', function(data){
 			dest.append(data);
 		});
 		MapPopup(dest);
@@ -175,7 +175,7 @@ var cachedAt = false;
         activityList = [];
     
     function WithActivityList(cb, opts){
-        var url = "/data/map_data/";
+        var url = baseUrl+"data/map_data/";
         if(!cachedAt) {
             $.retrieveJSON(url, function(data, status, cacheStatus){
                 cachedAt = cacheStatus;
