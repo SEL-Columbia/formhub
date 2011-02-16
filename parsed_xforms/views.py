@@ -173,6 +173,7 @@ def frequency_table(request, rows, columns):
 
 def dashboard(request):
     info = prep_info(request)
+    info['dashboard_base_url'] = "/xforms/"
     info['table_types'] = json.dumps(dimensions.keys())
     info['districts'] = json.dumps([x.to_dict() for x in District.objects.filter(active=True)])
     forms = XForm.objects.all()

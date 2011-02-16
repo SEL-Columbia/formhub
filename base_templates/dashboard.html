@@ -1,127 +1,69 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
+{% extends "base.html" %}
+{% block htitle %}Dashboard{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
-<html lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Baseline Data Collection : {% block title %}{% endblock %}</title>
-	<script type="text/javascript" src="/site-media/js/jquery-1.4.4-min.js"></script>
-	<script type="text/javascript" src="/site-media/jquery-ui/jquery-ui-1.8.7.custom.min.js"></script>
-	<script type="text/javascript" src="/site-media/js/jquery.buildin.js"></script>
-	<script type="text/javascript" src="/site-media/js/jquery.tmpl.min.js"></script>
-	<script type="text/javascript" src="/site-media/js/sammy-latest.min.js"></script>
-	<script type="text/javascript" src="/site-media/js/sammy.extensions.js"></script>
-	<script type="text/javascript" src="/site-media/js/jquery.offline.js"></script>
-	<script type="text/javascript" src="/site-media/js/nmis.dashboard.sammy.js?idonno"></script>
-	<link rel="stylesheet" href="/site-media/css/sitewide.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
-	<link rel="stylesheet" href="/site-media/css/map-key.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
-	<link rel="stylesheet" href="/site-media/css/tables.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
-	<link rel="stylesheet" href="/site-media/css/generated-donotedit.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
-	<link rel="stylesheet" href="/site-media/jquery-ui/jquery-ui-1.8.7.custom.css" type="text/css" media="screen" title="Sitewide" charset="utf-8" />
-	{% load i18n %}
-	<style type="text/css" media="screen">
-		table.fullw {
-			width: 100%;
-		}
-		.table-spacer {
-			height: 16px;
-			width:1px;
-			border-left: 1px dotted #888;
-		}
-	</style>
-</head>
-<body class="nmis">
-	<div id="header">
-		<div class="fwidth">
-			<a href="/#/" id="hlogo"><img src="/site-media/images/nmis_pilot.png" /></a>
-			<h2 class="title">Baseline Data Collection &raquo; <span id="page-title">Dashboard</span></h2>
-		<div class="account_links">
-			{% if user.is_authenticated %}
-			{% trans "Logged in" %}: {{ user.username }} 
-			(<a href="{% url auth_logout %}">{% trans "Log out" %}</a> | 
-			<a href="{% url auth_password_change %}">{% trans "Change password" %}</a>)
-			{% else %}
-			<a href="{% url auth_login %}">{% trans "Log in" %}</a>
-			{% endif %}
-		</div>
+{% block scripts %}
+<script type="text/javascript" charset="utf-8">
+	var baseUrl = "{{dashboard_base_url}}";
+</script>
+<script type="text/javascript" src="/site-media/js/sammy.extensions.js"></script>
+<script type="text/javascript" src="/site-media/js/nmis.dashboard.sammy.js?idonno"></script>
+<script src="/site-media/js/activity-list.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/site-media/css/map-key.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
+{% endblock %}
+
+{% block content %}
+<div class="full-content sliding" id="main">
+	<div class="iwrap" id="dashboard">
+		<div class="iiwrap">
 		</div>
 	</div>
-	{% if user.is_authenticated %}
-	<ul id="menu">
-		<div class="fwidth">
-		</div>
-	</ul>
-	{% endif %}
-	<div id="content">
-		<script src="/site-media/js/activity-list.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" charset="utf-8">
-			var storage = new Sammy.Store({name:'activity',element:'#content',type:'local'});
-		</script>
-		
-		<div class="fwidth">
-			{% if user.is_authenticated %}
-			
-			<div class="full-content sliding" id="main">
-				<div class="iwrap" id="dashboard">
-					<div class="iiwrap">
-					</div>
-				</div>
-				<div class="iwrap" id="activity">
-					<div class="iiwrap">
-						{% include '_activity.html' %}
-					</div>
-				</div>
-				<div class="iwrap" id="frequency-tables">
-					<div class="iiwrap">
-						{% include '_frequency_table.html' %}
-					</div>
-				</div>
-				<div class="iwrap" id="map">
-					<div class="iiwrap">
-						{% include '_map.html' %}
-					</div>
-				</div>
-				<div style="display:none" class="mapkey">
-					<a href="#" class="dontChangePage loadDistricts">Load LGA District Files</a>
-				</div>
-			</div>
-			{% else %}
-			{% include '_load_login_form.html' %}
-			{% endif %}
-			
+	<div class="iwrap" id="activity">
+		<div class="iiwrap">
+			{% include '_activity.html' %}
 		</div>
 	</div>
-	{% if user.is_authenticated %}
-	
-	<script type="text/javascript" charset="utf-8">
-	
-	$('body').delegate('.dontChangePage', 'click', function(evt){
+	<div class="iwrap" id="frequency-tables">
+		<div class="iiwrap">
+			{% include '_frequency_table.html' %}
+		</div>
+	</div>
+	<div class="iwrap" id="map">
+		<div class="iiwrap">
+			{% include '_map.html' %}
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+
+$('body').delegate('.dontChangePage', 'click', function(evt){
+	evt.preventDefault();
+})
+dashboard.activateSwitchTo(".full-content.sliding");
+
+$(function(){
+	var clearStorageLink = $("<a />", {href:'#'}).html("Clear Storage");
+	clearStorageLink.click(function(evt){
+		storage.clear('activity');
+		storage.clear('activity_stamp');
 		evt.preventDefault();
 	})
-	dashboard.activateSwitchTo(".full-content.sliding");
+})
 
-	$(function(){
-		var clearStorageLink = $("<a />", {href:'#'}).html("Clear Storage");
-		clearStorageLink.click(function(evt){
-			storage.clear('activity');
-			storage.clear('activity_stamp');
-			evt.preventDefault();
-		})
-	})
+	$('.button').button();
+	SetResizer(jQuery, ".iiwrap", "#header, #menu", (16+24));
 
-		$('.button').button();
-		SetResizer(jQuery, ".iiwrap", "#header, #menu", (16+24));
+</script>
 
-	</script>
-	{% endif %}
-	<script type="text/javascript" charset="utf-8">
-	var clickr = $("<a />", {href:'#','class':'dontChangePage'});
-	clickr.html('.');
-	clickr.css({'text-decoration':'none'})
-	clickr.click(function(){
-		storage.clear('activity');
-	})
-		$('.account_links').append(clickr);
-	</script>
-</body>
-</html>
+<script type="text/javascript" charset="utf-8">
+var clickr = $("<a />", {href:'#','class':'dontChangePage'});
+clickr.html('.');
+clickr.css({'text-decoration':'none'})
+clickr.click(function(){
+	storage.clear('activity');
+})
+	$('.account_links').append(clickr);
+</script>
+
+{% endblock %}
