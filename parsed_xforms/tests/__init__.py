@@ -1,3 +1,4 @@
 from form_submission import TestFormSubmission
 from surveyor_registration import TestSurveyorRegistration
 from phone_registration import PhoneTestCase
+from functional_tests import TestFunctional
