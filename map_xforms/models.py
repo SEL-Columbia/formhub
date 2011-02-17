@@ -9,3 +9,6 @@ class SurveyTypeMapData(models.Model):
             'slug': self.survey_type.slug,
             'color': self.color
         }
+    
+    def __unicode__(self):
+        return "SurveyTypeMapData: %s" % self.survey_type.slug
