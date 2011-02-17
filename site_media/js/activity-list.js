@@ -146,7 +146,7 @@ var cachedAt = false;
         activityList = [];
     
     function WithActivityList(cb, opts){
-        if (Modernizr.localStorage) {
+        if (Modernizr.localstorage) {
             if(!cachedAt) {
                 callbacks.push(cb);
                 $.retrieveJSON(dataUrl, function(data, status, cacheStatus){
