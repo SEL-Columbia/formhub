@@ -108,7 +108,7 @@ function parseFreqTable(data) {
 			// 
 			(function sumRows(tab){
 				var rows = $("tbody tr", tab);
-				$('thead tr th:first-child', tab).after($("<th />", {'class':'sum-header'}).html('&nbsp;'));
+				$('thead tr th:first-child', tab).after($("<th />", {'class':'sum-header'}).html('Total'));
 				rows.each(function(){
 					var sumTd = $("<td />", {'class':'row sum centered'});
 					var sum = 0;
@@ -133,7 +133,7 @@ function parseFreqTable(data) {
 				});
 				var sumRow = $("<tr />", {'class':'sum-row'});
 				$.each(columnsWithData, function(ct, tf){
-					var td = $("<td />");
+					var td = $("<td />").text("Total:");
 					if(ct==0) {
 						td.addClass("rname");
 					}
