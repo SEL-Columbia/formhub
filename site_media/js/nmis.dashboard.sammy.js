@@ -3,16 +3,14 @@ function capitalizeString(str) {
 }
 function Mappable(){}
 Mappable.prototype.showMapPoint = function() {
-    if('undefined'===typeof CustomMarker) {
-        LoadCustomMarker();
-    }
     if(this.gps && this.gps.lat) {
     	if(!this.mapPoint) {
     		var ll = new google.maps.LatLng(this.gps.lat, this.gps.lng)
-    		this.mapPoint = new CustomMarker({
+    		this.mapPoint = new google.maps.Marker({
     			title: this.title,
     			position: ll,
-    			map: _map
+    			map: _map,
+    			icon: this.icon()
     		});
     		if(this.mapPointListener) {
     		    var _pt = this;
