@@ -2,6 +2,10 @@
 </div>
 <script type="text/javascript" charset="utf-8">
 	
+	var defaultMapCenter = {
+		lat: 9.243092645104804,
+		lng: 7.9156494140625
+	};
 	
 	var MapPopup = (function(){
 		var showing = false;
@@ -135,7 +139,7 @@
 			})
 			this.Map(function(){
 				__map = this.map;
-				this.nigeriaCenter();
+				this.defaultCenter();
 
 				this.key({clear:true});
 				this.addSelector({list:[],text:"Select District"}, function(selector){

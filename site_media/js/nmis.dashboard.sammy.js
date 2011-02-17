@@ -77,12 +77,11 @@ var SetResizer = (function($, resizeSelector, excludeSelector, extraPadding){
 		var windowHeight = $(window).height(),
 			totalHeight = windowHeight - extraPadding;
 		
-		excludeElem.each(function(){
-			totalHeight -= $(this).height();
-		});
+		excludeElem.each(function(){totalHeight -= $(this).height();});
 		resizeElem.css({'height':totalHeight})
 	}
 	$(window).resize(ResizePage);
+	
 	$(function(){
 		resizeElem.css({'overflow':'auto'});
 		$(document.body).css({'overflow':'hidden'})
@@ -213,9 +212,6 @@ var zz;
             this.sammyMap=true;
         }
         $.extend(mapObj.prototype, {
-            // test: function(){
-            //     console.log("Hello", this);
-            // },
             mapCenter: function(center, opts){
                 var zoom = opts.zoom;
                 if(opts.bounds) {
@@ -306,7 +302,6 @@ var zz;
                     str += " &mdash ";
                     str += "point count: "+ mapState.points.length
                 }
-//                MapKey.insert(str);
             },
             setMapCenter: function(lat, lng, opts){
                 var opts = opts || {};
@@ -319,17 +314,11 @@ var zz;
                     this.map.fitBounds(bounds);
                 }
             },
-            nigeriaCenter: function(){
+            defaultCenter: function(){
                 this.map.setZoom(6);
-                this.map.setCenter(new google.maps.LatLng(9.243092645104804, 7.9156494140625))
+                this.map.setCenter(new google.maps.LatLng(defaultMapCenter.lat, defaultMapCenter.lng))
             },
-            clearPoints: function(){
-                // console.log(this.map, "clearing points");
-            },
-            getMapElem: function(){return gmapElem},
-            addPoints: function(pts){
-                // console.log(pts, "added");
-            }
+            getMapElem: function(){return gmapElem}
         });
         map = new mapObj();
         
