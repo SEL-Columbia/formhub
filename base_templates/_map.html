@@ -2,11 +2,16 @@
 </div>
 <script type="text/javascript" charset="utf-8">
 	
+	var defaultMapCenter = {
+		lat: 9.243092645104804,
+		lng: 7.9156494140625,
+		zoom: 6
+	};
 	
 	var MapPopup = (function(){
-		var showing = false;
-		var wrapElem;
-		function show(elem){
+		var showing = false,
+			  wrapElem;
+		return (function show(elem){
 			if(!wrapElem) {
 				wrapElem = $("#map #m-key");
 			}
@@ -19,28 +24,11 @@
 				width: 600
 			});
 			showing = elem;
-		}
-		return show;
-	})()
-	
-	var objs = {};
-	
-	var surveys = {{surveys|safe}}
-	objs.survey = surveys;
-
-	function findObj(objType, obj) {
-		var result;
-		$(objs[objType]).each(function(){
-			if(this.id==obj) {
-				result = this
-			}
 		});
-		if(!result) {return null;}
-		return result;
-	}
+	})();
 	
 	var District = (function(){
-		function _District(data) {
+		function District(data) {
 			$.extend(this, data);
 			var c = this.coords.split(",");
 			this.gps = {
@@ -48,12 +36,12 @@
 				lng: c[1]
 			}
 		}
-		_District.prototype = new Mappable();
-		_District.prototype.GLatLng = function(){
+		District.prototype = new Mappable();
+		District.prototype.GLatLng = function(){
 			var ll = this.coords.split(",");
 			return new google.maps.LatLng(ll[0],ll[1]);
 		}
-		_District.prototype.ensureKmlLoaded = function(map){
+		District.prototype.ensureKmlLoaded = function(map){
 			if(!this.kmlLayer) {
 				this.kmlLayer = new google.maps.KmlLayer(this.kml+"?b", {
 					map: map,
@@ -62,11 +50,11 @@
 				});
 			}
 		}
-		return _District;
+		return District;
 	})(jQuery)
 	
 	var districts = $({{districts|safe}}).map(function(){return new District(this)})
-	function findDistrict(did) {var result; $(districts).each(function(){if(did==this.id){result=this}}); return result;}
+	function findDistrict(did) {var result; $(districts).each(function(){if(did==this.id){result=this; return false;}}); return result;}
 	
 	var _map;
 	var filters = "survey surveyor date".split(" ")
@@ -135,7 +123,7 @@
 			})
 			this.Map(function(){
 				__map = this.map;
-				this.nigeriaCenter();
+				this.defaultCenter();
 
 				this.key({clear:true});
 				this.addSelector({list:[],text:"Select District"}, function(selector){
