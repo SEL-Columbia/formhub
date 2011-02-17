@@ -73,6 +73,7 @@ INSTALLED_APPS = (
     'phone_manager',
     'surveyor_manager',
     'xform_manager',
+    'map_xforms',
 )
 
 # SEARCH ENGINE settings
