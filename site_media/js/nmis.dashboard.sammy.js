@@ -27,18 +27,10 @@ var flagColors = "blue green orange pink purple red yellow".split(" ");
 Mappable.prototype.shadow = function(){};
 Mappable.prototype.icon = function(){
     var color = "grey";
-    switch(this.survey_type.toLowerCase()) {
-        case 'water':
-        color = "blue";
-        break;
-        case 'education':
-        case 'school':
-        color = 'green';
-        break;
-        case 'health':
-        color = 'red';
-        break;
+    if('undefined'===typeof this.survey_type_object){
+        this.survey_type_object = surveyTypes[this.survey_type];
     }
+    color = this.survey_type_object.color.toLowerCase();
     var icon = new google.maps.MarkerImage("/site-media/images/gmap-smaller-dots/"+color+".png", new google.maps.Size(13, 13),
         new google.maps.Point(0,0), new google.maps.Point(6, 6));
     return icon;

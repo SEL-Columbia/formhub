@@ -171,6 +171,8 @@ def frequency_table(request, rows, columns):
         }
     return HttpResponse(json.dumps(table, indent=4))
 
+from map_xforms.models import SurveyTypeMapData
+
 def dashboard(request):
     info = prep_info(request)
     info['dashboard_base_url'] = "/xforms/"
@@ -178,6 +180,7 @@ def dashboard(request):
     info['districts'] = json.dumps([x.to_dict() for x in District.objects.filter(active=True)])
     forms = XForm.objects.all()
     info['surveys'] = json.dumps(list(set([x.title for x in forms])))
+    info['survey_types'] = json.dumps([s.to_dict() for s in SurveyTypeMapData.objects.all()])
     return render_to_response("dashboard.html", info)
 
 def ensure_logged_in(request):
