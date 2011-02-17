@@ -8,12 +8,13 @@ var ActivityList, ActivityPoint;
 	_ActivityList.prototype = new Array();
 	$.extend(_ActivityList.prototype, {
 		find: function(id){
-			var i = 0; l = this.length;
+			var i = 0, l=this.length;
 			for(;i<l;i++) {
 				if(id==this[i].id) {
 					return this[i];
 				}
 			}
+			return false;
 		},
 		filter: function(k, v){
 			var subList = new _ActivityList([]);
@@ -21,12 +22,12 @@ var ActivityList, ActivityPoint;
 				v=v.toLowerCase();
 			}
 			$(this).each(function(){
-				if($.type(this[k])=='string') {
-					if(this[k].toLowerCase()==v) {
+				if($.type(this[k])==='string') {
+					if(this[k].toLowerCase()===v) {
 						subList.addPoint(this);
 					}
 				} else {
-					if(this[k]==v) {
+					if(this[k]===v) {
 						subList.addPoint(this)
 					}
 				}
@@ -34,16 +35,11 @@ var ActivityList, ActivityPoint;
 			return subList;
 		},
 		addPoint: function(point){
-			if(point instanceof _ActivityPoint) {
-				this.push(point)
-			} else {
-				this.push(new _ActivityPoint(point))
-			}
+			this.push(new _ActivityPoint(point))
 		},
 		addPoints: function(points){
 			var _Sl = this;
-			$(points).each(function(){_Sl.addPoint(this)})
-            // DashboardDebug.listInfo(this);
+			$(points).each(function(){_Sl.addPoint(this)});
 		},
 		latLngWindow: function(){
 			var lats = [], lngs = [];
@@ -54,7 +50,7 @@ var ActivityList, ActivityPoint;
 				}
 			});
 			if(lats.length == 0 || lngs.length==0) {
-				return null
+				return null;
 			}
 			var llRange = {
 				lat: {
@@ -89,8 +85,7 @@ var ActivityList, ActivityPoint;
 		}
 	})
 
-    var imageRoot = "/site-media",
-        months = "Jan Feb Mar Apr May June July Aug Sept Oct Nov Dec".split(" ");
+    var months = "Jan Feb Mar Apr May June July Aug Sept Oct Nov Dec".split(" ");
 	function _ActivityPoint(o){
 		if(o instanceof _ActivityPoint) {return o}
 		this.id = o._id;
@@ -100,7 +95,6 @@ var ActivityList, ActivityPoint;
 		    this.surveyor = o.device_id;
 		}
 
-        this.o = o;
         this.image_url = "/survey/"+this.id+"/";
         
         if(o.geopoint) {
@@ -124,7 +118,6 @@ var ActivityList, ActivityPoint;
 	}
 	_ActivityPoint.prototype = new Mappable();
     _ActivityPoint.prototype.mapPointListener = function(){
-//        this.prepForTemplate();
 		var dest = $('<div />', {'class':'survey-content'});
 		$.get(baseUrl+'survey/'+this.id+'/', function(data){
 			dest.append(data);
@@ -138,30 +131,6 @@ var ActivityList, ActivityPoint;
 		}
 		return result;
 	}
-	_ActivityPoint.prototype.prepForTemplate = function(){
-	    if(!this.dateObj) {this.processDateTime();}
-	    var months = "January February March April May June July August September October November December".split(" ")
-	    var _ds = "[";
-	    _ds += this.dateObj.getDate();
-	    _ds += " " + months[this.dateObj.getMonth()];
-	    _ds += ", " + (1900+this.dateObj.getYear());
-	    _ds += "]";
-	    this.photoContextString = _ds;
-	}
-    // _ActivityPoint.prototype.processDateTime = function(){
-    //     this.dateObj = (function(dt){
-    //         var date = dt.split(" ")[0];
-    //         var time = dt.split(" ")[1];
-    //         var year = +(date.split("-")[0]);
-    //         var month = +(date.split("-")[1]);
-    //         var day = +(date.split("-")[2]);
-    //         var hour = +(time.split(":")[0]);
-    //         var minute = +(time.split(":")[1]);
-    //         return new Date(year, month-1, day, hour, minute);
-    //     })(this.datetime);
-    //     this.date = this.datetime.split(" ")[0]
-    //     this.time = this.datetime.split(" ")[0]
-    // }
 	window.ActivityList = _ActivityList;
 })(jQuery);
 
@@ -171,28 +140,42 @@ var ActivityList, ActivityPoint;
 */
 var cachedAt = false;
 (function($){
-    var callbacks = [],
+    var dataUrl = baseUrl + "data/map_data/",
+        callbacks = [],
+        listCaller = {},
         activityList = [];
     
     function WithActivityList(cb, opts){
-        var url = baseUrl+"data/map_data/";
-        if(!cachedAt) {
-            $.retrieveJSON(url, function(data, status, cacheStatus){
-                cachedAt = cacheStatus;
-                if(cacheStatus && cacheStatus.retrievedAt) {
-                    //bury
-                } else {
-                    // storage.set('activity_stamp', [data.stamp]);
-                    window.__list = new ActivityList(data);
-                    $(callbacks).each(function(){
-                        this.call({}, window.__list);
-                    });
-                    callbacks = [];
-                }
-            });
-            callbacks.push(cb);
+        if (Modernizr.localStorage) {
+            if(!cachedAt) {
+                callbacks.push(cb);
+                $.retrieveJSON(dataUrl, function(data, status, cacheStatus){
+                    cachedAt = cacheStatus;
+                    if(cacheStatus && cacheStatus.retrievedAt) {
+                        //bury
+                    } else {
+                        // storage.set('activity_stamp', [data.stamp]);
+                        listCaller.list = new ActivityList(data);
+                        window.__list = listCaller.list;
+                        $(callbacks).each(function(){
+                            this.call(listCaller, listCaller.list);
+                        });
+                        callbacks = [];
+                    }
+                });
+            } else {
+                cb.call(listCaller, listCaller.list);
+            }
         } else {
-            cb.call({}, window.__list);
+            callbacks.push(cb);
+            $.getJSON(dataUrl, function(data, status){
+                listCaller.list = new ActivityList(data);
+                window.__list = listCaller.list;
+                $(callbacks).each(function(){
+                    this.call(listCaller, listCaller.list);
+                });
+                callbacks = [];
+            });
         }
     }
     window.WithActivityList = WithActivityList;

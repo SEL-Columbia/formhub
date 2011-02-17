@@ -315,7 +315,7 @@ var zz;
                 }
             },
             defaultCenter: function(){
-                this.map.setZoom(6);
+                this.map.setZoom(defaultMapCenter.zoom);
                 this.map.setCenter(new google.maps.LatLng(defaultMapCenter.lat, defaultMapCenter.lng))
             },
             getMapElem: function(){return gmapElem}
