@@ -39,8 +39,8 @@ Mappable.prototype.icon = function(){
         color = 'red';
         break;
     }
-    var icon = new google.maps.MarkerImage("/site-media/images/gmap-dots/"+color+".png", new google.maps.Size(25, 25),
-        new google.maps.Point(0,0), new google.maps.Point(12,12));
+    var icon = new google.maps.MarkerImage("/site-media/images/gmap-smaller-dots/"+color+".png", new google.maps.Size(13, 13),
+        new google.maps.Point(0,0), new google.maps.Point(6, 6));
     return icon;
 //	return "http://thydzik.com/thydzikGoogleMap/markerlink.php?text="+this.iconText+"&color="+this.iconColor;
 }
