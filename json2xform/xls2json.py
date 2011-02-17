@@ -24,7 +24,7 @@ class ExcelReader(object):
     def __init__(self, path):
         self._path = path
         self._dict = None
-        self._step1()
+        self._prepare_for_export()
         sheet_names = self._dict.keys()
         if len(sheet_names)==2 and SURVEY_SHEET in sheet_names and CHOICES_SHEET in sheet_names:
             self._fix_int_values()
@@ -38,12 +38,13 @@ class ExcelReader(object):
     def to_dict(self):
         return self._dict
 
-    def print_json_to_file(self):
-        fp = codecs.open(self._path[:-4] + ".json", mode="w", encoding="utf-8")
+    def print_json_to_file(self, filename=""):
+        if not filename: filename = self._path[:-4] + ".json"
+        fp = codecs.open(filename, mode="w", encoding="utf-8")
         json.dump(converter.to_dict(), fp=fp, ensure_ascii=False, indent=4)
         fp.close()
 
-    def _step1(self):
+    def _prepare_for_export(self):
         """
         Return a Python dictionary with a key for each worksheet
         name. For each sheet there is a list of dictionaries, each

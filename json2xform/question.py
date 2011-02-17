@@ -95,7 +95,7 @@ class SurveyElement(object):
         """
         xpaths = self.get_root()._xpath
         d = dict([(k, insert_xpaths(xpaths, v)) for k, v in self._attributes.items()])
-        return [ utils.E.bind(nodeset=xpaths[self._name], **d) ]
+        return [ utils.E.bind(nodeset=self.get_xpath(), **d) ]
 
     def control(self):
         """
