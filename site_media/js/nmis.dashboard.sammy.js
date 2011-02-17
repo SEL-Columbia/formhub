@@ -10,8 +10,7 @@ Mappable.prototype.showMapPoint = function() {
     			title: this.title,
     			position: ll,
     			map: _map,
-    			icon: this.icon(),
-    			shadow: this.shadow()
+    			icon: this.icon()
     		});
     		if(this.mapPointListener) {
     		    var _pt = this;
@@ -25,12 +24,7 @@ Mappable.prototype.showMapPoint = function() {
 }
 Mappable.prototype.flagColor = 'green';
 var flagColors = "blue green orange pink purple red yellow".split(" ");
-Mappable.prototype.shadow = function(){
-    var shadow = new google.maps.MarkerImage("/site-media/images/gmap-icons/shadow-s.png", new google.maps.Size(25, 25),
-        new google.maps.Point(0,0), new google.maps.Point(11,22));
-    return shadow;
-};
-
+Mappable.prototype.shadow = function(){};
 Mappable.prototype.icon = function(){
     var color = "grey";
     switch(this.survey_type.toLowerCase()) {
@@ -45,8 +39,8 @@ Mappable.prototype.icon = function(){
         color = 'red';
         break;
     }
-    var icon = new google.maps.MarkerImage("/site-media/images/gmap-icons/"+color+"-pointer-s.png", new google.maps.Size(25, 25),
-        new google.maps.Point(0,0), new google.maps.Point(11,22));
+    var icon = new google.maps.MarkerImage("/site-media/images/gmap-dots/"+color+".png", new google.maps.Size(25, 25),
+        new google.maps.Point(0,0), new google.maps.Point(12,12));
     return icon;
 //	return "http://thydzik.com/thydzikGoogleMap/markerlink.php?text="+this.iconText+"&color="+this.iconColor;
 }
