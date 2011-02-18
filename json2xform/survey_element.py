@@ -9,7 +9,14 @@ class SurveyElement(object):
         self._attributes = defaultdict(dict)
         self.set_attributes(kwargs.get(u"attributes", {}))
         self._parent = kwargs.get(u"parent", None)
+        self._elements = []
+        for element in kwargs.get(u"elements", []):
+            self._add_element(element)
 
+    def _add_element(self, element):
+        element._set_parent(self)
+        self._elements.append(element)
+    
     def get_control_dict(self):
         return self._attributes[u"control"]
 
@@ -21,6 +28,12 @@ class SurveyElement(object):
     
     def _set_parent(self, parent):
         self._parent = parent
+
+    def iter_elements(self):
+        yield self
+        for e in self._elements:
+            for f in e.iter_elements():
+                yield f
         
     def get_lineage(self):
         """
@@ -57,7 +70,7 @@ class SurveyElement(object):
 
     # XML generating functions, these probably need to be moved around.
     def label_element(self):
-        return utils.E.label(ref="jr:itext('%s')" % utils.SEP.join([utils.QUESTION_PREFIX, self._name]))
+        return utils.E.label(ref="jr:itext('%s')" % self._name)
 
     def hint_element(self):
         # I need to fix this like label above
@@ -72,17 +85,29 @@ class SurveyElement(object):
     def instance(self):
         return utils.E(self._name)
     
-    def get_bindings(self):
+    def xml_binding(self):
         """
-        Return a list of XML nodes for the binding of this survey
-        element and all its descendants. Note: we have to pass in a
-        dictionary of xpaths to do xpath substitution here.
+        Return the binding for this survey element.
         """
         survey = self.get_root()
-        d = dict([(k, survey.insert_xpaths(v)) for k, v in self._attributes.items()])
-        return [ utils.E.bind(nodeset=self.get_xpath(), **d) ]
+        d = self.get_bind_dict().copy()
+        if d:
+            for k, v in d.items():
+                d[k] = survey.insert_xpaths(v)
+            return utils.E.bind(nodeset=self.get_xpath(), **d)
+        return None
 
-    def control(self):
+    def xml_bindings(self):
+        """
+        Return a list of bindings for this node and all its descendents.
+        """
+        result = []
+        for e in self.iter_elements():
+            xml_binding = e.xml_binding()
+            if xml_binding: result.append(xml_binding)
+        return result
+
+    def xml_control(self):
         """
         The control depends on what type of question we're asking, it
         doesn't make sense to implement here in the base class.

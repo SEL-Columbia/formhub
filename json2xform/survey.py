@@ -1,18 +1,14 @@
 from question import MultipleChoiceQuestion, create_question_from_dict
 from section import Section
-from utils import E, ns, SEP, QUESTION_PREFIX, CHOICE_PREFIX, etree
+from question import Question
+from utils import E, ns, SEP, QUESTION_PREFIX, CHOICE_PREFIX, etree, XFORM_TAG_REGEXP
 from datetime import datetime
+from collections import defaultdict
 import codecs
-
+import re
 import json
 
 class Survey(Section):
-    # def __init__(self, title):
-    #     assert re.search(r"^" + XFORM_TAG_REGEXP + r"$", title)
-    #     self.title = title
-    #     self._stack = [self.title]
-    #     self.questions = questions
-    #     self._set_up_xpath_dictionary()
     def __init__(self, *args, **kwargs):
         self._xpath = {}
         self._parent = None
@@ -24,39 +20,42 @@ class Survey(Section):
         calls necessary preparation methods, then returns the xml.
         """
         self.validate()
-        
-        self._build_options_list_from_descendants()
-        self._add_to_xpath_dictionary(element=self)
+        self._setup_xpath_dictionary()
         
         return E(ns("h", "html"),
                  E(ns("h", "head"),
                    E(ns("h", "title"), self._name),
                    E("model",
-                     E.itext(*self.translations()),
+                     E.itext(*self.xml_translations()),
                      E.instance(self.instance()),
-                     *self.get_bindings()
+                     *self.xml_bindings()
                      ),
                    ),
-                 E(ns("h", "body"), *self.controls())
+                 E(ns("h", "body"), *self.xml_control())
                  )
 
-    def translations(self):
-        dictionary = {}
-        for q in self._elements:
-            for k in q._text.keys():
-                if k not in dictionary: dictionary[k] = []
-                dictionary[k].append(
-                    E.text(E.value(q._text[k]), id=SEP.join([QUESTION_PREFIX, q._name]))
-                    )
-            if isinstance(q, MultipleChoiceQuestion):
-                for choice in q._options:
-                    for k in choice._text.keys():
-                        if k not in dictionary: dictionary[k] = []
-                        dictionary[k].append(
-                            E.text(E.value(choice._text[k]), id=SEP.join([CHOICE_PREFIX, q._name, choice.value]))
-                            )
+    def _setup_translations(self):
+        self._translations = defaultdict(dict)
+        for e in self.iter_elements():
+            for lang in e._text.keys():
+                if e._name in self._translations[lang]:
+                    assert self._translations[lang][e._name] == e._text[lang], e._text
+                else:
+                    self._translations[lang][e._name] = e._text[lang]
 
-        return [E.translation(lang=lang, *dictionary[lang]) for lang in dictionary.keys()]
+    def xml_translations(self):
+        self._setup_translations()
+        result = []
+        for lang in self._translations.keys():
+            result.append( E.translation(lang=lang) )
+            for name in self._translations[lang].keys():
+                result[-1].append(
+                    E.text(
+                        E.value(self._translations[lang][name]),
+                        id=name
+                        )
+                    )
+        return result
 
     def id_string(self):
         return self._name + "_" + \
@@ -70,36 +69,18 @@ class Survey(Section):
         for q in self._elements: result.append(q.instance())
         return result
 
-    def controls(self):
-        return [q.control() for q in self._elements]
-
     def to_xml(self):
         return etree.tostring(self.xml(), pretty_print=True)
     
     def __unicode__(self):
         return "<survey name='%s' element_count='%s'>" % (self._name, len(self._elements))
     
-    def _build_options_list_from_descendants(self):
-        """
-        used in preparation for exporting to XForm. Returns the list so that we can test it.
-        """
-        self._options_list = []
-        for element in self._elements:
-            element.add_options_to_list(self._options_list)
-
-        return self._options_list
-    
-    def _add_to_xpath_dictionary(self, element):
-        """
-        Adds this element and all its children to this survey's xpath
-        dictionary.
-        """
-        if element._name in self._xpath:
-            raise Exception("Survey element names must be unique", element._name)
-        self._xpath[element._name] = element.get_xpath()
-        if isinstance(element, Section):
-            for e in self._elements:
-                self._add_to_xpath_dictionary(e)
+    def _setup_xpath_dictionary(self):
+        for element in self.iter_elements():
+            if isinstance(element, Question) or isinstance(element, Section):
+                if element._name in self._xpath:
+                    raise Exception("Survey element names must be unique", element._name)
+                self._xpath[element._name] = element.get_xpath()
         
     def load_elements_from_json(self, text_or_path):
         """
@@ -124,9 +105,9 @@ class Survey(Section):
         """
         return lambda matchobj: self._xpath[matchobj.group(1)]
 
-    def insert_xpaths(text):
+    def insert_xpaths(self, text):
         """
         Replace all instances of ${var} with the xpath to var.
         """
-        bracketed_tag = r"\$\{(" + utils.XFORM_TAG_REGEXP + r")\}"
+        bracketed_tag = r"\$\{(" + XFORM_TAG_REGEXP + r")\}"
         return re.sub(bracketed_tag, self._var_repl_function(), text)

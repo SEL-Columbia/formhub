@@ -27,6 +27,9 @@ def ns(abbrev, text):
 def is_valid_xml_tag(tag):
     return re.search(r"^" + XFORM_TAG_REGEXP + r"$", tag)
 
+def node(*args, **kwargs):
+    return E(*args, **kwargs)
+
 # def apply(function, survey):
 #     l = len(survey.elements)
 #     function(survey)
