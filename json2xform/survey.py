@@ -1,6 +1,6 @@
-from .question import MultipleChoiceQuestion, create_question_from_dict
-from .section import Section
-from .utils import E, ns, SEP, QUESTION_PREFIX, CHOICE_PREFIX, etree
+from question import MultipleChoiceQuestion, create_question_from_dict
+from section import Section
+from utils import E, ns, SEP, QUESTION_PREFIX, CHOICE_PREFIX, etree
 from datetime import datetime
 import codecs
 
@@ -34,7 +34,7 @@ class Survey(Section):
                    E("model",
                      E.itext(*self.translations()),
                      E.instance(self.instance()),
-                     *self.get_bindings(self._xpath)
+                     *self.get_bindings()
                      ),
                    ),
                  E(ns("h", "body"), *self.controls())
@@ -116,3 +116,17 @@ class Survey(Section):
         for d in element_dict_list:
             q = create_question_from_dict(d)
             self._add_element(q)
+
+    def _var_repl_function(self):
+        """
+        Given a dictionary of xpaths, return a function we can use to
+        replace ${varname} with the xpath to varname.
+        """
+        return lambda matchobj: self._xpath[matchobj.group(1)]
+
+    def insert_xpaths(text):
+        """
+        Replace all instances of ${var} with the xpath to var.
+        """
+        bracketed_tag = r"\$\{(" + utils.XFORM_TAG_REGEXP + r")\}"
+        return re.sub(bracketed_tag, self._var_repl_function(), text)

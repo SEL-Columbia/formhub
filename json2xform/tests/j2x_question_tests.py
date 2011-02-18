@@ -6,8 +6,8 @@ import sys, os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 from django.test import TestCase, Client
-from .json2xform import *
-from ..question import create_question_from_dict
+from json2xform import *
+from json2xform.question import create_question_from_dict
 
 import json
 
@@ -33,7 +33,7 @@ class Json2XformQuestionValidationTests(TestCase):
     def test_question_type_string(self):
         simple_string_json = {"text": {"French": "Nom du travailleur agricole:", \
                     "English": "Name of Community Agricultural Worker"}, \
-                    "type": "string", "name": "enumerator_name"}
+                    "type": "text", "name": "enumerator_name"}
 
         q = create_question_from_dict(simple_string_json)
         

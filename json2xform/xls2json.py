@@ -15,7 +15,6 @@ TYPES_SHEET = u"question types"
 
 CHOICE_LIST_NAME = u"list name"
 DICT_CHAR = u":"
-MULTIPLE_CHOICE_DELIMITER = r"\s+from\s+"
 
 TYPE = u"type"
 CHOICES = u"choices"
@@ -24,12 +23,13 @@ class ExcelReader(object):
     def __init__(self, path):
         self._path = path
         self._dict = None
-        self._prepare_for_export()
+        self._setup()
         sheet_names = self._dict.keys()
         if len(sheet_names)==2 and SURVEY_SHEET in sheet_names and CHOICES_SHEET in sheet_names:
             self._fix_int_values()
             self._group_dictionaries()
             self._construct_choice_lists()
+            self._process_question_type()
             self._insert_choice_lists()
         if sheet_names==[TYPES_SHEET]:
             self._group_dictionaries()
@@ -41,10 +41,10 @@ class ExcelReader(object):
     def print_json_to_file(self, filename=""):
         if not filename: filename = self._path[:-4] + ".json"
         fp = codecs.open(filename, mode="w", encoding="utf-8")
-        json.dump(converter.to_dict(), fp=fp, ensure_ascii=False, indent=4)
+        json.dump(self.to_dict(), fp=fp, ensure_ascii=False, indent=4)
         fp.close()
 
-    def _prepare_for_export(self):
+    def _setup(self):
         """
         Return a Python dictionary with a key for each worksheet
         name. For each sheet there is a list of dictionaries, each
@@ -110,6 +110,33 @@ class ExcelReader(object):
             else: choices[list_name] = [choice]
         self._dict[CHOICES_SHEET] = choices
 
+    def _process_question_type(self):
+        """
+        We need to handle question types that look like "select one
+        from list-name or specify other.
+
+        select one from list-name
+        select all that apply from list-name
+        select one from list-name or specify other
+        select all that apply from list-name or specify other
+
+        let's make it a requirement that list-names have no spaces
+        """
+        for q in self._dict[SURVEY_SHEET]:
+            question_type = q[TYPE]
+            question_type.strip()
+            re.sub(r"\s+", " ", question_type)
+            if question_type.startswith("select"):
+                m = re.search(r"^(?P<select_command>select one|select all that apply) from (?P<list_name>\S+)( (?P<specify_other>or specify other))?$", question_type)
+                assert m, "unsupported select syntax:" + question_type
+                assert CHOICES not in q
+                d = m.groupdict()
+                q[CHOICES] = d["list_name"]
+                if d["specify_other"]:
+                    q[TYPE] = " ".join([d["select_command"], d["specify_other"]])
+                else:
+                    q[TYPE] = d["select_command"]
+
     def _insert_choice_lists(self):
         """
         For each multiple choice question in the survey find the
@@ -118,12 +145,8 @@ class ExcelReader(object):
         underlying dict to be just the survey definition.
         """
         for q in self._dict[SURVEY_SHEET]:
-            l = re.split(MULTIPLE_CHOICE_DELIMITER, q[TYPE])
-            if len(l) > 2: raise Exception("There should be at most one 'from' in a question type.")
-            if len(l)==2:
-                assert CHOICES not in q
-                q[CHOICES] = self._dict[CHOICES_SHEET][l[1]]
-                q[TYPE] = l[0]
+            if CHOICES in q:
+                q[CHOICES] = self._dict[CHOICES][q[CHOICES]]
         self._dict = self._dict[SURVEY_SHEET]
 
 if __name__=="__main__":

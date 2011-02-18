@@ -1,114 +1,14 @@
 import os
-from .xls2json import ExcelReader
-from . import utils
-import re
 
-def _var_repl_function(xpaths):
-    """
-    Given a dictionary of xpaths, return a function we can use to
-    replace ${varname} with the xpath to varname.
-    """
-    return lambda matchobj: xpaths[matchobj.group(1)]
-
-def insert_xpaths(xpaths, text):
-    """
-    Replace all instances of ${var} with the xpath to var.
-    """
-    bracketed_tag = r"\$\{(" + utils.XFORM_TAG_REGEXP + r")\}"
-    return re.sub(bracketed_tag, _var_repl_function(xpaths), text)
-
-class SurveyElement(object):
-    def __init__(self, *args, **kwargs):
-        self._name = kwargs.get(u"name", u"")
-        self._attributes = kwargs.get(u"attributes", {})
-        self._question_type = kwargs.get(u"question_type", u"")
-        self._text = kwargs.get(u"text", {})
-
-    def validate(self):
-        assert utils.is_valid_xml_tag(self._name)
-    
-    def _set_parent(self, parent):
-        self._parent = parent
-        
-    def get_root(self):
-        current_element = self
-        while current_element._parent:
-            current_element = current_element._parent
-        return current_element
-
-    def get_xpath(self):
-        """
-        Return the xpath of this survey element.
-        """
-        l = [self._name]
-        current_element = self._parent
-        while current_element:
-            l.append(current_element._name)
-            current_element = current_element._parent
-        # add an empty string to get a leading slash on the xpath
-        l.append(u"")
-        l.reverse()
-        return u"/".join(l)
-
-    def to_dict(self):
-        return {'name': self._name}
-
-    def add_options_to_list(self, options_list):
-        pass
-        
-    def set_question_type(self, d):
-        """
-        This is a little hacky. I think it would be cleaner to use a
-        meta class to create a new class for each question type.
-        """
-        for k, v in d["bind"].items():
-            if ":" in k:
-                # we need to handle namespacing of attributes
-                l = k.split(":")
-                assert len(l)==2
-                k = utils.ns(l[0], l[1])
-            self._attributes[k] = v
-        self.hint = d.get("hint", {})
-
-    # XML generating functions, these probably need to be moved around.
-    def label_element(self):
-        return utils.E.label(ref="jr:itext('%s')" % utils.SEP.join([utils.QUESTION_PREFIX, self._name]))
-
-    def hint_element(self):
-        # I need to fix this like label above
-        if self.hint:
-            return utils.E.hint(self.hint)
-
-    def label_and_hint(self):
-        # if self.hint:
-        #     return [self.label_element(), self.hint_element()]
-        return [self.label_element()]
-
-    def instance(self):
-        return utils.E(self._name)
-    
-    def get_bindings(self):
-        """
-        Return a list of XML nodes for the binding of this survey
-        element and all its descendants. Note: we have to pass in a
-        dictionary of xpaths to do xpath substitution here.
-        """
-        xpaths = self.get_root()._xpath
-        d = dict([(k, insert_xpaths(xpaths, v)) for k, v in self._attributes.items()])
-        return [ utils.E.bind(nodeset=self.get_xpath(), **d) ]
-
-    def control(self):
-        """
-        The control depends on what type of question we're asking, it
-        doesn't make sense to implement here in the base class.
-        """
-        raise Exception("Control not implemented")
+import utils
+from xls2json import ExcelReader
+from survey_element import SurveyElement
 
 
 class Question(SurveyElement):
     pass
 
-   
+
 class InputQuestion(Question):
     """
     This control string is the same for: strings, integers, decimals,
@@ -119,31 +19,39 @@ class InputQuestion(Question):
 
 
 class UploadQuestion(Question):
+    def _get_media_type(self):
+        return self.get_control_dict()[u"mediatype"]
+        
     def control(self):
-        return utils.E.upload(ref=self.get_xpath(), mediatype=self.mediatype,
-                        *self.label_and_hint())
+        return utils.E.upload(
+            ref=self.get_xpath(),
+            mediatype=self._get_media_type(),
+            *self.label_and_hint()
+            )
 
 
 # I'm thinking we probably want this to be a SurveyElement
-class Option(object):
-    def __init__(self, **kwargs):
-        self._value = kwargs[u'value']
-        self._text = kwargs[u'text']
-        object.__init__(self)
+class Option(SurveyElement):
+    def __init__(self, *args, **kwargs):
+        SurveyElement.__init__(
+            self,
+            name=kwargs[u'value'],
+            text=kwargs[u'text']
+            )
     
-    def _set_parent(self, parent):
-        self._parent = parent
-
     def __eq__(self, other):
         return other.to_dict()==self.to_dict()
         
     def to_dict(self):
-        return {'value': self._value, 'text': self._text}
+        return {'value': self._name, 'text': self._text}
+
+    def get_translation_id(self):
+        self._parent
 
     def xml(self, question_name):
         return utils.E.item(
-            utils.E.label(ref="jr:itext('%s')" % utils.SEP.join([CHOICE_PREFIX, question_name, self.value])),
-            utils.E.value(self.value)
+            utils.E.label(ref="jr:itext('%s')" % utils.SEP.join([CHOICE_PREFIX, question_name, self._name])),
+            utils.E.value(self._name)
             )
 
 
@@ -173,10 +81,10 @@ class MultipleChoiceQuestion(Question):
     def _validate_unique_option_values(self):
         option_values = []
         for option in self._options:
-            if option._value in option_values:
+            if option._name in option_values:
                 raise Exception("Option with value: '%s' already exists" % option._value)
             else:
-                option_values.append(option._value)
+                option_values.append(option._name)
     
     def _add_option(self, **kwargs):
         option = Option(**kwargs)
@@ -184,8 +92,8 @@ class MultipleChoiceQuestion(Question):
         self._options.append(option)
 
     def control(self):
-        assert self._attributes[u"type"] in [u"select", u"select1"]
-        result = utils.E(self._attributes[u"type"], {"ref" : self.get_xpath()})
+        assert self.get_bind_dict()[u"type"] in [u"select", u"select1"]
+        result = utils.E(self.get_bind_dict()[u"type"], {"ref" : self.get_xpath()})
         for element in self.label_and_hint() + [c.xml(self._name) for c in self._options]:
             result.append(element)
         return result        
@@ -212,16 +120,18 @@ question_classes = {
 
 def create_question_from_dict(d):
     q_type_str = d.pop("type")
+    if q_type_str.endswith(" or specify other"):
+        q_type_str = q_type_str[:len(q_type_str)-len(" or specify other")]
     question_type = question_types_by_name[q_type_str]
     question_class = question_classes[ question_type["control"].get("tag", "") ]
-    d[u'question_type'] = q_type_str
+    d[u'type'] = q_type_str
     
     #this is because of a python2.6 issue w unicode strings as keys.
     new_dict={}
     for key in d: new_dict[str(key)] = d[key]
     result = question_class(**new_dict)
     
-    result.set_question_type(question_type)
+    result.set_attributes(question_type)
     return result
 
 

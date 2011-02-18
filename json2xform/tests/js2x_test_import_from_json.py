@@ -16,5 +16,5 @@ class Json2XformTestJsonImport(TestCase):
         s = Survey(name="Exchange rate")
         s.load_elements_from_json(json_text)
         
-        self.assertEqual(s._elements[0]._question_type, "decimal")
+        self.assertEqual(s._elements[0]._type, "decimal")
 		
