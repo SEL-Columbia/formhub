@@ -4,3 +4,4 @@
 from surveyor_manager.factory import SurveyorManagerFactory
 from phone_manager.factory import PhoneManagerFactory
 from locations.factory import DistrictFactory
+from xform_manager.factory import XFormManagerFactory
