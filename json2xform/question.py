@@ -1,6 +1,6 @@
 import os
 
-import utils
+from utils import node, SEP, CHOICE_PREFIX
 from xls2json import ExcelReader
 from survey_element import SurveyElement
 
@@ -14,16 +14,17 @@ class InputQuestion(Question):
     This control string is the same for: strings, integers, decimals,
     dates, geopoints, barcodes ...
     """
-    def control(self):
-        return utils.E.input(ref=self.get_xpath(), *self.label_and_hint())
+    def xml_control(self):
+        return node(u"input", ref=self.get_xpath(), *self.label_and_hint())
 
 
 class UploadQuestion(Question):
     def _get_media_type(self):
         return self.get_control_dict()[u"mediatype"]
         
-    def control(self):
-        return utils.E.upload(
+    def xml_control(self):
+        return node(
+            u"upload",
             ref=self.get_xpath(),
             mediatype=self._get_media_type(),
             *self.label_and_hint()
@@ -33,69 +34,49 @@ class UploadQuestion(Question):
 # I'm thinking we probably want this to be a SurveyElement
 class Option(SurveyElement):
     def __init__(self, *args, **kwargs):
-        SurveyElement.__init__(
-            self,
-            name=kwargs[u'value'],
-            text=kwargs[u'text']
-            )
+        """
+        This is a little hack here, I'm going to use an option's value
+        as its name.
+        """
+        self._value = kwargs[u"value"]
+        SurveyElement.__init__(self, name=self._value, text=kwargs[u"text"])
     
-    def __eq__(self, other):
-        return other.to_dict()==self.to_dict()
-        
-    def to_dict(self):
-        return {'value': self._name, 'text': self._text}
+    def xml_label(self):
+        return node(u"label", ref="jr:itext('%s')" % self._name)
 
-    def get_translation_id(self):
-        self._parent
+    def xml_value(self):
+        return node(u"value", self._value)
 
-    def xml(self, question_name):
-        return utils.E.item(
-            utils.E.label(ref="jr:itext('%s')" % utils.SEP.join([CHOICE_PREFIX, question_name, self._name])),
-            utils.E.value(self._name)
-            )
+    def xml(self):
+        item = node(u"item")
+        item.append(self.xml_label())
+        item.append(self.xml_value())
+        return item
 
 
 class MultipleChoiceQuestion(Question):
     def __init__(self, *args, **kwargs):
-        self._options = []
-        if u'options' in kwargs:
-            for option in kwargs[u'options']:
-                self._add_option(**option)
-        
         Question.__init__(self, *args, **kwargs)
-    
-    def add_options_to_list(self, options_list):
-        if self._options not in options_list:
-            options_list.append(self._options)
-        self._option_list_index_number = options_list.index(self._options)
-    
-    def to_dict(self):
-        base_dict = Question.to_dict(self)
-        local_dict = {'options': [o.to_dict() for o in self._options] }
-        return dict(base_dict.items() + local_dict.items())
-    
+        for option in kwargs[u'choices']:
+            self._add_option(**option)
+        
     def validate(self):
-        self._validate_unique_option_values()
         return Question.validate(self)
         
-    def _validate_unique_option_values(self):
-        option_values = []
-        for option in self._options:
-            if option._name in option_values:
-                raise Exception("Option with value: '%s' already exists" % option._value)
-            else:
-                option_values.append(option._name)
-    
     def _add_option(self, **kwargs):
         option = Option(**kwargs)
-        option._set_parent(self)
-        self._options.append(option)
+        self._add_element(option)
 
-    def control(self):
+    def xml_control(self):
         assert self.get_bind_dict()[u"type"] in [u"select", u"select1"]
-        result = utils.E(self.get_bind_dict()[u"type"], {"ref" : self.get_xpath()})
-        for element in self.label_and_hint() + [c.xml(self._name) for c in self._options]:
-            result.append(element)
+        result = node(
+            self.get_bind_dict()[u"type"],
+            {u"ref" : self.get_xpath()}
+            )
+        for n in self.label_and_hint():
+            result.append(n)
+        for n in [o.xml() for o in self._elements]:
+            result.append(n)                
         return result        
 
 

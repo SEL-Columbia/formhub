@@ -1,16 +1,6 @@
 from question import SurveyElement
 
 class Section(SurveyElement):
-    def __init__(self, *args, **kwargs):
-        self._elements = []
-        for element in kwargs.get(u"elements", []):
-            self._add_element(element)
-        SurveyElement.__init__(self, *args, **kwargs)
-    
-    def _add_element(self, element):
-        element._set_parent(self)
-        self._elements.append(element)
-    
     def to_dict(self):
         """
         Finished product.
@@ -33,3 +23,11 @@ class Section(SurveyElement):
                 raise Exception("Element with namme: '%s' already exists" % element._name)
             else:
                 element_slugs.append(element._name)
+
+    def xml_control(self):
+        """
+        Ideally, we'll have groups up and rolling soon, but for now
+        let's just return a list of controls from all the children of
+        this section.
+        """
+        return [e.xml_control() for e in self._elements]
