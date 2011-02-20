@@ -7,7 +7,7 @@ Replace these with more appropriate tests for your application.
 
 from django.test import TestCase
 
-from submission_qa.models import QualityReview
+from submission_qr.models import QualityReview
 from parsed_xforms.models import ParsedInstance
 from django.contrib.auth.models import User
 

@@ -74,7 +74,7 @@ INSTALLED_APPS = (
     'surveyor_manager',
     'xform_manager',
     'map_xforms',
-    'submission_qa',
+    'submission_qr',
 )
 
 # SEARCH ENGINE settings
