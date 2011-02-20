@@ -15,7 +15,7 @@ class InputQuestion(Question):
     dates, geopoints, barcodes ...
     """
     def xml_control(self):
-        return node(u"input", ref=self.get_xpath(), *self.label_and_hint())
+        return node(u"input", ref=self.get_xpath(), *self.xml_label_and_hint())
 
 
 class UploadQuestion(Question):
@@ -27,11 +27,10 @@ class UploadQuestion(Question):
             u"upload",
             ref=self.get_xpath(),
             mediatype=self._get_media_type(),
-            *self.label_and_hint()
+            *self.xml_label_and_hint()
             )
 
 
-# I'm thinking we probably want this to be a SurveyElement
 class Option(SurveyElement):
     def __init__(self, *args, **kwargs):
         """
@@ -41,9 +40,6 @@ class Option(SurveyElement):
         self._value = kwargs[u"value"]
         SurveyElement.__init__(self, name=self._value, text=kwargs[u"text"])
     
-    def xml_label(self):
-        return node(u"label", ref="jr:itext('%s')" % self._name)
-
     def xml_value(self):
         return node(u"value", self._value)
 
@@ -73,7 +69,7 @@ class MultipleChoiceQuestion(Question):
             self.get_bind_dict()[u"type"],
             {u"ref" : self.get_xpath()}
             )
-        for n in self.label_and_hint():
+        for n in self.xml_label_and_hint():
             result.append(n)
         for n in [o.xml() for o in self._elements]:
             result.append(n)                

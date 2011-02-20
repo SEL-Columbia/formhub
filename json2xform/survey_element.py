@@ -1,4 +1,4 @@
-import utils
+from utils import is_valid_xml_tag, node
 from collections import defaultdict
 
 class SurveyElement(object):
@@ -23,8 +23,14 @@ class SurveyElement(object):
     def get_bind_dict(self):
         return self._attributes[u"bind"]
 
+    def get_label_dict(self):
+        return self._text
+
+    def get_hint_dict(self):
+        return self._attributes[u"hint"]
+
     def validate(self):
-        assert utils.is_valid_xml_tag(self._name)
+        assert is_valid_xml_tag(self._name)
     
     def _set_parent(self, parent):
         self._parent = parent
@@ -58,9 +64,6 @@ class SurveyElement(object):
     def to_dict(self):
         return {'name': self._name}
 
-    def add_options_to_list(self, options_list):
-        pass
-        
     def set_attributes(self, d):
         """
         This is a little hacky. I think it would be cleaner to use a
@@ -68,22 +71,29 @@ class SurveyElement(object):
         """
         self._attributes.update(d)
 
+    def get_translation_keys(self):
+        # we could base this off of the xpath instead of just the name
+        return {
+            u"label" : u"%s:label" % self._name,
+            u"hint" : u"%s:hint" % self._name,
+            }
+
     # XML generating functions, these probably need to be moved around.
-    def label_element(self):
-        return utils.E.label(ref="jr:itext('%s')" % self._name)
+    def xml_label(self):
+        d = self.get_translation_keys()
+        return node(u"label", ref="jr:itext('%s')" % d[u"label"])
 
-    def hint_element(self):
-        # I need to fix this like label above
-        if self.hint:
-            return utils.E.hint(self.hint)
+    def xml_hint(self):
+        d = self.get_translation_keys()
+        return node(u"hint", ref="jr:itext('%s')" % d[u"hint"])
 
-    def label_and_hint(self):
-        # if self.hint:
-        #     return [self.label_element(), self.hint_element()]
-        return [self.label_element()]
+    def xml_label_and_hint(self):
+        if self.get_hint_dict():
+            return [self.xml_label(), self.xml_hint()]
+        return [self.xml_label()]
 
     def instance(self):
-        return utils.E(self._name)
+        return node(self._name)
     
     def xml_binding(self):
         """
@@ -94,7 +104,7 @@ class SurveyElement(object):
         if d:
             for k, v in d.items():
                 d[k] = survey.insert_xpaths(v)
-            return utils.E.bind(nodeset=self.get_xpath(), **d)
+            return node(u"bind", nodeset=self.get_xpath(), **d)
         return None
 
     def xml_bindings(self):
@@ -104,7 +114,7 @@ class SurveyElement(object):
         result = []
         for e in self.iter_elements():
             xml_binding = e.xml_binding()
-            if xml_binding: result.append(xml_binding)
+            if xml_binding!=None: result.append(xml_binding)
         return result
 
     def xml_control(self):
