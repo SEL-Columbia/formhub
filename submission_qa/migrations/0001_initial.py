@@ -11,13 +11,25 @@ class Migration(SchemaMigration):
         # Adding model 'QualityReview'
         db.create_table('submission_qa_qualityreview', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('submission', self.gf('django.db.models.fields.related.OneToOneField')(related_name='submission', unique=True, to=orm['parsed_xforms.ParsedInstance'])),
+            ('submission', self.gf('django.db.models.fields.related.ForeignKey')(related_name='quality_reviews', to=orm['parsed_xforms.ParsedInstance'])),
+            ('reviewer', self.gf('django.db.models.fields.related.ForeignKey')(related_name='quality_reviews', null=True, to=orm['auth.User'])),
+            ('score', self.gf('django.db.models.fields.IntegerField')(null=True)),
+            ('comment', self.gf('django.db.models.fields.TextField')(null=True)),
+            ('date_added', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+            ('date_changed', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+            ('hidden', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
         db.send_create_signal('submission_qa', ['QualityReview'])
+
+        # Adding unique constraint on 'QualityReview', fields ['submission', 'reviewer']
+        db.create_unique('submission_qa_qualityreview', ['submission_id', 'reviewer_id'])
 
 
     def backwards(self, orm):
         
+        # Removing unique constraint on 'QualityReview', fields ['submission', 'reviewer']
+        db.delete_unique('submission_qa_qualityreview', ['submission_id', 'reviewer_id'])
+
         # Deleting model 'QualityReview'
         db.delete_table('submission_qa_qualityreview')
 
@@ -91,9 +103,15 @@ class Migration(SchemaMigration):
             'visible_id': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '32'})
         },
         'submission_qa.qualityreview': {
-            'Meta': {'object_name': 'QualityReview'},
+            'Meta': {'unique_together': "(('submission', 'reviewer'),)", 'object_name': 'QualityReview'},
+            'comment': ('django.db.models.fields.TextField', [], {'null': 'True'}),
+            'date_added': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
+            'date_changed': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
+            'hidden': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'submission': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'submission'", 'unique': 'True', 'to': "orm['parsed_xforms.ParsedInstance']"})
+            'reviewer': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'quality_reviews'", 'null': 'True', 'to': "orm['auth.User']"}),
+            'score': ('django.db.models.fields.IntegerField', [], {'null': 'True'}),
+            'submission': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'quality_reviews'", 'to': "orm['parsed_xforms.ParsedInstance']"})
         },
         'surveyor_manager.surveyor': {
             'Meta': {'object_name': 'Surveyor', '_ormbases': ['auth.User']},

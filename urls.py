@@ -14,4 +14,5 @@ urlpatterns = patterns('',
     # static serve site media / only for development
     (r'^site-media/(?P<path>.+)$', 'django.views.static.serve', {'document_root' : MEDIA_ROOT}),
     (r'^xforms/', include('parsed_xforms.urls')),
+    (r'^xforms/quality_reviews/', include('submission_qa.urls')),
 )

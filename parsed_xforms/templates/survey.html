@@ -1,3 +1,5 @@
 {% for a in instance.attachments.all %}
 <a href="{{a.attachment.url}}" target="_BLANK"><img src="{{ a.attachment.url }}" style="width:180px;border:0 none;" /></a>
 {% endfor %}
+
+{% include 'survey_instance_data.html' %}
