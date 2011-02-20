@@ -37,11 +37,16 @@ class Survey(Section):
     def _setup_translations(self):
         self._translations = defaultdict(dict)
         for e in self.iter_elements():
-            for lang in e._text.keys():
-                if e._name in self._translations[lang]:
-                    assert self._translations[lang][e._name] == e._text[lang], e._text
-                else:
-                    self._translations[lang][e._name] = e._text[lang]
+            translation_keys = e.get_translation_keys()
+            for translation_key, text in [
+                (translation_keys[u"label"], e.get_label_dict()),
+                (translation_keys[u"hint"], e.get_hint_dict())
+                ]:
+                for lang in text.keys():
+                    if translation_key in self._translations[lang]:
+                        assert self._translations[lang][translation_key] == text[lang], text
+                    else:
+                        self._translations[lang][translation_key] = text[lang]
 
     def xml_translations(self):
         self._setup_translations()
@@ -65,7 +70,7 @@ class Survey(Section):
     # in SurveyElement
     def instance(self):
         root_node_name = self._name
-        result = E(root_node_name, {"id" : self.id_string()})
+        result = E(root_node_name, {u"id" : self.id_string()})
         for q in self._elements: result.append(q.instance())
         return result
 
