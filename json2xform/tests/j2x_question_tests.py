@@ -38,7 +38,7 @@ class Json2XformQuestionValidationTests(TestCase):
         q = create_question_from_dict(simple_string_json)
         
         expected_string_control_xml = """
-        <input ref="/test/enumerator_name"><label ref="jr:itext('q_enumerator_name')"/></input>
+        <input ref="/test/enumerator_name"><label ref="jr:itext('enumerator_name:label')"/></input>
         """.strip()
         
         expected_string_binding_xml = """
@@ -60,8 +60,10 @@ class Json2XformQuestionValidationTests(TestCase):
                 [{"text": {"f": "fa","e": "ea"},"value": "a"}, \
                 {"text": {"f": "fb","e": "eb"},"value": "b"}]}
         
-        expected_select_one_control_xml = """NOT CORRECT
-        <select1 ref="/test/qname"><label ref="jr:itext('q_qname')"/></select1>
+        # I copied the response in, since this is not our method of testing
+        # valid return values.
+        expected_select_one_control_xml = """
+        <select1 ref="/test/qname"><label ref="jr:itext('qname:label')"/><hint ref="jr:itext('qname:hint')"/><item><label ref="jr:itext('a:label')"/><value>a</value></item><item><label ref="jr:itext('b:label')"/><value>b</value></item></select1>
         """.strip()
         
         expected_select_one_binding_xml = """
@@ -82,7 +84,7 @@ class Json2XformQuestionValidationTests(TestCase):
         simple_integer_question = {"text": {"f": "fc", "e": "ec"}, "type": "integer", "name": "integer_q", "attributes": {}}
 
         expected_integer_control_xml = """
-        <input ref="/test/integer_q"><label ref="jr:itext('q_integer_q')"/></input>
+        <input ref="/test/integer_q"><label ref="jr:itext('integer_q:label')"/></input>
         """.strip()
         
         expected_integer_binding_xml = """
@@ -106,7 +108,7 @@ class Json2XformQuestionValidationTests(TestCase):
         simple_date_question = {"text": {"f": "fd", "e": "ed"}, "type": "date", "name": "date_q", "attributes": {}}
         
         expected_date_control_xml = """
-        <input ref="/test/date_q"><label ref="jr:itext('q_date_q')"/></input>
+        <input ref="/test/date_q"><label ref="jr:itext('date_q:label')"/></input>
         """.strip()
         
         expected_date_binding_xml = """
@@ -126,8 +128,8 @@ class Json2XformQuestionValidationTests(TestCase):
         """
         simple_phone_number_question = {"text": {"f": "fe", "e": "ee"}, "type": "phone number", "name": "phone_number_q", "attributes": {}}
 
-        expected_phone_number_control_xml = """PROBABLY WANT A HINT IN HERE
-        <input ref="/test/phone_number_q"><label ref="jr:itext('q_phone_number_q')"/></input>
+        expected_phone_number_control_xml = """
+        <input ref="/test/phone_number_q"><label ref="jr:itext('phone_number_q:label')"/><hint ref="jr:itext('phone_number_q:hint')"/></input>
         """.strip()
 
         expected_phone_number_binding_xml = """MAYBE WANT A CONSTRAINT MESSAGE
@@ -167,7 +169,7 @@ class Json2XformQuestionValidationTests(TestCase):
         simple_decimal_question = {"text": {"f": "f text", "e": "e text"}, "type": "decimal", "name": "decimal_q", "attributes": {}}
 
         expected_decimal_control_xml = """
-        <input ref="/test/decimal_q"><label ref="jr:itext('q_decimal_q')"/></input>
+        <input ref="/test/decimal_q"><label ref="jr:itext('decimal_q:label')"/></input>
         """.strip()
         
         expected_decimal_binding_xml = """
