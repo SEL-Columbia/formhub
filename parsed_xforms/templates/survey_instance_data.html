@@ -14,18 +14,22 @@
 	-->
 </table>
 {% if score_form %}
-<div id="score_form"></div>
+<div id="existing_scores"></div>
+<div id="score_form">
+	{{score_form|safe}}
+</div>
 <script type="text/javascript" charset="utf-8">
 var parsedInstanceId = {{instance.id}};
-var scoreUrl = '/xforms/quality_reviews/new/'+parsedInstanceId+'/';
-	$.ajax({
-		'url': scoreUrl
-	}).success(function(result){
-		var res = $(result),
-			form = $('form', res);
-		form.attr('action', scoreUrl);
-		$('#score_form').html(form);
-	});
+$.ajax({
+	url: '/xforms/quality_reviews/list/'+parsedInstanceId
+}).success(function(result){
+	$('#existing_scores').html(result);
+});
+
+$('#score_form form').submit(function(evt){
+	console.log(this);
+	return false;
+})
 </script>
 {% endif %}
 {% endblock %}

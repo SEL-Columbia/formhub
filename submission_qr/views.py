@@ -6,6 +6,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedire
 from django.views.generic.create_update import create_object, update_object
 from django.forms import ModelForm
 from django.core.urlresolvers import reverse
+from . import forms
 
 def list(request, group_name=None):
     qrs = QualityReview.objects.all()
@@ -19,22 +20,19 @@ def list(request, group_name=None):
     info['new_review_url'] = "/xforms/quality_reviews/new/" #def a cleaner way to do this
     return render_to_response("list.html", info)
 
-class CreateQualityReview(ModelForm):
-    class Meta:
-        model = QualityReview
-        exclude = ('hidden')
-#        exclude = ('submission', 'hidden')
-    #    fields = ("",)
-
 def new_review(request, pi_id, group_name=None):
     submission = ParsedInstance.objects.get(id=pi_id)
 #    reviewer = "whoever is logged in "
     return create_object(
         request=request,
-        form_class=CreateQualityReview,
+        form_class=forms.CreateQualityReview,
         template_name="form.html",
         post_save_redirect=reverse("list_quality_reviews"),
         )
+
+def list_reviews_for_submission(request, submission_id):
+    info = {'submission': ParsedInstance.objects.get(id=submission_id)}
+    return render_to_response("list_reviews.html", info)
 
 def show_hide(request, show_hide, qr_id):
     qr = QualityReview.objects.get(id=qr_id)
