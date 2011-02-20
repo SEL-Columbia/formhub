@@ -1,14 +1,6 @@
 from question import SurveyElement
 
 class Section(SurveyElement):
-    def to_dict(self):
-        """
-        Finished product.
-        NEEDS VALIDATION
-        """
-        self.validate()
-        return {'name': self._name, 'elements': [e.to_dict() for e in self._elements]}
-
     def validate(self):
         for element in self._elements:
             element.validate()

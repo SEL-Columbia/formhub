@@ -62,7 +62,18 @@ class SurveyElement(object):
         return u"/".join([u""] + [n._name for n in self.get_lineage()])
 
     def to_dict(self):
-        return {'name': self._name}
+        self.validate()
+        result = {
+            u"name" : self._name,
+            u"text" : self._text,
+            u"type" : self._type,
+            u"attributes" : self._attributes,
+            u"children" : [e.to_dict() for e in self._elements]
+            }
+        # remove any keys with empty values
+        for k, v in result.items():
+            if not v: del result[k]
+        return result
 
     def set_attributes(self, d):
         """

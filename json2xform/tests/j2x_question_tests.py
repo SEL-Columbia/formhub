@@ -46,7 +46,7 @@ class Json2XformQuestionValidationTests(TestCase):
         """.strip()
         
         self.s._add_element(q)
-        self.assertEqual(ctw(q.control()), expected_string_control_xml)
+        self.assertEqual(ctw(q.xml_control()), expected_string_control_xml)
         
         if TESTING_BINDINGS:
             self.assertEqual(ctw(q.get_bindings()), expected_string_binding_xml)
@@ -70,7 +70,7 @@ class Json2XformQuestionValidationTests(TestCase):
         
         q = create_question_from_dict(simple_select_one_json)
         self.s._add_element(q)
-        self.assertEqual(ctw(q.control()), expected_select_one_control_xml)
+        self.assertEqual(ctw(q.xml_control()), expected_select_one_control_xml)
         
         if TESTING_BINDINGS:
             self.assertEqual(ctw(q.get_bindings()), expected_select_one_binding_xml)
@@ -93,7 +93,7 @@ class Json2XformQuestionValidationTests(TestCase):
         
         self.s._add_element(q)
         
-        self.assertEqual(ctw(q.control()), expected_integer_control_xml)
+        self.assertEqual(ctw(q.xml_control()), expected_integer_control_xml)
         
         if TESTING_BINDINGS:
             self.assertEqual(ctw(q.get_bindings()), expected_integer_binding_xml)
@@ -115,7 +115,7 @@ class Json2XformQuestionValidationTests(TestCase):
         
         q = create_question_from_dict(simple_date_question)
         self.s._add_element(q)
-        self.assertEqual(ctw(q.control()), expected_date_control_xml)
+        self.assertEqual(ctw(q.xml_control()), expected_date_control_xml)
         
         if TESTING_BINDINGS:
             self.assertEqual(ctw(q.get_bindings()), expected_date_binding_xml)
@@ -136,7 +136,7 @@ class Json2XformQuestionValidationTests(TestCase):
         
         q = create_question_from_dict(simple_phone_number_question)
         self.s._add_element(q)
-        self.assertEqual(ctw(q.control()), expected_phone_number_control_xml)
+        self.assertEqual(ctw(q.xml_control()), expected_phone_number_control_xml)
         
         if TESTING_BINDINGS:
             self.assertEqual(ctw(q.get_bindings()), expected_phone_number_binding_xml)
@@ -147,9 +147,7 @@ class Json2XformQuestionValidationTests(TestCase):
         """
         simple_select_all_question = {"text": {"f": "f choisit", "e": "e choose"}, "attributes": {}, "type": "select all that apply", "name": "select_all_q", "choices": [{"text": {"f": "ff", "e": "ef"}, "value": "f"}, {"text": {"f": "fg", "e": "eg"}, "value": "g"}, {"text": {"f": "fh", "e": "eh"}, "value": "h"}]}
 
-        expected_select_all_control_xml = """NEED ITEMS LIST HERE
-        <select ref="/test/select_all_q"><label ref="jr:itext('q_select_all_q')"/></select>
-        """.strip()
+        expected_select_all_control_xml = """<select ref="/test/select_all_q"><label ref="jr:itext('select_all_q:label')"/><hint ref="jr:itext('select_all_q:hint')"/><item><label ref="jr:itext('f:label')"/><value>f</value></item><item><label ref="jr:itext('g:label')"/><value>g</value></item><item><label ref="jr:itext('h:label')"/><value>h</value></item></select>"""
         
         expected_select_all_binding_xml = """DEFINITELY WANT TO MAKE THIS REQUIRED WITH A NONE OPTION AVAILABLE
         <bind nodeset="/test/select_all_q" type="select" required="false()"/>
@@ -157,7 +155,7 @@ class Json2XformQuestionValidationTests(TestCase):
         
         q = create_question_from_dict(simple_select_all_question)
         self.s._add_element(q)
-        self.assertEqual(ctw(q.control()), expected_select_all_control_xml)
+        self.assertEqual(ctw(q.xml_control()), expected_select_all_control_xml)
         
         if TESTING_BINDINGS:
             self.assertEqual(ctw(q.get_bindings()), expected_select_all_binding_xml)
@@ -178,7 +176,7 @@ class Json2XformQuestionValidationTests(TestCase):
         
         q = create_question_from_dict(simple_decimal_question)
         self.s._add_element(q)
-        self.assertEqual(ctw(q.control()), expected_decimal_control_xml)
+        self.assertEqual(ctw(q.xml_control()), expected_decimal_control_xml)
         
         if TESTING_BINDINGS:
             self.assertEqual(ctw(q.get_bindings()), expected_decimal_binding_xml)

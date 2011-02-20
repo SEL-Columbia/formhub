@@ -53,7 +53,7 @@ class Option(SurveyElement):
 class MultipleChoiceQuestion(Question):
     def __init__(self, *args, **kwargs):
         Question.__init__(self, *args, **kwargs)
-        for option in kwargs[u'choices']:
+        for option in kwargs.get(u'choices', []):
             self._add_option(**option)
         
     def validate(self):
