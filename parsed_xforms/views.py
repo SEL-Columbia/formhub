@@ -16,7 +16,7 @@ import json
 import re
 from bson import json_util
 from . import utils, tag
-from .models import District, XForm, xform_instances, Instance
+from .models import District, XForm, xform_instances, ParsedInstance, Instance
 
 @require_GET
 def formList(request):
@@ -196,10 +196,23 @@ def main_index(request):
     return render_to_response("index.html", info)
 
 def survey(request, pk):
-    return render_to_response("survey.html",
-                              {"instance" : Instance.objects.get(pk=pk)}
-                              )
+    instance = ParsedInstance.objects.get(pk=pk)
+    data = instance.get_from_mongo()
+    
+#    from ipdb import set_trace as debug; debug()
+    return render_to_response("survey.html", \
+                             {"instance" : instance, \
+                                'score_form': True, \
+                               'data': data, \
+                               'popup': False})
 
+def survey_popup(request, pk):
+    instance = ParsedInstance.objects.get(pk=pk)
+    data = instance.get_from_mongo()
+    return render_to_response("survey.html", \
+                              {"instance" : instance, \
+                                'data': data, \
+                                'popup' : True})
 
 # import re
 # from django.utils import simplejson

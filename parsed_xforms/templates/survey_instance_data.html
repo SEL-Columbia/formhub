@@ -1,9 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
 <table class="fullw shade-alternate">
   <tr>
 	<th style="border-bottom:1px solid #ddd">Attribute</th>
 	<th style="border-bottom:1px solid #ddd">Value</th>
   </tr>
+	<tr><td>{{data}}</td></tr>
+	<!-- I'll let you figure this out :P. -AD
   {% for key, value in data %}
-  <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
+  <tr><td>{{ key }}</td><td>{{value}}</td></tr>
   {% endfor %}
+	-->
 </table>
+{% if score_form %}
+<div id="score_form"></div>
+<script type="text/javascript" charset="utf-8">
+var parsedInstanceId = {{instance.id}};
+var scoreUrl = '/xforms/quality_reviews/new/'+parsedInstanceId+'/';
+	$.ajax({
+		'url': scoreUrl
+	}).success(function(result){
+		var res = $(result),
+			form = $('form', res);
+		form.attr('action', scoreUrl);
+		$('#score_form').html(form);
+	});
+</script>
+{% endif %}
+{% endblock %}
