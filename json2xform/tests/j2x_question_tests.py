@@ -132,8 +132,8 @@ class Json2XformQuestionValidationTests(TestCase):
         <input ref="/test/phone_number_q"><label ref="jr:itext('phone_number_q:label')"/><hint ref="jr:itext('phone_number_q:hint')"/></input>
         """.strip()
 
-        expected_phone_number_binding_xml = """MAYBE WANT A CONSTRAINT MESSAGE
-        <bind nodeset="/test/phone_number_q" type="string" constraint="regex(., '^\d*$')"/>
+        expected_phone_number_binding_xml = """
+        <bind required="true()" jr:constraintMsg="Please enter only numbers." nodeset="/test/phone_number_q" type="string" constraint="regex(., '^\d*$')"/>
         """.strip()
         
         q = create_question_from_dict(simple_phone_number_question)

@@ -1,4 +1,4 @@
-from utils import is_valid_xml_tag, node
+from utils import is_valid_xml_tag, node, ns
 from collections import defaultdict
 
 class SurveyElement(object):
@@ -115,6 +115,11 @@ class SurveyElement(object):
         if d:
             for k, v in d.items():
                 d[k] = survey.insert_xpaths(v)
+                if u":" in k:
+                    l = k.split(u":")
+                    assert len(l)==2
+                    d[ns(l[0], l[1])] = survey.insert_xpaths(v)
+                    del d[k]
             return node(u"bind", nodeset=self.get_xpath(), **d)
         return None
 
