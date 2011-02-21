@@ -131,11 +131,15 @@ function parseFreqTable(data) {
 						columnsWithData[$(this).index()]=true;
 					}
 				});
+				var totaltotal=0;
+				var totalSpan = $("<span />")
 				var sumRow = $("<tr />", {'class':'sum-row'});
 				$.each(columnsWithData, function(ct, tf){
 					var td = $("<td />");
-					if(ct==0) {
+					if(ct===0) {
 						td.addClass("rname").text("Total:");
+					} else if(ct===1) {
+						td.addClass("centered").css({'color':'#fff', 'background-color':'#333'}).html(totalSpan)
 					}
 					if(tf) {
 						var sumVals = 0;
@@ -146,11 +150,13 @@ function parseFreqTable(data) {
 								sumVals += parseInt(nmVal);
 							}
 						});
+						totaltotal+=sumVals;
 						td.text(sumVals);
 						td.addClass('centered');
 						td.addClass('totals');
 					}
-					sumRow.append(td)
+					sumRow.append(td);
+					totalSpan.html(totaltotal);
 				});
 				$("thead", tab).append(sumRow);
 			})(table);
