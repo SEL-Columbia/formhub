@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="lcol">
+	<h2>{{survey_type_name}} Survey</h2>
+</div>
+<div class="r-col">
+	<div class="r-sect" style="text-align: right">
+		<a href="#" class="button">Export</a>
+	</div>
+	<div class="r-sect">
+		<h3 class="rs-title">Summary</h3>
+		<table border="0">
+			<tr>
+				<td>Number of Submissions</td>
+				<td>
+					10
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Number of Surveyors
+				</td>
+				<td>
+					10
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="r-sect">
+		<h3 class="rs-title">Chart</h3>
+	</div>
+	<div class="r-sect">
+		<h3 class="rs-title">Frequency Table</h3>
+		<p>
+			
+		</p>
+	</div>
+	<div class="r-sect">
+		<h3 class="rs-title">Activity</h3>
+		
+	</div>
+	<div class="r-sect">
+		<h3 class="rs-title">Activity</h3>
+		
+	</div>
+</div>
+<br class="cb" />
+<style type="text/css" media="screen">
+	.cb {
+		clear: both;
+	}
+	.lcol {
+		float: left;
+		width: 20%;
+	}
+	.lcol h2 {
+		margin: 2px 20px;
+		text-align: center;
+	}
+	.r-col {
+		float: right;
+		width: 70%;
+		padding: 4px;
+	}
+	.r-col .r-sect {
+		border: 1px solid #ddd;
+		padding: 5px;
+		margin: 0 0 4px;
+	}
+	.r-col .r-sect .rs-title {
+		font-size: 16px;
+		font-weight: bold;
+		margin: 2px 0;
+	}
+</style>
+<script type="text/javascript" charset="utf-8">
+	$('a.button').button();
+</script>
+{% endblock %}
