@@ -196,6 +196,7 @@ def main_index(request):
     return render_to_response("index.html", info)
 
 from submission_qr.forms import ajax_post_form as quality_review_ajax_form
+from submission_qr.views import score_partial
 
 def survey(request, pk):
     instance = ParsedInstance.objects.get(pk=pk)
@@ -204,8 +205,12 @@ def survey(request, pk):
     info = {"instance" : instance, \
        'data': data, \
        'popup': False}
-      
-    info['score_form'] = quality_review_ajax_form(instance=instance, reviewer=request.user)
+    
+    # score_partial is the section of the page that lists scores given
+    # to the survey.
+    # it also contains a form for editing existing submissions or posting
+    # a new one. 
+    info['score_partial'] = score_partial(instance, request.user, True)
     
     return render_to_response("survey.html", info)
 

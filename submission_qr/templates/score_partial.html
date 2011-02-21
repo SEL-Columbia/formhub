@@ -1,0 +1,36 @@
+{% extends 'partial_template.html' %}
+
+<!--
+This page is appended to the bottom of a parsedinstance view.
+It contains all the {{reviews}} that have been given to the 
+{{submission}} that are viewable by the {{user}}/{{reviewer}}.
+-->
+
+{% block content %}
+<div id="existing_reviews"></div>
+<div id="review_partial">
+	<ul>
+		{% for review in reviews %}
+		<li>
+			{% include 'review_summary.html' %}
+		</li>
+		{% endfor %}
+		{% if qr_exists %}
+		<li class='your-review'>
+			{% include 'review_summary.html' %}
+			<p class='edit'><a href="javascript:editReview()">[Edit]</a></p>
+		</li>
+		{% endif %}
+	</ul>
+</div>
+{% if errors %}
+<p class='errors'>{{errors}}</p>
+{% endif %}
+{% if qr_exists %}
+	<div id="review_form_wrap" style="display:none">
+		{% include 'review_form_table.html' %}
+	</div>
+{% else %}
+	{% include 'review_form_table.html' %}
+{% endif %}
+{% endblock %}
