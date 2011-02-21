@@ -30,6 +30,7 @@ class Json2XformExportingPrepTests(TestCase):
         
         # 2. survey._build_options_list_from_descendants()
         options_list = s._build_options_list_from_descendants()
+        # Is this method called somewhere else now?
         
         desired_options_list = [first_yesno_question._options]
         

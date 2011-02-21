@@ -195,16 +195,24 @@ def main_index(request):
     info['user'] = request.user
     return render_to_response("index.html", info)
 
+from submission_qr.forms import ajax_post_form as quality_review_ajax_form
+from submission_qr.views import score_partial
+
 def survey(request, pk):
     instance = ParsedInstance.objects.get(pk=pk)
     data = instance.get_from_mongo()
     
-#    from ipdb import set_trace as debug; debug()
-    return render_to_response("survey.html", \
-                             {"instance" : instance, \
-                                'score_form': True, \
-                               'data': data, \
-                               'popup': False})
+    info = {"instance" : instance, \
+       'data': data, \
+       'popup': False}
+    
+    # score_partial is the section of the page that lists scores given
+    # to the survey.
+    # it also contains a form for editing existing submissions or posting
+    # a new one. 
+    info['score_partial'] = score_partial(instance, request.user, True)
+    
+    return render_to_response("survey.html", info)
 
 def survey_popup(request, pk):
     instance = ParsedInstance.objects.get(pk=pk)

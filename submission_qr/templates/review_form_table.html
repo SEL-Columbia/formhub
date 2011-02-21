@@ -1,0 +1,12 @@
+<div id="review_form">
+	<form action="{{submission_qr_url}}/post/{{submission.id}}/{{user.id}}" method="post">
+		<table>
+			{{review_form.as_table}}
+			<tr>
+				<td colspan="2">
+					<input type="submit" value="Submit" />
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>

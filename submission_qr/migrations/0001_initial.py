@@ -9,7 +9,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         
         # Adding model 'QualityReview'
-        db.create_table('submission_qa_qualityreview', (
+        db.create_table('submission_qr_qualityreview', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('submission', self.gf('django.db.models.fields.related.ForeignKey')(related_name='quality_reviews', to=orm['parsed_xforms.ParsedInstance'])),
             ('reviewer', self.gf('django.db.models.fields.related.ForeignKey')(related_name='quality_reviews', null=True, to=orm['auth.User'])),
@@ -19,19 +19,19 @@ class Migration(SchemaMigration):
             ('date_changed', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
             ('hidden', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
-        db.send_create_signal('submission_qa', ['QualityReview'])
+        db.send_create_signal('submission_qr', ['QualityReview'])
 
         # Adding unique constraint on 'QualityReview', fields ['submission', 'reviewer']
-        db.create_unique('submission_qa_qualityreview', ['submission_id', 'reviewer_id'])
+        db.create_unique('submission_qr_qualityreview', ['submission_id', 'reviewer_id'])
 
 
     def backwards(self, orm):
         
         # Removing unique constraint on 'QualityReview', fields ['submission', 'reviewer']
-        db.delete_unique('submission_qa_qualityreview', ['submission_id', 'reviewer_id'])
+        db.delete_unique('submission_qr_qualityreview', ['submission_id', 'reviewer_id'])
 
         # Deleting model 'QualityReview'
-        db.delete_table('submission_qa_qualityreview')
+        db.delete_table('submission_qr_qualityreview')
 
 
     models = {
@@ -102,7 +102,7 @@ class Migration(SchemaMigration):
             'surveyor': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['surveyor_manager.Surveyor']", 'null': 'True'}),
             'visible_id': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '32'})
         },
-        'submission_qa.qualityreview': {
+        'submission_qr.qualityreview': {
             'Meta': {'unique_together': "(('submission', 'reviewer'),)", 'object_name': 'QualityReview'},
             'comment': ('django.db.models.fields.TextField', [], {'null': 'True'}),
             'date_added': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
@@ -145,4 +145,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['submission_qa']
+    complete_apps = ['submission_qr']
