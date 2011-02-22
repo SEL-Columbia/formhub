@@ -6,7 +6,7 @@ import sys, os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 from django.test import TestCase, Client
-from .json2xform import *
+from json2xform import *
 
 import json
 
