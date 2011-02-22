@@ -1,38 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<table class="fullw shade-alternate">
-  <tr>
-	<th style="border-bottom:1px solid #ddd">Attribute</th>
-	<th style="border-bottom:1px solid #ddd">Value</th>
-  </tr>
-	<tr><td>{{data}}</td></tr>
-	<!-- I'll let you figure this out :P. -AD
-  {% for key, value in data %}
-  <tr><td>{{ key }}</td><td>{{value}}</td></tr>
-  {% endfor %}
-	-->
-</table>
-{% if score_partial %}
-<div class='reviews'>
-{{score_partial|safe}}	
-</div>
-<script type="text/javascript" charset="utf-8">
-	$('div.reviews').delegate('form', 'submit', function(){
-		var postUrl = $(this).attr('action').replace('post','ajax_post');
-		$.ajax({
-		  type: 'POST',
-		  url: postUrl,
-		  data: $(this).serialize()
-		}).done(function(response){
-			$('.reviews').html(response)
-		})
-		return false;
-	});
-	function editReview() {
-		$('#review_form_wrap').show();
-		$('.your-review').hide();
-	}
-</script>
-{% endif %}
+
+{% load display_data %}
+{% include '_survey_instance_data.html' %}
+{% include '_review_section.html' %}
 {% endblock %}

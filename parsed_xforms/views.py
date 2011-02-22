@@ -198,12 +198,14 @@ def main_index(request):
 from submission_qr.forms import ajax_post_form as quality_review_ajax_form
 from submission_qr.views import score_partial
 
+import json
+
 def survey(request, pk):
     instance = ParsedInstance.objects.get(pk=pk)
     data = instance.get_from_mongo()
     
     info = {"instance" : instance, \
-       'data': data, \
+       'data': json.dumps(data), \
        'popup': False}
     
     # score_partial is the section of the page that lists scores given
