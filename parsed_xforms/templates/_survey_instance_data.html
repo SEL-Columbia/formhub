@@ -1,0 +1,41 @@
+<div id="data-table"></div>
+
+<script type="text/javascript" charset="utf-8">
+	(function(data, dest){
+		var categories = [];
+		var sortedStuff = {};
+		$.each(data, function(k, v){
+			if(k.indexOf('/')===-1) {
+
+			} else {
+				var cat = k.split("/")[0];
+				if(categories.indexOf(cat)===-1) {
+					categories.push(cat);
+					sortedStuff[cat]=[];
+				}
+				sortedStuff[cat].push([k.split("/")[1], v]);
+			}
+		});
+		var tab = $("<table />");
+		var tbod = $('<tbody />');
+		tab.append(tbod);
+		dest.append(tab);
+		var td, catTd, curTr;
+		$.each(sortedStuff, function(cat, arr){
+			td = $("<td />", {'colspan':2}).css({'font-weight':'bold'});
+			td.html(cat);
+			tbod.append($("<tr />").html(td));
+			catTd = $("<td />", {'rowspan':arr.length}).html(cat);
+			curTr = $("<tr />").html(catTd);
+			$.each(arr, function(i, val){
+				$.each(val, function(i, v){
+					td = $("<td />").html(v);
+					curTr.append(td);
+				});
+				tbod.append(curTr);
+				curTr = $("<tr />");
+			});
+		});
+		$(dest).append(tab);
+	})({{data|safe}}, $('#data-table'))
+</script>

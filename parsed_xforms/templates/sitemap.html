@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Running a large-scale survey?</h2>
+<ul>
+  <li><a href="/xform_manager">XForm Manager</a></li>
+  <ul>
+    <li><span
+ style="font-style: italic;">XForms - Upload new
+forms, set status of forms</span></li>
+  </ul>
+  <li><a href="/phone_manager">Phones</a> <br /> <span style="font-style:italic">(Identify who's
+responsible for a phones, and what its status is)</span></li>
+  <li>How is
+the surveying going?</li>
+  <ul>
+    <li><a href="/xforms/dashboard/">Dashboard</a></li>
+    <li><a href="/xforms/dashboard/#/map">Map</a></li>
+    <li><a href="/xforms/activity_list">Activity list</a><span
+ style="font-style: italic;">(filtered by form/
+district)</span></li>
+    <li><a href="/xforms/surveyors">Surveyors</a><span
+ style="font-style: italic;">(See which surveyors /
+teams are doing well)</span></li>
+	<li>
+		<a href="/xforms/surveys/water/">Water</a>
+	</li>
+  </ul>
+</ul>
+
+{% endblock %}

@@ -198,12 +198,14 @@ def main_index(request):
 from submission_qr.forms import ajax_post_form as quality_review_ajax_form
 from submission_qr.views import score_partial
 
+import json
+
 def survey(request, pk):
     instance = ParsedInstance.objects.get(pk=pk)
     data = instance.get_from_mongo()
     
     info = {"instance" : instance, \
-       'data': data, \
+       'data': json.dumps(data), \
        'popup': False}
     
     # score_partial is the section of the page that lists scores given
@@ -221,6 +223,53 @@ def survey_popup(request, pk):
                               {"instance" : instance, \
                                 'data': data, \
                                 'popup' : True})
+
+def sitemap(request):
+    return render_to_response("sitemap.html")
+
+class ViewNav(object):
+    def __init__(self, name, url):
+        self.url = url
+        self.name = name
+
+class MyRenderer(object):
+    def __init__(self, request, template):
+        self.req = request
+        self.template = template
+        self.info = {}
+        self.navigation_items = []
+    
+    def nav(self, item):
+        if isinstance(item, ViewNav):
+            self.navigation_items.append(item)
+        else:
+            self.navigation_items.append(ViewNav(*item))
+
+    def navs(self, items):
+        [self.nav(i) for i in items]
+    
+    def _info(self):
+        self.info['navs'] = self.navigation_items
+        self.info['user'] = self.req.user
+        return self.info
+    
+    def r(self):
+        return render_to_response(self.template, self._info())
+
+from xform_manager.models import SurveyType
+from map_xforms.models import SurveyTypeMapData
+
+def survey_type_dashboard(request, survey_type):
+    survey_type = SurveyType.objects.get(slug=survey_type)
+    map_data = SurveyTypeMapData.objects.get(survey_type=survey_type)
+    r = MyRenderer(request, "survey_type_dashboard.html")
+    r.navs([("Site Map", "/xforms/"), \
+            ("Survey Types", "/xforms/surveys"), \
+            ("Water", "/xforms/surveys/water")])
+    
+    r.info['survey_type'] = survey_type
+    r.info['survey_type_color'] = map_data.color
+    return r.r()
 
 # import re
 # from django.utils import simplejson
