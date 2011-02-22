@@ -2,39 +2,36 @@
 Testing that data in parsed instance's mongo_dict is properly categorized.
 """
 from django.test import TestCase, Client
-from xform_manager.models import Instance, XForm
-from surveyor_manager.models import Surveyor
+from parsed_xforms.models import categorize_from_xpath_structure
 from datetime import datetime
 
 class TestMongoData(TestCase):
 
     def test_simple_xpath_dict(self):
-        from parsed_xforms.models import categorize_from_xpath_structure
-        
         sample_xpath_dict = {
-            'onekey': 'value',
-            'category/key': 'value',
-            'category/key2': 'value',
-            'category2/key': 'value',
-            'category2/key2': 'value',
-            'supercategory/category/key': 'value',
-            'supercategory/category/key2': 'value'
+            'onekey': 'val1',
+            'category/key': 'val1',
+            'category/key2': 'val2',
+            'category2/key': 'val1',
+            'category2/key2': 'val2',
+            'supercategory/category/key': 'val1',
+            'supercategory/category/key2': 'val2'
         }
         
         expected_dict = {
-            'onekey': 'value',
+            'onekey': 'val1',
             'category': {
-                'key': 'value',
-                'key2': 'value'
+                'key': 'val1',
+                'key2': 'val2'
             },
             'category2': {
-                'key': 'value',
-                'key2': 'value'
+                'key': 'val1',
+                'key2': 'val2'
             },
             'supercategory': {
                 'category': {
-                    'key': 'value',
-                    'key2': 'value'
+                    'key': 'val1',
+                    'key2': 'val2'
                 }
             }
         }
