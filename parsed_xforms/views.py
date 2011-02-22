@@ -238,26 +238,37 @@ class MyRenderer(object):
         self.navigation_items = []
     
     def nav(self, item):
-        if isinstance(item, list):
-            [self.nav(x) for x in item]
+        if isinstance(item, ViewNav):
+            self.navigation_items.append(item)
         else:
-            if isinstance(item, ViewNav):
-                self.navigation_items.append(item)
-            else:
-                self.navigation_items.append(ViewNav(*item))
+            self.navigation_items.append(ViewNav(*item))
+
+    def navs(self, items):
+        [self.nav(i) for i in items]
     
     def _info(self):
         self.info['navs'] = self.navigation_items
+        self.info['user'] = self.req.user
         return self.info
     
     def r(self):
         return render_to_response(self.template, self._info())
 
+from xform_manager.models import SurveyType
+from map_xforms.models import SurveyTypeMapData
+
 def survey_type_dashboard(request, survey_type):
+    survey_type = SurveyType.objects.get(slug=survey_type)
+    map_data = SurveyTypeMapData.objects.get(survey_type=survey_type)
     r = MyRenderer(request, "survey_type_dashboard.html")
-    r.nav([ViewNav("Site Map", "/xforms/"), ViewNav("Survey Types", "/xforms/surveys"), \
-                ViewNav("Water", "/xforms/surveys/water")])
+    r.navs([("Site Map", "/xforms/"), \
+            ("Survey Types", "/xforms/surveys"), \
+            ("Water", "/xforms/surveys/water")])
+    
+    r.info['survey_type'] = survey_type
+    r.info['survey_type_color'] = map_data.color
     return r.r()
+
 # import re
 # from django.utils import simplejson
 # from django.shortcuts import render_to_response
