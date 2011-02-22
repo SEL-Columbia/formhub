@@ -1,3 +1,16 @@
+The goal of this work is to provide a library for creating XForms for
+use with ODK Collect. To do this we've created an object oriented
+Python library with the following class structure:
+* SurveyElement
+  * Option
+  * Question
+    * InputQuestion
+    * UploadQuestion
+    * MultipleChoiceQuestion
+  * Section
+    * Survey
+I want an easy way to create all of these elements from json.
+
 json2xform requires lxml.
 
 > lxml is a Pythonic binding for the libxml2 and libxslt libraries. It

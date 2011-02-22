@@ -8,6 +8,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 from django.test import TestCase, Client
 from json2xform import *
 from json2xform.question import Question
+from json2xform.builder import create_survey_element_from_dict
 
 import json
 
@@ -31,11 +32,16 @@ class Json2XformQuestionValidationTests(TestCase):
         self.s = Survey(name="test")
     
     def test_question_type_string(self):
-        simple_string_json = {"text": {"French": "Nom du travailleur agricole:", \
-                    "English": "Name of Community Agricultural Worker"}, \
-                    "type": "text", "name": "enumerator_name"}
+        simple_string_json = {
+            "label": {
+                "French": "Nom du travailleur agricole:",
+                "English": "Name of Community Agricultural Worker"
+                },
+            "type": "text",
+            "name": "enumerator_name"
+            }
 
-        q = Question.create_from_dict(simple_string_json)
+        q = create_survey_element_from_dict(simple_string_json)
         
         expected_string_control_xml = """
         <input ref="/test/enumerator_name"><label ref="jr:itext('enumerator_name:label')"/></input>
@@ -45,7 +51,7 @@ class Json2XformQuestionValidationTests(TestCase):
         <bind nodeset="/test/enumerator_name" type="string" required="true()"/>
         """.strip()
         
-        self.s._add_element(q)
+        self.s.add_child(q)
         self.assertEqual(ctw(q.xml_control()), expected_string_control_xml)
         
         if TESTING_BINDINGS:
@@ -75,8 +81,8 @@ class Json2XformQuestionValidationTests(TestCase):
         <bind nodeset="/test/qname" type="select1" required="true()"/>
         """.strip()
         
-        q = Question.create_from_dict(simple_select_one_json)
-        self.s._add_element(q)
+        q = create_survey_element_from_dict(simple_select_one_json)
+        self.s.add_child(q)
         self.assertEqual(ctw(q.xml_control()), expected_select_one_control_xml)
         
         if TESTING_BINDINGS:
@@ -96,9 +102,9 @@ class Json2XformQuestionValidationTests(TestCase):
         <bind nodeset="/test/integer_q" type="int" required="true()"/>
         """.strip()
         
-        q = Question.create_from_dict(simple_integer_question)
+        q = create_survey_element_from_dict(simple_integer_question)
         
-        self.s._add_element(q)
+        self.s.add_child(q)
         
         self.assertEqual(ctw(q.xml_control()), expected_integer_control_xml)
         
@@ -120,8 +126,8 @@ class Json2XformQuestionValidationTests(TestCase):
         <bind nodeset="/test/date_q" type="date" required="true()"/>
         """.strip()
         
-        q = Question.create_from_dict(simple_date_question)
-        self.s._add_element(q)
+        q = create_survey_element_from_dict(simple_date_question)
+        self.s.add_child(q)
         self.assertEqual(ctw(q.xml_control()), expected_date_control_xml)
         
         if TESTING_BINDINGS:
@@ -145,8 +151,8 @@ class Json2XformQuestionValidationTests(TestCase):
         <bind required="true()" jr:constraintMsg="Please enter only numbers." nodeset="/test/phone_number_q" type="string" constraint="regex(., '^\d*$')"/>
         """.strip()
         
-        q = Question.create_from_dict(simple_phone_number_question)
-        self.s._add_element(q)
+        q = create_survey_element_from_dict(simple_phone_number_question)
+        self.s.add_child(q)
         self.assertEqual(ctw(q.xml_control()), expected_phone_number_control_xml)
         
         if TESTING_BINDINGS:
@@ -173,8 +179,8 @@ class Json2XformQuestionValidationTests(TestCase):
         <bind nodeset="/test/select_all_q" type="select" required="false()"/>
         """.strip()
         
-        q = Question.create_from_dict(simple_select_all_question)
-        self.s._add_element(q)
+        q = create_survey_element_from_dict(simple_select_all_question)
+        self.s.add_child(q)
         self.assertEqual(ctw(q.xml_control()), expected_select_all_control_xml)
         
         if TESTING_BINDINGS:
@@ -194,8 +200,8 @@ class Json2XformQuestionValidationTests(TestCase):
         <bind nodeset="/test/decimal_q" type="decimal" required="true()"/>
         """.strip()
         
-        q = Question.create_from_dict(simple_decimal_question)
-        self.s._add_element(q)
+        q = create_survey_element_from_dict(simple_decimal_question)
+        self.s.add_child(q)
         self.assertEqual(ctw(q.xml_control()), expected_decimal_control_xml)
         
         if TESTING_BINDINGS:

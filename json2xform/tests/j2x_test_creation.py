@@ -20,7 +20,7 @@ class Json2XformVerboseSurveyCreationTests(TestCase):
         q.set_name("cow_color")
         
         q._add_option(label="Green", value="green")
-        s._add_element(q)
+        s.add_child(q)
 
         expected_dict = {
             u'name': 'Simple Survey',
