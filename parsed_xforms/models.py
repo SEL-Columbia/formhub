@@ -23,6 +23,9 @@ DISTRICT_ID = u"_district_id"
 ATTACHMENTS = u"_attachments"
 DATE = u"_date"
 
+def categorize_from_xpath_structure(mongo_dict):
+    return mongo_dict
+
 class ParsedInstance(models.Model):
     # I should rename this model, maybe Survey
     instance = models.OneToOneField(Instance, related_name="parsed_instance")
@@ -106,7 +109,10 @@ class ParsedInstance(models.Model):
         raise utils.MyError(
             "This instance hasn't been parsed into Mongo"
             )
-
+    
+    def json_data(self):
+        return categorize_from_xpath_structure(self.get_from_mongo())
+    
     def save(self, *args, **kwargs):
         doc = self.instance.get_dict()
         self._set_phone(doc)
