@@ -20,7 +20,9 @@ class SurveyElementBuilder(object):
         }
 
     def _get_question_class(self, question_type_str):
-        if question_type_str not in Question.TYPES: return None
+        if question_type_str not in Question.TYPES:
+            print "Skipping unrecognized question type", question_type_str
+            return None
         question_type = Question.TYPES[question_type_str]
         control_dict = question_type[Question.CONTROL]
         control_tag = control_dict.get(u"tag", u"")
@@ -40,10 +42,10 @@ class SurveyElementBuilder(object):
         return None
 
     def _create_section_from_dict(self, d):
-        # this messes with the dictionary, might want to avoid this side effect
-        children = d.pop(Section.CHILDREN)
-        section_class = self.SECTION_CLASSES[d[Section.TYPE]]
-        result = section_class(**d)
+        kwargs = d.copy()
+        children = kwargs.pop(Section.CHILDREN)
+        section_class = self.SECTION_CLASSES[kwargs[Section.TYPE]]
+        result = section_class(**kwargs)
         for child in children:
             survey_element = self.create_survey_element_from_dict(child)
             if survey_element: result.add_child(survey_element)

@@ -13,7 +13,7 @@ class SurveyElement(object):
     # this node will also have a parent and children, like a tree!
     # these will not be stored in the dict.
     PARENT = u"parent"
-    CHILDREN = u"elements"
+    CHILDREN = u"children"
 
     _DEFAULT_VALUES = {
         NAME : u"",
@@ -30,7 +30,7 @@ class SurveyElement(object):
             self._dict[k] = kwargs.get(k, default_value)
         self._parent = kwargs.get(u"parent", None)
         self._children = []
-        for element in kwargs.get(u"elements", []):
+        for element in kwargs.get(u"children", []):
             self.add_child(element)
 
     def add_child(self, element):
@@ -64,10 +64,10 @@ class SurveyElement(object):
     def _set_parent(self, parent):
         self._parent = parent
 
-    def iter_elements(self):
+    def iter_children(self):
         yield self
         for e in self._children:
-            for f in e.iter_elements():
+            for f in e.iter_children():
                 yield f
         
     def get_lineage(self):
@@ -153,7 +153,7 @@ class SurveyElement(object):
         Return a list of bindings for this node and all its descendents.
         """
         result = []
-        for e in self.iter_elements():
+        for e in self.iter_children():
             xml_binding = e.xml_binding()
             if xml_binding!=None: result.append(xml_binding)
         return result
