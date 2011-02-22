@@ -7,7 +7,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 from django.test import TestCase, Client
 from json2xform import *
-from json2xform.question import create_question_from_dict
+from json2xform.question import Question
 
 import json
 
@@ -35,7 +35,7 @@ class Json2XformQuestionValidationTests(TestCase):
                     "English": "Name of Community Agricultural Worker"}, \
                     "type": "text", "name": "enumerator_name"}
 
-        q = create_question_from_dict(simple_string_json)
+        q = Question.create_from_dict(simple_string_json)
         
         expected_string_control_xml = """
         <input ref="/test/enumerator_name"><label ref="jr:itext('enumerator_name:label')"/></input>
@@ -55,22 +55,27 @@ class Json2XformQuestionValidationTests(TestCase):
         """
         Test the lowest common denominator of question types.
         """
-        simple_select_one_json = {"text": {"f": "ftext","e": "etext"},\
-                "type": "select one","name": "qname","choices": \
-                [{"text": {"f": "fa","e": "ea"},"value": "a"}, \
-                {"text": {"f": "fb","e": "eb"},"value": "b"}]}
+        simple_select_one_json = {
+            "label" : {"f": "ftext","e": "etext"},
+            "type" : "select one",
+            "name" : "qname",
+            "choices" : [
+                {"label": {"f": "fa","e": "ea"},"value": "a"},
+                {"label": {"f": "fb","e": "eb"},"value": "b"}
+                ]
+            }
         
         # I copied the response in, since this is not our method of testing
         # valid return values.
         expected_select_one_control_xml = """
-        <select1 ref="/test/qname"><label ref="jr:itext('qname:label')"/><hint ref="jr:itext('qname:hint')"/><item><label ref="jr:itext('a:label')"/><value>a</value></item><item><label ref="jr:itext('b:label')"/><value>b</value></item></select1>
+        <select1 ref="/test/qname"><label ref="jr:itext('qname:label')"/><item><label ref="jr:itext('a:label')"/><value>a</value></item><item><label ref="jr:itext('b:label')"/><value>b</value></item></select1>
         """.strip()
         
         expected_select_one_binding_xml = """
         <bind nodeset="/test/qname" type="select1" required="true()"/>
         """.strip()
         
-        q = create_question_from_dict(simple_select_one_json)
+        q = Question.create_from_dict(simple_select_one_json)
         self.s._add_element(q)
         self.assertEqual(ctw(q.xml_control()), expected_select_one_control_xml)
         
@@ -91,7 +96,7 @@ class Json2XformQuestionValidationTests(TestCase):
         <bind nodeset="/test/integer_q" type="int" required="true()"/>
         """.strip()
         
-        q = create_question_from_dict(simple_integer_question)
+        q = Question.create_from_dict(simple_integer_question)
         
         self.s._add_element(q)
         
@@ -115,7 +120,7 @@ class Json2XformQuestionValidationTests(TestCase):
         <bind nodeset="/test/date_q" type="date" required="true()"/>
         """.strip()
         
-        q = create_question_from_dict(simple_date_question)
+        q = Question.create_from_dict(simple_date_question)
         self.s._add_element(q)
         self.assertEqual(ctw(q.xml_control()), expected_date_control_xml)
         
@@ -126,17 +131,21 @@ class Json2XformQuestionValidationTests(TestCase):
         """
         not sure how phone number questions should show up.
         """
-        simple_phone_number_question = {"text": {"f": "fe", "e": "ee"}, "type": "phone number", "name": "phone_number_q", "attributes": {}}
+        simple_phone_number_question = {
+            "label": {"f": "fe", "e": "ee"},
+            "type": "phone number",
+            "name": "phone_number_q",
+            }
 
         expected_phone_number_control_xml = """
-        <input ref="/test/phone_number_q"><label ref="jr:itext('phone_number_q:label')"/><hint ref="jr:itext('phone_number_q:hint')"/></input>
+        <input ref="/test/phone_number_q"><label ref="jr:itext('phone_number_q:label')"/></input>
         """.strip()
 
-        expected_phone_number_binding_xml = """MAYBE WANT A CONSTRAINT MESSAGE
-        <bind nodeset="/test/phone_number_q" type="string" constraint="regex(., '^\d*$')"/>
+        expected_phone_number_binding_xml = """
+        <bind required="true()" jr:constraintMsg="Please enter only numbers." nodeset="/test/phone_number_q" type="string" constraint="regex(., '^\d*$')"/>
         """.strip()
         
-        q = create_question_from_dict(simple_phone_number_question)
+        q = Question.create_from_dict(simple_phone_number_question)
         self.s._add_element(q)
         self.assertEqual(ctw(q.xml_control()), expected_phone_number_control_xml)
         
@@ -147,15 +156,24 @@ class Json2XformQuestionValidationTests(TestCase):
         """
         not sure how select all questions should show up...
         """
-        simple_select_all_question = {"text": {"f": "f choisit", "e": "e choose"}, "attributes": {}, "type": "select all that apply", "name": "select_all_q", "choices": [{"text": {"f": "ff", "e": "ef"}, "value": "f"}, {"text": {"f": "fg", "e": "eg"}, "value": "g"}, {"text": {"f": "fh", "e": "eh"}, "value": "h"}]}
+        simple_select_all_question = {
+            "label": {"f": "f choisit", "e": "e choose"},
+            "type": "select all that apply",
+            "name": "select_all_q",
+            "choices": [
+                {"label": {"f": "ff", "e": "ef"}, "value": "f"},
+                {"label": {"f": "fg", "e": "eg"}, "value": "g"},
+                {"label": {"f": "fh", "e": "eh"}, "value": "h"}
+                ]
+            }
 
-        expected_select_all_control_xml = """<select ref="/test/select_all_q"><label ref="jr:itext('select_all_q:label')"/><hint ref="jr:itext('select_all_q:hint')"/><item><label ref="jr:itext('f:label')"/><value>f</value></item><item><label ref="jr:itext('g:label')"/><value>g</value></item><item><label ref="jr:itext('h:label')"/><value>h</value></item></select>"""
+        expected_select_all_control_xml = """<select ref="/test/select_all_q"><label ref="jr:itext('select_all_q:label')"/><item><label ref="jr:itext('f:label')"/><value>f</value></item><item><label ref="jr:itext('g:label')"/><value>g</value></item><item><label ref="jr:itext('h:label')"/><value>h</value></item></select>"""
         
         expected_select_all_binding_xml = """
         <bind nodeset="/test/select_all_q" type="select" required="false()"/>
         """.strip()
         
-        q = create_question_from_dict(simple_select_all_question)
+        q = Question.create_from_dict(simple_select_all_question)
         self.s._add_element(q)
         self.assertEqual(ctw(q.xml_control()), expected_select_all_control_xml)
         
@@ -176,7 +194,7 @@ class Json2XformQuestionValidationTests(TestCase):
         <bind nodeset="/test/decimal_q" type="decimal" required="true()"/>
         """.strip()
         
-        q = create_question_from_dict(simple_decimal_question)
+        q = Question.create_from_dict(simple_decimal_question)
         self.s._add_element(q)
         self.assertEqual(ctw(q.xml_control()), expected_decimal_control_xml)
         

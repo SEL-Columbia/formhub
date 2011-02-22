@@ -11,6 +11,7 @@ import codecs
 # the following are the three sheet names that this program expects
 SURVEY_SHEET = u"survey"
 CHOICES_SHEET = u"choices"
+COLUMNS_SHEET = u"columns"
 TYPES_SHEET = u"question types"
 
 CHOICE_LIST_NAME = u"list name"
@@ -22,18 +23,24 @@ CHOICES = u"choices"
 class ExcelReader(object):
     def __init__(self, path):
         self._path = path
+        name_match = re.search(r"(?P<name>[^/]+)\.xls$", path)
+        self._name = name_match.groupdict()["name"]
         self._dict = None
         self._setup()
         sheet_names = self._dict.keys()
-        if len(sheet_names)==2 and SURVEY_SHEET in sheet_names and CHOICES_SHEET in sheet_names:
+        if SURVEY_SHEET in sheet_names:
             self._fix_int_values()
             self._group_dictionaries()
-            self._construct_choice_lists()
             self._process_question_type()
-            self._insert_choice_lists()
-        if sheet_names==[TYPES_SHEET]:
+            if CHOICES_SHEET in sheet_names:
+                self._construct_choice_lists()
+                self._insert_choice_lists()
+            self._dict = self._dict[SURVEY_SHEET]
+            self._organize_sections()
+        elif sheet_names==[TYPES_SHEET]:
             self._group_dictionaries()
             self._dict = self._dict[TYPES_SHEET]
+            self._organize_by_type_name()
 
     def to_dict(self):
         return self._dict
@@ -123,10 +130,11 @@ class ExcelReader(object):
         let's make it a requirement that list-names have no spaces
         """
         for q in self._dict[SURVEY_SHEET]:
+            if TYPE not in q: raise Exception("Did not specify question type", q)
             question_type = q[TYPE]
             question_type.strip()
             re.sub(r"\s+", " ", question_type)
-            if question_type.startswith("select"):
+            if question_type.startswith(u"select"):
                 m = re.search(r"^(?P<select_command>select one|select all that apply) from (?P<list_name>\S+)( (?P<specify_other>or specify other))?$", question_type)
                 assert m, "unsupported select syntax:" + question_type
                 assert CHOICES not in q
@@ -147,7 +155,33 @@ class ExcelReader(object):
         for q in self._dict[SURVEY_SHEET]:
             if CHOICES in q:
                 q[CHOICES] = self._dict[CHOICES][q[CHOICES]]
-        self._dict = self._dict[SURVEY_SHEET]
+
+    def _organize_sections(self):
+        # this needs to happen after columns have been inserted
+        result = {u"type" : u"survey", u"name" : self._name, u"elements" : []}
+        stack = [result]
+        for cmd in self._dict:
+            cmd_type = cmd[u"type"]
+            match_begin = re.match(r"begin (?P<type>group|repeat|table)", cmd_type)
+            match_end = re.match(r"end (?P<type>group|repeat|table)", cmd_type)
+            if match_begin:
+                # start a new section
+                cmd[u"type"] = match_begin.group(1)
+                cmd[u"elements"] = []
+                stack[-1][u"elements"].append(cmd)
+                stack.append(cmd)
+            elif match_end:
+                begin_cmd = stack.pop()
+                assert begin_cmd[u"type"] == match_end.group(1)
+            else:
+                stack[-1][u"elements"].append(cmd)
+        self._dict = result
+
+    def _organize_by_type_name(self):
+        result = {}
+        for question_type in self._dict:
+            result[question_type.pop(u"name")] = question_type
+        self._dict = result
 
 if __name__=="__main__":
     # Open the excel file that is the second argument to this python
@@ -155,5 +189,5 @@ if __name__=="__main__":
     path = sys.argv[1]
     assert path[-4:]==".xls"
     converter = ExcelReader(path)
-    converter.print_json_to_file()
-    # print json.dumps(converter.to_dict(), ensure_ascii=False, indent=4)
+    # converter.print_json_to_file()
+    print json.dumps(converter.to_dict(), ensure_ascii=False, indent=4)

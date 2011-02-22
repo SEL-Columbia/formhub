@@ -1,12 +1,42 @@
 import os
-
 from utils import node, SEP, CHOICE_PREFIX
-from xls2json import ExcelReader
 from survey_element import SurveyElement
+from xls2json import ExcelReader
 
 
 class Question(SurveyElement):
-    pass
+    # this is a dictionary of all the question types we will use in creating XForms.
+    _path_to_this_file = os.path.abspath(__file__)
+    _path_to_this_dir = os.path.dirname(_path_to_this_file)
+    _path_to_question_types = os.path.join(_path_to_this_dir, "question_types.xls")
+    _excel_reader = ExcelReader(_path_to_question_types)
+    TYPES = _excel_reader.to_dict()
+
+    @classmethod
+    def _get_question_class(cls, question_type_str):
+        question_type = Question.TYPES[question_type_str]
+        control_dict = question_type[u"control"]
+        control_tag = control_dict.get(u"tag", u"")
+        return cls.CLASSES[control_tag]
+
+    @classmethod
+    def create_from_dict(cls, d):
+        question_type_str = d[u"type"]
+        if question_type_str.endswith(u" or specify other"):
+            question_type_str = question_type_str[:len(question_type_str)-len(u" or specify other")]
+        question_class = cls._get_question_class(question_type_str)
+        return question_class(**d)
+
+    def get_bind_dict(self):
+        """
+        Overlay this questions binding attributes on type of the
+        attributes from this question type.
+        """
+        question_type_dict = self.TYPES[ self.get_type() ]
+        question_type_bind_dict = question_type_dict[self.BIND]
+        result = question_type_bind_dict.copy()
+        result.update( SurveyElement.get_bind_dict(self) )
+        return result
 
 
 class InputQuestion(Question):
@@ -32,16 +62,25 @@ class UploadQuestion(Question):
 
 
 class Option(SurveyElement):
+    VALUE = u"value"
+
     def __init__(self, *args, **kwargs):
         """
         This is a little hack here, I'm going to use an option's value
         as its name.
         """
-        self._value = kwargs[u"value"]
-        SurveyElement.__init__(self, name=self._value, text=kwargs[u"text"])
+        d = {
+            self.LABEL : kwargs[self.LABEL],
+            self.NAME : kwargs[self.VALUE],
+            }
+        SurveyElement.__init__(self, **d)
+        self._dict[self.VALUE] = kwargs[self.VALUE]
+
+    def get_value(self):
+        return self._dict[self.VALUE]
     
     def xml_value(self):
-        return node(u"value", self._value)
+        return node(u"value", self.get_value())
 
     def xml(self):
         item = node(u"item")
@@ -71,59 +110,15 @@ class MultipleChoiceQuestion(Question):
             )
         for n in self.xml_label_and_hint():
             result.append(n)
-        for n in [o.xml() for o in self._elements]:
+        for n in [o.xml() for o in self._children]:
             result.append(n)                
-        return result        
+        return result
 
-
-# this is a list of all the question types we will use in creating XForms.
-file_path = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)),
-    "question_types.xls"
-    )
-question_types = ExcelReader(file_path).to_dict()
-
-question_types_by_name = {}
-for question_type in question_types:
-    question_types_by_name[question_type.pop(u"name")] = question_type
-
-question_classes = {
-    "" : Question,
-    "input" : InputQuestion,
-    "select" : MultipleChoiceQuestion,
-    "select1" : MultipleChoiceQuestion,
-    "upload" : UploadQuestion,
+# we use this CLASSES dict to create questions from dictionaries
+Question.CLASSES = {
+    u"" : Question,
+    u"input" : InputQuestion,
+    u"select" : MultipleChoiceQuestion,
+    u"select1" : MultipleChoiceQuestion,
+    u"upload" : UploadQuestion,
     }
-
-def create_question_from_dict(d):
-    q_type_str = d.pop("type")
-    if q_type_str.endswith(" or specify other"):
-        q_type_str = q_type_str[:len(q_type_str)-len(" or specify other")]
-    question_type = question_types_by_name[q_type_str]
-    question_class = question_classes[ question_type["control"].get("tag", "") ]
-    d[u'type'] = q_type_str
-    
-    #this is because of a python2.6 issue w unicode strings as keys.
-    new_dict={}
-    for key in d: new_dict[str(key)] = d[key]
-    result = question_class(**new_dict)
-    
-    result.set_attributes(question_type)
-    return result
-
-
-# we will need to write a helper function to create tables of questions
-# i'm thinking the excel syntax will look something like:
-# begin table with columns from ...
-# row1
-# row2 ...
-# end table
-def table(rows, columns):
-    result = []
-    for row_text, row_name in tuples(rows):
-        for d in columns:
-            kwargs = d.copy()
-            kwargs["text"] = row_text + u": " + kwargs["text"]
-            kwargs["name"] = row_name + u" " + kwargs.get("name", sluggify(kwargs["text"]))
-            result.append(q(**kwargs))
-    return result
