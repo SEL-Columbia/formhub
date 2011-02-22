@@ -12,21 +12,6 @@ class Question(SurveyElement):
     _excel_reader = ExcelReader(_path_to_question_types)
     TYPES = _excel_reader.to_dict()
 
-    @classmethod
-    def _get_question_class(cls, question_type_str):
-        question_type = Question.TYPES[question_type_str]
-        control_dict = question_type[u"control"]
-        control_tag = control_dict.get(u"tag", u"")
-        return cls.CLASSES[control_tag]
-
-    @classmethod
-    def create_from_dict(cls, d):
-        question_type_str = d[u"type"]
-        if question_type_str.endswith(u" or specify other"):
-            question_type_str = question_type_str[:len(question_type_str)-len(u" or specify other")]
-        question_class = cls._get_question_class(question_type_str)
-        return question_class(**d)
-
     def get_bind_dict(self):
         """
         Overlay this questions binding attributes on type of the
@@ -100,7 +85,7 @@ class MultipleChoiceQuestion(Question):
         
     def _add_option(self, **kwargs):
         option = Option(**kwargs)
-        self._add_element(option)
+        self.add_child(option)
 
     def xml_control(self):
         assert self.get_bind_dict()[u"type"] in [u"select", u"select1"]
@@ -113,12 +98,3 @@ class MultipleChoiceQuestion(Question):
         for n in [o.xml() for o in self._children]:
             result.append(n)                
         return result
-
-# we use this CLASSES dict to create questions from dictionaries
-Question.CLASSES = {
-    u"" : Question,
-    u"input" : InputQuestion,
-    u"select" : MultipleChoiceQuestion,
-    u"select1" : MultipleChoiceQuestion,
-    u"upload" : UploadQuestion,
-    }

@@ -31,9 +31,9 @@ class SurveyElement(object):
         self._parent = kwargs.get(u"parent", None)
         self._children = []
         for element in kwargs.get(u"elements", []):
-            self._add_element(element)
+            self.add_child(element)
 
-    def _add_element(self, element):
+    def add_child(self, element):
         element._set_parent(self)
         self._children.append(element)
 

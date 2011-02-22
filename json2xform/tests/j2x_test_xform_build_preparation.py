@@ -21,8 +21,8 @@ class Json2XformExportingPrepTests(TestCase):
         second_yesno_question = MultipleChoiceQuestion(name="yn_q2", options=yes_or_no_dict_array)
         
         s = Survey(name="Yes Or No Tests")
-        s._add_element(first_yesno_question)
-        s._add_element(second_yesno_question)
+        s.add_child(first_yesno_question)
+        s.add_child(second_yesno_question)
         
         #begin the processes in survey.to_xml()
         # 1. validate()
