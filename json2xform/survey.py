@@ -44,7 +44,7 @@ class Survey(Section):
                 ]:
                 for lang in text.keys():
                     if translation_key in self._translations[lang]:
-                        assert self._translations[lang][translation_key] == text[lang], text
+                        assert self._translations[lang][translation_key] == text[lang], translation_key
                     else:
                         self._translations[lang][translation_key] = text[lang]
 
@@ -100,3 +100,9 @@ class Survey(Section):
         """
         bracketed_tag = r"\$\{(" + XFORM_TAG_REGEXP + r")\}"
         return re.sub(bracketed_tag, self._var_repl_function(), text)
+
+    def print_xform_to_file(self, filename=""):
+        if not filename: filename = self.id_string() + ".xml"
+        fp = codecs.open(filename, mode="w", encoding="utf-8")
+        fp.write(self.to_xml())
+        fp.close()

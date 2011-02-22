@@ -23,6 +23,17 @@ class Question(SurveyElement):
         result.update( SurveyElement.get_bind_dict(self) )
         return result
 
+    def get_control_dict(self):
+        """
+        Overlay this questions binding attributes on type of the
+        attributes from this question type.
+        """
+        question_type_dict = self.TYPES[ self.get_type() ]
+        question_type_control_dict = question_type_dict[self.CONTROL]
+        result = question_type_control_dict.copy()
+        result.update( SurveyElement.get_control_dict(self) )
+        return result
+
 
 class InputQuestion(Question):
     """
