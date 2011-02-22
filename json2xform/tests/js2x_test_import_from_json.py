@@ -12,9 +12,9 @@ import json
 
 class Json2XformTestJsonImport(TestCase):
     def test_simple_questions_can_be_imported_from_json(self):
-        json_text = '[{"text": {"French": "Combien?","English": "How many?" },"type": "decimal","name": "exchange_rate","attributes": {} }]'
+        json_text = '[{"text": {"French": "Combien?","English": "How many?" },"type": "decimal","name": "exchange_rate"}]'
         s = Survey(name="Exchange rate")
         s.load_elements_from_json(json_text)
         
-        self.assertEqual(s._elements[0]._type, "decimal")
+        self.assertEqual(s._children[0].get_type(), "decimal")
 		

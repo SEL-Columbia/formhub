@@ -28,16 +28,19 @@ class ExcelReader(object):
         self._dict = None
         self._setup()
         sheet_names = self._dict.keys()
-        if len(sheet_names)==3 and SURVEY_SHEET in sheet_names and CHOICES_SHEET in sheet_names and COLUMNS_SHEET in sheet_names:
+        if SURVEY_SHEET in sheet_names:
             self._fix_int_values()
             self._group_dictionaries()
-            self._construct_choice_lists()
             self._process_question_type()
-            self._insert_choice_lists()
+            if CHOICES_SHEET in sheet_names:
+                self._construct_choice_lists()
+                self._insert_choice_lists()
+            self._dict = self._dict[SURVEY_SHEET]
             self._organize_sections()
-        if sheet_names==[TYPES_SHEET]:
+        elif sheet_names==[TYPES_SHEET]:
             self._group_dictionaries()
             self._dict = self._dict[TYPES_SHEET]
+            self._organize_by_type_name()
 
     def to_dict(self):
         return self._dict
@@ -131,7 +134,7 @@ class ExcelReader(object):
             question_type = q[TYPE]
             question_type.strip()
             re.sub(r"\s+", " ", question_type)
-            if question_type.startswith("select"):
+            if question_type.startswith(u"select"):
                 m = re.search(r"^(?P<select_command>select one|select all that apply) from (?P<list_name>\S+)( (?P<specify_other>or specify other))?$", question_type)
                 assert m, "unsupported select syntax:" + question_type
                 assert CHOICES not in q
@@ -152,11 +155,10 @@ class ExcelReader(object):
         for q in self._dict[SURVEY_SHEET]:
             if CHOICES in q:
                 q[CHOICES] = self._dict[CHOICES][q[CHOICES]]
-        self._dict = self._dict[SURVEY_SHEET]
 
     def _organize_sections(self):
         # this needs to happen after columns have been inserted
-        result = {"type" : "survey", "name" : self._name, "elements" : []}
+        result = {u"type" : u"survey", u"name" : self._name, u"elements" : []}
         stack = [result]
         for cmd in self._dict:
             cmd_type = cmd[u"type"]
@@ -164,15 +166,21 @@ class ExcelReader(object):
             match_end = re.match(r"end (?P<type>group|repeat|table)", cmd_type)
             if match_begin:
                 # start a new section
-                cmd["type"] = match_begin.group(1)
-                cmd["elements"] = []
-                stack[-1]["elements"].append(cmd)
+                cmd[u"type"] = match_begin.group(1)
+                cmd[u"elements"] = []
+                stack[-1][u"elements"].append(cmd)
                 stack.append(cmd)
             elif match_end:
                 begin_cmd = stack.pop()
-                assert begin_cmd["type"] == match_end.group(1)
+                assert begin_cmd[u"type"] == match_end.group(1)
             else:
-                stack[-1]["elements"].append(cmd)
+                stack[-1][u"elements"].append(cmd)
+        self._dict = result
+
+    def _organize_by_type_name(self):
+        result = {}
+        for question_type in self._dict:
+            result[question_type.pop(u"name")] = question_type
         self._dict = result
 
 if __name__=="__main__":

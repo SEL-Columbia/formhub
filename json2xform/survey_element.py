@@ -2,42 +2,71 @@ from utils import is_valid_xml_tag, node, ns
 from collections import defaultdict
 
 class SurveyElement(object):
+    # the following are important keys for the underlying dict that
+    # describes this survey element
+    NAME = u"name"
+    LABEL = u"label"
+    HINT = u"hint"
+    TYPE = u"type"
+    BIND = u"bind"
+    CONTROL = u"control"
+    # this node will also have a parent and children, like a tree!
+    # these will not be stored in the dict.
+    PARENT = u"parent"
+    CHILDREN = u"elements"
+
+    _DEFAULT_VALUES = {
+        NAME : u"",
+        LABEL : {},
+        HINT : {},
+        TYPE : u"",
+        BIND : {},
+        CONTROL : {},
+        }
+
     def __init__(self, *args, **kwargs):
-        self._name = kwargs.get(u"name", u"")
-        self._text = kwargs.get(u"text", {})
-        self._type = kwargs.get(u"type", u"")
-        self._attributes = defaultdict(dict)
-        self.set_attributes(kwargs.get(u"attributes", {}))
+        self._dict = defaultdict(dict)
+        for k, default_value in self._DEFAULT_VALUES.items():
+            self._dict[k] = kwargs.get(k, default_value)
         self._parent = kwargs.get(u"parent", None)
-        self._elements = []
+        self._children = []
         for element in kwargs.get(u"elements", []):
             self._add_element(element)
 
     def _add_element(self, element):
         element._set_parent(self)
-        self._elements.append(element)
+        self._children.append(element)
+
+    def get_name(self):
+        return self._dict[self.NAME]
+
+    def set_name(self, name):
+        self._dict[self.NAME] = name
+
+    def get_type(self):
+        return self._dict[self.TYPE]
     
     def get_control_dict(self):
-        return self._attributes[u"control"]
+        return self._dict[self.CONTROL]
 
     def get_bind_dict(self):
-        return self._attributes[u"bind"]
+        return self._dict[self.BIND]
 
     def get_label_dict(self):
-        return self._text
+        return self._dict[self.LABEL]
 
     def get_hint_dict(self):
-        return self._attributes[u"hint"]
+        return self._dict[self.HINT]
 
     def validate(self):
-        assert is_valid_xml_tag(self._name)
+        assert is_valid_xml_tag(self._dict[self.NAME])
     
     def _set_parent(self, parent):
         self._parent = parent
 
     def iter_elements(self):
         yield self
-        for e in self._elements:
+        for e in self._children:
             for f in e.iter_elements():
                 yield f
         
@@ -59,17 +88,13 @@ class SurveyElement(object):
         """
         Return the xpath of this survey element.
         """
-        return u"/".join([u""] + [n._name for n in self.get_lineage()])
+        return u"/".join([u""] + [n.get_name() for n in self.get_lineage()])
 
     def to_dict(self):
         self.validate()
-        result = {
-            u"name" : self._name,
-            u"text" : self._text,
-            u"type" : self._type,
-            u"attributes" : self._attributes,
-            u"children" : [e.to_dict() for e in self._elements]
-            }
+        result = dict([(k, v) for k, v in self._dict.items()])
+        assert u"children" not in result
+        result[u"children"] = [e.to_dict() for e in self._children]
         # remove any keys with empty values
         for k, v in result.items():
             if not v: del result[k]
@@ -85,8 +110,8 @@ class SurveyElement(object):
     def get_translation_keys(self):
         # we could base this off of the xpath instead of just the name
         return {
-            u"label" : u"%s:label" % self._name,
-            u"hint" : u"%s:hint" % self._name,
+            u"label" : u"%s:label" % self.get_name(),
+            u"hint" : u"%s:hint" % self.get_name(),
             }
 
     # XML generating functions, these probably need to be moved around.
@@ -104,7 +129,7 @@ class SurveyElement(object):
         return [self.xml_label()]
 
     def instance(self):
-        return node(self._name)
+        return node(self.get_name())
     
     def xml_binding(self):
         """

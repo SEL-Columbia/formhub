@@ -14,12 +14,12 @@ class Json2XformVerboseSurveyCreationTests(TestCase):
     
     def test_survey_can_be_created_in_a_verbose_manner(self):
         s = Survey()
-        s._name = "Simple Survey"
+        s.set_name("Simple Survey")
         
         q = MultipleChoiceQuestion()
-        q._name = "cow_color"
+        q.set_name("cow_color")
         
-        q._add_option(text="Green", value="green")
+        q._add_option(label="Green", value="green")
         s._add_element(q)
 
         expected_dict = {
@@ -29,8 +29,9 @@ class Json2XformVerboseSurveyCreationTests(TestCase):
                     u'name': 'cow_color',
                     u'children': [
                         {
-                            u'text': 'Green',
-                            u'name': 'green'
+                            u'label': 'Green',
+                            u'name': 'green',
+                            u'value': 'green'
                             }
                         ],
                     }
@@ -41,8 +42,8 @@ class Json2XformVerboseSurveyCreationTests(TestCase):
     
     def test_survey_can_be_created_in_a_slightly_less_verbose_manner(self):
         option_dict_array = [
-            {'value': 'red', 'text':'Red'},
-            {'value': 'blue', 'text': 'Blue'}
+            {'value': 'red', 'label':'Red'},
+            {'value': 'blue', 'label': 'Blue'}
             ]
         
         q = MultipleChoiceQuestion(name="Favorite_Color", choices=option_dict_array)
@@ -54,8 +55,8 @@ class Json2XformVerboseSurveyCreationTests(TestCase):
                 {
                     u'name': 'Favorite_Color',
                     u'children': [
-                        {u'text': 'Red', u'name': 'red'},
-                        {u'text': 'Blue', u'name': 'blue'}
+                        {u'label': 'Red', u'name': 'red', u'value': 'red'},
+                        {u'label': 'Blue', u'name': 'blue', u'value': 'blue'}
                         ],
                     }
                 ],
@@ -65,8 +66,8 @@ class Json2XformVerboseSurveyCreationTests(TestCase):
     
     def test_two_options_cannot_have_the_same_value(self):
         q = MultipleChoiceQuestion(name="Favorite Color")
-        q._add_option(value="grey", text="Gray")
-        q._add_option(value="grey", text="Grey")
+        q._add_option(value="grey", label="Gray")
+        q._add_option(value="grey", label="Grey")
         self.assertRaises(Exception, q, 'validate')
     
     def test_one_section_cannot_have_two_conflicting_slugs(self):
