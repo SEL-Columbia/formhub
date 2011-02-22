@@ -200,9 +200,15 @@ from submission_qr.views import score_partial
 
 import json
 
+def json_safe(val):
+    return {'text': str(val), 'status': 'good'}
+
 def survey(request, pk):
     instance = ParsedInstance.objects.get(pk=pk)
-    data = instance.get_from_mongo()
+    mongo_data = instance.get_from_mongo()
+    data = {}
+    for key in data.keys():
+        data[key] = json_safe(mongo_data[key])
     
     info = {"instance" : instance, \
        'data': json.dumps(data), \
