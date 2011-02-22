@@ -20,17 +20,24 @@ class SurveyElementBuilder(object):
         }
 
     def _get_question_class(self, question_type_str):
+        if question_type_str not in Question.TYPES: return None
         question_type = Question.TYPES[question_type_str]
         control_dict = question_type[Question.CONTROL]
         control_tag = control_dict.get(u"tag", u"")
         return self.QUESTION_CLASSES[control_tag]
 
     def _create_question_from_dict(self, d):
+        """
+        This function returns None for unrecognized types.
+        """
         question_type_str = d[Question.TYPE]
+        # hack job right here to get this to work
         if question_type_str.endswith(u" or specify other"):
             question_type_str = question_type_str[:len(question_type_str)-len(u" or specify other")]
+            d[Question.TYPE] = question_type_str
         question_class = self._get_question_class(question_type_str)
-        return question_class(**d)
+        if question_class: return question_class(**d)
+        return None
 
     def _create_section_from_dict(self, d):
         # this messes with the dictionary, might want to avoid this side effect
@@ -39,7 +46,7 @@ class SurveyElementBuilder(object):
         result = section_class(**d)
         for child in children:
             survey_element = self.create_survey_element_from_dict(child)
-            result.add_child(survey_element)
+            if survey_element: result.add_child(survey_element)
         return result
 
     def create_survey_element_from_dict(self, d):

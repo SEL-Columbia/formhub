@@ -1,7 +1,6 @@
 # http://stackoverflow.com/questions/4126165/problem-downloading-google-spreadsheet-using-curl
 import os, sys
-from xls2json import ExcelReader
-from survey import Survey
+from xls2xform import xls2xform
 
 # in google docs, these spreadsheets have been published as web pages,
 # this way we can download the corresponding xls without sending a
@@ -21,11 +20,10 @@ def download(name):
         }
     os.system(cmd)
 
+def google2xform(name):
+    download(name)
+    xls2xform(name)
+
 if __name__=="__main__":
     name = sys.argv[1]
-    download(name)
-    converter = ExcelReader("%s.xls" % name)
-    converter.print_json_to_file()
-    s = Survey(name=name)
-    s.load_elements_from_json("%s.json" % name)
-    print s.to_xml()
+    google2xform(name)
