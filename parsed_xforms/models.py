@@ -23,8 +23,28 @@ DISTRICT_ID = u"_district_id"
 ATTACHMENTS = u"_attachments"
 DATE = u"_date"
 
+def create_structure_from_list_of_paths(result_dict, path_list):
+    """
+    Ohh yeahhh. http://www.youtube.com/watch?v=2iE4uEsaBF0
+    """
+    pointer = result_dict
+    key_index = len(path_list)-2
+    for i, p in enumerate(path_list):
+        if p not in pointer:
+            if i < key_index:
+                pointer[p] = {}
+            elif i==key_index:
+                pointer[p] = path_list[key_index+1]
+        if i < key_index:
+            pointer = pointer[p]
+
 def categorize_from_xpath_structure(mongo_dict):
-    return mongo_dict
+    result = {}
+    for key in mongo_dict.keys():
+        _vals = key.split('/')
+        _vals.append(mongo_dict[key])
+        create_structure_from_list_of_paths(result, _vals)
+    return result
 
 class ParsedInstance(models.Model):
     # I should rename this model, maybe Survey
