@@ -19,36 +19,6 @@
 	<link rel="stylesheet" href="/site-media/css/generated-donotedit.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
 	<link rel="stylesheet" href="/site-media/jquery-ui/jquery-ui-1.8.7.custom.css" type="text/css" media="screen" title="Sitewide" charset="utf-8" />
 	{% block scripts %}{% endblock %}
-	<style type="text/css" media="screen">
-		table.fullw {
-			width: 100%;
-		}
-		.table-spacer {
-			height: 16px;
-			width:1px;
-			border-left: 1px dotted #888;
-		}
-		#content .fwidth .nav {
-			margin: 3px 0 1px;
-			background-color: rgba(255,255,255,0.5);
-			border: 1px solid #ccc;
-			padding: 5px 12px;
-		}
-		#content .fwidth .nav a.nav-button {
-			background-color: #fff;
-			border: 1px solid #ccc;
-			text-decoration: none;
-			color: #555;
-			padding: 1px 6px;
-		}
-		#content .fwidth .nav a.nav-button:hover {
-			color: #000;
-		}
-		#content .fwidth .nav .raquo {
-			color: #555;
-		}
-		#content .fwidth .nav .raquo:last-child {display: none;}
-	</style>
 </head>
 <body class="nmis">
 	<div id="header">
@@ -92,6 +62,16 @@
 			})
 		}
 	</script>
+	{% if display_footer %}
+	<div id="footer">
+		<div class="fwidth">
+			<div id="footer">
+				{% include 'footer.html' %}
+				<br class="cb" />
+			</div>
+		</div>
+	</div>
+	{% endif %}
 	{% block footer %}{% endblock %}
 </body>
 </html>
