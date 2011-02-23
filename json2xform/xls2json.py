@@ -158,7 +158,7 @@ class ExcelReader(object):
 
     def _organize_sections(self):
         # this needs to happen after columns have been inserted
-        result = {u"type" : u"survey", u"name" : self._name, u"elements" : []}
+        result = {u"type" : u"survey", u"name" : self._name, u"children" : []}
         stack = [result]
         for cmd in self._dict:
             cmd_type = cmd[u"type"]
@@ -167,14 +167,14 @@ class ExcelReader(object):
             if match_begin:
                 # start a new section
                 cmd[u"type"] = match_begin.group(1)
-                cmd[u"elements"] = []
-                stack[-1][u"elements"].append(cmd)
+                cmd[u"children"] = []
+                stack[-1][u"children"].append(cmd)
                 stack.append(cmd)
             elif match_end:
                 begin_cmd = stack.pop()
                 assert begin_cmd[u"type"] == match_end.group(1)
             else:
-                stack[-1][u"elements"].append(cmd)
+                stack[-1][u"children"].append(cmd)
         self._dict = result
 
     def _organize_by_type_name(self):

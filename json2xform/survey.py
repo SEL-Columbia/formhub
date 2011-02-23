@@ -36,7 +36,7 @@ class Survey(Section):
 
     def _setup_translations(self):
         self._translations = defaultdict(dict)
-        for e in self.iter_elements():
+        for e in self.iter_children():
             translation_keys = e.get_translation_keys()
             for translation_key, text in [
                 (translation_keys[u"label"], e.get_label_dict()),
@@ -81,7 +81,7 @@ class Survey(Section):
         return "<survey name='%s' element_count='%s'>" % (self.get_name(), len(self._children))
     
     def _setup_xpath_dictionary(self):
-        for element in self.iter_elements():
+        for element in self.iter_children():
             if isinstance(element, Question) or isinstance(element, Section):
                 if element.get_name() in self._xpath:
                     raise Exception("Survey element names must be unique", element.get_name())

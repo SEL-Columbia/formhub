@@ -47,7 +47,7 @@ class Json2XformVerboseSurveyCreationTests(TestCase):
             ]
         
         q = MultipleChoiceQuestion(name="Favorite_Color", choices=option_dict_array)
-        s = Survey(name="Roses are Red", elements=[q])
+        s = Survey(name="Roses are Red", children=[q])
 
         expected_dict = {
             u'name': 'Roses are Red',
@@ -73,5 +73,5 @@ class Json2XformVerboseSurveyCreationTests(TestCase):
     def test_one_section_cannot_have_two_conflicting_slugs(self):
         q1 = InputQuestion(name="YourName")
         q2 = InputQuestion(name="YourName")
-        s = Survey(name="Roses are Red", elements=[q1, q2])
+        s = Survey(name="Roses are Red", children=[q1, q2])
         self.assertRaises(Exception, s, 'validate')

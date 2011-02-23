@@ -48,25 +48,25 @@ def get_pyobj_from_json(str_or_path):
     return doc
 
 # def apply(function, survey):
-#     l = len(survey.elements)
+#     l = len(survey.children)
 #     function(survey)
-#     if len(survey.elements) > l:
+#     if len(survey.children) > l:
 #         apply(function, survey)
 
 # def add_one_specify(survey):
-#     for i in range(len(survey.elements)):
-#         question = survey.elements[i]
+#     for i in range(len(survey.children)):
+#         question = survey.children[i]
 #         if question.type in ["select one", "select all that apply"]:
-#             if "other" in [choice[1] for choice in question.choices] and survey.elements[i+1].text!="Please specify":
+#             if "other" in [choice[1] for choice in question.choices] and survey.children[i+1].text!="Please specify":
 #                 d = {"name" : question.name + " other",
 #                      "text" : "Please specify",
 #                      "type" : "string",
 #                      "relevant" : "selected([%s], 'other')" % question.name}
 #                 new_question = Question(**d)
-#                 new_list = survey.elements[0:i+1]
+#                 new_list = survey.children[0:i+1]
 #                 new_list.append(new_question)
-#                 new_list.extend(survey.elements[i+1:len(survey.elements)])
-#                 survey.elements = new_list
+#                 new_list.extend(survey.children[i+1:len(survey.children)])
+#                 survey.children = new_list
 #                 return
 
 # def main(path):

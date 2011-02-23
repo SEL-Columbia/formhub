@@ -15,7 +15,7 @@ class Json2XformTestJsonImport(TestCase):
         json_text = {
             "type" : "survey",
             "name" : "Exchange rate",
-            "elements" : [
+            "children" : [
                 {
                     "label": {"French": "Combien?","English": "How many?" },
                     "type": "decimal",
