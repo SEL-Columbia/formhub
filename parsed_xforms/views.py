@@ -205,10 +205,10 @@ def json_safe(val):
 
 def survey(request, pk):
     instance = ParsedInstance.objects.get(pk=pk)
-    mongo_data = instance.get_from_mongo()
-    data = {}
-    for key in data.keys():
-        data[key] = json_safe(mongo_data[key])
+    print instance.get_from_mongo()
+    mongo_data = instance.json_data()
+    print mongo_data
+    data = json_safe(mongo_data)
     
     info = {"instance" : instance, \
        'data': json.dumps(data), \
@@ -262,20 +262,38 @@ class MyRenderer(object):
     def r(self):
         return render_to_response(self.template, self._info())
 
+from surveyor_manager.models import Surveyor
+
+def surveyors(request, surveyor_id=None):
+    r = MyRenderer(request, "survey_type_list.html")
+    r.navs([("XForms Overview", "/xforms/"), \
+            ("Surveyors", "/xforms/surveyors")])
+    if surveyor_id is not None:
+        r.info['surveyor'] = Surveyor.objects.get(id=surveyor_id)
+        r.template = "surveyor_profile.html"
+    else:
+        r.info['surveyors'] = Surveyor.objects.all()
+        r.template = "surveyors_list.html"
+    return r.r()
+
 from xform_manager.models import SurveyType
 from map_xforms.models import SurveyTypeMapData
 
-def survey_type_dashboard(request, survey_type):
-    survey_type = SurveyType.objects.get(slug=survey_type)
-    map_data = SurveyTypeMapData.objects.get(survey_type=survey_type)
-    r = MyRenderer(request, "survey_type_dashboard.html")
-    r.navs([("Site Map", "/xforms/"), \
-            ("Survey Types", "/xforms/surveys"), \
-            ("Water", "/xforms/surveys/water")])
-    
-    r.info['survey_type'] = survey_type
-    r.info['survey_type_color'] = map_data.color
+def survey_types(request, survey_type_slug=None):
+    r = MyRenderer(request, "survey_type_list.html")
+    r.navs([("XForms Overview", "/xforms/"), \
+            ("Survey Types", "/xforms/surveys")])
+    if survey_type_slug is not None:
+        survey_type = SurveyType.objects.get(slug=survey_type_slug)
+        map_data = SurveyTypeMapData.objects.get(survey_type=survey_type)
+        r.info['survey_type'] = survey_type
+        r.info['survey_type_color'] = map_data.color
+        r.template = "survey_type_dashboard.html"
+        r.nav((survey_type_slug, "/xforms/surveys/%s" % survey_type_slug))
+    else:
+        r.info['survey_types'] = SurveyType.objects.all()
     return r.r()
+
 
 # import re
 # from django.utils import simplejson
