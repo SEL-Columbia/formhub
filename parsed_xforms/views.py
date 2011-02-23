@@ -183,18 +183,6 @@ def dashboard(request):
     info['survey_types'] = json.dumps([s.to_dict() for s in SurveyTypeMapData.objects.all()])
     return render_to_response("dashboard.html", info)
 
-def ensure_logged_in(request):
-    resp = "OK"
-    if request.user.is_authenticated():
-        return HttpResponseRedirect("/odk/")
-    else:
-        return HttpResponseRedirect("/accounts/login")
-
-def main_index(request):
-    info={}
-    info['user'] = request.user
-    return render_to_response("index.html", info)
-
 from submission_qr.forms import ajax_post_form as quality_review_ajax_form
 from submission_qr.views import score_partial
 
@@ -277,7 +265,6 @@ def surveyors(request, surveyor_id=None):
     return r.r()
 
 from xform_manager.models import SurveyType
-from map_xforms.models import SurveyTypeMapData
 
 def survey_types(request, survey_type_slug=None):
     r = MyRenderer(request, "survey_type_list.html")
@@ -294,81 +281,6 @@ def survey_types(request, survey_type_slug=None):
         r.info['survey_types'] = SurveyType.objects.all()
     return r.r()
 
-
-# import re
-# from django.utils import simplejson
-# from django.shortcuts import render_to_response
-# from djangomako import shortcuts
-# from django.db.models import Avg, Max, Min, Count
-
-# from odk_dropbox import utils
-# from odk_dropbox.models import Form
-# from odk_dropbox.models import Form, odk_db
-# from .models import ParsedInstance, Phone, District
-# import datetime
-
-
-
-# def dashboard(request):
-#     info = {}
-#     info['table_types'] = simplejson.dumps(dimensions.keys())
-#     districts = District.objects.filter(active=True)
-#     info['districts'] = simplejson.dumps([x.to_dict() for x in districts])
-#     forms = Form.objects.all()
-#     info['surveys'] = simplejson.dumps(list(set([x.title for x in forms])))
-#     info['user'] = request.user
-# #    return HttpResponse(request.user)
-#     return render_to_response('dashboard.html', info)
-
-# def recent_activity(request):
-#     info={}
-#     info['submissions'] = ParsedInstance.objects.all().order_by('-end')[0:50]
-#     return render_to_response("activity.html", info)
-
-
-# def profiles_section(request):
-#     info = {'sectionname':'profiles'}
-#     return render_to_response("profiles.html", info)
-
-# def data_section(request):
-#     info = {'sectionname':'data'}
-#     return render_to_response("data.html", info)
-
-# def view_section(request):
-#     info = {'sectionname':'view'}
-#     pass_to_map = {'all':[],'surveyors':[], \
-#         'survey':[],'recent':[]}
-    
-#     psubs = []
-#     for ps in ParsedInstance.objects.exclude(location__gps=None):
-#         pcur = {}
-#         if ps.location.gps:
-#             pcur['images'] = [x.image.url for x in ps.instance.images.all()]
-#             pcur['phone'] = ps.phone.__unicode__()
-#             pcur['date'] = ps.end.strftime("%Y-%m-%d %H:%M")
-#             pcur['survey_type'] = ps.survey_type.name
-#             pcur['gps'] = ps.location.gps.to_dict()
-#             pcur['title'] = ps.survey_type.name
-#         psubs.append(pcur)
-    
-#     pass_to_map['all'] = psubs
-#     info['point_data'] = simplejson.dumps(pass_to_map)
-#     return render_to_response("view.html", info)
-
-# def couchly(request, survey_id):
-#     info = {}
-#     if survey_id != '':
-#         info['survey_id'] = survey_id
-#         info['display_dictionary'] = {'teachers_and_staff':'Teachers and Staff', \
-#             'geopoint':'GPS Coordinates', 'name': 'Name', 'community': 'Community', \
-#             'survey_data':'Survey Data'}
-#         info['survey_data'] = simplejson.dumps(odk_db.get(survey_id)['parsed_xml'])
-#     else:
-#         info['survey_list'] = [{'name':'Education 1', 'id':'#'}, \
-#                 {'name':'Health 1', 'id': '#'}, \
-#                 {'name':'Water 1', 'id': '#'}]
-    
-#     return render_to_response("couchly.html", info)
 
 # def survey_times(request):
 #     """
@@ -392,15 +304,6 @@ def survey_types(request, survey_type_slug=None):
 #         if v: times[k] = v[len(v)/2]
 #         else: del times[k]
 #     return render_to_response("dict.html", {"dict":times})
-
-# def date_tuple(t):
-#     return (t.year, t.month, t.day)
-
-# def average(l):
-#     result = datetime.timedelta(0)
-#     for x in l:
-#         result = result + x/len(l)
-#     return result
 
 # def remove_saved_later(l):
 #     for i in range(len(l)-1):
@@ -434,10 +337,6 @@ def survey_types(request, survey_type_slug=None):
 #     d = {"median time between surveys" : diffs[len(diffs)/2],
 #          "average time between surveys" : average(diffs)}
 #     return render_to_response("dict.html", {"dict" : d})
-
-# def analysis_section(request):
-#     info = {'sectionname':'analysis'}
-#     return render_to_response("analysis.html", info)
 
 # def embed_survey_instance_data(request, survey_id):
 #     ps = ParsedInstance.objects.get(pk=survey_id)
