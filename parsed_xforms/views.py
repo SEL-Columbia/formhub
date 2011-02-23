@@ -18,6 +18,8 @@ from bson import json_util
 from . import utils, tag
 from .models import District, XForm, xform_instances, ParsedInstance, Instance
 
+from view_pkgr import ViewPkgr
+
 @require_GET
 def formList(request):
     """This is where ODK Collect gets its download list."""
@@ -189,87 +191,63 @@ from submission_qr.views import score_partial
 import json
 
 def json_safe(val):
-    return {'text': str(val), 'status': 'good'}
+    if val.__class__=={}.__class__:
+        res = {}
+        for k, v in val.items():
+            res[k] = json_safe(v)
+        return res
+    else:
+        return str(val)
+
 
 def survey(request, pk):
-    instance = ParsedInstance.objects.get(pk=pk)
-    print instance.get_from_mongo()
-    mongo_data = instance.json_data()
-    print mongo_data
-    data = json_safe(mongo_data)
+    r = ViewPkgr(request, "survey.html")
     
-    info = {"instance" : instance, \
-       'data': json.dumps(data), \
-       'popup': False}
+    instance = ParsedInstance.objects.get(pk=pk)
+    data = json_safe(instance.json_data())
     
     # score_partial is the section of the page that lists scores given
     # to the survey.
     # it also contains a form for editing existing submissions or posting
     # a new one. 
-    info['score_partial'] = score_partial(instance, request.user, True)
+    reviewing = score_partial(instance, request.user, True)
     
-    return render_to_response("survey.html", info)
-
-def survey_popup(request, pk):
-    instance = ParsedInstance.objects.get(pk=pk)
-    data = instance.get_from_mongo()
-    return render_to_response("survey.html", \
-                              {"instance" : instance, \
-                                'data': data, \
-                                'popup' : True})
+    r.add_info({"instance" : instance, \
+       'data': json.dumps(data), \
+       'score_partial': reviewing, \
+       'popup': False})
+    return r.r()
 
 def sitemap(request):
-    return render_to_response("sitemap.html")
-
-class ViewNav(object):
-    def __init__(self, name, url):
-        self.url = url
-        self.name = name
-
-class MyRenderer(object):
-    def __init__(self, request, template):
-        self.req = request
-        self.template = template
-        self.info = {}
-        self.navigation_items = []
-    
-    def nav(self, item):
-        if isinstance(item, ViewNav):
-            self.navigation_items.append(item)
-        else:
-            self.navigation_items.append(ViewNav(*item))
-
-    def navs(self, items):
-        [self.nav(i) for i in items]
-    
-    def _info(self):
-        self.info['navs'] = self.navigation_items
-        self.info['user'] = self.req.user
-        return self.info
-    
-    def r(self):
-        return render_to_response(self.template, self._info())
+    r = ViewPkgr(request, "sitemap.html")
+    r.footer()
+    r.ensure_logged_in()
+    return r.r()
 
 from surveyor_manager.models import Surveyor
 
 def surveyors(request, surveyor_id=None):
-    r = MyRenderer(request, "survey_type_list.html")
+    r = ViewPkgr(request, "surveyors_list.html")
+    r.footer()
     r.navs([("XForms Overview", "/xforms/"), \
             ("Surveyors", "/xforms/surveyors")])
+    
     if surveyor_id is not None:
-        r.info['surveyor'] = Surveyor.objects.get(id=surveyor_id)
+        surveyor = Surveyor.objects.get(id=surveyor_id)
+        r.info['surveyor'] = surveyor
         r.template = "surveyor_profile.html"
+        r.nav([surveyor.name, "/xforms/surveyors/%d" % surveyor.id])
     else:
         r.info['surveyors'] = Surveyor.objects.all()
-        r.template = "surveyors_list.html"
     return r.r()
 
 from xform_manager.models import SurveyType
 
 def survey_types(request, survey_type_slug=None):
-    r = MyRenderer(request, "survey_type_list.html")
+    r = ViewPkgr(request, "survey_type_list.html")
     r.navs([("XForms Overview", "/xforms/"), \
             ("Survey Types", "/xforms/surveys")])
+    r.footer()
     if survey_type_slug is not None:
         survey_type = SurveyType.objects.get(slug=survey_type_slug)
         map_data = SurveyTypeMapData.objects.get(survey_type=survey_type)

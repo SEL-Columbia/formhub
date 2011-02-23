@@ -1,9 +1,5 @@
-{% extends 'base.html' %}
-
-{% block content %}
 <ul>
 {% for survey_type in survey_types %}
 	<li><a href="/xforms/surveys/{{survey_type.slug}}">{{survey_type.slug}}</a></li>
 {% endfor %}
 </ul>
-{% endblock %}
