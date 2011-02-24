@@ -1,41 +1,46 @@
 <div id="data-table"></div>
 
 <script type="text/javascript" charset="utf-8">
-	(function(data, dest){
-		var categories = [];
-		var sortedStuff = {};
-		$.each(data, function(k, v){
-			if(k.indexOf('/')===-1) {
 
-			} else {
-				var cat = k.split("/")[0];
-				if(categories.indexOf(cat)===-1) {
-					categories.push(cat);
-					sortedStuff[cat]=[];
+(function($){
+	function isMultiple(val){
+		"string number".split(" ").indexOf($.type(val))===-1
+	}
+	function Json2list(data){
+		var list = $("<ul />");
+		
+		var pointer = list;
+		function addToList(list, d) {
+			var newUl = $("<ul />");
+			var li = $("<li />");
+			$.each(data, function(k, val){
+				li.html(k);
+				list.append(li);
+				if(isMultiple(val)) {
+					list.append(addToList($("<ul />"), val));
+				} else {
+					list.append($("<li />").html("Hi"))
 				}
-				sortedStuff[cat].push([k.split("/")[1], v]);
-			}
-		});
-		var tab = $("<table />");
-		var tbod = $('<tbody />');
-		tab.append(tbod);
-		dest.append(tab);
-		var td, catTd, curTr;
-		$.each(sortedStuff, function(cat, arr){
-			td = $("<td />", {'colspan':2}).css({'font-weight':'bold'});
-			td.html(cat);
-			tbod.append($("<tr />").html(td));
-			catTd = $("<td />", {'rowspan':arr.length}).html(cat);
-			curTr = $("<tr />").html(catTd);
-			$.each(arr, function(i, val){
-				$.each(val, function(i, v){
-					td = $("<td />").html(v);
-					curTr.append(td);
-				});
-				tbod.append(curTr);
-				curTr = $("<tr />");
+
 			});
-		});
-		$(dest).append(tab);
-	})({{data|safe}}, $('#data-table'))
+			
+			return list;
+		}
+		var li;
+		$.each(data, function(k, val){
+			li = $("<li />").html(k);
+			list.append(li);
+			list.append(addToList($("<ul />"), val))
+		})
+		
+		
+		return list;
+	}
+	
+	$.json2list = Json2list
+})(jQuery)
+
+var surveyData = {"community": "Dafara", "_instance_doc_name": "health", "respondent1": {"phone_number1": "08054376241", "position1": "CHEW", "name1": "Ezekiel Danlami"}, "Equipment": {"Equipment_type": "None"}, "respondent2": {"position2": "None", "phone_number2": "None", "name2": "None"}, "_xform_id_string": "Health 2010-12-04_09-33-55", "always_open": "Yes", "id": "0", "lga15": "445.0", "end": "2010-12-09 15:52:24", "zone": "2.0", "_surveyor_name": "None", "start": "2010-12-09 15:30:35", "type": "PrimaryHealthCareCentre", "phone_number": "None", "picture": "1291905206235.jpg", "infrastructure": {"medical_waste_separated": "Yes", "days_no_water": "30", "fridge_power": "No", "power_sources": "Grid", "all_weather_road": "Yes", "days_inaccessible": "0", "days_no_potable_water": "30", "water_premises": "No", "daily_public_transport": "Yes", "days_garbage_disposed": "2", "transport_types": "other", "km_to_referral": "6", "days_no_power": "14", "sanitation_types": "none", "condition": "Poorly_maintained"}, "LaboratoryServices": {"laboratoryYN": "No", "Labtest": "None"}, "_district_id": "296", "state2": "15.0", "address": "Opposite Dafara pri sch", "ward": "Gaubi", "Meds_supplies": {"stockout_type": "Antibiotics Bednets", "Medsupplies": "malariameds Antibiotics Condoms Syringes Plasticgloves", "stockoutYN": "Yes"}, "device_id": "351771047024618", "administered_by": "LGA", "name": "Dafara PHC", "geopoint": "{u'latitude': u'8.853279948234558', u'altitude': u'390.0', u'longitude': u'7.280389666557312', u'accuracy': u'4.0'}", "info_tech": {"servicetype": "primarycare MalariaTx Deworming Antenatal Growthmonitor Institutionaldelivery BasicEOC Familyplanning", "chws": "3", "inst_delivery27_7": "Yes", "instruction": "None", "doctors_etc": "4", "living_quarters": "No", "tech_available": "Coverage", "daysclosed": "0", "staffpaidYN": "Yes", "health_facilitators": "0", "lab_staff": "0", "days_understaffed": "0", "Familyplan": "Pill Injectable", "BasicEOC_24_7": "Yes"}, "_attachments": "[]", "Fees": {"services_with_fees": "Childhealth Malariatx Family_planning Medications"}, "_id": "10"};
+$.json2list(surveyData).appendTo("#data-table");
+
 </script>
