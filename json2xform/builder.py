@@ -35,11 +35,22 @@ class SurveyElementBuilder(object):
         question_type_str = d[Question.TYPE]
         # hack job right here to get this to work
         if question_type_str.endswith(u" or specify other"):
+            d_copy = d.copy()
             question_type_str = question_type_str[:len(question_type_str)-len(u" or specify other")]
-            d[Question.TYPE] = question_type_str
+            d_copy[Question.TYPE] = question_type_str
+            return [self._create_question_from_dict(d_copy),
+                    self._create_specify_other_question_from_dict(d_copy)]
         question_class = self._get_question_class(question_type_str)
         if question_class: return question_class(**d)
         return None
+
+    def _create_specify_other_question_from_dict(self, d):
+        kwargs = {
+            Question.TYPE : u"specify other",
+            Question.NAME : u"%s_other" % d[Question.NAME],
+            Question.LABEL : d[Question.LABEL]
+            }
+        return InputQuestion(**kwargs)
 
     def _create_section_from_dict(self, d):
         kwargs = d.copy()

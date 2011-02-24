@@ -34,29 +34,20 @@ class SurveyElement(object):
             self.add_child(element)
 
     def add_child(self, element):
-        element._set_parent(self)
-        self._children.append(element)
+        # I should probably rename this function, because now it handles lists
+        if type(element)==list:
+            for list_element in element:
+                self.add_child(list_element)
+        else:
+            element._set_parent(self)
+            self._children.append(element)
 
-    def get_name(self):
-        return self._dict[self.NAME]
+    def get(self, key):
+        # name, type, control, bind, label, hint
+        return self._dict[key]
 
     def set_name(self, name):
         self._dict[self.NAME] = name
-
-    def get_type(self):
-        return self._dict[self.TYPE]
-    
-    def get_control_dict(self):
-        return self._dict[self.CONTROL]
-
-    def get_bind_dict(self):
-        return self._dict[self.BIND]
-
-    def get_label_dict(self):
-        return self._dict[self.LABEL]
-
-    def get_hint_dict(self):
-        return self._dict[self.HINT]
 
     def validate(self):
         assert is_valid_xml_tag(self._dict[self.NAME])
@@ -124,19 +115,16 @@ class SurveyElement(object):
         return node(u"hint", ref="jr:itext('%s')" % d[u"hint"])
 
     def xml_label_and_hint(self):
-        if self.get_hint_dict():
+        if self.get_hint():
             return [self.xml_label(), self.xml_hint()]
         return [self.xml_label()]
 
-    def instance(self):
-        return node(self.get_name())
-    
     def xml_binding(self):
         """
         Return the binding for this survey element.
         """
         survey = self.get_root()
-        d = self.get_bind_dict().copy()
+        d = self.get_bind().copy()
         if d:
             for k, v in d.items():
                 d[k] = survey.insert_xpaths(v)
@@ -164,3 +152,14 @@ class SurveyElement(object):
         doesn't make sense to implement here in the base class.
         """
         raise Exception("Control not implemented")
+
+
+# add a bunch of get methods to the SurveyElement class
+def add_get_method(cls, key):
+    def get_method(self):
+        return self.get(key)
+    get_method.__name__ = str("get_%s" % key)
+    setattr(cls, get_method.__name__, get_method)
+
+for key in SurveyElement._DEFAULT_VALUES.keys():
+    add_get_method(SurveyElement, key)
