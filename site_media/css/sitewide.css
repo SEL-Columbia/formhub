@@ -262,6 +262,28 @@ table.fullw {
 }
 br.cb { clear: both; }
 
+table.pretty {
+    border-spacing: 0px;
+}
+table.pretty td {
+    padding: 2px 8px
+}
+table.pretty thead th {
+    text-align: left;
+    border: 1px solid #bbb;
+    border-width: 0 0 1px 0;
+    padding: 3px 3px 3px 6px;
+}
+table.pretty a {
+    text-decoration: none;
+    color: #000;
+}
+table.pretty td {
+    border: 1px solid #eee;
+    border-width: 0 0 1px;
+}
+
+
 /* Copyright 2008-10 Jarrett Vance
 * see http://www.codeplex.com/blogsvc/license */
 .ui-rater>span {vertical-align:top;}
