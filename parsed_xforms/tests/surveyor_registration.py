@@ -88,7 +88,7 @@ class TestSurveyorRegistration(TestCase):
             'birth_date': '1970-07-07', 'device_id': '12345'})
 
         user_two = xform_factory.create_registration_instance({'form_id':self.xf.id_string, \
-            'start_time': ordered_times[1], \
+            'start_time': ordered_times[2], \
             'name': 'Alex Adams', 'birth_date': '1986-08-15', \
             'device_id': '12345'})
         
