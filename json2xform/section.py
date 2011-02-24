@@ -29,4 +29,4 @@ class Section(SurveyElement):
         let's just return a list of controls from all the children of
         this section.
         """
-        return [e.xml_control() for e in self._children]
+        return [e.xml_control() for e in self._children if e.xml_control() is not None]

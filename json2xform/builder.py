@@ -24,7 +24,7 @@ class SurveyElementBuilder(object):
             print "Skipping unrecognized question type", question_type_str
             return None
         question_type = Question.TYPES[question_type_str]
-        control_dict = question_type[Question.CONTROL]
+        control_dict = question_type.get(Question.CONTROL, {})
         control_tag = control_dict.get(u"tag", u"")
         return self.QUESTION_CLASSES[control_tag]
 
