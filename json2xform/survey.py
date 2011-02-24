@@ -106,3 +106,7 @@ class Survey(Section):
         fp = codecs.open(filename, mode="w", encoding="utf-8")
         fp.write(self.to_xml())
         fp.close()
+        
+    def instantiate(self):
+        from json2xform.instance import SurveyInstance
+        return SurveyInstance(self)

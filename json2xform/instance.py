@@ -1,3 +1,6 @@
+from xform_manager.utils import parse_xform_instance
+
+
 class SurveyInstance(object):
     def __init__(self, survey_object, **kwargs):
         self._survey = survey_object
@@ -13,6 +16,7 @@ class SurveyInstance(object):
         
         #see "answers(self):" below for explanation of this dict
         self._answers = {}
+        self._orphan_answers = {}
         
         #do we want to use keys or xpaths?
         #do we want to leave empty spaces where answers haven't been given?
@@ -30,13 +34,16 @@ class SurveyInstance(object):
 
     def answer(self, xpath=None, name=None, value=None):
         if name is not None:
-            _xpath = self._survey._xpath[name]
+            _xpath = self._survey._xpath.get(name, None)
         elif xpath is not None:
             _xpath = xpath
         else:
             raise Exception("Xpath or name must be given")
         
-        self._answers[_xpath] = value
+        if _xpath is not None:
+            self._answers[_xpath] = value
+        else:
+            self._orphan_answers[name] = value
 
     def answers(self):
         """
@@ -46,3 +53,18 @@ class SurveyInstance(object):
         """
         return self._answers
         
+    def import_from_xml(self, xml_string_or_filename):
+        import os.path
+        if os.path.isfile(xml_string_or_filename):
+            xml_str = open(xml_string_or_filename).read()
+        else:
+            xml_str = xml_string_or_filename
+        key_val_dict = parse_xform_instance(xml_str)
+        for k, v in key_val_dict.items():
+            self.answer(name=k, value=v)
+        
+    def __unicode__(self):
+        orphan_count = len(self._orphan_answers.keys())
+        placed_count = len(self._answers.keys())
+        answer_count = orphan_count + placed_count
+        return "<Instance (%d answers: %d placed. %d orphans)>" % (answer_count, placed_count, orphan_count)

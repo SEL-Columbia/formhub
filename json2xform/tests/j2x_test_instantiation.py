@@ -16,8 +16,9 @@ class Json2XformExportingPrepTests(TestCase):
         surv = Survey(name="Simple")
         q = create_survey_element_from_dict({"type":"text", "name":"survey_question"})
         surv.add_child(q)
-
-        i = Instance(surv)
+        
+        i = surv.instantiate()
+        
         self.assertEquals(i.keys(), ["survey_question"])
         self.assertEquals(set(i.xpaths()), set([\
             u"/Simple", \
@@ -39,3 +40,19 @@ class Json2XformExportingPrepTests(TestCase):
         i.answer(name="feeling", value="liquidy")
         self.assertEquals(i.answers()[u'/Water/feeling'], "liquidy")
         
+    def test_answers_can_be_imported_from_xml(self):
+        surv = Survey(name="data")
+        
+        surv.add_child(create_survey_element_from_dict({ \
+                                'type':'text', 'name':'name'}))
+        surv.add_child(create_survey_element_from_dict({ \
+                                'type':'integer', 'name':'users_per_month'}))
+        surv.add_child(create_survey_element_from_dict({ \
+                                'type':'gps', 'name':'geopoint'}))
+        
+        instance = surv.instantiate()
+        instance.import_from_xml("""
+        <?xml version='1.0' ?><data id="build_WaterSimple_1295821382"><name>JK Resevoir</name><users_per_month>300</users_per_month><geopoint>40.783594633609184 -73.96436698913574 300.0 4.0</geopoint></data>
+        """.strip())
+        
+        print instance.__unicode__()
