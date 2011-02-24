@@ -30,3 +30,27 @@ class Section(SurveyElement):
         this section.
         """
         return [e.xml_control() for e in self._children if e.xml_control() is not None]
+
+class RepeatingGroup(Section):
+    def xml_control(self):
+        """
+        <group>
+        <label>Fav Color</label>
+        <repeat nodeset="fav-color">
+          <select1 ref=".">
+            <label ref="jr:itext('fav')" />
+            <item><label ref="jr:itext('red')" /><value>red</value></item>
+            <item><label ref="jr:itext('green')" /><value>green</value></item>
+            <item><label ref="jr:itext('yellow')" /><value>yellow</value></item>
+          </select1>
+        </repeat>
+        </group>
+        """
+        repeat_node = node(u"repeat", nodeset=self.get_xpath())
+        for n in Section.xml_control(self):
+            repeat_node.append(n)
+        return node(
+            u"group",
+            self.xml_label(),
+            repeat_node
+            )

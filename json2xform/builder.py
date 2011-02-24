@@ -1,6 +1,6 @@
 from survey_element import SurveyElement
 from question import Question, InputQuestion, UploadQuestion, MultipleChoiceQuestion
-from section import Section
+from section import Section, RepeatingGroup
 from survey import Survey
 import utils
 
@@ -16,6 +16,7 @@ class SurveyElementBuilder(object):
 
     SECTION_CLASSES = {
         u"group" : Section,
+        u"repeat" : RepeatingGroup,
         u"survey" : Survey,
         }
 
