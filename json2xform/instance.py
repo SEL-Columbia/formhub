@@ -9,6 +9,9 @@ class SurveyInstance(object):
         #does the survey object provide a way to get the key dicts?
         self._keys = [c.get_name() for c in self._survey._children]
         
+        self._name = self._survey.get_name()
+        self._id = self._survey.id_string()
+        
         # get xpaths
         #  - prep for xpaths.
         self._survey.xml()
@@ -30,6 +33,11 @@ class SurveyInstance(object):
         if name is None:
             raise Exception("In answering, name must be given")
         
+        #ahh. this is horrible, but we need the xpath dict in survey to be up-to-date
+        #...maybe
+      # self._survey.xml()
+
+
         if name in self._survey._xpath.keys():
             self._answers[name] = value
         else:
@@ -40,13 +48,23 @@ class SurveyInstance(object):
         for k, v in self._answers.items():
             children.append({'node_name':k, 'value':v})
         return {
-            'node_name': self._survey.get_name(),
-            'id': self._survey.id_string(),
+            'node_name': self._name,
+            'id': self._id,
             'children': children
         }
         
     def to_xml(self):
-        return ""
+        """
+        A horrible way to do this, but it works (until we need the attributes pumped out in order, etc)
+        """
+        open_str = """<?xml version='1.0' ?><%s id="%s">""" % (self._name, self._id)
+        close_str = """</%s>""" % self._name
+        vals = ""
+        for k, v in self._answers.items():
+            vals += "<%s>%s</%s>" % (k, str(v), k)
+        
+        output = open_str + vals + close_str
+        return output
 
     def answers(self):
         """
