@@ -18,6 +18,7 @@ class Json2XformVerboseSurveyCreationTests(TestCase):
         
         q = MultipleChoiceQuestion()
         q.set_name("cow_color")
+        q._dict[MultipleChoiceQuestion.TYPE] = u"select one"
         
         q._add_option(label="Green", value="green")
         s.add_child(q)
@@ -27,6 +28,7 @@ class Json2XformVerboseSurveyCreationTests(TestCase):
             u'children': [
                 {
                     u'name': 'cow_color',
+                    u'type' : 'select one',
                     u'children': [
                         {
                             u'label': 'Green',
@@ -47,6 +49,7 @@ class Json2XformVerboseSurveyCreationTests(TestCase):
             ]
         
         q = MultipleChoiceQuestion(name="Favorite_Color", choices=option_dict_array)
+        q._dict[MultipleChoiceQuestion.TYPE] = u"select one"
         s = Survey(name="Roses are Red", children=[q])
 
         expected_dict = {
@@ -54,6 +57,7 @@ class Json2XformVerboseSurveyCreationTests(TestCase):
             u'children': [
                 {
                     u'name': 'Favorite_Color',
+                    u'type' : u'select one',
                     u'children': [
                         {u'label': 'Red', u'name': 'red', u'value': 'red'},
                         {u'label': 'Blue', u'name': 'blue', u'value': 'blue'}

@@ -39,8 +39,8 @@ class Survey(Section):
         for e in self.iter_children():
             translation_keys = e.get_translation_keys()
             for translation_key, text in [
-                (translation_keys[u"label"], e.get_label_dict()),
-                (translation_keys[u"hint"], e.get_hint_dict())
+                (translation_keys[u"label"], e.get_label()),
+                (translation_keys[u"hint"], e.get_hint())
                 ]:
                 for lang in text.keys():
                     if translation_key in self._translations[lang]:

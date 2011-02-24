@@ -4,6 +4,12 @@ from survey_element import SurveyElement
 from xls2json import ExcelReader
 
 
+def _overlay_dicts(over, under):
+    result = under.copy()
+    result.update(over)
+    return result
+
+
 class Question(SurveyElement):
     # this is a dictionary of all the question types we will use in creating XForms.
     _path_to_this_file = os.path.abspath(__file__)
@@ -12,27 +18,17 @@ class Question(SurveyElement):
     _excel_reader = ExcelReader(_path_to_question_types)
     TYPES = _excel_reader.to_dict()
 
-    def get_bind_dict(self):
+    def get(self, key):
         """
         Overlay this questions binding attributes on type of the
         attributes from this question type.
         """
-        question_type_dict = self.TYPES[ self.get_type() ]
-        question_type_bind_dict = question_type_dict[self.BIND]
-        result = question_type_bind_dict.copy()
-        result.update( SurveyElement.get_bind_dict(self) )
-        return result
-
-    def get_control_dict(self):
-        """
-        Overlay this questions binding attributes on type of the
-        attributes from this question type.
-        """
-        question_type_dict = self.TYPES[ self.get_type() ]
-        question_type_control_dict = question_type_dict[self.CONTROL]
-        result = question_type_control_dict.copy()
-        result.update( SurveyElement.get_control_dict(self) )
-        return result
+        question_type = SurveyElement.get(self, self.TYPE)
+        question_type_dict = self.TYPES[question_type]
+        under = question_type_dict.get(key, None)
+        over = SurveyElement.get(self, key)
+        if not under: return over
+        return _overlay_dicts(over, under)
 
 
 class InputQuestion(Question):
@@ -46,7 +42,7 @@ class InputQuestion(Question):
 
 class UploadQuestion(Question):
     def _get_media_type(self):
-        return self.get_control_dict()[u"mediatype"]
+        return self.get_control()[u"mediatype"]
         
     def xml_control(self):
         return node(
@@ -99,9 +95,9 @@ class MultipleChoiceQuestion(Question):
         self.add_child(option)
 
     def xml_control(self):
-        assert self.get_bind_dict()[u"type"] in [u"select", u"select1"]
+        assert self.get_bind()[u"type"] in [u"select", u"select1"]
         result = node(
-            self.get_bind_dict()[u"type"],
+            self.get_bind()[u"type"],
             {u"ref" : self.get_xpath()}
             )
         for n in self.xml_label_and_hint():
