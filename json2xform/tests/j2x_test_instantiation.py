@@ -7,8 +7,6 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 from django.test import TestCase, Client
 from json2xform import *
-from json2xform.instance import SurveyInstance as Instance
-from json2xform.builder import create_survey_element_from_dict
 
 class Json2XformExportingPrepTests(TestCase):
     
@@ -32,13 +30,13 @@ class Json2XformExportingPrepTests(TestCase):
         
         surv.add_child(q)
         surv.add_child(q2)
-        i = Instance(surv)
+        i = SurveyInstance(surv)
         
-        i.answer(xpath="/Water/color", value="blue")
-        self.assertEquals(i.answers()[u'/Water/color'], "blue")
+        i.answer(name="color", value="blue")
+        self.assertEquals(i.answers()[u'color'], "blue")
         
         i.answer(name="feeling", value="liquidy")
-        self.assertEquals(i.answers()[u'/Water/feeling'], "liquidy")
+        self.assertEquals(i.answers()[u'feeling'], "liquidy")
         
     def test_answers_can_be_imported_from_xml(self):
         surv = Survey(name="data")
@@ -58,3 +56,24 @@ class Json2XformExportingPrepTests(TestCase):
         """.strip())
         
         print instance.__unicode__()
+        
+    def test_simple_registration_xml(self):
+        reg_xform = Survey(name="Registration")
+        name_question = create_survey_element_from_dict({'type':'text','name':'name'})
+        reg_xform.add_child(name_question)
+        
+        reg_instance = reg_xform.instantiate()
+        
+        reg_instance.answer(name="name", value="bob")
+        
+        rdict = reg_instance.to_dict()
+        expected_dict = {"node_name" : "Registration", \
+                "id": reg_xform.id_string(), \
+                "children": [{'node_name':'name', 'value':'bob'}]}
+        
+        self.assertEqual(rdict, expected_dict)
+
+#        rx = reg_instance.to_xml()
+#        expected_xml = """<?xml version='1.0' ?><Registration id="%s"><name>bob</name></Registration>""" % \
+#                    (reg_xform.id_string())
+#        self.assertEqual(rx, expected_xml)

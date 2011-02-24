@@ -78,6 +78,7 @@ class Survey(Section):
         return "<survey name='%s' element_count='%s'>" % (self.get_name(), len(self._children))
     
     def _setup_xpath_dictionary(self):
+        self._xpath = {}
         for element in self.iter_children():
             if isinstance(element, Question) or isinstance(element, Section):
                 if element.get_name() in self._xpath:
