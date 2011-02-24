@@ -1,4 +1,5 @@
 from question import SurveyElement
+from utils import node
 
 class Section(SurveyElement):
     def validate(self):
@@ -15,6 +16,12 @@ class Section(SurveyElement):
                 raise Exception("Element with namme: '%s' already exists" % element.get_name())
             else:
                 element_slugs.append(element.get_name())
+
+    def xml_instance(self):
+        result = node(self.get_name())
+        for child in self._children:
+            result.append(child.xml_instance())
+        return result
 
     def xml_control(self):
         """

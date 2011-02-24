@@ -30,6 +30,9 @@ class Question(SurveyElement):
         if not under: return over
         return _overlay_dicts(over, under)
 
+    def xml_instance(self):
+        return node(self.get_name())
+
 
 class InputQuestion(Question):
     """

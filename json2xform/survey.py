@@ -27,7 +27,7 @@ class Survey(Section):
                    E(ns("h", "title"), self.get_name()),
                    E("model",
                      E.itext(*self.xml_translations()),
-                     E.instance(self.instance()),
+                     self.xml_instance(),
                      *self.xml_bindings()
                      ),
                    ),
@@ -66,12 +66,9 @@ class Survey(Section):
         return self.get_name() + "_" + \
             self._created.strftime("%Y-%m-%d_%H-%M-%S")
 
-    # most of the instance and controls and bindings should be handled
-    # in SurveyElement
-    def instance(self):
-        root_node_name = self.get_name()
-        result = E(root_node_name, {u"id" : self.id_string()})
-        for q in self._children: result.append(q.instance())
+    def xml_instance(self):
+        result = Section.xml_instance(self)
+        result.attrib[u"id"] = self.id_string()
         return result
 
     def to_xml(self):

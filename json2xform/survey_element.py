@@ -119,9 +119,6 @@ class SurveyElement(object):
             return [self.xml_label(), self.xml_hint()]
         return [self.xml_label()]
 
-    def instance(self):
-        return node(self.get_name())
-    
     def xml_binding(self):
         """
         Return the binding for this survey element.
