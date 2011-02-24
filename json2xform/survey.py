@@ -27,7 +27,7 @@ class Survey(Section):
                    E(ns("h", "title"), self.get_name()),
                    E("model",
                      E.itext(*self.xml_translations()),
-                     self.xml_instance(),
+                     E.instance(self.xml_instance()),
                      *self.xml_bindings()
                      ),
                    ),
