@@ -10,7 +10,7 @@ import codecs
 
 # the following are the three sheet names that this program expects
 SURVEY_SHEET = u"survey"
-CHOICES_SHEET = u"choices"
+CHOICES_SHEET = u"choices and columns"
 COLUMNS_SHEET = u"columns"
 TYPES_SHEET = u"question types"
 
@@ -154,7 +154,7 @@ class ExcelReader(object):
         """
         for q in self._dict[SURVEY_SHEET]:
             if CHOICES in q:
-                q[CHOICES] = self._dict[CHOICES][q[CHOICES]]
+                q[CHOICES] = self._dict[CHOICES_SHEET][q[CHOICES]]
 
     def _organize_sections(self):
         # this needs to happen after columns have been inserted
