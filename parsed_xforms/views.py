@@ -193,12 +193,12 @@ import json
 def json_safe(val):
     if val.__class__=={}.__class__:
         res = {}
+#        [res[k]=json_safe(v) for k,v in val.items()]
         for k, v in val.items():
             res[k] = json_safe(v)
         return res
     else:
         return str(val)
-
 
 def survey(request, pk):
     r = ViewPkgr(request, "survey.html")
@@ -218,8 +218,8 @@ def survey(request, pk):
        'popup': False})
     return r.r()
 
-def sitemap(request):
-    r = ViewPkgr(request, "sitemap.html")
+def xforms_directory(request):
+    r = ViewPkgr(request, "xforms_directory.html")
     r.footer()
     r.ensure_logged_in()
     return r.r()
