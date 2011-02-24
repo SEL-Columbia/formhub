@@ -17,5 +17,6 @@ urlpatterns = patterns('',
     url(r"^data/map_data/?$", views.map_data_points),
     url(r"^submission-counts/(\w+)/(\w+)$", views.frequency_table),
     url(r"^survey/(?P<pk>\d+)/$", views.survey),
-    url(r"^surveys/(?P<survey_type>\w+)/$", views.survey_type_dashboard),
+    url(r"^surveyors/((?P<surveyor_id>\d+)/)?$", views.surveyors),
+    url(r"^surveys/((?P<survey_type_slug>\w+)/)?$", views.survey_types),
 )

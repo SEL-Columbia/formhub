@@ -190,6 +190,78 @@ h2.title {
 	margin: 4px 0;
 }
 
+table.fullw {
+	width: 100%;
+}
+.table-spacer {
+	height: 16px;
+	width:1px;
+	border-left: 1px dotted #888;
+}
+#content .fwidth .nav {
+	margin: 3px 0 1px;
+	background-color: rgba(255,255,255,0.5);
+	border: 1px solid #ccc;
+	padding: 5px 12px;
+}
+#content .fwidth .nav a.nav-button {
+	background-color: #fff;
+	border: 1px solid #ccc;
+	text-decoration: none;
+	color: #555;
+	padding: 1px 6px;
+}
+#content .fwidth .nav a.nav-button:hover {
+	color: #000;
+}
+#content .fwidth .nav .raquo {
+	color: #555;
+}
+#content .fwidth .nav .raquo:last-child {display: none;}
+
+#footer {
+	background-color: rgb(68, 68, 68);
+	position: fixed;
+	bottom: 0pt;
+	width: 100%;
+}
+#footer .footer-section {
+	border: 1px solid rgb(120, 120, 120);
+	margin: 8px;
+	padding: 6px 12px;
+	width: 200px;
+	float: left;
+	color: rgb(204, 204, 204);
+}
+#footer p {
+	margin: 0pt;
+}
+#footer .fs-h {
+	text-decoration: underline;
+	font-size: 13px;
+	color: rgb(160, 160, 160);
+	margin:0 0 2px 0;
+}
+#footer p.fs-info, #footer p.fs-sub-info {
+	color: rgb(150, 150, 150);
+	font-size: 11px;
+	font-style: italic;
+	margin:0 0 2px;
+}
+#footer p.fs-sub-info {
+	margin: 0 0 1px 6px;
+}
+#footer p.fs-link {
+	color: rgb(160, 160, 160);
+	font-size: 13px;
+}
+#footer p.fs-link a {
+	color: rgb(160, 160, 160);
+	text-decoration: none;
+	display: block;
+}
+br.cb { clear: both; }
+
 /* Copyright 2008-10 Jarrett Vance
 * see http://www.codeplex.com/blogsvc/license */
 .ui-rater>span {vertical-align:top;}
