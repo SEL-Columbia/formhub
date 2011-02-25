@@ -27,6 +27,9 @@ class ImportedSurvey(object):
         
         Will that work?
         """
+        
+    def instantiate(self):
+        return Instance(imported_survey=self)
     
     def label_hint_list(self):
         return self._label_hint_list
