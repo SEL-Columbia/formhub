@@ -64,7 +64,7 @@ class Survey(Section):
 
     def id_string(self):
         return self.get_name() + "_" + \
-            self._created.strftime("%Y-%m-%d_%H-%M-%S")
+            self._created.strftime("%Y%m%d")
 
     def xml_instance(self):
         result = Section.xml_instance(self)
@@ -82,8 +82,9 @@ class Survey(Section):
         for element in self.iter_children():
             if isinstance(element, Question) or isinstance(element, Section):
                 if element.get_name() in self._xpath:
-                    raise Exception("Survey element names must be unique", element.get_name())
-                self._xpath[element.get_name()] = element.get_xpath()
+                    self._xpath[element.get_name()] = None
+                else:
+                    self._xpath[element.get_name()] = element.get_xpath()
         
     def _var_repl_function(self):
         """

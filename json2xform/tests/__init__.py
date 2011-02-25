@@ -6,3 +6,5 @@ from j2x_test_instantiation import *
 from j2x_test_importing_survey import *
 from json2xform_test import *
 from group_test import *
+from builder_tests import *
+from xls2json_tests import *

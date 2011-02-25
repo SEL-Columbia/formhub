@@ -10,15 +10,16 @@ import codecs
 
 # the following are the three sheet names that this program expects
 SURVEY_SHEET = u"survey"
-CHOICES_SHEET = u"choices and columns"
+CHOICES_SHEET_NAMES = [u"choices", u"choices and columns"]
 COLUMNS_SHEET = u"columns"
 TYPES_SHEET = u"question types"
 
-CHOICE_LIST_NAME = u"list name"
+LIST_NAME = u"list name"
 DICT_CHAR = u":"
 
 TYPE = u"type"
 CHOICES = u"choices"
+COLUMNS = u"columns"
 
 class ExcelReader(object):
     def __init__(self, path):
@@ -28,13 +29,19 @@ class ExcelReader(object):
         self._dict = None
         self._setup()
         sheet_names = self._dict.keys()
+
+        self._lists_sheet_name = None
+        for sheet_name in sheet_names:
+            if sheet_name in CHOICES_SHEET_NAMES:
+                self._lists_sheet_name = sheet_name
+
         if SURVEY_SHEET in sheet_names:
             self._fix_int_values()
             self._group_dictionaries()
             self._process_question_type()
-            if CHOICES_SHEET in sheet_names:
+            if self._lists_sheet_name:
                 self._construct_choice_lists()
-                self._insert_choice_lists()
+                self._insert_lists()
             self._dict = self._dict[SURVEY_SHEET]
             self._organize_sections()
         elif sheet_names==[TYPES_SHEET]:
@@ -109,13 +116,13 @@ class ExcelReader(object):
         Each choice has a list name associated with it. Go through the
         list of choices, grouping all the choices by their list name.
         """
-        choice_list = self._dict[CHOICES_SHEET]
+        choice_list = self._dict[self._lists_sheet_name]
         choices = {}
         for choice in choice_list:
-            list_name = choice.pop(CHOICE_LIST_NAME)
+            list_name = choice.pop(LIST_NAME)
             if list_name in choices: choices[list_name].append(choice)
             else: choices[list_name] = [choice]
-        self._dict[CHOICES_SHEET] = choices
+        self._dict[self._lists_sheet_name] = choices
 
     def _process_question_type(self):
         """
@@ -135,26 +142,45 @@ class ExcelReader(object):
             question_type.strip()
             re.sub(r"\s+", " ", question_type)
             if question_type.startswith(u"select"):
-                m = re.search(r"^(?P<select_command>select one|select all that apply) from (?P<list_name>\S+)( (?P<specify_other>or specify other))?$", question_type)
-                assert m, "unsupported select syntax:" + question_type
-                assert CHOICES not in q
-                d = m.groupdict()
-                q[CHOICES] = d["list_name"]
-                if d["specify_other"]:
-                    q[TYPE] = " ".join([d["select_command"], d["specify_other"]])
-                else:
-                    q[TYPE] = d["select_command"]
+                self._prepare_multiple_choice_question(q, question_type)
+            if question_type.startswith(u"begin table"):
+                self._prepare_begin_table(q, question_type)
 
-    def _insert_choice_lists(self):
+    def _prepare_multiple_choice_question(self, q, question_type):
+        m = re.search(r"^(?P<select_command>select one|select all that apply) from (?P<list_name>\S+)( (?P<specify_other>or specify other))?$", question_type)
+        assert m, "unsupported select syntax:" + question_type
+        assert CHOICES not in q
+        d = m.groupdict()
+        q[CHOICES] = d["list_name"]
+        if d["specify_other"]:
+            q[TYPE] = " ".join([d["select_command"], d["specify_other"]])
+        else:
+            q[TYPE] = d["select_command"]
+
+    def _prepare_begin_table(self, q, question_type):
+        m = re.search(r"^(?P<type>begin table) with columns from (?P<list_name>\S+)$", question_type)
+        assert m, "unsupported select syntax:" + question_type
+        assert COLUMNS not in q
+        d = m.groupdict()
+        q[COLUMNS] = d["list_name"]
+        q[TYPE] = d["type"]
+
+    def _insert_lists(self):
         """
-        For each multiple choice question in the survey find the
-        corresponding list of choices and add it to that
-        question. Finally, drop the choice lists and set the
-        underlying dict to be just the survey definition.
+        For each multiple choice question and table in the survey find
+        the corresponding list and add it to that question.
         """
+        lists_by_name = self._dict[self._lists_sheet_name]
         for q in self._dict[SURVEY_SHEET]:
-            if CHOICES in q:
-                q[CHOICES] = self._dict[CHOICES_SHEET][q[CHOICES]]
+            self._insert_list(q, CHOICES, lists_by_name)
+            self._insert_list(q, COLUMNS, lists_by_name)
+
+    def _insert_list(self, q, key, lists_by_name):
+        if key in q:
+            list_name = q[key]
+            if list_name not in lists_by_name:
+                raise Exception("There is no list of %s by this name" % key, list_name)
+            q[key] = lists_by_name[list_name]
 
     def _organize_sections(self):
         # this needs to happen after columns have been inserted

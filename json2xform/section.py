@@ -31,7 +31,7 @@ class Section(SurveyElement):
         """
         return [e.xml_control() for e in self._children if e.xml_control() is not None]
 
-class RepeatingGroup(Section):
+class RepeatingSection(Section):
     def xml_control(self):
         """
         <group>
@@ -54,3 +54,10 @@ class RepeatingGroup(Section):
             self.xml_label(),
             repeat_node
             )
+
+class GroupedSection(Section):
+    def xml_control(self):
+        group_node = node(u"group", self.xml_label(), nodeset=self.get_xpath())
+        for n in Section.xml_control(self):
+            group_node.append(n)
+        return group_node

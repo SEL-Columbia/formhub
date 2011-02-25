@@ -1,6 +1,6 @@
 from survey_element import SurveyElement
 from question import Question, InputQuestion, UploadQuestion, MultipleChoiceQuestion
-from section import Section, RepeatingGroup
+from section import Section, RepeatingSection, GroupedSection
 from survey import Survey
 import utils
 
@@ -15,15 +15,16 @@ class SurveyElementBuilder(object):
         }
 
     SECTION_CLASSES = {
-        u"group" : Section,
-        u"repeat" : RepeatingGroup,
+        u"group" : GroupedSection,
+        u"repeat" : RepeatingSection,
         u"survey" : Survey,
         }
 
     def _get_question_class(self, question_type_str):
-        if question_type_str not in Question.TYPES:
-            print "Skipping unrecognized question type", question_type_str
+        if question_type_str==u"include":
             return None
+        if question_type_str not in Question.TYPES:
+            raise Exception("Unknown question type", question_type_str)
         question_type = Question.TYPES[question_type_str]
         control_dict = question_type.get(Question.CONTROL, {})
         control_tag = control_dict.get(u"tag", u"")
@@ -43,7 +44,7 @@ class SurveyElementBuilder(object):
                     self._create_specify_other_question_from_dict(d_copy)]
         question_class = self._get_question_class(question_type_str)
         if question_class: return question_class(**d)
-        return None
+        return []
 
     def _create_specify_other_question_from_dict(self, d):
         kwargs = {
@@ -63,9 +64,26 @@ class SurveyElementBuilder(object):
             if survey_element: result.add_child(survey_element)
         return result
 
+    def _create_table_from_dict(self, d):
+        kwargs = dict([(k, d[k]) for k in [Section.NAME, Section.LABEL]])
+        result = GroupedSection(**kwargs)
+        for column in d[u"columns"]:
+            # create a new group for each column
+            try:
+                kwargs = dict([(k, column[k]) for k in [Section.NAME, Section.LABEL]])
+            except KeyError:
+                raise Exception("Column is missing name or label", column)
+            g = GroupedSection(**kwargs)
+            for child in d[SurveyElement.CHILDREN]:
+                g.add_child(self.create_survey_element_from_dict(child))
+            result.add_child(g)
+        return result
+
     def create_survey_element_from_dict(self, d):
         if d[SurveyElement.TYPE] in self.SECTION_CLASSES:
             return self._create_section_from_dict(d)
+        elif d[SurveyElement.TYPE]==u"table":
+            return self._create_table_from_dict(d)
         else:
             return self._create_question_from_dict(d)
 
