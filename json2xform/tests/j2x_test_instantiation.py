@@ -7,6 +7,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 from django.test import TestCase, Client
 from json2xform import *
+from json2xform.builder import create_survey_element_from_dict
 
 class Json2XformExportingPrepTests(TestCase):
     
