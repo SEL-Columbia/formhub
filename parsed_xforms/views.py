@@ -204,16 +204,20 @@ def survey(request, pk):
     r = ViewPkgr(request, "survey.html")
     
     instance = ParsedInstance.objects.get(pk=pk)
-    data = json_safe(instance.json_data())
+#    data = json_safe(instance.json_data())
     
     # score_partial is the section of the page that lists scores given
     # to the survey.
     # it also contains a form for editing existing submissions or posting
     # a new one. 
     reviewing = score_partial(instance, request.user, True)
+
+    data = [('key','val'), ('key2','val2')]
+    
+    r.info['survey_title'] = "Survey Title"
     
     r.add_info({"instance" : instance, \
-       'data': json.dumps(data), \
+        'data': data, \
        'score_partial': reviewing, \
        'popup': False})
     return r.r()
@@ -229,19 +233,18 @@ from surveyor_manager.models import Surveyor
 def surveyor_list_dict(surveyor):
     d = {'name':surveyor.name}
     d['profile_url'] = "/xforms/surveyors/%d" % surveyor.id
-    d['district'] = "Goa"
-    d['number_of_submissions'] = 12
-    d['most_recent_submission'] = "Yesterday"
+    #how do we find district?
+    d['district'] = "district-name-goes-here"
+    d['number_of_submissions'] = ParsedInstance.objects.filter(surveyor__id=surveyor.id).count()
+    d['most_recent_submission'] = "RecentSurveyTime" #? ParsedInstance.objects.filter(surveyor__id=surveyor.id)[0]
     return d
     
 def surveyor_profile_dict(surveyor):
     d = {'name': surveyor.name}
-#    from ipdb import set_trace; set_trace()
 #    d['district'] = surveyor.surveys.all()[0].district.name
     d['registered_at'] = "I donno"
     d['number_of_submissions'] = ParsedInstance.objects.filter(surveyor__id=surveyor.id).count()
     d['most_recent_survey_date'] = "Yesterday"
-    
     sts = []
     for st in SurveyType.objects.all():
         surveyor_st_count = ParsedInstance.objects.filter(surveyor__id=surveyor.id).count() #&& survey_type is st...
