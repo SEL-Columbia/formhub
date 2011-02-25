@@ -19,11 +19,11 @@ class TestSurveyorRegistration(TestCase):
         self.xf.delete()
 
     def test_registration_form_loaded(self):
-        registration_forms = XForm.objects.filter(title="Registration")
+        registration_forms = XForm.objects.filter(title="registration")
         self.assertTrue(len(registration_forms) > 0)
     
     def test_registration_creates_surveyor(self):
-        registration_instance = xform_factory.create_registration_instance({'start_time': datetime.now(),
+        registration_instance = xform_factory.create_registration_instance({'start': datetime.now(),
             'name': 'Steak Sauce',
             'device_id': '12345'
             })
@@ -47,17 +47,17 @@ class TestSurveyorRegistration(TestCase):
         ordered_times = [datetime(now.year, now.month, now.day, 1), \
                         datetime(now.year, now.month, now.day, 2), \
                         datetime(now.year, now.month, now.day, 3)]
-        first_registration = xform_factory.create_registration_instance({'start_time': ordered_times[0], \
+        first_registration = xform_factory.create_registration_instance({'start': ordered_times[0], \
             'name': 'Betty Bimbob', 'sex': 'female', \
             'birth_date': '1970-07-07', 'device_id': '12345'})
         
-        second_registration = xform_factory.create_registration_instance({'start_time': ordered_times[1], \
+        second_registration = xform_factory.create_registration_instance({'start': ordered_times[1], \
             'name': 'Alex Adams', 'birth_date': '1986-08-15', \
             'device_id': '12345'})
         
         self.assertTrue(Surveyor.objects.count(), 2)
         
-        submission = xform_factory.create_simple_instance({'start_time': ordered_times[2]})
+        submission = xform_factory.create_simple_instance({'start': ordered_times[2]})
         
         self.assertTrue(submission.parsed_instance.surveyor is not None)
         self.assertEqual(submission.parsed_instance.surveyor.name, 'Alex Adams')
@@ -71,7 +71,6 @@ class TestSurveyorRegistration(TestCase):
                 2. submission_one # hour 2 - should be attributed to betty 
         3: user_two (named Alex, hour 3)
                 4. submission_two # hour 4 - should be attributed to alex
-                
         Registrations performed in order,
         Submissions entered out of order.
         """
@@ -84,20 +83,20 @@ class TestSurveyorRegistration(TestCase):
                         datetime(now.year, now.month, now.day, 4)]
         
         user_one = xform_factory.create_registration_instance({'form_id': self.xf.id_string, \
-            'start_time': ordered_times[0], 'name': 'Betty Bimbob', 'sex': 'female', \
+            'start': ordered_times[0], 'name': 'Betty Bimbob', 'sex': 'female', \
             'birth_date': '1970-07-07', 'device_id': '12345'})
 
         user_two = xform_factory.create_registration_instance({'form_id':self.xf.id_string, \
-            'start_time': ordered_times[1], \
+            'start': ordered_times[2], \
             'name': 'Alex Adams', 'birth_date': '1986-08-15', \
             'device_id': '12345'})
         
         self.assertTrue(Surveyor.objects.count(), 2)
         
         # submissions are sometimes parsed out of order, so we are saving the 2nd submission first
-        submission_two = xform_factory.create_simple_instance({'start_time': ordered_times[3]})
+        submission_two = xform_factory.create_simple_instance({'start': ordered_times[3]})
         
-        submission_one = xform_factory.create_simple_instance({'start_time': ordered_times[1]})
+        submission_one = xform_factory.create_simple_instance({'start': ordered_times[1]})
 
         self.assertEqual(submission_one.parsed_instance.surveyor.name, 'Betty Bimbob')
         self.assertEqual(submission_two.parsed_instance.surveyor.name, 'Alex Adams')

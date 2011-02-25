@@ -86,8 +86,8 @@ class ParsedInstance(models.Model):
             name = doc[REGISTRATION_NAME]
             if not name:
                 raise utils.MyError("Registration must have a non-empty name.")
-            kwargs = {"username" : str(Surveyor.objects.all().count()),
-                      "password" : "none",
+            kwargs = {"username" : "surveyor%d" % Surveyor.objects.count(),
+                      "password" : "noneisabadd3f4u1tpassword",
                       "name" : name,}
             self.surveyor = Surveyor.objects.create(**kwargs)
         else:
@@ -159,14 +159,21 @@ def _remove_from_mongo(sender, **kwargs):
 
 pre_delete.connect(_remove_from_mongo, sender=Instance)
 
+import sys
+
 from django.db.models.signals import post_save
 def _parse_instance(sender, **kwargs):
-    parsed_instance, created = \
-        ParsedInstance.objects.get_or_create(instance=kwargs["instance"])
-    if not created:
-        # reparse this instance
-        # parsed_instance.save()
-        # this was creating an infinite loop
-        pass
-
+    try:
+        parsed_instance, created = \
+            ParsedInstance.objects.get_or_create(instance=kwargs["instance"])
+    except:
+        # catch any exceptions and print them to the error log
+        # it'd be good to add more info to these error logs
+        e = sys.exc_info()[1]
+        utils.report_exception(
+            "problem parsing submission",
+            e.__unicode__(),
+            sys.exc_info()
+            )
+    
 post_save.connect(_parse_instance, sender=Instance)

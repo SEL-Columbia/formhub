@@ -21,7 +21,7 @@ class Phone(models.Model):
     note = models.TextField(blank=True, null=True, verbose_name="Notes")
     
     # todo: replace this with a code field ?
-    visible_id = models.CharField(max_length=32, unique=True, 
+    visible_id = models.CharField(max_length=32,
                                   verbose_name="Visible ID")
     
     # todo: checks on the phone number consistency ?

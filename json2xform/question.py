@@ -32,6 +32,9 @@ class Question(SurveyElement):
 
     def xml_instance(self):
         return node(self.get_name())
+        
+    def xml_control(self):
+        return None
 
 
 class InputQuestion(Question):

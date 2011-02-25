@@ -9,6 +9,9 @@ class SurveyInstance(object):
         #does the survey object provide a way to get the key dicts?
         self._keys = [c.get_name() for c in self._survey._children]
         
+        self._name = self._survey.get_name()
+        self._id = self._survey.id_string()
+        
         # get xpaths
         #  - prep for xpaths.
         self._survey.xml()
@@ -17,12 +20,6 @@ class SurveyInstance(object):
         #see "answers(self):" below for explanation of this dict
         self._answers = {}
         self._orphan_answers = {}
-        
-        #do we want to use keys or xpaths?
-        #do we want to leave empty spaces where answers haven't been given?
-        #                --i think this could be useful
-        for x in self._xpaths:
-            self._answers[x] = None
     
     def keys(self):
         return self._keys
@@ -32,18 +29,42 @@ class SurveyInstance(object):
         #but survey doesn't like when xml() is called multiple times.
         return self._xpaths
 
-    def answer(self, xpath=None, name=None, value=None):
-        if name is not None:
-            _xpath = self._survey._xpath.get(name, None)
-        elif xpath is not None:
-            _xpath = xpath
-        else:
-            raise Exception("Xpath or name must be given")
+    def answer(self, name=None, value=None):
+        if name is None:
+            raise Exception("In answering, name must be given")
         
-        if _xpath is not None:
-            self._answers[_xpath] = value
+        #ahh. this is horrible, but we need the xpath dict in survey to be up-to-date
+        #...maybe
+      # self._survey.xml()
+
+
+        if name in self._survey._xpath.keys():
+            self._answers[name] = value
         else:
             self._orphan_answers[name] = value
+
+    def to_dict(self):
+        children = []
+        for k, v in self._answers.items():
+            children.append({'node_name':k, 'value':v})
+        return {
+            'node_name': self._name,
+            'id': self._id,
+            'children': children
+        }
+        
+    def to_xml(self):
+        """
+        A horrible way to do this, but it works (until we need the attributes pumped out in order, etc)
+        """
+        open_str = """<?xml version='1.0' ?><%s id="%s">""" % (self._name, self._id)
+        close_str = """</%s>""" % self._name
+        vals = ""
+        for k, v in self._answers.items():
+            vals += "<%s>%s</%s>" % (k, str(v), k)
+        
+        output = open_str + vals + close_str
+        return output
 
     def answers(self):
         """

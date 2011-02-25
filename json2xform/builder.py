@@ -26,7 +26,7 @@ class SurveyElementBuilder(object):
         if question_type_str not in Question.TYPES:
             raise Exception("Unknown question type", question_type_str)
         question_type = Question.TYPES[question_type_str]
-        control_dict = question_type[Question.CONTROL]
+        control_dict = question_type.get(Question.CONTROL, {})
         control_tag = control_dict.get(u"tag", u"")
         return self.QUESTION_CLASSES[control_tag]
 
