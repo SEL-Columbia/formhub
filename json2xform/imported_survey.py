@@ -21,7 +21,11 @@ class ImportedSurvey(object):
 	
 	def parse_xml(self):
 	    """
-	    Iterate through the parsed XML
+        1. Get keys from the xml instance.
+        2. Find bindings from the bindings.
+        3. Get the labels and hints that match up to those bindings.
+        
+        Will that work?
 	    """
 	
 	def label_hint_list(self):
