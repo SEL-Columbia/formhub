@@ -60,16 +60,17 @@ class Option(SurveyElement):
     VALUE = u"value"
 
     def __init__(self, *args, **kwargs):
-        """
-        This is a little hack here, I'm going to use an option's value
-        as its name.
-        """
+        # if there's no value key then we'll use the name
+        # the value and name will be used interchangeably
+        value = kwargs.get(self.VALUE, kwargs.get(self.NAME, None))
+        if value is None:
+            raise Exception("Did not specify value for multiple choice option", kwargs)
         d = {
             self.LABEL : kwargs[self.LABEL],
-            self.NAME : kwargs[self.VALUE],
+            self.NAME : value,
             }
         SurveyElement.__init__(self, **d)
-        self._dict[self.VALUE] = kwargs[self.VALUE]
+        self._dict[self.VALUE] = value
 
     def get_value(self):
         return self._dict[self.VALUE]
