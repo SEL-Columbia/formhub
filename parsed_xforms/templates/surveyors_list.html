@@ -1,5 +1,36 @@
-<ul>
-{% for surveyor in surveyors %}
-	<li><a href="/xforms/surveyors/{{surveyor.id}}">{{surveyor.name}}</a></li>
-{% endfor %}
-</ul>
+<table class="pretty fullw">
+	<thead>
+		<tr>
+			<th>
+				Name
+			</th>
+			<th>
+				District
+			</th>
+			<th>
+				Number of Submissions
+			</th>
+			<th>
+				Most Recent Submission
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for surveyor in surveyors %}
+		<tr>
+			<td>
+				<a href="{{surveyor.profile_url}}">{{surveyor.name}}</a>
+			</td>
+			<td>
+				{{surveyor.district}}
+			</td>
+			<td>
+				{{surveyor.number_of_submissions}}
+			</td>
+			<td>
+				{{surveyor.most_recent_submission}}
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>

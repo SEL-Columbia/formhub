@@ -189,7 +189,9 @@ h2.title {
 .error-box p {
 	margin: 4px 0;
 }
-
+table.halfw {
+    width: 50%;
+}
 table.fullw {
 	width: 100%;
 }
@@ -291,3 +293,37 @@ table.pretty td {
 .ui-rater-starsOff, .ui-rater-starsOn {display:inline-block; height:18px; background:url(../../img/default/stars.png) repeat-x 0 0px;}
 .ui-rater-starsOn {display:block; max-width:90px; top:0; background-position: 0 -36px;}
 .ui-rater-starsHover {background-position: 0 -18px!important;}
+
+div.lr-cols {
+	padding-left: 320px;
+	position: relative;
+}
+div.lr-cols hr {
+	border-color: #ccc;
+}
+.cb {
+	clear: both;
+}
+.l-col {
+	position: absolute;
+	top:0;
+	left:0;
+	width: 320px;
+}
+.l-col h2 {
+	margin: 2px 20px;
+	text-align: center;
+}
+.r-col {
+	padding: 4px;
+}
+.r-col .r-sect {
+	border: 1px solid #ddd;
+	padding: 5px;
+	margin: 0 0 4px;
+}
+.r-col .r-sect .rs-title {
+	font-size: 16px;
+	font-weight: bold;
+	margin: 2px 0;
+}

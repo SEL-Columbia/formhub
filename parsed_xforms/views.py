@@ -226,6 +226,29 @@ def xforms_directory(request):
 
 from surveyor_manager.models import Surveyor
 
+def surveyor_list_dict(surveyor):
+    d = {'name':surveyor.name}
+    d['profile_url'] = "/xforms/surveyors/%d" % surveyor.id
+    d['district'] = "Goa"
+    d['number_of_submissions'] = 12
+    d['most_recent_submission'] = "Yesterday"
+    return d
+    
+def surveyor_profile_dict(surveyor):
+    d = {'name': surveyor.name}
+#    from ipdb import set_trace; set_trace()
+#    d['district'] = surveyor.surveys.all()[0].district.name
+    d['registered_at'] = "I donno"
+    d['number_of_submissions'] = ParsedInstance.objects.filter(surveyor__id=surveyor.id).count()
+    d['most_recent_survey_date'] = "Yesterday"
+    
+    sts = []
+    for st in SurveyType.objects.all():
+        surveyor_st_count = ParsedInstance.objects.filter(surveyor__id=surveyor.id).count() #&& survey_type is st...
+        sts.append({'name': st.slug, 'submissions': surveyor_st_count})
+    d['survey_type_counts'] = sts
+    return d
+
 def surveyors(request, surveyor_id=None):
     r = ViewPkgr(request, "surveyors_list.html")
     r.footer()
@@ -234,14 +257,31 @@ def surveyors(request, surveyor_id=None):
     
     if surveyor_id is not None:
         surveyor = Surveyor.objects.get(id=surveyor_id)
-        r.info['surveyor'] = surveyor
+        r.info['surveyor'] = surveyor_profile_dict(surveyor)
         r.template = "surveyor_profile.html"
         r.nav([surveyor.name, "/xforms/surveyors/%d" % surveyor.id])
     else:
-        r.info['surveyors'] = Surveyor.objects.all()
+        r.info['surveyors'] = [surveyor_list_dict(s) for s in Surveyor.objects.all()]
     return r.r()
 
 from xform_manager.models import SurveyType
+
+def survey_type_list_dict(st):
+    d = {'name': st.slug}
+    d['profile_url'] = "/xforms/surveys/%s" % st.slug
+    d['submissions'] = 9999
+    return d
+    
+def survey_type_display_dict(st):
+    d = {'name': st.slug}
+    try:
+        map_data = SurveyTypeMapData.objects.get(survey_type=st)
+        d['color'] = map_data.color
+    except:
+        d['color'] = "Black"
+    d['number_of_submissions'] = "99945"
+    d['number_of_surveyors'] = "39453456"
+    return d
 
 def survey_types(request, survey_type_slug=None):
     r = ViewPkgr(request, "survey_type_list.html")
@@ -249,14 +289,16 @@ def survey_types(request, survey_type_slug=None):
             ("Survey Types", "/xforms/surveys")])
     r.footer()
     if survey_type_slug is not None:
-        survey_type = SurveyType.objects.get(slug=survey_type_slug)
-        map_data = SurveyTypeMapData.objects.get(survey_type=survey_type)
-        r.info['survey_type'] = survey_type
-        r.info['survey_type_color'] = map_data.color
-        r.template = "survey_type_dashboard.html"
-        r.nav((survey_type_slug, "/xforms/surveys/%s" % survey_type_slug))
+        try:
+            survey_type = SurveyType.objects.get(slug=survey_type_slug)
+            map_data = SurveyTypeMapData.objects.get(survey_type=survey_type)
+            r.info['template_st'] = survey_type_display_dict(survey_type)
+            r.template = "survey_type_dashboard.html"
+            r.nav((survey_type_slug, "/xforms/surveys/%s" % survey_type_slug))
+        except:
+            r.redirect_to = "/xforms/surveys"
     else:
-        r.info['survey_types'] = SurveyType.objects.all()
+        r.info['survey_types'] = [survey_type_list_dict(s) for s in SurveyType.objects.all()]
     return r.r()
 
 
