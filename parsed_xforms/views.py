@@ -204,7 +204,6 @@ def survey(request, pk):
     r = ViewPkgr(request, "survey.html")
     
     instance = ParsedInstance.objects.get(pk=pk)
-#    data = json_safe(instance.json_data())
     
     # score_partial is the section of the page that lists scores given
     # to the survey.
@@ -212,7 +211,10 @@ def survey(request, pk):
     # a new one. 
     reviewing = score_partial(instance, request.user, True)
 
-    data = [('key','val'), ('key2','val2')]
+    data = []
+    mongo_json = instance.get_from_mongo()
+    for key, val in mongo_json.items():
+        data.append((key, val))
     
     r.info['survey_title'] = "Survey Title"
     
