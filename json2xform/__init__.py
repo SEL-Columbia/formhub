@@ -5,9 +5,6 @@ from question import MultipleChoiceQuestion, InputQuestion
 from xls2json import ExcelReader
 from instance import SurveyInstance
 
-#i like to use this in tests
-from builder import create_survey_element_from_dict
-
 if __name__=="__main__":
     path = sys.argv[1]
     assert path[-4:]==".xls"
