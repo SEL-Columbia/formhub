@@ -40,6 +40,11 @@ class SurveyElementBuilder(object):
             d_copy = d.copy()
             question_type_str = question_type_str[:len(question_type_str)-len(u" or specify other")]
             d_copy[Question.TYPE] = question_type_str
+            # This is dangerous because we need translations
+            d_copy[u"choices"].append({
+                    u"name" : u"other",
+                    u"label" : {u"English" : u"Other"}
+                    })
             return [self._create_question_from_dict(d_copy),
                     self._create_specify_other_question_from_dict(d_copy)]
         question_class = self._get_question_class(question_type_str)
@@ -48,9 +53,10 @@ class SurveyElementBuilder(object):
 
     def _create_specify_other_question_from_dict(self, d):
         kwargs = {
-            Question.TYPE : u"specify other",
+            Question.TYPE : u"text",
             Question.NAME : u"%s_other" % d[Question.NAME],
-            Question.LABEL : d[Question.LABEL]
+            Question.LABEL : d[Question.LABEL],
+            Question.BIND : {u"relevant" : u"selected(${%s}, 'other')" % d[Question.NAME]}
             }
         return InputQuestion(**kwargs)
 

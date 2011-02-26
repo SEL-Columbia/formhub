@@ -44,7 +44,7 @@ class Survey(Section):
                 ]:
                 for lang in text.keys():
                     if translation_key in self._translations[lang]:
-                        assert self._translations[lang][translation_key] == text[lang], translation_key
+                        assert self._translations[lang][translation_key] == text[lang], "The labels for this translation key are inconsistent %(key)s %(label)s" % {"key" : translation_key, "label" : text[lang]}
                     else:
                         self._translations[lang][translation_key] = text[lang]
 
