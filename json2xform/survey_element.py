@@ -50,7 +50,7 @@ class SurveyElement(object):
         self._dict[self.NAME] = name
 
     def validate(self):
-        assert is_valid_xml_tag(self._dict[self.NAME])
+        assert is_valid_xml_tag(self.get_name()), "%s is an invalid xml tag name" % self.get_name()
     
     def _set_parent(self, parent):
         self._parent = parent
@@ -101,8 +101,8 @@ class SurveyElement(object):
     def get_translation_keys(self):
         # we could base this off of the xpath instead of just the name
         return {
-            u"label" : u"%s:label" % self.get_name(),
-            u"hint" : u"%s:hint" % self.get_name(),
+            u"label" : u"%s:label" % self.get_xpath(),
+            u"hint" : u"%s:hint" % self.get_xpath(),
             }
 
     # XML generating functions, these probably need to be moved around.

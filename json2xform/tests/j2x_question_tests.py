@@ -43,7 +43,7 @@ class Json2XformQuestionValidationTests(TestCase):
 
         q = create_survey_element_from_dict(simple_string_json)
         
-        expected_string_control_xml = """<input ref="/test/enumerator_name"><label ref="jr:itext('enumerator_name:label')"/><hint ref="jr:itext('enumerator_name:hint')"/></input>"""
+        expected_string_control_xml = """<input ref="/test/enumerator_name"><label ref="jr:itext('/test/enumerator_name:label')"/><hint ref="jr:itext('/test/enumerator_name:hint')"/></input>"""
         
         expected_string_binding_xml = """
         <bind nodeset="/test/enumerator_name" type="string" required="true()"/>
@@ -71,7 +71,7 @@ class Json2XformQuestionValidationTests(TestCase):
         
         # I copied the response in, since this is not our method of testing
         # valid return values.
-        expected_select_one_control_xml = """<select1 ref="/test/qname"><label ref="jr:itext('qname:label')"/><hint ref="jr:itext('qname:hint')"/><item><label ref="jr:itext('a:label')"/><value>a</value></item><item><label ref="jr:itext('b:label')"/><value>b</value></item></select1>"""
+        expected_select_one_control_xml = """<select1 ref="/test/qname"><label ref="jr:itext('/test/qname:label')"/><hint ref="jr:itext('/test/qname:hint')"/><item><label ref="jr:itext('/test/qname/a:label')"/><value>a</value></item><item><label ref="jr:itext('/test/qname/b:label')"/><value>b</value></item></select1>"""
         
         expected_select_one_binding_xml = """
         <bind nodeset="/test/qname" type="select1" required="true()"/>
@@ -91,7 +91,7 @@ class Json2XformQuestionValidationTests(TestCase):
         simple_integer_question = {"text": {"f": "fc", "e": "ec"}, "type": "integer", "name": "integer_q", "attributes": {}}
 
         expected_integer_control_xml = """
-        <input ref="/test/integer_q"><label ref="jr:itext('integer_q:label')"/></input>
+        <input ref="/test/integer_q"><label ref="jr:itext('/test/integer_q:label')"/></input>
         """.strip()
         
         expected_integer_binding_xml = """
@@ -115,7 +115,7 @@ class Json2XformQuestionValidationTests(TestCase):
         simple_date_question = {"text": {"f": "fd", "e": "ed"}, "type": "date", "name": "date_q", "attributes": {}}
         
         expected_date_control_xml = """
-        <input ref="/test/date_q"><label ref="jr:itext('date_q:label')"/></input>
+        <input ref="/test/date_q"><label ref="jr:itext('/test/date_q:label')"/></input>
         """.strip()
         
         expected_date_binding_xml = """
@@ -139,7 +139,7 @@ class Json2XformQuestionValidationTests(TestCase):
             "name": "phone_number_q",
             }
 
-        expected_phone_number_control_xml = """<input ref="/test/phone_number_q"><label ref="jr:itext('phone_number_q:label')"/><hint ref="jr:itext('phone_number_q:hint')"/></input>"""
+        expected_phone_number_control_xml = """<input ref="/test/phone_number_q"><label ref="jr:itext('/test/phone_number_q:label')"/><hint ref="jr:itext('/test/phone_number_q:hint')"/></input>"""
 
         expected_phone_number_binding_xml = """
         <bind required="true()" jr:constraintMsg="Please enter only numbers." nodeset="/test/phone_number_q" type="string" constraint="regex(., '^\d*$')"/>
@@ -167,7 +167,7 @@ class Json2XformQuestionValidationTests(TestCase):
                 ]
             }
 
-        expected_select_all_control_xml = """<select ref="/test/select_all_q"><label ref="jr:itext('select_all_q:label')"/><hint ref="jr:itext('select_all_q:hint')"/><item><label ref="jr:itext('f:label')"/><value>f</value></item><item><label ref="jr:itext('g:label')"/><value>g</value></item><item><label ref="jr:itext('h:label')"/><value>h</value></item></select>"""
+        expected_select_all_control_xml = """<select ref="/test/select_all_q"><label ref="jr:itext('/test/select_all_q:label')"/><hint ref="jr:itext('/test/select_all_q:hint')"/><item><label ref="jr:itext('/test/select_all_q/f:label')"/><value>f</value></item><item><label ref="jr:itext('/test/select_all_q/g:label')"/><value>g</value></item><item><label ref="jr:itext('/test/select_all_q/h:label')"/><value>h</value></item></select>"""
         
         expected_select_all_binding_xml = """
         <bind nodeset="/test/select_all_q" type="select" required="false()"/>
@@ -187,7 +187,7 @@ class Json2XformQuestionValidationTests(TestCase):
         simple_decimal_question = {"text": {"f": "f text", "e": "e text"}, "type": "decimal", "name": "decimal_q", "attributes": {}}
 
         expected_decimal_control_xml = """
-        <input ref="/test/decimal_q"><label ref="jr:itext('decimal_q:label')"/></input>
+        <input ref="/test/decimal_q"><label ref="jr:itext('/test/decimal_q:label')"/></input>
         """.strip()
         
         expected_decimal_binding_xml = """

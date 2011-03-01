@@ -71,7 +71,10 @@ class SurveyElementBuilder(object):
         return result
 
     def _create_table_from_dict(self, d):
-        kwargs = dict([(k, d[k]) for k in [Section.NAME, Section.LABEL]])
+        try:
+            kwargs = dict([(k, d[k]) for k in [Section.NAME, Section.LABEL]])
+        except KeyError:
+            raise Exception("This table is missing either a name or a label.", d)
         result = GroupedSection(**kwargs)
         for column in d[u"columns"]:
             # create a new group for each column

@@ -91,7 +91,12 @@ class Survey(Section):
         Given a dictionary of xpaths, return a function we can use to
         replace ${varname} with the xpath to varname.
         """
-        return lambda matchobj: self._xpath[matchobj.group(1)]
+        def repl(matchobj):
+            if matchobj.group(1) not in self._xpath:
+                raise Exception("There is not survey element with this name.",
+                                matchobj.group(1))
+            return self._xpath[matchobj.group(1)]
+        return repl
 
     def insert_xpaths(self, text):
         """

@@ -20,7 +20,7 @@ SEP = "_"
 
 # http://www.w3.org/TR/REC-xml/
 TAG_START_CHAR = r"[a-zA-Z:_]"
-TAG_CHAR = r"[a-zA-Z:_0-9\-\.]"
+TAG_CHAR = r"[a-zA-Z:_0-9\-.]"
 XFORM_TAG_REGEXP = "%(start)s%(char)s*" % {"start" : TAG_START_CHAR, "char" : TAG_CHAR}
 
 def ns(abbrev, text):

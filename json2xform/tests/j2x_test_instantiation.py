@@ -49,7 +49,7 @@ class Json2XformExportingPrepTests(TestCase):
         surv.add_child(create_survey_element_from_dict({ \
                                 'type':'gps', 'name':'geopoint'}))
         surv.add_child(create_survey_element_from_dict({ \
-                                'type':'load imei', 'name':'device_id'}))
+                                'type':'imei', 'name':'device_id'}))
         
         instance = surv.instantiate()
         instance.import_from_xml("""
