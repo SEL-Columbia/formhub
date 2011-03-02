@@ -76,7 +76,8 @@ class ExcelReader(object):
                     key = sheet.cell(0,column).value
                     value = sheet.cell(row,column).value
                     if value:
-                        row_dict[key] = value
+                        # this strip here is a little hacky way to clean up the data from excel, often spaces at the end of question types are breaking things
+                        row_dict[key] = value.strip()
                 if row_dict: self._dict[sheet.name].append(row_dict)
 
     def _fix_int_values(self):
@@ -119,7 +120,10 @@ class ExcelReader(object):
         choice_list = self._dict[self._lists_sheet_name]
         choices = {}
         for choice in choice_list:
-            list_name = choice.pop(LIST_NAME)
+            try:
+                list_name = choice.pop(LIST_NAME)
+            except KeyError:
+                raise Exception("For some reason this choice isn't associated with a list.", choice)
             if list_name in choices: choices[list_name].append(choice)
             else: choices[list_name] = [choice]
         self._dict[self._lists_sheet_name] = choices
@@ -198,7 +202,8 @@ class ExcelReader(object):
                 stack.append(cmd)
             elif match_end:
                 begin_cmd = stack.pop()
-                assert begin_cmd[u"type"] == match_end.group(1)
+                if begin_cmd[u"type"] != match_end.group(1):
+                    raise Exception("This end group does not match the previous begin", cmd)
             else:
                 stack[-1][u"children"].append(cmd)
         self._dict = result

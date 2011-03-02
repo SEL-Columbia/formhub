@@ -56,11 +56,12 @@ class SurveyElement(object):
         self._parent = parent
 
     def iter_children(self):
+        # it really seems like this method should not yield self
         yield self
         for e in self._children:
             for f in e.iter_children():
                 yield f
-        
+
     def get_lineage(self):
         """
         Return a the list [root, ..., self._parent, self]

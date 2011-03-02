@@ -13,7 +13,7 @@ class Section(SurveyElement):
         element_slugs = []
         for element in self._children:
             if element.get_name() in element_slugs:
-                raise Exception("Element with namme: '%s' already exists" % element.get_name())
+                raise Exception("Element with name: '%s' already exists" % element.get_name())
             else:
                 element_slugs.append(element.get_name())
 

@@ -103,19 +103,3 @@ def create_survey_element_from_dict(d):
 def create_survey_element_from_json(str_or_path):
     d = utils.get_pyobj_from_json(str_or_path)
     return create_survey_element_from_dict(d)
-
-# we will need to write a helper function to create tables of questions
-# i'm thinking the excel syntax will look something like:
-# begin table with columns from ...
-# row1
-# row2 ...
-# end table
-# def table(rows, columns):
-#     result = []
-#     for row_text, row_name in tuples(rows):
-#         for d in columns:
-#             kwargs = d.copy()
-#             kwargs["text"] = row_text + u": " + kwargs["text"]
-#             kwargs["name"] = row_name + u" " + kwargs.get("name", sluggify(kwargs["text"]))
-#             result.append(q(**kwargs))
-#     return result

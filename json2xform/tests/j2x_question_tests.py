@@ -71,7 +71,7 @@ class Json2XformQuestionValidationTests(TestCase):
         
         # I copied the response in, since this is not our method of testing
         # valid return values.
-        expected_select_one_control_xml = """<select1 ref="/test/qname"><label ref="jr:itext('/test/qname:label')"/><hint ref="jr:itext('/test/qname:hint')"/><item><label ref="jr:itext('/test/qname/a:label')"/><value>a</value></item><item><label ref="jr:itext('/test/qname/b:label')"/><value>b</value></item></select1>"""
+        expected_select_one_control_xml = """<select1 ref="/test/qname"><label ref="jr:itext('/test/qname:label')"/><item><label ref="jr:itext('/test/qname/a:label')"/><value>a</value></item><item><label ref="jr:itext('/test/qname/b:label')"/><value>b</value></item></select1>"""
         
         expected_select_one_binding_xml = """
         <bind nodeset="/test/qname" type="select1" required="true()"/>

@@ -95,7 +95,9 @@ class MultipleChoiceQuestion(Question):
             self._add_option(**option)
         
     def validate(self):
-        return Question.validate(self)
+        Question.validate(self)
+        for choice in self.iter_children():
+            if choice!=self: choice.validate()
         
     def _add_option(self, **kwargs):
         option = Option(**kwargs)
