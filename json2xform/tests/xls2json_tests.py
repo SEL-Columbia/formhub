@@ -11,7 +11,7 @@ from json2xform.xls2json import ExcelReader
 class BasicXls2JsonApiTests(TestCase):
 
     def test_simple_yes_or_no_question(self):
-        x = ExcelReader("json2xform/surveys/super_simple/yes_or_no_question.xls")
+        x = ExcelReader("json2xform/tests/yes_or_no_question.xls")
         x_results = x.to_dict()
         
         expected_dict = [
@@ -35,7 +35,7 @@ class BasicXls2JsonApiTests(TestCase):
 
 
     def test_gps(self):
-        x = ExcelReader("json2xform/surveys/super_simple/gps.xls")
+        x = ExcelReader("json2xform/tests/gps.xls")
 
         expected_dict = [{u'type': u'gps', u'name': u'location'}]
 
@@ -43,7 +43,7 @@ class BasicXls2JsonApiTests(TestCase):
 
     
     def test_string_and_integer(self):
-        x = ExcelReader("json2xform/surveys/super_simple/string_and_integer.xls")
+        x = ExcelReader("json2xform/tests/string_and_integer.xls")
 
         expected_dict = [{u'text': {u'english': u'What is your name?'}, u'type': u'string', u'name': u'your_name'}, {u'text': {u'english': u'How many years old are you?'}, u'type': u'integer', u'name': u'your_age'}]
 
