@@ -67,7 +67,7 @@ INSTALLED_APPS = (
     'south',
     'registration',
 
-    'json2xform',
+    'pyxform',
     'locations',
     'parsed_xforms',
     'phone_manager',
