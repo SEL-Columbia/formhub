@@ -194,6 +194,12 @@ def xforms_directory(request):
     r.ensure_logged_in()
     return r.r()
 
+def homepage(request):
+    r = ViewPkgr(request, "homepage.html")
+    r.footer()
+    r.ensure_logged_in()
+    return r.r()
+
 from surveyor_manager.models import Surveyor
 
 def surveyor_list_dict(surveyor):
