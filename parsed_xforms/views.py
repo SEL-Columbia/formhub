@@ -20,42 +20,6 @@ from .models import District, XForm, xform_instances, ParsedInstance, Instance
 
 from view_pkgr import ViewPkgr
 
-@require_GET
-def formList(request):
-    """This is where ODK Collect gets its download list."""
-    forms = [f.id_string for f in XForm.objects.filter(active=True)]
-    return render_to_response("formList.xml",
-                              {"forms": forms},
-                              mimetype="application/xml")
-
-@require_POST
-@csrf_exempt
-def submission(request):
-    # request.FILES is a django.utils.datastructures.MultiValueDict
-    # for each key we have a list of values
-    try:
-        xml_file_list = request.FILES.pop("xml_submission_file", [])
-
-        # save this XML file and media files as attachments
-        instance, created = get_or_create_instance(
-            xml_file_list[0],
-            list(itertools.chain(*request.FILES.values()))
-            )
-
-        # ODK needs two things for a form to be considered successful
-        # 1) the status code needs to be 201 (created)
-        # 2) The location header needs to be set to the host it posted to
-        response = HttpResponse("Your ODK submission was successful.")
-        response.status_code = 201
-        response['Location'] = "http://%s/submission" % request.get_host()
-        return response
-    except:
-        # catch any exceptions and print them to the error log
-        # it'd be good to add more info to these error logs
-        return HttpResponseBadRequest(
-            "We need to improve our error messages and logging."
-            )
-
 read_all_data, created = Permission.objects.get_or_create(
     name = "Can read all data",
     content_type = ContentType.objects.get_for_model(Permission),

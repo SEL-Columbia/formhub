@@ -6,10 +6,6 @@ from django.conf.urls.defaults import *
 from . import views
 
 urlpatterns = patterns('',
-    # list that ODK Collect uses to download forms
-    url(r"^formList$", views.formList),
-    # url where ODK Collect submits data
-    url(r"^submission$", views.submission),
     url(r"^survey-list/?$", views.export_list),
     url(r"^export_spreadsheet/(?P<id_string>[^/]*)\.xls$", views.xls),
     url(r"^$", views.xforms_directory, name="xforms_directory"),
