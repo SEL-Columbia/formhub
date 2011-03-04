@@ -23,8 +23,8 @@
 <body class="nmis">
 	<div id="header">
 		<div class="fwidth">
-			<a href="/xforms/" id="hlogo"><img src="/site-media/images/nmis_pilot.png" /></a>
-			<h2 class="title">Baseline Data Collection &raquo; <span id="page-title">Dashboard</span></h2>
+			<a href="/" id="hlogo"><img src="/site-media/images/nmis_pilot.png" /></a>
+			<h2 class="title">Baseline Data Collection</h2>
 		<div class="account_links">
 			{% if user.is_authenticated %}
 			{% trans "Logged in" %}: {{ user.username }} 
@@ -62,7 +62,6 @@
 			})
 		}
 	</script>
-	{% if display_footer %}
 	<div id="footer">
 		<div class="fwidth">
 			<div id="footer">
@@ -71,7 +70,6 @@
 			</div>
 		</div>
 	</div>
-	{% endif %}
 	{% block footer %}{% endblock %}
 </body>
 </html>
