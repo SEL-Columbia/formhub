@@ -107,3 +107,15 @@ def patch_south():
 
 # I need to import all the phase one data
 # find /home/amarder/host/Desktop/Phone\ Data\ Phase\ I/ -name "???" -exec python manage.py import_instances '{}' \;
+
+#the following method uses fab as an alternative to a shell script, which is
+#not a clean use of fab
+def local_ensure_git_subrepositories_loaded():
+    repositories_to_ensure = {
+        'pyxform': 'git://github.com/mvpdev/pyxform.git',
+        'xform_manager': 'git://github.com/mvpdev/xform_manager.git'
+    }
+    current_dir = os.dirname(__file__)
+    for repo_name, repo_link in repositories_to_ensure.items():
+        if not os.path.exists(os.path.join(current_dir, repo_name)):
+            local('git clone %s' % repo_link)
