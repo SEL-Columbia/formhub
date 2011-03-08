@@ -10,7 +10,7 @@
 # Is this really going to help us over having a single settings.py
 # example? I think Alex has the answer to this question. -Andrew
 
-import os
+import os, re
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -24,10 +24,17 @@ DATABASES = {
     },
 }
 
-MONGO = {
-    "database name" : "odk",
-    "test database name" : "odk_test",
-    }
+#this is a bad way to do this, but it works for our needs...
+# /path/to/repos/production/... will use production
+#   "  staging/... will use staging
+# all else will be dev.
+__repo_env = "dev"
+if re.search(PROJECT_ROOT, "production"):
+    __repo_env = "production"
+elif re.search(PROJECT_ROOT, "staging"):
+    __repo_env = "staging"
+
+REPOSITORY_ENVIRONMENT = __repo_env
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
