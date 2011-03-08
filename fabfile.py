@@ -115,7 +115,7 @@ def local_ensure_git_subrepositories_loaded():
         'pyxform': 'git://github.com/mvpdev/pyxform.git',
         'xform_manager': 'git://github.com/mvpdev/xform_manager.git'
     }
-    current_dir = os.dirname(__file__)
+    current_dir = os.path.dirname(__file__)
     for repo_name, repo_link in repositories_to_ensure.items():
         if not os.path.exists(os.path.join(current_dir, repo_name)):
             local('git clone %s' % repo_link)
