@@ -5,18 +5,32 @@
 from custom_settings import *
 
 import sys, os
-from pymongo import Connection
+from pymongo import Connection, errors as pymongo_errors
+
+try:
+    if sys.argv[1]=="test":
+        TESTING=True
+    else:
+        TESTING = False
+except:
+    TESTING = False
 
 # set up the Mongo Database
-_c = Connection()
-MONGO_DB = None
-if sys.argv[1]=="test":
-    # if we're testing, clear the database out
-    # note: this only works when we run the tests at the command line
-    _c.drop_database(MONGO["test database name"])
-    MONGO_DB = _c[MONGO["test database name"]]
+if TESTING:
+    MONGO_DB_NAME = MONGO["database name"]
 else:
-    MONGO_DB = _c[MONGO["database name"]]
+    MONGO_DB_NAME = MONGO["test database name"]
+
+_c = Connection()
+MONGO_DB = _c[MONGO_DB_NAME]
+
+#AD:  I think this method works to delete the test database...
+if TESTING:
+    try:
+        MONGO_DB.instances.drop()
+    except pymongo_errors.OperationFailure, e:
+        print "Pymongo wont delete for this reason: %s" % e
+
 
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 TIME_ZONE = 'America/Chicago'
