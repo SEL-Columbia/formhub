@@ -9,8 +9,6 @@ django-mptt==0.4.2
 pymongo==1.9
 -e git://github.com/mirhampt/django-factories.git#egg=django-factories
 
-#these libraries are required for pyxform tests, but not (currently) for
-# other webapp functions
-lxml==2.3
+# Handle lxml==2.3 dependency with apt-get:
+#   apt-get install python-lxml
 xlrd==0.7.1
-xlwt==0.7.2
