@@ -2,18 +2,18 @@
 # -*- coding: utf-8 -*-
 # vim: ai ts=4 sts=4 et sw=4
 
-from custom_settings import *
+try:
+    from custom_settings import *
+except ImportError, e:
+    raise Exception("custom_settings.py file cannot be found. Did you create custom_settings.py (see custom_settings_example.py)?")
+
+try:
+    TESTING #This is defined in the latest version of custom_settings_example.py
+except NameError, e:
+    raise Exception("Hi. You need to update your custom_settings.py based on custom_settings_example.py")
 
 import sys, os
 from pymongo import Connection, errors as pymongo_errors
-
-try:
-    if sys.argv[1]=="test":
-        TESTING=True
-    else:
-        TESTING = False
-except:
-    TESTING = False
 
 # set up the Mongo Database
 if TESTING:

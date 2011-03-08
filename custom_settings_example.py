@@ -24,6 +24,21 @@ DATABASES = {
     },
 }
 
+try:
+    if sys.argv[1]=="test":
+        TESTING=True
+    else:
+        TESTING = False
+except:
+    TESTING = False
+
+REPOSITORY_ENVIRONMENT = "dev"
+
+MONGO = {
+    "database name" : "%s_odk" % REPOSITORY_ENVIRONMENT,
+    "test database name" : "%s_odk_test" % REPOSITORY_ENVIRONMENT,
+    }
+
 #this is a bad way to do this, but it works for our needs...
 # /path/to/repos/production/... will use production
 #   "  staging/... will use staging
