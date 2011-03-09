@@ -34,11 +34,6 @@ except:
 
 REPOSITORY_ENVIRONMENT = "dev"
 
-MONGO = {
-    "database name" : "%s_odk" % REPOSITORY_ENVIRONMENT,
-    "test database name" : "%s_odk_test" % REPOSITORY_ENVIRONMENT,
-    }
-
 #this is a bad way to do this, but it works for our needs...
 # /path/to/repos/production/... will use production
 #   "  staging/... will use staging
@@ -50,6 +45,12 @@ elif re.search(PROJECT_ROOT, "staging"):
     __repo_env = "staging"
 
 REPOSITORY_ENVIRONMENT = __repo_env
+
+MONGO = {
+    "database name" : "%s_odk" % REPOSITORY_ENVIRONMENT,
+    "test database name" : "%s_odk_test" % REPOSITORY_ENVIRONMENT,
+    }
+
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
