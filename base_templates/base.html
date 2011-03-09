@@ -62,6 +62,7 @@
 			})
 		}
 	</script>
+	{% if display_footer %}
 	<div id="footer">
 		<div class="fwidth">
 			<div id="footer">
@@ -70,6 +71,6 @@
 			</div>
 		</div>
 	</div>
-	{% block footer %}{% endblock %}
+	{% endif %}
 </body>
 </html>
