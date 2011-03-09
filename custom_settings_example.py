@@ -10,7 +10,7 @@
 # Is this really going to help us over having a single settings.py
 # example? I think Alex has the answer to this question. -Andrew
 
-import os, re
+import os
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -24,33 +24,10 @@ DATABASES = {
     },
 }
 
-try:
-    if sys.argv[1]=="test":
-        TESTING=True
-    else:
-        TESTING = False
-except:
-    TESTING = False
-
-REPOSITORY_ENVIRONMENT = "dev"
-
-#this is a bad way to do this, but it works for our needs...
-# /path/to/repos/production/... will use production
-#   "  staging/... will use staging
-# all else will be dev.
-__repo_env = "dev"
-if re.search(PROJECT_ROOT, "production"):
-    __repo_env = "production"
-elif re.search(PROJECT_ROOT, "staging"):
-    __repo_env = "staging"
-
-REPOSITORY_ENVIRONMENT = __repo_env
-
 MONGO = {
-    "database name" : "%s_odk" % REPOSITORY_ENVIRONMENT,
-    "test database name" : "%s_odk_test" % REPOSITORY_ENVIRONMENT,
+    "database name" : "odk",
+    "test database name" : "odk_test",
     }
-
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
@@ -58,5 +35,3 @@ ADMINS = (
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-
-STRICT = False
