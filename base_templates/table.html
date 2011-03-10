@@ -1,0 +1,19 @@
+<table>
+	<thead>
+		<tr>
+	    <th></th>
+	    % for c in column_headers:
+	      <th>${c}</th>
+	    % endfor
+	  </tr>
+	</thead>
+	<tbody>
+	% for r in row_headers:
+      <tr><td>${r}</td>
+	  % for c in column_headers:
+	    <td>${cells.get((r,c), "")}</td>
+	  % endfor
+	  </tr>
+	% endfor
+	</tbody>
+</table>

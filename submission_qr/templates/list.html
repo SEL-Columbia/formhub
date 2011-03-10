@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}
+QualityReview
+{% endblock %}
+{% block content %}
+
+	<h2>
+		{{qr_count}} Reviews
+	</h2>
+	<table border="0">
+		<thead>
+			<tr>
+				<th></th>
+				<th>Reviewer</th>
+				<th>Score</th>
+				<th>Unicode</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for qr in qrs %}
+		{% if qr.hidden %}
+		<tr class="qr hidden">
+		{% else %}
+		<tr class="qr showing">
+		{% endif %}
+			<td>
+				{% if qr.hidden %}
+				<a href="{{show_hide_review_url}}show/{{qr.id}}">[Show]</a>
+				{% else %}
+				<a href="{{show_hide_review_url}}hide/{{qr.id}}">[Hide]</a>
+				{% endif %}
+			</td>
+			<td>
+				{{qr.reviewer}}
+			</td>
+			<td>
+				{{qr.score}}
+			</td>
+			<td>
+				{{qr}}
+			</td>
+		</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	<ul>
+	</ul>
+	<hr />
+	<h3>ParsedInstances</h3>
+	<ul>
+		{% for pi in pis %}
+		<li>
+			<a href="{{new_review_url}}{{pi.id}}/">Create Review for {{pi}}</a>
+		</li>
+		{% endfor %}
+	</ul>
+
+<style>
+	tr.qr.showing {
+		font-weight: bold;
+	}
+</style>
+{% endblock %}

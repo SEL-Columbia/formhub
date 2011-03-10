@@ -1,8 +1,9 @@
 custom_settings.py
 
-django-eav
+pyxform
+xform_manager
 eav
-site_media/odk
+site_media/attachments
 
 tmp/*
 *.pyc
@@ -11,3 +12,8 @@ tmp/*
 db.sqlite3
 error.log
 site_media/css/sass/.sass-cache/*
+.sass-cache
+.odk
+*orig
+.idea
+search_index

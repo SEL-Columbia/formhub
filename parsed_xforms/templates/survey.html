@@ -1,0 +1,39 @@
+{% for a in instance.attachments.all %}
+<a href="{{a.attachment.url}}" target="_BLANK"><img src="{{ a.attachment.url }}" style="width:180px;border:0 none;" /></a>
+{% endfor %}
+
+<div class="survey-view-section">
+	<h3 style="margin:-6px -12px 8px; padding: 6px 20px;background-color:#eee;border:1px solid #ccc;border-width: 0 0 1px 0">
+		{{survey_title}}
+	</h3>
+	<dl class='survey-data'>
+	{% for k in data %}
+		<dt>
+			{{k.0}}
+		</dt>
+		<dd>
+			{{k.1}}
+		</dd>
+	{% endfor %}
+	</dl>
+</div>
+
+<div class="survey-view-section">
+	{% include '_review_section.html' %}
+</div>
+<style>
+	.survey-view-section {
+		width: 600px;
+		margin: 6px auto;
+		padding: 6px 12px;
+		border: 1px solid #555;
+	}
+	dl.survey-data {
+		font-family: 'Comic Sans MS';
+		margin: 0 12px;
+		padding: 4px 0 14px;
+	}
+	dl.survey-data dt:after {
+		content: ':';
+	}
+</style>

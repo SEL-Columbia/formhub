@@ -1,0 +1,20 @@
+<table>
+  <tr>
+    <td>Title</td>
+    <td>Number of Submissions</td>
+    <td>Date of Last Submission</td>
+    <td>Data Export</td>
+  </tr>
+{% for xform in xforms %}
+<tr>
+  <td>{{ xform.title }}</td>
+  <td>{{ xform.submission_count }}</td>
+  <td>{{ xform.date_of_last_submission }}</td>
+  <td><a href="/{{ xform.id_string }}.xls">xls</a></td>
+</tr>
+{% endfor %}
+</table>
+<a class="xform-mgr button" href="/xform_manager/">XForm Manager</a>
+<script type="text/javascript" charset="utf-8">
+	$('a.xform-mgr.button').button()
+</script>
