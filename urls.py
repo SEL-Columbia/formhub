@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     url(r'^$', 'parsed_xforms.views.homepage', name='site-homepage'),
 
     (r'^phone_manager/', include('nmis.phone_manager.urls')),
-    (r'^xform_manager/', include('nmis.xform_manager.urls')),
+    (r'', include('nmis.xform_manager.urls')),
 
     (r'^admin/', include(admin.site.urls)),
     (r'^accounts/', include('registration.urls')),
