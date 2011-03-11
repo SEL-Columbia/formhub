@@ -7,6 +7,7 @@ from surveyor_manager.models import Surveyor
 from locations.models import District
 
 from xform_manager import utils, tag
+import sys
 
 # this is Mongo Collection (SQL table equivalent) where we will store
 # the parsed submissions
