@@ -10,13 +10,28 @@ from pymongo import Connection
 # set up the Mongo Database
 _c = Connection()
 MONGO_DB = None
-if sys.argv[1]=="test":
-    # if we're testing, clear the database out
-    # note: this only works when we run the tests at the command line
-    _c.drop_database(MONGO["test database name"])
-    MONGO_DB = _c[MONGO["test database name"]]
-else:
-    MONGO_DB = _c[MONGO["database name"]]
+
+try:
+    if sys.argv[1]=="test":
+        # if we're testing, clear the database out
+        # note: this only works when we run the tests at the command line
+        TESTING_MODE = True
+#        _c.drop_database(MONGO["test database name"])
+        MONGO_DB = _c[MONGO["test database name"]]
+    else:
+        TESTING_MODE = False
+        MONGO_DB = _c[MONGO["database name"]]
+except:
+    #sys.argv[0] raises an exception in production
+    TESTING_MODE = False
+
+#AD:  I think this method works to delete the test database...
+if TESTING_MODE:
+    try:
+        MONGO_DB.instances.drop()
+    except Exception, e:
+        #I never got this to work in my dev environment. -AD
+        _c.drop_database(MONGO["test database name"])
 
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 TIME_ZONE = 'America/Chicago'
