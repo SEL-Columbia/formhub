@@ -70,6 +70,7 @@ INSTALLED_APPS = (
     'pyxform',
     'locations',
     'parsed_xforms',
+    'lga_hack',
     'phone_manager',
     'surveyor_manager',
     'xform_manager',
