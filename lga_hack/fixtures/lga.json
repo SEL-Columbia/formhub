@@ -1,0 +1,7742 @@
+[
+  {
+    "pk": 1,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Abadam",
+      "scale_up": false,
+      "slug": "abadam"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 15,
+      "name": "Abaji",
+      "scale_up": true,
+      "slug": "abaji"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Abak",
+      "scale_up": false,
+      "slug": "abak"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 11,
+      "name": "Abakaliki",
+      "scale_up": false,
+      "slug": "abakaliki"
+    }
+  },
+  {
+    "pk": 5,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 1,
+      "name": "Aba North",
+      "scale_up": false,
+      "slug": "aba_north"
+    }
+  },
+  {
+    "pk": 6,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 1,
+      "name": "Aba South",
+      "scale_up": false,
+      "slug": "aba_south"
+    }
+  },
+  {
+    "pk": 7,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Abeokuta North",
+      "scale_up": false,
+      "slug": "abeokuta_north"
+    }
+  },
+  {
+    "pk": 8,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Abeokuta South",
+      "scale_up": false,
+      "slug": "abeokuta_south"
+    }
+  },
+  {
+    "pk": 9,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Abi",
+      "scale_up": false,
+      "slug": "abi"
+    }
+  },
+  {
+    "pk": 10,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Aboh Mbaise",
+      "scale_up": false,
+      "slug": "aboh_mbaise"
+    }
+  },
+  {
+    "pk": 11,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Abua Odual",
+      "scale_up": false,
+      "slug": "abua_odual"
+    }
+  },
+  {
+    "pk": 12,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Adavi",
+      "scale_up": false,
+      "slug": "adavi"
+    }
+  },
+  {
+    "pk": 13,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 13,
+      "name": "Ado-Ekiti",
+      "scale_up": false,
+      "slug": "ado_ekiti"
+    }
+  },
+  {
+    "pk": 14,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Ado-Odo/Ota",
+      "scale_up": false,
+      "slug": "ado_odo_ota"
+    }
+  },
+  {
+    "pk": 15,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Afijio",
+      "scale_up": false,
+      "slug": "afijio"
+    }
+  },
+  {
+    "pk": 16,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 11,
+      "name": "Afikpo North",
+      "scale_up": false,
+      "slug": "afikpo_north"
+    }
+  },
+  {
+    "pk": 17,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 11,
+      "name": "Afikpo South",
+      "scale_up": true,
+      "slug": "afikpo_south"
+    }
+  },
+  {
+    "pk": 18,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Agaie",
+      "scale_up": false,
+      "slug": "agaie"
+    }
+  },
+  {
+    "pk": 19,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Agatu",
+      "scale_up": false,
+      "slug": "agatu"
+    }
+  },
+  {
+    "pk": 20,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Agwara",
+      "scale_up": false,
+      "slug": "agwara"
+    }
+  },
+  {
+    "pk": 21,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Agege",
+      "scale_up": false,
+      "slug": "agege"
+    }
+  },
+  {
+    "pk": 22,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Aguata",
+      "scale_up": false,
+      "slug": "aguata"
+    }
+  },
+  {
+    "pk": 23,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Ahiazu-Mbaise",
+      "scale_up": false,
+      "slug": "ahiazu_mbaise"
+    }
+  },
+  {
+    "pk": 24,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Ahoada East",
+      "scale_up": false,
+      "slug": "ahoada_east"
+    }
+  },
+  {
+    "pk": 25,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Ahoada West",
+      "scale_up": false,
+      "slug": "ahoada_west"
+    }
+  },
+  {
+    "pk": 26,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Ajaokuta",
+      "scale_up": true,
+      "slug": "ajaokuta"
+    }
+  },
+  {
+    "pk": 27,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Ajeromi-Ifelodun",
+      "scale_up": false,
+      "slug": "ajeromi_ifelodun"
+    }
+  },
+  {
+    "pk": 28,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Ajingi",
+      "scale_up": false,
+      "slug": "ajingi"
+    }
+  },
+  {
+    "pk": 29,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Akamkpa",
+      "scale_up": false,
+      "slug": "akamkpa"
+    }
+  },
+  {
+    "pk": 30,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Akinyele",
+      "scale_up": false,
+      "slug": "akinyele"
+    }
+  },
+  {
+    "pk": 31,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 16,
+      "name": "Akko",
+      "scale_up": true,
+      "slug": "akko"
+    }
+  },
+  {
+    "pk": 32,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Akoko-Edo",
+      "scale_up": false,
+      "slug": "akoko_edo"
+    }
+  },
+  {
+    "pk": 33,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "Akoko North East",
+      "scale_up": true,
+      "slug": "akoko_north_east"
+    }
+  },
+  {
+    "pk": 34,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "Akoko North West",
+      "scale_up": true,
+      "slug": "akoko_north_west"
+    }
+  },
+  {
+    "pk": 35,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "Akoko South West",
+      "scale_up": false,
+      "slug": "akoko_south_west"
+    }
+  },
+  {
+    "pk": 36,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "Akoko South East",
+      "scale_up": false,
+      "slug": "akoko_south_east"
+    }
+  },
+  {
+    "pk": 37,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Akpabuyo",
+      "scale_up": false,
+      "slug": "akpabuyo"
+    }
+  },
+  {
+    "pk": 38,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Akuku Toru",
+      "scale_up": true,
+      "slug": "akuku_toru"
+    }
+  },
+  {
+    "pk": 39,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "Akure North",
+      "scale_up": false,
+      "slug": "akure_north"
+    }
+  },
+  {
+    "pk": 40,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "Akure South",
+      "scale_up": false,
+      "slug": "akure_south"
+    }
+  },
+  {
+    "pk": 41,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 26,
+      "name": "Akwanga",
+      "scale_up": true,
+      "slug": "akwanga"
+    }
+  },
+  {
+    "pk": 42,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Albasu",
+      "scale_up": false,
+      "slug": "albasu"
+    }
+  },
+  {
+    "pk": 43,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Aliero",
+      "scale_up": false,
+      "slug": "aliero"
+    }
+  },
+  {
+    "pk": 44,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Alimosho",
+      "scale_up": false,
+      "slug": "alimosho"
+    }
+  },
+  {
+    "pk": 45,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Alkaleri",
+      "scale_up": false,
+      "slug": "alkaleri"
+    }
+  },
+  {
+    "pk": 46,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Amuwo-Odofin",
+      "scale_up": false,
+      "slug": "amuwo_odofin"
+    }
+  },
+  {
+    "pk": 47,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Anambra East",
+      "scale_up": false,
+      "slug": "anambra_east"
+    }
+  },
+  {
+    "pk": 48,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Anambra West",
+      "scale_up": true,
+      "slug": "anambra_west"
+    }
+  },
+  {
+    "pk": 49,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Anaocha",
+      "scale_up": false,
+      "slug": "anaocha"
+    }
+  },
+  {
+    "pk": 50,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Andoni",
+      "scale_up": false,
+      "slug": "andoni"
+    }
+  },
+  {
+    "pk": 51,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 14,
+      "name": "Aninri",
+      "scale_up": true,
+      "slug": "aninri"
+    }
+  },
+  {
+    "pk": 52,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Aniocha North",
+      "scale_up": false,
+      "slug": "aniocha_north"
+    }
+  },
+  {
+    "pk": 53,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Aniocha South",
+      "scale_up": false,
+      "slug": "aniocha_south"
+    }
+  },
+  {
+    "pk": 54,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 37,
+      "name": "Anka",
+      "scale_up": false,
+      "slug": "anka"
+    }
+  },
+  {
+    "pk": 55,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Ankpa",
+      "scale_up": false,
+      "slug": "ankpa"
+    }
+  },
+  {
+    "pk": 56,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Apa",
+      "scale_up": false,
+      "slug": "apa"
+    }
+  },
+  {
+    "pk": 57,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Apapa",
+      "scale_up": false,
+      "slug": "apapa"
+    }
+  },
+  {
+    "pk": 58,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Ado",
+      "scale_up": true,
+      "slug": "ado"
+    }
+  },
+  {
+    "pk": 59,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 35,
+      "name": "Ardo-Kola",
+      "scale_up": false,
+      "slug": "ardo_kola"
+    }
+  },
+  {
+    "pk": 60,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Arewa-Dandi",
+      "scale_up": false,
+      "slug": "arewa_dandi"
+    }
+  },
+  {
+    "pk": 61,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Argungu",
+      "scale_up": false,
+      "slug": "argungu"
+    }
+  },
+  {
+    "pk": 62,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 1,
+      "name": "Arochukwu",
+      "scale_up": false,
+      "slug": "arochukwu"
+    }
+  },
+  {
+    "pk": 63,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 24,
+      "name": "Asa",
+      "scale_up": true,
+      "slug": "asa"
+    }
+  },
+  {
+    "pk": 64,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Asari Toru",
+      "scale_up": false,
+      "slug": "asari_toru"
+    }
+  },
+  {
+    "pk": 65,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Askira/Uba",
+      "scale_up": false,
+      "slug": "askira_uba"
+    }
+  },
+  {
+    "pk": 66,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Atakunmosa East",
+      "scale_up": true,
+      "slug": "atakunmosa_east"
+    }
+  },
+  {
+    "pk": 67,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Atakunmosa West",
+      "scale_up": false,
+      "slug": "atakunmosa_west"
+    }
+  },
+  {
+    "pk": 68,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Atiba",
+      "scale_up": false,
+      "slug": "atiba"
+    }
+  },
+  {
+    "pk": 69,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Atisbo",
+      "scale_up": false,
+      "slug": "atisbo"
+    }
+  },
+  {
+    "pk": 70,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Augie",
+      "scale_up": true,
+      "slug": "augie"
+    }
+  },
+  {
+    "pk": 71,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Auyo",
+      "scale_up": false,
+      "slug": "auyo"
+    }
+  },
+  {
+    "pk": 72,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 26,
+      "name": "Awe",
+      "scale_up": false,
+      "slug": "awe"
+    }
+  },
+  {
+    "pk": 73,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 14,
+      "name": "Awgu",
+      "scale_up": false,
+      "slug": "awgu"
+    }
+  },
+  {
+    "pk": 74,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Awka North",
+      "scale_up": true,
+      "slug": "awka_north"
+    }
+  },
+  {
+    "pk": 75,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Awka South",
+      "scale_up": false,
+      "slug": "awka_south"
+    }
+  },
+  {
+    "pk": 76,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Ayamelum",
+      "scale_up": false,
+      "slug": "ayamelum"
+    }
+  },
+  {
+    "pk": 77,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Ayedaade",
+      "scale_up": false,
+      "slug": "ayedaade"
+    }
+  },
+  {
+    "pk": 78,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Ayedire",
+      "scale_up": false,
+      "slug": "ayedire"
+    }
+  },
+  {
+    "pk": 79,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Babura",
+      "scale_up": false,
+      "slug": "babura"
+    }
+  },
+  {
+    "pk": 80,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Badagry",
+      "scale_up": false,
+      "slug": "badagry"
+    }
+  },
+  {
+    "pk": 81,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Bagudo",
+      "scale_up": false,
+      "slug": "bagudo"
+    }
+  },
+  {
+    "pk": 82,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Bagwai",
+      "scale_up": false,
+      "slug": "bagwai"
+    }
+  },
+  {
+    "pk": 83,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Bakassi",
+      "scale_up": false,
+      "slug": "bakassi"
+    }
+  },
+  {
+    "pk": 84,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 32,
+      "name": "Bokkos",
+      "scale_up": false,
+      "slug": "bokkos"
+    }
+  },
+  {
+    "pk": 85,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Bakori",
+      "scale_up": false,
+      "slug": "bakori"
+    }
+  },
+  {
+    "pk": 86,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 37,
+      "name": "Bakura",
+      "scale_up": false,
+      "slug": "bakura"
+    }
+  },
+  {
+    "pk": 87,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 16,
+      "name": "Balanga",
+      "scale_up": true,
+      "slug": "balanga"
+    }
+  },
+  {
+    "pk": 88,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 35,
+      "name": "Bali",
+      "scale_up": true,
+      "slug": "bali"
+    }
+  },
+  {
+    "pk": 89,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Bama",
+      "scale_up": false,
+      "slug": "bama"
+    }
+  },
+  {
+    "pk": 90,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 36,
+      "name": "Barde",
+      "scale_up": false,
+      "slug": "barde"
+    }
+  },
+  {
+    "pk": 91,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 32,
+      "name": "Barkin-Ladi",
+      "scale_up": false,
+      "slug": "barkin_ladi"
+    }
+  },
+  {
+    "pk": 92,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 24,
+      "name": "Baruten",
+      "scale_up": false,
+      "slug": "baruten"
+    }
+  },
+  {
+    "pk": 93,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Bassa",
+      "scale_up": false,
+      "slug": "bassa"
+    }
+  },
+  {
+    "pk": 94,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 32,
+      "name": "Bassa",
+      "scale_up": false,
+      "slug": "bassa"
+    }
+  },
+  {
+    "pk": 95,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Batagarawa",
+      "scale_up": false,
+      "slug": "batagarawa"
+    }
+  },
+  {
+    "pk": 96,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Batsari",
+      "scale_up": false,
+      "slug": "batsari"
+    }
+  },
+  {
+    "pk": 97,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Bauchi",
+      "scale_up": false,
+      "slug": "bauchi"
+    }
+  },
+  {
+    "pk": 98,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Baure",
+      "scale_up": false,
+      "slug": "baure"
+    }
+  },
+  {
+    "pk": 99,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Bayo",
+      "scale_up": false,
+      "slug": "bayo"
+    }
+  },
+  {
+    "pk": 100,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Bebeji",
+      "scale_up": false,
+      "slug": "bebeji"
+    }
+  },
+  {
+    "pk": 101,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Bekwara",
+      "scale_up": false,
+      "slug": "bekwara"
+    }
+  },
+  {
+    "pk": 102,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 1,
+      "name": "Bende",
+      "scale_up": false,
+      "slug": "bende"
+    }
+  },
+  {
+    "pk": 103,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Biase",
+      "scale_up": false,
+      "slug": "biase"
+    }
+  },
+  {
+    "pk": 104,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Bichi",
+      "scale_up": false,
+      "slug": "bichi"
+    }
+  },
+  {
+    "pk": 105,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Bida",
+      "scale_up": false,
+      "slug": "bida"
+    }
+  },
+  {
+    "pk": 106,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 16,
+      "name": "Billiri",
+      "scale_up": false,
+      "slug": "billiri"
+    }
+  },
+  {
+    "pk": 107,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Bindawa",
+      "scale_up": false,
+      "slug": "bindawa"
+    }
+  },
+  {
+    "pk": 108,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Binji",
+      "scale_up": true,
+      "slug": "binji"
+    }
+  },
+  {
+    "pk": 109,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Biriniwa",
+      "scale_up": false,
+      "slug": "biriniwa"
+    }
+  },
+  {
+    "pk": 110,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Birnin Gwari",
+      "scale_up": true,
+      "slug": "birnin_gwari"
+    }
+  },
+  {
+    "pk": 111,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Birnin-Kebbi",
+      "scale_up": false,
+      "slug": "birnin_kebbi"
+    }
+  },
+  {
+    "pk": 112,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Birnin-Kudu",
+      "scale_up": false,
+      "slug": "birnin_kudu"
+    }
+  },
+  {
+    "pk": 113,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 37,
+      "name": "Birnin-Magaji",
+      "scale_up": false,
+      "slug": "birnin_magaji"
+    }
+  },
+  {
+    "pk": 114,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Biu",
+      "scale_up": false,
+      "slug": "biu"
+    }
+  },
+  {
+    "pk": 115,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Bodinga",
+      "scale_up": false,
+      "slug": "bodinga"
+    }
+  },
+  {
+    "pk": 116,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Bogoro",
+      "scale_up": false,
+      "slug": "bogoro"
+    }
+  },
+  {
+    "pk": 117,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Boki",
+      "scale_up": true,
+      "slug": "boki"
+    }
+  },
+  {
+    "pk": 118,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Boluwaduro",
+      "scale_up": false,
+      "slug": "boluwaduro"
+    }
+  },
+  {
+    "pk": 119,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Bomadi",
+      "scale_up": false,
+      "slug": "bomadi"
+    }
+  },
+  {
+    "pk": 120,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Bonny",
+      "scale_up": false,
+      "slug": "bonny"
+    }
+  },
+  {
+    "pk": 121,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Borgu",
+      "scale_up": false,
+      "slug": "borgu"
+    }
+  },
+  {
+    "pk": 122,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Boripe",
+      "scale_up": false,
+      "slug": "boripe"
+    }
+  },
+  {
+    "pk": 123,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 36,
+      "name": "Bosari",
+      "scale_up": false,
+      "slug": "bosari"
+    }
+  },
+  {
+    "pk": 124,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Bosso",
+      "scale_up": false,
+      "slug": "bosso"
+    }
+  },
+  {
+    "pk": 125,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 6,
+      "name": "Brass",
+      "scale_up": true,
+      "slug": "brass"
+    }
+  },
+  {
+    "pk": 126,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Buji",
+      "scale_up": false,
+      "slug": "buji"
+    }
+  },
+  {
+    "pk": 127,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 37,
+      "name": "Bukkuyum",
+      "scale_up": true,
+      "slug": "bukkuyum"
+    }
+  },
+  {
+    "pk": 128,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Buruku",
+      "scale_up": false,
+      "slug": "buruku"
+    }
+  },
+  {
+    "pk": 129,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 37,
+      "name": "Bungudu",
+      "scale_up": false,
+      "slug": "bungudu"
+    }
+  },
+  {
+    "pk": 130,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Bunkure",
+      "scale_up": false,
+      "slug": "bunkure"
+    }
+  },
+  {
+    "pk": 131,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Bunza",
+      "scale_up": true,
+      "slug": "bunza"
+    }
+  },
+  {
+    "pk": 132,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Burutu",
+      "scale_up": false,
+      "slug": "burutu"
+    }
+  },
+  {
+    "pk": 133,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 15,
+      "name": "Bwari",
+      "scale_up": true,
+      "slug": "bwari"
+    }
+  },
+  {
+    "pk": 134,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Calabar-Municipal",
+      "scale_up": false,
+      "slug": "calabar_municipal"
+    }
+  },
+  {
+    "pk": 135,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Calabar South",
+      "scale_up": false,
+      "slug": "calabar_south"
+    }
+  },
+  {
+    "pk": 136,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Chanchaga",
+      "scale_up": false,
+      "slug": "chanchaga"
+    }
+  },
+  {
+    "pk": 137,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Charanchi",
+      "scale_up": false,
+      "slug": "charanchi"
+    }
+  },
+  {
+    "pk": 138,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Chibok",
+      "scale_up": false,
+      "slug": "chibok"
+    }
+  },
+  {
+    "pk": 139,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Chikun",
+      "scale_up": false,
+      "slug": "chikun"
+    }
+  },
+  {
+    "pk": 140,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Dala",
+      "scale_up": false,
+      "slug": "dala"
+    }
+  },
+  {
+    "pk": 141,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 36,
+      "name": "Damaturu",
+      "scale_up": false,
+      "slug": "damaturu"
+    }
+  },
+  {
+    "pk": 142,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Damban",
+      "scale_up": false,
+      "slug": "damban"
+    }
+  },
+  {
+    "pk": 143,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Dambatta",
+      "scale_up": false,
+      "slug": "dambatta"
+    }
+  },
+  {
+    "pk": 144,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Damboa",
+      "scale_up": false,
+      "slug": "damboa"
+    }
+  },
+  {
+    "pk": 145,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Dandi",
+      "scale_up": false,
+      "slug": "dandi"
+    }
+  },
+  {
+    "pk": 146,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Dandume",
+      "scale_up": false,
+      "slug": "dandume"
+    }
+  },
+  {
+    "pk": 147,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Dange/shuni",
+      "scale_up": false,
+      "slug": "dange_shuni"
+    }
+  },
+  {
+    "pk": 148,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Danja",
+      "scale_up": false,
+      "slug": "danja"
+    }
+  },
+  {
+    "pk": 149,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Dan-Musa",
+      "scale_up": false,
+      "slug": "dan_musa"
+    }
+  },
+  {
+    "pk": 150,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Darazo",
+      "scale_up": false,
+      "slug": "darazo"
+    }
+  },
+  {
+    "pk": 151,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Dass",
+      "scale_up": false,
+      "slug": "dass"
+    }
+  },
+  {
+    "pk": 152,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Daura",
+      "scale_up": false,
+      "slug": "daura"
+    }
+  },
+  {
+    "pk": 153,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Dawakin-Kudu",
+      "scale_up": false,
+      "slug": "dawakin_kudu"
+    }
+  },
+  {
+    "pk": 154,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Dawakin-Tofa",
+      "scale_up": false,
+      "slug": "dawakin_tofa"
+    }
+  },
+  {
+    "pk": 155,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Degema",
+      "scale_up": false,
+      "slug": "degema"
+    }
+  },
+  {
+    "pk": 156,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Dekina",
+      "scale_up": false,
+      "slug": "dekina"
+    }
+  },
+  {
+    "pk": 157,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Demsa",
+      "scale_up": false,
+      "slug": "demsa"
+    }
+  },
+  {
+    "pk": 158,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Dikwa",
+      "scale_up": false,
+      "slug": "dikwa"
+    }
+  },
+  {
+    "pk": 159,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Doguwa",
+      "scale_up": false,
+      "slug": "doguwa"
+    }
+  },
+  {
+    "pk": 160,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 26,
+      "name": "Doma",
+      "scale_up": false,
+      "slug": "doma"
+    }
+  },
+  {
+    "pk": 161,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 35,
+      "name": "Donga",
+      "scale_up": false,
+      "slug": "donga"
+    }
+  },
+  {
+    "pk": 162,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 16,
+      "name": "Dukku",
+      "scale_up": true,
+      "slug": "dukku"
+    }
+  },
+  {
+    "pk": 163,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Dunukofia",
+      "scale_up": false,
+      "slug": "dunukofia"
+    }
+  },
+  {
+    "pk": 164,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Dutse",
+      "scale_up": false,
+      "slug": "dutse"
+    }
+  },
+  {
+    "pk": 165,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Dutsi",
+      "scale_up": false,
+      "slug": "dutsi"
+    }
+  },
+  {
+    "pk": 166,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Dutsin-Ma",
+      "scale_up": false,
+      "slug": "dutsin_ma"
+    }
+  },
+  {
+    "pk": 167,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Eastern-Obolo",
+      "scale_up": false,
+      "slug": "eastern_obolo"
+    }
+  },
+  {
+    "pk": 168,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 11,
+      "name": "Ebonyi",
+      "scale_up": false,
+      "slug": "ebonyi"
+    }
+  },
+  {
+    "pk": 169,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Edati",
+      "scale_up": false,
+      "slug": "edati"
+    }
+  },
+  {
+    "pk": 170,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Ede North",
+      "scale_up": false,
+      "slug": "ede_north"
+    }
+  },
+  {
+    "pk": 171,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Ede South",
+      "scale_up": true,
+      "slug": "ede_south"
+    }
+  },
+  {
+    "pk": 172,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 24,
+      "name": "Edu",
+      "scale_up": false,
+      "slug": "edu"
+    }
+  },
+  {
+    "pk": 173,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Ife-Central",
+      "scale_up": false,
+      "slug": "ife_central"
+    }
+  },
+  {
+    "pk": 174,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Ife-East",
+      "scale_up": false,
+      "slug": "ife_east"
+    }
+  },
+  {
+    "pk": 175,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Ife-North",
+      "scale_up": false,
+      "slug": "ife_north"
+    }
+  },
+  {
+    "pk": 176,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Ife-South",
+      "scale_up": false,
+      "slug": "ife_south"
+    }
+  },
+  {
+    "pk": 177,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 13,
+      "name": "Efon",
+      "scale_up": false,
+      "slug": "efon"
+    }
+  },
+  {
+    "pk": 178,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Egbado North",
+      "scale_up": true,
+      "slug": "egbado_north"
+    }
+  },
+  {
+    "pk": 179,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Egbado South",
+      "scale_up": false,
+      "slug": "egbado_south"
+    }
+  },
+  {
+    "pk": 180,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Egbeda",
+      "scale_up": false,
+      "slug": "egbeda"
+    }
+  },
+  {
+    "pk": 181,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Egbedore",
+      "scale_up": false,
+      "slug": "egbedore"
+    }
+  },
+  {
+    "pk": 182,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Egor",
+      "scale_up": false,
+      "slug": "egor"
+    }
+  },
+  {
+    "pk": 183,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Ehime-Mbano",
+      "scale_up": false,
+      "slug": "ehime_mbano"
+    }
+  },
+  {
+    "pk": 184,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Ejigbo",
+      "scale_up": false,
+      "slug": "ejigbo"
+    }
+  },
+  {
+    "pk": 185,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 6,
+      "name": "Ekeremor",
+      "scale_up": false,
+      "slug": "ekeremor"
+    }
+  },
+  {
+    "pk": 186,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Eket",
+      "scale_up": false,
+      "slug": "eket"
+    }
+  },
+  {
+    "pk": 187,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 24,
+      "name": "Ekiti",
+      "scale_up": false,
+      "slug": "ekiti"
+    }
+  },
+  {
+    "pk": 188,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 13,
+      "name": "Ekiti East",
+      "scale_up": true,
+      "slug": "ekiti_east"
+    }
+  },
+  {
+    "pk": 189,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 13,
+      "name": "Ekiti South-West",
+      "scale_up": false,
+      "slug": "ekiti_south_west"
+    }
+  },
+  {
+    "pk": 190,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 13,
+      "name": "Ekiti West",
+      "scale_up": false,
+      "slug": "ekiti_west"
+    }
+  },
+  {
+    "pk": 191,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Ekwusigo",
+      "scale_up": false,
+      "slug": "ekwusigo"
+    }
+  },
+  {
+    "pk": 192,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Eleme",
+      "scale_up": false,
+      "slug": "eleme"
+    }
+  },
+  {
+    "pk": 193,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Emuoha",
+      "scale_up": false,
+      "slug": "emuoha"
+    }
+  },
+  {
+    "pk": 194,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 13,
+      "name": "Emure",
+      "scale_up": false,
+      "slug": "emure"
+    }
+  },
+  {
+    "pk": 195,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 14,
+      "name": "Enugu East",
+      "scale_up": false,
+      "slug": "enugu_east"
+    }
+  },
+  {
+    "pk": 196,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 14,
+      "name": "Enugu North",
+      "scale_up": false,
+      "slug": "enugu_north"
+    }
+  },
+  {
+    "pk": 197,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 14,
+      "name": "Enugu South",
+      "scale_up": false,
+      "slug": "enugu_south"
+    }
+  },
+  {
+    "pk": 198,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Epe",
+      "scale_up": false,
+      "slug": "epe"
+    }
+  },
+  {
+    "pk": 199,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Esan Central",
+      "scale_up": false,
+      "slug": "esan_central"
+    }
+  },
+  {
+    "pk": 200,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Esan North-East",
+      "scale_up": false,
+      "slug": "esan_north_east"
+    }
+  },
+  {
+    "pk": 201,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Esan South-East",
+      "scale_up": true,
+      "slug": "esan_south_east"
+    }
+  },
+  {
+    "pk": 202,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Esan West",
+      "scale_up": false,
+      "slug": "esan_west"
+    }
+  },
+  {
+    "pk": 203,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "Ese-Odo",
+      "scale_up": false,
+      "slug": "ese_odo"
+    }
+  },
+  {
+    "pk": 204,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Esit-Eket",
+      "scale_up": false,
+      "slug": "esit_eket"
+    }
+  },
+  {
+    "pk": 205,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Essien Udim",
+      "scale_up": false,
+      "slug": "essien_udim"
+    }
+  },
+  {
+    "pk": 206,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Etche",
+      "scale_up": false,
+      "slug": "etche"
+    }
+  },
+  {
+    "pk": 207,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Ethiope East",
+      "scale_up": false,
+      "slug": "ethiope_east"
+    }
+  },
+  {
+    "pk": 208,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Ethiope West",
+      "scale_up": true,
+      "slug": "ethiope_west"
+    }
+  },
+  {
+    "pk": 209,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Etim-Eko",
+      "scale_up": false,
+      "slug": "etim_eko"
+    }
+  },
+  {
+    "pk": 210,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Etinan",
+      "scale_up": false,
+      "slug": "etinan"
+    }
+  },
+  {
+    "pk": 211,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Eti-osa",
+      "scale_up": true,
+      "slug": "eti_osa"
+    }
+  },
+  {
+    "pk": 212,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Etsako-Central",
+      "scale_up": false,
+      "slug": "etsako_central"
+    }
+  },
+  {
+    "pk": 213,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Etsako East",
+      "scale_up": false,
+      "slug": "etsako_east"
+    }
+  },
+  {
+    "pk": 214,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Etsako West",
+      "scale_up": true,
+      "slug": "etsako_west"
+    }
+  },
+  {
+    "pk": 215,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Etung",
+      "scale_up": false,
+      "slug": "etung"
+    }
+  },
+  {
+    "pk": 216,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Ewekoro",
+      "scale_up": false,
+      "slug": "ewekoro"
+    }
+  },
+  {
+    "pk": 217,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 14,
+      "name": "Ezeagu",
+      "scale_up": false,
+      "slug": "ezeagu"
+    }
+  },
+  {
+    "pk": 218,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Ezinihitte",
+      "scale_up": false,
+      "slug": "ezinihitte"
+    }
+  },
+  {
+    "pk": 219,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 11,
+      "name": "Ezza North",
+      "scale_up": false,
+      "slug": "ezza_north"
+    }
+  },
+  {
+    "pk": 220,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 11,
+      "name": "Ezza South",
+      "scale_up": false,
+      "slug": "ezza_south"
+    }
+  },
+  {
+    "pk": 221,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Fagge",
+      "scale_up": false,
+      "slug": "fagge"
+    }
+  },
+  {
+    "pk": 222,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Fakai",
+      "scale_up": false,
+      "slug": "fakai"
+    }
+  },
+  {
+    "pk": 223,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Faskari",
+      "scale_up": false,
+      "slug": "faskari"
+    }
+  },
+  {
+    "pk": 224,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 36,
+      "name": "Fika",
+      "scale_up": false,
+      "slug": "fika"
+    }
+  },
+  {
+    "pk": 225,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Fufore",
+      "scale_up": false,
+      "slug": "fufore"
+    }
+  },
+  {
+    "pk": 226,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 16,
+      "name": "Funakaye",
+      "scale_up": false,
+      "slug": "funakaye"
+    }
+  },
+  {
+    "pk": 227,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 36,
+      "name": "Fune",
+      "scale_up": true,
+      "slug": "fune"
+    }
+  },
+  {
+    "pk": 228,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Funtua",
+      "scale_up": false,
+      "slug": "funtua"
+    }
+  },
+  {
+    "pk": 229,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Gabasawa",
+      "scale_up": true,
+      "slug": "gabasawa"
+    }
+  },
+  {
+    "pk": 230,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Gada",
+      "scale_up": false,
+      "slug": "gada"
+    }
+  },
+  {
+    "pk": 231,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Gagarawa",
+      "scale_up": false,
+      "slug": "gagarawa"
+    }
+  },
+  {
+    "pk": 232,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Gamawa",
+      "scale_up": false,
+      "slug": "gamawa"
+    }
+  },
+  {
+    "pk": 233,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Ganjuwa",
+      "scale_up": true,
+      "slug": "ganjuwa"
+    }
+  },
+  {
+    "pk": 234,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Ganaye",
+      "scale_up": false,
+      "slug": "ganaye"
+    }
+  },
+  {
+    "pk": 235,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Garki",
+      "scale_up": false,
+      "slug": "garki"
+    }
+  },
+  {
+    "pk": 236,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Garko",
+      "scale_up": false,
+      "slug": "garko"
+    }
+  },
+  {
+    "pk": 237,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Garun Mallam",
+      "scale_up": true,
+      "slug": "garun_mallam"
+    }
+  },
+  {
+    "pk": 238,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 35,
+      "name": "Gashaka",
+      "scale_up": false,
+      "slug": "gashaka"
+    }
+  },
+  {
+    "pk": 239,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 35,
+      "name": "Gassol",
+      "scale_up": false,
+      "slug": "gassol"
+    }
+  },
+  {
+    "pk": 240,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Gaya",
+      "scale_up": false,
+      "slug": "gaya"
+    }
+  },
+  {
+    "pk": 241,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Gayuk",
+      "scale_up": false,
+      "slug": "gayuk"
+    }
+  },
+  {
+    "pk": 242,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Gazewa",
+      "scale_up": false,
+      "slug": "gazewa"
+    }
+  },
+  {
+    "pk": 243,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Gbako",
+      "scale_up": false,
+      "slug": "gbako"
+    }
+  },
+  {
+    "pk": 244,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Gboko",
+      "scale_up": false,
+      "slug": "gboko"
+    }
+  },
+  {
+    "pk": 245,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 13,
+      "name": "Gbonyin",
+      "scale_up": false,
+      "slug": "gbonyin"
+    }
+  },
+  {
+    "pk": 246,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 36,
+      "name": "Geidam",
+      "scale_up": false,
+      "slug": "geidam"
+    }
+  },
+  {
+    "pk": 247,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Giade",
+      "scale_up": false,
+      "slug": "giade"
+    }
+  },
+  {
+    "pk": 248,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Giwa",
+      "scale_up": false,
+      "slug": "giwa"
+    }
+  },
+  {
+    "pk": 249,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Gokana",
+      "scale_up": false,
+      "slug": "gokana"
+    }
+  },
+  {
+    "pk": 250,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 16,
+      "name": "Gombe",
+      "scale_up": false,
+      "slug": "gombe"
+    }
+  },
+  {
+    "pk": 251,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Gombi",
+      "scale_up": false,
+      "slug": "gombi"
+    }
+  },
+  {
+    "pk": 252,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Goronyo",
+      "scale_up": false,
+      "slug": "goronyo"
+    }
+  },
+  {
+    "pk": 253,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Grie",
+      "scale_up": false,
+      "slug": "grie"
+    }
+  },
+  {
+    "pk": 254,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Gubio",
+      "scale_up": false,
+      "slug": "gubio"
+    }
+  },
+  {
+    "pk": 255,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Gudu",
+      "scale_up": false,
+      "slug": "gudu"
+    }
+  },
+  {
+    "pk": 256,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 36,
+      "name": "Gujba",
+      "scale_up": false,
+      "slug": "gujba"
+    }
+  },
+  {
+    "pk": 257,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 36,
+      "name": "Gulani",
+      "scale_up": false,
+      "slug": "gulani"
+    }
+  },
+  {
+    "pk": 258,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Guma",
+      "scale_up": false,
+      "slug": "guma"
+    }
+  },
+  {
+    "pk": 259,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Gumel",
+      "scale_up": false,
+      "slug": "gumel"
+    }
+  },
+  {
+    "pk": 260,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 37,
+      "name": "Gummi",
+      "scale_up": false,
+      "slug": "gummi"
+    }
+  },
+  {
+    "pk": 261,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Gurara",
+      "scale_up": false,
+      "slug": "gurara"
+    }
+  },
+  {
+    "pk": 262,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Guri",
+      "scale_up": true,
+      "slug": "guri"
+    }
+  },
+  {
+    "pk": 263,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 37,
+      "name": "Gusau",
+      "scale_up": false,
+      "slug": "gusau"
+    }
+  },
+  {
+    "pk": 264,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Guzamala",
+      "scale_up": true,
+      "slug": "guzamala"
+    }
+  },
+  {
+    "pk": 265,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Gwadabawa",
+      "scale_up": false,
+      "slug": "gwadabawa"
+    }
+  },
+  {
+    "pk": 266,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 15,
+      "name": "Gwagwalada",
+      "scale_up": false,
+      "slug": "gwagwalada"
+    }
+  },
+  {
+    "pk": 267,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Gwale",
+      "scale_up": false,
+      "slug": "gwale"
+    }
+  },
+  {
+    "pk": 268,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Gwandu",
+      "scale_up": false,
+      "slug": "gwandu"
+    }
+  },
+  {
+    "pk": 269,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Gwaram",
+      "scale_up": false,
+      "slug": "gwaram"
+    }
+  },
+  {
+    "pk": 270,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Gwarzo",
+      "scale_up": false,
+      "slug": "gwarzo"
+    }
+  },
+  {
+    "pk": 271,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Gwer East",
+      "scale_up": false,
+      "slug": "gwer_east"
+    }
+  },
+  {
+    "pk": 272,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Gwer West",
+      "scale_up": true,
+      "slug": "gwer_west"
+    }
+  },
+  {
+    "pk": 273,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Gwiwa",
+      "scale_up": false,
+      "slug": "gwiwa"
+    }
+  },
+  {
+    "pk": 274,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Gwoza",
+      "scale_up": false,
+      "slug": "gwoza"
+    }
+  },
+  {
+    "pk": 275,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Hadejia",
+      "scale_up": false,
+      "slug": "hadejia"
+    }
+  },
+  {
+    "pk": 276,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Hawul",
+      "scale_up": false,
+      "slug": "hawul"
+    }
+  },
+  {
+    "pk": 277,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Hong",
+      "scale_up": false,
+      "slug": "hong"
+    }
+  },
+  {
+    "pk": 278,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Ibadan North",
+      "scale_up": false,
+      "slug": "ibadan_north"
+    }
+  },
+  {
+    "pk": 279,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Ibadan North East",
+      "scale_up": false,
+      "slug": "ibadan_north_east"
+    }
+  },
+  {
+    "pk": 280,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Ibadan North West",
+      "scale_up": false,
+      "slug": "ibadan_north_west"
+    }
+  },
+  {
+    "pk": 281,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Ibadan South East",
+      "scale_up": false,
+      "slug": "ibadan_south_east"
+    }
+  },
+  {
+    "pk": 282,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Ibadan South West",
+      "scale_up": false,
+      "slug": "ibadan_south_west"
+    }
+  },
+  {
+    "pk": 283,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Ibaji",
+      "scale_up": false,
+      "slug": "ibaji"
+    }
+  },
+  {
+    "pk": 284,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Ibarapa Central",
+      "scale_up": false,
+      "slug": "ibarapa_central"
+    }
+  },
+  {
+    "pk": 285,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Ibarapa East",
+      "scale_up": false,
+      "slug": "ibarapa_east"
+    }
+  },
+  {
+    "pk": 286,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Ibarapa North",
+      "scale_up": true,
+      "slug": "ibarapa_north"
+    }
+  },
+  {
+    "pk": 287,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Ibeju/lekki",
+      "scale_up": true,
+      "slug": "ibeju_lekki"
+    }
+  },
+  {
+    "pk": 288,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Ibeno",
+      "scale_up": false,
+      "slug": "ibeno"
+    }
+  },
+  {
+    "pk": 289,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Ibesikpo-Asutan",
+      "scale_up": false,
+      "slug": "ibesikpo_asutan"
+    }
+  },
+  {
+    "pk": 290,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 35,
+      "name": "Ibi",
+      "scale_up": false,
+      "slug": "ibi"
+    }
+  },
+  {
+    "pk": 291,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Ibiono-Ibom",
+      "scale_up": false,
+      "slug": "ibiono_ibom"
+    }
+  },
+  {
+    "pk": 292,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Idah",
+      "scale_up": false,
+      "slug": "idah"
+    }
+  },
+  {
+    "pk": 293,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "Idanre",
+      "scale_up": false,
+      "slug": "idanre"
+    }
+  },
+  {
+    "pk": 294,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Ideato North",
+      "scale_up": false,
+      "slug": "ideato_north"
+    }
+  },
+  {
+    "pk": 295,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Ideato South",
+      "scale_up": false,
+      "slug": "ideato_south"
+    }
+  },
+  {
+    "pk": 296,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Idemili North",
+      "scale_up": false,
+      "slug": "idemili_north"
+    }
+  },
+  {
+    "pk": 297,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Idemili South",
+      "scale_up": false,
+      "slug": "idemili_south"
+    }
+  },
+  {
+    "pk": 298,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Ido",
+      "scale_up": false,
+      "slug": "ido"
+    }
+  },
+  {
+    "pk": 299,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 13,
+      "name": "Ido Osi",
+      "scale_up": false,
+      "slug": "ido_osi"
+    }
+  },
+  {
+    "pk": 300,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Ifako-Ijaye",
+      "scale_up": false,
+      "slug": "ifako_ijaye"
+    }
+  },
+  {
+    "pk": 301,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Ifedayo",
+      "scale_up": false,
+      "slug": "ifedayo"
+    }
+  },
+  {
+    "pk": 302,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "Ifedore",
+      "scale_up": false,
+      "slug": "ifedore"
+    }
+  },
+  {
+    "pk": 303,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 24,
+      "name": "Ifelodun",
+      "scale_up": true,
+      "slug": "ifelodun"
+    }
+  },
+  {
+    "pk": 304,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Ifelodun",
+      "scale_up": false,
+      "slug": "ifelodun"
+    }
+  },
+  {
+    "pk": 305,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Ifo",
+      "scale_up": false,
+      "slug": "ifo"
+    }
+  },
+  {
+    "pk": 306,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Igabi",
+      "scale_up": false,
+      "slug": "igabi"
+    }
+  },
+  {
+    "pk": 307,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Igalamela-Odolu",
+      "scale_up": false,
+      "slug": "igalamela_odolu"
+    }
+  },
+  {
+    "pk": 308,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 14,
+      "name": "Igbo Etiti",
+      "scale_up": true,
+      "slug": "igbo_etiti"
+    }
+  },
+  {
+    "pk": 309,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 14,
+      "name": "Igbo Eze - North",
+      "scale_up": false,
+      "slug": "igbo_eze_north"
+    }
+  },
+  {
+    "pk": 310,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 14,
+      "name": "Igbo-Eze South",
+      "scale_up": false,
+      "slug": "igbo_eze_south"
+    }
+  },
+  {
+    "pk": 311,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Iguegben",
+      "scale_up": false,
+      "slug": "iguegben"
+    }
+  },
+  {
+    "pk": 312,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Ihiala",
+      "scale_up": false,
+      "slug": "ihiala"
+    }
+  },
+  {
+    "pk": 313,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Ihitte/Uboma",
+      "scale_up": false,
+      "slug": "ihitte_uboma"
+    }
+  },
+  {
+    "pk": 314,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "ijaye",
+      "scale_up": false,
+      "slug": "ijaye"
+    }
+  },
+  {
+    "pk": 315,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Ijebu East",
+      "scale_up": false,
+      "slug": "ijebu_east"
+    }
+  },
+  {
+    "pk": 316,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Ijebu North",
+      "scale_up": false,
+      "slug": "ijebu_north"
+    }
+  },
+  {
+    "pk": 317,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Ijebu North East",
+      "scale_up": false,
+      "slug": "ijebu_north_east"
+    }
+  },
+  {
+    "pk": 318,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Ijebu-ode",
+      "scale_up": false,
+      "slug": "ijebu_ode"
+    }
+  },
+  {
+    "pk": 319,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 13,
+      "name": "Ijero",
+      "scale_up": true,
+      "slug": "ijero"
+    }
+  },
+  {
+    "pk": 320,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Ijumu",
+      "scale_up": false,
+      "slug": "ijumu"
+    }
+  },
+  {
+    "pk": 321,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Ika",
+      "scale_up": false,
+      "slug": "ika"
+    }
+  },
+  {
+    "pk": 322,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Ika North",
+      "scale_up": false,
+      "slug": "ika_north"
+    }
+  },
+  {
+    "pk": 323,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Ikara",
+      "scale_up": true,
+      "slug": "ikara"
+    }
+  },
+  {
+    "pk": 324,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Ika South",
+      "scale_up": false,
+      "slug": "ika_south"
+    }
+  },
+  {
+    "pk": 325,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Ikeduru",
+      "scale_up": false,
+      "slug": "ikeduru"
+    }
+  },
+  {
+    "pk": 326,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Ikeja",
+      "scale_up": true,
+      "slug": "ikeja"
+    }
+  },
+  {
+    "pk": 327,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Ikenne",
+      "scale_up": true,
+      "slug": "ikenne"
+    }
+  },
+  {
+    "pk": 328,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 13,
+      "name": "Ikere",
+      "scale_up": false,
+      "slug": "ikere"
+    }
+  },
+  {
+    "pk": 329,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 13,
+      "name": "Ikole",
+      "scale_up": true,
+      "slug": "ikole"
+    }
+  },
+  {
+    "pk": 330,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Ikom",
+      "scale_up": false,
+      "slug": "ikom"
+    }
+  },
+  {
+    "pk": 331,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Ikono",
+      "scale_up": false,
+      "slug": "ikono"
+    }
+  },
+  {
+    "pk": 332,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Ikorodu",
+      "scale_up": false,
+      "slug": "ikorodu"
+    }
+  },
+  {
+    "pk": 333,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Ikot-Abasi",
+      "scale_up": false,
+      "slug": "ikot_abasi"
+    }
+  },
+  {
+    "pk": 334,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Ikot-Ekpene",
+      "scale_up": false,
+      "slug": "ikot_ekpene"
+    }
+  },
+  {
+    "pk": 335,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Ikpoba-Okha",
+      "scale_up": false,
+      "slug": "ikpoba_okha"
+    }
+  },
+  {
+    "pk": 336,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Ikwerre",
+      "scale_up": false,
+      "slug": "ikwerre"
+    }
+  },
+  {
+    "pk": 337,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 11,
+      "name": "Ikwo",
+      "scale_up": true,
+      "slug": "ikwo"
+    }
+  },
+  {
+    "pk": 338,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 1,
+      "name": "Ikwuano",
+      "scale_up": true,
+      "slug": "ikwuano"
+    }
+  },
+  {
+    "pk": 339,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Ila",
+      "scale_up": false,
+      "slug": "ila"
+    }
+  },
+  {
+    "pk": 340,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 13,
+      "name": "Ilejemeje",
+      "scale_up": false,
+      "slug": "ilejemeje"
+    }
+  },
+  {
+    "pk": 341,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "Ile Oluji Okeigbo",
+      "scale_up": true,
+      "slug": "ile_oluji_okeigbo"
+    }
+  },
+  {
+    "pk": 342,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Ilesha-East",
+      "scale_up": false,
+      "slug": "ilesha_east"
+    }
+  },
+  {
+    "pk": 343,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Ilesha-West",
+      "scale_up": false,
+      "slug": "ilesha_west"
+    }
+  },
+  {
+    "pk": 344,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Illela",
+      "scale_up": true,
+      "slug": "illela"
+    }
+  },
+  {
+    "pk": 345,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 24,
+      "name": "Ilorin East",
+      "scale_up": false,
+      "slug": "ilorin_east"
+    }
+  },
+  {
+    "pk": 346,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 24,
+      "name": "Ilorin South",
+      "scale_up": false,
+      "slug": "ilorin_south"
+    }
+  },
+  {
+    "pk": 347,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 24,
+      "name": "Ilorin west",
+      "scale_up": false,
+      "slug": "ilorin_west"
+    }
+  },
+  {
+    "pk": 348,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Imeko Afon",
+      "scale_up": false,
+      "slug": "imeko_afon"
+    }
+  },
+  {
+    "pk": 349,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Ingawa",
+      "scale_up": false,
+      "slug": "ingawa"
+    }
+  },
+  {
+    "pk": 350,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Ini",
+      "scale_up": false,
+      "slug": "ini"
+    }
+  },
+  {
+    "pk": 351,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Ipokia",
+      "scale_up": false,
+      "slug": "ipokia"
+    }
+  },
+  {
+    "pk": 352,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "Irele",
+      "scale_up": false,
+      "slug": "irele"
+    }
+  },
+  {
+    "pk": 353,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Irepo",
+      "scale_up": false,
+      "slug": "irepo"
+    }
+  },
+  {
+    "pk": 354,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Irepodun",
+      "scale_up": false,
+      "slug": "irepodun"
+    }
+  },
+  {
+    "pk": 355,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 24,
+      "name": "Irepodun",
+      "scale_up": false,
+      "slug": "irepodun"
+    }
+  },
+  {
+    "pk": 356,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 13,
+      "name": "Irepodun/Ifelodun",
+      "scale_up": false,
+      "slug": "irepodun_ifelodun"
+    }
+  },
+  {
+    "pk": 357,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Irewole",
+      "scale_up": false,
+      "slug": "irewole"
+    }
+  },
+  {
+    "pk": 358,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Isa",
+      "scale_up": false,
+      "slug": "isa"
+    }
+  },
+  {
+    "pk": 359,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 13,
+      "name": "Ise/Orun",
+      "scale_up": false,
+      "slug": "ise_orun"
+    }
+  },
+  {
+    "pk": 360,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Iseyin",
+      "scale_up": false,
+      "slug": "iseyin"
+    }
+  },
+  {
+    "pk": 361,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 11,
+      "name": "Ishielu",
+      "scale_up": false,
+      "slug": "ishielu"
+    }
+  },
+  {
+    "pk": 362,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Isiala Mbano",
+      "scale_up": false,
+      "slug": "isiala_mbano"
+    }
+  },
+  {
+    "pk": 363,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 1,
+      "name": "Isiala Ngwa North",
+      "scale_up": false,
+      "slug": "isiala_ngwa_north"
+    }
+  },
+  {
+    "pk": 364,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 1,
+      "name": "Isiala Ngwa South",
+      "scale_up": false,
+      "slug": "isiala_ngwa_south"
+    }
+  },
+  {
+    "pk": 365,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 24,
+      "name": "Isin",
+      "scale_up": false,
+      "slug": "isin"
+    }
+  },
+  {
+    "pk": 366,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 14,
+      "name": "Isi-Uzo",
+      "scale_up": true,
+      "slug": "isi_uzo"
+    }
+  },
+  {
+    "pk": 367,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Isokan",
+      "scale_up": false,
+      "slug": "isokan"
+    }
+  },
+  {
+    "pk": 368,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Isoko north",
+      "scale_up": false,
+      "slug": "isoko_north"
+    }
+  },
+  {
+    "pk": 369,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Isoko South",
+      "scale_up": false,
+      "slug": "isoko_south"
+    }
+  },
+  {
+    "pk": 370,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Isu",
+      "scale_up": false,
+      "slug": "isu"
+    }
+  },
+  {
+    "pk": 371,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 1,
+      "name": "Isuikwuato",
+      "scale_up": false,
+      "slug": "isuikwuato"
+    }
+  },
+  {
+    "pk": 372,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Itas/Gadau",
+      "scale_up": true,
+      "slug": "itas_gadau"
+    }
+  },
+  {
+    "pk": 373,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Itesiwaju",
+      "scale_up": false,
+      "slug": "itesiwaju"
+    }
+  },
+  {
+    "pk": 374,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Itu",
+      "scale_up": false,
+      "slug": "itu"
+    }
+  },
+  {
+    "pk": 375,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 11,
+      "name": "Ivo",
+      "scale_up": false,
+      "slug": "ivo"
+    }
+  },
+  {
+    "pk": 376,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Iwajowa",
+      "scale_up": false,
+      "slug": "iwajowa"
+    }
+  },
+  {
+    "pk": 377,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Iwo",
+      "scale_up": false,
+      "slug": "iwo"
+    }
+  },
+  {
+    "pk": 378,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 11,
+      "name": "Izzi",
+      "scale_up": true,
+      "slug": "izzi"
+    }
+  },
+  {
+    "pk": 379,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Jaba",
+      "scale_up": false,
+      "slug": "jaba"
+    }
+  },
+  {
+    "pk": 380,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Jada",
+      "scale_up": false,
+      "slug": "jada"
+    }
+  },
+  {
+    "pk": 381,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Jahun",
+      "scale_up": false,
+      "slug": "jahun"
+    }
+  },
+  {
+    "pk": 382,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 36,
+      "name": "Jakusko",
+      "scale_up": false,
+      "slug": "jakusko"
+    }
+  },
+  {
+    "pk": 383,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 35,
+      "name": "Jalingo",
+      "scale_up": false,
+      "slug": "jalingo"
+    }
+  },
+  {
+    "pk": 384,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Jama'are",
+      "scale_up": false,
+      "slug": "jama_are"
+    }
+  },
+  {
+    "pk": 385,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Jega",
+      "scale_up": false,
+      "slug": "jega"
+    }
+  },
+  {
+    "pk": 386,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Jema'a",
+      "scale_up": false,
+      "slug": "jema_a"
+    }
+  },
+  {
+    "pk": 387,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Jere",
+      "scale_up": false,
+      "slug": "jere"
+    }
+  },
+  {
+    "pk": 388,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Jibia",
+      "scale_up": false,
+      "slug": "jibia"
+    }
+  },
+  {
+    "pk": 389,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 32,
+      "name": "Jos East",
+      "scale_up": false,
+      "slug": "jos_east"
+    }
+  },
+  {
+    "pk": 390,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 32,
+      "name": "Jos North",
+      "scale_up": false,
+      "slug": "jos_north"
+    }
+  },
+  {
+    "pk": 391,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 32,
+      "name": "Jos South",
+      "scale_up": false,
+      "slug": "jos_south"
+    }
+  },
+  {
+    "pk": 392,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Kabba/Bunu",
+      "scale_up": true,
+      "slug": "kabba_bunu"
+    }
+  },
+  {
+    "pk": 393,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Kabo",
+      "scale_up": false,
+      "slug": "kabo"
+    }
+  },
+  {
+    "pk": 394,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Kachia",
+      "scale_up": true,
+      "slug": "kachia"
+    }
+  },
+  {
+    "pk": 395,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Kaduna North",
+      "scale_up": false,
+      "slug": "kaduna_north"
+    }
+  },
+  {
+    "pk": 396,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "kaduna South",
+      "scale_up": false,
+      "slug": "kaduna_south"
+    }
+  },
+  {
+    "pk": 397,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Kafin-Hausa",
+      "scale_up": false,
+      "slug": "kafin_hausa"
+    }
+  },
+  {
+    "pk": 398,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Kafur",
+      "scale_up": false,
+      "slug": "kafur"
+    }
+  },
+  {
+    "pk": 399,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Kaga",
+      "scale_up": false,
+      "slug": "kaga"
+    }
+  },
+  {
+    "pk": 400,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Kagarko",
+      "scale_up": false,
+      "slug": "kagarko"
+    }
+  },
+  {
+    "pk": 401,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 24,
+      "name": "Kaiama",
+      "scale_up": true,
+      "slug": "kaiama"
+    }
+  },
+  {
+    "pk": 402,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "kaita",
+      "scale_up": true,
+      "slug": "kaita"
+    }
+  },
+  {
+    "pk": 403,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Kajola",
+      "scale_up": false,
+      "slug": "kajola"
+    }
+  },
+  {
+    "pk": 404,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Kajuru",
+      "scale_up": false,
+      "slug": "kajuru"
+    }
+  },
+  {
+    "pk": 405,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Kala/Balge",
+      "scale_up": true,
+      "slug": "kala_balge"
+    }
+  },
+  {
+    "pk": 406,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Kalgo",
+      "scale_up": false,
+      "slug": "kalgo"
+    }
+  },
+  {
+    "pk": 407,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 16,
+      "name": "Kaltungo",
+      "scale_up": false,
+      "slug": "kaltungo"
+    }
+  },
+  {
+    "pk": 408,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 32,
+      "name": "Kanam",
+      "scale_up": false,
+      "slug": "kanam"
+    }
+  },
+  {
+    "pk": 409,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Kankara",
+      "scale_up": false,
+      "slug": "kankara"
+    }
+  },
+  {
+    "pk": 410,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 32,
+      "name": "Kanke",
+      "scale_up": true,
+      "slug": "kanke"
+    }
+  },
+  {
+    "pk": 411,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Kankia",
+      "scale_up": false,
+      "slug": "kankia"
+    }
+  },
+  {
+    "pk": 412,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Kano-Municipal",
+      "scale_up": false,
+      "slug": "kano_municipal"
+    }
+  },
+  {
+    "pk": 413,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 36,
+      "name": "Karasuwa",
+      "scale_up": true,
+      "slug": "karasuwa"
+    }
+  },
+  {
+    "pk": 414,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Karaye",
+      "scale_up": false,
+      "slug": "karaye"
+    }
+  },
+  {
+    "pk": 415,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 35,
+      "name": "Karin Lamido",
+      "scale_up": true,
+      "slug": "karin_lamido"
+    }
+  },
+  {
+    "pk": 416,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 26,
+      "name": "Karu",
+      "scale_up": false,
+      "slug": "karu"
+    }
+  },
+  {
+    "pk": 417,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Katagum",
+      "scale_up": false,
+      "slug": "katagum"
+    }
+  },
+  {
+    "pk": 418,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Katcha",
+      "scale_up": false,
+      "slug": "katcha"
+    }
+  },
+  {
+    "pk": 419,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Katsina",
+      "scale_up": false,
+      "slug": "katsina"
+    }
+  },
+  {
+    "pk": 420,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Katsina-Ala",
+      "scale_up": false,
+      "slug": "katsina_ala"
+    }
+  },
+  {
+    "pk": 421,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Kaura",
+      "scale_up": false,
+      "slug": "kaura"
+    }
+  },
+  {
+    "pk": 422,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 37,
+      "name": "Kaura Namoda",
+      "scale_up": false,
+      "slug": "kaura_namoda"
+    }
+  },
+  {
+    "pk": 423,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Kauru",
+      "scale_up": false,
+      "slug": "kauru"
+    }
+  },
+  {
+    "pk": 424,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Kazaure",
+      "scale_up": false,
+      "slug": "kazaure"
+    }
+  },
+  {
+    "pk": 425,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 26,
+      "name": "Keana",
+      "scale_up": false,
+      "slug": "keana"
+    }
+  },
+  {
+    "pk": 426,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Kebbe",
+      "scale_up": false,
+      "slug": "kebbe"
+    }
+  },
+  {
+    "pk": 427,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 26,
+      "name": "Keffi",
+      "scale_up": false,
+      "slug": "keffi"
+    }
+  },
+  {
+    "pk": 428,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Khana",
+      "scale_up": true,
+      "slug": "khana"
+    }
+  },
+  {
+    "pk": 429,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Kibiya",
+      "scale_up": false,
+      "slug": "kibiya"
+    }
+  },
+  {
+    "pk": 430,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Kirfi",
+      "scale_up": true,
+      "slug": "kirfi"
+    }
+  },
+  {
+    "pk": 431,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Kiri-Kasama",
+      "scale_up": false,
+      "slug": "kiri_kasama"
+    }
+  },
+  {
+    "pk": 432,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Kiru",
+      "scale_up": false,
+      "slug": "kiru"
+    }
+  },
+  {
+    "pk": 433,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "kiyawa",
+      "scale_up": false,
+      "slug": "kiyawa"
+    }
+  },
+  {
+    "pk": 434,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Kogi",
+      "scale_up": false,
+      "slug": "kogi"
+    }
+  },
+  {
+    "pk": 435,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Koko/Besse",
+      "scale_up": false,
+      "slug": "koko_besse"
+    }
+  },
+  {
+    "pk": 436,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 26,
+      "name": "Kokona",
+      "scale_up": false,
+      "slug": "kokona"
+    }
+  },
+  {
+    "pk": 437,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 6,
+      "name": "Kolokuma",
+      "scale_up": false,
+      "slug": "kolokuma"
+    }
+  },
+  {
+    "pk": 438,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Konduga",
+      "scale_up": false,
+      "slug": "konduga"
+    }
+  },
+  {
+    "pk": 439,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Konshisha",
+      "scale_up": false,
+      "slug": "konshisha"
+    }
+  },
+  {
+    "pk": 440,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Kontagora",
+      "scale_up": false,
+      "slug": "kontagora"
+    }
+  },
+  {
+    "pk": 441,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Kosofe",
+      "scale_up": false,
+      "slug": "kosofe"
+    }
+  },
+  {
+    "pk": 442,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Kuagama",
+      "scale_up": false,
+      "slug": "kuagama"
+    }
+  },
+  {
+    "pk": 443,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Kubau",
+      "scale_up": false,
+      "slug": "kubau"
+    }
+  },
+  {
+    "pk": 444,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Kudan",
+      "scale_up": false,
+      "slug": "kudan"
+    }
+  },
+  {
+    "pk": 445,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 15,
+      "name": "Kuje",
+      "scale_up": true,
+      "slug": "kuje"
+    }
+  },
+  {
+    "pk": 446,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Kukawa",
+      "scale_up": false,
+      "slug": "kukawa"
+    }
+  },
+  {
+    "pk": 447,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Kumbotso",
+      "scale_up": false,
+      "slug": "kumbotso"
+    }
+  },
+  {
+    "pk": 448,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 35,
+      "name": "Kurmi",
+      "scale_up": false,
+      "slug": "kurmi"
+    }
+  },
+  {
+    "pk": 449,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Kunchi",
+      "scale_up": false,
+      "slug": "kunchi"
+    }
+  },
+  {
+    "pk": 450,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Kura",
+      "scale_up": false,
+      "slug": "kura"
+    }
+  },
+  {
+    "pk": 451,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Kurfi",
+      "scale_up": false,
+      "slug": "kurfi"
+    }
+  },
+  {
+    "pk": 452,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Kusada",
+      "scale_up": false,
+      "slug": "kusada"
+    }
+  },
+  {
+    "pk": 453,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 15,
+      "name": "Kwali",
+      "scale_up": false,
+      "slug": "kwali"
+    }
+  },
+  {
+    "pk": 454,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Kwande",
+      "scale_up": false,
+      "slug": "kwande"
+    }
+  },
+  {
+    "pk": 455,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 16,
+      "name": "Kwami",
+      "scale_up": false,
+      "slug": "kwami"
+    }
+  },
+  {
+    "pk": 456,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Kware",
+      "scale_up": false,
+      "slug": "kware"
+    }
+  },
+  {
+    "pk": 457,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Kwaya-Kusar",
+      "scale_up": false,
+      "slug": "kwaya_kusar"
+    }
+  },
+  {
+    "pk": 458,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 26,
+      "name": "Lafia",
+      "scale_up": false,
+      "slug": "lafia"
+    }
+  },
+  {
+    "pk": 459,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Lagelu",
+      "scale_up": true,
+      "slug": "lagelu"
+    }
+  },
+  {
+    "pk": 460,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Lagos Island",
+      "scale_up": false,
+      "slug": "lagos_island"
+    }
+  },
+  {
+    "pk": 461,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Lagos Mainland",
+      "scale_up": false,
+      "slug": "lagos_mainland"
+    }
+  },
+  {
+    "pk": 462,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 32,
+      "name": "Langtang South",
+      "scale_up": false,
+      "slug": "langtang_south"
+    }
+  },
+  {
+    "pk": 463,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 32,
+      "name": "Langtan North",
+      "scale_up": false,
+      "slug": "langtan_north"
+    }
+  },
+  {
+    "pk": 464,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Lapai",
+      "scale_up": false,
+      "slug": "lapai"
+    }
+  },
+  {
+    "pk": 465,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Larmurde",
+      "scale_up": true,
+      "slug": "larmurde"
+    }
+  },
+  {
+    "pk": 466,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 35,
+      "name": "Lau",
+      "scale_up": false,
+      "slug": "lau"
+    }
+  },
+  {
+    "pk": 467,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Lavun",
+      "scale_up": true,
+      "slug": "lavun"
+    }
+  },
+  {
+    "pk": 468,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Lere",
+      "scale_up": true,
+      "slug": "lere"
+    }
+  },
+  {
+    "pk": 469,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Logo",
+      "scale_up": true,
+      "slug": "logo"
+    }
+  },
+  {
+    "pk": 470,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Lokoja",
+      "scale_up": false,
+      "slug": "lokoja"
+    }
+  },
+  {
+    "pk": 471,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 36,
+      "name": "Machina",
+      "scale_up": false,
+      "slug": "machina"
+    }
+  },
+  {
+    "pk": 472,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Madgali",
+      "scale_up": false,
+      "slug": "madgali"
+    }
+  },
+  {
+    "pk": 473,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Madobi",
+      "scale_up": false,
+      "slug": "madobi"
+    }
+  },
+  {
+    "pk": 474,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Mafa",
+      "scale_up": false,
+      "slug": "mafa"
+    }
+  },
+  {
+    "pk": 475,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Magama",
+      "scale_up": false,
+      "slug": "magama"
+    }
+  },
+  {
+    "pk": 476,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Magumeri",
+      "scale_up": false,
+      "slug": "magumeri"
+    }
+  },
+  {
+    "pk": 477,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Mai'Adua",
+      "scale_up": false,
+      "slug": "mai_adua"
+    }
+  },
+  {
+    "pk": 478,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Maiduguri",
+      "scale_up": false,
+      "slug": "maiduguri"
+    }
+  },
+  {
+    "pk": 479,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Maigatari",
+      "scale_up": false,
+      "slug": "maigatari"
+    }
+  },
+  {
+    "pk": 480,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Maiha",
+      "scale_up": false,
+      "slug": "maiha"
+    }
+  },
+  {
+    "pk": 481,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Maiyama",
+      "scale_up": false,
+      "slug": "maiyama"
+    }
+  },
+  {
+    "pk": 482,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Makarfi",
+      "scale_up": false,
+      "slug": "makarfi"
+    }
+  },
+  {
+    "pk": 483,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Makoda",
+      "scale_up": false,
+      "slug": "makoda"
+    }
+  },
+  {
+    "pk": 484,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Malam-Maduri",
+      "scale_up": false,
+      "slug": "malam_maduri"
+    }
+  },
+  {
+    "pk": 485,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Malumfashi",
+      "scale_up": false,
+      "slug": "malumfashi"
+    }
+  },
+  {
+    "pk": 486,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 32,
+      "name": "Mangu",
+      "scale_up": false,
+      "slug": "mangu"
+    }
+  },
+  {
+    "pk": 487,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Mani",
+      "scale_up": false,
+      "slug": "mani"
+    }
+  },
+  {
+    "pk": 488,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 37,
+      "name": "Maradun",
+      "scale_up": false,
+      "slug": "maradun"
+    }
+  },
+  {
+    "pk": 489,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Mariga",
+      "scale_up": false,
+      "slug": "mariga"
+    }
+  },
+  {
+    "pk": 490,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Makurdi",
+      "scale_up": false,
+      "slug": "makurdi"
+    }
+  },
+  {
+    "pk": 491,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Marte",
+      "scale_up": false,
+      "slug": "marte"
+    }
+  },
+  {
+    "pk": 492,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 37,
+      "name": "Maru",
+      "scale_up": true,
+      "slug": "maru"
+    }
+  },
+  {
+    "pk": 493,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Mashegu",
+      "scale_up": false,
+      "slug": "mashegu"
+    }
+  },
+  {
+    "pk": 494,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Mashi",
+      "scale_up": true,
+      "slug": "mashi"
+    }
+  },
+  {
+    "pk": 495,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Matazu",
+      "scale_up": false,
+      "slug": "matazu"
+    }
+  },
+  {
+    "pk": 496,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Mayo-Belwa",
+      "scale_up": false,
+      "slug": "mayo_belwa"
+    }
+  },
+  {
+    "pk": 497,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Mbaitoli",
+      "scale_up": false,
+      "slug": "mbaitoli"
+    }
+  },
+  {
+    "pk": 498,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Mbo",
+      "scale_up": true,
+      "slug": "mbo"
+    }
+  },
+  {
+    "pk": 499,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Michika",
+      "scale_up": true,
+      "slug": "michika"
+    }
+  },
+  {
+    "pk": 500,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Miga",
+      "scale_up": true,
+      "slug": "miga"
+    }
+  },
+  {
+    "pk": 501,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 32,
+      "name": "Mikang",
+      "scale_up": true,
+      "slug": "mikang"
+    }
+  },
+  {
+    "pk": 502,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Minjibir",
+      "scale_up": false,
+      "slug": "minjibir"
+    }
+  },
+  {
+    "pk": 503,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Misau",
+      "scale_up": false,
+      "slug": "misau"
+    }
+  },
+  {
+    "pk": 504,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 13,
+      "name": "Moba",
+      "scale_up": false,
+      "slug": "moba"
+    }
+  },
+  {
+    "pk": 505,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Mobbar",
+      "scale_up": false,
+      "slug": "mobbar"
+    }
+  },
+  {
+    "pk": 506,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Mubi North",
+      "scale_up": false,
+      "slug": "mubi_north"
+    }
+  },
+  {
+    "pk": 507,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Mubi South",
+      "scale_up": false,
+      "slug": "mubi_south"
+    }
+  },
+  {
+    "pk": 508,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Mokwa",
+      "scale_up": false,
+      "slug": "mokwa"
+    }
+  },
+  {
+    "pk": 509,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Monguno",
+      "scale_up": false,
+      "slug": "monguno"
+    }
+  },
+  {
+    "pk": 510,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Mopa Muro",
+      "scale_up": false,
+      "slug": "mopa_muro"
+    }
+  },
+  {
+    "pk": 511,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 24,
+      "name": "Moro",
+      "scale_up": false,
+      "slug": "moro"
+    }
+  },
+  {
+    "pk": 512,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Moya",
+      "scale_up": true,
+      "slug": "moya"
+    }
+  },
+  {
+    "pk": 513,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Mpkat-Enin",
+      "scale_up": false,
+      "slug": "mpkat_enin"
+    }
+  },
+  {
+    "pk": 514,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 15,
+      "name": "Municipal-Area-Council",
+      "scale_up": false,
+      "slug": "municipal_area_council"
+    }
+  },
+  {
+    "pk": 515,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Musawa",
+      "scale_up": true,
+      "slug": "musawa"
+    }
+  },
+  {
+    "pk": 516,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Mushin",
+      "scale_up": false,
+      "slug": "mushin"
+    }
+  },
+  {
+    "pk": 517,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 16,
+      "name": "Nafada",
+      "scale_up": false,
+      "slug": "nafada"
+    }
+  },
+  {
+    "pk": 518,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 36,
+      "name": "Nangere",
+      "scale_up": false,
+      "slug": "nangere"
+    }
+  },
+  {
+    "pk": 519,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Nassarawa",
+      "scale_up": false,
+      "slug": "nassarawa"
+    }
+  },
+  {
+    "pk": 520,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 26,
+      "name": "Nasarawa",
+      "scale_up": false,
+      "slug": "nasarawa"
+    }
+  },
+  {
+    "pk": 521,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 26,
+      "name": "Nasarawa-Eggon",
+      "scale_up": false,
+      "slug": "nasarawa_eggon"
+    }
+  },
+  {
+    "pk": 522,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Ndokwa-East",
+      "scale_up": false,
+      "slug": "ndokwa_east"
+    }
+  },
+  {
+    "pk": 523,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Ndokwa-West",
+      "scale_up": false,
+      "slug": "ndokwa_west"
+    }
+  },
+  {
+    "pk": 524,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 6,
+      "name": "Nembe",
+      "scale_up": false,
+      "slug": "nembe"
+    }
+  },
+  {
+    "pk": 525,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Ngala",
+      "scale_up": false,
+      "slug": "ngala"
+    }
+  },
+  {
+    "pk": 526,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Nganzai",
+      "scale_up": false,
+      "slug": "nganzai"
+    }
+  },
+  {
+    "pk": 527,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Ngaski",
+      "scale_up": false,
+      "slug": "ngaski"
+    }
+  },
+  {
+    "pk": 528,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Ngor-Okpala",
+      "scale_up": true,
+      "slug": "ngor_okpala"
+    }
+  },
+  {
+    "pk": 529,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 36,
+      "name": "Nguru",
+      "scale_up": false,
+      "slug": "nguru"
+    }
+  },
+  {
+    "pk": 530,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Ningi",
+      "scale_up": false,
+      "slug": "ningi"
+    }
+  },
+  {
+    "pk": 531,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Njaba",
+      "scale_up": false,
+      "slug": "njaba"
+    }
+  },
+  {
+    "pk": 532,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Njikoka",
+      "scale_up": false,
+      "slug": "njikoka"
+    }
+  },
+  {
+    "pk": 533,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 14,
+      "name": "Nkanu",
+      "scale_up": false,
+      "slug": "nkanu"
+    }
+  },
+  {
+    "pk": 534,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 14,
+      "name": "Nkanu West",
+      "scale_up": false,
+      "slug": "nkanu_west"
+    }
+  },
+  {
+    "pk": 535,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Nkwerre",
+      "scale_up": false,
+      "slug": "nkwerre"
+    }
+  },
+  {
+    "pk": 536,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Nnewi North",
+      "scale_up": false,
+      "slug": "nnewi_north"
+    }
+  },
+  {
+    "pk": 537,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Nnewi South",
+      "scale_up": false,
+      "slug": "nnewi_south"
+    }
+  },
+  {
+    "pk": 538,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Nsit-Atai",
+      "scale_up": false,
+      "slug": "nsit_atai"
+    }
+  },
+  {
+    "pk": 539,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Nsit-Ibom",
+      "scale_up": false,
+      "slug": "nsit_ibom"
+    }
+  },
+  {
+    "pk": 540,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Nsit-Ubuim",
+      "scale_up": true,
+      "slug": "nsit_ubuim"
+    }
+  },
+  {
+    "pk": 541,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 14,
+      "name": "Nsukka",
+      "scale_up": false,
+      "slug": "nsukka"
+    }
+  },
+  {
+    "pk": 542,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Numan",
+      "scale_up": false,
+      "slug": "numan"
+    }
+  },
+  {
+    "pk": 543,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Nwangele",
+      "scale_up": true,
+      "slug": "nwangele"
+    }
+  },
+  {
+    "pk": 544,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Obafemi-Owode",
+      "scale_up": false,
+      "slug": "obafemi_owode"
+    }
+  },
+  {
+    "pk": 545,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Obanliku",
+      "scale_up": false,
+      "slug": "obanliku"
+    }
+  },
+  {
+    "pk": 546,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 26,
+      "name": "Obi",
+      "scale_up": true,
+      "slug": "obi"
+    }
+  },
+  {
+    "pk": 547,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Obi",
+      "scale_up": false,
+      "slug": "obi"
+    }
+  },
+  {
+    "pk": 548,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 1,
+      "name": "Obi Nwa",
+      "scale_up": true,
+      "slug": "obi_nwa"
+    }
+  },
+  {
+    "pk": 549,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Obio/Akpor",
+      "scale_up": false,
+      "slug": "obio_akpor"
+    }
+  },
+  {
+    "pk": 550,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Obokun",
+      "scale_up": false,
+      "slug": "obokun"
+    }
+  },
+  {
+    "pk": 551,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Obot-Akara",
+      "scale_up": false,
+      "slug": "obot_akara"
+    }
+  },
+  {
+    "pk": 552,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Obowo",
+      "scale_up": false,
+      "slug": "obowo"
+    }
+  },
+  {
+    "pk": 553,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Obubra",
+      "scale_up": false,
+      "slug": "obubra"
+    }
+  },
+  {
+    "pk": 554,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Obudu",
+      "scale_up": false,
+      "slug": "obudu"
+    }
+  },
+  {
+    "pk": 555,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Odeda",
+      "scale_up": true,
+      "slug": "odeda"
+    }
+  },
+  {
+    "pk": 556,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "Odigbo",
+      "scale_up": false,
+      "slug": "odigbo"
+    }
+  },
+  {
+    "pk": 557,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Odogbolu",
+      "scale_up": false,
+      "slug": "odogbolu"
+    }
+  },
+  {
+    "pk": 558,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Odo-otin",
+      "scale_up": true,
+      "slug": "odo_otin"
+    }
+  },
+  {
+    "pk": 559,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Odukpani",
+      "scale_up": true,
+      "slug": "odukpani"
+    }
+  },
+  {
+    "pk": 560,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 24,
+      "name": "Offa",
+      "scale_up": false,
+      "slug": "offa"
+    }
+  },
+  {
+    "pk": 561,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Ofu",
+      "scale_up": false,
+      "slug": "ofu"
+    }
+  },
+  {
+    "pk": 562,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Ogba/Egbema/Ndoni",
+      "scale_up": false,
+      "slug": "ogba_egbema_ndoni"
+    }
+  },
+  {
+    "pk": 563,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Ogbadibo",
+      "scale_up": false,
+      "slug": "ogbadibo"
+    }
+  },
+  {
+    "pk": 564,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Ogbaru",
+      "scale_up": false,
+      "slug": "ogbaru"
+    }
+  },
+  {
+    "pk": 565,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 6,
+      "name": "Ogbia",
+      "scale_up": false,
+      "slug": "ogbia"
+    }
+  },
+  {
+    "pk": 566,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Ogbomoso North",
+      "scale_up": false,
+      "slug": "ogbomoso_north"
+    }
+  },
+  {
+    "pk": 567,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Ogbomoso South",
+      "scale_up": false,
+      "slug": "ogbomoso_south"
+    }
+  },
+  {
+    "pk": 568,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Ogo Bolo",
+      "scale_up": false,
+      "slug": "ogo_bolo"
+    }
+  },
+  {
+    "pk": 569,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Ogoja",
+      "scale_up": false,
+      "slug": "ogoja"
+    }
+  },
+  {
+    "pk": 570,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Ogo Oluwa",
+      "scale_up": false,
+      "slug": "ogo_oluwa"
+    }
+  },
+  {
+    "pk": 571,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Ogori/Magongo",
+      "scale_up": false,
+      "slug": "ogori_magongo"
+    }
+  },
+  {
+    "pk": 572,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Ogun waterside",
+      "scale_up": false,
+      "slug": "ogun_waterside"
+    }
+  },
+  {
+    "pk": 573,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Oguta",
+      "scale_up": false,
+      "slug": "oguta"
+    }
+  },
+  {
+    "pk": 574,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 1,
+      "name": "Ohafia",
+      "scale_up": true,
+      "slug": "ohafia"
+    }
+  },
+  {
+    "pk": 575,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Ohaji/Egbema",
+      "scale_up": false,
+      "slug": "ohaji_egbema"
+    }
+  },
+  {
+    "pk": 576,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 11,
+      "name": "Ohaozara",
+      "scale_up": false,
+      "slug": "ohaozara"
+    }
+  },
+  {
+    "pk": 577,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 11,
+      "name": "Ohaukwu",
+      "scale_up": false,
+      "slug": "ohaukwu"
+    }
+  },
+  {
+    "pk": 578,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Ohimini",
+      "scale_up": false,
+      "slug": "ohimini"
+    }
+  },
+  {
+    "pk": 579,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Ohionmwon",
+      "scale_up": true,
+      "slug": "ohionmwon"
+    }
+  },
+  {
+    "pk": 580,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 14,
+      "name": "Oji-River",
+      "scale_up": false,
+      "slug": "oji_river"
+    }
+  },
+  {
+    "pk": 581,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Ojo",
+      "scale_up": false,
+      "slug": "ojo"
+    }
+  },
+  {
+    "pk": 582,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Oju",
+      "scale_up": false,
+      "slug": "oju"
+    }
+  },
+  {
+    "pk": 583,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Okehi",
+      "scale_up": false,
+      "slug": "okehi"
+    }
+  },
+  {
+    "pk": 584,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Okene",
+      "scale_up": false,
+      "slug": "okene"
+    }
+  },
+  {
+    "pk": 585,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 24,
+      "name": "Oke-Ero",
+      "scale_up": false,
+      "slug": "oke_ero"
+    }
+  },
+  {
+    "pk": 586,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Okigwe",
+      "scale_up": false,
+      "slug": "okigwe"
+    }
+  },
+  {
+    "pk": 587,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "Okitipupa",
+      "scale_up": false,
+      "slug": "okitipupa"
+    }
+  },
+  {
+    "pk": 588,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Okobo",
+      "scale_up": false,
+      "slug": "okobo"
+    }
+  },
+  {
+    "pk": 589,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Okpe",
+      "scale_up": false,
+      "slug": "okpe"
+    }
+  },
+  {
+    "pk": 590,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Okrika",
+      "scale_up": false,
+      "slug": "okrika"
+    }
+  },
+  {
+    "pk": 591,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Olamabolo",
+      "scale_up": false,
+      "slug": "olamabolo"
+    }
+  },
+  {
+    "pk": 592,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Ola-oluwa",
+      "scale_up": false,
+      "slug": "ola_oluwa"
+    }
+  },
+  {
+    "pk": 593,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Olorunda",
+      "scale_up": false,
+      "slug": "olorunda"
+    }
+  },
+  {
+    "pk": 594,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Olorunsogo",
+      "scale_up": false,
+      "slug": "olorunsogo"
+    }
+  },
+  {
+    "pk": 595,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Oluyole",
+      "scale_up": false,
+      "slug": "oluyole"
+    }
+  },
+  {
+    "pk": 596,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Omala",
+      "scale_up": true,
+      "slug": "omala"
+    }
+  },
+  {
+    "pk": 597,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Omuma",
+      "scale_up": true,
+      "slug": "omuma"
+    }
+  },
+  {
+    "pk": 598,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Ona-ara",
+      "scale_up": false,
+      "slug": "ona_ara"
+    }
+  },
+  {
+    "pk": 599,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "Ondo East",
+      "scale_up": true,
+      "slug": "ondo_east"
+    }
+  },
+  {
+    "pk": 600,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "Ondo west",
+      "scale_up": false,
+      "slug": "ondo_west"
+    }
+  },
+  {
+    "pk": 601,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 11,
+      "name": "Onicha",
+      "scale_up": false,
+      "slug": "onicha"
+    }
+  },
+  {
+    "pk": 602,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Onitsha North",
+      "scale_up": false,
+      "slug": "onitsha_north"
+    }
+  },
+  {
+    "pk": 603,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Onitsha",
+      "scale_up": false,
+      "slug": "onitsha"
+    }
+  },
+  {
+    "pk": 604,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Onna",
+      "scale_up": false,
+      "slug": "onna"
+    }
+  },
+  {
+    "pk": 605,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Okpokwu",
+      "scale_up": false,
+      "slug": "okpokwu"
+    }
+  },
+  {
+    "pk": 606,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Opobo/Nkoro",
+      "scale_up": false,
+      "slug": "opobo_nkoro"
+    }
+  },
+  {
+    "pk": 607,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Oredo",
+      "scale_up": false,
+      "slug": "oredo"
+    }
+  },
+  {
+    "pk": 608,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Orelope",
+      "scale_up": false,
+      "slug": "orelope"
+    }
+  },
+  {
+    "pk": 609,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Oriade",
+      "scale_up": false,
+      "slug": "oriade"
+    }
+  },
+  {
+    "pk": 610,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "OriIre",
+      "scale_up": true,
+      "slug": "oriire"
+    }
+  },
+  {
+    "pk": 611,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Orlu",
+      "scale_up": false,
+      "slug": "orlu"
+    }
+  },
+  {
+    "pk": 612,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Orolu",
+      "scale_up": false,
+      "slug": "orolu"
+    }
+  },
+  {
+    "pk": 613,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Oron",
+      "scale_up": false,
+      "slug": "oron"
+    }
+  },
+  {
+    "pk": 614,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Orsu",
+      "scale_up": false,
+      "slug": "orsu"
+    }
+  },
+  {
+    "pk": 615,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Oru East",
+      "scale_up": false,
+      "slug": "oru_east"
+    }
+  },
+  {
+    "pk": 616,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Oruk Anam",
+      "scale_up": true,
+      "slug": "oruk_anam"
+    }
+  },
+  {
+    "pk": 617,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Orumba North",
+      "scale_up": false,
+      "slug": "orumba_north"
+    }
+  },
+  {
+    "pk": 618,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Orumba South",
+      "scale_up": true,
+      "slug": "orumba_south"
+    }
+  },
+  {
+    "pk": 619,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Oru West",
+      "scale_up": false,
+      "slug": "oru_west"
+    }
+  },
+  {
+    "pk": 620,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "Ose",
+      "scale_up": false,
+      "slug": "ose"
+    }
+  },
+  {
+    "pk": 621,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Oshimili North",
+      "scale_up": false,
+      "slug": "oshimili_north"
+    }
+  },
+  {
+    "pk": 622,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Oshimili South",
+      "scale_up": false,
+      "slug": "oshimili_south"
+    }
+  },
+  {
+    "pk": 623,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Oshodi-Isolo",
+      "scale_up": false,
+      "slug": "oshodi_isolo"
+    }
+  },
+  {
+    "pk": 624,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 1,
+      "name": "Osisioma Ngwa",
+      "scale_up": false,
+      "slug": "osisioma_ngwa"
+    }
+  },
+  {
+    "pk": 625,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 30,
+      "name": "Osogbo",
+      "scale_up": false,
+      "slug": "osogbo"
+    }
+  },
+  {
+    "pk": 626,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Oturkpo",
+      "scale_up": false,
+      "slug": "oturkpo"
+    }
+  },
+  {
+    "pk": 627,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Ovia North East",
+      "scale_up": false,
+      "slug": "ovia_north_east"
+    }
+  },
+  {
+    "pk": 628,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Ovia-South-West",
+      "scale_up": false,
+      "slug": "ovia_south_west"
+    }
+  },
+  {
+    "pk": 629,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Owan East",
+      "scale_up": false,
+      "slug": "owan_east"
+    }
+  },
+  {
+    "pk": 630,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Owan West",
+      "scale_up": false,
+      "slug": "owan_west"
+    }
+  },
+  {
+    "pk": 631,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Owerri-Municipal",
+      "scale_up": false,
+      "slug": "owerri_municipal"
+    }
+  },
+  {
+    "pk": 632,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Owerri North",
+      "scale_up": false,
+      "slug": "owerri_north"
+    }
+  },
+  {
+    "pk": 633,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Owerri West",
+      "scale_up": false,
+      "slug": "owerri_west"
+    }
+  },
+  {
+    "pk": 634,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 29,
+      "name": "Owo",
+      "scale_up": false,
+      "slug": "owo"
+    }
+  },
+  {
+    "pk": 635,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 13,
+      "name": "Oye",
+      "scale_up": false,
+      "slug": "oye"
+    }
+  },
+  {
+    "pk": 636,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 4,
+      "name": "Oyi",
+      "scale_up": false,
+      "slug": "oyi"
+    }
+  },
+  {
+    "pk": 637,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Oyigbo",
+      "scale_up": false,
+      "slug": "oyigbo"
+    }
+  },
+  {
+    "pk": 638,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Oyo",
+      "scale_up": false,
+      "slug": "oyo"
+    }
+  },
+  {
+    "pk": 639,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Oyo East",
+      "scale_up": false,
+      "slug": "oyo_east"
+    }
+  },
+  {
+    "pk": 640,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 24,
+      "name": "Oyun",
+      "scale_up": false,
+      "slug": "oyun"
+    }
+  },
+  {
+    "pk": 641,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Paikoro",
+      "scale_up": false,
+      "slug": "paikoro"
+    }
+  },
+  {
+    "pk": 642,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 32,
+      "name": "Pankshin",
+      "scale_up": false,
+      "slug": "pankshin"
+    }
+  },
+  {
+    "pk": 643,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Patani",
+      "scale_up": false,
+      "slug": "patani"
+    }
+  },
+  {
+    "pk": 644,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 24,
+      "name": "Patigi",
+      "scale_up": false,
+      "slug": "patigi"
+    }
+  },
+  {
+    "pk": 645,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Port-Harcourt",
+      "scale_up": false,
+      "slug": "port_harcourt"
+    }
+  },
+  {
+    "pk": 646,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 36,
+      "name": "Potiskum",
+      "scale_up": false,
+      "slug": "potiskum"
+    }
+  },
+  {
+    "pk": 647,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 32,
+      "name": "Qua'an-Pan",
+      "scale_up": false,
+      "slug": "qua_an_pan"
+    }
+  },
+  {
+    "pk": 648,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Rabah",
+      "scale_up": false,
+      "slug": "rabah"
+    }
+  },
+  {
+    "pk": 649,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Rafi",
+      "scale_up": false,
+      "slug": "rafi"
+    }
+  },
+  {
+    "pk": 650,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Rano",
+      "scale_up": false,
+      "slug": "rano"
+    }
+  },
+  {
+    "pk": 651,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Remo North",
+      "scale_up": false,
+      "slug": "remo_north"
+    }
+  },
+  {
+    "pk": 652,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Rijau",
+      "scale_up": false,
+      "slug": "rijau"
+    }
+  },
+  {
+    "pk": 653,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Rimi",
+      "scale_up": false,
+      "slug": "rimi"
+    }
+  },
+  {
+    "pk": 654,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Rimin Gado",
+      "scale_up": false,
+      "slug": "rimin_gado"
+    }
+  },
+  {
+    "pk": 655,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Ringim",
+      "scale_up": false,
+      "slug": "ringim"
+    }
+  },
+  {
+    "pk": 656,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 32,
+      "name": "Riyom",
+      "scale_up": true,
+      "slug": "riyom"
+    }
+  },
+  {
+    "pk": 657,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Rogo",
+      "scale_up": false,
+      "slug": "rogo"
+    }
+  },
+  {
+    "pk": 658,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Roni",
+      "scale_up": false,
+      "slug": "roni"
+    }
+  },
+  {
+    "pk": 659,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Sabon-Birni",
+      "scale_up": false,
+      "slug": "sabon_birni"
+    }
+  },
+  {
+    "pk": 660,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Sabon-Gari",
+      "scale_up": false,
+      "slug": "sabon_gari"
+    }
+  },
+  {
+    "pk": 661,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Sabuwa",
+      "scale_up": false,
+      "slug": "sabuwa"
+    }
+  },
+  {
+    "pk": 662,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Safana",
+      "scale_up": false,
+      "slug": "safana"
+    }
+  },
+  {
+    "pk": 663,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 6,
+      "name": "Sagbama",
+      "scale_up": true,
+      "slug": "sagbama"
+    }
+  },
+  {
+    "pk": 664,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Sakaba",
+      "scale_up": false,
+      "slug": "sakaba"
+    }
+  },
+  {
+    "pk": 665,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Saki East",
+      "scale_up": false,
+      "slug": "saki_east"
+    }
+  },
+  {
+    "pk": 666,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Saki west",
+      "scale_up": false,
+      "slug": "saki_west"
+    }
+  },
+  {
+    "pk": 667,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Sandamu",
+      "scale_up": false,
+      "slug": "sandamu"
+    }
+  },
+  {
+    "pk": 668,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Sanga",
+      "scale_up": false,
+      "slug": "sanga"
+    }
+  },
+  {
+    "pk": 669,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Sapele",
+      "scale_up": false,
+      "slug": "sapele"
+    }
+  },
+  {
+    "pk": 670,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 35,
+      "name": "Sardauna",
+      "scale_up": false,
+      "slug": "sardauna"
+    }
+  },
+  {
+    "pk": 671,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 28,
+      "name": "Shagamu",
+      "scale_up": false,
+      "slug": "shagamu"
+    }
+  },
+  {
+    "pk": 672,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Shagari",
+      "scale_up": false,
+      "slug": "shagari"
+    }
+  },
+  {
+    "pk": 673,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Shanga",
+      "scale_up": false,
+      "slug": "shanga"
+    }
+  },
+  {
+    "pk": 674,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 8,
+      "name": "Shani",
+      "scale_up": true,
+      "slug": "shani"
+    }
+  },
+  {
+    "pk": 675,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Shanono",
+      "scale_up": false,
+      "slug": "shanono"
+    }
+  },
+  {
+    "pk": 676,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Shelleng",
+      "scale_up": false,
+      "slug": "shelleng"
+    }
+  },
+  {
+    "pk": 677,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 32,
+      "name": "Shendam",
+      "scale_up": false,
+      "slug": "shendam"
+    }
+  },
+  {
+    "pk": 678,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 37,
+      "name": "Shinkafi",
+      "scale_up": false,
+      "slug": "shinkafi"
+    }
+  },
+  {
+    "pk": 679,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Shira",
+      "scale_up": false,
+      "slug": "shira"
+    }
+  },
+  {
+    "pk": 680,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Shiroro",
+      "scale_up": false,
+      "slug": "shiroro"
+    }
+  },
+  {
+    "pk": 681,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 16,
+      "name": "Shongom",
+      "scale_up": false,
+      "slug": "shongom"
+    }
+  },
+  {
+    "pk": 682,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Shomolu",
+      "scale_up": false,
+      "slug": "shomolu"
+    }
+  },
+  {
+    "pk": 683,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Silame",
+      "scale_up": false,
+      "slug": "silame"
+    }
+  },
+  {
+    "pk": 684,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Soba",
+      "scale_up": false,
+      "slug": "soba"
+    }
+  },
+  {
+    "pk": 685,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Sokoto North",
+      "scale_up": false,
+      "slug": "sokoto_north"
+    }
+  },
+  {
+    "pk": 686,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Sokoto South",
+      "scale_up": false,
+      "slug": "sokoto_south"
+    }
+  },
+  {
+    "pk": 687,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Song",
+      "scale_up": true,
+      "slug": "song"
+    }
+  },
+  {
+    "pk": 688,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 6,
+      "name": "Southern Ijaw",
+      "scale_up": true,
+      "slug": "southern_ijaw"
+    }
+  },
+  {
+    "pk": 689,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Suleja",
+      "scale_up": false,
+      "slug": "suleja"
+    }
+  },
+  {
+    "pk": 690,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Sule Tankakar",
+      "scale_up": true,
+      "slug": "sule_tankakar"
+    }
+  },
+  {
+    "pk": 691,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Sumaila",
+      "scale_up": false,
+      "slug": "sumaila"
+    }
+  },
+  {
+    "pk": 692,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Suru",
+      "scale_up": true,
+      "slug": "suru"
+    }
+  },
+  {
+    "pk": 693,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 31,
+      "name": "Surulere",
+      "scale_up": false,
+      "slug": "surulere"
+    }
+  },
+  {
+    "pk": 694,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 25,
+      "name": "Surulere",
+      "scale_up": false,
+      "slug": "surulere"
+    }
+  },
+  {
+    "pk": 695,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Tafa",
+      "scale_up": false,
+      "slug": "tafa"
+    }
+  },
+  {
+    "pk": 696,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Tafawa-Balewa",
+      "scale_up": false,
+      "slug": "tafawa_balewa"
+    }
+  },
+  {
+    "pk": 697,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 33,
+      "name": "Tai",
+      "scale_up": false,
+      "slug": "tai"
+    }
+  },
+  {
+    "pk": 698,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Takai",
+      "scale_up": true,
+      "slug": "takai"
+    }
+  },
+  {
+    "pk": 699,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 35,
+      "name": "Takum",
+      "scale_up": true,
+      "slug": "takum"
+    }
+  },
+  {
+    "pk": 700,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 37,
+      "name": "Talata-Mafara",
+      "scale_up": false,
+      "slug": "talata_mafara"
+    }
+  },
+  {
+    "pk": 701,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Tambuwal",
+      "scale_up": true,
+      "slug": "tambuwal"
+    }
+  },
+  {
+    "pk": 702,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Tangaza",
+      "scale_up": false,
+      "slug": "tangaza"
+    }
+  },
+  {
+    "pk": 703,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Tarauni",
+      "scale_up": false,
+      "slug": "tarauni"
+    }
+  },
+  {
+    "pk": 704,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Tarka",
+      "scale_up": false,
+      "slug": "tarka"
+    }
+  },
+  {
+    "pk": 705,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 36,
+      "name": "Tarmuwa",
+      "scale_up": false,
+      "slug": "tarmuwa"
+    }
+  },
+  {
+    "pk": 706,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Taura",
+      "scale_up": false,
+      "slug": "taura"
+    }
+  },
+  {
+    "pk": 707,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Teungo",
+      "scale_up": false,
+      "slug": "teungo"
+    }
+  },
+  {
+    "pk": 708,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Tofa",
+      "scale_up": false,
+      "slug": "tofa"
+    }
+  },
+  {
+    "pk": 709,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Toro",
+      "scale_up": false,
+      "slug": "toro"
+    }
+  },
+  {
+    "pk": 710,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 26,
+      "name": "Toto",
+      "scale_up": true,
+      "slug": "toto"
+    }
+  },
+  {
+    "pk": 711,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 37,
+      "name": "Tsafe",
+      "scale_up": false,
+      "slug": "tsafe"
+    }
+  },
+  {
+    "pk": 712,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Tsanyawa",
+      "scale_up": false,
+      "slug": "tsanyawa"
+    }
+  },
+  {
+    "pk": 713,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Tudun-Wada",
+      "scale_up": false,
+      "slug": "tudun_wada"
+    }
+  },
+  {
+    "pk": 714,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Tureta",
+      "scale_up": false,
+      "slug": "tureta"
+    }
+  },
+  {
+    "pk": 715,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 14,
+      "name": "Udenu",
+      "scale_up": false,
+      "slug": "udenu"
+    }
+  },
+  {
+    "pk": 716,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 14,
+      "name": "Udi",
+      "scale_up": false,
+      "slug": "udi"
+    }
+  },
+  {
+    "pk": 717,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Udu",
+      "scale_up": false,
+      "slug": "udu"
+    }
+  },
+  {
+    "pk": 718,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Udung Uko",
+      "scale_up": false,
+      "slug": "udung_uko"
+    }
+  },
+  {
+    "pk": 719,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Ughelli North",
+      "scale_up": false,
+      "slug": "ughelli_north"
+    }
+  },
+  {
+    "pk": 720,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Ughelli South",
+      "scale_up": false,
+      "slug": "ughelli_south"
+    }
+  },
+  {
+    "pk": 721,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 1,
+      "name": "Ugwunagbo",
+      "scale_up": false,
+      "slug": "ugwunagbo"
+    }
+  },
+  {
+    "pk": 722,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 12,
+      "name": "Uhunmwonde",
+      "scale_up": false,
+      "slug": "uhunmwonde"
+    }
+  },
+  {
+    "pk": 723,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Ukanafun",
+      "scale_up": false,
+      "slug": "ukanafun"
+    }
+  },
+  {
+    "pk": 724,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Ukum",
+      "scale_up": false,
+      "slug": "ukum"
+    }
+  },
+  {
+    "pk": 725,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 1,
+      "name": "Ukwa East",
+      "scale_up": false,
+      "slug": "ukwa_east"
+    }
+  },
+  {
+    "pk": 726,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 1,
+      "name": "Ukwa West",
+      "scale_up": false,
+      "slug": "ukwa_west"
+    }
+  },
+  {
+    "pk": 727,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Ukwuani",
+      "scale_up": true,
+      "slug": "ukwuani"
+    }
+  },
+  {
+    "pk": 728,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 1,
+      "name": "Umuahia North",
+      "scale_up": false,
+      "slug": "umuahia_north"
+    }
+  },
+  {
+    "pk": 729,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 1,
+      "name": "Umuahia South",
+      "scale_up": false,
+      "slug": "umuahia_south"
+    }
+  },
+  {
+    "pk": 730,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 1,
+      "name": "Umu-Neochi",
+      "scale_up": false,
+      "slug": "umu_neochi"
+    }
+  },
+  {
+    "pk": 731,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Ungogo",
+      "scale_up": false,
+      "slug": "ungogo"
+    }
+  },
+  {
+    "pk": 732,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 17,
+      "name": "Unuimo",
+      "scale_up": true,
+      "slug": "unuimo"
+    }
+  },
+  {
+    "pk": 733,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Uruan",
+      "scale_up": false,
+      "slug": "uruan"
+    }
+  },
+  {
+    "pk": 734,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Urue Offong/Oruko",
+      "scale_up": false,
+      "slug": "urue_offong_oruko"
+    }
+  },
+  {
+    "pk": 735,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Ushongo",
+      "scale_up": false,
+      "slug": "ushongo"
+    }
+  },
+  {
+    "pk": 736,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 35,
+      "name": "Ussa",
+      "scale_up": false,
+      "slug": "ussa"
+    }
+  },
+  {
+    "pk": 737,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Uvwie",
+      "scale_up": false,
+      "slug": "uvwie"
+    }
+  },
+  {
+    "pk": 738,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 3,
+      "name": "Uyo",
+      "scale_up": false,
+      "slug": "uyo"
+    }
+  },
+  {
+    "pk": 739,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 14,
+      "name": "Uzo Uwani",
+      "scale_up": false,
+      "slug": "uzo_uwani"
+    }
+  },
+  {
+    "pk": 740,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 7,
+      "name": "Vandeikya",
+      "scale_up": false,
+      "slug": "vandeikya"
+    }
+  },
+  {
+    "pk": 741,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Wammako",
+      "scale_up": false,
+      "slug": "wammako"
+    }
+  },
+  {
+    "pk": 742,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 26,
+      "name": "Wamba",
+      "scale_up": false,
+      "slug": "wamba"
+    }
+  },
+  {
+    "pk": 743,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Warawa",
+      "scale_up": false,
+      "slug": "warawa"
+    }
+  },
+  {
+    "pk": 744,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Warji",
+      "scale_up": false,
+      "slug": "warji"
+    }
+  },
+  {
+    "pk": 745,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Warri North",
+      "scale_up": false,
+      "slug": "warri_north"
+    }
+  },
+  {
+    "pk": 746,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Warri South",
+      "scale_up": false,
+      "slug": "warri_south"
+    }
+  },
+  {
+    "pk": 747,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 10,
+      "name": "Warri South West",
+      "scale_up": true,
+      "slug": "warri_south_west"
+    }
+  },
+  {
+    "pk": 748,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Wasagu/Danko",
+      "scale_up": false,
+      "slug": "wasagu_danko"
+    }
+  },
+  {
+    "pk": 749,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 32,
+      "name": "Wase",
+      "scale_up": false,
+      "slug": "wase"
+    }
+  },
+  {
+    "pk": 750,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 20,
+      "name": "Wudil",
+      "scale_up": false,
+      "slug": "wudil"
+    }
+  },
+  {
+    "pk": 751,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 35,
+      "name": "Wukari",
+      "scale_up": false,
+      "slug": "wukari"
+    }
+  },
+  {
+    "pk": 752,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Wurno",
+      "scale_up": false,
+      "slug": "wurno"
+    }
+  },
+  {
+    "pk": 753,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 27,
+      "name": "Wushishi",
+      "scale_up": true,
+      "slug": "wushishi"
+    }
+  },
+  {
+    "pk": 754,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 34,
+      "name": "Yabo",
+      "scale_up": false,
+      "slug": "yabo"
+    }
+  },
+  {
+    "pk": 755,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Yagba East",
+      "scale_up": false,
+      "slug": "yagba_east"
+    }
+  },
+  {
+    "pk": 756,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 23,
+      "name": "Yagba West",
+      "scale_up": false,
+      "slug": "yagba_west"
+    }
+  },
+  {
+    "pk": 757,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Yakurr",
+      "scale_up": false,
+      "slug": "yakurr"
+    }
+  },
+  {
+    "pk": 758,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 9,
+      "name": "Yala",
+      "scale_up": true,
+      "slug": "yala"
+    }
+  },
+  {
+    "pk": 759,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 16,
+      "name": "Yalmatu/Deba",
+      "scale_up": false,
+      "slug": "yalmatu_deba"
+    }
+  },
+  {
+    "pk": 760,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 18,
+      "name": "Yankwashi",
+      "scale_up": false,
+      "slug": "yankwashi"
+    }
+  },
+  {
+    "pk": 761,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Yauri",
+      "scale_up": false,
+      "slug": "yauri"
+    }
+  },
+  {
+    "pk": 762,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 6,
+      "name": "Yenagoa",
+      "scale_up": false,
+      "slug": "yenagoa"
+    }
+  },
+  {
+    "pk": 763,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Yola North",
+      "scale_up": false,
+      "slug": "yola_north"
+    }
+  },
+  {
+    "pk": 764,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 2,
+      "name": "Yola South",
+      "scale_up": false,
+      "slug": "yola_south"
+    }
+  },
+  {
+    "pk": 765,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 35,
+      "name": "Yorro",
+      "scale_up": false,
+      "slug": "yorro"
+    }
+  },
+  {
+    "pk": 766,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 36,
+      "name": "Yunusari",
+      "scale_up": true,
+      "slug": "yunusari"
+    }
+  },
+  {
+    "pk": 767,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 36,
+      "name": "Yusufari",
+      "scale_up": false,
+      "slug": "yusufari"
+    }
+  },
+  {
+    "pk": 768,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 5,
+      "name": "Zakki",
+      "scale_up": false,
+      "slug": "zakki"
+    }
+  },
+  {
+    "pk": 769,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 21,
+      "name": "Zango",
+      "scale_up": false,
+      "slug": "zango"
+    }
+  },
+  {
+    "pk": 770,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Zangon Kataf",
+      "scale_up": false,
+      "slug": "zangon_kataf"
+    }
+  },
+  {
+    "pk": 771,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 19,
+      "name": "Zaria",
+      "scale_up": false,
+      "slug": "zaria"
+    }
+  },
+  {
+    "pk": 772,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 35,
+      "name": "Zing",
+      "scale_up": false,
+      "slug": "zing"
+    }
+  },
+  {
+    "pk": 773,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 37,
+      "name": "Zurmi",
+      "scale_up": true,
+      "slug": "zurmi"
+    }
+  },
+  {
+    "pk": 774,
+    "model": "lga_hack.lga",
+    "fields": {
+      "state": 22,
+      "name": "Zuru",
+      "scale_up": false,
+      "slug": "zuru"
+    }
+  }
+]

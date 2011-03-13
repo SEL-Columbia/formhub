@@ -1,0 +1,335 @@
+[
+    {
+        "pk": 1,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Abia",
+            "zone": 4,
+            "slug": "abia"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Adamawa",
+            "zone": 3,
+            "slug": "adamawa"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Akwa Ibom",
+            "zone": 5,
+            "slug": "akwa_ibom"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Anambra",
+            "zone": 4,
+            "slug": "anambra"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Bauchi",
+            "zone": 3,
+            "slug": "bauchi"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Bayelsa",
+            "zone": 5,
+            "slug": "bayelsa"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Benue",
+            "zone": 2,
+            "slug": "benue"
+        }
+    },
+    {
+        "pk": 8,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Borno",
+            "zone": 3,
+            "slug": "borno"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Cross River",
+            "zone": 5,
+            "slug": "cross_river"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Delta",
+            "zone": 5,
+            "slug": "delta"
+        }
+    },
+    {
+        "pk": 11,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Ebonyi",
+            "zone": 4,
+            "slug": "ebonyi"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Edo",
+            "zone": 5,
+            "slug": "edo"
+        }
+    },
+    {
+        "pk": 13,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Ekiti",
+            "zone": 6,
+            "slug": "ekiti"
+        }
+    },
+    {
+        "pk": 14,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Enugu",
+            "zone": 4,
+            "slug": "enugu"
+        }
+    },
+    {
+        "pk": 15,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "FCT",
+            "zone": 2,
+            "slug": "fct"
+        }
+    },
+    {
+        "pk": 16,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Gombe",
+            "zone": 3,
+            "slug": "gombe"
+        }
+    },
+    {
+        "pk": 17,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Imo",
+            "zone": 4,
+            "slug": "imo"
+        }
+    },
+    {
+        "pk": 18,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Jigawa",
+            "zone": 1,
+            "slug": "jigawa"
+        }
+    },
+    {
+        "pk": 19,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Kaduna",
+            "zone": 1,
+            "slug": "kaduna"
+        }
+    },
+    {
+        "pk": 20,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Kano",
+            "zone": 1,
+            "slug": "kano"
+        }
+    },
+    {
+        "pk": 21,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Katsina",
+            "zone": 1,
+            "slug": "katsina"
+        }
+    },
+    {
+        "pk": 22,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Kebbi",
+            "zone": 1,
+            "slug": "kebbi"
+        }
+    },
+    {
+        "pk": 23,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Kogi",
+            "zone": 2,
+            "slug": "kogi"
+        }
+    },
+    {
+        "pk": 24,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Kwara",
+            "zone": 2,
+            "slug": "kwara"
+        }
+    },
+    {
+        "pk": 25,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Lagos",
+            "zone": 6,
+            "slug": "lagos"
+        }
+    },
+    {
+        "pk": 26,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Nasarawa",
+            "zone": 2,
+            "slug": "nasarawa"
+        }
+    },
+    {
+        "pk": 27,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Niger",
+            "zone": 2,
+            "slug": "niger"
+        }
+    },
+    {
+        "pk": 28,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Ogun",
+            "zone": 6,
+            "slug": "ogun"
+        }
+    },
+    {
+        "pk": 29,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Ondo",
+            "zone": 6,
+            "slug": "ondo"
+        }
+    },
+    {
+        "pk": 30,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Osun",
+            "zone": 6,
+            "slug": "osun"
+        }
+    },
+    {
+        "pk": 31,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Oyo",
+            "zone": 6,
+            "slug": "oyo"
+        }
+    },
+    {
+        "pk": 32,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Plateau",
+            "zone": 2,
+            "slug": "plateau"
+        }
+    },
+    {
+        "pk": 33,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Rivers",
+            "zone": 5,
+            "slug": "rivers"
+        }
+    },
+    {
+        "pk": 34,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Sokoto",
+            "zone": 1,
+            "slug": "sokoto"
+        }
+    },
+    {
+        "pk": 35,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Taraba",
+            "zone": 3,
+            "slug": "taraba"
+        }
+    },
+    {
+        "pk": 36,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Yobe",
+            "zone": 3,
+            "slug": "yobe"
+        }
+    },
+    {
+        "pk": 37,
+        "model": "lga_hack.state",
+        "fields": {
+            "name": "Zamfara",
+            "zone": 1,
+            "slug": "zamfara"
+        }
+    }
+]

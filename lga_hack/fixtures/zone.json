@@ -1,0 +1,50 @@
+[
+    {
+        "pk": 1,
+        "model": "lga_hack.zone",
+        "fields": {
+            "name": "Northwest",
+            "slug": "northwest"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "lga_hack.zone",
+        "fields": {
+            "name": "North-Central",
+            "slug": "north_central"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "lga_hack.zone",
+        "fields": {
+            "name": "Northeast",
+            "slug": "northeast"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "lga_hack.zone",
+        "fields": {
+            "name": "Southeast",
+            "slug": "southeast"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "lga_hack.zone",
+        "fields": {
+            "name": "South-south",
+            "slug": "south_south"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "lga_hack.zone",
+        "fields": {
+            "name": "Southwest",
+            "slug": "southwest"
+        }
+    }
+]
