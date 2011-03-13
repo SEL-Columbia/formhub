@@ -1,0 +1,162 @@
+[
+    {
+        "name": "Kuje",
+        "state": "FCT, Abuja"
+    },
+    {
+        "name": "Song",
+        "state": "Adamawa"
+    },
+    {
+        "name": "Nwangele",
+        "state": "Imo"
+    },
+    {
+        "name": "Miga",
+        "state": "Jigawa"
+    },
+    {
+        "name": "Akoko North West",
+        "state": "Ondo"
+    },
+    {
+        "state": "Jigawa",
+        "name": "Guri"
+    },
+    {
+        "state": "Jigawa",
+        "name": "Sule Tankakar"
+    },
+    {
+        "state": "Kaduna",
+        "name": "Birnin Gwari"
+    },
+    {
+        "state": "Kaduna",
+        "name": "Ikara"
+    },
+    {
+        "state": "Kaduna",
+        "name": "Kachia"
+    },
+    {
+        "state": "Kaduna",
+        "name": "Lere"
+    },
+    {
+        "state": "Kano",
+        "name": "Gabasawa"
+    },
+    {
+        "state": "Kano",
+        "name": "Garun Mallam"
+    },
+    {
+        "state": "Kano",
+        "name": "Takai"
+    },
+    {
+        "state": "Katsina",
+        "name": "kaita"
+    },
+    {
+        "state": "Katsina",
+        "name": "Mashi"
+    },
+    {
+        "state": "Katsina",
+        "name": "Musawa"
+    },
+    {
+        "state": "Kebbi",
+        "name": "Augie"
+    },
+    {
+        "state": "Kebbi",
+        "name": "Bunza"
+    },
+    {
+        "state": "Kebbi",
+        "name": "Suru"
+    },
+    {
+        "state": "Sokoto",
+        "name": "Binji"
+    },
+    {
+        "state": "Sokoto",
+        "name": "Illela"
+    },
+    {
+        "state": "Sokoto",
+        "name": "Tambuwal"
+    },
+    {
+        "state": "Zamfara",
+        "name": "Bukkuyum"
+    },
+    {
+        "state": "Zamfara",
+        "name": "Maru"
+    },
+    {
+        "state": "Zamfara",
+        "name": "Zurmi"
+    },
+    {
+        "state": "Abia",
+        "name": "Ikwuano"
+    },
+    {
+        "state": "Abia",
+        "name": "Obi Nwa"
+    },
+    {
+        "state": "Abia",
+        "name": "Ohafia"
+    },
+    {
+        "state": "Anambra",
+        "name": "Anambra West"
+    },
+    {
+        "state": "Anambra",
+        "name": "Awka North"
+    },
+    {
+        "state": "Anambra",
+        "name": "Orumba South"
+    },
+    {
+        "state": "Ebonyi",
+        "name": "Afikpo South"
+    },
+    {
+        "state": "Ebonyi",
+        "name": "Ikwo"
+    },
+    {
+        "state": "Ebonyi",
+        "name": "Izzi"
+    },
+    {
+        "state": "Enugu",
+        "name": "Aninri"
+    },
+    {
+        "state": "Enugu",
+        "name": "Igbo Etiti"
+    },
+    {
+        "state": "Enugu",
+        "name": "Isi-Uzo"
+    },
+    {
+        "state": "Imo",
+        "name": "Ngor-Okpala"
+    },
+    {
+        "state": "Imo",
+        "name": "Unuimo"
+    }
+]

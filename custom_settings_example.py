@@ -35,5 +35,3 @@ ADMINS = (
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-
-STRICT = False

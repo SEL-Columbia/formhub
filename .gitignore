@@ -17,3 +17,6 @@ site_media/css/sass/.sass-cache/*
 *orig
 .idea
 search_index
+
+#for a local virtualenv (as done in mangrove repo)
+ve/
