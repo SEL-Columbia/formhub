@@ -10,7 +10,7 @@
       "latlng_str": "13.165801,13.463098",
       "kml_id": "kml_id_773",
       "slug": "abadam",
-      "unique_id": "borno_abadam"
+      "unique_slug": "borno_abadam"
     }
   },
   {
@@ -24,7 +24,7 @@
       "latlng_str": "6.878854,8.868812",
       "kml_id": "kml_id_345",
       "slug": "abaji",
-      "unique_id": "fct_abaji"
+      "unique_slug": "fct_abaji"
     }
   },
   {
@@ -38,7 +38,7 @@
       "latlng_str": "7.769601,5.007962",
       "kml_id": "kml_id_431",
       "slug": "abak",
-      "unique_id": "akwa_ibom_abak"
+      "unique_slug": "akwa_ibom_abak"
     }
   },
   {
@@ -52,7 +52,7 @@
       "latlng_str": "8.224891,6.262222",
       "kml_id": "kml_id_489",
       "slug": "abakaliki",
-      "unique_id": "ebonyi_abakaliki"
+      "unique_slug": "ebonyi_abakaliki"
     }
   },
   {
@@ -66,7 +66,7 @@
       "latlng_str": "7.369941,5.104199",
       "kml_id": "kml_id_401",
       "slug": "aba_north",
-      "unique_id": "abia_aba_north"
+      "unique_slug": "abia_aba_north"
     }
   },
   {
@@ -80,7 +80,7 @@
       "latlng_str": "7.347088,5.082958",
       "kml_id": "kml_id_398",
       "slug": "aba_south",
-      "unique_id": "abia_aba_south"
+      "unique_slug": "abia_aba_south"
     }
   },
   {
@@ -94,7 +94,7 @@
       "latlng_str": "3.16051,7.246934",
       "kml_id": "kml_id_58",
       "slug": "abeokuta_north",
-      "unique_id": "ogun_abeokuta_north"
+      "unique_slug": "ogun_abeokuta_north"
     }
   },
   {
@@ -108,7 +108,7 @@
       "latlng_str": "3.358378,7.157424",
       "kml_id": "kml_id_59",
       "slug": "abeokuta_south",
-      "unique_id": "ogun_abeokuta_south"
+      "unique_slug": "ogun_abeokuta_south"
     }
   },
   {
@@ -122,7 +122,7 @@
       "latlng_str": "8.02697,5.888767",
       "kml_id": "kml_id_453",
       "slug": "abi",
-      "unique_id": "cross_river_abi"
+      "unique_slug": "cross_river_abi"
     }
   },
   {
@@ -136,7 +136,7 @@
       "latlng_str": "7.254232,5.437105",
       "kml_id": "kml_id_174",
       "slug": "aboh_mbaise",
-      "unique_id": "imo_aboh_mbaise"
+      "unique_slug": "imo_aboh_mbaise"
     }
   },
   {
@@ -150,7 +150,7 @@
       "latlng_str": "6.582049,4.846349",
       "kml_id": "kml_id_123",
       "slug": "abua_odual",
-      "unique_id": "rivers_abua_odual"
+      "unique_slug": "rivers_abua_odual"
     }
   },
   {
@@ -164,7 +164,7 @@
       "latlng_str": "6.423816,7.673654",
       "kml_id": "kml_id_217",
       "slug": "adavi",
-      "unique_id": "kogi_adavi"
+      "unique_slug": "kogi_adavi"
     }
   },
   {
@@ -178,7 +178,7 @@
       "latlng_str": "5.265716,7.608825",
       "kml_id": "kml_id_110",
       "slug": "ado_ekiti",
-      "unique_id": "ekiti_ado_ekiti"
+      "unique_slug": "ekiti_ado_ekiti"
     }
   },
   {
@@ -192,7 +192,7 @@
       "latlng_str": "3.086786,6.589505",
       "kml_id": "kml_id_9",
       "slug": "ado_odo_ota",
-      "unique_id": "ogun_ado_odo_ota"
+      "unique_slug": "ogun_ado_odo_ota"
     }
   },
   {
@@ -206,7 +206,7 @@
       "latlng_str": "3.903944,7.743219",
       "kml_id": "kml_id_80",
       "slug": "afijio",
-      "unique_id": "oyo_afijio"
+      "unique_slug": "oyo_afijio"
     }
   },
   {
@@ -220,7 +220,7 @@
       "latlng_str": "7.936522,5.865192",
       "kml_id": "kml_id_454",
       "slug": "afikpo_north",
-      "unique_id": "ebonyi_afikpo_north"
+      "unique_slug": "ebonyi_afikpo_north"
     }
   },
   {
@@ -234,7 +234,7 @@
       "latlng_str": "7.821765,5.84171",
       "kml_id": "kml_id_450",
       "slug": "afikpo_south",
-      "unique_id": "ebonyi_afikpo_south"
+      "unique_slug": "ebonyi_afikpo_south"
     }
   },
   {
@@ -248,7 +248,7 @@
       "latlng_str": "6.425418,8.974834",
       "kml_id": "kml_id_328",
       "slug": "agaie",
-      "unique_id": "niger_agaie"
+      "unique_slug": "niger_agaie"
     }
   },
   {
@@ -262,7 +262,7 @@
       "latlng_str": "7.939219,7.842485",
       "kml_id": "kml_id_481",
       "slug": "agatu",
-      "unique_id": "benue_agatu"
+      "unique_slug": "benue_agatu"
     }
   },
   {
@@ -276,7 +276,7 @@
       "latlng_str": "4.503281,10.76435",
       "kml_id": "kml_id_297",
       "slug": "agwara",
-      "unique_id": "niger_agwara"
+      "unique_slug": "niger_agwara"
     }
   },
   {
@@ -290,7 +290,7 @@
       "latlng_str": "3.31779,6.620986",
       "kml_id": "kml_id_31",
       "slug": "agege",
-      "unique_id": "lagos_agege"
+      "unique_slug": "lagos_agege"
     }
   },
   {
@@ -304,7 +304,7 @@
       "latlng_str": "7.104857,5.961324",
       "kml_id": "kml_id_179",
       "slug": "aguata",
-      "unique_id": "anambra_aguata"
+      "unique_slug": "anambra_aguata"
     }
   },
   {
@@ -318,7 +318,7 @@
       "latlng_str": "7.262686,5.561733",
       "kml_id": "kml_id_414",
       "slug": "ahiazu_mbaise",
-      "unique_id": "imo_ahiazu_mbaise"
+      "unique_slug": "imo_ahiazu_mbaise"
     }
   },
   {
@@ -332,7 +332,7 @@
       "latlng_str": "6.632697,5.051905",
       "kml_id": "kml_id_151",
       "slug": "ahoada_east",
-      "unique_id": "rivers_ahoada_east"
+      "unique_slug": "rivers_ahoada_east"
     }
   },
   {
@@ -346,7 +346,7 @@
       "latlng_str": "6.522021,5.033242",
       "kml_id": "kml_id_128",
       "slug": "ahoada_west",
-      "unique_id": "rivers_ahoada_west"
+      "unique_slug": "rivers_ahoada_west"
     }
   },
   {
@@ -360,7 +360,7 @@
       "latlng_str": "6.582826,7.479378",
       "kml_id": "kml_id_242",
       "slug": "ajaokuta",
-      "unique_id": "kogi_ajaokuta"
+      "unique_slug": "kogi_ajaokuta"
     }
   },
   {
@@ -374,7 +374,7 @@
       "latlng_str": "3.337327,6.453808",
       "kml_id": "kml_id_12",
       "slug": "ajeromi_ifelodun",
-      "unique_id": "lagos_ajeromi_ifelodun"
+      "unique_slug": "lagos_ajeromi_ifelodun"
     }
   },
   {
@@ -388,7 +388,7 @@
       "latlng_str": "9.102056,11.996999",
       "kml_id": "kml_id_667",
       "slug": "ajingi",
-      "unique_id": "kano_ajingi"
+      "unique_slug": "kano_ajingi"
     }
   },
   {
@@ -402,7 +402,7 @@
       "latlng_str": "8.475521,5.402902",
       "kml_id": "kml_id_424",
       "slug": "akamkpa",
-      "unique_id": "cross_river_akamkpa"
+      "unique_slug": "cross_river_akamkpa"
     }
   },
   {
@@ -416,7 +416,7 @@
       "latlng_str": "3.931601,7.559061",
       "kml_id": "kml_id_77",
       "slug": "akinyele",
-      "unique_id": "oyo_akinyele"
+      "unique_slug": "oyo_akinyele"
     }
   },
   {
@@ -430,7 +430,7 @@
       "latlng_str": "11.107188,10.12045",
       "kml_id": "kml_id_690",
       "slug": "akko",
-      "unique_id": "gombe_akko"
+      "unique_slug": "gombe_akko"
     }
   },
   {
@@ -444,7 +444,7 @@
       "latlng_str": "6.117361,7.390791",
       "kml_id": "kml_id_212",
       "slug": "akoko_edo",
-      "unique_id": "edo_akoko_edo"
+      "unique_slug": "edo_akoko_edo"
     }
   },
   {
@@ -458,7 +458,7 @@
       "latlng_str": "5.834236,7.542162",
       "kml_id": "kml_id_206",
       "slug": "akoko_north_east",
-      "unique_id": "ondo_akoko_north_east"
+      "unique_slug": "ondo_akoko_north_east"
     }
   },
   {
@@ -472,7 +472,7 @@
       "latlng_str": "5.796924,7.657286",
       "kml_id": "kml_id_209",
       "slug": "akoko_north_west",
-      "unique_id": "ondo_akoko_north_west"
+      "unique_slug": "ondo_akoko_north_west"
     }
   },
   {
@@ -486,7 +486,7 @@
       "latlng_str": "5.680963,7.3883",
       "kml_id": "kml_id_204",
       "slug": "akoko_south_west",
-      "unique_id": "ondo_akoko_south_west"
+      "unique_slug": "ondo_akoko_south_west"
     }
   },
   {
@@ -500,7 +500,7 @@
       "latlng_str": "5.930774,7.421752",
       "kml_id": "kml_id_213",
       "slug": "akoko_south_east",
-      "unique_id": "ondo_akoko_south_east"
+      "unique_slug": "ondo_akoko_south_east"
     }
   },
   {
@@ -514,7 +514,7 @@
       "latlng_str": "8.480219,4.850344",
       "kml_id": "kml_id_509",
       "slug": "akpabuyo",
-      "unique_id": "cross_river_akpabuyo"
+      "unique_slug": "cross_river_akpabuyo"
     }
   },
   {
@@ -528,7 +528,7 @@
       "latlng_str": "6.674531,4.501688",
       "kml_id": "kml_id_116",
       "slug": "akuku_toru",
-      "unique_id": "rivers_akuku_toru"
+      "unique_slug": "rivers_akuku_toru"
     }
   },
   {
@@ -542,7 +542,7 @@
       "latlng_str": "5.333393,7.260577",
       "kml_id": "kml_id_93",
       "slug": "akure_north",
-      "unique_id": "ondo_akure_north"
+      "unique_slug": "ondo_akure_north"
     }
   },
   {
@@ -556,7 +556,7 @@
       "latlng_str": "5.210321,7.20665",
       "kml_id": "kml_id_92",
       "slug": "akure_south",
-      "unique_id": "ondo_akure_south"
+      "unique_slug": "ondo_akure_south"
     }
   },
   {
@@ -570,7 +570,7 @@
       "latlng_str": "8.338409,9.043628",
       "kml_id": "kml_id_502",
       "slug": "akwanga",
-      "unique_id": "nasarawa_akwanga"
+      "unique_slug": "nasarawa_akwanga"
     }
   },
   {
@@ -584,7 +584,7 @@
       "latlng_str": "9.183072,11.628836",
       "kml_id": "kml_id_663",
       "slug": "albasu",
-      "unique_id": "kano_albasu"
+      "unique_slug": "kano_albasu"
     }
   },
   {
@@ -598,7 +598,7 @@
       "latlng_str": "4.441205,12.308236",
       "kml_id": "kml_id_304",
       "slug": "aliero",
-      "unique_id": "kebbi_aliero"
+      "unique_slug": "kebbi_aliero"
     }
   },
   {
@@ -612,7 +612,7 @@
       "latlng_str": "3.261107,6.579699",
       "kml_id": "kml_id_11",
       "slug": "alimosho",
-      "unique_id": "lagos_alimosho"
+      "unique_slug": "lagos_alimosho"
     }
   },
   {
@@ -626,7 +626,7 @@
       "latlng_str": "10.481157,9.846035",
       "kml_id": "kml_id_692",
       "slug": "alkaleri",
-      "unique_id": "bauchi_alkaleri"
+      "unique_slug": "bauchi_alkaleri"
     }
   },
   {
@@ -640,7 +640,7 @@
       "latlng_str": "3.315371,6.440137",
       "kml_id": "kml_id_6",
       "slug": "amuwo_odofin",
-      "unique_id": "lagos_amuwo_odofin"
+      "unique_slug": "lagos_amuwo_odofin"
     }
   },
   {
@@ -654,7 +654,7 @@
       "latlng_str": "6.885564,6.306571",
       "kml_id": "kml_id_229",
       "slug": "anambra_east",
-      "unique_id": "anambra_anambra_east"
+      "unique_slug": "anambra_anambra_east"
     }
   },
   {
@@ -668,7 +668,7 @@
       "latlng_str": "6.832761,6.509248",
       "kml_id": "kml_id_225",
       "slug": "anambra_west",
-      "unique_id": "anambra_anambra_west"
+      "unique_slug": "anambra_anambra_west"
     }
   },
   {
@@ -682,7 +682,7 @@
       "latlng_str": "7.015666,6.09123",
       "kml_id": "kml_id_232",
       "slug": "anaocha",
-      "unique_id": "anambra_anaocha"
+      "unique_slug": "anambra_anaocha"
     }
   },
   {
@@ -696,7 +696,7 @@
       "latlng_str": "7.400936,4.511066",
       "kml_id": "kml_id_396",
       "slug": "andoni",
-      "unique_id": "rivers_andoni"
+      "unique_slug": "rivers_andoni"
     }
   },
   {
@@ -710,7 +710,7 @@
       "latlng_str": "7.591397,6.078006",
       "kml_id": "kml_id_467",
       "slug": "aninri",
-      "unique_id": "enugu_aninri"
+      "unique_slug": "enugu_aninri"
     }
   },
   {
@@ -724,7 +724,7 @@
       "latlng_str": "6.472494,6.376425",
       "kml_id": "kml_id_226",
       "slug": "aniocha_north",
-      "unique_id": "delta_aniocha_north"
+      "unique_slug": "delta_aniocha_north"
     }
   },
   {
@@ -738,7 +738,7 @@
       "latlng_str": "6.48522,6.126253",
       "kml_id": "kml_id_222",
       "slug": "aniocha_south",
-      "unique_id": "delta_aniocha_south"
+      "unique_slug": "delta_aniocha_south"
     }
   },
   {
@@ -752,7 +752,7 @@
       "latlng_str": "5.952243,11.922451",
       "kml_id": "kml_id_362",
       "slug": "anka",
-      "unique_id": "zamfara_anka"
+      "unique_slug": "zamfara_anka"
     }
   },
   {
@@ -766,7 +766,7 @@
       "latlng_str": "7.614109,7.413695",
       "kml_id": "kml_id_476",
       "slug": "ankpa",
-      "unique_id": "kogi_ankpa"
+      "unique_slug": "kogi_ankpa"
     }
   },
   {
@@ -780,7 +780,7 @@
       "latlng_str": "7.884276,7.624884",
       "kml_id": "kml_id_496",
       "slug": "apa",
-      "unique_id": "benue_apa"
+      "unique_slug": "benue_apa"
     }
   },
   {
@@ -794,7 +794,7 @@
       "latlng_str": "3.361333,6.441492",
       "kml_id": "kml_id_14",
       "slug": "apapa",
-      "unique_id": "lagos_apapa"
+      "unique_slug": "lagos_apapa"
     }
   },
   {
@@ -808,7 +808,7 @@
       "latlng_str": "8.00086,6.787276",
       "kml_id": "kml_id_486",
       "slug": "ado",
-      "unique_id": "benue_ado"
+      "unique_slug": "benue_ado"
     }
   },
   {
@@ -822,7 +822,7 @@
       "latlng_str": "11.197127,8.818548",
       "kml_id": "kml_id_554",
       "slug": "ardo_kola",
-      "unique_id": "taraba_ardo_kola"
+      "unique_slug": "taraba_ardo_kola"
     }
   },
   {
@@ -836,7 +836,7 @@
       "latlng_str": "3.992761,12.680844",
       "kml_id": "kml_id_302",
       "slug": "arewa_dandi",
-      "unique_id": "kebbi_arewa_dandi"
+      "unique_slug": "kebbi_arewa_dandi"
     }
   },
   {
@@ -850,7 +850,7 @@
       "latlng_str": "4.45256,12.705857",
       "kml_id": "kml_id_306",
       "slug": "argungu",
-      "unique_id": "kebbi_argungu"
+      "unique_slug": "kebbi_argungu"
     }
   },
   {
@@ -864,7 +864,7 @@
       "latlng_str": "7.816011,5.498594",
       "kml_id": "kml_id_449",
       "slug": "arochukwu",
-      "unique_id": "abia_arochukwu"
+      "unique_slug": "abia_arochukwu"
     }
   },
   {
@@ -878,7 +878,7 @@
       "latlng_str": "4.496737,8.387692",
       "kml_id": "kml_id_274",
       "slug": "asa",
-      "unique_id": "kwara_asa"
+      "unique_slug": "kwara_asa"
     }
   },
   {
@@ -892,7 +892,7 @@
       "latlng_str": "6.849978,4.763455",
       "kml_id": "kml_id_149",
       "slug": "asari_toru",
-      "unique_id": "rivers_asari_toru"
+      "unique_slug": "rivers_asari_toru"
     }
   },
   {
@@ -906,7 +906,7 @@
       "latlng_str": "12.874831,10.646503",
       "kml_id": "kml_id_720",
       "slug": "askira_uba",
-      "unique_id": "borno_askira_uba"
+      "unique_slug": "borno_askira_uba"
     }
   },
   {
@@ -920,7 +920,7 @@
       "latlng_str": "4.784315,7.445063",
       "kml_id": "kml_id_90",
       "slug": "atakunmosa_east",
-      "unique_id": "osun_atakunmosa_east"
+      "unique_slug": "osun_atakunmosa_east"
     }
   },
   {
@@ -934,7 +934,7 @@
       "latlng_str": "4.661085,7.524857",
       "kml_id": "kml_id_89",
       "slug": "atakunmosa_west",
-      "unique_id": "osun_atakunmosa_west"
+      "unique_slug": "osun_atakunmosa_west"
     }
   },
   {
@@ -948,7 +948,7 @@
       "latlng_str": "3.886791,8.265617",
       "kml_id": "kml_id_254",
       "slug": "atiba",
-      "unique_id": "oyo_atiba"
+      "unique_slug": "oyo_atiba"
     }
   },
   {
@@ -962,7 +962,7 @@
       "latlng_str": "3.303249,8.379969",
       "kml_id": "kml_id_253",
       "slug": "atisbo",
-      "unique_id": "oyo_atisbo"
+      "unique_slug": "oyo_atisbo"
     }
   },
   {
@@ -976,7 +976,7 @@
       "latlng_str": "4.624616,12.921371",
       "kml_id": "kml_id_308",
       "slug": "augie",
-      "unique_id": "kebbi_augie"
+      "unique_slug": "kebbi_augie"
     }
   },
   {
@@ -990,7 +990,7 @@
       "latlng_str": "10.013605,12.355127",
       "kml_id": "kml_id_746",
       "slug": "auyo",
-      "unique_id": "jigawa_auyo"
+      "unique_slug": "jigawa_auyo"
     }
   },
   {
@@ -1004,7 +1004,7 @@
       "latlng_str": "9.234623,8.313058",
       "kml_id": "kml_id_539",
       "slug": "awe",
-      "unique_id": "nasarawa_awe"
+      "unique_slug": "nasarawa_awe"
     }
   },
   {
@@ -1018,7 +1018,7 @@
       "latlng_str": "7.446454,6.161758",
       "kml_id": "kml_id_462",
       "slug": "awgu",
-      "unique_id": "enugu_awgu"
+      "unique_slug": "enugu_awgu"
     }
   },
   {
@@ -1032,7 +1032,7 @@
       "latlng_str": "7.051825,6.324594",
       "kml_id": "kml_id_235",
       "slug": "awka_north",
-      "unique_id": "anambra_awka_north"
+      "unique_slug": "anambra_awka_north"
     }
   },
   {
@@ -1046,7 +1046,7 @@
       "latlng_str": "7.080466,6.189599",
       "kml_id": "kml_id_231",
       "slug": "awka_south",
-      "unique_id": "anambra_awka_south"
+      "unique_slug": "anambra_awka_south"
     }
   },
   {
@@ -1060,7 +1060,7 @@
       "latlng_str": "6.973088,6.549559",
       "kml_id": "kml_id_219",
       "slug": "ayamelum",
-      "unique_id": "anambra_ayamelum"
+      "unique_slug": "anambra_ayamelum"
     }
   },
   {
@@ -1074,7 +1074,7 @@
       "latlng_str": "4.296039,7.318343",
       "kml_id": "kml_id_63",
       "slug": "ayedaade",
-      "unique_id": "osun_ayedaade"
+      "unique_slug": "osun_ayedaade"
     }
   },
   {
@@ -1088,7 +1088,7 @@
       "latlng_str": "4.254985,7.570715",
       "kml_id": "kml_id_54",
       "slug": "ayedire",
-      "unique_id": "osun_ayedire"
+      "unique_slug": "osun_ayedire"
     }
   },
   {
@@ -1102,7 +1102,7 @@
       "latlng_str": "8.85375,12.60881",
       "kml_id": "kml_id_672",
       "slug": "babura",
-      "unique_id": "jigawa_babura"
+      "unique_slug": "jigawa_babura"
     }
   },
   {
@@ -1116,7 +1116,7 @@
       "latlng_str": "2.950786,6.460172",
       "kml_id": "kml_id_8",
       "slug": "badagry",
-      "unique_id": "lagos_badagry"
+      "unique_slug": "lagos_badagry"
     }
   },
   {
@@ -1130,7 +1130,7 @@
       "latlng_str": "4.022025,11.425422",
       "kml_id": "kml_id_293",
       "slug": "bagudo",
-      "unique_id": "kebbi_bagudo"
+      "unique_slug": "kebbi_bagudo"
     }
   },
   {
@@ -1144,7 +1144,7 @@
       "latlng_str": "8.132805,12.100089",
       "kml_id": "kml_id_628",
       "slug": "bagwai",
-      "unique_id": "kano_bagwai"
+      "unique_slug": "kano_bagwai"
     }
   },
   {
@@ -1158,7 +1158,7 @@
       "latlng_str": "8.534569,4.674295",
       "kml_id": "kml_id_511",
       "slug": "bakassi",
-      "unique_id": "cross_river_bakassi"
+      "unique_slug": "cross_river_bakassi"
     }
   },
   {
@@ -1172,7 +1172,7 @@
       "latlng_str": "8.882045,9.186458",
       "kml_id": "kml_id_544",
       "slug": "bokkos",
-      "unique_id": "plateau_bokkos"
+      "unique_slug": "plateau_bokkos"
     }
   },
   {
@@ -1186,7 +1186,7 @@
       "latlng_str": "7.434302,11.629617",
       "kml_id": "kml_id_563",
       "slug": "bakori",
-      "unique_id": "katsina_bakori"
+      "unique_slug": "katsina_bakori"
     }
   },
   {
@@ -1200,7 +1200,7 @@
       "latlng_str": "5.870527,12.62152",
       "kml_id": "kml_id_357",
       "slug": "bakura",
-      "unique_id": "zamfara_bakura"
+      "unique_slug": "zamfara_bakura"
     }
   },
   {
@@ -1214,7 +1214,7 @@
       "latlng_str": "11.640638,9.80206",
       "kml_id": "kml_id_697",
       "slug": "balanga",
-      "unique_id": "gombe_balanga"
+      "unique_slug": "gombe_balanga"
     }
   },
   {
@@ -1228,7 +1228,7 @@
       "latlng_str": "11.004499,8.116439",
       "kml_id": "kml_id_550",
       "slug": "bali",
-      "unique_id": "taraba_bali"
+      "unique_slug": "taraba_bali"
     }
   },
   {
@@ -1242,7 +1242,7 @@
       "latlng_str": "13.980806,11.582858",
       "kml_id": "kml_id_760",
       "slug": "bama",
-      "unique_id": "borno_bama"
+      "unique_slug": "borno_bama"
     }
   },
   {
@@ -1256,7 +1256,7 @@
       "latlng_str": "11.085791,12.61154",
       "kml_id": "kml_id_749",
       "slug": "barde",
-      "unique_id": "yobe_barde"
+      "unique_slug": "yobe_barde"
     }
   },
   {
@@ -1270,7 +1270,7 @@
       "latlng_str": "8.907218,9.562602",
       "kml_id": "kml_id_592",
       "slug": "barkin_ladi",
-      "unique_id": "plateau_barkin_ladi"
+      "unique_slug": "plateau_barkin_ladi"
     }
   },
   {
@@ -1284,7 +1284,7 @@
       "latlng_str": "3.217594,9.358479",
       "kml_id": "kml_id_263",
       "slug": "baruten",
-      "unique_id": "kwara_baruten"
+      "unique_slug": "kwara_baruten"
     }
   },
   {
@@ -1298,7 +1298,7 @@
       "latlng_str": "7.015811,7.730959",
       "kml_id": "kml_id_246",
       "slug": "bassa",
-      "unique_id": "kogi_bassa"
+      "unique_slug": "kogi_bassa"
     }
   },
   {
@@ -1312,7 +1312,7 @@
       "latlng_str": "8.782509,10.078965",
       "kml_id": "kml_id_593",
       "slug": "bassa",
-      "unique_id": "plateau_bassa"
+      "unique_slug": "plateau_bassa"
     }
   },
   {
@@ -1326,7 +1326,7 @@
       "latlng_str": "7.57541,12.885884",
       "kml_id": "kml_id_636",
       "slug": "batagarawa",
-      "unique_id": "katsina_batagarawa"
+      "unique_slug": "katsina_batagarawa"
     }
   },
   {
@@ -1340,7 +1340,7 @@
       "latlng_str": "7.23233,12.804477",
       "kml_id": "kml_id_387",
       "slug": "batsari",
-      "unique_id": "katsina_batsari"
+      "unique_slug": "katsina_batsari"
     }
   },
   {
@@ -1354,7 +1354,7 @@
       "latlng_str": "9.93436,10.251373",
       "kml_id": "kml_id_600",
       "slug": "bauchi",
-      "unique_id": "bauchi_bauchi"
+      "unique_slug": "bauchi_bauchi"
     }
   },
   {
@@ -1368,7 +1368,7 @@
       "latlng_str": "8.814261,12.804759",
       "kml_id": "kml_id_678",
       "slug": "baure",
-      "unique_id": "katsina_baure"
+      "unique_slug": "katsina_baure"
     }
   },
   {
@@ -1382,7 +1382,7 @@
       "latlng_str": "11.734591,10.484238",
       "kml_id": "kml_id_705",
       "slug": "bayo",
-      "unique_id": "borno_bayo"
+      "unique_slug": "borno_bayo"
     }
   },
   {
@@ -1396,7 +1396,7 @@
       "latlng_str": "8.316686,11.529054",
       "kml_id": "kml_id_587",
       "slug": "bebeji",
-      "unique_id": "kano_bebeji"
+      "unique_slug": "kano_bebeji"
     }
   },
   {
@@ -1410,7 +1410,7 @@
       "latlng_str": "8.924939,6.712554",
       "kml_id": "kml_id_519",
       "slug": "bekwara",
-      "unique_id": "cross_river_bekwara"
+      "unique_slug": "cross_river_bekwara"
     }
   },
   {
@@ -1424,7 +1424,7 @@
       "latlng_str": "7.637982,5.605382",
       "kml_id": "kml_id_423",
       "slug": "bende",
-      "unique_id": "abia_bende"
+      "unique_slug": "abia_bende"
     }
   },
   {
@@ -1438,7 +1438,7 @@
       "latlng_str": "8.049405,5.560312",
       "kml_id": "kml_id_451",
       "slug": "biase",
-      "unique_id": "cross_river_biase"
+      "unique_slug": "cross_river_biase"
     }
   },
   {
@@ -1452,7 +1452,7 @@
       "latlng_str": "8.278955,12.271731",
       "kml_id": "kml_id_627",
       "slug": "bichi",
-      "unique_id": "kano_bichi"
+      "unique_slug": "kano_bichi"
     }
   },
   {
@@ -1466,7 +1466,7 @@
       "latlng_str": "6.018087,9.092287",
       "kml_id": "kml_id_339",
       "slug": "bida",
-      "unique_id": "niger_bida"
+      "unique_slug": "niger_bida"
     }
   },
   {
@@ -1480,7 +1480,7 @@
       "latlng_str": "11.114346,9.824984",
       "kml_id": "kml_id_696",
       "slug": "billiri",
-      "unique_id": "gombe_billiri"
+      "unique_slug": "gombe_billiri"
     }
   },
   {
@@ -1494,7 +1494,7 @@
       "latlng_str": "7.871236,12.705906",
       "kml_id": "kml_id_635",
       "slug": "bindawa",
-      "unique_id": "katsina_bindawa"
+      "unique_slug": "katsina_bindawa"
     }
   },
   {
@@ -1508,7 +1508,7 @@
       "latlng_str": "4.821017,13.184549",
       "kml_id": "kml_id_320",
       "slug": "binji",
-      "unique_id": "sokoto_binji"
+      "unique_slug": "sokoto_binji"
     }
   },
   {
@@ -1522,7 +1522,7 @@
       "latlng_str": "10.098539,12.841873",
       "kml_id": "kml_id_747",
       "slug": "biriniwa",
-      "unique_id": "jigawa_biriniwa"
+      "unique_slug": "jigawa_biriniwa"
     }
   },
   {
@@ -1536,7 +1536,7 @@
       "latlng_str": "6.626135,10.889362",
       "kml_id": "kml_id_327",
       "slug": "birnin_gwari",
-      "unique_id": "kaduna_birnin_gwari"
+      "unique_slug": "kaduna_birnin_gwari"
     }
   },
   {
@@ -1550,7 +1550,7 @@
       "latlng_str": "4.273911,12.482963",
       "kml_id": "kml_id_300",
       "slug": "birnin_kebbi",
-      "unique_id": "kebbi_birnin_kebbi"
+      "unique_slug": "kebbi_birnin_kebbi"
     }
   },
   {
@@ -1564,7 +1564,7 @@
       "latlng_str": "9.491854,11.465714",
       "kml_id": "kml_id_609",
       "slug": "birnin_kudu",
-      "unique_id": "jigawa_birnin_kudu"
+      "unique_slug": "jigawa_birnin_kudu"
     }
   },
   {
@@ -1578,7 +1578,7 @@
       "latlng_str": "6.945378,12.450699",
       "kml_id": "kml_id_380",
       "slug": "birnin_magaji",
-      "unique_id": "zamfara_birnin_magaji"
+      "unique_slug": "zamfara_birnin_magaji"
     }
   },
   {
@@ -1592,7 +1592,7 @@
       "latlng_str": "12.076908,10.786486",
       "kml_id": "kml_id_708",
       "slug": "biu",
-      "unique_id": "borno_biu"
+      "unique_slug": "borno_biu"
     }
   },
   {
@@ -1606,7 +1606,7 @@
       "latlng_str": "5.156725,12.860322",
       "kml_id": "kml_id_323",
       "slug": "bodinga",
-      "unique_id": "sokoto_bodinga"
+      "unique_slug": "sokoto_bodinga"
     }
   },
   {
@@ -1620,7 +1620,7 @@
       "latlng_str": "9.595136,9.582018",
       "kml_id": "kml_id_597",
       "slug": "bogoro",
-      "unique_id": "bauchi_bogoro"
+      "unique_slug": "bauchi_bogoro"
     }
   },
   {
@@ -1634,7 +1634,7 @@
       "latlng_str": "8.968633,6.318105",
       "kml_id": "kml_id_507",
       "slug": "boki",
-      "unique_id": "cross_river_boki"
+      "unique_slug": "cross_river_boki"
     }
   },
   {
@@ -1648,7 +1648,7 @@
       "latlng_str": "4.792833,7.936827",
       "kml_id": "kml_id_273",
       "slug": "boluwaduro",
-      "unique_id": "osun_boluwaduro"
+      "unique_slug": "osun_boluwaduro"
     }
   },
   {
@@ -1662,7 +1662,7 @@
       "latlng_str": "5.843242,5.290015",
       "kml_id": "kml_id_117",
       "slug": "bomadi",
-      "unique_id": "delta_bomadi"
+      "unique_slug": "delta_bomadi"
     }
   },
   {
@@ -1676,7 +1676,7 @@
       "latlng_str": "7.201024,4.507273",
       "kml_id": "kml_id_156",
       "slug": "bonny",
-      "unique_id": "rivers_bonny"
+      "unique_slug": "rivers_bonny"
     }
   },
   {
@@ -1690,7 +1690,7 @@
       "latlng_str": "4.077159,10.2885",
       "kml_id": "kml_id_267",
       "slug": "borgu",
-      "unique_id": "niger_borgu"
+      "unique_slug": "niger_borgu"
     }
   },
   {
@@ -1704,7 +1704,7 @@
       "latlng_str": "4.670346,7.857746",
       "kml_id": "kml_id_105",
       "slug": "boripe",
-      "unique_id": "osun_boripe"
+      "unique_slug": "osun_boripe"
     }
   },
   {
@@ -1718,7 +1718,7 @@
       "latlng_str": "11.385351,12.71827",
       "kml_id": "kml_id_751",
       "slug": "bosari",
-      "unique_id": "yobe_bosari"
+      "unique_slug": "yobe_bosari"
     }
   },
   {
@@ -1732,7 +1732,7 @@
       "latlng_str": "6.449854,9.596375",
       "kml_id": "kml_id_338",
       "slug": "bosso",
-      "unique_id": "niger_bosso"
+      "unique_slug": "niger_bosso"
     }
   },
   {
@@ -1746,7 +1746,7 @@
       "latlng_str": "6.285732,4.41952",
       "kml_id": "kml_id_120",
       "slug": "brass",
-      "unique_id": "bayelsa_brass"
+      "unique_slug": "bayelsa_brass"
     }
   },
   {
@@ -1760,7 +1760,7 @@
       "latlng_str": "9.723906,11.588039",
       "kml_id": "kml_id_562",
       "slug": "buji",
-      "unique_id": "jigawa_buji"
+      "unique_slug": "jigawa_buji"
     }
   },
   {
@@ -1774,7 +1774,7 @@
       "latlng_str": "5.576885,11.907808",
       "kml_id": "kml_id_359",
       "slug": "bukkuyum",
-      "unique_id": "zamfara_bukkuyum"
+      "unique_slug": "zamfara_bukkuyum"
     }
   },
   {
@@ -1788,7 +1788,7 @@
       "latlng_str": "9.105884,7.411936",
       "kml_id": "kml_id_522",
       "slug": "buruku",
-      "unique_id": "benue_buruku"
+      "unique_slug": "benue_buruku"
     }
   },
   {
@@ -1802,7 +1802,7 @@
       "latlng_str": "6.537224,12.099997",
       "kml_id": "kml_id_374",
       "slug": "bungudu",
-      "unique_id": "zamfara_bungudu"
+      "unique_slug": "zamfara_bungudu"
     }
   },
   {
@@ -1816,7 +1816,7 @@
       "latlng_str": "8.609705,11.676435",
       "kml_id": "kml_id_651",
       "slug": "bunkure",
-      "unique_id": "kano_bunkure"
+      "unique_slug": "kano_bunkure"
     }
   },
   {
@@ -1830,7 +1830,7 @@
       "latlng_str": "3.934326,12.144996",
       "kml_id": "kml_id_301",
       "slug": "bunza",
-      "unique_id": "kebbi_bunza"
+      "unique_slug": "kebbi_bunza"
     }
   },
   {
@@ -1844,7 +1844,7 @@
       "latlng_str": "5.64134,5.234905",
       "kml_id": "kml_id_40",
       "slug": "burutu",
-      "unique_id": "delta_burutu"
+      "unique_slug": "delta_burutu"
     }
   },
   {
@@ -1858,7 +1858,7 @@
       "latlng_str": "7.477183,9.269701",
       "kml_id": "kml_id_566",
       "slug": "bwari",
-      "unique_id": "fct_bwari"
+      "unique_slug": "fct_bwari"
     }
   },
   {
@@ -1872,7 +1872,7 @@
       "latlng_str": "8.36262,5.007312",
       "kml_id": "kml_id_510",
       "slug": "calabar_municipal",
-      "unique_id": "cross_river_calabar_municipal"
+      "unique_slug": "cross_river_calabar_municipal"
     }
   },
   {
@@ -1886,7 +1886,7 @@
       "latlng_str": "8.335308,4.846488",
       "kml_id": "kml_id_389",
       "slug": "calabar_south",
-      "unique_id": "cross_river_calabar_south"
+      "unique_slug": "cross_river_calabar_south"
     }
   },
   {
@@ -1900,7 +1900,7 @@
       "latlng_str": "6.544392,9.617234",
       "kml_id": "kml_id_350",
       "slug": "chanchaga",
-      "unique_id": "niger_chanchaga"
+      "unique_slug": "niger_chanchaga"
     }
   },
   {
@@ -1914,7 +1914,7 @@
       "latlng_str": "7.665981,12.59301",
       "kml_id": "kml_id_633",
       "slug": "charanchi",
-      "unique_id": "katsina_charanchi"
+      "unique_slug": "katsina_charanchi"
     }
   },
   {
@@ -1928,7 +1928,7 @@
       "latlng_str": "12.769586,10.829",
       "kml_id": "kml_id_719",
       "slug": "chibok",
-      "unique_id": "borno_chibok"
+      "unique_slug": "borno_chibok"
     }
   },
   {
@@ -1942,7 +1942,7 @@
       "latlng_str": "7.188046,10.420521",
       "kml_id": "kml_id_352",
       "slug": "chikun",
-      "unique_id": "kaduna_chikun"
+      "unique_slug": "kaduna_chikun"
     }
   },
   {
@@ -1956,7 +1956,7 @@
       "latlng_str": "8.498852,12.008662",
       "kml_id": "kml_id_658",
       "slug": "dala",
-      "unique_id": "kano_dala"
+      "unique_slug": "kano_dala"
     }
   },
   {
@@ -1970,7 +1970,7 @@
       "latlng_str": "11.93311,11.7898",
       "kml_id": "kml_id_757",
       "slug": "damaturu",
-      "unique_id": "yobe_damaturu"
+      "unique_slug": "yobe_damaturu"
     }
   },
   {
@@ -1984,7 +1984,7 @@
       "latlng_str": "10.853848,11.605118",
       "kml_id": "kml_id_739",
       "slug": "damban",
-      "unique_id": "bauchi_damban"
+      "unique_slug": "bauchi_damban"
     }
   },
   {
@@ -1998,7 +1998,7 @@
       "latlng_str": "8.656216,12.439137",
       "kml_id": "kml_id_675",
       "slug": "dambatta",
-      "unique_id": "kano_dambatta"
+      "unique_slug": "kano_dambatta"
     }
   },
   {
@@ -2012,7 +2012,7 @@
       "latlng_str": "12.767094,11.119763",
       "kml_id": "kml_id_723",
       "slug": "damboa",
-      "unique_id": "borno_damboa"
+      "unique_slug": "borno_damboa"
     }
   },
   {
@@ -2026,7 +2026,7 @@
       "latlng_str": "3.761802,11.860343",
       "kml_id": "kml_id_294",
       "slug": "dandi",
-      "unique_id": "kebbi_dandi"
+      "unique_slug": "kebbi_dandi"
     }
   },
   {
@@ -2040,7 +2040,7 @@
       "latlng_str": "7.210819,11.408654",
       "kml_id": "kml_id_379",
       "slug": "dandume",
-      "unique_id": "katsina_dandume"
+      "unique_slug": "katsina_dandume"
     }
   },
   {
@@ -2054,7 +2054,7 @@
       "latlng_str": "5.408394,12.873613",
       "kml_id": "kml_id_366",
       "slug": "dange_shuni",
-      "unique_id": "sokoto_dange_shuni"
+      "unique_slug": "sokoto_dange_shuni"
     }
   },
   {
@@ -2068,7 +2068,7 @@
       "latlng_str": "7.545662,11.410056",
       "kml_id": "kml_id_579",
       "slug": "danja",
-      "unique_id": "katsina_danja"
+      "unique_slug": "katsina_danja"
     }
   },
   {
@@ -2082,7 +2082,7 @@
       "latlng_str": "7.327537,12.237882",
       "kml_id": "kml_id_385",
       "slug": "dan_musa",
-      "unique_id": "katsina_dan_musa"
+      "unique_slug": "katsina_dan_musa"
     }
   },
   {
@@ -2096,7 +2096,7 @@
       "latlng_str": "10.611879,11.14839",
       "kml_id": "kml_id_703",
       "slug": "darazo",
-      "unique_id": "bauchi_darazo"
+      "unique_slug": "bauchi_darazo"
     }
   },
   {
@@ -2110,7 +2110,7 @@
       "latlng_str": "9.490509,10.014464",
       "kml_id": "kml_id_599",
       "slug": "dass",
-      "unique_id": "bauchi_dass"
+      "unique_slug": "bauchi_dass"
     }
   },
   {
@@ -2124,7 +2124,7 @@
       "latlng_str": "8.257419,12.982584",
       "kml_id": "kml_id_647",
       "slug": "daura",
-      "unique_id": "katsina_daura"
+      "unique_slug": "katsina_daura"
     }
   },
   {
@@ -2138,7 +2138,7 @@
       "latlng_str": "8.673719,11.803513",
       "kml_id": "kml_id_653",
       "slug": "dawakin_kudu",
-      "unique_id": "kano_dawakin_kudu"
+      "unique_slug": "kano_dawakin_kudu"
     }
   },
   {
@@ -2152,7 +2152,7 @@
       "latlng_str": "8.380143,12.143663",
       "kml_id": "kml_id_630",
       "slug": "dawakin_tofa",
-      "unique_id": "kano_dawakin_tofa"
+      "unique_slug": "kano_dawakin_tofa"
     }
   },
   {
@@ -2166,7 +2166,7 @@
       "latlng_str": "6.913997,4.63443",
       "kml_id": "kml_id_148",
       "slug": "degema",
-      "unique_id": "rivers_degema"
+      "unique_slug": "rivers_degema"
     }
   },
   {
@@ -2180,7 +2180,7 @@
       "latlng_str": "7.16503,7.531394",
       "kml_id": "kml_id_249",
       "slug": "dekina",
-      "unique_id": "kogi_dekina"
+      "unique_slug": "kogi_dekina"
     }
   },
   {
@@ -2194,7 +2194,7 @@
       "latlng_str": "12.015029,9.37072",
       "kml_id": "kml_id_712",
       "slug": "demsa",
-      "unique_id": "adamawa_demsa"
+      "unique_slug": "adamawa_demsa"
     }
   },
   {
@@ -2208,7 +2208,7 @@
       "latlng_str": "14.034352,11.917283",
       "kml_id": "kml_id_764",
       "slug": "dikwa",
-      "unique_id": "borno_dikwa"
+      "unique_slug": "borno_dikwa"
     }
   },
   {
@@ -2222,7 +2222,7 @@
       "latlng_str": "8.65735,10.857878",
       "kml_id": "kml_id_603",
       "slug": "doguwa",
-      "unique_id": "kano_doguwa"
+      "unique_slug": "kano_doguwa"
     }
   },
   {
@@ -2236,7 +2236,7 @@
       "latlng_str": "8.288729,8.226963",
       "kml_id": "kml_id_499",
       "slug": "doma",
-      "unique_id": "nasarawa_doma"
+      "unique_slug": "nasarawa_doma"
     }
   },
   {
@@ -2250,7 +2250,7 @@
       "latlng_str": "10.320026,7.634142",
       "kml_id": "kml_id_527",
       "slug": "donga",
-      "unique_id": "taraba_donga"
+      "unique_slug": "taraba_donga"
     }
   },
   {
@@ -2264,7 +2264,7 @@
       "latlng_str": "10.840917,10.773067",
       "kml_id": "kml_id_700",
       "slug": "dukku",
-      "unique_id": "gombe_dukku"
+      "unique_slug": "gombe_dukku"
     }
   },
   {
@@ -2278,7 +2278,7 @@
       "latlng_str": "6.950573,6.186925",
       "kml_id": "kml_id_236",
       "slug": "dunukofia",
-      "unique_id": "anambra_dunukofia"
+      "unique_slug": "anambra_dunukofia"
     }
   },
   {
@@ -2292,7 +2292,7 @@
       "latlng_str": "9.300241,11.78461",
       "kml_id": "kml_id_665",
       "slug": "dutse",
-      "unique_id": "jigawa_dutse"
+      "unique_slug": "jigawa_dutse"
     }
   },
   {
@@ -2306,7 +2306,7 @@
       "latlng_str": "8.135113,12.913508",
       "kml_id": "kml_id_644",
       "slug": "dutsi",
-      "unique_id": "katsina_dutsi"
+      "unique_slug": "katsina_dutsi"
     }
   },
   {
@@ -2320,7 +2320,7 @@
       "latlng_str": "7.524781,12.448961",
       "kml_id": "kml_id_621",
       "slug": "dutsin_ma",
-      "unique_id": "katsina_dutsin_ma"
+      "unique_slug": "katsina_dutsin_ma"
     }
   },
   {
@@ -2334,7 +2334,7 @@
       "latlng_str": "7.66435,4.520757",
       "kml_id": "kml_id_391",
       "slug": "eastern_obolo",
-      "unique_id": "akwa_ibom_eastern_obolo"
+      "unique_slug": "akwa_ibom_eastern_obolo"
     }
   },
   {
@@ -2348,7 +2348,7 @@
       "latlng_str": "8.122566,6.533182",
       "kml_id": "kml_id_488",
       "slug": "ebonyi",
-      "unique_id": "ebonyi_ebonyi"
+      "unique_slug": "ebonyi_ebonyi"
     }
   },
   {
@@ -2362,7 +2362,7 @@
       "latlng_str": "5.662045,9.053618",
       "kml_id": "kml_id_332",
       "slug": "edati",
-      "unique_id": "niger_edati"
+      "unique_slug": "niger_edati"
     }
   },
   {
@@ -2376,7 +2376,7 @@
       "latlng_str": "4.488563,7.729666",
       "kml_id": "kml_id_98",
       "slug": "ede_north",
-      "unique_id": "osun_ede_north"
+      "unique_slug": "osun_ede_north"
     }
   },
   {
@@ -2390,7 +2390,7 @@
       "latlng_str": "4.462639,7.657573",
       "kml_id": "kml_id_99",
       "slug": "ede_south",
-      "unique_id": "osun_ede_south"
+      "unique_slug": "osun_ede_south"
     }
   },
   {
@@ -2404,7 +2404,7 @@
       "latlng_str": "5.21755,8.874258",
       "kml_id": "kml_id_288",
       "slug": "edu",
-      "unique_id": "kwara_edu"
+      "unique_slug": "kwara_edu"
     }
   },
   {
@@ -2418,7 +2418,7 @@
       "latlng_str": "4.532248,7.558335",
       "kml_id": "kml_id_84",
       "slug": "ife_central",
-      "unique_id": "osun_ife_central"
+      "unique_slug": "osun_ife_central"
     }
   },
   {
@@ -2432,7 +2432,7 @@
       "latlng_str": "4.598924,7.407158",
       "kml_id": "kml_id_88",
       "slug": "ife_east",
-      "unique_id": "osun_ife_east"
+      "unique_slug": "osun_ife_east"
     }
   },
   {
@@ -2446,7 +2446,7 @@
       "latlng_str": "4.453911,7.245437",
       "kml_id": "kml_id_3",
       "slug": "ife_north",
-      "unique_id": "osun_ife_north"
+      "unique_slug": "osun_ife_north"
     }
   },
   {
@@ -2460,7 +2460,7 @@
       "latlng_str": "4.613188,7.229888",
       "kml_id": "kml_id_87",
       "slug": "ife_south",
-      "unique_id": "osun_ife_south"
+      "unique_slug": "osun_ife_south"
     }
   },
   {
@@ -2474,7 +2474,7 @@
       "latlng_str": "4.929149,7.688169",
       "kml_id": "kml_id_109",
       "slug": "efon",
-      "unique_id": "ekiti_efon"
+      "unique_slug": "ekiti_efon"
     }
   },
   {
@@ -2488,7 +2488,7 @@
       "latlng_str": "2.870961,7.136596",
       "kml_id": "kml_id_28",
       "slug": "egbado_north",
-      "unique_id": "ogun_egbado_north"
+      "unique_slug": "ogun_egbado_north"
     }
   },
   {
@@ -2502,7 +2502,7 @@
       "latlng_str": "2.982439,6.788153",
       "kml_id": "kml_id_27",
       "slug": "egbado_south",
-      "unique_id": "ogun_egbado_south"
+      "unique_slug": "ogun_egbado_south"
     }
   },
   {
@@ -2516,7 +2516,7 @@
       "latlng_str": "4.053728,7.380714",
       "kml_id": "kml_id_70",
       "slug": "egbeda",
-      "unique_id": "oyo_egbeda"
+      "unique_slug": "oyo_egbeda"
     }
   },
   {
@@ -2530,7 +2530,7 @@
       "latlng_str": "4.443338,7.806427",
       "kml_id": "kml_id_100",
       "slug": "egbedore",
-      "unique_id": "osun_egbedore"
+      "unique_slug": "osun_egbedore"
     }
   },
   {
@@ -2544,7 +2544,7 @@
       "latlng_str": "5.587267,6.355216",
       "kml_id": "kml_id_188",
       "slug": "egor",
-      "unique_id": "edo_egor"
+      "unique_slug": "edo_egor"
     }
   },
   {
@@ -2558,7 +2558,7 @@
       "latlng_str": "7.289286,5.683276",
       "kml_id": "kml_id_413",
       "slug": "ehime_mbano",
-      "unique_id": "imo_ehime_mbano"
+      "unique_slug": "imo_ehime_mbano"
     }
   },
   {
@@ -2572,7 +2572,7 @@
       "latlng_str": "4.263216,7.81313",
       "kml_id": "kml_id_82",
       "slug": "ejigbo",
-      "unique_id": "osun_ejigbo"
+      "unique_slug": "osun_ejigbo"
     }
   },
   {
@@ -2586,7 +2586,7 @@
       "latlng_str": "5.686783,4.978388",
       "kml_id": "kml_id_121",
       "slug": "ekeremor",
-      "unique_id": "bayelsa_ekeremor"
+      "unique_slug": "bayelsa_ekeremor"
     }
   },
   {
@@ -2600,7 +2600,7 @@
       "latlng_str": "7.940767,4.642085",
       "kml_id": "kml_id_430",
       "slug": "eket",
-      "unique_id": "akwa_ibom_eket"
+      "unique_slug": "akwa_ibom_eket"
     }
   },
   {
@@ -2614,7 +2614,7 @@
       "latlng_str": "5.362374,8.101",
       "kml_id": "kml_id_281",
       "slug": "ekiti",
-      "unique_id": "kwara_ekiti"
+      "unique_slug": "kwara_ekiti"
     }
   },
   {
@@ -2628,7 +2628,7 @@
       "latlng_str": "5.656837,7.72628",
       "kml_id": "kml_id_208",
       "slug": "ekiti_east",
-      "unique_id": "ekiti_ekiti_east"
+      "unique_slug": "ekiti_ekiti_east"
     }
   },
   {
@@ -2642,7 +2642,7 @@
       "latlng_str": "5.061997,7.525468",
       "kml_id": "kml_id_94",
       "slug": "ekiti_south_west",
-      "unique_id": "ekiti_ekiti_south_west"
+      "unique_slug": "ekiti_ekiti_south_west"
     }
   },
   {
@@ -2656,7 +2656,7 @@
       "latlng_str": "4.984751,7.723164",
       "kml_id": "kml_id_108",
       "slug": "ekiti_west",
-      "unique_id": "ekiti_ekiti_west"
+      "unique_slug": "ekiti_ekiti_west"
     }
   },
   {
@@ -2670,7 +2670,7 @@
       "latlng_str": "6.851867,6.001853",
       "kml_id": "kml_id_168",
       "slug": "ekwusigo",
-      "unique_id": "anambra_ekwusigo"
+      "unique_slug": "anambra_ekwusigo"
     }
   },
   {
@@ -2684,7 +2684,7 @@
       "latlng_str": "7.143332,4.792837",
       "kml_id": "kml_id_153",
       "slug": "eleme",
-      "unique_id": "rivers_eleme"
+      "unique_slug": "rivers_eleme"
     }
   },
   {
@@ -2698,7 +2698,7 @@
       "latlng_str": "6.795195,4.981021",
       "kml_id": "kml_id_147",
       "slug": "emuoha",
-      "unique_id": "rivers_emuoha"
+      "unique_slug": "rivers_emuoha"
     }
   },
   {
@@ -2712,7 +2712,7 @@
       "latlng_str": "5.525324,7.432828",
       "kml_id": "kml_id_205",
       "slug": "emure",
-      "unique_id": "ekiti_emure"
+      "unique_slug": "ekiti_emure"
     }
   },
   {
@@ -2726,7 +2726,7 @@
       "latlng_str": "7.560161,6.548362",
       "kml_id": "kml_id_459",
       "slug": "enugu_east",
-      "unique_id": "enugu_enugu_east"
+      "unique_slug": "enugu_enugu_east"
     }
   },
   {
@@ -2740,7 +2740,7 @@
       "latlng_str": "7.536312,6.445532",
       "kml_id": "kml_id_465",
       "slug": "enugu_north",
-      "unique_id": "enugu_enugu_north"
+      "unique_slug": "enugu_enugu_north"
     }
   },
   {
@@ -2754,7 +2754,7 @@
       "latlng_str": "7.504532,6.401837",
       "kml_id": "kml_id_464",
       "slug": "enugu_south",
-      "unique_id": "enugu_enugu_south"
+      "unique_slug": "enugu_enugu_south"
     }
   },
   {
@@ -2768,7 +2768,7 @@
       "latlng_str": "4.015977,6.531321",
       "kml_id": "kml_id_16",
       "slug": "epe",
-      "unique_id": "lagos_epe"
+      "unique_slug": "lagos_epe"
     }
   },
   {
@@ -2782,7 +2782,7 @@
       "latlng_str": "6.248883,6.722632",
       "kml_id": "kml_id_200",
       "slug": "esan_central",
-      "unique_id": "edo_esan_central"
+      "unique_slug": "edo_esan_central"
     }
   },
   {
@@ -2796,7 +2796,7 @@
       "latlng_str": "6.394006,6.774313",
       "kml_id": "kml_id_199",
       "slug": "esan_north_east",
-      "unique_id": "edo_esan_north_east"
+      "unique_slug": "edo_esan_north_east"
     }
   },
   {
@@ -2810,7 +2810,7 @@
       "latlng_str": "6.43084,6.555645",
       "kml_id": "kml_id_185",
       "slug": "esan_south_east",
-      "unique_id": "edo_esan_south_east"
+      "unique_slug": "edo_esan_south_east"
     }
   },
   {
@@ -2824,7 +2824,7 @@
       "latlng_str": "6.139538,6.67389",
       "kml_id": "kml_id_197",
       "slug": "esan_west",
-      "unique_id": "edo_esan_west"
+      "unique_slug": "edo_esan_west"
     }
   },
   {
@@ -2838,7 +2838,7 @@
       "latlng_str": "4.963632,6.273932",
       "kml_id": "kml_id_37",
       "slug": "ese_odo",
-      "unique_id": "ondo_ese_odo"
+      "unique_slug": "ondo_ese_odo"
     }
   },
   {
@@ -2852,7 +2852,7 @@
       "latlng_str": "8.07089,4.640539",
       "kml_id": "kml_id_437",
       "slug": "esit_eket",
-      "unique_id": "akwa_ibom_esit_eket"
+      "unique_slug": "akwa_ibom_esit_eket"
     }
   },
   {
@@ -2866,7 +2866,7 @@
       "latlng_str": "7.653803,5.117394",
       "kml_id": "kml_id_408",
       "slug": "essien_udim",
-      "unique_id": "akwa_ibom_essien_udim"
+      "unique_slug": "akwa_ibom_essien_udim"
     }
   },
   {
@@ -2880,7 +2880,7 @@
       "latlng_str": "7.104117,5.140103",
       "kml_id": "kml_id_159",
       "slug": "etche",
-      "unique_id": "rivers_etche"
+      "unique_slug": "rivers_etche"
     }
   },
   {
@@ -2894,7 +2894,7 @@
       "latlng_str": "6.109585,5.774711",
       "kml_id": "kml_id_129",
       "slug": "ethiope_east",
-      "unique_id": "delta_ethiope_east"
+      "unique_slug": "delta_ethiope_east"
     }
   },
   {
@@ -2908,7 +2908,7 @@
       "latlng_str": "5.75701,5.872276",
       "kml_id": "kml_id_135",
       "slug": "ethiope_west",
-      "unique_id": "delta_ethiope_west"
+      "unique_slug": "delta_ethiope_west"
     }
   },
   {
@@ -2922,7 +2922,7 @@
       "latlng_str": "7.595477,4.959287",
       "kml_id": "kml_id_406",
       "slug": "etim_eko",
-      "unique_id": "akwa_ibom_etim_eko"
+      "unique_slug": "akwa_ibom_etim_eko"
     }
   },
   {
@@ -2936,7 +2936,7 @@
       "latlng_str": "7.846472,4.838542",
       "kml_id": "kml_id_433",
       "slug": "etinan",
-      "unique_id": "akwa_ibom_etinan"
+      "unique_slug": "akwa_ibom_etinan"
     }
   },
   {
@@ -2950,7 +2950,7 @@
       "latlng_str": "3.540971,6.466279",
       "kml_id": "kml_id_13",
       "slug": "eti_osa",
-      "unique_id": "lagos_eti_osa"
+      "unique_slug": "lagos_eti_osa"
     }
   },
   {
@@ -2964,7 +2964,7 @@
       "latlng_str": "6.501,6.977712",
       "kml_id": "kml_id_241",
       "slug": "etsako_central",
-      "unique_id": "edo_etsako_central"
+      "unique_slug": "edo_etsako_central"
     }
   },
   {
@@ -2978,7 +2978,7 @@
       "latlng_str": "6.473835,7.226659",
       "kml_id": "kml_id_186",
       "slug": "etsako_east",
-      "unique_id": "edo_etsako_east"
+      "unique_slug": "edo_etsako_east"
     }
   },
   {
@@ -2992,7 +2992,7 @@
       "latlng_str": "6.326746,6.973338",
       "kml_id": "kml_id_201",
       "slug": "etsako_west",
-      "unique_id": "edo_etsako_west"
+      "unique_slug": "edo_etsako_west"
     }
   },
   {
@@ -3006,7 +3006,7 @@
       "latlng_str": "8.794218,5.874192",
       "kml_id": "kml_id_512",
       "slug": "etung",
-      "unique_id": "cross_river_etung"
+      "unique_slug": "cross_river_etung"
     }
   },
   {
@@ -3020,7 +3020,7 @@
       "latlng_str": "3.201153,6.958084",
       "kml_id": "kml_id_25",
       "slug": "ewekoro",
-      "unique_id": "ogun_ewekoro"
+      "unique_slug": "ogun_ewekoro"
     }
   },
   {
@@ -3034,7 +3034,7 @@
       "latlng_str": "7.185495,6.41912",
       "kml_id": "kml_id_239",
       "slug": "ezeagu",
-      "unique_id": "enugu_ezeagu"
+      "unique_slug": "enugu_ezeagu"
     }
   },
   {
@@ -3048,7 +3048,7 @@
       "latlng_str": "7.326942,5.475936",
       "kml_id": "kml_id_410",
       "slug": "ezinihitte",
-      "unique_id": "imo_ezinihitte"
+      "unique_slug": "imo_ezinihitte"
     }
   },
   {
@@ -3062,7 +3062,7 @@
       "latlng_str": "7.961099,6.252924",
       "kml_id": "kml_id_484",
       "slug": "ezza_north",
-      "unique_id": "ebonyi_ezza_north"
+      "unique_slug": "ebonyi_ezza_north"
     }
   },
   {
@@ -3076,7 +3076,7 @@
       "latlng_str": "8.011419,6.136112",
       "kml_id": "kml_id_485",
       "slug": "ezza_south",
-      "unique_id": "ebonyi_ezza_south"
+      "unique_slug": "ebonyi_ezza_south"
     }
   },
   {
@@ -3090,7 +3090,7 @@
       "latlng_str": "8.530362,12.014798",
       "kml_id": "kml_id_660",
       "slug": "fagge",
-      "unique_id": "kano_fagge"
+      "unique_slug": "kano_fagge"
     }
   },
   {
@@ -3104,7 +3104,7 @@
       "latlng_str": "4.89627,11.483987",
       "kml_id": "kml_id_311",
       "slug": "fakai",
-      "unique_id": "kebbi_fakai"
+      "unique_slug": "kebbi_fakai"
     }
   },
   {
@@ -3118,7 +3118,7 @@
       "latlng_str": "7.106093,11.663553",
       "kml_id": "kml_id_377",
       "slug": "faskari",
-      "unique_id": "katsina_faskari"
+      "unique_slug": "katsina_faskari"
     }
   },
   {
@@ -3132,7 +3132,7 @@
       "latlng_str": "11.229616,11.355374",
       "kml_id": "kml_id_687",
       "slug": "fika",
-      "unique_id": "yobe_fika"
+      "unique_slug": "yobe_fika"
     }
   },
   {
@@ -3146,7 +3146,7 @@
       "latlng_str": "12.61106,9.22149",
       "kml_id": "kml_id_561",
       "slug": "fufore",
-      "unique_id": "adamawa_fufore"
+      "unique_slug": "adamawa_fufore"
     }
   },
   {
@@ -3160,7 +3160,7 @@
       "latlng_str": "11.368554,10.827014",
       "kml_id": "kml_id_706",
       "slug": "funakaye",
-      "unique_id": "gombe_funakaye"
+      "unique_slug": "gombe_funakaye"
     }
   },
   {
@@ -3174,7 +3174,7 @@
       "latlng_str": "11.397254,11.837673",
       "kml_id": "kml_id_740",
       "slug": "fune",
-      "unique_id": "yobe_fune"
+      "unique_slug": "yobe_fune"
     }
   },
   {
@@ -3188,7 +3188,7 @@
       "latlng_str": "7.289832,11.460625",
       "kml_id": "kml_id_378",
       "slug": "funtua",
-      "unique_id": "katsina_funtua"
+      "unique_slug": "katsina_funtua"
     }
   },
   {
@@ -3202,7 +3202,7 @@
       "latlng_str": "8.887111,12.156803",
       "kml_id": "kml_id_668",
       "slug": "gabasawa",
-      "unique_id": "kano_gabasawa"
+      "unique_slug": "kano_gabasawa"
     }
   },
   {
@@ -3216,7 +3216,7 @@
       "latlng_str": "5.737781,13.665457",
       "kml_id": "kml_id_364",
       "slug": "gada",
-      "unique_id": "sokoto_gada"
+      "unique_slug": "sokoto_gada"
     }
   },
   {
@@ -3230,7 +3230,7 @@
       "latlng_str": "9.541048,12.513865",
       "kml_id": "kml_id_680",
       "slug": "gagarawa",
-      "unique_id": "jigawa_gagarawa"
+      "unique_slug": "jigawa_gagarawa"
     }
   },
   {
@@ -3244,7 +3244,7 @@
       "latlng_str": "10.648847,12.035963",
       "kml_id": "kml_id_731",
       "slug": "gamawa",
-      "unique_id": "bauchi_gamawa"
+      "unique_slug": "bauchi_gamawa"
     }
   },
   {
@@ -3258,7 +3258,7 @@
       "latlng_str": "10.046056,10.85254",
       "kml_id": "kml_id_608",
       "slug": "ganjuwa",
-      "unique_id": "bauchi_ganjuwa"
+      "unique_slug": "bauchi_ganjuwa"
     }
   },
   {
@@ -3272,7 +3272,7 @@
       "latlng_str": "11.974258,8.419518",
       "kml_id": "kml_id_552",
       "slug": "ganaye",
-      "unique_id": "adamawa_ganaye"
+      "unique_slug": "adamawa_ganaye"
     }
   },
   {
@@ -3286,7 +3286,7 @@
       "latlng_str": "9.059331,12.391495",
       "kml_id": "kml_id_671",
       "slug": "garki",
-      "unique_id": "jigawa_garki"
+      "unique_slug": "jigawa_garki"
     }
   },
   {
@@ -3300,7 +3300,7 @@
       "latlng_str": "8.867576,11.567081",
       "kml_id": "kml_id_606",
       "slug": "garko",
-      "unique_id": "kano_garko"
+      "unique_slug": "kano_garko"
     }
   },
   {
@@ -3314,7 +3314,7 @@
       "latlng_str": "8.412777,11.661927",
       "kml_id": "kml_id_625",
       "slug": "garun_mallam",
-      "unique_id": "kano_garun_mallam"
+      "unique_slug": "kano_garun_mallam"
     }
   },
   {
@@ -3328,7 +3328,7 @@
       "latlng_str": "11.344608,7.511556",
       "kml_id": "kml_id_530",
       "slug": "gashaka",
-      "unique_id": "taraba_gashaka"
+      "unique_slug": "taraba_gashaka"
     }
   },
   {
@@ -3342,7 +3342,7 @@
       "latlng_str": "10.529691,8.418203",
       "kml_id": "kml_id_551",
       "slug": "gassol",
-      "unique_id": "taraba_gassol"
+      "unique_slug": "taraba_gassol"
     }
   },
   {
@@ -3356,7 +3356,7 @@
       "latlng_str": "9.110473,11.79471",
       "kml_id": "kml_id_662",
       "slug": "gaya",
-      "unique_id": "kano_gaya"
+      "unique_slug": "kano_gaya"
     }
   },
   {
@@ -3370,7 +3370,7 @@
       "latlng_str": "11.906237,9.841742",
       "kml_id": "kml_id_713",
       "slug": "gayuk",
-      "unique_id": "adamawa_gayuk"
+      "unique_slug": "adamawa_gayuk"
     }
   },
   {
@@ -3384,7 +3384,7 @@
       "latlng_str": "8.72275,12.031706",
       "kml_id": "kml_id_649",
       "slug": "gazewa",
-      "unique_id": "kano_gazewa"
+      "unique_slug": "kano_gazewa"
     }
   },
   {
@@ -3398,7 +3398,7 @@
       "latlng_str": "6.036688,9.291551",
       "kml_id": "kml_id_334",
       "slug": "gbako",
-      "unique_id": "niger_gbako"
+      "unique_slug": "niger_gbako"
     }
   },
   {
@@ -3412,7 +3412,7 @@
       "latlng_str": "8.85914,7.371239",
       "kml_id": "kml_id_513",
       "slug": "gboko",
-      "unique_id": "benue_gboko"
+      "unique_slug": "benue_gboko"
     }
   },
   {
@@ -3426,7 +3426,7 @@
       "latlng_str": "5.496179,7.615628",
       "kml_id": "kml_id_203",
       "slug": "gbonyin",
-      "unique_id": "ekiti_gbonyin"
+      "unique_slug": "ekiti_gbonyin"
     }
   },
   {
@@ -3440,7 +3440,7 @@
       "latlng_str": "12.078472,12.663261",
       "kml_id": "kml_id_767",
       "slug": "geidam",
-      "unique_id": "yobe_geidam"
+      "unique_slug": "yobe_geidam"
     }
   },
   {
@@ -3454,7 +3454,7 @@
       "latlng_str": "10.20263,11.378421",
       "kml_id": "kml_id_733",
       "slug": "giade",
-      "unique_id": "bauchi_giade"
+      "unique_slug": "bauchi_giade"
     }
   },
   {
@@ -3468,7 +3468,7 @@
       "latlng_str": "7.369017,11.156531",
       "kml_id": "kml_id_376",
       "slug": "giwa",
-      "unique_id": "kaduna_giwa"
+      "unique_slug": "kaduna_giwa"
     }
   },
   {
@@ -3482,7 +3482,7 @@
       "latlng_str": "7.29197,4.669107",
       "kml_id": "kml_id_395",
       "slug": "gokana",
-      "unique_id": "rivers_gokana"
+      "unique_slug": "rivers_gokana"
     }
   },
   {
@@ -3496,7 +3496,7 @@
       "latlng_str": "11.157882,10.29078",
       "kml_id": "kml_id_704",
       "slug": "gombe",
-      "unique_id": "gombe_gombe"
+      "unique_slug": "gombe_gombe"
     }
   },
   {
@@ -3510,7 +3510,7 @@
       "latlng_str": "12.493818,9.440647",
       "kml_id": "kml_id_715",
       "slug": "gombi",
-      "unique_id": "adamawa_gombi"
+      "unique_slug": "adamawa_gombi"
     }
   },
   {
@@ -3524,7 +3524,7 @@
       "latlng_str": "5.782161,13.350923",
       "kml_id": "kml_id_368",
       "slug": "goronyo",
-      "unique_id": "sokoto_goronyo"
+      "unique_slug": "sokoto_goronyo"
     }
   },
   {
@@ -3538,7 +3538,7 @@
       "latlng_str": "12.516405,10.212697",
       "kml_id": "kml_id_710",
       "slug": "grie",
-      "unique_id": "adamawa_grie"
+      "unique_slug": "adamawa_grie"
     }
   },
   {
@@ -3552,7 +3552,7 @@
       "latlng_str": "12.750486,12.681272",
       "kml_id": "kml_id_766",
       "slug": "gubio",
-      "unique_id": "borno_gubio"
+      "unique_slug": "borno_gubio"
     }
   },
   {
@@ -3566,7 +3566,7 @@
       "latlng_str": "4.515701,13.419141",
       "kml_id": "kml_id_307",
       "slug": "gudu",
-      "unique_id": "sokoto_gudu"
+      "unique_slug": "sokoto_gudu"
     }
   },
   {
@@ -3580,7 +3580,7 @@
       "latlng_str": "11.924391,11.329279",
       "kml_id": "kml_id_709",
       "slug": "gujba",
-      "unique_id": "yobe_gujba"
+      "unique_slug": "yobe_gujba"
     }
   },
   {
@@ -3594,7 +3594,7 @@
       "latlng_str": "11.685324,10.937322",
       "kml_id": "kml_id_707",
       "slug": "gulani",
-      "unique_id": "yobe_gulani"
+      "unique_slug": "yobe_gulani"
     }
   },
   {
@@ -3608,7 +3608,7 @@
       "latlng_str": "8.822706,7.850283",
       "kml_id": "kml_id_536",
       "slug": "guma",
-      "unique_id": "benue_guma"
+      "unique_slug": "benue_guma"
     }
   },
   {
@@ -3622,7 +3622,7 @@
       "latlng_str": "9.410134,12.633204",
       "kml_id": "kml_id_685",
       "slug": "gumel",
-      "unique_id": "jigawa_gumel"
+      "unique_slug": "jigawa_gumel"
     }
   },
   {
@@ -3636,7 +3636,7 @@
       "latlng_str": "5.185811,11.987243",
       "kml_id": "kml_id_314",
       "slug": "gummi",
-      "unique_id": "zamfara_gummi"
+      "unique_slug": "zamfara_gummi"
     }
   },
   {
@@ -3650,7 +3650,7 @@
       "latlng_str": "7.068391,9.362685",
       "kml_id": "kml_id_349",
       "slug": "gurara",
-      "unique_id": "niger_gurara"
+      "unique_slug": "niger_gurara"
     }
   },
   {
@@ -3664,7 +3664,7 @@
       "latlng_str": "10.464648,12.653247",
       "kml_id": "kml_id_750",
       "slug": "guri",
-      "unique_id": "jigawa_guri"
+      "unique_slug": "jigawa_guri"
     }
   },
   {
@@ -3678,7 +3678,7 @@
       "latlng_str": "6.810819,11.831841",
       "kml_id": "kml_id_373",
       "slug": "gusau",
-      "unique_id": "zamfara_gusau"
+      "unique_slug": "zamfara_gusau"
     }
   },
   {
@@ -3692,7 +3692,7 @@
       "latlng_str": "13.216168,12.863717",
       "kml_id": "kml_id_772",
       "slug": "guzamala",
-      "unique_id": "borno_guzamala"
+      "unique_slug": "borno_guzamala"
     }
   },
   {
@@ -3706,7 +3706,7 @@
       "latlng_str": "5.361369,13.443486",
       "kml_id": "kml_id_325",
       "slug": "gwadabawa",
-      "unique_id": "sokoto_gwadabawa"
+      "unique_slug": "sokoto_gwadabawa"
     }
   },
   {
@@ -3720,7 +3720,7 @@
       "latlng_str": "6.972445,9.089437",
       "kml_id": "kml_id_342",
       "slug": "gwagwalada",
-      "unique_id": "fct_gwagwalada"
+      "unique_slug": "fct_gwagwalada"
     }
   },
   {
@@ -3734,7 +3734,7 @@
       "latlng_str": "8.49292,11.982774",
       "kml_id": "kml_id_657",
       "slug": "gwale",
-      "unique_id": "kano_gwale"
+      "unique_slug": "kano_gwale"
     }
   },
   {
@@ -3748,7 +3748,7 @@
       "latlng_str": "4.652055,12.488745",
       "kml_id": "kml_id_290",
       "slug": "gwandu",
-      "unique_id": "kebbi_gwandu"
+      "unique_slug": "kebbi_gwandu"
     }
   },
   {
@@ -3762,7 +3762,7 @@
       "latlng_str": "9.99224,11.200218",
       "kml_id": "kml_id_607",
       "slug": "gwaram",
-      "unique_id": "jigawa_gwaram"
+      "unique_slug": "jigawa_gwaram"
     }
   },
   {
@@ -3776,7 +3776,7 @@
       "latlng_str": "7.964743,11.899107",
       "kml_id": "kml_id_618",
       "slug": "gwarzo",
-      "unique_id": "kano_gwarzo"
+      "unique_slug": "kano_gwarzo"
     }
   },
   {
@@ -3790,7 +3790,7 @@
       "latlng_str": "8.439818,7.415375",
       "kml_id": "kml_id_494",
       "slug": "gwer_east",
-      "unique_id": "benue_gwer_east"
+      "unique_slug": "benue_gwer_east"
     }
   },
   {
@@ -3804,7 +3804,7 @@
       "latlng_str": "8.199659,7.652305",
       "kml_id": "kml_id_500",
       "slug": "gwer_west",
-      "unique_id": "benue_gwer_west"
+      "unique_slug": "benue_gwer_west"
     }
   },
   {
@@ -3818,7 +3818,7 @@
       "latlng_str": "8.283156,12.74788",
       "kml_id": "kml_id_639",
       "slug": "gwiwa",
-      "unique_id": "jigawa_gwiwa"
+      "unique_slug": "jigawa_gwiwa"
     }
   },
   {
@@ -3832,7 +3832,7 @@
       "latlng_str": "13.57735,11.190642",
       "kml_id": "kml_id_727",
       "slug": "gwoza",
-      "unique_id": "borno_gwoza"
+      "unique_slug": "borno_gwoza"
     }
   },
   {
@@ -3846,7 +3846,7 @@
       "latlng_str": "10.048057,12.47069",
       "kml_id": "kml_id_748",
       "slug": "hadejia",
-      "unique_id": "jigawa_hadejia"
+      "unique_slug": "jigawa_hadejia"
     }
   },
   {
@@ -3860,7 +3860,7 @@
       "latlng_str": "12.258522,10.470448",
       "kml_id": "kml_id_722",
       "slug": "hawul",
-      "unique_id": "borno_hawul"
+      "unique_slug": "borno_hawul"
     }
   },
   {
@@ -3874,7 +3874,7 @@
       "latlng_str": "12.897803,10.356769",
       "kml_id": "kml_id_717",
       "slug": "hong",
-      "unique_id": "adamawa_hong"
+      "unique_slug": "adamawa_hong"
     }
   },
   {
@@ -3888,7 +3888,7 @@
       "latlng_str": "3.912956,7.400153",
       "kml_id": "kml_id_69",
       "slug": "ibadan_north",
-      "unique_id": "oyo_ibadan_north"
+      "unique_slug": "oyo_ibadan_north"
     }
   },
   {
@@ -3902,7 +3902,7 @@
       "latlng_str": "3.93297,7.361244",
       "kml_id": "kml_id_65",
       "slug": "ibadan_north_east",
-      "unique_id": "oyo_ibadan_north_east"
+      "unique_slug": "oyo_ibadan_north_east"
     }
   },
   {
@@ -3916,7 +3916,7 @@
       "latlng_str": "3.882804,7.384585",
       "kml_id": "kml_id_68",
       "slug": "ibadan_north_west",
-      "unique_id": "oyo_ibadan_north_west"
+      "unique_slug": "oyo_ibadan_north_west"
     }
   },
   {
@@ -3930,7 +3930,7 @@
       "latlng_str": "3.910913,7.3291",
       "kml_id": "kml_id_66",
       "slug": "ibadan_south_east",
-      "unique_id": "oyo_ibadan_south_east"
+      "unique_slug": "oyo_ibadan_south_east"
     }
   },
   {
@@ -3944,7 +3944,7 @@
       "latlng_str": "3.868479,7.349612",
       "kml_id": "kml_id_67",
       "slug": "ibadan_south_west",
-      "unique_id": "oyo_ibadan_south_west"
+      "unique_slug": "oyo_ibadan_south_west"
     }
   },
   {
@@ -3958,7 +3958,7 @@
       "latlng_str": "6.789879,6.859071",
       "kml_id": "kml_id_240",
       "slug": "ibaji",
-      "unique_id": "kogi_ibaji"
+      "unique_slug": "kogi_ibaji"
     }
   },
   {
@@ -3972,7 +3972,7 @@
       "latlng_str": "3.249415,7.408419",
       "kml_id": "kml_id_60",
       "slug": "ibarapa_central",
-      "unique_id": "oyo_ibarapa_central"
+      "unique_slug": "oyo_ibarapa_central"
     }
   },
   {
@@ -3986,7 +3986,7 @@
       "latlng_str": "3.49485,7.536175",
       "kml_id": "kml_id_72",
       "slug": "ibarapa_east",
-      "unique_id": "oyo_ibarapa_east"
+      "unique_slug": "oyo_ibarapa_east"
     }
   },
   {
@@ -4000,7 +4000,7 @@
       "latlng_str": "3.090306,7.64024",
       "kml_id": "kml_id_73",
       "slug": "ibarapa_north",
-      "unique_id": "oyo_ibarapa_north"
+      "unique_slug": "oyo_ibarapa_north"
     }
   },
   {
@@ -4014,7 +4014,7 @@
       "latlng_str": "4.08462,6.439299",
       "kml_id": "kml_id_17",
       "slug": "ibeju_lekki",
-      "unique_id": "lagos_ibeju_lekki"
+      "unique_slug": "lagos_ibeju_lekki"
     }
   },
   {
@@ -4028,7 +4028,7 @@
       "latlng_str": "8.105987,4.565735",
       "kml_id": "kml_id_428",
       "slug": "ibeno",
-      "unique_id": "akwa_ibom_ibeno"
+      "unique_slug": "akwa_ibom_ibeno"
     }
   },
   {
@@ -4042,7 +4042,7 @@
       "latlng_str": "7.951665,4.920331",
       "kml_id": "kml_id_425",
       "slug": "ibesikpo_asutan",
-      "unique_id": "akwa_ibom_ibesikpo_asutan"
+      "unique_slug": "akwa_ibom_ibesikpo_asutan"
     }
   },
   {
@@ -4056,7 +4056,7 @@
       "latlng_str": "9.864194,8.426185",
       "kml_id": "kml_id_540",
       "slug": "ibi",
-      "unique_id": "taraba_ibi"
+      "unique_slug": "taraba_ibi"
     }
   },
   {
@@ -4070,7 +4070,7 @@
       "latlng_str": "7.873409,5.226256",
       "kml_id": "kml_id_444",
       "slug": "ibiono_ibom",
-      "unique_id": "akwa_ibom_ibiono_ibom"
+      "unique_slug": "akwa_ibom_ibiono_ibom"
     }
   },
   {
@@ -4084,7 +4084,7 @@
       "latlng_str": "6.722949,7.076363",
       "kml_id": "kml_id_243",
       "slug": "idah",
-      "unique_id": "kogi_idah"
+      "unique_slug": "kogi_idah"
     }
   },
   {
@@ -4098,7 +4098,7 @@
       "latlng_str": "5.190288,7.000689",
       "kml_id": "kml_id_52",
       "slug": "idanre",
-      "unique_id": "ondo_idanre"
+      "unique_slug": "ondo_idanre"
     }
   },
   {
@@ -4112,7 +4112,7 @@
       "latlng_str": "7.133453,5.876196",
       "kml_id": "kml_id_180",
       "slug": "ideato_north",
-      "unique_id": "imo_ideato_north"
+      "unique_slug": "imo_ideato_north"
     }
   },
   {
@@ -4126,7 +4126,7 @@
       "latlng_str": "7.132524,5.806193",
       "kml_id": "kml_id_181",
       "slug": "ideato_south",
-      "unique_id": "imo_ideato_south"
+      "unique_slug": "imo_ideato_south"
     }
   },
   {
@@ -4140,7 +4140,7 @@
       "latlng_str": "6.877162,6.133987",
       "kml_id": "kml_id_220",
       "slug": "idemili_north",
-      "unique_id": "anambra_idemili_north"
+      "unique_slug": "anambra_idemili_north"
     }
   },
   {
@@ -4154,7 +4154,7 @@
       "latlng_str": "6.887976,6.073995",
       "kml_id": "kml_id_224",
       "slug": "idemili_south",
-      "unique_id": "anambra_idemili_south"
+      "unique_slug": "anambra_idemili_south"
     }
   },
   {
@@ -4168,7 +4168,7 @@
       "latlng_str": "3.740836,7.451173",
       "kml_id": "kml_id_56",
       "slug": "ido",
-      "unique_id": "oyo_ido"
+      "unique_slug": "oyo_ido"
     }
   },
   {
@@ -4182,7 +4182,7 @@
       "latlng_str": "5.180776,7.861836",
       "kml_id": "kml_id_114",
       "slug": "ido_osi",
-      "unique_id": "ekiti_ido_osi"
+      "unique_slug": "ekiti_ido_osi"
     }
   },
   {
@@ -4196,7 +4196,7 @@
       "latlng_str": "3.30775,6.662517",
       "kml_id": "kml_id_32",
       "slug": "ifako_ijaye",
-      "unique_id": "lagos_ifako_ijaye"
+      "unique_slug": "lagos_ifako_ijaye"
     }
   },
   {
@@ -4210,7 +4210,7 @@
       "latlng_str": "4.980596,7.968935",
       "kml_id": "kml_id_278",
       "slug": "ifedayo",
-      "unique_id": "osun_ifedayo"
+      "unique_slug": "osun_ifedayo"
     }
   },
   {
@@ -4224,7 +4224,7 @@
       "latlng_str": "5.090485,7.368405",
       "kml_id": "kml_id_91",
       "slug": "ifedore",
-      "unique_id": "ondo_ifedore"
+      "unique_slug": "ondo_ifedore"
     }
   },
   {
@@ -4238,7 +4238,7 @@
       "latlng_str": "4.982033,8.555345",
       "kml_id": "kml_id_269",
       "slug": "ifelodun",
-      "unique_id": "kwara_ifelodun"
+      "unique_slug": "kwara_ifelodun"
     }
   },
   {
@@ -4252,7 +4252,7 @@
       "latlng_str": "4.6326,7.916069",
       "kml_id": "kml_id_106",
       "slug": "ifelodun",
-      "unique_id": "osun_ifelodun"
+      "unique_slug": "osun_ifelodun"
     }
   },
   {
@@ -4266,7 +4266,7 @@
       "latlng_str": "3.293403,6.742295",
       "kml_id": "kml_id_26",
       "slug": "ifo",
-      "unique_id": "ogun_ifo"
+      "unique_slug": "ogun_ifo"
     }
   },
   {
@@ -4280,7 +4280,7 @@
       "latlng_str": "7.509386,10.663871",
       "kml_id": "kml_id_355",
       "slug": "igabi",
-      "unique_id": "kaduna_igabi"
+      "unique_slug": "kaduna_igabi"
     }
   },
   {
@@ -4294,7 +4294,7 @@
       "latlng_str": "7.000195,7.081263",
       "kml_id": "kml_id_244",
       "slug": "igalamela_odolu",
-      "unique_id": "kogi_igalamela_odolu"
+      "unique_slug": "kogi_igalamela_odolu"
     }
   },
   {
@@ -4308,7 +4308,7 @@
       "latlng_str": "7.424831,6.68648",
       "kml_id": "kml_id_463",
       "slug": "igbo_etiti",
-      "unique_id": "enugu_igbo_etiti"
+      "unique_slug": "enugu_igbo_etiti"
     }
   },
   {
@@ -4322,7 +4322,7 @@
       "latlng_str": "7.459413,7.00477",
       "kml_id": "kml_id_474",
       "slug": "igbo_eze_north",
-      "unique_id": "enugu_igbo_eze_north"
+      "unique_slug": "enugu_igbo_eze_north"
     }
   },
   {
@@ -4336,7 +4336,7 @@
       "latlng_str": "7.388912,6.948485",
       "kml_id": "kml_id_473",
       "slug": "igbo_eze_south",
-      "unique_id": "enugu_igbo_eze_south"
+      "unique_slug": "enugu_igbo_eze_south"
     }
   },
   {
@@ -4350,7 +4350,7 @@
       "latlng_str": "6.240339,6.508648",
       "kml_id": "kml_id_194",
       "slug": "iguegben",
-      "unique_id": "edo_iguegben"
+      "unique_slug": "edo_iguegben"
     }
   },
   {
@@ -4364,7 +4364,7 @@
       "latlng_str": "6.884789,5.827938",
       "kml_id": "kml_id_167",
       "slug": "ihiala",
-      "unique_id": "anambra_ihiala"
+      "unique_slug": "anambra_ihiala"
     }
   },
   {
@@ -4378,7 +4378,7 @@
       "latlng_str": "7.368784,5.642867",
       "kml_id": "kml_id_417",
       "slug": "ihitte_uboma",
-      "unique_id": "imo_ihitte_uboma"
+      "unique_slug": "imo_ihitte_uboma"
     }
   },
   {
@@ -4392,7 +4392,7 @@
       "latlng_str": "4.713165,6.285034",
       "kml_id": "kml_id_38",
       "slug": "ijaye",
-      "unique_id": "ondo_ijaye"
+      "unique_slug": "ondo_ijaye"
     }
   },
   {
@@ -4406,7 +4406,7 @@
       "latlng_str": "4.248597,6.791592",
       "kml_id": "kml_id_45",
       "slug": "ijebu_east",
-      "unique_id": "ogun_ijebu_east"
+      "unique_slug": "ogun_ijebu_east"
     }
   },
   {
@@ -4420,7 +4420,7 @@
       "latlng_str": "3.996762,7.033246",
       "kml_id": "kml_id_46",
       "slug": "ijebu_north",
-      "unique_id": "ogun_ijebu_north"
+      "unique_slug": "ogun_ijebu_north"
     }
   },
   {
@@ -4434,7 +4434,7 @@
       "latlng_str": "4.021881,6.881442",
       "kml_id": "kml_id_47",
       "slug": "ijebu_north_east",
-      "unique_id": "ogun_ijebu_north_east"
+      "unique_slug": "ogun_ijebu_north_east"
     }
   },
   {
@@ -4448,7 +4448,7 @@
       "latlng_str": "3.977141,6.769884",
       "kml_id": "kml_id_44",
       "slug": "ijebu_ode",
-      "unique_id": "ogun_ijebu_ode"
+      "unique_slug": "ogun_ijebu_ode"
     }
   },
   {
@@ -4462,7 +4462,7 @@
       "latlng_str": "5.053999,7.848673",
       "kml_id": "kml_id_111",
       "slug": "ijero",
-      "unique_id": "ekiti_ijero"
+      "unique_slug": "ekiti_ijero"
     }
   },
   {
@@ -4476,7 +4476,7 @@
       "latlng_str": "5.956424,7.79448",
       "kml_id": "kml_id_202",
       "slug": "ijumu",
-      "unique_id": "kogi_ijumu"
+      "unique_slug": "kogi_ijumu"
     }
   },
   {
@@ -4490,7 +4490,7 @@
       "latlng_str": "7.534649,5.015195",
       "kml_id": "kml_id_407",
       "slug": "ika",
-      "unique_id": "akwa_ibom_ika"
+      "unique_slug": "akwa_ibom_ika"
     }
   },
   {
@@ -4504,7 +4504,7 @@
       "latlng_str": "6.292971,6.246737",
       "kml_id": "kml_id_196",
       "slug": "ika_north",
-      "unique_id": "delta_ika_north"
+      "unique_slug": "delta_ika_north"
     }
   },
   {
@@ -4518,7 +4518,7 @@
       "latlng_str": "8.217257,11.275379",
       "kml_id": "kml_id_584",
       "slug": "ikara",
-      "unique_id": "kaduna_ikara"
+      "unique_slug": "kaduna_ikara"
     }
   },
   {
@@ -4532,7 +4532,7 @@
       "latlng_str": "6.214632,6.180945",
       "kml_id": "kml_id_195",
       "slug": "ika_south",
-      "unique_id": "delta_ika_south"
+      "unique_slug": "delta_ika_south"
     }
   },
   {
@@ -4546,7 +4546,7 @@
       "latlng_str": "7.158868,5.562575",
       "kml_id": "kml_id_175",
       "slug": "ikeduru",
-      "unique_id": "imo_ikeduru"
+      "unique_slug": "imo_ikeduru"
     }
   },
   {
@@ -4560,7 +4560,7 @@
       "latlng_str": "3.345321,6.603518",
       "kml_id": "kml_id_30",
       "slug": "ikeja",
-      "unique_id": "lagos_ikeja"
+      "unique_slug": "lagos_ikeja"
     }
   },
   {
@@ -4574,7 +4574,7 @@
       "latlng_str": "3.675907,6.913141",
       "kml_id": "kml_id_34",
       "slug": "ikenne",
-      "unique_id": "ogun_ikenne"
+      "unique_slug": "ogun_ikenne"
     }
   },
   {
@@ -4588,7 +4588,7 @@
       "latlng_str": "5.215335,7.491472",
       "kml_id": "kml_id_95",
       "slug": "ikere",
-      "unique_id": "ekiti_ikere"
+      "unique_slug": "ekiti_ikere"
     }
   },
   {
@@ -4602,7 +4602,7 @@
       "latlng_str": "5.526199,7.916382",
       "kml_id": "kml_id_207",
       "slug": "ikole",
-      "unique_id": "ekiti_ikole"
+      "unique_slug": "ekiti_ikole"
     }
   },
   {
@@ -4616,7 +4616,7 @@
       "latlng_str": "8.599203,6.089564",
       "kml_id": "kml_id_508",
       "slug": "ikom",
-      "unique_id": "cross_river_ikom"
+      "unique_slug": "cross_river_ikom"
     }
   },
   {
@@ -4630,7 +4630,7 @@
       "latlng_str": "7.785311,5.194218",
       "kml_id": "kml_id_447",
       "slug": "ikono",
-      "unique_id": "akwa_ibom_ikono"
+      "unique_slug": "akwa_ibom_ikono"
     }
   },
   {
@@ -4644,7 +4644,7 @@
       "latlng_str": "3.572832,6.591003",
       "kml_id": "kml_id_24",
       "slug": "ikorodu",
-      "unique_id": "lagos_ikorodu"
+      "unique_slug": "lagos_ikorodu"
     }
   },
   {
@@ -4658,7 +4658,7 @@
       "latlng_str": "7.626,4.610533",
       "kml_id": "kml_id_404",
       "slug": "ikot_abasi",
-      "unique_id": "akwa_ibom_ikot_abasi"
+      "unique_slug": "akwa_ibom_ikot_abasi"
     }
   },
   {
@@ -4672,7 +4672,7 @@
       "latlng_str": "7.703641,5.199534",
       "kml_id": "kml_id_446",
       "slug": "ikot_ekpene",
-      "unique_id": "akwa_ibom_ikot_ekpene"
+      "unique_slug": "akwa_ibom_ikot_ekpene"
     }
   },
   {
@@ -4686,7 +4686,7 @@
       "latlng_str": "5.629513,6.18446",
       "kml_id": "kml_id_190",
       "slug": "ikpoba_okha",
-      "unique_id": "edo_ikpoba_okha"
+      "unique_slug": "edo_ikpoba_okha"
     }
   },
   {
@@ -4700,7 +4700,7 @@
       "latlng_str": "6.917538,5.088828",
       "kml_id": "kml_id_152",
       "slug": "ikwerre",
-      "unique_id": "rivers_ikwerre"
+      "unique_slug": "rivers_ikwerre"
     }
   },
   {
@@ -4714,7 +4714,7 @@
       "latlng_str": "8.187085,6.078062",
       "kml_id": "kml_id_490",
       "slug": "ikwo",
-      "unique_id": "ebonyi_ikwo"
+      "unique_slug": "ebonyi_ikwo"
     }
   },
   {
@@ -4728,7 +4728,7 @@
       "latlng_str": "7.605367,5.379234",
       "kml_id": "kml_id_418",
       "slug": "ikwuano",
-      "unique_id": "abia_ikwuano"
+      "unique_slug": "abia_ikwuano"
     }
   },
   {
@@ -4742,7 +4742,7 @@
       "latlng_str": "4.872727,7.987847",
       "kml_id": "kml_id_112",
       "slug": "ila",
-      "unique_id": "osun_ila"
+      "unique_slug": "osun_ila"
     }
   },
   {
@@ -4756,7 +4756,7 @@
       "latlng_str": "5.231582,7.961044",
       "kml_id": "kml_id_279",
       "slug": "ilejemeje",
-      "unique_id": "ekiti_ilejemeje"
+      "unique_slug": "ekiti_ilejemeje"
     }
   },
   {
@@ -4770,7 +4770,7 @@
       "latlng_str": "4.826103,7.238217",
       "kml_id": "kml_id_86",
       "slug": "ile_oluji_okeigbo",
-      "unique_id": "ondo_ile_oluji_okeigbo"
+      "unique_slug": "ondo_ile_oluji_okeigbo"
     }
   },
   {
@@ -4784,7 +4784,7 @@
       "latlng_str": "4.75389,7.607466",
       "kml_id": "kml_id_96",
       "slug": "ilesha_east",
-      "unique_id": "osun_ilesha_east"
+      "unique_slug": "osun_ilesha_east"
     }
   },
   {
@@ -4798,7 +4798,7 @@
       "latlng_str": "4.715819,7.646994",
       "kml_id": "kml_id_101",
       "slug": "ilesha_west",
-      "unique_id": "osun_ilesha_west"
+      "unique_slug": "osun_ilesha_west"
     }
   },
   {
@@ -4812,7 +4812,7 @@
       "latlng_str": "5.350398,13.66992",
       "kml_id": "kml_id_326",
       "slug": "illela",
-      "unique_id": "sokoto_illela"
+      "unique_slug": "sokoto_illela"
     }
   },
   {
@@ -4826,7 +4826,7 @@
       "latlng_str": "4.694936,8.564673",
       "kml_id": "kml_id_284",
       "slug": "ilorin_east",
-      "unique_id": "kwara_ilorin_east"
+      "unique_slug": "kwara_ilorin_east"
     }
   },
   {
@@ -4840,7 +4840,7 @@
       "latlng_str": "4.652554,8.440486",
       "kml_id": "kml_id_283",
       "slug": "ilorin_south",
-      "unique_id": "kwara_ilorin_south"
+      "unique_slug": "kwara_ilorin_south"
     }
   },
   {
@@ -4854,7 +4854,7 @@
       "latlng_str": "4.527322,8.498948",
       "kml_id": "kml_id_285",
       "slug": "ilorin_west",
-      "unique_id": "kwara_ilorin_west"
+      "unique_slug": "kwara_ilorin_west"
     }
   },
   {
@@ -4868,7 +4868,7 @@
       "latlng_str": "2.845402,7.691122",
       "kml_id": "kml_id_55",
       "slug": "imeko_afon",
-      "unique_id": "ogun_imeko_afon"
+      "unique_slug": "ogun_imeko_afon"
     }
   },
   {
@@ -4882,7 +4882,7 @@
       "latlng_str": "8.082084,12.631975",
       "kml_id": "kml_id_640",
       "slug": "ingawa",
-      "unique_id": "katsina_ingawa"
+      "unique_slug": "katsina_ingawa"
     }
   },
   {
@@ -4896,7 +4896,7 @@
       "latlng_str": "7.730794,5.401",
       "kml_id": "kml_id_445",
       "slug": "ini",
-      "unique_id": "akwa_ibom_ini"
+      "unique_slug": "akwa_ibom_ini"
     }
   },
   {
@@ -4910,7 +4910,7 @@
       "latlng_str": "2.812842,6.59224",
       "kml_id": "kml_id_10",
       "slug": "ipokia",
-      "unique_id": "ogun_ipokia"
+      "unique_slug": "ogun_ipokia"
     }
   },
   {
@@ -4924,7 +4924,7 @@
       "latlng_str": "5.018394,6.498812",
       "kml_id": "kml_id_50",
       "slug": "irele",
-      "unique_id": "ondo_irele"
+      "unique_slug": "ondo_irele"
     }
   },
   {
@@ -4938,7 +4938,7 @@
       "latlng_str": "3.910118,9.004851",
       "kml_id": "kml_id_264",
       "slug": "irepo",
-      "unique_id": "oyo_irepo"
+      "unique_slug": "oyo_irepo"
     }
   },
   {
@@ -4952,7 +4952,7 @@
       "latlng_str": "4.50965,7.881354",
       "kml_id": "kml_id_104",
       "slug": "irepodun",
-      "unique_id": "osun_irepodun"
+      "unique_slug": "osun_irepodun"
     }
   },
   {
@@ -4966,7 +4966,7 @@
       "latlng_str": "4.94951,8.15086",
       "kml_id": "kml_id_270",
       "slug": "irepodun",
-      "unique_id": "kwara_irepodun"
+      "unique_slug": "kwara_irepodun"
     }
   },
   {
@@ -4980,7 +4980,7 @@
       "latlng_str": "5.239831,7.702252",
       "kml_id": "kml_id_107",
       "slug": "irepodun_ifelodun",
-      "unique_id": "ekiti_irepodun_ifelodun"
+      "unique_slug": "ekiti_irepodun_ifelodun"
     }
   },
   {
@@ -4994,7 +4994,7 @@
       "latlng_str": "4.233098,7.425293",
       "kml_id": "kml_id_71",
       "slug": "irewole",
-      "unique_id": "osun_irewole"
+      "unique_slug": "osun_irewole"
     }
   },
   {
@@ -5008,7 +5008,7 @@
       "latlng_str": "6.342981,13.198354",
       "kml_id": "kml_id_369",
       "slug": "isa",
-      "unique_id": "sokoto_isa"
+      "unique_slug": "sokoto_isa"
     }
   },
   {
@@ -5022,7 +5022,7 @@
       "latlng_str": "5.391929,7.430287",
       "kml_id": "kml_id_2",
       "slug": "ise_orun",
-      "unique_id": "ekiti_ise_orun"
+      "unique_slug": "ekiti_ise_orun"
     }
   },
   {
@@ -5036,7 +5036,7 @@
       "latlng_str": "3.571956,7.864898",
       "kml_id": "kml_id_75",
       "slug": "iseyin",
-      "unique_id": "oyo_iseyin"
+      "unique_slug": "oyo_iseyin"
     }
   },
   {
@@ -5050,7 +5050,7 @@
       "latlng_str": "7.846247,6.414154",
       "kml_id": "kml_id_470",
       "slug": "ishielu",
-      "unique_id": "ebonyi_ishielu"
+      "unique_slug": "ebonyi_ishielu"
     }
   },
   {
@@ -5064,7 +5064,7 @@
       "latlng_str": "7.186435,5.681378",
       "kml_id": "kml_id_171",
       "slug": "isiala_mbano",
-      "unique_id": "imo_isiala_mbano"
+      "unique_slug": "imo_isiala_mbano"
     }
   },
   {
@@ -5078,7 +5078,7 @@
       "latlng_str": "7.359116,5.291463",
       "kml_id": "kml_id_411",
       "slug": "isiala_ngwa_north",
-      "unique_id": "abia_isiala_ngwa_north"
+      "unique_slug": "abia_isiala_ngwa_north"
     }
   },
   {
@@ -5092,7 +5092,7 @@
       "latlng_str": "7.413896,5.387212",
       "kml_id": "kml_id_412",
       "slug": "isiala_ngwa_south",
-      "unique_id": "abia_isiala_ngwa_south"
+      "unique_slug": "abia_isiala_ngwa_south"
     }
   },
   {
@@ -5106,7 +5106,7 @@
       "latlng_str": "5.062603,8.263668",
       "kml_id": "kml_id_280",
       "slug": "isin",
-      "unique_id": "kwara_isin"
+      "unique_slug": "kwara_isin"
     }
   },
   {
@@ -5120,7 +5120,7 @@
       "latlng_str": "7.687256,6.745281",
       "kml_id": "kml_id_469",
       "slug": "isi_uzo",
-      "unique_id": "enugu_isi_uzo"
+      "unique_slug": "enugu_isi_uzo"
     }
   },
   {
@@ -5134,7 +5134,7 @@
       "latlng_str": "4.166316,7.285595",
       "kml_id": "kml_id_61",
       "slug": "isokan",
-      "unique_id": "osun_isokan"
+      "unique_slug": "osun_isokan"
     }
   },
   {
@@ -5148,7 +5148,7 @@
       "latlng_str": "6.283637,5.44114",
       "kml_id": "kml_id_139",
       "slug": "isoko_north",
-      "unique_id": "delta_isoko_north"
+      "unique_slug": "delta_isoko_north"
     }
   },
   {
@@ -5162,7 +5162,7 @@
       "latlng_str": "6.257206,5.382296",
       "kml_id": "kml_id_140",
       "slug": "isoko_south",
-      "unique_id": "delta_isoko_south"
+      "unique_slug": "delta_isoko_south"
     }
   },
   {
@@ -5176,7 +5176,7 @@
       "latlng_str": "7.05499,5.688193",
       "kml_id": "kml_id_176",
       "slug": "isu",
-      "unique_id": "imo_isu"
+      "unique_slug": "imo_isu"
     }
   },
   {
@@ -5190,7 +5190,7 @@
       "latlng_str": "7.440462,5.813692",
       "kml_id": "kml_id_420",
       "slug": "isuikwuato",
-      "unique_id": "abia_isuikwuato"
+      "unique_slug": "abia_isuikwuato"
     }
   },
   {
@@ -5204,7 +5204,7 @@
       "latlng_str": "9.935634,11.883981",
       "kml_id": "kml_id_669",
       "slug": "itas_gadau",
-      "unique_id": "bauchi_itas_gadau"
+      "unique_slug": "bauchi_itas_gadau"
     }
   },
   {
@@ -5218,7 +5218,7 @@
       "latlng_str": "3.480015,8.194416",
       "kml_id": "kml_id_256",
       "slug": "itesiwaju",
-      "unique_id": "oyo_itesiwaju"
+      "unique_slug": "oyo_itesiwaju"
     }
   },
   {
@@ -5232,7 +5232,7 @@
       "latlng_str": "7.96449,5.126079",
       "kml_id": "kml_id_452",
       "slug": "itu",
-      "unique_id": "akwa_ibom_itu"
+      "unique_slug": "akwa_ibom_itu"
     }
   },
   {
@@ -5246,7 +5246,7 @@
       "latlng_str": "7.629232,5.895017",
       "kml_id": "kml_id_390",
       "slug": "ivo",
-      "unique_id": "ebonyi_ivo"
+      "unique_slug": "ebonyi_ivo"
     }
   },
   {
@@ -5260,7 +5260,7 @@
       "latlng_str": "2.918581,7.918796",
       "kml_id": "kml_id_74",
       "slug": "iwajowa",
-      "unique_id": "oyo_iwajowa"
+      "unique_slug": "oyo_iwajowa"
     }
   },
   {
@@ -5274,7 +5274,7 @@
       "latlng_str": "4.133383,7.680619",
       "kml_id": "kml_id_76",
       "slug": "iwo",
-      "unique_id": "osun_iwo"
+      "unique_slug": "osun_iwo"
     }
   },
   {
@@ -5288,7 +5288,7 @@
       "latlng_str": "8.281723,6.543057",
       "kml_id": "kml_id_491",
       "slug": "izzi",
-      "unique_id": "ebonyi_izzi"
+      "unique_slug": "ebonyi_izzi"
     }
   },
   {
@@ -5302,7 +5302,7 @@
       "latlng_str": "8.053788,9.484095",
       "kml_id": "kml_id_571",
       "slug": "jaba",
-      "unique_id": "kaduna_jaba"
+      "unique_slug": "kaduna_jaba"
     }
   },
   {
@@ -5316,7 +5316,7 @@
       "latlng_str": "12.379892,8.691837",
       "kml_id": "kml_id_549",
       "slug": "jada",
-      "unique_id": "adamawa_jada"
+      "unique_slug": "adamawa_jada"
     }
   },
   {
@@ -5330,7 +5330,7 @@
       "latlng_str": "9.561588,12.076766",
       "kml_id": "kml_id_670",
       "slug": "jahun",
-      "unique_id": "jigawa_jahun"
+      "unique_slug": "jigawa_jahun"
     }
   },
   {
@@ -5344,7 +5344,7 @@
       "latlng_str": "10.89362,12.425057",
       "kml_id": "kml_id_742",
       "slug": "jakusko",
-      "unique_id": "yobe_jakusko"
+      "unique_slug": "yobe_jakusko"
     }
   },
   {
@@ -5358,7 +5358,7 @@
       "latlng_str": "11.335831,8.908373",
       "kml_id": "kml_id_560",
       "slug": "jalingo",
-      "unique_id": "taraba_jalingo"
+      "unique_slug": "taraba_jalingo"
     }
   },
   {
@@ -5372,7 +5372,7 @@
       "latlng_str": "9.86659,11.700477",
       "kml_id": "kml_id_735",
       "slug": "jama_are",
-      "unique_id": "bauchi_jama_are"
+      "unique_slug": "bauchi_jama_are"
     }
   },
   {
@@ -5386,7 +5386,7 @@
       "latlng_str": "4.414339,12.087191",
       "kml_id": "kml_id_305",
       "slug": "jega",
-      "unique_id": "kebbi_jega"
+      "unique_slug": "kebbi_jega"
     }
   },
   {
@@ -5400,7 +5400,7 @@
       "latlng_str": "8.268854,9.361638",
       "kml_id": "kml_id_495",
       "slug": "jema_a",
-      "unique_id": "kaduna_jema_a"
+      "unique_slug": "kaduna_jema_a"
     }
   },
   {
@@ -5414,7 +5414,7 @@
       "latlng_str": "13.171457,11.869571",
       "kml_id": "kml_id_762",
       "slug": "jere",
-      "unique_id": "borno_jere"
+      "unique_slug": "borno_jere"
     }
   },
   {
@@ -5428,7 +5428,7 @@
       "latlng_str": "7.28058,12.977143",
       "kml_id": "kml_id_386",
       "slug": "jibia",
-      "unique_id": "katsina_jibia"
+      "unique_slug": "katsina_jibia"
     }
   },
   {
@@ -5442,7 +5442,7 @@
       "latlng_str": "9.125526,9.891083",
       "kml_id": "kml_id_589",
       "slug": "jos_east",
-      "unique_id": "plateau_jos_east"
+      "unique_slug": "plateau_jos_east"
     }
   },
   {
@@ -5456,7 +5456,7 @@
       "latlng_str": "8.90907,9.941347",
       "kml_id": "kml_id_595",
       "slug": "jos_north",
-      "unique_id": "plateau_jos_north"
+      "unique_slug": "plateau_jos_north"
     }
   },
   {
@@ -5470,7 +5470,7 @@
       "latlng_str": "8.832955,9.75693",
       "kml_id": "kml_id_590",
       "slug": "jos_south",
-      "unique_id": "plateau_jos_south"
+      "unique_slug": "plateau_jos_south"
     }
   },
   {
@@ -5484,7 +5484,7 @@
       "latlng_str": "6.226685,8.057179",
       "kml_id": "kml_id_215",
       "slug": "kabba_bunu",
-      "unique_id": "kogi_kabba_bunu"
+      "unique_slug": "kogi_kabba_bunu"
     }
   },
   {
@@ -5498,7 +5498,7 @@
       "latlng_str": "8.1906,11.889021",
       "kml_id": "kml_id_624",
       "slug": "kabo",
-      "unique_id": "kano_kabo"
+      "unique_slug": "kano_kabo"
     }
   },
   {
@@ -5512,7 +5512,7 @@
       "latlng_str": "7.629555,9.818182",
       "kml_id": "kml_id_569",
       "slug": "kachia",
-      "unique_id": "kaduna_kachia"
+      "unique_slug": "kaduna_kachia"
     }
   },
   {
@@ -5526,7 +5526,7 @@
       "latlng_str": "7.434486,10.544609",
       "kml_id": "kml_id_576",
       "slug": "kaduna_north",
-      "unique_id": "kaduna_kaduna_north"
+      "unique_slug": "kaduna_kaduna_north"
     }
   },
   {
@@ -5540,7 +5540,7 @@
       "latlng_str": "7.401654,10.492305",
       "kml_id": "kml_id_565",
       "slug": "kaduna_south",
-      "unique_id": "kaduna_kaduna_south"
+      "unique_slug": "kaduna_kaduna_south"
     }
   },
   {
@@ -5554,7 +5554,7 @@
       "latlng_str": "10.020129,12.150902",
       "kml_id": "kml_id_730",
       "slug": "kafin_hausa",
-      "unique_id": "jigawa_kafin_hausa"
+      "unique_slug": "jigawa_kafin_hausa"
     }
   },
   {
@@ -5568,7 +5568,7 @@
       "latlng_str": "7.685601,11.660673",
       "kml_id": "kml_id_578",
       "slug": "kafur",
-      "unique_id": "katsina_kafur"
+      "unique_slug": "katsina_kafur"
     }
   },
   {
@@ -5582,7 +5582,7 @@
       "latlng_str": "12.465851,11.629135",
       "kml_id": "kml_id_758",
       "slug": "kaga",
-      "unique_id": "borno_kaga"
+      "unique_slug": "borno_kaga"
     }
   },
   {
@@ -5596,7 +5596,7 @@
       "latlng_str": "7.564651,9.475714",
       "kml_id": "kml_id_567",
       "slug": "kagarko",
-      "unique_id": "kaduna_kagarko"
+      "unique_slug": "kaduna_kagarko"
     }
   },
   {
@@ -5610,7 +5610,7 @@
       "latlng_str": "4.184266,9.557728",
       "kml_id": "kml_id_268",
       "slug": "kaiama",
-      "unique_id": "kwara_kaiama"
+      "unique_slug": "kwara_kaiama"
     }
   },
   {
@@ -5624,7 +5624,7 @@
       "latlng_str": "7.71202,13.135976",
       "kml_id": "kml_id_638",
       "slug": "kaita",
-      "unique_id": "katsina_kaita"
+      "unique_slug": "katsina_kaita"
     }
   },
   {
@@ -5638,7 +5638,7 @@
       "latlng_str": "3.364024,8.052356",
       "kml_id": "kml_id_255",
       "slug": "kajola",
-      "unique_id": "oyo_kajola"
+      "unique_slug": "oyo_kajola"
     }
   },
   {
@@ -5651,9 +5651,8 @@
       "state": 19,
       "latlng_str": null,
       "kml_id": null,
-      "alternate_spelling": null,
       "slug": "kajuru",
-      "unique_id": "kaduna_kajuru"
+      "unique_slug": "kaduna_kajuru"
     }
   },
   {
@@ -5667,7 +5666,7 @@
       "latlng_str": "14.479201,12.06566",
       "kml_id": "kml_id_765",
       "slug": "kala_balge",
-      "unique_id": "borno_kala_balge"
+      "unique_slug": "borno_kala_balge"
     }
   },
   {
@@ -5681,7 +5680,7 @@
       "latlng_str": "4.06436,12.272624",
       "kml_id": "kml_id_303",
       "slug": "kalgo",
-      "unique_id": "kebbi_kalgo"
+      "unique_slug": "kebbi_kalgo"
     }
   },
   {
@@ -5695,7 +5694,7 @@
       "latlng_str": "11.412489,9.823453",
       "kml_id": "kml_id_698",
       "slug": "kaltungo",
-      "unique_id": "gombe_kaltungo"
+      "unique_slug": "gombe_kaltungo"
     }
   },
   {
@@ -5709,7 +5708,7 @@
       "latlng_str": "10.100141,9.478896",
       "kml_id": "kml_id_691",
       "slug": "kanam",
-      "unique_id": "plateau_kanam"
+      "unique_slug": "plateau_kanam"
     }
   },
   {
@@ -5723,7 +5722,7 @@
       "latlng_str": "7.381619,11.972695",
       "kml_id": "kml_id_371",
       "slug": "kankara",
-      "unique_id": "katsina_kankara"
+      "unique_slug": "katsina_kankara"
     }
   },
   {
@@ -5737,7 +5736,7 @@
       "latlng_str": "9.614247,9.370865",
       "kml_id": "kml_id_598",
       "slug": "kanke",
-      "unique_id": "plateau_kanke"
+      "unique_slug": "plateau_kanke"
     }
   },
   {
@@ -5751,7 +5750,7 @@
       "latlng_str": "7.767588,12.452983",
       "kml_id": "kml_id_619",
       "slug": "kankia",
-      "unique_id": "katsina_kankia"
+      "unique_slug": "katsina_kankia"
     }
   },
   {
@@ -5765,7 +5764,7 @@
       "latlng_str": "8.499517,11.958985",
       "kml_id": "kml_id_654",
       "slug": "kano_municipal",
-      "unique_id": "kano_kano_municipal"
+      "unique_slug": "kano_kano_municipal"
     }
   },
   {
@@ -5779,7 +5778,7 @@
       "latlng_str": "10.758961,12.957655",
       "kml_id": "kml_id_754",
       "slug": "karasuwa",
-      "unique_id": "yobe_karasuwa"
+      "unique_slug": "yobe_karasuwa"
     }
   },
   {
@@ -5793,7 +5792,7 @@
       "latlng_str": "8.021994,11.769368",
       "kml_id": "kml_id_614",
       "slug": "karaye",
-      "unique_id": "kano_karaye"
+      "unique_slug": "kano_karaye"
     }
   },
   {
@@ -5807,7 +5806,7 @@
       "latlng_str": "10.800319,9.214263",
       "kml_id": "kml_id_556",
       "slug": "karin_lamido",
-      "unique_id": "taraba_karin_lamido"
+      "unique_slug": "taraba_karin_lamido"
     }
   },
   {
@@ -5821,7 +5820,7 @@
       "latlng_str": "7.874653,9.027153",
       "kml_id": "kml_id_480",
       "slug": "karu",
-      "unique_id": "nasarawa_karu"
+      "unique_slug": "nasarawa_karu"
     }
   },
   {
@@ -5835,7 +5834,7 @@
       "latlng_str": "10.303583,11.691245",
       "kml_id": "kml_id_736",
       "slug": "katagum",
-      "unique_id": "bauchi_katagum"
+      "unique_slug": "bauchi_katagum"
     }
   },
   {
@@ -5849,7 +5848,7 @@
       "latlng_str": "6.277993,9.126802",
       "kml_id": "kml_id_335",
       "slug": "katcha",
-      "unique_id": "niger_katcha"
+      "unique_slug": "niger_katcha"
     }
   },
   {
@@ -5863,7 +5862,7 @@
       "latlng_str": "7.611084,13.00333",
       "kml_id": "kml_id_637",
       "slug": "katsina",
-      "unique_id": "katsina_katsina"
+      "unique_slug": "katsina_katsina"
     }
   },
   {
@@ -5877,7 +5876,7 @@
       "latlng_str": "9.523143,7.327255",
       "kml_id": "kml_id_528",
       "slug": "katsina_ala",
-      "unique_id": "benue_katsina_ala"
+      "unique_slug": "benue_katsina_ala"
     }
   },
   {
@@ -5891,7 +5890,7 @@
       "latlng_str": "8.475645,9.63461",
       "kml_id": "kml_id_564",
       "slug": "kaura",
-      "unique_id": "kaduna_kaura"
+      "unique_slug": "kaduna_kaura"
     }
   },
   {
@@ -5905,7 +5904,7 @@
       "latlng_str": "6.631501,12.486582",
       "kml_id": "kml_id_382",
       "slug": "kaura_namoda",
-      "unique_id": "zamfara_kaura_namoda"
+      "unique_slug": "zamfara_kaura_namoda"
     }
   },
   {
@@ -5919,7 +5918,7 @@
       "latlng_str": "8.350773,10.203501",
       "kml_id": "kml_id_573",
       "slug": "kauru",
-      "unique_id": "kaduna_kauru"
+      "unique_slug": "kaduna_kauru"
     }
   },
   {
@@ -5933,7 +5932,7 @@
       "latlng_str": "8.536196,12.659055",
       "kml_id": "kml_id_612",
       "slug": "kazaure",
-      "unique_id": "jigawa_kazaure"
+      "unique_slug": "jigawa_kazaure"
     }
   },
   {
@@ -5947,7 +5946,7 @@
       "latlng_str": "8.829228,8.197098",
       "kml_id": "kml_id_537",
       "slug": "keana",
-      "unique_id": "nasarawa_keana"
+      "unique_slug": "nasarawa_keana"
     }
   },
   {
@@ -5961,7 +5960,7 @@
       "latlng_str": "4.703948,11.847104",
       "kml_id": "kml_id_299",
       "slug": "kebbe",
-      "unique_id": "sokoto_kebbe"
+      "unique_slug": "sokoto_kebbe"
     }
   },
   {
@@ -5975,7 +5974,7 @@
       "latlng_str": "7.830773,8.842041",
       "kml_id": "kml_id_497",
       "slug": "keffi",
-      "unique_id": "nasarawa_keffi"
+      "unique_slug": "nasarawa_keffi"
     }
   },
   {
@@ -5989,7 +5988,7 @@
       "latlng_str": "7.468056,4.656899",
       "kml_id": "kml_id_397",
       "slug": "khana",
-      "unique_id": "rivers_khana"
+      "unique_slug": "rivers_khana"
     }
   },
   {
@@ -6003,7 +6002,7 @@
       "latlng_str": "8.681252,11.4864",
       "kml_id": "kml_id_605",
       "slug": "kibiya",
-      "unique_id": "kano_kibiya"
+      "unique_slug": "kano_kibiya"
     }
   },
   {
@@ -6017,7 +6016,7 @@
       "latlng_str": "10.532107,10.393748",
       "kml_id": "kml_id_701",
       "slug": "kirfi",
-      "unique_id": "bauchi_kirfi"
+      "unique_slug": "bauchi_kirfi"
     }
   },
   {
@@ -6031,7 +6030,7 @@
       "latlng_str": "10.235642,12.579593",
       "kml_id": "kml_id_744",
       "slug": "kiri_kasama",
-      "unique_id": "jigawa_kiri_kasama"
+      "unique_slug": "jigawa_kiri_kasama"
     }
   },
   {
@@ -6045,7 +6044,7 @@
       "latlng_str": "8.15969,11.55423",
       "kml_id": "kml_id_586",
       "slug": "kiru",
-      "unique_id": "kano_kiru"
+      "unique_slug": "kano_kiru"
     }
   },
   {
@@ -6059,7 +6058,7 @@
       "latlng_str": "9.623538,11.84769",
       "kml_id": "kml_id_666",
       "slug": "kiyawa",
-      "unique_id": "jigawa_kiyawa"
+      "unique_slug": "jigawa_kiyawa"
     }
   },
   {
@@ -6073,7 +6072,7 @@
       "latlng_str": "6.84572,8.175464",
       "kml_id": "kml_id_248",
       "slug": "kogi",
-      "unique_id": "kogi_kogi"
+      "unique_slug": "kogi_kogi"
     }
   },
   {
@@ -6087,7 +6086,7 @@
       "latlng_str": "4.337278,11.500432",
       "kml_id": "kml_id_298",
       "slug": "koko_besse",
-      "unique_id": "kebbi_koko_besse"
+      "unique_slug": "kebbi_koko_besse"
     }
   },
   {
@@ -6101,7 +6100,7 @@
       "latlng_str": "8.084121,8.834817",
       "kml_id": "kml_id_498",
       "slug": "kokona",
-      "unique_id": "nasarawa_kokona"
+      "unique_slug": "nasarawa_kokona"
     }
   },
   {
@@ -6115,7 +6114,7 @@
       "latlng_str": "6.271426,5.089349",
       "kml_id": "kml_id_127",
       "slug": "kolokuma",
-      "unique_id": "bayelsa_kolokuma"
+      "unique_slug": "bayelsa_kolokuma"
     }
   },
   {
@@ -6129,7 +6128,7 @@
       "latlng_str": "13.154917,11.667182",
       "kml_id": "kml_id_756",
       "slug": "konduga",
-      "unique_id": "borno_konduga"
+      "unique_slug": "borno_konduga"
     }
   },
   {
@@ -6143,7 +6142,7 @@
       "latlng_str": "8.706637,6.999847",
       "kml_id": "kml_id_516",
       "slug": "konshisha",
-      "unique_id": "benue_konshisha"
+      "unique_slug": "benue_konshisha"
     }
   },
   {
@@ -6157,7 +6156,7 @@
       "latlng_str": "5.455368,10.416192",
       "kml_id": "kml_id_313",
       "slug": "kontagora",
-      "unique_id": "niger_kontagora"
+      "unique_slug": "niger_kontagora"
     }
   },
   {
@@ -6171,7 +6170,7 @@
       "latlng_str": "3.414961,6.579116",
       "kml_id": "kml_id_5",
       "slug": "kosofe",
-      "unique_id": "lagos_kosofe"
+      "unique_slug": "lagos_kosofe"
     }
   },
   {
@@ -6185,7 +6184,7 @@
       "latlng_str": "9.779039,12.527328",
       "kml_id": "kml_id_683",
       "slug": "kuagama",
-      "unique_id": "jigawa_kuagama"
+      "unique_slug": "jigawa_kuagama"
     }
   },
   {
@@ -6199,7 +6198,7 @@
       "latlng_str": "8.373146,10.902485",
       "kml_id": "kml_id_583",
       "slug": "kubau",
-      "unique_id": "kaduna_kubau"
+      "unique_slug": "kaduna_kubau"
     }
   },
   {
@@ -6213,7 +6212,7 @@
       "latlng_str": "7.766072,11.269785",
       "kml_id": "kml_id_580",
       "slug": "kudan",
-      "unique_id": "kaduna_kudan"
+      "unique_slug": "kaduna_kudan"
     }
   },
   {
@@ -6227,7 +6226,7 @@
       "latlng_str": "7.253458,8.704472",
       "kml_id": "kml_id_347",
       "slug": "kuje",
-      "unique_id": "fct_kuje"
+      "unique_slug": "fct_kuje"
     }
   },
   {
@@ -6241,7 +6240,7 @@
       "latlng_str": "13.683414,13.050212",
       "kml_id": "kml_id_774",
       "slug": "kukawa",
-      "unique_id": "borno_kukawa"
+      "unique_slug": "borno_kukawa"
     }
   },
   {
@@ -6255,7 +6254,7 @@
       "latlng_str": "8.529059,11.925071",
       "kml_id": "kml_id_655",
       "slug": "kumbotso",
-      "unique_id": "kano_kumbotso"
+      "unique_slug": "kano_kumbotso"
     }
   },
   {
@@ -6269,7 +6268,7 @@
       "latlng_str": "10.633858,7.211659",
       "kml_id": "kml_id_523",
       "slug": "kurmi",
-      "unique_id": "taraba_kurmi"
+      "unique_slug": "taraba_kurmi"
     }
   },
   {
@@ -6283,7 +6282,7 @@
       "latlng_str": "8.260751,12.441118",
       "kml_id": "kml_id_613",
       "slug": "kunchi",
-      "unique_id": "kano_kunchi"
+      "unique_slug": "kano_kunchi"
     }
   },
   {
@@ -6297,7 +6296,7 @@
       "latlng_str": "8.506542,11.766458",
       "kml_id": "kml_id_652",
       "slug": "kura",
-      "unique_id": "kano_kura"
+      "unique_slug": "kano_kura"
     }
   },
   {
@@ -6311,7 +6310,7 @@
       "latlng_str": "7.490277,12.718906",
       "kml_id": "kml_id_634",
       "slug": "kurfi",
-      "unique_id": "katsina_kurfi"
+      "unique_slug": "katsina_kurfi"
     }
   },
   {
@@ -6325,7 +6324,7 @@
       "latlng_str": "7.980812,12.47049",
       "kml_id": "kml_id_641",
       "slug": "kusada",
-      "unique_id": "katsina_kusada"
+      "unique_slug": "katsina_kusada"
     }
   },
   {
@@ -6339,7 +6338,7 @@
       "latlng_str": "6.909538,8.712405",
       "kml_id": "kml_id_343",
       "slug": "kwali",
-      "unique_id": "fct_kwali"
+      "unique_slug": "fct_kwali"
     }
   },
   {
@@ -6353,7 +6352,7 @@
       "latlng_str": "9.413674,6.744053",
       "kml_id": "kml_id_506",
       "slug": "kwande",
-      "unique_id": "benue_kwande"
+      "unique_slug": "benue_kwande"
     }
   },
   {
@@ -6367,7 +6366,7 @@
       "latlng_str": "11.237296,10.503621",
       "kml_id": "kml_id_702",
       "slug": "kwami",
-      "unique_id": "gombe_kwami"
+      "unique_slug": "gombe_kwami"
     }
   },
   {
@@ -6381,7 +6380,7 @@
       "latlng_str": "5.296259,13.148889",
       "kml_id": "kml_id_324",
       "slug": "kware",
-      "unique_id": "sokoto_kware"
+      "unique_slug": "sokoto_kware"
     }
   },
   {
@@ -6395,7 +6394,7 @@
       "latlng_str": "11.869297,10.431005",
       "kml_id": "kml_id_721",
       "slug": "kwaya_kusar",
-      "unique_id": "borno_kwaya_kusar"
+      "unique_slug": "borno_kwaya_kusar"
     }
   },
   {
@@ -6409,7 +6408,7 @@
       "latlng_str": "8.69298,8.645315",
       "kml_id": "kml_id_501",
       "slug": "lafia",
-      "unique_id": "nasarawa_lafia"
+      "unique_slug": "nasarawa_lafia"
     }
   },
   {
@@ -6423,7 +6422,7 @@
       "latlng_str": "4.062259,7.49969",
       "kml_id": "kml_id_78",
       "slug": "lagelu",
-      "unique_id": "oyo_lagelu"
+      "unique_slug": "oyo_lagelu"
     }
   },
   {
@@ -6437,7 +6436,7 @@
       "latlng_str": "3.394989,6.453802",
       "kml_id": "kml_id_15",
       "slug": "lagos_island",
-      "unique_id": "lagos_lagos_island"
+      "unique_slug": "lagos_lagos_island"
     }
   },
   {
@@ -6451,7 +6450,7 @@
       "latlng_str": "3.386551,6.491355",
       "kml_id": "kml_id_21",
       "slug": "lagos_mainland",
-      "unique_id": "lagos_lagos_mainland"
+      "unique_slug": "lagos_lagos_mainland"
     }
   },
   {
@@ -6465,7 +6464,7 @@
       "latlng_str": "9.822878,8.615944",
       "kml_id": "kml_id_546",
       "slug": "langtang_south",
-      "unique_id": "plateau_langtang_south"
+      "unique_slug": "plateau_langtang_south"
     }
   },
   {
@@ -6479,7 +6478,7 @@
       "latlng_str": "9.828509,9.025889",
       "kml_id": "kml_id_532",
       "slug": "langtan_north",
-      "unique_id": "plateau_langtan_north"
+      "unique_slug": "plateau_langtan_north"
     }
   },
   {
@@ -6493,7 +6492,7 @@
       "latlng_str": "6.682007,8.846594",
       "kml_id": "kml_id_344",
       "slug": "lapai",
-      "unique_id": "niger_lapai"
+      "unique_slug": "niger_lapai"
     }
   },
   {
@@ -6507,7 +6506,7 @@
       "latlng_str": "11.686776,9.561741",
       "kml_id": "kml_id_693",
       "slug": "larmurde",
-      "unique_id": "adamawa_larmurde"
+      "unique_slug": "adamawa_larmurde"
     }
   },
   {
@@ -6521,7 +6520,7 @@
       "latlng_str": "11.410844,9.175104",
       "kml_id": "kml_id_553",
       "slug": "lau",
-      "unique_id": "taraba_lau"
+      "unique_slug": "taraba_lau"
     }
   },
   {
@@ -6535,7 +6534,7 @@
       "latlng_str": "5.63571,9.303946",
       "kml_id": "kml_id_329",
       "slug": "lavun",
-      "unique_id": "niger_lavun"
+      "unique_slug": "niger_lavun"
     }
   },
   {
@@ -6549,7 +6548,7 @@
       "latlng_str": "8.612611,10.352049",
       "kml_id": "kml_id_588",
       "slug": "lere",
-      "unique_id": "kaduna_lere"
+      "unique_slug": "kaduna_lere"
     }
   },
   {
@@ -6563,7 +6562,7 @@
       "latlng_str": "9.205393,7.680058",
       "kml_id": "kml_id_505",
       "slug": "logo",
-      "unique_id": "benue_logo"
+      "unique_slug": "benue_logo"
     }
   },
   {
@@ -6577,7 +6576,7 @@
       "latlng_str": "6.440401,8.148623",
       "kml_id": "kml_id_218",
       "slug": "lokoja",
-      "unique_id": "kogi_lokoja"
+      "unique_slug": "kogi_lokoja"
     }
   },
   {
@@ -6591,7 +6590,7 @@
       "latlng_str": "9.990687,12.988269",
       "kml_id": "kml_id_686",
       "slug": "machina",
-      "unique_id": "yobe_machina"
+      "unique_slug": "yobe_machina"
     }
   },
   {
@@ -6605,7 +6604,7 @@
       "latlng_str": "13.479542,10.849582",
       "kml_id": "kml_id_728",
       "slug": "madgali",
-      "unique_id": "adamawa_madgali"
+      "unique_slug": "adamawa_madgali"
     }
   },
   {
@@ -6619,7 +6618,7 @@
       "latlng_str": "8.40555,11.8234",
       "kml_id": "kml_id_626",
       "slug": "madobi",
-      "unique_id": "kano_madobi"
+      "unique_slug": "kano_madobi"
     }
   },
   {
@@ -6633,7 +6632,7 @@
       "latlng_str": "13.529176,12.01993",
       "kml_id": "kml_id_761",
       "slug": "mafa",
-      "unique_id": "borno_mafa"
+      "unique_slug": "borno_mafa"
     }
   },
   {
@@ -6647,7 +6646,7 @@
       "latlng_str": "4.974123,10.424032",
       "kml_id": "kml_id_286",
       "slug": "magama",
-      "unique_id": "niger_magama"
+      "unique_slug": "niger_magama"
     }
   },
   {
@@ -6661,7 +6660,7 @@
       "latlng_str": "12.63323,12.174918",
       "kml_id": "kml_id_759",
       "slug": "magumeri",
-      "unique_id": "borno_magumeri"
+      "unique_slug": "borno_magumeri"
     }
   },
   {
@@ -6675,7 +6674,7 @@
       "latlng_str": "8.219783,13.140806",
       "kml_id": "kml_id_643",
       "slug": "mai_adua",
-      "unique_id": "katsina_mai_adua"
+      "unique_slug": "katsina_mai_adua"
     }
   },
   {
@@ -6689,7 +6688,7 @@
       "latlng_str": "13.120159,11.846168",
       "kml_id": "kml_id_763",
       "slug": "maiduguri",
-      "unique_id": "borno_maiduguri"
+      "unique_slug": "borno_maiduguri"
     }
   },
   {
@@ -6703,7 +6702,7 @@
       "latlng_str": "9.563805,12.702933",
       "kml_id": "kml_id_684",
       "slug": "maigatari",
-      "unique_id": "jigawa_maigatari"
+      "unique_slug": "jigawa_maigatari"
     }
   },
   {
@@ -6717,7 +6716,7 @@
       "latlng_str": "13.179748,9.843515",
       "kml_id": "kml_id_718",
       "slug": "maiha",
-      "unique_id": "adamawa_maiha"
+      "unique_slug": "adamawa_maiha"
     }
   },
   {
@@ -6731,7 +6730,7 @@
       "latlng_str": "4.337618,11.857321",
       "kml_id": "kml_id_291",
       "slug": "maiyama",
-      "unique_id": "kebbi_maiyama"
+      "unique_slug": "kebbi_maiyama"
     }
   },
   {
@@ -6745,7 +6744,7 @@
       "latlng_str": "7.977054,11.324063",
       "kml_id": "kml_id_585",
       "slug": "makarfi",
-      "unique_id": "kaduna_makarfi"
+      "unique_slug": "kaduna_makarfi"
     }
   },
   {
@@ -6759,7 +6758,7 @@
       "latlng_str": "8.497067,12.426062",
       "kml_id": "kml_id_673",
       "slug": "makoda",
-      "unique_id": "kano_makoda"
+      "unique_slug": "kano_makoda"
     }
   },
   {
@@ -6773,7 +6772,7 @@
       "latlng_str": "10.020255,12.564222",
       "kml_id": "kml_id_745",
       "slug": "malam_maduri",
-      "unique_id": "jigawa_malam_maduri"
+      "unique_slug": "jigawa_malam_maduri"
     }
   },
   {
@@ -6787,7 +6786,7 @@
       "latlng_str": "7.644191,11.840715",
       "kml_id": "kml_id_616",
       "slug": "malumfashi",
-      "unique_id": "katsina_malumfashi"
+      "unique_slug": "katsina_malumfashi"
     }
   },
   {
@@ -6801,7 +6800,7 @@
       "latlng_str": "9.19192,9.418345",
       "kml_id": "kml_id_541",
       "slug": "mangu",
-      "unique_id": "plateau_mangu"
+      "unique_slug": "plateau_mangu"
     }
   },
   {
@@ -6815,7 +6814,7 @@
       "latlng_str": "7.926806,12.903577",
       "kml_id": "kml_id_631",
       "slug": "mani",
-      "unique_id": "katsina_mani"
+      "unique_slug": "katsina_mani"
     }
   },
   {
@@ -6829,7 +6828,7 @@
       "latlng_str": "6.293978,12.737568",
       "kml_id": "kml_id_356",
       "slug": "maradun",
-      "unique_id": "zamfara_maradun"
+      "unique_slug": "zamfara_maradun"
     }
   },
   {
@@ -6843,7 +6842,7 @@
       "latlng_str": "5.87265,10.69148",
       "kml_id": "kml_id_337",
       "slug": "mariga",
-      "unique_id": "niger_mariga"
+      "unique_slug": "niger_mariga"
     }
   },
   {
@@ -6857,7 +6856,7 @@
       "latlng_str": "8.48353,7.752784",
       "kml_id": "kml_id_535",
       "slug": "makurdi",
-      "unique_id": "benue_makurdi"
+      "unique_slug": "benue_makurdi"
     }
   },
   {
@@ -6871,7 +6870,7 @@
       "latlng_str": "13.816301,12.367062",
       "kml_id": "kml_id_771",
       "slug": "marte",
-      "unique_id": "borno_marte"
+      "unique_slug": "borno_marte"
     }
   },
   {
@@ -6885,7 +6884,7 @@
       "latlng_str": "6.299735,11.477453",
       "kml_id": "kml_id_361",
       "slug": "maru",
-      "unique_id": "zamfara_maru"
+      "unique_slug": "zamfara_maru"
     }
   },
   {
@@ -6899,7 +6898,7 @@
       "latlng_str": "5.219565,9.795765",
       "kml_id": "kml_id_287",
       "slug": "mashegu",
-      "unique_id": "niger_mashegu"
+      "unique_slug": "niger_mashegu"
     }
   },
   {
@@ -6913,7 +6912,7 @@
       "latlng_str": "7.99065,13.122953",
       "kml_id": "kml_id_645",
       "slug": "mashi",
-      "unique_id": "katsina_mashi"
+      "unique_slug": "katsina_mashi"
     }
   },
   {
@@ -6927,7 +6926,7 @@
       "latlng_str": "7.625967,12.265331",
       "kml_id": "kml_id_620",
       "slug": "matazu",
-      "unique_id": "katsina_matazu"
+      "unique_slug": "katsina_matazu"
     }
   },
   {
@@ -6941,7 +6940,7 @@
       "latlng_str": "11.906663,8.955246",
       "kml_id": "kml_id_559",
       "slug": "mayo_belwa",
-      "unique_id": "adamawa_mayo_belwa"
+      "unique_slug": "adamawa_mayo_belwa"
     }
   },
   {
@@ -6955,7 +6954,7 @@
       "latlng_str": "7.030795,5.598568",
       "kml_id": "kml_id_162",
       "slug": "mbaitoli",
-      "unique_id": "imo_mbaitoli"
+      "unique_slug": "imo_mbaitoli"
     }
   },
   {
@@ -6969,7 +6968,7 @@
       "latlng_str": "8.239227,4.653235",
       "kml_id": "kml_id_438",
       "slug": "mbo",
-      "unique_id": "akwa_ibom_mbo"
+      "unique_slug": "akwa_ibom_mbo"
     }
   },
   {
@@ -6983,7 +6982,7 @@
       "latlng_str": "13.377242,10.582296",
       "kml_id": "kml_id_724",
       "slug": "michika",
-      "unique_id": "adamawa_michika"
+      "unique_slug": "adamawa_michika"
     }
   },
   {
@@ -6997,7 +6996,7 @@
       "latlng_str": "9.687551,12.229764",
       "kml_id": "kml_id_682",
       "slug": "miga",
-      "unique_id": "jigawa_miga"
+      "unique_slug": "jigawa_miga"
     }
   },
   {
@@ -7011,7 +7010,7 @@
       "latlng_str": "9.577392,9.015216",
       "kml_id": "kml_id_548",
       "slug": "mikang",
-      "unique_id": "plateau_mikang"
+      "unique_slug": "plateau_mikang"
     }
   },
   {
@@ -7025,7 +7024,7 @@
       "latlng_str": "8.63466,12.204882",
       "kml_id": "kml_id_674",
       "slug": "minjibir",
-      "unique_id": "kano_minjibir"
+      "unique_slug": "kano_minjibir"
     }
   },
   {
@@ -7039,7 +7038,7 @@
       "latlng_str": "10.433209,11.380149",
       "kml_id": "kml_id_734",
       "slug": "misau",
-      "unique_id": "bauchi_misau"
+      "unique_slug": "bauchi_misau"
     }
   },
   {
@@ -7053,7 +7052,7 @@
       "latlng_str": "5.129115,7.998727",
       "kml_id": "kml_id_277",
       "slug": "moba",
-      "unique_id": "ekiti_moba"
+      "unique_slug": "ekiti_moba"
     }
   },
   {
@@ -7067,7 +7066,7 @@
       "latlng_str": "12.647639,13.151813",
       "kml_id": "kml_id_768",
       "slug": "mobbar",
-      "unique_id": "borno_mobbar"
+      "unique_slug": "borno_mobbar"
     }
   },
   {
@@ -7081,7 +7080,7 @@
       "latlng_str": "13.286227,10.302878",
       "kml_id": "kml_id_725",
       "slug": "mubi_north",
-      "unique_id": "adamawa_mubi_north"
+      "unique_slug": "adamawa_mubi_north"
     }
   },
   {
@@ -7095,7 +7094,7 @@
       "latlng_str": "13.321351,10.164447",
       "kml_id": "kml_id_726",
       "slug": "mubi_south",
-      "unique_id": "adamawa_mubi_south"
+      "unique_slug": "adamawa_mubi_south"
     }
   },
   {
@@ -7109,7 +7108,7 @@
       "latlng_str": "5.518683,9.123826",
       "kml_id": "kml_id_289",
       "slug": "mokwa",
-      "unique_id": "niger_mokwa"
+      "unique_slug": "niger_mokwa"
     }
   },
   {
@@ -7123,7 +7122,7 @@
       "latlng_str": "13.61839,12.539369",
       "kml_id": "kml_id_769",
       "slug": "monguno",
-      "unique_id": "borno_monguno"
+      "unique_slug": "borno_monguno"
     }
   },
   {
@@ -7137,7 +7136,7 @@
       "latlng_str": "5.945022,8.152005",
       "kml_id": "kml_id_333",
       "slug": "mopa_muro",
-      "unique_id": "kogi_mopa_muro"
+      "unique_slug": "kogi_mopa_muro"
     }
   },
   {
@@ -7151,7 +7150,7 @@
       "latlng_str": "4.669024,8.892099",
       "kml_id": "kml_id_252",
       "slug": "moro",
-      "unique_id": "kwara_moro"
+      "unique_slug": "kwara_moro"
     }
   },
   {
@@ -7165,7 +7164,7 @@
       "latlng_str": "7.083476,9.844287",
       "kml_id": "kml_id_353",
       "slug": "moya",
-      "unique_id": "niger_moya"
+      "unique_slug": "niger_moya"
     }
   },
   {
@@ -7179,7 +7178,7 @@
       "latlng_str": "7.757017,4.694375",
       "kml_id": "kml_id_427",
       "slug": "mpkat_enin",
-      "unique_id": "akwa_ibom_mpkat_enin"
+      "unique_slug": "akwa_ibom_mpkat_enin"
     }
   },
   {
@@ -7193,7 +7192,7 @@
       "latlng_str": "7.373005,8.873535",
       "kml_id": "kml_id_348",
       "slug": "municipal_area_council",
-      "unique_id": "fct_municipal_area_council"
+      "unique_slug": "fct_municipal_area_council"
     }
   },
   {
@@ -7207,7 +7206,7 @@
       "latlng_str": "7.643105,12.079941",
       "kml_id": "kml_id_617",
       "slug": "musawa",
-      "unique_id": "katsina_musawa"
+      "unique_slug": "katsina_musawa"
     }
   },
   {
@@ -7221,7 +7220,7 @@
       "latlng_str": "3.347726,6.524375",
       "kml_id": "kml_id_18",
       "slug": "mushin",
-      "unique_id": "lagos_mushin"
+      "unique_slug": "lagos_mushin"
     }
   },
   {
@@ -7235,7 +7234,7 @@
       "latlng_str": "11.212367,11.122892",
       "kml_id": "kml_id_699",
       "slug": "nafada",
-      "unique_id": "gombe_nafada"
+      "unique_slug": "gombe_nafada"
     }
   },
   {
@@ -7249,7 +7248,7 @@
       "latlng_str": "10.972857,11.789749",
       "kml_id": "kml_id_741",
       "slug": "nangere",
-      "unique_id": "yobe_nangere"
+      "unique_slug": "yobe_nangere"
     }
   },
   {
@@ -7263,7 +7262,7 @@
       "latlng_str": "8.585066,11.991873",
       "kml_id": "kml_id_661",
       "slug": "nassarawa",
-      "unique_id": "kano_nassarawa"
+      "unique_slug": "kano_nassarawa"
     }
   },
   {
@@ -7277,7 +7276,7 @@
       "latlng_str": "7.818044,8.374841",
       "kml_id": "kml_id_477",
       "slug": "nasarawa",
-      "unique_id": "nasarawa_nasarawa"
+      "unique_slug": "nasarawa_nasarawa"
     }
   },
   {
@@ -7291,7 +7290,7 @@
       "latlng_str": "8.451088,8.715283",
       "kml_id": "kml_id_504",
       "slug": "nasarawa_eggon",
-      "unique_id": "nasarawa_nasarawa_eggon"
+      "unique_slug": "nasarawa_nasarawa_eggon"
     }
   },
   {
@@ -7305,7 +7304,7 @@
       "latlng_str": "6.484674,5.627307",
       "kml_id": "kml_id_142",
       "slug": "ndokwa_east",
-      "unique_id": "delta_ndokwa_east"
+      "unique_slug": "delta_ndokwa_east"
     }
   },
   {
@@ -7319,7 +7318,7 @@
       "latlng_str": "6.326035,5.820347",
       "kml_id": "kml_id_144",
       "slug": "ndokwa_west",
-      "unique_id": "delta_ndokwa_west"
+      "unique_slug": "delta_ndokwa_west"
     }
   },
   {
@@ -7333,7 +7332,7 @@
       "latlng_str": "6.291357,4.515356",
       "kml_id": "kml_id_124",
       "slug": "nembe",
-      "unique_id": "bayelsa_nembe"
+      "unique_slug": "bayelsa_nembe"
     }
   },
   {
@@ -7347,7 +7346,7 @@
       "latlng_str": "14.185558,12.263008",
       "kml_id": "kml_id_755",
       "slug": "ngala",
-      "unique_id": "borno_ngala"
+      "unique_slug": "borno_ngala"
     }
   },
   {
@@ -7361,7 +7360,7 @@
       "latlng_str": "13.136505,12.491403",
       "kml_id": "kml_id_770",
       "slug": "nganzai",
-      "unique_id": "borno_nganzai"
+      "unique_slug": "borno_nganzai"
     }
   },
   {
@@ -7375,7 +7374,7 @@
       "latlng_str": "4.819133,10.595427",
       "kml_id": "kml_id_251",
       "slug": "ngaski",
-      "unique_id": "kebbi_ngaski"
+      "unique_slug": "kebbi_ngaski"
     }
   },
   {
@@ -7389,7 +7388,7 @@
       "latlng_str": "7.154378,5.315426",
       "kml_id": "kml_id_158",
       "slug": "ngor_okpala",
-      "unique_id": "imo_ngor_okpala"
+      "unique_slug": "imo_ngor_okpala"
     }
   },
   {
@@ -7403,7 +7402,7 @@
       "latlng_str": "10.410166,12.965865",
       "kml_id": "kml_id_753",
       "slug": "nguru",
-      "unique_id": "yobe_nguru"
+      "unique_slug": "yobe_nguru"
     }
   },
   {
@@ -7417,7 +7416,7 @@
       "latlng_str": "9.21614,11.120504",
       "kml_id": "kml_id_601",
       "slug": "ningi",
-      "unique_id": "bauchi_ningi"
+      "unique_slug": "bauchi_ningi"
     }
   },
   {
@@ -7431,7 +7430,7 @@
       "latlng_str": "7.012763,5.712761",
       "kml_id": "kml_id_178",
       "slug": "njaba",
-      "unique_id": "imo_njaba"
+      "unique_slug": "imo_njaba"
     }
   },
   {
@@ -7445,7 +7444,7 @@
       "latlng_str": "6.991599,6.197804",
       "kml_id": "kml_id_230",
       "slug": "njikoka",
-      "unique_id": "anambra_njikoka"
+      "unique_slug": "anambra_njikoka"
     }
   },
   {
@@ -7459,7 +7458,7 @@
       "latlng_str": "7.6349,6.323243",
       "kml_id": "kml_id_466",
       "slug": "nkanu",
-      "unique_id": "enugu_nkanu"
+      "unique_slug": "enugu_nkanu"
     }
   },
   {
@@ -7473,7 +7472,7 @@
       "latlng_str": "7.517445,6.331035",
       "kml_id": "kml_id_460",
       "slug": "nkanu_west",
-      "unique_id": "enugu_nkanu_west"
+      "unique_slug": "enugu_nkanu_west"
     }
   },
   {
@@ -7487,7 +7486,7 @@
       "latlng_str": "7.106815,5.748819",
       "kml_id": "kml_id_182",
       "slug": "nkwerre",
-      "unique_id": "imo_nkwerre"
+      "unique_slug": "imo_nkwerre"
     }
   },
   {
@@ -7501,7 +7500,7 @@
       "latlng_str": "6.903258,6.008109",
       "kml_id": "kml_id_115",
       "slug": "nnewi_north",
-      "unique_id": "anambra_nnewi_north"
+      "unique_slug": "anambra_nnewi_north"
     }
   },
   {
@@ -7515,7 +7514,7 @@
       "latlng_str": "6.97936,5.95046",
       "kml_id": "kml_id_170",
       "slug": "nnewi_south",
-      "unique_id": "anambra_nnewi_south"
+      "unique_slug": "anambra_nnewi_south"
     }
   },
   {
@@ -7529,7 +7528,7 @@
       "latlng_str": "8.03297,4.821883",
       "kml_id": "kml_id_440",
       "slug": "nsit_atai",
-      "unique_id": "akwa_ibom_nsit_atai"
+      "unique_slug": "akwa_ibom_nsit_atai"
     }
   },
   {
@@ -7543,7 +7542,7 @@
       "latlng_str": "7.891839,4.897378",
       "kml_id": "kml_id_432",
       "slug": "nsit_ibom",
-      "unique_id": "akwa_ibom_nsit_ibom"
+      "unique_slug": "akwa_ibom_nsit_ibom"
     }
   },
   {
@@ -7557,7 +7556,7 @@
       "latlng_str": "7.965051,4.751508",
       "kml_id": "kml_id_426",
       "slug": "nsit_ubuim",
-      "unique_id": "akwa_ibom_nsit_ubuim"
+      "unique_slug": "akwa_ibom_nsit_ubuim"
     }
   },
   {
@@ -7571,7 +7570,7 @@
       "latlng_str": "7.380293,6.850222",
       "kml_id": "kml_id_458",
       "slug": "nsukka",
-      "unique_id": "enugu_nsukka"
+      "unique_slug": "enugu_nsukka"
     }
   },
   {
@@ -7585,7 +7584,7 @@
       "latlng_str": "11.813662,9.436104",
       "kml_id": "kml_id_694",
       "slug": "numan",
-      "unique_id": "adamawa_numan"
+      "unique_slug": "adamawa_numan"
     }
   },
   {
@@ -7599,7 +7598,7 @@
       "latlng_str": "7.127389,5.715876",
       "kml_id": "kml_id_183",
       "slug": "nwangele",
-      "unique_id": "imo_nwangele"
+      "unique_slug": "imo_nwangele"
     }
   },
   {
@@ -7613,7 +7612,7 @@
       "latlng_str": "3.498525,6.955654",
       "kml_id": "kml_id_29",
       "slug": "obafemi_owode",
-      "unique_id": "ogun_obafemi_owode"
+      "unique_slug": "ogun_obafemi_owode"
     }
   },
   {
@@ -7627,7 +7626,7 @@
       "latlng_str": "9.298165,6.498827",
       "kml_id": "kml_id_520",
       "slug": "obanliku",
-      "unique_id": "cross_river_obanliku"
+      "unique_slug": "cross_river_obanliku"
     }
   },
   {
@@ -7641,7 +7640,7 @@
       "latlng_str": "8.773657,8.382906",
       "kml_id": "kml_id_533",
       "slug": "obi",
-      "unique_id": "nasarawa_obi"
+      "unique_slug": "nasarawa_obi"
     }
   },
   {
@@ -7655,7 +7654,7 @@
       "latlng_str": "8.252136,7.032097",
       "kml_id": "kml_id_493",
       "slug": "obi",
-      "unique_id": "benue_obi"
+      "unique_slug": "benue_obi"
     }
   },
   {
@@ -7669,7 +7668,7 @@
       "latlng_str": "7.489385,5.15862",
       "kml_id": "kml_id_393",
       "slug": "obi_nwa",
-      "unique_id": "abia_obi_nwa"
+      "unique_slug": "abia_obi_nwa"
     }
   },
   {
@@ -7683,7 +7682,7 @@
       "latlng_str": "6.998809,4.859179",
       "kml_id": "kml_id_146",
       "slug": "obio_akpor",
-      "unique_id": "rivers_obio_akpor"
+      "unique_slug": "rivers_obio_akpor"
     }
   },
   {
@@ -7697,7 +7696,7 @@
       "latlng_str": "4.750449,7.773371",
       "kml_id": "kml_id_102",
       "slug": "obokun",
-      "unique_id": "osun_obokun"
+      "unique_slug": "osun_obokun"
     }
   },
   {
@@ -7711,7 +7710,7 @@
       "latlng_str": "7.604317,5.246121",
       "kml_id": "kml_id_419",
       "slug": "obot_akara",
-      "unique_id": "akwa_ibom_obot_akara"
+      "unique_slug": "akwa_ibom_obot_akara"
     }
   },
   {
@@ -7725,7 +7724,7 @@
       "latlng_str": "7.36292,5.565679",
       "kml_id": "kml_id_409",
       "slug": "obowo",
-      "unique_id": "imo_obowo"
+      "unique_slug": "imo_obowo"
     }
   },
   {
@@ -7739,7 +7738,7 @@
       "latlng_str": "8.387838,6.005728",
       "kml_id": "kml_id_456",
       "slug": "obubra",
-      "unique_id": "cross_river_obubra"
+      "unique_slug": "cross_river_obubra"
     }
   },
   {
@@ -7753,7 +7752,7 @@
       "latlng_str": "9.060964,6.575658",
       "kml_id": "kml_id_518",
       "slug": "obudu",
-      "unique_id": "cross_river_obudu"
+      "unique_slug": "cross_river_obudu"
     }
   },
   {
@@ -7767,7 +7766,7 @@
       "latlng_str": "3.490721,7.345138",
       "kml_id": "kml_id_57",
       "slug": "odeda",
-      "unique_id": "ogun_odeda"
+      "unique_slug": "ogun_odeda"
     }
   },
   {
@@ -7781,7 +7780,7 @@
       "latlng_str": "4.689643,6.725177",
       "kml_id": "kml_id_48",
       "slug": "odigbo",
-      "unique_id": "ondo_odigbo"
+      "unique_slug": "ondo_odigbo"
     }
   },
   {
@@ -7795,7 +7794,7 @@
       "latlng_str": "3.808824,6.791898",
       "kml_id": "kml_id_4",
       "slug": "odogbolu",
-      "unique_id": "ogun_odogbolu"
+      "unique_slug": "ogun_odogbolu"
     }
   },
   {
@@ -7809,7 +7808,7 @@
       "latlng_str": "4.667267,8.013239",
       "kml_id": "kml_id_271",
       "slug": "odo_otin",
-      "unique_id": "osun_odo_otin"
+      "unique_slug": "osun_odo_otin"
     }
   },
   {
@@ -7823,7 +7822,7 @@
       "latlng_str": "8.072745,5.244413",
       "kml_id": "kml_id_435",
       "slug": "odukpani",
-      "unique_id": "cross_river_odukpani"
+      "unique_slug": "cross_river_odukpani"
     }
   },
   {
@@ -7837,7 +7836,7 @@
       "latlng_str": "4.685971,8.155122",
       "kml_id": "kml_id_276",
       "slug": "offa",
-      "unique_id": "kwara_offa"
+      "unique_slug": "kwara_offa"
     }
   },
   {
@@ -7851,7 +7850,7 @@
       "latlng_str": "7.066756,7.325968",
       "kml_id": "kml_id_247",
       "slug": "ofu",
-      "unique_id": "kogi_ofu"
+      "unique_slug": "kogi_ofu"
     }
   },
   {
@@ -7865,7 +7864,7 @@
       "latlng_str": "6.633015,5.419258",
       "kml_id": "kml_id_141",
       "slug": "ogba_egbema_ndoni",
-      "unique_id": "rivers_ogba_egbema_ndoni"
+      "unique_slug": "rivers_ogba_egbema_ndoni"
     }
   },
   {
@@ -7879,7 +7878,7 @@
       "latlng_str": "7.67208,7.002984",
       "kml_id": "kml_id_479",
       "slug": "ogbadibo",
-      "unique_id": "benue_ogbadibo"
+      "unique_slug": "benue_ogbadibo"
     }
   },
   {
@@ -7893,7 +7892,7 @@
       "latlng_str": "6.745908,5.897485",
       "kml_id": "kml_id_163",
       "slug": "ogbaru",
-      "unique_id": "anambra_ogbaru"
+      "unique_slug": "anambra_ogbaru"
     }
   },
   {
@@ -7907,7 +7906,7 @@
       "latlng_str": "6.336729,4.789246",
       "kml_id": "kml_id_125",
       "slug": "ogbia",
-      "unique_id": "bayelsa_ogbia"
+      "unique_slug": "bayelsa_ogbia"
     }
   },
   {
@@ -7921,7 +7920,7 @@
       "latlng_str": "4.278788,8.147253",
       "kml_id": "kml_id_260",
       "slug": "ogbomoso_north",
-      "unique_id": "oyo_ogbomoso_north"
+      "unique_slug": "oyo_ogbomoso_north"
     }
   },
   {
@@ -7935,7 +7934,7 @@
       "latlng_str": "4.242775,8.077669",
       "kml_id": "kml_id_259",
       "slug": "ogbomoso_south",
-      "unique_id": "oyo_ogbomoso_south"
+      "unique_slug": "oyo_ogbomoso_south"
     }
   },
   {
@@ -7949,7 +7948,7 @@
       "latlng_str": "7.186477,4.682904",
       "kml_id": "kml_id_157",
       "slug": "ogo_bolo",
-      "unique_id": "rivers_ogo_bolo"
+      "unique_slug": "rivers_ogo_bolo"
     }
   },
   {
@@ -7963,7 +7962,7 @@
       "latlng_str": "8.729137,6.520712",
       "kml_id": "kml_id_514",
       "slug": "ogoja",
-      "unique_id": "cross_river_ogoja"
+      "unique_slug": "cross_river_ogoja"
     }
   },
   {
@@ -7977,7 +7976,7 @@
       "latlng_str": "4.248474,7.929876",
       "kml_id": "kml_id_258",
       "slug": "ogo_oluwa",
-      "unique_id": "oyo_ogo_oluwa"
+      "unique_slug": "oyo_ogo_oluwa"
     }
   },
   {
@@ -7991,7 +7990,7 @@
       "latlng_str": "6.157582,7.473554",
       "kml_id": "kml_id_211",
       "slug": "ogori_magongo",
-      "unique_id": "kogi_ogori_magongo"
+      "unique_slug": "kogi_ogori_magongo"
     }
   },
   {
@@ -8005,7 +8004,7 @@
       "latlng_str": "4.421252,6.482246",
       "kml_id": "kml_id_43",
       "slug": "ogun_waterside",
-      "unique_id": "ogun_ogun_waterside"
+      "unique_slug": "ogun_ogun_waterside"
     }
   },
   {
@@ -8019,7 +8018,7 @@
       "latlng_str": "6.823609,5.663035",
       "kml_id": "kml_id_164",
       "slug": "oguta",
-      "unique_id": "imo_oguta"
+      "unique_slug": "imo_oguta"
     }
   },
   {
@@ -8033,7 +8032,7 @@
       "latlng_str": "7.80262,5.666111",
       "kml_id": "kml_id_448",
       "slug": "ohafia",
-      "unique_id": "abia_ohafia"
+      "unique_slug": "abia_ohafia"
     }
   },
   {
@@ -8047,7 +8046,7 @@
       "latlng_str": "6.864033,5.418513",
       "kml_id": "kml_id_150",
       "slug": "ohaji_egbema",
-      "unique_id": "imo_ohaji_egbema"
+      "unique_slug": "imo_ohaji_egbema"
     }
   },
   {
@@ -8061,7 +8060,7 @@
       "latlng_str": "7.792841,5.985604",
       "kml_id": "kml_id_468",
       "slug": "ohaozara",
-      "unique_id": "ebonyi_ohaozara"
+      "unique_slug": "ebonyi_ohaozara"
     }
   },
   {
@@ -8075,7 +8074,7 @@
       "latlng_str": "8.015618,6.528134",
       "kml_id": "kml_id_483",
       "slug": "ohaukwu",
-      "unique_id": "ebonyi_ohaukwu"
+      "unique_slug": "ebonyi_ohaukwu"
     }
   },
   {
@@ -8089,7 +8088,7 @@
       "latlng_str": "7.963137,7.25694",
       "kml_id": "kml_id_482",
       "slug": "ohimini",
-      "unique_id": "benue_ohimini"
+      "unique_slug": "benue_ohimini"
     }
   },
   {
@@ -8103,7 +8102,7 @@
       "latlng_str": "6.04207,6.130614",
       "kml_id": "kml_id_138",
       "slug": "ohionmwon",
-      "unique_id": "edo_ohionmwon"
+      "unique_slug": "edo_ohionmwon"
     }
   },
   {
@@ -8117,7 +8116,7 @@
       "latlng_str": "7.274712,6.173976",
       "kml_id": "kml_id_234",
       "slug": "oji_river",
-      "unique_id": "enugu_oji_river"
+      "unique_slug": "enugu_oji_river"
     }
   },
   {
@@ -8131,7 +8130,7 @@
       "latlng_str": "3.152729,6.464255",
       "kml_id": "kml_id_7",
       "slug": "ojo",
-      "unique_id": "lagos_ojo"
+      "unique_slug": "lagos_ojo"
     }
   },
   {
@@ -8145,7 +8144,7 @@
       "latlng_str": "8.405834,6.828675",
       "kml_id": "kml_id_492",
       "slug": "oju",
-      "unique_id": "benue_oju"
+      "unique_slug": "benue_oju"
     }
   },
   {
@@ -8159,7 +8158,7 @@
       "latlng_str": "6.327566,7.737636",
       "kml_id": "kml_id_216",
       "slug": "okehi",
-      "unique_id": "kogi_okehi"
+      "unique_slug": "kogi_okehi"
     }
   },
   {
@@ -8173,7 +8172,7 @@
       "latlng_str": "6.321265,7.470214",
       "kml_id": "kml_id_214",
       "slug": "okene",
-      "unique_id": "kogi_okene"
+      "unique_slug": "kogi_okene"
     }
   },
   {
@@ -8187,7 +8186,7 @@
       "latlng_str": "5.240769,8.181605",
       "kml_id": "kml_id_282",
       "slug": "oke_ero",
-      "unique_id": "kwara_oke_ero"
+      "unique_slug": "kwara_oke_ero"
     }
   },
   {
@@ -8201,7 +8200,7 @@
       "latlng_str": "7.318904,5.835356",
       "kml_id": "kml_id_416",
       "slug": "okigwe",
-      "unique_id": "imo_okigwe"
+      "unique_slug": "imo_okigwe"
     }
   },
   {
@@ -8215,7 +8214,7 @@
       "latlng_str": "4.712181,6.550479",
       "kml_id": "kml_id_49",
       "slug": "okitipupa",
-      "unique_id": "ondo_okitipupa"
+      "unique_slug": "ondo_okitipupa"
     }
   },
   {
@@ -8229,7 +8228,7 @@
       "latlng_str": "8.120985,4.805902",
       "kml_id": "kml_id_436",
       "slug": "okobo",
-      "unique_id": "akwa_ibom_okobo"
+      "unique_slug": "akwa_ibom_okobo"
     }
   },
   {
@@ -8243,7 +8242,7 @@
       "latlng_str": "5.811245,5.709951",
       "kml_id": "kml_id_137",
       "slug": "okpe",
-      "unique_id": "delta_okpe"
+      "unique_slug": "delta_okpe"
     }
   },
   {
@@ -8257,7 +8256,7 @@
       "latlng_str": "7.120072,4.699972",
       "kml_id": "kml_id_154",
       "slug": "okrika",
-      "unique_id": "rivers_okrika"
+      "unique_slug": "rivers_okrika"
     }
   },
   {
@@ -8271,7 +8270,7 @@
       "latlng_str": "7.518174,7.189606",
       "kml_id": "kml_id_472",
       "slug": "olamabolo",
-      "unique_id": "kogi_olamabolo"
+      "unique_slug": "kogi_olamabolo"
     }
   },
   {
@@ -8285,7 +8284,7 @@
       "latlng_str": "4.206835,7.743908",
       "kml_id": "kml_id_81",
       "slug": "ola_oluwa",
-      "unique_id": "osun_ola_oluwa"
+      "unique_slug": "osun_ola_oluwa"
     }
   },
   {
@@ -8299,7 +8298,7 @@
       "latlng_str": "4.564054,7.869327",
       "kml_id": "kml_id_103",
       "slug": "olorunda",
-      "unique_id": "osun_olorunda"
+      "unique_slug": "osun_olorunda"
     }
   },
   {
@@ -8313,7 +8312,7 @@
       "latlng_str": "4.102869,8.789334",
       "kml_id": "kml_id_266",
       "slug": "olorunsogo",
-      "unique_id": "oyo_olorunsogo"
+      "unique_slug": "oyo_olorunsogo"
     }
   },
   {
@@ -8327,7 +8326,7 @@
       "latlng_str": "3.867699,7.212426",
       "kml_id": "kml_id_62",
       "slug": "oluyole",
-      "unique_id": "oyo_oluyole"
+      "unique_slug": "oyo_oluyole"
     }
   },
   {
@@ -8341,7 +8340,7 @@
       "latlng_str": "7.534809,7.753645",
       "kml_id": "kml_id_475",
       "slug": "omala",
-      "unique_id": "kogi_omala"
+      "unique_slug": "kogi_omala"
     }
   },
   {
@@ -8355,7 +8354,7 @@
       "latlng_str": "7.235982,5.098983",
       "kml_id": "kml_id_0",
       "slug": "omuma",
-      "unique_id": "rivers_omuma"
+      "unique_slug": "rivers_omuma"
     }
   },
   {
@@ -8369,7 +8368,7 @@
       "latlng_str": "4.048611,7.240673",
       "kml_id": "kml_id_64",
       "slug": "ona_ara",
-      "unique_id": "oyo_ona_ara"
+      "unique_slug": "oyo_ona_ara"
     }
   },
   {
@@ -8383,7 +8382,7 @@
       "latlng_str": "4.951154,7.095376",
       "kml_id": "kml_id_53",
       "slug": "ondo_east",
-      "unique_id": "ondo_ondo_east"
+      "unique_slug": "ondo_ondo_east"
     }
   },
   {
@@ -8397,7 +8396,7 @@
       "latlng_str": "4.724858,7.028875",
       "kml_id": "kml_id_51",
       "slug": "ondo_west",
-      "unique_id": "ondo_ondo_west"
+      "unique_slug": "ondo_ondo_west"
     }
   },
   {
@@ -8411,7 +8410,7 @@
       "latlng_str": "7.890661,6.094689",
       "kml_id": "kml_id_457",
       "slug": "onicha",
-      "unique_id": "ebonyi_onicha"
+      "unique_slug": "ebonyi_onicha"
     }
   },
   {
@@ -8425,7 +8424,7 @@
       "latlng_str": "6.797417,6.159723",
       "kml_id": "kml_id_228",
       "slug": "onitsha_north",
-      "unique_id": "anambra_onitsha_north"
+      "unique_slug": "anambra_onitsha_north"
     }
   },
   {
@@ -8439,7 +8438,7 @@
       "latlng_str": "6.771822,6.136795",
       "kml_id": "kml_id_227",
       "slug": "onitsha",
-      "unique_id": "anambra_onitsha"
+      "unique_slug": "anambra_onitsha"
     }
   },
   {
@@ -8453,7 +8452,7 @@
       "latlng_str": "7.85956,4.643411",
       "kml_id": "kml_id_429",
       "slug": "onna",
-      "unique_id": "akwa_ibom_onna"
+      "unique_slug": "akwa_ibom_onna"
     }
   },
   {
@@ -8467,7 +8466,7 @@
       "latlng_str": "7.854691,7.01836",
       "kml_id": "kml_id_478",
       "slug": "okpokwu",
-      "unique_id": "benue_okpokwu"
+      "unique_slug": "benue_okpokwu"
     }
   },
   {
@@ -8481,7 +8480,7 @@
       "latlng_str": "7.500069,4.515315",
       "kml_id": "kml_id_403",
       "slug": "opobo_nkoro",
-      "unique_id": "rivers_opobo_nkoro"
+      "unique_slug": "rivers_opobo_nkoro"
     }
   },
   {
@@ -8495,7 +8494,7 @@
       "latlng_str": "5.565025,6.240471",
       "kml_id": "kml_id_189",
       "slug": "oredo",
-      "unique_id": "edo_oredo"
+      "unique_slug": "edo_oredo"
     }
   },
   {
@@ -8509,7 +8508,7 @@
       "latlng_str": "3.807412,8.803445",
       "kml_id": "kml_id_265",
       "slug": "orelope",
-      "unique_id": "oyo_orelope"
+      "unique_slug": "oyo_orelope"
     }
   },
   {
@@ -8523,7 +8522,7 @@
       "latlng_str": "4.88352,7.519026",
       "kml_id": "kml_id_85",
       "slug": "oriade",
-      "unique_id": "osun_oriade"
+      "unique_slug": "osun_oriade"
     }
   },
   {
@@ -8537,7 +8536,7 @@
       "latlng_str": "4.108262,8.296163",
       "kml_id": "kml_id_257",
       "slug": "oriire",
-      "unique_id": "oyo_oriire"
+      "unique_slug": "oyo_oriire"
     }
   },
   {
@@ -8551,7 +8550,7 @@
       "latlng_str": "7.040162,5.809346",
       "kml_id": "kml_id_177",
       "slug": "orlu",
-      "unique_id": "imo_orlu"
+      "unique_slug": "imo_orlu"
     }
   },
   {
@@ -8565,7 +8564,7 @@
       "latlng_str": "4.47296,7.901857",
       "kml_id": "kml_id_1",
       "slug": "orolu",
-      "unique_id": "osun_orolu"
+      "unique_slug": "osun_orolu"
     }
   },
   {
@@ -8579,7 +8578,7 @@
       "latlng_str": "8.234095,4.80656",
       "kml_id": "kml_id_443",
       "slug": "oron",
-      "unique_id": "akwa_ibom_oron"
+      "unique_slug": "akwa_ibom_oron"
     }
   },
   {
@@ -8593,7 +8592,7 @@
       "latlng_str": "6.97736,5.843589",
       "kml_id": "kml_id_169",
       "slug": "orsu",
-      "unique_id": "imo_orsu"
+      "unique_slug": "imo_orsu"
     }
   },
   {
@@ -8607,7 +8606,7 @@
       "latlng_str": "6.94003,5.729022",
       "kml_id": "kml_id_165",
       "slug": "oru_east",
-      "unique_id": "imo_oru_east"
+      "unique_slug": "imo_oru_east"
     }
   },
   {
@@ -8621,7 +8620,7 @@
       "latlng_str": "7.665812,4.810104",
       "kml_id": "kml_id_402",
       "slug": "oruk_anam",
-      "unique_id": "akwa_ibom_oruk_anam"
+      "unique_slug": "akwa_ibom_oruk_anam"
     }
   },
   {
@@ -8635,7 +8634,7 @@
       "latlng_str": "7.15763,6.095085",
       "kml_id": "kml_id_233",
       "slug": "orumba_north",
-      "unique_id": "anambra_orumba_north"
+      "unique_slug": "anambra_orumba_north"
     }
   },
   {
@@ -8649,7 +8648,7 @@
       "latlng_str": "7.225414,5.983694",
       "kml_id": "kml_id_184",
       "slug": "orumba_south",
-      "unique_id": "anambra_orumba_south"
+      "unique_slug": "anambra_orumba_south"
     }
   },
   {
@@ -8663,7 +8662,7 @@
       "latlng_str": "6.895868,5.757982",
       "kml_id": "kml_id_166",
       "slug": "oru_west",
-      "unique_id": "imo_oru_west"
+      "unique_slug": "imo_oru_west"
     }
   },
   {
@@ -8677,7 +8676,7 @@
       "latlng_str": "5.753949,7.083933",
       "kml_id": "kml_id_193",
       "slug": "ose",
-      "unique_id": "ondo_ose"
+      "unique_slug": "ondo_ose"
     }
   },
   {
@@ -8691,7 +8690,7 @@
       "latlng_str": "6.642338,6.305698",
       "kml_id": "kml_id_221",
       "slug": "oshimili_north",
-      "unique_id": "delta_oshimili_north"
+      "unique_slug": "delta_oshimili_north"
     }
   },
   {
@@ -8705,7 +8704,7 @@
       "latlng_str": "6.680504,6.102487",
       "kml_id": "kml_id_223",
       "slug": "oshimili_south",
-      "unique_id": "delta_oshimili_south"
+      "unique_slug": "delta_oshimili_south"
     }
   },
   {
@@ -8719,7 +8718,7 @@
       "latlng_str": "3.313235,6.534776",
       "kml_id": "kml_id_20",
       "slug": "oshodi_isolo",
-      "unique_id": "lagos_oshodi_isolo"
+      "unique_slug": "lagos_oshodi_isolo"
     }
   },
   {
@@ -8733,7 +8732,7 @@
       "latlng_str": "7.322307,5.180397",
       "kml_id": "kml_id_392",
       "slug": "osisioma_ngwa",
-      "unique_id": "abia_osisioma_ngwa"
+      "unique_slug": "abia_osisioma_ngwa"
     }
   },
   {
@@ -8747,7 +8746,7 @@
       "latlng_str": "4.564061,7.764345",
       "kml_id": "kml_id_97",
       "slug": "osogbo",
-      "unique_id": "osun_osogbo"
+      "unique_slug": "osun_osogbo"
     }
   },
   {
@@ -8761,7 +8760,7 @@
       "latlng_str": "8.065237,7.287661",
       "kml_id": "kml_id_487",
       "slug": "oturkpo",
-      "unique_id": "benue_oturkpo"
+      "unique_slug": "benue_oturkpo"
     }
   },
   {
@@ -8775,7 +8774,7 @@
       "latlng_str": "5.498644,6.421848",
       "kml_id": "kml_id_42",
       "slug": "ovia_north_east",
-      "unique_id": "edo_ovia_north_east"
+      "unique_slug": "edo_ovia_north_east"
     }
   },
   {
@@ -8789,7 +8788,7 @@
       "latlng_str": "5.25418,6.397716",
       "kml_id": "kml_id_36",
       "slug": "ovia_south_west",
-      "unique_id": "edo_ovia_south_west"
+      "unique_slug": "edo_ovia_south_west"
     }
   },
   {
@@ -8803,7 +8802,7 @@
       "latlng_str": "6.013331,7.072318",
       "kml_id": "kml_id_198",
       "slug": "owan_east",
-      "unique_id": "edo_owan_east"
+      "unique_slug": "edo_owan_east"
     }
   },
   {
@@ -8817,7 +8816,7 @@
       "latlng_str": "5.884823,6.919496",
       "kml_id": "kml_id_187",
       "slug": "owan_west",
-      "unique_id": "edo_owan_west"
+      "unique_slug": "edo_owan_west"
     }
   },
   {
@@ -8831,7 +8830,7 @@
       "latlng_str": "7.018646,5.477109",
       "kml_id": "kml_id_173",
       "slug": "owerri_municipal",
-      "unique_id": "imo_owerri_municipal"
+      "unique_slug": "imo_owerri_municipal"
     }
   },
   {
@@ -8845,7 +8844,7 @@
       "latlng_str": "7.081975,5.452974",
       "kml_id": "kml_id_172",
       "slug": "owerri_north",
-      "unique_id": "imo_owerri_north"
+      "unique_slug": "imo_owerri_north"
     }
   },
   {
@@ -8859,7 +8858,7 @@
       "latlng_str": "6.977041,5.428401",
       "kml_id": "kml_id_145",
       "slug": "owerri_west",
-      "unique_id": "imo_owerri_west"
+      "unique_slug": "imo_owerri_west"
     }
   },
   {
@@ -8873,7 +8872,7 @@
       "latlng_str": "5.55552,7.130211",
       "kml_id": "kml_id_192",
       "slug": "owo",
-      "unique_id": "ondo_owo"
+      "unique_slug": "ondo_owo"
     }
   },
   {
@@ -8887,7 +8886,7 @@
       "latlng_str": "5.348881,7.894247",
       "kml_id": "kml_id_113",
       "slug": "oye",
-      "unique_id": "ekiti_oye"
+      "unique_slug": "ekiti_oye"
     }
   },
   {
@@ -8901,7 +8900,7 @@
       "latlng_str": "6.901028,6.229963",
       "kml_id": "kml_id_237",
       "slug": "oyi",
-      "unique_id": "anambra_oyi"
+      "unique_slug": "anambra_oyi"
     }
   },
   {
@@ -8915,7 +8914,7 @@
       "latlng_str": "7.316547,4.842517",
       "kml_id": "kml_id_160",
       "slug": "oyigbo",
-      "unique_id": "rivers_oyigbo"
+      "unique_slug": "rivers_oyigbo"
     }
   },
   {
@@ -8929,7 +8928,7 @@
       "latlng_str": "3.784245,7.929932",
       "kml_id": "kml_id_79",
       "slug": "oyo",
-      "unique_id": "oyo_oyo"
+      "unique_slug": "oyo_oyo"
     }
   },
   {
@@ -8943,7 +8942,7 @@
       "latlng_str": "4.018487,7.869425",
       "kml_id": "kml_id_83",
       "slug": "oyo_east",
-      "unique_id": "oyo_oyo_east"
+      "unique_slug": "oyo_oyo_east"
     }
   },
   {
@@ -8957,7 +8956,7 @@
       "latlng_str": "4.671648,8.150043",
       "kml_id": "kml_id_275",
       "slug": "oyun",
-      "unique_id": "kwara_oyun"
+      "unique_slug": "kwara_oyun"
     }
   },
   {
@@ -8971,7 +8970,7 @@
       "latlng_str": "6.945177,9.492596",
       "kml_id": "kml_id_351",
       "slug": "paikoro",
-      "unique_id": "niger_paikoro"
+      "unique_slug": "niger_paikoro"
     }
   },
   {
@@ -8985,7 +8984,7 @@
       "latlng_str": "9.464596,9.285558",
       "kml_id": "kml_id_547",
       "slug": "pankshin",
-      "unique_id": "plateau_pankshin"
+      "unique_slug": "plateau_pankshin"
     }
   },
   {
@@ -8999,7 +8998,7 @@
       "latlng_str": "6.10051,5.180064",
       "kml_id": "kml_id_118",
       "slug": "patani",
-      "unique_id": "delta_patani"
+      "unique_slug": "delta_patani"
     }
   },
   {
@@ -9013,7 +9012,7 @@
       "latlng_str": "5.79468,8.643929",
       "kml_id": "kml_id_330",
       "slug": "patigi",
-      "unique_id": "kwara_patigi"
+      "unique_slug": "kwara_patigi"
     }
   },
   {
@@ -9027,7 +9026,7 @@
       "latlng_str": "7.015218,4.777617",
       "kml_id": "kml_id_155",
       "slug": "port_harcourt",
-      "unique_id": "rivers_port_harcourt"
+      "unique_slug": "rivers_port_harcourt"
     }
   },
   {
@@ -9041,7 +9040,7 @@
       "latlng_str": "11.157728,11.710193",
       "kml_id": "kml_id_738",
       "slug": "potiskum",
-      "unique_id": "yobe_potiskum"
+      "unique_slug": "yobe_potiskum"
     }
   },
   {
@@ -9055,7 +9054,7 @@
       "latlng_str": "9.156782,8.769973",
       "kml_id": "kml_id_542",
       "slug": "qua_an_pan",
-      "unique_id": "plateau_qua_an_pan"
+      "unique_slug": "plateau_qua_an_pan"
     }
   },
   {
@@ -9069,7 +9068,7 @@
       "latlng_str": "5.691709,13.006032",
       "kml_id": "kml_id_365",
       "slug": "rabah",
-      "unique_id": "sokoto_rabah"
+      "unique_slug": "sokoto_rabah"
     }
   },
   {
@@ -9083,7 +9082,7 @@
       "latlng_str": "6.270476,10.218445",
       "kml_id": "kml_id_340",
       "slug": "rafi",
-      "unique_id": "niger_rafi"
+      "unique_slug": "niger_rafi"
     }
   },
   {
@@ -9097,7 +9096,7 @@
       "latlng_str": "8.53374,11.488241",
       "kml_id": "kml_id_604",
       "slug": "rano",
-      "unique_id": "kano_rano"
+      "unique_slug": "kano_rano"
     }
   },
   {
@@ -9111,7 +9110,7 @@
       "latlng_str": "3.736254,7.014013",
       "kml_id": "kml_id_35",
       "slug": "remo_north",
-      "unique_id": "ogun_remo_north"
+      "unique_slug": "ogun_remo_north"
     }
   },
   {
@@ -9125,7 +9124,7 @@
       "latlng_str": "5.124889,11.116473",
       "kml_id": "kml_id_310",
       "slug": "rijau",
-      "unique_id": "niger_rijau"
+      "unique_slug": "niger_rijau"
     }
   },
   {
@@ -9139,7 +9138,7 @@
       "latlng_str": "7.70643,12.872336",
       "kml_id": "kml_id_632",
       "slug": "rimi",
-      "unique_id": "katsina_rimi"
+      "unique_slug": "katsina_rimi"
     }
   },
   {
@@ -9153,7 +9152,7 @@
       "latlng_str": "8.286844,11.935762",
       "kml_id": "kml_id_623",
       "slug": "rimin_gado",
-      "unique_id": "kano_rimin_gado"
+      "unique_slug": "kano_rimin_gado"
     }
   },
   {
@@ -9167,7 +9166,7 @@
       "latlng_str": "9.105025,12.152675",
       "kml_id": "kml_id_648",
       "slug": "ringim",
-      "unique_id": "jigawa_ringim"
+      "unique_slug": "jigawa_ringim"
     }
   },
   {
@@ -9181,7 +9180,7 @@
       "latlng_str": "8.703222,9.575293",
       "kml_id": "kml_id_591",
       "slug": "riyom",
-      "unique_id": "plateau_riyom"
+      "unique_slug": "plateau_riyom"
     }
   },
   {
@@ -9195,7 +9194,7 @@
       "latlng_str": "7.870783,11.507849",
       "kml_id": "kml_id_581",
       "slug": "rogo",
-      "unique_id": "kano_rogo"
+      "unique_slug": "kano_rogo"
     }
   },
   {
@@ -9209,7 +9208,7 @@
       "latlng_str": "8.321067,12.596755",
       "kml_id": "kml_id_642",
       "slug": "roni",
-      "unique_id": "jigawa_roni"
+      "unique_slug": "jigawa_roni"
     }
   },
   {
@@ -9223,7 +9222,7 @@
       "latlng_str": "6.25332,13.510937",
       "kml_id": "kml_id_370",
       "slug": "sabon_birni",
-      "unique_id": "sokoto_sabon_birni"
+      "unique_slug": "sokoto_sabon_birni"
     }
   },
   {
@@ -9237,7 +9236,7 @@
       "latlng_str": "7.682101,11.171447",
       "kml_id": "kml_id_575",
       "slug": "sabon_gari",
-      "unique_id": "kaduna_sabon_gari"
+      "unique_slug": "kaduna_sabon_gari"
     }
   },
   {
@@ -9251,7 +9250,7 @@
       "latlng_str": "7.067563,11.322234",
       "kml_id": "kml_id_375",
       "slug": "sabuwa",
-      "unique_id": "katsina_sabuwa"
+      "unique_slug": "katsina_sabuwa"
     }
   },
   {
@@ -9265,7 +9264,7 @@
       "latlng_str": "8.349077,12.899905",
       "kml_id": "kml_id_646",
       "slug": "safana",
-      "unique_id": "katsina_safana"
+      "unique_slug": "katsina_safana"
     }
   },
   {
@@ -9279,7 +9278,7 @@
       "latlng_str": "6.214882,5.146339",
       "kml_id": "kml_id_122",
       "slug": "sagbama",
-      "unique_id": "bayelsa_sagbama"
+      "unique_slug": "bayelsa_sagbama"
     }
   },
   {
@@ -9293,7 +9292,7 @@
       "latlng_str": "5.538966,11.15873",
       "kml_id": "kml_id_358",
       "slug": "sakaba",
-      "unique_id": "kebbi_sakaba"
+      "unique_slug": "kebbi_sakaba"
     }
   },
   {
@@ -9307,7 +9306,7 @@
       "latlng_str": "3.625884,8.63165",
       "kml_id": "kml_id_261",
       "slug": "saki_east",
-      "unique_id": "oyo_saki_east"
+      "unique_slug": "oyo_saki_east"
     }
   },
   {
@@ -9321,7 +9320,7 @@
       "latlng_str": "3.093998,8.570994",
       "kml_id": "kml_id_262",
       "slug": "saki_west",
-      "unique_id": "oyo_saki_west"
+      "unique_slug": "oyo_saki_west"
     }
   },
   {
@@ -9335,7 +9334,7 @@
       "latlng_str": "7.254925,12.473039",
       "kml_id": "kml_id_384",
       "slug": "sandamu",
-      "unique_id": "katsina_sandamu"
+      "unique_slug": "katsina_sandamu"
     }
   },
   {
@@ -9349,7 +9348,7 @@
       "latlng_str": "8.456682,9.224745",
       "kml_id": "kml_id_503",
       "slug": "sanga",
-      "unique_id": "kaduna_sanga"
+      "unique_slug": "kaduna_sanga"
     }
   },
   {
@@ -9363,7 +9362,7 @@
       "latlng_str": "5.629284,5.844953",
       "kml_id": "kml_id_136",
       "slug": "sapele",
-      "unique_id": "delta_sapele"
+      "unique_slug": "delta_sapele"
     }
   },
   {
@@ -9377,7 +9376,7 @@
       "latlng_str": "11.222335,6.905274",
       "kml_id": "kml_id_526",
       "slug": "sardauna",
-      "unique_id": "taraba_sardauna"
+      "unique_slug": "taraba_sardauna"
     }
   },
   {
@@ -9391,7 +9390,7 @@
       "latlng_str": "3.562302,6.787992",
       "kml_id": "kml_id_33",
       "slug": "shagamu",
-      "unique_id": "ogun_shagamu"
+      "unique_slug": "ogun_shagamu"
     }
   },
   {
@@ -9405,7 +9404,7 @@
       "latlng_str": "5.084518,12.540134",
       "kml_id": "kml_id_318",
       "slug": "shagari",
-      "unique_id": "sokoto_shagari"
+      "unique_slug": "sokoto_shagari"
     }
   },
   {
@@ -9419,7 +9418,7 @@
       "latlng_str": "4.726772,11.230074",
       "kml_id": "kml_id_295",
       "slug": "shanga",
-      "unique_id": "kebbi_shanga"
+      "unique_slug": "kebbi_shanga"
     }
   },
   {
@@ -9433,7 +9432,7 @@
       "latlng_str": "12.000323,10.186711",
       "kml_id": "kml_id_688",
       "slug": "shani",
-      "unique_id": "borno_shani"
+      "unique_slug": "borno_shani"
     }
   },
   {
@@ -9447,7 +9446,7 @@
       "latlng_str": "7.956466,12.091776",
       "kml_id": "kml_id_615",
       "slug": "shanono",
-      "unique_id": "kano_shanono"
+      "unique_slug": "kano_shanono"
     }
   },
   {
@@ -9461,7 +9460,7 @@
       "latlng_str": "12.163846,9.99934",
       "kml_id": "kml_id_714",
       "slug": "shelleng",
-      "unique_id": "adamawa_shelleng"
+      "unique_slug": "adamawa_shelleng"
     }
   },
   {
@@ -9475,7 +9474,7 @@
       "latlng_str": "9.509761,8.742623",
       "kml_id": "kml_id_545",
       "slug": "shendam",
-      "unique_id": "plateau_shendam"
+      "unique_slug": "plateau_shendam"
     }
   },
   {
@@ -9489,7 +9488,7 @@
       "latlng_str": "6.494,13.029899",
       "kml_id": "kml_id_383",
       "slug": "shinkafi",
-      "unique_id": "zamfara_shinkafi"
+      "unique_slug": "zamfara_shinkafi"
     }
   },
   {
@@ -9503,7 +9502,7 @@
       "latlng_str": "9.935419,11.44964",
       "kml_id": "kml_id_732",
       "slug": "shira",
-      "unique_id": "bauchi_shira"
+      "unique_slug": "bauchi_shira"
     }
   },
   {
@@ -9517,7 +9516,7 @@
       "latlng_str": "6.68798,10.158675",
       "kml_id": "kml_id_341",
       "slug": "shiroro",
-      "unique_id": "niger_shiroro"
+      "unique_slug": "niger_shiroro"
     }
   },
   {
@@ -9531,7 +9530,7 @@
       "latlng_str": "11.198805,9.671543",
       "kml_id": "kml_id_695",
       "slug": "shongom",
-      "unique_id": "gombe_shongom"
+      "unique_slug": "gombe_shongom"
     }
   },
   {
@@ -9545,7 +9544,7 @@
       "latlng_str": "3.388137,6.534787",
       "kml_id": "kml_id_23",
       "slug": "shomolu",
-      "unique_id": "lagos_shomolu"
+      "unique_slug": "lagos_shomolu"
     }
   },
   {
@@ -9559,7 +9558,7 @@
       "latlng_str": "4.81883,12.996196",
       "kml_id": "kml_id_319",
       "slug": "silame",
-      "unique_id": "sokoto_silame"
+      "unique_slug": "sokoto_silame"
     }
   },
   {
@@ -9573,7 +9572,7 @@
       "latlng_str": "7.956461,10.981584",
       "kml_id": "kml_id_574",
       "slug": "soba",
-      "unique_id": "kaduna_soba"
+      "unique_slug": "kaduna_soba"
     }
   },
   {
@@ -9587,7 +9586,7 @@
       "latlng_str": "5.226116,13.075126",
       "kml_id": "kml_id_322",
       "slug": "sokoto_north",
-      "unique_id": "sokoto_sokoto_north"
+      "unique_slug": "sokoto_sokoto_north"
     }
   },
   {
@@ -9601,7 +9600,7 @@
       "latlng_str": "5.237638,13.025602",
       "kml_id": "kml_id_250",
       "slug": "sokoto_south",
-      "unique_id": "sokoto_sokoto_south"
+      "unique_slug": "sokoto_sokoto_south"
     }
   },
   {
@@ -9615,7 +9614,7 @@
       "latlng_str": "12.644255,9.792946",
       "kml_id": "kml_id_711",
       "slug": "song",
-      "unique_id": "adamawa_song"
+      "unique_slug": "adamawa_song"
     }
   },
   {
@@ -9629,7 +9628,7 @@
       "latlng_str": "5.871975,4.706922",
       "kml_id": "kml_id_119",
       "slug": "southern_ijaw",
-      "unique_id": "bayelsa_southern_ijaw"
+      "unique_slug": "bayelsa_southern_ijaw"
     }
   },
   {
@@ -9643,7 +9642,7 @@
       "latlng_str": "7.193113,9.222061",
       "kml_id": "kml_id_354",
       "slug": "suleja",
-      "unique_id": "niger_suleja"
+      "unique_slug": "niger_suleja"
     }
   },
   {
@@ -9657,7 +9656,7 @@
       "latlng_str": "9.240734,12.634666",
       "kml_id": "kml_id_679",
       "slug": "sule_tankakar",
-      "unique_id": "jigawa_sule_tankakar"
+      "unique_slug": "jigawa_sule_tankakar"
     }
   },
   {
@@ -9671,7 +9670,7 @@
       "latlng_str": "8.947835,11.331867",
       "kml_id": "kml_id_602",
       "slug": "sumaila",
-      "unique_id": "kano_sumaila"
+      "unique_slug": "kano_sumaila"
     }
   },
   {
@@ -9685,7 +9684,7 @@
       "latlng_str": "4.054477,11.757615",
       "kml_id": "kml_id_292",
       "slug": "suru",
-      "unique_id": "kebbi_suru"
+      "unique_slug": "kebbi_suru"
     }
   },
   {
@@ -9699,7 +9698,7 @@
       "latlng_str": "4.414311,8.06448",
       "kml_id": "kml_id_272",
       "slug": "surulere",
-      "unique_id": "oyo_surulere"
+      "unique_slug": "oyo_surulere"
     }
   },
   {
@@ -9713,7 +9712,7 @@
       "latlng_str": "3.346365,6.490714",
       "kml_id": "kml_id_19",
       "slug": "surulere",
-      "unique_id": "lagos_surulere"
+      "unique_slug": "lagos_surulere"
     }
   },
   {
@@ -9727,7 +9726,7 @@
       "latlng_str": "7.27091,9.287605",
       "kml_id": "kml_id_568",
       "slug": "tafa",
-      "unique_id": "niger_tafa"
+      "unique_slug": "niger_tafa"
     }
   },
   {
@@ -9741,7 +9740,7 @@
       "latlng_str": "9.530534,9.817207",
       "kml_id": "kml_id_596",
       "slug": "tafawa_balewa",
-      "unique_id": "bauchi_tafawa_balewa"
+      "unique_slug": "bauchi_tafawa_balewa"
     }
   },
   {
@@ -9755,7 +9754,7 @@
       "latlng_str": "7.249565,4.765217",
       "kml_id": "kml_id_394",
       "slug": "tai",
-      "unique_id": "rivers_tai"
+      "unique_slug": "rivers_tai"
     }
   },
   {
@@ -9769,7 +9768,7 @@
       "latlng_str": "9.177574,11.494166",
       "kml_id": "kml_id_610",
       "slug": "takai",
-      "unique_id": "kano_takai"
+      "unique_slug": "kano_takai"
     }
   },
   {
@@ -9783,7 +9782,7 @@
       "latlng_str": "9.844602,7.020333",
       "kml_id": "kml_id_525",
       "slug": "takum",
-      "unique_id": "taraba_takum"
+      "unique_slug": "taraba_takum"
     }
   },
   {
@@ -9797,7 +9796,7 @@
       "latlng_str": "6.079706,12.412434",
       "kml_id": "kml_id_363",
       "slug": "talata_mafara",
-      "unique_id": "zamfara_talata_mafara"
+      "unique_slug": "zamfara_talata_mafara"
     }
   },
   {
@@ -9811,7 +9810,7 @@
       "latlng_str": "4.84004,12.41753",
       "kml_id": "kml_id_309",
       "slug": "tambuwal",
-      "unique_id": "sokoto_tambuwal"
+      "unique_slug": "sokoto_tambuwal"
     }
   },
   {
@@ -9825,7 +9824,7 @@
       "latlng_str": "4.982175,13.49993",
       "kml_id": "kml_id_321",
       "slug": "tangaza",
-      "unique_id": "sokoto_tangaza"
+      "unique_slug": "sokoto_tangaza"
     }
   },
   {
@@ -9839,7 +9838,7 @@
       "latlng_str": "8.54015,11.958883",
       "kml_id": "kml_id_659",
       "slug": "tarauni",
-      "unique_id": "kano_tarauni"
+      "unique_slug": "kano_tarauni"
     }
   },
   {
@@ -9853,7 +9852,7 @@
       "latlng_str": "8.820374,7.622709",
       "kml_id": "kml_id_534",
       "slug": "tarka",
-      "unique_id": "benue_tarka"
+      "unique_slug": "benue_tarka"
     }
   },
   {
@@ -9867,7 +9866,7 @@
       "latlng_str": "11.752715,12.236986",
       "kml_id": "kml_id_743",
       "slug": "tarmuwa",
-      "unique_id": "yobe_tarmuwa"
+      "unique_slug": "yobe_tarmuwa"
     }
   },
   {
@@ -9881,7 +9880,7 @@
       "latlng_str": "9.382007,12.289133",
       "kml_id": "kml_id_681",
       "slug": "taura",
-      "unique_id": "jigawa_taura"
+      "unique_slug": "jigawa_taura"
     }
   },
   {
@@ -9895,7 +9894,7 @@
       "latlng_str": "11.776006,7.959432",
       "kml_id": "kml_id_531",
       "slug": "teungo",
-      "unique_id": "adamawa_teungo"
+      "unique_slug": "adamawa_teungo"
     }
   },
   {
@@ -9909,7 +9908,7 @@
       "latlng_str": "8.328352,12.022379",
       "kml_id": "kml_id_629",
       "slug": "tofa",
-      "unique_id": "kano_tofa"
+      "unique_slug": "kano_tofa"
     }
   },
   {
@@ -9923,7 +9922,7 @@
       "latlng_str": "9.165688,10.335664",
       "kml_id": "kml_id_594",
       "slug": "toro",
-      "unique_id": "bauchi_toro"
+      "unique_slug": "bauchi_toro"
     }
   },
   {
@@ -9937,7 +9936,7 @@
       "latlng_str": "7.230147,8.283413",
       "kml_id": "kml_id_346",
       "slug": "toto",
-      "unique_id": "nasarawa_toto"
+      "unique_slug": "nasarawa_toto"
     }
   },
   {
@@ -9951,7 +9950,7 @@
       "latlng_str": "6.997313,11.841928",
       "kml_id": "kml_id_372",
       "slug": "tsafe",
-      "unique_id": "zamfara_tsafe"
+      "unique_slug": "zamfara_tsafe"
     }
   },
   {
@@ -9965,7 +9964,7 @@
       "latlng_str": "8.005145,12.266203",
       "kml_id": "kml_id_622",
       "slug": "tsanyawa",
-      "unique_id": "kano_tsanyawa"
+      "unique_slug": "kano_tsanyawa"
     }
   },
   {
@@ -9979,7 +9978,7 @@
       "latlng_str": "8.599931,11.238957",
       "kml_id": "kml_id_582",
       "slug": "tudun_wada",
-      "unique_id": "kano_tudun_wada"
+      "unique_slug": "kano_tudun_wada"
     }
   },
   {
@@ -9993,7 +9992,7 @@
       "latlng_str": "5.492292,12.481777",
       "kml_id": "kml_id_360",
       "slug": "tureta",
-      "unique_id": "sokoto_tureta"
+      "unique_slug": "sokoto_tureta"
     }
   },
   {
@@ -10007,7 +10006,7 @@
       "latlng_str": "7.559445,6.872585",
       "kml_id": "kml_id_471",
       "slug": "udenu",
-      "unique_id": "enugu_udenu"
+      "unique_slug": "enugu_udenu"
     }
   },
   {
@@ -10021,7 +10020,7 @@
       "latlng_str": "7.340046,6.438846",
       "kml_id": "kml_id_238",
       "slug": "udi",
-      "unique_id": "enugu_udi"
+      "unique_slug": "enugu_udi"
     }
   },
   {
@@ -10035,7 +10034,7 @@
       "latlng_str": "5.810617,5.500533",
       "kml_id": "kml_id_134",
       "slug": "udu",
-      "unique_id": "delta_udu"
+      "unique_slug": "delta_udu"
     }
   },
   {
@@ -10049,7 +10048,7 @@
       "latlng_str": "8.2579,4.749635",
       "kml_id": "kml_id_442",
       "slug": "udung_uko",
-      "unique_id": "akwa_ibom_udung_uko"
+      "unique_slug": "akwa_ibom_udung_uko"
     }
   },
   {
@@ -10063,7 +10062,7 @@
       "latlng_str": "6.024191,5.530725",
       "kml_id": "kml_id_132",
       "slug": "ughelli_north",
-      "unique_id": "delta_ughelli_north"
+      "unique_slug": "delta_ughelli_north"
     }
   },
   {
@@ -10077,7 +10076,7 @@
       "latlng_str": "5.858762,5.339849",
       "kml_id": "kml_id_133",
       "slug": "ughelli_south",
-      "unique_id": "delta_ughelli_south"
+      "unique_slug": "delta_ughelli_south"
     }
   },
   {
@@ -10091,7 +10090,7 @@
       "latlng_str": "7.345325,5.02582",
       "kml_id": "kml_id_399",
       "slug": "ugwunagbo",
-      "unique_id": "abia_ugwunagbo"
+      "unique_slug": "abia_ugwunagbo"
     }
   },
   {
@@ -10105,7 +10104,7 @@
       "latlng_str": "5.905751,6.502731",
       "kml_id": "kml_id_191",
       "slug": "uhunmwonde",
-      "unique_id": "edo_uhunmwonde"
+      "unique_slug": "edo_uhunmwonde"
     }
   },
   {
@@ -10119,7 +10118,7 @@
       "latlng_str": "7.630594,4.909987",
       "kml_id": "kml_id_405",
       "slug": "ukanafun",
-      "unique_id": "akwa_ibom_ukanafun"
+      "unique_slug": "akwa_ibom_ukanafun"
     }
   },
   {
@@ -10133,7 +10132,7 @@
       "latlng_str": "9.562374,7.612766",
       "kml_id": "kml_id_529",
       "slug": "ukum",
-      "unique_id": "benue_ukum"
+      "unique_slug": "benue_ukum"
     }
   },
   {
@@ -10147,7 +10146,7 @@
       "latlng_str": "7.457423,4.933172",
       "kml_id": "kml_id_400",
       "slug": "ukwa_east",
-      "unique_id": "abia_ukwa_east"
+      "unique_slug": "abia_ukwa_east"
     }
   },
   {
@@ -10161,7 +10160,7 @@
       "latlng_str": "7.257284,4.965125",
       "kml_id": "kml_id_161",
       "slug": "ukwa_west",
-      "unique_id": "abia_ukwa_west"
+      "unique_slug": "abia_ukwa_west"
     }
   },
   {
@@ -10175,7 +10174,7 @@
       "latlng_str": "6.243279,5.826746",
       "kml_id": "kml_id_143",
       "slug": "ukwuani",
-      "unique_id": "delta_ukwuani"
+      "unique_slug": "delta_ukwuani"
     }
   },
   {
@@ -10189,7 +10188,7 @@
       "latlng_str": "7.442976,5.624336",
       "kml_id": "kml_id_422",
       "slug": "umuahia_north",
-      "unique_id": "abia_umuahia_north"
+      "unique_slug": "abia_umuahia_north"
     }
   },
   {
@@ -10203,7 +10202,7 @@
       "latlng_str": "7.428368,5.506427",
       "kml_id": "kml_id_421",
       "slug": "umuahia_south",
-      "unique_id": "abia_umuahia_south"
+      "unique_slug": "abia_umuahia_south"
     }
   },
   {
@@ -10217,7 +10216,7 @@
       "latlng_str": "7.370625,5.948279",
       "kml_id": "kml_id_461",
       "slug": "umu_neochi",
-      "unique_id": "abia_umu_neochi"
+      "unique_slug": "abia_umu_neochi"
     }
   },
   {
@@ -10231,7 +10230,7 @@
       "latlng_str": "8.541744,12.045578",
       "kml_id": "kml_id_656",
       "slug": "ungogo",
-      "unique_id": "kano_ungogo"
+      "unique_slug": "kano_ungogo"
     }
   },
   {
@@ -10245,7 +10244,7 @@
       "latlng_str": "7.224924,5.787075",
       "kml_id": "kml_id_415",
       "slug": "unuimo",
-      "unique_id": "imo_unuimo"
+      "unique_slug": "imo_unuimo"
     }
   },
   {
@@ -10259,7 +10258,7 @@
       "latlng_str": "8.03429,5.004956",
       "kml_id": "kml_id_441",
       "slug": "uruan",
-      "unique_id": "akwa_ibom_uruan"
+      "unique_slug": "akwa_ibom_uruan"
     }
   },
   {
@@ -10273,7 +10272,7 @@
       "latlng_str": "8.182173,4.724601",
       "kml_id": "kml_id_439",
       "slug": "urue_offong_oruko",
-      "unique_id": "akwa_ibom_urue_offong_oruko"
+      "unique_slug": "akwa_ibom_urue_offong_oruko"
     }
   },
   {
@@ -10287,7 +10286,7 @@
       "latlng_str": "9.070146,7.108827",
       "kml_id": "kml_id_521",
       "slug": "ushongo",
-      "unique_id": "benue_ushongo"
+      "unique_slug": "benue_ushongo"
     }
   },
   {
@@ -10301,7 +10300,7 @@
       "latlng_str": "10.071336,7.099225",
       "kml_id": "kml_id_524",
       "slug": "ussa",
-      "unique_id": "taraba_ussa"
+      "unique_slug": "taraba_ussa"
     }
   },
   {
@@ -10315,7 +10314,7 @@
       "latlng_str": "5.804664,5.555183",
       "kml_id": "kml_id_130",
       "slug": "uvwie",
-      "unique_id": "delta_uvwie"
+      "unique_slug": "delta_uvwie"
     }
   },
   {
@@ -10329,7 +10328,7 @@
       "latlng_str": "7.879298,5.002046",
       "kml_id": "kml_id_434",
       "slug": "uyo",
-      "unique_id": "akwa_ibom_uyo"
+      "unique_slug": "akwa_ibom_uyo"
     }
   },
   {
@@ -10343,7 +10342,7 @@
       "latlng_str": "7.112339,6.711892",
       "kml_id": "kml_id_245",
       "slug": "uzo_uwani",
-      "unique_id": "enugu_uzo_uwani"
+      "unique_slug": "enugu_uzo_uwani"
     }
   },
   {
@@ -10357,7 +10356,7 @@
       "latlng_str": "9.01605,6.799541",
       "kml_id": "kml_id_517",
       "slug": "vandeikya",
-      "unique_id": "benue_vandeikya"
+      "unique_slug": "benue_vandeikya"
     }
   },
   {
@@ -10371,7 +10370,7 @@
       "latlng_str": "5.109806,13.060401",
       "kml_id": "kml_id_316",
       "slug": "wammako",
-      "unique_id": "sokoto_wammako"
+      "unique_slug": "sokoto_wammako"
     }
   },
   {
@@ -10385,7 +10384,7 @@
       "latlng_str": "8.689209,8.997362",
       "kml_id": "kml_id_543",
       "slug": "wamba",
-      "unique_id": "nasarawa_wamba"
+      "unique_slug": "nasarawa_wamba"
     }
   },
   {
@@ -10399,7 +10398,7 @@
       "latlng_str": "8.742874,11.920265",
       "kml_id": "kml_id_650",
       "slug": "warawa",
-      "unique_id": "kano_warawa"
+      "unique_slug": "kano_warawa"
     }
   },
   {
@@ -10413,7 +10412,7 @@
       "latlng_str": "9.777466,11.19583",
       "kml_id": "kml_id_611",
       "slug": "warji",
-      "unique_id": "bauchi_warji"
+      "unique_slug": "bauchi_warji"
     }
   },
   {
@@ -10427,7 +10426,7 @@
       "latlng_str": "5.305713,5.965564",
       "kml_id": "kml_id_41",
       "slug": "warri_north",
-      "unique_id": "delta_warri_north"
+      "unique_slug": "delta_warri_north"
     }
   },
   {
@@ -10441,7 +10440,7 @@
       "latlng_str": "5.60146,5.670791",
       "kml_id": "kml_id_131",
       "slug": "warri_south",
-      "unique_id": "delta_warri_south"
+      "unique_slug": "delta_warri_south"
     }
   },
   {
@@ -10455,7 +10454,7 @@
       "latlng_str": "5.460939,5.571075",
       "kml_id": "kml_id_39",
       "slug": "warri_south_west",
-      "unique_id": "delta_warri_south_west"
+      "unique_slug": "delta_warri_south_west"
     }
   },
   {
@@ -10469,7 +10468,7 @@
       "latlng_str": "5.217147,11.681703",
       "kml_id": "kml_id_312",
       "slug": "wasagu_danko",
-      "unique_id": "kebbi_wasagu_danko"
+      "unique_slug": "kebbi_wasagu_danko"
     }
   },
   {
@@ -10483,7 +10482,7 @@
       "latlng_str": "10.169483,9.020517",
       "kml_id": "kml_id_555",
       "slug": "wase",
-      "unique_id": "plateau_wase"
+      "unique_slug": "plateau_wase"
     }
   },
   {
@@ -10497,7 +10496,7 @@
       "latlng_str": "8.87889,11.738536",
       "kml_id": "kml_id_664",
       "slug": "wudil",
-      "unique_id": "kano_wudil"
+      "unique_slug": "kano_wudil"
     }
   },
   {
@@ -10511,7 +10510,7 @@
       "latlng_str": "9.860493,8.001422",
       "kml_id": "kml_id_538",
       "slug": "wukari",
-      "unique_id": "taraba_wukari"
+      "unique_slug": "taraba_wukari"
     }
   },
   {
@@ -10525,7 +10524,7 @@
       "latlng_str": "5.528834,13.260402",
       "kml_id": "kml_id_367",
       "slug": "wurno",
-      "unique_id": "sokoto_wurno"
+      "unique_slug": "sokoto_wurno"
     }
   },
   {
@@ -10539,7 +10538,7 @@
       "latlng_str": "5.990394,9.680701",
       "kml_id": "kml_id_336",
       "slug": "wushishi",
-      "unique_id": "niger_wushishi"
+      "unique_slug": "niger_wushishi"
     }
   },
   {
@@ -10553,7 +10552,7 @@
       "latlng_str": "4.951731,12.807916",
       "kml_id": "kml_id_317",
       "slug": "yabo",
-      "unique_id": "sokoto_yabo"
+      "unique_slug": "sokoto_yabo"
     }
   },
   {
@@ -10567,7 +10566,7 @@
       "latlng_str": "5.76798,8.143624",
       "kml_id": "kml_id_210",
       "slug": "yagba_east",
-      "unique_id": "kogi_yagba_east"
+      "unique_slug": "kogi_yagba_east"
     }
   },
   {
@@ -10581,7 +10580,7 @@
       "latlng_str": "5.515458,8.26159",
       "kml_id": "kml_id_331",
       "slug": "yagba_west",
-      "unique_id": "kogi_yagba_west"
+      "unique_slug": "kogi_yagba_west"
     }
   },
   {
@@ -10595,7 +10594,7 @@
       "latlng_str": "8.183385,5.814",
       "kml_id": "kml_id_455",
       "slug": "yakurr",
-      "unique_id": "cross_river_yakurr"
+      "unique_slug": "cross_river_yakurr"
     }
   },
   {
@@ -10609,7 +10608,7 @@
       "latlng_str": "8.563901,6.623098",
       "kml_id": "kml_id_515",
       "slug": "yala",
-      "unique_id": "cross_river_yala"
+      "unique_slug": "cross_river_yala"
     }
   },
   {
@@ -10623,7 +10622,7 @@
       "latlng_str": "11.507275,10.283209",
       "kml_id": "kml_id_689",
       "slug": "yalmatu_deba",
-      "unique_id": "gombe_yalmatu_deba"
+      "unique_slug": "gombe_yalmatu_deba"
     }
   },
   {
@@ -10637,7 +10636,7 @@
       "latlng_str": "8.514027,12.739176",
       "kml_id": "kml_id_677",
       "slug": "yankwashi",
-      "unique_id": "jigawa_yankwashi"
+      "unique_slug": "jigawa_yankwashi"
     }
   },
   {
@@ -10651,7 +10650,7 @@
       "latlng_str": "4.53564,10.975969",
       "kml_id": "kml_id_296",
       "slug": "yauri",
-      "unique_id": "kebbi_yauri"
+      "unique_slug": "kebbi_yauri"
     }
   },
   {
@@ -10665,7 +10664,7 @@
       "latlng_str": "6.380078,5.070742",
       "kml_id": "kml_id_126",
       "slug": "yenagoa",
-      "unique_id": "bayelsa_yenagoa"
+      "unique_slug": "bayelsa_yenagoa"
     }
   },
   {
@@ -10679,7 +10678,7 @@
       "latlng_str": "12.353024,9.236398",
       "kml_id": "kml_id_388",
       "slug": "yola_north",
-      "unique_id": "adamawa_yola_north"
+      "unique_slug": "adamawa_yola_north"
     }
   },
   {
@@ -10693,7 +10692,7 @@
       "latlng_str": "12.408301,9.259342",
       "kml_id": "kml_id_716",
       "slug": "yola_south",
-      "unique_id": "adamawa_yola_south"
+      "unique_slug": "adamawa_yola_south"
     }
   },
   {
@@ -10707,7 +10706,7 @@
       "latlng_str": "11.568351,8.899974",
       "kml_id": "kml_id_558",
       "slug": "yorro",
-      "unique_id": "taraba_yorro"
+      "unique_slug": "taraba_yorro"
     }
   },
   {
@@ -10721,7 +10720,7 @@
       "latlng_str": "11.928897,13.069955",
       "kml_id": "kml_id_729",
       "slug": "yunusari",
-      "unique_id": "yobe_yunusari"
+      "unique_slug": "yobe_yunusari"
     }
   },
   {
@@ -10735,7 +10734,7 @@
       "latlng_str": "10.856958,13.099238",
       "kml_id": "kml_id_752",
       "slug": "yusufari",
-      "unique_id": "yobe_yusufari"
+      "unique_slug": "yobe_yusufari"
     }
   },
   {
@@ -10749,7 +10748,7 @@
       "latlng_str": "10.387429,12.325285",
       "kml_id": "kml_id_737",
       "slug": "zakki",
-      "unique_id": "bauchi_zakki"
+      "unique_slug": "bauchi_zakki"
     }
   },
   {
@@ -10763,7 +10762,7 @@
       "latlng_str": "8.544796,12.931442",
       "kml_id": "kml_id_676",
       "slug": "zango",
-      "unique_id": "katsina_zango"
+      "unique_slug": "katsina_zango"
     }
   },
   {
@@ -10777,7 +10776,7 @@
       "latlng_str": "8.237498,9.810058",
       "kml_id": "kml_id_570",
       "slug": "zangon_kataf",
-      "unique_id": "kaduna_zangon_kataf"
+      "unique_slug": "kaduna_zangon_kataf"
     }
   },
   {
@@ -10791,7 +10790,7 @@
       "latlng_str": "7.710241,11.053071",
       "kml_id": "kml_id_577",
       "slug": "zaria",
-      "unique_id": "kaduna_zaria"
+      "unique_slug": "kaduna_zaria"
     }
   },
   {
@@ -10805,7 +10804,7 @@
       "latlng_str": "11.721507,8.901799",
       "kml_id": "kml_id_557",
       "slug": "zing",
-      "unique_id": "taraba_zing"
+      "unique_slug": "taraba_zing"
     }
   },
   {
@@ -10819,7 +10818,7 @@
       "latlng_str": "6.782567,12.875592",
       "kml_id": "kml_id_381",
       "slug": "zurmi",
-      "unique_id": "zamfara_zurmi"
+      "unique_slug": "zamfara_zurmi"
     }
   },
   {
@@ -10833,7 +10832,7 @@
       "latlng_str": "5.282267,11.475443",
       "kml_id": "kml_id_315",
       "slug": "zuru",
-      "unique_id": "kebbi_zuru"
+      "unique_slug": "kebbi_zuru"
     }
   }
 ]
