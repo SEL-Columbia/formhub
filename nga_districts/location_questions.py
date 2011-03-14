@@ -16,7 +16,7 @@ def select_zone():
 
 def select_state(zone):
     result = SelectOneQuestion(label=u"State", name=u"state_in_%s" % zone.slug)
-    result.set(Question.BIND, {u"relevant" : u"zone='%s'" % zone.slug})
+    result.set(Question.BIND, {u"relevant" : u"${zone}='%s'" % zone.slug})
     qs = State.get_phase2_query_set().filter(zone=zone).order_by("name")
     for state in qs:
         result.add_choice(label=state.name, value=state.slug)
@@ -27,7 +27,7 @@ def select_state_questions():
 
 def select_lga(state):
     result = SelectOneQuestion(label=u"LGA", name=u"lga_in_%s" % state.slug)
-    result.set(Question.BIND, {u"relevant" : u"state_in_%(zone)s='%(state)s'" % {u"zone" : state.zone.slug, u"state" : state.slug}})
+    result.set(Question.BIND, {u"relevant" : u"${state_in_%(zone)s}='%(state)s'" % {u"zone" : state.zone.slug, u"state" : state.slug}})
     qs = LGA.get_phase2_query_set().filter(state=state).order_by("name")
     for lga in qs:
         result.add_choice(label=lga.name, value=lga.slug)
@@ -38,6 +38,7 @@ def select_lga_questions():
 
 def select_zone_state_lga():
     survey = Survey()
+    survey.set(u"type", u"survey")
     questions = [select_zone()] + \
         select_state_questions() + \
         select_lga_questions()
