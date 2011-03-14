@@ -4,6 +4,7 @@
 from django.core.management.base import BaseCommand
 from pyxform.question import SelectOneQuestion, Question
 from pyxform.xls2json import print_pyobj_to_json
+from pyxform.survey import Survey
 from models import Zone, State, LGA
 
 def select_zone():
@@ -36,8 +37,11 @@ def select_lga_questions():
     return [select_lga(state) for state in State.get_phase2_query_set()]
 
 def select_zone_state_lga():
+    survey = Survey()
     questions = [select_zone()] + \
         select_state_questions() + \
         select_lga_questions()
-    pyobj = [q.to_dict() for q in questions]
+    for question in questions:
+        survey.add_child(question)
+    pyobj = survey.to_dict()
     print_pyobj_to_json(pyobj, "zone_state_lga.json")
