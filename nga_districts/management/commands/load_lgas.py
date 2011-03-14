@@ -3,8 +3,8 @@
 
 from django.core.management.base import BaseCommand
 from pyxform.xls2json import ExcelReader
-from lga_hack import models
 from django.conf import settings
+from nga_districts import models
 import os
 
 class Command(BaseCommand):
@@ -21,6 +21,14 @@ class Command(BaseCommand):
     ALLOWED_FIELDS = [u"id", u"name", u"scale_up"]
 
     def handle(self, *args, **kwargs):
+        print """
+        This is old code that should not be used. I wanted to hold
+        onto it because there are some alternate spellings in LGAs.xls
+        that might be useful. Instead you should call
+        python manage.py loaddata nga_districts/fixtures/*.json
+        """
+        return
+
         path = os.path.join(settings.PROJECT_ROOT, "lga_hack", "LGAs.xls")
         excel_reader = ExcelReader(path)
         zones_states_lgas = excel_reader.to_dict()
