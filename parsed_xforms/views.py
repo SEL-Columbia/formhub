@@ -195,7 +195,7 @@ def xforms_directory(request):
     return r.r()
 
 def homepage(request):
-    r = ViewPkgr(request, "homepage.html")
+    r = ViewPkgr(request, "xforms_directory.html")
     r.footer()
     r.ensure_logged_in()
     return r.r()
