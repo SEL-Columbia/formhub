@@ -96,15 +96,6 @@ def apache_restart():
     require('root', provided_by=('staging', 'production'))
     run('sudo apache2ctl restart')
 
-def patch_south():
-    """ fix incompatibility between django mongo kit and south """
-    import south
-    south_dir = south.__path__[0]
-    file_to_patch = os.path.join(south_dir, 'db', '__init__.py')
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    patch_file = os.path.join(current_dir, 'patches', 'south.db.__init__.patch')
-    print os.popen("patch %s < %s" % (file_to_patch, patch_file)).read()
-
 # I need to import all the phase one data
 # find /home/amarder/host/Desktop/Phone\ Data\ Phase\ I/ -name "???" -exec python manage.py import_instances '{}' \;
 
