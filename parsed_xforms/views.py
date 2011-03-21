@@ -211,22 +211,38 @@ def surveyor_list_dict(surveyor):
     d['district'] = "district-name-goes-here"
     d['number_of_submissions'] = ParsedInstance.objects.filter(surveyor__id=surveyor.id).count()
     all_submissions = ParsedInstance.objects.filter(surveyor__id=surveyor.id)
-    all_instances = [x.instance for x in all_submissions]
-    try:
-        most_recent_date = all_instances[0].date
-        for i in all_instances:
-            if most_recent_date > i.date: most_recent_date = i.date
+    all_submission_dates = [s.get_from_mongo().get(u'start', None) for s in all_submissions]
+
+    #if there are any dates...
+    if all_submission_dates:
+        most_recent_date = all_submission_dates[0]
+        for i in all_submission_dates:
+            if most_recent_date > i: most_recent_date = i
         d['most_recent_submission'] = most_recent_date
-    except IndexError, e:
+    else:
         d['most_recent_submission'] = "No submissions"
     return d
     
+STANDARD_DATE_DISPLAY = "%d-%m-%Y"
+
 def surveyor_profile_dict(surveyor):
     d = {'name': surveyor.name}
 #    d['district'] = surveyor.surveys.all()[0].district.name
-    d['registered_at'] = "I donno"
+    d['registered_at'] = "?"
     d['number_of_submissions'] = ParsedInstance.objects.filter(surveyor__id=surveyor.id).count()
-    d['most_recent_survey_date'] = "Yesterday"
+
+    #how should we query submissions?
+    d['most_recent_submissions'] = []
+    all_submissions = ParsedInstance.objects.filter(surveyor__id=surveyor.id)
+    all_submission_dates = [s.get_from_mongo().get(u'start', None) for s in all_submissions]
+    if all_submission_dates:
+        most_recent_date = all_submission_dates[0]
+        for i in all_submission_dates:
+            if most_recent_date > i: most_recent_date = i
+        d['most_recent_submission'] = most_recent_date
+    else:
+        d['most_recent_submission'] = "No submissions"
+    
     sts = []
     for st in SurveyType.objects.all():
         surveyor_st_count = ParsedInstance.objects.filter(surveyor__id=surveyor.id).count() #&& survey_type is st...
