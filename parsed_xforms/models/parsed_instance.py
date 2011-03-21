@@ -31,6 +31,9 @@ class ParsedInstance(models.Model):
     surveyor = models.ForeignKey(Surveyor, null=True)
     district = models.ForeignKey(District, null=True)
 
+    class Meta:
+        app_label = "parsed_xforms"
+
     def _set_phone(self, doc):
         self.phone, created = Phone.objects.get_or_create(imei=doc[tag.IMEI])
         

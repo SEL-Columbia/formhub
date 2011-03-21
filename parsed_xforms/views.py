@@ -16,7 +16,9 @@ import json
 import re
 from bson import json_util
 from . import utils, tag
-from .models import District, XForm, xform_instances, ParsedInstance, Instance
+from parsed_xforms.models import xform_instances, ParsedInstance
+from xform_manager.models import XForm, Instance
+from locations.models import District
 
 from view_pkgr import ViewPkgr
 
