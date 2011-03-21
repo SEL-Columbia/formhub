@@ -27,7 +27,7 @@ DATE = u"_date"
 class ParsedInstance(models.Model):
     # I should rename this model, maybe Survey
     instance = models.OneToOneField(Instance, related_name="parsed_instance")
-    phone = models.ForeignKey(Phone)
+    phone = models.ForeignKey(Phone, null=True)
     surveyor = models.ForeignKey(Surveyor, null=True)
     district = models.ForeignKey(District, null=True)
 
