@@ -210,7 +210,15 @@ def surveyor_list_dict(surveyor):
     #how do we find district?
     d['district'] = "district-name-goes-here"
     d['number_of_submissions'] = ParsedInstance.objects.filter(surveyor__id=surveyor.id).count()
-    d['most_recent_submission'] = "RecentSurveyTime" #? ParsedInstance.objects.filter(surveyor__id=surveyor.id)[0]
+    all_submissions = ParsedInstance.objects.filter(surveyor__id=surveyor.id)
+    all_instances = [x.instance for x in all_submissions]
+    try:
+        most_recent_date = all_instances[0].date
+        for i in all_instances:
+            if most_recent_date > i.date: most_recent_date = i.date
+        d['most_recent_submission'] = most_recent_date
+    except IndexError, e:
+        d['most_recent_submission'] = "No submissions"
     return d
     
 def surveyor_profile_dict(surveyor):
