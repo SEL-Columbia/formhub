@@ -20,15 +20,15 @@ class TestDistrictLinkage(TestCase):
     """
     This tests something.
     """
-    fixtures = ['lga.json']
+    fixtures = ['lga.json', 'state.json']
     
-    def test_xform_has_correct_fields(self):
+    def test_a_district_gets_assigned_properly(self):
         self.assertTrue(LGA.objects.count() > 0)
         xml = open(os.path.join(FIXTURES_DIR, "sample_southeast_ebonyi_izzi.xml")).read()
-        expected_district = LGA.objects.get(unique_slug="ebonyi_izzi")
+        expected_lga = LGA.objects.get(unique_slug="ebonyi_izzi")
         i = xm_models.Instance(xml=xml)
         i.save()
         pi = px_models.ParsedInstance.objects.get(instance__id=i.id)
         
-        self.assertTrue(pi.district != None)
-        self.assertEquals(pi.district.name, expected_district.name)
+        self.assertTrue(pi.lga != None)
+        self.assertEquals(pi.lga.name, expected_lga.name)

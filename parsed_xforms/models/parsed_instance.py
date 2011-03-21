@@ -24,12 +24,15 @@ DISTRICT_ID = u"_district_id"
 ATTACHMENTS = u"_attachments"
 DATE = u"_date"
 
+from nga_districts import models as nga_models
+
 class ParsedInstance(models.Model):
     # I should rename this model, maybe Survey
     instance = models.OneToOneField(Instance, related_name="parsed_instance")
     phone = models.ForeignKey(Phone, null=True)
     surveyor = models.ForeignKey(Surveyor, null=True)
     district = models.ForeignKey(District, null=True)
+    lga = models.ForeignKey(nga_models.LGA, null=True)
 
     class Meta:
         app_label = "parsed_xforms"
@@ -89,13 +92,21 @@ class ParsedInstance(models.Model):
         u'akoko_north_west' : 615,
         }
     def _set_district(self, doc):
-        self.district = None
-        for k in doc.keys():
-            if k==u"lga" and doc[k] in self.lgas_by_name:
-                self.district = District.objects.get(pk=self.lgas_by_name[doc[k]])
-            elif k in self.lgas_by_state.keys():
-                self.district = District.objects.get(pk=self.lgas_by_state[k])
-
+        zone_slug = doc.get(u'location/zone', None)
+        if not zone_slug: return None
+        
+        state_slug = doc.get(u'location/state_in_%s' % zone_slug, None)
+        if not state_slug: return None
+        
+        lga_slug = doc.get(u'location/lga_in_%s' % state_slug, None)
+        if not lga_slug: return None
+        
+        try:
+            state = nga_models.State.objects.get(slug=state_slug)
+            self.lga = state.lgas.get(slug=lga_slug)
+        except DoesNotExist, e:
+            return None
+    
     def get_from_mongo(self):
         result = xform_instances.find_one(self.id)
         if result: return result
