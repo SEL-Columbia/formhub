@@ -58,6 +58,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'nmis.urls'
 
+TEMPLATE_DEBUG=True
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, "base_templates/" )
 )
@@ -81,6 +82,12 @@ INSTALLED_APPS = (
     'xform_manager',
     'map_xforms',
     'submission_qr',
+    
+    #required for django-sentry
+    'indexer',
+    'paging',
+    'sentry',
+    'sentry.client',
 )
 
 # SEARCH ENGINE settings
