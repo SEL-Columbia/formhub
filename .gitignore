@@ -20,3 +20,6 @@ search_index
 
 #for a local virtualenv (as done in mangrove repo)
 ve/
+
+# file created by tests
+registration.xml
