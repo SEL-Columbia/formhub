@@ -36,37 +36,29 @@ class ParsedInstance(models.Model):
 
     def _set_phone(self, doc):
         self.phone, created = Phone.objects.get_or_create(imei=doc[tag.IMEI])
-        
-        # when a phone update comes in update the information about the phone
-        if doc[tag.INSTANCE_DOC_NAME]==PHONE_UPDATE:
-            d = {
-                "imei" : doc[tag.IMEI],
-                "status" : doc["status"],
-                "note" : doc["note"],
-                "visible_id" : doc["visible_id"],
-                "phone_number" : doc["phone_number"],
-                }
-            for k, v in d.items():
-                setattr(self.phone, k, v)
-            self.phone.save()
 
     @classmethod
     def get_survey_owner(cls, parsed_instance):
         # get all registrations for this phone that happened before
         # this instance
         qs = cls.objects.filter(instance__survey_type__slug=REGISTRATION,
-                                phone=parsed_instance.phone,
-                                instance__start_time__lte=parsed_instance.instance.start_time)
-        if qs.count()>0:
-            most_recent_registration = qs.order_by("-instance__start_time")[0]
-            return most_recent_registration.surveyor
-        return None
+                                phone=parsed_instance.phone)
+        #                         instance__start_time__lte=parsed_instance.instance.start_time)
+        # if qs.count()>0:
+        #     most_recent_registration = qs.order_by("-instance__start_time")[0]
+        #     return most_recent_registration.surveyor
+
+        # this needs to be based on the start as above
+        return None if qs.count()==0 else qs[0]
 
     def _set_surveyor(self, doc):
         if doc[tag.INSTANCE_DOC_NAME]==REGISTRATION:
-            name = doc[REGISTRATION_NAME]
+            name = doc.get(REGISTRATION_NAME, u"")
             if not name:
-                raise utils.MyError("Registration must have a non-empty name.")
+                raise Exception(
+                    "Registration must have a non-empty name.",
+                    self.instance.xml
+                    )
             kwargs = {"username" : "surveyor%d" % Surveyor.objects.count(),
                       "password" : "noneisabadd3f4u1tpassword",
                       "name" : name,}
