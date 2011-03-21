@@ -270,7 +270,7 @@ from xform_manager.models import SurveyType
 def survey_type_list_dict(st):
     d = {'name': st.slug}
     d['profile_url'] = "/xforms/surveys/%s" % st.slug
-    d['submissions'] = 9999
+    d['submissions'] = Instance.objects.filter(survey_type__id=st.id).count()
     return d
     
 def survey_type_display_dict(st):
