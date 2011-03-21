@@ -1,5 +1,5 @@
 from models import QualityReview
-from parsed_xforms.models import ParsedInstance
+from xform_manager.models import Instance
 
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
@@ -11,18 +11,18 @@ from . import forms
 
 def list(request, group_name=None):
     qrs = QualityReview.objects.all()
-    pis = ParsedInstance.objects.all()
+    pis = Instance.objects.all()
 #    if group_name:
 #        qrs = qrs.filter(group_name=group_name)
     info = {'qrs':qrs}
-    info['qr_count'] = ParsedInstance.objects.count()
+    info['qr_count'] = Instance.objects.count()
     info['pis'] = pis
     info['show_hide_review_url'] = "/xforms/quality_reviews/"
     info['new_review_url'] = "/xforms/quality_reviews/new/" #def a cleaner way to do this
     return render_to_response("list.html", info)
 
 def new_review(request, pi_id, group_name=None):
-    submission = ParsedInstance.objects.get(id=pi_id)
+    submission = Instance.objects.get(id=pi_id)
 #    reviewer = "whoever is logged in "
     return create_object(
         request=request,
@@ -32,7 +32,7 @@ def new_review(request, pi_id, group_name=None):
         )
 
 def list_reviews_for_submission(request, submission_id):
-    info = {'submission': ParsedInstance.objects.get(id=submission_id)}
+    info = {'submission': Instance.objects.get(id=submission_id)}
     return render_to_response("list_reviews.html", info)
 
 def show_hide(request, show_hide, qr_id):
@@ -47,7 +47,7 @@ def show_hide(request, show_hide, qr_id):
 
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 def ajax_review_post(request, submission_id, reviewer_id):
-    submission = ParsedInstance.objects.get(id=submission_id)
+    submission = Instance.objects.get(id=submission_id)
     reviewer = User.objects.get(id=reviewer_id)
     try:
         qr = QualityReview.objects.get(submission=submission, \
@@ -70,7 +70,7 @@ from django.template.loader import render_to_string
 
 def score_partial_request(request, submission_id, reviewer_id):
     user = User.objects.get(id=reviewer_id)
-    pi = ParsedInstance.objects.get(id=submission_id)
+    pi = Instance.objects.get(id=submission_id)
     return score_partial(pi, user)
 
 def score_partial(submission, reviewer, as_string=False, errors=""):

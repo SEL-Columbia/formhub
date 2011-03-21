@@ -1,6 +1,6 @@
 from models import QualityReview
 from django.forms import ModelForm
-from parsed_xforms.models import ParsedInstance
+from xform_manager.models import Instance
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 
@@ -26,7 +26,7 @@ def ajax_post_form(instance=None, reviewer=None):
 def ajax_post_form_create(request, instance_id, reviewer_id):
     comment = request.POST[u'comment']
     score = request.POST[u'score']
-    submission = ParsedInstance.objects.get(id=instance_id)
+    submission = Instance.objects.get(id=instance_id)
     reviewer = User.objects.get(id=reviewer_id)
     qr = QualityReview(comment=comment, \
             score=score, \
