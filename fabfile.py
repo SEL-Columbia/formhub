@@ -75,10 +75,9 @@ def deploy():
         if not console.confirm('Are you sure you want to deploy production?',
                                default=False):
             utils.abort('Production deployment aborted.')
-    
-    install_pip_requirements()
     with cd(env.code_root):
         run("git pull origin %(branch_name)s" % env)
+    install_pip_requirements()
 
 def install_pip_requirements():
     """ deleting django-eav from the virtualenv in order to force a new download and avoid a pip error. """
