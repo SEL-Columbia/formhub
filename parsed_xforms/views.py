@@ -17,6 +17,7 @@ import re
 from bson import json_util
 
 from parsed_xforms.models import xform_instances, ParsedInstance
+from parsed_xforms.models.common_tags import *
 from xform_manager.models import XForm, Instance
 from locations.models import District
 
@@ -59,12 +60,12 @@ def map_data_points(request):
     * GPS coordinates
     
     """
-    dict_list = []
-    # list(xform_instances.find(
-    #         spec={ : {"$exists" : True}},
-    #         fields=[tag.DATE_TIME_START, tag.SURVEYOR_NAME, tag.INSTANCE_DOC_NAME, tag.DISTRICT_ID, tag.GPS]
-    #         ))
-    
+    # These capitalized variables are coming out of models.common_tags.
+    gps_exists = {GPS : {"$exists" : True}}
+    fields = [DATE_TIME_START, SURVEYOR_NAME, INSTANCE_DOC_NAME,
+              DISTRICT_ID, GPS]
+    instances = xform_instances.find(spec=gps_exists, fields=fields)
+    dict_list = list(instances)
     return HttpResponse(json.dumps(dict_list, default=json_util.default))
 
 def xls_to_response(xls, fname):
