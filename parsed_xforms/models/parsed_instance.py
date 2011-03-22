@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 
 from xform_manager.models import XForm, Instance
 from phone_manager.models import Phone
@@ -36,9 +37,12 @@ class ParsedInstance(models.Model):
     instance = models.OneToOneField(Instance, related_name="parsed_instance")
     phone = models.ForeignKey(Phone, null=True)
     surveyor = models.ForeignKey(Surveyor, null=True)
-    district = models.ForeignKey(District, null=True)
-    lga = models.ForeignKey(nga_models.LGA, null=True)
     
+    # district is no longer used except in old data. once
+    # we've migrated phase I surveys, we should delete this field.
+    district = models.ForeignKey(District, null=True)
+    
+    lga = models.ForeignKey(nga_models.LGA, null=True)
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
     district = models.ForeignKey(District, null=True)
@@ -73,16 +77,24 @@ class ParsedInstance(models.Model):
         self.end_time = None if not u_end_time else \
             datetime_from_str(u_end_time)
 
-    def _set_district(self):
+    def _set_lga(self):
         doc = self.to_dict()
-        self.district = None
-        # for k in doc.keys():
-        #     if k==u"lga" and doc[k] in self.lgas_by_name:
-        #         self.district = District.objects.get(pk=self.lgas_by_name[doc[k]])
-        #     elif k in self.lgas_by_state.keys():
-        #         self.district = District.objects.get(pk=self.lgas_by_state[k])
-
-
+        
+        zone_slug = doc.get(u'location/zone', None)
+        if not zone_slug: return None
+        
+        state_slug = doc.get(u'location/state_in_%s' % zone_slug, None)
+        if not state_slug: return None
+        
+        lga_slug = doc.get(u'location/lga_in_%s' % state_slug, None)
+        if not lga_slug: return None
+        
+        try:
+            state = nga_models.State.objects.get(slug=state_slug)
+            self.lga = state.lgas.get(slug=lga_slug)
+        except ObjectDoesNotExist, e:
+            return None
+    
     time_to_set_surveyor = django.dispatch.Signal()
     def _set_surveyor(self):
         self.time_to_set_surveyor.send(sender=self)
@@ -99,7 +111,7 @@ class ParsedInstance(models.Model):
         self._set_phone()
         self._set_start_time()
         self._set_end_time()
-        self._set_district()
+        self._set_lga()
         self._set_surveyor()
         super(ParsedInstance, self).save(*args, **kwargs)
         doc.update(

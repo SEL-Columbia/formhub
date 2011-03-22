@@ -95,11 +95,19 @@ class Migration(SchemaMigration):
         'parsed_xforms.parsedinstance': {
             'Meta': {'object_name': 'ParsedInstance'},
             'district': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['locations.District']", 'null': 'True'}),
+            'end_time': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'instance': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'parsed_instance'", 'unique': 'True', 'to': "orm['xform_manager.Instance']"}),
             'lga': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['nga_districts.LGA']", 'null': 'True'}),
             'phone': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['phone_manager.Phone']", 'null': 'True'}),
+            'start_time': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
             'surveyor': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['surveyor_manager.Surveyor']", 'null': 'True'})
+        },
+        'parsed_xforms.registration': {
+            'Meta': {'object_name': 'Registration'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'parsed_instance': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['parsed_xforms.ParsedInstance']"}),
+            'surveyor': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['surveyor_manager.Surveyor']"})
         },
         'phone_manager.phone': {
             'Meta': {'object_name': 'Phone'},
