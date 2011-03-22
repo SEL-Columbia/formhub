@@ -26,6 +26,7 @@ ADMINS = (
 )
 
 DEBUG = True
+SENTRY_TESTING = True
 TEMPLATE_DEBUG = DEBUG
 
 SECRET_KEY = 'f6h^bz8&0+ad@+qsntr)_onhx2(y^^u%$434byw3l^q!*n078v'
