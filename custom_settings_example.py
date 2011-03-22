@@ -7,15 +7,7 @@
 # custom_settings_example.py to custom_settings.py and modify these
 # custom settings as you needed for your environment.
 
-# Is this really going to help us over having a single settings.py
-# example? I think Alex has the answer to this question. -Andrew
-
-import os
-
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-
 MEDIA_URL = 'http://127.0.0.1:8000/site-media/'
-MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'site_media/')
 
 DATABASES = {
     'default': {
@@ -35,3 +27,4 @@ ADMINS = (
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+

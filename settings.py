@@ -2,6 +2,15 @@
 # -*- coding: utf-8 -*-
 # vim: ai ts=4 sts=4 et sw=4
 
+import os
+
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'site_media/')
+
+#This is for xform_manager.
+#we should probably make this var name more specific
+STRICT = True
+
 from custom_settings import *
 
 import sys
