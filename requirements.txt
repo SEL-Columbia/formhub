@@ -9,7 +9,7 @@ django-registration==0.7
 django-mptt==0.4.2
 pymongo==1.9
 -e git://github.com/mirhampt/django-factories.git#egg=django-factories
-
+django-indexer==0.2.1
 # Handle lxml==2.3 dependency with apt-get:
 #   apt-get install python-lxml
 xlrd==0.7.1
