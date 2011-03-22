@@ -138,19 +138,19 @@ import sys
 
 from django.db.models.signals import post_save
 def _parse_instance(sender, **kwargs):
-    parsed_instance, created = \
-        ParsedInstance.objects.get_or_create(instance=kwargs["instance"])
-    # try:
-    #     parsed_instance, created = \
-    #         ParsedInstance.objects.get_or_create(instance=kwargs["instance"])
-    # except:
-    #     # catch any exceptions and print them to the error log
-    #     # it'd be good to add more info to these error logs
-    #     e = sys.exc_info()[1]
-    #     utils.report_exception(
-    #         "problem parsing submission",
-    #         e.__unicode__(),
-    #         sys.exc_info()
-    #         )
+    try:
+        parsed_instance, created = \
+            ParsedInstance.objects.get_or_create(instance=kwargs["instance"])
+    except:
+        # catch any exceptions and print them to the error log
+        # it'd be good to add more info to these error logs
+        # --i think this might not be necessary anymore, but keeping it in for
+        #   security.
+        e = sys.exc_info()[1]
+        utils.report_exception(
+                "problem parsing submission",
+                e.__unicode__(),
+                sys.exc_info()
+                )
     
 post_save.connect(_parse_instance, sender=Instance)
