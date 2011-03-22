@@ -49,8 +49,7 @@ LOGIN_REDIRECT_URL = '/'
 # user registration settings
 ACCOUNT_ACTIVATION_DAYS = 1
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'f6h^bz8&0+ad@+qsntr)_onhx2(y^^u%$434byw3l^q!*n078v'
+# Make the SECRET_KEY unique, and don't share it with anybody.  --d'oh!
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
