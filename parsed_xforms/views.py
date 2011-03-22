@@ -15,7 +15,7 @@ import xlwt
 import json
 import re
 from bson import json_util
-from . import utils, tag
+
 from parsed_xforms.models import xform_instances, ParsedInstance
 from xform_manager.models import XForm, Instance
 from locations.models import District
@@ -59,10 +59,11 @@ def map_data_points(request):
     * GPS coordinates
     
     """
-    dict_list = list(xform_instances.find(
-            spec={tag.GPS : {"$exists" : True}},
-            fields=[tag.DATE_TIME_START, tag.SURVEYOR_NAME, tag.INSTANCE_DOC_NAME, tag.DISTRICT_ID, tag.GPS]
-            ))
+    dict_list = []
+    # list(xform_instances.find(
+    #         spec={ : {"$exists" : True}},
+    #         fields=[tag.DATE_TIME_START, tag.SURVEYOR_NAME, tag.INSTANCE_DOC_NAME, tag.DISTRICT_ID, tag.GPS]
+    #         ))
     
     return HttpResponse(json.dumps(dict_list, default=json_util.default))
 
