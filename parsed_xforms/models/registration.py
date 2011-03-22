@@ -50,23 +50,24 @@ class Registration(models.Model):
 
 
 def _set_surveyor(sender, **kwargs):
-    parsed_instance = kwargs["instance"]
-    doc = parsed_instance.to_dict()
-    if doc[INSTANCE_DOC_NAME]==REGISTRATION:
-        # There should be a prettier way to do this. But, we want to
-        # make sure if this parsed instance has already been logged
-        # that we don't try to do it again.
-        qs = Registration.objects.filter(parsed_instance=parsed_instance)
-        if qs.count()>0: return
+    if kwargs["created"]:
+        parsed_instance = kwargs["instance"]
+        doc = parsed_instance.to_dict()
+        if doc[INSTANCE_DOC_NAME]==REGISTRATION:
+            # There should be a prettier way to do this. But, we want to
+            # make sure if this parsed instance has already been logged
+            # that we don't try to do it again.
+            qs = Registration.objects.filter(parsed_instance=parsed_instance)
+            if qs.count()>0: return
 
-        registration = \
-            Registration.objects.create(parsed_instance=parsed_instance)
-        parsed_instance.surveyor = registration.surveyor
-        # We need to save this update to the database.
+            registration = \
+                Registration.objects.create(parsed_instance=parsed_instance)
+            parsed_instance.surveyor = registration.surveyor
+            # We need to save this update to the database.
+        else:
+            parsed_instance.surveyor = \
+                Registration.get_registered_surveyor(parsed_instance)
         parsed_instance.save()
-    else:
-        parsed_instance.surveyor = \
-            Registration.get_registered_surveyor(parsed_instance)
 
 from django.db.models.signals import post_save
 post_save.connect(_set_surveyor, sender=ParsedInstance)
