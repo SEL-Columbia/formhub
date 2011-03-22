@@ -28,7 +28,7 @@ class TestSurveyorRegistration(TestCase):
             'device_id': '12345'
             })
         
-        self.assertTrue(Surveyor.objects.count(), 1)
+        self.assertEqual(Surveyor.objects.count(), 1)
         self.assertEqual(Surveyor.objects.all()[0].name, "Steak Sauce")
         
     def test_multiple_registrations_on_the_same_phone(self):

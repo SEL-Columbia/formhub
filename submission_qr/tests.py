@@ -19,9 +19,7 @@ class SimpleReviewTest(TestCase):
         self.user2 = User(username="gwendolyn")
         self.xform_factory = factory.XFormManagerFactory()
 
-        self.xform_factory.create_simple_instance()
-        
-        self.instance1 = ParsedInstance.objects.all()[0]
+        self.instance1 = self.xform_factory.create_simple_instance()
     
     def test_reviews_can_be_created(self):
         """

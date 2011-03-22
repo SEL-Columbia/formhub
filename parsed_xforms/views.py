@@ -15,8 +15,10 @@ import xlwt
 import json
 import re
 from bson import json_util
-from . import utils, tag
-from .models import District, XForm, xform_instances, ParsedInstance, Instance
+
+from parsed_xforms.models import xform_instances, ParsedInstance
+from xform_manager.models import XForm, Instance
+from locations.models import District
 
 from view_pkgr import ViewPkgr
 
@@ -57,10 +59,11 @@ def map_data_points(request):
     * GPS coordinates
     
     """
-    dict_list = list(xform_instances.find(
-            spec={tag.GPS : {"$exists" : True}},
-            fields=[tag.DATE_TIME_START, tag.SURVEYOR_NAME, tag.INSTANCE_DOC_NAME, tag.DISTRICT_ID, tag.GPS]
-            ))
+    dict_list = []
+    # list(xform_instances.find(
+    #         spec={ : {"$exists" : True}},
+    #         fields=[tag.DATE_TIME_START, tag.SURVEYOR_NAME, tag.INSTANCE_DOC_NAME, tag.DISTRICT_ID, tag.GPS]
+    #         ))
     
     return HttpResponse(json.dumps(dict_list, default=json_util.default))
 
@@ -195,7 +198,7 @@ def xforms_directory(request):
     return r.r()
 
 def homepage(request):
-    r = ViewPkgr(request, "homepage.html")
+    r = ViewPkgr(request, "xforms_directory.html")
     r.footer()
     r.ensure_logged_in()
     return r.r()
@@ -208,15 +211,39 @@ def surveyor_list_dict(surveyor):
     #how do we find district?
     d['district'] = "district-name-goes-here"
     d['number_of_submissions'] = ParsedInstance.objects.filter(surveyor__id=surveyor.id).count()
-    d['most_recent_submission'] = "RecentSurveyTime" #? ParsedInstance.objects.filter(surveyor__id=surveyor.id)[0]
+    all_submissions = ParsedInstance.objects.filter(surveyor__id=surveyor.id)
+    all_submission_dates = [s.get_from_mongo().get(u'start', None) for s in all_submissions]
+
+    #if there are any dates...
+    if all_submission_dates:
+        most_recent_date = all_submission_dates[0]
+        for i in all_submission_dates:
+            if most_recent_date > i: most_recent_date = i
+        d['most_recent_submission'] = most_recent_date
+    else:
+        d['most_recent_submission'] = "No submissions"
     return d
     
+STANDARD_DATE_DISPLAY = "%d-%m-%Y"
+
 def surveyor_profile_dict(surveyor):
     d = {'name': surveyor.name}
 #    d['district'] = surveyor.surveys.all()[0].district.name
-    d['registered_at'] = "I donno"
+    d['registered_at'] = "?"
     d['number_of_submissions'] = ParsedInstance.objects.filter(surveyor__id=surveyor.id).count()
-    d['most_recent_survey_date'] = "Yesterday"
+
+    #how should we query submissions?
+    d['most_recent_submissions'] = []
+    all_submissions = ParsedInstance.objects.filter(surveyor__id=surveyor.id)
+    all_submission_dates = [s.get_from_mongo().get(u'start', None) for s in all_submissions]
+    if all_submission_dates:
+        most_recent_date = all_submission_dates[0]
+        for i in all_submission_dates:
+            if most_recent_date > i: most_recent_date = i
+        d['most_recent_submission'] = most_recent_date
+    else:
+        d['most_recent_submission'] = "No submissions"
+    
     sts = []
     for st in SurveyType.objects.all():
         surveyor_st_count = ParsedInstance.objects.filter(surveyor__id=surveyor.id).count() #&& survey_type is st...
@@ -244,7 +271,7 @@ from xform_manager.models import SurveyType
 def survey_type_list_dict(st):
     d = {'name': st.slug}
     d['profile_url'] = "/xforms/surveys/%s" % st.slug
-    d['submissions'] = 9999
+    d['submissions'] = Instance.objects.filter(survey_type__id=st.id).count()
     return d
     
 def survey_type_display_dict(st):

@@ -1,5 +1,7 @@
+from district_assignment import TestDistrictLinkage
 from form_submission import TestFormSubmission
 from surveyor_registration import TestSurveyorRegistration
-from phone_registration import PhoneTestCase
 from functional_tests import TestFunctional
 from mongo_data_output import TestMongoData
+from reparse_everything import TestReparseEverything
+

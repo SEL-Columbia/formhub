@@ -2,6 +2,15 @@
 # -*- coding: utf-8 -*-
 # vim: ai ts=4 sts=4 et sw=4
 
+import os
+
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'site_media/')
+
+#This is for xform_manager.
+#we should probably make this var name more specific
+STRICT = True
+
 from custom_settings import *
 
 import sys
@@ -10,13 +19,18 @@ from pymongo import Connection
 # set up the Mongo Database
 _c = Connection()
 MONGO_DB = None
-if sys.argv[1]=="test":
-    # if we're testing, clear the database out
-    # note: this only works when we run the tests at the command line
-    _c.drop_database(MONGO["test database name"])
+TESTING_MODE = False
+
+if len(sys.argv)>=2 and sys.argv[1]=="test":
+    # This trick works only when we run tests from the command line.
+    TESTING_MODE = True
     MONGO_DB = _c[MONGO["test database name"]]
 else:
     MONGO_DB = _c[MONGO["database name"]]
+
+# Clear out the test database
+if TESTING_MODE:
+    MONGO_DB.instances.drop()
 
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 TIME_ZONE = 'America/Chicago'
@@ -35,8 +49,7 @@ LOGIN_REDIRECT_URL = '/'
 # user registration settings
 ACCOUNT_ACTIVATION_DAYS = 1
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'f6h^bz8&0+ad@+qsntr)_onhx2(y^^u%$434byw3l^q!*n078v'
+# Make the SECRET_KEY unique, and don't share it with anybody.  --d'oh!
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -53,6 +66,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'nmis.urls'
 
+TEMPLATE_DEBUG=True
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, "base_templates/" )
 )
@@ -70,11 +84,18 @@ INSTALLED_APPS = (
     'pyxform',
     'locations',
     'parsed_xforms',
+    'nga_districts',
     'phone_manager',
     'surveyor_manager',
     'xform_manager',
     'map_xforms',
     'submission_qr',
+    
+    #required for django-sentry
+    'indexer',
+    'paging',
+    'sentry',
+    'sentry.client',
 )
 
 # SEARCH ENGINE settings
