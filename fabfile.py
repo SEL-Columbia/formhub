@@ -19,6 +19,7 @@ def _setup_path():
     env.apache_dir = os.path.join(env.root, "apache")
     env.settings = '%(project)s.settings' % env
     env.backup_dir = os.path.join(env.root, "backups")
+    env.run_migration = False
 
 def staging_env():
     """ use staging environment on remote host"""
@@ -36,14 +37,16 @@ def production_env():
     _setup_path()
 
 @hosts('wsgi@staging.mvpafrica.org')
-def deploy_staging():
+def deploy_staging(migrate_db='no'):
     staging_env()
+    if migrate_db == 'migrate': env.run_migration = True
     deploy()
     restart_wsgi()
 
 @hosts('wsgi@staging.mvpafrica.org')
-def deploy_production():
+def deploy_production(migrate_db='no'):
     production_env()
+    if migrate_db == 'migrate': env.run_migration = True
     deploy()
     restart_wsgi()
 
@@ -83,6 +86,10 @@ def deploy():
     for repo_path in sub_repo_paths:
         with cd(repo_path):
             run("git pull origin %(branch_name)s" % env)
+    
+    if env.run_migration:
+        with cd(env.code_root):
+            run("python manage.py migrate")
     
     install_pip_requirements()
 
