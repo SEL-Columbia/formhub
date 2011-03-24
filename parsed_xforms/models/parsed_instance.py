@@ -122,7 +122,7 @@ class ParsedInstance(models.Model):
                 DISTRICT_ID :
                     None if not self.district else self.district.id,
                 ATTACHMENTS :
-                    [a.attachment.name for a in self.instance.attachments.all()],
+                    [a.media_file.name for a in self.instance.attachments.all()],
                 }
             )
         xform_instances.save(doc)

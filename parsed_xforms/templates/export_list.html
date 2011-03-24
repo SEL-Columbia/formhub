@@ -10,7 +10,7 @@
   <td>{{ xform.title }}</td>
   <td>{{ xform.submission_count }}</td>
   <td>{{ xform.date_of_last_submission }}</td>
-  <td><a href="/{{ xform.id_string }}.xls">xls</a></td>
+  <td><a href={% url parsed_xforms.views.xls id_string=xform.id_string %}>xls</a></td>
 </tr>
 {% endfor %}
 </table>

@@ -17,8 +17,10 @@ import re
 from bson import json_util
 
 from parsed_xforms.models import xform_instances, ParsedInstance
+from parsed_xforms.models.common_tags import *
 from xform_manager.models import XForm, Instance
 from locations.models import District
+from data_dictionary.models import DataDictionary
 
 from view_pkgr import ViewPkgr
 
@@ -59,13 +61,73 @@ def map_data_points(request):
     * GPS coordinates
     
     """
-    dict_list = []
-    # list(xform_instances.find(
-    #         spec={ : {"$exists" : True}},
-    #         fields=[tag.DATE_TIME_START, tag.SURVEYOR_NAME, tag.INSTANCE_DOC_NAME, tag.DISTRICT_ID, tag.GPS]
-    #         ))
-    
+    # These capitalized variables are coming out of models.common_tags.
+    gps_exists = {GPS : {"$exists" : True}}
+    fields = [DATE_TIME_START, SURVEYOR_NAME, INSTANCE_DOC_NAME,
+              DISTRICT_ID, GPS]
+    instances = xform_instances.find(spec=gps_exists, fields=fields)
+    dict_list = list(instances)
     return HttpResponse(json.dumps(dict_list, default=json_util.default))
+
+def _get_parsed_instances_from_mongo(id_string):
+    match_id_string = {ID_STRING : id_string}
+    parsed_instances = \
+        xform_instances.find(spec=match_id_string)
+    return list(parsed_instances)
+
+def _get_list_of_unique_keys(list_of_dicts):
+    s = set()
+    for d in list_of_dicts:
+        for k in d.keys():
+            s.add(k)
+    return list(s)
+
+def _sort_xpaths(xpaths, data_dictionary):
+    if data_dictionary:
+        # Sort the xpaths based on the order they appear in the
+        # survey.
+        data_dictionary.sort_xpaths(xpaths)
+    else:
+        # Sort the xpaths based on alphabetical order.
+        xpaths.sort()
+
+def _get_sorted_xpaths(list_of_dicts, data_dictionary):
+    xpaths = _get_list_of_unique_keys(list_of_dicts)
+    _sort_xpaths(xpaths, data_dictionary)
+    return xpaths
+
+def get_data_for_spreadsheet(id_string):
+    try:
+        data_dictionary = \
+            DataDictionary.objects.get(xform__id_string=id_string)
+    except DataDictionary.DoesNotExist:
+        data_dictionary = None
+
+    result = {u"data" : _get_parsed_instances_from_mongo(id_string)}
+    result[u"headers"] = _get_sorted_xpaths(result[u"data"],
+                                            data_dictionary)
+    if data_dictionary:
+        result[u"dictionary"] = \
+            data_dictionary.get_xpaths_and_labels()
+    return result
+
+def construct_worksheets(id_string):
+    # data, headers, and dictionary
+    dhd = get_data_for_spreadsheet(id_string)
+
+    sheet1 = [dhd[u"headers"]]
+    for survey in dhd[u"data"]:
+        row = []
+        for xpath in dhd[u"headers"]:
+            cell = survey.get(xpath, u"n/a")
+            row.append(unicode(cell))
+        sheet1.append(row)
+    result = [(u"Data", sheet1)]
+
+    if u"dictionary" in dhd:
+        sheet2 = [[u"Name", u"Label"]] + dhd[u"dictionary"]
+        result.append((u"Dictionary", sheet2))
+    return result
 
 def xls_to_response(xls, fname):
     response = HttpResponse(mimetype="application/ms-excel")
@@ -75,26 +137,16 @@ def xls_to_response(xls, fname):
 
 @permission_required("auth.read_all_data")
 def xls(request, id_string):
-    xform = XForm.objects.get(id_string=id_string)
-    xform.guarantee_parser()
-    headers = []
-    for path, attributes in xform.parser.get_variable_list():
-        headers.append(path)
-    table = [headers]
-    for i in xform.surveys.all():
-        row = []
-        d = i.get_from_mongo()
-        for h in headers:
-            row.append(str(d.get(h, u"n/a")))
-        table.append(row)
+    worksheets = construct_worksheets(id_string)
 
     wb = xlwt.Workbook()
-    ws = wb.add_sheet("Data")
-    for r in range(len(table)):
-        for c in range(len(table[r])):
-            ws.write(r, c, table[r][c])
+    for sheet_name, table in worksheets:
+        ws = wb.add_sheet(sheet_name)
+        for r in range(len(table)):
+            for c in range(len(table[r])):
+                ws.write(r, c, table[r][c])
 
-    return xls_to_response(wb, re.sub(r"\s+", "_", id_string) + ".xls")
+    return xls_to_response(wb, id_string + ".xls")
 
 dimensions = {
     "survey" : "survey_type__slug",
