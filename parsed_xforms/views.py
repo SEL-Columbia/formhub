@@ -192,6 +192,11 @@ def frequency_table(request, rows, columns):
         }
     return HttpResponse(json.dumps(table, indent=4))
 
+def submission_counts_by_lga(request):
+    dicts = ParsedInstance.objects.values("lga__name").annotate(count=Count("id")).order_by("count")
+    result = dict([(d['lga__name'], d['count']) for d in dicts])
+    return HttpResponse(json.dumps(result, indent=4))
+
 from map_xforms.models import SurveyTypeMapData
 
 def dashboard(request):
