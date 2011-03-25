@@ -47,13 +47,18 @@ class ParsedInstance(models.Model):
     end_time = models.DateTimeField(null=True)
     district = models.ForeignKey(District, null=True)
     surveyor = models.ForeignKey(Surveyor, null=True)
-    is_parsed = models.BooleanField(default=False)
+    is_new = models.BooleanField(default=False)
+    
+    #right now this is only accessed internally by self.to_dict()
+    __instance_doc_cache = None
     
     class Meta:
         app_label = "parsed_xforms"
     
     def to_dict(self):
-        return self.instance.get_dict()
+        if self.__instance_doc_cache is None:
+            self.__instance_doc_cache = self.instance.get_dict()
+        return self.__instance_doc_cache
 
     def _set_phone(self):
         doc = self.to_dict()
@@ -108,26 +113,26 @@ class ParsedInstance(models.Model):
             )
     
     def save(self, *args, **kwargs):
-        doc = None
-        if not self.is_parsed:
-            doc = self.parse()
-            self.is_parsed = True
-
+        if not self.is_new:
+            self.parse()
+            self.is_new = True
+        
         super(ParsedInstance, self).save(*args, **kwargs)
         
-        if doc is not None: self.update_mongo(doc)
+        # not sure if this is appropriate to
+        # call for each save.
+        self.update_mongo()
     
     
     def parse(self):
-        doc = self.to_dict()
         self._set_phone()
         self._set_start_time()
         self._set_end_time()
         self._set_lga()
         self._set_surveyor()
-        return doc
     
-    def update_mongo(self, doc):
+    def update_mongo(self, doc=None):
+        if doc is None: doc = self.to_dict()
         doc.update(
             {
                 ID : self.id,
