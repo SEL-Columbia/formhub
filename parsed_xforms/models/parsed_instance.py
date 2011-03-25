@@ -47,6 +47,7 @@ class ParsedInstance(models.Model):
     end_time = models.DateTimeField(null=True)
     district = models.ForeignKey(District, null=True)
     surveyor = models.ForeignKey(Surveyor, null=True)
+    is_parsed = models.BooleanField(default=False)
     
     class Meta:
         app_label = "parsed_xforms"
@@ -107,13 +108,26 @@ class ParsedInstance(models.Model):
             )
     
     def save(self, *args, **kwargs):
+        doc = None
+        if not self.is_parsed:
+            doc = self.parse()
+            self.is_parsed = True
+
+        super(ParsedInstance, self).save(*args, **kwargs)
+        
+        if doc is not None: self.update_mongo(doc)
+    
+    
+    def parse(self):
         doc = self.to_dict()
         self._set_phone()
         self._set_start_time()
         self._set_end_time()
         self._set_lga()
         self._set_surveyor()
-        super(ParsedInstance, self).save(*args, **kwargs)
+        return doc
+    
+    def update_mongo(self, doc):
         doc.update(
             {
                 ID : self.id,
