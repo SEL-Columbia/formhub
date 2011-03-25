@@ -138,9 +138,19 @@ import sys
 
 from django.db.models.signals import post_save
 def _parse_instance(sender, **kwargs):
+    # When an instance is saved, first delete the parsed_instance
+    # associated with it.
+    instance = kwargs["instance"]
+    if instance.parsed_instance:
+        # I'm worried with a OneToOneField this may also delete the
+        # instance.
+        instance.parsed_instance.delete()
+
     try:
-        parsed_instance, created = \
-            ParsedInstance.objects.get_or_create(instance=kwargs["instance"])
+        # Create a new ParsedInstance for this instance. This will
+        # reparse the submission.
+        parsed_instance = \
+            ParsedInstance.objects.create(instance=instance)
     except:
         # catch any exceptions and print them to the error log
         # it'd be good to add more info to these error logs
