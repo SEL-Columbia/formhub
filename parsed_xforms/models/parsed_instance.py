@@ -141,10 +141,10 @@ def _parse_instance(sender, **kwargs):
     # When an instance is saved, first delete the parsed_instance
     # associated with it.
     instance = kwargs["instance"]
-    if instance.parsed_instance:
-        # I'm worried with a OneToOneField this may also delete the
-        # instance.
-        instance.parsed_instance.delete()
+    qs = ParsedInstance.objects.filter(instance=instance)
+    if qs.count() > 0: qs.delete()
+    # I'm worried with a OneToOneField this may also delete the
+    # instance.
 
     try:
         # Create a new ParsedInstance for this instance. This will
