@@ -24,7 +24,7 @@ class TestReparseEverything(TestCase):
         for i in Instance.objects.all():
             #at the moment, reparse just deletes the parsed_instance
             #and then resaves, forcing a reparse instance.
-            i.reparse()
+            i.save()
         
         #THESE TESTS FAIL (and will continue to do so until we fix the code)
 #        self.assertEqual(ParsedInstance.objects.count(), 2)

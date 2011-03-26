@@ -15,4 +15,5 @@ urlpatterns = patterns('',
     url(r"^survey/(?P<pk>\d+)/$", views.survey),
     url(r"^surveyors/((?P<surveyor_id>\d+)/)?$", views.surveyors),
     url(r"^surveys/((?P<survey_type_slug>\w+)/)?$", views.survey_types),
+    url(r"^counts-by-lga/?$", views.submission_counts_by_lga),
 )

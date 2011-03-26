@@ -90,6 +90,7 @@ INSTALLED_APPS = (
     'xform_manager',
     'map_xforms',
     'submission_qr',
+    'data_dictionary',
     
     #required for django-sentry
     'indexer',

@@ -19,6 +19,7 @@ def _setup_path():
     env.apache_dir = os.path.join(env.root, "apache")
     env.settings = '%(project)s.settings' % env
     env.backup_dir = os.path.join(env.root, "backups")
+    env.run_migration = False
 
 def staging_env():
     """ use staging environment on remote host"""
@@ -32,18 +33,20 @@ def production_env():
     env.code_directory = 'nmis-production'
     env.environment = 'production'
     env.branch_name = 'master'
-    env.db_name = 'nmispilot'
+    env.db_name = 'nmispilot_phaseII'
     _setup_path()
 
 @hosts('wsgi@staging.mvpafrica.org')
-def deploy_staging():
+def deploy_staging(migrate_db='no'):
     staging_env()
+    if migrate_db == 'migrate': env.run_migration = True
     deploy()
     restart_wsgi()
 
 @hosts('wsgi@staging.mvpafrica.org')
-def deploy_production():
+def deploy_production(migrate_db='no'):
     production_env()
+    if migrate_db == 'migrate': env.run_migration = True
     deploy()
     restart_wsgi()
 
@@ -70,13 +73,24 @@ def backup_code_and_database():
 
 def deploy():
     """ git pull (branch) """
-    require('root', provided_by=('staging', 'production'))
+    #will pull the same branch as for the main repo
+    sub_repositories = ["pyxform", "xform_manager"]
+    sub_repo_paths = [os.path.join(env.code_root, repo) for repo in sub_repositories]
     if env.environment == 'production':
-        if not console.confirm('Are you sure you want to deploy production?',
+        if not console.confirm('Are you sure you want to deploy production? (Always back up-- "fab backup_production")',
                                default=False):
             utils.abort('Production deployment aborted.')
     with cd(env.code_root):
         run("git pull origin %(branch_name)s" % env)
+    
+    for repo_path in sub_repo_paths:
+        with cd(repo_path):
+            run("git pull origin %(branch_name)s" % env)
+    
+    if env.run_migration:
+        with cd(env.code_root):
+            run("python manage.py migrate")
+    
     install_pip_requirements()
 
 def install_pip_requirements():

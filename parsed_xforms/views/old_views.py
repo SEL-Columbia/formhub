@@ -9,18 +9,19 @@ from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.db.models import Avg, Max, Min, Count
+from django.template import RequestContext
 
 import itertools
-import xlwt
 import json
 import re
 from bson import json_util
 
 from parsed_xforms.models import xform_instances, ParsedInstance
+from parsed_xforms.models.common_tags import *
 from xform_manager.models import XForm, Instance
-from locations.models import District
+from nga_districts.models import LGA
 
-from view_pkgr import ViewPkgr
+from parsed_xforms.view_pkgr import ViewPkgr
 
 read_all_data, created = Permission.objects.get_or_create(
     name = "Can read all data",
@@ -29,9 +30,11 @@ read_all_data, created = Permission.objects.get_or_create(
     )
 @permission_required("auth.read_all_data")
 def export_list(request):
+    xforms = XForm.objects.all()
+    context = RequestContext(request, {"xforms" : xforms})
     return render_to_response(
         "export_list.html",
-        {"xforms" : XForm.objects.all()}
+        context_instance=context
         )
 
 def prep_info(request):
@@ -59,42 +62,13 @@ def map_data_points(request):
     * GPS coordinates
     
     """
-    dict_list = []
-    # list(xform_instances.find(
-    #         spec={ : {"$exists" : True}},
-    #         fields=[tag.DATE_TIME_START, tag.SURVEYOR_NAME, tag.INSTANCE_DOC_NAME, tag.DISTRICT_ID, tag.GPS]
-    #         ))
-    
+    # These capitalized variables are coming out of models.common_tags.
+    gps_exists = {GPS : {"$exists" : True}}
+    fields = [DATE_TIME_START, SURVEYOR_NAME, INSTANCE_DOC_NAME,
+              DISTRICT_ID, GPS]
+    instances = xform_instances.find(spec=gps_exists, fields=fields)
+    dict_list = list(instances)
     return HttpResponse(json.dumps(dict_list, default=json_util.default))
-
-def xls_to_response(xls, fname):
-    response = HttpResponse(mimetype="application/ms-excel")
-    response['Content-Disposition'] = 'attachment; filename=%s' % fname
-    xls.save(response)
-    return response
-
-@permission_required("auth.read_all_data")
-def xls(request, id_string):
-    xform = XForm.objects.get(id_string=id_string)
-    xform.guarantee_parser()
-    headers = []
-    for path, attributes in xform.parser.get_variable_list():
-        headers.append(path)
-    table = [headers]
-    for i in xform.surveys.all():
-        row = []
-        d = i.get_from_mongo()
-        for h in headers:
-            row.append(str(d.get(h, u"n/a")))
-        table.append(row)
-
-    wb = xlwt.Workbook()
-    ws = wb.add_sheet("Data")
-    for r in range(len(table)):
-        for c in range(len(table[r])):
-            ws.write(r, c, table[r][c])
-
-    return xls_to_response(wb, re.sub(r"\s+", "_", id_string) + ".xls")
 
 dimensions = {
     "survey" : "survey_type__slug",
@@ -139,6 +113,21 @@ def frequency_table(request, rows, columns):
         "cells" : cells
         }
     return HttpResponse(json.dumps(table, indent=4))
+
+def submission_counts_by_lga(request):
+    lgas = LGA.get_phase2_query_set()
+    counts = []
+    for lga in lgas:
+        row = (lga.state.zone.name,
+               lga.state.name,
+               lga.name,
+               ParsedInstance.objects.filter(lga=lga).count())
+        counts.append(row)
+    context = RequestContext(request, {"counts" : counts})
+    return render_to_response(
+        "submission_counts_by_lga.html",
+        context_instance=context
+        )
 
 from map_xforms.models import SurveyTypeMapData
 
@@ -198,10 +187,11 @@ def xforms_directory(request):
     return r.r()
 
 def homepage(request):
-    r = ViewPkgr(request, "xforms_directory.html")
-    r.footer()
-    r.ensure_logged_in()
-    return r.r()
+    context = RequestContext(request)
+    return render_to_response(
+        "homepage.html",
+        context_instance=context
+        )
 
 from surveyor_manager.models import Surveyor
 

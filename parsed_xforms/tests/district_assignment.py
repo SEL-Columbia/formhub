@@ -9,8 +9,8 @@ PATH_TO_FILE = os.path.realpath(__file__)
 CURRENT_DIR = os.path.dirname(PATH_TO_FILE)
 FIXTURES_DIR = os.path.join(CURRENT_DIR, "fixtures")
 
-print "what the fizoo"
-print FIXTURES_DIR
+#print "what the fizoo"
+#print FIXTURES_DIR
 
 from parsed_xforms import models as px_models
 from xform_manager import models as xm_models
