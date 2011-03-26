@@ -20,7 +20,7 @@ from bson import json_util
 from parsed_xforms.models import xform_instances, ParsedInstance
 from parsed_xforms.models.common_tags import *
 from xform_manager.models import XForm, Instance
-from locations.models import District
+from nga_districts.models import LGA
 from data_dictionary.models import DataDictionary
 
 from view_pkgr import ViewPkgr
@@ -196,9 +196,19 @@ def frequency_table(request, rows, columns):
     return HttpResponse(json.dumps(table, indent=4))
 
 def submission_counts_by_lga(request):
-    dicts = ParsedInstance.objects.values("lga__name").annotate(count=Count("id")).order_by("count")
-    result = dict([(d['lga__name'], d['count']) for d in dicts])
-    return HttpResponse(json.dumps(result, indent=4))
+    lgas = LGA.get_phase2_query_set()
+    counts = []
+    for lga in lgas:
+        row = (lga.state.zone.name,
+               lga.state.name,
+               lga.name,
+               ParsedInstance.objects.filter(lga=lga).count())
+        counts.append(row)
+    context = RequestContext(request, {"counts" : counts})
+    return render_to_response(
+        "submission_counts_by_lga.html",
+        context_instance=context
+        )
 
 from map_xforms.models import SurveyTypeMapData
 
