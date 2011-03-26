@@ -2,14 +2,25 @@
 {% block title %}Home Page{% endblock %}
 
 {% block content %}
-<p>Welcome to OSSAP's web-based facility inventory tool.</p>
+<p>
+  Welcome to OSSAP's web-based facility inventory tool.
+</p>
 
-<p>As a first step, we would like to walk you through some of the site's most important features:</p>
+<p>
+  As a first step, we would like to walk you through some of the
+  site's most important features:
+</p> 
 
 <ol>
-  <li> To track how well the survey teams are doing, check out <a href={% url parsed_xforms.views.submission_counts_by_lga %}>submission counts by LGA</a>.
+  <li> To track how well the survey teams are doing, check out:
+  <a href={% url parsed_xforms.views.submission_counts_by_lga %}>submission counts by LGA</a>
   <li> The map is currently under construction.
-  <li> To look at the data more carefully, download the data <a href={% url parsed_xforms.views.export_list %}>here</a>.
+  <li> To look at the data more carefully, download the
+  data <a href={% url parsed_xforms.views.export_list %}>here</a>. We
+  are in the process of ordering the variables according to the order
+  in which they appeared in the survey. And we will also add a data
+  dictionary to all the spreadsheets so one can see how the variable
+  names correspond to survey questions.
 </ol>
 {% endblock %}
 
