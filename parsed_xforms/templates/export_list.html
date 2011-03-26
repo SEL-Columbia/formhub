@@ -18,7 +18,11 @@
     {{ xform.time_of_last_submission }}
     {% endif %}
   </td>
-  <td><a href={% url parsed_xforms.views.xls id_string=xform.id_string %}>xls</a></td>
+  <td>
+    {% if xform.submission_count %}
+    <a href={% url parsed_xforms.views.xls id_string=xform.id_string %}>xls</a>
+    {% endif %}
+  </td>
 </tr>
 {% endfor %}
 </table>
