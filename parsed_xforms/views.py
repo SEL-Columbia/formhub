@@ -260,7 +260,7 @@ def xforms_directory(request):
 def homepage(request):
     context = RequestContext(request)
     return render_to_response(
-        "xforms_directory.html",
+        "homepage.html",
         context_instance=context
         )
 
