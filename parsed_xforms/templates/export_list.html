@@ -1,20 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Data Export{% endblock %}
+
+{% block content %}
 <table>
   <tr>
     <td>Title</td>
     <td>Number of Submissions</td>
-    <td>Date of Last Submission</td>
-    <td>Data Export</td>
+    <td>Time of Last Submission</td>
+    <td>Export</td>
   </tr>
 {% for xform in xforms %}
 <tr>
   <td>{{ xform.title }}</td>
   <td>{{ xform.submission_count }}</td>
-  <td>{{ xform.date_of_last_submission }}</td>
+  <td>
+    {% if xform.time_of_last_submission %}
+    {{ xform.time_of_last_submission }}
+    {% endif %}
+  </td>
   <td><a href={% url parsed_xforms.views.xls id_string=xform.id_string %}>xls</a></td>
 </tr>
 {% endfor %}
 </table>
-<a class="xform-mgr button" href="/xform_manager/">XForm Manager</a>
-<script type="text/javascript" charset="utf-8">
-	$('a.xform-mgr.button').button()
-</script>
+<!-- <a class="xform-mgr button" href="/xform_manager/">XForm Manager</a> -->
+<!-- <script type="text/javascript" charset="utf-8"> -->
+<!-- 	$('a.xform-mgr.button').button() -->
+<!-- </script> -->
+{% endblock %}

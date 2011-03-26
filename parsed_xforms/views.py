@@ -9,6 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.db.models import Avg, Max, Min, Count
+from django.template import RequestContext
 
 import itertools
 import xlwt
@@ -31,9 +32,11 @@ read_all_data, created = Permission.objects.get_or_create(
     )
 @permission_required("auth.read_all_data")
 def export_list(request):
+    xforms = XForm.objects.all()
+    context = RequestContext(request, {"xforms" : xforms})
     return render_to_response(
         "export_list.html",
-        {"xforms" : XForm.objects.all()}
+        context_instance=context
         )
 
 def prep_info(request):
