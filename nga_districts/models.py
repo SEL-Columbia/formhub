@@ -10,7 +10,6 @@ class NamedModel(models.Model):
     slug = models.SlugField()
 
     def save(self, *args, **kwargs):
-        print self.name
         self.slug = sluggify(self.name)
         super(NamedModel, self).save(*args, **kwargs)
 

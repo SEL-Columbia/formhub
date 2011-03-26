@@ -68,7 +68,6 @@ def _split_table_into_data_sheets(table):
 def construct_worksheets(id_string):
     # data, headers, and dictionary
     dhd = get_data_for_spreadsheet(id_string)
-    print "retrieved data."
 
     sheet1 = [dhd[u"headers"]]
     for survey in dhd[u"data"]:
@@ -77,9 +76,7 @@ def construct_worksheets(id_string):
             cell = survey.get(xpath, u"n/a")
             row.append(unicode(cell))
         sheet1.append(row)
-    print "sorted data into table"
     result = _split_table_into_data_sheets(sheet1)
-    print "split table into multiple sheets."
 
     if u"dictionary" in dhd:
         sheet2 = [[u"Name", u"Label"]] + dhd[u"dictionary"]
@@ -98,7 +95,6 @@ def xls(request, id_string):
 
     wb = xlwt.Workbook()
     for sheet_name, table in worksheets:
-        print sheet_name
         ws = wb.add_sheet(sheet_name)
         for r in range(len(table)):
             for c in range(len(table[r])):
