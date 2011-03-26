@@ -1,10 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
 <p>Welcome to OSSAP's web-based facility inventory tool.</p>
 
 <p>As a first step, we would like to walk you through some of the site's most important features:</p>
 
 <ol>
-<li> To track how well the survey teams are doing, check out <a href={% url parsed_xforms.views.submission_counts_by_lga %}>submission counts by LGA</a>.
+  <li> To track how well the survey teams are doing, check out <a href={% url parsed_xforms.views.submission_counts_by_lga %}>submission counts by LGA</a>.
+  <li> The map is currently under construction.
+  <li> To look at the data more carefully, download the data <a href={% url parsed_xforms.views.export_list %}>here</a>.
 </ol>
+{% endblock %}
 
 <!-- <table border="0" cellspacing="5" cellpadding="5" style="clear:both;margin:0 auto;"> -->
 <!-- 	<tbody> -->
