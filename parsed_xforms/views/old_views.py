@@ -23,7 +23,7 @@ from xform_manager.models import XForm, Instance
 from nga_districts.models import LGA
 from data_dictionary.models import DataDictionary
 
-from view_pkgr import ViewPkgr
+from parsed_xforms.view_pkgr import ViewPkgr
 
 read_all_data, created = Permission.objects.get_or_create(
     name = "Can read all data",
