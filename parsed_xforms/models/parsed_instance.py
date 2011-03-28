@@ -140,10 +140,14 @@ class ParsedInstance(models.Model):
                     None if not self.surveyor else self.surveyor.name,
                 DISTRICT_ID :
                     None if not self.district else self.district.id,
+                u'matched_district/lga_id':
+                    None if not self.lga else self.lga.id,
                 ATTACHMENTS :
                     [a.media_file.name for a in self.instance.attachments.all()],
                 }
             )
+        if self.lga:
+            print doc.get(u'matched_district/lga_id')
         xform_instances.save(doc)
 
 # http://docs.djangoproject.com/en/dev/topics/db/models/#overriding-model-methods
