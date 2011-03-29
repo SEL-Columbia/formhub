@@ -40,7 +40,7 @@ class TestDistrictLinkage(TestCase):
         i.save()
         
         pi = px_models.ParsedInstance.objects.get(instance__id=i.id)
-        doc = pi.to_dict()
+        doc = pi.get_from_mongo()
         
         #I assigned the 'matched_district/lga_id' in
         # the ParsedInstance update_mongo code
