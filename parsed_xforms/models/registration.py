@@ -57,7 +57,7 @@ def _set_surveyor(sender, **kwargs):
     if kwargs["created"]:
         parsed_instance = kwargs["instance"]
         doc = parsed_instance.to_dict()
-        if doc[INSTANCE_DOC_NAME]==REGISTRATION:
+        if doc[INSTANCE_DOC_NAME].lower()==REGISTRATION.lower():
             registration, created = Registration.objects.get_or_create(
                 parsed_instance=parsed_instance)
             parsed_instance.surveyor = registration.surveyor
