@@ -21,8 +21,6 @@ _c = Connection()
 MONGO_DB = None
 TESTING_MODE = False
 
-print sys.argv
-
 if len(sys.argv)>=2 and sys.argv[1]=="test" or sys.argv[1]=="test_all":
     # This trick works only when we run tests from the command line.
     TESTING_MODE = True
