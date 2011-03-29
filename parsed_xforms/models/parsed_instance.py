@@ -57,7 +57,7 @@ class ParsedInstance(models.Model):
             self._dict_cache = self.instance.get_dict()
         self._dict_cache.update(
             {
-                ID : self.id,
+                ID : self.instance.id,
                 SURVEYOR_NAME :
                     None if not self.surveyor else self.surveyor.name,
                 DISTRICT_ID :
@@ -141,7 +141,8 @@ class ParsedInstance(models.Model):
 # http://docs.djangoproject.com/en/dev/topics/db/models/#overriding-model-methods
 from django.db.models.signals import pre_delete
 def _remove_from_mongo(sender, **kwargs):
-    xform_instances.remove(kwargs["instance"].id)
+    instance_id = kwargs.get('instance').instance.id
+    xform_instances.remove(instance_id)
 
 pre_delete.connect(_remove_from_mongo, sender=ParsedInstance)
 
