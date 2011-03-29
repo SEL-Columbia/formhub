@@ -39,10 +39,11 @@ class Registration(models.Model):
                 self.parsed_instance.instance.xml, doc
                 )
         # Hack city with the username and password here.
-        kwargs = {"username" : "surveyor%d" % Surveyor.objects.count(),
-                  "password" : "noneisabadd3f4u1tpassword",
-                  "name" : name,}
-        return Surveyor.objects.create(**kwargs)
+        kwargs = {"username" : name,
+                  "name" : name,
+                  "password" : "noneisabadd3f4u1tpassword"}
+        surveyor, created = Surveyor.objects.get_or_create(**kwargs)
+        return surveyor
 
     def save(self, *args, **kwargs):
         self.surveyor = self._create_surveyor()
@@ -50,20 +51,16 @@ class Registration(models.Model):
 
 
 def _set_surveyor(sender, **kwargs):
+    # We need to check that this is a new ParsedInstance so we don't
+    # enter an infinite loop up setting the surveyor, saving, looking
+    # at this saved ParsedInstance, setting the surveyor, saving, ...
     if kwargs["created"]:
         parsed_instance = kwargs["instance"]
         doc = parsed_instance.to_dict()
         if doc[INSTANCE_DOC_NAME]==REGISTRATION:
-            # There should be a prettier way to do this. But, we want to
-            # make sure if this parsed instance has already been logged
-            # that we don't try to do it again.
-            qs = Registration.objects.filter(parsed_instance=parsed_instance)
-            if qs.count()>0: return
-
-            registration = \
-                Registration.objects.create(parsed_instance=parsed_instance)
+            registration, created = Registration.objects.get_or_create(
+                parsed_instance=parsed_instance)
             parsed_instance.surveyor = registration.surveyor
-            # We need to save this update to the database.
         else:
             parsed_instance.surveyor = \
                 Registration.get_registered_surveyor(parsed_instance)
