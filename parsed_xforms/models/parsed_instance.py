@@ -49,16 +49,26 @@ class ParsedInstance(models.Model):
     surveyor = models.ForeignKey(Surveyor, null=True)
     is_new = models.BooleanField(default=False)
     
-    #right now this is only accessed internally by self.to_dict()
-    __instance_doc_cache = None
-    
     class Meta:
         app_label = "parsed_xforms"
     
     def to_dict(self):
-        if self.__instance_doc_cache is None:
-            self.__instance_doc_cache = self.instance.get_dict()
-        return self.__instance_doc_cache
+        if not hasattr(self, "_dict_cache"):
+            self._dict_cache = self.instance.get_dict()
+        self._dict_cache.update(
+            {
+                ID : self.id,
+                SURVEYOR_NAME :
+                    None if not self.surveyor else self.surveyor.name,
+                DISTRICT_ID :
+                    None if not self.district else self.district.id,
+                u'matched_district/lga_id':
+                    None if not self.lga else self.lga.id,
+                ATTACHMENTS :
+                    [a.media_file.name for a in self.instance.attachments.all()],
+                }
+            )
+        return self._dict_cache
 
     def _set_phone(self):
         doc = self.to_dict()
@@ -105,13 +115,6 @@ class ParsedInstance(models.Model):
     def _set_surveyor(self):
         self.time_to_set_surveyor.send(sender=self)
     
-    def get_from_mongo(self):
-        result = xform_instances.find_one(self.id)
-        if result: return result
-        raise utils.MyError(
-            "This instance hasn't been parsed into Mongo"
-            )
-    
     def save(self, *args, **kwargs):
         if not self.is_new:
             self.parse()
@@ -131,22 +134,9 @@ class ParsedInstance(models.Model):
         self._set_lga()
         self._set_surveyor()
     
-    def update_mongo(self, doc=None):
-        if doc is None: doc = self.to_dict()
-        doc.update(
-            {
-                ID : self.id,
-                SURVEYOR_NAME :
-                    None if not self.surveyor else self.surveyor.name,
-                DISTRICT_ID :
-                    None if not self.district else self.district.id,
-                u'matched_district/lga_id':
-                    None if not self.lga else self.lga.id,
-                ATTACHMENTS :
-                    [a.media_file.name for a in self.instance.attachments.all()],
-                }
-            )
-        xform_instances.save(doc)
+    def update_mongo(self):
+        d = self.to_dict()
+        xform_instances.save(d)
 
 # http://docs.djangoproject.com/en/dev/topics/db/models/#overriding-model-methods
 from django.db.models.signals import pre_delete
