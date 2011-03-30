@@ -115,15 +115,26 @@ def frequency_table(request, rows, columns):
     return HttpResponse(json.dumps(table, indent=4))
 
 def submission_counts_by_lga(request):
-    lgas = LGA.get_phase2_query_set()
-    counts = []
+    dicts = ParsedInstance.objects.values(
+        "lga", "instance__xform__title"
+        ).annotate(count=Count("id"))
+
+    titles = [u"Agriculture", u"Education", u"Health", u"LGA", u"Water"]
+    headers = [u"Zone", u"State", u"LGA"] + titles
+
+    lgas = LGA.get_ordered_phase2_query_set()
+    rows = []
     for lga in lgas:
-        row = (lga.state.zone.name,
+        row = [lga.state.zone.name,
                lga.state.name,
-               lga.name,
-               ParsedInstance.objects.filter(lga=lga).count())
-        counts.append(row)
-    context = RequestContext(request, {"counts" : counts})
+               lga.name,]
+        for title in titles:
+            count = ParsedInstance.objects.filter(
+                lga=lga, instance__xform__title=title
+                ).count()
+            row.append(count)
+        rows.append(row)
+    context = RequestContext(request, {"headers" : headers, "rows" : rows})
     return render_to_response(
         "submission_counts_by_lga.html",
         context_instance=context
