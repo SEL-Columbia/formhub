@@ -9,7 +9,7 @@ DATE_TIME_START = u"start"
 DATE_TIME_END = u"end"
 IMEI = u"device_id"
 PICTURE = u"picture"
-GPS = u"geopoint"
+GPS = u"location/gps"
 LGA = u"lga"
 
 # value of INSTANCE_DOC_NAME that indicates a regisration form

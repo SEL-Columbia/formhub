@@ -31,9 +31,9 @@ class DataDictionary(models.Model):
             if x not in self._xpaths and y not in self._xpaths:
                 return 0
             elif x not in self._xpaths:
-                return -1
-            elif y not in self._xpaths:
                 return 1
+            elif y not in self._xpaths:
+                return -1
             return cmp(self._xpaths.index(x), self._xpaths.index(y))
         return xpath_cmp
 

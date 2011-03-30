@@ -4,12 +4,11 @@
 {% block content %}
 <table>
   <tr>
-    <td>Zone</td>
-    <td>State</td>
-    <td>LGA</td>
-    <td>Number of Submissions</td>
+  {% for header in headers %}
+  <td>{{ header }}</td>
+  {% endfor %}
   </tr>
-{% for row in counts %}
+{% for row in rows %}
 <tr>
   {% for cell in row %}
   <td>{{ cell }}</td>

@@ -53,3 +53,11 @@ class LGA(NamedModel):
             state__in=State.get_phase2_query_set(),
             scale_up=True,
             ).exclude(name__in=cls.get_phase1_lga_names())
+
+    @classmethod
+    def get_ordered_phase2_query_set(cls):
+        return cls.get_phase2_query_set().order_by(
+            "state__zone__name",
+            "state__name",
+            "name"
+            )
