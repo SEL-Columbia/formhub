@@ -4,7 +4,7 @@ Testing POSTs to "/submission"
 from django.test import TestCase, Client
 
 from xform_manager.models import Instance, XForm
-from surveyor_manager.models import Surveyor
+#from surveyor_manager.models import Surveyor
 from datetime import datetime
 
 PARSED_XFORMS_URL_ROOT = "/xforms"
@@ -14,8 +14,7 @@ import json
 from xform_manager.factory import XFormManagerFactory
 xfactory = XFormManagerFactory()
 
-from parsed_xforms.models import xform_instances
-from parsed_xforms import tag
+#from parsed_xforms.models import xform_instances
 
 import re
 
@@ -30,9 +29,12 @@ class TestFunctional(TestCase):
     
     def test_map_data_is_accessible(self):
         c = Client()
+        
+        self.assertEqual(Instance.objects.count(), 2)
+        
         response = c.get("%s/data/map_data" % PARSED_XFORMS_URL_ROOT)
         self.assertEqual(response.status_code, 200)
-
+    
         json_response = re.sub("Content-Type: text/html; charset=utf-8", "", str(response)).strip()
         j = json.loads(json_response)
         
