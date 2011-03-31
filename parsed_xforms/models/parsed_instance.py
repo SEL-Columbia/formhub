@@ -42,7 +42,7 @@ class ParsedInstance(models.Model):
     # we've migrated phase I surveys, we should delete this field.
     district = models.ForeignKey(District, null=True)
     
-    lga = models.ForeignKey(nga_models.LGA, null=True)
+    lga = models.ForeignKey(nga_models.LGA, null=True, related_name="parsed_instances")
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
     district = models.ForeignKey(District, null=True)
