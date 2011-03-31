@@ -13,6 +13,9 @@ import sys
 import django.dispatch
 import datetime
 
+from sentry.client.models import client as sentry_client
+import logging
+
 # this is Mongo Collection (SQL table equivalent) where we will store
 # the parsed submissions
 xform_instances = settings.MONGO_DB.instances
@@ -24,7 +27,7 @@ DISTRICT_ID = u"_district_id"
 ATTACHMENTS = u"_attachments"
 DATE = u"_date"
 
-from nga_districts import models as nga_models
+from nga_districts.models import LGA
 
 def datetime_from_str(text):
     # Assumes text looks like 2011-01-01T09:50:06.966
@@ -42,7 +45,7 @@ class ParsedInstance(models.Model):
     # we've migrated phase I surveys, we should delete this field.
     district = models.ForeignKey(District, null=True)
     
-    lga = models.ForeignKey(nga_models.LGA, null=True)
+    lga = models.ForeignKey(LGA, null=True)
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
     district = models.ForeignKey(District, null=True)
@@ -98,21 +101,21 @@ class ParsedInstance(models.Model):
 
     def _set_lga(self):
         doc = self.to_dict()
-        
+
         zone_slug = doc.get(u'location/zone', None)
-        if not zone_slug: return None
-        
+        if zone_slug is None: return
         state_slug = doc.get(u'location/state_in_%s' % zone_slug, None)
-        if not state_slug: return None
-        
+        if state_slug is None: return
         lga_slug = doc.get(u'location/lga_in_%s' % state_slug, None)
-        if not lga_slug: return None
-        
+        if lga_slug is None: return
+
         try:
-            state = nga_models.State.objects.get(slug=state_slug)
-            self.lga = state.lgas.get(slug=lga_slug)
-        except ObjectDoesNotExist, e:
-            return None
+            self.lga = LGA.objects.get(slug=lga_slug, state__slug=state_slug)
+        except LGA.DoesNotExist:
+            message = "There is no LGA with (state_slug, lga_slug)="
+            message += "(%(state)s, %(lga)s)" % {
+                "state" : state_slug, "lga" : lga_slug}
+            sentry_client.create_from_text(message, level=logging.ERROR)
     
     time_to_set_surveyor = django.dispatch.Signal()
     def _set_surveyor(self):
