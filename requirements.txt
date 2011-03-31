@@ -13,3 +13,4 @@ django-indexer==0.2.1
 # Handle lxml==2.3 dependency with apt-get:
 #   apt-get install python-lxml
 xlrd==0.7.1
+unittest2==0.5.1
