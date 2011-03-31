@@ -42,7 +42,7 @@ def reparse_all(*args, **kwargs):
         cols, counts_1, start_time = get_counts()
     
     #do stuff here
-    for i in Instance.objects.all():
+    for i in Instance.objects.all().iterator():
         if i.parsed_instance:
 #            i.reparse()
             i.save()
