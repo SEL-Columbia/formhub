@@ -1,9 +1,7 @@
-import json
-from bson import json_util
-from django.http import HttpResponse
 from common_tags import LGA_ID, DATE_TIME_START, SURVEYOR_NAME, \
     INSTANCE_DOC_NAME, ATTACHMENTS, GPS
 from parsed_xforms.models import xform_instances
+from utils import json_response
 
 def map_data_points(request, lga_id):
     """
@@ -24,8 +22,7 @@ def map_data_points(request, lga_id):
               LGA_ID, ATTACHMENTS, GPS]
     mongo_query = xform_instances.find(spec=match_lga, fields=fields)
     list_of_dicts = list(mongo_query)
-    json_str = json.dumps(list_of_dicts, default=json_util.default)
-    return HttpResponse(json_str)
+    return json_response(list_of_dicts)
 
 from django.core.urlresolvers import reverse
 from nga_districts.models import LGA
