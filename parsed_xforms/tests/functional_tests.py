@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.core.management import call_command
 
 from xform_manager.models import Instance, XForm
-from surveyor_manager.models import Surveyor
+#from surveyor_manager.models import Surveyor
 from datetime import datetime
 
 PARSED_XFORMS_URL_ROOT = "/xforms"
@@ -59,7 +59,7 @@ class TestFunctional(TestCase):
         url = reverse(map_data_points, kwargs={'lga_id' : self.lga.id})
         response = self.client.post(url)
         self.assertEqual(response.status_code, 200)
-
+    
         json_response = re.sub("Content-Type: text/html; charset=utf-8", "", str(response)).strip()
         j = json.loads(json_response)
         
