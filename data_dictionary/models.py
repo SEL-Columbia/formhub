@@ -21,6 +21,11 @@ class DataDictionary(models.Model):
                 [(e.get_abbreviated_xpath(), unicode(e.get_label())) for e in self._survey.iter_children()]
         return self._xpaths_and_labels
 
+    def get_label(self, xpath):
+        if not hasattr(self, "_label_from_xpath"):
+            self._label_from_xpath = dict(self.get_xpaths_and_labels())
+        return self._label_from_xpath.get(xpath, None)
+
     def get_xpath_cmp(self):
         self.set_survey_object()
         if not hasattr(self, "_xpaths"):
