@@ -9,8 +9,8 @@ from locations.models import District
 from nga_districts.models import LGA
 
 from xform_manager import utils
-from common_tags import IMEI, DATE_TIME_START, DATE_TIME_END, \
-    LGA_ID, ID, SURVEYOR_NAME, ATTACHMENTS, DATE 
+from common_tags import IMEI, DEVICE_ID, START_TIME, START, \
+    DATE_TIME_END, LGA_ID, ID, SURVEYOR_NAME, ATTACHMENTS, DATE
 import sys
 import django.dispatch
 import datetime
@@ -71,17 +71,25 @@ class ParsedInstance(models.Model):
         # I'm using two different keys here because I switched the key
         # we're using in Phase II. Ideally, we'd do this using a data
         # dictionary.
-        imei = doc.get(u"device_id", doc.get(u"imei", None))
-        if imei:
+        if IMEI in doc:
+            imei = doc[IMEI]
+            self.phone, created = Phone.objects.get_or_create(imei=imei)
+        elif DEVICE_ID in doc:
+            imei = doc[DEVICE_ID]
             self.phone, created = Phone.objects.get_or_create(imei=imei)
         else:
             self.phone = None
 
     def _set_start_time(self):
         doc = self.to_dict()
-        u_start_time = doc.get(DATE_TIME_START, u"")
-        self.start_time = None if not u_start_time else \
-            datetime_from_str(u_start_time)
+        if START_TIME in doc:
+            date_time_str = doc[START_TIME]
+            self.start_time = datetime_from_str(date_time_str)
+        elif START in doc:
+            date_time_str = doc[START]
+            self.start_time = datetime_from_str(date_time_str)
+        else:
+            self.start_time = None     
 
     def _set_end_time(self):
         doc = self.to_dict()
