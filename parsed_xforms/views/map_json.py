@@ -26,3 +26,16 @@ def map_data_points(request, lga_id):
     list_of_dicts = list(mongo_query)
     json_str = json.dumps(list_of_dicts, default=json_util.default)
     return HttpResponse(json_str)
+
+from django.core.urlresolvers import reverse
+from nga_districts.models import LGA
+from parsed_xforms.models import ParsedInstance
+
+def links_to_json_for_lga_maps(request):
+    result = u""
+    for lga in LGA.get_ordered_phase2_query_set():
+        d = {u"count" : ParsedInstance.objects.filter(lga=lga).count(),
+             u"url" : reverse(map_data_points, kwargs={'lga_id' : lga.id}),
+             u"name" : lga.name,}
+        result += u'%(count)s: <a href="%(url)s">%(name)s</a> <br/>' % d
+    return HttpResponse(result)

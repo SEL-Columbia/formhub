@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     url(r"^survey-list/?$", views.export_list),
     url(r"^export_spreadsheet/(?P<id_string>[^/]*)\.xls$", views.xls),
     url(r"^map_data_points/(?P<lga_id>\d+)/$", views.map_data_points),
+    url(r"^links_to_map_data/?$", views.links_to_json_for_lga_maps),
 
     url(r"^$", views.xforms_directory, name="xforms_directory"),
     url(r"^dashboard/$", views.dashboard, name="dashboard"),
