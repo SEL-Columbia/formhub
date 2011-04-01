@@ -37,7 +37,7 @@ class ParsedInstance(models.Model):
     # district is no longer used except in old data. once
     # we've migrated phase I surveys, we should delete this field.
     district = models.ForeignKey(District, null=True)
-    lga = models.ForeignKey(nga_models.LGA, null=True)
+    lga = models.ForeignKey(LGA, null=True)
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
     surveyor = models.ForeignKey(Surveyor, null=True)

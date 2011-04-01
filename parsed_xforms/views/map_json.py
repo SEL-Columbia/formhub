@@ -3,6 +3,8 @@ from common_tags import LGA_ID, DATE_TIME_START, SURVEYOR_NAME, \
 from parsed_xforms.models import xform_instances
 from utils import json_response
 
+from django.http import HttpResponse #, HttpResponseBadRequest, HttpResponseRedirect
+
 def map_data_points(request, lga_id):
     """
     The map list needs these attributes for each survey to display
