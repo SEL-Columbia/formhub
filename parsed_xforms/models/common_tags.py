@@ -19,7 +19,7 @@ REGISTRATION_NAME = u"name"
 
 # extra fields that we're adding to our mongo doc
 SURVEYOR_NAME = u"_surveyor_name"
-DISTRICT_ID = u"_district_id"
+LGA_ID = u"_lga_id"
 ATTACHMENTS = u"_attachments"
 DATE = u"_date"
 
