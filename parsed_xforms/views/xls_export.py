@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import permission_required
 from data_dictionary.models import DataDictionary
-from parsed_xforms.models.common_tags import *
+from common_tags import *
 from parsed_xforms.models import xform_instances
 from collections import defaultdict
 import xlwt

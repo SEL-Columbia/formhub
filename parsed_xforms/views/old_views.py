@@ -16,7 +16,7 @@ import json
 import re
 
 from parsed_xforms.models import xform_instances, ParsedInstance
-from parsed_xforms.models.common_tags import *
+from common_tags import *
 from xform_manager.models import XForm, Instance
 from nga_districts.models import LGA
 
