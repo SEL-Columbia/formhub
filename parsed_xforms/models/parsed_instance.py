@@ -6,9 +6,11 @@ from xform_manager.models import XForm, Instance
 from phone_manager.models import Phone
 from surveyor_manager.models import Surveyor
 from locations.models import District
+from nga_districts.models import LGA
 
 from xform_manager import utils
-from common_tags import IMEI, DATE_TIME_START, DATE_TIME_END
+from common_tags import IMEI, DATE_TIME_START, DATE_TIME_END, \
+    LGA_ID, ID, SURVEYOR_NAME, ATTACHMENTS, DATE 
 import sys
 import django.dispatch
 import datetime
@@ -19,15 +21,6 @@ import logging
 # this is Mongo Collection (SQL table equivalent) where we will store
 # the parsed submissions
 xform_instances = settings.MONGO_DB.instances
-
-# tags we'll be adding
-ID = u"_id"
-SURVEYOR_NAME = u"_surveyor_name"
-DISTRICT_ID = u"_district_id"
-ATTACHMENTS = u"_attachments"
-DATE = u"_date"
-
-from nga_districts.models import LGA
 
 def datetime_from_str(text):
     # Assumes text looks like 2011-01-01T09:50:06.966
@@ -48,7 +41,6 @@ class ParsedInstance(models.Model):
     lga = models.ForeignKey(LGA, null=True)
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
-    district = models.ForeignKey(District, null=True)
     surveyor = models.ForeignKey(Surveyor, null=True)
     is_new = models.BooleanField(default=False)
     
@@ -63,9 +55,7 @@ class ParsedInstance(models.Model):
                 ID : self.get_mongo_id(),
                 SURVEYOR_NAME :
                     None if not self.surveyor else self.surveyor.name,
-                DISTRICT_ID :
-                    None if not self.district else self.district.id,
-                u'matched_district/lga_id':
+                LGA_ID :
                     None if not self.lga else self.lga.id,
                 ATTACHMENTS :
                     [a.media_file.name for a in self.instance.attachments.all()],
