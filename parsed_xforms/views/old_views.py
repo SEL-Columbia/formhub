@@ -14,7 +14,6 @@ from django.template import RequestContext
 import itertools
 import json
 import re
-from bson import json_util
 
 from parsed_xforms.models import xform_instances, ParsedInstance
 from parsed_xforms.models.common_tags import *
@@ -48,28 +47,6 @@ def prep_info(request):
     info = {'user':request.user}
     return info
         
-def map_data_points(request):
-    """
-    The map list needs these attributes for each survey to display
-    the map & dropdown filters.
-    
-    * Submission/Instance/Mongo doc ID
-    * Date
-    * Surveyor name
-    * Survey Type
-    * District ID
-    * a URL to access the picture
-    * GPS coordinates
-    
-    """
-    # These capitalized variables are coming out of models.common_tags.
-    gps_exists = {GPS : {"$exists" : True}}
-    fields = [DATE_TIME_START, SURVEYOR_NAME, INSTANCE_DOC_NAME,
-              DISTRICT_ID, GPS]
-    instances = xform_instances.find(spec=gps_exists, fields=fields)
-    dict_list = list(instances)
-    return HttpResponse(json.dumps(dict_list, default=json_util.default))
-
 dimensions = {
     "survey" : "survey_type__slug",
     "surveyor" : "surveyor__name",
