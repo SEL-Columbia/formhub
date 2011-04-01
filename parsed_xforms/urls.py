@@ -8,9 +8,10 @@ from . import views
 urlpatterns = patterns('',
     url(r"^survey-list/?$", views.export_list),
     url(r"^export_spreadsheet/(?P<id_string>[^/]*)\.xls$", views.xls),
+    url(r"^map_data_points/(?P<lga_id>\d+)/$", views.map_data_points),
+
     url(r"^$", views.xforms_directory, name="xforms_directory"),
     url(r"^dashboard/$", views.dashboard, name="dashboard"),
-    url(r"^data/map_data/?$", views.map_data_points),
     url(r"^submission-counts/(\w+)/(\w+)$", views.frequency_table),
     url(r"^survey/(?P<pk>\d+)/$", views.survey),
     url(r"^surveyors/((?P<surveyor_id>\d+)/)?$", views.surveyors),
