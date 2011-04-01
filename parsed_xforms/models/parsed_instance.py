@@ -22,8 +22,12 @@ import logging
 # the parsed submissions
 xform_instances = settings.MONGO_DB.instances
 
+class ParseError(Exception):
+    pass
+
 def datetime_from_str(text):
     # Assumes text looks like 2011-01-01T09:50:06.966
+    if text is None: raise ParseError("datetime string not found")
     date_time_str = text.split(".")[0]
     return datetime.datetime.strptime(
         date_time_str, '%Y-%m-%dT%H:%M:%S'
@@ -73,12 +77,12 @@ class ParsedInstance(models.Model):
         if IMEI in doc:
             imei = doc[IMEI]
             # there are some instances where imei is none in the production data
-            if imei is None: return None
+            if imei is None: raise ParseError("Registration Doc: [tag:%s] has no value" % IMEI)
             self.phone, created = Phone.objects.get_or_create(imei=imei)
         elif DEVICE_ID in doc:
             imei = doc[DEVICE_ID]
             # there are some instances where imei is none in the production data
-            if imei is None: return None
+            if imei is None: raise ParseError("Registration Doc: [tag:%s] has no value" % DEVICE_ID)
             self.phone, created = Phone.objects.get_or_create(imei=imei)
         else:
             self.phone = None
@@ -92,7 +96,7 @@ class ParsedInstance(models.Model):
             date_time_str = doc[START]
             self.start_time = datetime_from_str(date_time_str)
         else:
-            self.start_time = None     
+            self.start_time = None
 
     def _set_end_time(self):
         doc = self.to_dict()
@@ -135,11 +139,16 @@ class ParsedInstance(models.Model):
     
     
     def parse(self):
-        self._set_phone()
-        self._set_start_time()
-        self._set_end_time()
-        self._set_lga()
-        self._set_surveyor()
+        try:
+            self._set_phone()
+            self._set_start_time()
+            self._set_end_time()
+            self._set_lga()
+            self._set_surveyor()
+        except ParseError, e:
+            sentry_client.create_from_text("Parse Error on Instance ID: %d - %s" % \
+                            (self.instance.id, e), \
+                            level=logging.ERROR)
     
     def update_mongo(self):
         d = self.to_dict()
