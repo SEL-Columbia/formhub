@@ -4,6 +4,8 @@ Test that districts are properly assigned to parsed_instances.
 from django.test import TestCase, Client
 from datetime import datetime
 
+from common_tags import LGA_ID
+
 import os
 PATH_TO_FILE = os.path.realpath(__file__)
 CURRENT_DIR = os.path.dirname(PATH_TO_FILE)
@@ -44,6 +46,6 @@ class TestDistrictLinkage(TestCase):
         
         #I assigned the 'matched_district/lga_id' in
         # the ParsedInstance update_mongo code
-        mongo_lga_id = doc.get(u'matched_district/lga_id', None)
+        mongo_lga_id = doc.get(LGA_ID, None)
         
         self.assertEquals(mongo_lga_id, self.expected_lga.id)
