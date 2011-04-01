@@ -72,9 +72,13 @@ class ParsedInstance(models.Model):
         # dictionary.
         if IMEI in doc:
             imei = doc[IMEI]
+            # there are some instances where imei is none in the production data
+            if imei is None: return None
             self.phone, created = Phone.objects.get_or_create(imei=imei)
         elif DEVICE_ID in doc:
             imei = doc[DEVICE_ID]
+            # there are some instances where imei is none in the production data
+            if imei is None: return None
             self.phone, created = Phone.objects.get_or_create(imei=imei)
         else:
             self.phone = None
