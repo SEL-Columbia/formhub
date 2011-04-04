@@ -18,7 +18,7 @@ import re
 from parsed_xforms.models import xform_instances, ParsedInstance
 from common_tags import *
 from xform_manager.models import XForm, Instance
-from nga_districts.models import LGA
+from nga_districts.models import LGA, Zone, State
 
 from parsed_xforms.view_pkgr import ViewPkgr
 
@@ -124,16 +124,94 @@ from map_xforms.models import SurveyTypeMapData
 
 from django.forms.models import model_to_dict
 
+from collections import defaultdict
+
 def dashboard(request):
     rc = RequestContext(request)
     rc.xforms = XForm.objects.all()
     rc.lga_table = submission_counts_by_lga(request, True)
     rc.table_types = json.dumps(dimensions.keys())
     rc.survey_types = [model_to_dict(s) for s in SurveyType.objects.all()]
+    
+    rc.zone_table = state_count_dict()
+    
     return render_to_response(
         "dashboard.html",
         context_instance=rc
         )
+
+def state_count_dict():
+    """
+    This is similar to submission_counts_by_lga except the data is ordered by Zone, State, then LGA
+    """
+    lga_query = LGA.get_ordered_phase2_query_set()
+
+    row_groups = []
+    titles = [u"Agriculture", u"Education", u"Health", u"LGA", u"Water"]
+    
+    survey_totals = defaultdict(int)
+    lgas_by_state = defaultdict(list)
+    zone_totals = {}
+    state_totals = {}
+    lga_totals = {}
+    
+    states_list = []
+    
+    for lga in lga_query.all():
+        totals_for_this_lga = {}
+        cur_state = lga.state
+        cur_zone = cur_state.zone
+        if cur_state not in states_list: states_list.append(cur_state)
+        if cur_state not in state_totals: state_totals[cur_state] = defaultdict(int)
+        if cur_zone not in zone_totals: zone_totals[cur_zone] = defaultdict(int)
+        
+        #this is one way to keep lga list so we can package it up later.
+        lgas_by_state[cur_state].append(lga)
+        
+        lga_total = 0
+        for title in titles:
+            count = ParsedInstance.objects.filter(
+                        lga=lga, instance__xform__title=title
+                    ).count()
+            state_totals[cur_state][title] += count
+            zone_totals[cur_zone][title] += count
+            survey_totals[title] += count
+            lga_total += count
+            totals_for_this_lga[title] = count
+        
+        totals_for_this_lga['total'] = lga_total
+        lga_totals[lga] = totals_for_this_lga
+    
+    survey_totals_by_title = []
+    for title in titles:
+        survey_totals_by_title.append(survey_totals[title])
+    
+    for state in states_list:
+        totals_by_title = []
+        total_total = 0
+        for title in titles:
+            val = state_totals[state][title]
+            totals_by_title.append(val)
+            total_total += val
+        lga_list = []
+        for lga in lgas_by_state[state]:
+            cur_lga_total = lga_totals[lga]
+            lga_totals_by_title = []
+            for title in titles:
+                lga_totals_by_title.append(cur_lga_total[title])
+            lga_list.append({'name':lga.name, 'total_count':cur_lga_total['total'], \
+                            'pk': lga.id, 'survey_totals_by_title': lga_totals_by_title})
+        
+        row_groups.append({'zone_name': state.zone.name, 'name': state.name, \
+                    'survey_totals_by_title': totals_by_title, 'total_count': total_total, \
+                    'lga_count': len(lga_list), 'lga_list': lga_list})
+    
+    return {
+        'survey_titles': titles,
+        'survey_totals_by_title': survey_totals_by_title,
+        'states': row_groups
+    }
+
 
 from submission_qr.forms import ajax_post_form as quality_review_ajax_form
 from submission_qr.views import score_partial

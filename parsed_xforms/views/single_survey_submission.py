@@ -1,10 +1,12 @@
 from parsed_xforms.models import ParsedInstance
+from xform_manager.models import Instance
 from data_dictionary.models import DataDictionary
 from django.http import HttpResponse
 from utils import json_response
 
 def survey_responses(request, pk):
-    parsed_instance = ParsedInstance.objects.get(pk=pk)
+    instance = Instance.objects.get(pk=pk)
+    parsed_instance = instance.parsed_instance
     data = parsed_instance.to_dict()
 
     # get rid of keys with leading underscores
@@ -37,7 +39,8 @@ def survey_responses(request, pk):
     return json_response(label_value_pairs)
 
 def survey_media_files(request, pk):
-    parsed_instance = ParsedInstance.objects.get(pk=pk)
+    instance = Instance.objects.get(pk=pk)
+    parsed_instance = instance.parsed_instance
     attachments = parsed_instance.instance.attachments
     urls = [a.media_file.url for a in attachments.all()]
     return json_response(urls)
