@@ -14,9 +14,11 @@
 {% block menu %}
 <li class="dashboard"><a href="#/">Data Export</a></li>
 <li class="lga-list"><a href="#/lga-list">LGA List</a></li>
+<!--
 <li class="recent-surveys"><a href="#/activity">Recent Surveys</a></li>
 <li class="frequency-tables"><a href="#/frequency-tables">Frequency Tables</a></li>
 <li class="map"><a href="#/map">Map</a></li>
+-->
 {% endblock %}
 
 {% block content %}
@@ -630,9 +632,9 @@ var MapKey = (function(){
 			if(!oneTime++) {
 				var list = new ActivityList(data);
 				var llWindow = list.latLngWindow();
-				var neBounds = [llWindow.range.lat.max, llWindow.range.lng.max];
-				var swBounds = [llWindow.range.lat.min, llWindow.range.lng.min];
 				if(llWindow) {
+					var neBounds = [llWindow.range.lat.max, llWindow.range.lng.max];
+					var swBounds = [llWindow.range.lat.min, llWindow.range.lng.min];
 					that.Map(function(){
 						__map = this.map;
 						var center = new google.maps.LatLng(llWindow.range.lat.avg,
