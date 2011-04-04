@@ -3,6 +3,7 @@ from form_submission import TestFormSubmission
 from surveyor_registration import TestSurveyorRegistration
 from reparse_everything import TestReparseEverything
 from map_view import TestMapView
+from survey_view import TestSurveyView
 
 # functional_tests have been replaced by map_view. Look in
 # functional_tests for an explanation of why these tests cannot be

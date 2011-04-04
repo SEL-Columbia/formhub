@@ -74,18 +74,11 @@ class ParsedInstance(models.Model):
         # I'm using two different keys here because I switched the key
         # we're using in Phase II. Ideally, we'd do this using a data
         # dictionary.
-        if IMEI in doc:
-            imei = doc[IMEI]
-            # there are some instances where imei is none in the production data
-            if imei is None: raise ParseError("Registration Doc: [tag:%s] has no value" % IMEI)
+        if (IMEI in doc) or (DEVICE_ID in doc):
+            imei = doc.get(IMEI, doc.get(DEVICE_ID))
+            if imei is None:
+                raise ParseError("XForm Instance has empty 'imei' or 'device_id' tag.")
             self.phone, created = Phone.objects.get_or_create(imei=imei)
-        elif DEVICE_ID in doc:
-            imei = doc[DEVICE_ID]
-            # there are some instances where imei is none in the production data
-            if imei is None: raise ParseError("Registration Doc: [tag:%s] has no value" % DEVICE_ID)
-            self.phone, created = Phone.objects.get_or_create(imei=imei)
-        else:
-            self.phone = None
 
     def _set_start_time(self):
         doc = self.to_dict()
