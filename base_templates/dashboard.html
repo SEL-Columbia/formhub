@@ -4,21 +4,80 @@
 
 {% block scripts %}
 <script type="text/javascript" charset="utf-8">
-	var baseUrl = "{{dashboard_base_url}}";
+//	var baseUrl = "{{dashboard_base_url}}";
 </script>
 <!-- <script type="text/javascript" src="/site-media/js/nmis.dashboard.sammy.js?idonno"></script> -->
 <!-- <script src="/site-media/js/activity-list.js" type="text/javascript" charset="utf-8"></script> -->
 <link rel="stylesheet" href="/site-media/css/map-key.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
 {% endblock %}
 
+{% block menu %}
+<li class="dashboard"><a href="#/">Data Export</a></li>
+<li class="lga-list"><a href="#/lga-list">LGA List</a></li>
+<li class="recent-surveys"><a href="#/activity">Recent Surveys</a></li>
+<li class="frequency-tables"><a href="#/frequency-tables">Frequency Tables</a></li>
+<li class="map"><a href="#/map">Map</a></li>
+{% endblock %}
+
 {% block content %}
 <div class="full-content sliding" id="main">
 	<div class="iwrap" id="dashboard">
 		<div class="iiwrap">
+			<!-- Copied from "export_list.html" -->
+			<table class="pretty padded">
+				<thead>
+					<tr>
+				    <th>Title</th>
+				    <th>Number of Submissions</th>
+				    <th>Time of Last Submission</th>
+				    <th>Export</th>
+				  </tr>
+				</thead>
+				<tbody>
+			{% for xform in xforms %}
+				<tr>
+				  <td>{{ xform.title }}</td>
+				  <td>{{ xform.submission_count }}</td>
+				  <td>
+				    {% if xform.time_of_last_submission %}
+				    {{ xform.time_of_last_submission }}
+				    {% endif %}
+				  </td>
+				  <td>
+				    {% if xform.submission_count %}
+				    <a href={% url parsed_xforms.views.xls id_string=xform.id_string %}>xls</a>
+				    {% endif %}
+				  </td>
+				</tr>
+			{% endfor %}
+			</tbody>
+			</table>
 		</div>
 	</div>
 	<div class="iwrap" id="lga-list">
 		<div class="iiwrap">
+			<div class='pretty-table-wrap'>
+			<table class="pretty padded">
+				<thead>
+					<tr>
+					  {% for header in lga_table.headers %}
+					  <th>{{ header }}</th>
+					  {% endfor %}
+					</tr>
+				</thead>
+				{% for row in lga_table.rows %}
+				<tbody>
+					<tr>
+					  {% for cell in row %}
+					  <td>
+						<a href="#/{{row.2}}">{{ cell }}</a>
+					  </td>
+					  {% endfor %}
+					</tr>
+				</tbody>
+				{% endfor %}
+			</table>
+			</div>
 		</div>
 	</div>
 	<div class="iwrap" id="activity">
@@ -78,30 +137,15 @@
 <script type="text/javascript" src="/site-media/js/sammy.extensions.js"></script>
 
 <script type="text/javascript" charset="utf-8">
-
-$('.dontChangePage').live('click', function(evt){evt.preventDefault();})
-
 /*-- clickr is a temporary shortcut to clear localstorage
---*/
 var clickr = $("<a />", {href:'#','class':'dontChangePage'});
 clickr.html('.');
-clickr.css({'text-decoration':'none'})
-clickr.click(function(){storage.clear('activity');})
+clickr.css({'text-decoration':'none'});
+clickr.click(function(){storage.clear('activity');});
 $('.account_links').append(clickr);
-
-
-/*--
-
-
-$(function(){
-	var clearStorageLink = $("<a />", {href:'#'}).html("Clear Storage");
-	clearStorageLink.click(function(evt){
-		storage.clear('activity');
-		storage.clear('activity_stamp');
-		evt.preventDefault();
-	})
-})
+$('.dontChangePage').live('click', function(evt){evt.preventDefault();})
 --*/
+
 	$('.button').button();
 	
 	function capitalizeString(str) {
@@ -141,6 +185,7 @@ $(function(){
 </script>
 
 <script type="text/javascript" charset="utf-8">
+/*--
 	var District = (function(){
 		function District(data) {
 			$.extend(this, data);
@@ -182,6 +227,7 @@ $(function(){
 		});
 		$('#lga-list').find('.iiwrap').append(stateList);
 	});
+	--*/
 
 //	var districts = $({{districts|safe}}).map(function(){return new District(this)})
 //	function findDistrict(did) {var result; $(districts).each(function(){if(did==this.id){result=this; return false;}}); return result;}
@@ -189,12 +235,13 @@ $(function(){
 
 <script type="text/javascript" charset="utf-8">
 	var dashboard = (function($){
-		var menu = $('#menu .fwidth').empty();
+/*--		var menu = $('#menu .fwidth').empty();
         menu.append($('<li />', {'class':'dashboard'}).html($("<a />", {href:"#/"}).html("Data Export"))); //why is this not loading in the page?
         menu.append($('<li />', {'class':'lga-list'}).html($("<a />", {href:"#/lga-list"}).html("LGA List"))); //why is this not loading in the page?
         menu.append($('<li />', {'class':'activity'}).html($("<a />", {href:"#/activity"}).html("Recent Surveys")))
         menu.append($('<li />', {'class':'frequency-tables'}).html($("<a />", {href:"#/frequency-tables"}).html("Frequency Tables")))
         menu.append($('<li />', {'class':'map'}).html($("<a />", {href:"#/map"}).html("Map")));
+--*/
 
 	    var dashboard = $.sammy("#main", function(){
 	        this.use(Sammy.Storage);
@@ -223,13 +270,13 @@ $(function(){
 	--*/
 	dashboard.get("#/", function(context){
         var dashbElem = this.switchTo("dashboard", {title: "Data"});
-        $.get(baseUrl + "survey-list", function(htResponse){
-            var surveyList = $(htResponse);
-            $('a', surveyList).button();
-            $('tr td:nth-child(2)', surveyList).css({'text-align':'center'})
-            $('.iiwrap', dashbElem).html(surveyList);
-        });
     });
+
+	/*-- LGA/State List
+	--*/
+	dashboard.get("#/lga-list", function(){
+		var pageElem = this.switchTo("lga-list", {title: "LGA List"})
+	})
 	
 </script>
 
@@ -649,9 +696,9 @@ $(function(){
 
 <script type="text/javascript" charset="utf-8">
 	var surveyTypes = {};
-	$.each({{survey_types|safe}}, function(k, v){
-		surveyTypes[v.slug] = v;
-	});
+//	$.each({{survey_types|safe}}, function(k, v){
+//		surveyTypes[v.slug] = v;
+//	});
 	var defaultMapCenter = {
 		lat: 9.243092645104804,
 		lng: 7.9156494140625,

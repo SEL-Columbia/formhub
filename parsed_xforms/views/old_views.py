@@ -91,7 +91,7 @@ def frequency_table(request, rows, columns):
         }
     return HttpResponse(json.dumps(table, indent=4))
 
-def submission_counts_by_lga(request):
+def submission_counts_by_lga(request, as_dict=False):
     dicts = ParsedInstance.objects.values(
         "lga", "instance__xform__title"
         ).annotate(count=Count("id"))
@@ -111,6 +111,9 @@ def submission_counts_by_lga(request):
                 ).count()
             row.append(count)
         rows.append(row)
+    
+    if as_dict: return {"headers" : headers, "rows" : rows}
+    
     context = RequestContext(request, {"headers" : headers, "rows" : rows})
     return render_to_response(
         "submission_counts_by_lga.html",
@@ -119,15 +122,18 @@ def submission_counts_by_lga(request):
 
 from map_xforms.models import SurveyTypeMapData
 
+from django.forms.models import model_to_dict
+
 def dashboard(request):
-    info = prep_info(request)
-    info['dashboard_base_url'] = "/xforms/"
-    info['table_types'] = json.dumps(dimensions.keys())
-    info['districts'] = json.dumps([x.to_dict() for x in District.objects.filter(active=True)])
-    forms = XForm.objects.all()
-    info['surveys'] = json.dumps(list(set([x.title for x in forms])))
-    info['survey_types'] = json.dumps([s.to_dict() for s in SurveyTypeMapData.objects.all()])
-    return render_to_response("dashboard.html", info)
+    rc = RequestContext(request)
+    rc.xforms = XForm.objects.all()
+    rc.lga_table = submission_counts_by_lga(request, True)
+    rc.table_types = json.dumps(dimensions.keys())
+    rc.survey_types = [model_to_dict(s) for s in SurveyType.objects.all()]
+    return render_to_response(
+        "dashboard.html",
+        context_instance=rc
+        )
 
 from submission_qr.forms import ajax_post_form as quality_review_ajax_form
 from submission_qr.views import score_partial
