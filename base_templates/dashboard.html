@@ -74,6 +74,17 @@
 		color: #777;
 		font-size: 11px;
 	}
+	table#state-lga-list a.img-link {
+		float: left;
+		display: block;
+		width: 80px;
+		max-height: 80px;
+		margin: 2px 8px 8px 0;
+	}
+	table#state-lga-list a.img-link img {
+		max-width: 80px;
+		max-height: 80px;
+	}
 	table.popup-context td {
 		font-size: 11px;
 		color: #444;
@@ -719,7 +730,7 @@ var MapKey = (function(){
 		}
 		var topContext = $("<tbody />");
 //		topContext.append($("<tr />", {'rowspan':4}).html())
-		var link = $("<a />", {'href': activityPoint.imageUrl, target: '_blank', 'style':'float:left;display:block;width:80px;height:80px;margin:2px 8px 8px 0'}).html($("<img />", {'src': activityPoint.imageUrl}));
+		var link = $("<a />", {'href': activityPoint.imageUrl, target: '_blank', 'class': 'img-link'}).html($("<img />", {'src': activityPoint.imageUrl}));
 		var tcWrap = $("<div />", {'class':'clearfix'}).append(link).append($("<table />", {'class':'popup-context'}).html(topContext));
 		var ddList = $("<dl />", {'style':'clear:both'});
 		$.each(data, function(i, qaPair){
