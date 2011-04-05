@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     url(r"^survey/(?P<pk>\d+)/$", views.survey_responses),
     url(r"^survey_image_urls/(?P<pk>\d+)/$", views.survey_media_files),
 
+    url(r"^median_survey_lengths/?$", views.median_survey_lengths),
     url(r"^$", views.xforms_directory, name="xforms_directory"),
     url(r"^dashboard/$", views.dashboard, name="dashboard"),
     url(r"^submission-counts/(\w+)/(\w+)$", views.frequency_table),
