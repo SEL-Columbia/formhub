@@ -14,12 +14,11 @@ from django.template import RequestContext
 import itertools
 import json
 import re
-from bson import json_util
 
 from parsed_xforms.models import xform_instances, ParsedInstance
-from parsed_xforms.models.common_tags import *
+from common_tags import *
 from xform_manager.models import XForm, Instance
-from nga_districts.models import LGA
+from nga_districts.models import LGA, Zone, State
 
 from parsed_xforms.view_pkgr import ViewPkgr
 
@@ -48,28 +47,6 @@ def prep_info(request):
     info = {'user':request.user}
     return info
         
-def map_data_points(request):
-    """
-    The map list needs these attributes for each survey to display
-    the map & dropdown filters.
-    
-    * Submission/Instance/Mongo doc ID
-    * Date
-    * Surveyor name
-    * Survey Type
-    * District ID
-    * a URL to access the picture
-    * GPS coordinates
-    
-    """
-    # These capitalized variables are coming out of models.common_tags.
-    gps_exists = {GPS : {"$exists" : True}}
-    fields = [DATE_TIME_START, SURVEYOR_NAME, INSTANCE_DOC_NAME,
-              DISTRICT_ID, GPS]
-    instances = xform_instances.find(spec=gps_exists, fields=fields)
-    dict_list = list(instances)
-    return HttpResponse(json.dumps(dict_list, default=json_util.default))
-
 dimensions = {
     "survey" : "survey_type__slug",
     "surveyor" : "surveyor__name",
@@ -114,7 +91,7 @@ def frequency_table(request, rows, columns):
         }
     return HttpResponse(json.dumps(table, indent=4))
 
-def submission_counts_by_lga(request):
+def submission_counts_by_lga(request, as_dict=False):
     dicts = ParsedInstance.objects.values(
         "lga", "instance__xform__title"
         ).annotate(count=Count("id"))
@@ -134,6 +111,9 @@ def submission_counts_by_lga(request):
                 ).count()
             row.append(count)
         rows.append(row)
+    
+    if as_dict: return {"headers" : headers, "rows" : rows}
+    
     context = RequestContext(request, {"headers" : headers, "rows" : rows})
     return render_to_response(
         "submission_counts_by_lga.html",
@@ -142,15 +122,99 @@ def submission_counts_by_lga(request):
 
 from map_xforms.models import SurveyTypeMapData
 
+from django.forms.models import model_to_dict
+
+from collections import defaultdict
+
 def dashboard(request):
-    info = prep_info(request)
-    info['dashboard_base_url'] = "/xforms/"
-    info['table_types'] = json.dumps(dimensions.keys())
-    info['districts'] = json.dumps([x.to_dict() for x in District.objects.filter(active=True)])
-    forms = XForm.objects.all()
-    info['surveys'] = json.dumps(list(set([x.title for x in forms])))
-    info['survey_types'] = json.dumps([s.to_dict() for s in SurveyTypeMapData.objects.all()])
-    return render_to_response("dashboard.html", info)
+    rc = RequestContext(request)
+    rc.xforms = XForm.objects.all()
+    rc.lga_table = submission_counts_by_lga(request, True)
+    rc.table_types = json.dumps(dimensions.keys())
+    rc.survey_types = [model_to_dict(s) for s in SurveyType.objects.all()]
+    
+    rc.zone_table = state_count_dict()
+    
+    return render_to_response(
+        "dashboard.html",
+        context_instance=rc
+        )
+
+def state_count_dict():
+    """
+    This is similar to submission_counts_by_lga except the data is ordered by Zone, State, then LGA
+    """
+    lga_query = LGA.get_ordered_phase2_query_set()
+
+    row_groups = []
+    titles = [u"Agriculture", u"Education", u"Health", u"LGA", u"Water"]
+    
+    survey_totals = defaultdict(int)
+    lgas_by_state = defaultdict(list)
+    zone_totals = {}
+    state_totals = {}
+    lga_totals = {}
+    total_total = 0
+    
+    states_list = []
+    
+    for lga in lga_query.all():
+        totals_for_this_lga = {}
+        cur_state = lga.state
+        cur_zone = cur_state.zone
+        if cur_state not in states_list: states_list.append(cur_state)
+        if cur_state not in state_totals: state_totals[cur_state] = defaultdict(int)
+        if cur_zone not in zone_totals: zone_totals[cur_zone] = defaultdict(int)
+        
+        #this is one way to keep lga list so we can package it up later.
+        lgas_by_state[cur_state].append(lga)
+        
+        lga_total = 0
+        for title in titles:
+            count = ParsedInstance.objects.filter(
+                        lga=lga, instance__xform__title=title
+                    ).count()
+            state_totals[cur_state][title] += count
+            zone_totals[cur_zone][title] += count
+            survey_totals[title] += count
+            lga_total += count
+            total_total += count
+            totals_for_this_lga[title] = count
+        
+        totals_for_this_lga['total'] = lga_total
+        lga_totals[lga] = totals_for_this_lga
+    
+    survey_totals_by_title = []
+    for title in titles:
+        survey_totals_by_title.append(survey_totals[title])
+    
+    for state in states_list:
+        totals_by_title = []
+        state_total = 0
+        for title in titles:
+            val = state_totals[state][title]
+            totals_by_title.append(val)
+            state_total += val
+        lga_list = []
+        for lga in lgas_by_state[state]:
+            cur_lga_total = lga_totals[lga]
+            lga_totals_by_title = []
+            for title in titles:
+                lga_totals_by_title.append(cur_lga_total[title])
+            lga_list.append({'name':lga.name, 'total_count':cur_lga_total['total'], \
+                            'pk': lga.id, 'survey_totals_by_title': lga_totals_by_title})
+        
+        row_groups.append({'zone_name': state.zone.name, 'name': state.name, \
+                    'survey_totals_by_title': totals_by_title, 'total_count': state_total, \
+                    'lga_count': len(lga_list), 'lga_list': lga_list})
+    
+    return {
+        'survey_titles': titles,
+        'survey_totals_by_title': survey_totals_by_title,
+        'states': row_groups,
+        'total_total': total_total
+    }
+
 
 from submission_qr.forms import ajax_post_form as quality_review_ajax_form
 from submission_qr.views import score_partial
@@ -190,19 +254,6 @@ def survey(request, pk):
        'score_partial': reviewing, \
        'popup': False})
     return r.r()
-
-def xforms_directory(request):
-    r = ViewPkgr(request, "xforms_directory.html")
-    r.footer()
-    r.ensure_logged_in()
-    return r.r()
-
-def homepage(request):
-    context = RequestContext(request)
-    return render_to_response(
-        "homepage.html",
-        context_instance=context
-        )
 
 from surveyor_manager.models import Surveyor
 

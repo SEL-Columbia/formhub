@@ -1,7 +1,7 @@
 from django.db import models
 from parsed_instance import ParsedInstance
 from surveyor_manager.models import Surveyor
-from common_tags import SURVEYOR_NAME, INSTANCE_DOC_NAME, REGISTRATION
+from common_tags import NAME, INSTANCE_DOC_NAME, REGISTRATION
 
 class Registration(models.Model):
     parsed_instance = models.ForeignKey(ParsedInstance)
@@ -32,10 +32,15 @@ class Registration(models.Model):
 
     def _create_surveyor(self):
         doc = self.parsed_instance.to_dict()
-        name = doc.get(u"name", u"")
-        if not name:
+        if NAME not in doc:
             raise Exception(
                 "Registration must have a non-empty name.",
+                self.parsed_instance.instance.xml, doc
+                )
+        name = doc[NAME]
+        if not name:
+            raise Exception(
+                "Name must be nonempty.",
                 self.parsed_instance.instance.xml, doc
                 )
         # Hack city with the username and password here.

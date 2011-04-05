@@ -1,3 +1,4 @@
 from parsed_instance import xform_instances, ParsedInstance
 from registration import Registration
+from data_dictionary import DataDictionary
 import common_tags

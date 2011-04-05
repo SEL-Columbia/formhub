@@ -3,8 +3,11 @@ from xform_manager.models import XForm
 from pyxform.builder import create_survey_element_from_json
 
 class DataDictionary(models.Model):
-    xform = models.ForeignKey(XForm)
+    xform = models.ForeignKey(XForm, related_name="data_dictionary")
     json = models.TextField()
+
+    class Meta:
+        app_label = "parsed_xforms"
 
     def set_survey_object(self):
         if not hasattr(self, "_survey"):
@@ -20,6 +23,11 @@ class DataDictionary(models.Model):
             self._xpaths_and_labels = \
                 [(e.get_abbreviated_xpath(), unicode(e.get_label())) for e in self._survey.iter_children()]
         return self._xpaths_and_labels
+
+    def get_label(self, xpath):
+        if not hasattr(self, "_label_from_xpath"):
+            self._label_from_xpath = dict(self.get_xpaths_and_labels())
+        return self._label_from_xpath.get(xpath, None)
 
     def get_xpath_cmp(self):
         self.set_survey_object()

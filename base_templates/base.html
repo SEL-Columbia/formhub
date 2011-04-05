@@ -31,6 +31,10 @@
 	{% if user.is_authenticated %}
 	<ul id="menu">
 		<div class="fwidth">
+			{% block menu %}
+			<li class="dashboard"><a href="/#/">Data Export</a></li>
+			<li class="submission-counts"><a href="/#/submission-counts">Submissions by LGA</a></li>
+			{% endblock %}
 		</div>
 	</ul>
 	{% endif %}

@@ -1,33 +1,32 @@
 from django.db import models
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
 
 from xform_manager.models import XForm, Instance
 from phone_manager.models import Phone
 from surveyor_manager.models import Surveyor
 from locations.models import District
+from nga_districts.models import LGA
 
 from xform_manager import utils
-from common_tags import IMEI, DATE_TIME_START, DATE_TIME_END
+from common_tags import IMEI, DEVICE_ID, START_TIME, START, \
+    END_TIME, END, LGA_ID, ID, SURVEYOR_NAME, ATTACHMENTS, DATE
 import sys
 import django.dispatch
 import datetime
+
+from sentry.client.models import client as sentry_client
+import logging
 
 # this is Mongo Collection (SQL table equivalent) where we will store
 # the parsed submissions
 xform_instances = settings.MONGO_DB.instances
 
-# tags we'll be adding
-ID = u"_id"
-SURVEYOR_NAME = u"_surveyor_name"
-DISTRICT_ID = u"_district_id"
-ATTACHMENTS = u"_attachments"
-DATE = u"_date"
-
-from nga_districts import models as nga_models
+class ParseError(Exception):
+    pass
 
 def datetime_from_str(text):
     # Assumes text looks like 2011-01-01T09:50:06.966
+    if text is None: raise ParseError("datetime string not found")
     date_time_str = text.split(".")[0]
     return datetime.datetime.strptime(
         date_time_str, '%Y-%m-%dT%H:%M:%S'
@@ -41,11 +40,9 @@ class ParsedInstance(models.Model):
     # district is no longer used except in old data. once
     # we've migrated phase I surveys, we should delete this field.
     district = models.ForeignKey(District, null=True)
-    
-    lga = models.ForeignKey(nga_models.LGA, null=True, related_name="parsed_instances")
+    lga = models.ForeignKey(LGA, null=True)
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
-    district = models.ForeignKey(District, null=True)
     surveyor = models.ForeignKey(Surveyor, null=True)
     is_new = models.BooleanField(default=False)
     
@@ -60,9 +57,7 @@ class ParsedInstance(models.Model):
                 ID : self.get_mongo_id(),
                 SURVEYOR_NAME :
                     None if not self.surveyor else self.surveyor.name,
-                DISTRICT_ID :
-                    None if not self.district else self.district.id,
-                u'matched_district/lga_id':
+                LGA_ID :
                     None if not self.lga else self.lga.id,
                 ATTACHMENTS :
                     [a.media_file.name for a in self.instance.attachments.all()],
@@ -78,41 +73,51 @@ class ParsedInstance(models.Model):
         # I'm using two different keys here because I switched the key
         # we're using in Phase II. Ideally, we'd do this using a data
         # dictionary.
-        imei = doc.get(u"device_id", doc.get(u"imei", None))
-        if imei:
+        if (IMEI in doc) or (DEVICE_ID in doc):
+            imei = doc.get(IMEI, doc.get(DEVICE_ID))
+            if imei is None:
+                raise ParseError("XForm Instance has empty 'imei' or 'device_id' tag.")
             self.phone, created = Phone.objects.get_or_create(imei=imei)
-        else:
-            self.phone = None
 
     def _set_start_time(self):
         doc = self.to_dict()
-        u_start_time = doc.get(DATE_TIME_START, u"")
-        self.start_time = None if not u_start_time else \
-            datetime_from_str(u_start_time)
+        if START_TIME in doc:
+            date_time_str = doc[START_TIME]
+            self.start_time = datetime_from_str(date_time_str)
+        elif START in doc:
+            date_time_str = doc[START]
+            self.start_time = datetime_from_str(date_time_str)
+        else:
+            self.start_time = None
 
     def _set_end_time(self):
         doc = self.to_dict()
-        u_end_time = doc.get(DATE_TIME_END, u"")
-        self.end_time = None if not u_end_time else \
-            datetime_from_str(u_end_time)
+        if END_TIME in doc:
+            date_time_str = doc[END_TIME]
+            self.end_time = datetime_from_str(date_time_str)
+        elif END in doc:
+            date_time_str = doc[END]
+            self.end_time = datetime_from_str(date_time_str)
+        else:
+            self.end_time = None
 
     def _set_lga(self):
         doc = self.to_dict()
-        
+
         zone_slug = doc.get(u'location/zone', None)
-        if not zone_slug: return None
-        
+        if zone_slug is None: return
         state_slug = doc.get(u'location/state_in_%s' % zone_slug, None)
-        if not state_slug: return None
-        
+        if state_slug is None: return
         lga_slug = doc.get(u'location/lga_in_%s' % state_slug, None)
-        if not lga_slug: return None
-        
+        if lga_slug is None: return
+
         try:
-            state = nga_models.State.objects.get(slug=state_slug)
-            self.lga = state.lgas.get(slug=lga_slug)
-        except ObjectDoesNotExist, e:
-            return None
+            self.lga = LGA.objects.get(slug=lga_slug, state__slug=state_slug)
+        except LGA.DoesNotExist:
+            message = "There is no LGA with (state_slug, lga_slug)="
+            message += "(%(state)s, %(lga)s)" % {
+                "state" : state_slug, "lga" : lga_slug}
+            sentry_client.create_from_text(message, level=logging.ERROR)
     
     time_to_set_surveyor = django.dispatch.Signal()
     def _set_surveyor(self):
@@ -131,11 +136,16 @@ class ParsedInstance(models.Model):
     
     
     def parse(self):
-        self._set_phone()
-        self._set_start_time()
-        self._set_end_time()
-        self._set_lga()
-        self._set_surveyor()
+        try:
+            self._set_phone()
+            self._set_start_time()
+            self._set_end_time()
+            self._set_lga()
+            self._set_surveyor()
+        except ParseError, e:
+            sentry_client.create_from_text("Parse Error on Instance ID: %d - %s" % \
+                            (self.instance.id, e), \
+                            level=logging.ERROR)
     
     def update_mongo(self):
         d = self.to_dict()

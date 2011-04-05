@@ -98,5 +98,7 @@ class TestSurveyorRegistration(TestCase):
         
         submission_one = xform_factory.create_simple_instance({'start': ordered_times[1]})
 
+        self.assertEqual(submission_one.parsed_instance.phone.imei, u"12345")
+        self.assertEqual(submission_one.parsed_instance.start_time, ordered_times[1])
         self.assertEqual(submission_one.parsed_instance.surveyor.name, 'Betty Bimbob')
         self.assertEqual(submission_two.parsed_instance.surveyor.name, 'Alex Adams')

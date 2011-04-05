@@ -40,12 +40,12 @@ def reparse_all(*args, **kwargs):
             reset_values()
         
         cols, counts_1, start_time = get_counts()
-    
-    #do stuff here
-    for i in Instance.objects.all():
-        if i.parsed_instance:
-#            i.reparse()
-            i.save()
+
+    # Delete all parsed instances.
+    ParsedInstance.objects.all().delete()
+    for i in Instance.objects.all().iterator():
+        # Parse each instance in the database
+        ParsedInstance.objects.create(instance=i)
     
     if debug:
         cols, counts_2, end_time = get_counts()
