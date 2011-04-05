@@ -74,6 +74,16 @@
 		color: #777;
 		font-size: 11px;
 	}
+	table#state-lga-list tr.selected td {
+		border-color: #777;
+		border-width: 1px 0;
+	}
+	table#state-lga-list.active tbody td {
+		opacity: 0.7;
+	}
+	table#state-lga-list.active tbody.opened td {
+		opacity: 1;
+	}
 	a.img-link {
 		float: left;
 		display: block;
@@ -87,7 +97,7 @@
 	}
 	table.popup-context td {
 		font-size: 11px;
-		color: #444;
+		color: #777;
 	}
 	table tr.total-row td.total {
 		font-weight: bold;
@@ -225,8 +235,18 @@
 
 (function(listTable){
 	listTable.find('tr.state-row').click(function(){
-		$('tbody.opened', listTable).removeClass('opened');
-		$(this).parents('tbody').addClass('opened');
+		if($(this).hasClass('selected')) {
+			$(this).removeClass('selected')
+				.parents('tbody').removeClass('opened');
+			$(listTable).removeClass('active');
+		} else {
+			$('tbody.opened', listTable).removeClass('opened');
+			$('.selected', listTable).removeClass('selected');
+//			$(this).parents('table').addClass('active').find('.selected').removeClass('selected');
+			$(this).addClass('selected')
+				.parents('tbody').addClass('opened');
+			$(listTable).addClass('active');
+		}
 	})
 })($('#state-lga-list'))
 
