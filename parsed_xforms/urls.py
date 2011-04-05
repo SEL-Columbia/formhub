@@ -14,10 +14,11 @@ urlpatterns = patterns('',
     url(r"^survey_image_urls/(?P<pk>\d+)/$", views.survey_media_files),
 
     url(r"^median_survey_lengths/?$", views.median_survey_lengths),
-    url(r"^$", views.xforms_directory, name="xforms_directory"),
-    url(r"^dashboard/$", views.dashboard, name="dashboard"),
     url(r"^submission-counts/(\w+)/(\w+)$", views.frequency_table),
     url(r"^surveyors/((?P<surveyor_id>\d+)/)?$", views.surveyors),
     url(r"^surveys/((?P<survey_type_slug>\w+)/)?$", views.survey_types),
     url(r"^counts-by-lga/?$", views.submission_counts_by_lga),
+    
+    url(r"^dashboard/$", views.dashboard, name="dashboard"),
+    url(r"^$", views.dashboard, name="dashboard"),
 )
