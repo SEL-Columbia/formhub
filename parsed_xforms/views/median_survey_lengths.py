@@ -11,7 +11,8 @@ def median_survey_lengths(request):
     for pi in ParsedInstance.objects.all().iterator():
         if pi.instance.xform:
             survey_title = pi.instance.xform.title
-            times[survey_title].append(pi.end_time - pi.start_time)
+            if pi.end_time is not None and pi.start_time is not None:
+                times[survey_title].append(pi.end_time - pi.start_time)
     for key in times.keys():
         times[key].sort()
     result = {}
