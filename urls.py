@@ -8,8 +8,6 @@ from xform_manager import views as xform_manager_views
 OPT_GROUP_REGEX = "((?P<group_name>[^/]+)/)?"
 
 urlpatterns = patterns('',
-    url(r'^$', 'parsed_xforms.views.homepage', name='site-homepage'),
-
     (r'^phone_manager/', include('nmis.phone_manager.urls')),
     (r'^admin/', include(admin.site.urls)),
     (r'^accounts/', include('registration.urls')),

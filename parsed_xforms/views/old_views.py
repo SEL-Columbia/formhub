@@ -255,19 +255,6 @@ def survey(request, pk):
        'popup': False})
     return r.r()
 
-def xforms_directory(request):
-    r = ViewPkgr(request, "xforms_directory.html")
-    r.footer()
-    r.ensure_logged_in()
-    return r.r()
-
-def homepage(request):
-    context = RequestContext(request)
-    return render_to_response(
-        "homepage.html",
-        context_instance=context
-        )
-
 from surveyor_manager.models import Surveyor
 
 def surveyor_list_dict(surveyor):
