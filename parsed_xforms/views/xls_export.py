@@ -1,7 +1,6 @@
 from django.contrib.auth.decorators import permission_required
-from data_dictionary.models import DataDictionary
-from common_tags import *
-from parsed_xforms.models import xform_instances
+from common_tags import ID_STRING
+from parsed_xforms.models import xform_instances, DataDictionary
 from collections import defaultdict
 import xlwt
 from django.http import HttpResponse

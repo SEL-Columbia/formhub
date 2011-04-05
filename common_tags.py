@@ -5,8 +5,6 @@
 ID_STRING = u"_id_string"
 INSTANCE_DOC_NAME = u"_name"
 ID = u"_id"
-DATE_TIME_START = u"start_time"
-DATE_TIME_END = u"end_time"
 PICTURE = u"picture"
 GPS = u"location/gps"
 LGA = u"lga"
@@ -16,6 +14,8 @@ IMEI = u"imei"           # This tag was used in Phase II
 # Survey start time:
 START_TIME = u"start_time" # This tag was used in Phase I
 START = u"start"           # This tag was used in Phase II
+END_TIME = u"end_time"
+END = u"end"
 
 # value of INSTANCE_DOC_NAME that indicates a regisration form
 REGISTRATION = u"registration"

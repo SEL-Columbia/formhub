@@ -1,4 +1,4 @@
-from common_tags import LGA_ID, DATE_TIME_START, SURVEYOR_NAME, \
+from common_tags import LGA_ID, START_TIME, SURVEYOR_NAME, \
     INSTANCE_DOC_NAME, ATTACHMENTS, GPS
 from parsed_xforms.models import xform_instances
 from utils import json_response
@@ -20,7 +20,7 @@ def map_data_points(request, lga_id):
     
     """
     match_lga = {LGA_ID : int(lga_id)}
-    fields = [DATE_TIME_START, SURVEYOR_NAME, INSTANCE_DOC_NAME,
+    fields = [START_TIME, SURVEYOR_NAME, INSTANCE_DOC_NAME,
               LGA_ID, ATTACHMENTS, GPS]
     mongo_query = xform_instances.find(spec=match_lga, fields=fields)
     list_of_dicts = list(mongo_query)

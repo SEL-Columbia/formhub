@@ -1,6 +1,5 @@
 from django.db import models
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
 
 from xform_manager.models import XForm, Instance
 from phone_manager.models import Phone
@@ -10,7 +9,7 @@ from nga_districts.models import LGA
 
 from xform_manager import utils
 from common_tags import IMEI, DEVICE_ID, START_TIME, START, \
-    DATE_TIME_END, LGA_ID, ID, SURVEYOR_NAME, ATTACHMENTS, DATE
+    END_TIME, END, LGA_ID, ID, SURVEYOR_NAME, ATTACHMENTS, DATE
 import sys
 import django.dispatch
 import datetime
@@ -93,9 +92,14 @@ class ParsedInstance(models.Model):
 
     def _set_end_time(self):
         doc = self.to_dict()
-        u_end_time = doc.get(DATE_TIME_END, u"")
-        self.end_time = None if not u_end_time else \
-            datetime_from_str(u_end_time)
+        if END_TIME in doc:
+            date_time_str = doc[END_TIME]
+            self.end_time = datetime_from_str(date_time_str)
+        elif END in doc:
+            date_time_str = doc[END]
+            self.end_time = datetime_from_str(date_time_str)
+        else:
+            self.end_time = None
 
     def _set_lga(self):
         doc = self.to_dict()

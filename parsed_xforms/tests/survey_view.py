@@ -1,9 +1,8 @@
 from django.test import TestCase
 from pyxform import create_survey_from_xls
 from xform_manager.models import XForm, Instance
-from parsed_xforms.models import ParsedInstance
+from parsed_xforms.models import ParsedInstance, DataDictionary
 from parsed_xforms.views import survey_responses
-from data_dictionary.models import DataDictionary
 from django.core.urlresolvers import reverse
 import json
 import re

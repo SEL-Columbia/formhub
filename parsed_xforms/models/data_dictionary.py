@@ -3,8 +3,11 @@ from xform_manager.models import XForm
 from pyxform.builder import create_survey_element_from_json
 
 class DataDictionary(models.Model):
-    xform = models.ForeignKey(XForm)
+    xform = models.ForeignKey(XForm, related_name="data_dictionary")
     json = models.TextField()
+
+    class Meta:
+        app_label = "parsed_xforms"
 
     def set_survey_object(self):
         if not hasattr(self, "_survey"):

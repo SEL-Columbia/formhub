@@ -1,6 +1,5 @@
-from parsed_xforms.models import ParsedInstance
+from parsed_xforms.models import ParsedInstance, DataDictionary
 from xform_manager.models import Instance
-from data_dictionary.models import DataDictionary
 from django.http import HttpResponse
 from utils import json_response
 
