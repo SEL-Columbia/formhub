@@ -662,7 +662,11 @@ var MapKey = (function(){
 
 	/*-- LGA/State List
 	--*/
-	dashboard.get("#/lga-list", function(){
+	
+	//redirects to submission-counts
+	dashboard.get("#/lga-list", function(){dashboard.setLocation("#/submission-counts");});
+	
+	dashboard.get("#/submission-counts", function(){
 		var pageElem = this.switchTo("lga-list", {title: "LGA List"});
 		$('.pretty-table-wrap', pageElem).fadeIn().css({'z-index':99});
 		$("#map-wrap", pageElem).fadeOut();
