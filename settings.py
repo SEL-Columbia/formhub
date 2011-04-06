@@ -43,7 +43,7 @@ USE_L10N = True
 ADMIN_MEDIA_PREFIX = '/media/'
 
 # settings for user authentication
-LOGIN_URL = '/login/'
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 
 # user registration settings
