@@ -19,15 +19,11 @@ from parsed_xforms.models import xform_instances, ParsedInstance
 from common_tags import *
 from xform_manager.models import XForm, Instance
 from nga_districts.models import LGA, Zone, State
+from deny_if_unauthorized import deny_if_unauthorized
 
 from parsed_xforms.view_pkgr import ViewPkgr
 
-read_all_data, created = Permission.objects.get_or_create(
-    name = "Can read all data",
-    content_type = ContentType.objects.get_for_model(Permission),
-    codename = "read_all_data"
-    )
-@permission_required("auth.read_all_data")
+@deny_if_unauthorized()
 def export_list(request):
     xforms = XForm.objects.all()
     context = RequestContext(request, {"xforms" : xforms})

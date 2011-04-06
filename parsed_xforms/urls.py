@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r"^links_to_map_data/?$", views.links_to_json_for_lga_maps),
     url(r"^survey/(?P<pk>\d+)/$", views.survey_responses),
     url(r"^survey_image_urls/(?P<pk>\d+)/$", views.survey_media_files),
+    url(r"^access_denied/$", views.access_denied),
 
     url(r"^median_survey_lengths/?$", views.median_survey_lengths),
     url(r"^$", views.xforms_directory, name="xforms_directory"),
