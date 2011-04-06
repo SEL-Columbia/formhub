@@ -88,7 +88,9 @@ def xls_to_response(xls, fname):
     xls.save(response)
     return response
 
-@permission_required("auth.read_all_data")
+from deny_if_unauthorized import deny_if_unauthorized
+
+@deny_if_unauthorized()
 def xls(request, id_string):
     worksheets = construct_worksheets(id_string)
 

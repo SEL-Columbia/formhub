@@ -87,6 +87,7 @@ def frequency_table(request, rows, columns):
         }
     return HttpResponse(json.dumps(table, indent=4))
 
+@deny_if_unauthorized()
 def submission_counts_by_lga(request, as_dict=False):
     dicts = ParsedInstance.objects.values(
         "lga", "instance__xform__title"
@@ -122,6 +123,7 @@ from django.forms.models import model_to_dict
 
 from collections import defaultdict
 
+@deny_if_unauthorized()
 def dashboard(request):
     rc = RequestContext(request)
     rc.xforms = XForm.objects.all()
