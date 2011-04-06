@@ -150,6 +150,7 @@ def state_count_dict():
     zone_totals = {}
     state_totals = {}
     lga_totals = {}
+    total_total = 0
     
     states_list = []
     
@@ -173,6 +174,7 @@ def state_count_dict():
             zone_totals[cur_zone][title] += count
             survey_totals[title] += count
             lga_total += count
+            total_total += count
             totals_for_this_lga[title] = count
         
         totals_for_this_lga['total'] = lga_total
@@ -184,11 +186,11 @@ def state_count_dict():
     
     for state in states_list:
         totals_by_title = []
-        total_total = 0
+        state_total = 0
         for title in titles:
             val = state_totals[state][title]
             totals_by_title.append(val)
-            total_total += val
+            state_total += val
         lga_list = []
         for lga in lgas_by_state[state]:
             cur_lga_total = lga_totals[lga]
@@ -199,13 +201,14 @@ def state_count_dict():
                             'pk': lga.id, 'survey_totals_by_title': lga_totals_by_title})
         
         row_groups.append({'zone_name': state.zone.name, 'name': state.name, \
-                    'survey_totals_by_title': totals_by_title, 'total_count': total_total, \
+                    'survey_totals_by_title': totals_by_title, 'total_count': state_total, \
                     'lga_count': len(lga_list), 'lga_list': lga_list})
     
     return {
         'survey_titles': titles,
         'survey_totals_by_title': survey_totals_by_title,
-        'states': row_groups
+        'states': row_groups,
+        'total_total': total_total
     }
 
 
@@ -247,19 +250,6 @@ def survey(request, pk):
        'score_partial': reviewing, \
        'popup': False})
     return r.r()
-
-def xforms_directory(request):
-    r = ViewPkgr(request, "xforms_directory.html")
-    r.footer()
-    r.ensure_logged_in()
-    return r.r()
-
-def homepage(request):
-    context = RequestContext(request)
-    return render_to_response(
-        "homepage.html",
-        context_instance=context
-        )
 
 from surveyor_manager.models import Surveyor
 

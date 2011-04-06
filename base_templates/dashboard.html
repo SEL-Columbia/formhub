@@ -59,7 +59,9 @@
 	table#state-lga-list tbody.opened tr.lga-row td {
 		background-color: #f6f6f6;
 		border-bottom-color: #ddd;
+		color: #333;
 	}
+	table#state-lga-list tbody.opened tr.lga-row td, table#state-lga-list tbody.opened tr.lga-row td a { color: #333; }
 	table#state-lga-list tbody.opened tr.state-row td {
 		border-bottom: 1px solid #bbb;
 	}
@@ -74,16 +76,41 @@
 		color: #777;
 		font-size: 11px;
 	}
-	table#state-lga-list tr.selected td {
+	table#state-lga-list td.h-bar {
+		width: 5px;
+		padding: 0;
+		background-color: #eee;
+	}
+	table#state-lga-list tbody.opened td.h-bar {
+		background-color: #999;
+	}
+	table#state-lga-list tbody.opened tr.lga-row td.h-bar {
+		background-color: #bbb;
+		border-color: #999;
+	}
+	table#state-lga-list tfoot td.h-bar {
+		background-color: transparent;
+		border-color: transparent;
+	}
+	table#state-lga-list tfoot td {
+		border-bottom-color: transparent;
+	}
+	table#state-lga-list tfoot td.total-total {
+		color: #222;
+		background-color: #ccc;
+		font-weight: bold;
 		border-color: #777;
-		border-width: 1px 0;
+		border-width: 1px 0 0 1px;
 	}
-	table#state-lga-list.active tbody td {
-		opacity: 0.7;
+	table#state-lga-list a {
+		display: block;
 	}
-	table#state-lga-list.active tbody.opened td {
-		opacity: 1;
+	table#state-lga-list .tot-span {
+		font-size: smaller;
+		font-weight: normal;
+		color: #777;
 	}
+/*--	table#state-lga-list td.lga-name span.lga-name-prefix {color: #eee;} --*/
 	a.img-link {
 		float: left;
 		display: block;
@@ -102,14 +129,20 @@
 	table tr.total-row td.total {
 		font-weight: bold;
 		border-top: 1px solid #aaa;
+		color: #222;
 	}
 	table td.total {
 		font-weight: bold;
 		border-left: 1px solid #aaa;
+		color: #222;
+		text-align: center;
 	}
-	table tr.lga-row td.total {
+	table tr.lga-row td {
 		font-weight: normal;
 		font-size: 11px;
+	}
+	table tr.lga-row td.total {
+		font-weight: bold;
 	}
 	table thead th.survey-col-header {
 		width: 120px;
@@ -119,19 +152,23 @@
 	<div class="iwrap" id="lga-list">
 		<div class="iiwrap">
 			<div class='pretty-table-wrap'>
+			<p class="info">
+				Phase II states are listed in the table below. Click on a state to see LGAs surveyed, and click the LGA name to see a map of the submitted surveys.
+			</p>
 			<table border="0" class="pretty padded" id="state-lga-list">
 				<thead>
 					<tr>
-						<th colspan="3"></th>
+						<th colspan="4"></th>
 						{% for title in zone_table.survey_titles %}
 						<th class="survey-col-header">{{title}}</th>
 						{% endfor %}
-						<th></th>
+						<th><span class='tot-span'>TOTAL</span></th>
 					</tr>
 				</thead>
 				{% for state in zone_table.states %}
 				<tbody>
 					<tr class="state-row">
+						<td class="h-bar"></td>
 						<td>{{state.zone_name}}</td>
 						<td>{{state.name}}</td>
 						<td>
@@ -146,8 +183,11 @@
 					</tr>
 					{% for lga in state.lga_list %}
 					<tr class="lga-row">
-						<td colspan="2"><a href="#/map/lga/{{lga.pk}}" class="discrete-link">[View LGA in Map]</a></td>
-						<td><a href="#/map/lga/{{lga.pk}}">{{lga.name}}</a></td>
+						<td class="h-bar"></td>
+						<td><a href="#/map/lga/{{lga.pk}}" class="discrete-link">[View Map]</a></td>
+						<td colspan="2" class="lga-name">
+							<a href="#/map/lga/{{lga.pk}}">
+								{{lga.name}}</a></td>
 						{% for tot in lga.survey_totals_by_title %}
 						<td class="centered">{{tot}}</td>
 						{% endfor %}
@@ -160,11 +200,12 @@
 				{% endfor %}
 				<tfoot>
 					<tr class="total-row">
-						<td colspan="3"></td>
+						<td class="h-bar"></td>
+						<td colspan="3" style="text-align:right"><span class="tot-span">TOTAL</span></td>
 						{% for tot in zone_table.survey_totals_by_title %}
 						<td class="centered total">{{tot}}</td>
 						{% endfor %}
-						<td></td>
+						<td class="total-total">{{zone_table.total_total}}</td>
 					</tr>
 				</tfoot>
 			</table>
@@ -296,56 +337,6 @@ $('.dontChangePage').live('click', function(evt){evt.preventDefault();})
 	SetResizer(jQuery, ".iiwrap", "#header, #menu", (16+24));
 
 </script>
-
-<script type="text/javascript" charset="utf-8">
-/*--
-	var District = (function(){
-		function District(data) {
-			$.extend(this, data);
-			var c = this.coords.split(",");
-			this.gps = {
-				lat: c[0],
-				lng: c[1]
-			}
-		}
-		District.prototype = new Mappable();
-		District.prototype.GLatLng = function(){
-			var ll = this.coords.split(",");
-			return new google.maps.LatLng(ll[0],ll[1]);
-		}
-		District.prototype.ensureKmlLoaded = function(map){
-			if(!this.kmlLayer) {
-				this.kmlLayer = new google.maps.KmlLayer(this.kml+"?b", {
-					map: map,
-					preserveViewport: true
-				});
-			}
-		}
-		return District;
-	})//(jQuery);
-	
-	var states = {{states_lgas|safe}};
-	
-	$(function addStateLgaLinks(){
-		var stateList = $("<ul />");
-		$.each(states, function(i, sd){
-			var stateLi = $("<li />").text(sd.name);
-			var lgaList = $("<ul />");
-			$.each(sd.lgas, function(ii, lga){
-				var lgaLink = $("<a />", {'href':'#/map/'+lga.slug}).text(lga.name);
-				lgaList.append($("<li />", {'id': 'lga-link-'+lga.slug}).html(lgaLink));
-			})
-			stateList.append(stateLi)
-				.append(lgaList);
-		});
-		$('#lga-list').find('.iiwrap').append(stateList);
-	});
-	--*/
-
-//	var districts = $({{districts|safe}}).map(function(){return new District(this)})
-//	function findDistrict(did) {var result; $(districts).each(function(){if(did==this.id){result=this; return false;}}); return result;}
-</script>
-
 <script type="text/javascript" charset="utf-8">
 (function(){
     Sammy.GoogleMaps = function(){
@@ -543,7 +534,7 @@ var MapKey = (function(){
 			return odiv;
 		},
 		prependButton: function(text, url){
-			this.tr.prepend($("<td />").html($("<a />", {'href':url}).text(text).thinButton()));
+			this.tr.prepend($("<td />").html($("<a />", {'href':url}).html(text).thinButton()));
 		},
 		appendMapTypeSelector: function(){
 		    mapTypeSelectors = $("<td />", {'id':'map-type-choices'})
@@ -662,7 +653,11 @@ var MapKey = (function(){
 
 	/*-- LGA/State List
 	--*/
-	dashboard.get("#/lga-list", function(){
+	
+	//redirects to submission-counts
+	dashboard.get("#/lga-list", function(){dashboard.setLocation("#/submission-counts");});
+	
+	dashboard.get("#/submission-counts", function(){
 		var pageElem = this.switchTo("lga-list", {title: "LGA List"});
 		$('.pretty-table-wrap', pageElem).fadeIn().css({'z-index':99});
 		$("#map-wrap", pageElem).fadeOut();
@@ -696,7 +691,7 @@ var MapKey = (function(){
 						var nav = this.key({clear:true});
 						MapKey.empty();
 						MapKey.appendMapTypeSelector();
-						MapKey.prependButton("Back to the List of LGAs", "#/lga-list");
+						MapKey.prependButton("&laquo; Back to the List of LGAs", "#/submission-counts");
 						list.each(function(){
 							if(!this.gps) {
 								return;
