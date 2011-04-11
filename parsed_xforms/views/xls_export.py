@@ -1,12 +1,12 @@
 from django.contrib.auth.decorators import permission_required
-from common_tags import ID_STRING
+from common_tags import XFORM_ID_STRING
 from parsed_xforms.models import xform_instances, DataDictionary
 from collections import defaultdict
 import xlwt
 from django.http import HttpResponse
 
 def _get_parsed_instances_from_mongo(id_string):
-    match_id_string = {ID_STRING : id_string}
+    match_id_string = {XFORM_ID_STRING : id_string}
     parsed_instances = \
         xform_instances.find(spec=match_id_string)
     return list(parsed_instances)
@@ -32,19 +32,20 @@ def _get_sorted_xpaths(list_of_dicts, data_dictionary):
     _sort_xpaths(xpaths, data_dictionary)
     return xpaths
 
+DATA_DICTIONARY = u"data_dictionary"
+DATA = u"data"
+XPATHS = u"xpaths"
+
 def get_data_for_spreadsheet(id_string):
+    result = {}
     try:
-        data_dictionary = \
+        result[DATA_DICTIONARY] = \
             DataDictionary.objects.get(xform__id_string=id_string)
     except DataDictionary.DoesNotExist:
-        data_dictionary = None
+        resutl[DATA_DICTIONARY] = None
 
-    result = {u"data" : _get_parsed_instances_from_mongo(id_string)}
-    result[u"headers"] = _get_sorted_xpaths(result[u"data"],
-                                            data_dictionary)
-    if data_dictionary:
-        result[u"dictionary"] = \
-            data_dictionary.get_xpaths_and_labels()
+    result[DATA] = _get_parsed_instances_from_mongo(id_string)
+    result[XPATHS] = _get_sorted_xpaths(result[DATA], result[DATA_DICTIONARY])
     return result
 
 NUMBER_OF_COLUMNS = 256
@@ -64,21 +65,24 @@ def _split_table_into_data_sheets(table):
                         sheets[i]) )
     return result
 
+def _get_headers(data_dictionary, xpaths):
+    return [data_dictionary.get_variable_name(xpath) for xpath in xpaths]
+
 def construct_worksheets(id_string):
     # data, headers, and dictionary
     dhd = get_data_for_spreadsheet(id_string)
 
-    sheet1 = [dhd[u"headers"]]
-    for survey in dhd[u"data"]:
+    sheet1 = [_get_headers(dhd[DATA_DICTIONARY], dhd[XPATHS])]
+    for survey in dhd[DATA]:
         row = []
-        for xpath in dhd[u"headers"]:
+        for xpath in dhd[XPATHS]:
             cell = survey.get(xpath, u"n/a")
             row.append(unicode(cell))
         sheet1.append(row)
     result = _split_table_into_data_sheets(sheet1)
 
-    if u"dictionary" in dhd:
-        sheet2 = [[u"Name", u"Label"]] + dhd[u"dictionary"]
+    if DATA_DICTIONARY in dhd:
+        sheet2 = [[u"Name", u"Label"]] + dhd[DATA_DICTIONARY]
         result.append((u"Dictionary", sheet2))
     return result
 
