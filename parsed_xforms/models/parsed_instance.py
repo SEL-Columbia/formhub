@@ -10,7 +10,6 @@ from nga_districts.models import LGA
 from xform_manager import utils
 from common_tags import IMEI, DEVICE_ID, START_TIME, START, \
     END_TIME, END, LGA_ID, ID, SURVEYOR_NAME, ATTACHMENTS, DATE
-import sys
 import django.dispatch
 import datetime
 
@@ -126,6 +125,12 @@ class ParsedInstance(models.Model):
     def save(self, *args, **kwargs):
         if not self.is_new:
             self.parse()
+            # todo: put this logging stuff back in.
+            # except ParseError, e:
+            #     sentry_client.create_from_text(
+            #         "Parse Error on Instance ID: %d - %s" % \
+            #             (self.instance.id, e), \
+            #             level=logging.ERROR)
             self.is_new = True
         
         super(ParsedInstance, self).save(*args, **kwargs)
@@ -136,16 +141,11 @@ class ParsedInstance(models.Model):
     
     
     def parse(self):
-        try:
-            self._set_phone()
-            self._set_start_time()
-            self._set_end_time()
-            self._set_lga()
-            self._set_surveyor()
-        except ParseError, e:
-            sentry_client.create_from_text("Parse Error on Instance ID: %d - %s" % \
-                            (self.instance.id, e), \
-                            level=logging.ERROR)
+        self._set_phone()
+        self._set_start_time()
+        self._set_end_time()
+        self._set_lga()
+        self._set_surveyor()
     
     def update_mongo(self):
         d = self.to_dict()
@@ -159,7 +159,6 @@ def _remove_from_mongo(sender, **kwargs):
 
 pre_delete.connect(_remove_from_mongo, sender=ParsedInstance)
 
-import sys
 
 from django.db.models.signals import post_save
 def _parse_instance(sender, **kwargs):
@@ -168,24 +167,10 @@ def _parse_instance(sender, **kwargs):
     instance = kwargs["instance"]
     qs = ParsedInstance.objects.filter(instance=instance)
     if qs.count() > 0: qs.delete()
-    # I'm worried with a OneToOneField this may also delete the
-    # instance.
 
-    try:
-        # Create a new ParsedInstance for this instance. This will
-        # reparse the submission.
-        parsed_instance = \
-            ParsedInstance.objects.create(instance=instance)
-    except:
-        # catch any exceptions and print them to the error log
-        # it'd be good to add more info to these error logs
-        # --i think this might not be necessary anymore, but keeping it in for
-        #   security.
-        e = sys.exc_info()[1]
-        utils.report_exception(
-                "problem parsing submission",
-                e.__unicode__(),
-                sys.exc_info()
-                )
+    # Create a new ParsedInstance for this instance. This will
+    # reparse the submission.
+    parsed_instance = \
+        ParsedInstance.objects.create(instance=instance)
     
 post_save.connect(_parse_instance, sender=Instance)
