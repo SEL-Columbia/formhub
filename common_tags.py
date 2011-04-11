@@ -2,7 +2,7 @@
 # FIELDS ELEGANTLY
 
 # These are common variable tags that we'll want to access
-ID_STRING = u"_id_string"
+XFORM_ID_STRING = u"_xform_id_string"
 INSTANCE_DOC_NAME = u"_name"
 ID = u"_id"
 PICTURE = u"picture"
