@@ -30,7 +30,13 @@ class TestSurveyView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-        json_response = re.sub("Content-Type: text/html; charset=utf-8", "", str(response)).strip()
+        response_str = str(response)
+        header = """Vary: Cookie
+Content-Type: text/html; charset=utf-8
+
+"""
+        self.assertTrue(response_str.startswith(header))
+        json_response = response_str[len(header):]
         j = json.loads(json_response)
         
         self.assertEqual(j, [[u"What's your name?", u'Andrew']])
