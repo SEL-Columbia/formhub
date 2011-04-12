@@ -1,0 +1,246 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyxform &mdash; nmis v0.7 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="nmis v0.7 documentation" href="index.html" />
+    <link rel="prev" title="NMIS Project Documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="NMIS Project Documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">nmis v0.7 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pyxform">
+<span id="pyxform"></span><h1>pyxform<a class="headerlink" href="#module-pyxform" title="Permalink to this headline">¶</a></h1>
+<p>pyxform is a Python library designed to make authoring XForms for ODK
+Collect easy.</p>
+<div class="section" id="module-pyxform.xls2xform">
+<span id="xls2xform"></span><h2>xls2xform<a class="headerlink" href="#module-pyxform.xls2xform" title="Permalink to this headline">¶</a></h2>
+<p>xls2xform converts properly formatted Excel documents into XForms for
+use with ODK Collect. xl2xform is called at the command line using:</p>
+<div class="highlight-python"><pre>python xls2xform.py path-to-excel-file</pre>
+</div>
+<p>To learn what sort of features are supported by xls2xform please refer
+to xls/tutorial-v0.1.xls. This example survey is the most straight
+forward introduction to the xls2xform syntax.</p>
+</div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<p>pyxform takes an object oriented approach to defining
+surveys. Questions, question options, groups of questions, and surveys
+are all instances of SurveyElement. This allows us to model a survey
+as a tree of SurveyElements. The class inheritance is structured as
+follows:</p>
+<ul>
+<li><dl class="first docutils">
+<dt>SurveyElement</dt>
+<dd><ul class="first last">
+<li><p class="first">Option</p>
+</li>
+<li><dl class="first docutils">
+<dt>Question</dt>
+<dd><ul class="first last simple">
+<li>InputQuestion</li>
+<li>UploadQuestion</li>
+<li>MultipleChoiceQuestion</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Section</dt>
+<dd><ul class="first last simple">
+<li>RepeatingSection</li>
+<li>GroupedSection</li>
+<li>Survey</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="section" id="surveyelement">
+<h3>SurveyElement<a class="headerlink" href="#surveyelement" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="pyxform.survey_element.SurveyElement">
+<em class="property">class </em><tt class="descclassname">pyxform.survey_element.</tt><tt class="descname">SurveyElement</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pyxform.survey_element.SurveyElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>SurveyElement is the base class we&#8217;ll looks for the following keys in kwargs: name,
+label, hint, type, bind, control, parent, children, and
+question_type_dictionary.</p>
+<dl class="method">
+<dt id="pyxform.survey_element.SurveyElement.add_child">
+<tt class="descname">add_child</tt><big>(</big><em>element</em><big>)</big><a class="headerlink" href="#pyxform.survey_element.SurveyElement.add_child" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a SurveyElement to this SurveyElement&#8217;s children. As a
+slight hack, this method also accepts a list of elements.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxform.survey_element.SurveyElement.get_children">
+<tt class="descname">get_children</tt><big>(</big><big>)</big><a class="headerlink" href="#pyxform.survey_element.SurveyElement.get_children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return this SurveyElement&#8217;s children.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxform.survey_element.SurveyElement.get_lineage">
+<tt class="descname">get_lineage</tt><big>(</big><big>)</big><a class="headerlink" href="#pyxform.survey_element.SurveyElement.get_lineage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a the list [root, ..., self._parent, self]</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxform.survey_element.SurveyElement.get_question_type_dictionary">
+<tt class="descname">get_question_type_dictionary</tt><big>(</big><big>)</big><a class="headerlink" href="#pyxform.survey_element.SurveyElement.get_question_type_dictionary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dictionary of question types this SurveyElement is
+associated with.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxform.survey_element.SurveyElement.get_xpath">
+<tt class="descname">get_xpath</tt><big>(</big><big>)</big><a class="headerlink" href="#pyxform.survey_element.SurveyElement.get_xpath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the xpath of this survey element.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxform.survey_element.SurveyElement.xml_binding">
+<tt class="descname">xml_binding</tt><big>(</big><big>)</big><a class="headerlink" href="#pyxform.survey_element.SurveyElement.xml_binding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the binding for this survey element.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxform.survey_element.SurveyElement.xml_bindings">
+<tt class="descname">xml_bindings</tt><big>(</big><big>)</big><a class="headerlink" href="#pyxform.survey_element.SurveyElement.xml_bindings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of bindings for this node and all its descendents.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyxform.survey_element.SurveyElement.xml_control">
+<tt class="descname">xml_control</tt><big>(</big><big>)</big><a class="headerlink" href="#pyxform.survey_element.SurveyElement.xml_control" title="Permalink to this definition">¶</a></dt>
+<dd><p>The control depends on what type of question we&#8217;re asking, it
+doesn&#8217;t make sense to implement here in the base class.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="question">
+<h3>Question<a class="headerlink" href="#question" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="pyxform.question.Question">
+<em class="property">class </em><tt class="descclassname">pyxform.question.</tt><tt class="descname">Question</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pyxform.question.Question" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pyxform.question.Question.get">
+<tt class="descname">get</tt><big>(</big><em>key</em><big>)</big><a class="headerlink" href="#pyxform.question.Question.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overlay this questions binding attributes on type of the
+attributes from this question type.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pyxform</a><ul>
+<li><a class="reference internal" href="#module-pyxform.xls2xform">xls2xform</a></li>
+<li><a class="reference internal" href="#api">API</a><ul>
+<li><a class="reference internal" href="#surveyelement">SurveyElement</a></li>
+<li><a class="reference internal" href="#question">Question</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">NMIS Project Documentation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/pyxform.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="NMIS Project Documentation"
+             >previous</a> |</li>
+        <li><a href="index.html">nmis v0.7 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, mvpdev.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
