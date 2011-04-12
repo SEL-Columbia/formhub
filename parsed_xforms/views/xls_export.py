@@ -1,90 +1,85 @@
-from django.contrib.auth.decorators import permission_required
-from common_tags import XFORM_ID_STRING
-from parsed_xforms.models import xform_instances, DataDictionary
-from collections import defaultdict
 import xlwt
+from collections import defaultdict
+
+class ExcelWriter(object):
+    """
+    This class is a simple wrapper around xlwt. It takes a list of
+    dictionaries (data) and a list of headers, and constructs an excel
+    workbook from those.
+    """
+
+    def __init__(self, data, headers):
+        self._set_data(data)
+        self._set_headers(headers)
+        self._setup_worksheets()
+
+    def _set_data(self, data):
+        """
+        data is a list of dictionaries, each dictionary describes a
+        row in the spreadsheet
+        """
+        assert type(data)==list
+        for d in data: assert type(d)==dict
+        self._data = data
+
+    def _set_headers(self, headers):
+        assert type(headers)==list
+        for header in headers: assert type(header)==unicode
+        self._headers = headers
+
+    def _setup_worksheets(self):
+        # todo: could break this into two steps as I had before:
+        # 1. construct one giant table of the data
+        # 2. split that giant table up into tables with at most 256
+        #    columns
+        max_number_of_columns = 256
+
+        self._sheets = defaultdict(list)
+        for d in self._data:
+            sheet_number = 0
+            while sheet_number * max_number_of_columns < len(self._headers):
+                sheet_name = u"Data Sheet %s" % unicode(sheet_number)
+                if len(self._sheets[sheet_name])==0:
+                    start = sheet_number * max_number_of_columns
+                    end = (sheet_number+1) * max_number_of_columns
+                    sheet_headers = self._headers[start:end]
+                    self._sheets[sheet_name].append(sheet_headers)
+                row = [d.get(header) for header in self._sheets[sheet_name][0]]
+                self._sheets[sheet_name].append(row)
+                sheet_number += 1
+
+    def set_sheet(self, name, table):
+        self._sheets[name] = table
+
+    def get_workbook(self):
+        self._wb = xlwt.Workbook()
+        for sheet_name, table in self._sheets.items():
+            ws = self._wb.add_sheet(sheet_name)
+            for i in range(len(table)):
+                for j in range(len(table[i])):
+                    ws.write(i, j, unicode(table[i][j]))
+        return self._wb
+
+
+from parsed_xforms.models import DataDictionary
+
+class DataDictionaryWriter(ExcelWriter):
+
+    def __init__(self, data_dictionary):
+        assert type(data_dictionary)==DataDictionary
+        self._data_dictionary = data_dictionary
+        data = data_dictionary.get_data_for_excel()
+        headers = data_dictionary.get_headers_for_excel()
+        ExcelWriter.__init__(self, data, headers)
+
+    def _add_data_dictionary_sheet(self):
+        sheet = [[u"Name", u"Label"]]
+        for e in self._data_dictionary.get_survey_elements():
+            sheet.append([e.get_abbreviated_xpath(), e.get_label()])
+        self.set_sheet(u"Dictionary", sheet)
+
+
 from django.http import HttpResponse
-
-def _get_parsed_instances_from_mongo(id_string):
-    match_id_string = {XFORM_ID_STRING : id_string}
-    parsed_instances = \
-        xform_instances.find(spec=match_id_string)
-    return list(parsed_instances)
-
-def _get_list_of_unique_keys(list_of_dicts):
-    s = set()
-    for d in list_of_dicts:
-        for k in d.keys():
-            s.add(k)
-    return list(s)
-
-def _sort_xpaths(xpaths, data_dictionary):
-    if data_dictionary:
-        # Sort the xpaths based on the order they appear in the
-        # survey.
-        data_dictionary.sort_xpaths(xpaths)
-    else:
-        # Sort the xpaths based on alphabetical order.
-        xpaths.sort()
-
-def _get_sorted_xpaths(list_of_dicts, data_dictionary):
-    xpaths = _get_list_of_unique_keys(list_of_dicts)
-    _sort_xpaths(xpaths, data_dictionary)
-    return xpaths
-
-DATA_DICTIONARY = u"data_dictionary"
-DATA = u"data"
-XPATHS = u"xpaths"
-
-def get_data_for_spreadsheet(id_string):
-    result = {}
-    try:
-        result[DATA_DICTIONARY] = \
-            DataDictionary.objects.get(xform__id_string=id_string)
-    except DataDictionary.DoesNotExist:
-        resutl[DATA_DICTIONARY] = None
-
-    result[DATA] = _get_parsed_instances_from_mongo(id_string)
-    result[XPATHS] = _get_sorted_xpaths(result[DATA], result[DATA_DICTIONARY])
-    return result
-
-NUMBER_OF_COLUMNS = 256
-
-def _split_table_into_data_sheets(table):
-    sheets = defaultdict(list)
-    for row in table:
-        sheet_number = 0
-        while sheet_number * NUMBER_OF_COLUMNS < len(row):
-            start = sheet_number * NUMBER_OF_COLUMNS
-            end = (sheet_number+1) * NUMBER_OF_COLUMNS
-            sheets[sheet_number].append(row[start:end])
-            sheet_number += 1
-    result = []
-    for i in range(len(sheets.keys())):
-        result.append( ("Data Sheet %s" % str(i+1),
-                        sheets[i]) )
-    return result
-
-def _get_headers(data_dictionary, xpaths):
-    return [data_dictionary.get_variable_name(xpath) for xpath in xpaths]
-
-def construct_worksheets(id_string):
-    # data, headers, and dictionary
-    dhd = get_data_for_spreadsheet(id_string)
-
-    sheet1 = [_get_headers(dhd[DATA_DICTIONARY], dhd[XPATHS])]
-    for survey in dhd[DATA]:
-        row = []
-        for xpath in dhd[XPATHS]:
-            cell = survey.get(xpath, u"n/a")
-            row.append(unicode(cell))
-        sheet1.append(row)
-    result = _split_table_into_data_sheets(sheet1)
-
-    if DATA_DICTIONARY in dhd:
-        sheet2 = [[u"Name", u"Label"]] + dhd[DATA_DICTIONARY]
-        result.append((u"Dictionary", sheet2))
-    return result
 
 def xls_to_response(xls, fname):
     response = HttpResponse(mimetype="application/ms-excel")
@@ -96,13 +91,8 @@ from deny_if_unauthorized import deny_if_unauthorized
 
 @deny_if_unauthorized()
 def xls(request, id_string):
-    worksheets = construct_worksheets(id_string)
-
-    wb = xlwt.Workbook()
-    for sheet_name, table in worksheets:
-        ws = wb.add_sheet(sheet_name)
-        for r in range(len(table)):
-            for c in range(len(table[r])):
-                ws.write(r, c, table[r][c])
-
-    return xls_to_response(wb, id_string + ".xls")
+    dictionary = \
+        DataDictionary.objects.get(xform__id_string=id_string)
+    writer = DataDictionaryWriter(dictionary)
+    workbook = writer.get_workbook()
+    return xls_to_response(workbook, id_string + ".xls")
