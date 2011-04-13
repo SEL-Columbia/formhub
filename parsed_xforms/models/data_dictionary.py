@@ -80,7 +80,7 @@ class DataDictionary(models.Model):
                              rename_hack.get(y,y))
         return column_key_cmp
 
-    def get_variable_name(self, abbreviated_xpath):
+    def _simple_get_variable_name(self, abbreviated_xpath):
         """
         If the abbreviated_xpath has been renamed in
         self.variable_names_json return that new name, otherwise
@@ -93,6 +93,11 @@ class DataDictionary(models.Model):
                 self._variable_names[abbreviated_xpath]:
             return self._variable_names[abbreviated_xpath]
         return abbreviated_xpath
+
+    def get_variable_name(self, abbreviated_xpath):
+        if self._rename_select_all_option_key(abbreviated_xpath):
+            return self._rename_select_all_option_key(abbreviated_xpath)
+        return self._simple_get_variable_name(abbreviated_xpath)
 
     def get_parsed_instances_from_mongo(self):
         id_string = self.xform.id_string
@@ -122,10 +127,47 @@ class DataDictionary(models.Model):
             for other_key in candidates:
                 root_key = other_key[:-len(u"_other")]
                 e = self.get_element(root_key)
-                if e.get_bind()[u"type"]==u"select1":
+                if e.get_bind().get(u"type")==u"select1":
                     if d[root_key]==u"other":
                         d[root_key] = d[other_key]
                     del d[other_key]
+
+    def _expand_select_all_that_apply(self, data):
+        def remove_all_indices(xpath):
+            return re.sub(r"\[\d+\]", u"", xpath)
+        for d in data:
+            for key in d.keys():
+                e = self.get_element(remove_all_indices(key))
+                if e and e.get_bind().get(u"type")==u"select":
+                    options_selected = None if d[key] is None else d[key].split()
+                    for i, child in enumerate(e.get_children()):
+                        new_key = key + u"[%s]" % i
+                        if options_selected is None:
+                            d[new_key] = u"n/a"
+                        elif child.get_name() in options_selected:
+                            assert new_key not in d
+                            d[new_key] = True
+                            if child.get_name()==u"other":
+                                d[new_key] = d[key + u"_other"]
+                                del d[key + u"_other"]
+                        else:
+                            d[new_key] = False
+                    del d[key]
+
+    def _rename_select_all_option_key(self, hacky_name):
+        """
+        hacky_name is the abbreviated xpath to the select all that
+        apply question with an index appended to the end indicating
+        the index of this child.
+        """
+        m = re.search(r"^(.+)\[(\d+)\]$", hacky_name)
+        if m:
+            e = self.get_element(m.group(1))
+            if e and e.get_bind().get(u"type")==u"select":
+                child = e.get_children()[int(m.group(2))]
+                return self._simple_get_variable_name(m.group(1)) + \
+                    u"_" + child.get_name()
+        return None
 
     def _remove_index_from_first_instance_of_repeat(self, data):
         for d in data:
@@ -142,6 +184,7 @@ class DataDictionary(models.Model):
         self._remove_index_from_first_instance_of_repeat(result)
         self._rename_key(lambda x: x.startswith(u"location/state_in_"), u"state", result)
         self._rename_key(lambda x: x.startswith(u"location/lga_in_"), u"lga", result)
+        self._expand_select_all_that_apply(result)
         return result
 
     def get_column_keys_for_excel(self):
