@@ -8,10 +8,12 @@ class ExcelWriter(object):
     workbook from those.
     """
 
-    def __init__(self, data, headers):
+    def __init__(self, data, column_keys, rename_function):
         self._set_data(data)
-        self._set_headers(headers)
+        self._set_column_keys(column_keys)
+        self._set_rename_function(rename_function)
         self._setup_worksheets()
+        self._rename_columns()
 
     def _set_data(self, data):
         """
@@ -22,10 +24,14 @@ class ExcelWriter(object):
         for d in data: assert type(d)==dict
         self._data = data
 
-    def _set_headers(self, headers):
-        assert type(headers)==list
-        for header in headers: assert type(header)==unicode
-        self._headers = headers
+    def _set_column_keys(self, column_keys):
+        assert type(column_keys)==list
+        for header in column_keys: assert type(header)==unicode
+        self._column_keys = column_keys
+
+    def _set_rename_function(self, rename_function):
+        assert callable(rename_function)
+        self._get_column_name = rename_function
 
     def _setup_worksheets(self):
         # todo: could break this into two steps as I had before:
@@ -37,16 +43,21 @@ class ExcelWriter(object):
         self._sheets = defaultdict(list)
         for d in self._data:
             sheet_number = 0
-            while sheet_number * max_number_of_columns < len(self._headers):
+            while sheet_number * max_number_of_columns < len(self._column_keys):
                 sheet_name = u"Data Sheet %s" % unicode(sheet_number)
                 if len(self._sheets[sheet_name])==0:
                     start = sheet_number * max_number_of_columns
                     end = (sheet_number+1) * max_number_of_columns
-                    sheet_headers = self._headers[start:end]
-                    self._sheets[sheet_name].append(sheet_headers)
+                    sheet_column_keys = self._column_keys[start:end]
+                    self._sheets[sheet_name].append(sheet_column_keys)
                 row = [d.get(header) for header in self._sheets[sheet_name][0]]
                 self._sheets[sheet_name].append(row)
                 sheet_number += 1
+
+    def _rename_columns(self):
+        for sheet in self._sheets.values():
+            for i in range(len(sheet[0])):
+                sheet[0][i] = self._get_column_name(sheet[0][i])
 
     def set_sheet(self, name, table):
         self._sheets[name] = table
@@ -69,8 +80,9 @@ class DataDictionaryWriter(ExcelWriter):
         assert type(data_dictionary)==DataDictionary
         self._data_dictionary = data_dictionary
         data = data_dictionary.get_data_for_excel()
-        headers = data_dictionary.get_headers_for_excel()
-        ExcelWriter.__init__(self, data, headers)
+        column_keys = data_dictionary.get_column_keys_for_excel()
+        rename_function = data_dictionary.get_variable_name
+        ExcelWriter.__init__(self, data, column_keys, rename_function)
 
     def _add_data_dictionary_sheet(self):
         sheet = [[u"Name", u"Label"]]

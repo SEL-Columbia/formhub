@@ -74,7 +74,7 @@ class DataDictionary(models.Model):
     def get_data_for_excel(self):
         return self.get_parsed_instances_from_mongo()
 
-    def get_headers_for_excel(self):
+    def get_column_keys_for_excel(self):
         def unique_keys(data):
             s = set()
             for d in data:
