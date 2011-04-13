@@ -50,7 +50,7 @@ class ExcelWriter(object):
                     end = (sheet_number+1) * max_number_of_columns
                     sheet_column_keys = self._column_keys[start:end]
                     self._sheets[sheet_name].append(sheet_column_keys)
-                row = [d.get(header) for header in self._sheets[sheet_name][0]]
+                row = [d.get(header, u"n/a") for header in self._sheets[sheet_name][0]]
                 self._sheets[sheet_name].append(row)
                 sheet_number += 1
 
