@@ -1,7 +1,7 @@
 import json
 from django.db import models
 from xform_manager.models import XForm
-from pyxform.builder import create_survey_element_from_json
+from pyxform import QuestionTypeDictionary, SurveyElementBuilder
 from common_tags import XFORM_ID_STRING
 from parsed_xforms.models import xform_instances
 import re
@@ -16,7 +16,9 @@ class DataDictionary(models.Model):
 
     def set_survey_object(self):
         if not hasattr(self, "_survey"):
-            self._survey = create_survey_element_from_json(self.json)
+            qtd = QuestionTypeDictionary("nigeria")
+            builder = SurveyElementBuilder(question_type_dictionary=qtd)
+            self._survey = builder.create_survey_element_from_json(self.json)
 
     def get_survey_object(self):
         self.set_survey_object()
