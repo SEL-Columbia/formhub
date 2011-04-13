@@ -25,14 +25,24 @@ class DataDictionary(models.Model):
         self.set_survey_object()
         return self._survey.iter_children()
 
-    def get_label(self, abbreviated_xpath):
-        if not hasattr(self, "_label_from_xpath"):
-            self._label_from_xpath = {}
+    def get_element(self, abbreviated_xpath):
+        if not hasattr(self, "_survey_elements"):
+            self._survey_elements = {}
             for e in self.get_survey_elements():
-                # todo: think about multiple language support
-                self._label_from_xpath[e.get_abbreviated_xpath()] = \
-                    e.get_label()
-        return self._label_from_xpath.get(abbreviated_xpath, None)
+                self._survey_elements[e.get_abbreviated_xpath()] = e
+        return self._survey_elements.get(abbreviated_xpath)
+
+    def get_label(self, abbreviated_xpath):
+        e = self.get_element(abbreviated_xpath)
+        # todo: think about multiple language support
+        if e: return e.get_label()
+
+    def remove_from_spreadsheet(self, abbreviated_xpath):
+        e = self.get_element(abbreviated_xpath)
+        if e is None: return False
+        if e.get_bind().get(u"readonly")==u"true()":
+            return True
+        return False
 
     def get_xpath_cmp(self):
         self.set_survey_object()
@@ -109,4 +119,4 @@ class DataDictionary(models.Model):
             return list(s)
         result = unique_keys(self.get_data_for_excel())
         result.sort(cmp=self.get_column_key_cmp())
-        return result
+        return [key for key in result if not self.remove_from_spreadsheet(key)]
