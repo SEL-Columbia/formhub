@@ -50,6 +50,17 @@ class DataDictionary(models.Model):
             return cmp(self._xpaths.index(x), self._xpaths.index(y))
         return xpath_cmp
 
+    def get_column_key_cmp(self):
+        rename_hack = {
+            u"state" : u"location/state_in_northwest",
+            u"lga" : u"location/lga_in_jigawa"
+            }
+        xpath_cmp = self.get_xpath_cmp()
+        def column_key_cmp(x, y):
+            return xpath_cmp(rename_hack.get(x,x),
+                             rename_hack.get(y,y))
+        return column_key_cmp
+
     def get_variable_name(self, abbreviated_xpath):
         """
         If the abbreviated_xpath has been renamed in
@@ -71,8 +82,23 @@ class DataDictionary(models.Model):
             xform_instances.find(spec=match_id_string)
         return list(parsed_instances)
 
+    def _rename_key(self, is_key_to_rename, new_key, data):
+        for d in data:
+            candidates = [k for k in d.keys() if is_key_to_rename(k)]
+            assert len(candidates)==1
+            assert new_key not in d
+            d[new_key] = d[candidates[0]]
+            del d[candidates[0]]
+
     def get_data_for_excel(self):
-        return self.get_parsed_instances_from_mongo()
+        result = self.get_parsed_instances_from_mongo()
+        def startswith(string):
+            def result(x):
+                return x.startswith(string)
+            return result
+        self._rename_key(startswith(u"location/state_in_"), u"state", result)
+        self._rename_key(startswith(u"location/lga_in_"), u"lga", result)
+        return result
 
     def get_column_keys_for_excel(self):
         def unique_keys(data):
@@ -81,6 +107,6 @@ class DataDictionary(models.Model):
                 for k in d.keys():
                     s.add(k)
             return list(s)
-        result = unique_keys(self.get_parsed_instances_from_mongo())
-        result.sort(cmp=self.get_xpath_cmp())
+        result = unique_keys(self.get_data_for_excel())
+        result.sort(cmp=self.get_column_key_cmp())
         return result
