@@ -103,11 +103,18 @@ class DataDictionary(models.Model):
 
     def _rename_key(self, is_key_to_rename, new_key, data):
         for d in data:
-            candidates = [k for k in d.keys() if is_key_to_rename(k) and d[k] is not None]
-            assert len(candidates)==1
-            assert new_key not in d
-            d[new_key] = d[candidates[0]]
-            del d[candidates[0]]
+            candidates = [k for k in d.keys() if is_key_to_rename(k)]
+            for k in candidates:
+                if d[k] is None:
+                    del d[k]
+                    candidates.remove(k)
+            if len(candidates) > 1:
+                for k in candidates:
+                    del d[k]
+            elif len(candidates)==1:
+                assert new_key not in d
+                d[new_key] = d[candidates[0]]
+                del d[candidates[0]]
 
     def _collapse_other_into_select_one(self, data):
         for d in data:
