@@ -100,8 +100,20 @@ class DataDictionary(models.Model):
             d[new_key] = d[candidates[0]]
             del d[candidates[0]]
 
+    def _collapse_other_into_select_one(self, data):
+        for d in data:
+            candidates = [k for k in d.keys() if k.endswith(u"_other")]
+            for other_key in candidates:
+                root_key = other_key[:-len(u"_other")]
+                e = self.get_element(root_key)
+                if e.get_bind()[u"type"]==u"select1":
+                    assert d[root_key]==u"other"
+                    d[root_key] = d[other_key]
+                    del d[other_key]
+
     def get_data_for_excel(self):
         result = self.get_parsed_instances_from_mongo()
+        self._collapse_other_into_select_one(result)
         def startswith(string):
             def result(x):
                 return x.startswith(string)
