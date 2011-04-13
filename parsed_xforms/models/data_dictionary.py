@@ -139,13 +139,9 @@ class DataDictionary(models.Model):
     def get_data_for_excel(self):
         result = self.get_parsed_instances_from_mongo()
         self._collapse_other_into_select_one(result)
-        self._remove_zero_index_from_first_instance_of_repeat(result)
-        def startswith(string):
-            def result(x):
-                return x.startswith(string)
-            return result
-        self._rename_key(startswith(u"location/state_in_"), u"state", result)
-        self._rename_key(startswith(u"location/lga_in_"), u"lga", result)
+        self._remove_index_from_first_instance_of_repeat(result)
+        self._rename_key(lambda x: x.startswith(u"location/state_in_"), u"state", result)
+        self._rename_key(lambda x: x.startswith(u"location/lga_in_"), u"lga", result)
         return result
 
     def get_column_keys_for_excel(self):
