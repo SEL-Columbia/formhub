@@ -39,6 +39,12 @@ class DataDictionary(models.Model):
         if e: return e.get_label()
 
     def remove_from_spreadsheet(self, abbreviated_xpath):
+        def respondent_index_above_two(abbreviated_xpath):
+            m = re.search(r"^respondent\[(\d+)\]/", abbreviated_xpath)
+            if m:
+                return int(m.group(1)) > 2
+            return False
+        if respondent_index_above_two(abbreviated_xpath): return True
         e = self.get_element(abbreviated_xpath)
         if e is None: return False
         if e.get_bind().get(u"readonly")==u"true()":
@@ -52,13 +58,17 @@ class DataDictionary(models.Model):
         def xpath_cmp(x, y):
             # For the moment, we aren't going to worry about repeating
             # nodes.
-            if x not in self._xpaths and y not in self._xpaths:
+            new_x = re.sub(r"\[\d+\]", u"", x)
+            new_y = re.sub(r"\[\d+\]", u"", y)
+            if new_x==new_y:
+                return cmp(x, y)
+            if new_x not in self._xpaths and new_y not in self._xpaths:
                 return 0
-            elif x not in self._xpaths:
+            elif new_x not in self._xpaths:
                 return 1
-            elif y not in self._xpaths:
+            elif new_y not in self._xpaths:
                 return -1
-            return cmp(self._xpaths.index(x), self._xpaths.index(y))
+            return cmp(self._xpaths.index(new_x), self._xpaths.index(new_y))
         return xpath_cmp
 
     def get_column_key_cmp(self):
