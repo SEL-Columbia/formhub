@@ -37,10 +37,11 @@ class DataDictionary(models.Model):
         if e: return e.get_label()
 
     def remove_from_spreadsheet(self, abbreviated_xpath):
+        # we will remove respondents 4 and above
         def respondent_index_above_two(abbreviated_xpath):
             m = re.search(r"^respondent\[(\d+)\]/", abbreviated_xpath)
             if m:
-                return int(m.group(1)) > 2
+                return int(m.group(1)) > 3
             return False
         if respondent_index_above_two(abbreviated_xpath): return True
         e = self.get_element(abbreviated_xpath)
@@ -119,11 +120,11 @@ class DataDictionary(models.Model):
                         d[root_key] = d[other_key]
                     del d[other_key]
 
-    def _remove_zero_index_from_first_instance_of_repeat(self, data):
+    def _remove_index_from_first_instance_of_repeat(self, data):
         for d in data:
-            candidates = [k for k in d.keys() if u"[0]" in k]
+            candidates = [k for k in d.keys() if u"[1]" in k]
             for key in candidates:
-                new_key = re.sub(r"\[0\]", "", key)
+                new_key = re.sub(r"\[1\]", "", key)
                 assert new_key not in d
                 d[new_key] = d[key]
                 del d[key]
