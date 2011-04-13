@@ -94,7 +94,7 @@ class DataDictionary(models.Model):
 
     def _rename_key(self, is_key_to_rename, new_key, data):
         for d in data:
-            candidates = [k for k in d.keys() if is_key_to_rename(k)]
+            candidates = [k for k in d.keys() if is_key_to_rename(k) and d[k] is not None]
             assert len(candidates)==1
             assert new_key not in d
             d[new_key] = d[candidates[0]]
@@ -107,8 +107,8 @@ class DataDictionary(models.Model):
                 root_key = other_key[:-len(u"_other")]
                 e = self.get_element(root_key)
                 if e.get_bind()[u"type"]==u"select1":
-                    assert d[root_key]==u"other"
-                    d[root_key] = d[other_key]
+                    if d[root_key]==u"other":
+                        d[root_key] = d[other_key]
                     del d[other_key]
 
     def get_data_for_excel(self):
