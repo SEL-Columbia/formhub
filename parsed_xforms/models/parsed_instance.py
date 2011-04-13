@@ -25,7 +25,7 @@ class ParseError(Exception):
 
 def datetime_from_str(text):
     # Assumes text looks like 2011-01-01T09:50:06.966
-    if text is None: raise ParseError("datetime string not found")
+    if text is None: return None
     date_time_str = text.split(".")[0]
     return datetime.datetime.strptime(
         date_time_str, '%Y-%m-%dT%H:%M:%S'
@@ -75,8 +75,9 @@ class ParsedInstance(models.Model):
         if (IMEI in doc) or (DEVICE_ID in doc):
             imei = doc.get(IMEI, doc.get(DEVICE_ID))
             if imei is None:
-                raise ParseError("XForm Instance has empty 'imei' or 'device_id' tag.")
-            self.phone, created = Phone.objects.get_or_create(imei=imei)
+                self.phone = None
+            else:
+                self.phone, created = Phone.objects.get_or_create(imei=imei)
 
     def _set_start_time(self):
         doc = self.to_dict()
