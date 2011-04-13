@@ -14,19 +14,15 @@ class DataDictionary(models.Model):
     class Meta:
         app_label = "parsed_xforms"
 
-    def set_survey_object(self):
+    def get_survey_object(self):
         if not hasattr(self, "_survey"):
             qtd = QuestionTypeDictionary("nigeria")
             builder = SurveyElementBuilder(question_type_dictionary=qtd)
             self._survey = builder.create_survey_element_from_json(self.json)
-
-    def get_survey_object(self):
-        self.set_survey_object()
         return self._survey
 
     def get_survey_elements(self):
-        self.set_survey_object()
-        return self._survey.iter_children()
+        return self.get_survey_object().iter_children()
 
     def get_element(self, abbreviated_xpath):
         if not hasattr(self, "_survey_elements"):
@@ -54,7 +50,6 @@ class DataDictionary(models.Model):
         return False
 
     def get_xpath_cmp(self):
-        self.set_survey_object()
         if not hasattr(self, "_xpaths"):
             self._xpaths = [e.get_abbreviated_xpath() for e in self.get_survey_elements()]
         def xpath_cmp(x, y):
