@@ -4,6 +4,7 @@ from xform_manager.models import XForm
 from pyxform.builder import create_survey_element_from_json
 from common_tags import XFORM_ID_STRING
 from parsed_xforms.models import xform_instances
+import re
 
 class DataDictionary(models.Model):
     xform = models.ForeignKey(XForm, related_name="data_dictionary")
@@ -111,9 +112,19 @@ class DataDictionary(models.Model):
                         d[root_key] = d[other_key]
                     del d[other_key]
 
+    def _remove_zero_index_from_first_instance_of_repeat(self, data):
+        for d in data:
+            candidates = [k for k in d.keys() if u"[0]" in k]
+            for key in candidates:
+                new_key = re.sub(r"\[0\]", "", key)
+                assert new_key not in d
+                d[new_key] = d[key]
+                del d[key]
+
     def get_data_for_excel(self):
         result = self.get_parsed_instances_from_mongo()
         self._collapse_other_into_select_one(result)
+        self._remove_zero_index_from_first_instance_of_repeat(result)
         def startswith(string):
             def result(x):
                 return x.startswith(string)
