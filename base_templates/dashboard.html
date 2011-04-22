@@ -467,6 +467,10 @@ $('.dontChangePage').live('click', function(evt){evt.preventDefault();})
         this.helper('SetMapElem', function(elem){gmapElem = $(elem)});
         var mapLoadCallbacks = [];
         this.helper('addMapLoadCallback', function(cb){mapLoadCallbacks.push(cb);})
+		function addNga113Map(map){
+			var l = google.maps.KmlLayer("/site-media/kml/113_lgas.kml");
+			l.setMap(map);
+		}
         this.helper('Map', function(cb){
             mapLoadCallbacks.push(cb);
             if(!loadFinished) {
