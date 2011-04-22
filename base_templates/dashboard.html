@@ -478,6 +478,7 @@ $('.dontChangePage').live('click', function(evt){evt.preventDefault();})
                 gmapElem.bind('gmapLoaded', function(){
                     //make the map and call the callback with the first argument as the map object
                     gmap = new google.maps.Map(gmapElem.get(0), {zoom:6,center:new google.maps.LatLng(9.243092645104804, 7.9156494140625), mapTypeId:'terrain', mapTypeControl: false});
+					addNga113Map(gmap);
                     _map = gmap;
                     map.map = gmap;
 //                    cb.call(map);
@@ -488,6 +489,7 @@ $('.dontChangePage').live('click', function(evt){evt.preventDefault();})
             } else {
                 if(!gmap) {
                     gmap = new google.maps.Map(gmapElem.get(0), {zoom:6,center:new google.maps.LatLng(9.243092645104804, 7.9156494140625), mapTypeId:'terrain', mapTypeControl: false });
+					addNga113Map(gmap);
                     map.map = gmap;
                     _map = gmap;
                 }
