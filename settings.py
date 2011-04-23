@@ -81,7 +81,6 @@ INSTALLED_APPS = (
     'south',
     'registration',
 
-    'pyxform',
     'locations',
     'parsed_xforms',
     'nga_districts',
