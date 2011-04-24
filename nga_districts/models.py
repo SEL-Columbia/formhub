@@ -38,6 +38,7 @@ class LGA(NamedModel):
     afr_id = models.TextField(null=True)
     kml_id = models.TextField(null=True)
     latlng_str = models.TextField(null=True)
+    survey_round = models.IntegerField(default=0)
 
     @classmethod
     def get_phase1_lga_names(cls):
@@ -61,3 +62,12 @@ class LGA(NamedModel):
             "state__name",
             "name"
             )
+
+    @classmethod
+    def set_survey_round_field(cls):
+        round1 = cls.get_phase1_query_set()
+        round1.update(survey_round=1)
+        round2 = cls.get_phase2_query_set()
+        round2.update(survey_round=2)
+        round3 = cls.objects.filter(scale_up=True, survey_round=0)
+        round3.update(survey_round=3)
