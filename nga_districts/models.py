@@ -22,6 +22,10 @@ class Zone(NamedModel):
     def get_phase2_query_set(cls):
         return cls.objects.filter(name__in=[u"Northwest", u"Southeast"])
 
+    @classmethod
+    det get_query_set_for_round(cls, r):
+        return cls.objects.filter(states__lgas__survey_round=r).distint().order_by("name")
+
 
 class State(NamedModel):
     zone = models.ForeignKey(Zone, related_name="states")
@@ -29,6 +33,10 @@ class State(NamedModel):
     @classmethod
     def get_phase2_query_set(cls):
         return cls.objects.filter(zone__in=Zone.get_phase2_query_set())
+
+    @classmethod
+    det get_query_set_for_round(cls, r):
+        return cls.objects.filter(lgas__survey_round=r).distint().order_by("name")
 
 
 class LGA(NamedModel):
@@ -71,3 +79,7 @@ class LGA(NamedModel):
         round2.update(survey_round=2)
         round3 = cls.objects.filter(scale_up=True, survey_round=0)
         round3.update(survey_round=3)
+
+    @classmethod
+    det get_query_set_for_round(cls, r):
+        return cls.objects.filter(survey_round=r).order_by("name")
