@@ -60,6 +60,7 @@ class ParsedInstance(models.Model):
                     None if not self.lga else self.lga.id,
                 ATTACHMENTS :
                     [a.media_file.name for a in self.instance.attachments.all()],
+                u"_status" : self.instance.status,
                 }
             )
         return self._dict_cache
