@@ -917,11 +917,17 @@ var MapKey = (function(){
 			health: "red",
 			agriculture: "orange",
 			lga: "purple",
-			education: "green"
+			education: "green",
+			defaultColor: "purple"
 		};
 		
 		_ActivityPoint.prototype.icon = function(){
-			var color = stColors[this.surveyType.toLowerCase()]
+			var color;
+			if(this.surveyType==undefined) {
+				color = 'purple'
+			} else {
+				color = stColors[this.surveyType.toLowerCase()]
+			}
 			var icon = new google.maps.MarkerImage("/site-media/images/geosilk/flag_"+color+".png", new google.maps.Size(16, 16),
 		        new google.maps.Point(0,0), new google.maps.Point(9, 15));
 		    
