@@ -74,7 +74,7 @@ def backup_code_and_database():
 def deploy():
     """ git pull (branch) """
     #will pull the same branch as for the main repo
-    sub_repositories = ["pyxform", "xform_manager"]
+    sub_repositories = ["xform_manager"]
     sub_repo_paths = [os.path.join(env.code_root, repo) for repo in sub_repositories]
     if env.environment == 'production':
         if not console.confirm('Are you sure you want to deploy production? (Always back up-- "fab backup_production")',
@@ -115,7 +115,6 @@ def apache_restart():
 #not a clean use of fab
 def local_ensure_git_subrepositories_loaded():
     repositories_to_ensure = {
-        'pyxform': 'git://github.com/mvpdev/pyxform.git',
         'xform_manager': 'git://github.com/mvpdev/xform_manager.git'
     }
     current_dir = os.path.dirname(__file__)
