@@ -54,7 +54,7 @@ class CsvWriter(object):
 
     def _ensure_directory_exists(self, path):
         abspath = os.path.abspath(path)
-        directory = os.path.dirname(abspath)        
+        directory = os.path.dirname(abspath)
         if not os.path.exists(directory):
             os.makedirs(directory)
 
@@ -128,6 +128,7 @@ def csv_export(request, id_string):
     dd = DataDictionary.objects.get(xform__id_string=id_string)
     ddw = DataDictionaryWriter()
     ddw.set_data_dictionary(dd)
-    file_path = os.path.join("csvs", id_string + ".csv")
+    this_directory = os.path.dirname(__file__)
+    file_path = os.path.join(this_directory, "csvs", id_string + ".csv")
     ddw.write_to_file(file_path)
     return send_file(path=file_path, content_type="application/csv")
