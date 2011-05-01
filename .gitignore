@@ -23,3 +23,6 @@ ve/
 
 # file created by tests
 registration.xml
+
+# folder to hold csv files
+csvs
