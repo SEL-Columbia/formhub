@@ -53,7 +53,8 @@ class CsvWriter(object):
         self._key_rename_function = key_rename_function
 
     def _ensure_directory_exists(self, path):
-        directory = os.path.dirname(path)
+        abspath = os.path.abspath(path)
+        directory = os.path.dirname(abspath)        
         if not os.path.exists(directory):
             os.makedirs(directory)
 
