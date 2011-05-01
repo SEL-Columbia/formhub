@@ -54,10 +54,8 @@ class CsvWriter(object):
 
     def _ensure_directory_exists(self, path):
         directory = os.path.dirname(path)
-        try:
+        if not os.path.exists(directory):
             os.makedirs(directory)
-        except:
-            pass
 
     def write_to_file(self, path):
         self._ensure_directory_exists(path)
