@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block htitle %}Dashboard{% endblock %}
 {% block title %}Dashboard{% endblock %}
-
+{% block head %}
+<link rel="stylesheet" href="/site-media/css/dashboard.css" type="text/css" media="all">
+{% endblock %}
 {% block scripts %}
-<script type="text/javascript" charset="utf-8">
-//	var baseUrl = "{{dashboard_base_url}}";
-</script>
-<link rel="stylesheet" href="/site-media/css/map-key.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
+<script type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/site-media/css/map-key.css" type="text/css" media="all" charset="utf-8" />
 {% endblock %}
 
 {% block content %}
