@@ -309,9 +309,6 @@
                 MapKey.selectors().append(selectorDiv);
                 fn.call(this, selector);
             },
-            divider: function(){
-                MapKey.addDivider();
-            },
             debug: function(mapState){
                 str = "";
                 str += "scale: " + mapState.scale
@@ -354,10 +351,6 @@
         this.helper('SetMapElem', function(elem){gmapElem = $(elem)});
         var mapLoadCallbacks = [];
         this.helper('addMapLoadCallback', function(cb){mapLoadCallbacks.push(cb);})
-		function addNga113Map(map){
-			var l = google.maps.KmlLayer("/site-media/kml/113_lgas.kml");
-			l.setMap(map);
-		}
         this.helper('Map', function(cb){
             mapLoadCallbacks.push(cb);
             if(!loadFinished) {
@@ -365,7 +358,11 @@
                 gmapElem.bind('gmapLoaded', function(){
                     //make the map and call the callback with the first argument as the map object
                     gmap = new google.maps.Map(gmapElem.get(0), {zoom:6,center:new google.maps.LatLng(9.243092645104804, 7.9156494140625), mapTypeId:'terrain', mapTypeControl: false});
-					addNga113Map(gmap);
+					var l = new google.maps.KmlLayer("http://staging.mvpafrica.org/site-media/kml/113_lgas.kml", {
+						preserveViewport: true,
+						suppressInfoWindows: true,
+						map: gmap
+					});
                     _map = gmap;
                     map.map = gmap;
 //                    cb.call(map);
@@ -376,7 +373,7 @@
             } else {
                 if(!gmap) {
                     gmap = new google.maps.Map(gmapElem.get(0), {zoom:6,center:new google.maps.LatLng(9.243092645104804, 7.9156494140625), mapTypeId:'terrain', mapTypeControl: false });
-					addNga113Map(gmap);
+		//			addNga113Map(gmap);
                     map.map = gmap;
                     _map = gmap;
                 }
@@ -461,45 +458,6 @@ var MapKey = (function(){
 		insert: function(cb){
 		    var td = $("<td />").html(cb);
 		    this.tr.append(td);
-		},
-		addDivider: function(){
-			this.tr.append($("<td />").html($("<div />", {'class':'table-spacer'})));
-		},
-		addDistrictDropdown: function(){
-			this.districtSelector = $("<select />");
-			var nigeria = $("<option />", {value:'all'}).html("Republic of Nigeria");
-			var allOpt = $("<optgroup />", {label:'Full view'}).html(nigeria)
-
-			var districtView = $("<optgroup />", {label: 'District view'})
-			this.districtSelector.append(allOpt);
-			$(districts).each(function(){
-				var opt = $("<option />", {value: this.id}).html(this.name);
-				districtView.append(opt);
-			});
-			this.districtSelector.append(districtView);
-			this.tr.append($("<td />").html(this.districtSelector));
-			return this.districtSelector;
-		},
-		addChoiceDropdown: function(){
-			this.addDivider();
-			this.choiceSelector = $("<select />");
-			this.choiceSelector.append($("<option>Date</option>"));
-			this.choiceSelector.append($("<option>Surveyor</option>"));
-			this.choiceSelector.append($("<option>Survey</option>"));
-			this.iDiv.find('tr').append($('<td />').html(this.choiceSelector))
-			return this.choiceSelector;
-		},
-		addSpecificityDropdown: function(choices){
-			this.addDivider();
-			var opt, selector = $("<select />");
-			$(choices).each(function(){
-				opt = $("<option />").html(this);
-				selector.append(opt);
-			});
-			this.tr.append($("<td />").html(selector))
-		},
-		showSelection: function(pType) {
-//				console.log("make selection for ", pType);
 		}
 	}
 })();
