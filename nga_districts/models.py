@@ -24,7 +24,7 @@ class Zone(NamedModel):
 
     @classmethod
     def get_query_set_for_round(cls, r):
-        return cls.objects.filter(states__lgas__survey_round=r).distint().order_by("name")
+        return cls.objects.filter(states__lgas__survey_round=r).distinct().order_by("name")
 
 
 class State(NamedModel):
@@ -36,7 +36,7 @@ class State(NamedModel):
 
     @classmethod
     def get_query_set_for_round(cls, r):
-        return cls.objects.filter(lgas__survey_round=r).distint().order_by("name")
+        return cls.objects.filter(lgas__survey_round=r).distinct().order_by("name")
 
 
 class LGA(NamedModel):
