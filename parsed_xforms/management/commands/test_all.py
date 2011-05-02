@@ -27,7 +27,7 @@ class Command(BaseCommand):
         from django.test.utils import get_runner
         patch_for_test_db_setup()
         
-        test_labels = ('pyxform', 'locations', 'parsed_xforms', \
+        test_labels = ('locations', 'parsed_xforms', \
                     'nga_districts', 'phone_manager', 'surveyor_manager', \
                     'xform_manager', 'map_xforms', 'submission_qr',)
         
