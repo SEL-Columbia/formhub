@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 
 from xform_manager.models import XForm, Instance
+from xform_manager.views import log_error
 from phone_manager.models import Phone
 from surveyor_manager.models import Surveyor
 from locations.models import District
@@ -12,9 +13,6 @@ from common_tags import IMEI, DEVICE_ID, START_TIME, START, \
     END_TIME, END, LGA_ID, ID, SURVEYOR_NAME, ATTACHMENTS, DATE
 import django.dispatch
 import datetime
-
-from sentry.client.models import client as sentry_client
-import logging
 
 # this is Mongo Collection (SQL table equivalent) where we will store
 # the parsed submissions
@@ -118,7 +116,7 @@ class ParsedInstance(models.Model):
             message = "There is no LGA with (state_slug, lga_slug)="
             message += "(%(state)s, %(lga)s)" % {
                 "state" : state_slug, "lga" : lga_slug}
-            sentry_client.create_from_text(message, level=logging.ERROR)
+            log_error(message)
     
     time_to_set_surveyor = django.dispatch.Signal()
     def _set_surveyor(self):
