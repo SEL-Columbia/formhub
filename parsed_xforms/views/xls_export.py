@@ -5,6 +5,10 @@ import os
 from xform_manager.xform_instance_parser import xform_instance_to_dict
 
 class XlsWriter(object):
+    def __init__(self):
+        self.set_file()
+        self.reset_workbook()
+    
     def set_file(self, file_object=None):
         """
         If the file object is None use a StringIO object.
@@ -38,8 +42,8 @@ class XlsWriter(object):
         for key in row.keys():
             if key not in columns:
                 self.add_column(sheet_name, key)
-        for j, value in enumerate(self._columns[sheet_name]):
-            self._sheets[sheet_name].write(i, j, value)
+        for j, column_name in enumerate(self._columns[sheet_name]):
+            self._sheets[sheet_name].write(i, j, row.get(column_name, u"n/a"))
         self._current_index[sheet_name] += 1
 
     def add_obs(self, obs):
@@ -51,6 +55,7 @@ class XlsWriter(object):
     def _fix_indices(self, obs):
         for sheet_name, rows in obs.items():
             for row in rows:
+                row[u'_index'] += self._current_index[sheet_name]
                 if row[u'_parent_index']==-1: continue
                 i = self._current_index[row[u'_parent_table_name']]
                 row[u'_parent_index'] += i
@@ -81,6 +86,7 @@ class DataDictionaryWriter(XlsWriter):
         self._data_dictionary = data_dictionary
         self.reset_workbook()
         self._add_sheets()
+        self.add_surveys()
 
     def _add_sheets(self):
         for e in self._data_dictionary.get_survey_elements():
@@ -98,11 +104,6 @@ class DataDictionaryWriter(XlsWriter):
             d = xform_instance_to_dict(i.xml)
             obs = self._dict_organizer.get_observation_from_dict(d)
             self.add_obs(obs)
-
-    def write_to_file(self, path):
-        self.set_file(open(path, mode='wb'))
-        self.add_surveys()
-        return self.save_workbook_to_file()        
 
 
 class DictOrganizer(object):
@@ -164,7 +165,6 @@ class DictOrganizer(object):
         return result
 
 
-from csv_export import send_file
 from django.http import HttpResponse
 from deny_if_unauthorized import deny_if_unauthorized
 
@@ -173,7 +173,9 @@ def xls_export(request, id_string):
     dd = DataDictionary.objects.get(xform__id_string=id_string)
     ddw = DataDictionaryWriter()
     ddw.set_data_dictionary(dd)
-    this_directory = os.path.dirname(__file__)
-    file_path = os.path.join(this_directory, "csvs", id_string + ".csv")
-    ddw.write_to_file(file_path)
-    return send_file(path=file_path, content_type="application/xls")
+    temp_file = ddw.save_workbook_to_file()
+    response = HttpResponse(mimetype='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename=%s.xls' % id_string
+    response.write(temp_file.getvalue())
+    temp_file.close()    
+    return response
