@@ -1,5 +1,8 @@
-from StringIO import StringIO
-import xlwt
+from collections import defaultdict
+from pyxform import Section, Question
+from parsed_xforms.models import DataDictionary
+import os
+from xform_manager.xform_instance_parser import xform_instance_to_dict
 
 class XlsWriter(object):
     def set_file(self, file_object=None):
@@ -9,9 +12,50 @@ class XlsWriter(object):
         if file_object is not None:
             self._file = file_object
         else:
+            from StringIO import StringIO
             self._file = StringIO()
 
-    def set_tables(self, tables):
+    def reset_workbook(self):
+        import xlwt
+        self._workbook = xlwt.Workbook()
+        self._sheets = {}
+        self._columns = defaultdict(list)
+        def one(): return 1
+        self._current_index = defaultdict(one)
+
+    def add_sheet(self, name):
+        sheet = self._workbook.add_sheet(name[0:20])
+        self._sheets[name] = sheet
+
+    def add_column(self, sheet_name, column_name):
+        index = len(self._columns[sheet_name])
+        self._sheets[sheet_name].write(0, index, column_name)
+        self._columns[sheet_name].append(column_name)
+
+    def add_row(self, sheet_name, row):
+        i = self._current_index[sheet_name]
+        columns = self._columns[sheet_name]
+        for key in row.keys():
+            if key not in columns:
+                self.add_column(sheet_name, key)
+        for j, value in enumerate(self._columns[sheet_name]):
+            self._sheets[sheet_name].write(i, j, value)
+        self._current_index[sheet_name] += 1
+
+    def add_obs(self, obs):
+        self._fix_indices(obs)
+        for sheet_name, rows in obs.items():
+            for row in rows:
+                self.add_row(sheet_name, row)
+
+    def _fix_indices(self, obs):
+        for sheet_name, rows in obs.items():
+            for row in rows:
+                if row[u'_parent_index']==-1: continue
+                i = self._current_index[row[u'_parent_table_name']]
+                row[u'_parent_index'] += i
+
+    def write_tables_to_workbook(self, tables):
         """
         tables should be a list of pairs, the first element in the
         pair is the name of the table, the second is the actual data.
@@ -19,248 +63,117 @@ class XlsWriter(object):
         todo: figure out how to write to the xls file rather than keep
         the whole workbook in memory.
         """
-        self._tables = tables
-
-    def get_xlwt_workbook(self):
-        book = xlwt.Workbook()
-        for table_name, table in self._tables:
-            sheet = book.add_sheet(table_name)
+        self.reset_workbook()
+        for table_name, table in tables:
+            self.add_sheet(table_name)
             for i, row in enumerate(table):
                 for j, value in enumerate(row):
-                    sheet.write(i,j,unicode(value))
-        return book
+                    self._sheets[table_name].write(i,j,unicode(value))
+        return self._workbook
 
-    def get_xls_file(self):
-        work_book = self.get_xlwt_workbook()
-        work_book.save(self._file)
+    def save_workbook_to_file(self):
+        self._workbook.save(self._file)
         return self._file
+
+
+class DataDictionaryWriter(XlsWriter):
+    def set_data_dictionary(self, data_dictionary):
+        self._data_dictionary = data_dictionary
+        self.reset_workbook()
+        self._add_sheets()
+
+    def _add_sheets(self):
+        for e in self._data_dictionary.get_survey_elements():
+            if isinstance(e, Section):
+                sheet_name = e.get_name()
+                self.add_sheet(sheet_name)
+                for f in e.get_children():
+                    if isinstance(f, Question):
+                        self.add_column(sheet_name, f.get_name())
+
+    def add_surveys(self):
+        if not hasattr(self, "_dict_organizer"):
+            self._dict_organizer = DictOrganizer()
+        for i in self._data_dictionary.xform.surveys.iterator():
+            d = xform_instance_to_dict(i.xml)
+            obs = self._dict_organizer.get_observation_from_dict(d)
+            self.add_obs(obs)
+
+    def write_to_file(self, path):
+        self.set_file(open(path, mode='wb'))
+        self.add_surveys()
+        return self.save_workbook_to_file()        
 
 
 class DictOrganizer(object):
     def set_dict_iterator(self, dict_iterator):
         self._dict_iterator = dict_iterator
 
-    def set_data_dictionary(self, data_dictionary):
-        self._data_dictionary = data_dictionary
-
-    def _set_table_names(self):
-        self._table_names = []
-        for survey_element in self.data_dictionary.get_survey_elements():
-            if isinstance(survey_element, Section):
-                self._table_names.append(survey_element.get_name())
-
-    def _mark_repeating_sections(self):
-        self._repeating_section_names = []
-        for survey_element in self.data_dictionary.get_survey_elements():
-            if isinstance(survey_element, RepeatingSection):
-                self._repeating_section_names.append(survey_element.get_name())
-
     # Every section will get its own table
     # I need to think of an easy way to flatten out a dictionary
     # parent name, index, table name, data
-    def _yield_rows_from_dict(self, d, table_name, index=1, parent_name=u"", parent_index=0):
-        result = {
-            u"_parent_name" : parent_name,
+    def _build_obs_from_dict(self, d, obs, table_name,
+                             parent_table_name, parent_index):
+        if table_name not in obs:
+            obs[table_name] = []
+        this_index = len(obs[table_name])
+        obs[table_name].append({
+            u"_parent_table_name" : parent_table_name,
             u"_parent_index" : parent_index,
-            u"_table_name" : table_name,
-            u"_index" : index,
-            }
+            })
         for k, v in d.items():
             if type(v)!=dict and type(v)!=list:
-                result[k] = v
-        yield result
+                assert k not in obs[table_name][-1]
+                obs[table_name][-1][k] = v
+        obs[table_name][-1][u"_index"] = this_index
 
         for k, v in d.items():
             if type(v)==dict:
                 kwargs = {
                     "d" : v,
+                    "obs" : obs,
                     "table_name" : k,
-                    "index" : 1,
-                    "parent_name" : table_name,
-                    "parent_index" : index
+                    "parent_table_name" : table_name,
+                    "parent_index" : this_index
                     }
-                for result in self._yield_rows_from_dict(**kwargs):
-                    yield result
+                self._build_obs_from_dict(**kwargs)
             if type(v)==list:
                 for i, item in enumerate(v):
                     kwargs = {
                         "d" : item,
+                        "obs" : obs,
                         "table_name" : k,
-                        "index" : i+1,
-                        "parent_name" : table_name,
-                        "parent_index" : index,
+                        "parent_table_name" : table_name,
+                        "parent_index" : this_index,
                         }
-                    for result in self._yield_rows_from_dict(**kwargs):
-                        yield result
+                    self._build_obs_from_dict(**kwargs)
+        return obs
 
-    def _combine_rows_into_observation(self, d):
+    def get_observation_from_dict(self, d):
         result = {}
         assert len(d.keys())==1
         root_name = d.keys()[0]
-        for row in self._yield_rows_from_dict(d[root_name], table_name=root_name):
-            table_name = row.pop(u"_table_name")
-            if table_name not in result: result[table_name] = []
-            result[table_name].append(row)
+        kwargs = {
+            "d" : d[root_name],
+            "obs" : result,
+            "table_name" : root_name,
+            "parent_table_name" : u"",
+            "parent_index" : -1,
+            }
+        self._build_obs_from_dict(**kwargs)
         return result
 
 
-def export(data_dictionary, file_object, format="blah"):
-    """
-    Exports data from couch documents matching a given tag to a file. 
-    Returns true if it finds data, otherwise nothing
-    """
-    schema = data_dictionary.get_shema()
-    docs = [result['value'] for result in db.view("couchexport/schema_index", key=schema_index).all()]
-    tables = format_tables(create_intermediate_tables(docs,schema))
-    _export_excel_2007(tables).save(file_object)
-
-def fit_to_schema(doc, schema):
-
-    def log(msg):
-        raise Exception("doc-schema mismatch: %s" % msg)
-
-    if schema is None:
-        if doc:
-            log("%s is not null" % doc)
-        return None
-    if isinstance(schema, list):
-        if not doc:
-            doc = []
-        if not isinstance(doc, list):
-            return fit_to_schema([doc], schema)
-        answ = []
-        schema_, = schema
-        for doc_ in doc:
-            answ.append(fit_to_schema(doc_, schema_))
-        return answ
-    if isinstance(schema, dict):
-        if not doc:
-            doc = {}
-        doc_keys = set(doc.keys())
-        schema_keys = set(schema.keys())
-        if doc_keys - schema_keys:
-            log("doc has keys not in schema: %s" % (', '.join(doc_keys - schema_keys)))
-        answ = {}
-        for key in schema:
-            #if schema[key] == unknown_type: continue
-            if doc.has_key(key):
-                answ[key] = fit_to_schema(doc.get(key), schema[key])
-            else:
-                answ[key] = render_never_was(schema[key])
-        return answ
-    if schema == "string":
-        if not doc:
-            doc = ""
-        if not isinstance(doc, basestring):
-        #log("%s is not a string" % doc)
-            doc = unicode(doc)
-        return doc
-
-
-def create_intermediate_tables(docs, schema, integer='#'):
-    def lookup(doc, keys):
-        for key in keys:
-            doc = doc[key]
-        return doc
-    def split_path(path):
-        table = []
-        column = []
-        id = []
-        for k in path:
-            if isinstance(k, basestring):
-                column.append(k)
-            else:
-                table.extend(column)
-                table.append(integer)
-                column = []
-                id.append(k)
-        return (tuple(table), tuple(column), tuple(id))
-    schema = [schema]
-    docs = fit_to_schema(docs, schema)
-    #first, flatten documents
-    queue = [()]
-    leaves = []
-    while queue:
-        path = queue.pop()
-        d = lookup(docs, path)
-        if isinstance(d, dict):
-            for key in d:
-                queue.append(path + (key,))
-        elif isinstance(d, list):
-            for i,_ in enumerate(d):
-                queue.append(path + (i,))
-        elif d != list_never_was:
-            leaves.append((split_path(path), d))
-    leaves.sort()
-    tables = {}
-    for (table_name, column_name, id), val in leaves:
-        table = tables.setdefault(table_name, {})
-        row = table.setdefault(id, {})
-        row[column_name] = val
-
-    return tables
-
-def nice(column_name):
-    return "/".join(column_name)
-
-def format_tables(tables, id_label='id', separator='.'):
-    answ = []
-    for table_name, table in sorted(tables.items()):
-        new_table = []
-        keys = sorted(table.items()[0][1].keys()) # the keys for every row are the same
-        header = [id_label]
-        for key in keys:
-            header.append(separator.join(key))
-        new_table.append(header)
-        for id, row in sorted(table.items()):
-            new_row = []
-            new_row.append(separator.join(map(unicode,id)))
-            for key in keys:
-                new_row.append(row[key])
-            new_table.append(new_row)
-        answ.append((separator.join(table_name), new_table))
-    return answ
-
-def export_csv(tables):
-    "this function isn't ready to use because of how it deals with files"
-    for table_name, table in tables:
-        writer = csv.writer(open("csv_test/" + table_name+'.csv', 'w'), dialect=csv.excel)
-        for row in table:
-            writer.writerow([x if '"' not in x else "" for x in row])
-
-def _export_excel(tables):
-    try:
-        import xlwt
-    except ImportError:
-        raise Exception("It doesn't look like this machine is configured for "
-                        "excel export. To export to excel you have to run the "
-                        "command:  easy_install xlutils")
-    book = xlwt.Workbook()
-    for table_name, table in tables:
-        # this is in case the first 20 characters are the same, but we	
-        # should do something smarter.	
-        #sheet = book.add_sheet(table_name[-20:])
-        hack_table_name_prefix = table_name[-20:]
-        hack_table_name = hack_table_name_prefix[0:10] + hashlib.sha1(table_name).hexdigest()[0:10]
-        sheet = book.add_sheet(hack_table_name)
-        for i,row in enumerate(table):
-            for j,val in enumerate(row):
-                sheet.write(i,j,unicode(val))
-    return book
-
-
+from csv_export import send_file
 from django.http import HttpResponse
-import json
+from deny_if_unauthorized import deny_if_unauthorized
 
-def xls(data_dictionary):
-    """
-    Download all data associated with this data dictionary.
-    """
-    if export(data_dictionary, tmp, format=Format.XLS):
-        response = HttpResponse(mimetype='application/vnd.ms-excel')
-        response['Content-Disposition'] = 'attachment; filename=%s.%s' % (export_tag, format)
-        response.write(tmp.getvalue())
-        tmp.close()
-        return response
-    else:
-        return HttpResponse("Sorry, there was no data found for the tag '%s'." % export_tag)
+@deny_if_unauthorized()
+def xls_export(request, id_string):
+    dd = DataDictionary.objects.get(xform__id_string=id_string)
+    ddw = DataDictionaryWriter()
+    ddw.set_data_dictionary(dd)
+    this_directory = os.path.dirname(__file__)
+    file_path = os.path.join(this_directory, "csvs", id_string + ".csv")
+    ddw.write_to_file(file_path)
+    return send_file(path=file_path, content_type="application/xls")

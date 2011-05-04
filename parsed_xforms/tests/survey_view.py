@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 import json
 import re
 from xform_manager.xform_instance_parser import xform_instance_to_dict
+from parsed_xforms.views.xls_export import XlsWriter, DictOrganizer, DataDictionaryWriter
 
 class TestSurveyView(TestCase):
     
@@ -43,18 +44,18 @@ Content-Type: text/html; charset=utf-8
         self.assertEqual(j, [[u"What's your name?", u'Andrew']])
 
     def test_xls_writer(self):
-        from parsed_xforms.views.xls_export import XlsWriter, DictOrganizer
         xls_writer = XlsWriter()
         xls_writer.set_file()
-        xls_writer.set_tables([
+        xls_writer.write_tables_to_workbook([
             ('table one', [['column header 1', 'column header 2'], [1, 2,]]),
             ('table two', [['1,1', '1,2'], ['2,1', '2,2']])
             ])
-        file_object = xls_writer.get_xls_file()
+        file_object = xls_writer.save_workbook_to_file()
         # I guess we should read the excel file and make sure it has
         # the right stuff. I looked at it, but writing that test
         # doesn't seem worth it.
 
+    def test_dict_organizer(self):
         serious_xml = u'''
         <?xml version=\'1.0\' ?>
           <household>
@@ -76,46 +77,52 @@ Content-Type: text/html; charset=utf-8
         dict_organizer = DictOrganizer()
         expected_dict = {
             u'household': [
-                {u'_parent_name': u'',
-                 u'_parent_index': 0,
+                {u'_parent_table_name': u'',
+                 u'_parent_index': -1,
                  u'number_of_members': u'10',
-                 u'_index': 1}
+                 u'_index': 0}
                 ],
             u'woman': [
-                {u'_parent_name': u'household',
-                 u'_parent_index': 1,
+                {u'_parent_table_name': u'household',
+                 u'_parent_index': 0,
                  u'name': u'Carla',
-                 u'_index': 1},
-                {u'_parent_name': u'household',
-                 u'_parent_index': 1,
+                 u'_index': 0},
+                {u'_parent_table_name': u'household',
+                 u'_parent_index': 0,
                  u'name': u'Fran',
-                 u'_index': 2}
+                 u'_index': 1}
                 ],
             u'man': [
-                {u'_parent_name': u'household',
-                 u'_parent_index': 1,
+                {u'_parent_table_name': u'household',
+                 u'_parent_index': 0,
                  u'name': u'Alex',
-                 u'_index': 1},
-                {u'_parent_name': u'household',
-                 u'_parent_index': 1,
+                 u'_index': 0},
+                {u'_parent_table_name': u'household',
+                 u'_parent_index': 0,
                  u'name': u'Bob',
-                 u'_index': 2}],
+                 u'_index': 1}],
             u'child': [
-                {u'_parent_name': u'woman',
-                 u'_parent_index': 1,
+                {u'_parent_table_name': u'woman',
+                 u'_parent_index': 0,
                  u'name': u'Danny',
-                 u'_index': 1},
-                {u'_parent_name': u'woman',
-                 u'_parent_index': 1,
+                 u'_index': 0},
+                {u'_parent_table_name': u'woman',
+                 u'_parent_index': 0,
                  u'name': u'Ed',
-                 u'_index': 2},
-                {u'_parent_name': u'woman',
-                 u'_parent_index': 2,
+                 u'_index': 1},
+                {u'_parent_table_name': u'woman',
+                 u'_parent_index': 1,
                  u'name': u'Greg',
-                 u'_index': 1}]}
+                 u'_index': 2}]}
         self.assertEqual(
-            dict_organizer._combine_rows_into_observation(d),
+            dict_organizer.get_observation_from_dict(d),
             expected_dict
             )
 
-            
+    def test_data_dictionary_writer(self):        
+        dd_writer = DataDictionaryWriter()
+        dd_writer.set_data_dictionary(self.data_dictionary)
+        self.assertEqual(dd_writer._sheets.keys(), [self.survey.get_name()])
+        self.assertEqual(dd_writer._columns.keys(), [self.survey.get_name()])
+        self.assertEqual(dd_writer._columns[self.survey.get_name()], [u'name'])
+                         

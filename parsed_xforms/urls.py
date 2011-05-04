@@ -8,6 +8,7 @@ from . import views
 urlpatterns = patterns('',
     url(r"^survey-list/?$", views.export_list),
     url(r"^export_spreadsheet/(?P<id_string>[^/]*)\.csv$", views.csv_export),
+    url(r"^export_spreadsheet/(?P<id_string>[^/]*)\.xls$", views.xls_export),
     url(r"^map_data_points/(?P<lga_id>\d+)/$", views.map_data_points),
     url(r"^survey/(?P<pk>\d+)/$", views.survey_responses),
     url(r"^survey_image_urls/(?P<pk>\d+)/$", views.survey_media_files),
