@@ -5,7 +5,6 @@
 import os
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'site_media/')
 
 #This is for xform_manager.
 #we should probably make this var name more specific
@@ -26,11 +25,16 @@ if len(sys.argv)>=2 and (sys.argv[1]=="test" or sys.argv[1]=="test_all"):
     TESTING_MODE = True
     MONGO_DB = _c[MONGO["test database name"]]
 else:
+    TESTING_MODE = False
     MONGO_DB = _c[MONGO["database name"]]
 
 # Clear out the test database
 if TESTING_MODE:
     MONGO_DB.instances.drop()
+    MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'test_site_media/')
+else:
+    MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'site_media/')
+    
 
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 TIME_ZONE = 'America/Chicago'
