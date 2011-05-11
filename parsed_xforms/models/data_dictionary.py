@@ -150,12 +150,12 @@ class DataDictionary(models.Model):
                         d[new_key] = u"n/a"
                     elif child.get_name() in options_selected:
                         assert new_key not in d
-                        d[new_key] = 1
+                        d[new_key] = True
                         if child.get_name()==u"other":
                             d[new_key] = d[key + u"_other"]
                             del d[key + u"_other"]
                     else:
-                        d[new_key] = 0
+                        d[new_key] = False
                 del d[key]
 
     def _rename_select_all_option_key(self, hacky_name):
