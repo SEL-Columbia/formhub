@@ -57,6 +57,7 @@ class LGA(NamedModel):
     kml_id = models.TextField(null=True)
     latlng_str = models.TextField(null=True)
     survey_round = models.IntegerField(default=0)
+    included_in_malaria_survey = models.BooleanField(default=False)
 
     @classmethod
     def get_phase1_lga_names(cls):
