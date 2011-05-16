@@ -1,9 +1,13 @@
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
+
 from django.db import models
 import re
+
 
 def sluggify(s):
     result = s.lower()
     return re.sub("[^a-z]+", "_", result)
+
 
 class NamedModel(models.Model):
     name = models.TextField()
@@ -24,7 +28,10 @@ class Zone(NamedModel):
 
     @classmethod
     def get_query_set_for_round(cls, r):
-        return cls.objects.filter(states__lgas__survey_round=r).distinct().order_by("name")
+        result = cls.objects.filter(states__lgas__survey_round=r)
+        result = result.distinct()
+        result = result.order_by("name")
+        return result
 
 
 class State(NamedModel):
@@ -36,7 +43,10 @@ class State(NamedModel):
 
     @classmethod
     def get_query_set_for_round(cls, r):
-        return cls.objects.filter(lgas__survey_round=r).distinct().order_by("name")
+        result = cls.objects.filter(lgas__survey_round=r)
+        result = result.distinct()
+        result = result.order_by("name")
+        return result
 
 
 class LGA(NamedModel):
