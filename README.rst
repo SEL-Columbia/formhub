@@ -17,7 +17,7 @@ Installation
 
 4. Clone this git repository
 
-    $ git clone https://amarder@github.com/mvpdev/nmis.git
+    $ git clone https://github.com/mvpdev/nmis.git
 
 5. Before installing fabric I had to install header files for Python:
 
@@ -30,3 +30,7 @@ Installation
 7. Copy example settings and edit them appropriately
 
     $ cp custom_settings_example.py custom_settings.py
+
+8. Clone the XForm Manager inside this Django project:
+
+    $ git clone https://github.com/mvpdev/xform_manager.git
