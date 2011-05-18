@@ -50,7 +50,7 @@
 		<div class="iiwrap">
 			<div class='pretty-table-wrap'>
 			<p class="info">
-				Phase II states are listed in the table below. Click on a state to see LGAs surveyed, and click the LGA name to see a map of the submitted surveys.
+				All states are listed in the table below. Click on a state to see LGAs surveyed, and click the LGA name to see a map of the submitted surveys.
 			</p>
 			<table border="0" class="pretty padded" id="state-lga-list">
 				<thead>
@@ -69,7 +69,7 @@
 						<td>{{state.zone_name}}</td>
 						<td>{{state.name}}</td>
 						<td>
-							<span class="lga-count">({{state.lga_count}} LGAs Surveyed)</span>
+							<span class="lga-count">({{state.lga_count}} LGAs)</span>
 						</td>
 						{% for tot in state.survey_totals_by_title %}
 						<td class="centered">{{tot}}</td>
