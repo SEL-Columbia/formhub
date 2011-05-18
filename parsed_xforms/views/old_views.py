@@ -89,12 +89,18 @@ def frequency_table(request, rows, columns):
     return HttpResponse(json.dumps(table, indent=4))
 
 
+def get_lgas():
+    qs = LGA.objects.all()
+    qs = qs.order_by("state__zone__name", "state__name", "name")
+    return qs
+
+
 @deny_if_unauthorized()
 def submission_counts_by_lga(request, as_dict=False):
     titles = [u"Agriculture", u"Education", u"Health", u"LGA", u"Water"]
     headers = [u"Zone", u"State", u"LGA"] + titles
 
-    lgas = LGA.get_ordered_phase2_query_set()
+    lgas = get_lgas()
     rows = []
     for lga in lgas:
         row = [lga.state.zone.name,
@@ -144,7 +150,7 @@ def state_count_dict():
     This is similar to submission_counts_by_lga except the data is
     ordered by Zone, State, then LGA
     """
-    lga_query = LGA.get_ordered_phase2_query_set()
+    lga_query = get_lgas()
 
     row_groups = []
     titles = [u"Agriculture", u"Education", u"Health", u"LGA", u"Water"]
@@ -169,11 +175,15 @@ def state_count_dict():
         if cur_zone not in zone_totals:
             zone_totals[cur_zone] = defaultdict(int)
 
-        #this is one way to keep lga list so we can package it up later.
+        # this is one way to keep lga list so we can package it up
+        # later.
         lgas_by_state[cur_state].append(lga)
 
         lga_total = 0
         for title in titles:
+            # todo: calculating these counts should be done with a
+            # single query outside of these two loops, it will be much
+            # faster.
             count = ParsedInstance.objects.filter(
                         lga=lga, instance__xform__title=title
                     ).count()
