@@ -1,7 +1,7 @@
 from django.db import models
 from parsed_instance import ParsedInstance
 from surveyor_manager.models import Surveyor
-from common_tags import NAME, INSTANCE_DOC_NAME, REGISTRATION
+from common_tags import NAME, REGISTRATION
 
 class Registration(models.Model):
     parsed_instance = models.ForeignKey(ParsedInstance)
@@ -31,19 +31,13 @@ class Registration(models.Model):
         return most_recent_registration.parsed_instance.surveyor
 
     def _create_surveyor(self):
-        doc = self.parsed_instance.to_dict()
-        if NAME not in doc:
-            raise Exception(
-                "Registration must have a non-empty name.",
-                self.parsed_instance.instance.xml, doc
-                )
-        name = doc[NAME]
+        name = self.parsed_instance.instance.get(NAME)
         if not name:
             raise Exception(
                 "Name must be nonempty.",
-                self.parsed_instance.instance.xml, doc
+                self.parsed_instance.instance.xml
                 )
-        # Hack city with the username and password here.
+        # todo: come up with a better username and password
         kwargs = {"username" : name,
                   "name" : name,
                   "password" : "noneisabadd3f4u1tpassword"}
@@ -61,8 +55,8 @@ def _set_surveyor(sender, **kwargs):
     # at this saved ParsedInstance, setting the surveyor, saving, ...
     if kwargs["created"]:
         parsed_instance = kwargs["instance"]
-        doc = parsed_instance.to_dict()
-        if doc[INSTANCE_DOC_NAME].lower()==REGISTRATION.lower():
+        root_node_name = parsed_instance.instance.get_root_node_name()
+        if root_node_name.lower()==REGISTRATION.lower():
             registration, created = Registration.objects.get_or_create(
                 parsed_instance=parsed_instance)
             parsed_instance.surveyor = registration.surveyor

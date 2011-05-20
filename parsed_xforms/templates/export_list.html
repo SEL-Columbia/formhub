@@ -20,7 +20,7 @@
   </td>
   <td>
     {% if xform.submission_count %}
-    <a href={% url parsed_xforms.views.xls id_string=xform.id_string %}>xls</a>
+    <a href={% url parsed_xforms.views.csv_export id_string=xform.id_string %}>csv</a>
     {% endif %}
   </td>
 </tr>

@@ -1,8 +1,9 @@
+from xform_manager.xform_instance_parser import XFORM_ID_STRING
+
 # WE SHOULD PUT MORE STRUCTURE ON THESE TAGS SO WE CAN ACCESS DOCUMENT
 # FIELDS ELEGANTLY
 
 # These are common variable tags that we'll want to access
-ID_STRING = u"_id_string"
 INSTANCE_DOC_NAME = u"_name"
 ID = u"_id"
 PICTURE = u"picture"

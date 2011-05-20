@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 
 from xform_manager.models import XForm, Instance
+from xform_manager.views import log_error
 from phone_manager.models import Phone
 from surveyor_manager.models import Surveyor
 from locations.models import District
@@ -10,12 +11,8 @@ from nga_districts.models import LGA
 from xform_manager import utils
 from common_tags import IMEI, DEVICE_ID, START_TIME, START, \
     END_TIME, END, LGA_ID, ID, SURVEYOR_NAME, ATTACHMENTS, DATE
-import sys
 import django.dispatch
 import datetime
-
-from sentry.client.models import client as sentry_client
-import logging
 
 # this is Mongo Collection (SQL table equivalent) where we will store
 # the parsed submissions
@@ -26,7 +23,7 @@ class ParseError(Exception):
 
 def datetime_from_str(text):
     # Assumes text looks like 2011-01-01T09:50:06.966
-    if text is None: raise ParseError("datetime string not found")
+    if text is None: return None
     date_time_str = text.split(".")[0]
     return datetime.datetime.strptime(
         date_time_str, '%Y-%m-%dT%H:%M:%S'
@@ -61,6 +58,7 @@ class ParsedInstance(models.Model):
                     None if not self.lga else self.lga.id,
                 ATTACHMENTS :
                     [a.media_file.name for a in self.instance.attachments.all()],
+                u"_status" : self.instance.status,
                 }
             )
         return self._dict_cache
@@ -76,8 +74,9 @@ class ParsedInstance(models.Model):
         if (IMEI in doc) or (DEVICE_ID in doc):
             imei = doc.get(IMEI, doc.get(DEVICE_ID))
             if imei is None:
-                raise ParseError("XForm Instance has empty 'imei' or 'device_id' tag.")
-            self.phone, created = Phone.objects.get_or_create(imei=imei)
+                self.phone = None
+            else:
+                self.phone, created = Phone.objects.get_or_create(imei=imei)
 
     def _set_start_time(self):
         doc = self.to_dict()
@@ -117,7 +116,7 @@ class ParsedInstance(models.Model):
             message = "There is no LGA with (state_slug, lga_slug)="
             message += "(%(state)s, %(lga)s)" % {
                 "state" : state_slug, "lga" : lga_slug}
-            sentry_client.create_from_text(message, level=logging.ERROR)
+            log_error(message)
     
     time_to_set_surveyor = django.dispatch.Signal()
     def _set_surveyor(self):
@@ -126,6 +125,12 @@ class ParsedInstance(models.Model):
     def save(self, *args, **kwargs):
         if not self.is_new:
             self.parse()
+            # todo: put this logging stuff back in.
+            # except ParseError, e:
+            #     sentry_client.create_from_text(
+            #         "Parse Error on Instance ID: %d - %s" % \
+            #             (self.instance.id, e), \
+            #             level=logging.ERROR)
             self.is_new = True
         
         super(ParsedInstance, self).save(*args, **kwargs)
@@ -136,16 +141,11 @@ class ParsedInstance(models.Model):
     
     
     def parse(self):
-        try:
-            self._set_phone()
-            self._set_start_time()
-            self._set_end_time()
-            self._set_lga()
-            self._set_surveyor()
-        except ParseError, e:
-            sentry_client.create_from_text("Parse Error on Instance ID: %d - %s" % \
-                            (self.instance.id, e), \
-                            level=logging.ERROR)
+        self._set_phone()
+        self._set_start_time()
+        self._set_end_time()
+        self._set_lga()
+        self._set_surveyor()
     
     def update_mongo(self):
         d = self.to_dict()
@@ -159,7 +159,6 @@ def _remove_from_mongo(sender, **kwargs):
 
 pre_delete.connect(_remove_from_mongo, sender=ParsedInstance)
 
-import sys
 
 from django.db.models.signals import post_save
 def _parse_instance(sender, **kwargs):
@@ -168,24 +167,10 @@ def _parse_instance(sender, **kwargs):
     instance = kwargs["instance"]
     qs = ParsedInstance.objects.filter(instance=instance)
     if qs.count() > 0: qs.delete()
-    # I'm worried with a OneToOneField this may also delete the
-    # instance.
 
-    try:
-        # Create a new ParsedInstance for this instance. This will
-        # reparse the submission.
-        parsed_instance = \
-            ParsedInstance.objects.create(instance=instance)
-    except:
-        # catch any exceptions and print them to the error log
-        # it'd be good to add more info to these error logs
-        # --i think this might not be necessary anymore, but keeping it in for
-        #   security.
-        e = sys.exc_info()[1]
-        utils.report_exception(
-                "problem parsing submission",
-                e.__unicode__(),
-                sys.exc_info()
-                )
+    # Create a new ParsedInstance for this instance. This will
+    # reparse the submission.
+    parsed_instance = \
+        ParsedInstance.objects.create(instance=instance)
     
 post_save.connect(_parse_instance, sender=Instance)

@@ -1,58 +1,51 @@
-#!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4 coding=utf-8
+# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
-from django.views.decorators.http import require_GET, require_POST
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render_to_response
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
-from django.db.models import Avg, Max, Min, Count
+from django.http import HttpResponse
+from django.db.models import Count
 from django.template import RequestContext
 
-import itertools
 import json
-import re
 
-from parsed_xforms.models import xform_instances, ParsedInstance
+from parsed_xforms.models import ParsedInstance
 from common_tags import *
 from xform_manager.models import XForm, Instance
-from nga_districts.models import LGA, Zone, State
+from nga_districts.models import LGA
+from deny_if_unauthorized import deny_if_unauthorized
 
 from parsed_xforms.view_pkgr import ViewPkgr
 
-read_all_data, created = Permission.objects.get_or_create(
-    name = "Can read all data",
-    content_type = ContentType.objects.get_for_model(Permission),
-    codename = "read_all_data"
-    )
-@permission_required("auth.read_all_data")
+
+@deny_if_unauthorized()
 def export_list(request):
     xforms = XForm.objects.all()
-    context = RequestContext(request, {"xforms" : xforms})
+    context = RequestContext(request, {"xforms": xforms})
     return render_to_response(
         "export_list.html",
         context_instance=context
         )
 
+
 def prep_info(request):
     """
-    This function is meant to be reused and provide the user object. If no user object, then
-    provide the login form.
-    
-    We might decide that this function is a lame attempt to have global variables passed
-    to django templates, and should be deleted.
+    This function is meant to be reused and provide the user
+    object. If no user object, then provide the login form.
+
+    We might decide that this function is a lame attempt to have
+    global variables passed to django templates, and should be
+    deleted.
     """
-    info = {'user':request.user}
+    info = {'user': request.user}
     return info
-        
+
+
 dimensions = {
-    "survey" : "survey_type__slug",
-    "surveyor" : "surveyor__name",
-    "date" : "date",
-    "location" : "district",
+    "survey": "survey_type__slug",
+    "surveyor": "surveyor__name",
+    "date": "date",
+    "location": "district",
     }
+
 
 def frequency_table(request, rows, columns):
     r = dimensions[rows]
@@ -66,8 +59,10 @@ def frequency_table(request, rows, columns):
     row_headers = []
     column_headers = []
     for d in dicts:
-        if d[r] not in row_headers: row_headers.append(d[r])
-        if d[c] not in column_headers: column_headers.append(d[c])
+        if d[r] not in row_headers:
+            row_headers.append(d[r])
+        if d[c] not in column_headers:
+            column_headers.append(d[c])
 
     row_headers.sort()
     column_headers.sort()
@@ -76,30 +71,36 @@ def frequency_table(request, rows, columns):
     for d in dicts:
         i = row_headers.index(d[r])
         j = column_headers.index(d[c])
-        if i in cells: cells[i][j] = d["count"]
-        else: cells[i] = {j : d["count"]}
+        if i in cells:
+            cells[i][j] = d["count"]
+        else:
+            cells[i] = {j: d["count"]}
 
     for i in range(len(row_headers)):
-        row_headers[i] = {"id" : i, "text" : row_headers[i]}
+        row_headers[i] = {"id": i, "text": row_headers[i]}
     for i in range(len(column_headers)):
-        column_headers[i] = {"id" : i, "text" : column_headers[i]}
+        column_headers[i] = {"id": i, "text": column_headers[i]}
 
     table = {
-        "row_headers" : row_headers,
-        "column_headers" : column_headers,
-        "cells" : cells
+        "row_headers": row_headers,
+        "column_headers": column_headers,
+        "cells": cells
         }
     return HttpResponse(json.dumps(table, indent=4))
 
-def submission_counts_by_lga(request, as_dict=False):
-    dicts = ParsedInstance.objects.values(
-        "lga", "instance__xform__title"
-        ).annotate(count=Count("id"))
 
+def get_lgas():
+    qs = LGA.objects.all()
+    qs = qs.order_by("state__zone__name", "state__name", "name")
+    return qs
+
+
+@deny_if_unauthorized()
+def submission_counts_by_lga(request, as_dict=False):
     titles = [u"Agriculture", u"Education", u"Health", u"LGA", u"Water"]
     headers = [u"Zone", u"State", u"LGA"] + titles
 
-    lgas = LGA.get_ordered_phase2_query_set()
+    lgas = get_lgas()
     rows = []
     for lga in lgas:
         row = [lga.state.zone.name,
@@ -111,10 +112,11 @@ def submission_counts_by_lga(request, as_dict=False):
                 ).count()
             row.append(count)
         rows.append(row)
-    
-    if as_dict: return {"headers" : headers, "rows" : rows}
-    
-    context = RequestContext(request, {"headers" : headers, "rows" : rows})
+
+    if as_dict:
+        return {"headers": headers, "rows": rows}
+
+    context = RequestContext(request, {"headers": headers, "rows": rows})
     return render_to_response(
         "submission_counts_by_lga.html",
         context_instance=context
@@ -126,51 +128,62 @@ from django.forms.models import model_to_dict
 
 from collections import defaultdict
 
+
+@deny_if_unauthorized()
 def dashboard(request):
     rc = RequestContext(request)
     rc.xforms = XForm.objects.all()
     rc.lga_table = submission_counts_by_lga(request, True)
     rc.table_types = json.dumps(dimensions.keys())
     rc.survey_types = [model_to_dict(s) for s in SurveyType.objects.all()]
-    
+
     rc.zone_table = state_count_dict()
-    
+
     return render_to_response(
         "dashboard.html",
         context_instance=rc
         )
 
+
 def state_count_dict():
     """
-    This is similar to submission_counts_by_lga except the data is ordered by Zone, State, then LGA
+    This is similar to submission_counts_by_lga except the data is
+    ordered by Zone, State, then LGA
     """
-    lga_query = LGA.get_ordered_phase2_query_set()
+    lga_query = get_lgas()
 
     row_groups = []
     titles = [u"Agriculture", u"Education", u"Health", u"LGA", u"Water"]
-    
+
     survey_totals = defaultdict(int)
     lgas_by_state = defaultdict(list)
     zone_totals = {}
     state_totals = {}
     lga_totals = {}
     total_total = 0
-    
+
     states_list = []
-    
+
     for lga in lga_query.all():
         totals_for_this_lga = {}
         cur_state = lga.state
         cur_zone = cur_state.zone
-        if cur_state not in states_list: states_list.append(cur_state)
-        if cur_state not in state_totals: state_totals[cur_state] = defaultdict(int)
-        if cur_zone not in zone_totals: zone_totals[cur_zone] = defaultdict(int)
-        
-        #this is one way to keep lga list so we can package it up later.
+        if cur_state not in states_list:
+            states_list.append(cur_state)
+        if cur_state not in state_totals:
+            state_totals[cur_state] = defaultdict(int)
+        if cur_zone not in zone_totals:
+            zone_totals[cur_zone] = defaultdict(int)
+
+        # this is one way to keep lga list so we can package it up
+        # later.
         lgas_by_state[cur_state].append(lga)
-        
+
         lga_total = 0
         for title in titles:
+            # todo: calculating these counts should be done with a
+            # single query outside of these two loops, it will be much
+            # faster.
             count = ParsedInstance.objects.filter(
                         lga=lga, instance__xform__title=title
                     ).count()
@@ -180,14 +193,14 @@ def state_count_dict():
             lga_total += count
             total_total += count
             totals_for_this_lga[title] = count
-        
+
         totals_for_this_lga['total'] = lga_total
         lga_totals[lga] = totals_for_this_lga
-    
+
     survey_totals_by_title = []
     for title in titles:
         survey_totals_by_title.append(survey_totals[title])
-    
+
     for state in states_list:
         totals_by_title = []
         state_total = 0
@@ -201,13 +214,26 @@ def state_count_dict():
             lga_totals_by_title = []
             for title in titles:
                 lga_totals_by_title.append(cur_lga_total[title])
-            lga_list.append({'name':lga.name, 'total_count':cur_lga_total['total'], \
-                            'pk': lga.id, 'survey_totals_by_title': lga_totals_by_title})
-        
-        row_groups.append({'zone_name': state.zone.name, 'name': state.name, \
-                    'survey_totals_by_title': totals_by_title, 'total_count': state_total, \
-                    'lga_count': len(lga_list), 'lga_list': lga_list})
-    
+            lga_list.append(
+                {
+                    'name': lga.name,
+                    'total_count': cur_lga_total['total'],
+                    'pk': lga.id,
+                    'survey_totals_by_title': lga_totals_by_title
+                    }
+                )
+
+        row_groups.append(
+            {
+                'zone_name': state.zone.name,
+                'name': state.name,
+                'survey_totals_by_title': totals_by_title,
+                'total_count': state_total,
+                'lga_count': len(lga_list),
+                'lga_list': lga_list
+                }
+            )
+
     return {
         'survey_titles': titles,
         'survey_totals_by_title': survey_totals_by_title,
@@ -216,13 +242,11 @@ def state_count_dict():
     }
 
 
-from submission_qr.forms import ajax_post_form as quality_review_ajax_form
 from submission_qr.views import score_partial
 
-import json
 
 def json_safe(val):
-    if val.__class__=={}.__class__:
+    if val.__class__ == {}.__class__:
         res = {}
 #        [res[k]=json_safe(v) for k,v in val.items()]
         for k, v in val.items():
@@ -231,34 +255,41 @@ def json_safe(val):
     else:
         return str(val)
 
+
 def survey(request, pk):
     r = ViewPkgr(request, "survey.html")
-    
+
     instance = ParsedInstance.objects.get(pk=pk)
-    
+
     # score_partial is the section of the page that lists scores given
     # to the survey.
     # it also contains a form for editing existing submissions or posting
-    # a new one. 
+    # a new one.
     reviewing = score_partial(instance, request.user, True)
 
     data = []
     mongo_json = instance.get_from_mongo()
     for key, val in mongo_json.items():
         data.append((key, val))
-    
+
     r.info['survey_title'] = "Survey Title"
-    
-    r.add_info({"instance" : instance, \
-        'data': data, \
-       'score_partial': reviewing, \
-       'popup': False})
+
+    r.add_info(
+        {
+            "instance": instance,
+            'data': data,
+            'score_partial': reviewing,
+            'popup': False
+            }
+        )
     return r.r()
+
 
 from surveyor_manager.models import Surveyor
 
+
 def surveyor_list_dict(surveyor):
-    d = {'name':surveyor.name}
+    d = {'name': surveyor.name}
     d['profile_url'] = "/xforms/surveyors/%d" % surveyor.id
     #how do we find district?
     d['district'] = "district-name-goes-here"

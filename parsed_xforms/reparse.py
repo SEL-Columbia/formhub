@@ -44,8 +44,11 @@ def reparse_all(*args, **kwargs):
     # Delete all parsed instances.
     ParsedInstance.objects.all().delete()
     for i in Instance.objects.all().iterator():
-        # Parse each instance in the database
-        ParsedInstance.objects.create(instance=i)
+        # There are a few instances that throw errors
+        try:
+            ParsedInstance.objects.create(instance=i)
+        except Exception as e:
+            print e
     
     if debug:
         cols, counts_2, end_time = get_counts()
