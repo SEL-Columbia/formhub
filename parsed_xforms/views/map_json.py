@@ -19,7 +19,7 @@ def map_data_points(request, lga_id):
     * GPS coordinates
     
     """
-    match_lga = {LGA_ID : int(lga_id)}
+    match_lga = {LGA_ID: int(lga_id), GPS: {"$exists": True}}
     fields = [START_TIME, SURVEYOR_NAME, INSTANCE_DOC_NAME,
               LGA_ID, ATTACHMENTS, GPS]
     mongo_query = xform_instances.find(spec=match_lga, fields=fields)
