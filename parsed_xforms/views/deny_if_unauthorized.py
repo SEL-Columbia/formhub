@@ -14,7 +14,7 @@ from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.utils.http import urlquote
 
-def deny_if_unauthorized(permission="xform.can_view"):
+def deny_if_unauthorized(permission="xform_manager.can_view"):
     """
     If the user requesting this page has 'permission' show them the
     view, if the user is anonymous redirect them to the login page,
