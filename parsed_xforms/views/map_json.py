@@ -4,12 +4,13 @@ from parsed_xforms.models import xform_instances
 from utils import json_response
 from deny_if_unauthorized import deny_if_unauthorized
 
+
 @deny_if_unauthorized()
 def map_data_points(request, lga_id):
     """
     The map list needs these attributes for each survey to display
     the map & dropdown filters.
-    
+
     * Mongo doc ID, this is the same as xform_manager.models.Instance.id
     * Date
     * Surveyor name
@@ -17,9 +18,8 @@ def map_data_points(request, lga_id):
     * LGA ID
     * a URL to access the picture
     * GPS coordinates
-    
     """
-    match_lga = {LGA_ID: int(lga_id), GPS: {"$exists": True}}
+    match_lga = {LGA_ID: int(lga_id), GPS: {"$regex": "[0-9 .]+"}}
     fields = [START_TIME, SURVEYOR_NAME, INSTANCE_DOC_NAME,
               LGA_ID, ATTACHMENTS, GPS]
     mongo_query = xform_instances.find(spec=match_lga, fields=fields)
