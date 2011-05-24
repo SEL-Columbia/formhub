@@ -17,7 +17,7 @@
 			<table class="pretty padded">
 				<thead>
 					<tr>
-				    <th>Title</th>
+				    <th>ID</th>
 				    <th>Number of Submissions</th>
 				    <th>Time of Last Submission</th>
 				    <th>Export</th>
@@ -26,7 +26,7 @@
 				<tbody>
 			{% for xform in xforms %}
 				<tr>
-				  <td>{{ xform.title }}</td>
+				  <td>{{ xform.id_string }}</td>
 				  <td>{{ xform.submission_count }}</td>
 				  <td>
 				    {% if xform.time_of_last_submission %}

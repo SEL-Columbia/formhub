@@ -2,14 +2,16 @@ import codecs
 import os
 import re
 
+
 class CsvWriter(object):
     """
-    Gosh darn csv package doesn't work with unicode.
-    
-    This class is a simple wrapper around csv.writer. It takes a row
-    iterator and a path to the file to write.
-    This class takes a dict iterator, a key comparator (for sorting
-    the keys), and a function to rename the keys.
+    The csv library doesn't handle unicode strings, so we've written
+    our own here.
+
+    This class takes a generator function to iterate through all the
+    dicts of data we wish to write to csv. This class also takes a key
+    comparator (for sorting the keys), and a function to rename the
+    headers.
     """
     def __init__(self):
         self._dict_iterator = []
@@ -86,7 +88,41 @@ class CsvWriter(object):
         self._file_object.writelines([row_string, u"\n"])
 
 
+from xform_manager.models import XForm
+from parsed_xforms.models import xform_instances
+from common_tags import XFORM_ID_STRING
+
+
+class XFormWriter(CsvWriter):
+
+    def __init__(self):
+        super(XFormWriter, self).__init__()
+        self._xform = None
+
+    def set_xform(self, xform):
+        self._xform = xform
+
+        generator_function = self.get_data_for_csv_writer
+        self.set_generator_function(generator_function)
+
+    def get_data_for_csv_writer(self):
+        match_id_string = {XFORM_ID_STRING: self._xform.id_string}
+        dicts = xform_instances.find(spec=match_id_string)
+        for d in dicts:
+            yield d
+
+    def set_from_id_string(self, id_string):
+        xform = XForm.objects.get(id_string=id_string)
+        self.set_xform(xform)
+
+    def get_default_file_path(self):
+        this_directory = os.path.dirname(__file__)
+        id_string = self._xform.id_string
+        return os.path.join(this_directory, "csvs", id_string + ".csv")
+
+
 from parsed_xforms.models import DataDictionary
+
 
 class DataDictionaryWriter(CsvWriter):
 
@@ -106,29 +142,44 @@ class DataDictionaryWriter(CsvWriter):
         key_rename_function = data_dictionary.get_variable_name
         self.set_key_rename_function(key_rename_function)
 
+    def set_from_id_string(self, id_string):
+        dd = DataDictionary.objects.get(xform__id_string=id_string)
+        self.set_data_dictionary(dd)
+
+    def get_default_file_path(self):
+        this_directory = os.path.dirname(__file__)
+        id_string = self._data_dictionary.xform.id_string
+        return os.path.join(this_directory, "csvs", id_string + ".csv")
+
+
 # http://djangosnippets.org/snippets/365/
 from django.http import HttpResponse
 from django.core.servers.basehttp import FileWrapper
 
+
 def send_file(path, content_type):
-    """                                                                         
-    Send a file through Django without loading the whole file into              
-    memory at once. The FileWrapper will turn the file object into an           
-    iterator for chunks of 8KB.                                                 
+    """
+    Send a file through Django without loading the whole file into
+    memory at once. The FileWrapper will turn the file object into an
+    iterator for chunks of 8KB.
     """
     wrapper = FileWrapper(file(path))
     response = HttpResponse(wrapper, content_type=content_type)
     response['Content-Length'] = os.path.getsize(path)
     return response
 
+
 from deny_if_unauthorized import deny_if_unauthorized
+
 
 @deny_if_unauthorized()
 def csv_export(request, id_string):
-    dd = DataDictionary.objects.get(xform__id_string=id_string)
-    ddw = DataDictionaryWriter()
-    ddw.set_data_dictionary(dd)
-    this_directory = os.path.dirname(__file__)
-    file_path = os.path.join(this_directory, "csvs", id_string + ".csv")
-    ddw.write_to_file(file_path)
+    try:
+        writer = DataDictionaryWriter()
+        writer.set_from_id_string(id_string)
+    except DataDictionary.DoesNotExist:
+        writer = XFormWriter()
+        writer.set_from_id_string(id_string)
+    file_path = writer.get_default_file_path()
+    writer.write_to_file(file_path)
     return send_file(path=file_path, content_type="application/csv")
