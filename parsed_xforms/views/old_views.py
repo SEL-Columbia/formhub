@@ -100,6 +100,11 @@ def submission_counts_by_lga(request, as_dict=False):
     titles = [u"Agriculture", u"Education", u"Health", u"LGA", u"Water"]
     headers = [u"Zone", u"State", u"LGA"] + titles
 
+    dicts = ParsedInstance.objects.values("instance__xform__title", "lga").annotate(count=Count("id"))
+    counts = defaultdict(dict)
+    for d in dicts:
+        counts[d['lga']][d['instance__xform__title']] = d['count']
+
     lgas = get_lgas()
     rows = []
     for lga in lgas:
@@ -107,9 +112,7 @@ def submission_counts_by_lga(request, as_dict=False):
                lga.state.name,
                lga.name,]
         for title in titles:
-            count = ParsedInstance.objects.filter(
-                lga=lga, instance__xform__title=title
-                ).count()
+            count = counts[lga.id].get(title, 0)
             row.append(count)
         rows.append(row)
 
