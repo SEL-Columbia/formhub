@@ -167,6 +167,11 @@ def state_count_dict():
 
     states_list = []
 
+    dicts = ParsedInstance.objects.values("instance__xform__title", "lga").annotate(count=Count("id"))
+    counts = defaultdict(dict)
+    for d in dicts:
+        counts[d['lga']][d['instance__xform__title']] = d['count']
+
     for lga in lga_query.all():
         totals_for_this_lga = {}
         cur_state = lga.state
@@ -184,12 +189,7 @@ def state_count_dict():
 
         lga_total = 0
         for title in titles:
-            # todo: calculating these counts should be done with a
-            # single query outside of these two loops, it will be much
-            # faster.
-            count = ParsedInstance.objects.filter(
-                        lga=lga, instance__xform__title=title
-                    ).count()
+            count = counts[lga.id].get(title, 0)
             state_totals[cur_state][title] += count
             zone_totals[cur_zone][title] += count
             survey_totals[title] += count
