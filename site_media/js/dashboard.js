@@ -550,13 +550,13 @@ var MapKey = (function(){
 			agriculture: "orange",
 			lga: "purple",
 			education: "green",
-			defaultColor: "purple"
+			defaultColor: "pink"
 		};
 		
 		_ActivityPoint.prototype.icon = function(){
 			var color;
 			if(this.surveyType==undefined) {
-				color = 'purple'
+				color = stColors.defaultColor;
 			} else {
 				color = stColors[this.surveyType.toLowerCase()]
 			}
