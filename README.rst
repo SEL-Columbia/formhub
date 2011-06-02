@@ -34,3 +34,8 @@ Installation
 8. Clone the XForm Manager inside this Django project:
 
     $ git clone https://github.com/mvpdev/xform_manager.git
+
+For those installing MySQL we had to do the following:
+
+    sudo apt-get install mysql-server mysql-client libmysqlclient-dev
+    pip install MySQL-python
