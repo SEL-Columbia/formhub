@@ -217,25 +217,26 @@ def state_count_dict():
             lga_totals_by_title = []
             for title in titles:
                 lga_totals_by_title.append(cur_lga_total[title])
-            lga_list.append(
+            if cur_lga_total['total'] > 0:
+                lga_list.append(
+                    {
+                        'name': lga.name,
+                        'total_count': cur_lga_total['total'],
+                        'pk': lga.id,
+                        'survey_totals_by_title': lga_totals_by_title
+                        }
+                    )
+        if state_total > 0:
+            row_groups.append(
                 {
-                    'name': lga.name,
-                    'total_count': cur_lga_total['total'],
-                    'pk': lga.id,
-                    'survey_totals_by_title': lga_totals_by_title
+                    'zone_name': state.zone.name,
+                    'name': state.name,
+                    'survey_totals_by_title': totals_by_title,
+                    'total_count': state_total,
+                    'lga_count': len(lga_list),
+                    'lga_list': lga_list
                     }
                 )
-
-        row_groups.append(
-            {
-                'zone_name': state.zone.name,
-                'name': state.name,
-                'survey_totals_by_title': totals_by_title,
-                'total_count': state_total,
-                'lga_count': len(lga_list),
-                'lga_list': lga_list
-                }
-            )
 
     return {
         'survey_titles': titles,
