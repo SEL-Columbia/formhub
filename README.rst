@@ -1,5 +1,5 @@
-NMIS Project v0.6.5
-===================
+NMIS Project v0.6.51
+====================
 
 Installation
 ------------
