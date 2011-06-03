@@ -14,6 +14,9 @@ class DataDictionary(models.Model):
     class Meta:
         app_label = "parsed_xforms"
 
+    def __unicode__(self):
+        return self.xform.__unicode__()
+
     def get_survey_object(self):
         if not hasattr(self, "_survey"):
             qtd = QuestionTypeDictionary("nigeria")
