@@ -9,6 +9,8 @@ ID = u"_id"
 PICTURE = u"picture"
 GPS = u"location/gps"
 LGA = u"lga"
+SURVEY_TYPE = u'_survey_type_slug'
+
 # Phone IMEI:
 DEVICE_ID = u"device_id" # This tag was used in Phase I
 IMEI = u"imei"           # This tag was used in Phase II

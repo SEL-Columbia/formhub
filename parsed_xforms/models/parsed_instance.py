@@ -10,7 +10,7 @@ from nga_districts.models import LGA
 
 from xform_manager import utils
 from common_tags import IMEI, DEVICE_ID, START_TIME, START, \
-    END_TIME, END, LGA_ID, ID, SURVEYOR_NAME, ATTACHMENTS, DATE
+    END_TIME, END, LGA_ID, ID, SURVEYOR_NAME, ATTACHMENTS, DATE, SURVEY_TYPE
 import django.dispatch
 import datetime
 
@@ -56,6 +56,7 @@ class ParsedInstance(models.Model):
                     None if not self.surveyor else self.surveyor.name,
                 LGA_ID :
                     None if not self.lga else self.lga.id,
+                SURVEY_TYPE: self.instance.survey_type.slug,
                 ATTACHMENTS :
                     [a.media_file.name for a in self.instance.attachments.all()],
                 u"_status" : self.instance.status,
