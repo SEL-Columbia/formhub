@@ -53,23 +53,35 @@ def deploy_production(migrate_db='no'):
 @hosts('wsgi@staging.mvpafrica.org')
 def backup_production():
     production_env()
-    backup_code_and_database()
+    backup_database()
 
 def bootstrap():
     """ initialize remote host environment (virtualenv, deploy, update) """
     require('root', provided_by=('staging', 'production'))
 
-def backup_code_and_database():
+def backup_database():
     cur_timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
     backup_directory_path = os.path.join(env.backup_dir, cur_timestamp)
     tarball_path = os.path.join(backup_directory_path, env.project)
     run("mkdir -p %s" % backup_directory_path)
-
-    with cd(env.root):
-        run("tar -cvf %s.tar %s" % (tarball_path, env.project))
-
+    
     with cd(backup_directory_path):
         run("mysqldump -u nmis -p$MYSQL_NMIS_PW %(db_name)s > %(db_name)s.sql" % env)
+        run("gzip %(db_name)s.sql" % env)
+
+@hosts('wsgi@staging.mvpafrica.org')
+def reparse_staging():
+    staging_env()
+    _run_reparse()
+
+@hosts('wsgi@staging.mvpafrica.org')
+def reparse_production():
+    production_env()
+    _run_reparse()
+
+def _run_reparse():
+    with cd(env.code_root):
+        run("python manage.py reparse")
 
 def deploy():
     """ git pull (branch) """
