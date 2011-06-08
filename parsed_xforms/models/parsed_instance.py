@@ -150,6 +150,9 @@ class ParsedInstance(models.Model):
     
     def update_mongo(self):
         d = self.to_dict()
+        for mod in self.instance.modifications.all():
+            if mod.action=="delete":
+                d.pop(mod.xpath)
         xform_instances.save(d)
 
 # http://docs.djangoproject.com/en/dev/topics/db/models/#overriding-model-methods
