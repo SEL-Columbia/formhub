@@ -8,7 +8,7 @@ class InstanceModification(models.Model):
 
     action = models.CharField(max_length=50)
 
-    instance = models.ForeignKey(Instance, null=False)
+    instance = models.ForeignKey(Instance, null=False, related_name="modifications")
     xpath = models.CharField(max_length=50)
 
     date_created = models.DateTimeField(auto_now_add=True)
