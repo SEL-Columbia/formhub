@@ -178,11 +178,19 @@
         this.helper('addMapLoadCallback', function(cb){mapLoadCallbacks.push(cb);})
         this.helper('Map', function(cb){
             mapLoadCallbacks.push(cb);
+            var gmapOptions = function(){
+                return {
+                    zoom: 6,
+                    center: new google.maps.LatLng(9.243092645104804, 7.9156494140625),
+                    mapTypeId: 'terrain',
+                    mapTypeControl: false
+                }
+            }
             if(!loadFinished) {
                 var sammyObj = this;
                 gmapElem.bind('gmapLoaded', function(){
                     //make the map and call the callback with the first argument as the map object
-                    gmap = new google.maps.Map(gmapElem.get(0), {zoom:6,center:new google.maps.LatLng(9.243092645104804, 7.9156494140625), mapTypeId:'terrain', mapTypeControl: false});
+                    gmap = new google.maps.Map(gmapElem.get(0), gmapOptions());
 					var l = new google.maps.KmlLayer("/site-media/kml/113_lgas.kml", {
 						preserveViewport: true,
 						suppressInfoWindows: true,
@@ -190,19 +198,16 @@
 					});
                     _map = gmap;
                     map.map = gmap;
-//                    cb.call(map);
                     $(mapLoadCallbacks).each(function(){
                         this.call(map);
-                    })
+                    });
                 });
             } else {
                 if(!gmap) {
-                    gmap = new google.maps.Map(gmapElem.get(0), {zoom:6,center:new google.maps.LatLng(9.243092645104804, 7.9156494140625), mapTypeId:'terrain', mapTypeControl: false });
-		//			addNga113Map(gmap);
+                    gmap = new google.maps.Map(gmapElem.get(0), gmapOptions());
                     map.map = gmap;
                     _map = gmap;
                 }
-                // cb.call(map);
                 $(mapLoadCallbacks).each(function(){
                     this.call(map);
                 })
