@@ -141,7 +141,10 @@ def dashboard(request):
     rc.survey_types = [model_to_dict(s) for s in SurveyType.objects.all()]
 
     rc.zone_table = state_count_dict()
-
+    
+    from django.conf import settings
+    rc.debug_mode = json.dumps(settings.DEBUG)
+    
     return render_to_response(
         "dashboard.html",
         context_instance=rc

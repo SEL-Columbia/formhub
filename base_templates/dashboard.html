@@ -5,7 +5,6 @@
 <link rel="stylesheet" href="/site-media/css/dashboard.css" type="text/css" media="all">
 {% endblock %}
 {% block scripts %}
-<script type="text/javascript" charset="utf-8"></script>
 <link rel="stylesheet" href="/site-media/css/map-key.css" type="text/css" media="all" charset="utf-8" />
 {% endblock %}
 
@@ -113,16 +112,13 @@
 			</div>
 		</div>
 	</div>
-	<div class="iwrap" id="map">
-		<div class="iiwrap">
-			<div class="map-wrap">
-			</div>
-		</div>
-	</div>
 </div>
-
 {% endblock %}
 {% block js %}
 <script type="text/javascript" src="/site-media/js/sammy.extensions.js"></script>
 <script type="text/javascript" src="/site-media/js/dashboard.js"></script>
+<script type="text/javascript" charset="utf-8">
+	/* clear localStorage if in debug mode */
+	(function(debugMode){ debugMode && localStorage.clear();})({{debug_mode}});
+</script>
 {% endblock %}
