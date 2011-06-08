@@ -16,3 +16,8 @@ class InstanceModification(models.Model):
 
     class Meta:
         app_label = "parsed_xforms"
+
+    def process_doc(self, doc):
+        if self.action=="delete":
+            doc.pop(self.xpath)
+        return doc
