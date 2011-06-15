@@ -191,7 +191,7 @@
                 gmapElem.bind('gmapLoaded', function(){
                     //make the map and call the callback with the first argument as the map object
                     gmap = new google.maps.Map(gmapElem.get(0), gmapOptions());
-					var l = new google.maps.KmlLayer("/site-media/kml/113_lgas.kml", {
+					var l = new google.maps.KmlLayer("/static/kml/113_lgas.kml", {
 						preserveViewport: true,
 						suppressInfoWindows: true,
 						map: gmap
@@ -303,7 +303,7 @@ var MapKey = (function(){
 
 	        this.use(Sammy.Title);
 	        this.setTitle(function(title){
-	            return ["Baseline Data Collection: ", title].join("");
+	            return [/*"Baseline Data Collection: ", */title].join("");
 	        });
 
 	        this.use(Sammy.Template);
@@ -546,7 +546,7 @@ var MapKey = (function(){
 			this.time = o.start_time;
 			this.title = this.surveyType;
 			this.imageUrl = o._attachments[0];
-			if(this.imageUrl) {this.imageUrl = '/site-media/'+this.imageUrl;}
+			if(this.imageUrl) {this.imageUrl = '/static/'+this.imageUrl;}
 		}
 		var flagColors = "blue green orange pink purple red yellow".split(" ");
 		var stColors = {
@@ -565,13 +565,13 @@ var MapKey = (function(){
 			} else {
 				color = stColors[this.surveyType.toLowerCase()]
 			}
-			var icon = new google.maps.MarkerImage("/site-media/images/geosilk/flag_"+color+".png", new google.maps.Size(16, 16),
+			var icon = new google.maps.MarkerImage("/static/images/geosilk/flag_"+color+".png", new google.maps.Size(16, 16),
 		        new google.maps.Point(0,0), new google.maps.Point(9, 15));
 		    
 			return icon;
 		}
 		_ActivityPoint.prototype.shadow = function(){
-			var icon = new google.maps.MarkerImage("/site-media/images/gmap-smaller-dots/"+color+".png", new google.maps.Size(13, 13),
+			var icon = new google.maps.MarkerImage("/static/images/gmap-smaller-dots/"+color+".png", new google.maps.Size(13, 13),
 		        new google.maps.Point(0,0), new google.maps.Point(6, 6));
 		    
 			return icon;

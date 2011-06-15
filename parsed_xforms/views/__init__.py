@@ -1,4 +1,8 @@
+#booo (import *)
 from old_views import *
+
+from dashboard_views import dashboard
+
 from csv_export import csv_export
 from xls_export import xls_export
 from map_json import map_data_points

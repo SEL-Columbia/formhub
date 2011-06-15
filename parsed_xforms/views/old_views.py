@@ -13,8 +13,7 @@ from xform_manager.models import XForm, Instance
 from nga_districts.models import LGA
 from deny_if_unauthorized import deny_if_unauthorized
 
-from parsed_xforms.view_pkgr import ViewPkgr
-
+#from parsed_xforms.view_pkgr import ViewPkgr
 
 @deny_if_unauthorized()
 def export_list(request):
@@ -125,31 +124,12 @@ def submission_counts_by_lga(request, as_dict=False):
         context_instance=context
         )
 
-from map_xforms.models import SurveyTypeMapData
+#from map_xforms.models import SurveyTypeMapData
 
 from django.forms.models import model_to_dict
 
 from collections import defaultdict
-
-
-@deny_if_unauthorized()
-def dashboard(request):
-    rc = RequestContext(request)
-    rc.xforms = XForm.objects.all()
-    rc.lga_table = submission_counts_by_lga(request, True)
-    rc.table_types = json.dumps(dimensions.keys())
-    rc.survey_types = [model_to_dict(s) for s in SurveyType.objects.all()]
-
-    rc.zone_table = state_count_dict()
-    
-    from django.conf import settings
-    rc.debug_mode = json.dumps(settings.DEBUG)
-    
-    return render_to_response(
-        "dashboard.html",
-        context_instance=rc
-        )
-
+from django.conf import settings
 
 def state_count_dict():
     """
@@ -251,49 +231,41 @@ def state_count_dict():
 
 from submission_qr.views import score_partial
 
-
-def json_safe(val):
-    if val.__class__ == {}.__class__:
-        res = {}
-#        [res[k]=json_safe(v) for k,v in val.items()]
-        for k, v in val.items():
-            res[k] = json_safe(v)
-        return res
-    else:
-        return str(val)
-
-
 def survey(request, pk):
-    r = ViewPkgr(request, "survey.html")
+    context = RequestContext(request)
+    return render_to_response("survey.html",
+        context_instance=context)
 
-    instance = ParsedInstance.objects.get(pk=pk)
-
-    # score_partial is the section of the page that lists scores given
-    # to the survey.
-    # it also contains a form for editing existing submissions or posting
-    # a new one.
-    reviewing = score_partial(instance, request.user, True)
-
-    data = []
-    mongo_json = instance.get_from_mongo()
-    for key, val in mongo_json.items():
-        data.append((key, val))
-
-    r.info['survey_title'] = "Survey Title"
-
-    r.add_info(
-        {
-            "instance": instance,
-            'data': data,
-            'score_partial': reviewing,
-            'popup': False
-            }
-        )
-    return r.r()
-
+# def blah():
+#     r = ViewPkgr(request, "survey.html")
+# 
+#     instance = ParsedInstance.objects.get(pk=pk)
+# 
+#     # score_partial is the section of the page that lists scores given
+#     # to the survey.
+#     # it also contains a form for editing existing submissions or posting
+#     # a new one.
+#     reviewing = score_partial(instance, request.user, True)
+# 
+#     data = []
+#     mongo_json = instance.get_from_mongo()
+#     for key, val in mongo_json.items():
+#         data.append((key, val))
+# 
+#     r.info['survey_title'] = "Survey Title"
+# 
+#     r.add_info(
+#         {
+#             "instance": instance,
+#             'data': data,
+#             'score_partial': reviewing,
+#             'popup': False
+#             }
+#         )
+#     return r.r()
+# 
 
 from surveyor_manager.models import Surveyor
-
 
 def surveyor_list_dict(surveyor):
     d = {'name': surveyor.name}

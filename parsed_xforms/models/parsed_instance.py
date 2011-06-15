@@ -5,7 +5,6 @@ from xform_manager.models import XForm, Instance
 from xform_manager.views import log_error
 from phone_manager.models import Phone
 from surveyor_manager.models import Surveyor
-from locations.models import District
 from nga_districts.models import LGA
 
 from xform_manager import utils
@@ -36,7 +35,6 @@ class ParsedInstance(models.Model):
     
     # district is no longer used except in old data. once
     # we've migrated phase I surveys, we should delete this field.
-    district = models.ForeignKey(District, null=True)
     lga = models.ForeignKey(LGA, null=True)
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
