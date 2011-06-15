@@ -24,11 +24,7 @@ def dashboard(request):
     rc.lga_table = submission_counts_by_lga(request, True)
     rc.table_types = json.dumps(dimensions.keys())
     rc.survey_types = [model_to_dict(s) for s in SurveyType.objects.all()]
-
-    rc.zone_table = state_count_dict()
-    
     rc.site_title = settings.SITE_TITLE
-    
     rc.debug_mode = json.dumps(settings.DEBUG)
     
     return render_to_response(
@@ -74,7 +70,10 @@ dimensions = {
     "location": "district",
     }
     
-    
+
+def state_count_json(request):
+    return HttpResponse(json.dumps(state_count_dict()))
+
 #state count dict is a beast
 def state_count_dict():
     """

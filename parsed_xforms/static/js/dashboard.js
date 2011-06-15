@@ -1,18 +1,60 @@
-(function(listTable){
-	listTable.find('tr.state-row').click(function(){
-		if($(this).hasClass('selected')) {
-			$(this).removeClass('selected')
-				.parents('tbody').removeClass('opened');
-			$(listTable).removeClass('active');
-		} else {
-			$('tbody.opened', listTable).removeClass('opened');
-			$('.selected', listTable).removeClass('selected');
-			$(this).addClass('selected')
-				.parents('tbody').addClass('opened');
-			$(listTable).addClass('active');
-		}
-	})
-})($('#state-lga-list'))
+function buildStateLgaTable(data) {
+	var hbar = $("<td />", {'class': 'h-bar'});
+	var table = $("<table />", {'class': 'pretty padded state-lga-list onlyforjs', id: 'state-lga-list'});
+	var thead = $("<thead />").html($("<th />", {'colspan': 4}));
+	var surveyTitles = data.survey_titles;
+	$.each(surveyTitles, function(i, t){
+		thead.append($("<th />", {'class': 'survey-col-header'}).text(t));
+	});
+	thead.append($("<th />", {'class': 'tot-span'}).text('TOTAL'));
+	table.append(thead);
+	$(data.states).each(function(i, state){
+		var tbod = $("<tbody />");
+		var tr = $("<tr />", {'class': 'state-row'});
+		var lgaCountStr = "("+state.lga_count+" LGAs)";
+		tr.append(hbar.clone())
+			.append($("<td />").text(state.zone_name))
+			.append($("<td />").text(state.name))
+			.append($("<td />").html($("<span />", {'class': 'lga-count'}).text(lgaCountStr)));
+		
+		$(state.survey_totals_by_title).each(function(i, num){
+			tr.append($("<td />", {'class': 'centered'}).text(num));
+		});
+		tr.append($("<td />", {'class': 'state total'}).html($("<span />").text(state.total_count)));
+		tbod.append(tr);
+		
+		$(state.lga_list).each(function(i, lga){
+			var tr = $("<tr />", {'class': 'lga-row'}).html(hbar.clone());
+			var lgaUrl = "#/map/lga/"+lga.pk;
+			var viewMapLink = $("<a />", {'href': lgaUrl, 'class':'discrete-link'}).text("[View Map]");
+			tr.append($("<td />").html(viewMapLink));
+			var lgaLink = $("<a />", {'href':lgaUrl}).text(lga.name);
+			tr.append($("<td />", {'colspan':2}).html(lgaLink));
+			$(lga.survey_totals_by_title).each(function(i, tot){
+				tr.append($("<td />", {'class': 'centered'}).html($("<span />").text(tot)))
+			});
+			tr.append($("<td />", {'class': 'lga total'}).html($("<span />", {'class':'total'}).text(lga.total_count)));
+			tbod.append(tr);
+		});
+		table.append(tbod);
+	});
+	(function activateStateTable(listTable){
+        listTable.delegate('tr.state-row', 'click', function(){
+            if($(this).hasClass('selected')) {
+    			$(this).removeClass('selected')
+    				.parents('tbody').removeClass('opened');
+    			listTable.removeClass('active');
+    		} else {
+    			$('tbody.opened', listTable).removeClass('opened');
+    			$('.selected', listTable).removeClass('selected');
+    			$(this).addClass('selected')
+    				.parents('tbody').addClass('opened');
+    			listTable.addClass('active');
+    		}
+        });
+    })(table);
+	return table;
+}
 
 	$('.button').button();
 	

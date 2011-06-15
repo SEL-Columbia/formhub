@@ -20,5 +20,6 @@ urlpatterns = patterns('',
     # url(r"^counts-by-lga/?$", views.submission_counts_by_lga),
     
     url(r"^dashboard/$", views.dashboard, name="dashboard"),
+    url(r"^state_count_json/$", views.state_count_json, name="state_count_json"),
     url(r"^$", views.dashboard, name="dashboard"),
 )
