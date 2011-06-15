@@ -1,3 +1,6 @@
+#This is not in use, but the code is copied over from geotag.py (which was in the project dir)
+
+"""
 # http://stackoverflow.com/questions/453395/what-is-the-best-way-to-geotag-jpeg-images-with-python
 
 import pyexiv2
@@ -17,14 +20,12 @@ def to_deg(value, loc):
     return (deg, min, sec, loc_value)    
 
 def set_gps_location(file_name, lat, lng):
-    """Adds GPS position as EXIF metadata
+    #Adds GPS position as EXIF metadata
 
-    Keyword arguments:
-    file_name -- image file 
-    lat -- latitude (as float)
-    lng -- longitude (as float)
-
-    """
+    #Keyword arguments:
+    #file_name -- image file 
+    #lat -- latitude (as float)
+    #lng -- longitude (as float)
     lat_deg = to_deg(lat, ["S", "N"])
     lng_deg = to_deg(lng, ["W", "E"])
 
@@ -64,3 +65,5 @@ for pi in ParsedInstance.objects.all():
             path = "site_media/" + image.name
             # set_gps_location(path, float(lat), float(lng))
             os.rename(path, "site_media/tagged/" + image.name)
+
+"""
