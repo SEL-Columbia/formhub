@@ -6,7 +6,6 @@ from django.conf.urls.defaults import *
 from . import views
 
 urlpatterns = patterns('',
-    url(r"^survey-list/?$", views.export_list),
     url(r"^export_spreadsheet/(?P<id_string>[^/]*)\.csv$", views.csv_export),
     url(r"^export_spreadsheet/(?P<id_string>[^/]*)\.xls$", views.xls_export),
     url(r"^map_data_points/(?P<lga_id>\d+)/$", views.map_data_points),
