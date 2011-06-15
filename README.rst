@@ -25,7 +25,7 @@ Installation
 
 6. Install all the requirements including fabric
 
-    $ pip install -r requirements.txt
+    $ pip install -r requirements.pip
 
 7. Copy example settings and edit them appropriately
 
