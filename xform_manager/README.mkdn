@@ -1,0 +1,12 @@
+XForm Manager v0.3
+==================
+
+Still in development
+--------------------
+
+XForm Manager/ODK_Logger is a Django app that provides URLs to serve XForms to ODK
+Collect and it stores a log of all data submitted from ODK Collect.
+
+add to installed apps
+include urls
+syncdb

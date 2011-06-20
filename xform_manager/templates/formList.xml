@@ -1,0 +1,5 @@
+<forms>
+  {% for f in xforms %}
+  <form url="{{root_url}}{{ f.url }}">{{ f.id_string }}</form>
+  {% endfor %}
+</forms>

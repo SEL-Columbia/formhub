@@ -1,0 +1,791 @@
+<h:html xmlns:h="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa" xmlns="http://www.w3.org/2002/xforms">
+  <h:head>
+    <h:title>Water</h:title>
+    <model>
+      <instance>
+        <Water id="Water_2011_03_17">
+          <research_assistant_name/>
+          <photo/>
+          <location>
+            <gps/>
+            <zone/>
+            <state_in_northwest/>
+            <state_in_southeast/>
+            <lga_in_jigawa/>
+            <lga_in_kaduna/>
+            <lga_in_kano/>
+            <lga_in_katsina/>
+            <lga_in_kebbi/>
+            <lga_in_sokoto/>
+            <lga_in_zamfara/>
+            <lga_in_abia/>
+            <lga_in_anambra/>
+            <lga_in_ebonyi/>
+            <lga_in_enugu/>
+            <lga_in_imo/>
+            <ward/>
+            <community/>
+          </location>
+          <respondent>
+            <name/>
+            <position/>
+            <phone_number/>
+          </respondent>
+          <locality/>
+          <nearest_school_or_clinic/>
+          <pre_existing_id/>
+          <type/>
+          <type_other/>
+          <distribution_type/>
+          <lift_mechanism/>
+          <lift_mechanism_other/>
+          <developed_by/>
+          <developed_by_other/>
+          <managed_by/>
+          <managed_by_other/>
+          <managing_organizations>
+            <federal_government>
+              <name/>
+            </federal_government>
+            <state_government>
+              <name/>
+            </state_government>
+            <local_government>
+              <name/>
+            </local_government>
+            <community>
+              <name/>
+            </community>
+            <individual>
+              <name/>
+            </individual>
+            <international_development_partner>
+              <name/>
+            </international_development_partner>
+            <private_organization>
+              <name/>
+            </private_organization>
+          </managing_organizations>
+          <pay_for_water/>
+          <used_today/>
+          <reasons_not_used/>
+          <reasons_not_used_other/>
+          <physical_state/>
+          <other_close_water/>
+          <times_used/>
+          <times_used_other/>
+          <help_completed/>
+          <thank_you/>
+        </Water>
+      </instance>
+      <bind nodeset="/Water/research_assistant_name" type="string" required="true()"/>
+      <bind nodeset="/Water/photo" required="true()"/>
+      <bind nodeset="/Water/location/gps" type="geopoint" required="true()"/>
+      <bind nodeset="/Water/location/zone" type="select1" required="true()"/>
+      <bind nodeset="/Water/location/state_in_northwest" relevant="/Water/location/zone='northwest'" type="select1" required="true()"/>
+      <bind nodeset="/Water/location/state_in_southeast" relevant="/Water/location/zone='southeast'" type="select1" required="true()"/>
+      <bind nodeset="/Water/location/lga_in_jigawa" relevant="/Water/location/state_in_northwest='jigawa'" type="select1" required="true()"/>
+      <bind nodeset="/Water/location/lga_in_kaduna" relevant="/Water/location/state_in_northwest='kaduna'" type="select1" required="true()"/>
+      <bind nodeset="/Water/location/lga_in_kano" relevant="/Water/location/state_in_northwest='kano'" type="select1" required="true()"/>
+      <bind nodeset="/Water/location/lga_in_katsina" relevant="/Water/location/state_in_northwest='katsina'" type="select1" required="true()"/>
+      <bind nodeset="/Water/location/lga_in_kebbi" relevant="/Water/location/state_in_northwest='kebbi'" type="select1" required="true()"/>
+      <bind nodeset="/Water/location/lga_in_sokoto" relevant="/Water/location/state_in_northwest='sokoto'" type="select1" required="true()"/>
+      <bind nodeset="/Water/location/lga_in_zamfara" relevant="/Water/location/state_in_northwest='zamfara'" type="select1" required="true()"/>
+      <bind nodeset="/Water/location/lga_in_abia" relevant="/Water/location/state_in_southeast='abia'" type="select1" required="true()"/>
+      <bind nodeset="/Water/location/lga_in_anambra" relevant="/Water/location/state_in_southeast='anambra'" type="select1" required="true()"/>
+      <bind nodeset="/Water/location/lga_in_ebonyi" relevant="/Water/location/state_in_southeast='ebonyi'" type="select1" required="true()"/>
+      <bind nodeset="/Water/location/lga_in_enugu" relevant="/Water/location/state_in_southeast='enugu'" type="select1" required="true()"/>
+      <bind nodeset="/Water/location/lga_in_imo" relevant="/Water/location/state_in_southeast='imo'" type="select1" required="true()"/>
+      <bind nodeset="/Water/location/ward" type="string" required="true()"/>
+      <bind nodeset="/Water/location/community" type="string" required="true()"/>
+      <bind nodeset="/Water/respondent/name" type="string" required="true()"/>
+      <bind nodeset="/Water/respondent/position" type="string" required="true()"/>
+      <bind required="true()" nodeset="/Water/respondent/phone_number" type="string" constraint="regex(., '^\d*$')"/>
+      <bind nodeset="/Water/locality" type="string" required="true()"/>
+      <bind nodeset="/Water/nearest_school_or_clinic" type="string" required="true()"/>
+      <bind nodeset="/Water/pre_existing_id" type="string" required="true()"/>
+      <bind nodeset="/Water/type" type="select1" required="true()"/>
+      <bind nodeset="/Water/type_other" relevant="selected(../type, 'other')" type="string" required="true()"/>
+      <bind nodeset="/Water/distribution_type" type="select1" required="true()"/>
+      <bind nodeset="/Water/lift_mechanism" type="select1" required="true()"/>
+      <bind nodeset="/Water/lift_mechanism_other" relevant="selected(../lift_mechanism, 'other')" type="string" required="true()"/>
+      <bind nodeset="/Water/developed_by" type="select1" required="true()"/>
+      <bind nodeset="/Water/developed_by_other" relevant="selected(../developed_by, 'other')" type="string" required="true()"/>
+      <bind nodeset="/Water/managed_by" type="select" required="false()"/>
+      <bind nodeset="/Water/managed_by_other" relevant="selected(../managed_by, 'other')" type="string" required="true()"/>
+      <bind nodeset="/Water/managing_organizations/federal_government/name" relevant="selected(/Water/managed_by, 'federal_government')" type="string" required="true()"/>
+      <bind nodeset="/Water/managing_organizations/state_government/name" relevant="selected(/Water/managed_by, 'state_government')" type="string" required="true()"/>
+      <bind nodeset="/Water/managing_organizations/local_government/name" relevant="selected(/Water/managed_by, 'local_government')" type="string" required="true()"/>
+      <bind nodeset="/Water/managing_organizations/community/name" relevant="selected(/Water/managed_by, 'community')" type="string" required="true()"/>
+      <bind nodeset="/Water/managing_organizations/individual/name" relevant="selected(/Water/managed_by, 'individual')" type="string" required="true()"/>
+      <bind nodeset="/Water/managing_organizations/international_development_partner/name" relevant="selected(/Water/managed_by, 'international_development_partner')" type="string" required="true()"/>
+      <bind nodeset="/Water/managing_organizations/private_organization/name" relevant="selected(/Water/managed_by, 'private_organization')" type="string" required="true()"/>
+      <bind nodeset="/Water/pay_for_water" type="select1" required="true()"/>
+      <bind nodeset="/Water/used_today" type="select1" required="true()"/>
+      <bind nodeset="/Water/reasons_not_used" relevant="/Water/used_today='no'" type="select" constraint="not( selected(., 'no_diesel') and /Water/lift_mechanism!='diesel' ) and not( selected(., 'no_electricity') and /Water/lift_mechanism!='electric' )" required="false()"/>
+      <bind nodeset="/Water/reasons_not_used_other" relevant="selected(../reasons_not_used, 'other')" type="string" required="true()"/>
+      <bind nodeset="/Water/physical_state" type="select1" required="true()"/>
+      <bind nodeset="/Water/other_close_water" type="select1" required="true()"/>
+      <bind nodeset="/Water/times_used" type="select1" required="true()"/>
+      <bind nodeset="/Water/times_used_other" relevant="selected(../times_used, 'other')" type="string" required="true()"/>
+      <bind nodeset="/Water/help_completed" type="select" required="false()"/>
+      <bind readonly="true()" nodeset="/Water/thank_you" type="string" required="false()"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/Water/research_assistant_name">
+      <label>Research Assistant's Name</label>
+    </input>
+    <upload ref="/Water/photo" mediatype="image/*">
+      <label>Photo of Facility</label>
+    </upload>
+    <group nodeset="/Water/location">
+      <label>Location</label>
+      <input ref="/Water/location/gps">
+        <label>Geocode of Facility</label>
+        <hint>Capture the geocode before entering the facility building.</hint>
+      </input>
+      <select1 ref="/Water/location/zone">
+        <label>Zone</label>
+        <item>
+          <label>Northwest</label>
+          <value>northwest</value>
+        </item>
+        <item>
+          <label>Southeast</label>
+          <value>southeast</value>
+        </item>
+      </select1>
+      <select1 ref="/Water/location/state_in_northwest">
+        <label>State</label>
+        <item>
+          <label>Jigawa</label>
+          <value>jigawa</value>
+        </item>
+        <item>
+          <label>Kaduna</label>
+          <value>kaduna</value>
+        </item>
+        <item>
+          <label>Kano</label>
+          <value>kano</value>
+        </item>
+        <item>
+          <label>Katsina</label>
+          <value>katsina</value>
+        </item>
+        <item>
+          <label>Kebbi</label>
+          <value>kebbi</value>
+        </item>
+        <item>
+          <label>Sokoto</label>
+          <value>sokoto</value>
+        </item>
+        <item>
+          <label>Zamfara</label>
+          <value>zamfara</value>
+        </item>
+      </select1>
+      <select1 ref="/Water/location/state_in_southeast">
+        <label>State</label>
+        <item>
+          <label>Abia</label>
+          <value>abia</value>
+        </item>
+        <item>
+          <label>Anambra</label>
+          <value>anambra</value>
+        </item>
+        <item>
+          <label>Ebonyi</label>
+          <value>ebonyi</value>
+        </item>
+        <item>
+          <label>Enugu</label>
+          <value>enugu</value>
+        </item>
+        <item>
+          <label>Imo</label>
+          <value>imo</value>
+        </item>
+      </select1>
+      <select1 ref="/Water/location/lga_in_jigawa">
+        <label>LGA</label>
+        <item>
+          <label>Guri</label>
+          <value>guri</value>
+        </item>
+        <item>
+          <label>Sule Tankakar</label>
+          <value>sule_tankakar</value>
+        </item>
+      </select1>
+      <select1 ref="/Water/location/lga_in_kaduna">
+        <label>LGA</label>
+        <item>
+          <label>Birnin Gwari</label>
+          <value>birnin_gwari</value>
+        </item>
+        <item>
+          <label>Ikara</label>
+          <value>ikara</value>
+        </item>
+        <item>
+          <label>Kachia</label>
+          <value>kachia</value>
+        </item>
+        <item>
+          <label>Lere</label>
+          <value>lere</value>
+        </item>
+      </select1>
+      <select1 ref="/Water/location/lga_in_kano">
+        <label>LGA</label>
+        <item>
+          <label>Gabasawa</label>
+          <value>gabasawa</value>
+        </item>
+        <item>
+          <label>Garun Mallam</label>
+          <value>garun_mallam</value>
+        </item>
+        <item>
+          <label>Takai</label>
+          <value>takai</value>
+        </item>
+      </select1>
+      <select1 ref="/Water/location/lga_in_katsina">
+        <label>LGA</label>
+        <item>
+          <label>Mashi</label>
+          <value>mashi</value>
+        </item>
+        <item>
+          <label>Musawa</label>
+          <value>musawa</value>
+        </item>
+        <item>
+          <label>kaita</label>
+          <value>kaita</value>
+        </item>
+      </select1>
+      <select1 ref="/Water/location/lga_in_kebbi">
+        <label>LGA</label>
+        <item>
+          <label>Augie</label>
+          <value>augie</value>
+        </item>
+        <item>
+          <label>Bunza</label>
+          <value>bunza</value>
+        </item>
+        <item>
+          <label>Suru</label>
+          <value>suru</value>
+        </item>
+      </select1>
+      <select1 ref="/Water/location/lga_in_sokoto">
+        <label>LGA</label>
+        <item>
+          <label>Binji</label>
+          <value>binji</value>
+        </item>
+        <item>
+          <label>Illela</label>
+          <value>illela</value>
+        </item>
+        <item>
+          <label>Tambuwal</label>
+          <value>tambuwal</value>
+        </item>
+      </select1>
+      <select1 ref="/Water/location/lga_in_zamfara">
+        <label>LGA</label>
+        <item>
+          <label>Bukkuyum</label>
+          <value>bukkuyum</value>
+        </item>
+        <item>
+          <label>Maru</label>
+          <value>maru</value>
+        </item>
+        <item>
+          <label>Zurmi</label>
+          <value>zurmi</value>
+        </item>
+      </select1>
+      <select1 ref="/Water/location/lga_in_abia">
+        <label>LGA</label>
+        <item>
+          <label>Ikwuano</label>
+          <value>ikwuano</value>
+        </item>
+        <item>
+          <label>Obi Nwa</label>
+          <value>obi_nwa</value>
+        </item>
+        <item>
+          <label>Ohafia</label>
+          <value>ohafia</value>
+        </item>
+      </select1>
+      <select1 ref="/Water/location/lga_in_anambra">
+        <label>LGA</label>
+        <item>
+          <label>Anambra West</label>
+          <value>anambra_west</value>
+        </item>
+        <item>
+          <label>Awka North</label>
+          <value>awka_north</value>
+        </item>
+        <item>
+          <label>Orumba South</label>
+          <value>orumba_south</value>
+        </item>
+      </select1>
+      <select1 ref="/Water/location/lga_in_ebonyi">
+        <label>LGA</label>
+        <item>
+          <label>Afikpo South</label>
+          <value>afikpo_south</value>
+        </item>
+        <item>
+          <label>Ikwo</label>
+          <value>ikwo</value>
+        </item>
+        <item>
+          <label>Izzi</label>
+          <value>izzi</value>
+        </item>
+      </select1>
+      <select1 ref="/Water/location/lga_in_enugu">
+        <label>LGA</label>
+        <item>
+          <label>Aninri</label>
+          <value>aninri</value>
+        </item>
+        <item>
+          <label>Igbo Etiti</label>
+          <value>igbo_etiti</value>
+        </item>
+        <item>
+          <label>Isi-Uzo</label>
+          <value>isi_uzo</value>
+        </item>
+      </select1>
+      <select1 ref="/Water/location/lga_in_imo">
+        <label>LGA</label>
+        <item>
+          <label>Ngor-Okpala</label>
+          <value>ngor_okpala</value>
+        </item>
+        <item>
+          <label>Unuimo</label>
+          <value>unuimo</value>
+        </item>
+      </select1>
+      <input ref="/Water/location/ward">
+        <label>Ward</label>
+      </input>
+      <input ref="/Water/location/community">
+        <label>Community</label>
+      </input>
+    </group>
+    <group>
+      <label>Respondent</label>
+      <repeat nodeset="/Water/respondent">
+        <input ref="/Water/respondent/name">
+          <label>Respondent name</label>
+        </input>
+        <input ref="/Water/respondent/position">
+          <label>Respondent position within school</label>
+        </input>
+        <input ref="/Water/respondent/phone_number">
+          <label>Respondent phone number</label>
+          <hint>Enter numbers only.</hint>
+        </input>
+      </repeat>
+    </group>
+    <input ref="/Water/locality">
+      <label>Which locality is this water scheme / source in or closest to?</label>
+    </input>
+    <input ref="/Water/nearest_school_or_clinic">
+      <label>Which school or health clinic is this scheme / source closest to?</label>
+    </input>
+    <input ref="/Water/pre_existing_id">
+      <label>Please enter pre-existing ID number for this water point, if any.</label>
+      <hint>Write 'n/a' if there is no pre-existing ID number.</hint>
+    </input>
+    <select1 ref="/Water/type">
+      <label>What kind of water scheme / source is this?</label>
+      <item>
+        <label>Borehole</label>
+        <value>borehole</value>
+      </item>
+      <item>
+        <label>Tube well</label>
+        <value>tube_well</value>
+      </item>
+      <item>
+        <label>Protected dug well</label>
+        <value>protected_dug_well</value>
+      </item>
+      <item>
+        <label>Developed/protected spring water</label>
+        <value>developed_protected_spring_water</value>
+      </item>
+      <item>
+        <label>Developed and treated surface water</label>
+        <value>developed_and_treated_surface_water</value>
+      </item>
+      <item>
+        <label>Rainwater harvesting scheme</label>
+        <value>rainwater_harvesting_scheme</value>
+      </item>
+      <item>
+        <label>Other</label>
+        <value>other</value>
+      </item>
+    </select1>
+    <input ref="/Water/type_other">
+      <label>Specify other.</label>
+    </input>
+    <select1 ref="/Water/distribution_type">
+      <label>What is the type of distribution of the water scheme / source?</label>
+      <item>
+        <label>Single point (where the scheme is located)</label>
+        <value>single_point</value>
+      </item>
+      <item>
+        <label>Mulitple points less than 100m reticulation</label>
+        <value>multiple_points_within_100m</value>
+      </item>
+      <item>
+        <label>Multiple points less than 1km reticulation</label>
+        <value>multiple_points_within_1000m</value>
+      </item>
+      <item>
+        <label>Multiple points more than 1km reticulation</label>
+        <value>multiple_points_beyond_1000m</value>
+      </item>
+    </select1>
+    <select1 ref="/Water/lift_mechanism">
+      <label>What is the lift mechanism at this water scheme / source?</label>
+      <item>
+        <label>Diesel pump</label>
+        <value>diesel</value>
+      </item>
+      <item>
+        <label>Electric motor pump</label>
+        <value>electric</value>
+      </item>
+      <item>
+        <label>Solar pump</label>
+        <value>solar</value>
+      </item>
+      <item>
+        <label>Hand pump</label>
+        <value>hand_pump</value>
+      </item>
+      <item>
+        <label>Rope/pulley</label>
+        <value>rope_pulley</value>
+      </item>
+      <item>
+        <label>Animal powered pump</label>
+        <value>animal</value>
+      </item>
+      <item>
+        <label>Don't know.</label>
+        <value>do_not_know</value>
+      </item>
+      <item>
+        <label>Other</label>
+        <value>other</value>
+      </item>
+    </select1>
+    <input ref="/Water/lift_mechanism_other">
+      <label>Specify other.</label>
+    </input>
+    <select1 ref="/Water/developed_by">
+      <label>Who developed this water scheme / source?</label>
+      <item>
+        <label>Federal government</label>
+        <value>federal_government</value>
+      </item>
+      <item>
+        <label>State government</label>
+        <value>state_government</value>
+      </item>
+      <item>
+        <label>Local government</label>
+        <value>local_government</value>
+      </item>
+      <item>
+        <label>Community</label>
+        <value>community</value>
+      </item>
+      <item>
+        <label>Individual</label>
+        <value>individual</value>
+      </item>
+      <item>
+        <label>International development partner</label>
+        <value>international_development_partner</value>
+      </item>
+      <item>
+        <label>Private organization</label>
+        <value>private_organization</value>
+      </item>
+      <item>
+        <label>Other</label>
+        <value>other</value>
+      </item>
+    </select1>
+    <input ref="/Water/developed_by_other">
+      <label>Specify other.</label>
+    </input>
+    <select ref="/Water/managed_by">
+      <label>Who manages this water scheme / source?</label>
+      <hint>Select all that apply.</hint>
+      <item>
+        <label>Federal government</label>
+        <value>federal_government</value>
+      </item>
+      <item>
+        <label>State government</label>
+        <value>state_government</value>
+      </item>
+      <item>
+        <label>Local government</label>
+        <value>local_government</value>
+      </item>
+      <item>
+        <label>Community</label>
+        <value>community</value>
+      </item>
+      <item>
+        <label>Individual</label>
+        <value>individual</value>
+      </item>
+      <item>
+        <label>International development partner</label>
+        <value>international_development_partner</value>
+      </item>
+      <item>
+        <label>Private organization</label>
+        <value>private_organization</value>
+      </item>
+      <item>
+        <label>Other</label>
+        <value>other</value>
+      </item>
+    </select>
+    <input ref="/Water/managed_by_other">
+      <label>Specify other.</label>
+    </input>
+    <group nodeset="/Water/managing_organizations">
+      <label>Managing Organizations</label>
+      <group nodeset="/Water/managing_organizations/federal_government">
+        <label>Federal government</label>
+        <input ref="/Water/managing_organizations/federal_government/name">
+          <label>What is the name of the Federal government organization that manages this water scheme / source?</label>
+        </input>
+      </group>
+      <group nodeset="/Water/managing_organizations/state_government">
+        <label>State government</label>
+        <input ref="/Water/managing_organizations/state_government/name">
+          <label>What is the name of the State government organization that manages this water scheme / source?</label>
+        </input>
+      </group>
+      <group nodeset="/Water/managing_organizations/local_government">
+        <label>Local government</label>
+        <input ref="/Water/managing_organizations/local_government/name">
+          <label>What is the name of the Local government organization that manages this water scheme / source?</label>
+        </input>
+      </group>
+      <group nodeset="/Water/managing_organizations/community">
+        <label>Community</label>
+        <input ref="/Water/managing_organizations/community/name">
+          <label>What is the name of the Community organization that manages this water scheme / source?</label>
+        </input>
+      </group>
+      <group nodeset="/Water/managing_organizations/individual">
+        <label>Individual</label>
+        <input ref="/Water/managing_organizations/individual/name">
+          <label>What is the name of the Individual organization that manages this water scheme / source?</label>
+        </input>
+      </group>
+      <group nodeset="/Water/managing_organizations/international_development_partner">
+        <label>International development partner</label>
+        <input ref="/Water/managing_organizations/international_development_partner/name">
+          <label>What is the name of the International development partner organization that manages this water scheme / source?</label>
+        </input>
+      </group>
+      <group nodeset="/Water/managing_organizations/private_organization">
+        <label>Private organization</label>
+        <input ref="/Water/managing_organizations/private_organization/name">
+          <label>What is the name of the Private organization organization that manages this water scheme / source?</label>
+        </input>
+      </group>
+    </group>
+    <select1 ref="/Water/pay_for_water">
+      <label>Do people have to pay for water from this water scheme / source?</label>
+      <item>
+        <label>Yes</label>
+        <value>yes</value>
+      </item>
+      <item>
+        <label>No</label>
+        <value>no</value>
+      </item>
+      <item>
+        <label>Don't know</label>
+        <value>do_not_know</value>
+      </item>
+    </select1>
+    <select1 ref="/Water/used_today">
+      <label>Does it appear that this water source/scheme was used today?</label>
+      <item>
+        <label>Yes</label>
+        <value>yes</value>
+      </item>
+      <item>
+        <label>No</label>
+        <value>no</value>
+      </item>
+      <item>
+        <label>Don't know</label>
+        <value>do_not_know</value>
+      </item>
+    </select1>
+    <select ref="/Water/reasons_not_used">
+      <label>Why was the water scheme / source not used today?</label>
+      <hint>Select all that apply.</hint>
+      <item>
+        <label>If a pump mechanism is used to lift the water - Pump mechanism is broken</label>
+        <value>pump_broken</value>
+      </item>
+      <item>
+        <label>If there is a diesel powered pump mechanism - No diesel is available</label>
+        <value>no_diesel</value>
+      </item>
+      <item>
+        <label>If there is a pump mechanism powered with electricity - No electricity is available</label>
+        <value>no_electricity</value>
+      </item>
+      <item>
+        <label>Missing/stolen parts</label>
+        <value>missing_stolen_parts</value>
+      </item>
+      <item>
+        <label>Lift mechanism is broken</label>
+        <value>lift_mechanism_broken</value>
+      </item>
+      <item>
+        <label>Kiosk, tap, or tank is broken</label>
+        <value>kiosk_tap_or_tank_broken</value>
+      </item>
+      <item>
+        <label>Poor water quality</label>
+        <value>poor_water_quality</value>
+      </item>
+      <item>
+        <label>The well is dry</label>
+        <value>dry_well</value>
+      </item>
+      <item>
+        <label>Still under construction</label>
+        <value>still_under_construction</value>
+      </item>
+      <item>
+        <label>Don&#8217;t know</label>
+        <value>dont_know</value>
+      </item>
+      <item>
+        <label>Other</label>
+        <value>other</value>
+      </item>
+    </select>
+    <input ref="/Water/reasons_not_used_other">
+      <label>Specify other.</label>
+    </input>
+    <select1 ref="/Water/physical_state">
+      <label>What is the condition of the water scheme / source's physical infrastructure?</label>
+      <item>
+        <label>Newly constructed</label>
+        <value>newly_constructed</value>
+      </item>
+      <item>
+        <label>Not new but well maintained</label>
+        <value>well_maintained</value>
+      </item>
+      <item>
+        <label>Poorly maintained</label>
+        <value>poorly_maintained</value>
+      </item>
+    </select1>
+    <select1 ref="/Water/other_close_water">
+      <label>Is there another safe / drinkable source within 1km of this water point?</label>
+      <item>
+        <label>Yes</label>
+        <value>yes</value>
+      </item>
+      <item>
+        <label>No</label>
+        <value>no</value>
+      </item>
+      <item>
+        <label>Don't know</label>
+        <value>do_not_know</value>
+      </item>
+    </select1>
+    <select1 ref="/Water/times_used">
+      <label>At which times of the year is this water scheme / source used?</label>
+      <item>
+        <label>It is used year round, all seasons.</label>
+        <value>year_round</value>
+      </item>
+      <item>
+        <label>It is used only during the dry seasons.</label>
+        <value>dry_seasons</value>
+      </item>
+      <item>
+        <label>It is used only during the wet seasons.</label>
+        <value>wet_seasons</value>
+      </item>
+      <item>
+        <label>Don't know.</label>
+        <value>do_not_know</value>
+      </item>
+      <item>
+        <label>Other</label>
+        <value>other</value>
+      </item>
+    </select1>
+    <input ref="/Water/times_used_other">
+      <label>Specify other.</label>
+    </input>
+    <select ref="/Water/help_completed">
+      <label>Who helped you to complete the questionnaire?</label>
+      <hint>Select all that apply.</hint>
+      <item>
+        <label>No one - completed on my own</label>
+        <value>nobody</value>
+      </item>
+      <item>
+        <label>LGA staff person</label>
+        <value>lga_staff</value>
+      </item>
+      <item>
+        <label>Community members</label>
+        <value>community_mem</value>
+      </item>
+    </select>
+    <input ref="/Water/thank_you">
+      <label>Many thanks.</label>
+    </input>
+  </h:body>
+</h:html>

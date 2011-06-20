@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}
+List XForms
+{% endblock %}
+{% block content %}
+<table class="pretty padded fullw">
+	<thead>
+		<tr>
+		  <th>Downloadable by Phone</th>
+			<th></th>
+			<th>
+				Form ID
+			</th>
+			<th>
+				Number of Submissions
+			</th>
+			<th>
+				Time of Last Submission
+			</th>
+			<th>
+				CSV
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+{% for xform in xforms %}
+		<tr>
+
+		  <td>
+		    <a href={% url xform_manager.views.toggle_downloadable id_string=xform.id_string %} class="delete">
+		      {% if xform.downloadable %}
+		      [ yes ]
+		      {% else %}
+		      [ no ]
+		      {% endif %}
+		    </a>
+		  </td>
+
+		  <td>
+			<!-- By request -->
+		    <a href="/admin/xform_manager/xform/{{xform.id}}/" class="edit">[ edit ]</a>
+		  </td>
+		
+	      <td>
+		    {{ xform.id_string }}
+		  </td>
+
+			<td>
+				{{ xform.submission_count }}
+			</td>
+			<td>
+			  {% if xform.time_of_last_submission %}
+			  {{ xform.time_of_last_submission }}
+			  {% endif %}
+			</td>
+			<td>
+				<a href="#" class="button">Download CSV</a>
+			</td>
+		</tr>
+{% endfor %}
+	</tbody>
+</table>
+<script type="text/javascript" charset="utf-8">
+<!--
+	$('tr span.downloadable.true').each(function(){$(this).parents('tr').find('td').css({'font-weight':'bold'})})
+-->
+</script>
+<br />
+<a href="xform/new" class="button">Add XForm</a>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}
+List XForms
+{% endblock %}
+{% block content %}
+<!-- this page is only intended for use in debugging purposes -->
+<form action="/submission" method="post" enctype="multipart/form-data">
+	<p><input type="file" name="xml_submission_file" /></p>
+	<p><input type="submit" value="Submit" /></p>
+</form>
+{% endblock %}

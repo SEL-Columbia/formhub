@@ -1,0 +1,9 @@
+<?xml version='1.0' ?>
+<data id="build_WaterSimple_1295821382">
+	<name>Central Park Pond</name>
+	<users_per_month>500</users_per_month>
+	<geopoint>40.765102558006795 -73.97389419555664 300.0 4.0</geopoint>
+	<device_id>6543210</device_id>
+	<start>2010-12-08T11:35:30.338</start>
+	<end>2010-12-08T11:40:30.338</end>
+</data>

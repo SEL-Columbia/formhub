@@ -1,0 +1,1470 @@
+<h:html xmlns:h="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa" xmlns="http://www.w3.org/2002/xforms">
+  <h:head>
+    <h:title>Water_Translated</h:title>
+    <model>
+      <itext>
+        <translation lang="Igbo">
+          <text id="/Water_Translated/reason_not_used/no_electricity:label">
+            <value>Oburu na enwere igwe eji ado mmiri nke oku lectric na enye ike oku adighi</value>
+          </text>
+          <text id="/Water_Translated/other_close_water/Yes:label">
+            <value>Ekwerem</value>
+          </text>
+          <text id="/Water_Translated/used_today/No:label">
+            <value>Ekweghi</value>
+          </text>
+          <text id="/Water_Translated/help_completed/nobody:label">
+            <value>Onweghi onye. Aruchara m onwe m</value>
+          </text>
+          <text id="/Water_Translated/physical_state:label">
+            <value>Olee onodu ulo mmiri a di /ebe mmiri a si aputa?</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/poor_quality:label">
+            <value>Mmiri adighi nma ma oli</value>
+          </text>
+          <text id="/Water_Translated/nearest_school_or_clinic:label">
+            <value>Olee ulo akwukwo/obere ulo ogwu ahuike mmiri dikariri nso</value>
+          </text>
+          <text id="/Water_Translated/managed_by/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/managed_by/state_government:label">
+            <value>Gomenti etiti</value>
+          </text>
+          <text id="/Water_Translated/developed_by/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/managed_by/private_organization:label">
+            <value>Ogbaku otu ndi nwe</value>
+          </text>
+          <text id="/Water_Translated/times_used/other:label">
+            <value>Onwere uzo ozo ana eji ya eme ihe</value>
+          </text>
+          <text id="/Water_Translated/type/tube_well:label">
+            <value>Welu eji aka adoro mmiri</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism:label">
+            <value>Olee etu esi adoro mmiri na ebe mmiri a di /si aputa? Biko lere /denye ihe na ado mmiri a</value>
+          </text>
+          <text id="/Water_Translated/physical_state/poorly_maintained:label">
+            <value>Anaighi emezi ya nkeoma</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used:hint">
+            <value>Select all that apply.</value>
+          </text>
+          <text id="/Water_Translated/developed_by/federal_government:label">
+            <value>Gomenti isi obodo</value>
+          </text>
+          <text id="/Water_Translated/help_completed/community_mem:label">
+            <value>Ndi otu ogbe</value>
+          </text>
+          <text id="/Water_Translated/type/developed_protected_spring_water:label">
+            <value>Usoro mmiri emeziri emezi</value>
+          </text>
+          <text id="/Water_Translated/locality:label">
+            <value>Olee ogbe ulo mmiri a dikariri nso /ebe odi</value>
+          </text>
+          <text id="/Water_Translated/managed_by/local_government:label">
+            <value>Gomenti ime obodo</value>
+          </text>
+          <text id="/Water_Translated/used_today/do_not_know:label">
+            <value>Amaghim</value>
+          </text>
+          <text id="/Water_Translated/managed_by:label">
+            <value>Onye na elekoita ya anya? Biko horo ihe nile oputara ma denye kwa aha onye na elekoita ya anya</value>
+          </text>
+          <text id="/Water_Translated/developed_by/community:label">
+            <value>Ogbe</value>
+          </text>
+          <text id="/Water_Translated/type/borehole:label">
+            <value>Mmiri agbapuru na esi na ime ala na aputa</value>
+          </text>
+          <text id="/Water_Translated/pay_for_water/No:label">
+            <value>Ekweghi</value>
+          </text>
+          <text id="/Water_Translated/developed_by_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/managed_by/individual:label">
+            <value>Otu madu</value>
+          </text>
+          <text id="/Water_Translated/other_close_water/No:label">
+            <value>Ekweghi</value>
+          </text>
+          <text id="/Water_Translated/help_completed:hint">
+            <value>Select all that apply.</value>
+          </text>
+          <text id="/Water_Translated/physical_state/well_maintained:label">
+            <value>Odighi ohuru ma elokotara ya anya nke oma</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/electric:label">
+            <value>Oku letirik na eme ka igwe ugbo ala na aru oru</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/type_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/gps:hint">
+            <value>GPS coordinates can only be collected when outside.</value>
+          </text>
+          <text id="/Water_Translated/gps:label">
+            <value>Denye ihe igwe  GPS na egosi ebe ulo mmiri a di /si aputa kwuru</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/type/rainwater_harvesting_scheme:label">
+            <value>Mmiri zoro ezo agbakotara na otu ebe</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/no_water:label">
+            <value>Mmiri adighi na welu</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/developed_by:label">
+            <value>Onye luru ebe mmiri a/ebe osi aputa?</value>
+          </text>
+          <text id="/Water_Translated/distribution_type:label">
+            <value>Olee etu esi eke mmiri na ebe mmiri a di /si aputa? Biko lere / denye etu esi eke mmiri.</value>
+          </text>
+          <text id="/Water_Translated/managed_by/international_development_partner:label">
+            <value>Ndi enyemuaka si mba ozo</value>
+          </text>
+          <text id="/Water_Translated/developed_by/international_development_partner:label">
+            <value>Ndi enyemuaka si mba ozo</value>
+          </text>
+          <text id="/Water_Translated/developed_by/state_government:label">
+            <value>Gomenti etiti</value>
+          </text>
+          <text id="/Water_Translated/times_used/dry_seasons:label">
+            <value>Ana eji ya oge okochi nani</value>
+          </text>
+          <text id="/Water_Translated/distribution_type/multiple_points_within_100m:label">
+            <value>Otutu ebe odi na erughi ogu ise meta gburugburu</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/do_not_know:label">
+            <value>Amaghim</value>
+          </text>
+          <text id="/Water_Translated/type/developed_and_treated_surface_water:label">
+            <value>Mmiri na aso-aso emeziri emezi</value>
+          </text>
+          <text id="/Water_Translated/times_used/wet_seasons:label">
+            <value>Ana eji ya oge udu mmiri nani</value>
+          </text>
+          <text id="/Water_Translated/developed_by/private_organization:label">
+            <value>Ogbaku otu ndi nwe</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/pump_broken:label">
+            <value>Oburu na eji igwe eweputa mmiri- Igwe mebiri emebi.</value>
+          </text>
+          <text id="/Water_Translated/developed_by/individual:label">
+            <value>Otu madu</value>
+          </text>
+          <text id="/Water_Translated/physical_state/na:label">
+            <value>Odighi</value>
+          </text>
+          <text id="/Water_Translated/times_used/year_round:label">
+            <value>Ana eji ya na ato nine,udu mmiri na okochi</value>
+          </text>
+          <text id="/Water_Translated/pay_for_water/Yes:label">
+            <value>Ekwerem</value>
+          </text>
+          <text id="/Water_Translated/managed_by/federal_government:label">
+            <value>Gomenti isi obodo</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/no_diesel:label">
+            <value>Oburu na enwere igwe dislu eji ado mmiri- Mmanu dislu adighi</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/animal:label">
+            <value>Igwe eji anumanu agba</value>
+          </text>
+          <text id="/Water_Translated/managed_by_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/times_used/do_not_know:label">
+            <value>Amaghim</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/managed_by:hint">
+            <value>Select all that apply.</value>
+          </text>
+          <text id="/Water_Translated/times_used:label">
+            <value>Olee mgbe na afo ana eweta mmiri ebe a /mmiri si ya aputa?</value>
+          </text>
+          <text id="/Water_Translated/developed_by/local_government:label">
+            <value>Gomenti ime obodo</value>
+          </text>
+          <text id="/Water_Translated/help_completed:label">
+            <value>Onye nyere gi aka were za ajuju ndia?</value>
+          </text>
+          <text id="/Water_Translated/distribution_type/multiple_points_beyond_1000m:label">
+            <value>Otutu ebe odi kariri otu kilomita gburugburu</value>
+          </text>
+          <text id="/Water_Translated/managed_by/community:label">
+            <value>Ogbe</value>
+          </text>
+          <text id="/Water_Translated/distribution_type/single_point:label">
+            <value>Ebe odi</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/rope_pulley:label">
+            <value>Udo</value>
+          </text>
+          <text id="/Water_Translated/distribution_type/multiple_points_within_1000m:label">
+            <value>Otutu ebe odi na erughi otu kilomita gburugburu</value>
+          </text>
+          <text id="/Water_Translated/other_close_water/do_not_know:label">
+            <value>Amaghim</value>
+          </text>
+          <text id="/Water_Translated/type/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/physical_state/newly_constructed:label">
+            <value>Aluru ya ohuru</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/do_not_know:label">
+            <value>Amaghim</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/diesel:label">
+            <value>Igwe eji agba mmanu disel</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used:label">
+            <value>Olee ihe ichere mere na anaghi eku mmiri ebe a/ onaghi aru oru?</value>
+          </text>
+          <text id="/Water_Translated/used_today/Yes:label">
+            <value>Ekwerem</value>
+          </text>
+          <text id="/Water_Translated/other_close_water:label">
+            <value>Onwere mmiri ozo di nma onunu di otu kilomita na ebe ulo mmiri a di /si aputa?</value>
+          </text>
+          <text id="/Water_Translated/photo:label">
+            <value>Oyonyo na egosi ebe ulo mmiri a di/si puta</value>
+          </text>
+          <text id="/Water_Translated/help_completed/lga_staff:label">
+            <value>Onye oru gomenti ngalaba ime obodo</value>
+          </text>
+          <text id="/Water_Translated/pay_for_water:label">
+            <value>Ndi mmadu ana akwu ugwo mmiri ebe a?</value>
+          </text>
+          <text id="/Water_Translated/type/protected_dug_well:label">
+            <value>Welu ekpuchiri ekpuche</value>
+          </text>
+          <text id="/Water_Translated/pay_for_water/do_not_know:label">
+            <value>Amaghim</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/solar:label">
+            <value>Igwe na enwe oku site na anwu</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/hand_pump:label">
+            <value>Igwe eji aka na agba</value>
+          </text>
+          <text id="/Water_Translated/type:label">
+            <value>Olee udi ebe mmiri o bu /osi aputa?</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/tapbroken:label">
+            <value>Ulo ebe ana edobe ihe ebe mmiri si agbaputa,ma obu ebe ana agbanye mmiri tiwara etiwa</value>
+          </text>
+          <text id="/Water_Translated/used_today:label">
+            <value>Odi gi ka ndi mmadu ekuru mmiri ebe na ubochi ta?</value>
+          </text>
+          <text id="/Water_Translated/water_pt_id_number:label">
+            <value>Biko denye noba eji mara ebe mmiri a di, ma onwe.Denye onweghi ma oburu na onweghi akara noba eji mara ya</value>
+          </text>
+        </translation>
+        <translation lang="Yoruba">
+          <text id="/Water_Translated/reason_not_used/no_electricity:label">
+            <value>N je ero ifami to nlo ina monamona wa - ko si ina monamona.</value>
+          </text>
+          <text id="/Water_Translated/other_close_water/Yes:label">
+            <value>Bee ni.</value>
+          </text>
+          <text id="/Water_Translated/used_today/No:label">
+            <value>Bee Ko/ndao.</value>
+          </text>
+          <text id="/Water_Translated/help_completed/nobody:label">
+            <value>Ko si enikan - mo pari re fun ra mi.</value>
+          </text>
+          <text id="/Water_Translated/physical_state:label">
+            <value>Kini ipo ti irisi awon ohun nkan amayederun ile/orisun omi  yi wa.?</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/poor_quality:label">
+            <value>Iri omi naa ko dara rara.</value>
+          </text>
+          <text id="/Water_Translated/nearest_school_or_clinic:label">
+            <value>Ile iwe tabi ile ilera wo ni orisun/ile ise omi yi sunmo julo.?</value>
+          </text>
+          <text id="/Water_Translated/managed_by/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/managed_by/state_government:label">
+            <value>Ijoba Ipinle.</value>
+          </text>
+          <text id="/Water_Translated/developed_by/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/managed_by/private_organization:label">
+            <value>Ile ise aladani.</value>
+          </text>
+          <text id="/Water_Translated/times_used/other:label">
+            <value>O ni ona miran ti a ngba lo o</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism:label">
+            <value>Kini eto ifamisoke/igbomisoke nibi ile ise omi/orisun omi yii./ Jowo se ami o dara si eto igbomisoke/ifamisoke ti o baa mu.</value>
+          </text>
+          <text id="/Water_Translated/physical_state/poorly_maintained:label">
+            <value>Won o toju re rara.</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used:hint">
+            <value>Select all that apply.</value>
+          </text>
+          <text id="/Water_Translated/developed_by/federal_government:label">
+            <value>Ijoba apapo.</value>
+          </text>
+          <text id="/Water_Translated/help_completed/community_mem:label">
+            <value>Omo awujo/ilu.</value>
+          </text>
+          <text id="/Water_Translated/type/developed_protected_spring_water:label">
+            <value>Orisun omi ti a kole fun /dabobo</value>
+          </text>
+          <text id="/Water_Translated/locality:label">
+            <value>Agbegbe/adugbo/ilu wo ni orisun /ile omi yi wa/ Orisun re tabi ibi ti o sun moo julo.?</value>
+          </text>
+          <text id="/Water_Translated/managed_by/local_government:label">
+            <value>Ijoba Ibile.</value>
+          </text>
+          <text id="/Water_Translated/used_today/do_not_know:label">
+            <value>Emi ko mo.</value>
+          </text>
+          <text id="/Water_Translated/managed_by:label">
+            <value>Tani o nse akoso ile/orisun omi yii.? Jowo yan gbogbo eyi ti o baa mu ki e si daruko  eni gaan naa ti o nsakoso re.</value>
+          </text>
+          <text id="/Water_Translated/developed_by/community:label">
+            <value>Awujo/ilu.</value>
+          </text>
+          <text id="/Water_Translated/type/borehole:label">
+            <value>Kanga dero (bore hole)</value>
+          </text>
+          <text id="/Water_Translated/pay_for_water/No:label">
+            <value>Bee Ko/ndao.</value>
+          </text>
+          <text id="/Water_Translated/developed_by_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/managed_by/individual:label">
+            <value>Aladani</value>
+          </text>
+          <text id="/Water_Translated/other_close_water/No:label">
+            <value>Bee Ko/ndao.</value>
+          </text>
+          <text id="/Water_Translated/type_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/physical_state/well_maintained:label">
+            <value>Ki ise tuntun sugbon a ntoju re daradara.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/electric:label">
+            <value>Ero ifami soke ti o nlo ina monamona.</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/help_completed:hint">
+            <value>Select all that apply.</value>
+          </text>
+          <text id="/Water_Translated/gps:hint">
+            <value>GPS coordinates can only be collected when outside.</value>
+          </text>
+          <text id="/Water_Translated/gps:label">
+            <value>gba aaye ti oju/orisun/ile omi yi wa nipa lilo ero afinimaye (GPS)</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/type/rainwater_harvesting_scheme:label">
+            <value>Eto itoju omi ojo.</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/no_water:label">
+            <value>Kanga naa ti gbe.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/developed_by:label">
+            <value>Tani o ko/ mu ki ile/orisun omi yi gberu/dagba sii</value>
+          </text>
+          <text id="/Water_Translated/distribution_type:label">
+            <value>Iru eto ipinfunni wo ni ile ise omi/orisun omi naa ni.? Jowo se ami  o dara si iru ipinmifunni ti o baa mu.</value>
+          </text>
+          <text id="/Water_Translated/managed_by/international_development_partner:label">
+            <value>Alabasisepo fun idagbasoke laarin awon orile ede. (Int. dev. Partner)</value>
+          </text>
+          <text id="/Water_Translated/developed_by/international_development_partner:label">
+            <value>Alabasisepo fun idagbasoke laarin awon orile ede. (Int. dev. Partner)</value>
+          </text>
+          <text id="/Water_Translated/developed_by/state_government:label">
+            <value>Ijoba Ipinle.</value>
+          </text>
+          <text id="/Water_Translated/times_used/dry_seasons:label">
+            <value>A nlo o nigba erun nikan</value>
+          </text>
+          <text id="/Water_Translated/distribution_type/multiple_points_within_100m:label">
+            <value>Oju pupo ti ko to iwon ogorun yipo.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/do_not_know:label">
+            <value>Emi ko mo.</value>
+          </text>
+          <text id="/Water_Translated/type/developed_and_treated_surface_water:label">
+            <value>Omi ojude ti a kole fun/dabobo.</value>
+          </text>
+          <text id="/Water_Translated/times_used/wet_seasons:label">
+            <value>A nlo o nigba ojo nikan</value>
+          </text>
+          <text id="/Water_Translated/developed_by/private_organization:label">
+            <value>Ile ise aladani.</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/pump_broken:label">
+            <value>Ti a ba lo ero lati fa omi soke - ti ero si baje.</value>
+          </text>
+          <text id="/Water_Translated/developed_by/individual:label">
+            <value>Aladani</value>
+          </text>
+          <text id="/Water_Translated/physical_state/na:label">
+            <value>Ko kan eyi.</value>
+          </text>
+          <text id="/Water_Translated/times_used/year_round:label">
+            <value>A n lo ni gbogbo igba ninu odun</value>
+          </text>
+          <text id="/Water_Translated/pay_for_water/Yes:label">
+            <value>Bee ni.</value>
+          </text>
+          <text id="/Water_Translated/managed_by/federal_government:label">
+            <value>Ijoba apapo.</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/no_diesel:label">
+            <value>N je ero ifami to nlo epo robi (diesel) wa. - ko si ero ifami to nlo epo robi.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/animal:label">
+            <value>Ero ifami to nlo agbara eranko.</value>
+          </text>
+          <text id="/Water_Translated/managed_by_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/times_used/do_not_know:label">
+            <value>Emi ko mo.</value>
+          </text>
+          <text id="/Water_Translated/managed_by:hint">
+            <value>Select all that apply.</value>
+          </text>
+          <text id="/Water_Translated/times_used:label">
+            <value>Igba wo ninu odun nio a n lo ile/orisun omi yii.?</value>
+          </text>
+          <text id="/Water_Translated/developed_by/local_government:label">
+            <value>Ijoba Ibile.</value>
+          </text>
+          <text id="/Water_Translated/help_completed:label">
+            <value>Tani o ran o lowo lati dahun si awon ibeere yii.?</value>
+          </text>
+          <text id="/Water_Translated/distribution_type/multiple_points_beyond_1000m:label">
+            <value>Oju pupo ti o ju iwon ibuso kan yipo.</value>
+          </text>
+          <text id="/Water_Translated/managed_by/community:label">
+            <value>Awujo/ilu.</value>
+          </text>
+          <text id="/Water_Translated/distribution_type/single_point:label">
+            <value>Oju Kansoso. (nibiti a se eto naa si.)</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/rope_pulley:label">
+            <value>Okun ifami.</value>
+          </text>
+          <text id="/Water_Translated/distribution_type/multiple_points_within_1000m:label">
+            <value>Oju pupo ti ko to iwon ibuso kan yipo.</value>
+          </text>
+          <text id="/Water_Translated/other_close_water/do_not_know:label">
+            <value>Emi ko mo.</value>
+          </text>
+          <text id="/Water_Translated/type/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/physical_state/newly_constructed:label">
+            <value>Tuntun ni.</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/do_not_know:label">
+            <value>Emi ko mo.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/diesel:label">
+            <value>Ero ifami soke ti o nlo epo robi  (diesel).</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used:label">
+            <value>Kini o dabi idi (awon idi) ti oju omi naa ko se wa ni lilo.?</value>
+          </text>
+          <text id="/Water_Translated/used_today/Yes:label">
+            <value>Bee ni.</value>
+          </text>
+          <text id="/Water_Translated/other_close_water:label">
+            <value>N je orisun omi miran to sailewu/lalaafia/dara fun mimu wa laarin iwon ibuso (kilometer) kan si ile/orisun omi yii.?</value>
+          </text>
+          <text id="/Water_Translated/photo:label">
+            <value>Ya aworan orisun/ile omi naa.</value>
+          </text>
+          <text id="/Water_Translated/help_completed/lga_staff:label">
+            <value>Osise ijoba ibile.</value>
+          </text>
+          <text id="/Water_Translated/pay_for_water:label">
+            <value>N je awon eniyan nilati san owo fun omi ti won pon lati orisun/ile omi yii.?</value>
+          </text>
+          <text id="/Water_Translated/type/protected_dug_well:label">
+            <value>kanga ti a de lori.</value>
+          </text>
+          <text id="/Water_Translated/pay_for_water/do_not_know:label">
+            <value>Emi ko mo.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/solar:label">
+            <value>Ero ifami soke ti o nlo agbara oorun.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/hand_pump:label">
+            <value>Ero ifami soke alafowo yi.</value>
+          </text>
+          <text id="/Water_Translated/type:label">
+            <value>Iru ile ise omi/orisun omi ni o je.?</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/tapbroken:label">
+            <value>Ile, oju ti omi ngba jade tabi agba omi baje.</value>
+          </text>
+          <text id="/Water_Translated/used_today:label">
+            <value>N je o jo bi eni pe a ti lo tabi pon omi ile/orisun omi yii loni.?</value>
+          </text>
+          <text id="/Water_Translated/water_pt_id_number:label">
+            <value>Jowo se akosile iye ami idankan mo ti o ti wa teleri fun oju omi/odo yii, ti o ba wa. Ko kosi sile ti o ba je pe ko si iye ami idankan mo teleri.</value>
+          </text>
+        </translation>
+        <translation lang="Hausa">
+          <text id="/Water_Translated/reason_not_used/no_electricity:label">
+            <value>Shin da akwai pampo mai amfani da hasken lantarki-Babu lantarki.</value>
+          </text>
+          <text id="/Water_Translated/other_close_water/Yes:label">
+            <value>A</value>
+          </text>
+          <text id="/Water_Translated/used_today/No:label">
+            <value>A a</value>
+          </text>
+          <text id="/Water_Translated/help_completed/nobody:label">
+            <value>Ba kowa-Na gama shi da kaina.</value>
+          </text>
+          <text id="/Water_Translated/physical_state:label">
+            <value>Menene matsayin ginin wajen samar da ruwan?</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/poor_quality:label">
+            <value>Ruwan bashi da kyau</value>
+          </text>
+          <text id="/Water_Translated/nearest_school_or_clinic:label">
+            <value>Wacce makaranta ko asibiti ya fi kusa da wurin samar da ruwan?</value>
+          </text>
+          <text id="/Water_Translated/managed_by/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/managed_by/state_government:label">
+            <value>Gwamnatin jiha</value>
+          </text>
+          <text id="/Water_Translated/developed_by/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/managed_by/private_organization:label">
+            <value>Masu zaman kansu</value>
+          </text>
+          <text id="/Water_Translated/times_used/other:label">
+            <value>Ana amfani da shi ta wata hanya dabam.</value>
+          </text>
+          <text id="/Water_Translated/type/tube_well:label">
+            <value>Pampon tuka tuka</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism:label">
+            <value>Shin wacce hanya ake bi ta diban wannan ruwan?A duuba/rubuta irin hanyar</value>
+          </text>
+          <text id="/Water_Translated/physical_state/poorly_maintained:label">
+            <value>Ba a lura dashi.</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used:hint">
+            <value>Select all that apply.</value>
+          </text>
+          <text id="/Water_Translated/developed_by/federal_government:label">
+            <value>Gwamnatin tarayya</value>
+          </text>
+          <text id="/Water_Translated/help_completed/community_mem:label">
+            <value>Jama'ar unguwa</value>
+          </text>
+          <text id="/Water_Translated/type/developed_protected_spring_water:label">
+            <value>Kewayayyen ruwa mai bulbula da dutse</value>
+          </text>
+          <text id="/Water_Translated/locality:label">
+            <value>Shin  wanne  gari  ne mafi kusa da wannan wurin samar da ruwa?</value>
+          </text>
+          <text id="/Water_Translated/managed_by/local_government:label">
+            <value>Karamar hukuma</value>
+          </text>
+          <text id="/Water_Translated/used_today/do_not_know:label">
+            <value>Ban sani ba.</value>
+          </text>
+          <text id="/Water_Translated/managed_by:label">
+            <value>Wa yake kula da wajen samar da ruwan?</value>
+          </text>
+          <text id="/Water_Translated/developed_by/community:label">
+            <value>Jama'a</value>
+          </text>
+          <text id="/Water_Translated/type/borehole:label">
+            <value>Rijiyar burtsatse</value>
+          </text>
+          <text id="/Water_Translated/pay_for_water/No:label">
+            <value>A a</value>
+          </text>
+          <text id="/Water_Translated/developed_by_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/managed_by/individual:label">
+            <value>Mutum shi kadai</value>
+          </text>
+          <text id="/Water_Translated/other_close_water/No:label">
+            <value>A a</value>
+          </text>
+          <text id="/Water_Translated/help_completed:hint">
+            <value>Select all that apply.</value>
+          </text>
+          <text id="/Water_Translated/physical_state/well_maintained:label">
+            <value>Ba sabo bane amma ana lura da shi.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/electric:label">
+            <value>Pampon ruwa mai amfani da lantarki.</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/type_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/gps:hint">
+            <value>GPS coordinates can only be collected when outside.</value>
+          </text>
+          <text id="/Water_Translated/gps:label">
+            <value>A karbi dungun da ruwan yake/tushensa</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/type/rainwater_harvesting_scheme:label">
+            <value>matattaran ruwan damina</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/no_water:label">
+            <value>Rijiyar ta bushe</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/developed_by:label">
+            <value>Wa ya samar da  ruwan?</value>
+          </text>
+          <text id="/Water_Translated/distribution_type:label">
+            <value>Shin wacce irin hanya ce ta raba ruwan?A duba/rubuta irin hanyar.</value>
+          </text>
+          <text id="/Water_Translated/managed_by/international_development_partner:label">
+            <value>Masu taimako na kasa da kasa</value>
+          </text>
+          <text id="/Water_Translated/developed_by/international_development_partner:label">
+            <value>Masu taimako na kasa da kasa</value>
+          </text>
+          <text id="/Water_Translated/developed_by/state_government:label">
+            <value>Gwamnatin jiha</value>
+          </text>
+          <text id="/Water_Translated/times_used/dry_seasons:label">
+            <value>Ana amfani dashi lokacin rani kawai.</value>
+          </text>
+          <text id="/Water_Translated/distribution_type/multiple_points_within_100m:label">
+            <value>Hanyoyin  ruwa masu yawa da ke kasa da tazarar mita dari.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/do_not_know:label">
+            <value>Ban sani ba</value>
+          </text>
+          <text id="/Water_Translated/type/developed_and_treated_surface_water:label">
+            <value>Ramin samar da ruwa da aka haka kuma ake tacewa</value>
+          </text>
+          <text id="/Water_Translated/times_used/wet_seasons:label">
+            <value>Ana amfani dashi lokacin damina kawai.</value>
+          </text>
+          <text id="/Water_Translated/developed_by/private_organization:label">
+            <value>Masu zaman kansu</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/pump_broken:label">
+            <value>Shin akwai pampon da ake amfani dashi dan diban ruwan-Pampon ya lalace.</value>
+          </text>
+          <text id="/Water_Translated/developed_by/individual:label">
+            <value>Mutum shi kadai</value>
+          </text>
+          <text id="/Water_Translated/physical_state/na:label">
+            <value>Ba yi da tasiri</value>
+          </text>
+          <text id="/Water_Translated/times_used/year_round:label">
+            <value>Ana amfani dashi shekara gaba daya,kowanne lokaci</value>
+          </text>
+          <text id="/Water_Translated/pay_for_water/Yes:label">
+            <value>A</value>
+          </text>
+          <text id="/Water_Translated/managed_by/federal_government:label">
+            <value>Gwamnatin tarayya</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/no_diesel:label">
+            <value>Shin akwai hanyar jan ruwan ta amfani da gas-Babu gas</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/animal:label">
+            <value>Pampon ruwa mai amfani da  dabbobi.</value>
+          </text>
+          <text id="/Water_Translated/managed_by_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/times_used/do_not_know:label">
+            <value>Ban sani ba.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/managed_by:hint">
+            <value>Select all that apply.</value>
+          </text>
+          <text id="/Water_Translated/times_used:label">
+            <value>A wadanne  lokuta a shekara wannan wajen samar da ruwa ya ke amfani?</value>
+          </text>
+          <text id="/Water_Translated/developed_by/local_government:label">
+            <value>Karamar hukuma</value>
+          </text>
+          <text id="/Water_Translated/help_completed:label">
+            <value>Wa ya taimaka maka/miki  wajen amsa tambayar.</value>
+          </text>
+          <text id="/Water_Translated/distribution_type/multiple_points_beyond_1000m:label">
+            <value>Hanyoyin  ruwa masu yawa mai tsawon fiye da kilomita daya.</value>
+          </text>
+          <text id="/Water_Translated/managed_by/community:label">
+            <value>Jama'a</value>
+          </text>
+          <text id="/Water_Translated/distribution_type/single_point:label">
+            <value>Hanyar ruwa da aka jawo guda daya.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/rope_pulley:label">
+            <value>Ja da igiya.</value>
+          </text>
+          <text id="/Water_Translated/distribution_type/multiple_points_within_1000m:label">
+            <value>Hanyoyin  ruwa masu yawa da ke kasa da tazarar  kilomita daya.</value>
+          </text>
+          <text id="/Water_Translated/other_close_water/do_not_know:label">
+            <value>Ban sani ba.</value>
+          </text>
+          <text id="/Water_Translated/type/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/physical_state/newly_constructed:label">
+            <value>Sabon gini</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/do_not_know:label">
+            <value>Ban sani ba</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/diesel:label">
+            <value>Pampon ruwa mai amfani da gas</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used:label">
+            <value>Wanne irin shaida ne ya nuna ba a yi amfani da wajen samar da ruwan ba?</value>
+          </text>
+          <text id="/Water_Translated/used_today/Yes:label">
+            <value>A</value>
+          </text>
+          <text id="/Water_Translated/other_close_water:label">
+            <value>Shin da akwai wani wajen samar da ruwan sha kamar kilomita daya daga wajen samar da wannan wurin da ake amfani da shi?</value>
+          </text>
+          <text id="/Water_Translated/photo:label">
+            <value>A dauki  hoton hanyar ruwa/tushensa</value>
+          </text>
+          <text id="/Water_Translated/help_completed/lga_staff:label">
+            <value>Ma'aikacin karamar hukuma.</value>
+          </text>
+          <text id="/Water_Translated/pay_for_water:label">
+            <value>Shin ko mutane na biyan kudin ruwa  a wajen samar da ruwan?</value>
+          </text>
+          <text id="/Water_Translated/type/protected_dug_well:label">
+            <value>Rufaffiyar rijiya</value>
+          </text>
+          <text id="/Water_Translated/pay_for_water/do_not_know:label">
+            <value>Ban sani ba.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/solar:label">
+            <value>Pampon  ruwa mai amfani da hasken rana.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/hand_pump:label">
+            <value>Tuka-tuka</value>
+          </text>
+          <text id="/Water_Translated/type:label">
+            <value>Shin wanne irin hanyar samar da ruwa ne?</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/tapbroken:label">
+            <value>Shago,pampo ko tanki ya lalace.</value>
+          </text>
+          <text id="/Water_Translated/used_today:label">
+            <value>shin ya nuna kuwa kamar  anyi amfani da wajen samar da ruwan yau?</value>
+          </text>
+          <text id="/Water_Translated/water_pt_id_number:label">
+            <value>A shigar da shaidar lamba ta wannan wurin samar da ruwan,idan da akwai.Idan kuma babu lambar shaida sai a rubuta babu.</value>
+          </text>
+        </translation>
+        <translation lang="English">
+          <text id="/Water_Translated/reason_not_used/no_electricity:label">
+            <value>If there is a pump mechanism powered with electricity - No electricity is available.</value>
+          </text>
+          <text id="/Water_Translated/other_close_water/Yes:label">
+            <value>Yes</value>
+          </text>
+          <text id="/Water_Translated/used_today/No:label">
+            <value>No</value>
+          </text>
+          <text id="/Water_Translated/help_completed/nobody:label">
+            <value>No one - completed on my own.</value>
+          </text>
+          <text id="/Water_Translated/physical_state:label">
+            <value>What is the condition of the water scheme / source's physical infrastructure?</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/poor_quality:label">
+            <value>Water quality is too poor.</value>
+          </text>
+          <text id="/Water_Translated/nearest_school_or_clinic:label">
+            <value>Which school or health clinic is this scheme / source closest to?</value>
+          </text>
+          <text id="/Water_Translated/managed_by/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/managed_by/state_government:label">
+            <value>State government</value>
+          </text>
+          <text id="/Water_Translated/developed_by/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/managed_by/private_organization:label">
+            <value>Private organization</value>
+          </text>
+          <text id="/Water_Translated/times_used/other:label">
+            <value>It has another pattern of use.</value>
+          </text>
+          <text id="/Water_Translated/type/tube_well:label">
+            <value>Tube well</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism:label">
+            <value>What is the lift mechanism at this water scheme / source? Please check/mark the lift mechanism.</value>
+          </text>
+          <text id="/Water_Translated/physical_state/poorly_maintained:label">
+            <value>Poorly maintained</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used:hint">
+            <value>Select all that apply.</value>
+          </text>
+          <text id="/Water_Translated/developed_by/federal_government:label">
+            <value>Federal government</value>
+          </text>
+          <text id="/Water_Translated/help_completed/community_mem:label">
+            <value>Community members.</value>
+          </text>
+          <text id="/Water_Translated/type/developed_protected_spring_water:label">
+            <value>Developed/protected spring water</value>
+          </text>
+          <text id="/Water_Translated/locality:label">
+            <value>Which locality is this water scheme / source in or closest to?</value>
+          </text>
+          <text id="/Water_Translated/managed_by/local_government:label">
+            <value>Local government</value>
+          </text>
+          <text id="/Water_Translated/used_today/do_not_know:label">
+            <value>Don't know.</value>
+          </text>
+          <text id="/Water_Translated/managed_by:label">
+            <value>Who manages this water scheme / source? Please select all that apply and specify the name of the managing entity.</value>
+          </text>
+          <text id="/Water_Translated/developed_by/community:label">
+            <value>Community</value>
+          </text>
+          <text id="/Water_Translated/type/borehole:label">
+            <value>Borehole</value>
+          </text>
+          <text id="/Water_Translated/pay_for_water/No:label">
+            <value>No</value>
+          </text>
+          <text id="/Water_Translated/developed_by_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/managed_by/individual:label">
+            <value>Individual</value>
+          </text>
+          <text id="/Water_Translated/other_close_water/No:label">
+            <value>No</value>
+          </text>
+          <text id="/Water_Translated/help_completed:hint">
+            <value>Select all that apply.</value>
+          </text>
+          <text id="/Water_Translated/physical_state/well_maintained:label">
+            <value>Not new but well maintained</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/electric:label">
+            <value>Electric motor pump</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/type_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/gps:hint">
+            <value>GPS coordinates can only be collected when outside.</value>
+          </text>
+          <text id="/Water_Translated/gps:label">
+            <value>Collect the GPS coordinates of this water scheme / source.</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/type/rainwater_harvesting_scheme:label">
+            <value>Rainwater harvesting scheme</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/no_water:label">
+            <value>The well is dry.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/developed_by:label">
+            <value>Who developed this water scheme / source?</value>
+          </text>
+          <text id="/Water_Translated/distribution_type:label">
+            <value>What is the type of distribution of the water scheme / source? Please check/mark the type of distribution.</value>
+          </text>
+          <text id="/Water_Translated/managed_by/international_development_partner:label">
+            <value>International development partner</value>
+          </text>
+          <text id="/Water_Translated/developed_by/international_development_partner:label">
+            <value>International development partner</value>
+          </text>
+          <text id="/Water_Translated/developed_by/state_government:label">
+            <value>State government</value>
+          </text>
+          <text id="/Water_Translated/times_used/dry_seasons:label">
+            <value>It is used only during the dry seasons.</value>
+          </text>
+          <text id="/Water_Translated/distribution_type/multiple_points_within_100m:label">
+            <value>Mulitple points less than 100m reticulation</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/do_not_know:label">
+            <value>Don't know.</value>
+          </text>
+          <text id="/Water_Translated/type/developed_and_treated_surface_water:label">
+            <value>Developed and treated surface water</value>
+          </text>
+          <text id="/Water_Translated/times_used/wet_seasons:label">
+            <value>It is used only during the wet seasons.</value>
+          </text>
+          <text id="/Water_Translated/developed_by/private_organization:label">
+            <value>Private organization</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/pump_broken:label">
+            <value>If a pump mechanism is used to lift the water - Pump mechanism is broken.</value>
+          </text>
+          <text id="/Water_Translated/developed_by/individual:label">
+            <value>Individual</value>
+          </text>
+          <text id="/Water_Translated/physical_state/na:label">
+            <value>Not applicable</value>
+          </text>
+          <text id="/Water_Translated/times_used/year_round:label">
+            <value>It is used year round, all seasons.</value>
+          </text>
+          <text id="/Water_Translated/pay_for_water/Yes:label">
+            <value>Yes</value>
+          </text>
+          <text id="/Water_Translated/managed_by/federal_government:label">
+            <value>Federal government</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/no_diesel:label">
+            <value>If there is a diesel powered pump mechanism - No diesel is available.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/animal:label">
+            <value>Animal powered pump</value>
+          </text>
+          <text id="/Water_Translated/managed_by_other:label">
+            <value>Specify other.</value>
+          </text>
+          <text id="/Water_Translated/times_used/do_not_know:label">
+            <value>Don't know.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/managed_by:hint">
+            <value>Select all that apply.</value>
+          </text>
+          <text id="/Water_Translated/times_used:label">
+            <value>At which times of the year is this water scheme / source used?</value>
+          </text>
+          <text id="/Water_Translated/developed_by/local_government:label">
+            <value>Local government</value>
+          </text>
+          <text id="/Water_Translated/help_completed:label">
+            <value>Who helped you to complete the questionnaire?</value>
+          </text>
+          <text id="/Water_Translated/distribution_type/multiple_points_beyond_1000m:label">
+            <value>Multiple points more than 1km reticulation</value>
+          </text>
+          <text id="/Water_Translated/managed_by/community:label">
+            <value>Community</value>
+          </text>
+          <text id="/Water_Translated/distribution_type/single_point:label">
+            <value>Single point (where the scheme is located)</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/rope_pulley:label">
+            <value>Rope/pulley</value>
+          </text>
+          <text id="/Water_Translated/distribution_type/multiple_points_within_1000m:label">
+            <value>Multiple points less than 1km reticulation</value>
+          </text>
+          <text id="/Water_Translated/other_close_water/do_not_know:label">
+            <value>Don't know.</value>
+          </text>
+          <text id="/Water_Translated/type/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/Water_Translated/physical_state/newly_constructed:label">
+            <value>Newly constructed</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/do_not_know:label">
+            <value>Don't know.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/diesel:label">
+            <value>Diesel pump</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used:label">
+            <value>What seems to the reason(s) that the water point is not in use?</value>
+          </text>
+          <text id="/Water_Translated/used_today/Yes:label">
+            <value>Yes</value>
+          </text>
+          <text id="/Water_Translated/other_close_water:label">
+            <value>Is there another safe / drinkable source of water within 1km of this water scheme / source used?</value>
+          </text>
+          <text id="/Water_Translated/photo:label">
+            <value>Take a picture of the water scheme / source.</value>
+          </text>
+          <text id="/Water_Translated/help_completed/lga_staff:label">
+            <value>LGA staff person.</value>
+          </text>
+          <text id="/Water_Translated/pay_for_water:label">
+            <value>Do people have to pay for water from this water scheme / source?</value>
+          </text>
+          <text id="/Water_Translated/type/protected_dug_well:label">
+            <value>Protected dug well</value>
+          </text>
+          <text id="/Water_Translated/pay_for_water/do_not_know:label">
+            <value>Don't know.</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/solar:label">
+            <value>Solar pump</value>
+          </text>
+          <text id="/Water_Translated/lift_mechanism/hand_pump:label">
+            <value>Hand pump</value>
+          </text>
+          <text id="/Water_Translated/type:label">
+            <value>What kind of water scheme / source is it?</value>
+          </text>
+          <text id="/Water_Translated/reason_not_used/tapbroken:label">
+            <value>Kiosk, tap, or tank is broken.</value>
+          </text>
+          <text id="/Water_Translated/used_today:label">
+            <value>Does it appear that this water source/scheme has been used today?</value>
+          </text>
+          <text id="/Water_Translated/water_pt_id_number:label">
+            <value>Please enter pre-existing ID number for this water point, if any. Write none of there is no pre-existing ID number.</value>
+          </text>
+        </translation>
+      </itext>
+      <instance>
+        <Water_Translated id="Water_Translated_2011_03_10">
+          <gps/>
+          <photo/>
+          <locality/>
+          <nearest_school_or_clinic/>
+          <water_pt_id_number/>
+          <type/>
+          <type_other/>
+          <distribution_type/>
+          <lift_mechanism/>
+          <lift_mechanism_other/>
+          <developed_by/>
+          <developed_by_other/>
+          <managed_by/>
+          <managed_by_other/>
+          <pay_for_water/>
+          <used_today/>
+          <reason_not_used/>
+          <reason_not_used_other/>
+          <physical_state/>
+          <other_close_water/>
+          <times_used/>
+          <help_completed/>
+        </Water_Translated>
+      </instance>
+      <bind nodeset="/Water_Translated/gps" type="geopoint" required="true()"/>
+      <bind nodeset="/Water_Translated/photo" required="true()"/>
+      <bind nodeset="/Water_Translated/locality" type="string" required="true()"/>
+      <bind nodeset="/Water_Translated/nearest_school_or_clinic" type="string" required="true()"/>
+      <bind nodeset="/Water_Translated/water_pt_id_number" type="string" required="true()"/>
+      <bind nodeset="/Water_Translated/type" type="select1" required="true()"/>
+      <bind nodeset="/Water_Translated/type_other" relevant="selected(../type, 'other')" type="string" required="true()"/>
+      <bind nodeset="/Water_Translated/distribution_type" type="select1" required="true()"/>
+      <bind nodeset="/Water_Translated/lift_mechanism" type="select1" required="true()"/>
+      <bind nodeset="/Water_Translated/lift_mechanism_other" relevant="selected(../lift_mechanism, 'other')" type="string" required="true()"/>
+      <bind nodeset="/Water_Translated/developed_by" type="select1" required="true()"/>
+      <bind nodeset="/Water_Translated/developed_by_other" relevant="selected(../developed_by, 'other')" type="string" required="true()"/>
+      <bind nodeset="/Water_Translated/managed_by" type="select" required="false()"/>
+      <bind nodeset="/Water_Translated/managed_by_other" relevant="selected(../managed_by, 'other')" type="string" required="true()"/>
+      <bind nodeset="/Water_Translated/pay_for_water" type="select1" required="true()"/>
+      <bind nodeset="/Water_Translated/used_today" type="select1" required="true()"/>
+      <bind nodeset="/Water_Translated/reason_not_used" relevant="selected(/Water_Translated/used_today, 'No')" type="select" required="false()"/>
+      <bind nodeset="/Water_Translated/reason_not_used_other" relevant="selected(../reason_not_used, 'other')" type="string" required="true()"/>
+      <bind nodeset="/Water_Translated/physical_state" type="select1" required="true()"/>
+      <bind nodeset="/Water_Translated/other_close_water" type="select1" required="true()"/>
+      <bind nodeset="/Water_Translated/times_used" type="select1" required="true()"/>
+      <bind nodeset="/Water_Translated/help_completed" type="select" required="false()"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/Water_Translated/gps">
+      <label ref="jr:itext('/Water_Translated/gps:label')"/>
+      <hint ref="jr:itext('/Water_Translated/gps:hint')"/>
+    </input>
+    <upload ref="/Water_Translated/photo" mediatype="image/*">
+      <label ref="jr:itext('/Water_Translated/photo:label')"/>
+    </upload>
+    <input ref="/Water_Translated/locality">
+      <label ref="jr:itext('/Water_Translated/locality:label')"/>
+    </input>
+    <input ref="/Water_Translated/nearest_school_or_clinic">
+      <label ref="jr:itext('/Water_Translated/nearest_school_or_clinic:label')"/>
+    </input>
+    <input ref="/Water_Translated/water_pt_id_number">
+      <label ref="jr:itext('/Water_Translated/water_pt_id_number:label')"/>
+    </input>
+    <select1 ref="/Water_Translated/type">
+      <label ref="jr:itext('/Water_Translated/type:label')"/>
+      <item>
+        <label ref="jr:itext('/Water_Translated/type/borehole:label')"/>
+        <value>borehole</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/type/tube_well:label')"/>
+        <value>tube_well</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/type/protected_dug_well:label')"/>
+        <value>protected_dug_well</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/type/developed_protected_spring_water:label')"/>
+        <value>developed_protected_spring_water</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/type/developed_and_treated_surface_water:label')"/>
+        <value>developed_and_treated_surface_water</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/type/rainwater_harvesting_scheme:label')"/>
+        <value>rainwater_harvesting_scheme</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/type/other:label')"/>
+        <value>other</value>
+      </item>
+    </select1>
+    <input ref="/Water_Translated/type_other">
+      <label ref="jr:itext('/Water_Translated/type_other:label')"/>
+    </input>
+    <select1 ref="/Water_Translated/distribution_type">
+      <label ref="jr:itext('/Water_Translated/distribution_type:label')"/>
+      <item>
+        <label ref="jr:itext('/Water_Translated/distribution_type/single_point:label')"/>
+        <value>single_point</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/distribution_type/multiple_points_within_100m:label')"/>
+        <value>multiple_points_within_100m</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/distribution_type/multiple_points_within_1000m:label')"/>
+        <value>multiple_points_within_1000m</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/distribution_type/multiple_points_beyond_1000m:label')"/>
+        <value>multiple_points_beyond_1000m</value>
+      </item>
+    </select1>
+    <select1 ref="/Water_Translated/lift_mechanism">
+      <label ref="jr:itext('/Water_Translated/lift_mechanism:label')"/>
+      <item>
+        <label ref="jr:itext('/Water_Translated/lift_mechanism/diesel:label')"/>
+        <value>diesel</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/lift_mechanism/electric:label')"/>
+        <value>electric</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/lift_mechanism/solar:label')"/>
+        <value>solar</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/lift_mechanism/hand_pump:label')"/>
+        <value>hand_pump</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/lift_mechanism/rope_pulley:label')"/>
+        <value>rope_pulley</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/lift_mechanism/animal:label')"/>
+        <value>animal</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/lift_mechanism/do_not_know:label')"/>
+        <value>do_not_know</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/lift_mechanism/other:label')"/>
+        <value>other</value>
+      </item>
+    </select1>
+    <input ref="/Water_Translated/lift_mechanism_other">
+      <label ref="jr:itext('/Water_Translated/lift_mechanism_other:label')"/>
+    </input>
+    <select1 ref="/Water_Translated/developed_by">
+      <label ref="jr:itext('/Water_Translated/developed_by:label')"/>
+      <item>
+        <label ref="jr:itext('/Water_Translated/developed_by/federal_government:label')"/>
+        <value>federal_government</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/developed_by/state_government:label')"/>
+        <value>state_government</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/developed_by/local_government:label')"/>
+        <value>local_government</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/developed_by/community:label')"/>
+        <value>community</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/developed_by/individual:label')"/>
+        <value>individual</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/developed_by/international_development_partner:label')"/>
+        <value>international_development_partner</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/developed_by/private_organization:label')"/>
+        <value>private_organization</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/developed_by/other:label')"/>
+        <value>other</value>
+      </item>
+    </select1>
+    <input ref="/Water_Translated/developed_by_other">
+      <label ref="jr:itext('/Water_Translated/developed_by_other:label')"/>
+    </input>
+    <select ref="/Water_Translated/managed_by">
+      <label ref="jr:itext('/Water_Translated/managed_by:label')"/>
+      <hint ref="jr:itext('/Water_Translated/managed_by:hint')"/>
+      <item>
+        <label ref="jr:itext('/Water_Translated/managed_by/federal_government:label')"/>
+        <value>federal_government</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/managed_by/state_government:label')"/>
+        <value>state_government</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/managed_by/local_government:label')"/>
+        <value>local_government</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/managed_by/community:label')"/>
+        <value>community</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/managed_by/individual:label')"/>
+        <value>individual</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/managed_by/international_development_partner:label')"/>
+        <value>international_development_partner</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/managed_by/private_organization:label')"/>
+        <value>private_organization</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/managed_by/other:label')"/>
+        <value>other</value>
+      </item>
+    </select>
+    <input ref="/Water_Translated/managed_by_other">
+      <label ref="jr:itext('/Water_Translated/managed_by_other:label')"/>
+    </input>
+    <select1 ref="/Water_Translated/pay_for_water">
+      <label ref="jr:itext('/Water_Translated/pay_for_water:label')"/>
+      <item>
+        <label ref="jr:itext('/Water_Translated/pay_for_water/Yes:label')"/>
+        <value>Yes</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/pay_for_water/No:label')"/>
+        <value>No</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/pay_for_water/do_not_know:label')"/>
+        <value>do_not_know</value>
+      </item>
+    </select1>
+    <select1 ref="/Water_Translated/used_today">
+      <label ref="jr:itext('/Water_Translated/used_today:label')"/>
+      <item>
+        <label ref="jr:itext('/Water_Translated/used_today/Yes:label')"/>
+        <value>Yes</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/used_today/No:label')"/>
+        <value>No</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/used_today/do_not_know:label')"/>
+        <value>do_not_know</value>
+      </item>
+    </select1>
+    <select ref="/Water_Translated/reason_not_used">
+      <label ref="jr:itext('/Water_Translated/reason_not_used:label')"/>
+      <hint ref="jr:itext('/Water_Translated/reason_not_used:hint')"/>
+      <item>
+        <label ref="jr:itext('/Water_Translated/reason_not_used/pump_broken:label')"/>
+        <value>pump_broken</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/reason_not_used/no_diesel:label')"/>
+        <value>no_diesel</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/reason_not_used/no_electricity:label')"/>
+        <value>no_electricity</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/reason_not_used/tapbroken:label')"/>
+        <value>tapbroken</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/reason_not_used/poor_quality:label')"/>
+        <value>poor_quality</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/reason_not_used/no_water:label')"/>
+        <value>no_water</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/reason_not_used/do_not_know:label')"/>
+        <value>do_not_know</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/reason_not_used/other:label')"/>
+        <value>other</value>
+      </item>
+    </select>
+    <input ref="/Water_Translated/reason_not_used_other">
+      <label ref="jr:itext('/Water_Translated/reason_not_used_other:label')"/>
+    </input>
+    <select1 ref="/Water_Translated/physical_state">
+      <label ref="jr:itext('/Water_Translated/physical_state:label')"/>
+      <item>
+        <label ref="jr:itext('/Water_Translated/physical_state/newly_constructed:label')"/>
+        <value>newly_constructed</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/physical_state/well_maintained:label')"/>
+        <value>well_maintained</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/physical_state/poorly_maintained:label')"/>
+        <value>poorly_maintained</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/physical_state/na:label')"/>
+        <value>na</value>
+      </item>
+    </select1>
+    <select1 ref="/Water_Translated/other_close_water">
+      <label ref="jr:itext('/Water_Translated/other_close_water:label')"/>
+      <item>
+        <label ref="jr:itext('/Water_Translated/other_close_water/Yes:label')"/>
+        <value>Yes</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/other_close_water/No:label')"/>
+        <value>No</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/other_close_water/do_not_know:label')"/>
+        <value>do_not_know</value>
+      </item>
+    </select1>
+    <select1 ref="/Water_Translated/times_used">
+      <label ref="jr:itext('/Water_Translated/times_used:label')"/>
+      <item>
+        <label ref="jr:itext('/Water_Translated/times_used/year_round:label')"/>
+        <value>year_round</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/times_used/dry_seasons:label')"/>
+        <value>dry_seasons</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/times_used/wet_seasons:label')"/>
+        <value>wet_seasons</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/times_used/other:label')"/>
+        <value>other</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/times_used/do_not_know:label')"/>
+        <value>do_not_know</value>
+      </item>
+    </select1>
+    <select ref="/Water_Translated/help_completed">
+      <label ref="jr:itext('/Water_Translated/help_completed:label')"/>
+      <hint ref="jr:itext('/Water_Translated/help_completed:hint')"/>
+      <item>
+        <label ref="jr:itext('/Water_Translated/help_completed/nobody:label')"/>
+        <value>nobody</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/help_completed/lga_staff:label')"/>
+        <value>lga_staff</value>
+      </item>
+      <item>
+        <label ref="jr:itext('/Water_Translated/help_completed/community_mem:label')"/>
+        <value>community_mem</value>
+      </item>
+    </select>
+  </h:body>
+</h:html>

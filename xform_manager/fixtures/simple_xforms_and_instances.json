@@ -1,0 +1,64 @@
+[{
+    "pk":1,
+    "model":"xform_manager.xform",
+    "fields":{
+      "xml":"<h:html xmlns=\\\"http://www.w3.org/2002/xforms\\\" xmlns:h=\\\"http://www.w3.org/1999/xhtml\\\" xmlns:ev=\\\"http://www.w3.org/2001/xml-events\\\" xmlns:xsd=\\\"http://www.w3.org/2001/XMLSchema\\\" xmlns:jr=\\\"http://openrosa.org/javarosa\\\">\\r\\n  <h:head>\\r\\n    <h:title>WaterSimple</h:title>\\r\\n    <model>\\r\\n      <instance>\\r\\n        <data id=\\\"build_WaterSimple_1295821382\\\">\\r\\n          <name/>\\r\\n          <users_per_month/>\\r\\n          <geopoint/>\\r\\n\\t\\t<start />\\r\\n\\t\\t<end />\\r\\n\\t\\t<device_id />\\r\\n        </data>\\r\\n      </instance>\\r\\n      <itext>\\r\\n        <translation lang=\\\"eng\\\">\\r\\n          <text id=\\\"/data/name:label\\\">\\r\\n            <value>Water Point Name</value>\\r\\n          </text>\\r\\n          <text id=\\\"/data/name:hint\\\">\\r\\n            <value>What is this point named?</value>\\r\\n          </text>\\r\\n          <text id=\\\"/data/users_per_month:label\\\">\\r\\n            <value>Monthly Usage</value>\\r\\n          </text>\\r\\n          <text id=\\\"/data/users_per_month:hint\\\">\\r\\n            <value>How many people use this every month?</value>\\r\\n          </text>\\r\\n          <text id=\\\"/data/geopoint:label\\\">\\r\\n            <value>Location</value>\\r\\n          </text>\\r\\n          <text id=\\\"/data/geopoint:hint\\\">\\r\\n            <value></value>\\r\\n          </text>\\r\\n        </translation>\\r\\n      </itext>\\r\\n\\t<bind jr:preload=\\\"property\\\" jr:preloadParams=\\\"device_id\\\" nodeset=\\\"/data/device_id\\\" required=\\\"true()\\\" type=\\\"string\\\"/>\\r\\n\\t<bind jr:preload=\\\"timestamp\\\" jr:preloadParams=\\\"start\\\" nodeset=\\\"/data/start\\\" required=\\\"true()\\\" type=\\\"dateTime\\\"/>\\r\\n\\t<bind jr:preload=\\\"timestamp\\\" jr:preloadParams=\\\"end\\\" nodeset=\\\"/data/end\\\" required=\\\"true()\\\" type=\\\"dateTime\\\"/>\\r\\n\\t<bind nodeset=\\\"/data/name\\\" type=\\\"string\\\" required=\\\"true()\\\"/>\\r\\n      <bind nodeset=\\\"/data/users_per_month\\\" type=\\\"int\\\" required=\\\"true()\\\" constraint=\\\"(. &gt; 0 and . &lt; )\\\"/>\\r\\n      <bind nodeset=\\\"/data/geopoint\\\" type=\\\"geopoint\\\" required=\\\"true()\\\"/>\\r\\n    </model>\\r\\n  </h:head>\\r\\n  <h:body>\\r\\n    <input ref=\\\"/data/name\\\">\\r\\n      <label ref=\\\"jr:itext('/data/name:label')\\\"/>\\r\\n      <hint ref=\\\"jr:itext('/data/name:hint')\\\"/>\\r\\n    </input>\\r\\n    <input ref=\\\"/data/users_per_month\\\">\\r\\n      <label ref=\\\"jr:itext('/data/users_per_month:label')\\\"/>\\r\\n      <hint ref=\\\"jr:itext('/data/users_per_month:hint')\\\"/>\\r\\n    </input>\\r\\n    <input ref=\\\"/data/geopoint\\\">\\r\\n      <label ref=\\\"jr:itext('/data/geopoint:label')\\\"/>\\r\\n      <hint ref=\\\"jr:itext('/data/geopoint:hint')\\\"/>\\r\\n    </input>\\r\\n  </h:body>\\r\\n</h:html>\\r\\n",
+      "downloadable":true,
+      "id_string":"build_WaterSimple_1295821382",
+      "description":"A simple water usage question.",
+      "title":"WaterSimple"
+    }
+  },
+  {
+    "pk":1,
+    "model":"phone_manager.phone",
+    "fields":{
+      "status":"functional",
+      "phone_number":"",
+      "note":null,
+      "visible_id":"",
+      "imei":"6543210",
+      "search_field":"6543210 functional   "
+    }
+  },
+  {
+    "pk":1,
+    "model":"xform_manager.surveytype",
+    "fields":{
+      "slug":"data"
+    }
+  },
+  {
+    "pk":1,
+    "model":"xform_manager.instance",
+    "fields":{
+      "xml":"<?xml version='1.0' ?>\\n<data id=\\\"build_WaterSimple_1295821382\\\">\\n\\t<name>JK Resevoir</name>\\n\\t<users_per_month>300</users_per_month>\\n\\t<geopoint>40.783594633609184 -73.96436698913574 300.0 4.0</geopoint>\\n\\t<device_id>6543210</device_id>\\n\\t<start>2010-12-08T10:04:30.338</start>\\n\\t<end>2010-12-08T11:04:30.338</end>\\n</data>",
+      "start_time":"2010-12-08 10:04:30",
+      "date":"2010-12-08",
+      "survey_type":1,
+      "xform":1
+    }
+  },
+  {
+    "pk":2,
+    "model":"xform_manager.instance",
+    "fields":{
+      "xml":"<?xml version='1.0' ?>\\n<data id=\\\"build_WaterSimple_1295821382\\\">\\n\\t<name>Mudd Building</name>\\n\\t<users_per_month>400</users_per_month>\\n\\t<geopoint>40.80937419746446 -73.95926006317139 300.0 4.0</geopoint>\\n\\t<device_id>6543210</device_id>\\n\\t<start>2010-12-08T11:15:30.338</start>\\n\\t<end>2010-12-08T11:17:30.338</end>\\n</data>",
+      "start_time":"2010-12-08 11:15:30",
+      "date":"2010-12-08",
+      "survey_type":1,
+      "xform":1
+    }
+  },
+  {
+    "pk":3,
+    "model":"xform_manager.instance",
+    "fields":{
+      "xml":"<?xml version='1.0' ?>\\n<data id=\\\"build_WaterSimple_1295821382\\\">\\n\\t<name>Central Park Pond</name>\\n\\t<users_per_month>500</users_per_month>\\n\\t<geopoint>40.765102558006795 -73.97389419555664 300.0 4.0</geopoint>\\n\\t<device_id>6543210</device_id>\\n\\t<start>2010-12-08T11:35:30.338</start>\\n\\t<end>2010-12-08T11:40:30.338</end>\\n</data>\\n",
+      "start_time":"2010-12-08 11:35:30",
+      "date":"2010-12-08",
+      "survey_type":1,
+      "xform":1
+    }
+  }
+]

@@ -1,0 +1,9 @@
+<?xml version='1.0' ?>
+<data id="build_WaterSimple_1295821382">
+	<name>Mudd Building</name>
+	<users_per_month>400</users_per_month>
+	<geopoint>40.80937419746446 -73.95926006317139 300.0 4.0</geopoint>
+	<device_id>6543210</device_id>
+	<start>2010-12-08T11:15:30.338</start>
+	<end>2010-12-08T11:17:30.338</end>
+</data>
