@@ -13,7 +13,7 @@ import json
 from xform_manager.factory import XFormManagerFactory
 xfactory = XFormManagerFactory()
 
-from parsed_xforms.models import xform_instances, ParsedInstance
+from parsed_xforms.models import ParsedInstance
 from parsed_xforms.views import map_data_points
 from nga_districts.models import Zone, State, LGA
 import common_tags as tag

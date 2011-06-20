@@ -152,33 +152,19 @@ LOGGING = {
 }
 
 
-from pymongo import Connection
 import sys
-
-MONGO = {
-    "database name" : "odk",
-    "test database name" : "odk_test",
-    }
-
 
 SITE_TITLE = "Baseline Data Collection"
 
-# set up the Mongo Database
-_c = Connection()
-MONGO_DB = None
 TESTING_MODE = False
-
 if len(sys.argv)>=2 and (sys.argv[1]=="test" or sys.argv[1]=="test_all"):
     # This trick works only when we run tests from the command line.
     TESTING_MODE = True
-    MONGO_DB = _c[MONGO["test database name"]]
 else:
     TESTING_MODE = False
-    MONGO_DB = _c[MONGO["database name"]]
 
 # Clear out the test database
 if TESTING_MODE:
-    MONGO_DB.instances.drop()
     MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'test_static/')
 else:
     MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'static/')

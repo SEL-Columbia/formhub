@@ -3,8 +3,8 @@ from django.db import models
 from xform_manager.models import XForm
 from pyxform import QuestionTypeDictionary, SurveyElementBuilder
 from common_tags import XFORM_ID_STRING
-from parsed_xforms.models import xform_instances
 import re
+
 
 class DataDictionary(models.Model):
     xform = models.ForeignKey(XForm, related_name="data_dictionary")
@@ -107,7 +107,9 @@ class DataDictionary(models.Model):
     def get_parsed_instances_from_mongo(self):
         id_string = self.xform.id_string
         match_id_string = {XFORM_ID_STRING : id_string}
-        return xform_instances.find(spec=match_id_string)
+        from newdb_error import NoMongoException
+        raise NoMongoException()
+#        return xform_instances.find(spec=match_id_string)
 
     def _rename_state_and_lga_keys(self, d):
         def rename_key(is_key_to_rename, new_key):

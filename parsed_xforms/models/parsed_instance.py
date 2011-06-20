@@ -13,10 +13,6 @@ from common_tags import IMEI, DEVICE_ID, START_TIME, START, \
 import django.dispatch
 import datetime
 
-# this is Mongo Collection (SQL table equivalent) where we will store
-# the parsed submissions
-xform_instances = settings.MONGO_DB.instances
-
 class ParseError(Exception):
     pass
 
@@ -49,7 +45,7 @@ class ParsedInstance(models.Model):
             self._dict_cache = self.instance.get_dict()
         self._dict_cache.update(
             {
-                ID : self.get_mongo_id(),
+                ID : self.instance.id,
                 SURVEYOR_NAME :
                     None if not self.surveyor else self.surveyor.name,
                 LGA_ID :
@@ -62,9 +58,6 @@ class ParsedInstance(models.Model):
             )
         return self._dict_cache
     
-    def get_mongo_id(self):
-        return self.instance.id
-
     def _set_phone(self):
         doc = self.to_dict()
         # I'm using two different keys here because I switched the key
@@ -147,18 +140,22 @@ class ParsedInstance(models.Model):
         self._set_surveyor()
     
     def update_mongo(self):
+        from newdb_error import NoMongoException
+        raise NoMongoException()
         d = self.to_dict()
         for mod in self.instance.modifications.all():
             d = mod.process_doc(d)
-        xform_instances.save(d)
+#        xform_instances.save(d)
 
 # http://docs.djangoproject.com/en/dev/topics/db/models/#overriding-model-methods
-from django.db.models.signals import pre_delete
-def _remove_from_mongo(sender, **kwargs):
-    instance_id = kwargs.get('instance').get_mongo_id()
-    xform_instances.remove(instance_id)
-
-pre_delete.connect(_remove_from_mongo, sender=ParsedInstance)
+# from django.db.models.signals import pre_delete
+# def _remove_from_mongo(sender, **kwargs):
+#     from newdb_error import NoMongoException
+#     raise NoMongoException()
+#     instance_id = kwargs.get('instance').get_mongo_id()
+#     xform_instances.remove(instance_id)
+# 
+# pre_delete.connect(_remove_from_mongo, sender=ParsedInstance)
 
 
 from django.db.models.signals import post_save

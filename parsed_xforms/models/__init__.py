@@ -1,4 +1,4 @@
-from parsed_instance import xform_instances, ParsedInstance
+from parsed_instance import ParsedInstance
 from registration import Registration
 from data_dictionary import DataDictionary
 from instance_modification import InstanceModification

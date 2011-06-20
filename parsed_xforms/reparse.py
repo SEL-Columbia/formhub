@@ -9,9 +9,6 @@ from surveyor_manager.models import Surveyor
 from django.contrib.auth.models import User
 from django.conf import settings
 
-xform_db = settings.MONGO_DB
-xform_instances = xform_db.instances
-
 import time, math
 
 def get_counts():
@@ -23,7 +20,6 @@ def get_counts():
         'districts_assigned': ParsedInstance.objects.exclude(lga=None).count(),
         'districts_total': nga_models.LGA.objects.count(),
         'registrations': Registration.objects.count(),
-        'mongo_instances': xform_instances.count(),
         'surveyors': Surveyor.objects.count(),
         'users': User.objects.count()
     }
@@ -86,14 +82,6 @@ def reset_values():
     """
     This function is meant to simulate what we want to acheive with i.delete(). Right now, it is resetting mongo_db, Deleting ParsedInstances, Deleting Surveyors.
     """
-    try:
-        xform_db.instances.drop()
-    except Exception, e:
-        #i can't believe i'm doing this, but
-        # it seems to be the only way to get this to not fail
-        # every other time i run it.
-        xform_db.instances.drop()
-    
     for x in Instance.objects.all():
         pi = ParsedInstance.objects.filter(instance=x)
         if pi.count() > 0:
