@@ -56,6 +56,8 @@ class ParsedInstance(models.Model):
                 u"_status" : self.instance.status,
                 }
             )
+        for mod in self.instance.modifications.all():
+            self._dict_cache = mod.process_doc(self._dict_cache)
         return self._dict_cache
     
     def _set_phone(self):
@@ -124,13 +126,7 @@ class ParsedInstance(models.Model):
             #             (self.instance.id, e), \
             #             level=logging.ERROR)
             self.is_new = True
-        
         super(ParsedInstance, self).save(*args, **kwargs)
-        
-        # not sure if this is appropriate to
-        # call for each save.
-        self.update_mongo()
-    
     
     def parse(self):
         self._set_phone()
@@ -139,14 +135,6 @@ class ParsedInstance(models.Model):
         self._set_lga()
         self._set_surveyor()
     
-    def update_mongo(self):
-        from newdb_error import NoMongoException
-        raise NoMongoException()
-        d = self.to_dict()
-        for mod in self.instance.modifications.all():
-            d = mod.process_doc(d)
-#        xform_instances.save(d)
-
 # http://docs.djangoproject.com/en/dev/topics/db/models/#overriding-model-methods
 # from django.db.models.signals import pre_delete
 # def _remove_from_mongo(sender, **kwargs):
