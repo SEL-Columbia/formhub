@@ -1,4 +1,5 @@
 from django.db import models
+from collections import defaultdict
 
 from nga_districts.models import LGA
 
@@ -93,6 +94,16 @@ class Facility(models.Model):
         drs = DataRecord.objects.filter(facility=self).values('date_value').distinct()
         return [d['date_value'] for d in drs]
 
+    @classmethod
+    def get_latest_data_by_lga(cls, lga):
+        d = defaultdict(dict)
+        records = DataRecord.objects.filter(facility__lga=lga).order_by('variable__slug', '-date_value')
+        for r in records:
+            # todo: test to make sure this sorting is correct
+            if r.variable.slug not in d[r.facility.id]:
+                d[r.facility.id][r.variable.slug] = r.value
+        return d
+
 from xform_manager.models import Instance
 from django.db.models.signals import post_save
 
@@ -104,8 +115,16 @@ def _connect_facility(sender, **kwargs):
     
     ftype, created = FacilityType.objects.get_or_create(name=survey_type.slug)
     facility = Facility.objects.create(name="Instance %d" % survey_instance.id, ftype=ftype)
-    
+
     idict = survey_instance.get_dict()
+    try:
+        zone = idict['location/zone']
+        state = idict['location/state_in_%s' % zone]
+        lga = idict['location/lga_in_%s' % state]
+        facility.lga = LGA.objects.get(slug=lga, state__slug=state)
+        facility.save()
+    except KeyError:
+        raise Exception(idict)
     for v in Variable.objects.all():
         if v.xpath in idict:
             facility.set(v, idict[v.xpath])
