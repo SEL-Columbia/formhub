@@ -1,0 +1,291 @@
+[
+  {
+    "pk": 1,
+    "model": "facilities.lga",
+    "fields": {
+      "name": "New York",
+      "slug": "new_york"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "facilities.lga",
+    "fields": {
+      "name": "Abuja",
+      "slug": "abuja"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "facilities.lga",
+    "fields": {
+      "name": "North Pole",
+      "slug": "north_pole"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "facilities.lga",
+    "fields": {
+      "name": "Marseille",
+      "slug": "marseille"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 1,
+      "ftype": 1,
+      "name": "Shake Shack"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 1,
+      "ftype": 1,
+      "name": "Big Daddy's"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 1,
+      "ftype": 1,
+      "name": "Five Guys"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 1,
+      "ftype": 1,
+      "name": "Burger King"
+    }
+  },
+  {
+    "pk": 5,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 1,
+      "ftype": 2,
+      "name": "Famiglia's"
+    }
+  },
+  {
+    "pk": 6,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 1,
+      "ftype": 2,
+      "name": "Koronet"
+    }
+  },
+  {
+    "pk": 7,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 2,
+      "ftype": 1,
+      "name": "Shake Shack: Abuja, Nigeria"
+    }
+  },
+  {
+    "pk": 8,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 2,
+      "ftype": 1,
+      "name": "Abuja Burgers"
+    }
+  },
+  {
+    "pk": 9,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 2,
+      "ftype": 1,
+      "name": "Mama Cass"
+    }
+  },
+  {
+    "pk": 10,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 2,
+      "ftype": 1,
+      "name": "FCT Burgers"
+    }
+  },
+  {
+    "pk": 11,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 2,
+      "ftype": 2,
+      "name": "Your Pizza is FCTed"
+    }
+  },
+  {
+    "pk": 12,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 2,
+      "ftype": 2,
+      "name": "Pizzabuja"
+    }
+  },
+  {
+    "pk": 13,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 3,
+      "ftype": 1,
+      "name": "Santa's In N Out Burger"
+    }
+  },
+  {
+    "pk": 14,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 3,
+      "ftype": 1,
+      "name": "Elf Burger"
+    }
+  },
+  {
+    "pk": 17,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 3,
+      "ftype": 2,
+      "name": "Reindeer Slice"
+    }
+  },
+  {
+    "pk": 18,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 3,
+      "ftype": 2,
+      "name": "Rudolph's Favorite Pizza"
+    }
+  },
+  {
+    "pk": 19,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 4,
+      "ftype": 1,
+      "name": "Le Shack de Shake"
+    }
+  },
+  {
+    "pk": 20,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 4,
+      "ftype": 1,
+      "name": "MacDo's"
+    }
+  },
+  {
+    "pk": 21,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 4,
+      "ftype": 1,
+      "name": "5 Hommes"
+    }
+  },
+  {
+    "pk": 22,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 4,
+      "ftype": 1,
+      "name": "Le Burger King"
+    }
+  },
+  {
+    "pk": 23,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 4,
+      "ftype": 2,
+      "name": "Le Pizza Éxtrordinaire"
+    }
+  },
+  {
+    "pk": 24,
+    "model": "facilities.facility",
+    "fields": {
+      "lga": 4,
+      "ftype": 2,
+      "name": "Les Siciliennes"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "facilities.variable",
+    "fields": {
+      "name": "Number of Burgers",
+      "data_type": "integer"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "facilities.variable",
+    "fields": {
+      "name": "Number of employees",
+      "data_type": "float"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "facilities.variable",
+    "fields": {
+      "name": "DoH Grade",
+      "data_type": "string"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "facilities.variable",
+    "fields": {
+      "name": "Number of Toppings",
+      "data_type": "integer"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "facilities.facilitytype",
+    "fields": {
+      "variables": [
+        1,
+        2,
+        3
+      ],
+      "variable_order_json": "[1, 2, 3]",
+      "name": "Hamburger Joints",
+      "slug": "burgers"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "facilities.facilitytype",
+    "fields": {
+      "variables": [
+        3,
+        4
+      ],
+      "variable_order_json": "[3, 4]",
+      "name": "Pizza Restaurants",
+      "slug": "pizza"
+    }
+  }
+]

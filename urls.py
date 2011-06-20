@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r"^%ssubmission$" % OPT_GROUP_REGEX, xform_manager_views.submission),
     url(r'^xform_manager/', include('nmis.xform_manager.urls')),
     url(r'^accounts/', include('registration.urls')),
+    url(r'^facilities/', include('facilities.urls')),
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

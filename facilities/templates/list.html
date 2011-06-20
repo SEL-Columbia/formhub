@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Facilities for Site: {{site_name}}</title>
+	<style type="text/css" media="screen">
+		body {
+			font-family: Arial;
+		}
+		.data {
+			text-align: center;
+		}
+		.agg {
+			font-size: smaller;
+			text-align: center;
+			background-color: #eee;
+		}
+		th { text-align: left; }
+	</style>
+</head>
+<body>
+	<h1>
+		{{site.name}}
+	</h1>
+	<a href="/">&laquo; Back to Home</a>
+	<hr>
+	<h2>
+		Dates:
+	</h2>
+	<ul>
+		{% for date in site.dates %}
+		<li>
+			{{date}}
+		</li>
+		{% endfor %}
+	</ul>
+	{% for date, ftype_data in site.facility_data_by_date %}
+	<div>
+		<h2>
+			{{date}}
+		</h2>
+		{% for ftype_name, ftype_slug, ft_variables, facilities in ftype_data %}
+		<div>
+			<h3>
+				{{ftype_name}}
+			</h3>
+			<table>
+				<thead>
+					<tr>
+						<th></th>
+						{% for variable in ft_variables %}
+						<th>
+							{{variable.name}}
+						</th>
+						{% endfor %}
+					</tr>
+				</thead>
+				<tbody>
+					{% for facility_name, values_array in facilities %}
+					<tr>
+						<th scope="row">
+							{{facility_name}}
+						</th>
+						{% for data in values_array %}
+						<td class="data">
+							{% if data %}
+							<span data-variable-data-type="((data.data_type))" class="reformat-data">
+								{{ data.value }}
+							</span>
+							{% else %}
+							<span class="nil-value">&mdash;</span>
+							{% endif %}
+						</td>
+						{% endfor %}
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		{% endfor %}
+	</div>
+	{% endfor %}
+	<!--
+	<script src="/static/js/jquery.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" charset="utf-8">
+		var reformatDataSpans = (function($){
+			var reformatters = {
+				float: function(elem){
+					var roundToDecimal = elem.data('decimalCount');
+					if(roundToDecimal===undefined) { return; }
+					var val = parseFloat(elem.text());
+					console.log(val);
+					if(!isNaN(val)) {
+						console.log("decimal count is ", roundToDecimal)
+						var x = Math.pow(10, parseInt(roundToDecimal));
+						var n = Math.round(val * x) / x;
+						console.log(n);
+						elem.text(''+ n);
+					}
+					elem.addClass('reformatted');
+				},
+				integer: function(elem){
+					var val = parseFloat(elem.text());
+					if(!isNaN(val)){ elem.text(Math.floor(val))}
+					$(this).addClass('reformatted');
+				}
+			}
+			function reformatAllSpans(){
+				$('span.reformat-data').each(function(){
+					if(!$(this).hasClass('reformatted')) {
+						var dt = $(this).data('variableDataType');
+						if(dt) {
+							reformatters[dt] !== undefined && reformatters[dt]($(this));
+						}
+					}
+				});
+			}
+			return reformatAllSpans;
+		})(jQuery);
+		
+		reformatDataSpans();
+	</script>
+	-->
+</body>
+</html>

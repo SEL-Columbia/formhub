@@ -2,6 +2,12 @@ from django.core.management.base import BaseCommand
 from django.core.management import call_command
 import os
 
+from facilities.models import *
+
+#from django.contrib.auth.models import User
+
+import json
+
 class Command(BaseCommand):
     help = "Load the LGAs from fixtures."
 
@@ -15,5 +21,9 @@ class Command(BaseCommand):
             path = os.path.join(['nga_districts', 'fixtures', file_name])
             call_command('loaddata', file_name)
         
+        with open('facilities/variables/variables.json', 'r') as f:
+            vdata = json.loads(f.read())
+            for variable in vdata:
+                v, created = Variable.objects.get_or_create(**variable)
         call_command('loaddata', 'xform_manager_dataset.json')
-        call_command('createsuperuser')
+#        call_command('createsuperuser')

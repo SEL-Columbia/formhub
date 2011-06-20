@@ -116,41 +116,10 @@ class ParsedInstance(models.Model):
     def _set_surveyor(self):
         self.time_to_set_surveyor.send(sender=self)
     
-    def save(self, *args, **kwargs):
-        if not self.is_new:
-            self.parse()
-            # todo: put this logging stuff back in.
-            # except ParseError, e:
-            #     sentry_client.create_from_text(
-            #         "Parse Error on Instance ID: %d - %s" % \
-            #             (self.instance.id, e), \
-            #             level=logging.ERROR)
-            self.is_new = True
-        super(ParsedInstance, self).save(*args, **kwargs)
-    
     def parse(self):
         self._set_phone()
         self._set_start_time()
         self._set_end_time()
         self._set_lga()
         self._set_surveyor()
-    
-# http://docs.djangoproject.com/en/dev/topics/db/models/#overriding-model-methods
-# from django.db.models.signals import pre_delete
-# def _remove_from_mongo(sender, **kwargs):
-#     from newdb_error import NoMongoException
-#     raise NoMongoException()
-#     instance_id = kwargs.get('instance').get_mongo_id()
-#     xform_instances.remove(instance_id)
-# 
-# pre_delete.connect(_remove_from_mongo, sender=ParsedInstance)
 
-
-from django.db.models.signals import post_save
-def _parse_instance(sender, **kwargs):
-    # When an instance is saved, first delete the parsed_instance
-    # associated with it.
-    instance = kwargs["instance"]
-    ParsedInstance.objects.get_or_create(instance=instance)
-
-post_save.connect(_parse_instance, sender=Instance)
