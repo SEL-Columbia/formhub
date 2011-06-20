@@ -16,3 +16,4 @@ class Command(BaseCommand):
             call_command('loaddata', file_name)
         
         call_command('loaddata', 'xform_manager_dataset.json')
+        call_command('createsuperuser')
