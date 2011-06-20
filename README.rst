@@ -1,7 +1,23 @@
 NMIS Project v0.7
 ====================
 
-Installation
+How to get up & Running (with sample dataset and sqlite)
+---------------------------------------------
+
+1. In a virtualenv, install requirements:
+
+    pip install -r requirements.pip
+
+
+2. Download xform_manager_dataset.json into the project directory
+
+
+3. Run load_fixtures management command
+
+    python manage.py load_fixtures
+
+
+Installation (old)
 ------------
 1. Install virtualenv, and mongodb if needed
 
