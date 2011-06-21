@@ -16,7 +16,7 @@ widget(function(){
 	$('.content-inner-wrap').append(p);
 	this.launchers.map = true;
 	this.addCallback('map', function(){
-		console.log("sweet", this);
+		//console.log(this, arguments);
 	});
 });
 -->
@@ -26,8 +26,8 @@ widget(function(){
 {% block js %}
 <script type="text/javascript" charset="utf-8">
 <!--
-var pageRootUrl = "/ui/";
 
+var pageRootUrl = "/ui/";
 $(function(evt){
 	var env = {
 		launchers: {},
@@ -43,35 +43,28 @@ $(function(evt){
 			if(mode !== data.mode) {
 				mode = data.mode;
 				console.log("Changing mode to "+data.mode);
-
 			}
 		})
 	})($('body'));
+	
 	$(_widgetCallbacks).each(function(i, w){
 		w.call(env);
 	});
 	
-	function setPageMode(x) {
-		console.log(x)
-	}
-	
 	function setPageMode(t) {
-		$('body').trigger('mode-change', {
-			mode: t
-		});
+		$('body').trigger('mode-change', {mode: t});
 	}
 	var dashboard = $.sammy(function(){
-		this.get("/ui/", function(){
-			
+		this.get(pageRootUrl, function(){
 			setPageMode("country");
 		});
-		this.get("/ui/lga/", function(){
+		this.get(pageRootUrl + "lga/", function(){
 			setPageMode("lga");
-		})
+		});
 	});
 	//do we want this in the global scope?
-	window._dashboard = dashboard;
-	dashboard.run();
+//	window._dashboard = dashboard;
+//	dashboard.run();
 	function runCallbacksOn(cbs, obj) {$(cbs).each(function(i, cb){cb.call(obj)})}
 	function launchMap(cbArr) {
 		var map = {};
