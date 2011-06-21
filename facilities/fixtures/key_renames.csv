@@ -1,0 +1,4 @@
+data_source,old_key,new_key
+Water_2011_03_18,location/gps,gps
+Health_2011_03_18,location/gps,gps
+Education_2011_03_18,location/gps,gps
