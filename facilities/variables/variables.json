@@ -1,9 +1,0 @@
-[
-  {
-    "slug": "gps",
-    "name": "GPS",
-    "xpath": "location/gps",
-    "description": "The GPS",
-    "data_type": "string"
-  }
-]
