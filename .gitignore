@@ -22,3 +22,5 @@ registration.xml
 
 # folder to hold csv files
 csvs
+
+xform_manager_dataset.json
