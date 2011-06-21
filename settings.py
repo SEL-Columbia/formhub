@@ -121,7 +121,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     
-#    'parsed_xforms',
+    'parsed_xforms',
     'xform_manager',
     'submission_qr',
     'phone_manager',
