@@ -1,47 +1,9 @@
 from django.db import models
 from collections import defaultdict
+import datetime
 
 from nga_districts.models import LGA
 
-# class LGA(models.Model):
-#     name = models.CharField(max_length=20)
-#     slug = models.SlugField()
-#     
-#     def dates(self):
-#         drs = DataRecord.objects.filter(facility__lga=self).values('date_value').distinct()
-#         return [d['date_value'] for d in drs]
-#     
-#     def facilities_by_type(self):
-#         oput = []
-#         for ftype in FacilityType.objects.all():
-#             facilities = list(Facility.objects.filter(ftype=ftype, lga=self).all())
-#             averages = []
-#             totals = []
-#             for variable in ftype.ordered_variables:
-#                 averages.append(variable.calculate_average_for_lga(self))
-#                 totals.append(variable.calculate_total_for_lga(self))
-#             oput.append(
-#                 (ftype, facilities, averages, totals)
-#             )
-#         return oput
-# 
-# def facility_data_by_date(self):
-#     #kindof a hack to get dates displaying in tables
-#     return [(date, self._ftype_data_for_date(date)) for date in self.dates()]
-# 
-# def _ftype_data_for_date(self, date):
-#     #kindof a hack to get dates displaying in tables
-#     oput = []
-#     for ftype in FacilityType.objects.all():
-#         oput.append(
-#             (ftype.name, ftype.slug,
-#                 ftype.ordered_variables,
-#                 [(f.name, f._ordered_records_for_date(date)) for f in self.facilities.filter(ftype=ftype).all()]
-#                 )
-#         )
-#     return oput
-
-import datetime
 
 class Facility(models.Model):
     name = models.CharField(max_length=20)
