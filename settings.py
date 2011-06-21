@@ -122,6 +122,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     
     'parsed_xforms',
+    'uis_r_us',
     'xform_manager',
     'submission_qr',
     'phone_manager',

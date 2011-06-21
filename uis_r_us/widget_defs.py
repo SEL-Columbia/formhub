@@ -1,0 +1,2 @@
+def cool():
+    print "Ah"
