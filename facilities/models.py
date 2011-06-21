@@ -1,6 +1,7 @@
 from django.db import models
 from collections import defaultdict
 import datetime
+import json
 
 from nga_districts.models import LGA
 
@@ -73,6 +74,8 @@ class Variable(models.Model):
     data_type = models.CharField(max_length=20)
     description = models.CharField(max_length=255)
     xpath = models.CharField(max_length=50)
+
+    FIELDS = ['name', 'slug', 'data_type', 'description', 'xpath']
     
     def calculate_total_for_lga(self, lga):
         if self.data_type == "string":
@@ -97,6 +100,12 @@ class Variable(models.Model):
                 tot += record.value
             return tot / count
 
+    def to_dict(self):
+        return dict([(k, getattr(self, k)) for k in self.FIELDS])
+
+    def __unicode__(self):
+        return json.dumps(self.to_dict(), indent=4)
+
 class DataRecord(models.Model):
     """
     Not sure if we want to use different columns for data types or do
@@ -104,38 +113,32 @@ class DataRecord(models.Model):
     behave differently. For now, this works and is pretty clean.
     """
     float_value = models.FloatField(null=True)
-    text_value = models.CharField(null=True, max_length=20)
+    boolean_value = models.NullBooleanField()
+    string_value = models.CharField(null=True, max_length=20)
+
     variable = models.ForeignKey(Variable, related_name="data_records")
     facility = models.ForeignKey(Facility, related_name="data_records")
     date_value = models.DateField(null=True)
 
-    _data_type = None
+    TYPES = ['float', 'boolean', 'string']
+
     def get_data_type(self):
-        #caches the data_type in the python object.
-        if self._data_type is None:
-            self._data_type = self.variable.data_type
-        return self._data_type
+        return self.variable.data_type
     data_type = property(get_data_type)
     
     def get_value(self):
-        if self.data_type == "string":
-            return self.text_value
-        else:
-            return self.float_value
+        return getattr(self, self.data_type + "_value")
     
+    def set_value(self, val):
+        setattr(self, self.data_type + "_value", val)
+    
+    value = property(get_value, set_value)
+
     def date_string(self):
         if self.date_value is None:
             return "No date"
         else:
             return self.date_value.strftime("%D")
-    
-    def set_value(self, val):
-        if self.variable.data_type == "string":
-            self.text_value = val
-        else:
-            self.float_value = val
-    
-    value = property(get_value, set_value)
 
 
 class FacilityType(models.Model):
@@ -218,6 +221,9 @@ class KeyRename(models.Model):
             if k in d:
                 temp[v] = d[k]
                 del d[k]
+            else:
+                print "rename rule '%s' not used in data source '%s'" % \
+                    (k, d['_data_source'])
         # this could overwrite keys that weren't renamed
         d.update(temp)
 
