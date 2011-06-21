@@ -1,6 +1,6 @@
 from nga_districts.models import LGA
 from facilities.models import FacilityType, Facility, Variable, KeyRename
-
+import json
 
 class FacilityBuilder(object):
     """
@@ -8,6 +8,8 @@ class FacilityBuilder(object):
     dictionary into a facility with data. This will allow us to load
     facilities from survey data or from csv files.
     """
+
+    SURVEYS_WITH_FACILITIES = ['Health', 'Water', 'Education']
 
     @classmethod
     def create_facility_from_dict(cls, d):
@@ -18,12 +20,20 @@ class FacilityBuilder(object):
         """
         KeyRename.rename_keys(d)
         ftype, created = FacilityType.objects.get_or_create(name=d['_survey_type'])
-        # hack: to get shit working
+        if 'gps' not in d or not d['gps']:
+            return
+        # using gps as facility id is a slight hack to get a unique id
         facility, created = Facility.objects.get_or_create(facility_id=d['gps'], ftype=ftype)
+        facility.lga = LGA.objects.get(id=d['_lga_id'])
+        facility.save()
 
         for v in Variable.objects.all():
             if v.slug in d:
                 facility.set(v, d[v.slug])
+
+    @classmethod
+    def print_dict(cls, d):
+        print json.dumps(d, indent=4, sort_keys=True)
 
     @classmethod
     def create_facility_from_instance(cls, survey_instance):
@@ -32,9 +42,12 @@ class FacilityBuilder(object):
         idict = survey_instance.get_dict()
 
         def add_survey_type_from_xform_id_string(d):
-            l = "_".split(d['_xform_id_string'])
+            l = d['_xform_id_string'].split("_")
             d['_survey_type'] = l[0]
         add_survey_type_from_xform_id_string(idict)
+
+        if idict['_survey_type'] not in cls.SURVEYS_WITH_FACILITIES:
+            return
 
         def add_lga_id(d):
             try:
