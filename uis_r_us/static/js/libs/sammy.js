@@ -1,3 +1,4 @@
+/* https://github.com/quirkey/sammy.git  | BRANCH: non_hash */
 // name: sammy
 // version: 0.7.0pre
 
