@@ -8,7 +8,7 @@ from nga_districts.models import LGA
 class Facility(models.Model):
     name = models.CharField(max_length=20)
     ftype = models.ForeignKey('FacilityType', related_name="facilities")
-    latlng = models.CharField(max_length=20)
+    facility_id = models.CharField(max_length=20)
 #    survey_instance = models.ForeignKey('Instance', related_name="facilities", null=True)
     lga = models.ForeignKey(LGA, related_name="facilities", null=True)
     
@@ -65,33 +65,6 @@ class Facility(models.Model):
             if r.variable.slug not in d[r.facility.id]:
                 d[r.facility.id][r.variable.slug] = r.value
         return d
-
-from xform_manager.models import Instance
-from django.db.models.signals import post_save
-
-def _connect_facility(sender, **kwargs):
-    # When an instance is saved, first delete the parsed_instance
-    # associated with it.
-    survey_instance = kwargs["instance"]
-    survey_type = survey_instance.survey_type
-    
-    ftype, created = FacilityType.objects.get_or_create(name=survey_type.slug)
-    facility = Facility.objects.create(name="Instance %d" % survey_instance.id, ftype=ftype)
-
-    idict = survey_instance.get_dict()
-    try:
-        zone = idict['location/zone']
-        state = idict['location/state_in_%s' % zone]
-        lga = idict['location/lga_in_%s' % state]
-        facility.lga = LGA.objects.get(slug=lga, state__slug=state)
-        facility.save()
-    except KeyError:
-        raise Exception(idict)
-    for v in Variable.objects.all():
-        if v.xpath in idict:
-            facility.set(v, idict[v.xpath])
-
-post_save.connect(_connect_facility, sender=Instance)
 
 
 class Variable(models.Model):
@@ -216,3 +189,45 @@ class FacilityType(models.Model):
         self._ordered_variables = None
         if autosave:
             self.save()
+
+
+class KeyRename(models.Model):
+    data_source = models.CharField(max_length=64)
+    old_key = models.CharField(max_length=64)
+    new_key = models.CharField(max_length=64)
+
+    class Meta:
+        unique_together = (("data_source", "old_key"),)
+
+    @classmethod
+    def _get_rename_dictionary(cls, data_source):
+        result = {}
+        for key_rename in cls.objects.filter(data_source=data_source):
+            result[key_rename.old_key] = key_rename.new_key
+        return result
+
+    @classmethod
+    def rename_keys(cls, d):
+        """
+        Apply the rename rules saved in the database to the dict
+        d. Assumes that the key '_data_source' is in d.
+        """
+        temp = {}
+        rename_dictionary = cls._get_rename_dictionary(d['_data_source'])
+        for k, v in rename_dictionary.items():
+            if k in d:
+                temp[v] = d[k]
+                del d[k]
+        # this could overwrite keys that weren't renamed
+        d.update(temp)
+
+
+from xform_manager.models import Instance
+from django.db.models.signals import post_save
+from facility_builder import FacilityBuilder
+
+def create_facility_from_signal(sender, **kwargs):
+    survey_instance = kwargs["instance"]
+    FacilityBuilder.create_facility_from_instance(survey_instance)
+
+post_save.connect(create_facility_from_signal, sender=Instance)
