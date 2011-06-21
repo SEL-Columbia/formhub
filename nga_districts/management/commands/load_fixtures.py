@@ -1,7 +1,8 @@
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
 import os
-from facilities.models import Variable, KeyRename
+import json
+from facilities.models import Facility, Variable, KeyRename, DataRecord
 from utils.csv_reader import CsvReader
 
 
@@ -10,6 +11,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         call_command('syncdb', interactive=False)
+        self.print_stats()
         self.load_lgas()
         csvs = [
             (Variable, os.path.join('facilities', 'fixtures', 'variables.csv')),
@@ -19,6 +21,15 @@ class Command(BaseCommand):
             self.create_objects_from_csv(model, path)
         self.load_surveys()
         self.create_admin_user()
+        self.print_stats()
+
+    def print_stats(self):
+        info = {
+            'number of facilities': Facility.objects.count(),
+            'facilities without lgas': Facility.objects.filter(lga=None).count(),
+            'number of data records': DataRecord.objects.count(),
+            }
+        print json.dumps(info, indent=4)
 
     def load_lgas(self):
         for file_name in ['zone.json', 'state.json', 'lga.json']:
