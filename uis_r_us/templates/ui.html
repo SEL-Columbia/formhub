@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<script type="text/javascript" charset="utf-8">
+<!--
+//add widget callbacks to this array
+var _widgetCallbacks = [];
+function widget(cb) { _widgetCallbacks.push(cb); }
+
+widget(function(){
+	var p = $("<p />");
+	p.append($("<a />", {'href':'/ui/'}).text("[ Country ]"))
+	p.append($("<a />", {'href':'/ui/lga/'}).text("[ LGA ]"));
+	$('.content-inner-wrap').append(p);
+	this.launchers.map = true;
+	this.addCallback('map', function(){
+		console.log("sweet", this);
+	});
+});
+-->
+</script>
+{% include 'widget_includes.html' %}
+{% endblock %}
+{% block js %}
+<script type="text/javascript" charset="utf-8">
+<!--
+var pageRootUrl = "/ui/";
+
+$(function(evt){
+	var env = {
+		launchers: {},
+		callbacks: {},
+		addCallback: function(k, fn){
+			if(this.callbacks[k]===undefined) {this.callbacks[k]=[]}
+			this.callbacks[k].push(fn);
+		}
+	};
+	(function setModeBinders(body){
+		var mode;
+		body.bind('mode-change', function(evt, data){
+			if(mode !== data.mode) {
+				mode = data.mode;
+				console.log("Changing mode to "+data.mode);
+
+			}
+		})
+	})($('body'));
+	$(_widgetCallbacks).each(function(i, w){
+		w.call(env);
+	});
+	
+	function setPageMode(x) {
+		console.log(x)
+	}
+	
+	function setPageMode(t) {
+		$('body').trigger('mode-change', {
+			mode: t
+		});
+	}
+	var dashboard = $.sammy(function(){
+		this.get("/ui/", function(){
+			
+			setPageMode("country");
+		});
+		this.get("/ui/lga/", function(){
+			setPageMode("lga");
+		})
+	});
+	//do we want this in the global scope?
+	window._dashboard = dashboard;
+	dashboard.run();
+	function runCallbacksOn(cbs, obj) {$(cbs).each(function(i, cb){cb.call(obj)})}
+	function launchMap(cbArr) {
+		var map = {};
+		//load map...
+		runCallbacksOn(env.callbacks.map, map);
+	}
+	if(env.launchers.map) {
+		launchMap();
+	}
+});
+-->
+</script>
+{% endblock %}
