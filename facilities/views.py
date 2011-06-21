@@ -8,7 +8,7 @@ from facilities.models import *
 def home(request):
     context = RequestContext(request)
     context.sites = LGA.objects.all()
-    return render_to_response("sites.html", context_instance=context)
+    return render_to_response("list_lgas.html", context_instance=context)
 
 def facilities_for_site(request, site_id):
     context = RequestContext(request)
