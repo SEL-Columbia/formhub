@@ -6,9 +6,9 @@ from uis_r_us.widgets import embed_widgets
 
 def dashboard(request, reqpath):
     context = RequestContext(request)
-    if not reqpath in ["", "lga"]:
+    if not reqpath in ["", "lga", "lga/"]:
         return HttpResponseRedirect("/ui/")
-    if reqpath == "lga":
+    if reqpath in ["lga", "lga/"]:
         return lga_view(context)
     else:
         return country_view(context)
