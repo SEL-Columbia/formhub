@@ -26,4 +26,14 @@ class Command(BaseCommand):
             for variable in vdata:
                 v, created = Variable.objects.get_or_create(**variable)
         call_command('loaddata', 'xform_manager_dataset.json')
-#        call_command('createsuperuser')
+        
+        #create an admin user...
+        from django.contrib.auth.models import User
+        admin = User.objects.create(
+            username="admin",
+            email="admin@admin.com",
+            is_staff=True,
+            is_superuser=True
+            )
+        admin.set_password("pass")
+        admin.save()

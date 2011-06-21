@@ -7,7 +7,7 @@ admin.autodiscover()
 from xform_manager import views as xform_manager_views
 OPT_GROUP_REGEX = "((?P<group_name>[^/]+)/)?"
 
-from main.views import baseline_redirect
+from main.views import index
 
 urlpatterns = patterns('',
     url(r"^%sformList$" % OPT_GROUP_REGEX, xform_manager_views.formList),
@@ -23,5 +23,5 @@ urlpatterns = patterns('',
     
     url(r'^baseline/', include('parsed_xforms.urls')),
     url(r'^xforms/', include('parsed_xforms.urls')),
-    url(r'^$', baseline_redirect),
+    url(r'^$', index),
 )
