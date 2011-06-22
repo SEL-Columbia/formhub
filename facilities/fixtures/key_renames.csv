@@ -15,3 +15,4 @@
 "Water_2011_03_18","type","water_source_type"
 "Water_2011_03_18","used_today","water_source_used_today_yn"
 "Water_2011_03_19","lift_mechanism","lift"
+"health.csv","geocodeoffacility","gps"

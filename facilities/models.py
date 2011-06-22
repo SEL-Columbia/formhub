@@ -7,9 +7,13 @@ from nga_districts.models import LGA
 
 
 class Facility(models.Model):
-    name = models.CharField(max_length=20)
+    """
+    TODO: Figure out what fields should actually be on a facility. I think all
+    fields should be stored in data records, with convenience fields stored in
+    the facility model as needed.
+    """
     ftype = models.ForeignKey('FacilityType', related_name="facilities")
-    facility_id = models.CharField(max_length=20)
+    facility_id = models.CharField(max_length=100)
 #    survey_instance = models.ForeignKey('Instance', related_name="facilities", null=True)
     lga = models.ForeignKey(LGA, related_name="facilities", null=True)
     
@@ -69,8 +73,8 @@ class Facility(models.Model):
 
 
 class Variable(models.Model):
-    name = models.CharField(max_length=30)
-    slug = models.CharField(max_length=20)
+    name = models.CharField(max_length=64)
+    slug = models.CharField(max_length=64)
     data_type = models.CharField(max_length=20)
     description = models.CharField(max_length=255)
     xpath = models.CharField(max_length=50)
@@ -114,7 +118,7 @@ class DataRecord(models.Model):
     """
     float_value = models.FloatField(null=True)
     boolean_value = models.NullBooleanField()
-    string_value = models.CharField(null=True, max_length=20)
+    string_value = models.CharField(null=True, max_length=255)
 
     variable = models.ForeignKey(Variable, related_name="data_records")
     facility = models.ForeignKey(Facility, related_name="data_records")
