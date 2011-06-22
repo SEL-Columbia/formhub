@@ -5,6 +5,7 @@ import json
 from facilities.models import Facility, Variable, KeyRename, DataRecord
 from facilities.facility_builder import FacilityBuilder
 from utils.csv_reader import CsvReader
+from django.conf import settings
 
 
 class Command(BaseCommand):
@@ -31,12 +32,34 @@ class Command(BaseCommand):
         self.print_stats()
 
     def drop_database(self):
-        # TODO: fix for when we swtich off of sqlite3
-        try:
-            os.remove('db.sqlite3')
-            print 'removed db.sqlite3'
-        except OSError:
-            pass
+        def drop_sqlite_database():
+            try:
+                os.remove('db.sqlite3')
+                print 'removed db.sqlite3'
+            except OSError:
+                pass
+
+        def drop_mysql_database():
+            import MySQLdb
+            db_name = settings.DATABASES['default']['NAME']
+            db = MySQLdb.connect(
+                "localhost",
+                settings.DATABASES['default']['USER'],
+                settings.DATABASES['default']['PASSWORD'],
+                db_name
+                )
+            cursor = db.cursor()
+            # to start up django the mysql database must exist
+            cursor.execute("DROP DATABASE %s" % db_name)
+            cursor.execute("CREATE DATABASE %s" % db_name)
+            db.close()
+
+        caller = {
+            'django.db.backends.mysql': drop_mysql_database,
+            'django.db.backends.sqlite3': drop_sqlite_database,
+            }
+        drop_function = caller[settings.DATABASES['default']['ENGINE']]
+        drop_function()
 
     def print_stats(self):
         info = {
