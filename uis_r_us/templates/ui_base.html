@@ -1,0 +1,88 @@
+{% load i18n %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>
+		{% if site_title %}
+		{{site_title}} :
+		{% endif %}
+		{% block title %}{% endblock %}
+	</title>
+	<link rel="stylesheet" href="/static/css/sitewide.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
+	<link rel="stylesheet" href="/static/css/tables.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
+	<link rel="stylesheet" href="/static/css/generated-donotedit.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
+	<link rel="stylesheet" href="/static/jquery-ui/jquery-ui-1.8.7.custom.css" type="text/css" media="screen" title="Sitewide" charset="utf-8" />
+	<script src="/static/js/modernizr-1.7.min.js" type="text/javascript" charset="utf-8"></script>
+	{% block head %}{% endblock %}
+</head>
+<body class="nmis">
+	<div id="header">
+		<div class="fwidth">
+			<a href="/" id="hlogo"><img src="/static/images/nmis_pilot.png" /></a>
+			<h2 class="title">{{site_title}}</h2>
+		<div class="account_links">
+			{% if user.is_authenticated %}
+			{% trans "Logged in" %}: {{ user.username }} 
+			(<a href="{% url auth_logout %}">{% trans "Log out" %}</a> | 
+			<a href="{% url auth_password_change %}">{% trans "Change password" %}</a>)
+			{% else %}
+			<a href="{% url auth_login %}">{% trans "Log in" %}</a>
+			{% endif %}
+		</div>
+		</div>
+	</div>
+	{% if user.is_authenticated %}
+	<ul id="menu">
+		<div class="fwidth">
+			{% block menu %}
+			<li class="dashboard"><a href="#/">Data Export</a></li>
+			<li class="submission-counts"><a href="#/submission-counts">Submissions by LGA</a></li>
+			{% endblock %}
+		</div>
+	</ul>
+	{% endif %}
+	<div id="content">
+		<div class="fwidth">
+			{% if navs %}
+			{% include 'embed_nav.html' %}
+			{% endif %}
+			{% block content %}{% endblock %}
+		</div>
+	</div>
+	{% if site_title %}
+	<script type="text/javascript" charset="utf-8">
+		var siteTitle = "{{site_title}}";
+	</script>
+	{% endif %}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
+    <script>window.jQuery || document.write("<script src='/static/js/jquery-1.5-min.js'>\x3C/script>")</script>
+
+	<script type="text/javascript" src="/static/jquery-ui/jquery-ui-1.8.7.custom.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.buildin.js"></script>
+	<!--<script type="text/javascript" src="/static/js/sammy-latest.min.js"></script>-->
+	<script type="text/javascript" src="/static/js/libs/sammy.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.offline.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.tmpl.min.js"></script>
+	<script src="/static/js/json2table.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script type="text/javascript" charset="utf-8">
+		if($('#content .fwidth').find('.iwrap').length==0) {
+			$('#content .fwidth > .content-inner-wrap').css({
+				'background-color':'#fff',
+				'border':'1px solid #666',
+				'padding': '6px',
+				'margin': '6px'
+			})
+		}
+	</script>
+	
+	{% block scripts %}{% endblock %}
+	{% block js %}
+	<!-- js block is for scripts that should be loaded at the end of the page -->
+	{% endblock %}
+	{% block footer %}{% endblock %}
+</body>
+</html>

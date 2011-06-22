@@ -3,6 +3,7 @@ from django.core.management import call_command
 import os
 import json
 from facilities.models import Facility, Variable, KeyRename, DataRecord
+from facilities.facility_builder import FacilityBuilder
 from utils.csv_reader import CsvReader
 
 
@@ -10,6 +11,7 @@ class Command(BaseCommand):
     help = "Load the LGAs from fixtures."
 
     def handle(self, *args, **kwargs):
+        self.drop_database()
         call_command('syncdb', interactive=False)
         self.print_stats()
         self.load_lgas()
@@ -19,9 +21,22 @@ class Command(BaseCommand):
             ]
         for model, path in csvs:
             self.create_objects_from_csv(model, path)
-        self.load_surveys()
+        # self.load_surveys()
+        facility_csvs = [
+            ('Health', 'health.csv', os.path.join('data', 'health.csv')),
+            ]
+        for facility_type, data_source, path in facility_csvs:
+            self.create_facilities_from_csv(facility_type, data_source, path)
         self.create_admin_user()
         self.print_stats()
+
+    def drop_database(self):
+        # TODO: fix for when we swtich off of sqlite3
+        try:
+            os.remove('db.sqlite3')
+            print 'removed db.sqlite3'
+        except OSError:
+            pass
 
     def print_stats(self):
         info = {
@@ -39,6 +54,13 @@ class Command(BaseCommand):
         csv_reader = CsvReader(path)
         for d in csv_reader.iter_dicts():
             model.objects.get_or_create(**d)
+
+    def create_facilities_from_csv(self, facility_type, data_source, path):
+        csv_reader = CsvReader(path)
+        for d in csv_reader.iter_dicts():
+            d['_data_source'] = data_source
+            d['_facility_type'] = facility_type
+            FacilityBuilder.create_facility_from_dict(d)
 
     def load_surveys(self):
         if not os.path.exists('xform_manager_dataset.json'):
