@@ -170,3 +170,10 @@ if TESTING_MODE:
     MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'test_static/')
 else:
     MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'static/')
+
+
+try:
+    from local_settings import *
+except ImportError:
+    print("You can override the default settings by adding a "
+          "local_settings.py file.")
