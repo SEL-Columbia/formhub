@@ -1,6 +1,6 @@
 WIDGETS_BY_REGION_LEVEL = [
         #country:
-        ["country_map", "country_key_indicators", "country_state_nav"],
+        ["country"],
         #state:
         ["regnav_state", "state_map", "state_mdg_performance"],
         #lga:
@@ -18,6 +18,7 @@ def widget_includes_by_region_level(scope):
     return (widget_ids, include_templates)
 
 import widget_defs
+
 def embed_widgets(context, scope="country"):
     widget_ids, include_templates = widget_includes_by_region_level(scope)
     for w in widget_ids:

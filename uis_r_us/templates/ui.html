@@ -69,10 +69,7 @@ $(function(evt){
 	$(_widgetCallbacks).each(function(i, w){
 		w.call(env);
 	});
-	
-	function setPageMode(t) {
-		$('body').trigger('mode-change', {mode: t});
-	}
+	function setPageMode(t) {$('body').trigger('mode-change', {mode: t});}
 	var dashboard = $.sammy(function(){
 		this.get(pageRootUrl, function(){
 			setPageMode("country");

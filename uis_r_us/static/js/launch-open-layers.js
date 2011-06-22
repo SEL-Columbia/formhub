@@ -52,12 +52,16 @@ var launchOpenLayers = (function(_opts){
             scriptsFinished = true;
         });
     }
+    function loadGoogleMaps() {
+        $('body').append($("<script />", {src: "http://maps.google.com/maps/api/js?sensor=false&callback=loadOpenLayers"}));
+    }
+    window.loadOpenLayers = loadScripts;
     
     function launch(_opts){
         if(typeof(_opts)==='function') {var passedCb = _opts; _opts = {}}
         if(opts===undefined) {opts = $.extend({}, defaultOpts, _opts);}
         if(mapElem===undefined) {mapElem = $(opts.elem);}
-        if(!scriptsStarted) {loadScripts(); scriptsStarted=true;}
+        if(!scriptsStarted) { loadGoogleMaps(); scriptsStarted=true;}
         function cbExecuter(cb){
             if(typeof(cb)==='function'){if(!scriptsFinished) {onScriptLoadFns.push(cb)} else {cb.call(context);}
             }
