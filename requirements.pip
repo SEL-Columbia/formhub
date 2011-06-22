@@ -8,3 +8,4 @@ pycrypto==2.3
 -e git://github.com/mvpdev/pyxform.git@750e7a7f71ad891896ff2563de4c522c62b40476#egg=pyxform-0.8-py2.7-develop
 wsgiref==0.1.2
 xlrd==0.7.1
+MySQL-python>=1.2.2
