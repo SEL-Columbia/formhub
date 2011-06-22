@@ -1,32 +1,48 @@
-{% extends "base.html" %}
+{% extends "ui_base.html" %}
 {% block head %}
 <link rel="stylesheet" href="/static/css/widget-wrap.css" type="text/css" media="all" charset="utf-8">
+<style type="text/css" media="screen">
+	.content-inner-wrap {
+		position: relative;
+	}
+	.resizing-map {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+		z-index: 10;
+	}
+	.overmap-content {
+		z-index: 11;
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+	}
+</style>
 {% endblock %}
 {% block content %}
+<div class='content-inner-wrap'>
+<div class='overmap-content'>
 <script type="text/javascript" charset="utf-8">
 <!--
 //add widget callbacks to this array
 var _widgetCallbacks = [];
 function widget(cb) { _widgetCallbacks.push(cb); }
-
-widget(function(){
-	var p = $("<p />");
-	p.append($("<a />", {'href':'/ui/'}).text("[ Country ]"))
-	p.append($("<a />", {'href':'/ui/lga/'}).text("[ LGA ]"));
-	$('.content-inner-wrap').append(p);
-	this.launchers.map = true;
-	this.addCallback('map', function(){
-		//console.log(this, arguments);
-	});
-});
 -->
 </script>
 {% include 'widget_includes.html' %}
+</div>
+<div id="map" class="resizing-map"></div>
+</div>
 {% endblock %}
 {% block js %}
+<script src="/static/js/launch-open-layers.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" charset="utf-8">
 <!--
-
+$('.content-inner-wrap').css({'padding':0})
 var pageRootUrl = "/ui/";
 $(function(evt){
 	var env = {
@@ -44,6 +60,9 @@ $(function(evt){
 				mode = data.mode;
 				console.log("Changing mode to "+data.mode);
 			}
+			launchOpenLayers(function(){
+				console.log("HERE!!", this.map)
+			});
 		})
 	})($('body'));
 	
@@ -63,8 +82,8 @@ $(function(evt){
 		});
 	});
 	//do we want this in the global scope?
-//	window._dashboard = dashboard;
-//	dashboard.run();
+	window._dashboard = dashboard;
+	dashboard.run();
 	function runCallbacksOn(cbs, obj) {$(cbs).each(function(i, cb){cb.call(obj)})}
 	function launchMap(cbArr) {
 		var map = {};
@@ -75,6 +94,34 @@ $(function(evt){
 		launchMap();
 	}
 });
+
+var SetResizer = (function($, resizeSelector, excludeSelector, extraPadding){
+	var resizeElem = $(resizeSelector),
+		excludeElem = $(excludeSelector);
+
+	function ResizePage(){
+		var windowHeight = $(window).height(),
+			totalHeight = windowHeight - extraPadding;
+
+		excludeElem.each(function(){totalHeight -= $(this).height();});
+		resizeElem.css({'height':totalHeight})
+	}
+	$(window).resize(ResizePage);
+
+	$(function(){
+		resizeElem.css({'overflow':'auto'});
+		$(document.body).css({'overflow':'hidden'})
+		$(window).trigger('resize')
+	});
+});
+(function($){
+	$.fn.thinButton = function(){
+		this.button();
+		$('span.ui-button-text', this).css({'padding':'1px 5px'});
+		return this;
+	}
+})(jQuery);
+SetResizer(jQuery, ".content-inner-wrap", "#header, #menu", 15);
 -->
 </script>
 {% endblock %}

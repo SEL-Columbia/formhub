@@ -4,7 +4,7 @@ WIDGETS_BY_REGION_LEVEL = [
         #state:
         ["regnav_state", "state_map", "state_mdg_performance"],
         #lga:
-        ["regnav_lga", "lga_facilities", "lga_map"]
+        ["lga_facilities"]
 ]
 
 def widget_includes_by_region_level(scope):
