@@ -19,7 +19,7 @@ class FacilityBuilder(object):
         added to the database.
         """
         KeyRename.rename_keys(d)
-        ftype, created = FacilityType.objects.get_or_create(name=d['_survey_type'])
+        ftype, created = FacilityType.objects.get_or_create(name=d['_facility_type'])
         if 'gps' not in d or not d['gps']:
             return
         # using gps as facility id is a slight hack to get a unique id
