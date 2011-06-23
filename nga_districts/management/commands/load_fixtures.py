@@ -85,7 +85,7 @@ class Command(BaseCommand):
             where to put this code. Probably not in the load_fixtures
             script.
             """
-            Variable.objects.get_or_create(slug='sector', name='Sector')
+            Variable.objects.get_or_create(data_type='string', slug='sector', name='Sector')
         add_critical_variables()
 
         csv_reader = CsvReader(os.path.join('facilities', 'fixtures', 'variables.csv'))
