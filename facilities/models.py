@@ -2,6 +2,7 @@ from django.db import models
 from collections import defaultdict
 import datetime
 import json
+import re
 
 from nga_districts.models import LGA
 
@@ -14,12 +15,13 @@ class Facility(models.Model):
     """
     facility_id = models.CharField(max_length=100)
     lga = models.ForeignKey(LGA, related_name="facilities", null=True)
-    
+
+
     def set(self, variable, value, date=None):
         if date is None:
             date = datetime.date.today()
         d, created = DataRecord.objects.get_or_create(variable=variable, facility=self, date_value=date)
-        d.value=value
+        d.value = variable.get_casted_value(value)
         d.save()
 
     def get_all_data(self):
@@ -49,9 +51,9 @@ class Facility(models.Model):
 
     def set_value(self, variable, value):
         d, created = DataRecord.objects.get_or_create(variable=variable, facility=self)
-        d.value = value
+        d.value = Variable.get_casted_value(value)
         d.save()
-    
+
     def dates(self):
         drs = DataRecord.objects.filter(facility=self).values('date_value').distinct()
         return [d['date_value'] for d in drs]
@@ -74,7 +76,31 @@ class Variable(models.Model):
     description = models.CharField(max_length=255)
 
     FIELDS = ['name', 'slug', 'data_type', 'description']
-    
+
+    def get_casted_value(self, value):
+        """
+        Takes a Variable and a value and casts it to the appropriate Variable.data_type.
+        """
+        def get_float(x):
+            return float(x)
+
+        def get_boolean(x):
+            if isinstance(x, basestring):
+                regex = re.compile('(true|t|yes|y|1)', re.IGNORECASE)
+                return regex.search(value) is not None
+            return bool(x)
+
+        def get_string(x):
+            return unicode(x)
+
+        cast_function = {
+            'float':   get_float,
+            'boolean': get_boolean,
+            'string':  get_string
+            }
+
+        return cast_function[self.data_type](value)
+
     def calculate_total_for_lga(self, lga):
         if self.data_type == "string":
             return None
@@ -84,7 +110,7 @@ class Variable(models.Model):
             for record in records:
                 tot += record.value
             return tot
-    
+
     def calculate_average_for_lga(self, lga):
         if self.data_type == "string":
             return None
@@ -139,13 +165,13 @@ class DataRecord(models.Model):
     def get_data_type(self):
         return self.variable.data_type
     data_type = property(get_data_type)
-    
+
     def get_value(self):
         return getattr(self, self.data_type + "_value")
-    
+
     def set_value(self, val):
         setattr(self, self.data_type + "_value", val)
-    
+
     value = property(get_value, set_value)
 
     def date_string(self):
