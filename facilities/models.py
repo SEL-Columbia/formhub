@@ -106,7 +106,7 @@ class Variable(models.Model):
             'string':  get_string
             }
 
-        return cast_function[self.data_type](value)
+        return cast_function.get(self.data_type, lambda x: x)(value)
 
     def calculate_total_for_lga(self, lga):
         if self.data_type == "string":

@@ -2,7 +2,8 @@ from django.core.management.base import BaseCommand
 from django.core.management import call_command
 import os
 import json
-from facilities.models import Facility, Variable, CalculatedVariable, KeyRename, DataRecord
+from facilities.models import Facility, Variable, CalculatedVariable, \
+    KeyRename, DataRecord
 from facilities.facility_builder import FacilityBuilder
 from utils.csv_reader import CsvReader
 from django.conf import settings
@@ -11,22 +12,23 @@ from django.conf import settings
 class Command(BaseCommand):
     help = "Load the LGAs from fixtures."
 
+    # python manage.py load_fixtures --limit will limit the import to
+    # three lgas.
+    from optparse import make_option
+    option_list = BaseCommand.option_list + (
+        make_option("--limit",
+                    dest="limit_import",
+                    default=False,
+                    action="store_true"),
+        )
+
     def handle(self, *args, **kwargs):
-        self.drop_database()
-        call_command('syncdb', interactive=False)
-        self.print_stats()
+        self._limit_import = kwargs['limit_import']
+        self.reset_database()
         self.load_lgas()
-        csvs = [
-            (KeyRename, os.path.join('facilities', 'fixtures', 'key_renames.csv')),
-            ]
-        for model, path in csvs:
-            self.create_objects_from_csv(model, path)
+        self.load_key_renames()
         self.load_variables()
-        facility_csvs = [
-            ('Health', 'health.csv', os.path.join('data', 'health.csv')),
-            ]
-        for facility_type, data_source, path in facility_csvs:
-            self.create_facilities_from_csv(facility_type, data_source, path)
+        self.load_health_facilities()
         self.create_admin_user()
         self.print_stats()
 
@@ -60,6 +62,10 @@ class Command(BaseCommand):
         drop_function = caller[settings.DATABASES['default']['ENGINE']]
         drop_function()
 
+    def reset_database(self):
+        self.drop_database()
+        call_command('syncdb', interactive=False)
+
     def print_stats(self):
         info = {
             'number of facilities': Facility.objects.count(),
@@ -71,6 +77,13 @@ class Command(BaseCommand):
     def load_lgas(self):
         for file_name in ['zone.json', 'state.json', 'lga.json']:
             call_command('loaddata', file_name)
+
+    def load_key_renames(self):
+        kwargs = {
+            'model': KeyRename,
+            'path': os.path.join('facilities', 'fixtures', 'key_renames.csv')
+            }
+        self.create_objects_from_csv(**kwargs)
 
     def create_objects_from_csv(self, model, path):
         csv_reader = CsvReader(path)
@@ -98,17 +111,29 @@ class Command(BaseCommand):
             else:
                 Variable.objects.get_or_create(**d)
 
+    def load_health_facilities(self):
+        kwargs = {
+            'facility_type': 'Health',
+            'data_source': 'health.csv',
+            'path': os.path.join('data', 'health.csv'),
+            }
+        self.create_facilities_from_csv(**kwargs)
+
     def create_facilities_from_csv(self, facility_type, data_source, path):
         csv_reader = CsvReader(path)
         num_errors = 0
         for d in csv_reader.iter_dicts():
+            if self._limit_import:
+                if d['_lga_id'] not in ['732', '127', '394']:
+                    continue
             d['_data_source'] = data_source
             d['_facility_type'] = facility_type
             d['sector'] = facility_type
-            try:
-                FacilityBuilder.create_facility_from_dict(d)
-            except:
-                num_errors += 1
+            FacilityBuilder.create_facility_from_dict(d)
+            # try:
+            #     FacilityBuilder.create_facility_from_dict(d)
+            # except:
+            #     num_errors += 1
         print "Had %d error(s) when importing facilities..." % num_errors
 
     def load_surveys(self):
