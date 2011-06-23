@@ -42,6 +42,112 @@ function widget(cb) { _widgetCallbacks.push(cb); }
 <script src="/static/js/launch-open-layers.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" charset="utf-8">
 <!--
+
+var facilityDataStuff = (function(){
+	var printDebugStats = true;
+	function warn() {
+		if(console !== undefined && console.warn !== undefined) {
+			console.warn(arguments); throw(arguments[0]);
+		}
+	}
+	function log() {
+		if(console !== undefined && console.log !== undefined) {
+			console.log(arguments);
+		}
+	}
+	function happy() {console.log(arguments);}
+	function processPassedData(passedData){
+		var data, sectors, noLatLngs=0;
+		facilitySectorSlugs = [];
+		
+		passedData === undefined && warn("No data was passed to the page", passedData);
+		if(!passedData.sectors || !passedData.sectors.length) {
+			warn("data must have 'sectors' list.")
+		}
+		(function validateSectors(s){
+			$(s).each(function(){
+				this.name === undefined && warn("Each sector needs a name.", this);
+				this.slug === undefined && warn("Each sector needs a slug.", this);
+				this.columns instanceof Array || warn("Sector columns must be an array.", this);
+				
+				(this.slug in facilitySectorSlugs) && warn("Slugs must not be used twice", this);
+				facilitySectorSlugs.push(this.slug);
+				
+				$(this.columns).each(function(i, val){
+					var name = val.name;
+					var slug = val.slug;
+					
+					name === undefined && warn("Each column needs a slug", this);
+					slug === undefined && warn("Each column needs a name", this);
+				});
+			});
+			sectors = s;
+		})(passedData.sectors)
+		passedData.data === undefined && warn("Data must be defined", this);
+		
+		(function validateData(d) {
+			d.length === undefined && warn("Data must be an array", this);
+			
+			$(d).each(function(i, row){
+				this.sector === undefined && warn("Each row must have a sector", this);
+				if(this.latlng === undefined) {
+					//some points don't have latlngs but should show up in tables.
+					noLatLngs++;
+				} else {
+					(this.latlng instanceof Array) || warn("LatLng must be an array", this);
+					(this.latlng.length === 2) || warn("Latlng must have length of 2", this);
+					
+				}
+				
+				(!!~facilitySectorSlugs.indexOf(this.sector)) || warn("Sector must be in the list of sector slugs:", {
+					sector: this.sector,
+					sectorSlugs: facilitySectorSlugs,
+					row: this
+				});
+			});
+		})(passedData.data);
+		
+		(function processData(rawData){
+			var uidCounter = 0;
+			var list = {};
+			var groupedList = {};
+			var sectorNames = [];
+			$.each(rawData, function(i, pt){
+				if(pt.uid===undefined) { pt.uid = 'uid'+i; }
+				if(!~sectorNames.indexOf(pt.sector)) {
+					sectorNames.push(pt.sector);
+					groupedList[pt.sector] = [];
+				}
+				groupedList[pt.sector].push(pt.uid);
+				list[pt.uid]=pt;
+			});
+			data = {
+				bySector: groupedList, //sector-grouped list of IDs, for the time being
+				list: list //the full list (this is actually an object where the keys are the unique IDs.)
+			};
+		})(passedData.data);
+		
+		printDebugStats && (function printTheDebugStats(){
+			log("" + sectors.length + " sectors were loaded.");
+			var placedPoints = 0;
+			$(sectors).each(function(){
+				if(data.bySector[this.slug] === undefined) {
+					log("!->: No data loaded for "+this.name);
+				} else {
+					var ct = data.bySector[this.slug].length;
+					placedPoints += ct;
+					log("   : "+this.slug+" has "+ct+" items.", this);
+				}
+			});
+			log(noLatLngs + " points had no coordinates")
+		})();
+		
+		window.facilityData = data;
+		window.facilitySectors = sectors;
+	}
+	return processPassedData;
+})()
+
 $('.content-inner-wrap').css({'padding':0})
 var pageRootUrl = "/ui/";
 $(function(evt){
@@ -58,11 +164,23 @@ $(function(evt){
 		body.bind('mode-change', function(evt, data){
 			if(mode !== data.mode) {
 				mode = data.mode;
-				console.log("Changing mode to "+data.mode);
+//				console.log("Changing mode to "+data.mode);
 			}
-			launchOpenLayers(function(){
-				console.log("HERE!!", this.map)
+			var fv1 = $.getJSON('/facilities/zurmi');
+			var fvDefs = $.getJSON('/facility_variables');
+			$.when(fv1, fvDefs).done(function(lgaRequest, varDataReq){
+				var facilityData = lgaRequest[0];
+				var variableDefs = varDataReq[0].sectors;
+				var facilityDataARr = [];
+				$.each(facilityData, function(k, v){
+					v.uid = k;
+					facilityDataARr.push(v);
+				});
+				facilityDataStuff({sectors: variableDefs, data: facilityDataARr});
 			});
+			// launchOpenLayers(function(){
+			// 	console.log("HERE!!", this.map)
+			// });
 		})
 	})($('body'));
 	
