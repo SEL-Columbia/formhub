@@ -1,7 +1,7 @@
 import json
 import uuid
 from nga_districts.models import LGA
-from facilities.models import FacilityType, Facility, Variable, KeyRename, \
+from facilities.models import Facility, Variable, KeyRename, \
     CalculatedVariable
 
 
@@ -29,12 +29,10 @@ class FacilityBuilder(object):
         """
         KeyRename.rename_keys(d)
         cls.add_calculated_variables(d)
-        ftype, created = FacilityType.objects.get_or_create(name=d['_facility_type'])
-
+        
         # using gps as facility id is a slight hack to get a unique id
         kwargs = {
-            'facility_id': d.get('gps', uuid.uuid4()),
-            'ftype': ftype
+            'facility_id': d.get('gps', uuid.uuid4())
             }
         if '_lga_id' in d:
             kwargs['lga'] = LGA.objects.get(id=d['_lga_id'])
