@@ -24,22 +24,13 @@ def lga_view(context):
     embed_widgets(context, "lga")
     return render_to_response("ui.html", context_instance=context)
 
+from facility_views.models import FacilityTable
+
 def variable_data(request):
-    variable_data = {
-        "sectors": [
-            {
-              "name": "Health",
-              "slug": "health",
-              "columns": [
-                {"slug": "facility_name", "name": "Name"},
-                {"slug": "facility_type", "name": "Type"},
-                {"slug": "power_sources_none", "name": "No Power Source"},
-                {"slug": "facility_owner_manager", "name": "Owner/Manager"},
-                {"slug": "all_weather_road_yn", "name": "All-weather Road"},
-                {"slug": "health_facility_condition", "name": "Condition"}
-              ]
-            }
-        ]
-    }
+    sectors = []
+    for sector_table in FacilityTable.objects.all():
+        sectors.append(sector_table.display_dict())
     import json
-    return HttpResponse(json.dumps(variable_data))
+    return HttpResponse(json.dumps({
+        'sectors': sectors
+    }))

@@ -123,6 +123,7 @@ INSTALLED_APPS = (
     
     'parsed_xforms',
     'uis_r_us',
+    'facility_views',
     'xform_manager',
     'phone_manager',
     'nga_districts',
