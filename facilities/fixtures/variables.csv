@@ -28,3 +28,4 @@
 "string","respondent_contact","Respondent Contact Number",
 "string","facility_name","Facility Name",
 "string","facility_address","Facility Address",
+"string","sector","Sector",

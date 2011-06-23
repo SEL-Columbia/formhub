@@ -342,7 +342,7 @@ var facilityDataStuff = (function(){
 					
 				}
 				
-				(!!~facilitySectorSlugs.indexOf(this.sector)) || warn("Sector must be in the list of sector slugs:", {
+				(!!~facilitySectorSlugs.indexOf(this.sector.toLowerCase())) || warn("Sector must be in the list of sector slugs:", {
 					sector: this.sector,
 					sectorSlugs: facilitySectorSlugs,
 					row: this
@@ -357,6 +357,7 @@ var facilityDataStuff = (function(){
 			var sectorNames = [];
 			$.each(rawData, function(i, pt){
 				if(pt.uid===undefined) { pt.uid = 'uid'+i; }
+				pt.sector = pt.sector.toLowerCase();
 				if(!~sectorNames.indexOf(pt.sector)) {
 					sectorNames.push(pt.sector);
 					groupedList[pt.sector] = [];
@@ -414,7 +415,7 @@ $(function(evt){
 				mode = data.mode;
 //				console.log("Changing mode to "+data.mode);
 			}
-			var fv1 = $.getJSON('/facilities/zurmi');
+			var fv1 = $.getJSON('/facilities/site/zurmi');
 			var fvDefs = $.getJSON('/facility_variables');
 			$.when(fv1, fvDefs).done(function(lgaRequest, varDataReq){
 				var facilityData = lgaRequest[0];

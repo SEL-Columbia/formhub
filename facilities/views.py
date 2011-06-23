@@ -15,23 +15,8 @@ def home(request):
 
 
 def facilities_for_site(request, site_id):
-    #    lga = LGA.objects.get(slug=site_id)
-    #    return HttpResponse(json.dumps(Facility.get_latest_data_by_lga(lga)))
-    sample_data = [
-        {'uid': 1,
-        'name': 'Some name',
-        'latlng': [12.234, 42.567],
-        'sector': 'water'},
-        {'uid': 2,
-        'name': 'Another name',
-        'sector': 'education',
-        'latlng': [12.21, 42.222]},
-        {'uid': 3,
-        'name': 'And another name',
-        'sector': 'health',
-        'latlng': [12.45, 42.34]}
-    ]
-    return HttpResponse(json.dumps(sample_data))
+    lga = LGA.objects.get(slug=site_id)
+    return HttpResponse(json.dumps(Facility.get_latest_data_by_lga(lga)))
 
 
 def facility(request, facility_id):
