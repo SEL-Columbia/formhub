@@ -101,12 +101,13 @@ class Variable(models.Model):
             return unicode(x)
 
         cast_function = {
-            'float':   get_float,
+            'float': get_float,
             'boolean': get_boolean,
-            'string':  get_string
+            'string': get_string
             }
-
-        return cast_function.get(self.data_type, lambda x: x)(value)
+        if self.data_type not in cast_function:
+            raise Exception(self.__unicode__())
+        return cast_function[self.data_type](value)
 
     def calculate_total_for_lga(self, lga):
         if self.data_type == "string":
