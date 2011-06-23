@@ -29,7 +29,7 @@ class FacilityBuilder(object):
         """
         KeyRename.rename_keys(d)
         cls.add_calculated_variables(d)
-        
+
         # using gps as facility id is a slight hack to get a unique id
         kwargs = {
             'facility_id': d.get('gps', uuid.uuid4())
