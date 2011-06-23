@@ -27,7 +27,16 @@ class Facility(models.Model):
         records = DataRecord.objects.filter(facility=self)
         d = defaultdict(dict)
         for record in records:
-            d[record.variable.slug][record.date_value] = record.value
+            d[record.variable.slug][record.date_value.isoformat()] = record.value
+        return d
+
+    def get_latest_data(self):
+        records = DataRecord.objects.filter(facility=self).order_by('-date_value')
+        d = {}
+        for r in records:
+            # todo: test to make sure this sorting is correct
+            if r.variable.slug not in d:
+                d[r.variable.slug] = r.value
         return d
 
     def get_latest_value_for_variable(self, variable):
@@ -36,7 +45,7 @@ class Facility(models.Model):
         try:
             record = DataRecord.objects.filter(facility=self, variable=variable).order_by('-date_value')[0]
         except IndexError:
-            record = None
+            return None
         return record.value
 
     def _ordered_records_for_date(self, date):
@@ -76,7 +85,7 @@ class Facility(models.Model):
 
 class Variable(models.Model):
     name = models.CharField(max_length=64)
-    slug = models.CharField(max_length=64)
+    slug = models.CharField(max_length=64, unique=True)
     data_type = models.CharField(max_length=20)
     description = models.CharField(max_length=255)
 
