@@ -14,7 +14,6 @@ class Facility(models.Model):
     """
     ftype = models.ForeignKey('FacilityType', related_name="facilities")
     facility_id = models.CharField(max_length=100)
-#    survey_instance = models.ForeignKey('Instance', related_name="facilities", null=True)
     lga = models.ForeignKey(LGA, related_name="facilities", null=True)
     
     def set(self, variable, value, date=None):
@@ -27,16 +26,19 @@ class Facility(models.Model):
     def get_all_data(self):
         records = DataRecord.objects.filter(facility=self)
         d = defaultdict(dict)
-        for r in records:
-            d[record.variable.slug][record.date] = record.value
-    
+        for record in records:
+            d[record.variable.slug][record.date_value] = record.value
+        return d
+
     def get_latest_value_for_variable(self, variable):
+        if type(variable) == str:
+            variable = Variable.objects.get(slug=variable)
         try:
-            variable = DataRecord.objects.filter(facility=self, variable=variable).order_by('-date_value')[0]
+            record = DataRecord.objects.filter(facility=self, variable=variable).order_by('-date_value')[0]
         except IndexError:
-            variable = None
-        return variable
-    
+            record = None
+        return record.value
+
     def _ordered_records_for_date(self, date):
         #kindof a hack to get dates displaying in tables
         variables = self.ftype.ordered_variables
@@ -77,9 +79,8 @@ class Variable(models.Model):
     slug = models.CharField(max_length=64)
     data_type = models.CharField(max_length=20)
     description = models.CharField(max_length=255)
-    xpath = models.CharField(max_length=50)
 
-    FIELDS = ['name', 'slug', 'data_type', 'description', 'xpath']
+    FIELDS = ['name', 'slug', 'data_type', 'description']
     
     def calculate_total_for_lga(self, lga):
         if self.data_type == "string":
@@ -109,6 +110,20 @@ class Variable(models.Model):
 
     def __unicode__(self):
         return json.dumps(self.to_dict(), indent=4)
+
+
+class CalculatedVariable(Variable):
+    """
+    example formula: d['num_students_total'] / d['num_tchrs_total']
+
+    Right now calculated variables will only be computed in
+    FacilityBuilder.create_facility_from_dict
+    """
+    formula = models.TextField()
+
+    def calculate_value(self, d):
+        return eval(self.formula)
+
 
 class DataRecord(models.Model):
     """
@@ -220,6 +235,8 @@ class KeyRename(models.Model):
         d. Assumes that the key '_data_source' is in d.
         """
         temp = {}
+        if '_data_source' not in d:
+            return
         rename_dictionary = cls._get_rename_dictionary(d['_data_source'])
         for k, v in rename_dictionary.items():
             if k in d:

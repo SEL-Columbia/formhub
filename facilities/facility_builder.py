@@ -1,6 +1,9 @@
-from nga_districts.models import LGA
-from facilities.models import FacilityType, Facility, Variable, KeyRename
 import json
+import uuid
+from nga_districts.models import LGA
+from facilities.models import FacilityType, Facility, Variable, KeyRename, \
+    CalculatedVariable
+
 
 class FacilityBuilder(object):
     """
@@ -12,6 +15,12 @@ class FacilityBuilder(object):
     SURVEYS_WITH_FACILITIES = ['Health', 'Water', 'Education']
 
     @classmethod
+    def add_calculated_variables(cls, d):
+        for cv in CalculatedVariable.objects.all():
+            value = cv.calculate_value(d)
+            d[cv.slug] = value
+
+    @classmethod
     def create_facility_from_dict(cls, d):
         """
         Requires facility type and lga to be specified in d, all other
@@ -19,17 +28,23 @@ class FacilityBuilder(object):
         added to the database.
         """
         KeyRename.rename_keys(d)
+        cls.add_calculated_variables(d)
         ftype, created = FacilityType.objects.get_or_create(name=d['_facility_type'])
-        if 'gps' not in d or not d['gps']:
-            return
+
         # using gps as facility id is a slight hack to get a unique id
-        facility, created = Facility.objects.get_or_create(facility_id=d['gps'], ftype=ftype)
-        facility.lga = LGA.objects.get(id=d['_lga_id'])
-        facility.save()
+        kwargs = {
+            'facility_id': d.get('gps', uuid.uuid4()),
+            'ftype': ftype
+            }
+        if '_lga_id' in d:
+            kwargs['lga'] = LGA.objects.get(id=d['_lga_id'])
+        facility, created = Facility.objects.get_or_create(**kwargs)
 
         for v in Variable.objects.all():
+            print v.slug
             if v.slug in d:
                 facility.set(v, d[v.slug])
+        return facility
 
     @classmethod
     def print_dict(cls, d):
