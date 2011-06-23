@@ -19,7 +19,6 @@
 "boolean","sufficient_number_of_classrooms","Enough classrooms","The school has enough classrooms.",
 "float","percentage_of_classrooms_in_good_condition","% of Classrooms in Good Condition",,
 "string","gps","GPS","GPS",
-,,,,
 "string","facility_type","Type","Type of health facility.",
 "string","ward","Ward",,
 "string","community","Community",,
@@ -28,4 +27,8 @@
 "string","respondent_contact","Respondent Contact Number",,
 "string","facility_name","Facility Name",,
 "string","facility_address","Facility Address",,
-"string","test","Test","Test CalculatedVariable","'foo'"
+"boolean","mobile_phone_signal_yn","Mobile Phone Signal",,
+"boolean","improved_sanitation","Improved Sanitation",,"d['flush_toilet_drain_to'] == 'improved' or d['toilet_types_vip_latrine'] or d['toilet_types_pit_w_slab']"
+"boolean","toilet_types_vip_latrine","Ventilated Improved Pit Latrine",,
+"boolean","flush_toilet_drain_to","Flush Toilet Drain",,
+"boolean","toilet_types_pit_w_slab","Pit Latrine with Slab",,
