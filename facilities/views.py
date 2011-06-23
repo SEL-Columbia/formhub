@@ -12,11 +12,21 @@ def home(request):
     return render_to_response("list_lgas.html", context_instance=context)
 
 def facilities_for_site(request, site_id):
-    context = RequestContext(request)
-    lga = LGA.objects.get(slug=site_id)
-#    context.site = lga
-#    context.site_name = lga.name
-#    context.ftypes = list(FacilityType.objects.all())
-#    context.facility_data = json.dumps(Facility.get_latest_data_by_lga(lga))
-    return HttpResponse(json.dumps(Facility.get_latest_data_by_lga(lga)))
-#    return render_to_response("facilities_by_lga.html", context_instance=context)
+    sample_data = [
+        {'uid': 1,
+        'name': 'Some name',
+        'latlng': [12.234, 42.567],
+        'sector': 'water'},
+        {'uid': 2,
+        'name': 'Another name',
+        'sector': 'education',
+        'latlng': [12.21, 42.222]},
+        {'uid': 3,
+        'name': 'And another name',
+        'sector': 'health',
+        'latlng': [12.45, 42.34]}
+    ]
+    return HttpResponse(json.dumps(sample_data))
+#    context = RequestContext(request)
+#    lga = LGA.objects.get(slug=site_id)
+#    return HttpResponse(json.dumps(Facility.get_latest_data_by_lga(lga)))
