@@ -41,7 +41,6 @@ class FacilityBuilder(object):
         facility, created = Facility.objects.get_or_create(**kwargs)
 
         for v in Variable.objects.all():
-            print v.slug
             if v.slug in d:
                 facility.set(v, d[v.slug])
         return facility
