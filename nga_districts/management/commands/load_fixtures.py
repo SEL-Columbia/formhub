@@ -95,6 +95,7 @@ class Command(BaseCommand):
         for d in csv_reader.iter_dicts():
             d['_data_source'] = data_source
             d['_facility_type'] = facility_type
+            d['sector'] = facility_type
             try:
                 FacilityBuilder.create_facility_from_dict(d)
             except:

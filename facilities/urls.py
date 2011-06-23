@@ -8,7 +8,7 @@ import views
 
 urlpatterns = patterns(
     '',
-    url(r'^facility/(?P<facility_id>[^/+])/$', views.facility),
-    url(r'^(?P<site_id>\S+)$', views.facilities_for_site),
+    url(r'^facility/(?P<facility_id>[^/]+)/$', views.facility),
+    url(r'^site/(?P<site_id>\S+)$', views.facilities_for_site),
     url(r'^$', views.home, name='home'),
     )

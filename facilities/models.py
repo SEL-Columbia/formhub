@@ -12,7 +12,6 @@ class Facility(models.Model):
     fields should be stored in data records, with convenience fields stored in
     the facility model as needed.
     """
-    ftype = models.ForeignKey('FacilityType', related_name="facilities")
     facility_id = models.CharField(max_length=100)
     lga = models.ForeignKey(LGA, related_name="facilities", null=True)
     
@@ -48,25 +47,10 @@ class Facility(models.Model):
             return None
         return record.value
 
-    def _ordered_records_for_date(self, date):
-        #kindof a hack to get dates displaying in tables
-        variables = self.ftype.ordered_variables
-        records = []
-        for v in variables:
-            try:
-                dr = DataRecord.objects.get(date_value=date, variable=v, facility=self)
-            except DataRecord.DoesNotExist:
-                dr = None
-            records.append(dr)
-        return records
-    
     def set_value(self, variable, value):
         d, created = DataRecord.objects.get_or_create(variable=variable, facility=self)
         d.value = value
         d.save()
-    
-    def values_in_order(self):
-        return [self.get_latest_value_for_variable(v) for v in self.ftype.ordered_variables]
     
     def dates(self):
         drs = DataRecord.objects.filter(facility=self).values('date_value').distinct()
@@ -169,59 +153,6 @@ class DataRecord(models.Model):
             return "No date"
         else:
             return self.date_value.strftime("%D")
-
-
-class FacilityType(models.Model):
-    """
-    A model to hold data specific to the FacilityType (...in MVIS this was the Sector)
-    """
-    name = models.CharField(max_length=20)
-    slug = models.SlugField()
-    variables = models.ManyToManyField(Variable, related_name="facility_types")
-    variable_order_json = models.TextField(null=True)
-    
-    _ordered_variables = None
-    def get_ordered_variables(self):
-        """
-        Order of variables is something that came up *a lot* in MVIS.
-        
-        The (fugly) code below uses self.variables (m2m field) but orders
-        the results based on the JSON list of ids in "variable_order_json".
-        """
-        if self._ordered_variables is not None:
-            return self._ordered_variables
-        #I think it makes sense to pull all the variables into memory.
-        variables = list(self.variables.all())
-        if self.variable_order_json is None:
-            ordered_ids = []
-        else:
-            import json
-            ordered_ids = json.loads(self.variable_order_json)
-        #aack... fugly code below
-        n_ordered_variables = []
-        for vid in ordered_ids:
-            try:
-                found_variable = [z for z in variables if z.id==vid][0]
-                variables.pop(variables.index(found_variable))
-                n_ordered_variables.append(found_variable)
-            except IndexError:
-                pass
-        self._ordered_variables = n_ordered_variables + variables
-        return self._ordered_variables
-    ordered_variables = property(get_ordered_variables)
-    
-    def set_variable_order(self, variable_list, autosave=True):
-        if len(variable_list)==0:
-            return
-        if isinstance(variable_list[0], int):
-            variable_id_list = variable_list
-        else:
-            variable_id_list = [v.id for v in variable_list]
-        import json
-        self.variable_order_json = json.dumps(variable_id_list)
-        self._ordered_variables = None
-        if autosave:
-            self.save()
 
 
 class KeyRename(models.Model):
