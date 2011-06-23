@@ -22,7 +22,6 @@ class Command(BaseCommand):
         for model, path in csvs:
             self.create_objects_from_csv(model, path)
         self.load_variables()
-        self.load_surveys()
         facility_csvs = [
             ('Health', 'health.csv', os.path.join('data', 'health.csv')),
             ]
@@ -79,6 +78,16 @@ class Command(BaseCommand):
             model.objects.get_or_create(**d)
 
     def load_variables(self):
+        def add_critical_variables():
+            """
+            I don't want to put these variables in fixtures because
+            our code depends on their existence. We should think about
+            where to put this code. Probably not in the load_fixtures
+            script.
+            """
+            Variable.objects.get_or_create(slug='sector', name='Sector')
+        add_critical_variables()
+
         csv_reader = CsvReader(os.path.join('facilities', 'fixtures', 'variables.csv'))
         for d in csv_reader.iter_dicts():
             # throw out the formula if it is empty
