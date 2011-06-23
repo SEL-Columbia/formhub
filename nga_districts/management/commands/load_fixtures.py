@@ -22,7 +22,7 @@ class Command(BaseCommand):
         for model, path in csvs:
             self.create_objects_from_csv(model, path)
         self.load_variables()
-        # self.load_surveys()
+        self.load_surveys()
         facility_csvs = [
             ('Health', 'health.csv', os.path.join('data', 'health.csv')),
             ]
@@ -103,9 +103,10 @@ class Command(BaseCommand):
         print "Had %d error(s) when importing facilities..." % num_errors
 
     def load_surveys(self):
-        if not os.path.exists('xform_manager_dataset.json'):
-            raise Exception("Download and unpack xform_manager_dataset.json into project dir.")
-        call_command('loaddata', 'xform_manager_dataset.json')
+        xfm_json_path = os.path.join('data','xform_manager_dataset.json')
+        if not os.path.exists(xfm_json_path):
+            raise Exception("Download and unpack xform_manager_dataset.json into project's data dir.")
+        call_command('loaddata', xfm_json_path)
 
     def create_admin_user(self):
         from django.contrib.auth.models import User

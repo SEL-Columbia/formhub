@@ -30,6 +30,13 @@ class Facility(models.Model):
         for record in records:
             d[record.variable.slug][record.date_value.isoformat()] = record.value
         return d
+    
+    @property
+    def sector(self):
+        try:
+            return DataRecord.objects.get(facility=self, variable__slug='sector').value
+        except DataRecord.DoesNotExist:
+            return None
 
     def get_latest_data(self):
         records = DataRecord.objects.filter(facility=self).order_by('-date_value')
