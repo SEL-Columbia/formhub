@@ -1,6 +1,4 @@
 "data_type","slug","name","description"
-"string","facility_name","Name",
-"string","facility_type","Type","Type of health facility."
 "boolean","power_sources_none","No Power","No power source (True = no power)."
 "string","facility_owner_manager","Owner/Manager","Manager or owner of the health facility."
 "boolean","all_weather_road_yn","All-weather Road","All weather road access."
@@ -21,3 +19,12 @@
 "boolean","sufficient_number_of_classrooms","Enough classrooms","The school has enough classrooms."
 "float","percentage_of_classrooms_in_good_condition","% of Classrooms in Good Condition",
 "string","gps","GPS","GPS"
+,,,
+"string","facility_type","Type","Type of health facility."
+"string","ward","Ward",
+"string","community","Community",
+"string","respondent_name","Respondent Name",
+"string","respondent_position","Respondent Position",
+"string","respondent_contact","Respondent Contact Number",
+"string","facility_name","Facility Name",
+"string","facility_address","Facility Address",

@@ -4,19 +4,25 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 import json
 
-from facilities.models import *
+from nga_districts.models import LGA
+from facilities.models import Facility
+
 
 def home(request):
     context = RequestContext(request)
     context.sites = LGA.objects.all()
     return render_to_response("list_lgas.html", context_instance=context)
 
+
 def facilities_for_site(request, site_id):
-    context = RequestContext(request)
     lga = LGA.objects.get(slug=site_id)
-#    context.site = lga
-#    context.site_name = lga.name
-#    context.ftypes = list(FacilityType.objects.all())
-#    context.facility_data = json.dumps(Facility.get_latest_data_by_lga(lga))
     return HttpResponse(json.dumps(Facility.get_latest_data_by_lga(lga)))
-#    return render_to_response("facilities_by_lga.html", context_instance=context)
+
+
+def facility(request, facility_id):
+    """
+    Return the latest information we have on this facility.
+    """
+    facility = Facility.objects.get(id=facility_id)
+    text = json.dumps(facility.get_latest_data(), indent=4, sort_keys=True)
+    return HttpResponse(text)
