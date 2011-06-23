@@ -1,30 +1,31 @@
-"data_type","slug","name","description"
-"boolean","power_sources_none","No Power","No power source (True = no power)."
-"string","facility_owner_manager","Owner/Manager","Manager or owner of the health facility."
-"boolean","all_weather_road_yn","All-weather Road","All weather road access."
-"string","health_facility_condition","Condition","General condition of the health facility."
-"string","school_name","Name",
-"string","level_of_education","Level","Level of education"
-"string","education_type","Type","Type of education offered."
-"boolean","water_sources_none","No Water","No water (True = no water)."
-"string","water_source_type","Type","Type of water source."
-"string","lift","Lift","Lift type."
-"string","water_source_developed_by","Developed by","Developer of the water source."
-"boolean","water_source_used_today_yn","Used today","Was this water source used today?"
-"string","water_source_physical_state","State","Physical state of the water source."
-"float","student_teacher_ratio","S/T Ratio",
-"boolean","student_teacher_ratio_ok","S/T Ratio OK?","The student/teacher ratio is at or above the threshold (35)."
-"float","ideal_number_of_classrooms","Ideal # classrooms",
-"float","total_number_of_classrooms","Total # classrooms",
-"boolean","sufficient_number_of_classrooms","Enough classrooms","The school has enough classrooms."
-"float","percentage_of_classrooms_in_good_condition","% of Classrooms in Good Condition",
-"string","gps","GPS","GPS"
-,,,
-"string","facility_type","Type","Type of health facility."
-"string","ward","Ward",
-"string","community","Community",
-"string","respondent_name","Respondent Name",
-"string","respondent_position","Respondent Position",
-"string","respondent_contact","Respondent Contact Number",
-"string","facility_name","Facility Name",
-"string","facility_address","Facility Address",
+"data_type","slug","name","description","formula"
+"boolean","power_sources_none","No Power","No power source (True = no power).",
+"string","facility_owner_manager","Owner/Manager","Manager or owner of the health facility.",
+"boolean","all_weather_road_yn","All-weather Road","All weather road access.",
+"string","health_facility_condition","Condition","General condition of the health facility.",
+"string","school_name","Name",,
+"string","level_of_education","Level","Level of education",
+"string","education_type","Type","Type of education offered.",
+"boolean","water_sources_none","No Water","No water (True = no water).",
+"string","water_source_type","Type","Type of water source.",
+"string","lift","Lift","Lift type.",
+"string","water_source_developed_by","Developed by","Developer of the water source.",
+"boolean","water_source_used_today_yn","Used today","Was this water source used today?",
+"string","water_source_physical_state","State","Physical state of the water source.",
+"float","student_teacher_ratio","S/T Ratio",,
+"boolean","student_teacher_ratio_ok","S/T Ratio OK?","The student/teacher ratio is at or above the threshold (35).",
+"float","ideal_number_of_classrooms","Ideal # classrooms",,
+"float","total_number_of_classrooms","Total # classrooms",,
+"boolean","sufficient_number_of_classrooms","Enough classrooms","The school has enough classrooms.",
+"float","percentage_of_classrooms_in_good_condition","% of Classrooms in Good Condition",,
+"string","gps","GPS","GPS",
+,,,,
+"string","facility_type","Type","Type of health facility.",
+"string","ward","Ward",,
+"string","community","Community",,
+"string","respondent_name","Respondent Name",,
+"string","respondent_position","Respondent Position",,
+"string","respondent_contact","Respondent Contact Number",,
+"string","facility_name","Facility Name",,
+"string","facility_address","Facility Address",,
+"string","test","Test","Test CalculatedVariable","'foo'"

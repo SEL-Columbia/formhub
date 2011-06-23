@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.core.management import call_command
 import os
 import json
-from facilities.models import Facility, Variable, KeyRename, DataRecord
+from facilities.models import Facility, Variable, CalculatedVariable, KeyRename, DataRecord
 from facilities.facility_builder import FacilityBuilder
 from utils.csv_reader import CsvReader
 from django.conf import settings
@@ -17,11 +17,11 @@ class Command(BaseCommand):
         self.print_stats()
         self.load_lgas()
         csvs = [
-            (Variable, os.path.join('facilities', 'fixtures', 'variables.csv')),
             (KeyRename, os.path.join('facilities', 'fixtures', 'key_renames.csv')),
             ]
         for model, path in csvs:
             self.create_objects_from_csv(model, path)
+        self.load_variables()
         # self.load_surveys()
         facility_csvs = [
             ('Health', 'health.csv', os.path.join('data', 'health.csv')),
@@ -78,12 +78,28 @@ class Command(BaseCommand):
         for d in csv_reader.iter_dicts():
             model.objects.get_or_create(**d)
 
+    def load_variables(self):
+        csv_reader = CsvReader(os.path.join('facilities', 'fixtures', 'variables.csv'))
+        for d in csv_reader.iter_dicts():
+            # throw out the formula if it is empty
+            if 'formula' in d and not d['formula']:
+                del(d['formula'])
+            if 'formula' in d:
+                CalculatedVariable.objects.get_or_create(**d)
+            else:
+                Variable.objects.get_or_create(**d)
+
     def create_facilities_from_csv(self, facility_type, data_source, path):
         csv_reader = CsvReader(path)
+        num_errors = 0
         for d in csv_reader.iter_dicts():
             d['_data_source'] = data_source
             d['_facility_type'] = facility_type
-            FacilityBuilder.create_facility_from_dict(d)
+            try:
+                FacilityBuilder.create_facility_from_dict(d)
+            except:
+                num_errors += 1
+        print "Had %d error(s) when importing facilities..." % num_errors
 
     def load_surveys(self):
         if not os.path.exists('xform_manager_dataset.json'):
