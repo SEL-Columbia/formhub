@@ -121,6 +121,8 @@ class CalculatedVariable(Variable):
     """
     formula = models.TextField()
 
+    FIELDS = Variable.FIELDS + ['formula']
+
     def calculate_value(self, d):
         return eval(self.formula)
 
