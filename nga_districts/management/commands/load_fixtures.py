@@ -31,6 +31,7 @@ class Command(BaseCommand):
         self.load_lgas()
         self.load_key_renames()
         self.load_variables()
+        self.load_table_defs()
         self.load_health_facilities()
         self.create_admin_user()
         self.print_stats()
@@ -142,6 +143,19 @@ class Command(BaseCommand):
             # except:
             #     num_errors += 1
         print "Had %d error(s) when importing facilities..." % num_errors
+    
+    def load_table_defs(self):
+        table_types = [
+            ("Health", "health"),
+            ("Education", "education"),
+            ("Water", "water")
+            ]
+        from facility_views.models import FacilityTable
+        for name, slug in table_types:
+            curtable = FacilityTable.objects.create(name=name, slug=slug)
+            csv_reader = CsvReader(os.path.join("facility_views","table_defs", "%s.csv" % slug))
+            for d in csv_reader.iter_dicts():
+                curtable.add_variable(d)
 
     def load_surveys(self):
         xfm_json_path = os.path.join('data','xform_manager_dataset.json')
