@@ -29,7 +29,7 @@ class Command(BaseCommand):
         self.load_key_renames()
         self.load_variables()
         self.load_table_defs()
-        self.load_health_facilities()
+        self.load_facilities()
         self.create_admin_user()
         self.print_stats()
 
@@ -112,20 +112,35 @@ class Command(BaseCommand):
             else:
                 Variable.objects.get_or_create(**d)
 
-    def load_health_facilities(self):
+    def load_facilities(self):
         data_dir = 'data'
-        kwargs = {
-            'facility_type': 'Health',
-            'data_source': 'health.csv',
-            'path': os.path.join(data_dir, 'health.csv'),
+        sector_args = {
+            'health': {
+                'facility_type': 'Health',
+                'data_source': 'health.csv',
+                'path': os.path.join(data_dir, 'health.csv'),
+                },
+            'education': {
+                'facility_type': 'Education',
+                'data_source': 'education.csv',
+                'path': os.path.join(data_dir, 'health.csv'),
+                },
+            'water': {
+                'facility_type': 'Water',
+                'data_source': 'water.csv',
+                'path': os.path.join(data_dir, 'water.csv'),
+                },
             }
-        self.create_facilities_from_csv(**kwargs)
+        for sector in sector_args:
+            self.create_facilities_from_csv(**sector_args[sector])
 
     def create_facilities_from_csv(self, facility_type, data_source, path):
         csv_reader = CsvReader(path)
         num_errors = 0
         for d in csv_reader.iter_dicts():
             if self._limit_import:
+                if '_lga_id' not in d:
+                    print d
                 if d['_lga_id'] not in ['732', '127', '394']:
                     continue
             d['_data_source'] = data_source
@@ -136,8 +151,8 @@ class Command(BaseCommand):
             #     FacilityBuilder.create_facility_from_dict(d)
             # except:
             #     num_errors += 1
-        print "Had %d error(s) when importing facilities..." % num_errors
-    
+        print "Had %d error(s) when importing %s facilities..." % (num_errors, facility_type)
+
     def load_table_defs(self):
         table_types = [
             ("Health", "health"),
