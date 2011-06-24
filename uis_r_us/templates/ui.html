@@ -432,9 +432,6 @@ $(function(evt){
 		})
 	})($('body'));
 	
-	$(_widgetCallbacks).each(function(i, w){
-		w.call(env);
-	});
 	var env = {};
 	var dashboard = $.sammy(function(){
 		this.get(pageRootUrl, function(){
