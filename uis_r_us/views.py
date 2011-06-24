@@ -3,8 +3,6 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 
-from uis_r_us.widgets import embed_widgets
-
 def dashboard(request, reqpath):
     if request.method == "POST":
         geoid = request.POST['lga']
@@ -28,13 +26,11 @@ def dashboard(request, reqpath):
 
 def country_view(context):
     context.site_title = "Nigeria"
-    embed_widgets(context, "country")
     return render_to_response("ui.html", context_instance=context)
 
 def lga_view(context):
     context.site_title = "LGA View"
     context.lga_id = context.lga.geoid
-    embed_widgets(context, "lga")
     return render_to_response("ui.html", context_instance=context)
 
 from facility_views.models import FacilityTable
