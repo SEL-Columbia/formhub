@@ -409,57 +409,49 @@ $(function(evt){
 	}
 	
 	(function setModeBinders(body){
-		var mode;
+		var mode, lga;
 		body.bind('mode-change', function(evt, data){
-			if(mode !== data.mode) {
-				mode = data.mode;
-//				console.log("Changing mode to "+data.mode);
-			}
-			var fv1 = $.getJSON('/facilities/site/unuimo');
-			var fvDefs = $.getJSON('/facility_variables');
-			$.when(fv1, fvDefs).done(function(lgaRequest, varDataReq){
-				var facilityData = lgaRequest[0];
-				var variableDefs = varDataReq[0].sectors;
-				var facilityDataARr = [];
-				$.each(facilityData, function(k, v){
-					v.uid = k;
-					facilityDataARr.push(v);
+			if(mode !== data.mode) { mode = data.mode; }
+			if(data.lgaId !== undefined) {
+				if(lga !== data.lgaId) { lga = data.lgaId; }
+			} else {lga = null; }
+		
+			if(lga) {
+				var fv1 = $.getJSON('/facilities/site/' + lga);
+				var fvDefs = $.getJSON('/facility_variables');
+				$.when(fv1, fvDefs).done(function(lgaRequest, varDataReq){
+					var facilityData = lgaRequest[0];
+					var variableDefs = varDataReq[0].sectors;
+					var facilityDataARr = [];
+					$.each(facilityData, function(k, v){
+						v.uid = k;
+						facilityDataARr.push(v);
+					});
+					facilityDataStuff({sectors: variableDefs, data: facilityDataARr});
+					if(facilityData!==undefined && facilitySectors!==undefined) {
+						buildFacilityDataTable(facilityData, facilitySectors);
+					}
 				});
-				facilityDataStuff({sectors: variableDefs, data: facilityDataARr});
-				if(facilityData!==undefined && facilitySectors!==undefined) {
-					buildFacilityDataTable(facilityData, facilitySectors);
-				}
-			});
-			// launchOpenLayers(function(){
-			// 	console.log("HERE!!", this.map)
-			// });
+			}
 		})
 	})($('body'));
 	
 	$(_widgetCallbacks).each(function(i, w){
 		w.call(env);
 	});
-	function setPageMode(t) {$('body').trigger('mode-change', {mode: t});}
+	var env = {};
 	var dashboard = $.sammy(function(){
 		this.get(pageRootUrl, function(){
-			setPageMode("country");
+			$('body').trigger('mode-change', {mode: 'country'})
 		});
-		this.get(pageRootUrl + "lga/", function(){
-			setPageMode("lga");
+		this.get(pageRootUrl + ":lga/?", function(){
+			var geoid = this.params.lga;
+			$('body').trigger('mode-change', {mode: 'lga', lgaId: geoid})
 		});
 	});
 	//do we want this in the global scope?
 	window._dashboard = dashboard;
 	dashboard.run();
-	function runCallbacksOn(cbs, obj) {$(cbs).each(function(i, cb){cb.call(obj)})}
-	function launchMap(cbArr) {
-		var map = {};
-		//load map...
-		runCallbacksOn(env.callbacks.map, map);
-	}
-	if(env.launchers.map) {
-		launchMap();
-	}
 });
 
 var SetResizer = (function($, resizeSelector, excludeSelector, extraPadding){

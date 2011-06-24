@@ -23,6 +23,17 @@
 		<div class="fwidth">
 			<a href="/" id="hlogo"><img src="/static/images/nmis_pilot.png" /></a>
 			<h2 class="title">{{site_title}}</h2>
+			<div class="lga-nav">
+				<form action="/ui/" method="POST">
+					<select name="lga">
+						{% for geoid, statename, lganame in active_districts %}
+						<option value="{{geoid}}">{{statename}} &raquo; {{lganame}}</option>
+						{% endfor %}
+					</select>
+					  {% csrf_token %}
+					<input type="submit" value="GO">
+				</form>
+			</div>
 		<div class="account_links">
 			{% if user.is_authenticated %}
 			{% trans "Logged in" %}: {{ user.username }} 
