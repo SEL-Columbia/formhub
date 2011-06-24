@@ -15,7 +15,7 @@ def home(request):
 
 
 def facilities_for_site(request, site_id):
-    lga = LGA.objects.get(slug=site_id)
+    lga = LGA.objects.get(geoid=site_id)
     return HttpResponse(json.dumps(Facility.get_latest_data_by_lga(lga)))
 
 

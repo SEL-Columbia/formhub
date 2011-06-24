@@ -5,7 +5,7 @@ django-registration==0.7
 ipython==0.10.2
 paramiko==1.7.7.1
 pycrypto==2.3
--e git://github.com/mvpdev/pyxform.git@750e7a7f71ad891896ff2563de4c522c62b40476#egg=pyxform-0.8-py2.7-develop
+-e git+https://github.com/mvpdev/pyxform.git@5cd544380c7baffcc4f2829b5452d60020663ddd#egg=pyxform-dev
 wsgiref==0.1.2
 xlrd==0.7.1
 MySQL-python>=1.2.2
