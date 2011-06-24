@@ -2,6 +2,8 @@ from django.core.management.base import BaseCommand
 from django.core.management import call_command
 import os
 import json
+import time
+import sys
 from facilities.models import Facility, Variable, CalculatedVariable, \
     KeyRename, DataRecord
 from facilities.facility_builder import FacilityBuilder
@@ -24,6 +26,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         self._limit_import = kwargs['limit_import']
+        self._start_time = time.time()
         self.reset_database()
         self.load_lgas()
         self.load_key_renames()
@@ -31,6 +34,7 @@ class Command(BaseCommand):
         self.load_table_defs()
         self.load_facilities()
         self.create_admin_user()
+        self._end_time = time.time()
         self.print_stats()
 
     def drop_database(self):
@@ -68,10 +72,14 @@ class Command(BaseCommand):
         call_command('syncdb', interactive=False)
 
     def print_stats(self):
+        def seconds_to_hms(seconds):
+            return time.strftime('%H:%M:%S', time.gmtime(seconds))
+
         info = {
             'number of facilities': Facility.objects.count(),
             'facilities without lgas': Facility.objects.filter(lga=None).count(),
             'number of data records': DataRecord.objects.count(),
+            'time': seconds_to_hms(self._end_time - self._start_time),
             }
         print json.dumps(info, indent=4)
 
@@ -123,7 +131,7 @@ class Command(BaseCommand):
             'education': {
                 'facility_type': 'Education',
                 'data_source': 'education.csv',
-                'path': os.path.join(data_dir, 'health.csv'),
+                'path': os.path.join(data_dir, 'education.csv'),
                 },
             'water': {
                 'facility_type': 'Water',
@@ -146,11 +154,13 @@ class Command(BaseCommand):
             d['_data_source'] = data_source
             d['_facility_type'] = facility_type
             d['sector'] = facility_type
-            FacilityBuilder.create_facility_from_dict(d)
-            # try:
-            #     FacilityBuilder.create_facility_from_dict(d)
-            # except:
-            #     num_errors += 1
+            #FacilityBuilder.create_facility_from_dict(d)
+            try:
+                FacilityBuilder.create_facility_from_dict(d)
+            except KeyboardInterrupt:
+                sys.exit(0)
+            except:
+                num_errors += 1
         print "Had %d error(s) when importing %s facilities..." % (num_errors, facility_type)
 
     def load_table_defs(self):
