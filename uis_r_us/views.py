@@ -49,8 +49,13 @@ from nga_districts.models import LGA
 def active_districts():
     lgas = LGA.objects.annotate(facility_count=Count('facilities')).filter(facility_count__gt=0)
     lga_list = []
+    from collections import defaultdict
+    states = defaultdict(list)
     for lga in lgas:
-        lga_list.append(
-            (lga.geoid, lga.state.name, lga.name)
-            )
+        states[lga.state].append(lga)
+    for state, lgas in states.items():
+        for lga in lgas:
+            lga_list.append(
+                (lga.geoid, lga.state.name, lga.name)
+                )
     return lga_list
