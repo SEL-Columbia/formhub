@@ -3,6 +3,7 @@ from django.core.management import call_command
 import os
 import json
 import time
+import sys
 from facilities.models import Facility, Variable, CalculatedVariable, \
     KeyRename, DataRecord
 from facilities.facility_builder import FacilityBuilder
@@ -156,6 +157,8 @@ class Command(BaseCommand):
             #FacilityBuilder.create_facility_from_dict(d)
             try:
                 FacilityBuilder.create_facility_from_dict(d)
+            except KeyboardInterrupt:
+                sys.exit(0)
             except:
                 num_errors += 1
         print "Had %d error(s) when importing %s facilities..." % (num_errors, facility_type)
