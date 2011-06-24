@@ -16,6 +16,8 @@ class Command(BaseCommand):
     # three lgas.
     from optparse import make_option
     option_list = BaseCommand.option_list + (
+        make_option('-r', '--real', dest='real_data', default=True,
+                    action='store_true'),
         make_option("--limit",
                     dest="limit_import",
                     default=False,
@@ -24,6 +26,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         self._limit_import = kwargs['limit_import']
+        self._real_data = kwargs['real_data']
         self.reset_database()
         self.load_lgas()
         self.load_key_renames()
@@ -112,10 +115,14 @@ class Command(BaseCommand):
                 Variable.objects.get_or_create(**d)
 
     def load_health_facilities(self):
+        if self._real_data:
+            data_dir = 'data'
+        else:
+            data_dir = 'data_samples'
         kwargs = {
             'facility_type': 'Health',
             'data_source': 'health.csv',
-            'path': os.path.join('data', 'health.csv'),
+            'path': os.path.join(data_dir, 'health.csv'),
             }
         self.create_facilities_from_csv(**kwargs)
 
