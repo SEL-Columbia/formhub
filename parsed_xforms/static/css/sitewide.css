@@ -41,7 +41,9 @@ ul#menu .fwidth > li:first-child {
 div#header {
   position: relative;
   height: 36px;
-  background-image: url("../images/header_repeat.png"); }
+  background-image: url("../images/header_repeat.png");
+  background-color: #3d3d3d;
+  }
   div#header #logo {
     width: 313px;
     height: 60px;
@@ -220,6 +222,13 @@ table.fullw {
 	color: #555;
 }
 #content .fwidth .nav .raquo:last-child {display: none;}
+
+.content-inner-wrap {
+    background-color: #fff;
+	border: 1px solid #666;
+	padding: 6px;
+	margin: 6px;
+}
 
 #footer {
 	background-color: rgb(68, 68, 68);
