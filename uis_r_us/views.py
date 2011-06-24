@@ -33,6 +33,7 @@ def country_view(context):
 
 def lga_view(context):
     context.site_title = "LGA View"
+    context.lga_id = context.lga.geoid
     embed_widgets(context, "lga")
     return render_to_response("ui.html", context_instance=context)
 

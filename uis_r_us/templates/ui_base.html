@@ -25,11 +25,15 @@
 			<h2 class="title">{{site_title}}</h2>
 			<div class="lga-nav">
 				<form action="/ui/" method="POST">
-					<select name="lga">
+					<select id="lga-select" name="lga">
+						<option value="0">Select an LGA</option>
 						{% for geoid, statename, lganame in active_districts %}
-						<option value="{{geoid}}">{{statename}} &raquo; {{lganame}}</option>
+						<option value="{{geoid}}"> &raquo; {{statename}}: {{lganame}}</option>
 						{% endfor %}
 					</select>
+					<script type="text/javascript" charset="utf-8">
+						var lgaId = (function(_){return _})({{lga_id}});
+					</script>
 					  {% csrf_token %}
 					<input type="submit" value="GO">
 				</form>
@@ -80,6 +84,9 @@
 	<script src="/static/js/json2table.js" type="text/javascript" charset="utf-8"></script>
 	
 	<script type="text/javascript" charset="utf-8">
+	if(lgaId!==undefined) {
+		$('select#lga-select').val(lgaId);
+	}
 		if($('#content .fwidth').find('.iwrap').length==0) {
 			$('#content .fwidth > .content-inner-wrap').css({
 				'background-color':'#fff',
