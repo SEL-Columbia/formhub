@@ -130,7 +130,7 @@ class Command(BaseCommand):
             'education': {
                 'facility_type': 'Education',
                 'data_source': 'education.csv',
-                'path': os.path.join(data_dir, 'health.csv'),
+                'path': os.path.join(data_dir, 'education.csv'),
                 },
             'water': {
                 'facility_type': 'Water',
