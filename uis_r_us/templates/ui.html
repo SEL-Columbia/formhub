@@ -415,7 +415,7 @@ $(function(evt){
 				mode = data.mode;
 //				console.log("Changing mode to "+data.mode);
 			}
-			var fv1 = $.getJSON('/facilities/site/zurmi');
+			var fv1 = $.getJSON('/facilities/site/unuimo');
 			var fvDefs = $.getJSON('/facility_variables');
 			$.when(fv1, fvDefs).done(function(lgaRequest, varDataReq){
 				var facilityData = lgaRequest[0];
