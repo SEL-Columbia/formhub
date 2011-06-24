@@ -2,8 +2,8 @@ from django.db import models
 from facilities.models import *
 
 class FacilityTable(models.Model):
-    name = models.CharField(max_length=25)
-    slug = models.CharField(max_length=25)
+    name = models.CharField(max_length=64)
+    slug = models.CharField(max_length=64)
     
     def display_dict(self):
         column_variables = []
@@ -25,9 +25,9 @@ class FacilityTable(models.Model):
 class TableColumn(models.Model):
     #there's a lot of overlap with facilities.Variable, but there's view-specific stuff
     #that needs a home.
-    name = models.CharField(max_length=25)
-    slug = models.CharField(max_length=25)
-    description = models.CharField(max_length=50, null=True)
+    name = models.CharField(max_length=64)
+    slug = models.CharField(max_length=64)
+    description = models.CharField(max_length=255, null=True)
     
     variable_id = models.IntegerField(null=True)
     
