@@ -151,7 +151,13 @@ class CalculatedVariable(Variable):
     FIELDS = Variable.FIELDS + ['formula']
 
     def calculate_value(self, d):
-        return eval(self.formula)
+        # TODO: eval lol
+        val = None
+        try:
+            val = eval(self.formula)
+        except:
+            pass
+        return val
 
 
 class DataRecord(models.Model):
