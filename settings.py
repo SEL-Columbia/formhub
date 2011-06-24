@@ -43,10 +43,6 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = ''
-
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
@@ -79,9 +75,10 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    
+    'compressor.finders.CompressorFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
-
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'mlfs33^s1l4xf6a36$0#j%dd*sisfoi&)&4s-v=91#^l01v)*j'
 
@@ -128,7 +125,9 @@ INSTALLED_APPS = (
     'phone_manager',
     'nga_districts',
     'facilities',
+    'compressor',
 )
+COMPRESS = True
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -157,6 +156,17 @@ LOGGING = {
 import sys
 
 SITE_TITLE = "Baseline Data Collection"
+
+COMPILER_FORMATS = {
+    '.sass': {
+        'binary_path': 'sass',
+        'arguments': '*.sass *.css'
+    },
+    '.scss': {
+        'binary_path': 'sass',
+        'arguments': '*.scss *.css'
+    }
+}
 
 TESTING_MODE = False
 if len(sys.argv)>=2 and (sys.argv[1]=="test" or sys.argv[1]=="test_all"):
