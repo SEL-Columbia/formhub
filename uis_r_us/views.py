@@ -3,8 +3,6 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 
-from uis_r_us.widgets import embed_widgets
-
 def dashboard(request, reqpath):
     if request.method == "POST":
         geoid = request.POST['lga']
@@ -28,13 +26,11 @@ def dashboard(request, reqpath):
 
 def country_view(context):
     context.site_title = "Nigeria"
-    embed_widgets(context, "country")
     return render_to_response("ui.html", context_instance=context)
 
 def lga_view(context):
     context.site_title = "LGA View"
     context.lga_id = context.lga.geoid
-    embed_widgets(context, "lga")
     return render_to_response("ui.html", context_instance=context)
 
 from facility_views.models import FacilityTable
@@ -53,8 +49,13 @@ from nga_districts.models import LGA
 def active_districts():
     lgas = LGA.objects.annotate(facility_count=Count('facilities')).filter(facility_count__gt=0)
     lga_list = []
+    from collections import defaultdict
+    states = defaultdict(list)
     for lga in lgas:
-        lga_list.append(
-            (lga.geoid, lga.state.name, lga.name)
-            )
+        states[lga.state].append(lga)
+    for state, lgas in states.items():
+        for lga in lgas:
+            lga_list.append(
+                (lga.geoid, lga.state.name, lga.name)
+                )
     return lga_list

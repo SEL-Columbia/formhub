@@ -25,14 +25,11 @@
 {% block content %}
 <div class='content-inner-wrap'>
 <div class='overmap-content'>
-<script type="text/javascript" charset="utf-8">
-<!--
-//add widget callbacks to this array
-var _widgetCallbacks = [];
-function widget(cb) { _widgetCallbacks.push(cb); }
--->
-</script>
-{% include 'widget_includes.html' %}
+	<div class="widget-outer-wrap" style="bottom:0">
+		<div class="fullw-widget">
+			<div id="lga-facilities-table"></div>
+		</div>
+	</div>
 </div>
 <div id="map" class="resizing-map"></div>
 </div>
@@ -435,9 +432,6 @@ $(function(evt){
 		})
 	})($('body'));
 	
-	$(_widgetCallbacks).each(function(i, w){
-		w.call(env);
-	});
 	var env = {};
 	var dashboard = $.sammy(function(){
 		this.get(pageRootUrl, function(){
