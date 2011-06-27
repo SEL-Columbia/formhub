@@ -41,6 +41,27 @@
 var defaultSectorSlug = 'health';
 
 var selectedSector, selectedFacility, selectedColumn;
+
+(function($){
+	//$('div.right-div').css({height:'65%','right':0,position:'absolute','background-color':'#fff'})
+	var rdCss = {
+		'background-color':'#fff',
+		margin: '4px 5px 5px 0'
+	};
+	var rdWstyle = "height:65%;right:0;position:absolute";
+	var overMapContent;
+	var rightDiv;
+	$.fn._showSideDiv = function(){
+		if(overMapContent===undefined) { overMapContent = $(".overmap-content"); }
+		if(rightDiv===undefined) {
+			var rdWrap = $("<div />", {'class':'rd-wrap', style: rdWstyle}).appendTo(overMapContent);
+			rightDiv = $("<div />", {'class': 'right-div'}).css(rdCss).appendTo(rdWrap);
+			}
+		rightDiv.html(this.eq(0));
+		rightDiv.show();
+	}
+})(jQuery)
+
 function facilityDataLoaded(){
 	$('body').bind('facility-select', function(evt, edata){
 		var facility = facilityData.list[edata.uid];
@@ -91,14 +112,18 @@ function facilityDataLoaded(){
 			});
 			popup.append(tab);
 		})();
-
-		popup.dialog({
-			height: 275,
-			width: 520,
+		popup._showSideDiv({
 			close: function(){
 				$('body').trigger('facility-unselect');
 			}
-		});
+		})
+		// popup.dialog({
+		// 	height: 275,
+		// 	width: 520,
+		// 	close: function(){
+		// 		$('body').trigger('facility-unselect');
+		// 	}
+		// });
 	});
 
     window.filterPointsBySector = function(sector){
@@ -120,7 +145,8 @@ function facilityDataLoaded(){
     }
 
 	$('body').bind('facility-unselect', function(evt, edata){
-		$('.ui-dialog').remove();
+//		$('.ui-dialog').remove();
+		$('.right-div').hide();
 		selectedSector === undefined || (typeof(filterPointsBySector)!=='function') ||filterPointsBySector(selectedSector);
 		$('.selected-facility').removeClass('selected-facility');
 		selectedFacility = undefined;
@@ -489,8 +515,8 @@ var SetResizer = (function($, resizeSelector, excludeSelector, extraPadding){
 
 	$(function(){
 		resizeElem.css({'overflow':'auto'});
-		$(document.body).css({'overflow':'hidden'})
-		$(window).trigger('resize')
+		$(document.body).css({'overflow':'hidden'});
+		$(window).trigger('resize');
 	});
 });
 (function($){
