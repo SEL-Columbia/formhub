@@ -2,6 +2,7 @@
 {% block head %}
 <style type="text/css" media="screen">
 	#image-nav {
+		display: none;
 		padding: 3px 20px;
 		height: 150px;
 	}
@@ -138,7 +139,7 @@ function facilityDataLoaded(){
 
     window.filterPointsBySector = function(sector){
         if(sector==='all') {
-            console.log("show all sectors");
+            log("show all sectors");
         } else {
             $.each(facilityData.list, function(i, pt){
 				if(pt.mrkr !== undefined) {
@@ -171,6 +172,11 @@ function facilityDataLoaded(){
 			(typeof(filterPointsBySector)==='function') && filterPointsBySector(selectedSector);
 		}
 	});
+	
+	
+	function showColumnDescription(colData) {
+		log("Show description box", colData);
+	}
 
 	$('body').bind('column-select', function(evt, edata){
 		var wrapElement = $('#lga-facilities-table');
@@ -178,17 +184,17 @@ function facilityDataLoaded(){
 		var sector = edata.sector;
 		if(selectedColumn!==edata.column) {
 			$('body').trigger('column-unselect', {column:selectedColumn});
-			if(column.description !== undefined && column.description !== null) {
+			if(column.clickable) {
 				$('.selected-column', wrapElement).removeClass('selected-column');
-				(function highlightTheColumn(columnIndex){
-					var table = $('table.facility-list');
+				(function highlightTheColumn(column){
+					var columnIndex = column.thIndex;
+					var table = column.th.parents('table');
 					table.find('tr').each(function(){
 						$(this).find('td').eq(columnIndex).addClass('selected-column');
 					})
-				})(column.thIndex);
+				})(column);
 
-				buildColumnDescriptionBox(edata.column);
-				$('#column-description').show();
+				showColumnDescription(edata.column);
 			}
 			selectedColumn = edata.column;
 		}
@@ -307,7 +313,8 @@ function createTableForSectorWithData(sector, data){
 	var sectorData  = data.bySector[sector.slug] || data.bySector[sector.name];
 	if(sector.columns!==undefined && sector.columns.length>0 && sectorData!==undefined && sectorData.length>0) {
 		$.each(sector.columns, function(i, col){
-			var th = $("<th />", {'class':'col-'+col.slug}).text(col.name);
+			var th = $("<th />", {'class':'col-'+col.slug}).text(col.name).addClass(col.clickable ? "clickable" : "not-clickable");
+			col.th = th;
 			col.thIndex = i;
 			th.click(function(){
 				$('body').trigger('column-select', {
