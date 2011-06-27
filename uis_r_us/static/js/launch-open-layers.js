@@ -22,7 +22,7 @@ var launchOpenLayers = (function(_opts){
     function loadScripts() {
         $.ajax({
             url: '/static/js/libs/OpenLayers.js',
-            type: 'script'
+            dataType: 'script'
         }).done(function(){
             OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
             OpenLayers.ImgPath = opts.olImgPath;
