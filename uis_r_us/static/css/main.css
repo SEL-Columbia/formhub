@@ -1,0 +1,29 @@
+/*-
+ Widgets 
+-*/
+
+.widget-wrap {
+    position: absolute;
+    border: 1px solid #bbb;
+    padding: 5px 8px;
+    margin: 4px 5px;
+    color: #333;
+    z-index: 999;
+    background-color: rgba(255,255,255,0.95);
+}
+.widget-outer-wrap {
+    width: 100%;
+    position: absolute;
+    z-index: 999;
+}
+.fullw-widget {
+    margin: 4px 8px;
+    border: 1px solid #bbb;
+    background-color: rgba(255,255,255,0.95);
+}
+.lga-nav {
+    position: absolute;
+    top: 5px;
+    left: 200px;
+}
+z
