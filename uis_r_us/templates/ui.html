@@ -53,7 +53,7 @@ function facilityDataLoaded(){
 
 
 		//scrolls to row by default (?)
-		if (edata.scrollToRow === undefined) { edata.scrollToRow = true; }
+//		if (edata.scrollToRow === undefined) { edata.scrollToRow = true; }
 
 		edata.scrollToRow && (function scrollToTheFacilitysTr(){
 			if(facility.tr!==undefined) {
@@ -100,6 +100,25 @@ function facilityDataLoaded(){
 			}
 		});
 	});
+
+    window.filterPointsBySector = function(sector){
+        if(sector==='all') {
+            console.log("show all sectors");
+        } else {
+            $.each(facilityData.list, function(i, pt){
+				if(pt.mrkr !== undefined) {
+					if(pt.sector === sector) {
+	                    //make opaque
+	                    $(pt.mrkr.icon.imageDiv).show();
+	                } else {
+	                    //make semi-transparent and low z-index
+	                    $(pt.mrkr.icon.imageDiv).hide();
+	                }
+				}
+            });
+        }
+    }
+
 	$('body').bind('facility-unselect', function(evt, edata){
 		$('.ui-dialog').remove();
 		selectedSector === undefined || (typeof(filterPointsBySector)!=='function') ||filterPointsBySector(selectedSector);
@@ -190,10 +209,58 @@ function facilityDataLoaded(){
 	ftabs.height(220);
 	ftabs.find('.ui-tabs-panel').css({'overflow':'auto','height':'75%'})
 	facilityTableWrap.addClass('ready');
-	launchOpenLayers({})(function(){
-		console.log(facilityData);
-	})
-//	loadMap(facilityData);
+	launchOpenLayers({
+		centroid: {
+			lat: 649256.11813719,
+			lng: 738031.10112355
+		}
+	})(function(){
+		var iconMakers = {};
+        var flagColors = "blue green orange pink purple red yellow".split(" ");
+  		var stColors = {
+  			water: "blue",
+  			health: "red",
+  			agriculture: "orange",
+  			lga: "purple",
+  			education: "green",
+  			defaultColor: "pink"
+  		};
+  		$.each(stColors, function(k, val){
+  		    iconMakers[k] = function(){
+  		        var url = "/static/images/geosilk/flag_"+val+".png";
+      		    var size = new OpenLayers.Size(16,16);
+      		    var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+  		        return new OpenLayers.Icon(url, size, offset);
+  		    }
+  		});
+		
+		
+//		$('.overmap-content').hide();
+//		window._map = this.map;
+		var markers = new OpenLayers.Layer.Markers("Markers");
+		var bounds = new OpenLayers.Bounds();
+		$.each(facilityData.list, function(i, d){
+    	        if(d.latlng!==undefined) {
+    	            var iconSector = (d.sector || 'default').toLowerCase();
+            	    var icon = (iconMakers[iconSector] || iconMakers.defaultColor)();
+            	    var ll = d.latlng;
+            	    var oLl = new OpenLayers.LonLat(ll[1], ll[0]).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));;
+            	    d.mrkr = new OpenLayers.Marker(oLl, icon);
+            	    d.mrkr.facilityUid = d.uid;
+            	    d.mrkr.events.on({
+            	        'click': function(evt){
+            	            $(evt.element).trigger('facility-select', {'uid': d.uid});
+            	        }
+            	    });
+            	    markers.addMarker(d.mrkr);
+            	    bounds.extend(oLl);
+    	        } 
+    	});
+		var google = new OpenLayers.Layer.Google( "Google", {type: 'satellite'});
+		this.map.addLayer(google);
+		this.map.addLayer(markers);
+    	this.map.zoomToExtent(bounds);
+	});
 }
 
 function createTableForSectorWithData(sector, data){
@@ -294,7 +361,6 @@ var facilityDataStuff = (function(){
 				} else {
 					(this.latlng instanceof Array) || warn("LatLng must be an array", this);
 					(this.latlng.length === 2) || warn("Latlng must have length of 2", this);
-					
 				}
 				
 				(!!~facilitySectorSlugs.indexOf(this.sector.toLowerCase())) || warn("Sector must be in the list of sector slugs:", {
@@ -306,12 +372,24 @@ var facilityDataStuff = (function(){
 		})(passedData.data);
 		
 		(function processData(rawData){
+			function makeLatLng(val) {
+				if(val !== undefined) {
+					var lll = val.split(" ");
+					return [
+						+lll[0],
+						+lll[1]
+						]
+				} else {
+					return undefined
+				}
+			}
 			var uidCounter = 0;
 			var list = {};
 			var groupedList = {};
 			var sectorNames = [];
 			$.each(rawData, function(i, pt){
 				if(pt.uid===undefined) { pt.uid = 'uid'+i; }
+				pt.latlng = makeLatLng(pt.gps);
 				pt.sector = pt.sector.toLowerCase();
 				if(!~sectorNames.indexOf(pt.sector)) {
 					sectorNames.push(pt.sector);
