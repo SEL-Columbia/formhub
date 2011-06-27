@@ -68,17 +68,21 @@ class Facility(models.Model):
     @classmethod
     def get_latest_data_by_lga(cls, lga):
         d = defaultdict(dict)
-        records = DataRecord.objects.filter(facility__lga=lga).order_by('variable__slug', '-date_value')
+#        records = DataRecord.objects.filter(facility__lga=lga).order_by('variable__slug', '-date_value')
+        records = DataRecord.objects.filter(facility__lga=lga).order_by('-date_value')
         for r in records:
             # todo: test to make sure this sorting is correct
-            if r.variable.slug not in d[r.facility.id]:
-                d[r.facility.id][r.variable.slug] = r.value
+#            if r.variable.slug not in d[r.facility.id]:
+#                d[r.facility.id][r.variable.slug] = r.value
+            if r.variable_id not in d[r.facility_id]:
+                d[r.facility_id][r.variable_id] = r.value
         return d
 
 
 class Variable(models.Model):
     name = models.CharField(max_length=64)
-    slug = models.CharField(max_length=64, unique=True)
+#    slug = models.CharField(max_length=64, unique=True)
+    slug = models.CharField(max_length=64, primary_key=True)
     data_type = models.CharField(max_length=20)
     description = models.CharField(max_length=255)
 
