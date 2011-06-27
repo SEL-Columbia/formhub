@@ -26,4 +26,53 @@
     top: 5px;
     left: 200px;
 }
-z
+
+
+.content-inner-wrap {
+	position: relative;
+}
+.resizing-map {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	z-index: 10;
+}
+.overmap-content {
+	z-index: 11;
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+}
+table.facility-list {
+	width: 100%;
+}
+.ui-tabs-nav li img.flag {
+	margin: 0 12px 0 0;
+	opacity: 0.5;
+}
+.ui-tabs-nav li.ui-state-active img.flag {
+	opacity: 1;
+}
+.ui-tabs-nav .sector-count {
+	font-size: 12px;
+	opacity: 0.8;
+}
+table.facility-list td {
+	padding: 2px 5px;
+	border: 1px solid #eee;
+}
+tr.selected-facility td {
+	background-color: #F2F2F2;
+	border-color: #ddd;
+}
+tr.selected-facility td.selected-column {
+	background-color: #E2E2E2;
+}
+td.selected-column, th.selected-column {
+	background-color: #F2F2F2;
+	border-color: #ddd;
+}

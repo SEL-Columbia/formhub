@@ -1,26 +1,36 @@
 {% extends "ui_base.html" %}
 {% block head %}
 <style type="text/css" media="screen">
-	.content-inner-wrap {
-		position: relative;
+	#image-nav {
+		padding: 3px 20px;
+		height: 150px;
 	}
-	.resizing-map {
-		position: absolute;
-		top: 0;
-		left: 0;
-		height: 100%;
+	#image-nav .image-iwrap {
 		width: 100%;
-		z-index: 10;
+		overflow: auto;
+		height: 130px;
 	}
-	.overmap-content {
-		z-index: 11;
-		position: absolute;
-		top: 0;
-		left: 0;
-		height: 100%;
-		width: 100%;
+	#image-nav ul {
+		width: 999em;
+	}
+	#image-nav li {
+		list-style-type: none;
+		margin-right: 8px;
+	}
+	.img-wrap {
+		background-color: #666;
+		width: 100px;
+		height: 100px;
+		border: 1px solid black;
+		float: left;
+	}
+	#column-description {
+		padding: 20px 10px;
+		background-color: rgba(0,0,0,0.1);
+		margin-top: 20px;
 	}
 </style>
+
 {% endblock %}
 {% block content %}
 <div class='content-inner-wrap'>
