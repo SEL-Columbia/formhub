@@ -1,0 +1,92 @@
+/*-
+ Widgets 
+-*/
+
+.widget-wrap {
+    position: absolute;
+    border: 1px solid #bbb;
+    padding: 5px 8px;
+    margin: 4px 5px;
+    color: #333;
+    z-index: 999;
+    background-color: rgba(255,255,255,0.95);
+}
+.widget-outer-wrap {
+    width: 100%;
+    position: absolute;
+    z-index: 999;
+}
+.fullw-widget {
+    margin: 4px 8px;
+    border: 1px solid #bbb;
+    background-color: rgba(255,255,255,0.95);
+}
+.lga-nav {
+    position: absolute;
+    top: 5px;
+    left: 200px;
+}
+
+
+.content-inner-wrap {
+	position: relative;
+}
+.resizing-map {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	z-index: 10;
+}
+.overmap-content {
+	z-index: 11;
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+}
+table.facility-list {
+	width: 100%;
+}
+table.facility-list td {
+    cursor: pointer;
+}
+.ui-tabs-nav li img.flag {
+	margin: 0 12px 0 0;
+	opacity: 0.5;
+}
+.ui-tabs-nav li.ui-state-active img.flag {
+	opacity: 1;
+}
+.ui-tabs-nav .sector-count {
+	font-size: 12px;
+	opacity: 0.8;
+}
+table.facility-list td {
+	padding: 2px 5px;
+	border: 1px solid #eee;
+}
+tr.selected-facility td {
+	background-color: #F2F2F2;
+	border-color: #ddd;
+}
+tr.selected-facility td.selected-column {
+	background-color: #E2E2E2;
+}
+td.selected-column, th.selected-column {
+	background-color: #F2F2F2;
+	border-color: #ddd;
+}
+th.clickable {
+    cursor: pointer;
+}
+th.clickable:hover {
+    background-color: #fafafa;
+}
+th.clickable:after {
+    content: ' [i]';
+    color: rgba(1,1,1,0.3);
+    font-size: 10px;
+}

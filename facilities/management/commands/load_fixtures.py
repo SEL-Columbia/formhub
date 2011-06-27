@@ -173,7 +173,13 @@ class Command(BaseCommand):
         for name, slug in table_types:
             curtable = FacilityTable.objects.create(name=name, slug=slug)
             csv_reader = CsvReader(os.path.join("facility_views","table_defs", "%s.csv" % slug))
-            for d in csv_reader.iter_dicts():
+            for input_d in csv_reader.iter_dicts():
+                d = {
+                    'name': input_d['name'],
+                    'slug': input_d['slug'],
+                    'description': input_d.pop('description', ''),
+                    'clickable': input_d.pop('clickable', 'no') == 'yes'
+                }
                 curtable.add_variable(d)
 
     def load_surveys(self):

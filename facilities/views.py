@@ -5,7 +5,7 @@ from django.template import RequestContext
 import json
 
 from nga_districts.models import LGA
-from facilities.models import Facility
+from facilities.models import Facility, DataRecord
 
 
 def home(request):
@@ -15,8 +15,34 @@ def home(request):
 
 
 def facilities_for_site(request, site_id):
+    def non_null(val_arr):
+        #each datarecord should have at least 2 null values (out of 3)
+        #this function returns the non-null value, if it exists.
+        nns = []
+        for v in val_arr:
+            if v is not None:
+                nns.append(v)
+        assert len(nns) < 2
+        if len(nns) == 0:
+            #there were 3 null values
+            return None
+        else:
+            #there was 1 non-null value
+            return nns[0]
     lga = LGA.objects.get(geoid=site_id)
-    return HttpResponse(json.dumps(Facility.get_latest_data_by_lga(lga)))
+    facility_ids = [z['id'] for z in Facility.objects.filter(lga=lga).values('id')]
+    d = {}
+    drq = DataRecord.objects.order_by('-date_value')
+    for facility in facility_ids:
+        drs = drq.filter(facility=facility)
+        dvals = {}
+        #TODO: find something to fix the date_value problem.
+        # (i think a different date would just override the entry in the dict)
+        for t in drs.values('variable_id', 'string_value', 'float_value', 'boolean_value', 'date_value'):
+            dvals[t['variable_id']] = \
+                    non_null([t['string_value'], t['float_value'], t['boolean_value']])
+        d[facility] = dvals
+    return HttpResponse(json.dumps(d))
 
 
 def facility(request, facility_id):

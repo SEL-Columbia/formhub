@@ -1,10 +1,10 @@
-"slug","name","description"
-"school_name","Name",
-"power_sources_none","No Power Source",
-"water_sources_none","No Water Source",
-"student_teacher_ratio","Student/Teacher Ratio",
-"student_teacher_ratio_ok","Student/Teacher Ratio OK",
-"ideal_number_of_classrooms","Ideal # of Classrooms",
-"total_number_of_classrooms","Total # of Classrooms",
-"sufficient_number_of_classrooms","Sufficient # of Classrooms",
-"percentage_of_classrooms_in_good_condition","% of Classrooms in Good Condition",
+"slug","name","description","clickable"
+"school_name","Name",,
+"power_sources_none","No Power Source","No power source reported for this school.","yes"
+"water_sources_none","No Water Source","No water source reported for this school.","yes"
+"student_teacher_ratio","Student/Teacher Ratio",,"yes"
+"student_teacher_ratio_ok","Student/Teacher Ratio OK",,"yes"
+"ideal_number_of_classrooms","Ideal # of Classrooms",,"yes"
+"total_number_of_classrooms","Total # of Classrooms",,"yes"
+"sufficient_number_of_classrooms","Sufficient # of Classrooms",,"yes"
+"percentage_of_classrooms_in_good_condition","% of Classrooms in Good Condition",,"yes"

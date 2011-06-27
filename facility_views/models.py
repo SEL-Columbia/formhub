@@ -5,13 +5,9 @@ class FacilityTable(models.Model):
     name = models.CharField(max_length=64)
     slug = models.CharField(max_length=64)
     
+    @property
     def display_dict(self):
-        column_variables = []
-        for v in self.variables.all():
-            column_variables.append({
-                'slug': v.slug,
-                'name': v.name
-            })
+        column_variables = [v.display_dict for v in self.variables.all()]
         return {
             'name': self.name,
             'slug': self.slug,
@@ -28,7 +24,18 @@ class TableColumn(models.Model):
     name = models.CharField(max_length=64)
     slug = models.CharField(max_length=64)
     description = models.CharField(max_length=255, null=True)
-    
+    clickable = models.BooleanField(default=False)
     variable_id = models.IntegerField(null=True)
     
     facility_table = models.ForeignKey(FacilityTable, related_name="variables")
+    
+    @property
+    def display_dict(self):
+        d = {
+            'name': self.name,
+            'slug': self.slug,
+            'clickable': self.clickable
+        }
+        if not self.description in [None, '']:
+            d['description'] = self.description
+        return d

@@ -38,7 +38,7 @@ from facility_views.models import FacilityTable
 def variable_data(request):
     sectors = []
     for sector_table in FacilityTable.objects.all():
-        sectors.append(sector_table.display_dict())
+        sectors.append(sector_table.display_dict)
     import json
     return HttpResponse(json.dumps({
         'sectors': sectors
