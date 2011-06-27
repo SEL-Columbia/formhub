@@ -28,7 +28,12 @@
 "string","facility_name","Facility Name",,
 "string","facility_address","Facility Address",,
 "boolean","mobile_phone_signal_yn","Mobile Phone Signal",,
+"string","flush_toilet_drain_to","Flush Toilet Drain",,
 "boolean","improved_sanitation","Improved Sanitation",,"d['flush_toilet_drain_to'] == 'improved' or d['toilet_types_vip_latrine'] or d['toilet_types_pit_w_slab']"
 "boolean","toilet_types_vip_latrine","Ventilated Improved Pit Latrine",,
-"boolean","flush_toilet_drain_to","Flush Toilet Drain",,
 "boolean","toilet_types_pit_w_slab","Pit Latrine with Slab",,
+"float","num_doctors_fulltime","Number of Doctors",,
+"float","num_nurses_fulltime","Number of Nurses",,
+"float","num_midwives_fulltime","Number of Midwives",,
+"float","num_nursemidwives_fulltime","Number of Nurse/Midwives",,
+"boolean","skilled_birth_attendant","Skilled Birth Attendant",,"d['num_doctors_fulltime'] > 0 or d['num_nurses_fulltime'] > 0 or d['num_midwives_fulltime'] > 0 or d['num_nursemidwives_fulltime'] > 0"
