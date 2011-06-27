@@ -76,7 +76,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     
-    'compressor.finders.CompressorFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 # Make this unique, and don't share it with anybody.
@@ -125,7 +124,6 @@ INSTALLED_APPS = (
     'phone_manager',
     'nga_districts',
     'facilities',
-    'compressor',
 )
 COMPRESS = True
 
@@ -156,17 +154,6 @@ LOGGING = {
 import sys
 
 SITE_TITLE = "Baseline Data Collection"
-
-COMPILER_FORMATS = {
-    '.sass': {
-        'binary_path': 'sass',
-        'arguments': '*.sass *.css'
-    },
-    '.scss': {
-        'binary_path': 'sass',
-        'arguments': '*.scss *.css'
-    }
-}
 
 TESTING_MODE = False
 if len(sys.argv)>=2 and (sys.argv[1]=="test" or sys.argv[1]=="test_all"):
