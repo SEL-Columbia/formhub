@@ -39,248 +39,207 @@
 <script type="text/javascript" charset="utf-8">
 <!--
 var defaultSectorSlug = 'health';
-var facilityDataLoaded = function(){};
 
 var selectedSector, selectedFacility, selectedColumn;
-(function(){
-		facilityDataLoaded = function(){
-			$('body').bind('facility-select', function(evt, edata){
-				var facility = facilityData.list[edata.uid];
-				if(facility === selectedFacility) {
-					return false;
-				}
-
-				selectedFacility === undefined || $('body').trigger('facility-unselect', {uid: selectedFacility.uid});
-				selectedFacility = facility;
-
-
-				//scrolls to row by default (?)
-				if (edata.scrollToRow === undefined) { edata.scrollToRow = true; }
-
-				edata.scrollToRow && (function scrollToTheFacilitysTr(){
-					if(facility.tr!==undefined) {
-						var ourTr = $(facility.tr);
-						var offsetTop = ourTr.offset().top - ourTr.parents('table').eq(0).offset().top
-						var tabPanel = ourTr.parents('.ui-tabs-panel');
-						tabPanel.scrollTo(offsetTop, 500, {
-							axis: 'y'
-						});
-					}
-				})()
-
-				$.each(facilityData.list, function(i, fdp){
-					fdp.mrkr === undefined || $(fdp.mrkr.icon.imageDiv).hide();
-				});
-				$(facility.mrkr.icon.imageDiv).show();
-
-				var popup = $("<div />");
-				var sector = $(facilitySectors).filter(function(){return this.slug==facility.sector}).get(0);
-				(function buildDefinitionList(){
-					var tab = $("<table />").css({
-						'width': 400
-					});
-					var imgFullUrl = ("http://nmis.mvpafrica.org/site-media/attachments/" + facility.img_id).toLowerCase();
-					var imgLink = $("<a />", {'href':imgFullUrl, 'target': '_BLANK'}).html($("<img />", {src: imgFullUrl}).css({'width': 90}));
-					popup.prepend(imgLink);
-
-					$(sector.columns).each(function(i, col){
-						var tr = $("<tr />");
-						var colSlug = col.slug;
-						var colName = col.name;
-						tr.append($("<td />").text(colName))
-						tr.append($("<td />").text(facility[colSlug]))
-						tab.append(tr);
-					});
-					popup.append(tab);
-				})();
-
-				popup.dialog({
-					height: 275,
-					width: 520,
-					close: function(){
-						$('body').trigger('facility-unselect');
-					}
-				});
-			});
-			$('body').bind('facility-unselect', function(evt, edata){
-				$('.ui-dialog').remove();
-				selectedSector === undefined || (typeof(filterPointsBySector)!=='function') ||filterPointsBySector(selectedSector);
-				$('.selected-facility').removeClass('selected-facility');
-				selectedFacility = undefined;
-			});
-//			$('body').bind('facility-mouseover', function(evt, edata){var facility = facilityData.list[edata.uid];});
-//			$('body').bind('facility-mouseout', function(evt, edata){var facility = facilityData.list[edata.uid];});
-			$('body').bind('sector-change', function(evt, edata){
-				$('body').trigger('facility-unselect');
-				if(selectedSector !== edata.sector) {
-					selectedSector = edata.sector;
-					ftabs.tabs('select', facilitySectorSlugs.indexOf(selectedSector));
-					(typeof(filterPointsBySector)==='function') && filterPointsBySector(selectedSector);
-				}
-			});
-
-			$('body').bind('column-select', function(evt, edata){
-				var wrapElement = $('#lga-facilities-table');
-				var column = edata.column;
-				var sector = edata.sector;
-				if(selectedColumn!==edata.column) {
-					$('body').trigger('column-unselect', {column:selectedColumn});
-					if(column.description !== undefined && column.description !== null) {
-						$('.selected-column', wrapElement).removeClass('selected-column');
-						(function highlightTheColumn(columnIndex){
-							var table = $('table.facility-list');
-							table.find('tr').each(function(){
-								$(this).find('td').eq(columnIndex).addClass('selected-column');
-							})
-						})(column.thIndex);
-
-						buildColumnDescriptionBox(edata.column);
-						$('#column-description').show();
-					}
-					selectedColumn = edata.column;
-				}
-			});
-			$('body').bind('column-unselect', function(evt, edata){
-				$('#column-description').hide();
-			})
-			// actions to be taken for the facility navigation table and image stuff.
-			$('body').bind('facility-select', function(evt, edata){
-				var facility = facilityData.list[edata.uid];
-				facility.tr === undefined || $(facility.tr).addClass('selected-facility');
-			});
-
-			var facilityTableWrap = $('#lga-facilities-table').html($('<div />', {'id': 'facility-tabs'}).html($('<ul />'))).append($('<div />', {'id':'image-nav'}));
-			var ftabs = $('div#facility-tabs', facilityTableWrap).css({'padding-bottom':18});
-			var ftabUl = $('ul', ftabs);
-			var imageNavigation = $('div#image-nav', facilityTableWrap);
-
-			$.each(facilitySectors, function(i, sector){
-				var li = $("<li />");
-				var fdata = facilityData.bySector[sector.slug] || facilityData.bySector[sector.name];
-				var sectorCount = $("<span />", {'class':'sector-count '+sector.slug});
-				if(fdata instanceof Array && fdata.length > 0) {
-					sectorCount.text(" ("+fdata.length+")")
-				}
-				li.append($("<a />", {'href':'#facilities-'+sector.slug}).text(sector.name).append(sectorCount));
-				ftabUl.append(li);
-				ftabs.append(createTableForSectorWithData(sector, facilityData));
-			});
-
-			ftabs.tabs({select: function(evt, ui){
-				$(evt.target).trigger('sector-change', {sector: $(ui.panel).data('sector-slug')})
-			}});
-
-			$(facilityTableWrap).trigger('sector-change', {sector: defaultSectorSlug});
-
-			(function deleteThisWhenYouWantToDoItProperly(){
-				var stColors = {
-		  			'facilities-water': "blue",
-		  			'facilities-health': "red",
-		  			'facilities-agriculture': "orange",
-		  			lga: "purple",
-		  			'facilities-education': "green",
-		  			defaultColor: "pink"
-		  		};
-				$('.ui-tabs-nav', ftabs).find('li a').each(function(){
-					var colorSlug = this.hash.replace("#", "");
-					var flagColor = stColors[colorSlug];
-					var flagUrl = "/static/images/geosilk/flag_"+flagColor+".png"
-					$(this).prepend($("<img />", {src: flagUrl, 'class': 'flag'}));
-				})
-			})();
-			$('#lga-facilities-wrap').height($(window).height()-160);
-			ftabs.height(220);
-			ftabs.find('.ui-tabs-panel').css({'overflow':'auto','height':'75%'})
-			facilityTableWrap.addClass('ready');
-//			loadMap(facilityData);
+function facilityDataLoaded(){
+	$('body').bind('facility-select', function(evt, edata){
+		var facility = facilityData.list[edata.uid];
+		if(facility === selectedFacility) {
+			return false;
 		}
-		
-		function createTableForSectorWithData(sector, data){
-			var div = $("<div />", {id: 'facilities-'+sector.slug}).text(sector.name).data('sector-slug', sector.slug);
-			var table = $('<table />', {'class':'facility-list'});
-			var thRow = $("<tr />");
-			table.append($("<thead />").html(thRow));
-			var sectorData  = data.bySector[sector.slug] || data.bySector[sector.name];
-			if(sector.columns!==undefined && sector.columns.length>0 && sectorData!==undefined && sectorData.length>0) {
-				$.each(sector.columns, function(i, col){
-					var th = $("<th />", {'class':'col-'+col.slug}).text(col.name);
-					col.thIndex = i;
-					th.click(function(){
-						$('body').trigger('column-select', {
-							sector: sector,
-							column: col
-						});
-					});
-					thRow.append(th)
-					});
-				var tbod = $("<tbody />");
-				$.each(sectorData, function(i, fUid){
-					tbod.append(createRowForFacilityWithColumns(data.list[fUid], sector.columns))
-				})
-				table.append(tbod);
+
+		selectedFacility === undefined || $('body').trigger('facility-unselect', {uid: selectedFacility.uid});
+		selectedFacility = facility;
+
+
+		//scrolls to row by default (?)
+		if (edata.scrollToRow === undefined) { edata.scrollToRow = true; }
+
+		edata.scrollToRow && (function scrollToTheFacilitysTr(){
+			if(facility.tr!==undefined) {
+				var ourTr = $(facility.tr);
+				var offsetTop = ourTr.offset().top - ourTr.parents('table').eq(0).offset().top
+				var tabPanel = ourTr.parents('.ui-tabs-panel');
+				tabPanel.scrollTo(offsetTop, 500, {
+					axis: 'y'
+				});
 			}
-			return div.html(table);
-		}
-		function createRowForFacilityWithColumns(fpoint, cols){
-			var tr = $("<tr />");
-			$.each(cols, function(i, col){
-				var colSlug = col.slug;
-				var value = fpoint[colSlug];
-				if(value===undefined) { value = '—'; }
-				tr.append($("<td />", {'class':'col-'+colSlug}).text(value));
-				tr.data('facility-uid', fpoint.uid);
+		})()
+
+		$.each(facilityData.list, function(i, fdp){
+			fdp.mrkr === undefined || $(fdp.mrkr.icon.imageDiv).hide();
+		});
+		$(facility.mrkr.icon.imageDiv).show();
+
+		var popup = $("<div />");
+		var sector = $(facilitySectors).filter(function(){return this.slug==facility.sector}).get(0);
+		(function buildDefinitionList(){
+			var tab = $("<table />").css({
+				'width': 400
 			});
-			tr.click(function(){$(this).trigger('facility-select', {
-				'uid': fpoint.uid,
-				'scrollToRow': false
-			})});
-			tr.mouseover(function(){$(this).trigger('facility-mouseover', {uid: fpoint.uid})})
-			tr.mouseout(function(){$(this).trigger('facility-mouseout', {uid: fpoint.uid})})
-			fpoint.tr = tr.get(0);
-			return tr;
+			var imgFullUrl = ("http://nmis.mvpafrica.org/site-media/attachments/" + facility.img_id).toLowerCase();
+			var imgLink = $("<a />", {'href':imgFullUrl, 'target': '_BLANK'}).html($("<img />", {src: imgFullUrl}).css({'width': 90}));
+			popup.prepend(imgLink);
+
+			$(sector.columns).each(function(i, col){
+				var tr = $("<tr />");
+				var colSlug = col.slug;
+				var colName = col.name;
+				tr.append($("<td />").text(colName))
+				tr.append($("<td />").text(facility[colSlug]))
+				tab.append(tr);
+			});
+			popup.append(tab);
+		})();
+
+		popup.dialog({
+			height: 275,
+			width: 520,
+			close: function(){
+				$('body').trigger('facility-unselect');
+			}
+		});
+	});
+	$('body').bind('facility-unselect', function(evt, edata){
+		$('.ui-dialog').remove();
+		selectedSector === undefined || (typeof(filterPointsBySector)!=='function') ||filterPointsBySector(selectedSector);
+		$('.selected-facility').removeClass('selected-facility');
+		selectedFacility = undefined;
+	});
+//	$('body').bind('facility-mouseover', function(evt, edata){var facility = facilityData.list[edata.uid];});
+//	$('body').bind('facility-mouseout', function(evt, edata){var facility = facilityData.list[edata.uid];});
+	$('body').bind('sector-change', function(evt, edata){
+		$('body').trigger('facility-unselect');
+		if(selectedSector !== edata.sector) {
+			selectedSector = edata.sector;
+			ftabs.tabs('select', facilitySectorSlugs.indexOf(selectedSector));
+			(typeof(filterPointsBySector)==='function') && filterPointsBySector(selectedSector);
 		}
-		
-})()
-/*
+	});
 
-widgets.push(function(){
+	$('body').bind('column-select', function(evt, edata){
+		var wrapElement = $('#lga-facilities-table');
+		var column = edata.column;
+		var sector = edata.sector;
+		if(selectedColumn!==edata.column) {
+			$('body').trigger('column-unselect', {column:selectedColumn});
+			if(column.description !== undefined && column.description !== null) {
+				$('.selected-column', wrapElement).removeClass('selected-column');
+				(function highlightTheColumn(columnIndex){
+					var table = $('table.facility-list');
+					table.find('tr').each(function(){
+						$(this).find('td').eq(columnIndex).addClass('selected-column');
+					})
+				})(column.thIndex);
 
-	
-	function populateImageDivForSector(s) {
-		var sector = $(facilitySectors).filter(function(){
-			if(this.slug===s) {return true;} else {return false;}
-		}).get(0);
-		
-		var naviWrap = $("<div />", {'class':'image-iwrap'});
-		imageNavigation.html(naviWrap);
-		var ulList = $("<ul />");
+				buildColumnDescriptionBox(edata.column);
+				$('#column-description').show();
+			}
+			selectedColumn = edata.column;
+		}
+	});
+	$('body').bind('column-unselect', function(evt, edata){
+		$('#column-description').hide();
+	})
+	// actions to be taken for the facility navigation table and image stuff.
+	$('body').bind('facility-select', function(evt, edata){
+		var facility = facilityData.list[edata.uid];
+		facility.tr === undefined || $(facility.tr).addClass('selected-facility');
+	});
 
-		var tt = $("<h4 />").text("Photos for " + sector.name);
-		
-		var facilities = $.map(facilityData.bySector[sector.slug], function(uid, i){return facilityData.list[uid];})
-		
-		$(facilities).each(function(i, facility){
-            var t = facility.image_id;
-			var thumbnailUrl = '/pictures/fwd/'+t+'/140x140';
-			var biggerImage = '/pictures/fwd/'+t+'/raw';
-			var im = $("<img />", {'src':thumbnailUrl});
-			var li = $("<li />", {'class':'img-wrap'}).html(im);
-			li.click(function(){
-				$('.ui-dialog').remove();
-				var pu = $("<div />");
-				pu.html($("<img />", {'src':biggerImage}));
-				pu.dialog();
-			})
-			ulList.append(li);
-		});
-		naviWrap.append(ulList);
-		var tot = 0;
-		$('li', ulList).each(function(){
-			tot += $(this).width();
-		});
+	var facilityTableWrap = $('#lga-facilities-table').html($('<div />', {'id': 'facility-tabs'}).html($('<ul />'))).append($('<div />', {'id':'image-nav'}));
+	var ftabs = $('div#facility-tabs', facilityTableWrap).css({'padding-bottom':18});
+	var ftabUl = $('ul', ftabs);
+	var imageNavigation = $('div#image-nav', facilityTableWrap);
+
+	$.each(facilitySectors, function(i, sector){
+		var li = $("<li />");
+		var fdata = facilityData.bySector[sector.slug] || facilityData.bySector[sector.name];
+		var sectorCount = $("<span />", {'class':'sector-count '+sector.slug});
+		if(fdata instanceof Array && fdata.length > 0) {
+			sectorCount.text(" ("+fdata.length+")")
+		}
+		li.append($("<a />", {'href':'#facilities-'+sector.slug}).text(sector.name).append(sectorCount));
+		ftabUl.append(li);
+		ftabs.append(createTableForSectorWithData(sector, facilityData));
+	});
+
+	ftabs.tabs({select: function(evt, ui){
+		$(evt.target).trigger('sector-change', {sector: $(ui.panel).data('sector-slug')})
+	}});
+
+	$(facilityTableWrap).trigger('sector-change', {sector: defaultSectorSlug});
+
+	(function deleteThisWhenYouWantToDoItProperly(){
+		var stColors = {
+  			'facilities-water': "blue",
+  			'facilities-health': "red",
+  			'facilities-agriculture': "orange",
+  			lga: "purple",
+  			'facilities-education': "green",
+  			defaultColor: "pink"
+  		};
+		$('.ui-tabs-nav', ftabs).find('li a').each(function(){
+			var colorSlug = this.hash.replace("#", "");
+			var flagColor = stColors[colorSlug];
+			var flagUrl = "/static/images/geosilk/flag_"+flagColor+".png"
+			$(this).prepend($("<img />", {src: flagUrl, 'class': 'flag'}));
+		})
+	})();
+	$('#lga-facilities-wrap').height($(window).height()-160);
+	ftabs.height(220);
+	ftabs.find('.ui-tabs-panel').css({'overflow':'auto','height':'75%'})
+	facilityTableWrap.addClass('ready');
+	launchOpenLayers({})(function(){
+		console.log(facilityData);
+	})
+//	loadMap(facilityData);
+}
+
+function createTableForSectorWithData(sector, data){
+	var div = $("<div />", {id: 'facilities-'+sector.slug}).text(sector.name).data('sector-slug', sector.slug);
+	var table = $('<table />', {'class':'facility-list'});
+	var thRow = $("<tr />");
+	table.append($("<thead />").html(thRow));
+	var sectorData  = data.bySector[sector.slug] || data.bySector[sector.name];
+	if(sector.columns!==undefined && sector.columns.length>0 && sectorData!==undefined && sectorData.length>0) {
+		$.each(sector.columns, function(i, col){
+			var th = $("<th />", {'class':'col-'+col.slug}).text(col.name);
+			col.thIndex = i;
+			th.click(function(){
+				$('body').trigger('column-select', {
+					sector: sector,
+					column: col
+				});
+			});
+			thRow.append(th)
+			});
+		var tbod = $("<tbody />");
+		$.each(sectorData, function(i, fUid){
+			tbod.append(createRowForFacilityWithColumns(data.list[fUid], sector.columns))
+		})
+		table.append(tbod);
 	}
-});
-*/
+	return div.html(table);
+}
+function createRowForFacilityWithColumns(fpoint, cols){
+	var tr = $("<tr />");
+	$.each(cols, function(i, col){
+		var colSlug = col.slug;
+		var value = fpoint[colSlug];
+		if(value===undefined) { value = '—'; }
+		tr.append($("<td />", {'class':'col-'+colSlug}).text(value));
+		tr.data('facility-uid', fpoint.uid);
+	});
+	tr.click(function(){$(this).trigger('facility-select', {
+		'uid': fpoint.uid,
+		'scrollToRow': false
+	})});
+	tr.mouseover(function(){$(this).trigger('facility-mouseover', {uid: fpoint.uid})})
+	tr.mouseout(function(){$(this).trigger('facility-mouseout', {uid: fpoint.uid})})
+	fpoint.tr = tr.get(0);
+	return tr;
+}
 
 var facilityDataStuff = (function(){
 	var printDebugStats = true;
@@ -391,14 +350,6 @@ var facilityDataStuff = (function(){
 $('.content-inner-wrap').css({'padding':0})
 var pageRootUrl = "/ui/";
 $(function(evt){
-	var env = {
-		launchers: {},
-		callbacks: {},
-		addCallback: function(k, fn){
-			if(this.callbacks[k]===undefined) {this.callbacks[k]=[]}
-			this.callbacks[k].push(fn);
-		}
-	};
 	
 	function buildFacilityDataTable(data, sectors){
 		facilityDataLoaded()
@@ -431,8 +382,6 @@ $(function(evt){
 			}
 		})
 	})($('body'));
-	
-	var env = {};
 	var dashboard = $.sammy(function(){
 		this.get(pageRootUrl, function(){
 			$('body').trigger('mode-change', {mode: 'country'})
