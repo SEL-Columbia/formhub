@@ -6,7 +6,7 @@ How to get up & Running (with sample dataset and sqlite)
 
 0. Checkout this branch
 
-    git fetch origin feature/dj13:feature/dj13 && git checkout feature/dj13
+    git checkout -b feature/dj13 origin/feature/dj13
 
 1. In a virtualenv, install requirements:
 
