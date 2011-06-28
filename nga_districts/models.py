@@ -2,6 +2,7 @@
 
 from django.db import models
 import re
+from facilities.abstract_models import DataRecord, DictModel
 
 
 def sluggify(s):
@@ -49,7 +50,11 @@ class State(NamedModel):
         return result
 
 
-class LGA(NamedModel):
+class LGARecord(DataRecord):
+    lga = models.ForeignKey('LGA', related_name='data_records')
+
+
+class LGA(NamedModel, DictModel):
     state = models.ForeignKey(State, related_name="lgas")
     scale_up = models.BooleanField()
     unique_slug = models.TextField(null=True)
@@ -59,6 +64,9 @@ class LGA(NamedModel):
     survey_round = models.IntegerField(default=0)
     included_in_malaria_survey = models.BooleanField(default=False)
     geoid = models.PositiveIntegerField(null=True)
+
+    _data_record_class = LGARecord
+    _data_record_fk = 'lga'
 
     @classmethod
     def get_phase1_lga_names(cls):

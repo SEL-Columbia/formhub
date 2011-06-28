@@ -1,12 +1,15 @@
 from django.db import models
 from collections import defaultdict
-import datetime
 
 from nga_districts.models import LGA
-from abstract_models import Variable, CalculatedVariable, DataRecord
+from abstract_models import Variable, CalculatedVariable, DataRecord, DictModel
 
 
-class Facility(models.Model):
+class FacilityRecord(DataRecord):
+    facility = models.ForeignKey('Facility', related_name='data_records')
+
+
+class Facility(DictModel):
     """
     TODO: Figure out what fields should actually be on a facility. I think all
     fields should be stored in data records, with convenience fields stored in
@@ -15,15 +18,11 @@ class Facility(models.Model):
     facility_id = models.CharField(max_length=100)
     lga = models.ForeignKey(LGA, related_name="facilities", null=True)
 
-    def set(self, variable, value, date=None):
-        if date is None:
-            date = datetime.date.today()
-        d, created = FacilityRecord.objects.get_or_create(variable=variable, facility=self, date=date)
-        d.value = variable.get_casted_value(value)
-        d.save()
+    _data_record_class = FacilityRecord
+    _data_record_fk = 'facility'
 
     def get_all_data(self):
-        records = FacilityRecord.objects.filter(facility=self)
+        records = self._data_record_class.objects.filter(facility=self)
         d = defaultdict(dict)
         for record in records:
             d[record.variable.slug][record.date.isoformat()] = record.value
@@ -32,12 +31,12 @@ class Facility(models.Model):
     @property
     def sector(self):
         try:
-            return FacilityRecord.objects.get(facility=self, variable__slug='sector').value
-        except FacilityRecord.DoesNotExist:
+            return self._data_record_class.objects.get(facility=self, variable__slug='sector').value
+        except self._data_record_class.DoesNotExist:
             return None
 
     def get_latest_data(self):
-        records = FacilityRecord.objects.filter(facility=self).order_by('-date')
+        records = self._data_record_class.objects.filter(facility=self).order_by('-date')
         d = {}
         for r in records:
             # todo: test to make sure this sorting is correct
@@ -49,13 +48,13 @@ class Facility(models.Model):
         if type(variable) == str:
             variable = Variable.objects.get(slug=variable)
         try:
-            record = FacilityRecord.objects.filter(facility=self, variable=variable).order_by('-date')[0]
+            record = self._data_record_class.objects.filter(facility=self, variable=variable).order_by('-date')[0]
         except IndexError:
             return None
         return record.value
 
     def set_value(self, variable, value):
-        d, created = FacilityRecord.objects.get_or_create(variable=variable, facility=self)
+        d, created = self._data_record_class.objects.get_or_create(variable=variable, facility=self)
         d.value = Variable.get_casted_value(value)
         d.save()
 
@@ -63,7 +62,7 @@ class Facility(models.Model):
         """
         Return a list of dates of all observations for this facility.
         """
-        drs = FacilityRecord.objects.filter(facility=self).values('date').distinct()
+        drs = self._data_record_class.objects.filter(facility=self).values('date').distinct()
         return [d['date'] for d in drs]
 
     @classmethod
@@ -103,10 +102,6 @@ class Facility(models.Model):
             for record in records:
                 tot += record.value
             return tot / count
-
-
-class FacilityRecord(DataRecord):
-    facility = models.ForeignKey(Facility, related_name="data_records")
 
 
 class KeyRename(models.Model):

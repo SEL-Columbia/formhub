@@ -22,10 +22,15 @@ class Command(BaseCommand):
                     dest="limit_import",
                     default=False,
                     action="store_true"),
+        make_option("--debug",
+                    dest="debug",
+                    default=False,
+                    action="store_true"),
         )
 
     def handle(self, *args, **kwargs):
         self._limit_import = kwargs['limit_import']
+        self._debug = kwargs['debug']
         self._start_time = time.time()
         self.reset_database()
         self.load_lgas()
@@ -154,14 +159,17 @@ class Command(BaseCommand):
             d['_data_source'] = data_source
             d['_facility_type'] = facility_type
             d['sector'] = facility_type
-            #FacilityBuilder.create_facility_from_dict(d)
-            try:
+            if self._debug:
                 FacilityBuilder.create_facility_from_dict(d)
-            except KeyboardInterrupt:
-                sys.exit(0)
-            except:
-                num_errors += 1
-        print "Had %d error(s) when importing %s facilities..." % (num_errors, facility_type)
+            else:
+                try:
+                    FacilityBuilder.create_facility_from_dict(d)
+                except KeyboardInterrupt:
+                    sys.exit(0)
+                except:
+                    num_errors += 1
+        if not self._debug:
+            print "Had %d error(s) when importing %s facilities..." % (num_errors, facility_type)
 
     def load_table_defs(self):
         table_types = [

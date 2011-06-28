@@ -1,6 +1,7 @@
 from django.db import models
 import json
 import re
+import datetime
 
 
 class Variable(models.Model):
@@ -78,7 +79,7 @@ class DataRecord(models.Model):
 
     TYPES = ['float', 'boolean', 'string']
 
-    variable = models.ForeignKey(Variable, related_name="data_records")
+    variable = models.ForeignKey(Variable)
     date = models.DateField(null=True)
 
     class Meta:
@@ -97,3 +98,21 @@ class DataRecord(models.Model):
             return "No date"
         else:
             return self.date.strftime("%D")
+
+
+class DictModel(models.Model):
+
+    class Meta:
+        abstract = True
+
+    def set(self, variable, value, date=None):
+        if date is None:
+            date = datetime.date.today()
+        kwargs = {
+            'variable': variable,
+            self._data_record_fk: self,
+            'date': date,
+            }
+        d, created = self._data_record_class.objects.get_or_create(**kwargs)
+        d.value = variable.get_casted_value(value)
+        d.save()
