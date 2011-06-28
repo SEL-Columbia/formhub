@@ -28,6 +28,7 @@ class Command(BaseCommand):
                 d = {
                     'name': input_d['name'],
                     'slug': input_d['slug'],
+                    'subgroups': input_d['subgroups'],
                     'description': input_d.pop('description', ''),
                     'clickable': input_d.pop('clickable', 'no') == 'yes'
                 }
