@@ -145,6 +145,10 @@ class DictModel(models.Model):
         abstract = True
 
     def set(self, variable, value, date=None):
+        """
+        This is used to add a data record of type variable to the instance.
+        It returns the casted value for the variable.
+        """
         if date is None:
             date = datetime.date.today()
         kwargs = {
@@ -155,15 +159,19 @@ class DictModel(models.Model):
         d, created = self._data_record_class.objects.get_or_create(**kwargs)
         d.value = variable.get_casted_value(value)
         d.save()
+        return d.value
 
     def add_data_from_dict(self, d):
         """
         Key value pairs in d that are in the data dictionary will be
-        added to the database.
+        added to the database along with any calculated variables that apply.
         """
-        KeyRename.rename_keys(d)
-        CalculatedVariable.add_calculated_variables(d)
-
         for v in Variable.objects.all():
             if v.slug in d:
-                self.set(v, d[v.slug])
+                # update the dict with the casted value
+                d[v.slug] = self.set(v, d[v.slug])
+
+        CalculatedVariable.add_calculated_variables(d)
+        for cv in CalculatedVariable.objects.all():
+            if cv.slug in d:
+                self.set(cv, d[cv.slug])

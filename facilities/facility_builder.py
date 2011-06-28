@@ -22,7 +22,6 @@ class FacilityBuilder(object):
         added to the database.
         """
         KeyRename.rename_keys(d)
-        CalculatedVariable.add_calculated_variables(d)
 
         # using gps as facility id is a slight hack to get a unique id
         kwargs = {
@@ -31,10 +30,8 @@ class FacilityBuilder(object):
         if '_lga_id' in d:
             kwargs['lga'] = LGA.objects.get(id=d['_lga_id'])
         facility, created = Facility.objects.get_or_create(**kwargs)
+        facility.add_data_from_dict(d)
 
-        for v in Variable.objects.all():
-            if v.slug in d:
-                facility.set(v, d[v.slug])
         return facility
 
     @classmethod
