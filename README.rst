@@ -29,7 +29,7 @@ install the requirements
 
 4. Install dropbox and make a symbolic link to the cleaned csv folder
 
-    ln -s ~/Dropbox/NMIS\ -\ Nigeria/NMIS\ Data/final_cleaned_data/csv/facility/ data
+    ln -s ~/Dropbox/NMIS\ -\ Nigeria/NMIS\ Data/final_cleaned_data/csv/ data
 
 5. Run load_fixtures management command
 
