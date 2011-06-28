@@ -5,7 +5,7 @@ import json
 import time
 import sys
 from facilities.models import Facility, Variable, CalculatedVariable, \
-    KeyRename, DataRecord
+    KeyRename, FacilityRecord
 from facilities.facility_builder import FacilityBuilder
 from utils.csv_reader import CsvReader
 from django.conf import settings
@@ -78,7 +78,7 @@ class Command(BaseCommand):
         info = {
             'number of facilities': Facility.objects.count(),
             'facilities without lgas': Facility.objects.filter(lga=None).count(),
-            'number of data records': DataRecord.objects.count(),
+            'number of data records': FacilityRecord.objects.count(),
             'time': seconds_to_hms(self._end_time - self._start_time),
             }
         print json.dumps(info, indent=4)

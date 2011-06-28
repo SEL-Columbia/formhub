@@ -19,12 +19,12 @@ class Facility(models.Model):
     def set(self, variable, value, date=None):
         if date is None:
             date = datetime.date.today()
-        d, created = DataRecord.objects.get_or_create(variable=variable, facility=self, date=date)
+        d, created = FacilityRecord.objects.get_or_create(variable=variable, facility=self, date=date)
         d.value = variable.get_casted_value(value)
         d.save()
 
     def get_all_data(self):
-        records = DataRecord.objects.filter(facility=self)
+        records = FacilityRecord.objects.filter(facility=self)
         d = defaultdict(dict)
         for record in records:
             d[record.variable.slug][record.date.isoformat()] = record.value
@@ -33,12 +33,12 @@ class Facility(models.Model):
     @property
     def sector(self):
         try:
-            return DataRecord.objects.get(facility=self, variable__slug='sector').value
-        except DataRecord.DoesNotExist:
+            return FacilityRecord.objects.get(facility=self, variable__slug='sector').value
+        except FacilityRecord.DoesNotExist:
             return None
 
     def get_latest_data(self):
-        records = DataRecord.objects.filter(facility=self).order_by('-date')
+        records = FacilityRecord.objects.filter(facility=self).order_by('-date')
         d = {}
         for r in records:
             # todo: test to make sure this sorting is correct
@@ -50,25 +50,28 @@ class Facility(models.Model):
         if type(variable) == str:
             variable = Variable.objects.get(slug=variable)
         try:
-            record = DataRecord.objects.filter(facility=self, variable=variable).order_by('-date')[0]
+            record = FacilityRecord.objects.filter(facility=self, variable=variable).order_by('-date')[0]
         except IndexError:
             return None
         return record.value
 
     def set_value(self, variable, value):
-        d, created = DataRecord.objects.get_or_create(variable=variable, facility=self)
+        d, created = FacilityRecord.objects.get_or_create(variable=variable, facility=self)
         d.value = Variable.get_casted_value(value)
         d.save()
 
     def dates(self):
-        drs = DataRecord.objects.filter(facility=self).values('date').distinct()
+        """
+        Return a list of dates of all observations for this facility.
+        """
+        drs = FacilityRecord.objects.filter(facility=self).values('date').distinct()
         return [d['date'] for d in drs]
 
     @classmethod
     def get_latest_data_by_lga(cls, lga):
         d = defaultdict(dict)
-#        records = DataRecord.objects.filter(facility__lga=lga).order_by('variable__slug', '-date')
-        records = DataRecord.objects.filter(facility__lga=lga).order_by('-date')
+#        records = FacilityRecord.objects.filter(facility__lga=lga).order_by('variable__slug', '-date')
+        records = FacilityRecord.objects.filter(facility__lga=lga).order_by('-date')
         for r in records:
             # todo: test to make sure this sorting is correct
 #            if r.variable.slug not in d[r.facility.id]:
@@ -116,7 +119,7 @@ class Variable(models.Model):
         if self.data_type == "string":
             return None
         else:
-            records = DataRecord.objects.filter(variable=self, facility__lga=lga)
+            records = FacilityRecord.objects.filter(variable=self, facility__lga=lga)
             tot = 0
             for record in records:
                 tot += record.value
@@ -126,7 +129,7 @@ class Variable(models.Model):
         if self.data_type == "string":
             return None
         else:
-            records = DataRecord.objects.filter(variable=self, facility__lga=lga)
+            records = FacilityRecord.objects.filter(variable=self, facility__lga=lga)
             count = records.count()
             if count == 0:
                 return 0
@@ -173,21 +176,19 @@ class DataRecord(models.Model):
     boolean_value = models.NullBooleanField()
     string_value = models.CharField(null=True, max_length=255)
 
-    variable = models.ForeignKey(Variable, related_name="data_records")
-    facility = models.ForeignKey(Facility, related_name="data_records")
-    date = models.DateField(null=True)
-
     TYPES = ['float', 'boolean', 'string']
 
-    def get_data_type(self):
-        return self.variable.data_type
-    data_type = property(get_data_type)
+    variable = models.ForeignKey(Variable, related_name="data_records")
+    date = models.DateField(null=True)
+
+    class Meta:
+        abstract = True
 
     def get_value(self):
-        return getattr(self, self.data_type + "_value")
+        return getattr(self, self.variable.data_type + "_value")
 
     def set_value(self, val):
-        setattr(self, self.data_type + "_value", val)
+        setattr(self, self.variable.data_type + "_value", val)
 
     value = property(get_value, set_value)
 
@@ -196,6 +197,10 @@ class DataRecord(models.Model):
             return "No date"
         else:
             return self.date.strftime("%D")
+
+
+class FacilityRecord(DataRecord):
+    facility = models.ForeignKey(Facility, related_name="data_records")
 
 
 class KeyRename(models.Model):

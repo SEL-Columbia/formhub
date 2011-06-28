@@ -5,7 +5,7 @@ from django.template import RequestContext
 import json
 
 from nga_districts.models import LGA
-from facilities.models import Facility, DataRecord
+from facilities.models import Facility, FacilityRecord
 
 
 def home(request):
@@ -32,7 +32,7 @@ def facilities_for_site(request, site_id):
     lga = LGA.objects.get(geoid=site_id)
     facility_ids = [z['id'] for z in Facility.objects.filter(lga=lga).values('id')]
     d = {}
-    drq = DataRecord.objects.order_by('-date')
+    drq = FacilityRecord.objects.order_by('-date')
     for facility in facility_ids:
         drs = drq.filter(facility=facility)
         dvals = {}
