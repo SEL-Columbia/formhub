@@ -25,8 +25,5 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-    
-    url(r'^baseline/', include('parsed_xforms.urls')),
-    url(r'^xforms/', include('parsed_xforms.urls')),
     url(r'^$', index),
 )

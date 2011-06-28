@@ -1,5 +1,6 @@
 from django.db import models
 from collections import defaultdict
+import sys
 
 from nga_districts.models import LGA
 from abstract_models import Variable, CalculatedVariable, DataRecord, DictModel, KeyRename
@@ -110,6 +111,9 @@ from facility_builder import FacilityBuilder
 
 def create_facility_from_signal(sender, **kwargs):
     survey_instance = kwargs["instance"]
-    FacilityBuilder.create_facility_from_instance(survey_instance)
+    try:
+        FacilityBuilder.create_facility_from_instance(survey_instance)
+    except:
+        print "Unexpected error:", sys.exc_info()[0]
 
 post_save.connect(create_facility_from_signal, sender=Instance)

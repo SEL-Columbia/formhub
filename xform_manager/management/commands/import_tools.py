@@ -16,10 +16,9 @@ from xform_manager.models import Instance, XForm
 from django.contrib.auth.models import User
 from django.conf import settings
 
-xform_db = settings.MONGO_DB
-xform_instances = xform_db.instances
 
 IMAGES_DIR = os.path.join(settings.MEDIA_ROOT, "attachments")
+
 
 class Command(BaseCommand):
     help = "Import ODK forms and instances."

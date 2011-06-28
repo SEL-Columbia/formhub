@@ -208,23 +208,7 @@ class Command(BaseCommand):
             print "Had %d error(s) when importing LGA %s data..." % (num_errors, data)
 
     def load_table_defs(self):
-        table_types = [
-            ("Health", "health"),
-            ("Education", "education"),
-            ("Water", "water")
-            ]
-        from facility_views.models import FacilityTable
-        for name, slug in table_types:
-            curtable = FacilityTable.objects.create(name=name, slug=slug)
-            csv_reader = CsvReader(os.path.join("facility_views","table_defs", "%s.csv" % slug))
-            for input_d in csv_reader.iter_dicts():
-                d = {
-                    'name': input_d['name'],
-                    'slug': input_d['slug'],
-                    'description': input_d.pop('description', ''),
-                    'clickable': input_d.pop('clickable', 'no') == 'yes'
-                }
-                curtable.add_variable(d)
+        call_command('load_table_defs')
 
     def load_surveys(self):
         xfm_json_path = os.path.join('data','xform_manager_dataset.json')

@@ -83,10 +83,10 @@ def import_instances_from_phone(path_to_odk_folder):
     instances = get_list_of_odk_instances()
 
     def add_path_to_instance_folder():
-        regexp = r"^/mnt/sdcard/odk/instances/([^/]+)/[^/]+.xml$"
+        regexp = r"/sdcard/odk/instances/([^/]+)/[^/]+.xml$"
         for instance in instances:
             m = re.search(regexp, instance[u'path'])
-            assert m
+            assert m, str(instance)
             instance_folder_name = m.group(1)
             instance[u'path_to_instance_folder'] = os.path.join(
                 path_to_odk_folder, u'instances',
