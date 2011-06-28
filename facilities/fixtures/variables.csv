@@ -74,3 +74,4 @@
 "float","pop_ratio_75_79","Population ratio 5-9",,
 "float","pop_ratio_80_84","Population ratio 5-9",,
 "float","pop_ratio_85_plus","Population ratio 5-9",,
+"float","area_sq_km","Area (sq. km)",,
