@@ -18,6 +18,17 @@ def images_count():
 
 
 class TestImportingDatabase(TestCase):
+    def setUp(self):
+        pass
+    
+    def tearDown(self):
+        # delete everything we imported
+        Instance.objects.all().delete() # ?
+        
+        images = glob.glob(os.path.join(settings.MEDIA_ROOT, 'attachments', '*'))
+        for image in images:
+            os.remove(image)
+    
     def test_importing_b1_and_b2(self):
         """
         b1 and b2 are from the *same phone* at different times. (this
@@ -31,22 +42,24 @@ class TestImportingDatabase(TestCase):
         1 photo survey (duplicate, completed)
         1 simple survey (marked as complete)
         """
+        # import from sd card
+        call_command('import_tools', DB_FIXTURES_PATH)
 
-        i = Instance.objects.count()
-        ims = images_count()
+        initial_instance_count = Instance.objects.count()
+        initial_image_count = images_count()
 
         call_command('import_tools', DB_FIXTURES_PATH)
 
-        i2 = Instance.objects.count()
-        ims2 = images_count()
+        final_instance_count = Instance.objects.count()
+        final_image_count = images_count()
 
         #Images are not duplicated
         # TODO: Figure out how to get this test passing.
-        self.assertEqual(ims, ims2)
+        self.assertEqual(initial_image_count, final_image_count)
 
         # Instance count should have incremented
         # by 1 (or 2) based on the b1 & b2 data sets
-        self.assertTrue(i < i2)
+        self.assertEqual(initial_instance_count, final_instance_count)
 
     def test_importing_duplicate_instance(self):
         """
@@ -63,11 +76,11 @@ class TestImportingDatabase(TestCase):
         xml_str = f.read()
         f.close()
         Instance.objects.create(xml=xml_str)
-        icount1 = Instance.objects.count()
+        initial_instance_count = Instance.objects.count()
 
         call_command('import_tools', DB_FIXTURES_PATH)
 
-        icount2 = Instance.objects.count()
+        final_instance_count = Instance.objects.count()
 
-        #it should increment by 1 (the incomplete survey) I think??
-        self.assertEqual(icount1 + 1, icount2)
+        self.assertEqual(initial_instance_count, 1)
+        self.assertEqual(final_instance_count, 2)
