@@ -35,14 +35,12 @@
 {% endblock %}
 {% block content %}
 <div class='content-inner-wrap'>
-<div class='overmap-content'>
 	<div class="widget-outer-wrap" style="bottom:0">
 		<div class="fullw-widget">
 			<div id="lga-facilities-table"></div>
 		</div>
 	</div>
-</div>
-<div id="map" class="resizing-map"></div>
+	<div id="map" class="resizing-map"></div>
 </div>
 {% endblock %}
 {% block js %}
@@ -59,13 +57,14 @@ var selectedSector, selectedFacility, selectedColumn;
 		'background-color':'#fff',
 		margin: '4px 5px 5px 0'
 	};
-	var rdWstyle = "height:65%;right:0;position:absolute";
+	var rdWstyle = "height:65%;right:0;position:absolute;z-index:99";
 	var overMapContent;
 	var rightDiv;
+	var mapContent;
 	$.fn._showSideDiv = function(){
-		if(overMapContent===undefined) { overMapContent = $(".overmap-content"); }
+		if(mapContent===undefined) { mapContent = $('.content-inner-wrap'); }
 		if(rightDiv===undefined) {
-			var rdWrap = $("<div />", {'class':'rd-wrap', style: rdWstyle}).appendTo(overMapContent);
+			var rdWrap = $("<div />", {'class':'rd-wrap', style: rdWstyle}).appendTo(mapContent);
 			rightDiv = $("<div />", {'class': 'right-div'}).css(rdCss).appendTo(rdWrap);
 			}
 		rightDiv.html(this.eq(0));
