@@ -30,6 +30,21 @@
 		background-color: rgba(0,0,0,0.1);
 		margin-top: 20px;
 	}
+	.column-data-wrap {}
+	.column-data {
+		margin: 4px 12px;
+		background-color: #fff;
+	}
+	.col-info {
+		margin: 2px 5px;
+	}
+	.col-info h2 {
+		margin: 2px 0;
+	}
+	.col-info h3.description {
+		margin: 2px 0;
+		text-decoration: underline;
+	} 
 </style>
 
 {% endblock %}
@@ -165,6 +180,7 @@ function facilityDataLoaded(){
 //	$('body').bind('facility-mouseout', function(evt, edata){var facility = facilityData.list[edata.uid];});
 	$('body').bind('sector-change', function(evt, edata){
 		$('body').trigger('facility-unselect');
+		$('body').trigger('column-unselect');
 		if(selectedSector !== edata.sector) {
 			selectedSector = edata.sector;
 			ftabs.tabs('select', facilitySectorSlugs.indexOf(selectedSector));
@@ -177,12 +193,21 @@ function facilityDataLoaded(){
 		log("Show description box", colData);
 	}
 
+
+	function getColData() {
+		var colData = $('.widget-outer-wrap').find('div.column-data');
+		if(colData.length===0) {
+			colData = $("<div />", {'class': 'column-data'});
+			$('.widget-outer-wrap').prepend($('<div />', {'class':'column-data-wrap'}).html(colData));
+		}
+		return colData;
+	}
 	$('body').bind('column-select', function(evt, edata){
 		var wrapElement = $('#lga-facilities-table');
 		var column = edata.column;
 		var sector = edata.sector;
 		if(selectedColumn!==edata.column) {
-			$('body').trigger('column-unselect', {column:selectedColumn});
+			$('body').trigger('column-unselect', {column:selectedColumn, nextColumn: edata.column});
 			if(column.clickable) {
 				$('.selected-column', wrapElement).removeClass('selected-column');
 				(function highlightTheColumn(column){
@@ -192,14 +217,31 @@ function facilityDataLoaded(){
 						$(this).find('td').eq(columnIndex).addClass('selected-column');
 					})
 				})(column);
-
 				showColumnDescription(edata.column);
+			}
+			if(true) {
+				var colData = getColData();
+				var cdiv = $("<div />", {'class':'col-info'}).html($("<h2 />").text(column.name));
+				if(column.description!==undefined) {
+					cdiv.append($("<h3 />", {'class':'description'}).text(column.description));
+				}
+				colData.animate({'height':80}, 500, function(){
+					$(this).html(cdiv);
+				});
 			}
 			selectedColumn = edata.column;
 		}
 	});
 	$('body').bind('column-unselect', function(evt, edata){
-		$('#column-description').hide();
+		if(edata===undefined) {edata = {}}
+		if(edata.nextColumn === undefined) {
+			var cd = getColData()
+			cd.animate({'height':0}, 500, function(){
+				cd.empty();
+			})
+		} else {
+			getColData().empty();
+		}
 	})
 	// actions to be taken for the facility navigation table and image stuff.
 	$('body').bind('facility-select', function(evt, edata){

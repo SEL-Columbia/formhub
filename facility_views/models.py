@@ -35,6 +35,7 @@ class TableColumn(models.Model):
         d = {
             'name': self.name,
             'slug': self.slug,
+            'subgroups': self.subgroups.split(' '),
             'clickable': self.clickable
         }
         if not self.description in [None, '']:
