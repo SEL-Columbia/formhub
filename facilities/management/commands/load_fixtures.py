@@ -181,6 +181,10 @@ class Command(BaseCommand):
                 'data': 'population',
                 'path': os.path.join(data_dir, 'population.csv'),
                 },
+            'area': {
+                'data': 'area',
+                'path': os.path.join(data_dir, 'area.csv'),
+                },
             }
         for kwargs in data_args:
             self.load_lga_data_from_csv(**data_args[kwargs])
