@@ -32,13 +32,13 @@ def facilities_for_site(request, site_id):
     lga = LGA.objects.get(geoid=site_id)
     facility_ids = [z['id'] for z in Facility.objects.filter(lga=lga).values('id')]
     d = {}
-    drq = DataRecord.objects.order_by('-date_value')
+    drq = DataRecord.objects.order_by('-date')
     for facility in facility_ids:
         drs = drq.filter(facility=facility)
         dvals = {}
-        #TODO: find something to fix the date_value problem.
+        #TODO: find something to fix the date problem.
         # (i think a different date would just override the entry in the dict)
-        for t in drs.values('variable_id', 'string_value', 'float_value', 'boolean_value', 'date_value'):
+        for t in drs.values('variable_id', 'string_value', 'float_value', 'boolean_value', 'date'):
             dvals[t['variable_id']] = \
                     non_null([t['string_value'], t['float_value'], t['boolean_value']])
         d[facility] = dvals

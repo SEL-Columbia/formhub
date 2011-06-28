@@ -16,11 +16,10 @@ class Facility(models.Model):
     facility_id = models.CharField(max_length=100)
     lga = models.ForeignKey(LGA, related_name="facilities", null=True)
 
-
     def set(self, variable, value, date=None):
         if date is None:
             date = datetime.date.today()
-        d, created = DataRecord.objects.get_or_create(variable=variable, facility=self, date_value=date)
+        d, created = DataRecord.objects.get_or_create(variable=variable, facility=self, date=date)
         d.value = variable.get_casted_value(value)
         d.save()
 
@@ -28,9 +27,9 @@ class Facility(models.Model):
         records = DataRecord.objects.filter(facility=self)
         d = defaultdict(dict)
         for record in records:
-            d[record.variable.slug][record.date_value.isoformat()] = record.value
+            d[record.variable.slug][record.date.isoformat()] = record.value
         return d
-    
+
     @property
     def sector(self):
         try:
@@ -39,7 +38,7 @@ class Facility(models.Model):
             return None
 
     def get_latest_data(self):
-        records = DataRecord.objects.filter(facility=self).order_by('-date_value')
+        records = DataRecord.objects.filter(facility=self).order_by('-date')
         d = {}
         for r in records:
             # todo: test to make sure this sorting is correct
@@ -51,7 +50,7 @@ class Facility(models.Model):
         if type(variable) == str:
             variable = Variable.objects.get(slug=variable)
         try:
-            record = DataRecord.objects.filter(facility=self, variable=variable).order_by('-date_value')[0]
+            record = DataRecord.objects.filter(facility=self, variable=variable).order_by('-date')[0]
         except IndexError:
             return None
         return record.value
@@ -62,14 +61,14 @@ class Facility(models.Model):
         d.save()
 
     def dates(self):
-        drs = DataRecord.objects.filter(facility=self).values('date_value').distinct()
-        return [d['date_value'] for d in drs]
+        drs = DataRecord.objects.filter(facility=self).values('date').distinct()
+        return [d['date'] for d in drs]
 
     @classmethod
     def get_latest_data_by_lga(cls, lga):
         d = defaultdict(dict)
-#        records = DataRecord.objects.filter(facility__lga=lga).order_by('variable__slug', '-date_value')
-        records = DataRecord.objects.filter(facility__lga=lga).order_by('-date_value')
+#        records = DataRecord.objects.filter(facility__lga=lga).order_by('variable__slug', '-date')
+        records = DataRecord.objects.filter(facility__lga=lga).order_by('-date')
         for r in records:
             # todo: test to make sure this sorting is correct
 #            if r.variable.slug not in d[r.facility.id]:
@@ -176,7 +175,7 @@ class DataRecord(models.Model):
 
     variable = models.ForeignKey(Variable, related_name="data_records")
     facility = models.ForeignKey(Facility, related_name="data_records")
-    date_value = models.DateField(null=True)
+    date = models.DateField(null=True)
 
     TYPES = ['float', 'boolean', 'string']
 
@@ -193,10 +192,10 @@ class DataRecord(models.Model):
     value = property(get_value, set_value)
 
     def date_string(self):
-        if self.date_value is None:
+        if self.date is None:
             return "No date"
         else:
-            return self.date_value.strftime("%D")
+            return self.date.strftime("%D")
 
 
 class KeyRename(models.Model):
