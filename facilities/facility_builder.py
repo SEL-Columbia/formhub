@@ -15,12 +15,6 @@ class FacilityBuilder(object):
     SURVEYS_WITH_FACILITIES = ['Health', 'Water', 'Education']
 
     @classmethod
-    def add_calculated_variables(cls, d):
-        for cv in CalculatedVariable.objects.all():
-            value = cv.calculate_value(d)
-            d[cv.slug] = value
-
-    @classmethod
     def create_facility_from_dict(cls, d):
         """
         Requires facility type and lga to be specified in d, all other
@@ -28,7 +22,7 @@ class FacilityBuilder(object):
         added to the database.
         """
         KeyRename.rename_keys(d)
-        cls.add_calculated_variables(d)
+        CalculatedVariable.add_calculated_variables(d)
 
         # using gps as facility id is a slight hack to get a unique id
         kwargs = {

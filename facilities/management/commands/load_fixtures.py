@@ -6,6 +6,7 @@ import time
 import sys
 from facilities.models import Facility, Variable, CalculatedVariable, \
     KeyRename, FacilityRecord
+from nga_districts.models import LGA, LGARecord
 from facilities.facility_builder import FacilityBuilder
 from utils.csv_reader import CsvReader
 from django.conf import settings
@@ -38,6 +39,7 @@ class Command(BaseCommand):
         self.load_variables()
         self.load_table_defs()
         self.load_facilities()
+        self.load_lga_data()
         self.create_admin_user()
         self._end_time = time.time()
         self.print_stats()
@@ -83,7 +85,8 @@ class Command(BaseCommand):
         info = {
             'number of facilities': Facility.objects.count(),
             'facilities without lgas': Facility.objects.filter(lga=None).count(),
-            'number of data records': FacilityRecord.objects.count(),
+            'number of facility records': FacilityRecord.objects.count(),
+            'number of lga records': LGARecord.objects.count(),
             'time': seconds_to_hms(self._end_time - self._start_time),
             }
         print json.dumps(info, indent=4)
@@ -126,7 +129,7 @@ class Command(BaseCommand):
                 Variable.objects.get_or_create(**d)
 
     def load_facilities(self):
-        data_dir = 'data'
+        data_dir = 'data/facility'
         sector_args = {
             'health': {
                 'facility_type': 'Health',
@@ -170,6 +173,39 @@ class Command(BaseCommand):
                     num_errors += 1
         if not self._debug:
             print "Had %d error(s) when importing %s facilities..." % (num_errors, facility_type)
+
+    def load_lga_data(self):
+        data_dir = 'data/lga'
+        data_args = {
+            'population': {
+                'data': 'population',
+                'path': os.path.join(data_dir, 'population.csv'),
+                },
+            }
+        for kwargs in data_args:
+            self.load_lga_data_from_csv(**data_args[kwargs])
+
+    def load_lga_data_from_csv(self, data, path):
+        csv_reader = CsvReader(path)
+        num_errors = 0
+        for d in csv_reader.iter_dicts():
+            if self._limit_import:
+                if '_lga_id' not in d:
+                    print d
+                if d['_lga_id'] not in ['732']:
+                    continue
+            lga = LGA.objects.get(id=d['_lga_id'])
+            if self._debug:
+                lga.add_data_from_dict(d)
+            else:
+                try:
+                    lga.add_data_from_dict(d)
+                except KeyboardInterrupt:
+                    sys.exit(0)
+                except:
+                    num_errors += 1
+        if not self._debug:
+            print "Had %d error(s) when importing LGA %s data..." % (num_errors, data)
 
     def load_table_defs(self):
         table_types = [

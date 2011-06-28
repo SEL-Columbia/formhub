@@ -2,7 +2,7 @@ from django.db import models
 from collections import defaultdict
 
 from nga_districts.models import LGA
-from abstract_models import Variable, CalculatedVariable, DataRecord, DictModel
+from abstract_models import Variable, CalculatedVariable, DataRecord, DictModel, KeyRename
 
 
 class FacilityRecord(DataRecord):
@@ -102,42 +102,6 @@ class Facility(DictModel):
             for record in records:
                 tot += record.value
             return tot / count
-
-
-class KeyRename(models.Model):
-    data_source = models.CharField(max_length=64)
-    old_key = models.CharField(max_length=64)
-    new_key = models.CharField(max_length=64)
-
-    class Meta:
-        unique_together = (("data_source", "old_key"),)
-
-    @classmethod
-    def _get_rename_dictionary(cls, data_source):
-        result = {}
-        for key_rename in cls.objects.filter(data_source=data_source):
-            result[key_rename.old_key] = key_rename.new_key
-        return result
-
-    @classmethod
-    def rename_keys(cls, d):
-        """
-        Apply the rename rules saved in the database to the dict
-        d. Assumes that the key '_data_source' is in d.
-        """
-        temp = {}
-        if '_data_source' not in d:
-            return
-        rename_dictionary = cls._get_rename_dictionary(d['_data_source'])
-        for k, v in rename_dictionary.items():
-            if k in d:
-                temp[v] = d[k]
-                del d[k]
-            else:
-                print "rename rule '%s' not used in data source '%s'" % \
-                    (k, d['_data_source'])
-        # this could overwrite keys that weren't renamed
-        d.update(temp)
 
 
 from xform_manager.models import Instance

@@ -4,10 +4,46 @@ import re
 import datetime
 
 
+class KeyRename(models.Model):
+    data_source = models.CharField(max_length=64)
+    old_key = models.CharField(max_length=64)
+    new_key = models.CharField(max_length=64)
+
+    class Meta:
+        unique_together = (("data_source", "old_key"),)
+
+    @classmethod
+    def _get_rename_dictionary(cls, data_source):
+        result = {}
+        for key_rename in cls.objects.filter(data_source=data_source):
+            result[key_rename.old_key] = key_rename.new_key
+        return result
+
+    @classmethod
+    def rename_keys(cls, d):
+        """
+        Apply the rename rules saved in the database to the dict
+        d. Assumes that the key '_data_source' is in d.
+        """
+        temp = {}
+        if '_data_source' not in d:
+            return
+        rename_dictionary = cls._get_rename_dictionary(d['_data_source'])
+        for k, v in rename_dictionary.items():
+            if k in d:
+                temp[v] = d[k]
+                del d[k]
+            else:
+                print "rename rule '%s' not used in data source '%s'" % \
+                    (k, d['_data_source'])
+        # this could overwrite keys that weren't renamed
+        d.update(temp)
+
+
 class Variable(models.Model):
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=255)
 #    slug = models.CharField(max_length=64, unique=True)
-    slug = models.CharField(max_length=64, primary_key=True)
+    slug = models.CharField(max_length=128, primary_key=True)
     data_type = models.CharField(max_length=20)
     description = models.CharField(max_length=255)
 
@@ -38,7 +74,6 @@ class Variable(models.Model):
             raise Exception(self.__unicode__())
         return cast_function[self.data_type](value)
 
-
     def to_dict(self):
         return dict([(k, getattr(self, k)) for k in self.FIELDS])
 
@@ -57,14 +92,18 @@ class CalculatedVariable(Variable):
 
     FIELDS = Variable.FIELDS + ['formula']
 
+    @classmethod
+    def add_calculated_variables(cls, d):
+        for cv in cls.objects.all():
+            value = cv.calculate_value(d)
+            if value is not None:
+                d[cv.slug] = value
+
     def calculate_value(self, d):
-        # TODO: eval lol
-        val = None
         try:
-            val = eval(self.formula)
+            return eval(self.formula)
         except:
-            pass
-        return val
+            return None
 
 
 class DataRecord(models.Model):
@@ -116,3 +155,15 @@ class DictModel(models.Model):
         d, created = self._data_record_class.objects.get_or_create(**kwargs)
         d.value = variable.get_casted_value(value)
         d.save()
+
+    def add_data_from_dict(self, d):
+        """
+        Key value pairs in d that are in the data dictionary will be
+        added to the database.
+        """
+        KeyRename.rename_keys(d)
+        CalculatedVariable.add_calculated_variables(d)
+
+        for v in Variable.objects.all():
+            if v.slug in d:
+                self.set(v, d[v.slug])
