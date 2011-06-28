@@ -276,7 +276,6 @@ function facilityDataLoaded(){
   		});
 		
 		
-//		$('.overmap-content').hide();
 //		window._map = this.map;
 		var markers = new OpenLayers.Layer.Markers("Markers");
 		var bounds = new OpenLayers.Bounds();
@@ -300,7 +299,28 @@ function facilityDataLoaded(){
 		var google = new OpenLayers.Layer.Google( "Google", {type: 'satellite'});
 		this.map.addLayer(google);
 		this.map.addLayer(markers);
-    	this.map.zoomToExtent(bounds);
+		(function defineNewZoomer(map){
+			map.zoomToExtentInBox = (function(){
+				return function(bounds, pixel, size){
+					if(pixel instanceof Array) { pixel = new OpenLayers.Pixel(pixel[0], pixel[1]) }
+					if(size instanceof Array) { size = new OpenLayers.Size(size[0], size[1]) }
+					(function(){
+			        	var center = bounds.getCenterLonLat();
+						if (this.baseLayer.wrapDateLine) {
+							var maxExtent = this.getMaxExtent();
+				            bounds = bounds.clone();
+				            while (bounds.right < bounds.left) {
+				                bounds.right += maxExtent.getWidth();
+				            }
+				            center = bounds.getCenterLonLat().wrapDateLine(maxExtent);
+							console.log(center);
+						}
+						this.setCenter(center, this.getZoomForExtent(bounds, false)-1);
+					}).call(map)
+				}
+			})()
+		})(this.map);
+    	this.map.zoomToExtentInBox(bounds, [10, 10], [200, 200]);
 	});
 }
 
