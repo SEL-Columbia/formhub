@@ -149,7 +149,7 @@ class Command(BaseCommand):
             if self._limit_import:
                 if '_lga_id' not in d:
                     print d
-                if d['_lga_id'] not in ['732', '127', '394']:
+                if d['_lga_id'] not in ['732']:
                     continue
             d['_data_source'] = data_source
             d['_facility_type'] = facility_type
