@@ -313,7 +313,6 @@ function facilityDataLoaded(){
 				                bounds.right += maxExtent.getWidth();
 				            }
 				            center = bounds.getCenterLonLat().wrapDateLine(maxExtent);
-							console.log(center);
 						}
 						this.setCenter(center, this.getZoomForExtent(bounds, false)-1);
 					}).call(map)
