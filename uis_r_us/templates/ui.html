@@ -369,19 +369,19 @@ function createRowForFacilityWithColumns(fpoint, cols){
 	fpoint.tr = tr.get(0);
 	return tr;
 }
+function log() {
+	if(console !== undefined && console.log !== undefined) {
+		console.log(arguments);
+	}
+}
+function warn() {
+	if(console !== undefined && console.warn !== undefined) {
+		console.warn(arguments); throw(arguments[0]);
+	}
+}
 
 var facilityDataStuff = (function(){
 	var printDebugStats = true;
-	function warn() {
-		if(console !== undefined && console.warn !== undefined) {
-			console.warn(arguments); throw(arguments[0]);
-		}
-	}
-	function log() {
-		if(console !== undefined && console.log !== undefined) {
-			console.log(arguments);
-		}
-	}
 	function happy() {console.log(arguments);}
 	function processPassedData(passedData){
 		var data, sectors, noLatLngs=0;
