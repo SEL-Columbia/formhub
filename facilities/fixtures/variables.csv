@@ -93,10 +93,11 @@
 "boolean","child_health_growth_monitor","Growth Monitoring",,
 "boolean","child_health_deworming","Deworming",,
 "boolean","paid_services_child_health","User feeds for child health services",,
+"boolean","no_user_fees_child_health","No user fees for child health",,"not d['paid_services_child_health']"
 "boolean","hiv_treatment_yn","HIV Treatment",,
 "boolean","hiv_tx_srvcs_pmtct_services","PMTCT Services",,
 "boolean","lab_tests_tb_microscopy","TB microscopy (Y/N)",,
 "boolean","tb_treatment_yn","TB Treatment",,
 "boolean","lab_tests_malaria_rdt","Malaria RDT Testing",,
 "boolean","malaria_treatment_yn","Malaria Treatment (ACT)",,
-"boolean","malaria_treatment_srvcs_itn","Insecticide-treated bednets (Y/N)",,
+"boolean","malaria_treatment_srvcs_itn","Insecticide-treated bednets",,
