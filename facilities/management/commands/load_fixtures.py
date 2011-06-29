@@ -49,7 +49,6 @@ class Command(BaseCommand):
         db_name = settings.DATABASES['default']['NAME']
         db_user = settings.DATABASES['default']['USER']
         db_password = settings.DATABASES['default']['PASSWORD']
-        print db_host, db_name, db_user, db_password
 
         def drop_sqlite_database():
             try:
