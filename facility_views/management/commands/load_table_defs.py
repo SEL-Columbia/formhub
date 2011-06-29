@@ -47,6 +47,7 @@ class Command(BaseCommand):
                     'slug': input_d['slug'],
                     'subgroups': input_d['subgroups'],
                     'description': input_d.pop('description', ''),
-                    'clickable': input_d.pop('clickable', 'no') == 'yes'
+                    'clickable': input_d.pop('clickable', 'no') == 'yes',
+                    'click_action': input_d.pop('click action', input_d.pop('click_action', '')),
                 }
                 curtable.add_variable(d)

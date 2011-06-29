@@ -31,6 +31,7 @@ class TableColumn(models.Model):
     slug = models.CharField(max_length=64)
     description = models.CharField(max_length=255, null=True)
     clickable = models.BooleanField(default=False)
+    click_action = models.CharField(max_length=64, null=True)
     subgroups = models.CharField(max_length=512, null=True)
     variable_id = models.IntegerField(null=True)
     
@@ -45,7 +46,8 @@ class TableColumn(models.Model):
             'name': self.name,
             'slug': self.slug,
             'subgroups': subgroups,
-            'clickable': self.clickable
+            'clickable': self.clickable,
+            'click_action': self.click_action
         }
         if not self.description in [None, '']:
             d['description'] = self.description

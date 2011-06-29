@@ -55,6 +55,14 @@
 		margin: 3px 7px;
 		background-color: #fff;
 		width: 185px;
+		padding: 6px 3px;
+	}
+	.sn ul {
+		margin: 0;
+		padding-left: 20px;
+	}
+	.sn ul ul {
+		padding-left: 10px;
 	}
 	#facility-tabs.hide-tds td, #facility-tabs.hide-tds th {
 		display: none;
@@ -204,9 +212,6 @@ function facilityDataLoaded(){
 			(typeof(filterPointsBySector)==='function') && filterPointsBySector(selectedSector);
 		}
 	});
-	function selectSubSector(ss) {
-		
-	}
 	$('body').bind('subsector-select', function(evt, edata){
 		var ftabs = $('#facility-tabs');
 		(function(ftabs){
@@ -233,13 +238,26 @@ function facilityDataLoaded(){
 	}
 
 
-	function getColData() {
+	function getColDataDiv() {
 		var colData = $('.widget-outer-wrap').find('div.column-data');
 		if(colData.length===0) {
 			colData = $("<div />", {'class': 'column-data'});
 			$('.widget-outer-wrap').prepend($('<div />', {'class':'column-data-wrap'}).html(colData));
 		}
 		return colData;
+	}
+	function getTabulations(sector, col) {
+		var sList = facilityData.bySector[sector];
+		var valueCounts = {};
+		$(sList).each(function(i, id){
+			var fac = facilityData.list[id];
+			var val = fac[col];
+			if(valueCounts[val] === undefined) {
+				valueCounts[val] = 0;
+			}
+			valueCounts[val]++;
+		});
+		return valueCounts;
 	}
 	$('body').bind('column-select', function(evt, edata){
 		var wrapElement = $('#lga-facilities-table');
@@ -258,29 +276,33 @@ function facilityDataLoaded(){
 				})(column);
 				showColumnDescription(edata.column);
 			}
-			if(true) {
-				var colData = getColData();
+			if(column.click_action === 'tabulate') {
+				var colDataDiv = getColDataDiv();
 				var cdiv = $("<div />", {'class':'col-info'}).html($("<h2 />").text(column.name));
 				if(column.description!==undefined) {
 					cdiv.append($("<h3 />", {'class':'description'}).text(column.description));
 				}
-				colData.animate({'height':80}, 500, function(){
-					$(this).html(cdiv);
+				var tabl = $("<table />").css({'width':'100%'});
+				var tbod = $("<tbody />").appendTo(tabl);
+				var tr = $("<tr />").appendTo(tbod);
+				var tabulations = getTabulations(sector.slug, column.slug);
+				$.each(tabulations, function(k, count){
+					var td = $("<td />");
+					td.append($("<strong />").text(k))
+						.append($("<span />").text(': '))
+						.append($("<span />", {'class': 'count'}).text(count));
+					tr.append(td);
 				});
+				cdiv.append(tabl);
+				colDataDiv.html(cdiv)
+						.css({'height':80});
 			}
 			selectedColumn = edata.column;
 		}
 	});
 	$('body').bind('column-unselect', function(evt, edata){
 		if(edata===undefined) {edata = {}}
-		if(edata.nextColumn === undefined) {
-			var cd = getColData()
-			cd.animate({'height':0}, 500, function(){
-				cd.empty();
-			})
-		} else {
-			getColData().empty();
-		}
+		getColDataDiv().empty().css({'height':0});
 	})
 	// actions to be taken for the facility navigation table and image stuff.
 	$('body').bind('facility-select', function(evt, edata){
