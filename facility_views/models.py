@@ -17,16 +17,11 @@ class FacilityTable(models.Model):
                 'slug': s.slug} for s in self.subgroups.all()]
         }
     
+    def add_column(self, data):
+        ColumnCategory.objects.get_or_create(table=self, slug=data['slug'], name=data['name'])
+    
     def add_variable(self, variable_data):
         variable_data['facility_table'] = self
-        
-        subgroup_list = variable_data.get('subgroups')
-        if subgroup_list is not None:
-            subgroups = subgroup_list.split(' ')
-            for subgroup in subgroups:
-                if subgroup is not '':
-                    col, created = ColumnCategory.objects. \
-                        get_or_create(name=subgroup, slug=subgroup, table=self)
         TableColumn.objects.get_or_create(**variable_data)
 
 class TableColumn(models.Model):
