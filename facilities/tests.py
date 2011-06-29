@@ -1,7 +1,7 @@
 from django.test import TestCase
 from facility_builder import FacilityBuilder
-from models import CalculatedVariable
-
+from models import CalculatedVariable, Variable, Facility, FacilityRecord
+from nga_districts.models import Zone, State, LGA
 
 class CalculatedVariableTest(TestCase):
 
@@ -37,3 +37,50 @@ class CalculatedVariableTest(TestCase):
             f.get_latest_value_for_variable('student_teacher_ratio'),
             5
             )
+
+
+class GapAnalysisTest(TestCase):
+
+    def setUp(self):
+        self.power = Variable.objects.create(
+            slug='power', data_type='string'
+            )
+
+        self.zone = Zone.objects.create(name='Zone', slug='zone')
+        self.state = State.objects.create(name='Zone', slug='zone', zone=self.zone)
+        lga_names = ['LGA_1', 'LGA_2']
+        self.lgas = [LGA.objects.create(name=n, slug=n, state=self.state) for n in lga_names]
+        self.facilities = []
+        for lga in self.lgas:
+            for facility_id in ['a', 'b']:
+                self.facilities.append(
+                    Facility.objects.create(facility_id=facility_id, lga=lga)
+                    )
+        for facility, value in zip(self.facilities, ['none', 'good', 'none', 'none']):
+            facility.set(self.power, value)
+
+    def tearDown(self):
+        self.zone.delete()  # I think this should cascade
+        self.power.delete()
+
+    def test_count_by_lga(self):
+        counts = FacilityRecord.count_by_lga(self.power)
+        expected_dict = {
+            1: {
+                'none': 1,
+                'good': 1,
+                },
+            2: {
+                'none': 2,
+                },
+            }
+        self.assertEquals(counts, expected_dict)
+
+
+
+
+
+
+
+
+

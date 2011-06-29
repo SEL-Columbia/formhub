@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Max
 from collections import defaultdict
 import sys
 
@@ -8,6 +9,18 @@ from abstract_models import Variable, CalculatedVariable, DataRecord, DictModel,
 
 class FacilityRecord(DataRecord):
     facility = models.ForeignKey('Facility', related_name='data_records')
+
+    @classmethod
+    def count_by_lga(cls, variable):
+        value = '%s_value' % variable.data_type
+        records = cls.objects.filter(variable=variable).values('facility__lga', 'facility', value).annotate(Max('date')).distinct()
+        result = defaultdict(dict)
+        for d in records:
+            try:
+                result[d['facility__lga']][d[value]] += 1
+            except KeyError:
+                result[d['facility__lga']][d[value]] = 1
+        return result
 
 
 class Facility(DictModel):
