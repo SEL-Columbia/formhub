@@ -28,3 +28,6 @@ xform_manager_dataset.json
 data
 local_settings.py
 .~lock.*
+
+# "your code sucks, you should fix this" -- andrew
+test_static
