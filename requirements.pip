@@ -7,7 +7,5 @@ ipython==0.10.2
 #-e git+https://github.com/mvpdev/pyxform.git@5cd544380c7baffcc4f2829b5452d60020663ddd#egg=pyxform-dev
 wsgiref==0.1.2
 xlrd==0.7.1
-MySQL-python>=1.2.2
 # sql alchemy is used for importing data from the phones
 SQLAlchemy==0.7.1
-psycopg2=2.4.2
