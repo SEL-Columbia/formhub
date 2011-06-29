@@ -45,6 +45,12 @@ class Command(BaseCommand):
         self.print_stats()
 
     def drop_database(self):
+        db_host = settings.DATABASES['default']['HOST'] or 'localhost'
+        db_name = settings.DATABASES['default']['NAME']
+        db_user = settings.DATABASES['default']['USER']
+        db_password = settings.DATABASES['default']['PASSWORD']
+        print db_host, db_name, db_user, db_password
+
         def drop_sqlite_database():
             try:
                 os.remove('db.sqlite3')
@@ -54,22 +60,38 @@ class Command(BaseCommand):
 
         def drop_mysql_database():
             import MySQLdb
-            db_name = settings.DATABASES['default']['NAME']
-            db = MySQLdb.connect(
-                "localhost",
-                settings.DATABASES['default']['USER'],
-                settings.DATABASES['default']['PASSWORD'],
+            conn = MySQLdb.connect(
+                db_host,
+                db_user,
+                db_password,
                 db_name
-                )
-            cursor = db.cursor()
+            )
+            cursor = conn.cursor()
             # to start up django the mysql database must exist
             cursor.execute("DROP DATABASE %s" % db_name)
             cursor.execute("CREATE DATABASE %s" % db_name)
-            db.close()
+            conn.close()
+
+        def drop_postgresql_database():
+            import psycopg2
+            # connect to postgres db to drop and recreate db
+            conn = psycopg2.connect(
+                database='postgres',
+                user=db_user,
+                host=db_host,
+                password=db_password
+            )
+            conn.set_isolation_level(
+                psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+            cursor = conn.cursor()
+            cursor.execute("DROP DATABASE %s" % db_name)
+            cursor.execute("CREATE DATABASE %s" % db_name)
+            conn.close()
 
         caller = {
             'django.db.backends.mysql': drop_mysql_database,
             'django.db.backends.sqlite3': drop_sqlite_database,
+            'django.db.backends.postgresql_psycopg2': drop_postgresql_database,
             }
         drop_function = caller[settings.DATABASES['default']['ENGINE']]
         drop_function()
