@@ -10,16 +10,10 @@
 "boolean","water_sources_none","No Water","No water (True = no water).",
 "boolean","water_access","Access to Water",,"not d['water_sources_none']"
 "string","water_source_type","Type","Type of water source.",
-"string","lift","Lift","Lift type.",
-"string","water_source_developed_by","Developed by","Developer of the water source.",
+"string","lift_mechanism","Lift","Lift type.",
+"string","source_developed_by","Developed by","Developer of the water source.",
 "boolean","water_source_used_today_yn","Used today","Was this water source used today?",
 "string","water_source_physical_state","State","Physical state of the water source.",
-"float","student_teacher_ratio","S/T Ratio",,
-"boolean","student_teacher_ratio_ok","S/T Ratio OK?","The student/teacher ratio is at or above the threshold (35).",
-"float","ideal_number_of_classrooms","Ideal # classrooms",,
-"float","total_number_of_classrooms","Total # classrooms",,
-"boolean","sufficient_number_of_classrooms","Enough classrooms","The school has enough classrooms.",
-"float","percentage_of_classrooms_in_good_condition","% of Classrooms in Good Condition",,
 "string","gps","GPS","GPS",
 "string","facility_type","Type","Type of health facility.",
 "string","ward","Ward",,
@@ -89,7 +83,7 @@
 "boolean","antenatal_care_yn","Antenatal Care",,
 "boolean","compr_oc_available_24_7","Comprehensive obstetric services 24/7",,
 "boolean","emoc_available_24_7","Emergency Medical Obstetric Services available 24/7",,
-"boolean","maternal_health_delivery_services_24_7","Delivery Services 24/7",,"d['compr_oc_available_24_7] or d['emoc_available_24_7']"
+"boolean","maternal_health_delivery_services_24_7","Delivery Services 24/7",,"d['compr_oc_available_24_7'] or d['emoc_available_24_7']"
 "boolean","facility_open_247_yn","Facility open 24 hours a day, 7 days a week",,
 "boolean","paid_services_anc_delivery","Paid services: ANC delivery (Y/N)",,
 "boolean","child_health_bcg_immunization","BCG Immunization",,
