@@ -1,0 +1,6 @@
+"slug","name","description","clickable","subgroups"
+"facility_name","Name",,,"infrastructure management condition"
+"power_sources_none","No Power","No power source was reported for this health facility.","yes","infrastructure"
+"facility_owner_manager","Owner/Manager",,,"management"
+"all_weather_road_yn","All-weather Road",,"yes","condition"
+"health_facility_condition","Condition",,"yes","condition"
