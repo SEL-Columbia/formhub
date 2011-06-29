@@ -1,6 +1,15 @@
 "slug","name","description","clickable","subgroups"
 "facility_name","Name",,,"all"
-"power_sources_none","No Power","No power source was reported for this health facility.","yes","infrastructure"
-"facility_owner_manager","Owner/Manager",,,
-"all_weather_road_yn","All-weather Road",,"yes",
+"water_access","Water","Access to water","yes","infrastructure"
+"power_access","Power","Access to Power",,"infrastructure"
+"improved_sanitation","Improved Sanitation","Access to Improved Sanitation","yes","infrastructure"
+"mobile_signal_funct_yn","Mobile Coverage","Mobile Phone Network Coverage","yes","infrastructure"
+"num_chews_fulltime","CHEWs","Number of fulltime CHEWs","yes","staffing"
+"health_adequately_staffed","Adequately Staffed","Health facility adequately staffed in past month","yes","staffing"
+"staff_paid_lastmth_yn","Staff Paid","Staff were paid past period","yes","staffing"
+"facility_open_247_yn","Open 24/7","Facilities open 24/7","yes","access"
+"all_weather_road_yn","All-weather Road",,"yes","access"
+"health_no_user_fees","No User Fees","No user fees",,"access"
+"emergency_transport_or_close_to_referral","Emergency Transport","Access to functional emergency transport","yes","access"
 "health_facility_condition","Condition",,"yes",
+"facility_owner_manager","Owner/Manager",,,"ownership"
