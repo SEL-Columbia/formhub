@@ -1,9 +1,11 @@
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
+from django.db.models import Count
 import os
 import json
 import time
 import sys
+from collections import defaultdict
 from facilities.models import Facility, Variable, CalculatedVariable, \
     KeyRename, FacilityRecord
 from nga_districts.models import LGA, LGARecord
@@ -103,12 +105,29 @@ class Command(BaseCommand):
         def seconds_to_hms(seconds):
             return time.strftime('%H:%M:%S', time.gmtime(seconds))
 
+        def get_variable_usage():
+            record_types = [FacilityRecord, LGARecord]
+            totals = defaultdict(int)
+            for record_type in record_types:
+                counts = record_type.objects.values('variable').annotate(Count('variable'))
+                for d in counts:
+                    totals[d['variable']] += d['variable__count']
+            return totals
+
+        def get_unused_variables():
+            all_vars = set([x['slug'] \
+                for x in Variable.objects.values('slug')])
+            used_vars = set([x['variable'] \
+                for x in FacilityRecord.objects.values('variable').distinct()])
+            return sorted(list(all_vars - used_vars))
+
         info = {
             'number of facilities': Facility.objects.count(),
             'facilities without lgas': Facility.objects.filter(lga=None).count(),
             'number of facility records': FacilityRecord.objects.count(),
             'number of lga records': LGARecord.objects.count(),
             'time': seconds_to_hms(self._end_time - self._start_time),
+            'unused variables': get_unused_variables(),
             }
         print json.dumps(info, indent=4)
 
