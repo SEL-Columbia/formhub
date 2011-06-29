@@ -1,11 +1,14 @@
 "data_type","slug","name","description","formula"
 "boolean","power_sources_none","No Power","No power source (True = no power).",
+"string","power_access",,,
+"boolean","power_access","Access to power","Has power","not d['power_sources_none']"
 "string","facility_owner_manager","Owner/Manager","Manager or owner of the health facility.",
 "string","health_facility_condition","Condition","General condition of the health facility.",
 "string","school_name","Name",,
 "string","level_of_education","Level","Level of education",
 "string","education_type","Type","Type of education offered.",
 "boolean","water_sources_none","No Water","No water (True = no water).",
+"boolean","water_access","Access to Water",,"not d['water_sources_none']"
 "string","water_source_type","Type","Type of water source.",
 "string","lift","Lift","Lift type.",
 "string","water_source_developed_by","Developed by","Developer of the water source.",
@@ -26,7 +29,7 @@
 "string","respondent_contact","Respondent Contact Number",,
 "string","facility_name","Facility Name",,
 "string","facility_address","Facility Address",,
-"boolean","mobile_phone_signal_yn","Mobile Phone Signal",,
+"boolean","mobile_signal_funct_yn","Mobile Phone Coverage",,
 "string","flush_toilet_drain_to","Flush Toilet Drain",,
 "boolean","improved_sanitation","Improved Sanitation",,"d['flush_toilet_drain_to'] == 'improved' or d['toilet_types_vip_latrine'] or d['toilet_types_pit_w_slab']"
 "boolean","toilet_types_vip_latrine","Ventilated Improved Pit Latrine",,
@@ -38,10 +41,12 @@
 "boolean","skilled_birth_attendant","Skilled Birth Attendant",,"d['num_doctors_fulltime'] > 0 or d['num_nurses_fulltime'] > 0 or d['num_midwives_fulltime'] > 0 or d['num_nursemidwives_fulltime'] > 0"
 "float","num_chews_fulltime","Number of CHEWs per Facility",,
 "float","days_facility_understaffed","How many days during the last month was this health facility understaffed (1 or more of the staff were absent)?",,
+"boolean","health_adequately_staffed","Health facility adequately staffed in past month",,"d['days_facility_understaffed']>5"
 "boolean","staff_paid_lastmth_yn","Were all salaried staff members paid their wages in the last month?",,
 "boolean","facility_open_247_yn","Facility open 24 hours a day, 7 days a week",,
 "boolean","all_weather_road_yn","Access to an all weather road",,
 "boolean","paid_services_routine_visit","User fees for routine visit",,
+"boolean","health_no_user_fees","Health facilities with no user fees",,"not d['paid_services_routine_visit']"
 "float","num_med_staff","Number of skilled medical staff ",,"d['num_doctors_fulltime'] + d['num_nurses_fulltime'] + d['num_midwives_fulltime'] + d['num_nursemidwives_fulltime']"
 "float","pop_male","Population (male)",,
 "float","pop_female","Population (female)",,

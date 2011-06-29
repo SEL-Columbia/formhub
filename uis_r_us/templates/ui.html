@@ -56,6 +56,12 @@
 		background-color: #fff;
 		width: 185px;
 	}
+	#facility-tabs.hide-tds td, #facility-tabs.hide-tds th {
+		display: none;
+	}
+	#facility-tabs.hide-tds td.show-me, #facility-tabs.hide-tds th.show-me {
+		display: table-cell;
+	}
 </style>
 
 {% endblock %}
@@ -190,19 +196,36 @@ function facilityDataLoaded(){
 //	$('body').bind('facility-mouseover', function(evt, edata){var facility = facilityData.list[edata.uid];});
 //	$('body').bind('facility-mouseout', function(evt, edata){var facility = facilityData.list[edata.uid];});
 	$('body').bind('sector-change', function(evt, edata){
-		$('body').trigger('facility-unselect');
-		$('body').trigger('column-unselect');
 		if(selectedSector !== edata.sector) {
+			$('body').trigger('facility-unselect');
+			$('body').trigger('column-unselect');
 			selectedSector = edata.sector;
 			ftabs.tabs('select', facilitySectorSlugs.indexOf(selectedSector));
 			(typeof(filterPointsBySector)==='function') && filterPointsBySector(selectedSector);
 		}
 	});
-	$('body').bind('sector-select', function(evt, edata){
+	function selectSubSector(ss) {
+		
+	}
+	$('body').bind('subsector-select', function(evt, edata){
+		var ftabs = $('#facility-tabs');
+		(function(ftabs){
+			ftabs.find('.show-me').removeClass('show-me');
+			ftabs.removeClass('hide-tds');
+		})(ftabs)
 		if(edata!==undefined) {
-			console.log("clicked on sector", edata);
+			var sector = edata.sector;
+			var subSector = edata.subSector
+			$('body').trigger('sector-change', { sector: sector });
+			if(subSector!=="all") {
+				(function(ftabs){
+					var selector = '#facilities-'+sector+' .subgroup-'+subSector;
+					ftabs.find(selector).addClass('show-me');
+					ftabs.addClass('hide-tds');
+				})(ftabs)
+			}
 		}
-	})
+	});
 	
 	
 	function showColumnDescription(colData) {
@@ -390,6 +413,9 @@ function createTableForSectorWithData(sector, data){
 	if(sector.columns!==undefined && sector.columns.length>0 && sectorData!==undefined && sectorData.length>0) {
 		$.each(sector.columns, function(i, col){
 			var th = $("<th />", {'class':'col-'+col.slug}).text(col.name).addClass(col.clickable ? "clickable" : "not-clickable");
+			$(col.subgroups).each(function(i, sg){
+				th.addClass('subgroup-'+sg);
+			});
 			col.th = th;
 			col.thIndex = i;
 			th.click(function(){
@@ -414,7 +440,11 @@ function createRowForFacilityWithColumns(fpoint, cols){
 		var colSlug = col.slug;
 		var value = fpoint[colSlug];
 		if(value===undefined) { value = '—'; }
-		tr.append($("<td />", {'class':'col-'+colSlug}).text(value));
+		var td = $("<td />", {'class':'col-'+colSlug}).text(value);
+		$(col.subgroups).each(function(i, sg){
+			td.addClass('subgroup-'+sg);
+		});
+		tr.append(td);
 		tr.data('facility-uid', fpoint.uid);
 	});
 	tr.click(function(){$(this).trigger('facility-select', {
@@ -573,7 +603,7 @@ function createSectorNav() {
 	});
 	sn.append(ul);
 	sn.delegate('a', 'click', function(evt){
-		$('body').trigger('sector-select', {
+		$('body').trigger('subsector-select', {
 			sector: $(this).data('sectorSlug'),
 			subSector: $(this).data('subSectorSlug')
 		})
