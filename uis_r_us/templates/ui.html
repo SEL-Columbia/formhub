@@ -44,7 +44,18 @@
 	.col-info h3.description {
 		margin: 2px 0;
 		text-decoration: underline;
-	} 
+	}
+	.sn-wrap {
+		position: absolute;
+		top: 200px;
+		left: 0;
+		z-index: 99;
+	}
+	.sn {
+		margin: 3px 7px;
+		background-color: #fff;
+		width: 185px;
+	}
 </style>
 
 {% endblock %}
@@ -526,7 +537,33 @@ var facilityDataStuff = (function(){
 		window.facilitySectors = sectors;
 	}
 	return processPassedData;
-})()
+})();
+
+function createSectorNav() {
+	if($('.content-inner-wrap .sn-wrap').length==0) {
+		var snWrap = $("<div />", {'class':'sn-wrap'}).appendTo($('.content-inner-wrap'));
+	} else {
+		var snWrap = $('.content-inner-wrap').find('.sn-wrap');
+	}
+	var sn = $('<div />', {'class':'sn'});
+	var ul = $("<ul />");
+	$(facilitySectors).each(function(i, sector){
+		var name = sector.name;
+		var slug = sector.slug;
+		var l = $("<a />", {'href': '#'}).text(sector.name);
+		var li = $("<li />").appendTo(ul)
+				.html(l);
+		var sul = $("<ul />").appendTo(ul);
+		$(sector.subgroups).each(function(i, subgroup){
+			var li = $("<li />").appendTo(sul);
+			var sgLink = $("<a />", {'href':'#'}).text(subgroup.name).appendTo(li);
+		});
+	});
+	sn.append(ul);
+	
+	snWrap.html(sn);
+	$('.content-inner-wrap').prepend()
+}
 
 $('.content-inner-wrap').css({'padding':0})
 var pageRootUrl = "/ui/";
@@ -559,6 +596,7 @@ $(function(evt){
 					if(facilityData!==undefined && facilitySectors!==undefined) {
 						buildFacilityDataTable(facilityData, facilitySectors);
 					}
+					createSectorNav()
 				});
 			}
 		})

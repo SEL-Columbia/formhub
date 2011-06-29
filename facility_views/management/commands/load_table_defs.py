@@ -9,6 +9,7 @@ from facilities.facility_builder import FacilityBuilder
 from utils.csv_reader import CsvReader
 from django.conf import settings
 
+from facility_views.models import *
 
 class Command(BaseCommand):
     help = "Load the table defs from the csvs."
@@ -19,8 +20,9 @@ class Command(BaseCommand):
             ("Education", "education"),
             ("Water", "water")
         ]
-        from facility_views.models import FacilityTable
         FacilityTable.objects.all().delete()
+        TableColumn.objects.all().delete()
+        ColumnCategory.objects.all().delete()
         for name, slug in table_types:
             curtable = FacilityTable.objects.create(name=name, slug=slug)
             csv_reader = CsvReader(os.path.join("facility_views","table_defs", "%s.csv" % slug))

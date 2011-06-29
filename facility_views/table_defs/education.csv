@@ -1,6 +1,6 @@
 "slug","name","description","clickable","subgroups"
 "school_name","Name",,,"all"
-"power_sources_none","No Power Source","No power source reported for this school.","yes","infastructure"
+"power_sources_none","No Power Source","No power source reported for this school.","yes","infrastructure"
 "water_sources_none","No Water Source","No water source reported for this school.","yes","infrastructure"
 "student_teacher_ratio","Student/Teacher Ratio",,"yes","staffing"
 "student_teacher_ratio_ok","Student/Teacher Ratio OK",,"yes","staffing"
