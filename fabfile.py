@@ -52,7 +52,7 @@ def backup(deployment_name):
         run("gzip %(database_name)s.sql" % env)
 
 
-def deploy(deployment_name, reload="limit"):
+def deploy(deployment_name, reload="none"):
     """
     Example command line usage:
     fab deploy:staging,reparse=none
