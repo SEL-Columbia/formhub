@@ -42,7 +42,6 @@ class KeyRename(models.Model):
 
 class Variable(models.Model):
     name = models.CharField(max_length=255)
-#    slug = models.CharField(max_length=64, unique=True)
     slug = models.CharField(max_length=128, primary_key=True)
     data_type = models.CharField(max_length=20)
     description = models.CharField(max_length=255)
@@ -76,6 +75,11 @@ class Variable(models.Model):
 
     def to_dict(self):
         return dict([(k, getattr(self, k)) for k in self.FIELDS])
+
+    @classmethod
+    def get_full_data_dictionary(cls, as_json=True):
+        result = [v.to_dict() for v in cls.objects.all()]
+        return result if not as_json else json.dumps(result)
 
     def __unicode__(self):
         return json.dumps(self.to_dict(), indent=4)
@@ -175,3 +179,46 @@ class DictModel(models.Model):
         for cv in CalculatedVariable.objects.all():
             if cv.slug in d:
                 self.set(cv, d[cv.slug])
+
+    def _kwargs(self):
+        """
+        To get all data records associated with a facility or lga we need to
+        filter FacilityRecords or LGARecords that link to this facility or
+        lga. Awesome doc string!
+        """
+        return {self._data_record_fk: self}
+
+    def get_all_data(self):
+        records = self._data_record_class.objects.filter(**self._kwargs())
+        d = defaultdict(dict)
+        for record in records:
+            d[record.variable.slug][record.date.isoformat()] = record.value
+        return d
+
+    def get_latest_data(self):
+        records = self._data_record_class.objects.filter(**self._kwargs()).order_by('-date')
+        d = {}
+        for r in records:
+            # todo: test to make sure this sorting is correct
+            if r.variable.slug not in d:
+                d[r.variable.slug] = r.value
+        return d
+
+    def get_latest_value_for_variable(self, variable):
+        if type(variable) == str:
+            variable = Variable.objects.get(slug=variable)
+        try:
+            kwargs = self._kwargs()
+            kwargs['variable'] = variable
+            record = self._data_record_class.objects.filter(**kwargs).order_by('-date')[0]
+        except IndexError:
+            return None
+        return record.value
+
+    def dates(self):
+        """
+        Return a list of dates of all observations for this DictModel.
+        """
+        drs = self._data_record_class.objects.filter(**self._kwargs()).values('date').distinct()
+        return [d['date'] for d in drs]
+

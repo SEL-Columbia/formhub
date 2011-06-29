@@ -22,49 +22,12 @@ class Facility(DictModel):
     _data_record_class = FacilityRecord
     _data_record_fk = 'facility'
 
-    def get_all_data(self):
-        records = self._data_record_class.objects.filter(facility=self)
-        d = defaultdict(dict)
-        for record in records:
-            d[record.variable.slug][record.date.isoformat()] = record.value
-        return d
-
     @property
     def sector(self):
         try:
             return self._data_record_class.objects.get(facility=self, variable__slug='sector').value
         except self._data_record_class.DoesNotExist:
             return None
-
-    def get_latest_data(self):
-        records = self._data_record_class.objects.filter(facility=self).order_by('-date')
-        d = {}
-        for r in records:
-            # todo: test to make sure this sorting is correct
-            if r.variable.slug not in d:
-                d[r.variable.slug] = r.value
-        return d
-
-    def get_latest_value_for_variable(self, variable):
-        if type(variable) == str:
-            variable = Variable.objects.get(slug=variable)
-        try:
-            record = self._data_record_class.objects.filter(facility=self, variable=variable).order_by('-date')[0]
-        except IndexError:
-            return None
-        return record.value
-
-    def set_value(self, variable, value):
-        d, created = self._data_record_class.objects.get_or_create(variable=variable, facility=self)
-        d.value = Variable.get_casted_value(value)
-        d.save()
-
-    def dates(self):
-        """
-        Return a list of dates of all observations for this facility.
-        """
-        drs = self._data_record_class.objects.filter(facility=self).values('date').distinct()
-        return [d['date'] for d in drs]
 
     @classmethod
     def get_latest_data_by_lga(cls, lga):
