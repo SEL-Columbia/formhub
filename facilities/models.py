@@ -11,6 +11,19 @@ class FacilityRecord(DataRecord):
     facility = models.ForeignKey('Facility', related_name='data_records')
 
     @classmethod
+    def counts_by_variable(cls, lga):
+        records = cls.objects.filter(facility__lga=lga).values('facility', 'variable', 'float_value', 'boolean_value', 'string_value').annotate(Max('date')).distinct()
+        result = defaultdict(dict)
+        for d in records:
+            variable = Variable.get_from_cache(d['variable'])
+            value = '%s_value' % variable.data_type
+            try:
+                result[d['variable']][d[value]] += 1
+            except KeyError:
+                result[d['variable']][d[value]] = 1
+        return result
+
+    @classmethod
     def count_by_lga(cls, variable):
         value = '%s_value' % variable.data_type
         records = cls.objects.filter(variable=variable).values('facility__lga', 'facility', value).annotate(Max('date')).distinct()

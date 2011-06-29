@@ -63,24 +63,12 @@ class GapAnalysisTest(TestCase):
         self.zone.delete()  # I think this should cascade
         self.power.delete()
 
-    def test_count_by_lga(self):
-        counts = FacilityRecord.count_by_lga(self.power)
+    def test_count_by_variable(self):
+        counts = FacilityRecord.counts_by_variable(self.lgas[0])
         expected_dict = {
-            1: {
+            'power': {
                 'none': 1,
                 'good': 1,
                 },
-            2: {
-                'none': 2,
-                },
             }
         self.assertEquals(counts, expected_dict)
-
-
-
-
-
-
-
-
-
