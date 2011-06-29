@@ -7,12 +7,18 @@ class FacilityTable(models.Model):
     
     @property
     def display_dict(self):
-        column_variables = [v.display_dict for v in self.variables.all()]
+        variables = list(self.variables.all())
+        column_variables = [v.display_dict for v in variables]
         return {
             'name': self.name,
             'slug': self.slug,
-            'columns': column_variables
+            'columns': column_variables,
+            'subgroups': [{'name': s.name,
+                'slug': s.slug} for s in self.subgroups.all()]
         }
+    
+    def add_column(self, data):
+        ColumnCategory.objects.get_or_create(table=self, slug=data['slug'], name=data['name'])
     
     def add_variable(self, variable_data):
         variable_data['facility_table'] = self
@@ -35,8 +41,14 @@ class TableColumn(models.Model):
         d = {
             'name': self.name,
             'slug': self.slug,
+            'subgroups': self.subgroups.split(' '),
             'clickable': self.clickable
         }
         if not self.description in [None, '']:
             d['description'] = self.description
         return d
+
+class ColumnCategory(models.Model):
+    name = models.CharField(max_length=64)
+    slug = models.CharField(max_length=64)
+    table = models.ForeignKey(FacilityTable, related_name='subgroups')

@@ -30,6 +30,32 @@
 		background-color: rgba(0,0,0,0.1);
 		margin-top: 20px;
 	}
+	.column-data-wrap {}
+	.column-data {
+		margin: 4px 12px;
+		background-color: #fff;
+	}
+	.col-info {
+		margin: 2px 5px;
+	}
+	.col-info h2 {
+		margin: 2px 0;
+	}
+	.col-info h3.description {
+		margin: 2px 0;
+		text-decoration: underline;
+	}
+	.sn-wrap {
+		position: absolute;
+		top: 200px;
+		left: 0;
+		z-index: 99;
+	}
+	.sn {
+		margin: 3px 7px;
+		background-color: #fff;
+		width: 185px;
+	}
 </style>
 
 {% endblock %}
@@ -165,24 +191,39 @@ function facilityDataLoaded(){
 //	$('body').bind('facility-mouseout', function(evt, edata){var facility = facilityData.list[edata.uid];});
 	$('body').bind('sector-change', function(evt, edata){
 		$('body').trigger('facility-unselect');
+		$('body').trigger('column-unselect');
 		if(selectedSector !== edata.sector) {
 			selectedSector = edata.sector;
 			ftabs.tabs('select', facilitySectorSlugs.indexOf(selectedSector));
 			(typeof(filterPointsBySector)==='function') && filterPointsBySector(selectedSector);
 		}
 	});
+	$('body').bind('sector-select', function(evt, edata){
+		if(edata!==undefined) {
+			console.log("clicked on sector", edata);
+		}
+	})
 	
 	
 	function showColumnDescription(colData) {
 		log("Show description box", colData);
 	}
 
+
+	function getColData() {
+		var colData = $('.widget-outer-wrap').find('div.column-data');
+		if(colData.length===0) {
+			colData = $("<div />", {'class': 'column-data'});
+			$('.widget-outer-wrap').prepend($('<div />', {'class':'column-data-wrap'}).html(colData));
+		}
+		return colData;
+	}
 	$('body').bind('column-select', function(evt, edata){
 		var wrapElement = $('#lga-facilities-table');
 		var column = edata.column;
 		var sector = edata.sector;
 		if(selectedColumn!==edata.column) {
-			$('body').trigger('column-unselect', {column:selectedColumn});
+			$('body').trigger('column-unselect', {column:selectedColumn, nextColumn: edata.column});
 			if(column.clickable) {
 				$('.selected-column', wrapElement).removeClass('selected-column');
 				(function highlightTheColumn(column){
@@ -192,14 +233,31 @@ function facilityDataLoaded(){
 						$(this).find('td').eq(columnIndex).addClass('selected-column');
 					})
 				})(column);
-
 				showColumnDescription(edata.column);
+			}
+			if(true) {
+				var colData = getColData();
+				var cdiv = $("<div />", {'class':'col-info'}).html($("<h2 />").text(column.name));
+				if(column.description!==undefined) {
+					cdiv.append($("<h3 />", {'class':'description'}).text(column.description));
+				}
+				colData.animate({'height':80}, 500, function(){
+					$(this).html(cdiv);
+				});
 			}
 			selectedColumn = edata.column;
 		}
 	});
 	$('body').bind('column-unselect', function(evt, edata){
-		$('#column-description').hide();
+		if(edata===undefined) {edata = {}}
+		if(edata.nextColumn === undefined) {
+			var cd = getColData()
+			cd.animate({'height':0}, 500, function(){
+				cd.empty();
+			})
+		} else {
+			getColData().empty();
+		}
 	})
 	// actions to be taken for the facility navigation table and image stuff.
 	$('body').bind('facility-select', function(evt, edata){
@@ -484,7 +542,46 @@ var facilityDataStuff = (function(){
 		window.facilitySectors = sectors;
 	}
 	return processPassedData;
-})()
+})();
+
+function createSectorNav() {
+	if($('.content-inner-wrap .sn-wrap').length==0) {
+		var snWrap = $("<div />", {'class':'sn-wrap'}).appendTo($('.content-inner-wrap'));
+	} else {
+		var snWrap = $('.content-inner-wrap').find('.sn-wrap');
+	}
+	var sn = $('<div />', {'class':'sn'});
+	var ul = $("<ul />");
+	$(facilitySectors).each(function(i, sector){
+		var name = sector.name;
+		var slug = sector.slug;
+		var l = $("<a />", {'href': '#'}).text(sector.name);
+		l.data('sectorSlug', sector.slug);
+		l.data('subSectorSlug', 'all');
+		
+		var li = $("<li />").appendTo(ul)
+				.html(l);
+		var sul = $("<ul />").appendTo(ul);
+		$(sector.subgroups).each(function(i, subgroup){
+			if(subgroup.name!=='all') {
+				var li = $("<li />").appendTo(sul);
+				var sgLink = $("<a />", {'href':'#'}).text(subgroup.name).appendTo(li);
+				sgLink.data('sectorSlug', sector.slug);
+				sgLink.data('subSectorSlug', subgroup.slug)
+			}
+		});
+	});
+	sn.append(ul);
+	sn.delegate('a', 'click', function(evt){
+		$('body').trigger('sector-select', {
+			sector: $(this).data('sectorSlug'),
+			subSector: $(this).data('subSectorSlug')
+		})
+		evt.preventDefault();
+	})
+	snWrap.html(sn);
+	$('.content-inner-wrap').prepend()
+}
 
 $('.content-inner-wrap').css({'padding':0})
 var pageRootUrl = "/ui/";
@@ -517,6 +614,7 @@ $(function(evt){
 					if(facilityData!==undefined && facilitySectors!==undefined) {
 						buildFacilityDataTable(facilityData, facilitySectors);
 					}
+					createSectorNav()
 				});
 			}
 		})
