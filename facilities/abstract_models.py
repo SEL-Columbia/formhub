@@ -1,4 +1,5 @@
 from django.db import models
+from collections import defaultdict
 import json
 import re
 import datetime
@@ -221,4 +222,3 @@ class DictModel(models.Model):
         """
         drs = self._data_record_class.objects.filter(**self._kwargs()).values('date').distinct()
         return [d['date'] for d in drs]
-
