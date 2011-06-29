@@ -10,3 +10,4 @@ xlrd==0.7.1
 MySQL-python>=1.2.2
 # sql alchemy is used for importing data from the phones
 SQLAlchemy==0.7.1
+psycopg2=2.4.2
