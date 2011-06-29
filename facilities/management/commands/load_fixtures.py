@@ -115,10 +115,8 @@ class Command(BaseCommand):
             return totals
 
         def get_unused_variables():
-            all_vars = set([x['slug'] \
-                for x in Variable.objects.values('slug')])
-            used_vars = set([x['variable'] \
-                for x in FacilityRecord.objects.values('variable').distinct()])
+            all_vars = set([x.slug for x in Variable.objects.all()])
+            used_vars = set(get_variable_usage().keys())
             return sorted(list(all_vars - used_vars))
 
         info = {
