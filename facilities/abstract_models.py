@@ -49,6 +49,14 @@ class Variable(models.Model):
 
     FIELDS = ['name', 'slug', 'data_type', 'description']
 
+    _cache = {}
+
+    @classmethod
+    def get_from_cache(cls, slug):
+        if slug not in cls._cache:
+            cls._cache[slug] = cls.objects.get(slug=slug)
+        return cls._cache[slug]
+
     def get_casted_value(self, value):
         """
         Takes a Variable and a value and casts it to the appropriate Variable.data_type.
