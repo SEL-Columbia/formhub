@@ -1,4 +1,5 @@
 from django.db import models
+from collections import defaultdict
 import json
 import re
 import datetime
@@ -47,6 +48,14 @@ class Variable(models.Model):
     description = models.CharField(max_length=255)
 
     FIELDS = ['name', 'slug', 'data_type', 'description']
+
+    _cache = {}
+
+    @classmethod
+    def get_from_cache(cls, slug):
+        if slug not in cls._cache:
+            cls._cache[slug] = cls.objects.get(slug=slug)
+        return cls._cache[slug]
 
     def get_casted_value(self, value):
         """
@@ -221,4 +230,3 @@ class DictModel(models.Model):
         """
         drs = self._data_record_class.objects.filter(**self._kwargs()).values('date').distinct()
         return [d['date'] for d in drs]
-

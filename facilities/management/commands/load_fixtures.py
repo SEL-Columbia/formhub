@@ -131,6 +131,12 @@ class Command(BaseCommand):
             }
         print json.dumps(info, indent=4)
 
+        from django.db import connection
+        if self._debug:
+            for query in connection.queries:
+                if float(query['time']) > .01:
+                    print query
+
     def load_lgas(self):
         for file_name in ['zone.json', 'state.json', 'lga.json']:
             call_command('loaddata', file_name)
