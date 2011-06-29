@@ -198,6 +198,11 @@ function facilityDataLoaded(){
 			(typeof(filterPointsBySector)==='function') && filterPointsBySector(selectedSector);
 		}
 	});
+	$('body').bind('sector-select', function(evt, edata){
+		if(edata!==undefined) {
+			console.log("clicked on sector", edata);
+		}
+	})
 	
 	
 	function showColumnDescription(colData) {
@@ -551,16 +556,29 @@ function createSectorNav() {
 		var name = sector.name;
 		var slug = sector.slug;
 		var l = $("<a />", {'href': '#'}).text(sector.name);
+		l.data('sectorSlug', sector.slug);
+		l.data('subSectorSlug', 'all');
+		
 		var li = $("<li />").appendTo(ul)
 				.html(l);
 		var sul = $("<ul />").appendTo(ul);
 		$(sector.subgroups).each(function(i, subgroup){
-			var li = $("<li />").appendTo(sul);
-			var sgLink = $("<a />", {'href':'#'}).text(subgroup.name).appendTo(li);
+			if(subgroup.name!=='all') {
+				var li = $("<li />").appendTo(sul);
+				var sgLink = $("<a />", {'href':'#'}).text(subgroup.name).appendTo(li);
+				sgLink.data('sectorSlug', sector.slug);
+				sgLink.data('subSectorSlug', subgroup.slug)
+			}
 		});
 	});
 	sn.append(ul);
-	
+	sn.delegate('a', 'click', function(evt){
+		$('body').trigger('sector-select', {
+			sector: $(this).data('sectorSlug'),
+			subSector: $(this).data('subSectorSlug')
+		})
+		evt.preventDefault();
+	})
 	snWrap.html(sn);
 	$('.content-inner-wrap').prepend()
 }
