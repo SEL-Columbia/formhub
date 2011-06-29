@@ -56,7 +56,7 @@ class LGARecord(DataRecord):
 
 class LGA(NamedModel, DictModel):
     state = models.ForeignKey(State, related_name="lgas")
-    scale_up = models.BooleanField()
+    scale_up = models.BooleanField(default=False)
     unique_slug = models.TextField(null=True)
     afr_id = models.TextField(null=True)
     kml_id = models.TextField(null=True)

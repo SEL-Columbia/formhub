@@ -38,10 +38,13 @@ class TableColumn(models.Model):
     
     @property
     def display_dict(self):
+        subgroups = []
+        if not self.subgroups == "":
+            subgroups = self.subgroups.split(" ")
         d = {
             'name': self.name,
             'slug': self.slug,
-            'subgroups': self.subgroups.split(' '),
+            'subgroups': subgroups,
             'clickable': self.clickable
         }
         if not self.description in [None, '']:
