@@ -5,13 +5,17 @@ from django.template import RequestContext
 import json
 
 from nga_districts.models import LGA
-from facilities.models import Facility, FacilityRecord
+from facilities.models import Facility, FacilityRecord, Variable
 
 
 def home(request):
     context = RequestContext(request)
     context.sites = LGA.objects.all()
     return render_to_response("list_lgas.html", context_instance=context)
+
+
+def data_dictionary(request):
+    return HttpResponse(Variable.get_full_data_dictionary())
 
 
 def facilities_for_site(request, site_id):
