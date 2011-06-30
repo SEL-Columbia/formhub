@@ -4,9 +4,6 @@
 "boolean","power_access","Access to power","Has power","not d['power_sources_none']"
 "string","facility_owner_manager","Owner/Manager","Manager or owner of the health facility.",
 "string","health_facility_condition","Condition","General condition of the health facility.",
-"string","school_name","Name",,
-"string","level_of_education","Level","Level of education",
-"string","education_type","Type","Type of education offered.",
 "boolean","water_sources_none","No Water","No water (True = no water).",
 "boolean","water_access","Access to Water",,"not d['water_sources_none']"
 "string","water_source_type","Type","Type of water source.",
@@ -14,6 +11,7 @@
 "string","source_developed_by","Developed by","Developer of the water source.",
 "boolean","water_source_used_today_yn","Used today","Was this water source used today?",
 "string","water_source_physical_state","State","Physical state of the water source.",
+"boolean","water_source_working_condition","Working Condition","Working condition of water source","d['water_source_physical_state'] in ['well_maintained', 'newly_constructed']"
 "string","gps","GPS","GPS",
 "string","facility_type","Type","Type of health facility.",
 "string","ward","Ward",,
@@ -101,3 +99,16 @@
 "boolean","lab_tests_malaria_rdt","Malaria RDT Testing",,
 "boolean","malaria_treatment_yn","Malaria Treatment (ACT)",,
 "boolean","malaria_treatment_srvcs_itn","Insecticide-treated bednets",,
+"string","school_name","Name",,
+"string","level_of_education","Level","Level of education",
+"string","education_type","Education Type","Type of education offered.",
+"string","num_students_frthr_than_3km","Number of students living further then 3 KM from school",,
+"string","school_students_3km_plus","Schools that have students living further then 3KM away",,"d['num_students_frthr_than_3km'] > 0"
+"boolean","fees_paid_for_by_school_none","No School Fees",,
+"float","num_tchrs_total","Number of Teachers",,
+"float","num_students_total","Number of Students",,
+"float","student_teacher_ratio","Student Teacher Ratio",,"d['num_students_total'] / d['num_tchrs_total']"
+"float","num_students_male","Number of male students",,
+"float","num_students_female","Number of female students",,
+"float","male_to_female_student_ratio","Male to female student ratio",,"d['num_students_male'] / d['num_students_female']"
+"boolean","gender_separated_toilets_yn","Gender Separated Toilets",,

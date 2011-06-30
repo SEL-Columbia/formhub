@@ -1,10 +1,9 @@
 "slug","name","description","clickable","subgroups","click action"
-"school_name","Name",,,"infrastructure staffing condition",
-"power_sources_none","No Power Source","No power source reported for this school.","yes","infrastructure",
-"water_sources_none","No Water Source","No water source reported for this school.","yes","infrastructure",
-"student_teacher_ratio","Student/Teacher Ratio",,"yes","staffing",
-"student_teacher_ratio_ok","Student/Teacher Ratio OK",,"yes","staffing",
-"ideal_number_of_classrooms","Ideal # of Classrooms",,"yes","condition",
-"total_number_of_classrooms","Total # of Classrooms",,"yes","condition",
-"sufficient_number_of_classrooms","Sufficient # of Classrooms",,"yes","condition",
-"percentage_of_classrooms_in_good_condition","% of Classrooms in Good Condition",,"yes","condition",
+"school_name","Name",,,"infrastructure staffing condition","tabulate"
+"water_access","Water","Access to water","yes","infrastructure","tabulate"
+"power_access","Power","Access to Power","yes","infrastructure","tabulate"
+"gender_separated_toilets_yn","Gender separated toilets",,"yes","infrastructure","tabulate"
+"school_students_3km_plus","Students more then 3KM away",,"yes","access","tabulate"
+"fees_paid_for_by_school_none","No school fees",,"yes","access","tabulate"
+"male_to_female_student_ratio","Male/Female Student Ratio",,"yes","access","tabulate"
+"student_teacher_ratio","Student/Teacher Ratio",,"yes","staffing","tabulate"
