@@ -464,12 +464,15 @@ function createRowForFacilityWithColumns(fpoint, cols){
 		if(value===undefined) { value = '—'; }
 		var td = $("<td />", {'class':'col-'+colSlug});
 		if(col.display_style=="checkmark") {
-			if(value) {
+			if($.type(value) === 'boolean' && !!value) {
 				td.html("&#x2713;");
 				td.css({'opacity': '1', 'background-color':'#f0f0f0'});
-			} else {
+			} else if($.type(value) === 'boolean') {
 				td.html("&#x2717;");
 				td.css({'opacity': '0.4'});
+			} else {
+				td.html('&mdash;');
+				td.css({opacity: '0.3'});
 			}
 			td.css({'text-align':'center'});
 		} else if(col.calc_action=="binarytally") {
@@ -479,10 +482,13 @@ function createRowForFacilityWithColumns(fpoint, cols){
 				var yCount = 0;
 				var vv = [];
 				$(cols).each(function(i, slug){
-					if(pt[slug]) {
-						yCount ++;
+					var val = pt[slug];
+					if(val!==undefined && $.type(val)==='boolean') {
+						if(val) {
+							yCount += 1;
+						}
+						tot += 1;
 					}
-					tot ++;
 				})
 				return [yCount, tot];
 			})(fpoint, cols);
