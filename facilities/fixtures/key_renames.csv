@@ -17,3 +17,6 @@
 "Water_2011_03_19","lift_mechanism","lift"
 "health.csv","geocodeoffacility","gps"
 "water.csv","geocodeoffacility","gps"
+"education.csv","water_none","water_sources_none"
+"education.csv","power_none","power_sources_none"
+"education.csv","water_none","water_sources_none"
