@@ -49,5 +49,8 @@ class Command(BaseCommand):
                     'description': input_d.pop('description', ''),
                     'clickable': input_d.pop('clickable', 'no') == 'yes',
                     'click_action': input_d.pop('click action', input_d.pop('click_action', '')),
+                    'display_style': input_d.pop('display style', input_d.pop('display_style', '')),
+                    'calc_action': input_d.pop('calc action', input_d.pop('calc_action', '')),
+                    'calc_columns': input_d.pop('calc columns', input_d.pop('calc_columns', '')),
                 }
                 curtable.add_variable(d)

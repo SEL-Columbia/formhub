@@ -462,7 +462,37 @@ function createRowForFacilityWithColumns(fpoint, cols){
 		var colSlug = col.slug;
 		var value = fpoint[colSlug];
 		if(value===undefined) { value = '—'; }
-		var td = $("<td />", {'class':'col-'+colSlug}).text(value);
+		var td = $("<td />", {'class':'col-'+colSlug});
+		if(col.display_style=="checkmark") {
+			if(value) {
+				td.html("&#x2713;");
+				td.css({'opacity': '1', 'background-color':'#f0f0f0'});
+			} else {
+				td.html("&#x2717;");
+				td.css({'opacity': '0.4'});
+			}
+			td.css({'text-align':'center'});
+		} else if(col.calc_action=="binarytally") {
+			var cols = col.calc_columns.split(" ");
+			var valx = (function calcRatio(pt, cols){
+				var tot = 0;
+				var yCount = 0;
+				var vv = [];
+				$(cols).each(function(i, slug){
+					if(pt[slug]) {
+						yCount ++;
+					}
+					tot ++;
+				})
+				return [yCount, tot];
+			})(fpoint, cols);
+			td.data('decimalValue', valx[0]/valx[1]);
+			td.append($("<span />", {'class':'numerator'}).text(valx[0]))
+			    .append($("<span />", {'class':'div'}).text('/'))
+			    .append($("<span />", {'class':'denominator'}).text(valx[1]));
+		} else {
+			td.text(value);
+		}
 		$(col.subgroups).each(function(i, sg){
 			td.addClass('subgroup-'+sg);
 		});
