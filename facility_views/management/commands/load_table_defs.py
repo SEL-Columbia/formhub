@@ -25,13 +25,13 @@ class Command(BaseCommand):
         ColumnCategory.objects.all().delete()
         
         subgroups = {}
-        sgs = list(CsvReader(os.path.join("facility_views","example_table_defs", "subgroups.csv")).iter_dicts())
+        sgs = list(CsvReader(os.path.join("facility_views","table_defs", "subgroups.csv")).iter_dicts())
         for sg in sgs:
             subgroups[sg['slug']] = sg['name']
 
         for name, slug in table_types:
             curtable = FacilityTable.objects.create(name=name, slug=slug)
-            csv_reader = CsvReader(os.path.join("facility_views","example_table_defs", "%s.csv" % slug))
+            csv_reader = CsvReader(os.path.join("facility_views","table_defs", "%s.csv" % slug))
             for input_d in csv_reader.iter_dicts():
                 subs = []
                 for sg in input_d['subgroups'].split(" "):
