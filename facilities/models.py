@@ -12,15 +12,27 @@ class FacilityRecord(DataRecord):
 
     @classmethod
     def counts_by_variable(cls, lga):
-        records = cls.objects.filter(facility__lga=lga).values('facility', 'variable', 'float_value', 'boolean_value', 'string_value').annotate(Max('date')).distinct()
-        result = defaultdict(dict)
+        records = cls.objects.filter(facility__lga=lga).values('facility', 'variable', 'float_value', 'boolean_value', 'string_value', 'facility__sector').annotate(Max('date')).distinct()
+        def infinite_dict():
+            return defaultdict(infinite_dict)
+        result = infinite_dict()
         for d in records:
             variable = Variable.get_from_cache(d['variable'])
             value = '%s_value' % variable.data_type
-            try:
-                result[d['variable']][d[value]] += 1
-            except KeyError:
-                result[d['variable']][d[value]] = 1
+            if d[value] in result[d['facility__sector']][d['variable']]:
+                result[d['facility__sector']][d['variable']][d[value]] += 1
+            else:
+                result[d['facility__sector']][d['variable']][d[value]] = 1
+        return result
+
+    @classmethod
+    def counts_of_boolean_variables(cls, lga):
+        result = cls.counts_by_variable(lga)
+        for sector, d in result.items():
+            for k, v in d.items():
+                variable = Variable.get_from_cache(k)
+                if variable.data_type != 'boolean':
+                    del d[k]
         return result
 
     @classmethod
@@ -36,6 +48,11 @@ class FacilityRecord(DataRecord):
         return result
 
 
+class Sector(models.Model):
+    slug = models.CharField(max_length=128, primary_key=True)
+    name = models.CharField(max_length=128)
+
+
 class Facility(DictModel):
     """
     TODO: Figure out what fields should actually be on a facility. I think all
@@ -44,16 +61,10 @@ class Facility(DictModel):
     """
     facility_id = models.CharField(max_length=100)
     lga = models.ForeignKey(LGA, related_name="facilities", null=True)
+    sector = models.ForeignKey(Sector, null=True)
 
     _data_record_class = FacilityRecord
     _data_record_fk = 'facility'
-
-    @property
-    def sector(self):
-        try:
-            return self._data_record_class.objects.get(facility=self, variable__slug='sector').value
-        except self._data_record_class.DoesNotExist:
-            return None
 
     @classmethod
     def get_latest_data_by_lga(cls, lga):

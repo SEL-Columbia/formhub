@@ -34,8 +34,12 @@ class TableColumn(models.Model):
     click_action = models.CharField(max_length=64, null=True)
     subgroups = models.CharField(max_length=512, null=True)
     variable_id = models.IntegerField(null=True)
-    
     facility_table = models.ForeignKey(FacilityTable, related_name="variables")
+    #display specific details
+    display_style = models.CharField(max_length=64, null=True)
+    #calc specific info
+    calc_action = models.CharField(max_length=64, null=True)
+    calc_columns = models.CharField(max_length=64, null=True)
     
     @property
     def display_dict(self):
@@ -49,6 +53,13 @@ class TableColumn(models.Model):
             'clickable': self.clickable,
             'click_action': self.click_action
         }
+        if not self.display_style in [None, '']:
+            d['display_style'] = self.display_style
+        
+        if not self.calc_action in [None, '']:
+            d['calc_action'] = self.calc_action
+            d['calc_columns'] = self.calc_columns
+        
         if not self.description in [None, '']:
             d['description'] = self.description
         return d

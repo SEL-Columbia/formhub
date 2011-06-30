@@ -1,10 +1,10 @@
-"slug","name","description","clickable","subgroups"
-"school_name","Name",,,"infrastructure staffing condition"
-"power_sources_none","No Power Source","No power source reported for this school.","yes","infrastructure"
-"water_sources_none","No Water Source","No water source reported for this school.","yes","infrastructure"
-"student_teacher_ratio","Student/Teacher Ratio",,"yes","staffing"
-"student_teacher_ratio_ok","Student/Teacher Ratio OK",,"yes","staffing"
-"ideal_number_of_classrooms","Ideal # of Classrooms",,"yes","condition"
-"total_number_of_classrooms","Total # of Classrooms",,"yes","condition"
-"sufficient_number_of_classrooms","Sufficient # of Classrooms",,"yes","condition"
-"percentage_of_classrooms_in_good_condition","% of Classrooms in Good Condition",,"yes","condition"
+"slug","name","description","clickable","subgroups","click action"
+"school_name","Name",,,"infrastructure staffing condition",
+"power_sources_none","No Power Source","No power source reported for this school.","yes","infrastructure",
+"water_sources_none","No Water Source","No water source reported for this school.","yes","infrastructure",
+"student_teacher_ratio","Student/Teacher Ratio",,"yes","staffing",
+"student_teacher_ratio_ok","Student/Teacher Ratio OK",,"yes","staffing",
+"ideal_number_of_classrooms","Ideal # of Classrooms",,"yes","condition",
+"total_number_of_classrooms","Total # of Classrooms",,"yes","condition",
+"sufficient_number_of_classrooms","Sufficient # of Classrooms",,"yes","condition",
+"percentage_of_classrooms_in_good_condition","% of Classrooms in Good Condition",,"yes","condition",

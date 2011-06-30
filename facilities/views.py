@@ -56,3 +56,9 @@ def facility(request, facility_id):
     facility = Facility.objects.get(id=facility_id)
     text = json.dumps(facility.get_latest_data(), indent=4, sort_keys=True)
     return HttpResponse(text)
+
+
+def boolean_counts_for_facilities_in_lga(request, lga_id):
+    lga = LGA.objects.get(id=lga_id)
+    text = json.dumps(FacilityRecord.counts_of_boolean_variables(lga), indent=4, sort_keys=True)
+    return HttpResponse(text)
