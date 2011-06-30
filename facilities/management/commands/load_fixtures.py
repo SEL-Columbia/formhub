@@ -7,7 +7,7 @@ import time
 import sys
 from collections import defaultdict
 from facilities.models import Facility, Variable, CalculatedVariable, \
-    KeyRename, FacilityRecord
+    KeyRename, FacilityRecord, Sector
 from nga_districts.models import LGA, LGARecord
 from facilities.facility_builder import FacilityBuilder
 from utils.csv_reader import CsvReader
@@ -30,6 +30,14 @@ class Command(BaseCommand):
                     default=False,
                     action="store_true"),
         )
+
+    # LGAs that will be loaded when the --limit option is True
+    # (this should be a list of string lga_id values)
+    #
+    # Examples:
+    #   '394' = Kaduna/Kachia
+    #   '732' = Imo/Unuimo
+    limit_lgas = ['394']
 
     def handle(self, *args, **kwargs):
         self._limit_import = kwargs['limit_import']
@@ -197,24 +205,30 @@ class Command(BaseCommand):
     def create_facilities_from_csv(self, facility_type, data_source, path):
         csv_reader = CsvReader(path)
         num_errors = 0
+        sector, created = Sector.objects.get_or_create(
+            slug=facility_type.lower(), name=facility_type)
         for d in csv_reader.iter_dicts():
             if self._limit_import:
                 if '_lga_id' not in d:
                     print d
-                if d['_lga_id'] not in ['732']:
+                if d['_lga_id'] not in self.limit_lgas:
                     continue
             d['_data_source'] = data_source
             d['_facility_type'] = facility_type
             d['sector'] = facility_type
+            facility = None
             if self._debug:
-                FacilityBuilder.create_facility_from_dict(d)
+                facility = FacilityBuilder.create_facility_from_dict(d)
             else:
                 try:
-                    FacilityBuilder.create_facility_from_dict(d)
+                    facility = FacilityBuilder.create_facility_from_dict(d)
                 except KeyboardInterrupt:
                     sys.exit(0)
                 except:
                     num_errors += 1
+            if facility is not None:
+                facility.sector = sector
+                facility.save()
         if not self._debug:
             print "Had %d error(s) when importing %s facilities..." % (num_errors, facility_type)
 
@@ -240,7 +254,7 @@ class Command(BaseCommand):
             if self._limit_import:
                 if '_lga_id' not in d:
                     print d
-                if d['_lga_id'] not in ['732']:
+                if d['_lga_id'] not in self.limit_lgas:
                     continue
             lga = LGA.objects.get(id=d['_lga_id'])
             if self._debug:
