@@ -38,8 +38,8 @@ class TableColumn(models.Model):
     #display specific details
     display_style = models.CharField(max_length=64, null=True)
     #calc specific info
-    calc_action = models.CharField(max_length=64, null=True)
-    calc_columns = models.CharField(max_length=64, null=True)
+    calc_action = models.CharField(max_length=128, null=True)
+    calc_columns = models.CharField(max_length=128, null=True)
     
     @property
     def display_dict(self):
