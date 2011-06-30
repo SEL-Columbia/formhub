@@ -1,9 +1,9 @@
 "slug","name","description","clickable","subgroups","click action","display_style","calc_action","calc_columns"
 "facility_name","Name",,,"general infrastructure staffing access maternal_health child_health disease_hiv disease_tb disease_malaria",,,,
-"water_access","Water","Access to water","yes","infrastructure","tabulate","checkmark truegood",,
-"power_access","Power","Access to Power",,"infrastructure","tabulate","checkmark truegood",,
-"improved_sanitation","Improved Sanitation","Access to Improved Sanitation","yes","infrastructure","tabulate","checkmark truegood",,
-"mobile_signal_funct_yn","Mobile Coverage","Mobile Phone Network Coverage","yes","infrastructure","tabulate","checkmark truegood",,
+"water_access","Water","Access to water","yes","infrastructure","tabulate","checkmark",,
+"power_access","Power","Access to Power",,"infrastructure","tabulate","checkmark",,
+"improved_sanitation","Improved Sanitation","Access to Improved Sanitation","yes","infrastructure","tabulate","checkmark",,
+"mobile_signal_funct_yn","Mobile Coverage","Mobile Phone Network Coverage","yes","infrastructure","tabulate","checkmark",,
 "health_infrastructure_performance_analysis","Performance Analysis","Health: Infrastructure Performance Analysis",,"infrastructure",,,"binarytally","water_access power_access improved_sanitation mobile_signal_funct_yn"
 "num_chews_fulltime","CHEWs","Number of fulltime CHEWs","yes","staffing","tabulate",,,
 "health_adequately_staffed","Adequately Staffed","Health facility adequately staffed in past month","yes","staffing","tabulate",,,
