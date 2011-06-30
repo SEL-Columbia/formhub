@@ -17,10 +17,33 @@ class FacilityRecord(DataRecord):
         for d in records:
             variable = Variable.get_from_cache(d['variable'])
             value = '%s_value' % variable.data_type
-            try:
-                result[d['variable']][d[value]] += 1
-            except KeyError:
-                result[d['variable']][d[value]] = 1
+            if variable.data_type == 'float':
+                try:
+                    i = result[d['variable']]['count']
+                    result[d['variable']]['sum'] += d[value]
+                    result[d['variable']]['avg'] = \
+                        (i * result[d['variable']]['avg'] + d[value]) / (i+1)
+                    result[d['variable']]['count'] += 1
+                except KeyError:
+                    result[d['variable']]['sum'] = d[value]
+                    result[d['variable']]['avg'] = d[value]
+                    result[d['variable']]['count'] = 1
+            elif variable.data_type == 'boolean':
+                try:
+                    if d[value]:
+                        result[d['variable']]['true'] += 1
+                    else:
+                        result[d['variable']]['false'] += 1
+                except KeyError:
+                    if d[value]:
+                        result[d['variable']]['true'] = 1
+                    else:
+                        result[d['variable']]['false'] = 1
+            elif variable.data_type == 'string':
+                try:
+                    result[d['variable']][d[value]] += 1
+                except KeyError:
+                    result[d['variable']][d[value]] = 1
         return result
 
     @classmethod

@@ -45,6 +45,12 @@ class GapAnalysisTest(TestCase):
         self.power = Variable.objects.create(
             slug='power', data_type='string'
             )
+        self.has_water = Variable.objects.create(
+            slug='has_water', data_type='boolean'
+            )
+        self.num_doctors = Variable.objects.create(
+            slug='num_doctors', data_type='float'
+            )
 
         self.zone = Zone.objects.create(name='Zone', slug='zone')
         self.state = State.objects.create(name='Zone', slug='zone', zone=self.zone)
@@ -52,12 +58,16 @@ class GapAnalysisTest(TestCase):
         self.lgas = [LGA.objects.create(name=n, slug=n, state=self.state) for n in lga_names]
         self.facilities = []
         for lga in self.lgas:
-            for facility_id in ['a', 'b']:
+            for facility_id in ['a', 'b', 'c', 'd']:
                 self.facilities.append(
                     Facility.objects.create(facility_id=facility_id, lga=lga)
                     )
-        for facility, value in zip(self.facilities, ['none', 'good', 'none', 'none']):
+        for facility, value in zip(self.facilities, ['none', 'good', 'bad', 'none']):
             facility.set(self.power, value)
+        for facility, value in zip(self.facilities, [True, False, True, False]):
+            facility.set(self.has_water, value)
+        for facility, value in zip(self.facilities, [10.0, 20.0, 30.0, 40.0]):
+            facility.set(self.num_doctors, value)
 
     def tearDown(self):
         self.zone.delete()  # I think this should cascade
@@ -67,8 +77,18 @@ class GapAnalysisTest(TestCase):
         counts = FacilityRecord.counts_by_variable(self.lgas[0])
         expected_dict = {
             'power': {
-                'none': 1,
+                'none': 2,
                 'good': 1,
+                'bad': 1,
+                },
+             'has_water': {
+                'true': 2,
+                'false': 2,
+                },
+             'num_doctors': {
+                'sum': 100.0,
+                'avg': 25.0,
+                'count': 4
                 },
             }
         self.assertEquals(counts, expected_dict)
