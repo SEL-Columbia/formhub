@@ -212,6 +212,12 @@ function facilityDataLoaded(){
 			(typeof(filterPointsBySector)==='function') && filterPointsBySector(selectedSector);
 		}
 	});
+	$('body').bind('subsector-unselect', function(evt, edata){
+		$('#facility-tabs')
+			.removeClass('hide-tds')
+			.find('.show-me').removeClass('show-me');
+	})
+	var selectedSubSector;
 	$('body').bind('subsector-select', function(evt, edata){
 		var ftabs = $('#facility-tabs');
 		(function(ftabs){
@@ -222,13 +228,16 @@ function facilityDataLoaded(){
 			var sector = edata.sector;
 			var subSector = edata.subSector
 			$('body').trigger('sector-change', { sector: sector });
-			if(subSector!=="all") {
-				(function(ftabs){
-					var selector = '#facilities-'+sector+' .subgroup-'+subSector;
-					ftabs.find(selector).addClass('show-me');
-					ftabs.addClass('hide-tds');
-				})(ftabs)
+			
+			if(selectedSubSector!==subSector) {
+				$('body').trigger('subsector-unselect');
+				var selector = '#facilities-'+sector+' .subgroup-'+subSector;
+				ftabs.find(selector).addClass('show-me');
+				ftabs.addClass('hide-tds');
+				selectedSubSector = subSector;
 			}
+		} else {
+			$('body').trigger('subsector-unselect');
 		}
 	});
 	
@@ -645,13 +654,13 @@ function createSectorNav() {
 		var slug = sector.slug;
 		var l = $("<a />", {'href': '#'}).text(sector.name);
 		l.data('sectorSlug', sector.slug);
-		l.data('subSectorSlug', 'all');
+		l.data('subSectorSlug', 'general');
 		
 		var li = $("<li />").appendTo(ul)
 				.html(l);
 		var sul = $("<ul />").appendTo(ul);
 		$(sector.subgroups).each(function(i, subgroup){
-			if(subgroup.name!=='all') {
+			if(subgroup.slug!=='general') {
 				var li = $("<li />").appendTo(sul);
 				var sgLink = $("<a />", {'href':'#'}).text(subgroup.name).appendTo(li);
 				sgLink.data('sectorSlug', sector.slug);

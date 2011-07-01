@@ -73,6 +73,11 @@ def deploy(deployment_name, reload="none"):
         with cd(env.code_path):
             run("git pull origin %(branch)s" % env)
     pull_code()
+    
+    def pull_data():
+        with cd(os.path.join(env.code_path, 'data')):
+            run("git pull origin master")
+    pull_data()
 
     def _run_in_virtualenv(command):
         activate_path = os.path.join(
