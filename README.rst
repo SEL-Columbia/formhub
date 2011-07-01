@@ -27,10 +27,15 @@ install the requirements
 
     pip install -r requirements.pip
 
-4. Install dropbox and make a symbolic link to the cleaned csv folder
+4. Install dropbox and make a symbolic link to the cleaned csv folder*
 
     ln -s ~/Dropbox/NMIS\ -\ Nigeria/NMIS\ Data/final_cleaned_data/csv/ data
 
 5. Run load_fixtures management command
 
     python manage.py load_fixtures
+
+
+* Alternatively, if you have the keys set up you can pull from the nmis_data private repo:
+
+   git clone wsgi@nmis-linode.mvpafrica.org:repositories/nmis_data.git data
