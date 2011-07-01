@@ -37,7 +37,7 @@ class Command(BaseCommand):
     # Examples:
     #   '394' = Kaduna/Kachia
     #   '732' = Imo/Unuimo
-    limit_lgas = ['394']
+    limit_lgas = settings.LIMITED_LGA_LIST
 
     def handle(self, *args, **kwargs):
         self._limit_import = kwargs['limit_import']

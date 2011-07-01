@@ -149,6 +149,7 @@ LOGGING = {
     }
 }
 
+LIMITED_LGA_LIST = ['394']
 
 import sys
 
