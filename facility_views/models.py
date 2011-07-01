@@ -40,6 +40,7 @@ class TableColumn(models.Model):
     #calc specific info
     calc_action = models.CharField(max_length=128, null=True)
     calc_columns = models.CharField(max_length=128, null=True)
+    display_order = models.IntegerField()
     
     @property
     def display_dict(self):
@@ -51,7 +52,8 @@ class TableColumn(models.Model):
             'slug': self.slug,
             'subgroups': subgroups,
             'clickable': self.clickable,
-            'click_action': self.click_action
+            'click_action': self.click_action,
+            'display_order': self.display_order
         }
         if not self.display_style in [None, '']:
             d['display_style'] = self.display_style

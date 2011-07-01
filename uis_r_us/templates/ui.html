@@ -441,8 +441,11 @@ function createTableForSectorWithData(sector, data){
 	var thRow = $("<tr />");
 	table.append($("<thead />").html(thRow));
 	var sectorData  = data.bySector[sector.slug] || data.bySector[sector.name];
+	function displayOrderSort(a,b) {
+		return (a.display_order > b.display_order) ? 1 : -1
+	}
 	if(sector.columns!==undefined && sector.columns.length>0 && sectorData!==undefined && sectorData.length>0) {
-		$.each(sector.columns, function(i, col){
+		$.each(sector.columns.sort(displayOrderSort), function(i, col){
 			var th = $("<th />", {'class':'col-'+col.slug}).text(col.name).addClass(col.clickable ? "clickable" : "not-clickable");
 			$(col.subgroups).each(function(i, sg){
 				th.addClass('subgroup-'+sg);

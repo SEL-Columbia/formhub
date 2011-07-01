@@ -32,6 +32,7 @@ class Command(BaseCommand):
         for name, slug in table_types:
             curtable = FacilityTable.objects.create(name=name, slug=slug)
             csv_reader = CsvReader(os.path.join("data","table_definitions", "%s.csv" % slug))
+            display_order = 0
             for input_d in csv_reader.iter_dicts():
                 subs = []
                 for sg in input_d['subgroups'].split(" "):
@@ -52,5 +53,7 @@ class Command(BaseCommand):
                     'display_style': input_d.pop('display style', input_d.pop('display_style', '')),
                     'calc_action': input_d.pop('calc action', input_d.pop('calc_action', '')),
                     'calc_columns': input_d.pop('calc columns', input_d.pop('calc_columns', '')),
+                    'display_order': display_order
                 }
+                display_order += 1
                 curtable.add_variable(d)
