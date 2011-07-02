@@ -1,6 +1,6 @@
-"slug","name","description","clickable","subgroups","click action"
-"water_source_type","Type",,,"management condition",
-"lift","Lift","What is lift?",,"management",
-"water_source_developed_by","Developed by",,"yes","management",
-"water_source_used_today_yn","Used today",,"yes","condition",
-"water_source_physical_state","Physical State",,"yes","condition",
+"slug","name","description","clickable","subgroups","click action","display_style","calc_action","calc_columns"
+"water_source_type","Type",,,"management condition",,,,
+"lift","Lift","What is lift?",,"management",,,,
+"water_source_developed_by","Developed by",,"yes","management",,,,
+"water_source_used_today_yn","Used today",,"yes","condition",,,,
+"water_source_physical_state","Physical State",,"yes","condition",,,,
