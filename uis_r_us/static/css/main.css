@@ -64,10 +64,13 @@ table.facility-list td {
 	font-size: 12px;
 	opacity: 0.8;
 }
+
 table.facility-list td {
 	padding: 2px 5px;
-	border: 1px solid #eee;
+	border: 0px solid #eee;
+	text-align: center;
 }
+
 tr.selected-facility td {
 	background-color: #F2F2F2;
 	border-color: #ddd;

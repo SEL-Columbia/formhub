@@ -15,7 +15,8 @@ table.ptable td.centered {
     text-align: center;
 }
 table.ptable td.data {
-    border-right: 1px solid #f2f2f2;
+    /*border-right: 1px solid #f2f2f2; */
+    align: center;
 }
 table.ptable td div.dwrap {
 /*--    background-color: #f2f2f2;

@@ -478,10 +478,14 @@ function createRowForFacilityWithColumns(fpoint, cols){
 		if(col.display_style=="checkmark") {
 			if($.type(value) === 'boolean' && !!value) {
 				td.html("&#x2713;");
-				td.css({'opacity': '1', 'background-color':'#f0f0f0'});
+				//td.css({'opacity': '1', 'background-color':'#f0f0f0','color':'#006600'});
+				//td.css({'opacity': '1', 'background-color':'#a2ea8e','color':'#006600'});
+				td.css({'opacity': '1','background-color':'#E6F5EB','color':'#336600'});
 			} else if($.type(value) === 'boolean') {
 				td.html("&#x2717;");
 				td.css({'opacity': '0.4'});
+				//td.css({'opacity': '1', 'color':'#bb0000','background-color':'#ea9f9c'});
+				td.css({'opacity': '1', 'color':'#a31919','background-color':'#FAEBE6'});
 			} else {
 				td.html('&mdash;');
 				td.css({opacity: '0.3'});
