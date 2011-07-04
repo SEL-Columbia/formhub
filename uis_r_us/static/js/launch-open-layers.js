@@ -32,6 +32,7 @@ var launchOpenLayers = (function(_opts){
                 displayProjection: new OpenLayers.Projection("EPSG:4326"),
                 units: "m",
                 maxResolution: 156543.0339,
+		allOverlays: true,
                 restrictedExtent: new OpenLayers.Bounds(re[0], re[1], re[2], re[3]),
                 maxExtent: new OpenLayers.Bounds(ob[0], ob[1], ob[2], ob[3])
               };
@@ -46,7 +47,13 @@ var launchOpenLayers = (function(_opts){
             if(!mapId) {mapId = mapElem.get(0).id= "-openlayers-map-elem"}
             context.map = new OpenLayers.Map(mapId, options);
 //            context.map.addLayers(mapLayers);
-            var googleSat = new OpenLayers.Layer.Google( "Google", {type: 'satellite'});
+            var googleSat = new OpenLayers.Layer.Google( "Google Satellite", {type: 'satellite',numZoomLevels: 24});
+//   	    var tilesat = new OpenLayers.Layer.TMS("Boundaries", "http://tilestream.openmangrove.org:8888/",
+//                  {
+//                    layername: 'nigeria_overlays_white',
+//                    type: 'png'
+//		  });
+
             context.map.addLayers([googleSat]);
             context.map.addControl(new OpenLayers.Control.LayerSwitcher());
             context.map.setCenter(new OpenLayers.LonLat(opts.centroid.lng, opts.centroid.lat), opts.zoom);

@@ -32,6 +32,7 @@
 "float","num_nursemidwives_fulltime","Number of Nurse/Midwives",,
 "boolean","skilled_birth_attendant","Skilled Birth Attendant",,"d['num_doctors_fulltime'] > 0 or d['num_nurses_fulltime'] > 0 or d['num_midwives_fulltime'] > 0 or d['num_nursemidwives_fulltime'] > 0"
 "float","num_chews_fulltime","Number of CHEWs per Facility",,
+"boolean","adequate_chews","Adequate number of CHEWs",,"d['num_chews_fulltime'] > 0"
 "float","days_facility_understaffed","How many days during the last month was this health facility understaffed (1 or more of the staff were absent)?",,
 "boolean","health_adequately_staffed","Health facility adequately staffed in past month",,"d['days_facility_understaffed']>5"
 "boolean","staff_paid_lastmth_yn","Were all salaried staff members paid their wages in the last month?",,
