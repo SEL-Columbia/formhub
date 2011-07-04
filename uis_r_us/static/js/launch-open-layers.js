@@ -47,7 +47,7 @@ var launchOpenLayers = (function(_opts){
             if(!mapId) {mapId = mapElem.get(0).id= "-openlayers-map-elem"}
             context.map = new OpenLayers.Map(mapId, options);
 //            context.map.addLayers(mapLayers);
-            var googleSat = new OpenLayers.Layer.Google( "Google Satellite", {type: 'satellite',numZoomLevels: 24});
+            var googleSat = new OpenLayers.Layer.Google( "Google Satellite", {type: 'satellite'});
 //   	    var tilesat = new OpenLayers.Layer.TMS("Boundaries", "http://tilestream.openmangrove.org:8888/",
 //                  {
 //                    layername: 'nigeria_overlays_white',
