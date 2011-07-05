@@ -35,6 +35,7 @@
 var olStyling = (function(){
     var iconMakers;
     var iconMode;
+    var markerLayer;
 	
     return {
         addIcon: function(facility, mode, opts){
@@ -44,12 +45,10 @@ var olStyling = (function(){
                 'size': opts.size
             };
         },
-        setMode: function(facilityData, markerLayer, mode){
-/*--            if(iconMode===undefined) {
-                iconMode = mode;
-            } else {
-                log("Change icon mode");
-            } */
+        setMarkerLayer: function(ml){
+            markerLayer = ml;
+        },
+        setMode: function(facilityData, mode){
             $.each(facilityData.list, function(k, fac){
                 if(fac.iconModes && fac.iconModes[mode] !== undefined) {
                     var iconModeData = fac.iconModes[mode];
@@ -65,7 +64,7 @@ var olStyling = (function(){
                         fac.mrkr = new OpenLayers.Marker(fac.openLayersLatLng, icon);
                         markerLayer.addMarker(fac.mrkr);
                     } else {
-                        fac.mrkr.icon.setSize(new OpenLayers.Size(size[0], size[1]));
+                        fac.mrkr.icon.setSize(size);
                         fac.mrkr.icon.setUrl(iconModeData.url);
                     }
                 }
@@ -240,6 +239,7 @@ $('body').bind('select-sector', function(evt, edata){
 			ftabs.addClass(specialClasses.tableHideTd);
 			selectedSubSector = fullSectorId;
 		}
+		olStyling.setMode(facilityData, 'main');
 	} else {
 		$('body').trigger('unselect-sector');
 	}
@@ -384,7 +384,7 @@ $('body').bind('select-column', function(evt, edata){
 		            });
 		        }
         	});
-        	olStyling.setMode(facilityData, undefined, columnMode);
+        	olStyling.setMode(facilityData, columnMode);
 		}
 		selectedColumn = edata.column;
 	}
@@ -520,7 +520,8 @@ function buildFacilityTable(data, sectors){
             	    bounds.extend(oLl); */
     	        } 
     	});
-    	olStyling.setMode(facilityData, markers, 'main');
+    	olStyling.setMarkerLayer(markers);
+    	olStyling.setMode(facilityData, 'main');
 		var tilesat = new OpenLayers.Layer.TMS("Boundaries", "http://tilestream.openmangrove.org:8888/",
 		            {
 		                layerName: 'nigeria_overlays_white',
