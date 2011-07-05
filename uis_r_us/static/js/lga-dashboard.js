@@ -181,7 +181,7 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
     			});
 			}
 		}
-		createSectorNav()
+//		createSectorNav()
 	}, function dataLoadFail(){
 		//called when the lga data fails to load
 		log("Data failed to load");
@@ -238,6 +238,8 @@ $('body').bind('select-sector', function(evt, edata){
 			ftabs.find(selector).addClass(specialClasses.showTd);
 			ftabs.addClass(specialClasses.tableHideTd);
 			selectedSubSector = fullSectorId;
+			$('.sub-sector-list a.selected').removeClass('selected');
+			$('.sub-sector-list').find('a.subsector-link-'+subSector).addClass('selected');
 		}
 		olStyling.setMode(facilityData, 'main');
 	} else {
@@ -583,7 +585,19 @@ function createTableForSectorWithData(sector, data){
 		})
 		table.append(tbod);
 	}
-	return div.html(table);
+	var subSectors = $("<div />").addClass("sub-sector-list");
+	function createSpanForSubSector(ssName, ssSlug, url) {
+	    return $("<a />", {'href': url}).text(ssName).addClass('subsector-link-'+ssSlug);
+	}
+	subSectors.append(createSpanForSubSector("General", 'general', [pageRootUrl, lgaId, sector.slug].join("/")));
+	$.each(sector.subgroups, function(i, sg){
+	    if(sg.slug!=='general') {
+	        subSectors.append(createSpanForSubSector(sg.name, sg.slug, [pageRootUrl, lgaId, [sector.slug, sg.slug].join(subSectorDelimiter)].join("/")));
+	    }
+	})
+	div.html(subSectors)
+	    .append(table);
+	return div;
 }
 function createRowForFacilityWithColumns(fpoint, cols){
 	var tr = $("<tr />");
