@@ -197,7 +197,7 @@ $('body').bind('select-sector', function(evt, edata){
         //would be good to confirm that sector &/or
         // subsector exist
         
-        fullSectorId = [sector, subSector].join("+");
+        fullSectorId = [sector, subSector].join('-');
     })(edata.fullSectorId);
 	
 	if(sector !== undefined) {
@@ -730,7 +730,7 @@ function createSectorNav() {
 		$(sector.subgroups).each(function(i, subgroup){
 			if(subgroup.slug!=='general') {
 				var li = $("<li />").appendTo(sul);
-				var sectorUrl = [pageRootUrl, lgaId, [sector.slug, subgroup.slug].join("+")].join("/");
+				var sectorUrl = [pageRootUrl, lgaId, [sector.slug, subgroup.slug].join('-')].join("/");
         		
 				var sgLink = $("<a />", {'href':sectorUrl}).text(subgroup.name).appendTo(li);
 				sgLink.data('sectorSlug', sector.slug);
