@@ -48,7 +48,7 @@ var olStyling = (function(){
         $.each(surveyTypeColors, function(k, val){
     	    iconMakers[k] = function(){
     	        var url = "/static/images/icons/"+val+".png";
-      		    var size = new OpenLayers.Size(16,16);
+      		    var size = new OpenLayers.Size(34,20);
       		    var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
     	        return new OpenLayers.Icon(url, size, offset);
     	    }
