@@ -53,6 +53,38 @@ class Sector(models.Model):
     name = models.CharField(max_length=128)
 
 
+class LGAIndicator(Variable):
+    """
+    Calculate LGA indicator from facility data. For now these are only
+    location level aggregations, we're only looking at the latest
+    data.
+    """
+    origin = models.ForeignKey(Variable, related_name='lga_indicators')
+    method = models.CharField(max_length=16)  # count_true
+    sector = models.ForeignKey(Sector)
+
+    def count_true(self):
+        assert self.origin.data_type == 'boolean'
+        records = FacilityRecord.objects.filter(variable=self.origin, facility__sector=self.sector).values('facility', 'facility__lga', 'boolean_value').annotate(Max('date')).distinct()
+        result = defaultdict(int)
+        for d in records:
+            if d['boolean_value']:
+                result[d['facility__lga']] += 1
+        return result
+
+    def set_lga_values(self):
+        """
+        self.method is the name of the aggregation method this
+        LGAIndicator should use. Grab that method, call it, and save
+        the results on the appropriate LGAs.
+        """
+        aggregation_method = getattr(self, self.method)
+        values = aggregation_method()  # self is implied, that's weird
+        for lga_id, value in values.iteritems():
+            lga = LGA.objects.get(id=lga_id)
+            lga.set(self, value)  # todo: right now we're ignoring date.
+
+
 class Facility(DictModel):
     """
     TODO: Figure out what fields should actually be on a facility. I think all
