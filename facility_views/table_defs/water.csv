@@ -1,6 +1,0 @@
-"slug","name","description","clickable","subgroups","click action"
-"water_source_type","Type",,,"general","tabulate"
-"lift_mechanism","Lift Mechanism","Lift mechanism","yes","general","tabulate"
-"water_source_working_condition","Working Condition",,"yes","general","tabulate"
-"water_source_physical_state","Physical State",,"yes","general","tabulate"
-"source_developed_by","Developed by","Source developed by","yes","general","tabulate"
