@@ -3,7 +3,7 @@ from django.db.models import Max
 from collections import defaultdict
 import sys
 
-from nga_districts.models import LGA
+from nga_districts.models import LGA, LGARecord
 from abstract_models import Variable, CalculatedVariable, DataRecord, DictModel, KeyRename
 
 
@@ -80,6 +80,30 @@ class LGAIndicator(Variable):
         """
         aggregation_method = getattr(self, self.method)
         values = aggregation_method()  # self is implied, that's weird
+        for lga_id, value in values.iteritems():
+            lga = LGA.objects.get(id=lga_id)
+            lga.set(self, value)  # todo: right now we're ignoring date.
+
+
+class GapVariable(Variable):
+    """
+    Has the information needed to do a Gap Analysis on a given variable.
+    """
+    variable = models.ForeignKey(Variable, related_name='gaps_using_actuals')
+    target = models.ForeignKey(Variable, related_name='gaps_using_targets')
+
+    def calculate_gap(self):
+        """
+        Get all the current and target values for the LGAs and calculate the gaps for them.
+        """
+        current_values = LGARecord.objects.filter(variable=self.variable).values(self.variable.value_field(), 'lga').annotate(Max('date'))
+        current = dict([(d['lga'], d[self.variable.value_field()]) for d in current_values])
+        target_values = LGARecord.objects.filter(variable=self.target).values(self.target.value_field(), 'lga').annotate(Max('date'))
+        target = dict([(d['lga'], d[self.target.value_field()]) for d in target_values])
+        return dict([(lga, target[lga] - current[lga]) for lga in current.keys() if lga in target])
+
+    def set_lga_values(self):
+        values = self.calculate_gap()
         for lga_id, value in values.iteritems():
             lga = LGA.objects.get(id=lga_id)
             lga.set(self, value)  # todo: right now we're ignoring date.

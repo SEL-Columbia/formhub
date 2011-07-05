@@ -52,6 +52,7 @@ class Command(BaseCommand):
                     'click_action': input_d.pop('click action', input_d.pop('click_action', '')),
                     'display_style': input_d.pop('display style', input_d.pop('display_style', '')),
                     'calc_action': input_d.pop('calc action', input_d.pop('calc_action', '')),
+                    'iconify_png_url': input_d.pop('iconify_png_url', input_d.pop('iconify png url', '')),
                     'calc_columns': input_d.pop('calc columns', input_d.pop('calc_columns', '')),
                     'display_order': display_order
                 }

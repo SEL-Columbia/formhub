@@ -7,7 +7,7 @@ import time
 import sys
 from collections import defaultdict
 from facilities.models import Facility, Variable, CalculatedVariable, \
-    KeyRename, FacilityRecord, Sector, LGAIndicator
+    KeyRename, FacilityRecord, Sector, LGAIndicator, GapVariable
 from nga_districts.models import LGA, LGARecord
 from facilities.facility_builder import FacilityBuilder
 from utils.csv_reader import CsvReader
@@ -52,6 +52,7 @@ class Command(BaseCommand):
         self.load_facilities()
         self.load_lga_data()
         self.calculate_lga_indicators()
+        self.calculate_lga_gaps()
         self.create_admin_user()
         self._end_time = time.time()
         self.print_stats()
@@ -179,13 +180,19 @@ class Command(BaseCommand):
 
         csv_reader = CsvReader(os.path.join('facilities', 'fixtures', 'variables.csv'))
         for d in csv_reader.iter_dicts():
-            if 'formula' in d:
+            if 'comment' in d:
+                # if the comment column is present, just ignore the line
+                continue
+            elif 'formula' in d:
                 CalculatedVariable.objects.get_or_create(**d)
             elif 'origin' in d and 'method' in d and 'sector' in d:
-                print d
                 d['origin'] = Variable.objects.get(slug=d['origin'])
                 d['sector'] = Sector.objects.get(slug=d['sector'])
                 lga_indicator = LGAIndicator.objects.create(**d)
+            elif 'variable' in d and 'target' in d:
+                d['variable'] = Variable.objects.get(slug=d['variable'])
+                d['target'] = Variable.objects.get(slug=d['target'])
+                gap_analyzer = GapVariable.objects.create(**d)
             else:
                 Variable.objects.get_or_create(**d)
 
@@ -289,6 +296,10 @@ class Command(BaseCommand):
 
     def calculate_lga_indicators(self):
         for i in LGAIndicator.objects.all():
+            i.set_lga_values()
+
+    def calculate_lga_gaps(self):
+        for i in GapVariable.objects.all():
             i.set_lga_values()
 
     def create_admin_user(self):
