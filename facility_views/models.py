@@ -40,10 +40,14 @@ class TableColumn(models.Model):
     #calc specific info
     calc_action = models.CharField(max_length=256, null=True)
     calc_columns = models.CharField(max_length=512, null=True)
+    iconify_png_url = models.CharField(max_length=256, null=True)
     display_order = models.IntegerField()
     
     @property
     def display_dict(self):
+        #this stuff is an extra step. I was hoping this extra step would lead
+        # to more flexibility (e.g. in turning 'click_action' from a string into a list.)
+        #Down the line, I definitely want to change how this is done. [-AD]
         subgroups = []
         if not self.subgroups == "":
             subgroups = self.subgroups.split(" ")
@@ -52,9 +56,12 @@ class TableColumn(models.Model):
             'slug': self.slug,
             'subgroups': subgroups,
             'clickable': self.clickable,
-            'click_action': self.click_action,
             'display_order': self.display_order
         }
+        if not self.iconify_png_url in ['', None]:
+            d['iconify_png_url'] = self.iconify_png_url
+        if not self.click_action == '':
+            d['click_actions'] = self.click_action.split(' ')
         if not self.display_style in [None, '']:
             d['display_style'] = self.display_style
         

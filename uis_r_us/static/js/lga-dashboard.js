@@ -70,6 +70,15 @@ var olStyling = (function(){
             } else if(status==='showing') {
                 $(mrkr.icon.imageDiv).show();
             }
+        },
+        changeIcon: function(facility, data){
+            if(data===undefined) {return;}
+            if(facility.mrkr !== undefined) {
+                var iconSize = new OpenLayers.Size(16,16);
+                var url = data.url;
+                facility.mrkr.icon.setSize(iconSize);
+                facility.mrkr.icon.setUrl(url);
+            }
         }
     }
 })();
@@ -284,7 +293,7 @@ $('body').bind('select-facility', function(evt, edata){
 	popup._showSideDiv({
 	    title: "Facility "+ facility.uid,
 		close: function(){
-			$('body').trigger('unselect-facility');
+		    $('body').trigger('unselect-facility');
 		}
 	});
 });
@@ -332,7 +341,7 @@ $('body').bind('select-column', function(evt, edata){
 				})
 			})(column);
 		}
-		if(column.click_action === 'tabulate') {
+		if(~column.click_actions.indexOf('tabulate')) {
 			var colDataDiv = getColDataDiv();
 			var cdiv = $("<div />", {'class':'col-info'}).html($("<h2 />").text(column.name));
 			if(column.description!==undefined) {
@@ -352,6 +361,19 @@ $('body').bind('select-column', function(evt, edata){
 			cdiv.append(tabl);
 			colDataDiv.html(cdiv)
 					.css({'height':80});
+		}
+		if(~column.click_actions.indexOf('iconify') && column.iconify_png_url !== undefined) {
+		    var t=0, z=0;
+		    var iconStrings = [];
+		    $.each(facilityData.list, function(i, fdp){
+		        if(fdp.sectorSlug===sector.slug) {
+		            var iconUrl = column.iconify_png_url + fdp[column.slug] + '.png';
+    		        olStyling.changeIcon(fdp, {
+    		            mode: column.slug,
+    		            url: iconUrl
+    		        });
+		        }
+        	});
 		}
 		selectedColumn = edata.column;
 	}
@@ -447,8 +469,9 @@ function buildFacilityTable(data, sectors){
 		var bounds = new OpenLayers.Bounds();
 		$.each(facilityData.list, function(i, d){
     	        if(d.latlng!==undefined) {
+    	            d.sectorSlug = (d.sector || 'default').toLowerCase();
             	    var icon = olStyling.createIcon({
-            	        sector: (d.sector || 'default').toLowerCase()
+            	        sector: d.sectorSlug
             	    });
             	    var ll = d.latlng;
             	    var oLl = new OpenLayers.LonLat(ll[1], ll[0]).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));;
@@ -699,6 +722,7 @@ var facilityDataStuff = (function(dataReq, passedData){
 		})();
 		
 		facilityData = data;
+		window._facilityData = data;
     	facilitySectors = sectors;
     	//save it in the request object to avoid these checks
     	// in future requests...
