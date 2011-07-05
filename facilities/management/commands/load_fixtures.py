@@ -180,8 +180,8 @@ class Command(BaseCommand):
 
         csv_reader = CsvReader(os.path.join('facilities', 'fixtures', 'variables.csv'))
         for d in csv_reader.iter_dicts():
-            if 'comment' in d:
-                # if the comment column is present, just ignore the line
+            if 'data_type' not in d:
+                # this row does not define a new variable
                 continue
             elif 'formula' in d:
                 CalculatedVariable.objects.get_or_create(**d)
