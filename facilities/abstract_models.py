@@ -94,6 +94,13 @@ class Variable(models.Model):
         return json.dumps(self.to_dict(), indent=4)
 
 
+def sum_non_null_values(d, keys):
+    """
+    Helper function for calculated variables.
+    """
+    return sum([d[key] for key in keys if d[key] is not None])
+
+
 class CalculatedVariable(Variable):
     """
     example formula: d['num_students_total'] / d['num_tchrs_total']
