@@ -36,11 +36,12 @@ td.checkmark {
     text-align: center;
 }
 td.checkmark.on {
-    background-color: #eaeaea;
+    background-color: #e6f5eb;
+    color: 336600;
 }
 td.checkmark.off {
-    background-color: #f7f7f7;
-    color: #888;
+    background-color: #faebe6;
+    color: #a31919;
 }
 td.checkmark.null {
     opacity: 0.4;
@@ -94,7 +95,7 @@ table.facility-list td {
 }
 table.facility-list td {
 	padding: 2px 5px;
-	border: 1px solid #eee;
+	border: 0 none;
 }
 tr.selected-facility td {
 	background-color: #F2F2F2;

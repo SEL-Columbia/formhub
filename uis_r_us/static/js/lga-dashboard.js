@@ -36,18 +36,18 @@ var olStyling = (function(){
     var iconMakers;
     //tempararily copying flags over.
     var surveyTypeColors = {
-		water: "blue",
-		health: "red",
+		water: "water_s",
+		health: "clinic_s",
 		agriculture: "orange",
 		lga: "purple",
-		education: "green",
+		education: "school_b",
 		'default': "pink"
 	};
     function createIconMakers() {
         iconMakers = {};
         $.each(surveyTypeColors, function(k, val){
     	    iconMakers[k] = function(){
-    	        var url = "/static/images/geosilk/flag_"+val+".png";
+    	        var url = "/static/images/icons/"+val+".png";
       		    var size = new OpenLayers.Size(16,16);
       		    var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
     	        return new OpenLayers.Icon(url, size, offset);
@@ -466,9 +466,12 @@ function buildFacilityTable(data, sectors){
             	    bounds.extend(oLl);
     	        } 
     	});
-		var google = new OpenLayers.Layer.Google( "Google", {type: 'satellite'});
-		this.map.addLayer(google);
-		this.map.addLayer(markers);
+		var tilesat = new OpenLayers.Layer.TMS("Boundaries", "http://tilestream.openmangrove.org:8888/",
+		            {
+		                layerName: 'nigeria_overlays_white',
+		                type: 'png'
+		            });
+		this.map.addLayers([tilesat, markers]);
         // (function defineNewZoomer(map){
         //  map.zoomToExtentInBox = (function(){
         //      return function(bounds, pixel, size){
