@@ -190,7 +190,6 @@ class Command(BaseCommand):
                 d['sector'] = Sector.objects.get(slug=d['sector'])
                 lga_indicator = LGAIndicator.objects.create(**d)
             elif 'variable' in d and 'target' in d:
-                print d
                 d['variable'] = Variable.objects.get(slug=d['variable'])
                 d['target'] = Variable.objects.get(slug=d['target'])
                 gap_analyzer = GapVariable.objects.create(**d)
