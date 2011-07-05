@@ -97,6 +97,8 @@ var urls = {
     lgaSpecific: '/facilities/site/'
 };
 
+var subSectorDelimiter = "-";
+
 (function($){
     //a quick ajax cache, just trying to prevent multiple
     // requests to the same url in one pageload... (for now)
@@ -183,7 +185,7 @@ $('body').bind('select-sector', function(evt, edata){
     var sector, subSector, fullSectorId;
     
     (function(lsid){
-        var lids = lsid.split(":");
+        var lids = lsid.split(subSectorDelimiter);
         sector = lids[0];
         if(lids.length > 1) {
             subSector = lids[1];
@@ -197,7 +199,7 @@ $('body').bind('select-sector', function(evt, edata){
         //would be good to confirm that sector &/or
         // subsector exist
         
-        fullSectorId = [sector, subSector].join('-');
+        fullSectorId = [sector, subSector].join(subSectorDelimiter);
     })(edata.fullSectorId);
 	
 	if(sector !== undefined) {
@@ -730,7 +732,7 @@ function createSectorNav() {
 		$(sector.subgroups).each(function(i, subgroup){
 			if(subgroup.slug!=='general') {
 				var li = $("<li />").appendTo(sul);
-				var sectorUrl = [pageRootUrl, lgaId, [sector.slug, subgroup.slug].join('-')].join("/");
+				var sectorUrl = [pageRootUrl, lgaId, [sector.slug, subgroup.slug].join(subSectorDelimiter)].join("/");
         		
 				var sgLink = $("<a />", {'href':sectorUrl}).text(subgroup.name).appendTo(li);
 				sgLink.data('sectorSlug', sector.slug);
