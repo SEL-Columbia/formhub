@@ -90,6 +90,13 @@ class Variable(models.Model):
         result = [v.to_dict() for v in cls.objects.all()]
         return result if not as_json else json.dumps(result)
 
+    def value_field(self):
+        """
+        Data for this variable will be stored in a column
+        with this name in a DataRecord.
+        """
+        return self.data_type + '_value'
+
     def __unicode__(self):
         return json.dumps(self.to_dict(), indent=4)
 
