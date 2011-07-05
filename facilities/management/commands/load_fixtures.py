@@ -7,7 +7,7 @@ import time
 import sys
 from collections import defaultdict
 from facilities.models import Facility, Variable, CalculatedVariable, \
-    KeyRename, FacilityRecord, Sector
+    KeyRename, FacilityRecord, Sector, LGAIndicator
 from nga_districts.models import LGA, LGARecord
 from facilities.facility_builder import FacilityBuilder
 from utils.csv_reader import CsvReader
@@ -45,11 +45,13 @@ class Command(BaseCommand):
         self._start_time = time.time()
         self.reset_database()
         self.load_lgas()
+        self.create_sectors()
         self.load_key_renames()
         self.load_variables()
         self.load_table_defs()
         self.load_facilities()
         self.load_lga_data()
+        self.calculate_lga_indicators()
         self.create_admin_user()
         self._end_time = time.time()
         self.print_stats()
@@ -147,6 +149,11 @@ class Command(BaseCommand):
         for file_name in ['zone.json', 'state.json', 'lga.json']:
             call_command('loaddata', file_name)
 
+    def create_sectors(self):
+        sectors = ['Education', 'Health', 'Water']
+        for sector in sectors:
+            Sector.objects.create(slug=sector.lower(), name=sector)
+
     def load_key_renames(self):
         kwargs = {
             'model': KeyRename,
@@ -172,11 +179,13 @@ class Command(BaseCommand):
 
         csv_reader = CsvReader(os.path.join('facilities', 'fixtures', 'variables.csv'))
         for d in csv_reader.iter_dicts():
-            # throw out the formula if it is empty
-            if 'formula' in d and not d['formula']:
-                del(d['formula'])
             if 'formula' in d:
                 CalculatedVariable.objects.get_or_create(**d)
+            elif 'origin' in d and 'method' in d and 'sector' in d:
+                print d
+                d['origin'] = Variable.objects.get(slug=d['origin'])
+                d['sector'] = Sector.objects.get(slug=d['sector'])
+                lga_indicator = LGAIndicator.objects.create(**d)
             else:
                 Variable.objects.get_or_create(**d)
 
@@ -205,7 +214,7 @@ class Command(BaseCommand):
     def create_facilities_from_csv(self, facility_type, data_source, path):
         csv_reader = CsvReader(path)
         num_errors = 0
-        sector, created = Sector.objects.get_or_create(
+        sector = Sector.objects.get(
             slug=facility_type.lower(), name=facility_type)
         for d in csv_reader.iter_dicts():
             if self._limit_import:
@@ -277,6 +286,10 @@ class Command(BaseCommand):
         if not os.path.exists(xfm_json_path):
             raise Exception("Download and unpack xform_manager_dataset.json into project's data dir.")
         call_command('loaddata', xfm_json_path)
+
+    def calculate_lga_indicators(self):
+        for i in LGAIndicator.objects.all():
+            i.set_lga_values()
 
     def create_admin_user(self):
         from django.contrib.auth.models import User

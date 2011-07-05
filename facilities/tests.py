@@ -1,6 +1,6 @@
 from django.test import TestCase
 from facility_builder import FacilityBuilder
-from models import CalculatedVariable, Variable, Facility, FacilityRecord, Sector
+from models import CalculatedVariable, Variable, Facility, FacilityRecord, Sector, LGAIndicator
 from nga_districts.models import Zone, State, LGA
 
 class CalculatedVariableTest(TestCase):
@@ -99,3 +99,53 @@ class GapAnalysisTest(TestCase):
         counts = FacilityRecord.counts_of_boolean_variables(self.lgas[0])
         expected_dict = {'test': {'has_water': expected_dict['test']['has_water']}}
         self.assertEquals(counts, expected_dict)
+
+
+class LGAIndicatorTest(TestCase):
+
+    def setUp(self):
+        self.has_water = Variable.objects.create(
+            slug='has_water', data_type='boolean'
+            )
+
+        self.zone = Zone.objects.create(name='Zone', slug='zone')
+        self.state = State.objects.create(name='Zone', slug='zone', zone=self.zone)
+        lga_names = ['LGA_1', 'LGA_2']
+        self.lgas = [LGA.objects.create(name=n, slug=n, state=self.state) for n in lga_names]
+        self.sector = Sector.objects.create(name='Test', slug='test')
+        self.facilities = []
+        for lga in self.lgas:
+            for facility_id in ['a', 'b']:
+                self.facilities.append(
+                    Facility.objects.create(facility_id=facility_id, lga=lga, sector=self.sector)
+                    )
+        self.assertEquals(len(self.facilities), 4)
+        for facility, value in zip(self.facilities, [True, True, True, False]):
+            facility.set(self.has_water, value)
+
+        kwargs = {
+            'name': 'Count of facilities with water',
+            'slug': 'water_count',
+            'data_type': 'float',
+            'description': 'Count of facilities with water',
+            'origin': self.has_water,
+            'method': 'count_true',
+            'sector': self.sector,
+            }
+        self.water_count = LGAIndicator.objects.create(**kwargs)
+
+    def tearDown(self):
+        self.zone.delete()  # I think this should cascade
+        self.has_water.delete()
+        self.sector.delete()
+
+    def test_count_true(self):
+        self.water_count.set_lga_values()
+        self.assertEquals(
+            self.lgas[0].get_latest_value_for_variable(self.water_count),
+            2
+            )
+        self.assertEquals(
+            self.lgas[1].get_latest_value_for_variable(self.water_count),
+            1
+            )
