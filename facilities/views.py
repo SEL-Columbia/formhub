@@ -33,7 +33,7 @@ def facilities_for_site(request, site_id):
         else:
             #there was 1 non-null value
             return nns[0]
-    lga = LGA.objects.get(geoid=site_id)
+    lga = LGA.objects.get(unique_slug=site_id)
     facility_ids = [z['id'] for z in Facility.objects.filter(lga=lga).values('id')]
     d = {}
     drq = FacilityRecord.objects.order_by('-date')
@@ -46,7 +46,12 @@ def facilities_for_site(request, site_id):
             dvals[t['variable_id']] = \
                     non_null([t['string_value'], t['float_value'], t['boolean_value']])
         d[facility] = dvals
-    return HttpResponse(json.dumps(d))
+    oput = {
+        'facilities': d,
+        'lgaName': lga.name,
+        'stateName': lga.state.name,
+    }
+    return HttpResponse(json.dumps(oput))
 
 
 def facility(request, facility_id):

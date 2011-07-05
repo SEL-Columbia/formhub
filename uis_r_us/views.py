@@ -5,15 +5,16 @@ from django.http import HttpResponse
 
 def dashboard(request, reqpath):
     if request.method == "POST":
-        geoid = request.POST['lga']
-        if LGA.objects.filter(geoid=geoid).count() > 0:
-            return HttpResponseRedirect("/ui/%s" % geoid)
+        lgaid = request.POST['lga']
+        if LGA.objects.filter(unique_slug=lgaid).count() > 0:
+            return HttpResponseRedirect("/ui/%s" % lgaid)
     context = RequestContext(request)
     lga = None
     context.active_districts = active_districts()
     if not reqpath == "":
+        req_lga_id = reqpath.split("/")[0]
         try:
-            lga = LGA.objects.get(geoid=reqpath)
+            lga = LGA.objects.get(unique_slug=req_lga_id)
         except:
             lga = None
         if lga == None:
@@ -30,7 +31,7 @@ def country_view(context):
 
 def lga_view(context):
     context.site_title = "LGA View"
-    context.lga_id = context.lga.geoid
+    context.lga_id = "'%s'" % context.lga.unique_slug
     return render_to_response("ui.html", context_instance=context)
 
 from facility_views.models import FacilityTable
@@ -56,6 +57,6 @@ def active_districts():
     for state, lgas in states.items():
         for lga in lgas:
             lga_list.append(
-                (lga.geoid, lga.state.name, lga.name)
+                (lga.unique_slug, lga.state.name, lga.name)
                 )
     return lga_list

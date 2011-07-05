@@ -21,12 +21,40 @@
     border: 1px solid #bbb;
     background-color: rgba(255,255,255,0.95);
 }
-.lga-nav {
+.load-options, .lga-nav {
     position: absolute;
     top: 5px;
-    left: 200px;
+}
+.lga-nav {
+    right: 300px;
+}
+.load-options {
+    right: 500px;
 }
 
+td.checkmark {
+    text-align: center;
+}
+td.checkmark.on {
+    background-color: #eaeaea;
+}
+td.checkmark.off {
+    background-color: #f7f7f7;
+    color: #888;
+}
+td.checkmark.null {
+    opacity: 0.4;
+    color: #bbb;
+}
+td.checkmark.on span.mrk:before {
+    content: '✓';
+}
+td.checkmark.off span.mrk:before {
+    content: '✗';
+}
+td.checkmark.null span.mrk:before {
+    content: '—';
+}
 
 .content-inner-wrap {
 	position: relative;
@@ -64,13 +92,10 @@ table.facility-list td {
 	font-size: 12px;
 	opacity: 0.8;
 }
-
 table.facility-list td {
 	padding: 2px 5px;
-	border: 0px solid #eee;
-	text-align: center;
+	border: 1px solid #eee;
 }
-
 tr.selected-facility td {
 	background-color: #F2F2F2;
 	border-color: #ddd;
