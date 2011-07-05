@@ -104,7 +104,6 @@ class GapVariable(Variable):
 
     def set_lga_values(self):
         values = self.calculate_gap()
-        print "here are the gap values", values
         for lga_id, value in values.iteritems():
             lga = LGA.objects.get(id=lga_id)
             lga.set(self, value)  # todo: right now we're ignoring date.
