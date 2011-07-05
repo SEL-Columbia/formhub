@@ -34,36 +34,44 @@
 // openlayers specific actions for icons
 var olStyling = (function(){
     var iconMakers;
-    //tempararily copying flags over.
-    var surveyTypeColors = {
-		water: "water_s",
-		health: "clinic_s",
-		agriculture: "orange",
-		lga: "purple",
-		education: "school_b",
-		'default': "pink"
-	};
-    function createIconMakers() {
-        iconMakers = {};
-        $.each(surveyTypeColors, function(k, val){
-    	    iconMakers[k] = function(){
-    	        var url = "/static/images/icons/"+val+".png";
-      		    var size = new OpenLayers.Size(34,20);
-      		    var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-    	        return new OpenLayers.Icon(url, size, offset);
-    	    }
-    	});
-    }
-    
+    var iconMode;
+    var markerLayer;
+	
     return {
-        createIcon: function(opts){
-            iconMakers === undefined && createIconMakers();
-            var sector = opts.sector;
-//            var style = opts.style (eg. "highlighted" ?)
-            var maker = iconMakers[opts.sector] || iconMakers['default'];
-            return maker();
+        addIcon: function(facility, mode, opts){
+            if(facility.iconModes === undefined) { facility.iconModes = {}; }
+            facility.iconModes[mode] = {
+                'url': opts.url,
+                'size': opts.size
+            };
         },
-        markIcon: function(mrkr, status){
+        setMarkerLayer: function(ml){
+            markerLayer = ml;
+        },
+        setMode: function(facilityData, mode){
+            $.each(facilityData.list, function(k, fac){
+                if(fac.iconModes && fac.iconModes[mode] !== undefined) {
+                    var iconModeData = fac.iconModes[mode];
+                    if(iconModeData.size instanceof OpenLayers.Size) {
+                        var size = iconModeData.size;
+                    } else {
+                        var size = new OpenLayers.Size(iconModeData.size[0], iconModeData.size[1]);
+                    }
+                    var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+                    var url = iconModeData.url;
+                    if(fac.mrkr === undefined) {
+                        var icon = new OpenLayers.Icon(url, size, offset);
+                        fac.mrkr = new OpenLayers.Marker(fac.openLayersLatLng, icon);
+                        markerLayer.addMarker(fac.mrkr);
+                    } else {
+                        fac.mrkr.icon.setSize(size);
+                        fac.mrkr.icon.setUrl(iconModeData.url);
+                    }
+                }
+            });
+        },
+        markIcon: function(pt, status){
+            var mrkr = pt.mrkr;
             if(mrkr === undefined) { return; }
             if(status==='hidden') {
                 $(mrkr.icon.imageDiv).hide();
@@ -173,7 +181,7 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
     			});
 			}
 		}
-		createSectorNav()
+//		createSectorNav()
 	}, function dataLoadFail(){
 		//called when the lga data fails to load
 		log("Data failed to load");
@@ -230,7 +238,10 @@ $('body').bind('select-sector', function(evt, edata){
 			ftabs.find(selector).addClass(specialClasses.showTd);
 			ftabs.addClass(specialClasses.tableHideTd);
 			selectedSubSector = fullSectorId;
+			$('.sub-sector-list a.selected').removeClass('selected');
+			$('.sub-sector-list').find('a.subsector-link-'+subSector).addClass('selected');
 		}
+		olStyling.setMode(facilityData, 'main');
 	} else {
 		$('body').trigger('unselect-sector');
 	}
@@ -264,10 +275,10 @@ $('body').bind('select-facility', function(evt, edata){
 				axis: 'y'
 			});
 		}
-	})()
+	})();
 
 	$.each(facilityData.list, function(i, fdp){
-	    olStyling.markIcon(fdp.mrkr, facility===fdp ? 'showing' : 'hidden');
+	    olStyling.markIcon(fdp, facility===fdp ? 'showing' : 'hidden');
 	});
     
 	var popup = $("<div />");
@@ -341,7 +352,7 @@ $('body').bind('select-column', function(evt, edata){
 				})
 			})(column);
 		}
-		if(~column.click_actions.indexOf('tabulate')) {
+		if(column.click_actions!== undefined && ~column.click_actions.indexOf('tabulate')) {
 			var colDataDiv = getColDataDiv();
 			var cdiv = $("<div />", {'class':'col-info'}).html($("<h2 />").text(column.name));
 			if(column.description!==undefined) {
@@ -362,18 +373,20 @@ $('body').bind('select-column', function(evt, edata){
 			colDataDiv.html(cdiv)
 					.css({'height':80});
 		}
+		var columnMode = "view_column_"+column.slug;
 		if(~column.click_actions.indexOf('iconify') && column.iconify_png_url !== undefined) {
 		    var t=0, z=0;
 		    var iconStrings = [];
 		    $.each(facilityData.list, function(i, fdp){
 		        if(fdp.sectorSlug===sector.slug) {
 		            var iconUrl = column.iconify_png_url + fdp[column.slug] + '.png';
-    		        olStyling.changeIcon(fdp, {
-    		            mode: column.slug,
-    		            url: iconUrl
-    		        });
+		            olStyling.addIcon(fdp, columnMode, {
+		                url: iconUrl,
+		                size: [16, 16]
+		            });
 		        }
         	});
+        	olStyling.setMode(facilityData, columnMode);
 		}
 		selectedColumn = edata.column;
 	}
@@ -399,7 +412,7 @@ function buildFacilityTable(data, sectors){
             // on creation.
             function showHideMarker(pt, tf) {
                 pt.showMrkr = tf;
-                olStyling.markIcon(pt.mrkr, tf ? 'showing' : 'hidden')
+                olStyling.markIcon(pt, tf ? 'showing' : 'hidden')
             }
             $.each(facilityData.list, function(i, pt){
                 showHideMarker(pt, (pt.sector === sector))
@@ -463,6 +476,18 @@ function buildFacilityTable(data, sectors){
 			lng: 738031.10112355
 		}
 	})(function(){
+	    function urlForSectorIcon(s) {
+	        var surveyTypeColors = {
+        		water: "water_s",
+        		health: "clinic_s",
+        		agriculture: "orange",
+        		lga: "purple",
+        		education: "school_b",
+        		'default': "pink"
+        	};
+	        var st = surveyTypeColors[s] || surveyTypeColors['default'];
+	        return '/static/images/icons/'+st+'.png';
+	    }
 		var iconMakers = {};
 //		window._map = this.map;
 		var markers = new OpenLayers.Layer.Markers("Markers");
@@ -470,11 +495,17 @@ function buildFacilityTable(data, sectors){
 		$.each(facilityData.list, function(i, d){
     	        if(d.latlng!==undefined) {
     	            d.sectorSlug = (d.sector || 'default').toLowerCase();
-            	    var icon = olStyling.createIcon({
-            	        sector: d.sectorSlug
-            	    });
+    	            olStyling.addIcon(d, 'main', {
+    	                url: urlForSectorIcon(d.sectorSlug),
+    	                size: [34, 20]
+    	            });
+    	            var ll = d.latlng;
+    	            var oLl = new OpenLayers.LonLat(ll[1], ll[0]).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+    	            d.openLayersLatLng = oLl;
+    	            bounds.extend(oLl);
+/*
             	    var ll = d.latlng;
-            	    var oLl = new OpenLayers.LonLat(ll[1], ll[0]).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));;
+            	    
             	    d.mrkr = new OpenLayers.Marker(oLl, icon);
             	    
             	    //checks to see if the facility has already been hidden
@@ -488,9 +519,11 @@ function buildFacilityTable(data, sectors){
             	        }
             	    });
             	    markers.addMarker(d.mrkr);
-            	    bounds.extend(oLl);
+            	    bounds.extend(oLl); */
     	        } 
     	});
+    	olStyling.setMarkerLayer(markers);
+    	olStyling.setMode(facilityData, 'main');
 		var tilesat = new OpenLayers.Layer.TMS("Boundaries", "http://tilestream.openmangrove.org:8888/",
 		            {
 		                layerName: 'nigeria_overlays_white',
@@ -552,7 +585,19 @@ function createTableForSectorWithData(sector, data){
 		})
 		table.append(tbod);
 	}
-	return div.html(table);
+	var subSectors = $("<div />").addClass("sub-sector-list");
+	function createSpanForSubSector(ssName, ssSlug, url) {
+	    return $("<a />", {'href': url}).text(ssName).addClass('subsector-link-'+ssSlug);
+	}
+	subSectors.append(createSpanForSubSector("General", 'general', [pageRootUrl, lgaId, sector.slug].join("/")));
+	$.each(sector.subgroups, function(i, sg){
+	    if(sg.slug!=='general') {
+	        subSectors.append(createSpanForSubSector(sg.name, sg.slug, [pageRootUrl, lgaId, [sector.slug, sg.slug].join(subSectorDelimiter)].join("/")));
+	    }
+	})
+	div.html(subSectors)
+	    .append(table);
+	return div;
 }
 function createRowForFacilityWithColumns(fpoint, cols){
 	var tr = $("<tr />");
