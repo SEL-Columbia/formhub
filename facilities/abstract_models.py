@@ -80,7 +80,11 @@ class Variable(models.Model):
             }
         if self.data_type not in cast_function:
             raise Exception(self.__unicode__())
-        return cast_function[self.data_type](value)
+        try:
+            value = cast_function[self.data_type](value)
+        except:
+            value = None
+        return value
 
     def to_dict(self):
         return dict([(k, getattr(self, k)) for k in self.FIELDS])
@@ -105,7 +109,16 @@ def sum_non_null_values(d, keys):
     """
     Helper function for calculated variables.
     """
-    return sum([d[key] for key in keys if d[key] is not None]) or 0.0
+    # loop through the keys and get the values to sum from d
+    # if the key is not in d, add it to d with a value of 0
+    operands = [0]
+    for key in keys:
+        try:
+            if d[key] is not None:
+                operands.append(d[key])
+        except:
+            pass
+    return sum(operands)
 
 
 class CalculatedVariable(Variable):
