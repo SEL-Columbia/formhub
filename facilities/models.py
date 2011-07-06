@@ -160,6 +160,20 @@ class Facility(DictModel):
                 tot += record.value
             return tot / count
 
+    @classmethod
+    def export_geocoords(cls):
+        # TODO: exception handling!
+        facilities = defaultdict(list)
+        for f in Facility.objects.all():
+            # use facility_id for now (major hack)
+            lat, lon = f.facility_id.split()[:2]
+            facilities[f.sector.slug].append({
+                    'id': f.id,
+                    'lat': float(lat),
+                    'long': float(lon)
+                })
+        return facilities
+
 
 from xform_manager.models import Instance
 from django.db.models.signals import post_save
