@@ -94,7 +94,7 @@ body .ui-tabs .ui-tabs-nav li a {
 	height: 24px;
 	position: absolute;
 	left: 10px;
-	top: 3px;
+	top: 5px;
 	background-repeat: no-repeat;
 }
 .ui-tabs-nav li.ui-state-active div.flag {
