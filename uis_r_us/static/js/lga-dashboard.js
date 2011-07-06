@@ -436,7 +436,11 @@ function buildFacilityTable(data, sectors){
 		if(fdata instanceof Array && fdata.length > 0) {
 			sectorCount.text(" ("+fdata.length+")")
 		}
-		li.append($("<a />", {'href':'#facilities-'+sector.slug}).text(sector.name).append(sectorCount));
+		li.append($("<a />", {'href':'#facilities-'+sector.slug})
+		        .text(sector.name)
+		        .addClass('ui-tab-sector-selector')
+		        .data('sectorSlug', sector.slug)
+		        .append(sectorCount));
 		ftabUl.append(li);
 		ftabs.append(createTableForSectorWithData(sector, facilityData));
 	});
@@ -452,19 +456,17 @@ function buildFacilityTable(data, sectors){
 	}});
 
 	(function deleteThisWhenYouWantToDoItProperly(){
-		var stColors = {
-  			'facilities-water': "blue",
-  			'facilities-health': "red",
-  			'facilities-agriculture': "orange",
-  			lga: "purple",
-  			'facilities-education': "green",
-  			defaultColor: "pink"
-  		};
-		$('.ui-tabs-nav', ftabs).find('li a').each(function(){
-			var colorSlug = this.hash.replace("#", "");
-			var flagColor = stColors[colorSlug];
-			var flagUrl = "/static/images/geosilk/flag_"+flagColor+".png"
-			$(this).prepend($("<img />", {src: flagUrl, 'class': 'flag'}));
+  		var uiTabIconSlugs = {
+    		water: "water_s",
+    		health: "clinic_s",
+    		education: "school_b"
+    	};
+		$('.ui-tabs-nav', ftabs).find('li a.ui-tab-sector-selector').each(function(){
+			var ss = $(this).data('sectorSlug');
+			var flagUrl = "/static/images/icons/"+uiTabIconSlugs[ss]+".png"
+			$(this).prepend($("<div />", {'class': 'flag'})
+			    .css({'background-image':"url('"+flagUrl+"')"})
+			    );
 		})
 	})();
 	ftabs.height(220);

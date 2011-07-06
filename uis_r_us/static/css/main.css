@@ -82,11 +82,22 @@ table.facility-list {
 table.facility-list td {
     cursor: pointer;
 }
-.ui-tabs-nav li img.flag {
+body .ui-tabs .ui-tabs-nav li a {
+    padding-left: 40px;
+}
+.ui-tabs-nav li div.flag {
 	margin: 0 12px 0 0;
 	opacity: 0.5;
+	display: block;
+	width: 20px;
+/* i think we're better off finding icons that fit in this than making this div bigger */
+	height: 24px;
+	position: absolute;
+	left: 10px;
+	top: 3px;
+	background-repeat: no-repeat;
 }
-.ui-tabs-nav li.ui-state-active img.flag {
+.ui-tabs-nav li.ui-state-active div.flag {
 	opacity: 1;
 }
 .ui-tabs-nav .sector-count {
