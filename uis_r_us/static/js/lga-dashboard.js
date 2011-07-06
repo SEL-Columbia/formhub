@@ -445,7 +445,7 @@ function buildFacilityTable(data, sectors){
 	    var sectorId = $(ui.panel).data('sector-slug');
 	    
 	    //* sammy setLocation will handle setting up the page:
-	    _dashboard.setLocation([pageRootUrl, lgaId, sectorId].join("/"))
+	    _dashboard.setLocation(pageRootUrl + lgaId + '/' + sectorId);
 	    //* otherwise, we could trigger the event ourselves:
         //>> $(evt.target).trigger('select-sector', {fullSectorId: sectorId})
         //* doing both causes problems right now.
@@ -589,10 +589,10 @@ function createTableForSectorWithData(sector, data){
 	function createSpanForSubSector(ssName, ssSlug, url) {
 	    return $("<a />", {'href': url}).text(ssName).addClass('subsector-link-'+ssSlug);
 	}
-	subSectors.append(createSpanForSubSector("General", 'general', [pageRootUrl, lgaId, sector.slug].join("/")));
+	subSectors.append(createSpanForSubSector("General", 'general', pageRootUrl + lgaId + '/' + sector.slug));
 	$.each(sector.subgroups, function(i, sg){
 	    if(sg.slug!=='general') {
-	        subSectors.append(createSpanForSubSector(sg.name, sg.slug, [pageRootUrl, lgaId, [sector.slug, sg.slug].join(subSectorDelimiter)].join("/")));
+	        subSectors.append(createSpanForSubSector(sg.name, sg.slug, pageRootUrl + lgaId + '/' + [sector.slug, sg.slug].join(subSectorDelimiter)));
 	    }
 	})
 	div.html(subSectors)
@@ -790,7 +790,7 @@ function createSectorNav() {
 	$(facilitySectors).each(function(i, sector){
 		var name = sector.name;
 		var slug = sector.slug;
-		var sectorUrl = [pageRootUrl, lgaId, sector.slug].join("/");
+		var sectorUrl = pageRootUrl + lgaId + '/' + sector.slug;
 		var l = $("<a />", {'href': sectorUrl}).text(sector.name);
 		l.data('sectorSlug', sector.slug);
 		l.data('subSectorSlug', 'general');
@@ -801,7 +801,7 @@ function createSectorNav() {
 		$(sector.subgroups).each(function(i, subgroup){
 			if(subgroup.slug!=='general') {
 				var li = $("<li />").appendTo(sul);
-				var sectorUrl = [pageRootUrl, lgaId, [sector.slug, subgroup.slug].join(subSectorDelimiter)].join("/");
+				var sectorUrl = pageRootUrl + lgaId + '/' + [sector.slug, subgroup.slug].join(subSectorDelimiter);
         		
 				var sgLink = $("<a />", {'href':sectorUrl}).text(subgroup.name).appendTo(li);
 				sgLink.data('sectorSlug', sector.slug);

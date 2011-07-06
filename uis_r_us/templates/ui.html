@@ -121,7 +121,7 @@
 <!--
 var debugMode = false;
 
-var pageRootUrl = "/ui";
+var pageRootUrl = "/~";
 
 var defaultSectorSlug = 'health';
 
@@ -144,7 +144,7 @@ $(function(){
 				.append($("<span />", {'class': 'lga-name'}).text(lga));
 		}
 		
-		this.get(pageRootUrl + '/', function(){
+		this.get(pageRootUrl, function(){
 			//a basic lga selector in the main div (temporary)
 			$('.content-inner-wrap').html((function(){
 				var hf = $("#header form").clone();
@@ -155,7 +155,7 @@ $(function(){
 					.css({'padding':'20px 30px'});
 			})());
 		});
-		this.get(pageRootUrl + "/:lga/(.+)", function(){
+		this.get(pageRootUrl + ":lga/(.+)", function(){
 			var lgaId = this.params.lga;
 			this.params.splat.length !== 1 && warn("Sammy needs some help selecting a sector.");
 			var fullSectorId = this.params.splat[0];
@@ -169,7 +169,7 @@ $(function(){
 								});
 							});
 		})
-		this.get(pageRootUrl + "/:lga", function(){
+		this.get(pageRootUrl + ":lga", function(){
 			var lgaId = this.params.lga;
 			lga.loadData(lgaId,
 							function(){

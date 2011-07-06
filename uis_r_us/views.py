@@ -7,7 +7,7 @@ def dashboard(request, reqpath):
     if request.method == "POST":
         lgaid = request.POST['lga']
         if LGA.objects.filter(unique_slug=lgaid).count() > 0:
-            return HttpResponseRedirect("/ui/%s" % lgaid)
+            return HttpResponseRedirect("/~%s" % lgaid)
     context = RequestContext(request)
     lga = None
     context.active_districts = active_districts()
@@ -18,7 +18,7 @@ def dashboard(request, reqpath):
         except:
             lga = None
         if lga == None:
-            return HttpResponseRedirect("/ui/")
+            return HttpResponseRedirect("/~")
     if lga == None:
         return country_view(context)
     else:

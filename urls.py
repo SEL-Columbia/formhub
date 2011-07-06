@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('registration.urls')),
     url(r'^facilities/', include('facilities.urls')),
     url(r'^facility_variables', ui_variable_data),
-    url(r'^ui/(?P<reqpath>\S*)', ui_dashboard),
+    url(r'^~(?P<reqpath>\S*)', ui_dashboard),
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
