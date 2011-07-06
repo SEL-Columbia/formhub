@@ -236,7 +236,6 @@ class Command(BaseCommand):
             else:
                 try:
                     facility = FacilityBuilder.create_facility_from_dict(d)
-                    facility_imported_ok = True
                 except KeyboardInterrupt:
                     sys.exit(0)
                 except:
