@@ -149,7 +149,11 @@ LOGGING = {
     }
 }
 
-LIMITED_LGA_LIST = ['394']
+
+# 394 - Kaduna/Kachia
+# 732 - Kano/Takai
+# 366 - Enugu/Isi-Uzo
+LIMITED_LGA_LIST = ['366']
 
 import sys
 
