@@ -102,7 +102,7 @@
 ,,"boolean","water_access","Access to Water",,"not d['water_sources_none']",,,,,
 ,,"boolean","water_source_working_condition","Working Condition","Working condition of water source","d['water_source_physical_state'] in ['well_maintained', 'newly_constructed']",,,,,
 ,,"boolean","improved_sanitation","Improved Sanitation",,"d['toilet_types_vip_latrine'] or d['toilet_types_pit_w_slab']",,,,,
-,,"float","health_infrastructure_rating","Health Infrastructure Rating",,"sum(x for x in [d['power_access'], d['water_access'], d['mobile_signal_funct_yn'], d['improved_sanitation']] if x)",,,,,
+,,"float","health_infrastructure_rating","Health Infrastructure Rating",,"sum_non_null_values(d, [d['power_access'], d['water_access'], d['mobile_signal_funct_yn'], d['improved_sanitation']])",,,,,
 ,,"boolean","skilled_birth_attendant","Skilled Birth Attendant",,"d['num_doctors_fulltime'] > 0 or d['num_nurses_fulltime'] > 0 or d['num_midwives_fulltime'] > 0 or d['num_nursemidwives_fulltime'] > 0",,,,,
 ,,"boolean","adequate_chews","Adequate number of CHEWs",,"d['num_chews_fulltime'] > 0",,,,,
 ,,"boolean","health_adequately_staffed","Health facility adequately staffed in past month",,"d['days_facility_understaffed']>5",,,,,
