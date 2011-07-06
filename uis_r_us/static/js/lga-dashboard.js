@@ -628,8 +628,8 @@ function createRowForFacilityWithColumns(fpoint, cols){
 						if(val) {
 							yCount += 1;
 						}
-						tot += 1;
 					}
+					tot += 1;
 				})
 				return [yCount, tot];
 			})(fpoint, cols);
