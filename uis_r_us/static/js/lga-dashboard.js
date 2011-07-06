@@ -480,10 +480,7 @@ function buildFacilityTable(data, sectors){
 	        var surveyTypeColors = {
         		water: "water_s",
         		health: "clinic_s",
-        		agriculture: "orange",
-        		lga: "purple",
-        		education: "school_b",
-        		'default': "pink"
+        		education: "school_b"
         	};
 	        var st = surveyTypeColors[s] || surveyTypeColors['default'];
 	        return '/static/images/icons/'+st+'.png';
