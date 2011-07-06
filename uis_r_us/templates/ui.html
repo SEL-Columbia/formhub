@@ -173,7 +173,7 @@ $(function(){
 			var lgaId = this.params.lga;
 			lga.loadData(lgaId,
 							function(){
-								lga.buildTable(this.data, this.sectors);
+								this.buildTable = true;
 								var t = createTitleForLga(this.stateName, this.lgaName);
 								setTitle(t);
 							});
