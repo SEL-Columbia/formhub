@@ -105,7 +105,7 @@ def sum_non_null_values(d, keys):
     """
     Helper function for calculated variables.
     """
-    return sum([d[key] for key in keys if d[key] is not None])
+    return sum([d[key] for key in keys if d[key] is not None]) or 0.0
 
 
 class CalculatedVariable(Variable):
