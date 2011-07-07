@@ -384,7 +384,21 @@ $('body').bind('select-column', function(evt, edata){
 				})
 			})(column);
 		}
-		if(column.click_actions!== undefined && ~column.click_actions.indexOf('tabulate')) {
+		function hasClickAction(col, str) {
+		    return col.click_actions !== undefined && ~column.click_actions.indexOf(str);
+		}
+		if(hasClickAction(column, 'piechart')) {
+		    var colDataDiv = getColDataDiv();
+			var cdiv = $("<div />", {'class':'col-info'}).html($("<h2 />").text(column.name));
+			cdiv.append($("<h2>").text("PIE CHART!!"))
+			if(column.description!==undefined) {
+				cdiv.append($("<h3 />", {'class':'description'}).text(column.description));
+			}
+			var tabulations = getTabulations(sector.slug, column.slug);
+			cdiv.append($("<p>").text(JSON.stringify(tabulations)))
+			colDataDiv.html(cdiv)
+					.css({'height':120});
+    	} else if(hasClickAction(column, 'tabulate')) {
 			var colDataDiv = getColDataDiv();
 			var cdiv = $("<div />", {'class':'col-info'}).html($("<h2 />").text(column.name));
 			if(column.description!==undefined) {
@@ -406,7 +420,7 @@ $('body').bind('select-column', function(evt, edata){
 					.css({'height':80});
 		}
 		var columnMode = "view_column_"+column.slug;
-		if(~column.click_actions.indexOf('iconify') && column.iconify_png_url !== undefined) {
+		if(hasClickAction(column, 'iconify')) {
 		    var t=0, z=0;
 		    var iconStrings = [];
 		    $.each(facilityData.list, function(i, fdp){
@@ -414,7 +428,7 @@ $('body').bind('select-column', function(evt, edata){
 		            var iconUrl = column.iconify_png_url + fdp[column.slug] + '.png';
 		            olStyling.addIcon(fdp, columnMode, {
 		                url: iconUrl,
-		                size: [16, 16]
+		                size: [34, 20]
 		            });
 		        }
         	});
