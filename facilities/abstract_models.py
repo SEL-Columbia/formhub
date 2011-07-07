@@ -49,6 +49,14 @@ class Variable(models.Model):
 
     FIELDS = ['name', 'slug', 'data_type', 'description']
 
+    PRIMITIVE_MAP = {
+        'float': 'float',
+        'boolean': 'boolean',
+        'string': 'string',
+        'percent': 'float',
+        'proportion': 'float'
+    }
+
     _cache = {}
 
     @classmethod
@@ -76,10 +84,13 @@ class Variable(models.Model):
         cast_function = {
             'float': get_float,
             'boolean': get_boolean,
-            'string': get_string
+            'string': get_string,
+            'percent': get_float,
+            'proportion': get_float,
             }
         if self.data_type not in cast_function:
-            raise Exception(self.__unicode__())
+            raise Exception("The data type casting function was not found. %s" \
+                % self.__unicode__())
         try:
             value = cast_function[self.data_type](value)
         except:
@@ -99,7 +110,7 @@ class Variable(models.Model):
         Data for this variable will be stored in a column
         with this name in a DataRecord.
         """
-        return self.data_type + '_value'
+        return self.PRIMITIVE_MAP[self.data_type] + '_value'
 
     def __unicode__(self):
         return json.dumps(self.to_dict(), indent=4)
@@ -165,10 +176,10 @@ class DataRecord(models.Model):
         abstract = True
 
     def get_value(self):
-        return getattr(self, self.variable.data_type + "_value")
+        return getattr(self, str(self.variable.value_field()))
 
     def set_value(self, val):
-        setattr(self, self.variable.data_type + "_value", val)
+        setattr(self, str(self.variable.value_field()), val)
 
     value = property(get_value, set_value)
 
