@@ -50,6 +50,7 @@ def facilities_for_site(request, site_id):
         'facilities': d,
         'lgaName': lga.name,
         'stateName': lga.state.name,
+        'lgaData': lga.get_latest_data(),
     }
     return HttpResponse(json.dumps(oput))
 

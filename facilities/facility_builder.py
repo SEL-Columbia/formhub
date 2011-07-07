@@ -2,7 +2,7 @@ import json
 import uuid
 from nga_districts.models import LGA
 from facilities.models import Facility, Variable, KeyRename, \
-    CalculatedVariable
+    CalculatedVariable, Sector
 
 
 class FacilityBuilder(object):
@@ -29,6 +29,9 @@ class FacilityBuilder(object):
             }
         if '_lga_id' in d:
             kwargs['lga'] = LGA.objects.get(id=d['_lga_id'])
+        if '_facility_type' in d:
+             kwargs['sector'] = Sector.objects.get(
+                slug=d['_facility_type'].lower())
         facility, created = Facility.objects.get_or_create(**kwargs)
         facility.add_data_from_dict(d)
 

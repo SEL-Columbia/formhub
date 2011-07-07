@@ -221,8 +221,6 @@ class Command(BaseCommand):
     def create_facilities_from_csv(self, facility_type, data_source, path):
         csv_reader = CsvReader(path)
         num_errors = 0
-        sector = Sector.objects.get(
-            slug=facility_type.lower(), name=facility_type)
         for d in csv_reader.iter_dicts():
             if self._limit_import:
                 if '_lga_id' not in d:
@@ -242,9 +240,6 @@ class Command(BaseCommand):
                     sys.exit(0)
                 except:
                     num_errors += 1
-            if facility is not None:
-                facility.sector = sector
-                facility.save()
         if not self._debug:
             print "Had %d error(s) when importing %s facilities..." % (num_errors, facility_type)
 

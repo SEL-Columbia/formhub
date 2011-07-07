@@ -66,10 +66,10 @@ class LGAIndicator(Variable):
     def count_true(self):
         assert self.origin.data_type == 'boolean'
         records = FacilityRecord.objects.filter(variable=self.origin, facility__sector=self.sector).values('facility', 'facility__lga', 'boolean_value').annotate(Max('date')).distinct()
-        result = defaultdict(int)
+        result = dict([(record['facility__lga'], 0.0) for record in records])
         for d in records:
             if d['boolean_value']:
-                result[d['facility__lga']] += 1
+                result[d['facility__lga']] += 1.0
         return result
 
     def set_lga_values(self):
@@ -159,6 +159,20 @@ class Facility(DictModel):
             for record in records:
                 tot += record.value
             return tot / count
+
+    @classmethod
+    def export_geocoords(cls):
+        # TODO: exception handling!
+        facilities = defaultdict(list)
+        for f in Facility.objects.all():
+            # use facility_id for now (major hack)
+            lat, lon = f.facility_id.split()[:2]
+            facilities[f.sector.slug].append({
+                    'id': f.id,
+                    'lat': float(lat),
+                    'long': float(lon)
+                })
+        return facilities
 
 
 from xform_manager.models import Instance
