@@ -727,13 +727,19 @@ var facilityDataStuff = (function(dataReq, passedData){
 			sectors = s;
 		})(passedData.sectors);
 		
-		sectors = passedData.sectors;
-		facilitySectorSlugs = (function validateSectors(s){
-		    var _facilitySectorSlugs = [];
-			$.each(s, function(i, t){
-				_facilitySectorSlugs.push(t.slug);
-			});
-			return _facilitySectorSlugs;
+		sectors = [];
+		facilitySectorSlugs = [];
+		
+		(function(s){
+		    //processing passed sector data.
+		    var slugs = [];
+		    var _s = [];
+		    $.each(s, function(i, ss){
+		        if(!~slugs.indexOf(ss.slug)) { slugs.push(ss.slug); }
+		        _s.push(ss);
+		    });
+		    facilitySectorSlugs = slugs;
+		    sectors = _s;
 		})(passedData.sectors);
 		
 		debugMode && (function validateData(d) {
