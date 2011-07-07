@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^lgas/', include('nmis.nga_districts.urls')),
     url(r'^accounts/', include('registration.urls')),
     url(r'^facilities/', include('facilities.urls')),
+    url(r'^resources/', include('resources.urls')),
     url(r'^facility_variables', ui_variable_data),
     url(r'^~(?P<reqpath>\S*)', ui_dashboard),
     # Uncomment the admin/doc line below to enable admin documentation:
