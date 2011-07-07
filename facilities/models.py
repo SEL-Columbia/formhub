@@ -60,7 +60,7 @@ class LGAIndicator(Variable):
     data.
     """
     origin = models.ForeignKey(Variable, related_name='lga_indicators')
-    method = models.CharField(max_length=16)  # count_true
+    method = models.CharField(max_length=16)  # count_true, avg, percentage_true, proportion_true
     sector = models.ForeignKey(Sector)
 
     def count_true(self):
@@ -71,6 +71,27 @@ class LGAIndicator(Variable):
             if d['boolean_value']:
                 result[d['facility__lga']] += 1.0
         return result
+
+    def stats(self):
+        assert self.origin.data_type in ['float', 'percent', 'proportion']
+        records = FacilityRecord.objects.filter(variable=self.origin, facility__sector=self.sector).values('facility', 'facility__lga', 'float_value').annotate(Max('date')).distinct()
+        result = dict([(record['facility__lga'], {'avg': 0.0, 'count': 0.0}) for record in records])
+        for d in records:
+            i = result[d['facility__lga']]['count']
+            x_i = d['float_value']
+            avg_i = result[d['facility__lga']]['avg']
+            result[d['facility__lga']]['avg'] = (x_i + i * avg_i) / (i + 1.0)
+            result[d['facility__lga']]['count'] += 1.0
+        return result
+
+    def avg(self):
+        return dict([(lga, stats['avg']) for lga, stats in self.stats().items()])
+
+    def percentage_true(self):
+        return dict([(lga, count / float(len(Facility.objects.filter(sector=self.sector, lga=lga)))) for lga, count in self.count_true().items()])
+
+    def proportion_true(self):
+        return self.percentage_true()
 
     def set_lga_values(self):
         """
