@@ -33,12 +33,10 @@
 	.column-data-wrap {}
 	.column-data {
 		margin: 4px 12px;
-		margin: 4px 12px;
-          	color: #fff;
-                background: url("/static/images/black90.png") repeat scroll 0 0 transparent;
-	        border: 0 none;
-	        border-radius: 3px 3px 3px 3px;
-
+		color: #fff;
+		background-color: rgba(0,0,0,0.5);
+		border: 0 none;
+		border-radius: 3px;
 	}
 	.col-info {
 		margin: 2px 5px;
@@ -106,6 +104,26 @@
 	.sub-sector-list a.selected {
 		background-color: #ccc;
 	}
+	.profile-data-wrap {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 25%;
+		z-index: 15;
+	}
+	.profile-data {
+		padding: 4px;
+		margin: 5px 12px;
+		background-color: rgba(255,255,255,0.9);
+		height: 300px;
+		overflow: auto;
+	}
+	.profile-data h2 {
+		margin: 3px 0;
+	}
+	.profile-data h3 {
+		margin: 2px 0;
+	}
 </style>
 
 {% endblock %}
@@ -124,6 +142,7 @@
 <script src="/static/js/launch-open-layers.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" charset="utf-8">
 <!--
+
 var debugMode = false;
 
 var pageRootUrl = "/~";

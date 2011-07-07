@@ -134,13 +134,42 @@ var subSectorDelimiter = "-";
     }
 })(jQuery);
 
+function buildLgaProfileBox(lga, dictionary) {
+    var oWrap = $('.content-inner-wrap').find('.profile-data-wrap');
+    if(oWrap.length===0) {
+        oWrap = $("<div />", {'class':'profile-data-wrap'}).appendTo($('.content-inner-wrap'));
+    } else {
+        oWrap.empty();
+    }
+    var wrap = $("<div />", {'class':'profile-data'})
+        .append($("<h3 />").text(lga.stateName))
+        .append($("<h2 />").text(lga.lgaName))
+        .append($("<hr />"));
+    
+    $("<table />").append((function(tbody, pdata){
+        $.each(dictionary, function(k, val){
+            var name = val.name;
+            var value = pdata[k];
+            var tr = $("<tr />")
+                .append($("<td />").text(name))
+                .append($("<td />").text(value));
+            tbody.append(tr);
+        });
+        return tbody;
+    })($('<tbody />'), lga.profileData))
+        .appendTo(wrap);
+    oWrap.html(wrap);
+}
+
 // Load data functions (creating ajax requests and triggering callbacks)
 function loadLgaData(lgaUniqueId, onLoadCallback) {
     var siteDataUrl = urls.lgaSpecific + lgaUniqueId;
     var variablesUrl = urls.variables;
 	var fv1 = $.getCacheJSON(siteDataUrl);
 	var fvDefs = $.getCacheJSON(variablesUrl);
-	$.when(fv1, fvDefs).then(function(lgaQ, varQ){
+	var fvDict = $.getCacheJSON("/static/json/variable_dictionary.json");
+	$.when(fv1, fvDefs, fvDict).then(function(lgaQ, varQ, varDict){
+	    var variableDictionary = varDict[0];
 	    var lgaData = lgaQ[0];
 		var stateName = lgaData.stateName;
 		var lgaName = lgaData.lgaName;
@@ -152,6 +181,9 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 			v.uid = k;
 			facilityDataARr.push(v);
 		});
+		
+		buildLgaProfileBox(lgaData, variableDictionary);
+		
 		facilityDataStuff(lgaQ, {sectors: variableDefs, data: facilityDataARr});
 		if(facilityData!==undefined && facilitySectors!==undefined) {
 			var context = {
@@ -457,7 +489,7 @@ function buildFacilityTable(data, sectors){
 
 	(function deleteThisWhenYouWantToDoItProperly(){
   		var uiTabIconSlugs = {
-    		water: "water_s",
+    		water: "water_small",
     		health: "clinic_s",
     		education: "school_b"
     	};
@@ -480,7 +512,7 @@ function buildFacilityTable(data, sectors){
 	})(function(){
 	    function urlForSectorIcon(s) {
 	        var surveyTypeColors = {
-        		water: "water_s",
+        		water: "water_small",
         		health: "clinic_s",
         		education: "school_b"
         	};
