@@ -616,17 +616,27 @@ function createTableForSectorWithData(sector, data){
 		})
 		table.append(tbod);
 	}
-	var subSectors = $("<div />").addClass("sub-sector-list");
-	function createSpanForSubSector(ssName, ssSlug, url) {
-	    return $("<a />", {'href': url}).text(ssName).addClass('subsector-link-'+ssSlug);
-	}
-	subSectors.append(createSpanForSubSector("General", 'general', pageRootUrl + lgaId + '/' + sector.slug));
-	$.each(sector.subgroups, function(i, sg){
-	    if(sg.slug!=='general') {
-	        subSectors.append(createSpanForSubSector(sg.name, sg.slug, pageRootUrl + lgaId + '/' + [sector.slug, sg.slug].join(subSectorDelimiter)));
-	    }
-	})
-	div.html(subSectors)
+	
+	var subSectors = (function createSubSectorLinks(){
+	    // probably want to find a better way to do this down the line, so
+	    // i'm encapsulating it in its own function.
+	    
+	    var subSectors = $("<div />").addClass("sub-sector-list");
+    	function createSpanForSubSector(ssName, ssSlug, url) {
+    	    return $("<a />", {'href': url}).text(ssName).addClass('subsector-link-'+ssSlug);
+    	}
+    	subSectors.append(createSpanForSubSector("General", 'general', pageRootUrl + lgaId + '/' + sector.slug));
+    	$.each(sector.subgroups, function(i, sg){
+    	    if(sg.slug!=='general') {
+        	    subSectors.append($("<span />").text(" | "));
+    	        subSectors.append(createSpanForSubSector(sg.name, sg.slug, pageRootUrl + lgaId + '/' + [sector.slug, sg.slug].join(subSectorDelimiter)));
+    	    }
+    	});
+    	return subSectors;
+	})();
+	
+	div.empty()
+	    .append(subSectors)
 	    .append(table);
 	return div;
 }
