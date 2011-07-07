@@ -135,15 +135,18 @@ var subSectorDelimiter = "-";
 })(jQuery);
 
 function buildLgaProfileBox(lga, dictionary) {
+    var oWrap = $('.content-inner-wrap').find('.profile-data-wrap');
+    if(oWrap.length===0) {
+        oWrap = $("<div />", {'class':'profile-data-wrap'}).appendTo($('.content-inner-wrap'));
+    } else {
+        oWrap.empty();
+    }
     var wrap = $("<div />", {'class':'profile-data'})
         .append($("<h3 />").text(lga.stateName))
         .append($("<h2 />").text(lga.lgaName))
         .append($("<hr />"));
     
     $("<table />").append((function(tbody, pdata){
-        console.log(pdata)
-
-        
         $.each(dictionary, function(k, val){
             var name = val.name;
             var value = pdata[k];
