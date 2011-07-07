@@ -158,10 +158,7 @@ function buildLgaProfileBox(lga, dictionary) {
         return tbody;
     })($('<tbody />'), lga.profileData))
         .appendTo(wrap);
-    $('.content-inner-wrap').prepend($("<div />", {
-        'class': 'profile-data-wrap',
-        'html': wrap
-    }));
+    oWrap.html(wrap);
 }
 
 // Load data functions (creating ajax requests and triggering callbacks)
@@ -492,7 +489,7 @@ function buildFacilityTable(data, sectors){
 
 	(function deleteThisWhenYouWantToDoItProperly(){
   		var uiTabIconSlugs = {
-    		water: "water_s",
+    		water: "water_small",
     		health: "clinic_s",
     		education: "school_b"
     	};
@@ -515,7 +512,7 @@ function buildFacilityTable(data, sectors){
 	})(function(){
 	    function urlForSectorIcon(s) {
 	        var surveyTypeColors = {
-        		water: "water_s",
+        		water: "water_small",
         		health: "clinic_s",
         		education: "school_b"
         	};
