@@ -182,7 +182,7 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 			facilityDataARr.push(v);
 		});
 		
-		buildLgaProfileBox(lgaData, variableDictionary);
+		buildLgaProfileBox(lgaData, variableDictionary.profile_variables);
 		
 		facilityDataStuff(lgaQ, {sectors: variableDefs, data: facilityDataARr});
 		if(facilityData!==undefined && facilitySectors!==undefined) {
@@ -384,7 +384,21 @@ $('body').bind('select-column', function(evt, edata){
 				})
 			})(column);
 		}
-		if(column.click_actions!== undefined && ~column.click_actions.indexOf('tabulate')) {
+		function hasClickAction(col, str) {
+		    return col.click_actions !== undefined && ~column.click_actions.indexOf(str);
+		}
+		if(hasClickAction(column, 'piechart')) {
+		    var colDataDiv = getColDataDiv();
+			var cdiv = $("<div />", {'class':'col-info'}).html($("<h2 />").text(column.name));
+			cdiv.append($("<h2>").text("PIE CHART!!"))
+			if(column.description!==undefined) {
+				cdiv.append($("<h3 />", {'class':'description'}).text(column.description));
+			}
+			var tabulations = getTabulations(sector.slug, column.slug);
+			cdiv.append($("<p>").text(JSON.stringify(tabulations)))
+			colDataDiv.html(cdiv)
+					.css({'height':120});
+    	} else if(hasClickAction(column, 'tabulate')) {
 			var colDataDiv = getColDataDiv();
 			var cdiv = $("<div />", {'class':'col-info'}).html($("<h2 />").text(column.name));
 			if(column.description!==undefined) {
@@ -406,7 +420,7 @@ $('body').bind('select-column', function(evt, edata){
 					.css({'height':80});
 		}
 		var columnMode = "view_column_"+column.slug;
-		if(~column.click_actions.indexOf('iconify') && column.iconify_png_url !== undefined) {
+		if(hasClickAction(column, 'iconify')) {
 		    var t=0, z=0;
 		    var iconStrings = [];
 		    $.each(facilityData.list, function(i, fdp){
@@ -414,7 +428,7 @@ $('body').bind('select-column', function(evt, edata){
 		            var iconUrl = column.iconify_png_url + fdp[column.slug] + '.png';
 		            olStyling.addIcon(fdp, columnMode, {
 		                url: iconUrl,
-		                size: [16, 16]
+		                size: [34, 20]
 		            });
 		        }
         	});
@@ -616,17 +630,27 @@ function createTableForSectorWithData(sector, data){
 		})
 		table.append(tbod);
 	}
-	var subSectors = $("<div />").addClass("sub-sector-list");
-	function createSpanForSubSector(ssName, ssSlug, url) {
-	    return $("<a />", {'href': url}).text(ssName).addClass('subsector-link-'+ssSlug);
-	}
-	subSectors.append(createSpanForSubSector("General", 'general', pageRootUrl + lgaId + '/' + sector.slug));
-	$.each(sector.subgroups, function(i, sg){
-	    if(sg.slug!=='general') {
-	        subSectors.append(createSpanForSubSector(sg.name, sg.slug, pageRootUrl + lgaId + '/' + [sector.slug, sg.slug].join(subSectorDelimiter)));
-	    }
-	})
-	div.html(subSectors)
+	
+	var subSectors = (function createSubSectorLinks(){
+	    // probably want to find a better way to do this down the line, so
+	    // i'm encapsulating it in its own function.
+	    
+	    var subSectors = $("<div />").addClass("sub-sector-list");
+    	function createSpanForSubSector(ssName, ssSlug, url) {
+    	    return $("<a />", {'href': url}).text(ssName).addClass('subsector-link-'+ssSlug);
+    	}
+    	subSectors.append(createSpanForSubSector("General", 'general', pageRootUrl + lgaId + '/' + sector.slug));
+    	$.each(sector.subgroups, function(i, sg){
+    	    if(sg.slug!=='general') {
+        	    subSectors.append($("<span />").text(" | "));
+    	        subSectors.append(createSpanForSubSector(sg.name, sg.slug, pageRootUrl + lgaId + '/' + [sector.slug, sg.slug].join(subSectorDelimiter)));
+    	    }
+    	});
+    	return subSectors;
+	})();
+	
+	div.empty()
+	    .append(subSectors)
 	    .append(table);
 	return div;
 }
@@ -717,13 +741,19 @@ var facilityDataStuff = (function(dataReq, passedData){
 			sectors = s;
 		})(passedData.sectors);
 		
-		sectors = passedData.sectors;
-		facilitySectorSlugs = (function validateSectors(s){
-		    var _facilitySectorSlugs = [];
-			$.each(s, function(i, t){
-				_facilitySectorSlugs.push(t.slug);
-			});
-			return _facilitySectorSlugs;
+		sectors = [];
+		facilitySectorSlugs = [];
+		
+		(function(s){
+		    //processing passed sector data.
+		    var slugs = [];
+		    var _s = [];
+		    $.each(s, function(i, ss){
+		        if(!~slugs.indexOf(ss.slug)) { slugs.push(ss.slug); }
+		        _s.push(ss);
+		    });
+		    facilitySectorSlugs = slugs;
+		    sectors = _s;
 		})(passedData.sectors);
 		
 		debugMode && (function validateData(d) {

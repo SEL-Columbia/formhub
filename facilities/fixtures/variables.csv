@@ -119,6 +119,7 @@
 ,,"boolean","compr_oc_suction_machine",,,,,,,,
 ,,"boolean","compr_oc_four_midwives",,,,,,,,
 ,,"boolean","compr_oc_blood_transfusions",,,,,,,,
+,,"boolean","school_code_yn",,,,,,,,
 "CALCULATED VARIABLES",,,,,,,,,,,
 ,,"boolean","power_access","Access to power","Has power","not d['power_sources_none']",,,,,
 ,,"boolean","water_access","Access to Water",,"not d['water_sources_none']",,,,,
@@ -183,6 +184,9 @@
 ,,"float","health_facilities_basic_emoc_fully_functional","Number of Health Facilities whose Basic EmOC is fully functional",,,"basic_emoc_fully_functional","count_true","health",,
 ,,"float","health_facilities_comprehensive_emoc_need_upgrade","Number of Health Facilities that needs Comprehensive EmOC upgrade",,,"comprehensive_emoc_need_upgrade","count_true","health",,
 ,,"float","health_facilities_comprehensive_emoc_fully_functional","Number of Health Facilities whose Comprehensive EmOC is fully functional",,,"comprehensive_emoc_fully_functional","count_true","health",,
+,,"float","education_avg_num_students","Average number of students per school",,,"num_students_total","avg","education",,
+,,"percent","education_percentage_of_schools_with_school_code","Percentage of schools with a school code",,,"school_code_yn","percentage_true","education",,
+,,"proportion","education_proportion_of_schools_with_power","Proportion of schools with power access",,,"power_access","proportion_true","education",,
 "GAP VARIABLES",,,,,,,,,,,
 ,,"float","gap_health_facilities_basic_emoc","Gap for health facilities with Basic EmOC",,,,,,"health_facilities_basic_emoc_fully_functional","target_health_facilities_basic_emoc"
 ,,"float","gap_health_facilities_comprehensive_emoc","Gap for health facilities with Comprehensive EmOC",,,,,,"health_facilities_comprehensive_emoc_fully_functional","target_health_facilities_comprehensive_emoc"

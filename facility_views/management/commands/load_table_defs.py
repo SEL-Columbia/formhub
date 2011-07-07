@@ -43,18 +43,21 @@ class Command(BaseCommand):
                         })
                 for sub in subs:
                     curtable.add_column(sub)
-                d = {
-                    'name': input_d['name'],
-                    'slug': input_d['slug'],
-                    'subgroups': input_d['subgroups'],
-                    'description': input_d.pop('description', ''),
-                    'clickable': input_d.pop('clickable', 'no') == 'yes',
-                    'click_action': input_d.pop('click action', input_d.pop('click_action', '')),
-                    'display_style': input_d.pop('display style', input_d.pop('display_style', '')),
-                    'calc_action': input_d.pop('calc action', input_d.pop('calc_action', '')),
-                    'iconify_png_url': input_d.pop('iconify_png_url', input_d.pop('iconify png url', '')),
-                    'calc_columns': input_d.pop('calc columns', input_d.pop('calc_columns', '')),
-                    'display_order': display_order
-                }
-                display_order += 1
-                curtable.add_variable(d)
+                try:
+                    d = {
+                        'name': input_d['name'],
+                        'slug': input_d['slug'],
+                        'subgroups': input_d['subgroups'],
+                        'description': input_d.pop('description', ''),
+                        'clickable': input_d.pop('clickable', 'no') == 'yes',
+                        'click_action': input_d.pop('click action', input_d.pop('click_action', '')),
+                        'display_style': input_d.pop('display style', input_d.pop('display_style', '')),
+                        'calc_action': input_d.pop('calc action', input_d.pop('calc_action', '')),
+                        'iconify_png_url': input_d.pop('iconify_png_url', input_d.pop('iconify png url', '')),
+                        'calc_columns': input_d.pop('calc columns', input_d.pop('calc_columns', '')),
+                        'display_order': display_order
+                    }
+                    display_order += 1
+                    curtable.add_variable(d)
+                except:
+                    print "Error importing table definition for data: %s" % input_d

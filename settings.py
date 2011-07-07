@@ -123,6 +123,7 @@ INSTALLED_APPS = (
     'phone_manager',
     'nga_districts',
     'facilities',
+    'resources',
 )
 COMPRESS = True
 
