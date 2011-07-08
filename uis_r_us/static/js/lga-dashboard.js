@@ -602,7 +602,7 @@ function buildFacilityTable(data, sectors){
 
 function createTableForSectorWithData(sector, data){
 	var div = $("<div />", {id: 'facilities-'+sector.slug}).text(sector.name).data('sector-slug', sector.slug);
-	var table = $('<table />', {'class':'facility-list'});
+	var table = $('<table />', {'class':'facility-list pretty fullw'});
 	var thRow = $("<tr />");
 	table.append($("<thead />").html(thRow));
 	var sectorData  = data.bySector[sector.slug] || data.bySector[sector.name];

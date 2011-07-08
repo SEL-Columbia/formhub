@@ -32,6 +32,10 @@
     right: 500px;
 }
 
+table.facility-list td, table.facility-list.pretty thead th {
+    text-align: center;
+}
+
 td.checkmark {
     text-align: center;
 }
