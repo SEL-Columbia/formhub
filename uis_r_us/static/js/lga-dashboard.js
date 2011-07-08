@@ -62,6 +62,12 @@ var olStyling = (function(){
                     if(fac.mrkr === undefined) {
                         var icon = new OpenLayers.Icon(url, size, offset);
                         fac.mrkr = new OpenLayers.Marker(fac.openLayersLatLng, icon);
+                        fac.mrkr.events.register('click', fac.mrkr, function(){
+                            $('body').trigger('select-facility', {
+                                'uid': fac.uid,
+                                'scrollToRow': true
+                            })
+                        });
                         markerLayer.addMarker(fac.mrkr);
                     } else {
                         fac.mrkr.icon.setSize(size);
@@ -164,9 +170,6 @@ function buildLgaProfileBox(lga, dictionary) {
 
 // Load data functions (creating ajax requests and triggering callbacks)
 function loadLgaData(lgaUniqueId, onLoadCallback) {
-    //temporary hiding the menu from other nmis :-/
-    $('#menu').hide();
-	
     var siteDataUrl = urls.lgaSpecific + lgaUniqueId;
     var variablesUrl = urls.variables;
 	var fv1 = $.getCacheJSON(siteDataUrl);
@@ -311,7 +314,7 @@ $('body').bind('select-facility', function(evt, edata){
 	//scrolls to row by default (?)
 //		if (edata.scrollToRow === undefined) { edata.scrollToRow = true; }
 
-	edata.scrollToRow && (function scrollToTheFacilitysTr(){
+	edata.scrollToRow && false && (function scrollToTheFacilitysTr(){
 		if(facility.tr!==undefined) {
 			var ourTr = $(facility.tr);
 			var offsetTop = ourTr.offset().top - ourTr.parents('table').eq(0).offset().top
@@ -333,6 +336,7 @@ $('body').bind('select-facility', function(evt, edata){
 		    .css({'width': 400})
 		    .appendTo(popup);
 		
+		facility.img_id = facility.photo;
 		if(!facility.img_id) {
 		    facility.img_id = "image_not_found.jpg";
 		}
@@ -343,10 +347,14 @@ $('body').bind('select-facility', function(evt, edata){
 		    'original': 'original'
 		}, facility.img_id);
 		
-		$("<a />", {'href': imgUrls.large, 'target': '_BLANK'})
-		            .html($("<img />", {src: imgUrls.small })
-		            .css({'width': 120}))
-		            .prependTo(popup);
+		var imgUrl = "http://nmis.mvpafrica.org/site-media/attachments/"+facility.img_id;
+		
+		if(facility.photo !== undefined) {
+		    $("<a />", {'href': imgUrl, 'target': '_BLANK'})
+    		            .html($("<img />", {src: imgUrl })
+    		            .css({'width': 120}))
+    		            .prependTo(popup);
+		}
 
 		$(sector.columns).each(function(i, col){
 		    $("<tr />")
@@ -364,6 +372,9 @@ $('body').bind('select-facility', function(evt, edata){
 });
 
 $('body').bind('unselect-facility', function(){
+    $.each(facilityData.list, function(i, fdp){
+	    olStyling.markIcon(fdp, 'showing');
+	});
     $('tr.selected-facility').removeClass('selected-facility');
 });
 
@@ -597,7 +608,11 @@ function createTableForSectorWithData(sector, data){
 	    return;
     }
     
-    var thRow = $('<tr />');
+    var thRow = $('<tr />')
+                .append($('<th />', {
+                    'text': '#',
+                    'class': 'row-num'
+                }));
     function displayOrderSort(a,b) { return (a.display_order > b.display_order) ? 1 : -1 }
 	$.each(sector.columns.sort(displayOrderSort), function(i, col){
 		var th = $('<th />')
@@ -622,7 +637,7 @@ function createTableForSectorWithData(sector, data){
 	
 	var tbod = $("<tbody />");
 	$.each(sectorData, function(i, fUid){
-		tbod.append(createRowForFacilityWithColumns(data.list[fUid], sector.columns))
+		tbod.append(createRowForFacilityWithColumns(data.list[fUid], sector.columns, i+1))
 	});
 	
 	function subSectorLink(ssName, ssslug) {
