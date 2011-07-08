@@ -21,7 +21,7 @@ class Command(BaseCommand):
     # three lgas.
     from optparse import make_option
     option_list = BaseCommand.option_list + (
-        make_option("--limit",
+        make_option("-l", "--limit",
                     dest="limit_import",
                     default=False,
                     help="limit the imported lgas to the small list specified in settings",
@@ -31,7 +31,7 @@ class Command(BaseCommand):
                     help="pass this if you don't want to reset the database (this will probably break things...)",
                     default=False,
                     action="store_true"),
-        make_option("--debug",
+        make_option("-d", "--debug",
                     dest="debug",
                     help="print debug stats about the query times.",
                     default=False,
@@ -189,21 +189,24 @@ class Command(BaseCommand):
 
         csv_reader = CsvReader(os.path.join('facilities', 'fixtures', 'variables.csv'))
         for d in csv_reader.iter_dicts():
-            if 'data_type' not in d:
-                # this row does not define a new variable
-                continue
-            elif 'formula' in d:
-                CalculatedVariable.objects.get_or_create(**d)
-            elif 'origin' in d and 'method' in d and 'sector' in d:
-                d['origin'] = Variable.objects.get(slug=d['origin'])
-                d['sector'] = Sector.objects.get(slug=d['sector'])
-                lga_indicator, created = LGAIndicator.objects.get_or_create(**d)
-            elif 'variable' in d and 'target' in d:
-                d['variable'] = Variable.objects.get(slug=d['variable'])
-                d['target'] = Variable.objects.get(slug=d['target'])
-                gap_analyzer, created = GapVariable.objects.get_or_create(**d)
-            else:
-                Variable.objects.get_or_create(**d)
+            try:
+                if 'data_type' not in d or 'SECTION' in d or 'COMMENTS' in d:
+                    # this row does not define a new variable
+                    continue
+                elif 'formula' in d:
+                    CalculatedVariable.objects.get_or_create(**d)
+                elif 'origin' in d and 'method' in d and 'sector' in d:
+                    d['origin'] = Variable.objects.get(slug=d['origin'])
+                    d['sector'] = Sector.objects.get(slug=d['sector'])
+                    lga_indicator, created = LGAIndicator.objects.get_or_create(**d)
+                elif 'variable' in d and 'target' in d:
+                    d['variable'] = Variable.objects.get(slug=d['variable'])
+                    d['target'] = Variable.objects.get(slug=d['target'])
+                    gap_analyzer, created = GapVariable.objects.get_or_create(**d)
+                else:
+                    Variable.objects.get_or_create(**d)
+            except:
+                raise Exception("Variable import failed for data: %s" % d)
 
     def load_facilities(self):
         data_dir = 'data/facility'
