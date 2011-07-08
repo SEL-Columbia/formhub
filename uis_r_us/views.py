@@ -2,7 +2,9 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def dashboard(request, reqpath):
     if request.method == "POST":
         lgaid = request.POST['lga']
