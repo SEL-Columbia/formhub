@@ -160,7 +160,7 @@ $('.content-inner-wrap').css({'padding':0})
 $(function(){
 	var dashboard = $.sammy(function(){
 		function createTitleForLga(state, lga) {
-			return $("<span />").text("LGA: ")
+			return $("<span />").text("NMIS: ")
 				.append($("<span />", {'class': 'state-name'}).text(state))
 				.append($("<span />").text(' - '))
 				.append($("<span />", {'class': 'lga-name'}).text(lga));
