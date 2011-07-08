@@ -659,6 +659,15 @@ function createTableForSectorWithData(sector, data){
 	    .append(table);
 	return div;
 }
+
+var decimalCount = 2;
+function roundDownValueIfNumber(val) {
+    if($.type(val)==='number' && (''+val).length>5) {
+        return Math.floor(Math.pow(10, decimalCount)* val)/Math.pow(10, decimalCount);
+    } else {
+        return val;
+    }
+}
 function createRowForFacilityWithColumns(fpoint, cols, rowNum){
 	var tr = $("<tr />");
 	$('<td />', {
@@ -669,7 +678,10 @@ function createRowForFacilityWithColumns(fpoint, cols, rowNum){
 	$.each(cols, function(i, col){
 		var colSlug = col.slug;
 		var value = fpoint[colSlug];
-		if(value===undefined) { value = '—'; }
+		if(value===undefined) { value = '—';
+		} else {
+		    value = roundDownValueIfNumber(value);
+		}
 		var td = $("<td />", {'class':'col-'+colSlug});
 		if(col.display_style=="checkmark") {
 		    td.addClass('checkmark')
