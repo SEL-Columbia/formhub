@@ -24,36 +24,34 @@ class Command(BaseCommand):
         make_option("--limit",
                     dest="limit_import",
                     default=False,
+                    help="limit the imported lgas to the small list specified in settings",
                     action="store_true"),
-        make_option("-r", "--reset-database",
-                    dest="reset_database",
+        make_option("-n", "--no-reset-database",
+                    dest="no_reset_database",
+                    help="pass this if you don't want to reset the database (this will probably break things...)",
                     default=False,
                     action="store_true"),
         make_option("--debug",
                     dest="debug",
+                    help="print debug stats about the query times.",
                     default=False,
                     action="store_true"),
         make_option("-s", "--skip-calculations",
                     dest="skip_calculate",
+                    help="skip calculations (this will probably break things...)",
                     default=False,
                     action="store_true"),
         )
 
-    # LGAs that will be loaded when the --limit option is True
-    # (this should be a list of string lga_id values)
-    #
-    # Examples:
-    #   '394' = Kaduna/Kachia
-    #   '732' = Imo/Unuimo
     limit_lgas = settings.LIMITED_LGA_LIST
 
     def handle(self, *args, **kwargs):
         self._limit_import = kwargs['limit_import']
         self._skip_calculate = kwargs['skip_calculate']
-        self._reset_database = kwargs['reset_database']
+        self._no_reset_database = kwargs['no_reset_database']
         self._debug = kwargs['debug']
         self._start_time = time.time()
-        if self._reset_database:
+        if not self._no_reset_database:
             self.reset_database()
         self.load_lgas()
         self.create_sectors()
