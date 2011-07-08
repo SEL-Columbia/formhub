@@ -11,6 +11,7 @@ def dashboard(request, reqpath):
     context = RequestContext(request)
     lga = None
     context.active_districts = active_districts()
+    context.active_districts2 = active_districts2()
     if not reqpath == "":
         req_lga_id = reqpath.split("/")[0]
         try:
@@ -48,6 +49,7 @@ def variable_data(request):
 from django.db.models import Count
 from nga_districts.models import LGA
 def active_districts():
+    #delete this method when we're sure the other one works with the full LGA list...
     lgas = LGA.objects.annotate(facility_count=Count('facilities')).filter(facility_count__gt=0)
     lga_list = []
     from collections import defaultdict
@@ -60,3 +62,20 @@ def active_districts():
                 (lga.unique_slug, lga.state.name, lga.name)
                 )
     return lga_list
+
+def active_districts2():
+    lgas = LGA.objects.annotate(facility_count=Count('facilities')).filter(facility_count__gt=0)
+    from collections import defaultdict
+    states = defaultdict(list)
+    for lga in lgas:
+        states[lga.state].append(lga)
+        
+    output = []
+    for state, lgas in states.items():
+        statelgas = []
+        for lga in lgas:
+            statelgas.append(
+                (lga.name, lga.unique_slug)
+                )
+        output.append((state.name, statelgas))
+    return output
