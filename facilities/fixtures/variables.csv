@@ -1,6 +1,7 @@
 "SECTION","COMMENTS","data_type","slug","name","description","formula","origin","method","sector","variable","target"
 "VARIABLES",,,,,,,,,,,
 ,,"float","_id","Survey Instance ID",,,,,,,
+,,"string","photo","Photo",,,,,,,
 ,,"boolean","power_sources_none","No Power","No power source (True = no power).",,,,,,
 ,,"string","power_access",,,,,,,,
 ,,"string","facility_owner_manager","Owner/Manager","Manager or owner of the health facility.",,,,,,
