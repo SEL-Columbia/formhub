@@ -25,8 +25,16 @@ class Command(BaseCommand):
                     dest="limit_import",
                     default=False,
                     action="store_true"),
+        make_option("-r", "--reset-database",
+                    dest="reset_database",
+                    default=False,
+                    action="store_true"),
         make_option("--debug",
                     dest="debug",
+                    default=False,
+                    action="store_true"),
+        make_option("-s", "--skip-calculations",
+                    dest="skip_calculate",
                     default=False,
                     action="store_true"),
         )
@@ -41,9 +49,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         self._limit_import = kwargs['limit_import']
+        self._skip_calculate = kwargs['skip_calculate']
+        self._reset_database = kwargs['reset_database']
         self._debug = kwargs['debug']
         self._start_time = time.time()
-        self.reset_database()
+        if self._reset_database:
+            self.reset_database()
         self.load_lgas()
         self.create_sectors()
         self.load_key_renames()
@@ -51,8 +62,8 @@ class Command(BaseCommand):
         self.load_table_defs()
         self.load_facilities()
         self.load_lga_data()
-        self.calculate_lga_indicators()
-        self.calculate_lga_gaps()
+        if not self._skip_calculate:
+            call_command("calculate_lga_indicators")
         self.create_admin_user()
         self._end_time = time.time()
         self.print_stats()
@@ -153,7 +164,7 @@ class Command(BaseCommand):
     def create_sectors(self):
         sectors = ['Education', 'Health', 'Water']
         for sector in sectors:
-            Sector.objects.create(slug=sector.lower(), name=sector)
+            Sector.objects.get_or_create(slug=sector.lower(), name=sector)
 
     def load_key_renames(self):
         kwargs = {
@@ -188,11 +199,11 @@ class Command(BaseCommand):
             elif 'origin' in d and 'method' in d and 'sector' in d:
                 d['origin'] = Variable.objects.get(slug=d['origin'])
                 d['sector'] = Sector.objects.get(slug=d['sector'])
-                lga_indicator = LGAIndicator.objects.create(**d)
+                lga_indicator, created = LGAIndicator.objects.get_or_create(**d)
             elif 'variable' in d and 'target' in d:
                 d['variable'] = Variable.objects.get(slug=d['variable'])
                 d['target'] = Variable.objects.get(slug=d['target'])
-                gap_analyzer = GapVariable.objects.create(**d)
+                gap_analyzer, created = GapVariable.objects.get_or_create(**d)
             else:
                 Variable.objects.get_or_create(**d)
 
@@ -288,14 +299,6 @@ class Command(BaseCommand):
         if not os.path.exists(xfm_json_path):
             raise Exception("Download and unpack xform_manager_dataset.json into project's data dir.")
         call_command('loaddata', xfm_json_path)
-
-    def calculate_lga_indicators(self):
-        for i in LGAIndicator.objects.all():
-            i.set_lga_values()
-
-    def calculate_lga_gaps(self):
-        for i in GapVariable.objects.all():
-            i.set_lga_values()
 
     def create_admin_user(self):
         from django.contrib.auth.models import User
