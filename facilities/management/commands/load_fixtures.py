@@ -180,21 +180,24 @@ class Command(BaseCommand):
 
         csv_reader = CsvReader(os.path.join('facilities', 'fixtures', 'variables.csv'))
         for d in csv_reader.iter_dicts():
-            if 'data_type' not in d:
-                # this row does not define a new variable
-                continue
-            elif 'formula' in d:
-                CalculatedVariable.objects.get_or_create(**d)
-            elif 'origin' in d and 'method' in d and 'sector' in d:
-                d['origin'] = Variable.objects.get(slug=d['origin'])
-                d['sector'] = Sector.objects.get(slug=d['sector'])
-                lga_indicator = LGAIndicator.objects.create(**d)
-            elif 'variable' in d and 'target' in d:
-                d['variable'] = Variable.objects.get(slug=d['variable'])
-                d['target'] = Variable.objects.get(slug=d['target'])
-                gap_analyzer = GapVariable.objects.create(**d)
-            else:
-                Variable.objects.get_or_create(**d)
+            try:
+                if 'data_type' not in d or 'SECTION' in d or 'COMMENTS' in d:
+                    # this row does not define a new variable
+                    continue
+                elif 'formula' in d:
+                    CalculatedVariable.objects.get_or_create(**d)
+                elif 'origin' in d and 'method' in d and 'sector' in d:
+                    d['origin'] = Variable.objects.get(slug=d['origin'])
+                    d['sector'] = Sector.objects.get(slug=d['sector'])
+                    lga_indicator = LGAIndicator.objects.create(**d)
+                elif 'variable' in d and 'target' in d:
+                    d['variable'] = Variable.objects.get(slug=d['variable'])
+                    d['target'] = Variable.objects.get(slug=d['target'])
+                    gap_analyzer = GapVariable.objects.create(**d)
+                else:
+                    Variable.objects.get_or_create(**d)
+            except:
+                raise Exception("Variable import failed for data: %s" % d)
 
     def load_facilities(self):
         data_dir = 'data/facility'
