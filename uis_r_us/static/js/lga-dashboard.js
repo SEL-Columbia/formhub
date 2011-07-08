@@ -664,9 +664,19 @@ var decimalCount = 2;
 function roundDownValueIfNumber(val) {
     if($.type(val)==='number' && (''+val).length>5) {
         return Math.floor(Math.pow(10, decimalCount)* val)/Math.pow(10, decimalCount);
-    } else {
+    } else if($.type(val)==='string') {
+        return splitAndCapitalizeString(val);
+    }  else {
         return val;
     }
+}
+function capitalizeString(str) {
+    var strstart = str.slice(0, 1);
+    var strend = str.slice(1);
+    return strstart.toUpperCase() + strend;
+}
+function splitAndCapitalizeString(str) {
+    return $.map(str.split('_'), capitalizeString).join(' ');
 }
 function createRowForFacilityWithColumns(fpoint, cols, rowNum){
 	var tr = $("<tr />");
