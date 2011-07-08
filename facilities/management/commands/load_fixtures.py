@@ -308,3 +308,11 @@ class Command(BaseCommand):
             )
         admin.set_password("pass")
         admin.save()
+        mdg_user, created = User.objects.get_or_create(
+            username="mdg",
+            email="mdg@example.com",
+            is_staff=True,
+            is_superuser=True
+            )
+        mdg_user.set_password("2015")
+        mdg_user.save()
