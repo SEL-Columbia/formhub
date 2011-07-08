@@ -1,132 +1,24 @@
 {
   "profile_variables": {
-    "pop_female": {
-      "name": "Population Female",
-      "order": 0
-    },
     "area_sq_km": {
       "name": "Area [square km]",
-      "order": 1
-    },
-    "pop_ratio_20_24": {
-      "name": "Population Ratio [20-24]",
-      "order": 2
-    },
-    "pop_females_sec_school_age_12_17": {
-      "name": "Population Females in Secondary School [12-17]",
-      "order": 3
-    },
-    "pop_ratio_30_34": {
-      "name": "Population Ratio [30-34]",
-      "order": 4
-    },
-    "pop_females_school_going_age_6_11": {
-      "name": "Population of Females at a School Going Age",
-      "order": 5
+      "order": 0
     },
     "est_households": {
-      "name": "Est. Number of Households",
-      "order": 6
+      "name": "Est. # of Households",
+      "order": 1
     },
-    "pop_ratio_45_49": {
-      "name": "Population Ratio [45-49]",
-      "order": 7
+    "pop_population": {
+      "name": "Population [total]",
+      "order": 2
     },
-    "pop_females_reproductive_age": {
-      "name": "Population of Females at Reproductive Age",
-      "order": 8
-    },
-    "pop_ratio_85_plus": {
-      "name": "Population Ratio [85+]",
-      "order": 9
+    "pop_female": {
+      "name": "Population [female]",
+      "order": 3
     },
     "pop_male": {
       "name": "Population [male]",
-      "order": 10
-    },
-    "pop_ratio_35_39": {
-      "name": "Population Ratio [35-39]",
-      "order": 11
-    },
-    "pop_ratio_55_59": {
-      "name": "Population Ratio [55-59]",
-      "order": 12
-    },
-    "pop_ratio_female": {
-      "name": "Population Ratio [female]",
-      "order": 13
-    },
-    "pop_ratio_60_64": {
-      "name": "Population Ratio [60-64]",
-      "order": 14
-    },
-    "pop_ratio_40_44": {
-      "name": "Population Ratio [40-44]",
-      "order": 15
-    },
-    "pop_ratio_70_74": {
-      "name": "Population Ratio [70-74]",
-      "order": 16
-    },
-    "pop_ratio_male": {
-      "name": "Population Raio [male]",
-      "order": 17
-    },
-    "pop_ratio_15_19": {
-      "name": "Population ratio [15-19]",
-      "order": 18
-    },
-    "pop_ratio_65_69": {
-      "name": "Population Ratio [65-69]",
-      "order": 19
-    },
-    "pop_ratio_50_54": {
-      "name": "Population Ratio [50-54]",
-      "order": 20
-    },
-    "pop_ratio_5_9": {
-      "name": "Population Ratio [5-9]",
-      "order": 21
-    },
-    "pop_u5_males": {
-      "name": "Population U5 Males",
-      "order": 22
-    },
-    "pop_population": {
-      "name": "Pop Population",
-      "order": 23
-    },
-    "pop_ratio_10_14": {
-      "name": "Population Ratio",
-      "order": 24
-    },
-    "pop_ratio_0_4": {
-      "name": "Population Ratio [0-4]",
-      "order": 25
-    },
-    "pop_ratio_80_84": {
-      "name": "Population Ratio [80-84]",
-      "order": 26
-    },
-    "pop_males_sec_school_age_12_17": {
-      "name": "Population of Males in Secondary School [Age 12-17]",
-      "order": 27
-    },
-    "pop_males_school_going_age_6_11": {
-      "name": "Population of Males Going to School [Age 6-11]",
-      "order": 28
-    },
-    "pop_ratio_25_29": {
-      "name": "Population Ratio (25-29)",
-      "order": 29
-    },
-    "pop_ratio_75_79": {
-      "name": "Population Ratio (75-79)",
-      "order": 30
-    },
-    "pop_u5_females": {
-      "name": "Population of Females Under 5",
-      "order": 31
+      "order": 4
     }
   }
 }

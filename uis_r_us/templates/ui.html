@@ -105,15 +105,14 @@
 	.profile-data-wrap {
 		position: absolute;
 		top: 0;
-		left: 0;
-		width: 25%;
+		left: 50px;
 		z-index: 15;
 	}
 	.profile-data {
 		padding: 4px;
 		margin: 5px 12px;
 		background-color: rgba(255,255,255,0.9);
-		height: 300px;
+		height: 175px;
 		overflow: auto;
 	}
 	.profile-data h2 {
@@ -122,6 +121,9 @@
 	.profile-data h3 {
 		margin: 2px 0;
 	}
+    .profile-data.hidden {
+        display: none;
+    }
 </style>
 
 {% endblock %}
@@ -163,7 +165,8 @@ $(function(){
 			return $("<span />").text("NMIS: ")
 				.append($("<span />", {'class': 'state-name'}).text(state))
 				.append($("<span />").text(' - '))
-				.append($("<span />", {'class': 'lga-name'}).text(lga));
+				.append($("<span />", {'class': 'lga-name'}).text(lga))
+                .append($("<span />", {'class': 'profile-toggle'}).html($("<a>", {'href':'#','text':'[INFO]'})).click(function(e){$('.profile-data').toggleClass('hidden');return false;}));
 		}
 		
 		this.get(pageRootUrl, function(){
