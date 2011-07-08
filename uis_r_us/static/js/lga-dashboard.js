@@ -266,8 +266,9 @@ $('body').bind('select-sector', function(evt, edata){
 		
 		if(selectedSubSector!==fullSectorId) {
 			$('body').trigger('unselect-sector');
-			var selector = '#facilities-'+sector+' .subgroup-'+subSector;
-			ftabs.find(selector).addClass(specialClasses.showTd);
+			var tabWrap = $('#facilities-'+sector, ftabs);
+			tabWrap.find('.subgroup-'+subSector).addClass(specialClasses.showTd);
+			tabWrap.find('.row-num').addClass(specialClasses.showTd);
 			ftabs.addClass(specialClasses.tableHideTd);
 			selectedSubSector = fullSectorId;
 			$('.sub-sector-list a.selected').removeClass('selected');
@@ -605,6 +606,10 @@ function createTableForSectorWithData(sector, data){
 	var thRow = $("<tr />");
 	table.append($("<thead />").html(thRow));
 	var sectorData  = data.bySector[sector.slug] || data.bySector[sector.name];
+	$("<th />", {
+	    'class': 'row-num',
+	    'text': '#'
+	}).appendTo(thRow);
 	function displayOrderSort(a,b) {
 		return (a.display_order > b.display_order) ? 1 : -1
 	}
@@ -626,7 +631,7 @@ function createTableForSectorWithData(sector, data){
 			});
 		var tbod = $("<tbody />");
 		$.each(sectorData, function(i, fUid){
-			tbod.append(createRowForFacilityWithColumns(data.list[fUid], sector.columns))
+			tbod.append(createRowForFacilityWithColumns(data.list[fUid], sector.columns, i+1))
 		})
 		table.append(tbod);
 	}
@@ -654,8 +659,13 @@ function createTableForSectorWithData(sector, data){
 	    .append(table);
 	return div;
 }
-function createRowForFacilityWithColumns(fpoint, cols){
+function createRowForFacilityWithColumns(fpoint, cols, rowNum){
 	var tr = $("<tr />");
+	$('<td />', {
+	    'class': 'row-num',
+	    'text': rowNum
+	}).appendTo(tr);
+	
 	$.each(cols, function(i, col){
 		var colSlug = col.slug;
 		var value = fpoint[colSlug];
@@ -665,9 +675,9 @@ function createRowForFacilityWithColumns(fpoint, cols){
 		    td.addClass('checkmark')
 			    .html($("<span />", {'class':'mrk'}));
 			if($.type(value) === 'boolean' && !!value) {
-			    td.addClass('on')
+			    td.addClass('on');
 			} else if($.type(value) === 'boolean') {
-			    td.addClass('off')
+			    td.addClass('off');
 			} else {
 			    td.addClass('null');
 			}
