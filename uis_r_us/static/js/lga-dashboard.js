@@ -103,7 +103,7 @@ var selectedSubSector,
     facilityData,
     facilitySectors;
 
-var facilityTabsSelector = "div#facility-tabs";
+var facilityTabsSelector = 'div#facility-tabs';
 
 var specialClasses = {
     showTd: 'show-me',
@@ -114,7 +114,8 @@ var urls = {
     lgaSpecific: '/facilities/site/'
 };
 
-var subSectorDelimiter = "-";
+var subSectorDelimiter = '-';
+var defaultSubSector = 'general';
 
 (function($){
     //a quick ajax cache, just trying to prevent multiple
@@ -243,7 +244,7 @@ $('body').bind('select-sector', function(evt, edata){
         }
         
         if(subSector===undefined) {
-            subSector = 'general';
+            subSector = defaultSubSector;
         }
         //would be good to confirm that sector &/or
         // subsector exist
@@ -493,18 +494,21 @@ function buildFacilityTable(data, sectors){
         }).appendTo($(ftabUl)); */
     
 	$.each(facilitySectors, function(i, sector){
-		var li = $("<li />");
 		var fdata = facilityData.bySector[sector.slug] || facilityData.bySector[sector.name];
-		var sectorCount = $("<span />", {'class':'sector-count '+sector.slug});
+		var sectorCount;
 		if(fdata instanceof Array && fdata.length > 0) {
-			sectorCount.text(" ("+fdata.length+")")
+		    sectorCount = $("<span />")
+   		            .addClass('sector-count')
+   		            .addClass(sector.slug)
+   		            .text(" ("+fdata.length+")");
 		}
-		li.append($("<a />", {'href':'#facilities-'+sector.slug})
+		$('<li />')
+		        .append($("<a />", {'href':'#facilities-'+sector.slug})
 		        .text(sector.name)
 		        .addClass('ui-tab-sector-selector')
 		        .data('sectorSlug', sector.slug)
-		        .append(sectorCount));
-		ftabUl.append(li);
+		        .append(sectorCount))
+		        .appendTo(ftabUl);
 		ftabs.append(createTableForSectorWithData(sector, facilityData));
 	});
 
@@ -526,10 +530,13 @@ function buildFacilityTable(data, sectors){
     	};
 		$('.ui-tabs-nav', ftabs).find('li a.ui-tab-sector-selector').each(function(){
 			var ss = $(this).data('sectorSlug');
-			var flagUrl = "/static/images/icons/"+uiTabIconSlugs[ss]+".png"
-			$(this).prepend($("<div />", {'class': 'flag'})
-			    .css({'background-image':"url('"+flagUrl+"')"})
-			    );
+			if(!!uiTabIconSlugs[ss]) {
+			    var flagUrl = "/static/images/icons/"+uiTabIconSlugs[ss]+".png";
+			    $('<div />')
+			        .addClass('flag')
+			        .css({'background-image': "url('" + flagUrl + "')"})
+			        .prependTo($(this));
+			}
 		})
 	})();
 	ftabs.height(220);
@@ -562,26 +569,10 @@ function buildFacilityTable(data, sectors){
     	                size: [34, 20]
     	            });
     	            var ll = d.latlng;
-    	            var oLl = new OpenLayers.LonLat(ll[1], ll[0]).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-    	            d.openLayersLatLng = oLl;
-    	            bounds.extend(oLl);
-/*
-            	    var ll = d.latlng;
-            	    
-            	    d.mrkr = new OpenLayers.Marker(oLl, icon);
-            	    
-            	    //checks to see if the facility has already been hidden
-            	    if(d.showMrkr !== undefined && !d.showMrkr) {
-            	        olStyling.markIcon(d.mrkr, 'hidden');
-            	    }
-            	    d.mrkr.facilityUid = d.uid;
-            	    d.mrkr.events.on({
-            	        'click': function(evt){
-            	            $(evt.element).trigger('select-facility', {'uid': d.uid});
-            	        }
-            	    });
-            	    markers.addMarker(d.mrkr);
-            	    bounds.extend(oLl); */
+    	            d.openLayersLatLng = new OpenLayers.LonLat(ll[1], ll[0])
+    	                .transform(new OpenLayers.Projection("EPSG:4326"),
+    	                            new OpenLayers.Projection("EPSG:900913"));
+    	            bounds.extend(d.openLayersLatLng);
     	        } 
     	});
     	olStyling.setMarkerLayer(markers);
@@ -592,85 +583,73 @@ function buildFacilityTable(data, sectors){
 		                type: 'png'
 		            });
 		this.map.addLayers([tilesat, markers]);
-        // (function defineNewZoomer(map){
-        //  map.zoomToExtentInBox = (function(){
-        //      return function(bounds, pixel, size){
-        //          if(pixel instanceof Array) { pixel = new OpenLayers.Pixel(pixel[0], pixel[1]) }
-        //          if(size instanceof Array) { size = new OpenLayers.Size(size[0], size[1]) }
-        //          (function(){
-        //              var center = bounds.getCenterLonLat();
-        //              if (this.baseLayer.wrapDateLine) {
-        //                  var maxExtent = this.getMaxExtent();
-        //                  bounds = bounds.clone();
-        //                  while (bounds.right < bounds.left) {
-        //                      bounds.right += maxExtent.getWidth();
-        //                  }
-        //                  center = bounds.getCenterLonLat().wrapDateLine(maxExtent);
-        //              }
-        //              this.setCenter(center, this.getZoomForExtent(bounds, false)-1);
-        //          }).call(map)
-        //      }
-        //  })()
-        // })(this.map);
-    	this.map.zoomToExtent(bounds);//, [10, 10], [200, 200]);
+    	this.map.zoomToExtent(bounds);
 	});
 }
 
 function createTableForSectorWithData(sector, data){
-	var div = $("<div />", {id: 'facilities-'+sector.slug}).text(sector.name).data('sector-slug', sector.slug);
-	var table = $('<table />', {'class':'facility-list'});
-	var thRow = $("<tr />");
-	table.append($("<thead />").html(thRow));
-	var sectorData  = data.bySector[sector.slug] || data.bySector[sector.name];
-	function displayOrderSort(a,b) {
-		return (a.display_order > b.display_order) ? 1 : -1
-	}
-	if(sector.columns!==undefined && sector.columns.length>0 && sectorData!==undefined && sectorData.length>0) {
-		$.each(sector.columns.sort(displayOrderSort), function(i, col){
-			var th = $("<th />", {'class':'col-'+col.slug}).text(col.name).addClass(col.clickable ? "clickable" : "not-clickable");
-			$(col.subgroups).each(function(i, sg){
-				th.addClass('subgroup-'+sg);
-			});
-			col.th = th;
-			col.thIndex = i;
-			th.click(function(){
-				$('body').trigger('select-column', {
-					sector: sector,
-					column: col
-				});
-			});
-			thRow.append(th)
-			});
-		var tbod = $("<tbody />");
-		$.each(sectorData, function(i, fUid){
-			tbod.append(createRowForFacilityWithColumns(data.list[fUid], sector.columns))
-		})
-		table.append(tbod);
-	}
+    var sectorData = data.bySector[sector.slug] || data.bySector[sector.name];
 	
-	var subSectors = (function createSubSectorLinks(){
-	    // probably want to find a better way to do this down the line, so
-	    // i'm encapsulating it in its own function.
-	    
-	    var subSectors = $("<div />").addClass("sub-sector-list");
-    	function createSpanForSubSector(ssName, ssSlug, url) {
-    	    return $("<a />", {'href': url}).text(ssName).addClass('subsector-link-'+ssSlug);
-    	}
-    	subSectors.append(createSpanForSubSector("General", 'general', pageRootUrl + lgaId + '/' + sector.slug));
-    	$.each(sector.subgroups, function(i, sg){
-    	    if(sg.slug!=='general') {
-        	    subSectors.append($("<span />").text(" | "));
-    	        subSectors.append(createSpanForSubSector(sg.name, sg.slug, pageRootUrl + lgaId + '/' + [sector.slug, sg.slug].join(subSectorDelimiter)));
-    	    }
+	if(!sector.columns instanceof Array || !sectorData instanceof Array) {
+	    return;
+    }
+    
+    var thRow = $('<tr />');
+    function displayOrderSort(a,b) { return (a.display_order > b.display_order) ? 1 : -1 }
+	$.each(sector.columns.sort(displayOrderSort), function(i, col){
+		var th = $('<th />')
+		        .text(col.name)
+		        .addClass('col-'+col.slug)
+		        .appendTo(thRow)
+		        .click(function(){
+		            $('body').trigger('select-column', {sector: sector, column: col});
+		        });
+		
+		col.clickable && th.addClass('clickable');
+		
+		$(col.subgroups).each(function(i, sg){
+			th.addClass('subgroup-'+sg);
+		});
+		
+		$.extend(col, {
+		    th: th,
+		    thIndex: i
+		});
+	});
+	
+	var tbod = $("<tbody />");
+	$.each(sectorData, function(i, fUid){
+		tbod.append(createRowForFacilityWithColumns(data.list[fUid], sector.columns))
+	});
+	
+	function subSectorLink(ssName, ssslug) {
+	    var url = pageRootUrl + lgaId + '/' + sector.slug +
+                (ssslug===defaultSubSector ? '' : subSectorDelimiter + ssslug);
+	    return $('<a />', {'href': url, 'class': 'subsector-link-'+ssslug})
+	                .text(ssName);
+	}
+	var subSectors = (function(subSectors, splitter){
+	    $.each(sector.subgroups, function(i, sg){
+    	    sg.slug !== defaultSubSector &&
+    	        subSectors.append(splitter.clone())
+    	                .append(subSectorLink(sg.name, sg.slug));
     	});
     	return subSectors;
-	})();
-	
-	div.empty()
+	})($('<div />').addClass('sub-sector-list'), $("<span />").text(" | "))
+	    .prepend(subSectorLink("General", defaultSubSector));
+
+    var table = $('<table />')
+                    .addClass('facility-list')
+                    .append($('<thead />').html(thRow))
+                    .append(tbod);
+    
+	return $('<div />')
+	    .attr('id', 'facilities-'+sector.slug)
+	    .data('sector-slug', sector.slug)
 	    .append(subSectors)
 	    .append(table);
-	return div;
 }
+
 function createRowForFacilityWithColumns(fpoint, cols){
 	var tr = $("<tr />");
 	$.each(cols, function(i, col){
@@ -871,13 +850,13 @@ function createSectorNav() {
 		var sectorUrl = pageRootUrl + lgaId + '/' + sector.slug;
 		var l = $("<a />", {'href': sectorUrl}).text(sector.name);
 		l.data('sectorSlug', sector.slug);
-		l.data('subSectorSlug', 'general');
+		l.data('subSectorSlug', defaultSubSector);
 		
 		var li = $("<li />").appendTo(ul)
 				.html(l);
 		var sul = $("<ul />").appendTo(ul);
 		$(sector.subgroups).each(function(i, subgroup){
-			if(subgroup.slug!=='general') {
+			if(subgroup.slug!==defaultSubSector) {
 				var li = $("<li />").appendTo(sul);
 				var sectorUrl = pageRootUrl + lgaId + '/' + [sector.slug, subgroup.slug].join(subSectorDelimiter);
         		
