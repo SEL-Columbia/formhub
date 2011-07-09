@@ -11,6 +11,7 @@ from main.views import index
 
 from uis_r_us.views import dashboard as ui_dashboard
 from uis_r_us.views import variable_data as ui_variable_data
+from survey_photos.views import photo_redirect
 
 urlpatterns = patterns('',
     url(r"^%sformList$" % OPT_GROUP_REGEX, xform_manager_views.formList),
@@ -21,6 +22,7 @@ urlpatterns = patterns('',
     url(r'^facilities/', include('facilities.urls')),
     url(r'^resources/', include('resources.urls')),
     url(r'^facility_variables', ui_variable_data),
+    url(r'^survey_photos/(?P<size>\S+)/(?P<photo_id>\S+)$', photo_redirect),
     url(r'^~(?P<reqpath>\S*)', ui_dashboard),
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

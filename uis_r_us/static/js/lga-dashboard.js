@@ -284,6 +284,14 @@ $('body').bind('unselect-sector', function(evt, edata){
 		.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
 });
 
+function imageUrls(imageSizes, imgId) {
+    return {
+        small: ["/survey_photos", imageSizes.small, imgId].join("/"),
+        large: ["/survey_photos", imageSizes.large, imgId].join("/"),
+        original: ["/survey_photos", 'original', imgId].join("/")
+    }
+}
+
 $('body').bind('select-facility', function(evt, edata){
 	var facility = facilityData.list[edata.uid];
 	if(facility === selectedFacility) {
@@ -316,22 +324,31 @@ $('body').bind('select-facility', function(evt, edata){
 	var popup = $("<div />");
 	var sector = $(facilitySectors).filter(function(){return this.slug==facility.sector}).get(0);
 	(function buildDefinitionList(){
-		var tab = $("<table />").css({
-			'width': 400
-		});
-		var imgFullUrl = ("http://nmis.mvpafrica.org/site-media/attachments/" + facility.img_id).toLowerCase();
-		var imgLink = $("<a />", {'href':imgFullUrl, 'target': '_BLANK'}).html($("<img />", {src: imgFullUrl}).css({'width': 90}));
-		popup.prepend(imgLink);
+		var tab = $("<table />")
+		    .css({'width': 400})
+		    .appendTo(popup);
+		
+		if(!facility.img_id) {
+		    facility.img_id = "image_not_found.jpg";
+		}
+		
+		var imgUrls = imageUrls({
+		    'small' : '120',
+		    'large': '500',
+		    'original': 'original'
+		}, facility.img_id);
+		
+		$("<a />", {'href': imgUrls.large, 'target': '_BLANK'})
+		            .html($("<img />", {src: imgUrls.small })
+		            .css({'width': 120}))
+		            .prependTo(popup);
 
 		$(sector.columns).each(function(i, col){
-			var tr = $("<tr />");
-			var colSlug = col.slug;
-			var colName = col.name;
-			tr.append($("<td />").text(colName))
-			tr.append($("<td />").text(facility[colSlug]))
-			tab.append(tr);
+		    $("<tr />")
+			    .append($("<td />").text(col.name))
+			    .append($("<td />").text(facility[col.slug]))
+			    .appendTo(tab);
 		});
-		popup.append(tab);
 	})();
 	popup._showSideDiv({
 	    title: "Facility "+ facility.uid,
