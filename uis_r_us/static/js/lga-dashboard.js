@@ -185,7 +185,7 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 		
 		buildLgaProfileBox(lgaData, variableDictionary.profile_variables);
 		
-		facilityDataStuff(lgaQ, {sectors: variableDefs, data: facilityDataARr});
+		processFacilityDataRequests(lgaQ, {sectors: variableDefs, data: facilityDataARr});
 		if(facilityData!==undefined && facilitySectors!==undefined) {
 			var context = {
 				data: facilityData,
@@ -653,37 +653,35 @@ function createTableForSectorWithData(sector, data){
 function createRowForFacilityWithColumns(fpoint, cols){
 	var tr = $("<tr />");
 	$.each(cols, function(i, col){
-		var colSlug = col.slug;
-		var value = fpoint[colSlug];
+		var value = fpoint[col.slug];
 		if(value===undefined) { value = '—'; }
-		var td = $("<td />", {'class':'col-'+colSlug});
-		if(col.display_style=="checkmark") {
-		    td.addClass('checkmark')
-			    .html($("<span />", {'class':'mrk'}));
-			if($.type(value) === 'boolean' && !!value) {
-			    td.addClass('on')
-			} else if($.type(value) === 'boolean') {
-			    td.addClass('off')
+		
+		var td = $('<td />')
+		        .addClass('col-'+col.slug)
+		        .appendTo(tr);
+		
+		if(col.display_style == "checkmark") {
+			if($.type(value) === 'boolean') {
+			    td.addClass(!!value ? 'on' : 'off')
 			} else {
 			    td.addClass('null');
 			}
-		} else if(col.calc_action=="binarytally") {
+			td.addClass('checkmark')
+			    .html($("<span />").addClass('mrk'));
+		} else if(col.calc_action === "binarytally") {
+		    //I think binarytally is no longer used.
 			var cols = col.calc_columns.split(" ");
 			var valx = (function calcRatio(pt, cols){
 				var tot = 0;
-				var yCount = 0;
-				var vv = [];
+				var num = 0;
 				$(cols).each(function(i, slug){
 					var val = pt[slug];
-					if(val!==undefined && $.type(val)==='boolean') {
-						if(val) {
-							yCount += 1;
-						}
-					}
+					num += ($.type(val) === 'boolean' && !!val) ? 1 : 0;
 					tot += 1;
-				})
-				return [yCount, tot];
+				});
+				return [num, tot];
 			})(fpoint, cols);
+			
 			td.data('decimalValue', valx[0]/valx[1]);
 			td.append($("<span />", {'class':'numerator'}).text(valx[0]))
 			    .append($("<span />", {'class':'div'}).text('/'))
@@ -694,7 +692,6 @@ function createRowForFacilityWithColumns(fpoint, cols){
 		$(col.subgroups).each(function(i, sg){
 			td.addClass('subgroup-'+sg);
 		});
-		tr.append(td);
 		tr.data('facility-uid', fpoint.uid);
 	});
 	tr.click(function(){$(this).trigger('select-facility', {
@@ -704,7 +701,7 @@ function createRowForFacilityWithColumns(fpoint, cols){
 	fpoint.tr = tr.get(0);
 	return tr;
 }
-var facilityDataStuff = (function(dataReq, passedData){
+var processFacilityDataRequests = (function(dataReq, passedData){
     if(dataReq[2].processedData !== undefined) {
 	    facilityData = dataReq[2].processedData.data;
 	    facilitySectors = dataReq[2].processedData.sectors;
