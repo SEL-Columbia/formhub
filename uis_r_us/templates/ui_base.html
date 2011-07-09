@@ -28,8 +28,12 @@
 			<div class="lga-nav">
 					<select id="lga-select" name="lga">
 						<option value="0">Select an LGA</option>
-						{% for lgaid, statename, lganame in active_districts %}
-						<option value="{{lgaid}}"> &raquo; {{statename}}: {{lganame}}</option>
+						{% for statename, lgas in active_districts2 %}
+						<optgroup label="{{statename}}">
+							{% for lganame, lgaid in lgas %}
+							<option value="{{lgaid}}">{{lganame}}</option>
+							{% endfor %}
+						</optgroup>
 						{% endfor %}
 					</select>
 					<script type="text/javascript" charset="utf-8">
@@ -46,8 +50,7 @@
 		<div class="account_links">
 			{% if user.is_authenticated %}
 			{% trans "Logged in" %}: {{ user.username }} 
-			(<a href="{% url auth_logout %}">{% trans "Log out" %}</a> | 
-			<a href="{% url auth_password_change %}">{% trans "Change password" %}</a>)
+			(<a href="{% url auth_logout %}">{% trans "Log out" %}</a>)
 			{% else %}
 			<a href="{% url auth_login %}">{% trans "Log in" %}</a>
 			{% endif %}

@@ -267,8 +267,9 @@ $('body').bind('select-sector', function(evt, edata){
 		
 		if(selectedSubSector!==fullSectorId) {
 			$('body').trigger('unselect-sector');
-			var selector = '#facilities-'+sector+' .subgroup-'+subSector;
-			ftabs.find(selector).addClass(specialClasses.showTd);
+			var tabWrap = $('#facilities-'+sector, ftabs);
+			tabWrap.find('.subgroup-'+subSector).addClass(specialClasses.showTd);
+			tabWrap.find('.row-num').addClass(specialClasses.showTd);
 			ftabs.addClass(specialClasses.tableHideTd);
 			selectedSubSector = fullSectorId;
 			$('.sub-sector-list a.selected').removeClass('selected');
@@ -589,7 +590,6 @@ function buildFacilityTable(data, sectors){
 
 function createTableForSectorWithData(sector, data){
     var sectorData = data.bySector[sector.slug] || data.bySector[sector.name];
-	
 	if(!sector.columns instanceof Array || !sectorData instanceof Array) {
 	    return;
     }
@@ -650,10 +650,36 @@ function createTableForSectorWithData(sector, data){
 	    .append(table);
 }
 
-function createRowForFacilityWithColumns(fpoint, cols){
+var decimalCount = 2;
+function roundDownValueIfNumber(val) {
+    if(val===undefined) {
+        return '—';
+    }
+    if($.type(val)==='number' && (''+val).length>5) {
+        return Math.floor(Math.pow(10, decimalCount)* val)/Math.pow(10, decimalCount);
+    } else if($.type(val)==='string') {
+        return splitAndCapitalizeString(val);
+    }  else {
+        return val;
+    }
+}
+function capitalizeString(str) {
+    var strstart = str.slice(0, 1);
+    var strend = str.slice(1);
+    return strstart.toUpperCase() + strend;
+}
+function splitAndCapitalizeString(str) {
+    return $.map(str.split('_'), capitalizeString).join(' ');
+}
+function createRowForFacilityWithColumns(fpoint, cols, rowNum){
 	var tr = $("<tr />");
+	$('<td />', {
+	    'class': 'row-num',
+	    'text': rowNum
+	}).appendTo(tr);
+	
 	$.each(cols, function(i, col){
-		var value = fpoint[col.slug];
+		var value = roundDownValueIfNumber(fpoint[col.slug]);
 		if(value===undefined) { value = '—'; }
 		
 		var td = $('<td />')
