@@ -608,7 +608,11 @@ function createTableForSectorWithData(sector, data){
 	    return;
     }
     
-    var thRow = $('<tr />');
+    var thRow = $('<tr />')
+                .append($('<th />', {
+                    'text': '#',
+                    'class': 'row-num'
+                }));
     function displayOrderSort(a,b) { return (a.display_order > b.display_order) ? 1 : -1 }
 	$.each(sector.columns.sort(displayOrderSort), function(i, col){
 		var th = $('<th />')
@@ -633,7 +637,7 @@ function createTableForSectorWithData(sector, data){
 	
 	var tbod = $("<tbody />");
 	$.each(sectorData, function(i, fUid){
-		tbod.append(createRowForFacilityWithColumns(data.list[fUid], sector.columns))
+		tbod.append(createRowForFacilityWithColumns(data.list[fUid], sector.columns, i+1))
 	});
 	
 	function subSectorLink(ssName, ssslug) {
