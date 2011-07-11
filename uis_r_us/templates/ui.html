@@ -124,6 +124,19 @@
     .profile-data.hidden {
         display: none;
     }
+	#header .toggle-button {
+		color: #eee;
+		text-decoration: none;
+		padding: 4px 13px;
+		font-size: 13px;
+		opacity: 0.8;
+	}
+	#header .toggle-button.toggled {
+		opacity: 1;
+	}
+	#lga-facilities-table.hidden {
+		display: none;
+	}
 </style>
 
 {% endblock %}
@@ -162,11 +175,28 @@ $('.content-inner-wrap').css({'padding':0})
 $(function(){
 	var dashboard = $.sammy(function(){
 		function createTitleForLga(state, lga) {
+			var profileDataLink = $('<a />', {'href':'#'})
+					.addClass('toggle-button')
+					.text('[LGA]')
+					.click(function(e){
+						$('.profile-data').toggleClass('hidden')
+						profileDataLink.toggleClass('hidden');
+						return false;
+					});
+			var facilityTableLink = $('<a />', {'href':'#'})
+					.addClass('toggle-button')
+					.text('[FACILITIES]')
+					.click(function(e){
+						$('#lga-facilities-table').toggleClass('hidden');
+						facilityTableLink.toggleClass('hidden');
+						return false;
+					})
 			return $("<span />").text("NMIS: ")
 				.append($("<span />", {'class': 'state-name'}).text(state))
 				.append($("<span />").text(' - '))
 				.append($("<span />", {'class': 'lga-name'}).text(lga))
-                .append($("<span />", {'class': 'profile-toggle'}).html($("<a>", {'href':'#','text':'[INFO]'})).click(function(e){$('.profile-data').toggleClass('hidden');return false;}));
+                .append(profileDataLink)
+				.append(facilityTableLink);
 		}
 		
 		this.get(pageRootUrl, function(){
