@@ -352,10 +352,12 @@ $('body').bind('select-facility', function(evt, edata){
 		
 		var imgUrl = "http://nmis.mvpafrica.org/site-media/attachments/"+facility.img_id;
 		
-		$("<a />", {'href': imgUrls.large, 'target': '_BLANK'})
-		            .html($("<img />", {src: imgUrl })
-		            .css({'width': 120}))
-		            .prependTo(popup);
+		if(facility.photo !== undefined) {
+		    $("<a />", {'href': imgUrl, 'target': '_BLANK'})
+    		            .html($("<img />", {src: imgUrl })
+    		            .css({'width': 120}))
+    		            .prependTo(popup);
+		}
 
 		$(sector.columns).each(function(i, col){
 		    $("<tr />")
