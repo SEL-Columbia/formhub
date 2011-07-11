@@ -170,9 +170,6 @@ function buildLgaProfileBox(lga, dictionary) {
 
 // Load data functions (creating ajax requests and triggering callbacks)
 function loadLgaData(lgaUniqueId, onLoadCallback) {
-    //temporary hiding the menu from other nmis :-/
-    $('#menu').hide();
-	
     var siteDataUrl = urls.lgaSpecific + lgaUniqueId;
     var variablesUrl = urls.variables;
 	var fv1 = $.getCacheJSON(siteDataUrl);
