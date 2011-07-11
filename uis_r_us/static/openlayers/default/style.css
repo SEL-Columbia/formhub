@@ -325,9 +325,11 @@ div.olControlSaveFeaturesItemInactive {
 }
 
 .olImageLoadError {
+    display: none;
+ /* factory defaults:
     background-color: pink;
     opacity: 0.5;
-    filter: alpha(opacity=50); /* IE */
+    filter: alpha(opacity=50); */
 }
 
 /**
