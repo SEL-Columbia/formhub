@@ -190,7 +190,7 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 		});
 		
 		buildLgaProfileBox(lgaData, variableDictionary.profile_variables);
-		
+		buildGapAnalysisTable(lgaData);
 		processFacilityDataRequests(lgaQ, {sectors: variableDefs, data: facilityDataARr});
 		if(facilityData!==undefined && facilitySectors!==undefined) {
 			var context = {
@@ -386,6 +386,31 @@ function getColDataDiv() {
 	}
 	return colData;
 }
+
+function getGaTable(){
+    var gt = $('.widget-outer-wrap').find('div.gap-analysis-table');
+	if(gt.length===0) {
+		gt = $("<div />", {'class': 'gap-analysis-table'});
+		$('.widget-outer-wrap').prepend($('<div />', {'class':'gap-analysis-table-wrap'}).html(gt));
+	}
+	return gt;
+}
+
+function buildGapAnalysisTable(lgaData){
+    var data = lgaData.profileData;
+    var gaTableWrap = getGaTable();
+    var table = $('#gap-analysis-table-template').find('table').clone();
+    table.find('.fill-me').each(function(){
+        var slug = $(this).data('variableSlug');
+        $(this).text(roundDownValueIfNumber(data[slug]))
+    });
+    //hiding gap analysis table by default for now.
+    gaTableWrap.parents().eq(0)
+            .addClass('toggleable')
+            .addClass('hidden')
+    return gaTableWrap.html(table);
+}
+
 
 function getTabulations(sector, col) {
 	var sList = facilityData.bySector[sector];
