@@ -375,6 +375,9 @@ $('body').bind('select-facility', function(evt, edata){
 });
 
 $('body').bind('unselect-facility', function(){
+    $.each(facilityData.list, function(i, fdp){
+	    olStyling.markIcon(fdp, 'showing');
+	});
     $('tr.selected-facility').removeClass('selected-facility');
 });
 
