@@ -183,7 +183,7 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 			facilityDataARr.push(v);
 		});
 		
-		buildLgaProfileBox(lgaData, variableDictionary.profile_variables);
+//		buildLgaProfileBox(lgaData, variableDictionary.profile_variables);
 		
 		processFacilityDataRequests(lgaQ, {sectors: variableDefs, data: facilityDataARr});
 		if(facilityData!==undefined && facilitySectors!==undefined) {
