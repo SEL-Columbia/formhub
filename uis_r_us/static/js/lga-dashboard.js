@@ -62,6 +62,12 @@ var olStyling = (function(){
                     if(fac.mrkr === undefined) {
                         var icon = new OpenLayers.Icon(url, size, offset);
                         fac.mrkr = new OpenLayers.Marker(fac.openLayersLatLng, icon);
+                        fac.mrkr.events.register('click', fac.mrkr, function(){
+                            $('body').trigger('select-facility', {
+                                'uid': fac.uid,
+                                'scrollToRow': true
+                            })
+                        });
                         markerLayer.addMarker(fac.mrkr);
                     } else {
                         fac.mrkr.icon.setSize(size);
@@ -311,7 +317,7 @@ $('body').bind('select-facility', function(evt, edata){
 	//scrolls to row by default (?)
 //		if (edata.scrollToRow === undefined) { edata.scrollToRow = true; }
 
-	edata.scrollToRow && (function scrollToTheFacilitysTr(){
+	edata.scrollToRow && false && (function scrollToTheFacilitysTr(){
 		if(facility.tr!==undefined) {
 			var ourTr = $(facility.tr);
 			var offsetTop = ourTr.offset().top - ourTr.parents('table').eq(0).offset().top
