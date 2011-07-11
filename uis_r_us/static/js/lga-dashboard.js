@@ -333,6 +333,7 @@ $('body').bind('select-facility', function(evt, edata){
 		    .css({'width': 400})
 		    .appendTo(popup);
 		
+		facility.img_id = facility.photo;
 		if(!facility.img_id) {
 		    facility.img_id = "image_not_found.jpg";
 		}
@@ -343,8 +344,10 @@ $('body').bind('select-facility', function(evt, edata){
 		    'original': 'original'
 		}, facility.img_id);
 		
+		var imgUrl = "http://nmis.mvpafrica.org/site-media/attachments/"+facility.img_id;
+		
 		$("<a />", {'href': imgUrls.large, 'target': '_BLANK'})
-		            .html($("<img />", {src: imgUrls.small })
+		            .html($("<img />", {src: imgUrl })
 		            .css({'width': 120}))
 		            .prependTo(popup);
 
