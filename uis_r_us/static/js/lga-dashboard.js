@@ -561,7 +561,11 @@ function buildFacilityTable(data, sectors){
 		centroid: {
 			lat: 649256.11813719,
 			lng: 738031.10112355
-		}
+		},
+		layers: [
+		    ["Nigeria", "nigeria_base"],
+		    ["Boundaries", "nigeria_overlays_white"],
+		]
 	})(function(){
 	    function urlForSectorIcon(s) {
 	        var surveyTypeColors = {
@@ -577,27 +581,23 @@ function buildFacilityTable(data, sectors){
 		var markers = new OpenLayers.Layer.Markers("Markers");
 		var bounds = new OpenLayers.Bounds();
 		$.each(facilityData.list, function(i, d){
-    	        if(d.latlng!==undefined) {
-    	            d.sectorSlug = (d.sector || 'default').toLowerCase();
-    	            olStyling.addIcon(d, 'main', {
-    	                url: urlForSectorIcon(d.sectorSlug),
-    	                size: [34, 20]
-    	            });
-    	            var ll = d.latlng;
-    	            d.openLayersLatLng = new OpenLayers.LonLat(ll[1], ll[0])
-    	                .transform(new OpenLayers.Projection("EPSG:4326"),
-    	                            new OpenLayers.Projection("EPSG:900913"));
-    	            bounds.extend(d.openLayersLatLng);
-    	        } 
+            if(d.latlng!==undefined) {
+                d.sectorSlug = (d.sector || 'default').toLowerCase();
+                olStyling.addIcon(d, 'main', {
+                    url: urlForSectorIcon(d.sectorSlug),
+                    size: [34, 20]
+                });
+                var ll = d.latlng;
+                d.openLayersLatLng = new OpenLayers.LonLat(ll[1], ll[0])
+                    .transform(new OpenLayers.Projection("EPSG:4326"),
+                                new OpenLayers.Projection("EPSG:900913"));
+                bounds.extend(d.openLayersLatLng);
+            }
     	});
     	olStyling.setMarkerLayer(markers);
+    	this.map.addLayer(markers);
     	olStyling.setMode(facilityData, 'main');
-		var tilesat = new OpenLayers.Layer.TMS("Boundaries", "http://tilestream.openmangrove.org:8888/",
-		            {
-		                layerName: 'nigeria_overlays_white',
-		                type: 'png'
-		            });
-		this.map.addLayers([tilesat, markers]);
+//		this.map.addLayers([tilesat, markers]);
     	this.map.zoomToExtent(bounds);
 	});
 }
