@@ -11,6 +11,7 @@ def dashboard(request, reqpath):
         if LGA.objects.filter(unique_slug=lgaid).count() > 0:
             return HttpResponseRedirect("/~%s" % lgaid)
     context = RequestContext(request)
+    context.site_title = "NMIS Nigeria"
     lga = None
     context.active_districts = active_districts()
     context.active_districts2 = active_districts2()

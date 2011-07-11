@@ -182,27 +182,25 @@ $(function(){
 		}
 		
 		this.get(pageRootUrl, function(){
-			//a basic lga selector in the main div (temporary)
-			$('.content-inner-wrap').html((function(){
-				launchOpenLayers({
-					defaultLayer: '',
-					layers: [
-					    ["Nigeria", "nigeria_base"],
-					    ["Nigeria health workers per thousand people", "nigeria_healthworkers_per_thousand"],
-					    ["Nigeria Health Facilities with Institutional Deliveries", "pct_healthfacilities_with_institutional_delivery"],
-					    ["Nigeria No Stockouts of Bednets or Malaria Medicine", "nigeria_pct_no_bednet_malmeds_oneweek"],
-					    ["Nigeria Classrooms That Need Repair", "nigeria_pct_classroom_need_repair"],
-					    ["Nigeria classrooms with proportion student to teacher ratio > 40", "nigeria_prop_ratio_greater_than_40"],
-					    ["Nigeria Immunization Rate", "nigearia_immunization_rate"],
-					    ["Nigeria Under 5 Mortality Rate", "nigeria_under5_mortality_rate"],
-					    ["Nigeria Child Wasting", "nigeria_wasting"],
-					    ["Nigeria Child Health", "nigeria_child_health"],
-					    ["Nigeria Child Nutrition", "nigeria_child_nutrition"],
-					    ["Nigeria Maternal Health", "nigeria_maternal_health"],
-					    ["Nigeria Primary Education Enrollment", "nigeria_primary_education_enrollment"]
-			        ]
-				});
-			})());
+			setTitle($("<span />", {'text': 'NMIS'}));
+			launchOpenLayers({
+				defaultLayer: '',
+				layers: [
+				    ["Nigeria", "nigeria_base"],
+				    ["Nigeria health workers per thousand people", "nigeria_healthworkers_per_thousand"],
+				    ["Nigeria Health Facilities with Institutional Deliveries", "pct_healthfacilities_with_institutional_delivery"],
+				    ["Nigeria No Stockouts of Bednets or Malaria Medicine", "nigeria_pct_no_bednet_malmeds_oneweek"],
+				    ["Nigeria Classrooms That Need Repair", "nigeria_pct_classroom_need_repair"],
+				    ["Nigeria classrooms with proportion student to teacher ratio > 40", "nigeria_prop_ratio_greater_than_40"],
+				    ["Nigeria Immunization Rate", "nigearia_immunization_rate"],
+				    ["Nigeria Under 5 Mortality Rate", "nigeria_under5_mortality_rate"],
+				    ["Nigeria Child Wasting", "nigeria_wasting"],
+				    ["Nigeria Child Health", "nigeria_child_health"],
+				    ["Nigeria Child Nutrition", "nigeria_child_nutrition"],
+				    ["Nigeria Maternal Health", "nigeria_maternal_health"],
+				    ["Nigeria Primary Education Enrollment", "nigeria_primary_education_enrollment"]
+		        ]
+			});
 		});
 		
 		function addToggleLinks(){
