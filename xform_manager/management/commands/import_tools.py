@@ -25,17 +25,17 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         path = args[0]
-        print "[Importing XForm Instances from %s]\n" % path
-        im_count = len(glob.glob(os.path.join(IMAGES_DIR, '*')))
-        instance_count = Instance.objects.count()
-        print "Before Parse:"
-        print " --> Images:    %d" % im_count
-        print " --> Instances: %d" % Instance.objects.count()
-        
+        debug = False
+        if debug:
+            print "[Importing XForm Instances from %s]\n" % path
+            im_count = len(glob.glob(os.path.join(IMAGES_DIR, '*')))
+            instance_count = Instance.objects.count()
+            print "Before Parse:"
+            print " --> Images:    %d" % im_count
+            print " --> Instances: %d" % Instance.objects.count()
         import_instances_from_jonathan(path)
-        
-        im_count2 = len(glob.glob(os.path.join(IMAGES_DIR, '*')))
-        print "After Parse:"
-        print " --> Images:    %d" % im_count2
-        print " --> Instances: %d" % Instance.objects.count()
-#        print glob.glob(os.path.join(path, "*"))
+        if debug:
+            im_count2 = len(glob.glob(os.path.join(IMAGES_DIR, '*')))
+            print "After Parse:"
+            print " --> Images:    %d" % im_count2
+            print " --> Instances: %d" % Instance.objects.count()
