@@ -28,10 +28,16 @@ class FacilityBuilder(object):
             'facility_id': d.get('gps', uuid.uuid4())
             }
         if '_lga_id' in d:
-            kwargs['lga'] = LGA.objects.get(id=d['_lga_id'])
+            try:
+                kwargs['lga'] = LGA.objects.get(id=d['_lga_id'])
+            except LGA.DoesNotExist, e:
+                pass
         if '_facility_type' in d:
-             kwargs['sector'] = Sector.objects.get(
-                slug=d['_facility_type'].lower())
+            try:
+                kwargs['sector'] = Sector.objects.get(
+                   slug=d['_facility_type'].lower())
+            except Sector.DoesNotExist, e:
+                pass
         facility, created = Facility.objects.get_or_create(**kwargs)
         facility.add_data_from_dict(d)
 
