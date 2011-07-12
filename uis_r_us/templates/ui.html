@@ -131,6 +131,12 @@
 		font-size: 13px;
 		opacity: 0.8;
 	}
+	div.toggleable {
+		display: block;
+	}
+	div.toggleable.hidden {
+		display: none;
+	}
 	#header .toggle-button.toggled {
 		opacity: 1;
 	}
@@ -138,7 +144,7 @@
 		display: none;
 	}
 </style>
-
+<link rel="stylesheet" href="/static/openlayers/default/style.css" type="text/css" media="all" charset="utf-8">
 {% endblock %}
 {% block content %}
 <div class='content-inner-wrap'>
@@ -148,6 +154,250 @@
 		</div>
 	</div>
 	<div id="map" class="resizing-map"></div>
+</div>
+<div id="gap-analysis-table-template" style="display:none">
+	<table>
+		<tbody>
+			<tr>
+				<td></td>
+				<td></td>
+				<td>Current</td>
+				<td>Target</td>
+				<td>Gap</td>
+			</tr>
+			<tr>
+				<td rowspan="3">
+					Facilities Per Population
+				</td>
+				<td>
+					Insitutional Delivery
+				</td>
+				<td class="fill-me" data-variable-slug="num_health_facilities_institutional_delivery_only"></td>
+				<td class="fill-me" data-variable-slug="target_health_facilities_institutional_delivery_only"></td>
+				<td class="fill-me" data-variable-slug="gap_health_facilities_institutional_delivery_only"></td>
+			</tr>
+			<tr>
+				<td>
+					Basic EmOC
+				</td>
+				<td class="fill-me" data-variable-slug="num_health_facilities_basic_emoc_fully_functional"></td>
+				<td class="fill-me" data-variable-slug="target_health_facilities_basic_emoc"></td>
+				<td class="fill-me" data-variable-slug="gap_health_facilities_basic_emoc"></td>
+			</tr>
+			<tr>
+				<td>
+					Comprehensive EmOC
+				</td>
+				<td class="fill-me" data-variable-slug="num_health_facilities_comprehensive_emoc_fully_functional"></td>
+				<td class="fill-me" data-variable-slug="target_health_facilities_comprehensive_emoc"></td>
+				<td class="fill-me" data-variable-slug="gap_health_facilities_comprehensive_emoc"></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td></td>
+				<td></td>
+				<td>Current</td>
+				<td>Target</td>
+				<td>Gap</td>
+			</tr>
+			<tr>
+				<td rowspan="5">
+					Infrastructure
+				</td>
+				<td>
+					Emergency Transport
+				</td>
+				<td class="fill-me" data-variable-slug="num_health_facilities_with_functioning_emergency_transport"></td>
+				<td class="fill-me" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me" data-variable-slug="gap_health_facilities_emergency_transport"></td>
+			</tr>	
+			<tr>
+				<td>
+					Mobile Communications
+				</td>
+				<td class="fill-me" data-variable-slug="num_health_facilities_functioning_mobile_and_coverage"></td>
+				<td class="fill-me" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me" data-variable-slug="gap_health_facilities_functioning_mobile_communications"></td>
+			</tr>
+			<tr>
+				<td>
+					Improved Water
+				</td>
+				<td class="fill-me" data-variable-slug="num_health_facilities_potable_water_past_mth"></td>
+				<td class="fill-me" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me" data-variable-slug="gap_health_facilities_potable_water"></td>
+			</tr>
+			<tr>
+				<td>
+					Improved Sanitation
+				</td>
+				<td class="fill-me" data-variable-slug="num_health_facilities_with_functioning_improved_sanitation"></td>
+				<td class="fill-me" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me" data-variable-slug="gap_health_facilities_functioning_improved_sanitation"></td>
+			</tr>
+			<tr>
+				<td>
+					Power
+				</td>
+				<td class="fill-me" data-variable-slug="num_health_facilities_power_access_and_functional"></td>
+				<td class="fill-me" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me" data-variable-slug="gap_health_facilities_power_access_and_funtional"></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td></td>
+				<td></td>
+				<td>Current</td>
+				<td>Target</td>
+				<td>Gap</td>
+			</tr>
+			<tr>
+				<td rowspan="3">
+					Equipment, Drugs &amp; Diagnostics
+				</td>
+				<td>
+					Minimum Equipment Package
+				</td>
+				<td class="fill-me" data-variable-slug="num_health_facilities_with_min_equipment_package"></td>
+				<td class="fill-me" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me" data-variable-slug="gap_health_facilities_with_min_equip_package"></td>
+			</tr>
+			<tr>
+				<td>
+					Minimum Essential Medications
+				</td>
+				<td class="fill-me" data-variable-slug="num_health_facilities_with_min_essential_meds"></td>
+				<td class="fill-me" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me" data-variable-slug="gap_health_facilities_with_min_essential_meds"></td>
+			</tr>
+			<tr>
+				<td>
+					Minimum Laboratory Diagnostics
+				</td>
+				<td class="fill-me" data-variable-slug="num_health_facilities_with_min_lab_diagnostics"></td>
+				<td class="fill-me" data-variable-slug="num_all_primary_health_facilities"></td>
+				<td class="fill-me" data-variable-slug="gap_health_facilities_minimum_lab_diagnostics"></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td></td>
+				<td></td>
+				<td>Current</td>
+				<td>Target</td>
+				<td>Gap</td>
+			</tr>
+			<tr>
+				<td rowspan="4">
+					Malaria
+				</td>
+				<td>
+					Facilities with ITNs
+				</td>
+				<td class="fill-me" data-variable-slug="num_health_facilities_with_itns"></td>
+				<td class="fill-me" data-variable-slug="num_all_primary_health_facilities"></td>
+				<td class="fill-me" data-variable-slug="gap_health_facilities_with_itns"></td>
+			</tr>
+			<tr>
+				<td>
+					Facilities with RDT
+				</td>
+				<td class="fill-me" data-variable-slug="num_health_facilities_with_malaria_testing"></td>
+				<td class="fill-me" data-variable-slug="num_all_primary_health_facilities"></td>
+				<td class="fill-me" data-variable-slug="gap_health_facilities_with_malaria_testing"></td>
+			</tr>
+			<tr>
+				<td>
+					Facilities with ACT
+				</td>
+				<td class="fill-me" data-variable-slug="num_health_facilities_with_artemisinin_for_malaria"></td>
+				<td class="fill-me" data-variable-slug="num_all_primary_health_facilities"></td>
+				<td class="fill-me" data-variable-slug="gap_health_facilities_with_artemisinin_for_malaria"></td>
+			</tr>
+			<tr>
+				<td>
+					Facilities with SP
+				</td>
+				<td class="fill-me" data-variable-slug="num_health_facilities_with_malaria_treatment_sulphadoxine"></td>
+				<td class="fill-me" data-variable-slug="num_all_primary_health_facilities"></td>
+				<td class="fill-me" data-variable-slug="gap_health_facilities_with_sulphadoxine_for_malaria"></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td></td>
+				<td></td>
+				<td>Current</td>
+				<td>Target</td>
+				<td>Gap</td>
+			</tr>
+			<tr>
+				<td rowspan="1">
+					Vaccination
+				</td>
+				<td>
+					Routine Immunization
+				</td>
+				<td class="fill-me" data-variable-slug="num_health_facilities_routine_immunization"></td>
+				<td class="fill-me" data-variable-slug="num_all_primary_health_facilities"></td>
+				<td class="fill-me" data-variable-slug="gap_health_facilities_routine_immunization"></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td></td>
+				<td></td>
+				<td>Current</td>
+				<td>Target</td>
+				<td>Gap</td>
+			</tr>
+			<tr>
+				<td rowspan="5">
+					Staffing
+				</td>
+				<td>
+					Physicians
+				</td>
+				<td class="fill-me" data-variable-slug="num_hospitals_with_at_least_one_fulltime_doctor"></td>
+				<td class="fill-me" data-variable-slug="num_hospitals"></td>
+				<td class="fill-me" data-variable-slug="gap_hospitals_with_at_least_one_fulltime_doctor"></td>
+			</tr>
+			<tr>
+				<td>
+					Midwives and Nurse-midwives
+				</td>
+				<td class="fill-me" data-variable-slug="num_primary_care_with_min_3_midwives_and_nursemidwives"></td>
+				<td class="fill-me" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me" data-variable-slug="gap_primary_care_with_min_3_midwives_and_nursemidwives"></td>
+			</tr>
+			<tr>
+				<td>
+					Nurses
+				</td>
+				<td class="fill-me" data-variable-slug="num_primary_care_with_min_2_nurses_fulltime"></td>
+				<td class="fill-me" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me" data-variable-slug="gap_primary_care_with_min_2_nurses"></td>
+			</tr>
+			<tr>
+				<td>
+					Senior CHEWs
+				</td>
+				<td class="fill-me" data-variable-slug="num_primary_care_with_min_4_sr_chews"></td>
+				<td class="fill-me" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me" data-variable-slug="gap_primary_health_facility_with_min_4_sr_CHEW"></td>
+			</tr>
+			<tr>
+				<td>
+					Junior CHEWs
+				</td>
+				<td class="fill-me" data-variable-slug="num_basic_facilities_with_min_1_jr_chew"></td>
+				<td class="fill-me" data-variable-slug="num_basic_health_facilities"></td>
+				<td class="fill-me" data-variable-slug="gap_basic_primary_with_min_1_jr_chew"></td>
+			</tr>
+		</tbody>
+	</table>
 </div>
 {% endblock %}
 {% block js %}
@@ -167,14 +417,43 @@ var loadMap = true;
 
 -->
 </script>
-<script src="/static/js/lga-dashboard.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/lga-dashboard.js?x23" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" charset="utf-8">
 <!--
 
-$('.content-inner-wrap').css({'padding':0})
+$('.content-inner-wrap').css({'padding':0});
 $(function(){
 	var dashboard = $.sammy(function(){
 		function createTitleForLga(state, lga) {
+			return $("<span />").text("NMIS: ")
+				.append($("<span />", {'class': 'state-name'}).text(state))
+				.append($("<span />").text(' - '))
+				.append($("<span />", {'class': 'lga-name'}).text(lga));
+		}
+		
+		this.get(pageRootUrl, function(){
+			setTitle($("<span />", {'text': 'NMIS'}));
+			launchOpenLayers({
+				defaultLayer: '',
+				layers: [
+				    ["Nigeria", "nigeria_base"],
+				    ["Nigeria health workers per thousand people", "nigeria_healthworkers_per_thousand"],
+				    ["Nigeria Health Facilities with Institutional Deliveries", "pct_healthfacilities_with_institutional_delivery"],
+				    ["Nigeria No Stockouts of Bednets or Malaria Medicine", "nigeria_pct_no_bednet_malmeds_oneweek"],
+				    ["Nigeria Classrooms That Need Repair", "nigeria_pct_classroom_need_repair"],
+				    ["Nigeria classrooms with proportion student to teacher ratio > 40", "nigeria_prop_ratio_greater_than_40"],
+				    ["Nigeria Immunization Rate", "nigearia_immunization_rate"],
+				    ["Nigeria Under 5 Mortality Rate", "nigeria_under5_mortality_rate"],
+				    ["Nigeria Child Wasting", "nigeria_wasting"],
+				    ["Nigeria Child Health", "nigeria_child_health"],
+				    ["Nigeria Child Nutrition", "nigeria_child_nutrition"],
+				    ["Nigeria Maternal Health", "nigeria_maternal_health"],
+				    ["Nigeria Primary Education Enrollment", "nigeria_primary_education_enrollment"]
+		        ]
+			});
+		});
+		
+		function addToggleLinks(){
 			var profileDataLink = $('<a />', {'href':'#'})
 					.addClass('toggle-button')
 					.text('[LGA]')
@@ -190,26 +469,22 @@ $(function(){
 						$('#lga-facilities-table').toggleClass('hidden');
 						facilityTableLink.toggleClass('hidden');
 						return false;
-					})
-			return $("<span />").text("NMIS: ")
-				.append($("<span />", {'class': 'state-name'}).text(state))
-				.append($("<span />").text(' - '))
-				.append($("<span />", {'class': 'lga-name'}).text(lga))
-                .append(profileDataLink)
-				.append(facilityTableLink);
+					});
+			var gapAnalysisLink = $('<a />', {href: '#'})
+					.addClass('toggle-button')
+					.text('[GAP ANALYSIS]')
+					.click(function(e){
+						$('.gap-analysis-table-wrap')
+							.addClass('toggleable')
+							.toggleClass('hidden');
+						gapAnalysisLink.toggleClass('hidden');
+						return false;
+					});
+			$('#header .title')
+					.append(profileDataLink)
+					.append(gapAnalysisLink)
+					.append(facilityTableLink)
 		}
-		
-		this.get(pageRootUrl, function(){
-			//a basic lga selector in the main div (temporary)
-			$('.content-inner-wrap').html((function(){
-				var hf = $("#header form").clone();
-				hf.find('.lga-nav').css({'position':'static'});
-				return $("<div />")
-					.append($("<h2 />").text("Select an LGA"))
-					.append(hf)
-					.css({'padding':'20px 30px'});
-			})());
-		});
 		this.get(pageRootUrl + ":lga/(.+)", function(){
 			var lgaId = this.params.lga;
 			this.params.splat.length !== 1 && warn("Sammy needs some help selecting a sector.");
@@ -222,6 +497,7 @@ $(function(){
 								this.trigger('select-sector', {
 									fullSectorId: fullSectorId
 								});
+								addToggleLinks();
 							});
 		})
 		this.get(pageRootUrl + ":lga", function(){
@@ -231,6 +507,7 @@ $(function(){
 								this.buildTable = true;
 								var t = createTitleForLga(this.stateName, this.lgaName);
 								setTitle(t);
+								addToggleLinks();
 							});
 		});
 	});

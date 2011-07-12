@@ -14,6 +14,7 @@ var launchOpenLayers = (function(_opts){
         layers: [
             ["Nigeria", "nigeria_base"]
         ],
+        defaultLayer: 'google',
         zoom: 6,
         maxExtent: [-20037500, -20037500, 20037500, 20037500],
         restrictedExtent: [-4783.9396188051, 463514.13943762, 1707405.4936624, 1625356.9691642]
@@ -36,10 +37,23 @@ var launchOpenLayers = (function(_opts){
                 maxExtent: new OpenLayers.Bounds(ob[0], ob[1], ob[2], ob[3])
               };
             var mapId = mapElem.get(0).id;
+            var mapserver = opts.tileUrl;
+            var mapLayers = $.map(opts.layers, function(ldata, i){
+                return new OpenLayers.Layer.TMS(ldata[0], [mapserver], 
+                    {
+                        layername: ldata[1],
+                        'type': 'png'
+                    });
+                });
+            
             if(!mapId) {mapId = mapElem.get(0).id= "-openlayers-map-elem"}
             context.map = new OpenLayers.Map(mapId, options);
             var googleSat = new OpenLayers.Layer.Google( "Google", {type: 'satellite'});
-            context.map.addLayers([googleSat]);
+            mapLayers.push(googleSat);
+            context.map.addLayers(mapLayers);
+            if(opts.defaultLayer==='google') {
+                context.map.setBaseLayer(googleSat);
+            }
             context.map.addControl(new OpenLayers.Control.LayerSwitcher());
             context.map.setCenter(new OpenLayers.LonLat(opts.centroid.lng, opts.centroid.lat), opts.zoom);
             $.each(onScriptLoadFns, function(i, fn){fn.call(context);})

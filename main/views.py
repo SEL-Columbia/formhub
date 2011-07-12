@@ -5,8 +5,9 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 
 def index(request):
-    context = RequestContext(request)
-    return render_to_response("main_index.html", context_instance=context)
+    return HttpResponseRedirect("/~")
+#    context = RequestContext(request)
+#    return render_to_response("main_index.html", context_instance=context)
 
 def baseline_redirect(request):
     return HttpResponseRedirect("/baseline/")
