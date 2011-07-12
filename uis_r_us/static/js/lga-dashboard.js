@@ -536,7 +536,7 @@ function buildFacilityTable(data, sectors){
 	$.each(facilitySectors, function(i, sector){
 		var fdata = facilityData.bySector[sector.slug] || facilityData.bySector[sector.name];
 		var sectorCount;
-		if(fdata instanceof Array && fdata.length > 0) {
+		if(fdata instanceof Array) {
 		    sectorCount = $("<span />")
    		            .addClass('sector-count')
    		            .addClass(sector.slug)
@@ -857,6 +857,11 @@ var processFacilityDataRequests = (function(dataReq, passedData){
 			var list = {};
 			var groupedList = {};
 			var sectorNames = [];
+			$.each(sectors, function(i, s){
+                if(!groupedList[s.slug]) {
+                    groupedList[s.slug] = [];
+                }
+            });
 			$.each(rawData, function(i, pt){
 				if(pt.uid===undefined) { pt.uid = 'uid'+i; }
 				pt.latlng = makeLatLng(pt.gps);
