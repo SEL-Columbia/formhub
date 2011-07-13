@@ -177,6 +177,14 @@ class Command(BaseCommand):
             model.objects.get_or_create(**d)
 
     def load_variables(self):
+        """
+        Load variables runs through variables.csv and populates these models
+          * Variable
+          * CalculatedVariable
+          * LGAIndicator
+          * GapVariable
+        """
+        
         def add_critical_variables():
             """
             I don't want to put these variables in fixtures because
@@ -293,6 +301,9 @@ class Command(BaseCommand):
             print "Had %d error(s) when importing LGA %s data..." % (num_errors, data)
 
     def load_table_defs(self):
+        """
+        Table defs contain details to help display the data. (table columns, etc)
+        """
         call_command('load_table_defs')
 
     def load_surveys(self):
