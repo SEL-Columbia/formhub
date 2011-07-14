@@ -269,16 +269,33 @@ class Command(BaseCommand):
             'population': {
                 'data': 'population',
                 'path': os.path.join(data_dir, 'population.csv'),
+                'data_format': 'variable_ids_in_cols',
                 },
             'area': {
                 'data': 'area',
                 'path': os.path.join(data_dir, 'area.csv'),
+                'data_format': 'variable_ids_in_cols',
+                },
+            'health': {
+                'data': 'health',
+                'path': os.path.join(data_dir, 'health.csv'),
+                'data_format': 'variable_ids_in_rows',
+                },
+            'education': {
+                'data': 'education',
+                'path': os.path.join(data_dir, 'education.csv'),
+                'data_format': 'variable_ids_in_rows',
+                },
+            'infrastructure': {
+                'data': 'infrastructure',
+                'path': os.path.join(data_dir, 'infrastructure.csv'),
+                'data_format': 'variable_ids_in_rows',
                 },
             }
         for kwargs in data_args:
             self.load_lga_data_from_csv(**data_args[kwargs])
 
-    def load_lga_data_from_csv(self, data, path):
+    def load_lga_data_from_csv(self, data, path, data_format):
         csv_reader = CsvReader(path)
         num_errors = 0
         for d in csv_reader.iter_dicts():
@@ -288,6 +305,10 @@ class Command(BaseCommand):
                 if d['_lga_id'] not in self.limit_lgas:
                     continue
             lga = LGA.objects.get(id=d['_lga_id'])
+            # if the variable_id is in the row grab it along
+            # with the value and put it in the dict
+            if data_format == 'variable_ids_in_rows':
+                d = {d['slug']: d['value']}
             if self._debug:
                 lga.add_data_from_dict(d)
             else:

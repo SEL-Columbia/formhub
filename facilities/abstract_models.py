@@ -45,7 +45,7 @@ class Variable(models.Model):
     name = models.CharField(max_length=255)
     slug = models.CharField(max_length=128, primary_key=True)
     data_type = models.CharField(max_length=20)
-    description = models.CharField(max_length=255)
+    description = models.TextField()
 
     FIELDS = ['name', 'slug', 'data_type', 'description']
 
