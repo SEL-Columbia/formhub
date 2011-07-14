@@ -399,7 +399,7 @@ function getGaTable(){
 function buildGapAnalysisTable(lgaData){
     var data = lgaData.profileData;
     var gaTableWrap = getGaTable();
-    var table = $('#gap-analysis-table-template').find('table').clone();
+    var table = $('#gap-analysis-table-template').children().eq(0).clone();
     table.find('.fill-me').each(function(){
         var slug = $(this).data('variableSlug');
         $(this).text(roundDownValueIfNumber(data[slug]))
