@@ -373,7 +373,11 @@ $('body').bind('select-facility', function(evt, edata){
 
 $('body').bind('unselect-facility', function(){
     $.each(facilityData.list, function(i, fdp){
-	    olStyling.markIcon(fdp, 'showing');
+        if(selectedSector=="all" || fdp.sectorSlug === selectedSector) {
+            olStyling.markIcon(fdp, 'showing');
+        } else {
+            olStyling.markIcon(fdp, 'hidden');
+        }
 	});
     $('tr.selected-facility').removeClass('selected-facility');
 });
@@ -564,6 +568,7 @@ function buildFacilityTable(data, sectors){
 	    if(!!sectorId) {
     	    nextLocation += '/' + sectorId;
 	    } else {
+	        selectedSector = "all";
 	        // we don't want ui tabs to select a tab.
 	        evt.preventDefault();
 	        //right now, the all button won't do anything
