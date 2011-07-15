@@ -499,6 +499,7 @@ $('body').bind('select-column', function(evt, edata){
 
 $('body').bind('unselect-column', function(evt, edata){
 	if(edata===undefined) { edata = {}; }
+    $('.selected-column').removeClass('selected-column');
 	getColDataDiv().empty().css({'height':0});
 });
 
