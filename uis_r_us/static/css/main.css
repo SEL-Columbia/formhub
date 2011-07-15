@@ -89,6 +89,9 @@ table.facility-list td {
 body .ui-tabs .ui-tabs-nav li a {
     padding-left: 40px;
 }
+body .ui-tabs .ui-tabs-nav li a.normal {
+    padding-left: 16px;
+}
 .ui-tabs-nav li div.flag {
 	margin: 0 12px 0 0;
 	opacity: 0.5;

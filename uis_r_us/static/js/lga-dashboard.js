@@ -232,31 +232,31 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 $('body').bind('select-sector', function(evt, edata){
 	var ftabs = $(facilityTabsSelector);
 	
-	(function(ftabs){
-		ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
-		ftabs.removeClass(specialClasses.tableHideTd);
-	})(ftabs);
+	ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
+	ftabs.removeClass(specialClasses.tableHideTd);
 	
 	if(edata===undefined) {edata = {};}
     var sector, subSector, fullSectorId;
     
-    (function(lsid){
-        var lids = lsid.split(subSectorDelimiter);
-        sector = lids[0];
-        if(lids.length > 1) {
-            subSector = lids[1];
-        } else {
-            subSector = undefined;
-        }
-        
-        if(subSector===undefined) {
-            subSector = defaultSubSector;
-        }
-        //would be good to confirm that sector &/or
-        // subsector exist
-        
-        fullSectorId = [sector, subSector].join(subSectorDelimiter);
-    })(edata.fullSectorId);
+    if(edata.fullSectorId !== undefined) {
+        (function(lsid){
+            var lids = lsid.split(subSectorDelimiter);
+            sector = lids[0];
+            if(lids.length > 1) {
+                subSector = lids[1];
+            } else {
+                subSector = undefined;
+            }
+
+            if(subSector===undefined) {
+                subSector = defaultSubSector;
+            }
+            //would be good to confirm that sector &/or
+            // subsector exist
+
+            fullSectorId = [sector, subSector].join(subSectorDelimiter);
+        })(edata.fullSectorId);
+    }
 	
 	if(sector !== undefined) {
 		//fullSectorId is needed to distinguish between 
@@ -553,12 +553,27 @@ function buildFacilityTable(data, sectors){
 		        .appendTo(ftabUl);
 		ftabs.append(createTableForSectorWithData(sector, facilityData));
 	});
+	
+	$('<li />')
+        .append($("<a />", {'href':'#all'}).text('All').addClass('normal'))
+        .appendTo(ftabUl);
 
 	ftabs.tabs({select: function(evt, ui){
 	    var sectorId = $(ui.panel).data('sector-slug');
-	    
+	    var nextLocation = pageRootUrl + lgaId;
+	    if(!!sectorId) {
+    	    nextLocation += '/' + sectorId;
+	    } else {
+	        // we don't want ui tabs to select a tab.
+	        evt.preventDefault();
+	        //right now, the all button won't do anything
+	        $.each(facilityData.list, function(k, fdp){
+	            olStyling.markIcon(fdp, 'showing');
+	        });
+	        return;
+	    }
 	    //* sammy setLocation will handle setting up the page:
-	    _dashboard.setLocation(pageRootUrl + lgaId + '/' + sectorId);
+	    _dashboard.setLocation(nextLocation);
 	    //* otherwise, we could trigger the event ourselves:
         //>> $(evt.target).trigger('select-sector', {fullSectorId: sectorId})
         //* doing both causes problems right now.
