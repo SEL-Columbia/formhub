@@ -654,10 +654,7 @@ function createTableForSectorWithData(sector, data){
 			th.addClass('subgroup-'+sg);
 		});
 		
-		$.extend(col, {
-		    th: th,
-		    thIndex: i
-		});
+		$.extend(col, { th: th, thIndex: i+1 });
 	});
 	
 	var tbod = $("<tbody />");
@@ -695,9 +692,7 @@ function createTableForSectorWithData(sector, data){
 
 var decimalCount = 2;
 function roundDownValueIfNumber(val) {
-    if(val===undefined) {
-        return '—';
-    }
+    if(val===undefined) { return '—'; }
     if($.type(val)==='object') {val = val.value;}
     if($.type(val)==='number' && (''+val).length>5) {
         return Math.floor(Math.pow(10, decimalCount)* val)/Math.pow(10, decimalCount);
@@ -821,9 +816,7 @@ var processFacilityDataRequests = (function(dataReq, passedData){
 		
 		debugMode && (function validateData(d) {
 		    d === undefined && warn('Data must be defined');
-		    
 			d.length === undefined && warn("Data must be an array", this);
-			
 			$(d).each(function(i, row){
 				this.sector === undefined && warn("Each row must have a sector", this);
 				if(this.latlng === undefined) {
@@ -833,7 +826,6 @@ var processFacilityDataRequests = (function(dataReq, passedData){
 					(this.latlng instanceof Array) || warn("LatLng must be an array", this);
 					(this.latlng.length === 2) || warn("Latlng must have length of 2", this);
 				}
-				
 				(!!~facilitySectorSlugs.indexOf(this.sector.toLowerCase())) || warn("Sector must be in the list of sector slugs:", {
 					sector: this.sector,
 					sectorSlugs: facilitySectorSlugs,
@@ -943,8 +935,7 @@ function createSectorNav() {
 	$('.content-inner-wrap').prepend()
 }
 return {
-    loadData: loadLgaData,
-    buildTable: buildFacilityTable
+    loadData: loadLgaData
 }
 //ending "lga" wrap.
 })();
