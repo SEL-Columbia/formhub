@@ -87,6 +87,9 @@
 		background-color: #fff;
 		margin: 4px 5px 5px 0;
 	}
+	.sub-sector-list {
+		padding: 3px 0 16px;
+	}
 	.sub-sector-list a {
 		padding: 3px 8px;
 /*		text-decoration: none;
@@ -142,6 +145,18 @@
 	}
 	#lga-facilities-table.hidden {
 		display: none;
+	}
+	#lga-facilities-table th {
+		background-color: #d4ebfa;
+	}
+	#lga-facilities-table th.clickable {
+		background-color: #bde0f8;
+		border: 3px solid;
+		border-color: #d9edfb #9bb8cb #748a99 #cee8fa;
+	}
+	#lga-facilities-table th.selected-column {
+		background-color: #afd1e9;
+		border-color: #a5c4d9 #c4e2f7 #c4e2f7 #90aabd;
 	}
 </style>
 <link rel="stylesheet" href="/static/openlayers/default/style.css" type="text/css" media="all" charset="utf-8">
@@ -568,7 +583,7 @@ var loadMap = true;
 
 -->
 </script>
-<script src="/static/js/lga-dashboard.js?x23" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/lga-dashboard.js?x23sdf" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" charset="utf-8">
 <!--
 
@@ -634,7 +649,7 @@ $(function(){
 			$('#header .title')
 					.append(profileDataLink)
 					.append(gapAnalysisLink)
-					.append(facilityTableLink)
+					.append(facilityTableLink);
 		}
 		this.get(pageRootUrl + ":lga/(.+)", function(){
 			var lgaId = this.params.lga;

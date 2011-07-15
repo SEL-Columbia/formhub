@@ -437,6 +437,7 @@ $('body').bind('select-column', function(evt, edata){
 			(function highlightTheColumn(column){
 				var columnIndex = column.thIndex;
 				var table = column.th.parents('table');
+				column.th.addClass('selected-column');
 				table.find('tr').each(function(){
 					$(this).find('td').eq(columnIndex).addClass('selected-column');
 				})
