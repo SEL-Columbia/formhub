@@ -899,41 +899,6 @@ var processFacilityDataRequests = (function(dataReq, passedData){
 		};
 	}
 });
-
-function createSectorNav() {
-	if($('.content-inner-wrap .sn-wrap').length==0) {
-		var snWrap = $("<div />", {'class':'sn-wrap'}).appendTo($('.content-inner-wrap'));
-	} else {
-		var snWrap = $('.content-inner-wrap').find('.sn-wrap');
-	}
-	var sn = $('<div />', {'class':'sn'});
-	var ul = $("<ul />");
-	$(facilitySectors).each(function(i, sector){
-		var name = sector.name;
-		var slug = sector.slug;
-		var sectorUrl = pageRootUrl + lgaId + '/' + sector.slug;
-		var l = $("<a />", {'href': sectorUrl}).text(sector.name);
-		l.data('sectorSlug', sector.slug);
-		l.data('subSectorSlug', defaultSubSector);
-		
-		var li = $("<li />").appendTo(ul)
-				.html(l);
-		var sul = $("<ul />").appendTo(ul);
-		$(sector.subgroups).each(function(i, subgroup){
-			if(subgroup.slug!==defaultSubSector) {
-				var li = $("<li />").appendTo(sul);
-				var sectorUrl = pageRootUrl + lgaId + '/' + [sector.slug, subgroup.slug].join(subSectorDelimiter);
-        		
-				var sgLink = $("<a />", {'href':sectorUrl}).text(subgroup.name).appendTo(li);
-				sgLink.data('sectorSlug', sector.slug);
-				sgLink.data('subSectorSlug', subgroup.slug)
-			}
-		});
-	});
-	sn.append(ul);
-	snWrap.html(sn);
-	$('.content-inner-wrap').prepend()
-}
 return {
     loadData: loadLgaData
 }
