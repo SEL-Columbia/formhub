@@ -638,11 +638,11 @@ function createTableForSectorWithData(sector, data){
     var thRow = $('<tr />')
                 .append($('<th />', {
                     'text': '#',
-                    'class': 'row-num'
+                    'class': 'row-num no-select'
                 }));
     function displayOrderSort(a,b) { return (a.display_order > b.display_order) ? 1 : -1 }
 	$.each(sector.columns.sort(displayOrderSort), function(i, col){
-		var th = $('<th />')
+		var th = $('<th />', {'class': 'no-select'})
 		        .text(col.name)
 		        .addClass('col-'+col.slug)
 		        .appendTo(thRow)
@@ -681,7 +681,7 @@ function createTableForSectorWithData(sector, data){
     	                .append(subSectorLink(sg.name, sg.slug));
     	});
     	return subSectors;
-	})($('<div />').addClass('sub-sector-list'), $("<span />").text(" | "))
+	})($('<div />', {'class': 'sub-sector-list no-select'}), $("<span />").text(" | "))
 	    .prepend(subSectorLink("General", defaultSubSector));
 
     var table = $('<table />')
