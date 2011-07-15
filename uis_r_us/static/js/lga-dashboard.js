@@ -663,10 +663,14 @@ function createTableForSectorWithData(sector, data){
 	});
 	
 	function subSectorLink(ssName, ssslug) {
-	    var url = pageRootUrl + lgaId + '/' + sector.slug +
-                (ssslug===defaultSubSector ? '' : subSectorDelimiter + ssslug);
-	    return $('<a />', {'href': url, 'class': 'subsector-link-'+ssslug})
-	                .text(ssName);
+	    var fullSectorSlug = sector.slug + (ssslug===defaultSubSector ? '' : subSectorDelimiter + ssslug)
+//	    var url = pageRootUrl + lgaId + '/' + fullSectorSlug;
+	    return $('<a />', {'href': '#', 'class': 'subsector-link-'+ssslug})
+	                .text(ssName)
+	                .click(function(evt){
+	                    $('body').trigger('select-sector', {fullSectorId: fullSectorSlug})
+	                    evt.preventDefault();
+	                });
 	}
 	var subSectors = (function(subSectors, splitter){
 	    $.each(sector.subgroups, function(i, sg){
