@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Max
 from collections import defaultdict
 import sys
+from treebeard.mp_tree import MP_Node
 
 from nga_districts.models import LGA, LGARecord
 from abstract_models import Variable, CalculatedVariable, DataRecord, DictModel, KeyRename
@@ -48,6 +49,16 @@ class FacilityRecord(DataRecord):
         return result
 
 
+class FacilityType(MP_Node):
+    slug = models.CharField(max_length=128)
+    name = models.CharField(max_length=128)
+
+    node_order_by = ['slug']
+
+    def __unicode__(self):
+        return u'%s: %s' % (self.__class__.__name__, self.name)
+
+
 class Sector(models.Model):
     slug = models.CharField(max_length=128, primary_key=True)
     name = models.CharField(max_length=128)
@@ -61,7 +72,7 @@ class LGAIndicator(Variable):
     """
     origin = models.ForeignKey(Variable, related_name='lga_indicators')
     method = models.CharField(max_length=16)  # count_true, avg, percentage_true, proportion_true, sum
-    sector = models.ForeignKey(Sector)
+    sector = models.ForeignKey(Sector, null=True)
 
     def count_true(self):
         assert self.origin.data_type == 'boolean', 'Assertion failed: %s (%s) is not a boolean' % (self.origin.slug, self.origin.data_type)
@@ -143,10 +154,17 @@ class Facility(DictModel):
     """
     facility_id = models.CharField(max_length=100)
     lga = models.ForeignKey(LGA, related_name="facilities", null=True)
+    facility_type = models.ForeignKey(FacilityType, null=True)
     sector = models.ForeignKey(Sector, null=True)
 
     _data_record_class = FacilityRecord
     _data_record_fk = 'facility'
+
+    def get_latest_data(self):
+        """
+        This is a temporary way to get the facility_type to the page (as if it were a data record).
+        """
+        return dict(_facility_type=self.facility_type.slug, **super(Facility, self).get_latest_data())
 
     @classmethod
     def get_latest_data_by_lga(cls, lga):
