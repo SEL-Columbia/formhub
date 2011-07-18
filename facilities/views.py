@@ -34,20 +34,9 @@ def facilities_for_site(request, site_id):
             #there was 1 non-null value
             return nns[0]
     lga = LGA.objects.get(unique_slug=site_id)
-    facility_ids = [z['id'] for z in Facility.objects.filter(lga=lga).values('id')]
-    d = {}
-    drq = FacilityRecord.objects.order_by('-date')
-    for facility in facility_ids:
-        drs = drq.filter(facility=facility)
-        dvals = {}
-        #TODO: find something to fix the date problem.
-        # (i think a different date would just override the entry in the dict)
-        for t in drs.values('variable_id', 'string_value', 'float_value', 'boolean_value', 'date'):
-            dvals[t['variable_id']] = \
-                    non_null([t['string_value'], t['float_value'], t['boolean_value']])
-        d[facility] = dvals
+    facilities = dict([(f.id, f.get_latest_data()) for f in Facility.objects.filter(lga=lga)])
     oput = {
-        'facilities': d,
+        'facilities': facilities,
         'lgaName': lga.name,
         'stateName': lga.state.name,
         'profileData': lga.get_latest_data(),
