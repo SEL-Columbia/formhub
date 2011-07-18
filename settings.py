@@ -121,16 +121,20 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    'registration',
 
     'uis_r_us',
     'facility_views',
     'xform_manager',
-    'phone_manager',
     'nga_districts',
     'facilities',
     'resources',
+    'user_management',
 )
 COMPRESS = True
+
+# Settings for Django Registration
+ACCOUNT_ACTIVATION_DAYS = 1
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

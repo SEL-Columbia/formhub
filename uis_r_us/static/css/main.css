@@ -89,6 +89,9 @@ table.facility-list td {
 body .ui-tabs .ui-tabs-nav li a {
     padding-left: 40px;
 }
+body .ui-tabs .ui-tabs-nav li a.normal {
+    padding-left: 16px;
+}
 .ui-tabs-nav li div.flag {
 	margin: 0 12px 0 0;
 	opacity: 0.5;
@@ -126,11 +129,7 @@ td.selected-column, th.selected-column {
 th.clickable {
     cursor: pointer;
 }
-th.clickable:hover {
-    background-color: #fafafa;
-}
 th.clickable:after {
-    content: ' [i]';
     color: rgba(1,1,1,0.3);
     font-size: 10px;
 }

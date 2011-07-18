@@ -232,31 +232,31 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 $('body').bind('select-sector', function(evt, edata){
 	var ftabs = $(facilityTabsSelector);
 	
-	(function(ftabs){
-		ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
-		ftabs.removeClass(specialClasses.tableHideTd);
-	})(ftabs);
+	ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
+	ftabs.removeClass(specialClasses.tableHideTd);
 	
 	if(edata===undefined) {edata = {};}
     var sector, subSector, fullSectorId;
     
-    (function(lsid){
-        var lids = lsid.split(subSectorDelimiter);
-        sector = lids[0];
-        if(lids.length > 1) {
-            subSector = lids[1];
-        } else {
-            subSector = undefined;
-        }
-        
-        if(subSector===undefined) {
-            subSector = defaultSubSector;
-        }
-        //would be good to confirm that sector &/or
-        // subsector exist
-        
-        fullSectorId = [sector, subSector].join(subSectorDelimiter);
-    })(edata.fullSectorId);
+    if(edata.fullSectorId !== undefined) {
+        (function(lsid){
+            var lids = lsid.split(subSectorDelimiter);
+            sector = lids[0];
+            if(lids.length > 1) {
+                subSector = lids[1];
+            } else {
+                subSector = undefined;
+            }
+
+            if(subSector===undefined) {
+                subSector = defaultSubSector;
+            }
+            //would be good to confirm that sector &/or
+            // subsector exist
+
+            fullSectorId = [sector, subSector].join(subSectorDelimiter);
+        })(edata.fullSectorId);
+    }
 	
 	if(sector !== undefined) {
 		//fullSectorId is needed to distinguish between 
@@ -373,7 +373,11 @@ $('body').bind('select-facility', function(evt, edata){
 
 $('body').bind('unselect-facility', function(){
     $.each(facilityData.list, function(i, fdp){
-	    olStyling.markIcon(fdp, 'showing');
+        if(selectedSector=="all" || fdp.sectorSlug === selectedSector) {
+            olStyling.markIcon(fdp, 'showing');
+        } else {
+            olStyling.markIcon(fdp, 'hidden');
+        }
 	});
     $('tr.selected-facility').removeClass('selected-facility');
 });
@@ -437,6 +441,7 @@ $('body').bind('select-column', function(evt, edata){
 			(function highlightTheColumn(column){
 				var columnIndex = column.thIndex;
 				var table = column.th.parents('table');
+				column.th.addClass('selected-column');
 				table.find('tr').each(function(){
 					$(this).find('td').eq(columnIndex).addClass('selected-column');
 				})
@@ -498,6 +503,7 @@ $('body').bind('select-column', function(evt, edata){
 
 $('body').bind('unselect-column', function(evt, edata){
 	if(edata===undefined) { edata = {}; }
+    $('.selected-column').removeClass('selected-column');
 	getColDataDiv().empty().css({'height':0});
 });
 
@@ -551,12 +557,28 @@ function buildFacilityTable(data, sectors){
 		        .appendTo(ftabUl);
 		ftabs.append(createTableForSectorWithData(sector, facilityData));
 	});
+	
+	$('<li />')
+        .append($("<a />", {'href':'#all'}).text('All').addClass('normal'))
+        .appendTo(ftabUl);
 
 	ftabs.tabs({select: function(evt, ui){
 	    var sectorId = $(ui.panel).data('sector-slug');
-	    
+	    var nextLocation = pageRootUrl + lgaId;
+	    if(!!sectorId) {
+    	    nextLocation += '/' + sectorId;
+	    } else {
+	        selectedSector = "all";
+	        // we don't want ui tabs to select a tab.
+	        evt.preventDefault();
+	        //right now, the all button won't do anything
+	        $.each(facilityData.list, function(k, fdp){
+	            olStyling.markIcon(fdp, 'showing');
+	        });
+	        return;
+	    }
 	    //* sammy setLocation will handle setting up the page:
-	    _dashboard.setLocation(pageRootUrl + lgaId + '/' + sectorId);
+	    _dashboard.setLocation(nextLocation);
 	    //* otherwise, we could trigger the event ourselves:
         //>> $(evt.target).trigger('select-sector', {fullSectorId: sectorId})
         //* doing both causes problems right now.
@@ -636,11 +658,11 @@ function createTableForSectorWithData(sector, data){
     var thRow = $('<tr />')
                 .append($('<th />', {
                     'text': '#',
-                    'class': 'row-num'
+                    'class': 'row-num no-select'
                 }));
     function displayOrderSort(a,b) { return (a.display_order > b.display_order) ? 1 : -1 }
 	$.each(sector.columns.sort(displayOrderSort), function(i, col){
-		var th = $('<th />')
+		var th = $('<th />', {'class': 'no-select'})
 		        .text(col.name)
 		        .addClass('col-'+col.slug)
 		        .appendTo(thRow)
@@ -654,10 +676,7 @@ function createTableForSectorWithData(sector, data){
 			th.addClass('subgroup-'+sg);
 		});
 		
-		$.extend(col, {
-		    th: th,
-		    thIndex: i
-		});
+		$.extend(col, { th: th, thIndex: i+1 });
 	});
 	
 	var tbod = $("<tbody />");
@@ -666,10 +685,14 @@ function createTableForSectorWithData(sector, data){
 	});
 	
 	function subSectorLink(ssName, ssslug) {
-	    var url = pageRootUrl + lgaId + '/' + sector.slug +
-                (ssslug===defaultSubSector ? '' : subSectorDelimiter + ssslug);
-	    return $('<a />', {'href': url, 'class': 'subsector-link-'+ssslug})
-	                .text(ssName);
+	    var fullSectorSlug = sector.slug + (ssslug===defaultSubSector ? '' : subSectorDelimiter + ssslug)
+//	    var url = pageRootUrl + lgaId + '/' + fullSectorSlug;
+	    return $('<a />', {'href': '#', 'class': 'subsector-link-'+ssslug})
+	                .text(ssName)
+	                .click(function(evt){
+	                    $('body').trigger('select-sector', {fullSectorId: fullSectorSlug})
+	                    evt.preventDefault();
+	                });
 	}
 	var subSectors = (function(subSectors, splitter){
 	    $.each(sector.subgroups, function(i, sg){
@@ -678,7 +701,7 @@ function createTableForSectorWithData(sector, data){
     	                .append(subSectorLink(sg.name, sg.slug));
     	});
     	return subSectors;
-	})($('<div />').addClass('sub-sector-list'), $("<span />").text(" | "))
+	})($('<div />', {'class': 'sub-sector-list no-select'}), $("<span />").text(" | "))
 	    .prepend(subSectorLink("General", defaultSubSector));
 
     var table = $('<table />')
@@ -695,9 +718,8 @@ function createTableForSectorWithData(sector, data){
 
 var decimalCount = 2;
 function roundDownValueIfNumber(val) {
-    if(val===undefined) {
-        return '—';
-    }
+    if(val===undefined) { return '—'; }
+    if($.type(val)==='object') {val = val.value;}
     if($.type(val)==='number' && (''+val).length>5) {
         return Math.floor(Math.pow(10, decimalCount)* val)/Math.pow(10, decimalCount);
     } else if($.type(val)==='string') {
@@ -820,9 +842,7 @@ var processFacilityDataRequests = (function(dataReq, passedData){
 		
 		debugMode && (function validateData(d) {
 		    d === undefined && warn('Data must be defined');
-		    
 			d.length === undefined && warn("Data must be an array", this);
-			
 			$(d).each(function(i, row){
 				this.sector === undefined && warn("Each row must have a sector", this);
 				if(this.latlng === undefined) {
@@ -832,7 +852,6 @@ var processFacilityDataRequests = (function(dataReq, passedData){
 					(this.latlng instanceof Array) || warn("LatLng must be an array", this);
 					(this.latlng.length === 2) || warn("Latlng must have length of 2", this);
 				}
-				
 				(!!~facilitySectorSlugs.indexOf(this.sector.toLowerCase())) || warn("Sector must be in the list of sector slugs:", {
 					sector: this.sector,
 					sectorSlugs: facilitySectorSlugs,
@@ -906,44 +925,8 @@ var processFacilityDataRequests = (function(dataReq, passedData){
 		};
 	}
 });
-
-function createSectorNav() {
-	if($('.content-inner-wrap .sn-wrap').length==0) {
-		var snWrap = $("<div />", {'class':'sn-wrap'}).appendTo($('.content-inner-wrap'));
-	} else {
-		var snWrap = $('.content-inner-wrap').find('.sn-wrap');
-	}
-	var sn = $('<div />', {'class':'sn'});
-	var ul = $("<ul />");
-	$(facilitySectors).each(function(i, sector){
-		var name = sector.name;
-		var slug = sector.slug;
-		var sectorUrl = pageRootUrl + lgaId + '/' + sector.slug;
-		var l = $("<a />", {'href': sectorUrl}).text(sector.name);
-		l.data('sectorSlug', sector.slug);
-		l.data('subSectorSlug', defaultSubSector);
-		
-		var li = $("<li />").appendTo(ul)
-				.html(l);
-		var sul = $("<ul />").appendTo(ul);
-		$(sector.subgroups).each(function(i, subgroup){
-			if(subgroup.slug!==defaultSubSector) {
-				var li = $("<li />").appendTo(sul);
-				var sectorUrl = pageRootUrl + lgaId + '/' + [sector.slug, subgroup.slug].join(subSectorDelimiter);
-        		
-				var sgLink = $("<a />", {'href':sectorUrl}).text(subgroup.name).appendTo(li);
-				sgLink.data('sectorSlug', sector.slug);
-				sgLink.data('subSectorSlug', subgroup.slug)
-			}
-		});
-	});
-	sn.append(ul);
-	snWrap.html(sn);
-	$('.content-inner-wrap').prepend()
-}
 return {
-    loadData: loadLgaData,
-    buildTable: buildFacilityTable
+    loadData: loadLgaData
 }
 //ending "lga" wrap.
 })();

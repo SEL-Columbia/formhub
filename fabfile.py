@@ -93,6 +93,8 @@ def deploy(deployment_name, reload="none"):
             _run_in_virtualenv("pip install -r requirements.pip")
     install_pip_requirements()
 
+    # NOTE: I recently installed the registration app, to get this
+    # working you need to use a syncdb, migrate isn't enough.
     def migrate_database():
         if env.migrate:
             with cd(env.code_path):
