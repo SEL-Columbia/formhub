@@ -129,7 +129,6 @@ INSTALLED_APPS = (
     'nga_districts',
     'facilities',
     'resources',
-    'user_management',
 )
 COMPRESS = True
 

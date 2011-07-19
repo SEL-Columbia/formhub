@@ -38,7 +38,6 @@ def add_user_to_groups_based_on_email_address(sender, **kwargs):
     if user.email.endswith('@mdgs.gov.ng') and \
             technical_assistants not in user.groups.all():
         user.groups.add(technical_assistants)
-        print user.email, user.groups.all()
 
 
 post_save.connect(add_user_to_groups_based_on_email_address, sender=User)
