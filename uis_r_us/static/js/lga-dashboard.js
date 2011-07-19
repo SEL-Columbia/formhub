@@ -226,14 +226,17 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 	});
 }
 
-// Moving "bind"ers up to the top.
+
+// These 6 "bind" methods define global event listeners which trigger behavior
+// in individual dashboard featured. (the table, the map, etc.)
+//   The global events are "select-" and "unselect-" each of the following:
+//     * sector
+//     * column
+//     * facility
+// All functions accessed in this file are defined elsewhere in the file.
+//   (Except jquery stuff and LaunchOpenLayers)
 
 $('body').bind('select-sector', function(evt, edata){
-	var ftabs = $(facilityTabsSelector);
-	
-	ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
-	ftabs.removeClass(specialClasses.tableHideTd);
-	
 	if(edata===undefined) {edata = {};}
     var sector, subSector, fullSectorId;
     
@@ -257,6 +260,9 @@ $('body').bind('select-sector', function(evt, edata){
         })(edata.fullSectorId);
     }
 	
+	var ftabs = $(facilityTabsSelector);
+	ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
+	ftabs.removeClass(specialClasses.tableHideTd);
 	if(sector !== undefined) {
 		//fullSectorId is needed to distinguish between 
 		// health:general  and  education:general (for example)
@@ -265,7 +271,6 @@ $('body').bind('select-sector', function(evt, edata){
 		    $('body').trigger('unselect-facility');
 		    $('body').trigger('unselect-column');
 		    selectedSector = sector;
-		    var ftabs = $(facilityTabsSelector);
 		    ftabs.tabs('select', facilitySectorSlugs.indexOf(selectedSector));
 		    (typeof(filterPointsBySector)==='function') && filterPointsBySector(selectedSector);
 		}
