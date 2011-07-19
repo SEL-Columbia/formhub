@@ -160,6 +160,7 @@ class LGAIndicatorTest(TestCase):
 
 from django.test.client import Client
 from django.contrib.auth.models import User
+import json
 
 class PassDataToPage(TestCase):
     def setUp(self):
@@ -200,3 +201,11 @@ class PassDataToPage(TestCase):
         first_unique_slug = LGA.objects.all()[0].unique_slug
         response = self.client.get('/facilities/site/%s' % first_unique_slug)
         self.assertEqual(response.status_code, 200)
+
+    def test_lga_facility_data(self):
+        first_unique_slug = LGA.objects.all()[0].unique_slug
+        response = self.client.get('/facilities/site/%s' % first_unique_slug)
+        self.assertEqual(response.status_code, 200)
+        resp = json.loads(response.content)
+        self.assertTrue(isinstance(resp.get('facilities'), dict))
+        self.assertTrue(isinstance(resp.get('profileData'), dict))
