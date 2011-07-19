@@ -1,34 +1,15 @@
 """
-The code below relies on the fixtures in initial_data.json to set up a
-signal handler to give permission to all TAs to read data on the site.
+Set up a signal handler to give permission to users with mdgs.gov.ng
+email addresses to read the site. This requires the fixtures in
+initial_data.json to define the required group and permission.
 """
 
-# Create the permissions we will need.
-from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
-
-# The following is a slight compromise. The content_type we use for
-# defining these permissions doesn't really matter.
-ct = ContentType.objects.get(model='ContentType')
-
-read = Permission.objects.get(
-    name='read', content_type=ct, codename='read'
-    )
-
-# Create a group for the technical assistants, and give the group read
-# access.
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import User, Group
+from django.db.models.signals import post_save
 
 technical_assistants = Group.objects.get(
     name="Technical Assistants"
     )
-if read not in technical_assistants.permissions.all():
-    technical_assistants.permissions.add(read)
-
-# Set up a signal handler to add users to the technical assistants
-# group.
-from django.db.models.signals import post_save
-from django.contrib.auth.models import User
 
 
 def add_user_to_groups_based_on_email_address(sender, **kwargs):
@@ -37,6 +18,5 @@ def add_user_to_groups_based_on_email_address(sender, **kwargs):
     if user.email.endswith('@mdgs.gov.ng') and \
             technical_assistants not in user.groups.all():
         user.groups.add(technical_assistants)
-
 
 post_save.connect(add_user_to_groups_based_on_email_address, sender=User)
