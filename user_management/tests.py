@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from auth import technical_assistants, \
+from models import technical_assistants, \
     add_user_to_groups_based_on_email_address
 from django.db.models.signals import post_save
 
