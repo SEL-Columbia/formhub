@@ -184,7 +184,7 @@ class PassDataToPage(TestCase):
         self.assertEquals(len(self.facilities), 4)
         for facility, value in zip(self.facilities, [True, True, True, False]):
             facility.set(self.has_water, value)
-        self.admin = admin, created = User.objects.get_or_create(
+        admin, created = User.objects.get_or_create(
                 username="admin",
                 email="admin@admin.com",
                 is_staff=True,
