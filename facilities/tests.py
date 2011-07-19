@@ -157,3 +157,34 @@ class LGAIndicatorTest(TestCase):
             self.lgas[1].get_latest_value_for_variable(self.water_count),
             1
             )
+
+from django.test.client import Client
+
+class PassDataToPage(TestCase):
+    def setUp(self):
+        # I took this set up code from LGAIndicatorTest
+        self.has_water = Variable.objects.create(
+            slug='has_water', data_type='boolean'
+            )
+        self.zone = Zone.objects.create(name='Zone', slug='zone')
+        self.state = State.objects.create(name='Zone', slug='zone', zone=self.zone)
+        lga_names = ['LGA_1', 'LGA_2']
+        self.lgas = [LGA.objects.create(name=n, slug=n, state=self.state, unique_slug='state_%s' % n) for n in lga_names]
+        self.sector = Sector.objects.create(name='Test', slug='test')
+        self.facilities = []
+        for lga in self.lgas:
+            for facility_id in ['a', 'b']:
+                self.facilities.append(
+                    Facility.objects.create(facility_id=facility_id, lga=lga, sector=self.sector)
+                    )
+        self.assertEquals(len(self.facilities), 4)
+        for facility, value in zip(self.facilities, [True, True, True, False]):
+            facility.set(self.has_water, value)
+
+    def test_lga_facility_json_url_works(self):
+        # Right now, this test checks to see if the lga's facility json url is accessible
+        client = Client()
+        self.assertTrue(LGA.objects.count() > 0)
+        first_unique_slug = LGA.objects.all()[0].unique_slug
+        response = client.get('/facilities/site/%s' % first_unique_slug)
+        self.assertEqual(response.status_code, 200)

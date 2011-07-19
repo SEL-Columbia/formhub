@@ -34,14 +34,12 @@
 		</div>
 	</div>
 	{% if user.is_authenticated %}
+	<!--
 	<ul id="menu">
 		<div class="fwidth">
-			{% block menu %}
-			<li class="dashboard"><a href="#/">Data Export</a></li>
-			<li class="submission-counts"><a href="#/submission-counts">Submissions by LGA</a></li>
-			{% endblock %}
 		</div>
 	</ul>
+	-->
 	{% endif %}
 	<div id="content">
 		<div class="fwidth">
@@ -58,28 +56,10 @@
 		var siteTitle = "{{site_title}}";
 	</script>
 	{% endif %}
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
-    <script>window.jQuery || document.write("<script src='/static/js/jquery-1.5-min.js'>\x3C/script>")</script>
-
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	<script>window.jQuery || document.write("<script src='/static/js/libs/jquery-1.6.2-min.js'>\x3C/script>")</script>
+	
 	<script type="text/javascript" src="/static/jquery-ui/jquery-ui-1.8.7.custom.min.js"></script>
-	<script type="text/javascript" src="/static/js/jquery.buildin.js"></script>
-	<!--<script type="text/javascript" src="/static/js/sammy-latest.min.js"></script>-->
-	<script type="text/javascript" src="/static/js/libs/sammy.js"></script>
-	<script type="text/javascript" src="/static/js/jquery.offline.js"></script>
-	<script type="text/javascript" src="/static/js/jquery.tmpl.min.js"></script>
-	<script src="/static/js/json2table.js" type="text/javascript" charset="utf-8"></script>
-	
-	<script type="text/javascript" charset="utf-8">
-		if($('#content .fwidth').find('.iwrap').length==0) {
-			$('#content .fwidth > .content-inner-wrap').css({
-				'background-color':'#fff',
-				'border':'1px solid #666',
-				'padding': '6px',
-				'margin': '6px'
-			})
-		}
-	</script>
-	
 	{% block scripts %}{% endblock %}
 	{% block js %}
 	<!-- js block is for scripts that should be loaded at the end of the page -->

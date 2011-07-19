@@ -7,7 +7,7 @@ admin.autodiscover()
 from xform_manager import views as xform_manager_views
 OPT_GROUP_REGEX = "((?P<group_name>[^/]+)/)?"
 
-from main.views import index
+from main.views import index, list_active_lgas
 
 from uis_r_us.views import dashboard as ui_dashboard
 from uis_r_us.views import variable_data as ui_variable_data
@@ -29,5 +29,6 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^lgas/$', list_active_lgas),
     url(r'^$', index),
 )

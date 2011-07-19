@@ -133,6 +133,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'registration',
 
+    'main',
     'uis_r_us',
     'facility_views',
     'xform_manager',
