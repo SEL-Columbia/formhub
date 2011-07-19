@@ -495,7 +495,7 @@ $('body').bind('select-column', function(evt, edata){
 					.css({'height':80});
 		}
 		var columnMode = "view_column_"+column.slug;
-		if(hasClickAction(column, 'iconify')) {
+		if(hasClickAction(column, 'iconify') && column.iconify_png_url !== undefined) {
 		    var t=0, z=0;
 		    var iconStrings = [];
 		    $.each(facilityData.list, function(i, fdp){
