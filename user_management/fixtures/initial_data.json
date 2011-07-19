@@ -5,7 +5,7 @@
         "fields": {
             "codename": "read", 
             "name": "read", 
-            "content_type": 1
+            "content_type": ["auth", "permission"]
         }
     }, 
     {
