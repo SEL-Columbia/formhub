@@ -23,6 +23,13 @@ class SignalTest(TestCase):
                 [r[1]() for r in post_save.receivers]
             )
 
+    def test_add_user_to_group(self):
+        carl = User.objects.create(
+            username='carl', email='carl@gmail.com', password='blah'
+            )
+        carl.groups.add(technical_assistants)
+        self.assertEquals(list(carl.groups.all()), [technical_assistants])
+
     def test_user_added_to_appropriate_group(self):
         allen = User.objects.create(
             username='allen', email='allen@mdgs.gov.ng', password='blah'
@@ -36,6 +43,6 @@ class SignalTest(TestCase):
         # confirmed the signal is being received in the django
         # shell. I believe there's something going on with the many to
         # many field during testing, very bizarre.
-        # self.assertTrue(technical_assistants in allen.groups.all())
+        self.assertTrue(technical_assistants in allen.groups.all())
 
         self.assertTrue(technical_assistants not in bob.groups.all())

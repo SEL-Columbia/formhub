@@ -1,5 +1,7 @@
-//right div popup (is functionally separate from the rest of the application logic)
-
+;
+// BEGIN temporary side-div jquery wrapper
+//   -- trying to keep the right-div popup logic separate form the rest
+//    of the application logic.
 (function($){
 	var overMapContent;
 	var rightDiv, rdNav;
@@ -30,8 +32,9 @@
 		   .show();
 	}
 })(jQuery);
+// END temporary side-div jquery wrapper
 
-// openlayers specific actions for icons
+// BEGIN custom openlayers icon functionality
 var olStyling = (function(){
     var iconMakers;
     var iconMode;
@@ -96,11 +99,14 @@ var olStyling = (function(){
         }
     }
 })();
+// END custom openlayers icon functionality
 
-
-//wrapping everything in the "lga" object, to stay out of the global scope.
+// BEGIN CLOSURE: LGA object
+//   --wraps everything to keep it out of the global scope.
 var lga = (function(){
 
+// BEGIN closure scope variable declaration
+//   --marking which variables are going to be reused between functions
 var selectedSubSector,
     selectedSector,
     selectedFacility,
@@ -108,6 +114,7 @@ var selectedSubSector,
     facilitySectorSlugs,
     facilityData,
     facilitySectors;
+
 
 var facilityTabsSelector = 'div#facility-tabs';
 
@@ -122,53 +129,9 @@ var urls = {
 
 var subSectorDelimiter = '-';
 var defaultSubSector = 'general';
+// END closure scope variable declaration
 
-(function($){
-    //a quick ajax cache, just trying to prevent multiple
-    // requests to the same url in one pageload... (for now)
-    var cacheData = {};
-    $.getCacheJSON = function(){
-        var url = arguments[0];
-        if(url in cacheData) {
-            return cacheData[url];
-        } else {
-            var q = $.getJSON.apply($, arguments);
-            q.done(function(){
-                cacheData[url] = q;
-            });
-            return q;
-        }
-    }
-})(jQuery);
-
-function buildLgaProfileBox(lga, dictionary) {
-    var oWrap = $('.content-inner-wrap').find('.profile-data-wrap');
-    if(oWrap.length===0) {
-        oWrap = $("<div />", {'class':'profile-data-wrap'}).appendTo($('.content-inner-wrap'));
-    } else {
-        oWrap.empty();
-    }
-    var wrap = $("<div />", {'class':'profile-data'})
-        .append($("<h3 />").text(lga.stateName))
-        .append($("<h2 />").text(lga.lgaName))
-        .append($("<hr />"));
-    
-    $("<table />").append((function(tbody, pdata){
-        $.each(dictionary, function(k, val){
-            var name = val.name;
-            var value = pdata[k];
-            var tr = $("<tr />")
-                .append($("<td />").text(name))
-                .append($("<td />").text(value));
-            tbody.append(tr);
-        });
-        return tbody;
-    })($('<tbody />'), lga.profileData))
-        .appendTo(wrap);
-    oWrap.html(wrap);
-}
-
-// Load data functions (creating ajax requests and triggering callbacks)
+// BEGIN load lga data via ajax
 function loadLgaData(lgaUniqueId, onLoadCallback) {
     var siteDataUrl = urls.lgaSpecific + lgaUniqueId;
     var variablesUrl = urls.variables;
@@ -220,21 +183,94 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
     			});
 			}
 		}
-//		createSectorNav()
 	}, function dataLoadFail(){
-		//called when the lga data fails to load
 		log("Data failed to load");
 	});
+};
+(function($){
+    //a quick ajax cache, just trying to prevent multiple
+    // requests to the same url in one pageload... (for now)
+    var cacheData = {};
+    $.getCacheJSON = function(){
+        var url = arguments[0];
+        if(url in cacheData) {
+            return cacheData[url];
+        } else {
+            var q = $.getJSON.apply($, arguments);
+            q.done(function(){
+                cacheData[url] = q;
+            });
+            return q;
+        }
+    }
+})(jQuery);
+// END load lga data via ajax
+
+// BEGIN lga-wide profile boxes
+function buildLgaProfileBox(lga, dictionary) {
+    var oWrap = $('.content-inner-wrap').find('.profile-data-wrap');
+    if(oWrap.length===0) {
+        oWrap = $("<div />", {'class':'profile-data-wrap'}).appendTo($('.content-inner-wrap'));
+    } else {
+        oWrap.empty();
+    }
+    var wrap = $("<div />", {'class':'profile-data'})
+        .append($("<h3 />").text(lga.stateName))
+        .append($("<h2 />").text(lga.lgaName))
+        .append($("<hr />"));
+    
+    $("<table />").append((function(tbody, pdata){
+        $.each(dictionary, function(k, val){
+            var name = val.name;
+            var value = pdata[k];
+            var tr = $("<tr />")
+                .append($("<td />").text(name))
+                .append($("<td />").text(value));
+            tbody.append(tr);
+        });
+        return tbody;
+    })($('<tbody />'), lga.profileData))
+        .appendTo(wrap);
+    oWrap.html(wrap);
 }
 
-// Moving "bind"ers up to the top.
 
+function getGaTable(){
+    var gt = $('.widget-outer-wrap').find('div.gap-analysis-table');
+	if(gt.length===0) {
+		gt = $("<div />", {'class': 'gap-analysis-table'});
+		$('.widget-outer-wrap').prepend($('<div />', {'class':'gap-analysis-table-wrap'}).html(gt));
+	}
+	return gt;
+}
+
+function buildGapAnalysisTable(lgaData){
+    var data = lgaData.profileData;
+    var gaTableWrap = getGaTable();
+    var table = $('#gap-analysis-table-template').children().eq(0).clone();
+    table.find('.fill-me').each(function(){
+        var slug = $(this).data('variableSlug');
+        $(this).text(roundDownValueIfNumber(data[slug]))
+    });
+    //hiding gap analysis table by default for now.
+    gaTableWrap.parents().eq(0)
+            .addClass('toggleable')
+            .addClass('hidden')
+    return gaTableWrap.html(table);
+}
+// END lga-wide profile boxes
+
+
+// BEGIN page mode binders
+//  -- These 6 "bind" methods define global event listeners which trigger behavior
+//     in individual dashboard featured. (the table, the map, etc.)
+//     The global events are "select-" and "unselect-" each of the following:
+//        * sector
+//        * column
+//        * facility
+//     All functions accessed in this file are defined elsewhere in the file.
+//     (Except jquery stuff and LaunchOpenLayers)
 $('body').bind('select-sector', function(evt, edata){
-	var ftabs = $(facilityTabsSelector);
-	
-	ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
-	ftabs.removeClass(specialClasses.tableHideTd);
-	
 	if(edata===undefined) {edata = {};}
     var sector, subSector, fullSectorId;
     
@@ -258,6 +294,9 @@ $('body').bind('select-sector', function(evt, edata){
         })(edata.fullSectorId);
     }
 	
+	var ftabs = $(facilityTabsSelector);
+	ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
+	ftabs.removeClass(specialClasses.tableHideTd);
 	if(sector !== undefined) {
 		//fullSectorId is needed to distinguish between 
 		// health:general  and  education:general (for example)
@@ -266,7 +305,6 @@ $('body').bind('select-sector', function(evt, edata){
 		    $('body').trigger('unselect-facility');
 		    $('body').trigger('unselect-column');
 		    selectedSector = sector;
-		    var ftabs = $(facilityTabsSelector);
 		    ftabs.tabs('select', facilitySectorSlugs.indexOf(selectedSector));
 		    (typeof(filterPointsBySector)==='function') && filterPointsBySector(selectedSector);
 		}
@@ -307,12 +345,11 @@ $('body').bind('select-facility', function(evt, edata){
 	}
 	
 	selectedFacility === undefined || $('body').trigger('unselect-facility', {uid: selectedFacility.uid});
-	
 	selectedFacility = facility;
+	
 	facility.tr === undefined || $(facility.tr).addClass('selected-facility');
 
-	//scrolls to row by default (?)
-//		if (edata.scrollToRow === undefined) { edata.scrollToRow = true; }
+    // if (edata.scrollToRow === undefined) { edata.scrollToRow = true; }
 
 	edata.scrollToRow && false && (function scrollToTheFacilitysTr(){
 		if(facility.tr!==undefined) {
@@ -391,31 +428,6 @@ function getColDataDiv() {
 	return colData;
 }
 
-function getGaTable(){
-    var gt = $('.widget-outer-wrap').find('div.gap-analysis-table');
-	if(gt.length===0) {
-		gt = $("<div />", {'class': 'gap-analysis-table'});
-		$('.widget-outer-wrap').prepend($('<div />', {'class':'gap-analysis-table-wrap'}).html(gt));
-	}
-	return gt;
-}
-
-function buildGapAnalysisTable(lgaData){
-    var data = lgaData.profileData;
-    var gaTableWrap = getGaTable();
-    var table = $('#gap-analysis-table-template').children().eq(0).clone();
-    table.find('.fill-me').each(function(){
-        var slug = $(this).data('variableSlug');
-        $(this).text(roundDownValueIfNumber(data[slug]))
-    });
-    //hiding gap analysis table by default for now.
-    gaTableWrap.parents().eq(0)
-            .addClass('toggleable')
-            .addClass('hidden')
-    return gaTableWrap.html(table);
-}
-
-
 function getTabulations(sector, col) {
 	var sList = facilityData.bySector[sector];
 	var valueCounts = {};
@@ -483,7 +495,7 @@ $('body').bind('select-column', function(evt, edata){
 					.css({'height':80});
 		}
 		var columnMode = "view_column_"+column.slug;
-		if(hasClickAction(column, 'iconify')) {
+		if(hasClickAction(column, 'iconify') && column.iconify_png_url !== undefined) {
 		    var t=0, z=0;
 		    var iconStrings = [];
 		    $.each(facilityData.list, function(i, fdp){
@@ -506,12 +518,14 @@ $('body').bind('unselect-column', function(evt, edata){
     $('.selected-column').removeClass('selected-column');
 	getColDataDiv().empty().css({'height':0});
 });
+// END page mode binders
 
-// page mode "bind"ers should be above.
-
+// BEGIN facility table builder
+//   -- facility table builder receives the facility data
+//      and builds a table for each sector. The rows of the
+//      table correspond to the facilities.
 var filterPointsBySector;
 var FACILITY_TABLE_BUILT = false;
-
 function buildFacilityTable(data, sectors){
     filterPointsBySector = function(sector){
         if(sector==='all') {
@@ -530,15 +544,9 @@ function buildFacilityTable(data, sectors){
         }
     }
 	FACILITY_TABLE_BUILT = true;
-	var facilityTableWrap = $('#lga-facilities-table').html($('<div />', {'id': 'facility-tabs'}).html($('<ul />'))).append($('<div />', {'id':'image-nav'}));
+	var facilityTableWrap = $('#lga-facilities-table').html($('<div />', {'id': 'facility-tabs'}).html($('<ul />')));
 	var ftabs = $(facilityTabsSelector, facilityTableWrap).css({'padding-bottom':18});
 	var ftabUl = $('ul', ftabs);
-	var imageNavigation = $('div#image-nav', facilityTableWrap);
-
-/*    var allLink = $("<li />", {
-            'html': $("<a />", {'href':'#all'}).text('All')
-        }).appendTo($(ftabUl)); */
-    
 	$.each(facilitySectors, function(i, sector){
 		var fdata = facilityData.bySector[sector.slug] || facilityData.bySector[sector.name];
 		var sectorCount;
@@ -649,6 +657,24 @@ function buildFacilityTable(data, sectors){
 	});
 }
 
+var decimalCount = 2;
+function roundDownValueIfNumber(val) {
+    if(val===undefined) { return '—'; }
+    if($.type(val)==='object') {val = val.value;}
+    if($.type(val)==='number' && (''+val).length>5) {
+        return Math.floor(Math.pow(10, decimalCount)* val)/Math.pow(10, decimalCount);
+    } else if($.type(val)==='string') {
+        return splitAndCapitalizeString(val);
+    }
+    return val;
+}
+function capitalizeString(str) {
+    var strstart = str.slice(0, 1);
+    var strend = str.slice(1);
+    return strstart.toUpperCase() + strend;
+}
+function splitAndCapitalizeString(str) { return $.map(str.split('_'), capitalizeString).join(' '); }
+
 function createTableForSectorWithData(sector, data){
     var sectorData = data.bySector[sector.slug] || data.bySector[sector.name];
 	if(!sector.columns instanceof Array || !sectorData instanceof Array) {
@@ -662,31 +688,31 @@ function createTableForSectorWithData(sector, data){
                 }));
     function displayOrderSort(a,b) { return (a.display_order > b.display_order) ? 1 : -1 }
 	$.each(sector.columns.sort(displayOrderSort), function(i, col){
-		var th = $('<th />', {'class': 'no-select'})
-		        .text(col.name)
-		        .addClass('col-'+col.slug)
-		        .appendTo(thRow)
+	    var thClasses = ['col-'+col.slug, 'no-select'];
+		col.clickable && thClasses.push('clickable');
+
+		$(col.subgroups).each(function(i, sg){
+			thClasses.push('subgroup-'+sg);
+		});
+
+		var th = $('<th />', {
+		            'class': thClasses.join(' '),
+		            'text': col.name
+		        })
 		        .click(function(){
 		            $('body').trigger('select-column', {sector: sector, column: col});
-		        });
-		
-		col.clickable && th.addClass('clickable');
-		
-		$(col.subgroups).each(function(i, sg){
-			th.addClass('subgroup-'+sg);
-		});
-		
+		        })
+		        .appendTo(thRow);
+
 		$.extend(col, { th: th, thIndex: i+1 });
 	});
-	
+
 	var tbod = $("<tbody />");
 	$.each(sectorData, function(i, fUid){
 		tbod.append(createRowForFacilityWithColumns(data.list[fUid], sector.columns, i+1))
 	});
-	
 	function subSectorLink(ssName, ssslug) {
 	    var fullSectorSlug = sector.slug + (ssslug===defaultSubSector ? '' : subSectorDelimiter + ssslug)
-//	    var url = pageRootUrl + lgaId + '/' + fullSectorSlug;
 	    return $('<a />', {'href': '#', 'class': 'subsector-link-'+ssslug})
 	                .text(ssName)
 	                .click(function(evt){
@@ -716,41 +742,24 @@ function createTableForSectorWithData(sector, data){
 	    .append(table);
 }
 
-var decimalCount = 2;
-function roundDownValueIfNumber(val) {
-    if(val===undefined) { return '—'; }
-    if($.type(val)==='object') {val = val.value;}
-    if($.type(val)==='number' && (''+val).length>5) {
-        return Math.floor(Math.pow(10, decimalCount)* val)/Math.pow(10, decimalCount);
-    } else if($.type(val)==='string') {
-        return splitAndCapitalizeString(val);
-    }  else {
-        return val;
-    }
-}
-function capitalizeString(str) {
-    var strstart = str.slice(0, 1);
-    var strend = str.slice(1);
-    return strstart.toUpperCase() + strend;
-}
-function splitAndCapitalizeString(str) {
-    return $.map(str.split('_'), capitalizeString).join(' ');
-}
 function createRowForFacilityWithColumns(fpoint, cols, rowNum){
-	var tr = $("<tr />");
-	$('<td />', {
-	    'class': 'row-num',
-	    'text': rowNum
-	}).appendTo(tr);
-	
+    //creates a row for the facility table. (only used in "createTableForSectorWithData")
+	var tr = $("<tr />")
+	        .data('facility-uid', fpoint.uid)
+	        .click(function(){
+	            //clicking a row triggers global event 'select-facility'
+	            $(this).trigger('select-facility', {
+        		    'uid': fpoint.uid,
+        		    'scrollToRow': false
+        	    })
+        	})
+        	.append($('<td />', {'class':'row-num', 'text': rowNum}));
+
 	$.each(cols, function(i, col){
 		var value = roundDownValueIfNumber(fpoint[col.slug]);
-		if(value===undefined) { value = '—'; }
-		
 		var td = $('<td />')
 		        .addClass('col-'+col.slug)
 		        .appendTo(tr);
-		
 		if(col.display_style == "checkmark") {
 			if($.type(value) === 'boolean') {
 			    td.addClass(!!value ? 'on' : 'off')
@@ -783,15 +792,18 @@ function createRowForFacilityWithColumns(fpoint, cols, rowNum){
 		$(col.subgroups).each(function(i, sg){
 			td.addClass('subgroup-'+sg);
 		});
-		tr.data('facility-uid', fpoint.uid);
 	});
-	tr.click(function(){$(this).trigger('select-facility', {
-		'uid': fpoint.uid,
-		'scrollToRow': false
-	})});
 	fpoint.tr = tr.get(0);
 	return tr;
 }
+// END facility table builder
+
+// BEGIN data processing:
+//  -- data processing step receives the json data and 
+//     processes it into the json format that is needed for the
+//     page to function.
+//     Note: in debug mode, it will give detailed descriptions of
+//     the data is not in the correct format.
 var processFacilityDataRequests = (function(dataReq, passedData){
     if(dataReq[2].processedData !== undefined) {
 	    facilityData = dataReq[2].processedData.data;
@@ -925,8 +937,10 @@ var processFacilityDataRequests = (function(dataReq, passedData){
 		};
 	}
 });
+// END data processing
+
 return {
     loadData: loadLgaData
 }
-//ending "lga" wrap.
 })();
+// END CLOSURE: LGA object

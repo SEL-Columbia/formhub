@@ -13,33 +13,21 @@ from nga_districts.models import LGA, LGARecord
 from facilities.facility_builder import FacilityBuilder
 from utils.csv_reader import CsvReader
 from django.conf import settings
+from optparse import make_option
 
 
 class Command(BaseCommand):
-    help = "Load the LGAs from fixtures."
+    help = "Load the LGA data from fixtures."
 
-    # python manage.py load_fixtures --limit will limit the import to
-    # three lgas.
-    from optparse import make_option
     option_list = BaseCommand.option_list + (
         make_option("-l", "--limit",
                     dest="limit_import",
                     default=False,
-                    help="limit the imported lgas to the small list specified in settings",
-                    action="store_true"),
-        make_option("-n", "--no-reset-database",
-                    dest="no_reset_database",
-                    help="pass this if you don't want to reset the database (this will probably break things...)",
-                    default=False,
+                    help="Limit the imported LGAs to the list specified in settings.py",
                     action="store_true"),
         make_option("-d", "--debug",
                     dest="debug",
                     help="print debug stats about the query times.",
-                    default=False,
-                    action="store_true"),
-        make_option("-s", "--skip-calculations",
-                    dest="skip_calculate",
-                    help="skip calculations (this will probably break things...)",
                     default=False,
                     action="store_true"),
         )
@@ -48,12 +36,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         self._limit_import = kwargs['limit_import']
-        self._skip_calculate = kwargs['skip_calculate']
-        self._no_reset_database = kwargs['no_reset_database']
         self._debug = kwargs['debug']
         self._start_time = time.time()
-        if not self._no_reset_database:
-            self.reset_database()
+        self.reset_database()
         self.load_lgas()
         self.create_sectors()
         self.create_facility_types()
@@ -62,8 +47,7 @@ class Command(BaseCommand):
         self.load_table_defs()
         self.load_facilities()
         self.load_lga_data()
-        if not self._skip_calculate:
-            call_command("calculate_lga_indicators")
+        call_command("calculate_lga_indicators")
         self.create_admin_user()
         self._end_time = time.time()
         self.print_stats()
@@ -300,7 +284,6 @@ class Command(BaseCommand):
 
     def create_facilities_from_csv(self, sector, data_source, path):
         csv_reader = CsvReader(path)
-        num_errors = 0
         for d in csv_reader.iter_dicts():
             if self._limit_import:
                 if '_lga_id' not in d:
@@ -310,20 +293,7 @@ class Command(BaseCommand):
             d['_data_source'] = data_source
             d['_facility_type'] = sector.lower()
             d['sector'] = sector
-            facility = None
-            if self._debug:
-                facility = FacilityBuilder.create_facility_from_dict(d)
-                if facility is None: num_errors += 1
-            else:
-                try:
-                    facility = FacilityBuilder.create_facility_from_dict(d)
-                    if facility is None: num_errors += 1
-                except KeyboardInterrupt:
-                    sys.exit(0)
-                except:
-                    num_errors += 1
-        if not self._debug:
-            print "Had %d error(s) when importing %s facilities..." % (num_errors, sector)
+            facility = FacilityBuilder.create_facility_from_dict(d)
 
     def load_lga_data(self):
         data_dir = 'data/lga'
