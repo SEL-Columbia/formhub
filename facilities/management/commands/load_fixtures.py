@@ -281,7 +281,6 @@ class Command(BaseCommand):
 
     def create_facilities_from_csv(self, sector, data_source, path):
         csv_reader = CsvReader(path)
-        num_errors = 0
         for d in csv_reader.iter_dicts():
             if self._limit_import:
                 if '_lga_id' not in d:
@@ -291,20 +290,7 @@ class Command(BaseCommand):
             d['_data_source'] = data_source
             d['_facility_type'] = sector.lower()
             d['sector'] = sector
-            facility = None
-            if self._debug:
-                facility = FacilityBuilder.create_facility_from_dict(d)
-                if facility is None: num_errors += 1
-            else:
-                try:
-                    facility = FacilityBuilder.create_facility_from_dict(d)
-                    if facility is None: num_errors += 1
-                except KeyboardInterrupt:
-                    sys.exit(0)
-                except:
-                    num_errors += 1
-        if not self._debug:
-            print "Had %d error(s) when importing %s facilities..." % (num_errors, sector)
+            facility = FacilityBuilder.create_facility_from_dict(d)
 
     def load_lga_data(self):
         data_dir = 'data/lga'

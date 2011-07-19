@@ -29,26 +29,26 @@ class FacilityBuilder(object):
             }
         # we need to check for lga, sector, and facility type
         # for now we are requiring that these must all be present
+
+        # TODO: The facility_type keys below should be done in a KeyRename.
         # in order for the facility to be saved
-        if 'sector' in d and '_lga_id' in d and '_facility_type' in d:
-            sector = d['sector']
-            # these are the data slugs that hold the facility_type for each sector
-            type_slugs = {
-                'Health': 'facility_type',
-                'Education': '_facility_type',
-                'Water': '_facility_type'
-            }
-            facility_type = d[type_slugs[sector]]
-            try:
-                kwargs['lga'] = LGA.objects.get(id=d['_lga_id'])
-                kwargs['sector'] = Sector.objects.get(slug=sector)
-                kwargs['facility_type'] = FacilityType.objects.get(slug=facility_type)
-                facility, created = Facility.objects.get_or_create(**kwargs)
-                facility.add_data_from_dict(d)
-                return facility
-            except (LGA.DoesNotExist, Sector.DoesNotExist, FacilityType.DoesNotExist):
-                return None
-        return None
+        # these are the data slugs that hold the facility_type for each sector
+        type_slugs = {
+            'Health': 'facility_type',
+            'Education': '_facility_type',
+            'Water': '_facility_type'
+        }
+        sector = d.get('sector')
+        facility_type = d.get(type_slugs[sector])
+        kwargs['lga'] = None if '_lga_id' not in d else LGA.objects.get(id=d['_lga_id'])
+        kwargs['sector'] = None if sector is None else Sector.objects.get(slug=sector.lower())
+        try:
+            kwargs['facility_type'] = FacilityType.objects.get(slug=facility_type)
+        except FacilityType.DoesNotExist:
+            kwargs['facility_type'] = None
+        facility, created = Facility.objects.get_or_create(**kwargs)
+        facility.add_data_from_dict(d)
+        return facility
 
     @classmethod
     def print_dict(cls, d):
