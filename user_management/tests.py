@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from models import technical_assistants, \
+from auth import technical_assistants, \
     add_user_to_groups_based_on_email_address
 from django.db.models.signals import post_save
 
@@ -22,6 +22,13 @@ class SignalTest(TestCase):
             add_user_to_groups_based_on_email_address in \
                 [r[1]() for r in post_save.receivers]
             )
+
+    def test_add_user_to_group(self):
+        carl = User.objects.create(
+            username='carl', email='carl@gmail.com', password='blah'
+            )
+        carl.groups.add(technical_assistants)
+        self.assertEquals(list(carl.groups.all()), [technical_assistants])
 
     def test_user_added_to_appropriate_group(self):
         allen = User.objects.create(
