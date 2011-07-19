@@ -2,7 +2,7 @@ import json
 import uuid
 from nga_districts.models import LGA
 from facilities.models import Facility, Variable, KeyRename, \
-    CalculatedVariable, Sector
+    CalculatedVariable, Sector, FacilityType
 
 
 class FacilityBuilder(object):
@@ -17,7 +17,7 @@ class FacilityBuilder(object):
     @classmethod
     def create_facility_from_dict(cls, d):
         """
-        Requires facility type and lga to be specified in d, all other
+        Requires facility type, sector and lga to be specified in d, all other
         key value pairs in d that are in the data dictionary will be
         added to the database.
         """
@@ -27,21 +27,28 @@ class FacilityBuilder(object):
         kwargs = {
             'facility_id': d.get('gps', uuid.uuid4())
             }
-        if '_lga_id' in d:
+        # we need to check for lga, sector, and facility type
+        # for now we are requiring that these must all be present
+        # in order for the facility to be saved
+        if 'sector' in d and '_lga_id' in d and '_facility_type' in d:
+            sector = d['sector']
+            # these are the data slugs that hold the facility_type for each sector
+            type_slugs = {
+                'Health': 'facility_type',
+                'Education': '_facility_type',
+                'Water': '_facility_type'
+            }
+            facility_type = d[type_slugs[sector]]
             try:
                 kwargs['lga'] = LGA.objects.get(id=d['_lga_id'])
-            except LGA.DoesNotExist, e:
-                pass
-        if '_facility_type' in d:
-            try:
-                kwargs['sector'] = Sector.objects.get(
-                   slug=d['_facility_type'].lower())
-            except Sector.DoesNotExist, e:
-                pass
-        facility, created = Facility.objects.get_or_create(**kwargs)
-        facility.add_data_from_dict(d)
-
-        return facility
+                kwargs['sector'] = Sector.objects.get(slug=sector)
+                kwargs['facility_type'] = FacilityType.objects.get(slug=facility_type)
+                facility, created = Facility.objects.get_or_create(**kwargs)
+                facility.add_data_from_dict(d)
+                return facility
+            except (LGA.DoesNotExist, Sector.DoesNotExist, FacilityType.DoesNotExist):
+                return None
+        return None
 
     @classmethod
     def print_dict(cls, d):

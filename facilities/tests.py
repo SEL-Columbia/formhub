@@ -1,11 +1,16 @@
 from django.test import TestCase
 from facility_builder import FacilityBuilder
-from models import CalculatedVariable, Variable, Facility, FacilityRecord, Sector, LGAIndicator
+from models import CalculatedVariable, Variable, Facility, Sector, FacilityRecord, FacilityType, LGAIndicator
 from nga_districts.models import Zone, State, LGA
 
 class CalculatedVariableTest(TestCase):
 
     def setUp(self):
+        self.zone = Zone.objects.create(name='Zone', slug='zone')
+        self.state = State.objects.create(name='State', slug='state', zone=self.zone)
+        self.lga = LGA.objects.create(name='LGA', slug='LGA', state=self.state)
+        self.sector = Sector.objects.create(name='Education', slug='education')
+        self.facility_type = FacilityType.add_root(name='Education', slug='education')
         fields = ['slug', 'data_type', 'formula']
         data_dictionary_types = [
             ['student_teacher_ratio', 'float', "d['num_students_total'] / d['num_tchrs_total']"],
@@ -28,7 +33,9 @@ class CalculatedVariableTest(TestCase):
         variables in the setUp method above.
         """
         d = {
-            '_facility_type': 'School',
+            'sector': self.sector.name,
+            '_lga_id': self.lga.id,
+            '_facility_type': self.sector.slug,
             'num_students_total': 100,
             'num_tchrs_total': 20,
             }
@@ -57,11 +64,12 @@ class GapAnalysisTest(TestCase):
         lga_names = ['LGA_1', 'LGA_2']
         self.lgas = [LGA.objects.create(name=n, slug=n, state=self.state) for n in lga_names]
         self.sector = Sector.objects.create(name='Test', slug='test')
+        self.facility_type = FacilityType.add_root(name='Test', slug='test')
         self.facilities = []
         for lga in self.lgas:
             for facility_id in ['a', 'b', 'c', 'd']:
                 self.facilities.append(
-                    Facility.objects.create(facility_id=facility_id, lga=lga, sector=self.sector)
+                    Facility.objects.create(facility_id=facility_id, lga=lga, sector=self.sector, facility_type=self.facility_type)
                     )
         for facility, value in zip(self.facilities, ['none', 'good', 'bad', 'none']):
             facility.set(self.power, value)

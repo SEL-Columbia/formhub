@@ -7,7 +7,7 @@ import time
 import sys
 from collections import defaultdict
 from facilities.models import Facility, Variable, CalculatedVariable, \
-    KeyRename, FacilityRecord, Sector, LGAIndicator, GapVariable
+    KeyRename, FacilityRecord, Sector, FacilityType, LGAIndicator, GapVariable
 from nga_districts.models import LGA, LGARecord
 from facilities.facility_builder import FacilityBuilder
 from utils.csv_reader import CsvReader
@@ -55,6 +55,7 @@ class Command(BaseCommand):
             self.reset_database()
         self.load_lgas()
         self.create_sectors()
+        self.create_facility_types()
         self.load_key_renames()
         self.load_variables()
         self.load_table_defs()
@@ -164,6 +165,51 @@ class Command(BaseCommand):
         for sector in sectors:
             Sector.objects.get_or_create(slug=sector.lower(), name=sector)
 
+    def create_facility_types(self):
+        get = lambda node_id: FacilityType.objects.get(pk=node_id)
+        facility_types = [
+                (('health', 'Health'), [
+                    (('level_1', 'Level 1'), [
+                        (('healthpost', 'Health Post'), []),
+                        (('dispensary', 'Dispensary'), []),
+                    ]),
+                    (('level_2', 'Level 2'), [
+                        (('primaryhealthclinic', 'Primary Health Clinic'), []),
+                    ]),
+                    (('level_3', 'Level 3'), [
+                        (('primaryhealthcarecentre', 'Primary Health Care Centre'), []),
+                        (('comprehensivehealthcentre', 'Comprehensive Health Centre'), []),
+                        (('wardmodelprimaryhealthcarecentre', 'Ward Model Primary Health Care Centre'), []),
+                        (('maternity', 'Maternity'), []),
+                    ]),
+                    (('level_4', 'Level 4'), [
+                        (('cottagehospital', 'Cottage Hospital'), []),
+                        (('generalhospital', 'General Hospital'), []),
+                        (('specialisthospital', 'Specialist Hospital'), []),
+                        (('teachinghospital', 'Teaching Hospital'), []),
+                        (('federalmedicalcare', 'Federal Medical Care'), []),
+                    ]),
+                    (('other', 'Other'), [
+                        (('private', 'Private'), []),
+                        (('other', 'Other'), []),
+                    ]),
+                ]),
+                (('education', 'Education'), []),
+                (('water', 'Water'), []),
+            ]
+
+        def add(child, parent):
+            slug = child[0][0]
+            name = child[0][1]
+            grandchildren = child[1]
+            child = parent.add_child(slug=slug, name=name)
+            for grandchild in grandchildren:
+                add(grandchild, child)
+
+        root = FacilityType.add_root(slug='facility_type', name='Facility Type')
+        for facility_type in facility_types:
+            add(facility_type, root)
+
     def load_key_renames(self):
         kwargs = {
             'model': KeyRename,
@@ -184,7 +230,7 @@ class Command(BaseCommand):
           * LGAIndicator
           * GapVariable
         """
-        
+
         def add_critical_variables():
             """
             I don't want to put these variables in fixtures because
@@ -193,44 +239,55 @@ class Command(BaseCommand):
             script.
             """
             Variable.objects.get_or_create(data_type='string', slug='sector', name='Sector')
+
         add_critical_variables()
 
         csv_reader = CsvReader(os.path.join('facilities', 'fixtures', 'variables.csv'))
+
+        def add_variable_from_dict(d):
+            """
+            Adds the variable described by the data in d.
+            """
+            if 'data_type' not in d or 'SECTION' in d or 'COMMENTS' in d:
+                # this row does not define a new variable
+                pass
+            elif 'formula' in d:
+                CalculatedVariable.objects.get_or_create(**d)
+            elif 'origin' in d and 'method' in d and 'sector' in d:
+                d['origin'] = Variable.objects.get(slug=d['origin'])
+                d['sector'] = Sector.objects.get(slug=d['sector'])
+                lga_indicator, created = LGAIndicator.objects.get_or_create(**d)
+            elif 'variable' in d and 'target' in d:
+                d['variable'] = Variable.objects.get(slug=d['variable'])
+                d['target'] = Variable.objects.get(slug=d['target'])
+                gap_analyzer, created = GapVariable.objects.get_or_create(**d)
+            else:
+                Variable.objects.get_or_create(**d)
+
         for d in csv_reader.iter_dicts():
-            try:
-                if 'data_type' not in d or 'SECTION' in d or 'COMMENTS' in d:
-                    # this row does not define a new variable
-                    continue
-                elif 'formula' in d:
-                    CalculatedVariable.objects.get_or_create(**d)
-                elif 'origin' in d and 'method' in d and 'sector' in d:
-                    d['origin'] = Variable.objects.get(slug=d['origin'])
-                    d['sector'] = Sector.objects.get(slug=d['sector'])
-                    lga_indicator, created = LGAIndicator.objects.get_or_create(**d)
-                elif 'variable' in d and 'target' in d:
-                    d['variable'] = Variable.objects.get(slug=d['variable'])
-                    d['target'] = Variable.objects.get(slug=d['target'])
-                    gap_analyzer, created = GapVariable.objects.get_or_create(**d)
-                else:
-                    Variable.objects.get_or_create(**d)
-            except:
-                raise Exception("Variable import failed for data: %s" % d)
+            if self._debug:
+                add_variable_from_dict(d)
+            else:
+                try:
+                    add_variable_from_dict(d)
+                except:
+                    raise Exception("Variable import failed for data: %s" % d)
 
     def load_facilities(self):
         data_dir = 'data/facility'
         sector_args = {
             'health': {
-                'facility_type': 'Health',
+                'sector': 'Health',
                 'data_source': 'health.csv',
                 'path': os.path.join(data_dir, 'health.csv'),
                 },
             'education': {
-                'facility_type': 'Education',
+                'sector': 'Education',
                 'data_source': 'education.csv',
                 'path': os.path.join(data_dir, 'education.csv'),
                 },
             'water': {
-                'facility_type': 'Water',
+                'sector': 'Water',
                 'data_source': 'water.csv',
                 'path': os.path.join(data_dir, 'water.csv'),
                 },
@@ -238,7 +295,7 @@ class Command(BaseCommand):
         for sector in sector_args:
             self.create_facilities_from_csv(**sector_args[sector])
 
-    def create_facilities_from_csv(self, facility_type, data_source, path):
+    def create_facilities_from_csv(self, sector, data_source, path):
         csv_reader = CsvReader(path)
         num_errors = 0
         for d in csv_reader.iter_dicts():
@@ -248,20 +305,22 @@ class Command(BaseCommand):
                 if d['_lga_id'] not in self.limit_lgas:
                     continue
             d['_data_source'] = data_source
-            d['_facility_type'] = facility_type
-            d['sector'] = facility_type
+            d['_facility_type'] = sector.lower()
+            d['sector'] = sector
             facility = None
             if self._debug:
                 facility = FacilityBuilder.create_facility_from_dict(d)
+                if facility is None: num_errors += 1
             else:
                 try:
                     facility = FacilityBuilder.create_facility_from_dict(d)
+                    if facility is None: num_errors += 1
                 except KeyboardInterrupt:
                     sys.exit(0)
                 except:
                     num_errors += 1
         if not self._debug:
-            print "Had %d error(s) when importing %s facilities..." % (num_errors, facility_type)
+            print "Had %d error(s) when importing %s facilities..." % (num_errors, sector)
 
     def load_lga_data(self):
         data_dir = 'data/lga'
