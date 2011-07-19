@@ -159,6 +159,7 @@ class LGAIndicatorTest(TestCase):
             )
 
 from django.test.client import Client
+from django.contrib.auth.models import User
 
 class PassDataToPage(TestCase):
     def setUp(self):
@@ -172,19 +173,30 @@ class PassDataToPage(TestCase):
         self.lgas = [LGA.objects.create(name=n, slug=n, state=self.state, unique_slug='state_%s' % n) for n in lga_names]
         self.sector = Sector.objects.create(name='Test', slug='test')
         self.facilities = []
+        ftype_root = FacilityType.add_root(slug='facility_type', name='Facility Type')
+        ftype = ftype_root.add_child(name="Toilet", slug="toilet")
         for lga in self.lgas:
             for facility_id in ['a', 'b']:
                 self.facilities.append(
-                    Facility.objects.create(facility_id=facility_id, lga=lga, sector=self.sector)
+                    Facility.objects.create(facility_id=facility_id, lga=lga, sector=self.sector, facility_type=ftype)
                     )
         self.assertEquals(len(self.facilities), 4)
         for facility, value in zip(self.facilities, [True, True, True, False]):
             facility.set(self.has_water, value)
+        self.admin = admin, created = User.objects.get_or_create(
+                username="admin",
+                email="admin@admin.com",
+                is_staff=True,
+                is_superuser=True
+                )
+        admin.set_password("pass")
+        admin.save()
+        self.client = Client()
+        self.client.login(username='admin', password='pass')
 
     def test_lga_facility_json_url_works(self):
         # Right now, this test checks to see if the lga's facility json url is accessible
-        client = Client()
         self.assertTrue(LGA.objects.count() > 0)
         first_unique_slug = LGA.objects.all()[0].unique_slug
-        response = client.get('/facilities/site/%s' % first_unique_slug)
+        response = self.client.get('/facilities/site/%s' % first_unique_slug)
         self.assertEqual(response.status_code, 200)
