@@ -220,7 +220,6 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
     			});
 			}
 		}
-//		createSectorNav()
 	}, function dataLoadFail(){
 		//called when the lga data fails to load
 		log("Data failed to load");
@@ -530,15 +529,9 @@ function buildFacilityTable(data, sectors){
         }
     }
 	FACILITY_TABLE_BUILT = true;
-	var facilityTableWrap = $('#lga-facilities-table').html($('<div />', {'id': 'facility-tabs'}).html($('<ul />'))).append($('<div />', {'id':'image-nav'}));
+	var facilityTableWrap = $('#lga-facilities-table').html($('<div />', {'id': 'facility-tabs'}).html($('<ul />')));
 	var ftabs = $(facilityTabsSelector, facilityTableWrap).css({'padding-bottom':18});
 	var ftabUl = $('ul', ftabs);
-	var imageNavigation = $('div#image-nav', facilityTableWrap);
-
-/*    var allLink = $("<li />", {
-            'html': $("<a />", {'href':'#all'}).text('All')
-        }).appendTo($(ftabUl)); */
-    
 	$.each(facilitySectors, function(i, sector){
 		var fdata = facilityData.bySector[sector.slug] || facilityData.bySector[sector.name];
 		var sectorCount;
