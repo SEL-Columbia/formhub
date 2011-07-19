@@ -34,7 +34,7 @@ class FacilityBuilder(object):
         # in order for the facility to be saved
         # these are the data slugs that hold the facility_type for each sector
         type_slugs = {
-            'Health': 'facility_type',
+            'Health': '_facility_type',
             'Education': '_facility_type',
             'Water': '_facility_type'
         }
