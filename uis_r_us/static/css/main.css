@@ -38,6 +38,7 @@ table.facility-list td, table.facility-list.pretty thead th {
 
 td.checkmark {
     text-align: center;
+    font-size: 11px;
 }
 td.checkmark.on {
     background-color: #e6f5eb;
@@ -52,10 +53,12 @@ td.checkmark.null {
     color: #bbb;
 }
 td.checkmark.on span.mrk:before {
-    content: '✓';
+/*    content: '✓'; */
+    content: 'YES';
 }
 td.checkmark.off span.mrk:before {
-    content: '✗';
+/*    content: '✗'; */
+    content: 'NO';
 }
 td.checkmark.null span.mrk:before {
     content: '—';
