@@ -18,5 +18,8 @@ def list_active_lgas(request):
     context.lgas = LGA.objects.annotate(facility_count=Count('facilities')).filter(facility_count__gt=0)
     return render_to_response("list_active_lgas.html", context_instance=context)
 
+def site_description(request):
+    return render_to_response("site_description.html")
+
 def baseline_redirect(request):
     return HttpResponseRedirect("/baseline/")
