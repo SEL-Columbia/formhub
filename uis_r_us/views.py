@@ -82,3 +82,12 @@ def active_districts2():
                 )
         output.append((state.name, statelgas))
     return output
+
+def mustache_template(request, template_name):
+    import os
+    template_path = 'uis_r_us/mustache/%s.html' % template_name
+    if not os.path.exists(template_path):
+        return HttpResponse('{"ERROR":"No such template: %s"}' % template_name)
+    else:
+        with open(template_path, 'r') as f:
+            return HttpResponse(f.read())
