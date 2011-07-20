@@ -18,7 +18,7 @@ def data_dictionary(request):
     return HttpResponse(Variable.get_full_data_dictionary())
 
 def facilities_for_site(request, site_id):
-    def non_null_values(t):
+    def non_null_value(t):
         # returns the first non-null value
         for val_k in ['string_value', 'float_value', 'boolean_value']:
             if t[val_k] is not None:
@@ -35,7 +35,7 @@ def facilities_for_site(request, site_id):
             vid = t['variable_id']
             if vid not in dvals or dvals[vid][0] < t['date']:
                 dvals[vid] = \
-                        (t['date'], non_null_values(t))
+                        (t['date'], non_null_value(t))
         dvoput = {}
         for variable in dvals.keys():
             dvoput[variable] = dvals[variable][1]
