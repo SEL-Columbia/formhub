@@ -173,6 +173,46 @@
 		-khtml-user-select: none;
 		-webkit-user-select: none;
 	}
+	div.display-box {
+		background-color: #fff;
+	}
+	div.display-box .occurrences {
+		margin-left: 4px;
+		font-size: 11px;
+	}
+	div.display-box * {
+		margin: 0;
+	}
+	div.db-l-w, div.db-r-w {
+		width: 50%;
+		float: left;
+	}
+	div.db-r-w  {
+		float: right;
+	}
+	div.db-l, div.db-r {
+		margin: 5px 12px 5px;
+	}
+	div.db-r {
+		margin-left: 0;
+	}
+	div.db-l .db-l-content {
+		margin-top: 4px;
+	}
+	div.db-l h2.db-title {
+		padding: 3px 0 4px;
+	}
+	div.db-r, div.db-l h2.db-title, div.db-l .db-l-content {
+		color: #000;
+		background-color: rgba(255,255,255,0.7);
+	}
+	div.db-r div.content {
+		margin: 3px 6px;
+	}
+	div.db-r {
+		overflow: auto;
+		height: 100px;
+	}
 </style>
 <link rel="stylesheet" href="/static/openlayers/default/style.css" type="text/css" media="all" charset="utf-8">
 {% endblock %}
