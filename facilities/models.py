@@ -162,9 +162,9 @@ class Facility(DictModel):
     the facility model as needed.
     """
     facility_id = models.CharField(max_length=100)
-    lga = models.ForeignKey(LGA, related_name="facilities", null=True)
-    facility_type = models.ForeignKey(FacilityType, null=True)
-    sector = models.ForeignKey(Sector, null=True)
+    lga = models.ForeignKey(LGA, related_name="facilities", null=True, default=None)
+    facility_type = models.ForeignKey(FacilityType, null=True, default=None)
+    sector = models.ForeignKey(Sector, null=True, default=None)
 
     _data_record_class = FacilityRecord
     _data_record_fk = 'facility'
