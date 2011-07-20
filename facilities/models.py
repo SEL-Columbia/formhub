@@ -75,14 +75,22 @@ class LGAIndicator(Variable):
     method = models.CharField(max_length=16)  # count_true, avg, percentage_true, proportion_true, sum
     sector = models.ForeignKey(Sector, null=True)
 
-    def count_true(self):
+    def count_boolean(self, looking_for):
         assert self.origin.data_type == 'boolean', 'Assertion failed: %s (%s) is not a boolean' % (self.origin.slug, self.origin.data_type)
         records = FacilityRecord.objects.filter(variable=self.origin, facility__sector=self.sector).values('facility', 'facility__lga', 'boolean_value').annotate(Max('date')).distinct()
         result = dict([(record['facility__lga'], 0.0) for record in records])
         for d in records:
-            if d['boolean_value']:
+            if looking_for and d['boolean_value']:
+                result[d['facility__lga']] += 1.0
+            elif not looking_for and not d['boolean_value']:
                 result[d['facility__lga']] += 1.0
         return result
+
+    def count_true(self):
+        return self.count_boolean(looking_for=True)
+
+    def count_false(self):
+        return self.count_boolean(looking_for=False)
 
     def stats(self):
         assert self.origin.data_type in ['float', 'percent', 'proportion'], 'Assertion failed: %s (%s) is not a float' % (self.origin.slug, self.origin.data_type)
