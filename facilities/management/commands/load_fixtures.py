@@ -7,7 +7,8 @@ import time
 import sys
 from collections import defaultdict
 from facilities.models import Facility, Variable, CalculatedVariable, \
-    KeyRename, FacilityRecord, Sector, FacilityType, LGAIndicator, GapVariable
+    KeyRename, FacilityRecord, Sector, FacilityType, PartitionVariable, \
+    LGAIndicator, GapVariable
 from nga_districts.models import LGA, LGARecord
 from facilities.facility_builder import FacilityBuilder
 from utils.csv_reader import CsvReader
@@ -237,6 +238,8 @@ class Command(BaseCommand):
                 pass
             elif 'formula' in d:
                 CalculatedVariable.objects.get_or_create(**d)
+            elif 'partition' in d:
+                PartitionVariable.objects.get_or_create(**d)
             elif 'origin' in d and 'method' in d and 'sector' in d:
                 d['origin'] = Variable.objects.get(slug=d['origin'])
                 d['sector'] = Sector.objects.get(slug=d['sector'])

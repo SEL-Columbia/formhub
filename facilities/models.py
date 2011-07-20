@@ -2,10 +2,11 @@ from django.db import models
 from django.db.models import Max
 from collections import defaultdict
 import sys
+import json
 from treebeard.mp_tree import MP_Node
 
 from nga_districts.models import LGA, LGARecord
-from abstract_models import Variable, CalculatedVariable, DataRecord, DictModel, KeyRename
+from abstract_models import Variable, CalculatedVariable, PartitionVariable, DataRecord, DictModel, KeyRename
 
 
 class FacilityRecord(DataRecord):

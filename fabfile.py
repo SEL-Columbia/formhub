@@ -6,7 +6,6 @@ from datetime import datetime
 env.update(
     {
         'deployments_path': '/home/wsgi/srv',
-        'hosts': ['wsgi@staging.mvpafrica.org'],
         'project_name': 'nmis',
         'virtualenv_directory': 'project_env',
         'migrate': True,
@@ -16,9 +15,16 @@ env.update(
 DEPLOYMENTS = {
     'dev': {
         'folder_name': 'nmis_dev',
+        'host_string': 'wsgi@staging.mvpafrica.org',
         'branch': 'feature/dj13',
         'backup': False,
         },
+    'staging': {
+        'folder_name': 'nmis_dev',
+        'host_string': 'wsgi@nmis-dev.mdgs.gov.ng',
+        'branch': 'feature/dj13',
+        'backup': False,
+        }
     }
 
 

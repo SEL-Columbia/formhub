@@ -3,6 +3,8 @@ from collections import defaultdict
 import json
 import re
 import datetime
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 
 class KeyRename(models.Model):
@@ -145,14 +147,38 @@ class CalculatedVariable(Variable):
 
     @classmethod
     def add_calculated_variables(cls, d):
-        for cv in cls.objects.all():
-            value = cv.calculate_value(d)
+        for v in cls.objects.all():
+            value = v.calculate_value(d)
             if value is not None:
-                d[cv.slug] = value
+                d[v.slug] = value
 
     def calculate_value(self, d):
         try:
             return eval(self.formula)
+        except:
+            return None
+
+
+class PartitionVariable(CalculatedVariable):
+    """
+    Variable that can allow for different values based on given criteria.
+    """
+    partition = models.TextField()
+
+    FIELDS = Variable.FIELDS + ['partition']
+
+    @property
+    def info(self):
+        # _partition is the python version of partition (which is json)
+        if not hasattr(self, '_partition'):
+            self._partition = json.loads(self.partition)
+        return self._partition
+
+    def calculate_value(self, d):
+        try:
+            for i in self.info:
+                if eval(i['criteria']):
+                    return i['value']
         except:
             return None
 
@@ -222,10 +248,11 @@ class DictModel(models.Model):
                 # update the dict with the casted value
                 d[v.slug] = self.set(v, d[v.slug])
 
-        CalculatedVariable.add_calculated_variables(d)
-        for cv in CalculatedVariable.objects.all():
-            if cv.slug in d:
-                self.set(cv, d[cv.slug])
+        for cls in [CalculatedVariable, PartitionVariable]:
+            cls.add_calculated_variables(d)
+            for v in cls.objects.all():
+                if v.slug in d:
+                    self.set(v, d[v.slug])
 
     def _kwargs(self):
         """
