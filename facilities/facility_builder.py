@@ -27,25 +27,21 @@ class FacilityBuilder(object):
         kwargs = {
             'facility_id': d.get('gps', uuid.uuid4())
             }
-        # we need to check for lga, sector, and facility type
-        # for now we are requiring that these must all be present
 
-        # TODO: The facility_type keys below should be done in a KeyRename.
-        # in order for the facility to be saved
-        # these are the data slugs that hold the facility_type for each sector
-        type_slugs = {
-            'Health': '_facility_type',
-            'Education': '_facility_type',
-            'Water': '_facility_type'
-        }
-        sector = d.get('sector')
-        facility_type = d.get(type_slugs[sector])
-        kwargs['lga'] = None if '_lga_id' not in d else LGA.objects.get(id=d['_lga_id'])
-        kwargs['sector'] = None if sector is None else Sector.objects.get(slug=sector.lower())
+        # Try to set the lga, sector, and facility type.
         try:
-            kwargs['facility_type'] = FacilityType.objects.get(slug=facility_type)
-        except FacilityType.DoesNotExist:
-            kwargs['facility_type'] = None
+            kwargs['lga'] = LGA.objects.get(id=d['_lga_id'])
+        except:
+            pass
+        try:
+            kwargs['sector'] = Sector.objects.get(slug=d['sector'].lower())
+        except:
+            pass
+        try:
+            kwargs['facility_type'] = FacilityType.objects.get(slug=d['_facility_type'])
+        except:
+            pass
+
         facility, created = Facility.objects.get_or_create(**kwargs)
         facility.add_data_from_dict(d)
         return facility
