@@ -44,6 +44,7 @@ class SignalTest(TestCase):
         # confirmed the signal is being received in the django
         # shell. I believe there's something going on with the many to
         # many field during testing, very bizarre.
+        technical_assistants = get_ta_group()
         self.assertTrue(technical_assistants in allen.groups.all())
 
         self.assertTrue(technical_assistants not in bob.groups.all())
