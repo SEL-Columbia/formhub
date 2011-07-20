@@ -75,4 +75,25 @@ function warn() {
         }
         evt.preventDefault();
     });
-})()
+})();
+
+var mTemplates = {};
+function getTemplate(templateName, cb) {
+    if(!mTemplates[templateName]) {
+        $.get("/mustache/"+templateName).done(function(d){
+            mTemplates[templateName] = d;
+            cb.call({
+                name: templateName,
+                template: d,
+                templates: mTemplates
+            }, d);
+        });
+    } else {
+        cb.call({
+            name: templateName,
+            template: mTemplates[templateName],
+            templates: mTemplates
+        });
+    }
+}
+
