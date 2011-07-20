@@ -1,0 +1,27 @@
+<div class="display-box">
+  <div class="db-l-w">
+    <div class="db-l">
+      <h2 class="db-title">
+        FACILITY BROWSER: {{sector}}
+      </h2>
+      <div class="db-l-content">
+        <h1>{{name}}</h1>
+        {{#description}}
+        <p>{{description}}</p>
+        {{/description}}
+      </div>
+    </div>
+  </div>
+  <div class="db-r-w">
+    <div class="db-r">
+      <div class="content">
+        {{#tabulations}}
+        <p>
+          <span class="value">{{value}}</span>
+          <span class="occurrences">({{occurrences}} <span class="oc-text">occurrences</span>)</span>
+        </p>
+        {{/tabulations}}
+      </div>
+    </div>
+  </div>
+</div>
