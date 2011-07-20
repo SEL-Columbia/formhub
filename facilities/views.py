@@ -17,32 +17,36 @@ def home(request):
 def data_dictionary(request):
     return HttpResponse(Variable.get_full_data_dictionary())
 
-
 def facilities_for_site(request, site_id):
-    def non_null(val_arr):
-        #each datarecord should have at least 2 null values (out of 3)
-        #this function returns the non-null value, if it exists.
-        nns = []
-        for v in val_arr:
-            if v is not None:
-                nns.append(v)
-        assert len(nns) < 2
-        if len(nns) == 0:
-            #there were 3 null values
-            return None
-        else:
-            #there was 1 non-null value
-            return nns[0]
+    def non_null_value(t):
+        # returns the first non-null value
+        for val_k in ['string_value', 'float_value', 'boolean_value']:
+            if t[val_k] is not None:
+                return t[val_k]
+        return None
     lga = LGA.objects.get(unique_slug=site_id)
-    facilities = dict([(f.id, f.get_latest_data()) for f in Facility.objects.filter(lga=lga)])
+    d = {}
+    drq = FacilityRecord.objects.order_by('-date')
+    for facility_dict in Facility.objects.filter(lga=lga).values('id'):
+        facility = facility_dict['id']
+        drs = drq.filter(facility=facility)
+        dvals = {}
+        for t in drs.values('variable_id', 'string_value', 'float_value', 'boolean_value', 'date'):
+            vid = t['variable_id']
+            if vid not in dvals or dvals[vid][0] < t['date']:
+                dvals[vid] = \
+                        (t['date'], non_null_value(t))
+        dvoput = {}
+        for variable in dvals.keys():
+            dvoput[variable] = dvals[variable][1]
+        d[facility] = dvoput
     oput = {
-        'facilities': facilities,
+        'facilities': d,
         'lgaName': lga.name,
         'stateName': lga.state.name,
         'profileData': lga.get_latest_data(),
     }
     return HttpResponse(json.dumps(oput))
-
 
 def facility(request, facility_id):
     """

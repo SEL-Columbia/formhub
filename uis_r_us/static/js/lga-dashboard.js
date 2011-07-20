@@ -442,12 +442,60 @@ function getTabulations(sector, col) {
 	return valueCounts;
 }
 
+var displayBoxHeaderText = "FACILITY BROWSER";
+//this is kinda ugly while I look into a better way to do this (e.g. mustache.js or jquery templates)
+var BuildDisplayBox = (function(column, sector, tabulations, elem){
+    var ldiv = $('<div />', {'class': 'db-l'});
+    var rdiv = $('<div />', {'class': 'db-r'});
+    var odiv = $("<div />", {'class':'display-box'})
+            .append($('<div />', {'class':'db-l-w'}).html(ldiv))
+            .append($('<div />', {'class':'db-r-w'}).html(rdiv));
+    $('<h2 />', {'class':'db-title'})
+            .text(displayBoxHeaderText + ': ' + sector.name.toUpperCase())
+            .appendTo(ldiv);
+    var description = !!column.description ? $('<p />').text(column.description) : undefined;
+    $('<div />', {'class': 'db-l-content'})
+            .append($('<h1 />').text(column.name))
+            .append(description)
+            .appendTo(ldiv);
+    var ul = $('<ul />');
+    var values = [];
+    var reverseTabulations = {};
+    var rVals = [];
+    var rcontent = $('<div />', {'class':'content'})
+                .appendTo(rdiv);
+    function addDisplayValue(value, occurrences, clname) {
+        var valElem = $('<p />');
+        $('<span />').text(value)
+                        .addClass('value')
+                        .appendTo(valElem);
+        $('<span />').text('('+occurrences+' occurrence'+ (occurrences===1 ? '' : 's') +')')
+                        .addClass('occurrences')
+                        .appendTo(valElem);
+        rcontent.append(valElem)
+    }
+    $.each(tabulations, function(k, val){
+        if(reverseTabulations['' + val]===undefined) {
+            reverseTabulations['' + val] = [];
+            rVals.push(val);
+        }
+        reverseTabulations[''+val].push(k);
+    });
+    $.each(rVals.sort().reverse(), function(i, val){
+        $.each(reverseTabulations['' + val], function(ii, val2){
+            addDisplayValue(val2, tabulations[val2]);
+        });
+    });
+    elem.html(odiv).css({'height': '110px'});
+});
+
+
 $('body').bind('select-column', function(evt, edata){
 	var wrapElement = $('#lga-facilities-table');
 	var column = edata.column;
 	var sector = edata.sector;
+	$('body').trigger('unselect-column', {column:selectedColumn, nextColumn: edata.column});
 	if(selectedColumn!==edata.column) {
-		$('body').trigger('unselect-column', {column:selectedColumn, nextColumn: edata.column});
 		if(column.clickable) {
 			$('.selected-column', wrapElement).removeClass('selected-column');
 			(function highlightTheColumn(column){
@@ -474,25 +522,7 @@ $('body').bind('select-column', function(evt, edata){
 			colDataDiv.html(cdiv)
 					.css({'height':120});
     	} else if(hasClickAction(column, 'tabulate')) {
-			var colDataDiv = getColDataDiv();
-			var cdiv = $("<div />", {'class':'col-info'}).html($("<h2 />").text(column.name));
-			if(column.description!==undefined) {
-				cdiv.append($("<h3 />", {'class':'description'}).text(column.description));
-			}
-			var tabl = $("<table />").css({'width':'100%'});
-			var tbod = $("<tbody />").appendTo(tabl);
-			var tr = $("<tr />").appendTo(tbod);
-			var tabulations = getTabulations(sector.slug, column.slug);
-			$.each(tabulations, function(k, count){
-				var td = $("<td />");
-				td.append($("<strong />").text(k))
-					.append($("<span />").text(': '))
-					.append($("<span />", {'class': 'count'}).text(count));
-				tr.append(td);
-			});
-			cdiv.append(tabl);
-			colDataDiv.html(cdiv)
-					.css({'height':80});
+			BuildDisplayBox(column, sector, getTabulations(sector.slug, column.slug), getColDataDiv())
 		}
 		var columnMode = "view_column_"+column.slug;
 		if(hasClickAction(column, 'iconify') && column.iconify_png_url !== undefined) {
@@ -516,6 +546,7 @@ $('body').bind('select-column', function(evt, edata){
 $('body').bind('unselect-column', function(evt, edata){
 	if(edata===undefined) { edata = {}; }
     $('.selected-column').removeClass('selected-column');
+    selectedColumn = undefined;
 	getColDataDiv().empty().css({'height':0});
 });
 // END page mode binders
