@@ -363,7 +363,7 @@ going age who are enrolled in it, as a percentage of the official primary school
 ,,"float","num_health_facilities_potable_water_past_mth","Number of health facilities with access to potable water in past month",,,,"potable_water_access","count_true","health",,
 ,,"float","num_primary_health_facilities","Number of primary health facilities (excluding health posts and dispensaries)",,,,"is_primary_care","count_true","health",,
 ,,"float","num_all_primary_health_facilities","Number of primary health facilities (including health posts and dispensaries)",,,,"is_all_primary_care","count_true","health",,
-,,"float","num_health_facilities_with_functioning_improved_sanitation","Number of health facilities with improved sanitation",,,,"Improved_sanitation_and_functional","count_true","health",,
+,,"float","num_health_facilities_with_functioning_improved_sanitation","Number of health facilities with improved sanitation",,,,"improved_sanitation_and_functional","count_true","health",,
 ,,"float","num_health_facilities_power_access_and_functional","Number of health facilities with power that is working",,,,"power_access_and_functional","count_true","health",,
 ,,"float","num_health_facilities_with_min_equipment_package","Number of health facilities with the minimum equipment package",,,,"minimum_equipment_package","count_true","health",,
 ,,"float","num_health_facilities_with_min_essential_meds","Number of health facilities with the minimum essential medications",,,,"minimum_essential_meds_package","count_true","health",,
