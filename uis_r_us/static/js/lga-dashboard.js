@@ -454,7 +454,6 @@ var BuildDisplayBox = (function(column, sector, tabulations, elem){
             .text(displayBoxHeaderText + ': ' + sector.name.toUpperCase())
             .appendTo(ldiv);
     var description = !!column.description ? $('<p />').text(column.description) : undefined;
-    console.log(column);
     $('<div />', {'class': 'db-l-content'})
             .append($('<h1 />').text(column.name))
             .append(description)
@@ -495,8 +494,8 @@ $('body').bind('select-column', function(evt, edata){
 	var wrapElement = $('#lga-facilities-table');
 	var column = edata.column;
 	var sector = edata.sector;
+	$('body').trigger('unselect-column', {column:selectedColumn, nextColumn: edata.column});
 	if(selectedColumn!==edata.column) {
-		$('body').trigger('unselect-column', {column:selectedColumn, nextColumn: edata.column});
 		if(column.clickable) {
 			$('.selected-column', wrapElement).removeClass('selected-column');
 			(function highlightTheColumn(column){
@@ -547,6 +546,7 @@ $('body').bind('select-column', function(evt, edata){
 $('body').bind('unselect-column', function(evt, edata){
 	if(edata===undefined) { edata = {}; }
     $('.selected-column').removeClass('selected-column');
+    selectedColumn = undefined;
 	getColDataDiv().empty().css({'height':0});
 });
 // END page mode binders
