@@ -3,6 +3,48 @@ from facility_builder import FacilityBuilder
 from models import CalculatedVariable, Variable, Facility, Sector, FacilityRecord, FacilityType, LGAIndicator
 from nga_districts.models import Zone, State, LGA
 
+class BasicDataTest(TestCase):
+    def setUp(self):
+        self.power = Variable.objects.create(
+            slug='power', data_type='string'
+            )
+        self.has_water = Variable.objects.create(
+            slug='has_water', data_type='boolean'
+            )
+        self.num_doctors = Variable.objects.create(
+            slug='num_doctors', data_type='float'
+            )
+
+        self.zone = Zone.objects.create(name='Zone', slug='zone')
+        self.state = State.objects.create(name='Zone', slug='zone', zone=self.zone)
+        self.lga = LGA.objects.create(name='Local Govt Area', slug='lga', state=self.state)
+        self.sector = Sector.objects.create(name='Test', slug='test')
+        self.facility_type = FacilityType.add_root(name='Test', slug='test')
+        self.facility = Facility.objects.create(facility_id='x', lga=self.lga, sector=self.sector, facility_type=self.facility_type)
+        self.variable_values = [
+                (self.power, 'none'),
+                (self.has_water, True),
+                (self.num_doctors, 10)
+            ]
+        for variable, value in self.variable_values:
+            self.facility.set(variable, value)
+
+    def test_get_all_data(self):
+        latest_data = self.facility.get_latest_data()
+        all_data = self.facility.get_all_data()
+        expected_values = ['none', True, 10]
+        varvals = [
+                (self.power, 'none'),
+                (self.has_water, True),
+                (self.num_doctors, 10)
+                ]
+        for variable, value in varvals:
+            variable_slug = variable.slug
+            #check to see if get_latest_data has the right value
+            self.assertEqual(latest_data[variable_slug], value)
+            #chack to see if get_all_data gives the right value
+            self.assertEqual(all_data[variable_slug].values()[0], value)
+
 class CalculatedVariableTest(TestCase):
 
     def setUp(self):
