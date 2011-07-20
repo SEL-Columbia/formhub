@@ -258,29 +258,41 @@ class Command(BaseCommand):
                     raise Exception("Variable import failed for data: %s" % d)
 
     def load_facilities(self):
-        data_dir = 'data/facility'
-        sector_args = {
-            'health': {
+        sectors = [
+            {
                 'sector': 'Health',
                 'data_source': 'health.csv',
-                'path': os.path.join(data_dir, 'health.csv'),
                 },
-            'education': {
+            {
                 'sector': 'Education',
                 'data_source': 'education.csv',
-                'path': os.path.join(data_dir, 'education.csv'),
                 },
-            'water': {
+            {
                 'sector': 'Water',
                 'data_source': 'water.csv',
-                'path': os.path.join(data_dir, 'water.csv'),
                 },
-            }
-        for sector in sector_args:
-            self.create_facilities_from_csv(**sector_args[sector])
+            {
+                'sector': 'Health',
+                'data_source': 'Health_2011_05_02.csv',
+                },
+            {
+                'sector': 'Education',
+                'data_source': 'Education_2011_05_02.csv',
+                },
+            {
+                'sector': 'Water',
+                'data_source': 'Water_2011_05_02.csv',
+                },
 
-    def create_facilities_from_csv(self, sector, data_source, path):
+            ]
+        for sector in sectors:
+            self.create_facilities_from_csv(**sector)
+
+    def create_facilities_from_csv(self, sector, data_source):
+        data_dir = 'data/facility'
+        path = os.path.join(data_dir, data_source)
         csv_reader = CsvReader(path)
+
         for d in csv_reader.iter_dicts():
             if self._limit_import:
                 if '_lga_id' not in d:
