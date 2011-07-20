@@ -16,8 +16,40 @@ from django.conf import settings
 from optparse import make_option
 
 
+def save_time(list_of_times):
+    """
+    @save_time(l) will save the function name, start time, and end
+    time in the list l whenever the decorated function is called.
+    """
+    def save_time_decorator(func):
+        def wrapped_func(*args, **kwargs):
+            start = time.time()
+            result = func(*args, **kwargs)
+            end = time.time()
+            seconds = end - start
+            list_of_times.append({
+                    'name': func.__name__,
+                    'seconds': seconds,
+                    })
+            return result
+        return wrapped_func
+    return save_time_decorator
+
+
 class Command(BaseCommand):
     help = "Load the LGA data from fixtures."
+
+    TIMES = []
+
+    @classmethod
+    def print_times(cls):
+        import operator
+        sorted_items = sorted(
+            [(d['name'], d['seconds']) for d in cls.TIMES],
+            key=operator.itemgetter(1)
+            )
+        for time, name in sorted_items:
+            print time, name
 
     option_list = BaseCommand.option_list + (
         make_option("-l", "--limit",
@@ -51,7 +83,9 @@ class Command(BaseCommand):
         self.create_admin_user()
         self._end_time = time.time()
         self.print_stats()
+        self.print_times()
 
+    @save_time(TIMES)
     def drop_database(self):
         db_host = settings.DATABASES['default']['HOST'] or 'localhost'
         db_name = settings.DATABASES['default']['NAME']
@@ -103,14 +137,13 @@ class Command(BaseCommand):
         drop_function = caller[settings.DATABASES['default']['ENGINE']]
         drop_function()
 
+    @save_time(TIMES)
     def reset_database(self):
         self.drop_database()
         call_command('syncdb', interactive=False)
 
+    @save_time(TIMES)
     def print_stats(self):
-        def seconds_to_hms(seconds):
-            return time.strftime('%H:%M:%S', time.gmtime(seconds))
-
         def get_variable_usage():
             record_types = [FacilityRecord, LGARecord]
             totals = defaultdict(int)
@@ -124,6 +157,9 @@ class Command(BaseCommand):
             all_vars = set([x.slug for x in Variable.objects.all()])
             used_vars = set(get_variable_usage().keys())
             return sorted(list(all_vars - used_vars))
+
+        def seconds_to_hms(seconds):
+            return time.strftime('%H:%M:%S', time.gmtime(seconds))
 
         info = {
             'number of facilities': Facility.objects.count(),
@@ -141,15 +177,18 @@ class Command(BaseCommand):
                 if float(query['time']) > .01:
                     print query
 
+    @save_time(TIMES)
     def load_lgas(self):
         for file_name in ['zone.json', 'state.json', 'lga.json']:
             call_command('loaddata', file_name)
 
+    @save_time(TIMES)
     def create_sectors(self):
         sectors = ['Education', 'Health', 'Water']
         for sector in sectors:
             Sector.objects.get_or_create(slug=sector.lower(), name=sector)
 
+    @save_time(TIMES)
     def create_facility_types(self):
         get = lambda node_id: FacilityType.objects.get(pk=node_id)
         facility_types = [
@@ -195,6 +234,7 @@ class Command(BaseCommand):
         for facility_type in facility_types:
             add(facility_type, root)
 
+    @save_time(TIMES)
     def load_key_renames(self):
         kwargs = {
             'model': KeyRename,
@@ -202,11 +242,13 @@ class Command(BaseCommand):
             }
         self.create_objects_from_csv(**kwargs)
 
+    @save_time(TIMES)
     def create_objects_from_csv(self, model, path):
         csv_reader = CsvReader(path)
         for d in csv_reader.iter_dicts():
             model.objects.get_or_create(**d)
 
+    @save_time(TIMES)
     def load_variables(self):
         """
         Load variables runs through variables.csv and populates these models
@@ -260,6 +302,7 @@ class Command(BaseCommand):
                 except:
                     raise Exception("Variable import failed for data: %s" % d)
 
+    @save_time(TIMES)
     def load_facilities(self):
         sectors = [
             {
@@ -291,6 +334,7 @@ class Command(BaseCommand):
         for sector in sectors:
             self.create_facilities_from_csv(**sector)
 
+    @save_time(TIMES)
     def create_facilities_from_csv(self, sector, data_source):
         data_dir = 'data/facility'
         path = os.path.join(data_dir, data_source)
@@ -307,6 +351,7 @@ class Command(BaseCommand):
             d['sector'] = sector
             facility = FacilityBuilder.create_facility_from_dict(d)
 
+    @save_time(TIMES)
     def load_lga_data(self):
         data_dir = 'data/lga'
         data_args = {
@@ -339,6 +384,7 @@ class Command(BaseCommand):
         for kwargs in data_args:
             self.load_lga_data_from_csv(**data_args[kwargs])
 
+    @save_time(TIMES)
     def load_lga_data_from_csv(self, data, path, data_format):
         csv_reader = CsvReader(path)
         num_errors = 0
@@ -365,18 +411,21 @@ class Command(BaseCommand):
         if not self._debug:
             print "Had %d error(s) when importing LGA %s data..." % (num_errors, data)
 
+    @save_time(TIMES)
     def load_table_defs(self):
         """
         Table defs contain details to help display the data. (table columns, etc)
         """
         call_command('load_table_defs')
 
+    @save_time(TIMES)
     def load_surveys(self):
         xfm_json_path = os.path.join('data','xform_manager_dataset.json')
         if not os.path.exists(xfm_json_path):
             raise Exception("Download and unpack xform_manager_dataset.json into project's data dir.")
         call_command('loaddata', xfm_json_path)
 
+    @save_time(TIMES)
     def create_admin_user(self):
         from django.contrib.auth.models import User
         admin, created = User.objects.get_or_create(
