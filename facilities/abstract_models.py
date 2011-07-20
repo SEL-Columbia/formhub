@@ -263,10 +263,22 @@ class DictModel(models.Model):
         return {self._data_record_fk: self}
 
     def get_all_data(self):
+        def non_null_value(t):
+            # returns the first non-null value
+            for val_k in ['string_value', 'float_value', 'boolean_value']:
+                if t[val_k] is not None:
+                    return t[val_k]
+            return None
+        def date_str(date):
+            return date.isoformat()
         records = self._data_record_class.objects.filter(**self._kwargs())
-        d = defaultdict(dict)
-        for record in records:
-            d[record.variable.slug][record.date.isoformat()] = record.value
+        d = {}
+        for r in records.values('variable_id', 'string_value', 'float_value', 'boolean_value', 'date'):
+            # todo: test to make sure this sorting is correct
+            variable_id = r['variable_id']
+            if variable_id not in d:
+                d[variable_id] = {}
+            d[variable_id][date_str(r['date'])] = non_null_value(r)
         return d
 
     def get_latest_data(self):
