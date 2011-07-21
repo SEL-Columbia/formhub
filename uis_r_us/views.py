@@ -3,6 +3,9 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.forms.models import model_to_dict
+from facility_views.models import FacilityTable, MapLayerDescription
+import json
 
 @login_required
 def dashboard(request, reqpath):
@@ -15,6 +18,10 @@ def dashboard(request, reqpath):
     lga = None
     context.active_districts = active_districts()
     context.active_districts2 = active_districts2()
+    mls = []
+    for map_layer in MapLayerDescription.objects.all():
+        mls.append(model_to_dict(map_layer))
+    context.layer_details = json.dumps(mls)
     if not reqpath == "":
         req_lga_id = reqpath.split("/")[0]
         try:
@@ -38,13 +45,10 @@ def lga_view(context):
     context.lga_id = "'%s'" % context.lga.unique_slug
     return render_to_response("ui.html", context_instance=context)
 
-from facility_views.models import FacilityTable
-
 def variable_data(request):
     sectors = []
     for sector_table in FacilityTable.objects.all():
         sectors.append(sector_table.display_dict)
-    import json
     return HttpResponse(json.dumps({
         'sectors': sectors
     }))
