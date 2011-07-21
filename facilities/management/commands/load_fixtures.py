@@ -4,7 +4,6 @@ from django.db.models import Count
 import os
 import json
 import time
-import sys
 from collections import defaultdict
 from facilities.models import Facility, Variable, CalculatedVariable, \
     KeyRename, FacilityRecord, Sector, FacilityType, PartitionVariable, \
@@ -247,28 +246,16 @@ class Command(BaseCommand):
     def load_facilities(self):
         sectors = [
             {
-                'sector': 'Health',
-                'data_source': 'health.csv',
-                },
-            {
                 'sector': 'Education',
-                'data_source': 'education.csv',
-                },
-            {
-                'sector': 'Water',
-                'data_source': 'water.csv',
+                'data_source': 'Educ_Baseline_PhaseII_all_merged_cleaned_07_20_2011.csv',
                 },
             {
                 'sector': 'Health',
-                'data_source': 'Health_2011_05_02.csv',
-                },
-            {
-                'sector': 'Education',
-                'data_source': 'Education_2011_05_02.csv',
+                'data_source': 'Health_PhII_RoundI&II&III_Clean.csv',
                 },
             {
                 'sector': 'Water',
-                'data_source': 'Water_2011_05_02.csv',
+                'data_source': 'Water_PhaseII_RoundI&II&III_Clean.csv',
                 },
 
             ]
@@ -282,11 +269,11 @@ class Command(BaseCommand):
         csv_reader = CsvReader(path)
 
         for d in csv_reader.iter_dicts():
-            if self._limit_import:
-                if '_lga_id' not in d:
-                    print d
-                if d['_lga_id'] not in self.limit_lgas:
-                    continue
+            if '_lga_id' not in d:
+                print "FACILITY MISSING LGA ID"
+                continue
+            if self._limit_import and d['_lga_id'] not in self.limit_lgas:
+                continue
             d['_data_source'] = data_source
             d['_facility_type'] = sector.lower()
             d['sector'] = sector
