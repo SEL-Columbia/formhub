@@ -58,7 +58,6 @@ class Command(BaseCommand):
         # If no arguments are given to this command run all the import
         # methods.
         if len(args) == 0:
-            self.reset_database()
             self.setup()
 
         # If arguments have been given to this command, run those
@@ -71,10 +70,16 @@ class Command(BaseCommand):
                 print "Unknown command:", arg
 
     def setup(self):
+        self.reset_database()
         self.load_system()
         self.load_data()
         self.load_calculations()
         self.print_stats()
+
+    @print_time
+    def reset_database(self):
+        self._drop_database()
+        call_command('syncdb', interactive=False)
 
     def load_system(self):
         self.create_users()
@@ -92,11 +97,6 @@ class Command(BaseCommand):
     def load_calculations(self):
         self.calculate_lga_indicators()
         self.calculate_lga_gaps()
-
-    @print_time
-    def reset_database(self):
-        self._drop_database()
-        call_command('syncdb', interactive=False)
 
     @print_time
     def create_users(self):
