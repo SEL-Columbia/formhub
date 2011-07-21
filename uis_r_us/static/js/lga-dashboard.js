@@ -188,7 +188,7 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 	});
 };
 (function($){
-    //a quick ajax cache, just trying to prevent multiple
+    //a quick ajax cache, merely trying to prevent multiple
     // requests to the same url in one pageload... (for now)
     var cacheData = {};
     $.getCacheJSON = function(){

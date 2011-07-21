@@ -46,7 +46,7 @@ class CsvReader(object):
             for key, value in zip(self._headers, row):
                 # note since we're reading this in from a csv file
                 # value is going to be a string or unicode string, we
-                # just want to avoid including empty strings in our
+                # quite simply want to avoid including empty strings in our
                 # dict.
                 if value:
                     result[key] = value
