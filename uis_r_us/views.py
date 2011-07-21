@@ -18,6 +18,22 @@ def dashboard(request, reqpath):
     lga = None
     context.active_districts = active_districts()
     context.active_districts2 = active_districts2()
+    context.nav_zones = [
+        {
+            'name': 'North West',
+            'states': [
+                {
+                    'name': 'California',
+                    'lgas': [
+                        {
+                            'name': 'San Francisco',
+                            'unique_slug': 'ca_sf'
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
     mls = []
     for map_layer in MapLayerDescription.objects.all():
         mls.append(model_to_dict(map_layer))

@@ -214,6 +214,17 @@
 		overflow: auto;
 		height: 100px;
 	}
+	#zone-navigation ul, #zone-navigation ul li {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+	}
+	#zone-navigation ul.lga-list {
+		display: none;
+	}
+	#zone-navigation ul.lga-list.showing {
+		display: block;
+	}
 </style>
 <link rel="stylesheet" href="/static/openlayers/default/style.css" type="text/css" media="all" charset="utf-8">
 {% endblock %}
@@ -225,6 +236,31 @@
 		</div>
 	</div>
 	<div id="map" class="resizing-map"></div>
+	<div id="zone-navigation">
+		{% for zone in nav_zones %}
+		<div class="zone-list">
+			<h2 class="zone-title">
+				{{zone.name}}
+			</h2>
+			<ul>
+				{% for state in zone.states %}
+				<li>
+					<a href="#" class="state-link">{{state.name}}</a>
+					<ul class="lga-list">
+						{% for lga in state.lgas %}
+						<li>
+							<a href="/~{{lga.unique_slug}}">
+								{{lga.name}}
+							</a>
+						</li>
+						{% endfor %}
+					</ul>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		{% endfor %}
+	</div>
 </div>
 <div id="gap-analysis-table-template" style="display:none">
 	<div>
@@ -647,6 +683,17 @@ var loadMap = true;
 var layerData = (function(_){return _})({{layer_details|safe}});
 
 $('.content-inner-wrap').css({'padding':0});
+
+function activateNavigation(){
+	var nav = $('#zone-navigation');
+	nav.delegate('a.state-link', 'click', function(){
+		$(this).parents('li')
+				.eq(0)
+				.find('ul')
+				.toggleClass('showing');
+	});
+}
+
 $(function(){
 	var dashboard = $.sammy(function(){
 		function createTitleForLga(state, lga) {
@@ -662,6 +709,10 @@ $(function(){
 		});
 		var layerIdsAndNames = [["Nigeria", "nigeria_base"]].concat(_layerIdsAndNames);
 		this.get(pageRootUrl, function(){
+			$('#map').css({
+				'height': '476px',
+				'position': 'static'
+			});
 			setTitle($("<span />", {'text': 'Home'}));
 			$('<div />')
 				.addClass('home-map')
@@ -674,9 +725,10 @@ $(function(){
 				.appendTo('#map')
 				.height(476)
 				.css({
-					'border': '1px solid black',
+					'border': '1px solid #bbb',
 					'padding-left': '685px'
 				});
+			activateNavigation();
 			launchOpenLayers({
 				defaultLayer: '',
 				layers: layerIdsAndNames,
