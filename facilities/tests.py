@@ -253,7 +253,7 @@ class PassDataToPage(TestCase):
         self.assertTrue(isinstance(resp.get('profileData'), dict))
 
 
-from score_variables import get_access_and_participation_score_variable
+from score_variables import get_access_and_participation_score_variable, FunctionComponent, Function, components, build_score
 
 
 class ScoreVariableTest(TestCase):
@@ -280,7 +280,6 @@ class ScoreVariableTest(TestCase):
         self.distance = self.variables['distance_from_catchment_area']
         facility.set(self.distance, 1.5) # 2 points
         access = get_access_and_participation_score_variable()
-        self.assertEquals(access.points(facility, 'distance_from_catchment_area'), 2)
 
     def test_total_access_points(self):
         # test that the total score for all of the components is correct
@@ -306,3 +305,31 @@ class ScoreVariableTest(TestCase):
             'female_to_male_ratio': 2,
             })
         self.assertEquals(access.score(facility), 14.0)
+
+    def test_field_storage(self):
+        fc = FunctionComponent(1, 'x < 1', 'Does this work?')
+        self.assertEquals(fc.to_dict(), {'value': 1, 'criteria': 'x < 1', 'label': 'Does this work?'})
+        self.assertTrue(fc.meets_criteria(.3))
+
+    def test_function(self):
+        f = Function(
+            [
+                FunctionComponent(0, 'x < 0', 'Less than 0'),
+                FunctionComponent(1, 'x >= 0', 'At least 0'),
+                ]
+            )
+        self.assertEquals(f.points(5), 1)
+
+    def test_build_score(self):
+        s = build_score(components)
+        self.assertEquals(
+            s.score({
+                    'net_intake_rate': 0.97,
+                    'distance_from_catchment_area': 1.5,
+                    'distance_to_nearest_secondary_school': 0.5,
+                    'proportion_of_students_living_less_than_3km_away': 0.4,
+                    'net_enrollment_ratio': 0.75,
+                    'female_to_male_ratio': 0.9,
+                    }),
+            14.0
+            )
