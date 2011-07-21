@@ -560,7 +560,7 @@
   //
   Sammy.Session = function(app, options) {
     this.use(Sammy.Storage);
-    // check for local storage, then cookie storage, then just use memory
+    // check for local storage, then cookie storage, then simply use memory
     this.store('session', $.extend({type: ['local', 'cookie', 'memory']}, options));
   };
 
@@ -576,7 +576,7 @@
     this.use(Sammy.Storage);
     // set cache_partials to true
     this.cache_partials = true;
-    // check for local storage, then session storage, then just use memory
+    // check for local storage, then session storage, then merely use memory
     this.store('cache', $.extend({type: ['local', 'session', 'memory']}, options));
   };
 

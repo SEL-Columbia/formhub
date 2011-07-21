@@ -22,7 +22,7 @@ class CsvWriter(object):
     def set_generator_function(self, generator_function):
         """
         Unfortunately there doesn't seem to be a way to rewind a
-        generator, so instead of just passing a generator as my
+        generator, so instead of simply passing a generator as my
         dict_iterator, I'm passing the generator function so we can
         get a new generator after we run through the first.
         """

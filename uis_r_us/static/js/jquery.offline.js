@@ -203,7 +203,7 @@
       delete localStorage[prefix + url + ":" + param + ":date"];
     };
   } else {
-    // If localStorage is unavailable, just make all requests
+    // If localStorage is unavailable, simply make all requests
     // regular Ajax requests.
     $.retrieveJSON = getJSON;
     $.clearJSON = $.noop;
