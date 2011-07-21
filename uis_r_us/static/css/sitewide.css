@@ -38,6 +38,11 @@ div#content .fwidth {
 ul#menu .fwidth > li:first-child {
     margin-left: -10px;
 }
+body.home #header {
+    height: 51px;
+    background-color: #545653;
+    background-image: none;
+}
 div#header {
   position: relative;
   height: 36px;
@@ -112,6 +117,28 @@ div.icontent {
 	border: 0 none;
 	margin: -3px 0;
 	height: 34px;
+}
+body.home #hlogo img {
+    height: 50px;
+}
+body.home h2.site-title {
+    position: absolute;
+	left: 110px;
+	top: 5px;
+	font-size: 14px;
+	margin: 0;
+	color: #aaa;
+	font-weight: normal;
+	opacity: 0.9;
+}
+body.home h2.title {
+	position: absolute;
+	left: 110px;
+	top: 23px;
+	font-size: 18px;
+	margin: 0;
+	color: #aaa;
+	font-weight: normal;
 }
 h2.title {
 	position: absolute;
