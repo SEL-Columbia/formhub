@@ -81,6 +81,8 @@ class ColumnCategory(models.Model):
 class MapLayerDescription(models.Model):
     slug = models.CharField(max_length=128)
     name = models.CharField(max_length=128)
-    source = models.CharField(max_length=128)
+    data_source = models.CharField(max_length=128)
     description = models.CharField(max_length=1024)
+    display_order = models.PositiveSmallIntegerField()
+    sector_string = models.CharField(max_length=64)
 
