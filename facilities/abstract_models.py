@@ -238,6 +238,9 @@ class DictModel(models.Model):
         d.save()
         return d.value
 
+    def get(self, variable):
+        return self.get_latest_value_for_variable(variable)
+
     def add_data_from_dict(self, d):
         """
         Key value pairs in d that are in the data dictionary will be

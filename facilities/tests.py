@@ -209,3 +209,26 @@ class PassDataToPage(TestCase):
         resp = json.loads(response.content)
         self.assertTrue(isinstance(resp.get('facilities'), dict))
         self.assertTrue(isinstance(resp.get('profileData'), dict))
+
+
+from score_variables import get_access_and_participation_score_variable
+
+
+class ScoreVariableTest(TestCase):
+
+    def setUp(self):
+        # create school with distance record on it
+        self.distance = Variable.objects.create(
+            slug='distance', data_type='float'
+            )
+
+    def test_distance_component(self):
+        # make sure the weight calculated from the distance for the
+        # school is correct
+        facility = Facility.objects.create()
+        facility.set(self.distance, 1.5)
+        access = get_access_and_participation_score_variable()
+        self.assertEquals(access.points(facility, 'distance'), 2)
+
+    def test_total_access_points(self):
+        pass
