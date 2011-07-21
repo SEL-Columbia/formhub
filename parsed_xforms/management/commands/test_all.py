@@ -37,7 +37,7 @@ class Command(BaseCommand):
         TestRunner = get_runner(settings)
         
         if hasattr(TestRunner, 'func_name'):
-            # Pre 1.2 test runners were just functions,
+            # Pre 1.2 test runners were merely functions,
             # and did not support the 'failfast' option.
             import warnings
             warnings.warn(

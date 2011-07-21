@@ -267,7 +267,7 @@ exports.dirname = function(path) {
     return '.';
   } else if (dir.length === 1 ||
       (isWindows && dir.length <= 3 && dir.charAt(1) === ':')) {
-    // It is just a slash or a drive letter with a slash
+    // It is simply a slash or a drive letter with a slash
     return dir;
   } else {
     // It is a full dirname, strip trailing slash

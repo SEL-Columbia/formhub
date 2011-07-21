@@ -7,6 +7,7 @@ from treebeard.mp_tree import MP_Node
 
 from nga_districts.models import LGA, LGARecord
 from abstract_models import Variable, CalculatedVariable, PartitionVariable, DataRecord, DictModel, KeyRename
+from score_variables import ScoreVariable
 
 
 class FacilityRecord(DataRecord):
@@ -161,7 +162,8 @@ class Facility(DictModel):
     fields should be stored in data records, with convenience fields stored in
     the facility model as needed.
     """
-    facility_id = models.CharField(max_length=100)
+    # TODO: Why do we need facility_id?
+    facility_id = models.CharField(max_length=100, null=True)
     lga = models.ForeignKey(LGA, related_name="facilities", null=True, default=None)
     facility_type = models.ForeignKey(FacilityType, null=True, default=None)
     sector = models.ForeignKey(Sector, null=True, default=None)

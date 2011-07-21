@@ -238,6 +238,9 @@ class DictModel(models.Model):
         d.save()
         return d.value
 
+    def get(self, variable):
+        return self.get_latest_value_for_variable(variable)
+
     def add_data_from_dict(self, d):
         """
         Key value pairs in d that are in the data dictionary will be
@@ -263,20 +266,46 @@ class DictModel(models.Model):
         return {self._data_record_fk: self}
 
     def get_all_data(self):
+        def non_null_value(t):
+            # returns the first non-null value
+            for val_k in ['string_value', 'float_value', 'boolean_value']:
+                if t[val_k] is not None:
+                    return t[val_k]
+            return None
+        def date_str(date):
+            return date.isoformat()
         records = self._data_record_class.objects.filter(**self._kwargs())
-        d = defaultdict(dict)
-        for record in records:
-            d[record.variable.slug][record.date.isoformat()] = record.value
+        d = {}
+        for r in records.values('variable_id', 'string_value', 'float_value', 'boolean_value', 'date'):
+            # todo: test to make sure this sorting is correct
+            variable_id = r['variable_id']
+            if variable_id not in d:
+                d[variable_id] = {}
+            d[variable_id][date_str(r['date'])] = non_null_value(r)
         return d
 
     def get_latest_data(self):
-        records = self._data_record_class.objects.filter(**self._kwargs()).order_by('-date')
+        def non_null_value(t):
+            # returns the first non-null value
+            for val_k in ['string_value', 'float_value', 'boolean_value']:
+                if t[val_k] is not None:
+                    return t[val_k]
+            return None
+        records = self._data_record_class.objects.filter(**self._kwargs())
         d = {}
-        for r in records:
+        for r in records.values('variable_id', 'string_value', 'float_value', 'boolean_value', 'date'):
             # todo: test to make sure this sorting is correct
-            if r.variable.slug not in d:
-                d[r.variable.slug] = r.value
-        return d
+            variable_id = r['variable_id']
+            if variable_id not in d or d[variable_id][0] < r['date']:
+                # updates the dict if it's the first record of its type OR
+                # if its date is more recent than the existing record
+                d[variable_id] = \
+                        (r['date'], non_null_value(r))
+        modd = {}
+        for variable, valtup in d.items():
+            #strips out the 'date' which was used to get most recent.
+            modd[variable] = valtup[1]
+        return modd
 
     def get_latest_value_for_variable(self, variable):
         if type(variable) == str:

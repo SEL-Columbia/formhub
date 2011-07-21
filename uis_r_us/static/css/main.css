@@ -159,3 +159,16 @@ table.gap-analysis td.blank {
 	padding: 0;
 	background-color: transparent;
 }
+
+/*--
+Description popup
+--*/
+#header .description-wrap {
+    display: none;
+    position: absolute;
+    z-index: 999;
+    background-color: #fafafa;
+}
+#header .description-wrap.showing.filled {
+    display: block;
+}

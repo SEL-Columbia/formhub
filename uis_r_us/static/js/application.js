@@ -43,3 +43,57 @@ function warn() {
 	    throw(arguments[0]);
 	}
 }
+
+(function(){
+    var popupRequested = false;
+    var popupDiv;
+    var popupWidth;
+    var descriptionWrap;
+    function getDescriptionWrap() {
+        if(descriptionWrap===undefined) {
+            descriptionWrap = $('.description-wrap').eq(0);
+            if(descriptionWrap.length===0) {
+                descriptionWrap = $('<div />')
+                        .addClass('description-wrap')
+                        .appendTo($('#header'));
+            }
+        }
+        return descriptionWrap;
+    }
+    $('a#hlogo').click(function(evt){
+        getDescriptionWrap().toggleClass('showing');
+        if(!popupRequested) {
+            var popupReq = $.get('/description').then(function(d){
+                popupDiv = $(d).find('#site-description');
+                popupWidth = popupDiv.data('width');
+                descriptionWrap
+                    .addClass('filled')
+                    .css({'width': popupWidth})
+                    .html(popupDiv);
+            });
+            popupRequested = true;
+        }
+        evt.preventDefault();
+    });
+})();
+
+var mTemplates = {};
+function getTemplate(templateName, cb) {
+    if(!mTemplates[templateName]) {
+        $.get("/mustache/"+templateName).done(function(d){
+            mTemplates[templateName] = d;
+            cb.call({
+                name: templateName,
+                template: d,
+                templates: mTemplates
+            }, d);
+        });
+    } else {
+        cb.call({
+            name: templateName,
+            template: mTemplates[templateName],
+            templates: mTemplates
+        });
+    }
+}
+
