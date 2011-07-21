@@ -99,7 +99,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'user_management.middleware.RequirePermissionMiddleware',
+    # 'user_management.middleware.RequirePermissionMiddleware',
 )
 
 # RESTRICTED_URLS and RESTRICTED_URLS_EXCEPTIONS are used by the
@@ -140,7 +140,7 @@ INSTALLED_APPS = (
     'nga_districts',
     'facilities',
     'resources',
-    'user_management',
+    # 'user_management',
 )
 COMPRESS = True
 
