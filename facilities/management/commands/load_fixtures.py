@@ -17,6 +17,12 @@ from optparse import make_option
 
 
 def print_time(func):
+    """
+    @print_time
+
+    Put this decorator around a function to see how many seconds each
+    call of this function takes to run.
+    """
     def wrapped_func(*args, **kwargs):
         start = time.time()
         result = func(*args, **kwargs)
@@ -52,7 +58,8 @@ class Command(BaseCommand):
         # If no arguments are given to this command run all the import
         # methods.
         if len(args) == 0:
-            self.run_all()
+            self.reset_database()
+            self.setup()
 
         # If arguments have been given to this command, run those
         # methods in the order they have been specified.
@@ -63,114 +70,53 @@ class Command(BaseCommand):
             else:
                 print "Unknown command:", arg
 
-    def run_all(self):
-        self._start_time = time.time()
-        self.reset_database()
+    def setup(self):
+        self.load_system()
+        self.load_data()
+        self.load_calculations()
+        self.print_stats()
+
+    def load_system(self):
+        self.create_users()
         self.load_lgas()
         self.create_sectors()
         self.create_facility_types()
         self.load_key_renames()
         self.load_variables()
         self.load_table_defs()
+
+    def load_data(self):
         self.load_facilities()
         self.load_lga_data()
+
+    def load_calculations(self):
         self.calculate_lga_indicators()
         self.calculate_lga_gaps()
-        self.create_admin_user()
-        self._end_time = time.time()
-        self.print_stats()
-
-    @print_time
-    def drop_database(self):
-        db_host = settings.DATABASES['default']['HOST'] or 'localhost'
-        db_name = settings.DATABASES['default']['NAME']
-        db_user = settings.DATABASES['default']['USER']
-        db_password = settings.DATABASES['default']['PASSWORD']
-
-        def drop_sqlite_database():
-            try:
-                os.remove('db.sqlite3')
-                print 'removed db.sqlite3'
-            except OSError:
-                pass
-
-        def drop_mysql_database():
-            import MySQLdb
-            conn = MySQLdb.connect(
-                db_host,
-                db_user,
-                db_password,
-                db_name
-            )
-            cursor = conn.cursor()
-            # to start up django the mysql database must exist
-            cursor.execute("DROP DATABASE %s" % db_name)
-            cursor.execute("CREATE DATABASE %s" % db_name)
-            conn.close()
-
-        def drop_postgresql_database():
-            import psycopg2
-            # connect to postgres db to drop and recreate db
-            conn = psycopg2.connect(
-                database='postgres',
-                user=db_user,
-                host=db_host,
-                password=db_password
-            )
-            conn.set_isolation_level(
-                psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
-            cursor = conn.cursor()
-            cursor.execute("DROP DATABASE %s" % db_name)
-            cursor.execute("CREATE DATABASE %s" % db_name)
-            conn.close()
-
-        caller = {
-            'django.db.backends.mysql': drop_mysql_database,
-            'django.db.backends.sqlite3': drop_sqlite_database,
-            'django.db.backends.postgresql_psycopg2': drop_postgresql_database,
-            }
-        drop_function = caller[settings.DATABASES['default']['ENGINE']]
-        drop_function()
 
     @print_time
     def reset_database(self):
-        self.drop_database()
+        self._drop_database()
         call_command('syncdb', interactive=False)
 
     @print_time
-    def print_stats(self):
-        def get_variable_usage():
-            record_types = [FacilityRecord, LGARecord]
-            totals = defaultdict(int)
-            for record_type in record_types:
-                counts = record_type.objects.values('variable').annotate(Count('variable'))
-                for d in counts:
-                    totals[d['variable']] += d['variable__count']
-            return totals
-
-        def get_unused_variables():
-            all_vars = set([x.slug for x in Variable.objects.all()])
-            used_vars = set(get_variable_usage().keys())
-            return sorted(list(all_vars - used_vars))
-
-        def seconds_to_hms(seconds):
-            return time.strftime('%H:%M:%S', time.gmtime(seconds))
-
-        info = {
-            'number of facilities': Facility.objects.count(),
-            'facilities without lgas': Facility.objects.filter(lga=None).count(),
-            'number of facility records': FacilityRecord.objects.count(),
-            'number of lga records': LGARecord.objects.count(),
-            'time': seconds_to_hms(self._end_time - self._start_time),
-            'unused variables': get_unused_variables(),
-            }
-        print json.dumps(info, indent=4)
-
-        from django.db import connection
-        if self._debug:
-            for query in connection.queries:
-                if float(query['time']) > .01:
-                    print query
+    def create_users(self):
+        from django.contrib.auth.models import User
+        admin, created = User.objects.get_or_create(
+            username="admin",
+            email="admin@admin.com",
+            is_staff=True,
+            is_superuser=True
+            )
+        admin.set_password("pass")
+        admin.save()
+        mdg_user, created = User.objects.get_or_create(
+            username="mdg",
+            email="mdg@example.com",
+            is_staff=True,
+            is_superuser=True
+            )
+        mdg_user.set_password("2015")
+        mdg_user.save()
 
     @print_time
     def load_lgas(self):
@@ -348,63 +294,48 @@ class Command(BaseCommand):
 
     @print_time
     def load_lga_data(self):
-        data_dir = 'data/lga'
-        data_args = {
-            'population': {
+        data_kwargs = [
+            {
                 'data': 'population',
-                'path': os.path.join(data_dir, 'population.csv'),
-                'data_format': 'variable_ids_in_cols',
                 },
-            'area': {
+            {
                 'data': 'area',
-                'path': os.path.join(data_dir, 'area.csv'),
-                'data_format': 'variable_ids_in_cols',
                 },
-            'health': {
+            {
                 'data': 'health',
-                'path': os.path.join(data_dir, 'health.csv'),
-                'data_format': 'variable_ids_in_rows',
+                'row_contains_variable_slug': True,
                 },
-            'education': {
+            {
                 'data': 'education',
-                'path': os.path.join(data_dir, 'education.csv'),
-                'data_format': 'variable_ids_in_rows',
+                'row_contains_variable_slug': True,
                 },
-            'infrastructure': {
+            {
                 'data': 'infrastructure',
-                'path': os.path.join(data_dir, 'infrastructure.csv'),
-                'data_format': 'variable_ids_in_rows',
+                'row_contains_variable_slug': True,
                 },
-            }
-        for kwargs in data_args:
-            self.load_lga_data_from_csv(**data_args[kwargs])
+            ]
+        for kwargs in data_kwargs:
+            filename = kwargs.pop('data') + '.csv'
+            kwargs['path'] = os.path.join('data/lga', filename)
+            self.load_lga_data_from_csv(**kwargs)
 
     @print_time
-    def load_lga_data_from_csv(self, data, path, data_format):
+    def load_lga_data_from_csv(self, path, row_contains_variable_slug=False):
         csv_reader = CsvReader(path)
-        num_errors = 0
         for d in csv_reader.iter_dicts():
-            if self._limit_import:
-                if '_lga_id' not in d:
-                    print d
-                if d['_lga_id'] not in self.limit_lgas:
-                    continue
+            if '_lga_id' not in d:
+                print "MISSING LGA ID:", d
+                continue
+            if self._limit_import and d['_lga_id'] not in self.limit_lgas:
+                continue
             lga = LGA.objects.get(id=d['_lga_id'])
-            # if the variable_id is in the row grab it along
-            # with the value and put it in the dict
-            if data_format == 'variable_ids_in_rows':
-                d = {d['slug']: d['value']}
-            if self._debug:
-                lga.add_data_from_dict(d)
+            if row_contains_variable_slug:
+                if 'slug' in d and 'value' in d:
+                    lga.add_data_from_dict({d['slug']: d['value']})
+                else:
+                    print "MISSING SLUG OR VALUE:", d
             else:
-                try:
-                    lga.add_data_from_dict(d)
-                except KeyboardInterrupt:
-                    sys.exit(0)
-                except:
-                    num_errors += 1
-        if not self._debug:
-            print "Had %d error(s) when importing LGA %s data..." % (num_errors, data)
+                lga.add_data_from_dict(d)
 
     @print_time
     def load_table_defs(self):
@@ -431,21 +362,83 @@ class Command(BaseCommand):
             i.set_lga_values()
 
     @print_time
-    def create_admin_user(self):
-        from django.contrib.auth.models import User
-        admin, created = User.objects.get_or_create(
-            username="admin",
-            email="admin@admin.com",
-            is_staff=True,
-            is_superuser=True
+    def print_stats(self):
+        def get_variable_usage():
+            record_types = [FacilityRecord, LGARecord]
+            totals = defaultdict(int)
+            for record_type in record_types:
+                counts = record_type.objects.values('variable').annotate(Count('variable'))
+                for d in counts:
+                    totals[d['variable']] += d['variable__count']
+            return totals
+
+        def get_unused_variables():
+            all_vars = set([x.slug for x in Variable.objects.all()])
+            used_vars = set(get_variable_usage().keys())
+            return sorted(list(all_vars - used_vars))
+
+        info = {
+            'number of facilities': Facility.objects.count(),
+            'facilities without lgas': Facility.objects.filter(lga=None).count(),
+            'number of facility records': FacilityRecord.objects.count(),
+            'number of lga records': LGARecord.objects.count(),
+            'unused variables': get_unused_variables(),
+            }
+        print json.dumps(info, indent=4)
+
+        from django.db import connection
+        if self._debug:
+            for query in connection.queries:
+                if float(query['time']) > .01:
+                    print query
+
+    def _drop_database(self):
+        db_host = settings.DATABASES['default']['HOST'] or 'localhost'
+        db_name = settings.DATABASES['default']['NAME']
+        db_user = settings.DATABASES['default']['USER']
+        db_password = settings.DATABASES['default']['PASSWORD']
+
+        def drop_sqlite_database():
+            try:
+                os.remove('db.sqlite3')
+                print 'removed db.sqlite3'
+            except OSError:
+                pass
+
+        def drop_mysql_database():
+            import MySQLdb
+            conn = MySQLdb.connect(
+                db_host,
+                db_user,
+                db_password,
+                db_name
             )
-        admin.set_password("pass")
-        admin.save()
-        mdg_user, created = User.objects.get_or_create(
-            username="mdg",
-            email="mdg@example.com",
-            is_staff=True,
-            is_superuser=True
+            cursor = conn.cursor()
+            # to start up django the mysql database must exist
+            cursor.execute("DROP DATABASE %s" % db_name)
+            cursor.execute("CREATE DATABASE %s" % db_name)
+            conn.close()
+
+        def drop_postgresql_database():
+            import psycopg2
+            # connect to postgres db to drop and recreate db
+            conn = psycopg2.connect(
+                database='postgres',
+                user=db_user,
+                host=db_host,
+                password=db_password
             )
-        mdg_user.set_password("2015")
-        mdg_user.save()
+            conn.set_isolation_level(
+                psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+            cursor = conn.cursor()
+            cursor.execute("DROP DATABASE %s" % db_name)
+            cursor.execute("CREATE DATABASE %s" % db_name)
+            conn.close()
+
+        caller = {
+            'django.db.backends.mysql': drop_mysql_database,
+            'django.db.backends.sqlite3': drop_sqlite_database,
+            'django.db.backends.postgresql_psycopg2': drop_postgresql_database,
+            }
+        drop_function = caller[settings.DATABASES['default']['ENGINE']]
+        drop_function()
