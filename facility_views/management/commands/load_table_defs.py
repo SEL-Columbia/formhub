@@ -20,15 +20,28 @@ class Command(BaseCommand):
             ("Education", "education"),
             ("Water", "water")
         ]
+        self.delete_existing_values()
+        self.load_subgroups()
+        self.load_table_types(table_types)
+        self.load_layer_descriptions()
+
+    def load_layer_descriptions(self):
+        layer_descriptions = list(CsvReader(os.path.join("data","map_layers", "layer_details.csv")).iter_dicts())
+        for layer in layer_descriptions:
+            MapLayerDescription.objects.get_or_create(**layer)
+
+    def delete_existing_values(self):
         FacilityTable.objects.all().delete()
         TableColumn.objects.all().delete()
         ColumnCategory.objects.all().delete()
-        
-        subgroups = {}
+
+    def load_subgroups(self):
+        self.subgroups = {}
         sgs = list(CsvReader(os.path.join("data","table_definitions", "subgroups.csv")).iter_dicts())
         for sg in sgs:
-            subgroups[sg['slug']] = sg['name']
+            self.subgroups[sg['slug']] = sg['name']
 
+    def load_table_types(self, table_types):
         for name, slug in table_types:
             curtable = FacilityTable.objects.create(name=name, slug=slug)
             csv_reader = CsvReader(os.path.join("data","table_definitions", "%s.csv" % slug))
@@ -36,9 +49,9 @@ class Command(BaseCommand):
             for input_d in csv_reader.iter_dicts():
                 subs = []
                 for sg in input_d['subgroups'].split(" "):
-                    if sg in subgroups:
+                    if sg in self.subgroups:
                         subs.append({
-                            'name': subgroups[sg],
+                            'name': self.subgroups[sg],
                             'slug': sg
                         })
                 for sub in subs:
