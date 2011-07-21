@@ -178,7 +178,7 @@ class PartitionVariable(CalculatedVariable):
         try:
             for i in self.info:
                 if eval(i['criteria']):
-                    return i['value']
+                    return eval(i['value'])
         except:
             return None
 
