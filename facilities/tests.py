@@ -259,18 +259,50 @@ from score_variables import get_access_and_participation_score_variable
 class ScoreVariableTest(TestCase):
 
     def setUp(self):
-        # create school with distance record on it
-        self.distance = Variable.objects.create(
-            slug='distance', data_type='float'
-            )
+        variable_slugs = [
+            'net_intake_rate',
+            'distance_from_catchment_area',
+            'distance_to_nearest_secondary_school',
+            'proportion_of_students_living_less_than_3km_away',
+            'net_enrollment_ratio',
+            'female_to_male_ratio',
+            ]
+        self.variables = {}
+        for slug in variable_slugs:
+            self.variables[slug] = Variable.objects.create(
+                slug=slug, data_type='float'
+                )
 
     def test_distance_component(self):
         # make sure the weight calculated from the distance for the
         # school is correct
         facility = Facility.objects.create()
-        facility.set(self.distance, 1.5)
+        self.distance = self.variables['distance_from_catchment_area']
+        facility.set(self.distance, 1.5) # 2 points
         access = get_access_and_participation_score_variable()
-        self.assertEquals(access.points(facility, 'distance'), 2)
+        self.assertEquals(access.points(facility, 'distance_from_catchment_area'), 2)
 
     def test_total_access_points(self):
-        pass
+        # test that the total score for all of the components is correct
+        facility = Facility.objects.create()
+        facility_data = [
+            ('net_intake_rate', 0.97), # 5 points
+            ('distance_from_catchment_area', 1.5), # 2 points
+            ('distance_to_nearest_secondary_school', 0.5), # 2 points
+            ('proportion_of_students_living_less_than_3km_away', 0.4), # 1 point
+            ('net_enrollment_ratio', 0.75), # 2 points
+            ('female_to_male_ratio', 0.9), # 2 points
+            ] # total: 14 points
+        for slug, value in facility_data:
+            facility.set(self.variables[slug], value)
+        access = get_access_and_participation_score_variable()
+        self.maxDiff = None
+        self.assertEquals(access.score_dict(facility), {
+            'net_intake_rate': 5,
+            'distance_from_catchment_area': 2,
+            'distance_to_nearest_secondary_school': 2,
+            'proportion_of_students_living_less_than_3km_away': 1,
+            'net_enrollment_ratio': 2,
+            'female_to_male_ratio': 2,
+            })
+        self.assertEquals(access.score(facility), 14.0)
