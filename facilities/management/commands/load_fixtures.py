@@ -233,7 +233,7 @@ class Command(BaseCommand):
     def load_key_renames(self):
         kwargs = {
             'model': KeyRename,
-            'path': os.path.join('facilities', 'fixtures', 'key_renames.csv')
+            'path': os.path.join('data', 'variables', 'key_renames.csv')
             }
         self.create_objects_from_csv(**kwargs)
 
@@ -264,7 +264,7 @@ class Command(BaseCommand):
 
         add_critical_variables()
 
-        csv_reader = CsvReader(os.path.join('facilities', 'fixtures', 'variables.csv'))
+        csv_reader = CsvReader(os.path.join('data', 'variables', 'variables.csv'))
 
         def add_variable_from_dict(d):
             """

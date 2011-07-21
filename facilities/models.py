@@ -147,7 +147,7 @@ class GapVariable(Variable):
         current = dict([(d['lga'], d[self.variable.value_field()]) for d in current_values])
         target_values = LGARecord.objects.filter(variable=self.target).values(self.target.value_field(), 'lga').annotate(Max('date'))
         target = dict([(d['lga'], d[self.target.value_field()]) for d in target_values])
-        return dict([(lga, target[lga] - current[lga]) for lga in current.keys() if lga in target])
+        return dict([(lga, max(target[lga] - current[lga], 0.0)) for lga in current.keys() if lga in target])
 
     def set_lga_values(self):
         values = self.calculate_gap()
