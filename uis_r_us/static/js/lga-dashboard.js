@@ -442,54 +442,6 @@ function getTabulations(sector, col) {
 	return valueCounts;
 }
 
-var displayBoxHeaderText = "FACILITY BROWSER";
-//this is kinda ugly while I look into a better way to do this (e.g. mustache.js or jquery templates)
-var BuildDisplayBox = (function(column, sector, tabulations, elem){
-    var ldiv = $('<div />', {'class': 'db-l'});
-    var rdiv = $('<div />', {'class': 'db-r'});
-    var odiv = $("<div />", {'class':'display-box'})
-            .append($('<div />', {'class':'db-l-w'}).html(ldiv))
-            .append($('<div />', {'class':'db-r-w'}).html(rdiv));
-    $('<h2 />', {'class':'db-title'})
-            .text(displayBoxHeaderText + ': ' + sector.name.toUpperCase())
-            .appendTo(ldiv);
-    var description = !!column.description ? $('<p />').text(column.description) : undefined;
-    $('<div />', {'class': 'db-l-content'})
-            .append($('<h1 />').text(column.name))
-            .append(description)
-            .appendTo(ldiv);
-    var ul = $('<ul />');
-    var values = [];
-    var reverseTabulations = {};
-    var rVals = [];
-    var rcontent = $('<div />', {'class':'content'})
-                .appendTo(rdiv);
-    function addDisplayValue(value, occurrences, clname) {
-        var valElem = $('<p />');
-        $('<span />').text(value)
-                        .addClass('value')
-                        .appendTo(valElem);
-        $('<span />').text('('+occurrences+' occurrence'+ (occurrences===1 ? '' : 's') +')')
-                        .addClass('occurrences')
-                        .appendTo(valElem);
-        rcontent.append(valElem)
-    }
-    $.each(tabulations, function(k, val){
-        if(reverseTabulations['' + val]===undefined) {
-            reverseTabulations['' + val] = [];
-            rVals.push(val);
-        }
-        reverseTabulations[''+val].push(k);
-    });
-    $.each(rVals.sort().reverse(), function(i, val){
-        $.each(reverseTabulations['' + val], function(ii, val2){
-            addDisplayValue(val2, tabulations[val2]);
-        });
-    });
-    elem.html(odiv).css({'height': '110px'});
-});
-
-
 $('body').bind('select-column', function(evt, edata){
 	var wrapElement = $('#lga-facilities-table');
 	var column = edata.column;
@@ -522,7 +474,20 @@ $('body').bind('select-column', function(evt, edata){
 			colDataDiv.html(cdiv)
 					.css({'height':120});
     	} else if(hasClickAction(column, 'tabulate')) {
-			BuildDisplayBox(column, sector, getTabulations(sector.slug, column.slug), getColDataDiv())
+    	    var tabulations = $.map(getTabulations(sector.slug, column.slug), function(k, val){
+                return { 'value': k, 'occurrences': val }
+            });
+            getMustacheTemplate('facility_column_description', function(){
+                var data = {
+                    tabulations: tabulations,
+                    sectorName: sector.name,
+                    name: column.name,
+                    description: column.description
+                };
+                getColDataDiv()
+                        .html(Mustache.to_html(this.template, data))
+                        .css({'height':110});
+            });
 		}
 		var columnMode = "view_column_"+column.slug;
 		if(hasClickAction(column, 'iconify') && column.iconify_png_url !== undefined) {
