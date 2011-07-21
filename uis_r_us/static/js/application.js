@@ -77,23 +77,25 @@ function warn() {
     });
 })();
 
-var mTemplates = {};
-function getTemplate(templateName, cb) {
-    if(!mTemplates[templateName]) {
-        $.get("/mustache/"+templateName).done(function(d){
-            mTemplates[templateName] = d;
+var getMustacheTemplate = (function(){
+    var mTemplates = {};
+    return function getMustacheTemplateFromCacheOrAjax(d) {
+        if(!mTemplates[templateName]) {
+            $.get("/mustache/"+templateName).done(function(d){
+                mTemplates[templateName] = d;
+                cb.call({
+                    name: templateName,
+                    template: d,
+                    templates: mTemplates
+                }, d);
+            });
+        } else {
             cb.call({
                 name: templateName,
-                template: d,
+                template: mTemplates[templateName],
                 templates: mTemplates
-            }, d);
-        });
-    } else {
-        cb.call({
-            name: templateName,
-            template: mTemplates[templateName],
-            templates: mTemplates
-        });
+            });
+        }
     }
-}
+})();
 
