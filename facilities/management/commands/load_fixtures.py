@@ -32,41 +32,13 @@ def print_time(func):
     return wrapped_func
 
 
-class Command(BaseCommand):
-    help = "Load the LGA data from fixtures."
-
-    option_list = BaseCommand.option_list + (
-        make_option("-l", "--limit",
-                    dest="limit_import",
-                    default=False,
-                    help="Limit the imported LGAs to the list specified in settings.py",
-                    action="store_true"),
-        make_option("-d", "--debug",
-                    dest="debug",
-                    help="print debug stats about the query times.",
-                    default=False,
-                    action="store_true"),
-        )
+class DataLoader(object):
 
     limit_lgas = settings.LIMITED_LGA_LIST
 
-    def handle(self, *args, **kwargs):
-        self._limit_import = kwargs['limit_import']
-        self._debug = kwargs['debug']
-
-        # If no arguments are given to this command run all the import
-        # methods.
-        if len(args) == 0:
-            self.setup()
-
-        # If arguments have been given to this command, run those
-        # methods in the order they have been specified.
-        for arg in args:
-            if hasattr(self, arg):
-                method = getattr(self, arg)
-                method()
-            else:
-                print "Unknown command:", arg
+    def __init__(self, **kwargs):
+        self._limit_import = kwargs.get('limit_import', False)
+        self._debug = kwargs.get('debug', False)
 
     def setup(self):
         self.reset_database()
@@ -429,3 +401,37 @@ class Command(BaseCommand):
             }
         drop_function = caller[settings.DATABASES['default']['ENGINE']]
         drop_function()
+
+
+class Command(BaseCommand):
+    help = "Load the LGA data from fixtures."
+
+    option_list = BaseCommand.option_list + (
+        make_option("-l", "--limit",
+                    dest="limit_import",
+                    default=False,
+                    help="Limit the imported LGAs to the list specified in settings.py",
+                    action="store_true"),
+        make_option("-d", "--debug",
+                    dest="debug",
+                    help="print debug stats about the query times.",
+                    default=False,
+                    action="store_true"),
+        )
+
+    def handle(self, *args, **kwargs):
+        data_loader = DataLoader(**kwargs)
+
+        # If no arguments are given to this command run all the import
+        # methods.
+        if len(args) == 0:
+            data_loader.setup()
+
+        # If arguments have been given to this command, run those
+        # methods in the order they have been specified.
+        for arg in args:
+            if hasattr(data_loader, arg):
+                method = getattr(data_loader, arg)
+                method()
+            else:
+                print "Unknown command:", arg
