@@ -742,6 +742,66 @@ var layerData = (function(_){return _})({{layer_details|safe}});
 
 $('.content-inner-wrap').css({'padding':0});
 
+
+var modes = {
+	home: {
+		enter: function(){
+			$('.widget-outer-wrap').hide()
+			$('.fwidth').width(900);
+			$('#zone-navigation').show();
+			var countryMap = $('#map').find('.country-map');
+			if(countryMap.length===0) {
+				countryMap = $('<div />')
+						.addClass('country-map')
+						.css({
+							'height': '476px',
+							'position': 'static'
+						})
+						.appendTo($('#map'));
+			}
+		},
+		leave: function() {
+			$('.widget-outer-wrap').show();
+			$('.fwidth').width('auto');
+			// $('#map').css({
+			// 	'height': '476px',
+			// 	'position': 'static'
+			// });
+		}
+	},
+	lga: {
+		enter: function (){
+			$('.profile-data-wrap').show();
+			$('#zone-navigation').hide();
+		},
+		leave: function(){
+			$('.profile-data-wrap').hide();
+		}
+	}
+};
+
+var currentMode;
+function setMode(mode) {
+	if(currentMode==mode) { return; }
+	currentMode!==undefined && modes[currentMode].leave
+					.apply(this, [].concat(arguments));
+	currentMode = mode;
+	modes[currentMode].enter.apply(this, [].concat(arguments))
+}
+
+//a temporary link back to the home page.
+$('<a />', {'href':'/~'})
+	.addClass('home-link')
+	.text('*')
+	.css({
+		position: 'absolute',
+		top: 5,
+		left: 5,
+		color: '#fff',
+		textDecoration: 'none'
+	})
+	.appendTo('#header');
+
 $(function(){
 	var dashboard = $.sammy(function(){
 		function createTitleForLga(state, lga) {
@@ -761,6 +821,7 @@ $(function(){
 				'height': '476px',
 				'position': 'static'
 			});
+			setMode('home');
 			setTitle($("<span />", {'text': 'Home'}));
 			$('<div />')
 				.addClass('home-map')
@@ -895,32 +956,32 @@ $(function(){
 					.append(gapAnalysisLink)
 					.append(facilityTableLink);
 		}
+		function showLgaAndSector(lgaId, fullSectorId) {
+			setMode('lga');
+			lga.loadData(lgaId, function(){
+				this.buildTable = true;
+				setTitle(createTitleForLga(this.stateName, this.lgaName));
+				fullSectorId !== undefined && this.trigger('select-sector', {fullSectorId: fullSectorId});
+				addToggleLinks();
+			});
+		}
 		this.get(pageRootUrl + ":lga/(.+)", function(){
 			var lgaId = this.params.lga;
 			this.params.splat.length !== 1 && warn("Sammy needs some help selecting a sector.");
 			var fullSectorId = this.params.splat[0];
-			$('#zone-navigation').hide();
-			lga.loadData(lgaId,
-							function(){
-								this.buildTable = true;
-								var t = createTitleForLga(this.stateName, this.lgaName);
-								setTitle(t);
-								this.trigger('select-sector', {
-									fullSectorId: fullSectorId
-								});
-								addToggleLinks();
-							});
+			showLgaAndSector(lgaId, fullSectorId);
 		})
 		this.get(pageRootUrl + ":lga", function(){
 			var lgaId = this.params.lga;
 			$('#zone-navigation').hide();
-			lga.loadData(lgaId,
+			showLgaAndSector(lgaId);
+/*			lga.loadData(lgaId,
 							function(){
 								this.buildTable = true;
 								var t = createTitleForLga(this.stateName, this.lgaName);
 								setTitle(t);
 								addToggleLinks();
-							});
+							}); */
 		});
 	});
 	
