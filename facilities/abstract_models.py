@@ -255,15 +255,12 @@ class DictModel(models.Model):
                 d[key] = self.set(variable, value)
         self._add_calculated_values(d)
 
-    _cache = []
-
     def _add_calculated_values(self, d):
-        if len(self._cache) == 0:
-            self._cache = list(CalculatedVariable.objects.all())
-        for variable in self._cache:
-            value = variable.calculate_value(d)
-            if value is not None:
-                self.set(variable, value)
+        for cls in [CalculatedVariable, PartitionVariable]:
+            for v in cls.objects.all():
+                v.add_calculated_value(d)
+                if v.slug in d:
+                    self.set(v, d[v.slug])
 
     def _kwargs(self):
         """
