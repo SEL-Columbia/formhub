@@ -39,14 +39,26 @@ def dashboard(request, reqpath):
         return lga_view(context)
 
 def get_nav_zones2():
-    zones = Zone.objects.all()
-    nav_list = []
-    for zone in zones:
-        nav_list.append({
-            'name': zone.name,
-            'states': state_data(zone)
-        })
-    return nav_list
+    zone_list = Zone.objects.all().values('id', 'name')
+    zones = {}
+    for zone in zone_list:
+        zid = zone.pop('id')
+        zone['states'] = []
+        zones[zid] = zone
+
+    state_list = State.objects.all().values('id', 'zone_id', 'name')
+    lga_list = LGA.objects.all().values('unique_slug', 'name', 'state_id')
+    states = {}
+    for state in state_list:
+        sid = state.pop('id')
+        zid = state.pop('zone_id')
+        state['lgas'] = []
+        states[sid] = state
+        zones[zid]['states'].append(state)
+    for lga in lga_list:
+        sid = lga.pop('state_id')
+        states[sid]['lgas'].append(lga)
+    return zone_list
 
 def get_nav_zones():
     zones = Zone.objects.all()

@@ -14,8 +14,21 @@ class TestLgaList(TestCase):
         self.assertEqual(len(nav_zones2), 6)
 
     def test_nav_zone_equality(self):
-        nav_zones = get_nav_zones()
-        nav_zones2 = get_nav_zones2()
-        names1 = [n['name'] for n in nav_zones]
-        names2 = [n['name'] for n in nav_zones2]
-        self.assertEqual(names1, names2)
+        nzs = [get_nav_zones(), get_nav_zones2()]
+
+        def get_names(z):
+            [n['name'] for n in z]
+        self.assertEqual(*[get_names(nz) for nz in nzs])
+
+        def state_names(z):
+            return [s['name'] for s in z['states']]
+        self.assertEqual(*[state_names(nz[0]) for nz in nzs])
+
+        def ordered_lga_slugs(z):
+            lga_slugs = []
+            for s in z['states']:
+                for lga in s['lgas']:
+                    lga_slugs.append(lga['unique_slug'])
+            lga_slugs.sort()
+            return lga_slugs
+        self.assertEqual(*[ordered_lga_slugs(nz[0]) for nz in nzs])
