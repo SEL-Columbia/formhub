@@ -19,7 +19,7 @@ def dashboard(request, reqpath):
     lga = None
     context.active_districts = active_districts()
     context.active_districts2 = active_districts2()
-    context.nav_zones = get_nav_zones()
+    context.nav_zones = get_nav_zones2()
     mls = []
     for map_layer in MapLayerDescription.objects.all():
         mls.append(model_to_dict(map_layer))
