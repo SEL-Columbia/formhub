@@ -214,6 +214,71 @@
 		overflow: auto;
 		height: 100px;
 	}
+	#zone-navigation .zl-wrap {
+		width: 16.6%;
+		float: left;
+	}
+	#zone-navigation .zone-list {
+		padding: 0 3px;
+	}
+	#zone-navigation .lga-count {
+		color: #444;
+		font-weight: normal;
+		font-size: 11px;
+		margin-left: 6px;
+	}
+	#zone-navigation .lga-count.zero {
+		color: #aaa;
+	}
+	#zone-navigation .zone-list h2 {
+		margin: 6px 0 3px;
+		padding: 0 5px;
+		text-transform: uppercase;
+		color: #444;
+		font-size: 14px;
+	}
+	#zone-navigation ul {
+		border: 1px solid #aaa;
+	}
+	#zone-navigation ul ul {
+		border: 0 none;
+	}
+	#zone-navigation ul li a {
+		display: block;
+		padding: 5px 12px;
+		background-color: #eee;
+		text-decoration: none;
+		color: #333;
+		font-weight: bold;
+		border-bottom: 1px solid #ccc;
+		cursor: pointer;
+		opacity: 0.8;
+	}
+	#zone-navigation ul li a:hover {
+		opacity: 1;
+	}
+	#zone-navigation ul ul a {
+		background-color: #fafafa;
+		color: #555;
+		border-color: #ddd;
+		font-weight: normal;
+		padding-left: 18px;
+	}
+	#zone-navigation ul ul a:before {
+		content: '»';
+		color: #bbb;
+	}
+	#zone-navigation ul, #zone-navigation ul li {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+	}
+	#zone-navigation ul.lga-list {
+		display: none;
+	}
+	#zone-navigation ul.lga-list.showing {
+		display: block;
+	}
 </style>
 <link rel="stylesheet" href="/static/openlayers/default/style.css" type="text/css" media="all" charset="utf-8">
 {% endblock %}
@@ -225,6 +290,35 @@
 		</div>
 	</div>
 	<div id="map" class="resizing-map"></div>
+	<div id="zone-navigation">
+		{% for zone in nav_zones %}
+		<div class="zl-wrap">
+			<div class="zone-list">
+				<h2 class="zone-title">
+					{{zone.name}}
+				</h2>
+				<ul>
+					{% for state in zone.states %}
+					<li>
+						<a href="#" class="state-link" data-lga-count="{{state.lga_count}}">
+							{{state.name}}
+						</a>
+						<ul class="lga-list">
+							{% for lga in state.lgas %}
+							<li>
+								<a href="/~{{lga.unique_slug}}">
+									{{lga.name}}
+								</a>
+							</li>
+							{% endfor %}
+						</ul>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
 </div>
 <div id="gap-analysis-table-template" style="display:none">
 	<div>
@@ -647,12 +741,76 @@ var loadMap = true;
 var layerData = (function(_){return _})({{layer_details|safe}});
 
 $('.content-inner-wrap').css({'padding':0});
+
+
+var modes = {
+	home: {
+		enter: function(){
+			$('.widget-outer-wrap').hide()
+			$('.fwidth').width(1100)
+			var zlHeight = 0;
+			$('.content-inner-wrap').find('.zl-wrap').each(function(){
+				if($(this).height()>zlHeight) {
+					zlHeight = $(this).height();
+				}
+			});
+			$('.content-inner-wrap')
+				.height(476 + zlHeight);
+			$('#zone-navigation').show();
+		},
+		leave: function() {
+			$('.widget-outer-wrap').show();
+			$('.fwidth').width('auto');
+			// $('#map').css({
+			// 	'height': '476px',
+			// 	'position': 'static'
+			// });
+		}
+	},
+	lga: {
+		enter: function (){
+			$('.profile-data-wrap').show();
+			$('#zone-navigation').hide();
+			// SetResizer is defiend in application.js
+			//   its purpose is to trigger "full-height" whenever the page is resized.
+			//   it has some weird side-effects on mobile browsers.
+			SetResizer(jQuery, ".content-inner-wrap", "#header, #menu", 15);
+		},
+		leave: function(){
+			$('.profile-data-wrap').hide();
+		}
+	}
+};
+
+var currentMode;
+function setMode(mode) {
+	if(currentMode==mode) { return; }
+	currentMode!==undefined && modes[currentMode].leave
+					.apply(this, [].concat(arguments));
+	currentMode = mode;
+	modes[currentMode].enter.apply(this, [].concat(arguments))
+}
+
+//a temporary link back to the home page.
+$('<a />', {'href':'/~'})
+	.addClass('home-link')
+	.text('*')
+	.css({
+		position: 'absolute',
+		top: 5,
+		left: 5,
+		color: '#fff',
+		opacity: 0.25,
+		textDecoration: 'none'
+	})
+	.appendTo('#header');
+
 $(function(){
 	var dashboard = $.sammy(function(){
 		function createTitleForLga(state, lga) {
-			return $("<span />").text("NMIS: ")
+			return $("<span />").text("LGA: ")
 				.append($("<span />", {'class': 'state-name'}).text(state))
-				.append($("<span />").text(' - '))
+				.append($("<span />").text(' » '))
 				.append($("<span />", {'class': 'lga-name'}).text(lga));
 		}
 		
@@ -662,10 +820,115 @@ $(function(){
 		});
 		var layerIdsAndNames = [["Nigeria", "nigeria_base"]].concat(_layerIdsAndNames);
 		this.get(pageRootUrl, function(){
-			setTitle($("<span />", {'text': 'NMIS'}));
+			$('#map').css({
+				'height': '476px',
+				'position': 'static'
+			});
+			setMode('home');
+			setTitle($("<span />", {'text': 'Home'}));
+			$('<div />')
+				.addClass('home-map')
+				.appendTo('#map')
+				.width(680)
+				.height(476)
+				.css({'position':'absolute'})
+			var mapNavWrap = $('<div />')
+				.addClass('home-map-nav')
+				.appendTo('#map')
+				.height(476)
+				.css({
+					'border': '1px solid #bbb',
+					'padding-left': '685px'
+				});
+			(function activateNavigation(){
+					var nav = $('#zone-navigation');
+					if(!nav.hasClass('activated')) {
+						nav.delegate('.lga-list a', 'click', function(){
+							//sammy is not being friendly right now, so I'm going around it.
+							window.location = this.href;
+							return false;
+						})
+						nav.delegate('a.state-link', 'click', function(){
+							var ul = $(this).parents('li')
+									.eq(0)
+									.find('ul');
+							if(ul.hasClass('showing')) {
+								nav.find('.showing').removeClass('showing');
+							} else {
+								nav.find('.showing').removeClass('showing');
+								ul.addClass('showing')
+							}
+						});
+						nav.find('.state-link').each(function(){
+							var lgaCount = $(this).data('lgaCount');
+							if(lgaCount!==undefined) {
+								$('<span />')
+									.text(' ('+lgaCount+')')
+									.addClass('lga-count')
+									.addClass(lgaCount===0 ? 'zero' : undefined)
+									.appendTo(this);
+							}
+						});
+						nav.addClass('activated')
+							.show();
+					}
+				})();
 			launchOpenLayers({
 				defaultLayer: '',
-				layers: layerIdsAndNames
+				layers: layerIdsAndNames,
+				layerSwitcher: false,
+				elem: '.home-map'
+			})(function(){
+//				mapNavWrap.empty();
+				var layerNav = $('<div />')
+						.addClass('layer-nav')
+						.appendTo(mapNavWrap);
+				var layerDescription = $('<div />')
+						.addClass('layer-description')
+						.appendTo(mapNavWrap);
+				var that = this;
+				(function createLayerSwitcher(){
+					var s = $('<select />');
+					$.each(layerData.sort(function(a,b){
+						if(a.display_order===b.display_order) {return 0;}
+						return a.display_order > b.display_order ? 1 : -1;
+					}), function(){
+						$('<option />')
+							.text(this.name)
+							.attr('value', this.slug)
+							.appendTo(s);
+					});
+					s.change(function(){
+						var layerId = $(this).val();
+						var OLlayer = that.mapLayers[layerId];
+						if(OLlayer!==undefined) {
+							that.map.setBaseLayer(OLlayer);
+						}
+						var layerObj;
+						$.each(layerData, function(){
+							if(this.slug===layerId) {
+								layerObj = this;
+							}
+						});
+						if(!!layerObj) {
+							layerDescription.empty();
+							var hideBox = true;
+							if(!!layerObj.description) {
+								hideBox = false;
+								$('<p />')
+									.text(layerObj.description)
+									.appendTo(layerDescription);
+							}
+							if(!!layerObj.data_source) {
+								hideBox = false;
+								$('<p />')
+									.text(layerObj.data_source)
+									.appendTo(layerDescription);
+							}
+						}
+						})
+						.appendTo(layerNav);
+				})();
 			});
 		});
 		
@@ -701,41 +964,38 @@ $(function(){
 					.append(gapAnalysisLink)
 					.append(facilityTableLink);
 		}
+		function showLgaAndSector(lgaId, fullSectorId) {
+			setMode('lga');
+			lga.loadData(lgaId, function(){
+				this.buildTable = true;
+				setTitle(createTitleForLga(this.stateName, this.lgaName));
+				fullSectorId !== undefined && this.trigger('select-sector', {fullSectorId: fullSectorId});
+				addToggleLinks();
+			});
+		}
 		this.get(pageRootUrl + ":lga/(.+)", function(){
 			var lgaId = this.params.lga;
 			this.params.splat.length !== 1 && warn("Sammy needs some help selecting a sector.");
 			var fullSectorId = this.params.splat[0];
-			lga.loadData(lgaId,
-							function(){
-								this.buildTable = true;
-								var t = createTitleForLga(this.stateName, this.lgaName);
-								setTitle(t);
-								this.trigger('select-sector', {
-									fullSectorId: fullSectorId
-								});
-								addToggleLinks();
-							});
+			showLgaAndSector(lgaId, fullSectorId);
 		})
 		this.get(pageRootUrl + ":lga", function(){
 			var lgaId = this.params.lga;
-			lga.loadData(lgaId,
+			$('#zone-navigation').hide();
+			showLgaAndSector(lgaId);
+/*			lga.loadData(lgaId,
 							function(){
 								this.buildTable = true;
 								var t = createTitleForLga(this.stateName, this.lgaName);
 								setTitle(t);
 								addToggleLinks();
-							});
+							}); */
 		});
 	});
 	
 	window._dashboard = dashboard;
 	dashboard.run();
 });
-
-// SetResizer is defiend in application.js
-//   its purpose is to trigger "full-height" whenever the page is resized.
-//   it has some weird side-effects on mobile browsers.
-SetResizer(jQuery, ".content-inner-wrap", "#header, #menu", 15);
 
 -->
 </script>

@@ -79,7 +79,7 @@ function warn() {
 
 var getMustacheTemplate = (function(){
     var mTemplates = {};
-    return function getMustacheTemplateFromCacheOrAjax(d) {
+    return function getMustacheTemplateFromCacheOrAjax(templateName, cb) {
         if(!mTemplates[templateName]) {
             $.get("/mustache/"+templateName).done(function(d){
                 mTemplates[templateName] = d;
