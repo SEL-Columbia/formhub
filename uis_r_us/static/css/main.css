@@ -41,12 +41,20 @@ td.checkmark {
     font-size: 11px;
 }
 td.checkmark.on {
+    background-color: #9dbbcf;
+    color: #003a60;
+    /* greenish
     background-color: #e6f5eb;
     color: 336600;
+    */
 }
 td.checkmark.off {
+    background-color: #bdd1de;
+    color: #003a60;
+    /* redish
     background-color: #faebe6;
     color: #a31919;
+    */
 }
 td.checkmark.null {
     opacity: 0.4;

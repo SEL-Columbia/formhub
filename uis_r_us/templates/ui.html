@@ -747,18 +747,16 @@ var modes = {
 	home: {
 		enter: function(){
 			$('.widget-outer-wrap').hide()
-			$('.fwidth').width(900);
+			$('.fwidth').width(1100)
+			var zlHeight = 0;
+			$('.content-inner-wrap').find('.zl-wrap').each(function(){
+				if($(this).height()>zlHeight) {
+					zlHeight = $(this).height();
+				}
+			});
+			$('.content-inner-wrap')
+				.height(476 + zlHeight);
 			$('#zone-navigation').show();
-			var countryMap = $('#map').find('.country-map');
-			if(countryMap.length===0) {
-				countryMap = $('<div />')
-						.addClass('country-map')
-						.css({
-							'height': '476px',
-							'position': 'static'
-						})
-						.appendTo($('#map'));
-			}
 		},
 		leave: function() {
 			$('.widget-outer-wrap').show();
@@ -773,6 +771,10 @@ var modes = {
 		enter: function (){
 			$('.profile-data-wrap').show();
 			$('#zone-navigation').hide();
+			// SetResizer is defiend in application.js
+			//   its purpose is to trigger "full-height" whenever the page is resized.
+			//   it has some weird side-effects on mobile browsers.
+			SetResizer(jQuery, ".content-inner-wrap", "#header, #menu", 15);
 		},
 		leave: function(){
 			$('.profile-data-wrap').hide();
@@ -798,6 +800,7 @@ $('<a />', {'href':'/~'})
 		top: 5,
 		left: 5,
 		color: '#fff',
+		opacity: 0.25,
 		textDecoration: 'none'
 	})
 	.appendTo('#header');
@@ -840,6 +843,11 @@ $(function(){
 			(function activateNavigation(){
 					var nav = $('#zone-navigation');
 					if(!nav.hasClass('activated')) {
+						nav.delegate('.lga-list a', 'click', function(){
+							//sammy is not being friendly right now, so I'm going around it.
+							window.location = this.href;
+							return false;
+						})
 						nav.delegate('a.state-link', 'click', function(){
 							var ul = $(this).parents('li')
 									.eq(0)
@@ -988,11 +996,6 @@ $(function(){
 	window._dashboard = dashboard;
 	dashboard.run();
 });
-
-// SetResizer is defiend in application.js
-//   its purpose is to trigger "full-height" whenever the page is resized.
-//   it has some weird side-effects on mobile browsers.
-SetResizer(jQuery, ".content-inner-wrap", "#header, #menu", 15);
 
 -->
 </script>
