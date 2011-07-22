@@ -1,6 +1,6 @@
 from django.test import TestCase
-from facility_builder import FacilityBuilder
-from models import CalculatedVariable, Variable, Facility, Sector, FacilityRecord, FacilityType, LGAIndicator
+from facilities.facility_builder import FacilityBuilder
+from facilities.models import CalculatedVariable, Variable, Facility, Sector, FacilityRecord, FacilityType, LGAIndicator
 from nga_districts.models import Zone, State, LGA
 
 class BasicDataTest(TestCase):
@@ -253,7 +253,7 @@ class PassDataToPage(TestCase):
         self.assertTrue(isinstance(resp.get('profileData'), dict))
 
 
-from score_variables import get_access_and_participation_score_variable
+from facilities.score_variables import get_access_and_participation_score_variable
 
 
 class ScoreVariableTest(TestCase):
