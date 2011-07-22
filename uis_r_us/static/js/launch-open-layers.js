@@ -42,6 +42,17 @@ var launchOpenLayers = (function(_opts){
             var mapserver = opts.tileUrl;
             var mapLayerArray = [];
             context.mapLayers = {};
+            $.each(opts.overlays, function(k, ldata){
+                var ml = new OpenLayers.Layer.TMS(ldata[0], [mapserver],
+                    {
+                        layername: ldata[1],
+                        'type': 'png',
+                        transparent: "true",
+                        isBaseLayer: false
+                    });
+                mapLayerArray.push(ml);
+                context.mapLayers[ldata[1]] = ml;
+                });
             $.each(opts.layers, function(k, ldata){
                 var ml = new OpenLayers.Layer.TMS(ldata[0], [mapserver],
                     {
