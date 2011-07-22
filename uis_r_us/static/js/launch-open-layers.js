@@ -14,6 +14,7 @@ var launchOpenLayers = (function(_opts){
         layers: [
             ["Nigeria", "nigeria_base"]
         ],
+        overlays: [],
         defaultLayer: 'google',
         layerSwitcher: true,
         zoom: 6,
