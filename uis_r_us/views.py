@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.forms.models import model_to_dict
 from facility_views.models import FacilityTable, MapLayerDescription
+from nga_districts.models import *
 import json
 
 @login_required
@@ -37,8 +38,17 @@ def dashboard(request, reqpath):
         context.lga = lga
         return lga_view(context)
 
+def get_nav_zones2():
+    zones = Zone.objects.all()
+    nav_list = []
+    for zone in zones:
+        nav_list.append({
+            'name': zone.name,
+            'states': state_data(zone)
+        })
+    return nav_list
+
 def get_nav_zones():
-    from nga_districts.models import *
     zones = Zone.objects.all()
     nav_list = []
     for zone in zones:
