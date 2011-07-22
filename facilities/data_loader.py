@@ -20,6 +20,7 @@ class DataLoader(object):
     def __init__(self, **kwargs):
         self._limit_import = kwargs.get('limit_import', False)
         self._debug = kwargs.get('debug', False)
+        self._data_dir = kwargs.get('data_dir', 'data')
 
     def setup(self):
         self.reset_database()
@@ -217,7 +218,7 @@ class DataLoader(object):
     def load_key_renames(self):
         kwargs = {
             'model': KeyRename,
-            'path': os.path.join('data', 'variables', 'key_renames.csv')
+            'path': os.path.join(self._data_dir, 'variables', 'key_renames.csv')
             }
         self.create_objects_from_csv(**kwargs)
 
@@ -248,7 +249,7 @@ class DataLoader(object):
 
         add_critical_variables()
 
-        csv_reader = CsvReader(os.path.join('data', 'variables', 'variables.csv'))
+        csv_reader = CsvReader(os.path.join(self._data_dir, 'variables', 'variables.csv'))
 
         def add_variable_from_dict(d):
             """
@@ -303,7 +304,7 @@ class DataLoader(object):
 
     @print_time
     def create_facilities_from_csv(self, sector, data_source):
-        data_dir = 'data/facility'
+        data_dir = os.path.join(self._data_dir, 'facility')
         path = os.path.join(data_dir, data_source)
         csv_reader = CsvReader(path)
 
@@ -342,7 +343,7 @@ class DataLoader(object):
             ]
         for kwargs in data_kwargs:
             filename = kwargs.pop('data') + '.csv'
-            kwargs['path'] = os.path.join('data/lga', filename)
+            kwargs['path'] = os.path.join(self._data_dir, 'lga', filename)
             self.load_lga_data_from_csv(**kwargs)
 
     @print_time

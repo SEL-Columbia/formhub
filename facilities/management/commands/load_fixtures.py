@@ -17,9 +17,16 @@ class Command(BaseCommand):
                     help="print debug stats about the query times.",
                     default=False,
                     action="store_true"),
+        make_option("-s", "--data_dir",
+                    dest="data_dir",
+                    help="Specify where data is pulled from.",
+                    default="data",
+                    action="store",
+                    type="string"),
         )
 
     def handle(self, *args, **kwargs):
+        print kwargs
         data_loader = DataLoader(**kwargs)
 
         # If no arguments are given to this command run all the import
