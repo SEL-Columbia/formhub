@@ -175,7 +175,10 @@ class Facility(DictModel):
         """
         This is a temporary way to get the facility_type to the page (as if it were a data record).
         """
-        return dict(_facility_type=self.facility_type.slug, **super(Facility, self).get_latest_data())
+        result = super(Facility, self).get_latest_data()
+        if self.facility_type is not None:
+            result['_facility_type'] = self.facility_type.slug
+        return result
 
     @classmethod
     def get_latest_data_by_lga(cls, lga):
