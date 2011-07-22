@@ -214,6 +214,39 @@
 		overflow: auto;
 		height: 100px;
 	}
+	#zone-navigation .zone-list {
+		width: 16%;
+		float: left;
+		border: 1px solid #ddd;
+	}
+	#zone-navigation .zone-list h2 {
+		margin: 12px 0 3px;
+		padding: 0 5px;
+		text-transform: uppercase;
+		color: #444;
+		font-size: 15px;
+	}
+	#zone-navigation ul li a {
+		display: block;
+		padding: 5px 12px;
+		background-color: #eee;
+		text-decoration: none;
+		color: #333;
+		font-weight: bold;
+		border-bottom: 1px solid #ccc;
+		cursor: pointer;
+		opacity: 0.8;
+	}
+	#zone-navigation ul li a:hover {
+		opacity: 1;
+	}
+	#zone-navigation ul ul a {
+		background-color: #fafafa;
+		color: #555;
+		border-color: #ddd;
+		font-weight: normal;
+		padding-left: 18px;
+	}
 	#zone-navigation ul, #zone-navigation ul li {
 		list-style-type: none;
 		margin: 0;
@@ -687,10 +720,15 @@ $('.content-inner-wrap').css({'padding':0});
 function activateNavigation(){
 	var nav = $('#zone-navigation');
 	nav.delegate('a.state-link', 'click', function(){
-		$(this).parents('li')
+		var ul = $(this).parents('li')
 				.eq(0)
-				.find('ul')
-				.toggleClass('showing');
+				.find('ul');
+		if(ul.hasClass('showing')) {
+			nav.find('.showing').removeClass('showing');
+		} else {
+			nav.find('.showing').removeClass('showing');
+			ul.addClass('showing')
+		}
 	});
 }
 

@@ -18,22 +18,7 @@ def dashboard(request, reqpath):
     lga = None
     context.active_districts = active_districts()
     context.active_districts2 = active_districts2()
-    context.nav_zones = [
-        {
-            'name': 'North West',
-            'states': [
-                {
-                    'name': 'California',
-                    'lgas': [
-                        {
-                            'name': 'San Francisco',
-                            'unique_slug': 'ca_sf'
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
+    context.nav_zones = get_nav_zones()
     mls = []
     for map_layer in MapLayerDescription.objects.all():
         mls.append(model_to_dict(map_layer))
@@ -51,6 +36,27 @@ def dashboard(request, reqpath):
     else:
         context.lga = lga
         return lga_view(context)
+
+def get_nav_zones():
+    from nga_districts.models import *
+    zones = Zone.objects.all()
+    nav_list = []
+    for zone in zones:
+        nav_list.append({
+            'name': zone.name,
+            'states': state_data(zone)
+        })
+    return nav_list
+
+def state_data(zone):
+    state_l = []
+    for state in zone.states.all():
+        state_lgas = state.lgas.all().values('name', 'unique_slug')
+        state_l.append({
+            'name': state.name,
+            'lgas': state_lgas
+        })
+    return state_l
 
 def country_view(context):
     context.site_title = "Nigeria"
