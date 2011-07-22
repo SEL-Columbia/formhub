@@ -44,7 +44,7 @@ function warn() {
 	}
 }
 
-(function(){
+var descriptionClick = (function(descriptionClickSelector){
     var popupRequested = false;
     var popupDiv;
     var popupWidth;
@@ -60,7 +60,7 @@ function warn() {
         }
         return descriptionWrap;
     }
-    $('a#hlogo').click(function(evt){
+    $(descriptionClickSelector).click(function(evt){
         getDescriptionWrap().toggleClass('showing');
         if(!popupRequested) {
             var popupReq = $.get('/description').then(function(d){
@@ -74,8 +74,9 @@ function warn() {
             popupRequested = true;
         }
         evt.preventDefault();
+        return false;
     });
-})();
+});
 
 var getMustacheTemplate = (function(){
     var mTemplates = {};

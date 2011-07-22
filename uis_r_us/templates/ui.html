@@ -279,6 +279,12 @@
 	#zone-navigation ul.lga-list.showing {
 		display: block;
 	}
+	a.hover-unhide {
+		opacity: 0.1;
+	}
+	a.hover-unhide:hover {
+		opacity: 0.4;
+	}
 </style>
 <link rel="stylesheet" href="/static/openlayers/default/style.css" type="text/css" media="all" charset="utf-8">
 {% endblock %}
@@ -792,18 +798,18 @@ function setMode(mode) {
 }
 
 //a temporary link back to the home page.
-$('<a />', {'href':'/~'})
+descriptionClick($('<a />', {'href':'/~'})
 	.addClass('home-link')
+	.addClass('hover-unhide')
 	.text('*')
 	.css({
 		position: 'absolute',
 		top: 5,
 		left: 5,
 		color: '#fff',
-		opacity: 0.25,
 		textDecoration: 'none'
 	})
-	.appendTo('#header');
+	.appendTo('#header'));
 
 $(function(){
 	var dashboard = $.sammy(function(){
