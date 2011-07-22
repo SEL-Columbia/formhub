@@ -340,6 +340,9 @@ class DataLoader(object):
                 'data': 'infrastructure',
                 'row_contains_variable_slug': True,
                 },
+            {
+                'data': 'LGA_Mang_Baseline_PhaseII_all_merged_cleaned_07_22_2011',
+                },
             ]
         for kwargs in data_kwargs:
             filename = kwargs.pop('data') + '.csv'
