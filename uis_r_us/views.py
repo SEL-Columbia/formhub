@@ -5,7 +5,8 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.forms.models import model_to_dict
 from facility_views.models import FacilityTable, MapLayerDescription
-from nga_districts.models import *
+from nga_districts.models import LGA, Zone, State
+from django.db.models import Count
 import json
 
 @login_required
@@ -19,7 +20,7 @@ def dashboard(request, reqpath):
     lga = None
     context.active_districts = active_districts()
     context.active_districts2 = active_districts2()
-    context.nav_zones = get_nav_zones()
+    context.nav_zones = get_nav_zones(filter_active=True)
     mls = []
     for map_layer in MapLayerDescription.objects.all():
         mls.append(model_to_dict(map_layer))
@@ -47,7 +48,12 @@ def get_nav_zones(filter_active=False):
         zones[zid] = zone
 
     state_list = State.objects.all().values('id', 'zone_id', 'name')
-    lga_list = LGA.objects.all().values('unique_slug', 'name', 'state_id')
+    if filter_active:
+        lga_list = LGA.objects.annotate(facility_count=Count('facilities')). \
+                        filter(facility_count__gt=0). \
+                        values('unique_slug', 'name', 'state_id')
+    else:
+        lga_list = LGA.objects.all().values('unique_slug', 'name', 'state_id')
     states = {}
     for state in state_list:
         sid = state.pop('id')
@@ -97,8 +103,6 @@ def variable_data(request):
         'sectors': sectors
     }))
 
-from django.db.models import Count
-from nga_districts.models import LGA
 def active_districts():
     #delete this method when we're sure the other one works with the full LGA list...
     lgas = LGA.objects.annotate(facility_count=Count('facilities')).filter(facility_count__gt=0)
