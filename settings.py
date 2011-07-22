@@ -99,16 +99,17 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # 'user_management.middleware.RequirePermissionMiddleware',
+    'user_management.middleware.RequirePermissionMiddleware',
 )
 
 # RESTRICTED_URLS and RESTRICTED_URLS_EXCEPTIONS are used by the
 # permission middleware in user_management.
 RESTRICTED_URLS = (
-    (r'', 'auth.read'),
+    (r'^/?$', 'auth.read'),
+    (r'^/?~', 'auth.read'),
+    (r'^/?facilities/', 'auth.read'),
     )
 RESTRICTED_URLS_EXCEPTIONS = (
-    r'^/?accounts/',
     )
 
 ROOT_URLCONF = 'nmis.urls'
@@ -140,7 +141,7 @@ INSTALLED_APPS = (
     'nga_districts',
     'facilities',
     'resources',
-    # 'user_management',
+    'user_management',
 )
 COMPRESS = True
 
