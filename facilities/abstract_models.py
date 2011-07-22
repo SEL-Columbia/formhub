@@ -1,10 +1,7 @@
 from django.db import models
-from collections import defaultdict
 import json
 import re
 import datetime
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
 
 
 class KeyRename(models.Model):
@@ -59,10 +56,14 @@ class Variable(models.Model):
         'proportion': 'float'
     }
 
+    # We simplify the approach in django.contrib.contenttype.models to
+    # cache variables. We need to think about how to keep the cache in
+    # sync with the database. Though generally, we'll be okay being a
+    # little loose right now.
     _cache = {}
 
     @classmethod
-    def get_from_cache(cls, slug):
+    def get(cls, slug):
         if slug not in cls._cache:
             cls._cache[slug] = cls.objects.get(slug=slug)
         return cls._cache[slug]
@@ -309,7 +310,7 @@ class DictModel(models.Model):
 
     def get_latest_value_for_variable(self, variable):
         if type(variable) == str:
-            variable = Variable.objects.get(slug=variable)
+            variable = Variable.get(slug=variable)
         try:
             kwargs = self._kwargs()
             kwargs['variable'] = variable

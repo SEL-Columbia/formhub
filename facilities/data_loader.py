@@ -173,12 +173,12 @@ class DataLoader(object):
             elif 'partition' in d:
                 PartitionVariable.objects.get_or_create(**d)
             elif 'origin' in d and 'method' in d and 'sector' in d:
-                d['origin'] = Variable.objects.get(slug=d['origin'])
+                d['origin'] = Variable.get(slug=d['origin'])
                 d['sector'] = Sector.objects.get(slug=d['sector'])
                 lga_indicator, created = LGAIndicator.objects.get_or_create(**d)
             elif 'variable' in d and 'target' in d:
-                d['variable'] = Variable.objects.get(slug=d['variable'])
-                d['target'] = Variable.objects.get(slug=d['target'])
+                d['variable'] = Variable.get(slug=d['variable'])
+                d['target'] = Variable.get(slug=d['target'])
                 gap_analyzer, created = GapVariable.objects.get_or_create(**d)
             else:
                 Variable.objects.get_or_create(**d)
