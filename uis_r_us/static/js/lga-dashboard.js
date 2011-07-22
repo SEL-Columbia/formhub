@@ -614,8 +614,10 @@ function buildFacilityTable(data, sectors){
 			lng: 738031.10112355
 		},
 		layers: [
-		    ["Nigeria", "nigeria_base"],
-		    ["Boundaries", "nigeria_overlays_white"],
+		    ["Nigeria", "nigeria_base"]
+		],
+		overlays: [
+		    ["Boundaries", "nigeria_overlays_white"]
 		]
 	})(function(){
 	    function urlForSectorIcon(s) {
