@@ -23,10 +23,13 @@ class DataLoader(object):
 
     def setup(self):
         self.reset_database()
+        self.load()
+        self.print_stats()
+
+    def load(self):
         self.load_system()
         self.load_data()
         self.load_calculations()
-        self.print_stats()
 
     @print_time
     def reset_database(self):
@@ -295,8 +298,7 @@ class DataLoader(object):
         for i in GapVariable.objects.all():
             i.set_lga_values()
 
-    @print_time
-    def print_stats(self):
+    def get_info(self):
         def get_variable_usage():
             record_types = [FacilityRecord, LGARecord]
             totals = defaultdict(int)
@@ -311,20 +313,17 @@ class DataLoader(object):
             used_vars = set(get_variable_usage().keys())
             return sorted(list(all_vars - used_vars))
 
-        info = {
+        return {
             'number of facilities': Facility.objects.count(),
             'facilities without lgas': Facility.objects.filter(lga=None).count(),
             'number of facility records': FacilityRecord.objects.count(),
             'number of lga records': LGARecord.objects.count(),
             'unused variables': get_unused_variables(),
             }
-        print json.dumps(info, indent=4)
 
-        from django.db import connection
-        if self._debug:
-            for query in connection.queries:
-                if float(query['time']) > .01:
-                    print query
+    @print_time
+    def print_stats(self):
+        print json.dumps(self.get_info(), indent=4)
 
     def _drop_database(self):
         db_host = settings.DATABASES['default']['HOST'] or 'localhost'
