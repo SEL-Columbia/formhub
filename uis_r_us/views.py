@@ -139,7 +139,9 @@ def active_districts2():
 
 def mustache_template(request, template_name):
     import os
-    template_path = 'uis_r_us/mustache/%s.html' % template_name
+    cur_file = os.path.abspath(__file__)
+    cur_dir = os.path.dirname(cur_file)
+    template_path = os.path.join(cur_dir, 'mustache', '%s.html' % template_name)
     if not os.path.exists(template_path):
         return HttpResponse('{"ERROR":"No such template: %s"}' % template_name)
     else:
