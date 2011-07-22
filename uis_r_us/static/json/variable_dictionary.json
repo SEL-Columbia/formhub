@@ -1,24 +1,44 @@
 {
   "profile_variables": {
-    "area_sq_km": {
-      "name": "Area [square km]",
-      "order": 0
+    "chairman_name": {
+        "name": "LGA Chairman",
+        "order": 0
     },
-    "est_households": {
-      "name": "Est. # of Households",
-      "order": 1
+    "secretary_name": {
+        "name": "LGA Secretary",
+        "order": 1
     },
     "pop_population": {
-      "name": "Population [total]",
-      "order": 2
+        "name": "Population (2006)",
+        "order": 2
     },
-    "pop_female": {
-      "name": "Population [female]",
-      "order": 3
+    "percentage_rural_pop": {
+        "name": "% Rural Population",
+        "order": 4
     },
-    "pop_male": {
-      "name": "Population [male]",
-      "order": 4
+    "area_sq_km": {
+        "name": "Area (square km)",
+        "order": 5
+    },
+    "distance_to_state_capital": {
+        "name": "Distance from LGA to state capital (km)",
+        "order": 6
+    },
+    "num_health_facilities": {
+        "name": "Number of health clinics",
+        "order": 7
+    },
+    "skilled_health_provider_population_ratio": {
+        "name": "Skilled health provider:population ratio",
+        "order": 8
+    },
+    "num_schools": {
+        "name": "Number of schools",
+        "order": 9
+    },
+    "student_teacher_ratio": {
+        "name": "Student:teacher ratio (primary)",
+        "order": 10
     }
   }
 }

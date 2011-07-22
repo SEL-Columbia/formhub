@@ -113,6 +113,9 @@ class LGAIndicator(Variable):
     def sum(self):
         return dict([(lga, stats['sum']) for lga, stats in self.stats().items()])
 
+    def count(self):
+        return dict([(lga, stats['count']) for lga, stats in self.stats().items()])
+
     def percentage_true(self):
         return dict([(lga, count / float(len(Facility.objects.filter(sector=self.sector, lga=lga)))) for lga, count in self.count_true().items()])
 
