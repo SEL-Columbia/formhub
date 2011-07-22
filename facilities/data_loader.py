@@ -81,48 +81,137 @@ class DataLoader(object):
     @print_time
     def create_facility_types(self):
         get = lambda node_id: FacilityType.objects.get(pk=node_id)
-        facility_types = [
-                (('health', 'Health'), [
-                    (('level_1', 'Level 1'), [
-                        (('healthpost', 'Health Post'), []),
-                        (('dispensary', 'Dispensary'), []),
-                    ]),
-                    (('level_2', 'Level 2'), [
-                        (('primaryhealthclinic', 'Primary Health Clinic'), []),
-                    ]),
-                    (('level_3', 'Level 3'), [
-                        (('primaryhealthcarecentre', 'Primary Health Care Centre'), []),
-                        (('comprehensivehealthcentre', 'Comprehensive Health Centre'), []),
-                        (('wardmodelprimaryhealthcarecentre', 'Ward Model Primary Health Care Centre'), []),
-                        (('maternity', 'Maternity'), []),
-                    ]),
-                    (('level_4', 'Level 4'), [
-                        (('cottagehospital', 'Cottage Hospital'), []),
-                        (('generalhospital', 'General Hospital'), []),
-                        (('specialisthospital', 'Specialist Hospital'), []),
-                        (('teachinghospital', 'Teaching Hospital'), []),
-                        (('federalmedicalcare', 'Federal Medical Care'), []),
-                    ]),
-                    (('other', 'Other'), [
-                        (('private', 'Private'), []),
-                        (('other', 'Other'), []),
-                    ]),
-                ]),
-                (('education', 'Education'), []),
-                (('water', 'Water'), []),
-            ]
+        facility_types = {
+            'slug': 'facility',
+            'name': 'Facility',
+            'children': [
+                {
+                    'slug': 'education',
+                    'name': 'Education',
+                    'children': [],
+                    },
+                {
+                    'slug': 'water',
+                    'name': 'Water',
+                    'children': [],
+                    },
+                {
+                    'slug': 'health',
+                    'name': 'Health',
+                    'children': [
+                        {
+                            'slug': 'level_1',
+                            'name': 'Level 1',
+                            'children': [
+                                {
+                                    'slug': 'healthpost',
+                                    'name': 'Health Post',
+                                    'children': []
+                                    },
+                                {
+                                    'slug': 'dispensary',
+                                    'name': 'Dispensary',
+                                    'children': []
+                                    },
+                                ]
+                            },
+                        {
+                            'slug': 'level_2',
+                            'name': 'Level 2',
+                            'children': [
+                                {
+                                    'slug': 'primaryhealthclinic',
+                                    'name': 'Primary Health Clinic',
+                                    'children': [],
+                                    },
+                                ]
+                            },
+                        {
+                            'slug': 'level_3',
+                            'name': 'Level 3',
+                            'children': [
+                                {
+                                    'slug': 'primaryhealthcarecentre',
+                                    'name': 'Primary Health Care Centre',
+                                    'children': [],
+                                    },
+                                {
+                                    'slug': 'comprehensivehealthcentre',
+                                    'name': 'Comprehensive Health Centre',
+                                    'children': [],
+                                    },
+                                {
+                                    'slug': 'wardmodelprimaryhealthcarecentre',
+                                    'name': 'Ward Model Primary Health Care Centre',
+                                    'children': [],
+                                    },
+                                {
+                                    'slug': 'maternity',
+                                    'name': 'Maternity',
+                                    'children': [],
+                                    },
+                                ],
+                            },
+                        {
+                            'slug': 'level_4',
+                            'name':  'Level 4',
+                            'children': [
+                                {
+                                    'slug': 'cottagehospital',
+                                    'name': 'Cottage Hospital',
+                                    'children': [],
+                                    },
+                                {
+                                    'slug': 'generalhospital',
+                                    'name': 'General Hospital',
+                                    'children': [],
+                                    },
+                                {
+                                    'slug': 'specialisthospital',
+                                    'name': 'Specialist Hospital',
+                                    'children': [],
+                                    },
+                                {
+                                    'slug': 'teachinghospital',
+                                    'name': 'Teaching Hospital',
+                                    'children': [],
+                                    },
+                                {
+                                    'slug': 'federalmedicalcare',
+                                    'name': 'Federal Medical Care',
+                                    'children': [],
+                                    },
+                                ],
+                            },
+                        {
+                            'slug': 'other',
+                            'name': 'Other',
+                            'children': [
+                                {
+                                    'slug': 'private',
+                                    'name': 'Private',
+                                    'children': [],
+                                    },
+                                {
+                                    'slug': 'other',
+                                    'name': 'Other',
+                                    'children': [],
+                                    },
+                                ]
+                            },
+                        ],
+                    },
+                ],
+            }
 
-        def add(child, parent):
-            slug = child[0][0]
-            name = child[0][1]
-            grandchildren = child[1]
-            child = parent.add_child(slug=slug, name=name)
-            for grandchild in grandchildren:
-                add(grandchild, child)
+        def create_node(d, parent):
+            children = d.pop('children')
+            result = FacilityType.add_root(**d) if parent is None else parent.add_child(**d)
+            for child in children:
+                create_node(child, result)
+            return result
 
-        root = FacilityType.add_root(slug='facility_type', name='Facility Type')
-        for facility_type in facility_types:
-            add(facility_type, root)
+        create_node(facility_types, None)
 
     @print_time
     def load_key_renames(self):

@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
 from facilities.data_loader import DataLoader
-from facilities.models import Sector
+from facilities.models import Sector, FacilityType
 
 
 class BasicDataTest(TestCase):
@@ -18,6 +18,10 @@ class BasicDataTest(TestCase):
             'water': 'Water'
             }
         self.assertEquals(sectors, expected_dict)
+
+    def test_create_facility_types(self):
+        self.data_loader.create_facility_types()
+        self.assertEquals(FacilityType.objects.count(), 23)
 
     def test_limited_import(self):
         # this needs to be rewritten with small csvs
