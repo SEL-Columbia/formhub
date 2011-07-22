@@ -19,7 +19,7 @@ def dashboard(request, reqpath):
     lga = None
     context.active_districts = active_districts()
     context.active_districts2 = active_districts2()
-    context.nav_zones = get_nav_zones2()
+    context.nav_zones = get_nav_zones()
     mls = []
     for map_layer in MapLayerDescription.objects.all():
         mls.append(model_to_dict(map_layer))
@@ -38,7 +38,7 @@ def dashboard(request, reqpath):
         context.lga = lga
         return lga_view(context)
 
-def get_nav_zones2():
+def get_nav_zones(filter_active=False):
     zone_list = Zone.objects.all().values('id', 'name')
     zones = {}
     for zone in zone_list:
@@ -60,7 +60,7 @@ def get_nav_zones2():
         states[sid]['lgas'].append(lga)
     return zone_list
 
-def get_nav_zones():
+def get_nav_zones_inefficient():
     zones = Zone.objects.all()
     nav_list = []
     for zone in zones:

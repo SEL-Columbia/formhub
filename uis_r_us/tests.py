@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from uis_r_us.views import get_nav_zones, get_nav_zones2
+from uis_r_us.views import get_nav_zones, get_nav_zones_inefficient
 
 class TestLgaList(TestCase):
     fixtures = ['lga.json', 'state.json', 'zone.json']
@@ -10,11 +10,11 @@ class TestLgaList(TestCase):
         self.assertEqual(len(nav_zones), 6)
 
     def test_nav_zones2(self):
-        nav_zones2 = get_nav_zones2()
+        nav_zones2 = get_nav_zones_inefficient()
         self.assertEqual(len(nav_zones2), 6)
 
     def test_nav_zone_equality(self):
-        nzs = [get_nav_zones(), get_nav_zones2()]
+        nzs = [get_nav_zones(), get_nav_zones_inefficient()]
 
         def get_names(z):
             [n['name'] for n in z]
