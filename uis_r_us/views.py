@@ -64,6 +64,8 @@ def get_nav_zones(filter_active=False):
     for lga in lga_list:
         sid = lga.pop('state_id')
         states[sid]['lgas'].append(lga)
+    for state in state_list:
+        state['lga_count'] = len(state['lgas'])
     return zone_list
 
 def get_nav_zones_inefficient():

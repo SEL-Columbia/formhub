@@ -214,17 +214,34 @@
 		overflow: auto;
 		height: 100px;
 	}
-	#zone-navigation .zone-list {
-		width: 16%;
+	#zone-navigation .zl-wrap {
+		width: 16.6%;
 		float: left;
-		border: 1px solid #ddd;
+	}
+	#zone-navigation .zone-list {
+		padding: 0 3px;
+	}
+	#zone-navigation .lga-count {
+		color: #444;
+		font-weight: normal;
+		font-size: 11px;
+		margin-left: 6px;
+	}
+	#zone-navigation .lga-count.zero {
+		color: #aaa;
 	}
 	#zone-navigation .zone-list h2 {
-		margin: 12px 0 3px;
+		margin: 6px 0 3px;
 		padding: 0 5px;
 		text-transform: uppercase;
 		color: #444;
-		font-size: 15px;
+		font-size: 14px;
+	}
+	#zone-navigation ul {
+		border: 1px solid #aaa;
+	}
+	#zone-navigation ul ul {
+		border: 0 none;
 	}
 	#zone-navigation ul li a {
 		display: block;
@@ -246,6 +263,10 @@
 		border-color: #ddd;
 		font-weight: normal;
 		padding-left: 18px;
+	}
+	#zone-navigation ul ul a:before {
+		content: '»';
+		color: #bbb;
 	}
 	#zone-navigation ul, #zone-navigation ul li {
 		list-style-type: none;
@@ -271,26 +292,30 @@
 	<div id="map" class="resizing-map"></div>
 	<div id="zone-navigation">
 		{% for zone in nav_zones %}
-		<div class="zone-list">
-			<h2 class="zone-title">
-				{{zone.name}}
-			</h2>
-			<ul>
-				{% for state in zone.states %}
-				<li>
-					<a href="#" class="state-link">{{state.name}}</a>
-					<ul class="lga-list">
-						{% for lga in state.lgas %}
-						<li>
-							<a href="/~{{lga.unique_slug}}">
-								{{lga.name}}
-							</a>
-						</li>
-						{% endfor %}
-					</ul>
-				</li>
-				{% endfor %}
-			</ul>
+		<div class="zl-wrap">
+			<div class="zone-list">
+				<h2 class="zone-title">
+					{{zone.name}}
+				</h2>
+				<ul>
+					{% for state in zone.states %}
+					<li>
+						<a href="#" class="state-link" data-lga-count="{{state.lga_count}}">
+							{{state.name}}
+						</a>
+						<ul class="lga-list">
+							{% for lga in state.lgas %}
+							<li>
+								<a href="/~{{lga.unique_slug}}">
+									{{lga.name}}
+								</a>
+							</li>
+							{% endfor %}
+						</ul>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
 		</div>
 		{% endfor %}
 	</div>
@@ -717,27 +742,12 @@ var layerData = (function(_){return _})({{layer_details|safe}});
 
 $('.content-inner-wrap').css({'padding':0});
 
-function activateNavigation(){
-	var nav = $('#zone-navigation');
-	nav.delegate('a.state-link', 'click', function(){
-		var ul = $(this).parents('li')
-				.eq(0)
-				.find('ul');
-		if(ul.hasClass('showing')) {
-			nav.find('.showing').removeClass('showing');
-		} else {
-			nav.find('.showing').removeClass('showing');
-			ul.addClass('showing')
-		}
-	});
-}
-
 $(function(){
 	var dashboard = $.sammy(function(){
 		function createTitleForLga(state, lga) {
-			return $("<span />").text("NMIS: ")
+			return $("<span />").text("LGA: ")
 				.append($("<span />", {'class': 'state-name'}).text(state))
-				.append($("<span />").text(' - '))
+				.append($("<span />").text(' » '))
 				.append($("<span />", {'class': 'lga-name'}).text(lga));
 		}
 		
@@ -766,7 +776,34 @@ $(function(){
 					'border': '1px solid #bbb',
 					'padding-left': '685px'
 				});
-			activateNavigation();
+			(function activateNavigation(){
+					var nav = $('#zone-navigation');
+					if(!nav.hasClass('activated')) {
+						nav.delegate('a.state-link', 'click', function(){
+							var ul = $(this).parents('li')
+									.eq(0)
+									.find('ul');
+							if(ul.hasClass('showing')) {
+								nav.find('.showing').removeClass('showing');
+							} else {
+								nav.find('.showing').removeClass('showing');
+								ul.addClass('showing')
+							}
+						});
+						nav.find('.state-link').each(function(){
+							var lgaCount = $(this).data('lgaCount');
+							if(lgaCount!==undefined) {
+								$('<span />')
+									.text(' ('+lgaCount+')')
+									.addClass('lga-count')
+									.addClass(lgaCount===0 ? 'zero' : undefined)
+									.appendTo(this);
+							}
+						});
+						nav.addClass('activated')
+							.show();
+					}
+				})();
 			launchOpenLayers({
 				defaultLayer: '',
 				layers: layerIdsAndNames,
@@ -862,6 +899,7 @@ $(function(){
 			var lgaId = this.params.lga;
 			this.params.splat.length !== 1 && warn("Sammy needs some help selecting a sector.");
 			var fullSectorId = this.params.splat[0];
+			$('#zone-navigation').hide();
 			lga.loadData(lgaId,
 							function(){
 								this.buildTable = true;
@@ -875,6 +913,7 @@ $(function(){
 		})
 		this.get(pageRootUrl + ":lga", function(){
 			var lgaId = this.params.lga;
+			$('#zone-navigation').hide();
 			lga.loadData(lgaId,
 							function(){
 								this.buildTable = true;
