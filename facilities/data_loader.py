@@ -190,7 +190,7 @@ class DataLoader(object):
                 try:
                     add_variable_from_dict(d)
                 except:
-                    raise Exception("Variable import failed for data: %s" % d)
+                    print "Variable import failed for data:", d
 
     @print_time
     def load_facilities(self):
