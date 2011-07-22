@@ -15,6 +15,7 @@ var launchOpenLayers = (function(_opts){
             ["Nigeria", "nigeria_base"]
         ],
         defaultLayer: 'google',
+        layerSwitcher: true,
         zoom: 6,
         maxExtent: [-20037500, -20037500, 20037500, 20037500],
         restrictedExtent: [-4783.9396188051, 463514.13943762, 1707405.4936624, 1625356.9691642]
@@ -39,23 +40,29 @@ var launchOpenLayers = (function(_opts){
               };
             var mapId = mapElem.get(0).id;
             var mapserver = opts.tileUrl;
-            var mapLayers = $.map(opts.layers, function(ldata, i){
-                return new OpenLayers.Layer.TMS(ldata[0], [mapserver], 
+            var mapLayerArray = [];
+            context.mapLayers = {};
+            $.each(opts.layers, function(k, ldata){
+                var ml = new OpenLayers.Layer.TMS(ldata[0], [mapserver],
                     {
                         layername: ldata[1],
                         'type': 'png'
                     });
+                mapLayerArray.push(ml);
+                context.mapLayers[ldata[1]] = ml;
                 });
             
             if(!mapId) {mapId = mapElem.get(0).id= "-openlayers-map-elem"}
             context.map = new OpenLayers.Map(mapId, options);
             var googleSat = new OpenLayers.Layer.Google( "Google", {type: 'satellite'});
-            mapLayers.push(googleSat);
-            context.map.addLayers(mapLayers);
+            mapLayerArray.push(googleSat);
+            context.map.addLayers(mapLayerArray);
             if(opts.defaultLayer==='google') {
                 context.map.setBaseLayer(googleSat);
             }
-            context.map.addControl(new OpenLayers.Control.LayerSwitcher());
+            if(opts.layerSwitcher) {
+                context.map.addControl(new OpenLayers.Control.LayerSwitcher());
+            }
             context.map.setCenter(new OpenLayers.LonLat(opts.centroid.lng, opts.centroid.lat), opts.zoom);
             $.each(onScriptLoadFns, function(i, fn){fn.call(context);})
             scriptsFinished = true;

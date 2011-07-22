@@ -20,7 +20,7 @@ class FacilityRecord(DataRecord):
             return defaultdict(infinite_dict)
         result = infinite_dict()
         for d in records:
-            variable = Variable.get_from_cache(d['variable'])
+            variable = Variable.get(d['variable'])
             value = '%s_value' % variable.data_type
             if d[value] in result[d['facility__sector']][d['variable']]:
                 result[d['facility__sector']][d['variable']][d[value]] += 1
@@ -33,7 +33,7 @@ class FacilityRecord(DataRecord):
         result = cls.counts_by_variable(lga)
         for sector, d in result.items():
             for k, v in d.items():
-                variable = Variable.get_from_cache(k)
+                variable = Variable.get(k)
                 if variable.data_type != 'boolean':
                     del d[k]
         return result

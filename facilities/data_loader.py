@@ -23,10 +23,13 @@ class DataLoader(object):
 
     def setup(self):
         self.reset_database()
+        self.load()
+        self.print_stats()
+
+    def load(self):
         self.load_system()
         self.load_data()
         self.load_calculations()
-        self.print_stats()
 
     @print_time
     def reset_database(self):
@@ -78,48 +81,137 @@ class DataLoader(object):
     @print_time
     def create_facility_types(self):
         get = lambda node_id: FacilityType.objects.get(pk=node_id)
-        facility_types = [
-                (('health', 'Health'), [
-                    (('level_1', 'Level 1'), [
-                        (('healthpost', 'Health Post'), []),
-                        (('dispensary', 'Dispensary'), []),
-                    ]),
-                    (('level_2', 'Level 2'), [
-                        (('primaryhealthclinic', 'Primary Health Clinic'), []),
-                    ]),
-                    (('level_3', 'Level 3'), [
-                        (('primaryhealthcarecentre', 'Primary Health Care Centre'), []),
-                        (('comprehensivehealthcentre', 'Comprehensive Health Centre'), []),
-                        (('wardmodelprimaryhealthcarecentre', 'Ward Model Primary Health Care Centre'), []),
-                        (('maternity', 'Maternity'), []),
-                    ]),
-                    (('level_4', 'Level 4'), [
-                        (('cottagehospital', 'Cottage Hospital'), []),
-                        (('generalhospital', 'General Hospital'), []),
-                        (('specialisthospital', 'Specialist Hospital'), []),
-                        (('teachinghospital', 'Teaching Hospital'), []),
-                        (('federalmedicalcare', 'Federal Medical Care'), []),
-                    ]),
-                    (('other', 'Other'), [
-                        (('private', 'Private'), []),
-                        (('other', 'Other'), []),
-                    ]),
-                ]),
-                (('education', 'Education'), []),
-                (('water', 'Water'), []),
-            ]
+        facility_types = {
+            'slug': 'facility',
+            'name': 'Facility',
+            'children': [
+                {
+                    'slug': 'education',
+                    'name': 'Education',
+                    'children': [],
+                    },
+                {
+                    'slug': 'water',
+                    'name': 'Water',
+                    'children': [],
+                    },
+                {
+                    'slug': 'health',
+                    'name': 'Health',
+                    'children': [
+                        {
+                            'slug': 'level_1',
+                            'name': 'Level 1',
+                            'children': [
+                                {
+                                    'slug': 'healthpost',
+                                    'name': 'Health Post',
+                                    'children': []
+                                    },
+                                {
+                                    'slug': 'dispensary',
+                                    'name': 'Dispensary',
+                                    'children': []
+                                    },
+                                ]
+                            },
+                        {
+                            'slug': 'level_2',
+                            'name': 'Level 2',
+                            'children': [
+                                {
+                                    'slug': 'primaryhealthclinic',
+                                    'name': 'Primary Health Clinic',
+                                    'children': [],
+                                    },
+                                ]
+                            },
+                        {
+                            'slug': 'level_3',
+                            'name': 'Level 3',
+                            'children': [
+                                {
+                                    'slug': 'primaryhealthcarecentre',
+                                    'name': 'Primary Health Care Centre',
+                                    'children': [],
+                                    },
+                                {
+                                    'slug': 'comprehensivehealthcentre',
+                                    'name': 'Comprehensive Health Centre',
+                                    'children': [],
+                                    },
+                                {
+                                    'slug': 'wardmodelprimaryhealthcarecentre',
+                                    'name': 'Ward Model Primary Health Care Centre',
+                                    'children': [],
+                                    },
+                                {
+                                    'slug': 'maternity',
+                                    'name': 'Maternity',
+                                    'children': [],
+                                    },
+                                ],
+                            },
+                        {
+                            'slug': 'level_4',
+                            'name':  'Level 4',
+                            'children': [
+                                {
+                                    'slug': 'cottagehospital',
+                                    'name': 'Cottage Hospital',
+                                    'children': [],
+                                    },
+                                {
+                                    'slug': 'generalhospital',
+                                    'name': 'General Hospital',
+                                    'children': [],
+                                    },
+                                {
+                                    'slug': 'specialisthospital',
+                                    'name': 'Specialist Hospital',
+                                    'children': [],
+                                    },
+                                {
+                                    'slug': 'teachinghospital',
+                                    'name': 'Teaching Hospital',
+                                    'children': [],
+                                    },
+                                {
+                                    'slug': 'federalmedicalcare',
+                                    'name': 'Federal Medical Care',
+                                    'children': [],
+                                    },
+                                ],
+                            },
+                        {
+                            'slug': 'other',
+                            'name': 'Other',
+                            'children': [
+                                {
+                                    'slug': 'private',
+                                    'name': 'Private',
+                                    'children': [],
+                                    },
+                                {
+                                    'slug': 'other',
+                                    'name': 'Other',
+                                    'children': [],
+                                    },
+                                ]
+                            },
+                        ],
+                    },
+                ],
+            }
 
-        def add(child, parent):
-            slug = child[0][0]
-            name = child[0][1]
-            grandchildren = child[1]
-            child = parent.add_child(slug=slug, name=name)
-            for grandchild in grandchildren:
-                add(grandchild, child)
+        def create_node(d, parent):
+            children = d.pop('children')
+            result = FacilityType.add_root(**d) if parent is None else parent.add_child(**d)
+            for child in children:
+                create_node(child, result)
+            return result
 
-        root = FacilityType.add_root(slug='facility_type', name='Facility Type')
-        for facility_type in facility_types:
-            add(facility_type, root)
+        create_node(facility_types, None)
 
     @print_time
     def load_key_renames(self):
@@ -170,12 +262,12 @@ class DataLoader(object):
             elif 'partition' in d:
                 PartitionVariable.objects.get_or_create(**d)
             elif 'origin' in d and 'method' in d and 'sector' in d:
-                d['origin'] = Variable.objects.get(slug=d['origin'])
+                d['origin'] = Variable.get(slug=d['origin'])
                 d['sector'] = Sector.objects.get(slug=d['sector'])
                 lga_indicator, created = LGAIndicator.objects.get_or_create(**d)
             elif 'variable' in d and 'target' in d:
-                d['variable'] = Variable.objects.get(slug=d['variable'])
-                d['target'] = Variable.objects.get(slug=d['target'])
+                d['variable'] = Variable.get(slug=d['variable'])
+                d['target'] = Variable.get(slug=d['target'])
                 gap_analyzer, created = GapVariable.objects.get_or_create(**d)
             else:
                 Variable.objects.get_or_create(**d)
@@ -187,7 +279,7 @@ class DataLoader(object):
                 try:
                     add_variable_from_dict(d)
                 except:
-                    raise Exception("Variable import failed for data: %s" % d)
+                    print "Variable import failed for data:", d
 
     @print_time
     def load_facilities(self):
@@ -298,8 +390,7 @@ class DataLoader(object):
         for i in GapVariable.objects.all():
             i.set_lga_values()
 
-    @print_time
-    def print_stats(self):
+    def get_info(self):
         def get_variable_usage():
             record_types = [FacilityRecord, LGARecord]
             totals = defaultdict(int)
@@ -314,20 +405,17 @@ class DataLoader(object):
             used_vars = set(get_variable_usage().keys())
             return sorted(list(all_vars - used_vars))
 
-        info = {
+        return {
             'number of facilities': Facility.objects.count(),
             'facilities without lgas': Facility.objects.filter(lga=None).count(),
             'number of facility records': FacilityRecord.objects.count(),
             'number of lga records': LGARecord.objects.count(),
             'unused variables': get_unused_variables(),
             }
-        print json.dumps(info, indent=4)
 
-        from django.db import connection
-        if self._debug:
-            for query in connection.queries:
-                if float(query['time']) > .01:
-                    print query
+    @print_time
+    def print_stats(self):
+        print json.dumps(self.get_info(), indent=4)
 
     def _drop_database(self):
         db_host = settings.DATABASES['default']['HOST'] or 'localhost'

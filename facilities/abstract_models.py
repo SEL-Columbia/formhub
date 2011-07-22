@@ -1,10 +1,7 @@
 from django.db import models
-from collections import defaultdict
 import json
 import re
 import datetime
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
 
 
 class KeyRename(models.Model):
@@ -59,13 +56,20 @@ class Variable(models.Model):
         'proportion': 'float'
     }
 
+    # We simplify the approach in django.contrib.contenttype.models to
+    # cache variables. We need to think about how to keep the cache in
+    # sync with the database. Though generally, we'll be okay being a
+    # little loose right now.
     _cache = {}
 
     @classmethod
-    def get_from_cache(cls, slug):
+    def get(cls, slug):
         if slug not in cls._cache:
-            cls._cache[slug] = cls.objects.get(slug=slug)
-        return cls._cache[slug]
+            try:
+                cls._cache[slug] = cls.objects.get(slug=slug)
+            except Variable.DoesNotExist:
+                pass
+        return cls._cache.get(slug)
 
     def get_casted_value(self, value):
         """
@@ -145,12 +149,10 @@ class CalculatedVariable(Variable):
 
     FIELDS = Variable.FIELDS + ['formula']
 
-    @classmethod
-    def add_calculated_variables(cls, d):
-        for v in cls.objects.all():
-            value = v.calculate_value(d)
-            if value is not None:
-                d[v.slug] = value
+    def add_calculated_value(self, d):
+        value = self.calculate_value(d)
+        if value is not None:
+            d[self.slug] = value
 
     def calculate_value(self, d):
         try:
@@ -246,16 +248,22 @@ class DictModel(models.Model):
         Key value pairs in d that are in the data dictionary will be
         added to the database along with any calculated variables that apply.
         """
-        for v in Variable.objects.all():
-            if v.slug in d:
+        for key, value in d.iteritems():
+            variable = Variable.get(key)
+            if variable is not None:
                 # update the dict with the casted value
-                d[v.slug] = self.set(v, d[v.slug])
+                d[key] = self.set(variable, value)
+        self._add_calculated_values(d)
 
-        for cls in [CalculatedVariable, PartitionVariable]:
-            cls.add_calculated_variables(d)
-            for v in cls.objects.all():
-                if v.slug in d:
-                    self.set(v, d[v.slug])
+    _cache = []
+
+    def _add_calculated_values(self, d):
+        if len(self._cache) == 0:
+            self._cache = list(CalculatedVariable.objects.all())
+        for variable in self._cache:
+            value = variable.calculate_value(d)
+            if value is not None:
+                self.set(variable, value)
 
     def _kwargs(self):
         """
@@ -309,7 +317,7 @@ class DictModel(models.Model):
 
     def get_latest_value_for_variable(self, variable):
         if type(variable) == str:
-            variable = Variable.objects.get(slug=variable)
+            variable = Variable.get(slug=variable)
         try:
             kwargs = self._kwargs()
             kwargs['variable'] = variable
