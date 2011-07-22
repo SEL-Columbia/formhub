@@ -35,7 +35,6 @@ class DataLoader(object):
 
     def load_system(self):
         self.create_users()
-        self.load_lgas()
         self.create_sectors()
         self.create_facility_types()
         self.load_key_renames()
@@ -69,11 +68,6 @@ class DataLoader(object):
             )
         mdg_user.set_password("2015")
         mdg_user.save()
-
-    @print_time
-    def load_lgas(self):
-        for file_name in ['zone.json', 'state.json', 'lga.json']:
-            call_command('loaddata', file_name)
 
     @print_time
     def create_sectors(self):
