@@ -22,13 +22,16 @@ class TestLgaList(TestCase):
 
         def state_names(z):
             return [s['name'] for s in z['states']]
-        self.assertEqual(*[state_names(nz[0]) for nz in nzs])
+
+        for nzi in range(0, len(nz)):
+            self.assertEqual(*[state_names(nz[nzi]) for nz in nzs])
 
         def ordered_lga_slugs(z):
             lga_slugs = []
             for s in z['states']:
                 for lga in s['lgas']:
                     lga_slugs.append(lga['unique_slug'])
-            lga_slugs.sort()
             return lga_slugs
-        self.assertEqual(*[ordered_lga_slugs(nz[0]) for nz in nzs])
+
+        for nzi in range(0, len(nz)):
+            self.assertEqual(*[ordered_lga_slugs(nz[nzi]) for nz in nzs])
