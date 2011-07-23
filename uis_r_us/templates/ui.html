@@ -285,6 +285,16 @@
 	a.hover-unhide:hover {
 		opacity: 0.4;
 	}
+	.map-loading-message {
+		position: absolute;
+		top: 100px;
+		left: 100px;
+		width: 300px;
+		border: 1px solid #aaa;
+		padding: 4px 9px;
+		border-radius: 6px;
+		background-color: #fafafa;
+	}
 </style>
 <link rel="stylesheet" href="/static/openlayers/default/style.css" type="text/css" media="all" charset="utf-8">
 {% endblock %}
@@ -879,9 +889,16 @@ $(function(){
 							.show();
 					}
 				})();
+			$('<div />')
+				.addClass('map-loading-message')
+				.appendTo('#map')
+				.hide();
+
 			launchOpenLayers({
 				defaultLayer: '',
 				layers: layerIdsAndNames,
+				loadingMessage: 'Please be patient while this map loads',
+				loadingElem: '.map-loading-message',
 				layerSwitcher: false,
 				elem: '.home-map'
 			})(function(){
