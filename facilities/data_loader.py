@@ -11,6 +11,7 @@ from facilities.facility_builder import FacilityBuilder
 from utils.csv_reader import CsvReader
 from utils.timing import print_time
 from django.conf import settings
+import codecs
 
 
 class DataLoader(object):
@@ -81,130 +82,6 @@ class DataLoader(object):
 
     @print_time
     def create_facility_types(self):
-        get = lambda node_id: FacilityType.objects.get(pk=node_id)
-        facility_types = {
-            'slug': 'facility',
-            'name': 'Facility',
-            'children': [
-                {
-                    'slug': 'education',
-                    'name': 'Education',
-                    'children': [],
-                    },
-                {
-                    'slug': 'water',
-                    'name': 'Water',
-                    'children': [],
-                    },
-                {
-                    'slug': 'health',
-                    'name': 'Health',
-                    'children': [
-                        {
-                            'slug': 'level_1',
-                            'name': 'Level 1',
-                            'children': [
-                                {
-                                    'slug': 'healthpost',
-                                    'name': 'Health Post',
-                                    'children': []
-                                    },
-                                {
-                                    'slug': 'dispensary',
-                                    'name': 'Dispensary',
-                                    'children': []
-                                    },
-                                ]
-                            },
-                        {
-                            'slug': 'level_2',
-                            'name': 'Level 2',
-                            'children': [
-                                {
-                                    'slug': 'primaryhealthclinic',
-                                    'name': 'Primary Health Clinic',
-                                    'children': [],
-                                    },
-                                ]
-                            },
-                        {
-                            'slug': 'level_3',
-                            'name': 'Level 3',
-                            'children': [
-                                {
-                                    'slug': 'primaryhealthcarecentre',
-                                    'name': 'Primary Health Care Centre',
-                                    'children': [],
-                                    },
-                                {
-                                    'slug': 'comprehensivehealthcentre',
-                                    'name': 'Comprehensive Health Centre',
-                                    'children': [],
-                                    },
-                                {
-                                    'slug': 'wardmodelprimaryhealthcarecentre',
-                                    'name': 'Ward Model Primary Health Care Centre',
-                                    'children': [],
-                                    },
-                                {
-                                    'slug': 'maternity',
-                                    'name': 'Maternity',
-                                    'children': [],
-                                    },
-                                ],
-                            },
-                        {
-                            'slug': 'level_4',
-                            'name':  'Level 4',
-                            'children': [
-                                {
-                                    'slug': 'cottagehospital',
-                                    'name': 'Cottage Hospital',
-                                    'children': [],
-                                    },
-                                {
-                                    'slug': 'generalhospital',
-                                    'name': 'General Hospital',
-                                    'children': [],
-                                    },
-                                {
-                                    'slug': 'specialisthospital',
-                                    'name': 'Specialist Hospital',
-                                    'children': [],
-                                    },
-                                {
-                                    'slug': 'teachinghospital',
-                                    'name': 'Teaching Hospital',
-                                    'children': [],
-                                    },
-                                {
-                                    'slug': 'federalmedicalcare',
-                                    'name': 'Federal Medical Care',
-                                    'children': [],
-                                    },
-                                ],
-                            },
-                        {
-                            'slug': 'other',
-                            'name': 'Other',
-                            'children': [
-                                {
-                                    'slug': 'private',
-                                    'name': 'Private',
-                                    'children': [],
-                                    },
-                                {
-                                    'slug': 'other',
-                                    'name': 'Other',
-                                    'children': [],
-                                    },
-                                ]
-                            },
-                        ],
-                    },
-                ],
-            }
-
         def create_node(d, parent):
             children = d.pop('children')
             result = FacilityType.add_root(**d) if parent is None else parent.add_child(**d)
@@ -212,7 +89,9 @@ class DataLoader(object):
                 create_node(child, result)
             return result
 
-        create_node(facility_types, None)
+        with codecs.open('facilities/fixtures/facility_types.json', 'r', encoding='utf-8') as f:
+            facility_types = json.load(f)
+            create_node(facility_types, None)
 
     @print_time
     def load_key_renames(self):
