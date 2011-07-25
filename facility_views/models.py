@@ -29,7 +29,7 @@ class TableColumn(models.Model):
     #that needs a home.
     name = models.CharField(max_length=64)
     slug = models.CharField(max_length=64)
-    description = models.CharField(max_length=255, null=True)
+    description = models.TextField(null=True)
     clickable = models.BooleanField(default=False)
     click_action = models.CharField(max_length=64, null=True)
     subgroups = models.CharField(max_length=512, null=True)
