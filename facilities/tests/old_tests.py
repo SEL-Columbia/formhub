@@ -305,6 +305,8 @@ class ScoreVariableTest(TestCase):
             'female_to_male_ratio': 2,
             })
         self.assertEquals(access.score(facility), 14.0)
+        # test that the maximum achievable score is correct
+        self.assertEquals(access.maximum_score(), 22.0)
 
     def test_field_storage(self):
         fc = FunctionComponent(1, 'x < 1', 'Does this work?')

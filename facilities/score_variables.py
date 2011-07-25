@@ -24,6 +24,9 @@ class ScoreVariable(Variable):
     def score(self, facility):
         return sum(self.score_dict(facility).values())
 
+    def maximum_score(self):
+        return self._score.maximum()
+
     def get_display_info(self, facility):
         """
         Return something like:
@@ -67,6 +70,9 @@ class Score(FieldStorage):
         """
         return sum(self.score_dict(d).values())
 
+    def maximum(self):
+        return sum([c.function.maximum_value() for c in self.component_list])
+
 
 class ScoreComponent(FieldStorage):
 
@@ -87,6 +93,9 @@ class Function(FieldStorage):
                 result = function_component.value
         assert result is not None, "This value does not satisfy any criteria."
         return result
+
+    def maximum_value(self):
+        return max([c.value for c in self.component_list])
 
 
 class FunctionComponent(FieldStorage):
