@@ -296,9 +296,54 @@
 		background-color: #fafafa;
 	}
 </style>
+
+<style type="text/css" media="screen">
+	.map-key-ww {
+		display: none;
+		position: absolute;
+		top: 0;
+		z-index: 99;
+		width: 100%;
+	}
+	.map-key-w {
+		margin: 11px 20px 0 100px;
+	}
+	.map-key-w table {
+		width: 100%;
+	}
+	.map-key-w a {
+		display: block;
+		float: left;
+		padding: 2px 4px;
+		background-color: #eee;
+		border: 1px solid #888;
+		color: #666;
+		border-radius: 2px;
+		text-decoration: none;
+		margin-right: 2px;
+	}
+</style>
 <link rel="stylesheet" href="/static/openlayers/default/style.css" type="text/css" media="all" charset="utf-8">
 {% endblock %}
 {% block content %}
+<!--
+<table><tbody><tr><td><a href="#/submission-counts" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button"><span class="ui-button-text" style="padding-top: 1px; padding-right: 5px; padding-bottom: 1px; padding-left: 5px; ">« Back to the List of LGAs</span></a></td><td id="map-type-choices"><div style="float: right; "><a href="#" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button"><span class="ui-button-text" style="padding-top: 1px; padding-right: 5px; padding-bottom: 1px; padding-left: 5px; ">Terrain</span></a><a href="#" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button"><span class="ui-button-text" style="padding-top: 1px; padding-right: 5px; padding-bottom: 1px; padding-left: 5px; ">Satellite</span></a><a href="#" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button"><span class="ui-button-text" style="padding-top: 1px; padding-right: 5px; padding-bottom: 1px; padding-left: 5px; ">Map</span></a></div></td></tr>
+</tbody></table>
+
+-->
+<script type="text/html" id="map-bar-template">
+	<div class="map-key-ww">
+		<div class="map-key-w">
+			<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix" id="m-key">
+				<table>
+					<tbody>
+						<tr></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</script>
 <div class='content-inner-wrap'>
 	<div class="widget-outer-wrap" style="bottom:0">
 		<div class="fullw-widget">
@@ -334,6 +379,8 @@
 			</div>
 		</div>
 		{% endfor %}
+		<div class="clearfix">
+		</div>
 	</div>
 </div>
 <div id="gap-analysis-table-template" style="display:none">
@@ -759,6 +806,48 @@ var layerData = (function(_){return _})({{layer_details|safe}});
 $('.content-inner-wrap').css({'padding':0});
 
 
+var mapBar = (function(){
+	var _placed = false;
+	var _elem;
+	var defaultOpts = {
+		'sectorButtons': [
+//			['Summary', 'summary'],
+			['Health', 'health'],
+			['Water', 'water'],
+			['Education', 'education']
+		],
+		reset: true
+	};
+	return function getMapBar(_opts){
+		var opts = $.extend(defaultOpts, _opts);
+		if(!_placed) {
+			_elem = $($('#map-bar-template').html());
+			$('.content-inner-wrap').prepend(_elem);
+			_placed = true;
+		}
+		var tr = _elem.find('tr');
+		opts.reset && tr.empty()
+		var sectorTd = $('<td />');
+		$.each(opts.sectorButtons, function(i, button){
+			$('<a />', {'href': '#', 'class': 'sectorButton'})
+					.text(button[0])
+					.appendTo(sectorTd)
+					.data('sectorSlug', button[1]);
+		});
+		sectorTd.delegate('a', 'click', function(){
+			var ss =  $(this).data('sectorSlug');
+			log(ss);
+			$('body').trigger('select-sector', {
+				fullSectorId: ss
+			});
+		});
+		tr.append(sectorTd);
+		return {
+			elem: _elem
+		};
+	}
+})();
+
 var modes = {
 	home: {
 		enter: function(){
@@ -791,9 +880,13 @@ var modes = {
 			//   its purpose is to trigger "full-height" whenever the page is resized.
 			//   it has some weird side-effects on mobile browsers.
 			SetResizer(jQuery, ".content-inner-wrap", "#header, #menu", 15);
+			var mb = mapBar()
+					.elem.show();
+//					.find('tr').append($('<td />').html($('<a />', {'href':'#'}).text("hi").click(function(){console.log(this); return false;})));
 		},
 		leave: function(){
 			$('.profile-data-wrap').hide();
+			mapBar().elem.hide();
 		}
 	}
 };
@@ -993,7 +1086,7 @@ $(function(){
 				this.buildTable = true;
 				setTitle(createTitleForLga(this.stateName, this.lgaName));
 				fullSectorId !== undefined && this.trigger('select-sector', {fullSectorId: fullSectorId});
-				addToggleLinks();
+				//addToggleLinks();
 			});
 		}
 		this.get(pageRootUrl + ":lga/(.+)", function(){

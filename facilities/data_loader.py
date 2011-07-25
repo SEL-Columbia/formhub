@@ -11,14 +11,12 @@ from facilities.facility_builder import FacilityBuilder
 from utils.csv_reader import CsvReader
 from utils.timing import print_time
 from django.conf import settings
+import codecs
 
 
 class DataLoader(object):
 
-    limit_lgas = settings.LIMITED_LGA_LIST
-
     def __init__(self, **kwargs):
-        self._limit_import = kwargs.get('limit_import', False)
         self._debug = kwargs.get('debug', False)
         self._data_dir = kwargs.get('data_dir', 'data')
 
@@ -45,13 +43,13 @@ class DataLoader(object):
         self.load_variables()
         self.load_table_defs()
 
-    def load_data(self):
-        self.load_facilities()
-        self.load_lga_data()
+    def load_data(self, lga_ids="all"):
+        self.load_facilities(lga_ids)
+        self.load_lga_data(lga_ids)
 
-    def load_calculations(self):
-        self.calculate_lga_indicators()
-        self.calculate_lga_gaps()
+    def load_calculations(self, lga_ids="all"):
+        self.calculate_lga_indicators(lga_ids)
+        self.calculate_lga_gaps(lga_ids)
 
     @print_time
     def create_users(self):
@@ -81,130 +79,6 @@ class DataLoader(object):
 
     @print_time
     def create_facility_types(self):
-        get = lambda node_id: FacilityType.objects.get(pk=node_id)
-        facility_types = {
-            'slug': 'facility',
-            'name': 'Facility',
-            'children': [
-                {
-                    'slug': 'education',
-                    'name': 'Education',
-                    'children': [],
-                    },
-                {
-                    'slug': 'water',
-                    'name': 'Water',
-                    'children': [],
-                    },
-                {
-                    'slug': 'health',
-                    'name': 'Health',
-                    'children': [
-                        {
-                            'slug': 'level_1',
-                            'name': 'Level 1',
-                            'children': [
-                                {
-                                    'slug': 'healthpost',
-                                    'name': 'Health Post',
-                                    'children': []
-                                    },
-                                {
-                                    'slug': 'dispensary',
-                                    'name': 'Dispensary',
-                                    'children': []
-                                    },
-                                ]
-                            },
-                        {
-                            'slug': 'level_2',
-                            'name': 'Level 2',
-                            'children': [
-                                {
-                                    'slug': 'primaryhealthclinic',
-                                    'name': 'Primary Health Clinic',
-                                    'children': [],
-                                    },
-                                ]
-                            },
-                        {
-                            'slug': 'level_3',
-                            'name': 'Level 3',
-                            'children': [
-                                {
-                                    'slug': 'primaryhealthcarecentre',
-                                    'name': 'Primary Health Care Centre',
-                                    'children': [],
-                                    },
-                                {
-                                    'slug': 'comprehensivehealthcentre',
-                                    'name': 'Comprehensive Health Centre',
-                                    'children': [],
-                                    },
-                                {
-                                    'slug': 'wardmodelprimaryhealthcarecentre',
-                                    'name': 'Ward Model Primary Health Care Centre',
-                                    'children': [],
-                                    },
-                                {
-                                    'slug': 'maternity',
-                                    'name': 'Maternity',
-                                    'children': [],
-                                    },
-                                ],
-                            },
-                        {
-                            'slug': 'level_4',
-                            'name':  'Level 4',
-                            'children': [
-                                {
-                                    'slug': 'cottagehospital',
-                                    'name': 'Cottage Hospital',
-                                    'children': [],
-                                    },
-                                {
-                                    'slug': 'generalhospital',
-                                    'name': 'General Hospital',
-                                    'children': [],
-                                    },
-                                {
-                                    'slug': 'specialisthospital',
-                                    'name': 'Specialist Hospital',
-                                    'children': [],
-                                    },
-                                {
-                                    'slug': 'teachinghospital',
-                                    'name': 'Teaching Hospital',
-                                    'children': [],
-                                    },
-                                {
-                                    'slug': 'federalmedicalcare',
-                                    'name': 'Federal Medical Care',
-                                    'children': [],
-                                    },
-                                ],
-                            },
-                        {
-                            'slug': 'other',
-                            'name': 'Other',
-                            'children': [
-                                {
-                                    'slug': 'private',
-                                    'name': 'Private',
-                                    'children': [],
-                                    },
-                                {
-                                    'slug': 'other',
-                                    'name': 'Other',
-                                    'children': [],
-                                    },
-                                ]
-                            },
-                        ],
-                    },
-                ],
-            }
-
         def create_node(d, parent):
             children = d.pop('children')
             result = FacilityType.add_root(**d) if parent is None else parent.add_child(**d)
@@ -212,7 +86,9 @@ class DataLoader(object):
                 create_node(child, result)
             return result
 
-        create_node(facility_types, None)
+        with codecs.open('facilities/fixtures/facility_types.json', 'r', encoding='utf-8') as f:
+            facility_types = json.load(f)
+            create_node(facility_types, None)
 
     @print_time
     def load_key_renames(self):
@@ -283,7 +159,7 @@ class DataLoader(object):
                     print "Variable import failed for data:", d
 
     @print_time
-    def load_facilities(self):
+    def load_facilities(self, lga_ids):
         sectors = [
             {
                 'sector': 'Education',
@@ -300,10 +176,10 @@ class DataLoader(object):
 
             ]
         for sector in sectors:
-            self.create_facilities_from_csv(**sector)
+            self.create_facilities_from_csv(lga_ids, **sector)
 
     @print_time
-    def create_facilities_from_csv(self, sector, data_source):
+    def create_facilities_from_csv(self, lga_ids, sector, data_source):
         data_dir = os.path.join(self._data_dir, 'facility')
         path = os.path.join(data_dir, data_source)
         csv_reader = CsvReader(path)
@@ -312,7 +188,7 @@ class DataLoader(object):
             if '_lga_id' not in d:
                 print "FACILITY MISSING LGA ID"
                 continue
-            if self._limit_import and d['_lga_id'] not in self.limit_lgas:
+            if lga_ids != "all" and d['_lga_id'] not in lga_ids:
                 continue
             d['_data_source'] = data_source
             d['_facility_type'] = sector.lower()
@@ -320,7 +196,7 @@ class DataLoader(object):
             facility = FacilityBuilder.create_facility_from_dict(d)
 
     @print_time
-    def load_lga_data(self):
+    def load_lga_data(self, lga_ids):
         data_kwargs = [
             {
                 'data': 'population',
@@ -347,16 +223,16 @@ class DataLoader(object):
         for kwargs in data_kwargs:
             filename = kwargs.pop('data') + '.csv'
             kwargs['path'] = os.path.join(self._data_dir, 'lga', filename)
-            self.load_lga_data_from_csv(**kwargs)
+            self.load_lga_data_from_csv(lga_ids, **kwargs)
 
     @print_time
-    def load_lga_data_from_csv(self, path, row_contains_variable_slug=False):
+    def load_lga_data_from_csv(self, lga_ids, path, row_contains_variable_slug=False):
         csv_reader = CsvReader(path)
         for d in csv_reader.iter_dicts():
             if '_lga_id' not in d:
                 print "MISSING LGA ID:", d
                 continue
-            if self._limit_import and d['_lga_id'] not in self.limit_lgas:
+            if lga_ids != "all" and d['_lga_id'] not in lga_ids:
                 continue
             lga = LGA.objects.get(id=d['_lga_id'])
             if row_contains_variable_slug:
@@ -382,12 +258,12 @@ class DataLoader(object):
         call_command('loaddata', xfm_json_path)
 
     @print_time
-    def calculate_lga_indicators(self):
+    def calculate_lga_indicators(self, lga_ids):
         for i in LGAIndicator.objects.all():
             i.set_lga_values()
 
     @print_time
-    def calculate_lga_gaps(self):
+    def calculate_lga_gaps(self, lga_ids):
         for i in GapVariable.objects.all():
             i.set_lga_values()
 
