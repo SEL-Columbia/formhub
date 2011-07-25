@@ -22,11 +22,9 @@ class DataLoader(object):
 
     def setup(self):
         self.reset_database()
-        self.load()
-        self.print_stats()
+        self.load_system()
 
     def load(self):
-        self.load_system()
         self.load_data()
         self.load_calculations()
 
