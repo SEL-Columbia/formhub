@@ -36,10 +36,8 @@ class Command(BaseCommand):
             if kwargs['limit_import']:
                 lga_ids = settings.LIMITED_LGA_LIST
             # data_loader.setup() is equivalent to the following 5 commands
-            data_loader.reset_database()
-            data_loader.load_system()
-            data_loader.load_data(lga_ids)
-            data_loader.load_calculations(lga_ids)
+            data_loader.setup()
+            data_loader.load(lga_ids)
             data_loader.print_stats()
 
         # If arguments have been given to this command, run those

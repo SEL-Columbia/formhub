@@ -24,9 +24,16 @@ class DataLoader(object):
         self.reset_database()
         self.load_system()
 
-    def load(self):
-        self.load_data()
-        self.load_calculations()
+    def load(self, lga_ids="all"):
+        self.load_data(lga_ids)
+        self.load_calculations(lga_ids)
+        for lga_id in lga_ids:
+            try:
+                lga = LGA.objects.get(id=lga_id)
+                lga.data_loaded = True
+                lga.save()
+            except LGA.DoesNotExist, e:
+                pass
 
     @print_time
     def reset_database(self):
@@ -40,6 +47,30 @@ class DataLoader(object):
         self.load_key_renames()
         self.load_variables()
         self.load_table_defs()
+        self.mark_available_lgas()
+
+    @print_time
+    def mark_available_lgas(self):
+        lga_ids = []
+        #this process takes about 6 seconds...
+        for csv_file in ['Health_PhII_RoundI&II&III_Clean.csv',
+                         'Educ_Baseline_PhaseII_all_merged_cleaned_07_20_2011.csv',
+                         'Water_PhaseII_RoundI&II&III_Clean.csv']:
+            data_dir = os.path.join(self._data_dir, 'facility')
+            path = os.path.join(data_dir, csv_file)
+            csv_reader = CsvReader(path)
+            for d in csv_reader.iter_dicts():
+                lga_id = d.get('_lga_id')
+                if lga_id is not None and lga_id not in lga_ids:
+                    lga_ids.append(lga_id)
+        for lga_id in lga_ids:
+            try:
+                lga = LGA.objects.get(id=lga_id)
+                lga.data_available=True
+                lga.save()
+            except LGA.DoesNotExist, e:
+                print "lga not found: %s" % str(lga_id)
+        print "%d LGAs have data" % LGA.objects.filter(data_available=True).count()
 
     def load_data(self, lga_ids="all"):
         self.load_facilities(lga_ids)
