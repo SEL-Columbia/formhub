@@ -16,10 +16,7 @@ import codecs
 
 class DataLoader(object):
 
-    limit_lgas = settings.LIMITED_LGA_LIST
-
     def __init__(self, **kwargs):
-        self._limit_import = kwargs.get('limit_import', False)
         self._debug = kwargs.get('debug', False)
         self._data_dir = kwargs.get('data_dir', 'data')
 
@@ -46,13 +43,13 @@ class DataLoader(object):
         self.load_variables()
         self.load_table_defs()
 
-    def load_data(self):
-        self.load_facilities()
-        self.load_lga_data()
+    def load_data(self, lga_ids="all"):
+        self.load_facilities(lga_ids)
+        self.load_lga_data(lga_ids)
 
-    def load_calculations(self):
-        self.calculate_lga_indicators()
-        self.calculate_lga_gaps()
+    def load_calculations(self, lga_ids="all"):
+        self.calculate_lga_indicators(lga_ids)
+        self.calculate_lga_gaps(lga_ids)
 
     @print_time
     def create_users(self):
@@ -162,7 +159,7 @@ class DataLoader(object):
                     print "Variable import failed for data:", d
 
     @print_time
-    def load_facilities(self):
+    def load_facilities(self, lga_ids):
         sectors = [
             {
                 'sector': 'Education',
@@ -179,10 +176,10 @@ class DataLoader(object):
 
             ]
         for sector in sectors:
-            self.create_facilities_from_csv(**sector)
+            self.create_facilities_from_csv(lga_ids, **sector)
 
     @print_time
-    def create_facilities_from_csv(self, sector, data_source):
+    def create_facilities_from_csv(self, lga_ids, sector, data_source):
         data_dir = os.path.join(self._data_dir, 'facility')
         path = os.path.join(data_dir, data_source)
         csv_reader = CsvReader(path)
@@ -191,7 +188,7 @@ class DataLoader(object):
             if '_lga_id' not in d:
                 print "FACILITY MISSING LGA ID"
                 continue
-            if self._limit_import and d['_lga_id'] not in self.limit_lgas:
+            if lga_ids != "all" and d['_lga_id'] not in lga_ids:
                 continue
             d['_data_source'] = data_source
             d['_facility_type'] = sector.lower()
@@ -199,7 +196,7 @@ class DataLoader(object):
             facility = FacilityBuilder.create_facility_from_dict(d)
 
     @print_time
-    def load_lga_data(self):
+    def load_lga_data(self, lga_ids):
         data_kwargs = [
             {
                 'data': 'population',
@@ -226,16 +223,16 @@ class DataLoader(object):
         for kwargs in data_kwargs:
             filename = kwargs.pop('data') + '.csv'
             kwargs['path'] = os.path.join(self._data_dir, 'lga', filename)
-            self.load_lga_data_from_csv(**kwargs)
+            self.load_lga_data_from_csv(lga_ids, **kwargs)
 
     @print_time
-    def load_lga_data_from_csv(self, path, row_contains_variable_slug=False):
+    def load_lga_data_from_csv(self, lga_ids, path, row_contains_variable_slug=False):
         csv_reader = CsvReader(path)
         for d in csv_reader.iter_dicts():
             if '_lga_id' not in d:
                 print "MISSING LGA ID:", d
                 continue
-            if self._limit_import and d['_lga_id'] not in self.limit_lgas:
+            if lga_ids != "all" and d['_lga_id'] not in lga_ids:
                 continue
             lga = LGA.objects.get(id=d['_lga_id'])
             if row_contains_variable_slug:
@@ -261,12 +258,12 @@ class DataLoader(object):
         call_command('loaddata', xfm_json_path)
 
     @print_time
-    def calculate_lga_indicators(self):
+    def calculate_lga_indicators(self, lga_ids):
         for i in LGAIndicator.objects.all():
             i.set_lga_values()
 
     @print_time
-    def calculate_lga_gaps(self):
+    def calculate_lga_gaps(self, lga_ids):
         for i in GapVariable.objects.all():
             i.set_lga_values()
 
