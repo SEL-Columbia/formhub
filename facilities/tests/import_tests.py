@@ -4,7 +4,7 @@ from facilities.data_loader import DataLoader
 from facilities.models import Sector, FacilityType
 
 
-class BasicDataTest(TestCase):
+class ImportDataTest(TestCase):
 
     def setUp(self):
         self.data_loader = DataLoader()
