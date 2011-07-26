@@ -27,13 +27,14 @@ class DataLoader(object):
     def load(self, lga_ids="all"):
         self.load_data(lga_ids)
         self.load_calculations(lga_ids)
-        for lga_id in lga_ids:
-            try:
-                lga = LGA.objects.get(id=lga_id)
-                lga.data_loaded = True
-                lga.save()
-            except LGA.DoesNotExist, e:
-                pass
+        if lga_ids != "all":
+            for lga_id in lga_ids:
+                try:
+                    lga = LGA.objects.get(id=lga_id)
+                    lga.data_loaded = True
+                    lga.save()
+                except LGA.DoesNotExist, e:
+                    pass
 
     @print_time
     def reset_database(self):
@@ -289,12 +290,12 @@ class DataLoader(object):
     @print_time
     def calculate_lga_indicators(self, lga_ids):
         for i in LGAIndicator.objects.all():
-            i.set_lga_values()
+            i.set_lga_values(lga_ids)
 
     @print_time
     def calculate_lga_gaps(self, lga_ids):
         for i in GapVariable.objects.all():
-            i.set_lga_values()
+            i.set_lga_values(lga_ids)
 
     def get_info(self):
         def get_variable_usage():
