@@ -1,0 +1,39 @@
+<div class="facility-popup">
+	<div class="title-bar">
+		<h1>{{name}}</h1>
+		<a href="#" class="close"><span>x</span></a>
+	</div>
+	<div class="left-col">
+		{{#image_url}}
+		<a href="#"><img style="width:80px;height:80px;" src="{{image_url}}"></a>
+		{{/image_url}}
+		<select>
+			{{#sector_data}}
+			<option value="{{slug}}">{{name}}</option>
+			{{/sector_data}}
+		</select>
+	</div>
+	<div class="right-col">
+		{{#sector_data}}
+		<div data-sector-slug="{{slug}}">
+			<h2>
+				{{name}}
+			</h2>
+			<table>
+				<tbody>
+					{{#variables}}
+					<tr>
+						<td>
+							{{name}}
+						</td>
+						<td>
+							{{value}}
+						</td>
+					</tr>
+					{{/variables}}
+				</tbody>
+			</table>
+		</div>
+		{{/sector_data}}
+	</div>
+</div>

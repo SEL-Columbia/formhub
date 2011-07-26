@@ -368,40 +368,33 @@ $('body').bind('select-facility', function(evt, edata){
     
 	var popup = $("<div />");
 	var sector = $(facilitySectors).filter(function(){return this.slug==facility.sector}).get(0);
-	(function buildDefinitionList(){
-		var tab = $("<table />")
-		    .css({'width': 400})
-		    .appendTo(popup);
-		
-		facility.img_id = facility.photo;
-		if(!facility.img_id) {
-		    facility.img_id = "image_not_found.jpg";
-		}
-		
-		var imgUrls = imageUrls({
-		    'small' : '120',
-		    'large': '500',
-		    'original': 'original'
-		}, facility.img_id);
-		
-		var imgUrl = "http://nmis.mvpafrica.org/site-media/attachments/"+facility.img_id;
-		
-		if(facility.photo !== undefined) {
-		    $("<a />", {'href': imgUrl, 'target': '_BLANK'})
-    		            .html($("<img />", {src: imgUrl })
-    		            .css({'width': 120}))
-    		            .prependTo(popup);
-		}
-
+	var name = facility.name || facility.facility_name || facility.school_name;
+    getMustacheTemplate('facility_popup', function(){
+        var data = {sector_data: []};
+        data.name = name || sector.name + ' Facility';
+		data.image_url = "http://nmis.mvpafrica.org/site-media/attachments/" +
+		        (facility.photo || "image_not_found.jpg");
+		var subgroups = {};
 		$(sector.columns).each(function(i, col){
-		    $("<tr />")
-			    .append($("<td />").text(col.name))
-			    .append($("<td />").text(facility[col.slug]))
-			    .appendTo(tab);
+		    $(col.subgroups).each(function(i, val){
+		        if(val!=="") {
+		            if(!subgroups[val]) { subgroups[val] = []; }
+    		        subgroups[val].push({
+    		            name: col.name,
+    		            slug: col.slug,
+    		            value: facility[col.slug]
+    		        });
+		        }
+		    });
 		});
-	})();
+		$(sector.subgroups).each(function(i, val){
+            subgroups[this.slug] !== undefined &&
+		        data.sector_data.push($.extend({}, val, { variables: subgroups[this.slug] }));
+		});
+        popup.append(Mustache.to_html(this.template, data));
+    });
 	popup._showSideDiv({
-	    title: "Facility "+ facility.uid,
+	    title: name,
 		close: function(){
 		    $('body').trigger('unselect-facility');
 		}
