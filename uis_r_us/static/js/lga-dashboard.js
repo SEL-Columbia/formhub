@@ -657,7 +657,7 @@ function buildFacilityTable(data, sectors){
 
 var decimalCount = 2;
 function roundDownValueIfNumber(val) {
-    if(val===undefined) { return '—'; }
+    if(val===undefined) { return 'n/a'; }
     if($.type(val)==='object') {val = val.value;}
     if($.type(val)==='number' && (''+val).length>5) {
         return Math.floor(Math.pow(10, decimalCount)* val)/Math.pow(10, decimalCount);

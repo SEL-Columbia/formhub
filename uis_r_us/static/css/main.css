@@ -69,7 +69,7 @@ td.checkmark.off span.mrk:before {
     content: 'NO';
 }
 td.checkmark.null span.mrk:before {
-    content: '—';
+    content: 'n/a';
 }
 
 .content-inner-wrap {
