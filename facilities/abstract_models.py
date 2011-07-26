@@ -243,24 +243,38 @@ class DictModel(models.Model):
     def get(self, variable):
         return self.get_latest_value_for_variable(variable)
 
-    def add_data_from_dict(self, d):
+    def add_data_from_dict(self, d, and_calculate=False, only_for_missing=False):
         """
         Key value pairs in d that are in the data dictionary will be
         added to the database along with any calculated variables that apply.
+
+        flags:
+            and_calculate: whether to add calculated variables from the data
+            only_for_missing: whether or not to add if there is a value
         """
         for key, value in d.iteritems():
             variable = Variable.get(key)
             if variable is not None:
                 # update the dict with the casted value
-                d[key] = self.set(variable, value)
-        self._add_calculated_values(d)
+                if only_for_missing and self.get(variable):
+                        pass
+                else:
+                    d[key] = self.set(variable, value)
+        if and_calculate:
+            self.add_calculated_values(d, only_for_missing)
 
-    def _add_calculated_values(self, d):
+    def add_calculated_values(self, d, only_for_missing=False):
         for cls in [CalculatedVariable, PartitionVariable]:
             for v in cls.objects.all():
-                v.add_calculated_value(d)
-                if v.slug in d:
-                    self.set(v, d[v.slug])
+                if only_for_missing and self.get(v):
+                    pass
+                else:
+                    v.add_calculated_value(d)
+                    if v.slug in d:
+                        self.set(v, d[v.slug])
+
+    def set_lga_values(self):
+        pass
 
     def _kwargs(self):
         """
