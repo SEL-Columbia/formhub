@@ -3,6 +3,7 @@ var launchOpenLayers = (function(_opts){
     var mapElem;
     var opts;
     var context = {};
+    var loadingMessageElement = false;
     var defaultOpts = {
         elem: '#map',
         centroid: {
@@ -17,6 +18,8 @@ var launchOpenLayers = (function(_opts){
         overlays: [],
         defaultLayer: 'google',
         layerSwitcher: true,
+        loadingElem: false,
+        loadingMessage: false,
         zoom: 6,
         maxExtent: [-20037500, -20037500, 20037500, 20037500],
         restrictedExtent: [-4783.9396188051, 463514.13943762, 1707405.4936624, 1625356.9691642]
@@ -28,6 +31,9 @@ var launchOpenLayers = (function(_opts){
             dataType: 'script',
             cache: false
         }).done(function(){
+            if(!!loadingMessageElement) {
+                loadingMessageElement.hide();
+            }
             OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
             OpenLayers.ImgPath = opts.olImgPath;
             var ob = opts.maxExtent, re = opts.restrictedExtent;
@@ -89,6 +95,11 @@ var launchOpenLayers = (function(_opts){
         if(typeof(_opts)==='function') {var passedCb = _opts; _opts = {}}
         if(opts===undefined) {opts = $.extend({}, defaultOpts, _opts);}
         if(mapElem===undefined) {mapElem = $(opts.elem);}
+        if(!!opts.loadingElem && !!opts.loadingMessage) {
+            loadingMessageElement = $(opts.loadingElem)
+                .text(opts.loadingMessage)
+                .show();
+        }
         if(!scriptsStarted) { loadGoogleMaps(); scriptsStarted=true;}
         function cbExecuter(cb){
             if(typeof(cb)==='function'){if(!scriptsFinished) {onScriptLoadFns.push(cb)} else {cb.call(context);}

@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from optparse import make_option
 from facilities.data_loader import DataLoader
-
+from django.conf import settings
 
 class Command(BaseCommand):
     help = "Load the LGA data from fixtures."
@@ -32,7 +32,13 @@ class Command(BaseCommand):
         # If no arguments are given to this command run all the import
         # methods.
         if len(args) == 0:
+            lga_ids = "all"
+            if kwargs['limit_import']:
+                lga_ids = settings.LIMITED_LGA_LIST
+            # data_loader.setup() is equivalent to the following 5 commands
             data_loader.setup()
+            data_loader.load(lga_ids)
+            data_loader.print_stats()
 
         # If arguments have been given to this command, run those
         # methods in the order they have been specified.

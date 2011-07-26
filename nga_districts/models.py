@@ -65,6 +65,11 @@ class LGA(NamedModel, DictModel):
     included_in_malaria_survey = models.BooleanField(default=False)
     geoid = models.PositiveIntegerField(null=True)
 
+    #lga.data_available==True if there's data in the csvs
+    data_available = models.BooleanField(default=False)
+    #lga.data_loaded==True if data is available AND data has been loaded in
+    data_loaded = models.BooleanField(default=False)
+
     _data_record_class = LGARecord
     _data_record_fk = 'lga'
 

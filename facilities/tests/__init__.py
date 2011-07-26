@@ -1,2 +1,4 @@
-from old_tests import *
-from import_tests import *
+from old_tests import BasicDataTest, CalculatedVariableTest, \
+                GapAnalysisTest, LGAIndicatorTest, PassDataToPage, \
+                ScoreVariableTest
+from import_tests import ImportDataTest
