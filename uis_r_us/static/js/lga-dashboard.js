@@ -592,7 +592,7 @@ function buildFacilityTable(data, sectors){
   		var uiTabIconSlugs = {
     		water: "water_small",
     		health: "clinic_s",
-    		education: "school_b"
+    		education: "school_w"
     	};
 		$('.ui-tabs-nav', ftabs).find('li a.ui-tab-sector-selector').each(function(){
 			var ss = $(this).data('sectorSlug');
@@ -624,7 +624,7 @@ function buildFacilityTable(data, sectors){
 	        var surveyTypeColors = {
         		water: "water_small",
         		health: "clinic_s",
-        		education: "school_b"
+        		education: "school_w"
         	};
 	        var st = surveyTypeColors[s] || surveyTypeColors['default'];
 	        return '/static/images/icons/'+st+'.png';
