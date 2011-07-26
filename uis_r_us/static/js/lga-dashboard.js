@@ -482,6 +482,7 @@ $('body').bind('select-column', function(evt, edata){
                     tabulations: tabulations,
                     sectorName: sector.name,
                     name: column.name,
+                    descriptive_name: column.descriptive_name,
                     description: column.description
                 };
                 getColDataDiv()
