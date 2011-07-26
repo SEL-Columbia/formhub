@@ -290,12 +290,12 @@ class DataLoader(object):
     @print_time
     def calculate_lga_indicators(self, lga_ids):
         for i in LGAIndicator.objects.all():
-            i.set_lga_values(lga_ids)
+            i.set_lga_values()
 
     @print_time
     def calculate_lga_gaps(self, lga_ids):
         for i in GapVariable.objects.all():
-            i.set_lga_values(lga_ids)
+            i.set_lga_values()
 
     def get_info(self):
         def get_variable_usage():
