@@ -305,7 +305,10 @@ $('body').bind('select-sector', function(evt, edata){
 		    $('body').trigger('unselect-facility');
 		    $('body').trigger('unselect-column');
 		    selectedSector = sector;
-		    ftabs.tabs('select', facilitySectorSlugs.indexOf(selectedSector));
+            ftabs.find('.facility-list-wrap').hide()
+                    .filter(function(){
+                        if(this.id == "facilities-"+selectedSector) { return true; }
+                    }).show();
 		    (typeof(filterPointsBySector)==='function') && filterPointsBySector(selectedSector);
 		}
 		
@@ -534,54 +537,14 @@ function buildFacilityTable(data, sectors){
         }
     }
 	FACILITY_TABLE_BUILT = true;
-	var facilityTableWrap = $('#lga-facilities-table').html($('<div />', {'id': 'facility-tabs'}).html($('<ul />')));
+	var facilityTableWrap = $('#lga-facilities-table');
+	$('<div />', {'id': 'facility-tabs'})
+	    .appendTo(facilityTableWrap);
 	var ftabs = $(facilityTabsSelector, facilityTableWrap).css({'padding-bottom':18});
-	var ftabUl = $('ul', ftabs);
 	$.each(facilitySectors, function(i, sector){
-		var fdata = facilityData.bySector[sector.slug] || facilityData.bySector[sector.name];
-		var sectorCount;
-		if(fdata instanceof Array) {
-		    sectorCount = $("<span />")
-   		            .addClass('sector-count')
-   		            .addClass(sector.slug)
-   		            .text(" ("+fdata.length+")");
-		}
-		$('<li />')
-		        .append($("<a />", {'href':'#facilities-'+sector.slug})
-		        .text(sector.name)
-		        .addClass('ui-tab-sector-selector')
-		        .data('sectorSlug', sector.slug)
-		        .append(sectorCount))
-		        .appendTo(ftabUl);
 		ftabs.append(createTableForSectorWithData(sector, facilityData));
 	});
 	
-	$('<li />')
-        .append($("<a />", {'href':'#all'}).text('All').addClass('normal'))
-        .appendTo(ftabUl);
-
-	ftabs.tabs({select: function(evt, ui){
-	    var sectorId = $(ui.panel).data('sector-slug');
-	    var nextLocation = pageRootUrl + lgaId;
-	    if(!!sectorId) {
-    	    nextLocation += '/' + sectorId;
-	    } else {
-	        selectedSector = "all";
-	        // we don't want ui tabs to select a tab.
-	        evt.preventDefault();
-	        //right now, the all button won't do anything
-	        $.each(facilityData.list, function(k, fdp){
-	            olStyling.markIcon(fdp, 'showing');
-	        });
-	        return;
-	    }
-	    //* sammy setLocation will handle setting up the page:
-	    _dashboard.setLocation(nextLocation);
-	    //* otherwise, we could trigger the event ourselves:
-        //>> $(evt.target).trigger('select-sector', {fullSectorId: sectorId})
-        //* doing both causes problems right now.
-	}});
-
 	(function deleteThisWhenYouWantToDoItProperly(){
   		var uiTabIconSlugs = {
     		water: "water_small",
@@ -729,6 +692,7 @@ function createTableForSectorWithData(sector, data){
     
 	return $('<div />')
 	    .attr('id', 'facilities-'+sector.slug)
+	    .addClass('facility-list-wrap')
 	    .data('sector-slug', sector.slug)
 	    .append(subSectors)
 	    .append(table);
