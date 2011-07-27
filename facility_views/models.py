@@ -31,6 +31,7 @@ class TableColumn(models.Model):
     descriptive_name = models.CharField(max_length=64)
     slug = models.CharField(max_length=64)
     description = models.TextField(null=True)
+    lga_description = models.TextField(null=True)
     clickable = models.BooleanField(default=False)
     click_action = models.CharField(max_length=64, null=True)
     subgroups = models.CharField(max_length=512, null=True)
@@ -55,24 +56,26 @@ class TableColumn(models.Model):
         d = {
             'name': self.name,
             'slug': self.slug,
-            'descriptive_name': self.descriptive_name,
             'subgroups': subgroups,
             'clickable': self.clickable,
             'display_order': self.display_order
         }
-        if not self.iconify_png_url in ['', None]:
-            d['iconify_png_url'] = self.iconify_png_url
-        if not self.click_action == '':
-            d['click_actions'] = self.click_action.split(' ')
-        if not self.display_style in [None, '']:
-            d['display_style'] = self.display_style
+        def is_present(str_or_none):
+            return str_or_none not in ['', None]
         
-        if not self.calc_action in [None, '']:
+        if is_present(self.iconify_png_url):
+            d['iconify_png_url'] = self.iconify_png_url
+        if is_present(self.click_action):
+            d['click_actions'] = self.click_action.split(' ')
+        if is_present(self.display_style):
+            d['display_style'] = self.display_style
+        if is_present(self.calc_action):
             d['calc_action'] = self.calc_action
             d['calc_columns'] = self.calc_columns
-        
-        if not self.description in [None, '']:
+        if is_present(self.description):
             d['description'] = self.description
+        if is_present(self.descriptive_name):
+            d['descriptive_name'] = self.descriptive_name
         return d
 
 class ColumnCategory(models.Model):
