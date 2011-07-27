@@ -305,7 +305,9 @@ $('body').bind('select-sector', function(evt, edata){
                     }).show();
 		    (typeof(filterPointsBySector)==='function') && filterPointsBySector(selectedSector);
 		}
-		
+
+		var sectorObj = $(facilitySectors).filter(function(){return this.slug==sector}).get(0);
+		setSummaryHtml(sectorObj.name + " Facilities");
 		if(selectedSubSector!==fullSectorId) {
 			$('body').trigger('unselect-sector');
 			var tabWrap = $('#facilities-'+sector, ftabs);
@@ -525,6 +527,11 @@ $('body').bind('unselect-column', function(evt, edata){
 //      table correspond to the facilities.
 var filterPointsBySector;
 var FACILITY_TABLE_BUILT = false;
+
+function setSummaryHtml(html) {
+    return $('#summary-p').html(html);
+}
+
 function buildFacilityTable(data, sectors){
     filterPointsBySector = function(sector){
         if(sector==='all') {
@@ -544,20 +551,21 @@ function buildFacilityTable(data, sectors){
     }
 	FACILITY_TABLE_BUILT = true;
 	var facilityTableWrap = $('#lga-facilities-table');
-	$('<div />', {'id': 'toggle-updown-bar'})
-	    .html($('<span />', {'class':'icon'}))
+	$('<div />', {'id': 'toggle-updown-bar'}).html($('<span />', {'class':'icon'}))
 	    .appendTo(facilityTableWrap)
 	    .click(function(){
 	        facilityTableWrap.toggleClass('closed');
 	    });
 	$('<div />', {'id': 'facility-tabs'})
 	    .appendTo(facilityTableWrap);
+	$('<p />', {'id': 'summary-p'})
+	    .appendTo(facilityTableWrap);
 	var ftabs = $(facilityTabsSelector, facilityTableWrap).css({'padding-bottom':18});
 	$.each(facilitySectors, function(i, sector){
 		ftabs.append(createTableForSectorWithData(sector, facilityData));
 	});
 	ftabs.height(220);
-	ftabs.find('.ui-tabs-panel').css({'overflow':'auto','height':'75%'})
+	ftabs.find('.ui-tabs-panel').css({'overflow':'auto','height':'75%'});
 	facilityTableWrap.addClass('ready');
 	loadMap && launchOpenLayers({
 		centroid: {
