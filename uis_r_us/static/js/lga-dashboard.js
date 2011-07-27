@@ -10,12 +10,7 @@
 	    if(opts===undefined) { opts={}; }
 		if(mapContent===undefined) { mapContent = $('.content-inner-wrap'); }
 		if(rightDiv===undefined) {
-			var rdWrap = $("<div />", {'class':'rd-wrap'}).appendTo(mapContent);
-			rightDiv = $("<div />", {'class': 'right-div'}).appendTo(rdWrap);
-            rdNav = $("<p />", {
-                'html': $("<span />", {'class':'facility-title'})
-            }).append($("<a />", {'href': '#', 'class': 'close', 'text':'[X]'}))
-                .appendTo(rightDiv);
+			var rightDiv = $("<div />", {'class':'rd-wrap'}).appendTo(mapContent);
             rightDiv.delegate('a.close', 'click', function(){
                 rightDiv.trigger('click-close');
                 return false;
@@ -26,10 +21,9 @@
 		    rightDiv.hide();
 		    opts.close !== undefined && opts.close.apply(this, arguments);
 		});
-		opts.title !== undefined && rdNav.find('.facility-title').text(opts.title);
-		rightDiv.html(rdNav)
-		   .append(this.eq(0))
-		   .show();
+		rightDiv
+		    .html(this.eq(0))
+		    .show();
 	}
 })(jQuery);
 // END temporary side-div jquery wrapper
@@ -394,7 +388,19 @@ $('body').bind('select-facility', function(evt, edata){
             subgroups[this.slug] !== undefined &&
 		        data.sector_data.push($.extend({}, val, { variables: subgroups[this.slug] }));
 		});
-        popup.append(Mustache.to_html(this.template, data));
+		var pdiv = $(Mustache.to_html(this.template, data));
+		pdiv.delegate('select', 'change', function(){
+		    var selectedSector = $(this).val();
+		    pdiv.find('div.facility-sector-select-box')
+		        .removeClass('selected')
+		        .filter(function(){
+    		        if($(this).data('sectorSlug')===selectedSector) {
+    		            return true;
+    		        }
+    		    })
+    		    .addClass('selected');
+		});
+        popup.append(pdiv);
     });
 	popup._showSideDiv({
 	    title: name,
@@ -550,24 +556,6 @@ function buildFacilityTable(data, sectors){
 	$.each(facilitySectors, function(i, sector){
 		ftabs.append(createTableForSectorWithData(sector, facilityData));
 	});
-	
-	(function deleteThisWhenYouWantToDoItProperly(){
-  		var uiTabIconSlugs = {
-    		water: "water_small",
-    		health: "clinic_s",
-    		education: "school_w"
-    	};
-		$('.ui-tabs-nav', ftabs).find('li a.ui-tab-sector-selector').each(function(){
-			var ss = $(this).data('sectorSlug');
-			if(!!uiTabIconSlugs[ss]) {
-			    var flagUrl = "/static/images/icons/"+uiTabIconSlugs[ss]+".png";
-			    $('<div />')
-			        .addClass('flag')
-			        .css({'background-image': "url('" + flagUrl + "')"})
-			        .prependTo($(this));
-			}
-		})
-	})();
 	ftabs.height(220);
 	ftabs.find('.ui-tabs-panel').css({'overflow':'auto','height':'75%'})
 	facilityTableWrap.addClass('ready');
