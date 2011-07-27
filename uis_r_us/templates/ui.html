@@ -956,7 +956,7 @@ $(function(){
 							//sammy is not being friendly right now, so I'm going around it.
 							window.location = this.href;
 							return false;
-						})
+						});
 						nav.delegate('a.state-link', 'click', function(){
 							var ul = $(this).parents('li')
 									.eq(0)

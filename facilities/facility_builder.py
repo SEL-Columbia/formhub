@@ -43,7 +43,7 @@ class FacilityBuilder(object):
             pass
 
         facility, created = Facility.objects.get_or_create(**kwargs)
-        facility.add_data_from_dict(d)
+        facility.add_data_from_dict(d, and_calculate=True)
         return facility
 
     @classmethod

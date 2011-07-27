@@ -80,6 +80,7 @@ class DataLoader(object):
     def load_calculations(self, lga_ids="all"):
         self.calculate_lga_indicators(lga_ids)
         self.calculate_lga_gaps(lga_ids)
+        self.calculate_lga_variables(lga_ids)
 
     @print_time
     def create_users(self):
@@ -271,7 +272,7 @@ class DataLoader(object):
                 else:
                     print "MISSING SLUG OR VALUE:", d
             else:
-                lga.add_data_from_dict(d)
+                lga.add_data_from_dict(d, and_calculate=True)
 
     @print_time
     def load_table_defs(self):
@@ -290,12 +291,17 @@ class DataLoader(object):
     @print_time
     def calculate_lga_indicators(self, lga_ids):
         for i in LGAIndicator.objects.all():
-            i.set_lga_values()
+            i.set_lga_values(lga_ids)
 
     @print_time
     def calculate_lga_gaps(self, lga_ids):
         for i in GapVariable.objects.all():
-            i.set_lga_values()
+            i.set_lga_values(lga_ids)
+
+    @print_time
+    def calculate_lga_variables(self, lga_ids):
+         for lga in LGA.objects.filter(id__in=[int(x) for x in lga_ids]):
+            lga.add_calculated_values(lga.get_latest_data(), only_for_missing=True)
 
     def get_info(self):
         def get_variable_usage():

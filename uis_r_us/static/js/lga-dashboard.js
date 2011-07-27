@@ -10,12 +10,7 @@
 	    if(opts===undefined) { opts={}; }
 		if(mapContent===undefined) { mapContent = $('.content-inner-wrap'); }
 		if(rightDiv===undefined) {
-			var rdWrap = $("<div />", {'class':'rd-wrap'}).appendTo(mapContent);
-			rightDiv = $("<div />", {'class': 'right-div'}).appendTo(rdWrap);
-            rdNav = $("<p />", {
-                'html': $("<span />", {'class':'facility-title'})
-            }).append($("<a />", {'href': '#', 'class': 'close', 'text':'[X]'}))
-                .appendTo(rightDiv);
+			var rightDiv = $("<div />", {'class':'rd-wrap'}).appendTo(mapContent);
             rightDiv.delegate('a.close', 'click', function(){
                 rightDiv.trigger('click-close');
                 return false;
@@ -26,10 +21,9 @@
 		    rightDiv.hide();
 		    opts.close !== undefined && opts.close.apply(this, arguments);
 		});
-		opts.title !== undefined && rdNav.find('.facility-title').text(opts.title);
-		rightDiv.html(rdNav)
-		   .append(this.eq(0))
-		   .show();
+		rightDiv
+		    .html(this.eq(0))
+		    .show();
 	}
 })(jQuery);
 // END temporary side-div jquery wrapper
@@ -305,7 +299,10 @@ $('body').bind('select-sector', function(evt, edata){
 		    $('body').trigger('unselect-facility');
 		    $('body').trigger('unselect-column');
 		    selectedSector = sector;
-		    ftabs.tabs('select', facilitySectorSlugs.indexOf(selectedSector));
+            ftabs.find('.facility-list-wrap').hide()
+                    .filter(function(){
+                        if(this.id == "facilities-"+selectedSector) { return true; }
+                    }).show();
 		    (typeof(filterPointsBySector)==='function') && filterPointsBySector(selectedSector);
 		}
 		
@@ -368,40 +365,45 @@ $('body').bind('select-facility', function(evt, edata){
     
 	var popup = $("<div />");
 	var sector = $(facilitySectors).filter(function(){return this.slug==facility.sector}).get(0);
-	(function buildDefinitionList(){
-		var tab = $("<table />")
-		    .css({'width': 400})
-		    .appendTo(popup);
-		
-		facility.img_id = facility.photo;
-		if(!facility.img_id) {
-		    facility.img_id = "image_not_found.jpg";
-		}
-		
-		var imgUrls = imageUrls({
-		    'small' : '120',
-		    'large': '500',
-		    'original': 'original'
-		}, facility.img_id);
-		
-		var imgUrl = "http://nmis.mvpafrica.org/site-media/attachments/"+facility.img_id;
-		
-		if(facility.photo !== undefined) {
-		    $("<a />", {'href': imgUrl, 'target': '_BLANK'})
-    		            .html($("<img />", {src: imgUrl })
-    		            .css({'width': 120}))
-    		            .prependTo(popup);
-		}
-
+	var name = facility.name || facility.facility_name || facility.school_name;
+    getMustacheTemplate('facility_popup', function(){
+        var data = {sector_data: []};
+        data.name = name || sector.name + ' Facility';
+		data.image_url = "http://nmis.mvpafrica.org/site-media/attachments/" +
+		        (facility.photo || "image_not_found.jpg");
+		var subgroups = {};
 		$(sector.columns).each(function(i, col){
-		    $("<tr />")
-			    .append($("<td />").text(col.name))
-			    .append($("<td />").text(facility[col.slug]))
-			    .appendTo(tab);
+		    $(col.subgroups).each(function(i, val){
+		        if(val!=="") {
+		            if(!subgroups[val]) { subgroups[val] = []; }
+    		        subgroups[val].push({
+    		            name: col.name,
+    		            slug: col.slug,
+    		            value: facility[col.slug]
+    		        });
+		        }
+		    });
 		});
-	})();
+		$(sector.subgroups).each(function(i, val){
+            subgroups[this.slug] !== undefined &&
+		        data.sector_data.push($.extend({}, val, { variables: subgroups[this.slug] }));
+		});
+		var pdiv = $(Mustache.to_html(this.template, data));
+		pdiv.delegate('select', 'change', function(){
+		    var selectedSector = $(this).val();
+		    pdiv.find('div.facility-sector-select-box')
+		        .removeClass('selected')
+		        .filter(function(){
+    		        if($(this).data('sectorSlug')===selectedSector) {
+    		            return true;
+    		        }
+    		    })
+    		    .addClass('selected');
+		});
+        popup.append(pdiv);
+    });
 	popup._showSideDiv({
-	    title: "Facility "+ facility.uid,
+	    title: name,
 		close: function(){
 		    $('body').trigger('unselect-facility');
 		}
@@ -482,6 +484,7 @@ $('body').bind('select-column', function(evt, edata){
                     tabulations: tabulations,
                     sectorName: sector.name,
                     name: column.name,
+                    descriptive_name: column.descriptive_name,
                     description: column.description
                 };
                 getColDataDiv()
@@ -540,71 +543,19 @@ function buildFacilityTable(data, sectors){
         }
     }
 	FACILITY_TABLE_BUILT = true;
-	var facilityTableWrap = $('#lga-facilities-table').html($('<div />', {'id': 'facility-tabs'}).html($('<ul />')));
+	var facilityTableWrap = $('#lga-facilities-table');
+	$('<div />', {'id': 'toggle-updown-bar'})
+	    .html($('<span />', {'class':'icon'}))
+	    .appendTo(facilityTableWrap)
+	    .click(function(){
+	        facilityTableWrap.toggleClass('closed');
+	    });
+	$('<div />', {'id': 'facility-tabs'})
+	    .appendTo(facilityTableWrap);
 	var ftabs = $(facilityTabsSelector, facilityTableWrap).css({'padding-bottom':18});
-	var ftabUl = $('ul', ftabs);
 	$.each(facilitySectors, function(i, sector){
-		var fdata = facilityData.bySector[sector.slug] || facilityData.bySector[sector.name];
-		var sectorCount;
-		if(fdata instanceof Array) {
-		    sectorCount = $("<span />")
-   		            .addClass('sector-count')
-   		            .addClass(sector.slug)
-   		            .text(" ("+fdata.length+")");
-		}
-		$('<li />')
-		        .append($("<a />", {'href':'#facilities-'+sector.slug})
-		        .text(sector.name)
-		        .addClass('ui-tab-sector-selector')
-		        .data('sectorSlug', sector.slug)
-		        .append(sectorCount))
-		        .appendTo(ftabUl);
 		ftabs.append(createTableForSectorWithData(sector, facilityData));
 	});
-	
-	$('<li />')
-        .append($("<a />", {'href':'#all'}).text('All').addClass('normal'))
-        .appendTo(ftabUl);
-
-	ftabs.tabs({select: function(evt, ui){
-	    var sectorId = $(ui.panel).data('sector-slug');
-	    var nextLocation = pageRootUrl + lgaId;
-	    if(!!sectorId) {
-    	    nextLocation += '/' + sectorId;
-	    } else {
-	        selectedSector = "all";
-	        // we don't want ui tabs to select a tab.
-	        evt.preventDefault();
-	        //right now, the all button won't do anything
-	        $.each(facilityData.list, function(k, fdp){
-	            olStyling.markIcon(fdp, 'showing');
-	        });
-	        return;
-	    }
-	    //* sammy setLocation will handle setting up the page:
-	    _dashboard.setLocation(nextLocation);
-	    //* otherwise, we could trigger the event ourselves:
-        //>> $(evt.target).trigger('select-sector', {fullSectorId: sectorId})
-        //* doing both causes problems right now.
-	}});
-
-	(function deleteThisWhenYouWantToDoItProperly(){
-  		var uiTabIconSlugs = {
-    		water: "water_small",
-    		health: "clinic_s",
-    		education: "school_b"
-    	};
-		$('.ui-tabs-nav', ftabs).find('li a.ui-tab-sector-selector').each(function(){
-			var ss = $(this).data('sectorSlug');
-			if(!!uiTabIconSlugs[ss]) {
-			    var flagUrl = "/static/images/icons/"+uiTabIconSlugs[ss]+".png";
-			    $('<div />')
-			        .addClass('flag')
-			        .css({'background-image': "url('" + flagUrl + "')"})
-			        .prependTo($(this));
-			}
-		})
-	})();
 	ftabs.height(220);
 	ftabs.find('.ui-tabs-panel').css({'overflow':'auto','height':'75%'})
 	facilityTableWrap.addClass('ready');
@@ -624,7 +575,7 @@ function buildFacilityTable(data, sectors){
 	        var surveyTypeColors = {
         		water: "water_small",
         		health: "clinic_s",
-        		education: "school_b"
+        		education: "school_w"
         	};
 	        var st = surveyTypeColors[s] || surveyTypeColors['default'];
 	        return '/static/images/icons/'+st+'.png';
@@ -657,7 +608,7 @@ function buildFacilityTable(data, sectors){
 
 var decimalCount = 2;
 function roundDownValueIfNumber(val) {
-    if(val===undefined) { return '—'; }
+    if(val===undefined) { return 'n/a'; }
     if($.type(val)==='object') {val = val.value;}
     if($.type(val)==='number' && (''+val).length>5) {
         return Math.floor(Math.pow(10, decimalCount)* val)/Math.pow(10, decimalCount);
@@ -735,6 +686,7 @@ function createTableForSectorWithData(sector, data){
     
 	return $('<div />')
 	    .attr('id', 'facilities-'+sector.slug)
+	    .addClass('facility-list-wrap')
 	    .data('sector-slug', sector.slug)
 	    .append(subSectors)
 	    .append(table);

@@ -59,6 +59,7 @@ class Command(BaseCommand):
                 try:
                     d = {
                         'name': input_d['name'],
+                        'descriptive_name': input_d.get('descriptive_name', input_d['name']),
                         'slug': input_d['slug'],
                         'subgroups': input_d['subgroups'],
                         'description': input_d.pop('description', ''),

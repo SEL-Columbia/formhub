@@ -28,8 +28,9 @@ class TableColumn(models.Model):
     #there's a lot of overlap with facilities.Variable, but there's view-specific stuff
     #that needs a home.
     name = models.CharField(max_length=64)
+    descriptive_name = models.CharField(max_length=64)
     slug = models.CharField(max_length=64)
-    description = models.CharField(max_length=255, null=True)
+    description = models.TextField(null=True)
     clickable = models.BooleanField(default=False)
     click_action = models.CharField(max_length=64, null=True)
     subgroups = models.CharField(max_length=512, null=True)
@@ -54,6 +55,7 @@ class TableColumn(models.Model):
         d = {
             'name': self.name,
             'slug': self.slug,
+            'descriptive_name': self.descriptive_name,
             'subgroups': subgroups,
             'clickable': self.clickable,
             'display_order': self.display_order
