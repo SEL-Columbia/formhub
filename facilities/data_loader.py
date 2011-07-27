@@ -380,3 +380,21 @@ class DataLoader(object):
             }
         drop_function = caller[settings.DATABASES['default']['ENGINE']]
         drop_function()
+
+def _lga_list_is_all(ll):
+    return ll == "all" or isinstance(ll, list) and ll[0] == "all"
+
+def load_lgas(lga_ids, individually=True):
+    """
+    Currently, this function is only called by the management command "load_lgas"
+    which is in charge of starting a subprocess.
+    """
+    if _lga_list_is_all(lga_ids):
+        lgas_with_data = LGA.objects.filter(data_available=True).values('id')
+        lga_ids = [l['id'] for l in lgas_with_data]
+    data_loader = DataLoader()
+    for lga_id in lga_ids:
+#        os.system("say 'starting to load L G A  %s'" % str(lga_id))
+        data_loader.load(lga_id)
+#        os.system("say 'finished loading L G A %s'" % str(lga_id))
+    data_loader.print_stats()

@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from django.core.management import call_command
 from optparse import make_option
 from facilities.data_loader import DataLoader
 from django.conf import settings
@@ -23,6 +24,11 @@ class Command(BaseCommand):
                     default="data",
                     action="store",
                     type="string"),
+        make_option("-S", "--spawn-subprocess",
+                    help="Spawn a subprocess to load the lgas",
+                    dest="spawn_subprocess",
+                    default=False,
+                    action="store_true"),
         )
 
     def handle(self, *args, **kwargs):
@@ -35,10 +41,19 @@ class Command(BaseCommand):
             lga_ids = "all"
             if kwargs['limit_import']:
                 lga_ids = settings.LIMITED_LGA_LIST
-            # data_loader.setup() is equivalent to the following 5 commands
             data_loader.setup()
-            data_loader.load(lga_ids)
-            data_loader.print_stats()
+            if not kwargs['spawn_subprocess']:
+                #load fixtures the old fashioned way.
+                data_loader.load(lga_ids)
+                data_loader.print_stats()
+            else:
+                print "Starting subprocess to load lga data in."
+                if lga_ids == "all":
+                    ccargs = ['load_lgas', 'all']
+                else:
+                    ccargs = ['load_lgas'] + lga_ids
+                #calling "load_lgas" with arguments.
+                call_command(*ccargs)
 
         # If arguments have been given to this command, run those
         # methods in the order they have been specified.
