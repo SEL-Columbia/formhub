@@ -24,8 +24,8 @@ class ScoreVariable(Variable):
     def score(self, facility):
         return sum(self.score_dict(facility).values())
 
-    def maximum_score(self):
-        return self._score.maximum()
+    def maximum_score(self, facility):
+        return self._score.maximum(facility.get_latest_data())
 
     def get_display_info(self, facility):
         """
@@ -38,15 +38,13 @@ class ScoreVariable(Variable):
         pass
 
 
-
-
 class FieldStorage(object):
 
     def __init__(self, *args, **kwargs):
         if len(args) > 0:
             assert len(kwargs.keys()) == 0
             kwargs = dict(zip(self.FIELDS, args))
-        assert sorted(kwargs.keys()) == sorted(self.FIELDS)
+        assert sorted(kwargs.keys()) == sorted(self.FIELDS), "kwargs: %s, FIELDS: %s" % (kwargs, self.FIELDS)
         for k, v in kwargs.items():
             setattr(self, k, v)
 
@@ -62,7 +60,7 @@ class Score(FieldStorage):
         """
         d is a dictionary of data, like {net_intake_rate: 3, ...}
         """
-        return dict([(c.slug, c.function.points(d[c.slug])) for c in self.component_list])
+        return dict([(c.slug, c.function.points(d[c.slug])) for c in self.component_list if c.applies_to(d)])
 
     def score(self, d):
         """
@@ -70,13 +68,25 @@ class Score(FieldStorage):
         """
         return sum(self.score_dict(d).values())
 
-    def maximum(self):
-        return sum([c.function.maximum_value() for c in self.component_list])
+    def maximum(self, d):
+        return sum([c.function.maximum_value() for c in self.component_list if c.applies_to(d)])
 
 
 class ScoreComponent(FieldStorage):
 
-    FIELDS = ['slug', 'label', 'function']
+    FIELDS = ['slug', 'label', 'function', 'limit_by', 'limit_to']
+
+    def applies_to(self, d):
+        """
+        check whether or not to score this component based on limit_by (field to check)
+        and limit_to (list of valid values)
+        """
+        if self.limit_by is None or self.limit_to is None:
+            return True
+        elif self.limit_by in d and d[self.limit_by] in self.limit_to:
+            return True
+        else:
+            return False
 
 
 class Function(FieldStorage):
@@ -115,7 +125,9 @@ def build_score(s):
                 sc['label'],
                 Function(
                     [FunctionComponent(**fc) for fc in sc['function']]
-                    )
+                    ),
+                sc['limit_by'],
+                sc['limit_to']
                 )
             for sc in s
             ]
@@ -123,12 +135,108 @@ def build_score(s):
 
 
 # create some score variables in this file that we'll want to test.
-components = [
+
+health_min_lab_diagnostics_components = [
+    {
+        'slug': 'lab_tests_malaria_rdt',
+        'label': 'RDT (Malaria)',
+        'limit_by': None,
+        'limit_to': None,
+        'function': [
+            {
+                'value': 1,
+                'criteria': 'x',
+                'label': 'Yes',
+                },
+            {
+                'value': 0,
+                'criteria': 'not x',
+                'label': 'No',
+                },
+            ],
+        },
+    {
+        'slug': 'lab_tests_hemoglobin_testing',
+        'label': 'Hemoglobin',
+        'limit_by': None,
+        'limit_to': None,
+        'function': [
+            {
+                'value': 1,
+                'criteria': 'x',
+                'label': 'Yes',
+                },
+            {
+                'value': 0,
+                'criteria': 'not x',
+                'label': 'No',
+                },
+            ],
+        },
+    {
+        'slug': 'lab_tests_stool',
+        'label': 'Stool',
+        'limit_by': 'facility_type',
+        'limit_to': ['primaryhealthcarecentre', 'comprehensivehealthcentre', 'wardmodelprimaryhealthcarecentre', 'maternity', 'cottagehospital', 'generalhospital', 'specialisthospital', 'teachinghospital', 'federalmedicalcare'],
+        'function': [
+            {
+                'value': 1,
+                'criteria': 'x',
+                'label': 'Yes',
+                },
+            {
+                'value': 0,
+                'criteria': 'not x',
+                'label': 'No',
+                },
+            ],
+        },
+    {
+        'slug': 'lab_tests_urine_testing',
+        'label': 'Urine',
+        'limit_by': None,
+        'limit_to': None,
+        'function': [
+            {
+                'value': 1,
+                'criteria': 'x',
+                'label': 'Yes',
+                },
+            {
+                'value': 0,
+                'criteria': 'not x',
+                'label': 'No',
+                },
+            ],
+        },
+    {
+        'slug': 'lab_tests_pregnancy',
+        'label': 'Pregnancy',
+        'limit_by': None,
+        'limit_to': None,
+        'function': [
+            {
+                'value': 1,
+                'criteria': 'x',
+                'label': 'Yes',
+                },
+            {
+                'value': 0,
+                'criteria': 'not x',
+                'label': 'No',
+                },
+            ],
+        },
+    ]
+
+education_access_and_participation_components = [
     # net intake rate should only be used at the primary and js levels,
     # right now we're going to ignore that.
     {
         'slug': 'net_intake_rate',
         'label': 'Net intake rate',
+        'limit_by': None,
+        'limit_to': None,
         'function': [
             {
                 'value': 5,
@@ -150,6 +258,8 @@ components = [
     {
         'slug': 'distance_from_catchment_area',
         'label': 'Distance from catchment area',
+        'limit_by': None,
+        'limit_to': None,
         'function': [
             {
                 'value': 3,
@@ -171,6 +281,8 @@ components = [
     {
         'slug': 'distance_to_nearest_secondary_school',
         'label': 'Distance to nearest secondary school',
+        'limit_by': None,
+        'limit_to': None,
         'function': [
             {
                 'value': 2,
@@ -192,6 +304,8 @@ components = [
     {
         'slug': 'proportion_of_students_living_less_than_3km_away',
         'label': 'Proportion of students living less than 3km away',
+        'limit_by': None,
+        'limit_to': None,
         'function': [
             {
                 'value': 3,
@@ -213,6 +327,8 @@ components = [
     {
         'slug': 'net_enrollment_ratio',
         'label': 'Net enrollment ratio',
+        'limit_by': None,
+        'limit_to': None,
         'function': [
             {
                 'value': 5,
@@ -234,6 +350,8 @@ components = [
     {
         'slug': 'female_to_male_ratio',
         'label': 'Female to male ratio',
+        'limit_by': None,
+        'limit_to': None,
         'function': [
             {
                 'value': 4,
@@ -254,7 +372,12 @@ components = [
         },
     ]
 
-def get_access_and_participation_score_variable():
-    result = ScoreVariable()
-    result.set_score(components)
+def get_education_access_and_participation_score_variable():
+    result = ScoreVariable(slug='education_access_and_participation_score')
+    result.set_score(education_access_and_participation_components)
+    return result
+
+def get_health_min_lab_diagnostics_score_variable():
+    result = ScoreVariable(slug='health_min_lab_diagnostics_score')
+    result.set_score(health_min_lab_diagnostics_components)
     return result
