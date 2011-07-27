@@ -185,13 +185,29 @@ Description popup
 Updown toggle bar
 --*/
 div#toggle-updown-bar {
-    height:12px;position:relative;background-color:#ccc;
+    height: 12px;
+    position: relative;
+    background-color: #ccc;
+    cursor: pointer;
 }
 #lga-facilities-table.closed #facility-tabs {
     display: none;
 }
+#lga-facilities-table #summary-p {
+    display: none;
+    margin: 3px 9px;
+    color: #222;
+}
+#lga-facilities-table.closed #summary-p {
+    display: block;
+}
 div#toggle-updown-bar span.icon {
-    display:block;margin:0 auto;width:10px; height:10px;position:absolute;left:50%
+    display: block;
+    margin: 0 auto;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    left: 50%
 }
 div#toggle-updown-bar span.icon:before {
     content: '▾';
