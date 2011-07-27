@@ -31,3 +31,6 @@ local_settings.py
 
 # "your code sucks, you should fix this" -- andrew
 test_static
+
+load_script.logs
+load_script.pid
