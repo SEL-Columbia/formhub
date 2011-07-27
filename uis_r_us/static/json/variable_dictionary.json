@@ -12,33 +12,13 @@
         "name": "Population (2006)",
         "order": 2
     },
-    "percentage_rural_pop": {
-        "name": "% Rural Population",
-        "order": 4
-    },
     "area_sq_km": {
         "name": "Area (square km)",
-        "order": 5
+        "order": 3
     },
     "distance_to_state_capital": {
         "name": "Distance from LGA to state capital (km)",
-        "order": 6
-    },
-    "num_health_facilities": {
-        "name": "Number of health clinics",
-        "order": 7
-    },
-    "skilled_health_provider_population_ratio": {
-        "name": "Skilled health provider:population ratio",
-        "order": 8
-    },
-    "num_schools": {
-        "name": "Number of schools",
-        "order": 9
-    },
-    "student_teacher_ratio": {
-        "name": "Student:teacher ratio (primary)",
-        "order": 10
+        "order": 4
     }
   }
 }
