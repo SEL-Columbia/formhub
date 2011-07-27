@@ -55,7 +55,7 @@ class DataLoader(object):
         lga_ids = []
         #this process takes about 6 seconds...
         for csv_file in ['Health_PhII_RoundI&II&III_Clean.csv',
-                         'Educ_Baseline_PhaseII_all_merged_cleaned_07_20_2011.csv',
+                         'Educ_Baseline_PhaseII_all_merged_cleaned_07_25_2011.csv',
                          'Water_PhaseII_RoundI&II&III_Clean.csv']:
             data_dir = os.path.join(self._data_dir, 'facility')
             path = os.path.join(data_dir, csv_file)
@@ -194,7 +194,7 @@ class DataLoader(object):
         sectors = [
             {
                 'sector': 'Education',
-                'data_source': 'Educ_Baseline_PhaseII_all_merged_cleaned_07_20_2011.csv',
+                'data_source': 'Educ_Baseline_PhaseII_all_merged_cleaned_07_25_2011.csv',
                 },
             {
                 'sector': 'Health',
@@ -248,7 +248,7 @@ class DataLoader(object):
                 'row_contains_variable_slug': True,
                 },
             {
-                'data': 'LGA_Mang_Baseline_PhaseII_all_merged_cleaned_07_22_2011',
+                'data': 'LGA_Mang_Baseline_PhaseII_all_merged_cleaned_07_25_2011',
                 },
             ]
         for kwargs in data_kwargs:
