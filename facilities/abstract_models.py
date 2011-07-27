@@ -273,9 +273,6 @@ class DictModel(models.Model):
                     if v.slug in d:
                         self.set(v, d[v.slug])
 
-    def set_lga_values(self):
-        pass
-
     def _kwargs(self):
         """
         To get all data records associated with a facility or lga we need to

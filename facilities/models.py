@@ -122,7 +122,7 @@ class LGAIndicator(Variable):
     def proportion_true(self):
         return self.percentage_true()
 
-    def set_lga_values(self, lga_ids):
+    def set_lga_values(self, lga_ids='all'):
         """
         self.method is the name of the aggregation method this
         LGAIndicator should use. Grab that method, call it, and save
@@ -154,7 +154,7 @@ class GapVariable(Variable):
         target = dict([(d['lga'], d[self.target.value_field()]) for d in target_values])
         return dict([(lga, max(target[lga] - current[lga], 0.0)) for lga in current.keys() if lga in target])
 
-    def set_lga_values(self, lga_ids):
+    def set_lga_values(self, lga_ids='all'):
         values = self.calculate_gap()
         for lga_id, value in values.iteritems():
             if lga_ids != "all" and str(lga_id) not in lga_ids:

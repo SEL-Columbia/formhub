@@ -253,24 +253,30 @@ class PassDataToPage(TestCase):
         self.assertTrue(isinstance(resp.get('profileData'), dict))
 
 
-from facilities.score_variables import get_access_and_participation_score_variable, FunctionComponent, Function, components, build_score
+from facilities.score_variables import get_education_access_and_participation_score_variable, education_access_and_participation_components, FunctionComponent, Function, build_score, get_health_min_lab_diagnostics_score_variable
 
 
 class ScoreVariableTest(TestCase):
 
     def setUp(self):
         variable_slugs = [
-            'net_intake_rate',
-            'distance_from_catchment_area',
-            'distance_to_nearest_secondary_school',
-            'proportion_of_students_living_less_than_3km_away',
-            'net_enrollment_ratio',
-            'female_to_male_ratio',
+            ('net_intake_rate', 'float'),
+            ('distance_from_catchment_area', 'float'),
+            ('distance_to_nearest_secondary_school', 'float'),
+            ('proportion_of_students_living_less_than_3km_away', 'float'),
+            ('net_enrollment_ratio', 'float'),
+            ('female_to_male_ratio', 'float'),
+            ('facility_type', 'string'),
+            ('lab_tests_malaria_rdt', 'boolean'),
+            ('lab_tests_hemoglobin_testing', 'boolean'),
+            ('lab_tests_stool', 'boolean'),
+            ('lab_tests_urine_testing', 'boolean'),
+            ('lab_tests_pregnancy', 'boolean'),
             ]
         self.variables = {}
-        for slug in variable_slugs:
+        for slug, data_type in variable_slugs:
             self.variables[slug] = Variable.objects.create(
-                slug=slug, data_type='float'
+                slug=slug, data_type=data_type
                 )
 
     def test_distance_component(self):
@@ -279,9 +285,9 @@ class ScoreVariableTest(TestCase):
         facility = Facility.objects.create()
         self.distance = self.variables['distance_from_catchment_area']
         facility.set(self.distance, 1.5) # 2 points
-        access = get_access_and_participation_score_variable()
+        access = get_education_access_and_participation_score_variable()
 
-    def test_total_access_points(self):
+    def test_points(self):
         # test that the total score for all of the components is correct
         facility = Facility.objects.create()
         facility_data = [
@@ -294,7 +300,7 @@ class ScoreVariableTest(TestCase):
             ] # total: 14 points
         for slug, value in facility_data:
             facility.set(self.variables[slug], value)
-        access = get_access_and_participation_score_variable()
+        access = get_education_access_and_participation_score_variable()
         self.maxDiff = None
         self.assertEquals(access.score_dict(facility), {
             'net_intake_rate': 5,
@@ -306,7 +312,38 @@ class ScoreVariableTest(TestCase):
             })
         self.assertEquals(access.score(facility), 14.0)
         # test that the maximum achievable score is correct
-        self.assertEquals(access.maximum_score(), 22.0)
+        self.assertEquals(access.maximum_score(facility), 22.0)
+
+    def test_points_by_type(self):
+        # test that the score is corrent (yet different) for different facility types
+        clinic = Facility.objects.create()
+        clinic_data = [
+            ('facility_type', 'healthclinic'),
+            ('lab_tests_malaria_rdt', True),
+            ('lab_tests_hemoglobin_testing', False),
+            ('lab_tests_stool', False),
+            ('lab_tests_urine_testing', True),
+            ('lab_tests_pregnancy', True),
+            ] # 3/4
+        for slug, value in clinic_data:
+            clinic.set(self.variables[slug], value)
+        hospital = Facility.objects.create()
+        hospital_data = [
+            ('facility_type', 'generalhospital'),
+            ('lab_tests_malaria_rdt', True),
+            ('lab_tests_hemoglobin_testing', False),
+            ('lab_tests_stool', True),
+            ('lab_tests_urine_testing', True),
+            ('lab_tests_pregnancy', True),
+            ] # 4/5
+        for slug, value in hospital_data:
+            hospital.set(self.variables[slug], value)
+        health_min_diagnostics_score = get_health_min_lab_diagnostics_score_variable()
+        self.maxDiff = None
+        self.assertEquals(health_min_diagnostics_score.score(clinic), 3.0)
+        self.assertEquals(health_min_diagnostics_score.maximum_score(clinic), 4.0)
+        self.assertEquals(health_min_diagnostics_score.score(hospital), 4.0)
+        self.assertEquals(health_min_diagnostics_score.maximum_score(hospital), 5.0)
 
     def test_field_storage(self):
         fc = FunctionComponent(1, 'x < 1', 'Does this work?')
@@ -323,7 +360,7 @@ class ScoreVariableTest(TestCase):
         self.assertEquals(f.points(5), 1)
 
     def test_build_score(self):
-        s = build_score(components)
+        s = build_score(education_access_and_participation_components)
         self.assertEquals(
             s.score({
                     'net_intake_rate': 0.97,
