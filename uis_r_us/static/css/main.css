@@ -69,7 +69,7 @@ td.checkmark.off span.mrk:before {
     content: 'NO';
 }
 td.checkmark.null span.mrk:before {
-    content: '—';
+    content: 'n/a';
 }
 
 .content-inner-wrap {
@@ -178,5 +178,75 @@ Description popup
     background-color: #fafafa;
 }
 #header .description-wrap.showing.filled {
+    display: block;
+}
+
+/*--
+Updown toggle bar
+--*/
+div#toggle-updown-bar {
+    height:12px;position:relative;background-color:#ccc;
+}
+#lga-facilities-table.closed #facility-tabs {
+    display: none;
+}
+div#toggle-updown-bar span.icon {
+    display:block;margin:0 auto;width:10px; height:10px;position:absolute;left:50%
+}
+div#toggle-updown-bar span.icon:before {
+    content: '▾';
+}
+div#lga-facilities-table.closed div#toggle-updown-bar span.icon:before {
+    content: '▴';
+}
+
+/*- Facility Popup
+-*/
+html .rd-wrap {
+    position: static;
+}
+.facility-popup {
+    width: 500px;
+    position: absolute;
+    left: 50%;
+    top: 50px;
+    margin-left: -250px;
+    background-color: #fff;
+}
+.facility-popup .title-bar h1 {
+    margin: 0;
+    font-size: 14px;
+}
+.facility-popup .title-bar a.close {
+    position: absolute;
+    top: 2px;
+    right: 3px;
+    width: 14px;
+    height: 14px;
+    background-color: #333;
+    color: #fff;
+    font-size: 11px;
+}
+.facility-popup .left-col {
+    width: 140px;
+    float: left;
+    border-right: 1px solid #777;
+}
+.facility-popup .right-col {
+    width: 300px;
+    float: left;
+    padding: 4px 8px 8px 20px;
+    padding-left: 20px;
+}
+.facility-popup .right-col table {
+    width: 100%;
+}
+.facility-popup .right-col table tr:nth-child(even) td {
+    background-color: #ddd;
+}
+.facility-popup .right-col .facility-sector-select-box {
+    display: none;
+}
+.facility-popup .right-col .facility-sector-select-box.selected {
     display: block;
 }
