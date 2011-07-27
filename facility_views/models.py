@@ -78,6 +78,24 @@ class TableColumn(models.Model):
             d['descriptive_name'] = self.descriptive_name
         return d
 
+    @classmethod
+    def load_row_from_csv(cls, input_d):
+        return {
+            'name': input_d['name'],
+            'descriptive_name': input_d.get('descriptive_name', input_d['name']),
+            'slug': input_d['slug'],
+            'subgroups': input_d['subgroups'],
+            'description': input_d.get('description', ''),
+            'lga_description': input_d.get('lga_description', input_d.get('description', '')),
+            'clickable': input_d.pop('clickable', 'no') == 'yes',
+            'click_action': input_d.pop('click action', input_d.pop('click_action', '')),
+            'display_style': input_d.pop('display style', input_d.pop('display_style', '')),
+            'calc_action': input_d.pop('calc action', input_d.pop('calc_action', '')),
+            'iconify_png_url': input_d.pop('iconify_png_url', input_d.pop('iconify png url', '')),
+            'calc_columns': input_d.pop('calc columns', input_d.pop('calc_columns', '')),
+            'display_order': input_d['display_order'],
+        }
+
 class ColumnCategory(models.Model):
     name = models.CharField(max_length=64)
     slug = models.CharField(max_length=64)
