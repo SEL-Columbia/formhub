@@ -180,3 +180,22 @@ Description popup
 #header .description-wrap.showing.filled {
     display: block;
 }
+
+/*--
+Updown toggle bar
+--*/
+div#toggle-updown-bar {
+    height:12px;position:relative;background-color:#ccc;
+}
+#lga-facilities-table.closed #facility-tabs {
+    display: none;
+}
+div#toggle-updown-bar span.icon {
+    display:block;margin:0 auto;width:10px; height:10px;position:absolute;left:50%
+}
+div#toggle-updown-bar span.icon:before {
+    content: '▾';
+}
+div#lga-facilities-table.closed div#toggle-updown-bar span.icon:before {
+    content: '▴';
+}

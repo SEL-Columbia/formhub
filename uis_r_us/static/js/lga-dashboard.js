@@ -538,6 +538,12 @@ function buildFacilityTable(data, sectors){
     }
 	FACILITY_TABLE_BUILT = true;
 	var facilityTableWrap = $('#lga-facilities-table');
+	$('<div />', {'id': 'toggle-updown-bar'})
+	    .html($('<span />', {'class':'icon'}))
+	    .appendTo(facilityTableWrap)
+	    .click(function(){
+	        facilityTableWrap.toggleClass('closed');
+	    });
 	$('<div />', {'id': 'facility-tabs'})
 	    .appendTo(facilityTableWrap);
 	var ftabs = $(facilityTabsSelector, facilityTableWrap).css({'padding-bottom':18});
