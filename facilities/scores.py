@@ -27,6 +27,9 @@ class ScoreVariable(Variable):
     def maximum_score(self, facility):
         return self._score.maximum(facility.get_latest_data())
 
+    def display_score(self, facility):
+        return self._score.display_score(facility.get_latest_data())
+
     def get_display_info(self, facility):
         """
         Return something like:
@@ -71,6 +74,8 @@ class Score(FieldStorage):
     def maximum(self, d):
         return sum([c.function.maximum_value() for c in self.component_list if c.applies_to(d)])
 
+    def display_score(self, d):
+        return unicode(int(self.score(d))) + u'/' + unicode(int(self.maximum(d)))
 
 class ScoreComponent(FieldStorage):
 

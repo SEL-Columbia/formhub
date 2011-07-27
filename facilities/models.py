@@ -7,7 +7,7 @@ from treebeard.mp_tree import MP_Node
 
 from nga_districts.models import LGA, LGARecord
 from abstract_models import Variable, CalculatedVariable, PartitionVariable, DataRecord, DictModel, KeyRename
-from score_variables import ScoreVariable
+from scores import ScoreVariable
 
 
 class FacilityRecord(DataRecord):

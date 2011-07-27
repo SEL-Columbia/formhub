@@ -253,7 +253,7 @@ class PassDataToPage(TestCase):
         self.assertTrue(isinstance(resp.get('profileData'), dict))
 
 
-from facilities.score_variables import get_education_access_and_participation_score_variable, education_access_and_participation_components, FunctionComponent, Function, build_score, get_health_min_lab_diagnostics_score_variable
+from facilities.scores import get_education_access_and_participation_score_variable, education_access_and_participation_components, FunctionComponent, Function, build_score, get_health_min_lab_diagnostics_score_variable
 
 
 class ScoreVariableTest(TestCase):
@@ -342,8 +342,10 @@ class ScoreVariableTest(TestCase):
         self.maxDiff = None
         self.assertEquals(health_min_diagnostics_score.score(clinic), 3.0)
         self.assertEquals(health_min_diagnostics_score.maximum_score(clinic), 4.0)
+        self.assertEquals(health_min_diagnostics_score.display_score(clinic), u'3/4')
         self.assertEquals(health_min_diagnostics_score.score(hospital), 4.0)
         self.assertEquals(health_min_diagnostics_score.maximum_score(hospital), 5.0)
+        self.assertEquals(health_min_diagnostics_score.display_score(hospital), u'4/5')
 
     def test_field_storage(self):
         fc = FunctionComponent(1, 'x < 1', 'Does this work?')
