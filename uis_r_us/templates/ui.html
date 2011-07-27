@@ -489,11 +489,18 @@ var mapBar = (function(){
 	var _placed = false;
 	var _elem;
 	var defaultOpts = {
+		'preSectorButtons': [
+			['Overview', 'overview']
+		],
 		'sectorButtons': [
 //			['Summary', 'summary'],
 			['Health', 'health'],
 			['Water', 'water'],
 			['Education', 'education']
+		],
+		'viewLevels': [
+			['LGA level', 'lga'],
+			['Facility level', 'facility']
 		],
 		reset: true
 	};
@@ -507,6 +514,15 @@ var mapBar = (function(){
 		var tr = _elem.find('tr');
 		opts.reset && tr.empty()
 		var sectorTd = $('<td />');
+		if(!!opts.preSectorButtons && opts.preSectorButtons.length > 0) {
+			$.each(opts.preSectorButtons, function(i, button){
+				$('<a />', {'href': '#', 'class': 'preSectorButton'})
+						.text(button[0])
+						.appendTo(sectorTd)
+						.data('sectorSlug', button[1]);
+			});
+			sectorTd.append($('<span />', {'class':'spacer'}))
+		}
 		$.each(opts.sectorButtons, function(i, button){
 			$('<a />', {'href': '#', 'class': 'sectorButton'})
 					.text(button[0])
@@ -515,12 +531,28 @@ var mapBar = (function(){
 		});
 		sectorTd.delegate('a', 'click', function(){
 			var ss =  $(this).data('sectorSlug');
-			log(ss);
-			$('body').trigger('select-sector', {
-				fullSectorId: ss
-			});
+			var sData = {viewLevel: 'facility'};
+			if(!!ss) {
+				sData.fullSectorId = ss;
+			}
+			$('body').trigger('select-sector', sData);
 		});
-		tr.append(sectorTd);
+
+		var viewLevelTd = $('<td />');
+		$.each(opts.viewLevels, function(i, button){
+			$('<a />', {'href':'#', 'class':'viewLevelButton'})
+				.text(button[0])
+				.appendTo(viewLevelTd)
+				.data('viewLevel', button[1])
+				.click(function(){
+					$('body').trigger('select-view-level', {
+						viewLevel: $(this).data('viewLevel')
+					});
+				})
+		});
+		tr
+			.append(sectorTd)
+			.append(viewLevelTd);
 		return {
 			elem: _elem
 		};
@@ -765,7 +797,7 @@ $(function(){
 			lga.loadData(lgaId, function(){
 				this.buildTable = true;
 				setTitle(createTitleForLga(this.stateName, this.lgaName));
-				fullSectorId !== undefined && this.trigger('select-sector', {fullSectorId: fullSectorId});
+				fullSectorId !== undefined && this.trigger('select-sector', {fullSectorId: fullSectorId, viewLevel: 'facility'});
 				//addToggleLinks();
 			});
 		}

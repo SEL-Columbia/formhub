@@ -169,7 +169,8 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 			if(context.triggers.length===0) {
 			    //set up default page mode
 			    $('body').trigger('select-sector', {
-            	        fullSectorId: defaultSectorSlug
+            	        fullSectorId: defaultSectorSlug,
+            	        viewLevel: 'facility'
             	        });
 			} else {
 			    $.each(context.triggers, function(i, tdata){
@@ -268,6 +269,12 @@ $('body').bind('select-sector', function(evt, edata){
 	if(edata===undefined) {edata = {};}
     var sector, subSector, fullSectorId;
     
+    if(edata.viewLevel!==undefined) {
+        $('body').trigger('select-view-level', edata);
+    }
+    if(edata.fullSectorId==="overview") {
+        edata.fullSectorId = undefined;
+    }
     if(edata.fullSectorId !== undefined) {
         (function(lsid){
             var lids = lsid.split(subSectorDelimiter);
@@ -289,9 +296,9 @@ $('body').bind('select-sector', function(evt, edata){
     }
 	
 	var ftabs = $(facilityTabsSelector);
-	ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
-	ftabs.removeClass(specialClasses.tableHideTd);
 	if(sector !== undefined) {
+	    ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
+    	ftabs.removeClass(specialClasses.tableHideTd);
 		//fullSectorId is needed to distinguish between 
 		// health:general  and  education:general (for example)
 		
@@ -320,13 +327,48 @@ $('body').bind('select-sector', function(evt, edata){
 		}
 		olStyling.setMode(facilityData, 'main');
 	} else {
+	    log('switch to overview');
 		$('body').trigger('unselect-sector');
+        $('body').trigger('select-view-level', {viewLevel: 'lga'});
+//		$('body').trigger('unselect-sector');
 	}
 });
 $('body').bind('unselect-sector', function(evt, edata){
 	$(facilityTabsSelector)
 		.removeClass(specialClasses.tableHideTd)
 		.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
+});
+var DEFAULT_VIEW_LEVEL = "lga",
+    currentViewLevel;
+$('body').bind('select-view-level', function(evt, edata){
+    if(edata===undefined) { edata = {}; }
+    if(edata.viewLevel===undefined) {edata.viewLevel = DEFAULT_VIEW_LEVEL;}
+    var viewLevel = edata.viewLevel;
+    if(currentViewLevel!==viewLevel) {
+        (function temporaryDisplay(){
+            var vld = $('.viewLevelDisplay');
+            if(vld.length===0) {
+                vld = $('<p />', {'class':'viewLevelDisplay'})
+                    .css({'position':'absolute','top':4,'right':200,'color':'#fff'})
+                    .appendTo($('#header .fwidth'));
+            }
+            return vld;
+        })().text(viewLevel);
+        
+        var cClass = 'facility-mode';
+        if(viewLevel==="facility") {
+            cClass = 'facility-mode';
+        } else {
+            cClass = 'lga-mode'
+        }
+        $('#lga-facilities-table')
+            .removeClass('facility-mode')
+            .removeClass('lga-mode')
+            .addClass(cClass);
+
+        log("switch to view level: "+viewLevel);
+        currentViewLevel = viewLevel;
+    }
 });
 
 function imageUrls(imageSizes, imgId) {
@@ -529,10 +571,19 @@ var filterPointsBySector;
 var FACILITY_TABLE_BUILT = false;
 
 function setSummaryHtml(html) {
-    return $('#summary-p').html(html);
+    return $('.summary-p').html(html);
 }
 
 function buildFacilityTable(data, sectors){
+    function _buildOverview(){
+        var div = $('<div />');
+        getMustacheTemplate('lga_overview', function(){
+            div.append(Mustache.to_html(this.template, {}));
+        });
+        return div;
+    }
+    
+    
     filterPointsBySector = function(sector){
         if(sector==='all') {
             log("show all sectors");
@@ -557,8 +608,14 @@ function buildFacilityTable(data, sectors){
 	        facilityTableWrap.toggleClass('closed');
 	    });
 	$('<div />', {'id': 'facility-tabs'})
+	    .addClass('facility-mode')
 	    .appendTo(facilityTableWrap);
-	$('<p />', {'id': 'summary-p'})
+	$('<div />', {'id': 'lga-view'})
+	    .addClass('lga-mode')
+	    .html(_buildOverview())
+	    .appendTo(facilityTableWrap);
+	$('<p />')
+	    .addClass('summary-p')
 	    .appendTo(facilityTableWrap);
 	var ftabs = $(facilityTabsSelector, facilityTableWrap).css({'padding-bottom':18});
 	$.each(facilitySectors, function(i, sector){

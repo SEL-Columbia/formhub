@@ -193,12 +193,12 @@ div#toggle-updown-bar {
 #lga-facilities-table.closed #facility-tabs {
     display: none;
 }
-#lga-facilities-table #summary-p {
+#lga-facilities-table .summary-p {
     display: none;
     margin: 3px 9px;
     color: #222;
 }
-#lga-facilities-table.closed #summary-p {
+#lga-facilities-table.closed .summary-p {
     display: block;
 }
 div#toggle-updown-bar span.icon {
@@ -588,4 +588,22 @@ a.hover-unhide:hover {
 	border-radius: 2px;
 	text-decoration: none;
 	margin-right: 2px;
+}
+
+/*-
+-*/
+#lga-facilities-table .lga-mode {
+    display: none;
+}
+#lga-facilities-table.lga-mode.closed .lga-mode {
+    display: none;
+}
+#lga-facilities-table.lga-mode .lga-mode {
+    display: block;
+}
+#lga-facilities-table .facility-mode {
+    display: none;
+}
+#lga-facilities-table.facility-mode .facility-mode {
+    display: block;
 }
