@@ -1029,17 +1029,18 @@ $(function(){
 						if(!!layerObj) {
 							layerDescription.empty();
 							var hideBox = true;
+							var description = $('<p />')
+								.appendTo(layerDescription);
 							if(!!layerObj.description) {
+								description.text(layerObj.description);
 								hideBox = false;
-								$('<p />')
-									.text(layerObj.description)
-									.appendTo(layerDescription);
 							}
 							if(!!layerObj.data_source) {
 								hideBox = false;
-								$('<p />')
-									.text(layerObj.data_source)
-									.appendTo(layerDescription);
+								$('<span />')
+									.text(' (' + layerObj.data_source + ')')
+									.css({'font-style':'italic'})
+									.appendTo(description);
 							}
 						}
 						})
