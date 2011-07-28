@@ -41,8 +41,7 @@ var createOurGraph = (function(pieWrap, legend, data, _opts){
             pvals.values, {
                     colors: pvals.colors,
                     legend: pvals.legend,
-                    legendpos: "east",
-                    href: ["http://link1", "http://link2", "http://link3"]
+                    legendpos: "east"
                 });
     pie.hover(function () {
         this.sector.stop();

@@ -16,7 +16,7 @@
         "name": "Area (square km)",
         "order": 3
     },
-    "distance_to_state_capital": {
+    "state_capital_distance": {
         "name": "Distance from LGA to state capital (km)",
         "order": 4
     }
