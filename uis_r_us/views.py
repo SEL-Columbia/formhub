@@ -147,3 +147,6 @@ def mustache_template(request, template_name):
     else:
         with open(template_path, 'r') as f:
             return HttpResponse(f.read())
+
+def modes(request):
+    return render_to_response("modes.html")
