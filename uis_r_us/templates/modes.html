@@ -1,0 +1,130 @@
+{% extends "ui_base.html" %}
+{% block head %}
+{% endblock %}
+{% block js %}
+<script type="text/javascript" charset="utf-8">
+
+	(function(body){
+		var nav = body.find('#nav-wrap');
+		var stats = body.find('#states');
+		var navChanger = (function(s, a){
+			$(s).delegate(a, 'click', function(evt){
+				$(s).find('.active')
+					.removeClass('active');
+				$(this)
+					.addClass('active');
+				evt.preventDefault();
+			});
+		});
+		
+		navChanger('#view-modes', 'a')
+		navChanger('#sectors', 'a')
+		
+		body.delegate('a.mode-button', 'click', function(evt){
+			if($(this).hasClass('-view-mode')) {
+				$(this).trigger('select-view-mode', $(this).data());
+			} else {
+				$(this).trigger('select-sector', $(this).data());
+			}
+			evt.preventDefault();
+		});
+		
+		var selectedSector;
+		body.bind('select-sector', function(evt, edata){
+			var sectorSlug = edata.sector;
+			if(selectedSector !== sectorSlug) {
+				selectedSector = sectorSlug;
+			}
+		});
+		var selectedViewMode;
+		body.bind('select-view-mode', function(evt, edata){
+			var viewModeSlug = edata.viewMode;
+			if(selectedViewMode !== viewModeSlug) {
+				selectedViewMode = viewModeSlug;
+			}
+		});
+	})($('body'));
+</script>
+{% endblock %}
+{% block content %}
+<style>
+	a.mode-button {
+		display: block;
+		background-color: #fafafa;
+		padding: 8px 12px;
+	}
+	a.mode-button.active {
+		background-color: #aaa;
+		font-weight: bold;
+	}
+	#nav-wrap {
+		width: 25%;
+		float: left;
+	}
+	#right-wrap {
+		width: 60%;
+		float: left;
+	}
+
+</style>
+<div id="nav-wrap">
+<div id="view-modes">
+	<h1>
+		View Modes
+	</h1>
+	<ul>
+		<li>
+			<a href="#" data-view-mode="lga" class="mode-button -view-mode">LGA view</a>
+		</li>
+		<li>
+			<a href="#" data-view-mode="facility" class="mode-button -view-mode">Facility view</a>
+		</li>
+	</ul>
+</div>
+<div id="sectors">
+	<h1>
+		Sectors
+	</h1>
+	<ul>
+		<li>
+			<a href="#" data-sector="overview" class="mode-button -sector-mode">Overview</a>
+		</li>
+		<li>
+			<a href="#" data-sector="education" class="mode-button -sector-mode">Education</a>
+		</li>
+		<li>
+			<a href="#" data-sector="water" class="mode-button -sector-mode">Water</a>
+		</li>
+		<li>
+			<a href="#" data-sector="health" class="mode-button -sector-mode">Health</a>
+		</li>
+	</ul>
+</div>
+</div>
+<div id="right-wrap">
+	<div id="states">
+		<table>
+			<tbody>
+				<tr>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="icons">
+		<h2>
+			Icons
+		</h2>
+		<p>
+			
+		</p>
+	</div>
+	<div class="bottom-box">
+		<h2>
+			Bottom box
+		</h2>
+		<p>
+			
+		</p>
+	</div>
+</div>
+{% endblock %}
