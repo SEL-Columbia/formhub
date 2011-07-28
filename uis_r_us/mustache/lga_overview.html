@@ -1,5 +1,46 @@
-<h5>Overview</h5>
-<hr>
-<p>
-	<em>Overview goes here</em>
-</p>
+<div class="overview-tabs">
+	<ul>
+		{{#sectors}}
+		<li>
+			<a href="#overview-{{slug}}">{{name}}</a>
+		</li>
+		{{/sectors}}
+	</ul>
+	{{#sectors}}
+	<div class="sector-overview" data-sector-slug="{{slug}}" id="overview-{{slug}}">
+		<h1>
+			{{name}}
+		</h1>
+		<table style="width:100%">
+			<thead>
+				<tr>
+					<th>
+						Variable Name
+					</th>
+					<th>
+						Value
+					</th>
+					<th>
+						Percent
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#variables}}
+				<tr>
+					<td>
+						{{name}}
+					</td>
+					<td>
+						{{value}}
+					</td>
+					<td>
+						{{percent}}
+					</td>
+				</tr>
+				{{/variables}}
+			</tbody>
+		</table>
+	</div>
+	{{/sectors}}
+</div>

@@ -1,4 +1,68 @@
 ;
+// BEGIN raphael graph wrapper
+var createOurGraph = (function(pieWrap, legend, data, _opts){
+    //creates a graph with some default options.
+    // if we want to customize stuff (ie. have behavior that changes based on
+    // different input) then we should work it into the "_opts" parameter.
+    var gid = $(pieWrap).get(0).id;
+    var defaultOpts = {
+        x: 50,
+        y: 50,
+        r: 35,
+        font: "12px 'Fontin Sans', Fontin-Sans, sans-serif"
+    };
+    var opts = $.extend({}, defaultOpts, _opts);
+    var rearranged_vals = $.map(legend, function(val){
+        return $.extend(val, {
+            value: data[val.key]
+        });
+    });
+    var pvals = (function(vals){
+        var values = [];
+    	var colors = [];
+    	var legend = [];
+    	vals.sort(function(a, b){ return b.value - a.value; });
+    	$(vals).each(function(){
+    		if(this.value > 0) {
+    			values.push(this.value);
+    			colors.push(this.color);
+    			legend.push('%% - ' + this.legend);
+    		}
+    	});
+    	return {
+    		values: values,
+    		colors: colors,
+    		legend: legend
+    	}
+    })(rearranged_vals);
+    var r = Raphael(gid);
+    r.g.txtattr.font = opts.font;
+    var pie = r.g.piechart(opts.x, opts.y, opts.r,
+            pvals.values, {
+                    colors: pvals.colors,
+                    legend: pvals.legend,
+                    legendpos: "east",
+                    href: ["http://link1", "http://link2", "http://link3"]
+                });
+    pie.hover(function () {
+        this.sector.stop();
+        this.sector.scale(1.1, 1.1, this.cx, this.cy);
+        if (this.label) {
+            this.label[0].stop();
+            this.label[0].scale(1.4);
+            this.label[1].attr({"font-weight": 800});
+        }
+    }, function () {
+        this.sector.animate({scale: [1, 1, this.cx, this.cy]}, 500, "bounce");
+        if (this.label) {
+            this.label[0].animate({scale: 1}, 500, "bounce");
+            this.label[1].attr({"font-weight": 400});
+        }
+    });
+    return r;
+});
+// END raphael graph wrapper
+
 // BEGIN temporary side-div jquery wrapper
 //   -- trying to keep the right-div popup logic separate form the rest
 //    of the application logic.
@@ -107,6 +171,7 @@ var selectedSubSector,
     selectedColumn,
     facilitySectorSlugs,
     facilityData,
+    overviewVariables,
     facilitySectors;
 
 
@@ -139,16 +204,19 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 		var lgaName = lgaData.lgaName;
 		var facilityData = lgaData.facilities;
 		var varDataReq = varQ[0];
-		var variableDefs = varDataReq.sectors;
 		var facilityDataARr = [];
 		$.each(facilityData, function(k, v){
 			v.uid = k;
 			facilityDataARr.push(v);
 		});
 		
-//		buildLgaProfileBox(lgaData, variableDictionary.profile_variables);
+        buildLgaProfileBox(lgaData, variableDictionary.profile_variables);
 //		buildGapAnalysisTable(lgaData);
-		processFacilityDataRequests(lgaQ, {sectors: variableDefs, data: facilityDataARr});
+		processFacilityDataRequests(lgaQ, {
+		    sectors: varDataReq.sectors,
+		    overview: varDataReq.overview,
+		    data: facilityDataARr
+		});
 		if(facilityData!==undefined && facilitySectors!==undefined) {
 			var context = {
 				data: facilityData,
@@ -202,13 +270,18 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 // END load lga data via ajax
 
 // BEGIN lga-wide profile boxes
-function buildLgaProfileBox(lga, dictionary) {
-    var oWrap = $('.content-inner-wrap').find('.profile-data-wrap');
-    if(oWrap.length===0) {
-        oWrap = $("<div />", {'class':'profile-data-wrap'}).appendTo($('.content-inner-wrap'));
-    } else {
-        oWrap.empty();
+function getBoxOrCreateDiv(container, selector, creator) {
+    var d = $(container).find(selector)
+    if(d.length===0) {
+        d = $.apply($, creator)
+                .appendTo(container);
     }
+    return d
+}
+
+
+function buildLgaProfileBox(lga, dictionary) {
+    var oWrap = getBoxOrCreateDiv('.content-inner-wrap', '.profile-data-wrap', ['<div />', {'class':'profile-data-wrap'}])
     var wrap = $("<div />", {'class':'profile-data'})
         .append($("<h3 />").text(lga.stateName))
         .append($("<h2 />").text(lga.lgaName))
@@ -444,6 +517,7 @@ $('body').bind('select-facility', function(evt, edata){
     		    })
     		    .addClass('selected');
 		});
+		pdiv.find('select').trigger('change');
         popup.append(pdiv);
     });
 	popup._showSideDiv({
@@ -524,35 +598,44 @@ $('body').bind('select-column', function(evt, edata){
 		}
 		if(hasClickAction(column, 'piechart')) {
 		    var colDataDiv = getColDataDiv().empty();
-            colDataDiv.append($("<div />", {'id': 'pie-chart'}))
-			var tabulations = getTabulations(sector.slug, column.slug);
-            var pie_tabs = getTabulationsForPieChart(sector.slug, column.slug)
-            log(pie_tabs);
-            var r = Raphael("pie-chart");
-			r.g.txtattr.font = "12px 'Fontin Sans', Fontin-Sans, sans-serif";
-            var pie = r.g.piechart(50, 50, 35, [pie_tabs['true'],pie_tabs['false'],pie_tabs['undefined']], {colors: ["#21c406","#ff5555","#999"],legend: ["%% – True", "%% - False","%% - Undefined"], legendpos: "east", href: ["http://link1", "http://link2", "http://link3"]});
-            pie.hover(function () {
-                this.sector.stop();
-                this.sector.scale(1.1, 1.1, this.cx, this.cy);
-                if (this.label) {
-                    this.label[0].stop();
-                    this.label[0].scale(1.4);
-                    this.label[1].attr({"font-weight": 800});
-                }
-            }, function () {
-                this.sector.animate({scale: [1, 1, this.cx, this.cy]}, 500, "bounce");
-                if (this.label) {
-                    this.label[0].animate({scale: 1}, 500, "bounce");
-                    this.label[1].attr({"font-weight": 400});
-                }
-            });
+		    
+		    var pcWrap = $("<div />", {'id': 'pie-chart'})
+		        .css({
+		                'background-color': '#fff',
+		                'width': 300,
+		                'height': 110,
+		                '-moz-border-radius': '5px',
+		                '-webkit-border-radius': '5px',
+		                'border-radius': '5px'
+		            })
+		        .appendTo(colDataDiv);
+
+		    var pieChartDisplayDefinitions = [
+                {
+                    "legend":"No",
+                    "color":"#ff5555",
+                    'key': 'false'
+                },{
+                    "legend":"Yes",
+                    "color":"#21c406",
+                    'key': 'true'
+                },{
+                    "legend":"Undefined",
+                    "color":"#999",
+                    'key': 'undefined'
+                }];
+
+		    createOurGraph(pcWrap,
+		                    pieChartDisplayDefinitions,
+		                    getTabulationsForPieChart(sector.slug, column.slug),
+		                    {});
+
             var cdiv = $("<div />", {'class':'col-info'}).html($("<h2 />").text(column.name));
 			if(column.description!==undefined) {
 				cdiv.append($("<h3 />", {'class':'description'}).text(column.description));
 			}
-			cdiv.append($("<p>").text(JSON.stringify(tabulations)))
 			colDataDiv
-					.append(cdiv)
+//					.append(cdiv)
                     .css({'height':120});
     	} else if(hasClickAction(column, 'tabulate')) {
     	    var tabulations = $.map(getTabulations(sector.slug, column.slug), function(k, val){
@@ -613,7 +696,25 @@ function buildFacilityTable(data, sectors){
     function _buildOverview(){
         var div = $('<div />');
         getMustacheTemplate('lga_overview', function(){
-            div.append(Mustache.to_html(this.template, {}));
+            var sectors = [];
+            var varsBySector = {};
+            $.each(overviewVariables, function(i, variable){
+                if(variable.sector!==undefined) {
+                    if(varsBySector[variable.sector]==undefined) {varsBySector[variable.sector] = [];}
+                    varsBySector[variable.sector].push(variable);
+                }
+            });
+            $.each(varsBySector, function(sectorSlug, variables){
+                sectors.push({
+                    name: sectorSlug,
+                    slug: sectorSlug,
+                    variables: variables
+                });
+            });
+            var overviewTabs = Mustache.to_html(this.template, {
+                sectors: sectors
+            });
+            div.append($(overviewTabs).tabs());
         });
         return div;
     }
@@ -642,17 +743,18 @@ function buildFacilityTable(data, sectors){
 	    .click(function(){
 	        facilityTableWrap.toggleClass('closed');
 	    });
-	$('<div />', {'id': 'facility-tabs'})
+	$('<div />', {'id':'facility-tabs'})
 	    .addClass('facility-mode')
 	    .appendTo(facilityTableWrap);
-	$('<div />', {'id': 'lga-view'})
+	$('<div />', {'id':'lga-view'})
 	    .addClass('lga-mode')
 	    .html(_buildOverview())
 	    .appendTo(facilityTableWrap);
-	$('<p />')
+	$('<p />', {id:'summary-p'})
 	    .addClass('summary-p')
 	    .appendTo(facilityTableWrap);
-	var ftabs = $(facilityTabsSelector, facilityTableWrap).css({'padding-bottom':18});
+	var ftabs = $(facilityTabsSelector, facilityTableWrap)
+	        .css({'padding-bottom':18});
 	$.each(facilitySectors, function(i, sector){
 		ftabs.append(createTableForSectorWithData(sector, facilityData));
 	});
@@ -858,12 +960,13 @@ var processFacilityDataRequests = (function(dataReq, passedData){
     if(dataReq[2].processedData !== undefined) {
 	    facilityData = dataReq[2].processedData.data;
 	    facilitySectors = dataReq[2].processedData.sectors;
+	    overviewVariables = dataReq[2].processedData.overview;
     } else {
 		var data, sectors, noLatLngs=0;
 		facilitySectorSlugs = [];
 		
 		passedData === undefined && warn("No data was passed to the page", passedData);
-		
+
 		debugMode && (function validateSectors(s){
 		    // this is called if debugMode is true.
 		    // it warns us if the inputs are wrong.
@@ -977,6 +1080,7 @@ var processFacilityDataRequests = (function(dataReq, passedData){
 		
 		facilityData = data;
 		window._facilityData = data;
+		overviewVariables = passedData.overview;
     	facilitySectors = sectors;
     	//save it in the request object to avoid these checks
     	// in future requests...

@@ -222,12 +222,19 @@ html .rd-wrap {
     position: static;
 }
 .facility-popup {
-    width: 500px;
+    width: 535px;
     position: absolute;
     left: 50%;
     top: 50px;
     margin-left: -250px;
     background-color: #fff;
+    padding-bottom: 8px;
+}
+.facility-popup .title-bar {
+    padding: 3px 12px;
+    background-color: #eee;
+    border-bottom: 1px solid #aaa;
+    color: #222
 }
 .facility-popup .title-bar h1 {
     margin: 0;
@@ -239,14 +246,23 @@ html .rd-wrap {
     right: 3px;
     width: 14px;
     height: 14px;
-    background-color: #333;
+    background-color: #c6c6c6;
+    border: 1px solid #b0b0b0;
     color: #fff;
-    font-size: 11px;
+    font-size: 12px;
+    font-weight: bold;
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+    border-radius: 7px;
+    text-align: center;
+    text-decoration: none;
+    line-height: 13px;
 }
 .facility-popup .left-col {
-    width: 140px;
+    width: 160px;
     float: left;
     border-right: 1px solid #777;
+    padding: 8px 12px;
 }
 .facility-popup .right-col {
     width: 300px;
@@ -259,6 +275,18 @@ html .rd-wrap {
 }
 .facility-popup .right-col table tr:nth-child(even) td {
     background-color: #ddd;
+}
+.facility-sector-select-box h2 {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #002552;
+}
+.facility-sector-select-box table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+.facility-sector-select-box .select-wrap {
+    padding: 4px 3px;
 }
 .facility-popup .right-col .facility-sector-select-box {
     display: none;
@@ -385,13 +413,18 @@ Right display div for facility popup
 }
 .profile-data-wrap {
 	position: absolute;
-	top: 0;
-	left: 50px;
+	top: 30px;
+	left: 100px;
 	z-index: 15;
+	background-color: rgba(0,0,0,0.5);
+	padding: 14px 6px 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-border-radius: 4px;
 }
 .profile-data {
 	padding: 4px;
-	margin: 5px 12px;
+	margin: 0;
 	background-color: rgba(255,255,255,0.9);
 	height: 175px;
 	overflow: auto;
@@ -402,7 +435,12 @@ Right display div for facility popup
 .profile-data h3 {
 	margin: 2px 0;
 }
-.profile-data.hidden {
+.profile-data-wrap.hidden {
+    height: 2px;
+    width: 300px;
+    background-color: rgba(0,0,0,0.4);
+}
+.profile-data-wrap.hidden .profile-data {
     display: none;
 }
 #header .toggle-button {
@@ -483,6 +521,11 @@ div.db-r div.content {
 div.db-r {
 	overflow: auto;
 	height: 100px;
+}
+#zone-navigation {
+    width: 90%;
+    margin: 0 auto;
+    padding: 0 0 12px;
 }
 #zone-navigation .zl-wrap {
 	width: 16.6%;

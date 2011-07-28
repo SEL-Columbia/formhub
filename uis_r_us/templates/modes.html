@@ -5,6 +5,20 @@
 <script type="text/javascript" charset="utf-8">
 
 	(function(body){
+		$.sammy(function(){
+			this.get('/modes/', function(){
+				body.trigger('select-view-mode', {
+					viewMode: 'overview'
+				});
+				body.trigger('select-sector', {
+					sector: 'overview'
+				});
+			});
+			this.get('/modes/sector/:sector', function(){body.trigger('select-sector', this.params);});
+			this.get('/modes/view/:viewMode', function(){body.trigger('select-view-mode', this.params);});
+			this.run();
+		});
+		
 		var nav = body.find('#nav-wrap');
 		var stats = body.find('#states');
 		var navChanger = (function(s, a){
@@ -74,10 +88,10 @@
 	</h1>
 	<ul>
 		<li>
-			<a href="#" data-view-mode="lga" class="mode-button -view-mode">LGA view</a>
+			<a href="/modes/view/lga" data-view-mode="lga" class="mode-button -view-mode">LGA view</a>
 		</li>
 		<li>
-			<a href="#" data-view-mode="facility" class="mode-button -view-mode">Facility view</a>
+			<a href="/modes/view/facility" data-view-mode="facility" class="mode-button -view-mode">Facility view</a>
 		</li>
 	</ul>
 </div>
@@ -87,16 +101,16 @@
 	</h1>
 	<ul>
 		<li>
-			<a href="#" data-sector="overview" class="mode-button -sector-mode">Overview</a>
+			<a href="/modes/" data-sector="overview" class="mode-button -sector-mode">Overview</a>
 		</li>
 		<li>
-			<a href="#" data-sector="education" class="mode-button -sector-mode">Education</a>
+			<a href="/modes/sector/education" data-sector="education" class="mode-button -sector-mode">Education</a>
 		</li>
 		<li>
-			<a href="#" data-sector="water" class="mode-button -sector-mode">Water</a>
+			<a href="/modes/sector/water" data-sector="water" class="mode-button -sector-mode">Water</a>
 		</li>
 		<li>
-			<a href="#" data-sector="health" class="mode-button -sector-mode">Health</a>
+			<a href="/modes/sector/health" data-sector="health" class="mode-button -sector-mode">Health</a>
 		</li>
 	</ul>
 </div>

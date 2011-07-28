@@ -30,7 +30,7 @@ urlpatterns = patterns('',
     url(r'^description/', main_views.site_description),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^lgas/$', main_views.list_active_lgas),
-    url(r'^modes/$', ui.modes),
+    url(r'^modes/(?P<mode_data>\S*)$', ui.modes),
     url(r'^mustache/(?P<template_name>\w+)$', ui.mustache_template),
     url(r'^$', main_views.index),
 )
