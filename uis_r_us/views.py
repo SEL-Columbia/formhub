@@ -97,12 +97,22 @@ def lga_view(context):
     context.lga_id = "'%s'" % context.lga.unique_slug
     return render_to_response("ui.html", context_instance=context)
 
+
+from utils.csv_reader import CsvReader
+import os
+
 def variable_data(request):
     sectors = []
     for sector_table in FacilityTable.objects.all():
         sectors.append(sector_table.display_dict)
+    overview_csv = CsvReader(os.path.join("data","table_definitions", "overview.csv"))
+    overview_data = []
+    for z in overview_csv.iter_dicts():
+        overview_data.append(z)
+    print overview_data
     return HttpResponse(json.dumps({
-        'sectors': sectors
+        'sectors': sectors,
+        'overview': overview_data
     }))
 
 def active_districts():

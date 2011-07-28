@@ -171,6 +171,7 @@ var selectedSubSector,
     selectedColumn,
     facilitySectorSlugs,
     facilityData,
+    overviewVariables,
     facilitySectors;
 
 
@@ -203,7 +204,6 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 		var lgaName = lgaData.lgaName;
 		var facilityData = lgaData.facilities;
 		var varDataReq = varQ[0];
-		var variableDefs = varDataReq.sectors;
 		var facilityDataARr = [];
 		$.each(facilityData, function(k, v){
 			v.uid = k;
@@ -212,7 +212,11 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 		
         buildLgaProfileBox(lgaData, variableDictionary.profile_variables);
 //		buildGapAnalysisTable(lgaData);
-		processFacilityDataRequests(lgaQ, {sectors: variableDefs, data: facilityDataARr});
+		processFacilityDataRequests(lgaQ, {
+		    sectors: varDataReq.sectors,
+		    overview: varDataReq.overview,
+		    data: facilityDataARr
+		});
 		if(facilityData!==undefined && facilitySectors!==undefined) {
 			var context = {
 				data: facilityData,
@@ -692,7 +696,25 @@ function buildFacilityTable(data, sectors){
     function _buildOverview(){
         var div = $('<div />');
         getMustacheTemplate('lga_overview', function(){
-            div.append(Mustache.to_html(this.template, {}));
+            var sectors = [];
+            var varsBySector = {};
+            $.each(overviewVariables, function(i, variable){
+                if(variable.sector!==undefined) {
+                    if(varsBySector[variable.sector]==undefined) {varsBySector[variable.sector] = [];}
+                    varsBySector[variable.sector].push(variable);
+                }
+            });
+            $.each(varsBySector, function(sectorSlug, variables){
+                sectors.push({
+                    name: sectorSlug,
+                    slug: sectorSlug,
+                    variables: variables
+                });
+            });
+            var overviewTabs = Mustache.to_html(this.template, {
+                sectors: sectors
+            });
+            div.append($(overviewTabs).tabs());
         });
         return div;
     }
@@ -938,12 +960,13 @@ var processFacilityDataRequests = (function(dataReq, passedData){
     if(dataReq[2].processedData !== undefined) {
 	    facilityData = dataReq[2].processedData.data;
 	    facilitySectors = dataReq[2].processedData.sectors;
+	    overviewVariables = dataReq[2].processedData.overview;
     } else {
 		var data, sectors, noLatLngs=0;
 		facilitySectorSlugs = [];
 		
 		passedData === undefined && warn("No data was passed to the page", passedData);
-		
+
 		debugMode && (function validateSectors(s){
 		    // this is called if debugMode is true.
 		    // it warns us if the inputs are wrong.
@@ -1057,6 +1080,7 @@ var processFacilityDataRequests = (function(dataReq, passedData){
 		
 		facilityData = data;
 		window._facilityData = data;
+		overviewVariables = passedData.overview;
     	facilitySectors = sectors;
     	//save it in the request object to avoid these checks
     	// in future requests...
