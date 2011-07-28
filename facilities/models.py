@@ -73,7 +73,7 @@ class LGAIndicator(Variable):
     data.
     """
     origin = models.ForeignKey(Variable, related_name='lga_indicators')
-    method = models.CharField(max_length=16)  # count_true, avg, percentage_true, proportion_true, sum
+    method = models.CharField(max_length=16)  # count_true/false, avg, percentage_true/false, proportion_true/false, sum
     sector = models.ForeignKey(Sector, null=True)
 
     def count_boolean(self, looking_for):
@@ -119,8 +119,14 @@ class LGAIndicator(Variable):
     def percentage_true(self):
         return dict([(lga, count / float(len(Facility.objects.filter(sector=self.sector, lga=lga)))) for lga, count in self.count_true().items()])
 
+    def percentage_false(self):
+        return dict([(lga, count / float(len(Facility.objects.filter(sector=self.sector, lga=lga)))) for lga, count in self.count_false().items()])
+
     def proportion_true(self):
         return self.percentage_true()
+
+    def proportion_false(self):
+        return self.percentage_false()
 
     def set_lga_values(self, lga_ids='all'):
         """
