@@ -493,6 +493,20 @@ function getTabulations(sector, col) {
 	return valueCounts;
 }
 
+function getTabulationsForPieChart(sector, col) {
+	var sList = facilityData.bySector[sector];
+	var valueCounts = {'true': 0, 'false': 0, 'undefined': 0};
+	$(sList).each(function(i, id){
+		var fac = facilityData.list[id];
+		var val = fac[col];
+		if(valueCounts[val] === undefined) {
+			valueCounts[val] = 0;
+		}
+		valueCounts[val]++;
+	});
+	return valueCounts;
+}
+
 $('body').bind('select-column', function(evt, edata){
 	var wrapElement = $('#lga-facilities-table');
 	var column = edata.column;
@@ -514,16 +528,37 @@ $('body').bind('select-column', function(evt, edata){
 		    return col.click_actions !== undefined && ~column.click_actions.indexOf(str);
 		}
 		if(hasClickAction(column, 'piechart')) {
-		    var colDataDiv = getColDataDiv();
-			var cdiv = $("<div />", {'class':'col-info'}).html($("<h2 />").text(column.name));
-			cdiv.append($("<h2>").text("PIE CHART!!"))
+		    var colDataDiv = getColDataDiv().empty();
+            colDataDiv.append($("<div />", {'id': 'pie-chart'}))
+			var tabulations = getTabulations(sector.slug, column.slug);
+            var pie_tabs = getTabulationsForPieChart(sector.slug, column.slug)
+            log(pie_tabs);
+            var r = Raphael("pie-chart");
+			r.g.txtattr.font = "12px 'Fontin Sans', Fontin-Sans, sans-serif";
+            var pie = r.g.piechart(50, 50, 35, [pie_tabs['true'],pie_tabs['false'],pie_tabs['undefined']], {colors: ["#21c406","#ff5555","#999"],legend: ["%% – True", "%% - False","%% - Undefined"], legendpos: "east", href: ["http://link1", "http://link2", "http://link3"]});
+            pie.hover(function () {
+                this.sector.stop();
+                this.sector.scale(1.1, 1.1, this.cx, this.cy);
+                if (this.label) {
+                    this.label[0].stop();
+                    this.label[0].scale(1.4);
+                    this.label[1].attr({"font-weight": 800});
+                }
+            }, function () {
+                this.sector.animate({scale: [1, 1, this.cx, this.cy]}, 500, "bounce");
+                if (this.label) {
+                    this.label[0].animate({scale: 1}, 500, "bounce");
+                    this.label[1].attr({"font-weight": 400});
+                }
+            });
+            var cdiv = $("<div />", {'class':'col-info'}).html($("<h2 />").text(column.name));
 			if(column.description!==undefined) {
 				cdiv.append($("<h3 />", {'class':'description'}).text(column.description));
 			}
-			var tabulations = getTabulations(sector.slug, column.slug);
 			cdiv.append($("<p>").text(JSON.stringify(tabulations)))
-			colDataDiv.html(cdiv)
-					.css({'height':120});
+			colDataDiv
+					.append(cdiv)
+                    .css({'height':120});
     	} else if(hasClickAction(column, 'tabulate')) {
     	    var tabulations = $.map(getTabulations(sector.slug, column.slug), function(k, val){
                 return { 'value': k, 'occurrences': val }
