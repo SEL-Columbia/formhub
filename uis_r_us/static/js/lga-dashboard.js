@@ -495,7 +495,7 @@ $('body').bind('select-facility', function(evt, edata){
     		        subgroups[val].push({
     		            name: col.name,
     		            slug: col.slug,
-    		            value: facility[col.slug]
+    		            value: roundDownValueIfNumber(facility[col.slug])
     		        });
 		        }
 		    });
@@ -830,6 +830,8 @@ function roundDownValueIfNumber(val) {
         return Math.floor(Math.pow(10, decimalCount)* val)/Math.pow(10, decimalCount);
     } else if($.type(val)==='string') {
         return splitAndCapitalizeString(val);
+    } else if($.type(val)==='boolean') {
+        return val ? 'Yes' : 'No';
     }
     return val;
 }
