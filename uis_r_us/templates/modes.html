@@ -2,66 +2,65 @@
 {% block head %}
 {% endblock %}
 {% block js %}
+
 <script type="text/javascript" charset="utf-8">
 
-	(function(body){
-		$.sammy(function(){
-			this.get('/modes/', function(){
-				body.trigger('select-view-mode', {
-					viewMode: 'overview'
-				});
-				body.trigger('select-sector', {
-					sector: 'overview'
-				});
-			});
-			this.get('/modes/sector/:sector', function(){body.trigger('select-sector', this.params);});
-			this.get('/modes/view/:viewMode', function(){body.trigger('select-view-mode', this.params);});
-			this.run();
-		});
-		
-		var nav = body.find('#nav-wrap');
-		var stats = body.find('#states');
-		var navChanger = (function(s, a){
-			$(s).delegate(a, 'click', function(evt){
-				$(s).find('.active')
-					.removeClass('active');
-				$(this)
-					.addClass('active');
-				evt.preventDefault();
-			});
-		});
-		
-		navChanger('#view-modes', 'a')
-		navChanger('#sectors', 'a')
-		
-		body.delegate('a.mode-button', 'click', function(evt){
-			if($(this).hasClass('-view-mode')) {
-				$(this).trigger('select-view-mode', $(this).data());
-			} else {
-				$(this).trigger('select-sector', $(this).data());
-			}
-			evt.preventDefault();
-		});
-		
-		var selectedSector;
-		body.bind('select-sector', function(evt, edata){
-			var sectorSlug = edata.sector;
-			if(selectedSector !== sectorSlug) {
-				selectedSector = sectorSlug;
-			}
-		});
-		var selectedViewMode;
-		body.bind('select-view-mode', function(evt, edata){
-			var viewModeSlug = edata.viewMode;
-			if(selectedViewMode !== viewModeSlug) {
-				selectedViewMode = viewModeSlug;
-			}
-		});
-	})($('body'));
+var wrap = $('.mode-demo');
+
+var rows = 'lga facility'.split(' ');
+var cols = 'health education'.split(' ');
+
+function selectRow(i){
+	wrap.find('tr').removeClass('selected');
+	wrap.find('tr:nth-child('+(i+1)+')').addClass('selected');
+}
+function selectColumn(i) {
+	wrap.find('td').removeClass('selected');
+	wrap.find('td:nth-child('+(i+1)+')').addClass('selected');
+}
+
+function selectViewMode(v) {
+	var ri = rows.indexOf(v);
+	if(~ri) { return selectRow(ri); }
+}
+function selectSector(v) {
+	var ri = cols.indexOf(v);
+	if(~ri) { return selectColumn(ri); }
+}
+
+$(function(){
+	selectViewMode('lga');
+	selectSector('health');
+});
+
 </script>
 {% endblock %}
 {% block content %}
+<table class="mode-demo">
+	<tr class="lga">
+		<td class="health">
+			LGA &raquo; Health
+		</td>
+		<td class="education">
+			LGA &raquo; Education
+		</td>
+	</tr>
+	<tr class="facility">
+		<td class="health">
+			Facility &raquo; Health
+		</td>
+		<td class="education">
+			Facility &raquo; Education
+		</td>
+	</tr>
+</table>
 <style>
+table.mode-demo td {
+	display: none;
+}
+table.mode-demo tr.selected td.selected {
+	display: table-cell;
+}
 	a.mode-button {
 		display: block;
 		background-color: #fafafa;
