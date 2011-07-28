@@ -35,6 +35,12 @@ var createOurGraph = (function(pieWrap, legend, data, _opts){
     		legend: legend
     	}
     })(rearranged_vals);
+    // NOTE: hack to get around a graphael bug!
+    // if there is only one color the chart will
+    // use the default value (Raphael.fn.g.colors[0])
+    // here, we will set it to whatever the highest
+    // value that we have is
+    Raphael.fn.g.colors[0] = pvals.colors[0];
     var r = Raphael(gid);
     r.g.txtattr.font = opts.font;
     var pie = r.g.piechart(opts.x, opts.y, opts.r,
