@@ -232,7 +232,7 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 			onLoadCallback.call(context);
 			
 			if(!FACILITY_TABLE_BUILT && context.buildTable) {
-			    buildFacilityTable(facilityData, facilitySectors);
+			    buildFacilityTable(facilityData, facilitySectors, lgaData);
 			}
 			if(context.triggers.length===0) {
 			    //set up default page mode
@@ -692,7 +692,7 @@ function setSummaryHtml(html) {
     return $('.summary-p').html(html);
 }
 
-function buildFacilityTable(data, sectors){
+function buildFacilityTable(data, sectors, lgaData){
     function _buildOverview(){
         var div = $('<div />');
         getMustacheTemplate('lga_overview', function(){
@@ -701,6 +701,21 @@ function buildFacilityTable(data, sectors){
             $.each(overviewVariables, function(i, variable){
                 if(variable.sector!==undefined) {
                     if(varsBySector[variable.sector]==undefined) {varsBySector[variable.sector] = [];}
+
+                    if(variable.value_record_slug !== undefined) {
+                        variable.value_record_slug = "chairman_name";
+                        variable.value_value = roundDownValueIfNumber(lgaData.profileData[variable.value_record_slug]);
+                    } else {
+                        variable.value_value = roundDownValueIfNumber(undefined);
+                    }
+
+                    if(variable.percent_record_slug !== undefined) {
+                        variable.percent_record_slug = "secretary_name";
+                        variable.percent_value = roundDownValueIfNumber(lgaData.profileData[variable.value_record_slug]);
+                    } else {
+                        variable.percent_value = roundDownValueIfNumber(undefined);
+                    }
+
                     varsBySector[variable.sector].push(variable);
                 }
             });
