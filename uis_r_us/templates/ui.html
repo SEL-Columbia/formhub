@@ -590,10 +590,6 @@ var modes = {
 		leave: function() {
 			$('.widget-outer-wrap').show();
 			$('.fwidth').width('auto');
-			// $('#map').css({
-			// 	'height': '476px',
-			// 	'position': 'static'
-			// });
 		}
 	},
 	lga: {
@@ -720,24 +716,51 @@ $(function(){
 				elem: '.home-map'
 			})(function(){
 //				mapNavWrap.empty();
+				var mn = $('<div />')
+							.addClass('mn-iwrap')
+							.css({'border':'1px solid black', 'padding':'3px 8px'});
+				var mnw = $('<div />')
+							.addClass('mn-iiwrap')
+							.css({'padding':'5px'})
+							.append(mn)
+							.appendTo(mapNavWrap);
 				var layerNav = $('<div />')
 						.addClass('layer-nav')
-						.appendTo(mapNavWrap);
+						.appendTo(mn);
+				var mdgDisplay = $('<h3 />')
+						.addClass('mdg-display')
+						.appendTo(mn);
 				var layerDescription = $('<div />')
 						.addClass('layer-description')
-						.appendTo(mapNavWrap);
+						.appendTo(mn);
 				var that = this;
 				(function createLayerSwitcher(){
 					var s = $('<select />');
+					var layerGroups = {};
+					var ogs = [];
 					$.each(layerData.sort(function(a,b){
 						if(a.display_order===b.display_order) {return 0;}
 						return a.display_order > b.display_order ? 1 : -1;
 					}), function(){
-						$('<option />')
+						var ss = this.mdg;
+						var dest = s;
+						if(ss!==undefined && ss !== '') {
+							if(layerGroups[ss]===undefined) {
+								var og = $('<optgroup />').attr('label', 'MDG '+ss);
+								layerGroups[ss] = og;
+								ogs.push(og);
+							}
+							dest = layerGroups[ss];
+						}
+						var o = $('<option />')
 							.text(this.name)
 							.attr('value', this.slug)
-							.appendTo(s);
+							.appendTo(dest);
 					});
+					$(ogs).each(function(){
+						s.append(this);
+					});
+					
 					s.change(function(){
 						var layerId = $(this).val();
 						var OLlayer = that.mapLayers[layerId];
@@ -751,6 +774,7 @@ $(function(){
 							}
 						});
 						if(!!layerObj) {
+							!!layerObj.mdg && mdgDisplay.text('MDG '+layerObj.mdg + ':');
 							layerDescription.empty();
 							var hideBox = true;
 							var description = $('<p />')
