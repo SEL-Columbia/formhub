@@ -1,3 +1,14 @@
+function mdgGoalText(gn){
+    return ["Goal 1 &raquo; Eradicate extreme poverty and hunger",
+    "Goal 2 &raquo; Achieve universal primary education",
+    "Goal 3 &raquo; Promote gender equality and empower women",
+    "Goal 4 &raquo; Reduce child mortality rates",
+    "Goal 5 &raquo; Improve maternal health",
+    "Goal 6 &raquo; Combat HIV/AIDS, malaria, and other diseases",
+    "Goal 7 &raquo; Ensure environmental sustainability",
+    "Goal 8 &raquo; Develop a global partnership for development"][gn-1];
+}
+
 var SetResizer = (function($, resizeSelector, excludeSelector, extraPadding){
 	var resizeElem = $(resizeSelector),
 		excludeElem = $(excludeSelector);

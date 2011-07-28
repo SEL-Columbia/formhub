@@ -744,7 +744,7 @@ $(function(){
 					}), function(){
 						var ss = this.mdg;
 						var dest = s;
-						if(ss!==undefined && ss !== '') {
+						if(ss!==undefined && ss !== '' && ss !== null) {
 							if(layerGroups[ss]===undefined) {
 								var og = $('<optgroup />').attr('label', 'MDG '+ss);
 								layerGroups[ss] = og;
@@ -774,7 +774,12 @@ $(function(){
 							}
 						});
 						if(!!layerObj) {
-							!!layerObj.mdg && mdgDisplay.text('MDG '+layerObj.mdg + ':');
+							if(!!layerObj.mdg) {
+								var mdgT = mdgGoalText(+layerObj.mdg);
+								mdgDisplay.html(mdgT);
+							} else {
+								mdgDisplay.empty();
+							}
 							layerDescription.empty();
 							var hideBox = true;
 							var description = $('<p />')
