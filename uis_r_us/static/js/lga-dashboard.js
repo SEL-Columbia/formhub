@@ -513,6 +513,7 @@ $('body').bind('select-facility', function(evt, edata){
     		    })
     		    .addClass('selected');
 		});
+		pdiv.find('select').trigger('change');
         popup.append(pdiv);
     });
 	popup._showSideDiv({

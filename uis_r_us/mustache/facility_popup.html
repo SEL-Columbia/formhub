@@ -7,11 +7,13 @@
 		{{#image_url}}
 		<a href="#"><img style="width:80px;height:80px;" src="{{image_url}}"></a>
 		{{/image_url}}
-		<select>
-			{{#sector_data}}
-			<option value="{{slug}}">{{name}}</option>
-			{{/sector_data}}
-		</select>
+		<div class="select-wrap">
+			<select>
+				{{#sector_data}}
+				<option value="{{slug}}">{{name}}</option>
+				{{/sector_data}}
+			</select>
+		</div>
 	</div>
 	<div class="right-col">
 		{{#sector_data}}

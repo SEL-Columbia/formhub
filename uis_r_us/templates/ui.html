@@ -58,7 +58,7 @@
 			</div>
 		</div>
 		{% endfor %}
-		<div class="clearfix">
+		<div class="clearfix" style="clear:both;">
 		</div>
 	</div>
 </div>
@@ -585,14 +585,6 @@ var modes = {
 		enter: function(){
 			$('.widget-outer-wrap').hide()
 			$('.fwidth').width(1100)
-			var zlHeight = 0;
-			$('.content-inner-wrap').find('.zl-wrap').each(function(){
-				if($(this).height()>zlHeight) {
-					zlHeight = $(this).height();
-				}
-			});
-			$('.content-inner-wrap')
-				.height(476 + zlHeight);
 			$('#zone-navigation').show();
 		},
 		leave: function() {
