@@ -146,7 +146,7 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 			facilityDataARr.push(v);
 		});
 		
-//		buildLgaProfileBox(lgaData, variableDictionary.profile_variables);
+        buildLgaProfileBox(lgaData, variableDictionary.profile_variables);
 //		buildGapAnalysisTable(lgaData);
 		processFacilityDataRequests(lgaQ, {sectors: variableDefs, data: facilityDataARr});
 		if(facilityData!==undefined && facilitySectors!==undefined) {
@@ -202,13 +202,18 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 // END load lga data via ajax
 
 // BEGIN lga-wide profile boxes
-function buildLgaProfileBox(lga, dictionary) {
-    var oWrap = $('.content-inner-wrap').find('.profile-data-wrap');
-    if(oWrap.length===0) {
-        oWrap = $("<div />", {'class':'profile-data-wrap'}).appendTo($('.content-inner-wrap'));
-    } else {
-        oWrap.empty();
+function getBoxOrCreateDiv(container, selector, creator) {
+    var d = $(container).find(selector)
+    if(d.length===0) {
+        d = $.apply($, creator)
+                .appendTo(container);
     }
+    return d
+}
+
+
+function buildLgaProfileBox(lga, dictionary) {
+    var oWrap = getBoxOrCreateDiv('.content-inner-wrap', '.profile-data-wrap', ['<div />', {'class':'profile-data-wrap'}])
     var wrap = $("<div />", {'class':'profile-data'})
         .append($("<h3 />").text(lga.stateName))
         .append($("<h2 />").text(lga.lgaName))
@@ -607,17 +612,18 @@ function buildFacilityTable(data, sectors){
 	    .click(function(){
 	        facilityTableWrap.toggleClass('closed');
 	    });
-	$('<div />', {'id': 'facility-tabs'})
+	$('<div />', {'id':'facility-tabs'})
 	    .addClass('facility-mode')
 	    .appendTo(facilityTableWrap);
-	$('<div />', {'id': 'lga-view'})
+	$('<div />', {'id':'lga-view'})
 	    .addClass('lga-mode')
 	    .html(_buildOverview())
 	    .appendTo(facilityTableWrap);
-	$('<p />')
+	$('<p />', {id:'summary-p'})
 	    .addClass('summary-p')
 	    .appendTo(facilityTableWrap);
-	var ftabs = $(facilityTabsSelector, facilityTableWrap).css({'padding-bottom':18});
+	var ftabs = $(facilityTabsSelector, facilityTableWrap)
+	        .css({'padding-bottom':18});
 	$.each(facilitySectors, function(i, sector){
 		ftabs.append(createTableForSectorWithData(sector, facilityData));
 	});

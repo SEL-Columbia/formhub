@@ -385,13 +385,18 @@ Right display div for facility popup
 }
 .profile-data-wrap {
 	position: absolute;
-	top: 0;
-	left: 50px;
+	top: 30px;
+	left: 100px;
 	z-index: 15;
+	background-color: rgba(0,0,0,0.5);
+	padding: 14px 6px 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-border-radius: 4px;
 }
 .profile-data {
 	padding: 4px;
-	margin: 5px 12px;
+	margin: 0;
 	background-color: rgba(255,255,255,0.9);
 	height: 175px;
 	overflow: auto;
@@ -402,7 +407,12 @@ Right display div for facility popup
 .profile-data h3 {
 	margin: 2px 0;
 }
-.profile-data.hidden {
+.profile-data-wrap.hidden {
+    height: 2px;
+    width: 300px;
+    background-color: rgba(0,0,0,0.4);
+}
+.profile-data-wrap.hidden .profile-data {
     display: none;
 }
 #header .toggle-button {
