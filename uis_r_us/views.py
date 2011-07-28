@@ -148,5 +148,5 @@ def mustache_template(request, template_name):
         with open(template_path, 'r') as f:
             return HttpResponse(f.read())
 
-def modes(request):
+def modes(request, mode_data):
     return render_to_response("modes.html")
