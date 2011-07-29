@@ -587,20 +587,22 @@ function getColDataDiv() {
 	return colData;
 }
 
-function getTabulations(sector, col) {
+function getTabulations(sector, col, keysArray) {
 	var sList = facilityData.bySector[sector];
 	var valueCounts = {};
+	// if we specify a "keysArray", then the returned valueCounts will include zero values
+	// for those keys.
+	if(keysArray!==undefined) { $.each(keysArray, function(i, val){valueCounts[val]=0;}) }
 	$(sList).each(function(i, id){
-		var fac = facilityData.list[id];
+	    var fac = facilityData.list[id];
 		var val = fac[col];
-		if(valueCounts[val] === undefined) {
-			valueCounts[val] = 0;
-		}
+		if(val === undefined) {val = 'undefined'}
+	    if(valueCounts[val] === undefined) { valueCounts[val] = 0; }
 		valueCounts[val]++;
 	});
 	return valueCounts;
 }
-
+/*--
 function getTabulationsForPieChart(sector, col) {
 	var sList = facilityData.bySector[sector];
 	var valueCounts = {'true': 0, 'false': 0, 'undefined': 0};
@@ -613,7 +615,7 @@ function getTabulationsForPieChart(sector, col) {
 		valueCounts[val]++;
 	});
 	return valueCounts;
-}
+} --*/
 
 $('body').bind('select-column', function(evt, edata){
 	var wrapElement = $('#lga-facilities-table');
@@ -666,7 +668,7 @@ $('body').bind('select-column', function(evt, edata){
 
 		    createOurGraph(pcWrap,
 		                    pieChartDisplayDefinitions,
-		                    getTabulationsForPieChart(sector.slug, column.slug),
+		                    getTabulations(sector.slug, column.slug, 'true false undefined'.split(' ')),
 		                    {});
 
             var cdiv = $("<div />", {'class':'col-info'}).html($("<h2 />").text(column.name));
