@@ -209,15 +209,15 @@ div#toggle-updown-bar {
     background-color: #ccc;
     cursor: pointer;
 }
-#lga-widget-content.closed #facility-tabs {
+#lga-widget-wrap.closed #facility-tabs {
     display: none;
 }
-#lga-widget-content .summary-p {
+#lga-widget-wrap .summary-p {
     display: none;
     margin: 3px 9px;
     color: #222;
 }
-#lga-widget-content.closed .summary-p {
+#lga-widget-wrap.closed .summary-p {
     display: block;
 }
 div#toggle-updown-bar span.icon {
@@ -231,7 +231,7 @@ div#toggle-updown-bar span.icon {
 div#toggle-updown-bar span.icon:before {
     content: '▾';
 }
-div#lga-widget-content.closed div#toggle-updown-bar span.icon:before {
+div#lga-widget-wrap.closed div#toggle-updown-bar span.icon:before {
     content: '▴';
 }
 
@@ -481,18 +481,18 @@ div.toggleable.hidden {
 #header .toggle-button.toggled {
 	opacity: 1;
 }
-#lga-widget-content.hidden {
+#lga-widget-wrap.hidden {
 	display: none;
 }
-#lga-widget-content th {
+#lga-widget-wrap th {
 	background-color: #d4ebfa;
 }
-#lga-widget-content th.clickable {
+#lga-widget-wrap th.clickable {
 	background-color: #bde0f8;
 	border: 2px solid;
 	border-color: #d9edfb #9bb8cb #95b1c3 #cee8fa;
 }
-#lga-widget-content th.selected-column {
+#lga-widget-wrap th.selected-column {
 	background-color: #afd1e9;
 	border-color: #a5c4d9 #c4e2f7 #c4e2f7 #90aabd;
 }
@@ -669,22 +669,22 @@ a.hover-unhide:hover {
  .facility-list-wrap.fl-hidden-sector {
     display: none;
 }
-#lga-widget-content .mode-lga {
+#lga-widget-wrap .mode-lga {
     display: none;
 }
-#lga-widget-content.mode-lga.closed .mode-lga {
+#lga-widget-wrap.mode-lga.closed .mode-lga {
     display: none;
 }
-#lga-widget-content.mode-lga .mode-lga {
+#lga-widget-wrap.mode-lga .mode-lga {
     display: block;
 }
-#lga-widget-content .mode-facility {
+#lga-widget-wrap .mode-facility {
     display: none;
 }
-body #lga-widget-content .mode-showing {
+body #lga-widget-wrap .mode-showing {
     display: block;
 }
-#lga-widget-content.mode-facility .mode-facility {
+#lga-widget-wrap.mode-facility .mode-facility {
     display: block;
 }
 

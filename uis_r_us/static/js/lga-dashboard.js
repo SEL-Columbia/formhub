@@ -419,7 +419,7 @@ function getNav() {
             nav.find('.active-button.view-mode-button').removeClass('active-button');
             nav.find('.view-mode-'+s).addClass('active-button');
 
-            $('#lga-widget-content')
+            $('#lga-widget-wrap')
                 .removeClass('mode-facility')
                 .removeClass('mode-lga')
                 .addClass('mode-'+_viewMode);
@@ -510,7 +510,7 @@ $('body').bind('select-view-level', function(evt, edata){
         } else {
             cClass = 'lga-mode'
         }
-        $('#lga-widget-content')
+        $('#lga-widget-wrap')
             .removeClass('facility-mode')
             .removeClass('lga-mode')
             .addClass(cClass);
@@ -655,7 +655,7 @@ function getTabulationsForPieChart(sector, col) {
 } --*/
 
 $('body').bind('select-column', function(evt, edata){
-	var wrapElement = $('#lga-widget-content');
+	var wrapElement = $('#lga-widget-wrap');
 	var column = edata.column;
 	var sector = edata.sector;
 	$('body').trigger('unselect-column', {column:selectedColumn, nextColumn: edata.column});
@@ -830,25 +830,25 @@ function buildFacilityTable(data, sectors, lgaData){
         }
     }
 	FACILITY_TABLE_BUILT = true;
-	var outerWrap = $('#lga-widget-content');
+	var outerWrap = $('#lga-widget-wrap');
 	$('<div />', {'id': 'toggle-updown-bar'}).html($('<span />', {'class':'icon'}))
 	    .appendTo(outerWrap)
 	    .click(function(){
 	        outerWrap.toggleClass('closed');
 	    });
-	var facilityTableWrap = $('<div />', {'class':'lga-table-content'})
+	var facilityContentWrap = $('<div />', {'class':'lga-table-content'})
 	        .appendTo(outerWrap);
 	$('<div />', {'id':'facility-tabs'})
 	    .addClass('mode-facility')
-	    .appendTo(facilityTableWrap);
+	    .appendTo(facilityContentWrap);
 	$('<div />', {'id':'lga-view'})
 	    .addClass('mode-lga')
 	    .html(_buildOverview())
-	    .appendTo(facilityTableWrap);
+	    .appendTo(facilityContentWrap);
 	$('<p />', {id:'summary-p'})
 	    .addClass('summary-p')
-	    .appendTo(facilityTableWrap);
-	var ftabs = $(facilityTabsSelector, facilityTableWrap)
+	    .appendTo(facilityContentWrap);
+	var ftabs = $(facilityTabsSelector, facilityContentWrap)
 	        .css({'padding-bottom':18});
 	$.each(facilitySectors, function(i, sector){
 		ftabs.append(createTableForSectorWithData(sector, facilityData));
@@ -860,7 +860,7 @@ function buildFacilityTable(data, sectors, lgaData){
 	    .appendTo(ftabs);
 	ftabs.height(220);
 	ftabs.find('.ui-tabs-panel').css({'overflow':'auto','height':'75%'});
-	facilityTableWrap.addClass('ready');
+	facilityContentWrap.addClass('ready');
 	loadMap && launchOpenLayers({
 		centroid: {
 			lat: 649256.11813719,
