@@ -43,7 +43,7 @@
 }
 .mn-iiwrap {
     height: 426px;
-    padding: 25px 12px 25px 40px;
+    padding: 25px 20px 25px 40px;
     width: 375px;
     position: absolute;
     right: 1px;
@@ -672,5 +672,5 @@ a.hover-unhide:hover {
 
 /*-- nav buttons --*/
 .map-key-w a.active-button {
-    background-color: #888;
+    background-color: #ccc;
 }

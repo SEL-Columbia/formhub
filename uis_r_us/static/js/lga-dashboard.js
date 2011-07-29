@@ -292,7 +292,9 @@ function buildLgaProfileBox(lga, dictionary) {
         .append($("<h3 />").text(lga.stateName))
         .append($("<h2 />").text(lga.lgaName))
         .append($("<hr />"));
-    
+
+	$('.map-key-w').find('.profile-toggle').addClass('active-button');
+
     $("<table />").append((function(tbody, pdata){
         $.each(dictionary, function(k, val){
             var name = val.name;
@@ -376,7 +378,6 @@ window.setViewMode = function SetViewMode(s){
         var nav = getNav();
         nav.find('.active-button.view-mode-button').removeClass('active-button');
         nav.find('.view-mode-'+s).addClass('active-button');
-        console.log(nav.find('.view-mode-'+s));
         log("changing view mode to ", _viewMode);
     }
     return change;
@@ -394,7 +395,7 @@ $('body').bind('select-sector', function(evt, edata){
     if(edata.fullSectorId==="overview") {
         edata.fullSectorId = undefined;
     }
-    setSector(edata.fullSectorId);
+//    setSector(edata.fullSectorId);
     if(edata.fullSectorId !== undefined) {
         (function(lsid){
             var lids = lsid.split(subSectorDelimiter);
