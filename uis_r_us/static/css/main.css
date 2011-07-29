@@ -665,9 +665,12 @@ a.hover-unhide:hover {
 
 /*-
 -*/
-body #lga-widget-wrap .facility-list-wrap.mode-lga.fl-hidden-view-mode,
- body #lga-widget-wrap .facility-list-wrap.mode-facility.fl-hidden-sector {
+body #lga-widget-wrap .modeswitch.fl-hidden-view-mode,
+ body #lga-widget-wrap .modeswitch.fl-hidden-sector {
     display: none;
+}
+body #lga-widget-wrap .modeswitch {
+    display: block;
 }
 #lga-widget-wrap .mode-lga {
     display: none;

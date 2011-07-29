@@ -129,6 +129,7 @@ var olStyling = (function(){
                         var icon = new OpenLayers.Icon(url, size, offset);
                         fac.mrkr = new OpenLayers.Marker(fac.openLayersLatLng, icon);
                         fac.mrkr.events.register('click', fac.mrkr, function(){
+                            selectFacility(fac.uid);
                             $('body').trigger('select-facility', {
                                 'uid': fac.uid,
                                 'scrollToRow': true
@@ -234,18 +235,17 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 				},
 				buildTable: false
 			};
+		    !FACILITY_TABLE_BUILT && buildFacilityTable(
+		                $('#lga-widget-wrap'),
+		                facilityData, facilitySectors, lgaData);
 			onLoadCallback.call(context);
-			
-			if(!FACILITY_TABLE_BUILT && context.buildTable) {
-			    buildFacilityTable(facilityData, facilitySectors, lgaData);
-			}
 			if(context.triggers.length===0) {
 			    //set up default page mode
-			    setSector(defaultSectorSlug);
-			    $('body').trigger('select-sector', {
-            	        fullSectorId: defaultSectorSlug,
-            	        viewLevel: 'facility'
-            	        });
+//			    setSector(defaultSectorSlug);
+//			    $('body').trigger('select-sector', {
+//            	        fullSectorId: defaultSectorSlug,
+//            	        viewLevel: 'facility'
+//            	        });
 			} else {
 			    $.each(context.triggers, function(i, tdata){
     			    $('body').trigger(tdata[0], tdata[1]);
@@ -376,14 +376,14 @@ function getNav() {
             ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
             ftabs.removeClass(specialClasses.tableHideTd);
 
-            ftabs.find('.facility-list-wrap').addClass('fl-hidden-sector')
+            ftabs.find('.modeswitch').addClass('fl-hidden-sector')
                     .filter(function(){
                         if($(this).data('sectorSlug')===_sector) { return true; }
 //                        if(this.id == "facilities-"+_sector) { return true; }
                     }).removeClass('fl-hidden-sector');
 		    (typeof(filterPointsBySector)==='function') && filterPointsBySector(_sector);
 
-            log("changing sector to ", _sector);
+            log("changing sector to", _sector);
         }
         return change;
     }
@@ -419,17 +419,15 @@ function getNav() {
             nav.find('.active-button.view-mode-button').removeClass('active-button');
             nav.find('.view-mode-'+s).addClass('active-button');
 
-            $('#lga-widget-wrap')
-                .removeClass('mode-facility')
-                .removeClass('mode-lga')
-                .addClass('mode-'+_viewMode);
-            log('mode-'+_viewMode, "FIND", $('#lga-facility-table').find('.mode-'+_viewMode))
-            log("changing view mode to ", _viewMode);
+            var ftabs = $(facilityTabsSelector);
+            ftabs.find('.modeswitch').addClass('fl-hidden-view-mode');
+            ftabs.find('.modeswitch.mode-'+_viewMode).removeClass('fl-hidden-view-mode');
+            log("changing view mode to", _viewMode);
         }
         return change;
     }
 })();
-
+/*
 $('body').bind('select-sector', function(evt, edata){
 	if(edata===undefined) {edata = {};}
     var sector, subSector, fullSectorId;
@@ -470,14 +468,15 @@ $('body').bind('select-sector', function(evt, edata){
     		//fullSectorId is needed to distinguish between 
     		// health:general  and  education:general (for example)
 
-		    $('body').trigger('unselect-facility');
-		    $('body').trigger('unselect-column');
+//		    $('body').trigger('unselect-facility');
+//		    $('body').trigger('unselect-column');
 
 		    selectedSector = sector;
 		}
 
 		var sectorObj = $(facilitySectors).filter(function(){return this.slug==sector}).get(0);
-		setSummaryHtml(sectorObj.name + " Facilities");
+//		setSummaryHtml(sectorObj.name + " Facilities");
+-- asdf
 		if(selectedSubSector!==fullSectorId) {
 			$('body').trigger('unselect-sector');
 			var tabWrap = $('.facility-list-wrap.sector-'+sector, ftabs);
@@ -489,6 +488,7 @@ $('body').bind('select-sector', function(evt, edata){
 			$('.sub-sector-list').find('a.subsector-link-'+subSector).addClass('selected');
 		}
 		olStyling.setMode(facilityData, 'main');
+		--
 	}
 });
 $('body').bind('unselect-sector', function(evt, edata){
@@ -496,6 +496,8 @@ $('body').bind('unselect-sector', function(evt, edata){
 		.removeClass(specialClasses.tableHideTd)
 		.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
 });
+*/
+
 var DEFAULT_VIEW_LEVEL = "lga",
     currentViewLevel;
 /*
@@ -527,6 +529,13 @@ function imageUrls(imageSizes, imgId) {
         original: ["/survey_photos", 'original', imgId].join("/")
     }
 }
+
+(function(){
+    
+    window.selectFacility = function(fId){
+        console.log('selecting facility '+fId);
+    }
+})();
 
 $('body').bind('select-facility', function(evt, edata){
 	var facility = facilityData.list[edata.uid];
@@ -770,7 +779,7 @@ function setSummaryHtml(html) {
     return $('.summary-p').html(html);
 }
 
-function buildFacilityTable(data, sectors, lgaData){
+function buildFacilityTable(outerWrap, data, sectors, lgaData){
     function _buildOverview(){
         var div = $('<div />');
         getMustacheTemplate('lga_overview', function(){
@@ -830,44 +839,51 @@ function buildFacilityTable(data, sectors, lgaData){
         }
     }
 	FACILITY_TABLE_BUILT = true;
-	var outerWrap = $('#lga-widget-wrap');
 	$('<div />', {'id': 'toggle-updown-bar'}).html($('<span />', {'class':'icon'}))
 	    .appendTo(outerWrap)
-	    .click(function(){
-	        outerWrap.toggleClass('closed');
-	    });
-	var lgaContent = $('<div />', {'class':'lga-widget-content'})
+	    .click(function(){ outerWrap.toggleClass('closed'); });
+	var lgaContent = $('<div />')
+	        .addClass('lga-widget-content')
 	        .appendTo(outerWrap);
-//	$('<div />', {'id':'lga-widget-content'})
-//	    .addClass('mode-facility')
-//	    .appendTo(lgaContent);
-
 /*	$('<div />', {'id':'lga-view'})
 	    .addClass('mode-lga')
 	    .html(_buildOverview())
-	    .appendTo(lgaContent); */
+	    .appendTo(lgaContent); 
 	$('<p />', {id:'summary-p'})
 	    .addClass('summary-p')
-	    .appendTo(lgaContent);
+	    .appendTo(lgaContent);*/
 	var ftabs = lgaContent;
     // var ftabs = $(facilityTabsSelector, lgaContent)
     //         .css({'padding-bottom':18});
 	$.each(facilitySectors, function(i, sector){
-		ftabs.append(createTableForSectorWithData(sector, facilityData));
+	    createTableForSectorWithData(sector, facilityData)
+	        .addClass('modeswitch') //possibly redundant.
+	        .appendTo(ftabs);
+	    
+	    $('<div />')
+	        .addClass('mode-lga')
+	        .addClass('modeswitch')
+	        .text(sector.name + ' LGA mode')
+	        .addClass('sector-'+sector.slug)
+    	    .data('sectorSlug', sector.slug)
+    	    .data('viewModeSlug', 'facility')
+    	    .appendTo(ftabs);
 	});
 	$('<div />')
-	    .addClass('facility-list-wrap')
+	    .addClass('modeswitch')
 	    .addClass('mode-facility')
 	    .addClass('sector-overview')
 	    .text('THIS IS THE OVERVIEW at the FACILITY LEVEL')
 	    .data('sectorSlug', 'overview')
+	    .data('viewModeSlug', 'facility')
 	    .appendTo(ftabs);
 	$('<div />')
-	    .addClass('facility-list-wrap')
+	    .addClass('modeswitch')
 	    .addClass('mode-lga')
 	    .addClass('sector-overview')
 	    .text('THIS IS THE OVERVIEW at the LGA LEVEL')
 	    .data('sectorSlug', 'overview')
+	    .data('viewModeSlug', 'lga')
 	    .appendTo(ftabs);
 	ftabs.height(220);
 	ftabs.find('.ui-tabs-panel').css({'overflow':'auto','height':'75%'});
@@ -971,7 +987,8 @@ function createTableForSectorWithData(sector, data){
 		        })
 		        .click(function(){
 		            setSector(sector.slug);
-		            $('body').trigger('select-column', {sector: sector, column: col});
+// TODO: implement select column
+//		            $('body').trigger('select-column', {sector: sector, column: col});
 		        })
 		        .appendTo(thRow);
 
@@ -1006,9 +1023,9 @@ function createTableForSectorWithData(sector, data){
                     .addClass('facility-list')
                     .append($('<thead />').html(thRow))
                     .append(tbod);
-    
-	return $('<div />')
-	    .addClass('facility-list-wrap')
+    return $('<div />')
+//	    .addClass('facility-list-wrap')
+	    .addClass('modeswitch')
 	    .addClass('mode-facility')
 	    .addClass('sector-'+sector.slug)
 	    .data('sectorSlug', sector.slug)
@@ -1022,6 +1039,7 @@ function createRowForFacilityWithColumns(fpoint, cols, rowNum){
 	        .data('facility-uid', fpoint.uid)
 	        .click(function(){
 	            //clicking a row triggers global event 'select-facility'
+	            selectFacility(fpoint.uid);
 	            $(this).trigger('select-facility', {
         		    'uid': fpoint.uid,
         		    'scrollToRow': false
