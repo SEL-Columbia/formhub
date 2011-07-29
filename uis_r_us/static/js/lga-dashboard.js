@@ -836,19 +836,19 @@ function buildFacilityTable(data, sectors, lgaData){
 	    .click(function(){
 	        outerWrap.toggleClass('closed');
 	    });
-	var facilityContentWrap = $('<div />', {'class':'lga-table-content'})
+	var lgaContent = $('<div />', {'class':'lga-widget-content'})
 	        .appendTo(outerWrap);
 	$('<div />', {'id':'facility-tabs'})
 	    .addClass('mode-facility')
-	    .appendTo(facilityContentWrap);
+	    .appendTo(lgaContent);
 	$('<div />', {'id':'lga-view'})
 	    .addClass('mode-lga')
 	    .html(_buildOverview())
-	    .appendTo(facilityContentWrap);
+	    .appendTo(lgaContent);
 	$('<p />', {id:'summary-p'})
 	    .addClass('summary-p')
-	    .appendTo(facilityContentWrap);
-	var ftabs = $(facilityTabsSelector, facilityContentWrap)
+	    .appendTo(lgaContent);
+	var ftabs = $(facilityTabsSelector, lgaContent)
 	        .css({'padding-bottom':18});
 	$.each(facilitySectors, function(i, sector){
 		ftabs.append(createTableForSectorWithData(sector, facilityData));
@@ -860,7 +860,7 @@ function buildFacilityTable(data, sectors, lgaData){
 	    .appendTo(ftabs);
 	ftabs.height(220);
 	ftabs.find('.ui-tabs-panel').css({'overflow':'auto','height':'75%'});
-	facilityContentWrap.addClass('ready');
+	lgaContent.addClass('ready');
 	loadMap && launchOpenLayers({
 		centroid: {
 			lat: 649256.11813719,
