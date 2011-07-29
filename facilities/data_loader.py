@@ -299,7 +299,7 @@ class DataLoader(object):
             i.set_lga_values(lga_ids)
 
     @print_time
-    def calculate_lga_variables(self, lga_ids):
+    def calculate_lga_variables(self, lga_ids="all"):
         if lga_ids is "all":
             lgas = LGA.objects.filter(data_available=True)
         else:
