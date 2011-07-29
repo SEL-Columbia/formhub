@@ -419,7 +419,7 @@ function getNav() {
             nav.find('.active-button.view-mode-button').removeClass('active-button');
             nav.find('.view-mode-'+s).addClass('active-button');
 
-            $('#lga-facilities-table')
+            $('#lga-widget-content')
                 .removeClass('mode-facility')
                 .removeClass('mode-lga')
                 .addClass('mode-'+_viewMode);
@@ -525,7 +525,7 @@ $('body').bind('select-view-level', function(evt, edata){
         } else {
             cClass = 'lga-mode'
         }
-        $('#lga-facilities-table')
+        $('#lga-widget-content')
             .removeClass('facility-mode')
             .removeClass('lga-mode')
             .addClass(cClass);
@@ -670,7 +670,7 @@ function getTabulationsForPieChart(sector, col) {
 } --*/
 
 $('body').bind('select-column', function(evt, edata){
-	var wrapElement = $('#lga-facilities-table');
+	var wrapElement = $('#lga-widget-content');
 	var column = edata.column;
 	var sector = edata.sector;
 	$('body').trigger('unselect-column', {column:selectedColumn, nextColumn: edata.column});
@@ -845,7 +845,7 @@ function buildFacilityTable(data, sectors, lgaData){
         }
     }
 	FACILITY_TABLE_BUILT = true;
-	var outerWrap = $('#lga-facilities-table');
+	var outerWrap = $('#lga-widget-content');
 	$('<div />', {'id': 'toggle-updown-bar'}).html($('<span />', {'class':'icon'}))
 	    .appendTo(outerWrap)
 	    .click(function(){

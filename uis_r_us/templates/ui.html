@@ -21,7 +21,7 @@
 <div class='content-inner-wrap'>
 	<div class="widget-outer-wrap" style="bottom:0">
 		<div class="fullw-widget">
-			<div id="lga-facilities-table"></div>
+			<div id="lga-widget-content"></div>
 		</div>
 	</div>
 	<div id="map" class="resizing-map"></div>
@@ -426,7 +426,7 @@ $(function(){
 					.addClass('toggle-button')
 					.text('[FACILITIES]')
 					.click(function(e){
-						$('#lga-facilities-table').toggleClass('hidden');
+						$('#lga-widget-content').toggleClass('hidden');
 						facilityTableLink.toggleClass('hidden');
 						return false;
 					});
