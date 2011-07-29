@@ -109,7 +109,6 @@ def variable_data(request):
     overview_data = []
     for z in overview_csv.iter_dicts():
         overview_data.append(z)
-    print overview_data
     return HttpResponse(json.dumps({
         'sectors': sectors,
         'overview': overview_data
