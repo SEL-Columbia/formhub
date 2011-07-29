@@ -35,7 +35,8 @@ class Command(BaseCommand):
             else:
                 self.handle_in_subprocess(*args)
         else:
-            load_lgas(_strings_in_list(args))
+            for lga in _strings_in_list(args):
+                load_lgas([lga])
     
     def start_subprocess(*args):
         hup_args = ["nohup", "python", "manage.py", "load_lgas", "--inside-hup-subprocess"] + _strings_in_list(args)
