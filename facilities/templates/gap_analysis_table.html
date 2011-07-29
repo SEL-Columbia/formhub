@@ -1,0 +1,401 @@
+<!--
+This was moved from ui.html over to this template.
+
+It is not included in any pages at the moment.
+-->
+
+<div id="gap-analysis-table-template" style="display:none">
+	<div>
+	<h2>Health</h2>
+	<table class="gap-analysis">
+		<tbody>
+			<tr>
+				<td colspan="2" class="blank"></td>
+				<td>Current</td>
+				<td>Target</td>
+				<td>Gap</td>
+			</tr>
+			<tr>
+				<td rowspan="3">
+					Facilities Per Population
+				</td>
+				<td>
+					Insitutional Delivery
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_health_facilities_institutional_delivery_only"></td>
+				<td class="fill-me centered" data-variable-slug="target_health_facilities_institutional_delivery_only"></td>
+				<td class="fill-me centered" data-variable-slug="gap_health_facilities_institutional_delivery_only"></td>
+			</tr>
+			<tr>
+				<td>
+					Basic EmOC
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_health_facilities_basic_emoc_fully_functional"></td>
+				<td class="fill-me centered" data-variable-slug="target_health_facilities_basic_emoc"></td>
+				<td class="fill-me centered" data-variable-slug="gap_health_facilities_basic_emoc"></td>
+			</tr>
+			<tr>
+				<td>
+					Comprehensive EmOC
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_health_facilities_comprehensive_emoc_fully_functional"></td>
+				<td class="fill-me centered" data-variable-slug="target_health_facilities_comprehensive_emoc"></td>
+				<td class="fill-me centered" data-variable-slug="gap_health_facilities_comprehensive_emoc"></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td colspan="2" class="blank"></td>
+				<td>Current</td>
+				<td>Target</td>
+				<td>Gap</td>
+			</tr>
+			<tr>
+				<td rowspan="5">
+					Infrastructure
+				</td>
+				<td>
+					Emergency Transport
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_health_facilities_with_functioning_emergency_transport"></td>
+				<td class="fill-me centered" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me centered" data-variable-slug="gap_health_facilities_emergency_transport"></td>
+			</tr>	
+			<tr>
+				<td>
+					Mobile Communications
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_health_facilities_functioning_mobile_and_coverage"></td>
+				<td class="fill-me centered" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me centered" data-variable-slug="gap_health_facilities_functioning_mobile_communications"></td>
+			</tr>
+			<tr>
+				<td>
+					Improved Water
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_health_facilities_potable_water_past_mth"></td>
+				<td class="fill-me centered" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me centered" data-variable-slug="gap_health_facilities_potable_water"></td>
+			</tr>
+			<tr>
+				<td>
+					Improved Sanitation
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_health_facilities_with_functioning_improved_sanitation"></td>
+				<td class="fill-me centered" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me centered" data-variable-slug="gap_health_facilities_functioning_improved_sanitation"></td>
+			</tr>
+			<tr>
+				<td>
+					Power
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_health_facilities_power_access_and_functional"></td>
+				<td class="fill-me centered" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me centered" data-variable-slug="gap_health_facilities_power_access_and_funtional"></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td colspan="2" class="blank"></td>
+				<td>Current</td>
+				<td>Target</td>
+				<td>Gap</td>
+			</tr>
+			<tr>
+				<td rowspan="3">
+					Equipment, Drugs &amp; Diagnostics
+				</td>
+				<td>
+					Minimum Equipment Package
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_health_facilities_with_min_equipment_package"></td>
+				<td class="fill-me centered" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me centered" data-variable-slug="gap_health_facilities_with_min_equip_package"></td>
+			</tr>
+			<tr>
+				<td>
+					Minimum Essential Medications
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_health_facilities_with_min_essential_meds"></td>
+				<td class="fill-me centered" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me centered" data-variable-slug="gap_health_facilities_with_min_essential_meds"></td>
+			</tr>
+			<tr>
+				<td>
+					Minimum Laboratory Diagnostics
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_health_facilities_with_min_lab_diagnostics"></td>
+				<td class="fill-me centered" data-variable-slug="num_all_primary_health_facilities"></td>
+				<td class="fill-me centered" data-variable-slug="gap_health_facilities_minimum_lab_diagnostics"></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td colspan="2" class="blank"></td>
+				<td>Current</td>
+				<td>Target</td>
+				<td>Gap</td>
+			</tr>
+			<tr>
+				<td rowspan="4">
+					Malaria
+				</td>
+				<td>
+					Facilities with ITNs
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_health_facilities_with_itns"></td>
+				<td class="fill-me centered" data-variable-slug="num_all_primary_health_facilities"></td>
+				<td class="fill-me centered" data-variable-slug="gap_health_facilities_with_itns"></td>
+			</tr>
+			<tr>
+				<td>
+					Facilities with RDT
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_health_facilities_with_malaria_testing"></td>
+				<td class="fill-me centered" data-variable-slug="num_all_primary_health_facilities"></td>
+				<td class="fill-me centered" data-variable-slug="gap_health_facilities_with_malaria_testing"></td>
+			</tr>
+			<tr>
+				<td>
+					Facilities with ACT
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_health_facilities_with_artemisinin_for_malaria"></td>
+				<td class="fill-me centered" data-variable-slug="num_all_primary_health_facilities"></td>
+				<td class="fill-me centered" data-variable-slug="gap_health_facilities_with_artemisinin_for_malaria"></td>
+			</tr>
+			<tr>
+				<td>
+					Facilities with SP
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_health_facilities_with_malaria_treatment_sulphadoxine"></td>
+				<td class="fill-me centered" data-variable-slug="num_all_primary_health_facilities"></td>
+				<td class="fill-me centered" data-variable-slug="gap_health_facilities_with_sulphadoxine_for_malaria"></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td colspan="2" class="blank"></td>
+				<td>Current</td>
+				<td>Target</td>
+				<td>Gap</td>
+			</tr>
+			<tr>
+				<td rowspan="1">
+					Vaccination
+				</td>
+				<td>
+					Routine Immunization
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_health_facilities_routine_immunization"></td>
+				<td class="fill-me centered" data-variable-slug="num_all_primary_health_facilities"></td>
+				<td class="fill-me centered" data-variable-slug="gap_health_facilities_routine_immunization"></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td colspan="2" class="blank"></td>
+				<td>Current</td>
+				<td>Target</td>
+				<td>Gap</td>
+			</tr>
+			<tr>
+				<td rowspan="5">
+					Staffing
+				</td>
+				<td>
+					Physicians
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_hospitals_with_at_least_one_fulltime_doctor"></td>
+				<td class="fill-me centered" data-variable-slug="num_hospitals"></td>
+				<td class="fill-me centered" data-variable-slug="gap_hospitals_with_at_least_one_fulltime_doctor"></td>
+			</tr>
+			<tr>
+				<td>
+					Midwives and Nurse-midwives
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_primary_care_with_min_3_midwives_and_nursemidwives"></td>
+				<td class="fill-me centered" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me centered" data-variable-slug="gap_primary_care_with_min_3_midwives_and_nursemidwives"></td>
+			</tr>
+			<tr>
+				<td>
+					Nurses
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_primary_care_with_min_2_nurses_fulltime"></td>
+				<td class="fill-me centered" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me centered" data-variable-slug="gap_primary_care_with_min_2_nurses"></td>
+			</tr>
+			<tr>
+				<td>
+					Senior CHEWs
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_primary_care_with_min_4_sr_chews"></td>
+				<td class="fill-me centered" data-variable-slug="num_primary_health_facilities"></td>
+				<td class="fill-me centered" data-variable-slug="gap_primary_health_facility_with_min_4_sr_CHEW"></td>
+			</tr>
+			<tr>
+				<td>
+					Junior CHEWs
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_basic_facilities_with_min_1_jr_chew"></td>
+				<td class="fill-me centered" data-variable-slug="num_basic_health_facilities"></td>
+				<td class="fill-me centered" data-variable-slug="gap_basic_primary_with_min_1_jr_chew"></td>
+			</tr>
+		</tbody>
+	</table>
+	<h2>Education</h2>
+	<table class="gap-analysis">
+		<tbody>
+			<tr>
+				<td colspan="2" class="blank"></td>
+				<td>Current</td>
+				<td>Target</td>
+				<td>Gap</td>
+			</tr>
+			<tr>
+				<td rowspan="3">
+					Schools &amp; Classrooms
+				</td>
+				<td>
+					Schools
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_primary_schools"></td>
+				<td class="fill-me centered" data-variable-slug="target_num_primary_schools"></td>
+				<td class="fill-me centered" data-variable-slug="gap_primary_schools"></td>
+			</tr>
+			<tr>
+				<td>
+					Classrooms
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_primary_classrooms_good_cond"></td>
+				<td class="fill-me centered" data-variable-slug="target_num_primary_classrooms"></td>
+				<td class="fill-me centered" data-variable-slug="gap_primary_school_classrooms_good_cond"></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td colspan="2" class="blank"></td>
+				<td>Current</td>
+				<td>Target</td>
+				<td>Gap</td>
+			</tr>
+			<tr>
+				<td rowspan="3">
+					Infrastructure
+				</td>
+				<td>
+					Water
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_primary_schools_with_potable_water"></td>
+				<td class="fill-me centered" data-variable-slug="num_primary_schools"></td>
+				<td class="fill-me centered" data-variable-slug="gap_primary_schools_potable_water"></td>
+			</tr>
+			<tr>
+				<td>
+					Sanitation
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_primary_schools_with_improved_sanitation_functioning"></td>
+				<td class="fill-me centered" data-variable-slug="num_primary_schools"></td>
+				<td class="fill-me centered" data-variable-slug="gap_primary_schools_improved_sanitation_functioning"></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td colspan="2" class="blank"></td>
+				<td>Current</td>
+				<td>Target</td>
+				<td>Gap</td>
+			</tr>
+			<tr>
+				<td rowspan="3">
+					Furniture
+				</td>
+				<td>
+					Chalkboards
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_primary_schools_with_chalkboards_each_classroom"></td>
+				<td class="fill-me centered" data-variable-slug="num_primary_schools"></td>
+				<td class="fill-me centered" data-variable-slug="gap_primary_schools_with_chalkboards_each_classroom"></td>
+			</tr>
+			<tr>
+				<td>
+				    Benches
+				</td>
+				<td class="fill-me centered" data-variable-slug="primary_school_benches"></td>
+				<td class="fill-me centered" data-variable-slug="sum_target_primary_school_benches"></td>
+				<td class="fill-me centered" data-variable-slug="gap_benches_primary_schools"></td>
+			</tr>
+			<tr>
+				<td>
+			        Desks
+				</td>
+				<td class="fill-me centered" data-variable-slug="primary_school_desks"></td>
+				<td class="fill-me centered" data-variable-slug="sum_target_primary_school_desks"></td>
+				<td class="fill-me centered" data-variable-slug="gap_desks_primary_schools"></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td colspan="2" class="blank"></td>
+				<td>Current</td>
+				<td>Target</td>
+				<td>Gap</td>
+			</tr>
+			<tr>
+				<td rowspan="4">
+					Teaching Materials
+				</td>
+				<td>
+					Textbooks
+				</td>
+				<td class="fill-me centered" data-variable-slug="primary_school_textbooks"></td>
+				<td class="fill-me centered" data-variable-slug="sum_target_primary_school_textbooks"></td>
+				<td class="fill-me centered" data-variable-slug="gap_textbooks_primary_schools"></td>
+			</tr>
+			<tr>
+				<td>
+					Excercise Books
+				</td>
+				<td class="fill-me centered" data-variable-slug="primary_school_exercise_books"></td>
+				<td class="fill-me centered" data-variable-slug="sum_target_primary_school_exercise_books"></td>
+				<td class="fill-me centered" data-variable-slug="gap_exercise_books_primary_schools"></td>
+			</tr>
+			<tr>
+				<td>
+					Pens/Pencils
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_primary_schools_with_sufficient_pens"></td>
+				<td class="fill-me centered" data-variable-slug="num_primary_schools"></td>
+				<td class="fill-me centered" data-variable-slug="gap_primary_schools_with_sufficient_pens"></td>
+			</tr>
+			<tr>
+				<td>
+					Teaching Toolkits
+				</td>
+				<td class="fill-me centered" data-variable-slug="num_primary_schools_natl_curriculum_and_teaching_kit"></td>
+				<td class="fill-me centered" data-variable-slug="num_primary_schools"></td>
+				<td class="fill-me centered" data-variable-slug="gap_primary_schools_natl_curriculum_and_teaching_kit"></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td colspan="2" class="blank"></td>
+				<td>Current</td>
+				<td>Target</td>
+				<td>Gap</td>
+			</tr>
+			<tr>
+				<td rowspan="1">
+					Staff
+				</td>
+				<td>
+					Qualified Teachers
+				</td>
+				<td class="fill-me centered" data-variable-slug="primary_school_teachers_qualified"></td>
+				<td class="fill-me centered" data-variable-slug="num_primary_classrooms_good_cond"></td>
+				<td class="fill-me centered" data-variable-slug="gap_qualified_teachers_primary_schools"></td>
+			</tr>
+		</tbody>
+	</table>
+	</div>
+</div>
