@@ -669,3 +669,8 @@ a.hover-unhide:hover {
 #lga-facilities-table.facility-mode .facility-mode {
     display: block;
 }
+
+/*-- nav buttons --*/
+.map-key-w a.active-button {
+    background-color: #888;
+}

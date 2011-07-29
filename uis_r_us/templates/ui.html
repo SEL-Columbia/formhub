@@ -529,6 +529,8 @@ var mapBar = (function(){
 		$.each(opts.sectorButtons, function(i, button){
 			$('<a />', {'href': '#', 'class': 'sectorButton'})
 					.text(button[0])
+					.addClass('sector-'+button[1])
+					.addClass('sector-button')
 					.appendTo(sectorTd)
 					.data('sectorSlug', button[1]);
 		});
@@ -537,6 +539,7 @@ var mapBar = (function(){
 			var sData = {viewLevel: 'facility'};
 			if(!!ss) {
 				sData.fullSectorId = ss;
+				setSector(ss);
 			}
 			$('body').trigger('select-sector', sData);
 		});
@@ -546,8 +549,11 @@ var mapBar = (function(){
 			$('<a />', {'href':'#', 'class':'viewLevelButton'})
 				.text(button[0])
 				.appendTo(viewLevelTd)
+				.addClass('view-mode-'+button[1])
+				.addClass('view-mode-button')
 				.data('viewLevel', button[1])
 				.click(function(){
+					setViewMode($(this).data('viewLevel'));
 					$('body').trigger('select-view-level', {
 						viewLevel: $(this).data('viewLevel')
 					});
@@ -565,10 +571,10 @@ var mapBar = (function(){
 					var pdw = $('.profile-data-wrap');
 					pdw.width(pdw.width());
 					var pdw = $('.profile-data-wrap').toggleClass('hidden');
-					if(pdw.hasClass('hidden')) {
-						$(this).addClass('active');
+					if(!pdw.hasClass('hidden')) {
+						$(this).addClass('active-button');
 					} else {
-						$(this).removeClass('active');
+						$(this).removeClass('active-button');
 					}
 				})
 				.appendTo(leftButtons);
@@ -841,6 +847,7 @@ $(function(){
 			lga.loadData(lgaId, function(){
 				this.buildTable = true;
 				setTitle(createTitleForLga(this.stateName, this.lgaName));
+				fullSectorId !== undefined && setSector(fullSectorId);
 				fullSectorId !== undefined && this.trigger('select-sector', {fullSectorId: fullSectorId, viewLevel: 'facility'});
 				//addToggleLinks();
 			});

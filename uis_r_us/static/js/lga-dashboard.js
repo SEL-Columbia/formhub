@@ -241,6 +241,7 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 			}
 			if(context.triggers.length===0) {
 			    //set up default page mode
+			    setSector(defaultSectorSlug);
 			    $('body').trigger('select-sector', {
             	        fullSectorId: defaultSectorSlug,
             	        viewLevel: 'facility'
@@ -343,16 +344,57 @@ function buildGapAnalysisTable(lgaData){
 //        * facility
 //     All functions accessed in this file are defined elsewhere in the file.
 //     (Except jquery stuff and LaunchOpenLayers)
+
+var _nav;
+function getNav() {
+    if(_nav===undefined || _nav.length===0) {
+        _nav = $('.map-key-w');
+    }
+    return _nav;
+}
+
+var sectors = 'overview health education water'.split(' ');
+var _sector;
+window.setSector = function SetSector(s){
+    var change = false;
+    if(~sectors.indexOf(s)) { if(_sector !== s) {_sector = s; change = true;} } else {warn("sector doesn't exist", s); }
+    if(change) {
+        var nav = getNav();
+        nav.find('.active-button.sector-button').removeClass('active-button');
+        nav.find('.sector-'+s).addClass('active-button');
+        log("changing sector to ", _sector);
+    }
+    return change;
+}
+
+var viewModes = 'facility lga'.split(' ');
+var _viewMode;
+window.setViewMode = function SetViewMode(s){
+    var change = false;
+    if(~viewModes.indexOf(s)) { if(_viewMode !== s) {_viewMode = s; change = true;} } else {warn("viewMode doesn't exist", s); }
+    if(change) {
+        var nav = getNav();
+        nav.find('.active-button.view-mode-button').removeClass('active-button');
+        nav.find('.view-mode-'+s).addClass('active-button');
+        console.log(nav.find('.view-mode-'+s));
+        log("changing view mode to ", _viewMode);
+    }
+    return change;
+}
+
+
 $('body').bind('select-sector', function(evt, edata){
 	if(edata===undefined) {edata = {};}
     var sector, subSector, fullSectorId;
     
     if(edata.viewLevel!==undefined) {
+        setViewMode(edata.viewLevel);
         $('body').trigger('select-view-level', edata);
     }
     if(edata.fullSectorId==="overview") {
         edata.fullSectorId = undefined;
     }
+    setSector(edata.fullSectorId);
     if(edata.fullSectorId !== undefined) {
         (function(lsid){
             var lids = lsid.split(subSectorDelimiter);
@@ -407,6 +449,7 @@ $('body').bind('select-sector', function(evt, edata){
 	} else {
 	    log('switch to overview');
 		$('body').trigger('unselect-sector');
+		setViewMode('lga');
         $('body').trigger('select-view-level', {viewLevel: 'lga'});
 //		$('body').trigger('unselect-sector');
 	}
@@ -879,6 +922,7 @@ function createTableForSectorWithData(sector, data){
 		            'text': col.name
 		        })
 		        .click(function(){
+		            setSector(sector);
 		            $('body').trigger('select-column', {sector: sector, column: col});
 		        })
 		        .appendTo(thRow);
@@ -895,6 +939,7 @@ function createTableForSectorWithData(sector, data){
 	    return $('<a />', {'href': '#', 'class': 'subsector-link-'+ssslug})
 	                .text(ssName)
 	                .click(function(evt){
+	                    setSector(fullSectorSlug);
 	                    $('body').trigger('select-sector', {fullSectorId: fullSectorSlug})
 	                    evt.preventDefault();
 	                });

@@ -28,7 +28,7 @@
 			<form action="/~/" method="POST">
 			<div class="lga-nav">
 					<select id="lga-select" name="lga" style="width:280px;" title="Select an LGA">
-						<option></option>
+						<!-- <option></option> -->
 						{% for statename, lgas in active_districts2 %}
 						<optgroup label="{{statename}}">
 							{% for lganame, lgaid in lgas %}
