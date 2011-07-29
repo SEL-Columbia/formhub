@@ -467,16 +467,6 @@ $('body').bind('select-view-level', function(evt, edata){
     if(edata.viewLevel===undefined) {edata.viewLevel = DEFAULT_VIEW_LEVEL;}
     var viewLevel = edata.viewLevel;
     if(currentViewLevel!==viewLevel) {
-        (function temporaryDisplay(){
-            var vld = $('.viewLevelDisplay');
-            if(vld.length===0) {
-                vld = $('<p />', {'class':'viewLevelDisplay'})
-                    .css({'position':'absolute','top':4,'right':200,'color':'#fff'})
-                    .appendTo($('#header .fwidth'));
-            }
-            return vld;
-        })().text(viewLevel);
-        
         var cClass = 'facility-mode';
         if(viewLevel==="facility") {
             cClass = 'facility-mode';
@@ -925,7 +915,7 @@ function createTableForSectorWithData(sector, data){
 		            'text': col.name
 		        })
 		        .click(function(){
-		            setSector(sector);
+		            setSector(sector.slug);
 		            $('body').trigger('select-column', {sector: sector, column: col});
 		        })
 		        .appendTo(thRow);

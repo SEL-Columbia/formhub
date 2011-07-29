@@ -641,6 +641,14 @@ a.hover-unhide:hover {
 .map-key-w {
 	margin: 11px 20px 0 100px;
 }
+.map-key-w .spacer {
+    margin: 4px 5px 0;
+    width: 1px;
+    display: block;
+    height: 14px;
+    border-left: 1px dotted #999;
+    float: left;
+}
 .map-key-w table {
 	width: 100%;
 }
