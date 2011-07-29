@@ -209,7 +209,7 @@ div#toggle-updown-bar {
     background-color: #ccc;
     cursor: pointer;
 }
-#lga-widget-wrap.closed #facility-tabs {
+#lga-widget-wrap.closed .lga-widget-content {
     display: none;
 }
 #lga-widget-wrap .summary-p {
@@ -388,10 +388,10 @@ html .rd-wrap {
     max-height: 300px;
     overflow: auto;
 }
-#facility-tabs.hide-tds td, #facility-tabs.hide-tds th {
+.lga-widget-content.hide-tds td, .lga-widget-content.hide-tds th {
 	display: none;
 }
-#facility-tabs.hide-tds .show-me {
+.lga-widget-content.hide-tds .show-me {
 	display: table-cell;
 }
 
@@ -665,8 +665,8 @@ a.hover-unhide:hover {
 
 /*-
 -*/
-.facility-list-wrap.fl-hidden-view-mode,
- .facility-list-wrap.fl-hidden-sector {
+body #lga-widget-wrap .facility-list-wrap.mode-lga.fl-hidden-view-mode,
+ body #lga-widget-wrap .facility-list-wrap.mode-facility.fl-hidden-sector {
     display: none;
 }
 #lga-widget-wrap .mode-lga {

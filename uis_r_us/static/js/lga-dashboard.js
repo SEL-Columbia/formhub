@@ -180,7 +180,7 @@ var selectedSubSector,
     facilitySectors;
 
 
-var facilityTabsSelector = 'div#facility-tabs';
+var facilityTabsSelector = 'div.lga-widget-content';
 
 var specialClasses = {
     showTd: 'show-me',
@@ -838,9 +838,9 @@ function buildFacilityTable(data, sectors, lgaData){
 	    });
 	var lgaContent = $('<div />', {'class':'lga-widget-content'})
 	        .appendTo(outerWrap);
-	$('<div />', {'id':'facility-tabs'})
-	    .addClass('mode-facility')
-	    .appendTo(lgaContent);
+//	$('<div />', {'id':'lga-widget-content'})
+//	    .addClass('mode-facility')
+//	    .appendTo(lgaContent);
 	$('<div />', {'id':'lga-view'})
 	    .addClass('mode-lga')
 	    .html(_buildOverview())
@@ -848,8 +848,9 @@ function buildFacilityTable(data, sectors, lgaData){
 	$('<p />', {id:'summary-p'})
 	    .addClass('summary-p')
 	    .appendTo(lgaContent);
-	var ftabs = $(facilityTabsSelector, lgaContent)
-	        .css({'padding-bottom':18});
+	var ftabs = lgaContent;
+    // var ftabs = $(facilityTabsSelector, lgaContent)
+    //         .css({'padding-bottom':18});
 	$.each(facilitySectors, function(i, sector){
 		ftabs.append(createTableForSectorWithData(sector, facilityData));
 	});
@@ -1007,6 +1008,7 @@ function createTableForSectorWithData(sector, data){
     
 	return $('<div />')
 	    .addClass('facility-list-wrap')
+	    .addClass('mode-facility')
 	    .addClass('sector-'+sector.slug)
 	    .data('sectorSlug', sector.slug)
 	    .append(subSectors)
