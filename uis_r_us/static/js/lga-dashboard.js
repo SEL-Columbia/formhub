@@ -474,13 +474,6 @@ $('body').bind('select-sector', function(evt, edata){
 		    $('body').trigger('unselect-column');
 
 		    selectedSector = sector;
-/*--            ftabs.find('.facility-list-wrap').hide()
-                    .filter(function(){
-                        if(this.id == "facilities-"+selectedSector) { return true; }
-                    }).show();
-    		    (typeof(filterPointsBySector)==='function') && filterPointsBySector(selectedSector);
-
-                     */
 		}
 
 		var sectorObj = $(facilitySectors).filter(function(){return this.slug==sector}).get(0);
@@ -488,8 +481,6 @@ $('body').bind('select-sector', function(evt, edata){
 		if(selectedSubSector!==fullSectorId) {
 			$('body').trigger('unselect-sector');
 			var tabWrap = $('.facility-list-wrap.sector-'+sector, ftabs);
-//			log(tabWrap);
-//			tabWrap = $('#facilities-'+sector, ftabs);
 			tabWrap.find('.subgroup-'+subSector).addClass(specialClasses.showTd);
 			tabWrap.find('.row-num').addClass(specialClasses.showTd);
 			ftabs.addClass(specialClasses.tableHideTd);
@@ -498,12 +489,6 @@ $('body').bind('select-sector', function(evt, edata){
 			$('.sub-sector-list').find('a.subsector-link-'+subSector).addClass('selected');
 		}
 		olStyling.setMode(facilityData, 'main');
-	} else {
-//	    log('switch to overview');
-//		$('body').trigger('unselect-sector');
-//		setViewMode('lga');
-//        $('body').trigger('select-view-level', {viewLevel: 'lga'});
-//		$('body').trigger('unselect-sector');
 	}
 });
 $('body').bind('unselect-sector', function(evt, edata){
@@ -1012,7 +997,6 @@ function createTableForSectorWithData(sector, data){
                     .append(tbod);
     
 	return $('<div />')
-//	    .attr('id', 'facilities-'+sector.slug)
 	    .addClass('facility-list-wrap')
 	    .addClass('sector-'+sector.slug)
 	    .data('sectorSlug', sector.slug)

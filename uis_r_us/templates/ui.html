@@ -323,10 +323,8 @@ $(function(){
 				layerSwitcher: false,
 				elem: '.home-map'
 			})(function(){
-//				mapNavWrap.empty();
 				var mn = $('<div />')
 							.addClass('mn-iwrap');
-//							.css({'border':'1px solid black', 'padding':'3px 8px'});
 				var mnw = $('<div />')
 							.addClass('mn-iiwrap')
 							.append(mn)
@@ -432,12 +430,6 @@ $(function(){
 			var lgaId = this.params.lga;
 			$('#zone-navigation').hide();
 			showLgaAndSector(lgaId);
-/*			lga.loadData(lgaId,
-							function(){
-								this.buildTable = true;
-								var t = createTitleForLga(this.stateName, this.lgaName);
-								setTitle(t);
-							}); */
 		});
 	});
 	
