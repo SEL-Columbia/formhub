@@ -665,7 +665,8 @@ a.hover-unhide:hover {
 
 /*-
 -*/
-.facility-list-wrap.fl-hidden {
+.facility-list-wrap.fl-hidden-view-mode,
+ .facility-list-wrap.fl-hidden-sector {
     display: none;
 }
 #lga-facilities-table .mode-lga {

@@ -376,11 +376,11 @@ function getNav() {
             ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
             ftabs.removeClass(specialClasses.tableHideTd);
 
-            ftabs.find('.facility-list-wrap').addClass('fl-hidden')
+            ftabs.find('.facility-list-wrap').addClass('fl-hidden-sector')
                     .filter(function(){
                         if($(this).data('sectorSlug')===_sector) { return true; }
 //                        if(this.id == "facilities-"+_sector) { return true; }
-                    }).removeClass('fl-hidden');
+                    }).removeClass('fl-hidden-sector');
 		    (typeof(filterPointsBySector)==='function') && filterPointsBySector(_sector);
 
             log("changing sector to ", _sector);
