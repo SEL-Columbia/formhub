@@ -384,6 +384,10 @@ html .rd-wrap {
 .sn ul ul {
 	padding-left: 10px;
 }
+.lga-table-content {
+    max-height: 300px;
+    overflow: auto;
+}
 #facility-tabs.hide-tds td, #facility-tabs.hide-tds th {
 	display: none;
 }

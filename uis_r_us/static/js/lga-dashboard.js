@@ -418,12 +418,12 @@ $('body').bind('select-sector', function(evt, edata){
 	
 	var ftabs = $(facilityTabsSelector);
 	if(sector !== undefined) {
-	    ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
-    	ftabs.removeClass(specialClasses.tableHideTd);
-		//fullSectorId is needed to distinguish between 
-		// health:general  and  education:general (for example)
-		
 		if(selectedSector !== sector) {
+		    ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
+        	ftabs.removeClass(specialClasses.tableHideTd);
+    		//fullSectorId is needed to distinguish between 
+    		// health:general  and  education:general (for example)
+
 		    $('body').trigger('unselect-facility');
 		    $('body').trigger('unselect-column');
 		    selectedSector = sector;
@@ -801,12 +801,14 @@ function buildFacilityTable(data, sectors, lgaData){
         }
     }
 	FACILITY_TABLE_BUILT = true;
-	var facilityTableWrap = $('#lga-facilities-table');
+	var outerWrap = $('#lga-facilities-table');
 	$('<div />', {'id': 'toggle-updown-bar'}).html($('<span />', {'class':'icon'}))
-	    .appendTo(facilityTableWrap)
+	    .appendTo(outerWrap)
 	    .click(function(){
-	        facilityTableWrap.toggleClass('closed');
+	        outerWrap.toggleClass('closed');
 	    });
+	var facilityTableWrap = $('<div />', {'class':'lga-table-content'})
+	        .appendTo(outerWrap);
 	$('<div />', {'id':'facility-tabs'})
 	    .addClass('facility-mode')
 	    .appendTo(facilityTableWrap);
@@ -940,7 +942,7 @@ function createTableForSectorWithData(sector, data){
 	    return $('<a />', {'href': '#', 'class': 'subsector-link-'+ssslug})
 	                .text(ssName)
 	                .click(function(evt){
-	                    setSector(fullSectorSlug);
+	                    setSector(sector.slug, ssslug);
 	                    $('body').trigger('select-sector', {fullSectorId: fullSectorSlug})
 	                    evt.preventDefault();
 	                });

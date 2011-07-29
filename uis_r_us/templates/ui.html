@@ -520,9 +520,11 @@ var mapBar = (function(){
 		if(!!opts.preSectorButtons && opts.preSectorButtons.length > 0) {
 			$.each(opts.preSectorButtons, function(i, button){
 				$('<a />', {'href': '#', 'class': 'preSectorButton'})
-						.text(button[0])
-						.appendTo(sectorTd)
-						.data('sectorSlug', button[1]);
+					.text(button[0])
+					.addClass('sector-'+button[1])
+					.addClass('sector-button')
+					.data('sectorSlug', button[1])
+					.appendTo(sectorTd);
 			});
 			sectorTd.append($('<span />', {'class':'spacer'}))
 		}
