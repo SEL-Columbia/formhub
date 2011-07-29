@@ -855,6 +855,7 @@ function buildFacilityTable(data, sectors, lgaData){
 	});
 	$('<div />')
 	    .addClass('facility-list-wrap')
+	    .addClass('sector-overview')
 	    .text('THIS IS THE OVERVIEW')
 	    .data('sectorSlug', 'overview')
 	    .appendTo(ftabs);
