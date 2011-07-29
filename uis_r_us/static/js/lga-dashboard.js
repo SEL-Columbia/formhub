@@ -501,7 +501,7 @@ $('body').bind('select-facility', function(evt, edata){
     		        subgroups[val].push({
     		            name: col.name,
     		            slug: col.slug,
-    		            value: roundDownValueIfNumber(facility[col.slug])
+    		            value: displayValue(facility[col.slug])
     		        });
 		        }
 		    });
@@ -709,16 +709,16 @@ function buildFacilityTable(data, sectors, lgaData){
 
                     if(variable.value_record_slug !== undefined) {
                         variable.value_record_slug = "chairman_name";
-                        variable.value_value = roundDownValueIfNumber(lgaData.profileData[variable.value_record_slug]);
+                        variable.value_value = displayValue(lgaData.profileData[variable.value_record_slug]);
                     } else {
-                        variable.value_value = roundDownValueIfNumber(undefined);
+                        variable.value_value = displayValue(undefined);
                     }
 
                     if(variable.percent_record_slug !== undefined) {
                         variable.percent_record_slug = "secretary_name";
-                        variable.percent_value = roundDownValueIfNumber(lgaData.profileData[variable.value_record_slug]);
+                        variable.percent_value = displayValue(lgaData.profileData[variable.value_record_slug]);
                     } else {
-                        variable.percent_value = roundDownValueIfNumber(undefined);
+                        variable.percent_value = displayValue(undefined);
                     }
 
                     varsBySector[variable.sector].push(variable);
@@ -829,6 +829,12 @@ function buildFacilityTable(data, sectors, lgaData){
 }
 
 var decimalCount = 2;
+function displayValue(val) {
+    if($.type(val)==='boolean') {
+        return val ? 'Yes' : 'No'
+    }
+    return roundDownValueIfNumber(val);
+}
 function roundDownValueIfNumber(val) {
     if(val===undefined) { return 'n/a'; }
     if($.type(val)==='object') {val = val.value;}

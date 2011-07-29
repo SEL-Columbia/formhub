@@ -26,12 +26,31 @@
     top: 5px;
 }
 .lga-nav {
+    padding: 6px 0;
     right: 300px;
+    width: 320px;
+}
+.lga-nav input {
+    position: absolute;
+    right:1px;
+    top: 6px;
 }
 .load-options {
     right: 500px;
 }
-
+.mn-iiwrap select {
+    width: 300px;
+}
+.mn-iiwrap {
+    height: 426px;
+    padding: 25px 12px 25px 40px;
+    width: 375px;
+    position: absolute;
+    right: 1px;
+    background-image: url('/static/images/homeshade.png');
+    background-position: left center;
+    background-repeat: repeat-y;
+}
 table.facility-list td, table.facility-list.pretty thead th {
     text-align: center;
 }
