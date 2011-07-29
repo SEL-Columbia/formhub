@@ -79,7 +79,7 @@ var createOurGraph = (function(pieWrap, legend, data, _opts){
 	    if(opts===undefined) { opts={}; }
 		if(mapContent===undefined) { mapContent = $('.content-inner-wrap'); }
 		if(rightDiv===undefined) {
-			var rightDiv = $("<div />", {'class':'rd-wrap'}).appendTo(mapContent);
+			rightDiv = $("<div />", {'class':'rd-wrap'}).appendTo(mapContent);
             rightDiv.delegate('a.close', 'click', function(){
                 rightDiv.trigger('click-close');
                 return false;
