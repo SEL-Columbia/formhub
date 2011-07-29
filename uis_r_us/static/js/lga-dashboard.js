@@ -355,34 +355,80 @@ function getNav() {
     return _nav;
 }
 
-var sectors = 'overview health education water'.split(' ');
-var _sector;
-window.setSector = function SetSector(s){
-    var change = false;
-    if(~sectors.indexOf(s)) { if(_sector !== s) {_sector = s; change = true;} } else {warn("sector doesn't exist", s); }
-    if(change) {
-        var nav = getNav();
-        nav.find('.active-button.sector-button').removeClass('active-button');
-        nav.find('.sector-'+s).addClass('active-button');
-        log("changing sector to ", _sector);
-    }
-    return change;
-}
+(function(){
+    var sectors = 'overview health education water'.split(' ');
+    var _sector, _prevSector;
+    window._sectorOnLeave = null;
 
-var viewModes = 'facility lga'.split(' ');
-var _viewMode;
-window.setViewMode = function SetViewMode(s){
-    var change = false;
-    if(~viewModes.indexOf(s)) { if(_viewMode !== s) {_viewMode = s; change = true;} } else {warn("viewMode doesn't exist", s); }
-    if(change) {
-        var nav = getNav();
-        nav.find('.active-button.view-mode-button').removeClass('active-button');
-        nav.find('.view-mode-'+s).addClass('active-button');
-        log("changing view mode to ", _viewMode);
-    }
-    return change;
-}
+    window.setSector = function SetSector(s){
+        var change = false;
+        if(~sectors.indexOf(s)) { if(_sector !== s) {_prevSector = _sector; _sector = s; change = true;} } else {warn("sector doesn't exist", s); }
+        if(change) {
+            // if a "leave" function is defined, it is executed and removed
+            if(typeof _sectorOnLeave ==='function') {_sectorOnLeave(); _sectorOnLeave = null;}
 
+            var nav = getNav();
+            nav.find('.active-button.sector-button').removeClass('active-button');
+            nav.find('.sector-'+s).addClass('active-button');
+
+            //remove all TD filtering classes
+            var ftabs = $(facilityTabsSelector);
+            ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
+            ftabs.removeClass(specialClasses.tableHideTd);
+
+            ftabs.find('.facility-list-wrap').addClass('fl-hidden')
+                    .filter(function(){
+                        if($(this).data('sectorSlug')===_sector) { return true; }
+//                        if(this.id == "facilities-"+_sector) { return true; }
+                    }).removeClass('fl-hidden');
+		    (typeof(filterPointsBySector)==='function') && filterPointsBySector(_sector);
+
+            log("changing sector to ", _sector);
+        }
+        return change;
+    }
+})();
+
+(function(){
+    //rewrite this to return if a "sector:subsector" is valid
+    function subSectorExists(){return true;}
+    var _fullSectorId, _prevFullSectorId;
+
+    window.setSubSector = function(s, ss){
+        setSector(s);
+        var fsid = s + ':' + ss,
+            change = false;
+        if(subSectorExists(fsid)) { if(_fullSectorId !== fsid) { _prevFullSectorId = _fullSectorId; _fullSectorId = fsid; change = true; }}
+        if(change) {
+            var nav = getNav();
+            nav.find('.sector-notes').text('subsector: '+ss);
+        }
+        return change;
+    }
+})();
+
+(function(){
+    var viewModes = 'facility lga'.split(' ');
+    var _viewMode, _prevViewMode;
+    
+    window.setViewMode = function SetViewMode(s){
+        var change = false;
+        if(~viewModes.indexOf(s)) { if(_viewMode !== s) {_prevViewMode = _viewMode; _viewMode = s; change = true;} } else {warn("viewMode doesn't exist", s); }
+        if(change) {
+            var nav = getNav();
+            nav.find('.active-button.view-mode-button').removeClass('active-button');
+            nav.find('.view-mode-'+s).addClass('active-button');
+
+            $('#lga-facilities-table')
+                .removeClass('mode-facility')
+                .removeClass('mode-lga')
+                .addClass('mode-'+_viewMode);
+            log('mode-'+_viewMode, "FIND", $('#lga-facility-table').find('.mode-'+_viewMode))
+            log("changing view mode to ", _viewMode);
+        }
+        return change;
+    }
+})();
 
 $('body').bind('select-sector', function(evt, edata){
 	if(edata===undefined) {edata = {};}
@@ -390,7 +436,7 @@ $('body').bind('select-sector', function(evt, edata){
     
     if(edata.viewLevel!==undefined) {
         setViewMode(edata.viewLevel);
-        $('body').trigger('select-view-level', edata);
+//        $('body').trigger('select-view-level', edata);
     }
     if(edata.fullSectorId==="overview") {
         edata.fullSectorId = undefined;
@@ -419,26 +465,31 @@ $('body').bind('select-sector', function(evt, edata){
 	var ftabs = $(facilityTabsSelector);
 	if(sector !== undefined) {
 		if(selectedSector !== sector) {
-		    ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
-        	ftabs.removeClass(specialClasses.tableHideTd);
+//		    ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
+//        	ftabs.removeClass(specialClasses.tableHideTd);
     		//fullSectorId is needed to distinguish between 
     		// health:general  and  education:general (for example)
 
 		    $('body').trigger('unselect-facility');
 		    $('body').trigger('unselect-column');
+
 		    selectedSector = sector;
-            ftabs.find('.facility-list-wrap').hide()
+/*--            ftabs.find('.facility-list-wrap').hide()
                     .filter(function(){
                         if(this.id == "facilities-"+selectedSector) { return true; }
                     }).show();
-		    (typeof(filterPointsBySector)==='function') && filterPointsBySector(selectedSector);
+    		    (typeof(filterPointsBySector)==='function') && filterPointsBySector(selectedSector);
+
+                     */
 		}
 
 		var sectorObj = $(facilitySectors).filter(function(){return this.slug==sector}).get(0);
 		setSummaryHtml(sectorObj.name + " Facilities");
 		if(selectedSubSector!==fullSectorId) {
 			$('body').trigger('unselect-sector');
-			var tabWrap = $('#facilities-'+sector, ftabs);
+			var tabWrap = $('.facility-list-wrap.sector-'+sector, ftabs);
+//			log(tabWrap);
+//			tabWrap = $('#facilities-'+sector, ftabs);
 			tabWrap.find('.subgroup-'+subSector).addClass(specialClasses.showTd);
 			tabWrap.find('.row-num').addClass(specialClasses.showTd);
 			ftabs.addClass(specialClasses.tableHideTd);
@@ -448,10 +499,10 @@ $('body').bind('select-sector', function(evt, edata){
 		}
 		olStyling.setMode(facilityData, 'main');
 	} else {
-	    log('switch to overview');
-		$('body').trigger('unselect-sector');
-		setViewMode('lga');
-        $('body').trigger('select-view-level', {viewLevel: 'lga'});
+//	    log('switch to overview');
+//		$('body').trigger('unselect-sector');
+//		setViewMode('lga');
+//        $('body').trigger('select-view-level', {viewLevel: 'lga'});
 //		$('body').trigger('unselect-sector');
 	}
 });
@@ -462,6 +513,7 @@ $('body').bind('unselect-sector', function(evt, edata){
 });
 var DEFAULT_VIEW_LEVEL = "lga",
     currentViewLevel;
+/*
 $('body').bind('select-view-level', function(evt, edata){
     if(edata===undefined) { edata = {}; }
     if(edata.viewLevel===undefined) {edata.viewLevel = DEFAULT_VIEW_LEVEL;}
@@ -482,7 +534,7 @@ $('body').bind('select-view-level', function(evt, edata){
         currentViewLevel = viewLevel;
     }
 });
-
+*/
 function imageUrls(imageSizes, imgId) {
     return {
         small: ["/survey_photos", imageSizes.small, imgId].join("/"),
@@ -802,10 +854,10 @@ function buildFacilityTable(data, sectors, lgaData){
 	var facilityTableWrap = $('<div />', {'class':'lga-table-content'})
 	        .appendTo(outerWrap);
 	$('<div />', {'id':'facility-tabs'})
-	    .addClass('facility-mode')
+	    .addClass('mode-facility')
 	    .appendTo(facilityTableWrap);
 	$('<div />', {'id':'lga-view'})
-	    .addClass('lga-mode')
+	    .addClass('mode-lga')
 	    .html(_buildOverview())
 	    .appendTo(facilityTableWrap);
 	$('<p />', {id:'summary-p'})
@@ -816,6 +868,11 @@ function buildFacilityTable(data, sectors, lgaData){
 	$.each(facilitySectors, function(i, sector){
 		ftabs.append(createTableForSectorWithData(sector, facilityData));
 	});
+	$('<div />')
+	    .addClass('facility-list-wrap')
+	    .text('THIS IS THE OVERVIEW')
+	    .data('sectorSlug', 'overview')
+	    .appendTo(ftabs);
 	ftabs.height(220);
 	ftabs.find('.ui-tabs-panel').css({'overflow':'auto','height':'75%'});
 	facilityTableWrap.addClass('ready');
@@ -929,12 +986,12 @@ function createTableForSectorWithData(sector, data){
 	$.each(sectorData, function(i, fUid){
 		tbod.append(createRowForFacilityWithColumns(data.list[fUid], sector.columns, i+1))
 	});
-	function subSectorLink(ssName, ssslug) {
-	    var fullSectorSlug = sector.slug + (ssslug===defaultSubSector ? '' : subSectorDelimiter + ssslug)
-	    return $('<a />', {'href': '#', 'class': 'subsector-link-'+ssslug})
+	function subSectorLink(ssName, subSectorSlug) {
+	    var fullSectorSlug = sector.slug + (subSectorSlug===defaultSubSector ? '' : subSectorDelimiter + subSectorSlug)
+	    return $('<a />', {'href': '#', 'class': 'subsector-link-'+subSectorSlug})
 	                .text(ssName)
 	                .click(function(evt){
-	                    setSector(sector.slug, ssslug);
+	                    setSubSector(sector.slug, subSectorSlug);
 	                    $('body').trigger('select-sector', {fullSectorId: fullSectorSlug})
 	                    evt.preventDefault();
 	                });
@@ -955,9 +1012,10 @@ function createTableForSectorWithData(sector, data){
                     .append(tbod);
     
 	return $('<div />')
-	    .attr('id', 'facilities-'+sector.slug)
+//	    .attr('id', 'facilities-'+sector.slug)
 	    .addClass('facility-list-wrap')
-	    .data('sector-slug', sector.slug)
+	    .addClass('sector-'+sector.slug)
+	    .data('sectorSlug', sector.slug)
 	    .append(subSectors)
 	    .append(table);
 }

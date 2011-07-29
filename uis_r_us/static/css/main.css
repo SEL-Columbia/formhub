@@ -665,23 +665,34 @@ a.hover-unhide:hover {
 
 /*-
 -*/
-#lga-facilities-table .lga-mode {
+.facility-list-wrap.fl-hidden {
     display: none;
 }
-#lga-facilities-table.lga-mode.closed .lga-mode {
+#lga-facilities-table .mode-lga {
     display: none;
 }
-#lga-facilities-table.lga-mode .lga-mode {
+#lga-facilities-table.mode-lga.closed .mode-lga {
+    display: none;
+}
+#lga-facilities-table.mode-lga .mode-lga {
     display: block;
 }
-#lga-facilities-table .facility-mode {
+#lga-facilities-table .mode-facility {
     display: none;
 }
-#lga-facilities-table.facility-mode .facility-mode {
+body #lga-facilities-table .mode-showing {
+    display: block;
+}
+#lga-facilities-table.mode-facility .mode-facility {
     display: block;
 }
 
 /*-- nav buttons --*/
 .map-key-w a.active-button {
     background-color: #ccc;
+}
+
+.map-key-w span.sector-notes {
+    color: #fff;
+    font-size: 11px;
 }
