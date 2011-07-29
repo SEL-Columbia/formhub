@@ -300,7 +300,11 @@ class DataLoader(object):
 
     @print_time
     def calculate_lga_variables(self, lga_ids):
-         for lga in LGA.objects.filter(id__in=[int(x) for x in lga_ids]):
+        if lga_ids is "all":
+            lgas = LGA.objects.filter(data_available=True)
+        else:
+            lgas = LGA.objects.filter(id__in=[int(x) for x in lga_ids])
+        for lga in lgas:
             lga.add_calculated_values(lga.get_latest_data(), only_for_missing=True)
 
     def get_info(self):
