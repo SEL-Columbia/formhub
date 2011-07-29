@@ -100,12 +100,13 @@ def lga_view(context):
 
 from utils.csv_reader import CsvReader
 import os
+from django.conf import settings
 
 def variable_data(request):
     sectors = []
     for sector_table in FacilityTable.objects.all():
         sectors.append(sector_table.display_dict)
-    overview_csv = CsvReader(os.path.join("data","table_definitions", "overview.csv"))
+    overview_csv = CsvReader(os.path.join(settings.PROJECT_ROOT, "data","table_definitions", "overview.csv"))
     overview_data = []
     for z in overview_csv.iter_dicts():
         overview_data.append(z)
