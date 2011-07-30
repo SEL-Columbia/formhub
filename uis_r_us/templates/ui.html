@@ -407,23 +407,6 @@ $(function(){
 				})();
 			});
 		});
-
-		function showLgaAndSector(lgaId, fullSectorId) {
-			setMode('lga');
-			lga.loadData(lgaId, function(){
-				this.buildTable = true;
-				setTitle(createTitleForLga(this.stateName, this.lgaName));
-//				fullSectorId !== undefined && setSector(fullSectorId);
-				//asdf
-//				fullSectorId !== undefined && this.trigger('select-sector', {fullSectorId: fullSectorId, viewLevel: 'facility'});
-			});
-		}
-		this.get(pageRootUrl + ":lga/(.+)", function(){
-			var lgaId = this.params.lga;
-			this.params.splat.length !== 1 && warn("Sammy needs some help selecting a sector.");
-			var fullSectorId = this.params.splat[0];
-			showLgaAndSector(lgaId, fullSectorId);
-		})
 		this.get(pageRootUrl + ":lga", function(){
 			var lgaId = this.params.lga;
 			$('#zone-navigation').hide();
@@ -434,7 +417,6 @@ $(function(){
 				setSector('health');
 				setViewMode('facility');
 			});
-//			showLgaAndSector(lgaId);
 		});
 	});
 	
