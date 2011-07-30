@@ -4,6 +4,8 @@ from optparse import make_option
 from facilities.data_loader import DataLoader
 from django.conf import settings
 
+from nga_districts.models import LGA
+
 class Command(BaseCommand):
     help = "Load the LGA data from fixtures."
 
@@ -49,9 +51,8 @@ class Command(BaseCommand):
             else:
                 print "Starting subprocess to load lga data in."
                 if lga_ids == "all":
-                    ccargs = ['load_lgas', 'all']
-                else:
-                    ccargs = ['load_lgas'] + lga_ids
+                    lga_ids = [str(i['id']) for i in LGA.objects.filter(data_available=True).values('id')]
+                ccargs = ['load_lgas'] + lga_ids
                 #calling "load_lgas" with arguments.
                 call_command(*ccargs)
 
