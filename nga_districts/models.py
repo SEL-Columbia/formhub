@@ -69,6 +69,8 @@ class LGA(NamedModel, DictModel):
     data_available = models.BooleanField(default=False)
     #lga.data_loaded==True if data is available AND data has been loaded in
     data_loaded = models.BooleanField(default=False)
+    # this is only changed in the loading script.
+    data_load_in_progress = models.BooleanField(default=False)
 
     _data_record_class = LGARecord
     _data_record_fk = 'lga'

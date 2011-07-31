@@ -52,5 +52,5 @@ class Command(BaseCommand):
 
     def handle_in_subprocess(*args):
         load_lgas(_strings_in_list(args))
-        os.rename('nohup.out', 'load_script.logs')
+        os.rename('nohup.out', 'load_script.log')
         os.unlink('load_script.pid')

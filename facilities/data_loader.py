@@ -24,17 +24,23 @@ class DataLoader(object):
         self.reset_database()
         self.load_system()
 
-    def load(self, lga_ids="all"):
-        self.load_data(lga_ids)
-        self.load_calculations(lga_ids)
-        if lga_ids != "all":
-            for lga_id in lga_ids:
-                try:
-                    lga = LGA.objects.get(id=lga_id)
-                    lga.data_loaded = True
-                    lga.save()
-                except LGA.DoesNotExist, e:
-                    pass
+    def load(self, lga_ids=[]):
+        lgas = []
+        for lga_id in lga_ids:
+            try:
+                lgas.append(LGA.objects.get(id=lga_id))
+            except LGA.DoesNotExist:
+                continue
+        for lga in lgas:
+            lga.data_load_in_progress = True
+            lga.save()
+        valid_ids_as_strings = [str(l.id) for l in lgas]
+        self.load_data(valid_ids_as_strings)
+        self.load_calculations(valid_ids_as_strings)
+        for lga in lgas:
+            lga.data_load_in_progress = False
+            lga.data_loaded = True
+            lga.save()
 
     @print_time
     def reset_database(self):
