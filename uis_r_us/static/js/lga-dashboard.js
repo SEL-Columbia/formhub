@@ -207,6 +207,13 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 	    var lgaData = lgaQ[0];
 		var stateName = lgaData.stateName;
 		var lgaName = lgaData.lgaName;
+		if(!!lgaData.error) {
+		    return $('<p />')
+		        .attr('title', 'Error')
+		        .text(lgaData.error)
+		        .appendTo($('#map'))
+		        .dialog();
+		}
 		var facilityData = lgaData.facilities;
 		var varDataReq = varQ[0];
 		var facilityDataARr = [];

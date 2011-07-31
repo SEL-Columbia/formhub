@@ -35,9 +35,9 @@ class DataLoader(object):
             lga.data_load_in_progress = True
             lga.save()
         valid_ids_as_strings = [str(l.id) for l in lgas]
-        self.load_data(valid_ids_as_strings)
-        self.load_calculations(valid_ids_as_strings)
         for lga in lgas:
+            self.load_data([str(lga.id)])
+            self.load_calculations([str(lga.id)])
             lga.data_load_in_progress = False
             lga.data_loaded = True
             lga.save()
@@ -79,11 +79,11 @@ class DataLoader(object):
                 print "lga not found: %s" % str(lga_id)
         print "%d LGAs have data" % LGA.objects.filter(data_available=True).count()
 
-    def load_data(self, lga_ids="all"):
+    def load_data(self, lga_ids=[]):
         self.load_facilities(lga_ids)
         self.load_lga_data(lga_ids)
 
-    def load_calculations(self, lga_ids="all"):
+    def load_calculations(self, lga_ids=[]):
         self.calculate_lga_indicators(lga_ids)
         self.calculate_lga_gaps(lga_ids)
         self.calculate_lga_variables(lga_ids)
@@ -225,7 +225,7 @@ class DataLoader(object):
             if '_lga_id' not in d:
                 print "FACILITY MISSING LGA ID"
                 continue
-            if lga_ids != "all" and d['_lga_id'] not in lga_ids:
+            if d['_lga_id'] not in lga_ids:
                 continue
             d['_data_source'] = data_source
             d['_facility_type'] = sector.lower()
@@ -269,7 +269,7 @@ class DataLoader(object):
             if '_lga_id' not in d:
                 print "MISSING LGA ID:", d
                 continue
-            if lga_ids != "all" and d['_lga_id'] not in lga_ids:
+            if d['_lga_id'] not in lga_ids:
                 continue
             lga = LGA.objects.get(id=d['_lga_id'])
             if row_contains_variable_slug:
@@ -305,11 +305,8 @@ class DataLoader(object):
             i.set_lga_values(lga_ids)
 
     @print_time
-    def calculate_lga_variables(self, lga_ids="all"):
-        if lga_ids is "all":
-            lgas = LGA.objects.filter(data_available=True)
-        else:
-            lgas = LGA.objects.filter(id__in=[int(x) for x in lga_ids])
+    def calculate_lga_variables(self, lga_ids=[]):
+        lgas = LGA.objects.filter(id__in=[int(x) for x in lga_ids])
         for lga in lgas:
             lga.add_calculated_values(lga.get_latest_data(), only_for_missing=True)
 

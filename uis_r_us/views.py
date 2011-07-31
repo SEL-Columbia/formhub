@@ -16,10 +16,10 @@ def dashboard(request, reqpath):
         if LGA.objects.filter(unique_slug=lgaid).count() > 0:
             return HttpResponseRedirect("/~%s" % lgaid)
     context = RequestContext(request)
+    context.data_loading_count = LGA.objects.filter(data_load_in_progress=True).count()
     context.site_title = "NMIS Nigeria"
     lga = None
     context.active_districts = active_districts()
-    context.active_districts2 = active_districts2()
     context.nav_zones = get_nav_zones(filter_active=True)
     mls = []
     for map_layer in MapLayerDescription.objects.all():
@@ -116,22 +116,8 @@ def variable_data(request):
     }))
 
 def active_districts():
-    #delete this method when we're sure the other one works with the full LGA list...
-    lgas = LGA.objects.annotate(facility_count=Count('facilities')).filter(facility_count__gt=0)
-    lga_list = []
-    from collections import defaultdict
-    states = defaultdict(list)
-    for lga in lgas:
-        states[lga.state].append(lga)
-    for state, lgas in states.items():
-        for lga in lgas:
-            lga_list.append(
-                (lga.unique_slug, lga.state.name, lga.name)
-                )
-    return lga_list
-
-def active_districts2():
-    lgas = LGA.objects.annotate(facility_count=Count('facilities')).filter(facility_count__gt=0)
+    lgas = LGA.objects.filter(data_loaded=True)
+#    lgas = LGA.objects.annotate(facility_count=Count('facilities')).filter(facility_count__gt=0)
     from collections import defaultdict
     states = defaultdict(list)
     for lga in lgas:

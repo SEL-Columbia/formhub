@@ -24,15 +24,22 @@
 		<div class="fwidth">
 			<a href="/" id="hlogo"><img src="/static/images/nmis_pilot.png" /></a>
 			<h2 class="site-title">Nigeria MDG Information System</h2>
-			<h2 class="title">{{site_title}}</h2>
+			<h2 class="title">
+				{{site_title}}
+			</h2>
+			{% if data_loading_count %}
+			<p class="loading-info" data-lgas-loading-count="{{data_loading_count}}" title="LGAs in progress: {{data_loading_count}}">
+				<img src="/static/images/grey-loader.gif">
+			</p>
+			{% endif %}
 			<form action="/~/" method="POST">
 			<div class="lga-nav">
 					<select id="lga-select" name="lga" style="width:280px;" title="Select an LGA">
 						<!-- <option></option> -->
-						{% for statename, lgas in active_districts2 %}
+						{% for statename, lgas in active_districts %}
 						<optgroup label="{{statename}}">
 							{% for lganame, lgaid in lgas %}
-							<option value="{{lgaid}}">{{lganame}}</option>
+								<option value="{{lgaid}}">{{lganame}}</option>
 							{% endfor %}
 						</optgroup>
 						{% endfor %}

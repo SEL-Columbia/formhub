@@ -25,27 +25,32 @@ def facilities_for_site(request, site_id):
                 return t[val_k]
         return None
     lga = LGA.objects.get(unique_slug=site_id)
-    d = {}
-    drq = FacilityRecord.objects.order_by('-date')
-    for facility_dict in Facility.objects.filter(lga=lga).values('id'):
-        facility = facility_dict['id']
-        drs = drq.filter(facility=facility)
-        dvals = {}
-        for t in drs.values('variable_id', 'string_value', 'float_value', 'boolean_value', 'date'):
-            vid = t['variable_id']
-            if vid not in dvals or dvals[vid][0] < t['date']:
-                dvals[vid] = \
-                        (t['date'], non_null_value(t))
-        dvoput = {}
-        for variable in dvals.keys():
-            dvoput[variable] = dvals[variable][1]
-        d[facility] = dvoput
     oput = {
-        'facilities': d,
         'lgaName': lga.name,
         'stateName': lga.state.name,
-        'profileData': lga.get_latest_data(),
     }
+    if not lga.data_available:
+        oput['error'] = "I'm sorry, it appears data is not available for this LGA at this moment."
+    elif not lga.data_loaded:
+        oput['error'] = "Data for this LGA is temporarily unavailable. Please check back shortly."
+    else:
+        d = {}
+        drq = FacilityRecord.objects.order_by('-date')
+        for facility_dict in Facility.objects.filter(lga=lga).values('id'):
+            facility = facility_dict['id']
+            drs = drq.filter(facility=facility)
+            dvals = {}
+            for t in drs.values('variable_id', 'string_value', 'float_value', 'boolean_value', 'date'):
+                vid = t['variable_id']
+                if vid not in dvals or dvals[vid][0] < t['date']:
+                    dvals[vid] = \
+                            (t['date'], non_null_value(t))
+            dvoput = {}
+            for variable in dvals.keys():
+                dvoput[variable] = dvals[variable][1]
+            d[facility] = dvoput
+        oput['facilities'] = d
+        oput['profileData'] = lga.get_latest_data()
     return HttpResponse(json.dumps(oput))
 
 def facility(request, facility_id):
