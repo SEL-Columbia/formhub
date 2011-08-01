@@ -749,22 +749,10 @@ function buildFacilityTable(data, sectors, lgaData){
             $.each(overviewVariables, function(i, variable){
                 if(variable.sector!==undefined) {
                     if(varsBySector[variable.sector]==undefined) {varsBySector[variable.sector] = [];}
-
-                    if(variable.value_record_slug !== undefined) {
-                        variable.value_record_slug = "chairman_name";
-                        variable.value_value = displayValue(lgaData.profileData[variable.value_record_slug]);
-                    } else {
-                        variable.value_value = displayValue(undefined);
+                    variable.value = displayValue(lgaData.profileData[variable.slug]);
+                    if(!!variable.in_overview) {
+                        varsBySector[variable.sector].push(variable);
                     }
-
-                    if(variable.percent_record_slug !== undefined) {
-                        variable.percent_record_slug = "secretary_name";
-                        variable.percent_value = displayValue(lgaData.profileData[variable.value_record_slug]);
-                    } else {
-                        variable.percent_value = displayValue(undefined);
-                    }
-
-                    varsBySector[variable.sector].push(variable);
                 }
             });
             $.each(varsBySector, function(sectorSlug, variables){
