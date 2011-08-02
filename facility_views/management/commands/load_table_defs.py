@@ -15,6 +15,10 @@ class Command(BaseCommand):
     help = "Load the table defs from the csvs."
 
     def handle(self, *args, **kwargs):
+        if len(args) > 0:
+            self._data_dir = args[0]
+        else:
+            self._data_dir = "data"
         table_types = [
             ("Health", "health"),
             ("Education", "education"),
@@ -26,7 +30,7 @@ class Command(BaseCommand):
         self.load_layer_descriptions()
 
     def load_layer_descriptions(self):
-        layer_descriptions = list(CsvReader(os.path.join("data","map_layers", "layer_details.csv")).iter_dicts())
+        layer_descriptions = list(CsvReader(os.path.join(self._data_dir,"map_layers", "layer_details.csv")).iter_dicts())
         for layer in layer_descriptions:
             MapLayerDescription.objects.get_or_create(**layer)
 
@@ -37,14 +41,14 @@ class Command(BaseCommand):
 
     def load_subgroups(self):
         self.subgroups = {}
-        sgs = list(CsvReader(os.path.join("data","table_definitions", "subgroups.csv")).iter_dicts())
+        sgs = list(CsvReader(os.path.join(self._data_dir,"table_definitions", "subgroups.csv")).iter_dicts())
         for sg in sgs:
             self.subgroups[sg['slug']] = sg['name']
 
     def load_table_types(self, table_types):
         for name, slug in table_types:
             curtable = FacilityTable.objects.create(name=name, slug=slug)
-            csv_reader = CsvReader(os.path.join("data","table_definitions", "%s.csv" % slug))
+            csv_reader = CsvReader(os.path.join(self._data_dir,"table_definitions", "%s.csv" % slug))
             display_order = 0
             for input_d in csv_reader.iter_dicts():
                 subs = []
