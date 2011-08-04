@@ -292,7 +292,7 @@ class DataLoader(object):
         """
         Table defs contain details to help display the data. (table columns, etc)
         """
-        call_command('load_table_defs')
+        call_command('load_table_defs', self._data_dir)
 
     @print_time
     def load_surveys(self):

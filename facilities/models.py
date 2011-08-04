@@ -102,6 +102,7 @@ class LGAIndicator(Variable):
             x_i = d['float_value']
             avg_i = result[d['facility__lga']]['avg']
             sum_i = result[d['facility__lga']]['sum']
+            if x_i is None: continue
             result[d['facility__lga']]['avg'] = (x_i + i * avg_i) / (i + 1.0)
             result[d['facility__lga']]['sum'] = sum_i + x_i
             result[d['facility__lga']]['count'] += 1.0
