@@ -209,15 +209,15 @@ div#toggle-updown-bar {
     background-color: #ccc;
     cursor: pointer;
 }
-#lga-facilities-table.closed #facility-tabs {
+#lga-widget-wrap.closed .lga-widget-content {
     display: none;
 }
-#lga-facilities-table .summary-p {
+#lga-widget-wrap .summary-p {
     display: none;
     margin: 3px 9px;
     color: #222;
 }
-#lga-facilities-table.closed .summary-p {
+#lga-widget-wrap.closed .summary-p {
     display: block;
 }
 div#toggle-updown-bar span.icon {
@@ -231,7 +231,7 @@ div#toggle-updown-bar span.icon {
 div#toggle-updown-bar span.icon:before {
     content: '▾';
 }
-div#lga-facilities-table.closed div#toggle-updown-bar span.icon:before {
+div#lga-widget-wrap.closed div#toggle-updown-bar span.icon:before {
     content: '▴';
 }
 
@@ -384,14 +384,14 @@ html .rd-wrap {
 .sn ul ul {
 	padding-left: 10px;
 }
-.lga-table-content {
+.lga-widget-content {
     max-height: 300px;
     overflow: auto;
 }
-#facility-tabs.hide-tds td, #facility-tabs.hide-tds th {
+.lga-widget-content.hide-tds td, .lga-widget-content.hide-tds th {
 	display: none;
 }
-#facility-tabs.hide-tds .show-me {
+.lga-widget-content.hide-tds .show-me {
 	display: table-cell;
 }
 
@@ -481,18 +481,18 @@ div.toggleable.hidden {
 #header .toggle-button.toggled {
 	opacity: 1;
 }
-#lga-facilities-table.hidden {
+#lga-widget-wrap.hidden {
 	display: none;
 }
-#lga-facilities-table th {
+#lga-widget-wrap th {
 	background-color: #d4ebfa;
 }
-#lga-facilities-table th.clickable {
+#lga-widget-wrap th.clickable {
 	background-color: #bde0f8;
 	border: 2px solid;
 	border-color: #d9edfb #9bb8cb #95b1c3 #cee8fa;
 }
-#lga-facilities-table th.selected-column {
+#lga-widget-wrap th.selected-column {
 	background-color: #afd1e9;
 	border-color: #a5c4d9 #c4e2f7 #c4e2f7 #90aabd;
 }
@@ -665,19 +665,29 @@ a.hover-unhide:hover {
 
 /*-
 -*/
-#lga-facilities-table .lga-mode {
+body #lga-widget-wrap .modeswitch.fl-hidden-view-mode,
+ body #lga-widget-wrap .modeswitch.fl-hidden-sector {
     display: none;
 }
-#lga-facilities-table.lga-mode.closed .lga-mode {
-    display: none;
-}
-#lga-facilities-table.lga-mode .lga-mode {
+body #lga-widget-wrap .modeswitch {
     display: block;
 }
-#lga-facilities-table .facility-mode {
+#lga-widget-wrap .mode-lga {
     display: none;
 }
-#lga-facilities-table.facility-mode .facility-mode {
+#lga-widget-wrap.mode-lga.closed .mode-lga {
+    display: none;
+}
+#lga-widget-wrap.mode-lga .mode-lga {
+    display: block;
+}
+#lga-widget-wrap .mode-facility {
+    display: none;
+}
+body #lga-widget-wrap .mode-showing {
+    display: block;
+}
+#lga-widget-wrap.mode-facility .mode-facility {
     display: block;
 }
 
@@ -695,6 +705,7 @@ a.hover-unhide:hover {
     top: 5px;
     right: -20px;
 }
+
 .loading-info img {
     position: absolute;
     top: 0;
@@ -702,6 +713,12 @@ a.hover-unhide:hover {
     width: 16px;
     height: 16px;
 }
+
 table.facility-list td.col-school_name, table.facility-list td.col-facility_name, table.facility-list td.col-water_source_type {
     text-align: left;
+}
+
+.map-key-w span.sector-notes {
+    color: #fff;
+    font-size: 11px;
 }

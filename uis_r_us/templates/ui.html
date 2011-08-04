@@ -21,7 +21,7 @@
 <div class='content-inner-wrap'>
 	<div class="widget-outer-wrap" style="bottom:0">
 		<div class="fullw-widget">
-			<div id="lga-facilities-table"></div>
+			<div id="lga-widget-wrap"></div>
 		</div>
 	</div>
 	<div id="map" class="resizing-map"></div>
@@ -68,7 +68,7 @@ var debugMode = false;
 
 var pageRootUrl = "/~";
 
-var defaultSectorSlug = 'health';
+var defaultSectorSlug = 'overview';
 
 var loadMap = true;
 //var loadMap = $("input#load-map").attr('checked');
@@ -96,7 +96,6 @@ var mapBar = (function(){
 			['Overview', 'overview']
 		],
 		'sectorButtons': [
-//			['Summary', 'summary'],
 			['Health', 'health'],
 			['Water', 'water'],
 			['Education', 'education']
@@ -156,9 +155,7 @@ var mapBar = (function(){
 				.data('viewLevel', button[1])
 				.click(function(){
 					setViewMode($(this).data('viewLevel'));
-					$('body').trigger('select-view-level', {
-						viewLevel: $(this).data('viewLevel')
-					});
+//					$('body').trigger('select-view-level', {viewLevel: $(this).data('viewLevel')});
 				});
 		});
 
@@ -323,10 +320,8 @@ $(function(){
 				layerSwitcher: false,
 				elem: '.home-map'
 			})(function(){
-//				mapNavWrap.empty();
 				var mn = $('<div />')
 							.addClass('mn-iwrap');
-//							.css({'border':'1px solid black', 'padding':'3px 8px'});
 				var mnw = $('<div />')
 							.addClass('mn-iiwrap')
 							.append(mn)
@@ -412,71 +407,23 @@ $(function(){
 				})();
 			});
 		});
-		
-		function addToggleLinks(){
-			var profileDataLink = $('<a />', {'href':'#'})
-					.addClass('toggle-button')
-					.text('[LGA]')
-					.click(function(e){
-						$('.profile-data').toggleClass('hidden')
-						profileDataLink.toggleClass('hidden');
-						return false;
-					});
-			var facilityTableLink = $('<a />', {'href':'#'})
-					.addClass('toggle-button')
-					.text('[FACILITIES]')
-					.click(function(e){
-						$('#lga-facilities-table').toggleClass('hidden');
-						facilityTableLink.toggleClass('hidden');
-						return false;
-					});
-			var gapAnalysisLink = $('<a />', {href: '#'})
-					.addClass('toggle-button')
-					.text('[GAP ANALYSIS]')
-					.click(function(e){
-						$('.gap-analysis-table-wrap')
-							.addClass('toggleable')
-							.toggleClass('hidden');
-						gapAnalysisLink.toggleClass('hidden');
-						return false;
-					});
-			$('#header .title')
-					.append(profileDataLink)
-					.append(gapAnalysisLink)
-					.append(facilityTableLink);
-		}
-		function showLgaAndSector(lgaId, fullSectorId) {
+		this.get(pageRootUrl + ":lga", function(){
+			var lgaId = this.params.lga;
+			$('#zone-navigation').hide();
 			setMode('lga');
 			lga.loadData(lgaId, function(){
 				this.buildTable = true;
 				setTitle(createTitleForLga(this.stateName, this.lgaName));
-				fullSectorId !== undefined && setSector(fullSectorId);
-				fullSectorId !== undefined && this.trigger('select-sector', {fullSectorId: fullSectorId, viewLevel: 'facility'});
-				//addToggleLinks();
+				setSector('health');
+				setViewMode('facility');
 			});
-		}
-		this.get(pageRootUrl + ":lga/(.+)", function(){
-			var lgaId = this.params.lga;
-			this.params.splat.length !== 1 && warn("Sammy needs some help selecting a sector.");
-			var fullSectorId = this.params.splat[0];
-			showLgaAndSector(lgaId, fullSectorId);
-		})
-		this.get(pageRootUrl + ":lga", function(){
-			var lgaId = this.params.lga;
-			$('#zone-navigation').hide();
-			showLgaAndSector(lgaId);
-/*			lga.loadData(lgaId,
-							function(){
-								this.buildTable = true;
-								var t = createTitleForLga(this.stateName, this.lgaName);
-								setTitle(t);
-								addToggleLinks();
-							}); */
 		});
 	});
 	
 	window._dashboard = dashboard;
-	dashboard.run();
+	$(function(){
+		dashboard.run();
+	});
 });
 
 -->
