@@ -194,6 +194,7 @@ if TESTING_MODE:
 else:
     MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'static/')
 
+MAIN_SITE_HOSTNAME = "nmis.mdgs.gov.ng"
 
 try:
     from local_settings import *

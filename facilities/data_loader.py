@@ -108,6 +108,13 @@ class DataLoader(object):
         mdg_user.set_password("2015")
         mdg_user.save()
 
+        from django.contrib.sites.models import Site
+        if Site.objects.count() == 1:
+            site = Site.objects.all()[0]
+            site.domain = settings.MAIN_SITE_HOSTNAME
+            site.name = settings.MAIN_SITE_HOSTNAME
+            site.save()
+
     @print_time
     def create_sectors(self):
         sectors = ['Education', 'Health', 'Water']
