@@ -251,28 +251,6 @@ html .rd-wrap {
     border-bottom: 1px solid #aaa;
     color: #222
 }
-.facility-popup .title-bar h1 {
-    margin: 0;
-    font-size: 14px;
-}
-.facility-popup .title-bar a.close {
-    position: absolute;
-    top: 2px;
-    right: 3px;
-    width: 14px;
-    height: 14px;
-    background-color: #c6c6c6;
-    border: 1px solid #b0b0b0;
-    color: #fff;
-    font-size: 12px;
-    font-weight: bold;
-    -moz-border-radius: 7px;
-    -webkit-border-radius: 7px;
-    border-radius: 7px;
-    text-align: center;
-    text-decoration: none;
-    line-height: 13px;
-}
 .facility-popup .left-col {
     width: 160px;
     float: left;

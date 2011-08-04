@@ -68,35 +68,6 @@ var createOurGraph = (function(pieWrap, legend, data, _opts){
 });
 // END raphael graph wrapper
 
-// BEGIN temporary side-div jquery wrapper
-//   -- trying to keep the right-div popup logic separate form the rest
-//    of the application logic.
-(function($){
-	var overMapContent;
-	var rightDiv, rdNav;
-	var mapContent;
-	$.fn._showSideDiv = function(opts){
-	    if(opts===undefined) { opts={}; }
-		if(mapContent===undefined) { mapContent = $('.content-inner-wrap'); }
-		if(rightDiv===undefined) {
-			rightDiv = $("<div />", {'class':'rd-wrap'}).appendTo(mapContent);
-            rightDiv.delegate('a.close', 'click', function(){
-                rightDiv.trigger('click-close');
-                return false;
-            });
-			}
-		rightDiv.unbind('click-close');
-		rightDiv.bind('click-close', function(){
-		    rightDiv.hide();
-		    opts.close !== undefined && opts.close.apply(this, arguments);
-		});
-		rightDiv
-		    .html(this.eq(0))
-		    .show();
-	}
-})(jQuery);
-// END temporary side-div jquery wrapper
-
 // BEGIN custom openlayers icon functionality
 var olStyling = (function(){
     var iconMakers;
@@ -495,17 +466,17 @@ function imageUrls(imageSizes, imgId) {
         		});
         		pdiv.find('select').trigger('change');
                 popup.append(pdiv);
-            });
-            var pdWidth = 600;
-            var pdRight = ($(window).width() - pdWidth) / 2;
-            
-            popup.dialog({
-                width: pdWidth,
-                resizable: false,
-                position: [pdRight, 106],
-                close: function(){
-                    setFacility();
-                }
+                popup.attr('title', name);
+                var pdWidth = 600;
+                var pdRight = ($(window).width() - pdWidth) / 2;
+                popup.dialog({
+                    width: pdWidth,
+                    resizable: false,
+                    position: [pdRight, 106],
+                    close: function(){
+                        setFacility();
+                    }
+                });
             });
         	/*-
         	TODO: reimplement "scrollTo"
