@@ -140,7 +140,7 @@ var mapBar = (function(){
 			var sData = {viewLevel: 'facility'};
 			if(!!ss) {
 				sData.fullSectorId = ss;
-				setSector(ss);
+				setSubSector(ss, 'general');
 			}
 			$('body').trigger('select-sector', sData);
 		});
@@ -414,7 +414,7 @@ $(function(){
 			lga.loadData(lgaId, function(){
 				this.buildTable = true;
 				setTitle(createTitleForLga(this.stateName, this.lgaName));
-				setSector('health');
+				setSubSector('health', 'general');
 				setViewMode('facility');
 			});
 		});

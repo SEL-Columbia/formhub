@@ -242,15 +242,11 @@ html .rd-wrap {
 }
 .facility-popup {
     width: 535px;
-    position: absolute;
-    left: 50%;
-    top: 50px;
-    margin-left: -250px;
+    margin: 0;
     background-color: #fff;
-    padding-bottom: 8px;
+    padding: 12px 0;
 }
 .facility-popup .title-bar {
-    padding: 3px 12px;
     background-color: #eee;
     border-bottom: 1px solid #aaa;
     color: #222
@@ -282,6 +278,9 @@ html .rd-wrap {
     float: left;
     border-right: 1px solid #777;
     padding: 8px 12px;
+    margin-left: -15px;
+    margin-top: -12px;
+    padding-right: 16px;
 }
 .facility-popup .right-col {
     width: 300px;
@@ -394,7 +393,9 @@ html .rd-wrap {
 .lga-widget-content.hide-tds .show-me {
 	display: table-cell;
 }
-
+.lga-widget-content td.row-num {
+    width: 20px;
+}
 /*--
 Right display div for facility popup
 --*/

@@ -130,10 +130,6 @@ var olStyling = (function(){
                         fac.mrkr = new OpenLayers.Marker(fac.openLayersLatLng, icon);
                         fac.mrkr.events.register('click', fac.mrkr, function(){
                             setFacility(fac.uid);
-                            $('body').trigger('select-facility', {
-                                'uid': fac.uid,
-                                'scrollToRow': true
-                            })
                         });
                         markerLayer.addMarker(fac.mrkr);
                     } else {
@@ -343,7 +339,6 @@ function buildGapAnalysisTable(lgaData){
 }
 // END lga-wide profile boxes
 
-
 // BEGIN page mode setters.
 //  --ie. a bunch of methods to set various page states.
 //    eg. setSector setViewMode setFacility setColumn
@@ -400,7 +395,7 @@ function getColDataDiv() {
         return change;
     }
 
-    function subSectorExists(){return true;}
+    function subSectorExists(){return true;/*-- TODO: fix this --*/}
     var _fullSectorId, _prevFullSectorId;
 
     window.setSubSector = function(s, ss){
@@ -409,8 +404,13 @@ function getColDataDiv() {
             change = false;
         if(subSectorExists(fsid)) { if(_fullSectorId !== fsid) { _prevFullSectorId = _fullSectorId; _fullSectorId = fsid; change = true; }}
         if(change) {
-            var nav = getNav();
-            nav.find('.sector-notes').text('subsector: '+ss);
+            var ftabs = $(facilityTabsSelector);
+            ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd)
+            ftabs.find('.row-num, .subgroup-'+ss)
+                .addClass(specialClasses.showTd);
+            ftabs.addClass(specialClasses.tableHideTd);
+//            var nav = getNav();
+//            nav.find('.sector-notes').text('subsector: '+ss);
         }
         return change;
     }
@@ -496,12 +496,17 @@ function imageUrls(imageSizes, imgId) {
         		pdiv.find('select').trigger('change');
                 popup.append(pdiv);
             });
-        	popup._showSideDiv({
-        	    title: name,
-        		close: function(){
-        		    setFacility();
-        		}
-        	});
+            var pdWidth = 600;
+            var pdRight = ($(window).width() - pdWidth) / 2;
+            
+            popup.dialog({
+                width: pdWidth,
+                resizable: false,
+                position: [pdRight, 106],
+                close: function(){
+                    setFacility();
+                }
+            });
         	/*-
         	TODO: reimplement "scrollTo"
         	edata.scrollToRow && false && (function scrollToTheFacilitysTr(){
@@ -648,7 +653,6 @@ function getTabulations(sector, col, keysArray) {
     		}
     		_selectedColumn = column;
         }
-        log('select column!!');
     }
 })();
 // END page mode binders
@@ -859,7 +863,7 @@ function createTableForSectorWithData(sector, data){
 		            'text': col.name
 		        })
 		        .click(function(){
-		            setSector(sector.slug);
+//		            setSector(sector.slug);
 // TODO: implement select column
 		            setColumn(sector, col);
 		        })
@@ -878,7 +882,7 @@ function createTableForSectorWithData(sector, data){
 	                .text(ssName)
 	                .click(function(evt){
 	                    setSubSector(sector.slug, subSectorSlug);
-	                    $('body').trigger('select-sector', {fullSectorId: fullSectorSlug})
+//	                    $('body').trigger('select-sector', {fullSectorId: fullSectorSlug})
 	                    evt.preventDefault();
 	                });
 	}
