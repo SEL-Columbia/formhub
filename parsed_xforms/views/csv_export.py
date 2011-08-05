@@ -170,7 +170,7 @@ def send_file(path, content_type):
     return response
 
 
-from deny_if_unauthorized import deny_if_unauthorized
+from user_management.deny_if_unauthorized import deny_if_unauthorized
 
 
 @deny_if_unauthorized()

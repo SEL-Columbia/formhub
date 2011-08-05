@@ -2,7 +2,7 @@ from parsed_xforms.models import ParsedInstance, DataDictionary
 from xform_manager.models import Instance
 from django.http import HttpResponse
 from utils import json_response
-from deny_if_unauthorized import deny_if_unauthorized
+from user_management.deny_if_unauthorized import deny_if_unauthorized
 
 @deny_if_unauthorized()
 def survey_responses(request, pk):

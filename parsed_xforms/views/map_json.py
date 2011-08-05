@@ -1,7 +1,7 @@
 from common_tags import LGA_ID, START_TIME, SURVEYOR_NAME, \
     INSTANCE_DOC_NAME, ATTACHMENTS, GPS, SURVEY_TYPE
 from utils import json_response
-from deny_if_unauthorized import deny_if_unauthorized
+from user_management.deny_if_unauthorized import deny_if_unauthorized
 
 
 @deny_if_unauthorized()

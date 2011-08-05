@@ -11,7 +11,7 @@ from parsed_xforms.models import ParsedInstance
 from common_tags import *
 from xform_manager.models import XForm, Instance
 from nga_districts.models import LGA
-from deny_if_unauthorized import deny_if_unauthorized
+from user_management.deny_if_unauthorized import deny_if_unauthorized
 
 #from parsed_xforms.view_pkgr import ViewPkgr
 

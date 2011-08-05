@@ -1,7 +1,8 @@
 # Adapted from here: http://djangosnippets.org/snippets/1219/
 
 import re
-from django.contrib.auth.decorators import permission_required
+#from django.contrib.auth.decorators import permission_required
+from user_management.deny_if_unauthorized import deny_if_unauthorized
 from django.conf import settings
 
 
@@ -44,7 +45,7 @@ class RequirePermissionMiddleware(object):
         for rule in self.restricted:
             url, required_permission = rule[0], rule[1]
             if url.match(request.path):
-                return permission_required(required_permission)(view_func)(
+                return deny_if_unauthorized(required_permission)(view_func)(
                     request, *view_args, **view_kwargs
                     )
 

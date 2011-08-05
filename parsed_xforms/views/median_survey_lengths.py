@@ -2,7 +2,7 @@ from collections import defaultdict
 from parsed_xforms.models import ParsedInstance
 from utils import json_response
 from django.shortcuts import render_to_response
-from deny_if_unauthorized import deny_if_unauthorized
+from user_management.deny_if_unauthorized import deny_if_unauthorized
 
 @deny_if_unauthorized
 def median_survey_lengths(request):

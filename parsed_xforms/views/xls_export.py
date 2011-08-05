@@ -166,7 +166,7 @@ class DictOrganizer(object):
 
 
 from django.http import HttpResponse
-from deny_if_unauthorized import deny_if_unauthorized
+from user_management.deny_if_unauthorized import deny_if_unauthorized
 
 @deny_if_unauthorized()
 def xls_export(request, id_string):

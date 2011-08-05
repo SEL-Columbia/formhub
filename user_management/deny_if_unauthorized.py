@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response
 
 def access_denied(request):
     context = RequestContext(request)
+    context.user_manager_email = "alex.dorey.ei@gmail.com"
     return render_to_response(
         "access_denied.html",
         context_instance=context
