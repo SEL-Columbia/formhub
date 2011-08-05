@@ -19,6 +19,12 @@ class DataLoader(object):
     def __init__(self, **kwargs):
         self._debug = kwargs.get('debug', False)
         self._data_dir = kwargs.get('data_dir', 'data')
+        self._load_config_file()
+
+    def _load_config_file(self):
+        path = os.path.join(self._data_dir, 'data_configurations.json')
+        with open(path) as f:
+            self._config = json.load(f)
 
     def setup(self):
         self.reset_database()
@@ -211,23 +217,8 @@ class DataLoader(object):
 
     @print_time
     def load_facilities(self, lga_ids):
-        sectors = [
-            {
-                'sector': 'Education',
-                'data_source': 'Educ_Baseline_PhaseII_all_merged_cleaned_07_25_2011.csv',
-                },
-            {
-                'sector': 'Health',
-                'data_source': 'Health_PhII_RoundI&II&III_Clean.csv',
-                },
-            {
-                'sector': 'Water',
-                'data_source': 'Water_PhaseII_RoundI&II&III_Clean.csv',
-                },
-
-            ]
-        for sector in sectors:
-            self.create_facilities_from_csv(lga_ids, **sector)
+        for facility_csv in self._config['facility_csvs']:
+            self.create_facilities_from_csv(lga_ids, **facility_csvs)
 
     @print_time
     def create_facilities_from_csv(self, lga_ids, sector, data_source):
@@ -248,29 +239,7 @@ class DataLoader(object):
 
     @print_time
     def load_lga_data(self, lga_ids):
-        data_kwargs = [
-            {
-                'data': 'population',
-                },
-            {
-                'data': 'area',
-                },
-            {
-                'data': 'health',
-                'row_contains_variable_slug': True,
-                },
-            {
-                'data': 'education',
-                'row_contains_variable_slug': True,
-                },
-            {
-                'data': 'infrastructure',
-                'row_contains_variable_slug': True,
-                },
-            {
-                'data': 'LGA_Mang_Baseline_PhaseII_all_merged_cleaned_07_25_2011',
-                },
-            ]
+        data_kwargs = self._config['lga']
         for kwargs in data_kwargs:
             filename = kwargs.pop('data') + '.csv'
             kwargs['path'] = os.path.join(self._data_dir, 'lga', filename)
