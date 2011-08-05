@@ -3,7 +3,7 @@ from django.test import TestCase
 from uis_r_us.views import get_nav_zones, get_nav_zones_inefficient
 
 class TestLgaList(TestCase):
-    fixtures = ['lga.json', 'state.json', 'zone.json']
+    fixtures = ['districts.json']
 
     def test_nav_zones(self):
         nav_zones = get_nav_zones()

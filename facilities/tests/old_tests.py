@@ -213,7 +213,7 @@ class PassDataToPage(TestCase):
         self.zone = Zone.objects.create(name='Zone', slug='zone')
         self.state = State.objects.create(name='Zone', slug='zone', zone=self.zone)
         lga_names = ['LGA_1', 'LGA_2']
-        self.lgas = [LGA.objects.create(name=n, slug=n, state=self.state, unique_slug='state_%s' % n) for n in lga_names]
+        self.lgas = [LGA.objects.create(name=n, slug=n, state=self.state, unique_slug='state_%s' % n, data_available=True, data_load_in_progress=False, data_loaded=True) for n in lga_names]
         self.sector = Sector.objects.create(name='Test', slug='test')
         self.facilities = []
         ftype_root = FacilityType.add_root(slug='facility_type', name='Facility Type')
