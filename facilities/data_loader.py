@@ -51,6 +51,7 @@ class DataLoader(object):
         self.create_users()
         self.create_sectors()
         self.create_facility_types()
+        self.load_lga_districts()
         self.load_key_renames()
         self.load_variables()
         self.load_table_defs()
@@ -141,6 +142,12 @@ class DataLoader(object):
             'path': os.path.join(self._data_dir, 'variables', 'key_renames.csv')
             }
         self.create_objects_from_csv(**kwargs)
+
+    @print_time
+    def load_lga_districts(self):
+        if os.path.exists(os.path.join(self._data_dir, 'districts', 'districts.json')):
+            nga_districts_json = os.path.join(self._data_dir, 'districts', 'districts.json')
+            call_command("loaddata", nga_districts_json)
 
     @print_time
     def create_objects_from_csv(self, model, path):
