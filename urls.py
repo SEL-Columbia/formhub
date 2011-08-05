@@ -26,6 +26,9 @@ urlpatterns = patterns('',
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
+#   This will download a google doc, as specified in uis_r_us.views
+#    url(r'google_help_doc/', ui.google_help_doc),
+
     # Uncomment the next line to enable the admin:
     url(r'^description/', main_views.site_description),
     url(r'^admin/', include(admin.site.urls)),

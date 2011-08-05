@@ -146,3 +146,20 @@ def mustache_template(request, template_name):
 
 def modes(request, mode_data):
     return render_to_response("modes.html")
+
+def google_help_doc(request):
+    google_doc_zip_url = "https://docs.google.com/document/d/1Dze4IZGr0IoIFuFAI_ohKR5mYUt4IAn5Y-uCJmnv1FQ/export?format=zip&id=1Dze4IZGr0IoIFuFAI_ohKR5mYUt4IAn5Y-uCJmnv1FQ&token=AC4w5VhqxjgX9xFvekZGlLQILEIfrl1wSg%3A1312574701000&tfe=yh_186"
+    cached_doc_path = os.path.join("docs", "cached_doc.html")
+    if not os.path.exists(cached_doc_path):
+        import urllib, zipfile
+        f = urllib.urlopen(google_doc_zip_url)
+        zf_path = "%s.zip" % cached_doc_path
+        with open(zf_path, 'w') as foutput:
+            foutput.write(f.read())
+        z = zipfile.ZipFile(zf_path)
+        for name in z.namelist():
+            with open(cached_doc_path, 'w') as html_file:
+                html_file.write(z.read(name))
+    with open(cached_doc_path) as f:
+        return HttpResponse(f.read())
+
