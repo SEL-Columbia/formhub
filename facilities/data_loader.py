@@ -217,7 +217,7 @@ class DataLoader(object):
     @print_time
     def load_facilities(self, lga_ids):
         for facility_csv in self._config['facility_csvs']:
-            self.create_facilities_from_csv(lga_ids, **facility_csvs)
+            self.create_facilities_from_csv(lga_ids, **facility_csv)
 
     @print_time
     def create_facilities_from_csv(self, lga_ids, sector, data_source):
