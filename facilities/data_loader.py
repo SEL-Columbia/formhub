@@ -66,10 +66,9 @@ class DataLoader(object):
     @print_time
     def mark_available_lgas(self):
         lga_ids = []
+        facility_csv_files = [ff['data_source'] for ff in self._config['facility_csvs']]
         #this process takes about 6 seconds...
-        for csv_file in ['Health_PhII_RoundI&II&III_Clean.csv',
-                         'Educ_Baseline_PhaseII_all_merged_cleaned_07_25_2011.csv',
-                         'Water_PhaseII_RoundI&II&III_Clean.csv']:
+        for csv_file in facility_csv_files:
             data_dir = os.path.join(self._data_dir, 'facility')
             path = os.path.join(data_dir, csv_file)
             csv_reader = CsvReader(path)
