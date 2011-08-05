@@ -69,7 +69,7 @@ class DataLoader(object):
         facility_csv_files = [ff['data_source'] for ff in self._config['facility_csvs']]
         #this process takes about 6 seconds...
         for csv_file in facility_csv_files:
-            data_dir = os.path.join(self._data_dir, 'facility')
+            data_dir = os.path.join(self._data_dir, 'facility_csvs')
             path = os.path.join(data_dir, csv_file)
             csv_reader = CsvReader(path)
             for d in csv_reader.iter_dicts():
@@ -150,9 +150,9 @@ class DataLoader(object):
 
     @print_time
     def load_lga_districts(self):
-        if os.path.exists(os.path.join(self._data_dir, 'districts', 'districts.json')):
-            nga_districts_json = os.path.join(self._data_dir, 'districts', 'districts.json')
-            call_command("loaddata", nga_districts_json)
+        districts_json_path = os.path.join(self._data_dir, 'districts', 'districts.json')
+        if os.path.exists(districts_json_path):
+            call_command("loaddata", districts_json_path)
 
     @print_time
     def create_objects_from_csv(self, model, path):
@@ -221,7 +221,7 @@ class DataLoader(object):
 
     @print_time
     def create_facilities_from_csv(self, lga_ids, sector, data_source):
-        data_dir = os.path.join(self._data_dir, 'facility')
+        data_dir = os.path.join(self._data_dir, 'facility_csvs')
         path = os.path.join(data_dir, data_source)
         csv_reader = CsvReader(path)
 
@@ -240,8 +240,8 @@ class DataLoader(object):
     def load_lga_data(self, lga_ids):
         data_kwargs = self._config['lga']
         for kwargs in data_kwargs:
-            filename = kwargs.pop('data') + '.csv'
-            kwargs['path'] = os.path.join(self._data_dir, 'lga', filename)
+            data_source = kwargs.pop('data_source')
+            kwargs['path'] = os.path.join(self._data_dir, 'lga', data_source)
             self.load_lga_data_from_csv(lga_ids, **kwargs)
 
     @print_time
