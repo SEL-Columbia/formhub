@@ -279,7 +279,49 @@ class DataLoader(object):
         """
         Table defs contain details to help display the data. (table columns, etc)
         """
-        call_command('load_table_defs', self._data_dir)
+        from facility_views.models import FacilityTable, TableColumn, ColumnCategory, MapLayerDescription
+        def delete_existing_table_defs():
+            FacilityTable.objects.all().delete()
+            TableColumn.objects.all().delete()
+            ColumnCategory.objects.all().delete()
+        delete_existing_table_defs()
+        subgroups = {}
+        def load_subgroups():
+            sgs = list(CsvReader(os.path.join(self._data_dir,"table_definitions", "subgroups.csv")).iter_dicts())
+            for sg in sgs:
+                subgroups[sg['slug']] = sg['name']
+            return subgroups
+        load_subgroups()
+        table_types = [
+            ("Health", "health"),
+            ("Education", "education"),
+            ("Water", "water")
+        ]
+        def load_table_types(table_types):
+            for name, slug in table_types:
+                curtable = FacilityTable.objects.create(name=name, slug=slug)
+                csv_reader = CsvReader(os.path.join(self._data_dir,"table_definitions", "%s.csv" % slug))
+                display_order = 0
+                for input_d in csv_reader.iter_dicts():
+                    subs = []
+                    for sg in input_d['subgroups'].split(" "):
+                        if sg in subgroups:
+                            subs.append({'name': subgroups[sg], 'slug': sg})
+                    for sub in subs:
+                        curtable.add_column(sub)
+                    try:
+                        input_d['display_order'] = display_order
+                        d = TableColumn.load_row_from_csv(input_d)
+                        display_order += 1
+                        curtable.add_variable(d)
+                    except:
+                        print "Error importing table definition for data: %s" % input_d
+        load_table_types(table_types)
+        def load_layer_descriptions():
+            layer_descriptions = list(CsvReader(os.path.join(self._data_dir,"map_layers", "layer_details.csv")).iter_dicts())
+            for layer in layer_descriptions:
+                MapLayerDescription.objects.get_or_create(**layer)
+        load_layer_descriptions()
 
     @print_time
     def load_surveys(self):
