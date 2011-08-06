@@ -198,27 +198,33 @@ class DataLoader(object):
             elif 'COMMENTS' in d:
                 return False
             return True
+
         def load_variable_file_with_loader(variable_file, loader):
             file_path = os.path.join(self._data_dir, 'variables', variable_file)
             for d in CsvReader(file_path).iter_dicts():
                 if dict_is_valid_var(d):
                     loader(d)
 
-        load_variable_file_with_loader('partition_variables.csv', cls_variable_loader(PartitionVariable))
-        load_variable_file_with_loader('calculated_variables.csv', cls_variable_loader(CalculatedVariable))
-        load_variable_file_with_loader('variables.csv', cls_variable_loader(Variable))
-
         def load_lga_variable(d):
             d['origin'] = Variable.get(slug=d['origin'])
             d['sector'] = Sector.objects.get(slug=d['sector'])
-            LGAIndicator.objects.get_or_create(**d)
-        load_variable_file_with_loader('lga_indicators.csv', load_lga_variable)
+            cls_variable_loader(LGAIndicator)(d)
 
         def gap_loader(d):
             d['variable'] = Variable.get(slug=d['variable'])
             d['target'] = Variable.get(slug=d['target'])
-            GapVariable.objects.get_or_create(**d)
-        load_variable_file_with_loader('gap_variables.csv', gap_loader)
+            cls_variable_loader(GapVariable)(d)
+
+        variable_loader_methods = {
+            'partition': cls_variable_loader(PartitionVariable),
+            'calculated': cls_variable_loader(CalculatedVariable),
+            'lga': load_lga_variable,
+            'gap': gap_loader,
+            'default': cls_variable_loader(Variable)
+        }
+        for variable_file_data in self._config['variables']:
+            load_method = variable_loader_methods.get(variable_file_data.get('type', 'default'))
+            load_variable_file_with_loader(variable_file_data.get('data_source'), load_method)
 
     @print_time
     def load_facilities(self, lga_ids):
@@ -227,8 +233,7 @@ class DataLoader(object):
 
     @print_time
     def create_facilities_from_csv(self, lga_ids, sector, data_source):
-        data_dir = os.path.join(self._data_dir, 'facility_csvs')
-        path = os.path.join(data_dir, data_source)
+        path = os.path.join(self._data_dir, 'facility_csvs', data_source)
         csv_reader = CsvReader(path)
 
         for d in csv_reader.iter_dicts():
