@@ -31,6 +31,8 @@ class DataLoader(object):
         self.load_system()
 
     def load(self, lga_ids=[]):
+        self.lga_ids = lga_ids
+
         lgas = []
         for lga_id in lga_ids:
             try:
@@ -40,13 +42,14 @@ class DataLoader(object):
         for lga in lgas:
             lga.data_load_in_progress = True
             lga.save()
-        valid_ids_as_strings = [str(l.id) for l in lgas]
         for lga in lgas:
-            self.load_data([str(lga.id)])
-            self.load_calculations([str(lga.id)])
+            self.lga_ids = [str(lga.id)]
+            self.load_data()
+            self.load_calculations()
             lga.data_load_in_progress = False
             lga.data_loaded = True
             lga.save()
+        self.lga_ids = lga_ids
 
     @print_time
     def reset_database(self):
@@ -86,13 +89,13 @@ class DataLoader(object):
         print "%d LGAs have data" % LGA.objects.filter(data_available=True).count()
 
     def load_data(self, lga_ids=[]):
-        self.load_facilities(lga_ids)
-        self.load_lga_data(lga_ids)
+        self.load_facilities()
+        self.load_lga_data()
 
-    def load_calculations(self, lga_ids=[]):
-        self.calculate_lga_indicators(lga_ids)
-        self.calculate_lga_gaps(lga_ids)
-        self.calculate_lga_variables(lga_ids)
+    def load_calculations(self):
+        self.calculate_lga_indicators()
+        self.calculate_lga_gaps()
+        self.calculate_lga_variables()
 
     @print_time
     def create_users(self):
@@ -227,20 +230,18 @@ class DataLoader(object):
             load_variable_file_with_loader(variable_file_data.get('data_source'), load_method)
 
     @print_time
-    def load_facilities(self, lga_ids):
+    def load_facilities(self):
         for facility_csv in self._config['facility_csvs']:
-            self.create_facilities_from_csv(lga_ids, **facility_csv)
+            self.create_facilities_from_csv(**facility_csv)
 
     @print_time
-    def create_facilities_from_csv(self, lga_ids, sector, data_source):
+    def create_facilities_from_csv(self, sector, data_source):
         path = os.path.join(self._data_dir, 'facility_csvs', data_source)
-        csv_reader = CsvReader(path)
-
-        for d in csv_reader.iter_dicts():
+        for d in CsvReader(path).iter_dicts():
             if '_lga_id' not in d:
                 print "FACILITY MISSING LGA ID"
                 continue
-            if d['_lga_id'] not in lga_ids:
+            if d['_lga_id'] not in self.lga_ids:
                 continue
             d['_data_source'] = data_source
             d['_facility_type'] = sector.lower()
@@ -248,21 +249,21 @@ class DataLoader(object):
             facility = FacilityBuilder.create_facility_from_dict(d)
 
     @print_time
-    def load_lga_data(self, lga_ids):
+    def load_lga_data(self):
         data_kwargs = self._config['lga']
         for kwargs in data_kwargs:
             data_source = kwargs.pop('data_source')
             kwargs['path'] = os.path.join(self._data_dir, 'lga', data_source)
-            self.load_lga_data_from_csv(lga_ids, **kwargs)
+            self.load_lga_data_from_csv(**kwargs)
 
     @print_time
-    def load_lga_data_from_csv(self, lga_ids, path, row_contains_variable_slug=False):
+    def load_lga_data_from_csv(self, path, row_contains_variable_slug=False):
         csv_reader = CsvReader(path)
         for d in csv_reader.iter_dicts():
             if '_lga_id' not in d:
                 print "MISSING LGA ID:", d
                 continue
-            if d['_lga_id'] not in lga_ids:
+            if d['_lga_id'] not in self.lga_ids:
                 continue
             lga = LGA.objects.get(id=d['_lga_id'])
             if row_contains_variable_slug:
@@ -288,18 +289,18 @@ class DataLoader(object):
         call_command('loaddata', xfm_json_path)
 
     @print_time
-    def calculate_lga_indicators(self, lga_ids):
+    def calculate_lga_indicators(self):
         for i in LGAIndicator.objects.all():
-            i.set_lga_values(lga_ids)
+            i.set_lga_values(self.lga_ids)
 
     @print_time
-    def calculate_lga_gaps(self, lga_ids):
+    def calculate_lga_gaps(self):
         for i in GapVariable.objects.all():
-            i.set_lga_values(lga_ids)
+            i.set_lga_values(self.lga_ids)
 
     @print_time
-    def calculate_lga_variables(self, lga_ids=[]):
-        lgas = LGA.objects.filter(id__in=[int(x) for x in lga_ids])
+    def calculate_lga_variables(self):
+        lgas = LGA.objects.filter(id__in=[int(x) for x in self.lga_ids])
         for lga in lgas:
             lga.add_calculated_values(lga.get_latest_data(), only_for_missing=True)
 
@@ -394,7 +395,5 @@ def load_lgas(lga_ids, individually=True):
         lga_ids = [l['id'] for l in lgas_with_data]
     data_loader = DataLoader()
     for lga_id in lga_ids:
-#        os.system("say 'starting to load L G A  %s'" % str(lga_id))
-        data_loader.load(lga_id)
-#        os.system("say 'finished loading L G A %s'" % str(lga_id))
+        data_loader.load(lgas=[lga_id])
     data_loader.print_stats()
