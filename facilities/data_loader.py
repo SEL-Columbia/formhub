@@ -181,38 +181,44 @@ class DataLoader(object):
 
         add_critical_variables()
 
-        csv_reader = CsvReader(os.path.join(self._data_dir, 'variables', 'variables.csv'))
+        def cls_variable_loader(cls):
+            def create_instance_of_cls_with_d(d):
+                if self._debug:
+                    cls.objects.get_or_create(**d)
+                else:
+                    try:
+                        cls.objects.get_or_create(**d)
+                    except:
+                        print "%s import failed for data: %s" % (cls.__name__, str(d))
+            return create_instance_of_cls_with_d
 
-        def add_variable_from_dict(d):
-            """
-            Adds the variable described by the data in d.
-            """
-            if 'data_type' not in d or 'SECTION' in d or 'COMMENTS' in d:
-                # this row does not define a new variable
-                pass
-            elif 'formula' in d:
-                CalculatedVariable.objects.get_or_create(**d)
-            elif 'partition' in d:
-                PartitionVariable.objects.get_or_create(**d)
-            elif 'origin' in d and 'method' in d and 'sector' in d:
-                d['origin'] = Variable.get(slug=d['origin'])
-                d['sector'] = Sector.objects.get(slug=d['sector'])
-                lga_indicator, created = LGAIndicator.objects.get_or_create(**d)
-            elif 'variable' in d and 'target' in d:
-                d['variable'] = Variable.get(slug=d['variable'])
-                d['target'] = Variable.get(slug=d['target'])
-                gap_analyzer, created = GapVariable.objects.get_or_create(**d)
-            else:
-                Variable.objects.get_or_create(**d)
+        def dict_is_valid_var(d):
+            if 'data_type' not in d:
+                return False
+            elif 'COMMENTS' in d:
+                return False
+            return True
+        def load_variable_file_with_loader(variable_file, loader):
+            file_path = os.path.join(self._data_dir, 'variables', variable_file)
+            for d in CsvReader(file_path).iter_dicts():
+                if dict_is_valid_var(d):
+                    loader(d)
 
-        for d in csv_reader.iter_dicts():
-            if self._debug:
-                add_variable_from_dict(d)
-            else:
-                try:
-                    add_variable_from_dict(d)
-                except:
-                    print "Variable import failed for data:", d
+        load_variable_file_with_loader('partition_variables.csv', cls_variable_loader(PartitionVariable))
+        load_variable_file_with_loader('calculated_variables.csv', cls_variable_loader(CalculatedVariable))
+        load_variable_file_with_loader('variables.csv', cls_variable_loader(Variable))
+
+        def load_lga_variable(d):
+            d['origin'] = Variable.get(slug=d['origin'])
+            d['sector'] = Sector.objects.get(slug=d['sector'])
+            LGAIndicator.objects.get_or_create(**d)
+        load_variable_file_with_loader('lga_indicators.csv', load_lga_variable)
+
+        def gap_loader(d):
+            d['variable'] = Variable.get(slug=d['variable'])
+            d['target'] = Variable.get(slug=d['target'])
+            GapVariable.objects.get_or_create(**d)
+        load_variable_file_with_loader('gap_variables.csv', gap_loader)
 
     @print_time
     def load_facilities(self, lga_ids):
