@@ -140,12 +140,7 @@ var mapBar = (function(){
 		});
 		sectorTd.delegate('a', 'click', function(){
 			var ss =  $(this).data('sectorSlug');
-			var sData = {viewLevel: 'facility'};
-			if(!!ss) {
-				sData.fullSectorId = ss;
-				setSubSector(ss, 'general');
-			}
-			$('body').trigger('select-sector', sData);
+			ss !== undefined && setSubSector(ss);
 		});
 
 		var viewLevelTd = $('<td />').appendTo(tr);
@@ -158,7 +153,6 @@ var mapBar = (function(){
 				.data('viewLevel', button[1])
 				.click(function(){
 					setViewMode($(this).data('viewLevel'));
-//					$('body').trigger('select-view-level', {viewLevel: $(this).data('viewLevel')});
 				});
 		});
 
@@ -417,7 +411,7 @@ $(function(){
 			lga.loadData(lgaId, function(){
 				this.buildTable = true;
 				setTitle(createTitleForLga(this.stateName, this.lgaName));
-				setSector(defaultMode.sector);
+				setSubSector(defaultMode.sector);
 				setViewMode(defaultMode.level);
 			});
 		});

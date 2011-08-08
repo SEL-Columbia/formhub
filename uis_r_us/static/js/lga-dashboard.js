@@ -351,9 +351,46 @@ function getColDataDiv() {
     window.__sector = null;
 
     window.setSector = function SetSector(s){
-        var change = false;
-        if(~sectors.indexOf(s)) { if(_sector !== s) {_prevSector = _sector; __sector = _sector = s; change = true;} } else { warn("sector doesn't exist", s); }
-        if(change) {
+        warn("Set sector is no longer used");
+//         var changeSector = false;
+//         if(~sectors.indexOf(s)) { if(_sector !== s) {_prevSector = _sector; __sector = _sector = s; changeSector = true;} } else { warn("sector doesn't exist", s); }
+//         if(changeSector) {
+// //            ensureValidSectorLevel(__viewMode, s);
+//             // if a "leave" function is defined, it is executed and removed
+//             if(typeof _sectorOnLeave ==='function') {_sectorOnLeave(); _sectorOnLeave = null;}
+//
+//             var nav = getNav();
+//             nav.find('.active-button.sector-button').removeClass('active-button');
+//             nav.find('.sector-'+s).addClass('active-button');
+//
+//             //remove all TD filtering classes
+//             var ftabs = $(facilityTabsSelector);
+//             ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
+//             ftabs.removeClass(specialClasses.tableHideTd);
+//
+//             ftabs.find('.modeswitch').addClass('fl-hidden-sector')
+//                     .filter(function(){
+//                         if($(this).data('sectorSlug')===_sector) { return true; }
+// //                        if(this.id == "facilities-"+_sector) { return true; }
+//                     }).removeClass('fl-hidden-sector');
+//          (typeof(filterPointsBySector)==='function') && filterPointsBySector(_sector);
+//
+//             log("changing sector to", _sector);
+//         }
+//         return changeSector;
+    }
+
+    function subSectorExists(){return true;/*-- TODO: fix this --*/}
+    var _fullSectorId, _prevFullSectorId;
+
+    window.setSubSector = function(s, ss){
+        var curSectorObj = $(facilitySectors).filter(function(){return this.slug==s}).get(0);
+        var fsid,
+            stabWrap,
+            changeSector = false
+            changeSubSector = false;
+        if(~sectors.indexOf(s)) { if(_sector !== s) {_prevSector = _sector; __sector = _sector = s; changeSector = true;} } else { warn("sector doesn't exist", s); }
+        if(changeSector) {
 //            ensureValidSectorLevel(__viewMode, s);
             // if a "leave" function is defined, it is executed and removed
             if(typeof _sectorOnLeave ==='function') {_sectorOnLeave(); _sectorOnLeave = null;}
@@ -376,19 +413,26 @@ function getColDataDiv() {
 
             log("changing sector to", _sector);
         }
-        return change;
-    }
 
-    function subSectorExists(){return true;/*-- TODO: fix this --*/}
-    var _fullSectorId, _prevFullSectorId;
+        if(curSectorObj===undefined) { return; }
+        if(curSectorObj.subgroups===undefined) { return; }
+        if(!curSectorObj.subgroups.length===0) { return; }
+        if(ss===undefined) {
+            ss = curSectorObj.subgroups[0].slug;
+        }
 
-    window.setSubSector = function(s, ss){
-        setSector(s);
-        var fsid = s + ':' + ss,
-            change = false;
-        if(subSectorExists(fsid)) { if(_fullSectorId !== fsid) { _prevFullSectorId = _fullSectorId; _fullSectorId = fsid; change = true; }}
-        if(change) {
+        fsid = s + ':' + ss;
+        if(subSectorExists(fsid)) { if(_fullSectorId !== fsid) { _prevFullSectorId = _fullSectorId; _fullSectorId = fsid; changeSubSector = true; }}
+        if(changeSubSector) {
             var ftabs = $(facilityTabsSelector);
+            
+            (function markSubsectorLinkSelected(stabWrap){
+                var ssList = stabWrap.find('.sub-sector-list');
+                ssList.find('.selected')
+                    .removeClass('selected');
+                ssList.find('.subsector-link-'+ss)
+                    .addClass('selected');
+            })(ftabs.find('.mode-facility.sector-'+s))
             ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd)
             ftabs.find('.row-num, .subgroup-'+ss)
                 .addClass(specialClasses.showTd);
@@ -396,7 +440,7 @@ function getColDataDiv() {
 //            var nav = getNav();
 //            nav.find('.sector-notes').text('subsector: '+ss);
         }
-        return change;
+        return changeSubSector;
     }
     // END SETTER: sector
 })();
@@ -870,25 +914,29 @@ function createTableForSectorWithData(sector, data){
 	$.each(sectorData, function(i, fUid){
 		tbod.append(createRowForFacilityWithColumns(data.list[fUid], sector.columns, i+1))
 	});
+	function defaultSubSector(sector) {
+	    if(sector.subgroups instanceof Array
+	            && sector.subgroups.length > 0) {
+    	    return sector.subgroups[0].slug;
+	    }
+	    return 'general';
+	}
 	function subSectorLink(ssName, subSectorSlug) {
-	    var fullSectorSlug = sector.slug + (subSectorSlug===defaultSubSector ? '' : subSectorDelimiter + subSectorSlug)
+	    var fullSectorSlug = sector.slug + subSectorDelimiter + subSectorSlug;
 	    return $('<a />', {'href': '#', 'class': 'subsector-link-'+subSectorSlug})
 	                .text(ssName)
 	                .click(function(evt){
 	                    setSubSector(sector.slug, subSectorSlug);
-//	                    $('body').trigger('select-sector', {fullSectorId: fullSectorSlug})
 	                    evt.preventDefault();
 	                });
 	}
 	var subSectors = (function(subSectors, splitter){
 	    $.each(sector.subgroups, function(i, sg){
-    	    sg.slug !== defaultSubSector &&
-    	        subSectors.append(splitter.clone())
-    	                .append(subSectorLink(sg.name, sg.slug));
+	        i !== 0 && subSectors.append(splitter.clone());
+	        subSectors.append(subSectorLink(sg.name, sg.slug));
     	});
     	return subSectors;
-	})($('<div />', {'class': 'sub-sector-list no-select'}), $("<span />").text(" | "))
-	    .prepend(subSectorLink("General", defaultSubSector));
+	})($('<div />', {'class': 'sub-sector-list no-select'}), $("<span />").text(" | "));
 
     var table = $('<table />')
                     .addClass('facility-list')
