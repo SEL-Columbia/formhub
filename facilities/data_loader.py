@@ -251,7 +251,8 @@ class DataLoader(object):
     @print_time
     def load_lga_data(self):
         data_kwargs = self._config['lga']
-        for kwargs in data_kwargs:
+        for kwargs_original in data_kwargs:
+            kwargs = kwargs_original.copy()
             data_source = kwargs.pop('data_source')
             kwargs['path'] = os.path.join(self._data_dir, 'lga', data_source)
             self.load_lga_data_from_csv(**kwargs)
