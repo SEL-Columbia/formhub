@@ -1,0 +1,29 @@
+<div class="sector-overview" data-sector-slug="{{slug}}" id="overview-{{slug}}">
+	<h1>
+		{{name}}
+	</h1>
+	<table style="width:100%">
+		<thead>
+			<tr>
+				<th>
+					Variable Name
+				</th>
+				<th>
+					Value
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#variables}}
+			<tr>
+				<td>
+					{{name}}
+				</td>
+				<td>
+					{{value}}
+				</td>
+			</tr>
+			{{/variables}}
+		</tbody>
+	</table>
+</div>
