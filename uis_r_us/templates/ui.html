@@ -68,7 +68,10 @@ var debugMode = false;
 
 var pageRootUrl = "/~";
 
-var defaultSectorSlug = 'overview';
+var defaultMode = {
+	sector: 'overview',
+	level: 'lga'
+};
 
 var loadMap = true;
 //var loadMap = $("input#load-map").attr('checked');
@@ -414,8 +417,8 @@ $(function(){
 			lga.loadData(lgaId, function(){
 				this.buildTable = true;
 				setTitle(createTitleForLga(this.stateName, this.lgaName));
-				setSubSector('health', 'general');
-				setViewMode('facility');
+				setSector(defaultMode.sector);
+				setViewMode(defaultMode.level);
 			});
 		});
 	});
