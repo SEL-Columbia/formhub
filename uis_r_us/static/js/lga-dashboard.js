@@ -668,7 +668,25 @@ function buildFacilityTable(outerWrap, data, sectors, lgaData){
         });
         return div;
     }
-    
+    function _buildSectorOverview(s){
+        var div = $('<div />');
+        getMustacheTemplate('lga_sector_overview', function(){
+            var data = {
+                variables: []
+            };
+            $.each(overviewVariables, function(i, variable){
+                if(!variable.in_overview && !!variable.in_sector && variable.sector == s) {
+                    data.variables.push({
+                        name: variable.name,
+                        value: displayValue(lgaData.profileData[variable.slug])
+                    });
+                }
+            });
+            var overviewTabs = Mustache.to_html(this.template, data);
+            div.append(overviewTabs);
+        });
+        return div;
+    }
     
     filterPointsBySector = function(sector){
         if(sector==='all') {
@@ -702,7 +720,7 @@ function buildFacilityTable(outerWrap, data, sectors, lgaData){
 	    $('<div />')
 	        .addClass('mode-lga')
 	        .addClass('modeswitch')
-	        .text(sector.name + ' LGA mode')
+	        .html(_buildSectorOverview(sector.slug))
 	        .addClass('sector-'+sector.slug)
     	    .data('sectorSlug', sector.slug)
     	    .data('viewModeSlug', 'facility')
