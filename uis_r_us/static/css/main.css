@@ -712,3 +712,12 @@ table.facility-list td.col-school_name, table.facility-list td.col-facility_name
     color: #fff;
     font-size: 11px;
 }
+
+#pie-chart {
+    background-color: #fff;
+    width: 300px;
+    height: 80px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px
+}

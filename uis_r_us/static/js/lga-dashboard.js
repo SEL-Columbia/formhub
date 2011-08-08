@@ -7,7 +7,7 @@ var createOurGraph = (function(pieWrap, legend, data, _opts){
     var gid = $(pieWrap).get(0).id;
     var defaultOpts = {
         x: 50,
-        y: 50,
+        y: 40,
         r: 35,
         font: "12px 'Fontin Sans', Fontin-Sans, sans-serif"
     };
@@ -26,7 +26,7 @@ var createOurGraph = (function(pieWrap, legend, data, _opts){
     		if(this.value > 0) {
     			values.push(this.value);
     			colors.push(this.color);
-    			legend.push('%% - ' + this.legend);
+    			legend.push('%% - ' + this.legend + ' (##)');
     		}
     	});
     	return {
@@ -579,46 +579,8 @@ function getTabulations(sector, col, keysArray) {
     		function hasClickAction(col, str) {
     		    return col.click_actions !== undefined && ~column.click_actions.indexOf(str);
     		}
-    		if(hasClickAction(column, 'piechart_truefalse')) {
-    		    var colDataDiv = getColDataDiv().empty();
-    		    var pcWrap = $("<div />", {'id': 'pie-chart'})
-    		        .css({
-    		                'background-color': '#fff',
-    		                'width': 300,
-    		                'height': 110,
-    		                '-moz-border-radius': '5px',
-    		                '-webkit-border-radius': '5px',
-    		                'border-radius': '5px'
-    		            })
-    		        .appendTo(colDataDiv);
-
-    		    var pieChartDisplayDefinitions = [
-                    {
-                        "legend":"No",
-                        "color":"#ff5555",
-                        'key': 'false'
-                    },{
-                        "legend":"Yes",
-                        "color":"#21c406",
-                        'key': 'true'
-                    },{
-                        "legend":"Undefined",
-                        "color":"#999",
-                        'key': 'undefined'
-                    }];
-
-    		    createOurGraph(pcWrap,
-    		                    pieChartDisplayDefinitions,
-    		                    getTabulations(sector.slug, column.slug, 'true false undefined'.split(' ')),
-    		                    {});
-
-                var cdiv = $("<div />", {'class':'col-info'}).html($("<h2 />").text(column.name));
-    			if(column.description!==undefined) {
-    				cdiv.append($("<h3 />", {'class':'description'}).text(column.description));
-    			}
-    			colDataDiv
-                        .css({'height':120});
-        	} else if(hasClickAction(column, 'tabulate')) {
+    		var hasPieChart = hasClickAction(column, 'piechart_truefalse');
+        	if(hasClickAction(column, 'tabulate') || hasPieChart) {
         	    var tabulations = $.map(getTabulations(sector.slug, column.slug), function(k, val){
                     return { 'value': k, 'occurrences': val }
                 });
@@ -630,9 +592,31 @@ function getTabulations(sector, col, keysArray) {
                         descriptive_name: column.descriptive_name,
                         description: column.description
                     };
-                    getColDataDiv()
+                    var cdd = getColDataDiv()
                             .html(Mustache.to_html(this.template, data))
                             .css({'height':110});
+
+                    if(hasClickAction(column, 'piechart_truefalse')) {
+                        log(cdd);
+            		    var pcWrap = cdd.find('.content').eq(0)
+            		        .attr('id', 'pie-chart')
+            		        .empty();
+                        log(pcWrap);
+            		    var pieChartDisplayDefinitions = [
+                            {'legend':'No', 'color':'#ff5555', 'key': 'false'},
+                            {'legend':'Yes','color':'#21c406','key': 'true'},
+                            {'legend':'Undefined','color':'#999','key': 'undefined'}];
+
+            		    createOurGraph(pcWrap,
+            		                    pieChartDisplayDefinitions,
+            		                    getTabulations(sector.slug, column.slug, 'true false undefined'.split(' ')),
+            		                    {});
+
+                        var cdiv = $("<div />", {'class':'col-info'}).html($("<h2 />").text(column.name));
+            			if(column.description!==undefined) {
+            				cdiv.append($("<h3 />", {'class':'description'}).text(column.description));
+            			}
+                    }
                 });
     		}
     		var columnMode = "view_column_"+column.slug;
