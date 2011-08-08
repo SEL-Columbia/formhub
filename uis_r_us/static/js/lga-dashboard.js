@@ -579,7 +579,7 @@ function getTabulations(sector, col, keysArray) {
     		function hasClickAction(col, str) {
     		    return col.click_actions !== undefined && ~column.click_actions.indexOf(str);
     		}
-    		if(hasClickAction(column, 'piechart')) {
+    		if(hasClickAction(column, 'piechart_truefalse')) {
     		    var colDataDiv = getColDataDiv().empty();
     		    var pcWrap = $("<div />", {'id': 'pie-chart'})
     		        .css({
