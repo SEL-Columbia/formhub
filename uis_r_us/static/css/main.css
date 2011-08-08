@@ -365,7 +365,7 @@ html .rd-wrap {
     max-height: 300px;
     overflow: auto;
 }
-.lga-widget-content.hide-tds td, .lga-widget-content.hide-tds th {
+.lga-widget-content.hide-tds table.facility-list td, .lga-widget-content.hide-tds table.facility-list th {
 	display: none;
 }
 .lga-widget-content.hide-tds .show-me {

@@ -693,16 +693,7 @@ function buildFacilityTable(outerWrap, data, sectors, lgaData){
 	var lgaContent = $('<div />')
 	        .addClass('lga-widget-content')
 	        .appendTo(outerWrap);
-/*	$('<div />', {'id':'lga-view'})
-	    .addClass('mode-lga')
-	    .html(_buildOverview())
-	    .appendTo(lgaContent); 
-	$('<p />', {id:'summary-p'})
-	    .addClass('summary-p')
-	    .appendTo(lgaContent);*/
 	var ftabs = lgaContent;
-    // var ftabs = $(facilityTabsSelector, lgaContent)
-    //         .css({'padding-bottom':18});
 	$.each(facilitySectors, function(i, sector){
 	    createTableForSectorWithData(sector, facilityData)
 	        .addClass('modeswitch') //possibly redundant.
@@ -729,7 +720,7 @@ function buildFacilityTable(outerWrap, data, sectors, lgaData){
 	    .addClass('modeswitch')
 	    .addClass('mode-lga')
 	    .addClass('sector-overview')
-	    .text('THIS IS THE OVERVIEW at the LGA LEVEL')
+	    .html(_buildOverview())
 	    .data('sectorSlug', 'overview')
 	    .data('viewModeSlug', 'lga')
 	    .appendTo(ftabs);
