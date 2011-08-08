@@ -140,7 +140,7 @@ var mapBar = (function(){
 		});
 		sectorTd.delegate('a', 'click', function(){
 			var ss =  $(this).data('sectorSlug');
-			ss !== undefined && setSubSector(ss);
+			ss !== undefined && setSector(ss);
 		});
 
 		var viewLevelTd = $('<td />').appendTo(tr);
@@ -411,7 +411,7 @@ $(function(){
 			lga.loadData(lgaId, function(){
 				this.buildTable = true;
 				setTitle(createTitleForLga(this.stateName, this.lgaName));
-				setSubSector(defaultMode.sector);
+				setSector(defaultMode.sector);
 				setViewMode(defaultMode.level);
 			});
 		});

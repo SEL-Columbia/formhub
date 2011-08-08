@@ -344,46 +344,16 @@ function getColDataDiv() {
 (function(){
     // BEGIN SETTER: sector
     var sectors = 'overview health education water'.split(' ');
-    var _sector, _prevSector;
+    var _sector, _prevSector,
+        _fullSectorId, _prevFullSectorId;
     window._sectorOnLeave = null;
     //right now, some things need access to the current sector slug,
     //  but I'm not sure if/how to expose it to the global scope yet.
     window.__sector = null;
 
-    window.setSector = function SetSector(s){
-        warn("Set sector is no longer used");
-//         var changeSector = false;
-//         if(~sectors.indexOf(s)) { if(_sector !== s) {_prevSector = _sector; __sector = _sector = s; changeSector = true;} } else { warn("sector doesn't exist", s); }
-//         if(changeSector) {
-// //            ensureValidSectorLevel(__viewMode, s);
-//             // if a "leave" function is defined, it is executed and removed
-//             if(typeof _sectorOnLeave ==='function') {_sectorOnLeave(); _sectorOnLeave = null;}
-//
-//             var nav = getNav();
-//             nav.find('.active-button.sector-button').removeClass('active-button');
-//             nav.find('.sector-'+s).addClass('active-button');
-//
-//             //remove all TD filtering classes
-//             var ftabs = $(facilityTabsSelector);
-//             ftabs.find('.'+specialClasses.showTd).removeClass(specialClasses.showTd);
-//             ftabs.removeClass(specialClasses.tableHideTd);
-//
-//             ftabs.find('.modeswitch').addClass('fl-hidden-sector')
-//                     .filter(function(){
-//                         if($(this).data('sectorSlug')===_sector) { return true; }
-// //                        if(this.id == "facilities-"+_sector) { return true; }
-//                     }).removeClass('fl-hidden-sector');
-//          (typeof(filterPointsBySector)==='function') && filterPointsBySector(_sector);
-//
-//             log("changing sector to", _sector);
-//         }
-//         return changeSector;
-    }
-
     function subSectorExists(){return true;/*-- TODO: fix this --*/}
-    var _fullSectorId, _prevFullSectorId;
 
-    window.setSubSector = function(s, ss){
+    window.setSector = function(s, ss){
         var curSectorObj = $(facilitySectors).filter(function(){return this.slug==s}).get(0);
         var fsid,
             stabWrap,
@@ -926,7 +896,7 @@ function createTableForSectorWithData(sector, data){
 	    return $('<a />', {'href': '#', 'class': 'subsector-link-'+subSectorSlug})
 	                .text(ssName)
 	                .click(function(evt){
-	                    setSubSector(sector.slug, subSectorSlug);
+	                    setSector(sector.slug, subSectorSlug);
 	                    evt.preventDefault();
 	                });
 	}
