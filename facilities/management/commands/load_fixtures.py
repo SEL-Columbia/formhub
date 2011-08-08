@@ -40,18 +40,17 @@ class Command(BaseCommand):
         # If no arguments are given to this command run all the import
         # methods.
         if len(args) == 0:
-            lga_ids = "all"
+            data_loader.setup()
             if kwargs['limit_import']:
                 lga_ids = settings.LIMITED_LGA_LIST
-            data_loader.setup()
+            else:
+                lga_ids = [str(i['id']) for i in LGA.objects.filter(data_available=True).values('id')]
             if not kwargs['spawn_subprocess']:
                 #load fixtures the old fashioned way.
                 data_loader.load(lga_ids)
                 data_loader.print_stats()
             else:
                 print "Starting subprocess to load lga data in."
-                if lga_ids == "all":
-                    lga_ids = [str(i['id']) for i in LGA.objects.filter(data_available=True).values('id')]
                 ccargs = ['load_lgas'] + lga_ids
                 #calling "load_lgas" with arguments.
                 call_command(*ccargs)
