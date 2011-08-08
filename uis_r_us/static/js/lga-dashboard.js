@@ -321,11 +321,23 @@ function buildGapAnalysisTable(lgaData){
     }
 })();
 function getColDataDiv() {
-	var colData = $('.widget-outer-wrap').find('div.column-data');
-	if(colData.length===0) {
-		colData = $("<div />", {'class': 'column-data'});
-		$('.widget-outer-wrap').prepend($('<div />', {'class':'column-data-wrap'}).html(colData));
+	var colData,
+	    colDataWrap = $('.widget-outer-wrap').find('div.column-data-wrap');
+	if(colDataWrap.length===0) {
+		colDataWrap = $("<div />", {'class': 'column-data-wrap'});
+		$('<a />', {'href': '#', 'class': 'close-col-data'})
+		    .text('X')
+		    .click(function(){
+		        colDataWrap.hide();
+		    })
+		    .appendTo(colDataWrap);
+		colData = $('<div />', {'class': 'column-data'})
+		    .appendTo(colDataWrap);
+		$('.widget-outer-wrap').prepend(colDataWrap);
+	} else {
+	    colData = colDataWrap.find('.column-data');
 	}
+	colDataWrap.show();
 	return colData;
 }
 
@@ -342,6 +354,7 @@ function getColDataDiv() {
         var change = false;
         if(~sectors.indexOf(s)) { if(_sector !== s) {_prevSector = _sector; __sector = _sector = s; change = true;} } else { warn("sector doesn't exist", s); }
         if(change) {
+//            ensureValidSectorLevel(__viewMode, s);
             // if a "leave" function is defined, it is executed and removed
             if(typeof _sectorOnLeave ==='function') {_sectorOnLeave(); _sectorOnLeave = null;}
 
@@ -393,10 +406,12 @@ function getColDataDiv() {
     var viewModes = 'facility lga'.split(' ');
     var _viewMode, _prevViewMode;
     
+    window.__viewMode = null;
     window.setViewMode = function SetViewMode(s){
         var change = false;
-        if(~viewModes.indexOf(s)) { if(_viewMode !== s) {_prevViewMode = _viewMode; _viewMode = s; change = true;} } else { warn("viewMode doesn't exist", s); }
+        if(~viewModes.indexOf(s)) { if(_viewMode !== s) {_prevViewMode = _viewMode; __viewMode = _viewMode = s; change = true;} } else { warn("viewMode doesn't exist", s); }
         if(change) {
+//            ensureValidSectorLevel(s, );
             var nav = getNav();
             nav.find('.active-button.view-mode-button').removeClass('active-button');
             nav.find('.view-mode-'+s).addClass('active-button');
@@ -534,7 +549,6 @@ function getTabulations(sector, col, keysArray) {
     	getColDataDiv().empty().css({'height':0});
     }
     window.setColumn = function(sector, column){
-        log('column ', column);
         var wrapElement = $('#lga-widget-wrap');
         if(_selectedColumn !== column) {
     		if(column.clickable) {

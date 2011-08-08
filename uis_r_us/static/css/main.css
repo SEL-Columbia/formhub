@@ -324,9 +324,20 @@ html .rd-wrap {
 	background-color: rgba(0,0,0,0.1);
 	margin-top: 20px;
 }
-.column-data-wrap {}
+a.close-col-data {
+    position: absolute;
+    top: 3pxpx;
+    right: 12px;
+    background-color: rgba(255,255,255,0.5);
+    width: 18px;
+    height: 18px;
+    text-align: center;
+    text-decoration: none;
+}
+/* not used:
+.column-data-wrap {} */
 .column-data {
-	margin: 4px 12px;
+    margin: 4px 12px;
 	color: #fff;
 	background-color: rgba(0,0,0,0.5);
 	border: 0 none;
