@@ -1,18 +1,19 @@
-{% extends "base.html" %}
+{% extends "ui_base.html" %}
 {% load i18n %}
 
-{% block title %}Access Denied{% endblock %}
+{% block page_title %}Access Denied{% endblock %}
 
 {% block content %}
+<div class='content-inner-wrap'>
 {% if user.is_authenticated %}
-	<h1>
-		Access Not Currently Available
-	</h1>
 	<p>
-		I'm sorry, but at the moment your account has not been granted full access to the Nigeria MDG Information System.
+		I'm sorry, but at the moment your account has not been
+		granted access to the Nigeria MDG Information System.
 	</p>
 	<p>
-		Please email <a href="mailto:{{user_manager_email}}?subject=NMIS%20User%20[{{user.username}}]%20Requesting%20Permission">OSSAP</a> with your information and they will be able to grant you full permission.
+		Please
+		email <a href="mailto:{{user_manager_email}}?subject=NMIS%20User%20[{{user.username}}]%20Requesting%20Permission">OSSAP</a>
+		to request access.
 	</p>
 {% else %}
 	<h1>
@@ -22,4 +23,5 @@
 		<a href="{% url auth_login %}">{% trans "Log in" %}</a>
 	</p>
 {% endif %}
+</div>
 {% endblock %}

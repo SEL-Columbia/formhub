@@ -1,11 +1,20 @@
-{% extends "base.html" %}
+{% extends "ui_base.html" %}
 {% load i18n %}
 
+{% block page_title %}Registration{% endblock %}
+
 {% block content %}
+<div class='content-inner-wrap'>
+<p>
+To register please fill in the form below.
+</p>
 <form method="post" action=".">
   {% csrf_token %}
-  {{ form.as_p }}
+  <table>
+  {{ form.as_table }}
+  </table>
 
   <input type="submit" value="{% trans 'Submit' %}" />
 </form>
+</div>
 {% endblock %}

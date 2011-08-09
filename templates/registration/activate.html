@@ -1,18 +1,17 @@
-{% extends "base.html" %}
-{% load i18n %}
+{% extends "ui_base.html" %}
+
+{% block page_title %}Account Activation{% endblock %}
 
 {% block content %}
+<div class='content-inner-wrap'>
 
-{% if account %}
+<p>
+  Your account has been successfully activated. Welcome to the Nigeria
+  MDG Information System.
+</p>
 
-<p>{% trans "Account successfully activated" %}</p>
+<p>You may log in <a href="{% url auth_login %}">here</a>.</p>
 
-<p><a href="{% url auth_login %}">{% trans "Log in" %}</a></p>
-
-{% else %}
-
-<p>{% trans "Account activation failed" %}</p>
-
-{% endif %}
+</div>
 
 {% endblock %}
