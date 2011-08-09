@@ -68,6 +68,57 @@ var createOurGraph = (function(pieWrap, legend, data, _opts){
 });
 // END raphael graph wrapper
 
+(function(){
+    var _onChangeIconsWill = [];
+
+    function iconsWill(command, onLeaveCommand) {
+        iconsWillReset()
+        if(onLeaveCommand!==undefined) {
+            onLeaveIconsWill(onLeaveCommand);
+        }
+
+        var o = command;
+        if(typeof(command)==="function") { o = command(); }
+        log("icons will ", JSON.stringify(o));
+    }
+
+    function onLeaveIconsWill(command){
+        _onChangeIconsWill.push(function(){
+            var o = command;
+            if(typeof(command)==="function") { o = command(); }
+            log(" .....", JSON.stringify(o));
+        });
+    }
+
+    function iconsWillReset(){
+        $(_onChangeIconsWill).each(function(i, fn){fn.call()});
+        _onChangeIconsWill = [];
+    }
+
+    window.onLeaveIconsWill = onLeaveIconsWill;
+    window.iconsWill = iconsWill;
+    window.iconsWillReset = iconsWillReset;
+})();
+
+(function forDebuggingOnly(){
+    var _onChangeIconsShould = [];
+    function iconsShould(str, onleaveShould){
+        iconsShouldReset();
+        if(onleaveShould !== undefined) {onLeaveIconsShould(onleaveShould);}
+    //    log("Icons should "+str);
+    }
+    function iconsShouldReset(){
+        $(_onChangeIconsShould).each(function(i, fn){fn.call()});
+        _onChangeIconsShould = [];
+    }
+    function onLeaveIconsShould(str) {
+    //    _onChangeIconsShould.push(function(){log(" ..." + str)})
+    }
+
+    window.iconsShould = iconsShould;
+    window.iconsShouldReset = iconsShouldReset;
+})();
+
 // BEGIN custom openlayers icon functionality
 var olStyling = (function(){
     var iconMakers;
@@ -328,6 +379,8 @@ function getColDataDiv() {
 		$('<a />', {'href': '#', 'class': 'close-col-data'})
 		    .text('X')
 		    .click(function(){
+		        iconsShouldReset();
+		        iconsWillReset();
 		        colDataWrap.hide();
 		    })
 		    .appendTo(colDataWrap);
@@ -392,8 +445,6 @@ function ensureValidSectorLevel(level, sector) {
 //                        if(this.id == "facilities-"+_sector) { return true; }
                     }).removeClass('fl-hidden-sector');
 		    (typeof(filterPointsBySector)==='function') && filterPointsBySector(_sector);
-
-            log("changing sector to", _sector);
         }
 
         if(curSectorObj===undefined) { return; }
@@ -446,7 +497,6 @@ function ensureValidSectorLevel(level, sector) {
             var ftabs = $(facilityTabsSelector);
             ftabs.find('.modeswitch').addClass('fl-hidden-view-mode');
             ftabs.find('.modeswitch.mode-'+_viewMode).removeClass('fl-hidden-view-mode');
-            log("changing view mode to", _viewMode);
         }
         return change;
     }
@@ -517,6 +567,8 @@ function imageUrls(imageSizes, imgId) {
                     position: [pdRight, 106],
                     close: function(){
                         setFacility();
+                        iconsShouldReset();
+                        iconsWillReset();
                     }
                 });
             });
@@ -535,6 +587,17 @@ function imageUrls(imageSizes, imgId) {
         	-*/
         	$.each(facilityData.list, function(i, fdp){
         	    olStyling.markIcon(fdp, facility===fdp ? 'showing' : 'hidden');
+        	});
+        	iconsShould("show selected facility, fade all the others", "unselect the facility");
+
+        	iconsWill(function showFacility(){
+        	    return {
+        	        showFacility: facility._id
+        	    };
+        	}, function(){
+        	    return {
+            	    unShowFacility: facility._id
+            	}
         	});
         } else {
             //unselect facility
@@ -610,11 +673,9 @@ function getTabulations(sector, col, keysArray) {
                             .css({'height':110});
 
                     if(hasClickAction(column, 'piechart_truefalse')) {
-                        log(cdd);
-            		    var pcWrap = cdd.find('.content').eq(0)
+                        var pcWrap = cdd.find('.content').eq(0)
             		        .attr('id', 'pie-chart')
             		        .empty();
-                        log(pcWrap);
             		    var pieChartDisplayDefinitions = [
                             {'legend':'No', 'color':'#ff5555', 'key': 'false'},
                             {'legend':'Yes','color':'#21c406','key': 'true'},
@@ -636,6 +697,16 @@ function getTabulations(sector, col, keysArray) {
     		if(hasClickAction(column, 'iconify') && column.iconify_png_url !== undefined) {
     		    var t=0, z=0;
     		    var iconStrings = [];
+    		    iconsShould("change to reflect the iconify column", "undo the iconify stuff");
+
+    		    iconsWill(function filterSector(){
+    		        return {
+    		            filterSector: sector.slug
+    		        }
+    		    }, {
+    		        unfilter: true
+    		    });
+
     		    $.each(facilityData.list, function(i, fdp){
     		        if(fdp.sectorSlug===sector.slug) {
     		            var iconUrl = column.iconify_png_url + fdp[column.slug] + '.png';
@@ -714,8 +785,11 @@ function buildFacilityTable(outerWrap, data, sectors, lgaData){
     }
     
     filterPointsBySector = function(sector){
-        if(sector==='all') {
-            log("show all sectors");
+        if(sector==='overview') {
+            iconsShould("unfilter all the points.");
+            iconsWill({
+                unfilter: true
+            });
         } else {
             //On first load, the OpenLayers markers are not created.
             // this "showHide" function tells us when to hide the markers
@@ -726,6 +800,12 @@ function buildFacilityTable(outerWrap, data, sectors, lgaData){
             }
             $.each(facilityData.list, function(i, pt){
                 showHideMarker(pt, (pt.sector === sector))
+            });
+            iconsShould("filter the points down to sector:"+sector);
+            iconsWill(function(){
+                return {
+                    filterSector: sector
+                }
             });
         }
     }
