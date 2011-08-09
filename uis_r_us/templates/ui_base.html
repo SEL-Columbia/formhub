@@ -5,11 +5,9 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <!-- todo: replace site_title with page_title -->
 	<title>
-		{% if site_title %}
-		{{site_title}}
-		{% endif %}
-		{% block title %}{% endblock %}
+	  {{ site_title|default:"Nigeria MDG Information System" }}
 	</title>
 	<link rel="stylesheet" href="/static/css/sitewide.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
 	<link rel="stylesheet" href="/static/css/tables.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
@@ -25,36 +23,17 @@
 			<a href="/" id="hlogo"><img src="/static/images/nmis_pilot.png" /></a>
 			<h2 class="site-title">Nigeria MDG Information System</h2>
 			<h2 class="title">
-				{{site_title}}
+	                  {% block page_title %}{{ site_title }}{% endblock %}
 			</h2>
 			{% if data_loading_count %}
 			<p class="loading-info" data-lgas-loading-count="{{data_loading_count}}" title="LGAs in progress: {{data_loading_count}}">
 				<img src="/static/images/grey-loader.gif">
 			</p>
 			{% endif %}
-			<form action="/~/" method="POST">
-			<div class="lga-nav">
-					<select id="lga-select" name="lga" style="width:280px;" title="Select an LGA">
-						<!-- <option></option> -->
-						{% for statename, lgas in active_districts %}
-						<optgroup label="{{statename}}">
-							{% for lganame, lgaid in lgas %}
-								<option value="{{lgaid}}">{{lganame}}</option>
-							{% endfor %}
-						</optgroup>
-						{% endfor %}
-					</select>
-					<script type="text/javascript" charset="utf-8">
-						var lgaId = (function(_){return _})({{lga_id|safe}});
-					</script>
-					  {% csrf_token %}
-					<input type="submit" value="GO">
-			</div>
-<!--			<div class="load-options">
-				<input type="checkbox" id="load-map" name="load-map" />
-				<label for="load-map">Load Map</label>
-			</div> -->
-			</form>
+
+                        {% block lga_nav %}{% endblock %}
+
+                        {% block account_links %}
 		<div class="account_links">
 			{% if user.is_authenticated %}
 			{% trans "Logged in" %}: {{ user.username }} 
@@ -62,6 +41,7 @@
 			{% else %}
 			<a href="{% url auth_login %}">{% trans "Log in" %}</a>
 			{% endif %}
+                        {% endblock %}
 		</div>
 		</div>
 	</div>

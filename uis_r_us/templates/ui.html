@@ -4,6 +4,33 @@
 </style>
 <link rel="stylesheet" href="/static/openlayers/default/style.css" type="text/css" media="all" charset="utf-8">
 {% endblock %}
+
+{% block lga_nav %}
+			<form action="/~/" method="POST">
+			<div class="lga-nav">
+					<select id="lga-select" name="lga" style="width:280px;" title="Select an LGA">
+						<!-- <option></option> -->
+						{% for statename, lgas in active_districts %}
+						<optgroup label="{{statename}}">
+							{% for lganame, lgaid in lgas %}
+								<option value="{{lgaid}}">{{lganame}}</option>
+							{% endfor %}
+						</optgroup>
+						{% endfor %}
+					</select>
+					<script type="text/javascript" charset="utf-8">
+						var lgaId = (function(_){return _})({{lga_id|safe}});
+					</script>
+					  {% csrf_token %}
+					<input type="submit" value="GO">
+			</div>
+<!--			<div class="load-options">
+				<input type="checkbox" id="load-map" name="load-map" />
+				<label for="load-map">Load Map</label>
+			</div> -->
+			</form>
+{% endblock %}
+
 {% block content %}
 <script type="text/html" id="map-bar-template">
 	<div class="map-key-ww">
