@@ -24,6 +24,13 @@ DEPLOYMENTS = {
         'host_string': 'wsgi@nmis-dev.mdgs.gov.ng',
         'branch': 'feature/dj13',
         'backup': False,
+        },
+    'production': {
+        'folder_name': 'nmis_production',
+        'host_string': 'wsgi@nmis-dev.mdgs.gov.ng',
+        'branch': 'feature/dj13',
+        'backup': True,
+        'database_name': 'nmis_production',
         }
     }
 
@@ -54,7 +61,7 @@ def backup(deployment_name):
         )
     run("mkdir -p %(backup_directory_path)s" % env)
     with cd(env.backup_directory_path):
-        run("mysqldump -u nmis -p$MYSQL_NMIS_PW %(database_name)s > %(database_name)s.sql" % env)
+        run("mysqldump -u root -p %(database_name)s > %(database_name)s.sql" % env)
         run("gzip %(database_name)s.sql" % env)
 
 
@@ -109,6 +116,7 @@ def deploy(deployment_name, reload="none"):
     def reload_fixtures(flag=""):
         with cd(env.code_path):
             _run_in_virtualenv("python manage.py load_fixtures %s" % flag)
+
     if reload == "all":
         reload_fixtures()
     elif reload == "limit":
