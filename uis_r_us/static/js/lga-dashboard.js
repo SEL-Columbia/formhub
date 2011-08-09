@@ -341,6 +341,16 @@ function getColDataDiv() {
 	return colData;
 }
 
+function ensureValidSectorLevel(level, sector) {
+    if(level===undefined || sector === undefined) {
+        return false;
+    }
+    if(level==="facility" && sector === "overview") {
+        setViewMode("lga");
+        return true;
+    }
+}
+
 (function(){
     // BEGIN SETTER: sector
     var sectors = 'overview health education water'.split(' ');
@@ -359,9 +369,11 @@ function getColDataDiv() {
             stabWrap,
             changeSector = false
             changeSubSector = false;
+
+        ensureValidSectorLevel(__viewMode, s);
         if(~sectors.indexOf(s)) { if(_sector !== s) {_prevSector = _sector; __sector = _sector = s; changeSector = true;} } else { warn("sector doesn't exist", s); }
         if(changeSector) {
-//            ensureValidSectorLevel(__viewMode, s);
+            $.cookie('sector', s);
             // if a "leave" function is defined, it is executed and removed
             if(typeof _sectorOnLeave ==='function') {_sectorOnLeave(); _sectorOnLeave = null;}
 
@@ -423,9 +435,10 @@ function getColDataDiv() {
     window.__viewMode = null;
     window.setViewMode = function SetViewMode(s){
         var change = false;
+        if(ensureValidSectorLevel(s, __sector)) { return; }
         if(~viewModes.indexOf(s)) { if(_viewMode !== s) {_prevViewMode = _viewMode; __viewMode = _viewMode = s; change = true;} } else { warn("viewMode doesn't exist", s); }
         if(change) {
-//            ensureValidSectorLevel(s, );
+            $.cookie('level', s);
             var nav = getNav();
             nav.find('.active-button.view-mode-button').removeClass('active-button');
             nav.find('.view-mode-'+s).addClass('active-button');

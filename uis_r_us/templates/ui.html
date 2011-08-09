@@ -411,8 +411,10 @@ $(function(){
 			lga.loadData(lgaId, function(){
 				this.buildTable = true;
 				setTitle(createTitleForLga(this.stateName, this.lgaName));
-				setSector(defaultMode.sector);
-				setViewMode(defaultMode.level);
+				var curSector = $.cookie('sector') || defaultMode.sector,
+					curLevel = $.cookie('level') || defaultMode.level;
+				setSector(curSector);
+				setViewMode(curLevel);
 			});
 		});
 	});
