@@ -118,43 +118,49 @@ var mapBar = (function(){
 		}
 		var tr = _elem.find('tr').detach();
 		opts.reset && tr.empty();
-		var sectorTd = $('<td />').appendTo(tr);
-		if(!!opts.preSectorButtons && opts.preSectorButtons.length > 0) {
-			$.each(opts.preSectorButtons, function(i, button){
-				$('<a />', {'href': '#', 'class': 'preSectorButton'})
-					.text(button[0])
-					.addClass('sector-'+button[1])
-					.addClass('sector-button')
-					.data('sectorSlug', button[1])
-					.appendTo(sectorTd);
-			});
-			sectorTd.append($('<span />', {'class':'spacer'}))
-		}
-		$.each(opts.sectorButtons, function(i, button){
-			$('<a />', {'href': '#', 'class': 'sectorButton'})
-					.text(button[0])
-					.addClass('sector-'+button[1])
-					.addClass('sector-button')
-					.appendTo(sectorTd)
-					.data('sectorSlug', button[1]);
-		});
-		sectorTd.delegate('a', 'click', function(){
-			var ss =  $(this).data('sectorSlug');
-			ss !== undefined && setSector(ss);
-		});
 
-		var viewLevelTd = $('<td />').appendTo(tr);
-		$.each(opts.viewLevels, function(i, button){
-			$('<a />', {'href':'#', 'class':'viewLevelButton'})
-				.text(button[0])
-				.appendTo(viewLevelTd)
-				.addClass('view-mode-'+button[1])
-				.addClass('view-mode-button')
-				.data('viewLevel', button[1])
-				.click(function(){
-					setViewMode($(this).data('viewLevel'));
+		(function(){
+			var viewLevelTd = $('<td />').appendTo(tr);
+			$.each(opts.viewLevels, function(i, button){
+				$('<a />', {'href':'#', 'class':'viewLevelButton'})
+					.text(button[0])
+					.appendTo(viewLevelTd)
+					.addClass('view-mode-'+button[1])
+					.addClass('view-mode-button')
+					.data('viewLevel', button[1])
+					.click(function(){
+						setViewMode($(this).data('viewLevel'));
+					});
+			});
+		})();
+
+		(function(){
+			var sectorTd = $('<td />');
+			if(!!opts.preSectorButtons && opts.preSectorButtons.length > 0) {
+				$.each(opts.preSectorButtons, function(i, button){
+					$('<a />', {'href': '#', 'class': 'preSectorButton'})
+						.text(button[0])
+						.addClass('sector-'+button[1])
+						.addClass('sector-button')
+						.data('sectorSlug', button[1])
+						.appendTo(sectorTd);
 				});
-		});
+				sectorTd.append($('<span />', {'class':'spacer'}))
+			}
+			$.each(opts.sectorButtons, function(i, button){
+				$('<a />', {'href': '#', 'class': 'sectorButton'})
+						.text(button[0])
+						.addClass('sector-'+button[1])
+						.addClass('sector-button')
+						.appendTo(sectorTd)
+						.data('sectorSlug', button[1]);
+			});
+			sectorTd.delegate('a', 'click', function(){
+				var ss =  $(this).data('sectorSlug');
+				ss !== undefined && setSector(ss);
+			});
+			sectorTd.appendTo(tr);
+		})();
 
 		var leftButtons = $('<td />').prependTo(tr);
 		$.each(opts.leftButtons, function(i, b){

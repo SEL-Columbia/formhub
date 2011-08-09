@@ -110,14 +110,6 @@ div.icontent {
     padding: 4px 12px;
 }
 
-#hlogo {
-	display: block;
-}
-#hlogo img {
-	border: 0 none;
-	margin: -3px 0;
-	height: 34px;
-}
 body.home #hlogo img {
     height: 50px;
 }

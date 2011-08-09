@@ -721,3 +721,12 @@ table.facility-list td.col-school_name, table.facility-list td.col-facility_name
     -webkit-border-radius: 5px;
     border-radius: 5px
 }
+
+#hlogo {
+	display: block;
+}
+#hlogo img {
+	border: 0 none;
+	margin: -3px 0;
+	height: 34px;
+}
