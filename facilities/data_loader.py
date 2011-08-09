@@ -305,9 +305,10 @@ class DataLoader(object):
                 display_order = 0
                 for input_d in csv_reader.iter_dicts():
                     subs = []
-                    for sg in input_d['subgroups'].split(" "):
-                        if sg in subgroups:
-                            subs.append({'name': subgroups[sg], 'slug': sg})
+                    if input_d['subgroups'] is not None:
+                        for sg in input_d['subgroups'].split(" "):
+                            if sg in subgroups:
+                                subs.append({'name': subgroups[sg], 'slug': sg})
                     for sub in subs:
                         curtable.add_column(sub)
                     try:
