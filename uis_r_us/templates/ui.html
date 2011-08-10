@@ -350,6 +350,13 @@ $(function(){
 				layerSwitcher: false,
 				elem: '.home-map'
 			})(function(){
+				var n = {
+					lat: 1044435.5543009,
+					lon: 875770.62606869,
+					z: 6
+				};
+				__map = this.map;
+				this.map.setCenter(new OpenLayers.LonLat(n.lon, n.lat), n.z);
 				var mn = $('<div />')
 							.addClass('mn-iwrap');
 				var mnw = $('<div />')

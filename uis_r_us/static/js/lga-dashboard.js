@@ -68,12 +68,75 @@ var createOurGraph = (function(pieWrap, legend, data, _opts){
 });
 // END raphael graph wrapper
 
+var HandleIcons = (function(){
+    // I'm starting to move away from olStyling handling all the icon changes.
+    window.zActions = [];
+    function showHideFacility(f, bool) {
+        var m = f.mrkr;
+        !!bool && m !== undefined && $(m.icon.imageDiv).show();
+        !bool && m !== undefined && $(m.icon.imageDiv).hide();
+    }
+
+    function changeIcon(f, columnVariable, iconUrl){
+        var icon = '' + iconUrl + f[columnVariable] + '.png';
+        zActions.push("icon:"+icon);
+        f.mrkr !== undefined && f.mrkr.icon.setUrl(icon);
+    }
+
+    function resetIcon(f){
+        f.mrkr !== undefined && f._defaultIconUrl !== undefined &&
+            f.mrkr.icon.setUrl(f._defaultIconUrl);
+        zActions.push("reset:"+f._id);
+    }
+
+    return function(facilityData, opts){
+        zActions = [];
+        // opts.filterSector is passed to "HandleIcons"
+        var s = opts.filterSector;
+        //__sector is the [temp] global sector reference
+        //  ...I don't want to count on in permanently, if possible
+        var _s = __sector;
+        var actions = {
+            sector: opts.filterSector !== undefined,
+            changeIcon: opts.iconColumn !== undefined,
+            resetIcons: !!opts.resetIcons
+        };
+        var c = 0;
+        var _c = 0;
+        $.each(facilityData.list, function(id, f){
+            actions.sector && showHideFacility(f, f.sector === s);
+            actions.changeIcon && changeIcon(f, opts.iconColumn, opts.iconifyUrl);
+            actions.resetIcons && resetIcon(f)
+        });
+        log("icons will ", JSON.stringify(opts));
+    }
+})();
+
+(function forDebuggingOnly(){
+    var _onChangeIconsShould = [];
+    function iconsShould(str, onleaveShould){
+        iconsShouldReset();
+        if(onleaveShould !== undefined) {onLeaveIconsShould(onleaveShould);}
+    //    log("Icons should "+str);
+    }
+    function iconsShouldReset(){
+        $(_onChangeIconsShould).each(function(i, fn){fn.call()});
+        _onChangeIconsShould = [];
+    }
+    function onLeaveIconsShould(str) {
+    //    _onChangeIconsShould.push(function(){log(" ..." + str)})
+    }
+
+    window.iconsShould = iconsShould;
+    window.iconsShouldReset = iconsShouldReset;
+})();
+
 // BEGIN custom openlayers icon functionality
 var olStyling = (function(){
     var iconMakers;
     var iconMode;
     var markerLayer;
-	
+
     return {
         addIcon: function(facility, mode, opts){
             if(facility.iconModes === undefined) { facility.iconModes = {}; }
@@ -97,6 +160,7 @@ var olStyling = (function(){
                     var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
                     var url = iconModeData.url;
                     if(fac.mrkr === undefined) {
+                        fac._defaultIconUrl = url;
                         var icon = new OpenLayers.Icon(url, size, offset);
                         fac.mrkr = new OpenLayers.Marker(fac.openLayersLatLng, icon);
                         fac.mrkr.events.register('click', fac.mrkr, function(){
@@ -104,8 +168,8 @@ var olStyling = (function(){
                         });
                         markerLayer.addMarker(fac.mrkr);
                     } else {
-                        fac.mrkr.icon.setSize(size);
-                        fac.mrkr.icon.setUrl(iconModeData.url);
+//                        fac.mrkr.icon.setSize(size);
+//                        fac.mrkr.icon.setUrl(iconModeData.url);
                     }
                 }
             });
@@ -114,9 +178,9 @@ var olStyling = (function(){
             var mrkr = pt.mrkr;
             if(mrkr === undefined) { return; }
             if(status==='hidden') {
-                $(mrkr.icon.imageDiv).hide();
+//                $(mrkr.icon.imageDiv).hide();
             } else if(status==='showing') {
-                $(mrkr.icon.imageDiv).show();
+//                $(mrkr.icon.imageDiv).show();
             }
         },
         changeIcon: function(facility, data){
@@ -147,7 +211,6 @@ var selectedSubSector,
     overviewVariables,
     facilitySectors;
 
-
 var facilityTabsSelector = 'div.lga-widget-content';
 
 var specialClasses = {
@@ -162,6 +225,40 @@ var urls = {
 var subSectorDelimiter = '-';
 var defaultSubSector = 'general';
 // END closure scope variable declaration
+
+// BEGIN icon handling within the closure scope
+(function(){
+    var _onChangeIconsWill = [];
+
+    function iconsWill(command, onLeaveCommand) {
+        iconsWillReset()
+        if(onLeaveCommand!==undefined) { onLeaveIconsWill(onLeaveCommand); }
+        var o = command;
+
+        if(typeof(command)==="function") { o = command(); }
+        HandleIcons(facilityData, o);
+//        log("icons will ", JSON.stringify(o));
+    }
+
+    function onLeaveIconsWill(command){
+        _onChangeIconsWill.push(function(){
+            var o = command;
+            if(typeof(command)==="function") { o = command(); }
+            HandleIcons(facilityData, o);
+//            log(" .....", JSON.stringify(o));
+        });
+    }
+
+    function iconsWillReset(){
+        $(_onChangeIconsWill).each(function(i, fn){fn.call()});
+        _onChangeIconsWill = [];
+    }
+
+    window.onLeaveIconsWill = onLeaveIconsWill;
+    window.iconsWill = iconsWill;
+    window.iconsWillReset = iconsWillReset;
+})();
+// END icon handling within the closure scope
 
 // BEGIN load lga data via ajax
 function loadLgaData(lgaUniqueId, onLoadCallback) {
@@ -189,7 +286,7 @@ function loadLgaData(lgaUniqueId, onLoadCallback) {
 			v.uid = k;
 			facilityDataARr.push(v);
 		});
-		
+
         buildLgaProfileBox(lgaData, variableDictionary.profile_variables);
 //		buildGapAnalysisTable(lgaData);
 		processFacilityDataRequests(lgaQ, {
@@ -259,7 +356,6 @@ function getBoxOrCreateDiv(container, selector, creator) {
     return d
 }
 
-
 function buildLgaProfileBox(lga, dictionary) {
     var oWrap = getBoxOrCreateDiv('.content-inner-wrap', '.profile-data-wrap', ['<div />', {'class':'profile-data-wrap'}])
     var wrap = $("<div />", {'class':'profile-data'})
@@ -283,7 +379,6 @@ function buildLgaProfileBox(lga, dictionary) {
         .appendTo(wrap);
     oWrap.html(wrap);
 }
-
 
 function getGaTable(){
     var gt = $('.widget-outer-wrap').find('div.gap-analysis-table');
@@ -328,6 +423,8 @@ function getColDataDiv() {
 		$('<a />', {'href': '#', 'class': 'close-col-data'})
 		    .text('X')
 		    .click(function(){
+		        iconsShouldReset();
+		        iconsWillReset();
 		        colDataWrap.hide();
 		    })
 		    .appendTo(colDataWrap);
@@ -392,8 +489,6 @@ function ensureValidSectorLevel(level, sector) {
 //                        if(this.id == "facilities-"+_sector) { return true; }
                     }).removeClass('fl-hidden-sector');
 		    (typeof(filterPointsBySector)==='function') && filterPointsBySector(_sector);
-
-            log("changing sector to", _sector);
         }
 
         if(curSectorObj===undefined) { return; }
@@ -407,7 +502,7 @@ function ensureValidSectorLevel(level, sector) {
         if(subSectorExists(fsid)) { if(_fullSectorId !== fsid) { _prevFullSectorId = _fullSectorId; _fullSectorId = fsid; changeSubSector = true; }}
         if(changeSubSector) {
             var ftabs = $(facilityTabsSelector);
-            
+
             (function markSubsectorLinkSelected(stabWrap){
                 var ssList = stabWrap.find('.sub-sector-list');
                 ssList.find('.selected')
@@ -431,7 +526,7 @@ function ensureValidSectorLevel(level, sector) {
     // BEGIN SETTER: viewMode
     var viewModes = 'facility lga'.split(' ');
     var _viewMode, _prevViewMode;
-    
+
     window.__viewMode = null;
     window.setViewMode = function SetViewMode(s){
         var change = false;
@@ -446,7 +541,6 @@ function ensureValidSectorLevel(level, sector) {
             var ftabs = $(facilityTabsSelector);
             ftabs.find('.modeswitch').addClass('fl-hidden-view-mode');
             ftabs.find('.modeswitch.mode-'+_viewMode).removeClass('fl-hidden-view-mode');
-            log("changing view mode to", _viewMode);
         }
         return change;
     }
@@ -517,6 +611,8 @@ function imageUrls(imageSizes, imgId) {
                     position: [pdRight, 106],
                     close: function(){
                         setFacility();
+                        iconsShouldReset();
+                        iconsWillReset();
                     }
                 });
             });
@@ -535,6 +631,19 @@ function imageUrls(imageSizes, imgId) {
         	-*/
         	$.each(facilityData.list, function(i, fdp){
         	    olStyling.markIcon(fdp, facility===fdp ? 'showing' : 'hidden');
+        	});
+        	iconsShould("show selected facility, fade all the others", "unselect the facility");
+
+        	iconsWill(function showFacility(){
+        	    return {
+        	        filterSector: facility.sector,
+        	        showFacility: facility._id
+        	    };
+        	}, function(){
+        	    return {
+        	        filterSector: __sector,
+            	    unShowFacility: facility._id
+            	}
         	});
         } else {
             //unselect facility
@@ -608,13 +717,10 @@ function getTabulations(sector, col, keysArray) {
                     var cdd = getColDataDiv()
                             .html(Mustache.to_html(this.template, data))
                             .css({'height':110});
-
                     if(hasClickAction(column, 'piechart_truefalse')) {
-                        log(cdd);
-            		    var pcWrap = cdd.find('.content').eq(0)
+                        var pcWrap = cdd.find('.content').eq(0)
             		        .attr('id', 'pie-chart')
             		        .empty();
-                        log(pcWrap);
             		    var pieChartDisplayDefinitions = [
                             {'legend':'No', 'color':'#ff5555', 'key': 'false'},
                             {'legend':'Yes','color':'#21c406','key': 'true'},
@@ -636,6 +742,19 @@ function getTabulations(sector, col, keysArray) {
     		if(hasClickAction(column, 'iconify') && column.iconify_png_url !== undefined) {
     		    var t=0, z=0;
     		    var iconStrings = [];
+    		    iconsShould("change to reflect the iconify column", "undo the iconify stuff");
+
+    		    iconsWill(function filterSector(){
+    		        return {
+    		            iconifyUrl: column.iconify_png_url,
+    		            filterSector: sector.slug,
+    		            iconColumn: column.slug
+    		        }
+    		    }, {
+    		        filterSector: __sector,
+                    resetIcons: true
+    		    });
+
     		    $.each(facilityData.list, function(i, fdp){
     		        if(fdp.sectorSlug===sector.slug) {
     		            var iconUrl = column.iconify_png_url + fdp[column.slug] + '.png';
@@ -712,10 +831,13 @@ function buildFacilityTable(outerWrap, data, sectors, lgaData){
         });
         return div;
     }
-    
+
     filterPointsBySector = function(sector){
-        if(sector==='all') {
-            log("show all sectors");
+        if(sector==='overview') {
+            iconsShould("unfilter all the points.");
+            iconsWill({
+                unfilter: true
+            });
         } else {
             //On first load, the OpenLayers markers are not created.
             // this "showHide" function tells us when to hide the markers
@@ -726,6 +848,12 @@ function buildFacilityTable(outerWrap, data, sectors, lgaData){
             }
             $.each(facilityData.list, function(i, pt){
                 showHideMarker(pt, (pt.sector === sector))
+            });
+            iconsShould("filter the points down to sector:"+sector);
+            iconsWill(function(){
+                return {
+                    filterSector: sector
+                }
             });
         }
     }
@@ -741,7 +869,7 @@ function buildFacilityTable(outerWrap, data, sectors, lgaData){
 	    createTableForSectorWithData(sector, facilityData)
 	        .addClass('modeswitch') //possibly redundant.
 	        .appendTo(ftabs);
-	    
+
 	    $('<div />')
 	        .addClass('mode-lga')
 	        .addClass('modeswitch')
@@ -848,7 +976,7 @@ function createTableForSectorWithData(sector, data){
 	if(!sector.columns instanceof Array || !sectorData instanceof Array) {
 	    return;
     }
-    
+
     var thRow = $('<tr />')
                 .append($('<th />', {
                     'text': '#',
@@ -959,7 +1087,7 @@ function createRowForFacilityWithColumns(fpoint, cols, rowNum){
 				});
 				return [num, tot];
 			})(fpoint, cols);
-			
+
 			td.data('decimalValue', valx[0]/valx[1]);
 			td.append($("<span />", {'class':'numerator'}).text(valx[0]))
 			    .append($("<span />", {'class':'div'}).text('/'))
@@ -990,7 +1118,7 @@ var processFacilityDataRequests = (function(dataReq, passedData){
     } else {
 		var data, sectors, noLatLngs=0;
 		facilitySectorSlugs = [];
-		
+
 		passedData === undefined && warn("No data was passed to the page", passedData);
 
 		debugMode && (function validateSectors(s){
@@ -1015,10 +1143,10 @@ var processFacilityDataRequests = (function(dataReq, passedData){
 			});
 			sectors = s;
 		})(passedData.sectors);
-		
+
 		sectors = [];
 		facilitySectorSlugs = [];
-		
+
 		(function(s){
 		    //processing passed sector data.
 		    var slugs = [];
@@ -1030,7 +1158,7 @@ var processFacilityDataRequests = (function(dataReq, passedData){
 		    facilitySectorSlugs = slugs;
 		    sectors = _s;
 		})(passedData.sectors);
-		
+
 		debugMode && (function validateData(d) {
 		    d === undefined && warn('Data must be defined');
 			d.length === undefined && warn("Data must be an array", this);
@@ -1050,7 +1178,7 @@ var processFacilityDataRequests = (function(dataReq, passedData){
 				});
 			});
 		})(passedData.data);
-		
+
 		(function processData(rawData){
 			function makeLatLng(val) {
 				if(val !== undefined) {
@@ -1088,7 +1216,7 @@ var processFacilityDataRequests = (function(dataReq, passedData){
 				list: list //the full list (this is actually an object where the keys are the unique IDs.)
 			};
 		})(passedData.data);
-		
+
 		debugMode && (function printTheDebugStats(){
 			log("" + sectors.length + " sectors were loaded.");
 			var placedPoints = 0;
@@ -1103,7 +1231,7 @@ var processFacilityDataRequests = (function(dataReq, passedData){
 			});
 			log(noLatLngs + " points had no coordinates")
 		})();
-		
+
 		facilityData = data;
 		window._facilityData = data;
 		overviewVariables = passedData.overview;

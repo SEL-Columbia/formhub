@@ -81,7 +81,7 @@ var launchOpenLayers = (function(_opts){
             if(opts.layerSwitcher) {
                 context.map.addControl(new OpenLayers.Control.LayerSwitcher());
             }
-            context.map.setCenter(new OpenLayers.LonLat(opts.centroid.lng, opts.centroid.lat), opts.zoom);
+//            context.map.setCenter(new OpenLayers.LonLat(opts.centroid.lng, opts.centroid.lat), opts.zoom);
             $.each(onScriptLoadFns, function(i, fn){fn.call(context);})
             scriptsFinished = true;
         });
