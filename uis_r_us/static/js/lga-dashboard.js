@@ -71,6 +71,25 @@ var createOurGraph = (function(pieWrap, legend, data, _opts){
 var HandleIcons = (function(){
     // I'm starting to move away from olStyling handling all the icon changes.
     window.zActions = [];
+
+    window.createIcon = function(f, info){
+        var url = info.url;
+        var size = info.size;
+        f.mrkr === undefined && (function(){
+            var s = new OpenLayers.Size(size[0], size[1])
+            var offset = new OpenLayers.Pixel(-(s.w/2), -s.h);
+            f._defaultIconUrl = url;
+            var icon = new OpenLayers.Icon(url, s, offset);
+            f.openLayersLatLng = new OpenLayers.LonLat(f.latlng[1], f.latlng[0])
+                .transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+            f.mrkr = new OpenLayers.Marker(f.openLayersLatLng, icon);
+            f.mrkr.events.register('click', f.mrkr, function(){
+                setFacility(f.uid);
+            });
+        })();
+        return f.mrkr;
+    }
+
     function showHideFacility(f, bool) {
         var m = f.mrkr;
         !!bool && m !== undefined && $(m.icon.imageDiv).show();
@@ -98,6 +117,7 @@ var HandleIcons = (function(){
         var _s = __sector;
         var actions = {
             sector: opts.filterSector !== undefined,
+            unfilter: !!opts.unfilter,
             changeIcon: opts.iconColumn !== undefined,
             resetIcons: !!opts.resetIcons
         };
@@ -107,6 +127,7 @@ var HandleIcons = (function(){
             actions.sector && showHideFacility(f, f.sector === s);
             actions.changeIcon && changeIcon(f, opts.iconColumn, opts.iconifyUrl);
             actions.resetIcons && resetIcon(f)
+            actions.unfilter && showHideFacility(f, true);
         });
         log("icons will ", JSON.stringify(opts));
     }
@@ -629,9 +650,9 @@ function imageUrls(imageSizes, imgId) {
         		}
         	})();
         	-*/
-        	$.each(facilityData.list, function(i, fdp){
-        	    olStyling.markIcon(fdp, facility===fdp ? 'showing' : 'hidden');
-        	});
+            // $.each(facilityData.list, function(i, fdp){
+            //     olStyling.markIcon(fdp, facility===fdp ? 'showing' : 'hidden');
+            // });
         	iconsShould("show selected facility, fade all the others", "unselect the facility");
 
         	iconsWill(function showFacility(){
@@ -647,13 +668,13 @@ function imageUrls(imageSizes, imgId) {
         	});
         } else {
             //unselect facility
-            $.each(facilityData.list, function(i, fdp){
-                if(selectedSector=="all" || fdp.sectorSlug === __sector) {
-                    olStyling.markIcon(fdp, 'showing');
-                } else {
-                    olStyling.markIcon(fdp, 'hidden');
-                }
-        	});
+            //             $.each(facilityData.list, function(i, fdp){
+            //                 if(selectedSector=="all" || fdp.sectorSlug === __sector) {
+            //                     olStyling.markIcon(fdp, 'showing');
+            //                 } else {
+            //                     olStyling.markIcon(fdp, 'hidden');
+            //                 }
+            // });
             $('tr.selected-facility').removeClass('selected-facility');
         }
     }
@@ -758,13 +779,13 @@ function getTabulations(sector, col, keysArray) {
     		    $.each(facilityData.list, function(i, fdp){
     		        if(fdp.sectorSlug===sector.slug) {
     		            var iconUrl = column.iconify_png_url + fdp[column.slug] + '.png';
-    		            olStyling.addIcon(fdp, columnMode, {
-    		                url: iconUrl,
-    		                size: [34, 20]
-    		            });
+                        // olStyling.addIcon(fdp, columnMode, {
+                        //     url: iconUrl,
+                        //     size: [34, 20]
+                        // });
     		        }
             	});
-            	olStyling.setMode(facilityData, columnMode);
+                // olStyling.setMode(facilityData, columnMode);
     		}
     		_selectedColumn = column;
         }
@@ -842,13 +863,13 @@ function buildFacilityTable(outerWrap, data, sectors, lgaData){
             //On first load, the OpenLayers markers are not created.
             // this "showHide" function tells us when to hide the markers
             // on creation.
-            function showHideMarker(pt, tf) {
-                pt.showMrkr = tf;
-                olStyling.markIcon(pt, tf ? 'showing' : 'hidden')
-            }
-            $.each(facilityData.list, function(i, pt){
-                showHideMarker(pt, (pt.sector === sector))
-            });
+            // function showHideMarker(pt, tf) {
+            //     pt.showMrkr = tf;
+            //     olStyling.markIcon(pt, tf ? 'showing' : 'hidden')
+            // }
+            // $.each(facilityData.list, function(i, pt){
+            //     showHideMarker(pt, (pt.sector === sector))
+            // });
             iconsShould("filter the points down to sector:"+sector);
             iconsWill(function(){
                 return {
@@ -926,20 +947,17 @@ function buildFacilityTable(outerWrap, data, sectors, lgaData){
 		$.each(facilityData.list, function(i, d){
             if(d.latlng!==undefined) {
                 d.sectorSlug = (d.sector || 'default').toLowerCase();
-                olStyling.addIcon(d, 'main', {
+                var m = createIcon(d, {
                     url: urlForSectorIcon(d.sectorSlug),
                     size: [34, 20]
                 });
-                var ll = d.latlng;
-                d.openLayersLatLng = new OpenLayers.LonLat(ll[1], ll[0])
-                    .transform(new OpenLayers.Projection("EPSG:4326"),
-                                new OpenLayers.Projection("EPSG:900913"));
-                bounds.extend(d.openLayersLatLng);
+                markers.addMarker(m);
+                bounds.extend(m.lonlat);
             }
     	});
-    	olStyling.setMarkerLayer(markers);
+        // olStyling.setMarkerLayer(markers);
     	this.map.addLayer(markers);
-    	olStyling.setMode(facilityData, 'main');
+        // olStyling.setMode(facilityData, 'main');
 //		this.map.addLayers([tilesat, markers]);
     	this.map.zoomToExtent(bounds);
 	});
