@@ -15,7 +15,7 @@ from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.utils.http import urlquote
 
-def deny_if_unauthorized(permission="xform_manager.can_view"):
+def deny_if_unauthorized(permission="xform_manager.can_view", middleware=False):
     """
     If the user requesting this page has 'permission' show them the
     view, if the user is anonymous redirect them to the login page,
@@ -27,7 +27,9 @@ def deny_if_unauthorized(permission="xform_manager.can_view"):
             # todo: for testing purposes this decorator is turned off
             # this should not be the case, the tests should log in.
             if user.has_perm(permission) or settings.TESTING_MODE:
-                return view_func(request, *args, **kwargs)
+                # Return none to let middleware keep doing its thing.
+                return None if middleware else \
+                    view_func(request, *args, **kwargs)
             elif user.is_anonymous():
                 path = urlquote(request.get_full_path())
                 pair = (settings.LOGIN_URL, path)

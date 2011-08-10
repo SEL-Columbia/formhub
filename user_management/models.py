@@ -5,6 +5,25 @@ email addresses to read the site.
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User, Permission, Group
 from django.db.models.signals import post_save
+from django.db import models
+
+
+class UserRequest(models.Model):
+    user = models.ForeignKey(User)
+    path = models.CharField(max_length=64)
+    date_time = models.DateTimeField(auto_now_add=True)
+
+    def process_request(self, request):
+        """
+        This is a middleware method to record all page requests by
+        user.
+        """
+        if not request.user.is_anonymous():
+            self.__class__.objects.create(
+                user=request.user,
+                path=request.get_full_path(),
+                )
+        return None
 
 
 def get_ta_group():

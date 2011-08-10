@@ -45,7 +45,7 @@ class RequirePermissionMiddleware(object):
         for rule in self.restricted:
             url, required_permission = rule[0], rule[1]
             if url.match(request.path):
-                return deny_if_unauthorized(required_permission)(view_func)(
+                return deny_if_unauthorized(required_permission, True)(view_func)(
                     request, *view_args, **view_kwargs
                     )
 
