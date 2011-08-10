@@ -153,6 +153,7 @@ var HandleIcons = (function(){
 })();
 
 // BEGIN custom openlayers icon functionality
+/*--
 var olStyling = (function(){
     var iconMakers;
     var iconMode;
@@ -216,6 +217,7 @@ var olStyling = (function(){
     }
 })();
 // END custom openlayers icon functionality
+*/
 
 // BEGIN CLOSURE: LGA object
 //   --wraps everything to keep it out of the global scope.
