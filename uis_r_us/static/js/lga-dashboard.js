@@ -152,73 +152,6 @@ var HandleIcons = (function(){
     window.iconsShouldReset = iconsShouldReset;
 })();
 
-// BEGIN custom openlayers icon functionality
-/*--
-var olStyling = (function(){
-    var iconMakers;
-    var iconMode;
-    var markerLayer;
-
-    return {
-        addIcon: function(facility, mode, opts){
-            if(facility.iconModes === undefined) { facility.iconModes = {}; }
-            facility.iconModes[mode] = {
-                'url': opts.url,
-                'size': opts.size
-            };
-        },
-        setMarkerLayer: function(ml){
-            markerLayer = ml;
-        },
-        setMode: function(facilityData, mode){
-            $.each(facilityData.list, function(k, fac){
-                if(fac.iconModes && fac.iconModes[mode] !== undefined) {
-                    var iconModeData = fac.iconModes[mode];
-                    if(iconModeData.size instanceof OpenLayers.Size) {
-                        var size = iconModeData.size;
-                    } else {
-                        var size = new OpenLayers.Size(iconModeData.size[0], iconModeData.size[1]);
-                    }
-                    var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-                    var url = iconModeData.url;
-                    if(fac.mrkr === undefined) {
-                        fac._defaultIconUrl = url;
-                        var icon = new OpenLayers.Icon(url, size, offset);
-                        fac.mrkr = new OpenLayers.Marker(fac.openLayersLatLng, icon);
-                        fac.mrkr.events.register('click', fac.mrkr, function(){
-                            setFacility(fac.uid);
-                        });
-                        markerLayer.addMarker(fac.mrkr);
-                    } else {
-//                        fac.mrkr.icon.setSize(size);
-//                        fac.mrkr.icon.setUrl(iconModeData.url);
-                    }
-                }
-            });
-        },
-        markIcon: function(pt, status){
-            var mrkr = pt.mrkr;
-            if(mrkr === undefined) { return; }
-            if(status==='hidden') {
-//                $(mrkr.icon.imageDiv).hide();
-            } else if(status==='showing') {
-//                $(mrkr.icon.imageDiv).show();
-            }
-        },
-        changeIcon: function(facility, data){
-            if(data===undefined) {return;}
-            if(facility.mrkr !== undefined) {
-                var iconSize = new OpenLayers.Size(16,16);
-                var url = data.url;
-                facility.mrkr.icon.setSize(iconSize);
-                facility.mrkr.icon.setUrl(url);
-            }
-        }
-    }
-})();
-// END custom openlayers icon functionality
-*/
-
 // BEGIN CLOSURE: LGA object
 //   --wraps everything to keep it out of the global scope.
 var lga = (function(){
@@ -806,6 +739,12 @@ function setSummaryHtml(html) {
     return $('.summary-p').html(html);
 }
 
+function findSector(sectorSlug){
+    return $(facilitySectors).filter(function(i, _s){
+        return _s.slug == sectorSlug
+    }).get(0);
+}
+
 function buildFacilityTable(outerWrap, data, sectors, lgaData){
     function _buildOverview(){
         var div = $('<div />');
@@ -822,11 +761,10 @@ function buildFacilityTable(outerWrap, data, sectors, lgaData){
                 }
             });
             $.each(varsBySector, function(sectorSlug, variables){
-                sectors.push({
-                    name: sectorSlug,
-                    slug: sectorSlug,
+                var s = findSector(sectorSlug);
+                sectors.push($.extend(s, {
                     variables: variables
-                });
+                }));
             });
             var overviewTabs = Mustache.to_html(this.template, {
                 sectors: sectors
@@ -838,9 +776,11 @@ function buildFacilityTable(outerWrap, data, sectors, lgaData){
     function _buildSectorOverview(s){
         var div = $('<div />');
         getMustacheTemplate('lga_sector_overview', function(){
+            var sectorObj = findSector(s);
             var data = {
                 variables: []
             };
+            data.name = sectorObj.name;
             $.each(overviewVariables, function(i, variable){
                 if(!variable.in_overview && !!variable.in_sector && variable.sector == s) {
                     data.variables.push({
@@ -902,14 +842,14 @@ function buildFacilityTable(outerWrap, data, sectors, lgaData){
     	    .data('viewModeSlug', 'facility')
     	    .appendTo(ftabs);
 	});
-	$('<div />')
-	    .addClass('modeswitch')
-	    .addClass('mode-facility')
-	    .addClass('sector-overview')
-	    .text('THIS IS THE OVERVIEW at the FACILITY LEVEL')
-	    .data('sectorSlug', 'overview')
-	    .data('viewModeSlug', 'facility')
-	    .appendTo(ftabs);
+    // $('<div />')
+    //     .addClass('modeswitch')
+    //     .addClass('mode-facility')
+    //     .addClass('sector-overview')
+    //     .text('THIS IS THE OVERVIEW at the FACILITY LEVEL')
+    //     .data('sectorSlug', 'overview')
+    //     .data('viewModeSlug', 'facility')
+    //     .appendTo(ftabs);
 	$('<div />')
 	    .addClass('modeswitch')
 	    .addClass('mode-lga')
@@ -1053,6 +993,7 @@ function createTableForSectorWithData(sector, data){
     	return subSectors;
 	})($('<div />', {'class': 'sub-sector-list no-select'}), $("<span />").text(" | "));
 
+    var sectorTitle = $('<h2 />').text(sector.name);
     var table = $('<table />')
                     .addClass('facility-list')
                     .append($('<thead />').html(thRow))
@@ -1063,6 +1004,7 @@ function createTableForSectorWithData(sector, data){
 	    .addClass('mode-facility')
 	    .addClass('sector-'+sector.slug)
 	    .data('sectorSlug', sector.slug)
+	    .append(sectorTitle)
 	    .append(subSectors)
 	    .append(table);
 }
