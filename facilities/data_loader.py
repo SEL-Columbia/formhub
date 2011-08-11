@@ -439,5 +439,6 @@ def load_lgas(lga_ids, individually=True):
         lga_ids = [l['id'] for l in lgas_with_data]
     data_loader = DataLoader()
     for lga_id in lga_ids:
-        data_loader.load(lgas=[lga_id])
+        data_loader.load([lga_id])
+        print "Finished loading LGA: %s" % (str(lga_id))
     data_loader.print_stats()
