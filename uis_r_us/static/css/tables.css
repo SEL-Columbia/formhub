@@ -1,6 +1,9 @@
 table.ptable {
     border-spacing: 0;
 }
+table tbody th {
+text-align: left;
+}
 table.ptable th {
     padding: 2px 6px;
 }
