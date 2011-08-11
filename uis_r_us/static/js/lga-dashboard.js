@@ -119,15 +119,20 @@ var HandleIcons = (function(){
             sector: opts.filterSector !== undefined,
             unfilter: !!opts.unfilter,
             changeIcon: opts.iconColumn !== undefined,
+            showFacility: opts.showFacility !== undefined,
             resetIcons: !!opts.resetIcons
         };
         var c = 0;
         var _c = 0;
         $.each(facilityData.list, function(id, f){
-            actions.sector && showHideFacility(f, f.sector === s);
+            if(s==='overview' || actions.unfilter) {
+                actions.sector && showHideFacility(f, true);
+            } else {
+                actions.sector && showHideFacility(f, f.sector === s);
+            }
             actions.changeIcon && changeIcon(f, opts.iconColumn, opts.iconifyUrl);
-            actions.resetIcons && resetIcon(f)
-            actions.unfilter && showHideFacility(f, true);
+            actions.resetIcons && resetIcon(f);
+            actions.showFacility && showHideFacility(f, opts.showFacility===f._id),
         });
         log("icons will ", JSON.stringify(opts));
     }
@@ -592,7 +597,7 @@ function imageUrls(imageSizes, imgId) {
 
         	iconsWill(function showFacility(){
         	    return {
-        	        filterSector: facility.sector,
+//        	        filterSector: facility.sector,
         	        showFacility: facility._id
         	    };
         	}, function(){
