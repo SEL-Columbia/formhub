@@ -317,6 +317,11 @@ function getBoxOrCreateDiv(container, selector, creator) {
     return d
 }
 
+window.hideProfileBox = function() {
+    $('.profile-data-wrap').addClass('hidden');
+    $('.profile-toggle').removeClass('active-button');
+}
+
 function buildLgaProfileBox(lga, dictionary) {
     var oWrap = getBoxOrCreateDiv('.content-inner-wrap', '.profile-data-wrap', ['<div />', {'class':'profile-data-wrap'}])
     var wrap = $("<div />", {'class':'profile-data'})
