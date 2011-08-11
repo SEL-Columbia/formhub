@@ -118,12 +118,10 @@ def deploy(deployment_name, reload="none"):
             _run_in_virtualenv("python manage.py load_fixtures %s" % flag)
 
     if reload == "all":
-        reload_fixtures()
+        print "Loading all data in from csvs."
+        reload_fixtures("-S")
     elif reload == "limit":
         reload_fixtures("--limit")
-    elif reload == "table_defs":
-        with cd(env.code_path):
-            _run_in_virtualenv("python manage.py load_table_defs")
 
     def collect_static():
         with cd(env.code_path):
