@@ -13,6 +13,8 @@ from utils.timing import print_time
 from django.conf import settings
 import codecs
 
+from django.core.mail import mail_admins
+import sys
 
 class DataLoader(object):
 
@@ -44,11 +46,25 @@ class DataLoader(object):
             lga.save()
         for lga in lgas:
             self.lga_ids = [str(lga.id)]
-            self.load_data()
-            self.load_calculations()
-            lga.data_load_in_progress = False
-            lga.data_loaded = True
-            lga.save()
+            try:
+                self.load_data()
+                self.load_calculations()
+                lga.data_load_in_progress = False
+                lga.data_loaded = True
+                lga.save()
+            except KeyboardInterrupt:
+                sys.exit(0)
+            except Exception, e:
+                lga.data_load_in_progress = False
+                lga.data_loaded = False
+                lga.save()
+                mail_admins("Problems with loading data from lga id: %s" % str(lga.id),
+                """I wasn't gonna say anything but [LGA ID:%s] is seriously causing problems with the load script. You guys might want to check it out.
+
+Sincerely,
+NMIS
+
+PS. some exception data: %s""" % (str(lga.id), str(e)))
         self.lga_ids = lga_ids
 
     @print_time
