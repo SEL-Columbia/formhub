@@ -122,6 +122,8 @@ def deploy(deployment_name, reload="none"):
         reload_fixtures("-S")
     elif reload == "limit":
         reload_fixtures("--limit")
+    elif reload == "table_defs":
+        reload_fixtures("load_table_defs")
 
     def collect_static():
         with cd(env.code_path):
