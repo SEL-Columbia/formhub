@@ -132,7 +132,7 @@ var HandleIcons = (function(){
             }
             actions.changeIcon && changeIcon(f, opts.iconColumn, opts.iconifyUrl);
             actions.resetIcons && resetIcon(f);
-            actions.showFacility && showHideFacility(f, opts.showFacility===f._id),
+            actions.showFacility && showHideFacility(f, opts.showFacility===f._id);
         });
         log("icons will ", JSON.stringify(opts));
     }
