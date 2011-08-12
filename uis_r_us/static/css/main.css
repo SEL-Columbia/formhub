@@ -494,7 +494,7 @@ div.toggleable.hidden {
 	-webkit-user-select: none;
 }
 div.display-box {
-	background-color: #fff;
+	background-color: #000;
 }
 div.display-box .occurrences {
 	margin-left: 4px;
@@ -524,8 +524,8 @@ div.db-l h2.db-title {
 	font-size: 15px;
 }
 div.db-r, div.db-l h2.db-title, div.db-l .db-l-content {
-	color: #000;
-	background-color: rgba(255,255,255,0.7);
+	color: #fff;
+
 }
 div.db-r div.content {
 	margin: 3px 6px;
@@ -729,4 +729,25 @@ table.facility-list td.col-school_name, table.facility-list td.col-facility_name
 	border: 0 none;
 	margin: -3px 0;
 	height: 34px;
+}
+
+
+
+.sector-overview {
+    padding: 0 12px;
+}
+.sector-overview h2 {
+    margin: 6px 0;
+}
+.sector-overview table {
+    width: 100%;
+}
+.sector-overview table th:nth-child(2) {
+    width: 200px;
+}
+.sector-overview table td:last-child {
+text-align: center;
+}
+.sector-overview table td {
+    padding: 3px;
 }
