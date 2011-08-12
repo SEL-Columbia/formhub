@@ -215,6 +215,9 @@ var mapBar = (function(){
 	}
 })();
 
+var tmpLegendData = {};
+$.getJSON('/static/tmp_legend_data.json').done(function(d, req){ tmpLegendData = d; });
+
 var modes = {
 	home: {
 		enter: function(){
@@ -357,11 +360,14 @@ $(function(){
 				};
 				__map = this.map;
 				this.map.setCenter(new OpenLayers.LonLat(n.lon, n.lat), n.z);
+				var mlLegend = $('<div />')
+							.addClass('mn-legend');
 				var mn = $('<div />')
 							.addClass('mn-iwrap');
 				var mnw = $('<div />')
 							.addClass('mn-iiwrap')
 							.append(mn)
+							.append(mlLegend)
 							.appendTo(mapNavWrap);
 				var layerNav = $('<div />')
 						.addClass('layer-nav')
@@ -420,6 +426,27 @@ $(function(){
 								mdgDisplay.html(mdgT);
 							} else {
 								mdgDisplay.empty();
+							}
+							var legendData = tmpLegendData[layerObj.slug];
+							if(legendData !== undefined) {
+								$('.mn-legend').addClass('open').html((function(ld){
+									var tbody = $('<tbody />');
+									$(ld).each(function(i, lv){
+										var tr = $('<tr />');
+										var styl = { 'background-color': lv.color };
+										if(lv.opacity !== undefined) { styl.opacity = lv.opacity; }
+										var colorSpan = $('<span />')
+												.addClass('color-span')
+												.css(styl)
+												.html("&nbsp;");
+										tr.append($('<td />').html(colorSpan));
+										tr.append($('<td />').html($('<p />').text(lv.value)));
+										tbody.append(tr);
+									});
+									return $('<table />').html(tbody);
+								})(legendData));
+							} else {
+								$('.mn-legend').removeClass('open').html('');
 							}
 							layerDescription.empty();
 							var hideBox = true;

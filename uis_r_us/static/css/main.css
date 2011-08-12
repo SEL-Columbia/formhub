@@ -751,3 +751,26 @@ text-align: center;
 .sector-overview table td {
     padding: 3px;
 }
+.mn-legend {
+    position: absolute;
+    bottom: 10px;
+    left: -160px;
+    width: 140px;
+    background-color: #fff;
+    border: 1px solid #555;
+    border-radius: 3px;
+    padding: 2px 4px;
+    display: none;
+}
+.mn-legend.open {
+    display: block;
+}
+.mn-legend p {
+    margin: 0;
+    font-size: 11px;
+    color: #333;
+}
+.mn-legend span.color-span {
+    display: block;
+    width: 30px;
+}
