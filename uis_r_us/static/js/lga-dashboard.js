@@ -507,6 +507,11 @@ function ensureValidSectorLevel(level, sector) {
             var ftabs = $(facilityTabsSelector);
             ftabs.find('.modeswitch').addClass('fl-hidden-view-mode');
             ftabs.find('.modeswitch.mode-'+_viewMode).removeClass('fl-hidden-view-mode');
+            if(_viewMode==="lga") {
+                ftabs.height(460);
+            } else {
+                ftabs.height(220);
+            }
         }
         return change;
     }
