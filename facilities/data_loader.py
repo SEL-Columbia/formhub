@@ -301,6 +301,7 @@ PS. some exception data: %s""" % (str(lga.id), str(e)))
             FacilityTable.objects.all().delete()
             TableColumn.objects.all().delete()
             ColumnCategory.objects.all().delete()
+            MapLayerDescription.objects.all().delete()
         delete_existing_table_defs()
         subgroups = {}
         def load_subgroups():
