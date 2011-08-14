@@ -10,5 +10,7 @@ xlrd==0.7.1
 # sql alchemy is used for importing data from the phones
 SQLAlchemy==0.7.1
 
-#django-registration==0.7
-https://bitbucket.org/ubernostrum/django-registration/downloads/django-registration-0.8-alpha-1.tar.gz
+# This version fails tests-- 
+#...  https://bitbucket.org/ubernostrum/django-registration/downloads/django-registration-0.8-alpha-1.tar.gz
+# This commit passes tests ( _MockRequestClient.environ needs 'wsgi.input')--
+https://bitbucket.org/ubernostrum/django-registration/get/fad7080fe769.tar.gz
