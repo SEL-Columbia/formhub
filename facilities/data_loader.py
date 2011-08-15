@@ -310,15 +310,14 @@ PS. some exception data: %s""" % (str(lga.id), str(e)))
                 subgroups[sg['slug']] = sg['name']
             return subgroups
         load_subgroups()
-        table_types = [
-            ("Health", "health"),
-            ("Education", "education"),
-            ("Water", "water")
-        ]
+        table_types = self._config['table_definitions']
         def load_table_types(table_types):
-            for name, slug in table_types:
+            for tt_data in table_types:
+                name = tt_data['name']
+                slug = tt_data['slug']
+                data_source = tt_data['data_source']
                 curtable = FacilityTable.objects.create(name=name, slug=slug)
-                csv_reader = CsvReader(os.path.join(self._data_dir,"table_definitions", "%s.csv" % slug))
+                csv_reader = CsvReader(os.path.join(self._data_dir,"table_definitions", data_source))
                 display_order = 0
                 for input_d in csv_reader.iter_dicts():
                     subs = []
