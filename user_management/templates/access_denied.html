@@ -4,7 +4,7 @@
 {% block page_title %}Access Denied{% endblock %}
 
 {% block content %}
-<div class='content-inner-wrap'>
+
 {% if user.is_authenticated %}
 	<p>
 		I'm sorry, but at the moment your account has not been
@@ -23,5 +23,5 @@
 		<a href="{% url auth_login %}">{% trans "Log in" %}</a>
 	</p>
 {% endif %}
-</div>
+
 {% endblock %}

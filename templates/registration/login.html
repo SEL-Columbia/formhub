@@ -6,14 +6,13 @@
 {% block account_links %}{% endblock %}
 
 {% block content %}
-<div class='content-inner-wrap'>
-  <p>
-    Welcome to the Nigeria MDGs Information System. In order to log in
-    you need a username and password. Please register
-     <a href="{% url registration_register %}">here</a> to get a
-    username and
-    password. To log in please fill in the form below.
-  </p>
+<p>
+  Welcome to the Nigeria MDGs Information System. In order to log in
+  you need a username and password. Please register
+   <a href="{% url registration_register %}">here</a> to get a
+  username and
+  password. To log in please fill in the form below.
+</p>
 
 <form method="post" action=".">
   <table>
@@ -33,5 +32,4 @@
   If you forget your username please email
   <a href="mailto:{{user_manager_email}}?subject=Forgot%20Password">OSSAP</a>.
 </p>
-</div>
 {% endblock %}

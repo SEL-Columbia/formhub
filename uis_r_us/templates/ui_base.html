@@ -62,7 +62,9 @@
 			{% if navs %}
 			{% include 'embed_nav.html' %}
 			{% endif %}
-			{% block content %}{% endblock %}
+			<div class="content-inner-wrap">
+				{% block content %}{% endblock %}
+			</div>
 		</div>
 	</div>
 	{% if site_title %}
