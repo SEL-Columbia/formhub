@@ -51,7 +51,7 @@ def add_user_to_groups_based_on_email_address(sender, **kwargs):
     user = kwargs["instance"]
     assert isinstance(user, User)
     technical_assistants = get_ta_group()
-    if user.email.endswith('@mdgs.gov.ng') and \
+    if (user.email.endswith('@mdgs.gov.ng') or user.email.endswith('@ei.columbia.edu')) and \
             technical_assistants not in user.groups.all():
         user.groups.add(technical_assistants)
 

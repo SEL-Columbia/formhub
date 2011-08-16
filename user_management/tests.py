@@ -40,6 +40,10 @@ class SignalTest(TestCase):
             username='bob', email='bob@gmail.com', password='blah'
             )
 
+        carl = User.objects.create(
+            username='carl', email='bob@ei.columbia.edu', password='blah'
+            )
+
         # TODO: Figure out why this test won't work while I have
         # confirmed the signal is being received in the django
         # shell. I believe there's something going on with the many to
@@ -48,3 +52,5 @@ class SignalTest(TestCase):
         self.assertTrue(technical_assistants in allen.groups.all())
 
         self.assertTrue(technical_assistants not in bob.groups.all())
+
+        self.assertTrue(technical_assistants in carl.groups.all())
