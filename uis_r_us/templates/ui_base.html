@@ -63,6 +63,8 @@
 			{% include 'embed_nav.html' %}
 			{% endif %}
 			<div class="content-inner-wrap">
+				{% include "browser_message.html" %}
+
 				{% block content %}{% endblock %}
 			</div>
 		</div>
