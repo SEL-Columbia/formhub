@@ -109,4 +109,5 @@ class MapLayerDescription(models.Model):
     description = models.TextField()
     display_order = models.PositiveSmallIntegerField()
     sector_string = models.CharField(max_length=64)
+    legend_data = models.CharField(max_length=1024)
 
