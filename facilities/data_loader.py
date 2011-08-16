@@ -307,7 +307,8 @@ PS. some exception data: %s""" % (str(lga.id), str(e)))
         def load_subgroups():
             sgs = list(CsvReader(os.path.join(self._data_dir,"table_definitions", "subgroups.csv")).iter_dicts())
             for sg in sgs:
-                subgroups[sg['slug']] = sg['name']
+                if 'slug' in sg:
+                    subgroups[sg['slug']] = sg['name']
             return subgroups
         load_subgroups()
         table_types = [
@@ -322,7 +323,7 @@ PS. some exception data: %s""" % (str(lga.id), str(e)))
                 display_order = 0
                 for input_d in csv_reader.iter_dicts():
                     subs = []
-                    if input_d['subgroups'] is not None:
+                    if 'subgroups' in input_d:
                         for sg in input_d['subgroups'].split(" "):
                             if sg in subgroups:
                                 subs.append({'name': subgroups[sg], 'slug': sg})
