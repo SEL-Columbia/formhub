@@ -517,11 +517,15 @@ div.db-r {
 	margin-left: 0;
 }
 div.db-l .db-l-content {
-	margin-top: 4px;
+	margin-top: 2px;
+}
+div.db-l .db-l-content h1 {
+    font-size: 17px;
+    margin: 1px 0;
 }
 div.db-l h2.db-title {
-	padding: 3px 0 4px;
-	font-size: 15px;
+	padding: 3px 0;
+	font-size: 13px;
 }
 div.db-r, div.db-l h2.db-title, div.db-l .db-l-content {
 	color: #fff;
