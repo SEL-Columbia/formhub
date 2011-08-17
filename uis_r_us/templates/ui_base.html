@@ -37,10 +37,11 @@
 		<div class="account_links">
 			{% if user.is_authenticated %}
 			{% trans "Logged in" %}: {{ user.username }} 
-			(<a href="{% url auth_logout %}">{% trans "Log out" %}</a>)
+			(<a href="{% url auth_logout %}">{% trans "Log out" %}</a>
+                        | <a href="http://nmis.tenderapp.com/">{% trans "Help" %}</a>)
 			{% else %}
 			<a href="{% url auth_login %}">{% trans "Log in" %}</a>
-			{% endif %}
+                        | <a href="http://nmis.tenderapp.com/">{% trans "Help" %}</a>			{% endif %}
                         {% endblock %}
 		</div>
 		</div>
