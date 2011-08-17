@@ -26,11 +26,17 @@ var launchOpenLayers = (function(_opts){
     }
     var onScriptLoadFns = [];
     function loadScripts() {
-        $.ajax({
+        var openlayers = $.ajax({
+            url: '/static/js/libs/wax.ol.min.js',
+            dataType: 'script',
+            cache: false
+        });
+        var wax = $.ajax({
             url: '/static/js/libs/OpenLayers.js',
             dataType: 'script',
             cache: false
-        }).done(function(){
+        });
+        $.when(openlayers, wax).done(function(){
             if(!!loadingMessageElement) {
                 loadingMessageElement.hide();
             }
