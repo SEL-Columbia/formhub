@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block head %}
-<style type="text/css" media="screen">
-</style>
+<link rel="stylesheet" href="/static/css/wax-controls.css" type="text/css" media="all" charset="utf-8">
 <link rel="stylesheet" href="/static/openlayers/default/style.css" type="text/css" media="all" charset="utf-8">
 {% endblock %}
 
@@ -378,6 +377,9 @@ $(function(){
 						.appendTo(mn);
 				var that = this;
 				(function createLayerSwitcher(){
+					//this == window
+					// we no longer can call this.map,
+					// so we have to call that.map instead.
 					var s = $('<select />')
 								.attr('title', 'Please select an indicator map...')
 								.append($('<option />'))
@@ -409,6 +411,14 @@ $(function(){
 					s.change(function(){
 						var layerId = $(this).val();
 						var OLlayer = that.mapLayers[layerId];
+						var curWax = that.waxLayerDict[layerId];
+						if(that.activeWax !== undefined) {
+							that.map.removeControl(that.activeWax);
+						}
+						if(curWax !== undefined) {
+							that.map.addControl(curWax);
+							that.activeWax = curWax;
+						}
 						if(OLlayer!==undefined) {
 							that.map.setBaseLayer(OLlayer);
 						}
