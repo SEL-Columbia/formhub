@@ -1,59 +1,14 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
-<html> 
-<head> 
-	<title>User Requests</title> 
-	
-	<meta name="robots" content="index,follow" /> 
-	
-	<meta name="title" content="Bob's Blog - Crafting Software: jQuery Auto-Filtering Table" /> 
-	<meta content="text/html; charset=UTF-8" http-equiv="content-type" /> 
-	<meta name="description" content="Thought on developing software and testing: jQuery Auto-Filtering Table" /> 
-	<meta name="keywords" content="" /> 
-
-	
-	<link rel="alternate" type="application/rss+xml" title="RSS" href="http://www.silverwareconsulting.com/rss.cfm?mode=full" /> 
- 
-	<script type="text/javascript"> 
-	function launchComment(id) {
-		cWin = window.open("http://www.silverwareconsulting.com/addcomment.cfm?id="+id,"cWin","width=550,height=700,menubar=yes,personalbar=no,dependent=true,directories=no,status=yes,toolbar=no,scrollbars=yes,resizable=yes");
-	}
-	function launchTrackback(id) {
-		cWin = window.open("http://www.silverwareconsulting.com/trackbacks.cfm?id="+id,"cWin","width=550,height=500,menubar=yes,personalbar=no,dependent=true,directories=no,status=yes,toolbar=no,scrollbars=yes,resizable=yes");
-	}
-	</script> 
-</head> 
- 
- 
-				
-
-<script src="/static/js/jquery.js" type="text/javascript"></script>
-<script type="text/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
-<script type="text/javascript" src="/static/js/jquery.uitablefilter.js"></script>
+{% extends 'base.html' %}
+{% block head %}
 <link rel="stylesheet" href="/static/css/tablesorter/style.css" type="text/css" media="print, projection, screen" />
-
-	<script type="text/javascript">
-	$(document).ready(function() {
-		var $table = $("#myTable")
-			.tablesorter({widthFixed: true, widgets: ['zebra']});
-		FilterText = "";
-		ColumnArray = ["State", "LGA", "User"];
-		for (i=0;i<ColumnArray.length;i++) {
-			$("#myTable tbody tr").find("td:eq(" + i + ")").click( function() {
-				clickedText = $(this).text();
-				FilterText = ((FilterText == clickedText) ? "" : clickedText );
-				$.uiTableFilter( $table, FilterText, ColumnArray[i]);
-			});
-		}
-	});
-	</script>
-
+{% endblock %}
+{% block content %}
 <table cellpadding="2" cellspacing="0" class="tablesorter" id="myTable">
   <thead>
     <tr>
       {% for header in headers %}<th>{{ header }}</th>{% endfor %}
     </tr>
   </thead>
-
   <tbody>
     {% for row in table %}
     <tr>
@@ -62,12 +17,25 @@
     {% endfor %}
   </tbody>
 <table>
+{% endblock %}
+{% block js %}
+<script type="text/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.uitablefilter.js"></script>
+<script type="text/javascript"> 
 
+$(function() {
+	var $table = $("#myTable")
+		.tablesorter({widthFixed: true, widgets: ['zebra']});
+	FilterText = "";
+	ColumnArray = ["State", "LGA", "User"];
+	for (i=0;i<ColumnArray.length;i++) {
+		$table.find('tbody tr').find("td:eq(" + i + ")").click( function() {
+			clickedText = $(this).text();
+			FilterText = ((FilterText == clickedText) ? "" : clickedText );
+			$.uiTableFilter( $table, FilterText, ColumnArray[i]);
+		});
+	}
+});
 
-
-
- 
-</body> 
-</html> 
-
-
+</script>
+{% endblock %}
