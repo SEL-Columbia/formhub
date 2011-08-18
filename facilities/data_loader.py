@@ -311,7 +311,6 @@ PS. some exception data: %s""" % (str(lga.id), str(e)))
                     subgroups[sg['slug']] = sg['name']
             return subgroups
         load_subgroups()
-        table_types = self._config['table_definitions']
         def load_table_types(table_types):
             for tt_data in table_types:
                 name = tt_data['name']
@@ -335,12 +334,30 @@ PS. some exception data: %s""" % (str(lga.id), str(e)))
                         curtable.add_variable(d)
                     except:
                         print "Error importing table definition for data: %s" % input_d
-        load_table_types(table_types)
-        def load_layer_descriptions():
-            layer_descriptions = list(CsvReader(os.path.join(self._data_dir,"map_layers", "layer_details.csv")).iter_dicts())
-            for layer in layer_descriptions:
-                MapLayerDescription.objects.get_or_create(**layer)
-        load_layer_descriptions()
+        load_table_types(self._config['table_definitions'])
+        def load_layer_descriptions(ld):
+            for layer_file in ld:
+                file_name = os.path.join(self._data_dir,"map_layers", layer_file['data_source'])
+                layer_descriptions = list(CsvReader(file_name).iter_dicts())
+                if layer_file['type'] == "layers":
+                    for layer in layer_descriptions:
+                        MapLayerDescription.objects.get_or_create(**layer)
+                elif layer_file['type'] == "legend_data":
+                    layers = defaultdict(list)
+                    for layer in layer_descriptions:
+                        lslug = layer['slug']
+                        lstr = ','.join([layer['value'],\
+                                        layer['opacity'],\
+                                        layer['color']])
+                        layers[lslug].append(lstr)
+                    for layer_slug, legend_values in layers.items():
+                        try:
+                            ml = MapLayerDescription.objects.get(slug=layer_slug)
+                            ml.legend_data = ';'.join(legend_values)
+                            ml.save()
+                        except MapLayerDescription.DoesNotExist:
+                            continue
+        load_layer_descriptions(self._config['map_layers'])
 
     @print_time
     def load_surveys(self):

@@ -213,9 +213,9 @@ var mapBar = (function(){
 	}
 })();
 
-var tmpLegendData = {};
-$.getJSON('/static/tmp_legend_data.json').done(function(d, req){ tmpLegendData = d; });
-
+// var tmpLegendData = {};
+// $.getJSON('/static/tmp_legend_data.json').done(function(d, req){ tmpLegendData = d; });
+// 
 var modes = {
 	home: {
 		enter: function(){
@@ -425,11 +425,23 @@ $(function(){
 							} else {
 								mdgDisplay.empty();
 							}
-							var legendData = tmpLegendData[layerObj.slug];
-							if(legendData !== undefined) {
-								$('.mn-legend').addClass('open').html((function(ld){
+							//legendDataStr comes compacted into a string.
+							var legendDataStr = layerObj.legend_data,
+								legendData = [];
+							if(!~['', undefined].indexOf(legendDataStr)) {
+								$.each(legendDataStr.split(';'), function(i, x){
+									if(x!=='') {
+										x = x.split(',');
+										legendData.push({
+											value: x[0],
+											opacity: x[1],
+											color: x[2]
+										});
+									}
+								});
+								$('.mn-legend').addClass('open').html((function(){
 									var tbody = $('<tbody />');
-									$(ld).each(function(i, lv){
+									$(legendData).each(function(i, lv){
 										var tr = $('<tr />');
 										var styl = { 'background-color': lv.color };
 										if(lv.opacity !== undefined) { styl.opacity = lv.opacity; }
@@ -442,7 +454,7 @@ $(function(){
 										tbody.append(tr);
 									});
 									return $('<table />').html(tbody);
-								})(legendData));
+								})());
 							} else {
 								$('.mn-legend').removeClass('open').html('');
 							}
