@@ -281,7 +281,7 @@ $(function(){
 		
 		//preparing the list of layers for "launchOpenLayers"
 		var _layerIdsAndNames = $.map(layerData, function(layer, i){
-			return [[layer.name, layer.slug]]
+			return [[layer.name, layer.slug, layer.level_key, layer.indicator_key]]
 		});
 		var layerIdsAndNames = [["Nigeria", "nigeria_base"]].concat(_layerIdsAndNames);
 		this.get(pageRootUrl, function(){

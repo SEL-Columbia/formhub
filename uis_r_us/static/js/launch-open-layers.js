@@ -27,16 +27,17 @@ var launchOpenLayers = (function(_opts){
     var onScriptLoadFns = [];
     function loadScripts() {
         var openlayers = $.ajax({
-            url: '/static/js/libs/wax.ol.min.js',
-            dataType: 'script',
-            cache: false
-        });
-        var wax = $.ajax({
             url: '/static/js/libs/OpenLayers.js',
             dataType: 'script',
             cache: false
+        }).done(function(){
+            $.ajax({
+                url: '/static/js/libs/wax.ol.min.js',
+                dataType: 'script',
+                cache: false
+                }).done(scriptsAreLoaded);
         });
-        $.when(openlayers, wax).done(function(){
+        function scriptsAreLoaded(){
             if(!!loadingMessageElement) {
                 loadingMessageElement.hide();
             }
@@ -54,6 +55,7 @@ var launchOpenLayers = (function(_opts){
             var mapId = mapElem.get(0).id;
             var mapserver = opts.tileUrl;
             var mapLayerArray = [];
+            var interactionArray = [];
             context.mapLayers = {};
             $.each(opts.overlays, function(k, ldata){
                 var ml = new OpenLayers.Layer.TMS(ldata[0], [mapserver],
@@ -75,12 +77,25 @@ var launchOpenLayers = (function(_opts){
                 mapLayerArray.push(ml);
                 context.mapLayers[ldata[1]] = ml;
                 });
-            
+            $.each(opts.layers, function(k, ldata){
+                if(ldata[2] != undefined && ldata[2] != '' && ldata[3] != undefined && ldata[3] != '') {
+                    base_url = mapserver + '1.0.0/' + ldata[1] + '/{z}/{x}/{y}';
+                    interaction = new wax.ol.Interaction({
+                        tilejson: '1.0.0',
+                        scheme: 'tms',
+                        tiles: [base_url + '.png'],
+                        grids: [base_url + '.grid.json'],
+                        formatter: function(options, data) { log(data); return data; }
+                        });
+                    interactionArray.push(interaction);
+                }
+            });
             if(!mapId) {mapId = mapElem.get(0).id= "-openlayers-map-elem"}
             context.map = new OpenLayers.Map(mapId, options);
             var googleSat = new OpenLayers.Layer.Google( "Google", {type: 'satellite'});
             mapLayerArray.push(googleSat);
             context.map.addLayers(mapLayerArray);
+            context.map.addControls(interactionArray);
             if(opts.defaultLayer==='google') {
                 context.map.setBaseLayer(googleSat);
             }
@@ -90,7 +105,7 @@ var launchOpenLayers = (function(_opts){
 //            context.map.setCenter(new OpenLayers.LonLat(opts.centroid.lng, opts.centroid.lat), opts.zoom);
             $.each(onScriptLoadFns, function(i, fn){fn.call(context);})
             scriptsFinished = true;
-        });
+        }
     }
     function loadGoogleMaps() {
         $('body').append($("<script />", {src: "http://maps.google.com/maps/api/js?sensor=false&callback=loadOpenLayers"}));
