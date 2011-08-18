@@ -339,6 +339,7 @@ a.close-col-data {
 .column-data {
     margin: 4px 12px;
 	color: #fff;
+	background-color: #222;
 	background-color: rgba(0,0,0,0.5);
 	border: 0 none;
 	border-radius: 3px;
@@ -493,9 +494,6 @@ div.toggleable.hidden {
 	-khtml-user-select: none;
 	-webkit-user-select: none;
 }
-div.display-box {
-	background-color: #000;
-}
 div.display-box .occurrences {
 	margin-left: 4px;
 	font-size: 11px;
@@ -510,22 +508,26 @@ div.db-l-w, div.db-r-w {
 div.db-r-w  {
 	float: right;
 }
-div.db-l, div.db-r {
+div.db, div.db-l, div.db-r {
 	margin: 5px 12px 5px;
 }
+div.db-content {}
 div.db-r {
 	margin-left: 0;
 }
 div.db-l .db-l-content {
-	margin-top: 4px;
+	margin-top: 2px;
 }
-div.db-l h2.db-title {
-	padding: 3px 0 4px;
-	font-size: 15px;
+div.display-box h1, div.db-l .db-l-content h1 {
+    font-size: 17px;
+    margin: 1px 0;
+}
+div.display-box h2.db-title {
+	padding: 3px 0;
+	font-size: 13px;
 }
 div.db-r, div.db-l h2.db-title, div.db-l .db-l-content {
 	color: #fff;
-
 }
 div.db-r div.content {
 	margin: 3px 6px;
@@ -754,8 +756,8 @@ text-align: center;
 .mn-legend {
     position: absolute;
     bottom: 10px;
-    left: -160px;
-    width: 140px;
+    left: -106px;
+    width: 96px;
     background-color: #fff;
     border: 1px solid #555;
     border-radius: 3px;
