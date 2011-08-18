@@ -28,6 +28,7 @@ urlpatterns = patterns('',
     url(r'^modes/(?P<mode_data>\S*)$', ui.modes),
     url(r'^mustache/(?P<template_name>\w+)$', ui.mustache_template),
     url(r'^resources/', include('resources.urls')),
+    url(r'^user_management/', include('user_management.urls')),
     url(r'^survey_photos/(?P<size>\S+)/(?P<photo_id>\S+)$', photo_redirect),
 
     url(r'^accounts/', include('registration.backends.default.urls')),
