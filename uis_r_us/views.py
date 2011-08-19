@@ -41,6 +41,9 @@ def dashboard(request, reqpath):
         context.lga = lga
         return lga_view(context)
 
+def test_map(request):
+    return render_to_response("test_map.html")
+
 def get_nav_zones(filter_active=False):
     zone_list = Zone.objects.all().values('id', 'name')
     zones = {}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block head %}
+<link rel="stylesheet" href="/static/css/qunit.css" type="text/css" media="all" charset="utf-8">
+{% endblock %}
+{% block js %}
+<script src="/static/js/application.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/libs/OpenLayers.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/libs/wax.ol.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/libs/qunit.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+	var map;
+	test("map is created", function(){
+		var options = {
+			projection: new OpenLayers.Projection("EPSG:900913"),
+            displayProjection: new OpenLayers.Projection("EPSG:4326"),
+            units: "m"
+		};
+		OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
+        OpenLayers.ImgPath = "/static/openlayers/default/img/";
+		map = new OpenLayers.Map('map', options);
+		var layers = [
+			["Nigeria", "nigeria_base"]
+		];
+		var mapLayerArray = [];
+		var mapserver = "http://tilestream.openmangrove.org:8888/";
+		$.each(layers, function(k, ldata){
+            var ml = new OpenLayers.Layer.TMS(ldata[0], [mapserver],
+                {
+                    layername: ldata[1],
+                    'type': 'png'
+                });
+            mapLayerArray.push(ml);
+            });
+		var ll = {
+            lat: 0.000068698255561324,
+            lng: 0.000083908685869343,
+			zoom: 6
+		}
+		var llz = new OpenLayers.LonLat(ll.lng, ll.lat);
+		log(llz);
+		map.setCenter(llz, ll.zoom);
+	    map.addLayers(mapLayerArray);
+		log(map);
+//		ok(false, "map is created");
+	})
+//	log($('#map'));
+</script>
+{% endblock %}
+{% block content %}
+<div id="map" style="border:1px solid blue;width:256px;height:256px;">
+</div>
+<h1 id="qunit-header">QUnit Testing of NMIS Map</h1>
+<h2 id="qunit-banner"></h2>
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture">test markup</div>
+{% endblock %}
