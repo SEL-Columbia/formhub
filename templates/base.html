@@ -81,7 +81,8 @@
 	<script type="text/javascript" src="/static/js/libs/chosen.jquery.min.js"></script>
 	<script type="text/javascript" charset="utf-8">
 		(function(s){
-			lgaId !== undefined && s.val(lgaId);
+			typeof lgaId !== 'undefined' &&
+				s.val(lgaId);
 			s.chosen();
 		})($('select#lga-select'));
 	</script>
