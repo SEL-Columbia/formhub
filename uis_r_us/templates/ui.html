@@ -432,6 +432,8 @@ $(function(){
 							if(!!layerObj.mdg) {
 								var mdgT = mdgGoalText(+layerObj.mdg);
 								mdgDisplay.html(mdgT);
+								mdgDisplay.append($('<hr />'));
+								mdgDisplay.append(layerObj.name);
 							} else {
 								mdgDisplay.empty();
 							}
