@@ -387,6 +387,7 @@ function getColDataDiv() {
 	if(colDataWrap.length===0) {
 		colDataWrap = $("<div />", {'class': 'column-data-wrap'});
 		$('<a />', {'href': '#', 'class': 'close-col-data'})
+		    .css({'left':"993px"})
 		    .text('X')
 		    .click(function(){
 		        iconsShouldReset();
@@ -687,7 +688,10 @@ function getTabulations(sector, col, keysArray) {
                     };
                     var cdd = getColDataDiv()
                             .html(Mustache.to_html(this.template, data))
-                            .css({'height':110});
+                            .css({
+                                height: 110,
+                                width: 1000
+                                });
                     if(hasClickAction(column, 'piechart_truefalse')) {
                         var pcWrap = cdd.find('.content').eq(0)
             		        .attr('id', 'pie-chart')
