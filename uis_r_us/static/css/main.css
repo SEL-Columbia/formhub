@@ -59,7 +59,7 @@ td.checkmark {
     text-align: center;
     font-size: 11px;
 }
-td.checkmark.on {
+td.checkmark.on-false {
     /* greenish
     background-color: #9dbbcf;
     color: #003a60;
@@ -67,7 +67,23 @@ td.checkmark.on {
     background-color: #e6f5eb;
     color: 336600;
 }
-td.checkmark.off {
+td.checkmark.off-false {
+    /* redish
+    background-color: #bdd1de;
+    color: #003a60;
+    */
+    background-color: #faebe6;
+    color: #a31919;
+}
+td.checkmark.on-true {
+    /* greenish
+    background-color: #9dbbcf;
+    color: #003a60;
+    */
+    background-color: #e6f5eb;
+    color: 336600;
+}
+td.checkmark.off-true {
     /* redish
     background-color: #bdd1de;
     color: #003a60;
@@ -79,11 +95,19 @@ td.checkmark.null {
     opacity: 0.4;
     color: #bbb;
 }
-td.checkmark.on span.mrk:before {
+td.checkmark.on-true span.mrk:before {
 /*    content: '✓'; */
     content: 'YES';
 }
-td.checkmark.off span.mrk:before {
+td.checkmark.off-true span.mrk:before {
+/*    content: '✗'; */
+    content: 'NO';
+}
+td.checkmark.off-false span.mrk:before {
+/*    content: '✓'; */
+    content: 'YES';
+}
+td.checkmark.on-false span.mrk:before {
 /*    content: '✗'; */
     content: 'NO';
 }

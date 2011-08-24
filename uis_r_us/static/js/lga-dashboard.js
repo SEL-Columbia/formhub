@@ -672,7 +672,7 @@ function getTabulations(sector, col, keysArray) {
     		function hasClickAction(col, str) {
     		    return col.click_actions !== undefined && ~column.click_actions.indexOf(str);
     		}
-    		var hasPieChart = hasClickAction(column, 'piechart_truefalse');
+    		var hasPieChart = hasClickAction(column, 'piechart_true') || hasClickAction(column, 'piechart_false');
         	if(hasClickAction(column, 'tabulate') || hasPieChart) {
         	    var tabulations = $.map(getTabulations(sector.slug, column.slug), function(k, val){
                     return { 'value': k, 'occurrences': val }
@@ -688,15 +688,22 @@ function getTabulations(sector, col, keysArray) {
                     var cdd = getColDataDiv()
                             .html(Mustache.to_html(this.template, data))
                             .css({'height':110});
-                    if(hasClickAction(column, 'piechart_truefalse')) {
+                    if(hasClickAction(column, 'piechart_true') || hasClickAction(column, 'piechart_false')) {
                         var pcWrap = cdd.find('.content').eq(0)
             		        .attr('id', 'pie-chart')
             		        .empty();
-            		    var pieChartDisplayDefinitions = [
-                            {'legend':'No', 'color':'#ff5555', 'key': 'false'},
-                            {'legend':'Yes','color':'#21c406','key': 'true'},
-                            {'legend':'Undefined','color':'#999','key': 'undefined'}];
-
+                        if(hasClickAction(column, 'piechart_true')) {
+                            var pieChartDisplayDefinitions = [
+                                {'legend':'No', 'color':'#ff5555', 'key': 'false'},
+                                {'legend':'Yes','color':'#21c406','key': 'true'},
+                                {'legend':'Undefined','color':'#999','key': 'undefined'}];
+                        }
+                        else if(hasClickAction(column, 'piechart_false')) {
+                            var pieChartDisplayDefinitions = [
+                                {'legend':'Yes', 'color':'#ff5555', 'key': 'true'},
+                                {'legend':'No','color':'#21c406','key': 'false'},
+                                {'legend':'Undefined','color':'#999','key': 'undefined'}];
+                        }
             		    createOurGraph(pcWrap,
             		                    pieChartDisplayDefinitions,
             		                    getTabulations(sector.slug, column.slug, 'true false undefined'.split(' ')),
@@ -1043,9 +1050,14 @@ function createRowForFacilityWithColumns(fpoint, cols, rowNum){
 		var td = $('<td />')
 		        .addClass('col-'+col.slug)
 		        .appendTo(tr);
-		if(col.display_style == "checkmark") {
+		if(col.display_style == "checkmark_true" || col.display_style == "checkmark_false") {
 			if($.type(value) === 'boolean') {
-			    td.addClass(!!value ? 'on' : 'off')
+                if (col.display_style == "checkmark_true") {
+			        td.addClass(!!value ? 'on-true' : 'off-true');
+                }
+                else if (col.display_style == "checkmark_false") {
+			        td.addClass(!!value ? 'off-false' : 'on-false');
+                }
 			} else {
 			    td.addClass('null');
 			}
