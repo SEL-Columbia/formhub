@@ -16,7 +16,7 @@ DEPLOYMENTS = {
     'dev': {
         'folder_name': 'nmis_dev',
         'host_string': 'wsgi@staging.mvpafrica.org',
-        'branch': 'feature/dj13',
+        'branch': 'develop',
         'backup': False,
         },
     'staging': {
