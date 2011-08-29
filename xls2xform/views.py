@@ -58,7 +58,7 @@ def home(request):
             #passed back to the page to display errors.
             context.form = submitted_form
     context.xforms = request.user.xforms.all()
-    return render_to_response("index.html", context_instance=context)
+    return render_to_response("xls2xform.html", context_instance=context)
 
 
 def delete_xform(request, survey_id):
