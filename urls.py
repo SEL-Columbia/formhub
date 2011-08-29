@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     url(r"^%ssubmission$" % OPT_GROUP_REGEX, xform_manager_views.submission),
     url(r'^xform_manager/', include('nmis.xform_manager.urls')),
     url(r'^xls2xform/', include('nmis.xls2xform.urls')),
+    url(r'^main/', include('nmis.main.urls')),
 
     url(r'^description/', main_views.site_description),
     url(r'^facilities/', include('facilities.urls')),
