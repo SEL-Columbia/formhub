@@ -2,81 +2,21 @@ import json
 import os
 import re
 
-from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
-from django.template import RequestContext
-from django.shortcuts import render_to_response
 from django import forms
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from django.template.defaultfilters import slugify as django_slugify
 
 from models import XForm
 from pyxform.xls2json import SurveyReader
-from pyxform.builder import create_survey_from_path
-from django.conf import settings
 
 
 def slugify(str):
     return re.sub("-", "_", django_slugify(str))
-
-
-class QuickConverter(forms.Form):
-    xls_file = forms.FileField(label="XLS File")
-
-    def _get_xform_using_pyxform(self):
-        """
-        Try using pyxform to convert the xls file into an xform. If
-        there is an exception return the exception, otherwise return a
-        dictionary where the single key is the desired file name and
-        the value is the xml of the xform.
-        """
-        try:
-            survey = create_survey_from_path(self.path)
-            xform_str = survey.to_xml()
-        except Exception as e:
-            return e
-        file_name = survey.id_string() + ".xml"
-        return {file_name: xform_str}
-
-    def get_xforms(self):
-        """
-        Try using both the old and new conversion methods on the
-        passed in xls file. If the new method works return the
-        resulting xform. If the old method works return the resulting
-        xform. Otherwise throw the exception from the new method. It
-        would be better to give the exception from both methods.
-        """
-        xls = self.cleaned_data['xls_file']
-        self.path = save_in_temp_dir(xls)
-
-        new = self._get_xform_using_pyxform()
-        os.remove(self.path)
-
-        if type(new) is dict:
-            return self._package(new)
-        else:
-            raise new
-
-    def _package(self, d):
-        assert len(d) == 1, "Code only supports single XForms."
-        filename = d.keys()[0]
-        response = HttpResponse(d[filename], mimetype="application/download")
-        response['Content-Disposition'] = 'attachment; filename=%s' % filename
-        return response
-
-
-def quick_converter(request):
-    if request.method == 'POST':
-        form = QuickConverter(request.POST, request.FILES)
-        if form.is_valid():
-            return form.get_xforms()
-    else:
-        form = QuickConverter()
-    context = RequestContext(request)
-    context.form = form
-    context.page_name = "Home"
-    return render_to_response(
-        'quick_converter.html', context_instance=context
-        )
 
 
 class CreateXForm(forms.Form):
@@ -94,14 +34,6 @@ class CreateXForm(forms.Form):
 
 
 def home(request):
-    if request.user.is_authenticated():
-        return index(request)
-    else:
-        return quick_converter(request)
-
-
-@login_required
-def index(request):
     context = RequestContext(request)
     context.title = "XLS2XForm v2.0-beta1"
     context.form = CreateXForm()
@@ -120,12 +52,14 @@ def index(request):
             xf_data = submitted_form.cleaned_data
             xf_data['user'] = request.user
             xf = XForm.objects.create(**xf_data)
-            return HttpResponseRedirect("/edit/%s" % xf.id_string)
+            edit_url = reverse(edit_xform, kwargs={'survey_id': xf.id_string})
+            return HttpResponseRedirect(edit_url)
         else:
             #passed back to the page to display errors.
             context.form = submitted_form
     context.xforms = request.user.xforms.all()
     return render_to_response("index.html", context_instance=context)
+
 
 def delete_xform(request, survey_id):
     xforms = request.user.xforms
