@@ -143,6 +143,7 @@ INSTALLED_APPS = (
     'facilities',
     'resources',
     'user_management',
+    'xls2xform',
 )
 COMPRESS = True
 
