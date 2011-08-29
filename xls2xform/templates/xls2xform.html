@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="content-section">
+    {% include "new_survey.html" %}
+  </div>
+
+  {% if xforms.count %}
+    <div class="content-section">
+      {% include "survey_list.html" %}
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" charset="utf-8">
+	$('a.delete').click(function(evt){
+		!confirm('Are you sure you want to delete this xform?') && evt.preventDefault();
+	});
+</script>
+{% endblock %}

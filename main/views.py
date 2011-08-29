@@ -7,10 +7,16 @@ from django.shortcuts import render_to_response
 from django.db.models import Count
 from nga_districts.models import LGA
 
+
 def index(request):
-    return HttpResponseRedirect("/~")
-#    context = RequestContext(request)
-#    return render_to_response("main_index.html", context_instance=context)
+    context = RequestContext(request)
+    context.extra_links = 'publish_link.html'
+    return render_to_response("survey_list.html", context_instance=context)
+
+
+def publish(request, id_string):
+    pass
+
 
 def list_active_lgas(request):
     context = RequestContext(request)

@@ -21,7 +21,7 @@ def slugify(str):
 
 class CreateXForm(forms.Form):
     title = forms.CharField()
-    id_string = forms.CharField(help_text="The ID string is used internally to link submissions to this survey.")
+    id_string = forms.CharField()
 
     def clean_id_string(self):
         id_string = slugify(self.data.get(u'id_string'))
@@ -58,7 +58,7 @@ def home(request):
             #passed back to the page to display errors.
             context.form = submitted_form
     context.xforms = request.user.xforms.all()
-    return render_to_response("index.html", context_instance=context)
+    return render_to_response("xls2xform.html", context_instance=context)
 
 
 def delete_xform(request, survey_id):
