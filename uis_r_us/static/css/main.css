@@ -799,3 +799,127 @@ text-align: center;
     display: block;
     width: 30px;
 }
+
+
+/*--BEGIN xls2xform stuff --*/
+/*- content-section stuff */
+.content-section {
+    padding: 8px 10px;
+    border: 1px dashed #aaa;
+    border-width: 0 0 1px;
+    margin: 8px 0;
+}
+.content-section p {
+    margin: 5px 0;
+}
+.content-section table td {
+    padding: 3px 8px;
+}
+
+/*- available-sections-list stuff */
+ul#available-sections-list {
+	list-style-type: none; margin: 0; padding: 0;
+}
+ul#available-sections-list li {
+	position: relative;
+	background-color: #f8f8f8;
+	border-bottom: 1px solid #bbb;
+	border-color: #bbb;
+	padding: 3px 8px 3px 16px;
+}
+ul#available-sections-list li div.left-bar {
+    opacity: 0.3;
+	width: 6px;
+	height: 100%;
+	position: absolute;
+	top: 0; left:1px;
+}
+ul#available-sections-list li div.left-bar.lb-a {
+	background-color: #96C6A8;
+}
+ul#available-sections-list li div.left-bar.lb-a.active {
+	background-color: #01A42F;
+}
+ul#available-sections-list li p {
+	margin: 0;
+}
+ul#available-sections-list li p.title {
+	font-weight: bold;
+}
+ul#available-sections-list li p.title span.sub-sections {
+	font-weight: normal;
+}
+ul#available-sections-list li p.title span.sub-sections span.ss {
+	margin: 1px 4px;
+	font-size: smaller;
+}
+ul#available-sections-list li p.section-buttons a {
+	display: inline-block; width: 200px;
+}
+/*--BEGIN form-section-list stuff --*/
+ol.form-section-list li a.move-up, ol.form-section-list li a.move-down {
+    position: absolute;
+    right: 30px;
+    font-size: 4px;
+    line-height: 1px;
+    color: transparent;
+    width: 30px;
+    height: 20px;
+    background-image: url('/static/images/up-down.png');
+    background-position: center top;
+    border: 0 none;
+    opacity: 0.3;
+}
+ol.form-section-list li:last-child a.button.move-down, ol.form-section-list li:first-child a.button.move-up {
+    opacity: 0.1;
+    cursor: default;
+}
+ol.form-section-list li a.button:hover {
+    opacity: 0.4;
+}
+ol.form-section-list li a.deactivate {
+    position: absolute;
+    top: 3px;
+    right: 4px;
+    opacity: 0.3;
+    width: 9px;
+    height: 9px;
+    font-size: 10px;
+    text-align: center;
+    line-height: 9px;
+    opacity: 0.6;
+    border-radius: 4px;
+}
+ol.form-section-list li a.move-up {
+    top: 4px;
+}
+ol.form-section-list li a.move-down {
+    background-position: center bottom;
+    bottom: 4px;
+}
+ol.form-section-list {
+    line-height: 20px;
+    font-size: 15px;
+}
+ol.form-section-list > li {
+    min-height: 54px;
+    clear: both;
+    position: relative;
+}
+ol.form-section-list li a {
+    display: block;
+    font-size: 11px;
+    width: 70px;
+    text-align: center;
+    padding: 1px 2px;
+    border: 1px solid #607890;
+    margin: 2px 0;
+    text-decoration: none;
+}
+ol.form-section-list {
+    padding: 12px 0;
+    margin-left: 2em;
+}
+/*--END form-section-list stuff --*/
+
+/*--END xls2xform stuff --*/
