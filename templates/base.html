@@ -7,7 +7,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <!-- todo: replace site_title with page_title -->
 	<title>
-	  {{ site_title|default:"Nigeria MDG Information System" }}
+	  {{ site_title|default:"ODK Easy" }}
 	</title>
 	<link rel="stylesheet" href="/static/css/sitewide.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
 	<link rel="stylesheet" href="/static/css/tables.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
@@ -21,7 +21,7 @@
 	<div id="header">
 		<div class="fwidth">
 			<a href="/" id="hlogo"><img src="/static/images/nmis_pilot.png" /></a>
-			<h2 class="site-title">Nigeria MDG Information System</h2>
+			<h2 class="site-title">ODK Easy</h2>
 			<h2 class="title">
 	                  {% block page_title %}{{ site_title }}{% endblock %}
 			</h2>
@@ -37,11 +37,10 @@
 		<div class="account_links">
 			{% if user.is_authenticated %}
 			{% trans "Logged in" %}: {{ user.username }} 
-			(<a href="{% url auth_logout %}">{% trans "Log out" %}</a>
-                        | <a href="http://nmis.tenderapp.com/">{% trans "Help" %}</a>)
+			(<a href="{% url auth_logout %}">{% trans "Log out" %}</a>)
 			{% else %}
 			<a href="{% url auth_login %}">{% trans "Log in" %}</a>
-                        | <a href="http://nmis.tenderapp.com/">{% trans "Help" %}</a>			{% endif %}
+                        {% endif %}
                         {% endblock %}
 		</div>
 		</div>
@@ -103,6 +102,9 @@
 	{% block js %}
 	<!-- js block is for scripts that should be loaded at the end of the page -->
 	{% endblock %}
-	{% block footer %}{% endblock %}
+
+	{% block footer %}
+        <a href="http://nmis.tenderapp.com/">{% trans "Help" %}</a>
+        {% endblock %}
 </body>
 </html>
