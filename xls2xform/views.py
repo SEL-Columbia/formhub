@@ -21,7 +21,7 @@ def slugify(str):
 
 class CreateXForm(forms.Form):
     title = forms.CharField()
-    id_string = forms.CharField(help_text="The ID string is used internally to link submissions to this survey.")
+    id_string = forms.CharField()
 
     def clean_id_string(self):
         id_string = slugify(self.data.get(u'id_string'))
