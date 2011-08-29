@@ -28,13 +28,13 @@
 				{{xform.title}}
 			</td>
 			<td>
-				<a href="/edit/{{xform.id_string}}">Edit</a>
+				<a href="{% url xls2xform.views.edit_xform xform.id_string %}">Edit</a>
 			</td>
 			<td>
-				<a href="/download/{{xform.id_string}}.xml">Download</a>
+				<a href="{% url xls2xform.views.download_xform xform.id_string 'xml' %}">Download</a>
 			</td>
 			<td>
-				<a href="/delete/{{xform.id_string}}" class="delete">Delete</a>
+				<a href="{% url xls2xform.views.delete_xform xform.id_string %}" class="delete">Delete</a>
 			</td>
 		</tr>
 		{% endfor %}

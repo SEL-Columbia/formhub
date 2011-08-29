@@ -65,7 +65,8 @@ def delete_xform(request, survey_id):
     xforms = request.user.xforms
     xform = xforms.get(id_string=survey_id)
     xform.delete()
-    return HttpResponseRedirect("/")
+    return HttpResponseRedirect(reverse(home))
+
 
 def download_xform(request, survey_id, format):
     xforms = request.user.xforms
@@ -97,7 +98,7 @@ def convert_file_to_json(file_io):
 
 def save_in_temp_dir(file_io):
     file_name = file_io.name
-    tmp_xls_dir = os.path.join(settings.CURRENT_DIR, "xls_tmp")
+    tmp_xls_dir = os.path.join(settings.PROJECT_ROOT, "xls_tmp")
     if not os.path.exists(tmp_xls_dir):
         os.mkdir(tmp_xls_dir)
     path = os.path.join(tmp_xls_dir, file_name)
@@ -185,5 +186,6 @@ def edit_section(request, survey_id, section_slug, action):
             active_slugs.remove(section_slug)
             active_slugs.insert(ii + 1, section_slug)
             xform.order_base_sections(active_slugs)
-    return HttpResponseRedirect("/edit/%s" % xform.id_string)
-
+    return HttpResponseRedirect(
+        reverse(edit_xform, kwargs={'survey_id': xform.id_string})
+        )

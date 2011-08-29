@@ -45,13 +45,12 @@
 	<span class="section-slug">{{section.slug}}</span> <span class="sub-sections">{% for ss in section.sub_sections %}<span class="ss">{{ss}}</span>{% endfor %}</span>
       </p>
       <p class="section-buttons">
-
 	{% if section.is_marked_included %}
-	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/deactivate" class="make-inactive">Remove from Survey</a>
+	<a href="{% url xls2xform.views.edit_section survey_id=xform.id_string section_slug=section.slug action='deactivate' %}" class="make-inactive">Remove from Survey</a>
 	{% else %}
-	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/activate" class="make-active">Add to Survey</a>
+	<a href="{% url xls2xform.views.edit_section survey_id=xform.id_string section_slug=section.slug action='activate' %}" class="make-active">Add to Survey</a>
 	{% endif %}
-	<a href="/edit/{{xform.id_string}}/section/{{section.slug}}/delete" class="delete">Delete</a>
+	<a href="{% url xls2xform.views.edit_section survey_id=xform.id_string section_slug=section.slug action='delete' %}" class="delete">Delete</a>
       </p>
     </li>
     {% endfor %}
@@ -82,15 +81,15 @@
 	</li>
 	{% endfor %}
       </ul>
-      <a class="button deactivate" href="/edit/{{xform.id_string}}/section/{{section.slug}}/deactivate" title="Remove Section">&mdash;</a>
-      <a class="button move-up" href="/edit/{{xform.id_string}}/section/{{section.slug}}/up" title="Move Up">Move Up</a>
-      <a class="button move-down" href="/edit/{{xform.id_string}}/section/{{section.slug}}/down" title="Move Down">Move Down</a>
+      <a class="button deactivate" href="{% url xls2xform.views.edit_section survey_id=xform.id_string section_slug=section.slug action='deactivate' %}" title="Remove Section">&mdash;</a>
+      <a class="button move-up" href="{% url xls2xform.views.edit_section survey_id=xform.id_string section_slug=section.slug action='up' %}" title="Move Up">Move Up</a>
+      <a class="button move-down" href="{% url xls2xform.views.edit_section survey_id=xform.id_string section_slug=section.slug action='down' %}" title="Move Down">Move Down</a>
     </li>
     {% endfor %}
   </ol>
   <p class="xform-buttons">
-    <a href="/download/{{xform.id_string}}.xml" id="download">Download XForm</a>
-    <a href="/download/{{xform.id_string}}.json" id="download">Download JSON</a>
+    <a href="{% url xls2xform.views.download_xform survey_id=xform.id_string format='xml' %}" id="download">Download XForm</a>
+    <a href="{% url xls2xform.views.download_xform survey_id=xform.id_string format='json' %}" id="download">Download JSON</a>
   </p>
   {% endif %}
 </div>
