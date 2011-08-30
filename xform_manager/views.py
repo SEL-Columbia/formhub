@@ -15,6 +15,7 @@ from django.template import RequestContext
 import itertools
 from . models import XForm, get_or_create_instance, Instance
 
+
 @require_GET
 def formList(request, group_name):
     """This is where ODK Collect gets its download list."""
@@ -48,9 +49,9 @@ def log_error(message, level=logging.ERROR):
 def submission(request, group_name):
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
-    
+
     xml_file_list = []
-    
+
     try:
         xml_file_list = request.FILES.pop("xml_submission_file", [])
     except IOError:
@@ -76,12 +77,14 @@ def submission(request, group_name):
     response['Location'] = "http://%s/submission" % request.get_host()
     return response
 
+
 def download_xform(request, id_string, group_name=None):
     xform = XForm.objects.get(id_string=id_string)
     return HttpResponse(
         xform.xml,
         mimetype="application/xml"
         )
+
 
 def list_xforms(request, group_name=None):
     xforms = XForm.objects.all()
@@ -95,12 +98,15 @@ def list_xforms(request, group_name=None):
         context_instance=context
         )
 
+
 def submission_test_form(request):
     """ This view is only for debugging. Do not link to this page. """
     return render_to_response("submission_test_form.html")
 
+
 # This following code bothers me a little bit, it seems perfectly
 # suited to be put in the Django admin.
+
 
 # CRUD for xforms
 # (C)reate using a ModelForm
@@ -108,6 +114,7 @@ class CreateXForm(ModelForm):
     class Meta:
         model = XForm
         exclude = ("id_string", "title",)
+
 
 def create_xform(request, group_name=None):
     return create_object(
@@ -117,13 +124,16 @@ def create_xform(request, group_name=None):
         post_save_redirect=reverse("list_xforms"),
         )
 
+
 # (R)ead using a nice list
+
 
 # (U)pdate using another ModelForm
 class UpdateXForm(ModelForm):
     class Meta:
         model = XForm
-        fields = ("web_title", "downloadable", "description", "groups",)
+        fields = ("downloadable", "groups",)
+
 
 def update_xform(request, id_string):
     xform = XForm.objects.get(id_string=id_string)
@@ -135,6 +145,7 @@ def update_xform(request, id_string):
         post_save_redirect="/", #reverse("list_xforms"),
         )
 
+
 # (D)elete: we won't let a user actually delete an XForm but they can
 # hide XForms using the (U)pdate view
 def toggle_downloadable(request, id_string):
@@ -142,6 +153,7 @@ def toggle_downloadable(request, id_string):
     xform.downloadable = not xform.downloadable
     xform.save()
     return HttpResponseRedirect(reverse("list_xforms"))
+
 
 def instance(request, pk):
     instance = Instance.objects.get(pk=pk)

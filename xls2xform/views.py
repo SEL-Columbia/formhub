@@ -19,9 +19,13 @@ def slugify(str):
     return re.sub("-", "_", django_slugify(str))
 
 
+def get_survey(user, id_string):
+    return XForm.objects.get(id_string=id_string, user=user)
+
+
 class CreateXForm(forms.Form):
     title = forms.CharField()
-    id_string = forms.CharField()
+    id_string = forms.CharField(label="ID String")
 
     def clean_id_string(self):
         id_string = slugify(self.data.get(u'id_string'))
@@ -33,11 +37,12 @@ class CreateXForm(forms.Form):
         return id_string
 
 
-def home(request):
+def home(request, **kwargs):
     context = RequestContext(request)
     context.title = "XLS2XForm v2.0-beta1"
     context.form = CreateXForm()
     context.page_name = "Home"
+    context.update(kwargs)
 
     if request.method == "POST":
         id_string = request.POST.get(u'id_string')

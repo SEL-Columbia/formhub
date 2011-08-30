@@ -10,6 +10,10 @@
       {% include "survey_list.html" %}
     </div>
   {% endif %}
+
+  {% if extra_section %}
+    {% include extra_section %}
+  {% endif %}
 {% endblock %}
 
 {% block js %}

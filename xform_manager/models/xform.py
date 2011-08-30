@@ -10,25 +10,27 @@ import re
 
 from datetime import datetime
 
+
 class XForm(models.Model):
-    # web_title is used if the user wants to display a different title
-    # on the website
-    web_title = models.CharField(max_length=64, blank=True, default="")
+    xml = models.TextField()
     downloadable = models.BooleanField()
-    description = models.TextField(blank=True, null=True, default="")
     groups = models.ManyToManyField(
         Group, verbose_name=_('groups'), blank=True,
-        help_text=_("Each XForm is assigned to groups, only users in atleast one of this XForm's groups will be able to update this XForm.")
+        help_text=_(
+            "Each XForm is assigned to groups, only users in atleast "
+            "one of this XForm's groups will be able to update this "
+            "XForm."
+            )
         )
-    xml = models.TextField()
+
+    # the following fields are filled in automatically
     id_string = models.SlugField(
         unique=True, editable=False, verbose_name="ID String"
         )
     title = models.CharField(editable=False, max_length=64)
-
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         app_label = 'xform_manager'
         verbose_name = "XForm"

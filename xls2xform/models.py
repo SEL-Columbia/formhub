@@ -6,20 +6,24 @@ import os
 import re
 import pyxform
 
+
 class SectionIncludeError(Exception):
     def __init__(self, container, include_slug):
         self.container = container
         self.include_slug = include_slug
 
+
 class IncludeNotFound(SectionIncludeError):
     def __repr__(self):
         return "The section '%s' was not able to include the section '%s'" % \
                     (self.container, self.include_slug)
-    
+
+
 class CircularInclude(SectionIncludeError):
     def __repr__(self):
         return "The section '%s' detected a circular include of section '%s'" % \
                     (self.container, self.include_slug)
+
 
 class XForm(models.Model):
     #id_string should definitely be changed to "name".
@@ -29,20 +33,20 @@ class XForm(models.Model):
     user = models.ForeignKey(User, related_name="xforms")
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
-    
+
     def __init__(self, *args, **kwargs):
         sections = kwargs.pop(u'sections', [])
         super(XForm, self).__init__(*args, **kwargs)
-        
+
     def __unicode__(self):
         return "[%s]: %s" % (self.id_string, self.title)
-    
+
     def save(self, *args, **kwargs):
         super(XForm, self).save(*args, **kwargs)
         if self.latest_version is None:
             self.latest_version = XFormVersion.objects.create(xform=self, version_number=0)
             self.save()
-    
+
     def export_survey(self, finalize=True, debug=False):
         """
         the first way of exporting surveys didn't allow imports
@@ -82,41 +86,42 @@ class XForm(models.Model):
 #            'question_type_dictionary':
 #            self.latest_version.get_question_type_dictionary(),
         }
-    
+
     def add_or_update_section(self, *args, **kwargs):
         """
         Automatically creates a new version whenever updating one of
         the sections.
         """
         slug = kwargs.get(u'slug')
-        
+
         lv = self.latest_version
         slug_dict = lv.sections_by_slug()
         new_section = XFormSection(*args, **kwargs)
-        
+
         if slug in slug_dict.keys():
             #TODO: check to see if the new section contains changes
             #assuming not--
             remove_section = slug_dict[slug]
         else:
             remove_section = None
-        
+
         nv = lv._clone()
         nv.sections.remove(remove_section)
-        
+
         new_section.save()
         nv.sections.add(new_section)
-        
+
         self.latest_version = nv
         self.save()
         return nv
-    
+
     def remove_section(self, *args, **kwargs):
         slug = kwargs.get(u'slug', None)
         lv = self.latest_version
         matching_section = lv.sections.get(slug=slug)
-        if matching_section is None: return lv
-        
+        if matching_section is None:
+            return lv
+
         slugs = lv.base_section_slugs()
         if slug in slugs:
             #when the slug is active, we need to
