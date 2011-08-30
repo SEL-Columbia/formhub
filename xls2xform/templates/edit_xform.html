@@ -11,14 +11,14 @@
       Upload Section
     </h2>
     <p>
-      To build an XForm for ODK Collect upload the XLS file(s) you
+      To build an Survey for ODK Collect upload the XLS file(s) you
       wish to convert. If your entire survey is described in a single
       XLS file, upload that file, mark it as active, and download the
-      resulting XForm.
+      resulting Survey.
 	</p>
 	<p>
       To update your survey, edit your XLS file, save the changes,
-      upload the file, and download the updated XForm.
+      upload the file, and download the updated Survey.
     </p>
     <p>
       {% csrf_token %}
@@ -35,7 +35,7 @@
   {% else %}
   <p>Below is a list of all sections that have been uploaded for this
   survey. You must add at least one section to your survey before you
-  can create an XForm for ODK Collect.</p>
+  can create an Survey for ODK Collect.</p>
   <ul id="available-sections-list">
     {% for section in available_sections %}
     <li data-section-slug="{{section.slug}}">
@@ -46,11 +46,11 @@
       </p>
       <p class="section-buttons">
 	{% if section.is_marked_included %}
-	<a href="{% url xls2xform.views.edit_section survey_id=xform.id_string section_slug=section.slug action='deactivate' %}" class="make-inactive">Remove from Survey</a>
+	<a href="{% url xls2survey.views.edit_section survey_id=survey.id_string section_slug=section.slug action='deactivate' %}" class="make-inactive">Remove from Survey</a>
 	{% else %}
-	<a href="{% url xls2xform.views.edit_section survey_id=xform.id_string section_slug=section.slug action='activate' %}" class="make-active">Add to Survey</a>
+	<a href="{% url xls2survey.views.edit_section survey_id=survey.id_string section_slug=section.slug action='activate' %}" class="make-active">Add to Survey</a>
 	{% endif %}
-	<a href="{% url xls2xform.views.edit_section survey_id=xform.id_string section_slug=section.slug action='delete' %}" class="delete">Delete</a>
+	<a href="{% url xls2survey.views.edit_section survey_id=survey.id_string section_slug=section.slug action='delete' %}" class="delete">Delete</a>
       </p>
     </li>
     {% endfor %}
@@ -81,15 +81,15 @@
 	</li>
 	{% endfor %}
       </ul>
-      <a class="button deactivate" href="{% url xls2xform.views.edit_section survey_id=xform.id_string section_slug=section.slug action='deactivate' %}" title="Remove Section">&mdash;</a>
-      <a class="button move-up" href="{% url xls2xform.views.edit_section survey_id=xform.id_string section_slug=section.slug action='up' %}" title="Move Up">Move Up</a>
-      <a class="button move-down" href="{% url xls2xform.views.edit_section survey_id=xform.id_string section_slug=section.slug action='down' %}" title="Move Down">Move Down</a>
+      <a class="button deactivate" href="{% url xls2survey.views.edit_section survey_id=survey.id_string section_slug=section.slug action='deactivate' %}" title="Remove Section">&mdash;</a>
+      <a class="button move-up" href="{% url xls2survey.views.edit_section survey_id=survey.id_string section_slug=section.slug action='up' %}" title="Move Up">Move Up</a>
+      <a class="button move-down" href="{% url xls2survey.views.edit_section survey_id=survey.id_string section_slug=section.slug action='down' %}" title="Move Down">Move Down</a>
     </li>
     {% endfor %}
   </ol>
-  <p class="xform-buttons">
-    <a href="{% url xls2xform.views.download_xform survey_id=xform.id_string format='xml' %}" id="download">Download XForm</a>
-    <a href="{% url xls2xform.views.download_xform survey_id=xform.id_string format='json' %}" id="download">Download JSON</a>
+  <p class="survey-buttons">
+    <a href="{% url xls2survey.views.download_survey survey_id=survey.id_string format='xml' %}" id="download">Download Survey</a>
+    <a href="{% url xls2survey.views.download_survey survey_id=survey.id_string format='json' %}" id="download">Download JSON</a>
   </p>
   {% endif %}
 </div>
@@ -104,7 +104,7 @@ $('a.delete').click(function(evt){
 });
 
 $('#validate').click(function(evt){
-	$.getJSON('/edit/{{xform.id_string}}/validate').done(function(data){
+	$.getJSON('/edit/{{survey.id_string}}/validate').done(function(data){
 		console.log(data);
 		if(data.section_stats) {
 			$.each(data.section_stats, function(sectionSlug, stat){
@@ -129,13 +129,13 @@ var debugJson = $("<a />", {'href':'#'}).text("View Underlying JSON").click(func
 	if(ta.length===0) {
 		ta = $('<textarea />', {'id':'t'})
 			.css({'width':'96%','height':'200px'})
-			.appendTo($('.xform-buttons'));
+			.appendTo($('.survey-buttons'));
 	}
-	$.getJSON("/edit/{{xform.id_string}}/debug_json").done(function(data){
+	$.getJSON("/edit/{{survey.id_string}}/debug_json").done(function(data){
 		ta.text(JSON.stringify(data));
 	});
 	evt.preventDefault();
-}).appendTo($('p.xform-buttons'));
+}).appendTo($('p.survey-buttons'));
 --*/
 -->
 </script>

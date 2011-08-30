@@ -25,26 +25,26 @@ class CircularInclude(SectionIncludeError):
                     (self.container, self.include_slug)
 
 
-class XForm(models.Model):
+class Survey(models.Model):
     #id_string should definitely be changed to "name".
     id_string = models.CharField(max_length=32)
     title = models.CharField(max_length=32)
-    latest_version = models.ForeignKey('XFormVersion', null=True, related_name="active_xform")
-    user = models.ForeignKey(User, related_name="xforms")
+    latest_version = models.ForeignKey('SurveyVersion', null=True, related_name="active_survey")
+    user = models.ForeignKey(User, related_name="surveys")
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
     def __init__(self, *args, **kwargs):
         sections = kwargs.pop(u'sections', [])
-        super(XForm, self).__init__(*args, **kwargs)
+        super(Survey, self).__init__(*args, **kwargs)
 
     def __unicode__(self):
         return "[%s]: %s" % (self.id_string, self.title)
 
     def save(self, *args, **kwargs):
-        super(XForm, self).save(*args, **kwargs)
+        super(Survey, self).save(*args, **kwargs)
         if self.latest_version is None:
-            self.latest_version = XFormVersion.objects.create(xform=self, version_number=0)
+            self.latest_version = SurveyVersion.objects.create(survey=self, version_number=0)
             self.save()
 
     def export_survey(self, finalize=True, debug=False):
@@ -94,7 +94,7 @@ class XForm(models.Model):
 
         lv = self.latest_version
         slug_dict = lv.sections_by_slug()
-        new_section = XFormSection(*args, **kwargs)
+        new_section = SurveySection(*args, **kwargs)
 
         if slug in slug_dict.keys():
             #TODO: check to see if the new section contains changes
@@ -180,12 +180,12 @@ class XForm(models.Model):
         self.save()
         return v
 
-class XFormVersion(models.Model):
-    xform = models.ForeignKey(XForm, related_name="versions")
+class SurveyVersion(models.Model):
+    survey = models.ForeignKey(Survey, related_name="versions")
     date_created = models.DateTimeField(auto_now_add=True)
     
-    base_section = models.ForeignKey('XFormSection', null=True, related_name="bversions")
-    qtypes_section = models.ForeignKey('XFormSection', null=True, related_name="qversions")
+    base_section = models.ForeignKey('SurveySection', null=True, related_name="bversions")
+    qtypes_section = models.ForeignKey('SurveySection', null=True, related_name="qversions")
     id_stamp = models.CharField(max_length=64)
     
     version_number = models.IntegerField()
@@ -202,24 +202,24 @@ class XFormVersion(models.Model):
         empty_base_survey_str = json.dumps(empty_base_survey)
         base_section_json = kwargs.pop(u'base_section_json',
                                        empty_base_survey_str)
-        base_section = XFormSection.objects.create(section_json=base_section_json, slug="_base")
+        base_section = SurveySection.objects.create(section_json=base_section_json, slug="_base")
         kwargs[u'base_section'] = base_section
         
         #not sure if this is the best way to do this... but it works for now.
         # qtypes_json = kwargs.pop(u'qtypes_section_json', u'null')
-        # qtypes_section = XFormSection.objects.create(section_json=qtypes_json, slug="_qtypes")
+        # qtypes_section = SurveySection.objects.create(section_json=qtypes_json, slug="_qtypes")
         # kwargs[u'qtypes_section'] = qtypes_section
 
-        super(XFormVersion, self).__init__(*args, **kwargs)
+        super(SurveyVersion, self).__init__(*args, **kwargs)
     
     def _clone(self):
         bsj = self.base_section.section_json
         vn = self.version_number
-        new_version = XFormVersion.objects.create(base_section_json=bsj, xform=self.xform, version_number=vn+1)
+        new_version = SurveyVersion.objects.create(base_section_json=bsj, survey=self.survey, version_number=vn+1)
         for s in self.sections.all(): new_version.sections.add(s)
         return new_version
     
-    #XFormVersion.sections_by_slug --is it used?
+    #SurveyVersion.sections_by_slug --is it used?
     
     def get_question_type_dictionary(self):
         return self.qtypes_section.questions_list
@@ -234,8 +234,8 @@ class XFormVersion(models.Model):
         """
         def base36encode(num, alphabet='abcdefghijklmnopqrstuvwxyz0123456789'):
             #Using base36 encode to have a character (or 2) at the end
-            # of the xforms id_string that signifies the version number
-            # this way, xforms exported on the same day do not have the
+            # of the surveys id_string that signifies the version number
+            # this way, surveys exported on the same day do not have the
             # same ID string.
             if num == 0:
                 return alphabet[0]
@@ -246,12 +246,12 @@ class XFormVersion(models.Model):
             return base36
         
         if self.id_stamp in [None, u'']:
-            #creates format: "xform_2011_01_01a"
+            #creates format: "survey_2011_01_01a"
             import datetime
             self.id_stamp = "%s_%s%s" % (
-                    self.xform.id_string,
+                    self.survey.id_string,
                     datetime.date.today().strftime("%Y_%m_%d"),
-                    base36encode(self.xform.finalized_version_count)
+                    base36encode(self.survey.finalized_version_count)
                 )
             self.save()
         return self.id_stamp
@@ -299,10 +299,10 @@ class XFormVersion(models.Model):
         return (available_section_list, self._included_sections)
 
 
-class XFormSection(models.Model):
+class SurveySection(models.Model):
     slug = models.TextField()
     section_json = models.TextField()
-    versions = models.ManyToManyField("XFormVersion", related_name="sections")
+    versions = models.ManyToManyField("SurveyVersion", related_name="sections")
     is_marked_included = False
     _sub_sections = None
 
@@ -322,7 +322,7 @@ class XFormSection(models.Model):
         
         if d is not None:
             kwargs[u'section_json'] = json.dumps(d)
-        return super(XFormSection, self).__init__(*args, **kwargs)
+        return super(SurveySection, self).__init__(*args, **kwargs)
 
     def sub_sections(self):
         def traverse_pyobj(pyobj):

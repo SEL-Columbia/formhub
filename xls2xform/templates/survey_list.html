@@ -1,12 +1,12 @@
 <h1>Survey List</h1>
 
 <table>
-  {% for xform in user.xforms.all %}
+  {% for survey in user.surveys.all %}
   <tr>
-    <td>{{xform.title}}</td>
-    <td><a href="{% url xls2xform.views.edit_xform xform.id_string %}">Edit</a></td>
-    <td><a href="{% url xls2xform.views.download_xform xform.id_string 'xml' %}">Download</a></td>
-    <td><a href="{% url xls2xform.views.delete_xform xform.id_string %}" class="delete">Delete</a></td>
+    <td>{{survey.title}}</td>
+    <td><a href="{% url xls2survey.views.edit_survey survey.id_string %}">Edit</a></td>
+    <td><a href="{% url xls2survey.views.download_survey survey.id_string 'xml' %}">Download</a></td>
+    <td><a href="{% url xls2survey.views.delete_survey survey.id_string %}" class="delete">Delete</a></td>
     {% if extra_links %}
     {% include extra_links %}
     {% endif %}
