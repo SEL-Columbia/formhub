@@ -1,2 +1,0 @@
-def cool():
-    print "Ah"

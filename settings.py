@@ -136,12 +136,7 @@ INSTALLED_APPS = (
     'registration',
 
     'main',
-    'uis_r_us',
-    'facility_views',
     'xform_manager',
-    'nga_districts',
-    'facilities',
-    'resources',
     'user_management',
     'xls2xform',
 )
