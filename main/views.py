@@ -35,14 +35,15 @@ def default_group(user):
     return group
 
 
-def publish(request, id_string):
-    survey = get_survey(request.user, id_string).export_survey()
+def publish(request, survey_id):
+    survey = get_survey(request.user, survey_id).export_survey()
     kwargs = {
         'xml': survey.to_xml(),
         'downloadable': True,
-        'groups': [default_group(request.user)],
         }
     xform, created = XForm.objects.get_or_create(**kwargs)
+    xform.groups.add(default_group(request.user))
+    return HttpResponseRedirect("/")
 
 
 def list_active_lgas(request):

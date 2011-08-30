@@ -81,10 +81,8 @@ class XForm(models.Model):
         return {
             'title': re.sub(" ", "_", self.title),
             'id_string': self.latest_version.get_unique_id(),
-            'main_section': self.latest_version.base_section.questions_list,
+            'name_of_main_section': self.latest_version.base_section.questions_list[0][u'name'], # TODO: Clean up hack city.
             'sections': included_sections,
-#            'question_type_dictionary':
-#            self.latest_version.get_question_type_dictionary(),
         }
 
     def add_or_update_section(self, *args, **kwargs):
@@ -257,7 +255,7 @@ class XFormVersion(models.Model):
                 )
             self.save()
         return self.id_stamp
-    
+
     def sections_by_slug(self):
         sections = {}
         for s in self.sections.all(): sections[s.slug] = s
@@ -270,7 +268,7 @@ class XFormVersion(models.Model):
         for k, v in sections.items():
             sections[k] = json.loads(v.section_json)
         return sections
-    
+
     def base_section_slugs(self):
         base_section_json = self.base_section.section_json 
         j_arr = json.loads(base_section_json)[u'children']
