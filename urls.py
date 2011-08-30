@@ -20,7 +20,6 @@ urlpatterns = patterns('',
     url(r'^xls2xform/', include('nmis.xls2xform.urls')),
     url(r'^main/', include('nmis.main.urls')),
 
-    url(r'^user_management/', include('user_management.urls')),
     url(r'^survey_photos/(?P<size>\S+)/(?P<photo_id>\S+)$', photo_redirect),
 
     url(r'^accounts/', include('registration.backends.default.urls')),
