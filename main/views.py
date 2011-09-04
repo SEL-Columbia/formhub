@@ -6,6 +6,7 @@ from django.contrib.auth.models import Permission, Group
 from xls2xform.views import home, get_survey
 from xform_manager.models import XForm
 
+from xls2xform.exporter import export_survey
 
 def index(request):
     kwargs = {
@@ -32,7 +33,7 @@ def default_group(user):
 
 
 def publish(request, survey_id):
-    survey = get_survey(request.user, survey_id).export_survey()
+    survey = export_survey(get_survey(request.user, survey_id))
     kwargs = {
         'xml': survey.to_xml(),
         'downloadable': True,

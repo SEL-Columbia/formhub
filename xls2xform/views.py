@@ -9,19 +9,12 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.template.defaultfilters import slugify as django_slugify
 
 from models import Survey
 from pyxform.xls2json import SurveyReader
 
-
-def slugify(str):
-    return re.sub("-", "_", django_slugify(str))
-
-
-def get_survey(user, id_string):
-    return Survey.objects.get(id_string=id_string, user=user)
-
+from xls2xform.utils import slugify, get_survey
+from xls2xform.exporter import export_survey
 
 class CreateSurvey(forms.Form):
     title = forms.CharField()
@@ -63,25 +56,35 @@ def home(request, **kwargs):
             #passed back to the page to display errors.
             context.form = submitted_form
     context.surveys = request.user.surveys.all()
-    return render_to_response("xls2survey.html", context_instance=context)
+    return render_to_response("xls2xform.html", context_instance=context)
 
 
 def delete_survey(request, survey_id):
-    surveys = request.user.surveys
-    survey = surveys.get(id_string=survey_id)
+    survey = request.user.surveys.get(id_string=survey_id)
     survey.delete()
     return HttpResponseRedirect(reverse(home))
 
 
 def download_survey(request, survey_id, format):
-    surveys = request.user.surveys
-    survey = surveys.get(id_string=survey_id)
-    survey_object = survey.export_survey()
+    # TODO:
+    # GET XFORM EXPORT WORKING WITH PYXFORM!!
+    # currently spitting out JSON
+    format = "json"
+    survey = request.user.surveys.get(id_string=survey_id)
+    import simplejson as json
+    xf_filename = "SAMPLE_%s.json" % survey_id
+    response = HttpResponse(json.dumps(survey._survey_package(), indent=4), mimetype="application/download")
+    response['Content-Disposition'] = 'attachment; filename=%s' % xf_filename
+    return response
+
+    # This used to work, but I put the stuff above to debug.
+    survey = request.user.surveys.get(id_string=survey_id)
+    survey_object = export_survey(survey)
     xf_filename = "%s.%s" % (survey_object.id_string(), format)
     if format == 'xml':
         survey_str = survey_object.to_xml()
     elif format == 'json':
-        survey_str = json.dumps(survey_object.to_dict())
+        survey_str = json.dumps(survey_object.to_dict(), indent=4)
     else:
         raise Exception("Unknown file format", format)
     response = HttpResponse(survey_str, mimetype="application/download")
@@ -89,16 +92,21 @@ def download_survey(request, survey_id, format):
     return response
 
 
-def convert_file_to_json(file_io):
+def convert_file_to_children_json(file_io):
     file_name = file_io.name
     if re.search("\.json$", file_name):
         slug = re.sub(".json$", "", file_name)
-        section_json = file_io.read()
+        # Loading json io into json lets us ensure
+        # that the json is valid.
+        children_list = json.loads(file_io.read())
+        if type(children_list) == dict:
+            children_list = children_list[u'children']
+        children_json = json.dumps(children_list)
     elif re.search("\.xls$", file_name):
-        slug, section_json = process_xls_io_to_section_json(file_io)
+        slug, children_json = process_xls_io_to_children_json(file_io)
     else:
         raise Exception("This file is not understood: %s" % file_name)
-    return (slug, section_json)
+    return (slug, children_json)
 
 
 def save_in_temp_dir(file_io):
@@ -107,13 +115,12 @@ def save_in_temp_dir(file_io):
     if not os.path.exists(tmp_xls_dir):
         os.mkdir(tmp_xls_dir)
     path = os.path.join(tmp_xls_dir, file_name)
-    f = open(path, 'w')
-    f.write(file_io.read())
-    f.close()
+    with open(path, 'w') as f:
+        f.write(file_io.read())
     return path
 
 
-def process_xls_io_to_section_json(file_io):
+def process_xls_io_to_children_json(file_io):
     # I agree that this function is not pretty, but I don't think we
     # should move this into the model because I prefer to think of the
     # model as file-format independent.
@@ -121,7 +128,7 @@ def process_xls_io_to_section_json(file_io):
     m = re.search(r'([^/]+).xls$', path)
     slug = m.group(1)
     xlr = SurveyReader(path)
-    xls_vals = xlr.to_dict()
+    xls_vals = xlr.to_dict()[u'children']
     qjson = json.dumps(xls_vals)
     os.remove(path)
     return (slug, qjson)
@@ -134,63 +141,31 @@ def edit_survey(request, survey_id):
     survey = surveys.get(id_string=survey_id)
     context.page_name = "Edit - %s" % survey.title
     context.title = "Edit Survey - %s" % survey.title
-    if request.method == 'POST':
-        #file has been posted
+    if u'section_file' in request.FILES:
+        # a file has been posted
         section_file = request.FILES[u'section_file']
-        slug, section_json = convert_file_to_json(section_file)
-        survey.add_or_update_section(slug=slug, section_json=section_json)
-
-        #should we auto add this section if it's the first?
-#        if survey.latest_version.sections.count()==1:
-#            survey.order_base_sections([form_id_string])
+        slug, children_json = convert_file_to_children_json(section_file)
+        survey.add_or_update_section(slug=slug, children_json=children_json)
     context.survey = survey
-
-    lv = survey.latest_version
-
     #section_portfolio:
     # --> all sections that have been uploaded to this form
     #included_base_sections:
     # --> all sections that have been specified for use in the base_section
-    section_portfolio, included_base_sections = lv.all_sections()
-
-    context.available_sections = section_portfolio
-    context.available_sections_empty = len(section_portfolio) == 0
-
-    context.base_sections = included_base_sections
-    context.base_sections_empty = len(included_base_sections) == 0
-
-    return render_to_response("edit_survey.html", context_instance=context)
-
+    context.section = survey.base_section
+    surveys_available_sections = [s for s in survey.survey_sections.order_by('slug').all()
+                                        if s.slug != '_base']
+    context.available_sections = surveys_available_sections
+    bsids = survey._base_section.includes_list
+    context.base_sections = [survey.survey_sections.get(slug=bs)
+                                for bs in bsids]
+    return render_to_response("edit_xform.html", context_instance=context)
 
 @login_required
 def edit_section(request, survey_id, section_slug, action):
     user = request.user
     survey = user.surveys.get(id_string=survey_id)
-    section = survey.latest_version.sections.get(slug=section_slug)
-    latest_version = survey.latest_version
-    section_portfolio, included_base_sections = latest_version.all_sections()
-    active_slugs = [s.slug for s in included_base_sections]
-
-    if action == "activate":
-        survey.activate_section(section)
-    elif action == "deactivate":
-        survey.deactivate_section(section)
-    elif action == "delete":
-        survey.remove_section(slug=section_slug)
-    elif action == "up":
-        #move the section up one...
-        ii = active_slugs.index(section_slug)
-        if ii > 0:
-            active_slugs.remove(section_slug)
-            active_slugs.insert(ii - 1, section_slug)
-            survey.order_base_sections(active_slugs)
-    elif action == "down":
-        #move the section down one...
-        ii = active_slugs.index(section_slug)
-        if ii < len(active_slugs) - 1:
-            active_slugs.remove(section_slug)
-            active_slugs.insert(ii + 1, section_slug)
-            survey.order_base_sections(active_slugs)
+    section = survey.survey_sections.get(slug=section_slug)
+    section.make_adjustment(survey.base_section, action)
     return HttpResponseRedirect(
         reverse(edit_survey, kwargs={'survey_id': survey.id_string})
         )
