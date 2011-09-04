@@ -102,8 +102,8 @@ def convert_file_to_children_json(file_io):
         if type(children_list) == dict:
             children_list = children_list[u'children']
         children_json = json.dumps(children_list)
-    elif re.search("\.xls$", file_name):
-        slug, children_json = process_xls_io_to_children_json(file_io)
+    elif re.search("\.xls$", file_name) or re.search("\.csv$", file_name):
+        slug, children_json = process_spreadsheet_io_to_children_json(file_io)
     else:
         raise Exception("This file is not understood: %s" % file_name)
     return (slug, children_json)
@@ -120,13 +120,13 @@ def save_in_temp_dir(file_io):
     return path
 
 
-def process_xls_io_to_children_json(file_io):
+def process_spreadsheet_io_to_children_json(file_io):
     # I agree that this function is not pretty, but I don't think we
     # should move this into the model because I prefer to think of the
     # model as file-format independent.
     path = save_in_temp_dir(file_io)
-    m = re.search(r'([^/]+).xls$', path)
-    slug = m.group(1)
+    directory, filename = os.path.split(path)
+    slug, extension = os.path.splitext(filename)
     xlr = SurveyReader(path)
     xls_vals = xlr.to_dict()[u'children']
     qjson = json.dumps(xls_vals)
