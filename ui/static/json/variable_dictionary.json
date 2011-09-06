@@ -1,0 +1,24 @@
+{
+  "profile_variables": {
+    "chairman_name": {
+        "name": "LGA Chairman",
+        "order": 0
+    },
+    "secretary_name": {
+        "name": "LGA Secretary",
+        "order": 1
+    },
+    "pop_population": {
+        "name": "Population (2006)",
+        "order": 2
+    },
+    "area_sq_km": {
+        "name": "Area (square km)",
+        "order": 3
+    },
+    "state_capital_distance": {
+        "name": "Distance from LGA to state capital (km)",
+        "order": 4
+    }
+  }
+}
