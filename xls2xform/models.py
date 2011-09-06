@@ -12,7 +12,7 @@ from xls2xform import pyxform_include_packager
 from xls2xform_errors import SectionIncludeError, IncludeNotFound, CircularInclude
 
 class Survey(models.Model):
-    id_string = models.CharField(max_length=32)
+    root_node_name = models.CharField(max_length=32)
     title = models.CharField(max_length=32)
     user = models.ForeignKey(User, related_name="surveys", null=True)
     date_created = models.DateTimeField(auto_now_add=True)
