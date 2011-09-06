@@ -16,10 +16,7 @@ class TestXFormCreation(TestCase):
                 ))
         xml = f.read()
         f.close()
-        xform = XForm.objects.create(
-            web_title="blah",
-            xml=xml
-            )
+        xform = XForm.objects.create(xml=xml)
         self.assertEqual(xform.xml, xml)
         self.assertEqual(xform.id_string, "Registration2010-12-04_09-34-00")
         self.assertEqual(xform.title, "Registration")
