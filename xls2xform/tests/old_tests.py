@@ -7,99 +7,17 @@ Replace this with more appropriate tests for your application.
 
 from django.test import TestCase
 from django.test.client import Client
-
-from models import *
-
+from xls2xform.models import *
 from django.contrib.auth.models import User
 
 
-class TestIndexView(TestCase):
-    def setUp(self):
-        admin = User.objects.create(username="admin")
-        admin.set_password("pass")
-        admin.save()
-        self.c = Client()
-        #log in
-        self.c.login(username="admin", password="pass")
 
-    def post_new_form(self, id_string, title):
-        response = self.c.post("/", {
-            'id_string': id_string,
-            'title': title,
-        }, follow=True)
-        if len(response.redirect_chain)==0:
-            import pdb
-            pdb.set_trace()
-        self.assertTrue(len(response.redirect_chain) > 0)
-        def spaces_subbed(str):
-            import re
-            return re.sub(" ", "_", str)
-        self.assertEquals(response.redirect_chain[0][0], "http://testserver/edit/%s" % spaces_subbed(id_string))
-
-    def test_new_forms(self):
-        inputs = [
-            ('id_string1', 'title1'),
-            ('id string2', 'title2'), # definitely wont pass
-            ('id_string3', 'title with space'),
-            #('', 'title'), # definitely wont pass
-            #('id_string', ''), # definitely wont pass
-            ]
-        for input in inputs:
-            # Survey.objects.create({
-            #     'id_string': input[0],
-            #     'title': input[1]
-            # })
-            self.post_new_form(*input)
-
-class SurveyCreationTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create(username="TestUser")
-        self.survey = Survey.objects.create(user=self.user, id_string="SimpleId")
-
-    def test_version(self):
-        #one version exists by default
-        self.assertEqual(self.survey.versions.count(), 1)
-        #version is empty
-        self.assertEqual(self.survey.latest_version.sections.count(), 0)
-
-    def test_add_section(self):
-        sd1 = {u'type':u'text', u'name': u'colour'}
-        first_version = self.survey.add_or_update_section(section_dict=sd1, slug="first_section")
-        
-        #VERSION COUNT INCREMENTED
-        self.assertEqual(self.survey.versions.count(), 2)
-
-        #the latest_version should have one section
-        self.assertEqual(self.survey.latest_version.sections.count(), 1)
-
-        #  -- add_or_update_section updates when the slug matches
-        sd2 = {u'type':u'text', u'name': u'color'}
-        second_version = self.survey.add_or_update_section(section_dict=sd2, slug="first_section")
-
-        #  -- the first version should not equal the second version, and other similar tests
-        self.assertTrue(first_version != second_version)
-
-        #VERSION COUNT INCREMENTED
-        self.assertEqual(self.survey.versions.count(), 3)
-
-        #the latest version should have 1 section still
-        self.assertEqual(self.survey.latest_version.sections.count(), 1)
-
-        #we should be able to remove that section
-        self.survey.remove_section(slug="first_section")
-        self.assertEqual(self.survey.latest_version.sections.count(), 0)
-        #removing a section creates a new version
-        self.assertEqual(self.survey.versions.count(), 4)
-
-    def tearDown(self):
-        self.user.delete()
-        self.survey.delete()
 
 
 class SectionOrderingViaBaseSection(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="TestUser")
-        self.survey = Survey.objects.create(user=self.user, id_string="SimpleId")
+        self.survey = Survey.objects.create(user=self.user, root_name="SimpleId")
 
         sd1 = [{u'type':u'text', u'name':u'color'}]
         self.survey.add_or_update_section(section_dict=sd1, slug="first_section")
@@ -165,7 +83,7 @@ class ExportingFormViaPysurvey(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="TestUser")
         self.survey = Survey.objects.create(user=self.user,
-                                          id_string=u"SimpleId",
+                                          root_name=u"SimpleId",
                                           title=u"SimpleId")
 
     def test_export(self):
@@ -193,11 +111,11 @@ class ExportingFormViaPysurvey(TestCase):
         lv = self.survey.activate_section(new_section)
         #self.survey.order_sections([u'first_section'])
         s = self.survey.export_survey()
-        pyxform_survey_id = s.id_string()
+        pyxform_survey_root_name = s.root_name()
 
         # The latest version generates a unique id and passes it in
         # the survey object. pyxform should use it.
-        self.assertEqual(lv.get_unique_id(), pyxform_survey_id)
+        self.assertEqual(lv.get_unique_id(), pyxform_survey_root_name)
         self.maxDiff = 3000
         expected_xml = """<h:html xmlns="http://www.w3.org/2002/surveys" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <h:head>
@@ -216,22 +134,18 @@ class ExportingFormViaPysurvey(TestCase):
       <label ref="jr:itext('/SimpleId/color:label')"/>
     </input>
   </h:body>
-</h:html>""" % pyxform_survey_id
+</h:html>""" % pyxform_survey_root_name
         self.assertEqual(s.to_xml(), expected_xml)
 
-        sd2 = [
-            {
-                u'type': u'integer',
-                u'name': u'weight'
-                }
-            ]
+        sd2 = [{ u'type': u'integer',
+                    u'name': u'weight' }]
         lv2 = self.survey.add_or_update_section(section_dict=sd2, slug="second_section")
         second_section = lv2.sections_by_slug()['second_section']
         lv2 = self.survey.activate_section(second_section)
-        pyxform_survey_id = lv2.get_unique_id()
+        pyxform_survey_root_name = lv2.get_unique_id()
 
         s = self.survey.export_survey()
-        self.assertEqual("""<h:html xmlns="http://www.w3.org/2002/surveys" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><h:head><h:title>SimpleId</h:title><model><instance><SimpleId id="%s"><color/><weight/></SimpleId></instance><bind nodeset="/SimpleId/color" required="true()" type="string"/><bind nodeset="/SimpleId/weight" required="true()" type="int"/></model></h:head><h:body><input ref="/SimpleId/color"><label ref="jr:itext('/SimpleId/color:label')"/></input><input ref="/SimpleId/weight"><label ref="jr:itext('/SimpleId/weight:label')"/></input></h:body></h:html>"""  % pyxform_survey_id, s.to_xml())
+        self.assertEqual("""<h:html xmlns="http://www.w3.org/2002/surveys" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><h:head><h:title>SimpleId</h:title><model><instance><SimpleId id="%s"><color/><weight/></SimpleId></instance><bind nodeset="/SimpleId/color" required="true()" type="string"/><bind nodeset="/SimpleId/weight" required="true()" type="int"/></model></h:head><h:body><input ref="/SimpleId/color"><label ref="jr:itext('/SimpleId/color:label')"/></input><input ref="/SimpleId/weight"><label ref="jr:itext('/SimpleId/weight:label')"/></input></h:body></h:html>"""  % pyxform_survey_root_name, s.to_xml())
     
     def tearDown(self):
         self.user.delete()
@@ -256,10 +170,10 @@ class PassValuesToPysurvey(TestCase):
                         ]
                     }
                 },
-            u'id_string': u'Test_canSpecifyIDstring'
+            u'root_name': u'Test_canSpecifyIDstring'
             }
         s = pyxform.create_survey(**survey_package)
         self.assertEqual(s.get_name(), "TestAsurvey")
-        self.assertEqual(s.id_string(), "Test_canSpecifyIDstring")
+        self.assertEqual(s.root_name(), "Test_canSpecifyIDstring")
         self.assertEqual(len(s._children), 1)
     #    -- what else do we need to test?
