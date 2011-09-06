@@ -139,6 +139,7 @@ INSTALLED_APPS = (
     'xform_manager',
     'user_management',
     'xls2xform',
+    'ui',
 )
 COMPRESS = True
 
