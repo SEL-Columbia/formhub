@@ -12,7 +12,7 @@ from xls2xform import pyxform_include_packager
 from xls2xform_errors import SectionIncludeError, IncludeNotFound, CircularInclude
 
 class Survey(models.Model):
-    root_node_name = models.CharField(max_length=32)
+    root_name = models.CharField(max_length=32)
     title = models.CharField(max_length=32)
     user = models.ForeignKey(User, related_name="surveys", null=True)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -22,7 +22,7 @@ class Survey(models.Model):
     version_count = models.PositiveIntegerField(default=0)
 
     def __unicode__(self):
-        return "[%s]: %s" % (self.id_string, self.title)
+        return "[%s]: %s" % (self.root_name, self.title)
 
     @property
     def _section_slugs(self):
@@ -51,7 +51,7 @@ class Survey(models.Model):
     @property
     def _unique_id(self):
         # returns a unique id from the version
-        return "%s_%d" % (self.id_string, self.finalized_version_count)
+        return "%s_%d" % (self.root_name, self.finalized_version_count)
 
     def _survey_package(self):
         main_section = self.base_section._children
@@ -59,7 +59,7 @@ class Survey(models.Model):
                                 for s in self._sections.exclude(slug="_base").all()])
         return { 'main_section': main_section,
                     'title': self.title,
-                    'id_string': self._unique_id,
+                    'root_name': self._unique_id,
                     'sections': available_sections }
 
     def add_or_update_section(self, *args, **kwargs):

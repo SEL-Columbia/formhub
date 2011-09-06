@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import patterns, url
 import views
 
-SURVEY_ID = r"(?P<survey_id>.+)"
+SURVEY_ID = r"(?P<survey_root_name>.+)"
 
 urlpatterns = patterns('',
     url(r"^$", views.home),
