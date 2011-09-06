@@ -11,13 +11,15 @@ from survey_packager_tests import *
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
+from xls2xform.views import edit_survey
+
 class ReverseLookupTest(TestCase):
     def setUp(self):
         self.root_name = "fixture1"
         self.survey = Survey.objects.get(root_name=self.root_name)
 
     def test_first_part_of_packager(self):
-        delete_url = \
-            reverse('xls2xform.views.delete_survey', kwargs={'survey_root_name': self.root_name})
-        edit_url = \
-            reverse('xls2xform.views.edit_survey', kwargs={'survey_root_name': self.root_name})
+        this_works = \
+            reverse('nmis.xls2xform.views.edit_survey', kwargs={'survey_root_name': self.root_name})
+        this_does_not_work = \
+            reverse(edit_survey, kwargs={'survey_root_name': self.root_name})
