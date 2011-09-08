@@ -13,8 +13,20 @@ from django.template import RequestContext
 from models import Survey
 from pyxform.xls2json import SurveyReader
 
-from xls2xform.utils import slugify, get_survey
+from xls2xform.utils import slugify
 from xls2xform.exporter import export_survey
+
+
+class QuickConverter(forms.Form):
+    xls_file = forms.FileField(label="XLS File")
+
+    def get_survey(self):
+        xls = self.cleaned_data['xls_file']
+        path = save_in_temp_dir(xls)
+        from pyxform.builder import create_survey_from_path
+        survey = create_survey_from_path(path)
+        return survey
+
 
 class CreateSurvey(forms.Form):
     title = forms.CharField()
@@ -30,6 +42,7 @@ class CreateSurvey(forms.Form):
         return root_name
 
 
+# this is probably replaced by main.views.index
 def home(request, **kwargs):
     context = RequestContext(request)
     context.title = "XLS2Survey v2.0-beta1"
@@ -57,6 +70,7 @@ def home(request, **kwargs):
             context.form = submitted_form
     context.surveys = request.user.surveys.all()
     return render_to_response("xls2xform.html", context_instance=context)
+
 
 
 def delete_survey(request, survey_root_name):
