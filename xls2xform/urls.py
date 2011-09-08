@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import patterns, url
-import views
+from xls2xform import views
 
 SURVEY_ID = r"(?P<survey_root_name>.+)"
 
