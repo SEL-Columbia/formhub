@@ -132,7 +132,7 @@ def create_xform(request, group_name=None):
 class UpdateXForm(ModelForm):
     class Meta:
         model = XForm
-        fields = ("downloadable", "groups",)
+        fields = ("downloadable",)
 
 
 def update_xform(request, id_string):

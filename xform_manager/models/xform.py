@@ -3,25 +3,15 @@
 
 from django.db import models
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import User
 from django.conf import settings
 import re
-
-from datetime import datetime
 
 
 class XForm(models.Model):
     xml = models.TextField()
     downloadable = models.BooleanField()
-    groups = models.ManyToManyField(
-        Group, verbose_name=_('groups'), blank=True,
-        help_text=_(
-            "Each XForm is assigned to groups, only users in atleast "
-            "one of this XForm's groups will be able to update this "
-            "XForm."
-            )
-        )
+    user = models.ForeignKey(User, related_name='xforms')
 
     # the following fields are filled in automatically
     id_string = models.SlugField(
