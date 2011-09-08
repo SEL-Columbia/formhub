@@ -2,14 +2,12 @@
 
 {% block content %}
   <div class="content-section">
-    {% include "new_survey.html" %}
+    {% include "publish_survey.html" %}
   </div>
 
-  {% if surveys.count %}
-    <div class="content-section">
-      {% include "survey_list.html" %}
-    </div>
-  {% endif %}
+  <div class="content-section">
+    {% include "published_surveys.html" %}
+  </div>
 
   {% if extra_section %}
     {% include extra_section %}
