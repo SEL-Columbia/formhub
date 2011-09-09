@@ -1,17 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <div class="content-section">
-    {% include "publish_survey.html" %}
-  </div>
-
-  <div class="content-section">
-    {% include "published_surveys.html" %}
-  </div>
-
-  {% if extra_section %}
-    {% include extra_section %}
-  {% endif %}
+  {% include "publish_survey.html" %}
+  {% include "published_surveys.html" %}
 {% endblock %}
 
 {% block js %}

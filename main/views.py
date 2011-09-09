@@ -12,7 +12,7 @@ from xls2xform.exporter import export_survey
 from xls2xform.views import QuickConverter
 
 
-def index(request):
+def dashboard(request):
     if request.method == 'POST':
         form = QuickConverter(request.POST, request.FILES)
         if form.is_valid():

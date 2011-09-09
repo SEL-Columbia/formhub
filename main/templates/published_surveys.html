@@ -1,46 +1,49 @@
 {% if user.xforms %}
+<div class="content-section">
+  <h1>Published Surveys</h1>
 
-<h1>Published Surveys</h1>
-
-<table class="pretty padded fullw">
-  <thead>
-    <tr>
-      <th>Downloadable by Phone</th>
-      <th>Form ID</th>
-      <th>Number of Submissions</th>
-      <th>Time of Last Submission</th>
-      <th>CSV</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for xform in user.xforms.all %}
-    <tr>
-      <td>
-	<a href={% url xform_manager.views.toggle_downloadable id_string=xform.id_string %} class="delete">
-	  {% if xform.downloadable %}
-	  [ yes ]
-	  {% else %}
-	  [ no ]
+  <table class="pretty padded fullw">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>ID</th>
+        <th>Downloadable</th>
+        <th>Number of Submissions</th>
+        <th>Time of Last Submission</th>
+        <th>Export</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for xform in user.xforms.all %}
+      <tr>
+        <td>{{ xform.title }}</td>
+        <td>{{ xform.id_string }}</td>
+        <td>
+	  <a href={% url xform_manager.views.toggle_downloadable id_string=xform.id_string %} class="delete">
+	    {% if xform.downloadable %}
+	    [ yes ]
+	    {% else %}
+	    [ no ]
+	    {% endif %}
+	  </a>
+        </td>
+        <td>{{ xform.submission_count }}</td>
+        <td>
+	  {% if xform.time_of_last_submission %}
+	  {{ xform.time_of_last_submission }}
 	  {% endif %}
-	</a>
-      </td>
-      <td>{{ xform.id_string }}</td>
-      <td>{{ xform.submission_count }}</td>
-      <td>
-	{% if xform.time_of_last_submission %}
-	{{ xform.time_of_last_submission }}
-	{% endif %}
-      </td>
-      <td><a href="#" class="button">Download CSV</a></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
-<script type="text/javascript" charset="utf-8">
-<!--
+        </td>
+        <td><a href={% url parsed_xforms.views.csv_export id_string %} class="button">CSV</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+  <script type="text/javascript" charset="utf-8">
+    <!--
 	$('tr span.downloadable.true').each(function(){$(this).parents('tr').find('td').css({'font-weight':'bold'})})
--->
-</script>
-
+      -->
+  </script>
+</div>
+  
 {% endif %}
