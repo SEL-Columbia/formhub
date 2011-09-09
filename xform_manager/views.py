@@ -152,7 +152,7 @@ def toggle_downloadable(request, id_string):
     xform = XForm.objects.get(id_string=id_string)
     xform.downloadable = not xform.downloadable
     xform.save()
-    return HttpResponseRedirect(reverse("list_xforms"))
+    return HttpResponseRedirect("/")
 
 
 def instance(request, pk):
