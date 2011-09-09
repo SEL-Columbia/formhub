@@ -14,6 +14,10 @@ from survey_photos.views import photo_redirect
 urlpatterns = patterns('',
     url(r'^$', main_views.dashboard),
 
+    # todo: formList and submission should have a user prefix.
+    url(r"^%sformList$" % OPT_GROUP_REGEX, xform_manager_views.formList),
+    url(r"^%ssubmission$" % OPT_GROUP_REGEX, xform_manager_views.submission),
+
     url(r'^xform_manager/', include('nmis.xform_manager.urls')),
     url(r'^xls2xform/', include('nmis.xls2xform.urls')),
     url(r'^parsed_xforms/', include('nmis.parsed_xforms.urls')),
