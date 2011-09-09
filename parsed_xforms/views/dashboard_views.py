@@ -10,7 +10,6 @@ import json
 from parsed_xforms.models import ParsedInstance
 from common_tags import *
 from xform_manager.models import XForm, Instance
-from nga_districts.models import LGA
 from user_management.deny_if_unauthorized import deny_if_unauthorized
 from collections import defaultdict
 from xform_manager.models import SurveyType
@@ -32,35 +31,6 @@ def dashboard(request):
         context_instance=rc
         )
 
-@deny_if_unauthorized()
-def submission_counts_by_lga(request, as_dict=False):
-    titles = [u"Agriculture", u"Education", u"Health", u"LGA", u"Water"]
-    headers = [u"Zone", u"State", u"LGA"] + titles
-
-    dicts = ParsedInstance.objects.values("instance__xform__title", "lga").annotate(count=Count("id"))
-    counts = defaultdict(dict)
-    for d in dicts:
-        counts[d['lga']][d['instance__xform__title']] = d['count']
-
-    lgas = LGA.objects.order_by("state__zone__name", "state__name", "name").all()
-    rows = []
-    for lga in lgas:
-        row = [lga.state.zone.name,
-               lga.state.name,
-               lga.name,]
-        for title in titles:
-            count = counts[lga.id].get(title, 0)
-            row.append(count)
-        rows.append(row)
-
-    if as_dict:
-        return {"headers": headers, "rows": rows}
-
-    context = RequestContext(request, {"headers": headers, "rows": rows})
-    return render_to_response(
-        "submission_counts_by_lga.html",
-        context_instance=context
-        )
 
 #used in dashboard() to get table_types //among other places?
 dimensions = {

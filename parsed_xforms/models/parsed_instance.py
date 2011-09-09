@@ -3,9 +3,6 @@ from django.conf import settings
 
 from xform_manager.models import XForm, Instance
 from xform_manager.views import log_error
-from phone_manager.models import Phone
-from surveyor_manager.models import Surveyor
-from nga_districts.models import LGA
 
 from xform_manager import utils
 from common_tags import IMEI, DEVICE_ID, START_TIME, START, \
@@ -26,17 +23,13 @@ def datetime_from_str(text):
 
 class ParsedInstance(models.Model):
     instance = models.OneToOneField(Instance, related_name="parsed_instance")
-    phone = models.ForeignKey(Phone, null=True)
-    surveyor = models.ForeignKey(Surveyor, null=True)
-    
+
     # district is no longer used except in old data. once
     # we've migrated phase I surveys, we should delete this field.
-    lga = models.ForeignKey(LGA, null=True)
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
-    surveyor = models.ForeignKey(Surveyor, null=True)
     is_new = models.BooleanField(default=False)
-    
+
     class Meta:
         app_label = "parsed_xforms"
     
