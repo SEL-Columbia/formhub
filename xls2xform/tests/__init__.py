@@ -19,7 +19,6 @@ class ReverseLookupTest(TestCase):
         self.survey = Survey.objects.get(root_name=self.root_name)
 
     def test_first_part_of_packager(self):
-        this_works = \
-            reverse('nmis.xls2xform.views.edit_survey', kwargs={'survey_root_name': self.root_name})
-        this_does_not_work = \
+        # !!!
+        this_finally_works = \
             reverse(edit_survey, kwargs={'survey_root_name': self.root_name})

@@ -11,7 +11,7 @@ import re
 class XForm(models.Model):
     xml = models.TextField()
     downloadable = models.BooleanField()
-    user = models.ForeignKey(User, related_name='xforms')
+    user = models.ForeignKey(User, related_name='xforms', null=True)
 
     # the following fields are filled in automatically
     id_string = models.SlugField(
