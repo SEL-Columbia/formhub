@@ -8,7 +8,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedire
 from django.forms import ModelForm
 from django.views.generic.create_update import create_object, update_object
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import User
 from django.forms.models import ModelMultipleChoiceField
 from django.template import RequestContext
 
@@ -17,10 +17,10 @@ from . models import XForm, get_or_create_instance, Instance
 
 
 @require_GET
-def formList(request, group_name):
+def formList(request, username):
     """This is where ODK Collect gets its download list."""
-    xforms = XForm.objects.filter(downloadable=True) if not group_name \
-        else XForm.objects.filter(downloadable=True, groups__name=group_name)
+    xforms = XForm.objects.filter(downloadable=True) if not username \
+        else XForm.objects.filter(downloadable=True, user__username=username)
     return render_to_response(
         "formList.xml",
         {"xforms" : xforms, 'root_url': 'http://%s' % request.get_host()},
@@ -46,7 +46,7 @@ def log_error(message, level=logging.ERROR):
 
 @require_POST
 @csrf_exempt
-def submission(request, group_name):
+def submission(request, username):
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
 
@@ -78,7 +78,7 @@ def submission(request, group_name):
     return response
 
 
-def download_xform(request, id_string, group_name=None):
+def download_xform(request, id_string, username=None):
     xform = XForm.objects.get(id_string=id_string)
     return HttpResponse(
         xform.xml,
@@ -86,12 +86,12 @@ def download_xform(request, id_string, group_name=None):
         )
 
 
-def list_xforms(request, group_name=None):
+def list_xforms(request, username=None):
     xforms = XForm.objects.all()
-    if group_name:
+    if username:
         # ideally this filtering should be done based on the user's
         # group membership
-        xforms = xforms.filter(groups__name=group_name)
+        xforms = xforms.filter(groups__name=username)
     context = RequestContext(request, {"xforms" : xforms})
     return render_to_response(
         "list_xforms.html",
@@ -116,7 +116,7 @@ class CreateXForm(ModelForm):
         exclude = ("id_string", "title",)
 
 
-def create_xform(request, group_name=None):
+def create_xform(request, username=None):
     return create_object(
         request=request,
         form_class=CreateXForm,
