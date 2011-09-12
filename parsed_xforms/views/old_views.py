@@ -91,41 +91,10 @@ from django.forms.models import model_to_dict
 from collections import defaultdict
 from django.conf import settings
 
-from submission_qr.views import score_partial
-
 def survey(request, pk):
     context = RequestContext(request)
     return render_to_response("survey.html",
         context_instance=context)
-
-# def blah():
-#     r = ViewPkgr(request, "survey.html")
-# 
-#     instance = ParsedInstance.objects.get(pk=pk)
-# 
-#     # score_partial is the section of the page that lists scores given
-#     # to the survey.
-#     # it also contains a form for editing existing submissions or posting
-#     # a new one.
-#     reviewing = score_partial(instance, request.user, True)
-# 
-#     data = []
-#     mongo_json = instance.get_from_mongo()
-#     for key, val in mongo_json.items():
-#         data.append((key, val))
-# 
-#     r.info['survey_title'] = "Survey Title"
-# 
-#     r.add_info(
-#         {
-#             "instance": instance,
-#             'data': data,
-#             'score_partial': reviewing,
-#             'popup': False
-#             }
-#         )
-#     return r.r()
-# 
 
 STANDARD_DATE_DISPLAY = "%d-%m-%Y"
 

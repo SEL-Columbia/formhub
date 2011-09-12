@@ -29,7 +29,7 @@ class Command(BaseCommand):
         
         test_labels = ('locations', 'parsed_xforms', \
                     'nga_districts', 'phone_manager', 'surveyor_manager', \
-                    'xform_manager', 'map_xforms', 'submission_qr',)
+                    'xform_manager', 'map_xforms',)
         
         verbosity = int(options.get('verbosity', 1))
         interactive = options.get('interactive', True)
