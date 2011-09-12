@@ -10,6 +10,7 @@ from xform_manager.models import XForm
 
 from xls2xform.exporter import export_survey
 from xls2xform.views import QuickConverter
+from parsed_xforms.models import DataDictionary
 
 
 def dashboard(request):
@@ -52,3 +53,8 @@ def publish(user, survey):
     xform, created = XForm.objects.get_or_create(**kwargs)
 
     # need to also make a data dictionary
+    kwargs = {
+        'xform': xform,
+        'json': survey.to_json(),
+        }
+    data_dictionary, created = DataDictionary.objects.get_or_create(**kwargs)

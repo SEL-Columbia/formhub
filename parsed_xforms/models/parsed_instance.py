@@ -1,21 +1,21 @@
 from django.db import models
-from django.conf import settings
+from django.db.models.signals import post_save
 
+from utils.reinhardt import queryset_iterator
 from xform_manager.models import XForm, Instance
-from xform_manager.views import log_error
-
-from xform_manager import utils
 from common_tags import IMEI, DEVICE_ID, START_TIME, START, \
     END_TIME, END, LGA_ID, ID, SURVEYOR_NAME, ATTACHMENTS, DATE, SURVEY_TYPE
-import django.dispatch
 import datetime
+
 
 class ParseError(Exception):
     pass
 
+
 def datetime_from_str(text):
     # Assumes text looks like 2011-01-01T09:50:06.966
-    if text is None: return None
+    if text is None:
+        return None
     date_time_str = text.split(".")[0]
     return datetime.datetime.strptime(
         date_time_str, '%Y-%m-%dT%H:%M:%S'
@@ -24,12 +24,8 @@ def datetime_from_str(text):
 
 class ParsedInstance(models.Model):
     instance = models.OneToOneField(Instance, related_name="parsed_instance")
-
-    # district is no longer used except in old data. once
-    # we've migrated phase I surveys, we should delete this field.
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
-    is_new = models.BooleanField(default=False)
 
     class Meta:
         app_label = "parsed_xforms"
@@ -48,17 +44,11 @@ class ParsedInstance(models.Model):
             self._dict_cache = mod.process_doc(self._dict_cache)
         return self._dict_cache
 
-    def _set_phone(self):
-        doc = self.to_dict()
-        # I'm using two different keys here because I switched the key
-        # we're using in Phase II. Ideally, we'd do this using a data
-        # dictionary.
-        if (IMEI in doc) or (DEVICE_ID in doc):
-            imei = doc.get(IMEI, doc.get(DEVICE_ID))
-            if imei is None:
-                self.phone = None
-            else:
-                self.phone, created = Phone.objects.get_or_create(imei=imei)
+    @classmethod
+    def dicts(cls, xform):
+        qs = cls.objects.filter(instance__xform=xform)
+        for parsed_instance in queryset_iterator(qs):
+            yield parsed_instance.to_dict()
 
     def _set_start_time(self):
         doc = self.to_dict()
@@ -82,32 +72,15 @@ class ParsedInstance(models.Model):
         else:
             self.end_time = None
 
-    def _set_lga(self):
-        doc = self.to_dict()
-
-        zone_slug = doc.get(u'location/zone', None)
-        if zone_slug is None: return
-        state_slug = doc.get(u'location/state_in_%s' % zone_slug, None)
-        if state_slug is None: return
-        lga_slug = doc.get(u'location/lga_in_%s' % state_slug, None)
-        if lga_slug is None: return
-
-        try:
-            self.lga = LGA.objects.get(slug=lga_slug, state__slug=state_slug)
-        except LGA.DoesNotExist:
-            message = "There is no LGA with (state_slug, lga_slug)="
-            message += "(%(state)s, %(lga)s)" % {
-                "state" : state_slug, "lga" : lga_slug}
-            log_error(message)
-    
-    time_to_set_surveyor = django.dispatch.Signal()
-    def _set_surveyor(self):
-        self.time_to_set_surveyor.send(sender=self)
-    
     def parse(self):
-        self._set_phone()
         self._set_start_time()
         self._set_end_time()
-        self._set_lga()
-        self._set_surveyor()
 
+
+def _parse_instance(sender, **kwargs):
+    # When an instance is saved, first delete the parsed_instance
+    # associated with it.
+    instance = kwargs["instance"]
+    pi, created = ParsedInstance.objects.get_or_create(instance=instance)
+
+post_save.connect(_parse_instance, sender=Instance)

@@ -1,6 +1,7 @@
 import json
 from django.db import models
 from xform_manager.models import XForm
+from parsed_xforms.models import ParsedInstance
 from pyxform import QuestionTypeDictionary, SurveyElementBuilder
 from common_tags import XFORM_ID_STRING
 import re
@@ -9,7 +10,6 @@ import re
 class DataDictionary(models.Model):
     xform = models.ForeignKey(XForm, related_name="data_dictionary")
     json = models.TextField()
-    variable_names_json = models.TextField(default=u"{}")
 
     class Meta:
         app_label = "parsed_xforms"
@@ -104,13 +104,6 @@ class DataDictionary(models.Model):
             return self._rename_select_all_option_key(abbreviated_xpath)
         return self._simple_get_variable_name(abbreviated_xpath)
 
-    def get_parsed_instances_from_mongo(self):
-        id_string = self.xform.id_string
-        match_id_string = {XFORM_ID_STRING : id_string}
-        from newdb_error import NoMongoException
-        raise NoMongoException()
-#        return xform_instances.find(spec=match_id_string)
-
     def _rename_state_and_lga_keys(self, d):
         def rename_key(is_key_to_rename, new_key):
             candidates = [k for k in d.keys() if is_key_to_rename(k)]
@@ -187,7 +180,7 @@ class DataDictionary(models.Model):
             del d[key]
 
     def get_data_for_excel(self):
-        for d in self.get_parsed_instances_from_mongo():
+        for d in ParsedInstance.dicts(self.xform):
             self._remove_index_from_first_instance_of_repeat(d)
             self._rename_state_and_lga_keys(d)
             self._expand_select_all_that_apply(d)

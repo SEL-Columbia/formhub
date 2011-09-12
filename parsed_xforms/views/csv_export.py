@@ -88,8 +88,8 @@ class CsvWriter(object):
         self._file_object.writelines([row_string, u"\n"])
 
 
-from xform_manager.models import XForm, Instance
-from utils.reinhardt import queryset_iterator
+from xform_manager.models import XForm
+from parsed_xforms.models import ParsedInstance
 
 
 class XFormWriter(CsvWriter):
@@ -105,11 +105,7 @@ class XFormWriter(CsvWriter):
         self.set_generator_function(generator_function)
 
     def get_data_for_csv_writer(self):
-        qs = Instance.objects.filter(xform=self._xform)
-        for instance in queryset_iterator(qs):
-            d = instance.get_dict()
-            print d
-            yield d
+        return ParsedInstance.dicts(self._xform)
 
     def set_from_id_string(self, id_string):
         xform = XForm.objects.get(id_string=id_string)

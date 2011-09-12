@@ -119,10 +119,12 @@ Content-Type: text/html; charset=utf-8
             expected_dict
             )
 
-    def test_data_dictionary_writer(self):        
+    def test_data_dictionary_writer(self):
         dd_writer = DataDictionaryWriter()
         dd_writer.set_data_dictionary(self.data_dictionary)
         self.assertEqual(dd_writer._sheets.keys(), [self.survey.get_name()])
         self.assertEqual(dd_writer._columns.keys(), [self.survey.get_name()])
-        self.assertEqual(dd_writer._columns[self.survey.get_name()], [u'name'])
-                         
+        self.assertEqual(
+            dd_writer._columns[self.survey.get_name()],
+            [u'name', u'_parent_index', u'_parent_table_name', u'_index']
+            )

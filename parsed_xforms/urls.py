@@ -3,7 +3,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 from django.conf.urls.defaults import *
-from . import views
+from parsed_xforms import views
 
 urlpatterns = patterns('',
     url(r"^export_spreadsheet/(?P<id_string>[^/]*)\.csv$", views.csv_export),

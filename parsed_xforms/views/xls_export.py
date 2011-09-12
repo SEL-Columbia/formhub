@@ -1,14 +1,14 @@
 from collections import defaultdict
 from pyxform import Section, Question
 from parsed_xforms.models import DataDictionary
-import os
 from xform_manager.xform_instance_parser import xform_instance_to_dict
+
 
 class XlsWriter(object):
     def __init__(self):
         self.set_file()
         self.reset_workbook()
-    
+
     def set_file(self, file_object=None):
         """
         If the file object is None use a StringIO object.
