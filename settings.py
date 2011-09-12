@@ -137,6 +137,7 @@ INSTALLED_APPS = (
 
     'main',
     'xform_manager',
+    'parsed_xforms',
     'user_management',
     'xls2xform',
     'ui',

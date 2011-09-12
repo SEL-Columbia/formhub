@@ -14,6 +14,7 @@ def log(*args, **kwargs):
     """
     pass
 
+
 class Instance(models.Model):
     # I should rename this model, maybe Survey
     xml = models.TextField()

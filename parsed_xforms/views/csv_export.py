@@ -89,7 +89,8 @@ class CsvWriter(object):
 
 
 from xform_manager.models import XForm
-from common_tags import XFORM_ID_STRING
+from parsed_xforms.models import ParsedInstance
+from utils.reinhardt import queryset_iterator
 
 
 class XFormWriter(CsvWriter):
@@ -105,12 +106,9 @@ class XFormWriter(CsvWriter):
         self.set_generator_function(generator_function)
 
     def get_data_for_csv_writer(self):
-        match_id_string = {XFORM_ID_STRING: self._xform.id_string}
-        from newdb_error import NoMongoException
-        raise NoMongoException()
-#        dicts = xform_instances.find(spec=match_id_string)
-#        for d in dicts:
-#            yield d
+        qs = ParsedInstance.objects.filter(instance__xform=self._xform)
+        for parsed_instance in queryset_iterator(qs):
+            yield parsed_instance.to_dict()
 
     def set_from_id_string(self, id_string):
         xform = XForm.objects.get(id_string=id_string)

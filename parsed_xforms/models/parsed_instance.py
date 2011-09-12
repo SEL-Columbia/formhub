@@ -21,6 +21,7 @@ def datetime_from_str(text):
         date_time_str, '%Y-%m-%dT%H:%M:%S'
         )
 
+
 class ParsedInstance(models.Model):
     instance = models.OneToOneField(Instance, related_name="parsed_instance")
 
@@ -32,27 +33,21 @@ class ParsedInstance(models.Model):
 
     class Meta:
         app_label = "parsed_xforms"
-    
+
     def to_dict(self):
         if not hasattr(self, "_dict_cache"):
             self._dict_cache = self.instance.get_dict()
         self._dict_cache.update(
             {
-                ID : self.instance.id,
-                SURVEYOR_NAME :
-                    None if not self.surveyor else self.surveyor.name,
-                LGA_ID :
-                    None if not self.lga else self.lga.id,
-                SURVEY_TYPE: self.instance.survey_type.slug,
-                ATTACHMENTS :
-                    [a.media_file.name for a in self.instance.attachments.all()],
-                u"_status" : self.instance.status,
+                ID: self.instance.id,
+                ATTACHMENTS: [a.media_file.name for a in self.instance.attachments.all()],                    
+                u"_status": self.instance.status,
                 }
             )
         for mod in self.instance.modifications.all():
             self._dict_cache = mod.process_doc(self._dict_cache)
         return self._dict_cache
-    
+
     def _set_phone(self):
         doc = self.to_dict()
         # I'm using two different keys here because I switched the key
