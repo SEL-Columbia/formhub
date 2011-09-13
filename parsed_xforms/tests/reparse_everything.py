@@ -7,8 +7,8 @@ from datetime import datetime
 from xform_manager.factory import XFormManagerFactory
 
 from parsed_xforms.models import *
-from surveyor_manager.models import *
 from xform_manager.models import *
+
 
 class TestReparseEverything(TestCase):
     def setUp(self):
@@ -18,12 +18,8 @@ class TestReparseEverything(TestCase):
     
     def test_basic_reparse_method_works(self):
         self.assertEqual(ParsedInstance.objects.count(), 2)
-#        self.assertEqual(xform_instances.count(), 2)
-        self.assertEqual(Surveyor.objects.count(), 1)
-        
+
         for i in Instance.objects.all():
             i.save()
 
         self.assertEqual(ParsedInstance.objects.count(), 2)
-#        self.assertEqual(xform_instances.count(), 2)
-        self.assertEqual(Surveyor.objects.count(), 1)
