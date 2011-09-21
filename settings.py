@@ -99,19 +99,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'user_management.middleware.RequirePermissionMiddleware',
-    'user_management.models.UserRequest',
 )
-
-# RESTRICTED_URLS and RESTRICTED_URLS_EXCEPTIONS are used by the
-# permission middleware in user_management.
-RESTRICTED_URLS = (
-    (r'^/?$', 'auth.read'),
-    (r'^/?~', 'auth.read'),
-    (r'^/?facilities/', 'auth.read'),
-    )
-RESTRICTED_URLS_EXCEPTIONS = (
-    )
 
 ROOT_URLCONF = 'nmis.urls'
 
@@ -136,10 +124,8 @@ INSTALLED_APPS = (
     'registration',
 
     'main',
-    'xform_manager',
-    'parsed_xforms',
-    'user_management',
-    'xls2xform',
+    'odk_logger',
+    'odk_viewer',
     'ui',
 )
 COMPRESS = True
@@ -189,9 +175,9 @@ else:
 
 # Clear out the test database
 if TESTING_MODE:
-    MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'test_static/')
+    MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'test_media/')
 else:
-    MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'static/')
+    MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'media/')
 
 MAIN_SITE_HOSTNAME = "nmis.mdgs.gov.ng"
 

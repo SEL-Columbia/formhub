@@ -1,16 +1,23 @@
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
-from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission, Group
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django import forms
 
-from xform_manager.models import XForm
+from pyxform.builder import create_survey_from_xls
+from odk_logger.models import XForm
+from odk_viewer.models import DataDictionary
 
-from xls2xform.exporter import export_survey
-from xls2xform.views import QuickConverter
-from parsed_xforms.models import DataDictionary
+
+class QuickConverter(forms.Form):
+    xls_file = forms.FileField(label="XLS File")
+
+    def get_survey(self):
+        xls = self.cleaned_data['xls_file']
+        survey = create_survey_from_xls(xls)
+        return survey
 
 
 def dashboard(request):

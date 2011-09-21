@@ -1,4 +1,4 @@
-from xform_manager.xform_instance_parser import XFORM_ID_STRING
+from odk_logger.xform_instance_parser import XFORM_ID_STRING
 
 # WE SHOULD PUT MORE STRUCTURE ON THESE TAGS SO WE CAN ACCESS DOCUMENT
 # FIELDS ELEGANTLY

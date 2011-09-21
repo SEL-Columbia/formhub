@@ -19,7 +19,7 @@
         <td>{{ xform.title }}</td>
         <td>{{ xform.id_string }}</td>
         <td>
-	  <a href="{% url xform_manager.views.toggle_downloadable id_string=xform.id_string %}?next=/">
+	  <a href="{% url odk_logger.views.toggle_downloadable id_string=xform.id_string %}?next=/">
 	    {% if xform.downloadable %}
 	    [ yes ]
 	    {% else %}
@@ -33,7 +33,7 @@
 	  {{ xform.time_of_last_submission }}
 	  {% endif %}
         </td>
-        <td><a href="{% url parsed_xforms.views.csv_export xform.id_string %}" class="button">csv</a></td>
+        <td><a href="{% url odk_viewer.views.csv_export xform.id_string %}" class="button">csv</a></td>
       </tr>
       {% endfor %}
     </tbody>

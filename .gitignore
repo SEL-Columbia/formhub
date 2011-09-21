@@ -29,8 +29,9 @@ xform_manager_dataset.json
 local_settings.py
 .~lock.*
 
-# "your code sucks, you should fix this" -- andrew
-test_static
+# media folder used by tests
+# todo: figure out a way to clean this up rather than ignore it.
+/test_media
 
 load_script.logs
 load_script.pid
