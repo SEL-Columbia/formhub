@@ -25,7 +25,7 @@ csvs
 
 xform_manager_dataset.json
 
-data
+/data
 local_settings.py
 .~lock.*
 
