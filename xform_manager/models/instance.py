@@ -78,7 +78,10 @@ class Instance(models.Model):
         if not hasattr(self, "_parser"):
             self._parser = XFormInstanceParser(self.xml)
 
-    def get_dict(self, force_new=False):
+    def get_dict(self, force_new=False, flat=True):
         """Return a python object representation of this instance's XML."""
         self._set_parser()
-        return self._parser.get_flat_dict_with_attributes()
+        if flat:
+            return self._parser.get_flat_dict_with_attributes()
+        else:
+            return self._parser.to_dict()

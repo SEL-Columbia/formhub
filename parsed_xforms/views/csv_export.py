@@ -129,14 +129,21 @@ class DataDictionaryWriter(CsvWriter):
     def set_data_dictionary(self, data_dictionary):
         self._data_dictionary = data_dictionary
 
-        generator_function = data_dictionary.get_data_for_excel
-        self.set_generator_function(generator_function)
-
-        key_comparator = data_dictionary.get_column_key_cmp()
-        self.set_key_comparator(key_comparator)
-
         key_rename_function = data_dictionary.get_variable_name
         self.set_key_rename_function(key_rename_function)
+
+    def write_to_file(self, path):
+        self._ensure_directory_exists(path)
+        self._file_object = codecs.open(path, mode="w", encoding="utf-8")
+
+        headers = [self._key_rename_function(k) for k in self._data_dictionary.get_headers()]
+        self._write_row(headers)
+
+        for d in self._data_dictionary.get_data_for_excel():
+            # todo: figure out how to use csv.writer with unicode
+            self._write_row([d.get(k, u"n/a") for k in self._data_dictionary.get_headers()])
+
+        self._file_object.close()
 
     def set_from_id_string(self, id_string):
         dd = DataDictionary.objects.get(xform__id_string=id_string)

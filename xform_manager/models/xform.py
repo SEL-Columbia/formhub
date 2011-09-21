@@ -43,7 +43,7 @@ class XForm(models.Model):
         text = re.sub(r"\s+", " ", self.xml)
         matches = re.findall(r'<instance>.*id="([^"]+)".*</instance>', text)
         if len(matches) != 1:
-            raise Exception("There should be a single id string.", matches)
+            raise Exception("There should be a single id string.", text)
         self.id_string = matches[0]
 
     def _set_title(self):

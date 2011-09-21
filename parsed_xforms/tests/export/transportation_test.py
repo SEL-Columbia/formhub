@@ -42,19 +42,21 @@ class TestTransportationSurvey(TestCase):
     def test_mongo_entries(self):
         data = [
             {
-                "available_transportation_types_to_referral_facility": "ambulance bicycle",
+                "available_transportation_types_to_referral_facility/ambulance": True,
+                "available_transportation_types_to_referral_facility/bicycle": True,
                 "ambulance/frequency_to_referral_facility": "daily",
                 "bicycle/frequency_to_referral_facility": "weekly"
                 },
             {
-                "available_transportation_types_to_referral_facility": "none"
+                "available_transportation_types_to_referral_facility/none": True
                 },
             {
-                "available_transportation_types_to_referral_facility": "ambulance",
+                "available_transportation_types_to_referral_facility/ambulance": True,
                 "ambulance/frequency_to_referral_facility": "weekly",
                 },
             {
-                "available_transportation_types_to_referral_facility": "taxi other",
+                "available_transportation_types_to_referral_facility/taxi": True,
+                "available_transportation_types_to_referral_facility/other": True,
                 "available_transportation_types_to_referral_facility_other": "camel",
                 "taxi/frequency_to_referral_facility": "daily",
                 "other/frequency_to_referral_facility": "other",
@@ -89,7 +91,9 @@ class TestTransportationSurvey(TestCase):
         self.assertEqual(instance.get_dict(), expected_dict)
 
     def _get_csv_(self):
-        url = reverse(csv_export, kwargs={'id_string': self.id_string})
+        # todo: get the csv.reader to handle unicode as done here:
+        # http://docs.python.org/library/csv.html#examples
+        url = reverse(csv_export, kwargs={'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         actual_csv = response.content
@@ -111,6 +115,7 @@ class TestTransportationSurvey(TestCase):
         self.data_dictionary = DataDictionary.objects.all()[0]
         with open(os.path.join(self.test_path, "headers.json")) as f:
             expected_list = json.load(f)
+        self.maxDiff = None
         self.assertEqual(self.data_dictionary.get_headers(), expected_list)
 
         # test to make sure the headers in the actual csv are as expected
@@ -118,7 +123,7 @@ class TestTransportationSurvey(TestCase):
         self.assertEqual(actual_csv.next(), expected_list)
 
     def test_csv_export2(self):
-        url = reverse(csv_export, kwargs={'id_string': self.id_string})
+        url = reverse(csv_export, kwargs={'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         actual_csv = response.content

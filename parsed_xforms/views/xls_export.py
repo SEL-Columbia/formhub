@@ -91,11 +91,11 @@ class DataDictionaryWriter(XlsWriter):
     def _add_sheets(self):
         for e in self._data_dictionary.get_survey_elements():
             if isinstance(e, Section):
-                sheet_name = e.get_name()
+                sheet_name = e.name
                 self.add_sheet(sheet_name)
-                for f in e.get_children():
+                for f in e.children:
                     if isinstance(f, Question):
-                        self.add_column(sheet_name, f.get_name())
+                        self.add_column(sheet_name, f.name)
 
     def add_surveys(self):
         if not hasattr(self, "_dict_organizer"):

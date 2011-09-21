@@ -16,7 +16,7 @@ def _load_registration_survey_object():
     Loads a registration survey with all the values necessary
     to register a surveyor.
     """
-    survey = Survey(name=u"registration")
+    survey = Survey(name=u"registration", id_string=u"registration")
     survey.add_child(create_survey_element_from_dict({
         u'type':u'text',u'name':u'name', u'label':u'Name'
     }))
@@ -39,7 +39,7 @@ def _load_simple_survey_object():
     Returns a "watersimple" survey object,
     complete with questions.
     """
-    survey = Survey(name=u"WaterSimple")
+    survey = Survey(name=u"WaterSimple", id_string=u"WaterSimple")
     survey.add_child(create_survey_element_from_dict({
         u'hint': {u'English':u'What is this point named?'},
         u'label': {u'English':u'Water Point Name'},
@@ -71,7 +71,9 @@ def _load_simple_survey_object():
     }))
     return survey
 
+
 class XFormManagerFactory(object):
+
     def create_registration_xform(self):
         """
         Calls 'get_registration_xform', saves the result, and returns.
@@ -79,7 +81,7 @@ class XFormManagerFactory(object):
         xf = self.get_registration_xform()
         xf.save()
         return xf
-    
+
     def get_registration_xform(self):
         """
         Gets a registration xform. (currently loaded in from fixture)
@@ -87,7 +89,7 @@ class XFormManagerFactory(object):
         """
         reg_xform = _load_registration_survey_object()
         return XForm(xml=reg_xform.to_xml())
-    
+
     def create_registration_instance(self, custom_values={}):
         i = self.get_registration_instance(custom_values)
         i.save()

@@ -9,8 +9,9 @@ import re
 from xform_manager.xform_instance_parser import xform_instance_to_dict
 from parsed_xforms.views.xls_export import XlsWriter, DictOrganizer, DataDictionaryWriter
 
+
 class TestSurveyView(TestCase):
-    
+
     def setUp(self):
         self.survey = create_survey_from_xls("parsed_xforms/tests/name_survey.xls")
         self.xform = XForm.objects.create(xml=self.survey.to_xml())
@@ -19,8 +20,8 @@ class TestSurveyView(TestCase):
             xform=self.xform, json=json_str)
 
         info = {
-            "survey_name" : self.survey.get_name(),
-            "id_string" : self.survey.id_string(),
+            "survey_name" : self.survey.name,
+            "id_string" : self.survey.id_string,
             "name" : "Andrew"
             }
         xml_str = u'<?xml version=\'1.0\' ?><%(survey_name)s id="%(id_string)s"><name>%(name)s</name></%(survey_name)s>' % info
@@ -122,9 +123,9 @@ Content-Type: text/html; charset=utf-8
     def test_data_dictionary_writer(self):
         dd_writer = DataDictionaryWriter()
         dd_writer.set_data_dictionary(self.data_dictionary)
-        self.assertEqual(dd_writer._sheets.keys(), [self.survey.get_name()])
-        self.assertEqual(dd_writer._columns.keys(), [self.survey.get_name()])
+        self.assertEqual(dd_writer._sheets.keys(), [self.survey.name])
+        self.assertEqual(dd_writer._columns.keys(), [self.survey.name])
         self.assertEqual(
-            dd_writer._columns[self.survey.get_name()],
+            dd_writer._columns[self.survey.name],
             [u'name', u'_parent_index', u'_parent_table_name', u'_index']
             )
