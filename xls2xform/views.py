@@ -12,6 +12,7 @@ from django.template import RequestContext
 
 from models import Survey
 from pyxform.xls2json import SurveyReader
+from pyxform.builder import create_survey_from_xls
 
 from xls2xform.utils import slugify
 from xls2xform.exporter import export_survey
@@ -22,9 +23,7 @@ class QuickConverter(forms.Form):
 
     def get_survey(self):
         xls = self.cleaned_data['xls_file']
-        path = save_in_temp_dir(xls)
-        from pyxform.builder import create_survey_from_path
-        survey = create_survey_from_path(path)
+        survey = create_survey_from_xls(xls)
         return survey
 
 
