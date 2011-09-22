@@ -60,7 +60,7 @@ STATIC_URL = '/static/'
 
 # Login URLs
 LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/~'
+LOGIN_REDIRECT_URL = '/'
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.

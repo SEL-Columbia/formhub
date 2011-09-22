@@ -4,11 +4,3 @@
   {% include "publish_survey.html" %}
   {% include "published_surveys.html" %}
 {% endblock %}
-
-{% block js %}
-<script type="text/javascript" charset="utf-8">
-	$('a.delete').click(function(evt){
-		!confirm('Are you sure you want to delete this survey?') && evt.preventDefault();
-	});
-</script>
-{% endblock %}

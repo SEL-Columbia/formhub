@@ -1,106 +1,94 @@
-{% load i18n %}
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
 
-<html lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <!-- todo: replace site_title with page_title -->
-	<title>
-	  {{ site_title|default:"ODK Deploy" }}
-	</title>
-	<link rel="stylesheet" href="/static/css/sitewide.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
-	<link rel="stylesheet" href="/static/css/tables.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
-	<link rel="stylesheet" href="/static/css/generated-donotedit.css" type="text/css" media="all" title="Sitewide" charset="utf-8" />
-    <link rel="stylesheet" href="/static/css/main.css" media="screen">
-	<link rel="stylesheet" href="/static/jquery-ui/jquery-ui-1.8.7.custom.css" type="text/css" media="screen" title="Sitewide" charset="utf-8" />
-	<script src="/static/js/modernizr-2.js" type="text/javascript" charset="utf-8"></script>
-	{% block head %}{% endblock %}
-</head>
-<body class="nmis home">
-	<div id="header">
-		<div class="fwidth">
-			<a href="/" id="hlogo"><img src="/static/images/nmis_pilot.png" /></a>
-			<h2 class="site-title">ODK Deploy</h2>
-			<h2 class="title">
-	                  {% block page_title %}{{ site_title }}{% endblock %}
-			</h2>
-			{% if data_loading_count %}
-			<p class="loading-info" data-lgas-loading-count="{{data_loading_count}}" title="LGAs in progress: {{data_loading_count}}">
-				<img src="/static/images/grey-loader.gif">
-			</p>
-			{% endif %}
+<!DOCTYPE html> 
+<html lang="en"> 
+  <head> 
+    <meta charset="utf-8"> 
+    <title>ODK Deploy</title> 
+    <meta name="description" content=""> 
+    <meta name="author" content=""> 
+ 
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements --> 
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]--> 
+ 
+    <!-- Le styles --> 
+    <link href="/static/bootstrap/bootstrap.css" rel="stylesheet"> 
+    <link href="/static/bootstrap/docs/assets/css/docs.css" rel="stylesheet"> 
+    <link href="/static/bootstrap/docs/assets/js/google-code-prettify/prettify.css" rel="stylesheet"> 
+ 
+    <!-- Le javascript --> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script> 
+    <script src="http://autobahn.tablesorter.com/jquery.tablesorter.min.js"></script> 
+    <script src="/static/bootstrap/docs/assets/js/google-code-prettify/prettify.js"></script> 
+    <script>$(function () { prettyPrint() })</script> 
+    <script src="/static/bootstrap/js/bootstrap-dropdown.js"></script> 
+    <script src="/static/bootstrap/js/bootstrap-twipsy.js"></script> 
+    <script src="/static/bootstrap/js/bootstrap-scrollspy.js"></script> 
+    <script src="/static/bootstrap/docs/assets/js/application.js"></script> 
+ 
+    <!-- Le fav and touch icons --> 
+    <link rel="shortcut icon" type="image/x-icon" href="/static/bootstrap/assets/ico/favicon.ico"> 
+    <link rel="apple-touch-icon" href="/static/bootstrap/assets/ico/bootstrap-apple-57x57.png"> 
+    <link rel="apple-touch-icon" sizes="72x72" href="/static/bootstrap/assets/ico/bootstrap-apple-72x72.png"> 
+    <link rel="apple-touch-icon" sizes="114x114" href="/static/bootstrap/assets/ico/bootstrap-apple-114x114.png"> 
+  </head> 
+ 
+  <body> 
+ 
+    <!-- Topbar
+    ================================================== --> 
+    <div class="topbar" data-dropdown="dropdown" > 
+      <div class="topbar-inner"> 
+        <div class="container"> 
+          <a class="brand" href="#">ODK Deploy</a> 
+          <!--
+          <ul class="nav"> 
+            <li class="active"><a href="#overview">Overview</a></li>
+            <li><a href="#about">About</a></li> 
+          </ul> 
+          -->
+          <ul class="nav secondary-nav"> 
+            {% if user.is_authenticated %}
+            <li class="dropdown"> 
+              <a href="#" class="dropdown-toggle">{{ user.username }}</a> 
+              <ul class="dropdown-menu"> 
+                <li><a href="{% url auth_logout %}">Log out</a></li> 
+              </ul> 
+            </li> 
+            {% else %}
+            <li><a href="{% url auth_login %}">Log in</a></li>
+            {% endif %}
+          </ul> 
+        </div> 
+      </div> 
+    </div> 
 
-                        {% block lga_nav %}{% endblock %}
-
-                        {% block account_links %}
-		<div class="account_links">
-			{% if user.is_authenticated %}
-			{% trans "Logged in" %}: {{ user.username }} 
-			(<a href="{% url auth_logout %}">{% trans "Log out" %}</a>)
-			{% else %}
-			<a href="{% url auth_login %}">{% trans "Log in" %}</a>
-                        {% endif %}
-                        {% endblock %}
-		</div>
-		</div>
-	</div>
-	{% if user.is_authenticated %}
-	<!--
-	<ul id="menu">
-		<div class="fwidth">
-			{% block menu %}
-			<li class="dashboard"><a href="#/">Data Export</a></li>
-			<li class="submission-counts"><a href="#/submission-counts">Submissions by LGA</a></li>
-			{% endblock %}
-		</div>
-	</ul>
-	-->
-	{% endif %}
-	<div id="content">
-		<div class="fwidth">
-			{% if navs %}
-			{% include 'embed_nav.html' %}
-			{% endif %}
-			<div class="content-inner-wrap">
-				{% include "browser_message.html" %}
-
-				{% block content %}{% endblock %}
-			</div>
-		</div>
-	</div>
-	{% if site_title %}
-	<script type="text/javascript" charset="utf-8">
-		var siteTitle = "{{site_title}}";
-	</script>
-	{% endif %}
-	<link rel="stylesheet" href="/static/css/chosen.css" type="text/css" media="all" charset="utf-8">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-	<script src="/static/js/libs/jquery.cookie.js" type="text/javascript" charset="utf-8"></script>
-	<script type="text/javascript" src="/static/js/libs/chosen.jquery.min.js"></script>
-	<script type="text/javascript" charset="utf-8">
-		(function(s){
-			typeof lgaId !== 'undefined' &&
-				s.val(lgaId);
-			s.chosen();
-		})($('select#lga-select'));
-	</script>
-	<script>window.jQuery || document.write("<script src='/static/js/libs/jquery-1.6.2-min.js'>\x3C/script>")</script>
-	<script type="text/javascript" src="/static/js/libs/color.js"></script>
-	<script type="text/javascript" src="/static/js/libs/mustache.js"></script>
-	<script type="text/javascript" src="/static/jquery-ui/jquery-ui-1.8.7.custom.min.js"></script>
-	<!--<script type="text/javascript" src="/static/js/sammy-latest.min.js"></script>
-	<script type="text/javascript" src="/static/js/jquery.tmpl.min.js"></script>
-	-->
-	<script type="text/javascript" src="/static/js/libs/sammy.js"></script>
-	<script type="text/javascript" src="/static/js/jquery.offline.js"></script>
-	<script src="/static/js/json2table.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/static/js/libs/raphael-min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/static/js/g.raphael-min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/static/js/g.pie-min.js" type="text/javascript" charset="utf-8"></script>
-	{% block scripts %}{% endblock %}
-	{% block js %}
-	<!-- js block is for scripts that should be loaded at the end of the page -->
-	{% endblock %}
-</body>
+    <div class="container" min-height="100%">
+      {% block content %}{% endblock %}
+    </div>
+ 
+    <footer class="footer"> 
+      <div class="container"> 
+        <p> 
+          Designed by <a href="http://modi.mech.columbia.edu/">Modi Research Group</a>.<br /> 
+          Code licensed under the <a href="http://www.xfree86.org/3.3.6/COPYRIGHT2.html#3" target="_blank">X11 License</a>.
+        </p> 
+      </div> 
+    </footer> 
+ 
+  </body> 
 </html>
+
+
+
+
+<!--
+     -->
+
+<!--	<div id="content">
+		<div class="fwidth">
+			<div class="content-inner-wrap"> -->
+
+
+

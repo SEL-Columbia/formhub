@@ -1,8 +1,10 @@
 {% if user.xforms.count %}
-<div class="content-section">
-  <h1>Published Surveys</h1>
+<section id="published-surveys">
+  <div class="page-header">
+    <h1>Published Surveys <small>Export, map, and view submissions.</small></h1>
+  </div>
 
-  <table class="pretty padded fullw">
+  <table class="zebra-striped">
     <thead>
       <tr>
         <th>Title</th>
@@ -39,10 +41,5 @@
     </tbody>
   </table>
   
-  <script type="text/javascript" charset="utf-8">
-    <!--
-	$('tr span.downloadable.true').each(function(){$(this).parents('tr').find('td').css({'font-weight':'bold'})})
-      -->
-  </script>
-</div>
+</section>
 {% endif %}
