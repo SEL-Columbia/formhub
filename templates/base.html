@@ -41,54 +41,39 @@
     <div class="topbar" data-dropdown="dropdown" > 
       <div class="topbar-inner"> 
         <div class="container"> 
-          <a class="brand" href="#">ODK Deploy</a> 
+          <a class="brand" href="/">ODK Deploy</a> 
           <!--
           <ul class="nav"> 
             <li class="active"><a href="#overview">Overview</a></li>
             <li><a href="#about">About</a></li> 
           </ul> 
           -->
+          {% if user.is_authenticated %}
           <ul class="nav secondary-nav"> 
-            {% if user.is_authenticated %}
             <li class="dropdown"> 
               <a href="#" class="dropdown-toggle">{{ user.username }}</a> 
               <ul class="dropdown-menu"> 
-                <li><a href="{% url auth_logout %}">Log out</a></li> 
+                <li><a href="{% url auth_logout %}">Sign out</a></li>
+                <li><a href="{% url auth_password_change %}">Change password</a></li>
               </ul> 
             </li> 
-            {% else %}
-            <li><a href="{% url auth_login %}">Log in</a></li>
-            {% endif %}
           </ul> 
+          {% endif %}
         </div> 
       </div> 
     </div> 
 
-    <div class="container" min-height="100%">
+    <div class="container">
       {% block content %}{% endblock %}
     </div>
  
     <footer class="footer"> 
       <div class="container"> 
         <p> 
-          Designed by <a href="http://modi.mech.columbia.edu/">Modi Research Group</a>.<br /> 
-          Code licensed under the <a href="http://www.xfree86.org/3.3.6/COPYRIGHT2.html#3" target="_blank">X11 License</a>.
+          Built by the <a href="http://modi.mech.columbia.edu/">Modi Research Group</a>.<br /> 
+          Code licensed under the <a href="http://www.xfree86.org/3.3.6/COPYRIGHT2.html#3">X11 License</a>.
         </p> 
       </div> 
     </footer> 
- 
   </body> 
 </html>
-
-
-
-
-<!--
-     -->
-
-<!--	<div id="content">
-		<div class="fwidth">
-			<div class="content-inner-wrap"> -->
-
-
-

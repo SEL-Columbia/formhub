@@ -2,6 +2,7 @@
 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission, Group
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django import forms
@@ -20,6 +21,7 @@ class QuickConverter(forms.Form):
         return survey
 
 
+@login_required
 def dashboard(request):
     if request.method == 'POST':
         form = QuickConverter(request.POST, request.FILES)

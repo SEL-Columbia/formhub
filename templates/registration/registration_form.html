@@ -1,18 +1,21 @@
 {% extends "base.html" %}
-{% load i18n %}
-
-{% block page_title %}Registration{% endblock %}
 
 {% block content %}
-<p>
-To register please fill in the form below.
-</p>
-<form method="post" action=".">
-  {% csrf_token %}
-  <table>
-  {{ form.as_table }}
-  </table>
+<section id="register">
+  <div class="page-header">
+    <h1>Register</h1>
+  </div>
 
-  <input type="submit" value="{% trans 'Submit' %}" />
-</form>
+  <div class="row">
+    <div class="span8">
+      <form method="post" action=".">
+        {% csrf_token %}
+        <table>
+          {{ form.as_table }}
+        </table>
+        <input type="submit" class="btn large primary" value="Register" />
+      </form>
+    </div>
+  </div>
+</section>
 {% endblock %}

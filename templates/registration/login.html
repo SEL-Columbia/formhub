@@ -1,36 +1,24 @@
 {% extends "base.html" %}
-{% load i18n %}
-
-{% block page_title %}Log In{% endblock %}
-
-{% block account_links %}{% endblock %}
 
 {% block content %}
-<p>
-  Welcome to the Nigeria MDGs Information System!
-</p>
-<p>
-  Please login with your username and password below. Not registered?
-  Please register
-  <a href="{% url registration_register %}">here</a>.
-</p>
+<section id="login">
+  <div class="page-header">
+    <h1>Sign in</h1>
+  </div>
 
-<form method="post" action=".">
-  <table>
-    {{ form.as_table }}
-  </table>
-  {% csrf_token %}
-  <input type="submit" value="{% trans 'Log in' %}" />
-  <input type="hidden" name="next" value="{{ next }}" />
-</form>
-
-<p>
-  If you forget your password you can reset it
-  <a href="{% url auth_password_reset %}">here</a>.
-</p>
-
-<p>
-  If you forget your username please email
-  <a href="mailto:{{user_manager_email}}?subject=Forgot%20Password">OSSAP</a>.
-</p>
+  <div class="row">
+    <div class="span8">
+      <form method="post" action=".">
+        <table>
+          {{ form.as_table }}
+        </table>
+        {% csrf_token %}
+        <input type="submit" class="btn large primary" value="Sign in" />
+        <input type="hidden" name="next" value="{{ next }}" />
+      </form>
+      <p>Can't access your account? <a href="{% url auth_password_reset %}">Reset your password</a></p>
+      <p>New to ODK Deploy? <a href="{% url registration_register %}">Create an account.</a></p>
+    </div>
+  </div>
+</section>
 {% endblock %}
