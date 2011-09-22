@@ -4,44 +4,24 @@
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
-from django.forms import ModelForm
-from django.views.generic.create_update import create_object, update_object
-from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
-from django.forms.models import ModelMultipleChoiceField
-from django.template import RequestContext
+from django.http import HttpResponse, HttpResponseBadRequest, \
+    HttpResponseRedirect
 
-import itertools
-from . models import XForm, get_or_create_instance, Instance
+from models import XForm, get_or_create_instance
 
 
 @require_GET
 def formList(request, username):
     """This is where ODK Collect gets its download list."""
-    xforms = XForm.objects.filter(downloadable=True) if not username \
-        else XForm.objects.filter(downloadable=True, user__username=username)
-    return render_to_response(
-        "formList.xml",
-        {"xforms" : xforms, 'root_url': 'http://%s' % request.get_host()},
-        mimetype="application/xml"
-        )
-
-
-try:
-    from sentry.client.models import client as sentry_client
-except:
-    # I want to set this code up to not rely on sentry as it breaks
-    # testing.
-    sentry_client = None
-import logging
-
-def log_error(message, level=logging.ERROR):
-    if sentry_client is not None:
-        sentry_client.create_from_text(message, level=level)
-    else:
-        print "If sentry was set up we would log the following", \
-              message
+    xforms = XForm.objects.filter(downloadable=True, user__username=username)
+    urls = [
+        {
+            'url': request.build_absolute_uri(xform.url()),
+            'text': xform.id_string,
+            }
+        for xform in xforms
+        ]
+    return render_to_response("formList.xml", {'urls': urls}, mimetype="application/xml")
 
 
 @require_POST
@@ -49,15 +29,8 @@ def log_error(message, level=logging.ERROR):
 def submission(request, username):
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
-
-    xml_file_list = []
-
-    try:
-        xml_file_list = request.FILES.pop("xml_submission_file", [])
-    except IOError:
-#        raise Exception("The connection broke before all files were posted.")
-        log_error('The connection broke before all files were posted.')
-    if len(xml_file_list)!=1:
+    xml_file_list = request.FILES.pop("xml_submission_file", [])
+    if len(xml_file_list) != 1:
         return HttpResponseBadRequest(
             "There should be a single XML submission file."
             )
@@ -78,83 +51,16 @@ def submission(request, username):
     return response
 
 
-def download_xform(request, id_string, username=None):
-    xform = XForm.objects.get(id_string=id_string)
+def download_xform(request, username, id_string):
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
     return HttpResponse(
         xform.xml,
         mimetype="application/xml"
         )
 
 
-def list_xforms(request, username=None):
-    xforms = XForm.objects.all()
-    if username:
-        # ideally this filtering should be done based on the user's
-        # group membership
-        xforms = xforms.filter(groups__name=username)
-    context = RequestContext(request, {"xforms" : xforms})
-    return render_to_response(
-        "list_xforms.html",
-        context_instance=context
-        )
-
-
-def submission_test_form(request):
-    """ This view is only for debugging. Do not link to this page. """
-    return render_to_response("submission_test_form.html")
-
-
-# This following code bothers me a little bit, it seems perfectly
-# suited to be put in the Django admin.
-
-
-# CRUD for xforms
-# (C)reate using a ModelForm
-class CreateXForm(ModelForm):
-    class Meta:
-        model = XForm
-        exclude = ("id_string", "title",)
-
-
-def create_xform(request, username=None):
-    return create_object(
-        request=request,
-        form_class=CreateXForm,
-        template_name="form.html",
-        post_save_redirect=reverse("list_xforms"),
-        )
-
-
-# (R)ead using a nice list
-
-
-# (U)pdate using another ModelForm
-class UpdateXForm(ModelForm):
-    class Meta:
-        model = XForm
-        fields = ("downloadable",)
-
-
-def update_xform(request, id_string):
-    xform = XForm.objects.get(id_string=id_string)
-    return update_object(
-        request=request,
-        object_id=xform.id,
-        form_class=UpdateXForm,
-        template_name="form.html",
-        post_save_redirect="/", #reverse("list_xforms"),
-        )
-
-
-# (D)elete: we won't let a user actually delete an XForm but they can
-# hide XForms using the (U)pdate view
-def toggle_downloadable(request, id_string):
-    xform = XForm.objects.get(id_string=id_string)
+def toggle_downloadable(request, username, id_string):
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
     xform.downloadable = not xform.downloadable
     xform.save()
     return HttpResponseRedirect("/")
-
-
-def instance(request, pk):
-    instance = Instance.objects.get(pk=pk)
-    return HttpResponse(instance.as_html())

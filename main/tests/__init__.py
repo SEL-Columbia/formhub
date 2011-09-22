@@ -14,6 +14,7 @@ from django.test.client import Client
 class TestSite(TestCase):
 
     def test_process(self):
+        self.maxDiff = None
         self._create_user_and_login()
         self._publish_xls_file()
         self._check_formList()
@@ -42,12 +43,25 @@ class TestSite(TestCase):
         self.assertEqual(self.xform.id_string, "transportation_2011_07_25")
 
     def _check_formList(self):
-        pass
+        response = self.client.get('/bob/formList')
+        self.download_url = 'http://testserver/bob/transportation_2011_07_25.xml'
+        expected_content = """<forms>
+  
+  <form url="%s">transportation_2011_07_25</form>
+  
+</forms>
+""" % self.download_url
+        self.assertEqual(response.content, expected_content)
 
     def _download_xform(self):
-        pass
+        response = self.client.get(self.download_url)
+        xml_path = os.path.join(self.this_directory, "transportation.xml")
+        with open(xml_path) as xml_file:
+            expected_content = xml_file.read()
+        self.assertEqual(expected_content, response.content)
 
     def _make_submissions(self):
+        # todo: actually post files rather than import
         odk_path = os.path.join(self.this_directory, "odk")
         import_instances_from_phone(odk_path)
         self.assertEqual(self.xform.surveys.count(), 4)
@@ -65,7 +79,6 @@ class TestSite(TestCase):
         self.data_dictionary = DataDictionary.objects.all()[0]
         with open(os.path.join(self.this_directory, "headers.json")) as f:
             expected_list = json.load(f)
-        self.maxDiff = None
         self.assertEqual(self.data_dictionary.get_headers(), expected_list)
 
         # test to make sure the headers in the actual csv are as expected
@@ -176,7 +189,6 @@ class TestSite(TestCase):
         l = list(self.xform.data_dictionary.all())
         self.assertTrue(len(l) == 1)
         dd = l[0]
-        self.maxDiff = None
         for row, expected_dict in zip(actual_csv, data):
             d = dict(zip(headers, row))
             for k, v in d.items():

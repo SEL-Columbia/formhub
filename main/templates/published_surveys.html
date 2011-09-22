@@ -21,7 +21,7 @@
         <td>{{ xform.title }}</td>
         <td>{{ xform.id_string }}</td>
         <td>
-	  <a href="{% url odk_logger.views.toggle_downloadable id_string=xform.id_string %}?next=/">
+	  <a href="{% url odk_logger.views.toggle_downloadable username=user.username id_string=xform.id_string %}?next=/">
 	    {% if xform.downloadable %}
 	    [ yes ]
 	    {% else %}

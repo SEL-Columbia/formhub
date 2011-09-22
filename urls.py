@@ -14,5 +14,5 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    url(r'^', include('nmis.odk_logger.urls')),
+    url(r'^(?P<username>[^/]+)/', include('nmis.odk_logger.urls')),
 )

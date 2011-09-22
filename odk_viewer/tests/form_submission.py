@@ -3,20 +3,10 @@ Testing POSTs to "/submission"
 """
 from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
-from odk_logger import urls
+from odk_logger import views
 
 
 class TestFormSubmission(TestCase):
-    def tests_formlist(self):
-        response = self.client.get(reverse(urls.FORM_LIST))
-        self.assertEqual(response.status_code, 200)
-
-    def test_empty_post(self):
-        """
-        The status code is not 200 if the user submits a bad/empty survey
-        """
-        response = self.client.post("/submission", {})
-        self.assertNotEqual(response.status_code, 200)
 
     def test_form_post(self):
         """

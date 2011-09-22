@@ -36,7 +36,10 @@ class XForm(models.Model):
     def url(self):
         return reverse(
             "download_xform",
-            kwargs={"id_string" : self.id_string},
+            kwargs={
+                "username": self.user.username,
+                "id_string": self.id_string
+                }
             )
 
     def _set_id_string(self):
