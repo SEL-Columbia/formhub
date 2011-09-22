@@ -19,27 +19,64 @@ def publish(username, password, path_to_xls):
         return client.post('/', post_data)
 
 
-class TestTransportationSurvey(TestCase):
+class TestSite(TestCase):
 
-    def setUp(self):
+    def test_process(self):
+        self._create_user()
+        self._publish_xls_file()
+        self._check_formList()
+        self._download_xform()
+        self._make_submissions()
+        self._check_csv_export()
+
+    def _create_user(self):
         self.user = User.objects.create(username="bob")
         self.user.set_password("bob")
         self.user.save()
-        self.test_path = os.path.join("odk_viewer", "tests", "export")
-        xls_path = os.path.join(self.test_path, "transportation.xls")
+
+    def _publish_xls_file(self):
+        self.this_directory = os.path.join("main", "tests")
+        xls_path = os.path.join(self.this_directory, "transportation.xls")
         response = publish("bob", "bob", xls_path)
+
+        # make sure publishing the survey worked
         self.assertEqual(response.status_code, 200)
-        odk_path = os.path.join(self.test_path, "odk")
-        import_instances_from_phone(odk_path)
         self.assertEqual(XForm.objects.count(), 1)
         self.xform = XForm.objects.all()[0]
-        self.set_data_dictionary()
-
-    def test_setup(self):
         self.assertEqual(self.xform.id_string, "transportation_2011_07_25")
+
+    def _check_formList(self):
+        pass
+
+    def _download_xform(self):
+        pass
+
+    def _make_submissions(self):
+        odk_path = os.path.join(self.this_directory, "odk")
+        import_instances_from_phone(odk_path)
         self.assertEqual(self.xform.surveys.count(), 4)
 
-    def test_mongo_entries(self):
+    def _check_csv_export(self):
+        self._check_data_dictionary()
+        self._check_data_for_csv_export()
+        self._check_group_xpaths_do_not_appear_in_dicts_for_export()
+        self._check_csv_export_first_pass()
+        self._check_csv_export_second_pass()
+
+    def _check_data_dictionary(self):
+        # test to make sure the data dictionary returns the expected headers
+        self.assertEqual(DataDictionary.objects.count(), 1)
+        self.data_dictionary = DataDictionary.objects.all()[0]
+        with open(os.path.join(self.this_directory, "headers.json")) as f:
+            expected_list = json.load(f)
+        self.maxDiff = None
+        self.assertEqual(self.data_dictionary.get_headers(), expected_list)
+
+        # test to make sure the headers in the actual csv are as expected
+        actual_csv = self._get_csv_()
+        self.assertEqual(actual_csv.next(), expected_list)
+
+    def _check_data_for_csv_export(self):
         data = [
             {
                 "available_transportation_types_to_referral_facility/ambulance": True,
@@ -62,11 +99,11 @@ class TestTransportationSurvey(TestCase):
                 "other/frequency_to_referral_facility": "other",
                 }
             ]
-        for d, mongo_entry in zip(data, self.data_dictionary.get_data_for_excel()):
+        for d, d_from_db in zip(data, self.data_dictionary.get_data_for_excel()):
             for k, v in d.items():
-                self.assertEqual(v, mongo_entry["transportation/" + k])
+                self.assertEqual(v, d_from_db["transportation/" + k])
 
-    def test_group_xpaths_should_not_be_added_to_mongo(self):
+    def _check_group_xpaths_do_not_appear_in_dicts_for_export(self):
         instance = self.xform.surveys.all()[0]
         expected_dict = {
             "transportation": {
@@ -100,29 +137,16 @@ class TestTransportationSurvey(TestCase):
         actual_lines = actual_csv.split("\n")
         return csv.reader(actual_lines)
 
-    def test_csv_export(self):
+    def _check_csv_export_first_pass(self):
         actual_csv = self._get_csv_()
-        f = open(os.path.join(self.test_path, "transportation.csv"), "r")
+        f = open(os.path.join(self.this_directory, "transportation.csv"), "r")
         expected_csv = csv.reader(f)
         for actual_row, expected_row in zip(actual_csv, expected_csv):
             for actual_cell, expected_cell in zip(actual_row, expected_row):
                 self.assertEqual(actual_cell, expected_cell)
         f.close()
 
-    def set_data_dictionary(self):
-        # test to make sure the data dictionary returns the expected headers
-        self.assertEqual(DataDictionary.objects.count(), 1)
-        self.data_dictionary = DataDictionary.objects.all()[0]
-        with open(os.path.join(self.test_path, "headers.json")) as f:
-            expected_list = json.load(f)
-        self.maxDiff = None
-        self.assertEqual(self.data_dictionary.get_headers(), expected_list)
-
-        # test to make sure the headers in the actual csv are as expected
-        actual_csv = self._get_csv_()
-        self.assertEqual(actual_csv.next(), expected_list)
-
-    def test_csv_export2(self):
+    def _check_csv_export_second_pass(self):
         url = reverse(csv_export, kwargs={'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
