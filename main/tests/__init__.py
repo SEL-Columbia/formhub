@@ -8,36 +8,32 @@ from odk_viewer.views import csv_export
 from django.core.urlresolvers import reverse
 import csv
 import json
-
-
-def publish(username, password, path_to_xls):
-    from django.test.client import Client
-    client = Client()
-    assert client.login(username=username, password=password)
-    with open(path_to_xls) as xls_file:
-        post_data = {'xls_file': xls_file}
-        return client.post('/', post_data)
+from django.test.client import Client
 
 
 class TestSite(TestCase):
 
     def test_process(self):
-        self._create_user()
+        self._create_user_and_login()
         self._publish_xls_file()
         self._check_formList()
         self._download_xform()
         self._make_submissions()
         self._check_csv_export()
 
-    def _create_user(self):
+    def _create_user_and_login(self):
         self.user = User.objects.create(username="bob")
         self.user.set_password("bob")
         self.user.save()
+        self.client = Client()
+        assert self.client.login(username="bob", password="bob")
 
     def _publish_xls_file(self):
         self.this_directory = os.path.join("main", "tests")
         xls_path = os.path.join(self.this_directory, "transportation.xls")
-        response = publish("bob", "bob", xls_path)
+        with open(xls_path) as xls_file:
+            post_data = {'xls_file': xls_file}
+            response = self.client.post('/', post_data)
 
         # make sure publishing the survey worked
         self.assertEqual(response.status_code, 200)
