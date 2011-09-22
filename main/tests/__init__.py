@@ -1,14 +1,14 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from odk_viewer.models import DataDictionary
-from odk_logger.import_tools import import_instances_from_phone
-from odk_logger.models import XForm
+from odk_logger.models import XForm, Instance
 import os
 from odk_viewer.views import csv_export
 from django.core.urlresolvers import reverse
 import csv
 import json
 from django.test.client import Client
+import glob
 
 
 class TestSite(TestCase):
@@ -26,15 +26,16 @@ class TestSite(TestCase):
         self.user = User.objects.create(username="bob")
         self.user.set_password("bob")
         self.user.save()
-        self.client = Client()
-        assert self.client.login(username="bob", password="bob")
+        self.bob = Client()
+        assert self.bob.login(username="bob", password="bob")
+        self.anon = Client()
 
     def _publish_xls_file(self):
         self.this_directory = os.path.join("main", "tests")
         xls_path = os.path.join(self.this_directory, "transportation.xls")
         with open(xls_path) as xls_file:
             post_data = {'xls_file': xls_file}
-            response = self.client.post('/', post_data)
+            response = self.bob.post('/', post_data)
 
         # make sure publishing the survey worked
         self.assertEqual(response.status_code, 200)
@@ -43,7 +44,7 @@ class TestSite(TestCase):
         self.assertEqual(self.xform.id_string, "transportation_2011_07_25")
 
     def _check_formList(self):
-        response = self.client.get('/bob/formList')
+        response = self.anon.get('/bob/formList')
         self.download_url = 'http://testserver/bob/transportation_2011_07_25.xml'
         expected_content = """<forms>
   
@@ -54,16 +55,19 @@ class TestSite(TestCase):
         self.assertEqual(response.content, expected_content)
 
     def _download_xform(self):
-        response = self.client.get(self.download_url)
+        response = self.anon.get(self.download_url)
         xml_path = os.path.join(self.this_directory, "transportation.xml")
         with open(xml_path) as xml_file:
             expected_content = xml_file.read()
         self.assertEqual(expected_content, response.content)
 
     def _make_submissions(self):
-        # todo: actually post files rather than import
-        odk_path = os.path.join(self.this_directory, "odk")
-        import_instances_from_phone(odk_path)
+        pattern = os.path.join(self.this_directory, "instances", "*/*.xml")
+        for path in glob.glob(pattern):
+            with open(path) as f:
+                post_data = {'xml_submission_file': f}
+                self.anon.post('/bob/submission', post_data)
+        self.assertEqual(Instance.objects.count(), 4)
         self.assertEqual(self.xform.surveys.count(), 4)
 
     def _check_csv_export(self):
@@ -108,12 +112,21 @@ class TestSite(TestCase):
                 "other/frequency_to_referral_facility": "other",
                 }
             ]
-        for d, d_from_db in zip(data, self.data_dictionary.get_data_for_excel()):
-            for k, v in d.items():
-                self.assertEqual(v, d_from_db["transportation/" + k])
+        for d_from_db in self.data_dictionary.get_data_for_excel():
+            for k, v in d_from_db.items():
+                if k != u'_xform_id_string' and v:
+                    new_key = k[len('transportation/'):]
+                    d_from_db[new_key] = d_from_db[k]
+                del d_from_db[k]
+            self.assertTrue(d_from_db in data)
+            data.remove(d_from_db)
+        self.assertEquals(data, [])
 
     def _check_group_xpaths_do_not_appear_in_dicts_for_export(self):
-        instance = self.xform.surveys.all()[0]
+        # todo: not sure which order the instances are getting put
+        # into the database, the hard coded index below should be
+        # fixed.
+        instance = self.xform.surveys.all()[1]
         expected_dict = {
             "transportation": {
                 "transportation": {
@@ -140,7 +153,7 @@ class TestSite(TestCase):
         # todo: get the csv.reader to handle unicode as done here:
         # http://docs.python.org/library/csv.html#examples
         url = reverse(csv_export, kwargs={'id_string': self.xform.id_string})
-        response = self.client.get(url)
+        response = self.bob.get(url)
         self.assertEqual(response.status_code, 200)
         actual_csv = response.content
         actual_lines = actual_csv.split("\n")
@@ -157,7 +170,7 @@ class TestSite(TestCase):
 
     def _check_csv_export_second_pass(self):
         url = reverse(csv_export, kwargs={'id_string': self.xform.id_string})
-        response = self.client.get(url)
+        response = self.bob.get(url)
         self.assertEqual(response.status_code, 200)
         actual_csv = response.content
         actual_lines = actual_csv.split("\n")
@@ -165,13 +178,13 @@ class TestSite(TestCase):
         headers = actual_csv.next()
         data = [
             {
+                "available_transportation_types_to_referral_facility/none": "True"
+                },
+            {
                 "available_transportation_types_to_referral_facility/ambulance": "True",
                 "available_transportation_types_to_referral_facility/bicycle": "True",
                 "ambulance/frequency_to_referral_facility": "daily",
                 "bicycle/frequency_to_referral_facility": "weekly"
-                },
-            {
-                "available_transportation_types_to_referral_facility/none": "True"
                 },
             {
                 "available_transportation_types_to_referral_facility/ambulance": "True",

@@ -38,6 +38,7 @@ def submission(request, username):
     # save this XML file and media files as attachments
     media_files = request.FILES.values()
     instance, created = get_or_create_instance(
+        username,
         xml_file_list[0],
         media_files
         )

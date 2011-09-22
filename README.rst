@@ -10,10 +10,7 @@ ODK Deploy
 * main - This app is the glue that brings odk_logger and odk_exporter
   together. This is where xls2xform conversion happens.
 
-TODO:
-* Get the conversion, download XForm, upload survey, download csv
-  process working and tested.
-* ui app: we need to come up with a smart way to customize the look of
-  the site without affecting the rest of the code. maybe ui is how we
-  should do this.
+TODO
+----
+
 * Get rid of common_tags.py

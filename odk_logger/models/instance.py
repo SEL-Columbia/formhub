@@ -1,12 +1,11 @@
 from django.db import models
-from django.conf import settings
+from django.contrib.auth.models import User
 
 from .xform import XForm
 from .survey_type import SurveyType
 from odk_logger.xform_instance_parser import XFormInstanceParser, \
      XFORM_ID_STRING
 
-from datetime import datetime
 
 def log(*args, **kwargs):
     """
@@ -18,13 +17,14 @@ def log(*args, **kwargs):
 class Instance(models.Model):
     # I should rename this model, maybe Survey
     xml = models.TextField()
+    user = models.ForeignKey(User, related_name='surveys', null=True)
 
     #using instances instead of surveys breaks django
     xform = models.ForeignKey(XForm, null=True, related_name="surveys")
     start_time = models.DateTimeField(null=True)
     date = models.DateField(null=True)
     survey_type = models.ForeignKey(SurveyType)
-    
+
     #shows when we first received this instance
     date_created = models.DateTimeField(auto_now_add=True)
     #this will end up representing "date last parsed"
@@ -35,17 +35,15 @@ class Instance(models.Model):
     # we will add a fourth status: submitted_via_web
     status = models.CharField(max_length=20,
                               default=u'submitted_via_web')
-    
+
     class Meta:
         app_label = 'odk_logger'
 
     def _set_xform(self, doc):
         try:
-            self.xform = XForm.objects.get(id_string=doc[XFORM_ID_STRING])
+            self.xform = XForm.objects.get(id_string=doc[XFORM_ID_STRING], user=self.user)
         except XForm.DoesNotExist:
             self.xform = None
-            log("The corresponding XForm definition is missing",
-                doc[XFORM_ID_STRING])
 
     def get_root_node_name(self):
         self._set_parser()
