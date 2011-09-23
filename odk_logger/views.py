@@ -7,7 +7,7 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseRedirect
 
-from models import XForm, get_or_create_instance
+from models import XForm, create_instance
 
 
 @require_GET
@@ -37,7 +37,7 @@ def submission(request, username):
 
     # save this XML file and media files as attachments
     media_files = request.FILES.values()
-    instance, created = get_or_create_instance(
+    create_instance(
         username,
         xml_file_list[0],
         media_files
@@ -48,7 +48,7 @@ def submission(request, username):
     # 2) The location header needs to be set to the host it posted to
     response = HttpResponse("Your ODK submission was successful.")
     response.status_code = 201
-    response['Location'] = "http://%s/submission" % request.get_host()
+    response['Location'] = request.build_absolute_uri(request.path)
     return response
 
 
