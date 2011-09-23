@@ -62,8 +62,12 @@ class TestSite(TestCase):
         self.assertEqual(expected_content, response.content)
 
     def _make_submissions(self):
-        pattern = os.path.join(self.this_directory, "instances", "*/*.xml")
-        for path in glob.glob(pattern):
+        surveys = ['transport_2011-07-25_19-05-49',
+                   'transport_2011-07-25_19-05-36',
+                   'transport_2011-07-25_19-06-01',
+                   'transport_2011-07-25_19-06-14',]
+        paths = [os.path.join(self.this_directory, 'instances', s, s + '.xml') for s in surveys]
+        for path in paths:
             with open(path) as f:
                 post_data = {'xml_submission_file': f}
                 self.anon.post('/bob/submission', post_data)
