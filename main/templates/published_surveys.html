@@ -35,11 +35,16 @@
 	  {{ xform.time_of_last_submission }}
 	  {% endif %}
         </td>
-        <td><a href="{% url odk_viewer.views.csv_export xform.id_string %}" class="button">csv</a></td>
+        <td>
+          <a href="{% url odk_viewer.views.csv_export xform.id_string %}">csv</a>,
+          <a href="{% url odk_viewer.views.xls_export xform.id_string %}">xls</a>
+        </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-  
+
+Check out your surveys on a <a href="{% url odk_viewer.views.map %}">map</a>.
+
 </section>
 {% endif %}
