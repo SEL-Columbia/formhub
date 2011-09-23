@@ -1,0 +1,24 @@
+<div class="topbar" data-dropdown="dropdown" > 
+  <div class="topbar-inner"> 
+    <div class="container"> 
+      <a class="brand" href="/">ODK Deploy</a> 
+      <!--
+      <ul class="nav"> 
+        <li class="active"><a href="#overview">Overview</a></li>
+        <li><a href="#about">About</a></li> 
+      </ul> 
+      -->
+      {% if user.is_authenticated %}
+      <ul class="nav secondary-nav"> 
+        <li class="dropdown"> 
+          <a href="#" class="dropdown-toggle">{{ user.username }}</a> 
+          <ul class="dropdown-menu"> 
+            <li><a href="{% url auth_logout %}">Sign out</a></li>
+            <li><a href="{% url auth_password_change %}">Change password</a></li>
+          </ul> 
+        </li> 
+      </ul> 
+      {% endif %}
+    </div> 
+  </div> 
+</div> 

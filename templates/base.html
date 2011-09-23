@@ -31,49 +31,22 @@
     <link rel="shortcut icon" type="image/x-icon" href="/static/bootstrap/docs/assets/ico/favicon.ico"> 
     <link rel="apple-touch-icon" href="/static/bootstrap/docs/assets/ico/bootstrap-apple-57x57.png"> 
     <link rel="apple-touch-icon" sizes="72x72" href="/static/bootstrap/docs/assets/ico/bootstrap-apple-72x72.png"> 
-    <link rel="apple-touch-icon" sizes="114x114" href="/static/bootstrap/docs/assets/ico/bootstrap-apple-114x114.png"> 
-  </head> 
- 
-  <body> 
- 
-    <!-- Topbar
-    ================================================== --> 
-    <div class="topbar" data-dropdown="dropdown" > 
-      <div class="topbar-inner"> 
-        <div class="container"> 
-          <a class="brand" href="/">ODK Deploy</a> 
-          <!--
-          <ul class="nav"> 
-            <li class="active"><a href="#overview">Overview</a></li>
-            <li><a href="#about">About</a></li> 
-          </ul> 
-          -->
-          {% if user.is_authenticated %}
-          <ul class="nav secondary-nav"> 
-            <li class="dropdown"> 
-              <a href="#" class="dropdown-toggle">{{ user.username }}</a> 
-              <ul class="dropdown-menu"> 
-                <li><a href="{% url auth_logout %}">Sign out</a></li>
-                <li><a href="{% url auth_password_change %}">Change password</a></li>
-              </ul> 
-            </li> 
-          </ul> 
-          {% endif %}
-        </div> 
-      </div> 
-    </div> 
+    <link rel="apple-touch-icon" sizes="114x114" href="/static/bootstrap/docs/assets/ico/bootstrap-apple-114x114.png">
 
-    <div class="container">
+    <!-- spot to insert stuff for google maps -->
+    {% block additional-headers %}{% endblock %}
+  </head> 
+
+  {% block body %}
+  <body>
+    {% include "topbar.html" %}
+
+    <div class="container"> 
       {% block content %}{% endblock %}
     </div>
- 
-    <footer class="footer"> 
-      <div class="container"> 
-        <p> 
-          Built by the <a href="http://modi.mech.columbia.edu/">Modi Research Group</a>.<br /> 
-          Code licensed under the <a href="http://www.xfree86.org/3.3.6/COPYRIGHT2.html#3">X11 License</a>.
-        </p> 
-      </div> 
-    </footer> 
-  </body> 
+
+    {% include "footer.html" %}
+  </body>
+  {% endblock %}
+
 </html>

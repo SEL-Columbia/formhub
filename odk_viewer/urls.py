@@ -11,6 +11,5 @@ urlpatterns = patterns('',
     url(r"^survey/(?P<pk>\d+)/$", views.survey_responses),
     url(r"^survey_image_urls/(?P<pk>\d+)/$", views.survey_media_files),
 
-    url(r"^dashboard/$", views.dashboard, name="dashboard"),
-    url(r"^$", views.dashboard, name="dashboard"),
+    url(r"^map/$", views.map),
 )
