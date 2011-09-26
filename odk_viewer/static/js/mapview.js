@@ -16,17 +16,21 @@ function initialize() {
             // create a marker on the map for this point
             var marker = new google.maps.Marker({
                 position: point,
-                map: map, 
+                map: map
             });
+            var instance = points[i].instance;
 
             // create an info window that opens this marker is clicked
-            var infowindow = new google.maps.InfoWindow({
-                content: points[i].info
-            });
+            var infowindow = new google.maps.InfoWindow();
             google.maps.event.addListener(marker, 'click', function(){
-                if(!!open_window) {
+                if (!!open_window) {
                     open_window.close();
                 }
+                // todo: remove hard coded url
+                var url = "/odk_viewer/survey/" + instance.toString() + "/";
+                $.get(url).done(function(data){
+                    infowindow.setContent(data);
+                });
                 infowindow.open(map, marker);
                 open_window = infowindow;
             });
