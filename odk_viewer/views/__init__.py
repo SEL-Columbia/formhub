@@ -1,16 +1,12 @@
-#booo (import *)
-from old_views import *
-
-from dashboard_views import dashboard, state_count_json
-
 from csv_export import csv_export
 from xls_export import xls_export
 from single_survey_submission import survey_responses, survey_media_files
 
-
+# map view
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 import json
+from odk_viewer.models import ParsedInstance
 
 
 def average(values):
