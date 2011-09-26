@@ -1,12 +1,13 @@
-from odk_viewer.models import ParsedInstance, DataDictionary
+from odk_viewer.models import ParsedInstance
 from odk_logger.models import Instance
-from django.http import HttpResponse
 from utils.reinhardt import json_response
+from django.shortcuts import render_to_response
+
 
 def survey_responses(request, pk):
-    instance = Instance.objects.get(pk=pk)
-    parsed_instance = instance.parsed_instance
-    data = parsed_instance.to_dict()
+    # todo: do a good job of displaying hierarchical data
+    pi = ParsedInstance.objects.get(instance=pk)
+    data = pi.to_dict()
 
     # get rid of keys with leading underscores
     data_for_display = {}
@@ -14,28 +15,14 @@ def survey_responses(request, pk):
         if not k.startswith(u"_"):
             data_for_display[k] = v
 
-    try:
-        xform = parsed_instance.instance.xform
-        data_dictionary = DataDictionary.objects.get(xform=xform)
-    except DataDictionary.DoesNotExist:
-        data_dictionary = None
-    if data_dictionary:
-        xpaths = data_for_display.keys()
-        xpaths.sort(cmp=data_dictionary.get_xpath_cmp())
-        label_value_pairs = []
-        for xpath in xpaths:
-            label = data_dictionary.get_label(xpath)
-            if label==u"{}": label = xpath
-            value = data_for_display[xpath]
-            if type(value)==unicode:
-                pretty_value = data_dictionary.get_label(xpath + u"/" + value)
-                if pretty_value: value = pretty_value
-            if value:
-                label_value_pairs.append((label, value))
-    else:
-        label_value_pairs = data_for_display.items()
+    xpaths = data_for_display.keys()
+    xpaths.sort(cmp=pi.data_dictionary.get_xpath_cmp())
+    label_value_pairs = [
+        (pi.data_dictionary.get_label(xpath),
+         data_for_display[xpath]) for xpath in xpaths]
 
-    return json_response(label_value_pairs)
+    return render_to_response('survey.html', {'label_value_pairs': label_value_pairs})
+
 
 def survey_media_files(request, pk):
     instance = Instance.objects.get(pk=pk)

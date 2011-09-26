@@ -1,0 +1,16 @@
+<table class="zebra-striped">
+  <thead>
+    <tr>
+      <th>Question</th>
+      <th>Response</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for pair in label_value_pairs %}
+    <tr>
+      <td>{{ pair.0 }}</td>
+      <td>{{ pair.1 }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

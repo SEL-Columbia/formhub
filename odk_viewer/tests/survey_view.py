@@ -32,14 +32,24 @@ class TestSurveyView(TestCase):
         url = reverse(survey_responses, kwargs={'pk' : self.parsed_instance.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-
-        response_str = str(response)
-        header = """Content-Type: text/html; charset=utf-8"""
-        self.assertTrue(response_str.startswith(header))
-        json_response = response_str[len(header):]
-        j = json.loads(json_response)
-        
-        self.assertEqual(j, [[u"What's your name?", u'Andrew']])
+        expected_html = '''<table class="zebra-striped">
+  <thead>
+    <tr>
+      <th>Question</th>
+      <th>Response</th>
+    </tr>
+  </thead>
+  <tbody>
+    
+    <tr>
+      <td>What&#39;s your name?</td>
+      <td>Andrew</td>
+    </tr>
+    
+  </tbody>
+</table>
+'''
+        self.assertEqual(expected_html, response.content)
 
     def test_xls_writer(self):
         xls_writer = XlsWriter()
