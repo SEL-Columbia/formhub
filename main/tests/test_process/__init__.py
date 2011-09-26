@@ -8,10 +8,30 @@ from django.core.urlresolvers import reverse
 import csv
 import json
 from django.test.client import Client
-import glob
 
 
-class TestSite(TestCase):
+class MainTestCase(TestCase):
+
+    def _create_user_and_login(self):
+        self.user = User.objects.create(username="bob")
+        self.user.set_password("bob")
+        self.user.save()
+        self.bob = Client()
+        assert self.bob.login(username="bob", password="bob")
+        self.anon = Client()
+
+    def _publish_xls_file(self, path):
+        with open(path) as xls_file:
+            post_data = {'xls_file': xls_file}
+            return self.bob.post('/', post_data)
+
+    def _make_submission(self, path):
+        with open(path) as f:
+            post_data = {'xml_submission_file': f}
+            self.anon.post('/bob/submission', post_data)
+
+
+class TestSite(MainTestCase):
 
     def test_process(self):
         self.maxDiff = None
@@ -22,20 +42,10 @@ class TestSite(TestCase):
         self._make_submissions()
         self._check_csv_export()
 
-    def _create_user_and_login(self):
-        self.user = User.objects.create(username="bob")
-        self.user.set_password("bob")
-        self.user.save()
-        self.bob = Client()
-        assert self.bob.login(username="bob", password="bob")
-        self.anon = Client()
-
     def _publish_xls_file(self):
         self.this_directory = os.path.dirname(__file__)
         xls_path = os.path.join(self.this_directory, "transportation.xls")
-        with open(xls_path) as xls_file:
-            post_data = {'xls_file': xls_file}
-            response = self.bob.post('/', post_data)
+        response = MainTestCase._publish_xls_file(self, xls_path)
 
         # make sure publishing the survey worked
         self.assertEqual(response.status_code, 200)
@@ -68,9 +78,7 @@ class TestSite(TestCase):
                    'transport_2011-07-25_19-06-14',]
         paths = [os.path.join(self.this_directory, 'instances', s, s + '.xml') for s in surveys]
         for path in paths:
-            with open(path) as f:
-                post_data = {'xml_submission_file': f}
-                self.anon.post('/bob/submission', post_data)
+            self._make_submission(path)
         self.assertEqual(Instance.objects.count(), 4)
         self.assertEqual(self.xform.surveys.count(), 4)
 

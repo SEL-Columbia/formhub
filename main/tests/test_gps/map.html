@@ -1,0 +1,86 @@
+
+<!DOCTYPE html> 
+<html lang="en"> 
+  <head> 
+    <meta charset="utf-8"> 
+    <title>ODK Deploy</title> 
+    <meta name="description" content=""> 
+    <meta name="author" content=""> 
+ 
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements --> 
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]--> 
+ 
+    <!-- Le styles --> 
+    <link href="/static/bootstrap/bootstrap.css" rel="stylesheet"> 
+    <link href="/static/bootstrap/docs/assets/css/docs.css" rel="stylesheet"> 
+    <link href="/static/bootstrap/docs/assets/js/google-code-prettify/prettify.css" rel="stylesheet"> 
+ 
+    <!-- Le javascript --> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script> 
+    <script src="http://autobahn.tablesorter.com/jquery.tablesorter.min.js"></script> 
+    <script src="/static/bootstrap/docs/assets/js/google-code-prettify/prettify.js"></script> 
+    <script>$(function () { prettyPrint() })</script> 
+    <script src="/static/bootstrap/js/bootstrap-dropdown.js"></script> 
+    <script src="/static/bootstrap/js/bootstrap-twipsy.js"></script> 
+    <script src="/static/bootstrap/js/bootstrap-scrollspy.js"></script> 
+    <script src="/static/bootstrap/docs/assets/js/application.js"></script> 
+ 
+    <!-- Le fav and touch icons --> 
+    <link rel="shortcut icon" type="image/x-icon" href="/static/bootstrap/docs/assets/ico/favicon.ico"> 
+    <link rel="apple-touch-icon" href="/static/bootstrap/docs/assets/ico/bootstrap-apple-57x57.png"> 
+    <link rel="apple-touch-icon" sizes="72x72" href="/static/bootstrap/docs/assets/ico/bootstrap-apple-72x72.png"> 
+    <link rel="apple-touch-icon" sizes="114x114" href="/static/bootstrap/docs/assets/ico/bootstrap-apple-114x114.png">
+
+    <!-- spot to insert stuff for google maps -->
+    
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+  html { height: 100%; overflow: hidden }
+  body { height: 100%; margin: 0; padding: 0 }
+  #map_canvas { height: 100% }
+</style>
+
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+var points = [{"lat": 40.81101715564728, "instance": 1, "lng": -73.96446704864502}, {"lat": 40.811086893081665, "instance": 2, "lng": -73.96449387073517}];
+var center = {"lat": 40.81105202436447, "lng": -73.9644804596901};
+</script>
+<script src="/static/js/mapview.js" type="text/javascript"></script>
+
+  </head> 
+
+  
+<body onload="initialize()">
+  <div class="topbar" data-dropdown="dropdown" > 
+  <div class="topbar-inner"> 
+    <div class="container"> 
+      <a class="brand" href="/">ODK Deploy</a> 
+      <!--
+      <ul class="nav"> 
+        <li class="active"><a href="#overview">Overview</a></li>
+        <li><a href="#about">About</a></li> 
+      </ul> 
+      -->
+      
+      <ul class="nav secondary-nav"> 
+        <li class="dropdown"> 
+          <a href="#" class="dropdown-toggle">bob</a> 
+          <ul class="dropdown-menu"> 
+            <li><a href="/accounts/logout/">Sign out</a></li>
+            <li><a href="/accounts/password/change/">Change password</a></li>
+          </ul> 
+        </li> 
+      </ul> 
+      
+    </div> 
+  </div> 
+</div> 
+
+
+  <div id="map_canvas" style="width:100%; height:100%; margin-top: 40px"></div>
+</body>
+
+
+</html>

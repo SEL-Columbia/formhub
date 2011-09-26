@@ -26,6 +26,9 @@ class ParsedInstance(models.Model):
     instance = models.OneToOneField(Instance, related_name="parsed_instance")
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
+    # todo: decide if decimal field is better than float field.
+    lat = models.FloatField(null=True)
+    lng = models.FloatField(null=True)
 
     class Meta:
         app_label = "odk_viewer"
@@ -33,15 +36,13 @@ class ParsedInstance(models.Model):
     def to_dict(self):
         if not hasattr(self, "_dict_cache"):
             self._dict_cache = self.instance.get_dict()
-        self._dict_cache.update(
-            {
-                ID: self.instance.id,
-                ATTACHMENTS: [a.media_file.name for a in self.instance.attachments.all()],                    
-                u"_status": self.instance.status,
-                }
-            )
-        for mod in self.instance.modifications.all():
-            self._dict_cache = mod.process_doc(self._dict_cache)
+            self._dict_cache.update(
+                {
+                    ID: self.instance.id,
+                    ATTACHMENTS: [a.media_file.name for a in self.instance.attachments.all()],                    
+                    u"_status": self.instance.status,
+                    }
+                )
         return self._dict_cache
 
     @classmethod
@@ -72,15 +73,42 @@ class ParsedInstance(models.Model):
         else:
             self.end_time = None
 
-    def parse(self):
+    def get_data_dictionary(self):
+        qs = self.instance.xform.data_dictionary.all()
+        assert qs.count() == 1
+        return qs[0]
+
+    data_dictionary = property(get_data_dictionary)
+
+    # todo: figure out how much of this code should be here versus
+    # data_dictionary.py.
+    def _get_geopoint(self):
+        doc = self.to_dict()
+        xpath = self.data_dictionary.xpath_of_first_geopoint()
+        text = doc.get(xpath, u'')
+        return dict(zip(
+                [u'latitude', u'longitude', u'altitude', u'accuracy'],
+                text.split()
+                ))
+
+    def _set_geopoint(self):
+        g = self._get_geopoint()
+        self.lat = g.get(u'latitude')
+        self.lng = g.get(u'longitude')
+
+    def save(self, *args, **kwargs):
         self._set_start_time()
         self._set_end_time()
+        self._set_geopoint()
+        super(ParsedInstance, self).save(*args, **kwargs)
 
 
 def _parse_instance(sender, **kwargs):
     # When an instance is saved, first delete the parsed_instance
     # associated with it.
     instance = kwargs["instance"]
-    pi, created = ParsedInstance.objects.get_or_create(instance=instance)
+    if instance.xform is not None and \
+            instance.xform.data_dictionary.count() == 1:
+        pi, created = ParsedInstance.objects.get_or_create(instance=instance)
 
 post_save.connect(_parse_instance, sender=Instance)

@@ -61,12 +61,11 @@ def table():
 
 def map(request):
     context = RequestContext(request)
-    points = [[40, 40], [40, 41], [41, 40], [41, 41]]
-    center = [average([p[0] for p in points]),
-              average([p[1] for p in points])]
-    for i in range(len(points)):
-        points[i].append(table())
-    points = [dict(zip(['lat', 'lng', 'info'], p)) for p in points]
-    context.points = json.dumps(points)
-    context.center = json.dumps({'lat': center[0], 'lng': center[1]})
+    points = ParsedInstance.objects.values('lat', 'lng', 'instance').filter(instance__user=request.user)
+    center = {
+        'lat': average([p['lat'] for p in points]),
+        'lng': average([p['lng'] for p in points]),
+        }
+    context.points = json.dumps(list(points))
+    context.center = json.dumps(center)
     return render_to_response('map.html', context_instance=context)

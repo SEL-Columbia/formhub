@@ -41,6 +41,11 @@ class DataDictionary(models.Model):
     def get_survey_elements(self):
         return self.get_survey_object().iter_children()
 
+    def xpath_of_first_geopoint(self):
+        for e in self.get_survey_elements():
+            if e.bind.get(u'type') == u'geopoint':
+                return e.get_abbreviated_xpath()
+
     def xpaths(self):
         headers = []
         for e in self.get_survey_elements():
