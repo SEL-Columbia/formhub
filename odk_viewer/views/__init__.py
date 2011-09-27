@@ -13,51 +13,9 @@ def average(values):
     return sum(values, 0.0) / len(values)
 
 
-def table():
-    return """
-<table class="zebra-striped"> 
-    <thead> 
-      <tr> 
-        <th>Title</th> 
-        <th>ID</th> 
-        <th>Downloadable</th> 
-        <th>Number of Submissions</th> 
-        <th>Time of Last Submission</th> 
-        <th>Export</th> 
-      </tr> 
-    </thead> 
-    <tbody> 
-      
-      <tr> 
-        <td>text_and_integer</td> 
-        <td>text_and_integer</td> 
-        <td> 
-	  <a href="/admin/text_and_integer/toggle_downloadable/?next=/"> 
-	    
-	    [ yes ]
-	    
-	  </a> 
-        </td> 
-        <td>9</td> 
-        <td> 
-	  
-	  Sept. 23, 2011, 10:59 a.m.
-	  
-        </td> 
-        <td> 
-          <a href="/odk_viewer/export_spreadsheet/text_and_integer.csv">csv</a>,
-          <a href="/odk_viewer/export_spreadsheet/text_and_integer.xls">xls</a> 
-        </td> 
-      </tr> 
-      
-    </tbody> 
-  </table>
-"""
-
-
-def map(request):
+def map(request, id_string):
     context = RequestContext(request)
-    points = ParsedInstance.objects.values('lat', 'lng', 'instance').filter(instance__user=request.user)
+    points = ParsedInstance.objects.values('lat', 'lng', 'instance').filter(instance__user=request.user, instance__xform__id_string=id_string)
     center = {
         'lat': average([p['lat'] for p in points]),
         'lng': average([p['lng'] for p in points]),

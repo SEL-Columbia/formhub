@@ -9,10 +9,11 @@
       <tr>
         <th>Title</th>
         <th>ID</th>
-        <th>Downloadable</th>
+        <th>Administration</th>
         <th>Number of Submissions</th>
         <th>Time of Last Submission</th>
         <th>Export</th>
+        <th>View</th>
       </tr>
     </thead>
     <tbody>
@@ -21,11 +22,13 @@
         <td>{{ xform.title }}</td>
         <td>{{ xform.id_string }}</td>
         <td>
+          <a href="{% url odk_logger.views.download_xform username=user.username id_string=xform.id_string %}">xform</a>,
+          <!-- <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}">delete</a>, -->
 	  <a href="{% url odk_logger.views.toggle_downloadable username=user.username id_string=xform.id_string %}?next=/">
 	    {% if xform.downloadable %}
-	    [ yes ]
+	    hide
 	    {% else %}
-	    [ no ]
+	    unhide
 	    {% endif %}
 	  </a>
         </td>
@@ -36,15 +39,20 @@
 	  {% endif %}
         </td>
         <td>
+          {% if xform.submission_count %}
           <a href="{% url odk_viewer.views.csv_export xform.id_string %}">csv</a>,
           <a href="{% url odk_viewer.views.xls_export xform.id_string %}">xls</a>
+          {% endif %}
+        </td>
+        <td>
+          {% if xform.data_dictionary.has_surveys_with_geopoints %}
+          <a href="{% url odk_viewer.views.map xform.id_string %}">map</a>
+          {% endif %}
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-
-Check out your surveys on a <a href="{% url odk_viewer.views.map %}">map</a>.
 
 </section>
 {% endif %}

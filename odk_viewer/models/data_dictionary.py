@@ -3,7 +3,7 @@ from odk_logger.models import XForm
 from pyxform import QuestionTypeDictionary, SurveyElementBuilder
 from pyxform.section import Section
 from pyxform.question import Option
-from common_tags import XFORM_ID_STRING, ID
+from common_tags import ID
 from odk_viewer.models import ParsedInstance
 import re
 from utils.reinhardt import queryset_iterator
@@ -22,7 +22,7 @@ class ColumnRename(models.Model):
 
 
 class DataDictionary(models.Model):
-    xform = models.ForeignKey(XForm, related_name="data_dictionary")
+    xform = models.OneToOneField(XForm, related_name='data_dictionary')
     json = models.TextField()
 
     class Meta:
@@ -45,6 +45,9 @@ class DataDictionary(models.Model):
         for e in self.get_survey_elements():
             if e.bind.get(u'type') == u'geopoint':
                 return e.get_abbreviated_xpath()
+
+    def has_surveys_with_geopoints(self):
+        return ParsedInstance.objects.filter(instance__xform=self.xform, lat__isnull=False).count() > 0
 
     def xpaths(self):
         headers = []

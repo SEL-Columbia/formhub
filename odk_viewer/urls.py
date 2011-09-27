@@ -10,5 +10,5 @@ urlpatterns = patterns('',
     url(r"^export_spreadsheet/(?P<id_string>[^/]*)\.xls$", views.xls_export),
     url(r"^survey/(?P<pk>\d+)/$", views.survey_responses),
     url(r"^survey_image_urls/(?P<pk>\d+)/$", views.survey_media_files),
-    url(r"^map/$", views.map),
+    url(r"^map/(?P<id_string>[^/]*)/$", views.map),
 )

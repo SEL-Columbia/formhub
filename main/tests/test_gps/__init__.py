@@ -36,7 +36,7 @@ class TestGPS(MainTestCase):
             self.assertEquals(pi.lng, lat_lng[1])
 
     def _check_map_view(self):
-        map_url = reverse(odk_viewer.views.map)
+        map_url = reverse(odk_viewer.views.map, kwargs={'id_string': 'gps'})
         response = self.bob.get(map_url)
         html_path = os.path.join(self.this_directory, 'map.html')
         with open(html_path) as f:

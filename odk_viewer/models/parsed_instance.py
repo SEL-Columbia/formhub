@@ -2,9 +2,9 @@ from django.db import models
 from django.db.models.signals import post_save
 
 from utils.reinhardt import queryset_iterator
-from odk_logger.models import XForm, Instance
-from common_tags import IMEI, DEVICE_ID, START_TIME, START, \
-    END_TIME, END, LGA_ID, ID, SURVEYOR_NAME, ATTACHMENTS, DATE, SURVEY_TYPE
+from odk_logger.models import Instance
+from common_tags import START_TIME, START, \
+    END_TIME, END, ID, ATTACHMENTS
 import datetime
 
 
@@ -74,9 +74,7 @@ class ParsedInstance(models.Model):
             self.end_time = None
 
     def get_data_dictionary(self):
-        qs = self.instance.xform.data_dictionary.all()
-        assert qs.count() == 1
-        return qs[0]
+        return self.instance.xform.data_dictionary
 
     data_dictionary = property(get_data_dictionary)
 
@@ -108,7 +106,7 @@ def _parse_instance(sender, **kwargs):
     # associated with it.
     instance = kwargs["instance"]
     if instance.xform is not None and \
-            instance.xform.data_dictionary.count() == 1:
+            instance.xform.data_dictionary is not None:
         pi, created = ParsedInstance.objects.get_or_create(instance=instance)
 
 post_save.connect(_parse_instance, sender=Instance)

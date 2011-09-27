@@ -211,9 +211,7 @@ class TestSite(MainTestCase):
                 }
             ]
 
-        l = list(self.xform.data_dictionary.all())
-        self.assertTrue(len(l) == 1)
-        dd = l[0]
+        dd = self.xform.data_dictionary
         for row, expected_dict in zip(actual_csv, data):
             d = dict(zip(headers, row))
             for k, v in d.items():
