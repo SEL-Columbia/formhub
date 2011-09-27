@@ -1,7 +1,5 @@
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.models import Permission, Group
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -37,22 +35,6 @@ def dashboard(request):
     return render_to_response("dashboard.html", context_instance=context)
 
 
-def default_group(user):
-    name = user.username
-    ct = ContentType.objects.get_by_natural_key(
-        app_label='auth', model='permission'
-        )
-    perm, created = Permission.objects.get_or_create(
-        name=name, content_type=ct, codename=name
-        )
-    group, created = Group.objects.get_or_create(
-        name=name
-        )
-    if perm not in group.permissions.all():
-        group.permissions.add(perm)
-    return group
-
-
 def publish(user, survey):
     kwargs = {
         'xml': survey.to_xml(),
@@ -67,3 +49,7 @@ def publish(user, survey):
         'json': survey.to_json(),
         }
     data_dictionary, created = DataDictionary.objects.get_or_create(**kwargs)
+
+
+def tutorial(request):
+    return render_to_response('tutorial_wrap.html')

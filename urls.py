@@ -8,6 +8,7 @@ from main import views as main_views
 
 urlpatterns = patterns('',
     url(r'^$', main_views.dashboard),
+    url(r'^tutorial/$', main_views.tutorial),
 
     url(r'^odk_viewer/', include('nmis.odk_viewer.urls')),
 

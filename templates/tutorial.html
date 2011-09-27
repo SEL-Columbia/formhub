@@ -1,0 +1,122 @@
+<section id="introduction">
+  <div class="page-header">
+    <h1>Introduction</h1>
+  </div>
+
+  <p>
+    ODK Deploy aims to make collecting survey data with Android smart
+    phones easy and free.
+  </p>
+  <p>
+    One uses ODK Deploy as follows:
+    <ol>
+      <li><a href="./#translate-survey">Translate survey into the xsl2xform syntax.</a></li>
+      <li><a href="./#publish-survey">Upload xls2xform file to ODK Deploy.</a></li>
+      <li><a href="./#use-odk-collect">Use ODK Collect to download survey and submit data.</a></li>
+      <li><a href="./#analyze-survey-data">Use ODK Deploy to download and map survey data.</a></li>
+    </ol>
+    This tutorial will walk you through each stop of the way.
+  </p>
+</section>
+
+<section id="translate-survey">
+  <div class="page-header">
+    <h2>Translate survey into the xsl2xform syntax</h2>
+  </div>
+
+  <div class="row">
+    <div class="span6">
+      <p>
+        The first step in collecting survey data is to actually write the
+        survey. For this tutorial we will be using the following survey:
+        <ol>
+          <li>What is your name?</li>
+          <li>How old are you?</li>
+          <li>May I take your picture?</li>
+          <li>Do you have any children?</li>
+          <li>Record your GPS coordinates.</li>
+          <li>What web browsers do you use?</li>
+        </ol>
+        The second step is writing this survey in the xls2xform
+        syntax. The idea behind this approach is that each question in the
+        survey is a row in the spreadsheet. By using a spreadsheet we can
+        expose most of the XForm features supported by ODK
+        Collect. Check out the images to the right that show the
+        xls2xform syntax for this survey.
+      </p>
+    </div>
+    <div class="span10">
+      <img src="/static/tutorial/survey_sheet.png" width="100%" /><br />
+      <img src="/static/tutorial/choices_sheet.png" width="100%" /><br />
+    </div>
+  </div>
+</section>
+
+<section id="publish-survey">
+  <div class="page-header">
+    <h2>Upload xls2xform file to ODK Deploy</h2>
+  </div>
+
+  <div class="row">
+    <div class="span6">
+      <p>
+        After creating an account and signing into the site you can
+        publish surveys for use with ODK Collect. Below we publish the
+        <a href="/static/tutorial/tutorial.xls">tutorial.xls</a> file
+        described above.
+      </p>
+    </div>
+    <div class="span10">
+      <img src="/static/tutorial/publish_survey.png" width="100%" />
+      <img src="/static/tutorial/published_surveys.png" width="100%" />
+    </div>
+  </div>
+</section>
+
+<section id="use-odk-collect">
+  <div class="page-header">
+    <h2>Use ODK Collect to download survey and submit data</h2>
+  </div>
+
+  <div class="row">
+    <div class="span6">
+      <p>
+        The url of this web application must be given to ODK Collect
+        before it will get forms from and submit data to ODK
+        Deploy. In Collect's Main Menu, press the Menu button. Select
+        Server Preferences, then Server. Enter
+        http://odk-deploy.org/your-username as the server.<br />
+
+        Download your published form to your phone.<br />
+
+        After filling out the survey on your phone submit the data to
+        the server.
+      </p>
+    </div>
+    <div class="span1">&nbsp;</div>
+    <div class="span3">
+      <img src="/static/tutorial/server_preferences.png" width="100%" />
+    </div>
+    <div class="span3">
+      <img src="/static/tutorial/download.png" width="100%" />
+    </div>
+    <div class="span3">
+      <img src="/static/tutorial/send_finished_data.png" width="100%" />
+    </div>
+</section>
+
+<section id="analyze-survey-data">
+  <div class="page-header">
+    <h2>Use ODK Deploy to download and map survey data</h2>
+  </div>
+
+  <p>
+    After submitting data from ODK Collect to the server you can now
+    download the data as a nicely formatted csv or xls file.
+
+    <img src="/static/tutorial/submitted_data.png" width="100%" /><br />
+
+    And look at surveys on a map:
+    <img src="/static/tutorial/map.png" width="100%" /><br />
+  </p>
+</section>

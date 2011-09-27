@@ -32,6 +32,7 @@ local_settings.py
 # media folder used by tests
 # todo: figure out a way to clean this up rather than ignore it.
 /test_media
+/media
 
 load_script.logs
 load_script.pid
