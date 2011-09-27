@@ -181,7 +181,7 @@ textarea {
  * Basic and global styles for generating a grid system, structural layout, and page templates
  * ------------------------------------------------------------------------------------------- */
 html, body {
-  background-color: #ffffff;
+  background-color: #eeeeee;
 }
 body {
   margin: 0;
