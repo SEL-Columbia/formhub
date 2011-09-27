@@ -65,3 +65,9 @@ def toggle_downloadable(request, username, id_string):
     xform.downloadable = not xform.downloadable
     xform.save()
     return HttpResponseRedirect("/")
+
+
+def delete_xform(request, username, id_string):
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    xform.delete()
+    return HttpResponseRedirect('/')

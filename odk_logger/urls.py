@@ -9,5 +9,6 @@ urlpatterns = patterns('',
     url(r"^formList$", views.formList),
     url(r"^submission$", views.submission),
     url(r"^(?P<id_string>[^/]+)\.xml$", views.download_xform, name="download_xform"),
+    url(r"^delete/(?P<id_string>[^/]+)/$", views.delete_xform),
     url(r"^(?P<id_string>[^/]+)/toggle_downloadable/$", views.toggle_downloadable),
 )
