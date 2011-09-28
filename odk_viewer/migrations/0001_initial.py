@@ -8,63 +8,59 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Adding model 'XForm'
-        db.create_table('odk_logger_xform', (
+        # Adding model 'ParsedInstance'
+        db.create_table('odk_viewer_parsedinstance', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('xml', self.gf('django.db.models.fields.TextField')()),
-            ('downloadable', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='xforms', null=True, to=orm['auth.User'])),
-            ('id_string', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=50, db_index=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=64)),
-            ('date_created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('date_modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-        ))
-        db.send_create_signal('odk_logger', ['XForm'])
-
-        # Adding model 'SurveyType'
-        db.create_table('odk_logger_surveytype', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('slug', self.gf('django.db.models.fields.CharField')(max_length=100)),
-        ))
-        db.send_create_signal('odk_logger', ['SurveyType'])
-
-        # Adding model 'Instance'
-        db.create_table('odk_logger_instance', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('xml', self.gf('django.db.models.fields.TextField')()),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='surveys', null=True, to=orm['auth.User'])),
-            ('xform', self.gf('django.db.models.fields.related.ForeignKey')(related_name='surveys', null=True, to=orm['odk_logger.XForm'])),
+            ('instance', self.gf('django.db.models.fields.related.OneToOneField')(related_name='parsed_instance', unique=True, to=orm['odk_logger.Instance'])),
             ('start_time', self.gf('django.db.models.fields.DateTimeField')(null=True)),
-            ('date', self.gf('django.db.models.fields.DateField')(null=True)),
-            ('survey_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['odk_logger.SurveyType'])),
+            ('end_time', self.gf('django.db.models.fields.DateTimeField')(null=True)),
+            ('lat', self.gf('django.db.models.fields.FloatField')(null=True)),
+            ('lng', self.gf('django.db.models.fields.FloatField')(null=True)),
+        ))
+        db.send_create_signal('odk_viewer', ['ParsedInstance'])
+
+        # Adding model 'ColumnRename'
+        db.create_table('odk_viewer_columnrename', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('xpath', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255)),
+            ('column_name', self.gf('django.db.models.fields.CharField')(max_length=32)),
+        ))
+        db.send_create_signal('odk_viewer', ['ColumnRename'])
+
+        # Adding model 'DataDictionary'
+        db.create_table('odk_viewer_datadictionary', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('xform', self.gf('django.db.models.fields.related.OneToOneField')(related_name='data_dictionary', unique=True, to=orm['odk_logger.XForm'])),
+            ('json', self.gf('django.db.models.fields.TextField')()),
+        ))
+        db.send_create_signal('odk_viewer', ['DataDictionary'])
+
+        # Adding model 'InstanceModification'
+        db.create_table('odk_viewer_instancemodification', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True)),
+            ('action', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('instance', self.gf('django.db.models.fields.related.ForeignKey')(related_name='modifications', to=orm['odk_logger.Instance'])),
+            ('xpath', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('date_created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('date_modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('status', self.gf('django.db.models.fields.CharField')(default=u'submitted_via_web', max_length=20)),
         ))
-        db.send_create_signal('odk_logger', ['Instance'])
-
-        # Adding model 'Attachment'
-        db.create_table('odk_logger_attachment', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('instance', self.gf('django.db.models.fields.related.ForeignKey')(related_name='attachments', to=orm['odk_logger.Instance'])),
-            ('media_file', self.gf('django.db.models.fields.files.FileField')(max_length=100)),
-        ))
-        db.send_create_signal('odk_logger', ['Attachment'])
+        db.send_create_signal('odk_viewer', ['InstanceModification'])
 
 
     def backwards(self, orm):
         
-        # Deleting model 'XForm'
-        db.delete_table('odk_logger_xform')
+        # Deleting model 'ParsedInstance'
+        db.delete_table('odk_viewer_parsedinstance')
 
-        # Deleting model 'SurveyType'
-        db.delete_table('odk_logger_surveytype')
+        # Deleting model 'ColumnRename'
+        db.delete_table('odk_viewer_columnrename')
 
-        # Deleting model 'Instance'
-        db.delete_table('odk_logger_instance')
+        # Deleting model 'DataDictionary'
+        db.delete_table('odk_viewer_datadictionary')
 
-        # Deleting model 'Attachment'
-        db.delete_table('odk_logger_attachment')
+        # Deleting model 'InstanceModification'
+        db.delete_table('odk_viewer_instancemodification')
 
 
     models = {
@@ -104,12 +100,6 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        'odk_logger.attachment': {
-            'Meta': {'object_name': 'Attachment'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'instance': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'attachments'", 'to': "orm['odk_logger.Instance']"}),
-            'media_file': ('django.db.models.fields.files.FileField', [], {'max_length': '100'})
-        },
         'odk_logger.instance': {
             'Meta': {'object_name': 'Instance'},
             'date': ('django.db.models.fields.DateField', [], {'null': 'True'}),
@@ -138,7 +128,38 @@ class Migration(SchemaMigration):
             'title': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'xforms'", 'null': 'True', 'to': "orm['auth.User']"}),
             'xml': ('django.db.models.fields.TextField', [], {})
+        },
+        'odk_viewer.columnrename': {
+            'Meta': {'object_name': 'ColumnRename'},
+            'column_name': ('django.db.models.fields.CharField', [], {'max_length': '32'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'xpath': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'})
+        },
+        'odk_viewer.datadictionary': {
+            'Meta': {'object_name': 'DataDictionary'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'json': ('django.db.models.fields.TextField', [], {}),
+            'xform': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'data_dictionary'", 'unique': 'True', 'to': "orm['odk_logger.XForm']"})
+        },
+        'odk_viewer.instancemodification': {
+            'Meta': {'object_name': 'InstanceModification'},
+            'action': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'date_created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'date_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'instance': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'modifications'", 'to': "orm['odk_logger.Instance']"}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True'}),
+            'xpath': ('django.db.models.fields.CharField', [], {'max_length': '50'})
+        },
+        'odk_viewer.parsedinstance': {
+            'Meta': {'object_name': 'ParsedInstance'},
+            'end_time': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'instance': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'parsed_instance'", 'unique': 'True', 'to': "orm['odk_logger.Instance']"}),
+            'lat': ('django.db.models.fields.FloatField', [], {'null': 'True'}),
+            'lng': ('django.db.models.fields.FloatField', [], {'null': 'True'}),
+            'start_time': ('django.db.models.fields.DateTimeField', [], {'null': 'True'})
         }
     }
 
-    complete_apps = ['odk_logger']
+    complete_apps = ['odk_viewer']
