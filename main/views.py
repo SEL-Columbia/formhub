@@ -32,6 +32,7 @@ def dashboard(request):
 
     context = RequestContext(request)
     context.form = form
+    context.odk_url = request.build_absolute_uri(request.user.username)
     return render_to_response("dashboard.html", context_instance=context)
 
 
@@ -54,4 +55,7 @@ def publish(user, survey):
 def tutorial(request):
     context = RequestContext(request)
     context.content = 'tutorial.html'
+    username = request.user.username if request.user.username else \
+        'your-user-name'
+    context.odk_url = request.build_absolute_uri(username)
     return render_to_response('base.html', context_instance=context)
