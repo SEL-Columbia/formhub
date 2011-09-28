@@ -15,7 +15,7 @@ class XForm(models.Model):
 
     # the following fields are filled in automatically
     id_string = models.SlugField(
-        unique=True, editable=False, verbose_name="ID String"
+        editable=False, verbose_name="ID String"
         )
     title = models.CharField(editable=False, max_length=64)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -23,6 +23,7 @@ class XForm(models.Model):
 
     class Meta:
         app_label = 'odk_logger'
+        unique_together = (("user", "id_string"),)
         verbose_name = "XForm"
         verbose_name_plural = "XForms"
         ordering = ("id_string",)

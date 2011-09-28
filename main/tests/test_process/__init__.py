@@ -12,12 +12,20 @@ from django.test.client import Client
 
 class MainTestCase(TestCase):
 
-    def _create_user_and_login(self):
-        self.user = User.objects.create(username="bob")
-        self.user.set_password("bob")
-        self.user.save()
-        self.bob = Client()
-        assert self.bob.login(username="bob", password="bob")
+    def _create_user(self, username, password):
+        user = User.objects.create(username=username)
+        user.set_password(password)
+        user.save()
+        return user
+
+    def _login(self, username, password):
+        client = Client()
+        assert client.login(username=username, password=password)
+        return client
+
+    def _create_user_and_login(self, username="bob", password="bob"):
+        self.user = self._create_user(username, password)
+        self.bob = self._login(username, password)
         self.anon = Client()
 
     def _publish_xls_file(self, path):
