@@ -52,4 +52,6 @@ def publish(user, survey):
 
 
 def tutorial(request):
-    return render_to_response('base.html', {'content': 'tutorial.html'})
+    context = RequestContext(request)
+    context.content = 'tutorial.html'
+    return render_to_response('base.html', context_instance=context)
