@@ -52,4 +52,4 @@ def publish(user, survey):
 
 
 def tutorial(request):
-    return render_to_response('tutorial_wrap.html')
+    return render_to_response('base.html', {'content': 'tutorial.html'})

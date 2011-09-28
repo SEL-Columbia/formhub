@@ -42,7 +42,7 @@
     {% include "topbar.html" %}
 
     <div class="container"> 
-      {% block content %}{% endblock %}
+      {% block content %}{% include content %}{% endblock %}
     </div>
 
     {% include "footer.html" %}
