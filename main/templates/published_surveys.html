@@ -23,7 +23,23 @@
         <td>{{ xform.id_string }}</td>
         <td>
           <a href="{% url odk_logger.views.download_xform username=user.username id_string=xform.id_string %}" rel="twipsy" data-original-title="To download the XForm representation of this survey right click this link and select 'Save Link As...'">xform</a>,
-          <!-- <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}">delete</a>, -->
+
+          <!-- DELETE -->
+          <div id="delete-{{ xform.id_string }}" class="modal hide fade">
+            <div class="modal-header">
+              <a href="#" class="close">&times;</a>
+              <h3>Delete Confirmation</h3>
+            </div>
+            <div class="modal-body">
+              <p>Are you sure you want to delete {{ xform.title }}?</p>
+            </div>
+            <div class="modal-footer">
+              <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn primary">Delete</a>
+              <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">Cancel</a>
+            </div>
+          </div>
+          <a href="#" data-controls-modal="delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true">delete</a>,
+
 	  <a href="{% url odk_logger.views.toggle_downloadable username=user.username id_string=xform.id_string %}?next=/" rel="twipsy" data-original-title="Hide or unhide a survey, this will determine whether ODK Collect will see this survey when getting new forms from the server.">
 	    {% if xform.downloadable %}
 	    hide
