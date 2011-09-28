@@ -1,4 +1,4 @@
-You have registered on the {{ site.name }}. To activate your account
+You have registered on {{ site.name }}. To activate your account
 please click on the link below:
 
 http://{{ site.domain }}{% url registration_activate activation_key %}
