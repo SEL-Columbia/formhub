@@ -5,13 +5,13 @@ from fabric.decorators import hosts
 
 DEFAULTS = {
     'home': '/home/wsgi/srv/',
-    'repo_name': 'nmis',
+    'repo_name': 'deploy',
     }
 
 DEPLOYMENTS = {
     'alpha': {
         'project': 'ei_surveyor_alpha',
-        'branch': 'feature/xls2xform',
+        'branch': 'master',
     },
     # 'prod': {
     #     'project': 'xls2xform_production',
