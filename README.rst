@@ -10,6 +10,13 @@ ODK Deploy
 * main - This app is the glue that brings odk_logger and odk_exporter
   together. This is where xls2xform conversion happens.
 
+Installation
+------------
+
+I had to install python-virtualenv, create a virtual environment for
+this project, install requirements, and install a java runtime
+environment for ODK Validate.
+
 TODO
 ----
 
