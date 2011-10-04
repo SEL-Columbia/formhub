@@ -1,4 +1,4 @@
-# Django settings for nmis project.
+# Django settings for deploy project.
 import os
 
 CURRENT_FILE = os.path.abspath(__file__)
@@ -102,7 +102,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.transaction.TransactionMiddleware',
 )
 
-ROOT_URLCONF = 'nmis.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, 'templates')
@@ -179,8 +179,6 @@ if TESTING_MODE:
     MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'test_media/')
 else:
     MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'media/')
-
-MAIN_SITE_HOSTNAME = "nmis.mdgs.gov.ng"
 
 try:
     from local_settings import *
