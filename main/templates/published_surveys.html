@@ -7,7 +7,6 @@
   <table class="zebra-striped">
     <thead>
       <tr>
-        <th>Title</th>
         <th>ID</th>
         <th>Administration</th>
         <th>Number of Submissions</th>
@@ -19,7 +18,6 @@
     <tbody>
       {% for xform in user.xforms.all %}
       <tr>
-        <td>{{ xform.title }}</td>
         <td>{{ xform.id_string }}</td>
         <td>
           <a href="{% url odk_logger.views.download_xform username=user.username id_string=xform.id_string %}" rel="twipsy" data-original-title="To download the XForm representation of this survey right click this link and select 'Save Link As...'">xform</a>,
