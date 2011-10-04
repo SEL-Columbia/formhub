@@ -1,5 +1,43 @@
-ODK Deploy
-==========
+Installation
+============
+
+Here are the steps I went through to install ODK Deploy in Ubuntu
+10.04. First, I set up a new virtual environment:
+
+    sudo apt-get install python-virtualenv
+    cd ~/Documents
+    mkdir virtual_environments
+    cd virtual_environments
+    virtualenv --no-site-packages deploy
+    source deploy/bin/activate
+
+Second, I cloned the repo:
+
+    cd ~/Documents
+    git clone git@github.com:modilabs/deploy.git
+
+Install the requirements:
+
+    cd deploy
+    pip install -r requirements.pip
+
+If you don't already have a Java Runtime Environment installed this is
+necessary for running ODK Validate. A *.jar file used to validate
+XForms.
+
+    sudo apt-get install default-jre
+
+To create a database for your development server do the following:
+
+    python manage.py syncdb
+    python manage.py migrate
+
+And now you should be ready to run the server:
+
+    python manage.py runserver
+
+Code Structure
+==============
 
 * odk_logger - This app serves XForms to ODK Collect and receives
   submissions from ODK Collect. This is a stand alone application.
@@ -9,15 +47,3 @@ ODK Deploy
   single survey view.
 * main - This app is the glue that brings odk_logger and odk_exporter
   together. This is where xls2xform conversion happens.
-
-Installation
-------------
-
-I had to install python-virtualenv, create a virtual environment for
-this project, install requirements, and install a java runtime
-environment for ODK Validate.
-
-TODO
-----
-
-* Get rid of common_tags.py
