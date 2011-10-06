@@ -37,7 +37,7 @@ class TestGPS(MainTestCase):
 
     def _check_map_view(self):
         map_url = reverse(odk_viewer.views.map, kwargs={'id_string': 'gps'})
-        response = self.bob.get(map_url)
+        response = self.client.get(map_url)
         html_path = os.path.join(self.this_directory, 'fixtures', 'gps', 'map.html')
         with open(html_path) as f:
             expected_content = f.read()

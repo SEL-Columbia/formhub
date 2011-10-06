@@ -21,7 +21,7 @@ class TestUnique(MainTestCase):
         # second time
         response = self._publish_xls_file(xls_path)
         self.assertEquals(XForm.objects.count(), 1)
-        self.bob.logout()
+        self.client.logout()
 
         # first time
         self._create_user_and_login(username="carl", password="carl")

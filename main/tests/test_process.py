@@ -19,6 +19,7 @@ class TestSite(MainTestCase):
         self._make_submissions()
         self._check_csv_export()
         self._check_delete()
+        self._check_uniqueness_of_group_names_enforced()
 
     def _publish_xls_file(self):
         self.this_directory = os.path.dirname(__file__)
@@ -147,7 +148,7 @@ class TestSite(MainTestCase):
         # todo: get the csv.reader to handle unicode as done here:
         # http://docs.python.org/library/csv.html#examples
         url = reverse(csv_export, kwargs={'id_string': self.xform.id_string})
-        response = self.bob.get(url)
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         actual_csv = response.content
         actual_lines = actual_csv.split("\n")
@@ -164,7 +165,7 @@ class TestSite(MainTestCase):
 
     def _check_csv_export_second_pass(self):
         url = reverse(csv_export, kwargs={'id_string': self.xform.id_string})
-        response = self.bob.get(url)
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         actual_csv = response.content
         actual_lines = actual_csv.split("\n")
@@ -206,3 +207,12 @@ class TestSite(MainTestCase):
         self.user.xforms.all()[0].delete()
         # todo: get the test below passing
         # self.assertEquals(self.user.xforms.count(), 0)
+
+    def _check_uniqueness_of_group_names_enforced(self):
+        xls_path = os.path.join(self.this_directory, "fixtures", "group_names_must_be_unique.xls")
+        pre_count = XForm.objects.count()
+        response = MainTestCase._publish_xls_file(self, xls_path)
+
+        # todo: make sure publishing the survey threw an error
+        self.assertEqual(response.status_code, 200)
+        # self.assertEqual(XForm.objects.count(), pre_count)
