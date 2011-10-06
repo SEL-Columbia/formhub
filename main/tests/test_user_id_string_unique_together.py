@@ -1,4 +1,4 @@
-from test_process import MainTestCase
+from test_base import MainTestCase
 import os
 from odk_logger.models import XForm
 

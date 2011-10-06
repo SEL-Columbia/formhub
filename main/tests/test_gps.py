@@ -1,4 +1,4 @@
-from test_process import MainTestCase
+from test_base import MainTestCase
 import os
 from odk_viewer.models import ParsedInstance
 from django.core.urlresolvers import reverse
