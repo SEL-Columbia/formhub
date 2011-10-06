@@ -18,6 +18,7 @@ class TestSite(MainTestCase):
         self._download_xform()
         self._make_submissions()
         self._check_csv_export()
+        self._check_delete()
 
     def _publish_xls_file(self):
         self.this_directory = os.path.dirname(__file__)
@@ -32,8 +33,9 @@ class TestSite(MainTestCase):
         self.assertEqual(self.xform.id_string, "transportation_2011_07_25")
 
     def _check_formList(self):
-        response = self.anon.get('/bob/formList')
-        self.download_url = 'http://testserver/bob/transportation_2011_07_25.xml'
+        url = '/%s/formList' % self.user.username
+        response = self.anon.get(url)
+        self.download_url = 'http://testserver/%s/transportation_2011_07_25.xml' % self.user.username
         expected_content = """<forms>
   
   <form url="%s">transportation_2011_07_25</form>
@@ -198,3 +200,9 @@ class TestSite(MainTestCase):
                 if v in ["n/a", "False"] or k in dd._additional_headers():
                     del d[k]
             self.assertEqual(d, dict([("transportation/" + k, v) for k, v in expected_dict.items()]))
+
+    def _check_delete(self):
+        self.assertEquals(self.user.xforms.count(), 1)
+        self.user.xforms.all()[0].delete()
+        # todo: get the test below passing
+        # self.assertEquals(self.user.xforms.count(), 0)

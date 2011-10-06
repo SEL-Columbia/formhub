@@ -12,6 +12,7 @@ class XForm(models.Model):
     xml = models.TextField()
     downloadable = models.BooleanField()
     user = models.ForeignKey(User, related_name='xforms', null=True)
+    deleted = models.BooleanField(default=False)
 
     # the following fields are filled in automatically
     id_string = models.SlugField(
@@ -65,6 +66,10 @@ class XForm(models.Model):
         self._set_title()
         super(XForm, self).save(*args, **kwargs)
 
+    def delete(self):
+        self.deleted = True
+        self.save()
+
     def __unicode__(self):
         return getattr(self, "id_string", "")
 
@@ -75,3 +80,16 @@ class XForm(models.Model):
     def time_of_last_submission(self):
         if self.submission_count() > 0:
             return self.surveys.order_by("-date_created")[0].date_created
+
+
+# todo: figure out the right way to override the default manager
+from django.db.models.query import QuerySet
+
+
+class XFormManager(models.Manager):
+
+    def get_query_set(self):
+        return QuerySet(self.model, using=self._db).filter(deleted=False)
+
+
+XForm.add_to_class("objects", XFormManager())
