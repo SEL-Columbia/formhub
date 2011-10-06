@@ -1,4 +1,4 @@
-from ..test_process import MainTestCase
+from test_process import MainTestCase
 import os
 from odk_logger.models import XForm
 
@@ -12,7 +12,7 @@ class TestUnique(MainTestCase):
         """
         self._create_user_and_login()
         self.this_directory = os.path.dirname(__file__)
-        xls_path = os.path.join(self.this_directory, "..", "test_gps", "gps.xls")
+        xls_path = os.path.join(self.this_directory, "fixtures", "gps", "gps.xls")
 
         # first time
         response = self._publish_xls_file(xls_path)

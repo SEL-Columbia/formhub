@@ -52,7 +52,7 @@ class TestSite(MainTestCase):
 
     def _publish_xls_file(self):
         self.this_directory = os.path.dirname(__file__)
-        xls_path = os.path.join(self.this_directory, "transportation.xls")
+        xls_path = os.path.join(self.this_directory, "fixtures", "transportation", "transportation.xls")
         response = MainTestCase._publish_xls_file(self, xls_path)
 
         # make sure publishing the survey worked
@@ -74,7 +74,7 @@ class TestSite(MainTestCase):
 
     def _download_xform(self):
         response = self.anon.get(self.download_url)
-        xml_path = os.path.join(self.this_directory, "transportation.xml")
+        xml_path = os.path.join(self.this_directory, "fixtures", "transportation", "transportation.xml")
         with open(xml_path) as xml_file:
             expected_content = xml_file.read()
         self.assertEqual(expected_content, response.content)
@@ -84,7 +84,7 @@ class TestSite(MainTestCase):
                    'transport_2011-07-25_19-05-36',
                    'transport_2011-07-25_19-06-01',
                    'transport_2011-07-25_19-06-14',]
-        paths = [os.path.join(self.this_directory, 'instances', s, s + '.xml') for s in surveys]
+        paths = [os.path.join(self.this_directory, 'fixtures', 'transportation', 'instances', s, s + '.xml') for s in surveys]
         for path in paths:
             self._make_submission(path)
         self.assertEqual(Instance.objects.count(), 4)
@@ -101,7 +101,7 @@ class TestSite(MainTestCase):
         # test to make sure the data dictionary returns the expected headers
         self.assertEqual(DataDictionary.objects.count(), 1)
         self.data_dictionary = DataDictionary.objects.all()[0]
-        with open(os.path.join(self.this_directory, "headers.json")) as f:
+        with open(os.path.join(self.this_directory, "fixtures", "transportation", "headers.json")) as f:
             expected_list = json.load(f)
         self.assertEqual(self.data_dictionary.get_headers(), expected_list)
 
@@ -181,7 +181,7 @@ class TestSite(MainTestCase):
 
     def _check_csv_export_first_pass(self):
         actual_csv = self._get_csv_()
-        f = open(os.path.join(self.this_directory, "transportation.csv"), "r")
+        f = open(os.path.join(self.this_directory, "fixtures", "transportation", "transportation.csv"), "r")
         expected_csv = csv.reader(f)
         for actual_row, expected_row in zip(actual_csv, expected_csv):
             for actual_cell, expected_cell in zip(actual_row, expected_row):

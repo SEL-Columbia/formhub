@@ -1,4 +1,4 @@
-from ..test_process import MainTestCase
+from test_process import MainTestCase
 import os
 from odk_viewer.models import ParsedInstance
 from django.core.urlresolvers import reverse
@@ -16,14 +16,14 @@ class TestGPS(MainTestCase):
 
     def _publish_survey(self):
         self.this_directory = os.path.dirname(__file__)
-        xls_path = os.path.join(self.this_directory, "gps.xls")
+        xls_path = os.path.join(self.this_directory, "fixtures", "gps", "gps.xls")
         MainTestCase._publish_xls_file(self, xls_path)
 
     def _make_submissions(self):
         surveys = ['gps_1980-01-23_20-52-08',
                    'gps_1980-01-23_21-21-33',]
         for survey in surveys:
-            path = os.path.join(self.this_directory, 'instances', survey + '.xml')
+            path = os.path.join(self.this_directory, 'fixtures', 'gps', 'instances', survey + '.xml')
             self._make_submission(path)
 
     def _check_lat_lng(self):
@@ -38,7 +38,7 @@ class TestGPS(MainTestCase):
     def _check_map_view(self):
         map_url = reverse(odk_viewer.views.map, kwargs={'id_string': 'gps'})
         response = self.bob.get(map_url)
-        html_path = os.path.join(self.this_directory, 'map.html')
+        html_path = os.path.join(self.this_directory, 'fixtures', 'gps', 'map.html')
         with open(html_path) as f:
             expected_content = f.read()
         self.assertEqual(expected_content, response.content)
