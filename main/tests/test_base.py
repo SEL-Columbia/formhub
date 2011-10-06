@@ -29,4 +29,5 @@ class MainTestCase(TestCase):
     def _make_submission(self, path):
         with open(path) as f:
             post_data = {'xml_submission_file': f}
-            self.anon.post('/bob/submission', post_data)
+            url = '/%s/submission' % self.user.username
+            self.anon.post(url, post_data)

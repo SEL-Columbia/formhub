@@ -90,41 +90,14 @@ class CsvWriter(object):
 
 from odk_logger.models import XForm
 from odk_viewer.models import ParsedInstance
-
-
-class XFormWriter(CsvWriter):
-
-    def __init__(self):
-        super(XFormWriter, self).__init__()
-        self._xform = None
-
-    def set_xform(self, xform):
-        self._xform = xform
-
-        generator_function = self.get_data_for_csv_writer
-        self.set_generator_function(generator_function)
-
-    def get_data_for_csv_writer(self):
-        return ParsedInstance.dicts(self._xform)
-
-    def set_from_id_string(self, id_string):
-        xform = XForm.objects.get(id_string=id_string)
-        self.set_xform(xform)
-
-    def get_default_file_path(self):
-        this_directory = os.path.dirname(__file__)
-        id_string = self._xform.id_string
-        return os.path.join(this_directory, "csvs", id_string + ".csv")
-
-
 from odk_viewer.models import DataDictionary
 
 
 class DataDictionaryWriter(CsvWriter):
 
-    def __init__(self):
+    def __init__(self, data_dictionary):
         super(DataDictionaryWriter, self).__init__()
-        self._data_dictionary = None
+        self.set_data_dictionary(data_dictionary)
 
     def set_data_dictionary(self, data_dictionary):
         self._data_dictionary = data_dictionary
@@ -144,10 +117,6 @@ class DataDictionaryWriter(CsvWriter):
             self._write_row([d.get(k, u"n/a") for k in self._data_dictionary.get_headers()])
 
         self._file_object.close()
-
-    def set_from_id_string(self, id_string):
-        dd = DataDictionary.objects.get(xform__id_string=id_string)
-        self.set_data_dictionary(dd)
 
     def get_default_file_path(self):
         this_directory = os.path.dirname(__file__)
@@ -173,12 +142,9 @@ def send_file(path, content_type):
 
 
 def csv_export(request, id_string):
-    try:
-        writer = DataDictionaryWriter()
-        writer.set_from_id_string(id_string)
-    except DataDictionary.DoesNotExist:
-        writer = XFormWriter()
-        writer.set_from_id_string(id_string)
+    dd = DataDictionary.objects.get(xform__id_string=id_string,
+                                    xform__user=request.user)
+    writer = DataDictionaryWriter(dd)
     file_path = writer.get_default_file_path()
     writer.write_to_file(file_path)
     return send_file(path=file_path, content_type="application/csv")

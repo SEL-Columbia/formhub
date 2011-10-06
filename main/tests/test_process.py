@@ -10,9 +10,9 @@ import json
 
 class TestSite(MainTestCase):
 
-    def test_process(self):
+    def test_process(self, username="bob", password="bob"):
         self.maxDiff = None
-        self._create_user_and_login()
+        self._create_user_and_login(username, password)
         self._publish_xls_file()
         self._check_formList()
         self._download_xform()
@@ -22,12 +22,13 @@ class TestSite(MainTestCase):
     def _publish_xls_file(self):
         self.this_directory = os.path.dirname(__file__)
         xls_path = os.path.join(self.this_directory, "fixtures", "transportation", "transportation.xls")
+        pre_count = XForm.objects.count()
         response = MainTestCase._publish_xls_file(self, xls_path)
 
         # make sure publishing the survey worked
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(XForm.objects.count(), 1)
-        self.xform = XForm.objects.all()[0]
+        self.assertEqual(XForm.objects.count(), pre_count+1)
+        self.xform = list(XForm.objects.all())[-1]
         self.assertEqual(self.xform.id_string, "transportation_2011_07_25")
 
     def _check_formList(self):
@@ -54,9 +55,10 @@ class TestSite(MainTestCase):
                    'transport_2011-07-25_19-06-01',
                    'transport_2011-07-25_19-06-14',]
         paths = [os.path.join(self.this_directory, 'fixtures', 'transportation', 'instances', s, s + '.xml') for s in surveys]
+        pre_count = Instance.objects.count()
         for path in paths:
             self._make_submission(path)
-        self.assertEqual(Instance.objects.count(), 4)
+        self.assertEqual(Instance.objects.count(), pre_count + 4)
         self.assertEqual(self.xform.surveys.count(), 4)
 
     def _check_csv_export(self):
@@ -68,7 +70,8 @@ class TestSite(MainTestCase):
 
     def _check_data_dictionary(self):
         # test to make sure the data dictionary returns the expected headers
-        self.assertEqual(DataDictionary.objects.count(), 1)
+        qs = DataDictionary.objects.filter(xform__user=self.user)
+        self.assertEqual(qs.count(), 1)
         self.data_dictionary = DataDictionary.objects.all()[0]
         with open(os.path.join(self.this_directory, "fixtures", "transportation", "headers.json")) as f:
             expected_list = json.load(f)
