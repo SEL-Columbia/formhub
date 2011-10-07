@@ -2,10 +2,17 @@
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
 from django.db import models
+from django.db.models.query import QuerySet
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.conf import settings
 import re
+
+
+class XFormManager(models.Manager):
+
+    def get_query_set(self):
+        return QuerySet(self.model, using=self._db).filter(deleted=False)
 
 
 class XForm(models.Model):
@@ -21,6 +28,9 @@ class XForm(models.Model):
     title = models.CharField(editable=False, max_length=64)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+
+    # Comment out this line if you want to see all the deleted surveys.
+    objects = XFormManager()
 
     class Meta:
         app_label = 'odk_logger'
@@ -80,16 +90,3 @@ class XForm(models.Model):
     def time_of_last_submission(self):
         if self.submission_count() > 0:
             return self.surveys.order_by("-date_created")[0].date_created
-
-
-# todo: figure out the right way to override the default manager
-from django.db.models.query import QuerySet
-
-
-class XFormManager(models.Manager):
-
-    def get_query_set(self):
-        return QuerySet(self.model, using=self._db).filter(deleted=False)
-
-
-XForm.add_to_class("objects", XFormManager())

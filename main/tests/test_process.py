@@ -205,8 +205,7 @@ class TestSite(MainTestCase):
     def _check_delete(self):
         self.assertEquals(self.user.xforms.count(), 1)
         self.user.xforms.all()[0].delete()
-        # todo: get the test below passing
-        # self.assertEquals(self.user.xforms.count(), 0)
+        self.assertEquals(self.user.xforms.count(), 0)
 
     def _check_uniqueness_of_group_names_enforced(self):
         xls_path = os.path.join(self.this_directory, "fixtures", "group_names_must_be_unique.xls")
