@@ -3,9 +3,7 @@ Django==1.3
 South==0.7.3
 xlrd==0.7.1
 xlwt==0.7.2
-
-# todo: use stable version of django registration
-https://bitbucket.org/ubernostrum/django-registration/get/fad7080fe769.tar.gz
+django-registration==0.7
 
 # sql alchemy was used for importing data from phones
 # SQLAlchemy==0.7.1

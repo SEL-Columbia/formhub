@@ -7,7 +7,7 @@ admin.autodiscover()
 from main import views as main_views
 
 urlpatterns = patterns('',
-    url(r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^accounts/', include('registration.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
