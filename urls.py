@@ -4,8 +4,6 @@ from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
-from main import views as main_views
-
 urlpatterns = patterns('',
     url(r'^accounts/', include('registration.urls')),
     url(r'^admin/', include(admin.site.urls)),

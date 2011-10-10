@@ -14,25 +14,32 @@ class QuickConverter(forms.Form):
     xls_file = forms.FileField(label="XLS File")
 
     def get_survey(self):
-        xls = self.cleaned_data['xls_file']
-        survey = create_survey_from_xls(xls)
-        return survey
+        if self.is_valid():
+            xls = self.cleaned_data['xls_file']
+            return create_survey_from_xls(xls)
 
 
 @login_required
 def dashboard(request):
+    context = RequestContext(request)
+    context.form = QuickConverter()
+    context.odk_url = request.build_absolute_uri(request.user.username)
+
     if request.method == 'POST':
-        form = QuickConverter(request.POST, request.FILES)
-        if form.is_valid():
+        try:
+            form = QuickConverter(request.POST, request.FILES)
             survey = form.get_survey()
             publish(request.user, survey)
-            form = QuickConverter()
-    else:
-        form = QuickConverter()
+            context.message = {
+                'type': 'success',
+                'text': 'Successfully published %s.' % survey.id_string,
+                }
+        except Exception as e:
+            context.message = {
+                'type': 'error',
+                'text': repr(e),
+                }
 
-    context = RequestContext(request)
-    context.form = form
-    context.odk_url = request.build_absolute_uri(request.user.username)
     return render_to_response("dashboard.html", context_instance=context)
 
 
@@ -42,14 +49,14 @@ def publish(user, survey):
         'downloadable': True,
         'user': user,
         }
-    xform, created = XForm.objects.get_or_create(**kwargs)
+    xform = XForm.objects.create(**kwargs)
 
     # need to also make a data dictionary
     kwargs = {
         'xform': xform,
         'json': survey.to_json(),
         }
-    data_dictionary, created = DataDictionary.objects.get_or_create(**kwargs)
+    data_dictionary = DataDictionary.objects.create(**kwargs)
 
 
 def tutorial(request):
