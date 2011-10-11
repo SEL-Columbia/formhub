@@ -13,43 +13,10 @@ class CsvWriter(object):
     comparator (for sorting the keys), and a function to rename the
     headers.
     """
-    def __init__(self):
-        self._dict_iterator = []
-        self._keys = []
-        self._key_comparator = cmp
-        self._key_rename_function = lambda x: x
-
-    def set_generator_function(self, generator_function):
-        """
-        Unfortunately there doesn't seem to be a way to rewind a
-        generator, so instead of simply passing a generator as my
-        dict_iterator, I'm passing the generator function so we can
-        get a new generator after we run through the first.
-        """
-        self._generator_function = generator_function
-        self._reset_dict_iterator()
-        self._create_list_of_keys()
-
-    # def set_dict_iterator(self, dict_iterator):
-    #     self._dict_iterator = dict_iterator
-    #     self._create_list_of_keys()
-
-    def _reset_dict_iterator(self):
-        self._dict_iterator = self._generator_function()
-
-    def _create_list_of_keys(self):
-        key_set = set()
-        for d in self._dict_iterator:
-            for k in d.iterkeys():
-                key_set.add(k)
-        self._keys = list(key_set)
-        self._reset_dict_iterator()
-
-    def set_key_comparator(self, key_comparator):
-        self._key_comparator = key_comparator
-
-    def _sort_keys(self):
-        self._keys.sort(cmp=self._key_comparator)
+    def __init__(self, dict_iterator, keys, key_rename_function):
+        self._dict_iterator = dict_iterator
+        self._keys = keys
+        self._key_rename_function = key_rename_function
 
     def set_key_rename_function(self, key_rename_function):
         self._key_rename_function = key_rename_function
@@ -62,20 +29,16 @@ class CsvWriter(object):
 
     def write_to_file(self, path):
         self._ensure_directory_exists(path)
-        self._file_object = codecs.open(path, mode="w", encoding="utf-8")
 
-        self._sort_keys()
-        headers = [self._key_rename_function(k) for k in self._keys]
-        self._write_row(headers)
+        with codecs.open(path, mode="w", encoding="utf-8") as f:
+            headers = [self._key_rename_function(k) for k in self._keys]
+            self._write_row(headers, f)
 
-        for d in self._dict_iterator:
-            # todo: figure out how to use csv.writer with unicode
-            self._write_row([d.get(k, u"n/a") for k in self._keys])
-        self._reset_dict_iterator()
+            for d in self._dict_iterator:
+                # todo: figure out how to use csv.writer with unicode
+                self._write_row([d.get(k, u"n/a") for k in self._keys], f)
 
-        self._file_object.close()
-
-    def _write_row(self, row):
+    def _write_row(self, row, file_object):
         quote_escaped_row = []
         for cell in row:
             cell_string = unicode(cell)
@@ -85,38 +48,21 @@ class CsvWriter(object):
             else:
                 quote_escaped_row.append(cell_string)
         row_string = u",".join(quote_escaped_row)
-        self._file_object.writelines([row_string, u"\n"])
+        file_object.writelines([row_string, u"\n"])
 
 
-from odk_logger.models import XForm
-from odk_viewer.models import ParsedInstance
 from odk_viewer.models import DataDictionary
 
 
 class DataDictionaryWriter(CsvWriter):
 
     def __init__(self, data_dictionary):
-        super(DataDictionaryWriter, self).__init__()
-        self.set_data_dictionary(data_dictionary)
-
-    def set_data_dictionary(self, data_dictionary):
         self._data_dictionary = data_dictionary
-
-        key_rename_function = data_dictionary.get_variable_name
-        self.set_key_rename_function(key_rename_function)
-
-    def write_to_file(self, path):
-        self._ensure_directory_exists(path)
-        self._file_object = codecs.open(path, mode="w", encoding="utf-8")
-
-        headers = [self._key_rename_function(k) for k in self._data_dictionary.get_headers()]
-        self._write_row(headers)
-
-        for d in self._data_dictionary.get_data_for_excel():
-            # todo: figure out how to use csv.writer with unicode
-            self._write_row([d.get(k, u"n/a") for k in self._data_dictionary.get_headers()])
-
-        self._file_object.close()
+        super(DataDictionaryWriter, self).__init__(
+            dict_iterator=data_dictionary.get_data_for_excel(),
+            keys=data_dictionary.get_headers(),
+            key_rename_function=data_dictionary.get_variable_name
+            )
 
     def get_default_file_path(self):
         this_directory = os.path.dirname(__file__)

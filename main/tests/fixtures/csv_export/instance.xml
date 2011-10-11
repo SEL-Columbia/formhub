@@ -1,0 +1,15 @@
+<double_repeat id="double_repeat">
+  <bed_net>
+    <member>
+      <name>Andrew</name>
+    </member>
+    <member>
+      <name>Bob</name>
+    </member>
+  </bed_net>
+  <bed_net>
+    <member>
+      <name>Carl</name>
+    </member>
+  </bed_net>
+</double_repeat>

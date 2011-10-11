@@ -1,8 +1,8 @@
 from django.db import models
 from odk_logger.models import XForm
 from pyxform import QuestionTypeDictionary, SurveyElementBuilder
-from pyxform.section import Section
-from pyxform.question import Option
+from pyxform.section import Section, RepeatingSection
+from pyxform.question import Option, Question
 from common_tags import ID
 from odk_viewer.models import ParsedInstance
 import re
@@ -49,36 +49,49 @@ class DataDictionary(models.Model):
     def has_surveys_with_geopoints(self):
         return ParsedInstance.objects.filter(instance__xform=self.xform, lat__isnull=False).count() > 0
 
-    def xpaths(self):
-        headers = []
-        for e in self.get_survey_elements():
-            if isinstance(e, Section) or isinstance(e, Option):
-                continue
+    def xpaths(self, prefix='', survey_element=None, result=None,
+               repeat_iterations=4):
+        """
+        Return a list of XPaths for this survey that will be used as
+        headers for the csv export.
+        """
+        if survey_element is None:
+            survey_element = self.get_survey_object()
+        if result is None:
+            result = []
+        path = '/'.join([prefix, survey_element.name])
+        if survey_element.children is not None:
+            # add xpaths to result for each child
+            indices = [''] if type(survey_element) != RepeatingSection else \
+                ['[%d]' % (i + 1) for i in range(repeat_iterations)]
+            for i in indices:
+                for e in survey_element.children:
+                    self.xpaths(path + i, e, result, repeat_iterations)
+        if isinstance(survey_element, Question):
+            result.append(path)
 
-            state_or_lga_key = self._rename_zone_state_lga_xpath(
-                e.get_abbreviated_xpath()
-                )
-            if state_or_lga_key is not None:
-                if state_or_lga_key not in headers:
-                    headers.append(state_or_lga_key)
-            elif e.bind.get(u"type") == u"select":
-                for child in e.children:
-                    headers.append(child.get_abbreviated_xpath())
-            else:
-                headers.append(e.get_abbreviated_xpath())
-        return headers
+        # replace the single question column with a column for each
+        # item in a select all that apply question.
+        if survey_element.bind.get(u'type') == u'select':
+            result.pop()
+            for child in survey_element.children:
+                result.append('/'.join([path, child.name]))
+
+        return result
 
     def get_headers(self):
         """
         Return a list of headers for a csv file.
         """
-        return self.xpaths() + self._additional_headers()
+        def shorten(xpath):
+            l = xpath.split('/')
+            return '/'.join(l[2:])
+        shortened_xpaths = [shorten(xpath) for xpath in self.xpaths()]
+        return shortened_xpaths + self._additional_headers()
 
     def _additional_headers(self):
-        return ['_xform_id_string', '_surveyor_name', '_geo_id',
-                '_percentage_complete', '_status', '_id',
-                '_survey_type_slug', '_attachments', '_lga_id',
-                '_potential_duplicates']
+        return [u'_xform_id_string', u'_percentage_complete', u'_status',
+                u'_id', u'_attachments', u'_potential_duplicates']
 
     def get_element(self, abbreviated_xpath):
         if not hasattr(self, "_survey_elements"):
@@ -136,18 +149,6 @@ class DataDictionary(models.Model):
 
         return xpath_cmp
 
-    def get_column_key_cmp(self):
-        rename_hack = {
-            u"state": u"location/zone",
-            u"lga": u"location/zone"
-            }
-        xpath_cmp = self.get_xpath_cmp()
-
-        def column_key_cmp(x, y):
-            return xpath_cmp(rename_hack.get(x, x), rename_hack.get(y, y))
-
-        return column_key_cmp
-
     def _simple_get_variable_name(self, abbreviated_xpath):
         """
         If the abbreviated_xpath has been renamed in
@@ -172,37 +173,10 @@ class DataDictionary(models.Model):
             # todo: there is information we want to add in parsed xforms.
             yield i.get_dict()
 
-    def _rename_zone_state_lga_xpath(self, key):
-        if key == u"location/zone":
-            return u"zone"
-        m = re.search("^(location/)?(state|lga)_in_[^/]+$", key)
-        if m:
-            return m.group(2)
-
     def _rename_key(self, d, old_key, new_key):
         assert new_key not in d, d
         d[new_key] = d[old_key]
         del d[old_key]
-
-    def _rename_zone(self, d):
-        self._location_prefix = u"" if u"zone" in d else u"location/"
-        if u"location/zone" in d:
-            self._rename_key(d, u"location/zone", u"zone")
-
-    def _rename_state(self, d):
-        state_key = self._location_prefix + u"state_in_" + d.get(u"zone", u"")
-        if state_key in d:
-            self._rename_key(d, state_key, u"state")
-
-    def _rename_lga(self, d):
-        lga_key = self._location_prefix + u"lga_in_" + d.get(u"state", u"")
-        if lga_key in d:
-            self._rename_key(d, lga_key, u"lga")
-
-    def _rename_state_and_lga_keys(self, d):
-        self._rename_zone(d)
-        self._rename_state(d)
-        self._rename_lga(d)
 
     def _expand_select_all_that_apply(self, d):
         for key in d.keys():
@@ -232,14 +206,6 @@ class DataDictionary(models.Model):
                 return child.get_abbreviated_xpath()
         return None
 
-    def _remove_index_from_first_instance_of_repeat(self, d):
-        candidates = [k for k in d.keys() if u"[1]" in k]
-        for key in candidates:
-            new_key = re.sub(r"\[1\]", "", key)
-            assert new_key not in d
-            d[new_key] = d[key]
-            del d[key]
-
     def _add_list_of_potential_duplicates(self, d):
         parsed_instance = ParsedInstance.objects.get(instance__id=d[ID])
         if parsed_instance.phone is not None and \
@@ -253,8 +219,6 @@ class DataDictionary(models.Model):
 
     def get_data_for_excel(self):
         for d in self.get_list_of_parsed_instances():
-            self._remove_index_from_first_instance_of_repeat(d)
-            self._rename_state_and_lga_keys(d)
             self._expand_select_all_that_apply(d)
             self._remove_unwanted_keys(d)
             # self._add_list_of_potential_duplicates(d)

@@ -22,7 +22,6 @@ class TestSite(MainTestCase):
         self._check_uniqueness_of_group_names_enforced()
 
     def _publish_xls_file(self):
-        self.this_directory = os.path.dirname(__file__)
         xls_path = os.path.join(self.this_directory, "fixtures", "transportation", "transportation.xls")
         pre_count = XForm.objects.count()
         response = MainTestCase._publish_xls_file(self, xls_path)

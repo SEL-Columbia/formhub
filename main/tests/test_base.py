@@ -1,3 +1,4 @@
+import os
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.test.client import Client
@@ -20,6 +21,8 @@ class MainTestCase(TestCase):
         self.user = self._create_user(username, password)
         self.client = self._login(username, password)
         self.anon = Client()
+
+    this_directory = os.path.dirname(__file__)
 
     def _publish_xls_file(self, path):
         with open(path) as xls_file:
