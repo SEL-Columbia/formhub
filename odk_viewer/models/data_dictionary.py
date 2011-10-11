@@ -31,15 +31,19 @@ class DataDictionary(models.Model):
     def __unicode__(self):
         return self.xform.__unicode__()
 
-    def get_survey_object(self):
+    def get_survey(self):
         if not hasattr(self, "_survey"):
             qtd = QuestionTypeDictionary("nigeria")
             builder = SurveyElementBuilder(question_type_dictionary=qtd)
             self._survey = builder.create_survey_element_from_json(self.json)
         return self._survey
 
+    survey = property(get_survey)
+
     def get_survey_elements(self):
-        return self.get_survey_object().iter_children()
+        return self.survey.iter_children()
+
+    survey_elements = property(get_survey_elements)
 
     def xpath_of_first_geopoint(self):
         for e in self.get_survey_elements():
@@ -56,7 +60,7 @@ class DataDictionary(models.Model):
         headers for the csv export.
         """
         if survey_element is None:
-            survey_element = self.get_survey_object()
+            survey_element = self.survey
         if result is None:
             result = []
         path = '/'.join([prefix, survey_element.name])
@@ -79,6 +83,10 @@ class DataDictionary(models.Model):
 
         return result
 
+    def _additional_headers(self):
+        return [u'_xform_id_string', u'_percentage_complete', u'_status',
+                u'_id', u'_attachments', u'_potential_duplicates']
+
     def get_headers(self):
         """
         Return a list of headers for a csv file.
@@ -86,12 +94,15 @@ class DataDictionary(models.Model):
         def shorten(xpath):
             l = xpath.split('/')
             return '/'.join(l[2:])
-        shortened_xpaths = [shorten(xpath) for xpath in self.xpaths()]
-        return shortened_xpaths + self._additional_headers()
 
-    def _additional_headers(self):
-        return [u'_xform_id_string', u'_percentage_complete', u'_status',
-                u'_id', u'_attachments', u'_potential_duplicates']
+        return [shorten(xpath) for xpath in self.xpaths()] + \
+            self._additional_headers()
+
+    def get_keys(self):
+        def remove_first_index(xpath):
+            return re.sub(r'\[1\]', '', xpath)
+
+        return [remove_first_index(header) for header in self.get_headers()]
 
     def get_element(self, abbreviated_xpath):
         if not hasattr(self, "_survey_elements"):
@@ -111,26 +122,9 @@ class DataDictionary(models.Model):
         if e:
             return e.label
 
-    def _remove_unwanted_keys(self, d):
-        # we will remove repeat iterations above 4
-        # TODO: This will mess up the xls export.
-        def repeat_above_four(abbreviated_xpath):
-            m = re.search(r"\[(\d+)\]", abbreviated_xpath)
-            if m:
-                return int(m.group(1)) > 4
-            return False
-        for k in d.keys():
-            if repeat_above_four(k):
-                del d[k]
-            e = self.get_element(k)
-            if e is None:
-                continue
-            if e.bind.get(u"readonly") == u"true()":
-                del d[k]
-
     def get_xpath_cmp(self):
         if not hasattr(self, "_xpaths"):
-            self._xpaths = [e.get_abbreviated_xpath() for e in self.get_survey_elements()]
+            self._xpaths = [e.get_abbreviated_xpath() for e in self.survey_elements]
 
         def xpath_cmp(x, y):
             # For the moment, we aren't going to worry about repeating
@@ -149,24 +143,28 @@ class DataDictionary(models.Model):
 
         return xpath_cmp
 
-    def _simple_get_variable_name(self, abbreviated_xpath):
+    def get_variable_name(self, abbreviated_xpath):
         """
         If the abbreviated_xpath has been renamed in
         self.variable_names_json return that new name, otherwise
         return the original abbreviated_xpath.
         """
+        if not hasattr(self, "_keys"):
+            self._keys = self.get_keys()
+        if not hasattr(self, "_headers"):
+            self._headers = self.get_headers()
+
+        assert abbreviated_xpath in self._keys, abbreviated_xpath
+        i = self._keys.index(abbreviated_xpath)
+        header = self._headers[i]
+
         if not hasattr(self, "_variable_names"):
             self._variable_names = ColumnRename.get_dict()
             assert type(self._variable_names) == dict
-        if abbreviated_xpath in self._variable_names and \
-                self._variable_names[abbreviated_xpath]:
-            return self._variable_names[abbreviated_xpath]
-        return abbreviated_xpath
 
-    def get_variable_name(self, abbreviated_xpath):
-        if self._rename_select_all_option_key(abbreviated_xpath):
-            return self._rename_select_all_option_key(abbreviated_xpath)
-        return self._simple_get_variable_name(abbreviated_xpath)
+        if header in self._variable_names and self._variable_names[header]:
+            return self._variable_names[header]
+        return header
 
     def get_list_of_parsed_instances(self):
         for i in queryset_iterator(self.xform.surveys.all()):
@@ -192,20 +190,6 @@ class DataDictionary(models.Model):
                         d[new_key] = False
                 del d[key]
 
-    def _rename_select_all_option_key(self, hacky_name):
-        """
-        hacky_name is the abbreviated xpath to the select all that
-        apply question with an index appended to the end indicating
-        the index of this child.
-        """
-        m = re.search(r"^(.+)\[(\d+)\]$", hacky_name)
-        if m:
-            e = self.get_element(m.group(1))
-            if e and e.bind.get(u"type") == u"select":
-                child = e.children[int(m.group(2))]
-                return child.get_abbreviated_xpath()
-        return None
-
     def _add_list_of_potential_duplicates(self, d):
         parsed_instance = ParsedInstance.objects.get(instance__id=d[ID])
         if parsed_instance.phone is not None and \
@@ -220,6 +204,5 @@ class DataDictionary(models.Model):
     def get_data_for_excel(self):
         for d in self.get_list_of_parsed_instances():
             self._expand_select_all_that_apply(d)
-            self._remove_unwanted_keys(d)
             # self._add_list_of_potential_duplicates(d)
             yield d

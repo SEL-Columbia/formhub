@@ -58,7 +58,11 @@ def _flatten_dict(d, prefix):
                 # implemented that [0] should be the first node, but
                 # according to the W3C standard it should have been
                 # [1]. I'm adding 1 to i to start at 1.
-                item_prefix[-1] += u"[%s]" % unicode(i + 1)
+                if i > 0:
+                    # hack: removing [1] index to be consistent across
+                    # surveys that have a single repitition of the
+                    # loop versus mutliple.
+                    item_prefix[-1] += u"[%s]" % unicode(i + 1)
                 if type(item) == dict:
                     for pair in _flatten_dict(item, item_prefix):
                         yield pair

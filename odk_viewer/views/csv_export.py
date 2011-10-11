@@ -60,7 +60,7 @@ class DataDictionaryWriter(CsvWriter):
         self._data_dictionary = data_dictionary
         super(DataDictionaryWriter, self).__init__(
             dict_iterator=data_dictionary.get_data_for_excel(),
-            keys=data_dictionary.get_headers(),
+            keys=data_dictionary.get_keys(),
             key_rename_function=data_dictionary.get_variable_name
             )
 
