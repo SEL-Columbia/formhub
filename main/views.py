@@ -37,7 +37,7 @@ def dashboard(request):
         except Exception as e:
             context.message = {
                 'type': 'error',
-                'text': repr(e),
+                'text': unicode(e),
                 }
 
     return render_to_response("dashboard.html", context_instance=context)
