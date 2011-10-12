@@ -4,7 +4,7 @@
     <model>
       <instance>
         <transportation id="transportation_2011_07_25">
-          <transportation>
+          <transport>
             <available_transportation_types_to_referral_facility/>
             <available_transportation_types_to_referral_facility_other/>
             <ambulance>
@@ -37,27 +37,27 @@
             <other>
               <frequency_to_referral_facility/>
             </other>
-          </transportation>
+          </transport>
         </transportation>
       </instance>
-      <bind constraint="(.='none' or not(selected(., 'none')))" nodeset="/transportation/transportation/available_transportation_types_to_referral_facility" type="select"/>
-      <bind nodeset="/transportation/transportation/available_transportation_types_to_referral_facility_other" relevant="selected(../available_transportation_types_to_referral_facility, 'other')" type="string"/>
-      <bind nodeset="/transportation/transportation/ambulance/frequency_to_referral_facility" relevant="selected(/transportation/transportation/available_transportation_types_to_referral_facility, 'ambulance')" type="select1"/>
-      <bind nodeset="/transportation/transportation/bicycle/frequency_to_referral_facility" relevant="selected(/transportation/transportation/available_transportation_types_to_referral_facility, 'bicycle')" type="select1"/>
-      <bind nodeset="/transportation/transportation/boat_canoe/frequency_to_referral_facility" relevant="selected(/transportation/transportation/available_transportation_types_to_referral_facility, 'boat_canoe')" type="select1"/>
-      <bind nodeset="/transportation/transportation/bus/frequency_to_referral_facility" relevant="selected(/transportation/transportation/available_transportation_types_to_referral_facility, 'bus')" type="select1"/>
-      <bind nodeset="/transportation/transportation/donkey_mule_cart/frequency_to_referral_facility" relevant="selected(/transportation/transportation/available_transportation_types_to_referral_facility, 'donkey_mule_cart')" type="select1"/>
-      <bind nodeset="/transportation/transportation/keke_pepe/frequency_to_referral_facility" relevant="selected(/transportation/transportation/available_transportation_types_to_referral_facility, 'keke_pepe')" type="select1"/>
-      <bind nodeset="/transportation/transportation/lorry/frequency_to_referral_facility" relevant="selected(/transportation/transportation/available_transportation_types_to_referral_facility, 'lorry')" type="select1"/>
-      <bind nodeset="/transportation/transportation/motorbike/frequency_to_referral_facility" relevant="selected(/transportation/transportation/available_transportation_types_to_referral_facility, 'motorbike')" type="select1"/>
-      <bind nodeset="/transportation/transportation/taxi/frequency_to_referral_facility" relevant="selected(/transportation/transportation/available_transportation_types_to_referral_facility, 'taxi')" type="select1"/>
-      <bind nodeset="/transportation/transportation/other/frequency_to_referral_facility" relevant="selected(/transportation/transportation/available_transportation_types_to_referral_facility, 'other')" type="select1"/>
+      <bind constraint="(.='none' or not(selected(., 'none')))" nodeset="/transportation/transport/available_transportation_types_to_referral_facility" type="select"/>
+      <bind nodeset="/transportation/transport/available_transportation_types_to_referral_facility_other" relevant="selected(../available_transportation_types_to_referral_facility, 'other')" type="string"/>
+      <bind nodeset="/transportation/transport/ambulance/frequency_to_referral_facility" relevant="selected(/transportation/transport/available_transportation_types_to_referral_facility, 'ambulance')" type="select1"/>
+      <bind nodeset="/transportation/transport/bicycle/frequency_to_referral_facility" relevant="selected(/transportation/transport/available_transportation_types_to_referral_facility, 'bicycle')" type="select1"/>
+      <bind nodeset="/transportation/transport/boat_canoe/frequency_to_referral_facility" relevant="selected(/transportation/transport/available_transportation_types_to_referral_facility, 'boat_canoe')" type="select1"/>
+      <bind nodeset="/transportation/transport/bus/frequency_to_referral_facility" relevant="selected(/transportation/transport/available_transportation_types_to_referral_facility, 'bus')" type="select1"/>
+      <bind nodeset="/transportation/transport/donkey_mule_cart/frequency_to_referral_facility" relevant="selected(/transportation/transport/available_transportation_types_to_referral_facility, 'donkey_mule_cart')" type="select1"/>
+      <bind nodeset="/transportation/transport/keke_pepe/frequency_to_referral_facility" relevant="selected(/transportation/transport/available_transportation_types_to_referral_facility, 'keke_pepe')" type="select1"/>
+      <bind nodeset="/transportation/transport/lorry/frequency_to_referral_facility" relevant="selected(/transportation/transport/available_transportation_types_to_referral_facility, 'lorry')" type="select1"/>
+      <bind nodeset="/transportation/transport/motorbike/frequency_to_referral_facility" relevant="selected(/transportation/transport/available_transportation_types_to_referral_facility, 'motorbike')" type="select1"/>
+      <bind nodeset="/transportation/transport/taxi/frequency_to_referral_facility" relevant="selected(/transportation/transport/available_transportation_types_to_referral_facility, 'taxi')" type="select1"/>
+      <bind nodeset="/transportation/transport/other/frequency_to_referral_facility" relevant="selected(/transportation/transport/available_transportation_types_to_referral_facility, 'other')" type="select1"/>
     </model>
   </h:head>
   <h:body>
-    <group ref="/transportation/transportation">
+    <group ref="/transportation/transport">
       <label>Transportation</label>
-      <select ref="/transportation/transportation/available_transportation_types_to_referral_facility">
+      <select ref="/transportation/transport/available_transportation_types_to_referral_facility">
         <label>What types of transportation are available from here to the referral health facility?</label>
         <hint>Select all that apply.</hint>
         <item>
@@ -105,12 +105,12 @@
           <value>other</value>
         </item>
       </select>
-      <input ref="/transportation/transportation/available_transportation_types_to_referral_facility_other">
+      <input ref="/transportation/transport/available_transportation_types_to_referral_facility_other">
         <label>Specify other.</label>
       </input>
-      <group ref="/transportation/transportation/ambulance">
+      <group ref="/transportation/transport/ambulance">
         <label>ambulance</label>
-        <select1 ref="/transportation/transportation/ambulance/frequency_to_referral_facility">
+        <select1 ref="/transportation/transport/ambulance/frequency_to_referral_facility">
           <label>Is ambulance available daily or weekly?</label>
           <item>
             <label>Daily</label>
@@ -130,9 +130,9 @@
           </item>
         </select1>
       </group>
-      <group ref="/transportation/transportation/bicycle">
+      <group ref="/transportation/transport/bicycle">
         <label>bicycle</label>
-        <select1 ref="/transportation/transportation/bicycle/frequency_to_referral_facility">
+        <select1 ref="/transportation/transport/bicycle/frequency_to_referral_facility">
           <label>Is bicycle available daily or weekly?</label>
           <item>
             <label>Daily</label>
@@ -152,9 +152,9 @@
           </item>
         </select1>
       </group>
-      <group ref="/transportation/transportation/boat_canoe">
+      <group ref="/transportation/transport/boat_canoe">
         <label>boat/canoe</label>
-        <select1 ref="/transportation/transportation/boat_canoe/frequency_to_referral_facility">
+        <select1 ref="/transportation/transport/boat_canoe/frequency_to_referral_facility">
           <label>Is boat/canoe available daily or weekly?</label>
           <item>
             <label>Daily</label>
@@ -174,9 +174,9 @@
           </item>
         </select1>
       </group>
-      <group ref="/transportation/transportation/bus">
+      <group ref="/transportation/transport/bus">
         <label>bus</label>
-        <select1 ref="/transportation/transportation/bus/frequency_to_referral_facility">
+        <select1 ref="/transportation/transport/bus/frequency_to_referral_facility">
           <label>Is bus available daily or weekly?</label>
           <item>
             <label>Daily</label>
@@ -196,9 +196,9 @@
           </item>
         </select1>
       </group>
-      <group ref="/transportation/transportation/donkey_mule_cart">
+      <group ref="/transportation/transport/donkey_mule_cart">
         <label>donkey/mule/cart</label>
-        <select1 ref="/transportation/transportation/donkey_mule_cart/frequency_to_referral_facility">
+        <select1 ref="/transportation/transport/donkey_mule_cart/frequency_to_referral_facility">
           <label>Is donkey/mule/cart available daily or weekly?</label>
           <item>
             <label>Daily</label>
@@ -218,9 +218,9 @@
           </item>
         </select1>
       </group>
-      <group ref="/transportation/transportation/keke_pepe">
+      <group ref="/transportation/transport/keke_pepe">
         <label>keke napep</label>
-        <select1 ref="/transportation/transportation/keke_pepe/frequency_to_referral_facility">
+        <select1 ref="/transportation/transport/keke_pepe/frequency_to_referral_facility">
           <label>Is keke napep available daily or weekly?</label>
           <item>
             <label>Daily</label>
@@ -240,9 +240,9 @@
           </item>
         </select1>
       </group>
-      <group ref="/transportation/transportation/lorry">
+      <group ref="/transportation/transport/lorry">
         <label>lorry</label>
-        <select1 ref="/transportation/transportation/lorry/frequency_to_referral_facility">
+        <select1 ref="/transportation/transport/lorry/frequency_to_referral_facility">
           <label>Is lorry available daily or weekly?</label>
           <item>
             <label>Daily</label>
@@ -262,9 +262,9 @@
           </item>
         </select1>
       </group>
-      <group ref="/transportation/transportation/motorbike">
+      <group ref="/transportation/transport/motorbike">
         <label>motorbike</label>
-        <select1 ref="/transportation/transportation/motorbike/frequency_to_referral_facility">
+        <select1 ref="/transportation/transport/motorbike/frequency_to_referral_facility">
           <label>Is motorbike available daily or weekly?</label>
           <item>
             <label>Daily</label>
@@ -284,9 +284,9 @@
           </item>
         </select1>
       </group>
-      <group ref="/transportation/transportation/taxi">
+      <group ref="/transportation/transport/taxi">
         <label>taxi</label>
-        <select1 ref="/transportation/transportation/taxi/frequency_to_referral_facility">
+        <select1 ref="/transportation/transport/taxi/frequency_to_referral_facility">
           <label>Is taxi available daily or weekly?</label>
           <item>
             <label>Daily</label>
@@ -306,9 +306,9 @@
           </item>
         </select1>
       </group>
-      <group ref="/transportation/transportation/other">
+      <group ref="/transportation/transport/other">
         <label>Other</label>
-        <select1 ref="/transportation/transportation/other/frequency_to_referral_facility">
+        <select1 ref="/transportation/transport/other/frequency_to_referral_facility">
           <label>Is Other available daily or weekly?</label>
           <item>
             <label>Daily</label>

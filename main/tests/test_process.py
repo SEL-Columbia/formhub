@@ -109,7 +109,7 @@ class TestSite(MainTestCase):
         for d_from_db in self.data_dictionary.get_data_for_excel():
             for k, v in d_from_db.items():
                 if k != u'_xform_id_string' and v:
-                    new_key = k[len('transportation/'):]
+                    new_key = k[len('transport/'):]
                     d_from_db[new_key] = d_from_db[k]
                 del d_from_db[k]
             self.assertTrue(d_from_db in data)
@@ -123,7 +123,7 @@ class TestSite(MainTestCase):
         instance = self.xform.surveys.all()[1]
         expected_dict = {
             "transportation": {
-                "transportation": {
+                "transport": {
                     "bicycle": {
                         "frequency_to_referral_facility": "weekly"
                         },
@@ -136,9 +136,9 @@ class TestSite(MainTestCase):
             }
         self.assertEqual(instance.get_dict(flat=False), expected_dict)
         expected_dict = {
-            "transportation/available_transportation_types_to_referral_facility": "ambulance bicycle",
-            "transportation/ambulance/frequency_to_referral_facility": "daily",
-            "transportation/bicycle/frequency_to_referral_facility": "weekly",
+            "transport/available_transportation_types_to_referral_facility": "ambulance bicycle",
+            "transport/ambulance/frequency_to_referral_facility": "daily",
+            "transport/bicycle/frequency_to_referral_facility": "weekly",
             "_xform_id_string": "transportation_2011_07_25",
             }
         self.assertEqual(instance.get_dict(), expected_dict)
@@ -199,7 +199,7 @@ class TestSite(MainTestCase):
             for k, v in d.items():
                 if v in ["n/a", "False"] or k in dd._additional_headers():
                     del d[k]
-            self.assertEqual(d, dict([("transportation/" + k, v) for k, v in expected_dict.items()]))
+            self.assertEqual(d, dict([("transport/" + k, v) for k, v in expected_dict.items()]))
 
     def _check_delete(self):
         self.assertEquals(self.user.xforms.count(), 1)
@@ -211,6 +211,6 @@ class TestSite(MainTestCase):
         pre_count = XForm.objects.count()
         response = MainTestCase._publish_xls_file(self, xls_path)
 
-        # todo: make sure publishing the survey threw an error
+        # make sure publishing the survey threw an error
         self.assertEqual(response.status_code, 200)
-        # self.assertEqual(XForm.objects.count(), pre_count)
+        self.assertEqual(XForm.objects.count(), pre_count)
