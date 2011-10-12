@@ -63,7 +63,7 @@ class DataDictionary(models.Model):
             survey_element = self.survey
         if result is None:
             result = []
-        path = '/'.join([prefix, survey_element.name])
+        path = '/'.join([prefix, unicode(survey_element.name)])
         if survey_element.children is not None:
             # add xpaths to result for each child
             indices = [''] if type(survey_element) != RepeatingSection else \
