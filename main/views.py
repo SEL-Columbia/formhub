@@ -23,7 +23,7 @@ class QuickConverter(forms.Form):
 def dashboard(request):
     context = RequestContext(request)
     context.form = QuickConverter()
-    context.odk_url = request.build_absolute_uri(request.user.username)
+    context.odk_url = request.build_absolute_uri("/%s" % request.user.username)
 
     if request.method == 'POST':
         try:
@@ -64,5 +64,5 @@ def tutorial(request):
     context.content = 'tutorial.html'
     username = request.user.username if request.user.username else \
         'your-user-name'
-    context.odk_url = request.build_absolute_uri(username)
+    context.odk_url = request.build_absolute_uri("/%s" % username)
     return render_to_response('base.html', context_instance=context)
