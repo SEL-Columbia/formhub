@@ -44,7 +44,10 @@
     {% include "topbar.html" %}
 
     <div class="container"> 
-      {% block content %}{% include content %}{% endblock %}
+      {% block content %}
+        {% if template %}{% include template %}{% endif %}
+        {{ content|safe }}
+      {% endblock %}
     </div>
 
     {% include "footer.html" %}

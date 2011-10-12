@@ -4,10 +4,14 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django import forms
+from django.template.loader import render_to_string
 
 from pyxform.builder import create_survey_from_xls
 from odk_logger.models import XForm
 from odk_viewer.models import DataDictionary
+
+import urllib2
+import re
 
 
 class QuickConverter(forms.Form):
@@ -61,8 +65,51 @@ def publish(user, survey):
 
 def tutorial(request):
     context = RequestContext(request)
-    context.content = 'tutorial.html'
+    context.template = 'tutorial.html'
     username = request.user.username if request.user.username else \
         'your-user-name'
     context.odk_url = request.build_absolute_uri(username)
+    return render_to_response('base.html', context_instance=context)
+
+
+def syntax(request):
+
+    def html():
+        url = 'https://docs.google.com/document/pub?id=1Dze4IZGr0IoIFuFAI_ohKR5mYUt4IAn5Y-uCJmnv1FQ'
+        f = urllib2.urlopen(url)
+        result = f.read()
+        f.close()
+        return result
+
+    def content():
+        m = re.search(r'<body>(.*)<div id="footer">', html(), re.DOTALL)
+        return m.group(1)
+
+    def wrap_sections():
+        header = r'<h(?P<level>\d) class="c\d"><a name="(?P<id>[^"]+)"></a><span>(?P<title>[^<]+)</span></h\d>'
+        l = re.split(header, content())
+        l.pop(0)
+        result = ''
+        while l:
+            d = {
+                # hack: cause we started with h3 in google docs
+                'level': int(l.pop(0)) - 2,
+                'id': l.pop(0),
+                'title': l.pop(0),
+                'content': l.pop(0),
+                }
+            result += render_to_string('section.html', d)
+        return result
+
+    def fix_image_url(html):
+        # this isn't working because an ampersand in the url is being
+        # escaped, gahh.
+        return re.sub(
+            'src="pubimage\?',
+            'ref="https://docs.google.com/document/pubimage?',
+            html
+            )
+
+    context = RequestContext(request)
+    context.content = fix_image_url(wrap_sections())
     return render_to_response('base.html', context_instance=context)

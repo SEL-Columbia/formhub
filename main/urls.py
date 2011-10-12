@@ -4,4 +4,5 @@ import views
 urlpatterns = patterns('',
     url(r'^$', views.dashboard),
     url(r'^tutorial/$', views.tutorial),
+    url(r'^syntax/$', views.syntax),
 )
