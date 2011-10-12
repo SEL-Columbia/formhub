@@ -15,7 +15,7 @@ def average(values):
 
 def map(request, id_string):
     context = RequestContext(request)
-    points = ParsedInstance.objects.values('lat', 'lng', 'instance').filter(instance__user=request.user, instance__xform__id_string=id_string)
+    points = ParsedInstance.objects.values('lat', 'lng', 'instance').filter(instance__user=request.user, instance__xform__id_string=id_string, lat__isnull=False, lng__isnull=False)
     center = {
         'lat': average([p['lat'] for p in points]),
         'lng': average([p['lng'] for p in points]),
