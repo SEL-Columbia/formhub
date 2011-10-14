@@ -1,6 +1,6 @@
 from csv_export import csv_export
 from xls_export import xls_export
-from single_survey_submission import survey_responses, survey_media_files
+from single_survey_submission import survey_responses
 
 # map view
 from django.shortcuts import render_to_response

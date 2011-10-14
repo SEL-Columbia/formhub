@@ -21,12 +21,11 @@ def survey_responses(request, pk):
         (pi.data_dictionary.get_label(xpath),
          data_for_display[xpath]) for xpath in xpaths]
 
-    return render_to_response('survey.html', {'label_value_pairs': label_value_pairs})
+    return render_to_response('survey.html', {
+            'label_value_pairs': label_value_pairs,
+            'image_urls': image_urls(pi.instance),
+            })
 
 
-def survey_media_files(request, pk):
-    instance = Instance.objects.get(pk=pk)
-    parsed_instance = instance.parsed_instance
-    attachments = parsed_instance.instance.attachments
-    urls = [a.media_file.url for a in attachments.all()]
-    return json_response(urls)
+def image_urls(instance):
+    return [a.media_file.url for a in instance.attachments.all()]

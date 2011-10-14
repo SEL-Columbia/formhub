@@ -1,3 +1,11 @@
+<ul class="media-grid">
+{% for image_url in image_urls %}
+<li><a href="#">
+  <img width="210" class="thumbnail" src="{{ image_url }}" alt="">
+</a></li>
+{% endfor %}
+</ul>
+
 <table class="zebra-striped">
   <thead>
     <tr>
