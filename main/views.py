@@ -5,6 +5,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django import forms
 from django.template.loader import render_to_string
+from django.template.defaultfilters import slugify
 
 from pyxform.builder import create_survey_from_xls
 from odk_logger.models import XForm
@@ -72,36 +73,58 @@ def tutorial(request):
     return render_to_response('base.html', context_instance=context)
 
 
-def syntax(request):
+class GoogleDocSection(dict):
 
-    def html():
-        url = 'https://docs.google.com/document/pub?id=1Dze4IZGr0IoIFuFAI_ohKR5mYUt4IAn5Y-uCJmnv1FQ'
+    FIELDS = ['level', 'id', 'title', 'content']
+
+    def to_html(self):
+        return render_to_string('section.html', self)
+
+
+class TreeNode(list):
+
+    def __init__(self, value=None, parent=None):
+        self.value = value
+        self.parent = parent
+        list.__init__(self)
+
+    def add_child(self, value):
+        child = TreeNode(value, self)
+        self.append(child)
+        return child
+
+
+class GoogleDoc(object):
+
+    def __init__(self, url):
         f = urllib2.urlopen(url)
-        result = f.read()
+        self._html = f.read()
         f.close()
-        return result
+        self._extract_content()
+        self._extract_sections()
 
-    def content():
-        m = re.search(r'<body>(.*)<div id="footer">', html(), re.DOTALL)
-        return m.group(1)
+    def _extract_content(self):
+        m = re.search(r'<body>(.*)</div><div id="footer">', self._html, re.DOTALL)
+        self._content = m.group(1)
 
-    def wrap_sections():
+    def _extract_sections(self):
+        self._sections = []
         header = r'<h(?P<level>\d) class="c\d"><a name="(?P<id>[^"]+)"></a><span>(?P<title>[^<]+)</span></h\d>'
-        l = re.split(header, content())
+        l = re.split(header, self._content)
+        print len(l)
         l.pop(0)
-        result = ''
         while l:
-            d = {
+            section = GoogleDocSection(
                 # hack: cause we started with h3 in google docs
-                'level': int(l.pop(0)) - 2,
-                'id': l.pop(0),
-                'title': l.pop(0),
-                'content': l.pop(0),
-                }
-            result += render_to_string('section.html', d)
-        return result
+                level=int(l.pop(0)) - 2,
+                id=l.pop(0),
+                title=l.pop(0),
+                content=l.pop(0),
+                )
+            section['id'] = slugify(section['title'])
+            self._sections.append(section)
 
-    def fix_image_url(html):
+    def _fix_image_url(html):
         # this isn't working because an ampersand in the url is being
         # escaped, gahh.
         return re.sub(
@@ -110,6 +133,51 @@ def syntax(request):
             html
             )
 
+    def _construct_section_tree(self):
+        self._section_tree = TreeNode(GoogleDocSection(level=0))
+        current_node = self._section_tree
+        for section in self._sections:
+            while section['level'] <= current_node.value['level']:
+                current_node = current_node.parent
+            while section['level'] > current_node.value['level'] + 1:
+                current_node = current_node.add_child(GoogleDocSection(level=current_node.value['level'] + 1))
+            assert section['level'] == current_node.value['level'] + 1
+            current_node = current_node.add_child(section)
+
+    def _navigation_list(self, node=None):
+        if node is None:
+            self._construct_section_tree()
+            return self._navigation_list(self._section_tree)
+        result = ""
+        if 'title' in node.value and 'id' in node.value:
+            result += '<li><a href="#%(id)s">%(title)s</a></li>' % node.value
+        if len(node) > 0:
+            result += "<ul>%s</ul>" % "\n".join([self._navigation_list(child) for child in node])
+        return result
+
+    def _navigation_html(self):
+        return render_to_string('section.html', {
+                'level': 1,
+                'id': 'contents',
+                'title': 'Contents',
+                'content': self._navigation_list(),
+                })
+
+    def to_html(self):
+        return """
+<div class="row">
+  <div class="span12">%(content)s</div>
+  <div class="span4">%(nav)s</div>
+</div>
+""" % {
+            'nav': self._navigation_html(),
+            'content': '\n'.join([s.to_html() for s in self._sections]),
+            }
+
+
+def syntax(request):
+    url = 'https://docs.google.com/document/pub?id=1Dze4IZGr0IoIFuFAI_ohKR5mYUt4IAn5Y-uCJmnv1FQ'
+    doc = GoogleDoc(url)
     context = RequestContext(request)
-    context.content = fix_image_url(wrap_sections())
+    context.content = doc.to_html()
     return render_to_response('base.html', context_instance=context)
