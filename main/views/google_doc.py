@@ -31,10 +31,14 @@ class TreeNode(list):
 
 class GoogleDoc(object):
 
-    def __init__(self, url):
-        f = urllib2.urlopen(url)
-        self._html = f.read()
-        f.close()
+    def __init__(self, url=None):
+        if url is not None:
+            f = urllib2.urlopen(url)
+            self.set_html(f.read())
+            f.close()
+
+    def set_html(self, html):
+        self._html = html
         self._extract_content()
         self._extract_sections()
 
@@ -56,7 +60,7 @@ class GoogleDoc(object):
 
     def _extract_sections(self):
         self._sections = []
-        header = r'<h(?P<level>\d) class="c\d">' \
+        header = r'<h(?P<level>\d) class="c\d+">' \
             r'<a name="(?P<id>[^"]+)"></a>'      \
             r'<span>(?P<title>[^<]+)</span>'     \
             r'</h\d>'
