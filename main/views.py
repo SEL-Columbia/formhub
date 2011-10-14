@@ -106,6 +106,14 @@ class GoogleDoc(object):
     def _extract_content(self):
         m = re.search(r'<body>(.*)</div><div id="footer">', self._html, re.DOTALL)
         self._content = m.group(1)
+        self._fix_image_url()
+
+    def _fix_image_url(self):
+        def repl(m):
+            # we have to make the url for this image absolute
+            return re.sub('src="', 'src="https://docs.google.com/document/', m.group(1))
+
+        self._content = re.sub(r'(<img[^>]*>)', repl, self._content)
 
     def _extract_sections(self):
         self._sections = []
@@ -123,15 +131,6 @@ class GoogleDoc(object):
                 )
             section['id'] = slugify(section['title'])
             self._sections.append(section)
-
-    def _fix_image_url(html):
-        # this isn't working because an ampersand in the url is being
-        # escaped, gahh.
-        return re.sub(
-            'src="pubimage\?',
-            'ref="https://docs.google.com/document/pubimage?',
-            html
-            )
 
     def _construct_section_tree(self):
         self._section_tree = TreeNode(GoogleDocSection(level=0))
