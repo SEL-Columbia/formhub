@@ -5,7 +5,7 @@ from fabric.decorators import hosts
 
 DEFAULTS = {
     'home': '/home/wsgi/srv/',
-    'repo_name': 'deploy',
+    'repo_name': 'formhub',
     }
 
 DEPLOYMENTS = {

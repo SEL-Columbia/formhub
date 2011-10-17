@@ -1,24 +1,24 @@
 Installation
 ============
 
-Here are the steps I went through to install ODK Deploy in Ubuntu
+Here are the steps I went through to install formhub in Ubuntu
 10.04. First, I set up a new virtual environment:
 
     sudo apt-get install python-virtualenv
     cd ~/Documents
     mkdir virtual_environments
     cd virtual_environments
-    virtualenv --no-site-packages deploy
-    source deploy/bin/activate
+    virtualenv --no-site-packages formhub
+    source formhub/bin/activate
 
 Second, I cloned the repo:
 
     cd ~/Documents
-    git clone git@github.com:modilabs/deploy.git
+    git clone git@github.com:modilabs/formhub.git
 
 Install the requirements:
 
-    cd deploy
+    cd formhub
     pip install -r requirements.pip
 
 If you don't already have a Java Runtime Environment installed this is

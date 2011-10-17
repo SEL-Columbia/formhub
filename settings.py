@@ -1,4 +1,3 @@
-# Django settings for deploy project.
 import os
 
 CURRENT_FILE = os.path.abspath(__file__)
