@@ -4,7 +4,19 @@
     <h1>Published Forms <small>Export, map, and view submissions.</small></h1>
   </div>
 
-  <table class="zebra-striped">
+  <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+	  $('#forms-table').dataTable({
+        "bPaginate": false,
+        "oLanguage": {"sSearch": ""}
+      });
+      $('#forms-table_filter').addClass('row')
+	} );
+  </script>
+
+
+  <table id="forms-table" class="zebra-striped">
     <thead>
       <tr>
         <th>ID</th>
@@ -67,6 +79,8 @@
       {% endfor %}
     </tbody>
   </table>
+
+  <hr />
 
   <p>
     The url of this web application <strong>{{ odk_url }}</strong>
