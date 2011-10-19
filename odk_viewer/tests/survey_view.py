@@ -32,7 +32,8 @@ class TestSurveyView(TestCase):
         url = reverse(survey_responses, kwargs={'pk' : self.parsed_instance.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        expected_html = '''<table class="zebra-striped">
+        expected_html = '''
+<table class="zebra-striped">
   <thead>
     <tr>
       <th>Question</th>

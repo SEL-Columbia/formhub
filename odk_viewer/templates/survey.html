@@ -1,3 +1,4 @@
+{% if image_urls %}
 <ul class="media-grid">
 {% for image_url in image_urls %}
 <li><a href="#">
@@ -5,7 +6,7 @@
 </a></li>
 {% endfor %}
 </ul>
-
+{% endif %}
 <table class="zebra-striped">
   <thead>
     <tr>
