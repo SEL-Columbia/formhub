@@ -26,20 +26,13 @@ def dashboard(request):
     context.odk_url = request.build_absolute_uri("/%s" % request.user.username)
 
     if request.method == 'POST':
-        try:
-            form = QuickConverter(request.POST, request.FILES)
-            survey = form.get_survey()
-            publish(request.user, survey)
-            context.message = {
-                'type': 'success',
-                'text': 'Successfully published %s.' % survey.id_string,
-                }
-        except Exception as e:
-            context.message = {
-                'type': 'error',
-                'text': unicode(e),
-                }
-
+        form = QuickConverter(request.POST, request.FILES)
+        survey = form.get_survey()
+        publish(request.user, survey)
+        context.message = {
+            'type': 'success',
+            'text': 'Successfully published %s.' % survey.id_string,
+            }
     return render_to_response("dashboard.html", context_instance=context)
 
 
