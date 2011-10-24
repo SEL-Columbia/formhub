@@ -6,6 +6,10 @@ from django.test.client import Client
 
 class MainTestCase(TestCase):
 
+    def setUp(self):
+        self.maxDiff = None
+        self._create_user_and_login()
+
     def _create_user(self, username, password):
         user, created = User.objects.get_or_create(username=username)
         user.set_password(password)
@@ -25,6 +29,8 @@ class MainTestCase(TestCase):
     this_directory = os.path.dirname(__file__)
 
     def _publish_xls_file(self, path):
+        if not path.startswith('/'):
+            path = os.path.join(self.this_directory, path)
         with open(path) as xls_file:
             post_data = {'xls_file': xls_file}
             return self.client.post('/', post_data)

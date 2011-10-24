@@ -1,6 +1,7 @@
 from test_base import MainTestCase
 import os
 from odk_logger.models import XForm
+from django.db import IntegrityError
 
 
 class TestUnique(MainTestCase):
@@ -19,7 +20,8 @@ class TestUnique(MainTestCase):
         self.assertEquals(XForm.objects.count(), 1)
 
         # second time
-        response = self._publish_xls_file(xls_path)
+        with self.assertRaises(IntegrityError):
+            self._publish_xls_file(xls_path)
         self.assertEquals(XForm.objects.count(), 1)
         self.client.logout()
 

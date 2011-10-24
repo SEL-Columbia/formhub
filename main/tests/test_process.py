@@ -10,16 +10,15 @@ import json
 
 class TestSite(MainTestCase):
 
-    def test_process(self, username="bob", password="bob"):
-        self.maxDiff = None
-        self._create_user_and_login(username, password)
+    def test_process(self, username=None, password=None):
+        if username is not None:
+            self._create_user_and_login(username, password)
         self._publish_xls_file()
         self._check_formList()
         self._download_xform()
         self._make_submissions()
         self._check_csv_export()
         self._check_delete()
-        self._check_uniqueness_of_group_names_enforced()
 
     def _publish_xls_file(self):
         xls_path = os.path.join(self.this_directory, "fixtures", "transportation", "transportation.xls")
@@ -205,12 +204,3 @@ class TestSite(MainTestCase):
         self.assertEquals(self.user.xforms.count(), 1)
         self.user.xforms.all()[0].delete()
         self.assertEquals(self.user.xforms.count(), 0)
-
-    def _check_uniqueness_of_group_names_enforced(self):
-        xls_path = os.path.join(self.this_directory, "fixtures", "group_names_must_be_unique.xls")
-        pre_count = XForm.objects.count()
-        response = MainTestCase._publish_xls_file(self, xls_path)
-
-        # make sure publishing the survey threw an error
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(XForm.objects.count(), pre_count)
