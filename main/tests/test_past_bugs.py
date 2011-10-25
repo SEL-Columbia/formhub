@@ -1,6 +1,7 @@
 from test_process import TestSite
 from test_base import MainTestCase
 from odk_logger.models import XForm
+import os
 
 
 class TestCSVExport(TestSite):
@@ -28,3 +29,9 @@ class TestInputs(MainTestCase):
 
     def test_mch(self):
         self._publish_xls_file('fixtures/bug_fixes/MCH_v1.xls')
+
+    def test_erics_files(self):
+        for name in ['battery_life.xls',
+                     'enumerator_weekly.xls',
+                     'Enumerator_Training_Practice_Survey.xls',]:
+            self._publish_xls_file(os.path.join('fixtures', 'bug_fixes', name))
