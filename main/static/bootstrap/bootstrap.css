@@ -2370,3 +2370,12 @@ button.btn::-moz-focus-inner, input[type=submit].btn::-moz-focus-inner {
     text-align: right;
     padding-bottom: 10px;
 }
+
+/* got the TOC to display on the right
+   side of the google_doc page */
+div#nav-wrap {
+	position: fixed;
+	top: 40px;
+	margin-left: 710px;
+	width: 220px;
+}
