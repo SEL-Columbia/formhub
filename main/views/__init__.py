@@ -6,6 +6,7 @@ from django.template import RequestContext
 from django import forms
 
 from pyxform.builder import create_survey_from_xls
+from pyxform.errors import PyXFormError
 from odk_logger.models import XForm
 from odk_viewer.models import DataDictionary
 
@@ -26,13 +27,19 @@ def dashboard(request):
     context.odk_url = request.build_absolute_uri("/%s" % request.user.username)
 
     if request.method == 'POST':
-        form = QuickConverter(request.POST, request.FILES)
-        survey = form.get_survey()
-        publish(request.user, survey)
-        context.message = {
-            'type': 'success',
-            'text': 'Successfully published %s.' % survey.id_string,
-            }
+        try:
+            form = QuickConverter(request.POST, request.FILES)
+            survey = form.get_survey()
+            publish(request.user, survey)
+            context.message = {
+                'type': 'success',
+                'text': 'Successfully published %s.' % survey.id_string,
+                }
+        except PyXFormError as e:
+            context.message = {
+                'type': 'error',
+                'text': unicode(e),
+                }
     return render_to_response("dashboard.html", context_instance=context)
 
 
