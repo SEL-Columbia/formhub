@@ -20,8 +20,8 @@ class TestUnique(MainTestCase):
         self.assertEquals(XForm.objects.count(), 1)
 
         # second time
-        with self.assertRaises(IntegrityError):
-            self._publish_xls_file(xls_path)
+        response = self._publish_xls_file(xls_path)
+        self.assertTrue("Form with id 'gps' already exists." in response.content)
         self.assertEquals(XForm.objects.count(), 1)
         self.client.logout()
 
