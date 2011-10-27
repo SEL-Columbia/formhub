@@ -9,17 +9,10 @@ from django.conf import settings
 import re
 
 
-class XFormManager(models.Manager):
-
-    def get_query_set(self):
-        return QuerySet(self.model, using=self._db).filter(deleted=False)
-
-
 class XForm(models.Model):
     xml = models.TextField()
     downloadable = models.BooleanField()
     user = models.ForeignKey(User, related_name='xforms', null=True)
-    deleted = models.BooleanField(default=False)
 
     # the following fields are filled in automatically
     id_string = models.SlugField(
@@ -28,9 +21,6 @@ class XForm(models.Model):
     title = models.CharField(editable=False, max_length=64)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
-
-    # Comment out this line if you want to see all the deleted surveys.
-    objects = XFormManager()
 
     class Meta:
         app_label = 'odk_logger'
@@ -75,10 +65,6 @@ class XForm(models.Model):
             raise Exception("In strict mode, the XForm ID must be a valid slug and contain no spaces.")
         self._set_title()
         super(XForm, self).save(*args, **kwargs)
-
-    def delete(self):
-        self.deleted = True
-        self.save()
 
     def __unicode__(self):
         return getattr(self, "id_string", "")
