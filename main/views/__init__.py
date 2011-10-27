@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django import forms
+from django.db import IntegrityError
 
 from pyxform.builder import create_survey_from_xls
 from pyxform.errors import PyXFormError
@@ -39,6 +40,11 @@ def dashboard(request):
             context.message = {
                 'type': 'error',
                 'text': unicode(e),
+                }
+        except IntegrityError as e:
+            context.message = {
+                'type': 'error',
+                'text': "Form with id '%s' already exists." % survey.id_string,
                 }
     return render_to_response("dashboard.html", context_instance=context)
 
