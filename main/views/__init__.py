@@ -6,7 +6,6 @@ from django.template import RequestContext
 from django import forms
 from django.db import IntegrityError
 
-from pyxform.builder import create_survey_from_xls
 from pyxform.errors import PyXFormError
 from odk_logger.models import XForm
 from odk_viewer.models import DataDictionary
@@ -15,10 +14,12 @@ from odk_viewer.models import DataDictionary
 class QuickConverter(forms.Form):
     xls_file = forms.FileField(label="XLS File")
 
-    def get_survey(self):
+    def publish(self, user):
         if self.is_valid():
-            xls = self.cleaned_data['xls_file']
-            return create_survey_from_xls(xls)
+            return DataDictionary.objects.create(
+                user=user,
+                xls=self.cleaned_data['xls_file']
+                )
 
 
 @login_required
@@ -30,8 +31,7 @@ def dashboard(request):
     if request.method == 'POST':
         try:
             form = QuickConverter(request.POST, request.FILES)
-            survey = form.get_survey()
-            publish(request.user, survey)
+            survey = form.publish(request.user).survey
             context.message = {
                 'type': 'success',
                 'text': 'Successfully published %s.' % survey.id_string,
@@ -44,25 +44,9 @@ def dashboard(request):
         except IntegrityError as e:
             context.message = {
                 'type': 'error',
-                'text': "Form with id '%s' already exists." % survey.id_string,
+                'text': 'Form with this id already exists.',
                 }
     return render_to_response("dashboard.html", context_instance=context)
-
-
-def publish(user, survey):
-    kwargs = {
-        'xml': survey.to_xml(),
-        'downloadable': True,
-        'user': user,
-        }
-    xform = XForm.objects.create(**kwargs)
-
-    # need to also make a data dictionary
-    kwargs = {
-        'xform': xform,
-        'json': survey.to_json(),
-        }
-    data_dictionary = DataDictionary.objects.create(**kwargs)
 
 
 def tutorial(request):

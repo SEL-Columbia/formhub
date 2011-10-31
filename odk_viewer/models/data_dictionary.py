@@ -1,11 +1,14 @@
 from django.db import models
+from django.contrib.auth.models import User
 from odk_logger.models import XForm
 from pyxform import QuestionTypeDictionary, SurveyElementBuilder
-from pyxform.section import Section, RepeatingSection
-from pyxform.question import Option, Question
+from pyxform.section import RepeatingSection
+from pyxform.question import Question
+from pyxform.builder import create_survey_from_xls
 from common_tags import ID
 from odk_viewer.models import ParsedInstance
 import re
+import os
 from utils.reinhardt import queryset_iterator
 
 
@@ -21,12 +24,33 @@ class ColumnRename(models.Model):
         return dict([(cr.xpath, cr.column_name) for cr in cls.objects.all()])
 
 
+def upload_to(instance, filename):
+    return os.path.join(
+        'xls',
+        instance.user.username,
+        filename
+        )
+
+
 class DataDictionary(models.Model):
-    xform = models.OneToOneField(XForm, related_name='data_dictionary')
+    user = models.ForeignKey(User, null=True)
+    xls = models.FileField(upload_to=upload_to, null=True)
     json = models.TextField()
+    xform = models.OneToOneField(XForm, related_name='data_dictionary')
 
     class Meta:
         app_label = "odk_viewer"
+
+    def save(self, *args, **kwargs):
+        if self.xls:
+            survey = create_survey_from_xls(self.xls)
+            self.json = survey.to_json()
+            self.xform, created = XForm.objects.get_or_create(
+                xml=survey.to_xml(),
+                downloadable=True,
+                user=self.user
+                )
+        super(DataDictionary, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.xform.__unicode__()

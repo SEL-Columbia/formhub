@@ -21,7 +21,7 @@ class TestUnique(MainTestCase):
 
         # second time
         response = self._publish_xls_file(xls_path)
-        self.assertTrue("Form with id 'gps' already exists." in response.content)
+        self.assertTrue("Form with this id already exists." in response.content)
         self.assertEquals(XForm.objects.count(), 1)
         self.client.logout()
 
