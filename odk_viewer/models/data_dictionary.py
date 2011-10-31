@@ -32,32 +32,21 @@ def upload_to(instance, filename):
         )
 
 
-class DataDictionary(models.Model):
-    user = models.ForeignKey(User, null=True)
-    xls = models.FileField(upload_to=upload_to, null=True)
-    shared = models.BooleanField(default=False)
-    json = models.TextField()
-    xform = models.OneToOneField(XForm, related_name='data_dictionary')
+class DataDictionary(XForm):
 
     class Meta:
         app_label = "odk_viewer"
+        proxy = True
 
     def save(self, *args, **kwargs):
         if self.xls:
             survey = create_survey_from_xls(self.xls)
             self.json = survey.to_json()
-            self.xform, created = XForm.objects.get_or_create(
-                xml=survey.to_xml(),
-                downloadable=True,
-                user=self.user
-                )
+            self.xml = survey.to_xml()
         super(DataDictionary, self).save(*args, **kwargs)
 
     def file_name(self):
         return os.path.split(self.xls.name)[-1]
-
-    def __unicode__(self):
-        return self.xform.__unicode__()
 
     def get_survey(self):
         if not hasattr(self, "_survey"):
@@ -79,7 +68,7 @@ class DataDictionary(models.Model):
                 return e.get_abbreviated_xpath()
 
     def has_surveys_with_geopoints(self):
-        return ParsedInstance.objects.filter(instance__xform=self.xform, lat__isnull=False).count() > 0
+        return ParsedInstance.objects.filter(instance__xform=self, lat__isnull=False).count() > 0
 
     def xpaths(self, prefix='', survey_element=None, result=None,
                repeat_iterations=4):
@@ -195,7 +184,7 @@ class DataDictionary(models.Model):
         return header
 
     def get_list_of_parsed_instances(self):
-        for i in queryset_iterator(self.xform.surveys.all()):
+        for i in queryset_iterator(self.surveys.all()):
             # todo: there is information we want to add in parsed xforms.
             yield i.get_dict()
 

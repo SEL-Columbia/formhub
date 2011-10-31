@@ -26,7 +26,7 @@ class XForm(models.Model):
     user = models.ForeignKey(User, related_name='xforms', null=True)
 
     shared = models.BooleanField(default=False)
-    downloadable = models.BooleanField()
+    downloadable = models.BooleanField(default=True)
 
     # the following fields are filled in automatically
     id_string = models.SlugField(
