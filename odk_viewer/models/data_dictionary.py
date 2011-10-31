@@ -35,6 +35,7 @@ def upload_to(instance, filename):
 class DataDictionary(models.Model):
     user = models.ForeignKey(User, null=True)
     xls = models.FileField(upload_to=upload_to, null=True)
+    shared = models.BooleanField(default=False)
     json = models.TextField()
     xform = models.OneToOneField(XForm, related_name='data_dictionary')
 
@@ -51,6 +52,9 @@ class DataDictionary(models.Model):
                 user=self.user
                 )
         super(DataDictionary, self).save(*args, **kwargs)
+
+    def file_name(self):
+        return os.path.split(self.xls.name)[-1]
 
     def __unicode__(self):
         return self.xform.__unicode__()

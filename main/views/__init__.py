@@ -1,5 +1,7 @@
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
 
+import os
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -7,7 +9,6 @@ from django import forms
 from django.db import IntegrityError
 
 from pyxform.errors import PyXFormError
-from odk_logger.models import XForm
 from odk_viewer.models import DataDictionary
 
 
@@ -67,3 +68,13 @@ def syntax(request):
     context = RequestContext(request)
     context.content = doc.to_html()
     return render_to_response('base.html', context_instance=context)
+
+
+def gallery(request):
+    """
+    Return a list of urls for all the shared xls files. This could be
+    made a lot prettier.
+    """
+    context = RequestContext(request)
+    context.shared_forms = DataDictionary.objects.filter(shared=True)
+    return render_to_response('gallery.html', context_instance=context)
