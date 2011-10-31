@@ -4,6 +4,7 @@ from south.db import db
 from south.v2 import DataMigration
 from django.db import models
 from odk_logger.models import XForm
+from odk_viewer.models import DataDictionary
 
 
 class Migration(DataMigration):
@@ -11,10 +12,13 @@ class Migration(DataMigration):
     def forwards(self, orm):
         "Write your forwards methods here."
         for xform in XForm.objects.all():
-            xform.xls = xform.data_dictionary.xls
-            xform.json = xform.data_dictionary.json
-            xform.shared = xform.data_dictionary.shared
-            xform.save()
+            try:
+                xform.xls = xform.data_dictionary.xls
+                xform.json = xform.data_dictionary.json
+                xform.shared = xform.data_dictionary.shared
+                xform.save()
+            except DataDictionary.DoesNotExist:
+                pass
 
 
     def backwards(self, orm):
