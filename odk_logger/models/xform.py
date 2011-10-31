@@ -6,13 +6,27 @@ from django.db.models.query import QuerySet
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.conf import settings
+import os
 import re
 
 
+def upload_to(instance, filename):
+    return os.path.join(
+        'xls',
+        instance.user.username,
+        filename
+        )
+
+
 class XForm(models.Model):
+    xls = models.FileField(upload_to=upload_to, null=True)
+    json = models.TextField(default=u'')
     xml = models.TextField()
-    downloadable = models.BooleanField()
+
     user = models.ForeignKey(User, related_name='xforms', null=True)
+
+    shared = models.BooleanField(default=False)
+    downloadable = models.BooleanField()
 
     # the following fields are filled in automatically
     id_string = models.SlugField(
