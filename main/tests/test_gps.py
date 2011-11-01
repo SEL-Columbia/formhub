@@ -38,6 +38,11 @@ class TestGPS(MainTestCase):
     def _check_map_view(self):
         map_url = reverse(odk_viewer.views.map, kwargs={'id_string': 'gps'})
         response = self.client.get(map_url)
+        # testing the response context to get a concise notification if the lat/long values have
+        # changed.
+        expected_ll = '{"lat": 40.81105202436447, "lng": -73.9644804596901}'
+        for r in response.context:
+            self.assertEqual(expected_ll, r.center)
         html_path = os.path.join(self.this_directory, 'fixtures', 'gps', 'map.html')
         with open(html_path) as f:
             expected_content = f.read()
