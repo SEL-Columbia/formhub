@@ -169,8 +169,8 @@ from django.http import HttpResponse
 
 
 def xls_export(request, id_string):
-    dd = DataDictionary.objects.get(xform__id_string=id_string,
-                                    xform__user=request.user)
+    dd = DataDictionary.objects.get(id_string=id_string,
+                                    user=request.user)
     ddw = DataDictionaryWriter()
     ddw.set_data_dictionary(dd)
     temp_file = ddw.save_workbook_to_file()
