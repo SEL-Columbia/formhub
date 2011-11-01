@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 CURRENT_FILE = os.path.abspath(__file__)
 PROJECT_ROOT = os.path.dirname(CURRENT_FILE)
@@ -175,6 +176,7 @@ else:
 # Clear out the test database
 if TESTING_MODE:
     MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'test_media/')
+    subprocess.call(["rm", "-r", MEDIA_ROOT])
 else:
     MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'media/')
 

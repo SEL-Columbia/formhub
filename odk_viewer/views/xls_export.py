@@ -100,7 +100,7 @@ class DataDictionaryWriter(XlsWriter):
     def add_surveys(self):
         if not hasattr(self, "_dict_organizer"):
             self._dict_organizer = DictOrganizer()
-        for i in self._data_dictionary.xform.surveys.iterator():
+        for i in self._data_dictionary.surveys.iterator():
             d = xform_instance_to_dict(i.xml)
             obs = self._dict_organizer.get_observation_from_dict(d)
             self.add_obs(obs)

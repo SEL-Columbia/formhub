@@ -1,11 +1,14 @@
 from django.db import models
+from django.contrib.auth.models import User
 from odk_logger.models import XForm
 from pyxform import QuestionTypeDictionary, SurveyElementBuilder
-from pyxform.section import Section, RepeatingSection
-from pyxform.question import Option, Question
+from pyxform.section import RepeatingSection
+from pyxform.question import Question
+from pyxform.builder import create_survey_from_xls
 from common_tags import ID
 from odk_viewer.models import ParsedInstance
 import re
+import os
 from utils.reinhardt import queryset_iterator
 
 
@@ -21,15 +24,29 @@ class ColumnRename(models.Model):
         return dict([(cr.xpath, cr.column_name) for cr in cls.objects.all()])
 
 
-class DataDictionary(models.Model):
-    xform = models.OneToOneField(XForm, related_name='data_dictionary')
-    json = models.TextField()
+def upload_to(instance, filename):
+    return os.path.join(
+        'xls',
+        instance.user.username,
+        filename
+        )
+
+
+class DataDictionary(XForm):
 
     class Meta:
         app_label = "odk_viewer"
+        proxy = True
 
-    def __unicode__(self):
-        return self.xform.__unicode__()
+    def save(self, *args, **kwargs):
+        if self.xls:
+            survey = create_survey_from_xls(self.xls)
+            self.json = survey.to_json()
+            self.xml = survey.to_xml()
+        super(DataDictionary, self).save(*args, **kwargs)
+
+    def file_name(self):
+        return os.path.split(self.xls.name)[-1]
 
     def get_survey(self):
         if not hasattr(self, "_survey"):
@@ -51,7 +68,7 @@ class DataDictionary(models.Model):
                 return e.get_abbreviated_xpath()
 
     def has_surveys_with_geopoints(self):
-        return ParsedInstance.objects.filter(instance__xform=self.xform, lat__isnull=False).count() > 0
+        return ParsedInstance.objects.filter(instance__xform=self, lat__isnull=False).count() > 0
 
     def xpaths(self, prefix='', survey_element=None, result=None,
                repeat_iterations=4):
@@ -167,7 +184,7 @@ class DataDictionary(models.Model):
         return header
 
     def get_list_of_parsed_instances(self):
-        for i in queryset_iterator(self.xform.surveys.all()):
+        for i in queryset_iterator(self.surveys.all()):
             # todo: there is information we want to add in parsed xforms.
             yield i.get_dict()
 

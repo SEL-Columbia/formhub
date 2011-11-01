@@ -66,7 +66,7 @@ class DataDictionaryWriter(CsvWriter):
 
     def get_default_file_path(self):
         this_directory = os.path.dirname(__file__)
-        id_string = self._data_dictionary.xform.id_string
+        id_string = self._data_dictionary.id_string
         return os.path.join(this_directory, "csvs", id_string + ".csv")
 
 
@@ -88,8 +88,8 @@ def send_file(path, content_type):
 
 
 def csv_export(request, id_string):
-    dd = DataDictionary.objects.get(xform__id_string=id_string,
-                                    xform__user=request.user)
+    dd = DataDictionary.objects.get(id_string=id_string,
+                                    user=request.user)
     writer = DataDictionaryWriter(dd)
     file_path = writer.get_default_file_path()
     writer.write_to_file(file_path)

@@ -74,7 +74,12 @@ class ParsedInstance(models.Model):
             self.end_time = None
 
     def get_data_dictionary(self):
-        return self.instance.xform.data_dictionary
+        # todo: import here is a hack to get around a circular import
+        from odk_viewer.models import DataDictionary
+        return DataDictionary.objects.get(
+            user=self.instance.xform.user,
+            id_string=self.instance.xform.id_string
+            )
 
     data_dictionary = property(get_data_dictionary)
 
@@ -105,8 +110,7 @@ def _parse_instance(sender, **kwargs):
     # When an instance is saved, first delete the parsed_instance
     # associated with it.
     instance = kwargs["instance"]
-    if instance.xform is not None and \
-            instance.xform.data_dictionary is not None:
+    if instance.xform is not None:
         pi, created = ParsedInstance.objects.get_or_create(instance=instance)
 
 post_save.connect(_parse_instance, sender=Instance)

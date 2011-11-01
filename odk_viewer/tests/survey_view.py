@@ -14,10 +14,9 @@ class TestSurveyView(TestCase):
 
     def setUp(self):
         self.survey = create_survey_from_xls("odk_viewer/tests/name_survey.xls")
-        self.xform = XForm.objects.create(xml=self.survey.to_xml())
         json_str = json.dumps(self.survey.to_dict())
         self.data_dictionary = DataDictionary.objects.create(
-            xform=self.xform, json=json_str)
+            xml=self.survey.to_xml(), json=json_str)
 
         info = {
             "survey_name" : self.survey.name,

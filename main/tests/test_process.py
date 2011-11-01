@@ -71,7 +71,7 @@ class TestSite(MainTestCase):
 
     def _check_data_dictionary(self):
         # test to make sure the data dictionary returns the expected headers
-        qs = DataDictionary.objects.filter(xform__user=self.user)
+        qs = DataDictionary.objects.filter(user=self.user)
         self.assertEqual(qs.count(), 1)
         self.data_dictionary = DataDictionary.objects.all()[0]
         with open(os.path.join(self.this_directory, "fixtures", "transportation", "headers.json")) as f:
@@ -192,7 +192,7 @@ class TestSite(MainTestCase):
                 }
             ]
 
-        dd = self.xform.data_dictionary
+        dd = DataDictionary.objects.get(pk=self.xform.pk)
         for row, expected_dict in zip(actual_csv, data):
             d = dict(zip(headers, row))
             for k, v in d.items():

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section id="shared-forms">
+  <div class="page-header">
+    <h1>Shared Forms</h1>
+  </div>
+
+  <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+	  $('#forms-table').dataTable({
+        "bPaginate": false,
+        "oLanguage": {"sSearch": "Search:"}
+      });
+      $('#forms-table_filter').addClass('row')
+	} );
+  </script>
+
+  <table id="forms-table" class="zebra-striped">
+    <thead>
+      <tr>
+        <th>User</th><!-- we will want more user information -->
+        <th>Title</th>
+        <th>Description</th>
+        <th>XLS File</th>
+        <!-- tags -->
+      </tr>
+    </thead>
+    <tbody>
+      {% for data_dictionary in shared_forms %}
+      <tr>
+        <td>{{ data_dictionary.user.username }}</td>
+        <td>{{ data_dictionary.xform.title }}</td>
+        <td>{{ data_dictionary.description }}</td>
+        <td><a href="{{ data_dictionary.xls.url }}">{{ data_dictionary.file_name }}</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</section>
+{% endblock %}

@@ -1,10 +1,17 @@
 from django.contrib import admin
-from .models.instance import Instance
-from .models.attachment import Attachment
-from .models.survey_type import SurveyType
-from .models.xform import XForm
+from odk_logger.models import XForm
 
-admin.site.register(Instance)
-admin.site.register(Attachment)
-admin.site.register(SurveyType)
-admin.site.register(XForm)
+
+class FormAdmin(admin.ModelAdmin):
+
+    exclude = ('xls', 'json', 'xml', 'user')
+    list_display = ('id_string', 'downloadable', 'shared')
+
+    # A user should only see forms that belong to him.
+    def queryset(self, request):
+        qs = super(FormAdmin, self).queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(user=request.user)
+
+admin.site.register(XForm, FormAdmin)
