@@ -55,5 +55,9 @@ Code Structure
   data dictionary as produced by pyxform. It also provides a map and
   single survey view.
 
-* main - This app is the glue that brings odk_logger and odk_exporter
-  together. This is where xls2xform conversion happens.
+* main - This app is the glue that brings odk_logger and odk_viewer
+  together.
+
+In general, I think breaking these pieces into separate applications
+has been a mistake. I think we should move to having all of the code
+for formhub in a single Django application.
