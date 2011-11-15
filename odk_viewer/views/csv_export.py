@@ -1,7 +1,7 @@
 import codecs
 import os
 import re
-
+from django.contrib.auth.decorators import login_required
 
 class CsvWriter(object):
     """
@@ -86,7 +86,7 @@ def send_file(path, content_type):
     response['Content-Length'] = os.path.getsize(path)
     return response
 
-
+@login_required
 def csv_export(request, id_string):
     dd = DataDictionary.objects.get(id_string=id_string,
                                     user=request.user)
