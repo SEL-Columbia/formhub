@@ -8,7 +8,33 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseRedirect
 
 from models import XForm, create_instance
+from odk_logger.import_tools import import_instances_from_zip
 
+import zipfile
+
+@require_POST
+@csrf_exempt
+def bulksubmission(request, username):
+    # puts it in a temp directory.
+    # runs "import_tools(temp_directory)"
+    # deletes
+
+    # request.FILES is a django.utils.datastructures.MultiValueDict
+    # for each key we have a list of values
+    temp_postfile = request.FILES.pop("zip_submission_file", [])
+    if len(temp_postfile) == 1:
+        zip_file = temp_postfile[0].temporary_file_path()
+        import_instances_from_zip(zip_file, user=request.user)
+        response = HttpResponse("Your ODK submission was successful. Your user now has %d instances." % \
+                    request.user.surveys.count())
+        response.status_code = 202
+        response['Location'] = request.build_absolute_uri(request.path)
+        return response
+    else:
+        return HttpResponse(str(temp_postfile))
+
+def bulksubmission_form(request, username=None):
+	return render_to_response("bulk_submission_form.html")
 
 @require_GET
 def formList(request, username):

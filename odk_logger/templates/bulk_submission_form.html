@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}
+Update XForm {{xform.id_string}}
+{% endblock %}
+{% block content %}
+
+<div class="row">
+	<div class="span8">
+		<form method="post" action="./bulk-submission" enctype="multipart/form-data">
+			<p>
+				<input type="file" name="zip_submission_file">
+				<input type="submit" value="Submit">
+			</p>
+			{% csrf_token %}
+		</form>
+	</div>
+</div>
+
+{% endblock %}
+
