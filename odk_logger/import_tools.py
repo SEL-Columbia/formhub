@@ -93,7 +93,10 @@ def import_instances_from_phone(path_to_odk_folder, user):
 
     add_path_to_instance_folder()
     for i in instances:
-        import_instance(i[u'path_to_instance_folder'], i[u'status'], user)
+        try:
+            import_instance(i[u'path_to_instance_folder'], i[u'status'], user)
+        except Exception as e:
+            print e
 
 import zipfile
 import tempfile
