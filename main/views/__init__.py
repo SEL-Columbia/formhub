@@ -50,6 +50,14 @@ def dashboard(request):
     return render_to_response("dashboard.html", context_instance=context)
 
 
+def public_profile(request):
+    context = RequestContext(request)
+    context.form = QuickConverter()
+    context.odk_url = request.build_absolute_uri("/%s" % request.user.username)
+
+    return render_to_response("public_profile.html", context_instance=context)
+
+
 def tutorial(request):
     context = RequestContext(request)
     context.template = 'tutorial.html'
@@ -57,6 +65,12 @@ def tutorial(request):
         'your-user-name'
     context.odk_url = request.build_absolute_uri("/%s" % username)
     return render_to_response('base.html', context_instance=context)
+
+def support(request):
+    context = RequestContext(request)
+    context.template = 'support.html'
+    return render_to_response('base.html', context_instance=context)
+
 
 
 from google_doc import GoogleDoc
