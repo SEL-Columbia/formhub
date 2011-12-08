@@ -54,7 +54,7 @@ class TestGPS(MainTestCase):
         # if the lat/long values have changed.
         lat = str(round_down_geopoint(40.811052024364471))
         lng = str(round_down_geopoint(-73.964480459690094))
-        expected_ll = '{"lat": %s, "lng": %s}' % (lat, lng)
+        expected_ll = '{"lat": "%s", "lng": "%s"}' % (lat, lng)
         for r in response.context:
             self.assertEqual(expected_ll, r.center)
         html_path = os.path.join(self.this_directory, 'fixtures', 'gps', 'map.html')
