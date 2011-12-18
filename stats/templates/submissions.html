@@ -8,8 +8,8 @@
 	$(document).ready(function() {
 	  $('#stats-table').dataTable({
 		  "bPaginate" : true,
-		  "bSort" : true,
-		  "bFilter" : false
+		  "bFilter" : false,
+		  "aoColumns" : [null, {"sClass": "centered"} ]
           });
 	});
   </script>
@@ -29,7 +29,7 @@
       {% if k != 'total_submission_count' %}
       <tr>
         <td>{{k}}</td>
-        <td><center>{{v}}</center></td>
+        <td>{{v}}</td>
       </tr>
       {% endif %}
       {% endfor %}
