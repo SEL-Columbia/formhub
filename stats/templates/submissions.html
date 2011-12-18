@@ -7,12 +7,12 @@
   <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 	  $('#stats-table').dataTable({
-        "bPaginate": true,
-        "oLanguage": {"sSearch": "Search:"},
-        "oSearch": {"sSearch": "archive"}
-      });
-      $('#stats-table_filter').addClass('row')
-	} );
+		  "bPaginate" : true,
+		  "bSort" : true,
+		  "aoColumnDefs": [ { "sType": "numeric", "aTargets": [ 1 ] } ],
+		  "bFilter" : false
+          });
+	});
   </script>
 
 
