@@ -1,5 +1,3 @@
-# vim: ai ts=5 sts=4 et sw=4 encoding=utf-8
-
 import os
 
 from django.contrib.auth.decorators import login_required
