@@ -1,4 +1,4 @@
-# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
+# vim: ai ts=5 sts=4 et sw=4 encoding=utf-8
 
 import os
 
@@ -10,18 +10,8 @@ from django.db import IntegrityError
 
 from pyxform.errors import PyXFormError
 from odk_viewer.models import DataDictionary
-
-
-class QuickConverter(forms.Form):
-    xls_file = forms.FileField(label="XLS File")
-
-    def publish(self, user):
-        if self.is_valid():
-            return DataDictionary.objects.create(
-                user=user,
-                xls=self.cleaned_data['xls_file']
-                )
-
+from utils.quick_converter import QuickConverter
+from utils.google_doc import GoogleDoc
 
 @login_required
 def dashboard(request):
@@ -70,11 +60,6 @@ def support(request):
     context = RequestContext(request)
     context.template = 'support.html'
     return render_to_response('base.html', context_instance=context)
-
-
-
-from google_doc import GoogleDoc
-
 
 def syntax(request):
     url = 'https://docs.google.com/document/pub?id=1Dze4IZGr0IoIFuFAI_ohKR5mYUt4IAn5Y-uCJmnv1FQ'
