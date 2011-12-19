@@ -4,7 +4,6 @@ from odk_viewer.views import csv_export
 from odk_viewer.models import DataDictionary
 from test_base import MainTestCase
 
-
 class TestExport(MainTestCase):
 
     def setUp(self):
