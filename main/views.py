@@ -68,6 +68,8 @@ def profile(request, username):
         return HttpResponseRedirect("/")
     if content_user == request.user:
         context.show_dashboard = True
+        context.form = QuickConverter()
+        context.odk_url = request.build_absolute_uri("/%s" % request.user.username)
     context.content_user = content_user
     context.content_user_gravatar_img_link = get_gravatar_img_link(content_user)
     return render_to_response("profile.html", context_instance=context)
