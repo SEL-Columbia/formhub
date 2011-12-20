@@ -1,8 +1,9 @@
-from test_base import MainTestCase
+from django.test import TestCase
 from django.contrib.auth.models import User
 from main.models import UserProfile
 
-class TestUserProfile(MainTestCase):
+# do not inherit from MainTestCase because we don't want auto login
+class TestUserProfile(TestCase):
     def setup(self):
         self.client = Client()
 
@@ -23,14 +24,12 @@ class TestUserProfile(MainTestCase):
         self.response = self.client.post(url, post_data)
 
     def test_create_user_with_given_name(self):
+        self.assertEqual(len(User.objects.all()), 0)
         self._create_user_and_profile()
-        raise Exception(self.response.content)
         self.assertEqual(User.objects.all()[0].username, 'bob')
 
     def test_create_user_profile_for_user(self):
         self._create_user_and_profile()
-        raise Exception(self.response.content)
-        raise Exception(UserProfile.objects.all())
         profile = User.objects.all()[0].profile
         self.assertEqual(profile.city, 'Bobville')
 
