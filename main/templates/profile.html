@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% if content_user == user %}
+    {% if show_dashboard %}
         {% include "publish_survey.html" %}
         {% include "published_surveys.html" %}
     {% else %}
