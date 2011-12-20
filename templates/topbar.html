@@ -4,11 +4,12 @@
       <a class="brand" href="/" title="formhub"><img height="14px" alt="formhub" src="/static/images/logo.png" /></a>
       <ul class="nav">
         <!-- <li class="active"><a href="#overview">Overview</a></li> -->
+        <li><a href="{% url main.views.form_gallery %}">Forms</a></li>
         <li><a href="{% url main.views.tutorial %}">About</a></li>
         <li><a href="{% url main.views.syntax %}">Syntax</a></li>
         <li><a href="{% url main.views.support %}">Support</a></li>
         <li><a href="http://blog.formhub.org/">Blog</a></li>
-        <!-- <li><a href="{% url main.views.gallery %}">Gallery</a></li> -->
+
       </ul>
       {% if user.is_authenticated %}
       <ul class="nav secondary-nav">

@@ -144,11 +144,11 @@ def syntax(request):
     return render_to_response('base.html', context_instance=context)
 
 
-def gallery(request):
+def form_gallery(request):
     """
     Return a list of urls for all the shared xls files. This could be
     made a lot prettier.
     """
     context = RequestContext(request)
     context.shared_forms = DataDictionary.objects.filter(shared=True)
-    return render_to_response('gallery.html', context_instance=context)
+    return render_to_response('form_gallery.html', context_instance=context)

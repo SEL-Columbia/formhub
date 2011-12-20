@@ -30,7 +30,7 @@
     <tbody>
       {% for data_dictionary in shared_forms %}
       <tr>
-        <td>{{ data_dictionary.user.username }}</td>
+        <td><a href="/{{ data_dictionary.user.username }}">{{ data_dictionary.user.username }}</a></td>
         <td>{{ data_dictionary.xform.title }}</td>
         <td>{{ data_dictionary.description }}</td>
         <td><a href="{{ data_dictionary.xls.url }}">{{ data_dictionary.file_name }}</a></td>
