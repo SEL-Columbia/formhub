@@ -5,6 +5,8 @@ from registration.models import RegistrationProfile
 from country_field import COUNTRIES
 
 class RegistrationFormUserProfile(RegistrationForm):
+    username = forms.CharField(widget=forms.TextInput(), max_length=30)
+    email = forms.CharField(widget=forms.TextInput(), max_length=30)
     name = forms.CharField(widget=forms.TextInput(), required=False, max_length=255)
     city = forms.CharField(widget=forms.TextInput(), required=False, max_length=255)
     country = forms.ChoiceField(widget=forms.Select(), required=False, choices=COUNTRIES, initial='ZZ')
