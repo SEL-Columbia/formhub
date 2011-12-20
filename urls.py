@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     url(r'^support/$', 'main.views.support'),
     url(r'^login_redirect/$', 'main.views.login_redirect'),
     url(r'^(?P<username>[^/]+)/$', 'main.views.profile'),
+    url(r'^(?P<username>[^/]+)/profile$', 'main.views.public_profile'),
 
     # stats
     url(r"^stats/submissions/$", 'stats.views.submissions'),

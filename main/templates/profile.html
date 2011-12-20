@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% if content_user == user %}
-        {% include "publish_survey.html" %}
-        {% include "published_surveys.html" %}
+    {% if show_dashboard %}
+        {% include "dashboard.html" %}
     {% else %}
+        <section id="profile">
+          <div class="page-header">
+            <img src='{{ content_user_gravatar_img_link }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' />
+            <h1>{{ content_user.username }}<span style='color:#DDD; font-weight:100'>&nbsp;|&nbsp;</span><span style='color:#AAA; font-size:smaller'>First Last</span></h1>
+          </div>
+          <p>Member since: {{ content_user.date_joined|date:"F j, Y" }}</p>
+        </section>
     {% endif %}
 {% endblock %}

@@ -14,6 +14,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 
 from pyxform.errors import PyXFormError
 from odk_viewer.models import DataDictionary
+from gravatar import get_gravatar_img_link
 
 
 class QuickConverter(forms.Form):
@@ -65,7 +66,28 @@ def profile(request, username):
         content_user = User.objects.get(username=username)
     except User.DoesNotExist:
         return HttpResponseRedirect("/")
+    if content_user == request.user:
+        context.show_dashboard = True
+        context.form = QuickConverter()
+        context.odk_url = request.build_absolute_uri("/%s" % request.user.username)
     context.content_user = content_user
+    context.content_user_gravatar_img_link = get_gravatar_img_link(content_user)
+    return render_to_response("profile.html", context_instance=context)
+
+
+@require_GET
+@login_required
+def public_profile(request, username):
+    if username != request.user.username:
+        return HttpResponseRedirect("/%s" % username)
+    context = RequestContext(request)
+    content_user = None
+    try:
+        content_user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return HttpResponseRedirect("/")
+    context.content_user = content_user
+    context.content_user_gravatar_img_link = get_gravatar_img_link(content_user)
     return render_to_response("profile.html", context_instance=context)
 
 
@@ -100,13 +122,6 @@ def support(request):
     context = RequestContext(request)
     context.template = 'support.html'
     return render_to_response('base.html', context_instance=context)
-
-
-def public_profile(request):
-    context = RequestContext(request)
-    context.form = QuickConverter()
-    context.odk_url = request.build_absolute_uri("/%s" % request.user.username)
-    return render_to_response("public_profile.html", context_instance=context)
 
 
 def tutorial(request):
