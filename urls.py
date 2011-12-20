@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^syntax/$', 'main.views.syntax'),
     url(r'^gallery/$', 'main.views.gallery'),
     url(r'^support/$', 'main.views.support'),
+    url(r'^login_redirect/$', 'main.views.login_redirect'),
     url(r'^(?P<username>[^/]+)/$', 'main.views.profile'),
 
     # stats

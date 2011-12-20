@@ -52,6 +52,11 @@ def home(request):
     return render_to_response("home.html", context_instance=context)
 
 
+@login_required
+def login_redirect(request):
+    return HttpResponseRedirect("/%s" % request.user.username)
+
+
 @require_GET
 def profile(request, username):
     context = RequestContext(request)

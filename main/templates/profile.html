@@ -1,13 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    Profile for {{content_user.username}}
     {% if content_user == user %}
-        Your profile
         {% include "publish_survey.html" %}
         {% include "published_surveys.html" %}
     {% else %}
-        Other profile
     {% endif %}
 {% endblock %}
-
