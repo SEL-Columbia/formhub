@@ -51,7 +51,7 @@
           </div>
           <a href="#" data-controls-modal="delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true">delete</a>,
 
-	  <a href="{% url odk_logger.views.toggle_downloadable username=user.username id_string=xform.id_string %}?next=/" rel="twipsy" data-original-title="Hide or unhide a form, this will determine whether ODK Collect will see this form when getting new forms from the server.">
+	  <a href="{% url odk_logger.views.toggle_downloadable username=user.username id_string=xform.id_string %}" rel="twipsy" data-original-title="Hide or unhide a form, this will determine whether ODK Collect will see this form when getting new forms from the server.">
 	    {% if xform.downloadable %}
 	    archive
 	    {% else %}
