@@ -14,6 +14,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 
 from pyxform.errors import PyXFormError
 from odk_viewer.models import DataDictionary
+from gravatar import get_gravatar_img_link
 
 
 class QuickConverter(forms.Form):
@@ -66,6 +67,7 @@ def profile(request, username):
     except User.DoesNotExist:
         return HttpResponseRedirect("/")
     context.content_user = content_user
+    context.content_user_gravatar_img_link = get_gravatar_img_link(content_user)
     return render_to_response("profile.html", context_instance=context)
 
 
