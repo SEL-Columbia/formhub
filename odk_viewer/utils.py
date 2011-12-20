@@ -162,7 +162,7 @@ def report_exception(subject, info, exc_info=None):
         print info
     else:
         mail_admins(subject=subject, message=info)
-        
+
 from django.core.files.uploadedfile import InMemoryUploadedFile
 def django_file(path, field_name, content_type):
     # adapted from here: http://groups.google.com/group/django-users/browse_thread/thread/834f988876ff3c45/

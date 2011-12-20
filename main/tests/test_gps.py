@@ -3,7 +3,7 @@ import os
 from odk_viewer.models import ParsedInstance, DataDictionary
 from django.core.urlresolvers import reverse
 import odk_viewer
-
+from odk_logger.utils import round_down_geopoint
 
 class TestGPS(MainTestCase):
 
@@ -52,10 +52,12 @@ class TestGPS(MainTestCase):
         response = self.client.get(map_url)
         # testing the response context to get a concise notification
         # if the lat/long values have changed.
-        expected_ll = '{"lat": 40.811052024364471, "lng": -73.964480459690094}'
+        lat = str(round_down_geopoint(40.811052024364471))
+        lng = str(round_down_geopoint(-73.964480459690094))
+        expected_ll = '{"lat": "%s", "lng": "%s"}' % (lat, lng)
         for r in response.context:
             self.assertEqual(expected_ll, r.center)
         html_path = os.path.join(self.this_directory, 'fixtures', 'gps', 'map.html')
         with open(html_path) as f:
             expected_content = f.read()
-        self.assertEqual(expected_content, response.content)
+        self.assertContains(response, expected_content)

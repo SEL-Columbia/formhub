@@ -22,7 +22,7 @@
       <tr>
         <th>ID</th>
         <th>Administration</th>
-        <th>Number of Submissions</th>
+        <th>Submissions</th>
         <th>Last Submission</th>
         <th>Export</th>
         <th>View</th>
@@ -59,7 +59,7 @@
 	    {% endif %}
 	  </a>
         </td>
-        <td>{{ xform.submission_count }}</td>
+        <td><center>{{ xform.submission_count }}</center></td>
         <td>
 	  {% if xform.time_of_last_submission %}
 	  {{ xform.time_of_last_submission }}
@@ -73,7 +73,7 @@
         </td>
         <td>
           {% if xform.data_dictionary.has_surveys_with_geopoints %}
-          <a href="{% url odk_viewer.views.map xform.id_string %}">map</a>
+          <center><a href="{% url odk_viewer.views.map xform.id_string %}">map</a></center>
           {% endif %}
         </td>
       </tr>

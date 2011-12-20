@@ -14,6 +14,7 @@
  
     <!-- Le styles --> 
     <link href="/static/bootstrap/bootstrap.css" rel="stylesheet"> 
+    <link href="/static/bootstrap/formhub-extras.css" rel="stylesheet"> 
     <link href="/static/bootstrap/docs/assets/css/docs.css" rel="stylesheet"> 
     <link href="/static/bootstrap/docs/assets/js/google-code-prettify/prettify.css" rel="stylesheet"> 
  
@@ -37,13 +38,41 @@
 
     <!-- spot to insert stuff for google maps -->
     {% block additional-headers %}{% endblock %}
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-83697-18']);
+  _gaq.push(['_setDomainName', 'formhub.org']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
   </head> 
 
   {% block body %}
   <body style="padding-top: 40px;">
     {% include "topbar.html" %}
 
-    <div class="container"> 
+    <div class="container">
+      {% block message %}
+        {% if message %}
+          <div class="row">
+            <div class="span16">
+              <div class="alert-message block-message {{ message.type }} fade in" data-alert="alert">
+            <a class="close" href="#">×</a>
+            <p>{{ message.text|safe }}</p>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endblock %}
       {% block content %}
         {% if template %}{% include template %}{% endif %}
         {{ content|safe }}

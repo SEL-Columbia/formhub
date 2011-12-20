@@ -1,8 +1,10 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.conf import settings
 
+
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -16,7 +18,11 @@ urlpatterns = patterns('',
     url(r'^tutorial/$', 'main.views.tutorial'),
     url(r'^syntax/$', 'main.views.syntax'),
     url(r'^gallery/$', 'main.views.gallery'),
-    url(r'^(?P<username>\w+)/$', 'main.views.profile'),
+    url(r'^support/$', 'main.views.support'),
+    url(r'^(?P<username>[^/]+)/$', 'main.views.profile'),
+
+    # stats
+    url(r"^stats/submissions/$", 'stats.views.submissions'),
 
     # exporting stuff
     url(r"^odk_viewer/export_spreadsheet/(?P<id_string>[^/]*)\.csv$", 'odk_viewer.views.csv_export'),
