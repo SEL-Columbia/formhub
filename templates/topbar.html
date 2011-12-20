@@ -19,6 +19,10 @@
           </ul> 
         </li> 
       </ul> 
+      {% else %}
+      <ul class="nav" style="float:right"> 
+        <li><a href="{% url auth_login %}">Sign in</a></li>
+      </ul> 
       {% endif %}
     </div> 
   </div> 

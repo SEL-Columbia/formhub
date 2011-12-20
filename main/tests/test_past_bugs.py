@@ -24,6 +24,7 @@ class TestInputs(MainTestCase):
     def test_uniqueness_of_group_names_enforced(self):
         pre_count = XForm.objects.count()
         response = self._publish_xls_file('fixtures/group_names_must_be_unique.xls')
+        print response.content
         self.assertTrue("There are two sections with the name group_names_must_be_unique." in response.content)
         self.assertEqual(XForm.objects.count(), pre_count)
 
