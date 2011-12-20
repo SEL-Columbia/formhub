@@ -2,11 +2,12 @@ from django import forms
 from registration.forms import RegistrationForm
 from main.models import UserProfile
 from registration.models import RegistrationProfile
+from country_field import COUNTRIES
 
 class RegistrationFormUserProfile(RegistrationForm):
     name = forms.CharField(widget=forms.TextInput(), required=False, max_length=255)
     city = forms.CharField(widget=forms.TextInput(), required=False, max_length=255)
-    country = forms.CharField(widget=forms.TextInput(), required=False, max_length=255)
+    country = forms.ChoiceField(widget=forms.Select(), required=False, choices=COUNTRIES, initial='ZZ')
     organization = forms.CharField(widget=forms.TextInput(), required=False, max_length=255)
     home_page = forms.CharField(widget=forms.TextInput(), required=False, max_length=255)
     twitter = forms.CharField(widget=forms.TextInput(), required=False, max_length=255)
