@@ -130,7 +130,12 @@ INSTALLED_APPS = (
 )
 COMPRESS = True
 
+# extra data stored with users
 AUTH_PROFILE_MODULE = 'main.UserProfile'
+# case insensitive usernames
+AUTHENTICATION_BACKENDS = (
+    'main.backends.ModelBackend',
+)
 
 # Settings for Django Registration
 ACCOUNT_ACTIVATION_DAYS = 1
