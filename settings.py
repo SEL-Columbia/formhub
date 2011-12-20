@@ -79,7 +79,6 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 # Make this unique, and don't share it with anybody.
@@ -130,6 +129,8 @@ INSTALLED_APPS = (
     'stats',
 )
 COMPRESS = True
+
+AUTH_PROFILE_MODULE = 'main.UserProfile'
 
 # Settings for Django Registration
 ACCOUNT_ACTIVATION_DAYS = 1
