@@ -15,7 +15,8 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 from pyxform.errors import PyXFormError
 from odk_viewer.models import DataDictionary
 from gravatar import get_gravatar_img_link
-
+from main.models import UserProfile
+from odk_logger.models import Instance
 
 class QuickConverter(forms.Form):
     xls_file = forms.FileField(label="XLS File")
@@ -31,6 +32,8 @@ class QuickConverter(forms.Form):
 def home(request):
     context = RequestContext(request)
     context.form = QuickConverter()
+    context.num_users = User.objects.count()
+    context.num_surveys = Instance.objects.count()
 
     if request.method == 'POST':
         try:
@@ -88,6 +91,21 @@ def public_profile(request, username):
         return HttpResponseRedirect("/")
     context.content_user = content_user
     context.content_user_gravatar_img_link = get_gravatar_img_link(content_user)
+    # create empty profile if none exists
+    try:
+        content_user.profile
+    except:
+        UserProfile.objects.create(user=content_user)
+    context.location = ""
+    if content_user.profile.city:
+        context.location = content_user.profile.city
+    if content_user.profile.country:
+        if content_user.profile.city:
+            context.location += ", "
+        context.location += content_user.profile.country
+    context.forms= content_user.xforms.filter(shared__exact=1).order_by('-date_created')
+    context.num_forms= len(context.forms)
+
     return render_to_response("profile.html", context_instance=context)
 
 

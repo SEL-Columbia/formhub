@@ -7,70 +7,55 @@
   <section id="profile">
     <div class="page-header">
       <img src='{{ content_user_gravatar_img_link }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' />
-      <h1>{{ content_user.username }}<span style='color:#DDD; font-weight:100'>&nbsp;|&nbsp;</span><span style='color:#AAA; font-size:smaller'>First Last</span></h1>
+      <h1>{{ content_user.username }}<span style='color:#DDD; font-weight:100'>&nbsp;|&nbsp;</span><span style='color:#AAA; font-size:smaller'>{{ content_user.profile.first_name }} {{ content_user.profile.last_name }}</span></h1>
     </div>
     <div class="row">
       <div class="span10">
-	<p>Location: [location], [country]</p>
-        <p>Website: <a href="">www.website.com</a></p>
-        <p>Twitter: <a href="http://www.twitter.com/{{content_user.username}}">@{{content_user.username}}</a></p>
+    {% if location  %}
+        <p>Location: {{ location }}</p>
+    {% endif %}
+    {% if content_user.profile.home_page %}
+        <p>Website: <a href="{{ content_user.profile.home_page }}">{{ content_user.profile.home_page }}</a></p>
+    {% endif %}
+    {% if content_user.profile.twitter %}
+        <p>Twitter: <a href="http://www.twitter.com/{{ content_user.profile.twitter }}">@{{ content_user.profile.twitter }}</a></p>
+    {% endif %}
         <p>Member since: {{ content_user.date_joined|date:"F j, Y" }}</p>
       </div>
       <div class="span6">
-	<h1>5 <small>Shared forms</small></h1>
+	<h1>{{ num_forms }} <small>Shared forms</small></h1>
       </div>  
     </div> 
     <hr>
     <div class="row">
       <div class="span16">
-	<h3>Shared Forms & Public Data <small>(5)</small></h3>
+	<h3>Shared Forms & Public Data <small>({{ num_forms }})</small></h3>
 	<table>
 	  <thead>
 	    <tr>
               <th>Name</th>
-              <th>Description</th>
+              <th>Create Date</th>
               <th>XLSForm</th>
               <th>Public Data</th>
               <th>View</th>
 	    </tr>
 	  </thead>
 	  <tbody>
-	    <tr>
-              <td>Form 1</td>
-              <td>Blah blah blah</td>
-              <td><center><a href=""><button class="btn small success">form.xls</button></a></center></td>
-              <td><a href=""><button class="btn small">csv</button></a> <a href=""><button class="btn small">xls</button></a></td>
-              <td><a href=""><button class="btn small info">Map &raquo;</button></a></td>
-	    </tr>
-	    <tr>
-              <td>Form 2</td>
-              <td>Blah blah blah</td>
-              <td><center><a href=""><button class="btn small success">form.xls</button></a></center></td>
-              <td>Private</td>
-              <td></td>
-	    </tr>
-	    <tr>
-              <td>Form 3</td>
-              <td>Blah blah blah</td>
-              <td><center><a href=""><button class="btn small success">form.xls</button></a></center></td>
-              <td><a href=""><button class="btn small">csv</button></a> <a href=""><button class="btn small">xls</button></a></td>
-              <td><a href=""><button class="btn small info">Map &raquo;</button></a></td>
-	    </tr>
-	    <tr>
-              <td>Form 4</td>
-              <td>Blah blah blah</td>
-              <td><center><a href=""><button class="btn small success">form.xls</button></a></center></td>
-              <td><a href=""><button class="btn small">csv</button></a> <a href=""><button class="btn small">xls</button></a></td>
-              <td><a href=""><button class="btn small info">Map &raquo;</button></a></td>
-	    </tr>
-	    <tr>
-              <td>Form 5</td>
-              <td>Blah blah blah</td>
-              <td><center><a href=""><button class="btn small success">form.xls</button></a></center></td>
-              <td><a href=""><button class="btn small">csv</button></a> <a href=""><button class="btn small">xls</button></a></td>
-              <td><a href=""><button class="btn small info">Map &raquo;</button></a></td>
-	    </tr>
-
+        {% for form in forms %}
+            <tr>
+                <td>{{ form.title }}</td>
+                <td>{{ form.date_created|date:"N d, Y" }}</td>
+                <td><center><a href=""><button class="btn small success">form.xls</button></a></center></td>
+                <td>
+                    {% if form.shared_data %}
+                        <a href="{% url odk_viewer.views.csv_export form.id_string %}"><button class="btn small">csv</button></a> <a href="{% url odk_viewer.views.xls_export form.id_string %}"><button class="btn small">xls</button></a>
+                    {% else %}
+                        <span class="label warning">PRIVATE</span>
+                    {% endif %}
+                </td>
+                  <td><a href="{% url odk_viewer.views.map xform.id_string %}"><button class="btn small info">Map &raquo;</button></a></td>
+            </tr>
+        {% endfor %}
 	  </tbody>
 	</table>
     </div> 
