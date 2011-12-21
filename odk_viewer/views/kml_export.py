@@ -33,8 +33,8 @@ def kml_export(request, id_string):
         table_rows = []
         for key, value in label_value_pairs:
             table_rows.append('<tr><td>%s</td><td>%s</td></tr>' % (key, value))
-        print '<table>%s</table>' % (''.join(table_rows))
-        data_for_template.append({"lat": pi.lat, "lng": pi.lng, "table": '<table>%s</table>' % (''.join(table_rows))})
+        #print '<table border="1">%s</table>' % (''.join(table_rows))
+        data_for_template.append({"lat": pi.lat, "lng": pi.lng, "table": '<table border="1">%s</table>' % (''.join(table_rows))})
         
     context.data = data_for_template
     #import pdb; pdb.set_trace()
