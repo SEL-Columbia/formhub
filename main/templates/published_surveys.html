@@ -45,7 +45,7 @@
               <p>Are you sure you want to delete the form '{{ xform.title }}'? This form has <strong>{{ xform.submission_count }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.</p>
             </div>
             <div class="modal-footer">
-              <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn primary">delete</a>
+              <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn primary">Delete</a>
               <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">Cancel</a>
             </div>
           </div>
