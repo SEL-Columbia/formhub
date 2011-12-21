@@ -1,4 +1,6 @@
 from test_base import MainTestCase
+from test_user_profile import TestUserProfile
+from django.test.client import Client
 from django.contrib.auth.models import User
 from main.models import UserProfile
 
@@ -14,4 +16,11 @@ class TestUserLogin(MainTestCase):
         password = 'bobbob'
         self._create_user(username, password)
         self._login('robert', password)
+
+class TestUserReservedNames(TestUserProfile):
+    def test_disallow_reserved_names(self):
+        username = 'forms'
+        password = 'bobbob'
+        self._login_user_and_profile({ 'username': username })
+        self.assertEqual(len(User.objects.all()), 0)
 

@@ -27,10 +27,12 @@ class TestUserProfile(TestCase):
 
     def test_create_user_with_given_name(self):
         self._login_user_and_profile()
+        self.assertEqual(self.response.status_code, 302)
         self.assertEqual(User.objects.all()[0].username, 'bob')
 
     def test_create_user_profile_for_user(self):
         self._login_user_and_profile()
+        self.assertEqual(self.response.status_code, 302)
         profile = User.objects.all()[0].profile
         self.assertEqual(profile.city, 'Bobville')
 
