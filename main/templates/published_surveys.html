@@ -67,8 +67,8 @@
         </td>
         <td>
           {% if xform.submission_count %}
-          <a href="{% url odk_viewer.views.csv_export xform.id_string %}"><button class="btn small">csv</button></a>
-          <a href="{% url odk_viewer.views.xls_export xform.id_string %}"><button class="btn small">xls</button></a>
+          <a href="{% url odk_viewer.views.csv_export user.username xform.id_string %}"><button class="btn small">csv</button></a>
+          <a href="{% url odk_viewer.views.xls_export user.username xform.id_string %}"><button class="btn small">xls</button></a>
           {% endif %}
         </td>
         <td>

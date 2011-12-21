@@ -48,12 +48,12 @@
                 <td><center><a href=""><button class="btn small success">form.xls</button></a></center></td>
                 <td>
                     {% if form.shared_data %}
-                        <a href="{% url odk_viewer.views.csv_export form.id_string %}"><button class="btn small">csv</button></a> <a href="{% url odk_viewer.views.xls_export form.id_string %}"><button class="btn small">xls</button></a>
+                        <a href="{% url odk_viewer.views.csv_export user.username form.id_string %}"><button class="btn small">csv</button></a> <a href="{% url odk_viewer.views.xls_export form.id_string %}"><button class="btn small">xls</button></a>
                     {% else %}
                         <span class="label warning">PRIVATE</span>
                     {% endif %}
                 </td>
-                  <td><a href="{% url odk_viewer.views.map xform.id_string %}"><button class="btn small info">Map &raquo;</button></a></td>
+                  <td><a href="{% url odk_viewer.views.map user.username xform.id_string %}"><button class="btn small info">Map &raquo;</button></a></td>
             </tr>
         {% endfor %}
 	  </tbody>
