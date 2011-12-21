@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Stats</h1>
+
+  <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+	  $('#stats-table').dataTable({
+		  "bPaginate" : true,
+		  "bFilter" : false,
+		  "aoColumns" : [null, {"sClass": "centered"} ]
+          });
+	});
+  </script>
+
+
+<h3>Submissions: {{stats.submission_count.total_submission_count}}</h3>
+
+  <table id="stats-table" class="zebra-striped">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Submissions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for k, v in stats.submission_count.items %}
+      {% if k != 'total_submission_count' %}
+      <tr>
+        <td>{{k}}</td>
+        <td>{{v}}</td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <hr />
+
+
+{% endblock %}

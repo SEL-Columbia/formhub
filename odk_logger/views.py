@@ -61,7 +61,7 @@ def formList(request, username):
             }
         for xform in xforms
         ]
-    return render_to_response("formList.xml", {'urls': urls}, mimetype="application/xml")
+    return render_to_response("formList.xml", {'urls': urls}, mimetype="text/xml")
 
 
 @require_POST

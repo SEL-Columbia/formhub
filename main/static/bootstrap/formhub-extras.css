@@ -1,0 +1,9 @@
+/*
+formhub-extras.css
+Made for formhub.org, which mostly uses bootstrap for css.
+This is for all the extra things it needs beyond what bootstrap provides.
+*/
+
+.centered {
+	text-align: center;
+}

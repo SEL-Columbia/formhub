@@ -3,7 +3,6 @@ from pyxform import Section, Question
 from odk_viewer.models import DataDictionary
 from odk_logger.xform_instance_parser import xform_instance_to_dict
 
-
 class XlsWriter(object):
     def __init__(self):
         self.set_file()
@@ -80,8 +79,6 @@ class XlsWriter(object):
         self._workbook.save(self._file)
         return self._file
 
-
-class DataDictionaryWriter(XlsWriter):
     def set_data_dictionary(self, data_dictionary):
         self._data_dictionary = data_dictionary
         self.reset_workbook()
@@ -104,7 +101,6 @@ class DataDictionaryWriter(XlsWriter):
             d = xform_instance_to_dict(i.xml)
             obs = self._dict_organizer.get_observation_from_dict(d)
             self.add_obs(obs)
-
 
 class DictOrganizer(object):
     def set_dict_iterator(self, dict_iterator):
@@ -164,18 +160,3 @@ class DictOrganizer(object):
         self._build_obs_from_dict(**kwargs)
         return result
 
-
-from django.http import HttpResponse
-
-
-def xls_export(request, id_string):
-    dd = DataDictionary.objects.get(xform__id_string=id_string,
-                                    xform__user=request.user)
-    ddw = DataDictionaryWriter()
-    ddw.set_data_dictionary(dd)
-    temp_file = ddw.save_workbook_to_file()
-    response = HttpResponse(mimetype='application/vnd.ms-excel')
-    response['Content-Disposition'] = 'attachment; filename=%s.xls' % id_string
-    response.write(temp_file.getvalue())
-    temp_file.close()    
-    return response

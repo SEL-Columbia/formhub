@@ -1,7 +1,7 @@
 import codecs
 import os
 import re
-
+from odk_viewer.models import DataDictionary
 
 class CsvWriter(object):
     """
@@ -50,10 +50,6 @@ class CsvWriter(object):
         row_string = u",".join(quote_escaped_row)
         file_object.writelines([row_string, u"\n"])
 
-
-from odk_viewer.models import DataDictionary
-
-
 class DataDictionaryWriter(CsvWriter):
 
     def __init__(self, data_dictionary):
@@ -69,28 +65,3 @@ class DataDictionaryWriter(CsvWriter):
         id_string = self._data_dictionary.id_string
         return os.path.join(this_directory, "csvs", id_string + ".csv")
 
-
-# http://djangosnippets.org/snippets/365/
-from django.http import HttpResponse
-from django.core.servers.basehttp import FileWrapper
-
-
-def send_file(path, content_type):
-    """
-    Send a file through Django without loading the whole file into
-    memory at once. The FileWrapper will turn the file object into an
-    iterator for chunks of 8KB.
-    """
-    wrapper = FileWrapper(file(path))
-    response = HttpResponse(wrapper, content_type=content_type)
-    response['Content-Length'] = os.path.getsize(path)
-    return response
-
-
-def csv_export(request, id_string):
-    dd = DataDictionary.objects.get(id_string=id_string,
-                                    user=request.user)
-    writer = DataDictionaryWriter(dd)
-    file_path = writer.get_default_file_path()
-    writer.write_to_file(file_path)
-    return send_file(path=file_path, content_type="application/csv")

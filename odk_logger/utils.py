@@ -18,3 +18,9 @@ def report_exception(subject, info, exc_info=None):
         print info
     else:
         mail_admins(subject=subject, message=info)
+
+import decimal
+
+def round_down_geopoint(num):
+    decimal_mult = 1000000
+    return str(decimal.Decimal(int(num * decimal_mult))/decimal_mult)

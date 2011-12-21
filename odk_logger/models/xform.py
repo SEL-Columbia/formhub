@@ -58,6 +58,10 @@ class XForm(models.Model):
                 }
             )
 
+    def data_dictionary(self):
+        from odk_viewer.models import DataDictionary
+        return DataDictionary.objects.get(pk=self.pk)
+
     def _set_id_string(self):
         text = re.sub(r"\s+", " ", self.xml)
         matches = re.findall(r'<instance>.*id="([^"]+)".*</instance>', text)
