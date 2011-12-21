@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<kml xmlns="http://earth.google.com/kml/2.2">
+  <Document>
+		{% for d in data %}  
+	    <Placemark>	
+                <ExtendedData>
+        		<Data name="Survey Instances">
+		          <value>Instance No 1</value>
+		        </Data>
+	      </ExtendedData>
+              <Snippet>Surver Instance: {{d.index}} </Snippet>
+              <description>
+    			 <![CDATA[{{d.table|safe}}]]>  
+              </description>
+	          <Point>
+        <coordinates>
+        	{{d.lng}}, {{d.lat}}
+        </coordinates>
+      </Point>
+    </Placemark>
+{% endfor %}
+	</Document>
+</kml>
