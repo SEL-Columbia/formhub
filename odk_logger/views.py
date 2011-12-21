@@ -12,26 +12,40 @@ from odk_logger.import_tools import import_instances_from_zip
 
 import zipfile
 
+from django.contrib.auth.models import User
+
 @require_POST
 @csrf_exempt
 def bulksubmission(request, username):
     # puts it in a temp directory.
     # runs "import_tools(temp_directory)"
     # deletes
+    try:
+        posting_user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return HttpResponseBadRequest("User %s not found" % username)
+    
+    #import pdb; pdb.set_trace()
 
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
     temp_postfile = request.FILES.pop("zip_submission_file", [])
+    #temp_postfile = request.FILES.pop("file", [])
+    #request.user = request.POST
+    #temp_postfile = request.FILES
     if len(temp_postfile) == 1:
+        print "Here"
         zip_file = temp_postfile[0].temporary_file_path()
-        import_instances_from_zip(zip_file, user=request.user)
+        #import_instances_from_zip(zip_file, user=request.user)
+        import_instances_from_zip(zip_file, user=posting_user)
         response = HttpResponse("Your ODK submission was successful. Your user now has %d instances." % \
-                    request.user.surveys.count())
+                    posting_user.surveys.count())
         response.status_code = 202
         response['Location'] = request.build_absolute_uri(request.path)
         return response
     else:
-        return HttpResponse(str(temp_postfile))
+        print "Here2"    
+        return HttpResponse("Fail !!!!!")
 
 def bulksubmission_form(request, username=None):
 	return render_to_response("bulk_submission_form.html")

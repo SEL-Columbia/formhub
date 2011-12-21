@@ -1,5 +1,6 @@
 from csv_export import csv_export
 from xls_export import xls_export
+from kml_export import kml_export
 from single_survey_submission import survey_responses
 
 # map view
@@ -23,3 +24,5 @@ def map(request, id_string):
     context.points = json.dumps(list(points))
     context.center = json.dumps(center)
     return render_to_response('map.html', context_instance=context)
+
+
