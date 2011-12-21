@@ -23,6 +23,7 @@ def create_instance(username, xml_file, media_files, status=u'submitted_via_web'
     user = get_object_or_404(User, username=username)
 
     instance = Instance.objects.create(xml=xml, user=user, status=status)
+    instance, created = Instance.objects.get_or_create(xml=xml, user=user, status=status)
     for f in media_files:
         Attachment.objects.create(instance=instance, media_file=f)
     return instance
