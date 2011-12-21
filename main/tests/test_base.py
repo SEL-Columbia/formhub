@@ -40,3 +40,4 @@ class MainTestCase(TestCase):
             post_data = {'xml_submission_file': f}
             url = '/%s/submission' % self.user.username
             self.anon.post(url, post_data)
+
