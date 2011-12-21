@@ -4,12 +4,77 @@
     {% if show_dashboard %}
         {% include "dashboard.html" %}
     {% else %}
-        <section id="profile">
-          <div class="page-header">
-            <img src='{{ content_user_gravatar_img_link }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' />
-            <h1>{{ content_user.username }}<span style='color:#DDD; font-weight:100'>&nbsp;|&nbsp;</span><span style='color:#AAA; font-size:smaller'>First Last</span></h1>
-          </div>
-          <p>Member since: {{ content_user.date_joined|date:"F j, Y" }}</p>
-        </section>
-    {% endif %}
-{% endblock %}
+  <section id="profile">
+    <div class="page-header">
+      <img src='{{ content_user_gravatar_img_link }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' />
+      <h1>{{ content_user.username }}<span style='color:#DDD; font-weight:100'>&nbsp;|&nbsp;</span><span style='color:#AAA; font-size:smaller'>First Last</span></h1>
+    </div>
+    <div class="row">
+      <div class="span10">
+	<p>Location: [location], [country]</p>
+        <p>Website: <a href="">www.website.com</a></p>
+        <p>Twitter: <a href="http://www.twitter.com/{{content_user.username}}">@{{content_user.username}}</a></p>
+        <p>Member since: {{ content_user.date_joined|date:"F j, Y" }}</p>
+      </div>
+      <div class="span6">
+	<h1>5 <small>Shared forms</small></h1>
+      </div>  
+    </div> 
+    <hr>
+    <div class="row">
+      <div class="span16">
+	<h3>Shared Forms & Public Data <small>(5)</small></h3>
+	<table>
+	  <thead>
+	    <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th style="float: center">XLSForm</th>
+              <th>Data</th>
+              <th>View</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr>
+              <td>Form 1</td>
+              <td>Blah blah blah</td>
+              <td><a href=""><button class="btn small success">form.xls</button></a></td>
+              <td><a href=""><button class="btn small">csv</button></a> <a href=""><button class="btn small">xls</button></a></td>
+              <td><a href=""><button class="btn small info">Map &raquo;</button></a></td>
+	    </tr>
+	    <tr>
+              <td>Form 2</td>
+              <td>Blah blah blah</td>
+              <td><a href=""><button class="btn small success">form.xls</button></a></td>
+              <td>Private</td>
+              <td></td>
+	    </tr>
+	    <tr>
+              <td>Form 3</td>
+              <td>Blah blah blah</td>
+              <td><a href=""><button class="btn small success">form.xls</button></a></td>
+              <td><a href=""><button class="btn small">csv</button></a> <a href=""><button class="btn small">xls</button></a></td>
+              <td><a href=""><button class="btn small info">Map &raquo;</button></a></td>
+	    </tr>
+	    <tr>
+              <td>Form 4</td>
+              <td>Blah blah blah</td>
+              <td><a href=""><button class="btn small success">form.xls</button></a></td>
+              <td><a href=""><button class="btn small">csv</button></a> <a href=""><button class="btn small">xls</button></a></td>
+              <td><a href=""><button class="btn small info">Map &raquo;</button></a></td>
+	    </tr>
+	    <tr>
+              <td>Form 5</td>
+              <td>Blah blah blah</td>
+              <td><a href=""><button class="btn small success">form.xls</button></a></td>
+              <td><a href=""><button class="btn small">csv</button></a> <a href=""><button class="btn small">xls</button></a></td>
+              <td><a href=""><button class="btn small info">Map &raquo;</button></a></td>
+	    </tr>
+
+	  </tbody>
+	</table>
+    </div> 
+  </section>
+  {% endif %}
+  {% endblock %}
+  

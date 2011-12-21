@@ -24,7 +24,7 @@
         <th>Administration</th>
         <th>Submissions</th>
         <th>Last Submission</th>
-        <th>Export</th>
+        <th>Data</th>
         <th>View</th>
       </tr>
     </thead>
@@ -49,7 +49,7 @@
               <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">Cancel</a>
             </div>
           </div>
-          <a href="#" data-controls-modal="delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true">delete</a>,
+          <a href="#" data-controls-modal="delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true">Delete</a>,
 
 	  <a href="{% url odk_logger.views.toggle_downloadable username=user.username id_string=xform.id_string %}" rel="twipsy" data-original-title="Hide or unhide a form, this will determine whether ODK Collect will see this form when getting new forms from the server.">
 	    {% if xform.downloadable %}
@@ -67,13 +67,13 @@
         </td>
         <td>
           {% if xform.submission_count %}
-          <a href="{% url odk_viewer.views.csv_export xform.id_string %}">csv</a>,
-          <a href="{% url odk_viewer.views.xls_export xform.id_string %}">xls</a>
+          <a href="{% url odk_viewer.views.csv_export xform.id_string %}"><button class="btn small">csv</button></a>
+          <a href="{% url odk_viewer.views.xls_export xform.id_string %}"><button class="btn small">xls</button></a>
           {% endif %}
         </td>
         <td>
           {% if xform.data_dictionary.has_surveys_with_geopoints %}
-          <center><a href="{% url odk_viewer.views.map xform.id_string %}">map</a></center>
+          <center><a href="{% url odk_viewer.views.map xform.id_string %}"><button class="btn small info">Map &raquo;</button></a></center>
           {% endif %}
         </td>
       </tr>
