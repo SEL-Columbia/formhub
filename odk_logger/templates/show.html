@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <section id="profile">
+    <div class="page-header">
+      <img src='{{ content_user_gravatar_img_link }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' />
+      <h1>
+        {{ content_user.username }}
+        <span style='color:#DDD; font-weight:100'>&nbsp;/&nbsp;</span>
+        {{ xform.id_string }}
+      </h1>
+    </div>
+    <div class="row">
+      <div class="span10">
+    {% if location  %}
+        <p>Location: {{ location }}</p>
+    {% endif %}
+    {% if profile.home_page %}
+        <p>Website: <a href="{{ profile.home_page }}">{{ profile.home_page }}</a></p>
+    {% endif %}
+    {% if profile.twitter %}
+        <p>Twitter: <a href="http://www.twitter.com/{{ profile.twitter }}">@{{ profile.twitter }}</a></p>
+    {% endif %}
+        <p>Member since: {{ content_user.date_joined|date:"F j, Y" }}</p>
+      </div>
+      <div class="span6">
+	<h1>{{ num_forms }} <small>Shared forms</small></h1>
+      </div>  
+    </div> 
+    <hr>
+    <div class="row">
+      <div class="span16">
+	<h3>Shared Forms & Public Data <small>({{ num_forms }})</small></h3>
+	<table class="zebra-striped">
+	  <thead>
+	    <tr>
+              <th>Name</th>
+              <th>Create Date</th>
+              <th>XLSForm</th>
+              <th>Public Data</th>
+              <th>View</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+        {% for form in forms %}
+            <tr>
+                <td>{{ form.title }}</td>
+                <td>{{ form.date_created|date:"N d, Y" }}</td>
+                <td>
+                    <center>
+                    <a href="{% url download_xform content_user.username form.id_string %}">
+                        <button class="btn small success">form.xls</button>
+                    </a>
+                    </center>
+                </td>
+                <td>
+                    <center>
+                    {% if form.shared_data %}
+                        <a href="{% url odk_viewer.views.csv_export form.id_string %}">
+                            <button class="btn small">csv</button>
+                        </a>
+                        <a href="{% url odk_viewer.views.xls_export form.id_string %}">
+                            <button class="btn small">xls</button>
+                        </a>
+                    {% else %}
+                        <span class="label warning">PRIVATE</span>
+                    {% endif %}
+                    </center>
+                </td>
+                <td>
+                    <center>
+                    <a href="{% url odk_viewer.views.map xform.id_string %}">
+                        <button class="btn small info">Map &raquo;</button>
+                    </a>
+                    </center>
+                </td>
+            </tr>
+        {% endfor %}
+	  </tbody>
+	</table>
+    </div> 
+  </section>
+  {% endblock %}
+  
