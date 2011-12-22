@@ -22,7 +22,7 @@ urlpatterns = patterns('',
     url(r'^(?P<username>[^/]+)/$', 'main.views.profile'),
     url(r'^(?P<username>[^/]+)/profile$', 'main.views.public_profile'),
     url(r'^(?P<username>[^/]+)/settings', 'main.views.profile_settings'),
-    url(r'^(?P<username>[^/]+)/(?P<id_string>[^/]+)$', 'odk_logger.views.show'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)$', 'odk_logger.views.show'),
 
 
     # stats
