@@ -31,10 +31,22 @@ class QuickConverter(forms.Form):
 
 def home(request):
     context = RequestContext(request)
-    context.form = QuickConverter()
     context.num_users = User.objects.count()
-    context.num_surveys = Instance.objects.count()
+    return render_to_response("home.html", context_instance=context)
 
+
+@login_required
+def login_redirect(request):
+    return HttpResponseRedirect("/%s" % request.user.username)
+
+
+def profile(request, username):
+    context = RequestContext(request)
+    content_user = None
+    context.num_surveys = Instance.objects.count()
+    context.form = QuickConverter()
+
+    # xlsform submission...
     if request.method == 'POST':
         try:
             form = QuickConverter(request.POST, request.FILES)
@@ -53,29 +65,22 @@ def home(request):
                 'type': 'error',
                 'text': 'Form with this id already exists.',
                 }
-    return render_to_response("home.html", context_instance=context)
 
-
-@login_required
-def login_redirect(request):
-    return HttpResponseRedirect("/%s" % request.user.username)
-
-
-@require_GET
-def profile(request, username):
-    context = RequestContext(request)
-    content_user = None
+    # profile view...
     try:
         content_user = User.objects.get(username=username)
     except User.DoesNotExist:
         return HttpResponseRedirect("/")
+    # for the same user -> dashboard
     if content_user == request.user:
         context.show_dashboard = True
         context.form = QuickConverter()
         context.odk_url = request.build_absolute_uri("/%s" % request.user.username)
+    # for any other user -> profile
     profile, created = UserProfile.objects.get_or_create(user=content_user)
     set_profile_data(context, content_user)
     return render_to_response("profile.html", context_instance=context)
+
 
 @login_required
 def profile_settings(request, username):
