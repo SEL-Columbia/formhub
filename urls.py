@@ -21,6 +21,8 @@ urlpatterns = patterns('',
     url(r'^login_redirect/$', 'main.views.login_redirect'),
     url(r'^(?P<username>[^/]+)/$', 'main.views.profile'),
     url(r'^(?P<username>[^/]+)/profile$', 'main.views.public_profile'),
+    url(r'^(?P<username>[^/]+)/settings', 'main.views.profile_settings'),
+    url(r'^(?P<username>[^/]+)/(?P<id_string>[^/]+)$', 'odk_logger.views.show'),
 
     # stats
     url(r"^stats/submissions/$", 'stats.views.submissions'),

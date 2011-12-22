@@ -17,8 +17,9 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle"></a>
           <ul class="dropdown-menu">
-            <li><a href="/{{user.username}}/profile">Public profile</a></li>
-            <li><a href="{% url auth_password_change %}">Change password</a></li>
+            <li><a href="{% url main.views.public_profile user.username %}">Public profile</a></li>
+            <li><a href="{% url main.views.profile_settings user.username %}">Settings</a></li>
+            <!--<li><a href="{% url auth_password_change %}">Change password</a></li>-->
             <li><a href="{% url auth_logout %}">Sign out</a></li>
           </ul>
         </li>
