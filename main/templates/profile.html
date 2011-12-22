@@ -7,18 +7,21 @@
   <section id="profile">
     <div class="page-header">
       <img src='{{ content_user_gravatar_img_link }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' />
-      <h1>{{ content_user.username }}<span style='color:#DDD; font-weight:100'>&nbsp;|&nbsp;</span><span style='color:#AAA; font-size:smaller'>{{ content_user.profile.first_name }} {{ content_user.profile.last_name }}</span></h1>
+      <h1>{{ content_user.username }}<span style='color:#DDD; font-weight:100'>&nbsp;|&nbsp;</span><span style='color:#AAA; font-size:smaller'>{{ profile.name }}</span></h1>
     </div>
     <div class="row">
       <div class="span10">
+    {% if profile.organization %}
+        <p>Organization: {{ profile.organization}}</p>
+    {% endif %}
     {% if location  %}
         <p>Location: {{ location }}</p>
     {% endif %}
-    {% if content_user.profile.home_page %}
-        <p>Website: <a href="{{ content_user.profile.home_page }}">{{ content_user.profile.home_page }}</a></p>
+    {% if profile.home_page %}
+        <p>Website: <a href="{{ profile.home_page }}">{{ profile.home_page }}</a></p>
     {% endif %}
-    {% if content_user.profile.twitter %}
-        <p>Twitter: <a href="http://www.twitter.com/{{ content_user.profile.twitter }}">@{{ content_user.profile.twitter }}</a></p>
+    {% if profile.twitter %}
+        <p>Twitter: <a href="http://www.twitter.com/{{ profile.twitter }}">@{{ profile.twitter }}</a></p>
     {% endif %}
         <p>Member since: {{ content_user.date_joined|date:"F j, Y" }}</p>
       </div>
@@ -30,7 +33,7 @@
     <div class="row">
       <div class="span16">
 	<h3>Shared Forms & Public Data <small>({{ num_forms }})</small></h3>
-	<table>
+	<table class="zebra-striped">
 	  <thead>
 	    <tr>
               <th>Name</th>
@@ -43,17 +46,40 @@
 	  <tbody>
         {% for form in forms %}
             <tr>
-                <td>{{ form.title }}</td>
-                <td>{{ form.date_created|date:"N d, Y" }}</td>
-                <td><center><a href=""><button class="btn small success">form.xls</button></a></center></td>
                 <td>
+                    <a href="{% url odk_logger.views.show content_user.username form.id_string %}">
+                        {{ form.title }}
+                    <a/>
+                </td>
+                <td>{{ form.date_created|date:"N d, Y" }}</td>
+                <td>
+                    <center>
+                    <a href="{% url download_xform content_user.username form.id_string %}">
+                        <button class="btn small success">form.xls</button>
+                    </a>
+                    </center>
+                </td>
+                <td>
+                    <center>
                     {% if form.shared_data %}
-                        <a href="{% url odk_viewer.views.csv_export form.id_string %}"><button class="btn small">csv</button></a> <a href="{% url odk_viewer.views.xls_export form.id_string %}"><button class="btn small">xls</button></a>
+                        <a href="{% url odk_viewer.views.csv_export form.id_string %}">
+                            <button class="btn small">csv</button>
+                        </a>
+                        <a href="{% url odk_viewer.views.xls_export form.id_string %}">
+                            <button class="btn small">xls</button>
+                        </a>
                     {% else %}
                         <span class="label warning">PRIVATE</span>
                     {% endif %}
+                    </center>
                 </td>
-                  <td><a href="{% url odk_viewer.views.map xform.id_string %}"><button class="btn small info">Map &raquo;</button></a></td>
+                <td>
+                    <center>
+                    <a href="{% url odk_viewer.views.map xform.id_string %}">
+                        <button class="btn small info">Map &raquo;</button>
+                    </a>
+                    </center>
+                </td>
             </tr>
         {% endfor %}
 	  </tbody>
