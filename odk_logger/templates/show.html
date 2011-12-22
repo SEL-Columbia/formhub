@@ -23,62 +23,41 @@
     {% endif %}
         <p>Member since: {{ content_user.date_joined|date:"F j, Y" }}</p>
       </div>
-      <div class="span6">
-	<h1>{{ num_forms }} <small>Shared forms</small></h1>
-      </div>  
     </div> 
     <hr>
     <div class="row">
       <div class="span16">
-	<h3>Shared Forms & Public Data <small>({{ num_forms }})</small></h3>
-	<table class="zebra-striped">
-	  <thead>
-	    <tr>
-              <th>Name</th>
-              <th>Create Date</th>
-              <th>XLSForm</th>
-              <th>Public Data</th>
-              <th>View</th>
-	    </tr>
-	  </thead>
-	  <tbody>
-        {% for form in forms %}
-            <tr>
-                <td>{{ form.title }}</td>
-                <td>{{ form.date_created|date:"N d, Y" }}</td>
-                <td>
-                    <center>
-                    <a href="{% url download_xform content_user.username form.id_string %}">
-                        <button class="btn small success">form.xls</button>
-                    </a>
-                    </center>
-                </td>
-                <td>
-                    <center>
-                    {% if form.shared_data %}
-                        <a href="{% url odk_viewer.views.csv_export form.id_string %}">
-                            <button class="btn small">csv</button>
-                        </a>
-                        <a href="{% url odk_viewer.views.xls_export form.id_string %}">
-                            <button class="btn small">xls</button>
-                        </a>
-                    {% else %}
-                        <span class="label warning">PRIVATE</span>
-                    {% endif %}
-                    </center>
-                </td>
-                <td>
-                    <center>
-                    <a href="{% url odk_viewer.views.map xform.id_string %}">
-                        <button class="btn small info">Map &raquo;</button>
-                    </a>
-                    </center>
-                </td>
-            </tr>
-        {% endfor %}
-	  </tbody>
-	</table>
+        <h3>Description: {{ xform.id_string }}</h3>
+        <a href="{% url download_xform content_user.username xform.id_string %}">
+            <button class="btn small success">form.xls</button>
+        </a>
+    <hr>
+    <h3>Data
+    {% if xform.shared_data %}
+        <span class="label notice">PUBLIC</span>
+    </h3>
+        <ul>
+            <li>
+                <a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}">
+                    <button class="btn small">csv</button>
+                </a>
+            </li>
+            <li>
+                <a href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}">
+                    <button class="btn small">xls</button>
+                </a>
+            </li>
+            <li>
+                <a href="{% url odk_viewer.views.map xform.id_string %}">
+                    <button class="btn small info">Map &raquo;</button>
+                </a>
+            </li>
+        </ul>
+    {% else %}
+        <span class="label warning">PRIVATE</span>
+    </h3>
+    {% endif %}
     </div> 
   </section>
-  {% endblock %}
+{% endblock %}
   

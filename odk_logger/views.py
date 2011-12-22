@@ -54,9 +54,11 @@ def submission(request, username):
     return response
 
 @require_GET
-@login_required
 def show(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
+    # no access
+    if xform.shared == False and username != request.user.username:
+        HttpResponseRedirect("/")
     context = RequestContext(request)
     context.xform = xform
     context.content_user = xform.user
