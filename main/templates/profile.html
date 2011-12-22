@@ -62,10 +62,10 @@
                 <td>
                     <center>
                     {% if form.shared_data %}
-                        <a href="{% url odk_viewer.views.csv_export form.id_string %}">
+                        <a href="{% url odk_viewer.views.csv_export content_user.username form.id_string %}">
                             <button class="btn small">csv</button>
                         </a>
-                        <a href="{% url odk_viewer.views.xls_export form.id_string %}">
+                        <a href="{% url odk_viewer.views.xls_export content_user.username form.id_string %}">
                             <button class="btn small">xls</button>
                         </a>
                     {% else %}
@@ -75,7 +75,7 @@
                 </td>
                 <td>
                     <center>
-                    <a href="{% url odk_viewer.views.map xform.id_string %}">
+                    <a href="{% url odk_viewer.views.map form.id_string %}">
                         <button class="btn small info">Map &raquo;</button>
                     </a>
                     </center>

@@ -11,14 +11,17 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        for xform in XForm.objects.all():
-            try:
-                xform.xls = xform.data_dictionary.xls
-                xform.json = xform.data_dictionary.json
-                xform.shared = xform.data_dictionary.shared
-                xform.save()
-            except DataDictionary.DoesNotExist:
-                pass
+        # leaving this in for the sake of posterity in case someone
+        # wants to know what this migration used to do. it turns out
+        # that you can't really do this in django/south
+#        for xform in XForm.objects.all():
+#            try:
+#                xform.xls = xform.data_dictionary.xls
+#                xform.json = xform.data_dictionary.json
+#                xform.shared = xform.data_dictionary.shared
+#                xform.save()
+#            except DataDictionary.DoesNotExist:
+#                pass
 
 
     def backwards(self, orm):

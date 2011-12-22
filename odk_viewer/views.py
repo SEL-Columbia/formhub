@@ -80,7 +80,7 @@ def send_file(path, content_type):
     return response
 
 @login_required
-def csv_export(request, id_string):
+def csv_export(request, username, id_string):
     dd = DataDictionary.objects.get(id_string=id_string,
                                     user=request.user)
     writer = DataDictionaryWriter(dd)
@@ -88,7 +88,7 @@ def csv_export(request, id_string):
     writer.write_to_file(file_path)
     return send_file(path=file_path, content_type="application/csv")
 
-def xls_export(request, id_string):
+def xls_export(request, username, id_string):
     dd = DataDictionary.objects.get(id_string=id_string,
                                     user=request.user)
     ddw = XlsWriter()

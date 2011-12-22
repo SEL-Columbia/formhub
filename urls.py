@@ -24,18 +24,22 @@ urlpatterns = patterns('',
     url(r'^(?P<username>[^/]+)/settings', 'main.views.profile_settings'),
     url(r'^(?P<username>[^/]+)/(?P<id_string>[^/]+)$', 'odk_logger.views.show'),
 
+
     # stats
     url(r"^stats/submissions/$", 'stats.views.submissions'),
 
     # exporting stuff
-    url(r"^odk_viewer/export_spreadsheet/(?P<id_string>[^/]*)\.csv$", 'odk_viewer.views.csv_export'),
-    url(r"^odk_viewer/export_spreadsheet/(?P<id_string>[^/]*)\.xls$", 'odk_viewer.views.xls_export'),
+
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.csv$", 'odk_viewer.views.csv_export'),
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.xls$", 'odk_viewer.views.xls_export'),
     url(r"^odk_viewer/survey/(?P<pk>\d+)/$", 'odk_viewer.views.survey_responses'),
     url(r"^odk_viewer/map/(?P<id_string>[^/]*)/$", 'odk_viewer.views.map'),
 
     # odk data urls
+
     url(r"^(?P<username>\w+)/formList$", 'odk_logger.views.formList'),
     url(r"^(?P<username>\w+)/submission$", 'odk_logger.views.submission'),
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/form\.xml$", 'odk_logger.views.download_xform', name="download_xform"),
     url(r"^(?P<username>\w+)/(?P<id_string>[^/]+)\.xml$", 'odk_logger.views.download_xform', name="download_xform"),
     url(r"^(?P<username>\w+)/delete/(?P<id_string>[^/]+)/$", 'odk_logger.views.delete_xform'),
     url(r"^(?P<username>\w+)/(?P<id_string>[^/]+)/toggle_downloadable/$", 'odk_logger.views.toggle_downloadable'),
