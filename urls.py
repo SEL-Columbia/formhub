@@ -28,8 +28,8 @@ urlpatterns = patterns('',
 
     # exporting stuff
 
-    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/form\.csv$", 'odk_viewer.views.csv_export'),
-    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/form\.xls$", 'odk_viewer.views.xls_export'),
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.csv$", 'odk_viewer.views.csv_export'),
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.xls$", 'odk_viewer.views.xls_export'),
     url(r"^odk_viewer/survey/(?P<pk>\d+)/$", 'odk_viewer.views.survey_responses'),
     url(r"^odk_viewer/map/(?P<id_string>[^/]*)/$", 'odk_viewer.views.map'),
 
