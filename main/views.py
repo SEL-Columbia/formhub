@@ -1,5 +1,3 @@
-# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
-
 import os
 
 from django.contrib.auth.decorators import login_required
@@ -17,6 +15,8 @@ from odk_viewer.models import DataDictionary
 from gravatar import get_gravatar_img_link
 from main.models import UserProfile
 from odk_logger.models import Instance
+from utils.user_auth import check_and_set_user, set_profile_data
+from main.forms import UserProfileForm
 
 class QuickConverter(forms.Form):
     xls_file = forms.FileField(label="XLS File")
@@ -73,39 +73,31 @@ def profile(request, username):
         context.show_dashboard = True
         context.form = QuickConverter()
         context.odk_url = request.build_absolute_uri("/%s" % request.user.username)
-    context.content_user = content_user
-    context.content_user_gravatar_img_link = get_gravatar_img_link(content_user)
+    profile, created = UserProfile.objects.get_or_create(user=content_user)
+    set_profile_data(context, content_user)
     return render_to_response("profile.html", context_instance=context)
 
+@login_required
+def profile_settings(request, username):
+    context = RequestContext(request)
+    content_user = check_and_set_user(request, username)
+    context.content_user = content_user
+    profile, created = UserProfile.objects.get_or_create(user=content_user)
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect("/%s/profile" % content_user.username)
+    else:
+        form = UserProfileForm(instance=profile)
+    return render_to_response("settings.html", { 'form': form }, context_instance=context)
 
 @require_GET
 @login_required
 def public_profile(request, username):
-    if username != request.user.username:
-        return HttpResponseRedirect("/%s" % username)
+    content_user = check_and_set_user(request, username)
     context = RequestContext(request)
-    content_user = None
-    try:
-        content_user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        return HttpResponseRedirect("/")
-    context.content_user = content_user
-    context.content_user_gravatar_img_link = get_gravatar_img_link(content_user)
-    # create empty profile if none exists
-    try:
-        content_user.profile
-    except:
-        UserProfile.objects.create(user=content_user)
-    context.location = ""
-    if content_user.profile.city:
-        context.location = content_user.profile.city
-    if content_user.profile.country:
-        if content_user.profile.city:
-            context.location += ", "
-        context.location += content_user.profile.country
-    context.forms= content_user.xforms.filter(shared__exact=1).order_by('-date_created')
-    context.num_forms= len(context.forms)
-
+    set_profile_data(context, content_user)
     return render_to_response("profile.html", context_instance=context)
 
 

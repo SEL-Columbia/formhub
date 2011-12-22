@@ -35,7 +35,7 @@ class TestGPS(MainTestCase):
 
     def _check_link_to_map_view(self):
         response = self.client.get("/%s/" % self.user.username)
-        map_url = '<a href="/odk_viewer/map/gps/">map</a>'
+        map_url = '<a href="/odk_viewer/map/gps/">'
         self.assertTrue(map_url in response.content)
 
     def _check_lat_lng(self):

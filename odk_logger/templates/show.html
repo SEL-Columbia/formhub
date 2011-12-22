@@ -1,19 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% if show_dashboard %}
-        {% include "dashboard.html" %}
-    {% else %}
   <section id="profile">
     <div class="page-header">
       <img src='{{ content_user_gravatar_img_link }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' />
-      <h1>{{ content_user.username }}<span style='color:#DDD; font-weight:100'>&nbsp;|&nbsp;</span><span style='color:#AAA; font-size:smaller'>{{ profile.name }}</span></h1>
+      <h1>
+        {{ content_user.username }}
+        <span style='color:#DDD; font-weight:100'>&nbsp;/&nbsp;</span>
+        {{ xform.id_string }}
+      </h1>
     </div>
     <div class="row">
       <div class="span10">
-    {% if profile.organization %}
-        <p>Organization: {{ profile.organization}}</p>
-    {% endif %}
     {% if location  %}
         <p>Location: {{ location }}</p>
     {% endif %}
@@ -46,11 +44,7 @@
 	  <tbody>
         {% for form in forms %}
             <tr>
-                <td>
-                    <a href="{% url odk_logger.views.show content_user.username form.id_string %}">
-                        {{ form.title }}
-                    <a/>
-                </td>
+                <td>{{ form.title }}</td>
                 <td>{{ form.date_created|date:"N d, Y" }}</td>
                 <td>
                     <center>
@@ -62,10 +56,10 @@
                 <td>
                     <center>
                     {% if form.shared_data %}
-                        <a href="{% url odk_viewer.views.csv_export content_user.username form.id_string %}">
+                        <a href="{% url odk_viewer.views.csv_export form.id_string %}">
                             <button class="btn small">csv</button>
                         </a>
-                        <a href="{% url odk_viewer.views.xls_export content_user.username form.id_string %}">
+                        <a href="{% url odk_viewer.views.xls_export form.id_string %}">
                             <button class="btn small">xls</button>
                         </a>
                     {% else %}
@@ -75,7 +69,7 @@
                 </td>
                 <td>
                     <center>
-                    <a href="{% url odk_viewer.views.map form.id_string %}">
+                    <a href="{% url odk_viewer.views.map xform.id_string %}">
                         <button class="btn small info">Map &raquo;</button>
                     </a>
                     </center>
@@ -86,6 +80,5 @@
 	</table>
     </div> 
   </section>
-  {% endif %}
   {% endblock %}
   
