@@ -53,6 +53,7 @@ def submission(request, username):
     response['Location'] = request.build_absolute_uri(request.path)
     return response
 
+@require_GET
 @login_required
 def show(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)

@@ -145,7 +145,7 @@ class TestSite(MainTestCase):
     def _get_csv_(self):
         # todo: get the csv.reader to handle unicode as done here:
         # http://docs.python.org/library/csv.html#examples
-        url = reverse(csv_export, kwargs={'id_string': self.xform.id_string})
+        url = reverse(csv_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         actual_csv = response.content
@@ -162,7 +162,7 @@ class TestSite(MainTestCase):
         f.close()
 
     def _check_csv_export_second_pass(self):
-        url = reverse(csv_export, kwargs={'id_string': self.xform.id_string})
+        url = reverse(csv_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         actual_csv = response.content

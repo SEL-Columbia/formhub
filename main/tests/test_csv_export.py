@@ -24,8 +24,9 @@ class TestExport(MainTestCase):
             u'/double_repeat/bed_net[2]/member[2]/name',
             ]
         self.assertEquals(dd.xpaths(repeat_iterations=2), xpaths)
-        url = reverse(csv_export, kwargs={'id_string': 'double_repeat'})
+        url = reverse(csv_export, kwargs={'username': self.user.username, 'id_string': 'double_repeat'})
         response = self.client.get(url)
         with open(os.path.join(self.fixtures, 'export.csv')) as f:
             expected_content = f.read()
         self.assertEquals(response.content, expected_content)
+
