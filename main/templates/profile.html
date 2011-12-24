@@ -33,6 +33,7 @@
     <div class="row">
       <div class="span16">
 	<h3>Shared Forms & Public Data <small>({{ num_forms }})</small></h3>
+    {% if forms %}
 	<table class="zebra-striped">
 	  <thead>
 	    <tr>
@@ -84,6 +85,9 @@
         {% endfor %}
 	  </tbody>
 	</table>
+    {% else %}
+        <h4>None public</h4>
+    {% endif %}
     </div> 
   </section>
   {% endif %}
