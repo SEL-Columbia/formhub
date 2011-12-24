@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4 coding=utf-8
-
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response
@@ -58,7 +55,7 @@ def show(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     # no access
     if xform.shared == False and username != request.user.username:
-        HttpResponseRedirect("/")
+        return HttpResponseRedirect("/")
     context = RequestContext(request)
     context.xform = xform
     context.content_user = xform.user
