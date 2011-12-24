@@ -9,30 +9,26 @@
         <span style='color:#DDD; font-weight:100'>&nbsp;/&nbsp;</span>
         {{ xform.id_string }}
       </h1>
-    </div>
-    <div class="row">
-      <div class="span10">
-    {% if location  %}
-        <p>Location: {{ location }}</p>
-    {% endif %}
-    {% if profile.home_page %}
-        <p>Website: <a href="{{ profile.home_page }}">{{ profile.home_page }}</a></p>
-    {% endif %}
-    {% if profile.twitter %}
-        <p>Twitter: <a href="http://www.twitter.com/{{ profile.twitter }}">@{{ profile.twitter }}</a></p>
-    {% endif %}
-        <p>Member since: {{ content_user.date_joined|date:"F j, Y" }}</p>
-      </div>
     </div> 
     <hr>
     <div class="row">
       <div class="span16">
-        <h3>Description: {{ xform.id_string }}</h3>
+        <h3>Description:</h3>
+        <p>
+            {% if xform.description %}
+                {{ xform.description }}
+            {% else %}
+                None
+            {% endif %}
+            <div style="display:hidden">
+            </div>
+            <a id="description_edit" href="" class="btn small primary">edit</a>
+        </p>
         <a href="{% url download_xform content_user.username xform.id_string %}">
             <button class="btn small success">form.xls</button>
         </a>
     <hr>
-    <h3>Data
+    <h3>Form Data
     {% if xform.shared_data %}
         <span class="label notice">PUBLIC</span>
     </h3>
