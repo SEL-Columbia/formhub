@@ -110,6 +110,8 @@ def public_profile(request, username):
 def dashboard(request):
     context = RequestContext(request)
     context.form = QuickConverter()
+    content_user = request.user
+    set_profile_data(context, content_user)
     context.odk_url = request.build_absolute_uri("/%s" % request.user.username)
 
     if request.method == 'POST':
