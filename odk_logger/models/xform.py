@@ -20,6 +20,7 @@ def upload_to(instance, filename):
 class XForm(models.Model):
     xls = models.FileField(upload_to=upload_to, null=True)
     json = models.TextField(default=u'')
+    description = models.TextField(default=u'', null=True)
     xml = models.TextField()
 
     user = models.ForeignKey(User, related_name='xforms', null=True)
