@@ -111,6 +111,7 @@ def kml_export(request, id_string):
         data = pi.to_dict()
         # get rid of keys with leading underscores
         data_for_display = {}
+        image_urls(pi)
         for k, v in data.items():
             if not k.startswith(u"_"):
                 data_for_display[k] = v
@@ -120,13 +121,13 @@ def kml_export(request, id_string):
             (pi.data_dictionary.get_label(xpath),
             data_for_display[xpath]) for xpath in xpaths]   
         table_rows = []
+        
         for key, value in label_value_pairs:
             table_rows.append('<tr><td>%s</td><td>%s</td></tr>' % (key, value))
-        data_for_template.append({"lat": pi.lat, "lng": pi.lng, "table": '<table border="1">%s</table>' % (''.join(table_rows))})
-    #import pdb pdb.set_trace()    
-    context.data = data_for_template
-    response = render_to_response("facilities_template.kml",
-    context_instance=context,
-    mimetype="application/vnd.google-earth.kml+xml")
-    response['Content-Disposition'] = 'attachment; filename=facilities.kml'
-    return response
+        data_for_template.append({"lat": pi.lat, "lng": pi.lng, "table": '<table border="1"><tr><td>%s</table>' % (''.join(table_rows))})
+        context.data = data_for_template
+        response = render_to_response("survey.kml",
+        context_instance=context,
+        mimetype="application/vnd.google-earth.kml+xml")
+        response['Content-Disposition'] = 'attachment; filename=facilities.kml'
+        return response
