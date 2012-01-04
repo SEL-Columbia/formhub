@@ -31,6 +31,7 @@ class QuickConverter(forms.Form):
 
 def home(request):
     context = RequestContext(request)
+    context.num_forms = Instance.objects.count()
     context.num_users = User.objects.count()
     return render_to_response("home.html", context_instance=context)
 
