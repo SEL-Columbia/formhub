@@ -25,26 +25,21 @@ def bulksubmission(request, username):
     except User.DoesNotExist:
         return HttpResponseBadRequest("User %s not found" % username)
     
-    #import pdb; pdb.set_trace()
-
+    
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
     temp_postfile = request.FILES.pop("zip_submission_file", [])
-    #temp_postfile = request.FILES.pop("file", [])
-    #request.user = request.POST
-    #temp_postfile = request.FILES
     if len(temp_postfile) == 1:
-        print "Here"
         zip_file = temp_postfile[0].temporary_file_path()
         #import_instances_from_zip(zip_file, user=request.user)
-        import_instances_from_zip(zip_file, user=posting_user)
+        count = import_instances_from_zip(zip_file, user=posting_user)
         response = HttpResponse("Your ODK submission was successful. Your user now has %d instances." % \
                     posting_user.surveys.count())
-        response.status_code = 202
+        response.status_code = 200
         response['Location'] = request.build_absolute_uri(request.path)
         return response
     else:
-        print "Here2"    
+        #print "Here2"    
         return HttpResponse("Fail !!!!!")
 
 def bulksubmission_form(request, username=None):

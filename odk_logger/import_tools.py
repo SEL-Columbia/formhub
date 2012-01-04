@@ -50,11 +50,11 @@ def import_instance(path_to_instance_folder, status, user):
     # todo: if an instance has been submitted make sure all the
     # files are in the database.
     # there shouldn't be any instances with a submitted status in the
-    models.create_instance(user.username, xml_file, images, status)
-
+    instance = models.create_instance(user.username, xml_file, images, status) 
     # close the files
     xml_file.close()
     for i in images: i.close()
+    return instance
 
 def import_instances_from_phone(path_to_odk_folder, user):
     print '.'
@@ -92,27 +92,31 @@ def import_instances_from_phone(path_to_odk_folder, user):
                 )
 
     add_path_to_instance_folder()
+    count = 0
     for i in instances:
         try:
-            import_instance(i[u'path_to_instance_folder'], i[u'status'], user)
+            instance = import_instance(i[u'path_to_instance_folder'], i[u'status'], user)
+            if instance: count += 1
         except Exception as e:
             print e
+    return count
 
 import zipfile
 import tempfile
 import shutil
 
 def import_instances_from_zip(zipfile_path, user):
+    count = 0
     try:
         temp_directory = tempfile.mkdtemp()
         zf = zipfile.ZipFile(zipfile_path)
         zf.extractall(temp_directory)
         odk_folders = glob.glob(os.path.join(temp_directory, "*", "odk"))
         for odk_folder in odk_folders:
-            import_instances_from_phone(odk_folder, user)
+            count += import_instances_from_phone(odk_folder, user)
     finally:
         shutil.rmtree(temp_directory)
-
+    return count
 
 # this script is intended to be called as follows
 
