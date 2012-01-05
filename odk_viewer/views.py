@@ -13,8 +13,8 @@ from odk_viewer.models import ParsedInstance
 from odk_logger.utils import round_down_geopoint
 from odk_logger.xform_instance_parser import xform_instance_to_dict
 from pyxform import Section, Question
+from odk_logger.utils import response_with_mimetype_and_name
 
-#from utils.reinhardt import json_response
 from csv_writer import CsvWriter
 from csv_writer import DataDictionaryWriter
 from xls_writer import XlsWriter
@@ -94,9 +94,13 @@ def xls_export(request, username, id_string):
     ddw = XlsWriter()
     ddw.set_data_dictionary(dd)
     temp_file = ddw.save_workbook_to_file()
-    response = HttpResponse(mimetype='application/vnd.ms-excel')
-    response['Content-Disposition'] = 'attachment; filename=%s.xls' % id_string
+    response = response_with_mimetype_and_name('vnd.ms-excel', id_string)
     response.write(temp_file.getvalue())
     temp_file.close()
+    return response
+
+def zip_export(request, username, id_string):
+    response = response_with_mimetype_and_name('zip', id_string)
+    response.content = zip_file
     return response
 

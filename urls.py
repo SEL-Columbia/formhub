@@ -32,6 +32,7 @@ urlpatterns = patterns('',
 
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.csv$", 'odk_viewer.views.csv_export'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.xls$", 'odk_viewer.views.xls_export'),
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.zip", 'odk_viewer.views.zip_export'),
     url(r"^odk_viewer/survey/(?P<pk>\d+)/$", 'odk_viewer.views.survey_responses'),
     url(r"^odk_viewer/map/(?P<id_string>[^/]*)/$", 'odk_viewer.views.map'),
 
@@ -41,7 +42,8 @@ urlpatterns = patterns('',
     url(r"^(?P<username>\w+)/submission$", 'odk_logger.views.submission'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/form\.xml$", 'odk_logger.views.download_xform', name="download_xform"),
     # TODO create action to return XLS form
-    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/form\.xls$", 'odk_logger.views.download_xform', name="download_xlsform"),
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/form\.xls$", 'odk_logger.views.download_xlsform', name="download_xlsform"),
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/form\.json", 'odk_logger.views.download_jsonform', name="download_jsonform"),
     url(r"^(?P<username>\w+)/(?P<id_string>[^/]+)\.xml$", 'odk_logger.views.download_xform', name="download_xform"),
     url(r"^(?P<username>\w+)/delete/(?P<id_string>[^/]+)/$", 'odk_logger.views.delete_xform'),
     url(r"^(?P<username>\w+)/(?P<id_string>[^/]+)/toggle_downloadable/$", 'odk_logger.views.toggle_downloadable'),

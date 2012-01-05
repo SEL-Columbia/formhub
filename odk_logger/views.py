@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from models import XForm, create_instance
 from main.gravatar import get_gravatar_img_link
-
+from utils import response_with_mimetype_and_name
 
 @require_GET
 def formList(request, username):
@@ -64,11 +64,26 @@ def show(request, username, id_string):
 
 def download_xform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
-    return HttpResponse(
-        xform.xml,
-        mimetype="application/xml"
-        )
+    response = response_with_mimetype_and_name('xml', id_string)
+    repsonse.content = xform.xml
+    return response
 
+def download_xlsform(request, username, id_string):
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    response = response_with_mimetype_and_name('vnd.ms-excel', id_string)
+    response.content= xform.xls
+    return response
+
+def download_jsonform(request, username, id_string):
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    response = response_with_mimetype_and_name('json', id_string)
+    response.content = xform.json
+    return response
+
+def delete_xform(request, username, id_string):
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    xform.delete()
+    return HttpResponseRedirect('/')
 
 def toggle_downloadable(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
@@ -76,8 +91,3 @@ def toggle_downloadable(request, username, id_string):
     xform.save()
     return HttpResponseRedirect("/%s" % username)
 
-
-def delete_xform(request, username, id_string):
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
-    xform.delete()
-    return HttpResponseRedirect('/')

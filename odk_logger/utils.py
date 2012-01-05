@@ -24,3 +24,12 @@ import decimal
 def round_down_geopoint(num):
     decimal_mult = 1000000
     return str(decimal.Decimal(int(num * decimal_mult))/decimal_mult)
+
+from datetime import date
+from django.http import HttpResponse
+
+def response_with_mimetype_and_name(_mimetype, name):
+    response = HttpResponse(mimetype=("application/%s" % _mimetype))
+    response['Content-Disposition'] = 'attachment; filename=%s_%s.xls' % (name, date.today().strftime("%Y_%m_%d"))
+    return response
+
