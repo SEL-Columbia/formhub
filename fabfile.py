@@ -13,6 +13,10 @@ DEPLOYMENTS = {
         'project': 'ei_surveyor_alpha',
         'branch': 'master',
     },
+    'dev': {
+        'project': 'formhub_dev',
+        'branch': 'develop',
+    },
     # 'prod': {
     #     'project': 'xls2xform_production',
     #     'branch': 'master',

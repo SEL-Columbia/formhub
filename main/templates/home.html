@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <br/>
+    <h1>Welcome to formhub! <small>&nbsp;The hub for your mobile data collection needs</small></h1>
+
+
+<div class="row">
+  <div class="span6">
+<p>
+<em>
+formhub is a <strong>free</strong> hosted service that makes data collection <strong>simple</strong> and <strong> collaborative</strong></em>.
+</p>
+<p>
+  <strong>Simple.</strong> All you need to get started is an <a href="/accounts/register/">account</a> on formhub and the ability to author .xls files. Absolutely no technical setup required.
+</p>
+<p>
+<strong>Collaborative.</strong> Share your data collection forms in <a href="/syntax">Excel</a>.  <a href="/forms">Find</a>, grab and modify another person's form and quickly deploy it.
+</p>
+<p>
+<strong>Mobile.</strong>
+  formhub works seemlessly with <a href="http://www.opendatakit.org">ODK Collect</a> a robust and proven data collection platform for Android.  
+</p>
+<p>
+For more info please read <a href="http://blog.formhub.org/2011/12/05/data-gatherers-of-the-world-unite/">here</a>.
+</p>
+<p><b>Not registered?</b></p>
+<p style="font-size:larger">
+ <a href="/accounts/register/"><button class="btn primary">Create Account &raquo;</button></a>
+</p>
+  </div>
+ 
+ <div class="span10">
+   <p><img src="/static/tutorial/submitted_data.png" width=100%></p>
+   <p><div style="float:right"><h1>{{ num_forms }} <small>forms submitted</small></h1>
+   <h1>{{ num_users }} <small>formhubbers!</small></h1></div></p>
+ </div>
+</div>
+{% endblock %}
+

@@ -17,15 +17,15 @@ def upload_to(instance, filename):
         filename
         )
 
-
 class XForm(models.Model):
     xls = models.FileField(upload_to=upload_to, null=True)
     json = models.TextField(default=u'')
+    description = models.TextField(default=u'', null=True)
     xml = models.TextField()
 
     user = models.ForeignKey(User, related_name='xforms', null=True)
-
     shared = models.BooleanField(default=False)
+    shared_data = models.BooleanField(default=False)
     downloadable = models.BooleanField(default=True)
 
     # the following fields are filled in automatically

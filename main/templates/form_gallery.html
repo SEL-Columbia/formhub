@@ -3,7 +3,7 @@
 {% block content %}
 <section id="shared-forms">
   <div class="page-header">
-    <h1>Shared Forms</h1>
+    <h1>Form Gallery <small>Shared Forms</small></h1>
   </div>
 
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
@@ -21,16 +21,16 @@
     <thead>
       <tr>
         <th>User</th><!-- we will want more user information -->
-        <th>Title</th>
+        <th>Name</th>
         <th>Description</th>
-        <th>XLS File</th>
+        <th>XLSForm</th>
         <!-- tags -->
       </tr>
     </thead>
     <tbody>
       {% for data_dictionary in shared_forms %}
       <tr>
-        <td>{{ data_dictionary.user.username }}</td>
+        <td><a href="/{{ data_dictionary.user.username }}">{{ data_dictionary.user.username }}</a></td>
         <td>{{ data_dictionary.xform.title }}</td>
         <td>{{ data_dictionary.description }}</td>
         <td><a href="{{ data_dictionary.xls.url }}">{{ data_dictionary.file_name }}</a></td>

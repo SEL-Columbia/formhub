@@ -3,7 +3,6 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.test.client import Client
 
-
 class MainTestCase(TestCase):
 
     def setUp(self):
@@ -39,4 +38,5 @@ class MainTestCase(TestCase):
         with open(path) as f:
             post_data = {'xml_submission_file': f}
             url = '/%s/submission' % self.user.username
-            self.anon.post(url, post_data)
+            self.response = self.anon.post(url, post_data)
+

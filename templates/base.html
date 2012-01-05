@@ -60,7 +60,19 @@
   <body style="padding-top: 40px;">
     {% include "topbar.html" %}
 
-    <div class="container"> 
+    <div class="container">
+      {% block message %}
+        {% if message %}
+          <div class="row">
+            <div class="span16">
+              <div class="alert-message block-message {{ message.type }} fade in" data-alert="alert">
+            <a class="close" href="#">×</a>
+            <p>{{ message.text|safe }}</p>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endblock %}
       {% block content %}
         {% if template %}{% include template %}{% endif %}
         {{ content|safe }}

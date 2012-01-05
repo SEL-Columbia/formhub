@@ -4,3 +4,9 @@ from test_user_id_string_unique_together import TestUnique
 from test_past_bugs import TestCSVExport, TestInputs
 from test_csv_export import TestExport
 from test_google_doc import TestGoogleDoc
+from test_user_profile import TestUserProfile
+from test_user_login import TestUserLogin
+from test_user_login import TestUserReservedNames
+from test_user_settings import TestUserSettings
+from test_form_show import TestFormShow
+

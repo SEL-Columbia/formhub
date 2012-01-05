@@ -24,8 +24,6 @@ def submissions(request):
         for xform in user.xforms.all():
             stats['submission_count'][user.username] += xform.submission_count()
             stats['submission_count']['total_submission_count'] += xform.submission_count()
-    
     context.stats = stats
-    
     return render_to_response("submissions.html", context_instance=context)
 

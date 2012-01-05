@@ -1,13 +1,12 @@
-#!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4 coding=utf-8
-
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseRedirect
-
+from django.contrib.auth.decorators import login_required
+from django.template import RequestContext
 from models import XForm, create_instance
+from main.gravatar import get_gravatar_img_link
 
 
 @require_GET
@@ -51,6 +50,17 @@ def submission(request, username):
     response['Location'] = request.build_absolute_uri(request.path)
     return response
 
+@require_GET
+def show(request, username, id_string):
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    # no access
+    if xform.shared == False and username != request.user.username:
+        return HttpResponseRedirect("/")
+    context = RequestContext(request)
+    context.xform = xform
+    context.content_user = xform.user
+    context.content_user_gravatar_img_link = get_gravatar_img_link(context.content_user)
+    return render_to_response("show.html", context_instance=context)
 
 def download_xform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
@@ -64,7 +74,7 @@ def toggle_downloadable(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     xform.downloadable = not xform.downloadable
     xform.save()
-    return HttpResponseRedirect("/")
+    return HttpResponseRedirect("/%s" % username)
 
 
 def delete_xform(request, username, id_string):

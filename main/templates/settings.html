@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section id="register">
+  <div class="page-header">
+    <h1>Edit User Profile</h1>
+  </div>
+  <div class="row">
+    <div class="span8">
+    <a href="{% url auth_password_change %}">change password</a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="span8">
+      <form method="post" action="{% url main.views.profile_settings content_user.username %}">
+        {% csrf_token %}
+        <table>
+          {{ form.as_table }}
+        </table>
+        <input type="submit" class="btn primary" value="Update" />
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,31 +1,21 @@
 # encoding: utf-8
 import datetime
 from south.db import db
-from south.v2 import DataMigration
+from south.v2 import SchemaMigration
 from django.db import models
-from odk_logger.models import XForm
-from odk_viewer.models import DataDictionary
 
-
-class Migration(DataMigration):
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        "Write your forwards methods here."
-        # leaving this in for the sake of posterity in case someone
-        # wants to know what this migration used to do. it turns out
-        # that you can't really do this in django/south
-#        for xform in XForm.objects.all():
-#            try:
-#                xform.xls = xform.data_dictionary.xls
-#                xform.json = xform.data_dictionary.json
-#                xform.shared = xform.data_dictionary.shared
-#                xform.save()
-#            except DataDictionary.DoesNotExist:
-#                pass
+        
+        # Adding field 'XForm.description'
+        db.add_column('odk_logger_xform', 'description', self.gf('django.db.models.fields.TextField')(default=u'', null=True), keep_default=False)
 
 
     def backwards(self, orm):
-        "Write your backwards methods here."
+        
+        # Deleting field 'XForm.description'
+        db.delete_column('odk_logger_xform', 'description')
 
 
     models = {
@@ -93,11 +83,13 @@ class Migration(DataMigration):
             'Meta': {'ordering': "('id_string',)", 'unique_together': "(('user', 'id_string'),)", 'object_name': 'XForm'},
             'date_created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'date_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'downloadable': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'description': ('django.db.models.fields.TextField', [], {'default': "u''", 'null': 'True'}),
+            'downloadable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'id_string': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'}),
             'json': ('django.db.models.fields.TextField', [], {'default': "u''"}),
             'shared': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'shared_data': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'xforms'", 'null': 'True', 'to': "orm['auth.User']"}),
             'xls': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'null': 'True'}),

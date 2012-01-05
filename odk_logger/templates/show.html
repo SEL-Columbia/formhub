@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <section id="profile">
+    <div class="page-header">
+      <img src='{{ content_user_gravatar_img_link }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' />
+      <h1>
+        {{ content_user.username }}
+        <span style='color:#DDD; font-weight:100'>&nbsp;/&nbsp;</span>
+        {{ xform.id_string }}
+      </h1>
+    </div> 
+    <hr>
+    <div class="row">
+      <div class="span16">
+        <h3>Description:</h3>
+        <p>
+            {% if xform.description %}
+                {{ xform.description }}
+            {% else %}
+                None
+            {% endif %}
+            <div style="display:hidden">
+            </div>
+            <a id="description_edit" href="" class="btn small primary">edit</a>
+        </p>
+        <a href="{% url download_xlsform content_user.username xform.id_string %}">
+            <button class="btn small success">form.xls</button>
+        </a>
+    <hr>
+    <h3>Form Data
+    {% if xform.shared_data %}
+        <span class="label notice">PUBLIC</span>
+    </h3>
+        <ul>
+            <li>
+                <a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}">
+                    <button class="btn small">csv</button>
+                </a>
+            </li>
+            <li>
+                <a href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}">
+                    <button class="btn small">xls</button>
+                </a>
+            </li>
+            <li>
+                <a href="{% url odk_viewer.views.map xform.id_string %}">
+                    <button class="btn small info">Map &raquo;</button>
+                </a>
+            </li>
+        </ul>
+    {% else %}
+        <span class="label warning">PRIVATE</span>
+    </h3>
+    {% endif %}
+    </div> 
+  </section>
+{% endblock %}
+  
