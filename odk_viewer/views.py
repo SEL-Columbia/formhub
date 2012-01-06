@@ -101,6 +101,7 @@ def xls_export(request, username, id_string):
 
 def zip_export(request, username, id_string):
     response = response_with_mimetype_and_name('zip', id_string)
+    # TODO create that zip_file
     response.content = zip_file
     return response
 

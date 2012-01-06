@@ -6,9 +6,9 @@ from django.template import RequestContext
 from django import forms
 from django.db import IntegrityError
 from django.contrib.auth.models import User
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
 from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect
+    HttpResponseRedirect, HttpResponseNotAllowed
 
 from pyxform.errors import PyXFormError
 from odk_viewer.models import DataDictionary
@@ -138,14 +138,25 @@ def dashboard(request):
 @require_GET
 def show(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
+    is_owner = username == request.user.username
     # no access
-    if xform.shared == False and username != request.user.username:
+    if xform.shared == False and not is_owner:
         return HttpResponseRedirect("/")
     context = RequestContext(request)
+    context.is_owner = is_owner
     context.xform = xform
     context.content_user = xform.user
     return render_to_response("show.html", context_instance=context)
 
+@require_POST
+@login_required
+def edit(request, username, id_string):
+    if username == request.user.username:
+        xform = XForm.objects.get(user__username=username, id_string=id_string)
+        xform.description = request.POST['description']
+        xform.save()
+        return HttpResponse('Updated succeeded.')
+    return HttpResponseNotAllowed('Update failed.')
 
 def support(request):
     context = RequestContext(request)

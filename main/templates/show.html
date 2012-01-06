@@ -10,14 +10,19 @@
         {{ xform.id_string }}
       </h1>
     </div> 
-    <hr>
     <div class="row">
       <div class="span16">
         <h3>Description:</h3>
         <div class="clearfix">
             <div class="input">
-            <textarea id="textarea" class="xxlarge"  disabled="" rows="3" name="textarea">{% if xform.description %}{{ xform.description }}{% else %}None{% endif %}</textarea>
-            <a id="description_edit" href="" class="btn small primary">edit</a>
+            <form>
+                {% csrf_token %}
+                <textarea id="description" class="xxlarge"  disabled="" rows="3" name="textarea">{% if xform.description %}{{ xform.description }}{% else %}None{% endif %}</textarea>
+                {% if is_owner %}
+                    <a id="description_edit" href="" class="btn small primary">edit</a>
+                    <a id="description_save" style="display:none" href="" class="btn small primary" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+                {% endif %}
+            </form>
             </div>
         </div>
         </p>

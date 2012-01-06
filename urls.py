@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     url(r'^(?P<username>[^/]+)/profile$', 'main.views.public_profile'),
     url(r'^(?P<username>[^/]+)/settings', 'main.views.profile_settings'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)$', 'main.views.show'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/edit$', 'main.views.edit'),
 
 
     # stats
