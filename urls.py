@@ -22,7 +22,7 @@ urlpatterns = patterns('',
     url(r'^(?P<username>[^/]+)/$', 'main.views.profile'),
     url(r'^(?P<username>[^/]+)/profile$', 'main.views.public_profile'),
     url(r'^(?P<username>[^/]+)/settings', 'main.views.profile_settings'),
-    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)$', 'odk_logger.views.show'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)$', 'main.views.show'),
 
 
     # stats
@@ -41,7 +41,6 @@ urlpatterns = patterns('',
     url(r"^(?P<username>\w+)/formList$", 'odk_logger.views.formList'),
     url(r"^(?P<username>\w+)/submission$", 'odk_logger.views.submission'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/form\.xml$", 'odk_logger.views.download_xform', name="download_xform"),
-    # TODO create action to return XLS form
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/form\.xls$", 'odk_logger.views.download_xlsform', name="download_xlsform"),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/form\.json", 'odk_logger.views.download_jsonform', name="download_jsonform"),
     url(r"^(?P<username>\w+)/(?P<id_string>[^/]+)\.xml$", 'odk_logger.views.download_xform', name="download_xform"),

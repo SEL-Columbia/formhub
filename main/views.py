@@ -13,7 +13,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 from pyxform.errors import PyXFormError
 from odk_viewer.models import DataDictionary
 from main.models import UserProfile
-from odk_logger.models import Instance
+from odk_logger.models import Instance, XForm
 from utils.user_auth import check_and_set_user, set_profile_data
 from main.forms import UserProfileForm
 
@@ -133,6 +133,18 @@ def dashboard(request):
                 'text': 'Form with this id already exists.',
                 }
     return render_to_response("dashboard.html", context_instance=context)
+
+
+@require_GET
+def show(request, username, id_string):
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    # no access
+    if xform.shared == False and username != request.user.username:
+        return HttpResponseRedirect("/")
+    context = RequestContext(request)
+    context.xform = xform
+    context.content_user = xform.user
+    return render_to_response("show.html", context_instance=context)
 
 
 def support(request):

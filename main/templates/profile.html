@@ -48,7 +48,7 @@
         {% for form in forms %}
             <tr>
                 <td>
-                    <a href="{% url odk_logger.views.show content_user.username form.id_string %}">
+                    <a href="{% url main.views.show content_user.username form.id_string %}">
                         {{ form.title }}
                     <a/>
                 </td>

@@ -49,21 +49,10 @@ def submission(request, username):
     response['Location'] = request.build_absolute_uri(request.path)
     return response
 
-@require_GET
-def show(request, username, id_string):
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
-    # no access
-    if xform.shared == False and username != request.user.username:
-        return HttpResponseRedirect("/")
-    context = RequestContext(request)
-    context.xform = xform
-    context.content_user = xform.user
-    return render_to_response("show.html", context_instance=context)
-
 def download_xform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     response = response_with_mimetype_and_name('xml', id_string)
-    repsonse.content = xform.xml
+    response.content = xform.xml
     return response
 
 def download_xlsform(request, username, id_string):
