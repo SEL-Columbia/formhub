@@ -57,7 +57,6 @@ def import_instance(path_to_instance_folder, status, user):
     return instance
 
 def import_instances_from_phone(path_to_odk_folder, user):
-    print '.'
     path_to_sqlite_db = os.path.join(path_to_odk_folder,
                                      'metadata', 'data')
     def get_table_describing_odk_files():
