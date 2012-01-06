@@ -97,10 +97,12 @@ def profile_settings(request, username):
         form = UserProfileForm(instance=profile)
     return render_to_response("settings.html", { 'form': form }, context_instance=context)
 
+
 @require_GET
-@login_required
 def public_profile(request, username):
     content_user = check_and_set_user(request, username)
+    if isinstance(content_user, HttpResponseRedirect):
+        return content_user
     context = RequestContext(request)
     set_profile_data(context, content_user)
     return render_to_response("profile.html", context_instance=context)
