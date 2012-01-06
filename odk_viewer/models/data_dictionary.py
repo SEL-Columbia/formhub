@@ -201,7 +201,6 @@ class DataDictionary(XForm):
                 for i, child in enumerate(e.children):
                     new_key = child.get_abbreviated_xpath()
                     if child.name in options_selected:
-                        assert new_key not in d
                         d[new_key] = True
                     else:
                         d[new_key] = False
