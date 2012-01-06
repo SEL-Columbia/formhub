@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<kml xmlns="http://earth.google.com/kml/2.2">
+  <Document>
+  		<name>{{data.name}}</name>
+			  	<Style id="sh_red-circle">
+			<IconStyle>
+				<scale>1.3</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/paddle/red-circle.png</href>
+				</Icon>
+				<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+			</IconStyle>
+			<ListStyle>
+				<ItemIcon>
+					<href>http://maps.google.com/mapfiles/kml/paddle/red-circle-lv.png</href>
+				</ItemIcon>
+			</ListStyle>
+		</Style>
+		<StyleMap id="msn_red-circle">
+			<Pair>
+				<key>normal</key>
+				<styleUrl>#sn_red-circle</styleUrl>
+			</Pair>
+			<Pair>
+				<key>highlight</key>
+				<styleUrl>#sh_red-circle</styleUrl>
+			</Pair>
+		</StyleMap>
+	
+		{% for d in data %}  
+	    <Placemark>	
+	            <name>Survey Instance: {{d.id}}</name>
+                <Snippet> </Snippet>
+		              <description>
+		                 
+		    			 <![CDATA[{{d.table|safe}}]]>  
+		              </description>
+		              <styleUrl>#sh_red-circle</styleUrl>
+		              <Point>
+				        <coordinates>
+				        	{{d.lng}}, {{d.lat}}
+				        </coordinates>
+		      		  </Point>
+        </Placemark>
+{% endfor %}
+	</Document>
+</kml>
