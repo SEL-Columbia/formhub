@@ -58,7 +58,6 @@ def import_instance(path_to_instance_folder, status):
     for i in images: i.close()
 
 def import_instances_from_phone(path_to_odk_folder):
-    print '.'
     path_to_sqlite_db = os.path.join(path_to_odk_folder,
                                      'metadata', 'data')
 
