@@ -5,7 +5,7 @@ import os, glob
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
 
-from odk_logger.import_tools import import_instances_from_jonathan
+from odk_logger.import_tools import import_instances_from_zip
 from odk_logger.models import Instance, XForm
 
 from django.contrib.auth.models import User
@@ -28,7 +28,7 @@ class Command(BaseCommand):
             print "Before Parse:"
             print " --> Images:    %d" % im_count
             print " --> Instances: %d" % Instance.objects.count()
-        import_instances_from_jonathan(path)
+        import_instances_from_zip(path)
         if debug:
             im_count2 = len(glob.glob(os.path.join(IMAGES_DIR, '*')))
             print "After Parse:"
