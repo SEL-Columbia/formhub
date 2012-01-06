@@ -1,7 +1,7 @@
 from test_base import MainTestCase
 from test_process import TestSite
 from main.models import UserProfile
-from odk_logger.views import show
+from main.views import show
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
 import os
