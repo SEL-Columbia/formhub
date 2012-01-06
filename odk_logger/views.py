@@ -6,7 +6,6 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from models import XForm, create_instance
-from main.gravatar import get_gravatar_img_link
 
 
 @require_GET
@@ -59,7 +58,6 @@ def show(request, username, id_string):
     context = RequestContext(request)
     context.xform = xform
     context.content_user = xform.user
-    context.content_user_gravatar_img_link = get_gravatar_img_link(context.content_user)
     return render_to_response("show.html", context_instance=context)
 
 def download_xform(request, username, id_string):

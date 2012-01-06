@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.db import models
 from country_field import COUNTRIES
+from gravatar import get_gravatar_img_link
 
 class UserProfile(models.Model):
     # This field is required.
@@ -14,4 +15,7 @@ class UserProfile(models.Model):
     organization = models.CharField(max_length=255, blank=True)
     home_page = models.CharField(max_length=255, blank=True)
     twitter = models.CharField(max_length=255, blank=True)
+
+    def gravatar(self):
+        return get_gravatar_img_link(self.user)
 

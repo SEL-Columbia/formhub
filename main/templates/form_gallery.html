@@ -30,10 +30,17 @@
     <tbody>
       {% for data_dictionary in shared_forms %}
       <tr>
-        <td><a href="/{{ data_dictionary.user.username }}">{{ data_dictionary.user.username }}</a></td>
-        <td>{{ data_dictionary.xform.title }}</td>
+        <td>
+          <img src='{{ data_dictionary.user.profile.gravatar }}' alt='' width='20' height='20' style='float:left; padding-right:10px;' />
+          <a href="/{{ data_dictionary.user.username }}">{{ data_dictionary.user.username }}</a>
+        </td>
+        <td>{{ data_dictionary.title }}</td>
         <td>{{ data_dictionary.description }}</td>
-        <td><a href="{{ data_dictionary.xls.url }}">{{ data_dictionary.file_name }}</a></td>
+        <td>
+          {% if data_dictionary.xls %}
+            <a href="{{ data_dictionary.xls.url }}">{{ data_dictionary.file_name }}</a>
+          {% endif %}
+        </td>
       </tr>
       {% endfor %}
     </tbody>

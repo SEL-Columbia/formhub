@@ -1,6 +1,5 @@
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
-from main.gravatar import get_gravatar_img_link
 from main.models import UserProfile
 
 def check_and_set_user(request, username):
@@ -16,7 +15,6 @@ def check_and_set_user(request, username):
 def set_profile_data(context, content_user):
     # create empty profile if none exists
     context.content_user = content_user
-    context.content_user_gravatar_img_link = get_gravatar_img_link(content_user)
     context.profile, created = UserProfile.objects.get_or_create(user=content_user)
     context.location = ""
     if content_user.profile.city:

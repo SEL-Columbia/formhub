@@ -12,7 +12,6 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 
 from pyxform.errors import PyXFormError
 from odk_viewer.models import DataDictionary
-from gravatar import get_gravatar_img_link
 from main.models import UserProfile
 from odk_logger.models import Instance
 from utils.user_auth import check_and_set_user, set_profile_data
