@@ -21,8 +21,14 @@
             </div>
         </div>
         </p>
+        <a href="{% url download_xform content_user.username xform.id_string %}">
+            <button class="btn small success">form.xml</button>
+        </a>
         <a href="{% url download_xlsform content_user.username xform.id_string %}">
             <button class="btn small success">form.xls</button>
+        </a>
+        <a href="{% url download_jsonform content_user.username xform.id_string %}">
+            <button class="btn small success">form.json</button>
         </a>
     <hr>
     <h3>Form Data

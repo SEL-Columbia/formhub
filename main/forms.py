@@ -35,9 +35,19 @@ class RegistrationFormUserProfile(RegistrationForm, UserProfileFormRegister):
         pass
 
     _reserved_usernames = [
+        'accounts',
+        'about',
+        'admin',
+        'clients',
+        'data',
         'formhub',
         'forms',
-        'accounts'
+        'maps',
+        'odk',
+        'support',
+        'syntax',
+        'xls2xform',
+        'users'
     ]
 
     username = forms.CharField(widget=forms.TextInput(), max_length=30)
