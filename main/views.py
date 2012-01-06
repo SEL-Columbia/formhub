@@ -153,7 +153,11 @@ def show(request, username, id_string):
 def edit(request, username, id_string):
     if username == request.user.username:
         xform = XForm.objects.get(user__username=username, id_string=id_string)
-        xform.description = request.POST['description']
+        if request.POST.get('description'):
+            xform.description = request.POST['description']
+        if request.POST.get('toggle_data_download'):
+            raise Exception(xform.downloadable)
+            xform.downloadable = not xform.downloadable
         xform.save()
         return HttpResponse('Updated succeeded.')
     return HttpResponseNotAllowed('Update failed.')
