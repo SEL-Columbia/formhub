@@ -59,6 +59,12 @@ class TestFormShow(MainTestCase):
         self.assertNotContains(response, 'PRIVATE')
         self.assertContains(response, '/%s/data.csv' % self.xform.id_string)
 
+    def test_show_link_if_owner(self):
+        response = self.client.get(self.url)
+        self.assertContains(response, '/%s/data.csv' % self.xform.id_string)
+        self.assertContains(response, '/%s/data.xls' % self.xform.id_string)
+        self.assertContains(response, '/map/%s' % self.xform.id_string)
+
     def test_user_sees_edit_btn(self):
         response = self.client.get(self.url)
         self.assertContains(response, 'edit</a>')
@@ -105,12 +111,26 @@ class TestFormShow(MainTestCase):
 
     def test_user_toggle_data_privacy(self):
         self.assertEqual(self.xform.shared, False)
-        response = self.client.post(self.edit_url, {'toggle_data_download': 'true'})
+        response = self.client.post(self.edit_url, {'toggle_shared': 'data'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared_data, True)
+
+    def test_user_toggle_data_privacy_off(self):
+        self.xform.shared_data = True
+        self.xform.save()
+        response = self.client.post(self.edit_url, {'toggle_shared': 'data'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared_data, False)
+
+    def test_user_toggle_form_privacy(self):
+        self.assertEqual(self.xform.shared, False)
+        response = self.client.post(self.edit_url, {'toggle_shared': 'form'})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared, True)
+
+    def test_user_toggle_form_privacy_off(self):
         self.xform.shared = True
         self.xform.save()
-        response = self.client.post(self.edit_url, {'toggle_data_download': 'true'})
+        response = self.client.post(self.edit_url, {'toggle_shared': 'form'})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared, False)
-
