@@ -157,9 +157,10 @@ def edit(request, username, id_string):
         xform = XForm.objects.get(user__username=username, id_string=id_string)
         if request.POST.get('description'):
             xform.description = request.POST['description']
-        if request.POST.get('toggle_data_download'):
-            raise Exception(xform.downloadable)
-            xform.downloadable = not xform.downloadable
+        if request.POST.get('toggle_shared') and request.POST['toggle_shared'] == 'data':
+            xform.shared_data = not xform.shared_data
+        if request.POST.get('toggle_shared') and request.POST['toggle_shared'] == 'form':
+            xform.shared = not xform.shared
         xform.save()
         return HttpResponse('Updated succeeded.')
     return HttpResponseNotAllowed('Update failed.')

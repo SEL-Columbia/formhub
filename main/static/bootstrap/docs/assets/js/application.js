@@ -100,7 +100,7 @@ $(document).ajaxSend(function(event, xhr, settings) {
   });
 
   $('#description_save').click(function() {
-    saveBtn = $(this);
+    var saveBtn = $(this);
     $.post(saveBtn.data('url'), {'description': $('#description').val()}, function (data) {
       saveBtn.hide();
       $('#description_edit').show();
@@ -108,5 +108,20 @@ $(document).ajaxSend(function(event, xhr, settings) {
     })
     return false;
   });
+
+  function toggleBind(opt1, opt2, param) {
+      $('#' + opt1 + ', #' + opt2).click(function() {
+        var btn = $(this);
+        $.post($(this).data('url'), {toggle_shared: param}, function (data) {
+            $('#' + opt1).toggleClass('primary');
+            $('#' + opt2).toggleClass('primary');
+        });
+        return false;
+      });
+  }
+
+  toggleBind('toggle_shared_data_pub', 'toggle_shared_data_pri', 'data');
+  toggleBind('toggle_shared_pub', 'toggle_shared_pri', 'form');
+
 });
 
