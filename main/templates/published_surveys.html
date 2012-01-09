@@ -46,7 +46,7 @@
         </td>
         <td>
           {% if xform.data_dictionary.has_surveys_with_geopoints %}
-          <center><a href="{% url odk_viewer.views.map xform.id_string %}"><button class="btn small info">Map &raquo;</button></a></center>
+          <center><a href="{% url odk_viewer.views.map_view user.username xform.id_string %}"><button class="btn small info">Map &raquo;</button></a></center>
           {% endif %}
         </td>
       </tr>

@@ -35,7 +35,7 @@ class TestGPS(MainTestCase):
 
     def _check_link_to_map_view(self):
         response = self.client.get("/%s/" % self.user.username)
-        map_url = '<a href="/odk_viewer/map/gps/">'
+        map_url = '<a href="/%s/forms/gps/map">' % self.user.username
         self.assertTrue(map_url in response.content)
 
     def _check_lat_lng(self):
@@ -48,7 +48,10 @@ class TestGPS(MainTestCase):
             self.assertEquals(round_down_geopoint(pi.lng), lat_lng[1])
 
     def _check_map_view(self):
-        map_url = reverse(odk_viewer.views.map, kwargs={'id_string': 'gps'})
+        map_url = reverse(odk_viewer.views.map_view, kwargs={
+            'username': self.user.username,
+            'id_string': 'gps'
+        })
         response = self.client.get(map_url)
         # testing the response context to get a concise notification
         # if the lat/long values have changed.
@@ -61,3 +64,4 @@ class TestGPS(MainTestCase):
         with open(html_path) as f:
             expected_content = f.read()
         self.assertContains(response, expected_content)
+

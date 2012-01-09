@@ -34,7 +34,7 @@ class TestSite(MainTestCase):
     def _check_formList(self):
         url = '/%s/formList' % self.user.username
         response = self.anon.get(url)
-        self.download_url = 'http://testserver/%s/transportation_2011_07_25.xml' % self.user.username
+        self.download_url = 'http://testserver/%s/forms/transportation_2011_07_25/form.xml' % self.user.username
         expected_content = """<forms>
   
   <form url="%s">transportation_2011_07_25</form>

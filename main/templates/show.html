@@ -53,7 +53,7 @@
         <a href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}">
             <button class="btn small">xls</button>
         </a>
-        <a href="{% url odk_viewer.views.map xform.id_string %}">
+        <a href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
             <button class="btn small info">Map &raquo;</button>
         </a>
         </div>

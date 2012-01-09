@@ -22,13 +22,14 @@ from xls_writer import DataDictionary
 
 import json
 import os
+from datetime import date
 
 def average(values):
     if len(values):
         return sum(values, 0.0) / len(values)
     return None
 
-def map(request, id_string):
+def map_view(request, username, id_string):
     context = RequestContext(request)
     points = ParsedInstance.objects.values('lat', 'lng', 'instance').filter(instance__user=request.user, instance__xform__id_string=id_string, lat__isnull=False, lng__isnull=False)
     center = {
@@ -70,7 +71,7 @@ def survey_responses(request, pk):
 def image_urls(instance):
     return [a.media_file.url for a in instance.attachments.all()]
 
-def send_file(path, content_type):
+def send_file(path, content_type, name):
     """
     Send a file through Django without loading the whole file into
     memory at once. The FileWrapper will turn the file object into an
@@ -78,6 +79,7 @@ def send_file(path, content_type):
     """
     wrapper = FileWrapper(file(path))
     response = HttpResponse(wrapper, content_type=content_type)
+    response['Content-Disposition'] = 'attachment; filename=%s_%s_data.csv' % (name, date.today().strftime("%Y_%m_%d"))
     response['Content-Length'] = os.path.getsize(path)
     return response
 
@@ -88,7 +90,7 @@ def csv_export(request, username, id_string):
     writer = DataDictionaryWriter(dd)
     file_path = writer.get_default_file_path()
     writer.write_to_file(file_path)
-    return send_file(path=file_path, content_type="application/csv")
+    return send_file(file_path, "application/csv", id_string)
 
 def xls_export(request, username, id_string):
     dd = DataDictionary.objects.get(id_string=id_string,
