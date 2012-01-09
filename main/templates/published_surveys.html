@@ -69,8 +69,11 @@
           {% if xform.submission_count %}
           <a href="{% url odk_viewer.views.csv_export xform.id_string %}">csv</a>,
           <a href="{% url odk_viewer.views.xls_export xform.id_string %}">xls</a>,
-          <a href="{% url odk_viewer.views.kml_export xform.id_string %}">kml</a>
+              {% if xform.data_dictionary.has_surveys_with_geopoints %}
+              <a href="{% url odk_viewer.views.kml_export xform.id_string %}">kml</a>
+              {% endif %}
           {% endif %}
+	  
         </td>
         <td>
           {% if xform.data_dictionary.has_surveys_with_geopoints %}
