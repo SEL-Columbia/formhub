@@ -6,7 +6,7 @@ from django.shortcuts import render_to_response
 # http://djangosnippets.org/snippets/365/
 from django.core.servers.basehttp import FileWrapper
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotAllowed
 from odk_logger.models import Instance
 from odk_viewer.models import DataDictionary
 from odk_viewer.models import ParsedInstance
@@ -14,6 +14,7 @@ from odk_logger.utils import round_down_geopoint
 from odk_logger.xform_instance_parser import xform_instance_to_dict
 from pyxform import Section, Question
 from odk_logger.utils import response_with_mimetype_and_name
+from django.contrib.auth.models import User
 
 from csv_writer import CsvWriter
 from csv_writer import DataDictionaryWriter
@@ -33,7 +34,8 @@ def average(values):
 
 def map_view(request, username, id_string):
     context = RequestContext(request)
-    points = ParsedInstance.objects.values('lat', 'lng', 'instance').filter(instance__user=request.user, instance__xform__id_string=id_string, lat__isnull=False, lng__isnull=False)
+    owner = User.objects.get(username=username)
+    points = ParsedInstance.objects.values('lat', 'lng', 'instance').filter(instance__user=owner, instance__xform__id_string=id_string, lat__isnull=False, lng__isnull=False)
     center = {
         'lat': round_down_geopoint(average([p['lat'] for p in points])),
         'lng': round_down_geopoint(average([p['lng'] for p in points])),
@@ -89,10 +91,12 @@ def send_file(path, content_type, name):
     return response
 
 
-@login_required
 def csv_export(request, username, id_string):
+    owner = User.objects.get(username=username)
     dd = DataDictionary.objects.get(id_string=id_string,
-                                    user=request.user)
+                                    user=owner)
+    if not dd.shared_data and request.user.username != username:
+        return HttpResponseNotAllowed('Not shared.')
     writer = DataDictionaryWriter(dd)
     file_path = writer.get_default_file_path()
     writer.write_to_file(file_path)
@@ -100,8 +104,11 @@ def csv_export(request, username, id_string):
 
 
 def xls_export(request, username, id_string):
+    owner = User.objects.get(username=username)
     dd = DataDictionary.objects.get(id_string=id_string,
-                                    user=request.user)
+                                    user=owner)
+    if not dd.shared_data and request.user.username != username:
+        return HttpResponseNotAllowed('Not shared.')
     ddw = XlsWriter()
     ddw.set_data_dictionary(dd)
     temp_file = ddw.save_workbook_to_file()
@@ -112,8 +119,14 @@ def xls_export(request, username, id_string):
 
 
 def zip_export(request, username, id_string):
+    owner = User.objects.get(username=username)
+    dd = DataDictionary.objects.get(id_string=id_string,
+                                    user=owner)
+    if not dd.shared_data and request.user.username != username:
+        return HttpResponseNotAllowed('Not shared.')
     response = response_with_mimetype_and_name('zip', id_string)
     # TODO create that zip_file
+    zip_file = None
     response.content = zip_file
     return response
 
@@ -122,7 +135,12 @@ def kml_export(request, username, id_string):
     # read the locations from the database
     context = RequestContext(request)
     context.message="HELLO!!"
-    pis = ParsedInstance.objects.filter(instance__user=request.user, instance__xform__id_string=id_string, lat__isnull=False, lng__isnull=False)
+    owner = User.objects.get(username=username)
+    dd = DataDictionary.objects.get(id_string=id_string,
+                                    user=owner)
+    if not dd.shared_data and request.user.username != username:
+        return HttpResponseNotAllowed('Not shared.')
+    pis = ParsedInstance.objects.filter(instance__user=owner, instance__xform__id_string=id_string, lat__isnull=False, lng__isnull=False)
     data_for_template = []
     for pi in pis:
         # read the survey instances
@@ -149,3 +167,4 @@ def kml_export(request, username, id_string):
     mimetype="application/vnd.google-earth.kml+xml")
     response['Content-Disposition'] = 'attachment; filename=%s.kml' %(id_string)
     return response
+

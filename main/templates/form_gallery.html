@@ -42,7 +42,7 @@
         <td>{{ data_dictionary.description }}</td>
         <td>
           {% if data_dictionary.xls %}
-            <a href="{% url download_xform data_dictionary.user.username data_dictionary.file_name %}"><button class="btn small success">XForm</button></a>
+            <a href="{% url download_xlsform data_dictionary.user.username data_dictionary.id_string %}"><button class="btn small success">Excel</button></a>
           {% endif %}
         </td>
         <td>

@@ -57,14 +57,16 @@
                 </td>
                 <td>{{ form.date_created|date:"N d, Y" }}</td>
                 <td>
-                    <center>
-                    <a href="{% url download_xform content_user.username form.id_string %}">
-                        <button class="btn small success">XForm</button>
+                <td>
+                    {% if form.shared %}
+                    <a href="{% url download_xlsform content_user.username form.id_string %}">
+                        <button class="btn small success">Excel</button>
                     </a>
-                    </center>
+                    {% else %}
+                        <span class="label warning">PRIVATE</span>
+                    {% endif %}
                 </td>
                 <td>
-                    <center>
                     {% if form.shared_data %}
                         <a href="{% url odk_viewer.views.csv_export content_user.username form.id_string %}">
                             <button class="btn small">csv</button>
@@ -75,14 +77,18 @@
                     {% else %}
                         <span class="label warning">PRIVATE</span>
                     {% endif %}
-                    </center>
                 </td>
                 <td>
-                    <center>
+                    {% if form.shared_data %}
+                    <a href="{% url odk_viewer.views.kml_export content_user.username form.id_string %}">
+                        <button class="btn small">kml</button>
+                    </a>
                     <a href="{% url odk_viewer.views.map_view content_user.username form.id_string %}">
                         <button class="btn small info">Map &raquo;</button>
                     </a>
-                    </center>
+                    {% else %}
+                        <span class="label warning">PRIVATE</span>
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}

@@ -4,6 +4,7 @@ from main.models import UserProfile
 from main.views import show, edit
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
+from odk_viewer.views import csv_export, xls_export, zip_export, kml_export
 import os
 
 class TestFormShow(MainTestCase):
@@ -15,6 +16,8 @@ class TestFormShow(MainTestCase):
                 "transportation", "transportation.xls")
         response = self._publish_xls_file(xls_path)
         self.assertEqual(XForm.objects.count(), 1)
+        s = 'transport_2011-07-25_19-05-49'
+        self._make_submission(os.path.join(self.this_directory, 'fixtures', 'transportation', 'instances', s, s + '.xml'))
         self.xform = XForm.objects.all()[0]
         self.url = reverse(show, kwargs={
             'username': self.user.username,
@@ -134,3 +137,72 @@ class TestFormShow(MainTestCase):
         response = self.client.post(self.edit_url, {'toggle_shared': 'form'})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared, False)
+
+    def test_restrict_csv_export_if_not_shared(self):
+        url = reverse(csv_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        response = self.anon.get(url)
+        self.assertEqual(response.status_code, 405)
+
+    def test_restrict_xls_export_if_not_shared(self):
+        url = reverse(xls_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        response = self.anon.get(url)
+        self.assertEqual(response.status_code, 405)
+
+    def test_restrict_zip_export_if_not_shared(self):
+        url = reverse(zip_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        response = self.anon.get(url)
+        self.assertEqual(response.status_code, 405)
+
+    def test_restrict_kml_export_if_not_shared(self):
+        url = reverse(kml_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        response = self.anon.get(url)
+        self.assertEqual(response.status_code, 405)
+
+    def test_allow_csv_export_if_shared(self):
+        self.xform.shared_data = True
+        self.xform.save()
+        url = reverse(csv_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        response = self.anon.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_allow_xls_export_if_shared(self):
+        self.xform.shared_data = True
+        self.xform.save()
+        url = reverse(xls_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        response = self.anon.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_allow_zip_export_if_shared(self):
+        self.xform.shared_data = True
+        self.xform.save()
+        url = reverse(zip_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        response = self.anon.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_allow_kml_export_if_shared(self):
+        self.xform.shared_data = True
+        self.xform.save()
+        url = reverse(kml_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        response = self.anon.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_allow_csv_export(self):
+        url = reverse(csv_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_allow_xls_export(self):
+        url = reverse(xls_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_allow_zip_export(self):
+        url = reverse(zip_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_allow_kml_export(self):
+        url = reverse(kml_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
