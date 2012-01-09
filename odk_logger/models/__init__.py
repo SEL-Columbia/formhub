@@ -21,11 +21,10 @@ def create_instance(username, xml_file, media_files, status=u'submitted_via_web'
     xml = xml_file.read()
     xml_file.close()
     user = get_object_or_404(User, username=username)
-    
-    instance, created = Instance.objects.get_or_create(xml=xml, user=user, status=status)
-    if created:
+    existing_instance_count = Instance.objects.filter(xml=xml, user=user).count()
+    if existing_instance_count == 0:
+        instance = Instance.objects.create(xml=xml, user=user, status=status)
         for f in media_files:
             Attachment.objects.get_or_create(instance=instance, media_file=f)
         return instance
     return None
-
