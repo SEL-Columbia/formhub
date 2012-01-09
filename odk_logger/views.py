@@ -47,8 +47,7 @@ def bulksubmission(request, username):
         response['Location'] = request.build_absolute_uri(request.path)
         return response
     else:
-        #print "Here2"    
-        return HttpResponse("Fail !!!!!")
+        return HttpResponseBadRequest("There was a problem receiving your ODK submission. [Error: multiple submission files (?)]")
 
 def bulksubmission_form(request, username=None):
 	return render_to_response("bulk_submission_form.html")
