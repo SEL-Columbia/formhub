@@ -22,8 +22,10 @@ def report_exception(subject, info, exc_info=None):
 import decimal
 
 def round_down_geopoint(num):
-    decimal_mult = 1000000
-    return str(decimal.Decimal(int(num * decimal_mult))/decimal_mult)
+    if num:
+        decimal_mult = 1000000
+        return str(decimal.Decimal(int(num * decimal_mult))/decimal_mult)
+    return None
 
 from datetime import date
 from django.http import HttpResponse

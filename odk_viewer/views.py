@@ -24,7 +24,9 @@ import json
 import os
 
 def average(values):
-    return sum(values, 0.0) / len(values)
+    if len(values):
+        return sum(values, 0.0) / len(values)
+    return None
 
 def map(request, id_string):
     context = RequestContext(request)
