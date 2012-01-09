@@ -41,8 +41,8 @@ def bulksubmission(request, username):
         our_tf = open(our_tfpath, 'rb')
         count = import_instances_from_zip(our_tf, user=posting_user)
         os.remove(our_tfpath)
-        response = HttpResponse("Your ODK submission was successful. Your user now has %d instances." % \
-                    posting_user.surveys.count())
+        response = HttpResponse("Your ODK submission was successful. %d surveys imported. Your user now has %d instances." % \
+                    (count, posting_user.surveys.count()))
         response.status_code = 200
         response['Location'] = request.build_absolute_uri(request.path)
         return response
@@ -76,7 +76,6 @@ def submission(request, username):
         return HttpResponseBadRequest(
             "There should be a single XML submission file."
             )
-
     # save this XML file and media files as attachments
     media_files = request.FILES.values()
     create_instance(
@@ -84,7 +83,6 @@ def submission(request, username):
         xml_file_list[0],
         media_files
         )
-
     # ODK needs two things for a form to be considered successful
     # 1) the status code needs to be 201 (created)
     # 2) The location header needs to be set to the host it posted to
