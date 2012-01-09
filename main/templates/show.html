@@ -12,7 +12,20 @@
     </div> 
     <div class="row">
       <div class="span16">
-        <h3>Description:</h3>
+        <a href="{% url download_xform content_user.username xform.id_string %}">
+            <button class="btn small success">XForm</button>
+        </a>
+        <a href="{% url download_xlsform content_user.username xform.id_string %}">
+            <button class="btn small success">Excel</button>
+        </a>
+        <a href="{% url download_jsonform content_user.username xform.id_string %}">
+            <button class="btn small success">Form JSON</button>
+        </a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span11">
+        <h3>Description</h3>
         <div class="clearfix">
             <div class="input">
             <form>
@@ -25,56 +38,56 @@
             </form>
             </div>
         </div>
-        </p>
-        <a href="{% url download_xform content_user.username xform.id_string %}">
-            <button class="btn small success">XForm</button>
-        </a>
-        <a href="{% url download_xlsform content_user.username xform.id_string %}">
-            <button class="btn small success">Excel</button>
-        </a>
-        <a href="{% url download_jsonform content_user.username xform.id_string %}">
-            <button class="btn small success">Form JSON</button>
-        </a>
-    <hr>
-    <h3>
-        Form Data
-        {% if xform.shared_data %}
-            <span class="label notice">PUBLIC</span>
-        {% else %}
-            <span class="label warning">PRIVATE</span>
+      </div>
+      <div class="span5">
+        {% if is_owner %}
+        <h3>Settings</h3>
+        <div class="clearfix">
+            <label>Form Privacy&nbsp;</label>
+            <div class="input">
+                <a id="toggle_shared_pub" href="" class="btn small{% if xform.shared%} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PUBLIC</a>
+                <a id="toggle_shared_pri" href="" class="btn small{% if not xform.shared%} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PRIVATE</a>
+            </div> 
+            <br/>
+            <label>Data Privacy&nbsp;</label>
+            <div class="input">
+                <a id="toggle_shared_data_pub" href="" class="btn small{% if xform.shared_data %} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PUBLIC</a>
+                <a id="toggle_shared_data_pri" href="" class="btn small{% if not xform.shared_data %} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PRIVATE</a>
+            </div> 
+        </div> 
         {% endif %}
-    </h3>
-    {% if xform.shared_data or is_owner %}
+      </div>
+    </div>
+    <div class="row">
+      <div class="span16">
+        <hr>
+        <h3>
+            Form Data
+            {% if xform.shared_data %}
+                <span class="label notice">PUBLIC</span>
+            {% else %}
+                <span class="label warning">PRIVATE</span>
+            {% endif %}
+        </h3>
+        {% if xform.shared_data or is_owner %}
         <h4>Number of submissions: {{ xform.submission_count }}</h4>
-        <div>
-        <a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}">
-            <button class="btn small">csv</button>
-        </a>
-        <a href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}">
-            <button class="btn small">xls</button>
-        </a>
-        <a href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
-            <button class="btn small info">Map &raquo;</button>
-        </a>
-        </div>
-    {% endif %}
-    {% if is_owner %}
-    <br/>
-    <h3>Settings</h3>
-    <div class="clearfix">
-        <label>Form Privacy&nbsp;</label>
-        <div class="input">
-            <a id="toggle_shared_pub" href="" class="btn small{% if xform.shared%} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PUBLIC</a>
-            <a id="toggle_shared_pri" href="" class="btn small{% if not xform.shared%} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PRIVATE</a>
-        </div> 
-        <br/>
-        <label>Data Privacy&nbsp;</label>
-        <div class="input">
-            <a id="toggle_shared_data_pub" href="" class="btn small{% if xform.shared_data %} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PUBLIC</a>
-            <a id="toggle_shared_data_pri" href="" class="btn small{% if not xform.shared_data %} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PRIVATE</a>
-        </div> 
-    </div> 
-    {% endif %}
+        {% if xform.submission_count > 0 %}
+            <div>
+            <a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}">
+                <button class="btn small">csv</button>
+            </a>
+            <a href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}">
+                <button class="btn small">xls</button>
+            </a>
+            <a href="{% url odk_viewer.views.kml_export content_user.username xform.id_string %}">
+                <button class="btn small">kml</button>
+            </a>
+            <a href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
+                <button class="btn small info">Map &raquo;</button>
+            </a>
+            </div>
+        {% endif %}
+        {% endif %}
     </div> 
   </section>
 {% endblock %}
