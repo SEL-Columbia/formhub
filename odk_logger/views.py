@@ -11,6 +11,8 @@ from models import XForm, create_instance
 from odk_logger.import_tools import import_instances_from_zip
 
 import zipfile
+import tempfile
+import os
 
 from django.contrib.auth.models import User
 
@@ -30,9 +32,15 @@ def bulksubmission(request, username):
     # for each key we have a list of values
     temp_postfile = request.FILES.pop("zip_submission_file", [])
     if len(temp_postfile) == 1:
-        zip_file = temp_postfile[0].temporary_file_path()
-        #import_instances_from_zip(zip_file, user=request.user)
-        count = import_instances_from_zip(zip_file, user=posting_user)
+        postfile = temp_postfile[0]
+        tempdir = tempfile.gettempdir()
+        our_tfpath = os.path.join(tempdir, postfile.name)
+        our_tempfile = open(our_tfpath, 'wb')
+        our_tempfile.write(postfile.read())
+        our_tempfile.close()
+        our_tf = open(our_tfpath, 'rb')
+        count = import_instances_from_zip(our_tf, user=posting_user)
+        os.remove(our_tfpath)
         response = HttpResponse("Your ODK submission was successful. Your user now has %d instances." % \
                     posting_user.surveys.count())
         response.status_code = 200
