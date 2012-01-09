@@ -125,7 +125,7 @@ def kml_export(request, id_string):
             table_rows.append('<tr><td>%s</td><td>%s</td></tr>' % (key, value))
         img_urls = image_urls(pi.instance)
         img_url = img_urls[0] if img_urls else ""
-        data_for_template.append({"name":id_string, "id": pi.id, "lat": pi.lat, "lng": pi.lng,'image_urls': img_urls, "table": '<table border="1"><a href="#"><img width="210" class="thumbnail" src="%s" alt=""></a><%s</table>' % (img_url,''.join(table_rows))})
+        data_for_template.append({"name":id_string, "id": pi.id, "lat": pi.lat, "lng": pi.lng,'image_urls': img_urls, "table": '<table border="1"><a href="#"><img width="210" class="thumbnail" src="http://formhub.org%s" alt=""></a><%s</table>' % (img_url,''.join(table_rows))})
         
     
     context.data = data_for_template
