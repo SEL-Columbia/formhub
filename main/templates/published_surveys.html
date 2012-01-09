@@ -40,8 +40,11 @@
         </td>
         <td>
           {% if xform.submission_count %}
-          <a href="{% url odk_viewer.views.csv_export user.username xform.id_string %}"><button class="btn small">csv</button></a>
-          <a href="{% url odk_viewer.views.xls_export user.username xform.id_string %}"><button class="btn small">xls</button></a>
+              <a href="{% url odk_viewer.views.csv_export user.username xform.id_string %}"><button class="btn small">csv</button></a>
+              <a href="{% url odk_viewer.views.xls_export user.username xform.id_string %}"><button class="btn small">xls</button></a>
+              {% if xform.data_dictionary.has_surveys_with_geopoints %}
+              <a href="{% url odk_viewer.views.kml_export user.username xform.id_string %}"><button class="btn small">kml</button></a>
+              {% endif %}
           {% endif %}
         </td>
         <td>

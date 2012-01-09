@@ -20,6 +20,7 @@
 				    <th>Number of Submissions</th>
 				    <th>Time of Last Submission</th>
 				    <th>Export</th>
+				    <th>Download KML</th>
 				  </tr>
 				</thead>
 				<tbody>
@@ -35,6 +36,11 @@
 				  <td>
 				    {% if xform.submission_count %}
 				    <a href="{% url odk_viewer.views.csv_export id_string=xform.id_string %}">csv</a>
+				    {% endif %}
+				  </td>
+				  <td>
+				    {% if xform.submission_count %}
+				    <a href="{% url odk_viewer.views.kml_export id_string=xform.id_string %}">kml</a>
 				    {% endif %}
 				  </td>
 				</tr>

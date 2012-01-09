@@ -24,10 +24,12 @@ import json
 import os
 from datetime import date
 
+
 def average(values):
     if len(values):
         return sum(values, 0.0) / len(values)
     return None
+
 
 def map_view(request, username, id_string):
     context = RequestContext(request)
@@ -45,6 +47,7 @@ def map_view(request, username, id_string):
     context.points = json.dumps([round_down_point(p) for p in list(points)])
     context.center = json.dumps(center)
     return render_to_response('map.html', context_instance=context)
+
 
 def survey_responses(request, pk):
     # todo: do a good job of displaying hierarchical data
@@ -68,8 +71,10 @@ def survey_responses(request, pk):
             'image_urls': image_urls(pi.instance),
             })
 
+
 def image_urls(instance):
     return [a.media_file.url for a in instance.attachments.all()]
+
 
 def send_file(path, content_type, name):
     """
@@ -83,6 +88,7 @@ def send_file(path, content_type, name):
     response['Content-Length'] = os.path.getsize(path)
     return response
 
+
 @login_required
 def csv_export(request, username, id_string):
     dd = DataDictionary.objects.get(id_string=id_string,
@@ -91,6 +97,7 @@ def csv_export(request, username, id_string):
     file_path = writer.get_default_file_path()
     writer.write_to_file(file_path)
     return send_file(file_path, "application/csv", id_string)
+
 
 def xls_export(request, username, id_string):
     dd = DataDictionary.objects.get(id_string=id_string,
@@ -103,9 +110,42 @@ def xls_export(request, username, id_string):
     temp_file.close()
     return response
 
+
 def zip_export(request, username, id_string):
     response = response_with_mimetype_and_name('zip', id_string)
     # TODO create that zip_file
     response.content = zip_file
     return response
 
+
+def kml_export(request, username, id_string):
+    # read the locations from the database
+    context = RequestContext(request)
+    context.message="HELLO!!"
+    pis = ParsedInstance.objects.filter(instance__user=request.user, instance__xform__id_string=id_string, lat__isnull=False, lng__isnull=False)
+    data_for_template = []
+    for pi in pis:
+        # read the survey instances
+        data = pi.to_dict()
+        # get rid of keys with leading underscores
+        data_for_display = {}
+        for k, v in data.items():
+            if not k.startswith(u"_"):
+                data_for_display[k] = v
+        xpaths = data_for_display.keys()
+        xpaths.sort(cmp=pi.data_dictionary.get_xpath_cmp())
+        label_value_pairs = [
+            (pi.data_dictionary.get_label(xpath),
+            data_for_display[xpath]) for xpath in xpaths]
+        table_rows = []
+        for key, value in label_value_pairs:
+            table_rows.append('<tr><td>%s</td><td>%s</td></tr>' % (key, value))
+        img_urls = image_urls(pi.instance)
+        img_url = img_urls[0] if img_urls else ""
+        data_for_template.append({"name":id_string, "id": pi.id, "lat": pi.lat, "lng": pi.lng,'image_urls': img_urls, "table": '<table border="1"><a href="#"><img width="210" class="thumbnail" src="%s" alt=""></a><%s</table>' % (img_url,''.join(table_rows))})
+    context.data = data_for_template
+    response = render_to_response("survey.kml",
+    context_instance=context,
+    mimetype="application/vnd.google-earth.kml+xml")
+    response['Content-Disposition'] = 'attachment; filename=%s.kml' %(id_string)
+    return response

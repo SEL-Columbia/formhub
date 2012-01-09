@@ -34,7 +34,7 @@ def django_file(path, field_name, content_type):
         charset=None
         )
 
-def import_instance(path_to_instance_folder, status):
+def import_instance(path_to_instance_folder, status, user):
     xml_files = glob.glob( os.path.join(path_to_instance_folder, "*.xml") )
     if len(xml_files)<1: return
     if len(xml_files)>1: raise Exception("Too many XML files.")
@@ -50,17 +50,15 @@ def import_instance(path_to_instance_folder, status):
     # todo: if an instance has been submitted make sure all the
     # files are in the database.
     # there shouldn't be any instances with a submitted status in the
-    # db.
-    models.get_or_create_instance(xml_file, images, status)
-
+    instance = models.create_instance(user.username, xml_file, images, status) 
     # close the files
     xml_file.close()
     for i in images: i.close()
+    return instance
 
-def import_instances_from_phone(path_to_odk_folder):
+def import_instances_from_phone(path_to_odk_folder, user):
     path_to_sqlite_db = os.path.join(path_to_odk_folder,
                                      'metadata', 'data')
-
     def get_table_describing_odk_files():
         db = create_engine('sqlite:///%s' % path_to_sqlite_db)
         metadata = MetaData()
@@ -93,19 +91,31 @@ def import_instances_from_phone(path_to_odk_folder):
                 )
 
     add_path_to_instance_folder()
+    count = 0
     for i in instances:
         try:
-            import_instance(i[u'path_to_instance_folder'], i[u'status'])
+            instance = import_instance(i[u'path_to_instance_folder'], i[u'status'], user)
+            if instance: count += 1
         except Exception as e:
             print e
+    return count
 
+import zipfile
+import tempfile
+import shutil
 
-def import_instances_from_jonathan(containing_folder):
-    phone_folders = glob.glob( os.path.join(containing_folder, "*") )
-    for phone_folder in phone_folders:
-        odk_folder = os.path.join(phone_folder, 'odk')
-        import_instances_from_phone(odk_folder)
-
+def import_instances_from_zip(zipfile_path, user):
+    count = 0
+    try:
+        temp_directory = tempfile.mkdtemp()
+        zf = zipfile.ZipFile(zipfile_path)
+        zf.extractall(temp_directory)
+        odk_folders = glob.glob(os.path.join(temp_directory, "*", "odk"))
+        for odk_folder in odk_folders:
+            count += import_instances_from_phone(odk_folder, user)
+    finally:
+        shutil.rmtree(temp_directory)
+    return count
 
 # this script is intended to be called as follows
 
