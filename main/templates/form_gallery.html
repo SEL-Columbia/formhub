@@ -20,10 +20,12 @@
   <table id="forms-table" class="zebra-striped">
     <thead>
       <tr>
+        <th></th>
         <th>User</th><!-- we will want more user information -->
         <th>Name</th>
         <th>Description</th>
         <th>XLSForm</th>
+        <th>Map</th>
         <!-- tags -->
       </tr>
     </thead>
@@ -31,15 +33,22 @@
       {% for data_dictionary in shared_forms %}
       <tr>
         <td>
-          <img src='{{ data_dictionary.user.profile.gravatar }}' alt='' width='20' height='20' style='float:left; padding-right:10px;' />
+          <img src='{{ data_dictionary.user.profile.gravatar }}' alt='' width='20' height='20' />
+        </td>
+        <td>
           <a href="/{{ data_dictionary.user.username }}">{{ data_dictionary.user.username }}</a>
         </td>
-        <td>{{ data_dictionary.title }}</td>
+        <td><a href="{% url main.views.show data_dictionary.user.username data_dictionary.id_string %}">{{ data_dictionary.title }}</a></td>
         <td>{{ data_dictionary.description }}</td>
         <td>
           {% if data_dictionary.xls %}
-            <a href="{{ data_dictionary.xls.url }}">{{ data_dictionary.file_name }}</a>
+            <a href="{% url download_xform data_dictionary.user.username data_dictionary.file_name %}"><button class="btn small success">XForm</button></a>
           {% endif %}
+        </td>
+        <td>
+            <a href="{% url odk_viewer.views.map_view data_dictionary.user.username data_dictionary.id_string %}">
+                <button class="btn small info">Map &raquo;</button>
+            </a>
         </td>
       </tr>
       {% endfor %}

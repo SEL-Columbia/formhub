@@ -17,6 +17,11 @@ class TestUserLogin(MainTestCase):
         self._create_user(username, password)
         self._login('robert', password)
 
+    def test_redirect_if_logged_in(self):
+        self._create_user_and_login()
+        response = self.client.get('')
+        self.assertEqual(response.status_code, 302)
+
 class TestUserReservedNames(TestUserProfile):
     def test_disallow_reserved_names(self):
         username = 'forms'

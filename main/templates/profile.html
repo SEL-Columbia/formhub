@@ -56,7 +56,7 @@
                 <td>
                     <center>
                     <a href="{% url download_xform content_user.username form.id_string %}">
-                        <button class="btn small success">form.xls</button>
+                        <button class="btn small success">XForm</button>
                     </a>
                     </center>
                 </td>
@@ -76,7 +76,7 @@
                 </td>
                 <td>
                     <center>
-                    <a href="{% url odk_viewer.views.map form.id_string %}">
+                    <a href="{% url odk_viewer.views.map_view content_user.username form.id_string %}">
                         <button class="btn small info">Map &raquo;</button>
                     </a>
                     </center>

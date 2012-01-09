@@ -32,7 +32,10 @@ def home(request):
     context = RequestContext(request)
     context.num_forms = Instance.objects.count()
     context.num_users = User.objects.count()
-    return render_to_response("home.html", context_instance=context)
+    if request.user.username:
+        return HttpResponseRedirect("/%s" % request.user.username)
+    else:
+        return render_to_response("home.html", context_instance=context)
 
 
 @login_required
@@ -199,3 +202,4 @@ def form_gallery(request):
     context = RequestContext(request)
     context.shared_forms = DataDictionary.objects.filter(shared=True)
     return render_to_response('form_gallery.html', context_instance=context)
+

@@ -63,7 +63,7 @@ class TestFormShow(MainTestCase):
         response = self.client.get(self.url)
         self.assertContains(response, '/%s/data.csv' % self.xform.id_string)
         self.assertContains(response, '/%s/data.xls' % self.xform.id_string)
-        self.assertContains(response, '/map/%s' % self.xform.id_string)
+        self.assertContains(response, '%s/map' % self.xform.id_string)
 
     def test_user_sees_edit_btn(self):
         response = self.client.get(self.url)

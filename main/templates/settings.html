@@ -16,6 +16,10 @@
       <form method="post" action="{% url main.views.profile_settings content_user.username %}">
         {% csrf_token %}
         <table>
+          <tr>
+          <th><label>Username:</label></th>
+          <td><span class="uneditable-input">{{ content_user.username }}</span></td>
+          </tr>
           {{ form.as_table }}
         </table>
         <input type="submit" class="btn primary" value="Update" />
