@@ -7,26 +7,29 @@
   <section id="profile">
     <div class="page-header">
       <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' />
-      <h1>{{ content_user.username }}<span style='color:#DDD; font-weight:100'>&nbsp;|&nbsp;</span><span style='color:#AAA; font-size:smaller'>{{ profile.name }}</span></h1>
+      <h1>
+        {{ content_user.username }}
+        {% if profile.name %}<span style='color:#DDD; font-weight:100;'>&nbsp;|&nbsp;</span><span style='color:#AAA; font-size:smaller;'>{{ profile.name }}</span>
+        <span style='float:right;'>{{ num_forms }} <small>Shared form{{ num_forms|pluralize }}</small></span>
+      </h1>{% endif %}
     </div>
     <div class="row">
       <div class="span10">
     {% if profile.organization %}
-        <p>Organization: {{ profile.organization}}</p>
+        <p><strong>Organization: </strong>{{ profile.organization}}</p>
     {% endif %}
     {% if location  %}
-        <p>Location: {{ location }}</p>
+        <p><strong>Location: </strong>{{ location }}</p>
     {% endif %}
     {% if profile.home_page %}
-        <p>Website: <a href="{{ profile.home_page }}">{{ profile.home_page }}</a></p>
+        <p><strong>Website: </strong><a href="{{ profile.home_page }}">{{ profile.home_page }}</a></p>
     {% endif %}
     {% if profile.twitter %}
-        <p>Twitter: <a href="http://www.twitter.com/{{ profile.twitter }}">@{{ profile.twitter }}</a></p>
+        <p><strong>Twitter: </strong><a href="http://www.twitter.com/{{ profile.twitter }}">@{{ profile.twitter }}</a></p>
     {% endif %}
-        <p>Member since: {{ content_user.date_joined|date:"F j, Y" }}</p>
+        <p><strong>Member since: </strong>{{ content_user.date_joined|date:"F j, Y" }}</p>
       </div>
       <div class="span6">
-	<h1>{{ num_forms }} <small>Shared forms</small></h1>
       </div>  
     </div> 
     <hr>
