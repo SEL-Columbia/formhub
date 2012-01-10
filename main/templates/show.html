@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% block content %}
   <section id="profile">
     <div class="page-header">
@@ -32,24 +31,31 @@
       </div>
       <div class="span5">
         {% if is_owner %}
+        <script type="text/javascript" charset="utf-8">
+            $(document).ready(function() {
+              $.each(['form-shared', 'data-shared', 'active-form'], function(inx, el) {
+                  var cb = $('#' + el + ':checkbox');
+                  cb.iphoneStyle({
+                    onChange: function() { privacyEdit(cb.data('url'), el.split('-')[0]); }
+                  });
+              });
+            });
+        </script>
         <h3>Settings</h3>
         <div class="clearfix">
-          <label>Form Privacy&nbsp;</label>
+          <label>Form Shared&nbsp;</label>
           <div class="input">
-            <a id="toggle_shared_public" href="" class="btn small{% if xform.shared%} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PUBLIC</a>
-                <a id="toggle_shared_private" href="" class="btn small{% if not xform.shared%} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PRIVATE</a>
+            <input id="form-shared" type="checkbox"{% if xform.shared %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
           </div> 
           <br/>
-          <label>Data Privacy&nbsp;</label>
+          <label>Data Shared&nbsp;</label>
           <div class="input">
-            <a id="toggle_shared_data_public" href="" class="btn small{% if xform.shared_data %} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PUBLIC</a>
-            <a id="toggle_shared_data_private" href="" class="btn small{% if not xform.shared_data %} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PRIVATE</a>
+            <input id="data-shared" type="checkbox"{% if xform.shared_data %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
           </div> 
           <br/>
-          <label>Status&nbsp;</label>
+          <label>Form Active&nbsp;</label>
           <div class="input">
-            <a id="toggle_downloadable_active" href="" class="btn small{% if xform.downloadable %} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">Active</a>
-            <a id="toggle_downloadable_inactive" href="" class="btn small{% if not xform.downloadable %} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">Inactive</a>
+            <input id="active-form" type="checkbox"{% if xform.downloadable %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
           </div> 
         </div> 
         {% endif %}

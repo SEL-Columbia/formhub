@@ -126,3 +126,8 @@ $(document).ajaxSend(function(event, xhr, settings) {
 
 });
 
+function privacyEdit(url, param) {
+  $.post(url, {toggle_shared: param});
+}
+
+

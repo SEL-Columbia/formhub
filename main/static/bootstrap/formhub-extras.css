@@ -7,3 +7,37 @@ This is for all the extra things it needs beyond what bootstrap provides.
 .centered {
 	text-align: center;
 }
+
+.bordered {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background-color: #DFDFDF;
+    padding: 8px 0;
+}
+
+.bordered img {
+    padding: 0 10px;
+}
+
+.bordered .span2:first-child small, .bordered .span2:first-child h4 {
+    padding: 0 10px;
+}
+
+.bordered small {
+    font-size: 80%;
+}
+
+.bordered h4 {
+    line-height: 16px;
+    padding-top 5px;
+}
+
+.short {
+    line-height: 26px;
+}
+
+table.narrow-labels label {
+    width: 80px;
+}
+

@@ -72,9 +72,9 @@ class TestFormShow(MainTestCase):
         response = self.client.get(self.url)
         self.assertContains(response, 'edit</a>')
 
-    def test_user_sees_toggle_data_share_btn(self):
+    def test_user_sees_settings(self):
         response = self.client.get(self.url)
-        self.assertContains(response, 'PUBLIC</a>')
+        self.assertContains(response, 'Settings')
 
     def test_anon_no_edit_btn(self):
         self.xform.shared = True

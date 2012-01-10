@@ -77,6 +77,8 @@ def profile(request, username):
     # for the same user -> dashboard
     if content_user == request.user:
         context.show_dashboard = True
+        context.user_surveys = content_user.surveys.count()
+        context.all_forms = content_user.xforms.count()
         context.form = QuickConverter()
         context.odk_url = request.build_absolute_uri("/%s" % request.user.username)
     # for any other user -> profile
