@@ -7,15 +7,23 @@
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
   <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
-	  $('#forms-table').dataTable({
+	  var tbl = $('#forms-table').dataTable({
         "bPaginate": false,
         "oLanguage": {"sSearch": "Search:"},
-        "oSearch": {"sSearch": ""}
+        "oSearch": {"sSearch": ""},
+        "aoColumnDefs": [
+            { "bVisible": false, "aTargets": [ 5 ] }
+        ]
       });
-      $('#forms-table_filter').addClass('row')
-	} );
+      tbl.fnFilter( 'true', 5, true);
+      var tblFilter = $('#forms-table_filter');
+      tblFilter.addClass('row');
+      tblFilter.prepend('Show inactive: <input id="active-select" type="checkbox" />&nbsp;&nbsp;');
+      $('#active-select').change(function() {
+          tbl.fnFilter('(true' + ($(this).is(':checked') ? '|false)' : ')'), 5, true);
+      });
+	});
   </script>
-
 
   <table id="forms-table" class="zebra-striped">
     <thead>
@@ -25,6 +33,7 @@
         <th>Last Submission</th>
         <th>Data</th>
         <th>View</th>
+        <th>Active</th>
       </tr>
     </thead>
     <tbody>
@@ -52,6 +61,7 @@
           <center><a href="{% url odk_viewer.views.map_view user.username xform.id_string %}"><button class="btn small info">Map &raquo;</button></a></center>
           {% endif %}
         </td>
+        <td>{{ xform.downloadable|lower }}</td>
       </tr>
       {% endfor %}
     </tbody>
