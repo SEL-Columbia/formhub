@@ -110,6 +110,7 @@ def public_profile(request, username):
         return content_user
     context = RequestContext(request)
     set_profile_data(context, content_user)
+    context.is_owner = request.user == content_user
     return render_to_response("profile.html", context_instance=context)
 
 

@@ -7,7 +7,7 @@ from django.shortcuts import render_to_response
 from django.core.servers.basehttp import FileWrapper
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseNotAllowed
-from odk_logger.models import Instance
+from odk_logger.models import XForm, Instance
 from odk_viewer.models import DataDictionary
 from odk_viewer.models import ParsedInstance
 from odk_logger.utils import round_down_geopoint
@@ -15,6 +15,7 @@ from odk_logger.xform_instance_parser import xform_instance_to_dict
 from pyxform import Section, Question
 from odk_logger.utils import response_with_mimetype_and_name
 from django.contrib.auth.models import User
+from main.models import UserProfile
 
 from csv_writer import CsvWriter
 from csv_writer import DataDictionaryWriter
@@ -33,8 +34,14 @@ def average(values):
 
 
 def map_view(request, username, id_string):
-    context = RequestContext(request)
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
     owner = User.objects.get(username=username)
+    if not (xform.shared_data or owner == request.user):
+        return HttpResponseNotAllowed('Not shared.')
+    context = RequestContext(request)
+    context.content_user = owner
+    context.xform = xform
+    context.profile, created = UserProfile.objects.get_or_create(user=owner)
     points = ParsedInstance.objects.values('lat', 'lng', 'instance').filter(instance__user=owner, instance__xform__id_string=id_string, lat__isnull=False, lng__isnull=False)
     center = {
         'lat': round_down_geopoint(average([p['lat'] for p in points])),
@@ -48,6 +55,7 @@ def map_view(request, username, id_string):
         }
     context.points = json.dumps([round_down_point(p) for p in list(points)])
     context.center = json.dumps(center)
+    context.map_view = True
     return render_to_response('map.html', context_instance=context)
 
 

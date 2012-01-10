@@ -22,7 +22,7 @@
                 {% csrf_token %}
                 <textarea id="description" class="xxlarge"  disabled="" rows="3" name="textarea">{% if xform.description %}{{ xform.description }}{% else %}None{% endif %}</textarea>
                 {% if is_owner %}
-                    <a id="description_edit" href="" class="btn small primary">edit</a>
+                    <a id="description_edit" href="" class="btn small">edit</a>
                     <a id="description_save" style="display:none" href="" class="btn small primary" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
                 {% endif %}
             </form>
@@ -63,20 +63,33 @@
     </div>
     <div class="row">
       <div class="span16">
-        <a href="{% url download_xform content_user.username xform.id_string %}">
-          <button class="btn small success">XForm</button>
-        </a>
+        <ul class="inline">
+        <li>
         <a href="{% url download_xlsform content_user.username xform.id_string %}">
           <button class="btn small success">Excel</button>
         </a>
-        <a href="{% url download_jsonform content_user.username xform.id_string %}">
-          <button class="btn small success">Form JSON</button>
-        </a>
+        </li>
+        <li class="inline dropdown" data-dropdown="dropdown">
+            <a class="dropdown-toggle btn small" href="#">Other</a>
+            <ul class="dropdown-menu">
+                <li>
+                <a href="{% url download_xform content_user.username xform.id_string %}">
+                  <button class="btn small success">XForm</button>
+                </a>
+                </li>
+                <li>
+                <a href="{% url download_jsonform content_user.username xform.id_string %}">
+                  <button class="btn small success">Form JSON</button>
+                </a>
+                </li>
+            </ul>
+        </li>
+        </ul>
       </div>
     </div>
     <div class="row">
       <div class="span16">
-        <hr>
+        <hr/>
         <h3>
             Form Data
             {% if xform.shared_data %}
@@ -86,7 +99,7 @@
             {% endif %}
         </h3>
         {% if xform.shared_data or is_owner %}
-        <h4>Number of submissions: {{ xform.submission_count }}</h4>
+        <h4>Submissions: {{ xform.submission_count }}</h4>
         {% if xform.submission_count > 0 %}
             <div>
             <a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}">

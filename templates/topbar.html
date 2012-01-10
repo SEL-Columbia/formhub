@@ -2,6 +2,54 @@
   <div class="topbar-inner">
     <div class="container">
       <a class="brand" href="/" title="formhub"><img height="14px" alt="formhub" src="/static/images/logo.png" /></a>
+      {% if map_view %}
+      <ul class="nav">
+        <li>&nbsp;</li>
+        <li>
+            <img src='{{ profile.gravatar }}' alt='gravatar' width='30' height='30' />
+            &nbsp;
+            &nbsp;
+        </li>
+        <li>&nbsp;&nbsp;</li>
+        <li>
+          <h3>
+            <a href="{% url main.views.profile content_user.username %}">{{ content_user.username }}</a>
+          </h3>
+        </li>
+        <li>
+          <h3><a href="#">&nbsp;/&nbsp;</a></h3>
+        </li>
+        <li>
+          <h3>
+            <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
+          </h3>
+        </li>
+        <li>&nbsp;</li>
+        <li><a href="#"><span class="inverted">submissions {{ xform.submission_count }}</span></a></li>
+      </ul>
+      <ul class="nav secondary-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle">Data Download</a>
+          <ul class="dropdown-menu">
+            <li>
+                <a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}">
+                    <button class="btn small">csv</button>
+                </a>
+            </li>
+            <li>
+                <a href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}">
+                    <button class="btn small">xls</button>
+                </a>
+            </li>
+            <li>
+                <a href="{% url odk_viewer.views.kml_export content_user.username xform.id_string %}">
+                    <button class="btn small">kml</button>
+                </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      {% else %}
       <ul class="nav">
         <!-- <li class="active"><a href="#overview">Overview</a></li> -->
         <li><a href="{% url main.views.form_gallery %}">Forms</a></li>
@@ -28,6 +76,7 @@
       <ul class="nav" style="float:right">
         <li><a href="{% url auth_login %}">Sign in</a></li>
       </ul>
+      {% endif %}
       {% endif %}
     </div>
   </div>

@@ -4,7 +4,7 @@ from main.models import UserProfile
 from main.views import show, edit
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
-from odk_viewer.views import csv_export, xls_export, zip_export, kml_export
+from odk_viewer.views import csv_export, xls_export, zip_export, kml_export, map_view
 import os
 
 class TestFormShow(MainTestCase):
@@ -218,6 +218,23 @@ class TestFormShow(MainTestCase):
 
     def test_allow_kml_export(self):
         url = reverse(kml_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_allow_map(self):
+        url = reverse(map_view, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_restrict_map(self):
+        url = reverse(map_view, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        response = self.anon.get(url)
+        self.assertEqual(response.status_code, 405)
+
+    def test_allow_map_if_shared(self):
+        self.xform.shared_data = True
+        self.xform.save()
+        url = reverse(map_view, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 

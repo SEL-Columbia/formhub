@@ -10,12 +10,23 @@
 
    <section id="profile">
      <div class="page-header">
-       <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' />
+       <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' />
        <h1>
          {{ content_user.username }}
-         {% if profile.name %}<span style='color:#DDD; font-weight:100;'>&nbsp;|&nbsp;</span><span style='color:#AAA; font-size:smaller;'>{{ profile.name }}</span>
-         <span style='float:right;'>{{ num_forms }} <small>Shared form{{ num_forms|pluralize }}</small></span>
-       </h1>{% endif %}
+         {% if profile.name %}
+            <span class='pipe'>&nbsp;|&nbsp;</span><span class='name'>{{ profile.name }}</span>
+          {% endif %}
+          {% if is_owner %}
+            <span class='right'>
+            <a href="{% url main.views.profile_settings content_user.username %}" class="btn small">Edit Your Profile</a>
+            </span>
+          {% endif %}
+       </h1>
+       <h2>
+            <span class='right'>
+                {{ num_forms }} <small>Shared form{{ num_forms|pluralize }}</small>
+            </span>
+       </h2>
      </div>
      <div class="row">
        <div class="span10">
@@ -61,7 +72,6 @@
                     <a/>
                 </td>
                 <td>{{ form.date_created|date:"N d, Y" }}</td>
-                <td>
                 <td>
                     {% if form.shared %}
                     <a href="{% url download_xlsform content_user.username form.id_string %}">

@@ -96,6 +96,7 @@ $(document).ajaxSend(function(event, xhr, settings) {
     $(this).hide();
     $('#description_save').show();
     $('#description').removeAttr('disabled');
+    $('#description').show();
     return false;
   });
 

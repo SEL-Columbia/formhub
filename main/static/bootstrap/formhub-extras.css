@@ -16,28 +16,91 @@ This is for all the extra things it needs beyond what bootstrap provides.
     padding: 8px 0;
 }
 
-.bordered img {
+.profile img {
     padding: 0 10px;
 }
 
-.bordered .span2:first-child small, .bordered .span2:first-child h4 {
+.profile .span2:first-child small, .profile .span2:first-child h4 {
     padding: 0 10px;
 }
 
-.bordered small {
+.profile small {
     font-size: 80%;
 }
 
-.bordered h4 {
+.profile h4 {
     line-height: 16px;
     padding-top 5px;
+}
+
+.profile span {
+    font-size: 11px;
+    vertical-align: top;
+}
+
+.profile span a {
+    color: #000;
+}
+
+#profile.page-header img {
+    float: left;
+    padding-right: 10px;
+}
+
+span.pipe {
+    color: #DDD;
+    font-weight: 100;
+}
+
+span.name {
+    color: #AAA;
+    font-size: small;
+}
+
+span.right {
+    float: right;
 }
 
 .short {
     line-height: 26px;
 }
 
+span.inverted {
+    -webkit-border-radius: 50px;
+    -moz-border-radius: 50px;
+    border-radius: 50px;
+    background-color: #FFF;
+    color: #000;
+    padding: 3px 8px;
+    font-weight: bold;
+}
+
 table.narrow-labels label {
     width: 80px;
+}
+
+textarea[disabled]#description {
+    background-color: transparent;
+    color: #444;
+    border-color: #FEFEFE;
+}
+
+ul.inline {
+    margin: 0 0 18px;
+    padding: 0;
+    list-style: none;
+    zoom: 1;
+}
+
+ul.inline li {
+    display: inline;
+}
+
+ul.inline ul.dropdown-menu {
+    margin: -12px 0 0 55px;
+}
+
+.topbar div > ul > li > img {
+    margin-top: 5px;
 }
 
