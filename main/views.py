@@ -164,6 +164,8 @@ def edit(request, username, id_string):
             xform.shared_data = not xform.shared_data
         if request.POST.get('toggle_shared') and request.POST['toggle_shared'] == 'form':
             xform.shared = not xform.shared
+        if request.POST.get('toggle_shared') and request.POST['toggle_shared'] == 'active':
+            xform.downloadable = not xform.downloadable
         xform.save()
         return HttpResponse('Updated succeeded.')
     return HttpResponseNotAllowed('Update failed.')

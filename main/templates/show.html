@@ -36,14 +36,20 @@
         <div class="clearfix">
           <label>Form Privacy&nbsp;</label>
           <div class="input">
-            <a id="toggle_shared_pub" href="" class="btn small{% if xform.shared%} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PUBLIC</a>
-                <a id="toggle_shared_pri" href="" class="btn small{% if not xform.shared%} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PRIVATE</a>
+            <a id="toggle_shared_public" href="" class="btn small{% if xform.shared%} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PUBLIC</a>
+                <a id="toggle_shared_private" href="" class="btn small{% if not xform.shared%} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PRIVATE</a>
           </div> 
           <br/>
           <label>Data Privacy&nbsp;</label>
           <div class="input">
-            <a id="toggle_shared_data_pub" href="" class="btn small{% if xform.shared_data %} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PUBLIC</a>
-            <a id="toggle_shared_data_pri" href="" class="btn small{% if not xform.shared_data %} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PRIVATE</a>
+            <a id="toggle_shared_data_public" href="" class="btn small{% if xform.shared_data %} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PUBLIC</a>
+            <a id="toggle_shared_data_private" href="" class="btn small{% if not xform.shared_data %} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">PRIVATE</a>
+          </div> 
+          <br/>
+          <label>Status&nbsp;</label>
+          <div class="input">
+            <a id="toggle_downloadable_active" href="" class="btn small{% if xform.downloadable %} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">Active</a>
+            <a id="toggle_downloadable_inactive" href="" class="btn small{% if not xform.downloadable %} primary{% endif %}" data-url="{% url main.views.edit content_user.username xform.id_string %}">Inactive</a>
           </div> 
         </div> 
         {% endif %}

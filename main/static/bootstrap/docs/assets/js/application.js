@@ -120,8 +120,9 @@ $(document).ajaxSend(function(event, xhr, settings) {
       });
   }
 
-  toggleBind('toggle_shared_data_pub', 'toggle_shared_data_pri', 'data');
-  toggleBind('toggle_shared_pub', 'toggle_shared_pri', 'form');
+  toggleBind('toggle_shared_data_public', 'toggle_shared_data_private', 'data');
+  toggleBind('toggle_shared_public', 'toggle_shared_private', 'form');
+  toggleBind('toggle_downloadable_active', 'toggle_downloadable_inactive', 'active');
 
 });
 

@@ -138,6 +138,21 @@ class TestFormShow(MainTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared, False)
 
+    def test_user_toggle_form_downloadable(self):
+        self.xform.downloadable = False
+        self.xform.save()
+        self.assertEqual(self.xform.downloadable, False)
+        response = self.client.post(self.edit_url, {'toggle_shared': 'active'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(XForm.objects.get(pk=self.xform.pk).downloadable, True)
+
+    def test_user_toggle_form_downloadable_off(self):
+        self.xform.downloadable = True
+        self.xform.save()
+        response = self.client.post(self.edit_url, {'toggle_shared': 'active'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(XForm.objects.get(pk=self.xform.pk).downloadable, False)
+
     def test_restrict_csv_export_if_not_shared(self):
         url = reverse(csv_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
         response = self.anon.get(url)
