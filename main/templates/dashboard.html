@@ -1,70 +1,75 @@
 {% block content %}
 
+<script type="text/javascript">$(':checkbox').iphoneStyle();</script>
 <section id="profile">
   <div class="row">
 
     <!-- hack on publish survey here first -->
-    <div class="span10">
-      <h1>Publish a Form <small>Upload Excel form files.</small></h1>
-      
-      <div class="row">
-	<div class="span8">
-	  <p>
-            For a quick introduction on how to publish a form check out
-            the <a href="{% url main.views.tutorial %}">tutorial</a>.<br /><br/>
-	    
-            New to formhub? Try publishing
-            <a href="/static/tutorial/tutorial.xls">tutorial.xls</a>.<br /><br/>
-	    
-            Learn about the XLSForm syntax <a href="/syntax/">here</a> or checkout this more advanced example: <a href="https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0AgpC5gsTSm_4dFZQdzZZVGxlcEQ3aktBbFlyRXE3cFE&output=xls">nutrition_screening.xls</a>.<br />
-
-	</div>
-	
-	<div class="span8">
-	  <form action="." method="post" enctype="multipart/form-data">
+    <div class="span8">
+        <h1>Publish a Form <small>Upload Excel form files.</small></h1>
+        For a quick introduction on how to publish a form check out
+        the <a href="{% url main.views.tutorial %}">tutorial</a>.
+        <br/>
+        <br/>
+        New to formhub? Try publishing
+        <a href="/static/tutorial/tutorial.xls">tutorial.xls</a>.
+        <br/>
+        <br/>
+        Learn about the XLSForm syntax <a href="/syntax/">here</a> or checkout this more advanced example: <a href="https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0AgpC5gsTSm_4dFZQdzZZVGxlcEQ3aktBbFlyRXE3cFE&output=xls">nutrition_screening.xls</a>.
+        <br/>
+        <form action="." method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <table>
-              {{ form.as_table }}
+            <table class="narrow-labels">
+                {{ form.as_table }}
             </table>
-            <span style='float:middle;'><input type="submit" class="btn large primary" value="Publish" /></a>
-</form>
+            <span style='float:middle;'>
+                <input type="submit" class="btn large primary" value="Publish" />
+            </span>
+        </form>
+    </div>
+    <div class="span2">
+        &nbsp;
+    </div>
+    <div class="span6 bordered">
+        <div class="row">
+        <div class="span1">
+            <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' />
+        </div>
+        <div class="span5">
+            <h3 class="short"><a href="/{{content_user.username}}/profile">{{ content_user.username }}</a></h3>
+            <span style='font-size:11px; vertical-align: top'>View Profile Page</span>
+            <h3 class="short">
+            {% if profile.name %}<span style='color:#DDD; font-weight:100;'>&nbsp;|&nbsp;</span>
+            <span style='color:#AAA; font-size:smaller;'>{{ profile.name }}</span>
+            {% endif %}
+            </h3>
+        </div>
+        </div>
+        <div class="row">
+        <div class="span2">
+            <h4>{{ all_forms }}</h4> 
+        </div>
+        <div class="span2">
+            <h4>{{ num_forms }}</h4> 
+        </div>
+        <div class="span2">
+            <h4>{{ user_surveys }}</h4> 
+        </div>
+        </div>
+        <div class="row">
+        <div class="span2">
+            <small>ALL FORMS</small>
+        </div>
+        <div class="span2">
+            <small>SHARED FORMS</small>
+        </div>
+        <div class="span2">
+            <small>SUBMISSIONS</small>
+        </div>
+        </div>
+    </div>
 </div>
-</div>
-</div>
-
-
-
-
-    <div class="span6">
-      <table border=0>
-	<tr>
-	  <td>
-	    <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' />
-	    <h3><a href="/{{content_user.username}}/profile">{{ content_user.username }}</a></h3>
-	    <span style='font-size:11px; vertical-align: top'>View Profile Page</span></small>
-          </td><td><h3>
-
-{% if profile.name %}<span style='color:#DDD; font-weight:100;'>&nbsp;|&nbsp;</span>
-	  <span style='color:#AAA; font-size:smaller;'>{{ profile.name }}</span>
-	{% endif %}</h3>
-</td></tr>
-</tr><td>
-
-
-      
-        <span style='float:right;'>{{ num_forms }} <small>Shared form{{ num_forms|pluralize }}</small></span>
-</td></tr></table>
-
-</div>
-
-
-</div>
-
-
 </section>
-
-
-
-<!--  {% include "publish_survey.html" %} -->
-  {% include "published_surveys.html" %}
+{% include "published_surveys.html" %}
 {% endblock %}
+
