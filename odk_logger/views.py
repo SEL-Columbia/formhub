@@ -98,7 +98,7 @@ def download_xform(request, username, id_string):
 
 def download_xlsform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
-    response = response_with_mimetype_and_name('vnd.ms-excel', id_string)
+    response = response_with_mimetype_and_name('vnd.ms-excel', id_string, extension='xls')
     response.content= xform.xls
     return response
 
