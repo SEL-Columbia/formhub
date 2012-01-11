@@ -91,7 +91,7 @@ ul.inline li {
 }
 
 ul.inline ul.dropdown-menu {
-    margin: -12px 0 0 55px;
+    margin-top: -12px;
 }
 
 .topbar div > ul > li > img {
