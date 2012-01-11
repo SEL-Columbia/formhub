@@ -1,10 +1,8 @@
 <section id="publish-form">
-  <div class="page-header">
+  <div class="page-header"> 
     <h1>Publish a Form <small>Upload Excel form files.</small></h1>
   </div>
-
   <div class="row">
-
     <div class="span8">
       <p>
         For a quick introduction on how to publish a form check out
@@ -26,18 +24,5 @@
         <input type="submit" class="btn large primary" value="Publish" />
       </form>
     </div>
-
   </div>
-
-{% if message %}
-  <div class="row">
-    <div class="span16">
-      <div class="alert-message block-message {{ message.type }} fade in" data-alert="alert">
-	<a class="close" href="#">×</a>
-	<p>{{ message.text|safe }}</p>
-      </div>
-    </div>
-  </div>
-{% endif %}
-
 </section>

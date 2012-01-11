@@ -1,5 +1,3 @@
-# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
-
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.db import transaction

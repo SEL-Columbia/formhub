@@ -1,26 +1,83 @@
-<div class="topbar" data-dropdown="dropdown" > 
-  <div class="topbar-inner"> 
-    <div class="container"> 
-      <a class="brand" href="/" title="formhub"><img height="14px" alt="formhub" src="/static/images/logo.png" /></a> 
-      <ul class="nav"> 
+<div class="topbar" data-dropdown="dropdown" >
+  <div class="topbar-inner{% if map_view %} topbar-inner-map{% endif %}">
+    <div class="container">
+      <a class="brand" href="/" title="formhub"><img height="14px" alt="formhub" src="/static/images/logo.png" /></a>
+      {% if map_view %}
+      <ul class="nav">
+        <li>&nbsp;</li>
+        <li>
+            <img src='{{ profile.gravatar }}' alt='gravatar' width='30' height='30' />
+            &nbsp;
+            &nbsp;
+        </li>
+        <li>&nbsp;&nbsp;</li>
+        <li>
+          <h3>
+            <a href="{% url main.views.profile content_user.username %}">{{ content_user.username }}</a>
+          </h3>
+        </li>
+        <li>
+          <h3><a href="#">&nbsp;/&nbsp;</a></h3>
+        </li>
+        <li>
+          <h3>
+            <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
+          </h3>
+        </li>
+        <li>&nbsp;</li>
+        <li><a href="#"><span class="inverted">{{ xform.submission_count }} submissions</span></a></li>
+      </ul>
+      <ul class="nav secondary-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle">Data Download</a>
+          <ul class="dropdown-menu">
+            <li>
+                <a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}">
+                    csv
+                </a>
+            </li>
+            <li>
+                <a href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}">
+                    xls
+                </a>
+            </li>
+            <li>
+                <a href="{% url odk_viewer.views.kml_export content_user.username xform.id_string %}">
+                    kml
+                </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      {% else %}
+      <ul class="nav">
         <!-- <li class="active"><a href="#overview">Overview</a></li> -->
+        <li><a href="{% url main.views.form_gallery %}">Forms</a></li>
         <li><a href="{% url main.views.tutorial %}">About</a></li>
         <li><a href="{% url main.views.syntax %}">Syntax</a></li>
         <li><a href="{% url main.views.support %}">Support</a></li>
         <li><a href="http://blog.formhub.org/">Blog</a></li>
-        <!-- <li><a href="{% url main.views.gallery %}">Gallery</a></li> -->
-      </ul> 
+
+      </ul>
       {% if user.is_authenticated %}
-      <ul class="nav secondary-nav"> 
-        <li class="dropdown"> 
-          <a href="#" class="dropdown-toggle">{{ user.username }}</a> 
-          <ul class="dropdown-menu"> 
-            <li><a href="{% url auth_password_change %}">Change password</a></li>
+      <ul class="nav secondary-nav">
+        <li><a href="/{{user.username}}">{{user.username}}</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle"></a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url main.views.public_profile user.username %}">Public profile</a></li>
+            <li><a href="{% url main.views.profile_settings user.username %}">Settings</a></li>
+            <!--<li><a href="{% url auth_password_change %}">Change password</a></li>-->
             <li><a href="{% url auth_logout %}">Sign out</a></li>
-          </ul> 
-        </li> 
-      </ul> 
+          </ul>
+        </li>
+      </ul>
+      {% else %}
+      <ul class="nav" style="float:right">
+        <li><a href="{% url auth_login %}">Sign in</a></li>
+      </ul>
       {% endif %}
-    </div> 
-  </div> 
-</div> 
+      {% endif %}
+    </div>
+  </div>
+</div>

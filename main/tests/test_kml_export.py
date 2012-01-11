@@ -25,7 +25,7 @@ class TestKMLExport(MainTestCase):
             u'/double_repeat/bed_net[2]/member[2]/name',
             ]
         self.assertEquals(dd.xpaths(repeat_iterations=2), xpaths)
-        url = reverse(kml_export, kwargs={'id_string': 'double_repeat'})
+        url = reverse(kml_export, kwargs={'username': self.user.username, 'id_string': 'double_repeat'})
         response = self.client.get(url)
         with open(os.path.join(self.fixtures, 'export.kml')) as f:
             expected_content = f.read()

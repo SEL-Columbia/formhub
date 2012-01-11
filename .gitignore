@@ -3,6 +3,8 @@ site_media/attachments
 
 tmp/*
 *.pyc
+*.sql
+*.tar.gz
 *~
 .DS_Store
 db.sqlite3

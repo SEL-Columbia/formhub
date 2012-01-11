@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+    {% if show_dashboard %}
+        {% include "dashboard.html" %}
+    {% else %}
+
+
+   <section id="profile">
+     <div class="page-header">
+       <h1>
+         <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' />
+         {{ content_user.username }}
+         {% if profile.name %}
+            <span class='pipe'>&nbsp;|&nbsp;</span><span class='name'>{{ profile.name }}</span>
+          {% endif %}
+          {% if is_owner %}
+            <span class='right'>
+            <a href="{% url main.views.profile_settings content_user.username %}" class="btn small">Edit Your Profile</a>
+            </span>
+          {% endif %}
+       </h1>
+       <h2>
+            <span class='right'>
+                {{ num_forms }} <small>Shared form{{ num_forms|pluralize }}</small>
+            </span>
+       </h2>
+     </div>
+     <div class="row">
+       <div class="span10">
+	 {% if profile.organization %}
+         <p><strong>Organization: </strong>{{ profile.organization}}</p>
+	 {% endif %}
+	 {% if location  %}
+         <p><strong>Location: </strong>{{ location }}</p>
+	 {% endif %}
+	 {% if profile.home_page %}
+         <p><strong>Website: </strong><a href="{{ profile.home_page }}">{{ profile.home_page }}</a></p>
+	 {% endif %}
+	 {% if profile.twitter %}
+         <p><strong>Twitter: </strong><a href="http://www.twitter.com/{{ profile.twitter }}">@{{ profile.twitter }}</a></p>
+	 {% endif %}
+         <p><strong>Member since: </strong>{{ content_user.date_joined|date:"F j, Y" }}</p>
+       </div>
+       <div class="span6">
+       </div>  
+     </div> 
+     <hr>
+
+     <div class="row">
+       <div class="span16">
+	 <h3>Shared Forms & Public Data <small>({{ num_forms }})</small></h3>
+	 {% if forms %}
+	 <table class="zebra-striped">
+	   <thead>
+	    <tr>
+              <th>Name</th>
+              <th>Create Date</th>
+              <th>XLSForm</th>
+              <th>Public Data</th>
+              <th>View</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+        {% for form in forms %}
+            <tr>
+                <td>
+                    <a href="{% url main.views.show content_user.username form.id_string %}">
+                        {{ form.title }}
+                    <a/>
+                </td>
+                <td>{{ form.date_created|date:"N d, Y" }}</td>
+                <td>
+                    {% if form.shared %}
+                    <a href="{% url download_xlsform content_user.username form.id_string %}">
+                        <button class="btn small success">Excel</button>
+                    </a>
+                    {% else %}
+                        <span class="label warning">PRIVATE</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if form.shared_data %}
+                        <a href="{% url odk_viewer.views.csv_export content_user.username form.id_string %}">
+                            <button class="btn small">csv</button>
+                        </a>
+                        <a href="{% url odk_viewer.views.xls_export content_user.username form.id_string %}">
+                            <button class="btn small">xls</button>
+                        </a>
+                        <a href="{% url odk_viewer.views.kml_export content_user.username form.id_string %}">
+                            <button class="btn small">kml</button>
+                        </a>
+                    {% else %}
+                        <span class="label warning">PRIVATE</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if form.shared_data %}
+                    <a href="{% url odk_viewer.views.map_view content_user.username form.id_string %}">
+                        <button class="btn small info">Map &raquo;</button>
+                    </a>
+                    {% else %}
+                        <span class="label warning">PRIVATE</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+	  </tbody>
+	</table>
+    {% else %}
+        <h4>None public</h4>
+    {% endif %}
+    </div> 
+  </section>
+  {% endif %}
+  {% endblock %}
+  
