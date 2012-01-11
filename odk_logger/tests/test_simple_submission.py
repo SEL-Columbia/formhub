@@ -41,6 +41,7 @@ class TestSimpleSubmission(TestCase):
             xform.xml = sss.to_xml()
             xform.save()
         get_xml_for_form(self.xform1)
+        get_xml_for_form(self.xform2)
 
     def tearDown(self):
         self.xform1.delete()
