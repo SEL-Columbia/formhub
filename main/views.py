@@ -1,5 +1,6 @@
-import os
+import os, urllib2
 
+from django.core.files.base import ContentFile
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -17,19 +18,23 @@ from odk_logger.models import Instance, XForm
 from utils.user_auth import check_and_set_user, set_profile_data
 from main.forms import UserProfileForm
 
-class QuickConverter(forms.Form):
-    xls_file = forms.FileField(label="XLS File")
-    #xls_url = forms.URLField(verify_exists=False, label="or web link", required=False)
+class QuickConverterFile(forms.Form):
+    xls_file = forms.FileField(label="XLS File", required=False)
 
+class QuickConverterURL(forms.Form):
+    xls_url = forms.URLField(verify_exists=False, label="XLS URL", required=False)
+
+class QuickConverter(QuickConverterFile, QuickConverterURL):
     def publish(self, user):
         if self.is_valid():
+            cleaned_xls_file = self.cleaned_data['xls_file']
+            if not cleaned_xls_file:
+                cleaned_url = self.cleaned_data['xls_url']
+                cleaned_xls_file = ContentFile(urllib2.urlopen(cleaned_url).read())
             return DataDictionary.objects.create(
                 user=user,
-                xls=self.cleaned_data['xls_file']
+                xls=cleaned_xls_file
                 )
-        else:
-            raise Exception(self._errors)
-
 
 def home(request):
     context = RequestContext(request)
@@ -83,7 +88,8 @@ def profile(request, username):
         context.show_dashboard = True
         context.user_surveys = content_user.surveys.count()
         context.all_forms = content_user.xforms.count()
-        context.form = QuickConverter()
+        context.form = QuickConverterFile()
+        context.form_url = QuickConverterURL()
         context.odk_url = request.build_absolute_uri("/%s" % request.user.username)
     # for any other user -> profile
     profile, created = UserProfile.objects.get_or_create(user=content_user)

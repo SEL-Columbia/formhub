@@ -2,7 +2,7 @@ from test_base import MainTestCase
 from odk_viewer.models import DataDictionary
 from odk_logger.models import XForm, Instance
 import os
-from odk_viewer.views import csv_export
+from odk_viewer.views import xls_export, csv_export
 from django.core.urlresolvers import reverse
 import csv
 import json
@@ -19,6 +19,18 @@ class TestSite(MainTestCase):
         self._make_submissions()
         self._check_csv_export()
         self._check_delete()
+
+    def test_url_upload(self):
+        self._create_user_and_login()
+        self._publish_xls_file()
+        xls_url = reverse(xls_export, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
+        pre_count = XForm.objects.count()
+        response = self.client.post('/%s/' % self.user.username, {'xls_url': xls_url})
+        # make sure publishing the survey worked
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(XForm.objects.count(), pre_count+1)
+        self.xform = list(XForm.objects.all())[-1]
 
     def _publish_xls_file(self):
         xls_path = os.path.join(self.this_directory, "fixtures", "transportation", "transportation.xls")
