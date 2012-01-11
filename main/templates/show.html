@@ -74,12 +74,12 @@
             <ul class="dropdown-menu">
                 <li>
                 <a href="{% url download_xform content_user.username xform.id_string %}">
-                  <button class="btn small success">XForm</button>
+                  XForm
                 </a>
                 </li>
                 <li>
                 <a href="{% url download_jsonform content_user.username xform.id_string %}">
-                  <button class="btn small success">Form JSON</button>
+                  Form JSON
                 </a>
                 </li>
             </ul>
@@ -102,15 +102,33 @@
         <h4>Submissions: {{ xform.submission_count }}</h4>
         {% if xform.submission_count > 0 %}
             <div>
-            <a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}">
-                <button class="btn small">csv</button>
-            </a>
-            <a href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}">
-                <button class="btn small">xls</button>
-            </a>
-            <a href="{% url odk_viewer.views.kml_export content_user.username xform.id_string %}">
-                <button class="btn small">kml</button>
-            </a>
+            <div class="input-prepend">
+                <span class="add-on">
+                <a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}">
+                    csv
+                </a>
+                </span>
+                <input class="xxlarge" type="text" size="16" value="{{ base_url }}{% url odk_viewer.views.csv_export content_user.username xform.id_string %}"/>
+            </div>
+            <br/>
+            <div class="input-prepend">
+                <span class="add-on">
+                <a href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}">
+                    xls
+                </a>
+                </span>
+                <input class="xxlarge" type="text" size="16" value="{{ base_url }}{% url odk_viewer.views.xls_export content_user.username xform.id_string %}"/>
+            </div>
+            <br/>
+            <div class="input-prepend">
+                <span class="add-on">
+                <a href="{% url odk_viewer.views.kml_export content_user.username xform.id_string %}">
+                    kml
+                </a>
+                </span>
+                <input class="xxlarge" type="text" size="16" value="{{ base_url }}{% url odk_viewer.views.kml_export content_user.username xform.id_string %}"/>
+            </div>
+            <br/>
             <a href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
                 <button class="btn small info">Map &raquo;</button>
             </a>
