@@ -39,6 +39,7 @@ class TestSimpleSubmission(TestCase):
             builder = SurveyElementBuilder(question_type_dictionary=qtd)
             sss = builder.create_survey_element_from_json(xform.json)
             xform.xml = sss.to_xml()
+            xform._mark_start_time_boolean()
             xform.save()
         get_xml_for_form(self.xform1)
         get_xml_for_form(self.xform2)
@@ -46,6 +47,10 @@ class TestSimpleSubmission(TestCase):
     def tearDown(self):
         self.xform1.delete()
         self.user.delete()
+
+    def test_start_time_boolean_properly_set(self):
+        self.assertTrue(self.xform1.has_start_time == False)
+        self.assertTrue(self.xform2.has_start_time == True)
 
     def test_simple_yes_submission(self):
         def submit_simple_yes():
