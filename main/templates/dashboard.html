@@ -30,23 +30,24 @@
     <div class="span2">
         &nbsp;
     </div>
-    <div class="span6 bordered profile">
+    <div class="span6 profile">
+        <div class="bordered">
         <div class="row">
         <div class="span1">
             <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' />
         </div>
-        <div class="span5">
-            <h3 class="short"><a href="/{{content_user.username}}/profile">{{ content_user.username }}</a></h3>
-            <span><a href="/{{content_user.username}}/profile">View Profile Page</a></span>
+        <div class="span4">
             <h3 class="short">
-            {% if profile.name %}
-              <span style='color:#AAA; font-size:smaller;'>{{ profile.name }}</span>
-            {% endif %}
+                <a href="/{{content_user.username}}/profile">{{ content_user.username }}</a>
+                {% if profile.name %}
+                <span class="name">|&nbsp;{{ profile.name }}</span>
+                {% endif %}
             </h3>
+            <span><a href="/{{content_user.username}}/profile">View Profile Page</a></span>
         </div>
         </div>
         <div class="row">
-        <div class="span2">
+        <div class="span1">
             <h4>{{ all_forms }}</h4> 
         </div>
         <div class="span2">
@@ -57,14 +58,15 @@
         </div>
         </div>
         <div class="row">
-        <div class="span2">
-            <small>ALL FORMS</small>
+        <div class="span1">
+            <small>FORMS</small>
         </div>
         <div class="span2">
             <small>SHARED FORMS</small>
         </div>
         <div class="span2">
             <small>SUBMISSIONS</small>
+        </div>
         </div>
         </div>
     </div>
