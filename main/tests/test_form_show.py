@@ -17,7 +17,8 @@ class TestFormShow(MainTestCase):
         response = self._publish_xls_file(xls_path)
         self.assertEqual(XForm.objects.count(), 1)
         s = 'transport_2011-07-25_19-05-49'
-        self._make_submission(os.path.join(self.this_directory, 'fixtures', 'transportation', 'instances', s, s + '.xml'))
+        self._make_submission(os.path.join(self.this_directory, 'fixtures',
+                    'transportation', 'instances', s, s + '.xml'))
         self.xform = XForm.objects.all()[0]
         self.url = reverse(show, kwargs={
             'username': self.user.username,
@@ -59,7 +60,6 @@ class TestFormShow(MainTestCase):
         self.xform.shared_data = True
         self.xform.save()
         response = self.anon.get(self.url)
-        self.assertNotContains(response, 'PRIVATE')
         self.assertContains(response, '/%s/data.csv' % self.xform.id_string)
 
     def test_show_link_if_owner(self):
@@ -154,87 +154,102 @@ class TestFormShow(MainTestCase):
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).downloadable, False)
 
     def test_restrict_csv_export_if_not_shared(self):
-        url = reverse(csv_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        url = reverse(csv_export, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
         response = self.anon.get(url)
         self.assertEqual(response.status_code, 405)
 
     def test_restrict_xls_export_if_not_shared(self):
-        url = reverse(xls_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        url = reverse(xls_export, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
         response = self.anon.get(url)
         self.assertEqual(response.status_code, 405)
 
     def test_restrict_zip_export_if_not_shared(self):
-        url = reverse(zip_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        url = reverse(zip_export, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
         response = self.anon.get(url)
         self.assertEqual(response.status_code, 405)
 
     def test_restrict_kml_export_if_not_shared(self):
-        url = reverse(kml_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        url = reverse(kml_export, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
         response = self.anon.get(url)
         self.assertEqual(response.status_code, 405)
 
     def test_allow_csv_export_if_shared(self):
         self.xform.shared_data = True
         self.xform.save()
-        url = reverse(csv_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        url = reverse(csv_export, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
         response = self.anon.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_allow_xls_export_if_shared(self):
         self.xform.shared_data = True
         self.xform.save()
-        url = reverse(xls_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        url = reverse(xls_export, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
         response = self.anon.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_allow_zip_export_if_shared(self):
         self.xform.shared_data = True
         self.xform.save()
-        url = reverse(zip_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        url = reverse(zip_export, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
         response = self.anon.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_allow_kml_export_if_shared(self):
         self.xform.shared_data = True
         self.xform.save()
-        url = reverse(kml_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        url = reverse(kml_export, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
         response = self.anon.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_allow_csv_export(self):
-        url = reverse(csv_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        url = reverse(csv_export, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_allow_xls_export(self):
-        url = reverse(xls_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        url = reverse(xls_export, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_allow_zip_export(self):
-        url = reverse(zip_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        url = reverse(zip_export, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_allow_kml_export(self):
-        url = reverse(kml_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        url = reverse(kml_export, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_allow_map(self):
-        url = reverse(map_view, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        url = reverse(map_view, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_restrict_map(self):
-        url = reverse(map_view, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        url = reverse(map_view, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
         response = self.anon.get(url)
         self.assertEqual(response.status_code, 405)
 
     def test_allow_map_if_shared(self):
         self.xform.shared_data = True
         self.xform.save()
-        url = reverse(map_view, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        url = reverse(map_view, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
