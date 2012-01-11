@@ -47,7 +47,21 @@ class RegistrationFormUserProfile(RegistrationForm, UserProfileFormRegister):
         'support',
         'syntax',
         'xls2xform',
-        'users'
+        'users',
+        'worldbank',
+        'unicef',
+        'who',
+        'wb',
+        'wfp',
+        'save',
+        'ei',
+        'modilabs',
+        'mvp',
+        'unido',
+        'unesco',
+        'savethechildren',
+        'worldvision',
+        'afsis'
     ]
 
     username = forms.CharField(widget=forms.TextInput(), max_length=30)
