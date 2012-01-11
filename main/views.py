@@ -158,7 +158,7 @@ def show(request, username, id_string):
     context.is_owner = is_owner
     context.xform = xform
     context.content_user = xform.user
-    context.base_url = request.build_absolute_uri()
+    context.base_url = "http://%s" % request.get_host()
     return render_to_response("show.html", context_instance=context)
 
 @require_POST
