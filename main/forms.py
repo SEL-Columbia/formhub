@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from registration.forms import RegistrationForm
+from registration.forms import RegistrationFormUniqueEmail
 from main.models import UserProfile
 from registration.models import RegistrationProfile
 from country_field import COUNTRIES
@@ -30,7 +30,7 @@ class UserProfileFormRegister(forms.Form):
         return new_profile
 
 # order of inheritance control order of form display
-class RegistrationFormUserProfile(RegistrationForm, UserProfileFormRegister):
+class RegistrationFormUserProfile(RegistrationFormUniqueEmail, UserProfileFormRegister):
     class Meta:
         pass
 
