@@ -1,5 +1,5 @@
 <div class="topbar" data-dropdown="dropdown" >
-  <div class="topbar-inner">
+  <div class="topbar-inner{% if map_view %} topbar-inner-map{% endif %}">
     <div class="container">
       <a class="brand" href="/" title="formhub"><img height="14px" alt="formhub" src="/static/images/logo.png" /></a>
       {% if map_view %}
@@ -33,17 +33,17 @@
           <ul class="dropdown-menu">
             <li>
                 <a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}">
-                    <button class="btn small">csv</button>
+                    csv
                 </a>
             </li>
             <li>
                 <a href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}">
-                    <button class="btn small">xls</button>
+                    xls
                 </a>
             </li>
             <li>
                 <a href="{% url odk_viewer.views.kml_export content_user.username xform.id_string %}">
-                    <button class="btn small">kml</button>
+                    kml
                 </a>
             </li>
           </ul>

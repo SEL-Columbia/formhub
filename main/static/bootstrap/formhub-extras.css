@@ -12,16 +12,9 @@ This is for all the extra things it needs beyond what bootstrap provides.
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
-    background-color: #DFDFDF;
-    padding: 8px 0;
-}
-
-.profile img {
-    padding: 0 10px;
-}
-
-.profile .span2:first-child small, .profile .span2:first-child h4 {
-    padding: 0 10px;
+    background-color: #F2F2F2;
+    border: 1px solid #DFDFDF;
+    padding: 8px 10px;
 }
 
 .profile small {
@@ -54,7 +47,7 @@ span.pipe {
 
 span.name {
     color: #AAA;
-    font-size: small;
+    font-size: smaller;
 }
 
 span.right {
@@ -63,6 +56,7 @@ span.right {
 
 .short {
     line-height: 26px;
+    margin-bottom: 0;
 }
 
 span.inverted {
@@ -102,5 +96,10 @@ ul.inline ul.dropdown-menu {
 
 .topbar div > ul > li > img {
     margin-top: 5px;
+}
+
+.topbar-inner-map {
+    background-color: #012A39;
+    background-image: -moz-linear-gradient(center top , #025B7C, #012A39);
 }
 

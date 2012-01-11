@@ -19,6 +19,7 @@ from main.forms import UserProfileForm
 
 class QuickConverter(forms.Form):
     xls_file = forms.FileField(label="XLS File")
+    #xls_url = forms.URLField(verify_exists=False, label="or web link", required=False)
 
     def publish(self, user):
         if self.is_valid():
@@ -26,12 +27,15 @@ class QuickConverter(forms.Form):
                 user=user,
                 xls=self.cleaned_data['xls_file']
                 )
+        else:
+            raise Exception(self._errors)
 
 
 def home(request):
     context = RequestContext(request)
     context.num_forms = Instance.objects.count()
     context.num_users = User.objects.count()
+    context.num_shared_forms = XForm.objects.filter(shared__exact=1).count()
     if request.user.username:
         return HttpResponseRedirect("/%s" % request.user.username)
     else:
@@ -154,6 +158,7 @@ def show(request, username, id_string):
     context.is_owner = is_owner
     context.xform = xform
     context.content_user = xform.user
+    context.base_url = request.build_absolute_uri()
     return render_to_response("show.html", context_instance=context)
 
 @require_POST

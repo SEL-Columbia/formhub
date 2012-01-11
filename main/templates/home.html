@@ -32,8 +32,31 @@ For more info please read <a href="http://blog.formhub.org/2011/12/05/data-gathe
  
  <div class="span10">
    <p><img src="/static/tutorial/submitted_data.png" width=100%></p>
-   <p><div style="float:right"><h1>{{ num_forms }} <small>forms submitted</small></h1>
-   <h1>{{ num_users }} <small>formhubbers!</small></h1></div></p>
+   <br/>
+   <br/>
+   <div class="row" style="float:right">
+     <div class="span3">
+       <h1 class="short">{{ num_forms }}</h1>
+     </div>
+     <div class="span3">
+       <h1 class="short">{{ num_shared_forms }}</h1>
+     </div>
+     <div class="span3">
+       <h1 class="short">{{ num_users }}</h1>
+     </div>
+   </div>
+   <div class="row" style="float:right">
+     <div class="span3">
+       <h1><small>forms submitted</small></h1>
+     </div>
+     <div class="span3">
+       <h1><small>shared form</small></h1>
+     </div>
+     <div class="span3">
+       <h1><small>formhubbers!</small></h1>
+     </div>
+   </div>
+   </div>
  </div>
 </div>
 {% endblock %}
