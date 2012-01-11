@@ -10,8 +10,8 @@
 
    <section id="profile">
      <div class="page-header">
-       <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' />
        <h1>
+         <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' />
          {{ content_user.username }}
          {% if profile.name %}
             <span class='pipe'>&nbsp;|&nbsp;</span><span class='name'>{{ profile.name }}</span>
@@ -89,15 +89,15 @@
                         <a href="{% url odk_viewer.views.xls_export content_user.username form.id_string %}">
                             <button class="btn small">xls</button>
                         </a>
+                        <a href="{% url odk_viewer.views.kml_export content_user.username form.id_string %}">
+                            <button class="btn small">kml</button>
+                        </a>
                     {% else %}
                         <span class="label warning">PRIVATE</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if form.shared_data %}
-                    <a href="{% url odk_viewer.views.kml_export content_user.username form.id_string %}">
-                        <button class="btn small">kml</button>
-                    </a>
                     <a href="{% url odk_viewer.views.map_view content_user.username form.id_string %}">
                         <button class="btn small info">Map &raquo;</button>
                     </a>
