@@ -40,7 +40,11 @@
       {% for xform in user.xforms.all %}
       <tr>
         <td>
-            <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.id_string }}</a></td>
+            <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.id_string }}</a>
+            {% if xform.shared %}
+                <span class="label notice">PUBLIC</span>
+            {% endif %}
+        </td>
         <td><center>{{ xform.submission_count }}</center></td>
         <td>
           {% if xform.time_of_last_submission %}
@@ -54,6 +58,9 @@
               {% if xform.data_dictionary.has_surveys_with_geopoints %}
               <a href="{% url odk_viewer.views.kml_export user.username xform.id_string %}"><button class="btn small">kml</button></a>
               {% endif %}
+          {% endif %}
+          {% if xform.shared_data %}
+              <span class="label notice">PUBLIC</span>
           {% endif %}
         </td>
         <td>
