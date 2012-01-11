@@ -43,6 +43,7 @@ class DataDictionary(XForm):
             survey = create_survey_from_xls(self.xls)
             self.json = survey.to_json()
             self.xml = survey.to_xml()
+            self._mark_start_time_boolean()
         super(DataDictionary, self).save(*args, **kwargs)
 
     def file_name(self):
@@ -222,3 +223,10 @@ class DataDictionary(XForm):
             self._expand_select_all_that_apply(d)
             # self._add_list_of_potential_duplicates(d)
             yield d
+
+    def _mark_start_time_boolean(self):
+        starttime_substring = 'jr:preloadParams="start"'
+        if self.xml.find(starttime_substring) != -1:
+            self.has_start_time = True
+        else:
+            self.has_start_time = False

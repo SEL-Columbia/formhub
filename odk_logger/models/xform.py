@@ -35,6 +35,7 @@ class XForm(models.Model):
     title = models.CharField(editable=False, max_length=64)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+    has_start_time = models.BooleanField(default=False)
 
     class Meta:
         app_label = 'odk_logger'
