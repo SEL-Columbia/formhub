@@ -109,22 +109,6 @@ $(document).ajaxSend(function(event, xhr, settings) {
     })
     return false;
   });
-
-  function toggleBind(opt1, opt2, param) {
-      $('#' + opt1 + ', #' + opt2).click(function() {
-        var btn = $(this);
-        $.post($(this).data('url'), {toggle_shared: param}, function (data) {
-            $('#' + opt1).toggleClass('primary');
-            $('#' + opt2).toggleClass('primary');
-        });
-        return false;
-      });
-  }
-
-  toggleBind('toggle_shared_data_public', 'toggle_shared_data_private', 'data');
-  toggleBind('toggle_shared_public', 'toggle_shared_private', 'form');
-  toggleBind('toggle_downloadable_active', 'toggle_downloadable_inactive', 'active');
-
 });
 
 function privacyEdit(url, param) {

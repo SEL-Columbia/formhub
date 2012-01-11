@@ -33,11 +33,25 @@
         {% if is_owner %}
         <script type="text/javascript" charset="utf-8">
             $(document).ready(function() {
+              {% if xform.shared_data %}
+                $('#data-shared-private').hide();
+              {% else %}
+                $('#data-shared-public').hide();
+              {% endif %}
+              {% if xform.shared %}
+                $('#form-shared-private').hide();
+              {% else %}
+                $('#form-shared-public').hide();
+              {% endif %}
               $.each(['form-shared', 'data-shared', 'active-form'], function(inx, el) {
-                  var cb = $('#' + el + ':checkbox');
-                  cb.iphoneStyle({
-                    onChange: function() { privacyEdit(cb.data('url'), el.split('-')[0]); }
-                  });
+                var cb = $('#' + el + ':checkbox');
+                cb.iphoneStyle({
+                  onChange: function() {
+                    privacyEdit(cb.data('url'), el.split('-')[0]);
+                    $('#' + el + '-public').toggle();
+                    $('#' + el + '-private').toggle();
+                  }
+                });
               });
             });
         </script>
@@ -87,11 +101,8 @@
         <hr/>
         <h3>
             XLSForm
-            {% if xform.shared_data %}
-                <span class="label notice">PUBLIC</span>
-            {% else %}
-                <span class="label warning">PRIVATE</span>
-            {% endif %}
+            <span id="form-shared-public" class="label notice">PUBLIC</span>
+            <span id="form-shared-private" class="label warning">PRIVATE</span>
         </h3>
         <ul class="inline">
         <li>
@@ -122,11 +133,8 @@
         <hr/>
         <h3>
             Form Data
-            {% if xform.shared_data %}
-                <span class="label notice">PUBLIC</span>
-            {% else %}
-                <span class="label warning">PRIVATE</span>
-            {% endif %}
+            <span id="data-shared-public" class="label notice">PUBLIC</span>
+            <span id="data-shared-private" class="label warning">PRIVATE</span>
         </h3>
         {% if xform.shared_data or is_owner %}
         <h4>Submissions: {{ xform.submission_count }}</h4>
