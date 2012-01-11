@@ -10,6 +10,8 @@ from models import XForm, create_instance
 from utils import response_with_mimetype_and_name
 from odk_logger.import_tools import import_instances_from_zip
 import zipfile
+import tempfile
+import os
 
 
 @require_POST
@@ -27,16 +29,22 @@ def bulksubmission(request, username):
     # for each key we have a list of values
     temp_postfile = request.FILES.pop("zip_submission_file", [])
     if len(temp_postfile) == 1:
-        zip_file = temp_postfile[0].temporary_file_path()
-        #import_instances_from_zip(zip_file, user=request.user)
-        count = import_instances_from_zip(zip_file, user=posting_user)
-        response = HttpResponse("Your ODK submission was successful. Your user now has %d instances." % \
-                    posting_user.surveys.count())
+        postfile = temp_postfile[0]
+        tempdir = tempfile.gettempdir()
+        our_tfpath = os.path.join(tempdir, postfile.name)
+        our_tempfile = open(our_tfpath, 'wb')
+        our_tempfile.write(postfile.read())
+        our_tempfile.close()
+        our_tf = open(our_tfpath, 'rb')
+        count = import_instances_from_zip(our_tf, user=posting_user)
+        os.remove(our_tfpath)
+        response = HttpResponse("Your ODK submission was successful. %d surveys imported. Your user now has %d instances." % \
+                    (count, posting_user.surveys.count()))
         response.status_code = 200
         response['Location'] = request.build_absolute_uri(request.path)
         return response
     else:
-        return HttpResponse("Fail !!!!!")
+        return HttpResponseBadRequest("There was a problem receiving your ODK submission. [Error: multiple submission files (?)]")
 
 
 def bulksubmission_form(request, username=None):
@@ -67,7 +75,6 @@ def submission(request, username):
         return HttpResponseBadRequest(
             "There should be a single XML submission file."
             )
-
     # save this XML file and media files as attachments
     media_files = request.FILES.values()
     create_instance(
@@ -75,7 +82,6 @@ def submission(request, username):
         xml_file_list[0],
         media_files
         )
-
     # ODK needs two things for a form to be considered successful
     # 1) the status code needs to be 201 (created)
     # 2) The location header needs to be set to the host it posted to
