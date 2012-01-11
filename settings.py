@@ -27,7 +27,7 @@ DATABASES = {
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'America/New_York'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -60,7 +60,7 @@ STATIC_URL = '/static/'
 
 # Login URLs
 LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/login_redirect/'
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
@@ -79,7 +79,6 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 # Make this unique, and don't share it with anybody.
@@ -130,6 +129,13 @@ INSTALLED_APPS = (
     'stats',
 )
 COMPRESS = True
+
+# extra data stored with users
+AUTH_PROFILE_MODULE = 'main.UserProfile'
+# case insensitive usernames
+AUTHENTICATION_BACKENDS = (
+    'main.backends.ModelBackend',
+)
 
 # Settings for Django Registration
 ACCOUNT_ACTIVATION_DAYS = 1
@@ -186,3 +192,4 @@ try:
 except ImportError:
     print("You can override the default settings by adding a "
           "local_settings.py file.")
+

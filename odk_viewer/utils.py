@@ -147,7 +147,6 @@ class XFormParser(object):
 # f.close()
 # import json ; print json.dumps(xform.get_variable_dictionary(), indent=4)
 
-
 from django.conf import settings
 from django.core.mail import mail_admins
 import traceback
@@ -175,3 +174,4 @@ def django_file(path, field_name, content_type):
         size=os.path.getsize(path),
         charset=None
         )
+

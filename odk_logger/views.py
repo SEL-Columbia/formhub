@@ -1,20 +1,18 @@
-#!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4 coding=utf-8
-
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseRedirect
-
+from django.contrib.auth.decorators import login_required
+from django.template import RequestContext
+from django.contrib.auth.models import User
 from models import XForm, create_instance
+from utils import response_with_mimetype_and_name
 from odk_logger.import_tools import import_instances_from_zip
-
 import zipfile
 import tempfile
 import os
 
-from django.contrib.auth.models import User
 
 @require_POST
 @csrf_exempt
@@ -26,8 +24,7 @@ def bulksubmission(request, username):
         posting_user = User.objects.get(username=username)
     except User.DoesNotExist:
         return HttpResponseBadRequest("User %s not found" % username)
-    
-    
+
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
     temp_postfile = request.FILES.pop("zip_submission_file", [])
@@ -49,8 +46,10 @@ def bulksubmission(request, username):
     else:
         return HttpResponseBadRequest("There was a problem receiving your ODK submission. [Error: multiple submission files (?)]")
 
+
 def bulksubmission_form(request, username=None):
 	return render_to_response("bulk_submission_form.html")
+
 
 @require_GET
 def formList(request, username):
@@ -91,23 +90,32 @@ def submission(request, username):
     response['Location'] = request.build_absolute_uri(request.path)
     return response
 
-
 def download_xform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
-    return HttpResponse(
-        xform.xml,
-        mimetype="application/xml"
-        )
+    response = response_with_mimetype_and_name('xml', id_string)
+    response.content = xform.xml
+    return response
 
-
-def toggle_downloadable(request, username, id_string):
+def download_xlsform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
-    xform.downloadable = not xform.downloadable
-    xform.save()
-    return HttpResponseRedirect("/")
+    response = response_with_mimetype_and_name('vnd.ms-excel', id_string)
+    response.content= xform.xls
+    return response
 
+def download_jsonform(request, username, id_string):
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    response = response_with_mimetype_and_name('json', id_string)
+    response.content = xform.json
+    return response
 
 def delete_xform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     xform.delete()
     return HttpResponseRedirect('/')
+
+def toggle_downloadable(request, username, id_string):
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    xform.downloadable = not xform.downloadable
+    xform.save()
+    return HttpResponseRedirect("/%s" % username)
+

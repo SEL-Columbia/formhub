@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section id="profile">
+    <div class="page-header">
+      <!-- <img src='{{ content_user.profile.gravatar }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' /> -->
+	<h3>
+	  <div style='vertical-align: middle'>      
+	  <img src='{{ content_user.profile.gravatar }}' alt='' width='20' height='20' /> 
+	  <a href="/{{content_user.username}}/">{{ content_user.username }}</a> /
+	  </div>
+	</h3>
+      <h1>    
+	<span style='color: #999;'>{{ xform.id_string }}</span>
+      </h1>
+    </div> 
+    <div class="row">
+      <div class="span11">
+        <h3>Description</h3>
+        <div class="clearfix">
+            <div class="input">
+            <form>
+                {% csrf_token %}
+                <textarea id="description" class="xxlarge"  disabled="" rows="3" name="textarea">{% if xform.description %}{{ xform.description }}{% else %}None{% endif %}</textarea>
+                {% if is_owner %}
+                    <a id="description_edit" href="" class="btn small">edit</a>
+                    <a id="description_save" style="display:none" href="" class="btn small primary" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+                {% endif %}
+            </form>
+            </div>
+        </div>
+      </div>
+      <div class="span5">
+        {% if is_owner %}
+        <script type="text/javascript" charset="utf-8">
+            $(document).ready(function() {
+              {% if xform.shared_data %}
+                $('#data-shared-private').hide();
+              {% else %}
+                $('#data-shared-public').hide();
+              {% endif %}
+              {% if xform.shared %}
+                $('#form-shared-private').hide();
+              {% else %}
+                $('#form-shared-public').hide();
+              {% endif %}
+              $.each(['form-shared', 'data-shared', 'active-form'], function(inx, el) {
+                var cb = $('#' + el + ':checkbox');
+                cb.iphoneStyle({
+                  onChange: function() {
+                    privacyEdit(cb.data('url'), el.split('-')[0]);
+                    $('#' + el + '-public').toggle();
+                    $('#' + el + '-private').toggle();
+                  }
+                });
+              });
+            });
+        </script>
+        <h3>Settings</h3>
+        <div class="clearfix">
+          <label>Form Shared&nbsp;</label>
+          <div class="input">
+            <input id="form-shared" type="checkbox"{% if xform.shared %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
+          </div> 
+          <br/>
+          <label>Data Shared&nbsp;</label>
+          <div class="input">
+            <input id="data-shared" type="checkbox"{% if xform.shared_data %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
+          </div> 
+          <br/>
+          <label>Form Active&nbsp;</label>
+          <div class="input">
+            <input id="active-form" type="checkbox"{% if xform.downloadable %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
+          </div> 
+          <br/>
+          <label>Delete Form&nbsp;</label>
+        <div class="input">
+          <!-- DELETE -->
+          <div id="delete-{{ xform.id_string }}" class="modal hide fade">
+            <div class="modal-header">
+              <a href="#" class="close">&times;</a>
+              <h3>Delete Confirmation</h3>
+            </div>
+            <div class="modal-body">
+              <p>Are you sure you want to delete the form '{{ xform.title }}'? This form has <strong>{{ xform.submission_count }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.</p>
+            </div>
+            <div class="modal-footer">
+              <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn primary">Delete</a>
+              <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">Cancel</a>
+            </div>
+          </div>
+          <a href="#" data-controls-modal="delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true">
+              <button class="btn small danger">Delete</button>
+          </a>
+        </div>
+        </div> 
+        {% endif %}
+      </div>
+    </div>
+    <div class="row">
+      <div class="span16">
+        <hr/>
+        <h3>
+            XLSForm
+            <span id="form-shared-public" class="label notice">PUBLIC</span>
+            <span id="form-shared-private" class="label warning">PRIVATE</span>
+        </h3>
+        <ul class="inline">
+        <li>
+            <div class="input-prepend">
+                <span class="add-on">
+                    <a href="{% url download_xlsform content_user.username xform.id_string %}">
+                    Excel
+                    </a>
+                </span>
+                <input class="xxlarge" type="text" size="16" value="{{ base_url }}{% url download_xlsform content_user.username xform.id_string %}"/>
+            </div>
+            <br/>
+        </li>
+        <li class="inline dropdown" data-dropdown="dropdown">
+            <a class="dropdown-toggle btn small" href="#">Other</a>
+            <ul class="dropdown-menu">
+                <li>
+                <a href="{% url download_xform content_user.username xform.id_string %}">
+                  XForm
+                </a>
+                </li>
+                <li>
+                <a href="{% url download_jsonform content_user.username xform.id_string %}">
+                  Form JSON
+                </a>
+                </li>
+            </ul>
+        </li>
+        </ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span16">
+        <hr/>
+        <h3>
+            Form Data
+            <span id="data-shared-public" class="label notice">PUBLIC</span>
+            <span id="data-shared-private" class="label warning">PRIVATE</span>
+        </h3>
+        {% if xform.shared_data or is_owner %}
+        <h4>Submissions: {{ xform.submission_count }}</h4>
+        {% if xform.submission_count > 0 %}
+            <div>
+            <div class="input-prepend">
+                <span class="add-on">
+                <a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}">
+                    csv
+                </a>
+                </span>
+                <input class="xxlarge" type="text" size="16" value="{{ base_url }}{% url odk_viewer.views.csv_export content_user.username xform.id_string %}"/>
+            </div>
+            <br/>
+            <div class="input-prepend">
+                <span class="add-on">
+                <a href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}">
+                    xls
+                </a>
+                </span>
+                <input class="xxlarge" type="text" size="16" value="{{ base_url }}{% url odk_viewer.views.xls_export content_user.username xform.id_string %}"/>
+            </div>
+            <br/>
+            <div class="input-prepend">
+                <span class="add-on">
+                <a href="{% url odk_viewer.views.kml_export content_user.username xform.id_string %}">
+                    kml
+                </a>
+                </span>
+                <input class="xxlarge" type="text" size="16" value="{{ base_url }}{% url odk_viewer.views.kml_export content_user.username xform.id_string %}"/>
+            </div>
+            <br/>
+            <a href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
+                <button class="btn small info">View Map &raquo;</button>
+            </a>
+            </div>
+        {% endif %}
+        {% endif %}
+    </div> 
+  </section>
+{% endblock %}
+  

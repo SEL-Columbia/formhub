@@ -3,7 +3,6 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.test.client import Client
 
-
 class MainTestCase(TestCase):
 
     def setUp(self):
@@ -29,14 +28,15 @@ class MainTestCase(TestCase):
     this_directory = os.path.dirname(__file__)
 
     def _publish_xls_file(self, path):
-        if not path.startswith('/'):
+        if not path.startswith('/%s/' % self.user.username):
             path = os.path.join(self.this_directory, path)
         with open(path) as xls_file:
             post_data = {'xls_file': xls_file}
-            return self.client.post('/', post_data)
+            return self.client.post('/%s/' % self.user.username, post_data)
 
     def _make_submission(self, path):
         with open(path) as f:
             post_data = {'xml_submission_file': f}
             url = '/%s/submission' % self.user.username
-            self.anon.post(url, post_data)
+            self.response = self.anon.post(url, post_data)
+

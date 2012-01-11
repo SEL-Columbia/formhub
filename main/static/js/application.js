@@ -1,113 +1,118 @@
-function mdgGoalText(gn){
-    return ["Goal 1 &raquo; Eradicate extreme poverty and hunger",
-    "Goal 2 &raquo; Achieve universal primary education",
-    "Goal 3 &raquo; Promote gender equality and empower women",
-    "Goal 4 &raquo; Reduce child mortality rates",
-    "Goal 5 &raquo; Improve maternal health",
-    "Goal 6 &raquo; Combat HIV/AIDS, malaria, and other diseases",
-    "Goal 7 &raquo; Ensure environmental sustainability",
-    "Goal 8 &raquo; Develop a global partnership for development"][gn-1];
-}
+$(document).ready(function(){
 
-var SetResizer = (function($, resizeSelector, excludeSelector, extraPadding){
-	var resizeElem = $(resizeSelector),
-		excludeElem = $(excludeSelector);
+  // table sort example
+  // ==================
 
-	function ResizePage(){
-		var windowHeight = $(window).height(),
-			totalHeight = windowHeight - extraPadding;
+  $("#sortTableExample").tablesorter( { sortList: [[ 1, 0 ]] } )
 
-		excludeElem.each(function(){totalHeight -= $(this).height();});
-		resizeElem.css({'height':totalHeight})
-	}
-	$(window).resize(ResizePage);
 
-	$(function(){
-		resizeElem.css({'overflow':'auto'});
-		$(document.body).css({'overflow':'hidden'});
-		$(window).trigger('resize');
-	});
-});
+  // add on logic
+  // ============
 
-(function($){
-	$.fn.thinButton = function(){
-		this.button();
-		$('span.ui-button-text', this).css({'padding':'1px 5px'});
-		return this;
-	}
-})(jQuery);
+  $('.add-on :checkbox').click(function () {
+    if ($(this).attr('checked')) {
+      $(this).parents('.add-on').addClass('active')
+    } else {
+      $(this).parents('.add-on').removeClass('active')
+    }
+  })
 
-function setTitle(t) {
-    var dtext = $("<span />").html(t.clone()).text();
-    $('#header .title').html(t);
-    $('title').html(dtext);
-}
 
-function log() {
-	if(console !== undefined && console.log !== undefined) {
-		console.log.apply(console, arguments);
-	}
-}
-function warn() {
-	if(console !== undefined && console.warn !== undefined) {
-	    console.warn.apply(console, arguments);
-	    throw(arguments[0]);
-	}
-}
+  // Disable certain links in docs
+  // =============================
+  // Please do not carry these styles over to your projects, it's merely here to prevent button clicks form taking you away from your spot on page
 
-var descriptionClick = (function(descriptionClickSelector){
-    var popupRequested = false;
-    var popupDiv;
-    var popupWidth;
-    var descriptionWrap;
-    function getDescriptionWrap() {
-        if(descriptionWrap===undefined) {
-            descriptionWrap = $('.description-wrap').eq(0);
-            if(descriptionWrap.length===0) {
-                descriptionWrap = $('<div />')
-                        .addClass('description-wrap')
-                        .appendTo($('#header'));
+  $('ul.tabs a, ul.pills a, .pagination a, .well .btn, .actions .btn, .alert-message .btn, a.close').click(function (e) {
+    e.preventDefault()
+  })
+
+  // Copy code blocks in docs
+  $(".copy-code").focus(function () {
+    var el = this;
+    // push select to event loop for chrome :{o
+    setTimeout(function () { $(el).select(); }, 0);
+  });
+
+
+  // POSITION STATIC TWIPSIES
+  // ========================
+
+  $(window).bind( 'load resize', function () {
+    $(".twipsies a").each(function () {
+       $(this)
+        .twipsy({
+          live: false
+        , placement: $(this).attr('title')
+        , trigger: 'manual'
+        , offset: 2
+        })
+        .twipsy('show')
+      })
+  })
+
+// CSRF Protection for AJAX
+// https://docs.djangoproject.com/en/dev/ref/contrib/csrf/
+$(document).ajaxSend(function(event, xhr, settings) {
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
-        return descriptionWrap;
+        return cookieValue;
     }
-    $(descriptionClickSelector).click(function(evt){
-        getDescriptionWrap().toggleClass('showing');
-        if(!popupRequested) {
-            var popupReq = $.get('/description').then(function(d){
-                popupDiv = $(d).find('#site-description');
-                popupWidth = popupDiv.data('width');
-                descriptionWrap
-                    .addClass('filled')
-                    .css({'width': popupWidth})
-                    .html(popupDiv);
-            });
-            popupRequested = true;
-        }
-        evt.preventDefault();
-        return false;
-    });
+    function sameOrigin(url) {
+        // url could be relative or scheme relative or absolute
+        var host = document.location.host; // host + port
+        var protocol = document.location.protocol;
+        var sr_origin = '//' + host;
+        var origin = protocol + sr_origin;
+        // Allow absolute or scheme relative URLs to same origin
+        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+            // or any other URL that isn't scheme relative or absolute i.e relative.
+            !(/^(\/\/|http:|https:).*/.test(url));
+    }
+    function safeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+    }
+});
+// END CSRF Protection for AJAX
+// https://docs.djangoproject.com/en/dev/ref/contrib/csrf/
+
+// main.show
+  $('#description_edit').click(function() {
+    $(this).hide();
+    $('#description_save').show();
+    $('#description').removeAttr('disabled');
+    $('#description').show();
+    return false;
+  });
+
+  $('#description_save').click(function() {
+    var saveBtn = $(this);
+    $.post(saveBtn.data('url'), {'description': $('#description').val()}, function (data) {
+      saveBtn.hide();
+      $('#description_edit').show();
+      $('#description').attr('disabled', '');
+    })
+    return false;
+  });
 });
 
-var getMustacheTemplate = (function(){
-    var mTemplates = {};
-    return function getMustacheTemplateFromCacheOrAjax(templateName, cb) {
-        if(!mTemplates[templateName]) {
-            $.get("/mustache/"+templateName).done(function(d){
-                mTemplates[templateName] = d;
-                cb.call({
-                    name: templateName,
-                    template: d,
-                    templates: mTemplates
-                }, d);
-            });
-        } else {
-            cb.call({
-                name: templateName,
-                template: mTemplates[templateName],
-                templates: mTemplates
-            });
-        }
-    }
-})();
+function privacyEdit(url, param) {
+  $.post(url, {toggle_shared: param});
+}
+
 

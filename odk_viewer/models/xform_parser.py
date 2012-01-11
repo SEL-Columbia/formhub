@@ -117,4 +117,4 @@ class XFormParser(XForm):
                         )
                 elif vardict[path][u"type"] in cleaner:
                     data[path] = cleaner[vardict[path][u"type"]](data[path])
-        
+ 

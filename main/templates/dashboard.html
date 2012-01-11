@@ -1,6 +1,78 @@
-{% extends 'base.html' %}
-
 {% block content %}
-  {% include "publish_survey.html" %}
-  {% include "published_surveys.html" %}
+
+<script type="text/javascript">$(':checkbox').iphoneStyle();</script>
+<section id="profile">
+  <div class="row">
+
+    <!-- hack on publish survey here first -->
+    <div class="span8">
+        <h1>Publish a Form <small>Upload Excel form files.</small></h1>
+        For a quick introduction on how to publish a form check out
+        the <a href="{% url main.views.tutorial %}">tutorial</a>.
+        <br/>
+        <br/>
+        New to formhub? Try publishing
+        <a href="/static/tutorial/tutorial.xls">tutorial.xls</a>.
+        <br/>
+        <br/>
+        Learn about the XLSForm syntax <a href="/syntax/">here</a> or checkout this more advanced example: <a href="https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0AgpC5gsTSm_4dFZQdzZZVGxlcEQ3aktBbFlyRXE3cFE&output=xls">nutrition_screening.xls</a>.
+        <br/>
+        <br/>
+        <form action="." method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <table class="narrow-labels">
+                {{ form.as_table }}
+            </table>
+            <span style='float:middle;'>
+                <input type="submit" class="btn large primary" value="Publish" />
+            </span>
+        </form>
+    </div>
+    <div class="span2">
+        &nbsp;
+    </div>
+    <div class="span6 profile">
+        <div class="bordered">
+        <div class="row">
+        <div class="span1">
+            <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' />
+        </div>
+        <div class="span4">
+            <h3 class="short">
+                <a href="/{{content_user.username}}/profile">{{ content_user.username }}</a>
+                {% if profile.name %}
+                <span class="name">|&nbsp;{{ profile.name }}</span>
+                {% endif %}
+            </h3>
+            <span><a href="/{{content_user.username}}/profile">View Profile Page</a></span>
+        </div>
+        </div>
+        <div class="row">
+        <div class="span1">
+            <h4>{{ all_forms }}</h4> 
+        </div>
+        <div class="span2">
+            <h4>{{ num_forms }}</h4> 
+        </div>
+        <div class="span2">
+            <h4>{{ user_surveys }}</h4> 
+        </div>
+        </div>
+        <div class="row">
+        <div class="span1">
+            <small>FORMS</small>
+        </div>
+        <div class="span2">
+            <small>SHARED FORMS</small>
+        </div>
+        <div class="span2">
+            <small>SUBMISSIONS</small>
+        </div>
+        </div>
+        </div>
+    </div>
+</div>
+</section>
+{% include "published_surveys.html" %}
 {% endblock %}
+

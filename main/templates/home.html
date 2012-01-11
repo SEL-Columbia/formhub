@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <br/>
+    <h1>Welcome to formhub! <small>&nbsp;The hub for your mobile data collection needs</small></h1>
+
+
+<div class="row">
+  <div class="span6">
+<p>
+<em>
+formhub is a <strong>free</strong> hosted service that makes data collection <strong>simple</strong> and <strong> collaborative</strong></em>.
+</p>
+<p>
+  <strong>Simple.</strong> All you need to get started is an <a href="/accounts/register/">account</a> on formhub and the ability to author .xls files. Absolutely no technical setup required.
+</p>
+<p>
+<strong>Collaborative.</strong> Share your data collection forms in <a href="/syntax">Excel</a>.  <a href="/forms">Find</a>, grab and modify other <a href='/forms/'>peoples' forms</a> and quickly deploy it. Publish gathered data to share it with others via Excel, CSV, KML or an interactive map.
+</p>
+<p>
+<strong>Mobile.</strong>
+  formhub works seemlessly with <a href="http://www.opendatakit.org">ODK Collect</a> a robust and proven data collection platform for Android.  
+</p>
+<p>
+For more info please read <a href="http://blog.formhub.org/2011/12/05/data-gatherers-of-the-world-unite/">here</a>.
+</p>
+<p><b>Not registered?</b></p>
+<p style="font-size:larger">
+ <a href="/accounts/register/"><button class="btn primary">Create Account &raquo;</button></a>
+</p>
+  </div>
+ 
+ <div class="span10">
+   <p><img src="/static/tutorial/submitted_data.png" width=100%></p>
+   <br/>
+   <br/>
+   <div class="row" style="float:right">
+     <div class="span3">
+       <h1 class="short">{{ num_forms }}</h1>
+     </div>
+     <div class="span3">
+       <h1 class="short">{{ num_shared_forms }}</h1>
+     </div>
+     <div class="span3">
+       <h1 class="short">{{ num_users }}</h1>
+     </div>
+   </div>
+   <div class="row" style="float:right">
+     <div class="span3">
+       <h1><small>forms submitted</small></h1>
+     </div>
+     <div class="span3">
+       <h1><small>shared forms</small></h1>
+     </div>
+     <div class="span3">
+       <h1><small>formhubbers!</small></h1>
+     </div>
+   </div>
+   </div>
+ </div>
+</div>
+{% endblock %}
+
