@@ -106,9 +106,15 @@
         </h3>
         <ul class="inline">
         <li>
-        <a href="{% url download_xlsform content_user.username xform.id_string %}">
-          <button class="btn small success">Excel</button>
-        </a>
+            <div class="input-prepend">
+                <span class="add-on">
+                    <a href="{% url download_xlsform content_user.username xform.id_string %}">
+                    Excel
+                    </a>
+                </span>
+                <input class="xxlarge" type="text" size="16" value="{{ base_url }}{% url download_xlsform content_user.username xform.id_string %}"/>
+            </div>
+            <br/>
         </li>
         <li class="inline dropdown" data-dropdown="dropdown">
             <a class="dropdown-toggle btn small" href="#">Other</a>
