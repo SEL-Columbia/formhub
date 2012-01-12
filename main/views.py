@@ -149,7 +149,10 @@ def dashboard(request):
 
 @require_GET
 def show(request, username, id_string):
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    try:
+        xform = XForm.objects.get(user__username=username, id_string=id_string)
+    except XForm.DoesNotExist:
+        return HttpResponseRedirect("/")
     is_owner = username == request.user.username
     # no access
     if xform.shared == False and not is_owner:
