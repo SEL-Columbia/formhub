@@ -120,7 +120,7 @@ def xls_export(request, username, id_string):
     ddw = XlsWriter()
     ddw.set_data_dictionary(dd)
     temp_file = ddw.save_workbook_to_file()
-    response = response_with_mimetype_and_name('vnd.ms-excel', id_string)
+    response = response_with_mimetype_and_name('vnd.ms-excel', id_string, extension='xls')
     response.write(temp_file.getvalue())
     temp_file.close()
     return response
