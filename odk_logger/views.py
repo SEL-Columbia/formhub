@@ -101,10 +101,8 @@ def download_xlsform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     path = os.path.join('media', xform.xls.path)
     if os.path.exists(path):
-        wrapper = FileWrapper(file(path))
-        response = HttpResponse(wrapper, content_type='vnd.ms-excel')
-        response['Content-Disposition']= 'attachment; filename=%s.xls' % id_string
-        response['Content-Length'] = os.path.getsize(path)
+        response = response_with_mimetype_and_name('vnd.ms-excel', id_string, show_date=False,
+                extension='xls', file_path=path)
         return response
     else:
         return HttpResponseRedirect("/%s" % username)

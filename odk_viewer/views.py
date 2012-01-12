@@ -4,7 +4,6 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 # http://djangosnippets.org/snippets/365/
-from django.core.servers.basehttp import FileWrapper
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseNotAllowed
 from odk_logger.models import XForm, Instance
@@ -13,7 +12,7 @@ from odk_viewer.models import ParsedInstance
 from odk_logger.utils import round_down_geopoint
 from odk_logger.xform_instance_parser import xform_instance_to_dict
 from pyxform import Section, Question
-from odk_logger.utils import response_with_mimetype_and_name
+from odk_logger.utils import response_with_mimetype_and_name, disposition_ext_and_date
 from django.contrib.auth.models import User
 from main.models import UserProfile
 
@@ -86,19 +85,6 @@ def image_urls(instance):
     return [a.media_file.url for a in instance.attachments.all()]
 
 
-def send_file(path, content_type, name):
-    """
-    Send a file through Django without loading the whole file into
-    memory at once. The FileWrapper will turn the file object into an
-    iterator for chunks of 8KB.
-    """
-    wrapper = FileWrapper(file(path))
-    response = HttpResponse(wrapper, content_type=content_type)
-    response['Content-Disposition'] = 'attachment; filename=%s_%s_data.csv' % (name, date.today().strftime("%Y_%m_%d"))
-    response['Content-Length'] = os.path.getsize(path)
-    return response
-
-
 def csv_export(request, username, id_string):
     owner = User.objects.get(username=username)
     dd = DataDictionary.objects.get(id_string=id_string,
@@ -108,7 +94,9 @@ def csv_export(request, username, id_string):
     writer = DataDictionaryWriter(dd)
     file_path = writer.get_default_file_path()
     writer.write_to_file(file_path)
-    return send_file(file_path, "application/csv", id_string)
+    response = response_with_mimetype_and_name('application/csv', id_string, extension='csv',
+            file_path=file_path)
+    return response
 
 
 def xls_export(request, username, id_string):
@@ -171,8 +159,8 @@ def kml_export(request, username, id_string):
         data_for_template.append({"name":id_string, "id": pi.id, "lat": pi.lat, "lng": pi.lng,'image_urls': img_urls, "table": '<table border="1"><a href="#"><img width="210" class="thumbnail" src="%s" alt=""></a><%s</table>' % (img_url,''.join(table_rows))})
     context.data = data_for_template
     response = render_to_response("survey.kml",
-    context_instance=context,
-    mimetype="application/vnd.google-earth.kml+xml")
-    response['Content-Disposition'] = 'attachment; filename=%s.kml' %(id_string)
+        context_instance=context,
+        mimetype="application/vnd.google-earth.kml+xml")
+    response['Content-Disposition'] = disposition_ext_and_date(id_string, 'kml')
     return response
 
