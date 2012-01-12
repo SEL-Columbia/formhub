@@ -1,3 +1,4 @@
+from django.core.servers.basehttp import FileWrapper
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response
@@ -92,19 +93,25 @@ def submission(request, username):
 
 def download_xform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
-    response = response_with_mimetype_and_name('xml', id_string)
+    response = response_with_mimetype_and_name('xml', id_string, show_date=False)
     response.content = xform.xml
     return response
 
 def download_xlsform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
-    response = response_with_mimetype_and_name('vnd.ms-excel', id_string, extension='xls')
-    response.content= xform.xls
-    return response
+    path = os.path.join('media', xform.xls.path)
+    if os.path.exists(path):
+        wrapper = FileWrapper(file(path))
+        response = HttpResponse(wrapper, content_type='vnd.ms-excel')
+        response['Content-Disposition']= 'attachment; filename=%s.xls' % id_string
+        response['Content-Length'] = os.path.getsize(path)
+        return response
+    else:
+        return HttpResponseRedirect("/%s" % username)
 
 def download_jsonform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
-    response = response_with_mimetype_and_name('json', id_string)
+    response = response_with_mimetype_and_name('json', id_string, show_date=False)
     response.content = xform.json
     return response
 
