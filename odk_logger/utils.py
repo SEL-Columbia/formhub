@@ -30,10 +30,12 @@ def round_down_geopoint(num):
 from datetime import date
 from django.http import HttpResponse
 
-def response_with_mimetype_and_name(_mimetype, name, extension=None):
+def response_with_mimetype_and_name(_mimetype, name, extension=None, show_date=True):
     if not extension:
         extension = _mimetype
     response = HttpResponse(mimetype=("application/%s" % _mimetype))
-    response['Content-Disposition'] = 'attachment; filename=%s_%s.%s' % (name, date.today().strftime("%Y_%m_%d"), extension)
+    if show_date:
+        name = "%s_%s" % (name, date.today().strftime("%Y_%m_%d"))
+    response['Content-Disposition'] = 'attachment; filename=%s.%s' % (name, extension)
     return response
 
