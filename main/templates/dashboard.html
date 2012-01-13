@@ -1,10 +1,20 @@
 {% block content %}
 
-<script type="text/javascript">$(':checkbox').iphoneStyle();</script>
 <section id="profile">
   <div class="row">
-
-    <!-- hack on publish survey here first -->
+    {% if messages %}
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $(".alert-message").alert();
+            });
+        </script>
+        {% for message in messages %}
+            <div class="alert-message {{ message.tags }}">
+                <a class="close" href="#">x</a>
+                <p>{{ message|safe }}</p>
+            </div>
+        {% endfor %}
+    {% endif %}
     <div class="span8">
         <h1>Publish a Form <small>Upload Excel form files.</small></h1>
         For a quick introduction on how to publish a form check out
@@ -48,7 +58,7 @@
         <div class="bordered">
         <div class="row">
         <div class="span1">
-            <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' />
+            <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' />
         </div>
         <div class="span4">
             <h3 class="short">

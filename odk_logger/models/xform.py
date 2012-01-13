@@ -77,6 +77,9 @@ class XForm(models.Model):
             raise Exception("There should be a single title.", matches)
         self.title = u"" if not matches else matches[0]
 
+    def update(self, *args, **kwargs):
+        super(XForm, self).save(*args, **kwargs)
+
     def save(self, *args, **kwargs):
         self._set_id_string()
         if getattr(settings, 'STRICT', True) and \

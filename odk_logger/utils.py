@@ -29,9 +29,24 @@ def round_down_geopoint(num):
 
 from datetime import date
 from django.http import HttpResponse
+from django.core.servers.basehttp import FileWrapper
+import os
 
-def response_with_mimetype_and_name(_mimetype, name):
-    response = HttpResponse(mimetype=("application/%s" % _mimetype))
-    response['Content-Disposition'] = 'attachment; filename=%s_%s.xls' % (name, date.today().strftime("%Y_%m_%d"))
+def response_with_mimetype_and_name(_mimetype, name, extension=None, show_date=True, file_path=None):
+    if not extension:
+        extension = _mimetype
+    mimetype = "application/%s" % _mimetype
+    if file_path:
+        wrapper = FileWrapper(file(file_path))
+        response = HttpResponse(wrapper, mimetype=mimetype)
+        response['Content-Length'] = os.path.getsize(file_path)
+    else:
+        response = HttpResponse(mimetype=mimetype)
+    response['Content-Disposition'] = disposition_ext_and_date(name, extension, show_date)
     return response
+
+def disposition_ext_and_date(name, extension, show_date=True):
+    if show_date:
+        name = "%s_%s" % (name, date.today().strftime("%Y_%m_%d"))
+    return 'attachment; filename=%s.%s' % (name, extension)
 

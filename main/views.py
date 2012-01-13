@@ -155,7 +155,10 @@ def dashboard(request):
 
 @require_GET
 def show(request, username, id_string):
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    try:
+        xform = XForm.objects.get(user__username=username, id_string=id_string)
+    except XForm.DoesNotExist:
+        return HttpResponseRedirect("/")
     is_owner = username == request.user.username
     # no access
     if xform.shared == False and not is_owner:
@@ -164,7 +167,7 @@ def show(request, username, id_string):
     context.is_owner = is_owner
     context.xform = xform
     context.content_user = xform.user
-    context.base_url = request.build_absolute_uri()
+    context.base_url = "http://%s" % request.get_host()
     return render_to_response("show.html", context_instance=context)
 
 @require_POST
@@ -180,7 +183,7 @@ def edit(request, username, id_string):
             xform.shared = not xform.shared
         if request.POST.get('toggle_shared') and request.POST['toggle_shared'] == 'active':
             xform.downloadable = not xform.downloadable
-        xform.save()
+        xform.update()
         return HttpResponse('Updated succeeded.')
     return HttpResponseNotAllowed('Update failed.')
 

@@ -4,7 +4,7 @@ from odk_logger.models import XForm
 
 class FormAdmin(admin.ModelAdmin):
 
-    exclude = ('xls', 'json', 'xml', 'user')
+    exclude = ('user',)
     list_display = ('id_string', 'downloadable', 'shared')
 
     # A user should only see forms that belong to him.

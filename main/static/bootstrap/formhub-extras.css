@@ -35,6 +35,10 @@ This is for all the extra things it needs beyond what bootstrap provides.
     color: #000;
 }
 
+.profile img {
+    border: 1px solid #AAAAAA;
+}
+
 #profile.page-header img {
     float: left;
     padding-right: 10px;

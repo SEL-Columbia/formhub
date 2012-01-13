@@ -30,7 +30,6 @@
         </div>
       </div>
       <div class="span5">
-        {% if is_owner %}
         <script type="text/javascript" charset="utf-8">
             $(document).ready(function() {
               {% if xform.shared_data %}
@@ -55,6 +54,7 @@
               });
             });
         </script>
+        {% if is_owner %}
         <h3>Settings</h3>
         <div class="clearfix">
           <label>Form Shared&nbsp;</label>
