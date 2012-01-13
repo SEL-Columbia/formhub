@@ -30,7 +30,9 @@ class QuickConverter(QuickConverterFile, QuickConverterURL):
             cleaned_xls_file = self.cleaned_data['xls_file']
             if not cleaned_xls_file:
                 cleaned_url = self.cleaned_data['xls_url']
-                cleaned_xls_file = urllib2.urlopen(cleaned_url).read()
+                cleaned_xls_file = urlparse(cleaned_url)
+                cleaned_xls_file = cleaned_xls_file.path.split('/')[-1]
+                cleaned_xls_data = urllib2.urlopen(cleaned_url).read()
             return DataDictionary.objects.create(
                 user=user,
                 xls=cleaned_xls_file
