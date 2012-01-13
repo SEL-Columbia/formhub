@@ -15,6 +15,7 @@ class UserProfile(models.Model):
     organization = models.CharField(max_length=255, blank=True)
     home_page = models.CharField(max_length=255, blank=True)
     twitter = models.CharField(max_length=255, blank=True)
+    description = models.CharField(max_length=255, blank=True)
 
     def gravatar(self):
         return get_gravatar_img_link(self.user)
