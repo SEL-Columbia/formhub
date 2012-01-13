@@ -7,6 +7,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.contrib.auth.models import User
+from django.contrib import messages
 from models import XForm, create_instance
 from utils import response_with_mimetype_and_name
 from odk_logger.import_tools import import_instances_from_zip
@@ -105,6 +106,7 @@ def download_xlsform(request, username, id_string):
                 extension='xls', file_path=path)
         return response
     else:
+        messages.add_message(request, messages.WARNING, 'No XLS file for your form <strong>%s</strong>' % id_string)
         return HttpResponseRedirect("/%s" % username)
 
 def download_jsonform(request, username, id_string):
