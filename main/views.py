@@ -17,6 +17,9 @@ from main.models import UserProfile
 from odk_logger.models import Instance, XForm
 from utils.user_auth import check_and_set_user, set_profile_data
 from main.forms import UserProfileForm
+from urlparse import urlparse
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
 class QuickConverterFile(forms.Form):
     xls_file = forms.FileField(label="XLS File", required=False)
@@ -33,6 +36,7 @@ class QuickConverter(QuickConverterFile, QuickConverterURL):
                 cleaned_xls_file = urlparse(cleaned_url)
                 cleaned_xls_file = cleaned_xls_file.path.split('/')[-1]
                 cleaned_xls_data = urllib2.urlopen(cleaned_url).read()
+                path = default_storage.save(upload_to(None, cleaned_xls_file, user.username))
             return DataDictionary.objects.create(
                 user=user,
                 xls=cleaned_xls_file
