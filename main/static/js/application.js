@@ -92,24 +92,33 @@ $(document).ajaxSend(function(event, xhr, settings) {
 // https://docs.djangoproject.com/en/dev/ref/contrib/csrf/
 
 // main.show
-  $('#description_edit').click(function() {
-    $(this).hide();
-    $('#description_save').show();
-    $('#description').removeAttr('disabled');
-    $('#description').show();
+    bindEditPost('title');
+    bindEditPost('description');
+});
+
+function bindEditPost(type) {
+  $('#' + type + '_edit').click(function() {
+    var btn = $(this);
+    var type_id = '#' + $(this).data('id');
+    btn.hide();
+    $(type_id + '_save').show();
+    $(type_id).removeAttr('disabled');
     return false;
   });
 
-  $('#description_save').click(function() {
+  $('#' + type + '_save').click(function() {
     var saveBtn = $(this);
-    $.post(saveBtn.data('url'), {'description': $('#description').val()}, function (data) {
+    var type_id = '#' + saveBtn.data('id');
+    var params = {};
+    params[type] = $(type_id).val();
+    $.post(saveBtn.data('url'), params, function (data) {
       saveBtn.hide();
-      $('#description_edit').show();
-      $('#description').attr('disabled', '');
+      $(type_id + '_edit').show();
+      $(type_id).attr('disabled', '');
     })
     return false;
   });
-});
+}
 
 function privacyEdit(url, param) {
   $.post(url, {toggle_shared: param});
