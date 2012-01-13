@@ -15,15 +15,28 @@
     </div> 
     <div class="row">
       <div class="span11">
+        <h3>Title</h3>
+        <div class="clearfix">
+            <div class="input">
+            <form>
+                {% csrf_token %}
+                <input type="text" id="title"class="xxlarge" disabled="" rows="3" value="{{ xform.title }}" />
+                {% if is_owner %}
+                    <a id="title_edit" data-id="title" href="" class="btn small">edit</a>
+                    <a id="title_save" data-id="title" style="display:none" href="" class="btn small primary" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+                {% endif %}
+            </form>
+            </div>
+        </div>
         <h3>Description</h3>
         <div class="clearfix">
             <div class="input">
             <form>
                 {% csrf_token %}
-                <textarea id="description" class="xxlarge"  disabled="" rows="3" name="textarea">{% if xform.description %}{{ xform.description }}{% else %}None{% endif %}</textarea>
+                <textarea id="description" class="xxlarge" disabled="" rows="3" name="textarea">{% if xform.description %}{{ xform.description }}{% else %}None{% endif %}</textarea>
                 {% if is_owner %}
-                    <a id="description_edit" href="" class="btn small">edit</a>
-                    <a id="description_save" style="display:none" href="" class="btn small primary" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+                    <a id="description_edit" data-id="description" href="" class="btn small">edit</a>
+                    <a id="description_save" data-id="description" style="display:none" href="" class="btn small primary" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
                 {% endif %}
             </form>
             </div>

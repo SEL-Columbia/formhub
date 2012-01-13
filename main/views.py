@@ -171,6 +171,8 @@ def edit(request, username, id_string):
         xform = XForm.objects.get(user__username=username, id_string=id_string)
         if request.POST.get('description'):
             xform.description = request.POST['description']
+        if request.POST.get('title'):
+            xform.title = request.POST['title']
         if request.POST.get('toggle_shared') and request.POST['toggle_shared'] == 'data':
             xform.shared_data = not xform.shared_data
         if request.POST.get('toggle_shared') and request.POST['toggle_shared'] == 'form':
