@@ -40,7 +40,7 @@
       {% for xform in user.xforms.all %}
       <tr>
         <td>
-            <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.id_string }}</a>
+            <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
             {% if xform.shared %}
                 <span class="label notice">PUBLIC</span>
             {% endif %}
