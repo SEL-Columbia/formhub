@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from registration.forms import RegistrationFormUniqueEmail
 from main.models import UserProfile
 from registration.models import RegistrationProfile
-from country_field import COUNTRIES
+from utils.country_field import COUNTRIES
 from django.forms import ModelForm
 
 class UserProfileForm(ModelForm):
