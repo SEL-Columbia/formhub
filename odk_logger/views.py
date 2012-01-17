@@ -60,8 +60,8 @@ def formList(request, username):
     urls = [
         {
             'url': request.build_absolute_uri(xform.url()),
-            'text': xform.id_string,
-            }
+            'text': xform.title,
+        }
         for xform in xforms
         ]
     return render_to_response("formList.xml", {'urls': urls}, mimetype="text/xml")
