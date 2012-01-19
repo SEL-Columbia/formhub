@@ -17,6 +17,9 @@ def upload_to(instance, filename):
         filename
         )
 
+class XLSFormError(Exception):
+    pass
+
 class XForm(models.Model):
     xls = models.FileField(upload_to=upload_to, null=True)
     json = models.TextField(default=u'')
@@ -67,14 +70,14 @@ class XForm(models.Model):
         text = re.sub(r"\s+", " ", self.xml)
         matches = re.findall(r'<instance>.*id="([^"]+)".*</instance>', text)
         if len(matches) != 1:
-            raise Exception("There should be a single id string.", text)
+            raise XLSFormError("There should be a single id string.", text)
         self.id_string = matches[0]
 
     def _set_title(self):
         text = re.sub(r"\s+", " ", self.xml)
         matches = re.findall(r"<h:title>([^<]+)</h:title>", text)
         if len(matches) != 1:
-            raise Exception("There should be a single title.", matches)
+            raise XLSFormError("There should be a single title.", matches)
         self.title = u"" if not matches else matches[0]
 
     def update(self, *args, **kwargs):
@@ -84,7 +87,7 @@ class XForm(models.Model):
         self._set_id_string()
         if getattr(settings, 'STRICT', True) and \
                 not re.search(r"^[\w-]+$", self.id_string):
-            raise Exception("In strict mode, the XForm ID must be a valid slug and contain no spaces.")
+            raise XLSFormError("In strict mode, the XForm ID must be a valid slug and contain no spaces.")
         self._set_title()
         super(XForm, self).save(*args, **kwargs)
 
