@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.db import models
-from country_field import COUNTRIES
-from gravatar import get_gravatar_img_link
+from utils.country_field import COUNTRIES
+from utils.gravatar import get_gravatar_img_link
 
 class UserProfile(models.Model):
     # This field is required.
@@ -19,4 +19,7 @@ class UserProfile(models.Model):
 
     def gravatar(self):
         return get_gravatar_img_link(self.user)
+
+    class Meta:
+        app_label = 'main'
 

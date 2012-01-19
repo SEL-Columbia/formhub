@@ -15,6 +15,7 @@ from pyxform.errors import PyXFormError
 from odk_viewer.models import DataDictionary
 from main.models import UserProfile
 from odk_logger.models import Instance, XForm
+from odk_logger.models.xform import XLSFormError
 from utils.user_auth import check_and_set_user, set_profile_data
 from main.forms import UserProfileForm
 from urlparse import urlparse
@@ -73,7 +74,7 @@ def profile(request, username):
                 'type': 'success',
                 'text': 'Successfully published %s.' % survey.id_string,
                 }
-        except PyXFormError as e:
+        except (PyXFormError, XLSFormError) as e:
             context.message = {
                 'type': 'error',
                 'text': unicode(e),
@@ -137,25 +138,6 @@ def dashboard(request):
     content_user = request.user
     set_profile_data(context, content_user)
     context.odk_url = request.build_absolute_uri("/%s" % request.user.username)
-
-    if request.method == 'POST':
-        try:
-            form = QuickConverter(request.POST, request.FILES)
-            survey = form.publish(request.user).survey
-            context.message = {
-                'type': 'success',
-                'text': 'Successfully published %s.' % survey.id_string,
-                }
-        except PyXFormError as e:
-            context.message = {
-                'type': 'error',
-                'text': unicode(e),
-                }
-        except IntegrityError as e:
-            context.message = {
-                'type': 'error',
-                'text': 'Form with this id already exists.',
-                }
     return render_to_response("dashboard.html", context_instance=context)
 
 
@@ -183,6 +165,8 @@ def edit(request, username, id_string):
         xform = XForm.objects.get(user__username=username, id_string=id_string)
         if request.POST.get('description'):
             xform.description = request.POST['description']
+        if request.POST.get('title'):
+            xform.title = request.POST['title']
         if request.POST.get('toggle_shared') and request.POST['toggle_shared'] == 'data':
             xform.shared_data = not xform.shared_data
         if request.POST.get('toggle_shared') and request.POST['toggle_shared'] == 'form':

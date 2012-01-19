@@ -60,8 +60,8 @@ def formList(request, username):
     urls = [
         {
             'url': request.build_absolute_uri(xform.url()),
-            'text': xform.id_string,
-            }
+            'text': xform.title,
+        }
         for xform in xforms
         ]
     return render_to_response("formList.xml", {'urls': urls}, mimetype="text/xml")
@@ -72,7 +72,13 @@ def formList(request, username):
 def submission(request, username):
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
-    xml_file_list = request.FILES.pop("xml_submission_file", [])
+    try:
+        xml_file_list = request.FILES.pop("xml_submission_file", [])
+    except IOError as e:
+        if e.value == 'request data read error':
+            return HttpResponseBadRequest("File transfer interruption.")
+        else:
+            raise
     if len(xml_file_list) != 1:
         return HttpResponseBadRequest(
             "There should be a single XML submission file."

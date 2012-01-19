@@ -3,8 +3,9 @@ from django.contrib.auth.models import User
 from registration.forms import RegistrationFormUniqueEmail
 from main.models import UserProfile
 from registration.models import RegistrationProfile
-from country_field import COUNTRIES
+from utils.country_field import COUNTRIES
 from django.forms import ModelForm
+import re
 
 class UserProfileForm(ModelForm):
     class Meta:
@@ -67,10 +68,14 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail, UserProfileFormRe
     username = forms.CharField(widget=forms.TextInput(), max_length=30)
     email = forms.CharField(widget=forms.TextInput(), max_length=30)
 
+    illegal_usernames_re = re.compile(" |#|%|\&|\*|{|}|\|:|\"|'|\?|>|<|/|\\\\")
+
     def clean_username(self):
         username = self.cleaned_data['username'].lower()
         if username in self._reserved_usernames:
             raise forms.ValidationError(u'%s is a reserved name, please choose another' % username)
+        elif self.illegal_usernames_re.search(username):
+            raise forms.ValidationError(u'username cannot contain #%&*{}\:"\'?></\\ or any spaces')
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:

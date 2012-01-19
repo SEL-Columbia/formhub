@@ -49,7 +49,7 @@ class TestSite(MainTestCase):
         self.download_url = 'http://testserver/%s/forms/transportation_2011_07_25/form.xml' % self.user.username
         expected_content = """<forms>
   
-  <form url="%s">transportation_2011_07_25</form>
+  <form url="%s">transportation</form>
   
 </forms>
 """ % self.download_url
