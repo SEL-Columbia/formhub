@@ -13,6 +13,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 
 from pyxform.errors import PyXFormError
 from odk_viewer.models import DataDictionary
+from odk_viewer.models.data_dictionary import upload_to
 from main.models import UserProfile
 from odk_logger.models import Instance, XForm
 from odk_logger.models.xform import XLSFormError
@@ -35,9 +36,10 @@ class QuickConverter(QuickConverterFile, QuickConverterURL):
             if not cleaned_xls_file:
                 cleaned_url = self.cleaned_data['xls_url']
                 cleaned_xls_file = urlparse(cleaned_url)
-                cleaned_xls_file = cleaned_xls_file.path.split('/')[-1]
-                cleaned_xls_data = urllib2.urlopen(cleaned_url).read()
-                path = default_storage.save(upload_to(None, cleaned_xls_file, user.username))
+                cleaned_xls_file = '_'.join(cleaned_xls_file.path.split('/')[-2:])
+                cleaned_xls_file = upload_to(None, cleaned_xls_file, user.username)
+                xls_data = ContentFile(urllib2.urlopen(cleaned_url).read())
+                default_storage.save(cleaned_xls_file, xls_data)
             return DataDictionary.objects.create(
                 user=user,
                 xls=cleaned_xls_file
