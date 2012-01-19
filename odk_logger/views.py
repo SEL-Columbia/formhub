@@ -74,8 +74,11 @@ def submission(request, username):
     # for each key we have a list of values
     try:
         xml_file_list = request.FILES.pop("xml_submission_file", [])
-    except IOError:
-        return HttpResponseBadRequest("File transfer interruption.")
+    except IOError as e:
+        if e.value == 'request data read error':
+            return HttpResponseBadRequest("File transfer interruption.")
+        else:
+            raise
     if len(xml_file_list) != 1:
         return HttpResponseBadRequest(
             "There should be a single XML submission file."
