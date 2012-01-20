@@ -7,11 +7,24 @@
   </div>
 
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
+
   <script type="text/javascript" charset="utf-8">
+
+        $.extend( $.fn.dataTableExt.oStdClasses, {
+          "sSortAsc": "header headerSortDown",
+          "sSortDesc": "header headerSortUp",
+          "sSortable": "header"
+        } );
+
 	$(document).ready(function() {
 	  $('#forms-table').dataTable({
-        "bPaginate": false,
-        "oLanguage": {"sSearch": "Search:"}
+                  "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
+	          "bPaginate" : true,
+                  "sPaginationType": "bootstrap",
+                  "bSort": true, 
+                  "oLanguage": {"sSearch": "Search:"},
+                  "oSearch": {"sSearch": ""},
       });
       $('#forms-table_filter').addClass('row')
 	} );
