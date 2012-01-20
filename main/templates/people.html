@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
-
 {% block content %}
 
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
+
   <script type="text/javascript" charset="utf-8">
 
         $.extend( $.fn.dataTableExt.oStdClasses, {
@@ -13,42 +13,38 @@
         } );
 
 	$(document).ready(function() {
-	  $('#stats-table').dataTable({
+	  $('#people-table').dataTable({
                   "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
 	          "bPaginate" : true,
                   "sPaginationType": "bootstrap",
-                  "iDisplayLength": 25,
                   "bSort": true, 
                   "oLanguage": {"sSearch": "Search:"},
                   "oSearch": {"sSearch": ""},
-	          "aaSorting": [[ 1, "desc" ]]
           });
 	});
   </script>
 
   <div class="page-header">
 <br>
-<h1>Submissions ({{stats.submission_count.total_submission_count}})</h1>
+    <h1>formhubbers <small>({{users.count}})</small></h1>
   </div>
-
-
-
-
-  <table id="stats-table" class="zebra-striped">
+  <table id="people-table" class="zebra-striped">
     <thead>
       <tr>
         <th>User</th>
-        <th>Submissions</th>
+        <th>Name</th>
+	<th>Organization</th>
+	<th>Location</th>
       </tr>
     </thead>
     <tbody>
-      {% for k, v in stats.submission_count.items %}
-      {% if k != 'total_submission_count' %}
+      {% for user in users %}
       <tr>
-        <td>{{k}}</td>
-        <td>{{v}}</td>
+        <td><img height='20' width='20' src="{{user.profile.gravatar}}"/>&nbsp; <a href="/{{user.username}}"/>{{ user.username }}</a></td>
+        <td>{{ user.profile.name }}</td>
+        <td>{{ user.profile.organization }}</td>
+        <td>{% if user.profile.city %}{{ user.profile.city }},{% endif %} {% if user.profile.country %}{{user.profile.country}}{% endif %}</td>
       </tr>
-      {% endif %}
       {% endfor %}
     </tbody>
   </table>

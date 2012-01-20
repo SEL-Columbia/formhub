@@ -5,10 +5,21 @@
   </div>
 
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
   <script type="text/javascript" charset="utf-8">
+
+        $.extend( $.fn.dataTableExt.oStdClasses, {
+          "sSortAsc": "header headerSortDown",
+          "sSortDesc": "header headerSortUp",
+          "sSortable": "header"
+        } );
+
+
 	$(document).ready(function() {
 	  var tbl = $('#forms-table').dataTable({
         "bPaginate": false,
+        "sPaginationType": "bootstrap",
+        "bSort": true, 
         "oLanguage": {"sSearch": "Search:"},
         "oSearch": {"sSearch": ""},
         "aoColumnDefs": [
