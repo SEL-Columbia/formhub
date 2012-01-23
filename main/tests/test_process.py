@@ -2,11 +2,18 @@ from test_base import MainTestCase
 from odk_viewer.models import DataDictionary
 from odk_logger.models import XForm, Instance
 import os
-from odk_viewer.views import csv_export
+from odk_viewer.views import xls_export, csv_export
 from django.core.urlresolvers import reverse
 import csv
 import json
+import urllib2
 
+def internet_on():
+    try:
+        response=urllib2.urlopen('http://74.125.113.99',timeout=1)
+        return True
+    except urllib2.URLError as err: pass
+    return False
 
 class TestSite(MainTestCase):
 
@@ -20,13 +27,23 @@ class TestSite(MainTestCase):
         self._check_csv_export()
         self._check_delete()
 
+    def test_url_upload(self):
+        if internet_on():
+            self._create_user_and_login()
+            xls_url = 'http://formhub.org/pld/forms/transportation_2011_07_25/form.xls'
+            pre_count = XForm.objects.count()
+            response = self.client.post('/%s/' % self.user.username, {'xls_url': xls_url})
+            # make sure publishing the survey worked
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(XForm.objects.count(), pre_count+1)
+
     def _publish_xls_file(self):
         xls_path = os.path.join(self.this_directory, "fixtures", "transportation", "transportation.xls")
         pre_count = XForm.objects.count()
-        response = MainTestCase._publish_xls_file(self, xls_path)
+        self.response = MainTestCase._publish_xls_file(self, xls_path)
 
         # make sure publishing the survey worked
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.response.status_code, 200)
         self.assertEqual(XForm.objects.count(), pre_count+1)
         self.xform = list(XForm.objects.all())[-1]
         self.assertEqual(self.xform.id_string, "transportation_2011_07_25")
