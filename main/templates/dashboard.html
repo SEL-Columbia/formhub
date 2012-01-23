@@ -30,9 +30,22 @@
         <br/>
         <form action="." method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <table class="narrow-labels">
-                {{ form.as_table }}
-            </table>
+            <ul class="tabs" data-tabs="tabs">
+                <li class="active"><a href="#upload">Upload</a></li>
+                <li><a href="#url">URL</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="upload">
+                    <table class="narrow-labels">
+                        {{ form.as_table }}
+                    </table>
+                </div>
+                <div class="tab-pane" id="url">
+                    <table class="narrow-labels">
+                        {{ form_url.as_table }}
+                    </table>
+                </div>
+            </div>
             <span style='float:middle;'>
                 <input type="submit" class="btn large primary" value="Publish" />
             </span>
@@ -46,6 +59,7 @@
         <div class="row">
         <div class="span1">
             <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' />
+
         </div>
         <div class="span4">
             <h3 class="short">
