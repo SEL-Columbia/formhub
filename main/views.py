@@ -91,7 +91,6 @@ def profile(request, username):
     set_profile_data(context, content_user)
     return render_to_response("profile.html", context_instance=context)
 
-@login_required
 def members_list(request):
     context = RequestContext(request)
     users = User.objects.all()
