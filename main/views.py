@@ -14,7 +14,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 from pyxform.errors import PyXFormError
 from odk_viewer.models import DataDictionary
 from odk_viewer.models.data_dictionary import upload_to
-from main.models import UserProfile
+from main.models import UserProfile, MetaData
 from odk_logger.models import Instance, XForm
 from odk_logger.models.xform import XLSFormError
 from utils.user_auth import check_and_set_user, set_profile_data
@@ -165,6 +165,8 @@ def show(request, username, id_string):
     context.xform = xform
     context.content_user = xform.user
     context.base_url = "http://%s" % request.get_host()
+    context.form_license = MetaData.form_license(xform)
+    context.data_license = MetaData.data_license(xform)
     return render_to_response("show.html", context_instance=context)
 
 @require_POST
@@ -176,12 +178,13 @@ def edit(request, username, id_string):
             xform.description = request.POST['description']
         if request.POST.get('title'):
             xform.title = request.POST['title']
-        if request.POST.get('toggle_shared') and request.POST['toggle_shared'] == 'data':
-            xform.shared_data = not xform.shared_data
-        if request.POST.get('toggle_shared') and request.POST['toggle_shared'] == 'form':
-            xform.shared = not xform.shared
-        if request.POST.get('toggle_shared') and request.POST['toggle_shared'] == 'active':
-            xform.downloadable = not xform.downloadable
+        if request.POST.get('toggle_shared'):
+            if request.POST['toggle_shared'] == 'data':
+                xform.shared_data = not xform.shared_data
+            elif request.POST['toggle_shared'] == 'form':
+                xform.shared = not xform.shared
+            elif request.POST['toggle_shared'] == 'active':
+                xform.downloadable = not xform.downloadable
         xform.update()
         return HttpResponse('Updated succeeded.')
     return HttpResponseNotAllowed('Update failed.')
