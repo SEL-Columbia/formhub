@@ -118,12 +118,12 @@
             <span id="form-shared-private" class="label warning">PRIVATE</span>
         </h3>
         <p>
-            License: {{ form_license.value|default:'None' }}
+            License: {{ form_license.value|default:'No license' }}
             {% if is_owner %}
+                {% for field in form %}
+                    {{ field }}
+                {% endfor %}
                 <button class="btn small">edit</button>
-                <table>
-                    {{ form.as_table }}
-                </table>
             {% endif %}
         </p>
         <br/>
