@@ -117,6 +117,16 @@
             <span id="form-shared-public" class="label notice">PUBLIC</span>
             <span id="form-shared-private" class="label warning">PRIVATE</span>
         </h3>
+        <p>
+            License: {{ form_license.value|default:'None' }}
+            {% if is_owner %}
+                <button class="btn small">edit</button>
+                <table>
+                    {{ form.as_table }}
+                </table>
+            {% endif %}
+        </p>
+        <br/>
         <ul class="inline">
         <li>
             <div class="input-prepend">
@@ -155,6 +165,10 @@
             <span id="data-shared-public" class="label notice">PUBLIC</span>
             <span id="data-shared-private" class="label warning">PRIVATE</span>
         </h3>
+        <p>
+            License: {{ data_license.value|default:'None' }}
+
+        </p>
         {% if xform.shared_data or is_owner %}
         <h4>Submissions: {{ xform.submission_count }}</h4>
         {% if xform.submission_count > 0 %}

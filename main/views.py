@@ -18,7 +18,7 @@ from main.models import UserProfile, MetaData
 from odk_logger.models import Instance, XForm
 from odk_logger.models.xform import XLSFormError
 from utils.user_auth import check_and_set_user, set_profile_data
-from main.forms import UserProfileForm
+from main.forms import UserProfileForm, FormLicenseForm
 from urlparse import urlparse
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -167,6 +167,7 @@ def show(request, username, id_string):
     context.base_url = "http://%s" % request.get_host()
     context.form_license = MetaData.form_license(xform)
     context.data_license = MetaData.data_license(xform)
+    context.form = FormLicenseForm()#instance=context.form_license)
     return render_to_response("show.html", context_instance=context)
 
 @require_POST

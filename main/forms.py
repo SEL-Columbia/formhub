@@ -1,11 +1,19 @@
 from django import forms
 from django.contrib.auth.models import User
 from registration.forms import RegistrationFormUniqueEmail
-from main.models import UserProfile
+from main.models import UserProfile, MetaData
 from registration.models import RegistrationProfile
 from utils.country_field import COUNTRIES
 from django.forms import ModelForm
 import re
+
+FORM_LICENSES_CHOICES = (
+    ('Attribution CC BY', 'Attribution CC BY'),
+    ('Attribution-ShareAlike CC BY-SA', 'Attribution-ShareAlike CC BY-SA')
+)
+
+class FormLicenseForm(forms.Form):
+    value = forms.ChoiceField(choices=FORM_LICENSES_CHOICES)
 
 class UserProfileForm(ModelForm):
     class Meta:
