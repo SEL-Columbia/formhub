@@ -37,6 +37,16 @@ class TestSite(MainTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(XForm.objects.count(), pre_count+1)
 
+    def test_url_upload_non_dot_xls_path(self):
+        if internet_on():
+            self._create_user_and_login()
+            xls_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0AgpC5gsTSm_4dFZQdzZZVGxlcEQ3aktBbFlyRXE3cFE&output=xls'
+            pre_count = XForm.objects.count()
+            response = self.client.post('/%s/' % self.user.username, {'xls_url': xls_url})
+            # make sure publishing the survey worked
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(XForm.objects.count(), pre_count+1)
+
     def _publish_xls_file(self):
         xls_path = os.path.join(self.this_directory, "fixtures", "transportation", "transportation.xls")
         pre_count = XForm.objects.count()

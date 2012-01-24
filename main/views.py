@@ -37,9 +37,11 @@ class QuickConverter(QuickConverterFile, QuickConverterURL):
                 cleaned_url = self.cleaned_data['xls_url']
                 cleaned_xls_file = urlparse(cleaned_url)
                 cleaned_xls_file = '_'.join(cleaned_xls_file.path.split('/')[-2:])
+                if cleaned_xls_file[-4:] != '.xls':
+                    cleaned_xls_file += '.xls'
                 cleaned_xls_file = upload_to(None, cleaned_xls_file, user.username)
                 xls_data = ContentFile(urllib2.urlopen(cleaned_url).read())
-                default_storage.save(cleaned_xls_file, xls_data)
+                cleaned_xls_file = default_storage.save(cleaned_xls_file, xls_data)
             return DataDictionary.objects.create(
                 user=user,
                 xls=cleaned_xls_file
