@@ -2,6 +2,7 @@ from test_base import MainTestCase
 from odk_viewer.models import DataDictionary
 from odk_logger.models import XForm, Instance
 import os
+import fnmatch
 from odk_viewer.views import xls_export, csv_export
 from django.core.urlresolvers import reverse
 import csv
@@ -37,15 +38,38 @@ class TestSite(MainTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(XForm.objects.count(), pre_count+1)
 
-    def _publish_xls_file(self):
-        xls_path = os.path.join(self.this_directory, "fixtures", "transportation", "transportation.xls")
+    # This method tests a large number of xls files.
+    # create a directory /main/test/fixtures/online_xls
+    # containing the files you would like to test.
+    # DO NOT CHECK IN PRIVATE XLS FILES!!
+    def test_upload_all_xls(self):
+        root_dir = os.path.join(self.this_directory, "fixtures", "online_xls")
+        if os.path.exists(root_dir):
+            for root, sub_folders, filenames in os.walk(root_dir):
+                # ignore files that don't end in '.xls'
+                for filename in fnmatch.filter(filenames, '*.xls'):
+                    self._publish_file(os.path.join(root, filename))
+                    # delete it so we don't have id_string conflicts
+                    if self.xform:
+                        self.xform.delete()
+                        self.xform = None
+                print 'finished sub-folder %s' % root
+
+    def _publish_file(self, xls_path):
         pre_count = XForm.objects.count()
         self.response = MainTestCase._publish_xls_file(self, xls_path)
 
         # make sure publishing the survey worked
         self.assertEqual(self.response.status_code, 200)
+        if XForm.objects.count() != pre_count+1:
+            # print file location
+            print '\nPublish Failure for file: %s' % xls_path
         self.assertEqual(XForm.objects.count(), pre_count+1)
         self.xform = list(XForm.objects.all())[-1]
+
+    def _publish_xls_file(self):
+        xls_path = os.path.join(self.this_directory, "fixtures", "transportation", "transportation.xls")
+        self._publish_file(xls_path)
         self.assertEqual(self.xform.id_string, "transportation_2011_07_25")
 
     def _check_formList(self):
