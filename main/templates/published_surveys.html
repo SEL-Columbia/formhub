@@ -1,3 +1,4 @@
+{% load humanize %}
 {% if user.xforms.count %}
 <section id="published-forms">
   <div class="page-header">
@@ -56,7 +57,7 @@
                 <span class="label notice">PUBLIC</span>
             {% endif %}
         </td>
-        <td><center>{{ xform.submission_count }}</center></td>
+        <td><center>{{ xform.submission_count|intcomma }}</center></td>
         <td>
           {% if xform.time_of_last_submission %}
           {{ xform.time_of_last_submission|date:"N d, Y" }}

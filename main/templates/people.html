@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load humanize %}
 {% block content %}
 
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
@@ -26,7 +27,7 @@
 
   <div class="page-header">
 <br>
-    <h1>formhubbers <small>({{users.count}})</small></h1>
+    <h1>formhubbers <small>({{users.count|intcomma}})</small></h1>
   </div>
   <table id="people-table" class="zebra-striped">
     <thead>
