@@ -22,8 +22,8 @@
                 {% csrf_token %}
                 <input type="text" id="title"class="xxlarge" disabled="" rows="3" value="{{ xform.title }}" />
                 {% if is_owner %}
-                    <a id="title_edit" data-id="title" href="" class="btn small">edit</a>
-                    <a id="title_save" data-id="title" style="display:none" href="" class="btn small primary" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+                    <a id="title_edit" data-id="title" href="" class="btn small bind-edit">edit</a>
+                    <a id="title_save" data-id="title" style="display:none" href="" class="btn small primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
                 {% endif %}
             </form>
             </div>
@@ -35,8 +35,8 @@
                 {% csrf_token %}
                 <textarea id="description" class="xxlarge" disabled="" rows="3" name="textarea">{% if xform.description %}{{ xform.description }}{% else %}None{% endif %}</textarea>
                 {% if is_owner %}
-                    <a id="description_edit" data-id="description" href="" class="btn small">edit</a>
-                    <a id="description_save" data-id="description" style="display:none" href="" class="btn small primary" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+                    <a id="description_edit" data-id="description" href="" class="btn small bind-edit">edit</a>
+                    <a id="description_save" data-id="description" style="display:none" href="" class="btn small primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
                 {% endif %}
             </form>
             </div>
@@ -118,14 +118,18 @@
             <span id="form-shared-private" class="label warning">PRIVATE</span>
         </h3>
         <p>
-            License: {{ form_license.value|default:'No license' }}
+            License:
             {% if is_owner %}
-                {% for field in form %}
+                {% for field in form_license_form %}
                     {{ field }}
                 {% endfor %}
-                <button class="btn small">edit</button>
+                <a id="form-license_edit" data-id="form-license" href="" class="btn small bind-edit">edit</a>
+                <a id="form-license_save" data-id="form-license" style="display:none" href="" class="btn small primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+            {% else %}
+                {{ form_license|default:'No license' }}
             {% endif %}
         </p>
+        <p><a id="form-license_info" style="display:none" href="">License information</a></p>
         <br/>
         <ul class="inline">
         <li>
@@ -166,9 +170,18 @@
             <span id="data-shared-private" class="label warning">PRIVATE</span>
         </h3>
         <p>
-            License: {{ data_license.value|default:'None' }}
-
+            License:
+            {% if is_owner %}
+                {% for field in data_license_form %}
+                    {{ field }}
+                {% endfor %}
+                <a id="data-license_edit" data-id="data-license" href="" class="btn small bind-edit">edit</a>
+                <a id="data-license_save" data-id="data-license" style="display:none" href="" class="btn small primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+            {% else %}
+                {{ data_license|default:'No license' }}
+            {% endif %}
         </p>
+        <p><a id="data-license_info" style="display:none" href="">License information</a></p>
         {% if xform.shared_data or is_owner %}
         <h4>Submissions: {{ xform.submission_count }}</h4>
         {% if xform.submission_count > 0 %}

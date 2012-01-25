@@ -8,12 +8,23 @@ from django.forms import ModelForm
 import re
 
 FORM_LICENSES_CHOICES = (
-    ('Attribution CC BY', 'Attribution CC BY'),
-    ('Attribution-ShareAlike CC BY-SA', 'Attribution-ShareAlike CC BY-SA')
+    ('No License', 'No License'),
+    ('https://creativecommons.org/licenses/by/3.0/', 'Attribution CC BY'),
+    ('https://creativecommons.org/licenses/by-sa/3.0/', 'Attribution-ShareAlike CC BY-SA')
 )
 
+DATA_LICENSES_CHOICES = (
+    ('No License', 'No License'),
+    ('http://opendatacommons.org/licenses/pddl/summary/', 'PDDL'),
+    ('http://opendatacommons.org/licenses/by/summary/', 'ODC-BY'),
+    ('http://opendatacommons.org/licenses/odbl/summary/', 'ODBL')
+)
+
+class DataLicenseForm(forms.Form):
+    value = forms.ChoiceField(choices=DATA_LICENSES_CHOICES, widget=forms.Select(attrs={'disabled':'disabled', 'id':'data-license'}))
+
 class FormLicenseForm(forms.Form):
-    value = forms.ChoiceField(choices=FORM_LICENSES_CHOICES)
+    value = forms.ChoiceField(choices=FORM_LICENSES_CHOICES, widget=forms.Select(attrs={'disabled':'disabled', 'id':'form-license'}))
 
 class UserProfileForm(ModelForm):
     class Meta:

@@ -118,6 +118,10 @@ class TestFormShow(MainTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).title, desc)
 
+    def test_user_form_license_edit_updates(self):
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(XForm.objects.get(pk=self.xform.pk).title, desc)
+
     def test_user_toggle_data_privacy(self):
         self.assertEqual(self.xform.shared, False)
         response = self.client.post(self.edit_url, {'toggle_shared': 'data'})
