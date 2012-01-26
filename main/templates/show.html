@@ -20,7 +20,7 @@
             <div class="input">
             <form>
                 {% csrf_token %}
-                <input type="text" id="title"class="xxlarge" disabled="" rows="3" value="{{ xform.title }}" />
+                <input type="text" id="source"class="xxlarge" disabled="" rows="3" value="{{ xform.title }}" />
                 {% if is_owner %}
                     <a id="title_edit" data-id="title" href="" class="btn small bind-edit">edit</a>
                     <a id="title_save" data-id="title" style="display:none" href="" class="btn small primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
@@ -37,6 +37,23 @@
                 {% if is_owner %}
                     <a id="description_edit" data-id="description" href="" class="btn small bind-edit">edit</a>
                     <a id="description_save" data-id="description" style="display:none" href="" class="btn small primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+                {% endif %}
+            </form>
+            </div>
+        </div>
+        <h3>Source</h3>
+        <div class="clearfix">
+            <div class="input">
+            <form>
+                {% csrf_token %}
+                {% if source.data_field %}
+                {% else %}
+                    <input type="text" id="title"class="xxlarge" disabled="" rows="3" value="{{ source.data_value|default:"None provided" }}" />
+                {% endif %}
+
+                {% if is_owner %}
+                    <a id="source_edit" data-id="source" href="" class="btn small bind-edit">edit</a>
+                    <a id="source_save" data-id="source" style="display:none" href="" class="btn small primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
                 {% endif %}
             </form>
             </div>

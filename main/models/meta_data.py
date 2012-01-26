@@ -40,6 +40,11 @@ class MetaData(models.Model):
         data_type = 'data_license'
         return unique_type_for_form(xform, data_type, data_value)
 
+    @staticmethod
+    def source(xform, data_value=None):
+        data_type = 'source'
+        return unique_type_for_form(xform, data_type, data_value)
+
     class Meta:
         app_label = 'main'
 
