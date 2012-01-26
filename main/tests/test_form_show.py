@@ -1,6 +1,6 @@
 from test_base import MainTestCase
 from test_process import TestSite
-from main.models import UserProfile
+from main.models import UserProfile, MetaData
 from main.views import show, edit
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
@@ -119,8 +119,16 @@ class TestFormShow(MainTestCase):
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).title, desc)
 
     def test_user_form_license_edit_updates(self):
+        desc = 'Snooky'
+        response = self.client.post(self.edit_url, {'form-license': desc})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(XForm.objects.get(pk=self.xform.pk).title, desc)
+        self.assertEqual(MetaData.form_license(self.xform).data_value, desc)
+
+    def test_user_data_license_edit_updates(self):
+        desc = 'Snooky'
+        response = self.client.post(self.edit_url, {'data-license': desc})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(MetaData.data_license(self.xform).data_value, desc)
 
     def test_user_toggle_data_privacy(self):
         self.assertEqual(self.xform.shared, False)
