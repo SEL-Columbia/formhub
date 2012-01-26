@@ -1,5 +1,13 @@
 from django.db import models
 from odk_logger.models import XForm
+import os
+
+def upload_to(instance, filename):
+    return os.path.join(
+        'docs',
+        instance.user.username,
+        filename
+        )
 
 def unique_type_for_form(xform, data_type, data_value=None):
     result = type_for_form(xform, data_type)
@@ -20,6 +28,7 @@ class MetaData(models.Model):
     xform = models.ForeignKey(XForm)
     data_type = models.CharField(max_length=255)
     data_value = models.CharField(max_length=255)
+    data_file = models.FileField(upload_to=upload_to, null=True)
 
     @staticmethod
     def form_license(xform, data_value=None):
