@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block content %}
     <br/>
@@ -36,13 +37,13 @@ For more info please read <a href="http://blog.formhub.org/2011/12/05/data-gathe
    <br/>
    <div class="row" style="float:right">
      <div class="span3">
-       <h1 class="short">{{ num_forms }}</h1>
+       <h1 class="short">{{ num_forms|intcomma }}</h1>
      </div>
      <div class="span3">
-       <h1 class="short">{{ num_shared_forms }}</h1>
+       <h1 class="short">{{ num_shared_forms|intcomma }}</h1>
      </div>
      <div class="span3">
-       <h1 class="short">{{ num_users }}</h1>
+       <h1 class="short">{{ num_users|intcomma }}</h1>
      </div>
    </div>
    <div class="row" style="float:right">
