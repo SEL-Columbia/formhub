@@ -129,9 +129,11 @@ def import_instances_from_zip(zipfile_path, user, status="zip"):
             # close the files
             xml_file.close()
             for i in images: i.close()
-            if instance is not None:
-                count += 1
-        iterate_through_odk_instances(temp_directory, callback)
+            if instance:
+                return 1
+            else:
+                return 0
+        count = iterate_through_odk_instances(temp_directory, callback)
     finally:
         shutil.rmtree(temp_directory)
     return count
