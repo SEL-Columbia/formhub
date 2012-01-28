@@ -103,8 +103,18 @@ def import_instances_from_phone(path_to_odk_folder, user):
 import zipfile
 import tempfile
 import shutil
+from odk_logger.xform_fs import XFormInstanceFS
 
-from odk_logger.traverse_odk_archive import iterate_through_odk_instances
+def iterate_through_odk_instances(dirpath, callback):
+    count = 0
+    for directory, subdirs, subfiles in os.walk(dirpath):
+        for filename in subfiles:
+            filepath = os.path.join(directory, filename)
+            if XFormInstanceFS.is_valid_odk_instance(filepath):
+                xfxs = XFormInstanceFS(filepath)
+                count += callback(xfxs)
+                del(xfxs)
+    return count
 
 def import_instances_from_zip(zipfile_path, user, status="zip"):
     count = 0
