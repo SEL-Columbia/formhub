@@ -1,11 +1,30 @@
 from django import forms
 from django.contrib.auth.models import User
 from registration.forms import RegistrationFormUniqueEmail
-from main.models import UserProfile
+from main.models import UserProfile, MetaData
 from registration.models import RegistrationProfile
 from utils.country_field import COUNTRIES
 from django.forms import ModelForm
 import re
+
+FORM_LICENSES_CHOICES = (
+    ('No License', 'No License'),
+    ('https://creativecommons.org/licenses/by/3.0/', 'Attribution CC BY'),
+    ('https://creativecommons.org/licenses/by-sa/3.0/', 'Attribution-ShareAlike CC BY-SA')
+)
+
+DATA_LICENSES_CHOICES = (
+    ('No License', 'No License'),
+    ('http://opendatacommons.org/licenses/pddl/summary/', 'PDDL'),
+    ('http://opendatacommons.org/licenses/by/summary/', 'ODC-BY'),
+    ('http://opendatacommons.org/licenses/odbl/summary/', 'ODBL')
+)
+
+class DataLicenseForm(forms.Form):
+    value = forms.ChoiceField(choices=DATA_LICENSES_CHOICES, widget=forms.Select(attrs={'disabled':'disabled', 'id':'data-license'}))
+
+class FormLicenseForm(forms.Form):
+    value = forms.ChoiceField(choices=FORM_LICENSES_CHOICES, widget=forms.Select(attrs={'disabled':'disabled', 'id':'form-license'}))
 
 class UserProfileForm(ModelForm):
     class Meta:
