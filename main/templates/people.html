@@ -36,6 +36,7 @@
         <th>Name</th>
 	<th>Organization</th>
 	<th>Location</th>
+	<th>Member Since</th>
       </tr>
     </thead>
     <tbody>
@@ -45,12 +46,11 @@
         <td>{{ user.profile.name }}</td>
         <td>{{ user.profile.organization }}</td>
         <td>{% if user.profile.city %}{{ user.profile.city }},{% endif %} {% if user.profile.country %}{{user.profile.country}}{% endif %}</td>
+	<td>{{ user.date_joined|date:"F j, Y" }}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-
   <hr />
-
 
 {% endblock %}
