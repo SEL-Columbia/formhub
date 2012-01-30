@@ -70,7 +70,7 @@ def profile(request, username):
     context.form = QuickConverter()
 
     # xlsform submission...
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_authenticated():
         try:
             form = QuickConverter(request.POST, request.FILES)
             survey = form.publish(request.user).survey
