@@ -14,11 +14,11 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 from pyxform.errors import PyXFormError
 from odk_viewer.models import DataDictionary
 from odk_viewer.models.data_dictionary import upload_to
-from main.models import UserProfile
+from main.models import UserProfile, MetaData
 from odk_logger.models import Instance, XForm
 from odk_logger.models.xform import XLSFormError
 from utils.user_auth import check_and_set_user, set_profile_data
-from main.forms import UserProfileForm
+from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm
 from urlparse import urlparse
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -70,7 +70,7 @@ def profile(request, username):
     context.form = QuickConverter()
 
     # xlsform submission...
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_authenticated():
         try:
             form = QuickConverter(request.POST, request.FILES)
             survey = form.publish(request.user).survey
@@ -167,6 +167,11 @@ def show(request, username, id_string):
     context.xform = xform
     context.content_user = xform.user
     context.base_url = "http://%s" % request.get_host()
+    context.source = MetaData.source(xform)
+    context.form_license = MetaData.form_license(xform).data_value
+    context.data_license = MetaData.data_license(xform).data_value
+    context.form_license_form = FormLicenseForm(initial={'value': context.form_license})
+    context.data_license_form = DataLicenseForm(initial={'value': context.data_license})
     return render_to_response("show.html", context_instance=context)
 
 @require_POST
@@ -176,14 +181,19 @@ def edit(request, username, id_string):
         xform = XForm.objects.get(user__username=username, id_string=id_string)
         if request.POST.get('description'):
             xform.description = request.POST['description']
-        if request.POST.get('title'):
+        elif request.POST.get('title'):
             xform.title = request.POST['title']
-        if request.POST.get('toggle_shared') and request.POST['toggle_shared'] == 'data':
-            xform.shared_data = not xform.shared_data
-        if request.POST.get('toggle_shared') and request.POST['toggle_shared'] == 'form':
-            xform.shared = not xform.shared
-        if request.POST.get('toggle_shared') and request.POST['toggle_shared'] == 'active':
-            xform.downloadable = not xform.downloadable
+        elif request.POST.get('toggle_shared'):
+            if request.POST['toggle_shared'] == 'data':
+                xform.shared_data = not xform.shared_data
+            elif request.POST['toggle_shared'] == 'form':
+                xform.shared = not xform.shared
+            elif request.POST['toggle_shared'] == 'active':
+                xform.downloadable = not xform.downloadable
+        elif request.POST.get('form-license'):
+            MetaData.form_license(xform, request.POST['form-license'])
+        elif request.POST.get('data-license'):
+            MetaData.data_license(xform, request.POST['data-license'])
         xform.update()
         return HttpResponse('Updated succeeded.')
     return HttpResponseNotAllowed('Update failed.')

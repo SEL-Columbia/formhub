@@ -87,7 +87,7 @@ table.narrow-labels label {
     width: 80px;
 }
 
-textarea[disabled]#description, input[disabled]#title {
+textarea[disabled].present, input[disabled].present{
     background-color: transparent;
     color: #444;
     border-color: #FEFEFE;
@@ -153,3 +153,4 @@ table {
     margin: 1em 0;
     clear: both;
 }
+

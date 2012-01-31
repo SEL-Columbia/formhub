@@ -47,6 +47,14 @@ class TestSite(MainTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(XForm.objects.count(), pre_count+1)
 
+    def test_not_logged_in_cannot_upload(self):
+        path = os.path.join(self.this_directory, "fixtures", "transportation", "transportation.xls")
+        if not path.startswith('/%s/' % self.user.username):
+            path = os.path.join(self.this_directory, path)
+        with open(path) as xls_file:
+            post_data = {'xls_file': xls_file}
+            return self.anon.post('/%s/' % self.user.username, post_data)
+
     def _publish_xls_file(self):
         xls_path = os.path.join(self.this_directory, "fixtures", "transportation", "transportation.xls")
         pre_count = XForm.objects.count()
