@@ -75,11 +75,7 @@ def submission(request, username):
     try:
         xml_file_list = request.FILES.pop("xml_submission_file", [])
     except IOError, v:
-        try:
-            (code, message) = v
-        except:
-            code = 0
-            message = v
+        message = v
         if message == 'request data read error':
             return HttpResponseBadRequest("File transfer interruption.")
         else:

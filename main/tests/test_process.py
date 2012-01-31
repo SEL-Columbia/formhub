@@ -55,10 +55,27 @@ class TestSite(MainTestCase):
                         self.xform = None
                 print 'finished sub-folder %s' % root
 
+    def test_url_upload_non_dot_xls_path(self):
+        if internet_on():
+            self._create_user_and_login()
+            xls_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0AgpC5gsTSm_4dFZQdzZZVGxlcEQ3aktBbFlyRXE3cFE&output=xls'
+            pre_count = XForm.objects.count()
+            response = self.client.post('/%s/' % self.user.username, {'xls_url': xls_url})
+            # make sure publishing the survey worked
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(XForm.objects.count(), pre_count+1)
+
+    def test_not_logged_in_cannot_upload(self):
+        path = os.path.join(self.this_directory, "fixtures", "transportation", "transportation.xls")
+        if not path.startswith('/%s/' % self.user.username):
+            path = os.path.join(self.this_directory, path)
+        with open(path) as xls_file:
+            post_data = {'xls_file': xls_file}
+            return self.anon.post('/%s/' % self.user.username, post_data)
+
     def _publish_file(self, xls_path):
         pre_count = XForm.objects.count()
         self.response = MainTestCase._publish_xls_file(self, xls_path)
-
         # make sure publishing the survey worked
         self.assertEqual(self.response.status_code, 200)
         if XForm.objects.count() != pre_count+1:

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load humanize %}
 {% block content %}
 
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
@@ -26,7 +27,7 @@
 
   <div class="page-header">
 <br>
-    <h1>formhubbers <small>({{users.count}})</small></h1>
+    <h1>formhubbers <small>({{users.count|intcomma}})</small></h1>
   </div>
   <table id="people-table" class="zebra-striped">
     <thead>
@@ -35,6 +36,7 @@
         <th>Name</th>
 	<th>Organization</th>
 	<th>Location</th>
+	<th>Member Since</th>
       </tr>
     </thead>
     <tbody>
@@ -44,12 +46,11 @@
         <td>{{ user.profile.name }}</td>
         <td>{{ user.profile.organization }}</td>
         <td>{% if user.profile.city %}{{ user.profile.city }},{% endif %} {% if user.profile.country %}{{user.profile.country}}{% endif %}</td>
+	<td>{{ user.date_joined|date:"F j, Y" }}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-
   <hr />
-
 
 {% endblock %}

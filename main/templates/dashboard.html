@@ -1,3 +1,5 @@
+{% load humanize %}
+
 {% block content %}
 
 <section id="profile">
@@ -73,13 +75,13 @@
         </div>
         <div class="row">
         <div class="span1">
-            <h4>{{ all_forms }}</h4> 
+            <h4>{{ all_forms|intcomma }}</h4>
         </div>
         <div class="span2">
-            <h4>{{ num_forms }}</h4> 
+            <h4>{{ num_forms|intcomma }}</h4>
         </div>
         <div class="span2">
-            <h4>{{ user_surveys }}</h4> 
+            <h4>{{ user_surveys|intcomma }}</h4>
         </div>
         </div>
         <div class="row">
