@@ -61,7 +61,7 @@ class DataDictionary(XForm):
     survey = property(get_survey)
 
     def get_survey_elements(self):
-        return self.survey.iter_children()
+        return self.survey.iter_descendants()
 
     survey_elements = property(get_survey_elements)
 
