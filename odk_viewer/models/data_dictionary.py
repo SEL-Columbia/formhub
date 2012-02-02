@@ -24,16 +24,6 @@ class ColumnRename(models.Model):
         return dict([(cr.xpath, cr.column_name) for cr in cls.objects.all()])
 
 
-def upload_to(instance, filename, username=None):
-    if instance:
-        username = instance.user.username
-    return os.path.join(
-        'xls',
-        username,
-        filename
-        )
-
-
 class DataDictionary(XForm):
 
     class Meta:

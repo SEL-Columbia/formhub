@@ -10,18 +10,11 @@ import os
 import re
 
 
-def upload_to(instance, filename):
-    return os.path.join(
-        'xls',
-        instance.user.username,
-        filename
-        )
-
 class XLSFormError(Exception):
     pass
 
 class XForm(models.Model):
-    xls = models.FileField(upload_to=upload_to, null=True)
+    xls = models.FileField(upload_to="XLS", null=True)
     json = models.TextField(default=u'')
     description = models.TextField(default=u'', null=True)
     xml = models.TextField()

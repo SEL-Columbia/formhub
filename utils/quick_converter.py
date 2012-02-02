@@ -4,7 +4,7 @@ from django import forms
 from odk_viewer.models import DataDictionary
 
 class QuickConverter(forms.Form):
-    xls_file = forms.FileField(label="XLS File")
+    xls_file = forms.FileField(upload_to="XLS", label="XLS File")
 
     def publish(self, user):
         if self.is_valid():
