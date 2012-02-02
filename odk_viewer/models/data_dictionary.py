@@ -24,16 +24,6 @@ class ColumnRename(models.Model):
         return dict([(cr.xpath, cr.column_name) for cr in cls.objects.all()])
 
 
-def upload_to(instance, filename, username=None):
-    if instance:
-        username = instance.user.username
-    return os.path.join(
-        'xls',
-        username,
-        filename
-        )
-
-
 class DataDictionary(XForm):
 
     class Meta:
@@ -61,7 +51,7 @@ class DataDictionary(XForm):
     survey = property(get_survey)
 
     def get_survey_elements(self):
-        return self.survey.iter_children()
+        return self.survey.iter_descendants()
 
     survey_elements = property(get_survey_elements)
 
