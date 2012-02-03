@@ -1,12 +1,7 @@
-# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
-
-class MyError(Exception):
-    pass
-
-
 import traceback
 from django.conf import settings
 from django.core.mail import mail_admins
+
 def report_exception(subject, info, exc_info=None):
     if exc_info:
         cls, err = exc_info[:2]
