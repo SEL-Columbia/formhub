@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.core.files.storage import get_storage_class
 from models import XForm, create_instance
 from utils import response_with_mimetype_and_name
 from odk_logger.import_tools import import_instances_from_zip
@@ -107,10 +108,11 @@ def download_xform(request, username, id_string):
 
 def download_xlsform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
-    path = os.path.join('media', xform.xls.path)
-    if os.path.exists(path):
+    file_path = xform.xls.name
+    default_storage = get_storage_class()()
+    if default_storage.exists(file_path):
         response = response_with_mimetype_and_name('vnd.ms-excel', id_string, show_date=False,
-                extension='xls', file_path=path)
+                extension='xls', file_path=file_path)
         return response
     else:
         messages.add_message(request, messages.WARNING, 'No XLS file for your form <strong>%s</strong>' % id_string)
