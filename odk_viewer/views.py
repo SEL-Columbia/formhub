@@ -95,7 +95,7 @@ def csv_export(request, username, id_string):
     file_path = writer.get_default_file_path()
     writer.write_to_file(file_path)
     response = response_with_mimetype_and_name('application/csv', id_string, extension='csv',
-            file_path=file_path)
+            file_path=file_path, use_local_filesystem=True)
     return response
 
 

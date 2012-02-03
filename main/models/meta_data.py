@@ -4,8 +4,8 @@ import os
 
 def upload_to(instance, filename):
     return os.path.join(
-        'docs',
         instance.user.username,
+        'docs',
         filename
         )
 
