@@ -1,7 +1,9 @@
 from test_base import MainTestCase
 from odk_logger.models import XForm
 from django.core.urlresolvers import reverse
+from django.core.files.storage import get_storage_class
 from odk_viewer.views import xls_export
+
 import os
 
 class TestFormErrors(MainTestCase):
@@ -24,10 +26,11 @@ class TestFormErrors(MainTestCase):
         self.xform = XForm.objects.all()[0]
         self.xform.shared_data = True
         self.xform.save()
-        path = os.path.join('media', self.xform.xls.path)
-        self.assertEqual(os.path.exists(path), True)
-        os.remove(path)
-        self.assertEqual(os.path.exists(path), False)
+        default_storage = get_storage_class()()
+        path = self.xform.xls.name
+        self.assertEqual(default_storage.exists(path), True)
+        default_storage.delete(path)
+        self.assertEqual(default_storage.exists(path), False)
         url = reverse(xls_export, kwargs={'username': self.user.username,
                 'id_string': self.xform.id_string})
         response = self.anon.get(url)
