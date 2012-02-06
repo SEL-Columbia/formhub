@@ -41,8 +41,11 @@ class XFormInstanceFS(object):
     def is_valid_odk_instance(cls, filepath):
         if not filepath.endswith(".xml"):
             return False
-        env, dirname = os.path.split(os.path.dirname(os.path.abspath(filepath)))
-        return dirname != "forms"
+        with open(filepath, 'r') as ff:
+            fxml = ff.read()
+            if fxml.find("""<?xml version='1.0' ?>""") == 0:
+                return True
+        return False
 
     def __str__(self):
         return "<XForm XML: %s>" % self.xform_id
