@@ -21,23 +21,25 @@
 	  $('#forms-table').dataTable({
                   "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
 	          "bPaginate" : true,
-                  "sPaginationType": "bootstrap",
+                  "sPaginationType": "bootstrap",// "iDisplayLength": 4, 
                   "bSort": true, 
                   "oLanguage": {"sSearch": "Search:"},
                   "oSearch": {"sSearch": ""},
+                  "fnDrawCallback": function() {
+                    {% if loggedin_user %}
+                      // add click event to all public (x)forms
+                      $('a.clonexls').click(function(){
+                        data = this.href.split("#")[1].split("/")
+                        clone_xlsform(data[0], data[1]);
+                        return false;
+                      });
+                       {% endif %}
+                  }
       });
       $('#forms-table_filter').addClass('row');
       
       $('#mfeedback').hide();
       
-      {% if loggedin_user %}
-      // add click event to all public (x)forms
-      $('a.clonexls').click(function(){
-        data = this.href.split("#")[1].split("/")
-        clone_xlsform(data[0], data[1]);
-        return false;
-      });
-       {% endif %}
 	} );
 	{% if loggedin_user %}
 	var clone_xlsform = function (username, formid){
