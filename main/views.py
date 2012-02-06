@@ -64,6 +64,7 @@ def login_redirect(request):
     return HttpResponseRedirect("/%s" % request.user.username)
 
 
+@login_required
 def clone_xlsform(request, username):
     """
     Copy a public/Shared form to a users list of forms.
@@ -72,7 +73,7 @@ def clone_xlsform(request, username):
     context = RequestContext(request)
     context.message = {'type': None, 'text': '....'}
 
-    if request.method == 'POST' and request.user.is_authenticated():
+    if request.method == 'POST':
         try:
             form_owner = request.POST.get('username')
             id_string = request.POST.get('id_string')
@@ -82,7 +83,7 @@ def clone_xlsform(request, username):
             if default_storage.exists(path):
                 xls_file = upload_to(None, id_string + '_cloned.xls', \
                                             request.user.username)
-                xls_data = default_storage.open(path).read()
+                xls_data = default_storage.open(path)
                 xls_file = default_storage.save(xls_file, xls_data)
                 context.message = u"%s-%s" % (form_owner, xls_file)
                 survey = DataDictionary.objects.create(
