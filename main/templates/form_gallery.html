@@ -81,7 +81,7 @@
         <td>
           {% if data_dictionary.xls %}
             <a href="{% url download_xlsform data_dictionary.user.username data_dictionary.id_string %}"><button class="btn small success">Excel</button></a>
-            {% if loggedin_user %}
+            {% if loggedin_user and data_dictionary.xls|length > 0 %}
             <a href="#{{ data_dictionary.user.username }}/{{ data_dictionary.id_string }}" class="clonexls"><button class="btn small">Clone Form</button></a>
             {% endif %}
           {% endif %}
