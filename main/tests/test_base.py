@@ -2,6 +2,7 @@ import os
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.test.client import Client
+from odk_logger.models import XForm
 
 class MainTestCase(TestCase):
 
@@ -33,6 +34,13 @@ class MainTestCase(TestCase):
         with open(path) as xls_file:
             post_data = {'xls_file': xls_file}
             return self.client.post('/%s/' % self.user.username, post_data)
+
+    def _publish_transporation_form(self):
+        xls_path = os.path.join(self.this_directory, "fixtures",
+                "transportation", "transportation.xls")
+        response = self._publish_xls_file(xls_path)
+        self.assertEqual(XForm.objects.count(), 1)
+        self.xform = XForm.objects.all()[0]
 
     def _make_submission(self, path):
         with open(path) as f:
