@@ -16,6 +16,7 @@ class UserProfile(models.Model):
     home_page = models.CharField(max_length=255, blank=True)
     twitter = models.CharField(max_length=255, blank=True)
     description = models.CharField(max_length=255, blank=True)
+    require_auth = models.BooleanField(default=False)
 
     def gravatar(self):
         return get_gravatar_img_link(self.user)
