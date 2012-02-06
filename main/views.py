@@ -78,11 +78,11 @@ def clone_xlsform(request, username):
             id_string = request.POST.get('id_string')
             xform = XForm.objects.get(user__username=form_owner, \
                                         id_string=id_string)
-            path = os.path.join('media', xform.xls.path)
-            if os.path.exists(path):
+            path = xform.xls.name
+            if default_storage.exists(path):
                 xls_file = upload_to(None, id_string + '_cloned.xls', \
                                             request.user.username)
-                xls_data = ContentFile(open(path, 'r').read())
+                xls_data = default_storage.open(path).read()
                 xls_file = default_storage.save(xls_file, xls_data)
                 context.message = u"%s-%s" % (form_owner, xls_file)
                 survey = DataDictionary.objects.create(
