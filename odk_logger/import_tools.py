@@ -103,16 +103,47 @@ def import_instances_from_phone(path_to_odk_folder, user):
 import zipfile
 import tempfile
 import shutil
+from odk_logger.xform_fs import XFormInstanceFS
 
-def import_instances_from_zip(zipfile_path, user):
+def iterate_through_odk_instances(dirpath, callback):
+    count = 0
+    for directory, subdirs, subfiles in os.walk(dirpath):
+        for filename in subfiles:
+            filepath = os.path.join(directory, filename)
+            if XFormInstanceFS.is_valid_odk_instance(filepath):
+                xfxs = XFormInstanceFS(filepath)
+                count += callback(xfxs)
+                del(xfxs)
+    return count
+
+def import_instances_from_zip(zipfile_path, user, status="zip"):
     count = 0
     try:
         temp_directory = tempfile.mkdtemp()
         zf = zipfile.ZipFile(zipfile_path)
         zf.extractall(temp_directory)
-        odk_folders = glob.glob(os.path.join(temp_directory, "*", "odk"))
-        for odk_folder in odk_folders:
-            count += import_instances_from_phone(odk_folder, user)
+        def callback(xform_fs):
+            """
+            This callback is passed an instance of a XFormInstanceFS.
+            See xform_fs.py for more info.
+            """
+            xml_file = django_file(xform_fs.path,
+                                   field_name="xml_file",
+                                   content_type="text/xml")
+            images = [django_file(jpg, field_name="image",
+                            content_type="image/jpeg") for jpg in xform_fs.photos]
+            # todo: if an instance has been submitted make sure all the
+            # files are in the database.
+            # there shouldn't be any instances with a submitted status in the
+            instance = models.create_instance(user.username, xml_file, images, status)
+            # close the files
+            xml_file.close()
+            for i in images: i.close()
+            if instance:
+                return 1
+            else:
+                return 0
+        count = iterate_through_odk_instances(temp_directory, callback)
     finally:
         shutil.rmtree(temp_directory)
     return count
