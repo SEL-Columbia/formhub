@@ -64,33 +64,42 @@ def bulksubmission_form(request, username=None):
 
 @require_GET
 def formList(request, username):
-    import json
-    # TODO remove debug print out
-    print json.dumps([str(x) for x in request.META.items()], sort_keys=True, indent=4)
-    if 'HTTP_AUTHORIZATION' in request.META:
-        auth = request.META['HTTP_AUTHORIZATION'].split()
-        if len(auth) == 2:
-            # NOTE: We are only support bASIC authentication for now.
-            #
-            if auth[0].lower() == "basic":
-                uname, passwd = base64.b64decode(auth[1]).split(':')
-                user = authenticate(username=uname, password=passwd)
-                if user is not None:
-                    if user.is_active:
-                        login(request, user)
-                        request.user = user
-                        """This is where ODK Collect gets its download list."""
-                        xforms = XForm.objects.filter(downloadable=True, user__username=username)
-                        urls = [
-                            {
-                                'url': request.build_absolute_uri(xform.url()),
-                                'text': xform.title,
-                            }
-                            for xform in xforms
-                            ]
-                        return render_to_response("formList.xml", {'urls': urls}, mimetype="text/xml")
+    if username in ['pld', 'mejymejy']:
+        if 'HTTP_AUTHORIZATION' in request.META:
+            auth = request.META['HTTP_AUTHORIZATION'].split()
+            if len(auth) == 2:
+                # NOTE: We are only support bASIC authentication for now.
+                #
+                if auth[0].lower() == "basic":
+                    uname, passwd = base64.b64decode(auth[1]).split(':')
+                    user = authenticate(username=uname, password=passwd)
+                    if user is not None:
+                        if user.is_active:
+                            login(request, user)
+                            request.user = user
+                            """This is where ODK Collect gets its download list."""
+                            xforms = XForm.objects.filter(downloadable=True, user__username=username)
+                            urls = [
+                                {
+                                    'url': request.build_absolute_uri(xform.url()),
+                                    'text': xform.title,
+                                }
+                                for xform in xforms
+                                ]
+                            return render_to_response("formList.xml", {'urls': urls}, mimetype="text/xml")
+        else:
+            return HttpResponseNotAuthorized('Must be logged in')
     else:
-        return HttpResponseNotAuthorized('Must be logged in')
+        """This is where ODK Collect gets its download list."""
+        xforms = XForm.objects.filter(downloadable=True, user__username=username)
+        urls = [
+            {
+                'url': request.build_absolute_uri(xform.url()),
+                'text': xform.title,
+            }
+            for xform in xforms
+            ]
+        return render_to_response("formList.xml", {'urls': urls}, mimetype="text/xml")
 
 
 @require_POST
