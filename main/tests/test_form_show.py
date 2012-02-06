@@ -12,14 +12,10 @@ class TestFormShow(MainTestCase):
     def setUp(self):
         MainTestCase.setUp(self)
         self._create_user_and_login()
-        xls_path = os.path.join(self.this_directory, "fixtures",
-                "transportation", "transportation.xls")
-        response = self._publish_xls_file(xls_path)
-        self.assertEqual(XForm.objects.count(), 1)
+        self._publish_transporation_form()
         s = 'transport_2011-07-25_19-05-49'
         self._make_submission(os.path.join(self.this_directory, 'fixtures',
                     'transportation', 'instances', s, s + '.xml'))
-        self.xform = XForm.objects.all()[0]
         self.url = reverse(show, kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string
