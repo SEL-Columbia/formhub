@@ -28,6 +28,7 @@ class TestUserSettings(MainTestCase):
             'country': 'BB',
             'twitter': 'bobo',
             'home_page': 'bob.com',
+            'require_auth': True,
         }
         response = self.client.post(self.settings_url, post_data)
         self.assertEqual(response.status_code, 302)
