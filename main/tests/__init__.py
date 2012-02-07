@@ -12,3 +12,4 @@ from test_user_settings import TestUserSettings
 from test_form_show import TestFormShow
 from test_form_errors import TestFormErrors
 from test_form_gallery import TestFormGallery
+from test_form_auth import TestFormAuth
