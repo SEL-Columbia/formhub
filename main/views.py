@@ -174,7 +174,8 @@ def profile_settings(request, username):
             return HttpResponseRedirect("/%s/profile" % content_user.username)
     else:
         form = UserProfileForm(instance=profile)
-    return render_to_response("settings.html", { 'form': form }, context_instance=context)
+    return render_to_response("settings.html", { 'form': form },
+            context_instance=context)
 
 
 @require_GET

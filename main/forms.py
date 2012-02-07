@@ -10,7 +10,8 @@ import re
 FORM_LICENSES_CHOICES = (
     ('No License', 'No License'),
     ('https://creativecommons.org/licenses/by/3.0/', 'Attribution CC BY'),
-    ('https://creativecommons.org/licenses/by-sa/3.0/', 'Attribution-ShareAlike CC BY-SA')
+    ('https://creativecommons.org/licenses/by-sa/3.0/',
+     'Attribution-ShareAlike CC BY-SA')
 )
 
 DATA_LICENSES_CHOICES = (
@@ -21,10 +22,12 @@ DATA_LICENSES_CHOICES = (
 )
 
 class DataLicenseForm(forms.Form):
-    value = forms.ChoiceField(choices=DATA_LICENSES_CHOICES, widget=forms.Select(attrs={'disabled':'disabled', 'id':'data-license'}))
+    value = forms.ChoiceField(choices=DATA_LICENSES_CHOICES,
+        widget=forms.Select(attrs={'disabled':'disabled', 'id':'data-license'}))
 
 class FormLicenseForm(forms.Form):
-    value = forms.ChoiceField(choices=FORM_LICENSES_CHOICES, widget=forms.Select(attrs={'disabled':'disabled', 'id':'form-license'}))
+    value = forms.ChoiceField(choices=FORM_LICENSES_CHOICES,
+        widget=forms.Select(attrs={'disabled':'disabled', 'id':'form-license'}))
 
 class UserProfileForm(ModelForm):
     class Meta:
@@ -32,12 +35,18 @@ class UserProfileForm(ModelForm):
         exclude = ('user',)
 
 class UserProfileFormRegister(forms.Form):
-    name = forms.CharField(widget=forms.TextInput(), required=False, max_length=255)
-    city = forms.CharField(widget=forms.TextInput(), required=False, max_length=255)
-    country = forms.ChoiceField(widget=forms.Select(), required=False, choices=COUNTRIES, initial='ZZ')
-    organization = forms.CharField(widget=forms.TextInput(), required=False, max_length=255)
-    home_page = forms.CharField(widget=forms.TextInput(), required=False, max_length=255)
-    twitter = forms.CharField(widget=forms.TextInput(), required=False, max_length=255)
+    name = forms.CharField(widget=forms.TextInput(), required=False,
+        max_length=255)
+    city = forms.CharField(widget=forms.TextInput(), required=False,
+        max_length=255)
+    country = forms.ChoiceField(widget=forms.Select(), required=False,
+        choices=COUNTRIES, initial='ZZ')
+    organization = forms.CharField(widget=forms.TextInput(), required=False,
+        max_length=255)
+    home_page = forms.CharField(widget=forms.TextInput(), required=False,
+        max_length=255)
+    twitter = forms.CharField(widget=forms.TextInput(), required=False,
+        max_length=255)
 
     def save(self, new_user):
         new_profile = UserProfile(user=new_user, name=self.cleaned_data['name'],
@@ -92,9 +101,11 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail, UserProfileFormRe
     def clean_username(self):
         username = self.cleaned_data['username'].lower()
         if username in self._reserved_usernames:
-            raise forms.ValidationError(u'%s is a reserved name, please choose another' % username)
+            raise forms.ValidationError(
+                u'%s is a reserved name, please choose another' % username)
         elif self.illegal_usernames_re.search(username):
-            raise forms.ValidationError(u'username cannot contain #%&*{}\:"\'?></\\ or any spaces')
+            raise forms.ValidationError(
+                u'username cannot contain #%&*{}\:"\'?></\\ or any spaces')
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
@@ -102,9 +113,10 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail, UserProfileFormRe
         raise forms.ValidationError(u'%s already exists' % username )
 
     def save(self, profile_callback=None):
-        new_user = RegistrationProfile.objects.create_inactive_user(username=self.cleaned_data['username'],
-                password=self.cleaned_data['password1'],
-                email=self.cleaned_data['email'])
+        new_user = RegistrationProfile.objects.create_inactive_user(
+            username=self.cleaned_data['username'],
+            password=self.cleaned_data['password1'],
+            email=self.cleaned_data['email'])
         UserProfileFormRegister.save(self, new_user)
         return new_user
 
