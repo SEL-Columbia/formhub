@@ -178,7 +178,8 @@ def enter_data(self, username, id_string):
         tmp.seek(0)
         values = {
             'file': tmp,
-            'format': 'json'
+            'format': 'json',
+            'uuid': xform.uuid
         }
         data, headers = multipart_encode(values)
         headers['User-Agent'] = 'formhub'
@@ -188,5 +189,6 @@ def enter_data(self, username, id_string):
             response = json.loads(response.read())
             return HttpResponseRedirect(response['url'])
         except urllib2.URLError:
-            return HttpResponseRedirect(reverse('main.views.show',
-                        kwargs={'username': username, 'id_string': id_string}))
+            pass # this will happen if we could not connect to touchforms
+    return HttpResponseRedirect(reverse('main.views.show',
+                kwargs={'username': username, 'id_string': id_string}))
