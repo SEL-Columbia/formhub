@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 import os
 import re
+import uuid
 
 
 def upload_to(instance, filename):
@@ -15,6 +16,10 @@ def upload_to(instance, filename):
         instance.user.username,
         'xls',
         os.path.split(filename)[1])
+
+
+def generate_uuid_for_form():
+    return uuid.uuid4().hex
 
 
 class XLSFormError(Exception):
@@ -40,6 +45,7 @@ class XForm(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     has_start_time = models.BooleanField(default=False)
+    uuid = models.CharField(max_length=32, default=u'')
 
     class Meta:
         app_label = 'odk_logger'
