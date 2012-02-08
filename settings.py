@@ -194,3 +194,4 @@ except ImportError:
     print("You can override the default settings by adding a "
           "local_settings.py file.")
 
+TOUCHFORMS_URL = "http://localhost:8000/"

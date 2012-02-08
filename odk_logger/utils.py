@@ -1,4 +1,5 @@
 import traceback
+import tempfile
 from django.conf import settings
 from django.core.mail import mail_admins
 
@@ -53,3 +54,13 @@ def disposition_ext_and_date(name, extension, show_date=True):
         name = "%s_%s" % (name, date.today().strftime("%Y_%m_%d"))
     return 'attachment; filename=%s.%s' % (name, extension)
 
+def store_temp_file(data):
+    tmp = tempfile.TemporaryFile()
+    ret = None
+    try:
+        tmp.write(data)
+        tmp.seek(0)
+        ret = tmp
+    finally:
+        tmp.close()
+    return ret

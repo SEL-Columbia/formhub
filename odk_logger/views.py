@@ -1,4 +1,3 @@
-from django.core.servers.basehttp import FileWrapper
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response, get_object_or_404
@@ -11,14 +10,22 @@ from django.contrib.auth import authenticate, login
 from django.contrib.sites.models import Site
 from django.contrib import messages
 from django.core.files.storage import get_storage_class
+from django.core.files.base import ContentFile
+from django.core.urlresolvers import reverse
+from django.conf import settings
 from models import XForm, create_instance
 from main.models import UserProfile
 from utils import response_with_mimetype_and_name
+from utils import store_temp_file
 from odk_logger.import_tools import import_instances_from_zip
 import zipfile
 import tempfile
 import os
 import base64
+import urllib, urllib2
+import json
+from poster.encode import multipart_encode
+from poster.streaminghttp import register_openers
 
 class HttpResponseNotAuthorized(HttpResponse):
     status_code = 401
@@ -161,3 +168,25 @@ def toggle_downloadable(request, username, id_string):
     xform.save()
     return HttpResponseRedirect("/%s" % username)
 
+def enter_data(self, username, id_string):
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    register_openers()
+    url = settings.TOUCHFORMS_URL
+    response = None
+    with tempfile.TemporaryFile() as tmp:
+        tmp.write(xform.xml)
+        tmp.seek(0)
+        values = {
+            'file': tmp,
+            'format': 'json'
+        }
+        data, headers = multipart_encode(values)
+        headers['User-Agent'] = 'formhub'
+        req = urllib2.Request(url, data, headers)
+        try:
+            response = urllib2.urlopen(req)
+            response = json.loads(response.read())
+            return HttpResponseRedirect(response['url'])
+        except urllib2.URLError:
+            return HttpResponseRedirect(reverse('main.views.show',
+                        kwargs={'username': username, 'id_string': id_string}))

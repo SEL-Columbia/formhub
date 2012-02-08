@@ -163,4 +163,3 @@ def kml_export(request, username, id_string):
         mimetype="application/vnd.google-earth.kml+xml")
     response['Content-Disposition'] = disposition_ext_and_date(id_string, 'kml')
     return response
-
