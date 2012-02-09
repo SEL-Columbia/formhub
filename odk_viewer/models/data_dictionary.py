@@ -28,9 +28,9 @@ def upload_to(instance, filename, username=None):
     if instance:
         username = instance.user.username
     return os.path.join(
-        'xls',
         username,
-        filename
+        'xls',
+        os.path.split(filename)[1]
         )
 
 

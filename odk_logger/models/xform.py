@@ -12,13 +12,14 @@ import re
 
 def upload_to(instance, filename):
     return os.path.join(
-        'xls',
         instance.user.username,
-        filename
-        )
+        'xls',
+        os.path.split(filename)[1])
+
 
 class XLSFormError(Exception):
     pass
+
 
 class XForm(models.Model):
     xls = models.FileField(upload_to=upload_to, null=True)

@@ -22,6 +22,7 @@ from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm
 from urlparse import urlparse
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from django.utils import simplejson
 
 class QuickConverterFile(forms.Form):
     xls_file = forms.FileField(label="XLS File", required=False)
@@ -62,6 +63,51 @@ def home(request):
 def login_redirect(request):
     return HttpResponseRedirect("/%s" % request.user.username)
 
+
+@login_required
+def clone_xlsform(request, username):
+    """
+    Copy a public/Shared form to a users list of forms.
+    Eliminates the need to download Excel File and upload again.
+    """
+    context = RequestContext(request)
+    context.message = {'type': None, 'text': '....'}
+
+    if request.method == 'POST':
+        try:
+            form_owner = request.POST.get('username')
+            id_string = request.POST.get('id_string')
+            xform = XForm.objects.get(user__username=form_owner, \
+                                        id_string=id_string)
+            path = xform.xls.name
+            if default_storage.exists(path):
+                xls_file = upload_to(None, id_string + '_cloned.xls', \
+                                            request.user.username)
+                xls_data = default_storage.open(path)
+                xls_file = default_storage.save(xls_file, xls_data)
+                context.message = u"%s-%s" % (form_owner, xls_file)
+                survey = DataDictionary.objects.create(
+                    user=request.user,
+                    xls=xls_file
+                    ).survey
+                context.message = {
+                    'type': 'success',
+                    'text': 'Successfully cloned %s into your '\
+                            '<a href="/%s">profile</a>.' % \
+                            (survey.id_string, username)
+                    }
+        except (PyXFormError, XLSFormError) as e:
+            context.message = {
+                'type': 'error',
+                'text': unicode(e),
+                }
+        except IntegrityError as e:
+            context.message = {
+                'type': 'error',
+                'text': 'Form with this id already exists.',
+                }
+    return HttpResponse(simplejson.dumps(context.message), \
+                        mimetype='application/json')
 
 def profile(request, username):
     context = RequestContext(request)
@@ -128,7 +174,8 @@ def profile_settings(request, username):
             return HttpResponseRedirect("/%s/profile" % content_user.username)
     else:
         form = UserProfileForm(instance=profile)
-    return render_to_response("settings.html", { 'form': form }, context_instance=context)
+    return render_to_response("settings.html", { 'form': form },
+            context_instance=context)
 
 
 @require_GET
@@ -230,6 +277,8 @@ def form_gallery(request):
     made a lot prettier.
     """
     context = RequestContext(request)
+    if request.user.is_authenticated():
+        context.loggedin_user = request.user
     context.shared_forms = DataDictionary.objects.filter(shared=True)
     return render_to_response('form_gallery.html', context_instance=context)
 

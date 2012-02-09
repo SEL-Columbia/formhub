@@ -8,6 +8,7 @@
     "transport/available_transportation_types_to_referral_facility/lorry", 
     "transport/available_transportation_types_to_referral_facility/motorbike", 
     "transport/available_transportation_types_to_referral_facility/taxi", 
+    "transport/available_transportation_types_to_referral_facility/none", 
     "transport/available_transportation_types_to_referral_facility/other", 
     "transport/available_transportation_types_to_referral_facility_other", 
     "transport/ambulance/frequency_to_referral_facility", 
