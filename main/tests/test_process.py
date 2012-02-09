@@ -95,7 +95,7 @@ class TestSite(MainTestCase):
         self.download_url = 'http://testserver/%s/forms/transportation_2011_07_25/form.xml' % self.user.username
         expected_content = """<forms>
   
-  <form url="%s">transportation</form>
+  <form url="%s">transportation_2011_07_25</form>
   
 </forms>
 """ % self.download_url
@@ -148,9 +148,7 @@ class TestSite(MainTestCase):
                 "ambulance/frequency_to_referral_facility": "daily",
                 "bicycle/frequency_to_referral_facility": "weekly"
                 },
-            {
-                "available_transportation_types_to_referral_facility/none": True
-                },
+            {},
             {
                 "available_transportation_types_to_referral_facility/ambulance": True,
                 "ambulance/frequency_to_referral_facility": "weekly",
@@ -228,9 +226,7 @@ class TestSite(MainTestCase):
         actual_csv = csv.reader(actual_lines)
         headers = actual_csv.next()
         data = [
-            {
-                "available_transportation_types_to_referral_facility/none": "True"
-                },
+            {},
             {
                 "available_transportation_types_to_referral_facility/ambulance": "True",
                 "available_transportation_types_to_referral_facility/bicycle": "True",
