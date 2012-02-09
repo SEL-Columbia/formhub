@@ -1,6 +1,6 @@
-<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:orx="http://openrosa.org/xforms/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <h:head>
-    <h:title>transportation</h:title>
+    <h:title>transportation_2011_07_25</h:title>
     <model>
       <instance>
         <transportation id="transportation_2011_07_25">
@@ -40,7 +40,7 @@
           </transport>
         </transportation>
       </instance>
-      <bind constraint="(.='none' or not(selected(., 'none')))" nodeset="/transportation/transport/available_transportation_types_to_referral_facility" type="select"/>
+      <bind nodeset="/transportation/transport/available_transportation_types_to_referral_facility" type="select"/>
       <bind nodeset="/transportation/transport/available_transportation_types_to_referral_facility_other" relevant="selected(../available_transportation_types_to_referral_facility, 'other')" type="string"/>
       <bind nodeset="/transportation/transport/ambulance/frequency_to_referral_facility" relevant="selected(/transportation/transport/available_transportation_types_to_referral_facility, 'ambulance')" type="select1"/>
       <bind nodeset="/transportation/transport/bicycle/frequency_to_referral_facility" relevant="selected(/transportation/transport/available_transportation_types_to_referral_facility, 'bicycle')" type="select1"/>
@@ -95,10 +95,6 @@
         <item>
           <label>taxi</label>
           <value>taxi</value>
-        </item>
-        <item>
-          <label>None</label>
-          <value>none</value>
         </item>
         <item>
           <label>Other</label>
