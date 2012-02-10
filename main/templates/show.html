@@ -59,6 +59,20 @@
             </form>
             </div>
         </div>
+        <h3>Supporting Documents</h3>
+        <div class=clearfix>
+            <div class="input">
+            <form>
+                {% for doc in supporting_docs %}
+                    <p>{{ doc.data_value }}</p>
+                {% endfor %}
+                {% if is_owner %}
+                    <a id="doc_add" data-id="doc" href="" class="btn small bind-add" data-url="{% url main.views.edit content_user.username xform.id_string %}">add</a>
+                    <input type="file" name="doc_file" id="doc" style="display:none" />
+                {% endif %}
+            </form>
+            </div>
+        </div>
       </div>
       <div class="span5">
         <script type="text/javascript" charset="utf-8">

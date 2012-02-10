@@ -5,6 +5,7 @@ from main.views import show, edit
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
 from odk_viewer.views import csv_export, xls_export, zip_export, kml_export, map_view
+from tempfile import NamedTemporaryFile
 import os
 
 class TestFormShow(MainTestCase):
@@ -267,3 +268,38 @@ class TestFormShow(MainTestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    def test_show_add_supporting_docs_if_owner(self):
+        response = self.client.get(self.url)
+        self.assertContains(response, 'add</a>')
+
+    def test_hide_add_supporting_docs_if_not_owner(self):
+        self.xform.shared = True
+        self.xform.save()
+        response = self.anon.get(self.url)
+        self.assertNotContains(response, 'add</a>')
+
+    def _add_supporting_doc(self):
+        name = 'transportation.xls'
+        path = os.path.join(self.this_directory, "fixtures",
+                "transportation", name)
+        with open(path) as doc_file:
+            post_data = {'doc_file': doc_file}
+            response = self.client.post(self.edit_url, post_data)
+        return name
+
+    def test_adds_supporting_doc_on_submit(self):
+        count = len(MetaData.objects.filter(xform=self.xform,
+                data_type='supporting_doc'))
+        name = self._add_supporting_doc()
+        self.assertEquals(count + 1, len(
+                MetaData.objects.filter(xform=self.xform,
+                data_type='supporting_doc')))
+
+    def test_shows_doc_after_submit(self):
+        name = self._add_supporting_doc()
+        response = self.client.get(self.url)
+        self.assertContains(response, name)
+        self.xform.shared = True
+        self.xform.save()
+        response = self.anon.get(self.url)
+        self.assertContains(response, name)

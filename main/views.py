@@ -219,6 +219,9 @@ def show(request, username, id_string):
     context.data_license = MetaData.data_license(xform).data_value
     context.form_license_form = FormLicenseForm(initial={'value': context.form_license})
     context.data_license_form = DataLicenseForm(initial={'value': context.data_license})
+    context.supporting_docs = MetaData.supporting_docs(xform)
+    if context.supporting_docs:
+        raise Exception(context.supporting_docs)
     return render_to_response("show.html", context_instance=context)
 
 @require_POST
@@ -241,6 +244,8 @@ def edit(request, username, id_string):
             MetaData.form_license(xform, request.POST['form-license'])
         elif request.POST.get('data-license'):
             MetaData.data_license(xform, request.POST['data-license'])
+        elif request.FILES.get('doc_file'):
+            MetaData.supporting_docs(xform, request.FILES['doc_file'])
         xform.update()
         return HttpResponse('Updated succeeded.')
     return HttpResponseNotAllowed('Update failed.')
