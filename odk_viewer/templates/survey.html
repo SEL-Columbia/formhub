@@ -17,7 +17,7 @@
   <tbody>
     {% for pair in label_value_pairs %}
     <tr>
-      <td>{{ pair.0 }}</td>
+      <td>{{ pair.0|safe }}</td>
       <td>{{ pair.1 }}</td>
     </tr>
     {% endfor %}
