@@ -25,6 +25,12 @@ import json
 import os
 from datetime import date
 
+def parse_label_for_display(pi, xpath):
+    label = pi.data_dictionary.get_label(xpath)
+    if type(label) == dict:
+        label = ["%s: %s" % (key, value) for key, value in label.items()]
+        label = "<br/>".join(label)
+    return label
 
 def average(values):
     if len(values):
@@ -72,8 +78,9 @@ def survey_responses(request, pk):
     xpaths = data_for_display.keys()
     xpaths.sort(cmp=pi.data_dictionary.get_xpath_cmp())
     label_value_pairs = [
-        (pi.data_dictionary.get_label(xpath),
-         data_for_display[xpath]) for xpath in xpaths]
+         (parse_label_for_display(pi, xpath),
+         data_for_display[xpath]) for xpath in xpaths
+    ]
 
     return render_to_response('survey.html', {
             'label_value_pairs': label_value_pairs,
