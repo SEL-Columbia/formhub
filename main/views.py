@@ -220,8 +220,6 @@ def show(request, username, id_string):
     context.form_license_form = FormLicenseForm(initial={'value': context.form_license})
     context.data_license_form = DataLicenseForm(initial={'value': context.data_license})
     context.supporting_docs = MetaData.supporting_docs(xform)
-    if context.supporting_docs:
-        raise Exception(context.supporting_docs)
     return render_to_response("show.html", context_instance=context)
 
 @require_POST
