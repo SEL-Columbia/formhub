@@ -67,8 +67,10 @@
                     <p>{{ doc.data_value }}</p>
                 {% endfor %}
                 {% if is_owner %}
+                    <div class="input">
+                        <input type="file" name="doc_file" id="doc" />
                     <a id="doc_add" data-id="doc" href="" class="btn small bind-add" data-url="{% url main.views.edit content_user.username xform.id_string %}">add</a>
-                    <input type="file" name="doc_file" id="doc" style="display:none" />
+                    </div>
                 {% endif %}
             </form>
             </div>
