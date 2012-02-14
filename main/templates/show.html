@@ -62,17 +62,18 @@
         <h3>Supporting Documents</h3>
         <div class=clearfix>
             <div class="input">
-            <form>
                 {% for doc in supporting_docs %}
                     <p>{{ doc.data_value }}</p>
                 {% endfor %}
                 {% if is_owner %}
-                    <input type="file" name="doc_file" id="doc" />
-                    <div>
-                        <a id="doc_add" data-id="doc" href="" class="btn small bind-add" data-url="{% url main.views.edit content_user.username xform.id_string %}">upload</a>
-                    </div>
+                <form action="{% url main.views.edit content_user.username, xform.id_string %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <table class="narrow-labels">
+                    {{ form.as_table }}
+                    </table>
+                    <input type="submit" class="btn" value="Upload" />
                 {% endif %}
-            </form>
+                </form>
             </div>
         </div>
       </div>

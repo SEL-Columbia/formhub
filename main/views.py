@@ -24,6 +24,9 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.utils import simplejson
 
+class SupportDoc(forms.Form):
+    doc = forms.FileField(label="Document", required=True)
+
 class QuickConverterFile(forms.Form):
     xls_file = forms.FileField(label="XLS File", required=False)
 
@@ -220,6 +223,7 @@ def show(request, username, id_string):
     context.form_license_form = FormLicenseForm(initial={'value': context.form_license})
     context.data_license_form = DataLicenseForm(initial={'value': context.data_license})
     context.supporting_docs = MetaData.supporting_docs(xform)
+    context.form = SupportDoc()
     return render_to_response("show.html", context_instance=context)
 
 @require_POST
@@ -242,8 +246,9 @@ def edit(request, username, id_string):
             MetaData.form_license(xform, request.POST['form-license'])
         elif request.POST.get('data-license'):
             MetaData.data_license(xform, request.POST['data-license'])
-        elif request.FILES.get('doc_file'):
-            MetaData.supporting_docs(xform, request.FILES['doc_file'])
+        elif request.FILES:
+            MetaData.supporting_docs(xform, request.FILES['doc'])
+        #elif request.FILES.get('doc_file'):
         xform.update()
         return HttpResponse('Updated succeeded.')
     return HttpResponseNotAllowed('Update failed.')
