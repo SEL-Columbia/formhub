@@ -27,10 +27,12 @@ from datetime import date
 
 def parse_label_for_display(pi, xpath):
     label = pi.data_dictionary.get_label(xpath)
-    if type(label) == dict:
-        label = ["%s: %s" % (key, value) for key, value in label.items()]
-        label = "<br/>".join(label)
-    return label
+    if not type(label) == dict:
+        label = { 'Unknown': label }
+    return label.items()
+#        label = ["%s: %s" % (key, value) for key, value in label.items()]
+#        label = "<br/>".join(label)
+#    return label
 
 def average(values):
     if len(values):
@@ -81,10 +83,13 @@ def survey_responses(request, pk):
          (parse_label_for_display(pi, xpath),
          data_for_display[xpath]) for xpath in xpaths
     ]
-
+    languages = label_value_pairs[-1][0]
+    
     return render_to_response('survey.html', {
             'label_value_pairs': label_value_pairs,
             'image_urls': image_urls(pi.instance),
+            'languages': languages, 
+            'default_language': languages[0][0]
             })
 
 
