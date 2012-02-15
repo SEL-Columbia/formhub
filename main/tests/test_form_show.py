@@ -5,7 +5,7 @@ from main.views import show, edit, download_supporting_doc
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
 from odk_viewer.views import csv_export, xls_export, zip_export, kml_export
-from odk_viewer.view import map_view
+from odk_viewer.views import map_view
 from tempfile import NamedTemporaryFile
 import os
 
