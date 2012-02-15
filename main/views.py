@@ -1,6 +1,7 @@
 import os, urllib2
 
 from django.core.files.base import ContentFile
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -16,6 +17,7 @@ from odk_viewer.models import DataDictionary
 from odk_viewer.models.data_dictionary import upload_to
 from main.models import UserProfile, MetaData
 from odk_logger.models import Instance, XForm
+from odk_logger.utils import response_with_mimetype_and_name
 from odk_logger.models.xform import XLSFormError
 from utils.user_auth import check_and_set_user, set_profile_data
 from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm
@@ -23,9 +25,10 @@ from urlparse import urlparse
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.utils import simplejson
+from django.shortcuts import get_object_or_404
 
 class SupportDoc(forms.Form):
-    doc = forms.FileField(label="Document", required=True)
+    doc = forms.FileField(label="Supporting document", required=True)
 
 class QuickConverterFile(forms.Form):
     xls_file = forms.FileField(label="XLS File", required=False)
@@ -204,10 +207,8 @@ def dashboard(request):
 
 @require_GET
 def show(request, username, id_string):
-    try:
-        xform = XForm.objects.get(user__username=username, id_string=id_string)
-    except XForm.DoesNotExist:
-        return HttpResponseRedirect("/")
+    xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
     is_owner = username == request.user.username
     # no access
     if xform.shared == False and not is_owner:
@@ -248,9 +249,14 @@ def edit(request, username, id_string):
             MetaData.data_license(xform, request.POST['data-license'])
         elif request.FILES:
             MetaData.supporting_docs(xform, request.FILES['doc'])
-        #elif request.FILES.get('doc_file'):
         xform.update()
-        return HttpResponse('Updated succeeded.')
+        if request.is_ajax():
+            return HttpResponse('Updated succeeded.')
+        else:
+            return HttpResponseRedirect(reverse(show, kwargs={
+                        'username': username,
+                        'id_string': id_string
+                        }))
     return HttpResponseNotAllowed('Update failed.')
 
 def support(request):
@@ -289,4 +295,16 @@ def form_gallery(request):
         context.loggedin_user = request.user
     context.shared_forms = DataDictionary.objects.filter(shared=True)
     return render_to_response('form_gallery.html', context_instance=context)
+
+def download_supporting_doc(request, username, id_string, doc_id):
+    xfrom = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
+    if username == request.user.username or xform.shared:
+        doc = MetaData.objects.get(pk=doc_id)
+        name = doc.data_value
+        path = doc.data_file.name
+        mimetype = doc.data_file_type
+        return response_with_mimetype_and_name(mimetype, name, '', None, False,
+            path)
+    return HttpResponseNotAllowed('Permission denied.')
 
