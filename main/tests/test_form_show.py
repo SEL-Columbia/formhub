@@ -1,10 +1,11 @@
 from test_base import MainTestCase
 from test_process import TestSite
 from main.models import UserProfile, MetaData
-from main.views import show, edit
+from main.views import show, edit, download_supporting_doc
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
-from odk_viewer.views import csv_export, xls_export, zip_export, kml_export, map_view
+from odk_viewer.views import csv_export, xls_export, zip_export, kml_export
+from odk_viewer.view import map_view
 from tempfile import NamedTemporaryFile
 import os
 
@@ -90,8 +91,10 @@ class TestFormShow(MainTestCase):
         self.xform.shared = True
         self.xform.save()
         desc = 'Snooky'
-        response = self.anon.post(self.edit_url, {'description': desc})
-        self.assertNotEqual(XForm.objects.get(pk=self.xform.pk).description, desc)
+        response = self.anon.post(self.edit_url, {'description': desc},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertNotEqual(
+            XForm.objects.get(pk=self.xform.pk).description, desc)
         self.assertEqual(response.status_code, 302)
 
     def test_not_owner_no_edit_post(self):
@@ -99,57 +102,67 @@ class TestFormShow(MainTestCase):
         self.xform.save()
         desc = 'Snooky'
         self._create_user_and_login("jo")
-        response = self.client.post(self.edit_url, {'description': desc})
+        response = self.client.post(self.edit_url, {'description': desc},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 405)
-        self.assertNotEqual(XForm.objects.get(pk=self.xform.pk).description, desc)
+        self.assertNotEqual(
+            XForm.objects.get(pk=self.xform.pk).description, desc)
 
     def test_user_description_edit_updates(self):
         desc = 'Snooky'
-        response = self.client.post(self.edit_url, {'description': desc})
+        response = self.client.post(self.edit_url, {'description': desc},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).description, desc)
 
     def test_user_title_edit_updates(self):
         desc = 'Snooky'
-        response = self.client.post(self.edit_url, {'title': desc})
+        response = self.client.post(self.edit_url, {'title': desc},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).title, desc)
 
     def test_user_form_license_edit_updates(self):
         desc = 'Snooky'
-        response = self.client.post(self.edit_url, {'form-license': desc})
+        response = self.client.post(self.edit_url, {'form-license': desc},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(MetaData.form_license(self.xform).data_value, desc)
 
     def test_user_data_license_edit_updates(self):
         desc = 'Snooky'
-        response = self.client.post(self.edit_url, {'data-license': desc})
+        response = self.client.post(self.edit_url, {'data-license': desc},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(MetaData.data_license(self.xform).data_value, desc)
 
     def test_user_toggle_data_privacy(self):
         self.assertEqual(self.xform.shared, False)
-        response = self.client.post(self.edit_url, {'toggle_shared': 'data'})
+        response = self.client.post(self.edit_url, {'toggle_shared': 'data'},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared_data, True)
 
     def test_user_toggle_data_privacy_off(self):
         self.xform.shared_data = True
         self.xform.save()
-        response = self.client.post(self.edit_url, {'toggle_shared': 'data'})
+        response = self.client.post(self.edit_url, {'toggle_shared': 'data'},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared_data, False)
 
     def test_user_toggle_form_privacy(self):
         self.assertEqual(self.xform.shared, False)
-        response = self.client.post(self.edit_url, {'toggle_shared': 'form'})
+        response = self.client.post(self.edit_url, {'toggle_shared': 'form'},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared, True)
 
     def test_user_toggle_form_privacy_off(self):
         self.xform.shared = True
         self.xform.save()
-        response = self.client.post(self.edit_url, {'toggle_shared': 'form'})
+        response = self.client.post(self.edit_url, {'toggle_shared': 'form'},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared, False)
 
@@ -157,14 +170,16 @@ class TestFormShow(MainTestCase):
         self.xform.downloadable = False
         self.xform.save()
         self.assertEqual(self.xform.downloadable, False)
-        response = self.client.post(self.edit_url, {'toggle_shared': 'active'})
+        response = self.client.post(self.edit_url, {'toggle_shared': 'active'},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).downloadable, True)
 
     def test_user_toggle_form_downloadable_off(self):
         self.xform.downloadable = True
         self.xform.save()
-        response = self.client.post(self.edit_url, {'toggle_shared': 'active'})
+        response = self.client.post(self.edit_url, {'toggle_shared': 'active'},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).downloadable, False)
 
@@ -270,21 +285,27 @@ class TestFormShow(MainTestCase):
 
     def test_show_add_supporting_docs_if_owner(self):
         response = self.client.get(self.url)
-        self.assertContains(response, 'add</a>')
+        self.assertContains(response, 'Upload')
 
     def test_hide_add_supporting_docs_if_not_owner(self):
         self.xform.shared = True
         self.xform.save()
         response = self.anon.get(self.url)
-        self.assertNotContains(response, 'add</a>')
+        self.assertNotContains(response, 'Upload')
 
     def _add_supporting_doc(self):
         name = 'transportation.xls'
         path = os.path.join(self.this_directory, "fixtures",
                 "transportation", name)
         with open(path) as doc_file:
-            post_data = {'doc_file': doc_file}
+            post_data = {'doc': doc_file}
             response = self.client.post(self.edit_url, post_data)
+        doc = MetaData.objects.filter(xform=self.xform,
+            data_type='supporting_doc')[0]
+        self.doc_url = reverse(download_supporting_doc, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'doc_id': doc.id})
         return name
 
     def test_adds_supporting_doc_on_submit(self):
@@ -295,7 +316,7 @@ class TestFormShow(MainTestCase):
                 MetaData.objects.filter(xform=self.xform,
                 data_type='supporting_doc')))
 
-    def test_shows_doc_after_submit(self):
+    def test_shows_supporting_doc_after_submit(self):
         name = self._add_supporting_doc()
         response = self.client.get(self.url)
         self.assertContains(response, name)
@@ -303,3 +324,20 @@ class TestFormShow(MainTestCase):
         self.xform.save()
         response = self.anon.get(self.url)
         self.assertContains(response, name)
+
+    def test_download_supporting_doc(self):
+        name = self._add_supporting_doc()
+        self.client.get(self.doc_url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_no_download_supporting_doc_for_anon(self):
+        name = self._add_supporting_doc()
+        self.anon.get(self.doc_url)
+        self.assertEqual(response.status_code, 405)
+
+    def test_shared_download_supporting_doc_for_anon(self):
+        name = self._add_supporting_doc()
+        self.xform.shared = True
+        self.xform.save()
+        self.anon.get(self.doc_url)
+        self.assertEqual(response.status_code, 200)
