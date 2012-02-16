@@ -193,4 +193,3 @@ try:
 except ImportError:
     print("You can override the default settings by adding a "
           "local_settings.py file.")
-
