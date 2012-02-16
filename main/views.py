@@ -1,5 +1,3 @@
-import os, urllib2
-
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
@@ -20,39 +18,15 @@ from odk_logger.models import Instance, XForm
 from odk_logger.utils import response_with_mimetype_and_name
 from odk_logger.models.xform import XLSFormError
 from utils.user_auth import check_and_set_user, set_profile_data
-from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm
+from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
+     SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter
 from urlparse import urlparse
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.utils import simplejson
 from django.shortcuts import get_object_or_404
 
-class SupportDoc(forms.Form):
-    doc = forms.FileField(label="Supporting document", required=True)
-
-class QuickConverterFile(forms.Form):
-    xls_file = forms.FileField(label="XLS File", required=False)
-
-class QuickConverterURL(forms.Form):
-    xls_url = forms.URLField(verify_exists=False, label="XLS URL", required=False)
-
-class QuickConverter(QuickConverterFile, QuickConverterURL):
-    def publish(self, user):
-        if self.is_valid():
-            cleaned_xls_file = self.cleaned_data['xls_file']
-            if not cleaned_xls_file:
-                cleaned_url = self.cleaned_data['xls_url']
-                cleaned_xls_file = urlparse(cleaned_url)
-                cleaned_xls_file = '_'.join(cleaned_xls_file.path.split('/')[-2:])
-                if cleaned_xls_file[-4:] != '.xls':
-                    cleaned_xls_file += '.xls'
-                cleaned_xls_file = upload_to(None, cleaned_xls_file, user.username)
-                xls_data = ContentFile(urllib2.urlopen(cleaned_url).read())
-                cleaned_xls_file = default_storage.save(cleaned_xls_file, xls_data)
-            return DataDictionary.objects.create(
-                user=user,
-                xls=cleaned_xls_file
-                )
+import os, urllib2
 
 def home(request):
     context = RequestContext(request)
@@ -159,6 +133,7 @@ def profile(request, username):
     set_profile_data(context, content_user)
     return render_to_response("profile.html", context_instance=context)
 
+
 def members_list(request):
     context = RequestContext(request)
     users = User.objects.all()
@@ -224,8 +199,9 @@ def show(request, username, id_string):
     context.form_license_form = FormLicenseForm(initial={'value': context.form_license})
     context.data_license_form = DataLicenseForm(initial={'value': context.data_license})
     context.supporting_docs = MetaData.supporting_docs(xform)
-    context.form = SupportDoc()
+    context.form = SupportDocForm()
     return render_to_response("show.html", context_instance=context)
+
 
 @require_POST
 @login_required
@@ -307,4 +283,3 @@ def download_supporting_doc(request, username, id_string, doc_id):
         return response_with_mimetype_and_name(mimetype, name, '', None, False,
             path)
     return HttpResponseNotAllowed('Permission denied.')
-
