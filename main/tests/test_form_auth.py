@@ -2,6 +2,7 @@ from test_base import MainTestCase
 from odk_logger.views import formList
 from django.core.urlresolvers import reverse
 from main.models import UserProfile
+from main.views import login_redirect
 import base64
 
 class TestFormAuth(MainTestCase):
@@ -56,3 +57,7 @@ class TestFormAuth(MainTestCase):
         self.assertEquals(response.status_code, 401)
         response = self.anon.get(self.url, **self._set_auth_headers('bob', 'bob'))
         self.assertEquals(response.status_code, 200)
+
+    def test_login_redirect_redirects(self):
+        response = self.client.get(reverse(login_redirect))
+        self.assertEquals(response.status_code, 302)
