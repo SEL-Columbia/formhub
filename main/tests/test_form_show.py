@@ -327,17 +327,17 @@ class TestFormShow(MainTestCase):
 
     def test_download_supporting_doc(self):
         name = self._add_supporting_doc()
-        self.client.get(self.doc_url)
+        response = self.client.get(self.doc_url)
         self.assertEqual(response.status_code, 200)
 
     def test_no_download_supporting_doc_for_anon(self):
         name = self._add_supporting_doc()
-        self.anon.get(self.doc_url)
+        response = self.anon.get(self.doc_url)
         self.assertEqual(response.status_code, 405)
 
     def test_shared_download_supporting_doc_for_anon(self):
         name = self._add_supporting_doc()
         self.xform.shared = True
         self.xform.save()
-        self.anon.get(self.doc_url)
+        response = self.anon.get(self.doc_url)
         self.assertEqual(response.status_code, 200)
