@@ -1,6 +1,7 @@
 import os, urllib2
 
 from django.core.files.base import ContentFile
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -64,50 +65,56 @@ def login_redirect(request):
     return HttpResponseRedirect("/%s" % request.user.username)
 
 
+@require_POST
 @login_required
 def clone_xlsform(request, username):
     """
     Copy a public/Shared form to a users list of forms.
     Eliminates the need to download Excel File and upload again.
     """
+    to_username = request.user.username
     context = RequestContext(request)
     context.message = {'type': None, 'text': '....'}
 
-    if request.method == 'POST':
-        try:
-            form_owner = request.POST.get('username')
-            id_string = request.POST.get('id_string')
-            xform = XForm.objects.get(user__username=form_owner, \
-                                        id_string=id_string)
-            path = xform.xls.name
-            if default_storage.exists(path):
-                xls_file = upload_to(None, id_string + '_cloned.xls', \
-                                            request.user.username)
-                xls_data = default_storage.open(path)
-                xls_file = default_storage.save(xls_file, xls_data)
-                context.message = u"%s-%s" % (form_owner, xls_file)
-                survey = DataDictionary.objects.create(
-                    user=request.user,
-                    xls=xls_file
-                    ).survey
-                context.message = {
-                    'type': 'success',
-                    'text': 'Successfully cloned %s into your '\
-                            '<a href="/%s">profile</a>.' % \
-                            (survey.id_string, username)
-                    }
-        except (PyXFormError, XLSFormError) as e:
+    try:
+        form_owner = request.POST.get('username')
+        id_string = request.POST.get('id_string')
+        xform = XForm.objects.get(user__username=form_owner, \
+                                    id_string=id_string)
+        path = xform.xls.name
+        if default_storage.exists(path):
+            xls_file = upload_to(None, id_string + '_cloned.xls', to_username)
+            xls_data = default_storage.open(path)
+            xls_file = default_storage.save(xls_file, xls_data)
+            context.message = u"%s-%s" % (form_owner, xls_file)
+            survey = DataDictionary.objects.create(
+                user=request.user,
+                xls=xls_file
+                ).survey
             context.message = {
-                'type': 'error',
-                'text': unicode(e),
+                'type': 'success',
+                'text': 'Successfully cloned %s into your '\
+                        '<a href="/%s">profile</a>.' % \
+                        (survey.id_string, username)
                 }
-        except IntegrityError as e:
-            context.message = {
-                'type': 'error',
-                'text': 'Form with this id already exists.',
-                }
-    return HttpResponse(simplejson.dumps(context.message), \
+    except (PyXFormError, XLSFormError) as e:
+        context.message = {
+            'type': 'error',
+            'text': unicode(e),
+            }
+    except IntegrityError as e:
+        context.message = {
+            'type': 'error',
+            'text': 'Form with this id already exists.',
+            }
+    if request.is_ajax():
+        return HttpResponse(simplejson.dumps(context.message), \
                         mimetype='application/json')
+    else:
+        return HttpResponseRedirect(reverse(show, kwargs={
+                    'username': to_username,
+                    'id_string': survey.id_string
+                }))
 
 def profile(request, username):
     context = RequestContext(request)
