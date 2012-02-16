@@ -104,14 +104,27 @@ $(document).ready(function(){
     $('.bind-save').click(function() {
         var saveBtn = $(this);
         var type = saveBtn.data('id');
-        var type_id = '#' + type
+        var type_id = '#' + type;
         var params = {};
         params[type] = $(type_id).val();
         $.post(saveBtn.data('url'), params, function (data) {
             saveBtn.hide();
             $(type_id + '_edit').show();
             $(type_id).attr('disabled', '');
-        })
+        });
+        return false;
+    });
+
+    $('.bind-add').click(function() {
+        var addBtn = $(this);
+        var type = addBtn.data('id');
+        var type_id = '#' + type;
+        var params = {};
+        params[type] = $(type_id).val();
+        // TODO handle multi-part post
+        $.post(addBtn.data('url'), params, function (data) {
+            $(type_id).val('');
+        });
         return false;
     });
 

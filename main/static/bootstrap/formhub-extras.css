@@ -90,7 +90,8 @@ table.narrow-labels label {
 textarea[disabled].present, input[disabled].present{
     background-color: transparent;
     color: #444;
-    border-color: #FEFEFE;
+    border-color: transparent;
+    box-shadow: none;
 }
 
 ul.inline {
