@@ -206,27 +206,23 @@ class DataDictionary(XForm):
         d[new_key] = d[old_key]
         del d[old_key]
 
-    def _expand_select_all_that_apply(self, d):
-        for key in d.keys():
-            e = self.get_element(key)
-            if e and e.bind.get(u"type") == u"select":
-                options_selected = d[key].split()
-                for i, child in enumerate(e.children):
-                    new_key = child.get_abbreviated_xpath()
-                    if child.name in options_selected:
-                        d[new_key] = True
-                    else:
-                        d[new_key] = False
-                del d[key]
+    def _expand_select_all_that_apply(self, d, key, e):
+        if e and e.bind.get(u"type") == u"select":
+            options_selected = d[key].split()
+            for i, child in enumerate(e.children):
+                new_key = child.get_abbreviated_xpath()
+                if child.name in options_selected:
+                    d[new_key] = True
+                else:
+                    d[new_key] = False
+            del d[key]
 
-    def _expand_geocodes(self, d):
-        for key in d.keys():
-            e = self.get_element(key)
-            if e and e.bind.get(u"type") == u"geopoint":
-                geodata = d[key].split()
-                for i in range(len(geodata)):
-                    new_key = "%s_%s" % (key, self.geodata_suffixes[i])
-                    d[new_key] = geodata[i]
+    def _expand_geocodes(self, d, key, e):
+        if e and e.bind.get(u"type") == u"geopoint":
+            geodata = d[key].split()
+            for i in range(len(geodata)):
+                new_key = "%s_%s" % (key, self.geodata_suffixes[i])
+                d[new_key] = geodata[i]
 
     def _add_list_of_potential_duplicates(self, d):
         parsed_instance = ParsedInstance.objects.get(instance__id=d[ID])
@@ -241,8 +237,10 @@ class DataDictionary(XForm):
 
     def get_data_for_excel(self):
         for d in self.get_list_of_parsed_instances():
-            self._expand_select_all_that_apply(d)
-            self._expand_geocodes(d)
+            for key in d.keys():
+                e = self.get_element(key)
+                self._expand_select_all_that_apply(d, key, e)
+                self._expand_geocodes(d, key, e)
             # self._add_list_of_potential_duplicates(d)
             yield d
 
