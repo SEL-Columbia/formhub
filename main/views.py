@@ -24,6 +24,7 @@ from urlparse import urlparse
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.utils import simplejson
+from django.shortcuts import render_to_response, get_object_or_404
 
 class QuickConverterFile(forms.Form):
     xls_file = forms.FileField(label="XLS File", required=False)
@@ -55,14 +56,16 @@ def home(request):
     context.num_users = User.objects.count()
     context.num_shared_forms = XForm.objects.filter(shared__exact=1).count()
     if request.user.username:
-        return HttpResponseRedirect("/%s" % request.user.username)
+        return HttpResponseRedirect(reverse(profile,
+            kwargs={'username': request.user.username}))
     else:
-        return render_to_response("home.html", context_instance=context)
+        return render_to_response('home.html')
 
 
 @login_required
 def login_redirect(request):
-    return HttpResponseRedirect("/%s" % request.user.username)
+    return HttpResponseRedirect(reverse(profile,
+        kwargs={'username': request.user.username}))
 
 
 @require_POST
@@ -143,10 +146,7 @@ def profile(request, username):
                 }
 
     # profile view...
-    try:
-        content_user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        return HttpResponseRedirect("/")
+    content_user = get_object_or_404(User, username=username)
     # for the same user -> dashboard
     if content_user == request.user:
         context.show_dashboard = True
@@ -178,7 +178,8 @@ def profile_settings(request, username):
         form = UserProfileForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect("/%s/profile" % content_user.username)
+            return HttpResponseRedirect(reverse(public_profile,
+                kwargs={'username': request.user.username}))
     else:
         form = UserProfileForm(instance=profile)
     return render_to_response("settings.html", { 'form': form },
@@ -208,14 +209,12 @@ def dashboard(request):
 
 @require_GET
 def show(request, username, id_string):
-    try:
-        xform = XForm.objects.get(user__username=username, id_string=id_string)
-    except XForm.DoesNotExist:
-        return HttpResponseRedirect("/")
+    xform = get_object_or_404(XForm,
+        user__username=username, id_string=id_string)
     is_owner = username == request.user.username
     # no access
     if xform.shared == False and not is_owner:
-        return HttpResponseRedirect("/")
+        return HttpResponseRedirect(reverse(home))
     context = RequestContext(request)
     context.is_owner = is_owner
     context.xform = xform
