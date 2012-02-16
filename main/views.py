@@ -297,7 +297,7 @@ def form_gallery(request):
     return render_to_response('form_gallery.html', context_instance=context)
 
 def download_supporting_doc(request, username, id_string, doc_id):
-    xfrom = get_object_or_404(XForm,
+    xform = get_object_or_404(XForm,
             user__username=username, id_string=id_string)
     if username == request.user.username or xform.shared:
         doc = MetaData.objects.get(pk=doc_id)
