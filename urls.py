@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     # form specific
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)$', 'main.views.show'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/edit$', 'main.views.edit'),
-    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/doc/(?P<doc_id>[^/]+)', 'main.views.download_supporting_doc'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/doc/(?P<data_id>[^/]+)', 'main.views.download_metadata'),
 
     # stats
     url(r"^stats/submissions/$", 'stats.views.submissions'),
