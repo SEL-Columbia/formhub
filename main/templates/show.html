@@ -10,18 +10,12 @@
 	  <a href="/{{content_user.username}}/">{{ content_user.username }}</a> /
 	  </div>
 	</h3>
-      <h1>    
-	<span style='color: #999;'>{{ xform.id_string }}</span>
-      </h1>
-    </div> 
-    <div class="row">
-      <div class="span11">
-        <h3>Title</h3>
+    <h1>    
         <div class="clearfix">
             <div class="input">
             <form>
                 {% csrf_token %}
-                <input type="text" id="title"class="xxlarge present" disabled="" rows="3" value="{{ xform.title }}" />
+                <input type="text" id="title"class="xxlarge present header" disabled="" rows="3" value="{{ xform.title }}" />
                 {% if is_owner %}
                     <a id="title_edit" data-id="title" href="" class="btn small bind-edit">edit</a>
                     <a id="title_save" data-id="title" style="display:none" href="" class="btn small primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
@@ -29,6 +23,13 @@
             </form>
             </div>
         </div>
+    </h1>
+    </div> 
+    <div class="row">
+      <div class="span11">
+        {% if is_owner %}
+            <h4>Form ID: {{ xform.id_string }}</h4>
+        {% endif %}
         <h3>Description</h3>
         <div class="clearfix">
             <div class="input">
