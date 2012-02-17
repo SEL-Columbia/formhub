@@ -107,8 +107,9 @@ def csv_export(request, username, id_string):
     writer = DataDictionaryWriter(dd)
     file_path = writer.get_default_file_path()
     writer.write_to_file(file_path)
-    response = response_with_mimetype_and_name('application/csv', id_string, extension='csv',
-            file_path=file_path, use_local_filesystem=True)
+    response = response_with_mimetype_and_name('application/csv', id_string,
+        extension='csv',
+        file_path=file_path, use_local_filesystem=True)
     return response
 
 
@@ -121,7 +122,8 @@ def xls_export(request, username, id_string):
     ddw = XlsWriter()
     ddw.set_data_dictionary(dd)
     temp_file = ddw.save_workbook_to_file()
-    response = response_with_mimetype_and_name('vnd.ms-excel', id_string, extension='xls')
+    response = response_with_mimetype_and_name('vnd.ms-excel', id_string,
+        extension='xls')
     response.write(temp_file.getvalue())
     temp_file.close()
     return response
