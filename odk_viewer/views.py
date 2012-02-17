@@ -27,10 +27,9 @@ from datetime import date
 
 def parse_label_for_display(pi, xpath):
     label = pi.data_dictionary.get_label(xpath)
-    if type(label) == dict:
-        label = ["%s: %s" % (key, value) for key, value in label.items()]
-        label = "<br/>".join(label)
-    return label
+    if not type(label) == dict:
+        label = { 'Unknown': label }
+    return label.items()
 
 def average(values):
     if len(values):
@@ -47,7 +46,11 @@ def map_view(request, username, id_string):
     context.content_user = owner
     context.xform = xform
     context.profile, created = UserProfile.objects.get_or_create(user=owner)
-    points = ParsedInstance.objects.values('lat', 'lng', 'instance').filter(instance__user=owner, instance__xform__id_string=id_string, lat__isnull=False, lng__isnull=False)
+    points = ParsedInstance.objects.values('lat', 'lng', 'instance').filter(
+        instance__user=owner,
+        instance__xform__id_string=id_string,
+        lat__isnull=False,
+        lng__isnull=False)
     center = {
         'lat': round_down_geopoint(average([p['lat'] for p in points])),
         'lng': round_down_geopoint(average([p['lng'] for p in points])),
@@ -81,10 +84,13 @@ def survey_responses(request, pk):
          (parse_label_for_display(pi, xpath),
          data_for_display[xpath]) for xpath in xpaths
     ]
-
+    languages = label_value_pairs[-1][0]
+    
     return render_to_response('survey.html', {
             'label_value_pairs': label_value_pairs,
             'image_urls': image_urls(pi.instance),
+            'languages': languages, 
+            'default_language': languages[0][0]
             })
 
 
