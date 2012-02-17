@@ -97,8 +97,9 @@ def clone_xlsform(request, username):
             context.message = {
                 'type': 'success',
                 'text': 'Successfully cloned %s into your '\
-                        '<a href="/%s">profile</a>.' % \
-                        (survey.id_string, username)
+                        '<a href="%s">profile</a>.' % \
+                        (survey.id_string, reverse(profile,
+                            kwargs={'username': to_username}))
                 }
     except (PyXFormError, XLSFormError) as e:
         context.message = {
