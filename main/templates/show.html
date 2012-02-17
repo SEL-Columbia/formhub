@@ -50,16 +50,25 @@
         <h3>Source</h3>
         <div class="clearfix">
             <div class="input">
-            <form>
+            <form action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {% if source.data_field %}
-                {% else %}
-                    <input type="text" id="source"class="xxlarge present" disabled="" rows="3" value="{{ source.data_value|default:"None provided" }}" />
-                {% endif %}
+                <input type="text" id="source"class="xxlarge present" disabled="" rows="3" value="{{ source.data_value|default:"None provided" }}" />
 
                 {% if is_owner %}
                     <a id="source_edit" data-id="source" href="" class="btn small bind-edit">edit</a>
                     <a id="source_save" data-id="source" style="display:none" href="" class="btn small primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+                {% endif %}
+
+                {% if source.data_file %}
+                    <p><a href="{% url main.views.download_metadata content_user.username xform.id_string source.id %}">{{ source.data_file.name }}</p></a>
+                {% endif %}
+
+                {% if is_owner %}
+                    {% csrf_token %}
+                    <table>
+                    {{ source_form.as_table }}
+                    </table>
+                    <input type="submit" class="btn" value="Upload" />
                 {% endif %}
             </form>
             </div>
@@ -68,17 +77,17 @@
         <div class=clearfix>
             <div class="input">
                 {% for doc in supporting_docs %}
-                    <p><a href="{% url main.views.download_supporting_doc content_user.username xform.id_string doc.id %}">{{ doc.data_value }}</p></a>
+                    <p><a href="{% url main.views.download_metadata content_user.username xform.id_string doc.id %}">{{ doc.data_value }}</p></a>
                 {% endfor %}
                 {% if is_owner %}
                 <form action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <table>
-                    {{ form.as_table }}
+                    {{ doc_form.as_table }}
                     </table>
                     <input type="submit" class="btn" value="Upload" />
-                {% endif %}
                 </form>
+                {% endif %}
             </div>
         </div>
       </div>

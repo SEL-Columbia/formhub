@@ -18,7 +18,8 @@ from odk_logger.utils import response_with_mimetype_and_name
 from odk_logger.models.xform import XLSFormError
 from utils.user_auth import check_and_set_user, set_profile_data
 from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
-     SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter
+     SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
+     SourceForm
 from django.core.files.storage import default_storage
 from django.utils import simplejson
 from django.shortcuts import render_to_response, get_object_or_404
@@ -203,7 +204,8 @@ def show(request, username, id_string):
     context.data_license_form = DataLicenseForm(
         initial={'value': context.data_license})
     context.supporting_docs = MetaData.supporting_docs(xform)
-    context.form = SupportDocForm()
+    context.doc_form = SupportDocForm()
+    context.source_form = SourceForm()
     return render_to_response("show.html", context_instance=context)
 
 
@@ -227,6 +229,9 @@ def edit(request, username, id_string):
             MetaData.form_license(xform, request.POST['form-license'])
         elif request.POST.get('data-license'):
             MetaData.data_license(xform, request.POST['data-license'])
+        elif request.POST.get('source') or request.FILES.get('source'):
+            MetaData.source(xform, request.POST.get('source'),
+                request.FILES.get('source'))
         elif request.FILES:
             MetaData.supporting_docs(xform, request.FILES['doc'])
         xform.update()
@@ -276,14 +281,13 @@ def form_gallery(request):
     context.shared_forms = DataDictionary.objects.filter(shared=True)
     return render_to_response('form_gallery.html', context_instance=context)
 
-def download_supporting_doc(request, username, id_string, doc_id):
+def download_metadata(request, username, id_string, data_id):
     xform = get_object_or_404(XForm,
             user__username=username, id_string=id_string)
     if username == request.user.username or xform.shared:
-        doc = MetaData.objects.get(pk=doc_id)
-        name = doc.data_value
-        path = doc.data_file.name
-        mimetype = doc.data_file_type
-        return response_with_mimetype_and_name(mimetype, name, '', None, False,
-            path)
+        data = MetaData.objects.get(pk=data_id)
+        return response_with_mimetype_and_name(
+            data.data_file_type,
+            data.data_value, '', None, False,
+            data.data_file.name)
     return HttpResponseNotAllowed('Permission denied.')

@@ -127,6 +127,9 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail, UserProfileFormRe
         UserProfileFormRegister.save(self, new_user)
         return new_user
 
+class SourceForm(forms.Form):
+    source = forms.FileField(label="Source document", required=True)
+
 class SupportDocForm(forms.Form):
     doc = forms.FileField(label="Supporting document", required=True)
 
