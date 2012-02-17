@@ -30,9 +30,6 @@ def parse_label_for_display(pi, xpath):
     if not type(label) == dict:
         label = { 'Unknown': label }
     return label.items()
-#        label = ["%s: %s" % (key, value) for key, value in label.items()]
-#        label = "<br/>".join(label)
-#    return label
 
 def average(values):
     if len(values):
@@ -49,7 +46,11 @@ def map_view(request, username, id_string):
     context.content_user = owner
     context.xform = xform
     context.profile, created = UserProfile.objects.get_or_create(user=owner)
-    points = ParsedInstance.objects.values('lat', 'lng', 'instance').filter(instance__user=owner, instance__xform__id_string=id_string, lat__isnull=False, lng__isnull=False)
+    points = ParsedInstance.objects.values('lat', 'lng', 'instance').filter(
+        instance__user=owner,
+        instance__xform__id_string=id_string,
+        lat__isnull=False,
+        lng__isnull=False)
     center = {
         'lat': round_down_geopoint(average([p['lat'] for p in points])),
         'lng': round_down_geopoint(average([p['lng'] for p in points])),
