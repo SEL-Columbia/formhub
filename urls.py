@@ -23,9 +23,12 @@ urlpatterns = patterns('',
     url(r'^(?P<username>[^/]+)/$', 'main.views.profile'),
     url(r'^(?P<username>[^/]+)/profile$', 'main.views.public_profile'),
     url(r'^(?P<username>[^/]+)/settings', 'main.views.profile_settings'),
+    url(r'^(?P<username>[^/]+)/cloneform$', 'main.views.clone_xlsform'),
+
+    # form specific
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)$', 'main.views.show'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/edit$', 'main.views.edit'),
-    url(r'^(?P<username>[^/]+)/cloneform$', 'main.views.clone_xlsform'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/doc/(?P<doc_id>[^/]+)', 'main.views.download_supporting_doc'),
 
     # stats
     url(r"^stats/submissions/$", 'stats.views.submissions'),

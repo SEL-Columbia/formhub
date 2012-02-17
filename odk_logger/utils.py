@@ -28,11 +28,13 @@ from django.core.servers.basehttp import FileWrapper
 from django.core.files.storage import get_storage_class
 import os
 
-def response_with_mimetype_and_name(_mimetype, name, extension=None,
-    show_date=True, file_path=None, use_local_filesystem=False):
-    if not extension:
-        extension = _mimetype
-    mimetype = "application/%s" % _mimetype
+def response_with_mimetype_and_name(mimetype, name, extension=None,
+    show_date=True, file_path=None, use_local_filesystem=False,
+    full_mime=False):
+    if extension == None:
+        extension = mimetype
+    if not full_mime:
+        mimetype = "application/%s" % mimetype
     if file_path:
         if not use_local_filesystem:
             default_storage = get_storage_class()()
