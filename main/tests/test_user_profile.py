@@ -1,7 +1,9 @@
 from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from main.models import UserProfile
+from main.views import profile
 
 # do not inherit from MainTestCase because we don't want auto login
 class TestUserProfile(TestCase):
@@ -23,7 +25,8 @@ class TestUserProfile(TestCase):
             'twitter': 'boberama'
         }
         url = '/accounts/register/'
-        self.response = self.client.post(url, dict(post_data.items() + extra_post_data.items()))
+        self.response = self.client.post(url,
+            dict(post_data.items() + extra_post_data.items()))
 
     def test_create_user_with_given_name(self):
         self._login_user_and_profile()
@@ -46,3 +49,7 @@ class TestUserProfile(TestCase):
         self._login_user_and_profile({ 'username': 'admin' })
         self.assertEqual(User.objects.count(), users_before)
 
+    def test_404_if_user_does_not_exist(self):
+        response = self.client.get(reverse(profile,
+            kwargs={'username': 'nonuser'}))
+        self.assertEqual(response.status_code, 404)
