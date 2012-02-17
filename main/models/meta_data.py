@@ -4,7 +4,7 @@ import os
 
 def upload_to(instance, filename):
     return os.path.join(
-        instance.user.username,
+        instance.xform.user.username,
         'docs',
         filename
         )
@@ -29,6 +29,7 @@ class MetaData(models.Model):
     data_type = models.CharField(max_length=255)
     data_value = models.CharField(max_length=255)
     data_file = models.FileField(upload_to=upload_to, null=True)
+    data_file_type = models.CharField(max_length=255, null=True)
 
     @staticmethod
     def form_license(xform, data_value=None):
@@ -44,6 +45,17 @@ class MetaData(models.Model):
     def source(xform, data_value=None):
         data_type = 'source'
         return unique_type_for_form(xform, data_type, data_value)
+
+    @staticmethod
+    def supporting_docs(xform, data_file=None):
+        data_type = 'supporting_doc'
+        if data_file:
+            doc = MetaData(data_type=data_type, xform=xform,
+                    data_value=data_file.name,
+                    data_file=data_file,
+                    data_file_type=data_file.content_type)
+            doc.save()
+        return type_for_form(xform, data_type)
 
     class Meta:
         app_label = 'main'

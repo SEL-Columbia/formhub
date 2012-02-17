@@ -1,6 +1,5 @@
-import os, urllib2
-
 from django.core.files.base import ContentFile
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -16,37 +15,18 @@ from odk_viewer.models import DataDictionary
 from odk_viewer.models.data_dictionary import upload_to
 from main.models import UserProfile, MetaData
 from odk_logger.models import Instance, XForm
+from odk_logger.utils import response_with_mimetype_and_name
 from odk_logger.models.xform import XLSFormError
 from utils.user_auth import check_and_set_user, set_profile_data
-from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm
+from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
+     SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter
 from urlparse import urlparse
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.utils import simplejson
+from django.shortcuts import get_object_or_404
 
-class QuickConverterFile(forms.Form):
-    xls_file = forms.FileField(label="XLS File", required=False)
-
-class QuickConverterURL(forms.Form):
-    xls_url = forms.URLField(verify_exists=False, label="XLS URL", required=False)
-
-class QuickConverter(QuickConverterFile, QuickConverterURL):
-    def publish(self, user):
-        if self.is_valid():
-            cleaned_xls_file = self.cleaned_data['xls_file']
-            if not cleaned_xls_file:
-                cleaned_url = self.cleaned_data['xls_url']
-                cleaned_xls_file = urlparse(cleaned_url)
-                cleaned_xls_file = '_'.join(cleaned_xls_file.path.split('/')[-2:])
-                if cleaned_xls_file[-4:] != '.xls':
-                    cleaned_xls_file += '.xls'
-                cleaned_xls_file = upload_to(None, cleaned_xls_file, user.username)
-                xls_data = ContentFile(urllib2.urlopen(cleaned_url).read())
-                cleaned_xls_file = default_storage.save(cleaned_xls_file, xls_data)
-            return DataDictionary.objects.create(
-                user=user,
-                xls=cleaned_xls_file
-                )
+import os, urllib2
 
 def home(request):
     context = RequestContext(request)
@@ -153,6 +133,7 @@ def profile(request, username):
     set_profile_data(context, content_user)
     return render_to_response("profile.html", context_instance=context)
 
+
 def members_list(request):
     context = RequestContext(request)
     users = User.objects.all()
@@ -201,10 +182,8 @@ def dashboard(request):
 
 @require_GET
 def show(request, username, id_string):
-    try:
-        xform = XForm.objects.get(user__username=username, id_string=id_string)
-    except XForm.DoesNotExist:
-        return HttpResponseRedirect("/")
+    xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
     is_owner = username == request.user.username
     # no access
     if xform.shared == False and not is_owner:
@@ -219,7 +198,10 @@ def show(request, username, id_string):
     context.data_license = MetaData.data_license(xform).data_value
     context.form_license_form = FormLicenseForm(initial={'value': context.form_license})
     context.data_license_form = DataLicenseForm(initial={'value': context.data_license})
+    context.supporting_docs = MetaData.supporting_docs(xform)
+    context.form = SupportDocForm()
     return render_to_response("show.html", context_instance=context)
+
 
 @require_POST
 @login_required
@@ -241,8 +223,16 @@ def edit(request, username, id_string):
             MetaData.form_license(xform, request.POST['form-license'])
         elif request.POST.get('data-license'):
             MetaData.data_license(xform, request.POST['data-license'])
+        elif request.FILES:
+            MetaData.supporting_docs(xform, request.FILES['doc'])
         xform.update()
-        return HttpResponse('Updated succeeded.')
+        if request.is_ajax():
+            return HttpResponse('Updated succeeded.')
+        else:
+            return HttpResponseRedirect(reverse(show, kwargs={
+                        'username': username,
+                        'id_string': id_string
+                        }))
     return HttpResponseNotAllowed('Update failed.')
 
 def support(request):
@@ -282,3 +272,14 @@ def form_gallery(request):
     context.shared_forms = DataDictionary.objects.filter(shared=True)
     return render_to_response('form_gallery.html', context_instance=context)
 
+def download_supporting_doc(request, username, id_string, doc_id):
+    xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
+    if username == request.user.username or xform.shared:
+        doc = MetaData.objects.get(pk=doc_id)
+        name = doc.data_value
+        path = doc.data_file.name
+        mimetype = doc.data_file_type
+        return response_with_mimetype_and_name(mimetype, name, '', None, False,
+            path)
+    return HttpResponseNotAllowed('Permission denied.')
