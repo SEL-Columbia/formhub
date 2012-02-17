@@ -12,6 +12,10 @@
 <script type="text/javascript">
 var points = {{ points|safe }};
 var center = {{ center|safe }};
+$('#selectLanguage').live('change', function() {
+    $('.language').hide();
+    $('.' + $(this).val()).show();
+});
 </script>
 <script src="/static/js/mapview.js" type="text/javascript"></script>
 {% endblock %}
