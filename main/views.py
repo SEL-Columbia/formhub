@@ -301,9 +301,9 @@ def form_photos(request, username, id_string):
     context.form_view = True
     context.content_user = owner
     context.xform = xform
-    context.images = [
+    context.images = sum([
         image_urls(s.parsed_instance.instance) for s in xform.surveys.all()
-    ]
+    ], [])
     context.profile, created = UserProfile.objects.get_or_create(user=owner)
     if username == request.user.username or xform.shared_data:
         return render_to_response('form_photos.html', context_instance=context)
