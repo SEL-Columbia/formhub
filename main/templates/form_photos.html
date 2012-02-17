@@ -7,23 +7,26 @@
     body { height: 100%; margin: 0; padding: 0 }
     #map_canvas { height: 100% }
 </style>
-<script type="text/javascript" src="/static/galleria/galleria-1.2.6.min.js"></script>
 {% endblock %}
 
 {% block body %}
 <body>
     {% include "topbar.html" %}
-    <div id="gallery">
+    <div id="myCarousel" class="carousel">
+    <!-- Carousel items -->
+    <div class="carousel-inner">
     {% for image_url in images %}
-        <img src="{{ image_url }}">
+        <div class="item"><img src="{{ image_url }}"></div>
     {% endfor %}
     </div>
-<script type="text/javascript">
-    Galleria.loadTheme('/static/galleria/theme/galleria.classic.min.js');
-    $("#gallery").galleria({
-        width: 500,
-        height: 500
-    });
-</script>
+    <!-- Carousel nav -->
+    <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+    <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+    </div>
+    <div id="gallery">
+    </div>
+    <script type="text/javascript">
+        $('.myCarousel').carousel()
+    </script>
 </body>
 {% endblock %}
