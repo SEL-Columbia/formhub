@@ -103,16 +103,16 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail, UserProfileFormRe
     username = forms.CharField(widget=forms.TextInput(), max_length=30)
     email = forms.CharField(widget=forms.TextInput(), max_length=30)
 
-    illegal_usernames_re = re.compile(" |#|%|\&|\*|{|}|\|:|\"|'|\?|>|<|/|\\\\")
+    legal_usernames_re = re.compile("^\w+$")
 
     def clean_username(self):
         username = self.cleaned_data['username'].lower()
         if username in self._reserved_usernames:
             raise forms.ValidationError(
                 u'%s is a reserved name, please choose another' % username)
-        elif self.illegal_usernames_re.search(username):
+        elif not self.legal_usernames_re.search(username):
             raise forms.ValidationError(
-                u'username cannot contain #%&*{}\:"\'?></\\ or any spaces')
+                u'username may only contain alpha-numeric characters and underscores')
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:

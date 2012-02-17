@@ -40,9 +40,25 @@ class TestUserProfile(TestCase):
         self.assertEqual(profile.city, 'Bobville')
 
     def test_disallow_non_alpha_numeric(self):
+        invalid_usernames = [
+            'b ob',
+            'b.o.b.',
+            'b-ob',
+            'b!',
+            '@bob',
+            'bob@bob.com',
+            'bob$',
+            'b&o&b',
+            'bob?',
+            '#bob',
+            '(bob)',
+            'b*ob',
+            '%s % bob',
+        ]
         users_before = User.objects.count()
-        self._login_user_and_profile({ 'username': 'b ob' })
-        self.assertEqual(User.objects.count(), users_before)
+        for username in invalid_usernames:
+            self._login_user_and_profile({ 'username': username })
+            self.assertEqual(User.objects.count(), users_before)
 
     def test_disallow_reserved_name(self):
         users_before = User.objects.count()
