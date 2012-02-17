@@ -101,9 +101,10 @@ def submission(request, username):
     # for each key we have a list of values
     try:
         xml_file_list = request.FILES.pop("xml_submission_file", [])
-    except IOError, v:
-        message = v
-        if message == 'request data read error':
+    except IOError, e:
+        if type(e) == tuple:
+            e = e[1]
+        if e == 'request data read error':
             return HttpResponseBadRequest("File transfer interruption.")
         else:
             raise

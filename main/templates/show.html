@@ -64,6 +64,23 @@
             </form>
             </div>
         </div>
+        <h3>Supporting Documents</h3>
+        <div class=clearfix>
+            <div class="input">
+                {% for doc in supporting_docs %}
+                    <p><a href="{% url main.views.download_supporting_doc content_user.username xform.id_string doc.id %}">{{ doc.data_value }}</p></a>
+                {% endfor %}
+                {% if is_owner %}
+                <form action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <table>
+                    {{ form.as_table }}
+                    </table>
+                    <input type="submit" class="btn" value="Upload" />
+                {% endif %}
+                </form>
+            </div>
+        </div>
       </div>
       <div class="span5">
         <script type="text/javascript" charset="utf-8">
@@ -130,7 +147,7 @@
             <div class="modal-footer">
               <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn primary">Delete</a>
               <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">Cancel</a>
-            </div>
+        ,  </div>
           </div>
           <a href="#" data-controls-modal="delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true">
               <button class="btn small danger">Delete</button>
