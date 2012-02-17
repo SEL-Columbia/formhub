@@ -8,7 +8,9 @@
     <div id="mfeedback">&nbsp;</div>
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
-
+  {% if loggedin_user %}
+    <script type="text/javascript" language="javascript" src="/static/js/form_actions.js"></script>
+  {% endif %}
   <script type="text/javascript" charset="utf-8">
 
         $.extend( $.fn.dataTableExt.oStdClasses, {
@@ -29,11 +31,11 @@
                     {% if loggedin_user %}
                       // add click event to all public (x)forms
                       $('a.clonexls').click(function(){
-                        data = this.href.split("#")[1].split("/")
-                        clone_xlsform(data[0], data[1]);
+                        el = $(this);
+                        clone_xlsform(el.data('url'), el.data('username'), el.data('id'));
                         return false;
                       });
-                       {% endif %}
+                   {% endif %}
                   }
       });
       $('#forms-table_filter').addClass('row');
@@ -41,20 +43,6 @@
       $('#mfeedback').hide();
       
 	} );
-	{% if loggedin_user %}
-	var clone_xlsform = function (username, formid){
-	    // send to server form owner and form id for cloning/copying
-	    $.post('/{{ loggedin_user.username }}/cloneform',
-	        {'username': username,
-	         'id_string': formid}, function(data){
-	        if(data.type == "success" || data.type == "error"){
-	            $('#mfeedback').html('<div class="alert-message"><a class="close" href="#">x</a><p>' + data.text+'</p></div>');
-	            $('#mfeedback').show();
-	            $('.alert-message').alert()
-	        }
-	    }, 'json');
-	};
-	{% endif %}
   </script>
 
   <table id="forms-table" class="zebra-striped">
@@ -82,7 +70,7 @@
           {% if data_dictionary.xls %}
             <a href="{% url download_xlsform data_dictionary.user.username data_dictionary.id_string %}"><button class="btn small success">Excel</button></a>
             {% if loggedin_user and data_dictionary.xls|length > 0 %}
-            <a href="#{{ data_dictionary.user.username }}/{{ data_dictionary.id_string }}" class="clonexls"><button class="btn small">Clone Form</button></a>
+            <a href="" data-url="{% url main.views.clone_xlsform data_dictionary.user.username %}" data-username="{{ data_dictionary.user.username }}" data-id="{{ data_dictionary.id_string }}" class="clonexls"><button class="btn small">Clone</button></a>
             {% endif %}
           {% endif %}
         </td>

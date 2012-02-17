@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load humanize %}
 {% block content %}
+  {% if user.is_authenticated %}
+    <script type="text/javascript" language="javascript" src="/static/js/form_actions.js"></script>
+  {% endif %}
   <section id="profile">
     <div class="page-header">
       <!-- <img src='{{ content_user.profile.gravatar }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' /> -->
@@ -13,9 +16,11 @@
       <h1>    
 	<span style='color: #999;'>{{ xform.id_string }}</span>
       </h1>
-    </div> 
+    </div>
+        <div id="mfeedback">&nbsp;</div> 
     <div class="row">
       <div class="span11">
+        <div id="mfeedback">&nbsp;</div>
         <h3>Title</h3>
         <div class="clearfix">
             <div class="input">
@@ -83,6 +88,14 @@
                   }
                 });
               });
+            {% if user.is_authenticated %}
+              // add click event to all public (x)forms
+              $('a.clonexls').click(function(){
+                el = $(this);
+                clone_xlsform(el.data('url'), el.data('username'), el.data('id'));
+                return false;
+              });
+            {% endif %}
             });
         </script>
         {% if is_owner %}
@@ -176,6 +189,12 @@
                 </li>
             </ul>
         </li>
+        {% if user.is_authenticated and content_user.username != user.username and xform.xls|length > 0 %}
+            <br/><br/>
+            <li>
+                <a href="" data-url="{% url main.views.clone_xlsform xform.user.username %}" data-username="{{ xform.user.username }}" data-id="{{ xform.id_string }}" class="clonexls"><button class="btn small">Clone</button></a>
+            </li>
+        {% endif %}
         </ul>
       </div>
     </div>
@@ -232,7 +251,7 @@
             </div>
             <br/>
             <a href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
-                <button class="btn small info">View Map &raquo;</button>
+ 
             </a>
             </div>
         {% endif %}

@@ -3,7 +3,7 @@ from odk_logger.models import XForm
 from django.core.urlresolvers import reverse
 from django.core.files.storage import get_storage_class
 from odk_viewer.views import xls_export
-
+from main.views import show
 import os
 
 class TestFormErrors(MainTestCase):
@@ -49,4 +49,12 @@ class TestFormErrors(MainTestCase):
                 'id_string': self.xform.id_string})
         response = self.anon.get(url)
         self.assertEqual(response.status_code, 405)
+
+    def test_nonexist_id_string(self):
+        url = reverse(show,
+            kwargs={'username': self.user.username, 'id_string': '4444'})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+        response = self.anon.get(url)
+        self.assertEqual(response.status_code, 404)
 
