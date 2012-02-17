@@ -277,6 +277,15 @@
  
             </a>
             </div>
+            <p>
+            <a href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
+                <button class="btn small info">Map &raquo;</button>
+            </a>
+            </p>
+            <p>
+                <a href="{% url main.views.form_photos content_user.username xform.id_string %}">
+                    <button class="btn small info">Photos &raquo;</button>
+            </p>
         {% endif %}
         {% endif %}
     </div> 
