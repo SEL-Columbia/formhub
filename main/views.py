@@ -195,7 +195,7 @@ def show(request, username, id_string):
     context.is_owner = is_owner
     context.xform = xform
     context.content_user = xform.user
-    context.base_url = "http://%s" % request.get_host()
+    context.base_url = "https://%s" % request.get_host()
     context.source = MetaData.source(xform)
     context.form_license = MetaData.form_license(xform).data_value
     context.data_license = MetaData.data_license(xform).data_value
