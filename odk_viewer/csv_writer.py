@@ -35,7 +35,7 @@ class CsvWriter(object):
             self._write_row(headers, f)
 
             for d in self._dict_iterator:
-                # todo: figure out how to use csv.writer with unicode
+                # TODO: figure out how to use csv.writer with unicode
                 self._write_row([d.get(k, u"n/a") for k in self._keys], f)
 
     def _write_row(self, row, file_object):
