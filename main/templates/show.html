@@ -84,7 +84,8 @@
                   }
                 });
               });
-
+              
+            {% if loggedin_user and xform.shared %}
               // add click event to all public (x)forms
               $('a.clonexls').click(function(){
                 data = this.href.split("#")[1].split("/")
@@ -96,7 +97,7 @@
             
 	        var clone_xlsform = function (username, formid){
 	            // send to server form owner and form id for cloning/copying
-	            $.post('/{{ content_user.username }}/cloneform',
+	            $.post('/{{ loggedin_user.username }}/cloneform',
 	                {'username': username,
 	                 'id_string': formid}, function(data){
 	                if(data.type == "success" || data.type == "error"){
@@ -106,7 +107,7 @@
 	                }
 	            }, 'json');
 	        };
-
+        {% endif %}
 
         </script>
         {% if is_owner %}
@@ -201,9 +202,11 @@
             </ul>
         </li>
         <br/><br/>
+         {% if loggedin_user and xform.shared %}
         <li>
             <a href="#{{ content_user.username }}/{{ xform.id_string }}" class="clonexls"><button class="btn small">Clone</button></a>
         </li>
+        {% endif %}
         </ul>
       </div>
     </div>
