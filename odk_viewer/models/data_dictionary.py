@@ -37,8 +37,8 @@ def upload_to(instance, filename, username=None):
 class DataDictionary(XForm):
 
     geodata_suffixes = [
-        'lat',
-        'lng',
+        'latitude',
+        'longitude',
         'alt',
         'precision'
     ]
