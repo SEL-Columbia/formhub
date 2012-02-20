@@ -7,16 +7,15 @@
     body { height: 100%; margin: 0; padding: 0 }
     #map_canvas { height: 100% }
 </style>
+<script type="text/javascript" src="/static/galleria/galleria-1.2.6.min.js"></script>
 {% endblock %}
 
 {% block body %}
 <body>
     {% include "topbar.html" %}
-    <div id="myCarousel" class="carousel">
-    <!-- Carousel items -->
-    <div class="carousel-inner">
+    <div id="gallery">
     {% for image_url in images %}
-        <div class="item"><img src="{{ image_url }}"></div>
+        <img src="{{ image_url }}">
     {% endfor %}
     </div>
 <script type="text/javascript">

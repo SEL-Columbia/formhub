@@ -217,3 +217,11 @@
     background-image: url(classic-map.png);
     background-repeat: no-repeat;
 }
+.galleria-container {
+    margin: 0 auto;
+    width: 100%;
+    min-height: 720px;
+}
+.galleria-errors {
+    display: none;
+}
