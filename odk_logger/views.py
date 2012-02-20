@@ -174,7 +174,7 @@ def toggle_downloadable(request, username, id_string):
     xform.save()
     return HttpResponseRedirect("/%s" % username)
 
-def enter_data(self, username, id_string):
+def enter_data(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     register_openers()
     url = settings.TOUCHFORMS_URL
@@ -193,7 +193,16 @@ def enter_data(self, username, id_string):
         try:
             response = urllib2.urlopen(req)
             response = json.loads(response.read())
-            return HttpResponseRedirect(response['url'])
+            context = RequestContext(request)
+            owner = User.objects.get(username=username)
+            context.profile, created = UserProfile.objects.get_or_create(user=owner)
+            context.xform = xform
+            context.content_user = owner
+            context.form_view = True
+            context.touchforms = response['url']
+            return render_to_response("form_entry.html",
+context_instance=context)
+            #return HttpResponseRedirect(response['url'])
         except urllib2.URLError:
             pass # this will happen if we could not connect to touchforms
     return HttpResponseRedirect(reverse('main.views.show',
