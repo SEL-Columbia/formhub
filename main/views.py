@@ -23,6 +23,7 @@ from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
 from django.core.files.storage import default_storage
 from django.utils import simplejson
 from django.shortcuts import render_to_response, get_object_or_404
+from odk_viewer.views import image_urls
 
 def home(request):
     context = RequestContext(request)
@@ -290,4 +291,20 @@ def download_metadata(request, username, id_string, data_id):
             data.data_file_type,
             data.data_value, '', None, False,
             data.data_file.name)
+    return HttpResponseNotAllowed('Permission denied.')
+
+def form_photos(request, username, id_string):
+    xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
+    owner = User.objects.get(username=username)
+    context = RequestContext(request)
+    context.form_view = True
+    context.content_user = owner
+    context.xform = xform
+    context.images = sum([
+        image_urls(s.parsed_instance.instance) for s in xform.surveys.all()
+    ], [])
+    context.profile, created = UserProfile.objects.get_or_create(user=owner)
+    if username == request.user.username or xform.shared_data:
+        return render_to_response('form_photos.html', context_instance=context)
     return HttpResponseNotAllowed('Permission denied.')
