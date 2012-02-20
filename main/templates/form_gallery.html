@@ -64,7 +64,7 @@
         <td>
           <a href="/{{ data_dictionary.user.username }}">{{ data_dictionary.user.username }}</a>
         </td>
-        <td><a href="{% url main.views.show data_dictionary.user.username data_dictionary.id_string %}">{{ data_dictionary.title }}</a></td>
+        <td><a href="{% url main.views.show data_dictionary.user.username data_dictionary.id_string %}">{{ data_dictionary.uuid }}</a></td>
         <td>{{ data_dictionary.description }}</td>
         <td>
           {% if data_dictionary.xls %}

@@ -92,11 +92,15 @@ class XForm(models.Model):
 
     def save(self, *args, **kwargs):
         self._set_id_string()
+        self._set_uuid()
         if getattr(settings, 'STRICT', True) and \
                 not re.search(r"^[\w-]+$", self.id_string):
             raise XLSFormError("In strict mode, the XForm ID must be a valid slug and contain no spaces.")
         self._set_title()
         super(XForm, self).save(*args, **kwargs)
+
+    def _set_uuid(self):
+        self.uuid = generate_uuid_for_form()
 
     def __unicode__(self):
         return getattr(self, "id_string", "")

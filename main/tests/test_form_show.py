@@ -371,3 +371,9 @@ class TestFormShow(MainTestCase):
             'username': self.user.username,
             'id_string': self.xform.id_string}))
         self.assertEqual(response.status_code, 200)
+
+    def test_load_from_uuid(self):
+        self.xform = XForm.objects.get(pk=self.xform.id)
+        response = self.client.get(reverse(show, kwargs={
+            'uuid': self.xform.uuid}))
+        self.assertEqual(response.status_code, 200)

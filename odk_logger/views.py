@@ -125,7 +125,7 @@ def submission(request, username=None):
         uuid = request.POST.get('uuid')
         if not uuid:
             return HttpResponseBadRequest("Username or ID required.")
-        username = XForm.objects.filter(uuid=uuid).user.username
+        username = XForm.objects.get(uuid=uuid).user.username
     create_instance(
         username,
         xml_file_list[0],
