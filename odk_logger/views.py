@@ -103,7 +103,7 @@ def formList(request, username):
 
 @require_POST
 @csrf_exempt
-def submission(request, username):
+def submission(request, username=None):
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
     try:
@@ -120,6 +120,11 @@ def submission(request, username):
             )
     # save this XML file and media files as attachments
     media_files = request.FILES.values()
+    if not username:
+        uuid = request.POST.get('uuid')
+        if not uuid:
+            return HttpResponseBadRequest("Username or ID required.")
+        username = XForm.objects.filter(uuid=uuid).user.username
     create_instance(
         username,
         xml_file_list[0],

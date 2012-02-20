@@ -73,6 +73,8 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail, UserProfileFormRe
         'forms',
         'maps',
         'odk',
+        'submit',
+        'submission',
         'support',
         'syntax',
         'xls2xform',

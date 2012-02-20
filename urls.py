@@ -40,6 +40,7 @@ urlpatterns = patterns('',
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/enter-data", 'odk_logger.views.enter_data'),
 
     # odk data urls
+    url(r"^submission$", 'odk_logger.views.submission'),
     url(r"^(?P<username>\w+)/formList$", 'odk_logger.views.formList'),
     url(r"^(?P<username>\w+)/submission$", 'odk_logger.views.submission'),
     url(r"^(?P<username>\w+)/bulk-submission$", 'odk_logger.views.bulksubmission'),
