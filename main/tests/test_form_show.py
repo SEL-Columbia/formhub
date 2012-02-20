@@ -1,7 +1,7 @@
 from test_base import MainTestCase
 from test_process import TestSite
 from main.models import UserProfile, MetaData
-from main.views import show, edit, download_metadata
+from main.views import show, edit, download_metadata, form_photos
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
 from odk_viewer.views import csv_export, xls_export, zip_export, kml_export
@@ -365,3 +365,9 @@ class TestFormShow(MainTestCase):
         name = self._add_metadata('source')
         self.assertNotEqual(MetaData.source(self.xform).data_file, None)
         self.assertEqual(MetaData.source(self.xform).data_value, desc)
+
+    def test_load_photo_page(self):
+        response = self.client.get(reverse(form_photos, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string}))
+        self.assertEqual(response.status_code, 200)
