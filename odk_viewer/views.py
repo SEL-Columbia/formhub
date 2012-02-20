@@ -63,7 +63,7 @@ def map_view(request, username, id_string):
         }
     context.points = json.dumps([round_down_point(p) for p in list(points)])
     context.center = json.dumps(center)
-    context.map_view = True
+    context.form_view = True
     return render_to_response('map.html', context_instance=context)
 
 
