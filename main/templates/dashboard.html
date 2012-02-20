@@ -60,8 +60,14 @@
         <div class="bordered">
         <div class="row">
         <div class="span1">
+            {% if not profile.gravatar_exists %}
+                <a style="display: inline-block;" title="Click to change your avatar" href="https://secure.gravatar.com/site/login" id="gravatar">
+            {% endif %}
             <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' />
-
+            {% if not profile.gravatar_exists %}
+               </a>
+               <script type="text/javascript">$('#gravatar').twipsy();</script>
+            {% endif %}
         </div>
         <div class="span4">
             <h3 class="short">

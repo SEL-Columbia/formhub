@@ -11,7 +11,14 @@
    <section id="profile">
      <div class="page-header">
        <h1>
+         {% if not profile.gravatar_exists %}
+             <a style="display: inline-block;" title="Click to change your avatar" href="https://secure.gravatar.com/site/login" id="gravatar">
+         {% endif %}
          <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' />
+         {% if not profile.gravatar_exists %}
+            </a>
+            <script type="text/javascript">$('#gravatar').twipsy();</script>
+         {% endif %}
          {{ content_user.username }}
          {% if profile.name %}
             <span class='pipe'>&nbsp;|&nbsp;</span><span class='name'>{{ profile.name }}</span>
