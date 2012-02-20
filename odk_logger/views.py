@@ -174,7 +174,7 @@ def enter_data(self, username, id_string):
     url = settings.TOUCHFORMS_URL
     response = None
     with tempfile.TemporaryFile() as tmp:
-        tmp.write(xform.xml)
+        tmp.write(xform.xml.encode('utf-8'))
         tmp.seek(0)
         values = {
             'file': tmp,
