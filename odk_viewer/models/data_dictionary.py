@@ -36,6 +36,13 @@ def upload_to(instance, filename, username=None):
 
 class DataDictionary(XForm):
 
+    geodata_suffixes = [
+        'latitude',
+        'longitude',
+        'alt',
+        'precision'
+    ]
+
     class Meta:
         app_label = "odk_viewer"
         proxy = True
@@ -61,7 +68,7 @@ class DataDictionary(XForm):
     survey = property(get_survey)
 
     def get_survey_elements(self):
-        return self.survey.iter_children()
+        return self.survey.iter_descendants()
 
     survey_elements = property(get_survey_elements)
 
@@ -100,6 +107,9 @@ class DataDictionary(XForm):
             result.pop()
             for child in survey_element.children:
                 result.append('/'.join([path, child.name]))
+        elif survey_element.bind.get(u'type') == u'geopoint':
+            for suffix in self.geodata_suffixes:
+                result.append('_'.join([path, suffix]))
 
         return result
 
@@ -138,7 +148,7 @@ class DataDictionary(XForm):
 
     def get_label(self, abbreviated_xpath):
         e = self.get_element(abbreviated_xpath)
-        # todo: think about multiple language support
+        # TODO: think about multiple language support
         if e:
             return e.label
 
@@ -188,7 +198,7 @@ class DataDictionary(XForm):
 
     def get_list_of_parsed_instances(self):
         for i in queryset_iterator(self.surveys.all()):
-            # todo: there is information we want to add in parsed xforms.
+            # TODO: there is information we want to add in parsed xforms.
             yield i.get_dict()
 
     def _rename_key(self, d, old_key, new_key):
@@ -196,18 +206,23 @@ class DataDictionary(XForm):
         d[new_key] = d[old_key]
         del d[old_key]
 
-    def _expand_select_all_that_apply(self, d):
-        for key in d.keys():
-            e = self.get_element(key)
-            if e and e.bind.get(u"type") == u"select":
-                options_selected = d[key].split()
-                for i, child in enumerate(e.children):
-                    new_key = child.get_abbreviated_xpath()
-                    if child.name in options_selected:
-                        d[new_key] = True
-                    else:
-                        d[new_key] = False
-                del d[key]
+    def _expand_select_all_that_apply(self, d, key, e):
+        if e and e.bind.get(u"type") == u"select":
+            options_selected = d[key].split()
+            for i, child in enumerate(e.children):
+                new_key = child.get_abbreviated_xpath()
+                if child.name in options_selected:
+                    d[new_key] = True
+                else:
+                    d[new_key] = False
+            del d[key]
+
+    def _expand_geocodes(self, d, key, e):
+        if e and e.bind.get(u"type") == u"geopoint":
+            geodata = d[key].split()
+            for i in range(len(geodata)):
+                new_key = "%s_%s" % (key, self.geodata_suffixes[i])
+                d[new_key] = geodata[i]
 
     def _add_list_of_potential_duplicates(self, d):
         parsed_instance = ParsedInstance.objects.get(instance__id=d[ID])
@@ -222,7 +237,10 @@ class DataDictionary(XForm):
 
     def get_data_for_excel(self):
         for d in self.get_list_of_parsed_instances():
-            self._expand_select_all_that_apply(d)
+            for key in d.keys():
+                e = self.get_element(key)
+                self._expand_select_all_that_apply(d, key, e)
+                self._expand_geocodes(d, key, e)
             # self._add_list_of_potential_duplicates(d)
             yield d
 

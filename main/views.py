@@ -1,5 +1,6 @@
 import os, urllib2
 
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -15,37 +16,16 @@ from odk_viewer.models import DataDictionary
 from odk_viewer.models.data_dictionary import upload_to
 from main.models import UserProfile, MetaData
 from odk_logger.models import Instance, XForm
+from odk_logger.utils import response_with_mimetype_and_name
 from odk_logger.models.xform import XLSFormError
 from utils.user_auth import check_and_set_user, set_profile_data
-from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm
-from urlparse import urlparse
+from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
+     SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
+     SourceForm
 from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
 from django.utils import simplejson
-
-class QuickConverterFile(forms.Form):
-    xls_file = forms.FileField(label="XLS File", required=False)
-
-class QuickConverterURL(forms.Form):
-    xls_url = forms.URLField(verify_exists=False, label="XLS URL", required=False)
-
-class QuickConverter(QuickConverterFile, QuickConverterURL):
-    def publish(self, user):
-        if self.is_valid():
-            cleaned_xls_file = self.cleaned_data['xls_file']
-            if not cleaned_xls_file:
-                cleaned_url = self.cleaned_data['xls_url']
-                cleaned_xls_file = urlparse(cleaned_url)
-                cleaned_xls_file = '_'.join(cleaned_xls_file.path.split('/')[-2:])
-                if cleaned_xls_file[-4:] != '.xls':
-                    cleaned_xls_file += '.xls'
-                cleaned_xls_file = upload_to(None, cleaned_xls_file, user.username)
-                xls_data = ContentFile(urllib2.urlopen(cleaned_url).read())
-                cleaned_xls_file = default_storage.save(cleaned_xls_file, xls_data)
-            return DataDictionary.objects.create(
-                user=user,
-                xls=cleaned_xls_file
-                )
+from django.shortcuts import render_to_response, get_object_or_404
+from odk_viewer.views import image_urls
 
 def home(request):
     context = RequestContext(request)
@@ -53,60 +33,69 @@ def home(request):
     context.num_users = User.objects.count()
     context.num_shared_forms = XForm.objects.filter(shared__exact=1).count()
     if request.user.username:
-        return HttpResponseRedirect("/%s" % request.user.username)
+        return HttpResponseRedirect(reverse(profile,
+            kwargs={'username': request.user.username}))
     else:
-        return render_to_response("home.html", context_instance=context)
+        return render_to_response('home.html', context_instance=context)
 
 
 @login_required
 def login_redirect(request):
-    return HttpResponseRedirect("/%s" % request.user.username)
+    return HttpResponseRedirect(reverse(profile,
+        kwargs={'username': request.user.username}))
 
 
+@require_POST
 @login_required
 def clone_xlsform(request, username):
     """
     Copy a public/Shared form to a users list of forms.
     Eliminates the need to download Excel File and upload again.
     """
+    to_username = request.user.username
     context = RequestContext(request)
     context.message = {'type': None, 'text': '....'}
 
-    if request.method == 'POST':
-        try:
-            form_owner = request.POST.get('username')
-            id_string = request.POST.get('id_string')
-            xform = XForm.objects.get(user__username=form_owner, \
-                                        id_string=id_string)
-            path = xform.xls.name
-            if default_storage.exists(path):
-                xls_file = upload_to(None, id_string + '_cloned.xls', \
-                                            request.user.username)
-                xls_data = default_storage.open(path)
-                xls_file = default_storage.save(xls_file, xls_data)
-                context.message = u"%s-%s" % (form_owner, xls_file)
-                survey = DataDictionary.objects.create(
-                    user=request.user,
-                    xls=xls_file
-                    ).survey
-                context.message = {
-                    'type': 'success',
-                    'text': 'Successfully cloned %s into your '\
-                            '<a href="/%s">profile</a>.' % \
-                            (survey.id_string, username)
-                    }
-        except (PyXFormError, XLSFormError) as e:
+    try:
+        form_owner = request.POST.get('username')
+        id_string = request.POST.get('id_string')
+        xform = XForm.objects.get(user__username=form_owner, \
+                                    id_string=id_string)
+        path = xform.xls.name
+        if default_storage.exists(path):
+            xls_file = upload_to(None, id_string + '_cloned.xls', to_username)
+            xls_data = default_storage.open(path)
+            xls_file = default_storage.save(xls_file, xls_data)
+            context.message = u"%s-%s" % (form_owner, xls_file)
+            survey = DataDictionary.objects.create(
+                user=request.user,
+                xls=xls_file
+                ).survey
             context.message = {
-                'type': 'error',
-                'text': unicode(e),
+                'type': 'success',
+                'text': 'Successfully cloned %s into your '\
+                        '<a href="%s">profile</a>.' % \
+                        (survey.id_string, reverse(profile,
+                            kwargs={'username': to_username}))
                 }
-        except IntegrityError as e:
-            context.message = {
-                'type': 'error',
-                'text': 'Form with this id already exists.',
-                }
-    return HttpResponse(simplejson.dumps(context.message), \
+    except (PyXFormError, XLSFormError) as e:
+        context.message = {
+            'type': 'error',
+            'text': unicode(e),
+            }
+    except IntegrityError as e:
+        context.message = {
+            'type': 'error',
+            'text': 'Form with this id already exists.',
+            }
+    if request.is_ajax():
+        return HttpResponse(simplejson.dumps(context.message), \
                         mimetype='application/json')
+    else:
+        return HttpResponseRedirect(reverse(show, kwargs={
+                    'username': to_username,
+                    'id_string': survey.id_string
+                }))
 
 def profile(request, username):
     context = RequestContext(request)
@@ -135,10 +124,7 @@ def profile(request, username):
                 }
 
     # profile view...
-    try:
-        content_user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        return HttpResponseRedirect("/")
+    content_user = get_object_or_404(User, username=username)
     # for the same user -> dashboard
     if content_user == request.user:
         context.show_dashboard = True
@@ -149,8 +135,10 @@ def profile(request, username):
         context.odk_url = request.build_absolute_uri("/%s" % request.user.username)
     # for any other user -> profile
     profile, created = UserProfile.objects.get_or_create(user=content_user)
+    profile.gravatar_exists()
     set_profile_data(context, content_user)
     return render_to_response("profile.html", context_instance=context)
+
 
 def members_list(request):
     context = RequestContext(request)
@@ -170,7 +158,8 @@ def profile_settings(request, username):
         form = UserProfileForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect("/%s/profile" % content_user.username)
+            return HttpResponseRedirect(reverse(public_profile,
+                kwargs={'username': request.user.username}))
     else:
         form = UserProfileForm(instance=profile)
     return render_to_response("settings.html", { 'form': form },
@@ -200,25 +189,29 @@ def dashboard(request):
 
 @require_GET
 def show(request, username, id_string):
-    try:
-        xform = XForm.objects.get(user__username=username, id_string=id_string)
-    except XForm.DoesNotExist:
-        return HttpResponseRedirect("/")
+    xform = get_object_or_404(XForm,
+        user__username=username, id_string=id_string)
     is_owner = username == request.user.username
     # no access
     if xform.shared == False and not is_owner:
-        return HttpResponseRedirect("/")
+        return HttpResponseRedirect(reverse(home))
     context = RequestContext(request)
     context.is_owner = is_owner
     context.xform = xform
     context.content_user = xform.user
-    context.base_url = "http://%s" % request.get_host()
+    context.base_url = "https://%s" % request.get_host()
     context.source = MetaData.source(xform)
     context.form_license = MetaData.form_license(xform).data_value
     context.data_license = MetaData.data_license(xform).data_value
-    context.form_license_form = FormLicenseForm(initial={'value': context.form_license})
-    context.data_license_form = DataLicenseForm(initial={'value': context.data_license})
+    context.form_license_form = FormLicenseForm(
+        initial={'value': context.form_license})
+    context.data_license_form = DataLicenseForm(
+        initial={'value': context.data_license})
+    context.supporting_docs = MetaData.supporting_docs(xform)
+    context.doc_form = SupportDocForm()
+    context.source_form = SourceForm()
     return render_to_response("show.html", context_instance=context)
+
 
 @require_POST
 @login_required
@@ -240,8 +233,19 @@ def edit(request, username, id_string):
             MetaData.form_license(xform, request.POST['form-license'])
         elif request.POST.get('data-license'):
             MetaData.data_license(xform, request.POST['data-license'])
+        elif request.POST.get('source') or request.FILES.get('source'):
+            MetaData.source(xform, request.POST.get('source'),
+                request.FILES.get('source'))
+        elif request.FILES:
+            MetaData.supporting_docs(xform, request.FILES['doc'])
         xform.update()
-        return HttpResponse('Updated succeeded.')
+        if request.is_ajax():
+            return HttpResponse('Updated succeeded.')
+        else:
+            return HttpResponseRedirect(reverse(show, kwargs={
+                        'username': username,
+                        'id_string': id_string
+                        }))
     return HttpResponseNotAllowed('Update failed.')
 
 def support(request):
@@ -281,3 +285,29 @@ def form_gallery(request):
     context.shared_forms = DataDictionary.objects.filter(shared=True)
     return render_to_response('form_gallery.html', context_instance=context)
 
+def download_metadata(request, username, id_string, data_id):
+    xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
+    if username == request.user.username or xform.shared:
+        data = MetaData.objects.get(pk=data_id)
+        return response_with_mimetype_and_name(
+            data.data_file_type,
+            data.data_value, '', None, False,
+            data.data_file.name)
+    return HttpResponseNotAllowed('Permission denied.')
+
+def form_photos(request, username, id_string):
+    xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
+    owner = User.objects.get(username=username)
+    context = RequestContext(request)
+    context.form_view = True
+    context.content_user = owner
+    context.xform = xform
+    context.images = sum([
+        image_urls(s.parsed_instance.instance) for s in xform.surveys.all()
+    ], [])
+    context.profile, created = UserProfile.objects.get_or_create(user=owner)
+    if username == request.user.username or xform.shared_data:
+        return render_to_response('form_photos.html', context_instance=context)
+    return HttpResponseNotAllowed('Permission denied.')

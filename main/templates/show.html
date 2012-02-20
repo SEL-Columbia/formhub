@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load humanize %}
 {% block content %}
+  {% if user.is_authenticated %}
+    <script type="text/javascript" language="javascript" src="/static/js/form_actions.js"></script>
+  {% endif %}
   <section id="profile">
     <div class="page-header">
       <!-- <img src='{{ content_user.profile.gravatar }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' /> -->
@@ -10,18 +13,11 @@
 	  <a href="/{{content_user.username}}/">{{ content_user.username }}</a> /
 	  </div>
 	</h3>
-      <h1>    
-	<span style='color: #999;'>{{ xform.id_string }}</span>
-      </h1>
-    </div> 
-    <div class="row">
-      <div class="span11">
-        <h3>Title</h3>
         <div class="clearfix">
             <div class="input">
             <form>
                 {% csrf_token %}
-                <input type="text" id="title"class="xxlarge present" disabled="" rows="3" value="{{ xform.title }}" />
+                <input type="text" id="title"class="xxlarge present header" disabled="" rows="3" value="{{ xform.title }}" />
                 {% if is_owner %}
                     <a id="title_edit" data-id="title" href="" class="btn small bind-edit">edit</a>
                     <a id="title_save" data-id="title" style="display:none" href="" class="btn small primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
@@ -29,6 +25,12 @@
             </form>
             </div>
         </div>
+    </div> 
+    <div class="row">
+      <div class="span11">
+        {% if is_owner %}
+            <h4>Form ID: {{ xform.id_string }}</h4>
+        {% endif %}
         <h3>Description</h3>
         <div class="clearfix">
             <div class="input">
@@ -45,18 +47,44 @@
         <h3>Source</h3>
         <div class="clearfix">
             <div class="input">
-            <form>
+            <form action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {% if source.data_field %}
-                {% else %}
-                    <input type="text" id="source"class="xxlarge present" disabled="" rows="3" value="{{ source.data_value|default:"None provided" }}" />
-                {% endif %}
+                <input type="text" id="source"class="xxlarge present" disabled="" rows="3" value="{{ source.data_value|default:"None provided" }}" />
 
                 {% if is_owner %}
                     <a id="source_edit" data-id="source" href="" class="btn small bind-edit">edit</a>
                     <a id="source_save" data-id="source" style="display:none" href="" class="btn small primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
                 {% endif %}
+
+                {% if source.data_file %}
+                    <p><a href="{% url main.views.download_metadata content_user.username xform.id_string source.id %}">{{ source.data_file.name }}</p></a>
+                {% endif %}
+
+                {% if is_owner %}
+                    {% csrf_token %}
+                    <table>
+                    {{ source_form.as_table }}
+                    </table>
+                    <input type="submit" class="btn" value="Upload" />
+                {% endif %}
             </form>
+            </div>
+        </div>
+        <h3>Supporting Documents</h3>
+        <div class=clearfix>
+            <div class="input">
+                {% for doc in supporting_docs %}
+                    <p><a href="{% url main.views.download_metadata content_user.username xform.id_string doc.id %}">{{ doc.data_value }}</p></a>
+                {% endfor %}
+                {% if is_owner %}
+                <form action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <table>
+                    {{ doc_form.as_table }}
+                    </table>
+                    <input type="submit" class="btn" value="Upload" />
+                </form>
+                {% endif %}
             </div>
         </div>
       </div>
@@ -83,6 +111,14 @@
                   }
                 });
               });
+            {% if user.is_authenticated %}
+              // add click event to all public (x)forms
+              $('a.clonexls').click(function(){
+                el = $(this);
+                clone_xlsform(el.data('url'), el.data('username'), el.data('id'));
+                return false;
+              });
+            {% endif %}
             });
         </script>
         {% if is_owner %}
@@ -117,7 +153,7 @@
             <div class="modal-footer">
               <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn primary">Delete</a>
               <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">Cancel</a>
-            </div>
+        ,  </div>
           </div>
           <a href="#" data-controls-modal="delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true">
               <button class="btn small danger">Delete</button>
@@ -176,6 +212,12 @@
                 </li>
             </ul>
         </li>
+        {% if user.is_authenticated and content_user.username != user.username and xform.xls|length > 0 %}
+            <br/><br/>
+            <li>
+                <a href="" data-url="{% url main.views.clone_xlsform xform.user.username %}" data-username="{{ xform.user.username }}" data-id="{{ xform.id_string }}" class="clonexls"><button class="btn small">Clone</button></a>
+            </li>
+        {% endif %}
         </ul>
       </div>
     </div>
@@ -232,11 +274,20 @@
             </div>
             <br/>
             <a href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
-                <button class="btn small info">View Map &raquo;</button>
+ 
             </a>
             <br/>
             <br/>
             </div>
+            <p>
+            <a href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
+                <button class="btn small info">Map &raquo;</button>
+            </a>
+            </p>
+            <p>
+                <a href="{% url main.views.form_photos content_user.username xform.id_string %}">
+                    <button class="btn small info">Photos &raquo;</button>
+            </p>
         {% endif %}
         {% endif %}
         <a href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">

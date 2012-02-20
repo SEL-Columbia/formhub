@@ -7,12 +7,12 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseNotAllowed
 from odk_logger.models import XForm, Instance
-from odk_viewer.models import DataDictionary
-from odk_viewer.models import ParsedInstance
+from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_logger.utils import round_down_geopoint
 from odk_logger.xform_instance_parser import xform_instance_to_dict
 from pyxform import Section, Question
-from odk_logger.utils import response_with_mimetype_and_name, disposition_ext_and_date
+from odk_logger.utils import response_with_mimetype_and_name,\
+     disposition_ext_and_date
 from django.contrib.auth.models import User
 from main.models import UserProfile
 
@@ -25,6 +25,11 @@ import json
 import os
 from datetime import date
 
+def parse_label_for_display(pi, xpath):
+    label = pi.data_dictionary.get_label(xpath)
+    if not type(label) == dict:
+        label = { 'Unknown': label }
+    return label.items()
 
 def average(values):
     if len(values):
@@ -41,7 +46,11 @@ def map_view(request, username, id_string):
     context.content_user = owner
     context.xform = xform
     context.profile, created = UserProfile.objects.get_or_create(user=owner)
-    points = ParsedInstance.objects.values('lat', 'lng', 'instance').filter(instance__user=owner, instance__xform__id_string=id_string, lat__isnull=False, lng__isnull=False)
+    points = ParsedInstance.objects.values('lat', 'lng', 'instance').filter(
+        instance__user=owner,
+        instance__xform__id_string=id_string,
+        lat__isnull=False,
+        lng__isnull=False)
     center = {
         'lat': round_down_geopoint(average([p['lat'] for p in points])),
         'lng': round_down_geopoint(average([p['lng'] for p in points])),
@@ -54,7 +63,7 @@ def map_view(request, username, id_string):
         }
     context.points = json.dumps([round_down_point(p) for p in list(points)])
     context.center = json.dumps(center)
-    context.map_view = True
+    context.form_view = True
     return render_to_response('map.html', context_instance=context)
 
 
@@ -72,12 +81,16 @@ def survey_responses(request, pk):
     xpaths = data_for_display.keys()
     xpaths.sort(cmp=pi.data_dictionary.get_xpath_cmp())
     label_value_pairs = [
-        (pi.data_dictionary.get_label(xpath),
-         data_for_display[xpath]) for xpath in xpaths]
-
+         (parse_label_for_display(pi, xpath),
+         data_for_display[xpath]) for xpath in xpaths
+    ]
+    languages = label_value_pairs[-1][0]
+    
     return render_to_response('survey.html', {
             'label_value_pairs': label_value_pairs,
             'image_urls': image_urls(pi.instance),
+            'languages': languages, 
+            'default_language': languages[0][0]
             })
 
 
@@ -94,8 +107,9 @@ def csv_export(request, username, id_string):
     writer = DataDictionaryWriter(dd)
     file_path = writer.get_default_file_path()
     writer.write_to_file(file_path)
-    response = response_with_mimetype_and_name('application/csv', id_string, extension='csv',
-            file_path=file_path, use_local_filesystem=True)
+    response = response_with_mimetype_and_name('application/csv', id_string,
+        extension='csv',
+        file_path=file_path, use_local_filesystem=True)
     return response
 
 
@@ -108,7 +122,8 @@ def xls_export(request, username, id_string):
     ddw = XlsWriter()
     ddw.set_data_dictionary(dd)
     temp_file = ddw.save_workbook_to_file()
-    response = response_with_mimetype_and_name('vnd.ms-excel', id_string, extension='xls')
+    response = response_with_mimetype_and_name('vnd.ms-excel', id_string,
+        extension='xls')
     response.write(temp_file.getvalue())
     temp_file.close()
     return response

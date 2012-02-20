@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block additional-headers %}
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+    html { height: 100%; overflow: hidden }
+    body { height: 100%; margin: 0; padding: 0 }
+    #gallery { height: 100% }
+</style>
+<script type="text/javascript" src="/static/galleria/galleria-1.2.6.min.js"></script>
+{% endblock %}
+
+{% block body %}
+<body>
+    {% include "topbar.html" %}
+    <div id="gallery">
+    {% for image_url in images %}
+        <img src="{{ image_url }}">
+    {% endfor %}
+    </div>
+<script type="text/javascript">
+    Galleria.loadTheme('/static/galleria/theme/galleria.classic.min.js');
+    $("#gallery").galleria({
+    });
+</script>
+</body>
+{% endblock %}

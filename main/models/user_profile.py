@@ -18,9 +18,24 @@ class UserProfile(models.Model):
     description = models.CharField(max_length=255, blank=True)
     require_auth = models.BooleanField(default=False,
             verbose_name="Require Phone Authentication")
+    gravatar_data = None
 
     def gravatar(self):
-        return get_gravatar_img_link(self.user)
+        if not self.gravatar_data:
+            self.set_gravatar_data()
+        return self.gravatar_data['gravatar']
+
+    def gravatar_exists(self):
+        if not self.gravatar_data:
+            self.set_gravatar_data()
+        return self.gravatar_data['exists']
+
+    def set_gravatar_data(self):
+        data = get_gravatar_img_link(self.user)
+        self.gravatar_data = {
+            'gravatar': data[0],
+            'exists': data[1]
+        }
 
     class Meta:
         app_label = 'main'

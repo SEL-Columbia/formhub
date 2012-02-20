@@ -87,10 +87,20 @@ table.narrow-labels label {
     width: 80px;
 }
 
-textarea[disabled].present, input[disabled].present{
+textarea[disabled].present, input[disabled].present {
     background-color: transparent;
     color: #444;
-    border-color: #FEFEFE;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+input[disabled].header {
+    color: #999;
+    font-size: 30px;
+    line-height: 35px;
+    height: 35px;
+    font-weight: bold;
+    margin-left: -3px;
 }
 
 ul.inline {
@@ -153,4 +163,3 @@ table {
     margin: 1em 0;
     clear: both;
 }
-
