@@ -20,11 +20,13 @@ class UserProfile(models.Model):
             verbose_name="Require Phone Authentication")
     gravatar_data = None
 
+    @property
     def gravatar(self):
         if not self.gravatar_data:
             self.set_gravatar_data()
         return self.gravatar_data['gravatar']
 
+    @property
     def gravatar_exists(self):
         if not self.gravatar_data:
             self.set_gravatar_data()

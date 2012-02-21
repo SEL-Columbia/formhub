@@ -133,7 +133,6 @@ def profile(request, username):
         context.odk_url = request.build_absolute_uri("/%s" % request.user.username)
     # for any other user -> profile
     profile, created = UserProfile.objects.get_or_create(user=content_user)
-    profile.gravatar_exists()
     set_profile_data(context, content_user)
     return render_to_response("profile.html", context_instance=context)
 
