@@ -163,3 +163,16 @@ table {
     margin: 1em 0;
     clear: both;
 }
+
+a#gravatar {
+    display: block;
+    width: 48px;
+    height: 70px;
+    position: relative;
+}
+a#gravatar span.small-link {
+    position: absolute;
+    bottom: 0px;
+    font-size: 11px;
+    left: 0;
+}
