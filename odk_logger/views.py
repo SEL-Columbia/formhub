@@ -106,7 +106,7 @@ def formList(request, username):
 @csrf_exempt
 def submission(request, username=None):
     context = RequestContext(request)
-    context.show_options = False
+    show_options = False
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
     try:
@@ -128,7 +128,7 @@ def submission(request, username=None):
         uuid = request.POST.get('uuid')
         if not uuid:
             return HttpResponseBadRequest("Username or ID required.")
-        context.show_options = True
+        show_options = True
         xform = XForm.objects.get(uuid=uuid)
         username = xform.user.username
     instance = create_instance(
@@ -141,7 +141,7 @@ def submission(request, username=None):
     # ODK needs two things for a form to be considered successful
     # 1) the status code needs to be 201 (created)
     # 2) The location header needs to be set to the host it posted to
-    if context.show_options:
+    if show_options:
         context.username = instance.user.username
         context.id_string = instance.xform.id_string
         context.domain = Site.objects.get(id=settings.SITE_ID).domain
