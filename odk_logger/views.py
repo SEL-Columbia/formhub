@@ -141,17 +141,22 @@ def submission(request, username=None):
     # ODK needs two things for a form to be considered successful
     # 1) the status code needs to be 201 (created)
     # 2) The location header needs to be set to the host it posted to
-    context.username = instance.user.username
-    context.id_string = instance.xform.id_string
-    context.domain = Site.objects.get(id=settings.SITE_ID).domain
-    response = render_to_response("submission.html", context_instance=context)
+    if context.show_options:
+        context.username = instance.user.username
+        context.id_string = instance.xform.id_string
+        context.domain = Site.objects.get(id=settings.SITE_ID).domain
+        response = render_to_response("submission.html",
+            context_instance=context)
+    else:
+        response = HttpResponse()
     response.status_code = 201
     response['Location'] = request.build_absolute_uri(request.path)
     return response
 
 def download_xform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
-    response = response_with_mimetype_and_name('xml', id_string, show_date=False)
+    response = response_with_mimetype_and_name('xml', id_string,
+        show_date=False)
     response.content = xform.xml
     return response
 
