@@ -12,7 +12,9 @@
 {% block body %}
 <body>
     {% include "topbar.html" %}
-    <iframe id="touchforms" src="{{ touchforms }}">
-    </iframe>
+    <div id="formplayer">
+        <iframe id="touchforms" src="{{ touchforms }}">
+        </iframe>
+    </div>
 </body>
 {% endblock %}
