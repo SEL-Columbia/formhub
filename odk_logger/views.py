@@ -26,6 +26,7 @@ import urllib, urllib2
 import json
 from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
+from django.contrib.sites.models import Site
 
 class HttpResponseNotAuthorized(HttpResponse):
     status_code = 401
@@ -104,6 +105,8 @@ def formList(request, username):
 @require_POST
 @csrf_exempt
 def submission(request, username=None):
+    context = RequestContext(request)
+    context.show_options = False
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
     try:
@@ -125,16 +128,23 @@ def submission(request, username=None):
         uuid = request.POST.get('uuid')
         if not uuid:
             return HttpResponseBadRequest("Username or ID required.")
-        username = XForm.objects.get(uuid=uuid).user.username
-    create_instance(
+        context.show_options = True
+        xform = XForm.objects.get(uuid=uuid)
+        username = xform.user.username
+    instance = create_instance(
         username,
         xml_file_list[0],
         media_files
         )
+    if instance == None:
+        return HttpResponseBadRequest("Unable to create submission.")
     # ODK needs two things for a form to be considered successful
     # 1) the status code needs to be 201 (created)
     # 2) The location header needs to be set to the host it posted to
-    response = HttpResponse("Your ODK submission was successful.")
+    context.username = instance.user.username
+    context.id_string = instance.xform.id_string
+    context.domain = Site.objects.get(id=settings.SITE_ID).domain
+    response = render_to_response("submission.html", context_instance=context)
     response.status_code = 201
     response['Location'] = request.build_absolute_uri(request.path)
     return response
