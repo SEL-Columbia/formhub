@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
 from django.db import models
 from utils.country_field import COUNTRIES
 from utils.gravatar import get_gravatar_img_link
