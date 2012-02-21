@@ -7,7 +7,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script> 
     <script type="text/javascript">
         $('a.webform-link').click(function() {
-            top.location = $(this).href;
+            top.location = $(this).attr('href');
             return false;
         });
     </script>
