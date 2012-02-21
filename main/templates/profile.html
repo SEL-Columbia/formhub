@@ -11,7 +11,7 @@
    <section id="profile">
      <div class="page-header">
        <h1>
-         {% if not profile.gravatar_exists %}
+         {% if is_owner and not profile.gravatar_exists %}
              <a style="display: inline-block;" title="Click to change your avatar" href="https://secure.gravatar.com/site/login" id="gravatar">
          {% endif %}
          <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' />
