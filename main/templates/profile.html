@@ -16,6 +16,7 @@
          {% endif %}
          <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' />
          {% if not profile.gravatar_exists %}
+            <span class="small-link">change</span>
             </a>
             <script type="text/javascript">$('#gravatar').twipsy();</script>
          {% endif %}
