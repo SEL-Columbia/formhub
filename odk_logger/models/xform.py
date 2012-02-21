@@ -87,20 +87,21 @@ class XForm(models.Model):
             raise XLSFormError("There should be a single title.", matches)
         self.title = u"" if not matches else matches[0]
 
+    def _set_uuid(self):
+        self.uuid = generate_uuid_for_form()
+
     def update(self, *args, **kwargs):
         super(XForm, self).save(*args, **kwargs)
 
     def save(self, *args, **kwargs):
+        if not self.uuid:
+            self._set_uuid()
         self._set_id_string()
-        self._set_uuid()
         if getattr(settings, 'STRICT', True) and \
                 not re.search(r"^[\w-]+$", self.id_string):
             raise XLSFormError("In strict mode, the XForm ID must be a valid slug and contain no spaces.")
         self._set_title()
         super(XForm, self).save(*args, **kwargs)
-
-    def _set_uuid(self):
-        self.uuid = generate_uuid_for_form()
 
     def __unicode__(self):
         return getattr(self, "id_string", "")
