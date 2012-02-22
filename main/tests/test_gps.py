@@ -3,7 +3,7 @@ import os
 from odk_viewer.models import ParsedInstance, DataDictionary
 from django.core.urlresolvers import reverse
 import odk_viewer
-from odk_logger.utils import round_down_geopoint
+from utils.logger_tools import round_down_geopoint
 
 class TestGPS(MainTestCase):
 
