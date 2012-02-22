@@ -290,10 +290,11 @@
             </p>
         {% endif %}
         {% endif %}
-        <a href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
-            <button class="btn small info">Enter Web Form &raquo;</button>
-        </a>
+        {% if is_owner %}
+            <a href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
+                <button class="btn small info">Enter Web Form &raquo;</button>
+            </a>
+        {% endif %}
     </div> 
   </section>
 {% endblock %}
-  
