@@ -1,4 +1,3 @@
-from django.core.servers.basehttp import FileWrapper
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response, get_object_or_404
@@ -11,14 +10,23 @@ from django.contrib.auth import authenticate, login
 from django.contrib.sites.models import Site
 from django.contrib import messages
 from django.core.files.storage import get_storage_class
+from django.core.files.base import ContentFile
+from django.core.urlresolvers import reverse
+from django.conf import settings
 from models import XForm, create_instance
 from main.models import UserProfile
 from utils import response_with_mimetype_and_name
+from utils import store_temp_file
 from odk_logger.import_tools import import_instances_from_zip
 import zipfile
 import tempfile
 import os
 import base64
+import urllib, urllib2
+import json
+from poster.encode import multipart_encode
+from poster.streaminghttp import register_openers
+from django.contrib.sites.models import Site
 
 class HttpResponseNotAuthorized(HttpResponse):
     status_code = 401
@@ -96,7 +104,9 @@ def formList(request, username):
 
 @require_POST
 @csrf_exempt
-def submission(request, username):
+def submission(request, username=None):
+    context = RequestContext(request)
+    show_options = False
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
     try:
@@ -114,22 +124,39 @@ def submission(request, username):
             )
     # save this XML file and media files as attachments
     media_files = request.FILES.values()
-    create_instance(
+    if not username:
+        uuid = request.POST.get('uuid')
+        if not uuid:
+            return HttpResponseBadRequest("Username or ID required.")
+        show_options = True
+        xform = XForm.objects.get(uuid=uuid)
+        username = xform.user.username
+    instance = create_instance(
         username,
         xml_file_list[0],
         media_files
         )
+    if instance == None:
+        return HttpResponseBadRequest("Unable to create submission.")
     # ODK needs two things for a form to be considered successful
     # 1) the status code needs to be 201 (created)
     # 2) The location header needs to be set to the host it posted to
-    response = HttpResponse("Your ODK submission was successful.")
+    if show_options:
+        context.username = instance.user.username
+        context.id_string = instance.xform.id_string
+        context.domain = Site.objects.get(id=settings.SITE_ID).domain
+        response = render_to_response("submission.html",
+            context_instance=context)
+    else:
+        response = HttpResponse()
     response.status_code = 201
     response['Location'] = request.build_absolute_uri(request.path)
     return response
 
 def download_xform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
-    response = response_with_mimetype_and_name('xml', id_string, show_date=False)
+    response = response_with_mimetype_and_name('xml', id_string,
+        show_date=False)
     response.content = xform.xml
     return response
 
@@ -162,3 +189,36 @@ def toggle_downloadable(request, username, id_string):
     xform.save()
     return HttpResponseRedirect("/%s" % username)
 
+def enter_data(request, username, id_string):
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    register_openers()
+    url = settings.TOUCHFORMS_URL
+    response = None
+    with tempfile.TemporaryFile() as tmp:
+        tmp.write(xform.xml.encode('utf-8'))
+        tmp.seek(0)
+        values = {
+            'file': tmp,
+            'format': 'json',
+            'uuid': xform.uuid
+        }
+        data, headers = multipart_encode(values)
+        headers['User-Agent'] = 'formhub'
+        req = urllib2.Request(url, data, headers)
+        try:
+            response = urllib2.urlopen(req)
+            response = json.loads(response.read())
+            context = RequestContext(request)
+            owner = User.objects.get(username=username)
+            context.profile, created = UserProfile.objects.get_or_create(user=owner)
+            context.xform = xform
+            context.content_user = owner
+            context.form_view = True
+            context.touchforms = response['url']
+            return render_to_response("form_entry.html",
+context_instance=context)
+            #return HttpResponseRedirect(response['url'])
+        except urllib2.URLError:
+            pass # this will happen if we could not connect to touchforms
+    return HttpResponseRedirect(reverse('main.views.show',
+                kwargs={'username': username, 'id_string': id_string}))

@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 import os
 import re
+import uuid
 
 
 def upload_to(instance, filename):
@@ -15,6 +16,10 @@ def upload_to(instance, filename):
         instance.user.username,
         'xls',
         os.path.split(filename)[1])
+
+
+def generate_uuid_for_form():
+    return uuid.uuid4().hex
 
 
 class XLSFormError(Exception):
@@ -40,6 +45,7 @@ class XForm(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     has_start_time = models.BooleanField(default=False)
+    uuid = models.CharField(max_length=32, default=u'')
 
     class Meta:
         app_label = 'odk_logger'
@@ -81,10 +87,15 @@ class XForm(models.Model):
             raise XLSFormError("There should be a single title.", matches)
         self.title = u"" if not matches else matches[0]
 
+    def _set_uuid(self):
+        self.uuid = generate_uuid_for_form()
+
     def update(self, *args, **kwargs):
         super(XForm, self).save(*args, **kwargs)
 
     def save(self, *args, **kwargs):
+        if not self.uuid:
+            self._set_uuid()
         self._set_id_string()
         if getattr(settings, 'STRICT', True) and \
                 not re.search(r"^[\w-]+$", self.id_string):

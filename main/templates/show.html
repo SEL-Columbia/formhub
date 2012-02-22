@@ -276,6 +276,8 @@
             <a href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
  
             </a>
+            <br/>
+            <br/>
             </div>
             <p>
             <a href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
@@ -288,6 +290,9 @@
             </p>
         {% endif %}
         {% endif %}
+        <a href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
+            <button class="btn small info">Enter Web Form &raquo;</button>
+        </a>
     </div> 
   </section>
 {% endblock %}

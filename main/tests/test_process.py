@@ -28,6 +28,17 @@ class TestSite(MainTestCase):
         self._check_csv_export()
         self._check_delete()
 
+    def test_uuid_submit(self):
+        self._create_user_and_login()
+        self._publish_xls_file()
+        survey = 'transport_2011-07-25_19-05-49'
+        path = os.path.join(self.this_directory, 'fixtures', 'transportation',
+            'instances', survey, survey + '.xml')
+        with open(path) as f:
+            post_data = { 'xml_submission_file': f, 'uuid': self.xform.uuid }
+            url = '/submission'
+            self.response = self.anon.post(url, post_data)
+
     def test_url_upload(self):
         if internet_on():
             self._create_user_and_login()

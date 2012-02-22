@@ -1,3 +1,5 @@
+import os, urllib2
+
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
@@ -185,9 +187,13 @@ def dashboard(request):
 
 
 @require_GET
-def show(request, username, id_string):
-    xform = get_object_or_404(XForm,
-        user__username=username, id_string=id_string)
+def show(request, username=None, id_string=None, uuid=None):
+    if uuid:
+        xform = get_object_or_404(XForm, uuid=uuid)
+        username = xform.user.username
+    else:
+        xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
     is_owner = username == request.user.username
     # no access
     if xform.shared == False and not is_owner:
