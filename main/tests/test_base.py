@@ -38,9 +38,10 @@ class MainTestCase(TestCase):
     def _publish_transporation_form(self):
         xls_path = os.path.join(self.this_directory, "fixtures",
                 "transportation", "transportation.xls")
+        count = XForm.objects.count()
         response = self._publish_xls_file(xls_path)
-        self.assertEqual(XForm.objects.count(), 1)
-        self.xform = XForm.objects.all()[0]
+        self.assertEqual(XForm.objects.count(), count + 1)
+        self.xform = XForm.objects.all().reverse()[0]
 
     def _make_submission(self, path):
         with open(path) as f:

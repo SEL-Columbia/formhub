@@ -263,26 +263,6 @@ class TestFormShow(MainTestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    def test_allow_map(self):
-        url = reverse(map_view, kwargs={'username': self.user.username,
-                'id_string': self.xform.id_string})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-
-    def test_restrict_map(self):
-        url = reverse(map_view, kwargs={'username': self.user.username,
-                'id_string': self.xform.id_string})
-        response = self.anon.get(url)
-        self.assertEqual(response.status_code, 405)
-
-    def test_allow_map_if_shared(self):
-        self.xform.shared_data = True
-        self.xform.save()
-        url = reverse(map_view, kwargs={'username': self.user.username,
-                'id_string': self.xform.id_string})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-
     def test_show_add_supporting_docs_if_owner(self):
         response = self.client.get(self.url)
         self.assertContains(response, 'Upload')

@@ -17,6 +17,7 @@ from odk_viewer.models.data_dictionary import upload_to
 from main.models import UserProfile, MetaData
 from odk_logger.models import Instance, XForm
 from utils.logger_tools import response_with_mimetype_and_name
+from utils.decorators import is_owner
 from odk_logger.models.xform import XLSFormError
 from utils.user_auth import check_and_set_user, set_profile_data
 from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
@@ -314,3 +315,9 @@ def form_photos(request, username, id_string):
     if username == request.user.username or xform.shared_data:
         return render_to_response('form_photos.html', context_instance=context)
     return HttpResponseNotAllowed('Permission denied.')
+
+@require_POST
+@is_owner
+def set_perm(request, username, id_string):
+    pass
+

@@ -26,6 +26,7 @@ class TestUserReservedNames(TestUserProfile):
     def test_disallow_reserved_names(self):
         username = 'forms'
         password = 'bobbob'
+        count = User.objects.count()
         self._login_user_and_profile({ 'username': username })
-        self.assertEqual(len(User.objects.all()), 0)
+        self.assertEqual(len(User.objects.all()), count)
 

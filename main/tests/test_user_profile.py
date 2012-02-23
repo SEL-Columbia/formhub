@@ -25,18 +25,22 @@ class TestUserProfile(TestCase):
             'twitter': 'boberama'
         }
         url = '/accounts/register/'
-        self.response = self.client.post(url,
-            dict(post_data.items() + extra_post_data.items()))
+        post_data = dict(post_data.items() + extra_post_data.items())
+        self.response = self.client.post(url, post_data)
+        try:
+            self.user = User.objects.get(username=post_data['username'])
+        except DoesNotExist:
+            pass
 
     def test_create_user_with_given_name(self):
         self._login_user_and_profile()
         self.assertEqual(self.response.status_code, 302)
-        self.assertEqual(User.objects.all()[0].username, 'bob')
+        self.assertEqual(self.user.username, 'bob')
 
     def test_create_user_profile_for_user(self):
         self._login_user_and_profile()
         self.assertEqual(self.response.status_code, 302)
-        profile = User.objects.all()[0].profile
+        profile = self.user.profile
         self.assertEqual(profile.city, 'Bobville')
 
     def test_disallow_non_alpha_numeric(self):

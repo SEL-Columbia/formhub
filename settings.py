@@ -109,6 +109,9 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+# needed by guardian
+ANONYMOUS_USER_ID = -1
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -123,11 +126,11 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'registration',
     'south',
-
     'main',
     'odk_logger',
     'odk_viewer',
     'stats',
+    'guardian',
 )
 COMPRESS = True
 
@@ -136,6 +139,7 @@ AUTH_PROFILE_MODULE = 'main.UserProfile'
 # case insensitive usernames
 AUTHENTICATION_BACKENDS = (
     'main.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
 )
 
 # Settings for Django Registration
