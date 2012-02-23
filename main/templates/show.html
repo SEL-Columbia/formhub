@@ -160,6 +160,15 @@
           </a>
         </div>
         </div> 
+        <div>
+            <form action="{% url main.views.set_perm content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <table class="narrow-labels">
+                {{ permission_form.as_table }}
+                </table>
+                <input type="submit" class="btn" value="Submit" />
+            </form>
+        </div>
         {% endif %}
       </div>
     </div>

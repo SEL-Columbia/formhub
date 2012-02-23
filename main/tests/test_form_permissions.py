@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
 from odk_viewer.views import map_view
 from guardian.shortcuts import assign, remove_perm
-from main.views import set_perm
+from main.views import set_perm, show
 
 import os
 
@@ -38,12 +38,12 @@ class TestFormPermissions(MainTestCase):
 
     def test_restrict_map_for_anon(self):
         response = self.anon.get(self.url)
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 403)
 
     def test_restrict_map_for_not_owner(self):
         self._create_user_and_login('alice')
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 403)
 
     def test_allow_map_if_shared(self):
         self.xform.shared_data = True
@@ -63,10 +63,45 @@ class TestFormPermissions(MainTestCase):
         response = self.client.get(self.url)
         remove_perm('change_xform', self.user, self.xform)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 403)
 
-    def test_add_permission_to_user(self):
+    def test_require_owner_to_add_perm(self):
+        response = self.anon.post(self.perm_url)
+        self.assertEqual(response.status_code, 403)
+
+    def test_add_view_to_user(self):
         user = self._create_user('alice', 'alice')
-        self.client.post(self.perm_url, { 'for_user': user.username,
-            'perm_type': 'view' })
-        pass
+        response = self.client.post(self.perm_url, {'for_user': user.username,
+            'perm_type': 'view'})
+        self.assertEqual(response.status_code, 200)
+        alice = self._login('alice', 'alice')
+        response = alice.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_add_edit_to_user(self):
+        user = self._create_user('alice', 'alice')
+        response = self.client.post(self.perm_url, {'for_user': user.username,
+            'perm_type': 'edit'})
+        self.assertEqual(response.status_code, 200)
+        alice = self._login('alice', 'alice')
+        # TODO: test some feature edit URL
+        response = alice.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_public_with_link_to_share(self):
+        response = self.client.post(self.perm_url, {'for_user': 'all',
+            'perm_type': 'link'})
+        self.assertEqual(response.status_code, 200)
+        response = self.anon.get(reverse(show,
+                    kwargs={'uuid': self.xform.uuid}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_private_set_link_to_share_off(self):
+        response = self.client.post(self.perm_url, {'for_user': 'all',
+            'perm_type': 'link'})
+        response = self.anon.get(reverse(show,
+                    kwargs={'uuid': self.xform.uuid}))
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(self.perm_url, {'for_user': 'none',
+            'perm_type': 'link'})
+        self.assertEqual(response.status_code, 403)

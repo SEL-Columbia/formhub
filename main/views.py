@@ -9,8 +9,7 @@ from django.db import IntegrityError
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_GET, require_POST
 from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect, HttpResponseNotAllowed
-
+    HttpResponseRedirect, HttpResponseNotAllowed, HttpResponseForbidden
 from pyxform.errors import PyXFormError
 from odk_viewer.models import DataDictionary
 from odk_viewer.models.data_dictionary import upload_to
@@ -22,11 +21,12 @@ from odk_logger.models.xform import XLSFormError
 from utils.user_auth import check_and_set_user, set_profile_data
 from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
      SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
-     SourceForm
+     SourceForm, PermissionForm
 from django.core.files.storage import default_storage
 from django.utils import simplejson
 from django.shortcuts import render_to_response, get_object_or_404
 from odk_viewer.views import image_urls
+from guardian.shortcuts import assign, remove_perm
 
 def home(request):
     context = RequestContext(request)
@@ -97,6 +97,7 @@ def clone_xlsform(request, username):
                     'username': to_username,
                     'id_string': survey.id_string
                 }))
+
 
 def profile(request, username):
     context = RequestContext(request)
@@ -197,7 +198,8 @@ def show(request, username=None, id_string=None, uuid=None):
             user__username=username, id_string=id_string)
     is_owner = username == request.user.username
     # no access
-    if xform.shared == False and not is_owner:
+    if not (xform.shared or is_owner or
+            (uuid and MetaData.public_link(xform))):
         return HttpResponseRedirect(reverse(home))
     context = RequestContext(request)
     context.is_owner = is_owner
@@ -207,13 +209,15 @@ def show(request, username=None, id_string=None, uuid=None):
     context.source = MetaData.source(xform)
     context.form_license = MetaData.form_license(xform).data_value
     context.data_license = MetaData.data_license(xform).data_value
-    context.form_license_form = FormLicenseForm(
-        initial={'value': context.form_license})
-    context.data_license_form = DataLicenseForm(
-        initial={'value': context.data_license})
-    context.supporting_docs = MetaData.supporting_docs(xform)
-    context.doc_form = SupportDocForm()
-    context.source_form = SourceForm()
+    if is_owner:
+        context.form_license_form = FormLicenseForm(
+            initial={'value': context.form_license})
+        context.data_license_form = DataLicenseForm(
+            initial={'value': context.data_license})
+        context.supporting_docs = MetaData.supporting_docs(xform)
+        context.doc_form = SupportDocForm()
+        context.source_form = SourceForm()
+        context.permission_form = PermissionForm(username)
     return render_to_response("show.html", context_instance=context)
 
 
@@ -250,7 +254,7 @@ def edit(request, username, id_string):
                         'username': username,
                         'id_string': id_string
                         }))
-    return HttpResponseNotAllowed('Update failed.')
+    return HttpResponseForbidden('Update failed.')
 
 def support(request):
     context = RequestContext(request)
@@ -298,7 +302,7 @@ def download_metadata(request, username, id_string, data_id):
             data.data_file_type,
             data.data_value, '', None, False,
             data.data_file.name)
-    return HttpResponseNotAllowed('Permission denied.')
+    return HttpResponseForbidden('Permission denied.')
 
 def form_photos(request, username, id_string):
     xform = get_object_or_404(XForm,
@@ -314,10 +318,31 @@ def form_photos(request, username, id_string):
     context.profile, created = UserProfile.objects.get_or_create(user=owner)
     if username == request.user.username or xform.shared_data:
         return render_to_response('form_photos.html', context_instance=context)
-    return HttpResponseNotAllowed('Permission denied.')
+    return HttpResponseForbidden('Permission denied.')
+
 
 @require_POST
 @is_owner
 def set_perm(request, username, id_string):
-    pass
-
+    xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
+    try:
+        perm_type = request.POST['perm_type']
+        for_user = request.POST['for_user']
+    except KeyError:
+        return HttpResponseBadRequest()
+    if perm_type in ['edit', 'view', 'remove']:
+        user = User.objects.get(username=for_user)
+        if perm_type == 'edit':
+            assign('change_xform', user, xform)
+        elif perm_type == 'view':
+            assign('view_xform', user, xform)
+        elif perm_type == 'remove':
+            remove_perm('change_xform', user, xform)
+            remove_perm('view_xform', user, xform)
+    elif perm_type == 'link':
+        if for_user == 'all':
+            MetaData.public_link(xform, True)
+        elif for_user == 'none':
+            MetaData.public_link(xform)
+    return HttpResponse()

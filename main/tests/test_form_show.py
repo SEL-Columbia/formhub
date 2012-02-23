@@ -104,7 +104,7 @@ class TestFormShow(MainTestCase):
         self._create_user_and_login("jo")
         response = self.client.post(self.edit_url, {'description': desc},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 403)
         self.assertNotEqual(
             XForm.objects.get(pk=self.xform.pk).description, desc)
 
@@ -187,25 +187,25 @@ class TestFormShow(MainTestCase):
         url = reverse(csv_export, kwargs={'username': self.user.username,
                 'id_string': self.xform.id_string})
         response = self.anon.get(url)
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 403)
 
     def test_restrict_xls_export_if_not_shared(self):
         url = reverse(xls_export, kwargs={'username': self.user.username,
                 'id_string': self.xform.id_string})
         response = self.anon.get(url)
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 403)
 
     def test_restrict_zip_export_if_not_shared(self):
         url = reverse(zip_export, kwargs={'username': self.user.username,
                 'id_string': self.xform.id_string})
         response = self.anon.get(url)
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 403)
 
     def test_restrict_kml_export_if_not_shared(self):
         url = reverse(kml_export, kwargs={'username': self.user.username,
                 'id_string': self.xform.id_string})
         response = self.anon.get(url)
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 403)
 
     def test_allow_csv_export_if_shared(self):
         self.xform.shared_data = True
@@ -313,7 +313,7 @@ class TestFormShow(MainTestCase):
     def test_no_download_supporting_doc_for_anon(self):
         name = self._add_metadata()
         response = self.anon.get(self.doc_url)
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 403)
 
     def test_shared_download_supporting_doc_for_anon(self):
         name = self._add_metadata()

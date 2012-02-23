@@ -29,7 +29,7 @@ class TestUserProfile(TestCase):
         self.response = self.client.post(url, post_data)
         try:
             self.user = User.objects.get(username=post_data['username'])
-        except DoesNotExist:
+        except User.DoesNotExist:
             pass
 
     def test_create_user_with_given_name(self):
