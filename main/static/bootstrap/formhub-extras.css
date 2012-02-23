@@ -95,7 +95,8 @@ textarea[disabled].present, input[disabled].present {
 }
 
 input[disabled].header {
-    color: #999;
+    
+    color: #808080;
     font-size: 30px;
     line-height: 35px;
     height: 35px;
