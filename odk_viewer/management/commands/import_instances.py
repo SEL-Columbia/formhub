@@ -4,7 +4,8 @@
 import os, glob
 from django.core.management.base import BaseCommand
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from ... import models, utils
+from ... import models
+import utils.viewer_tools
 
 class Command(BaseCommand):
     help = "Import a folder of ODK instances."
@@ -16,19 +17,19 @@ class Command(BaseCommand):
             if len(xml_files)<1: continue
             # we need to figure out what to do if there are multiple
             # xml files in the same folder.
-            xml_file = utils.django_file(xml_files[0],
+            xml_file = viewer_tools.django_file(xml_files[0],
                                          field_name="xml_file",
                                          content_type="text/xml")
             images = []
             for jpg in glob.glob(os.path.join(instance, "*.jpg")):
                 images.append(
-                    utils.django_file(jpg,
+                    viewer_tools.django_file(jpg,
                                       field_name="image",
                                       content_type="image/jpeg")
                     )
             try:
                 models.get_or_create_instance(xml_file, images)
-            except utils.MyError, e:
+            except viewer_tools.MyError, e:
                 print e
 
             # close the files

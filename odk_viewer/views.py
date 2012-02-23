@@ -8,10 +8,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseNotAllowed
 from odk_logger.models import XForm, Instance
 from odk_viewer.models import DataDictionary, ParsedInstance
-from odk_logger.utils import round_down_geopoint
+from utils.logger_tools import round_down_geopoint
 from odk_logger.xform_instance_parser import xform_instance_to_dict
 from pyxform import Section, Question
-from odk_logger.utils import response_with_mimetype_and_name,\
+from utils.logger_tools import response_with_mimetype_and_name,\
      disposition_ext_and_date
 from django.contrib.auth.models import User
 from main.models import UserProfile

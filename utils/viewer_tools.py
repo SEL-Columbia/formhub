@@ -1,10 +1,6 @@
-#!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
-# import ipdb; ipdb.set_trace()
-
 from xml.dom import minidom
 import os, sys
-from . import tag
+import common_tags as tag
 
 SLASH = u"/"
 

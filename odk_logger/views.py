@@ -15,8 +15,9 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from models import XForm, create_instance
 from main.models import UserProfile
-from utils import response_with_mimetype_and_name
-from utils import store_temp_file
+from utils.logger_tools import response_with_mimetype_and_name
+from utils.logger_tools import store_temp_file
+from utils.decorators import is_owner
 from odk_logger.import_tools import import_instances_from_zip
 import zipfile
 import tempfile
@@ -189,6 +190,7 @@ def toggle_downloadable(request, username, id_string):
     xform.save()
     return HttpResponseRedirect("/%s" % username)
 
+@is_owner
 def enter_data(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     register_openers()
