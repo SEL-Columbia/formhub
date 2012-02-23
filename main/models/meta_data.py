@@ -38,9 +38,16 @@ class MetaData(models.Model):
     data_file_type = models.CharField(max_length=255, null=True)
 
     @staticmethod
-    def public_link(xform, data_value=False):
+    def public_link(xform, data_value=None):
         data_type = 'public_link'
-        return unique_type_for_form(xform, data_type, data_value)
+        if data_value == False:
+            data_value = 'False'
+        metadata = unique_type_for_form(xform, data_type, data_value)
+        # make text field a boolean
+        if metadata.data_value == 'True':
+            return True
+        else:
+            return False
 
     @staticmethod
     def form_license(xform, data_value=None):

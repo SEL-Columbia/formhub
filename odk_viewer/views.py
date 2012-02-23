@@ -41,7 +41,8 @@ def map_view(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     owner = User.objects.get(username=username)
     if not (xform.shared_data or owner == request.user or\
-            request.user.has_perm('odk_logger.view_xform', xform)):
+            request.user.has_perm('odk_logger.view_xform', xform) or
+            request.user.has_perm('odk_logger.change_xform', xform)):
         return HttpResponseForbidden('Not shared.')
     context = RequestContext(request)
     context.content_user = owner

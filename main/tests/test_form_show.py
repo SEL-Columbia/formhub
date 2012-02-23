@@ -303,6 +303,7 @@ class TestFormShow(MainTestCase):
         self.xform.shared = True
         self.xform.save()
         response = self.anon.get(self.url)
+        self.assertEqual(response.status_code, 200)
         self.assertContains(response, name)
 
     def test_download_supporting_doc(self):

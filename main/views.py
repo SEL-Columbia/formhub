@@ -199,7 +199,7 @@ def show(request, username=None, id_string=None, uuid=None):
     is_owner = username == request.user.username
     # no access
     if not (xform.shared or is_owner or
-            (uuid and MetaData.public_link(xform))):
+            (uuid and MetaData.public_link(xform) == True)):
         return HttpResponseRedirect(reverse(home))
     context = RequestContext(request)
     context.is_owner = is_owner
@@ -344,5 +344,5 @@ def set_perm(request, username, id_string):
         if for_user == 'all':
             MetaData.public_link(xform, True)
         elif for_user == 'none':
-            MetaData.public_link(xform)
+            MetaData.public_link(xform, False)
     return HttpResponse()

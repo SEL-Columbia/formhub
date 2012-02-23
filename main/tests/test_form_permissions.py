@@ -5,6 +5,7 @@ from odk_logger.models import XForm
 from odk_viewer.views import map_view
 from guardian.shortcuts import assign, remove_perm
 from main.views import set_perm, show
+from main.models import MetaData
 
 import os
 
@@ -67,7 +68,7 @@ class TestFormPermissions(MainTestCase):
 
     def test_require_owner_to_add_perm(self):
         response = self.anon.post(self.perm_url)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
 
     def test_add_view_to_user(self):
         user = self._create_user('alice', 'alice')
@@ -92,6 +93,7 @@ class TestFormPermissions(MainTestCase):
         response = self.client.post(self.perm_url, {'for_user': 'all',
             'perm_type': 'link'})
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(MetaData.public_link(self.xform), True)
         response = self.anon.get(reverse(show,
                     kwargs={'uuid': self.xform.uuid}))
         self.assertEqual(response.status_code, 200)
@@ -99,9 +101,13 @@ class TestFormPermissions(MainTestCase):
     def test_private_set_link_to_share_off(self):
         response = self.client.post(self.perm_url, {'for_user': 'all',
             'perm_type': 'link'})
+        self.assertEqual(MetaData.public_link(self.xform), True)
         response = self.anon.get(reverse(show,
                     kwargs={'uuid': self.xform.uuid}))
         self.assertEqual(response.status_code, 200)
         response = self.client.post(self.perm_url, {'for_user': 'none',
             'perm_type': 'link'})
+        self.assertEqual(MetaData.public_link(self.xform), False)
+        response = self.anon.get(reverse(show,
+                    kwargs={'uuid': self.xform.uuid}))
         self.assertEqual(response.status_code, 403)
