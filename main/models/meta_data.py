@@ -38,6 +38,11 @@ class MetaData(models.Model):
     data_file_type = models.CharField(max_length=255, null=True)
 
     @staticmethod
+    def public_link(xform, data_value=False):
+        data_type = 'public_link'
+        return unique_type_for_form(xform, data_type, data_value)
+
+    @staticmethod
     def form_license(xform, data_value=None):
         data_type = 'form_license'
         return unique_type_for_form(xform, data_type, data_value)
