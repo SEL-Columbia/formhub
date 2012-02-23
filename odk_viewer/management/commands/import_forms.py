@@ -3,7 +3,8 @@
 
 import os, glob
 from django.core.management.base import BaseCommand
-from ... import models, utils
+from ... import models
+import utils.viewer_tools
 
 class Command(BaseCommand):
     help = "Import a folder of XForms for ODK."
