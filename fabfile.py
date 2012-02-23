@@ -15,7 +15,7 @@ DEPLOYMENTS = {
     },
     'dev': {
         'project': 'formhub_dev',
-        'branch': 'galleria',
+        'branch': 'master',
     },
     # 'prod': {
     #     'project': 'xls2xform_production',
@@ -48,6 +48,7 @@ def deploy(deployment_name):
     setup_env(deployment_name)
     with cd(env.code_src):
         run("git pull origin %(branch)s" % env)
+        run('find . -name "*.pyc" -exec rm -rf {} \;')
     run_in_virtualenv("pip install -r %s" % env.pip_requirements_file)
     with cd(env.code_src):
         run_in_virtualenv("python manage.py migrate")
