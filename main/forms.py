@@ -31,6 +31,7 @@ DATA_LICENSES_CHOICES = (
 PERM_CHOICES = (
     ('view', 'Can view'),
     ('edit', 'Can edit'),
+    ('remove', 'Remove permissions'),
 )
 
 class DataLicenseForm(forms.Form):
