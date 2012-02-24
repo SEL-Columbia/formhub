@@ -93,7 +93,7 @@ class Migration(DataMigration):
             'shared_data': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'xforms'", 'null': 'True', 'to': "orm['auth.User']"}),
-            'uuid': ('django.db.models.fields.CharField', [], {'default': "u''", 'unique': 'True', 'max_length': '32'}),
+            'uuid': ('django.db.models.fields.CharField', [], {'default': "u''", 'max_length': '32'}),
             'xls': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'null': 'True'}),
             'xml': ('django.db.models.fields.TextField', [], {})
         }
