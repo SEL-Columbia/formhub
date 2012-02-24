@@ -197,12 +197,18 @@ def show(request, username=None, id_string=None, uuid=None):
         xform = get_object_or_404(XForm,
                 user__username=username, id_string=id_string)
     is_owner = username == request.user.username
+    can_edit = is_owner or\
+            request.user.has_perm('odk_logger.change_xform', xform)
+    can_view = can_edit or\
+            request.user.has_perm('odk_logger.view_xform', xform)
     # no access
-    if not (xform.shared or is_owner or
+    if not (xform.shared or can_view or
             (uuid and MetaData.public_link(xform) == True)):
         return HttpResponseRedirect(reverse(home))
     context = RequestContext(request)
     context.is_owner = is_owner
+    context.can_edit = can_edit
+    context.can_view = can_view
     context.xform = xform
     context.content_user = xform.user
     context.base_url = "https://%s" % request.get_host()
@@ -226,8 +232,9 @@ def show(request, username=None, id_string=None, uuid=None):
 @require_POST
 @login_required
 def edit(request, username, id_string):
-    if username == request.user.username:
-        xform = XForm.objects.get(user__username=username, id_string=id_string)
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    if username == request.user.username or\
+            request.user.has_perm('odk_logger.change_xform', xform):
         if request.POST.get('description'):
             xform.description = request.POST['description']
         elif request.POST.get('title'):
@@ -352,4 +359,7 @@ def set_perm(request, username, id_string):
             MetaData.public_link(xform, True)
         elif for_user == 'none':
             MetaData.public_link(xform, False)
-    return HttpResponse()
+    return HttpResponseRedirect(reverse(show, kwargs={
+                'username': username,
+                'id_string': id_string
+            }))

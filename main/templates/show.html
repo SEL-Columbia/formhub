@@ -18,7 +18,7 @@
             <form>
                 {% csrf_token %}
                 <input type="text" id="title"class="xxlarge present header" disabled="" rows="3" value="{{ xform.title }}" />
-                {% if is_owner %}
+                {% if can_edit %}
                     <a id="title_edit" data-id="title" href="" class="btn small bind-edit">edit</a>
                     <a id="title_save" data-id="title" style="display:none" href="" class="btn small primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
                 {% endif %}
@@ -28,7 +28,7 @@
     </div> 
     <div class="row">
       <div class="span11">
-        {% if is_owner %}
+        {% if can_edit %}
             <h4>Form ID: {{ xform.id_string }}</h4>
         {% endif %}
         <h3>Description</h3>
@@ -37,7 +37,7 @@
             <form>
                 {% csrf_token %}
                 <textarea id="description" class="xxlarge present" disabled="" rows="3" name="textarea">{% if xform.description %}{{ xform.description }}{% else %}None{% endif %}</textarea>
-                {% if is_owner %}
+                {% if can_edit %}
                     <a id="description_edit" data-id="description" href="" class="btn small bind-edit">edit</a>
                     <a id="description_save" data-id="description" style="display:none" href="" class="btn small primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
                 {% endif %}
@@ -51,7 +51,7 @@
                 {% csrf_token %}
                 <input type="text" id="source"class="xxlarge present" disabled="" rows="3" value="{{ source.data_value|default:"None provided" }}" />
 
-                {% if is_owner %}
+                {% if can_edit %}
                     <a id="source_edit" data-id="source" href="" class="btn small bind-edit">edit</a>
                     <a id="source_save" data-id="source" style="display:none" href="" class="btn small primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
                 {% endif %}
@@ -60,7 +60,7 @@
                     <p><a href="{% url main.views.download_metadata content_user.username xform.id_string source.id %}">{{ source.data_file.name }}</p></a>
                 {% endif %}
 
-                {% if is_owner %}
+                {% if can_edit %}
                     {% csrf_token %}
                     <table>
                     {{ source_form.as_table }}
@@ -76,7 +76,7 @@
                 {% for doc in supporting_docs %}
                     <p><a href="{% url main.views.download_metadata content_user.username xform.id_string doc.id %}">{{ doc.data_value }}</p></a>
                 {% endfor %}
-                {% if is_owner %}
+                {% if can_edit %}
                 <form action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <table>
@@ -190,7 +190,7 @@
         </h3>
         <p>
             License:
-            {% if is_owner %}
+            {% if can_edit %}
                 {% for field in form_license_form %}
                     {{ field }}
                 {% endfor %}
@@ -248,7 +248,7 @@
         </h3>
         <p>
             License:
-            {% if is_owner %}
+            {% if can_edit %}
                 {% for field in data_license_form %}
                     {{ field }}
                 {% endfor %}
@@ -259,7 +259,7 @@
             {% endif %}
         </p>
         <p><a id="data-license_info" style="display:none" href="">License information</a></p>
-        {% if xform.shared_data or is_owner %}
+        {% if xform.shared_data or can_view %}
         <h4>Submissions: {{ xform.submission_count|intcomma }}</h4>
         {% if xform.submission_count > 0 %}
             <div>
@@ -307,7 +307,7 @@
             </p>
         {% endif %}
         {% endif %}
-        {% if is_owner %}
+        {% if can_edit %}
             <a href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
                 <button class="btn small info">Enter Web Form &raquo;</button>
             </a>
