@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
 from odk_viewer.views import map_view
 from guardian.shortcuts import assign, remove_perm
-from main.views import set_perm, show
+from main.views import set_perm, show, edit
 from main.models import MetaData
 
 import os
@@ -85,7 +85,7 @@ class TestFormPermissions(MainTestCase):
             'perm_type': 'edit'})
         self.assertEqual(response.status_code, 200)
         alice = self._login('alice', 'alice')
-        # TODO: test some feature edit URL
+        # TODO: test some future edit URL
         response = alice.get(self.url)
         self.assertEqual(response.status_code, 200)
 
@@ -110,4 +110,15 @@ class TestFormPermissions(MainTestCase):
         self.assertEqual(MetaData.public_link(self.xform), False)
         response = self.anon.get(reverse(show,
                     kwargs={'uuid': self.xform.uuid}))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
+
+    def test_show_list_of_users_shared_with(self):
+        new_username = 'alice'
+        user = self._create_user(new_username, 'alice')
+        response = self.client.post(self.perm_url, {'for_user': user.username,
+            'perm_type': 'view'})
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(reverse(show,
+                kwargs={'uuid': self.xform.uuid}))
+        self.assertContains(response, new_username)
+

@@ -43,6 +43,15 @@ class MainTestCase(TestCase):
         self.assertEqual(XForm.objects.count(), count + 1)
         self.xform = XForm.objects.all().reverse()[0]
 
+    def _submit_transport_instance(self):
+        s = 'transport_2011-07-25_19-05-49'
+        self._make_submission(os.path.join(self.this_directory, 'fixtures',
+                    'transportation', 'instances', s, s + '.xml'))
+    
+    def _publish_transporation_form_and_submit_instance(self):
+        self._publish_transporation_form()
+        self._submit_transport_instance()
+        
     def _make_submission(self, path):
         with open(path) as f:
             post_data = {'xml_submission_file': f}

@@ -14,3 +14,6 @@ from test_form_errors import TestFormErrors
 from test_form_gallery import TestFormGallery
 from test_form_auth import TestFormAuth
 from test_form_permissions import TestFormPermissions
+from test_form_edit import TestFormEdit
+from test_form_exports import TestFormExports
+from test_form_metadata import TestFormMetadata
