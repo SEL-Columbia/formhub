@@ -165,7 +165,7 @@
             {% if users_with_perms|length %}
             <ul>
                 {% for user, perms in users_with_perms %}
-                <li>{{ user }}: {{ perms }}</li>
+                    <li>{{ user }}: {% for perm in perms %}{{ perm }} {% endfor %}</li>
                 {% endfor %}
             </ul>
             {% endif %}
