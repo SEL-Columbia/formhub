@@ -161,6 +161,14 @@
         </div>
         </div> 
         <div>
+            <h3>Sharing</h3>
+            {% if users_with_perms|length %}
+            <ul>
+                {% for user, perms in users_with_perms %}
+                <li>{{ user }}: {{ perms }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             <form action="{% url main.views.set_perm content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <table class="narrow-labels">
