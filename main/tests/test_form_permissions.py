@@ -22,6 +22,12 @@ class TestFormPermissions(MainTestCase):
             'id_string': self.xform.id_string})
         self.perm_url = reverse(set_perm, kwargs={
             'username': self.user.username, 'id_string': self.xform.id_string})
+        self.edit_url = reverse(edit, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        })
+        self.show_url = reverse(show,
+                    kwargs={'uuid': self.xform.uuid})
 
     def test_set_permissions_for_user(self):
         self._create_user_and_login('alice')
@@ -74,7 +80,7 @@ class TestFormPermissions(MainTestCase):
         user = self._create_user('alice', 'alice')
         response = self.client.post(self.perm_url, {'for_user': user.username,
             'perm_type': 'view'})
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         alice = self._login('alice', 'alice')
         response = alice.get(self.url)
         self.assertEqual(response.status_code, 200)
@@ -82,34 +88,49 @@ class TestFormPermissions(MainTestCase):
     def test_add_edit_to_user(self):
         user = self._create_user('alice', 'alice')
         response = self.client.post(self.perm_url, {'for_user': user.username,
-            'perm_type': 'edit'})
-        self.assertEqual(response.status_code, 200)
+            'perm_type': 'view'})
+        self.assertEqual(response.status_code, 302)
         alice = self._login('alice', 'alice')
-        # TODO: test some future edit URL
-        response = alice.get(self.url)
-        self.assertEqual(response.status_code, 200)
+        response = alice.get(self.show_url)
+        self.assertNotContains(response, self.xform.id_string)
+        self.assertContains(response, 'Submissions:')
+
+    def test_add_edit_to_user(self):
+        user = self._create_user('alice', 'alice')
+        response = self.client.post(self.perm_url, {'for_user': user.username,
+            'perm_type': 'edit'})
+        self.assertEqual(response.status_code, 302)
+        alice = self._login('alice', 'alice')
+        response = alice.post(self.edit_url)
+        self.assertEqual(response.status_code, 302)
+
+    def test_add_edit_to_user(self):
+        user = self._create_user('alice', 'alice')
+        response = self.client.post(self.perm_url, {'for_user': user.username,
+            'perm_type': 'edit'})
+        self.assertEqual(response.status_code, 302)
+        alice = self._login('alice', 'alice')
+        response = alice.get(self.show_url)
+        self.assertContains(response, 'Form ID: %s' % self.xform.id_string)
 
     def test_public_with_link_to_share(self):
         response = self.client.post(self.perm_url, {'for_user': 'all',
             'perm_type': 'link'})
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         self.assertEqual(MetaData.public_link(self.xform), True)
-        response = self.anon.get(reverse(show,
-                    kwargs={'uuid': self.xform.uuid}))
+        response = self.anon.get(self.show_url)
         self.assertEqual(response.status_code, 200)
 
     def test_private_set_link_to_share_off(self):
         response = self.client.post(self.perm_url, {'for_user': 'all',
             'perm_type': 'link'})
         self.assertEqual(MetaData.public_link(self.xform), True)
-        response = self.anon.get(reverse(show,
-                    kwargs={'uuid': self.xform.uuid}))
+        response = self.anon.get(self.show_url)
         self.assertEqual(response.status_code, 200)
         response = self.client.post(self.perm_url, {'for_user': 'none',
             'perm_type': 'link'})
         self.assertEqual(MetaData.public_link(self.xform), False)
-        response = self.anon.get(reverse(show,
-                    kwargs={'uuid': self.xform.uuid}))
+        response = self.anon.get(self.show_url)
         self.assertEqual(response.status_code, 302)
 
     def test_show_list_of_users_shared_with(self):
@@ -117,8 +138,6 @@ class TestFormPermissions(MainTestCase):
         user = self._create_user(new_username, 'alice')
         response = self.client.post(self.perm_url, {'for_user': user.username,
             'perm_type': 'view'})
-        self.assertEqual(response.status_code, 200)
-        response = self.client.get(reverse(show,
-                kwargs={'uuid': self.xform.uuid}))
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(self.show_url)
         self.assertContains(response, new_username)
-
