@@ -62,6 +62,7 @@ class Migration(DataMigration):
         'main.metadata': {
             'Meta': {'object_name': 'MetaData'},
             'data_file': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'null': 'True'}),
+            'data_file_type': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
             'data_type': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'data_value': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
