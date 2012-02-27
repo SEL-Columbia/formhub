@@ -1,7 +1,7 @@
 # Create your views here.
 import os
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django import forms
@@ -10,7 +10,7 @@ from django.db import IntegrityError
 from django.contrib.auth.models import User
 
 
-@login_required
+@permission_required('is_staff')
 def submissions(request):
     context = RequestContext(request)
 
