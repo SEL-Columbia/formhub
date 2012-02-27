@@ -11,10 +11,17 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         ct, created = ContentType.objects.get_or_create(model='XForm', app_label='odk_logger')
+        # remove old permission label
+        Permission.objects.get(codename='can_view').delete()
+        # add new permission label
         perm, created = Permission.objects.get_or_create(content_type=ct, codename='view_xform', name='Can view associated data')
 
     def backwards(self, orm):
-        pass
+        ct, created = ContentType.objects.get_or_create(model='XForm', app_label='odk_logger')
+        # remove old permission label
+        Permission.objects.get(codename='view_xform').delete()
+        # add new permission label
+        perm, created = Permission.objects.get_or_create(content_type=ct, codename='can_view', name='Can view associated data')
 
     models = {
         'auth.group': {
