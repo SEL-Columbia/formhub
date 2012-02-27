@@ -67,7 +67,7 @@ class TestSite(MainTestCase):
                             self.xform.delete()
                             self.xform = None
                 print 'finished sub-folder %s' % root
-        self.assertEqual(success, True)
+            self.assertEqual(success, True)
 
     def test_url_upload_non_dot_xls_path(self):
         if internet_on():
