@@ -56,15 +56,18 @@ class TestSite(MainTestCase):
     def test_upload_all_xls(self):
         root_dir = os.path.join(self.this_directory, "fixtures", "online_xls")
         if os.path.exists(root_dir):
+            success = True
             for root, sub_folders, filenames in os.walk(root_dir):
                 # ignore files that don't end in '.xls'
                 for filename in fnmatch.filter(filenames, '*.xls'):
-                    self._publish_file(os.path.join(root, filename))
-                    # delete it so we don't have id_string conflicts
-                    if self.xform:
-                        self.xform.delete()
-                        self.xform = None
+                    success = self._publish_file(os.path.join(root, filename), False)
+                    if success:
+                        # delete it so we don't have id_string conflicts
+                        if self.xform:
+                            self.xform.delete()
+                            self.xform = None
                 print 'finished sub-folder %s' % root
+        self.assertEqual(success, True)
 
     def test_url_upload_non_dot_xls_path(self):
         if internet_on():
@@ -84,16 +87,23 @@ class TestSite(MainTestCase):
             post_data = {'xls_file': xls_file}
             return self.anon.post('/%s/' % self.user.username, post_data)
 
-    def _publish_file(self, xls_path):
+    def _publish_file(self, xls_path, strict=True):
+        """
+        Returns False if not strict and publish fails
+        """
         pre_count = XForm.objects.count()
         self.response = MainTestCase._publish_xls_file(self, xls_path)
         # make sure publishing the survey worked
         self.assertEqual(self.response.status_code, 200)
-        if XForm.objects.count() != pre_count+1:
+        if XForm.objects.count() != pre_count + 1:
             # print file location
             print '\nPublish Failure for file: %s' % xls_path
-        self.assertEqual(XForm.objects.count(), pre_count+1)
+            if strict:
+                self.assertEqual(XForm.objects.count(), pre_count+1)
+            else:
+                return False
         self.xform = list(XForm.objects.all())[-1]
+        return True
 
     def _publish_xls_file(self):
         xls_path = os.path.join(self.this_directory, "fixtures", "transportation", "transportation.xls")
