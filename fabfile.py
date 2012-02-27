@@ -15,7 +15,7 @@ DEPLOYMENTS = {
     },
     'dev': {
         'project': 'formhub_dev',
-        'branch': 'permissions',
+        'branch': 'master',
     },
     # 'prod': {
     #     'project': 'xls2xform_production',
