@@ -10,22 +10,22 @@ from django.contrib.auth.models import Permission
 class Migration(DataMigration):
 
     def forwards(self, orm):
+        ct = ContentType.objects.get(model='xform', app_label='odk_logger')
         # remove old permission label
         try:
-            Permission.objects.get(codename='can_view').delete()
+            Permission.objects.get(content_type=ct, codename='can_view').delete()
         except Permission.DoesNotExist:
             pass
-        ct, created = ContentType.objects.get_or_create(model='xform', app_label='odk_logger')
         # add new permission label
         perm, created = Permission.objects.get_or_create(content_type=ct, codename='view_xform', name='Can view associated data')
 
     def backwards(self, orm):
+        ct = ContentType.objects.get(model='xform', app_label='odk_logger')
         # remove old permission label
         try:
-            Permission.objects.get(codename='view_xform').delete()
+            Permission.objects.get(content_type=ct, codename='view_xform').delete()
         except Permission.DoesNotExist:
             pass
-        ct, created = ContentType.objects.get_or_create(model='xform', app_label='odk_logger')
         # add new permission label
         perm, created = Permission.objects.get_or_create(content_type=ct, codename='can_view', name='Can view associated data')
 
