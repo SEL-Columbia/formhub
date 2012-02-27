@@ -9,6 +9,10 @@ from django.contrib.auth.models import Permission
 
 class Migration(DataMigration):
 
+    depends_on = (
+            ("guardian", "0005_auto__chg_field_groupobjectpermission_object_pk__chg_field_userobjectp"),
+    )
+
     def forwards(self, orm):
         # remove old permission label if migrated with old model metadata
         try:
