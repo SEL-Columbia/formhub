@@ -202,10 +202,12 @@ def show(request, username=None, id_string=None, uuid=None):
     can_view = can_edit or\
             request.user.has_perm('odk_logger.view_xform', xform)
     # no access
+    public_link = MetaData.public_link(xform)
     if not (xform.shared or can_view or
-            (uuid and MetaData.public_link(xform) == True)):
+            (uuid and public_link)):
         return HttpResponseRedirect(reverse(home))
     context = RequestContext(request)
+    context.public_link = public_link
     context.is_owner = is_owner
     context.can_edit = can_edit
     context.can_view = can_view
@@ -359,6 +361,9 @@ def set_perm(request, username, id_string):
             MetaData.public_link(xform, True)
         elif for_user == 'none':
             MetaData.public_link(xform, False)
+        elif for_user == 'toggle':
+            current = MetaData.public_link(xform)
+            MetaData.public_link(xform, not current)
     return HttpResponseRedirect(reverse(show, kwargs={
                 'username': username,
                 'id_string': id_string
