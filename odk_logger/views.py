@@ -15,9 +15,9 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from models import XForm, create_instance
 from main.models import UserProfile
-from utils.logger_tools import response_with_mimetype_and_name
-from utils.logger_tools import store_temp_file
+from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
 from utils.decorators import is_owner
+from utils.user_auth import has_permission
 from odk_logger.import_tools import import_instances_from_zip
 import zipfile
 import tempfile
@@ -156,6 +156,7 @@ def submission(request, username=None):
 
 def download_xform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
+    # TODO: protect for users who have settings to use auth
     response = response_with_mimetype_and_name('xml', id_string,
         show_date=False)
     response.content = xform.xml
@@ -163,6 +164,9 @@ def download_xform(request, username, id_string):
 
 def download_xlsform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
+    owner = User.objects.get(username=username)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden('Not shared.')
     file_path = xform.xls.name
     default_storage = get_storage_class()()
     if default_storage.exists(file_path):
@@ -174,25 +178,32 @@ def download_xlsform(request, username, id_string):
         return HttpResponseRedirect("/%s" % username)
 
 def download_jsonform(request, username, id_string):
+    owner = User.objects.get(username=username)
     xform = XForm.objects.get(user__username=username, id_string=id_string)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden('Not shared.')
     response = response_with_mimetype_and_name('json', id_string, show_date=False)
     response.content = xform.json
     return response
 
+@is_owner
 def delete_xform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     xform.delete()
     return HttpResponseRedirect('/')
 
+@is_owner
 def toggle_downloadable(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     xform.downloadable = not xform.downloadable
     xform.save()
     return HttpResponseRedirect("/%s" % username)
 
-@is_owner
 def enter_data(request, username, id_string):
+    owner = User.objects.get(username=username)
     xform = XForm.objects.get(user__username=username, id_string=id_string)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden('Not shared.')
     register_openers()
     url = settings.TOUCHFORMS_URL
     response = None

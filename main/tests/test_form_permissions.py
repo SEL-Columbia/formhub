@@ -28,6 +28,11 @@ class TestFormPermissions(MainTestCase):
         })
         self.show_url = reverse(show,
                     kwargs={'uuid': self.xform.uuid})
+        self.show_normal_url = reverse(show, kwargs={
+                'username': self.user.username,
+                'id_string': self.xform.id_string
+        })
+        self.base_url = 'http://testserver'
 
     def test_set_permissions_for_user(self):
         self._create_user_and_login('alice')
@@ -119,19 +124,61 @@ class TestFormPermissions(MainTestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(MetaData.public_link(self.xform), True)
         response = self.anon.get(self.show_url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['Location'],
+                '%s%s' % (self.base_url, self.show_normal_url))
 
     def test_private_set_link_to_share_off(self):
         response = self.client.post(self.perm_url, {'for_user': 'all',
             'perm_type': 'link'})
         self.assertEqual(MetaData.public_link(self.xform), True)
         response = self.anon.get(self.show_url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['Location'],
+                '%s%s' % (self.base_url, self.show_normal_url))
         response = self.client.post(self.perm_url, {'for_user': 'none',
             'perm_type': 'link'})
         self.assertEqual(MetaData.public_link(self.xform), False)
         response = self.anon.get(self.show_url)
         self.assertEqual(response.status_code, 302)
+        self.assertNotEqual(response['Location'],
+                '%s%s' % (self.base_url, self.show_normal_url))
+
+    def test_public_with_link_to_share_toggle_on(self):
+        response = self.client.post(self.perm_url, {'for_user': 'toggle',
+            'perm_type': 'link'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(MetaData.public_link(self.xform), True)
+        response = self.anon.get(self.show_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['Location'],
+                '%s%s' % (self.base_url, self.show_normal_url))
+        response = self.anon.get(self.show_normal_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '/forms/%s' % self.xform.uuid)
+
+    def test_private_set_link_to_share_toggle_off(self):
+        response = self.client.post(self.perm_url, {'for_user': 'toggle',
+            'perm_type': 'link'})
+        self.assertEqual(MetaData.public_link(self.xform), True)
+        response = self.anon.get(self.show_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['Location'],
+                '%s%s' % (self.base_url, self.show_normal_url))
+        response = self.client.post(self.perm_url, {'for_user': 'none',
+            'perm_type': 'link'})
+        self.assertEqual(MetaData.public_link(self.xform), False)
+        response = self.anon.get(self.show_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertNotEqual(response['Location'],
+                '%s%s' % (self.base_url, self.show_normal_url))
+
+    def test_public_with_link_to_share_toggle_on(self):
+        response = self.client.post(self.perm_url, {'for_user': 'toggle',
+            'perm_type': 'link'})
+        response = self.anon.get(self.show_url)
+        response = self.anon.get(self.url)
+        self.assertEqual(response.status_code, 200)
 
     def test_show_list_of_users_shared_with(self):
         new_username = 'alice'

@@ -14,13 +14,14 @@ class Migration(DataMigration):
     )
 
     def forwards(self, orm):
+        pass
         # remove old permission label if migrated with old model metadata
         try:
             ct = ContentType.objects.get(model='xform', app_label='odk_logger')
             Permission.objects.get(content_type=ct, codename='can_view').delete()
             # add new permission label
             perm, created = Permission.objects.get_or_create(content_type=ct, codename='view_xform', name='Can view associated data')
-        except ContentType.DoesNotExist, Permission.DoesNotExist:
+        except (ContentType.DoesNotExist, Permission.DoesNotExist):
             pass
 
     def backwards(self, orm):
