@@ -18,7 +18,7 @@ from odk_logger.models import Instance, XForm
 from utils.logger_tools import response_with_mimetype_and_name
 from utils.decorators import is_owner
 from odk_logger.models.xform import XLSFormError
-from utils.user_auth import check_and_set_user, set_profile_data
+from utils.user_auth import check_and_set_user, set_profile_data, has_permission
 from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
      SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
      SourceForm, PermissionForm
@@ -193,27 +193,28 @@ def show(request, username=None, id_string=None, uuid=None):
     if uuid:
         xform = get_object_or_404(XForm, uuid=uuid)
         username = xform.user.username
-        public_link = MetaData.public_link(xform)
-        if public_link:
-            request.session['public_link'] = True
+        request.session['public_link'] = MetaData.public_link(xform)
+        if request.session['public_link']:
+            return HttpResponseRedirect(reverse(show, kwargs={
+                        'username': username,
+                        'id_string': xform.id_string
+                        }))
     else:
         xform = get_object_or_404(XForm,
                 user__username=username, id_string=id_string)
-        public_link = MetaData.public_link(xform)
     is_owner = username == request.user.username
     can_edit = is_owner or\
             request.user.has_perm('odk_logger.change_xform', xform)
     can_view = can_edit or\
             request.user.has_perm('odk_logger.view_xform', xform)
     # no access
-    if not (xform.shared or can_view or
-            (uuid and public_link)):
+    if not (xform.shared or can_view or request.session.get('public_link')):
         return HttpResponseRedirect(reverse(home))
     context = RequestContext(request)
-    context.public_link = public_link
+    context.public_link = MetaData.public_link(xform)
     context.is_owner = is_owner
     context.can_edit = can_edit
-    context.can_view = can_view
+    context.can_view = can_view or request.session.get('public_link')
     context.xform = xform
     context.content_user = xform.user
     context.base_url = "https://%s" % request.get_host()
@@ -327,6 +328,8 @@ def form_photos(request, username, id_string):
     xform = get_object_or_404(XForm,
             user__username=username, id_string=id_string)
     owner = User.objects.get(username=username)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden('Not shared.')
     context = RequestContext(request)
     context.form_view = True
     context.content_user = owner
@@ -335,9 +338,7 @@ def form_photos(request, username, id_string):
         image_urls(s.parsed_instance.instance) for s in xform.surveys.all()
     ], [])
     context.profile, created = UserProfile.objects.get_or_create(user=owner)
-    if username == request.user.username or xform.shared_data:
-        return render_to_response('form_photos.html', context_instance=context)
-    return HttpResponseForbidden('Permission denied.')
+    return render_to_response('form_photos.html', context_instance=context)
 
 
 @require_POST
