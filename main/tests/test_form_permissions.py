@@ -153,6 +153,13 @@ class TestFormPermissions(MainTestCase):
         response = self.anon.get(self.show_url)
         self.assertEqual(response.status_code, 302)
 
+    def test_public_with_link_to_share_toggle_on(self):
+        response = self.client.post(self.perm_url, {'for_user': 'toggle',
+            'perm_type': 'link'})
+        response = self.anon.get(self.show_url)
+        response = self.anon.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
     def test_show_list_of_users_shared_with(self):
         new_username = 'alice'
         user = self._create_user(new_username, 'alice')

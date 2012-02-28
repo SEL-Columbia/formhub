@@ -8,11 +8,11 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
 from odk_logger.models import XForm, Instance
 from odk_viewer.models import DataDictionary, ParsedInstance
-from utils.logger_tools import round_down_geopoint
 from odk_logger.xform_instance_parser import xform_instance_to_dict
 from pyxform import Section, Question
 from utils.logger_tools import response_with_mimetype_and_name,\
-     disposition_ext_and_date
+     disposition_ext_and_date, round_down_geopoint
+from utils.user_auth import has_permission
 from django.contrib.auth.models import User
 from main.models import UserProfile
 
@@ -25,11 +25,6 @@ import json
 import os
 from datetime import date
 
-
-def _has_permission(xform, owner, user):
-    return xform.shared_data or owner == user or\
-            user.has_perm('odk_logger.view_xform', xform) or\
-            user.has_perm('odk_logger.change_xform', xform)
 
 def parse_label_for_display(pi, xpath):
     label = pi.data_dictionary.get_label(xpath)
@@ -46,7 +41,7 @@ def average(values):
 def map_view(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     owner = User.objects.get(username=username)
-    if not _has_permission(xform, owner, request.user):
+    if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
     context = RequestContext(request)
     context.content_user = owner
@@ -107,7 +102,7 @@ def image_urls(instance):
 def csv_export(request, username, id_string):
     owner = User.objects.get(username=username)
     xform = XForm.objects.get(id_string=id_string, user=owner)
-    if not _has_permission(xform, owner, request.user):
+    if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
     dd = DataDictionary.objects.get(id_string=id_string,
                                     user=owner)
@@ -123,7 +118,7 @@ def csv_export(request, username, id_string):
 def xls_export(request, username, id_string):
     owner = User.objects.get(username=username)
     xform = XForm.objects.get(id_string=id_string, user=owner)
-    if not _has_permission(xform, owner, request.user):
+    if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
     dd = DataDictionary.objects.get(id_string=id_string,
                                     user=owner)
@@ -140,7 +135,7 @@ def xls_export(request, username, id_string):
 def zip_export(request, username, id_string):
     owner = User.objects.get(username=username)
     xform = XForm.objects.get(id_string=id_string, user=owner)
-    if not _has_permission(xform, owner, request.user):
+    if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
     dd = DataDictionary.objects.get(id_string=id_string,
                                     user=owner)
@@ -157,7 +152,7 @@ def kml_export(request, username, id_string):
     context.message="HELLO!!"
     owner = User.objects.get(username=username)
     xform = XForm.objects.get(id_string=id_string, user=owner)
-    if not _has_permission(xform, owner, request.user):
+    if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
     dd = DataDictionary.objects.get(id_string=id_string,
                                     user=owner)
