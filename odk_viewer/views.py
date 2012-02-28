@@ -8,11 +8,11 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
 from odk_logger.models import XForm, Instance
 from odk_viewer.models import DataDictionary, ParsedInstance
-from utils.logger_tools import round_down_geopoint
 from odk_logger.xform_instance_parser import xform_instance_to_dict
 from pyxform import Section, Question
 from utils.logger_tools import response_with_mimetype_and_name,\
-     disposition_ext_and_date
+     disposition_ext_and_date, round_down_geopoint
+from utils.user_auth import has_permission
 from django.contrib.auth.models import User
 from main.models import UserProfile
 
@@ -24,6 +24,7 @@ from xls_writer import DataDictionary
 import json
 import os
 from datetime import date
+
 
 def parse_label_for_display(pi, xpath):
     label = pi.data_dictionary.get_label(xpath)
@@ -40,9 +41,7 @@ def average(values):
 def map_view(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     owner = User.objects.get(username=username)
-    if not (xform.shared_data or owner == request.user or\
-            request.user.has_perm('odk_logger.view_xform', xform) or
-            request.user.has_perm('odk_logger.change_xform', xform)):
+    if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
     context = RequestContext(request)
     context.content_user = owner
@@ -102,10 +101,11 @@ def image_urls(instance):
 
 def csv_export(request, username, id_string):
     owner = User.objects.get(username=username)
+    xform = XForm.objects.get(id_string=id_string, user=owner)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden('Not shared.')
     dd = DataDictionary.objects.get(id_string=id_string,
                                     user=owner)
-    if not dd.shared_data and request.user.username != username:
-        return HttpResponseForbidden('Not shared.')
     writer = DataDictionaryWriter(dd)
     file_path = writer.get_default_file_path()
     writer.write_to_file(file_path)
@@ -117,10 +117,11 @@ def csv_export(request, username, id_string):
 
 def xls_export(request, username, id_string):
     owner = User.objects.get(username=username)
+    xform = XForm.objects.get(id_string=id_string, user=owner)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden('Not shared.')
     dd = DataDictionary.objects.get(id_string=id_string,
                                     user=owner)
-    if not dd.shared_data and request.user.username != username:
-        return HttpResponseForbidden('Not shared.')
     ddw = XlsWriter()
     ddw.set_data_dictionary(dd)
     temp_file = ddw.save_workbook_to_file()
@@ -133,10 +134,11 @@ def xls_export(request, username, id_string):
 
 def zip_export(request, username, id_string):
     owner = User.objects.get(username=username)
+    xform = XForm.objects.get(id_string=id_string, user=owner)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden('Not shared.')
     dd = DataDictionary.objects.get(id_string=id_string,
                                     user=owner)
-    if not dd.shared_data and request.user.username != username:
-        return HttpResponseForbidden('Not shared.')
     response = response_with_mimetype_and_name('zip', id_string)
     # TODO create that zip_file
     zip_file = None
@@ -149,10 +151,11 @@ def kml_export(request, username, id_string):
     context = RequestContext(request)
     context.message="HELLO!!"
     owner = User.objects.get(username=username)
+    xform = XForm.objects.get(id_string=id_string, user=owner)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden('Not shared.')
     dd = DataDictionary.objects.get(id_string=id_string,
                                     user=owner)
-    if not dd.shared_data and request.user.username != username:
-        return HttpResponseForbidden('Not shared.')
     pis = ParsedInstance.objects.filter(instance__user=owner, instance__xform__id_string=id_string, lat__isnull=False, lng__isnull=False)
     data_for_template = []
     for pi in pis:

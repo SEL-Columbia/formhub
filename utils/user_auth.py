@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from main.models import UserProfile
 import re
 
+
 def check_and_set_user(request, username):
     if username != request.user.username:
         return HttpResponseRedirect("/%s" % username)
@@ -12,6 +13,7 @@ def check_and_set_user(request, username):
     except User.DoesNotExist:
         return HttpResponseRedirect("/")
     return content_user
+
 
 def set_profile_data(context, content_user):
     # create empty profile if none exists
@@ -30,3 +32,9 @@ def set_profile_data(context, content_user):
     if context.home_page and re.match("http", context.home_page) == None:
         context.home_page = "http://%s" % context.home_page
 
+
+def has_permission(xform, owner, request):
+    user = request.user
+    return xform.shared_data or request.session.get('public_link') or owner == user or\
+            user.has_perm('odk_logger.view_xform', xform) or\
+            user.has_perm('odk_logger.change_xform', xform)
