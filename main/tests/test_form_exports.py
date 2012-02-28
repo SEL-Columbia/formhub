@@ -9,6 +9,13 @@ class TestFormExports(MainTestCase):
         self._create_user_and_login()
         self._publish_transporation_form_and_submit_instance()
 
+    def test_csv_raw_export_name(self):
+        url = reverse(csv_export, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
+        response = self.anon.get(url)
+        raise Exception(response.content)
+        self.assertEqual(response.content, 1)
+
     def test_restrict_csv_export_if_not_shared(self):
         url = reverse(csv_export, kwargs={'username': self.user.username,
                 'id_string': self.xform.id_string})

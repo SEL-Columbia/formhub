@@ -109,6 +109,8 @@ def csv_export(request, username, id_string):
     writer = DataDictionaryWriter(dd)
     file_path = writer.get_default_file_path()
     writer.write_to_file(file_path)
+    if request.GET.get('raw'):
+        id_string = None
     response = response_with_mimetype_and_name('application/csv', id_string,
         extension='csv',
         file_path=file_path, use_local_filesystem=True)
