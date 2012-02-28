@@ -38,10 +38,20 @@ class MainTestCase(TestCase):
     def _publish_transporation_form(self):
         xls_path = os.path.join(self.this_directory, "fixtures",
                 "transportation", "transportation.xls")
+        count = XForm.objects.count()
         response = self._publish_xls_file(xls_path)
-        self.assertEqual(XForm.objects.count(), 1)
-        self.xform = XForm.objects.all()[0]
+        self.assertEqual(XForm.objects.count(), count + 1)
+        self.xform = XForm.objects.all().reverse()[0]
 
+    def _submit_transport_instance(self):
+        s = 'transport_2011-07-25_19-05-49'
+        self._make_submission(os.path.join(self.this_directory, 'fixtures',
+                    'transportation', 'instances', s, s + '.xml'))
+    
+    def _publish_transporation_form_and_submit_instance(self):
+        self._publish_transporation_form()
+        self._submit_transport_instance()
+        
     def _make_submission(self, path):
         with open(path) as f:
             post_data = {'xml_submission_file': f}

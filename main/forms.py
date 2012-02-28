@@ -18,28 +18,54 @@ FORM_LICENSES_CHOICES = (
     ('No License', 'No License'),
     ('https://creativecommons.org/licenses/by/3.0/', 'Attribution CC BY'),
     ('https://creativecommons.org/licenses/by-sa/3.0/',
-     'Attribution-ShareAlike CC BY-SA')
+     'Attribution-ShareAlike CC BY-SA'),
 )
 
 DATA_LICENSES_CHOICES = (
     ('No License', 'No License'),
     ('http://opendatacommons.org/licenses/pddl/summary/', 'PDDL'),
     ('http://opendatacommons.org/licenses/by/summary/', 'ODC-BY'),
-    ('http://opendatacommons.org/licenses/odbl/summary/', 'ODBL')
+    ('http://opendatacommons.org/licenses/odbl/summary/', 'ODBL'),
+)
+
+PERM_CHOICES = (
+    ('view', 'Can view'),
+    ('edit', 'Can edit'),
+    ('remove', 'Remove permissions'),
 )
 
 class DataLicenseForm(forms.Form):
     value = forms.ChoiceField(choices=DATA_LICENSES_CHOICES,
         widget=forms.Select(attrs={'disabled':'disabled', 'id':'data-license'}))
 
+
 class FormLicenseForm(forms.Form):
     value = forms.ChoiceField(choices=FORM_LICENSES_CHOICES,
         widget=forms.Select(attrs={'disabled':'disabled', 'id':'form-license'}))
+
+
+class PermissionForm(forms.Form):
+
+    for_user = forms.ChoiceField(
+        widget=forms.Select())
+
+    perm_type = forms.ChoiceField(choices=PERM_CHOICES,
+        widget=forms.Select())
+
+    def __init__(self, username):
+        self.username = username
+        super(PermissionForm, self).__init__()
+        choices = [(u.username, u.username) for u in 
+            User.objects.order_by('username').exclude(username=username)]
+        #raise Exception(choices)
+        self.fields['for_user'].choices = choices
+
 
 class UserProfileForm(ModelForm):
     class Meta:
         model = UserProfile
         exclude = ('user',)
+
 
 class UserProfileFormRegister(forms.Form):
     name = forms.CharField(widget=forms.TextInput(), required=False,
@@ -64,6 +90,7 @@ class UserProfileFormRegister(forms.Form):
                 twitter=self.cleaned_data['twitter'])
         new_profile.save()
         return new_profile
+
 
 # order of inheritance control order of form display
 class RegistrationFormUserProfile(RegistrationFormUniqueEmail, UserProfileFormRegister):
@@ -129,17 +156,22 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail, UserProfileFormRe
         UserProfileFormRegister.save(self, new_user)
         return new_user
 
+
 class SourceForm(forms.Form):
     source = forms.FileField(label="Source document", required=True)
+
 
 class SupportDocForm(forms.Form):
     doc = forms.FileField(label="Supporting document", required=True)
 
+
 class QuickConverterFile(forms.Form):
     xls_file = forms.FileField(label="XLS File", required=False)
 
+
 class QuickConverterURL(forms.Form):
     xls_url = forms.URLField(verify_exists=False, label="XLS URL", required=False)
+
 
 class QuickConverter(QuickConverterFile, QuickConverterURL):
     def publish(self, user):
