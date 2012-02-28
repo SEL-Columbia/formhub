@@ -201,9 +201,9 @@ def toggle_downloadable(request, username, id_string):
 
 def enter_data(request, username, id_string):
     owner = User.objects.get(username=username)
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
     register_openers()
     url = settings.TOUCHFORMS_URL
     response = None

@@ -190,17 +190,16 @@ def dashboard(request):
 
 @require_GET
 def show(request, username=None, id_string=None, uuid=None):
-    context = RequestContext(request)
     if uuid:
         xform = get_object_or_404(XForm, uuid=uuid)
         username = xform.user.username
         public_link = MetaData.public_link(xform)
         if public_link:
             request.session['public_link'] = True
-            context.public_link = public_link
     else:
         xform = get_object_or_404(XForm,
                 user__username=username, id_string=id_string)
+        public_link = MetaData.public_link(xform)
     is_owner = username == request.user.username
     can_edit = is_owner or\
             request.user.has_perm('odk_logger.change_xform', xform)
@@ -210,6 +209,8 @@ def show(request, username=None, id_string=None, uuid=None):
     if not (xform.shared or can_view or
             (uuid and public_link)):
         return HttpResponseRedirect(reverse(home))
+    context = RequestContext(request)
+    context.public_link = public_link
     context.is_owner = is_owner
     context.can_edit = can_edit
     context.can_view = can_view

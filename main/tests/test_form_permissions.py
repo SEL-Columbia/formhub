@@ -140,6 +140,7 @@ class TestFormPermissions(MainTestCase):
         self.assertEqual(MetaData.public_link(self.xform), True)
         response = self.anon.get(self.show_url)
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '/forms/%s' % self.xform.uuid)
 
     def test_private_set_link_to_share_toggle_off(self):
         response = self.client.post(self.perm_url, {'for_user': 'toggle',
