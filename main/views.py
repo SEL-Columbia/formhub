@@ -202,18 +202,16 @@ def show(request, username=None, id_string=None, uuid=None):
     else:
         xform = get_object_or_404(XForm,
                 user__username=username, id_string=id_string)
-        public_link = MetaData.public_link(xform)
     is_owner = username == request.user.username
     can_edit = is_owner or\
             request.user.has_perm('odk_logger.change_xform', xform)
     can_view = can_edit or\
             request.user.has_perm('odk_logger.view_xform', xform)
     # no access
-    if not (xform.shared or can_view or request.session.get('public_link') or
-            (uuid and public_link)):
+    if not (xform.shared or can_view or request.session.get('public_link')):
         return HttpResponseRedirect(reverse(home))
     context = RequestContext(request)
-    context.public_link = public_link
+    context.public_link = MetaData.public_link(xform)
     context.is_owner = is_owner
     context.can_edit = can_edit
     context.can_view = can_view or request.session.get('public_link')
