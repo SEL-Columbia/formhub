@@ -179,9 +179,9 @@ def download_xlsform(request, username, id_string):
 
 def download_jsonform(request, username, id_string):
     owner = User.objects.get(username=username)
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
     response = response_with_mimetype_and_name('json', id_string, show_date=False)
     response.content = xform.json
     return response
