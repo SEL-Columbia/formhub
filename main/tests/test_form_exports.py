@@ -12,9 +12,9 @@ class TestFormExports(MainTestCase):
     def test_csv_raw_export_name(self):
         url = reverse(csv_export, kwargs={'username': self.user.username,
                 'id_string': self.xform.id_string})
-        response = self.anon.get(url)
-        raise Exception(response.content)
-        self.assertEqual(response.content, 1)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Location'], 'http://testserver%s' % url)
 
     def test_restrict_csv_export_if_not_shared(self):
         url = reverse(csv_export, kwargs={'username': self.user.username,
