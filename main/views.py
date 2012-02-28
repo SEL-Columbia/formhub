@@ -193,8 +193,8 @@ def show(request, username=None, id_string=None, uuid=None):
     if uuid:
         xform = get_object_or_404(XForm, uuid=uuid)
         username = xform.user.username
-        if MetaData.public_link(xform):
-            request.session['public_link'] = True
+        request.session['public_link'] = MetaData.public_link(xform)
+        if request.session['public_link']:
             return HttpResponseRedirect(reverse(show, kwargs={
                         'username': username,
                         'id_string': xform.id_string
