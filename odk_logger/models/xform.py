@@ -54,7 +54,7 @@ class XForm(models.Model):
         verbose_name_plural = "XForms"
         ordering = ("id_string",)
         permissions = (
-            ("can_view", "Can view associated data"),
+            ("view_xform", "Can view associated data"),
             )
 
     def file_name(self):

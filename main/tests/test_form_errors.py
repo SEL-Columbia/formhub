@@ -48,7 +48,7 @@ class TestFormErrors(MainTestCase):
         url = reverse(xls_export, kwargs={'username': self.user.username,
                 'id_string': self.xform.id_string})
         response = self.anon.get(url)
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 403)
 
     def test_nonexist_id_string(self):
         url = reverse(show,
