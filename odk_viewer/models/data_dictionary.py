@@ -43,6 +43,8 @@ class DataDictionary(XForm):
         'precision'
     ]
 
+    surveys_for_export = lambda d: d.surveys.all()
+
     class Meta:
         app_label = "odk_viewer"
         proxy = True
@@ -197,9 +199,15 @@ class DataDictionary(XForm):
         return header
 
     def get_list_of_parsed_instances(self):
-        for i in queryset_iterator(self.surveys.all()):
+        print self.surveys_for_export
+        if self.surveys_for_export:
+            print map(lambda x: x.date_created, DataDictionary.surveys_for_export(self))
+            print map(lambda x: x.date_created, self.surveys.all())
+            print DataDictionary.surveys_for_export(self) == self.surveys.all()
+        for i in queryset_iterator(DataDictionary.surveys_for_export(self)):
             # TODO: there is information we want to add in parsed xforms.
             yield i.get_dict()
+        self.surveys_for_export = None
 
     def _rename_key(self, d, old_key, new_key):
         assert new_key not in d, d

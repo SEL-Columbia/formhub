@@ -5,13 +5,14 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 # http://djangosnippets.org/snippets/365/
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden,\
+         HttpResponseBadRequest
 from odk_logger.models import XForm, Instance
 from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_logger.xform_instance_parser import xform_instance_to_dict
 from pyxform import Section, Question
 from utils.logger_tools import response_with_mimetype_and_name,\
-     disposition_ext_and_date, round_down_geopoint
+         disposition_ext_and_date, round_down_geopoint
 from utils.user_auth import has_permission
 from django.contrib.auth.models import User
 from main.models import UserProfile
@@ -23,8 +24,40 @@ from xls_writer import DataDictionary
 
 import json
 import os
+from time import strftime, strptime
 from datetime import date
 
+def encode(time_str):
+    time = strptime(time_str, "%Y_%m_%d_%H_%M_%S")
+    return strftime("%Y-%m-%d %H:%M:%S", time)
+
+def dd_for_params(id_string, owner, request):
+    dd = DataDictionary.objects.get(id_string=id_string,
+                                    user=owner)
+    start = end = None
+    if request.GET.get('start'):
+        try:
+            start = encode(request.GET['start'])
+        except ValueError:
+            # bad format
+            return [False,
+                HttpReponseBadRequest('Start time format must be YY_MM_DD_hh_mm_ss')
+            ]
+        print start
+        dd.surveys_for_export = lambda d: d.surveys.filter(date_created__gte=start)
+    if request.GET.get('end'):
+        try:
+            end = encode(request.GET['end'])
+        except ValueError:
+            # bad format
+            return [False,
+                HttpReponseBadRequest('End time format must be YY_MM_DD_hh_mm_ss')
+            ]
+        print end
+        dd.surveys_for_export = lambda d: d.surveys.filter(date_created__lte=end)
+    if start and end:
+        dd.surveys_for_export = lambda d: d.surveys.filter(date_created__lte=end)
+    return [True, dd]
 
 def parse_label_for_display(pi, xpath):
     label = pi.data_dictionary.get_label(xpath)
@@ -104,8 +137,8 @@ def csv_export(request, username, id_string):
     xform = XForm.objects.get(id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
-    dd = DataDictionary.objects.get(id_string=id_string,
-                                    user=owner)
+    valid, dd = dd_for_params(id_string, owner, request)
+    if not valid: return dd
     writer = DataDictionaryWriter(dd)
     file_path = writer.get_default_file_path()
     writer.write_to_file(file_path)
