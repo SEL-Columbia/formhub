@@ -109,6 +109,8 @@ def csv_export(request, username, id_string):
     writer = DataDictionaryWriter(dd)
     file_path = writer.get_default_file_path()
     writer.write_to_file(file_path)
+    if request.GET.get('raw'):
+        id_string = None
     response = response_with_mimetype_and_name('application/csv', id_string,
         extension='csv',
         file_path=file_path, use_local_filesystem=True)
@@ -125,6 +127,8 @@ def xls_export(request, username, id_string):
     ddw = XlsWriter()
     ddw.set_data_dictionary(dd)
     temp_file = ddw.save_workbook_to_file()
+    if request.GET.get('raw'):
+        id_string = None
     response = response_with_mimetype_and_name('vnd.ms-excel', id_string,
         extension='xls')
     response.write(temp_file.getvalue())
@@ -139,6 +143,8 @@ def zip_export(request, username, id_string):
         return HttpResponseForbidden('Not shared.')
     dd = DataDictionary.objects.get(id_string=id_string,
                                     user=owner)
+    if request.GET.get('raw'):
+        id_string = None
     response = response_with_mimetype_and_name('zip', id_string)
     # TODO create that zip_file
     zip_file = None

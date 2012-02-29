@@ -52,6 +52,8 @@ def response_with_mimetype_and_name(mimetype, name, extension=None,
     return response
 
 def disposition_ext_and_date(name, extension, show_date=True):
+    if name == None:
+        return 'attachment;'
     if show_date:
         name = "%s_%s" % (name, date.today().strftime("%Y_%m_%d"))
     return 'attachment; filename=%s.%s' % (name, extension)

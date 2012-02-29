@@ -9,17 +9,38 @@ class TestFormExports(MainTestCase):
         self._create_user_and_login()
         self._publish_transporation_form_and_submit_instance()
 
+    def test_csv_raw_export_name(self):
+        url = reverse(csv_export, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
+        response = self.client.get(url + '?raw=1')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Disposition'], 'attachment;')
+
     def test_restrict_csv_export_if_not_shared(self):
         url = reverse(csv_export, kwargs={'username': self.user.username,
                 'id_string': self.xform.id_string})
         response = self.anon.get(url)
         self.assertEqual(response.status_code, 403)
 
+    def test_xls_raw_export_name(self):
+        url = reverse(xls_export, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
+        response = self.client.get(url + '?raw=1')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Disposition'], 'attachment;')
+
     def test_restrict_xls_export_if_not_shared(self):
         url = reverse(xls_export, kwargs={'username': self.user.username,
                 'id_string': self.xform.id_string})
         response = self.anon.get(url)
         self.assertEqual(response.status_code, 403)
+
+    def test_zip_raw_export_name(self):
+        url = reverse(zip_export, kwargs={'username': self.user.username,
+                'id_string': self.xform.id_string})
+        response = self.client.get(url + '?raw=1')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Disposition'], 'attachment;')
 
     def test_restrict_zip_export_if_not_shared(self):
         url = reverse(zip_export, kwargs={'username': self.user.username,
