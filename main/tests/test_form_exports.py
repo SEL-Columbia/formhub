@@ -1,6 +1,7 @@
 from test_base import MainTestCase
 from odk_viewer.views import csv_export, xls_export, zip_export, kml_export
 from django.core.urlresolvers import reverse
+
 import time
 
 class TestFormExports(MainTestCase):
@@ -19,6 +20,7 @@ class TestFormExports(MainTestCase):
         self.assertEqual(response['Content-Disposition'], 'attachment;')
 
     def test_filter_by_date(self):
+        time.sleep(1)
         before_time = time.strftime('%Y_%m_%d_%H_%M_%S')
         response = self.client.get(self.csv_url + '?end=%s' % before_time)
         before_length = response['Content-Length']
@@ -28,7 +30,6 @@ class TestFormExports(MainTestCase):
         after_length = response['Content-Length']
         response = self.client.get(self.csv_url)
         full_length = response['Content-Length']
-        raise Exception('f: %s, a: %s, b: %s' % (full_length, after_length, before_length))
         self.assertEqual(after_length > before_length, True)
         self.assertEqual(full_length > after_length, True)
 

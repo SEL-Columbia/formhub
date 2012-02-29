@@ -43,7 +43,6 @@ def dd_for_params(id_string, owner, request):
             return [False,
                 HttpReponseBadRequest('Start time format must be YY_MM_DD_hh_mm_ss')
             ]
-        print start
         dd.surveys_for_export = lambda d: d.surveys.filter(date_created__gte=start)
     if request.GET.get('end'):
         try:
@@ -53,7 +52,6 @@ def dd_for_params(id_string, owner, request):
             return [False,
                 HttpReponseBadRequest('End time format must be YY_MM_DD_hh_mm_ss')
             ]
-        print end
         dd.surveys_for_export = lambda d: d.surveys.filter(date_created__lte=end)
     if start and end:
         dd.surveys_for_export = lambda d: d.surveys.filter(date_created__lte=end)
