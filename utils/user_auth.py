@@ -33,8 +33,9 @@ def set_profile_data(context, content_user):
         context.home_page = "http://%s" % context.home_page
 
 
-def has_permission(xform, owner, request):
+def has_permission(xform, owner, request, shared=False):
     user = request.user
-    return xform.shared_data or request.session.get('public_link') or owner == user or\
+    return shared or xform.shared_data or request.session.get('public_link') or\
+            owner == user or\
             user.has_perm('odk_logger.view_xform', xform) or\
             user.has_perm('odk_logger.change_xform', xform)

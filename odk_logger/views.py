@@ -165,24 +165,26 @@ def download_xform(request, username, id_string):
 def download_xlsform(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     owner = User.objects.get(username=username)
-    if not has_permission(xform, owner, request):
+    if not has_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden('Not shared.')
     file_path = xform.xls.name
     default_storage = get_storage_class()()
     if default_storage.exists(file_path):
-        response = response_with_mimetype_and_name('vnd.ms-excel', id_string, show_date=False,
-                extension='xls', file_path=file_path)
+        response = response_with_mimetype_and_name('vnd.ms-excel', id_string,
+                show_date=False, extension='xls', file_path=file_path)
         return response
     else:
-        messages.add_message(request, messages.WARNING, 'No XLS file for your form <strong>%s</strong>' % id_string)
+        messages.add_message(request, messages.WARNING,
+                'No XLS file for your form <strong>%s</strong>' % id_string)
         return HttpResponseRedirect("/%s" % username)
 
 def download_jsonform(request, username, id_string):
     owner = User.objects.get(username=username)
     xform = XForm.objects.get(user__username=username, id_string=id_string)
-    if not has_permission(xform, owner, request):
+    if not has_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden('Not shared.')
-    response = response_with_mimetype_and_name('json', id_string, show_date=False)
+    response = response_with_mimetype_and_name('json', id_string,
+            show_date=False)
     response.content = xform.json
     return response
 

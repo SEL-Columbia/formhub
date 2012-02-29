@@ -2,6 +2,7 @@ from test_base import MainTestCase
 from main.views import show, form_photos
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
+from odk_logger.views import download_xlsform, download_jsonform, download_xform
 
 class TestFormShow(MainTestCase):
 
@@ -32,6 +33,33 @@ class TestFormShow(MainTestCase):
         self.xform.shared = True
         self.xform.save()
         response = self.anon.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_dl_xls_to_anon_if_public(self):
+        self.xform.shared = True
+        self.xform.save()
+        response = self.anon.get(reverse(download_xlsform, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        }))
+        self.assertEqual(response.status_code, 200)
+
+    def test_dl_json_to_anon_if_public(self):
+        self.xform.shared = True
+        self.xform.save()
+        response = self.anon.get(reverse(download_jsonform, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        }))
+        self.assertEqual(response.status_code, 200)
+
+    def test_dl_xform_to_anon_if_public(self):
+        self.xform.shared = True
+        self.xform.save()
+        response = self.anon.get(reverse(download_xform, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        }))
         self.assertEqual(response.status_code, 200)
 
     def test_show_private_if_shared_but_not_data(self):
