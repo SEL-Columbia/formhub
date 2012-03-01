@@ -7,6 +7,7 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden,\
          HttpResponseBadRequest
+from django.core.files.storage import get_storage_class
 from odk_logger.models import XForm, Instance
 from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_logger.xform_instance_parser import xform_instance_to_dict
@@ -32,9 +33,9 @@ def encode(time_str):
     return strftime("%Y-%m-%d %H:%M:%S", time)
 
 def dd_for_params(id_string, owner, request):
+    start = end = None
     dd = DataDictionary.objects.get(id_string=id_string,
                                     user=owner)
-    start = end = None
     if request.GET.get('start'):
         try:
             start = encode(request.GET['start'])
@@ -153,6 +154,11 @@ def xls_export(request, username, id_string):
     xform = XForm.objects.get(id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
+    # TODO: cleanup xls writer so this interface applies
+    """
+    valid, dd = dd_for_params(id_string, owner, request)
+    if not valid: return dd
+    """
     dd = DataDictionary.objects.get(id_string=id_string,
                                     user=owner)
     ddw = XlsWriter()
@@ -163,6 +169,7 @@ def xls_export(request, username, id_string):
     response = response_with_mimetype_and_name('vnd.ms-excel', id_string,
         extension='xls')
     response.write(temp_file.getvalue())
+    response['Content-Length'] = len(temp_file.getvalue())
     temp_file.close()
     return response
 
