@@ -185,22 +185,20 @@ def zip_export(request, username, id_string):
                                     user=owner)
     if request.GET.get('raw'):
         id_string = None
-    response = response_with_mimetype_and_name('zip', id_string)
     # create zip_file
-    tmp = TemporaryFile()
+    tmp = NamedTemporaryFile()
     z = zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED)
     photos = image_urls_for_form(xform)
     for photo in photos:
         f = NamedTemporaryFile()
         req = urllib2.Request(photo)
         f.write(urllib2.urlopen(req).read())
+        f.seek(0)
         z.write(f.name, urlparse(photo).path[1:])
+        f.close()
     z.close()
-    wrapper = FileWrapper(tmp)
-    response.content = wrapper
-    response['Content-Length'] = tmp.tell()
-    tmp.seek(0)
-    tmp.close()
+    response = response_with_mimetype_and_name('zip', id_string,
+            file_path=tmp.name, use_local_filesystem=True)
     return response
 
 
