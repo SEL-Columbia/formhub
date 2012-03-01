@@ -7,6 +7,17 @@ SLASH = u"/"
 class MyError(Exception):
     pass
 
+
+def image_urls_for_form(xform):
+    return sum([
+        image_urls(s.parsed_instance.instance) for s in xform.surveys.all()
+    ], [])
+
+
+def image_urls(instance):
+    return [a.media_file.url for a in instance.attachments.all()]
+
+
 def parse_xform_instance(xml_str):
     """
     'xml_str' is a str object holding the XML of an XForm
