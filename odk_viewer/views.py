@@ -8,7 +8,6 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden,\
          HttpResponseBadRequest
 from django.core.files.storage import get_storage_class
-from django.core.servers.basehttp import FileWrapper
 from odk_logger.models import XForm, Instance
 from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_logger.xform_instance_parser import xform_instance_to_dict
