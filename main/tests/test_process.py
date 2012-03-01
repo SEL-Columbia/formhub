@@ -1,6 +1,6 @@
 from test_base import MainTestCase
 from odk_viewer.models import DataDictionary
-from odk_logger.models import XForm, Instance
+from odk_logger.models import XForm 
 import os
 import fnmatch
 from odk_viewer.views import xls_export, csv_export
@@ -47,7 +47,7 @@ class TestSite(MainTestCase):
             response = self.client.post('/%s/' % self.user.username, {'xls_url': xls_url})
             # make sure publishing the survey worked
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(XForm.objects.count(), pre_count+1)
+            self.assertEqual(XForm.objects.count(), pre_count + 1)
 
     # This method tests a large number of xls files.
     # create a directory /main/test/fixtures/online_xls
@@ -128,18 +128,6 @@ class TestSite(MainTestCase):
         with open(xml_path) as xml_file:
             expected_content = xml_file.read()
         self.assertEqual(expected_content, response.content)
-
-    def _make_submissions(self):
-        surveys = ['transport_2011-07-25_19-05-49',
-                   'transport_2011-07-25_19-05-36',
-                   'transport_2011-07-25_19-06-01',
-                   'transport_2011-07-25_19-06-14',]
-        paths = [os.path.join(self.this_directory, 'fixtures', 'transportation', 'instances', s, s + '.xml') for s in surveys]
-        pre_count = Instance.objects.count()
-        for path in paths:
-            self._make_submission(path)
-        self.assertEqual(Instance.objects.count(), pre_count + 4)
-        self.assertEqual(self.xform.surveys.count(), 4)
 
     def _check_csv_export(self):
         self._check_data_dictionary()
