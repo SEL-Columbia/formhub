@@ -202,14 +202,14 @@ def toggle_downloadable(request, username, id_string):
     return HttpResponseRedirect("/%s" % username)
 
 def enter_data(request, username, id_string):
-    if not hasattr(settings, 'TOUCHFORMS_URL'):
-        return HttpResponseRedirect(reverse('main.views.show',
-            kwargs={'username': username, 'id_string': id_string}))
-    url = settings.TOUCHFORMS_URL
     owner = User.objects.get(username=username)
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
+    if not hasattr(settings, 'TOUCHFORMS_URL'):
+        return HttpResponseRedirect(reverse('main.views.show',
+            kwargs={'username': username, 'id_string': id_string}))
+    url = settings.TOUCHFORMS_URL
     register_openers()
     response = None
     with tempfile.TemporaryFile() as tmp:
