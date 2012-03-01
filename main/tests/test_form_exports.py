@@ -20,6 +20,7 @@ class TestFormExports(MainTestCase):
         self.assertEqual(response['Content-Disposition'], 'attachment;')
 
     def test_filter_by_date(self):
+        first_time = time.strftime('%Y_%m_%d_%H_%M_%S')
         time.sleep(1)
         before_time = time.strftime('%Y_%m_%d_%H_%M_%S')
         response = self.client.get(self.csv_url + '?end=%s' % before_time)
@@ -32,6 +33,10 @@ class TestFormExports(MainTestCase):
         full_length = response['Content-Length']
         self.assertEqual(after_length > before_length, True)
         self.assertEqual(full_length > after_length, True)
+        response = self.client.get(self.csv_url + '?end=%s' % first_time)
+        before_length = response['Content-Length']
+        self.assertEqual(after_length > before_length, True)
+        self.assertEqual(full_length > before_length, True)
 
     def test_restrict_csv_export_if_not_shared(self):
         response = self.anon.get(self.csv_url)
