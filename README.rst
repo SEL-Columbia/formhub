@@ -53,7 +53,7 @@ To run tests enter the following:
 
 If you would like to contribute code please read:
 
-    https://github.com/modilabs/formhub/wiki/Contributing-Code-to-Formhub
+https://github.com/modilabs/formhub/wiki/Contributing-Code-to-Formhub
 
 Code Structure
 ==============
