@@ -26,7 +26,9 @@ from xls_writer import DataDictionary
 
 import json
 import os
+import urllib2
 import zipfile
+from tempfile import NamedTemporaryFile
 from time import strftime, strptime
 from datetime import date
 
