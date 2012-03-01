@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden,\
          HttpResponseBadRequest
 from django.core.files.storage import get_storage_class
+from django.core.servers.basehttp import FileWrapper
 from odk_logger.models import XForm, Instance
 from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_logger.xform_instance_parser import xform_instance_to_dict
@@ -195,7 +196,8 @@ def zip_export(request, username, id_string):
         f.write(urllib2.urlopen(req).read())
         z.write(f.name, urlparse(photo).path[1:])
     z.close()
-    response.write(tmp.getvalue())
+    wrapper = FileWrapper(tmp)
+    response.content = wrapper
     response['Content-Length'] = tmp.tell()
     tmp.seek(0)
     tmp.close()
