@@ -28,7 +28,7 @@ import json
 import os
 import urllib2
 import zipfile
-from tempfile import NamedTemporaryFile
+from tempfile import TemporaryFile, NamedTemporaryFile
 from time import strftime, strptime
 from datetime import date
 from urlparse import urlparse
@@ -186,7 +186,7 @@ def zip_export(request, username, id_string):
         id_string = None
     response = response_with_mimetype_and_name('zip', id_string)
     # create zip_file
-    tmp = tempfile.TemporaryFile()
+    tmp = TemporaryFile()
     z = zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED)
     photos = image_urls_for_form(xform)
     for photo in photos:
