@@ -197,6 +197,8 @@ def zip_export(request, username, id_string):
         z.write(f.name, urlparse(photo).path[1:])
         f.close()
     z.close()
+    if request.GET.get('raw'):
+        id_string = None
     response = response_with_mimetype_and_name('zip', id_string,
             file_path=tmp.name, use_local_filesystem=True)
     return response
