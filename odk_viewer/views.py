@@ -14,6 +14,7 @@ from odk_logger.xform_instance_parser import xform_instance_to_dict
 from pyxform import Section, Question
 from utils.logger_tools import response_with_mimetype_and_name,\
          disposition_ext_and_date, round_down_geopoint
+from utils.viewer_tools import image_urls
 from utils.user_auth import has_permission
 from django.contrib.auth.models import User
 from main.models import UserProfile
@@ -25,6 +26,7 @@ from xls_writer import DataDictionary
 
 import json
 import os
+import zipfile
 from time import strftime, strptime
 from datetime import date
 
@@ -127,10 +129,6 @@ def survey_responses(request, pk):
             })
 
 
-def image_urls(instance):
-    return [a.media_file.url for a in instance.attachments.all()]
-
-
 def csv_export(request, username, id_string):
     owner = User.objects.get(username=username)
     xform = XForm.objects.get(id_string=id_string, user=owner)
@@ -184,9 +182,16 @@ def zip_export(request, username, id_string):
     if request.GET.get('raw'):
         id_string = None
     response = response_with_mimetype_and_name('zip', id_string)
-    # TODO create that zip_file
-    zip_file = None
-    response.content = zip_file
+    # create zip_file
+    z = zipfile.ZipFile('attachments', 'w')
+    photos = image_urls_for_form(xform)
+    for photo in photos:
+        f = NamedTemporaryFile()
+        req = urllib2.Request(photo)
+        f.write(urllib2.urlopen(req).read())
+        z.write(f.name)
+    z.close()
+    response.content = z
     return response
 
 
