@@ -1,9 +1,10 @@
-from django.test import TestCase
+from main.tests.test_base import MainTestCase
+#from django.test import TestCase
 from odk_logger.models import Instance
 import os
 import glob
 
-from django.core.management import call_command
+from odk_logger.import_tools import import_instances_from_zip
 
 CUR_PATH = os.path.abspath(__file__)
 CUR_DIR = os.path.dirname(CUR_PATH)
@@ -17,17 +18,17 @@ def images_count():
     return len(images)
 
 
-class TestImportingDatabase(TestCase):
+class TestImportingDatabase(MainTestCase):
     def setUp(self):
-        pass
+        MainTestCase.setUp(self)
     
     def tearDown(self):
         # delete everything we imported
         Instance.objects.all().delete() # ?
-        
-        images = glob.glob(os.path.join(settings.MEDIA_ROOT, 'attachments', '*'))
-        for image in images:
-            os.remove(image)
+        if settings.TESTING_MODE:
+            images = glob.glob(os.path.join(settings.MEDIA_ROOT, 'attachments', '*'))
+            for image in images:
+                os.remove(image)
     
     def test_importing_b1_and_b2(self):
         """
@@ -43,12 +44,12 @@ class TestImportingDatabase(TestCase):
         1 simple survey (marked as complete)
         """
         # import from sd card
-        call_command('import_tools', DB_FIXTURES_PATH)
+        import_instances_from_zip(os.path.join(DB_FIXTURES_PATH, "bulk_submission.zip"), self.user)
 
         initial_instance_count = Instance.objects.count()
         initial_image_count = images_count()
 
-        call_command('import_tools', DB_FIXTURES_PATH)
+        import_instances_from_zip(os.path.join(DB_FIXTURES_PATH, "bulk_submission.zip"), self.user)
 
         final_instance_count = Instance.objects.count()
         final_image_count = images_count()
@@ -61,26 +62,3 @@ class TestImportingDatabase(TestCase):
         # by 1 (or 2) based on the b1 & b2 data sets
         self.assertEqual(initial_instance_count, final_instance_count)
 
-    def test_importing_duplicate_instance(self):
-        """
-        The management command should not duplicate the survey that
-        has already been submitted via web.
-        """
-        #xml_str is the completed simple fixture instance
-        instance_id = "simple_two_questions_2011_05_03_2011-05-03_18-30-49"
-        path_to_b2_instance = os.path.join(
-            DB_FIXTURES_PATH, "b2", "odk", "instances", instance_id,
-            "%s.xml" % instance_id
-            )
-        f = open(path_to_b2_instance)
-        xml_str = f.read()
-        f.close()
-        Instance.objects.create(xml=xml_str)
-        initial_instance_count = Instance.objects.count()
-
-        call_command('import_tools', DB_FIXTURES_PATH)
-
-        final_instance_count = Instance.objects.count()
-
-        self.assertEqual(initial_instance_count, 1)
-        self.assertEqual(final_instance_count, 2)
