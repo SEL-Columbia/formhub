@@ -14,7 +14,7 @@ from odk_logger.xform_instance_parser import xform_instance_to_dict
 from pyxform import Section, Question
 from utils.logger_tools import response_with_mimetype_and_name,\
          disposition_ext_and_date, round_down_geopoint
-from utils.viewer_tools import image_urls
+from utils.viewer_tools import image_urls, image_urls_for_form
 from utils.user_auth import has_permission
 from django.contrib.auth.models import User
 from main.models import UserProfile

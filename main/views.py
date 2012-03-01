@@ -25,7 +25,7 @@ from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
 from django.core.files.storage import default_storage
 from django.utils import simplejson
 from django.shortcuts import render_to_response, get_object_or_404
-from odk_viewer.views import images_urls_for_form
+from odk_viewer.views import image_urls_for_form
 from guardian.shortcuts import assign, remove_perm, get_users_with_perms
 
 def home(request):
