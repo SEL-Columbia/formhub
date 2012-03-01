@@ -195,10 +195,10 @@ def zip_export(request, username, id_string):
         f.write(urllib2.urlopen(req).read())
         z.write(f.name, urlparse(photo).path[1:])
     z.close()
-    wrapper = FileWrapper(tmp)
-    response.content = wrapper
+    response.write(tmp.getvalue())
     response['Content-Length'] = tmp.tell()
     tmp.seek(0)
+    tmp.close()
     return response
 
 
