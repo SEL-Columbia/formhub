@@ -43,6 +43,10 @@ class DataDictionary(XForm):
         'precision'
     ]
 
+    def __init__(self, *args, **kwargs):
+        self.surveys_for_export = lambda d: d.surveys.all()
+        super(DataDictionary, self).__init__(*args, **kwargs)
+
     class Meta:
         app_label = "odk_viewer"
         proxy = True
@@ -197,7 +201,7 @@ class DataDictionary(XForm):
         return header
 
     def get_list_of_parsed_instances(self):
-        for i in queryset_iterator(self.surveys.all()):
+        for i in queryset_iterator(self.surveys_for_export(self)):
             # TODO: there is information we want to add in parsed xforms.
             yield i.get_dict()
 
