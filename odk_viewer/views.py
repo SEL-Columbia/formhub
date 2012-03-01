@@ -31,6 +31,7 @@ import zipfile
 from tempfile import NamedTemporaryFile
 from time import strftime, strptime
 from datetime import date
+from urlparse import urlparse
 
 def encode(time_str):
     time = strptime(time_str, "%Y_%m_%d_%H_%M_%S")
@@ -185,15 +186,19 @@ def zip_export(request, username, id_string):
         id_string = None
     response = response_with_mimetype_and_name('zip', id_string)
     # create zip_file
-    z = zipfile.ZipFile('attachments', 'w')
+    tmp = tempfile.TemporaryFile()
+    z = zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED)
     photos = image_urls_for_form(xform)
     for photo in photos:
         f = NamedTemporaryFile()
         req = urllib2.Request(photo)
         f.write(urllib2.urlopen(req).read())
-        z.write(f.name)
+        z.write(f.name, urlparse(photo).path[1:])
     z.close()
-    response.content = z
+    wrapper = FileWrapper(tmp)
+    response.content = wrapper
+    response['Content-Length'] = tmp.tell()
+    tmp.seek(0)
     return response
 
 
