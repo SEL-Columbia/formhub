@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from odk_logger.models import XForm
-from pyxform import QuestionTypeDictionary, SurveyElementBuilder
+from pyxform import SurveyElementBuilder
 from pyxform.section import RepeatingSection
 from pyxform.question import Question
 from pyxform.builder import create_survey_from_xls
@@ -10,7 +10,7 @@ from odk_viewer.models import ParsedInstance
 import re
 import os
 from utils.reinhardt import queryset_iterator
-
+from utils.export_tools import question_types_to_exclude
 
 class ColumnRename(models.Model):
     xpath = models.CharField(max_length=255, unique=True)
@@ -64,8 +64,7 @@ class DataDictionary(XForm):
 
     def get_survey(self):
         if not hasattr(self, "_survey"):
-            qtd = QuestionTypeDictionary("nigeria")
-            builder = SurveyElementBuilder(question_type_dictionary=qtd)
+            builder = SurveyElementBuilder()
             self._survey = builder.create_survey_element_from_json(self.json)
         return self._survey
 
@@ -92,6 +91,8 @@ class DataDictionary(XForm):
         """
         if survey_element is None:
             survey_element = self.survey
+        elif question_types_to_exclude(survey_element.type):
+            return []
         if result is None:
             result = []
         path = '/'.join([prefix, unicode(survey_element.name)])

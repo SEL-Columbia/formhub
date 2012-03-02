@@ -2,6 +2,7 @@ from collections import defaultdict
 from pyxform import Section, Question
 from odk_viewer.models import DataDictionary
 from odk_logger.xform_instance_parser import xform_instance_to_dict
+from utils.export_tools import question_types_to_exclude
 
 class XlsWriter(object):
     def __init__(self):
@@ -91,7 +92,7 @@ class XlsWriter(object):
                 sheet_name = e.name
                 self.add_sheet(sheet_name)
                 for f in e.children:
-                    if isinstance(f, Question):
+                    if isinstance(f, Question) and not question_types_to_exclude(f.type):
                         self.add_column(sheet_name, f.name)
 
     def add_surveys(self):
