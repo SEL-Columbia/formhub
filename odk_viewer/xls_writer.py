@@ -1,7 +1,6 @@
 from collections import defaultdict
 from pyxform import Section, Question
 from odk_viewer.models import DataDictionary
-from odk_logger.xform_instance_parser import xform_instance_to_dict
 from utils.export_tools import question_types_to_exclude
 
 class XlsWriter(object):
@@ -84,7 +83,9 @@ class XlsWriter(object):
         self._data_dictionary = data_dictionary
         self.reset_workbook()
         self._add_sheets()
-        self.add_surveys()
+        observations = self._data_dictionary.add_surveys()
+        for obs in observations:
+            self.add_obs(obs)
 
     def _add_sheets(self):
         for e in self._data_dictionary.get_survey_elements():
@@ -94,70 +95,3 @@ class XlsWriter(object):
                 for f in e.children:
                     if isinstance(f, Question) and not question_types_to_exclude(f.type):
                         self.add_column(sheet_name, f.name)
-
-    def add_surveys(self):
-        if not hasattr(self, "_dict_organizer"):
-            self._dict_organizer = DictOrganizer()
-        for i in self._data_dictionary.surveys.iterator():
-            d = xform_instance_to_dict(i.xml)
-            obs = self._dict_organizer.get_observation_from_dict(d)
-            self.add_obs(obs)
-
-class DictOrganizer(object):
-    def set_dict_iterator(self, dict_iterator):
-        self._dict_iterator = dict_iterator
-
-    # Every section will get its own table
-    # I need to think of an easy way to flatten out a dictionary
-    # parent name, index, table name, data
-    def _build_obs_from_dict(self, d, obs, table_name,
-                             parent_table_name, parent_index):
-        if table_name not in obs:
-            obs[table_name] = []
-        this_index = len(obs[table_name])
-        obs[table_name].append({
-            u"_parent_table_name" : parent_table_name,
-            u"_parent_index" : parent_index,
-            })
-        for k, v in d.items():
-            if type(v)!=dict and type(v)!=list:
-                assert k not in obs[table_name][-1]
-                obs[table_name][-1][k] = v
-        obs[table_name][-1][u"_index"] = this_index
-
-        for k, v in d.items():
-            if type(v)==dict:
-                kwargs = {
-                    "d" : v,
-                    "obs" : obs,
-                    "table_name" : k,
-                    "parent_table_name" : table_name,
-                    "parent_index" : this_index
-                    }
-                self._build_obs_from_dict(**kwargs)
-            if type(v)==list:
-                for i, item in enumerate(v):
-                    kwargs = {
-                        "d" : item,
-                        "obs" : obs,
-                        "table_name" : k,
-                        "parent_table_name" : table_name,
-                        "parent_index" : this_index,
-                        }
-                    self._build_obs_from_dict(**kwargs)
-        return obs
-
-    def get_observation_from_dict(self, d):
-        result = {}
-        assert len(d.keys())==1
-        root_name = d.keys()[0]
-        kwargs = {
-            "d" : d[root_name],
-            "obs" : result,
-            "table_name" : root_name,
-            "parent_table_name" : u"",
-            "parent_index" : -1,
-            }
-        self._build_obs_from_dict(**kwargs)
-        return result
-
