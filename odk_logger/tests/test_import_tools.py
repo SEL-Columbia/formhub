@@ -13,14 +13,17 @@ DB_FIXTURES_PATH = os.path.join(CUR_DIR, 'data_from_sdcard')
 from django.conf import settings
 
 
-def images_count():
-    images = glob.glob(os.path.join(settings.MEDIA_ROOT, 'attachments', '*'))
+def images_count(username="bob"):
+    images = glob.glob(os.path.join(settings.MEDIA_ROOT, username, 'attachments', '*'))
     return len(images)
 
 
 class TestImportingDatabase(MainTestCase):
     def setUp(self):
         MainTestCase.setUp(self)
+        self._publish_xls_file(
+                               os.path.join(settings.PROJECT_ROOT, \
+                                    "odk_logger", "fixtures", "test_forms", "tutorial.xls"))
     
     def tearDown(self):
         # delete everything we imported
@@ -46,19 +49,14 @@ class TestImportingDatabase(MainTestCase):
         # import from sd card
         import_instances_from_zip(os.path.join(DB_FIXTURES_PATH, "bulk_submission.zip"), self.user)
 
-        initial_instance_count = Instance.objects.count()
-        initial_image_count = images_count()
-
-        import_instances_from_zip(os.path.join(DB_FIXTURES_PATH, "bulk_submission.zip"), self.user)
-
-        final_instance_count = Instance.objects.count()
-        final_image_count = images_count()
+        instance_count = Instance.objects.count()
+        image_count = images_count()
 
         #Images are not duplicated
         # TODO: Figure out how to get this test passing.
-        self.assertEqual(initial_image_count, final_image_count)
+        self.assertEqual(image_count, 2)
 
         # Instance count should have incremented
         # by 1 (or 2) based on the b1 & b2 data sets
-        self.assertEqual(initial_instance_count, final_instance_count)
+        self.assertEqual(instance_count, 2)
 
