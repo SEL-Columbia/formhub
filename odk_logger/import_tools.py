@@ -107,14 +107,18 @@ from odk_logger.xform_fs import XFormInstanceFS
 
 def iterate_through_odk_instances(dirpath, callback):
     count = 0
+    errors = 0
     for directory, subdirs, subfiles in os.walk(dirpath):
         for filename in subfiles:
             filepath = os.path.join(directory, filename)
             if XFormInstanceFS.is_valid_odk_instance(filepath):
                 xfxs = XFormInstanceFS(filepath)
-                count += callback(xfxs)
+                try:
+                    count += callback(xfxs)
+                except:
+                    errors += 1
                 del(xfxs)
-    return count
+    return (count, errors)
 
 def import_instances_from_zip(zipfile_path, user, status="zip"):
     count = 0
@@ -143,7 +147,7 @@ def import_instances_from_zip(zipfile_path, user, status="zip"):
                 return 1
             else:
                 return 0
-        count = iterate_through_odk_instances(temp_directory, callback)
+        count, errors = iterate_through_odk_instances(temp_directory, callback)
     finally:
         shutil.rmtree(temp_directory)
     return count
