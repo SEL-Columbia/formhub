@@ -69,9 +69,13 @@
         <td>
           {% if data_dictionary.xls %}
             <a href="{% url download_xlsform data_dictionary.user.username data_dictionary.id_string %}"><button class="btn small success">Excel</button></a>
-            {% if loggedin_user and data_dictionary.xls|length > 0 %}
+            {% for cl in cloned %}
+             {% if cl.id_string == data_dictionary.id_string and not cl.is_cloned %}
+                {% if loggedin_user and data_dictionary.xls|length > 0  and loggedin_user.username != data_dictionary.user.username %}
             <a href="" data-url="{% url main.views.clone_xlsform data_dictionary.user.username %}" data-username="{{ data_dictionary.user.username }}" data-id="{{ data_dictionary.id_string }}" class="clonexls"><button class="btn small">Clone</button></a>
-            {% endif %}
+                {% endif %}
+             {% endif %}
+            {% endfor %}
           {% endif %}
         </td>
       </tr>
