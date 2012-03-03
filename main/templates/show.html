@@ -246,7 +246,7 @@
                 </li>
             </ul>
         </li>
-        {% if user.is_authenticated and content_user.username != user.username and xform.xls|length > 0 and not cloned%}
+        {% if user.is_authenticated and content_user.username != user.username and xform.xls|length > 0 and not cloned %}
             <br/><br/>
             <li>
                 <a href="" data-url="{% url main.views.clone_xlsform xform.user.username %}" data-username="{{ xform.user.username }}" data-id="{{ xform.id_string }}" class="clonexls"><button class="btn small">Clone</button></a>
