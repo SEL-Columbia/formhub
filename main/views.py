@@ -212,7 +212,7 @@ def show(request, username=None, id_string=None, uuid=None):
         return HttpResponseRedirect(reverse(home))
     context = RequestContext(request)
     try:
-        XForm.objects.get(user__username=username,
+        XForm.objects.get(user__username=request.user.username,
         id_string=id_string + '_cloned')
         context['cloned'] = True
     except XForm.DoesNotExist:
@@ -317,10 +317,10 @@ def form_gallery(request):
     if request.user.is_authenticated():
         context.loggedin_user = request.user
     context.shared_forms = DataDictionary.objects.filter(shared=True)
-    dd= context.shared_forms.values_list('id_string')
     clone_list = []
     for s in context.shared_forms:
-        if s.id_string + '_cloned' in dd and s.user.username == request.user.username:
+        if DataDictionary.objects.filter(id_string=s.id_string + '_cloned', 
+           user__username=request.user.username):
             clone_list.append({'is_cloned': True, 'id_string': s.id_string})
         else:
             clone_list.append({'is_cloned': False, 'id_string': s.id_string})
