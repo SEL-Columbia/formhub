@@ -45,11 +45,8 @@ class TestFormExports(MainTestCase):
     def test_filter_by_date_csv(self):
         self._filter_export_test(self.csv_url)
 
-    # TODO: enable test after xls writer can handle this
-    """
     def test_filter_by_date_xls(self):
         self._filter_export_test(self.xls_url)
-    """
 
     def test_restrict_csv_export_if_not_shared(self):
         response = self.anon.get(self.csv_url)

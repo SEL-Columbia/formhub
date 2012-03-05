@@ -56,7 +56,7 @@ class DataDictionary(XForm):
         if not hasattr(self, "_dict_organizer"):
             _dict_organizer = DictOrganizer()
         obs = []
-        for i in self.surveys.iterator():
+        for i in queryset_iterator(self.surveys_for_export(self)):
             d = xform_instance_to_dict(i.xml)
             obs.append(_dict_organizer.get_observation_from_dict(d))
         return obs
