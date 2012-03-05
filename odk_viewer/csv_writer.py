@@ -31,8 +31,6 @@ class CsvWriter(object):
         self._ensure_directory_exists(path)
 
         with codecs.open(path, mode="w", encoding="utf-8") as f:
-            #for k in self._keys:
-            #    print 'header key: %s' % k
             headers = [self._key_rename_function(k) for k in self._keys]
             self._write_row(headers, f)
 
