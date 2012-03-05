@@ -3,6 +3,9 @@ from odk_viewer.views import csv_export, xls_export, zip_export, kml_export
 from django.core.urlresolvers import reverse
 
 import time
+import csv
+import tempfile
+from xlrd import open_workbook
 
 class TestFormExports(MainTestCase):
 
@@ -17,38 +20,50 @@ class TestFormExports(MainTestCase):
                 'username': self.user.username,
                 'id_string': self.xform.id_string})
 
+    def _num_rows(self, content, export_format):
+        def xls_rows(f):
+            return open_workbook(file_contents=f).sheets()[0].nrows
+        def csv_rows(f):
+            with tempfile.TemporaryFile() as tmp:
+                tmp.write(f.encode('utf-8'))
+                tmp.seek(0)
+                return len([line for line in csv.reader(tmp)])
+        num_rows_fn = {
+            'xls': xls_rows,
+            'csv': csv_rows,
+        }
+        return num_rows_fn[export_format](content)
+
     def test_csv_raw_export_name(self):
         response = self.client.get(self.csv_url + '?raw=1')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Disposition'], 'attachment;')
 
-    def _filter_export_test(self, url):
+    def _filter_export_test(self, url, export_format):
         first_time = time.strftime('%Y_%m_%d_%H_%M_%S')
         time.sleep(1)
         before_time = time.strftime('%Y_%m_%d_%H_%M_%S')
         response = self.client.get(url + '?end=%s' % before_time)
+        content = response.content
         self.assertEqual(response.status_code, 200)
-        before_length = response['Content-Length']
+        self.assertEqual(self._num_rows(content, export_format), 2)
         self._make_submissions()
         after_time = time.strftime('%Y_%m_%d_%H_%M_%S')
         response = self.client.get(url + '?start=%s' % before_time)
-        after_length = response['Content-Length']
+        content = response.content
+        self.assertEqual(self._num_rows(content, export_format), 5)
         response = self.client.get(url)
-        full_length = response['Content-Length']
-        self.assertEqual(after_length > before_length, True)
-        self.assertEqual(full_length > after_length, True)
+        content = response.content
+        self.assertEqual(self._num_rows(content, export_format), 6)
         response = self.client.get(url + '?end=%s' % first_time)
-        before_length = response['Content-Length']
-        self.assertEqual(after_length > before_length, True)
-        self.assertEqual(full_length > before_length, True)
+        content = response.content
+        self.assertEqual(self._num_rows(content, export_format), 2)
 
     def test_filter_by_date_csv(self):
-        self._filter_export_test(self.csv_url)
+        self._filter_export_test(self.csv_url, 'csv')
 
     def test_filter_by_date_xls(self):
-        # Excel exports don't change size
-        #self._filter_export_test(self.xls_url)
-        pass
+        self._filter_export_test(self.xls_url, 'xls')
 
     def test_restrict_csv_export_if_not_shared(self):
         response = self.anon.get(self.csv_url)
