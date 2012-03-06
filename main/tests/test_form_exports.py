@@ -45,8 +45,9 @@ class TestFormExports(MainTestCase):
         Number of rows equals number of surveys plus 1, the header row.
         """
         time.sleep(1)
-        # 1 surey exists before this time
+        # 1 survey exists before this time
         before_time = time.strftime('%Y_%m_%d_%H_%M_%S')
+        time.sleep(1)
         self._make_submissions()
         time.sleep(1)
         # 5 surveys exist before this time
