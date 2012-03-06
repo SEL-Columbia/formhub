@@ -40,6 +40,7 @@ class TestFormExports(MainTestCase):
         self.assertEqual(response['Content-Disposition'], 'attachment;')
 
     def _filter_export_test(self, url, export_format):
+        time.sleep(1)
         first_time = time.strftime('%Y_%m_%d_%H_%M_%S')
         time.sleep(1)
         before_time = time.strftime('%Y_%m_%d_%H_%M_%S')
