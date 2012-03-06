@@ -10,7 +10,7 @@ class TestFormShowSubmission(MainTestCase):
         MainTestCase.setUp(self)
         self._create_user_and_login()
         self._publish_transporation_form_and_submit_instance()
-        self.submission= self.xform.surveys.reverse()[0]
+        self.submission = self.xform.surveys.reverse()[0]
         self.url = reverse(show_submission, kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string,
