@@ -201,7 +201,13 @@ class TestFormPermissions(MainTestCase):
         response = self.client.post(self.perm_url, {'for_user': 'none',
             'perm_type': 'link'})
         self.assertEqual(MetaData.public_link(self.xform), False)
-        elf.assertEqual(response.status_code, 302)
+        response = self.anon.get(self.show_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['Location'],
+                '%s%s' % (self.base_url, self.show_normal_url))
+        # follow redirect
+        response = self.anon.get(response['Location'])
+        self.assertEqual(response.status_code, 302)
         self.assertNotEqual(response['Location'],
                 '%s%s' % (self.base_url, self.show_normal_url))
 
