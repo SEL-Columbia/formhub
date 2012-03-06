@@ -9,6 +9,7 @@ class MainTestCase(TestCase):
     def setUp(self):
         self.maxDiff = None
         self._create_user_and_login()
+        self.base_url = 'http://testserver'
 
     def _create_user(self, username, password):
         user, created = User.objects.get_or_create(username=username)
@@ -47,11 +48,11 @@ class MainTestCase(TestCase):
         s = 'transport_2011-07-25_19-05-49'
         self._make_submission(os.path.join(self.this_directory, 'fixtures',
                     'transportation', 'instances', s, s + '.xml'))
-    
+
     def _publish_transporation_form_and_submit_instance(self):
         self._publish_transporation_form()
         self._submit_transport_instance()
-        
+
     def _make_submission(self, path):
         with open(path) as f:
             post_data = {'xml_submission_file': f}

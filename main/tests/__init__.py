@@ -18,3 +18,4 @@ from test_form_edit import TestFormEdit
 from test_form_exports import TestFormExports
 from test_form_metadata import TestFormMetadata
 from test_form_enter_data import TestFormEnterData
+from test_form_show_submission import TestFormShowSubmission
