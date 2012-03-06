@@ -64,7 +64,8 @@ class MainTestCase(TestCase):
                    'transport_2011-07-25_19-05-36',
                    'transport_2011-07-25_19-06-01',
                    'transport_2011-07-25_19-06-14',]
-        paths = [os.path.join(self.this_directory, 'fixtures', 'transportation', 'instances', s, s + '.xml') for s in surveys]
+        paths = [os.path.join(self.this_directory, 'fixtures', 'transportation',
+                'instances', s, s + '.xml') for s in surveys]
         pre_count = Instance.objects.count()
         for path in paths:
             self._make_submission(path)

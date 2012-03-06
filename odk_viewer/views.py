@@ -26,9 +26,7 @@ from utils.viewer_tools import image_urls, image_urls_for_form
 from utils.user_auth import has_permission
 from main.models import UserProfile
 from csv_writer import CsvWriter
-from csv_writer import DataDictionaryWriter
 from xls_writer import XlsWriter
-from xls_writer import DataDictionary
 
 def encode(time_str):
     time = strptime(time_str, "%Y_%m_%d_%H_%M_%S")
@@ -44,20 +42,25 @@ def dd_for_params(id_string, owner, request):
         except ValueError:
             # bad format
             return [False,
-                HttpReponseBadRequest('Start time format must be YY_MM_DD_hh_mm_ss')
+                HttpReponseBadRequest(
+                        'Start time format must be YY_MM_DD_hh_mm_ss')
             ]
-        dd.surveys_for_export = lambda d: d.surveys.filter(date_created__gte=start)
+        dd.surveys_for_export = lambda d: d.surveys.filter(
+                date_created__gte=start)
     if request.GET.get('end'):
         try:
             end = encode(request.GET['end'])
         except ValueError:
             # bad format
             return [False,
-                HttpReponseBadRequest('End time format must be YY_MM_DD_hh_mm_ss')
+                HttpReponseBadRequest(
+                        'End time format must be YY_MM_DD_hh_mm_ss')
             ]
-        dd.surveys_for_export = lambda d: d.surveys.filter(date_created__lte=end)
+        dd.surveys_for_export = lambda d: d.surveys.filter(
+                date_created__lte=end)
     if start and end:
-        dd.surveys_for_export = lambda d: d.surveys.filter(date_created__lte=end)
+        dd.surveys_for_export = lambda d: d.surveys.filter(
+                date_created__lte=end, date_created__gte=start)
     return [True, dd]
 
 def parse_label_for_display(pi, xpath):
@@ -120,7 +123,6 @@ def survey_responses(request, pk):
          data_for_display[xpath]) for xpath in xpaths
     ]
     languages = label_value_pairs[-1][0]
-
     return render_to_response('survey.html', {
             'label_value_pairs': label_value_pairs,
             'image_urls': image_urls(pi.instance),
@@ -136,7 +138,8 @@ def csv_export(request, username, id_string):
         return HttpResponseForbidden('Not shared.')
     valid, dd = dd_for_params(id_string, owner, request)
     if not valid: return dd
-    writer = DataDictionaryWriter(dd)
+    writer = CsvWriter(dd, dd.get_data_for_excel(), dd.get_keys(),\
+            dd.get_variable_name)
     file_path = writer.get_default_file_path()
     writer.write_to_file(file_path)
     if request.GET.get('raw'):
@@ -152,13 +155,8 @@ def xls_export(request, username, id_string):
     xform = XForm.objects.get(id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
-    # TODO: cleanup xls writer so this interface applies
-    """
     valid, dd = dd_for_params(id_string, owner, request)
     if not valid: return dd
-    """
-    dd = DataDictionary.objects.get(id_string=id_string,
-                                    user=owner)
     ddw = XlsWriter()
     ddw.set_data_dictionary(dd)
     temp_file = ddw.save_workbook_to_file()
@@ -167,7 +165,8 @@ def xls_export(request, username, id_string):
     response = response_with_mimetype_and_name('vnd.ms-excel', id_string,
         extension='xls')
     response.write(temp_file.getvalue())
-    response['Content-Length'] = len(temp_file.getvalue())
+    temp_file.seek(0, os.SEEK_END)
+    response['Content-Length'] = temp_file.tell()
     temp_file.close()
     return response
 

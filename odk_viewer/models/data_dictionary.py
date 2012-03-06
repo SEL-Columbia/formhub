@@ -7,7 +7,6 @@ from pyxform.question import Question
 from pyxform.builder import create_survey_from_xls
 from common_tags import ID
 from odk_viewer.models import ParsedInstance
-from odk_logger.xform_instance_parser import xform_instance_to_dict
 import re
 import os
 from utils.reinhardt import queryset_iterator
@@ -56,8 +55,7 @@ class DataDictionary(XForm):
         if not hasattr(self, "_dict_organizer"):
             _dict_organizer = DictOrganizer()
         obs = []
-        for i in self.surveys.iterator():
-            d = xform_instance_to_dict(i.xml)
+        for d in self.get_list_of_parsed_instances(flat=False):
             obs.append(_dict_organizer.get_observation_from_dict(d))
         return obs
 
@@ -211,10 +209,10 @@ class DataDictionary(XForm):
             return self._variable_names[header]
         return header
 
-    def get_list_of_parsed_instances(self):
+    def get_list_of_parsed_instances(self, flat=True):
         for i in queryset_iterator(self.surveys_for_export(self)):
             # TODO: there is information we want to add in parsed xforms.
-            yield i.get_dict()
+            yield i.get_dict(flat=flat)
 
     def _rename_key(self, d, old_key, new_key):
         assert new_key not in d, d
