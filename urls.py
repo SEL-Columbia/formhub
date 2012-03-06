@@ -43,7 +43,7 @@ urlpatterns = patterns('',
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.xls$", 'odk_viewer.views.xls_export'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.kml$", 'odk_viewer.views.kml_export'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.zip", 'odk_viewer.views.zip_export'),
-    url(r"^odk_viewer/survey/(?P<pk>\d+)/$", 'odk_viewer.views.survey_responses'),
+    url(r"^odk_viewer/survey/(?P<instance_id>\d+)/$", 'odk_viewer.views.survey_responses'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/map", 'odk_viewer.views.map_view'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/enter-data", 'odk_logger.views.enter_data'),
 

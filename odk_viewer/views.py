@@ -11,9 +11,10 @@ from collections import defaultdict
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.files.storage import get_storage_class
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseForbidden,\
-         HttpResponseBadRequest
-from django.shortcuts import render_to_response
+         HttpResponseBadRequest, HttpResponseRedirect
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 
 from odk_logger.models import XForm, Instance
@@ -23,7 +24,7 @@ from pyxform import Section, Question
 from utils.logger_tools import response_with_mimetype_and_name,\
          disposition_ext_and_date, round_down_geopoint
 from utils.viewer_tools import image_urls, image_urls_for_form
-from utils.user_auth import has_permission
+from utils.user_auth import has_permission, get_xform_and_perms
 from main.models import UserProfile
 from csv_writer import CsvWriter
 from xls_writer import XlsWriter
@@ -105,9 +106,15 @@ def map_view(request, username, id_string):
     return render_to_response('map.html', context_instance=context)
 
 
-def survey_responses(request, pk):
-    # todo: do a good job of displaying hierarchical data
-    pi = ParsedInstance.objects.get(instance=pk)
+# TODO: do a good job of displaying hierarchical data
+def survey_responses(request, instance_id):
+    pi = get_object_or_404(ParsedInstance, instance=instance_id)
+    xform, is_owner, can_edit, can_view = get_xform_and_perms(pi.instance.user.username,\
+            pi.instance.xform.id_string, request)
+    # no access
+    if not (xform.shared_data or can_view or
+            request.session.get('public_link')):
+        return HttpResponseRedirect('/')
     data = pi.to_dict()
 
     # get rid of keys with leading underscores
