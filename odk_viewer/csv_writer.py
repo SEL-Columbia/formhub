@@ -13,7 +13,9 @@ class CsvWriter(object):
     comparator (for sorting the keys), and a function to rename the
     headers.
     """
-    def __init__(self, dict_iterator, keys, key_rename_function):
+    def __init__(self, data_dictionary, dict_iterator, keys,\
+            key_rename_function):
+        self._data_dictionary = data_dictionary
         self._dict_iterator = dict_iterator
         self._keys = keys
         self._key_rename_function = key_rename_function
@@ -50,18 +52,7 @@ class CsvWriter(object):
         row_string = u",".join(quote_escaped_row)
         file_object.writelines([row_string, u"\n"])
 
-class DataDictionaryWriter(CsvWriter):
-
-    def __init__(self, data_dictionary):
-        self._data_dictionary = data_dictionary
-        super(DataDictionaryWriter, self).__init__(
-            dict_iterator=data_dictionary.get_data_for_excel(),
-            keys=data_dictionary.get_keys(),
-            key_rename_function=data_dictionary.get_variable_name
-            )
-
     def get_default_file_path(self):
         this_directory = os.path.dirname(__file__)
         id_string = self._data_dictionary.id_string
         return os.path.join(this_directory, "csvs", id_string + ".csv")
-

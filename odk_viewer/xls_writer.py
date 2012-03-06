@@ -93,5 +93,6 @@ class XlsWriter(object):
                 sheet_name = e.name
                 self.add_sheet(sheet_name)
                 for f in e.children:
-                    if isinstance(f, Question) and not question_types_to_exclude(f.type):
+                    if isinstance(f, Question) and\
+                            not question_types_to_exclude(f.type):
                         self.add_column(sheet_name, f.name)
