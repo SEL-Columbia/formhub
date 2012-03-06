@@ -67,7 +67,7 @@ class TestFormExports(MainTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self._num_rows(response.content, export_format), 10)
         # test restricting to between start time and end time
-        response = self.client.get(url + '?start=%s&end=%s' % (first_time,
+        response = self.client.get(url + '?start=%s&end=%s' % (before_time,
                     after_time))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self._num_rows(response.content, export_format), 5)
