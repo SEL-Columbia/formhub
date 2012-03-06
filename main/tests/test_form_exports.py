@@ -44,21 +44,23 @@ class TestFormExports(MainTestCase):
         first_time = time.strftime('%Y_%m_%d_%H_%M_%S')
         time.sleep(1)
         before_time = time.strftime('%Y_%m_%d_%H_%M_%S')
-        response = self.client.get(url + '?end=%s' % before_time)
-        content = response.content
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(self._num_rows(content, export_format), 2)
         self._make_submissions()
+        time.sleep(1)
         after_time = time.strftime('%Y_%m_%d_%H_%M_%S')
+        time.sleep(1)
+        self._make_submissions()
+        response = self.client.get(url + '?end=%s' % before_time)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self._num_rows(response.content, export_format), 2)
         response = self.client.get(url + '?start=%s' % before_time)
-        content = response.content
-        self.assertEqual(self._num_rows(content, export_format), 5)
+        self.assertEqual(self._num_rows(response.content, export_format), 9)
         response = self.client.get(url)
-        content = response.content
-        self.assertEqual(self._num_rows(content, export_format), 6)
+        self.assertEqual(self._num_rows(response.content, export_format), 10)
         response = self.client.get(url + '?end=%s' % first_time)
-        content = response.content
-        self.assertEqual(self._num_rows(content, export_format), 2)
+        self.assertEqual(self._num_rows(response.content, export_format), 2)
+        response = self.client.get(url + '?start=%s&end=%s' % (first_time,
+                    after_time))
+        self.assertEqual(self._num_rows(response.content, export_format), 5)
 
     def test_filter_by_date_csv(self):
         self._filter_export_test(self.csv_url, 'csv')

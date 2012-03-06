@@ -63,7 +63,7 @@ def dd_for_params(id_string, owner, request):
                 date_created__lte=end)
     if start and end:
         dd.surveys_for_export = lambda d: d.surveys.filter(
-                date_created__lte=end, date_created_gte=start)
+                date_created__lte=end, date_created__gte=start)
     return [True, dd]
 
 def parse_label_for_display(pi, xpath):
@@ -126,11 +126,10 @@ def survey_responses(request, pk):
          data_for_display[xpath]) for xpath in xpaths
     ]
     languages = label_value_pairs[-1][0]
-    
     return render_to_response('survey.html', {
             'label_value_pairs': label_value_pairs,
             'image_urls': image_urls(pi.instance),
-            'languages': languages, 
+            'languages': languages,
             'default_language': languages[0][0]
             })
 
