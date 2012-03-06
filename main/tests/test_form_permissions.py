@@ -18,6 +18,7 @@ class TestFormPermissions(MainTestCase):
         s = 'transport_2011-07-25_19-05-49'
         self._make_submission(os.path.join(self.this_directory, 'fixtures',
             'transportation', 'instances', s, s + '.xml'))
+        self.submission = self.xform.surveys.reverse()[0]
         self.url = reverse(map_view, kwargs={'username': self.user.username,
             'id_string': self.xform.id_string})
         self.perm_url = reverse(set_perm, kwargs={
