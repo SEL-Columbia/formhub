@@ -40,26 +40,36 @@ class TestFormExports(MainTestCase):
         self.assertEqual(response['Content-Disposition'], 'attachment;')
 
     def _filter_export_test(self, url, export_format):
+        """
+        Test filter exports.  Use sleep to ensure we don't have unique seconds.
+        Number of rows equals number of surveys plus 1, the header row.
+        """
         time.sleep(1)
-        first_time = time.strftime('%Y_%m_%d_%H_%M_%S')
-        time.sleep(1)
+        # 1 surey exists before this time
         before_time = time.strftime('%Y_%m_%d_%H_%M_%S')
         self._make_submissions()
         time.sleep(1)
+        # 5 surveys exist before this time
         after_time = time.strftime('%Y_%m_%d_%H_%M_%S')
         time.sleep(1)
+        # 9 surveys exist in total
         self._make_submissions()
+        # test restricting to before end time
         response = self.client.get(url + '?end=%s' % before_time)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self._num_rows(response.content, export_format), 2)
+        # test restricting to after start time
         response = self.client.get(url + '?start=%s' % before_time)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(self._num_rows(response.content, export_format), 9)
+        # test no time restriction
         response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(self._num_rows(response.content, export_format), 10)
-        response = self.client.get(url + '?end=%s' % first_time)
-        self.assertEqual(self._num_rows(response.content, export_format), 2)
+        # test restricting to between start time and end time
         response = self.client.get(url + '?start=%s&end=%s' % (first_time,
                     after_time))
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(self._num_rows(response.content, export_format), 5)
 
     def test_filter_by_date_csv(self):
