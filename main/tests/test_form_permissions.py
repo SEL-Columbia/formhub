@@ -2,7 +2,7 @@ from test_base import MainTestCase
 from test_process import TestSite
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
-from odk_viewer.views import map_view
+from odk_viewer.views import map_view, survey_responses
 from guardian.shortcuts import assign, remove_perm
 from main.views import set_perm, show, edit
 from main.models import MetaData
@@ -18,6 +18,7 @@ class TestFormPermissions(MainTestCase):
         s = 'transport_2011-07-25_19-05-49'
         self._make_submission(os.path.join(self.this_directory, 'fixtures',
             'transportation', 'instances', s, s + '.xml'))
+        self.submission = self.xform.surveys.reverse()[0]
         self.url = reverse(map_view, kwargs={'username': self.user.username,
             'id_string': self.xform.id_string})
         self.perm_url = reverse(set_perm, kwargs={
@@ -226,3 +227,14 @@ class TestFormPermissions(MainTestCase):
         self.assertEqual(response.status_code, 302)
         response = self.client.get(self.show_normal_url)
         self.assertContains(response, new_username)
+
+    def test_anon_uuid_get_survey(self):
+        survey_url = reverse(survey_responses, kwargs={
+                'instance_id': self.submission.pk })
+        response = self.client.post(self.perm_url, {'for_user': 'toggle',
+            'perm_type': 'link'})
+        self.assertEqual(response.status_code, 302)
+        response = self.anon.get(self.show_url)
+        self.assertEqual(response.status_code, 302)
+        response = self.anon.get(survey_url)
+        self.assertEquals(response.status_code, 200)

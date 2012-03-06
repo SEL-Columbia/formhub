@@ -374,4 +374,4 @@ def show_submission(request, username, id_string, uuid):
         return HttpResponseRedirect(reverse(home))
     submission = get_object_or_404(Instance, uuid=uuid)
     return HttpResponseRedirect(reverse(survey_responses,
-                kwargs={ 'pk': submission.parsed_instance.pk }))
+                kwargs={ 'instance_id': submission.pk }))
