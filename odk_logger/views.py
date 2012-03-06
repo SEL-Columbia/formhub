@@ -1,3 +1,10 @@
+import base64
+import json
+import os
+import tempfile
+import urllib, urllib2
+import zipfile
+
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response, get_object_or_404
@@ -13,21 +20,15 @@ from django.core.files.storage import get_storage_class
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from poster.encode import multipart_encode
+from poster.streaminghttp import register_openers
+
 from models import XForm, create_instance
 from main.models import UserProfile
 from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
 from utils.decorators import is_owner
 from utils.user_auth import has_permission
 from odk_logger.import_tools import import_instances_from_zip
-import zipfile
-import tempfile
-import os
-import base64
-import urllib, urllib2
-import json
-from poster.encode import multipart_encode
-from poster.streaminghttp import register_openers
-from django.contrib.sites.models import Site
 
 class HttpResponseNotAuthorized(HttpResponse):
     status_code = 401
