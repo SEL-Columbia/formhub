@@ -9,6 +9,7 @@ class MainTestCase(TestCase):
     def setUp(self):
         self.maxDiff = None
         self._create_user_and_login()
+        self.base_url = 'http://testserver'
 
     def _create_user(self, username, password):
         user, created = User.objects.get_or_create(username=username)

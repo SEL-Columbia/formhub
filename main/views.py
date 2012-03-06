@@ -1,8 +1,8 @@
 import os, urllib2
 
-from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response
+from django.core.urlresolvers import reverse
+from django.core.files.storage import default_storage
 from django.template import RequestContext
 from django import forms
 from django.db import IntegrityError
@@ -10,23 +10,24 @@ from django.contrib.auth.models import User
 from django.views.decorators.http import require_GET, require_POST
 from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseRedirect, HttpResponseNotAllowed, HttpResponseForbidden
-from pyxform.errors import PyXFormError
-from odk_viewer.models import DataDictionary
-from odk_viewer.models.data_dictionary import upload_to
-from main.models import UserProfile, MetaData
-from odk_logger.models import Instance, XForm
-from utils.logger_tools import response_with_mimetype_and_name
-from utils.decorators import is_owner
-from odk_logger.models.xform import XLSFormError
-from utils.user_auth import check_and_set_user, set_profile_data, has_permission
-from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
-     SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
-     SourceForm, PermissionForm
-from django.core.files.storage import default_storage
 from django.utils import simplejson
 from django.shortcuts import render_to_response, get_object_or_404
-from odk_viewer.views import image_urls_for_form
+from pyxform.errors import PyXFormError
 from guardian.shortcuts import assign, remove_perm, get_users_with_perms
+
+from main.models import UserProfile, MetaData
+from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
+         SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
+     SourceForm, PermissionForm
+from odk_logger.models import Instance, XForm
+from odk_logger.models.xform import XLSFormError
+from odk_viewer.models import DataDictionary
+from odk_viewer.models.data_dictionary import upload_to
+from odk_viewer.views import image_urls_for_form, survey_responses
+from utils.logger_tools import response_with_mimetype_and_name
+from utils.decorators import is_owner
+from utils.user_auth import check_and_set_user, set_profile_data,\
+         has_permission, get_xform_and_perms
 
 def home(request):
     context = RequestContext(request)
@@ -192,21 +193,13 @@ def dashboard(request):
 def show(request, username=None, id_string=None, uuid=None):
     if uuid:
         xform = get_object_or_404(XForm, uuid=uuid)
-        username = xform.user.username
         request.session['public_link'] = MetaData.public_link(xform)
-        if request.session['public_link']:
-            return HttpResponseRedirect(reverse(show, kwargs={
-                        'username': username,
-                        'id_string': xform.id_string
-                        }))
-    else:
-        xform = get_object_or_404(XForm,
-                user__username=username, id_string=id_string)
-    is_owner = username == request.user.username
-    can_edit = is_owner or\
-            request.user.has_perm('odk_logger.change_xform', xform)
-    can_view = can_edit or\
-            request.user.has_perm('odk_logger.view_xform', xform)
+        return HttpResponseRedirect(reverse(show, kwargs={
+                    'username': xform.user.username,
+                    'id_string': xform.id_string
+                    }))
+    xform, is_owner, can_edit, can_view = get_xform_and_perms(username,\
+            id_string, request)
     # no access
     if not (xform.shared or can_view or request.session.get('public_link')):
         return HttpResponseRedirect(reverse(home))
@@ -370,3 +363,15 @@ def set_perm(request, username, id_string):
                 'username': username,
                 'id_string': id_string
             }))
+
+
+def show_submission(request, username, id_string, uuid):
+    xform, is_owner, can_edit, can_view = get_xform_and_perms(username,\
+            id_string, request)
+    # no access
+    if not (xform.shared_data or can_view or
+            request.session.get('public_link')):
+        return HttpResponseRedirect(reverse(home))
+    submission = get_object_or_404(Instance, uuid=uuid)
+    return HttpResponseRedirect(reverse(survey_responses,
+                kwargs={ 'pk': submission.parsed_instance.pk }))

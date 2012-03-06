@@ -1,27 +1,3 @@
-from collections import defaultdict
-# map view
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from django.shortcuts import render_to_response
-# http://djangosnippets.org/snippets/365/
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseForbidden,\
-         HttpResponseBadRequest
-from django.core.files.storage import get_storage_class
-from odk_logger.models import XForm, Instance
-from odk_viewer.models import DataDictionary, ParsedInstance
-from odk_logger.xform_instance_parser import xform_instance_to_dict
-from pyxform import Section, Question
-from utils.logger_tools import response_with_mimetype_and_name,\
-         disposition_ext_and_date, round_down_geopoint
-from utils.viewer_tools import image_urls, image_urls_for_form
-from utils.user_auth import has_permission
-from django.contrib.auth.models import User
-from main.models import UserProfile
-
-from csv_writer import CsvWriter
-from xls_writer import XlsWriter
-
 import json
 import os
 import urllib2
@@ -30,6 +6,27 @@ from tempfile import NamedTemporaryFile
 from time import strftime, strptime
 from datetime import date
 from urlparse import urlparse
+from collections import defaultdict
+
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.core.files.storage import get_storage_class
+from django.http import HttpResponse, HttpResponseForbidden,\
+         HttpResponseBadRequest
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+
+from odk_logger.models import XForm, Instance
+from odk_logger.xform_instance_parser import xform_instance_to_dict
+from odk_viewer.models import DataDictionary, ParsedInstance
+from pyxform import Section, Question
+from utils.logger_tools import response_with_mimetype_and_name,\
+         disposition_ext_and_date, round_down_geopoint
+from utils.viewer_tools import image_urls, image_urls_for_form
+from utils.user_auth import has_permission
+from main.models import UserProfile
+from csv_writer import CsvWriter
+from xls_writer import XlsWriter
 
 def encode(time_str):
     time = strptime(time_str, "%Y_%m_%d_%H_%M_%S")

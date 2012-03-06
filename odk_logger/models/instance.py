@@ -5,6 +5,7 @@ from .xform import XForm
 from .survey_type import SurveyType
 from odk_logger.xform_instance_parser import XFormInstanceParser, \
      XFORM_ID_STRING
+from utils.model_tools import set_uuid
 
 
 def log(*args, **kwargs):
@@ -35,6 +36,7 @@ class Instance(models.Model):
     # we will add a fourth status: submitted_via_web
     status = models.CharField(max_length=20,
                               default=u'submitted_via_web')
+    uuid = models.CharField(max_length=32, default=u'')
 
     class Meta:
         app_label = 'odk_logger'
@@ -70,6 +72,7 @@ class Instance(models.Model):
         self._set_start_time(doc)
         self._set_date(doc)
         self._set_survey_type(doc)
+        set_uuid(self)
         super(Instance, self).save(*args, **kwargs)
 
     def _set_parser(self):
