@@ -39,7 +39,7 @@ class ParsedInstance(models.Model):
             self._dict_cache.update(
                 {
                     ID: self.instance.id,
-                    ATTACHMENTS: [a.media_file.name for a in self.instance.attachments.all()],                    
+                    ATTACHMENTS: [a.media_file.name for a in self.instance.attachments.all()],
                     u"_status": self.instance.status,
                     }
                 )
