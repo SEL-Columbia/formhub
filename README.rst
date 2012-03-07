@@ -44,6 +44,17 @@ And now you should be ready to run the server:
 
     python manage.py runserver
 
+Running Tests and Contributing
+==============================
+
+To run tests enter the following:
+
+    python manage.py test
+
+If you would like to contribute code please read:
+
+https://github.com/modilabs/formhub/wiki/Contributing-Code-to-Formhub
+
 Code Structure
 ==============
 

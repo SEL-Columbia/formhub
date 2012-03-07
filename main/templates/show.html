@@ -10,7 +10,7 @@
 	<h3>
 	  <div style='vertical-align: middle'>      
 	  <img src='{{ content_user.profile.gravatar }}' alt='' width='20' height='20' /> 
-	  <a href="/{{content_user.username}}/">{{ content_user.username }}</a> /
+	  <a href="/{{content_user.username}}/">{{ content_user.username }}</a> (Owner) /
 	  </div>
 	</h3>
         <div class="clearfix">
@@ -304,6 +304,15 @@
                 </a>
                 </span>
                 <input class="xxlarge" type="text" size="16" value="{{ base_url }}{% url odk_viewer.views.kml_export content_user.username xform.id_string %}"/>
+            </div>
+            <br/>
+            <div class="input-prepend">
+                <span class="add-on">
+                <a href="{% url odk_viewer.views.zip_export content_user.username xform.id_string %}">
+                    zip
+                </a>
+                </span>
+                <input class="xxlarge" type="text" size="16" value="{{ base_url }}{% url odk_viewer.views.zip_export content_user.username xform.id_string %}"/>
             </div>
             <br/>
             <a href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">

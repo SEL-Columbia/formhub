@@ -1,7 +1,11 @@
+import re
+
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+
 from main.models import UserProfile
-import re
+from odk_logger.models import XForm
 
 
 def check_and_set_user(request, username):
@@ -39,3 +43,14 @@ def has_permission(xform, owner, request, shared=False):
             owner == user or\
             user.has_perm('odk_logger.view_xform', xform) or\
             user.has_perm('odk_logger.change_xform', xform)
+
+
+def get_xform_and_perms(username, id_string, request):
+    xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
+    is_owner = username == request.user.username
+    can_edit = is_owner or\
+            request.user.has_perm('odk_logger.change_xform', xform)
+    can_view = can_edit or\
+            request.user.has_perm('odk_logger.view_xform', xform)
+    return [xform, is_owner, can_edit, can_view]

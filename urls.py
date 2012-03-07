@@ -33,6 +33,7 @@ urlpatterns = patterns('',
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/perms$', 'main.views.set_perm'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/photos', 'main.views.form_photos'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/doc/(?P<data_id>[^/]+)', 'main.views.download_metadata'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/submission/(?P<uuid>[^/]+)$', 'main.views.show_submission'),
 
     # stats
     url(r"^stats/submissions/$", 'stats.views.submissions'),
@@ -42,7 +43,7 @@ urlpatterns = patterns('',
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.xls$", 'odk_viewer.views.xls_export'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.kml$", 'odk_viewer.views.kml_export'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.zip", 'odk_viewer.views.zip_export'),
-    url(r"^odk_viewer/survey/(?P<pk>\d+)/$", 'odk_viewer.views.survey_responses'),
+    url(r"^odk_viewer/survey/(?P<instance_id>\d+)/$", 'odk_viewer.views.survey_responses'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/map", 'odk_viewer.views.map_view'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/enter-data", 'odk_logger.views.enter_data'),
 
