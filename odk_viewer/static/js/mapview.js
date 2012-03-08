@@ -1,51 +1,41 @@
-var latlng = new google.maps.LatLng(center.lat, center.lng);
+var centerLatlng = new L.LatLng(center.lat, center.lng);
 var map;
 var defaultZoom = 8;
 function initialize() {
-    var myOptions = {
-        zoom: defaultZoom,
-        center: latlng,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-
-    var open_window;
+    map = new L.Map('map_canvas');
+    // todo: change cloudmade api key i.e. /398a...81/ to a modilabs one
+    var cloudmadeTileLayer = new L.TileLayer('http://{s}.tile.cloudmade.com/398a8a41acd34d688dde441c60edfd81/997/256/{z}/{x}/{y}.png', {
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+        maxZoom: 18
+    });
+    map.setView(centerLatlng, defaultZoom).addLayer(cloudmadeTileLayer);
     var latLngArray = new Array();
     for (var i=0; i<points.length; i=i+1) {
         // use a self executing function to create a new scope in each
         // iteration of the loop.
         latLngArray.push((function(){
-            var point = new google.maps.LatLng(points[i].lat, points[i].lng);
             // create a marker on the map for this point
-            var marker = new google.maps.Marker({
-                position: point,
-                map: map
-            });
-            var instance = points[i].instance;
+            var point = new L.LatLng(points[i].lat, points[i].lng);
+            var marker = new L.Marker(point);
 
-            // create an info window that opens this marker is clicked
-            var infowindow = new google.maps.InfoWindow();
-            google.maps.event.addListener(marker, 'click', function(){
-                if (!!open_window) {
-                    open_window.close();
-                }
-                // todo: remove hard coded url
-                var url = "/odk_viewer/survey/" + instance.toString() + "/";
-                $.get(url).done(function(data){
-                    infowindow.setContent(data);
-                });
-                infowindow.open(map, marker);
-                open_window = infowindow;
+            var instance = points[i].instance;
+            var popup = new L.Popup();
+
+            // todo: remove hard coded url
+            var url = "/odk_viewer/survey/" + instance.toString() + "/";
+            // todo: perhaps load url on marker click so we dont have to wait for all urls to load - test on a large survey
+            $.get(url).done(function(data){
+                marker.bindPopup(data);
             });
+
+            map.addLayer(marker);
             return point;
         })());
     }
     // fitting to bounds with one point will zoom too far
     if (latLngArray.length > 1) {
-        var latlngbounds = new google.maps.LatLngBounds();
-        for (var i=0; i<latLngArray.length; i++) {
-            latlngbounds.extend(latLngArray[i]);
-        }
+        var latlngbounds = new L.LatLngBounds(latLngArray);
         map.fitBounds(latlngbounds);
    }
 }
+
