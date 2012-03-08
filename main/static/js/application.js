@@ -38,15 +38,15 @@ $(document).ready(function(){
     // ========================
 
     $(window).bind( 'load resize', function () {
-        $(".twipsies a").each(function () {
+        $(".tooltips a").each(function () {
             $(this)
-            .twipsy({
+            .tooltip({
                 live: false
                 , placement: $(this).attr('title')
                 , trigger: 'manual'
                 , offset: 2
             })
-            .twipsy('show')
+            .tooltip('show')
         })
     })
 
