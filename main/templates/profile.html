@@ -18,7 +18,7 @@
          {% if is_owner and not profile.gravatar_exists %}
             <span class="small-link">change</span>
             </a>
-            <script type="text/javascript">$('#gravatar').twipsy();</script>
+            <script type="text/javascript">$('#gravatar').tooltip();</script>
          {% endif %}
          {{ content_user.username }}
          {% if profile.name %}

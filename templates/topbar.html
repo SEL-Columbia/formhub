@@ -1,7 +1,7 @@
-<div class="topbar" data-dropdown="dropdown" >
-  <div class="topbar-inner{% if form_view %} topbar-inner-map{% endif %}">
+<div class="navbar" data-dropdown="dropdown" >
+  <div class="navbar-inner{% if form_view %} navbar-inner-map{% endif %}">
     <div class="container">
-      <a class="brand" href="/" title="formhub"><img height="14px" alt="formhub" src="/static/images/logo.png" /></a>
+      <a class="brand" href="/" title="formhub"><img alt="formhub" src="/static/images/logo.png" /></a>
       {% if form_view %}
       <ul class="nav">
         <li>&nbsp;</li>
@@ -27,7 +27,7 @@
         <li>&nbsp;</li>
         <li><a href="#"><span class="inverted">{{ xform.submission_count }} submissions</span></a></li>
       </ul>
-      <ul class="nav secondary-nav">
+      <ul class="nav nav-pills">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle">Data Download</a>
           <ul class="dropdown-menu">
@@ -61,7 +61,7 @@
 
       </ul>
       {% if user.is_authenticated %}
-      <ul class="nav secondary-nav">
+      <ul class="nav nav-pills">
         <li><a href="/{{user.username}}">{{user.username}}</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle"></a>
