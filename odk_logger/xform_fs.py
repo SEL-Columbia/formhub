@@ -47,5 +47,20 @@ class XFormInstanceFS(object):
                 return True
         return False
 
+    @property
+    def instance_status(self):
+        """
+        I probably have access to the metadata directory here:
+          `self.metadata_directory`
+        and i need to know the status.
+
+        use sqlalchemy to open the database and retrieve the status
+        of this form.
+
+        see import_tools.py to find how it was done in odk collect 1.1.5
+        """
+        # Note: return None if there is no metadata available...
+        return "i_can_not_haz_status"
+
     def __str__(self):
         return "<XForm XML: %s>" % self.xform_id

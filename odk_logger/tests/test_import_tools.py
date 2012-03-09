@@ -52,6 +52,12 @@ class TestImportingDatabase(MainTestCase):
         instance_count = Instance.objects.count()
         image_count = images_count()
 
+        # one of the imported surveys is "complete"
+        self.assertEqual(Instance.objects.filter(status="complete"), 1)
+
+        # one of the imported surveys is "incomplete"
+        self.assertEqual(Instance.objects.filter(status="incomplete"), 1)
+
         #Images are not duplicated
         # TODO: Figure out how to get this test passing.
         self.assertEqual(image_count, 2)
