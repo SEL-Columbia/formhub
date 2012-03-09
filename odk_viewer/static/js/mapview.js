@@ -17,15 +17,18 @@ function initialize() {
             // create a marker on the map for this point
             var point = new L.LatLng(points[i].lat, points[i].lng);
             var marker = new L.Marker(point);
-
             var instance = points[i].instance;
-            var popup = new L.Popup();
 
             // todo: remove hard coded url
             var url = "/odk_viewer/survey/" + instance.toString() + "/";
-            // todo: perhaps load url on marker click so we dont have to wait for all urls to load - test on a large survey
-            $.get(url).done(function(data){
-                marker.bindPopup(data);
+            // bind open popup to marker's click event
+            marker.on('click', function(evt){
+                var targetMarker = evt.target;
+                // open a loading popup so the user knows something is happening
+                targetMarker.bindPopup('Loading...').openPopup();
+                $.get(url).done(function(data){
+                    targetMarker.bindPopup(data).openPopup();
+                });
             });
 
             map.addLayer(marker);
