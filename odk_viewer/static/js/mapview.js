@@ -3,8 +3,7 @@ var map;
 var defaultZoom = 8;
 function initialize() {
     map = new L.Map('map_canvas');
-    // todo: change cloudmade api key i.e. /398a...81/ to a modilabs one
-    var cloudmadeTileLayer = new L.TileLayer('http://{s}.tile.cloudmade.com/398a8a41acd34d688dde441c60edfd81/997/256/{z}/{x}/{y}.png', {
+    var cloudmadeTileLayer = new L.TileLayer('http://{s}.tile.cloudmade.com/b1e5699de0e74928959c89bf0f777a5b/997/256/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
         maxZoom: 18
     });
@@ -16,18 +15,28 @@ function initialize() {
         latLngArray.push((function(){
             // create a marker on the map for this point
             var point = new L.LatLng(points[i].lat, points[i].lng);
-            var marker = new L.Marker(point);
+            var marker = new L.CircleMarker(point, {
+                'radius': 8 
+            });
             var instance = points[i].instance;
 
-            // todo: remove hard coded url
+            // TODO: remove hard coded url
             var url = "/odk_viewer/survey/" + instance.toString() + "/";
+            // open a loading popup so the user knows something is happening
+            //a = marker.bindPopup('Loading...');//.openPopup();
+
             // bind open popup to marker's click event
-            marker.on('click', function(evt){
-                var targetMarker = evt.target;
-                // open a loading popup so the user knows something is happening
-                targetMarker.bindPopup('Loading...').openPopup();
+            marker.on('click', function(e){
+                var targetMarker = e.target;
+                var popup = new L.Popup({
+                    'maxWidth': 500,
+                });
+                latlng = e.latlng;
+                latlng.lat += 1;
+                popup.setLatLng(latlng);
                 $.get(url).done(function(data){
-                    targetMarker.bindPopup(data).openPopup();
+                    popup.setContent(data);
+                    map.openPopup(popup);
                 });
             });
 
