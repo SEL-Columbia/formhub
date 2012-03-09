@@ -137,7 +137,7 @@ def import_instances_from_zip(zipfile_path, user, default_status="zip_unspecifie
             images = [django_file(jpg, field_name="image",
                             content_type="image/jpeg") for jpg in xform_fs.photos]
 
-            submission_status = xform_fs.instance_status:
+            submission_status = xform_fs.instance_status
 
             if not submission_status:
                 submission_status = default_status
