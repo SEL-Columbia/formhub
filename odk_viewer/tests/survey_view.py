@@ -32,7 +32,8 @@ class TestSurveyView(TestCase):
         self.parsed_instance = ParsedInstance.objects.get(instance=self.instance)
 
     def test_survey_view(self):
-        url = reverse(survey_responses, kwargs={'pk' : self.parsed_instance.id})
+        url = reverse(survey_responses, kwargs={
+                'instance_id' : self.parsed_instance.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         expected_html = '''
@@ -129,12 +130,6 @@ class TestSurveyView(TestCase):
             expected_dict
             )
 
-    def test_data_dictionary_writer(self):
-        dd_writer = CsvWriter(dd)
-        dd_writer.set_data_dictionary(self.data_dictionary)
-        self.assertEqual(dd_writer._sheets.keys(), [self.survey.name])
-        self.assertEqual(dd_writer._columns.keys(), [self.survey.name])
-        self.assertEqual(
-            dd_writer._columns[self.survey.name],
-            [u'name', u'_parent_index', u'_parent_table_name', u'_index']
-            )
+    def test_csv_writer(self):
+        dd_writer = CsvWriter(self.data_dictionary)
+        self.assertEqual(dd_writer._keys, self.data_dictionary.get_keys())
