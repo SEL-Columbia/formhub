@@ -40,7 +40,7 @@ class TestImportingDatabase(MainTestCase):
         The metadata is in "odk/metadata/data".
         """
         # import from sd card
-        import_instances_from_zip(os.path.join(DB_FIXTURES_PATH, "bulk_submission_1-1-7.zip"), self.user)
+        import_instances_from_zip(os.path.join(DB_FIXTURES_PATH, "bulk_submission_1-1-5.zip"), self.user)
 
         instance_count = Instance.objects.count()
         image_count = images_count()
