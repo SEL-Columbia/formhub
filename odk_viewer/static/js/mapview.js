@@ -1,42 +1,76 @@
-var centerLatlng = new L.LatLng(center.lat, center.lng);
-var map;
+var centerLatLng = new L.LatLng(center.lat, center.lng);
 var defaultZoom = 8;
+var mapId = 'map_canvas';
+var map;
+var mapMarkerIcon = L.Icon.extend({
+    iconUrl: '/static/images/marker-solid-24.png',
+    shadowUrl: null,
+    iconSize: new L.Point(24, 24),
+    shadowSize: null,
+    iconAnchor: new L.Point(12, 24),
+    popupAnchor: new L.Point(0,-24)
+});
+
 function initialize() {
-    map = new L.Map('map_canvas');
-    var cloudmadeTileLayer = new L.TileLayer('http://{s}.tile.cloudmade.com/b1e5699de0e74928959c89bf0f777a5b/997/256/{z}/{x}/{y}.png', {
-        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-        maxZoom: 18
+    // mapbox streets formhub tiles
+    var url = 'http://a.tiles.mapbox.com/v3/modilabs.map-hgm23qjf.jsonp';
+
+    // Make a new Leaflet map in your container div
+    map = new L.Map(mapId).setView(centerLatLng, defaultZoom);
+
+    // Get metadata about the map from MapBox
+    wax.tilejson(url, function(tilejson) {
+        var mapboxstreet = new wax.leaf.connector(tilejson);
+        // Add MapBox Streets as a base layer
+        //.addLayer(new wax.leaf.connector(tilejson));
+        map.addLayer(mapboxstreet);
+        //	var googleSat = new L.Google();
+        //	map.addLayer(googleSat);
+        map.addControl(new L.Control.Layers({'MapBox Streets':mapboxstreet}))
+        addPoints();
     });
-    map.setView(centerLatlng, defaultZoom).addLayer(cloudmadeTileLayer);
+}
+
+function addPoints() {
     var latLngArray = new Array();
     for (var i=0; i<points.length; i=i+1) {
         // use a self executing function to create a new scope in each
         // iteration of the loop.
         latLngArray.push((function(){
-            // create a marker on the map for this point
             var point = new L.LatLng(points[i].lat, points[i].lng);
-            var marker = new L.CircleMarker(point, {
-                'radius': 8 
-            });
+
+            // for circle marker
+            //var marker = new L.CircleMarker(point, {
+            //    'radius': 6 
+            //});
+            var marker = new L.Marker(point, {icon: new mapMarkerIcon()});
+
             var instance = points[i].instance;
 
             // TODO: remove hard coded url
             var url = "/odk_viewer/survey/" + instance.toString() + "/";
             // open a loading popup so the user knows something is happening
-            //a = marker.bindPopup('Loading...');//.openPopup();
+            marker.bindPopup('Loading...').openPopup();
 
             // bind open popup to marker's click event
+
             marker.on('click', function(e){
                 var targetMarker = e.target;
+
+                /*  for circle marker logic
                 var popup = new L.Popup({
                     'maxWidth': 500,
+                    'offset': new L.Point(0,-50)
                 });
                 latlng = e.latlng;
-                latlng.lat += 1;
                 popup.setLatLng(latlng);
-                $.get(url).done(function(data){
-                    popup.setContent(data);
-                    map.openPopup(popup);
+                */
+
+               $.get(url).done(function(data){
+                    targetMarker.bindPopup(data,{'maxWidth': 500}).openPopup();
+                    // for circle marker
+                    // popup.setContent(data);
+                    //  map.openPopup(popup);
                 });
             });
 
