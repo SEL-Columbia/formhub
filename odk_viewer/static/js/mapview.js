@@ -30,9 +30,9 @@ function initialize() {
                 var targetMarker = e.target;
                 var popup = new L.Popup({
                     'maxWidth': 500,
+                    'offset': new L.Point(0,-50)
                 });
                 latlng = e.latlng;
-                latlng.lat += 1;
                 popup.setLatLng(latlng);
                 $.get(url).done(function(data){
                     popup.setContent(data);
