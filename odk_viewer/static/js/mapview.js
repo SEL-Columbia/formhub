@@ -60,9 +60,9 @@ function addPoints() {
                 /*  for circle marker logic
                 var popup = new L.Popup({
                     'maxWidth': 500,
+                    'offset': new L.Point(0,-50)
                 });
                 latlng = e.latlng;
-                latlng.lat += 1;
                 popup.setLatLng(latlng);
                 */
 
