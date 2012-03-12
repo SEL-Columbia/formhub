@@ -1,20 +1,24 @@
+import json
+import re
+
 from django.test import TestCase
+from django.core.urlresolvers import reverse
+
 from pyxform import create_survey_from_xls
 from odk_logger.models import XForm, Instance
 from odk_viewer.models import ParsedInstance, DataDictionary
 from odk_viewer.views import survey_responses
-from django.core.urlresolvers import reverse
-import json
-import re
 from odk_logger.xform_instance_parser import xform_instance_to_dict
-from odk_viewer.views.xls_export import XlsWriter, DictOrganizer, DataDictionaryWriter
+from odk_viewer.xls_writer import XlsWriter
+from odk_viewer.csv_writer import CsvWriter
+from utils.export_tools import DictOrganizer
 
 
 class TestSurveyView(TestCase):
 
     def setUp(self):
         self.survey = create_survey_from_xls("odk_viewer/tests/name_survey.xls")
-        json_str = json.dumps(self.survey.to_dict())
+        json_str = json.dumps(self.survey.to_json_dict())
         self.data_dictionary = DataDictionary.objects.create(
             xml=self.survey.to_xml(), json=json_str)
 
@@ -40,12 +44,10 @@ class TestSurveyView(TestCase):
     </tr>
   </thead>
   <tbody>
-    
     <tr>
       <td>What&#39;s your name?</td>
       <td>Andrew</td>
     </tr>
-    
   </tbody>
 </table>
 '''
@@ -78,7 +80,7 @@ class TestSurveyView(TestCase):
             <woman>
               <name>Fran</name>
               <child><name>Greg</name></child>
-            </woman>            
+            </woman>
           </household>'''
         serious_xml = re.sub(r">\s+<", "><", serious_xml)
         d = xform_instance_to_dict(serious_xml)
@@ -128,7 +130,7 @@ class TestSurveyView(TestCase):
             )
 
     def test_data_dictionary_writer(self):
-        dd_writer = DataDictionaryWriter()
+        dd_writer = CsvWriter(dd)
         dd_writer.set_data_dictionary(self.data_dictionary)
         self.assertEqual(dd_writer._sheets.keys(), [self.survey.name])
         self.assertEqual(dd_writer._columns.keys(), [self.survey.name])

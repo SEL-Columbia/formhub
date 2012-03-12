@@ -1,11 +1,14 @@
+from django.conf import settings
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 
 from utils.reinhardt import queryset_iterator
 from odk_logger.models import Instance
-from common_tags import START_TIME, START, \
-    END_TIME, END, ID, ATTACHMENTS
+from common_tags import START_TIME, START, END_TIME, END, ID, UUID, ATTACHMENTS
 import datetime
+
+# this is Mongo Collection where we will store the parsed submissions
+xform_instances = settings.MONGO_DB.instances
 
 
 class ParseError(Exception):
@@ -33,13 +36,19 @@ class ParsedInstance(models.Model):
     class Meta:
         app_label = "odk_viewer"
 
+    def update_mongo(self):
+        d = self.to_dict()
+        xform_instances.save(d)
+
     def to_dict(self):
         if not hasattr(self, "_dict_cache"):
             self._dict_cache = self.instance.get_dict()
             self._dict_cache.update(
                 {
+                    UUID: self.instance.uuid,
                     ID: self.instance.id,
-                    ATTACHMENTS: [a.media_file.name for a in self.instance.attachments.all()],
+                    ATTACHMENTS: [a.media_file.name for a in\
+                            self.instance.attachments.all()],
                     u"_status": self.instance.status,
                     }
                 )
@@ -104,6 +113,15 @@ class ParsedInstance(models.Model):
         self._set_end_time()
         self._set_geopoint()
         super(ParsedInstance, self).save(*args, **kwargs)
+        # insert into Mongo
+        self.update_mongo()
+
+
+def _remove_from_mongo(sender, **kwargs):
+    instance_id = kwargs.get('instance').instance.id
+    xform_instances.remove(instance_id)
+
+pre_delete.connect(_remove_from_mongo, sender=ParsedInstance)
 
 
 def _parse_instance(sender, **kwargs):
