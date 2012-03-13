@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save, pre_delete
 
-from utils.reinhardt import queryset_iterator
+from utils.model_tools import queryset_iterator
 from odk_logger.models import Instance
 from common_tags import START_TIME, START, END_TIME, END, ID, UUID, ATTACHMENTS
 import datetime
@@ -92,7 +92,7 @@ class ParsedInstance(models.Model):
 
     data_dictionary = property(get_data_dictionary)
 
-    # todo: figure out how much of this code should be here versus
+    # TODO: figure out how much of this code should be here versus
     # data_dictionary.py.
     def _get_geopoint(self):
         doc = self.to_dict()
