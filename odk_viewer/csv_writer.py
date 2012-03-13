@@ -13,9 +13,11 @@ class CsvWriter(object):
     comparator (for sorting the keys), and a function to rename the
     headers.
     """
-    def __init__(self, data_dictionary, dict_iterator, keys,\
-            key_rename_function):
-        self._data_dictionary = data_dictionary
+    def __init__(self, dd, dict_iterator=None, keys=None, key_rename_function=None):
+        self._data_dictionary = dd
+        if not dict_iterator: dict_iterator = dd.get_data_for_excel()
+        if not keys: keys = dd.get_keys()
+        if not key_rename_function: key_rename_fuction = dd.get_variable_name
         self._dict_iterator = dict_iterator
         self._keys = keys
         self._key_rename_function = key_rename_function

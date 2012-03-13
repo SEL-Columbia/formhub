@@ -178,15 +178,23 @@ import sys
 
 SITE_TITLE = "Baseline Data Collection"
 
+# MongoDB
+from pymongo import Connection
+_MONGO_CONNECTION = Connection()
+MONGO_DB = None
+
 TESTING_MODE = False
 if len(sys.argv)>=2 and (sys.argv[1]=="test" or sys.argv[1]=="test_all"):
     # This trick works only when we run tests from the command line.
     TESTING_MODE = True
+    MONGO_DB = _MONGO_CONNECTION["formhub_test"]
 else:
     TESTING_MODE = False
+    MONGO_DB = _MONGO_CONNECTION["formhub"]
 
 # Clear out the test database
 if TESTING_MODE:
+    MONGO_DB.instances.drop()
     MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'test_media/')
     subprocess.call(["rm", "-r", MEDIA_ROOT])
 else:
