@@ -60,10 +60,10 @@ def clone_xlsform(request, username):
     try:
         form_owner = request.POST.get('username')
         id_string = request.POST.get('id_string')
-        if len(id_string) > 0 and id_string[0].isdigit():
-            id_string = '_' + id_string
         xform = XForm.objects.get(user__username=form_owner, \
                                     id_string=id_string)
+        if len(id_string) > 0 and id_string[0].isdigit():
+            id_string = '_' + id_string
         path = xform.xls.name
         if default_storage.exists(path):
             xls_file = upload_to(None, id_string + '_cloned.xls', to_username)
@@ -95,10 +95,7 @@ def clone_xlsform(request, username):
         return HttpResponse(simplejson.dumps(context.message), \
                         mimetype='application/json')
     else:
-        return HttpResponseRedirect(reverse(show, kwargs={
-                    'username': to_username,
-                    'id_string': survey.id_string
-                }))
+        return HttpResponse(context.message['text'])
 
 
 def profile(request, username):
