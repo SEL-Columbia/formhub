@@ -61,6 +61,8 @@ def clone_xlsform(request, username):
     try:
         form_owner = request.POST.get('username')
         id_string = request.POST.get('id_string')
+        if len(id_string) > 0 and id_string[0].isdidgit():
+            id_string = '_' + id_string
         xform = XForm.objects.get(user__username=form_owner, \
                                     id_string=id_string)
         path = xform.xls.name
