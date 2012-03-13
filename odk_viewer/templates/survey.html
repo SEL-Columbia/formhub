@@ -21,16 +21,12 @@
       <th>Response</th>
     </tr>
   </thead>
-  <tbody>
-    {% for pair in label_value_pairs %}
+  <tbody>{% for pair in label_value_pairs %}
     <tr>
-      <td>
-        {% for language, label in pair.0 %}
-            <span class="language {{ language }}"{% if language != default_language %} style="display: none;"{% endif %}>{{ label }}</span>
-        {% endfor %}
-      </td>
+      <td>{% for language, label in pair.0 %}
+        <span class="language {{ language }}"{% if language != default_language %} style="display: none;"{% endif %}>{{ label }}</span>
+      {% endfor %}</td>
       <td>{{ pair.1 }}</td>
-    </tr>
-    {% endfor %}
+    </tr>{% endfor %}
   </tbody>
 </table>

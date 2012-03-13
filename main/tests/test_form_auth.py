@@ -10,7 +10,7 @@ class TestFormAuth(MainTestCase):
     def setUp(self):
         MainTestCase.setUp(self)
         self._create_user_and_login('bob', 'bob')
-        self._publish_transporation_form()
+        self._publish_transportation_form()
         self.url = reverse(formList, kwargs={'username': self.user.username})
 
     def _set_require_auth(self, auth=True):
