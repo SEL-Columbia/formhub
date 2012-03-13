@@ -9,7 +9,7 @@ class TestFormGallery(MainTestCase):
     def setUp(self):
         MainTestCase.setUp(self)
         self._create_user_and_login()
-        self._publish_transporation_form()
+        self._publish_transportation_form()
         self.url = reverse(clone_xlsform, kwargs={'username': self.user.username})
 
     def test_require_logged_in_user(self):
