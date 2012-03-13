@@ -1,3 +1,7 @@
+import base64
+import datetime
+import re
+
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save, pre_delete
@@ -5,7 +9,6 @@ from django.db.models.signals import post_save, pre_delete
 from utils.model_tools import queryset_iterator
 from odk_logger.models import Instance
 from common_tags import START_TIME, START, END_TIME, END, ID, UUID, ATTACHMENTS
-import datetime
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
@@ -37,8 +40,23 @@ class ParsedInstance(models.Model):
         app_label = "odk_viewer"
 
     def update_mongo(self):
-        d = self.to_dict()
+        d = self.to_dict_for_mongo()
         xform_instances.save(d)
+
+    def to_dict_for_mongo(self):
+        d = self.to_dict()
+        for key, value in d.items():
+            if self._is_invalid_for_mongo(key):
+                del d[key]
+                d[self._encode_for_mongo(key)] = value
+        return d
+
+    def _encode_for_mongo(self, key):
+        return reduce(lambda s, c: re.sub(c[0], base64.b64encode(c[1]), s),
+                [(r'^\$', '$'), (r'\.', '.')], key)
+
+    def _is_invalid_for_mongo(self, key):
+        return (key.startswith('$') or key.count('.') > 0)
 
     def to_dict(self):
         if not hasattr(self, "_dict_cache"):

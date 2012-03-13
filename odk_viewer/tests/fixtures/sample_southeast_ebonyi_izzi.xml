@@ -1,8 +1,0 @@
-<?xml version='1.0' ?>
-<SomeForm id="SomeForm_12345">
-	<location>
-		<zone>southeast</zone>
-		<state_in_southeast>ebonyi</state_in_southeast>
-		<lga_in_ebonyi>izzi</lga_in_ebonyi>
-	</location>
-</SomeForm>
