@@ -13,7 +13,14 @@ class TestMongoData(MainTestCase):
         MainTestCase.setUp(self)
         self._publish_transportation_form_and_submit_instance()
         self.instances = settings.MONGO_DB.instances
+        self.pi = self.xform.surveys.all()[0].parsed_instance
 
-    def test_mongo(self):
-        self.assertEquals(self.xform.surveys.all()[0].parsed_instance.to_dict(),
-                self.instances.find_one())
+    def test_mongo_find_one(self):
+        self.assertEquals(self.pi.to_dict(), self.instances.find_one())
+
+    def test_mongo_find(self):
+        self.assertEquals([self.pi.to_dict()], self.instances.find())
+
+    def test_mongo_find_by_id(self):
+        self.assertEquals(self.pi.to_dict(),
+                self.instances.find_one({'id': self.pi.instance.id))
