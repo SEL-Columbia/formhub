@@ -3,8 +3,9 @@ import re
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-
 from pyxform import create_survey_from_xls
+
+from main.tests.test_base import MainTestCase
 from odk_logger.models import XForm, Instance
 from odk_viewer.models import ParsedInstance, DataDictionary
 from odk_viewer.views import survey_responses
@@ -14,13 +15,14 @@ from odk_viewer.csv_writer import CsvWriter
 from utils.export_tools import DictOrganizer
 
 
-class TestSurveyView(TestCase):
+class TestSurveyView(MainTestCase):
 
     def setUp(self):
+        MainTestCase.setUp(self)
         self.survey = create_survey_from_xls("odk_viewer/tests/name_survey.xls")
         json_str = json.dumps(self.survey.to_json_dict())
         self.data_dictionary = DataDictionary.objects.create(
-            xml=self.survey.to_xml(), json=json_str)
+            xml=self.survey.to_xml(), json=json_str, user = self.user)
 
         info = {
             "survey_name" : self.survey.name,
@@ -28,8 +30,9 @@ class TestSurveyView(TestCase):
             "name" : "Andrew"
             }
         xml_str = u'<?xml version=\'1.0\' ?><%(survey_name)s id="%(id_string)s"><name>%(name)s</name></%(survey_name)s>' % info
-        self.instance = Instance.objects.create(xml=xml_str)
-        self.parsed_instance = ParsedInstance.objects.get(instance=self.instance)
+        self.instance = Instance.objects.create(xml=xml_str, user=self.user)
+        self.parsed_instance = ParsedInstance.objects.get(
+                instance=self.instance)
 
     def test_survey_view(self):
         url = reverse(survey_responses, kwargs={
@@ -37,6 +40,7 @@ class TestSurveyView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         expected_html = '''
+
 <table class="zebra-striped">
   <thead>
     <tr>
@@ -46,7 +50,9 @@ class TestSurveyView(TestCase):
   </thead>
   <tbody>
     <tr>
-      <td>What&#39;s your name?</td>
+      <td>
+        <span class="language Unknown">What&#39;s your name?</span>
+      </td>
       <td>Andrew</td>
     </tr>
   </tbody>

@@ -6,7 +6,7 @@ from odk_logger.xform_instance_parser import XFORM_ID_STRING
 # These are common variable tags that we'll want to access
 INSTANCE_DOC_NAME = u"_name"
 ID = u"_id"
-UUID = u"uuid"
+UUID = u"_uuid"
 PICTURE = u"picture"
 GPS = u"location/gps"
 LGA = u"lga"
