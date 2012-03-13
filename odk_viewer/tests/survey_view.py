@@ -1,22 +1,28 @@
+import json
+import re
+
 from django.test import TestCase
+from django.core.urlresolvers import reverse
 from pyxform import create_survey_from_xls
+
+from main.tests.test_base import MainTestCase
 from odk_logger.models import XForm, Instance
 from odk_viewer.models import ParsedInstance, DataDictionary
 from odk_viewer.views import survey_responses
-from django.core.urlresolvers import reverse
-import json
-import re
 from odk_logger.xform_instance_parser import xform_instance_to_dict
-from odk_viewer.views.xls_export import XlsWriter, DictOrganizer, DataDictionaryWriter
+from odk_viewer.xls_writer import XlsWriter
+from odk_viewer.csv_writer import CsvWriter
+from utils.export_tools import DictOrganizer
 
 
-class TestSurveyView(TestCase):
+class TestSurveyView(MainTestCase):
 
     def setUp(self):
+        MainTestCase.setUp(self)
         self.survey = create_survey_from_xls("odk_viewer/tests/name_survey.xls")
-        json_str = json.dumps(self.survey.to_dict())
+        json_str = json.dumps(self.survey.to_json_dict())
         self.data_dictionary = DataDictionary.objects.create(
-            xml=self.survey.to_xml(), json=json_str)
+            xml=self.survey.to_xml(), json=json_str, user = self.user)
 
         info = {
             "survey_name" : self.survey.name,
@@ -24,14 +30,17 @@ class TestSurveyView(TestCase):
             "name" : "Andrew"
             }
         xml_str = u'<?xml version=\'1.0\' ?><%(survey_name)s id="%(id_string)s"><name>%(name)s</name></%(survey_name)s>' % info
-        self.instance = Instance.objects.create(xml=xml_str)
-        self.parsed_instance = ParsedInstance.objects.get(instance=self.instance)
+        self.instance = Instance.objects.create(xml=xml_str, user=self.user)
+        self.parsed_instance = ParsedInstance.objects.get(
+                instance=self.instance)
 
     def test_survey_view(self):
-        url = reverse(survey_responses, kwargs={'pk' : self.parsed_instance.id})
+        url = reverse(survey_responses, kwargs={
+                'instance_id' : self.parsed_instance.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         expected_html = '''
+
 <table class="zebra-striped">
   <thead>
     <tr>
@@ -40,12 +49,12 @@ class TestSurveyView(TestCase):
     </tr>
   </thead>
   <tbody>
-    
     <tr>
-      <td>What&#39;s your name?</td>
+      <td>
+        <span class="language Unknown">What&#39;s your name?</span>
+      </td>
       <td>Andrew</td>
     </tr>
-    
   </tbody>
 </table>
 '''
@@ -78,7 +87,7 @@ class TestSurveyView(TestCase):
             <woman>
               <name>Fran</name>
               <child><name>Greg</name></child>
-            </woman>            
+            </woman>
           </household>'''
         serious_xml = re.sub(r">\s+<", "><", serious_xml)
         d = xform_instance_to_dict(serious_xml)
@@ -127,12 +136,6 @@ class TestSurveyView(TestCase):
             expected_dict
             )
 
-    def test_data_dictionary_writer(self):
-        dd_writer = DataDictionaryWriter()
-        dd_writer.set_data_dictionary(self.data_dictionary)
-        self.assertEqual(dd_writer._sheets.keys(), [self.survey.name])
-        self.assertEqual(dd_writer._columns.keys(), [self.survey.name])
-        self.assertEqual(
-            dd_writer._columns[self.survey.name],
-            [u'name', u'_parent_index', u'_parent_table_name', u'_index']
-            )
+    def test_csv_writer(self):
+        dd_writer = CsvWriter(self.data_dictionary)
+        self.assertEqual(dd_writer._keys, self.data_dictionary.get_keys())
