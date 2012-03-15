@@ -2,11 +2,11 @@ navbar:
     username:
         description: the user name area should flow to right
         where: <ul class="nav secondary-nav"> changed to <ul class="nav nav-pills">
-        why: secondary-nav depreciated
+        why: secondary-nav deprecated
     userdropdown:
         descrption: drop down missing!
         where: <ul class="nav secondary-nav"> changed to <ul class="nav nav-pills">
-        why: secondary-nav depreciated
+        why: secondary-nav deprecated
 
 frontpage:
     body_spacing:
@@ -23,10 +23,10 @@ frontpage:
         where:  container: row :span3
         why: span3 went from 160px to 220px
 
-    creat_account_button:
+    create_account_button:
         description: the button color changed from blue to white
         where: container:row:span6:button
-        why: whyyyyy?
+        why: the primary class has changed to btn-primary
 
 forms:
     show_entries_search:
