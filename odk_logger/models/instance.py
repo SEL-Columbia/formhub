@@ -88,7 +88,8 @@ class Instance(models.Model):
         else:
             return self._parser.to_dict()
 
+from utils.stathat_api import stathat_count
 def stathat_form_submission(sender, instance, created, **kwargs):
     if created:
-       print "new instance created!"
+       stathat_count('formhub-submissions')
 post_save.connect(stathat_form_submission, sender=Instance)
