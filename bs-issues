@@ -1,0 +1,30 @@
+navbar:
+    username:
+        description: the user name area should flow to right
+        where: <ul class="nav secondary-nav"> changed to <ul class="nav nav-pills">
+        why: secondary-nav depreciated
+    userdropdown:
+        descrption: drop down missing!
+        where: <ul class="nav secondary-nav"> changed to <ul class="nav nav-pills">
+        why: secondary-nav depreciated
+
+frontpage:
+    body_spacing:
+        description: the text area and picture area should be on the same horizontal plane. Now they are loped up and down.
+        where: <div class='row'> <div class='span6'><div class='span10'>
+        why: span6 width went from 340px to 460px, span10 width went from 580px to 780px
+    h1:
+        description: Welcome to formhub! lowered itself a bit
+        where: <div class="container"><h1>
+        why: margin-botton:18px missing, and other container h1 configs
+
+    submission_numbers:
+        description: the three numbers are too far apart sometimes they show on the next line
+        where:  container: row :span3
+        why: span3 went from 160px to 220px
+
+    creat_account_button:
+        description: the button color changed from blue to white
+        where: container:row:span6:button
+        why: whyyyyy?
+
