@@ -28,3 +28,19 @@ frontpage:
         where: container:row:span6:button
         why: whyyyyy?
 
+forms:
+    show_entries_search:
+        description: spacing error
+        where: forms-table_wrapper:row:span8
+        why: span8 went from 460px to 620px
+
+    table:
+        description: no table loaded, all text are lumped together
+        where: <table id="forms-table" class="zebra-striped">
+        why: form-table not recognized on the css side
+
+Syntax:
+    content_body_spacing:
+        description: content is on top of body where it should be on right
+        where: look for span4 and span12
+        why: span4 went from 220px to 300px, span12 went from 700px to 940px
