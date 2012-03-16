@@ -17,7 +17,7 @@
             </div>
         {% endfor %}
     {% endif %}
-    <div class="span8">
+    <div class="span5">
         <h1>Publish a Form <small>Upload Excel form files.</small></h1>
         For a quick introduction on how to publish a form check out
         the <a href="{% url main.views.tutorial %}">tutorial</a>.
@@ -32,9 +32,10 @@
         <br/>
         <form action="." method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <ul class="tabs" data-tabs="tabs">
-                <li class="active"><a href="#upload">Upload</a></li>
-                <li><a href="#url">URL</a></li>
+            <div class="tabbable">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#upload" data-toggle="tab">Upload</a></li>
+                <li><a href="#url" data-toggle="tab">URL</a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="upload">
@@ -48,12 +49,15 @@
                     </table>
                 </div>
             </div>
+            </div>
             <span style='float:middle;'>
-                <input type="submit" class="btn large primary" value="Publish" />
+	        <div class="form-actions">
+                <input type="submit" class="btn large btn-primary" value="Publish" />
+		</div>
             </span>
         </form>
     </div>
-    <div class="span2">
+    <div class="span1">
         &nbsp;
     </div>
     <div class="span6 profile">
@@ -66,7 +70,7 @@
             <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' />
             {% if not profile.gravatar_exists %}
                </a>
-               <script type="text/javascript">$('#gravatar').twipsy();</script>
+               <script type="text/javascript">$('#gravatar').tooltip();</script>
             {% endif %}
         </div>
         <div class="span4">

@@ -12,25 +12,17 @@
     <![endif]--> 
  
     <!-- Le styles --> 
-    <link href="/static/bootstrap/bootstrap.css" rel="stylesheet"> 
-    <link href="/static/bootstrap/formhub-extras.css" rel="stylesheet"> 
-    <link href="/static/bootstrap/docs/assets/css/docs.css" rel="stylesheet"> 
-    <link href="/static/bootstrap/docs/assets/js/google-code-prettify/prettify.css" rel="stylesheet"> 
+    <link href="/static/bootstrap/bootstrap.min.css" rel="stylesheet"> 
+    <link href="/static/css/screen.css" rel="stylesheet"> 
     <link href="/static/css/iphone-btn-style.css" rel="stylesheet"> 
  
     <!-- Le javascript --> 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
     <script src="/static/js/jquery.tablesorter.min.js"></script> 
-    <script src="/static/bootstrap/docs/assets/js/google-code-prettify/prettify.js"></script> 
-    <script>$(function () { prettyPrint() })</script> 
-    <script src="/static/bootstrap/js/bootstrap-dropdown.js"></script> 
-    <script src="/static/bootstrap/js/bootstrap-modal.js"></script>
-    <script src="/static/bootstrap/js/bootstrap-alerts.js"></script>
-    <script src="/static/bootstrap/js/bootstrap-twipsy.js"></script> 
-    <script src="/static/bootstrap/js/bootstrap-scrollspy.js"></script> 
-    <script src="/static/bootstrap/js/bootstrap-tabs.js"></script> 
     <script src="/static/js/application.js"></script> 
     <script src="/static/js/iphone-style-checkboxes.js"></script> 
+
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script> 
  
     <!-- Le fav and touch icons --> 
     <link rel="shortcut icon" type="image/x-icon" href="/static/images/favicon.ico"> 
@@ -59,7 +51,7 @@
   </head> 
 
   {% block body %}
-  <body style="padding-top: 40px;">
+  <body>
     {% include "topbar.html" %}
 
     <div class="container">
