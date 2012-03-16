@@ -14,7 +14,7 @@
           {{ form.as_table }}
         </table>
         {% csrf_token %}
-        <input type="submit" class="btn large btn-primary" value="Sign in" />
+        <input type="submit" class="btn btn-large btn-primary" value="Sign in" />
         <input type="hidden" name="next" value="{{ next }}" />
       </form>
       <p>Can't access your account? <a href="{% url auth_password_reset %}">Reset your password.</a></p>

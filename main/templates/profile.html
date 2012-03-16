@@ -84,34 +84,34 @@
                 <td>
                     {% if form.shared %}
                     <a href="{% url download_xlsform content_user.username form.id_string %}">
-                        <button class="btn small success">Excel</button>
+                        <button class="btn btn-small btn-success">Excel</button>
                     </a>
                     {% else %}
-                        <span class="label warning">PRIVATE</span>
+                        <span class="label label-warning">PRIVATE</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if form.shared_data %}
                         <a href="{% url odk_viewer.views.csv_export content_user.username form.id_string %}">
-                            <button class="btn small">csv</button>
+                            <button class="btn btn-small">csv</button>
                         </a>
                         <a href="{% url odk_viewer.views.xls_export content_user.username form.id_string %}">
-                            <button class="btn small">xls</button>
+                            <button class="btn btn-small">xls</button>
                         </a>
                         <a href="{% url odk_viewer.views.kml_export content_user.username form.id_string %}">
-                            <button class="btn small">kml</button>
+                            <button class="btn btn-small">kml</button>
                         </a>
                     {% else %}
-                        <span class="label warning">PRIVATE</span>
+                        <span class="label label-warning">PRIVATE</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if form.shared_data %}
                     <a href="{% url odk_viewer.views.map_view content_user.username form.id_string %}">
-                        <button class="btn small info">Map &raquo;</button>
+                        <button class="btn btn-small btn-info">Map &raquo;</button>
                     </a>
                     {% else %}
-                        <span class="label warning">PRIVATE</span>
+                        <span class="label label-warning">PRIVATE</span>
                     {% endif %}
                 </td>
             </tr>

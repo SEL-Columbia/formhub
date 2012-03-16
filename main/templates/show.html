@@ -320,18 +320,18 @@
             </div>
             <p>
             <a href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
-                <button class="btn btn-small info">Map &raquo;</button>
+                <button class="btn btn-small btn-info">Map &raquo;</button>
             </a>
             </p>
             <p>
                 <a href="{% url main.views.form_photos content_user.username xform.id_string %}">
-                    <button class="btn btn-small info">Photos &raquo;</button>
+                    <button class="btn btn-small btn-info">Photos &raquo;</button>
             </p>
         {% endif %}
         {% endif %}
         {% if can_edit %}
             <a href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
-                <button class="btn btn-small info">Enter Web Form &raquo;</button>
+                <button class="btn btn-small btn-info">Enter Web Form &raquo;</button>
             </a>
         {% endif %}
     </div> 
