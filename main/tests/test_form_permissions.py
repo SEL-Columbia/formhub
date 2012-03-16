@@ -14,7 +14,7 @@ class TestFormPermissions(MainTestCase):
     def setUp(self):
         MainTestCase.setUp(self)
         self._create_user_and_login()
-        self._publish_transporation_form()
+        self._publish_transportation_form()
         s = 'transport_2011-07-25_19-05-49'
         self._make_submission(os.path.join(self.this_directory, 'fixtures',
             'transportation', 'instances', s, s + '.xml'))
@@ -40,7 +40,7 @@ class TestFormPermissions(MainTestCase):
         assign('change_xform', self.user, self.xform)
         self.assertEqual(self.user.has_perm('change_xform', self.xform), True)
         xform = self.xform
-        self._publish_transporation_form()
+        self._publish_transportation_form()
         self.assertNotEqual(xform, self.xform)
         self.assertEqual(self.user.has_perm('change_xform', self.xform), False)
 

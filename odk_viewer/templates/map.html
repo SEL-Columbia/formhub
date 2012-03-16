@@ -6,9 +6,14 @@
   html { height: 100%; overflow: hidden }
   body { height: 100%; margin: 0; padding: 0 }
   #map_canvas { height: 100% }
+  .leaflet-popup-content {max-height: 450px; overflow: auto; width: 420px; padding: 4px;}
 </style>
-
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<link rel="stylesheet" href="/static/css/leaflet.css" />
+<!--[if lte IE 8]>
+    <link rel="stylesheet" href="/static/css/leaflet.ie.css" />
+<![endif]-->
+<script type="text/javascript" src="/static/js/leaflet.js"></script>
+<script type="text/javascript" src="/static/js/wax.leaf.min.js"></script>
 <script type="text/javascript">
 var points = {{ points|safe }};
 var center = {{ center|safe }};

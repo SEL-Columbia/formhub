@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     url(r'^people/$', 'main.views.members_list'),
     url(r'^xls2xform/$', 'main.views.xls2xform'),
     url(r'^support/$', 'main.views.support'),
+    url(r'^stats/$', 'staff.views.stats'),
     url(r'^login_redirect/$', 'main.views.login_redirect'),
     url(r'^(?P<username>[^/]+)/$', 'main.views.profile'),
     url(r'^(?P<username>[^/]+)/profile$', 'main.views.public_profile'),
@@ -36,7 +37,7 @@ urlpatterns = patterns('',
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/submission/(?P<uuid>[^/]+)$', 'main.views.show_submission'),
 
     # stats
-    url(r"^stats/submissions/$", 'stats.views.submissions'),
+    url(r"^stats/submissions/$", 'staff.views.submissions'),
 
     # exporting stuff
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.csv$", 'odk_viewer.views.csv_export'),

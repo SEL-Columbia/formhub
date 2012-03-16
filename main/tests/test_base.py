@@ -36,7 +36,7 @@ class MainTestCase(TestCase):
             post_data = {'xls_file': xls_file}
             return self.client.post('/%s/' % self.user.username, post_data)
 
-    def _publish_transporation_form(self):
+    def _publish_transportation_form(self):
         xls_path = os.path.join(self.this_directory, "fixtures",
                 "transportation", "transportation.xls")
         count = XForm.objects.count()
@@ -49,8 +49,8 @@ class MainTestCase(TestCase):
         self._make_submission(os.path.join(self.this_directory, 'fixtures',
                     'transportation', 'instances', s, s + '.xml'))
 
-    def _publish_transporation_form_and_submit_instance(self):
-        self._publish_transporation_form()
+    def _publish_transportation_form_and_submit_instance(self):
+        self._publish_transportation_form()
         self._submit_transport_instance()
 
     def _make_submission(self, path):
