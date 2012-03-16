@@ -28,6 +28,11 @@ def submissions(request):
     return render_to_response("submissions.html", context_instance=context)
 
 
+@staff_member_required
+def mailer(request):
+    pass
+
+
 def stats(request):
     context = RequestContext(request)
     context.template = 'stats.html'
