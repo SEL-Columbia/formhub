@@ -205,7 +205,7 @@ def show(request, username=None, id_string=None, uuid=None):
     context = RequestContext(request)
     try:
         XForm.objects.get(user__username=request.user.username,
-        id_string=id_string + '_cloned')
+        id_string__contains=id_string + '_cloned')
         context['cloned'] = True
     except XForm.DoesNotExist:
         context['cloned'] = False
@@ -312,12 +312,11 @@ def form_gallery(request):
         context.loggedin_user = request.user
     context.shared_forms = DataDictionary.objects.filter(shared=True)
     clone_list = []
+    dd = DataDictionary.objects.all()
     for s in context.shared_forms:
-        if DataDictionary.objects.filter(id_string=s.id_string + '_cloned', 
+        if dd.filter(id_string__contains=s.id_string + '_cloned', 
            user__username=request.user.username):
-            clone_list.append({'is_cloned': True, 'id_string': s.id_string})
-        else:
-            clone_list.append({'is_cloned': False, 'id_string': s.id_string})
+            clone_list.append(s.id_string)
     context['cloned'] = clone_list
     return render_to_response('form_gallery.html', context_instance=context)
 
