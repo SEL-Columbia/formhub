@@ -7,7 +7,9 @@
   </div>
   <div class="row">
     <div class="span6">
-    <a href="{% url auth_password_change %}">change password</a>
+      <a class="btn" href="{% url auth_password_change %}">change password</a>
+      <br/>
+      <br/>
     </div>
   </div>
 
@@ -17,10 +19,21 @@
         {% csrf_token %}
         <table>
           <tr>
-          <th><label>Username:</label></th>
+          <td><label>Username:</label></td>
           <td><span class="uneditable-input">{{ content_user.username }}</span></td>
           </tr>
-          {{ form.as_table }}
+        {% for field in form %}
+          <tr>
+            <td>
+              {{ field.label_tag }}
+            </td>
+            <td>
+              {{ field.errors }}
+              {{ field }}
+              {% if field.field.required %}*{% endif %}
+            </td>
+          </tr>
+        {% endfor %}
         </table>
         <input type="submit" class="btn btn-primary" value="Update" />
       </form>
