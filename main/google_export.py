@@ -7,6 +7,7 @@ import gdata.docs.data
 import gdata.docs.client
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -65,7 +66,7 @@ def google_auth_return(request):
     access_token = token.get_access_token(request.REQUEST)
     ts.token = gdata.gauth.token_to_blob(token=access_token)
     ts.save()
-    return HttpResponseRedirect('/gauth')
+    return HttpResponseRedirect(reverse(google_oauth2_request))
 
 
 def refresh_access_token(refresh_token):
