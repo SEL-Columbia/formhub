@@ -26,19 +26,14 @@
           {% endif %}
           {% if is_owner %}
             <span class='right'>
-            <a href="{% url main.views.profile_settings content_user.username %}" class="btn small">Edit Your Profile</a>
+            <a href="{% url main.views.profile_settings content_user.username %}" class="btn btn-small">Edit Your Profile</a>
             </span>
           {% endif %}
        </h1>
-       <em>{{ profile.description }}</em>
-       <h2>
-            <span class='right'>
-                {{ num_forms }} <small>Shared form{{ num_forms|pluralize }}</small>
-            </span>
-       </h2>
      </div>
+     <em>{{ profile.description }}</em>
      <div class="row">
-       <div class="span10">
+       <div class="span8">
 	 {% if profile.organization %}
          <p><strong>Organization: </strong>{{ profile.organization}}</p>
 	 {% endif %}
@@ -53,16 +48,21 @@
 	 {% endif %}
          <p><strong>Member since: </strong>{{ content_user.date_joined|date:"F j, Y" }}</p>
        </div>
-       <div class="span6">
+       <div class="span4">
+         <h2>
+            <span class='right'>
+              {{ num_forms }} <small>Shared form{{ num_forms|pluralize }}</small>
+            </span>
+         </h2>
        </div>  
      </div> 
      <hr>
 
      <div class="row">
-       <div class="span16">
+       <div class="span12">
 	 <h3>Shared Forms & Public Data <small>({{ num_forms }})</small></h3>
 	 {% if forms %}
-	 <table class="zebra-striped">
+	 <table class="table table-bordered table-striped">
 	   <thead>
 	    <tr>
               <th>Name</th>

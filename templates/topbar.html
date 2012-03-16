@@ -27,7 +27,7 @@
         <li>&nbsp;</li>
         <li><a href="#"><span class="inverted">{{ xform.submission_count }} submissions</span></a></li>
       </ul>
-      <ul class="nav nav-pills">
+      <ul class="nav pull-right">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle">Data Download</a>
           <ul class="dropdown-menu">
@@ -60,11 +60,13 @@
         <li><a href="http://blog.formhub.org/">Blog</a></li>
 
       </ul>
-      {% if user.is_authenticated %}
-      <ul class="nav nav-pills">
+      <ul class="nav pull-right">
+        {% if user.is_authenticated %}
         <li><a href="/{{user.username}}">{{user.username}}</a></li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle"></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <b class="caret"></b>
+          </a>
           <ul class="dropdown-menu">
             <li><a href="{% url main.views.public_profile user.username %}">Public profile</a></li>
             <li><a href="{% url main.views.profile_settings user.username %}">Settings</a></li>
@@ -72,12 +74,10 @@
             <li><a href="{% url auth_logout %}">Sign out</a></li>
           </ul>
         </li>
-      </ul>
-      {% else %}
-      <ul class="nav" style="float:right">
+        {% else %}
         <li><a href="{% url auth_login %}">Sign in</a></li>
+        {% endif %}
       </ul>
-      {% endif %}
       {% endif %}
     </div>
   </div>

@@ -6,14 +6,14 @@
     <h1>Edit User Profile</h1>
   </div>
   <div class="row">
-    <div class="span8">
+    <div class="span6">
     <a href="{% url auth_password_change %}">change password</a>
     </div>
   </div>
 
   <div class="row">
-    <div class="span8">
-      <form method="post" action="{% url main.views.profile_settings content_user.username %}">
+    <div class="span6">
+      <form class="well" method="post" action="{% url main.views.profile_settings content_user.username %}">
         {% csrf_token %}
         <table>
           <tr>
@@ -22,7 +22,7 @@
           </tr>
           {{ form.as_table }}
         </table>
-        <input type="submit" class="btn primary" value="Update" />
+        <input type="submit" class="btn btn-primary" value="Update" />
       </form>
     </div>
   </div>
