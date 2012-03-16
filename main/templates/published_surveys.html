@@ -37,7 +37,7 @@
 	});
   </script>
 
-  <table id="forms-table" class="zebra-striped">
+  <table id="forms-table" class="table table-bordered table-striped">
     <thead>
       <tr>
         <th>Name</th>
@@ -54,7 +54,7 @@
         <td>
             <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
             {% if xform.shared %}
-                <span class="label notice">PUBLIC</span>
+                <span class="label label-info">PUBLIC</span>
             {% endif %}
         </td>
         <td><center>{{ xform.submission_count|intcomma }}</center></td>
@@ -65,20 +65,35 @@
         </td>
         <td>
           {% if xform.submission_count %}
-              <a href="{% url odk_viewer.views.csv_export user.username xform.id_string %}"><button class="btn small">csv</button></a>
-              <a href="{% url odk_viewer.views.xls_export user.username xform.id_string %}"><button class="btn small">xls</button></a>
+              <a href="{% url odk_viewer.views.csv_export user.username xform.id_string %}"><button class="btn btn-small">csv</button></a>
+              <a href="{% url odk_viewer.views.xls_export user.username xform.id_string %}"><button class="btn btn-small">xls</button></a>
               {% if xform.data_dictionary.has_surveys_with_geopoints %}
-              <a href="{% url odk_viewer.views.kml_export user.username xform.id_string %}"><button class="btn small">kml</button></a>
+              <a href="{% url odk_viewer.views.kml_export user.username xform.id_string %}"><button class="btn btn-small">kml</button></a>
               {% endif %}
           {% endif %}
           {% if xform.shared_data %}
-              <span class="label notice">PUBLIC</span>
+              <span class="label label-info">PUBLIC</span>
           {% endif %}
         </td>
         <td>
+	  <div class=btn-group>
+	    <center>
           {% if xform.data_dictionary.has_surveys_with_geopoints %}
-          <center><a href="{% url odk_viewer.views.map_view user.username xform.id_string %}"><button class="btn small info">Map &raquo;</button></a></center>
+	  <a class="btn" href="{% url odk_viewer.views.map_view user.username xform.id_string %}">
+	    <i class="icon-map-marker"></i>
+	  </a>
           {% endif %}
+	  <a class="btn" href="{% url main.views.form_photos content_user.username xform.id_string %}">
+	    <i class="icon-camera"></i>
+	  </a>
+
+	  <a class="btn" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
+	    <i class="icon-edit"></i>
+	  </a>
+	  </center>
+	    </div>
+
+
         </td>
         <td>{{ xform.downloadable|lower }}</td>
       </tr>
@@ -100,7 +115,7 @@
 
 <script>
   $(function () {
-  $("a[rel=twipsy]").twipsy({
+  $("a[rel=tooltip]").tooltip({
   live: true,
   placement: 'below'
   })

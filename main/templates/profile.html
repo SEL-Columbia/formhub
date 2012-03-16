@@ -18,7 +18,7 @@
          {% if is_owner and not profile.gravatar_exists %}
             <span class="small-link">change</span>
             </a>
-            <script type="text/javascript">$('#gravatar').twipsy();</script>
+            <script type="text/javascript">$('#gravatar').tooltip();</script>
          {% endif %}
          {{ content_user.username }}
          {% if profile.name %}
@@ -26,19 +26,14 @@
           {% endif %}
           {% if is_owner %}
             <span class='right'>
-            <a href="{% url main.views.profile_settings content_user.username %}" class="btn small">Edit Your Profile</a>
+            <a href="{% url main.views.profile_settings content_user.username %}" class="btn btn-small">Edit Your Profile</a>
             </span>
           {% endif %}
        </h1>
-       <em>{{ profile.description }}</em>
-       <h2>
-            <span class='right'>
-                {{ num_forms }} <small>Shared form{{ num_forms|pluralize }}</small>
-            </span>
-       </h2>
      </div>
+     <em>{{ profile.description }}</em>
      <div class="row">
-       <div class="span10">
+       <div class="span8">
 	 {% if profile.organization %}
          <p><strong>Organization: </strong>{{ profile.organization}}</p>
 	 {% endif %}
@@ -53,16 +48,21 @@
 	 {% endif %}
          <p><strong>Member since: </strong>{{ content_user.date_joined|date:"F j, Y" }}</p>
        </div>
-       <div class="span6">
+       <div class="span4">
+         <h2>
+            <span class='right'>
+              {{ num_forms }} <small>Shared form{{ num_forms|pluralize }}</small>
+            </span>
+         </h2>
        </div>  
      </div> 
      <hr>
 
      <div class="row">
-       <div class="span16">
+       <div class="span12">
 	 <h3>Shared Forms & Public Data <small>({{ num_forms }})</small></h3>
 	 {% if forms %}
-	 <table class="zebra-striped">
+	 <table class="table table-bordered table-striped">
 	   <thead>
 	    <tr>
               <th>Name</th>
@@ -84,34 +84,34 @@
                 <td>
                     {% if form.shared %}
                     <a href="{% url download_xlsform content_user.username form.id_string %}">
-                        <button class="btn small success">Excel</button>
+                        <button class="btn btn-small btn-success"><i class="icon-th icon-white"></i> XLS</button>
                     </a>
                     {% else %}
-                        <span class="label warning">PRIVATE</span>
+                        <span class="label label-warning">PRIVATE</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if form.shared_data %}
                         <a href="{% url odk_viewer.views.csv_export content_user.username form.id_string %}">
-                            <button class="btn small">csv</button>
+                            <button class="btn btn-small">csv</button>
                         </a>
                         <a href="{% url odk_viewer.views.xls_export content_user.username form.id_string %}">
-                            <button class="btn small">xls</button>
+                            <button class="btn btn-small">xls</button>
                         </a>
                         <a href="{% url odk_viewer.views.kml_export content_user.username form.id_string %}">
-                            <button class="btn small">kml</button>
+                            <button class="btn btn-small">kml</button>
                         </a>
                     {% else %}
-                        <span class="label warning">PRIVATE</span>
+                        <span class="label label-warning">PRIVATE</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if form.shared_data %}
                     <a href="{% url odk_viewer.views.map_view content_user.username form.id_string %}">
-                        <button class="btn small info">Map &raquo;</button>
+                        <button class="btn btn-small btn-info"><i class="icon-map-marker icon-white"></i> Map</button>
                     </a>
                     {% else %}
-                        <span class="label warning">PRIVATE</span>
+                        <span class="label label-warning">PRIVATE</span>
                     {% endif %}
                 </td>
             </tr>

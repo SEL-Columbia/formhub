@@ -17,15 +17,6 @@ $(document).ready(function(){
         }
     })
 
-
-    // Disable certain links in docs
-    // =============================
-    // Please do not carry these styles over to your projects, it's merely here to prevent button clicks form taking you away from your spot on page
-
-    $('ul.tabs a, ul.pills a, .pagination a, .well .btn, .actions .btn, .alert-message .btn, a.close').click(function (e) {
-        e.preventDefault()
-    })
-
     // Copy code blocks in docs
     $(".copy-code").focus(function () {
         var el = this;
@@ -38,15 +29,15 @@ $(document).ready(function(){
     // ========================
 
     $(window).bind( 'load resize', function () {
-        $(".twipsies a").each(function () {
+        $(".tooltips a").each(function () {
             $(this)
-            .twipsy({
+            .tooltip({
                 live: false
                 , placement: $(this).attr('title')
                 , trigger: 'manual'
                 , offset: 2
             })
-            .twipsy('show')
+            .tooltip('show')
         })
     })
 
