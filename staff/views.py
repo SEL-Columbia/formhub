@@ -1,7 +1,7 @@
 # Create your views here.
 import os
 
-from django.contrib.auth.decorators import permission_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django import forms
@@ -10,7 +10,7 @@ from django.db import IntegrityError
 from django.contrib.auth.models import User
 
 
-@permission_required('is_staff')
+@staff_member_required
 def submissions(request):
     context = RequestContext(request)
 
@@ -27,3 +27,9 @@ def submissions(request):
     context.stats = stats
     return render_to_response("submissions.html", context_instance=context)
 
+
+@staff_member_required
+def stats(request):
+    context = RequestContext(request)
+    context.template = 'stats.html'
+    return render_to_response('base.html', context_instance=context)
