@@ -6,9 +6,12 @@ from django.db.models.query import QuerySet
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.db.models.signals import post_save
+
+from utils.model_tools import set_uuid
+
 import os
 import re
-import uuid
 
 
 def upload_to(instance, filename):
@@ -16,10 +19,6 @@ def upload_to(instance, filename):
         instance.user.username,
         'xls',
         os.path.split(filename)[1])
-
-
-def generate_uuid_for_form():
-    return uuid.uuid4().hex
 
 
 class XLSFormError(Exception):
@@ -87,15 +86,11 @@ class XForm(models.Model):
             raise XLSFormError("There should be a single title.", matches)
         self.title = u"" if not matches else matches[0]
 
-    def _set_uuid(self):
-        self.uuid = generate_uuid_for_form()
-
     def update(self, *args, **kwargs):
         super(XForm, self).save(*args, **kwargs)
 
     def save(self, *args, **kwargs):
-        if not self.uuid:
-            self._set_uuid()
+        set_uuid(self)
         self._set_id_string()
         if getattr(settings, 'STRICT', True) and \
                 not re.search(r"^[\w-]+$", self.id_string):
@@ -113,3 +108,9 @@ class XForm(models.Model):
     def time_of_last_submission(self):
         if self.submission_count() > 0:
             return self.surveys.order_by("-date_created")[0].date_created
+
+from utils.stathat_api import stathat_count
+def stathat_forms_created(sender, instance, created, **kwargs):
+    if created:
+       stathat_count('formhub-forms-created')
+post_save.connect(stathat_forms_created, sender=XForm)

@@ -9,6 +9,7 @@ class MainTestCase(TestCase):
     def setUp(self):
         self.maxDiff = None
         self._create_user_and_login()
+        self.base_url = 'http://testserver'
 
     def _create_user(self, username, password):
         user, created = User.objects.get_or_create(username=username)
@@ -35,7 +36,7 @@ class MainTestCase(TestCase):
             post_data = {'xls_file': xls_file}
             return self.client.post('/%s/' % self.user.username, post_data)
 
-    def _publish_transporation_form(self):
+    def _publish_transportation_form(self):
         xls_path = os.path.join(self.this_directory, "fixtures",
                 "transportation", "transportation.xls")
         count = XForm.objects.count()
@@ -47,11 +48,11 @@ class MainTestCase(TestCase):
         s = 'transport_2011-07-25_19-05-49'
         self._make_submission(os.path.join(self.this_directory, 'fixtures',
                     'transportation', 'instances', s, s + '.xml'))
-    
-    def _publish_transporation_form_and_submit_instance(self):
-        self._publish_transporation_form()
+
+    def _publish_transportation_form_and_submit_instance(self):
+        self._publish_transportation_form()
         self._submit_transport_instance()
-        
+
     def _make_submission(self, path):
         with open(path) as f:
             post_data = {'xml_submission_file': f}
@@ -63,7 +64,8 @@ class MainTestCase(TestCase):
                    'transport_2011-07-25_19-05-36',
                    'transport_2011-07-25_19-06-01',
                    'transport_2011-07-25_19-06-14',]
-        paths = [os.path.join(self.this_directory, 'fixtures', 'transportation', 'instances', s, s + '.xml') for s in surveys]
+        paths = [os.path.join(self.this_directory, 'fixtures', 'transportation',
+                'instances', s, s + '.xml') for s in surveys]
         pre_count = Instance.objects.count()
         for path in paths:
             self._make_submission(path)

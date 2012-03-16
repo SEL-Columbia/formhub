@@ -9,7 +9,7 @@ class TestFormShow(MainTestCase):
     def setUp(self):
         MainTestCase.setUp(self)
         self._create_user_and_login()
-        self._publish_transporation_form_and_submit_instance()
+        self._publish_transportation_form_and_submit_instance()
         self.url = reverse(show, kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string
@@ -122,4 +122,6 @@ class TestFormShow(MainTestCase):
         self.xform = XForm.objects.get(pk=self.xform.id)
         response = self.client.get(reverse(show, kwargs={
             'uuid': self.xform.uuid}))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['Location'],
+                '%s%s' % (self.base_url, self.url))

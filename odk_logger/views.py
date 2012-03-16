@@ -1,3 +1,10 @@
+import base64
+import json
+import os
+import tempfile
+import urllib, urllib2
+import zipfile
+
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response, get_object_or_404
@@ -13,28 +20,23 @@ from django.core.files.storage import get_storage_class
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from poster.encode import multipart_encode
+from poster.streaminghttp import register_openers
+
 from models import XForm, create_instance
 from main.models import UserProfile
 from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
 from utils.decorators import is_owner
 from utils.user_auth import has_permission
 from odk_logger.import_tools import import_instances_from_zip
-import zipfile
-import tempfile
-import os
-import base64
-import urllib, urllib2
-import json
-from poster.encode import multipart_encode
-from poster.streaminghttp import register_openers
-from django.contrib.sites.models import Site
 
 class HttpResponseNotAuthorized(HttpResponse):
     status_code = 401
 
     def __init__(self, redirect_to):
         HttpResponse.__init__(self)
-        self['WWW-Authenticate'] = 'Basic realm="%s"' % Site.objects.get_current().name
+        self['WWW-Authenticate'] =\
+                'Basic realm="%s"' % Site.objects.get_current().name
 
 @require_POST
 @csrf_exempt
@@ -163,7 +165,8 @@ def download_xform(request, username, id_string):
     return response
 
 def download_xlsform(request, username, id_string):
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
     owner = User.objects.get(username=username)
     if not has_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden('Not shared.')
@@ -203,7 +206,8 @@ def toggle_downloadable(request, username, id_string):
 
 def enter_data(request, username, id_string):
     owner = User.objects.get(username=username)
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    xform = get_object_or_404(XForm, user__username=username,
+                id_string=id_string)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
     if not hasattr(settings, 'TOUCHFORMS_URL'):
@@ -228,7 +232,8 @@ def enter_data(request, username, id_string):
             response = json.loads(response.read())
             context = RequestContext(request)
             owner = User.objects.get(username=username)
-            context.profile, created = UserProfile.objects.get_or_create(user=owner)
+            context.profile, created = UserProfile.objects.get_or_create(
+                    user=owner)
             context.xform = xform
             context.content_user = owner
             context.form_view = True
