@@ -121,10 +121,9 @@
         <h3>Settings</h3>
         <div class="clearfix">
           <div class="input">
-          <label>Form Shared&nbsp;
+          <label>Form Shared&nbsp;</label>
             <input id="form-shared" type="checkbox"{% if xform.shared %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
           </div> 
-          </label>
           <br/>
           <label>Data Shared&nbsp;</label>
           <div class="input">
@@ -198,7 +197,7 @@
         <hr/>
         <h3>
             XLSForm
-            <span id="form-shared-public" class="label label-notice">PUBLIC</span>
+            <span id="form-shared-public" class="label label-info">PUBLIC</span>
             <span id="form-shared-private" class="label label-warning">PRIVATE</span>
         </h3>
         <br/>
@@ -258,7 +257,7 @@
         <hr/>
         <h3>
             Form Data
-            <span id="data-shared-public" class="label label-notice">PUBLIC</span>
+            <span id="data-shared-public" class="label label-info">PUBLIC</span>
             <span id="data-shared-private" class="label label-warning">PRIVATE</span>
         </h3>
         {% if xform.shared_data or can_view %}

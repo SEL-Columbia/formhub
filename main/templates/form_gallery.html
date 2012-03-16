@@ -49,7 +49,6 @@
   <table id="forms-table" class="table table-bordered table-striped">
     <thead>
       <tr>
-        <th></th>
         <th>User</th>
         <th>Name</th>
         <th>Description</th>
@@ -60,10 +59,7 @@
       {% for data_dictionary in shared_forms %}
       <tr>
         <td>
-          <img src='{{ data_dictionary.user.profile.gravatar }}' alt='' width='20' height='20' />
-        </td>
-        <td>
-          <a href="/{{ data_dictionary.user.username }}">{{ data_dictionary.user.username }}</a>
+          <img src='{{ data_dictionary.user.profile.gravatar }}' alt='' width='20' height='20' />&nbsp;<a href="/{{ data_dictionary.user.username }}">{{ data_dictionary.user.username }}</a>
         </td>
         <td><a href="{% url main.views.show data_dictionary.user.username data_dictionary.id_string %}">{{ data_dictionary.title }}</a></td>
         <td>{{ data_dictionary.description }}</td>
