@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import patterns, include, url
-from main.views import google_oauth2_request
-from main.views import google_auth_return
+from main.google_export import google_oauth2_request
+from main.google_export import google_auth_return
 
 urlpatterns = patterns('',
     url(r'^gauthtest$',
