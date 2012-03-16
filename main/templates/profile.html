@@ -84,7 +84,7 @@
                 <td>
                     {% if form.shared %}
                     <a href="{% url download_xlsform content_user.username form.id_string %}">
-                        <button class="btn btn-small btn-success">Excel</button>
+                        <button class="btn btn-small btn-success"><i class="icon-th icon-white"></i> XLS</button>
                     </a>
                     {% else %}
                         <span class="label label-warning">PRIVATE</span>
@@ -108,7 +108,7 @@
                 <td>
                     {% if form.shared_data %}
                     <a href="{% url odk_viewer.views.map_view content_user.username form.id_string %}">
-                        <button class="btn btn-small btn-info">Map &raquo;</button>
+                        <button class="btn btn-small btn-info"><i class="icon-map-marker icon-white"></i> Map</button>
                     </a>
                     {% else %}
                         <span class="label label-warning">PRIVATE</span>

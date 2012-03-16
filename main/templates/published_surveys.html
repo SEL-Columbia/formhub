@@ -76,9 +76,24 @@
           {% endif %}
         </td>
         <td>
+	  <div class=btn-group>
+	    <center>
           {% if xform.data_dictionary.has_surveys_with_geopoints %}
-          <center><a href="{% url odk_viewer.views.map_view user.username xform.id_string %}"><button class="btn small btn-info">Map &raquo;</button></a></center>
+	  <a class="btn" href="{% url odk_viewer.views.map_view user.username xform.id_string %}">
+	    <i class="icon-map-marker"></i>
+	  </a>
           {% endif %}
+	  <a class="btn" href="{% url main.views.form_photos content_user.username xform.id_string %}">
+	    <i class="icon-camera"></i>
+	  </a>
+
+	  <a class="btn" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
+	    <i class="icon-edit"></i>
+	  </a>
+	  </center>
+	    </div>
+
+
         </td>
         <td>{{ xform.downloadable|lower }}</td>
       </tr>
