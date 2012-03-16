@@ -11,25 +11,24 @@
             &nbsp;
         </li>
         <li>&nbsp;&nbsp;</li>
-        <li>
-          <h3>
-            <a href="{% url main.views.profile content_user.username %}">{{ content_user.username }}</a>
-          </h3>
+        <li class="lead">
+          <a href="{% url main.views.profile content_user.username %}">{{ content_user.username }}</a>
         </li>
-        <li>
-          <h3><a href="#">&nbsp;/&nbsp;</a></h3>
+        <li class="lead">
+          <a href="#">&nbsp;/&nbsp;</a>
         </li>
-        <li>
-          <h3>
-            <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
-          </h3>
+        <li class="lead">
+          <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
         </li>
         <li>&nbsp;</li>
         <li><a href="#"><span class="inverted">{{ xform.submission_count }} submissions</span></a></li>
       </ul>
       <ul class="nav pull-right">
+        <li><a href="#" class="dropdown-toggle">Data Download</a></li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle">Data Download</a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <b class="caret"></b>
+          </a>
           <ul class="dropdown-menu">
             <li>
                 <a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}">
