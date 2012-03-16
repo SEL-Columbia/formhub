@@ -239,3 +239,7 @@ table.table thead .sorting_desc_disabled { background: url('images/sort_desc_dis
 table.dataTable th:active {
 	outline: none;
 }
+
+section {
+    padding-top: 20px;
+}
