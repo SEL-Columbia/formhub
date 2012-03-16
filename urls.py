@@ -12,6 +12,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
+    # google urls
+    url(r'^', include('main.google_urls')),
     # main website views
     url(r'^$', 'main.views.home'),
     url(r'^tutorial/$', 'main.views.tutorial'),

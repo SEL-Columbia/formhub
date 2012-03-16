@@ -183,6 +183,10 @@ from pymongo import Connection
 _MONGO_CONNECTION = Connection()
 MONGO_DB = None
 
+GOOGLE_STEP2_URI = 'http://formhub.ukanga.com/gwelcome'
+GOOGLE_CLIENT_ID = '407955357870.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = 'h4L38a0Cl2sCMznKsAHj0N5n'
+
 TESTING_MODE = False
 if len(sys.argv)>=2 and (sys.argv[1]=="test" or sys.argv[1]=="test_all"):
     # This trick works only when we run tests from the command line.
