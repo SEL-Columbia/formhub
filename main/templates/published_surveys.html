@@ -54,7 +54,7 @@
         <td>
             <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
             {% if xform.shared %}
-                <span class="label label-notice">PUBLIC</span>
+                <span class="label label-info">PUBLIC</span>
             {% endif %}
         </td>
         <td><center>{{ xform.submission_count|intcomma }}</center></td>
@@ -72,7 +72,7 @@
               {% endif %}
           {% endif %}
           {% if xform.shared_data %}
-              <span class="label label-notice">PUBLIC</span>
+              <span class="label label-info">PUBLIC</span>
           {% endif %}
         </td>
         <td>
