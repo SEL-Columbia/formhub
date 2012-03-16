@@ -18,7 +18,7 @@ DEPLOYMENTS = {
     'dev': {
         'host_string': 'wsgi@nmis-linode.mvpafrica.org',
         'project': 'formhub_dev',
-        'branch': 'bootstrap',
+        'branch': 'master',
     },
     # 'prod': {
     #     'project': 'xls2xform_production',
