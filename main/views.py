@@ -268,6 +268,12 @@ def support(request):
     context.template = 'support.html'
     return render_to_response('base.html', context_instance=context)
 
+def stats(request):
+    context = RequestContext(request)
+    context.template = 'stats.html'
+    return render_to_response('base.html', context_instance=context)
+
+
 def xls2xform(request):
     context = RequestContext(request)
     context.template = 'xls2xform.html'

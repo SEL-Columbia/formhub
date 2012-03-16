@@ -6,6 +6,7 @@ from django.db.models.query import QuerySet
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.db.models.signals import post_save
 
 from utils.model_tools import set_uuid
 
@@ -107,3 +108,9 @@ class XForm(models.Model):
     def time_of_last_submission(self):
         if self.submission_count() > 0:
             return self.surveys.order_by("-date_created")[0].date_created
+
+from utils.stathat_api import stathat_count
+def stathat_forms_created(sender, instance, created, **kwargs):
+    if created:
+       stathat_count('formhub-forms-created')
+post_save.connect(stathat_forms_created, sender=XForm)

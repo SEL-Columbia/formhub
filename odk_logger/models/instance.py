@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 
 from .xform import XForm
 from .survey_type import SurveyType
@@ -86,3 +87,9 @@ class Instance(models.Model):
             return self._parser.get_flat_dict_with_attributes()
         else:
             return self._parser.to_dict()
+
+from utils.stathat_api import stathat_count
+def stathat_form_submission(sender, instance, created, **kwargs):
+    if created:
+       stathat_count('formhub-submissions')
+post_save.connect(stathat_form_submission, sender=Instance)
