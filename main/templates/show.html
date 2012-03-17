@@ -14,78 +14,37 @@
 	  </div>
 	</h3>
         <div class="clearfix">
-            <div class="input">
+          <div class="input">
             <form>
-                {% csrf_token %}
-                <input type="text" id="title"class="input-xxlarge present header" disabled="" rows="3" value="{{ xform.title }}" />
-                {% if can_edit %}
-                    <a id="title_edit" data-id="title" href="" class="btn small bind-edit">edit</a>
-                    <a id="title_save" data-id="title" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
-                {% endif %}
+              {% csrf_token %}
+              <input type="text" id="title"class="input-xxlarge present header" disabled="" rows="3" value="{{ xform.title }}" />
+              {% if can_edit %}
+              <a id="title_edit" data-id="title" href="" class="btn small bind-edit">edit</a>
+              <a id="title_save" data-id="title" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+              {% endif %}
             </form>
-            </div>
+          </div>
         </div>
     </div> 
     <div class="row">
       <div class="span8">
         {% if can_edit %}
-            <h4>Form ID: {{ xform.id_string }}</h4>
+        <h4>Form ID: {{ xform.id_string }}</h4>
         {% endif %}
         <h3>Description</h3>
         <div class="clearfix">
-            <div class="input">
+          <div class="input">
             <form>
-                {% csrf_token %}
-                <textarea id="description" class="input-xxlarge present" disabled="" rows="3" name="textarea">{% if xform.description %}{{ xform.description }}{% else %}None{% endif %}</textarea>
-                {% if can_edit %}
-                    <a id="description_edit" data-id="description" href="" class="btn small bind-edit">edit</a>
-                    <a id="description_save" data-id="description" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
-                {% endif %}
+              {% csrf_token %}
+              <textarea id="description" class="input-xxlarge present" disabled="" rows="3" name="textarea">{% if xform.description %}{{ xform.description }}{% else %}None{% endif %}</textarea>
+              {% if can_edit %}
+              <a id="description_edit" data-id="description" href="" class="btn small bind-edit">edit</a>
+              <a id="description_save" data-id="description" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+              {% endif %}
             </form>
-            </div>
+          </div>
         </div>
 
-        <div class="clearfix">
-            <form class="well" action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
-                <h3>Source</h3>
-                {% csrf_token %}
-                <input type="text" id="source"class="input-xxlarge present" disabled="" rows="3" value="{{ source.data_value|default:"None provided" }}" />
-
-                {% if can_edit %}
-                    <a id="source_edit" data-id="source" href="" class="btn small bind-edit">edit</a>
-                    <a id="source_save" data-id="source" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
-                {% endif %}
-
-                {% if source.data_file %}
-                    <p><a href="{% url main.views.download_metadata content_user.username xform.id_string source.id %}">{{ source.data_file.name }}</p></a>
-                {% endif %}
-
-                {% if can_edit %}
-                    {% csrf_token %}
-                    <table>
-                    {{ source_form.as_table }}
-                    </table>
-                    <input type="submit" class="btn" value="Upload" />
-                {% endif %}
-            </form>
-        </div>
-        <div class=clearfix>
-                {% for doc in supporting_docs %}
-                    <p><a href="{% url main.views.download_metadata content_user.username xform.id_string doc.id %}">{{ doc.data_value }}</p></a>
-                {% endfor %}
-                {% if can_edit %}
-                <form class="well" action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
-                <h3>Supporting Documents</h3>
-                    {% csrf_token %}
-                    <table>
-                    {{ doc_form.as_table }}
-                    </table>
-                    <input type="submit" class="btn" value="Upload" />
-                </form>
-                {% endif %}
-        </div>
-      </div>
-      <div class="span4">
         <script type="text/javascript" charset="utf-8">
             $(document).ready(function() {
               {% if xform.shared_data %}
@@ -112,89 +71,14 @@
               // add click event to all public (x)forms
               $('a.clonexls').click(function(){
                 el = $(this);
-                clone_xlsform(el.data('url'), el.data('username'), el.data('id'));
+                clone_xlsofrm(el.data('url'), el.data('username'), el.data('id'));
                 return false;
               });
             {% endif %}
             });
         </script>
-        {% if is_owner %}
-        <h3>Settings</h3>
-        <div class="clearfix">
-          <div class="input">
-          <label>Form Shared&nbsp;</label>
-            <input id="form-shared" type="checkbox"{% if xform.shared %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
-          </div> 
-          <br/>
-          <label>Data Shared&nbsp;</label>
-          <div class="input">
-            <input id="data-shared" type="checkbox"{% if xform.shared_data %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
-          </div> 
-          <br/>
-          <label>Form Active&nbsp;</label>
-          <div class="input">
-            <input id="active-form" type="checkbox"{% if xform.downloadable %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
-          </div> 
-          <br/>
-          <label>Delete Form&nbsp;</label>
-        <div class="input">
-          <!-- DELETE -->
-          <div id="delete-{{ xform.id_string }}" class="modal hide fade">
-            <div class="modal-header">
-              <a href="#" class="close">&times;</a>
-              <h3>Delete Confirmation</h3>
-            </div>
-            <div class="modal-body">
-              <p>Are you sure you want to delete the form '{{ xform.title }}'? This form has <strong>{{ xform.submission_count|intcomma }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.</p>
-            </div>
-            <div class="modal-footer">
-              <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn btn-primary">Delete</a>
-              <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">Cancel</a>
-        ,  </div>
-          </div>
-          <a href="#" data-controls-modal="delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true">
-              <button class="btn small btn-danger">Delete</button>
-          </a>
-        </div>
-        </div> 
-        <div>
-            <h3>Sharing</h3>
-            Sharing by link is
-            <strong>
-            {% if public_link %}
-                on with url <a href="{% url main.views.show xform.uuid %}">{{ base_url }}{% url main.views.show xform.uuid %}</a>
-            {% else %}
-                off
-            {% endif %}
-            <form action="{% url main.views.set_perm content_user.username xform.id_string %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="perm_type" value="link"/>
-                <input type="hidden" name="for_user" value="toggle"/>
-                <input type="submit" class="btn" value="Turn {% if public_link %}off{% else %}on{% endif %}" />
-            </form>
-            </strong>
-            <br/>
-            <br/>
-            {% if users_with_perms|length %}
-            <ul>
-                {% for user, perms in users_with_perms %}
-                    <li>{{ user }}: {% for perm in perms %}{{ perm }} {% endfor %}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-            <form action="{% url main.views.set_perm content_user.username xform.id_string %}" method="post">
-                {% csrf_token %}
-                <table class="narrow-labels">
-                {{ permission_form.as_table }}
-                </table>
-                <input type="submit" class="btn" value="Submit" />
-            </form>
-        </div>
-        {% endif %}
-      </div>
-    </div>
-    <div class="row">
-      <div class="span16">
+
+
         <hr/>
         <h3>
             XLSForm
@@ -202,7 +86,7 @@
             <span id="form-shared-private" class="label label-warning">PRIVATE</span>
         </h3>
         <br/>
-<div class="btn-toolbar" style="margin-bottom: 9px">
+	<div class="btn-toolbar" style="margin-bottom: 9px">
 	  <div class="btn-group">
 	    <button class="btn btn-success"><a href="{% url download_xlsform content_user.username xform.id_string %}"><i class="icon-th icon-white"></i><font color=#FFF> XLSForm</font></a></button>
 	    <button class="btn dropdown-toggle btn-success" data-toggle="dropdown">
@@ -225,8 +109,8 @@
 	      </li>
 	    </ul>
 	  </div>
-</div>
-<br>
+	</div>
+	<br>
         {% if user.is_authenticated and content_user.username != user.username and xform.xls|length > 0 %}
             <br/><br/>
             <li>
@@ -250,11 +134,6 @@
         <p><a id="form-license_info" style="display:none" href="">License information</a></p>
 
 
-
-      </div>
-    </div>
-    <div class="row">
-      <div class="span16">
         <hr/>
         <h3>
             Form Data
@@ -337,6 +216,8 @@
     <p><a id="data-license_info" style="display:none" href="">License information</a></p>
 
             </div>
+
+
             <p>
 	      <div class="btn-group" style="margin-bottom: 9px">
 		<a class="btn btn-info" rel="tooltip" title="View Map" href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
@@ -352,8 +233,134 @@
 		  <i class="icon-edit icon-white"></i> Enter Web Form</a>
 		{% endif %}
 	      </div>
-<br>
 
-	    </div> 
+
+
+<br>
+<hr>
+        <div class="clearfix">
+	  <h3>Form Metadata</h3>
+	  <br>
+            <form class="well" action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
+                <h3>Source</h3>
+                {% csrf_token %}
+                <input type="text" id="source"class="input-xxlarge present" disabled="" rows="3" value="{{ source.data_value|default:"None provided" }}" />
+
+                {% if can_edit %}
+                    <a id="source_edit" data-id="source" href="" class="btn small bind-edit">edit</a>
+                    <a id="source_save" data-id="source" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+                {% endif %}
+
+                {% if source.data_file %}
+                    <p><a href="{% url main.views.download_metadata content_user.username xform.id_string source.id %}">{{ source.data_file.name }}</p></a>
+                {% endif %}
+
+                {% if can_edit %}
+                    {% csrf_token %}
+                    <table>
+                    {{ source_form.as_table }}
+                    </table>
+                    <input type="submit" class="btn" value="Upload" />
+                {% endif %}
+            </form>
+        </div>
+        <div class=clearfix>
+                {% for doc in supporting_docs %}
+                    <p><a href="{% url main.views.download_metadata content_user.username xform.id_string doc.id %}">{{ doc.data_value }}</p></a>
+                {% endfor %}
+                {% if can_edit %}
+                <form class="well" action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
+                <h3>Supporting Documents</h3>
+                    {% csrf_token %}
+                    <table>
+                    {{ doc_form.as_table }}
+                    </table>
+                    <input type="submit" class="btn" value="Upload" />
+                </form>
+                {% endif %}
+        </div>
+	
+	    </div>
+</div>
+    <div class="row">
+      <div class="span3">
+
+
+        {% if is_owner %}
+        <h3>Settings</h3>
+        <div class="clearfix">
+          <div class="input">
+          <label>Form Shared&nbsp;</label>
+            <input id="form-shared" type="checkbox"{% if xform.shared %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
+          </div> 
+          <br/>
+          <label>Data Shared&nbsp;</label>
+          <div class="input">
+            <input id="data-shared" type="checkbox"{% if xform.shared_data %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
+          </div> 
+          <br/>
+          <label>Form Active&nbsp;</label>
+          <div class="input">
+            <input id="active-form" type="checkbox"{% if xform.downloadable %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
+          </div> 
+          <br/>
+          <label>Delete Form&nbsp;</label>
+        <div class="input">
+          <!-- DELETE -->
+          <div id="delete-{{ xform.id_string }}" class="modal hide fade">
+            <div class="modal-header">
+              <a href="#" class="close">&times;</a>
+              <h3>Delete Confirmation</h3>
+            </div>
+            <div class="modal-body">
+              <p>Are you sure you want to delete the form '{{ xform.title }}'? This form has <strong>{{ xform.submission_count|intcomma }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.</p>
+            </div>
+            <div class="modal-footer">
+              <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn btn-primary">Delete</a>
+              <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">Cancel</a>
+        ,  </div>
+          </div>
+          <a href="#" data-controls-modal="delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true">
+              <button class="btn small btn-danger">Delete</button>
+          </a>
+        </div>
+        </div> 
+        <div>
+	  <br>
+            <h3>Sharing</h3>
+            Sharing by link is
+            <strong>
+            {% if public_link %}
+                on with url <a href="{% url main.views.show xform.uuid %}">{{ base_url }}{% url main.views.show xform.uuid %}</a>
+            {% else %}
+                off
+            {% endif %}
+            <form action="{% url main.views.set_perm content_user.username xform.id_string %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="perm_type" value="link"/>
+                <input type="hidden" name="for_user" value="toggle"/>
+                <input type="submit" class="btn" value="Turn {% if public_link %}off{% else %}on{% endif %}" />
+            </form>
+            </strong>
+            <br/>
+            {% if users_with_perms|length %}
+            <ul>
+                {% for user, perms in users_with_perms %}
+                    <li>{{ user }}: {% for perm in perms %}{{ perm }} {% endfor %}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <form action="{% url main.views.set_perm content_user.username xform.id_string %}" method="post">
+                {% csrf_token %}
+                <table class="narrow-labels">
+                {{ permission_form.as_table }}
+                </table>
+                <input type="submit" class="btn" value="Submit" />
+            </form>
+        </div>
+        {% endif %}
+      </div>
+
+
   </section>
 {% endblock %}
