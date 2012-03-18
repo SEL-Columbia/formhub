@@ -77,7 +77,10 @@ class XForm(models.Model):
         matches = re.findall(r'<instance>.*id="([^"]+)".*</instance>', text)
         if len(matches) != 1:
             raise XLSFormError("There should be a single id string.", text)
-        self.id_string = matches[0]
+        if len(matches[0]) > 0 and matches[0][0].isdigit():
+            self.id_string = '_' + matches[0]
+        else:
+            self.id_string = matches[0]
 
     def _set_title(self):
         text = re.sub(r"\s+", " ", self.xml)
