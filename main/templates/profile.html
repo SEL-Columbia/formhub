@@ -107,9 +107,11 @@
                 </td>
                 <td>
                     {% if form.shared_data %}
+		    {% if form.data_dictionary.has_surveys_with_geopoints %}
                     <a href="{% url odk_viewer.views.map_view content_user.username form.id_string %}">
                         <button class="btn btn-small btn-info"><i class="icon-map-marker icon-white"></i> Map</button>
                     </a>
+		    {% endif %}
                     {% else %}
                         <span class="label label-warning">PRIVATE</span>
                     {% endif %}
