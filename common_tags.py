@@ -6,6 +6,7 @@ from odk_logger.xform_instance_parser import XFORM_ID_STRING
 # These are common variable tags that we'll want to access
 INSTANCE_DOC_NAME = u"_name"
 ID = u"_id"
+UUID = u"_uuid"
 PICTURE = u"picture"
 GPS = u"location/gps"
 LGA = u"lga"
@@ -26,9 +27,5 @@ REGISTRATION = u"registration"
 NAME = u"name"
 
 # extra fields that we're adding to our mongo doc
-SURVEYOR_NAME = u"_surveyor_name"
-LGA_ID = u"_lga_id"
 ATTACHMENTS = u"_attachments"
 DATE = u"_date"
-
-PHONE_UPDATE = u"phone"

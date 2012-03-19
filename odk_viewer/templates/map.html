@@ -6,13 +6,14 @@
   html { height: 100%; overflow: hidden }
   body { height: 100%; margin: 0; padding: 0 }
   #map_canvas { height: 100% }
+  .leaflet-popup-content {max-height: 450px; overflow: auto; width: 420px; padding: 4px;}
 </style>
 <link rel="stylesheet" href="/static/css/leaflet.css" />
 <!--[if lte IE 8]>
     <link rel="stylesheet" href="/static/css/leaflet.ie.css" />
 <![endif]-->
-
 <script type="text/javascript" src="/static/js/leaflet.js"></script>
+<script type="text/javascript" src="/static/js/wax.leaf.min.js"></script>
 <script type="text/javascript">
 var points = {{ points|safe }};
 var center = {{ center|safe }};
@@ -28,6 +29,6 @@ $('#selectLanguage').live('change', function() {
 <body onload="initialize()">
   {% include "topbar.html" %}
 
-  <div id="map_canvas" style="width:100%; height:100%; margin-top: 40px"></div>
+  <div id="map_canvas" style="width:100%; height:100%;"></div>
 </body>
 {% endblock %}

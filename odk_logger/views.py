@@ -165,7 +165,8 @@ def download_xform(request, username, id_string):
     return response
 
 def download_xlsform(request, username, id_string):
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
     owner = User.objects.get(username=username)
     if not has_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden('Not shared.')

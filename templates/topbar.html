@@ -1,7 +1,7 @@
-<div class="topbar" data-dropdown="dropdown" >
-  <div class="topbar-inner{% if form_view %} topbar-inner-map{% endif %}">
+<div class="navbar" data-dropdown="dropdown" >
+  <div class="navbar-inner{% if form_view %} navbar-inner-map{% endif %}">
     <div class="container">
-      <a class="brand" href="/" title="formhub"><img height="14px" alt="formhub" src="/static/images/logo.png" /></a>
+      <a class="brand" href="/" title="formhub"><img alt="formhub" src="/static/images/logo.png" /></a>
       {% if form_view %}
       <ul class="nav">
         <li>&nbsp;</li>
@@ -11,25 +11,24 @@
             &nbsp;
         </li>
         <li>&nbsp;&nbsp;</li>
-        <li>
-          <h3>
-            <a href="{% url main.views.profile content_user.username %}">{{ content_user.username }}</a>
-          </h3>
+        <li class="lead">
+          <a href="{% url main.views.profile content_user.username %}">{{ content_user.username }}</a>
         </li>
-        <li>
-          <h3><a href="#">&nbsp;/&nbsp;</a></h3>
+        <li class="lead">
+          <a href="#">&nbsp;/&nbsp;</a>
         </li>
-        <li>
-          <h3>
-            <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
-          </h3>
+        <li class="lead">
+          <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
         </li>
         <li>&nbsp;</li>
         <li><a href="#"><span class="inverted">{{ xform.submission_count }} submissions</span></a></li>
       </ul>
-      <ul class="nav secondary-nav">
+      <ul class="nav pull-right">
+        <li><a href="#" class="dropdown-toggle">Data Download</a></li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle">Data Download</a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <b class="caret"></b>
+          </a>
           <ul class="dropdown-menu">
             <li>
                 <a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}">
@@ -60,24 +59,25 @@
         <li><a href="http://blog.formhub.org/">Blog</a></li>
 
       </ul>
-      {% if user.is_authenticated %}
-      <ul class="nav secondary-nav">
+      <ul class="nav pull-right">
+        {% if user.is_authenticated %}
         <li><a href="/{{user.username}}">{{user.username}}</a></li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle"></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <b class="caret"></b>
+          </a>
           <ul class="dropdown-menu">
-            <li><a href="{% url main.views.public_profile user.username %}">Public profile</a></li>
-            <li><a href="{% url main.views.profile_settings user.username %}">Settings</a></li>
+            <li><a href="{% url main.views.public_profile user.username %}"><i class="icon-user"></i> Public profile</a></li>
+            <li><a href="{% url main.views.profile_settings user.username %}"><i class="icon-cog"></i> Settings</a></li>
             <!--<li><a href="{% url auth_password_change %}">Change password</a></li>-->
-            <li><a href="{% url auth_logout %}">Sign out</a></li>
+	    <li class="divider"></li>
+            <li><a href="{% url auth_logout %}"><i class="icon-off"></i> Sign out</a></li>
           </ul>
         </li>
-      </ul>
-      {% else %}
-      <ul class="nav" style="float:right">
+        {% else %}
         <li><a href="{% url auth_login %}">Sign in</a></li>
+        {% endif %}
       </ul>
-      {% endif %}
       {% endif %}
     </div>
   </div>
