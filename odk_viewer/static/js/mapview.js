@@ -2,14 +2,14 @@ var centerLatLng = new L.LatLng(center.lat, center.lng);
 var defaultZoom = 8;
 var mapId = 'map_canvas';
 var map;
-var mapMarkerIcon = L.Icon.extend({
+var mapMarkerIcon = L.Icon.extend({options:{
     iconUrl: '/static/images/marker-solid-24.png',
     shadowUrl: null,
     iconSize: new L.Point(24, 24),
     shadowSize: null,
     iconAnchor: new L.Point(12, 24),
     popupAnchor: new L.Point(0,-24)
-});
+}});
 
 function initialize() {
     // mapbox streets formhub tiles
