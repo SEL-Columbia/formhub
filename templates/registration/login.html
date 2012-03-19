@@ -9,12 +9,12 @@
 
   <div class="row">
     <div class="span8">
-      <form method="post" action=".">
+      <form class="well" method="post" action=".">
         <table>
           {{ form.as_table }}
         </table>
         {% csrf_token %}
-        <input type="submit" class="btn large primary" value="Sign in" />
+        <input type="submit" class="btn btn-large btn-primary" value="Sign in" />
         <input type="hidden" name="next" value="{{ next }}" />
       </form>
       <p>Can't access your account? <a href="{% url auth_password_reset %}">Reset your password.</a></p>

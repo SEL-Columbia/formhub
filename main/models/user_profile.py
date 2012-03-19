@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from utils.country_field import COUNTRIES
 from utils.gravatar import get_gravatar_img_link, gravatar_exists
+from django.db.models.signals import post_save
 
 class UserProfile(models.Model):
     # This field is required.
@@ -29,3 +30,8 @@ class UserProfile(models.Model):
     class Meta:
         app_label = 'main'
 
+from utils.stathat_api import stathat_count
+def stathat_user_signups(sender, instance, created, **kwargs):
+    if created:
+       stathat_count('formhub-signups')
+post_save.connect(stathat_user_signups, sender=UserProfile)

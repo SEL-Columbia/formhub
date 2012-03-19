@@ -263,10 +263,12 @@ def edit(request, username, id_string):
                         }))
     return HttpResponseForbidden('Update failed.')
 
+
 def support(request):
     context = RequestContext(request)
     context.template = 'support.html'
     return render_to_response('base.html', context_instance=context)
+
 
 def xls2xform(request):
     context = RequestContext(request)

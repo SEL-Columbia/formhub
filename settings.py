@@ -129,7 +129,7 @@ INSTALLED_APPS = (
     'main',
     'odk_logger',
     'odk_viewer',
-    'stats',
+    'staff',
     'guardian',
 )
 COMPRESS = True

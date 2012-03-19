@@ -41,7 +41,7 @@ class TestSurveyView(MainTestCase):
         self.assertEqual(response.status_code, 200)
         expected_html = '''
 
-<table class="zebra-striped">
+<table class="table table-bordered table-striped">
   <thead>
     <tr>
       <th>Question</th>
@@ -57,6 +57,7 @@ class TestSurveyView(MainTestCase):
     </tr>
   </tbody>
 </table>
+<script type="text/javascript">_StatHat.push([\'_trackCount\', \'nDdz7zH1c26BwPwOzF0_fyBMc2Fl\', 1.0]);</script>
 '''
         self.assertEqual(expected_html, response.content)
 
