@@ -243,3 +243,49 @@ def kml_export(request, username, id_string):
         mimetype="application/vnd.google-earth.kml+xml")
     response['Content-Disposition'] = disposition_ext_and_date(id_string, 'kml')
     return response
+
+
+def google_xls_export(request, username, id_string):
+    owner = User.objects.get(username=username)
+    xform = XForm.objects.get(id_string=id_string, user=owner)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden('Not shared.')
+    valid, dd = dd_for_params(id_string, owner, request)
+    if not valid: return dd
+    this_directory = os.path.dirname(__file__)
+    file_path = os.path.join(this_directory, "csvs", id_string + ".xls")
+    ddw = XlsWriter()
+    ddw.set_file(open(file_path))
+    ddw.set_data_dictionary(dd)
+    temp_file = ddw.save_workbook_to_file()
+    import gdata
+    import gdata.docs
+    import gdata.data
+    import gdata.docs.client
+    import gdata.docs.data
+    from main.google_export import token, refresh_access_token, redirect_uri
+    from main.models import TokenStorageModel
+    try:
+        ts = TokenStorageModel.objects.get(id=request.user)
+    except TokenStorageModel.DoesNotExist:
+        return HttpResponseRedirect(redirect_uri)
+    else:
+        stored_token = gdata.gauth.token_from_blob(ts.token)
+        print stored_token.refresh_token, stored_token.access_token
+        if stored_token.refresh_token is not None and\
+           stored_token.access_token is not None:
+            token.access_token = refresh_access_token(stored_token.refresh_token)
+            token.refresh_token = stored_token.refresh_token
+            print stored_token.refresh_token, stored_token.access_token
+            docs_client = gdata.docs.client.DocsClient(source=token.user_agent)
+            docs_client = token.authorize(docs_client)
+            xls_doc = gdata.docs.data.Resource(type='spreadsheet', title=id_string)
+            media = gdata.data.MediaSource()
+            media.SetFileHandle(file_path, 'application/vnd.ms-excel')
+            xls_doc = docs_client.CreateResource(xls_doc, media=media)
+            # save token with new access_token
+            ts.token = gdata.gauth.token_to_blob(token)
+            ts.save()
+            print xls_doc.title.text, xls_doc.resource_id.text
+    temp_file.close()
+    return HttpResponseRedirect('https://docs.google.com')
