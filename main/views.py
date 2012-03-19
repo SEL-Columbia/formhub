@@ -124,6 +124,11 @@ def profile(request, username):
                 'type': 'error',
                 'text': 'Form with this id already exists.',
                 }
+        except AttributeError as e: # form.publish returned None, not sure why...
+            context.message = {
+                'type': 'error',
+                'text': unicode(e),
+                }
 
     # profile view...
     content_user = get_object_or_404(User, username=username)
