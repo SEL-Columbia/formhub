@@ -10,6 +10,9 @@ var mapMarkerIcon = L.Icon.extend({options:{
     iconAnchor: new L.Point(12, 24),
     popupAnchor: new L.Point(0,-24)
 }});
+// TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
+var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekkywR';
+var bingMapType = 'Road'; //Road, Aerial or AerialWithLabels
 
 function initialize() {
     // mapbox streets formhub tiles
@@ -18,17 +21,23 @@ function initialize() {
     // Make a new Leaflet map in your container div
     map = new L.Map(mapId).setView(centerLatLng, defaultZoom);
 
+    var layersControl = new L.Control.Layers();
+    map.addControl(layersControl);
+
     // Get metadata about the map from MapBox
     wax.tilejson(url, function(tilejson) {
         var mapboxstreet = new wax.leaf.connector(tilejson);
-        // Add MapBox Streets as a base layer
-        //.addLayer(new wax.leaf.connector(tilejson));
+
+        // add mapbox as default base layer
         map.addLayer(mapboxstreet);
-        //	var googleSat = new L.Google();
-        //	map.addLayer(googleSat);
-        map.addControl(new L.Control.Layers({'MapBox Streets':mapboxstreet}))
-        addPoints();
+        layersControl.addBaseLayer(mapboxstreet, 'MapBox Streets');
     });
+
+    // add bing maps layer
+    var bingLayer = new L.TileLayer.Bing(bingAPIKey, bingMapType);
+    layersControl.addBaseLayer(bingLayer, 'Bing Map');
+
+    addPoints();
 }
 
 function addPoints() {
