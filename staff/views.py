@@ -28,24 +28,6 @@ def submissions(request):
     return render_to_response("submissions.html", context_instance=context)
 
 
-@staff_member_required
-def mailer(request):
-    # get all users
-    users = User.objects.all()
-    for user in users:
-        # send each email separately so users cannot see eachother
-        send_templated_mail(
-            template_name='notice',
-            from_email='noreply@formhub.org',
-            recipient_list=[user.email],
-            context={
-                'username':request.user.username,
-                'full_name':request.user.get_full_name(),
-                'signup_date':request.user.date_joined
-            },
-        )
-
-
 def stats(request):
     context = RequestContext(request)
     context.template = 'stats.html'
