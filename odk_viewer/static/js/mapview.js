@@ -12,7 +12,8 @@ var mapMarkerIcon = L.Icon.extend({options:{
 }});
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
 var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekkywR';
-var bingMapType = 'Road'; //Road, Aerial or AerialWithLabels
+var bingMapType = 'AerialWithLabels';
+var bingMapTypeLabels = {'AerialWithLabels': 'Bing Satellite Map', 'Road': 'Bing Road Map'}; //Road, Aerial or AerialWithLabels
 
 function initialize() {
     // mapbox streets formhub tiles
@@ -24,6 +25,12 @@ function initialize() {
     var layersControl = new L.Control.Layers();
     map.addControl(layersControl);
 
+    // add bing maps layer
+    $.each(bingMapTypeLabels, function(type, label) {
+        var bingLayer = new L.TileLayer.Bing(bingAPIKey, type); 
+        layersControl.addBaseLayer(bingLayer, label);
+    });
+
     // Get metadata about the map from MapBox
     wax.tilejson(url, function(tilejson) {
         var mapboxstreet = new wax.leaf.connector(tilejson);
@@ -32,10 +39,6 @@ function initialize() {
         map.addLayer(mapboxstreet);
         layersControl.addBaseLayer(mapboxstreet, 'MapBox Streets');
     });
-
-    // add bing maps layer
-    var bingLayer = new L.TileLayer.Bing(bingAPIKey, bingMapType);
-    layersControl.addBaseLayer(bingLayer, 'Bing Map');
 
     addPoints();
 }
