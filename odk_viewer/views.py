@@ -252,13 +252,14 @@ def google_xls_export(request, username, id_string):
         return HttpResponseForbidden('Not shared.')
     valid, dd = dd_for_params(id_string, owner, request)
     if not valid: return dd
-    this_directory = os.path.dirname(__file__)
-    file_path = os.path.join(this_directory, "csvs", id_string + ".xls")
     ddw = XlsWriter()
-    ddw.set_file(open(file_path))
+    tmp = NamedTemporaryFile(delete=False)
+    ddw.set_file(tmp)
     ddw.set_data_dictionary(dd)
     temp_file = ddw.save_workbook_to_file()
+    temp_file.close()
     import gdata
+    import gdata.gauth
     import gdata.docs
     import gdata.data
     import gdata.docs.client
@@ -271,7 +272,6 @@ def google_xls_export(request, username, id_string):
         return HttpResponseRedirect(redirect_uri)
     else:
         stored_token = gdata.gauth.token_from_blob(ts.token)
-        print stored_token.refresh_token, stored_token.access_token
         if stored_token.refresh_token is not None and\
            stored_token.access_token is not None:
             token.access_token = refresh_access_token(stored_token.refresh_token)
@@ -279,13 +279,13 @@ def google_xls_export(request, username, id_string):
             print stored_token.refresh_token, stored_token.access_token
             docs_client = gdata.docs.client.DocsClient(source=token.user_agent)
             docs_client = token.authorize(docs_client)
-            xls_doc = gdata.docs.data.Resource(type='spreadsheet', title=id_string)
+            xls_doc = gdata.docs.data.Resource(
+                type='spreadsheet', title=xform.title)
             media = gdata.data.MediaSource()
-            media.SetFileHandle(file_path, 'application/vnd.ms-excel')
+            media.SetFileHandle(tmp.name, 'application/vnd.ms-excel')
             xls_doc = docs_client.CreateResource(xls_doc, media=media)
             # save token with new access_token
             ts.token = gdata.gauth.token_to_blob(token)
             ts.save()
-            print xls_doc.title.text, xls_doc.resource_id.text
-    temp_file.close()
+    os.unlink(tmp.name)
     return HttpResponseRedirect('https://docs.google.com')
