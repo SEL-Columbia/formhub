@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from templated_email import send_templated_mail
 
 
 @staff_member_required

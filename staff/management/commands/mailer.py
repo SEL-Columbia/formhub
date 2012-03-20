@@ -1,17 +1,29 @@
-from django.core.management.base import BaseCommand
+from optparse import make_option
+
+from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.template.loader import get_template
+from templated_email import send_templated_mail
 
 from odk_viewer.models import ParsedInstance
 from utils.model_tools import queryset_iterator
 
 class Command(BaseCommand):
-    help = "Insert all existing parsed instances into MongoDB"
+    help = "Send an email to all formhub users"
+
+    option_list = BaseCommand.option_list + (
+        make_option("-m", "--message",
+            dest="message",
+            default=False
+        ),
+    )
 
     def handle(self, *args, **kwargs):
-        message = kwargs['message']
+        message = kwargs.get('message')
+        get_template('templated_email/notice.email')
         if not message:
-            raise AttributeError('message must be included in kwargs')
+            raise CommandError('message must be included in kwargs')
         # get all users
         #users = User.objects.all()
         # TODO uncomment above and remove below after testing

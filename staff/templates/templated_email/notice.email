@@ -1,4 +1,4 @@
-{% block subject %}formhub notificaiton for {{username}}{% endblock %}
+{% block subject %}formhub notification for {{username}}{% endblock %}
 {% block plain %}
   Hi {{full_name}},
 
