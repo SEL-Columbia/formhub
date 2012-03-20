@@ -15,6 +15,7 @@ from django.contrib.auth.decorators import login_required
 from gdata.spreadsheets import client
 
 from main.models import  TokenStorageModel
+from main.views import home
 
 token = gdata.gauth.OAuth2Token(client_id=settings.GOOGLE_CLIENT_ID,
     client_secret=settings.GOOGLE_CLIENT_SECRET,
@@ -66,7 +67,7 @@ def google_auth_return(request):
     access_token = token.get_access_token(request.REQUEST)
     ts.token = gdata.gauth.token_to_blob(token=access_token)
     ts.save()
-    return HttpResponseRedirect(reverse(google_oauth2_request))
+    return HttpResponseRedirect(reverse(home))
 
 
 def refresh_access_token(refresh_token):
