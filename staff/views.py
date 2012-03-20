@@ -1,13 +1,13 @@
 # Create your views here.
 import os
 
+from django import forms
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.models import User
+from django.db import IntegrityError
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django import forms
-from django.db import IntegrityError
-
-from django.contrib.auth.models import User
+from templated_email import send_templated_mail
 
 
 @staff_member_required
@@ -30,7 +30,20 @@ def submissions(request):
 
 @staff_member_required
 def mailer(request):
-    pass
+    # get all users
+    users = User.objects.all()
+    for user in users:
+        # send each email separately so users cannot see eachother
+        send_templated_mail(
+            template_name='notice',
+            from_email='noreply@formhub.org',
+            recipient_list=[user.email],
+            context={
+                'username':request.user.username,
+                'full_name':request.user.get_full_name(),
+                'signup_date':request.user.date_joined
+            },
+        )
 
 
 def stats(request):
