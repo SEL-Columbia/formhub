@@ -23,6 +23,13 @@ $('#selectLanguage').live('change', function() {
     $('.language').hide();
     $('.' + $(this).val()).show();
 });
+function setMapHeight(){
+  var newHeight = $(window).height()-
+      $('.navbar-inner').height()
+  $('#map_canvas').height(newHeight);
+}
+$(document).ready(function() { setMapHeight(); });
+$(window).resize(setMapHeight);
 </script>
 <script src="/static/js/mapview.js" type="text/javascript"></script>
 {% endblock %}
