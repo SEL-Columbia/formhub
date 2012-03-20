@@ -15,12 +15,13 @@ class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option("-m", "--message",
             dest="message",
-            default=False
+            default=False,
         ),
     )
 
     def handle(self, *args, **kwargs):
         message = kwargs.get('message')
+        verbosity = kwargs.get('verbosity')
         get_template('templated_email/notice.email')
         if not message:
             raise CommandError('message must be included in kwargs')
@@ -29,6 +30,8 @@ class Command(BaseCommand):
         # TODO uncomment above and remove below after testing
         users = User.objects.filter(pk__in=[7,91,159])
         for user in users:
+            if verbosity:
+                print 'Sending email to: %s' % user.email
             # send each email separately so users cannot see eachother
             send_templated_mail(
                 template_name='notice',
