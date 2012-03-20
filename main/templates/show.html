@@ -141,7 +141,7 @@
           <!-- DELETE -->
           <div id="delete-{{ xform.id_string }}" class="modal hide fade">
             <div class="modal-header">
-              <a href="#" class="close">&times;</a>
+              <a data-dismiss="modal" class="close">&times;</a>
               <h3>Delete Confirmation</h3>
             </div>
             <div class="modal-body">
@@ -150,10 +150,10 @@
             <div class="modal-footer">
               <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn btn-primary">Delete</a>
               <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">Cancel</a>
-        ,  </div>
+            </div>
           </div>
-          <a href="#" data-controls-modal="delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true">
-              <button class="btn small btn-danger">Delete</button>
+          <a data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" class="btn btn-small btn-danger">
+            Delete
           </a>
         </div>
         </div> 
