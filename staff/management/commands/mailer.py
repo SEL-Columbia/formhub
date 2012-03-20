@@ -30,8 +30,10 @@ class Command(BaseCommand):
         # TODO uncomment above and remove below after testing
         users = User.objects.filter(pk__in=[7,91,159])
         for user in users:
+            name = user.get_full_name()
+            if not name or len(name) == 0: name = user.email
             if verbosity:
-                print 'Sending email to: %s' % user.email
+                print 'Emailing name: %s, email: %s' % (name, user.email)
             # send each email separately so users cannot see eachother
             send_templated_mail(
                 template_name='notice',
@@ -39,7 +41,7 @@ class Command(BaseCommand):
                 recipient_list=[user.email],
                 context={
                     'username':user.username,
-                    'full_name':user.get_full_name(),
+                    'full_name':name,
                     'message': message
                 },
             )
