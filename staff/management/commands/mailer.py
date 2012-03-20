@@ -26,9 +26,7 @@ class Command(BaseCommand):
         if not message:
             raise CommandError('message must be included in kwargs')
         # get all users
-        #users = User.objects.all()
-        # TODO uncomment above and remove below after testing
-        users = User.objects.filter(pk__in=[7,91,159])
+        users = User.objects.all()
         for user in users:
             name = user.get_full_name()
             if not name or len(name) == 0: name = user.email
