@@ -86,7 +86,7 @@ def clone_xlsform(request, username):
         res = loader.render_to_string('message.html',
                 context_instance=context).replace("'", r"\'").replace('\n', '')
         return HttpResponse(
-                "$('#mfeedback').html('%s');$('#mfeedback').show();" % res)
+                "$('#mfeedback').html('%s').show();" % res)
     else:
         return HttpResponse(context.message['text'])
 
