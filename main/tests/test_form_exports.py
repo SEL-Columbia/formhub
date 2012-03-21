@@ -12,7 +12,7 @@ class TestFormExports(MainTestCase):
     def setUp(self):
         MainTestCase.setUp(self)
         self._create_user_and_login()
-        self._publish_transporation_form_and_submit_instance()
+        self._publish_transportation_form_and_submit_instance()
         self.csv_url = reverse(csv_export, kwargs={
                 'username': self.user.username,
                 'id_string': self.xform.id_string})

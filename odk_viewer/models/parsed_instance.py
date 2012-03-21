@@ -1,11 +1,17 @@
-from django.db import models
-from django.db.models.signals import post_save
-
-from utils.reinhardt import queryset_iterator
-from odk_logger.models import Instance
-from common_tags import START_TIME, START, \
-    END_TIME, END, ID, ATTACHMENTS
+import base64
 import datetime
+import re
+
+from django.conf import settings
+from django.db import models
+from django.db.models.signals import post_save, pre_delete
+
+from utils.model_tools import queryset_iterator
+from odk_logger.models import Instance
+from common_tags import START_TIME, START, END_TIME, END, ID, UUID, ATTACHMENTS
+
+# this is Mongo Collection where we will store the parsed submissions
+xform_instances = settings.MONGO_DB.instances
 
 
 class ParseError(Exception):
@@ -33,13 +39,34 @@ class ParsedInstance(models.Model):
     class Meta:
         app_label = "odk_viewer"
 
+    def update_mongo(self):
+        d = self.to_dict_for_mongo()
+        xform_instances.save(d)
+
+    def to_dict_for_mongo(self):
+        d = self.to_dict()
+        for key, value in d.items():
+            if self._is_invalid_for_mongo(key):
+                del d[key]
+                d[self._encode_for_mongo(key)] = value
+        return d
+
+    def _encode_for_mongo(self, key):
+        return reduce(lambda s, c: re.sub(c[0], base64.b64encode(c[1]), s),
+                [(r'^\$', '$'), (r'\.', '.')], key)
+
+    def _is_invalid_for_mongo(self, key):
+        return (key.startswith('$') or key.count('.') > 0)
+
     def to_dict(self):
         if not hasattr(self, "_dict_cache"):
             self._dict_cache = self.instance.get_dict()
             self._dict_cache.update(
                 {
+                    UUID: self.instance.uuid,
                     ID: self.instance.id,
-                    ATTACHMENTS: [a.media_file.name for a in self.instance.attachments.all()],
+                    ATTACHMENTS: [a.media_file.name for a in\
+                            self.instance.attachments.all()],
                     u"_status": self.instance.status,
                     }
                 )
@@ -83,7 +110,7 @@ class ParsedInstance(models.Model):
 
     data_dictionary = property(get_data_dictionary)
 
-    # todo: figure out how much of this code should be here versus
+    # TODO: figure out how much of this code should be here versus
     # data_dictionary.py.
     def _get_geopoint(self):
         doc = self.to_dict()
@@ -104,6 +131,15 @@ class ParsedInstance(models.Model):
         self._set_end_time()
         self._set_geopoint()
         super(ParsedInstance, self).save(*args, **kwargs)
+        # insert into Mongo
+        self.update_mongo()
+
+
+def _remove_from_mongo(sender, **kwargs):
+    instance_id = kwargs.get('instance').instance.id
+    xform_instances.remove(instance_id)
+
+pre_delete.connect(_remove_from_mongo, sender=ParsedInstance)
 
 
 def _parse_instance(sender, **kwargs):

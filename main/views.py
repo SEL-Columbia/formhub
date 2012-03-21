@@ -63,6 +63,8 @@ def clone_xlsform(request, username):
         id_string = request.POST.get('id_string')
         xform = XForm.objects.get(user__username=form_owner, \
                                     id_string=id_string)
+        if len(id_string) > 0 and id_string[0].isdigit():
+            id_string = '_' + id_string
         path = xform.xls.name
         if default_storage.exists(path):
             xls_file = upload_to(None, id_string + '_cloned.xls', to_username)
@@ -94,10 +96,7 @@ def clone_xlsform(request, username):
         return HttpResponse(simplejson.dumps(context.message), \
                         mimetype='application/json')
     else:
-        return HttpResponseRedirect(reverse(show, kwargs={
-                    'username': to_username,
-                    'id_string': survey.id_string
-                }))
+        return HttpResponse(context.message['text'])
 
 
 def profile(request, username):
@@ -124,6 +123,11 @@ def profile(request, username):
             context.message = {
                 'type': 'error',
                 'text': 'Form with this id already exists.',
+                }
+        except AttributeError as e: # form.publish returned None, not sure why...
+            context.message = {
+                'type': 'error',
+                'text': unicode(e),
                 }
 
     # profile view...
@@ -264,10 +268,12 @@ def edit(request, username, id_string):
                         }))
     return HttpResponseForbidden('Update failed.')
 
+
 def support(request):
     context = RequestContext(request)
     context.template = 'support.html'
     return render_to_response('base.html', context_instance=context)
+
 
 def xls2xform(request):
     context = RequestContext(request)

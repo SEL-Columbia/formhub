@@ -35,7 +35,8 @@ class HttpResponseNotAuthorized(HttpResponse):
 
     def __init__(self, redirect_to):
         HttpResponse.__init__(self)
-        self['WWW-Authenticate'] = 'Basic realm="%s"' % Site.objects.get_current().name
+        self['WWW-Authenticate'] =\
+                'Basic realm="%s"' % Site.objects.get_current().name
 
 @require_POST
 @csrf_exempt
@@ -164,7 +165,8 @@ def download_xform(request, username, id_string):
     return response
 
 def download_xlsform(request, username, id_string):
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
     owner = User.objects.get(username=username)
     if not has_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden('Not shared.')
@@ -204,7 +206,8 @@ def toggle_downloadable(request, username, id_string):
 
 def enter_data(request, username, id_string):
     owner = User.objects.get(username=username)
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    xform = get_object_or_404(XForm, user__username=username,
+                id_string=id_string)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
     if not hasattr(settings, 'TOUCHFORMS_URL'):
@@ -229,7 +232,8 @@ def enter_data(request, username, id_string):
             response = json.loads(response.read())
             context = RequestContext(request)
             owner = User.objects.get(username=username)
-            context.profile, created = UserProfile.objects.get_or_create(user=owner)
+            context.profile, created = UserProfile.objects.get_or_create(
+                    user=owner)
             context.xform = xform
             context.content_user = owner
             context.form_view = True

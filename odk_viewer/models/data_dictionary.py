@@ -9,7 +9,7 @@ from common_tags import ID
 from odk_viewer.models import ParsedInstance
 import re
 import os
-from utils.reinhardt import queryset_iterator
+from utils.model_tools import queryset_iterator
 from utils.export_tools import question_types_to_exclude, DictOrganizer
 
 class ColumnRename(models.Model):
