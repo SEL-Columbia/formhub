@@ -5,7 +5,7 @@ $(document).ready(function() {
     $.post(el.data('url'), {
         'username': el.data('username'),
         'id_string': el.data('id') 
-    }}, 'script');
+    }, 'script');
     scrollTo(0,0);
     return false;
   });
