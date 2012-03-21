@@ -13,6 +13,7 @@ var mapMarkerIcon = L.Icon.extend({options:{
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
 var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekkywR';
 var bingMapTypeLabels = {'AerialWithLabels': 'Bing Satellite Map', 'Road': 'Bing Road Map'}; //Road, Aerial or AerialWithLabels
+var mapBoxAdditAttribution = " Map data (c) OpenStreetMap contributors, CC-BY-SA";
 
 function initialize() {
     // mapbox streets formhub tiles
@@ -32,6 +33,7 @@ function initialize() {
 
     // Get metadata about the map from MapBox
     wax.tilejson(url, function(tilejson) {
+        tilejson.attribution += mapBoxAdditAttribution;
         var mapboxstreet = new wax.leaf.connector(tilejson);
 
         // add mapbox as default base layer
