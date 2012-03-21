@@ -28,21 +28,9 @@
                   "bSort": true, 
                   "oLanguage": {"sSearch": "Search:"},
                   "oSearch": {"sSearch": ""},
-                  "fnDrawCallback": function() {
-                    {% if loggedin_user %}
-                      // add click event to all public (x)forms
-                      $('a.clonexls').click(function(){
-                        el = $(this);
-                        clone_xlsform(el.data('url'), el.data('username'), el.data('id'));
-                        return false;
-                      });
-                   {% endif %}
-                  }
       });
       $('#forms-table_filter').addClass('row');
-      
       $('#mfeedback').hide();
-      
 	} );
   </script>
 

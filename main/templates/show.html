@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load humanize %}
 {% block content %}
+  {% if user.is_authenticated %}
+    <script type="text/javascript" language="javascript" src="/static/js/form_actions.js"></script>
+  {% endif %}
   <section id="profile">
     <div class="page-header">
       <!-- <img src='{{ content_user.profile.gravatar }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' /> -->
@@ -106,18 +109,6 @@
                   }
                 });
               });
-            {% if user.is_authenticated %}
-              // add click event to all public (x)forms
-              $('a.clonexls').click(function(){
-                el = $(this);
-                $.post(el.data('url'), {
-                    'username': el.data('username'),
-                    'id_string': el.data('id') 
-                }}, 'script');
-                scrollTo(0,0);
-                return false;
-              });
-            {% endif %}
             });
         </script>
         {% if is_owner %}
