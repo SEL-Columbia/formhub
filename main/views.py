@@ -5,14 +5,12 @@ from django.core.urlresolvers import reverse
 from django.core.files.storage import default_storage
 from django.template import RequestContext
 from django import forms
-from django.db import IntegrityError
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_GET, require_POST
 from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseRedirect, HttpResponseNotAllowed, HttpResponseForbidden
 from django.utils import simplejson
 from django.shortcuts import render_to_response, get_object_or_404
-from pyxform.errors import PyXFormError
 from guardian.shortcuts import assign, remove_perm, get_users_with_perms
 
 from main.models import UserProfile, MetaData
@@ -20,11 +18,10 @@ from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
          SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
      SourceForm, PermissionForm
 from odk_logger.models import Instance, XForm
-from odk_logger.models.xform import XLSFormError
 from odk_viewer.models import DataDictionary
 from odk_viewer.models.data_dictionary import upload_to
 from odk_viewer.views import image_urls_for_form, survey_responses
-from utils.logger_tools import response_with_mimetype_and_name
+from utils.logger_tools import response_with_mimetype_and_name, publish_form
 from utils.decorators import is_owner
 from utils.user_auth import check_and_set_user, set_profile_data,\
          has_permission, get_xform_and_perms
@@ -58,7 +55,7 @@ def clone_xlsform(request, username):
     context = RequestContext(request)
     context.message = {'type': None, 'text': '....'}
 
-    try:
+    def set_form():
         form_owner = request.POST.get('username')
         id_string = request.POST.get('id_string')
         xform = XForm.objects.get(user__username=form_owner, \
@@ -76,23 +73,14 @@ def clone_xlsform(request, username):
                 user=request.user,
                 xls=xls_file
                 ).survey
-            context.message = {
-                'type': 'success',
+            return {
+                'type': 'alert-success',
                 'text': 'Successfully cloned %s into your '\
                         '<a href="%s">profile</a>.' % \
                         (survey.id_string, reverse(profile,
                             kwargs={'username': to_username}))
                 }
-    except (PyXFormError, XLSFormError) as e:
-        context.message = {
-            'type': 'error',
-            'text': unicode(e),
-            }
-    except IntegrityError as e:
-        context.message = {
-            'type': 'error',
-            'text': 'Form with this id already exists.',
-            }
+    context.message = publish_form(set_form)
     if request.is_ajax():
         return HttpResponse(simplejson.dumps(context.message), \
                         mimetype='application/json')
@@ -108,28 +96,14 @@ def profile(request, username):
 
     # xlsform submission...
     if request.method == 'POST' and request.user.is_authenticated():
-        try:
+        def set_form():
             form = QuickConverter(request.POST, request.FILES)
             survey = form.publish(request.user).survey
-            context.message = {
-                'type': 'success',
+            return {
+                'type': 'alert-success',
                 'text': 'Successfully published %s.' % survey.id_string,
                 }
-        except (PyXFormError, XLSFormError) as e:
-            context.message = {
-                'type': 'error',
-                'text': unicode(e),
-                }
-        except IntegrityError as e:
-            context.message = {
-                'type': 'error',
-                'text': 'Form with this id already exists.',
-                }
-        except AttributeError as e: # form.publish returned None, not sure why...
-            context.message = {
-                'type': 'error',
-                'text': unicode(e),
-                }
+        context.message = publish_form(set_form)
 
     # profile view...
     content_user = get_object_or_404(User, username=username)
