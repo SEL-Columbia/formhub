@@ -120,7 +120,7 @@ def iterate_through_odk_instances(dirpath, callback):
                 del(xfxs)
     return (count, errors)
 
-def import_instances_from_zip(zipfile_path, user, status="zip"):
+def import_instances_from_zip(zipfile_path, user, default_status="zip_unspecified"):
     count = 0
     try:
         temp_directory = tempfile.mkdtemp()
@@ -136,10 +136,15 @@ def import_instances_from_zip(zipfile_path, user, status="zip"):
                                    content_type="text/xml")
             images = [django_file(jpg, field_name="image",
                             content_type="image/jpeg") for jpg in xform_fs.photos]
+
+            submission_status = xform_fs.instance_status
+
+            if not submission_status:
+                submission_status = default_status
             # todo: if an instance has been submitted make sure all the
             # files are in the database.
             # there shouldn't be any instances with a submitted status in the
-            instance = models.create_instance(user.username, xml_file, images, status)
+            instance = models.create_instance(user.username, xml_file, images, submission_status)
             # close the files
             xml_file.close()
             for i in images: i.close()

@@ -32,25 +32,56 @@ class TestImportingDatabase(MainTestCase):
             images = glob.glob(os.path.join(settings.MEDIA_ROOT, 'attachments', '*'))
             for image in images:
                 os.remove(image)
-    
-    def test_importing_b1_and_b2(self):
+    def test_importing_1_1_5(self):
         """
-        b1 and b2 are from the *same phone* at different times. (this
-        might not be a realistic test)
+        bulk_submission_1-1-5.zip has an ODK directory from
+        a device using ODK Collect 1.1.5.
 
-        b1:
-        1 photo survey (completed)
-        1 simple survey (not marked complete)
-
-        b2:
-        1 photo survey (duplicate, completed)
-        1 simple survey (marked as complete)
+        The metadata is in "odk/metadata/data".
         """
         # import from sd card
-        import_instances_from_zip(os.path.join(DB_FIXTURES_PATH, "bulk_submission.zip"), self.user)
+        import_instances_from_zip(os.path.join(DB_FIXTURES_PATH, "bulk_submission_1-1-5.zip"), self.user)
 
         instance_count = Instance.objects.count()
         image_count = images_count()
+
+        statii = sorted([x['status'] for x in Instance.objects.all().values('status')])
+
+        # one of the imported surveys is "complete"
+        self.assertEqual(statii[0], "complete")
+
+        # one of the imported surveys is "incomplete"
+        self.assertEqual(statii[1], "incomplete")
+
+        #Images are not duplicated
+        # TODO: Figure out how to get this test passing.
+        self.assertEqual(image_count, 2)
+
+        #Instance count should have incremented
+        # by 1 (or 2) based on the b1 & b2 data sets
+        self.assertEqual(instance_count, 2)
+
+    def test_importing_1_1_7(self):
+        """
+        bulk_submission_1-1-7.zip has an ODK directory from
+        a device using ODK Collect 1.1.7.
+
+        The metadata is in "odk/metadata/instances.db".
+        """
+
+        # import from sd card
+        import_instances_from_zip(os.path.join(DB_FIXTURES_PATH, "bulk_submission_1-1-7.zip"), self.user)
+
+        instance_count = Instance.objects.count()
+        image_count = images_count()
+
+        statii = sorted([x['status'] for x in Instance.objects.all().values('status')])
+
+        # one of the imported surveys is "complete"
+        self.assertEqual(statii[0], "complete")
+
+        # one of the imported surveys is "incomplete"
+        self.assertEqual(statii[1], "incomplete")
 
         #Images are not duplicated
         # TODO: Figure out how to get this test passing.
