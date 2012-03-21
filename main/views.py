@@ -186,12 +186,10 @@ def show(request, username=None, id_string=None, uuid=None):
     if not (xform.shared or can_view or request.session.get('public_link')):
         return HttpResponseRedirect(reverse(home))
     context = RequestContext(request)
-    try:
-        XForm.objects.get(user__username=request.user.username,
-        id_string=id_string + XForm.CLONED_SUFFIX)
-        context.cloned = True
-    except XForm.DoesNotExist:
-        context.cloned = False
+    context.cloned = len(
+        XForm.objects.filter(user__username=request.user.username,
+                id_string=id_string + XForm.CLONED_SUFFIX)
+    ) > 0
     context.public_link = MetaData.public_link(xform)
     context.is_owner = is_owner
     context.can_edit = can_edit
