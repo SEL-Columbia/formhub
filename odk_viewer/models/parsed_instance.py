@@ -27,8 +27,28 @@ def datetime_from_str(text):
         date_time_str, '%Y-%m-%dT%H:%M:%S'
         )
 
+def dict_for_mongo(d):
+    # TODO recursively rewrite ALL keys
+    for key, value in d.items():
+        if _is_invalid_for_mongo(key):
+            del d[key]
+            d[_encode_for_mongo(key)] = value
+    return d
+
+
+def _encode_for_mongo(key):
+    return reduce(lambda s, c: re.sub(c[0], base64.b64encode(c[1]), s),
+            [(r'^\$', '$'), (r'\.', '.')], key)
+
+
+def _is_invalid_for_mongo(key):
+    return (key.startswith('$') or key.count('.') > 0)
+
 
 class ParsedInstance(models.Model):
+    USERFORM_ID = u'_userform_id'
+    STATUS = u'_status'
+
     instance = models.OneToOneField(Instance, related_name="parsed_instance")
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
@@ -39,24 +59,17 @@ class ParsedInstance(models.Model):
     class Meta:
         app_label = "odk_viewer"
 
+    @classmethod
+    def query_mongo(cls, username, id_string, query):
+        query = dict_for_mongo(query)
+        query[cls.USERFORM_ID] = u'%s_%s' % (username, id_string)
+        return xform_instances.find(query)
+
     def update_mongo(self):
-        d = self.to_dict_for_mongo()
+        d = dict_for_mongo(self.to_dict())
+        d[self.USERFORM_ID] = u'%s_%s' % (self.instance.user.username,
+                self.instance.xform.id_string)
         xform_instances.save(d)
-
-    def to_dict_for_mongo(self):
-        d = self.to_dict()
-        for key, value in d.items():
-            if self._is_invalid_for_mongo(key):
-                del d[key]
-                d[self._encode_for_mongo(key)] = value
-        return d
-
-    def _encode_for_mongo(self, key):
-        return reduce(lambda s, c: re.sub(c[0], base64.b64encode(c[1]), s),
-                [(r'^\$', '$'), (r'\.', '.')], key)
-
-    def _is_invalid_for_mongo(self, key):
-        return (key.startswith('$') or key.count('.') > 0)
 
     def to_dict(self):
         if not hasattr(self, "_dict_cache"):
@@ -67,7 +80,7 @@ class ParsedInstance(models.Model):
                     ID: self.instance.id,
                     ATTACHMENTS: [a.media_file.name for a in\
                             self.instance.attachments.all()],
-                    u"_status": self.instance.status,
+                    self.STATUS: self.instance.status,
                     }
                 )
         return self._dict_cache

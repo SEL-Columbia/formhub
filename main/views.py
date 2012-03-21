@@ -215,6 +215,17 @@ def show(request, username=None, id_string=None, uuid=None):
 
 
 @require_POST
+def api(request, username=None, id_string=None):
+    '''
+    query={'last_name': 'Smith'}
+    '''
+    query_str = request.POST['query']
+    query = simplejson.loads(query_str)
+    json = ParsedInstance.query_mongo(username, id_string, query)
+    render_to_response(simplejson.dumps(json))
+
+
+@require_POST
 @login_required
 def edit(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
