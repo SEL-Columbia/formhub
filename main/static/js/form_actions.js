@@ -1,6 +1,6 @@
 $(document).ready(function() {
   // add click event to all public (x)forms
-  $('a.clonexls').live('click', function() {
+  $(document).on('click', 'a.clonexls', function() {
     el = $(this);
     $.post(el.data('url'), {
         'username': el.data('username'),
