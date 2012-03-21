@@ -208,7 +208,7 @@
 	    </ul>
 	  </div>
 	  <div class="btn-group">
-	    <button class="btn "><a href="{% url download_xlsform content_user.username xform.id_string %}"><i class="icon-file"></i><font color=#000> XForm</font></a></button>
+	    <button class="btn "><a href="{% url download_xform content_user.username xform.id_string %}"><i class="icon-file"></i><font color=#000> XForm</font></a></button>
 	    <button class="btn dropdown-toggle" data-toggle="dropdown">
 	      <span class="caret"></span>
 	    </button>
@@ -218,6 +218,19 @@
 	      </li>
 	    </ul>
 	  </div>
+	  <div class="btn-group">
+	    <button class="btn "><a href="{% url download_jsonform content_user.username xform.id_string %}"><i class="icon-file"></i><font color=#000> JSONForm</font></a></button>
+	    <button class="btn dropdown-toggle" data-toggle="dropdown">
+	      <span class="caret"></span>
+	    </button>
+	    <ul class="dropdown-menu">
+	      <li>                    
+		<input class="input-xxlarge" type="text" size="16" value="{{ base_url }}{% url download_jsonform content_user.username xform.id_string %}"/>
+	      </li>
+	    </ul>
+	  </div>
+
+
 </div>
 <br>
         </ul>
@@ -291,7 +304,7 @@
 <div class="btn-toolbar" style="margin-bottom: 9px">
   
 	  <div class="btn-group">
-	    <button class="btn "><a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>xls</font></a></button>
+	    <button class="btn "><a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>csv</font></a></button>
 	    <button class="btn dropdown-toggle" data-toggle="dropdown">
 	      <span class="caret"></span>
 	    </button>
