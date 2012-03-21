@@ -210,10 +210,10 @@ def show(request, username=None, id_string=None, uuid=None):
     context = RequestContext(request)
     try:
         XForm.objects.get(user__username=request.user.username,
-        id_string__contains=id_string + '_cloned')
-        context['cloned'] = True
+        id_string=id_string + '_cloned')
+        context.cloned = True
     except XForm.DoesNotExist:
-        context['cloned'] = False
+        context.cloned = False
     context.public_link = MetaData.public_link(xform)
     context.is_owner = is_owner
     context.can_edit = can_edit
@@ -316,13 +316,9 @@ def form_gallery(request):
     if request.user.is_authenticated():
         context.loggedin_user = request.user
     context.shared_forms = DataDictionary.objects.filter(shared=True)
-    clone_list = []
-    dd = DataDictionary.objects.all()
-    for s in context.shared_forms:
-        if dd.filter(id_string__contains=s.id_string + '_cloned', 
-           user__username=request.user.username):
-            clone_list.append(s.id_string)
-    context['cloned'] = clone_list
+    context.cloned = [x.id_string.split("_cloned")[0] for x in 
+    DataDictionary.objects.filter(user__username=request.user.username, 
+    id_string__in=[x.id_string + '_cloned' for x in context.shared_forms])]
     return render_to_response('form_gallery.html', context_instance=context)
 
 def download_metadata(request, username, id_string, data_id):
