@@ -7,6 +7,7 @@ from django.template import RequestContext
 from django import forms
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_GET, require_POST
+from django.template import loader
 from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseRedirect, HttpResponseNotAllowed, HttpResponseForbidden
 from django.utils import simplejson
@@ -82,8 +83,9 @@ def clone_xlsform(request, username):
                 }
     context.message = publish_form(set_form)
     if request.is_ajax():
-        return HttpResponse(simplejson.dumps(context.message), \
-                        mimetype='application/json')
+        res = loader.render_to_string('message.html',
+                context_instance=context).replace("'", r"\'")
+        return HttpResponse("$('#mfeedback').html('%s');" % res)
     else:
         return HttpResponse(context.message['text'])
 
