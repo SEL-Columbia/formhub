@@ -26,6 +26,8 @@ class XLSFormError(Exception):
 
 
 class XForm(models.Model):
+    CLONED_SUFFIX = '_cloned'
+
     xls = models.FileField(upload_to=upload_to, null=True)
     json = models.TextField(default=u'')
     description = models.TextField(default=u'', null=True)

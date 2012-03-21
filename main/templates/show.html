@@ -7,6 +7,7 @@
   <section id="profile">
     <div class="page-header">
       <!-- <img src='{{ content_user.profile.gravatar }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' /> -->
+    <div id="mfeedback">&nbsp;</div>
 	<h3>
 	  <div style='vertical-align: middle'>      
 	  <img src='{{ content_user.profile.gravatar }}' alt='' width='20' height='20' /> 
@@ -108,14 +109,6 @@
                   }
                 });
               });
-            {% if user.is_authenticated %}
-              // add click event to all public (x)forms
-              $('a.clonexls').click(function(){
-                el = $(this);
-                clone_xlsform(el.data('url'), el.data('username'), el.data('id'));
-                return false;
-              });
-            {% endif %}
             });
         </script>
         {% if is_owner %}
@@ -227,12 +220,6 @@
 	  </div>
 </div>
 <br>
-        {% if user.is_authenticated and content_user.username != user.username and xform.xls|length > 0 %}
-            <br/><br/>
-            <li>
-                <a href="" data-url="{% url main.views.clone_xlsform xform.user.username %}" data-username="{{ xform.user.username }}" data-id="{{ xform.id_string }}" class="clonexls"><button class="btn btn-small">Clone</button></a>
-            </li>
-        {% endif %}
         </ul>
 
         <p>
@@ -248,9 +235,41 @@
             {% endif %}
         </p>
         <p><a id="form-license_info" style="display:none" href="">License information</a></p>
-
-
-
+        <br/>
+        <ul class="inline">
+        <li>
+            <div class="input-prepend">
+                <span class="add-on">
+                    <a href="{% url download_xlsform content_user.username xform.id_string %}">
+                    Excel
+                    </a>
+                </span>
+                <input class="xxlarge" type="text" size="16" value="{{ base_url }}{% url download_xlsform content_user.username xform.id_string %}"/>
+            </div>
+            <br/>
+        </li>
+        <li class="inline dropdown" data-dropdown="dropdown">
+            <a class="dropdown-toggle btn small" href="#">Other</a>
+            <ul class="dropdown-menu">
+                <li>
+                <a href="{% url download_xform content_user.username xform.id_string %}">
+                  XForm
+                </a>
+                </li>
+                <li>
+                <a href="{% url download_jsonform content_user.username xform.id_string %}">
+                  Form JSON
+                </a>
+                </li>
+            </ul>
+        </li>
+        {% if user.is_authenticated and content_user.username != user.username and xform.xls|length > 0 and not cloned %}
+            <br/><br/>
+            <li>
+                <a href="" data-url="{% url main.views.clone_xlsform xform.user.username %}" data-username="{{ xform.user.username }}" data-id="{{ xform.id_string }}" class="clonexls"><button class="btn small">Clone</button></a>
+            </li>
+        {% endif %}
+        </ul>
       </div>
     </div>
     <div class="row">
