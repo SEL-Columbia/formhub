@@ -41,7 +41,7 @@ class TestSurveyView(MainTestCase):
         self.assertEqual(response.status_code, 200)
         expected_html = '''
 
-<table class="zebra-striped">
+<table class="table table-bordered table-striped">
   <thead>
     <tr>
       <th>Question</th>
