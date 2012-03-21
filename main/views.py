@@ -67,7 +67,8 @@ def clone_xlsform(request, username):
             id_string = '_' + id_string
         path = xform.xls.name
         if default_storage.exists(path):
-            xls_file = upload_to(None, id_string + '_cloned.xls', to_username)
+            xls_file = upload_to(None, '%s%s.xls' % (
+                        id_string, XForm.CLONED_SUFFIX), to_username)
             xls_data = default_storage.open(path)
             xls_file = default_storage.save(xls_file, xls_data)
             context.message = u"%s-%s" % (form_owner, xls_file)
@@ -210,7 +211,7 @@ def show(request, username=None, id_string=None, uuid=None):
     context = RequestContext(request)
     try:
         XForm.objects.get(user__username=request.user.username,
-        id_string=id_string + '_cloned')
+        id_string=id_string + XForm.CLONED_SUFFIX)
         context.cloned = True
     except XForm.DoesNotExist:
         context.cloned = False
@@ -315,10 +316,18 @@ def form_gallery(request):
     context = RequestContext(request)
     if request.user.is_authenticated():
         context.loggedin_user = request.user
-    context.shared_forms = DataDictionary.objects.filter(shared=True)
-    context.cloned = [x.id_string.split("_cloned")[0] for x in 
-    DataDictionary.objects.filter(user__username=request.user.username, 
-    id_string__in=[x.id_string + '_cloned' for x in context.shared_forms])]
+    context.shared_forms = XForm.objects.filter(shared=True)
+    # build list of shared forms with cloned suffix
+    id_strings_with_cloned_suffix = [
+        x.id_string + XForm.CLONED_SUFFIX for x in context.shared_forms
+    ]
+    # build list of id_strings for forms this user has cloned
+    context.cloned = [
+        x.id_string.split(XForm.CLONED_SUFFIX)[0] for x in XForm.objects.filter(
+                user__username=request.user.username,
+                id_string__in=id_strings_with_cloned_suffix
+        )
+    ]
     return render_to_response('form_gallery.html', context_instance=context)
 
 def download_metadata(request, username, id_string, data_id):
