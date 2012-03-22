@@ -28,10 +28,11 @@ def datetime_from_str(text):
         )
 
 def dict_for_mongo(d):
-    # TODO recursively rewrite ALL keys
     for key, value in d.items():
         if _is_invalid_for_mongo(key):
             del d[key]
+            if type(value) == dict:
+                value = dict_for_mongo(value)
             d[_encode_for_mongo(key)] = value
     return d
 
@@ -48,6 +49,7 @@ def _is_invalid_for_mongo(key):
 class ParsedInstance(models.Model):
     USERFORM_ID = u'_userform_id'
     STATUS = u'_status'
+    DEFAULT_LIMIT = 30000
 
     instance = models.OneToOneField(Instance, related_name="parsed_instance")
     start_time = models.DateTimeField(null=True)
@@ -60,10 +62,12 @@ class ParsedInstance(models.Model):
         app_label = "odk_viewer"
 
     @classmethod
-    def query_mongo(cls, username, id_string, query):
+    def query_mongo(cls, username, id_string, query, start=0,
+            limit=DEFAULT_LIMIT):
         query = dict_for_mongo(query)
         query[cls.USERFORM_ID] = u'%s_%s' % (username, id_string)
-        return xform_instances.find(query)
+        return xform_instances.find(query,
+                {cls.USERFORM_ID: 0}).skip(start).limit(limit)
 
     def update_mongo(self):
         d = dict_for_mongo(self.to_dict())

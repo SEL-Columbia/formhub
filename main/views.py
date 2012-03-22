@@ -1,25 +1,24 @@
 import os, urllib2
 
-from django.contrib.auth.decorators import login_required
+from django import forms
 from django.core.urlresolvers import reverse
 from django.core.files.storage import default_storage
-from django.template import RequestContext
-from django import forms
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.views.decorators.http import require_GET, require_POST
-from django.template import loader
 from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseRedirect, HttpResponseNotAllowed, HttpResponseForbidden
-from django.utils import simplejson
 from django.shortcuts import render_to_response, get_object_or_404
+from django.template import loader, RequestContext
+from django.utils import simplejson
+from django.views.decorators.http import require_GET, require_POST
 from guardian.shortcuts import assign, remove_perm, get_users_with_perms
 
 from main.models import UserProfile, MetaData
 from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
          SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
-     SourceForm, PermissionForm
+         SourceForm, PermissionForm
 from odk_logger.models import Instance, XForm
-from odk_viewer.models import DataDictionary
+from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_viewer.models.data_dictionary import upload_to
 from odk_viewer.views import image_urls_for_form, survey_responses
 from utils.logger_tools import response_with_mimetype_and_name, publish_form
@@ -48,10 +47,10 @@ def login_redirect(request):
 @require_POST
 @login_required
 def clone_xlsform(request, username):
-    """
+    '''
     Copy a public/Shared form to a users list of forms.
     Eliminates the need to download Excel File and upload again.
-    """
+    '''
     to_username = request.user.username
     context = RequestContext(request)
     context.message = {'type': None, 'text': '....'}
@@ -69,7 +68,7 @@ def clone_xlsform(request, username):
                         id_string, XForm.CLONED_SUFFIX), to_username)
             xls_data = default_storage.open(path)
             xls_file = default_storage.save(xls_file, xls_data)
-            context.message = u"%s-%s" % (form_owner, xls_file)
+            context.message = u'%s-%s' % (form_owner, xls_file)
             survey = DataDictionary.objects.create(
                 user=request.user,
                 xls=xls_file
@@ -217,12 +216,13 @@ def show(request, username=None, id_string=None, uuid=None):
 @require_POST
 def api(request, username=None, id_string=None):
     '''
-    query={'last_name': 'Smith'}
+    Example query={'last_name': 'Smith'}
     '''
     query_str = request.POST['query']
     query = simplejson.loads(query_str)
-    json = ParsedInstance.query_mongo(username, id_string, query)
-    render_to_response(simplejson.dumps(json))
+    cursor = ParsedInstance.query_mongo(username, id_string, query)
+    records = list(record for record in cursor)
+    return HttpResponse(simplejson.dumps(records))
 
 
 @require_POST
@@ -384,4 +384,4 @@ def show_submission(request, username, id_string, uuid):
         return HttpResponseRedirect(reverse(home))
     submission = get_object_or_404(Instance, uuid=uuid)
     return HttpResponseRedirect(reverse(survey_responses,
-                kwargs={ 'instance_id': submission.pk }))
+                kwargs={'instance_id': submission.pk}))
