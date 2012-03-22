@@ -7,6 +7,7 @@
   <section id="profile">
     <div class="page-header">
       <!-- <img src='{{ content_user.profile.gravatar }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' /> -->
+    <div id="mfeedback">&nbsp;</div>
 	<h3>
 	  <div style='vertical-align: middle'>      
 	  <img src='{{ content_user.profile.gravatar }}' alt='' width='20' height='20' /> 
@@ -47,181 +48,44 @@
 <!------------------------------------------------------------------------->
 
         <div class="clearfix bordered">
-
-        <hr/>
-        <h3>
-            XLSForm
-            <span id="form-shared-public" class="label label-info">PUBLIC</span>
-            <span id="form-shared-private" class="label label-warning">PRIVATE</span>
-        </h3>
-        <br/>
-<div class="btn-toolbar" style="margin-bottom: 9px">
-	  <div class="btn-group">
-	    <button class="btn btn-success"><a href="{% url download_xlsform content_user.username xform.id_string %}"><i class="icon-th icon-white"></i><font color=#FFF> XLSForm</font></a></button>
-	    <button class="btn dropdown-toggle btn-success" data-toggle="dropdown">
-	      <span class="caret"></span>
-	    </button>
-	    <ul class="dropdown-menu">
-	      <li>                    
-		<input class="input-xxlarge" type="text" size="16" value="{{ base_url }}{% url download_xlsform content_user.username xform.id_string %}"/>
-	      </li>
-	    </ul>
-	  </div>
-	  <div class="btn-group">
-	    <button class="btn "><a href="{% url download_xform content_user.username xform.id_string %}"><i class="icon-file"></i><font color=#000> XForm</font></a></button>
-	    <button class="btn dropdown-toggle" data-toggle="dropdown">
-	      <span class="caret"></span>
-	    </button>
-	    <ul class="dropdown-menu">
-	      <li>                    
-		<input class="input-xxlarge" type="text" size="16" value="{{ base_url }}{% url download_xform content_user.username xform.id_string %}"/>
-	      </li>
-	    </ul>
-	  </div>
-	  <div class="btn-group">
-	    <button class="btn "><a href="{% url download_jsonform content_user.username xform.id_string %}"><i class="icon-file"></i><font color=#000> JSONForm</font></a></button>
-	    <button class="btn dropdown-toggle" data-toggle="dropdown">
-	      <span class="caret"></span>
-	    </button>
-	    <ul class="dropdown-menu">
-	      <li>                    
-		<input class="input-xxlarge" type="text" size="16" value="{{ base_url }}{% url download_jsonform content_user.username xform.id_string %}"/>
-	      </li>
-	    </ul>
-	  </div>
+          <form action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
+                <h3>Source</h3>
+                {% if source.data_file %}
+                    <p><a href="{% url main.views.download_metadata content_user.username xform.id_string source.id %}">{{ source.data_file.name }}</p></a>
+                {% endif %}
+                {% csrf_token %}
+                <input type="text" id="source" class="input-xxlarge present" disabled="" rows="3" value="{{ source.data_value|default:"None provided" }}" />
+                {% if can_edit %}
+                    <a id="source_edit" data-id="source" href="" class="btn small bind-edit">edit</a>
+                    <a id="source_save" data-id="source" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+                {% endif %}
 
 
-</div>
-<br>
-        {% if user.is_authenticated and content_user.username != user.username and xform.xls|length > 0 %}
-            <br/><br/>
-            <li>
-                <a href="" data-url="{% url main.views.clone_xlsform xform.user.username %}" data-username="{{ xform.user.username }}" data-id="{{ xform.id_string }}" class="clonexls"><button class="btn btn-small">Clone</button></a>
-            </li>
-        {% endif %}
-        </ul>
+                {% if can_edit %}
+                    {% csrf_token %}
+                    <table>
+                    {{ source_form.as_table }}
+                    </table>
+                    <input type="submit" class="btn" value="Upload" />
+                {% endif %}
+            </form>
 
-        <p>
-            License:
-            {% if can_edit %}
-                {% for field in form_license_form %}
-                    {{ field }}
+        </div>
+        <div class="clearfix bordered">
+                <h3>Supporting Documents</h3>
+                {% for doc in supporting_docs %}
+                    <p><a href="{% url main.views.download_metadata content_user.username xform.id_string doc.id %}">{{ doc.data_value }}</p></a>
                 {% endfor %}
-                <a id="form-license_edit" data-id="form-license" href="" class="btn btn-small bind-edit">edit</a>
-                <a id="form-license_save" data-id="form-license" style="display:none" href="" class="btn btn-small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
-            {% else %}
-                {{ form_license|default:'No license' }}
-            {% endif %}
-        </p>
-        <p><a id="form-license_info" style="display:none" href="">License information</a></p>
-
-
-
-      </div>
-
-<!------------------------------------------------------------------------->
-<!------------------------------------------------------------------------->
-      <div class="clearfix bordered">
-        <hr/>
-        <h3>
-            Form Data
-            <span id="data-shared-public" class="label label-info">PUBLIC</span>
-            <span id="data-shared-private" class="label label-warning">PRIVATE</span>
-        </h3>
-        {% if xform.shared_data or can_view %}
-
-        {% if xform.submission_count > 0 %}
-            <div>
-            <div class="input-prepend">
-
-<br>
-
-<div class="btn-toolbar" style="margin-bottom: 9px">
-  
-	  <div class="btn-group">
-	    <button class="btn "><a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>csv</font></a></button>
-	    <button class="btn dropdown-toggle" data-toggle="dropdown">
-	      <span class="caret"></span>
-	    </button>
-	    <ul class="dropdown-menu">
-	      <li>                    
-		<input class="input-xxlarge" type="text" size="16" value="{{base_url}}{% url odk_viewer.views.csv_export content_user.username xform.id_string %}"/>
-	      </li>
-	    </ul>
-	  </div>
-
-
-	  <div class="btn-group">
-	    <button class="btn "><a href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>xls</font></a></button>
-	    <button class="btn dropdown-toggle" data-toggle="dropdown">
-	      <span class="caret"></span>
-	    </button>
-	    <ul class="dropdown-menu">
-	      <li>                    
-		<input class="input-xxlarge" type="text" size="16" value="{{base_url}}{% url odk_viewer.views.xls_export content_user.username xform.id_string %}"/>
-	      </li>
-	    </ul>
-	  </div>
-	  <div class="btn-group">
-	    <button class="btn "><a href="{% url odk_viewer.views.kml_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>kml</font></a></button>
-	    <button class="btn dropdown-toggle" data-toggle="dropdown">
-	      <span class="caret"></span>
-	    </button>
-	    <ul class="dropdown-menu">
-	      <li>                    
-		<input class="input-xxlarge" type="text" size="16" value="{{base_url}}{% url odk_viewer.views.kml_export content_user.username xform.id_string %}"/>
-	      </li>
-	    </ul>
-	  </div>
-
-	  <div class="btn-group">
-	    <button class="btn "><a href="{% url odk_viewer.views.zip_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>zip</font></a></button>
-	    <button class="btn dropdown-toggle" data-toggle="dropdown">
-	      <span class="caret"></span>
-	    </button>
-	    <ul class="dropdown-menu">
-	      <li>                    
-		<input class="input-xxlarge" type="text" size="16" value="{{base_url}}{% url odk_viewer.views.zip_export content_user.username xform.id_string %}"/>
-	      </li>
-	    </ul>
-	  </div>
-</div>
-
-        <h4>Submissions: {{ xform.submission_count|intcomma }}</h4>
-<br>
-    <p>
-            License:
-            {% if can_edit %}
-                {% for field in data_license_form %}
-                    {{ field }}
-                {% endfor %}
-                <a id="data-license_edit" data-id="data-license" href="" class="btn btn-small bind-edit">edit</a>
-                <a id="data-license_save" data-id="data-license" style="display:none" href="" class="btn btn-small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
-            {% else %}
-                {{ data_license|default:'No license' }}
-            {% endif %}
-        </p>
-    <p><a id="data-license_info" style="display:none" href="">License information</a></p>
-
-            </div>
-            <p>
-	      <div class="btn-group" style="margin-bottom: 9px">
-		<a class="btn btn-info" rel="tooltip" title="View Map" href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
-		  <i class="icon-map-marker icon-white"></i> Map
-		</a>
-		<a class="btn btn-info" btn-info  rel="tooltip" title="View Photos" href="{% url main.views.form_photos content_user.username xform.id_string %}">
-		  <i class="icon-camera icon-white"></i> Photos
-		</a>
-		{% endif %}
-		{% endif %}
-		{% if can_edit %}
-		<a class="btn btn-info" rel="tooltip" title="Webform" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
-		  <i class="icon-edit icon-white"></i> Enter Web Form</a>
-		{% endif %}
-	      </div>
-<br>
-
-<!------------------------------------------------------------------------->
+                {% if can_edit %}
+                <form action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <table>
+                    {{ doc_form.as_table }}
+                    </table>
+                    <input type="submit" class="btn" value="Upload" />
+                </form>
+                {% endif %}
+        </div>
       </div>
       <div class="span4">
         <script type="text/javascript" charset="utf-8">
@@ -246,14 +110,6 @@
                   }
                 });
               });
-            {% if user.is_authenticated %}
-              // add click event to all public (x)forms
-              $('a.clonexls').click(function(){
-                el = $(this);
-                clone_xlsform(el.data('url'), el.data('username'), el.data('id'));
-                return false;
-              });
-            {% endif %}
             });
         </script>
         {% if is_owner %}
@@ -332,53 +188,226 @@
       </div>
     </div>
     <div class="row">
-<!------------------------------------------------------------------------->
-    <div class = "span12 clearfix">
-            <form class="well" action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
-                <h3>Source</h3>
-                {% csrf_token %}
-                <input type="text" id="source"class="input-xxlarge present" disabled="" rows="3" value="{{ source.data_value|default:"None provided" }}" />
-
-                {% if can_edit %}
-                    <a id="source_edit" data-id="source" href="" class="btn small bind-edit">edit</a>
-                    <a id="source_save" data-id="source" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
-                {% endif %}
-
-                {% if source.data_file %}
-                    <p><a href="{% url main.views.download_metadata content_user.username xform.id_string source.id %}">{{ source.data_file.name }}</p></a>
-                {% endif %}
-
-                {% if can_edit %}
-                    {% csrf_token %}
-                    <table>
-                    {{ source_form.as_table }}
-                    </table>
-                    <input type="submit" class="btn" value="Upload" />
-                {% endif %}
-            </form>
-</div>
-<!------------------------------------------------------------------------->
-    </div>
-    <div class="row">
-        <div class="span12 clearfix">
-                {% for doc in supporting_docs %}
-                    <p><a href="{% url main.views.download_metadata content_user.username xform.id_string doc.id %}">{{ doc.data_value }}</p></a>
-                {% endfor %}
-                {% if can_edit %}
-                <form class="well" action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
-                <h3>Supporting Documents</h3>
-                    {% csrf_token %}
-                    <table>
-                    {{ doc_form.as_table }}
-                    </table>
-                    <input type="submit" class="btn" value="Upload" />
-                </form>
-                {% endif %}
+      <div class="span12">
+        <hr/>
+        <h3>
+            XLSForm
+            <span id="form-shared-public" class="label label-info">PUBLIC</span>
+            <span id="form-shared-private" class="label label-warning">PRIVATE</span>
+        </h3>
+        <br/>
+        <div class="btn-toolbar" style="margin-bottom: 9px">
+          <div class="btn-group">
+            <button class="btn btn-success"><a href="{% url download_xlsform content_user.username xform.id_string %}"><i class="icon-th icon-white"></i><font color=#FFF> XLSForm</font></a></button>
+            <button class="btn dropdown-toggle btn-success" data-toggle="dropdown">
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li>                    
+                <input class="input-xxlarge" type="text" size="16" value="{{ base_url }}{% url download_xlsform content_user.username xform.id_string %}"/>
+              </li>
+            </ul>
+          </div>
+          <div class="btn-group">
+            <button class="btn "><a href="{% url download_xform content_user.username xform.id_string %}"><i class="icon-file"></i><font color=#000> XForm</font></a></button>
+            <button class="btn dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li>                    
+                <input class="input-xxlarge" type="text" size="16" value="{{ base_url }}{% url download_xform content_user.username xform.id_string %}"/>
+              </li>
+            </ul>
+          </div>
+          <div class="btn-group">
+            <button class="btn "><a href="{% url download_jsonform content_user.username xform.id_string %}"><i class="icon-file"></i><font color=#000> JSONForm</font></a></button>
+            <button class="btn dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li>                    
+                <input class="input-xxlarge" type="text" size="16" value="{{ base_url }}{% url download_jsonform content_user.username xform.id_string %}"/>
+              </li>
+            </ul>
         </div>
+    </div>
+<br>
+        </ul>
+        <p>
+            License:
+            {% if can_edit %}
+                {% for field in form_license_form %}
+                    {{ field }}
+                {% endfor %}
+                <a id="form-license_edit" data-id="form-license" href="" class="btn btn-small bind-edit">edit</a>
+                <a id="form-license_save" data-id="form-license" style="display:none" href="" class="btn btn-small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+            {% else %}
+                {{ form_license|default:'No license' }}
+            {% endif %}
+        </p>
+        <p><a id="form-license_info" style="display:none" href="">License information</a></p>
+        <br/>
+        <ul class="inline">
+        <li>
+            <div class="input-prepend">
+                <span class="add-on">
+                    <a href="{% url download_xlsform content_user.username xform.id_string %}">
+                    Excel
+                    </a>
+                </span>
+                <input class="xxlarge" type="text" size="16" value="{{ base_url }}{% url download_xlsform content_user.username xform.id_string %}"/>
+            </div>
+            <br/>
+        </li>
+        <li class="inline dropdown" data-dropdown="dropdown">
+            <a class="dropdown-toggle btn small" href="#">Other</a>
+            <ul class="dropdown-menu">
+                <li>
+                <a href="{% url download_xform content_user.username xform.id_string %}">
+                  XForm
+                </a>
+                </li>
+                <li>
+                <a href="{% url download_jsonform content_user.username xform.id_string %}">
+                  Form JSON
+                </a>
+                </li>
+            </ul>
+        </li>
+        {% if user.is_authenticated and content_user.username != user.username and xform.xls|length > 0 and not cloned %}
+            <br/><br/>
+            <li>
+                <a href="" data-url="{% url main.views.clone_xlsform xform.user.username %}" data-username="{{ xform.user.username }}" data-id="{{ xform.id_string }}" class="clonexls"><button class="btn small">Clone</button></a>
+            </li>
+        {% endif %}
+        </ul>
+      </div>
+      <div class="clearfix bordered">
+        <hr/>
+        <h3>
+            Form Data
+            <span id="data-shared-public" class="label label-info">PUBLIC</span>
+            <span id="data-shared-private" class="label label-warning">PRIVATE</span>
+        </h3>
+        {% if xform.shared_data or can_view %}
+        {% if xform.submission_count > 0 %}
+        <div>
+        <div class="input-prepend">
+        <br>
+        <div class="btn-toolbar" style="margin-bottom: 9px">
+          <div class="btn-group">
+            <button class="btn "><a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>csv</font></a></button>
+            <button class="btn dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li>                    
+                <input class="input-xxlarge" type="text" size="16" value="{{base_url}}{% url odk_viewer.views.csv_export content_user.username xform.id_string %}"/>
+              </li>
+            </ul>
+          </div>
+          <div class="btn-group">
+            <button class="btn "><a href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>xls</font></a></button>
+            <button class="btn dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li>                    
+                <input class="input-xxlarge" type="text" size="16" value="{{base_url}}{% url odk_viewer.views.xls_export content_user.username xform.id_string %}"/>
+              </li>
+            </ul>
+          </div>
+          <div class="btn-group">
+            <button class="btn "><a href="{% url odk_viewer.views.kml_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>kml</font></a></button>
+            <button class="btn dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li>                    
+                <input class="input-xxlarge" type="text" size="16" value="{{base_url}}{% url odk_viewer.views.kml_export content_user.username xform.id_string %}"/>
+              </li>
+            </ul>
+          </div>
 
-<!------------------------------------------------------------------------->
-<!------------------------------------------------------------------------->
-
-	    </div> 
+          <div class="btn-group">
+            <button class="btn "><a href="{% url odk_viewer.views.zip_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>zip</font></a></button>
+            <button class="btn dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li>                    
+                <input class="input-xxlarge" type="text" size="16" value="{{base_url}}{% url odk_viewer.views.zip_export content_user.username xform.id_string %}"/>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <h4>Submissions: {{ xform.submission_count|intcomma }}</h4>
+        <br>
+        <p>
+            License:
+            {% if can_edit %}
+                {% for field in data_license_form %}
+                    {{ field }}
+                {% endfor %}
+                <a id="data-license_edit" data-id="data-license" href="" class="btn btn-small bind-edit">edit</a>
+                <a id="data-license_save" data-id="data-license" style="display:none" href="" class="btn btn-small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+            {% else %}
+                {{ data_license|default:'No license' }}
+            {% endif %}
+        </p>
+        <p><a id="data-license_info" style="display:none" href="">License information</a></p>
+        </div>
+	    <div class="btn-group" style="margin-bottom: 9px">
+            <a class="btn btn-info" rel="tooltip" title="View Map" href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
+              <i class="icon-map-marker icon-white"></i> Map
+            </a>
+            <a class="btn btn-info" btn-info  rel="tooltip" title="View Photos" href="{% url main.views.form_photos content_user.username xform.id_string %}">
+              <i class="icon-camera icon-white"></i> Photos
+            </a>
+		{% endif %}
+		{% endif %}
+		{% if can_edit %}
+		<a class="btn btn-info" rel="tooltip" title="Webform" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
+		  <i class="icon-edit icon-white"></i> Enter Web Form
+        </a>
+		{% endif %}
+	    </div>
+        <br>
+      </div>
+      <div class="span4">
+        <script type="text/javascript" charset="utf-8">
+            $(document).ready(function() {
+              {% if xform.shared_data %}
+                $('#data-shared-private').hide();
+              {% else %}
+                $('#data-shared-public').hide();
+              {% endif %}
+              {% if xform.shared %}
+                $('#form-shared-private').hide();
+              {% else %}
+                $('#form-shared-public').hide();
+              {% endif %}
+              $.each(['form-shared', 'data-shared', 'active-form'], function(inx, el) {
+                var cb = $('#' + el + ':checkbox');
+                cb.iphoneStyle({
+                  onChange: function() {
+                    privacyEdit(cb.data('url'), el.split('-')[0]);
+                    $('#' + el + '-public').toggle();
+                    $('#' + el + '-private').toggle();
+                  }
+                });
+              });
+            {% if user.is_authenticated %}
+              // add click event to all public (x)forms
+              $('a.clonexls').click(function(){
+                el = $(this);
+                clone_xlsform(el.data('url'), el.data('username'), el.data('id'));
+                return false;
+              });
+            {% endif %}
+            });
+        </script>
+      </div>
+    </div>
   </section>
 {% endblock %}

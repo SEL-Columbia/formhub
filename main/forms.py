@@ -1,18 +1,21 @@
+import os
+import re
+import urllib2
+from urlparse import urlparse
+
 from django import forms
-from django.core.files.base import ContentFile
 from django.contrib.auth.models import User
-from registration.forms import RegistrationFormUniqueEmail
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
+from django.core.validators import URLValidator
+from django.forms import ModelForm
+
 from main.models import UserProfile, MetaData
+from odk_viewer.models import DataDictionary
+from odk_viewer.models.data_dictionary import upload_to
+from registration.forms import RegistrationFormUniqueEmail
 from registration.models import RegistrationProfile
 from utils.country_field import COUNTRIES
-from django.forms import ModelForm
-from odk_viewer.models import DataDictionary
-from urlparse import urlparse
-from odk_viewer.models.data_dictionary import upload_to
-import re
-import os
-import urllib2
-from django.core.files.storage import default_storage
 
 FORM_LICENSES_CHOICES = (
     ('No License', 'No License'),
@@ -55,9 +58,8 @@ class PermissionForm(forms.Form):
     def __init__(self, username):
         self.username = username
         super(PermissionForm, self).__init__()
-        choices = [(u.username, u.username) for u in 
+        choices = [(u.username, u.username) for u in
             User.objects.order_by('username').exclude(username=username)]
-        #raise Exception(choices)
         self.fields['for_user'].choices = choices
 
 
@@ -174,6 +176,8 @@ class QuickConverterURL(forms.Form):
 
 
 class QuickConverter(QuickConverterFile, QuickConverterURL):
+    validate = URLValidator(verify_exists=True)
+
     def publish(self, user):
         if self.is_valid():
             cleaned_xls_file = self.cleaned_data['xls_file']
@@ -184,6 +188,7 @@ class QuickConverter(QuickConverterFile, QuickConverterURL):
                 if cleaned_xls_file[-4:] != '.xls':
                     cleaned_xls_file += '.xls'
                 cleaned_xls_file = upload_to(None, cleaned_xls_file, user.username)
+                self.validate(cleaned_url)
                 xls_data = ContentFile(urllib2.urlopen(cleaned_url).read())
                 cleaned_xls_file = default_storage.save(cleaned_xls_file, xls_data)
             return DataDictionary.objects.create(
