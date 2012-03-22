@@ -24,7 +24,7 @@ from odk_viewer.views import image_urls_for_form, survey_responses
 from utils.logger_tools import response_with_mimetype_and_name, publish_form
 from utils.decorators import is_owner
 from utils.user_auth import check_and_set_user, set_profile_data,\
-         has_permission, get_xform_and_perms
+         has_permission, get_xform_and_perms, check_and_set_user_and_form
 
 def home(request):
     context = RequestContext(request)
@@ -218,7 +218,12 @@ def api(request, username=None, id_string=None):
     '''
     Example query={'last_name': 'Smith'}
     '''
-    query_str = request.POST['query']
+    xform, owner = check_and_set_user_and_form(username, id_string, request)
+    if not xform:
+        return HttpResponseForbidden('Not shared.')
+    query_str = request.POST.get('query')
+    if not query_str:
+        return HttpResponseBadRequest('Post must include "query" paramenter')
     query = simplejson.loads(query_str)
     cursor = ParsedInstance.query_mongo(username, id_string, query)
     records = list(record for record in cursor)
@@ -328,10 +333,8 @@ def download_metadata(request, username, id_string, data_id):
     return HttpResponseForbidden('Permission denied.')
 
 def form_photos(request, username, id_string):
-    xform = get_object_or_404(XForm,
-            user__username=username, id_string=id_string)
-    owner = User.objects.get(username=username)
-    if not has_permission(xform, owner, request):
+    xform, owner = check_and_set_user_and_form(username, id_string, request)
+    if not xform:
         return HttpResponseForbidden('Not shared.')
     context = RequestContext(request)
     context.form_view = True

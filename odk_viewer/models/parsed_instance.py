@@ -54,7 +54,7 @@ class ParsedInstance(models.Model):
     instance = models.OneToOneField(Instance, related_name="parsed_instance")
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
-    # todo: decide if decimal field is better than float field.
+    # TODO: decide if decimal field is better than float field.
     lat = models.FloatField(null=True)
     lng = models.FloatField(null=True)
 
@@ -69,10 +69,14 @@ class ParsedInstance(models.Model):
         return xform_instances.find(query,
                 {cls.USERFORM_ID: 0}).skip(start).limit(limit)
 
-    def update_mongo(self):
+    def to_dict_for_mongo(self):
         d = dict_for_mongo(self.to_dict())
         d[self.USERFORM_ID] = u'%s_%s' % (self.instance.user.username,
                 self.instance.xform.id_string)
+        return d
+
+    def update_mongo(self):
+        d = self.to_dict_for_mongo()
         xform_instances.save(d)
 
     def to_dict(self):

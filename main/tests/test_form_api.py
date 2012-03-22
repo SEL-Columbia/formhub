@@ -19,7 +19,7 @@ class TestFormAPI(MainTestCase):
     def test_api(self):
         # query string
         data = simplejson.dumps({})
-        response = self.client.post(self.api_url, { 'query': data })
+        response = self.client.post(self.api_url, {'query': data})
         self.assertEqual(response.status_code, 200)
         d = dict_for_mongo(
                 self.xform.surveys.all()[0].parsed_instance.to_dict())
@@ -32,7 +32,7 @@ class TestFormAPI(MainTestCase):
             'transport/available_transportation_types_to_referral_facility':\
                 'none'
         })
-        response = self.client.post(self.api_url, { 'query': data })
+        response = self.client.post(self.api_url, {'query': data})
         self.assertEqual(response.status_code, 200)
         d = dict_for_mongo(
                 self.xform.surveys.all()[0].parsed_instance.to_dict())
@@ -45,6 +45,6 @@ class TestFormAPI(MainTestCase):
             'available_transporation_types_to_referral_facility':\
                 'bicycle'
         })
-        response = self.client.post(self.api_url, { 'query': data })
+        response = self.client.post(self.api_url, {'query': data})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, '[]')
