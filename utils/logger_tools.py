@@ -82,20 +82,20 @@ def publish_form(callback):
         return {
             'type': 'alert-error',
             'text': unicode(e),
-            }
+        }
     except IntegrityError as e:
         return {
             'type': 'alert-error',
             'text': 'Form with this id already exists.',
-            }
-    except AttributeError as e:
-        # form.publish returned None, not sure why...
-        return {
-            'type': 'alert-error',
-            'text': unicode(e),
-            }
+        }
     except ValidationError, e:
         # on clone invalid URL
+        return {
+            'type': 'alert-error',
+            'text': 'Invalid URL format.',
+        }
+    except AttributeError as e:
+        # form.publish returned None, not sure why...
         return {
             'type': 'alert-error',
             'text': unicode(e),

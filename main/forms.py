@@ -60,7 +60,6 @@ class PermissionForm(forms.Form):
         super(PermissionForm, self).__init__()
         choices = [(u.username, u.username) for u in
             User.objects.order_by('username').exclude(username=username)]
-        #raise Exception(choices)
         self.fields['for_user'].choices = choices
 
 
