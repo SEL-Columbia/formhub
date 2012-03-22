@@ -4,6 +4,7 @@ import tempfile
 import traceback
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.files.storage import get_storage_class
 from django.core.mail import mail_admins
 from django.core.servers.basehttp import FileWrapper
@@ -93,3 +94,9 @@ def publish_form(callback):
             'type': 'alert-error',
             'text': unicode(e),
             }
+    except ValidationError, e:
+        # on clone invalid URL
+        return {
+            'type': 'alert-error',
+            'text': unicode(e),
+        }
