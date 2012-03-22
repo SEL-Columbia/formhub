@@ -213,19 +213,20 @@ def show(request, username=None, id_string=None, uuid=None):
     return render_to_response("show.html", context_instance=context)
 
 
-@require_POST
+@require_GET
 def api(request, username=None, id_string=None):
     '''
-    Example query={'last_name': 'Smith'}
+    Returns all results as JSON.  If a parameter string is passed,
+    it converts this string to a dictionary that is then used as a
+    MongoDB query string.
+    E.g. api?{'last_name': 'Smith'}
     '''
     xform, owner = check_and_set_user_and_form(username, id_string, request)
     if not xform:
         return HttpResponseForbidden('Not shared.')
-    query_str = request.POST.get('query')
-    if not query_str:
-        return HttpResponseBadRequest('Post must include "query" paramenter')
-    query = simplejson.loads(query_str)
-    cursor = ParsedInstance.query_mongo(username, id_string, query)
+    query = request.GET
+    cursor = ParsedInstance.query_mongo(username, id_string,
+            dict(query.items()))
     records = list(record for record in cursor)
     return HttpResponse(simplejson.dumps(records))
 
