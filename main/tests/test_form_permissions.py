@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
 from odk_viewer.views import map_view, survey_responses
 from guardian.shortcuts import assign, remove_perm
-from main.views import set_perm, show, edit
+from main.views import set_perm, show, edit, api
 from main.models import MetaData
 
 import os
@@ -32,6 +32,10 @@ class TestFormPermissions(MainTestCase):
         self.show_normal_url = reverse(show, kwargs={
                 'username': self.user.username,
                 'id_string': self.xform.id_string
+        })
+        self.api_url = reverse(api, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
         })
 
     def test_set_permissions_for_user(self):
@@ -238,3 +242,13 @@ class TestFormPermissions(MainTestCase):
         self.assertEqual(response.status_code, 302)
         response = self.anon.get(survey_url)
         self.assertEquals(response.status_code, 200)
+
+    def test_anon_reject_api(self):
+        response = self.anon.get(self.api_url)
+        self.assertEqual(response.status_code, 403)
+
+    def test_client_allow_api(self):
+        response = self.client.get(self.api_url, {'query': '{}'})
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(self.api_url)
+        self.assertEqual(response.status_code, 200)
