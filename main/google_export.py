@@ -39,20 +39,16 @@ def google_oauth2_request(request):
         print stored_token.refresh_token, stored_token.access_token
         if stored_token.refresh_token is not None and\
            stored_token.access_token is not None:
-            token.access_token = refresh_access_token(stored_token.refresh_token)
             token.refresh_token = stored_token.refresh_token
-            print stored_token.refresh_token, stored_token.access_token
+            working_token = refresh_access_token(token, request.user)
             docs_client = client.SpreadsheetsClient(source=token.user_agent)
-            docs_client = token.authorize(docs_client)
+            docs_client = working_token.authorize(docs_client)
             docs_feed = docs_client.GetSpreadsheets()
             _l = '<ul>'
             for entry in docs_feed.entry:
                 _l += '<li>%s</li>' % entry.title.text
                 print entry.title.text
             _l += '</ul>'
-            # save token with new access_token
-            ts.token = gdata.gauth.token_to_blob(token)
-            ts.save()
             return HttpResponse(_l)
     print redirect_uri
     return HttpResponseRedirect(redirect_uri)
@@ -70,11 +66,15 @@ def google_auth_return(request):
     return HttpResponseRedirect(reverse(home))
 
 
-def refresh_access_token(refresh_token):
+def refresh_access_token(token, user):
+    try:
+        ts = TokenStorageModel.objects.get(id=user)
+    except TokenStorageModel.DoesNotExist:
+        ts = TokenStorageModel(id=user)
     data = urllib.urlencode({
         'client_id': settings.GOOGLE_CLIENT_ID,
         'client_secret': settings.GOOGLE_CLIENT_SECRET,
-        'refresh_token': refresh_token,
+        'refresh_token': token.refresh_token,
         'grant_type': 'refresh_token'})
     request = urllib2.Request(
         url='https://accounts.google.com/o/oauth2/token',
@@ -82,7 +82,8 @@ def refresh_access_token(refresh_token):
     request_open = urllib2.urlopen(request)
     response = request_open.read()
     request_open.close()
-    print response
     tokens = json.loads(response)
-    access_token = tokens['access_token']
-    return access_token
+    token.access_token = tokens['access_token']
+    ts.token = gdata.gauth.token_to_blob(token)
+    ts.save()
+    return token

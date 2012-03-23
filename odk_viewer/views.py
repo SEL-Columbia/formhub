@@ -274,18 +274,14 @@ def google_xls_export(request, username, id_string):
         stored_token = gdata.gauth.token_from_blob(ts.token)
         if stored_token.refresh_token is not None and\
            stored_token.access_token is not None:
-            token.access_token = refresh_access_token(stored_token.refresh_token)
             token.refresh_token = stored_token.refresh_token
-            print stored_token.refresh_token, stored_token.access_token
+            working_token = refresh_access_token(token, request.user)
             docs_client = gdata.docs.client.DocsClient(source=token.user_agent)
-            docs_client = token.authorize(docs_client)
+            docs_client = working_token.authorize(docs_client)
             xls_doc = gdata.docs.data.Resource(
                 type='spreadsheet', title=xform.title)
             media = gdata.data.MediaSource()
             media.SetFileHandle(tmp.name, 'application/vnd.ms-excel')
             xls_doc = docs_client.CreateResource(xls_doc, media=media)
-            # save token with new access_token
-            ts.token = gdata.gauth.token_to_blob(token)
-            ts.save()
     os.unlink(tmp.name)
     return HttpResponseRedirect('https://docs.google.com')
