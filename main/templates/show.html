@@ -7,6 +7,7 @@
   <section id="profile">
     <div class="page-header">
       <!-- <img src='{{ content_user.profile.gravatar }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' /> -->
+    <div id="mfeedback">&nbsp;</div>
 	<h3>
 	  <div style='vertical-align: middle'>      
 	  <img src='{{ content_user.profile.gravatar }}' alt='' width='20' height='20' /> 
@@ -44,6 +45,7 @@
             </form>
             </div>
         </div>
+
         <div class="clearfix">
             <form class="well" action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
                 <h3>Source</h3>
@@ -107,14 +109,6 @@
                   }
                 });
               });
-            {% if user.is_authenticated %}
-              // add click event to all public (x)forms
-              $('a.clonexls').click(function(){
-                el = $(this);
-                clone_xlsform(el.data('url'), el.data('username'), el.data('id'));
-                return false;
-              });
-            {% endif %}
             });
         </script>
         {% if is_owner %}
@@ -140,7 +134,7 @@
           <!-- DELETE -->
           <div id="delete-{{ xform.id_string }}" class="modal hide fade">
             <div class="modal-header">
-              <a href="#" class="close">&times;</a>
+              <a data-dismiss="modal" class="close">&times;</a>
               <h3>Delete Confirmation</h3>
             </div>
             <div class="modal-body">
@@ -149,10 +143,10 @@
             <div class="modal-footer">
               <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn btn-primary">Delete</a>
               <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">Cancel</a>
-        ,  </div>
+            </div>
           </div>
-          <a href="#" data-controls-modal="delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true">
-              <button class="btn small btn-danger">Delete</button>
+          <a data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" class="btn btn-small btn-danger">
+            Delete
           </a>
         </div>
         </div> 
@@ -214,7 +208,7 @@
 	    </ul>
 	  </div>
 	  <div class="btn-group">
-	    <button class="btn "><a href="{{ base_url }}{% url download_xlsform content_user.username xform.id_string %}"><i class="icon-file"></i><font color=#000> XForm</font></a></button>
+	    <button class="btn "><a href="{% url download_xform content_user.username xform.id_string %}"><i class="icon-file"></i><font color=#000> XForm</font></a></button>
 	    <button class="btn dropdown-toggle" data-toggle="dropdown">
 	      <span class="caret"></span>
 	    </button>
@@ -224,14 +218,21 @@
 	      </li>
 	    </ul>
 	  </div>
+	  <div class="btn-group">
+	    <button class="btn "><a href="{% url download_jsonform content_user.username xform.id_string %}"><i class="icon-file"></i><font color=#000> JSONForm</font></a></button>
+	    <button class="btn dropdown-toggle" data-toggle="dropdown">
+	      <span class="caret"></span>
+	    </button>
+	    <ul class="dropdown-menu">
+	      <li>                    
+		<input class="input-xxlarge" type="text" size="16" value="{{ base_url }}{% url download_jsonform content_user.username xform.id_string %}"/>
+	      </li>
+	    </ul>
+	  </div>
+
+
 </div>
 <br>
-        {% if user.is_authenticated and content_user.username != user.username and xform.xls|length > 0 %}
-            <br/><br/>
-            <li>
-                <a href="" data-url="{% url main.views.clone_xlsform xform.user.username %}" data-username="{{ xform.user.username }}" data-id="{{ xform.id_string }}" class="clonexls"><button class="btn btn-small">Clone</button></a>
-            </li>
-        {% endif %}
         </ul>
 
         <p>
@@ -247,9 +248,41 @@
             {% endif %}
         </p>
         <p><a id="form-license_info" style="display:none" href="">License information</a></p>
-
-
-
+        <br/>
+        <ul class="inline">
+        <li>
+            <div class="input-prepend">
+                <span class="add-on">
+                    <a href="{% url download_xlsform content_user.username xform.id_string %}">
+                    Excel
+                    </a>
+                </span>
+                <input class="xxlarge" type="text" size="16" value="{{ base_url }}{% url download_xlsform content_user.username xform.id_string %}"/>
+            </div>
+            <br/>
+        </li>
+        <li class="inline dropdown" data-dropdown="dropdown">
+            <a class="dropdown-toggle btn small" href="#">Other</a>
+            <ul class="dropdown-menu">
+                <li>
+                <a href="{% url download_xform content_user.username xform.id_string %}">
+                  XForm
+                </a>
+                </li>
+                <li>
+                <a href="{% url download_jsonform content_user.username xform.id_string %}">
+                  Form JSON
+                </a>
+                </li>
+            </ul>
+        </li>
+        {% if user.is_authenticated and content_user.username != user.username and xform.xls|length > 0 and not cloned %}
+            <br/><br/>
+            <li>
+                <a href="" data-url="{% url main.views.clone_xlsform xform.user.username %}" data-username="{{ xform.user.username }}" data-id="{{ xform.id_string }}" class="clonexls"><button class="btn small">Clone</button></a>
+            </li>
+        {% endif %}
+        </ul>
       </div>
     </div>
     <div class="row">
@@ -271,7 +304,7 @@
 <div class="btn-toolbar" style="margin-bottom: 9px">
   
 	  <div class="btn-group">
-	    <button class="btn "><a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>xls</font></a></button>
+	    <button class="btn "><a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>csv</font></a></button>
 	    <button class="btn dropdown-toggle" data-toggle="dropdown">
 	      <span class="caret"></span>
 	    </button>
@@ -364,7 +397,7 @@
 		{% endif %}
 	      </div>
 <br>
-	  
+
 	    </div> 
   </section>
 {% endblock %}

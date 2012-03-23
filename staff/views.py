@@ -1,13 +1,12 @@
 # Create your views here.
 import os
 
+from django import forms
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.models import User
+from django.db import IntegrityError
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django import forms
-from django.db import IntegrityError
-
-from django.contrib.auth.models import User
 
 
 @staff_member_required

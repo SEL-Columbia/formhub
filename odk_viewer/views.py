@@ -205,7 +205,6 @@ def zip_export(request, username, id_string):
             file_path=tmp.name, use_local_filesystem=True)
     return response
 
-
 def kml_export(request, username, id_string):
     # read the locations from the database
     context = RequestContext(request)
@@ -218,19 +217,21 @@ def kml_export(request, username, id_string):
                                     user=owner)
     pis = ParsedInstance.objects.filter(instance__user=owner, instance__xform__id_string=id_string, lat__isnull=False, lng__isnull=False)
     data_for_template = []
+
+    labels = {}
+    def cached_get_labels(xpath):
+        if xpath in labels.keys(): return labels[xpath]
+        labels[xpath] = dd.get_label(xpath)
+        return labels[xpath]
     for pi in pis:
         # read the survey instances
-        data = pi.to_dict()
-        # get rid of keys with leading underscores
-        data_for_display = {}
-        for k, v in data.items():
-            if not k.startswith(u"_"):
-                data_for_display[k] = v
+        data_for_display = pi.to_dict()
         xpaths = data_for_display.keys()
         xpaths.sort(cmp=pi.data_dictionary.get_xpath_cmp())
         label_value_pairs = [
-            (pi.data_dictionary.get_label(xpath),
-            data_for_display[xpath]) for xpath in xpaths]
+            (cached_get_labels(xpath),
+            data_for_display[xpath]) for xpath in xpaths 
+                                     if not xpath.startswith(u"_")]
         table_rows = []
         for key, value in label_value_pairs:
             table_rows.append('<tr><td>%s</td><td>%s</td></tr>' % (key, value))

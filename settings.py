@@ -6,6 +6,7 @@ PROJECT_ROOT = os.path.dirname(CURRENT_FILE)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/'
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),

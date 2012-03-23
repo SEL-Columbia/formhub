@@ -5,14 +5,13 @@ from django.core.urlresolvers import reverse
 from django.core.files.storage import default_storage
 from django.template import RequestContext
 from django import forms
-from django.db import IntegrityError
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_GET, require_POST
+from django.template import loader
 from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseRedirect, HttpResponseNotAllowed, HttpResponseForbidden
 from django.utils import simplejson
 from django.shortcuts import render_to_response, get_object_or_404
-from pyxform.errors import PyXFormError
 from guardian.shortcuts import assign, remove_perm, get_users_with_perms
 
 from main.models import UserProfile, MetaData
@@ -20,11 +19,10 @@ from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
          SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
      SourceForm, PermissionForm
 from odk_logger.models import Instance, XForm
-from odk_logger.models.xform import XLSFormError
 from odk_viewer.models import DataDictionary
 from odk_viewer.models.data_dictionary import upload_to
 from odk_viewer.views import image_urls_for_form, survey_responses
-from utils.logger_tools import response_with_mimetype_and_name
+from utils.logger_tools import response_with_mimetype_and_name, publish_form
 from utils.decorators import is_owner
 from utils.user_auth import check_and_set_user, set_profile_data,\
          has_permission, get_xform_and_perms
@@ -58,7 +56,7 @@ def clone_xlsform(request, username):
     context = RequestContext(request)
     context.message = {'type': None, 'text': '....'}
 
-    try:
+    def set_form():
         form_owner = request.POST.get('username')
         id_string = request.POST.get('id_string')
         xform = XForm.objects.get(user__username=form_owner, \
@@ -67,7 +65,8 @@ def clone_xlsform(request, username):
             id_string = '_' + id_string
         path = xform.xls.name
         if default_storage.exists(path):
-            xls_file = upload_to(None, id_string + '_cloned.xls', to_username)
+            xls_file = upload_to(None, '%s%s.xls' % (
+                        id_string, XForm.CLONED_SUFFIX), to_username)
             xls_data = default_storage.open(path)
             xls_file = default_storage.save(xls_file, xls_data)
             context.message = u"%s-%s" % (form_owner, xls_file)
@@ -75,26 +74,19 @@ def clone_xlsform(request, username):
                 user=request.user,
                 xls=xls_file
                 ).survey
-            context.message = {
-                'type': 'success',
+            return {
+                'type': 'alert-success',
                 'text': 'Successfully cloned %s into your '\
                         '<a href="%s">profile</a>.' % \
                         (survey.id_string, reverse(profile,
                             kwargs={'username': to_username}))
                 }
-    except (PyXFormError, XLSFormError) as e:
-        context.message = {
-            'type': 'error',
-            'text': unicode(e),
-            }
-    except IntegrityError as e:
-        context.message = {
-            'type': 'error',
-            'text': 'Form with this id already exists.',
-            }
+    context.message = publish_form(set_form)
     if request.is_ajax():
-        return HttpResponse(simplejson.dumps(context.message), \
-                        mimetype='application/json')
+        res = loader.render_to_string('message.html',
+                context_instance=context).replace("'", r"\'").replace('\n', '')
+        return HttpResponse(
+                "$('#mfeedback').html('%s').show();" % res)
     else:
         return HttpResponse(context.message['text'])
 
@@ -107,23 +99,14 @@ def profile(request, username):
 
     # xlsform submission...
     if request.method == 'POST' and request.user.is_authenticated():
-        try:
+        def set_form():
             form = QuickConverter(request.POST, request.FILES)
             survey = form.publish(request.user).survey
-            context.message = {
-                'type': 'success',
+            return {
+                'type': 'alert-success',
                 'text': 'Successfully published %s.' % survey.id_string,
                 }
-        except (PyXFormError, XLSFormError) as e:
-            context.message = {
-                'type': 'error',
-                'text': unicode(e),
-                }
-        except IntegrityError as e:
-            context.message = {
-                'type': 'error',
-                'text': 'Form with this id already exists.',
-                }
+        context.message = publish_form(set_form)
 
     # profile view...
     content_user = get_object_or_404(User, username=username)
@@ -203,6 +186,12 @@ def show(request, username=None, id_string=None, uuid=None):
     if not (xform.shared or can_view or request.session.get('public_link')):
         return HttpResponseRedirect(reverse(home))
     context = RequestContext(request)
+    try:
+        XForm.objects.get(user__username=request.user.username,
+        id_string=id_string + XForm.CLONED_SUFFIX)
+        context.cloned = True
+    except XForm.DoesNotExist:
+        context.cloned = False
     context.public_link = MetaData.public_link(xform)
     context.is_owner = is_owner
     context.can_edit = can_edit
@@ -304,7 +293,18 @@ def form_gallery(request):
     context = RequestContext(request)
     if request.user.is_authenticated():
         context.loggedin_user = request.user
-    context.shared_forms = DataDictionary.objects.filter(shared=True)
+    context.shared_forms = XForm.objects.filter(shared=True)
+    # build list of shared forms with cloned suffix
+    id_strings_with_cloned_suffix = [
+        x.id_string + XForm.CLONED_SUFFIX for x in context.shared_forms
+    ]
+    # build list of id_strings for forms this user has cloned
+    context.cloned = [
+        x.id_string.split(XForm.CLONED_SUFFIX)[0] for x in XForm.objects.filter(
+                user__username=request.user.username,
+                id_string__in=id_strings_with_cloned_suffix
+        )
+    ]
     return render_to_response('form_gallery.html', context_instance=context)
 
 def download_metadata(request, username, id_string, data_id):

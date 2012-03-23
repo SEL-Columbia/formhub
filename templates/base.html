@@ -57,14 +57,7 @@
     <div class="container">
       {% block message %}
         {% if message %}
-          <div class="row">
-            <div class="span16">
-              <div class="alert-message block-message {{ message.type }} fade in" data-alert="alert">
-            <a class="close" href="#">×</a>
-            <p>{{ message.text|safe }}</p>
-              </div>
-            </div>
-          </div>
+          {% include "message.html" %}
         {% endif %}
       {% endblock %}
       {% block content %}

@@ -8,6 +8,7 @@ poster==0.8.1
 django-guardian==1.0.3
 pymongo==2.1.1
 gdata==2.0.16
+django-templated-email==0.4.1
 
 # sql alchemy was used for importing data from phones
 SQLAlchemy==0.7.1
