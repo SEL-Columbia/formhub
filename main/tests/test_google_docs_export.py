@@ -1,4 +1,4 @@
-ifrom django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse
 
 from main.models import TokenStorageModel
 from main.google_export import token, refresh_access_token
