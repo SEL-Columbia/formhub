@@ -20,9 +20,6 @@ var navContainerSelector = ".nav.pull-right"
 var questions = [];
 
 function initialize() {
-    // load form json url
-    loadFormJSON(formJSONUrl, loadFormJSONCallback);
-
     // mapbox streets formhub tiles
     var url = 'http://a.tiles.mapbox.com/v3/modilabs.map-hgm23qjf.jsonp';
 
@@ -49,6 +46,9 @@ function initialize() {
     });
 
     addPoints();
+
+    // load form json url
+    loadFormJSON(formJSONUrl, loadFormJSONCallback);
 }
 
 function addPoints() {
@@ -168,7 +168,7 @@ function loadFormJSONCallback(questions)
             $('.select-one-anchor').click(function(){
                 // rel contains the question's unique name
                 var rel = $(this).attr("rel");
-                
+
             })
         }
     }
