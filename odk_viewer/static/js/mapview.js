@@ -15,7 +15,14 @@ var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekky
 var bingMapTypeLabels = {'AerialWithLabels': 'Bing Satellite Map', 'Road': 'Bing Road Map'}; //Road, Aerial or AerialWithLabels
 var mapBoxAdditAttribution = " Map data (c) OpenStreetMap contributors, CC-BY-SA";
 
+// map filter vars
+var navContainerSelector = ".nav.pull-right"
+var questions = [];
+
 function initialize() {
+    // load form json url
+    loadFormJSON(formJSONUrl, loadFormJSONCallback);
+
     // mapbox streets formhub tiles
     var url = 'http://a.tiles.mapbox.com/v3/modilabs.map-hgm23qjf.jsonp';
 
@@ -96,4 +103,92 @@ function addPoints() {
         var latlngbounds = new L.LatLngBounds(latLngArray);
         map.fitBounds(latlngbounds);
    }
+}
+
+function loadFormJSON(url, callback)
+{
+    $.getJSON(url, function(data){
+        var questions = data.children;
+        callback(_parseQuestions(questions));
+    })
+}
+
+function _parseQuestions(questions)
+{
+    var questionsObject =  new Object();
+    for(var i=0;i<questions.length;i++)
+    {
+        var q = questions[i];
+        questionsObject[q.name] = q;
+    }
+    return questionsObject;
+}
+
+function loadFormJSONCallback(questions)
+{
+    /// create "select one question to color code" widget
+    var navContainer = $(navContainerSelector);
+    if(navContainer.length == 1)
+    {
+        var hasSelectOne = false;
+
+        var dropdownLabel = _createElementAndSetAttrs('li');
+        var dropdownLink = _createElementAndSetAttrs('a', {"href": "#"}, "Color Responses By:");
+        dropdownLabel.appendChild(dropdownLink);
+        navContainer.append(dropdownLabel);
+
+        var dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown"});
+        var dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle", "data-toggle":"dropdown"});
+        var dropdownCaret = _createElementAndSetAttrs('b', {"class":"caret"});
+        dropdownCaretLink.appendChild(dropdownCaret);
+        dropDownContainer.appendChild(dropdownCaretLink);
+
+
+        var questionUlContainer = _createElementAndSetAttrs("ul", {"class":"dropdown-menu"});
+        /// create links for select one questions
+        for(key in questions)
+        {
+            var question = questions[key];
+            if(question.type == "select one")
+            {
+                hasSelectOne = true;
+                var questionLi = _createElementAndSetAttrs("li", {}, "");
+                var questionLink = _createElementAndSetAttrs("a", {"href":"#", "class":"select-one-anchor", "rel": question.name}, question.label);
+
+                questionLi.appendChild(questionLink);
+                questionUlContainer.appendChild(questionLi);
+            }
+        }
+        dropDownContainer.appendChild(questionUlContainer);
+
+        // we only do this if we have select one questions
+        if(hasSelectOne)
+        {
+            navContainer.append(dropDownContainer);
+            $('.select-one-anchor').click(function(){
+                // rel contains the question's unique name
+                var rel = $(this).attr("rel");
+                
+            })
+        }
+    }
+    else
+        throw "Container '" + navContainerSelector + "' not found";
+
+    /// create "select question to filter by" using widget
+}
+
+function _createElementAndSetAttrs(tag, attributes, text)
+{
+    var el = document.createElement(tag);
+    for(attr in attributes)
+    {
+        el.setAttribute(attr, attributes[attr]);
+    }
+
+    if(text)
+    {
+        el.appendChild(document.createTextNode(text));
+    }
+    return el;
 }

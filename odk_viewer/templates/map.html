@@ -19,6 +19,7 @@
 <script type="text/javascript">
 var points = {{ points|safe }};
 var center = {{ center|safe }};
+var formJSONUrl = "{{ jsonform_url }}";
 $('#selectLanguage').live('change', function() {
     $('.language').hide();
     $('.' + $(this).val()).show();

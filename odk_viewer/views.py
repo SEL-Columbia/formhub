@@ -28,6 +28,7 @@ from utils.user_auth import has_permission, get_xform_and_perms
 from main.models import UserProfile
 from csv_writer import CsvWriter
 from xls_writer import XlsWriter
+from odk_logger.views import download_jsonform
 
 def encode(time_str):
     time = strptime(time_str, "%Y_%m_%d_%H_%M_%S")
@@ -103,7 +104,7 @@ def map_view(request, username, id_string):
     context.points = json.dumps([round_down_point(p) for p in list(points)])
     context.center = json.dumps(center)
     context.form_view = True
-    context.jsonform_url = url = reverse(odk_logger.views.download_jsonform, \
+    context.jsonform_url = reverse(download_jsonform, \
         kwargs={"username": username, "id_string":id_string})
     return render_to_response('map.html', context_instance=context)
 
