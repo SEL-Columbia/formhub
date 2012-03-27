@@ -20,6 +20,7 @@
 var points = {{ points|safe }};
 var center = {{ center|safe }};
 var formJSONUrl = "{{ jsonform_url }}";
+var mongoAPIUrl = "{{ mongo_api_url }}";
 $('#selectLanguage').live('change', function() {
     $('.language').hide();
     $('.' + $(this).val()).show();

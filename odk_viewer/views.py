@@ -29,6 +29,8 @@ from main.models import UserProfile
 from csv_writer import CsvWriter
 from xls_writer import XlsWriter
 from odk_logger.views import download_jsonform
+# TODO: using from main.views import api breaks the application, why?
+import main
 
 def encode(time_str):
     time = strptime(time_str, "%Y_%m_%d_%H_%M_%S")
@@ -106,6 +108,8 @@ def map_view(request, username, id_string):
     context.form_view = True
     context.jsonform_url = reverse(download_jsonform, \
         kwargs={"username": username, "id_string":id_string})
+    context.mongo_api_url = reverse(main.views.api, \
+        kwargs={"username": username, "id_string": id_string})
     return render_to_response('map.html', context_instance=context)
 
 
@@ -114,7 +118,7 @@ def survey_responses(request, instance_id):
     pi = get_object_or_404(ParsedInstance, instance=instance_id)
     xform, is_owner, can_edit, can_view = get_xform_and_perms(\
             pi.instance.user.username, pi.instance.xform.id_string, request)
-    # no access
+    # no accessvar formJSONUrl = "{{ jsonform_url }}";
     if not (xform.shared_data or can_view or
             request.session.get('public_link')):
         return HttpResponseRedirect('/')
