@@ -49,6 +49,18 @@ class TestSite(MainTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(XForm.objects.count(), pre_count + 1)
 
+
+    def test_bad_url_upload(self):
+        if internet_on():
+            self._create_user_and_login()
+            xls_url = 'formhuborg/pld/forms/transportation_2011_07_25/form.xls'
+            pre_count = XForm.objects.count()
+            response = self.client.post('/%s/' % self.user.username, {'xls_url': xls_url})
+            # make sure publishing the survey worked
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(XForm.objects.count(), pre_count)
+
+
     # This method tests a large number of xls files.
     # create a directory /main/test/fixtures/online_xls
     # containing the files you would like to test.

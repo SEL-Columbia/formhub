@@ -22,7 +22,7 @@ class Instance(models.Model):
     user = models.ForeignKey(User, related_name='surveys', null=True)
 
     #using instances instead of surveys breaks django
-    xform = models.ForeignKey(XForm, null=True, related_name="surveys")
+    xform = models.ForeignKey(XForm, null=True, related_name='surveys')
     start_time = models.DateTimeField(null=True)
     date = models.DateField(null=True)
     survey_type = models.ForeignKey(SurveyType)

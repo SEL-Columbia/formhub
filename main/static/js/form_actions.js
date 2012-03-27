@@ -1,13 +1,12 @@
-var clone_xlsform = function (url, username, formid) {
-    // send to server form owner and form id for cloning/copying
-    $.post(url,
-        {'username': username,
-         'id_string': formid}, function(data){
-        if(data.type == "success" || data.type == "error"){
-            $('#mfeedback').html('<div class="alert-message"><a class="close" href="#">x</a><p>' + data.text + '</p></div>');
-            $('#mfeedback').show();
-            $('.alert-message').alert()
-        }
-    }, 'json');
+$(document).ready(function() {
+  // add click event to all public (x)forms
+  $(document).on('click', 'a.clonexls', function() {
+    el = $(this);
+    $.post(el.data('url'), {
+        'username': el.data('username'),
+        'id_string': el.data('id') 
+    }, function() {}, 'script');
     scrollTo(0,0);
-};
+    return false;
+  });
+});
