@@ -251,7 +251,6 @@ class TestSite(MainTestCase):
                 "available_transportation_types_to_referral_facility/other": "True",
                 "available_transportation_types_to_referral_facility_other": "camel",
                 "taxi/frequency_to_referral_facility": "daily",
-                "other/frequency_to_referral_facility": "other",
                 }
             ]
 
