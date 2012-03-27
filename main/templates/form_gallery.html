@@ -8,9 +8,7 @@
     <div id="mfeedback">&nbsp;</div>
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
-  {% if loggedin_user %}
-    <script type="text/javascript" language="javascript" src="/static/js/form_actions.js"></script>
-  {% endif %}
+  <script type="text/javascript" language="javascript" src="/static/js/form_actions.js"></script>
   <script type="text/javascript" charset="utf-8">
 
         $.extend( $.fn.dataTableExt.oStdClasses, {
@@ -28,21 +26,9 @@
                   "bSort": true, 
                   "oLanguage": {"sSearch": "Search:"},
                   "oSearch": {"sSearch": ""},
-                  "fnDrawCallback": function() {
-                    {% if loggedin_user %}
-                      // add click event to all public (x)forms
-                      $('a.clonexls').click(function(){
-                        el = $(this);
-                        clone_xlsform(el.data('url'), el.data('username'), el.data('id'));
-                        return false;
-                      });
-                   {% endif %}
-                  }
       });
       $('#forms-table_filter').addClass('row');
-      
       $('#mfeedback').hide();
-      
 	} );
   </script>
 
@@ -65,9 +51,13 @@
         <td>{{ data_dictionary.description }}</td>
         <td>
           {% if data_dictionary.xls %}
-            <a href="{% url download_xlsform data_dictionary.user.username data_dictionary.id_string %}"><button class="btn btn-success small"><i class="icon-th icon-white"></i> XLS</button></a>
-            {% if loggedin_user and data_dictionary.xls|length > 0 %}
-            <a href="" data-url="{% url main.views.clone_xlsform data_dictionary.user.username %}" data-username="{{ data_dictionary.user.username }}" data-id="{{ data_dictionary.id_string }}" class="clonexls"><button class="btn small">Clone</button></a>
+            <a href="{% url download_xlsform data_dictionary.user.username data_dictionary.id_string %}"><button class="btn btn-small btn-success">Excel</button></a>
+            {% if not data_dictionary.id_string in cloned %}
+                {% if loggedin_user and data_dictionary.xls|length > 0  and loggedin_user.username != data_dictionary.user.username %}
+                    <a href="" data-url="{% url main.views.clone_xlsform data_dictionary.user.username %}" 
+                    data-username="{{ data_dictionary.user.username }}" data-id="{{ data_dictionary.id_string }}" class="clonexls">
+                    <button class="btn small">Clone</button></a>
+                {% endif %}
             {% endif %}
           {% endif %}
         </td>
