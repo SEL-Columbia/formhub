@@ -126,11 +126,13 @@ function _parseQuestions(questions)
 
 function loadFormJSONCallback(questions)
 {
-    /// create "select one question to color code" widget
+    // just to make sure the nav container exists
     var navContainer = $(navContainerSelector);
     if(navContainer.length == 1)
     {
+        // create "select one question to color code" widget
         var hasSelectOne = false;
+        var hasFilterQuestions = false;
 
         var dropdownLabel = _createElementAndSetAttrs('li');
         var dropdownLink = _createElementAndSetAttrs('a', {"href": "#"}, "Color Responses By:");
@@ -138,24 +140,27 @@ function loadFormJSONCallback(questions)
         navContainer.append(dropdownLabel);
 
         var dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown"});
-        var dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle", "data-toggle":"dropdown"});
+        var dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
+            "data-toggle":"dropdown"});
         var dropdownCaret = _createElementAndSetAttrs('b', {"class":"caret"});
         dropdownCaretLink.appendChild(dropdownCaret);
         dropDownContainer.appendChild(dropdownCaretLink);
 
-
         var questionUlContainer = _createElementAndSetAttrs("ul", {"class":"dropdown-menu"});
-        /// create links for select one questions
+
+        // create an "All" link to reset the map
+        var questionLi = _createSelectOneLi({"name":"", "label":"All"});
+        questionUlContainer.appendChild(questionLi);
+
+        // create links for select one questions
+        // TODO: run code to pull out select one questions and filter questions once
         for(key in questions)
         {
             var question = questions[key];
             if(question.type == "select one")
             {
                 hasSelectOne = true;
-                var questionLi = _createElementAndSetAttrs("li", {}, "");
-                var questionLink = _createElementAndSetAttrs("a", {"href":"#", "class":"select-one-anchor", "rel": question.name}, question.label);
-
-                questionLi.appendChild(questionLink);
+                questionLi = _createSelectOneLi(question);
                 questionUlContainer.appendChild(questionLi);
             }
         }
@@ -171,11 +176,26 @@ function loadFormJSONCallback(questions)
 
             })
         }
+
+        // TODO: create "Filter Responses By" widget
     }
     else
         throw "Container '" + navContainerSelector + "' not found";
+}
 
-    /// create "select question to filter by" using widget
+function _isFilterableQuestion(questionType)
+{
+    return true;
+}
+
+function _createSelectOneLi(question)
+{
+    var questionLi = _createElementAndSetAttrs("li", {}, "");
+    var questionLink = _createElementAndSetAttrs("a", {"href":"#", "class":"select-one-anchor",
+        "rel": question.name}, question.label);
+
+    questionLi.appendChild(questionLink);
+    return questionLi;
 }
 
 function _createElementAndSetAttrs(tag, attributes, text)
