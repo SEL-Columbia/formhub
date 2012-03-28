@@ -99,14 +99,20 @@ FormResponseManager.prototype._toGeoJSON = function()
     {
         var response = this.responses[idx];
         var gps = response.gps;
-        // split gps into its parts
-        var parts = gps.split(" ");
-        var lng = parts[0];
-        var lat = parts[1];
+        if(gps)
+        {
+            // split gps into its parts
+            var parts = gps.split(" ");
+            if(parts.length > 1)
+            {
+                var lng = parts[0];
+                var lat = parts[1];
 
-        var geometry = {"type":"Point", "coordinates": [lat, lng]}
-        var feature = {"type": "Feature", "id": response._id, "geometry":geometry, "properties":response};
-        features.push(feature);
+                var geometry = {"type":"Point", "coordinates": [lat, lng]}
+                var feature = {"type": "Feature", "id": response._id, "geometry":geometry, "properties":response};
+                features.push(feature);
+            }
+        }
     }
 
     this.geoJSON = {"type":"FeatureCollection", "features":features};
