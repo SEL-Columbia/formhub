@@ -90,7 +90,7 @@ FormResponseManager.prototype._toGeoJSON = function()
         var lat = parts[1];
 
         var geometry = {"type":"Point", "coordinates": [lat, lng]}
-        var feature = {"type": "Feature", "id": response._id, "geometry":geometry};
+        var feature = {"type": "Feature", "id": response._id, "geometry":geometry, "properties":response};
         features.push(feature);
     }
 
