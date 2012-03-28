@@ -117,7 +117,7 @@ def survey_responses(request, instance_id):
     pi = get_object_or_404(ParsedInstance, instance=instance_id)
     xform, is_owner, can_edit, can_view = get_xform_and_perms(\
             pi.instance.user.username, pi.instance.xform.id_string, request)
-    # no accessvar formJSONUrl = "{{ jsonform_url }}";
+    # no access
     if not (xform.shared_data or can_view or
             request.session.get('public_link')):
         return HttpResponseRedirect('/')
