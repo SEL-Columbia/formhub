@@ -149,7 +149,7 @@ function loadFormJSONCallback(questions)
         var questionUlContainer = _createElementAndSetAttrs("ul", {"class":"dropdown-menu"});
 
         // create an "All" link to reset the map
-        var questionLi = _createSelectOneLi({"name":"", "label":"All"});
+        var questionLi = _createSelectOneLi({"name":"", "label":"None"});
         questionUlContainer.appendChild(questionLi);
 
         // create links for select one questions
@@ -172,8 +172,8 @@ function loadFormJSONCallback(questions)
             navContainer.append(dropDownContainer);
             $('.select-one-anchor').click(function(){
                 // rel contains the question's unique name
-                var rel = $(this).attr("rel");
-
+                var questionName = $(this).attr("rel");
+                colorResponsesBy(questionName);
             })
         }
 
@@ -181,6 +181,14 @@ function loadFormJSONCallback(questions)
     }
     else
         throw "Container '" + navContainerSelector + "' not found";
+}
+
+function colorResponsesBy(questionName)
+{
+    /// TODO: dont need to load the data multiple times, its the same data jsut needs to be colored by questionName
+    $.getJSON(mongoAPIUrl, {}, function(data){
+        console.log(data);
+    })
 }
 
 function _isFilterableQuestion(questionType)
