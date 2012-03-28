@@ -10,14 +10,105 @@ var mapMarkerIcon = L.Icon.extend({options:{
     iconAnchor: new L.Point(12, 24),
     popupAnchor: new L.Point(0,-24)
 }});
+var geoJsonLayer = new L.GeoJSON(null);
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
 var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekkywR';
 var bingMapTypeLabels = {'AerialWithLabels': 'Bing Satellite Map', 'Road': 'Bing Road Map'}; //Road, Aerial or AerialWithLabels
 var mapBoxAdditAttribution = " Map data (c) OpenStreetMap contributors, CC-BY-SA";
 
+// TODO: Consider moving to a separate file
+// used to load and manage form questions
+FormJSONManager = function(url, callback)
+{
+    this.url = url;
+    this.callback = callback;
+}
+
+FormJSONManager.prototype.loadFormJSON = function()
+{
+    var thisManager = this;
+    $.getJSON(thisManager.url, function(data){
+        thisManager.questions = data.children;
+        thisManager._parseQuestions();
+        thisManager.callback.call(thisManager);
+    })
+}
+
+FormJSONManager.prototype._parseQuestions = function()
+{
+    this.selectOneQuestions = [];
+    for(idx in this.questions)
+    {
+        var question = this.questions[idx];
+        if(question.type == "select one")
+            this.selectOneQuestions.push(question);
+    }
+}
+
+FormJSONManager.prototype.getNumSelectOneQuestions = function()
+{
+    if(!this.selectOneQuestions)
+        this._parseQuestions();
+
+    return this.selectOneQuestions.length;
+}
+
+FormJSONManager.prototype.getSelectOneQuestions = function()
+{
+    if(!this.selectOneQuestions)
+        this._parseQuestions();
+
+    return this.selectOneQuestions;
+}
+
+// used to manage response data loaded via ajax
+FormResponseManager = function(url, callback)
+{
+    this.url = url;
+    this.callback = callback;
+}
+
+FormResponseManager.prototype.loadResponseData = function(params)
+{
+    var thisFormResponseMngr = this;
+    $.getJSON(thisFormResponseMngr.url, params, function(data){
+        thisFormResponseMngr.responses = data;
+        thisFormResponseMngr.callback.call(thisFormResponseMngr);
+    })
+}
+
+FormResponseManager.prototype._toGeoJSON = function()
+{
+    var features = [];
+    for(idx in this.responses)
+    {
+        var response = this.responses[idx];
+        var gps = response.gps;
+        // split gps into its parts
+        var parts = gps.split(" ");
+        var lng = parts[0];
+        var lat = parts[1];
+
+        var geometry = {"type":"Point", "coordinates": [lat, lng]}
+        var feature = {"type": "Feature", "id": response._id, "geometry":geometry};
+        features.push(feature);
+    }
+
+    this.geoJSON = {"type":"FeatureCollection", "features":features};
+}
+
+FormResponseManager.prototype.getAsGeoJSON = function()
+{
+    if(!this.geoJSON)
+        this._toGeoJSON();
+
+    return this.geoJSON;
+}
+
 // map filter vars
-var navContainerSelector = ".nav.pull-right"
-var questions = [];
+var navContainerSelector = ".nav.pull-right";
+var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
+var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
 
 function initialize() {
     // mapbox streets formhub tiles
@@ -45,130 +136,102 @@ function initialize() {
         layersControl.addBaseLayer(mapboxstreet, 'MapBox Streets');
     });
 
-    addPoints();
-
-    // load form json url
-    loadFormJSON(formJSONUrl, loadFormJSONCallback);
+    formResponseMngr.loadResponseData({});
 }
 
-function addPoints() {
-    var latLngArray = new Array();
-    for (var i=0; i<points.length; i=i+1) {
-        // use a self executing function to create a new scope in each
-        // iteration of the loop.
-        latLngArray.push((function(){
-            var point = new L.LatLng(points[i].lat, points[i].lng);
+// callback called after form data has been loaded via the mongo form API
+function loadResponseDataCallback()
+{
+    // load form structure/questions here since we now have some data
+    //formJSONMngr.loadFormJSON();
 
-            // for circle marker
-            //var marker = new L.CircleMarker(point, {
-            //    'radius': 6 
-            //});
-            var marker = new L.Marker(point, {icon: new mapMarkerIcon()});
+    // use this.getAsGeoJSON (essentially formResponseMngr.getAsGeoJSON) to setup points
+    var geoJSON = this.getAsGeoJSON();
 
-            var instance = points[i].instance;
+    _rebuildMarkerLayer(geoJSON);
+}
 
-            // TODO: remove hard coded url
-            var url = "/odk_viewer/survey/" + instance.toString() + "/";
-            // open a loading popup so the user knows something is happening
-            marker.bindPopup('Loading...').openPopup();
+function _rebuildMarkerLayer(geoJSON)
+{
+    var latLngArray = [];
+    /// remove existing geoJsonLayer
+    map.removeLayer(geoJsonLayer);
 
-            // bind open popup to marker's click event
-
-            marker.on('click', function(e){
-                var targetMarker = e.target;
-
-                /*  for circle marker logic
-                var popup = new L.Popup({
-                    'maxWidth': 500,
-                    'offset': new L.Point(0,-50)
-                });
-                latlng = e.latlng;
-                popup.setLatLng(latlng);
-                */
-
-               $.get(url).done(function(data){
-                    targetMarker.bindPopup(data,{'maxWidth': 500}).openPopup();
-                    // for circle marker
-                    // popup.setContent(data);
-                    //  map.openPopup(popup);
-                });
+    geoJsonLayer = new L.GeoJSON(null, {
+        pointToLayer: function (latlng){
+            var marker = new L.Marker(latlng, {
+                icon: new mapMarkerIcon()
             });
+            return marker;
+        }
+    });
 
-            map.addLayer(marker);
-            return point;
-        })());
-    }
+    geoJsonLayer.on("featureparse", function(geoJSONEvt){
+        var marker = geoJSONEvt.layer;
+        latLngArray.push(marker.getLatLng());
+        marker.on('click', function(e){
+            var targetMarker = e.target;
+
+            // TODO: remove hard coded url - could hack by reversing url using 0000 as instance_id then replacing with actual id
+            var url = "/odk_viewer/survey/" + geoJSONEvt.id.toString() + "/";
+            // open a loading popup so the user knows something is happening
+            targetMarker.bindPopup('Loading...').openPopup();
+
+            $.get(url).done(function(data){
+                targetMarker.bindPopup(data,{'maxWidth': 500}).openPopup();
+            });
+        });
+    });
+
+    /// need this here instead of the constructor so that we can catch the featureparse event
+    geoJsonLayer.addGeoJSON(geoJSON);
+    map.addLayer(geoJsonLayer);
+
     // fitting to bounds with one point will zoom too far
     if (latLngArray.length > 1) {
         var latlngbounds = new L.LatLngBounds(latLngArray);
         map.fitBounds(latlngbounds);
-   }
-}
-
-function loadFormJSON(url, callback)
-{
-    $.getJSON(url, function(data){
-        var questions = data.children;
-        callback(_parseQuestions(questions));
-    })
-}
-
-function _parseQuestions(questions)
-{
-    var questionsObject =  new Object();
-    for(var i=0;i<questions.length;i++)
-    {
-        var q = questions[i];
-        questionsObject[q.name] = q;
     }
-    return questionsObject;
 }
 
-function loadFormJSONCallback(questions)
+/// NOTE: "this" here refers to the instance of formJSONManager that was used to load the form JSON
+function loadFormJSONCallback()
 {
     // just to make sure the nav container exists
     var navContainer = $(navContainerSelector);
     if(navContainer.length == 1)
     {
-        // create "select one question to color code" widget
-        var hasSelectOne = false;
-        var hasFilterQuestions = false;
-
-        var dropdownLabel = _createElementAndSetAttrs('li');
-        var dropdownLink = _createElementAndSetAttrs('a', {"href": "#"}, "Color Responses By:");
-        dropdownLabel.appendChild(dropdownLink);
-        navContainer.append(dropdownLabel);
-
-        var dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown"});
-        var dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
-            "data-toggle":"dropdown"});
-        var dropdownCaret = _createElementAndSetAttrs('b', {"class":"caret"});
-        dropdownCaretLink.appendChild(dropdownCaret);
-        dropDownContainer.appendChild(dropdownCaretLink);
-
-        var questionUlContainer = _createElementAndSetAttrs("ul", {"class":"dropdown-menu"});
-
-        // create an "All" link to reset the map
-        var questionLi = _createSelectOneLi({"name":"", "label":"None"});
-        questionUlContainer.appendChild(questionLi);
-
-        // create links for select one questions
-        // TODO: run code to pull out select one questions and filter questions once
-        for(key in questions)
+        // check if we have select one questions
+        if(this.getNumSelectOneQuestions() > 0)
         {
-            var question = questions[key];
-            if(question.type == "select one")
+            var dropdownLabel = _createElementAndSetAttrs('li');
+            var dropdownLink = _createElementAndSetAttrs('a', {"href": "#"}, "Color Responses By:");
+            dropdownLabel.appendChild(dropdownLink);
+            navContainer.append(dropdownLabel);
+
+            var dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown"});
+            var dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
+                "data-toggle":"dropdown"});
+            var dropdownCaret = _createElementAndSetAttrs('b', {"class":"caret"});
+            dropdownCaretLink.appendChild(dropdownCaret);
+            dropDownContainer.appendChild(dropdownCaretLink);
+
+            var questionUlContainer = _createElementAndSetAttrs("ul", {"class":"dropdown-menu"});
+
+            // create an "All" link to reset the map
+            var questionLi = _createSelectOneLi({"name":"", "label":"None"});
+            questionUlContainer.appendChild(questionLi);
+
+            // create links for select one questions
+            selectOneQuestions = this.getSelectOneQuestions();
+            for(idx in selectOneQuestions)
             {
-                hasSelectOne = true;
+                var question = selectOneQuestions[idx];
                 questionLi = _createSelectOneLi(question);
                 questionUlContainer.appendChild(questionLi);
             }
-        }
-        dropDownContainer.appendChild(questionUlContainer);
+            dropDownContainer.appendChild(questionUlContainer);
 
-        // we only do this if we have select one questions
-        if(hasSelectOne)
-        {
             navContainer.append(dropDownContainer);
             $('.select-one-anchor').click(function(){
                 // rel contains the question's unique name
@@ -176,24 +239,9 @@ function loadFormJSONCallback(questions)
                 colorResponsesBy(questionName);
             })
         }
-
-        // TODO: create "Filter Responses By" widget
     }
     else
         throw "Container '" + navContainerSelector + "' not found";
-}
-
-function colorResponsesBy(questionName)
-{
-    /// TODO: dont need to load the data multiple times, its the same data jsut needs to be colored by questionName
-    $.getJSON(mongoAPIUrl, {}, function(data){
-        console.log(data);
-    })
-}
-
-function _isFilterableQuestion(questionType)
-{
-    return true;
 }
 
 function _createSelectOneLi(question)

@@ -103,7 +103,6 @@ def map_view(request, username, id_string):
             'lng': round_down_geopoint(p['lng']),
             'instance': p['instance']
         }
-    context.points = json.dumps([round_down_point(p) for p in list(points)])
     context.center = json.dumps(center)
     context.form_view = True
     context.jsonform_url = reverse(download_jsonform, \
