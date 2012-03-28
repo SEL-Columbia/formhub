@@ -10,6 +10,21 @@ var mapMarkerIcon = L.Icon.extend({options:{
     iconAnchor: new L.Point(12, 24),
     popupAnchor: new L.Point(0,-24)
 }});
+var redMarkerIcon = mapMarkerIcon.extend({options:{
+    iconUrl: '/static/images/marker-solid-24-red.png'
+}});
+var blueMarkerIcon = mapMarkerIcon.extend({options:{
+    iconUrl: '/static/images/marker-solid-24-blue.png'
+}});
+var greenMarkerIcon = mapMarkerIcon.extend({options:{
+    iconUrl: '/static/images/marker-solid-24-green.png'
+}});
+var yellowMarkerIcon = mapMarkerIcon.extend({options:{
+    iconUrl: '/static/images/marker-solid-24-yellow.png'
+}});
+var orangeMarkerIcon = mapMarkerIcon.extend({options:{
+    iconUrl: '/static/images/marker-solid-24-orange.png'
+}});
 var geoJsonLayer = new L.GeoJSON(null);
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
 var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekkywR';
@@ -151,9 +166,14 @@ function loadResponseDataCallback()
     _rebuildMarkerLayer(geoJSON);
 }
 
-function _rebuildMarkerLayer(geoJSON)
+function _rebuildMarkerLayer(geoJSON, questionName)
 {
     var latLngArray = [];
+    // TODO: remove after testing
+    questionName = "rating";
+    var colorMarkers = [redMarkerIcon, blueMarkerIcon, greenMarkerIcon, yellowMarkerIcon, orangeMarkerIcon];
+    var questionColor = {};
+
     /// remove existing geoJsonLayer
     map.removeLayer(geoJsonLayer);
 
@@ -169,6 +189,24 @@ function _rebuildMarkerLayer(geoJSON)
     geoJsonLayer.on("featureparse", function(geoJSONEvt){
         var marker = geoJSONEvt.layer;
         latLngArray.push(marker.getLatLng());
+
+        /// check if questionname is set and which color reperesents this responses answer
+        if(questionName)
+        {
+            var colorMarker = questionColor[response]
+            var response =geoJSONEvt.properties[questionName];
+            if(!colorMarker)
+            {
+                // pick a color
+                if(colorMarkers.length > 0)
+                {
+                    colorMarker = colorMarkers.pop(0);
+                    /// save marker for this response
+                    questionColor[response] = colorMarker;
+                }
+            }
+            marker.setIcon(new colorMarker);
+        }
         marker.on('click', function(e){
             var targetMarker = e.target;
 
