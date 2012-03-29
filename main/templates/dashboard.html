@@ -20,11 +20,11 @@
         <form action="." method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="tabbable">
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs nomarginbottom">
                 <li class="active"><a href="#upload" data-toggle="tab">Upload</a></li>
                 <li><a href="#url" data-toggle="tab">URL</a></li>
             </ul>
-            <div class="tab-content">
+            <div class="tab-content bordered-side">
                 <div class="tab-pane active" id="upload">
                     <table class="narrow-labels">
                         {{ form.as_table }}
@@ -38,7 +38,7 @@
             </div>
             </div>
             <span style='float:middle;'>
-	        <div class="form-actions">
+	        <div class="form-actions bordered-side bordered-bottom nomargintop">
                 <input type="submit" class="btn large btn-primary" value="Publish" />
 		</div>
             </span>

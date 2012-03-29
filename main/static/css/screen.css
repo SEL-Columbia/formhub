@@ -27,6 +27,21 @@ This is for all the extra things it needs beyond what bootstrap provides.
     padding: 8px 10px;
 }
 
+.bordered-side {
+    border-left: 1px solid #DFDFDF;
+    border-right: 1px solid #DFDFDF;
+    padding: 8px 10px;
+}
+.bordered-bottom {
+    border-bottom: 1px solid #DFDFDF;
+    padding: 8px 10px;
+}
+.nomarginbottom {
+    margin-bottom:0px;
+}
+.nomargintop {
+    margin-top:0px;
+}
 .profile small {
     font-size: 80%;
 }
