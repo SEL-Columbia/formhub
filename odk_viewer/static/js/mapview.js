@@ -164,10 +164,10 @@ function initialize() {
 function loadResponseDataCallback()
 {
     // load form structure/questions here since we now have some data
-    //formJSONMngr.loadFormJSON();
+    formJSONMngr.loadFormJSON();
 
-    // use this.getAsGeoJSON (essentially formResponseMngr.getAsGeoJSON) to setup points
-    var geoJSON = this.getAsGeoJSON();
+    // get geoJSON data to setup points
+    var geoJSON = formResponseMngr.getAsGeoJSON();
 
     _rebuildMarkerLayer(geoJSON);
 }
@@ -175,8 +175,6 @@ function loadResponseDataCallback()
 function _rebuildMarkerLayer(geoJSON, questionName)
 {
     var latLngArray = [];
-    // TODO: remove after testing
-    questionName = "rating";
     var colorMarkers = [redMarkerIcon, blueMarkerIcon, greenMarkerIcon, yellowMarkerIcon, orangeMarkerIcon];
     var questionColor = {};
 
@@ -196,11 +194,11 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         var marker = geoJSONEvt.layer;
         latLngArray.push(marker.getLatLng());
 
-        /// check if questionname is set and which color reperesents this responses answer
+        /// check if questionName is set
         if(questionName)
         {
-            var colorMarker = questionColor[response]
-            var response =geoJSONEvt.properties[questionName];
+            var response = geoJSONEvt.properties[questionName];
+            var colorMarker = questionColor[response];
             if(!colorMarker)
             {
                 // pick a color
@@ -246,7 +244,7 @@ function loadFormJSONCallback()
     if(navContainer.length == 1)
     {
         // check if we have select one questions
-        if(this.getNumSelectOneQuestions() > 0)
+        if(formJSONMngr.getNumSelectOneQuestions() > 0)
         {
             var dropdownLabel = _createElementAndSetAttrs('li');
             var dropdownLink = _createElementAndSetAttrs('a', {"href": "#"}, "Color Responses By:");
@@ -280,7 +278,10 @@ function loadFormJSONCallback()
             $('.select-one-anchor').click(function(){
                 // rel contains the question's unique name
                 var questionName = $(this).attr("rel");
-                colorResponsesBy(questionName);
+                // get geoJSON data to setup points
+                var geoJSON = formResponseMngr.getAsGeoJSON();
+
+                _rebuildMarkerLayer(geoJSON, questionName);
             })
         }
     }
