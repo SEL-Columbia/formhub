@@ -10,6 +10,21 @@ var mapMarkerIcon = L.Icon.extend({options:{
     iconAnchor: new L.Point(12, 24),
     popupAnchor: new L.Point(0,-24)
 }});
+var redMarkerIcon = mapMarkerIcon.extend({options:{
+    iconUrl: '/static/images/marker-solid-24-red.png'
+}});
+var blueMarkerIcon = mapMarkerIcon.extend({options:{
+    iconUrl: '/static/images/marker-solid-24-blue.png'
+}});
+var greenMarkerIcon = mapMarkerIcon.extend({options:{
+    iconUrl: '/static/images/marker-solid-24-green.png'
+}});
+var yellowMarkerIcon = mapMarkerIcon.extend({options:{
+    iconUrl: '/static/images/marker-solid-24-yellow.png'
+}});
+var orangeMarkerIcon = mapMarkerIcon.extend({options:{
+    iconUrl: '/static/images/marker-solid-24-orange.png'
+}});
 var geoJsonLayer = new L.GeoJSON(null);
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
 var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekkywR';
@@ -22,6 +37,7 @@ FormJSONManager = function(url, callback)
 {
     this.url = url;
     this.callback = callback;
+    this.geopointQuestions = [];
 }
 
 FormJSONManager.prototype.loadFormJSON = function()
@@ -42,6 +58,8 @@ FormJSONManager.prototype._parseQuestions = function()
         var question = this.questions[idx];
         if(question.type == "select one")
             this.selectOneQuestions.push(question);
+        if(question.type == "geopoint")
+            this.geopointQuestions.push(question)
     }
 }
 
@@ -59,6 +77,14 @@ FormJSONManager.prototype.getSelectOneQuestions = function()
         this._parseQuestions();
 
     return this.selectOneQuestions;
+}
+
+// TODO: This picks the first geopoint question regardless if there are multiple
+FormJSONManager.prototype.getGeoPointQuestion = function()
+{
+    if(this.geopointQuestions.length > 0)
+        return this.geopointQuestions[0];
+   return null;
 }
 
 // used to manage response data loaded via ajax
@@ -80,10 +106,11 @@ FormResponseManager.prototype.loadResponseData = function(params)
 FormResponseManager.prototype._toGeoJSON = function()
 {
     var features = [];
+    var geopointQuestion = formJSONMngr.getGeoPointQuestion()["name"];
     for(idx in this.responses)
     {
         var response = this.responses[idx];
-        var gps = response.gps;
+        var gps = response[geopointQuestion];
         if(gps)
         {
             // split gps into its parts
@@ -113,6 +140,7 @@ FormResponseManager.prototype.getAsGeoJSON = function()
 
 // map filter vars
 var navContainerSelector = ".nav.pull-right";
+var legendContainerId = "legend";
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
 
@@ -149,17 +177,15 @@ function initialize() {
 function loadResponseDataCallback()
 {
     // load form structure/questions here since we now have some data
-    //formJSONMngr.loadFormJSON();
-
-    // use this.getAsGeoJSON (essentially formResponseMngr.getAsGeoJSON) to setup points
-    var geoJSON = this.getAsGeoJSON();
-
-    _rebuildMarkerLayer(geoJSON);
+    formJSONMngr.loadFormJSON();
 }
 
-function _rebuildMarkerLayer(geoJSON)
+function _rebuildMarkerLayer(geoJSON, questionName)
 {
     var latLngArray = [];
+    var colorMarkers = [redMarkerIcon, blueMarkerIcon, greenMarkerIcon, yellowMarkerIcon, orangeMarkerIcon];
+    var questionColor = {};
+
     /// remove existing geoJsonLayer
     map.removeLayer(geoJsonLayer);
 
@@ -175,6 +201,24 @@ function _rebuildMarkerLayer(geoJSON)
     geoJsonLayer.on("featureparse", function(geoJSONEvt){
         var marker = geoJSONEvt.layer;
         latLngArray.push(marker.getLatLng());
+
+        /// check if questionName is set
+        if(questionName)
+        {
+            var response = geoJSONEvt.properties[questionName];
+            var colorMarker = questionColor[response];
+            if(!colorMarker)
+            {
+                // pick a color
+                if(colorMarkers.length > 0)
+                {
+                    colorMarker = colorMarkers.pop(0);
+                    /// save marker for this response
+                    questionColor[response] = colorMarker;
+                }
+            }
+            marker.setIcon(new colorMarker);
+        }
         marker.on('click', function(e){
             var targetMarker = e.target;
 
@@ -193,6 +237,9 @@ function _rebuildMarkerLayer(geoJSON)
     geoJsonLayer.addGeoJSON(geoJSON);
     map.addLayer(geoJsonLayer);
 
+    if(questionName)
+        createLegend(questionName, questionColor);
+
     // fitting to bounds with one point will zoom too far
     if (latLngArray.length > 1) {
         var latlngbounds = new L.LatLngBounds(latLngArray);
@@ -200,15 +247,52 @@ function _rebuildMarkerLayer(geoJSON)
     }
 }
 
-/// NOTE: "this" here refers to the instance of formJSONManager that was used to load the form JSON
+function createLegend(questionName, questionColor)
+{
+    // TODO: consider creating container once and keeping a variable reference
+    // try find existing legend and destroy
+    var legendContainer = $(("#"+legendContainerId));
+    if(legendContainer.length > 0)
+        legendContainer.empty();
+    else
+    {
+        var container = _createElementAndSetAttrs('div', {"id":legendContainerId});
+        $((".leaflet-control-container")).prepend(container);
+        legendContainer = $(container);
+    }
+
+    var legendTitle = _createElementAndSetAttrs('h3', {}, questionName);
+    var legendUl = _createElementAndSetAttrs('ul');
+    legendContainer.append(legendTitle);
+    legendContainer.append(legendUl);
+    for(response in questionColor)
+    {
+        var color = questionColor[response];
+        var responseLi = _createElementAndSetAttrs('li');
+        var iconUrl = (new color).options.iconUrl;
+        var legendIcon = _createElementAndSetAttrs('img', {"src": iconUrl});
+        var responseText = _createElementAndSetAttrs('span', {}, response);
+
+        responseLi.appendChild(legendIcon);
+        responseLi.appendChild(responseText);
+
+        legendUl.appendChild(responseLi);
+    }
+}
+
 function loadFormJSONCallback()
 {
+    // get geoJSON data to setup points
+    var geoJSON = formResponseMngr.getAsGeoJSON();
+
+    _rebuildMarkerLayer(geoJSON);
+
     // just to make sure the nav container exists
-    var navContainer = $(navContainerSelector);
+    /*var navContainer = $(navContainerSelector);
     if(navContainer.length == 1)
     {
         // check if we have select one questions
-        if(this.getNumSelectOneQuestions() > 0)
+        if(formJSONMngr.getNumSelectOneQuestions() > 0)
         {
             var dropdownLabel = _createElementAndSetAttrs('li');
             var dropdownLink = _createElementAndSetAttrs('a', {"href": "#"}, "Color Responses By:");
@@ -242,12 +326,15 @@ function loadFormJSONCallback()
             $('.select-one-anchor').click(function(){
                 // rel contains the question's unique name
                 var questionName = $(this).attr("rel");
-                colorResponsesBy(questionName);
+                // get geoJSON data to setup points
+                var geoJSON = formResponseMngr.getAsGeoJSON();
+
+                _rebuildMarkerLayer(geoJSON, questionName);
             })
         }
     }
     else
-        throw "Container '" + navContainerSelector + "' not found";
+        throw "Container '" + navContainerSelector + "' not found";*/
 }
 
 function _createSelectOneLi(question)
