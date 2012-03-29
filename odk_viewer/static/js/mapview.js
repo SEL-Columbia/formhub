@@ -1,4 +1,4 @@
-var centerLatLng = new L.LatLng(center.lat, center.lng);
+var centerLatLng = new L.LatLng(!center.lat?0.0:center.lat, !center.lng?0.0:center.lng);
 var defaultZoom = 8;
 var mapId = 'map_canvas';
 var map;
