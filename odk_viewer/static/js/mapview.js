@@ -37,6 +37,7 @@ FormJSONManager = function(url, callback)
 {
     this.url = url;
     this.callback = callback;
+    this.geopointQuestions = [];
 }
 
 FormJSONManager.prototype.loadFormJSON = function()
@@ -57,6 +58,8 @@ FormJSONManager.prototype._parseQuestions = function()
         var question = this.questions[idx];
         if(question.type == "select one")
             this.selectOneQuestions.push(question);
+        if(question.type == "geopoint")
+            this.geopointQuestions.push(question)
     }
 }
 
@@ -74,6 +77,14 @@ FormJSONManager.prototype.getSelectOneQuestions = function()
         this._parseQuestions();
 
     return this.selectOneQuestions;
+}
+
+// TODO: This picks the first geopoint question regardless if there are multiple
+FormJSONManager.prototype.getGeoPointQuestion = function()
+{
+    if(this.geopointQuestions.length > 0)
+        return this.geopointQuestions[0];
+   return null;
 }
 
 // used to manage response data loaded via ajax
@@ -95,10 +106,11 @@ FormResponseManager.prototype.loadResponseData = function(params)
 FormResponseManager.prototype._toGeoJSON = function()
 {
     var features = [];
+    var geopointQuestion = formJSONMngr.getGeoPointQuestion()["name"];
     for(idx in this.responses)
     {
         var response = this.responses[idx];
-        var gps = response.gps;
+        var gps = response[geopointQuestion];
         if(gps)
         {
             // split gps into its parts
@@ -166,11 +178,6 @@ function loadResponseDataCallback()
 {
     // load form structure/questions here since we now have some data
     formJSONMngr.loadFormJSON();
-
-    // get geoJSON data to setup points
-    var geoJSON = formResponseMngr.getAsGeoJSON();
-
-    _rebuildMarkerLayer(geoJSON);
 }
 
 function _rebuildMarkerLayer(geoJSON, questionName)
@@ -245,14 +252,11 @@ function createLegend(questionName, questionColor)
     // TODO: consider creating container once and keeping a variable reference
     // try find existing legend and destroy
     var legendContainer = $(("#"+legendContainerId));
-    console.log("#legendContainerId");
-    console.log($("#"+legendContainerId));
     if(legendContainer.length > 0)
         legendContainer.empty();
     else
     {
         var container = _createElementAndSetAttrs('div', {"id":legendContainerId});
-        console.log($("#"+mapId));
         $((".leaflet-control-container")).prepend(container);
         legendContainer = $(container);
     }
@@ -276,11 +280,15 @@ function createLegend(questionName, questionColor)
     }
 }
 
-/// NOTE: "this" here refers to the instance of formJSONManager that was used to load the form JSON
 function loadFormJSONCallback()
 {
+    // get geoJSON data to setup points
+    var geoJSON = formResponseMngr.getAsGeoJSON();
+
+    _rebuildMarkerLayer(geoJSON);
+
     // just to make sure the nav container exists
-    var navContainer = $(navContainerSelector);
+    /*var navContainer = $(navContainerSelector);
     if(navContainer.length == 1)
     {
         // check if we have select one questions
@@ -326,7 +334,7 @@ function loadFormJSONCallback()
         }
     }
     else
-        throw "Container '" + navContainerSelector + "' not found";
+        throw "Container '" + navContainerSelector + "' not found";*/
 }
 
 function _createSelectOneLi(question)
