@@ -8,6 +8,14 @@
   #map_canvas { height: 100% }
   .leaflet-popup-content {max-height: 450px; overflow: auto; width: 420px; padding: 4px;}
   .leaflet-popup-content ul {list-style-type:none;}
+  #legend {
+      background-color: white;
+      width: 200px;
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      padding: 10px;
+  }
 </style>
 <link rel="stylesheet" href="/static/css/leaflet.css" />
 <!--[if lte IE 8]>
@@ -17,8 +25,9 @@
 <script type="text/javascript" src="/static/js/wax.leaf.min.js"></script>
 <script type="text/javascript" src="/static/js/TileLayer.Bing.js"></script>
 <script type="text/javascript">
-var points = {{ points|safe }};
 var center = {{ center|safe }};
+var formJSONUrl = "{{ jsonform_url }}";
+var mongoAPIUrl = "{{ mongo_api_url }}";
 $('#selectLanguage').live('change', function() {
     $('.language').hide();
     $('.' + $(this).val()).show();
