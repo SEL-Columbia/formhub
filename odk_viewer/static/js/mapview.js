@@ -128,6 +128,7 @@ FormResponseManager.prototype.getAsGeoJSON = function()
 
 // map filter vars
 var navContainerSelector = ".nav.pull-right";
+var legendContainerId = "legend";
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
 
@@ -229,10 +230,49 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     geoJsonLayer.addGeoJSON(geoJSON);
     map.addLayer(geoJsonLayer);
 
+    if(questionName)
+        createLegend(questionName, questionColor);
+
     // fitting to bounds with one point will zoom too far
     if (latLngArray.length > 1) {
         var latlngbounds = new L.LatLngBounds(latLngArray);
         map.fitBounds(latlngbounds);
+    }
+}
+
+function createLegend(questionName, questionColor)
+{
+    // TODO: consider creating container once and keeping a variable reference
+    // try find existing legend and destroy
+    var legendContainer = $(("#"+legendContainerId));
+    console.log("#legendContainerId");
+    console.log($("#"+legendContainerId));
+    if(legendContainer.length > 0)
+        legendContainer.empty();
+    else
+    {
+        var container = _createElementAndSetAttrs('div', {"id":legendContainerId});
+        console.log($("#"+mapId));
+        $((".leaflet-control-container")).prepend(container);
+        legendContainer = $(container);
+    }
+
+    var legendTitle = _createElementAndSetAttrs('h3', {}, questionName);
+    var legendUl = _createElementAndSetAttrs('ul');
+    legendContainer.append(legendTitle);
+    legendContainer.append(legendUl);
+    for(response in questionColor)
+    {
+        var color = questionColor[response];
+        var responseLi = _createElementAndSetAttrs('li');
+        var iconUrl = (new color).options.iconUrl;
+        var legendIcon = _createElementAndSetAttrs('img', {"src": iconUrl});
+        var responseText = _createElementAndSetAttrs('span', {}, response);
+
+        responseLi.appendChild(legendIcon);
+        responseLi.appendChild(responseText);
+
+        legendUl.appendChild(responseLi);
     }
 }
 
