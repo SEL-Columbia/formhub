@@ -44,23 +44,25 @@ FormJSONManager.prototype.loadFormJSON = function()
 {
     var thisManager = this;
     $.getJSON(thisManager.url, function(data){
-        thisManager.questions = data.children;
-        thisManager._parseQuestions();
+        thisManager._parseQuestions(data.children);
         thisManager.callback.call(thisManager);
     })
 }
 
-FormJSONManager.prototype._parseQuestions = function()
+FormJSONManager.prototype._parseQuestions = function(questionData)
 {
     this.selectOneQuestions = [];
-    for(idx in this.questions)
+    this.questions = {};
+    for(idx in questionData)
     {
-        var question = this.questions[idx];
+        var question = questionData[idx];
+        this.questions[question.name] = question;
         if(question.type == "select one")
             this.selectOneQuestions.push(question);
         if(question.type == "geopoint")
             this.geopointQuestions.push(question)
     }
+    console.log(this.questions);
 }
 
 FormJSONManager.prototype.getNumSelectOneQuestions = function()
@@ -87,6 +89,11 @@ FormJSONManager.prototype.getGeoPointQuestion = function()
    return null;
 }
 
+FormJSONManager.prototype.getQuestionByName = function(name)
+{
+    return this.questions[name];
+}
+
 // used to manage response data loaded via ajax
 FormResponseManager = function(url, callback)
 {
@@ -106,11 +113,14 @@ FormResponseManager.prototype.loadResponseData = function(params)
 FormResponseManager.prototype._toGeoJSON = function()
 {
     var features = [];
-    var geopointQuestion = formJSONMngr.getGeoPointQuestion()["name"];
+    var geopointQuestionName = null;
+    var geopointQuestion = formJSONMngr.getGeoPointQuestion()
+    if(geopointQuestion)
+        geopointQuestionName = geopointQuestion["name"];
     for(idx in this.responses)
     {
         var response = this.responses[idx];
-        var gps = response[geopointQuestion];
+        var gps = response[geopointQuestionName];
         if(gps)
         {
             // split gps into its parts
@@ -238,7 +248,9 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     map.addLayer(geoJsonLayer);
 
     if(questionName)
-        createLegend(questionName, questionColor);
+        showLegend(questionName, questionColor);
+    else
+        hideLegend();
 
     // fitting to bounds with one point will zoom too far
     if (latLngArray.length > 1) {
@@ -247,9 +259,12 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     }
 }
 
-function createLegend(questionName, questionColor)
+function showLegend(questionName, questionColor)
 {
     // TODO: consider creating container once and keeping a variable reference
+    var question = formJSONMngr.getQuestionByName(questionName);
+    var questionLabel = question["label"];
+
     // try find existing legend and destroy
     var legendContainer = $(("#"+legendContainerId));
     if(legendContainer.length > 0)
@@ -261,7 +276,7 @@ function createLegend(questionName, questionColor)
         legendContainer = $(container);
     }
 
-    var legendTitle = _createElementAndSetAttrs('h3', {}, questionName);
+    var legendTitle = _createElementAndSetAttrs('h3', {}, questionLabel);
     var legendUl = _createElementAndSetAttrs('ul');
     legendContainer.append(legendTitle);
     legendContainer.append(legendUl);
@@ -280,15 +295,25 @@ function createLegend(questionName, questionColor)
     }
 }
 
+function hideLegend()
+{
+    var legendContainer = $(("#"+legendContainerId));
+    if(legendContainer.length > 0)
+    {
+        legendContainer.empty();
+        legendContainer.attr("style", "display:none")
+    }
+}
+
 function loadFormJSONCallback()
 {
-    // get geoJSON data to setup points
+    // get geoJSON data to setup points - relies on questions having been parsed so has to be in/after the callback
     var geoJSON = formResponseMngr.getAsGeoJSON();
 
     _rebuildMarkerLayer(geoJSON);
 
     // just to make sure the nav container exists
-    /*var navContainer = $(navContainerSelector);
+    var navContainer = $(navContainerSelector);
     if(navContainer.length == 1)
     {
         // check if we have select one questions
@@ -334,7 +359,7 @@ function loadFormJSONCallback()
         }
     }
     else
-        throw "Container '" + navContainerSelector + "' not found";*/
+        throw "Container '" + navContainerSelector + "' not found";
 }
 
 function _createSelectOneLi(question)
