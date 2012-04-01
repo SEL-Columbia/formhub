@@ -9,7 +9,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect, HttpResponseForbidden
+    HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotAllowed
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.contrib.auth.models import User
@@ -108,6 +108,8 @@ def formList(request, username):
 @require_POST
 @csrf_exempt
 def submission(request, username=None):
+    if not XForm.objects.get(uuid=request.POST.get('uuid')).downloadable:
+        return HttpResponseNotAllowed(['POST'], 'Form is not active')
     context = RequestContext(request)
     show_options = False
     # request.FILES is a django.utils.datastructures.MultiValueDict
