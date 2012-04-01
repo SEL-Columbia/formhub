@@ -70,9 +70,12 @@ def bulksubmission(request, username):
     else:
         return HttpResponseBadRequest("There was a problem receiving your ODK submission. [Error: multiple submission files (?)]")
 
-
+@login_required
 def bulksubmission_form(request, username=None):
-	return render_to_response("bulk_submission_form.html")
+    if request.user.username == username:
+	    return render_to_response("bulk_submission_form.html")
+    else:
+        return HttpResponseRedirect('/%s' % request.user.username)
 
 
 @require_GET
