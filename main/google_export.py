@@ -56,6 +56,8 @@ def google_oauth2_request(request):
 
 @login_required
 def google_auth_return(request):
+    if 'code' not in request.REQUEST:
+        return HttpResponse(u"Invalid Request")
     try:
         ts = TokenStorageModel.objects.get(id=request.user)
     except TokenStorageModel.DoesNotExist:
