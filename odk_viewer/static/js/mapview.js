@@ -276,6 +276,7 @@ function showLegend(questionName, questionColor)
         legendContainer = $(container);
     }
 
+    legendContainer.attr("style", "diplay:block");
     var legendTitle = _createElementAndSetAttrs('h3', {}, questionLabel);
     var legendUl = _createElementAndSetAttrs('ul');
     legendContainer.append(legendTitle);
