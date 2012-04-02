@@ -13,10 +13,10 @@ urlpatterns = patterns('',
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # google urls
-    url(r'^gauthtest$',
+    url(r'^gauthtest/$',
         'main.google_export.google_oauth2_request',
         name='google-auth'),
-    url(r'^gwelcome$',
+    url(r'^gwelcome/$',
         'main.google_export.google_auth_return',
         name='google-auth-welcome'),
 
