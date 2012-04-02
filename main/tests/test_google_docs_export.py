@@ -10,7 +10,7 @@ class TestGoogleDocsExport(MainTestCase):
 
     def setUp(self):
         self.token = token
-        self.refresh_token = '1/n6dPCssv4Zjx9c0rDYGzsIwJExEGrWyj5n5O_wBmRJU'
+        self.refresh_token = '1/ISGBd-OBWr-RbXN2Fq879Xht1inmg_n4sJ_Wd4CoQNk'
         self.token.refresh_token = self.refresh_token
         self._create_user_and_login()
 
