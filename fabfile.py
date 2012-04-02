@@ -10,21 +10,12 @@ DEFAULTS = {
     }
 
 DEPLOYMENTS = {
-    'alpha': {
-        'host_string': 'wsgi@nmis-linode.mvpafrica.org',
-        'project': 'ei_surveyor_alpha',
-        'branch': 'master',
-    },
     'dev': {
         'host_string': 'wsgi@nmis-linode.mvpafrica.org',
         'project': 'formhub_dev',
         'branch': 'master',
     },
-    # 'prod': {
-    #     'project': 'xls2xform_production',
-    #     'branch': 'master',
-    # }
-    'ec2': {
+    'prod': {
         'home': '/home/ubuntu/srv/',
         'host_string': 'ubuntu@23.21.134.243',
         'project': 'formhub-ec2',
