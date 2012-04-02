@@ -62,7 +62,6 @@ FormJSONManager.prototype._parseQuestions = function(questionData)
         if(question.type == "geopoint")
             this.geopointQuestions.push(question)
     }
-    console.log(this.questions);
 }
 
 FormJSONManager.prototype.getNumSelectOneQuestions = function()
