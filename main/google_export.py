@@ -19,7 +19,7 @@ from main.views import home
 
 token = gdata.gauth.OAuth2Token(client_id=settings.GOOGLE_CLIENT_ID,
     client_secret=settings.GOOGLE_CLIENT_SECRET,
-    scope=', '.join(['https://docs.google.com/feeds/',
+    scope=' '.join(['https://docs.google.com/feeds/',
         'https://spreadsheets.google.com/feeds/']),
     user_agent='formhub')
 
