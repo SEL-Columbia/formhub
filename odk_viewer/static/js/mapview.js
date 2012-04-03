@@ -4,10 +4,10 @@ var mapId = 'map_canvas';
 var map;
 var popupOffset = new L.Point(0, -10);
 var circleStyle = {
-    color: '#f03',
+    color: '#fff',
     border: 5,
-    fillColor: '#f03',
-    fillOpacity: 0.5,
+    fillColor: '#cc3333',
+    fillOpacity: 0.9,
     radius: 8
 }
 var geoJsonLayer = new L.GeoJSON(null);
@@ -253,7 +253,8 @@ function _rebuildMarkerLayer(geoJSON, questionName)
                 /// save color for this response
                 questionColor[response] = responseColor;
             }
-            circleStyle.color = responseColor;
+            //circleStyle.color = responseColor;
+	    circleStyle.color = '#fff';
             circleStyle.fillColor = responseColor;
             marker.setStyle(circleStyle);
         }
@@ -356,7 +357,7 @@ function loadFormJSONCallback()
         if(formJSONMngr.getNumSelectOneQuestions() > 0)
         {
             var dropdownLabel = _createElementAndSetAttrs('li');
-            var dropdownLink = _createElementAndSetAttrs('a', {"href": "#"}, "Color Responses By:");
+            var dropdownLink = _createElementAndSetAttrs('a', {"href": "#"}, "Color Responses By");
             dropdownLabel.appendChild(dropdownLink);
             navContainer.append(dropdownLabel);
 
