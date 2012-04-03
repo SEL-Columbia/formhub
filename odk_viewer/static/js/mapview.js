@@ -93,6 +93,33 @@ FormJSONManager.prototype.getQuestionByName = function(name)
     return this.questions[name];
 }
 
+/// pass a question object and get its label, if language is specified, try get label for that otherwise return the first label
+FormJSONManager.prototype.getQuestionLabel = function(question, language)
+{
+    var labelProp = question["label"];
+
+    /// if plain string, return
+    if(typeof(labelProp) == "string")
+        return labelProp;
+    else if(typeof(labelProp) == "object")
+    {
+        if(language && labelProp.hasOwnProperty(language))
+            return labelProp[language];
+        else
+        {
+            var label = null;
+            for(key in labelProp)
+            {
+                label = labelProp[key];
+                break;// break at first instance and return that
+            }
+            return label;
+        }
+
+    }
+    return null;
+}
+
 // used to manage response data loaded via ajax
 FormResponseManager = function(url, callback)
 {
@@ -149,6 +176,7 @@ FormResponseManager.prototype.getAsGeoJSON = function()
 
 // map filter vars
 var navContainerSelector = ".nav.pull-right";
+var legendParentSelector = ".leaflet-control-container";
 var legendContainerId = "legend";
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
@@ -262,7 +290,7 @@ function showLegend(questionName, questionColor)
 {
     // TODO: consider creating container once and keeping a variable reference
     var question = formJSONMngr.getQuestionByName(questionName);
-    var questionLabel = question["label"];
+    var questionLabel = formJSONMngr.getQuestionLabel(question);
 
     // try find existing legend and destroy
     var legendContainer = $(("#"+legendContainerId));
@@ -271,7 +299,8 @@ function showLegend(questionName, questionColor)
     else
     {
         var container = _createElementAndSetAttrs('div', {"id":legendContainerId});
-        $((".leaflet-control-container")).prepend(container);
+        var legendParent = $(legendParentSelector);
+        legendParent.prepend(container);
         legendContainer = $(container);
     }
 
@@ -365,8 +394,9 @@ function loadFormJSONCallback()
 function _createSelectOneLi(question)
 {
     var questionLi = _createElementAndSetAttrs("li", {}, "");
+    var questionLabel = formJSONMngr.getQuestionLabel(question);
     var questionLink = _createElementAndSetAttrs("a", {"href":"#", "class":"select-one-anchor",
-        "rel": question.name}, question.label);
+        "rel": question.name}, questionLabel);
 
     questionLi.appendChild(questionLink);
     return questionLi;
