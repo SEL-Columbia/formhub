@@ -320,7 +320,9 @@ function rebuildLegend(questionName, questionColor)
     {
         var color = questionColor[response];
         var responseLi = _createElementAndSetAttrs('li');
-        var itemLabel = formJSONMngr.getMultilingualLabel(choices[response]);
+        // TODO: some response objects dont have a name attribute e.g. if the name was 0 like in tutorial.xls yes_no choice
+        // that breaks the getMultilingualLabel call
+        var itemLabel = response;//formJSONMngr.getMultilingualLabel(choices[response]);
         var legendIcon = _createElementAndSetAttrs('span', {"class": "legend-bullet", "style": "background-color: " + color});
         var responseText = _createElementAndSetAttrs('span', {}, itemLabel);
 
