@@ -3,6 +3,7 @@ var defaultZoom = 8;
 var mapId = 'map_canvas';
 var map;
 var popupOffset = new L.Point(0, -10);
+var notSpecifiedCaption = "Not Specified";
 var circleStyle = {
     color: '#fff',
     border: 5,
@@ -251,6 +252,9 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         if(questionName)
         {
             var response = geoJSONEvt.properties[questionName];
+            // check if response is missing (user did not specify)
+            if(!response)
+                response = notSpecifiedCaption;
             var responseColor = questionColor[response];
             if(!responseColor)
             {
@@ -327,9 +331,10 @@ function rebuildLegend(questionName, questionColor)
     {
         var color = questionColor[response];
         var responseLi = _createElementAndSetAttrs('li');
-        // TODO: some response objects dont have a name attribute e.g. if the name was 0 like in tutorial.xls yes_no choice
-        // that breaks the getMultilingualLabel call
-        var itemLabel = response;//formJSONMngr.getMultilingualLabel(choices[response]);
+        var itemLabel = response;
+        // check if the choices contain this response before we try to get the reponse's label
+        if(choices.hasOwnProperty(response))
+            itemLabel = formJSONMngr.getMultilingualLabel(choices[response]);
         var legendIcon = _createElementAndSetAttrs('span', {"class": "legend-bullet", "style": "background-color: " + color});
         var responseText = _createElementAndSetAttrs('span', {}, itemLabel);
 
