@@ -23,6 +23,8 @@ FormJSONManager = function(url, callback)
     this.url = url;
     this.callback = callback;
     this.geopointQuestions = [];
+    this.selectOneQuestions = [];
+    this.questions = {};
 }
 
 FormJSONManager.prototype.loadFormJSON = function()
@@ -34,34 +36,38 @@ FormJSONManager.prototype.loadFormJSON = function()
     })
 }
 
-FormJSONManager.prototype._parseQuestions = function(questionData)
+FormJSONManager.prototype._parseQuestions = function(questionData, parentQuestionName)
 {
-    this.selectOneQuestions = [];
-    this.questions = {};
     for(idx in questionData)
     {
         var question = questionData[idx];
-        this.questions[question.name] = question;
+        var questionName = question.name;
+        if(parentQuestionName && parentQuestionName != "")
+            questionName = parentQuestionName + "/" + questionName;
+        question.name = questionName;
+
+        if(question.type != "group")
+        {
+            this.questions[questionName] = question;
+        }
+        /// if question is a group, recurse to collect children
+        else if(question.type == "group" && question.hasOwnProperty("children"))
+            this._parseQuestions(question.children, question.name);
+
         if(question.type == "select one")
             this.selectOneQuestions.push(question);
-        if(question.type == "geopoint")
+        if(question.type == "geopoint" || question.type == "gps")
             this.geopointQuestions.push(question)
     }
 }
 
 FormJSONManager.prototype.getNumSelectOneQuestions = function()
 {
-    if(!this.selectOneQuestions)
-        this._parseQuestions();
-
     return this.selectOneQuestions.length;
 }
 
 FormJSONManager.prototype.getSelectOneQuestions = function()
 {
-    if(!this.selectOneQuestions)
-        this._parseQuestions();
-
     return this.selectOneQuestions;
 }
 
