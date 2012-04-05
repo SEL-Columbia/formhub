@@ -4,6 +4,11 @@ Made for formhub.org, which mostly uses bootstrap for css.
 This is for all the extra things it needs beyond what bootstrap provides.
 */
 
+/* for fixed top */
+body {
+    padding-top:40px;
+}
+
 .centered {
 	text-align: center;
 }
@@ -136,6 +141,9 @@ ul.inline ul.dropdown-menu {
     margin-top: -12px;
 }
 
+.topbar {
+    position:fixed;
+}
 .topbar div > ul > li > img {
     margin-top: 5px;
 }
