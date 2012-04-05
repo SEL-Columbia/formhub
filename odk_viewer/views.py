@@ -28,6 +28,9 @@ from utils.user_auth import has_permission, get_xform_and_perms
 from main.models import UserProfile
 from csv_writer import CsvWriter
 from xls_writer import XlsWriter
+from odk_logger.views import download_jsonform
+# TODO: using from main.views import api breaks the application, why?
+import main
 
 def encode(time_str):
     time = strptime(time_str, "%Y_%m_%d_%H_%M_%S")
@@ -100,9 +103,12 @@ def map_view(request, username, id_string):
             'lng': round_down_geopoint(p['lng']),
             'instance': p['instance']
         }
-    context.points = json.dumps([round_down_point(p) for p in list(points)])
     context.center = json.dumps(center)
     context.form_view = True
+    context.jsonform_url = reverse(download_jsonform, \
+        kwargs={"username": username, "id_string":id_string})
+    context.mongo_api_url = reverse(main.views.api, \
+        kwargs={"username": username, "id_string": id_string})
     return render_to_response('map.html', context_instance=context)
 
 
