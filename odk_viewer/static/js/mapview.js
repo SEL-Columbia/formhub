@@ -6,8 +6,8 @@ var popupOffset = new L.Point(0, -10);
 var notSpecifiedCaption = "Not Specified";
 var circleStyle = {
     color: '#fff',
-    border: 5,
-    fillColor: '#f00',
+    border: 8,
+    fillColor: '#ff3300',
     fillOpacity: 0.9,
     radius: 8
 }
