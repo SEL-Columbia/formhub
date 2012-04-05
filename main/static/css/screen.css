@@ -158,6 +158,11 @@ ul.inline ul.dropdown-menu {
     color: #FFFFFF;
 }
 
+.nav > li.lead {
+    font-size: 15px;
+}
+
+
 div.dataTables_length label {
     width: 460px;
     float: left;
