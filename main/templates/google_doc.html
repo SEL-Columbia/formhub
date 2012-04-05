@@ -1,4 +1,7 @@
 <div class="row">
   <div class="span9">{{ content|safe }}</div>
-  <div class="span3"><div class="nav nav-list">{{ nav|safe }}</div></div>
+  <div class="span3 offset9 fixed"><div class="nav nav-list">{{ nav|safe }}</div></div>
 </div>
+<script type = "text/javascript">
+    $(function(){$('table').addClass('table').addClass('table-bordered').addClass('table-striped');})
+</script>
