@@ -15,12 +15,11 @@
           <a href="{% url main.views.profile content_user.username %}">{{ content_user.username }}</a>
         </li>
         <li class="lead">
-          <a href="#">&nbsp;/&nbsp;</a>
+          <a href="#">/</a>
         </li>
         <li class="lead">
           <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
         </li>
-        <li>&nbsp;</li>
         <li><a href="#"><span class="inverted">{{ xform.submission_count }} submissions</span></a></li>
       </ul>
       <ul class="nav pull-right">
