@@ -36,6 +36,9 @@ This is for all the extra things it needs beyond what bootstrap provides.
     border-bottom: 1px solid #DFDFDF;
     padding: 8px 10px;
 }
+.fixed {
+    position:fixed;
+}
 .nomarginbottom {
     margin-bottom:0px;
 }
