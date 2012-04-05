@@ -7,7 +7,7 @@ var notSpecifiedCaption = "Not Specified";
 var circleStyle = {
     color: '#fff',
     border: 5,
-    fillColor: '#cc3333',
+    fillColor: '#f00',
     fillOpacity: 0.9,
     radius: 8
 }
@@ -263,10 +263,14 @@ function _rebuildMarkerLayer(geoJSON, questionName)
                 /// save color for this response
                 questionColor[response] = responseColor;
             }
-            //circleStyle.color = responseColor;
-	    circleStyle.color = '#fff';
-            circleStyle.fillColor = responseColor;
-            marker.setStyle(circleStyle);
+            var newStyle = {
+                color: '#fff',
+                border: circleStyle.border,
+                fillColor: responseColor,
+                fillOpacity: circleStyle.fillOpacity,
+                radius: circleStyle.opacity
+            }
+            marker.setStyle(newStyle);
         }
         marker.on('click', function(e){
             var latLng = e.latlng;
