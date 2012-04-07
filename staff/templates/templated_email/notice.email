@@ -1,0 +1,28 @@
+{% block subject %}formhub notification for {{username}}{% endblock %}
+{% block plain %}
+  Hi {{full_name}},
+
+  {{message}}
+
+  Thanks for using formhub!
+  The Formhub Dev Team
+
+  P.S. Please consider joining the formhub-users group, https://groups.google.com/group/formhub-users
+{% endblock %}
+{% block html %}
+  <p>Hi {{full_name}},</p>
+
+  <p>
+      {{message}}
+  </p>
+
+  <p>
+      Thanks for using formhub!
+      <br/>
+      The Formhub Dev Team
+  </p>
+
+  <p>
+      P.S. Please consider joining the <a href="https://groups.google.com/group/formhub-users">formhub-users group</a>.
+  </p>
+{% endblock %}

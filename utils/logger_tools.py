@@ -1,7 +1,18 @@
-import traceback
+from datetime import date
+import os
 import tempfile
+import traceback
+
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.files.storage import get_storage_class
 from django.core.mail import mail_admins
+from django.core.servers.basehttp import FileWrapper
+from django.db import IntegrityError
+from django.http import HttpResponse
+from odk_logger.models.xform import XLSFormError
+from pyxform.errors import PyXFormError
+
 
 def report_exception(subject, info, exc_info=None):
     if exc_info:
@@ -22,12 +33,6 @@ def round_down_geopoint(num):
         decimal_mult = 1000000
         return str(decimal.Decimal(int(num * decimal_mult))/decimal_mult)
     return None
-
-from datetime import date
-from django.http import HttpResponse
-from django.core.servers.basehttp import FileWrapper
-from django.core.files.storage import get_storage_class
-import os
 
 def response_with_mimetype_and_name(mimetype, name, extension=None,
     show_date=True, file_path=None, use_local_filesystem=False,
@@ -68,3 +73,30 @@ def store_temp_file(data):
     finally:
         tmp.close()
     return ret
+
+
+def publish_form(callback):
+    try:
+        return callback()
+    except (PyXFormError, XLSFormError) as e:
+        return {
+            'type': 'alert-error',
+            'text': unicode(e),
+        }
+    except IntegrityError as e:
+        return {
+            'type': 'alert-error',
+            'text': 'Form with this id already exists.',
+        }
+    except ValidationError, e:
+        # on clone invalid URL
+        return {
+            'type': 'alert-error',
+            'text': 'Invalid URL format.',
+        }
+    except AttributeError as e:
+        # form.publish returned None, not sure why...
+        return {
+            'type': 'alert-error',
+            'text': unicode(e),
+        }

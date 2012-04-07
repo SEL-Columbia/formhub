@@ -4,40 +4,24 @@
 
 <section id="profile">
   <div class="row">
-    {% if messages %}
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $(".alert-message").alert();
-            });
-        </script>
-        {% for message in messages %}
-            <div class="alert-message {{ message.tags }}">
-                <a class="close" href="#">x</a>
-                <p>{{ message|safe }}</p>
-            </div>
-        {% endfor %}
-    {% endif %}
     <div class="span5">
         <h1>Publish a Form <small>Upload XLSForm</small></h1>
         For a quick introduction on how to publish a form check out
-        the <a href="{% url main.views.tutorial %}">tutorial</a>.
+        the <a href="{% url main.views.tutorial %}">tutorial</a>, and try publishing
+        <a href="http://formhub.org/formhub_u/forms/tutorial/form.xls">tutorial.xls</a>.
         <br/>
         <br/>
-        New to formhub? Try publishing
-        <a href="/formhub_u/forms/tutorial/form.xls">tutorial.xls</a>.
-        <br/>
-        <br/>
-        Learn about the XLSForm syntax <a href="/syntax/">here</a> or checkout more examples at:<br> <a href="https://formhub.org/formhub_u/">Formhub University</a>.
+        Learn about the XLSForm syntax <a href="/syntax/">here</a>, email <a href="https://groups.google.com/forum/?fromgroups#!forum/formhub-users">formhub users mailing list</a> if you have questions, and checkout examples at: <br/><a href="https://formhub.org/formhub_u/">Formhub University</a>.
         <br/>
         <br/>
         <form action="." method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="tabbable">
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs nomarginbottom">
                 <li class="active"><a href="#upload" data-toggle="tab">Upload</a></li>
                 <li><a href="#url" data-toggle="tab">URL</a></li>
             </ul>
-            <div class="tab-content">
+            <div class="tab-content bordered-side">
                 <div class="tab-pane active" id="upload">
                     <table class="narrow-labels">
                         {{ form.as_table }}
@@ -51,7 +35,7 @@
             </div>
             </div>
             <span style='float:middle;'>
-	        <div class="form-actions">
+	        <div class="form-actions bordered-side bordered-bottom nomargintop">
                 <input type="submit" class="btn large btn-primary" value="Publish" />
 		</div>
             </span>

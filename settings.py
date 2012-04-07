@@ -1,11 +1,15 @@
 import os
 import subprocess
+import sys
+
+from pymongo import Connection
 
 CURRENT_FILE = os.path.abspath(__file__)
 PROJECT_ROOT = os.path.dirname(CURRENT_FILE)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/'
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -136,6 +140,7 @@ COMPRESS = True
 
 # extra data stored with users
 AUTH_PROFILE_MODULE = 'main.UserProfile'
+
 # case insensitive usernames
 AUTHENTICATION_BACKENDS = (
     'main.backends.ModelBackend',
@@ -168,18 +173,7 @@ LOGGING = {
     }
 }
 
-
-# 394 - Kaduna/Kachia
-# 732 - Kano/Takai
-# 366 - Enugu/Isi-Uzo
-LIMITED_LGA_LIST = ['366']
-
-import sys
-
-SITE_TITLE = "Baseline Data Collection"
-
 # MongoDB
-from pymongo import Connection
 _MONGO_CONNECTION = Connection()
 MONGO_DB = None
 

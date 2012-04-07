@@ -32,8 +32,10 @@ class XlsWriter(object):
 
     def add_column(self, sheet_name, column_name):
         index = len(self._columns[sheet_name])
-        self._sheets[sheet_name].write(0, index, column_name)
-        self._columns[sheet_name].append(column_name)
+        sheet = self._sheets.get(sheet_name)
+        if sheet:
+            sheet.write(0, index, column_name)
+            self._columns[sheet_name].append(column_name)
 
     def add_row(self, sheet_name, row):
         i = self._current_index[sheet_name]
