@@ -3,7 +3,7 @@ from odk_logger.models import XForm
 import os
 
 def upload_to(instance, filename):
-    if instance.data_type in ['image/jpeg', 'image/png', 'audio/mpeg']:
+    if instance.data_type == 'media':
         return os.path.join(
         instance.xform.user.username,
         'formid-media',
@@ -83,7 +83,7 @@ class MetaData(models.Model):
 
     @staticmethod
     def media_upload(xform, data_file=None):
-        data_type = 'Media'
+        data_type = 'media'
         if data_file:
             if data_file.content_type in ['image/jpeg', 'image/png', 'audio/mpeg']:
                 media = MetaData(data_type=data_type, xform=xform,
