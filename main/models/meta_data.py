@@ -81,7 +81,7 @@ class MetaData(models.Model):
             doc.save()
         return type_for_form(xform, data_type)
 
-        @staticmethod
+    @staticmethod
     def media_upload(xform, data_file=None):
         data_type = 'Media'
         if data_file:
