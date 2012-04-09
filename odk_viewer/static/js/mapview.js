@@ -310,7 +310,8 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         clearLegend();
 
     // fitting to bounds with one point will zoom too far
-    if (latLngArray.length > 1) {
+    // don't zoom when we "view by response"
+    if (latLngArray.length > 1 && !questionName) {
         var latlngbounds = new L.LatLngBounds(latLngArray);
         map.fitBounds(latlngbounds);
     }

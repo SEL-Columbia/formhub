@@ -39,8 +39,8 @@
 <script type="text/javascript" src="/static/js/TileLayer.Bing.js"></script>
 <script type="text/javascript">
 var center = {{ center|safe }};
-var formJSONUrl = "{{ jsonform_url }}";
-var mongoAPIUrl = "{{ mongo_api_url }}";
+var formJSONUrl = "/static/form.json";
+var mongoAPIUrl = "/static/api.json";
 $('#selectLanguage').live('change', function() {
     $('.language').hide();
     $('.' + $(this).val()).show();
