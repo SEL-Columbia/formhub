@@ -374,7 +374,7 @@ function loadFormJSONCallback()
         if(formJSONMngr.getNumSelectOneQuestions() > 0)
         {
             var dropdownLabel = _createElementAndSetAttrs('li');
-            var dropdownLink = _createElementAndSetAttrs('a', {"href": "#"}, "Color Responses By");
+            var dropdownLink = _createElementAndSetAttrs('a', {"href": "#"}, "View By");
             dropdownLabel.appendChild(dropdownLink);
             navContainer.append(dropdownLabel);
 

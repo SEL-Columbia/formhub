@@ -177,6 +177,10 @@ LOGGING = {
 _MONGO_CONNECTION = Connection()
 MONGO_DB = None
 
+GOOGLE_STEP2_URI = 'http://formhub.org/gwelcome'
+GOOGLE_CLIENT_ID = '617113120802.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = '9reM29qpGFPyI8TBuB54Z4fk'
+
 TESTING_MODE = False
 if len(sys.argv)>=2 and (sys.argv[1]=="test" or sys.argv[1]=="test_all"):
     # This trick works only when we run tests from the command line.
