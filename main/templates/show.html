@@ -186,7 +186,7 @@
           </div>
 
           <div class="btn-group">
-            <button class="btn "><a href="{% url odk_viewer.views.zip_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>zip</font></a></button>
+            <a class="btn" href="{% url odk_viewer.views.zip_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>zip</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
@@ -197,7 +197,7 @@
             </ul>
           </div>
         <div class="btn-group">
-            <button class="btn "><a href="{% url odk_viewer.views.google_xls_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>gdocs</font></a></button>
+            <a class="btn" href="{% url odk_viewer.views.google_xls_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>gdocs</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
                 <span class="caret"></span>
             </button>
