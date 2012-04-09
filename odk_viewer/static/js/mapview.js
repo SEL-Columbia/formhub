@@ -4,6 +4,7 @@ var mapId = 'map_canvas';
 var map;
 var popupOffset = new L.Point(0, -10);
 var notSpecifiedCaption = "Not Specified";
+var colorPalette = ['#8DD3C7', '#FB8072', '#FFFFB3', '#BEBADA', '#80B1D3', '#FDB462', '#B3DE69', '#FCCDE5', '#D9D9D9', '#BC80BD', '#CCEBC5', '#FFED6F'];
 var circleStyle = {
     color: '#fff',
     border: 8,
@@ -226,6 +227,7 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     var questionColor = {};
     var numChoices = 0;
     var randomColorStep = 0;
+    var paletteCounter = 0;
 
     if(questionName)
     {
@@ -258,8 +260,15 @@ function _rebuildMarkerLayer(geoJSON, questionName)
             var responseColor = questionColor[response];
             if(!responseColor)
             {
+                // check if color palette has colors we haven't used
+                if(paletteCounter < colorPalette.length)
+                    responseColor = colorPalette[paletteCounter++];
                 // generate a color
-                responseColor = get_random_color(randomColorStep++, numChoices);
+                else
+                {
+                    // number of steps is reduced by the number of colors in our palette
+                    responseColor = get_random_color(randomColorStep++, (numChoices - colorPalette.length));
+                }
                 /// save color for this response
                 questionColor[response] = responseColor;
             }
@@ -301,7 +310,8 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         clearLegend();
 
     // fitting to bounds with one point will zoom too far
-    if (latLngArray.length > 1) {
+    // don't zoom when we "view by response"
+    if (latLngArray.length > 1 && !questionName) {
         var latlngbounds = new L.LatLngBounds(latLngArray);
         map.fitBounds(latlngbounds);
     }
