@@ -250,3 +250,45 @@ def kml_export(request, username, id_string):
         mimetype="application/vnd.google-earth.kml+xml")
     response['Content-Disposition'] = disposition_ext_and_date(id_string, 'kml')
     return response
+
+
+def google_xls_export(request, username, id_string):
+    owner = User.objects.get(username=username)
+    xform = XForm.objects.get(id_string=id_string, user=owner)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden('Not shared.')
+    valid, dd = dd_for_params(id_string, owner, request)
+    if not valid: return dd
+    ddw = XlsWriter()
+    tmp = NamedTemporaryFile(delete=False)
+    ddw.set_file(tmp)
+    ddw.set_data_dictionary(dd)
+    temp_file = ddw.save_workbook_to_file()
+    temp_file.close()
+    import gdata
+    import gdata.gauth
+    import gdata.docs
+    import gdata.data
+    import gdata.docs.client
+    import gdata.docs.data
+    from main.google_export import token, refresh_access_token, redirect_uri
+    from main.models import TokenStorageModel
+    try:
+        ts = TokenStorageModel.objects.get(id=request.user)
+    except TokenStorageModel.DoesNotExist:
+        return HttpResponseRedirect(redirect_uri)
+    else:
+        stored_token = gdata.gauth.token_from_blob(ts.token)
+        if stored_token.refresh_token is not None and\
+           stored_token.access_token is not None:
+            token.refresh_token = stored_token.refresh_token
+            working_token = refresh_access_token(token, request.user)
+            docs_client = gdata.docs.client.DocsClient(source=token.user_agent)
+            docs_client = working_token.authorize(docs_client)
+            xls_doc = gdata.docs.data.Resource(
+                type='spreadsheet', title=xform.title)
+            media = gdata.data.MediaSource()
+            media.SetFileHandle(tmp.name, 'application/vnd.ms-excel')
+            xls_doc = docs_client.CreateResource(xls_doc, media=media)
+    os.unlink(tmp.name)
+    return HttpResponseRedirect('https://docs.google.com')
