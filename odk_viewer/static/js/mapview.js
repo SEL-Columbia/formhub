@@ -2,29 +2,15 @@ var centerLatLng = new L.LatLng(!center.lat?0.0:center.lat, !center.lng?0.0:cent
 var defaultZoom = 8;
 var mapId = 'map_canvas';
 var map;
-var mapMarkerIcon = L.Icon.extend({options:{
-    iconUrl: '/static/images/marker-solid-24.png',
-    shadowUrl: null,
-    iconSize: new L.Point(24, 24),
-    shadowSize: null,
-    iconAnchor: new L.Point(12, 24),
-    popupAnchor: new L.Point(0,-24)
-}});
-var redMarkerIcon = mapMarkerIcon.extend({options:{
-    iconUrl: '/static/images/marker-solid-24-red.png'
-}});
-var blueMarkerIcon = mapMarkerIcon.extend({options:{
-    iconUrl: '/static/images/marker-solid-24-blue.png'
-}});
-var greenMarkerIcon = mapMarkerIcon.extend({options:{
-    iconUrl: '/static/images/marker-solid-24-green.png'
-}});
-var yellowMarkerIcon = mapMarkerIcon.extend({options:{
-    iconUrl: '/static/images/marker-solid-24-yellow.png'
-}});
-var orangeMarkerIcon = mapMarkerIcon.extend({options:{
-    iconUrl: '/static/images/marker-solid-24-orange.png'
-}});
+var popupOffset = new L.Point(0, -10);
+var notSpecifiedCaption = "Not Specified";
+var circleStyle = {
+    color: '#fff',
+    border: 8,
+    fillColor: '#ff3300',
+    fillOpacity: 0.9,
+    radius: 8
+}
 var geoJsonLayer = new L.GeoJSON(null);
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
 var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekkywR';
@@ -38,6 +24,8 @@ FormJSONManager = function(url, callback)
     this.url = url;
     this.callback = callback;
     this.geopointQuestions = [];
+    this.selectOneQuestions = [];
+    this.questions = {};
 }
 
 FormJSONManager.prototype.loadFormJSON = function()
@@ -49,34 +37,38 @@ FormJSONManager.prototype.loadFormJSON = function()
     })
 }
 
-FormJSONManager.prototype._parseQuestions = function(questionData)
+FormJSONManager.prototype._parseQuestions = function(questionData, parentQuestionName)
 {
-    this.selectOneQuestions = [];
-    this.questions = {};
     for(idx in questionData)
     {
         var question = questionData[idx];
-        this.questions[question.name] = question;
+        var questionName = question.name;
+        if(parentQuestionName && parentQuestionName != "")
+            questionName = parentQuestionName + "/" + questionName;
+        question.name = questionName;
+
+        if(question.type != "group")
+        {
+            this.questions[questionName] = question;
+        }
+        /// if question is a group, recurse to collect children
+        else if(question.type == "group" && question.hasOwnProperty("children"))
+            this._parseQuestions(question.children, question.name);
+
         if(question.type == "select one")
             this.selectOneQuestions.push(question);
-        if(question.type == "geopoint")
+        if(question.type == "geopoint" || question.type == "gps")
             this.geopointQuestions.push(question)
     }
 }
 
 FormJSONManager.prototype.getNumSelectOneQuestions = function()
 {
-    if(!this.selectOneQuestions)
-        this._parseQuestions();
-
     return this.selectOneQuestions.length;
 }
 
 FormJSONManager.prototype.getSelectOneQuestions = function()
 {
-    if(!this.selectOneQuestions)
-        this._parseQuestions();
-
     return this.selectOneQuestions;
 }
 
@@ -91,6 +83,44 @@ FormJSONManager.prototype.getGeoPointQuestion = function()
 FormJSONManager.prototype.getQuestionByName = function(name)
 {
     return this.questions[name];
+}
+
+FormJSONManager.prototype.getChoices = function(question)
+{
+    var choices = {};
+    for(idx in question.children)
+    {
+        var choice = question.children[idx];
+        choices[choice.name] =  choice;
+    }
+    return choices;
+}
+
+/// pass a question object and get its label, if language is specified, try get label for that otherwise return the first label
+FormJSONManager.prototype.getMultilingualLabel = function(question, language)
+{
+    var labelProp = question["label"];
+
+    /// if plain string, return
+    if(typeof(labelProp) == "string")
+        return labelProp;
+    else if(typeof(labelProp) == "object")
+    {
+        if(language && labelProp.hasOwnProperty(language))
+            return labelProp[language];
+        else
+        {
+            var label = null;
+            for(key in labelProp)
+            {
+                label = labelProp[key];
+                break;// break at first instance and return that
+            }
+            return label;
+        }
+
+    }
+    return null;
 }
 
 // used to manage response data loaded via ajax
@@ -149,6 +179,7 @@ FormResponseManager.prototype.getAsGeoJSON = function()
 
 // map filter vars
 var navContainerSelector = ".nav.pull-right";
+var legendParentSelector = ".leaflet-control-container";
 var legendContainerId = "legend";
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
@@ -192,52 +223,70 @@ function loadResponseDataCallback()
 function _rebuildMarkerLayer(geoJSON, questionName)
 {
     var latLngArray = [];
-    var colorMarkers = [redMarkerIcon, blueMarkerIcon, greenMarkerIcon, yellowMarkerIcon, orangeMarkerIcon];
     var questionColor = {};
+    var numChoices = 0;
+    var randomColorStep = 0;
+
+    if(questionName)
+    {
+        var question = formJSONMngr.getQuestionByName(questionName);
+        var numChoices = question.children.length;
+    }
 
     /// remove existing geoJsonLayer
     map.removeLayer(geoJsonLayer);
 
     geoJsonLayer = new L.GeoJSON(null, {
         pointToLayer: function (latlng){
-            var marker = new L.Marker(latlng, {
-                icon: new mapMarkerIcon()
-            });
+            var marker = new L.CircleMarker(latlng, circleStyle);
             return marker;
         }
     });
 
     geoJsonLayer.on("featureparse", function(geoJSONEvt){
         var marker = geoJSONEvt.layer;
-        latLngArray.push(marker.getLatLng());
+        var latLng = marker._latlng;
+        latLngArray.push(latLng);
 
         /// check if questionName is set
         if(questionName)
         {
             var response = geoJSONEvt.properties[questionName];
-            var colorMarker = questionColor[response];
-            if(!colorMarker)
+            // check if response is missing (user did not specify)
+            if(!response)
+                response = notSpecifiedCaption;
+            var responseColor = questionColor[response];
+            if(!responseColor)
             {
-                // pick a color
-                if(colorMarkers.length > 0)
-                {
-                    colorMarker = colorMarkers.pop(0);
-                    /// save marker for this response
-                    questionColor[response] = colorMarker;
-                }
+                // generate a color
+                responseColor = get_random_color(randomColorStep++, numChoices);
+                /// save color for this response
+                questionColor[response] = responseColor;
             }
-            marker.setIcon(new colorMarker);
+            var newStyle = {
+                color: '#fff',
+                border: circleStyle.border,
+                fillColor: responseColor,
+                fillOpacity: circleStyle.fillOpacity,
+                radius: circleStyle.opacity
+            }
+            marker.setStyle(newStyle);
         }
         marker.on('click', function(e){
-            var targetMarker = e.target;
+            var latLng = e.latlng;
+            //var targetMarker = e.target;
 
             // TODO: remove hard coded url - could hack by reversing url using 0000 as instance_id then replacing with actual id
             var url = "/odk_viewer/survey/" + geoJSONEvt.id.toString() + "/";
             // open a loading popup so the user knows something is happening
-            targetMarker.bindPopup('Loading...').openPopup();
+            //targetMarker.bindPopup('Loading...').openPopup();
 
             $.get(url).done(function(data){
-                targetMarker.bindPopup(data,{'maxWidth': 500}).openPopup();
+                var popup = new L.Popup({offset: popupOffset});
+                popup.setLatLng(latLng);
+                popup.setContent(data);
+                //targetMarker.bindPopup(data,{'maxWidth': 500}).openPopup();
+                map.openPopup(popup);
             });
         });
     });
@@ -247,9 +296,9 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     map.addLayer(geoJsonLayer);
 
     if(questionName)
-        showLegend(questionName, questionColor);
+        rebuildLegend(questionName, questionColor);
     else
-        hideLegend();
+        clearLegend();
 
     // fitting to bounds with one point will zoom too far
     if (latLngArray.length > 1) {
@@ -258,11 +307,12 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     }
 }
 
-function showLegend(questionName, questionColor)
+function rebuildLegend(questionName, questionColor)
 {
     // TODO: consider creating container once and keeping a variable reference
     var question = formJSONMngr.getQuestionByName(questionName);
-    var questionLabel = question["label"];
+    var choices = formJSONMngr.getChoices(question);
+    var questionLabel = formJSONMngr.getMultilingualLabel(question);
 
     // try find existing legend and destroy
     var legendContainer = $(("#"+legendContainerId));
@@ -271,7 +321,8 @@ function showLegend(questionName, questionColor)
     else
     {
         var container = _createElementAndSetAttrs('div', {"id":legendContainerId});
-        $((".leaflet-control-container")).prepend(container);
+        var legendParent = $(legendParentSelector);
+        legendParent.prepend(container);
         legendContainer = $(container);
     }
 
@@ -284,9 +335,12 @@ function showLegend(questionName, questionColor)
     {
         var color = questionColor[response];
         var responseLi = _createElementAndSetAttrs('li');
-        var iconUrl = (new color).options.iconUrl;
-        var legendIcon = _createElementAndSetAttrs('img', {"src": iconUrl});
-        var responseText = _createElementAndSetAttrs('span', {}, response);
+        var itemLabel = response;
+        // check if the choices contain this response before we try to get the reponse's label
+        if(choices.hasOwnProperty(response))
+            itemLabel = formJSONMngr.getMultilingualLabel(choices[response]);
+        var legendIcon = _createElementAndSetAttrs('span', {"class": "legend-bullet", "style": "background-color: " + color});
+        var responseText = _createElementAndSetAttrs('span', {}, itemLabel);
 
         responseLi.appendChild(legendIcon);
         responseLi.appendChild(responseText);
@@ -295,7 +349,7 @@ function showLegend(questionName, questionColor)
     }
 }
 
-function hideLegend()
+function clearLegend()
 {
     var legendContainer = $(("#"+legendContainerId));
     if(legendContainer.length > 0)
@@ -320,7 +374,7 @@ function loadFormJSONCallback()
         if(formJSONMngr.getNumSelectOneQuestions() > 0)
         {
             var dropdownLabel = _createElementAndSetAttrs('li');
-            var dropdownLink = _createElementAndSetAttrs('a', {"href": "#"}, "Color Responses By:");
+            var dropdownLink = _createElementAndSetAttrs('a', {"href": "#"}, "View By");
             dropdownLabel.appendChild(dropdownLink);
             navContainer.append(dropdownLabel);
 
@@ -365,8 +419,9 @@ function loadFormJSONCallback()
 function _createSelectOneLi(question)
 {
     var questionLi = _createElementAndSetAttrs("li", {}, "");
+    var questionLabel = formJSONMngr.getMultilingualLabel(question);
     var questionLink = _createElementAndSetAttrs("a", {"href":"#", "class":"select-one-anchor",
-        "rel": question.name}, question.label);
+        "rel": question.name}, questionLabel);
 
     questionLi.appendChild(questionLink);
     return questionLi;
@@ -385,4 +440,25 @@ function _createElementAndSetAttrs(tag, attributes, text)
         el.appendChild(document.createTextNode(text));
     }
     return el;
+}
+
+function get_random_color(step, numOfSteps) {
+    // This function generates vibrant, "evenly spaced" colours (i.e. no clustering). This is ideal for creating easily distiguishable vibrant markers in Google Maps and other apps.
+    // Adam Cole, 2011-Sept-14
+    // HSV to RBG adapted from: http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
+    var r, g, b;
+    var h = step / numOfSteps;
+    var i = ~~(h * 6);
+    var f = h * 6 - i;
+    var q = 1 - f;
+    switch(i % 6){
+        case 0: r = 1, g = f, b = 0; break;
+        case 1: r = q, g = 1, b = 0; break;
+        case 2: r = 0, g = 1, b = f; break;
+        case 3: r = 0, g = q, b = 1; break;
+        case 4: r = f, g = 0, b = 1; break;
+        case 5: r = 1, g = 0, b = q; break;
+    }
+    var c = "#" + ("00" + (~ ~(r * 255)).toString(16)).slice(-2) + ("00" + (~ ~(g * 255)).toString(16)).slice(-2) + ("00" + (~ ~(b * 255)).toString(16)).slice(-2);
+    return (c);
 }

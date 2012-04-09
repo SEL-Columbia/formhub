@@ -55,8 +55,7 @@
             {% if not data_dictionary.id_string in cloned %}
                 {% if loggedin_user and data_dictionary.xls|length > 0  and loggedin_user.username != data_dictionary.user.username %}
                     <a href="" data-url="{% url main.views.clone_xlsform data_dictionary.user.username %}" 
-                    data-username="{{ data_dictionary.user.username }}" data-id="{{ data_dictionary.id_string }}" class="clonexls">
-                    <button class="btn small">Clone</button></a>
+                    data-username="{{ data_dictionary.user.username }}" data-id="{{ data_dictionary.id_string }}" class="clonexls btn small" onclick="$(this).hide()">Clone</a>
                 {% endif %}
             {% endif %}
           {% endif %}
