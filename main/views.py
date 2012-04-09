@@ -330,7 +330,18 @@ def download_metadata(request, username, id_string, data_id):
     xform = get_object_or_404(XForm,
             user__username=username, id_string=id_string)
     if username == request.user.username or xform.shared:
-        data = MetaData.objects.get(pk=data_id)
+        data = get_object_or_404(MetaData, pk=data_id)
+        return response_with_mimetype_and_name(
+            data.data_file_type,
+            data.data_value, '', None, False,
+            data.data_file.name)
+    return HttpResponseForbidden('Permission denied.')
+
+def download_media_data(request, username, id_string, data_id):
+    xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
+    if username == request.user.username or xform.shared:
+        data = get_object_or_404(MetaData, pk=data_id)
         return response_with_mimetype_and_name(
             data.data_file_type,
             data.data_value, '', None, False,
