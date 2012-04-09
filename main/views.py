@@ -16,7 +16,7 @@ from guardian.shortcuts import assign, remove_perm, get_users_with_perms
 from main.models import UserProfile, MetaData
 from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
          SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
-         SourceForm, PermissionForm
+         SourceForm, PermissionForm, MediaForm
 from odk_logger.models import Instance, XForm
 from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_viewer.models.data_dictionary import upload_to
