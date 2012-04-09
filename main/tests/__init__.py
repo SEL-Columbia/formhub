@@ -19,4 +19,5 @@ from test_form_exports import TestFormExports
 from test_form_metadata import TestFormMetadata
 from test_form_enter_data import TestFormEnterData
 from test_form_show_submission import TestFormShowSubmission
+from test_google_docs_export import TestGoogleDocsExport
 from test_form_api import TestFormAPI
