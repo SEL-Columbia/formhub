@@ -73,7 +73,7 @@ def bulksubmission(request, username):
 @login_required
 def bulksubmission_form(request, username=None):
     if request.user.username == username:
-	    return render_to_response("bulk_submission_form.html")
+        return render_to_response("bulk_submission_form.html")
     else:
         return HttpResponseRedirect('/%s' % request.user.username)
 
@@ -138,10 +138,10 @@ def submission(request, username=None):
         xform = XForm.objects.get(uuid=uuid)
         username = xform.user.username
     instance = create_instance(
-        username,
-        xml_file_list[0],
-        media_files
-        )
+            username,
+            xml_file_list[0],
+            media_files
+            )
     if instance == None:
         return HttpResponseBadRequest("Unable to create submission.")
     # ODK needs two things for a form to be considered successful
