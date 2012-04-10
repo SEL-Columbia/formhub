@@ -29,6 +29,12 @@ def datetime_from_str(text):
 
 def dict_for_mongo(d):
     for key, value in d.items():
+        if key == '_id':
+            try:
+                d[key] = int(value)
+            except ValueError:
+                # if it is not an int don't convert it
+                pass
         if _is_invalid_for_mongo(key):
             del d[key]
             if type(value) == dict:
