@@ -2,9 +2,17 @@ var centerLatLng = new L.LatLng(!center.lat?0.0:center.lat, !center.lng?0.0:cent
 var defaultZoom = 8;
 var mapId = 'map_canvas';
 var map;
+// array of mapbox maps to use as base layers - the first one will be the default map
+var mapboxMaps = [
+    {'label': 'Mapbox Street', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-hgm23qjf.jsonp'},
+    {'label': 'MapBox Streets Light', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-p543gvbh.jsonp'},
+    {'label': 'MapBox Streets Zenburn', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-bjhr55gf.jsonp'}
+];
+var allowResetZoomLevel = true; // used to allow zooming when first loaded
 var popupOffset = new L.Point(0, -10);
 var notSpecifiedCaption = "Not Specified";
-var colorPalette = ['#8DD3C7', '#FB8072', '#FFFFB3', '#BEBADA', '#80B1D3', '#FDB462', '#B3DE69', '#FCCDE5', '#D9D9D9', '#BC80BD', '#CCEBC5', '#FFED6F'];
+var colorPalette = ['#8DD3C7', '#FB8072', '#FFFFB3', '#BEBADA', '#80B1D3', '#FDB462', '#B3DE69', '#FCCDE5', '#D9D9D9',
+    '#BC80BD', '#CCEBC5', '#FFED6F'];
 var circleStyle = {
     color: '#fff',
     border: 8,
@@ -186,9 +194,6 @@ var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
 
 function initialize() {
-    // mapbox streets formhub tiles
-    var url = 'http://a.tiles.mapbox.com/v3/modilabs.map-hgm23qjf.jsonp';
-
     // Make a new Leaflet map in your container div
     map = new L.Map(mapId).setView(centerLatLng, defaultZoom);
 
@@ -201,14 +206,18 @@ function initialize() {
         layersControl.addBaseLayer(bingLayer, label);
     });
 
-    // Get metadata about the map from MapBox
-    wax.tilejson(url, function(tilejson) {
-        tilejson.attribution += mapBoxAdditAttribution;
-        var mapboxstreet = new wax.leaf.connector(tilejson);
+    $.each(mapboxMaps, function(idx, mapData){
+        // Get metadata about the map from MapBox
+        wax.tilejson(mapData.url, function(tilejson) {
+            tilejson.attribution += mapBoxAdditAttribution;
+            var mapboxstreet = new wax.leaf.connector(tilejson);
 
-        // add mapbox as default base layer
-        map.addLayer(mapboxstreet);
-        layersControl.addBaseLayer(mapboxstreet, 'MapBox Streets');
+            layersControl.addBaseLayer(mapboxstreet, mapData.label);
+
+            // only add default layer to map
+            if(idx == 0)
+                map.addLayer(mapboxstreet);
+        });
     });
 
     formResponseMngr.loadResponseData({});
@@ -311,7 +320,7 @@ function _rebuildMarkerLayer(geoJSON, questionName)
 
     // fitting to bounds with one point will zoom too far
     // don't zoom when we "view by response"
-    if (latLngArray.length > 1 && !questionName) {
+    if (latLngArray.length > 1 && allowResetZoomLevel) {
         var latlngbounds = new L.LatLngBounds(latLngArray);
         map.fitBounds(latlngbounds);
     }
@@ -413,6 +422,7 @@ function loadFormJSONCallback()
 
             navContainer.append(dropDownContainer);
             $('.select-one-anchor').click(function(){
+                allowResetZoomLevel = false; // disable zoom reset whenever this is clicked
                 // rel contains the question's unique name
                 var questionName = $(this).attr("rel");
                 // get geoJSON data to setup points

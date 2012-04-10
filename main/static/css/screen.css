@@ -297,3 +297,6 @@ section {
 .footer p {
   color: #555;
 }
+#map_canvas {
+    margin-top: 40px;
+}
