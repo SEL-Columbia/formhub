@@ -104,9 +104,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.transaction.TransactionMiddleware',
 )
 
-if DEBUG:
-    MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
-
 ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
@@ -219,3 +216,6 @@ try:
 except ImportError:
     print("You can override the default settings by adding a "
           "local_settings.py file.")
+
+if DEBUG:
+    MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
