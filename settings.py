@@ -102,7 +102,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
-    'utils.middleware.ExceptionLoggingMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
@@ -217,3 +216,6 @@ try:
 except ImportError:
     print("You can override the default settings by adding a "
           "local_settings.py file.")
+
+if DEBUG:
+    MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
