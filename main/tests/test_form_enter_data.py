@@ -27,7 +27,6 @@ class TestFormEnterData(MainTestCase):
             return True
         return False
 
-
     def test_enter_data_redir(self):
         response = self.client.get(self.url)
         status_code = 200 if self._running_touchforms() else 302
