@@ -6,6 +6,14 @@ import re
 XFORM_ID_STRING = u"_xform_id_string"
 
 
+class InstanceParseError(Exception):
+    pass
+
+
+class InstanceEmptyError(InstanceParseError):
+    pass
+
+
 def _xml_node_to_dict(node):
     assert isinstance(node, minidom.Node)
     if len(node.childNodes) == 0:
@@ -95,6 +103,8 @@ class XFormInstanceParser(object):
         self._root_node = self._xml_obj.documentElement
         self._dict = _xml_node_to_dict(self._root_node)
         self._flat_dict = {}
+        if self._dict is None:
+            raise InstanceEmptyError
         for path, value in _flatten_dict(self._dict, []):
             self._flat_dict[u"/".join(path[1:])] = value
         self._set_attributes()

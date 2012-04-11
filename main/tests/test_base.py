@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.test.client import Client
 from odk_logger.models import XForm, Instance
+import urllib2
 
 class MainTestCase(TestCase):
 
@@ -71,3 +72,14 @@ class MainTestCase(TestCase):
             self._make_submission(path)
         self.assertEqual(Instance.objects.count(), pre_count + 4)
         self.assertEqual(self.xform.surveys.count(), pre_count + 4)
+
+    def _check_url(self, url, timeout=1):
+        try:
+            response = urllib2.urlopen(url, timeout=timeout)
+            return True
+        except urllib2.URLError as err: pass
+        return False
+
+    def _internet_on(self, url='http://74.125.113.99'):
+        # default value is some google IP
+        return self._check_url(url)

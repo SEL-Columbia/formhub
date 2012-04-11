@@ -58,3 +58,12 @@ class TestFormErrors(MainTestCase):
         response = self.anon.get(url)
         self.assertEqual(response.status_code, 404)
 
+    def test_empty_submission(self):
+        count = XForm.objects.count()
+        xls_path = os.path.join(self.this_directory, "fixtures",
+                "transportation", "transportation.xls")
+        xml_path = os.path.join(self.this_directory, "fixtures",
+                "transportation", "transportation_empty_submission.xml")
+        self._publish_xls_file(xls_path)
+        self._make_submission(xml_path)
+        self.assertTrue(self.response.status_code, 400)
