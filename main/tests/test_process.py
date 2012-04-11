@@ -7,14 +7,7 @@ from odk_viewer.views import xls_export, csv_export
 from django.core.urlresolvers import reverse
 import csv
 import json
-import urllib2
 
-def internet_on():
-    try:
-        response=urllib2.urlopen('http://74.125.113.99',timeout=1)
-        return True
-    except urllib2.URLError as err: pass
-    return False
 
 class TestSite(MainTestCase):
 
@@ -40,7 +33,7 @@ class TestSite(MainTestCase):
             self.response = self.anon.post(url, post_data)
 
     def test_url_upload(self):
-        if internet_on():
+        if self._internet_on():
             self._create_user_and_login()
             xls_url = 'http://formhub.org/pld/forms/transportation_2011_07_25/form.xls'
             pre_count = XForm.objects.count()
@@ -51,7 +44,7 @@ class TestSite(MainTestCase):
 
 
     def test_bad_url_upload(self):
-        if internet_on():
+        if self._internet_on():
             self._create_user_and_login()
             xls_url = 'formhuborg/pld/forms/transportation_2011_07_25/form.xls'
             pre_count = XForm.objects.count()
@@ -82,7 +75,7 @@ class TestSite(MainTestCase):
             self.assertEqual(success, True)
 
     def test_url_upload_non_dot_xls_path(self):
-        if internet_on():
+        if self._internet_on():
             self._create_user_and_login()
             xls_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0AgpC5gsTSm_4dFZQdzZZVGxlcEQ3aktBbFlyRXE3cFE&output=xls'
             pre_count = XForm.objects.count()
