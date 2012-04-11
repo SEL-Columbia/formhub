@@ -1,6 +1,6 @@
 from test_base import MainTestCase
 from odk_viewer.models import DataDictionary
-from odk_logger.models import XForm 
+from odk_logger.models import XForm
 import os
 import fnmatch
 from odk_viewer.views import xls_export, csv_export
