@@ -29,6 +29,7 @@ from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
 from utils.decorators import is_owner
 from utils.user_auth import has_permission
 from odk_logger.import_tools import import_instances_from_zip
+from odk_logger.xform_instance_parser import InstanceEmptyError
 
 class HttpResponseNotAuthorized(HttpResponse):
     status_code = 401
@@ -137,11 +138,14 @@ def submission(request, username=None):
         show_options = True
         xform = XForm.objects.get(uuid=uuid)
         username = xform.user.username
-    instance = create_instance(
-            username,
-            xml_file_list[0],
-            media_files
-            )
+    try:
+        instance = create_instance(
+                username,
+                xml_file_list[0],
+                media_files
+                )
+    except InstanceEmptyError:
+        return HttpResponseBadRequest("Received empty submission. No instance was created")
     if instance == None:
         return HttpResponseBadRequest("Unable to create submission.")
     # ODK needs two things for a form to be considered successful

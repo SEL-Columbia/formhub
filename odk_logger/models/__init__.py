@@ -6,6 +6,7 @@ from .instance import Instance
 from .xform import XForm
 from .attachment import Attachment
 from .survey_type import SurveyType
+from odk_logger.xform_instance_parser import InstanceParseError
 
 
 @transaction.commit_on_success
