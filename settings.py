@@ -4,7 +4,8 @@ import sys
 
 from pymongo import Connection
 
-PROJECT_ROOT = os.path.curdir
+CURRENT_FILE = os.path.abspath(__file__)
+PROJECT_ROOT = os.path.dirname(CURRENT_FILE)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
