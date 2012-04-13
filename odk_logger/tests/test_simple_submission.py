@@ -8,6 +8,8 @@ from pyxform import QuestionTypeDictionary, SurveyElementBuilder
 from odk_viewer.models import DataDictionary
 from odk_logger.models import create_instance, Instance
 
+ from django.http import HttpResponseNotAllowed
+
 class TempFileProxy(object):
     """
     create_instance will be looking for a file object,
@@ -82,3 +84,14 @@ class TestSimpleSubmission(TestCase):
         # an instance from 11 AM already exists in the database, so it *SHOULD NOT* increment the survey count.
         submit_at_hour(11)
         self.assertEquals(2, self.xform2.surveys.count())
+
+    def test_submission_deactivated(self):
+        f = self.xform1
+        f.downloadable = True
+        def sumbit():
+            if f.downloadable == False:
+                return HttpResponseNotAllowed(['POST'])
+            else return True
+        self.assertTrue(submit())
+        f.downloadable = False
+        self.assertEquals(HttpResponseNotAllowed(['POST']), submit())
