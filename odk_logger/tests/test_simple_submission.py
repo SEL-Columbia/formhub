@@ -8,7 +8,7 @@ from pyxform import QuestionTypeDictionary, SurveyElementBuilder
 from odk_viewer.models import DataDictionary
 from odk_logger.models import create_instance, Instance
 
- from django.http import HttpResponseNotAllowed
+from django.http import HttpResponseNotAllowed
 
 class TempFileProxy(object):
     """
@@ -91,7 +91,8 @@ class TestSimpleSubmission(TestCase):
         def sumbit():
             if f.downloadable == False:
                 return HttpResponseNotAllowed(['POST'])
-            else return True
+            else:
+                return True
         self.assertTrue(submit())
         f.downloadable = False
         self.assertEquals(HttpResponseNotAllowed(['POST']), submit())
