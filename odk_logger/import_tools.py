@@ -56,50 +56,6 @@ def import_instance(path_to_instance_folder, status, user):
     for i in images: i.close()
     return instance
 
-def import_instances_from_phone(path_to_odk_folder, user):
-    path_to_sqlite_db = os.path.join(path_to_odk_folder,
-                                     'metadata', 'data')
-    def get_table_describing_odk_files():
-        db = create_engine('sqlite:///%s' % path_to_sqlite_db)
-        metadata = MetaData()
-        metadata.bind = db
-        return Table('files', metadata, autoload=True)
-
-    files = get_table_describing_odk_files()
-    column_names = [c.name for c in files.columns]
-
-    def get_list_of_odk_instances():
-        result = []
-        for row in files.select().execute().fetchall():
-            d = dict(zip(column_names, row))
-            # todo: figure out how to do where statements
-            if d[u'type'] == u'instance':
-                result.append(d)
-        return result
-
-    instances = get_list_of_odk_instances()
-
-    def add_path_to_instance_folder():
-        regexp = r"/sdcard/odk/instances/([^/]+)/[^/]+.xml$"
-        for instance in instances:
-            m = re.search(regexp, instance[u'path'])
-            assert m, str(instance)
-            instance_folder_name = m.group(1)
-            instance[u'path_to_instance_folder'] = os.path.join(
-                path_to_odk_folder, u'instances',
-                instance_folder_name
-                )
-
-    add_path_to_instance_folder()
-    count = 0
-    for i in instances:
-        try:
-            instance = import_instance(i[u'path_to_instance_folder'], i[u'status'], user)
-            if instance: count += 1
-        except Exception as e:
-            print e
-    return count
-
 import zipfile
 import tempfile
 import shutil
