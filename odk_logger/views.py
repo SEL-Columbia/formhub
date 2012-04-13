@@ -116,8 +116,6 @@ def formList(request, username):
 @require_POST
 @csrf_exempt
 def submission(request, username=None):
-    if not XForm.objects.get(uuid=request.POST.get('uuid')).downloadable:
-        return HttpResponseNotAllowed(['POST'], 'Form is not active')
     context = RequestContext(request)
     show_options = False
     # request.FILES is a django.utils.datastructures.MultiValueDict
@@ -127,7 +125,7 @@ def submission(request, username=None):
     except IOError, e:
         if type(e) == tuple:
             e = e[1]
-        if e == 'request data read error':
+        if str(e) == 'request data read error':
             return HttpResponseBadRequest("File transfer interruption.")
         else:
             raise
@@ -151,7 +149,9 @@ def submission(request, username=None):
                 media_files
                 )
     except InstanceEmptyError:
-        return HttpResponseBadRequest("Received empty submission. No instance was created")
+        return HttpResponseBadRequest('Received empty submission. No instance was created')
+    except FormInactiveError:
+        return HttpResponseNotAllowed('Form is not active')
     if instance == None:
         return HttpResponseBadRequest("Unable to create submission.")
     # ODK needs two things for a form to be considered successful
