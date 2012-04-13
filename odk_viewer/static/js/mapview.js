@@ -327,23 +327,21 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         }
         marker.on('click', function(e){
             var latLng = e.latlng;
-            //var targetMarker = e.target;
+            var popup = new L.Popup({offset: popupOffset});
+            popup.setLatLng(latLng);
 
-            // TODO: remove hard coded url - could hack by reversing url using 0000 as instance_id then replacing with actual id
-            var url = "/odk_viewer/survey/" + geoJSONEvt.id.toString() + "/";
             // open a loading popup so the user knows something is happening
-            //targetMarker.bindPopup('Loading...').openPopup();
+            popup.setContent("Loading...");
+            map.openPopup(popup);
 
             $.getJSON(mongoAPIUrl, {"_id":geoJSONEvt.id}).done(function(data){
-                var popup = new L.Popup({offset: popupOffset});
-                popup.setLatLng(latLng);
                 var content;
                 if(data.length > 0)
                     content = JSONSurveyToHTML(data[0]);
                 else
                     content = "An error occurred";
                 popup.setContent(content);
-                map.openPopup(popup);
+                //map.openPopup(popup);
             });
         });
     });
