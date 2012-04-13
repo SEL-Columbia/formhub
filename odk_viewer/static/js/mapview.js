@@ -20,7 +20,7 @@ var circleStyle = {
     fillOpacity: 0.9,
     radius: 8
 }
-// TODO: can we get the entire from mongo API
+// TODO: can we get the entire URL from mongo API
 var amazonUrlPrefix = "https://formhub.s3.amazonaws.com/";
 var geoJsonLayer = new L.GeoJSON(null);
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
