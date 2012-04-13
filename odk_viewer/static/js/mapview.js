@@ -20,6 +20,8 @@ var circleStyle = {
     fillOpacity: 0.9,
     radius: 8
 }
+// TODO: can we get the entire from mongo API
+var amazonUrlPrefix = "https://formhub.s3.amazonaws.com/";
 var geoJsonLayer = new L.GeoJSON(null);
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
 var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekkywR';
@@ -34,6 +36,7 @@ FormJSONManager = function(url, callback)
     this.callback = callback;
     this.geopointQuestions = [];
     this.selectOneQuestions = [];
+    this.supportedLanguages = [];
     this.questions = {};
 }
 
@@ -42,6 +45,7 @@ FormJSONManager.prototype.loadFormJSON = function()
     var thisManager = this;
     $.getJSON(thisManager.url, function(data){
         thisManager._parseQuestions(data.children);
+        thisManager._parseSupportedLanguages();
         thisManager.callback.call(thisManager);
     })
 }
@@ -67,7 +71,7 @@ FormJSONManager.prototype._parseQuestions = function(questionData, parentQuestio
         if(question.type == "select one")
             this.selectOneQuestions.push(question);
         if(question.type == "geopoint" || question.type == "gps")
-            this.geopointQuestions.push(question)
+            this.geopointQuestions.push(question);
     }
 }
 
@@ -105,6 +109,36 @@ FormJSONManager.prototype.getChoices = function(question)
     return choices;
 }
 
+FormJSONManager.prototype._parseSupportedLanguages = function()
+{
+    // run through question objects, stop at first question with label object and check it for multiple languages
+    for(questionName in this.questions)
+    {
+        var question = this.questions[questionName];
+        if(question.hasOwnProperty("label"))
+        {
+            var labelProp = question["label"];
+            if(typeof(labelProp) == "string")
+                this.supportedLanguages = ["default"];
+            else if(typeof(labelProp) == "object")
+            {
+                for(key in labelProp)
+                {
+                    var language = {"name": encodeForCSSclass(key), "label": key}
+                    this.supportedLanguages.push(language)
+                }
+            }
+            break;
+        }
+    }
+}
+
+function encodeForCSSclass (str) {
+    str = (str + '').toString();
+
+    return str.replace(" ", "-");
+}
+
 /// pass a question object and get its label, if language is specified, try get label for that otherwise return the first label
 FormJSONManager.prototype.getMultilingualLabel = function(question, language)
 {
@@ -129,7 +163,8 @@ FormJSONManager.prototype.getMultilingualLabel = function(question, language)
         }
 
     }
-    return null;
+    // return raw name
+    return question["name"];
 }
 
 // used to manage response data loaded via ajax
@@ -299,11 +334,15 @@ function _rebuildMarkerLayer(geoJSON, questionName)
             // open a loading popup so the user knows something is happening
             //targetMarker.bindPopup('Loading...').openPopup();
 
-            $.get(url).done(function(data){
+            $.getJSON(mongoAPIUrl, {"_id":geoJSONEvt.id}).done(function(data){
                 var popup = new L.Popup({offset: popupOffset});
                 popup.setLatLng(latLng);
-                popup.setContent(data);
-                //targetMarker.bindPopup(data,{'maxWidth': 500}).openPopup();
+                var content;
+                if(data.length > 0)
+                    content = JSONSurveyToHTML(data[0]);
+                else
+                    content = "An error occurred";
+                popup.setContent(content);
                 map.openPopup(popup);
             });
         });
@@ -324,6 +363,83 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         var latlngbounds = new L.LatLngBounds(latLngArray);
         map.fitBounds(latlngbounds);
     }
+}
+
+/*
+ * Format the json data to HTML for a map popup
+ */
+function JSONSurveyToHTML(data)
+{
+    var htmlContent = '<table class="table table-bordered table-striped"> <thead>\n<tr>\n<th>Question</th>\n<th>Response</th>\n</tr>\n</thead>\n<tbody>\n';
+
+    // add images if any
+    // TODO: this assumes all attachments are images
+    if(data._attachments.length > 0)
+    {
+        var mediaContainer = '<ul class="media-grid">';
+        for(idx in data._attachments)
+        {
+            var attachmentUrl = data._attachments[idx];
+            mediaContainer += '<li><a href="#">';
+            var imgSrc = amazonUrlPrefix + attachmentUrl;
+            var imgTag = _createElementAndSetAttrs('img', {"class":"thumbnail", "width":"210", "src": imgSrc})
+            mediaContainer += imgTag.outerHTML;
+            mediaContainer += '</a></li>';
+
+        }
+        mediaContainer += '</ul>';
+        htmlContent += mediaContainer;
+    }
+
+    // add language select if we have multiple languages
+    if(formJSONMngr.supportedLanguages.length > 1)
+    {
+        var selectTag = _createElementAndSetAttrs('select', {"id":"selectLanguage"});
+        for(idx in formJSONMngr.supportedLanguages)
+        {
+            var langauge = formJSONMngr.supportedLanguages[idx];
+            var o = new Option(langauge.label, langauge.name);
+            selectTag.add(o);
+        }
+        htmlContent += selectTag.outerHTML;
+    }
+
+    for(questionName in formJSONMngr.questions)
+    {
+        //if(data[questionName])
+        {
+            var question  = formJSONMngr.getQuestionByName(questionName);
+            var response = _createElementAndSetAttrs('tr', {});
+            var td = _createElementAndSetAttrs('td', {});
+            // if at least one language, iterate over them and add a span for each
+            if(formJSONMngr.supportedLanguages.length > 0)
+            {
+                for(idx in formJSONMngr.supportedLanguages)
+                {
+                    var language = formJSONMngr.supportedLanguages[idx];
+                    var style = "";
+                    if(idx > 0)
+                    {
+                        style = "display: none"
+                    }
+                    var span = _createElementAndSetAttrs('span', {"class": ("language " + language.name), "style": style}, formJSONMngr.getMultilingualLabel(question, language.label));
+                    td.appendChild(span);
+                }
+            }
+            else
+            {
+                var span = _createElementAndSetAttrs('span', {"class": "language"}, formJSONMngr.getMultilingualLabel(question));
+                td.appendChild(span);
+            }
+
+            response.appendChild(td);
+            td = _createElementAndSetAttrs('td', {}, data[questionName]);
+            response.appendChild(td);
+            htmlContent += response.outerHTML;
+        }
+    }
+    htmlContent += '</tbody></table>';
+    return htmlContent;
 }
 
 function rebuildLegend(questionName, questionColor)
