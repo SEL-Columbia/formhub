@@ -88,7 +88,7 @@ def publish_form(callback):
             'type': 'alert-error',
             'text': 'Form with this id already exists.',
         }
-    except ValidationError, e:
+    except ValidationError as e:
         # on clone invalid URL
         return {
             'type': 'alert-error',
