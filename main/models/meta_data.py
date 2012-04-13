@@ -30,6 +30,11 @@ def unique_type_for_form(xform, data_type, data_value=None, data_file=None):
 def type_for_form(xform, data_type):
     return MetaData.objects.filter(xform=xform, data_type=data_type)
 
+def remove_type_for_form(xform, data_type):
+    result = type_for_form(xform, data_type)
+    if(result):
+        result.delete()
+
 class MetaData(models.Model):
     xform = models.ForeignKey(XForm)
     data_type = models.CharField(max_length=255)
@@ -74,6 +79,26 @@ class MetaData(models.Model):
                     data_file_type=data_file.content_type)
             doc.save()
         return type_for_form(xform, data_type)
+
+    @staticmethod
+    def enumerator_username(xform, data_value=None):
+        data_type = 'enumerator_username'
+        return unique_type_for_form(xform, data_type, data_value)
+
+    @staticmethod
+    def enumerator_password(xform, data_value=None):
+        data_type = 'enumerator_password'
+        return unique_type_for_form(xform, data_type, data_value)
+
+    @staticmethod
+    def remove_enumerator_username(xform, data_value=None):
+        data_type = 'enumerator_username'
+        remove_type_for_form(xform, data_type)
+
+    @staticmethod
+    def remove_enumerator_password(xform, data_value=None):
+        data_type = 'enumerator_password'
+        remove_type_for_form(xform, data_type)
 
     class Meta:
         app_label = 'main'

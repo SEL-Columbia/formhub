@@ -3,6 +3,7 @@ from main.views import show, form_photos
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
 from odk_logger.views import download_xlsform, download_jsonform, download_xform
+from main.models.meta_data import MetaData, unique_type_for_form, type_for_form, remove_type_for_form
 
 class TestFormShow(MainTestCase):
 
@@ -125,3 +126,11 @@ class TestFormShow(MainTestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response['Location'],
                 '%s%s' % (self.base_url, self.url))
+
+    def test_remove_type_for_form(self):
+        self.xform = XForm.objects.get(pk=self.xform.id)
+        data_type = "enumerator_username"
+        unique_type_for_form(self.xform, data_type, "a_username")
+        remove_type_for_form(self.xform, data_type)
+        results = type_for_form(self.xform, data_type)
+        self.assertEqual(len(results), 0)

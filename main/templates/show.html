@@ -341,6 +341,32 @@
                   }
                 });
               });
+              {% if enumerator_enabled %}
+                $('#enumerator-credentials-form').show();
+              {% endif %}
+              $('#enumerator-credentials:checkbox').iphoneStyle({
+                  onChange: function(cbData, isEnabled){
+                      var enumeratorForm = $('#enumerator-credentials-form');
+                      if(isEnabled)
+                      {
+                          enumeratorForm.show();
+                      }
+                      else
+                      {
+                          var editUrl = $('#enumerator-credentials:checkbox').data('url');
+                          $.post(editUrl, {"enumerator_credentials_disabled": true}, 'json')
+                              .success(function(){
+                                  enumeratorForm.hide();
+                                  enumeratorForm.children("input[type=text]").each(function(idx, elm){
+                                      $(elm).val('');
+                                  })
+                              })
+                              .error(function(){
+
+                              })
+                      }
+                  }
+              })
             });
         </script>
         {% if is_owner %}
@@ -360,6 +386,21 @@
           <div class="input">
             <input id="active-form" type="checkbox"{% if xform.downloadable %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
           </div> 
+          <br/>
+          <label>Separate Enumerator Credentials&nbsp;</label>
+          <div class="input">
+            <input id="enumerator-credentials" type="checkbox"{% if enumerator_enabled %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
+          </div>
+          <br/>
+          <form id="enumerator-credentials-form" action="{% url main.views.edit content_user.username xform.id_string %}" method="post" style="display:none">
+            {% csrf_token %}
+            <label>Enumerator Username&nbsp;</label>
+            <input type="text" name="enumerator_username" value="{{ enumerator_username }}"/>
+            <label>Enumerator Password&nbsp;</label>
+            <input type="text" name="enumerator_password" value="{{ enumerator_password }}"/>
+            <br/>
+            <input type="submit" class="btn" value="Submit" />
+          </form>
           <br/>
           <label>Delete Form&nbsp;</label>
         <div class="input">

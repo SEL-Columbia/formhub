@@ -200,6 +200,9 @@ def show(request, username=None, id_string=None, uuid=None):
     context.form_license = MetaData.form_license(xform).data_value
     context.data_license = MetaData.data_license(xform).data_value
     context.supporting_docs = MetaData.supporting_docs(xform)
+    context.enumerator_username = MetaData.enumerator_username(xform).data_value
+    context.enumerator_password = MetaData.enumerator_password(xform).data_value
+    context.enumerator_enabled = context.enumerator_username and context.enumerator_password
     if is_owner:
         context.form_license_form = FormLicenseForm(
                 initial={'value': context.form_license})
@@ -257,6 +260,13 @@ def edit(request, username, id_string):
                 request.FILES.get('source'))
         elif request.FILES:
             MetaData.supporting_docs(xform, request.FILES['doc'])
+        elif request.POST.get('enumerator_username') and request.POST.get('enumerator_password'):
+            MetaData.enumerator_username(xform, request.POST.get('enumerator_username'))
+            MetaData.enumerator_password(xform, request.POST.get('enumerator_password'))
+        elif request.POST.get('enumerator_credentials_disabled'):
+            MetaData.remove_enumerator_username(xform)
+            MetaData.remove_enumerator_password(xform)
+
         xform.update()
         if request.is_ajax():
             return HttpResponse('Updated succeeded.')
