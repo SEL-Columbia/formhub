@@ -61,10 +61,14 @@ def bulksubmission(request, username):
         our_tempfile.write(postfile.read())
         our_tempfile.close()
         our_tf = open(our_tfpath, 'rb')
-        count = import_instances_from_zip(our_tf, user=posting_user)
+        count, errors = import_instances_from_zip(our_tf, user=posting_user)
         os.remove(our_tfpath)
-        response = HttpResponse("Your ODK submission was successful. %d surveys imported. Your user now has %d instances." % \
-                    (count, posting_user.surveys.count()))
+        json_msg = {
+            'message': "Your ODK submission was successful. %d surveys imported. Your user now has %d instances." % \
+                    (count, posting_user.surveys.count()),
+            'errors': errors
+        }
+        response = HttpResponse(json.dumps(json_msg))
         response.status_code = 200
         response['Location'] = request.build_absolute_uri(request.path)
         return response
