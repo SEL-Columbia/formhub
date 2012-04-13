@@ -29,6 +29,7 @@ from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
 from utils.decorators import is_owner
 from utils.user_auth import has_permission
 from odk_logger.import_tools import import_instances_from_zip
+from odk_logger.xform_instance_parser import InstanceEmptyError
 
 class HttpResponseNotAuthorized(HttpResponse):
     status_code = 401
@@ -60,10 +61,14 @@ def bulksubmission(request, username):
         our_tempfile.write(postfile.read())
         our_tempfile.close()
         our_tf = open(our_tfpath, 'rb')
-        count = import_instances_from_zip(our_tf, user=posting_user)
+        count, errors = import_instances_from_zip(our_tf, user=posting_user)
         os.remove(our_tfpath)
-        response = HttpResponse("Your ODK submission was successful. %d surveys imported. Your user now has %d instances." % \
-                    (count, posting_user.surveys.count()))
+        json_msg = {
+            'message': "Your ODK submission was successful. %d surveys imported. Your user now has %d instances." % \
+                    (count, posting_user.surveys.count()),
+            'errors': errors
+        }
+        response = HttpResponse(json.dumps(json_msg))
         response.status_code = 200
         response['Location'] = request.build_absolute_uri(request.path)
         return response
@@ -73,7 +78,7 @@ def bulksubmission(request, username):
 @login_required
 def bulksubmission_form(request, username=None):
     if request.user.username == username:
-	    return render_to_response("bulk_submission_form.html")
+        return render_to_response("bulk_submission_form.html")
     else:
         return HttpResponseRedirect('/%s' % request.user.username)
 
@@ -139,11 +144,14 @@ def submission(request, username=None):
         show_options = True
         xform = XForm.objects.get(uuid=uuid)
         username = xform.user.username
-    instance = create_instance(
-        username,
-        xml_file_list[0],
-        media_files
-        )
+    try:
+        instance = create_instance(
+                username,
+                xml_file_list[0],
+                media_files
+                )
+    except InstanceEmptyError:
+        return HttpResponseBadRequest("Received empty submission. No instance was created")
     if instance == None:
         return HttpResponseBadRequest("Unable to create submission.")
     # ODK needs two things for a form to be considered successful
