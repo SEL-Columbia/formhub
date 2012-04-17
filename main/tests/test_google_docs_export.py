@@ -33,7 +33,6 @@ class TestGoogleDocsExport(MainTestCase):
             'id_string': self.xform.id_string
         }))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['Location'], 'https://docs.google.com')
 
     def _refresh_token(self):
         self.assertEqual(TokenStorageModel.objects.all().count(), 0)
