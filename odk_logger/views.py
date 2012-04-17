@@ -9,7 +9,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect, HttpResponseForbidden
+    HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotAllowed
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.contrib.auth.models import User
@@ -61,10 +61,14 @@ def bulksubmission(request, username):
         our_tempfile.write(postfile.read())
         our_tempfile.close()
         our_tf = open(our_tfpath, 'rb')
-        count = import_instances_from_zip(our_tf, user=posting_user)
+        count, errors = import_instances_from_zip(our_tf, user=posting_user)
         os.remove(our_tfpath)
-        response = HttpResponse("Your ODK submission was successful. %d surveys imported. Your user now has %d instances." % \
-                    (count, posting_user.surveys.count()))
+        json_msg = {
+            'message': "Your ODK submission was successful. %d surveys imported. Your user now has %d instances." % \
+                    (count, posting_user.surveys.count()),
+            'errors': errors
+        }
+        response = HttpResponse(json.dumps(json_msg))
         response.status_code = 200
         response['Location'] = request.build_absolute_uri(request.path)
         return response
@@ -121,7 +125,7 @@ def submission(request, username=None):
     except IOError, e:
         if type(e) == tuple:
             e = e[1]
-        if e == 'request data read error':
+        if str(e) == 'request data read error':
             return HttpResponseBadRequest("File transfer interruption.")
         else:
             raise
@@ -145,7 +149,9 @@ def submission(request, username=None):
                 media_files
                 )
     except InstanceEmptyError:
-        return HttpResponseBadRequest("Received empty submission. No instance was created")
+        return HttpResponseBadRequest('Received empty submission. No instance was created')
+    except FormInactiveError:
+        return HttpResponseNotAllowed('Form is not active')
     if instance == None:
         return HttpResponseBadRequest("Unable to create submission.")
     # ODK needs two things for a form to be considered successful

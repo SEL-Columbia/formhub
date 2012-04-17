@@ -20,7 +20,7 @@ var circleStyle = {
     fillOpacity: 0.9,
     radius: 8
 }
-// TODO: can we get the entire from mongo API
+// TODO: can we get the entire URL from mongo API
 var amazonUrlPrefix = "https://formhub.s3.amazonaws.com/";
 var geoJsonLayer = new L.GeoJSON(null);
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
@@ -327,23 +327,21 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         }
         marker.on('click', function(e){
             var latLng = e.latlng;
-            //var targetMarker = e.target;
+            var popup = new L.Popup({offset: popupOffset});
+            popup.setLatLng(latLng);
 
-            // TODO: remove hard coded url - could hack by reversing url using 0000 as instance_id then replacing with actual id
-            var url = "/odk_viewer/survey/" + geoJSONEvt.id.toString() + "/";
             // open a loading popup so the user knows something is happening
-            //targetMarker.bindPopup('Loading...').openPopup();
+            popup.setContent("Loading...");
+            map.openPopup(popup);
 
             $.getJSON(mongoAPIUrl, {"_id":geoJSONEvt.id}).done(function(data){
-                var popup = new L.Popup({offset: popupOffset});
-                popup.setLatLng(latLng);
                 var content;
                 if(data.length > 0)
                     content = JSONSurveyToHTML(data[0]);
                 else
                     content = "An error occurred";
                 popup.setContent(content);
-                map.openPopup(popup);
+                //map.openPopup(popup);
             });
         });
     });
@@ -382,8 +380,10 @@ function JSONSurveyToHTML(data)
             var attachmentUrl = data._attachments[idx];
             mediaContainer += '<li><a href="#">';
             var imgSrc = amazonUrlPrefix + attachmentUrl;
-            var imgTag = _createElementAndSetAttrs('img', {"class":"thumbnail", "width":"210", "src": imgSrc})
-            mediaContainer += imgTag.outerHTML;
+            var imgTag = _createElementAndSetAttrs('img', {"class":"thumbnail", "width":"210", "src": imgSrc});
+            var dummyContainer = _createElementAndSetAttrs('div', {});
+            dummyContainer.appendChild(imgTag);
+            mediaContainer += dummyContainer.innerHTML;
             mediaContainer += '</a></li>';
 
         }
@@ -401,7 +401,9 @@ function JSONSurveyToHTML(data)
             var o = new Option(langauge.label, langauge.name);
             selectTag.add(o);
         }
-        htmlContent += selectTag.outerHTML;
+        var dummyContainer = _createElementAndSetAttrs('div', {});
+        dummyContainer.appendChild(selectTag);
+        htmlContent += dummyContainer.innerHTML;
     }
 
     for(questionName in formJSONMngr.questions)
@@ -435,7 +437,9 @@ function JSONSurveyToHTML(data)
             response.appendChild(td);
             td = _createElementAndSetAttrs('td', {}, data[questionName]);
             response.appendChild(td);
-            htmlContent += response.outerHTML;
+            var dummyContainer = _createElementAndSetAttrs('div', {});
+            dummyContainer.appendChild(response);
+            htmlContent += dummyContainer.innerHTML;
         }
     }
     htmlContent += '</tbody></table>';

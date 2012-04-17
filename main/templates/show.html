@@ -147,8 +147,6 @@
         </h3>
         {% if xform.shared_data or can_view %}
         {% if xform.submission_count > 0 %}
-        <div>
-        <div class="input-prepend">
         <br>
         <div class="btn-toolbar" style="margin-bottom: 9px">
           <div class="btn-group">
@@ -196,7 +194,7 @@
               </li>
             </ul>
           </div>
-        <div class="btn-group">
+          <div class="btn-group">
             <a class="btn" href="{% url odk_viewer.views.google_xls_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>gdocs</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
                 <span class="caret"></span>
@@ -206,7 +204,7 @@
                     <input class="input-xxlarge" type="text" size="16" value="{{base_url}}{% url odk_viewer.views.google_xls_export content_user.username xform.id_string %}"/>
                 </li>
             </ul>
-        </div>
+          </div>
         </div>
         <h4>Submissions: {{ xform.submission_count|intcomma }}</h4>
         <br>
@@ -223,7 +221,6 @@
             {% endif %}
         </p>
         <p><a id="data-license_info" style="display:none" href="">License information</a></p>
-        </div>
 	    <div class="btn-group" style="margin-bottom: 9px">
             <a class="btn btn-info" rel="tooltip" title="View Map" href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
               <i class="icon-map-marker icon-white"></i> Map
@@ -231,16 +228,17 @@
             <a class="btn btn-info" btn-info  rel="tooltip" title="View Photos" href="{% url main.views.form_photos content_user.username xform.id_string %}">
               <i class="icon-camera icon-white"></i> Photos
             </a>
+        </div>
 		{% endif %}
 		{% endif %}
 		{% if can_edit %}
-		<a class="btn btn-info" rel="tooltip" title="Webform" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
-		  <i class="icon-edit icon-white"></i> Enter Web Form
-        </a>
+	    <div class="btn-group" style="margin-bottom: 9px">
+		    <a class="btn btn-info" rel="tooltip" title="Webform" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
+		      <i class="icon-edit icon-white"></i> Enter Web Form
+            </a>
+        </div>
 		{% endif %}
-	    </div>
         <br>
-      </div>
       <div class="span4">
         <script type="text/javascript">
             $(document).ready(function() {
