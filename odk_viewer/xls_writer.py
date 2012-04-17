@@ -7,6 +7,7 @@ class XlsWriter(object):
     def __init__(self):
         self.set_file()
         self.reset_workbook()
+        self.sheet_name_limit = 30
 
     def set_file(self, file_object=None):
         """
@@ -27,8 +28,11 @@ class XlsWriter(object):
         self._current_index = defaultdict(one)
 
     def add_sheet(self, name):
-        sheet = self._workbook.add_sheet(name[0:20])
-        self._sheets[name] = sheet
+        # excel worksheet name limit seems to be 31 characters (30 to be safe)
+        unique_sheet_name = name[0:self.sheet_name_limit]
+        unique_sheet_name = self._generate_unique_sheet_name(unique_sheet_name)
+        sheet = self._workbook.add_sheet(unique_sheet_name)
+        self._sheets[unique_sheet_name] = sheet
 
     def add_column(self, sheet_name, column_name):
         index = len(self._columns[sheet_name])
@@ -98,3 +102,21 @@ class XlsWriter(object):
                     if isinstance(f, Question) and\
                             not question_types_to_exclude(f.type):
                         self.add_column(sheet_name, f.name)
+
+    def _generate_unique_sheet_name(self, sheet_name):
+        # check if sheet name exists
+        if(not self._sheets.has_key(sheet_name)):
+            return sheet_name
+        else:
+            i = 1
+            unique_name = sheet_name
+            while(self._sheets.has_key(unique_name)):
+                number_len = len(str(i))
+                allowed_name_len = self.sheet_name_limit - number_len
+                # make name required len
+                if(len(unique_name) > allowed_name_len):
+                    unique_name = unique_name[0:allowed_name_len]
+                unique_name = "{0}{1}".format(unique_name, i)
+                i = i + 1
+            return unique_name
+
