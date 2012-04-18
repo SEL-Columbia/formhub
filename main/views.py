@@ -217,16 +217,22 @@ def show(request, username=None, id_string=None, uuid=None):
 def api(request, username=None, id_string=None):
     '''
     Returns all results as JSON.  If a parameter string is passed,
-    it converts this string to a dictionary that is then used as a
-    MongoDB query string.
-    E.g. api?{'last_name': 'Smith'}
+    it takes the 'query' parameter, converts this string to a dictionary, an
+    that is then used as a MongoDB query string.
+
+    NOTE: only a specific set of operators are allow, currently $or and $and.
+    Please send a request if you'd like another operator to be enabled.
+
+    NOTE: Your query must be valid JSON, double check it here,
+    http://json.parser.online.fr/
+
+    E.g. api?query='{"last_name": "Smith"}'
     '''
     xform, owner = check_and_set_user_and_form(username, id_string, request)
     if not xform:
         return HttpResponseForbidden('Not shared.')
-    query = request.GET
     cursor = ParsedInstance.query_mongo(username, id_string,
-            dict(query.items()))
+            request.GET.get('query'))
     records = list(record for record in cursor)
     return HttpResponse(simplejson.dumps(records))
 
