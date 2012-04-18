@@ -101,12 +101,17 @@ FormJSONManager.prototype.getQuestionByName = function(name)
 FormJSONManager.prototype.getChoices = function(question)
 {
     var choices = {};
-    for(idx in question.children)
+    for(i=0;i<question.children.length;i++)
     {
-        var choice = question.children[idx];
+        var choice = question.children[i];
         choices[choice.name] =  choice;
     }
     return choices;
+}
+
+FormJSONManager.prototype.setCurrentSelectOneQuestionName = function(name)
+{
+    this._currentSelectOneQuestionName = name;
 }
 
 FormJSONManager.prototype._parseSupportedLanguages = function()
@@ -172,17 +177,53 @@ FormResponseManager = function(url, callback)
 {
     this.url = url;
     this.callback = callback;
+    this._select_one_filters = [];
+    this._currentSelectOneQuestionName = null; // name of the currently selected "View By Question if any"
 }
 
 FormResponseManager.prototype.loadResponseData = function(params)
 {
     var thisFormResponseMngr = this;
+
+    /// invalidate geoJSON data
+    this.geoJSON = null;
+
+    /// append select-one filters to params
+    if(formJSONMngr._currentSelectOneQuestionName)
+    {
+        for(idx in this._select_one_filters)
+        {
+            var responseName =  this._select_one_filters[idx];
+            params[formJSONMngr._currentSelectOneQuestionName] = responseName;
+        }
+    }
     $.getJSON(thisFormResponseMngr.url, params, function(data){
         thisFormResponseMngr.responses = data;
         thisFormResponseMngr.callback.call(thisFormResponseMngr);
     })
 }
 
+FormResponseManager.prototype.addResponseToSelectOneFilter = function(name)
+{
+    // TODO: dont clear once we can query using $or
+    this.clearSelectOneFilterResponses();
+    if(this._select_one_filters.indexOf(name) == -1)
+        this._select_one_filters.push(name);
+}
+
+FormResponseManager.prototype.removeResponseFromSelectOneFilter = function(name)
+{
+    var idx = this._select_one_filters.indexOf(name);
+    if(idx > -1)
+        this._select_one_filters.splice(idx, 1);
+}
+
+FormResponseManager.prototype.clearSelectOneFilterResponses = function(name)
+{
+    this._select_one_filters = [];
+}
+
+/// this cannot be called before the form is loaded as we rely on the form to determine the gps field
 FormResponseManager.prototype._toGeoJSON = function()
 {
     var features = [];
@@ -261,6 +302,7 @@ function initialize() {
 // callback called after form data has been loaded via the mongo form API
 function loadResponseDataCallback()
 {
+    formResponseMngr.callback = null;// initial callback is for setup, subsequent reloads must set desired callback
     // load form structure/questions here since we now have some data
     formJSONMngr.loadFormJSON();
 }
@@ -268,15 +310,39 @@ function loadResponseDataCallback()
 function _rebuildMarkerLayer(geoJSON, questionName)
 {
     var latLngArray = [];
-    var questionColor = {};
-    var numChoices = 0;
+    var questionColorMap = {};
     var randomColorStep = 0;
     var paletteCounter = 0;
 
     if(questionName)
     {
         var question = formJSONMngr.getQuestionByName(questionName);
-        var numChoices = question.children.length;
+        // formJSONMngr.getChoices returns an object NOT an array so we use children directly here
+        var choices = question.children;
+        // build an array of choice names so that we can append "Not Specified" to it
+        var choiceNames = [];
+        for(i=0;i < choices.length;i++)
+        {
+            var choice = choices[i];
+            choiceNames.push(choice.name);
+        }
+        // TODO: figure out how to query for empty/null responses
+        //choiceNames.push(notSpecifiedCaption);
+        for(i=0;i < choiceNames.length;i++)
+        {
+            var choiceName = choiceNames[i];
+            var choiceColor = null;
+            // check if color palette has colors we haven't used
+            if(paletteCounter < colorPalette.length)
+                choiceColor = colorPalette[paletteCounter++];
+            else
+            {
+                // number of steps is reduced by the number of colors in our palette
+                choiceColor = get_random_color(randomColorStep++, (choiceNames.length - colorPalette.length));
+            }
+            /// save color for this choice
+            questionColorMap[choiceName] = choiceColor;
+        }
     }
 
     /// remove existing geoJsonLayer
@@ -301,21 +367,7 @@ function _rebuildMarkerLayer(geoJSON, questionName)
             // check if response is missing (user did not specify)
             if(!response)
                 response = notSpecifiedCaption;
-            var responseColor = questionColor[response];
-            if(!responseColor)
-            {
-                // check if color palette has colors we haven't used
-                if(paletteCounter < colorPalette.length)
-                    responseColor = colorPalette[paletteCounter++];
-                // generate a color
-                else
-                {
-                    // number of steps is reduced by the number of colors in our palette
-                    responseColor = get_random_color(randomColorStep++, (numChoices - colorPalette.length));
-                }
-                /// save color for this response
-                questionColor[response] = responseColor;
-            }
+            var responseColor = questionColorMap[response];
             var newStyle = {
                 color: '#fff',
                 border: circleStyle.border,
@@ -351,7 +403,7 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     map.addLayer(geoJsonLayer);
 
     if(questionName)
-        rebuildLegend(questionName, questionColor);
+        rebuildLegend(questionName, questionColorMap);
     else
         clearLegend();
 
@@ -446,7 +498,7 @@ function JSONSurveyToHTML(data)
     return htmlContent;
 }
 
-function rebuildLegend(questionName, questionColor)
+function rebuildLegend(questionName, questionColorMap)
 {
     // TODO: consider creating container once and keeping a variable reference
     var question = formJSONMngr.getQuestionByName(questionName);
@@ -470,22 +522,51 @@ function rebuildLegend(questionName, questionColor)
     var legendUl = _createElementAndSetAttrs('ul');
     legendContainer.append(legendTitle);
     legendContainer.append(legendUl);
-    for(response in questionColor)
+    for(response in questionColorMap)
     {
-        var color = questionColor[response];
+        var color = questionColorMap[response];
         var responseLi = _createElementAndSetAttrs('li');
         var itemLabel = response;
         // check if the choices contain this response before we try to get the reponse's label
         if(choices.hasOwnProperty(response))
             itemLabel = formJSONMngr.getMultilingualLabel(choices[response]);
         var legendIcon = _createElementAndSetAttrs('span', {"class": "legend-bullet", "style": "background-color: " + color});
-        var responseText = _createElementAndSetAttrs('span', {}, itemLabel);
+        var responseText = _createElementAndSetAttrs('span', {});
+        var anchorClass = 'legend-label';
+        if(formResponseMngr._select_one_filters.indexOf(response) > -1)
+            anchorClass += " active";
+        else
+            anchorClass += " normal";
+        var legendAnchor = _createElementAndSetAttrs('a', {'class':anchorClass, 'href':'#', 'rel':response}, itemLabel);
+        responseText.appendChild(legendAnchor);
 
         responseLi.appendChild(legendIcon);
         responseLi.appendChild(responseText);
 
         legendUl.appendChild(responseLi);
     }
+
+    // bind legend click event
+    $('a.legend-label').on('click', function(){
+        var elm = $(this);
+        var responseName = elm.attr('rel');
+        // if element class is normal add response other wise, remove
+        if(elm.hasClass('normal'))
+        {
+            formResponseMngr.addResponseToSelectOneFilter(responseName);
+            elm.removeClass('normal');
+            elm.addClass('active');
+        }
+        else
+        {
+            formResponseMngr.removeResponseFromSelectOneFilter(responseName);
+            elm.removeClass('active');
+            elm.addClass('normal');
+        }
+        // reload with new params
+        formResponseMngr.callback = filterSelectOneCallback;
+        formResponseMngr.loadResponseData({})
+    });
 }
 
 function clearLegend()
@@ -496,6 +577,13 @@ function clearLegend()
         legendContainer.empty();
         legendContainer.attr("style", "display:none")
     }
+}
+
+function filterSelectOneCallback()
+{
+    // get geoJSON data to setup points - relies on questions having been parsed so has to be in/after the callback
+    var geoJSON = formResponseMngr.getAsGeoJSON();
+    _rebuildMarkerLayer(geoJSON, formJSONMngr._currentSelectOneQuestionName);
 }
 
 function loadFormJSONCallback()
@@ -545,6 +633,9 @@ function loadFormJSONCallback()
                 allowResetZoomLevel = false; // disable zoom reset whenever this is clicked
                 // rel contains the question's unique name
                 var questionName = $(this).attr("rel");
+                // update question name
+                formJSONMngr.setCurrentSelectOneQuestionName(questionName);
+                formResponseMngr.clearSelectOneFilterResponses();
                 // get geoJSON data to setup points
                 var geoJSON = formResponseMngr.getAsGeoJSON();
 
