@@ -191,13 +191,19 @@ FormResponseManager.prototype.loadResponseData = function(params)
     /// append select-one filters to params
     if(formJSONMngr._currentSelectOneQuestionName)
     {
+        var orFilters = [];
         for(idx in this._select_one_filters)
         {
             var responseName =  this._select_one_filters[idx];
-            params[formJSONMngr._currentSelectOneQuestionName] = responseName;
+            var questionName = formJSONMngr._currentSelectOneQuestionName;
+            var orFilter = {};
+            orFilter[questionName] = responseName;
+            orFilters.push(orFilter);
         }
+        if(orFilters.length > 0)
+            params['$or'] = orFilters;
     }
-    $.getJSON(thisFormResponseMngr.url, params, function(data){
+    $.getJSON(thisFormResponseMngr.url, {'query':JSON.stringify(params)}, function(data){
         thisFormResponseMngr.responses = data;
         thisFormResponseMngr.callback.call(thisFormResponseMngr);
     })
@@ -205,8 +211,6 @@ FormResponseManager.prototype.loadResponseData = function(params)
 
 FormResponseManager.prototype.addResponseToSelectOneFilter = function(name)
 {
-    // TODO: dont clear once we can query using $or
-    this.clearSelectOneFilterResponses();
     if(this._select_one_filters.indexOf(name) == -1)
         this._select_one_filters.push(name);
 }
