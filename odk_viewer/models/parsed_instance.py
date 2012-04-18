@@ -2,9 +2,11 @@ import base64
 import datetime
 import re
 
+from bson import json_util
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save, pre_delete
+import json
 
 from utils.model_tools import queryset_iterator
 from odk_logger.models import Instance
@@ -12,6 +14,7 @@ from common_tags import START_TIME, START, END_TIME, END, ID, UUID, ATTACHMENTS
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
+key_whitelist = ['$or', '$and']
 
 
 class ParseError(Exception):
@@ -26,6 +29,7 @@ def datetime_from_str(text):
     return datetime.datetime.strptime(
         date_time_str, '%Y-%m-%dT%H:%M:%S'
         )
+
 
 def dict_for_mongo(d):
     for key, value in d.items():
@@ -49,7 +53,7 @@ def _encode_for_mongo(key):
 
 
 def _is_invalid_for_mongo(key):
-    return (key.startswith('$') or key.count('.') > 0)
+    return not key in key_whitelist and (key.startswith('$') or key.count('.') > 0)
 
 
 class ParsedInstance(models.Model):
@@ -70,6 +74,7 @@ class ParsedInstance(models.Model):
     @classmethod
     def query_mongo(cls, username, id_string, query, start=0,
             limit=DEFAULT_LIMIT):
+        query = json.loads(query, object_hook=json_util.object_hook)
         query = dict_for_mongo(query)
         query[cls.USERFORM_ID] = u'%s_%s' % (username, id_string)
         return xform_instances.find(query,
