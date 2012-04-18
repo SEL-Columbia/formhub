@@ -552,17 +552,9 @@ function rebuildLegend(questionName, questionColorMap)
         var responseName = elm.attr('rel');
         // if element class is normal add response other wise, remove
         if(elm.hasClass('normal'))
-        {
             formResponseMngr.addResponseToSelectOneFilter(responseName);
-            elm.removeClass('normal');
-            elm.addClass('active');
-        }
         else
-        {
             formResponseMngr.removeResponseFromSelectOneFilter(responseName);
-            elm.removeClass('active');
-            elm.addClass('normal');
-        }
         // reload with new params
         formResponseMngr.callback = filterSelectOneCallback;
         formResponseMngr.loadResponseData({})
