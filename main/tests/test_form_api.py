@@ -40,10 +40,13 @@ class TestFormAPI(MainTestCase):
 
     def test_api_query_no_records(self):
         # query string
-        data = {
-            'available_transporation_types_to_referral_facility':\
-                'bicycle'
-        }
+        json = '{"available_transporation_types_to_referral_facility": "bicycle"}'
+        data = {'query': json}
         response = self.client.get(self.api_url, data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, '[]')
+
+    def test_handle_bad_json(self):
+        response = self.client.get(self.api_url, {'query': 'bad'})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(True, 'JSON' in response.content)
