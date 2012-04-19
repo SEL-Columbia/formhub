@@ -197,7 +197,15 @@ FormResponseManager.prototype.loadResponseData = function(params)
             var responseName =  this._select_one_filters[idx];
             var questionName = formJSONMngr._currentSelectOneQuestionName;
             var orFilter = {};
-            orFilter[questionName] = responseName;
+            // check for a "Not Specified" filter
+            if(responseName == notSpecifiedCaption)
+            {
+                orFilter[questionName] = {"$exists": false};
+            }
+            else
+            {
+                orFilter[questionName] = responseName;
+            }
             orFilters.push(orFilter);
         }
         if(orFilters.length > 0)
@@ -331,7 +339,7 @@ function _rebuildMarkerLayer(geoJSON, questionName)
             choiceNames.push(choice.name);
         }
         // TODO: figure out how to query for empty/null responses
-        //choiceNames.push(notSpecifiedCaption);
+        choiceNames.push(notSpecifiedCaption);
         for(i=0;i < choiceNames.length;i++)
         {
             var choiceName = choiceNames[i];
