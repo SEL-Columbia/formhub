@@ -1,0 +1,15 @@
+#Fri Mar 09 10:07:28 EST 2012
+eclipse.preferences.version=1
+encoding//odk_logger/import_tools.py=utf-8
+encoding//odk_logger/management/commands/export_xforms_and_instances.py=utf-8
+encoding//odk_logger/management/commands/import.py=utf-8
+encoding//odk_logger/management/commands/import_forms.py=utf-8
+encoding//odk_logger/management/commands/import_instances.py=utf-8
+encoding//odk_logger/management/commands/import_tools.py=utf-8
+encoding//odk_logger/models/__init__.py=utf-8
+encoding//odk_logger/tests/parsing_tests.py=utf-8
+encoding//odk_logger/views.py=utf-8
+encoding//odk_logger/xform_instance_parser.py=utf-8
+encoding//odk_viewer/management/commands/import_forms.py=utf-8
+encoding//odk_viewer/management/commands/import_instances.py=utf-8
+encoding//utils/csv_reader.py=utf-8

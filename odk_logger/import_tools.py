@@ -101,6 +101,7 @@ def import_instances_from_zip(zipfile_path, user, status="zip"):
             # files are in the database.
             # there shouldn't be any instances with a submitted status in the
             instance = models.create_instance(user.username, xml_file, images, status)
+            #import pdb;pdb.set_trace();
             # close the files
             xml_file.close()
             for i in images: i.close()
