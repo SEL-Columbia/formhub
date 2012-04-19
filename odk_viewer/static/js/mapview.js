@@ -38,6 +38,7 @@ FormJSONManager = function(url, callback)
     this.selectOneQuestions = [];
     this.supportedLanguages = [];
     this.questions = {};
+
 }
 
 FormJSONManager.prototype.loadFormJSON = function()
@@ -191,13 +192,27 @@ FormResponseManager.prototype.loadResponseData = function(params)
     /// append select-one filters to params
     if(formJSONMngr._currentSelectOneQuestionName)
     {
+        var orFilters = [];
         for(idx in this._select_one_filters)
         {
             var responseName =  this._select_one_filters[idx];
-            params[formJSONMngr._currentSelectOneQuestionName] = responseName;
+            var questionName = formJSONMngr._currentSelectOneQuestionName;
+            var orFilter = {};
+            // check for a "Not Specified" filter
+            if(responseName == notSpecifiedCaption)
+            {
+                orFilter[questionName] = {"$exists": false};
+            }
+            else
+            {
+                orFilter[questionName] = responseName;
+            }
+            orFilters.push(orFilter);
         }
+        if(orFilters.length > 0)
+            params['$or'] = orFilters;
     }
-    $.getJSON(thisFormResponseMngr.url, params, function(data){
+    $.getJSON(thisFormResponseMngr.url, {'query':JSON.stringify(params)}, function(data){
         thisFormResponseMngr.responses = data;
         thisFormResponseMngr.callback.call(thisFormResponseMngr);
     })
@@ -205,8 +220,6 @@ FormResponseManager.prototype.loadResponseData = function(params)
 
 FormResponseManager.prototype.addResponseToSelectOneFilter = function(name)
 {
-    // TODO: dont clear once we can query using $or
-    this.clearSelectOneFilterResponses();
     if(this._select_one_filters.indexOf(name) == -1)
         this._select_one_filters.push(name);
 }
@@ -313,10 +326,17 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     var questionColorMap = {};
     var randomColorStep = 0;
     var paletteCounter = 0;
+    var responseCountValid = false;
 
     if(questionName)
     {
         var question = formJSONMngr.getQuestionByName(questionName);
+        /// check if response count has been calculated for this question
+        if(question.hasOwnProperty('responseCounts'))
+            responseCountValid = true;
+        else
+            question['responseCounts'] = {};
+
         // formJSONMngr.getChoices returns an object NOT an array so we use children directly here
         var choices = question.children;
         // build an array of choice names so that we can append "Not Specified" to it
@@ -325,9 +345,12 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         {
             var choice = choices[i];
             choiceNames.push(choice.name);
+            if(!responseCountValid)
+                question.responseCounts[choice.name] = 0;
         }
-        // TODO: figure out how to query for empty/null responses
-        //choiceNames.push(notSpecifiedCaption);
+        choiceNames.push(notSpecifiedCaption);
+        if(!responseCountValid)
+            question.responseCounts[notSpecifiedCaption] = 0;
         for(i=0;i < choiceNames.length;i++)
         {
             var choiceName = choiceNames[i];
@@ -363,10 +386,14 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         /// check if questionName is set
         if(questionName)
         {
+            var question = formJSONMngr.getQuestionByName(questionName);
             var response = geoJSONEvt.properties[questionName];
             // check if response is missing (user did not specify)
             if(!response)
                 response = notSpecifiedCaption;
+            /// increment response count if its not been done before
+            if(!responseCountValid)
+                question.responseCounts[response] += 1;
             var responseColor = questionColorMap[response];
             var newStyle = {
                 color: '#fff',
@@ -391,7 +418,7 @@ function _rebuildMarkerLayer(geoJSON, questionName)
                 if(data.length > 0)
                     content = JSONSurveyToHTML(data[0]);
                 else
-                    content = "An error occurred";
+                    content = "An unexpected error occurred";
                 popup.setContent(content);
                 //map.openPopup(popup);
             });
@@ -532,16 +559,27 @@ function rebuildLegend(questionName, questionColorMap)
             itemLabel = formJSONMngr.getMultilingualLabel(choices[response]);
         var legendIcon = _createElementAndSetAttrs('span', {"class": "legend-bullet", "style": "background-color: " + color});
         var responseText = _createElementAndSetAttrs('span', {});
-        var anchorClass = 'legend-label';
-        if(formResponseMngr._select_one_filters.indexOf(response) > -1)
-            anchorClass += " active";
+        var numResponses = question.responseCounts[response];
+        if(numResponses > 0)
+        {
+            var anchorClass = 'legend-label';
+            if(formResponseMngr._select_one_filters.indexOf(response) > -1)
+                anchorClass += " active";
+            else
+                anchorClass += " normal";
+            var legendAnchor = _createElementAndSetAttrs('a', {'class':anchorClass, 'href':'#', 'rel':response}, itemLabel);
+            responseText.appendChild(legendAnchor);
+        }
         else
-            anchorClass += " normal";
-        var legendAnchor = _createElementAndSetAttrs('a', {'class':anchorClass, 'href':'#', 'rel':response}, itemLabel);
-        responseText.appendChild(legendAnchor);
+        {
+            var legendSpan = _createElementAndSetAttrs('span', {}, itemLabel);
+            responseText.appendChild(legendSpan);
+        }
+        var responseCountSpan = _createElementAndSetAttrs('span', {'class':'legend-response-count'}, numResponses.toString());
 
         responseLi.appendChild(legendIcon);
         responseLi.appendChild(responseText);
+        responseLi.appendChild(responseCountSpan);
 
         legendUl.appendChild(responseLi);
     }
