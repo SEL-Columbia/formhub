@@ -1,0 +1,19 @@
+Metadata-Version: 1.0
+Name: django-registration
+Version: 0.7
+Summary: An extensible user-registration application for Django
+Home-page: http://www.bitbucket.org/ubernostrum/django-registration/wiki/
+Author: James Bennett
+Author-email: james@b-list.org
+License: UNKNOWN
+Download-URL: http://www.bitbucket.org/ubernostrum/django-registration/get/v0.7.gz
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Django
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Topic :: Utilities

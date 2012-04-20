@@ -76,7 +76,7 @@ def iterate_through_odk_instances(dirpath, callback):
                 try:
                     count += callback(xfxs)
                 except Exception, e:
-                    errors.append(str(e))
+                    errors.append("%s => %s" % (xfxs.filename, str(e)))
                 del(xfxs)
     return (count, errors)
 
