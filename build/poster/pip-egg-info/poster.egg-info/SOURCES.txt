@@ -1,0 +1,14 @@
+MANIFEST.in
+pip-egg-info/poster.egg-info/PKG-INFO
+pip-egg-info/poster.egg-info/SOURCES.txt
+pip-egg-info/poster.egg-info/dependency_links.txt
+pip-egg-info/poster.egg-info/requires.txt
+pip-egg-info/poster.egg-info/top_level.txt
+pip-egg-info/poster.egg-info/zip-safe
+poster/__init__.py
+poster/encode.py
+poster/streaminghttp.py
+tests/__init__.py
+tests/test_encode.py
+tests/test_server.py
+tests/test_streaming.py

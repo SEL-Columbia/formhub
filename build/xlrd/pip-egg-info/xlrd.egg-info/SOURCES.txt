@@ -1,0 +1,14 @@
+pip-egg-info/xlrd.egg-info/PKG-INFO
+pip-egg-info/xlrd.egg-info/SOURCES.txt
+pip-egg-info/xlrd.egg-info/dependency_links.txt
+pip-egg-info/xlrd.egg-info/top_level.txt
+scripts/runxlrd.py
+xlrd/__init__.py
+xlrd/biffh.py
+xlrd/compdoc.py
+xlrd/formatting.py
+xlrd/formula.py
+xlrd/licences.py
+xlrd/sheet.py
+xlrd/timemachine.py
+xlrd/xldate.py

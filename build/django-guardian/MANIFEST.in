@@ -1,0 +1,13 @@
+include CHANGES
+include LICENSE
+include README.rst
+include MANIFEST.in
+include tests.py
+include run_test_and_report.sh
+recursive-include guardian *.py
+recursive-include guardian/fixtures *.json
+recursive-include guardian/templates *.html
+recursive-include guardian/tests/templates *.html
+recursive-include docs *
+prune example_project
+prune docs/build
