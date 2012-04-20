@@ -231,8 +231,11 @@ def api(request, username=None, id_string=None):
     xform, owner = check_and_set_user_and_form(username, id_string, request)
     if not xform:
         return HttpResponseForbidden('Not shared.')
-    cursor = ParsedInstance.query_mongo(username, id_string,
-            request.GET.get('query'))
+    try:
+        cursor = ParsedInstance.query_mongo(username, id_string,
+                request.GET.get('query'))
+    except ValueError, e:
+        return HttpResponseBadRequest(e.message)
     records = list(record for record in cursor)
     return HttpResponse(simplejson.dumps(records))
 

@@ -14,7 +14,7 @@ from common_tags import START_TIME, START, END_TIME, END, ID, UUID, ATTACHMENTS
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
-key_whitelist = ['$or', '$and']
+key_whitelist = ['$or', '$and', '$exists']
 
 
 class ParseError(Exception):
@@ -33,16 +33,18 @@ def datetime_from_str(text):
 
 def dict_for_mongo(d):
     for key, value in d.items():
+        if type(value) == list:
+            value = map(dict_for_mongo, [e for e in value if type(e) == dict])
+        if type(value) == dict:
+            value = dict_for_mongo(value)
         if key == '_id':
             try:
                 d[key] = int(value)
             except ValueError:
                 # if it is not an int don't convert it
                 pass
-        if _is_invalid_for_mongo(key):
+        elif _is_invalid_for_mongo(key):
             del d[key]
-            if type(value) == dict:
-                value = dict_for_mongo(value)
             d[_encode_for_mongo(key)] = value
     return d
 
@@ -74,7 +76,7 @@ class ParsedInstance(models.Model):
     @classmethod
     def query_mongo(cls, username, id_string, query, start=0,
             limit=DEFAULT_LIMIT):
-        query = json.loads(query, object_hook=json_util.object_hook)
+        query = json.loads(query, object_hook=json_util.object_hook) if query else {}
         query = dict_for_mongo(query)
         query[cls.USERFORM_ID] = u'%s_%s' % (username, id_string)
         return xform_instances.find(query,
