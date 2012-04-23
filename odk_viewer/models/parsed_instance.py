@@ -34,7 +34,7 @@ def datetime_from_str(text):
 def dict_for_mongo(d):
     for key, value in d.items():
         if type(value) == list:
-            value = map(dict_for_mongo, value)
+            value = [dict_for_mongo(e) if type(e) == dict else e for e in value]
         if type(value) == dict:
             value = dict_for_mongo(value)
         if key == '_id':
