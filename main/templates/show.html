@@ -385,7 +385,7 @@
             <input id="active-form" type="checkbox"{% if xform.downloadable %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
           </div> 
           <br/>
-          <label>Separate Enumerator Credentials&nbsp;</label>
+          <label>Separate Enumerator Credentials (Don't use colon characters)&nbsp;</label>
           <div class="input">
             <input id="enumerator-credentials" type="checkbox"{% if enumerator_enabled %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
           </div>

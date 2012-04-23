@@ -267,7 +267,9 @@ def edit(request, username, id_string):
         elif request.POST.get('enumerator_username') and request.POST.get('enumerator_password'):
             enumerator_username = request.POST.get('enumerator_username')
             enumerator_password = request.POST.get('enumerator_password')
-            MetaData.enumerator_credentials(xform, "{0}:{1}".format(enumerator_username, enumerator_password))
+            # make sure our special delimeter is not in the user/password pair
+            if(enumerator_username.find(":") == -1 and  enumerator_password.find(":") == -1):
+                MetaData.enumerator_credentials(xform, "{0}:{1}".format(enumerator_username, enumerator_password))
         elif request.POST.get('enumerator_credentials_disabled'):
             MetaData.remove_enumerator_credentials(xform)
 
