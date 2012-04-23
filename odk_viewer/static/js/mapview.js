@@ -413,7 +413,7 @@ function _rebuildMarkerLayer(geoJSON, questionName)
             popup.setContent("Loading...");
             map.openPopup(popup);
 
-            $.getJSON(mongoAPIUrl, {"_id":geoJSONEvt.id}).done(function(data){
+            $.getJSON(mongoAPIUrl, {'query': '{"_id":' + geoJSONEvt.id + '}'}).done(function(data){
                 var content;
                 if(data.length > 0)
                     content = JSONSurveyToHTML(data[0]);
