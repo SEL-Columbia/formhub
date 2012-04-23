@@ -252,6 +252,7 @@ def kml_export(request, username, id_string):
     return response
 
 
+@login_required
 def google_xls_export(request, username, id_string):
     owner = User.objects.get(username=username)
     xform = XForm.objects.get(id_string=id_string, user=owner)
