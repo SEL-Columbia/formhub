@@ -22,6 +22,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
+from main.models.meta_data import MetaData
 
 from models import XForm, create_instance
 from main.models import UserProfile
@@ -86,8 +87,10 @@ def bulksubmission_form(request, username=None):
 @require_GET
 def formList(request, username):
     render_formlist = False
+    render_separateAuthList = False
     formlist_user = get_object_or_404(User, username=username)
     profile, created = UserProfile.objects.get_or_create(user=formlist_user)
+    auth_meta_datas = []
     if profile.require_auth:
         # source, http://djangosnippets.org/snippets/243/
         if 'HTTP_AUTHORIZATION' in request.META:
@@ -100,6 +103,12 @@ def formList(request, username):
                     user = authenticate(username=uname, password=passwd)
                     if user is not None and user.is_active:
                         render_formlist = True
+                # check for valid separate auth credentials
+                # use if because separate credentials could have the same username as the account username
+                if MetaData.count_formlist_for_auth(formlist_user, uname, passwd) > 0:
+                    render_separateAuthList = True
+                    auth_meta_datas = MetaData.get_formlist_for_auth(formlist_user, uname, passwd)
+
     else:
         render_formlist = True
     if render_formlist:
@@ -108,6 +117,12 @@ def formList(request, username):
         urls = [
             {'url': request.build_absolute_uri(xform.url()), 'text': xform.title}
             for xform in xforms
+        ]
+        return render_to_response("formList.xml", {'urls': urls}, mimetype="text/xml")
+    elif render_separateAuthList:
+        urls = [
+            {'url': request.build_absolute_uri(auth_meta_data.xform.url()), 'text': auth_meta_data.xform.title}
+            for auth_meta_data in auth_meta_datas
         ]
         return render_to_response("formList.xml", {'urls': urls}, mimetype="text/xml")
     return HttpResponseNotAuthorized('Must be logged in')
