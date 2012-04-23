@@ -1,3 +1,4 @@
+from main.models.meta_data import MetaData
 from test_base import MainTestCase
 from odk_logger.views import formList
 from django.core.urlresolvers import reverse
@@ -61,3 +62,23 @@ class TestFormAuth(MainTestCase):
     def test_login_redirect_redirects(self):
         response = self.client.get(reverse(login_redirect))
         self.assertEquals(response.status_code, 302)
+
+    def _add_enumerator_credentials_to_form(self, enumerator_username, enumerator_password):
+        return MetaData.enumerator_credentials(self.xform, "{0}:{1}".format(enumerator_username, enumerator_password))
+
+    def test_enumerator_login_success(self):
+        enumerator_username = "tutorialuser"
+        enumerator_password = "tutorialpassword"
+        self._add_enumerator_credentials_to_form(enumerator_username, enumerator_password)
+        self._set_require_auth()
+        response = self.client.get(self.url, **self._set_auth_headers(enumerator_username, enumerator_password))
+        self.assertEquals(response.status_code, 200)
+
+    def test_enumerator_login_failure(self):
+        enumerator_username = "tutorialuser"
+        enumerator_password = "tutorialpassword"
+        enumerator_password_not = "tutorialpasswordNOT"
+        self._add_enumerator_credentials_to_form(enumerator_username, enumerator_password)
+        self._set_require_auth()
+        response = self.client.get(self.url, **self._set_auth_headers(enumerator_username, enumerator_password_not))
+        self.assertEquals(response.status_code, 401)
