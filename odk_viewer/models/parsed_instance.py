@@ -3,9 +3,11 @@ import datetime
 import re
 import json
 
+from bson import json_util
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save, pre_delete
+import json
 
 
 from utils.model_tools import queryset_iterator
@@ -14,6 +16,7 @@ from common_tags import START_TIME, START, END_TIME, END, ID, UUID, ATTACHMENTS
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
+key_whitelist = ['$or', '$and', '$exists']
 
 
 class ParseError(Exception):
@@ -29,18 +32,21 @@ def datetime_from_str(text):
         date_time_str, '%Y-%m-%dT%H:%M:%S'
         )
 
+
 def dict_for_mongo(d):
     for key, value in d.items():
+        if type(value) == list:
+            value = [dict_for_mongo(e) if type(e) == dict else e for e in value]
+        if type(value) == dict:
+            value = dict_for_mongo(value)
         if key == '_id':
             try:
                 d[key] = int(value)
             except ValueError:
                 # if it is not an int don't convert it
                 pass
-        if _is_invalid_for_mongo(key):
+        elif _is_invalid_for_mongo(key):
             del d[key]
-            if type(value) == dict:
-                value = dict_for_mongo(value)
             d[_encode_for_mongo(key)] = value
     return d
 
@@ -51,7 +57,7 @@ def _encode_for_mongo(key):
 
 
 def _is_invalid_for_mongo(key):
-    return (key.startswith('$') or key.count('.') > 0)
+    return not key in key_whitelist and (key.startswith('$') or key.count('.') > 0)
 
 
 class ParsedInstance(models.Model):
@@ -72,6 +78,7 @@ class ParsedInstance(models.Model):
     @classmethod
     def query_mongo(cls, username, id_string, query, start=0,
             limit=DEFAULT_LIMIT):
+        query = json.loads(query, object_hook=json_util.object_hook) if query else {}
         query = dict_for_mongo(query)
         query[cls.USERFORM_ID] = u'%s_%s' % (username, id_string)
         return xform_instances.find(query,
