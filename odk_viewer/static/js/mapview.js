@@ -197,7 +197,10 @@ FormResponseManager.prototype.loadResponseData = function(params)
         for(idx in this._select_one_filters)
         {
             var responseName =  this._select_one_filters[idx];
-            orFilters.push(responseName);
+            if(responseName == notSpecifiedCaption)
+                orFilters.push(null);
+            else
+                orFilters.push(responseName);
         }
         if(orFilters.length > 0)
         {
@@ -341,7 +344,7 @@ function _rebuildMarkerLayer(geoJSON, questionName)
             if(!responseCountValid)
                 question.responseCounts[choice.name] = 0;
         }
-        //choiceNames.push(notSpecifiedCaption);
+        choiceNames.push(notSpecifiedCaption);
         if(!responseCountValid)
             question.responseCounts[notSpecifiedCaption] = 0;
         for(i=0;i < choiceNames.length;i++)
