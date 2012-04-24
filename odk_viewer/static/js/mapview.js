@@ -192,25 +192,18 @@ FormResponseManager.prototype.loadResponseData = function(params)
     /// append select-one filters to params
     if(formJSONMngr._currentSelectOneQuestionName)
     {
+        var questionName = formJSONMngr._currentSelectOneQuestionName;
         var orFilters = [];
         for(idx in this._select_one_filters)
         {
             var responseName =  this._select_one_filters[idx];
-            var questionName = formJSONMngr._currentSelectOneQuestionName;
-            var orFilter = {};
-            // check for a "Not Specified" filter
-            if(responseName == notSpecifiedCaption)
-            {
-                orFilter[questionName] = {"$exists": false};
-            }
-            else
-            {
-                orFilter[questionName] = responseName;
-            }
-            orFilters.push(orFilter);
+            orFilters.push(responseName);
         }
         if(orFilters.length > 0)
-            params['$or'] = orFilters;
+        {
+            var inParam = {'$in': orFilters};
+            params[questionName] = inParam;
+        }
     }
     $.getJSON(thisFormResponseMngr.url, {'query':JSON.stringify(params)}, function(data){
         thisFormResponseMngr.responses = data;
@@ -348,7 +341,7 @@ function _rebuildMarkerLayer(geoJSON, questionName)
             if(!responseCountValid)
                 question.responseCounts[choice.name] = 0;
         }
-        choiceNames.push(notSpecifiedCaption);
+        //choiceNames.push(notSpecifiedCaption);
         if(!responseCountValid)
             question.responseCounts[notSpecifiedCaption] = 0;
         for(i=0;i < choiceNames.length;i++)

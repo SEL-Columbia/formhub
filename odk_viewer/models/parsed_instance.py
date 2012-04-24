@@ -14,7 +14,7 @@ from common_tags import START_TIME, START, END_TIME, END, ID, UUID, ATTACHMENTS
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
-key_whitelist = ['$or', '$and', '$exists']
+key_whitelist = ['$or', '$and', '$exists', '$in']
 
 
 class ParseError(Exception):
