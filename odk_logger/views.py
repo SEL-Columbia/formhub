@@ -170,7 +170,8 @@ def submission(request, username=None):
     return response
 
 def download_xform(request, username, id_string):
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
     # TODO: protect for users who have settings to use auth
     response = response_with_mimetype_and_name('xml', id_string,
         show_date=False)
