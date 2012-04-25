@@ -200,6 +200,13 @@ def show(request, username=None, id_string=None, uuid=None):
     context.form_license = MetaData.form_license(xform).data_value
     context.data_license = MetaData.data_license(xform).data_value
     context.supporting_docs = MetaData.supporting_docs(xform)
+    context.enumerator_username = ""
+    context.enumerator_password = ""
+    moderator_credentials = MetaData.enumerator_credentials(xform).data_value
+    if(len(moderator_credentials.split(":")) == 2):
+        context.enumerator_username, context.enumerator_password =\
+        moderator_credentials.split(":")
+    context.enumerator_enabled = context.enumerator_username and context.enumerator_password
     if is_owner:
         context.form_license_form = FormLicenseForm(
                 initial={'value': context.form_license})
@@ -266,6 +273,15 @@ def edit(request, username, id_string):
                 request.FILES.get('source'))
         elif request.FILES:
             MetaData.supporting_docs(xform, request.FILES['doc'])
+        elif request.POST.get('enumerator_username') and request.POST.get('enumerator_password'):
+            enumerator_username = request.POST.get('enumerator_username')
+            enumerator_password = request.POST.get('enumerator_password')
+            # make sure our special delimeter is not in the user/password pair
+            if(enumerator_username.find(":") == -1 and  enumerator_password.find(":") == -1):
+                MetaData.enumerator_credentials(xform, "{0}:{1}".format(enumerator_username, enumerator_password))
+        elif request.POST.get('enumerator_credentials_disabled'):
+            MetaData.remove_enumerator_credentials(xform)
+
         xform.update()
         if request.is_ajax():
             return HttpResponse('Updated succeeded.')

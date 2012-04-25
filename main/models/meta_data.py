@@ -30,6 +30,11 @@ def unique_type_for_form(xform, data_type, data_value=None, data_file=None):
 def type_for_form(xform, data_type):
     return MetaData.objects.filter(xform=xform, data_type=data_type)
 
+def remove_type_for_form(xform, data_type):
+    result = type_for_form(xform, data_type)
+    if(result):
+        result.delete()
+
 class MetaData(models.Model):
     xform = models.ForeignKey(XForm)
     data_type = models.CharField(max_length=255)
@@ -74,6 +79,30 @@ class MetaData(models.Model):
                     data_file_type=data_file.content_type)
             doc.save()
         return type_for_form(xform, data_type)
+
+    @staticmethod
+    def enumerator_credentials(xform, data_value=None):
+        data_type = 'enumerator_credentials'
+        return unique_type_for_form(xform, data_type, data_value)
+
+    @staticmethod
+    def remove_enumerator_credentials(xform, data_value=None):
+        data_type = 'enumerator_credentials'
+        remove_type_for_form(xform, data_type)
+
+    @staticmethod
+    def count_formlist_for_auth(user, enumerator_username, enumerator_password):
+        #TODO: or filter for public forms
+        return MetaData.objects.filter(data_type="enumerator_credentials",
+            data_value="{0}:{1}".format(enumerator_username, enumerator_password),
+            xform__user=user, xform__downloadable=True).count()
+
+    @staticmethod
+    def get_formlist_for_auth(user, enumerator_username, enumerator_password):
+        #TODO: or filter for public forms
+        return MetaData.objects.filter(data_type="enumerator_credentials",
+            data_value="{0}:{1}".format(enumerator_username, enumerator_password),
+            xform__user=user, xform__downloadable=True)
 
     class Meta:
         app_label = 'main'
