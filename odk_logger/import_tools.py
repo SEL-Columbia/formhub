@@ -66,7 +66,8 @@ def import_instance(path_to_instance_folder, status, user):
 
 
 def iterate_through_odk_instances(dirpath, callback):
-    count = 0
+    total_file_count = 0
+    success_count = 0
     errors = []
     for directory, subdirs, subfiles in os.walk(dirpath):
         for filename in subfiles:
@@ -74,11 +75,12 @@ def iterate_through_odk_instances(dirpath, callback):
             if XFormInstanceFS.is_valid_odk_instance(filepath):
                 xfxs = XFormInstanceFS(filepath)
                 try:
-                    count += callback(xfxs)
+                    success_count += callback(xfxs)
                 except Exception, e:
-                    errors.append(str(e))
+                    errors.append("%s => %s" % (xfxs.filename, str(e)))
                 del(xfxs)
-    return (count, errors)
+                total_file_count += 1
+    return (total_file_count, success_count, errors)
 
 
 def import_instances_from_zip(zipfile_path, user, status="zip"):
@@ -86,6 +88,7 @@ def import_instances_from_zip(zipfile_path, user, status="zip"):
     try:
         temp_directory = tempfile.mkdtemp()
         zf = zipfile.ZipFile(zipfile_path)
+        
         zf.extractall(temp_directory)
         def callback(xform_fs):
             """
@@ -108,7 +111,7 @@ def import_instances_from_zip(zipfile_path, user, status="zip"):
                 return 1
             else:
                 return 0
-        count, errors = iterate_through_odk_instances(temp_directory, callback)
+        total_count, success_count, errors = iterate_through_odk_instances(temp_directory, callback)
     finally:
         shutil.rmtree(temp_directory)
-    return (count, errors)
+    return (total_count, success_count, errors)

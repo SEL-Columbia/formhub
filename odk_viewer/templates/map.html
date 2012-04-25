@@ -22,6 +22,7 @@
       border-radius: 3px;
   }
   #legend ul {list-style: none;margin: 0px}
+  #legend ul li {padding: 2px 0px;}
   #legend span.legend-bullet {
       width: 15px;
       height: 15px;
@@ -29,11 +30,19 @@
       margin-right: 5px;
       border-radius: 3px;
   }
+  #legend a.legend-label {padding: 2px; font-weight: bold;}
+  #legend a.legend-label.active {
+      background-color: #0078A8;
+      color: white;
+      border-radius: 2px;
+  }
+  #legend .legend-response-count{float: right; font-weight: bold}
 </style>
 <link rel="stylesheet" href="/static/css/leaflet.css" />
 <!--[if lte IE 8]>
     <link rel="stylesheet" href="/static/css/leaflet.ie.css" />
 <![endif]-->
+<script type="text/javascript" src="/static/js/json2.js"></script>
 <script type="text/javascript" src="/static/js/leaflet.js"></script>
 <script type="text/javascript" src="/static/js/wax.leaf.min.js"></script>
 <script type="text/javascript" src="/static/js/TileLayer.Bing.js"></script>
