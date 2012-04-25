@@ -1,40 +1,42 @@
-pyxform
-site_media/attachments
-
-tmp/*
-*.pyc
-*.sql
-*.tar.gz
-*~
-.DS_Store
-*.sqlite3
+/data
 error.log
-site_media/css/sass/.sass-cache/*
-.sass-cache
-.odk
-*orig
-.idea
+load_script.logs
+load_script.pid
+local_settings.py
+pyxform
 search_index
-
-#for a local virtualenv (as done in mangrove repo)
-ve/
-
-# file created by tests
-registration.xml
+site_media/attachments
+site_media/css/sass/.sass-cache/*
+tmp/*
+xform_manager_dataset.json
 
 # folder to hold csv files
 csvs
-
-xform_manager_dataset.json
-
-/data
-local_settings.py
-.~lock.*
 
 # media folder used by tests
 # todo: figure out a way to clean this up rather than ignore it.
 /test_media
 /media
 
-load_script.logs
-load_script.pid
+# file created by tests
+registration.xml
+
+# for a local virtualenv (as done in mangrove repo)
+ve/
+
+.~lock.*
+.DS_Store
+.idea
+.odk
+.project
+.pydevproject
+.sass-cache
+.settings
+
+*.bak
+*.pyc
+*.sql
+*.sqlite3
+*.tar.gz
+*~
+*orig

@@ -23,6 +23,11 @@ class MainTestCase(TestCase):
         assert client.login(username=username, password=password)
         return client
 
+    def _logout(self, client=None):
+        if not client:
+            client = self.client
+        client.logout()
+
     def _create_user_and_login(self, username="bob", password="bob"):
         self.user = self._create_user(username, password)
         self.client = self._login(username, password)
@@ -36,6 +41,11 @@ class MainTestCase(TestCase):
         with open(path) as xls_file:
             post_data = {'xls_file': xls_file}
             return self.client.post('/%s/' % self.user.username, post_data)
+
+    def _share_form_data(self, id_string='transportation_2011_07_25'):
+        xform = XForm.objects.get(id_string=id_string)
+        xform.shared_data = True
+        xform.save()
 
     def _publish_transportation_form(self):
         xls_path = os.path.join(self.this_directory, "fixtures",

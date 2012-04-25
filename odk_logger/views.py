@@ -61,12 +61,12 @@ def bulksubmission(request, username):
         our_tempfile.write(postfile.read())
         our_tempfile.close()
         our_tf = open(our_tfpath, 'rb')
-        count, errors = import_instances_from_zip(our_tf, user=posting_user)
+        total_count, success_count, errors = import_instances_from_zip(our_tf, user=posting_user)
         os.remove(our_tfpath)
         json_msg = {
-            'message': "Your ODK submission was successful. %d surveys imported. Your user now has %d instances." % \
-                    (count, posting_user.surveys.count()),
-            'errors': errors
+            'message': "Submission successful. Out of %d survey instances, %d were imported (%d were rejected--duplicates, missing forms, etc.)" % \
+                    (total_count, success_count, total_count - success_count),
+            'errors': "%d %s" % (len(errors), errors)
         }
         response = HttpResponse(json.dumps(json_msg))
         response.status_code = 200
@@ -170,7 +170,8 @@ def submission(request, username=None):
     return response
 
 def download_xform(request, username, id_string):
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
     # TODO: protect for users who have settings to use auth
     response = response_with_mimetype_and_name('xml', id_string,
         show_date=False)
