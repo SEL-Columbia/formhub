@@ -3,6 +3,11 @@
         <div class="alert alert-block {{ message.type }} fade in">
             <a class="close" href="#" data-dismiss="alert">×</a>
             <p>{{ message.text|safe }}</p>
+            {# the following is specific for error message #}
+            {# handling with a bad xls form submission #}
+            {% ifequal message.type "alert-error" %}
+                <p>Please contact us at <a href="support@formhub.org">support@formhub.org</a> attaching the file your are trying to submit. Thank you!</p>
+            {% endifequal %}
         </div>
     </div>
 </div>
