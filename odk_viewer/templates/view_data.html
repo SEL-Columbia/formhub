@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="data-view-wrapper">
+    <table cellpadding="0" cellspacing="0" border="0" class="display" id="data-view">
+        <thead>
+        <tr>
+            <th width="20%">Type of Eat</th>
+            <th width="25%">Description</th>
+            <th width="25%">Amount</th>
+            <th width="15%">Rating</th>
+            <th width="15%">Risk Factor</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script src="/static/js/jquery.dataTables.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#data-view').dataTable({
+        "bProcessing": true,
+        "sAjaxSource": '/larry/forms/good_eats/data'
+    });
+});
+</script>
+{% endblock %}

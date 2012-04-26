@@ -16,6 +16,7 @@ from django.http import HttpResponse, HttpResponseForbidden,\
          HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from django.utils import simplejson
 
 from odk_logger.models import XForm, Instance
 from odk_logger.xform_instance_parser import xform_instance_to_dict
@@ -293,3 +294,36 @@ def google_xls_export(request, username, id_string):
             xls_doc = docs_client.CreateResource(xls_doc, media=media)
     os.unlink(tmp.name)
     return HttpResponseRedirect('https://docs.google.com')
+
+def view_data(request, username, id_string):
+    owner = User.objects.get(username=username)
+    xform = get_object_or_404(XForm, user__username=username,
+        id_string=id_string)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden('Not shared.')
+    # get columns/fields to setup the table
+
+    return render_to_response("view_data.html")
+
+def data(request, username, id_string):
+    owner = User.objects.get(username=username)
+    xform = get_object_or_404(XForm, user__username=username,
+        id_string=id_string)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden('Not shared.')
+
+    # get response data
+    try:
+        cursor = ParsedInstance.query_mongo(username, id_string, '{}')
+    except ValueError, e:
+        return HttpResponseBadRequest(e.message)
+    records = []
+    for record in cursor:
+        data = []
+        for key,value in record.iteritems():
+            data.append(value)
+        records.append(data)
+    #records = list(record for record in cursor)
+    return HttpResponse(simplejson.dumps({'aaData':records}))
+
+
