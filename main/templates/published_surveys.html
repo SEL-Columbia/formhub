@@ -91,7 +91,7 @@
 	    <i class="icon-edit"></i>
 	  </a>
             {% if xform.submission_count > 0 %}
-      <a class="btn" href="{% url odk_logger.views.view_data content_user.username xform.id_string %}">
+      <a class="btn" href="{% url odk_viewer.views.data_view content_user.username xform.id_string %}">
         <i class="icon-th-list"></i>
             {% endif %}
       </a>

@@ -295,35 +295,18 @@ def google_xls_export(request, username, id_string):
     os.unlink(tmp.name)
     return HttpResponseRedirect('https://docs.google.com')
 
-def view_data(request, username, id_string):
-    owner = User.objects.get(username=username)
-    xform = get_object_or_404(XForm, user__username=username,
-        id_string=id_string)
-    if not has_permission(xform, owner, request):
-        return HttpResponseForbidden('Not shared.')
-    # get columns/fields to setup the table
-
-    return render_to_response("view_data.html")
-
-def data(request, username, id_string):
+def data_view(request, username, id_string):
     owner = User.objects.get(username=username)
     xform = get_object_or_404(XForm, user__username=username,
         id_string=id_string)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
 
-    # get response data
-    try:
-        cursor = ParsedInstance.query_mongo(username, id_string, '{}')
-    except ValueError, e:
-        return HttpResponseBadRequest(e.message)
-    records = []
-    for record in cursor:
-        data = []
-        for key,value in record.iteritems():
-            data.append(value)
-        records.append(data)
-    #records = list(record for record in cursor)
-    return HttpResponse(simplejson.dumps({'aaData':records}))
+    context = RequestContext(request)
+    context.mongo_api_url = reverse(main.views.api,\
+        kwargs={"username": username, "id_string": id_string})
+    context.jsonform_url = reverse(download_jsonform,\
+        kwargs={"username": username, "id_string":id_string})
+    return render_to_response("data_view.html", context_instance=context)
 
 
