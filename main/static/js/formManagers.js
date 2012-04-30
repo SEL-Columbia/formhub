@@ -272,13 +272,11 @@ FormResponseManager.prototype._toPivotJs = function(fields)
     for(idx in this.responses)
     {
         var response = this.responses[idx];
-        console.log(response);
         var row = [];
 
         for(i=0;i<titles.length;i++)
         {
             var title = titles[i];
-            console.log("title: " + title)
             var data = "";
             /// check if we have a response in for this title
             if(response.hasOwnProperty(title))
@@ -296,6 +294,11 @@ FormResponseManager.prototype.getAsPivotJs = function(fields)
     if(!this.pivotJsData)
         this._toPivotJs(fields);
 
-    console.log(this.pivotJsData);
     return this.pivotJsData;
+}
+
+function encodeForCSSclass (str) {
+    str = (str + '').toString();
+
+    return str.replace(" ", "-");
 }

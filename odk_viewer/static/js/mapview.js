@@ -28,14 +28,6 @@ var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekky
 var bingMapTypeLabels = {'AerialWithLabels': 'Bing Satellite Map', 'Road': 'Bing Road Map'}; //Road, Aerial or AerialWithLabels
 var mapBoxAdditAttribution = " Map data (c) OpenStreetMap contributors, CC-BY-SA";
 
-// TODO: Consider moving to a separate file
-
-function encodeForCSSclass (str) {
-    str = (str + '').toString();
-
-    return str.replace(" ", "-");
-}
-
 // map filter vars
 var navContainerSelector = ".nav.pull-right";
 var legendParentSelector = ".leaflet-control-container";
