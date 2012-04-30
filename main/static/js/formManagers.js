@@ -284,7 +284,6 @@ FormResponseManager.prototype.getAsPivotJs = function(fields)
 {
     if(!this.pivotJsData)
         this._toPivotJs(fields);
-
     return this.pivotJsData;
 }
 
