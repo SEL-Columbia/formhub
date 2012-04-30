@@ -79,15 +79,15 @@
 	  <div class=btn-group>
 	    <center>
           {% if xform.data_dictionary.has_surveys_with_geopoints %}
-	  <a class="btn" href="{% url odk_viewer.views.map_view user.username xform.id_string %}">
+	  <a class="btn" href="{% url odk_viewer.views.map_view user.username xform.id_string %}" data-original-title="View Map" rel="tooltip">
 	    <i class="icon-map-marker"></i>
 	  </a>
           {% endif %}
-	  <a class="btn" href="{% url main.views.form_photos content_user.username xform.id_string %}">
+	  <a class="btn" href="{% url main.views.form_photos content_user.username xform.id_string %}" data-original-title="View Photo" rel="tooltip" >
 	    <i class="icon-camera"></i>
 	  </a>
 
-	  <a class="btn" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
+	  <a class="btn" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}" data-original-title="Enter Web Form" rel="tooltip">
 	    <i class="icon-edit"></i>
 	  </a>
             {% if xform.submission_count > 0 %}
@@ -125,5 +125,6 @@
   placement: 'below'
   })
   })
+  $('.btn').tooltip();
 </script>
 {% endif %}
