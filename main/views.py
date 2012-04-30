@@ -6,11 +6,13 @@ from django.core.files.storage import default_storage
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect, HttpResponseNotAllowed, HttpResponseForbidden
+    HttpResponseRedirect, HttpResponseNotAllowed, \
+    HttpResponseForbidden, HttpResponseNotFound
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
 from django.utils import simplejson
 from django.views.decorators.http import require_GET, require_POST
+from django.core.files.storage import get_storage_class
 from guardian.shortcuts import assign, remove_perm, get_users_with_perms
 
 from main.models import UserProfile, MetaData
@@ -340,10 +342,14 @@ def download_metadata(request, username, id_string, data_id):
             user__username=username, id_string=id_string)
     if username == request.user.username or xform.shared:
         data = get_object_or_404(MetaData, pk=data_id)
-        return response_with_mimetype_and_name(
-            data.data_file_type,
-            data.data_value, '', None, False,
-            data.data_file.name)
+        file_path = data.data_file.name
+        default_storage = get_storage_class()()
+        if default_storage.exists(file_path):
+            response = response_with_mimetype_and_name(data.data_file_type, data.data_value,
+                    show_date=False, file_path=file_path)
+            return response
+        else:
+            return HttpResponseNotFound()
     return HttpResponseForbidden('Permission denied.')
 
 def download_media_data(request, username, id_string, data_id):
@@ -351,10 +357,18 @@ def download_media_data(request, username, id_string, data_id):
             user__username=username, id_string=id_string)
     if username == request.user.username or xform.shared:
         data = get_object_or_404(MetaData, pk=data_id)
-        return response_with_mimetype_and_name(
+        '''return response_with_mimetype_and_name(
             data.data_file_type,
             data.data_value, '', None, False,
-            data.data_file.name)
+            data.data_file.name) '''
+        file_path = data.data_file.name
+        default_storage = get_storage_class()()
+        if default_storage.exists(file_path):
+            response = response_with_mimetype_and_name(data.data_file_type, data.data_value,
+                    show_date=False, file_path=file_path)
+            return response
+        else:
+            return HttpResponseNotFound()
     return HttpResponseForbidden('Permission denied.')
 
 def form_photos(request, username, id_string):
