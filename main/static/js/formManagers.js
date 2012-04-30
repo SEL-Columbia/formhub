@@ -242,7 +242,7 @@ FormResponseManager.prototype._toPivotJs = function(fields)
     var titles = [];
     for(i=0;i<fields.length;i++)
     {
-        titles.push(fields[i]);
+        titles.push(fields[i]["name"]);
     }
     pivotData.push(titles);
 
@@ -252,13 +252,26 @@ FormResponseManager.prototype._toPivotJs = function(fields)
         var response = this.responses[idx];
         var row = [];
 
-        for(i=0;i<titles.length;i++)
+        for(i=0;i<fields.length;i++)
         {
-            var title = titles[i];
+            var field = fields[i]
+            var title = field["name"];
+            var pivotType = field["type"];
             var data = "";
             /// check if we have a response in for this title
             if(response.hasOwnProperty(title))
+            {
                 data = response[title];
+                /// if this is time(date + time) data remove the T inside datetime data
+                if(pivotType == "time")
+                {
+                    var pattern = /^\d{4}\-\d{2}\-\d{2}T/;
+                    if(pattern.test(data))
+                    {
+                        data = data.replace("T", " ");
+                    }
+                }
+            }
             row.push(data);
         }
         pivotData.push(row);

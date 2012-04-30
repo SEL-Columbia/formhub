@@ -37,7 +37,8 @@
 <script type="text/javascript" src="/static/js/jquery_pivot.js"></script>
 <script type="text/javascript" src="/static/js/dataTables.bootstrap.js"></script>
 <script type="text/javascript">
-var pivotFilterableTypes = ["text", "integer", "decimal", "select one", "select multiple", "date", "datetime", "star", "end", "today"];
+var pivotFilterableTypes = ["text", "integer", "decimal", "select one", "select multiple", "date", "datetime", "start", "end", "today"];
+var pivotUnLabelableTypes = ["geopoint", "image", "photo", "barcode", "audio", "video"]; // fields we DON'T want to show by default
 var formJSONUrl = "{{ jsonform_url }}";
 var mongoAPIUrl = "{{ mongo_api_url }}";
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
@@ -72,10 +73,15 @@ function loadResponseDataCallback()
         field["type"] = getPivotType(question.type);
         if(isFilterable(question.type))
             field["filterable"] = true;
+        if(isLabelable(question.type))
+            rowLabels.push(questionName);
+        else
+        {
+            //field["labelable"] = false;
+        }
         fields.push(field);
-        rowLabels.push(questionName);
     }
-    var data = formResponseMngr.getAsPivotJs(rowLabels);
+    var data = formResponseMngr.getAsPivotJs(fields);
 
     // format the data into pivots array array format
     $('#pivot-container').pivot_display('setup', {json: data, fields: fields, rowLabels: rowLabels, 'callbacks':{
@@ -99,23 +105,28 @@ function isFilterable(questionType)
     return pivotFilterableTypes.indexOf(questionType.toLowerCase()) != -1;
 }
 
+function isLabelable(questionType)
+{
+    return pivotUnLabelableTypes.indexOf(questionType.toLowerCase()) == -1
+}
+
 function getPivotType(questionType)
 {
     switch(questionType.toLowerCase())
     {
         case "integer":
             return "integer";
-            break;
         case "decimal":
             return "float";
-            break;
         case "date":
         case "today":
             return "date";
-            break;
+        case "datetime":
+        case "start":
+        case "end":
+            return "time";
         default:
             return "string";
-            break;
     }
 }
 </script>
