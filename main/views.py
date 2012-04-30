@@ -357,10 +357,6 @@ def download_media_data(request, username, id_string, data_id):
             user__username=username, id_string=id_string)
     if username == request.user.username or xform.shared:
         data = get_object_or_404(MetaData, pk=data_id)
-        '''return response_with_mimetype_and_name(
-            data.data_file_type,
-            data.data_value, '', None, False,
-            data.data_file.name) '''
         file_path = data.data_file.name
         default_storage = get_storage_class()()
         if default_storage.exists(file_path):
