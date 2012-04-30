@@ -31,6 +31,8 @@
 <span id="pivot-detail"></span>
 <hr/>
 <div id="results"></div>
+<script type="text/javascript" src="/static/js/json2.js"></script>
+<script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
 <script type="text/javascript" src="/static/js/formManagers.js"></script>
 <script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="/static/js/pivot.js"></script>
@@ -78,6 +80,9 @@ function loadResponseDataCallback()
         fields.push(field);
     }
     var data = formResponseMngr.getAsPivotJs(fields);
+    var cookieLabels = getCookieLabels();
+    if(cookieLabels)
+        rowLabels = cookieLabels;
 
     // format the data into pivots array array format
     $('#pivot-container').pivot_display('setup', {json: data, fields: fields, rowLabels: rowLabels, 'callbacks':{
@@ -92,6 +97,10 @@ function loadResponseDataCallback()
                 },
                 "sScrollX":"100%"
             });
+            // get currently active fields
+            var activeFields = pivot.config().rowLabels;
+            // save selected fields to cookie
+            setCookieLabels(activeFields);
         }
     }})
 }
@@ -124,6 +133,25 @@ function getPivotType(questionType)
         default:
             return "string";
     }
+}
+
+// get array of labels saved in the cookie if any
+function getCookieLabels()
+{
+    var labelCookie = $.cookie("labelables");
+    if(!labelCookie)
+        return null;
+    else
+    {
+        return  JSON.parse(labelCookie);
+    }
+}
+
+function setCookieLabels(activeFields)
+{
+    var labelCookieOpts = {"path": document.location.pathname, "expires": 28};
+    var labelables = JSON.stringify(activeFields);
+    $.cookie("labelables", labelables, labelCookieOpts);
 }
 </script>
 {% endblock %}
