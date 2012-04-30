@@ -147,12 +147,10 @@
         </h3>
         {% if xform.shared_data or can_view %}
         {% if xform.submission_count > 0 %}
-        <div>
-        <div class="input-prepend">
         <br>
         <div class="btn-toolbar" style="margin-bottom: 9px">
           <div class="btn-group">
-            <a class="btn" href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>csv</font></a>
+            <a class="btn" href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export to csv File"><i class="icon-download-alt"></i> <font color=#000>csv</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
@@ -163,7 +161,7 @@
             </ul>
           </div>
           <div class="btn-group">
-            <a class="btn" href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>xls</font></a>
+            <a class="btn" href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export to xls File"><i class="icon-download-alt"></i> <font color=#000>xls</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
@@ -174,7 +172,7 @@
             </ul>
           </div>
           <div class="btn-group">
-            <a class="btn" href="{% url odk_viewer.views.kml_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>kml</font></a>
+            <a class="btn" href="{% url odk_viewer.views.kml_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export to kml File (Google Earth)"><i class="icon-download-alt"></i> <font color=#000>kml</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
@@ -186,7 +184,7 @@
           </div>
 
           <div class="btn-group">
-            <button class="btn "><a href="{% url odk_viewer.views.zip_export content_user.username xform.id_string %}"><i class="icon-download-alt"></i> <font color=#000>zip</font></a></button>
+            <a class="btn" href="{% url odk_viewer.views.zip_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export a zip folder of attachments"><i class="icon-download-alt"></i> <font color=#000>zip</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
@@ -194,6 +192,17 @@
               <li>                    
                 <input class="input-xxlarge" type="text" size="16" value="{{base_url}}{% url odk_viewer.views.zip_export content_user.username xform.id_string %}"/>
               </li>
+            </ul>
+          </div>
+          <div class="btn-group">
+            <a class="btn" href="{% url odk_viewer.views.google_xls_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export to google docs"><i class="icon-download-alt"></i> <font color=#000>gdocs</font></a>
+            <button class="btn dropdown-toggle" data-toggle="dropdown">
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <input class="input-xxlarge" type="text" size="16" value="{{base_url}}{% url odk_viewer.views.google_xls_export content_user.username xform.id_string %}"/>
+                </li>
             </ul>
           </div>
         </div>
@@ -212,7 +221,6 @@
             {% endif %}
         </p>
         <p><a id="data-license_info" style="display:none" href="">License information</a></p>
-        </div>
 	    <div class="btn-group" style="margin-bottom: 9px">
             <a class="btn btn-info" rel="tooltip" title="View Map" href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
               <i class="icon-map-marker icon-white"></i> Map
@@ -220,16 +228,17 @@
             <a class="btn btn-info" btn-info  rel="tooltip" title="View Photos" href="{% url main.views.form_photos content_user.username xform.id_string %}">
               <i class="icon-camera icon-white"></i> Photos
             </a>
+        </div>
 		{% endif %}
 		{% endif %}
 		{% if can_edit %}
-		<a class="btn btn-info" rel="tooltip" title="Webform" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
-		  <i class="icon-edit icon-white"></i> Enter Web Form
-        </a>
+	    <div class="btn-group" style="margin-bottom: 9px">
+		    <a class="btn btn-info" rel="tooltip" title="Webform" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
+		      <i class="icon-edit icon-white"></i> Enter Web Form
+            </a>
+        </div>
 		{% endif %}
-	    </div>
         <br>
-      </div>
       <div class="span4">
         <script type="text/javascript">
             $(document).ready(function() {
@@ -426,4 +435,7 @@
     </div>
     <br/>
   </section>
+  <script type="text/javascript">
+      $('.btn').tooltip();
+  </script>
 {% endblock %}

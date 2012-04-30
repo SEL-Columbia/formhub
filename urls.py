@@ -12,6 +12,14 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
+    # google urls
+    url(r'^gauthtest/$',
+        'main.google_export.google_oauth2_request',
+        name='google-auth'),
+    url(r'^gwelcome/$',
+        'main.google_export.google_auth_return',
+        name='google-auth-welcome'),
+
     # main website views
     url(r'^$', 'main.views.home'),
     url(r'^tutorial/$', 'main.views.tutorial'),
@@ -46,6 +54,7 @@ urlpatterns = patterns('',
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.xls$", 'odk_viewer.views.xls_export'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.kml$", 'odk_viewer.views.kml_export'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.zip", 'odk_viewer.views.zip_export'),
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/gdocs$", 'odk_viewer.views.google_xls_export'),
     url(r"^odk_viewer/survey/(?P<instance_id>\d+)/$", 'odk_viewer.views.survey_responses'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/map", 'odk_viewer.views.map_view'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/enter-data", 'odk_logger.views.enter_data'),

@@ -6,6 +6,7 @@ from .instance import Instance
 from .xform import XForm
 from .attachment import Attachment
 from .survey_type import SurveyType
+from odk_logger.xform_instance_parser import InstanceParseError
 
 
 @transaction.commit_on_success
@@ -24,7 +25,7 @@ def create_instance(username, xml_file, media_files, status=u'submitted_via_web'
         proceed_to_create_instance = True
     else:
         existing_instance = Instance.objects.filter(xml=xml, user=user)[0]
-        if not existing_instance.xform.has_start_time:
+        if existing_instance.xform and not existing_instance.xform.has_start_time:
             proceed_to_create_instance = True
         else:
             # Ignore submission as a duplicate IFF

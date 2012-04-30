@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.test.client import Client
 from odk_logger.models import XForm, Instance
+import urllib2
 
 class MainTestCase(TestCase):
 
@@ -22,6 +23,11 @@ class MainTestCase(TestCase):
         assert client.login(username=username, password=password)
         return client
 
+    def _logout(self, client=None):
+        if not client:
+            client = self.client
+        client.logout()
+
     def _create_user_and_login(self, username="bob", password="bob"):
         self.user = self._create_user(username, password)
         self.client = self._login(username, password)
@@ -35,6 +41,11 @@ class MainTestCase(TestCase):
         with open(path) as xls_file:
             post_data = {'xls_file': xls_file}
             return self.client.post('/%s/' % self.user.username, post_data)
+
+    def _share_form_data(self, id_string='transportation_2011_07_25'):
+        xform = XForm.objects.get(id_string=id_string)
+        xform.shared_data = True
+        xform.save()
 
     def _publish_transportation_form(self):
         xls_path = os.path.join(self.this_directory, "fixtures",
@@ -71,3 +82,14 @@ class MainTestCase(TestCase):
             self._make_submission(path)
         self.assertEqual(Instance.objects.count(), pre_count + 4)
         self.assertEqual(self.xform.surveys.count(), pre_count + 4)
+
+    def _check_url(self, url, timeout=1):
+        try:
+            response = urllib2.urlopen(url, timeout=timeout)
+            return True
+        except urllib2.URLError as err: pass
+        return False
+
+    def _internet_on(self, url='http://74.125.113.99'):
+        # default value is some google IP
+        return self._check_url(url)

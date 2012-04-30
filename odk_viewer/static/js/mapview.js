@@ -2,8 +2,17 @@ var centerLatLng = new L.LatLng(!center.lat?0.0:center.lat, !center.lng?0.0:cent
 var defaultZoom = 8;
 var mapId = 'map_canvas';
 var map;
+// array of mapbox maps to use as base layers - the first one will be the default map
+var mapboxMaps = [
+    {'label': 'Mapbox Street', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-hgm23qjf.jsonp'},
+    {'label': 'MapBox Streets Light', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-p543gvbh.jsonp'},
+    {'label': 'MapBox Streets Zenburn', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-bjhr55gf.jsonp'}
+];
+var allowResetZoomLevel = true; // used to allow zooming when first loaded
 var popupOffset = new L.Point(0, -10);
 var notSpecifiedCaption = "Not Specified";
+var colorPalette = ['#8DD3C7', '#FB8072', '#FFFFB3', '#BEBADA', '#80B1D3', '#FDB462', '#B3DE69', '#FCCDE5', '#D9D9D9',
+    '#BC80BD', '#CCEBC5', '#FFED6F'];
 var circleStyle = {
     color: '#fff',
     border: 8,
@@ -11,6 +20,8 @@ var circleStyle = {
     fillOpacity: 0.9,
     radius: 8
 }
+// TODO: can we get the entire URL from mongo API
+var amazonUrlPrefix = "https://formhub.s3.amazonaws.com/";
 var geoJsonLayer = new L.GeoJSON(null);
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
 var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekkywR';
@@ -25,7 +36,9 @@ FormJSONManager = function(url, callback)
     this.callback = callback;
     this.geopointQuestions = [];
     this.selectOneQuestions = [];
+    this.supportedLanguages = [];
     this.questions = {};
+
 }
 
 FormJSONManager.prototype.loadFormJSON = function()
@@ -33,6 +46,7 @@ FormJSONManager.prototype.loadFormJSON = function()
     var thisManager = this;
     $.getJSON(thisManager.url, function(data){
         thisManager._parseQuestions(data.children);
+        thisManager._parseSupportedLanguages();
         thisManager.callback.call(thisManager);
     })
 }
@@ -58,7 +72,7 @@ FormJSONManager.prototype._parseQuestions = function(questionData, parentQuestio
         if(question.type == "select one")
             this.selectOneQuestions.push(question);
         if(question.type == "geopoint" || question.type == "gps")
-            this.geopointQuestions.push(question)
+            this.geopointQuestions.push(question);
     }
 }
 
@@ -88,12 +102,47 @@ FormJSONManager.prototype.getQuestionByName = function(name)
 FormJSONManager.prototype.getChoices = function(question)
 {
     var choices = {};
-    for(idx in question.children)
+    for(i=0;i<question.children.length;i++)
     {
-        var choice = question.children[idx];
+        var choice = question.children[i];
         choices[choice.name] =  choice;
     }
     return choices;
+}
+
+FormJSONManager.prototype.setCurrentSelectOneQuestionName = function(name)
+{
+    this._currentSelectOneQuestionName = name;
+}
+
+FormJSONManager.prototype._parseSupportedLanguages = function()
+{
+    // run through question objects, stop at first question with label object and check it for multiple languages
+    for(questionName in this.questions)
+    {
+        var question = this.questions[questionName];
+        if(question.hasOwnProperty("label"))
+        {
+            var labelProp = question["label"];
+            if(typeof(labelProp) == "string")
+                this.supportedLanguages = ["default"];
+            else if(typeof(labelProp) == "object")
+            {
+                for(key in labelProp)
+                {
+                    var language = {"name": encodeForCSSclass(key), "label": key}
+                    this.supportedLanguages.push(language)
+                }
+            }
+            break;
+        }
+    }
+}
+
+function encodeForCSSclass (str) {
+    str = (str + '').toString();
+
+    return str.replace(" ", "-");
 }
 
 /// pass a question object and get its label, if language is specified, try get label for that otherwise return the first label
@@ -120,7 +169,8 @@ FormJSONManager.prototype.getMultilingualLabel = function(question, language)
         }
 
     }
-    return null;
+    // return raw name
+    return question["name"];
 }
 
 // used to manage response data loaded via ajax
@@ -128,17 +178,61 @@ FormResponseManager = function(url, callback)
 {
     this.url = url;
     this.callback = callback;
+    this._select_one_filters = [];
+    this._currentSelectOneQuestionName = null; // name of the currently selected "View By Question if any"
 }
 
 FormResponseManager.prototype.loadResponseData = function(params)
 {
     var thisFormResponseMngr = this;
-    $.getJSON(thisFormResponseMngr.url, params, function(data){
+
+    /// invalidate geoJSON data
+    this.geoJSON = null;
+
+    /// append select-one filters to params
+    if(formJSONMngr._currentSelectOneQuestionName)
+    {
+        var questionName = formJSONMngr._currentSelectOneQuestionName;
+        var orFilters = [];
+        for(idx in this._select_one_filters)
+        {
+            var responseName =  this._select_one_filters[idx];
+            if(responseName == notSpecifiedCaption)
+                orFilters.push(null);
+            else
+                orFilters.push(responseName);
+        }
+        if(orFilters.length > 0)
+        {
+            var inParam = {'$in': orFilters};
+            params[questionName] = inParam;
+        }
+    }
+    $.getJSON(thisFormResponseMngr.url, {'query':JSON.stringify(params)}, function(data){
         thisFormResponseMngr.responses = data;
         thisFormResponseMngr.callback.call(thisFormResponseMngr);
     })
 }
 
+FormResponseManager.prototype.addResponseToSelectOneFilter = function(name)
+{
+    if(this._select_one_filters.indexOf(name) == -1)
+        this._select_one_filters.push(name);
+}
+
+FormResponseManager.prototype.removeResponseFromSelectOneFilter = function(name)
+{
+    var idx = this._select_one_filters.indexOf(name);
+    if(idx > -1)
+        this._select_one_filters.splice(idx, 1);
+}
+
+FormResponseManager.prototype.clearSelectOneFilterResponses = function(name)
+{
+    this._select_one_filters = [];
+}
+
+/// this cannot be called before the form is loaded as we rely on the form to determine the gps field
 FormResponseManager.prototype._toGeoJSON = function()
 {
     var features = [];
@@ -185,9 +279,6 @@ var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
 
 function initialize() {
-    // mapbox streets formhub tiles
-    var url = 'http://a.tiles.mapbox.com/v3/modilabs.map-hgm23qjf.jsonp';
-
     // Make a new Leaflet map in your container div
     map = new L.Map(mapId).setView(centerLatLng, defaultZoom);
 
@@ -200,14 +291,18 @@ function initialize() {
         layersControl.addBaseLayer(bingLayer, label);
     });
 
-    // Get metadata about the map from MapBox
-    wax.tilejson(url, function(tilejson) {
-        tilejson.attribution += mapBoxAdditAttribution;
-        var mapboxstreet = new wax.leaf.connector(tilejson);
+    $.each(mapboxMaps, function(idx, mapData){
+        // Get metadata about the map from MapBox
+        wax.tilejson(mapData.url, function(tilejson) {
+            tilejson.attribution += mapBoxAdditAttribution;
+            var mapboxstreet = new wax.leaf.connector(tilejson);
 
-        // add mapbox as default base layer
-        map.addLayer(mapboxstreet);
-        layersControl.addBaseLayer(mapboxstreet, 'MapBox Streets');
+            layersControl.addBaseLayer(mapboxstreet, mapData.label);
+
+            // only add default layer to map
+            if(idx == 0)
+                map.addLayer(mapboxstreet);
+        });
     });
 
     formResponseMngr.loadResponseData({});
@@ -216,6 +311,7 @@ function initialize() {
 // callback called after form data has been loaded via the mongo form API
 function loadResponseDataCallback()
 {
+    formResponseMngr.callback = null;// initial callback is for setup, subsequent reloads must set desired callback
     // load form structure/questions here since we now have some data
     formJSONMngr.loadFormJSON();
 }
@@ -223,14 +319,49 @@ function loadResponseDataCallback()
 function _rebuildMarkerLayer(geoJSON, questionName)
 {
     var latLngArray = [];
-    var questionColor = {};
-    var numChoices = 0;
+    var questionColorMap = {};
     var randomColorStep = 0;
+    var paletteCounter = 0;
+    var responseCountValid = false;
 
     if(questionName)
     {
         var question = formJSONMngr.getQuestionByName(questionName);
-        var numChoices = question.children.length;
+        /// check if response count has been calculated for this question
+        if(question.hasOwnProperty('responseCounts'))
+            responseCountValid = true;
+        else
+            question['responseCounts'] = {};
+
+        // formJSONMngr.getChoices returns an object NOT an array so we use children directly here
+        var choices = question.children;
+        // build an array of choice names so that we can append "Not Specified" to it
+        var choiceNames = [];
+        for(i=0;i < choices.length;i++)
+        {
+            var choice = choices[i];
+            choiceNames.push(choice.name);
+            if(!responseCountValid)
+                question.responseCounts[choice.name] = 0;
+        }
+        choiceNames.push(notSpecifiedCaption);
+        if(!responseCountValid)
+            question.responseCounts[notSpecifiedCaption] = 0;
+        for(i=0;i < choiceNames.length;i++)
+        {
+            var choiceName = choiceNames[i];
+            var choiceColor = null;
+            // check if color palette has colors we haven't used
+            if(paletteCounter < colorPalette.length)
+                choiceColor = colorPalette[paletteCounter++];
+            else
+            {
+                // number of steps is reduced by the number of colors in our palette
+                choiceColor = get_random_color(randomColorStep++, (choiceNames.length - colorPalette.length));
+            }
+            /// save color for this choice
+            questionColorMap[choiceName] = choiceColor;
+        }
     }
 
     /// remove existing geoJsonLayer
@@ -251,18 +382,15 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         /// check if questionName is set
         if(questionName)
         {
+            var question = formJSONMngr.getQuestionByName(questionName);
             var response = geoJSONEvt.properties[questionName];
             // check if response is missing (user did not specify)
             if(!response)
                 response = notSpecifiedCaption;
-            var responseColor = questionColor[response];
-            if(!responseColor)
-            {
-                // generate a color
-                responseColor = get_random_color(randomColorStep++, numChoices);
-                /// save color for this response
-                questionColor[response] = responseColor;
-            }
+            /// increment response count if its not been done before
+            if(!responseCountValid)
+                question.responseCounts[response] += 1;
+            var responseColor = questionColorMap[response];
             var newStyle = {
                 color: '#fff',
                 border: circleStyle.border,
@@ -274,19 +402,21 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         }
         marker.on('click', function(e){
             var latLng = e.latlng;
-            //var targetMarker = e.target;
+            var popup = new L.Popup({offset: popupOffset});
+            popup.setLatLng(latLng);
 
-            // TODO: remove hard coded url - could hack by reversing url using 0000 as instance_id then replacing with actual id
-            var url = "/odk_viewer/survey/" + geoJSONEvt.id.toString() + "/";
             // open a loading popup so the user knows something is happening
-            //targetMarker.bindPopup('Loading...').openPopup();
+            popup.setContent("Loading...");
+            map.openPopup(popup);
 
-            $.get(url).done(function(data){
-                var popup = new L.Popup({offset: popupOffset});
-                popup.setLatLng(latLng);
-                popup.setContent(data);
-                //targetMarker.bindPopup(data,{'maxWidth': 500}).openPopup();
-                map.openPopup(popup);
+            $.getJSON(mongoAPIUrl, {'query': '{"_id":' + geoJSONEvt.id + '}'}).done(function(data){
+                var content;
+                if(data.length > 0)
+                    content = JSONSurveyToHTML(data[0]);
+                else
+                    content = "An unexpected error occurred";
+                popup.setContent(content);
+                //map.openPopup(popup);
             });
         });
     });
@@ -296,18 +426,102 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     map.addLayer(geoJsonLayer);
 
     if(questionName)
-        rebuildLegend(questionName, questionColor);
+        rebuildLegend(questionName, questionColorMap);
     else
         clearLegend();
 
     // fitting to bounds with one point will zoom too far
-    if (latLngArray.length > 1) {
+    // don't zoom when we "view by response"
+    if (latLngArray.length > 1 && allowResetZoomLevel) {
         var latlngbounds = new L.LatLngBounds(latLngArray);
         map.fitBounds(latlngbounds);
     }
 }
 
-function rebuildLegend(questionName, questionColor)
+/*
+ * Format the json data to HTML for a map popup
+ */
+function JSONSurveyToHTML(data)
+{
+    var htmlContent = '<table class="table table-bordered table-striped"> <thead>\n<tr>\n<th>Question</th>\n<th>Response</th>\n</tr>\n</thead>\n<tbody>\n';
+
+    // add images if any
+    // TODO: this assumes all attachments are images
+    if(data._attachments.length > 0)
+    {
+        var mediaContainer = '<ul class="media-grid">';
+        for(idx in data._attachments)
+        {
+            var attachmentUrl = data._attachments[idx];
+            mediaContainer += '<li><a href="#">';
+            var imgSrc = amazonUrlPrefix + attachmentUrl;
+            var imgTag = _createElementAndSetAttrs('img', {"class":"thumbnail", "width":"210", "src": imgSrc});
+            var dummyContainer = _createElementAndSetAttrs('div', {});
+            dummyContainer.appendChild(imgTag);
+            mediaContainer += dummyContainer.innerHTML;
+            mediaContainer += '</a></li>';
+
+        }
+        mediaContainer += '</ul>';
+        htmlContent += mediaContainer;
+    }
+
+    // add language select if we have multiple languages
+    if(formJSONMngr.supportedLanguages.length > 1)
+    {
+        var selectTag = _createElementAndSetAttrs('select', {"id":"selectLanguage"});
+        for(idx in formJSONMngr.supportedLanguages)
+        {
+            var langauge = formJSONMngr.supportedLanguages[idx];
+            var o = new Option(langauge.label, langauge.name);
+            selectTag.add(o);
+        }
+        var dummyContainer = _createElementAndSetAttrs('div', {});
+        dummyContainer.appendChild(selectTag);
+        htmlContent += dummyContainer.innerHTML;
+    }
+
+    for(questionName in formJSONMngr.questions)
+    {
+        //if(data[questionName])
+        {
+            var question  = formJSONMngr.getQuestionByName(questionName);
+            var response = _createElementAndSetAttrs('tr', {});
+            var td = _createElementAndSetAttrs('td', {});
+            // if at least one language, iterate over them and add a span for each
+            if(formJSONMngr.supportedLanguages.length > 0)
+            {
+                for(idx in formJSONMngr.supportedLanguages)
+                {
+                    var language = formJSONMngr.supportedLanguages[idx];
+                    var style = "";
+                    if(idx > 0)
+                    {
+                        style = "display: none"
+                    }
+                    var span = _createElementAndSetAttrs('span', {"class": ("language " + language.name), "style": style}, formJSONMngr.getMultilingualLabel(question, language.label));
+                    td.appendChild(span);
+                }
+            }
+            else
+            {
+                var span = _createElementAndSetAttrs('span', {"class": "language"}, formJSONMngr.getMultilingualLabel(question));
+                td.appendChild(span);
+            }
+
+            response.appendChild(td);
+            td = _createElementAndSetAttrs('td', {}, data[questionName]);
+            response.appendChild(td);
+            var dummyContainer = _createElementAndSetAttrs('div', {});
+            dummyContainer.appendChild(response);
+            htmlContent += dummyContainer.innerHTML;
+        }
+    }
+    htmlContent += '</tbody></table>';
+    return htmlContent;
+}
+
+function rebuildLegend(questionName, questionColorMap)
 {
     // TODO: consider creating container once and keeping a variable reference
     var question = formJSONMngr.getQuestionByName(questionName);
@@ -331,22 +545,54 @@ function rebuildLegend(questionName, questionColor)
     var legendUl = _createElementAndSetAttrs('ul');
     legendContainer.append(legendTitle);
     legendContainer.append(legendUl);
-    for(response in questionColor)
+    for(response in questionColorMap)
     {
-        var color = questionColor[response];
+        var color = questionColorMap[response];
         var responseLi = _createElementAndSetAttrs('li');
         var itemLabel = response;
         // check if the choices contain this response before we try to get the reponse's label
         if(choices.hasOwnProperty(response))
             itemLabel = formJSONMngr.getMultilingualLabel(choices[response]);
         var legendIcon = _createElementAndSetAttrs('span', {"class": "legend-bullet", "style": "background-color: " + color});
-        var responseText = _createElementAndSetAttrs('span', {}, itemLabel);
+        var responseText = _createElementAndSetAttrs('span', {});
+        var numResponses = question.responseCounts[response];
+        if(numResponses > 0)
+        {
+            var anchorClass = 'legend-label';
+            if(formResponseMngr._select_one_filters.indexOf(response) > -1)
+                anchorClass += " active";
+            else
+                anchorClass += " normal";
+            var legendAnchor = _createElementAndSetAttrs('a', {'class':anchorClass, 'href':'#', 'rel':response}, itemLabel);
+            responseText.appendChild(legendAnchor);
+        }
+        else
+        {
+            var legendSpan = _createElementAndSetAttrs('span', {}, itemLabel);
+            responseText.appendChild(legendSpan);
+        }
+        var responseCountSpan = _createElementAndSetAttrs('span', {'class':'legend-response-count'}, numResponses.toString());
 
         responseLi.appendChild(legendIcon);
         responseLi.appendChild(responseText);
+        responseLi.appendChild(responseCountSpan);
 
         legendUl.appendChild(responseLi);
     }
+
+    // bind legend click event
+    $('a.legend-label').on('click', function(){
+        var elm = $(this);
+        var responseName = elm.attr('rel');
+        // if element class is normal add response other wise, remove
+        if(elm.hasClass('normal'))
+            formResponseMngr.addResponseToSelectOneFilter(responseName);
+        else
+            formResponseMngr.removeResponseFromSelectOneFilter(responseName);
+        // reload with new params
+        formResponseMngr.callback = filterSelectOneCallback;
+        formResponseMngr.loadResponseData({})
+    });
 }
 
 function clearLegend()
@@ -357,6 +603,13 @@ function clearLegend()
         legendContainer.empty();
         legendContainer.attr("style", "display:none")
     }
+}
+
+function filterSelectOneCallback()
+{
+    // get geoJSON data to setup points - relies on questions having been parsed so has to be in/after the callback
+    var geoJSON = formResponseMngr.getAsGeoJSON();
+    _rebuildMarkerLayer(geoJSON, formJSONMngr._currentSelectOneQuestionName);
 }
 
 function loadFormJSONCallback()
@@ -403,8 +656,12 @@ function loadFormJSONCallback()
 
             navContainer.append(dropDownContainer);
             $('.select-one-anchor').click(function(){
+                allowResetZoomLevel = false; // disable zoom reset whenever this is clicked
                 // rel contains the question's unique name
                 var questionName = $(this).attr("rel");
+                // update question name
+                formJSONMngr.setCurrentSelectOneQuestionName(questionName);
+                formResponseMngr.clearSelectOneFilterResponses();
                 // get geoJSON data to setup points
                 var geoJSON = formResponseMngr.getAsGeoJSON();
 

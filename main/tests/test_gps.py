@@ -60,8 +60,4 @@ class TestGPS(MainTestCase):
         expected_ll = '{"lat": "%s", "lng": "%s"}' % (lat, lng)
         for r in response.context:
             self.assertEqual(expected_ll, r.center)
-        html_path = os.path.join(self.this_directory, 'fixtures', 'gps', 'map.html')
-        with open(html_path) as f:
-            expected_content = f.read()
-        self.assertContains(response, expected_content)
-
+        self.assertContains(response, expected_ll)

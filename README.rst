@@ -47,9 +47,21 @@ And now you should be ready to run the server:
 Running Tests and Contributing
 ==============================
 
-To run tests enter the following:
+To run all tests enter the following:
 
     python manage.py test
+
+To run the tests for a specific app, e.g. main, enter:
+
+    python manage.py test main
+
+To run the test for a specific class in a specific app, e.g. the class ``TestFormErrors`` in main, enter:
+
+    python manage.py test main.TestFormErrors
+
+To run the test for a specific method in a specific class in a specific app, e.g. the method ``test_submission_deactivated`` in the class ``TestFormErrors`` in main, enter:
+
+    python manage.py test main.TestFormErrors.test_submission_deactivated
 
 If you would like to contribute code please read:
 

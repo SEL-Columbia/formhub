@@ -158,16 +158,29 @@ ACCOUNT_ACTIVATION_DAYS = 1
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler'
-        }
+        },
+        'console': {
+             'level':'DEBUG',
+             'class':'logging.StreamHandler',
+             'formatter': 'verbose'
+        },
     },
     'loggers': {
         'django.request': {
             'handlers': ['mail_admins'],
-            'level': 'ERROR',
+            'level': 'DEBUG',
             'propagate': True,
         },
     }
@@ -176,6 +189,10 @@ LOGGING = {
 # MongoDB
 _MONGO_CONNECTION = Connection()
 MONGO_DB = None
+
+GOOGLE_STEP2_URI = 'http://formhub.org/gwelcome'
+GOOGLE_CLIENT_ID = '617113120802.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = '9reM29qpGFPyI8TBuB54Z4fk'
 
 TESTING_MODE = False
 if len(sys.argv)>=2 and (sys.argv[1]=="test" or sys.argv[1]=="test_all"):
@@ -199,3 +216,6 @@ try:
 except ImportError:
     print("You can override the default settings by adding a "
           "local_settings.py file.")
+
+if DEBUG:
+    MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
