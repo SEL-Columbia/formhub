@@ -7,7 +7,6 @@ FormJSONManager = function(url, callback)
     this.selectOneQuestions = [];
     this.supportedLanguages = [];
     this.questions = {};
-
 }
 
 FormJSONManager.prototype.loadFormJSON = function()
@@ -134,27 +133,6 @@ FormJSONManager.prototype.getMultilingualLabel = function(question, language)
     }
     // return raw name
     return question["name"];
-}
-
-FormJSONManager.prototype.getPivotJsFields = function()
-{
-    var fields = [];
-    for(questionName in this.questions)
-    {
-        var field = {name: questionName, type: 'string', filterable: true}
-        fields.push(field);
-    }
-    return fields;
-}
-
-FormJSONManager.prototype.getRowLabels = function()
-{
-    var rowLabels = [];
-    for(question in this.questions)
-    {
-        rowLabels.push(question);
-    }
-    return rowLabels;
 }
 
 // used to manage response data loaded via ajax

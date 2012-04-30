@@ -37,7 +37,7 @@
 <script type="text/javascript" src="/static/js/jquery_pivot.js"></script>
 <script type="text/javascript" src="/static/js/dataTables.bootstrap.js"></script>
 <script type="text/javascript">
-
+var pivotFilterableTypes = ["text", "integer", "decimal", "select one", "select multiple", "date", "datetime", "star", "end", "today"];
 var formJSONUrl = "{{ jsonform_url }}";
 var mongoAPIUrl = "{{ mongo_api_url }}";
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
@@ -61,8 +61,20 @@ function loadFormJSONCallback()
 
 function loadResponseDataCallback()
 {
-    var fields = formJSONMngr.getPivotJsFields();
-    var rowLabels = formJSONMngr.getRowLabels();
+    var fields = [];
+    var rowLabels = [];
+    for(questionName in formJSONMngr.questions)
+    {
+        var question = formJSONMngr.questions[questionName];
+        var field = {name: questionName};
+
+        /// check its type
+        field["type"] = getPivotType(question.type);
+        if(isFilterable(question.type))
+            field["filterable"] = true;
+        fields.push(field);
+        rowLabels.push(questionName);
+    }
     var data = formResponseMngr.getAsPivotJs(rowLabels);
 
     // format the data into pivots array array format
@@ -80,6 +92,31 @@ function loadResponseDataCallback()
             });
         }
     }})
+}
+
+function isFilterable(questionType)
+{
+    return pivotFilterableTypes.indexOf(questionType.toLowerCase()) != -1;
+}
+
+function getPivotType(questionType)
+{
+    switch(questionType.toLowerCase())
+    {
+        case "integer":
+            return "integer";
+            break;
+        case "decimal":
+            return "float";
+            break;
+        case "date":
+        case "today":
+            return "date";
+            break;
+        default:
+            return "string";
+            break;
+    }
 }
 </script>
 {% endblock %}
