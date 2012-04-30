@@ -75,10 +75,6 @@ function loadResponseDataCallback()
             field["filterable"] = true;
         if(isLabelable(question.type))
             rowLabels.push(questionName);
-        else
-        {
-            //field["labelable"] = false;
-        }
         fields.push(field);
     }
     var data = formResponseMngr.getAsPivotJs(fields);
