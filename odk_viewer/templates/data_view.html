@@ -1,6 +1,33 @@
 {% extends 'base.html' %}
+{% block additional-headers %}
+<link rel="stylesheet" href="/static/css/pivot.css" />
+<link rel="stylesheet" href="/static/css/subnav.css" />
+{% endblock %}
 
 {% block content %}
+    <div class="subnav">
+      <ul class="nav nav-pills">
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            Filter Fields
+            <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu stop-propagation" style="overflow:auto;max-height:450px;padding:10px;">
+            <div id="filter-list"></div>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            Display Fields
+            <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu stop-propagation" style="overflow:auto;max-height:450px;padding:10px;">
+            <div id="row-label-fields"></div>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <hr/>
 <span id="pivot-detail"></span>
 <hr/>
 <div id="results"></div>
@@ -17,6 +44,11 @@ var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCall
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 
 $(document).ready(function(){
+    // prevent dropdown from closing after selection
+    $('.stop-propagation').click(function(event){
+        event.stopPropagation();
+    });
+
     // load form
     formJSONMngr.loadFormJSON();
 });
