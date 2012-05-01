@@ -85,24 +85,36 @@ function loadResponseDataCallback()
         rowLabels = cookieLabels;
 
     // format the data into pivots array array format
-    $('#pivot-container').pivot_display('setup', {json: data, fields: fields, rowLabels: rowLabels, 'callbacks':{
+    $('#pivot-container').pivot_display('setup', {json: data, fields: fields, rowLabels: rowLabels, orderChecked: false, 'callbacks':{
         afterUpdateResults: function(){
-            $('#results > table').dataTable({
-                "sDom": "<'row'<'span6'l><'span6'f>>t<'row'<'span6'i><'span6'p>>",
-                "iDisplayLength": 50,
-                "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
-                "sPaginationType": "bootstrap",
-                "oLanguage": {
-                    "sLengthMenu": "_MENU_ records per page"
-                },
-                "sScrollX":"100%"
-            });
             // get currently active fields
-            var activeFields = pivot.config().rowLabels;
+            var activeFields = getPivotRowLabels();
+            if(activeFields.length > 0)
+            {
+                $('#results > table').dataTable({
+                    "sDom": "<'row'<'span6'l><'span6'f>>t<'row'<'span6'i><'span6'p>>",
+                    "iDisplayLength": 50,
+                    "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
+                    "sPaginationType": "bootstrap",
+                    "oLanguage": {
+                        "sLengthMenu": "_MENU_ records per page"
+                    },
+                    "sScrollX":"100%"
+                });
+            }
+            else
+            {
+                //$('#results').empty();
+            }
             // save selected fields to cookie
             setCookieLabels(activeFields);
         }
     }})
+}
+
+function getPivotRowLabels()
+{
+    return pivot.config().rowLabels;
 }
 
 function isFilterable(questionType)
