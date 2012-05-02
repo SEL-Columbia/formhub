@@ -13,7 +13,7 @@ DEPLOYMENTS = {
     'dev': {
         'host_string': 'wsgi@nmis-linode.mvpafrica.org',
         'project': 'formhub_dev',
-        'branch': 'master',
+        'branch': 'data-web_view-pivot_js',
     },
     'prod': {
         'home': '/home/ubuntu/srv/',
