@@ -6,17 +6,19 @@ from django.core.files.storage import default_storage
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect, HttpResponseNotAllowed, HttpResponseForbidden
+    HttpResponseRedirect, HttpResponseNotAllowed, \
+    HttpResponseForbidden, HttpResponseNotFound, HttpResponseServerError
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
 from django.utils import simplejson
 from django.views.decorators.http import require_GET, require_POST
+from django.core.files.storage import get_storage_class
 from guardian.shortcuts import assign, remove_perm, get_users_with_perms
 
 from main.models import UserProfile, MetaData
 from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
          SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
-         SourceForm, PermissionForm
+         SourceForm, PermissionForm, MediaForm
 from odk_logger.models import Instance, XForm
 from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_viewer.models.data_dictionary import upload_to
@@ -200,6 +202,7 @@ def show(request, username=None, id_string=None, uuid=None):
     context.form_license = MetaData.form_license(xform).data_value
     context.data_license = MetaData.data_license(xform).data_value
     context.supporting_docs = MetaData.supporting_docs(xform)
+    context.media_upload = MetaData.media_upload(xform)
     if is_owner:
         context.form_license_form = FormLicenseForm(
                 initial={'value': context.form_license})
@@ -207,6 +210,7 @@ def show(request, username=None, id_string=None, uuid=None):
                 initial={'value': context.data_license})
         context.doc_form = SupportDocForm()
         context.source_form = SourceForm()
+        context.media_form = MediaForm()
         context.users_with_perms = get_users_with_perms(xform,
                 attach_perms=True).items()
         context.permission_form = PermissionForm(username)
@@ -268,6 +272,8 @@ def edit(request, username, id_string):
         elif request.POST.get('source') or request.FILES.get('source'):
             MetaData.source(xform, request.POST.get('source'),
                 request.FILES.get('source'))
+        elif request.FILES.get('media'):
+            MetaData.media_upload(xform, request.FILES.get('media'))
         elif request.FILES:
             MetaData.supporting_docs(xform, request.FILES['doc'])
         xform.update()
@@ -336,14 +342,56 @@ def form_gallery(request):
     return render_to_response('form_gallery.html', context_instance=context)
 
 def download_metadata(request, username, id_string, data_id):
+    data = get_object_or_404(MetaData, pk=data_id)
+    default_storage = get_storage_class()()
+    if request.GET.get('del', False) and username == request.user.username:
+        try:
+            default_storage.delete(data.data_file.name)
+            data.delete()
+            return HttpResponseRedirect(reverse(show, kwargs={
+                        'username': username,
+                        'id_string': id_string
+                        }))
+        except Exception, e:
+            return HttpResponseServerError()
     xform = get_object_or_404(XForm,
             user__username=username, id_string=id_string)
     if username == request.user.username or xform.shared:
-        data = MetaData.objects.get(pk=data_id)
-        return response_with_mimetype_and_name(
-            data.data_file_type,
-            data.data_value, '', None, False,
-            data.data_file.name)
+        data = get_object_or_404(MetaData, pk=data_id)
+        file_path = data.data_file.name
+        default_storage = get_storage_class()()
+        if default_storage.exists(file_path):
+            response = response_with_mimetype_and_name(data.data_file_type, data.data_value,
+                    show_date=False, file_path=file_path)
+            return response
+        else:
+            return HttpResponseNotFound()
+    return HttpResponseForbidden('Permission denied.')
+
+def download_media_data(request, username, id_string, data_id):
+    data = get_object_or_404(MetaData, pk=data_id)
+    default_storage = get_storage_class()()
+    if request.GET.get('del', False) and username == request.user.username:
+        try:
+            default_storage.delete(data.data_file.name)
+            data.delete()
+            return HttpResponseRedirect(reverse(show, kwargs={
+                        'username': username,
+                        'id_string': id_string
+                        }))
+        except Exception, e:
+            return HttpResponseServerError()
+    xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
+    if username == request.user.username or xform.shared:
+        file_path = data.data_file.name
+        default_storage = get_storage_class()()
+        if default_storage.exists(file_path):
+            response = response_with_mimetype_and_name(data.data_file_type, data.data_value,
+                    show_date=False, file_path=file_path)
+            return response
+        else:
+            return HttpResponseNotFound()
     return HttpResponseForbidden('Permission denied.')
 
 def form_photos(request, username, id_string):
