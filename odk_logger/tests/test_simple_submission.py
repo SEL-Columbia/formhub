@@ -1,12 +1,13 @@
-from django.test import TestCase
 import os
 import glob
-from django.core.management import call_command
-from django.conf import settings
+
 from django.contrib.auth.models import User
-from pyxform import QuestionTypeDictionary, SurveyElementBuilder
-from odk_viewer.models import DataDictionary
+from django.test import TestCase
+from pyxform import SurveyElementBuilder
+
 from odk_logger.models import create_instance, Instance
+from odk_viewer.models import DataDictionary
+
 
 class TempFileProxy(object):
     """
@@ -35,8 +36,7 @@ class TestSimpleSubmission(TestCase):
         {"id_string": "start_time", "children": [{"name": "start_time", "type": "start"}], "name": "start_time", "title": "start_time", "type": "survey"}
         """.strip()
         def get_xml_for_form(xform):
-            qtd = QuestionTypeDictionary("nigeria")
-            builder = SurveyElementBuilder(question_type_dictionary=qtd)
+            builder = SurveyElementBuilder()#question_type_dictionary=qtd)
             sss = builder.create_survey_element_from_json(xform.json)
             xform.xml = sss.to_xml()
             xform._mark_start_time_boolean()

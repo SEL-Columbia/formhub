@@ -19,7 +19,6 @@
     "transport/lorry/frequency_to_referral_facility", 
     "transport/motorbike/frequency_to_referral_facility", 
     "transport/taxi/frequency_to_referral_facility", 
-    "transport/other/frequency_to_referral_facility",
     "_xform_id_string",
     "_percentage_complete",
     "_status",

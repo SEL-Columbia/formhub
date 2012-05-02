@@ -8,17 +8,48 @@
   #map_canvas { height: 100% }
   .leaflet-popup-content {max-height: 450px; overflow: auto; width: 420px; padding: 4px;}
   .leaflet-popup-content ul {list-style-type:none;}
+  .navbar .nav.pull-right .dropdown-menu {max-height: 600px; width: 400px; overflow: auto;}
+  .dropdown-menu a {white-space: normal; max-width: 600px;}
+  #legend {
+      background-color: white;
+      width: 200px;
+      opacity: 0.95;
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      padding: 15px;
+      z-index: 7;
+      border-radius: 3px;
+  }
+  #legend ul {list-style: none;margin: 0px}
+  #legend ul li {padding: 2px 0px;}
+  #legend span.legend-bullet {
+      width: 15px;
+      height: 15px;
+      float: left;
+      margin-right: 5px;
+      border-radius: 3px;
+  }
+  #legend a.legend-label {padding: 2px; font-weight: bold;}
+  #legend a.legend-label.active {
+      background-color: #0078A8;
+      color: white;
+      border-radius: 2px;
+  }
+  #legend .legend-response-count{float: right; font-weight: bold}
 </style>
 <link rel="stylesheet" href="/static/css/leaflet.css" />
 <!--[if lte IE 8]>
     <link rel="stylesheet" href="/static/css/leaflet.ie.css" />
 <![endif]-->
+<script type="text/javascript" src="/static/js/json2.js"></script>
 <script type="text/javascript" src="/static/js/leaflet.js"></script>
 <script type="text/javascript" src="/static/js/wax.leaf.min.js"></script>
 <script type="text/javascript" src="/static/js/TileLayer.Bing.js"></script>
 <script type="text/javascript">
-var points = {{ points|safe }};
 var center = {{ center|safe }};
+var formJSONUrl = "{{ jsonform_url }}";
+var mongoAPIUrl = "{{ mongo_api_url }}";
 $('#selectLanguage').live('change', function() {
     $('.language').hide();
     $('.' + $(this).val()).show();

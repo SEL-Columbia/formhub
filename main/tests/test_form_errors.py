@@ -8,6 +8,13 @@ import os
 
 class TestFormErrors(MainTestCase):
 
+    def _create_xform(self):
+        self.xls_path = os.path.join(self.this_directory, "fixtures",
+                "transportation", "transportation.xls")
+        response = self._publish_xls_file(self.xls_path)
+        self.assertEquals(response.status_code, 200)
+        self.xform = XForm.objects.all()[0]
+
     def test_bad_id_string(self):
         self._create_user_and_login()
         count = XForm.objects.count()
@@ -18,12 +25,7 @@ class TestFormErrors(MainTestCase):
         self.assertEquals(XForm.objects.count(), count)
 
     def test_dl_no_xls(self):
-        count = XForm.objects.count()
-        xls_path = os.path.join(self.this_directory, "fixtures",
-                "transportation", "transportation.xls")
-        response = self._publish_xls_file(xls_path)
-        self.assertEquals(response.status_code, 200)
-        self.xform = XForm.objects.all()[0]
+        self._create_xform()
         self.xform.shared_data = True
         self.xform.save()
         default_storage = get_storage_class()()
@@ -37,12 +39,7 @@ class TestFormErrors(MainTestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_dl_xls_not_file(self):
-        count = XForm.objects.count()
-        xls_path = os.path.join(self.this_directory, "fixtures",
-                "transportation", "transportation.xls")
-        response = self._publish_xls_file(xls_path)
-        self.assertEquals(response.status_code, 200)
-        self.xform = XForm.objects.all()[0]
+        self._create_xform()
         self.xform.xls = "blah"
         self.xform.save()
         url = reverse(xls_export, kwargs={'username': self.user.username,
@@ -58,3 +55,20 @@ class TestFormErrors(MainTestCase):
         response = self.anon.get(url)
         self.assertEqual(response.status_code, 404)
 
+    def test_empty_submission(self):
+        xls_path = os.path.join(self.this_directory, "fixtures",
+                "transportation", "transportation.xls")
+        xml_path = os.path.join(self.this_directory, "fixtures",
+                "transportation", "transportation_empty_submission.xml")
+        self._publish_xls_file(xls_path)
+        self._make_submission(xml_path)
+        self.assertTrue(self.response.status_code, 400)
+
+    def test_submission_deactivated(self):
+        self._create_xform()
+        self.xform.downloadable = False
+        self.xform.save()
+        xml_path = os.path.join(self.this_directory, "fixtures",
+                "transportation", "transportation_empty_submission.xml")
+        self._make_submission(xml_path)
+        self.assertTrue(self.response.status_code, 400)

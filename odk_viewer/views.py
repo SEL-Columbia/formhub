@@ -28,6 +28,9 @@ from utils.user_auth import has_permission, get_xform_and_perms
 from main.models import UserProfile
 from csv_writer import CsvWriter
 from xls_writer import XlsWriter
+from odk_logger.views import download_jsonform
+# TODO: using from main.views import api breaks the application, why?
+import main
 
 def encode(time_str):
     time = strptime(time_str, "%Y_%m_%d_%H_%M_%S")
@@ -100,9 +103,12 @@ def map_view(request, username, id_string):
             'lng': round_down_geopoint(p['lng']),
             'instance': p['instance']
         }
-    context.points = json.dumps([round_down_point(p) for p in list(points)])
     context.center = json.dumps(center)
     context.form_view = True
+    context.jsonform_url = reverse(download_jsonform, \
+        kwargs={"username": username, "id_string":id_string})
+    context.mongo_api_url = reverse(main.views.api, \
+        kwargs={"username": username, "id_string": id_string})
     return render_to_response('map.html', context_instance=context)
 
 
@@ -237,10 +243,53 @@ def kml_export(request, username, id_string):
             table_rows.append('<tr><td>%s</td><td>%s</td></tr>' % (key, value))
         img_urls = image_urls(pi.instance)
         img_url = img_urls[0] if img_urls else ""
-        data_for_template.append({"name":id_string, "id": pi.id, "lat": pi.lat, "lng": pi.lng,'image_urls': img_urls, "table": '<table border="1"><a href="#"><img width="210" class="thumbnail" src="%s" alt=""></a><%s</table>' % (img_url,''.join(table_rows))})
+        data_for_template.append({"name":id_string, "id": pi.id, "lat": pi.lat, "lng": pi.lng,'image_urls': img_urls, "table": '<table border="1"><a href="#"><img width="210" class="thumbnail" src="%s" alt=""></a>%s</table>' % (img_url,''.join(table_rows))})
     context.data = data_for_template
     response = render_to_response("survey.kml",
         context_instance=context,
         mimetype="application/vnd.google-earth.kml+xml")
     response['Content-Disposition'] = disposition_ext_and_date(id_string, 'kml')
     return response
+
+
+@login_required
+def google_xls_export(request, username, id_string):
+    owner = User.objects.get(username=username)
+    xform = XForm.objects.get(id_string=id_string, user=owner)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden('Not shared.')
+    valid, dd = dd_for_params(id_string, owner, request)
+    if not valid: return dd
+    ddw = XlsWriter()
+    tmp = NamedTemporaryFile(delete=False)
+    ddw.set_file(tmp)
+    ddw.set_data_dictionary(dd)
+    temp_file = ddw.save_workbook_to_file()
+    temp_file.close()
+    import gdata
+    import gdata.gauth
+    import gdata.docs
+    import gdata.data
+    import gdata.docs.client
+    import gdata.docs.data
+    from main.google_export import token, refresh_access_token, redirect_uri
+    from main.models import TokenStorageModel
+    try:
+        ts = TokenStorageModel.objects.get(id=request.user)
+    except TokenStorageModel.DoesNotExist:
+        return HttpResponseRedirect(redirect_uri)
+    else:
+        stored_token = gdata.gauth.token_from_blob(ts.token)
+        if stored_token.refresh_token is not None and\
+           stored_token.access_token is not None:
+            token.refresh_token = stored_token.refresh_token
+            working_token = refresh_access_token(token, request.user)
+            docs_client = gdata.docs.client.DocsClient(source=token.user_agent)
+            docs_client = working_token.authorize(docs_client)
+            xls_doc = gdata.docs.data.Resource(
+                type='spreadsheet', title=xform.title)
+            media = gdata.data.MediaSource()
+            media.SetFileHandle(tmp.name, 'application/vnd.ms-excel')
+            xls_doc = docs_client.CreateResource(xls_doc, media=media)
+    os.unlink(tmp.name)
+    return HttpResponseRedirect('https://docs.google.com')

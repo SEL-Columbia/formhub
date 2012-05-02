@@ -1,33 +1,30 @@
 import os, urllib2
 
-from django.contrib.auth.decorators import login_required
+from django import forms
 from django.core.urlresolvers import reverse
 from django.core.files.storage import default_storage
-from django.template import RequestContext
-from django import forms
-from django.db import IntegrityError
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.views.decorators.http import require_GET, require_POST
 from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseRedirect, HttpResponseNotAllowed, HttpResponseForbidden
-from django.utils import simplejson
 from django.shortcuts import render_to_response, get_object_or_404
-from pyxform.errors import PyXFormError
+from django.template import loader, RequestContext
+from django.utils import simplejson
+from django.views.decorators.http import require_GET, require_POST
 from guardian.shortcuts import assign, remove_perm, get_users_with_perms
 
 from main.models import UserProfile, MetaData
 from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
          SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
-     SourceForm, MediaForm, PermissionForm
+         SourceForm, MediaForm, PermissionForm
 from odk_logger.models import Instance, XForm
-from odk_logger.models.xform import XLSFormError
-from odk_viewer.models import DataDictionary
+from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_viewer.models.data_dictionary import upload_to
 from odk_viewer.views import image_urls_for_form, survey_responses
-from utils.logger_tools import response_with_mimetype_and_name
+from utils.logger_tools import response_with_mimetype_and_name, publish_form
 from utils.decorators import is_owner
 from utils.user_auth import check_and_set_user, set_profile_data,\
-         has_permission, get_xform_and_perms
+         has_permission, get_xform_and_perms, check_and_set_user_and_form
 
 def home(request):
     context = RequestContext(request)
@@ -50,15 +47,15 @@ def login_redirect(request):
 @require_POST
 @login_required
 def clone_xlsform(request, username):
-    """
+    '''
     Copy a public/Shared form to a users list of forms.
     Eliminates the need to download Excel File and upload again.
-    """
+    '''
     to_username = request.user.username
     context = RequestContext(request)
     context.message = {'type': None, 'text': '....'}
 
-    try:
+    def set_form():
         form_owner = request.POST.get('username')
         id_string = request.POST.get('id_string')
         xform = XForm.objects.get(user__username=form_owner, \
@@ -67,34 +64,28 @@ def clone_xlsform(request, username):
             id_string = '_' + id_string
         path = xform.xls.name
         if default_storage.exists(path):
-            xls_file = upload_to(None, id_string + '_cloned.xls', to_username)
+            xls_file = upload_to(None, '%s%s.xls' % (
+                        id_string, XForm.CLONED_SUFFIX), to_username)
             xls_data = default_storage.open(path)
             xls_file = default_storage.save(xls_file, xls_data)
-            context.message = u"%s-%s" % (form_owner, xls_file)
+            context.message = u'%s-%s' % (form_owner, xls_file)
             survey = DataDictionary.objects.create(
                 user=request.user,
                 xls=xls_file
                 ).survey
-            context.message = {
-                'type': 'success',
+            return {
+                'type': 'alert-success',
                 'text': 'Successfully cloned %s into your '\
                         '<a href="%s">profile</a>.' % \
                         (survey.id_string, reverse(profile,
                             kwargs={'username': to_username}))
                 }
-    except (PyXFormError, XLSFormError) as e:
-        context.message = {
-            'type': 'error',
-            'text': unicode(e),
-            }
-    except IntegrityError as e:
-        context.message = {
-            'type': 'error',
-            'text': 'Form with this id already exists.',
-            }
+    context.message = publish_form(set_form)
     if request.is_ajax():
-        return HttpResponse(simplejson.dumps(context.message), \
-                        mimetype='application/json')
+        res = loader.render_to_string('message.html',
+                context_instance=context).replace("'", r"\'").replace('\n', '')
+        return HttpResponse(
+                "$('#mfeedback').html('%s').show();" % res)
     else:
         return HttpResponse(context.message['text'])
 
@@ -107,28 +98,14 @@ def profile(request, username):
 
     # xlsform submission...
     if request.method == 'POST' and request.user.is_authenticated():
-        try:
+        def set_form():
             form = QuickConverter(request.POST, request.FILES)
             survey = form.publish(request.user).survey
-            context.message = {
-                'type': 'success',
+            return {
+                'type': 'alert-success',
                 'text': 'Successfully published %s.' % survey.id_string,
                 }
-        except (PyXFormError, XLSFormError) as e:
-            context.message = {
-                'type': 'error',
-                'text': unicode(e),
-                }
-        except IntegrityError as e:
-            context.message = {
-                'type': 'error',
-                'text': 'Form with this id already exists.',
-                }
-        except AttributeError as e: # form.publish returned None, not sure why...
-            context.message = {
-                'type': 'error',
-                'text': unicode(e),
-                }
+        context.message = publish_form(set_form)
 
     # profile view...
     content_user = get_object_or_404(User, username=username)
@@ -208,6 +185,10 @@ def show(request, username=None, id_string=None, uuid=None):
     if not (xform.shared or can_view or request.session.get('public_link')):
         return HttpResponseRedirect(reverse(home))
     context = RequestContext(request)
+    context.cloned = len(
+        XForm.objects.filter(user__username=request.user.username,
+                id_string=id_string + XForm.CLONED_SUFFIX)
+    ) > 0
     context.public_link = MetaData.public_link(xform)
     context.is_owner = is_owner
     context.can_edit = can_edit
@@ -232,6 +213,37 @@ def show(request, username=None, id_string=None, uuid=None):
                 attach_perms=True).items()
         context.permission_form = PermissionForm(username)
     return render_to_response("show.html", context_instance=context)
+
+
+@require_GET
+def api(request, username=None, id_string=None):
+    '''
+    Returns all results as JSON.  If a parameter string is passed,
+    it takes the 'query' parameter, converts this string to a dictionary, an
+    that is then used as a MongoDB query string.
+
+    NOTE: only a specific set of operators are allow, currently $or and $and.
+    Please send a request if you'd like another operator to be enabled.
+
+    NOTE: Your query must be valid JSON, double check it here,
+    http://json.parser.online.fr/
+
+    E.g. api?query='{"last_name": "Smith"}'
+    '''
+    xform, owner = check_and_set_user_and_form(username, id_string, request)
+    if not xform:
+        return HttpResponseForbidden('Not shared.')
+    try:
+        cursor = ParsedInstance.query_mongo(username, id_string,
+                request.GET.get('query'))
+    except ValueError, e:
+        return HttpResponseBadRequest(e.message)
+    records = list(record for record in cursor)
+    if 'callback' in request.GET and request.GET.get('callback') != '':
+        callback = request.GET.get('callback')
+        return HttpResponse("%s(%s)" % (callback, simplejson.dumps(records)), \
+                    mimetype='application/json')
+    return HttpResponse(simplejson.dumps(records))
 
 
 @require_POST
@@ -313,7 +325,18 @@ def form_gallery(request):
     context = RequestContext(request)
     if request.user.is_authenticated():
         context.loggedin_user = request.user
-    context.shared_forms = DataDictionary.objects.filter(shared=True)
+    context.shared_forms = XForm.objects.filter(shared=True)
+    # build list of shared forms with cloned suffix
+    id_strings_with_cloned_suffix = [
+        x.id_string + XForm.CLONED_SUFFIX for x in context.shared_forms
+    ]
+    # build list of id_strings for forms this user has cloned
+    context.cloned = [
+        x.id_string.split(XForm.CLONED_SUFFIX)[0] for x in XForm.objects.filter(
+                user__username=request.user.username,
+                id_string__in=id_strings_with_cloned_suffix
+        )
+    ]
     return render_to_response('form_gallery.html', context_instance=context)
 
 def download_metadata(request, username, id_string, data_id):
@@ -328,10 +351,8 @@ def download_metadata(request, username, id_string, data_id):
     return HttpResponseForbidden('Permission denied.')
 
 def form_photos(request, username, id_string):
-    xform = get_object_or_404(XForm,
-            user__username=username, id_string=id_string)
-    owner = User.objects.get(username=username)
-    if not has_permission(xform, owner, request):
+    xform, owner = check_and_set_user_and_form(username, id_string, request)
+    if not xform:
         return HttpResponseForbidden('Not shared.')
     context = RequestContext(request)
     context.form_view = True
@@ -384,4 +405,4 @@ def show_submission(request, username, id_string, uuid):
         return HttpResponseRedirect(reverse(home))
     submission = get_object_or_404(Instance, uuid=uuid)
     return HttpResponseRedirect(reverse(survey_responses,
-                kwargs={ 'instance_id': submission.pk }))
+                kwargs={'instance_id': submission.pk}))

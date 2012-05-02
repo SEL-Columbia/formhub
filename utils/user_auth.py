@@ -30,8 +30,8 @@ def set_profile_data(context, content_user):
         if content_user.profile.city:
             context.location += ", "
         context.location += content_user.profile.country
-    context.forms= content_user.xforms.filter(shared__exact=1).order_by('-date_created')
-    context.num_forms= len(context.forms)
+    context.forms = content_user.xforms.filter(shared__exact=1).order_by('-date_created')
+    context.num_forms = len(context.forms)
     context.home_page = context.profile.home_page
     if context.home_page and re.match("http", context.home_page) == None:
         context.home_page = "http://%s" % context.home_page
@@ -43,6 +43,14 @@ def has_permission(xform, owner, request, shared=False):
             owner == user or\
             user.has_perm('odk_logger.view_xform', xform) or\
             user.has_perm('odk_logger.change_xform', xform)
+
+
+def check_and_set_user_and_form(username, id_string, request):
+    xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
+    owner = User.objects.get(username=username)
+    return [xform, owner] if has_permission(xform, owner, request)\
+            else [False, False]
 
 
 def get_xform_and_perms(username, id_string, request):

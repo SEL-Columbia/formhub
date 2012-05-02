@@ -1,20 +1,13 @@
 from test_base import MainTestCase
 from odk_viewer.models import DataDictionary
-from odk_logger.models import XForm 
+from odk_logger.models import XForm
 import os
 import fnmatch
 from odk_viewer.views import xls_export, csv_export
 from django.core.urlresolvers import reverse
 import csv
 import json
-import urllib2
 
-def internet_on():
-    try:
-        response=urllib2.urlopen('http://74.125.113.99',timeout=1)
-        return True
-    except urllib2.URLError as err: pass
-    return False
 
 class TestSite(MainTestCase):
 
@@ -40,7 +33,7 @@ class TestSite(MainTestCase):
             self.response = self.anon.post(url, post_data)
 
     def test_url_upload(self):
-        if internet_on():
+        if self._internet_on():
             self._create_user_and_login()
             xls_url = 'http://formhub.org/pld/forms/transportation_2011_07_25/form.xls'
             pre_count = XForm.objects.count()
@@ -48,6 +41,18 @@ class TestSite(MainTestCase):
             # make sure publishing the survey worked
             self.assertEqual(response.status_code, 200)
             self.assertEqual(XForm.objects.count(), pre_count + 1)
+
+
+    def test_bad_url_upload(self):
+        if self._internet_on():
+            self._create_user_and_login()
+            xls_url = 'formhuborg/pld/forms/transportation_2011_07_25/form.xls'
+            pre_count = XForm.objects.count()
+            response = self.client.post('/%s/' % self.user.username, {'xls_url': xls_url})
+            # make sure publishing the survey worked
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(XForm.objects.count(), pre_count)
+
 
     # This method tests a large number of xls files.
     # create a directory /main/test/fixtures/online_xls
@@ -70,7 +75,7 @@ class TestSite(MainTestCase):
             self.assertEqual(success, True)
 
     def test_url_upload_non_dot_xls_path(self):
-        if internet_on():
+        if self._internet_on():
             self._create_user_and_login()
             xls_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0AgpC5gsTSm_4dFZQdzZZVGxlcEQ3aktBbFlyRXE3cFE&output=xls'
             pre_count = XForm.objects.count()
@@ -251,7 +256,6 @@ class TestSite(MainTestCase):
                 "available_transportation_types_to_referral_facility/other": "True",
                 "available_transportation_types_to_referral_facility_other": "camel",
                 "taxi/frequency_to_referral_facility": "daily",
-                "other/frequency_to_referral_facility": "other",
                 }
             ]
 

@@ -4,6 +4,11 @@ Made for formhub.org, which mostly uses bootstrap for css.
 This is for all the extra things it needs beyond what bootstrap provides.
 */
 
+/* for fixed top */
+body {
+    padding-top:40px;
+}
+
 .centered {
 	text-align: center;
 }
@@ -27,6 +32,24 @@ This is for all the extra things it needs beyond what bootstrap provides.
     padding: 8px 10px;
 }
 
+.bordered-side {
+    border-left: 1px solid #DFDFDF;
+    border-right: 1px solid #DFDFDF;
+    padding: 8px 10px;
+}
+.bordered-bottom {
+    border-bottom: 1px solid #DFDFDF;
+    padding: 8px 10px;
+}
+.fixed {
+    position:fixed;
+}
+.nomarginbottom {
+    margin-bottom:0px;
+}
+.nomargintop {
+    margin-top:0px;
+}
 .profile small {
     font-size: 80%;
 }
@@ -118,6 +141,9 @@ ul.inline ul.dropdown-menu {
     margin-top: -12px;
 }
 
+.topbar {
+    position:fixed;
+}
 .topbar div > ul > li > img {
     margin-top: 5px;
 }
@@ -142,6 +168,11 @@ ul.inline ul.dropdown-menu {
 .navbar .navbar-inner-map .nav > li > a {
     color: #FFFFFF;
 }
+
+.nav > li.lead {
+    font-size: 15px;
+}
+
 
 div.dataTables_length label {
     width: 460px;
@@ -265,4 +296,7 @@ section {
 }
 .footer p {
   color: #555;
+}
+#map_canvas {
+  margin-top: 40px;
 }

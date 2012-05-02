@@ -34,9 +34,6 @@
             <taxi>
               <frequency_to_referral_facility/>
             </taxi>
-            <other>
-              <frequency_to_referral_facility/>
-            </other>
           </transport>
         </transportation>
       </instance>
@@ -51,7 +48,6 @@
       <bind nodeset="/transportation/transport/lorry/frequency_to_referral_facility" relevant="selected(/transportation/transport/available_transportation_types_to_referral_facility, 'lorry')" type="select1"/>
       <bind nodeset="/transportation/transport/motorbike/frequency_to_referral_facility" relevant="selected(/transportation/transport/available_transportation_types_to_referral_facility, 'motorbike')" type="select1"/>
       <bind nodeset="/transportation/transport/taxi/frequency_to_referral_facility" relevant="selected(/transportation/transport/available_transportation_types_to_referral_facility, 'taxi')" type="select1"/>
-      <bind nodeset="/transportation/transport/other/frequency_to_referral_facility" relevant="selected(/transportation/transport/available_transportation_types_to_referral_facility, 'other')" type="select1"/>
     </model>
   </h:head>
   <h:body>
@@ -284,28 +280,6 @@
         <label>taxi</label>
         <select1 ref="/transportation/transport/taxi/frequency_to_referral_facility">
           <label>Is taxi available daily or weekly?</label>
-          <item>
-            <label>Daily</label>
-            <value>daily</value>
-          </item>
-          <item>
-            <label>Weekly</label>
-            <value>weekly</value>
-          </item>
-          <item>
-            <label>Other</label>
-            <value>other</value>
-          </item>
-          <item>
-            <label>Don't know</label>
-            <value>dont_know</value>
-          </item>
-        </select1>
-      </group>
-      <group ref="/transportation/transport/other">
-        <label>Other</label>
-        <select1 ref="/transportation/transport/other/frequency_to_referral_facility">
-          <label>Is Other available daily or weekly?</label>
           <item>
             <label>Daily</label>
             <value>daily</value>

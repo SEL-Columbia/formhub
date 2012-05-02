@@ -9,7 +9,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect, HttpResponseForbidden
+    HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotAllowed
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.contrib.auth.models import User
@@ -29,6 +29,7 @@ from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
 from utils.decorators import is_owner
 from utils.user_auth import has_permission
 from odk_logger.import_tools import import_instances_from_zip
+from odk_logger.xform_instance_parser import InstanceEmptyError
 
 class HttpResponseNotAuthorized(HttpResponse):
     status_code = 401
@@ -60,19 +61,26 @@ def bulksubmission(request, username):
         our_tempfile.write(postfile.read())
         our_tempfile.close()
         our_tf = open(our_tfpath, 'rb')
-        count = import_instances_from_zip(our_tf, user=posting_user)
+        total_count, success_count, errors = import_instances_from_zip(our_tf, user=posting_user)
         os.remove(our_tfpath)
-        response = HttpResponse("Your ODK submission was successful. %d surveys imported. Your user now has %d instances." % \
-                    (count, posting_user.surveys.count()))
+        json_msg = {
+            'message': "Submission successful. Out of %d survey instances, %d were imported (%d were rejected--duplicates, missing forms, etc.)" % \
+                    (total_count, success_count, total_count - success_count),
+            'errors': "%d %s" % (len(errors), errors)
+        }
+        response = HttpResponse(json.dumps(json_msg))
         response.status_code = 200
         response['Location'] = request.build_absolute_uri(request.path)
         return response
     else:
         return HttpResponseBadRequest("There was a problem receiving your ODK submission. [Error: multiple submission files (?)]")
 
-
+@login_required
 def bulksubmission_form(request, username=None):
-	return render_to_response("bulk_submission_form.html")
+    if request.user.username == username:
+        return render_to_response("bulk_submission_form.html")
+    else:
+        return HttpResponseRedirect('/%s' % request.user.username)
 
 
 @require_GET
@@ -117,7 +125,7 @@ def submission(request, username=None):
     except IOError, e:
         if type(e) == tuple:
             e = e[1]
-        if e == 'request data read error':
+        if str(e) == 'request data read error':
             return HttpResponseBadRequest("File transfer interruption.")
         else:
             raise
@@ -134,11 +142,16 @@ def submission(request, username=None):
         show_options = True
         xform = XForm.objects.get(uuid=uuid)
         username = xform.user.username
-    instance = create_instance(
-        username,
-        xml_file_list[0],
-        media_files
-        )
+    try:
+        instance = create_instance(
+                username,
+                xml_file_list[0],
+                media_files
+                )
+    except InstanceEmptyError:
+        return HttpResponseBadRequest('Received empty submission. No instance was created')
+    except FormInactiveError:
+        return HttpResponseNotAllowed('Form is not active')
     if instance == None:
         return HttpResponseBadRequest("Unable to create submission.")
     # ODK needs two things for a form to be considered successful
@@ -157,7 +170,8 @@ def submission(request, username=None):
     return response
 
 def download_xform(request, username, id_string):
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    xform = get_object_or_404(XForm,
+            user__username=username, id_string=id_string)
     # TODO: protect for users who have settings to use auth
     response = response_with_mimetype_and_name('xml', id_string,
         show_date=False)
@@ -188,7 +202,11 @@ def download_jsonform(request, username, id_string):
         return HttpResponseForbidden('Not shared.')
     response = response_with_mimetype_and_name('json', id_string,
             show_date=False)
-    response.content = xform.json
+    if 'callback' in request.GET and request.GET.get('callback') != '':
+        callback = request.GET.get('callback')
+        response.content = "%s(%s)" % (callback, xform.json)
+    else:
+        response.content = xform.json
     return response
 
 @is_owner

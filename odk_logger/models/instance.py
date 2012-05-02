@@ -9,10 +9,7 @@ from odk_logger.xform_instance_parser import XFormInstanceParser, \
 from utils.model_tools import set_uuid
 
 
-def log(*args, **kwargs):
-    """
-    This is a place holder for a real logging function.
-    """
+class FormInactiveError(Exception):
     pass
 
 
@@ -22,7 +19,7 @@ class Instance(models.Model):
     user = models.ForeignKey(User, related_name='surveys', null=True)
 
     #using instances instead of surveys breaks django
-    xform = models.ForeignKey(XForm, null=True, related_name="surveys")
+    xform = models.ForeignKey(XForm, null=True, related_name='surveys')
     start_time = models.DateTimeField(null=True)
     date = models.DateField(null=True)
     survey_type = models.ForeignKey(SurveyType)
@@ -70,6 +67,8 @@ class Instance(models.Model):
     def save(self, *args, **kwargs):
         doc = self.get_dict()
         self._set_xform(doc)
+        if self.xform and not self.xform.downloadable:
+            raise FormInactiveError()
         self._set_start_time(doc)
         self._set_date(doc)
         self._set_survey_type(doc)
