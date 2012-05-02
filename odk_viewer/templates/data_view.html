@@ -30,6 +30,7 @@
     <hr/>
 <span id="pivot-detail"></span>
 <hr/>
+<div id="instructions" style="display: none"></div>
 <div id="results"></div>
 <script type="text/javascript" src="/static/js/json2.js"></script>
 <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
@@ -45,6 +46,7 @@ var formJSONUrl = "{{ jsonform_url }}";
 var mongoAPIUrl = "{{ mongo_api_url }}";
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
+var instrcutionTpl = "Your survey has <strong>{numquestions}</strong> question(s) and <strong>{numsubmissions}</strong> submission(s). Please click on Display Fields above and select the questions you want to view responses for."
 
 $(document).ready(function(){
     // prevent dropdown from closing after selection
@@ -84,6 +86,10 @@ function loadResponseDataCallback()
     if(cookieLabels)
         rowLabels = cookieLabels;
 
+    instrcutionTpl = instrcutionTpl.replace('{numquestions}', fields.length);
+    instrcutionTpl = instrcutionTpl.replace('{numsubmissions}', formResponseMngr.responses.length);
+    $('#instructions').html(instrcutionTpl);
+
     // format the data into pivots array array format
     $('#pivot-container').pivot_display('setup', {json: data, fields: fields, rowLabels: rowLabels, orderChecked: false, 'callbacks':{
         afterUpdateResults: function(){
@@ -91,6 +97,7 @@ function loadResponseDataCallback()
             var activeFields = getPivotRowLabels();
             if(activeFields.length > 0)
             {
+                $('#instructions').hide();
                 $('#results > table').dataTable({
                     "sDom": "<'row'<'span6'l><'span6'f>>t<'row'<'span6'i><'span6'p>>",
                     "iDisplayLength": 50,
@@ -105,6 +112,7 @@ function loadResponseDataCallback()
             else
             {
                 //$('#results').empty();
+                $('#instructions').show();
             }
             // save selected fields to cookie
             setCookieLabels(activeFields);
