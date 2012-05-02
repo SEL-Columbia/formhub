@@ -167,6 +167,15 @@ class SupportDocForm(forms.Form):
     doc = forms.FileField(label="Supporting document", required=True)
 
 
+class MediaForm(forms.Form):
+    media = forms.FileField(label="Media upload", required=True)
+
+    def clean_media(self):
+        data_type = self.cleaned_data['media'].content_type
+        if not data_type in ['image/jpeg', 'image/png', 'audio/mpeg']:
+            raise forms.ValidationError('Only these media types are \
+            allowed .png .jpg .mp3')
+
 class QuickConverterFile(forms.Form):
     xls_file = forms.FileField(label="XLS File", required=False)
 

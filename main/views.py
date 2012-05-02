@@ -16,7 +16,7 @@ from guardian.shortcuts import assign, remove_perm, get_users_with_perms
 from main.models import UserProfile, MetaData
 from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
          SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
-         SourceForm, PermissionForm
+         SourceForm, MediaForm, PermissionForm
 from odk_logger.models import Instance, XForm
 from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_viewer.models.data_dictionary import upload_to
@@ -200,6 +200,7 @@ def show(request, username=None, id_string=None, uuid=None):
     context.form_license = MetaData.form_license(xform).data_value
     context.data_license = MetaData.data_license(xform).data_value
     context.supporting_docs = MetaData.supporting_docs(xform)
+    context.media_upload = MetaData.media_upload(xform)
     if is_owner:
         context.form_license_form = FormLicenseForm(
                 initial={'value': context.form_license})
@@ -207,6 +208,7 @@ def show(request, username=None, id_string=None, uuid=None):
                 initial={'value': context.data_license})
         context.doc_form = SupportDocForm()
         context.source_form = SourceForm()
+        context.media_form = MediaForm()
         context.users_with_perms = get_users_with_perms(xform,
                 attach_perms=True).items()
         context.permission_form = PermissionForm(username)
@@ -268,6 +270,8 @@ def edit(request, username, id_string):
         elif request.POST.get('source') or request.FILES.get('source'):
             MetaData.source(xform, request.POST.get('source'),
                 request.FILES.get('source'))
+        elif request.FILES.get('media'):
+            MetaData.media_upload(xform, request.FILES.get('media'))
         elif request.FILES:
             MetaData.supporting_docs(xform, request.FILES['doc'])
         xform.update()
