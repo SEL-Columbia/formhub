@@ -112,7 +112,7 @@ def formList(request, username):
             for xform in xforms
         ]
         return render_to_response("formList.xml", {'urls': urls, 'host': 
-                                request.get_host()}, mimetype="text/xml")
+                        'http://%s' % request.get_host()}, mimetype="text/xml")
     return HttpResponseNotAuthorized('Must be logged in')
 
 

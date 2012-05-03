@@ -321,11 +321,11 @@
         </div>
         <br/>
         <div class="clearfix bordered">
-            <h3>Media Uploads || <small> jpeg/png/mp3 allowed </small></h3>
+            <h3>Media &nbsp;<small> jpeg/png/mp3 allowed </small></h3>
             {% for media in media_upload %}
               <p><a href="{% url main.views.download_media_data content_user.username xform.id_string media.id %}">{{ media.data_value }}</a>
               {% if can_edit %}
-              || <a href="{% url main.views.download_media_data content_user.username xform.id_string media.id %}?del=true"> remove </a>
+              &ndash;<a href="{% url main.views.download_media_data content_user.username xform.id_string media.id %}?del=true"> remove </a>
               {% endif %}
               </p>
             {% endfor %}
