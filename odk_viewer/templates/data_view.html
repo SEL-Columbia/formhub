@@ -77,8 +77,8 @@ function loadResponseDataCallback()
         field["type"] = getPivotType(question.type);
         if(isFilterable(question.type))
             field["filterable"] = true;
-        if(isLabelable(question.type))
-            rowLabels.push(questionName);
+        /*if(isLabelable(question.type))
+            rowLabels.push(questionName);*/
         fields.push(field);
     }
     var data = formResponseMngr.getAsPivotJs(fields);
@@ -106,7 +106,7 @@ function loadResponseDataCallback()
                     "oLanguage": {
                         "sLengthMenu": "_MENU_ records per page"
                     },
-                    "sScrollX":"100%"
+                    "sScrollX":"940",
                 });
             }
             else
