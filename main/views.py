@@ -232,8 +232,12 @@ def api(request, username=None, id_string=None):
     if not xform:
         return HttpResponseForbidden('Not shared.')
     try:
-        cursor = ParsedInstance.query_mongo(username, id_string,
-                request.GET.get('query'))
+        args = {"username": username, "id_string": id_string, "query": request.GET.get('query')}
+        if 'start' in request.GET:
+            args["start"] = int(request.GET.get('start'))
+        if 'limit' in request.GET:
+            args["limit"] = int(request.GET.get('limit'))
+        cursor = ParsedInstance.query_mongo(**args)
     except ValueError, e:
         return HttpResponseBadRequest(e.message)
     records = list(record for record in cursor)
