@@ -205,7 +205,11 @@ def download_jsonform(request, username, id_string):
         return HttpResponseForbidden('Not shared.')
     response = response_with_mimetype_and_name('json', id_string,
             show_date=False)
-    response.content = xform.json
+    if 'callback' in request.GET and request.GET.get('callback') != '':
+        callback = request.GET.get('callback')
+        response.content = "%s(%s)" % (callback, xform.json)
+    else:
+        response.content = xform.json
     return response
 
 @is_owner

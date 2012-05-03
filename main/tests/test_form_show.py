@@ -53,6 +53,18 @@ class TestFormShow(MainTestCase):
         }))
         self.assertEqual(response.status_code, 200)
 
+    def test_dl_jsonp_to_anon_if_public(self):
+        self.xform.shared = True
+        self.xform.save()
+        callback = 'jsonpCallback'
+        response = self.anon.get(reverse(download_jsonform, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        }), {'callback': callback})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.startswith(callback + '('), True)
+        self.assertEqual(response.content.endswith(')'), True)
+
     def test_dl_xform_to_anon_if_public(self):
         self.xform.shared = True
         self.xform.save()
