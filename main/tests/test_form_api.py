@@ -50,3 +50,18 @@ class TestFormAPI(MainTestCase):
         response = self.client.get(self.api_url, {'query': 'bad'})
         self.assertEqual(response.status_code, 400)
         self.assertEqual(True, 'JSON' in response.content)
+
+    def test_api_jsonp(self):
+        # query string
+        callback = 'jsonpCallback'
+        response = self.client.get(self.api_url, {'callback': callback})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.startswith(callback + '('), True)
+        self.assertEqual(response.content.endswith(')'), True)
+        start = callback.__len__() + 1
+        end = response.content.__len__() - 1
+        content = response.content[start: end]
+        d = dict_for_mongo(
+                self.xform.surveys.all()[0].parsed_instance.to_dict())
+        find_d = simplejson.loads(content)[0]
+        self.assertEqual(sorted(find_d, key=find_d.get), sorted(d, key=d.get))
