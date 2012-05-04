@@ -339,6 +339,21 @@
             </form>
             {% endif %}
         </div>
+        <br/>
+        <div class="clearfix bordered">
+            <h3>Mapbox Layer</h3>
+            <p><a href='{{ mapbox_layer.link }}'>{{ mapbox_layer.map_name }}</a> &ndash;
+            Attribution: {{ mapbox_layer.attribution }}</p>
+            {% if can_edit %}
+            <form action="{% url main.views.edit content_user.username xform.id_string %}" method="post">
+                {% csrf_token %}
+                <table>
+                {{ mapbox_layer_form.as_table }}
+                </table>
+                <input type="submit" class="btn" value="Upload" />
+            </form>
+            {% endif %}
+        </div>
       </div>
       <div class="span4">
         <script type="text/javascript" charset="utf-8">
