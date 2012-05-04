@@ -18,7 +18,7 @@ from guardian.shortcuts import assign, remove_perm, get_users_with_perms
 from main.models import UserProfile, MetaData
 from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
          SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
-         SourceForm, PermissionForm, MediaForm
+         SourceForm, PermissionForm, MediaForm, MapboxLayerForm
 from odk_logger.models import Instance, XForm
 from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_viewer.models.data_dictionary import upload_to
@@ -203,6 +203,7 @@ def show(request, username=None, id_string=None, uuid=None):
     context.data_license = MetaData.data_license(xform).data_value
     context.supporting_docs = MetaData.supporting_docs(xform)
     context.media_upload = MetaData.media_upload(xform)
+    context.mapbox_layer = MetaData.mapbox_layer_upload(xform)
     if is_owner:
         context.form_license_form = FormLicenseForm(
                 initial={'value': context.form_license})
@@ -211,6 +212,7 @@ def show(request, username=None, id_string=None, uuid=None):
         context.doc_form = SupportDocForm()
         context.source_form = SourceForm()
         context.media_form = MediaForm()
+        context.mapbox_layer_form = MapboxLayerForm()
         context.users_with_perms = get_users_with_perms(xform,
                 attach_perms=True).items()
         context.permission_form = PermissionForm(username)
@@ -274,6 +276,10 @@ def edit(request, username, id_string):
                 request.FILES.get('source'))
         elif request.FILES.get('media'):
             MetaData.media_upload(xform, request.FILES.get('media'))
+        elif request.POST.get('map_name'):
+            mapbox_layer = MapboxLayerForm(request.POST)
+            if mapbox_layer.is_valid():
+                MetaData.mapbox_layer_upload(xform, mapbox_layer.cleaned_data)
         elif request.FILES:
             MetaData.supporting_docs(xform, request.FILES['doc'])
         xform.update()
