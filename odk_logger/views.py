@@ -30,6 +30,7 @@ from utils.decorators import is_owner
 from utils.user_auth import has_permission
 from odk_logger.import_tools import import_instances_from_zip
 from odk_logger.xform_instance_parser import InstanceEmptyError
+from odk_logger.models.instance import FormInactiveError
 
 class HttpResponseNotAuthorized(HttpResponse):
     status_code = 401
