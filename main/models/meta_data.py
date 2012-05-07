@@ -111,6 +111,7 @@ class MetaData(models.Model):
             data_values['map_name'] = values[0]
             data_values['link'] = values[1]
             data_values['attribution'] = values[2]
+            data_values['id'] = type_for_form(xform, data_type)[0].id
             return data_values
         else:
             return None
