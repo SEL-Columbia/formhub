@@ -237,6 +237,8 @@ def api(request, username=None, id_string=None):
             args["start"] = int(request.GET.get('start'))
         if 'limit' in request.GET:
             args["limit"] = int(request.GET.get('limit'))
+        if 'count' in request.GET:
+            args["count"] = True if int(request.GET.get('count')) > 0 else False
         cursor = ParsedInstance.query_mongo(**args)
     except ValueError, e:
         return HttpResponseBadRequest(e.message)
