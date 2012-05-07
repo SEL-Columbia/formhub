@@ -114,9 +114,21 @@ class TestFormShow(MainTestCase):
         self.assertNotContains(response, 'PUBLIC</a>')
         self.assertNotContains(response, 'PRIVATE</a>')
 
+    def test_show_add_sourc_doc_if_owner(self):
+        response = self.client.get(self.url)
+        self.assertContains(response, 'Source document:')
+
     def test_show_add_supporting_docs_if_owner(self):
         response = self.client.get(self.url)
-        self.assertContains(response, 'Upload')
+        self.assertContains(response, 'Supporting document:')
+
+    def test_show_add_supporting_media_if_owner(self):
+        response = self.client.get(self.url)
+        self.assertContains(response, 'Media upload:')
+
+    def test_show_add_mapbox_layer_if_owner(self):
+        response = self.client.get(self.url)
+        self.assertContains(response, 'Jsonp url:')
 
     def test_hide_add_supporting_docs_if_not_owner(self):
         self.xform.shared = True
