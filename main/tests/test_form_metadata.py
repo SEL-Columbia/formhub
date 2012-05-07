@@ -27,9 +27,9 @@ class TestFormMetadata(MainTestCase):
         path = os.path.join(self.this_directory, "fixtures",
                 "transportation", name)
         with open(path) as doc_file:
-            post_data = {}
-            post_data[data_type] = doc_file
-            response = self.client.post(self.edit_url, post_data)
+            self.post_data = {}
+            self.post_data[data_type] = doc_file
+            response = self.client.post(self.edit_url, self.post_data)
         if data_type == 'media':
             self.doc = MetaData.objects.filter(data_type='media').reverse()[0]
             self.doc_url = reverse(download_media_data, kwargs={
@@ -60,6 +60,17 @@ class TestFormMetadata(MainTestCase):
                 MetaData.objects.filter(xform=self.xform,
                 data_type='media')))
 
+    def test_adds_mapbox_layer_on_submit(self):
+        count = len(MetaData.objects.filter(xform=self.xform,
+                data_type='mapbox_layer'))
+        self.post_data = {}
+        self.post_data['map_name'] = 'test_mapbox_layer'
+        self.post_data['link'] = 'http://0.0.0.0:8080'
+        response = self.client.post(self.edit_url, self.post_data)
+        self.assertEquals(count + 1, len(
+                MetaData.objects.filter(xform=self.xform,
+                data_type='mapbox_layer')))
+
     def test_shows_supporting_doc_after_submit(self):
         name = self._add_metadata()
         response = self.client.get(self.url)
@@ -79,6 +90,19 @@ class TestFormMetadata(MainTestCase):
         response = self.anon.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, name)
+
+    def test_shows_mapbox_layer_after_submit(self):
+        self.post_data = {}
+        self.post_data['map_name'] = 'test_mapbox_layer'
+        self.post_data['link'] = 'http://0.0.0.0:8080'
+        response = self.client.post(self.edit_url, self.post_data)
+        response = self.client.get(self.url)
+        self.assertContains(response, 'test_mapbox_layer')
+        self.xform.shared = True
+        self.xform.save()
+        response = self.anon.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'test_mapbox_layer')
 
     def test_download_supporting_doc(self):
         name = self._add_metadata()
@@ -125,6 +149,22 @@ class TestFormMetadata(MainTestCase):
     def test_delete_supporting_media(self):
         name = self._add_metadata(data_type='media')
         response = self.client.get(self.doc_url + '?del=true')
+        self.assertEqual(response.status_code, 302)
+        name = self._add_metadata(data_type='media')
+        response = self.anon.get(self.doc_url + '?del=true')
+        self.assertEqual(response.status_code, 403)
+
+    def test_delete_mapbox_layer(self):
+        self.post_data = {}
+        self.post_data['map_name'] = 'test_mapbox_layer'
+        self.post_data['link'] = 'http://0.0.0.0:8080'
+        response = self.client.post(self.edit_url, self.post_data)
+        self.doc = MetaData.objects.filter(data_type='mapbox_layer').reverse()[0]
+        self.doc_url = reverse(download_metadata, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'data_id': self.doc.id})
+        response = self.client.get(self.doc_url + '?map_name_del=true')
         self.assertEqual(response.status_code, 302)
         name = self._add_metadata(data_type='media')
         response = self.anon.get(self.doc_url + '?del=true')

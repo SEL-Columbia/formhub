@@ -68,7 +68,13 @@ $(window).resize(setMapHeight);
 {% block body %}
 <body onload="initialize()">
   {% include "topbar.html" %}
-
+  
+  {% if mapbox_layer %}
+  <script type="text/javascript">
+  mapboxMaps.push({'label': 'MapBox {{mapbox_layer.map_name}}', 'url': '{{mapbox_layer.link}}'})
+  </script>
+  {% endif %}
+  
   <div id="map_canvas" style="width:100%; height:100%;"></div>
 </body>
 {% endblock %}
