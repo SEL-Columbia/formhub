@@ -144,7 +144,7 @@ FormResponseManager = function(url, callback)
     this._currentSelectOneQuestionName = null; // name of the currently selected "View By Question if any"
 }
 
-FormResponseManager.prototype.loadResponseData = function(params)
+FormResponseManager.prototype.loadResponseData = function(params, start, limit)
 {
     var thisFormResponseMngr = this;
 
@@ -170,10 +170,23 @@ FormResponseManager.prototype.loadResponseData = function(params)
             params[questionName] = inParam;
         }
     }
-    $.getJSON(thisFormResponseMngr.url, {'query':JSON.stringify(params)}, function(data){
-        thisFormResponseMngr.responses = data;
-        thisFormResponseMngr.callback.call(thisFormResponseMngr);
-    })
+    var urlParams = {'query':JSON.stringify(params)};
+    start = parseInt(start)
+    if(start)
+        urlParams['start'] = start
+    limit = parseInt(limit)
+    if(limit)
+        urlParams['limit'] = limit
+    // first do the count
+    urlParams['count'] = 1
+    $.getJSON(thisFormResponseMngr.url, urlParams).success(function(data){
+            thisFormResponseMngr.responseCount = data[0]['count']
+            urlParams['count'] = 0
+            $.getJSON(thisFormResponseMngr.url, urlParams, function(data){
+                thisFormResponseMngr.responses = data;
+                thisFormResponseMngr.callback.call(thisFormResponseMngr);
+            })
+        })
 }
 
 FormResponseManager.prototype.addResponseToSelectOneFilter = function(name)
@@ -247,7 +260,7 @@ FormResponseManager.prototype._toPivotJs = function(fields)
     pivotData.push(titles);
 
     // now we do the data making sure its in the same order as the titles above
-    for(idx in this.responses)
+    /*for(idx in this.responses)
     {
         var response = this.responses[idx];
         var row = [];
@@ -275,7 +288,7 @@ FormResponseManager.prototype._toPivotJs = function(fields)
             row.push(data);
         }
         pivotData.push(row);
-    }
+    }*/
 
     this.pivotJsData = JSON.stringify(pivotData);
 }
