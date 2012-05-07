@@ -71,7 +71,7 @@ $(window).resize(setMapHeight);
   
   {% if mapbox_layer %}
   <script type="text/javascript">
-  mapboxMaps.push({'label': 'MapBox {{mapbox_layer.map_name}}', 'url': '{{mapbox_layer.link}}'})
+  mapboxMaps.push({'label': '{{mapbox_layer.map_name}}', 'url': '{{mapbox_layer.link}}'})
   </script>
   {% endif %}
   
