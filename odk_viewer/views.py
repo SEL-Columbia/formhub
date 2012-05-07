@@ -25,7 +25,7 @@ from utils.logger_tools import response_with_mimetype_and_name,\
          disposition_ext_and_date, round_down_geopoint
 from utils.viewer_tools import image_urls, image_urls_for_form
 from utils.user_auth import has_permission, get_xform_and_perms
-from main.models import UserProfile
+from main.models import UserProfile, MetaData
 from csv_writer import CsvWriter
 from xls_writer import XlsWriter
 from odk_logger.views import download_jsonform
@@ -109,6 +109,7 @@ def map_view(request, username, id_string):
         kwargs={"username": username, "id_string":id_string})
     context.mongo_api_url = reverse(main.views.api, \
         kwargs={"username": username, "id_string": id_string})
+    context.mapbox_layer = MetaData.mapbox_layer_upload(xform)
     return render_to_response('map.html', context_instance=context)
 
 
