@@ -130,7 +130,6 @@ function loadResponseDataCallback()
  */
 function loadResponseData(url, data, callback, settings)
 {
-    console.log(arguments);
     // gather the datatables options
     var options = {}
     for(i in data)
@@ -138,7 +137,6 @@ function loadResponseData(url, data, callback, settings)
         var item = data[i];
         options[item['name']] = item['value'];
     }
-    console.log(options);
     var start = options['iDisplayStart'];
     var limit =  options['iDisplayLength'];
     if(limit < 0)
