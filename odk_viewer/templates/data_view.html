@@ -146,10 +146,19 @@ function loadResponseData(url, data, callback, settings)
 
     formResponseMngr.callback = function(){
         var fields = [];
-        for(questionName in formJSONMngr.questions)
+        // NOTE: we only pass fields that are currently activated
+        var activeFields = getPivotRowLabels();
+        for(idx in activeFields)
         {
+            var questionName = activeFields[idx];
             var question = formJSONMngr.questions[questionName];
             var field = {name: questionName};
+
+            /// check its type
+            field["type"] = getPivotType(question.type);
+            if(isFilterable(question.type))
+                field["filterable"] = true;
+            field["filterable"] = true;
             fields.push(field);
         }
 
