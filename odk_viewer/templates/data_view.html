@@ -2,6 +2,9 @@
 {% block additional-headers %}
 <link rel="stylesheet" href="/static/css/pivot.css" />
 <link rel="stylesheet" href="/static/css/subnav.css" />
+<style type="text/css">
+    #threshold-message { margin: 4px 0px; color: #ff0000; }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -20,6 +23,7 @@
     </div>
 <hr/>
 <div id="instructions" style="display: none"></div>
+<div id="threshold-message" style="display: none"></div>
 <div id="results"></div>
 <script type="text/javascript" src="/static/js/json2.js"></script>
 <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
@@ -37,6 +41,7 @@ var clientSideProcessingThreshold = 250; // If responses exceed this, we sort/se
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
 var instrcutionTpl = "Your survey has <strong>{numquestions}</strong> question(s) and <strong>{numsubmissions}</strong> submission(s). Please click on Display Fields above and select the questions you want to view responses for."
+var thresholdLimitMsgTpl = "NOTE: This is a beta feature and your survey contains more than <strong>{threshold}</strong> responses, search and sort features will not work.";
 
 $(document).ready(function(){
     // prevent dropdown from closing after selection
@@ -82,6 +87,12 @@ function loadResponseDataCallback()
     instructions = instructions.replace('{numsubmissions}', formResponseMngr.responseCount);
     $('#instructions').html(instructions);
 
+    if(formResponseMngr.responseCount > clientSideProcessingThreshold)
+    {
+        var thresholdLimitMsg = thresholdLimitMsgTpl.replace('{threshold}', clientSideProcessingThreshold);
+        $('#threshold-message').html(thresholdLimitMsg).show();
+    }
+
     // format the data into pivots array array format
     $('#pivot-container').pivot_display('setup', {json: data, fields: fields, rowLabels: rowLabels, orderChecked: false, 'callbacks':{
         afterUpdateResults: function(){
@@ -107,6 +118,9 @@ function loadResponseDataCallback()
                 // check if total num responses exceed threshold and push processing server side
                 if(formResponseMngr.responseCount > clientSideProcessingThreshold)
                 {
+                    dataTableOptions["sDom"] = "<'row'<'span6'l>>t<'row'<'span6'i><'span6'p>>"; //disable search
+                    //dataTableOptions["bProcessing"] = true; //show processing indicator
+                    dataTableOptions["bSort"] = false;
                     dataTableOptions["bServerSide"] = true;
                     dataTableOptions["sAjaxSource"] = mongoAPIUrl;
                     dataTableOptions["fnServerData"] = loadResponseData;
