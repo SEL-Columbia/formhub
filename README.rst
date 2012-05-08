@@ -33,9 +33,10 @@ Install Mongodb:
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
 
     Add this line to /etc/apt/sources.list then save:
-    deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen
+    'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen'
 
     sudo apt-get update
+    
     sudo apt-get install mongodb-10gen
 
 If you don't already have a Java Runtime Environment installed this is
