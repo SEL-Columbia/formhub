@@ -150,6 +150,7 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit)
 
     /// invalidate geoJSON data
     this.geoJSON = null;
+    this.dtData = null;
 
     /// append select-one filters to params
     if(formJSONMngr._currentSelectOneQuestionName)
@@ -172,10 +173,11 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit)
     }
     var urlParams = {'query':JSON.stringify(params)};
     start = parseInt(start)
-    if(start)
+        // use !isNaN so we also have zeros
+    if(!isNaN(start))
         urlParams['start'] = start
     limit = parseInt(limit)
-    if(limit)
+    if(!isNaN(limit))
         urlParams['limit'] = limit
     // first do the count
     urlParams['count'] = 1
@@ -260,7 +262,7 @@ FormResponseManager.prototype._toPivotJs = function(fields)
     pivotData.push(titles);
 
     // now we do the data making sure its in the same order as the titles above
-    /*for(idx in this.responses)
+    for(idx in this.responses)
     {
         var response = this.responses[idx];
         var row = [];
@@ -288,9 +290,52 @@ FormResponseManager.prototype._toPivotJs = function(fields)
             row.push(data);
         }
         pivotData.push(row);
-    }*/
+    }
 
     this.pivotJsData = JSON.stringify(pivotData);
+}
+
+/**
+ * Return an object in the data Array
+ * @param fields
+ */
+FormResponseManager.prototype._toDataTables = function(fields)
+{
+    this.dtData = null;
+    var aaData = [];
+
+    // now we do the data making sure its in the same order as the titles above
+    for(idx in this.responses)
+    {
+        var response = this.responses[idx];
+        var row = [];
+
+        for(i=0;i<fields.length;i++)
+        {
+            var field = fields[i]
+            var title = field["name"];
+            var pivotType = field["type"];
+            var data = "";
+            /// check if we have a response in for this title
+            if(response.hasOwnProperty(title))
+            {
+                data = response[title];
+                /// if this is time(date + time) data remove the T inside datetime data
+                if(pivotType == "time")
+                {
+                    var pattern = /^\d{4}\-\d{2}\-\d{2}T/;
+                    if(pattern.test(data))
+                    {
+                        data = data.replace("T", " ");
+                    }
+                }
+            }
+            row.push(data);
+        }
+        aaData.push(row);
+    }
+
+    this.dtData = aaData;
 }
 
 FormResponseManager.prototype.getAsPivotJs = function(fields)
@@ -298,6 +343,13 @@ FormResponseManager.prototype.getAsPivotJs = function(fields)
     if(!this.pivotJsData)
         this._toPivotJs(fields);
     return this.pivotJsData;
+}
+
+FormResponseManager.prototype.getAsDataTables =  function(fields)
+{
+    if(!this.dtData)
+        this._toDataTables(fields);
+    return this.dtData;
 }
 
 function encodeForCSSclass (str) {

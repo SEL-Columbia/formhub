@@ -9,15 +9,6 @@
       <ul class="nav nav-pills">
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-            Filter Fields
-            <b class="caret"></b>
-          </a>
-          <ul class="dropdown-menu stop-propagation" style="overflow:auto;max-height:450px;padding:10px;">
-            <div id="filter-list"></div>
-          </ul>
-        </li>
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
             Display Fields
             <b class="caret"></b>
           </a>
@@ -27,8 +18,6 @@
         </li>
       </ul>
     </div>
-    <hr/>
-<span id="pivot-detail"></span>
 <hr/>
 <div id="instructions" style="display: none"></div>
 <div id="results"></div>
@@ -44,8 +33,9 @@ var pivotFilterableTypes = ["text", "integer", "decimal", "select one", "select 
 var pivotUnLabelableTypes = ["geopoint", "image", "photo", "barcode", "audio", "video"]; // fields we DON'T want to show by default
 var formJSONUrl = "{{ jsonform_url }}";
 var mongoAPIUrl = "{{ mongo_api_url }}";
-var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
+var clientSideProcessingThreshold = 3; // If responses exceed this, we sort/search on server side
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
+var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
 var instrcutionTpl = "Your survey has <strong>{numquestions}</strong> question(s) and <strong>{numsubmissions}</strong> submission(s). Please click on Display Fields above and select the questions you want to view responses for."
 
 $(document).ready(function(){
@@ -61,7 +51,7 @@ $(document).ready(function(){
 function loadFormJSONCallback()
 {
     /// we have loaded the form, now load the data
-    formResponseMngr.loadResponseData({});
+    formResponseMngr.loadResponseData({}, 0, clientSideProcessingThreshold);
 }
 
 function loadResponseDataCallback()
@@ -79,6 +69,7 @@ function loadResponseDataCallback()
             field["filterable"] = true;
         /*if(isLabelable(question.type))
             rowLabels.push(questionName);*/
+        field["filterable"] = true;
         fields.push(field);
     }
     var data = formResponseMngr.getAsPivotJs(fields);
@@ -98,26 +89,78 @@ function loadResponseDataCallback()
             if(activeFields.length > 0)
             {
                 $('#instructions').hide();
-                $('#results > table').dataTable({
+                var dataTableOptions = {
                     "sDom": "<'row'<'span6'l><'span6'f>>t<'row'<'span6'i><'span6'p>>",
-                    "iDisplayLength": 50,
+                    "iDisplayLength": 25,
                     "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
                     "sPaginationType": "bootstrap",
                     "oLanguage": {
                         "sLengthMenu": "_MENU_ records per page"
                     },
-                    "sScrollX":"940",
-                });
+                    "bDeferRender": true, // defer the creation of the table elements for each row until they are needed for a draw
+                    "bScrollAutoCss": true,
+                    "sScrollX":"940"
+                }
+
+                // check if total num responses exceed threshold and push processing server side
+                if(formResponseMngr.responseCount > clientSideProcessingThreshold)
+                {
+                    dataTableOptions["bServerSide"] = true;
+                    dataTableOptions["sAjaxSource"] = mongoAPIUrl;
+                    dataTableOptions["fnServerData"] = loadResponseData;
+                }
+                $('#results > table').dataTable(dataTableOptions);
             }
             else
             {
-                //$('#results').empty();
                 $('#instructions').show();
             }
             // save selected fields to cookie
             setCookieLabels(activeFields);
         }
     }})
+}
+
+/**
+ * Do custom formatting for API and then format the returned data for dataTables
+ * @param url
+ * @param data
+ * @param callback
+ * @param settings
+ */
+function loadResponseData(url, data, callback, settings)
+{
+    console.log(arguments);
+    // gather the datatables options
+    var options = {}
+    for(i in data)
+    {
+        var item = data[i];
+        options[item['name']] = item['value'];
+    }
+    console.log(options);
+    var start = options['iDisplayStart'];
+    var limit =  options['iDisplayLength'];
+    if(limit < 0)
+        limit = null;
+
+    var params = {};
+
+    formResponseMngr.callback = function(){
+        var fields = [];
+        for(questionName in formJSONMngr.questions)
+        {
+            var question = formJSONMngr.questions[questionName];
+            var field = {name: questionName};
+            fields.push(field);
+        }
+
+        $(settings.oInstance).trigger('xhr', settings);
+        var aaData = formResponseMngr.getAsDataTables(fields);
+        var json = {'aaData': aaData, iTotalDisplayRecords: formResponseMngr.responseCount, iTotalRecords: formResponseMngr.responseCount}
+        callback( json );
+    }
+    formResponseMngr.loadResponseData(params, start, limit);
 }
 
 function getPivotRowLabels()
@@ -127,7 +170,9 @@ function getPivotRowLabels()
 
 function isFilterable(questionType)
 {
-    return pivotFilterableTypes.indexOf(questionType.toLowerCase()) != -1;
+    //return pivotFilterableTypes.indexOf(questionType.toLowerCase()) != -1;
+    //at the moment, nothing is filterable
+    return false;
 }
 
 function isLabelable(questionType)
