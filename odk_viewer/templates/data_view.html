@@ -77,9 +77,10 @@ function loadResponseDataCallback()
     if(cookieLabels)
         rowLabels = cookieLabels;
 
-    instrcutionTpl = instrcutionTpl.replace('{numquestions}', fields.length);
-    instrcutionTpl = instrcutionTpl.replace('{numsubmissions}', formResponseMngr.responses.length);
-    $('#instructions').html(instrcutionTpl);
+    var instructions = instrcutionTpl.replace('{numquestions}', fields.length);
+    //TODO: this need to be re-calculated when we filter, likely in the callback below
+    instructions = instructions.replace('{numsubmissions}', formResponseMngr.responseCount);
+    $('#instructions').html(instructions);
 
     // format the data into pivots array array format
     $('#pivot-container').pivot_display('setup', {json: data, fields: fields, rowLabels: rowLabels, orderChecked: false, 'callbacks':{
@@ -90,7 +91,8 @@ function loadResponseDataCallback()
             {
                 $('#instructions').hide();
                 var dataTableOptions = {
-                    "sDom": "<'row'<'span6'l><'span6'f>>t<'row'<'span6'i><'span6'p>>",
+                    //"sDom": "<'row'<'span6'l><'span6'f>>t<'row'<'span6'i><'span6'p>>",
+                    "sDom": "<'row'<'span6'l>>t<'row'<'span6'i><'span6'p>>",
                     "iDisplayLength": 25,
                     "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
                     "sPaginationType": "bootstrap",
