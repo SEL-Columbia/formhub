@@ -16,6 +16,7 @@ from django.http import HttpResponse, HttpResponseForbidden,\
          HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from django.utils import simplejson
 
 from odk_logger.models import XForm, Instance
 from odk_logger.xform_instance_parser import xform_instance_to_dict
@@ -294,3 +295,19 @@ def google_xls_export(request, username, id_string):
             xls_doc = docs_client.CreateResource(xls_doc, media=media)
     os.unlink(tmp.name)
     return HttpResponseRedirect('https://docs.google.com')
+
+def data_view(request, username, id_string):
+    owner = User.objects.get(username=username)
+    xform = get_object_or_404(XForm, user__username=username,
+        id_string=id_string)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden('Not shared.')
+
+    context = RequestContext(request)
+    context.mongo_api_url = reverse(main.views.api,\
+        kwargs={"username": username, "id_string": id_string})
+    context.jsonform_url = reverse(download_jsonform,\
+        kwargs={"username": username, "id_string":id_string})
+    return render_to_response("data_view.html", context_instance=context)
+
+

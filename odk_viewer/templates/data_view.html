@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% block additional-headers %}
+<link rel="stylesheet" href="/static/css/pivot.css" />
+<link rel="stylesheet" href="/static/css/subnav.css" />
+{% endblock %}
+
+{% block content %}
+    <div class="subnav">
+      <ul class="nav nav-pills">
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            Filter Fields
+            <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu stop-propagation" style="overflow:auto;max-height:450px;padding:10px;">
+            <div id="filter-list"></div>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            Display Fields
+            <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu stop-propagation" style="overflow:auto;max-height:450px;padding:10px;">
+            <div id="row-label-fields"></div>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <hr/>
+<span id="pivot-detail"></span>
+<hr/>
+<div id="instructions" style="display: none"></div>
+<div id="results"></div>
+<script type="text/javascript" src="/static/js/json2.js"></script>
+<script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="/static/js/formManagers.js"></script>
+<script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/static/js/pivot.js"></script>
+<script type="text/javascript" src="/static/js/jquery_pivot.js"></script>
+<script type="text/javascript" src="/static/js/dataTables.bootstrap.js"></script>
+<script type="text/javascript">
+var pivotFilterableTypes = ["text", "integer", "decimal", "select one", "select multiple", "date", "datetime", "start", "end", "today"];
+var pivotUnLabelableTypes = ["geopoint", "image", "photo", "barcode", "audio", "video"]; // fields we DON'T want to show by default
+var formJSONUrl = "{{ jsonform_url }}";
+var mongoAPIUrl = "{{ mongo_api_url }}";
+var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
+var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
+var instrcutionTpl = "Your survey has <strong>{numquestions}</strong> question(s) and <strong>{numsubmissions}</strong> submission(s). Please click on Display Fields above and select the questions you want to view responses for."
+
+$(document).ready(function(){
+    // prevent dropdown from closing after selection
+    $('.stop-propagation').click(function(event){
+        event.stopPropagation();
+    });
+
+    // load form
+    formJSONMngr.loadFormJSON();
+});
+
+function loadFormJSONCallback()
+{
+    /// we have loaded the form, now load the data
+    formResponseMngr.loadResponseData({});
+}
+
+function loadResponseDataCallback()
+{
+    var fields = [];
+    var rowLabels = [];
+    for(questionName in formJSONMngr.questions)
+    {
+        var question = formJSONMngr.questions[questionName];
+        var field = {name: questionName};
+
+        /// check its type
+        field["type"] = getPivotType(question.type);
+        if(isFilterable(question.type))
+            field["filterable"] = true;
+        if(isLabelable(question.type))
+            rowLabels.push(questionName);
+        fields.push(field);
+    }
+    var data = formResponseMngr.getAsPivotJs(fields);
+    var cookieLabels = getCookieLabels();
+    if(cookieLabels)
+        rowLabels = cookieLabels;
+
+    instrcutionTpl = instrcutionTpl.replace('{numquestions}', fields.length);
+    instrcutionTpl = instrcutionTpl.replace('{numsubmissions}', formResponseMngr.responses.length);
+    $('#instructions').html(instrcutionTpl);
+
+    // format the data into pivots array array format
+    $('#pivot-container').pivot_display('setup', {json: data, fields: fields, rowLabels: rowLabels, orderChecked: false, 'callbacks':{
+        afterUpdateResults: function(){
+            // get currently active fields
+            var activeFields = getPivotRowLabels();
+            if(activeFields.length > 0)
+            {
+                $('#instructions').hide();
+                $('#results > table').dataTable({
+                    "sDom": "<'row'<'span6'l><'span6'f>>t<'row'<'span6'i><'span6'p>>",
+                    "iDisplayLength": 50,
+                    "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
+                    "sPaginationType": "bootstrap",
+                    "oLanguage": {
+                        "sLengthMenu": "_MENU_ records per page"
+                    },
+                    "sScrollX":"100%"
+                });
+            }
+            else
+            {
+                //$('#results').empty();
+                $('#instructions').show();
+            }
+            // save selected fields to cookie
+            setCookieLabels(activeFields);
+        }
+    }})
+}
+
+function getPivotRowLabels()
+{
+    return pivot.config().rowLabels;
+}
+
+function isFilterable(questionType)
+{
+    return pivotFilterableTypes.indexOf(questionType.toLowerCase()) != -1;
+}
+
+function isLabelable(questionType)
+{
+    return pivotUnLabelableTypes.indexOf(questionType.toLowerCase()) == -1
+}
+
+function getPivotType(questionType)
+{
+    switch(questionType.toLowerCase())
+    {
+        case "integer":
+            return "integer";
+        case "decimal":
+            return "float";
+        case "date":
+        case "today":
+            return "date";
+        case "datetime":
+        case "start":
+        case "end":
+            return "time";
+        default:
+            return "string";
+    }
+}
+
+// get array of labels saved in the cookie if any
+function getCookieLabels()
+{
+    var labelCookie = $.cookie("labelables");
+    if(!labelCookie)
+        return null;
+    else
+    {
+        return  JSON.parse(labelCookie);
+    }
+}
+
+function setCookieLabels(activeFields)
+{
+    var labelCookieOpts = {"path": document.location.pathname, "expires": 28};
+    var labelables = JSON.stringify(activeFields);
+    $.cookie("labelables", labelables, labelCookieOpts);
+}
+</script>
+{% endblock %}
