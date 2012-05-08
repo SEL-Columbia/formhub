@@ -29,9 +29,10 @@ Install the requirements:
     pip install -r requirements.pip
 
 Install Mongodb:
+
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
 
-Add this line to /etc/apt/sources.list then save.
+    Add this line to /etc/apt/sources.list then save:
     deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen
 
     sudo apt-get update
