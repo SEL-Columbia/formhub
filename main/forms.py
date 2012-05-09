@@ -167,6 +167,24 @@ class SupportDocForm(forms.Form):
     doc = forms.FileField(label="Supporting document", required=True)
 
 
+class MediaForm(forms.Form):
+    media = forms.FileField(label="Media upload", required=True)
+
+    def clean_media(self):
+        data_type = self.cleaned_data['media'].content_type
+        if not data_type in ['image/jpeg', 'image/png', 'audio/mpeg']:
+            raise forms.ValidationError('Only these media types are \
+                                        allowed .png .jpg .mp3')
+
+
+class MapboxLayerForm(forms.Form):
+    map_name = forms.CharField(widget=forms.TextInput(), required=True,
+        max_length=255)
+    attribution = forms.CharField(widget=forms.TextInput(), required=False,
+        max_length=255)
+    link = forms.URLField(verify_exists=False, label="Jsonp url", required=True)
+
+
 class QuickConverterFile(forms.Form):
     xls_file = forms.FileField(label="XLS File", required=False)
 

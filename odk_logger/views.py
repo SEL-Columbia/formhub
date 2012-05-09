@@ -24,12 +24,13 @@ from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
 
 from models import XForm, create_instance
-from main.models import UserProfile
+from main.models import UserProfile, MetaData
 from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
 from utils.decorators import is_owner
 from utils.user_auth import has_permission
 from odk_logger.import_tools import import_instances_from_zip
 from odk_logger.xform_instance_parser import InstanceEmptyError
+from odk_logger.models.instance import FormInactiveError
 
 class HttpResponseNotAuthorized(HttpResponse):
     status_code = 401
@@ -106,10 +107,13 @@ def formList(request, username):
         """This is where ODK Collect gets its download list."""
         xforms = XForm.objects.filter(downloadable=True, user__username=username)
         urls = [
-            {'url': request.build_absolute_uri(xform.url()), 'text': xform.title}
+            {'url': request.build_absolute_uri(xform.url()), 'text': xform.title
+            , 'media': {'m': MetaData.media_upload(xform), 'user': xform.user, 
+            'id': xform.id_string}}
             for xform in xforms
         ]
-        return render_to_response("formList.xml", {'urls': urls}, mimetype="text/xml")
+        return render_to_response("formList.xml", {'urls': urls, 'host': 
+                        'http://%s' % request.get_host()}, mimetype="text/xml")
     return HttpResponseNotAuthorized('Must be logged in')
 
 

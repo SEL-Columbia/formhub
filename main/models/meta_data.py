@@ -1,8 +1,15 @@
 from django.db import models
 from odk_logger.models import XForm
 import os
+import json
 
 def upload_to(instance, filename):
+    if instance.data_type == 'media':
+        return os.path.join(
+        instance.xform.user.username,
+        'formid-media',
+        filename
+        )
     return os.path.join(
         instance.xform.user.username,
         'docs',
@@ -75,6 +82,41 @@ class MetaData(models.Model):
             doc.save()
         return type_for_form(xform, data_type)
 
+    @staticmethod
+    def media_upload(xform, data_file=None):
+        data_type = 'media'
+        if data_file:
+            if data_file.content_type in ['image/jpeg', 'image/png', 'audio/mpeg']:
+                media = MetaData(data_type=data_type, xform=xform,
+                        data_value=data_file.name,
+                        data_file=data_file,
+                        data_file_type=data_file.content_type)
+                media.save()
+        return type_for_form(xform, data_type)
+
+    @staticmethod
+    def mapbox_layer_upload(xform, data=None):
+        data_type = 'mapbox_layer'
+        if data and not MetaData.objects.filter(xform=xform, 
+                        data_type = 'mapbox_layer'):
+            s = ''
+            for key in data:
+                s = s + data[key] + '||' 
+            mapbox_layer = MetaData(data_type=data_type, xform=xform,
+                    data_value=s)
+            mapbox_layer.save()
+        if type_for_form(xform, data_type):
+            values = type_for_form(xform, data_type)[0].data_value.split('||')
+            data_values = {}
+            data_values['map_name'] = values[0]
+            data_values['link'] = values[1]
+            data_values['attribution'] = values[2]
+            data_values['id'] = type_for_form(xform, data_type)[0].id
+            return data_values
+        else:
+            return None
+
+    
     class Meta:
         app_label = 'main'
 
