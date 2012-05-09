@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block additional-headers %}
+<style type="text/css">
+
+</style>
+<script type="text/javascript" src="/static/js/formManagers.js"></script>
+<script type="text/javascript">
+var formJSONUrl = "{% url odk_logger.views.download_jsonform username id_string %}";
+var mongoAPIUrl = "{% url main.views.api username id_string %}";
+
+$(document).ready(function() {
+
+});
+</script>
+{% endblock %}
+
+{% block body %}
+<body>
+  {% include "topbar.html" %}
+</body>
+{% endblock %}

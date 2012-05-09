@@ -294,3 +294,15 @@ def google_xls_export(request, username, id_string):
             xls_doc = docs_client.CreateResource(xls_doc, media=media)
     os.unlink(tmp.name)
     return HttpResponseRedirect('https://docs.google.com')
+
+def response(request, username, id_string):
+    xform, is_owner, can_edit, can_view = get_xform_and_perms(\
+        username, id_string, request)
+    # no access
+    if not (xform.shared_data or can_view or
+            request.session.get('public_link')):
+        return HttpResponseRedirect('/')
+    return render_to_response('response.html', {
+        'username': username,
+        'id_string': id_string,
+    })
