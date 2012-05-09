@@ -27,15 +27,14 @@ class TestFormAPI(MainTestCase):
 
     def test_api_with_query(self):
         # query string
-        data = {
-            'transport/available_transportation_types_to_referral_facility':\
-                'none'
-        }
+        json = '{"transport/available_transportation_types_to_referral_facility":"none"}'
+        data = {'query': json}
         response = self.client.get(self.api_url, data)
         self.assertEqual(response.status_code, 200)
         d = dict_for_mongo(
                 self.xform.surveys.all()[0].parsed_instance.to_dict())
         find_d = simplejson.loads(response.content)[0]
+        print "find_d %s" % find_d
         self.assertEqual(sorted(find_d, key=find_d.get), sorted(d, key=d.get))
 
     def test_api_query_no_records(self):
