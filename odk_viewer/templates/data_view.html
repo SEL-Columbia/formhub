@@ -95,6 +95,7 @@ function loadResponseDataCallback()
 
     // format the data into pivots array array format
     $('#pivot-container').pivot_display('setup', {json: data, fields: fields, rowLabels: rowLabels, orderChecked: false, 'callbacks':{
+        // TODO: this currently re-loads server-side data whenever display columns are changed although all the data is already available - Fix
         afterUpdateResults: function(){
             // get currently active fields
             var activeFields = getPivotRowLabels();
