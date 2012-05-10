@@ -217,13 +217,15 @@ def kml_export(request, username, id_string):
     # read the locations from the database
     context = RequestContext(request)
     context.message="HELLO!!"
-    owner = User.objects.get(username=username)
-    xform = XForm.objects.get(id_string=id_string, user=owner)
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
     dd = DataDictionary.objects.get(id_string=id_string,
                                     user=owner)
-    pis = ParsedInstance.objects.filter(instance__user=owner, instance__xform__id_string=id_string, lat__isnull=False, lng__isnull=False)
+    pis = ParsedInstance.objects.filter(instance__user=owner,
+            instance__xform__id_string=id_string, lat__isnull=False,
+            lng__isnull=False)
     data_for_template = []
 
     labels = {}
@@ -245,7 +247,13 @@ def kml_export(request, username, id_string):
             table_rows.append('<tr><td>%s</td><td>%s</td></tr>' % (key, value))
         img_urls = image_urls(pi.instance)
         img_url = img_urls[0] if img_urls else ""
-        data_for_template.append({"name":id_string, "id": pi.id, "lat": pi.lat, "lng": pi.lng,'image_urls': img_urls, "table": '<table border="1"><a href="#"><img width="210" class="thumbnail" src="%s" alt=""></a>%s</table>' % (img_url,''.join(table_rows))})
+        data_for_template.append({
+                'name':id_string,
+                'id': pi.id,
+                'lat': pi.lat,
+                'lng': pi.lng,
+                'image_urls': img_urls,
+                'table': '<table border="1"><a href="#"><img width="210" class="thumbnail" src="%s" alt=""></a>%s</table>' % (img_url,''.join(table_rows))})
     context.data = data_for_template
     response = render_to_response("survey.kml",
         context_instance=context,
