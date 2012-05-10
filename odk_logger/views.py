@@ -200,8 +200,9 @@ def download_xlsform(request, username, id_string):
         return HttpResponseRedirect("/%s" % username)
 
 def download_jsonform(request, username, id_string):
-    owner = User.objects.get(username=username)
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, user__username=username,
+            id_string=id_string)
     if not has_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden('Not shared.')
     response = response_with_mimetype_and_name('json', id_string,
