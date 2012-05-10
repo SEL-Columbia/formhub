@@ -73,7 +73,8 @@ Question.prototype.getLabel = function(language)
       });
 
       this.bind('error', {}, function(){
-          alert('Invalid route requested')
+          //alert('Invalid route requested')
+          app.setLocation('#/');
       })
 
   });
