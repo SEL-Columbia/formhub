@@ -301,7 +301,7 @@ def response(request, username, id_string):
     # no access
     if not (xform.shared_data or can_view or
             request.session.get('public_link')):
-        return HttpResponseRedirect('/')
+        return HttpResponseForbidden('Not shared.')
     return render_to_response('response.html', {
         'username': username,
         'id_string': id_string,
