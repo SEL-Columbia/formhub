@@ -2,6 +2,7 @@ from datetime import date
 import os
 import tempfile
 import traceback
+from PIL import Image
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -100,3 +101,38 @@ def publish_form(callback):
             'type': 'alert-error',
             'text': unicode(e),
         }
+
+
+def get_dimensions((width, height), longest_side):
+    if width > height:
+        width = longest_side
+        height = (height/width) * longest_side
+    elif height >width:
+        height = longest_side
+        width = (width/height) * longest_side
+    else:
+        height = longest_side
+        width = longest_side
+    return (width, height)
+
+def resize(filename):
+    default_storage = get_storage_class()()
+    path = default_storage.path(filename)
+    image = Image.open(path)
+    
+    # Prepare file name to use here
+    new_path = path.split('.')
+    name = ''
+    for i in range(len(new_path) - 1):
+        if i == len(new_path) - 2:
+            name = name + new_path[i]
+        else:
+            name = name + new_path[i] + '.'
+    
+    # The save medium thumbnail
+    image.thumbnail(get_dimensions(image.size, 480), Image.ANTIALIAS)
+    image.save(name + '-thumb-medium.' +new_path[len(new_path) - 1] )
+    
+    # Save small thumbnail first
+    image.thumbnail(get_dimensions(image.size, 240), Image.ANTIALIAS)
+    image.save(name + '-thumb-small.' +new_path[len(new_path) - 1] )
