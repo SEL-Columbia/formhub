@@ -4,18 +4,130 @@
 <style type="text/css">
 
 </style>
+
+<script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
+<script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/sammy-0.7.1.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/sammy/sammy.meld-0.7.1.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div id="data"></div>
 <script type="text/javascript">
 var formJSONUrl = "{% url odk_logger.views.download_jsonform username id_string %}";
 var mongoAPIUrl = "{% url main.views.api username id_string %}";
+var app; // sammy app
+var questions = {};
+var cleanRe = /\//g; // regular expression used to clean names with slashes
+var cleanReplacement = '_';
 
-$(document).ready(function() {
+(function($) {
 
-});
+  app = $.sammy('#data', function() {
+      this.use('Meld');
+
+      // index route
+      this.get('#/', function(context) {
+          /// get the first response object
+          var query = '{}'
+          loadData(context)
+      });
+
+      // #/id route
+      this.get('#/id/:id', function(context) {
+          var id = this.params['id']
+          var query = '{"_id": ' + id + '}'
+          loadData(context, query)
+      });
+
+  });
+
+  /// load form structure
+  $.getJSON(formJSONUrl)
+      .success(function(data){
+              parseQuestions(data.children)
+              createTable()
+              app.run('#/')
+          });
+
+})(jQuery);
+
+function loadData(context, query)
+{
+    $.getJSON(mongoAPIUrl, {'query': query, 'start':0, 'limit':1})
+            .success(function(data){
+                reDraw(context, data[0]);
+            })
+            .error(function(){
+                alert("BAD REQUEST")
+            })
+}
+
+function reDraw(context, data)
+{
+    // make sure we have some data, if the id was in valid we would gte a blank array
+    if(data)
+    {
+        var cleanData = {}
+        for(key in data)
+        {
+            var value = data[key]
+            var cleanKey = key.replace(cleanRe, cleanReplacement)
+            console.log(cleanKey)
+            cleanData[cleanKey] = value
+        }
+        console.log(cleanData)
+        // check if table has been created, if not reCreate
+        if($('#data table').length == 0)
+            createTable()
+        context.meld($('#data'), cleanData, {
+            selector: function(k) {
+                k = k.replace(cleanRe, cleanReplacement)
+                return '[data-key=' + k + ']';
+            }
+        });
+    }
+    else
+    {
+        $('#data').empty();
+        $('#data').html("<h3>The requested content was not found.<h3>")
+    }
+}
+
+function createTable()
+{
+    var dataContainer = $('#data')
+    dataContainer.empty()
+    var table = $('<table id="data-table" class="table table-bordered table-striped"></table')
+    var tHead = $('<thead><tr><th class="header">Question</th><th class="header">Response</th></tr></thead>')
+    var tBody = $('<tbody></tbody>')
+    for(key in questions)
+    {
+        var question = questions[key];
+        var questionLabel = key//question.label;
+        var dataRow = $('<tr class=""><td>' + questionLabel + '</td><td data-key="' + key + '"></td></tr>')
+        tBody.append(dataRow)
+    }
+    table.append(tHead)
+    table.append(tBody)
+    $('#data').append(table)
+}
+
+function parseQuestions(children, prefix)
+{
+  for(idx in children)
+  {
+      var question = children[idx]
+      if(question.hasOwnProperty('children') /*&& question.type == "group"*/)
+      {
+          parseQuestions(question.children, (question.name + cleanReplacement))
+      }
+      else
+      {
+          // TODO: question class that has accessor mesthods for type, label, language etc
+          questions[((prefix?prefix:'') + question.name)] = question
+      }
+  }
+}
 </script>
-{% endblock %}
-
-{% block body %}
-<body>
-  {% include "topbar.html" %}
-</body>
 {% endblock %}
