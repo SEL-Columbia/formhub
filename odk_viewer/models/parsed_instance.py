@@ -77,11 +77,15 @@ class ParsedInstance(models.Model):
 
     @classmethod
     def query_mongo(cls, username, id_string, query, start=0,
-            limit=DEFAULT_LIMIT):
+            limit=DEFAULT_LIMIT, count=False):
         query = json.loads(query, object_hook=json_util.object_hook) if query else {}
         query = dict_for_mongo(query)
         query[cls.USERFORM_ID] = u'%s_%s' % (username, id_string)
-        return xform_instances.find(query,
+        if count:
+            return [{"count":xform_instances.find(query,
+                    {cls.USERFORM_ID: 0}).count()}]
+        else:
+            return xform_instances.find(query,
                 {cls.USERFORM_ID: 0}).skip(start).limit(limit)
 
     def to_dict_for_mongo(self):

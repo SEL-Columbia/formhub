@@ -28,249 +28,6 @@ var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekky
 var bingMapTypeLabels = {'AerialWithLabels': 'Bing Satellite Map', 'Road': 'Bing Road Map'}; //Road, Aerial or AerialWithLabels
 var mapBoxAdditAttribution = " Map data (c) OpenStreetMap contributors, CC-BY-SA";
 
-// TODO: Consider moving to a separate file
-// used to load and manage form questions
-FormJSONManager = function(url, callback)
-{
-    this.url = url;
-    this.callback = callback;
-    this.geopointQuestions = [];
-    this.selectOneQuestions = [];
-    this.supportedLanguages = [];
-    this.questions = {};
-
-}
-
-FormJSONManager.prototype.loadFormJSON = function()
-{
-    var thisManager = this;
-    $.getJSON(thisManager.url, function(data){
-        thisManager._parseQuestions(data.children);
-        thisManager._parseSupportedLanguages();
-        thisManager.callback.call(thisManager);
-    })
-}
-
-FormJSONManager.prototype._parseQuestions = function(questionData, parentQuestionName)
-{
-    for(idx in questionData)
-    {
-        var question = questionData[idx];
-        var questionName = question.name;
-        if(parentQuestionName && parentQuestionName != "")
-            questionName = parentQuestionName + "/" + questionName;
-        question.name = questionName;
-
-        if(question.type != "group")
-        {
-            this.questions[questionName] = question;
-        }
-        /// if question is a group, recurse to collect children
-        else if(question.type == "group" && question.hasOwnProperty("children"))
-            this._parseQuestions(question.children, question.name);
-
-        if(question.type == "select one")
-            this.selectOneQuestions.push(question);
-        if(question.type == "geopoint" || question.type == "gps")
-            this.geopointQuestions.push(question);
-    }
-}
-
-FormJSONManager.prototype.getNumSelectOneQuestions = function()
-{
-    return this.selectOneQuestions.length;
-}
-
-FormJSONManager.prototype.getSelectOneQuestions = function()
-{
-    return this.selectOneQuestions;
-}
-
-// TODO: This picks the first geopoint question regardless if there are multiple
-FormJSONManager.prototype.getGeoPointQuestion = function()
-{
-    if(this.geopointQuestions.length > 0)
-        return this.geopointQuestions[0];
-   return null;
-}
-
-FormJSONManager.prototype.getQuestionByName = function(name)
-{
-    return this.questions[name];
-}
-
-FormJSONManager.prototype.getChoices = function(question)
-{
-    var choices = {};
-    for(i=0;i<question.children.length;i++)
-    {
-        var choice = question.children[i];
-        choices[choice.name] =  choice;
-    }
-    return choices;
-}
-
-FormJSONManager.prototype.setCurrentSelectOneQuestionName = function(name)
-{
-    this._currentSelectOneQuestionName = name;
-}
-
-FormJSONManager.prototype._parseSupportedLanguages = function()
-{
-    // run through question objects, stop at first question with label object and check it for multiple languages
-    for(questionName in this.questions)
-    {
-        var question = this.questions[questionName];
-        if(question.hasOwnProperty("label"))
-        {
-            var labelProp = question["label"];
-            if(typeof(labelProp) == "string")
-                this.supportedLanguages = ["default"];
-            else if(typeof(labelProp) == "object")
-            {
-                for(key in labelProp)
-                {
-                    var language = {"name": encodeForCSSclass(key), "label": key}
-                    this.supportedLanguages.push(language)
-                }
-            }
-            break;
-        }
-    }
-}
-
-function encodeForCSSclass (str) {
-    str = (str + '').toString();
-
-    return str.replace(" ", "-");
-}
-
-/// pass a question object and get its label, if language is specified, try get label for that otherwise return the first label
-FormJSONManager.prototype.getMultilingualLabel = function(question, language)
-{
-    var labelProp = question["label"];
-
-    /// if plain string, return
-    if(typeof(labelProp) == "string")
-        return labelProp;
-    else if(typeof(labelProp) == "object")
-    {
-        if(language && labelProp.hasOwnProperty(language))
-            return labelProp[language];
-        else
-        {
-            var label = null;
-            for(key in labelProp)
-            {
-                label = labelProp[key];
-                break;// break at first instance and return that
-            }
-            return label;
-        }
-
-    }
-    // return raw name
-    return question["name"];
-}
-
-// used to manage response data loaded via ajax
-FormResponseManager = function(url, callback)
-{
-    this.url = url;
-    this.callback = callback;
-    this._select_one_filters = [];
-    this._currentSelectOneQuestionName = null; // name of the currently selected "View By Question if any"
-}
-
-FormResponseManager.prototype.loadResponseData = function(params)
-{
-    var thisFormResponseMngr = this;
-
-    /// invalidate geoJSON data
-    this.geoJSON = null;
-
-    /// append select-one filters to params
-    if(formJSONMngr._currentSelectOneQuestionName)
-    {
-        var questionName = formJSONMngr._currentSelectOneQuestionName;
-        var orFilters = [];
-        for(idx in this._select_one_filters)
-        {
-            var responseName =  this._select_one_filters[idx];
-            if(responseName == notSpecifiedCaption)
-                orFilters.push(null);
-            else
-                orFilters.push(responseName);
-        }
-        if(orFilters.length > 0)
-        {
-            var inParam = {'$in': orFilters};
-            params[questionName] = inParam;
-        }
-    }
-    $.getJSON(thisFormResponseMngr.url, {'query':JSON.stringify(params)}, function(data){
-        thisFormResponseMngr.responses = data;
-        thisFormResponseMngr.callback.call(thisFormResponseMngr);
-    })
-}
-
-FormResponseManager.prototype.addResponseToSelectOneFilter = function(name)
-{
-    if(this._select_one_filters.indexOf(name) == -1)
-        this._select_one_filters.push(name);
-}
-
-FormResponseManager.prototype.removeResponseFromSelectOneFilter = function(name)
-{
-    var idx = this._select_one_filters.indexOf(name);
-    if(idx > -1)
-        this._select_one_filters.splice(idx, 1);
-}
-
-FormResponseManager.prototype.clearSelectOneFilterResponses = function(name)
-{
-    this._select_one_filters = [];
-}
-
-/// this cannot be called before the form is loaded as we rely on the form to determine the gps field
-FormResponseManager.prototype._toGeoJSON = function()
-{
-    var features = [];
-    var geopointQuestionName = null;
-    var geopointQuestion = formJSONMngr.getGeoPointQuestion()
-    if(geopointQuestion)
-        geopointQuestionName = geopointQuestion["name"];
-    for(idx in this.responses)
-    {
-        var response = this.responses[idx];
-        var gps = response[geopointQuestionName];
-        if(gps)
-        {
-            // split gps into its parts
-            var parts = gps.split(" ");
-            if(parts.length > 1)
-            {
-                var lng = parts[0];
-                var lat = parts[1];
-
-                var geometry = {"type":"Point", "coordinates": [lat, lng]}
-                var feature = {"type": "Feature", "id": response._id, "geometry":geometry, "properties":response};
-                features.push(feature);
-            }
-        }
-    }
-
-    this.geoJSON = {"type":"FeatureCollection", "features":features};
-}
-
-FormResponseManager.prototype.getAsGeoJSON = function()
-{
-    if(!this.geoJSON)
-        this._toGeoJSON();
-
-    return this.geoJSON;
-}
-
 // map filter vars
 var navContainerSelector = ".nav.pull-right";
 var legendParentSelector = ".leaflet-control-container";
@@ -563,7 +320,7 @@ function rebuildLegend(questionName, questionColorMap)
                 anchorClass += " active";
             else
                 anchorClass += " normal";
-            var legendAnchor = _createElementAndSetAttrs('a', {'class':anchorClass, 'href':'#', 'rel':response}, itemLabel);
+            var legendAnchor = _createElementAndSetAttrs('a', {'class':anchorClass, 'href':'javascript:;', 'rel':response}, itemLabel);
             responseText.appendChild(legendAnchor);
         }
         else
@@ -655,29 +412,45 @@ function loadFormJSONCallback()
             dropDownContainer.appendChild(questionUlContainer);
 
             navContainer.append(dropDownContainer);
-            $('.select-one-anchor').click(function(){
-                allowResetZoomLevel = false; // disable zoom reset whenever this is clicked
+            /*$('.select-one-anchor').click(function(){
                 // rel contains the question's unique name
                 var questionName = $(this).attr("rel");
-                // update question name
-                formJSONMngr.setCurrentSelectOneQuestionName(questionName);
-                formResponseMngr.clearSelectOneFilterResponses();
-                // get geoJSON data to setup points
-                var geoJSON = formResponseMngr.getAsGeoJSON();
-
-                _rebuildMarkerLayer(geoJSON, questionName);
-            })
+                viewByChanged(questionName);
+            })*/
         }
     }
     else
         throw "Container '" + navContainerSelector + "' not found";
+
+    // Bind a callback that executes when document.location.hash changes.
+    $(window).bind( "hashchange", function(e) {
+        var hash = e.fragment;
+        viewByChanged(hash);
+    });
+
+    // Since the event is only triggered when the hash changes, we need
+    // to trigger the event now, to handle the hash the page may have
+    // loaded with.
+    $(window).trigger( "hashchange" );
+}
+
+function viewByChanged(questionName)
+{
+    allowResetZoomLevel = false; // disable zoom reset whenever this is clicked
+    // update question name
+    formJSONMngr.setCurrentSelectOneQuestionName(questionName);
+    formResponseMngr.clearSelectOneFilterResponses();
+    // get geoJSON data to setup points
+    var geoJSON = formResponseMngr.getAsGeoJSON();
+
+    _rebuildMarkerLayer(geoJSON, questionName);
 }
 
 function _createSelectOneLi(question)
 {
     var questionLi = _createElementAndSetAttrs("li", {}, "");
     var questionLabel = formJSONMngr.getMultilingualLabel(question);
-    var questionLink = _createElementAndSetAttrs("a", {"href":"#", "class":"select-one-anchor",
+    var questionLink = _createElementAndSetAttrs("a", {"href":("#" + question.name), "class":"select-one-anchor",
         "rel": question.name}, questionLabel);
 
     questionLi.appendChild(questionLink);
