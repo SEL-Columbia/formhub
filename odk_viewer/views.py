@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 from django.core.files.storage import get_storage_class
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseForbidden,\
-         HttpResponseBadRequest, HttpResponseRedirect
+         HttpResponseBadRequest, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 
@@ -295,13 +295,21 @@ def google_xls_export(request, username, id_string):
     os.unlink(tmp.name)
     return HttpResponseRedirect('https://docs.google.com')
 
-def response(request, username, id_string):
+def response(request, username, id_string, instance_id):
     xform, is_owner, can_edit, can_view = get_xform_and_perms(\
         username, id_string, request)
     # no access
     if not (xform.shared_data or can_view or
             request.session.get('public_link')):
         return HttpResponseForbidden('Not shared.')
+    # build query string
+    query = '{{"_id": {}}}'.format(instance_id)
+    cursor = ParsedInstance.query_mongo(username, id_string, query)
+    # check exists
+    if cursor.count() == 0:
+        return HttpResponseNotFound('Not Found.')
+
+    record = cursor.next()
     return render_to_response('response.html', {
         'username': username,
         'id_string': id_string,
