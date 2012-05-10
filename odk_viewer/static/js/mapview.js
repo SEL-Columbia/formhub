@@ -563,7 +563,7 @@ function rebuildLegend(questionName, questionColorMap)
                 anchorClass += " active";
             else
                 anchorClass += " normal";
-            var legendAnchor = _createElementAndSetAttrs('a', {'class':anchorClass, 'href':'#', 'rel':response}, itemLabel);
+            var legendAnchor = _createElementAndSetAttrs('a', {'class':anchorClass, 'href':'javascript:;', 'rel':response}, itemLabel);
             responseText.appendChild(legendAnchor);
         }
         else
@@ -655,29 +655,45 @@ function loadFormJSONCallback()
             dropDownContainer.appendChild(questionUlContainer);
 
             navContainer.append(dropDownContainer);
-            $('.select-one-anchor').click(function(){
-                allowResetZoomLevel = false; // disable zoom reset whenever this is clicked
+            /*$('.select-one-anchor').click(function(){
                 // rel contains the question's unique name
                 var questionName = $(this).attr("rel");
-                // update question name
-                formJSONMngr.setCurrentSelectOneQuestionName(questionName);
-                formResponseMngr.clearSelectOneFilterResponses();
-                // get geoJSON data to setup points
-                var geoJSON = formResponseMngr.getAsGeoJSON();
-
-                _rebuildMarkerLayer(geoJSON, questionName);
-            })
+                viewByChanged(questionName);
+            })*/
         }
     }
     else
         throw "Container '" + navContainerSelector + "' not found";
+
+    // Bind a callback that executes when document.location.hash changes.
+    $(window).bind( "hashchange", function(e) {
+        var hash = e.fragment;
+        viewByChanged(hash);
+    });
+
+    // Since the event is only triggered when the hash changes, we need
+    // to trigger the event now, to handle the hash the page may have
+    // loaded with.
+    $(window).trigger( "hashchange" );
+}
+
+function viewByChanged(questionName)
+{
+    allowResetZoomLevel = false; // disable zoom reset whenever this is clicked
+    // update question name
+    formJSONMngr.setCurrentSelectOneQuestionName(questionName);
+    formResponseMngr.clearSelectOneFilterResponses();
+    // get geoJSON data to setup points
+    var geoJSON = formResponseMngr.getAsGeoJSON();
+
+    _rebuildMarkerLayer(geoJSON, questionName);
 }
 
 function _createSelectOneLi(question)
 {
     var questionLi = _createElementAndSetAttrs("li", {}, "");
     var questionLabel = formJSONMngr.getMultilingualLabel(question);
-    var questionLink = _createElementAndSetAttrs("a", {"href":"#", "class":"select-one-anchor",
+    var questionLink = _createElementAndSetAttrs("a", {"href":("#" + question.name), "class":"select-one-anchor",
         "rel": question.name}, questionLabel);
 
     questionLi.appendChild(questionLink);
