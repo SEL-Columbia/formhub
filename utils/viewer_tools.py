@@ -1,6 +1,7 @@
 from xml.dom import minidom
 import os, sys
 import common_tags as tag
+from django.core.files.storage import get_storage_class
 
 SLASH = u"/"
 
@@ -13,9 +14,22 @@ def image_urls_for_form(xform):
         image_urls(s) for s in xform.surveys.all()
     ], [])
 
+def get_path(path, suffix):
+    new_path = path.split('.')
+    name = ''
+    for i in range(len(new_path) - 1):
+        if i == len(new_path) - 2:
+            name = name + new_path[i]
+        else:
+            name = name + new_path[i] + '.'
+    name = name + suffix +new_path[len(new_path) - 1]
+    return name
 
 def image_urls(instance):
-    return [a.media_file.url for a in instance.attachments.all()]
+    default_storage = get_storage_class()() 
+    return [ get_path(a.media_file.url, '-thumb-medium.') 
+        if default_storage.exists(get_path(a.media_file.url, '-thumb-medium.')) 
+        else a.media_file.url for a in instance.attachments.all()]
 
 
 def parse_xform_instance(xml_str):
