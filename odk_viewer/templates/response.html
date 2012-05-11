@@ -12,6 +12,9 @@
 {% endblock %}
 
 {% block content %}
+<div class="page-header">
+    <h1>Browse Form Data</h1>
+</div>
 <div id="data"></div>
 <script type="text/javascript">
 var formJSONUrl = "{% url odk_logger.views.download_jsonform username id_string %}";
@@ -83,16 +86,57 @@ Question.prototype.getLabel = function(language)
   $.getJSON(formJSONUrl)
       .success(function(data){
               parseQuestions(data.children);
-              app.run('#/');
+              // load count
+              $.getJSON(mongoAPIUrl, {'count': 1})
+                  .success(function(data){
+                          app.run('#/');
+                      })
           });
 
 })(jQuery);
 
 function loadData(context, query)
 {
-    $.getJSON(mongoAPIUrl, {'query': query, 'start':0, 'limit':1})
+    //TODO: show loader
+    $.getJSON(mongoAPIUrl, {'query': query, 'limit':1})
             .success(function(data){
                 reDraw(context, data[0]);
+                if(data[0])
+                {
+                    // load next record
+                    $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$gt": ' + data[0]['_id'] +'}}', 'limit': 1})
+                        .success(function(nextData){
+                                var nextButton = $('li.next');
+                                if(nextData.length > 0)
+                                {
+                                    nextButton.removeClass('disabled');
+                                    nextButton.children('a').attr('href', '#/' + nextData[0]['_id']);
+                                }
+                                else
+                                {
+                                    nextButton.addClass('disabled');
+                                    // make next url the current url
+                                    nextButton.children('a').attr('href', '#/' + data[0]['_id']);
+                                }
+                            });
+                    // load previous record
+                    $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$lt": ' + data[0]['_id'] +'}}', 'limit': 1})
+                            .success(function(prevData){
+                                var prevButton = $('li.prev');
+                                if(prevData.length > 0)
+                                {
+                                    prevButton.removeClass('disabled');
+                                    prevButton.children('a').attr('href', '#/' + prevData[0]['_id']);
+                                }
+                                else
+                                {
+                                    prevButton.addClass('disabled');
+                                    // make prev url the current url
+                                    prevButton.children('a').attr('href', '#/' + data[0]['_id']);
+                                }
+                            });
+                }
+
             })
             .error(function(){
                 alert("BAD REQUEST");
@@ -133,6 +177,19 @@ function createTable()
 {
     var dataContainer = $('#data');
     dataContainer.empty();
+
+    // status and navigation rows - have to do separate top and bottom since jquery doesnt seem to append the same onject twice
+    var topStatusNavRows = $('<div class="row"></div>');
+    var statusStr = '<div class="span6"><div class="dataTables_info"></div></div>';
+    var topStatus = $(statusStr);
+    topStatusNavRows.append(topStatus);
+
+    var pagerStr = '<div class="span6"><div class="dataTables_paginate paging_bootstrap pagination"><ul><li class="prev disabled"><a href="#">← Previous</a></li><li class="next disabled"><a href="#">Next → </a></li></ul></div></div>';
+    var topPager = $(pagerStr);
+
+    topStatusNavRows.append(topPager);
+    dataContainer.append(topStatusNavRows);
+
     var table = $('<table id="data-table" class="table table-bordered table-striped"></table');
     var tHead = $('<thead><tr><th class="header" width="50%">Question</th><th class="header">Response</th></tr></thead>');
     var tBody = $('<tbody></tbody>');
@@ -145,7 +202,16 @@ function createTable()
     }
     table.append(tHead);
     table.append(tBody);
-    $('#data').append(table);
+    dataContainer.append(table);
+
+    var bottomStatusNavRows = $('<div class="row"></div>');
+    var bottomStatus = $(statusStr);
+    bottomStatusNavRows.append(bottomStatus);
+
+    var bottomPager = $(pagerStr);
+
+    bottomStatusNavRows.append(bottomPager);
+    dataContainer.append(bottomStatusNavRows);
 }
 
 function parseQuestions(children, prefix)
