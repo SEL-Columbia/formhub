@@ -16,6 +16,7 @@ from django.http import HttpResponse, HttpResponseForbidden,\
          HttpResponseBadRequest, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from django.utils import simplejson
 
 from odk_logger.models import XForm, Instance
 from odk_logger.xform_instance_parser import xform_instance_to_dict
@@ -216,13 +217,15 @@ def kml_export(request, username, id_string):
     # read the locations from the database
     context = RequestContext(request)
     context.message="HELLO!!"
-    owner = User.objects.get(username=username)
-    xform = XForm.objects.get(id_string=id_string, user=owner)
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
     dd = DataDictionary.objects.get(id_string=id_string,
                                     user=owner)
-    pis = ParsedInstance.objects.filter(instance__user=owner, instance__xform__id_string=id_string, lat__isnull=False, lng__isnull=False)
+    pis = ParsedInstance.objects.filter(instance__user=owner,
+            instance__xform__id_string=id_string, lat__isnull=False,
+            lng__isnull=False)
     data_for_template = []
 
     labels = {}
@@ -244,7 +247,13 @@ def kml_export(request, username, id_string):
             table_rows.append('<tr><td>%s</td><td>%s</td></tr>' % (key, value))
         img_urls = image_urls(pi.instance)
         img_url = img_urls[0] if img_urls else ""
-        data_for_template.append({"name":id_string, "id": pi.id, "lat": pi.lat, "lng": pi.lng,'image_urls': img_urls, "table": '<table border="1"><a href="#"><img width="210" class="thumbnail" src="%s" alt=""></a>%s</table>' % (img_url,''.join(table_rows))})
+        data_for_template.append({
+                'name':id_string,
+                'id': pi.id,
+                'lat': pi.lat,
+                'lng': pi.lng,
+                'image_urls': img_urls,
+                'table': '<table border="1"><a href="#"><img width="210" class="thumbnail" src="%s" alt=""></a>%s</table>' % (img_url,''.join(table_rows))})
     context.data = data_for_template
     response = render_to_response("survey.kml",
         context_instance=context,
@@ -294,6 +303,20 @@ def google_xls_export(request, username, id_string):
             xls_doc = docs_client.CreateResource(xls_doc, media=media)
     os.unlink(tmp.name)
     return HttpResponseRedirect('https://docs.google.com')
+
+def data_view(request, username, id_string):
+    owner = User.objects.get(username=username)
+    xform = get_object_or_404(XForm, user__username=username,
+        id_string=id_string)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden('Not shared.')
+
+    context = RequestContext(request)
+    context.mongo_api_url = reverse(main.views.api,\
+        kwargs={"username": username, "id_string": id_string})
+    context.jsonform_url = reverse(download_jsonform,\
+        kwargs={"username": username, "id_string":id_string})
+    return render_to_response("data_view.html", context_instance=context)
 
 def response(request, username, id_string):
     xform, is_owner, can_edit, can_view = get_xform_and_perms(\
