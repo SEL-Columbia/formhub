@@ -16,8 +16,8 @@ from common_tags import START_TIME, START, END_TIME, END, ID, UUID, ATTACHMENTS
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
-key_whitelist = ['$or', '$and', '$exists', '$in', '$gt', '$lt']
-
+key_whitelist = ['$or', '$and', '$exists', '$in', '$gt', '$gte', '$lt', '$lte']
+''
 
 class ParseError(Exception):
     pass
@@ -37,9 +37,9 @@ def dict_for_mongo(d):
     for key, value in d.items():
         if type(value) == list:
             value = [dict_for_mongo(e) if type(e) == dict else e for e in value]
-        if type(value) == dict:
+        elif type(value) == dict:
             value = dict_for_mongo(value)
-        if key == '_id':
+        elif key == '_id':
             try:
                 d[key] = int(value)
             except ValueError:
