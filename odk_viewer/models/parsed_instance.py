@@ -77,13 +77,21 @@ class ParsedInstance(models.Model):
 
     @classmethod
     def query_mongo(cls, username, id_string, query, start=0,
-            limit=DEFAULT_LIMIT, count=False):
+            limit=DEFAULT_LIMIT, count=False, sort=None):
         query = json.loads(query, object_hook=json_util.object_hook) if query else {}
         query = dict_for_mongo(query)
         query[cls.USERFORM_ID] = u'%s_%s' % (username, id_string)
+        # if sort is specified, convert to dict
+        if sort:
+            sort = json.loads(sort, object_hook=json_util.object_hook) if query else {}
         if count:
             return [{"count":xform_instances.find(query,
                     {cls.USERFORM_ID: 0}).count()}]
+        elif type(sort) == dict and len(sort) == 1:
+            sort_key = sort.keys()[0]
+            sort_dir = int(sort[sort_key]) # -1 for desc, 1 for asc
+            return xform_instances.find(query,
+                {cls.USERFORM_ID: 0}).skip(start).limit(limit).sort(sort_key, sort_dir)
         else:
             return xform_instances.find(query,
                 {cls.USERFORM_ID: 0}).skip(start).limit(limit)
