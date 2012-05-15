@@ -325,10 +325,10 @@ function rebuildLegend(questionName, questionColorMap)
             anchorClass += " inactive";
         var legendAnchor = _createElementAndSetAttrs('a', {'class':anchorClass, 'href':'javascript:;', 'rel':response});
         legendAnchor.appendChild(legendIcon);
-        legendAnchor.appendChild(responseText);
         legendAnchor.appendChild(responseCountSpan);
-        responseLi.appendChild(legendAnchor);
 
+        legendAnchor.appendChild(responseText);
+        responseLi.appendChild(legendAnchor);
         legendUl.appendChild(responseLi);
     }
 

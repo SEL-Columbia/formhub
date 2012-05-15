@@ -17,12 +17,12 @@
       position: absolute;
       bottom: 15px;
       left: 15px;
-      padding: 15px;
+      padding: 8px;
       z-index: 7;
       border-radius: 3px;
   }
   #legend ul {list-style: none;margin: 0px}
-  #legend ul li {padding: 2px 0px;}
+  #legend ul li {/*padding: 2px 0px;*/}
   #legend span.legend-bullet {
       width: 15px;
       height: 15px;
@@ -30,11 +30,18 @@
       margin-right: 5px;
       border-radius: 3px;
   }
-  #legend a.legend-label {padding: 2px; font-weight: bold;}
+  #legend span.item-label{
+      padding: 0px 20px 0px 20px;
+      display: block;
+  }
+  #legend a.legend-label {padding: 6px; font-weight: bold;}
   #legend a.legend-label.active {
       background-color: #0078A8;
       color: white;
-      border-radius: 2px;
+  }
+  #legend a.legend-label.inactive {
+      font-weight: normal;
+      color: #666;
   }
   #legend .legend-response-count{float: right; font-weight: bold}
 </style>
