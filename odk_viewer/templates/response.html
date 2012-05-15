@@ -21,7 +21,8 @@ var formJSONUrl = "{% url odk_logger.views.download_jsonform username id_string 
 var mongoAPIUrl = "{% url main.views.api username id_string %}";
 var app; // sammy app
 var questions = {};
-var cleanRe = /\//g; // regular expression used to clean names with slashes
+// TODO: this re should only accept valid js variable names so numbers/letter/underscore
+var cleanRe = /[\[\]\/]/g; // regular expression used to clean names with slashes
 var cleanReplacement = '_';
 
 Question = function(questionData)
