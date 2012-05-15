@@ -18,15 +18,3 @@ class Attachment(models.Model):
 
     class Meta:
         app_label = 'odk_logger'
-
-    def save(self, *args, **kwargs):
-        """
-        Save Photo after ensuring it is not blank.  Resize as needed.
-        """
-
-        if not self.id and not self.media_file:
-            return
-
-        super(Attachment, self).save()
-
-        resize(self.media_file.name)
