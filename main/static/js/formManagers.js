@@ -272,6 +272,7 @@ FormResponseManager.prototype._toHexbinGeoJSON = function()
                 .xValue( function(d) { return d.lng; } )
                 .yValue( function(d) { return d.lat; } )
                 ( latLngArray );
+    countMax = d3.max( hexset, function(d) { return d.data.length; } );
     for(idx in hexset) { 
         hex = hexset[idx];
         var geometry = {"type":"Polygon", 
@@ -281,8 +282,11 @@ FormResponseManager.prototype._toHexbinGeoJSON = function()
                         };
         var feature = {"type": "Feature", 
                         "geometry":geometry, 
-                        "properties": _(hex.data).map(function(d) {
-                                        return {lat: d.lat, lng: (d.lng > 90 ? 90 - d.lng : d.lng)}; })
+                        "properties": {"rawdata" :_(hex.data).map(function(d) {
+                                        return {lat: d.lat, lng: (d.lng > 90 ? 90 - d.lng : d.lng)}; }),
+                                       "count" : hex.data.length,
+                                       "countMax" : countMax
+                                      }
                       };
         features.push(feature);
     } 
