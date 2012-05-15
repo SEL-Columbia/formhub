@@ -248,6 +248,8 @@ FormResponseManager.prototype._toHexbinGeoJSON = function()
     var latLngArray = [];
     var geopointQuestionName = null;
     var geopointQuestion = formJSONMngr.getGeoPointQuestion()
+    function fixlng(n) { return (n < 0 ? 90 - n : n); };
+    function fixlnginv(n) { return (n > 90 ? 90 - n : n); };
     if(geopointQuestion)
         geopointQuestionName = geopointQuestion["name"];
     for(idx in responses)
@@ -262,9 +264,9 @@ FormResponseManager.prototype._toHexbinGeoJSON = function()
             {
                 var lat = parseFloat(parts[0]);
                 var lng = parseFloat(parts[1]);
-    
-                latLngArray.push({ lat: lat,
-                                   lng: (lng < 0 ? 90 - lng : lng)});
+                latLngArray.push({ lat: lat, 
+                                   lng: fixlng(lng)});
+                //if(latLongFilter(lat, lng))
             }
         }
     }
@@ -275,15 +277,16 @@ FormResponseManager.prototype._toHexbinGeoJSON = function()
     countMax = d3.max( hexset, function(d) { return d.data.length; } );
     for(idx in hexset) { 
         hex = hexset[idx];
+        if(!hex.data.length) continue; // No need to put in polygons without points inside of them
         var geometry = {"type":"Polygon", 
                         "coordinates": _(hex.points).map(function(d) {
-                                        return [d.y, (d.x > 90 ? 90 - d.x : d.x)];
+                                        return [d.y, fixlnginv(d.x)];
                                         })
                         };
         var feature = {"type": "Feature", 
                         "geometry":geometry, 
                         "properties": {"rawdata" :_(hex.data).map(function(d) {
-                                        return {lat: d.lat, lng: (d.lng > 90 ? 90 - d.lng : d.lng)}; }),
+                                        return {lat: d.lat, lng: fixlnginv(d.lng)}; }),
                                        "count" : hex.data.length,
                                        "countMax" : countMax
                                       }
