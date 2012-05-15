@@ -15,5 +15,9 @@ class Command(BaseCommand):
         for att in queryset_iterator(Attachment.objects.all()):
             filename = att.media_file.name
             default_storage = get_storage_class()()
-            if not default_storage.exists(get_path(filename, '-thumb-medium.')):
-                resize(filename)
+            if not default_storage.exists(get_path(filename, '-med.')):
+                try:
+                    resize(filename)
+                    print 'Thumbnail created for %s' % filename
+                except Exception, e:
+                    print 'Error on %s: %s' % (filename, e.message)
