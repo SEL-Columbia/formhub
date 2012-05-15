@@ -248,13 +248,11 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
     var latLngArray = [];
     var geopointQuestionName = null;
     var geopointQuestion = formJSONMngr.getGeoPointQuestion()
-    function fixlng(n) { return (n < 0 ? 90 - n : n); };
+    function fixlng(n) { return (n < 0 ? 90 - n : n); }; //TODO: is this correct?
     function fixlnginv(n) { return (n > 90 ? 90 - n : n); };
     if(geopointQuestion)
         geopointQuestionName = geopointQuestion["name"];
-    for(idx in responses)
-    {
-        var response = responses[idx];
+    _.each(responses, function(response) {
         var gps = response[geopointQuestionName];
         if(gps)
         {
@@ -265,34 +263,33 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
                 var lat = parseFloat(parts[0]);
                 var lng = parseFloat(parts[1]);
                 if(latLongFilter===undefined || latLongFilter(lat, lng))
-                        latLngArray.push({ lat: lat, 
-                                   lng: fixlng(lng)});
+                    latLngArray.push({ lat: lat, lng: fixlng(lng)});
             }
         }
-    }
+    });
     hexset = d3.layout.hexbin()
                 .xValue( function(d) { return d.lng; } )
                 .yValue( function(d) { return d.lat; } )
                 ( latLngArray );
     countMax = d3.max( hexset, function(d) { return d.data.length; } );
-    for(idx in hexset) { 
-        hex = hexset[idx];
-        if(!hex.data.length) continue; // No need to put in polygons without points inside of them
-        var geometry = {"type":"Polygon", 
-                        "coordinates": _(hex.points).map(function(d) {
-                                        return [d.y, fixlnginv(d.x)];
-                                        })
-                        };
-        var feature = {"type": "Feature", 
-                        "geometry":geometry, 
-                        "properties": {"rawdata" :_(hex.data).map(function(d) {
-                                        return {lat: d.lat, lng: fixlnginv(d.lng)}; }),
-                                       "count" : hex.data.length,
-                                       "countMax" : countMax
-                                      }
-                      };
-        features.push(feature);
-    } 
+    _.each(hexset, function(hex) {
+        if(hex.data.length) {
+            var geometry = {"type":"Polygon", 
+                            "coordinates": _(hex.points).map(function(d) {
+                                    return [d.y, fixlnginv(d.x)];
+                                    })
+                            };
+            var feature = {"type": "Feature", 
+                           "geometry":geometry, 
+                           "properties": {"rawdata" :_(hex.data).map(function(d) {
+                                                return {lat: d.lat, lng: fixlnginv(d.lng)}; }),
+                                           "count" : hex.data.length,
+                                           "countMax" : countMax
+                                          }
+                           };
+                features.push(feature);
+        }
+    });
 
     this.hexGeoJSON = {"type":"FeatureCollection", "features":features};
 }
