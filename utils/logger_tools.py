@@ -3,6 +3,9 @@ import os
 import tempfile
 import traceback
 from PIL import Image
+import urllib2 as urllib
+from PIL import Image
+from cStringIO import StringIO
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -117,11 +120,16 @@ def get_dimensions((width, height), longest_side):
 
 def resize(filename):
     default_storage = get_storage_class()()
-    path = default_storage.path(filename)
-    image = Image.open(path)
+    path = default_storage.url(filename)
+    img_file = urllib.urlopen(path)
+    im = StringIO(img_file.read())
+    image = Image.open(im)
     
+    
+    fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
+    filename = fs.path(filename)
     # Prepare file name to use here
-    new_path = path.split('.')
+    new_path = filename.split('.')
     name = ''
     for i in range(len(new_path) - 1):
         if i == len(new_path) - 2:
@@ -129,10 +137,17 @@ def resize(filename):
         else:
             name = name + new_path[i] + '.'
     
-    # The save medium thumbnail
-    image.thumbnail(get_dimensions(image.size, 480), Image.ANTIALIAS)
-    image.save(name + '-thumb-medium.' +new_path[len(new_path) - 1] )
+    # Save large thumbnail
+    image.thumbnail(get_dimensions(image.size, 1280), Image.ANTIALIAS)
+    image.save(name + '-lrg.' + new_path[len(new_path) - 1])
+    default_storage.save(name + '-lrg.' + new_path[len(new_path) - 1], fs.open(name + '-lrg.' + new_path[len(new_path) - 1]))
     
-    # Save small thumbnail first
+    # Then save medium thumbnail
+    image.thumbnail(get_dimensions(image.size, 640), Image.ANTIALIAS)
+    image.save(name + '-med.' + new_path[len(new_path) - 1])
+    default_storage.save(name + '-med.' + new_path[len(new_path) - 1], fs.open(name + '-med.' + new_path[len(new_path) - 1]))
+    
+    # Then save small thumbnail
     image.thumbnail(get_dimensions(image.size, 240), Image.ANTIALIAS)
-    image.save(name + '-thumb-small.' +new_path[len(new_path) - 1] )
+    image.save(name + '-sml.' + new_path[len(new_path) - 1])
+    default_storage.save(name + '-sml.' + new_path[len(new_path) - 1], fs.open(name + '-sml.' + new_path[len(new_path) - 1]))
