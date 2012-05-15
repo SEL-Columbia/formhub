@@ -241,7 +241,7 @@ FormResponseManager.prototype._toGeoJSON = function()
 }
 
 /// this cannot be called before the form is loaded as we rely on the form to determine the gps field
-FormResponseManager.prototype._toHexbinGeoJSON = function()
+FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
 {
     var responses = this.responses;
     var features = [];
@@ -264,9 +264,9 @@ FormResponseManager.prototype._toHexbinGeoJSON = function()
             {
                 var lat = parseFloat(parts[0]);
                 var lng = parseFloat(parts[1]);
-                latLngArray.push({ lat: lat, 
+                if(latLongFilter===undefined || latLongFilter(lat, lng))
+                        latLngArray.push({ lat: lat, 
                                    lng: fixlng(lng)});
-                //if(latLongFilter(lat, lng))
             }
         }
     }
@@ -303,10 +303,10 @@ FormResponseManager.prototype.getAsGeoJSON = function()
 
     return this.geoJSON;
 }
-FormResponseManager.prototype.getAsHexbinGeoJSON = function()
+FormResponseManager.prototype.getAsHexbinGeoJSON = function(latLongFilter)
 {
     if(!this.hexGeoJSON)
-        this._toHexbinGeoJSON();
+        this._toHexbinGeoJSON(latLongFilter);
 
     return this.hexGeoJSON;
 }

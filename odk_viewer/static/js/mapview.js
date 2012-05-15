@@ -197,11 +197,10 @@ function _rebuildMarkerLayer(geoJSON, questionName)
 
 function addHexOverLay()
 {
-    curBounds = map.getBounds();
     latLngFilter = function(lat, lng) {
-                    curBounds.contains(new L.LatLng(lat, lng));
-                };
-    hexdata = formResponseMngr.getAsHexbinGeoJSON();
+        return map.getBounds().contains(new L.LatLng(lat, lng));
+    };
+    hexdata = formResponseMngr.getAsHexbinGeoJSON(latLngFilter);
     // The following line converts geoJSON Polygons into L.Polygon
     // there may be a way to do this 'natively' through Leaflet
     polygons = _.compact(
