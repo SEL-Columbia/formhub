@@ -27,8 +27,8 @@ def get_path(path, suffix):
 
 def image_urls(instance):
     default_storage = get_storage_class()() 
-    return [ get_path(a.media_file.url, '-thumb-medium.') 
-        if default_storage.exists(get_path(a.media_file.name, '-thumb-medium.')) 
+    return [ default_storage.url(get_path(a.media_file.name, '-med.')) 
+        if default_storage.exists(get_path(a.media_file.name, '-med.')) 
         else a.media_file.url for a in instance.attachments.all()]
 
 
