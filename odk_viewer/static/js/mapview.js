@@ -299,7 +299,7 @@ function rebuildLegend(questionName, questionColorMap)
 
     legendContainer.attr("style", "diplay:block");
     var legendTitle = _createElementAndSetAttrs('h3', {}, questionLabel);
-    var legendUl = _createElementAndSetAttrs('ul');
+    var legendUl = _createElementAndSetAttrs('ul', {"class":"nav nav-pills nav-stacked"});
     legendContainer.append(legendTitle);
     legendContainer.append(legendUl);
     for(response in questionColorMap)
@@ -311,29 +311,24 @@ function rebuildLegend(questionName, questionColorMap)
         if(choices.hasOwnProperty(response))
             itemLabel = formJSONMngr.getMultilingualLabel(choices[response]);
         var legendIcon = _createElementAndSetAttrs('span', {"class": "legend-bullet", "style": "background-color: " + color});
-        var responseText = _createElementAndSetAttrs('span', {});
+        var responseText = _createElementAndSetAttrs('span', {"class":"item-label"}, itemLabel);
         var numResponses = question.responseCounts[response];
-        if(numResponses > 0)
-        {
-            var anchorClass = 'legend-label';
-            if(formResponseMngr._select_one_filters.indexOf(response) > -1)
-                anchorClass += " active";
-            else
-                anchorClass += " normal";
-            var legendAnchor = _createElementAndSetAttrs('a', {'class':anchorClass, 'href':'javascript:;', 'rel':response}, itemLabel);
-            responseText.appendChild(legendAnchor);
-        }
-        else
-        {
-            var legendSpan = _createElementAndSetAttrs('span', {}, itemLabel);
-            responseText.appendChild(legendSpan);
-        }
         var responseCountSpan = _createElementAndSetAttrs('span', {'class':'legend-response-count'}, numResponses.toString());
 
-        responseLi.appendChild(legendIcon);
-        responseLi.appendChild(responseText);
-        responseLi.appendChild(responseCountSpan);
+        // create the anchor
+        var anchorClass = 'legend-label';
+        if(formResponseMngr._select_one_filters.indexOf(response) > -1)
+            anchorClass += " active";
+        else if(numResponses > 0)
+            anchorClass += " normal";
+        else
+            anchorClass += " inactive";
+        var legendAnchor = _createElementAndSetAttrs('a', {'class':anchorClass, 'href':'javascript:;', 'rel':response});
+        legendAnchor.appendChild(legendIcon);
+        legendAnchor.appendChild(responseCountSpan);
 
+        legendAnchor.appendChild(responseText);
+        responseLi.appendChild(legendAnchor);
         legendUl.appendChild(responseLi);
     }
 
