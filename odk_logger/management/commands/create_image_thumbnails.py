@@ -18,6 +18,9 @@ class Command(BaseCommand):
             if not default_storage.exists(get_path(filename, '-med.')):
                 try:
                     resize(filename)
-                    print 'Thumbnail created for %s' % filename
+                    if default_storage.exists(get_path(filename, '-med.')):
+                        print 'Thumbnail created for %s' % filename
+                    else:
+                        print 'Something didn\'t go right for %s' % filename
                 except Exception, e:
                     print 'Error on %s: %s' % (filename, e.message)

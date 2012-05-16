@@ -25,6 +25,7 @@ def get_path(path, suffix):
     name = name + suffix +new_path[len(new_path) - 1]
     return name
 
+
 def image_urls(instance):
     default_storage = get_storage_class()() 
     return [ default_storage.url(get_path(a.media_file.name, '-med.')) 

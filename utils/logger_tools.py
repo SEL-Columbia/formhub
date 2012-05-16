@@ -15,6 +15,7 @@ from django.core.servers.basehttp import FileWrapper
 from django.db import IntegrityError
 from django.http import HttpResponse
 from odk_logger.models.xform import XLSFormError
+from utils.viewer_tools import get_path
 from pyxform.errors import PyXFormError
 
 
@@ -127,27 +128,21 @@ def resize(filename):
     
     
     fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
-    filename = fs.path(filename)
-    # Prepare file name to use here
-    new_path = filename.split('.')
-    name = ''
-    for i in range(len(new_path) - 1):
-        if i == len(new_path) - 2:
-            name = name + new_path[i]
-        else:
-            name = name + new_path[i] + '.'
+    loc_file_name = fs.path(filename)
     
+    print get_path(loc_file_name, '-lrg.')
+    print get_path(filename, '-lrg.')
     # Save large thumbnail
     image.thumbnail(get_dimensions(image.size, 1280), Image.ANTIALIAS)
-    image.save(name + '-lrg.' + new_path[len(new_path) - 1])
-    default_storage.save(name + '-lrg.' + new_path[len(new_path) - 1], fs.open(name + '-lrg.' + new_path[len(new_path) - 1]))
+    image.save(get_path(loc_file_name, '-lrg.'))
+    default_storage.save(get_path(filename, '-lrg.'), fs.open(get_path(loc_file_name, '-lrg.')))
     
     # Then save medium thumbnail
     image.thumbnail(get_dimensions(image.size, 640), Image.ANTIALIAS)
-    image.save(name + '-med.' + new_path[len(new_path) - 1])
-    default_storage.save(name + '-med.' + new_path[len(new_path) - 1], fs.open(name + '-med.' + new_path[len(new_path) - 1]))
-    
+    image.save(get_path(loc_file_name, '-med.'))
+    default_storage.save(get_path(filename, '-med.'), fs.open(get_path(loc_file_name, '-med.')))
+
     # Then save small thumbnail
     image.thumbnail(get_dimensions(image.size, 240), Image.ANTIALIAS)
-    image.save(name + '-sml.' + new_path[len(new_path) - 1])
-    default_storage.save(name + '-sml.' + new_path[len(new_path) - 1], fs.open(name + '-sml.' + new_path[len(new_path) - 1]))
+    image.save(get_path(loc_file_name, '-sml.'))
+    default_storage.save(get_path(filename, '-sml.'), fs.open(get_path(loc_file_name, '-sml.')))
