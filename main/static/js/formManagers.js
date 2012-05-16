@@ -248,8 +248,11 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
     var latLngArray = [];
     var geopointQuestionName = null;
     var geopointQuestion = formJSONMngr.getGeoPointQuestion()
-    function fixlng(n) { return (n < 0 ? 90 - n : n); }; //TODO: is this correct?
-    function fixlnginv(n) { return (n > 90 ? 90 - n : n); };
+    // The following functions needed hexbin-js doesn't deal well with negatives
+    function fixlng(n) { return (n < 0 ? 360 + n : n); }; 
+    function fixlnginv(n) { return (n > 180 ? n - 360 : n); };
+    function fixlat(n) { return (n < 0 ? 90 - n : n); }; 
+    function fixlatinv(n) { return (n > 90 ? 90 - n : n); };
     if(geopointQuestion)
         geopointQuestionName = geopointQuestion["name"];
     _.each(responses, function(response) {
