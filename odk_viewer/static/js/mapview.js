@@ -24,6 +24,7 @@ var circleStyle = {
 var amazonUrlPrefix = "https://formhub.s3.amazonaws.com/";
 var geoJsonLayer = new L.GeoJSON(null);
 var hexbinLayerGroup = new L.LayerGroup();
+var hexbinPolygons = [];
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
 var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekkywR';
 var bingMapTypeLabels = {'AerialWithLabels': 'Bing Satellite Map', 'Road': 'Bing Road Map'}; //Road, Aerial or AerialWithLabels
@@ -196,6 +197,17 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     }
 }
 
+function refreshHex(hexdata, hex_feature_to_polygon_fn) {
+    map.removeLayer(hexbinLayerGroup);
+    hexbinLayerGroup.clearLayers();
+    hexdata = formResponseMngr.getAsHexbinGeoJSON();
+    // TODO: The following line converts geoJSON Polygons into L.Polygon
+    // there may be a way to do this 'natively' through Leaflet
+    hexbinPolygons = _.compact(_.map(hexdata.features, hex_feature_to_polygon_fn));
+    _(hexbinPolygons).map(function(x) { hexbinLayerGroup.addLayer(x); });
+    map.addLayer(hexbinLayerGroup);   
+}
+
 function addHexOverLay()
 {
     map.removeLayer(hexbinLayerGroup);
@@ -203,7 +215,7 @@ function addHexOverLay()
     hexdata = formResponseMngr.getAsHexbinGeoJSON();
     // TODO: The following line converts geoJSON Polygons into L.Polygon
     // there may be a way to do this 'natively' through Leaflet
-    polygons = _.compact(
+    hexbinPolygons = _.compact(
                  _.map(hexdata.features, function(el) {
                         return new L.Polygon(_.map(el.geometry.coordinates, 
                             function(x) { return new L.LatLng(x[0], x[1]); }),
@@ -213,13 +225,12 @@ function addHexOverLay()
                             }
                             );
                }));
-    _(polygons).map(function(x) { hexbinLayerGroup.addLayer(x); });
+    _(hexbinPolygons).map(function(x) { hexbinLayerGroup.addLayer(x); });
     map.addLayer(hexbinLayerGroup);
 }
 
 function recomputeHexOverLayColors(questionName, responseNames) {
-    
-
+    hexbinPolygons
 }
 
 /*
