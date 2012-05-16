@@ -19,10 +19,11 @@ var circleStyle = {
     fillColor: '#ff3300',
     fillOpacity: 0.9,
     radius: 8
-}
+};
 // TODO: can we get the entire URL from mongo API
 var amazonUrlPrefix = "https://formhub.s3.amazonaws.com/";
 var geoJsonLayer = new L.GeoJSON(null);
+var hexbinLayerGroup = new L.LayerGroup();
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
 var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekkywR';
 var bingMapTypeLabels = {'AerialWithLabels': 'Bing Satellite Map', 'Road': 'Bing Road Map'}; //Road, Aerial or AerialWithLabels
@@ -57,7 +58,7 @@ function initialize() {
             layersControl.addBaseLayer(mapboxstreet, mapData.label);
 
             // only add default layer to map
-            if(idx == 0)
+            if(idx === 0)
                 map.addLayer(mapboxstreet);
         });
     });
@@ -88,7 +89,7 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         if(question.hasOwnProperty('responseCounts'))
             responseCountValid = true;
         else
-            question['responseCounts'] = {};
+            question.responseCounts = {};
 
         // formJSONMngr.getChoices returns an object NOT an array so we use children directly here
         var choices = question.children;
@@ -154,7 +155,7 @@ function _rebuildMarkerLayer(geoJSON, questionName)
                 fillColor: responseColor,
                 fillOpacity: circleStyle.fillOpacity,
                 radius: circleStyle.opacity
-            }
+            };
             marker.setStyle(newStyle);
         }
         marker.on('click', function(e){
@@ -197,9 +198,8 @@ function _rebuildMarkerLayer(geoJSON, questionName)
 
 function addHexOverLay()
 {
-    latLngFilter = function(lat, lng) {
-        return map.getBounds().contains(new L.LatLng(lat, lng));
-    };
+    map.removeLayer(hexbinLayerGroup);
+    hexbinLayerGroup.clearLayers();
     hexdata = formResponseMngr.getAsHexbinGeoJSON();
     // TODO: The following line converts geoJSON Polygons into L.Polygon
     // there may be a way to do this 'natively' through Leaflet
@@ -213,7 +213,13 @@ function addHexOverLay()
                             }
                             );
                }));
-    _(polygons).map(function(x) { map.addLayer(x); });
+    _(polygons).map(function(x) { hexbinLayerGroup.addLayer(x); });
+    map.addLayer(hexbinLayerGroup);
+}
+
+function recomputeHexOverLayColors(questionName, responseNames) {
+    
+
 }
 
 /*
@@ -221,6 +227,7 @@ function addHexOverLay()
  */
 function JSONSurveyToHTML(data)
 {
+    var idx, dummyContainer, questionName, span;
     var htmlContent = '<table class="table table-bordered table-striped"> <thead>\n<tr>\n<th>Question</th>\n<th>Response</th>\n</tr>\n</thead>\n<tbody>\n';
 
     // add images if any
@@ -234,7 +241,7 @@ function JSONSurveyToHTML(data)
             mediaContainer += '<li><a href="#">';
             var imgSrc = amazonUrlPrefix + attachmentUrl;
             var imgTag = _createElementAndSetAttrs('img', {"class":"thumbnail", "width":"210", "src": imgSrc});
-            var dummyContainer = _createElementAndSetAttrs('div', {});
+            dummyContainer = _createElementAndSetAttrs('div', {});
             dummyContainer.appendChild(imgTag);
             mediaContainer += dummyContainer.innerHTML;
             mediaContainer += '</a></li>';
@@ -254,14 +261,14 @@ function JSONSurveyToHTML(data)
             var o = new Option(langauge.label, langauge.name);
             selectTag.add(o);
         }
-        var dummyContainer = _createElementAndSetAttrs('div', {});
+        dummyContainer = _createElementAndSetAttrs('div', {});
         dummyContainer.appendChild(selectTag);
         htmlContent += dummyContainer.innerHTML;
     }
 
     for(questionName in formJSONMngr.questions)
     {
-        //if(data[questionName])
+        if(data[questionName])
         {
             var question  = formJSONMngr.getQuestionByName(questionName);
             var response = _createElementAndSetAttrs('tr', {});
@@ -275,22 +282,22 @@ function JSONSurveyToHTML(data)
                     var style = "";
                     if(idx > 0)
                     {
-                        style = "display: none"
+                        style = "display: none";
                     }
-                    var span = _createElementAndSetAttrs('span', {"class": ("language " + language.name), "style": style}, formJSONMngr.getMultilingualLabel(question, language.label));
+                    span = _createElementAndSetAttrs('span', {"class": ("language " + language.name), "style": style}, formJSONMngr.getMultilingualLabel(question, language.label));
                     td.appendChild(span);
                 }
             }
             else
             {
-                var span = _createElementAndSetAttrs('span', {"class": "language"}, formJSONMngr.getMultilingualLabel(question));
+                span = _createElementAndSetAttrs('span', {"class": "language"}, formJSONMngr.getMultilingualLabel(question));
                 td.appendChild(span);
             }
 
             response.appendChild(td);
             td = _createElementAndSetAttrs('td', {}, data[questionName]);
             response.appendChild(td);
-            var dummyContainer = _createElementAndSetAttrs('div', {});
+            dummyContainer = _createElementAndSetAttrs('div', {});
             dummyContainer.appendChild(response);
             htmlContent += dummyContainer.innerHTML;
         }
@@ -301,6 +308,7 @@ function JSONSurveyToHTML(data)
 
 function rebuildLegend(questionName, questionColorMap)
 {
+    var response;
     // TODO: consider creating container once and keeping a variable reference
     var question = formJSONMngr.getQuestionByName(questionName);
     var choices = formJSONMngr.getChoices(question);
@@ -369,7 +377,7 @@ function rebuildLegend(questionName, questionColorMap)
             formResponseMngr.removeResponseFromSelectOneFilter(responseName);
         // reload with new params
         formResponseMngr.callback = filterSelectOneCallback;
-        formResponseMngr.loadResponseData({})
+        formResponseMngr.loadResponseData({});
     });
 }
 
@@ -379,7 +387,7 @@ function clearLegend()
     if(legendContainer.length > 0)
     {
         legendContainer.empty();
-        legendContainer.attr("style", "display:none")
+        legendContainer.attr("style", "display:none");
     }
 }
 
@@ -392,6 +400,7 @@ function filterSelectOneCallback()
 
 function loadFormJSONCallback()
 {
+    var idx;
     // get geoJSON data to setup points - relies on questions having been parsed so has to be in/after the callback
     var geoJSON = formResponseMngr.getAsGeoJSON();
 
@@ -480,6 +489,7 @@ function _createSelectOneLi(question)
 
 function _createElementAndSetAttrs(tag, attributes, text)
 {
+    var attr;
     var el = document.createElement(tag);
     for(attr in attributes)
     {
@@ -512,4 +522,23 @@ function get_random_color(step, numOfSteps) {
     }
     var c = "#" + ("00" + (~ ~(r * 255)).toString(16)).slice(-2) + ("00" + (~ ~(g * 255)).toString(16)).slice(-2) + ("00" + (~ ~(b * 255)).toString(16)).slice(-2);
     return (c);
+}
+
+function select_from_array(array, zero_to_one_inclusive) {
+    var epsilon = 0.00001;
+    return array[Math.floor(zero_to_one_inclusive * (array.length - epsilon))];
+
+}
+function get_proportional_color(zero_to_one) {
+    // http://colorbrewer2.org/index.php?type=sequential&scheme=Purples&n=9   
+    var purples = ["FCFBFD", "EFEDF5", "DADAEB", "BCBDDC", "9E9AC8", "807DBA", 
+                   "6A51A3", "54278F", "3F007D"]; 
+    return select_from_array(purples, zero_to_one);
+}
+
+function get_dichromatic_color(zero_to_one) {
+    // http://colorbrewer2.org/index.php?type=diverging&scheme=RdBu&n=11
+    var diverging = ["67001F", "B2182B", "D6604D", "F4A582", "FDDBC7", "F7F7F7", 
+                     "D1E5F0", "92C5DE", "4393C3", "2166AC", "053061"];
+    return select_from_array(diverging, zero_to_one);
 }

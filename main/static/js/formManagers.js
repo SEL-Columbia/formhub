@@ -266,7 +266,7 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
                 var lat = parseFloat(parts[0]);
                 var lng = parseFloat(parts[1]);
                 if(latLongFilter===undefined || latLongFilter(lat, lng))
-                    latLngArray.push({ lat: fixlat(lat), lng: fixlng(lng)});
+                    latLngArray.push({ lat: fixlat(lat), lng: fixlng(lng), response: response});
             }
         }
     });
@@ -285,7 +285,7 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
             var feature = {"type": "Feature", 
                            "geometry":geometry, 
                            "properties": {"rawdata" :_(hex.data).map(function(d) {
-                                                return {lat: fixlatinv(d.lat), lng: fixlnginv(d.lng)}; }),
+                                                return {lat: fixlatinv(d.lat), lng: fixlnginv(d.lng), response: d.response}; }),
                                            "count" : hex.data.length,
                                            "countMax" : countMax
                                           }
