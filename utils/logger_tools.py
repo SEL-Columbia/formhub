@@ -2,6 +2,10 @@ from datetime import date
 import os
 import tempfile
 import traceback
+from PIL import Image
+import urllib2 as urllib
+from PIL import Image
+from cStringIO import StringIO
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -11,6 +15,7 @@ from django.core.servers.basehttp import FileWrapper
 from django.db import IntegrityError
 from django.http import HttpResponse
 from odk_logger.models.xform import XLSFormError
+from utils.viewer_tools import get_path
 from pyxform.errors import PyXFormError
 
 
@@ -100,3 +105,58 @@ def publish_form(callback):
             'type': 'alert-error',
             'text': unicode(e),
         }
+
+
+def get_dimensions((width, height), longest_side):
+    if width > height:
+        width = longest_side
+        height = (height/width) * longest_side
+    elif height >width:
+        height = longest_side
+        width = (width/height) * longest_side
+    else:
+        height = longest_side
+        width = longest_side
+    return (width, height)
+
+def resize(filename):
+    default_storage = get_storage_class()()
+    path = default_storage.url(filename)
+    img_file = urllib.urlopen(path)
+    im = StringIO(img_file.read())
+    image = Image.open(im)
+
+    fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
+    loc_file_name = fs.path(filename)
+
+    # Save large thumbnail
+    image.thumbnail(get_dimensions(image.size, 1280), Image.ANTIALIAS)
+    image.save(get_path(loc_file_name, '-lrg.'))
+    default_storage.save(get_path(filename, '-lrg.'), fs.open(get_path(loc_file_name, '-lrg.')))
+    
+    # Then save medium thumbnail
+    image.thumbnail(get_dimensions(image.size, 640), Image.ANTIALIAS)
+    image.save(get_path(loc_file_name, '-med.'))
+    default_storage.save(get_path(filename, '-med.'), fs.open(get_path(loc_file_name, '-med.')))
+
+    # Then save small thumbnail
+    image.thumbnail(get_dimensions(image.size, 240), Image.ANTIALIAS)
+    image.save(get_path(loc_file_name, '-sml.'))
+    default_storage.save(get_path(filename, '-sml.'), fs.open(get_path(loc_file_name, '-sml.')))
+    
+def resize_local_env(filename):
+    default_storage = get_storage_class()()
+    path = default_storage.path(filename)
+    image = Image.open(path)
+
+    # Save large thumbnail
+    image.thumbnail(get_dimensions(image.size, 1280), Image.ANTIALIAS)
+    image.save(get_path(path, '-lrg.'))
+
+    # Then save medium thumbnail
+    image.thumbnail(get_dimensions(image.size, 640), Image.ANTIALIAS)
+    image.save(get_path(path, '-med.'))
+
+    # Then save small thumbnail
+    image.thumbnail(get_dimensions(image.size, 240), Image.ANTIALIAS)
+    image.save(get_path(path, '-sml.'))
