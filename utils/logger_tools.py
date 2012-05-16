@@ -125,13 +125,10 @@ def resize(filename):
     img_file = urllib.urlopen(path)
     im = StringIO(img_file.read())
     image = Image.open(im)
-    
-    
+
     fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
     loc_file_name = fs.path(filename)
-    
-    print get_path(loc_file_name, '-lrg.')
-    print get_path(filename, '-lrg.')
+
     # Save large thumbnail
     image.thumbnail(get_dimensions(image.size, 1280), Image.ANTIALIAS)
     image.save(get_path(loc_file_name, '-lrg.'))
@@ -146,3 +143,20 @@ def resize(filename):
     image.thumbnail(get_dimensions(image.size, 240), Image.ANTIALIAS)
     image.save(get_path(loc_file_name, '-sml.'))
     default_storage.save(get_path(filename, '-sml.'), fs.open(get_path(loc_file_name, '-sml.')))
+    
+def resize_local_env(filename):
+    default_storage = get_storage_class()()
+    path = default_storage.path(filename)
+    image = Image.open(path)
+
+    # Save large thumbnail
+    image.thumbnail(get_dimensions(image.size, 1280), Image.ANTIALIAS)
+    image.save(get_path(path, '-lrg.'))
+
+    # Then save medium thumbnail
+    image.thumbnail(get_dimensions(image.size, 640), Image.ANTIALIAS)
+    image.save(get_path(path, '-med.'))
+
+    # Then save small thumbnail
+    image.thumbnail(get_dimensions(image.size, 240), Image.ANTIALIAS)
+    image.save(get_path(path, '-sml.'))
