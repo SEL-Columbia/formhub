@@ -7,7 +7,7 @@ FormJSONManager = function(url, callback)
     this.selectOneQuestions = [];
     this.supportedLanguages = [];
     this.questions = {};
-}
+};
 
 FormJSONManager.prototype.loadFormJSON = function()
 {
@@ -16,16 +16,17 @@ FormJSONManager.prototype.loadFormJSON = function()
         thisManager._parseQuestions(data.children);
         thisManager._parseSupportedLanguages();
         thisManager.callback.call(thisManager);
-    })
-}
+    });
+};
 
 FormJSONManager.prototype._parseQuestions = function(questionData, parentQuestionName)
 {
+    var idx;
     for(idx in questionData)
     {
         var question = questionData[idx];
         var questionName = question.name;
-        if(parentQuestionName && parentQuestionName != "")
+        if(parentQuestionName && parentQuestionName !== "")
             questionName = parentQuestionName + "/" + questionName;
         question.name = questionName;
 
@@ -42,17 +43,17 @@ FormJSONManager.prototype._parseQuestions = function(questionData, parentQuestio
         if(question.type == "geopoint" || question.type == "gps")
             this.geopointQuestions.push(question);
     }
-}
+};
 
 FormJSONManager.prototype.getNumSelectOneQuestions = function()
 {
     return this.selectOneQuestions.length;
-}
+};
 
 FormJSONManager.prototype.getSelectOneQuestions = function()
 {
     return this.selectOneQuestions;
-}
+};
 
 // TODO: This picks the first geopoint question regardless if there are multiple
 FormJSONManager.prototype.getGeoPointQuestion = function()
@@ -60,12 +61,12 @@ FormJSONManager.prototype.getGeoPointQuestion = function()
     if(this.geopointQuestions.length > 0)
         return this.geopointQuestions[0];
     return null;
-}
+};
 
 FormJSONManager.prototype.getQuestionByName = function(name)
 {
     return this.questions[name];
-}
+};
 
 FormJSONManager.prototype.getChoices = function(question)
 {
@@ -76,15 +77,16 @@ FormJSONManager.prototype.getChoices = function(question)
         choices[choice.name] =  choice;
     }
     return choices;
-}
+};
 
 FormJSONManager.prototype.setCurrentSelectOneQuestionName = function(name)
 {
     this._currentSelectOneQuestionName = name;
-}
+};
 
 FormJSONManager.prototype._parseSupportedLanguages = function()
 {
+    var questionName, key;
     // run through question objects, stop at first question with label object and check it for multiple languages
     for(questionName in this.questions)
     {
@@ -98,18 +100,19 @@ FormJSONManager.prototype._parseSupportedLanguages = function()
             {
                 for(key in labelProp)
                 {
-                    var language = {"name": encodeForCSSclass(key), "label": key}
-                    this.supportedLanguages.push(language)
+                    var language = {"name": encodeForCSSclass(key), "label": key};
+                    this.supportedLanguages.push(language);
                 }
             }
             break;
         }
     }
-}
+};
 
 /// pass a question object and get its label, if language is specified, try get label for that otherwise return the first label
 FormJSONManager.prototype.getMultilingualLabel = function(question, language)
 {
+    var key;
     var labelProp = question["label"];
 
     /// if plain string, return
@@ -133,7 +136,7 @@ FormJSONManager.prototype.getMultilingualLabel = function(question, language)
     }
     // return raw name
     return question["name"];
-}
+};
 
 // used to manage response data loaded via ajax
 FormResponseManager = function(url, callback)
@@ -142,10 +145,11 @@ FormResponseManager = function(url, callback)
     this.callback = callback;
     this._select_one_filters = [];
     this._currentSelectOneQuestionName = null; // name of the currently selected "View By Question if any"
-}
+};
 
 FormResponseManager.prototype.loadResponseData = function(params, start, limit)
 {
+    var idx;
     var thisFormResponseMngr = this;
 
     /// invalidate geoJSON data
@@ -172,49 +176,50 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit)
         }
     }
     var urlParams = {'query':JSON.stringify(params)};
-    start = parseInt(start)
+    start = parseInt(start, 10);
         // use !isNaN so we also have zeros
     if(!isNaN(start))
-        urlParams['start'] = start
-    limit = parseInt(limit)
+        urlParams['start'] = start;
+    limit = parseInt(limit, 10);
     if(!isNaN(limit))
-        urlParams['limit'] = limit
+        urlParams['limit'] = limit;
     // first do the count
-    urlParams['count'] = 1
+    urlParams['count'] = 1;
     $.getJSON(thisFormResponseMngr.url, urlParams).success(function(data){
-            thisFormResponseMngr.responseCount = data[0]['count']
-            urlParams['count'] = 0
+            thisFormResponseMngr.responseCount = data[0]['count'];
+            urlParams['count'] = 0;
             $.getJSON(thisFormResponseMngr.url, urlParams, function(data){
                 thisFormResponseMngr.responses = data;
                 thisFormResponseMngr.callback.call(thisFormResponseMngr);
-            })
-        })
-}
+            });
+        });
+};
 
 FormResponseManager.prototype.addResponseToSelectOneFilter = function(name)
 {
     if(this._select_one_filters.indexOf(name) == -1)
         this._select_one_filters.push(name);
-}
+};
 
 FormResponseManager.prototype.removeResponseFromSelectOneFilter = function(name)
 {
     var idx = this._select_one_filters.indexOf(name);
     if(idx > -1)
         this._select_one_filters.splice(idx, 1);
-}
+};
 
 FormResponseManager.prototype.clearSelectOneFilterResponses = function(name)
 {
     this._select_one_filters = [];
-}
+};
 
 /// this cannot be called before the form is loaded as we rely on the form to determine the gps field
 FormResponseManager.prototype._toGeoJSON = function()
 {
+    var idx;
     var features = [];
     var geopointQuestionName = null;
-    var geopointQuestion = formJSONMngr.getGeoPointQuestion()
+    var geopointQuestion = formJSONMngr.getGeoPointQuestion();
     if(geopointQuestion)
         geopointQuestionName = geopointQuestion["name"];
     for(idx in this.responses)
@@ -230,7 +235,7 @@ FormResponseManager.prototype._toGeoJSON = function()
                 var lng = parts[0];
                 var lat = parts[1];
 
-                var geometry = {"type":"Point", "coordinates": [lat, lng]}
+                var geometry = {"type":"Point", "coordinates": [lat, lng]};
                 var feature = {"type": "Feature", "id": response._id, "geometry":geometry, "properties":response};
                 features.push(feature);
             }
@@ -238,7 +243,7 @@ FormResponseManager.prototype._toGeoJSON = function()
     }
 
     this.geoJSON = {"type":"FeatureCollection", "features":features};
-}
+};
 
 FormResponseManager.prototype.getAsGeoJSON = function()
 {
@@ -246,12 +251,13 @@ FormResponseManager.prototype.getAsGeoJSON = function()
         this._toGeoJSON();
 
     return this.geoJSON;
-}
+};
 
 FormResponseManager.prototype._toPivotJs = function(fields)
 {
     this.pivotJsData = null;
     var pivotData = [];
+    var idx;
 
     // first row is the titles
     var titles = [];
@@ -269,7 +275,7 @@ FormResponseManager.prototype._toPivotJs = function(fields)
 
         for(i=0;i<fields.length;i++)
         {
-            var field = fields[i]
+            var field = fields[i];
             var title = field["name"];
             var pivotType = field["type"];
             var data = "";
@@ -293,7 +299,7 @@ FormResponseManager.prototype._toPivotJs = function(fields)
     }
 
     this.pivotJsData = JSON.stringify(pivotData);
-}
+};
 
 /**
  * Return an object in the data Array
@@ -303,6 +309,7 @@ FormResponseManager.prototype._toDataTables = function(fields)
 {
     this.dtData = null;
     var aaData = [];
+    var idx;
 
     // now we do the data making sure its in the same order as the titles above
     for(idx in this.responses)
@@ -312,7 +319,7 @@ FormResponseManager.prototype._toDataTables = function(fields)
 
         for(i=0;i<fields.length;i++)
         {
-            var field = fields[i]
+            var field = fields[i];
             var title = field["name"];
             var pivotType = field["type"];
             var data = "";
@@ -336,24 +343,25 @@ FormResponseManager.prototype._toDataTables = function(fields)
     }
 
     this.dtData = aaData;
-}
+};
 
 FormResponseManager.prototype.getAsPivotJs = function(fields)
 {
     if(!this.pivotJsData)
         this._toPivotJs(fields);
     return this.pivotJsData;
-}
+};
 
 FormResponseManager.prototype.getAsDataTables =  function(fields)
 {
     if(!this.dtData)
         this._toDataTables(fields);
     return this.dtData;
-}
+};
 
 function encodeForCSSclass (str) {
     str = (str + '').toString();
 
     return str.replace(" ", "-");
-}
+};
+
