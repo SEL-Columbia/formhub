@@ -17,11 +17,11 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
         for att in queryset_iterator(Attachment.objects.select_related('instance', 'instance__xform').all()):
-            write_exif(att)
             filename = att.media_file.name
             default_storage = get_storage_class()()
             if not default_storage.exists(get_path(filename, 
                                     settings.THUMB_CONF['small']['suffix'])):
+                write_exif(att)
                 try:
                     if default_storage.__class__ != fs.__class__:
                         resize(filename)
