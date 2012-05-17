@@ -123,6 +123,8 @@ def get_dimensions((width, height), longest_side):
 def _save_thumbnails(image, path, size, suffix, filename=None):
     # If filename is present, resize on s3 fs
     if filename:
+        default_storage = get_storage_class()()
+        fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
         image.thumbnail(get_dimensions(image.size, size), Image.ANTIALIAS)
         image.save(get_path(path, suffix))
         default_storage.save(get_path(filename, suffix), 
