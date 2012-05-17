@@ -6,6 +6,7 @@ from PIL import Image
 import urllib2 as urllib
 from PIL import Image
 from cStringIO import StringIO
+import json
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -119,44 +120,75 @@ def get_dimensions((width, height), longest_side):
         width = longest_side
     return (width, height)
 
+def _save_thumbnails(image, path, size, suffix, filename=None):
+    # If filename is present, resize on s3 fs
+    if filename:
+        image.thumbnail(get_dimensions(image.size, size), Image.ANTIALIAS)
+        image.save(get_path(path, suffix))
+        default_storage.save(get_path(filename, suffix), 
+                                fs.open(get_path(path, suffix)))
+    else:
+        image.thumbnail(get_dimensions(image.size, size), Image.ANTIALIAS)
+        image.save(get_path(path, suffix))
+
 def resize(filename):
     default_storage = get_storage_class()()
     path = default_storage.url(filename)
     img_file = urllib.urlopen(path)
     im = StringIO(img_file.read())
     image = Image.open(im)
+    conf = settings.THUMB_CONF
 
     fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
-    loc_file_name = fs.path(filename)
+    loc_path = fs.path(filename)
 
-    # Save large thumbnail
-    image.thumbnail(get_dimensions(image.size, 1280), Image.ANTIALIAS)
-    image.save(get_path(loc_file_name, '-lrg.'))
-    default_storage.save(get_path(filename, '-lrg.'), fs.open(get_path(loc_file_name, '-lrg.')))
-    
-    # Then save medium thumbnail
-    image.thumbnail(get_dimensions(image.size, 640), Image.ANTIALIAS)
-    image.save(get_path(loc_file_name, '-med.'))
-    default_storage.save(get_path(filename, '-med.'), fs.open(get_path(loc_file_name, '-med.')))
+    _save_thumbnails(image, loc_path, conf['large']['size'], 
+                            conf['large']['suffix'], filename=filename)
+    _save_thumbnails(image, loc_path, conf['medium']['size'], 
+                            conf['medium']['suffix'], filename=filename)
+    _save_thumbnails(image, loc_path, conf['small']['size'], 
+                            conf['small']['suffix'], filename=filename)
 
-    # Then save small thumbnail
-    image.thumbnail(get_dimensions(image.size, 240), Image.ANTIALIAS)
-    image.save(get_path(loc_file_name, '-sml.'))
-    default_storage.save(get_path(filename, '-sml.'), fs.open(get_path(loc_file_name, '-sml.')))
-    
 def resize_local_env(filename):
     default_storage = get_storage_class()()
     path = default_storage.path(filename)
     image = Image.open(path)
+    conf = settings.THUMB_CONF
 
-    # Save large thumbnail
-    image.thumbnail(get_dimensions(image.size, 1280), Image.ANTIALIAS)
-    image.save(get_path(path, '-lrg.'))
+    _save_thumbnails(image, path, conf['large']['size'], conf['large']['suffix'])
+    _save_thumbnails(image, path, conf['medium']['size'], conf['medium']['suffix'])
+    _save_thumbnails(image, path, conf['small']['size'], conf['small']['suffix'])
 
-    # Then save medium thumbnail
-    image.thumbnail(get_dimensions(image.size, 640), Image.ANTIALIAS)
-    image.save(get_path(path, '-med.'))
 
-    # Then save small thumbnail
-    image.thumbnail(get_dimensions(image.size, 240), Image.ANTIALIAS)
-    image.save(get_path(path, '-sml.'))
+def write_exif(attachment):
+    types =json.loads(attachment.instance.xform.json)
+    column = ''
+    for x in types['children']:
+        if x['type'] == 'geopoint':
+            column = x['name']     
+    
+    d = attachment.instance.get_dict()
+    gps = d.get(column, None)
+    if gps:
+        lat, lng, alt, acc = gps.split()
+        fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
+        default_storage = get_storage_class()()
+        path = default_storage.path(att.media_file.name)
+        
+        try:
+            if default_storage.__class__ != fs.__class__:
+                default_storage = get_storage_class()()
+                path = default_storage.url(filename)
+                img_file = urllib.urlopen(path)
+                im = StringIO(img_file.read())
+                image = Image.open(im)
+                image.save(fs.path(attachment.media_file.name))
+                set_gps_location(path, float(lat), float(lng))
+                default_storage.save(attachment.media_file.name, 
+                                fs.open(fs.path(attachment.media_file.name)))
+            else:
+                default_storage = get_storage_class()()
+                path = default_storage.path(attachment.media_file.name)
+                set_gps_location(path, float(lat), float(lng))
+        except (IOError, OSError), e:
+            print 'Error geocoding %s: %s' % (attachment.media_file.name, e)
