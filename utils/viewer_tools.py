@@ -2,6 +2,7 @@ from xml.dom import minidom
 import os, sys
 import common_tags as tag
 from django.core.files.storage import get_storage_class
+from django.conf import settings
 
 SLASH = u"/"
 
@@ -15,22 +16,18 @@ def image_urls_for_form(xform):
     ], [])
 
 def get_path(path, suffix):
-    new_path = path.split('.')
-    name = ''
-    for i in range(len(new_path) - 1):
-        if i == len(new_path) - 2:
-            name = name + new_path[i]
-        else:
-            name = name + new_path[i] + '.'
-    name = name + suffix +new_path[len(new_path) - 1]
-    return name
+    from os.path import splitext
+    fileName, fileExtension = os.path.splitext(path)
+    return fileName + suffix +  fileExtension
 
 
 def image_urls(instance):
     default_storage = get_storage_class()() 
-    return [ default_storage.url(get_path(a.media_file.name, '-med.')) 
-        if default_storage.exists(get_path(a.media_file.name, '-med.')) 
-        else a.media_file.url for a in instance.attachments.all()]
+    return [ default_storage.url(get_path(a.media_file.name, 
+            settings.THUMB_CONF['medium']['suffix'])) if 
+            default_storage.exists(get_path(a.media_file.name, 
+            settings.THUMB_CONF['medium']['suffix'])) else 
+            a.media_file.url for a in instance.attachments.all()]
 
 
 def parse_xform_instance(xml_str):
