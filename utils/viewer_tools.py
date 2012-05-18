@@ -1,5 +1,6 @@
 from xml.dom import minidom
 import os, sys
+from os.path import splitext
 import common_tags as tag
 from django.core.files.storage import get_storage_class
 from django.conf import settings
@@ -16,7 +17,6 @@ def image_urls_for_form(xform):
     ], [])
 
 def get_path(path, suffix):
-    from os.path import splitext
     fileName, fileExtension = os.path.splitext(path)
     return fileName + suffix +  fileExtension
 
