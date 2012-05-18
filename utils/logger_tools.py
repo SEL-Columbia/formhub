@@ -190,7 +190,6 @@ def write_exif(attachment):
     if gps:
         lat, lng, alt, acc = gps.split()
         fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
-        print gps
         try:
             default_storage = get_storage_class()()
             if default_storage.__class__ != fs.__class__:
