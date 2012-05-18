@@ -159,12 +159,8 @@ def resize(filename):
     fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
     loc_path = fs.path(filename)
 
-    _save_thumbnails(image, loc_path, conf['large']['size'], 
-                            conf['large']['suffix'], filename=filename)
-    _save_thumbnails(image, loc_path, conf['medium']['size'], 
-                            conf['medium']['suffix'], filename=filename)
-    _save_thumbnails(image, loc_path, conf['small']['size'], 
-                            conf['small']['suffix'], filename=filename)
+    [_save_thumbnails(image, loc_path, conf[key]['size'], conf[key]['suffix'], 
+                                    filename=filename)) for key in conf.keys()]
 
 def resize_local_env(filename):
     default_storage = get_storage_class()()
@@ -172,10 +168,8 @@ def resize_local_env(filename):
     image = Image.open(path)
     conf = settings.THUMB_CONF
 
-    _save_thumbnails(image, path, conf['large']['size'], conf['large']['suffix'])
-    _save_thumbnails(image, path, conf['medium']['size'], conf['medium']['suffix'])
-    _save_thumbnails(image, path, conf['small']['size'], conf['small']['suffix'])
-
+    [_save_thumbnails(image, path, conf[key]['size'], conf[key]['suffix']) 
+                                                        for key in conf.keys()]
 
 def write_exif(attachment):
     # get the geopoint fields
