@@ -217,30 +217,36 @@ function _rebuildHexOverLay(hexdata, hex_feature_to_polygon_properties) {
 
 function _reComputeHexOverLayColors(questionName, responseNames) {
     var hex_feature_to_polygon_properties = function(el) {
-        var reduce_fn = function(instance) { return (-1 === responseNames.indexOf(instance.response[questionName])); }; 
+        // TODO: remove rawdata from properties, go through formJSONManager or somesuch instead
         var numerator = _.reduce(el.properties.rawdata, function(numer, instance) {
-                            if(reduce_fn(instance)) {
-                                return numer + 1;
-                            } else return numer;
+                            return numer + (_.contains(responseNames, instance.response[questionName]) ? 1 : 0);
                         }, 0.0);
-        var color = getProportionalColor(numerator / el.properties.rawdata.length);
-        return {   fillColor: color, fillOpacity: 0.9, color: 'grey', weight: 1 };
+        var denominator = el.properties.rawdata.length;
+        var color = getProportionalColor(numerator / denominator);
+        var opacity = 0.9;
+        return { fillColor: color, fillOpacity: opacity, color: 'grey', weight: 1 };
+                   
     };
     _rebuildHexOverLay(hexbinData, hex_feature_to_polygon_properties);
 }
 
 function addHexOverLay()
 {
-    if(!hexbinData) hexbinData = formResponseMngr.getAsHexbinGeoJSON(); // global var
+    hexbinData = formResponseMngr.getAsHexbinGeoJSON(); // global var
     var arr_to_latlng = function(arr) { return new L.LatLng(arr[0], arr[1]); };
-    // TODO: The following line converts geoJSON Polygons into L.Polygon
-    // there may be a way to do this 'natively' through Leaflet
     var hex_feature_to_polygon_properties = function(el) {
         var color = getProportionalColor(el.properties.count / (el.properties.countMax * 1.2));
         return {fillColor: color, fillOpacity: 0.9, color:'grey', weight: 1};
     };
     _rebuildHexOverLay(hexbinData, hex_feature_to_polygon_properties);
 }
+
+function removeHexOverLay()
+{
+    map.removeLayer(hexbinLayerGroup);
+    hexbinLayerGroup.clearLayers();
+}
+
 
 /*
  * Format the json data to HTML for a map popup

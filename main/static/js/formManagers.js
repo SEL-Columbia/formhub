@@ -148,9 +148,10 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit)
 {
     var thisFormResponseMngr = this;
 
-    /// invalidate geoJSON data
+    /// invalidate all derivative data 
     this.geoJSON = null;
     this.dtData = null;
+    this.hexGeoJSON = null;
 
     /// append select-one filters to params
     if(formJSONMngr._currentSelectOneQuestionName)
@@ -251,8 +252,8 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
     // The following functions needed hexbin-js doesn't deal well with negatives
     function fixlng(n) { return (n < 0 ? 360 + n : n); }; 
     function fixlnginv(n) { return (n > 180 ? n - 360 : n); };
-    function fixlat(n) { return (n < 0 ? 90 - n : n); }; 
-    function fixlatinv(n) { return (n > 90 ? 90 - n : n); };
+    function fixlat(n) { return (n < 0 ? 90 + n : 90 + n); }; 
+    function fixlatinv(n) { return (n > 90 ? n - 90 : n - 90); };
     if(geopointQuestion)
         geopointQuestionName = geopointQuestion["name"];
     _.each(responses, function(response) {
@@ -273,7 +274,6 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
     hexset = d3.layout.hexbin()
                 .xValue( function(d) { return d.lng; } )
                 .yValue( function(d) { return d.lat; } )
-                .hexI(.05)
                 ( latLngArray );
     countMax = d3.max( hexset, function(d) { return d.data.length; } );
     _.each(hexset, function(hex) {
