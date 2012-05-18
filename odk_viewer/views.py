@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 from django.core.files.storage import get_storage_class
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseForbidden,\
-         HttpResponseBadRequest, HttpResponseRedirect, HttpResponseNotFound
+         HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils import simplejson
@@ -317,16 +317,3 @@ def data_view(request, username, id_string):
     context.jsonform_url = reverse(download_jsonform,\
         kwargs={"username": username, "id_string":id_string})
     return render_to_response("data_view.html", context_instance=context)
-
-def response(request, username, id_string):
-    xform, is_owner, can_edit, can_view = get_xform_and_perms(\
-        username, id_string, request)
-    # no access
-    if not (xform.shared_data or can_view or
-            request.session.get('public_link')):
-        return HttpResponseForbidden('Not shared.')
-
-    return render_to_response('response.html', {
-        'username': username,
-        'id_string': id_string,
-    })
