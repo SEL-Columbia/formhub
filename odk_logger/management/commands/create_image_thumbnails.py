@@ -9,7 +9,6 @@ from utils.model_tools import queryset_iterator
 from utils.logger_tools import get_dimensions, resize, resize_local_env, \
                                 write_exif
 from utils.viewer_tools import get_path
-from utils.geotag import set_gps_location
 
 class Command(BaseCommand):
     help = "Creates thumbnails for all form images and stores them"
