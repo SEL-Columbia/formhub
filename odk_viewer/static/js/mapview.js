@@ -182,6 +182,7 @@ function _rebuildMarkerLayer(geoJSON, questionName)
 
     /// need this here instead of the constructor so that we can catch the featureparse event
     geoJsonLayer.addGeoJSON(geoJSON);
+    refreshHexOverLay(); // TODO: add a toggle to do this only if hexOn = true;
     map.addLayer(geoJsonLayer);
 
     if(questionName)
@@ -196,12 +197,9 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         map.fitBounds(latlngbounds);
     }
 }
-
 function _rebuildHexOverLay(hexdata, hex_feature_to_polygon_properties) {
     map.removeLayer(hexbinLayerGroup);
     hexbinLayerGroup.clearLayers();
-    // TODO: The following line converts geoJSON Polygons into L.Polygon
-    // there may be a way to do this 'natively' through Leaflet
     var arr_to_latlng = function(arr) { return new L.LatLng(arr[0], arr[1]); };
     var hex_feature_to_polygon_fn = function(el) {
         return new L.Polygon(_(el.geometry.coordinates).map(arr_to_latlng),
@@ -214,6 +212,11 @@ function _rebuildHexOverLay(hexdata, hex_feature_to_polygon_properties) {
     _(hexbinPolygons).map(function(x) { hexbinLayerGroup.addLayer(x); });
     map.addLayer(hexbinLayerGroup);   
 }
+//TODO: build new Polygons here, and in _rebuildHexOverLay, just reset the properties
+function constructHexBinOverLay() {
+    hexbinData = formResponseMngr.getAsHexbinGeoJSON();
+    _rebuildHexOverLay(hexbinData, function() { return {}; });
+}
 
 function _reComputeHexOverLayColors(questionName, responseNames) {
     var hex_feature_to_polygon_properties = function(el) {
@@ -222,23 +225,30 @@ function _reComputeHexOverLayColors(questionName, responseNames) {
                             return numer + (_.contains(responseNames, instance.response[questionName]) ? 1 : 0);
                         }, 0.0);
         var denominator = el.properties.rawdata.length;
-        var color = getProportionalColor(numerator / denominator);
-        var opacity = 0.9;
-        return { fillColor: color, fillOpacity: opacity, color: 'grey', weight: 1 };
+        var color = getProportionalColor(numerator / denominator, "greens");
+        return { fillColor: color, fillOpacity: 0.9, color: 'grey', weight: 1 };
                    
     };
     _rebuildHexOverLay(hexbinData, hex_feature_to_polygon_properties);
 }
 
-function addHexOverLay()
+function _hexOverLayByCount()
 {
-    hexbinData = formResponseMngr.getAsHexbinGeoJSON(); // global var
-    var arr_to_latlng = function(arr) { return new L.LatLng(arr[0], arr[1]); };
     var hex_feature_to_polygon_properties = function(el) {
         var color = getProportionalColor(el.properties.count / (el.properties.countMax * 1.2));
         return {fillColor: color, fillOpacity: 0.9, color:'grey', weight: 1};
     };
     _rebuildHexOverLay(hexbinData, hex_feature_to_polygon_properties);
+}
+
+function refreshHexOverLay() { // refresh hex overlay, in any map state
+    // IF we have already calculated hex bin data, and have a filtration active, recomputer colors;
+    if (!hexbinData) constructHexBinOverLay();
+    if (formResponseMngr._currentSelectOneQuestionName && formResponseMngr._select_one_filters.length)
+        _reComputeHexOverLayColors(formResponseMngr._currentSelectOneQuestionName,
+                                   formResponseMngr._select_one_filters);
+    else
+        _hexOverLayByCount();
 }
 
 function removeHexOverLay()
@@ -247,6 +257,11 @@ function removeHexOverLay()
     hexbinLayerGroup.clearLayers();
 }
 
+function toggleHexOverLay()
+{
+    if(map.hasLayer(hexbinLayerGroup)) removeHexOverLay();
+    else refreshHexOverLay();
+}
 
 /*
  * Format the json data to HTML for a map popup
@@ -339,6 +354,7 @@ function rebuildLegend(questionName, questionColorMap)
     var question = formJSONMngr.getQuestionByName(questionName);
     var choices = formJSONMngr.getChoices(question);
     var questionLabel = formJSONMngr.getMultilingualLabel(question);
+    formResponseMngr._currentSelectOneQuestionName = questionName; //TODO: this should be done somewhere else?
 
     // try find existing legend and destroy
     var legendContainer = $(("#"+legendContainerId));
@@ -404,6 +420,7 @@ function rebuildLegend(questionName, questionColorMap)
         // reload with new params
         formResponseMngr.callback = filterSelectOneCallback;
         formResponseMngr.loadResponseData({});
+        refreshHexOverLay();
     });
 }
 
@@ -555,11 +572,14 @@ function select_from_array(array, zero_to_one_inclusive) {
     return array[Math.floor(zero_to_one_inclusive * (array.length - epsilon))];
 
 }
-function getProportionalColor(zero_to_one) {
+function getProportionalColor(zero_to_one, colorscheme) {
     // http://colorbrewer2.org/index.php?type=sequential&scheme=Purples&n=9 -- with first white taken out
-    var purples = ["#EFEDF5", "#DADAEB", "#BCBDDC", "#9E9AC8", "#807DBA", 
-                   "#6A51A3", "#54278F", "#3F007D"]; 
-    return select_from_array(purples, zero_to_one);
+    var proportionalColorSchemes = {"purples": ["#EFEDF5", "#DADAEB", "#BCBDDC", "#9E9AC8", "#807DBA", 
+                                                "#6A51A3", "#54278F", "#3F007D"],
+                                    "greens": ["#DEEBF7", "#C6DBEF", "#9ECAE1", "#6BAED6", "#4292C6", 
+                                                "#2171B5", "#08519C", "#08306B"]};
+    if (!colorscheme) colorscheme = "purples";
+    return select_from_array(proportionalColorSchemes[colorscheme], zero_to_one);
 }
 
 function getDichromaticColor(zero_to_one) {

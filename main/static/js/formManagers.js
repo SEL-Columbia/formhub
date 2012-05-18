@@ -151,7 +151,7 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit)
     /// invalidate all derivative data 
     this.geoJSON = null;
     this.dtData = null;
-    this.hexGeoJSON = null;
+    //this.hexGeoJSON = null; // hexGeoJSON is actually not reset when there is a view-by
 
     /// append select-one filters to params
     if(formJSONMngr._currentSelectOneQuestionName)
