@@ -76,8 +76,8 @@ class ParsedInstance(models.Model):
         app_label = "odk_viewer"
 
     @classmethod
-    def query_mongo(cls, username, id_string, query, start=0,
-            limit=DEFAULT_LIMIT, count=False, sort=None):
+    def query_mongo(cls, username, id_string, query, fields, sort, start=0,
+            limit=DEFAULT_LIMIT, count=False):
         query = json.loads(query, object_hook=json_util.object_hook) if query else {}
         query = dict_for_mongo(query)
         query[cls.USERFORM_ID] = u'%s_%s' % (username, id_string)
