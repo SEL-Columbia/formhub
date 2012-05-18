@@ -24,7 +24,7 @@ var circleStyle = {
 var amazonUrlPrefix = "https://formhub.s3.amazonaws.com/";
 var geoJsonLayer = new L.GeoJSON(null);
 var hexbinLayerGroup = new L.LayerGroup();
-var hexbinPolygons = [];
+var hexbinData = null;
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
 var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekkywR';
 var bingMapTypeLabels = {'AerialWithLabels': 'Bing Satellite Map', 'Road': 'Bing Road Map'}; //Road, Aerial or AerialWithLabels
@@ -197,40 +197,49 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     }
 }
 
-function refreshHex(hexdata, hex_feature_to_polygon_fn) {
+function _rebuildHexOverLay(hexdata, hex_feature_to_polygon_properties) {
     map.removeLayer(hexbinLayerGroup);
     hexbinLayerGroup.clearLayers();
-    hexdata = formResponseMngr.getAsHexbinGeoJSON();
     // TODO: The following line converts geoJSON Polygons into L.Polygon
     // there may be a way to do this 'natively' through Leaflet
-    hexbinPolygons = _.compact(_.map(hexdata.features, hex_feature_to_polygon_fn));
+    var arr_to_latlng = function(arr) { return new L.LatLng(arr[0], arr[1]); };
+    var hex_feature_to_polygon_fn = function(el) {
+        return new L.Polygon(_(el.geometry.coordinates).map(arr_to_latlng),
+                                hex_feature_to_polygon_properties(el));
+    };
+    hexbinPolygons = _(hexdata.features).chain()
+                        .map(hex_feature_to_polygon_fn)
+                        .compact()
+                        .value();
     _(hexbinPolygons).map(function(x) { hexbinLayerGroup.addLayer(x); });
     map.addLayer(hexbinLayerGroup);   
 }
 
-function addHexOverLay()
-{
-    map.removeLayer(hexbinLayerGroup);
-    hexbinLayerGroup.clearLayers();
-    hexdata = formResponseMngr.getAsHexbinGeoJSON();
-    // TODO: The following line converts geoJSON Polygons into L.Polygon
-    // there may be a way to do this 'natively' through Leaflet
-    hexbinPolygons = _.compact(
-                 _.map(hexdata.features, function(el) {
-                        return new L.Polygon(_.map(el.geometry.coordinates, 
-                            function(x) { return new L.LatLng(x[0], x[1]); }),
-                            {   
-                                fillOpacity: el.properties.count / (el.properties.countMax * 1.2),
-                                weight: 1
-                            }
-                            );
-               }));
-    _(hexbinPolygons).map(function(x) { hexbinLayerGroup.addLayer(x); });
-    map.addLayer(hexbinLayerGroup);
+function _reComputeHexOverLayColors(questionName, responseNames) {
+    var hex_feature_to_polygon_properties = function(el) {
+        var reduce_fn = function(instance) { return (-1 === responseNames.indexOf(instance.response[questionName])); }; 
+        var numerator = _.reduce(el.properties.rawdata, function(numer, instance) {
+                            if(reduce_fn(instance)) {
+                                return numer + 1;
+                            } else return numer;
+                        }, 0.0);
+        var color = getProportionalColor(numerator / el.properties.rawdata.length);
+        return {   fillColor: color, fillOpacity: 0.9, color: 'grey', weight: 1 };
+    };
+    _rebuildHexOverLay(hexbinData, hex_feature_to_polygon_properties);
 }
 
-function recomputeHexOverLayColors(questionName, responseNames) {
-    hexbinPolygons
+function addHexOverLay()
+{
+    if(!hexbinData) hexbinData = formResponseMngr.getAsHexbinGeoJSON(); // global var
+    var arr_to_latlng = function(arr) { return new L.LatLng(arr[0], arr[1]); };
+    // TODO: The following line converts geoJSON Polygons into L.Polygon
+    // there may be a way to do this 'natively' through Leaflet
+    var hex_feature_to_polygon_properties = function(el) {
+        var color = getProportionalColor(el.properties.count / (el.properties.countMax * 1.2));
+        return {fillColor: color, fillOpacity: 0.9, color:'grey', weight: 1};
+    };
+    _rebuildHexOverLay(hexbinData, hex_feature_to_polygon_properties);
 }
 
 /*
@@ -540,16 +549,16 @@ function select_from_array(array, zero_to_one_inclusive) {
     return array[Math.floor(zero_to_one_inclusive * (array.length - epsilon))];
 
 }
-function get_proportional_color(zero_to_one) {
-    // http://colorbrewer2.org/index.php?type=sequential&scheme=Purples&n=9   
-    var purples = ["FCFBFD", "EFEDF5", "DADAEB", "BCBDDC", "9E9AC8", "807DBA", 
-                   "6A51A3", "54278F", "3F007D"]; 
+function getProportionalColor(zero_to_one) {
+    // http://colorbrewer2.org/index.php?type=sequential&scheme=Purples&n=9 -- with first white taken out
+    var purples = ["#EFEDF5", "#DADAEB", "#BCBDDC", "#9E9AC8", "#807DBA", 
+                   "#6A51A3", "#54278F", "#3F007D"]; 
     return select_from_array(purples, zero_to_one);
 }
 
-function get_dichromatic_color(zero_to_one) {
+function getDichromaticColor(zero_to_one) {
     // http://colorbrewer2.org/index.php?type=diverging&scheme=RdBu&n=11
-    var diverging = ["67001F", "B2182B", "D6604D", "F4A582", "FDDBC7", "F7F7F7", 
-                     "D1E5F0", "92C5DE", "4393C3", "2166AC", "053061"];
+    var diverging = ["#67001F", "#B2182B", "#D6604D", "#F4A582", "#FDDBC7", "#F7F7F7", 
+                     "#D1E5F0", "#92C5DE", "#4393C3", "#2166AC", "#053061"];
     return select_from_array(diverging, zero_to_one);
 }

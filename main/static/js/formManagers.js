@@ -273,6 +273,7 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
     hexset = d3.layout.hexbin()
                 .xValue( function(d) { return d.lng; } )
                 .yValue( function(d) { return d.lat; } )
+                .hexI(.05)
                 ( latLngArray );
     countMax = d3.max( hexset, function(d) { return d.data.length; } );
     _.each(hexset, function(hex) {
