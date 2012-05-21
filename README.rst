@@ -1,7 +1,7 @@
 Formhub
 =======
 
-.. image:: https://secure.travis-ci.org/modilabs/formhub.png
+.. image:: https://secure.travis-ci.org/modilabs/formhub.png?branch=master
   :target: http://travis-ci.org/modilabs/formhub
 
 Installation
