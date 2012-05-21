@@ -70,18 +70,7 @@ function initialize() {
 function loadFormJSONCallback()
 {
     // we only want to load gps and select one data to begin with
-    fields = [];
-    for(idx in formJSONMngr.selectOneQuestions)
-    {
-        var question = formJSONMngr.selectOneQuestions[idx];
-        fields.push(question["name"]);
-    }
-
-    for(idx in formJSONMngr.geopointQuestions)
-    {
-        var question = formJSONMngr.geopointQuestions[idx];
-        fields.push(question["name"]);
-    }
+    fields = getBootstrapFields();
 
     // load responses
     formResponseMngr.loadResponseData({}, 0, null, fields);
@@ -425,8 +414,30 @@ function rebuildLegend(questionName, questionColorMap)
             formResponseMngr.removeResponseFromSelectOneFilter(responseName);
         // reload with new params
         formResponseMngr.callback = filterSelectOneCallback;
-        formResponseMngr.loadResponseData({})
+        fields = getBootstrapFields();
+        formResponseMngr.loadResponseData({}, 0, null, fields)
     });
+}
+
+/**
+ * Get fields we deem nesseceary to display map/legend
+ */
+function getBootstrapFields()
+{
+    // we only want to load gps and select one data to begin with
+    fields = [];
+    for(idx in formJSONMngr.selectOneQuestions)
+    {
+        var question = formJSONMngr.selectOneQuestions[idx];
+        fields.push(question["name"]);
+    }
+
+    for(idx in formJSONMngr.geopointQuestions)
+    {
+        var question = formJSONMngr.geopointQuestions[idx];
+        fields.push(question["name"]);
+    }
+    return fields;
 }
 
 function clearLegend()
