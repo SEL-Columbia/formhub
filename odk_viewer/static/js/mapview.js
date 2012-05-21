@@ -43,10 +43,10 @@ var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCall
 function initialize() {
     // Make a new Leaflet map in your container div
     map = new L.Map(mapId).setView(centerLatLng, defaultZoom);
-    layersControl = new L.Control.Layers();
-    layersControl.addOverlay(markerLayerGroup, markerLayerLabel);
-    layersControl.addOverlay(hexbinLayerGroup, hexLayerLabel);
+    var overlays = {markerLayerLabel: markerLayerGroup, hexLayerLabel: hexbinLayerGroup};
+    layersControl = new L.Control.Layers({}, overlays);
     map.addControl(layersControl);
+    map.addLayer(markerLayerGroup); //show marker layer by default
 
     // add bing maps layer
     $.each(bingMapTypeLabels, function(type, label) {
@@ -202,7 +202,6 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     }
 }
 function _rebuildHexOverLay(hexdata, hex_feature_to_polygon_properties) {
-    map.removeLayer(hexbinLayerGroup);
     hexbinLayerGroup.clearLayers();
     var arr_to_latlng = function(arr) { return new L.LatLng(arr[0], arr[1]); };
     var hex_feature_to_polygon_fn = function(el) {
@@ -214,7 +213,6 @@ function _rebuildHexOverLay(hexdata, hex_feature_to_polygon_properties) {
                         .compact()
                         .value();
     _(hexbinPolygons).map(function(x) { hexbinLayerGroup.addLayer(x); });
-    map.addLayer(hexbinLayerGroup);
 }
 //TODO: build new Polygons here, and in _rebuildHexOverLay, just reset the properties
 function constructHexBinOverLay() {
@@ -257,7 +255,6 @@ function refreshHexOverLay() { // refresh hex overlay, in any map state
 
 function removeHexOverLay()
 {
-    map.removeLayer(hexbinLayerGroup);
     hexbinLayerGroup.clearLayers();
 }
 
