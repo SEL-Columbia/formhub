@@ -68,15 +68,86 @@ function initialize() {
         });
     });
 
-    formResponseMngr.loadResponseData({});
+    // load form structure/questions
+    formJSONMngr.loadFormJSON();
 }
 
-// callback called after form data has been loaded via the mongo form API
+// callback called after formstaructure has been loaded from form json url
+function loadFormJSONCallback()
+{
+    // we only want to load gps and select one data to begin with
+    fields = getBootstrapFields();
+
+    // load responses
+    formResponseMngr.loadResponseData({}, 0, null, fields);
+}
+
+// callback called after response data has been loaded via the mongo form API
 function loadResponseDataCallback()
 {
     formResponseMngr.callback = null;// initial callback is for setup, subsequent reloads must set desired callback
-    // load form structure/questions here since we now have some data
-    formJSONMngr.loadFormJSON();
+
+    // get geoJSON data to setup points - relies on questions having been parsed
+    var geoJSON = formResponseMngr.getAsGeoJSON();
+
+    _rebuildMarkerLayer(geoJSON);
+
+    // just to make sure the nav container exists
+    var navContainer = $(navContainerSelector);
+    if(navContainer.length == 1)
+    {
+        // check if we have select one questions
+        if(formJSONMngr.getNumSelectOneQuestions() > 0)
+        {
+            var dropdownLabel = _createElementAndSetAttrs('li');
+            var dropdownLink = _createElementAndSetAttrs('a', {"href": "#"}, "View By");
+            dropdownLabel.appendChild(dropdownLink);
+            navContainer.append(dropdownLabel);
+
+            var dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown"});
+            var dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
+                "data-toggle":"dropdown"});
+            var dropdownCaret = _createElementAndSetAttrs('b', {"class":"caret"});
+            dropdownCaretLink.appendChild(dropdownCaret);
+            dropDownContainer.appendChild(dropdownCaretLink);
+
+            var questionUlContainer = _createElementAndSetAttrs("ul", {"class":"dropdown-menu"});
+
+            // create an "All" link to reset the map
+            var questionLi = _createSelectOneLi({"name":"", "label":"None"});
+            questionUlContainer.appendChild(questionLi);
+
+            // create links for select one questions
+            selectOneQuestions = formJSONMngr.getSelectOneQuestions();
+            for(idx in selectOneQuestions)
+            {
+                var question = selectOneQuestions[idx];
+                questionLi = _createSelectOneLi(question);
+                questionUlContainer.appendChild(questionLi);
+            }
+            dropDownContainer.appendChild(questionUlContainer);
+
+            navContainer.append(dropDownContainer);
+            /*$('.select-one-anchor').click(function(){
+             // rel contains the question's unique name
+             var questionName = $(this).attr("rel");
+             viewByChanged(questionName);
+             })*/
+        }
+    }
+    else
+        throw "Container '" + navContainerSelector + "' not found";
+
+    // Bind a callback that executes when document.location.hash changes.
+    $(window).bind( "hashchange", function(e) {
+        var hash = e.fragment;
+        viewByChanged(hash);
+    });
+
+    // Since the event is only triggered when the hash changes, we need
+    // to trigger the event now, to handle the hash the page may have
+    // loaded with.
+    $(window).trigger( "hashchange" );
 }
 
 function _rebuildMarkerLayer(geoJSON, questionName)
@@ -371,7 +442,7 @@ function rebuildLegend(questionName, questionColorMap)
 
     legendContainer.attr("style", "diplay:block");
     var legendTitle = _createElementAndSetAttrs('h3', {}, questionLabel);
-    var legendUl = _createElementAndSetAttrs('ul');
+    var legendUl = _createElementAndSetAttrs('ul', {"class":"nav nav-pills nav-stacked"});
     legendContainer.append(legendTitle);
     legendContainer.append(legendUl);
     for(response in questionColorMap)
@@ -383,29 +454,24 @@ function rebuildLegend(questionName, questionColorMap)
         if(choices.hasOwnProperty(response))
             itemLabel = formJSONMngr.getMultilingualLabel(choices[response]);
         var legendIcon = _createElementAndSetAttrs('span', {"class": "legend-bullet", "style": "background-color: " + color});
-        var responseText = _createElementAndSetAttrs('span', {});
+        var responseText = _createElementAndSetAttrs('span', {"class":"item-label"}, itemLabel);
         var numResponses = question.responseCounts[response];
-        if(numResponses > 0)
-        {
-            var anchorClass = 'legend-label';
-            if(formResponseMngr._select_one_filters.indexOf(response) > -1)
-                anchorClass += " active";
-            else
-                anchorClass += " normal";
-            var legendAnchor = _createElementAndSetAttrs('a', {'class':anchorClass, 'href':'javascript:;', 'rel':response}, itemLabel);
-            responseText.appendChild(legendAnchor);
-        }
-        else
-        {
-            var legendSpan = _createElementAndSetAttrs('span', {}, itemLabel);
-            responseText.appendChild(legendSpan);
-        }
         var responseCountSpan = _createElementAndSetAttrs('span', {'class':'legend-response-count'}, numResponses.toString());
 
-        responseLi.appendChild(legendIcon);
-        responseLi.appendChild(responseText);
-        responseLi.appendChild(responseCountSpan);
+        // create the anchor
+        var anchorClass = 'legend-label';
+        if(formResponseMngr._select_one_filters.indexOf(response) > -1)
+            anchorClass += " active";
+        else if(numResponses > 0)
+            anchorClass += " normal";
+        else
+            anchorClass += " inactive";
+        var legendAnchor = _createElementAndSetAttrs('a', {'class':anchorClass, 'href':'javascript:;', 'rel':response});
+        legendAnchor.appendChild(legendIcon);
+        legendAnchor.appendChild(responseCountSpan);
 
+        legendAnchor.appendChild(responseText);
+        responseLi.appendChild(legendAnchor);
         legendUl.appendChild(responseLi);
     }
 
@@ -420,9 +486,32 @@ function rebuildLegend(questionName, questionColorMap)
             formResponseMngr.removeResponseFromSelectOneFilter(responseName);
         // reload with new params
         formResponseMngr.callback = filterSelectOneCallback;
+        fields = getBootstrapFields();
+        formResponseMngr.loadResponseData({}, 0, null, fields)
         formResponseMngr.loadResponseData({});
         refreshHexOverLay();
     });
+}
+
+/**
+ * Get fields we deem nesseceary to display map/legend
+ */
+function getBootstrapFields()
+{
+    // we only want to load gps and select one data to begin with
+    fields = [];
+    for(idx in formJSONMngr.selectOneQuestions)
+    {
+        var question = formJSONMngr.selectOneQuestions[idx];
+        fields.push(question["name"]);
+    }
+
+    for(idx in formJSONMngr.geopointQuestions)
+    {
+        var question = formJSONMngr.geopointQuestions[idx];
+        fields.push(question["name"]);
+    }
+    return fields;
 }
 
 function clearLegend()
