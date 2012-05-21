@@ -194,9 +194,11 @@ GOOGLE_STEP2_URI = 'http://formhub.org/gwelcome'
 GOOGLE_CLIENT_ID = '617113120802.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = '9reM29qpGFPyI8TBuB54Z4fk'
 
+# Changing the keys here will change order of evaluation and break functionality
+# Place additional keys inorder both alphabeticall and in descending size 
 THUMB_CONF = {'large' : {'size': 1280, 'suffix': '-lrg'},
               'medium' : {'size': 640, 'suffix': '-med'},
-              'small' : {'size': 240, 'suffix': '-sml'} 
+              'smaller' : {'size': 240, 'suffix': '-sml'} 
              }
 
 TESTING_MODE = False
