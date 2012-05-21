@@ -317,5 +317,3 @@ def data_view(request, username, id_string):
     context.jsonform_url = reverse(download_jsonform,\
         kwargs={"username": username, "id_string":id_string})
     return render_to_response("data_view.html", context_instance=context)
-
-

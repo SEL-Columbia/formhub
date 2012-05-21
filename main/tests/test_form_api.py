@@ -84,3 +84,14 @@ class TestFormAPI(MainTestCase):
         find_d = simplejson.loads(response.content)[0]
         self.assertTrue(find_d.has_key('count'))
         self.assertEqual(find_d.get('count'), 1)
+
+    def test_api_column_select(self):
+        # query string
+        json = '{"transport/available_transportation_types_to_referral_facility":"none"}'
+        columns = '["transport/available_transportation_types_to_referral_facility"]'
+        data = {'query': json, 'fields': columns}
+        response = self.client.get(self.api_url, data)
+        self.assertEqual(response.status_code, 200)
+        find_d = simplejson.loads(response.content)[0]
+        self.assertTrue(find_d.has_key('transport/available_transportation_types_to_referral_facility'))
+        self.assertFalse(find_d.has_key('_attachments'))

@@ -1,8 +1,13 @@
-Installation
-============
+Formhub
+=======
 
-Here are the steps I went through to install formhub in Ubuntu
-10.04. First, I set up a new virtual environment:
+.. image:: https://secure.travis-ci.org/modilabs/formhub.png
+  :target: http://travis-ci.org/modilabs/formhub
+
+Installation
+------------
+
+On Ubuntu 10.04. First, I set up a new virtual environment:
 
     sudo apt-get install python-virtualenv
 
@@ -32,8 +37,7 @@ Install Mongodb:
 
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
 
-    Add this line to /etc/apt/sources.list then save:
-    'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen'
+    echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' >> /etc/apt/sources.list
 
     sudo apt-get update
     
@@ -55,8 +59,8 @@ And now you should be ready to run the server:
 
     python manage.py runserver
 
-Running Tests and Contributing
-==============================
+Running Tests
+-------------
 
 To run all tests enter the following:
 
@@ -74,12 +78,15 @@ To run the test for a specific method in a specific class in a specific app, e.g
 
     python manage.py test main.TestFormErrors.test_submission_deactivated
 
+Contributing
+------------
+
 If you would like to contribute code please read:
 
 https://github.com/modilabs/formhub/wiki/Contributing-Code-to-Formhub
 
 Code Structure
-==============
+--------------
 
 * odk_logger - This app serves XForms to ODK Collect and receives
   submissions from ODK Collect. This is a stand alone application.

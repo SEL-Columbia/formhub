@@ -16,8 +16,8 @@ from common_tags import START_TIME, START, END_TIME, END, ID, UUID, ATTACHMENTS
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
-key_whitelist = ['$or', '$and', '$exists', '$in']
-
+key_whitelist = ['$or', '$and', '$exists', '$in', '$gt', '$gte', '$lt', '$lte']
+''
 
 class ParseError(Exception):
     pass
@@ -37,9 +37,9 @@ def dict_for_mongo(d):
     for key, value in d.items():
         if type(value) == list:
             value = [dict_for_mongo(e) if type(e) == dict else e for e in value]
-        if type(value) == dict:
+        elif type(value) == dict:
             value = dict_for_mongo(value)
-        if key == '_id':
+        elif key == '_id':
             try:
                 d[key] = int(value)
             except ValueError:
@@ -76,17 +76,30 @@ class ParsedInstance(models.Model):
         app_label = "odk_viewer"
 
     @classmethod
-    def query_mongo(cls, username, id_string, query, start=0,
+    def query_mongo(cls, username, id_string, query, fields, sort, start=0,
             limit=DEFAULT_LIMIT, count=False):
+        fields_to_select = {cls.USERFORM_ID: 0}
+        # TODO: give more detailed error messages to 3rd parties using the API when json.loads fails
         query = json.loads(query, object_hook=json_util.object_hook) if query else {}
         query = dict_for_mongo(query)
         query[cls.USERFORM_ID] = u'%s_%s' % (username, id_string)
+        # fields must be a string array i.e. '["name", "age"]'
+        fields = json.loads(fields, object_hook=json_util.object_hook) if fields else []
+        # TODO: current mongo (2.0.4 of this writing) cant mix including and excluding fields in a single query
+        if type(fields) == list and len(fields) > 0:
+            fields_to_select = dict([(field, 1) for field in fields])
+        sort = json.loads(sort, object_hook=json_util.object_hook) if sort else {}
         if count:
             return [{"count":xform_instances.find(query,
-                    {cls.USERFORM_ID: 0}).count()}]
+                fields_to_select).count()}]
+        elif type(sort) == dict and len(sort) == 1:
+            sort_key = sort.keys()[0]
+            sort_dir = int(sort[sort_key]) # -1 for desc, 1 for asc
+            return xform_instances.find(query,
+                fields_to_select).skip(start).limit(limit).sort(sort_key, sort_dir)
         else:
             return xform_instances.find(query,
-                {cls.USERFORM_ID: 0}).skip(start).limit(limit)
+                fields_to_select).skip(start).limit(limit)
 
     def to_dict_for_mongo(self):
         d = dict_for_mongo(self.to_dict())
