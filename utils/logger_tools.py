@@ -153,6 +153,7 @@ def resize(filename):
     path = default_storage.url(filename)
     img_file = urllib.urlopen(path)
     im = StringIO(img_file.read())
+    img_file.close()
     image = Image.open(im)
     conf = settings.THUMB_CONF
 
@@ -160,7 +161,7 @@ def resize(filename):
     loc_path = fs.path(filename)
 
     [_save_thumbnails(image, loc_path, conf[key]['size'], conf[key]['suffix'], 
-                                    filename=filename)) for key in conf.keys()]
+                                    filename=filename) for key in conf.keys()]
 
 def resize_local_env(filename):
     default_storage = get_storage_class()()
@@ -189,9 +190,12 @@ def write_exif(attachment):
             if default_storage.__class__ != fs.__class__:
                 path = default_storage.url(attachment.media_file.name)
                 img_file = urllib.urlopen(path)
-                im = StringIO(img_file.read())
-                image = Image.open(im)
-                image.save(fs.path(attachment.media_file.name))
+                
+                f = file(fs.path(attachment.media_file.name), 'wb')
+                f.write(img_file.read())
+                f.close()
+                img_file.close()
+                
                 set_gps_location(fs.path(attachment.media_file.name), 
                                             float(lat), float(lng))
                 default_storage.save(attachment.media_file.name, 
