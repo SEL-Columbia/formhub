@@ -27,7 +27,7 @@ var markerLayerGroup = new L.LayerGroup();
 var hexbinLayerGroup = new L.LayerGroup();
 var hexbinData = null;
 var markerLayerLabel = "Marker Layer";
-var hexLayerLabel = "Hexbin Layer";
+var hexbinLayerLabel = "Hexbin Layer";
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
 var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekkywR';
 var bingMapTypeLabels = {'AerialWithLabels': 'Bing Satellite Map', 'Road': 'Bing Road Map'}; //Road, Aerial or AerialWithLabels
@@ -43,7 +43,9 @@ var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCall
 function initialize() {
     // Make a new Leaflet map in your container div
     map = new L.Map(mapId).setView(centerLatLng, defaultZoom);
-    var overlays = {markerLayerLabel: markerLayerGroup, hexLayerLabel: hexbinLayerGroup};
+    var overlays = {};
+    overlays[markerLayerLabel] = markerLayerGroup;
+    overlays[hexbinLayerLabel] = hexbinLayerGroup;
     layersControl = new L.Control.Layers({}, overlays);
     map.addControl(layersControl);
     map.addLayer(markerLayerGroup); //show marker layer by default
