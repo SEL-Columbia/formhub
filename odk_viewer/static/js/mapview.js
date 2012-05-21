@@ -2,6 +2,7 @@ var centerLatLng = new L.LatLng(!center.lat?0.0:center.lat, !center.lng?0.0:cent
 var defaultZoom = 8;
 var mapId = 'map_canvas';
 var map;
+var layersControl;
 // array of mapbox maps to use as base layers - the first one will be the default map
 var mapboxMaps = [
     {'label': 'Mapbox Street', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-hgm23qjf.jsonp'},
@@ -22,9 +23,11 @@ var circleStyle = {
 };
 // TODO: can we get the entire URL from mongo API
 var amazonUrlPrefix = "https://formhub.s3.amazonaws.com/";
-var geoJsonLayer = new L.GeoJSON(null);
+var markerLayerGroup = new L.LayerGroup();
 var hexbinLayerGroup = new L.LayerGroup();
 var hexbinData = null;
+var markerLayerLabel = "Marker Layer";
+var hexLayerLabel = "Hexbin Layer";
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
 var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekkywR';
 var bingMapTypeLabels = {'AerialWithLabels': 'Bing Satellite Map', 'Road': 'Bing Road Map'}; //Road, Aerial or AerialWithLabels
@@ -40,8 +43,9 @@ var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCall
 function initialize() {
     // Make a new Leaflet map in your container div
     map = new L.Map(mapId).setView(centerLatLng, defaultZoom);
-
-    var layersControl = new L.Control.Layers();
+    layersControl = new L.Control.Layers();
+    layersControl.addOverlay(markerLayerGroup, markerLayerLabel);
+    layersControl.addOverlay(hexbinLayerGroup, hexLayerLabel);
     map.addControl(layersControl);
 
     // add bing maps layer
@@ -124,9 +128,9 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     }
 
     /// remove existing geoJsonLayer
-    map.removeLayer(geoJsonLayer);
+    markerLayerGroup.clearLayers();
 
-    geoJsonLayer = new L.GeoJSON(null, {
+    var geoJsonLayer = new L.GeoJSON(null, {
         pointToLayer: function (latlng){
             var marker = new L.CircleMarker(latlng, circleStyle);
             return marker;
@@ -182,8 +186,8 @@ function _rebuildMarkerLayer(geoJSON, questionName)
 
     /// need this here instead of the constructor so that we can catch the featureparse event
     geoJsonLayer.addGeoJSON(geoJSON);
+    markerLayerGroup.addLayer(geoJsonLayer);
     refreshHexOverLay(); // TODO: add a toggle to do this only if hexOn = true;
-    map.addLayer(geoJsonLayer);
 
     if(questionName)
         rebuildLegend(questionName, questionColorMap);
@@ -210,7 +214,7 @@ function _rebuildHexOverLay(hexdata, hex_feature_to_polygon_properties) {
                         .compact()
                         .value();
     _(hexbinPolygons).map(function(x) { hexbinLayerGroup.addLayer(x); });
-    map.addLayer(hexbinLayerGroup);   
+    map.addLayer(hexbinLayerGroup);
 }
 //TODO: build new Polygons here, and in _rebuildHexOverLay, just reset the properties
 function constructHexBinOverLay() {
