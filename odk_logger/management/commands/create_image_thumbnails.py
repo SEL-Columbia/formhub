@@ -19,7 +19,7 @@ class Command(BaseCommand):
             filename = att.media_file.name
             default_storage = get_storage_class()()
             if not default_storage.exists(get_path(filename, 
-                                    settings.THUMB_CONF['small']['suffix'])):
+                                    settings.THUMB_CONF['smaller']['suffix'])):
                 write_exif(att)
                 try:
                     if default_storage.__class__ != fs.__class__:
@@ -27,7 +27,7 @@ class Command(BaseCommand):
                     else:
                         resize_local_env(filename)
                     if default_storage.exists(get_path(filename, 
-                                    settings.THUMB_CONF['small']['suffix'])):
+                                    settings.THUMB_CONF['smaller']['suffix'])):
                         print 'Thumbnails created for %s' % filename
                     else:
                         print 'Something didn\'t go right for %s' % filename
