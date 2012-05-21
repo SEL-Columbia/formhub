@@ -144,7 +144,8 @@ FormResponseManager = function(url, callback)
     this._currentSelectOneQuestionName = null; // name of the currently selected "View By Question if any"
 }
 
-FormResponseManager.prototype.loadResponseData = function(params, start, limit)
+// TODO: remove filter generation from within class, it should be application specific, right?
+FormResponseManager.prototype.loadResponseData = function(params, start, limit, fields)
 {
     var thisFormResponseMngr = this;
 
@@ -172,18 +173,20 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit)
         }
     }
     var urlParams = {'query':JSON.stringify(params)};
-    start = parseInt(start)
+    start = parseInt(start);
         // use !isNaN so we also have zeros
     if(!isNaN(start))
-        urlParams['start'] = start
+        urlParams['start'] = start;
     limit = parseInt(limit)
     if(!isNaN(limit))
-        urlParams['limit'] = limit
+        urlParams['limit'] = limit;
     // first do the count
-    urlParams['count'] = 1
+    urlParams['count'] = 1;
     $.getJSON(thisFormResponseMngr.url, urlParams).success(function(data){
             thisFormResponseMngr.responseCount = data[0]['count']
-            urlParams['count'] = 0
+            urlParams['count'] = 0;
+            if(fields && fields.length > 0)
+                urlParams["fields"] = JSON.stringify(fields);
             $.getJSON(thisFormResponseMngr.url, urlParams, function(data){
                 thisFormResponseMngr.responses = data;
                 thisFormResponseMngr.callback.call(thisFormResponseMngr);
