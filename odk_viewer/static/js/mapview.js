@@ -185,9 +185,9 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     });
 
     /// need this here instead of the constructor so that we can catch the featureparse event
+    refreshHexOverLay(); // TODO: add a toggle to do this only if hexOn = true;
     geoJsonLayer.addGeoJSON(geoJSON);
     markerLayerGroup.addLayer(geoJsonLayer);
-    refreshHexOverLay(); // TODO: add a toggle to do this only if hexOn = true;
 
     if(questionName)
         rebuildLegend(questionName, questionColorMap);
