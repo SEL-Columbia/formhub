@@ -291,7 +291,10 @@ function constructHexBinOverLay() {
     _rebuildHexOverLay(hexbinData, function() { return {}; });
 }
 
-function _reComputeHexOverLayColors(questionName, responseNames) {
+function _recomputeHexColorsByRatio(questionName, responseNames) {
+    if (_(responseNames).contains(notSpecifiedCaption)) 
+        responseNames.push(undefined); // hack? if notSpeciedCaption is in repsonseNames, then need to
+        // count when instance.response[questionName] doesn't exist, and is therefore ``undefined''
     var hex_feature_to_polygon_properties = function(el) {
         // TODO: remove rawdata from properties, go through formJSONManager or somesuch instead
         var numerator = _.reduce(el.properties.rawdata, function(numer, instance) {
@@ -318,7 +321,7 @@ function refreshHexOverLay() { // refresh hex overlay, in any map state
     // IF we have already calculated hex bin data, and have a filtration active, recomputer colors;
     if (!hexbinData) constructHexBinOverLay();
     if (formResponseMngr._currentSelectOneQuestionName && formResponseMngr._select_one_filters.length)
-        _reComputeHexOverLayColors(formResponseMngr._currentSelectOneQuestionName,
+        _recomputeHexColorsByRatio(formResponseMngr._currentSelectOneQuestionName,
                                    formResponseMngr._select_one_filters);
     else
         _hexOverLayByCount();
