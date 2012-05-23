@@ -34,7 +34,7 @@ var legendParentSelector = ".leaflet-control-container";
 var legendContainerId = "legend";
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
-var currentLanguageIdx = 0;
+var currentLanguageIdx = -1;
 
 function initialize() {
     // Make a new Leaflet map in your container div
@@ -132,6 +132,8 @@ function loadResponseDataCallback()
             // set default language
             setLanguage(0);
         }
+        else
+            currentLanguageIdx = 0;// needed for non-multilingual forms
 
         // check if we have select one questions
         if(formJSONMngr.getNumSelectOneQuestions() > 0)
