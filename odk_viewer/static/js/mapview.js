@@ -34,7 +34,7 @@ var legendParentSelector = ".leaflet-control-container";
 var legendContainerId = "legend";
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
-var currentLanguageIdx = null;
+var currentLanguageIdx = 0;
 
 function initialize() {
     // Make a new Leaflet map in your container div
