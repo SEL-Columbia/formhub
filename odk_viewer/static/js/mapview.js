@@ -350,21 +350,6 @@ function JSONSurveyToHTML(data)
         htmlContent += mediaContainer;
     }
 
-    // add language select if we have multiple languages
-    if(formJSONMngr.supportedLanguages.length > 1)
-    {
-        var selectTag = _createElementAndSetAttrs('select', {"id":"selectLanguage"});
-        for(idx in formJSONMngr.supportedLanguages)
-        {
-            var langauge = formJSONMngr.supportedLanguages[idx];
-            var o = new Option(langauge.label, langauge.name);
-            selectTag.add(o);
-        }
-        var dummyContainer = _createElementAndSetAttrs('div', {});
-        dummyContainer.appendChild(selectTag);
-        htmlContent += dummyContainer.innerHTML;
-    }
-
     for(questionName in formJSONMngr.questions)
     {
         //if(data[questionName])
@@ -383,7 +368,7 @@ function JSONSurveyToHTML(data)
                     {
                         style = "display: none"
                     }
-                    var span = _createElementAndSetAttrs('span', {"class": ("language " + language.name), "style": style}, formJSONMngr.getMultilingualLabel(question, language.label));
+                    var span = _createElementAndSetAttrs('span', {"class": ("language language-" + idx), "style": style}, formJSONMngr.getMultilingualLabel(question, language.label));
                     td.appendChild(span);
                 }
             }
