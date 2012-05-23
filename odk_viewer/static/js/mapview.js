@@ -412,12 +412,8 @@ function getLanguageAt(idx)
 
 function rebuildLegend(questionName, questionColorMap)
 {
-    var language = null;
-    if(formJSONMngr.supportedLanguages.length > 1)
-        language = getLanguageAt(currentLanguageIdx);
     var question = formJSONMngr.getQuestionByName(questionName);
     var choices = formJSONMngr.getChoices(question);
-    var questionLabel = formJSONMngr.getMultilingualLabel(question, language);
 
     // TODO: consider creating container once and keeping a reference
     // try find existing legend and destroy
@@ -433,7 +429,18 @@ function rebuildLegend(questionName, questionColorMap)
     }
 
     legendContainer.attr("style", "diplay:block");
-    var legendTitle = _createElementAndSetAttrs('h3', {}, questionLabel);
+    var legendTitle = _createElementAndSetAttrs('h3', {});
+    var i;
+    for(i=0;i<formJSONMngr.supportedLanguages.length;i++)
+    {
+        var language = getLanguageAt(i);
+        var spanAttrs = {"class":("language language-" + i)};
+        if(i != currentLanguageIdx)
+            spanAttrs["style"] = "display:none;";
+        var questionLabel = formJSONMngr.getMultilingualLabel(question, language);
+        var titleSpan = _createElementAndSetAttrs('span', spanAttrs, questionLabel);
+        legendTitle.appendChild(titleSpan);
+    }
     var legendUl = _createElementAndSetAttrs('ul', {"class":"nav nav-pills nav-stacked"});
     legendContainer.append(legendTitle);
     legendContainer.append(legendUl);
@@ -458,7 +465,6 @@ function rebuildLegend(questionName, questionColorMap)
         var responseCountSpan = _createElementAndSetAttrs('span', {'class':'legend-response-count'}, numResponses.toString());
         legendAnchor.appendChild(responseCountSpan);
         // add a language span for each language
-        var i;
         for(i=0;i<formJSONMngr.supportedLanguages.length;i++)
         {
             var itemLabel = response;
