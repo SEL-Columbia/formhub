@@ -364,13 +364,13 @@ function JSONSurveyToHTML(data)
             {
                 for(idx in formJSONMngr.supportedLanguages)
                 {
-                    var language = formJSONMngr.supportedLanguages[idx];
+                    var language = getLanguageAt(idx);
                     var style = "";
                     if(idx != currentLanguageIdx)
                     {
                         style = "display: none"
                     }
-                    var span = _createElementAndSetAttrs('span', {"class": ("language language-" + idx), "style": style}, formJSONMngr.getMultilingualLabel(question, language.label));
+                    var span = _createElementAndSetAttrs('span', {"class": ("language language-" + idx), "style": style}, formJSONMngr.getMultilingualLabel(question, language));
                     td.appendChild(span);
                 }
             }
