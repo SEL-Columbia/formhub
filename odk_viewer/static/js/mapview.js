@@ -113,8 +113,8 @@ function loadResponseDataCallback()
             var idx;
             for(idx in formJSONMngr.supportedLanguages)
             {
-                var language = formJSONMngr.supportedLanguages[idx];
-                var languageAnchor = _createElementAndSetAttrs('a', {"class":"language", "data":idx.toString()}, language["label"]);
+                var language = getLanguageAt(idx);
+                var languageAnchor = _createElementAndSetAttrs('a', {"class":"language", "data":idx.toString()}, language);
                 var languageLi = _createElementAndSetAttrs('li');
                 languageLi.appendChild(languageAnchor);
                 languageUlContainer.appendChild(languageLi);
@@ -191,10 +191,9 @@ function setLanguage(idx)
 {
     if(idx != currentLanguageIdx)
     {
-        var newLanguage = formJSONMngr.supportedLanguages[idx]["label"];
-        console.log(newLanguage);
-        currentLanguageIdx = idx;
+        var newLanguage = getLanguageAt(idx);
         $('a.language-label').html('Language ('+ newLanguage +')');
+        currentLanguageIdx = idx;
     }
 }
 
@@ -403,16 +402,16 @@ function JSONSurveyToHTML(data)
     return htmlContent;
 }
 
-function getLanguageFromIdx(idx)
+function getLanguageAt(idx)
 {
-    return language = formJSONMngr.supportedLanguages[idx]["label"];
+    return language = formJSONMngr.supportedLanguages[idx];
 }
 
 function rebuildLegend(questionName, questionColorMap)
 {
     var language = null;
     if(formJSONMngr.supportedLanguages.length > 1)
-        language = getLanguageFromIdx(currentLanguageIdx);
+        language = getLanguageAt(currentLanguageIdx);
     var question = formJSONMngr.getQuestionByName(questionName);
     var choices = formJSONMngr.getChoices(question);
     var questionLabel = formJSONMngr.getMultilingualLabel(question, language);
@@ -534,9 +533,19 @@ function viewByChanged(questionName)
 function _createSelectOneLi(question)
 {
     var questionLi = _createElementAndSetAttrs("li", {}, "");
-    var questionLabel = formJSONMngr.getMultilingualLabel(question);
     var questionLink = _createElementAndSetAttrs("a", {"href":("#" + question.name), "class":"select-one-anchor",
-        "rel": question.name}, questionLabel);
+        "rel": question.name});
+    var i;
+    for(i=0;i<formJSONMngr.supportedLanguages.length;i++)
+    {
+        var language = getLanguageAt(i);
+        var questionLabel = formJSONMngr.getMultilingualLabel(question, language);
+        var spanAttrs = {"class":("language language-" + i)};
+        if(i != currentLanguageIdx)
+            spanAttrs["style"] = "display:none";
+        var languageSpan = _createElementAndSetAttrs("span", spanAttrs, questionLabel);
+        questionLink.appendChild(languageSpan);
+    }
 
     questionLi.appendChild(questionLink);
     return questionLi;
