@@ -98,8 +98,7 @@ FormJSONManager.prototype._parseSupportedLanguages = function()
             {
                 for(key in labelProp)
                 {
-                    var language = {"name": encodeForCSSclass(key), "label": key}
-                    this.supportedLanguages.push(language)
+                    this.supportedLanguages.push(key)
                 }
             }
             break;
