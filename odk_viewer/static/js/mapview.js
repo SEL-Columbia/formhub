@@ -34,6 +34,7 @@ var legendParentSelector = ".leaflet-control-container";
 var legendContainerId = "legend";
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
+var currentLanguageIdx = null;
 
 function initialize() {
     // Make a new Leaflet map in your container div
@@ -66,11 +67,11 @@ function initialize() {
     formJSONMngr.loadFormJSON();
 }
 
-// callback called after formstaructure has been loaded from form json url
+// callback called after form's structure has been loaded from form json url
 function loadFormJSONCallback()
 {
     // we only want to load gps and select one data to begin with
-    fields = getBootstrapFields();
+    var fields = getBootstrapFields();
 
     // load responses
     formResponseMngr.loadResponseData({}, 0, null, fields);
@@ -90,6 +91,48 @@ function loadResponseDataCallback()
     var navContainer = $(navContainerSelector);
     if(navContainer.length == 1)
     {
+        // add language selector
+        if(formJSONMngr.supportedLanguages.length > 1)
+        {
+            var dropdownLabel = _createElementAndSetAttrs('li');
+            var dropdownLink = _createElementAndSetAttrs('a', {"href": "#", "class":"language-label"}, "Language");
+            dropdownLabel.appendChild(dropdownLink);
+            navContainer.append(dropdownLabel);
+
+            var dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown language-picker"});
+            var dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
+                "data-toggle":"dropdown"});
+            var dropdownCaret = _createElementAndSetAttrs('b', {"class":"caret"});
+            dropdownCaretLink.appendChild(dropdownCaret);
+            dropDownContainer.appendChild(dropdownCaretLink);
+
+            var languageUlContainer = _createElementAndSetAttrs("ul", {"class":"dropdown-menu"});
+
+            // create links for select one questions
+            selectOneQuestions = formJSONMngr.getSelectOneQuestions();
+            var idx;
+            for(idx in formJSONMngr.supportedLanguages)
+            {
+                var language = formJSONMngr.supportedLanguages[idx];
+                var languageAnchor = _createElementAndSetAttrs('a', {"class":"language", "data":idx.toString()}, language["label"]);
+                var languageLi = _createElementAndSetAttrs('li');
+                languageLi.appendChild(languageAnchor);
+                languageUlContainer.appendChild(languageLi);
+            }
+            dropDownContainer.appendChild(languageUlContainer);
+
+            navContainer.append(dropDownContainer);
+
+            // attach callbacks
+            $('.language-picker a.language').click(function(){
+                var languageIdx = parseInt($(this).attr('data'));
+                setLanguage(languageIdx);
+            });
+
+            // set default language
+            setLanguage(0);
+        }
+
         // check if we have select one questions
         if(formJSONMngr.getNumSelectOneQuestions() > 0)
         {
@@ -142,6 +185,17 @@ function loadResponseDataCallback()
     // to trigger the event now, to handle the hash the page may have
     // loaded with.
     $(window).trigger( "hashchange" );
+}
+
+function setLanguage(idx)
+{
+    if(idx != currentLanguageIdx)
+    {
+        var newLanguage = formJSONMngr.supportedLanguages[idx]["label"];
+        console.log(newLanguage);
+        currentLanguageIdx = idx;
+        $('a.language-label').html('Language ('+ newLanguage +')');
+    }
 }
 
 function _rebuildMarkerLayer(geoJSON, questionName)
@@ -323,7 +377,7 @@ function JSONSurveyToHTML(data)
                 {
                     var language = formJSONMngr.supportedLanguages[idx];
                     var style = "";
-                    if(idx > 0)
+                    if(idx != currentLanguageIdx)
                     {
                         style = "display: none"
                     }
@@ -349,13 +403,21 @@ function JSONSurveyToHTML(data)
     return htmlContent;
 }
 
+function getLanguageFromIdx(idx)
+{
+    return language = formJSONMngr.supportedLanguages[idx]["label"];
+}
+
 function rebuildLegend(questionName, questionColorMap)
 {
-    // TODO: consider creating container once and keeping a variable reference
+    var language = null;
+    if(formJSONMngr.supportedLanguages.length > 1)
+        language = getLanguageFromIdx(currentLanguageIdx);
     var question = formJSONMngr.getQuestionByName(questionName);
     var choices = formJSONMngr.getChoices(question);
-    var questionLabel = formJSONMngr.getMultilingualLabel(question);
+    var questionLabel = formJSONMngr.getMultilingualLabel(question, language);
 
+    // TODO: consider creating container once and keeping a reference
     // try find existing legend and destroy
     var legendContainer = $(("#"+legendContainerId));
     if(legendContainer.length > 0)
@@ -380,7 +442,7 @@ function rebuildLegend(questionName, questionColorMap)
         var itemLabel = response;
         // check if the choices contain this response before we try to get the reponse's label
         if(choices.hasOwnProperty(response))
-            itemLabel = formJSONMngr.getMultilingualLabel(choices[response]);
+            itemLabel = formJSONMngr.getMultilingualLabel(choices[response], language);
         var legendIcon = _createElementAndSetAttrs('span', {"class": "legend-bullet", "style": "background-color: " + color});
         var responseText = _createElementAndSetAttrs('span', {"class":"item-label"}, itemLabel);
         var numResponses = question.responseCounts[response];
