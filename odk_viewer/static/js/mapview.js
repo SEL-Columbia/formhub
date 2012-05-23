@@ -194,6 +194,9 @@ function setLanguage(idx)
         var newLanguage = getLanguageAt(idx);
         $('a.language-label').html('Language ('+ newLanguage +')');
         currentLanguageIdx = idx;
+        /// hide all language spans
+        $('span.language').hide();
+        $(('span.language-'+idx)).show();
     }
 }
 
@@ -438,7 +441,7 @@ function rebuildLegend(questionName, questionColorMap)
     {
         var color = questionColorMap[response];
         var responseLi = _createElementAndSetAttrs('li');
-
+        var numResponses = question.responseCounts[response];
         // create the anchor
         var anchorClass = 'legend-label';
         if(formResponseMngr._select_one_filters.indexOf(response) > -1)
@@ -452,7 +455,6 @@ function rebuildLegend(questionName, questionColorMap)
         var legendIcon = _createElementAndSetAttrs('span', {"class": "legend-bullet", "style": "background-color: " + color});
         legendAnchor.appendChild(legendIcon);
 
-        var numResponses = question.responseCounts[response];
         var responseCountSpan = _createElementAndSetAttrs('span', {'class':'legend-response-count'}, numResponses.toString());
         legendAnchor.appendChild(responseCountSpan);
         // add a language span for each language
