@@ -359,24 +359,16 @@ function JSONSurveyToHTML(data)
             var question  = formJSONMngr.getQuestionByName(questionName);
             var response = _createElementAndSetAttrs('tr', {});
             var td = _createElementAndSetAttrs('td', {});
-            // if at least one language, iterate over them and add a span for each
-            if(formJSONMngr.supportedLanguages.length > 0)
+
+            for(idx in formJSONMngr.supportedLanguages)
             {
-                for(idx in formJSONMngr.supportedLanguages)
+                var language = getLanguageAt(idx);
+                var style = "";
+                if(idx != currentLanguageIdx)
                 {
-                    var language = formJSONMngr.supportedLanguages[idx];
-                    var style = "";
-                    if(idx != currentLanguageIdx)
-                    {
-                        style = "display: none"
-                    }
-                    var span = _createElementAndSetAttrs('span', {"class": ("language language-" + idx), "style": style}, formJSONMngr.getMultilingualLabel(question, language.label));
-                    td.appendChild(span);
+                    style = "display: none"
                 }
-            }
-            else
-            {
-                var span = _createElementAndSetAttrs('span', {"class": "language"}, formJSONMngr.getMultilingualLabel(question));
+                var span = _createElementAndSetAttrs('span', {"class": ("language language-" + idx), "style": style}, formJSONMngr.getMultilingualLabel(question, language));
                 td.appendChild(span);
             }
 
