@@ -438,14 +438,6 @@ function rebuildLegend(questionName, questionColorMap)
     {
         var color = questionColorMap[response];
         var responseLi = _createElementAndSetAttrs('li');
-        var itemLabel = response;
-        // check if the choices contain this response before we try to get the reponse's label
-        if(choices.hasOwnProperty(response))
-            itemLabel = formJSONMngr.getMultilingualLabel(choices[response], language);
-        var legendIcon = _createElementAndSetAttrs('span', {"class": "legend-bullet", "style": "background-color: " + color});
-        var responseText = _createElementAndSetAttrs('span', {"class":"item-label"}, itemLabel);
-        var numResponses = question.responseCounts[response];
-        var responseCountSpan = _createElementAndSetAttrs('span', {'class':'legend-response-count'}, numResponses.toString());
 
         // create the anchor
         var anchorClass = 'legend-label';
@@ -456,10 +448,29 @@ function rebuildLegend(questionName, questionColorMap)
         else
             anchorClass += " inactive";
         var legendAnchor = _createElementAndSetAttrs('a', {'class':anchorClass, 'href':'javascript:;', 'rel':response});
-        legendAnchor.appendChild(legendIcon);
-        legendAnchor.appendChild(responseCountSpan);
 
-        legendAnchor.appendChild(responseText);
+        var legendIcon = _createElementAndSetAttrs('span', {"class": "legend-bullet", "style": "background-color: " + color});
+        legendAnchor.appendChild(legendIcon);
+
+        var numResponses = question.responseCounts[response];
+        var responseCountSpan = _createElementAndSetAttrs('span', {'class':'legend-response-count'}, numResponses.toString());
+        legendAnchor.appendChild(responseCountSpan);
+        // add a language span for each language
+        var i;
+        for(i=0;i<formJSONMngr.supportedLanguages.length;i++)
+        {
+            var itemLabel = response;
+            var language = getLanguageAt(i);
+            // check if the choices contain this response before we try to get the reponse's label
+            if(choices.hasOwnProperty(response))
+                itemLabel = formJSONMngr.getMultilingualLabel(choices[response], language);
+            var spanAttrs = {"class":("item-label language language-" + i)};
+            if(i != currentLanguageIdx)
+                spanAttrs["style"] = "display:none";
+            var responseText = _createElementAndSetAttrs('span', spanAttrs, itemLabel);
+            legendAnchor.appendChild(responseText);
+        }
+
         responseLi.appendChild(legendAnchor);
         legendUl.appendChild(responseLi);
     }
