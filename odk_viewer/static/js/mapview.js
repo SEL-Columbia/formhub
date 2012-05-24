@@ -194,7 +194,7 @@ function setLanguage(idx)
     if(idx != currentLanguageIdx)
     {
         var newLanguage = getLanguageAt(idx);
-        $('a.language-label').html('Language ('+ newLanguage +')');
+        $('a.language-label').html(newLanguage);
         currentLanguageIdx = idx;
         /// hide all language spans
         $('span.language').hide();
