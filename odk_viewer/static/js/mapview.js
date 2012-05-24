@@ -2,6 +2,7 @@ var centerLatLng = new L.LatLng(!center.lat?0.0:center.lat, !center.lng?0.0:cent
 var defaultZoom = 8;
 var mapId = 'map_canvas';
 var map;
+var layersControl;
 // array of mapbox maps to use as base layers - the first one will be the default map
 var mapboxMaps = [
     {'label': 'Mapbox Street', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-hgm23qjf.jsonp'},
@@ -19,10 +20,14 @@ var circleStyle = {
     fillColor: '#ff3300',
     fillOpacity: 0.9,
     radius: 8
-}
+};
 // TODO: can we get the entire URL from mongo API
 var amazonUrlPrefix = "https://formhub.s3.amazonaws.com/";
-var geoJsonLayer = new L.GeoJSON(null);
+var markerLayerGroup = new L.LayerGroup();
+var hexbinLayerGroup = new L.LayerGroup();
+var hexbinData = null;
+var markerLayerLabel = "Marker Layer";
+var hexbinLayerLabel = "Hexbin Layer";
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
 var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekkywR';
 var bingMapTypeLabels = {'AerialWithLabels': 'Bing Satellite Map', 'Road': 'Bing Road Map'}; //Road, Aerial or AerialWithLabels
@@ -39,9 +44,12 @@ var currentLanguageIdx = -1;
 function initialize() {
     // Make a new Leaflet map in your container div
     map = new L.Map(mapId).setView(centerLatLng, defaultZoom);
-
-    var layersControl = new L.Control.Layers();
+    var overlays = {};
+    overlays[markerLayerLabel] = markerLayerGroup;
+    overlays[hexbinLayerLabel] = hexbinLayerGroup;
+    layersControl = new L.Control.Layers({}, overlays);
     map.addControl(layersControl);
+    map.addLayer(markerLayerGroup); //show marker layer by default
 
     // add bing maps layer
     $.each(bingMapTypeLabels, function(type, label) {
@@ -58,7 +66,7 @@ function initialize() {
             layersControl.addBaseLayer(mapboxstreet, mapData.label);
 
             // only add default layer to map
-            if(idx == 0)
+            if(idx === 0)
                 map.addLayer(mapboxstreet);
         });
     });
@@ -217,7 +225,7 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         if(question.hasOwnProperty('responseCounts'))
             responseCountValid = true;
         else
-            question['responseCounts'] = {};
+            question.responseCounts = {};
 
         // formJSONMngr.getChoices returns an object NOT an array so we use children directly here
         var choices = question.children;
@@ -251,9 +259,9 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     }
 
     /// remove existing geoJsonLayer
-    map.removeLayer(geoJsonLayer);
+    markerLayerGroup.clearLayers();
 
-    geoJsonLayer = new L.GeoJSON(null, {
+    var geoJsonLayer = new L.GeoJSON(null, {
         pointToLayer: function (latlng){
             var marker = new L.CircleMarker(latlng, circleStyle);
             return marker;
@@ -283,7 +291,7 @@ function _rebuildMarkerLayer(geoJSON, questionName)
                 fillColor: responseColor,
                 fillOpacity: circleStyle.fillOpacity,
                 radius: circleStyle.opacity
-            }
+            };
             marker.setStyle(newStyle);
         }
         marker.on('click', function(e){
@@ -308,8 +316,9 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     });
 
     /// need this here instead of the constructor so that we can catch the featureparse event
+    refreshHexOverLay(); // TODO: add a toggle to do this only if hexOn = true;
     geoJsonLayer.addGeoJSON(geoJSON);
-    map.addLayer(geoJsonLayer);
+    markerLayerGroup.addLayer(geoJsonLayer);
 
     if(questionName)
         rebuildLegend(questionName, questionColorMap);
@@ -323,12 +332,78 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         map.fitBounds(latlngbounds);
     }
 }
+function _rebuildHexOverLay(hexdata, hex_feature_to_polygon_properties) {
+    hexbinLayerGroup.clearLayers();
+    var arr_to_latlng = function(arr) { return new L.LatLng(arr[0], arr[1]); };
+    var hex_feature_to_polygon_fn = function(el) {
+        return new L.Polygon(_(el.geometry.coordinates).map(arr_to_latlng),
+                                hex_feature_to_polygon_properties(el));
+    };
+    hexbinPolygons = _(hexdata.features).chain()
+                        .map(hex_feature_to_polygon_fn)
+                        .compact()
+                        .value();
+    _(hexbinPolygons).map(function(x) { hexbinLayerGroup.addLayer(x); });
+}
+//TODO: build new Polygons here, and in _rebuildHexOverLay, just reset the properties
+function constructHexBinOverLay() {
+    hexbinData = formResponseMngr.getAsHexbinGeoJSON();
+    _rebuildHexOverLay(hexbinData, function() { return {}; });
+}
+
+function _recomputeHexColorsByRatio(questionName, responseNames) {
+    if (_(responseNames).contains(notSpecifiedCaption)) 
+        responseNames.push(undefined); // hack? if notSpeciedCaption is in repsonseNames, then need to
+        // count when instance.response[questionName] doesn't exist, and is therefore ``undefined''
+    var hex_feature_to_polygon_properties = function(el) {
+        // TODO: remove rawdata from properties, go through formJSONManager or somesuch instead
+        var numerator = _.reduce(el.properties.rawdata, function(numer, instance) {
+                            return numer + (_.contains(responseNames, instance.response[questionName]) ? 1 : 0);
+                        }, 0.0);
+        var denominator = el.properties.rawdata.length;
+        var color = getProportionalColor(numerator / denominator, "greens");
+        return { fillColor: color, fillOpacity: 0.9, color: 'grey', weight: 1 };
+                   
+    };
+    _rebuildHexOverLay(hexbinData, hex_feature_to_polygon_properties);
+}
+
+function _hexOverLayByCount()
+{
+    var hex_feature_to_polygon_properties = function(el) {
+        var color = getProportionalColor(el.properties.count / (el.properties.countMax * 1.2));
+        return {fillColor: color, fillOpacity: 0.9, color:'grey', weight: 1};
+    };
+    _rebuildHexOverLay(hexbinData, hex_feature_to_polygon_properties);
+}
+
+function refreshHexOverLay() { // refresh hex overlay, in any map state
+    // IF we have already calculated hex bin data, and have a filtration active, recomputer colors;
+    if (!hexbinData) constructHexBinOverLay();
+    if (formResponseMngr._currentSelectOneQuestionName && formResponseMngr._select_one_filters.length)
+        _recomputeHexColorsByRatio(formResponseMngr._currentSelectOneQuestionName,
+                                   formResponseMngr._select_one_filters);
+    else
+        _hexOverLayByCount();
+}
+
+function removeHexOverLay()
+{
+    hexbinLayerGroup.clearLayers();
+}
+
+function toggleHexOverLay()
+{
+    if(map.hasLayer(hexbinLayerGroup)) removeHexOverLay();
+    else refreshHexOverLay();
+}
 
 /*
  * Format the json data to HTML for a map popup
  */
 function JSONSurveyToHTML(data)
 {
+    var idx, dummyContainer, questionName, span;
     var htmlContent = '<table class="table table-bordered table-striped"> <thead>\n<tr>\n<th>Question</th>\n<th>Response</th>\n</tr>\n</thead>\n<tbody>\n';
 
     // add images if any
@@ -342,7 +417,7 @@ function JSONSurveyToHTML(data)
             mediaContainer += '<li><a href="#">';
             var imgSrc = amazonUrlPrefix + attachmentUrl;
             var imgTag = _createElementAndSetAttrs('img', {"class":"thumbnail", "width":"210", "src": imgSrc});
-            var dummyContainer = _createElementAndSetAttrs('div', {});
+            dummyContainer = _createElementAndSetAttrs('div', {});
             dummyContainer.appendChild(imgTag);
             mediaContainer += dummyContainer.innerHTML;
             mediaContainer += '</a></li>';
@@ -354,7 +429,7 @@ function JSONSurveyToHTML(data)
 
     for(questionName in formJSONMngr.questions)
     {
-        //if(data[questionName])
+        if(data[questionName])
         {
             var question  = formJSONMngr.getQuestionByName(questionName);
             var response = _createElementAndSetAttrs('tr', {});
@@ -375,7 +450,7 @@ function JSONSurveyToHTML(data)
             response.appendChild(td);
             td = _createElementAndSetAttrs('td', {}, data[questionName]);
             response.appendChild(td);
-            var dummyContainer = _createElementAndSetAttrs('div', {});
+            dummyContainer = _createElementAndSetAttrs('div', {});
             dummyContainer.appendChild(response);
             htmlContent += dummyContainer.innerHTML;
         }
@@ -391,8 +466,11 @@ function getLanguageAt(idx)
 
 function rebuildLegend(questionName, questionColorMap)
 {
+    var response;
+    // TODO: consider creating container once and keeping a variable reference
     var question = formJSONMngr.getQuestionByName(questionName);
     var choices = formJSONMngr.getChoices(question);
+    formResponseMngr._currentSelectOneQuestionName = questionName; //TODO: this should be done somewhere else?
 
     // TODO: consider creating container once and keeping a reference
     // try find existing legend and destroy
@@ -475,6 +553,8 @@ function rebuildLegend(questionName, questionColorMap)
         formResponseMngr.callback = filterSelectOneCallback;
         fields = getBootstrapFields();
         formResponseMngr.loadResponseData({}, 0, null, fields)
+        formResponseMngr.loadResponseData({});
+        refreshHexOverLay();
     });
 }
 
@@ -505,7 +585,7 @@ function clearLegend()
     if(legendContainer.length > 0)
     {
         legendContainer.empty();
-        legendContainer.attr("style", "display:none")
+        legendContainer.attr("style", "display:none");
     }
 }
 
@@ -551,6 +631,7 @@ function _createSelectOneLi(question)
 
 function _createElementAndSetAttrs(tag, attributes, text)
 {
+    var attr;
     var el = document.createElement(tag);
     for(attr in attributes)
     {
@@ -583,4 +664,26 @@ function get_random_color(step, numOfSteps) {
     }
     var c = "#" + ("00" + (~ ~(r * 255)).toString(16)).slice(-2) + ("00" + (~ ~(g * 255)).toString(16)).slice(-2) + ("00" + (~ ~(b * 255)).toString(16)).slice(-2);
     return (c);
+}
+
+function select_from_array(array, zero_to_one_inclusive) {
+    var epsilon = 0.00001;
+    return array[Math.floor(zero_to_one_inclusive * (array.length - epsilon))];
+
+}
+function getProportionalColor(zero_to_one, colorscheme) {
+    // http://colorbrewer2.org/index.php?type=sequential&scheme=Purples&n=9 -- with first white taken out
+    var proportionalColorSchemes = {"purples": ["#EFEDF5", "#DADAEB", "#BCBDDC", "#9E9AC8", "#807DBA", 
+                                                "#6A51A3", "#54278F", "#3F007D"],
+                                    "greens": ["#DEEBF7", "#C6DBEF", "#9ECAE1", "#6BAED6", "#4292C6", 
+                                                "#2171B5", "#08519C", "#08306B"]};
+    if (!colorscheme) colorscheme = "purples";
+    return select_from_array(proportionalColorSchemes[colorscheme], zero_to_one);
+}
+
+function getDichromaticColor(zero_to_one) {
+    // http://colorbrewer2.org/index.php?type=diverging&scheme=RdBu&n=11
+    var diverging = ["#67001F", "#B2182B", "#D6604D", "#F4A582", "#FDDBC7", "#F7F7F7", 
+                     "#D1E5F0", "#92C5DE", "#4393C3", "#2166AC", "#053061"];
+    return select_from_array(diverging, zero_to_one);
 }
