@@ -59,7 +59,7 @@ function initialize() {
             // only add default layer to map
             if(idx == 0 && !custAdded)
                 map.addLayer(mapboxstreet);
-            else if (idx == 3 && custAdded)
+            else if (idx == mapboxMaps.length && custAdded)
                 map.addLayer(mapboxstreet);
                 $("input[name=leaflet-base-layers]").attr('checked', true);
         });
