@@ -57,8 +57,11 @@ function initialize() {
             layersControl.addBaseLayer(mapboxstreet, mapData.label);
 
             // only add default layer to map
-            if(idx == 0)
+            if(idx == 0 && !custAdded)
                 map.addLayer(mapboxstreet);
+            else if (idx == 3 && custAdded)
+                map.addLayer(mapboxstreet);
+                $("input[name=leaflet-base-layers]").attr('checked', true);
         });
     });
 
