@@ -39,6 +39,7 @@ var legendParentSelector = ".leaflet-control-container";
 var legendContainerId = "legend";
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
+var currentLanguageIdx = -1;
 
 function initialize() {
     // Make a new Leaflet map in your container div
@@ -74,11 +75,11 @@ function initialize() {
     formJSONMngr.loadFormJSON();
 }
 
-// callback called after formstaructure has been loaded from form json url
+// callback called after form's structure has been loaded from form json url
 function loadFormJSONCallback()
 {
     // we only want to load gps and select one data to begin with
-    fields = getBootstrapFields();
+    var fields = getBootstrapFields();
 
     // load responses
     formResponseMngr.loadResponseData({}, 0, null, fields);
@@ -98,6 +99,50 @@ function loadResponseDataCallback()
     var navContainer = $(navContainerSelector);
     if(navContainer.length == 1)
     {
+        // add language selector
+        if(formJSONMngr.supportedLanguages.length > 1)
+        {
+            var dropdownLabel = _createElementAndSetAttrs('li');
+            var dropdownLink = _createElementAndSetAttrs('a', {"href": "#", "class":"language-label"}, "Language");
+            dropdownLabel.appendChild(dropdownLink);
+            navContainer.append(dropdownLabel);
+
+            var dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown language-picker"});
+            var dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
+                "data-toggle":"dropdown"});
+            var dropdownCaret = _createElementAndSetAttrs('b', {"class":"caret"});
+            dropdownCaretLink.appendChild(dropdownCaret);
+            dropDownContainer.appendChild(dropdownCaretLink);
+
+            var languageUlContainer = _createElementAndSetAttrs("ul", {"class":"dropdown-menu"});
+
+            // create links for select one questions
+            selectOneQuestions = formJSONMngr.getSelectOneQuestions();
+            var idx;
+            for(idx in formJSONMngr.supportedLanguages)
+            {
+                var language = getLanguageAt(idx);
+                var languageAnchor = _createElementAndSetAttrs('a', {"class":"language", "data":idx.toString()}, language);
+                var languageLi = _createElementAndSetAttrs('li');
+                languageLi.appendChild(languageAnchor);
+                languageUlContainer.appendChild(languageLi);
+            }
+            dropDownContainer.appendChild(languageUlContainer);
+
+            navContainer.append(dropDownContainer);
+
+            // attach callbacks
+            $('.language-picker a.language').click(function(){
+                var languageIdx = parseInt($(this).attr('data'));
+                setLanguage(languageIdx);
+            });
+
+            // set default language
+            setLanguage(0);
+        }
+        else
+            currentLanguageIdx = 0;// needed for non-multilingual forms
+
         // check if we have select one questions
         if(formJSONMngr.getNumSelectOneQuestions() > 0)
         {
@@ -150,6 +195,19 @@ function loadResponseDataCallback()
     // to trigger the event now, to handle the hash the page may have
     // loaded with.
     $(window).trigger( "hashchange" );
+}
+
+function setLanguage(idx)
+{
+    if(idx != currentLanguageIdx)
+    {
+        var newLanguage = getLanguageAt(idx);
+        $('a.language-label').html('Language ('+ newLanguage +')');
+        currentLanguageIdx = idx;
+        /// hide all language spans
+        $('span.language').hide();
+        $(('span.language-'+idx)).show();
+    }
 }
 
 function _rebuildMarkerLayer(geoJSON, questionName)
@@ -369,21 +427,6 @@ function JSONSurveyToHTML(data)
         htmlContent += mediaContainer;
     }
 
-    // add language select if we have multiple languages
-    if(formJSONMngr.supportedLanguages.length > 1)
-    {
-        var selectTag = _createElementAndSetAttrs('select', {"id":"selectLanguage"});
-        for(idx in formJSONMngr.supportedLanguages)
-        {
-            var langauge = formJSONMngr.supportedLanguages[idx];
-            var o = new Option(langauge.label, langauge.name);
-            selectTag.add(o);
-        }
-        dummyContainer = _createElementAndSetAttrs('div', {});
-        dummyContainer.appendChild(selectTag);
-        htmlContent += dummyContainer.innerHTML;
-    }
-
     for(questionName in formJSONMngr.questions)
     {
         if(data[questionName])
@@ -391,24 +434,16 @@ function JSONSurveyToHTML(data)
             var question  = formJSONMngr.getQuestionByName(questionName);
             var response = _createElementAndSetAttrs('tr', {});
             var td = _createElementAndSetAttrs('td', {});
-            // if at least one language, iterate over them and add a span for each
-            if(formJSONMngr.supportedLanguages.length > 0)
+
+            for(idx in formJSONMngr.supportedLanguages)
             {
-                for(idx in formJSONMngr.supportedLanguages)
+                var language = getLanguageAt(idx);
+                var style = "";
+                if(idx != currentLanguageIdx)
                 {
-                    var language = formJSONMngr.supportedLanguages[idx];
-                    var style = "";
-                    if(idx > 0)
-                    {
-                        style = "display: none";
-                    }
-                    span = _createElementAndSetAttrs('span', {"class": ("language " + language.name), "style": style}, formJSONMngr.getMultilingualLabel(question, language.label));
-                    td.appendChild(span);
+                    style = "display: none"
                 }
-            }
-            else
-            {
-                span = _createElementAndSetAttrs('span', {"class": "language"}, formJSONMngr.getMultilingualLabel(question));
+                var span = _createElementAndSetAttrs('span', {"class": ("language language-" + idx), "style": style}, formJSONMngr.getMultilingualLabel(question, language));
                 td.appendChild(span);
             }
 
@@ -424,15 +459,20 @@ function JSONSurveyToHTML(data)
     return htmlContent;
 }
 
+function getLanguageAt(idx)
+{
+    return language = formJSONMngr.supportedLanguages[idx];
+}
+
 function rebuildLegend(questionName, questionColorMap)
 {
     var response;
     // TODO: consider creating container once and keeping a variable reference
     var question = formJSONMngr.getQuestionByName(questionName);
     var choices = formJSONMngr.getChoices(question);
-    var questionLabel = formJSONMngr.getMultilingualLabel(question);
     formResponseMngr._currentSelectOneQuestionName = questionName; //TODO: this should be done somewhere else?
 
+    // TODO: consider creating container once and keeping a reference
     // try find existing legend and destroy
     var legendContainer = $(("#"+legendContainerId));
     if(legendContainer.length > 0)
@@ -446,7 +486,18 @@ function rebuildLegend(questionName, questionColorMap)
     }
 
     legendContainer.attr("style", "diplay:block");
-    var legendTitle = _createElementAndSetAttrs('h3', {}, questionLabel);
+    var legendTitle = _createElementAndSetAttrs('h3', {});
+    var i;
+    for(i=0;i<formJSONMngr.supportedLanguages.length;i++)
+    {
+        var language = getLanguageAt(i);
+        var spanAttrs = {"class":("language language-" + i)};
+        if(i != currentLanguageIdx)
+            spanAttrs["style"] = "display:none;";
+        var questionLabel = formJSONMngr.getMultilingualLabel(question, language);
+        var titleSpan = _createElementAndSetAttrs('span', spanAttrs, questionLabel);
+        legendTitle.appendChild(titleSpan);
+    }
     var legendUl = _createElementAndSetAttrs('ul', {"class":"nav nav-pills nav-stacked"});
     legendContainer.append(legendTitle);
     legendContainer.append(legendUl);
@@ -454,15 +505,7 @@ function rebuildLegend(questionName, questionColorMap)
     {
         var color = questionColorMap[response];
         var responseLi = _createElementAndSetAttrs('li');
-        var itemLabel = response;
-        // check if the choices contain this response before we try to get the reponse's label
-        if(choices.hasOwnProperty(response))
-            itemLabel = formJSONMngr.getMultilingualLabel(choices[response]);
-        var legendIcon = _createElementAndSetAttrs('span', {"class": "legend-bullet", "style": "background-color: " + color});
-        var responseText = _createElementAndSetAttrs('span', {"class":"item-label"}, itemLabel);
         var numResponses = question.responseCounts[response];
-        var responseCountSpan = _createElementAndSetAttrs('span', {'class':'legend-response-count'}, numResponses.toString());
-
         // create the anchor
         var anchorClass = 'legend-label';
         if(formResponseMngr._select_one_filters.indexOf(response) > -1)
@@ -472,10 +515,27 @@ function rebuildLegend(questionName, questionColorMap)
         else
             anchorClass += " inactive";
         var legendAnchor = _createElementAndSetAttrs('a', {'class':anchorClass, 'href':'javascript:;', 'rel':response});
-        legendAnchor.appendChild(legendIcon);
-        legendAnchor.appendChild(responseCountSpan);
 
-        legendAnchor.appendChild(responseText);
+        var legendIcon = _createElementAndSetAttrs('span', {"class": "legend-bullet", "style": "background-color: " + color});
+        legendAnchor.appendChild(legendIcon);
+
+        var responseCountSpan = _createElementAndSetAttrs('span', {'class':'legend-response-count'}, numResponses.toString());
+        legendAnchor.appendChild(responseCountSpan);
+        // add a language span for each language
+        for(i=0;i<formJSONMngr.supportedLanguages.length;i++)
+        {
+            var itemLabel = response;
+            var language = getLanguageAt(i);
+            // check if the choices contain this response before we try to get the reponse's label
+            if(choices.hasOwnProperty(response))
+                itemLabel = formJSONMngr.getMultilingualLabel(choices[response], language);
+            var spanAttrs = {"class":("item-label language language-" + i)};
+            if(i != currentLanguageIdx)
+                spanAttrs["style"] = "display:none";
+            var responseText = _createElementAndSetAttrs('span', spanAttrs, itemLabel);
+            legendAnchor.appendChild(responseText);
+        }
+
         responseLi.appendChild(legendAnchor);
         legendUl.appendChild(responseLi);
     }
@@ -551,9 +611,19 @@ function viewByChanged(questionName)
 function _createSelectOneLi(question)
 {
     var questionLi = _createElementAndSetAttrs("li", {}, "");
-    var questionLabel = formJSONMngr.getMultilingualLabel(question);
     var questionLink = _createElementAndSetAttrs("a", {"href":("#" + question.name), "class":"select-one-anchor",
-        "rel": question.name}, questionLabel);
+        "rel": question.name});
+    var i;
+    for(i=0;i<formJSONMngr.supportedLanguages.length;i++)
+    {
+        var language = getLanguageAt(i);
+        var questionLabel = formJSONMngr.getMultilingualLabel(question, language);
+        var spanAttrs = {"class":("language language-" + i)};
+        if(i != currentLanguageIdx)
+            spanAttrs["style"] = "display:none";
+        var languageSpan = _createElementAndSetAttrs("span", spanAttrs, questionLabel);
+        questionLink.appendChild(languageSpan);
+    }
 
     questionLi.appendChild(questionLink);
     return questionLi;
