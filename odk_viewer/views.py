@@ -326,7 +326,7 @@ def instance(request, username, id_string):
             request.session.get('public_link')):
         return HttpResponseForbidden('Not shared.')
 
-    return render_to_response('response.html', {
+    return render_to_response('instance.html', {
         'username': username,
         'id_string': id_string,
     })
