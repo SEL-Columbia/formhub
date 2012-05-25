@@ -8,7 +8,7 @@
 <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
 <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/sammy-0.7.1.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="/static/js/sammy/sammy.meld-0.7.1.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/sammy-plugins/sammy.meld-0.7.1.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -105,7 +105,7 @@ function loadData(context, query)
                 if(data[0])
                 {
                     // load next record
-                    $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$gt": ' + data[0]['_id'] +'}}', 'limit': 1, 'sort': '{"_id":1}'})
+                    $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$gt": ' + data[0]['_id'] +'}}', 'limit': 1, 'sort': '{"_id":1}', 'fields':'["_id"]'})
                         .success(function(nextData){
                                 var nextButton = $('li.next');
                                 if(nextData.length > 0)
@@ -121,7 +121,7 @@ function loadData(context, query)
                                 }
                             });
                     // load previous record
-                    $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$lt": ' + data[0]['_id'] +'}}', 'limit': 1, 'sort': '{"_id":-1}'})
+                    $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$lt": ' + data[0]['_id'] +'}}', 'limit': 1, 'sort': '{"_id":-1}', 'fields':'["_id"]'})
                             .success(function(prevData){
                                 var prevButton = $('li.prev');
                                 if(prevData.length > 0)
