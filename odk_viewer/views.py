@@ -322,5 +322,5 @@ def attachment_url(request):
     media_file = request.GET.get('media_file')
     attachment = get_object_or_404(Attachment, media_file=media_file)
     media_url = attachment.media_file.url
-    return redirect(media_url)
+    return HttpResponse(media_url)
 
