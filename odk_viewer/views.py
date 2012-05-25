@@ -14,11 +14,11 @@ from django.core.files.storage import get_storage_class
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseForbidden,\
          HttpResponseBadRequest, HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils import simplejson
 
-from odk_logger.models import XForm, Instance
+from odk_logger.models import XForm, Instance, Attachment
 from odk_logger.xform_instance_parser import xform_instance_to_dict
 from odk_viewer.models import DataDictionary, ParsedInstance
 from pyxform import Section, Question
@@ -317,3 +317,10 @@ def data_view(request, username, id_string):
     context.jsonform_url = reverse(download_jsonform,\
         kwargs={"username": username, "id_string":id_string})
     return render_to_response("data_view.html", context_instance=context)
+
+def attachment_url(request):
+    media_file = request.GET.get('media_file')
+    attachment = get_object_or_404(Attachment, media_file=media_file)
+    media_url = attachment.media_file.url
+    return redirect(media_url)
+
