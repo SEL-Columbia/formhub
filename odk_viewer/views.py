@@ -318,7 +318,7 @@ def data_view(request, username, id_string):
         kwargs={"username": username, "id_string":id_string})
     return render_to_response("data_view.html", context_instance=context)
 
-def response(request, username, id_string):
+def instance(request, username, id_string):
     xform, is_owner, can_edit, can_view = get_xform_and_perms(\
         username, id_string, request)
     # no access
