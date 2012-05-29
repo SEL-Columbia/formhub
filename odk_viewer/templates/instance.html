@@ -194,9 +194,9 @@ function createTable()
     var table = $('<table id="data-table" class="table table-bordered table-striped"></table');
     var tHead = $('<thead><tr><th class="header" width="50%">Question</th><th class="header">Response</th></tr></thead>');
     var tBody = $('<tbody></tbody>');
+    var key;
     for(key in questions)
     {
-        console.log(key);
         var question = questions[key];
         var questionLabel = question.getLabel();
         var dataRow = $('<tr class=""><td>' + questionLabel + '</td><td data-key="' + key + '"></td></tr>');
