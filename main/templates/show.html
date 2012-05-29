@@ -231,6 +231,9 @@
             <a class="btn btn-info" btn-info  rel="tooltip" title="View Submitted Data" href="{% url odk_viewer.views.data_view content_user.username xform.id_string %}">
                 <i class="icon-th-list icon-white"></i> View Data
             </a>
+            <a class="btn btn-info" btn-info  rel="tooltip" title="Browse Data (One by One)" href="{% url odk_viewer.views.instance content_user.username xform.id_string %}">
+                <i class="icon-list-alt icon-white"></i> Browse Data
+            </a>
         </div>
 		{% endif %}
 		{% endif %}
