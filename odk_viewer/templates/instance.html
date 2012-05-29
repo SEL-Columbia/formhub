@@ -150,6 +150,7 @@ function reDraw(context, data)
     if(data)
     {
         var cleanData = {};
+        var key;
         for(key in data)
         {
             var value = data[key];
@@ -194,6 +195,7 @@ function createTable()
     var table = $('<table id="data-table" class="table table-bordered table-striped"></table');
     var tHead = $('<thead><tr><th class="header" width="50%">Question</th><th class="header">Response</th></tr></thead>');
     var tBody = $('<tbody></tbody>');
+    var key;
     for(key in questions)
     {
         var question = questions[key];
@@ -217,8 +219,9 @@ function createTable()
 
 function parseQuestions(children, prefix)
 {
-  for(idx in children)
-  {
+    var idx
+    for(idx in children)
+    {
       var question = children[idx];
       if(question.hasOwnProperty('children') && question.type == "group")
       {
@@ -229,7 +232,7 @@ function parseQuestions(children, prefix)
           // TODO: question class that has accessor mesthods for type, label, language etc
           questions[((prefix?prefix:'') + question.name)] = new Question(question);
       }
-  }
+    }
 }
 </script>
 {% endblock %}
