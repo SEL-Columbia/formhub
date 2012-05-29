@@ -24,6 +24,9 @@ var questions = {};
 // TODO: this re should only accept valid js variable names so numbers/letter/underscore
 var cleanRe = /[\[\]\/]/g; // regular expression used to clean names with slashes
 var cleanReplacement = '_';
+var positionTpl = "Record {pos} of {total}";
+var numRecords = null;
+var browsePos = null;
 
 Question = function(questionData)
 {
@@ -90,6 +93,8 @@ Question.prototype.getLabel = function(language)
               // load count
               $.getJSON(mongoAPIUrl, {'count': 1})
                   .success(function(data){
+                          //todo: count num records before and num records after so we know our starting point
+                          numRecords = data[0]["count"];
                           app.run('#/');
                       })
           });
@@ -102,46 +107,80 @@ function loadData(context, query)
     $.getJSON(mongoAPIUrl, {'query': query, 'limit':1})
             .success(function(data){
                 reDraw(context, data[0]);
-                if(data[0])
+                
+                // check if we initialised the browsePos
+                if(false)//TODO: find a way to increment browsePos client-side
                 {
-                    // load next record
-                    $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$gt": ' + data[0]['_id'] +'}}', 'limit': 1, 'sort': '{"_id":1}', 'fields':'["_id"]'})
-                        .success(function(nextData){
-                                var nextButton = $('li.next');
-                                if(nextData.length > 0)
-                                {
-                                    nextButton.removeClass('disabled');
-                                    nextButton.children('a').attr('href', '#/' + nextData[0]['_id']);
-                                }
-                                else
-                                {
-                                    nextButton.addClass('disabled');
-                                    // make next url the current url
-                                    nextButton.children('a').attr('href', '#/' + data[0]['_id']);
-                                }
-                            });
-                    // load previous record
-                    $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$lt": ' + data[0]['_id'] +'}}', 'limit': 1, 'sort': '{"_id":-1}', 'fields':'["_id"]'})
-                            .success(function(prevData){
-                                var prevButton = $('li.prev');
-                                if(prevData.length > 0)
-                                {
-                                    prevButton.removeClass('disabled');
-                                    prevButton.children('a').attr('href', '#/' + prevData[0]['_id']);
-                                }
-                                else
-                                {
-                                    prevButton.addClass('disabled');
-                                    // make prev url the current url
-                                    prevButton.children('a').attr('href', '#/' + data[0]['_id']);
-                                }
+                    updatePrevNextControls(data[0]);
+
+                    // update pos status text
+                    updatePosStatus();
+                }
+                else
+                {
+                    $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$lt": ' + data[0]['_id'] +'}}', 'count': 1})
+                            .success(function(posData){
+                                browsePos = posData[0]["count"] + 1;
+                                updatePrevNextControls(data[0]);
+
+                                // update pos status text
+                                updatePosStatus();
                             });
                 }
-
             })
             .error(function(){
                 alert("BAD REQUEST");
             })
+}
+
+function updatePosStatus()
+{
+    var posText = positionTpl.replace('{pos}', browsePos);
+    posText = posText.replace('{total}', numRecords);
+    $('.record-pos').html(posText);
+}
+
+function updatePrevNextControls(data)
+{
+    // load next record
+    $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$gt": ' + data['_id'] +'}}', 'limit': 1, 'sort': '{"_id":1}', 'fields':'["_id"]'})
+            .success(function(nextData){
+                var nextButton = $('li.next');
+                if(nextData.length > 0)
+                {
+                    nextButton.removeClass('disabled');
+                    nextButton.children('a').attr('href', '#/' + nextData[0]['_id']);
+                }
+                else
+                {
+                    nextButton.addClass('disabled');
+                    // make next url the current url
+                    nextButton.children('a').attr('href', '#/' + data['_id']);
+                }
+            });
+    // load previous record
+    $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$lt": ' + data['_id'] +'}}', 'limit': 1, 'sort': '{"_id":-1}', 'fields':'["_id"]'})
+            .success(function(prevData){
+                var prevButton = $('li.prev');
+                if(prevData.length > 0)
+                {
+                    prevButton.removeClass('disabled');
+                    prevButton.children('a').attr('href', '#/' + prevData[0]['_id']);
+                }
+                else
+                {
+                    prevButton.addClass('disabled');
+                    // make prev url the current url
+                    prevButton.children('a').attr('href', '#/' + data['_id']);
+                }
+
+                // if we haven't checked our position before
+                if(browsePos)
+                {
+                    // get num records before
+
+                }
+            });
 }
 
 function reDraw(context, data)
@@ -180,9 +219,9 @@ function createTable()
     var dataContainer = $('#data');
     dataContainer.empty();
 
-    // status and navigation rows - have to do separate top and bottom since jquery doesnt seem to append the same onject twice
+    // status and navigation rows - have to separate top and bottom since jquery doesnt append the same object twice
     var topStatusNavRows = $('<div class="row"></div>');
-    var statusStr = '<div class="span6"><div class="dataTables_info"></div></div>';
+    var statusStr = '<div class="span6"><div class="dataTables_info"><h4 class="record-pos">Record 1 of 6</h4></div></div>';
     var topStatus = $(statusStr);
     topStatusNavRows.append(topStatus);
 
