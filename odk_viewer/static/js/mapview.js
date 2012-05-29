@@ -414,8 +414,8 @@ function JSONSurveyToHTML(data)
         for(idx in data._attachments)
         {
             var attachmentUrl = data._attachments[idx];
-            mediaContainer += '<li><a href="#">';
-            var imgSrc = amazonUrlPrefix + attachmentUrl;
+            var imgSrc = attachmentsBaseUrl + '?media_file=' + encodeURIComponent(attachmentUrl);
+            mediaContainer += '<li><a href="'+imgSrc+'" target="_blank">';
             var imgTag = _createElementAndSetAttrs('img', {"class":"thumbnail", "width":"210", "src": imgSrc});
             dummyContainer = _createElementAndSetAttrs('div', {});
             dummyContainer.appendChild(imgTag);
