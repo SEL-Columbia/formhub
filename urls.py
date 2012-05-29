@@ -57,6 +57,7 @@ urlpatterns = patterns('',
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/gdocs$", 'odk_viewer.views.google_xls_export'),
     url(r"^odk_viewer/survey/(?P<instance_id>\d+)/$", 'odk_viewer.views.survey_responses'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/map", 'odk_viewer.views.map_view'),
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/instance", 'odk_viewer.views.instance'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/enter-data", 'odk_logger.views.enter_data'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/view-data", 'odk_viewer.views.data_view'),
 
