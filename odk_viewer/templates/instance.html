@@ -21,6 +21,7 @@ var formJSONUrl = "{% url odk_logger.views.download_jsonform username id_string 
 var mongoAPIUrl = "{% url main.views.api username id_string %}";
 var app; // sammy app
 var questions = {};
+var languages = [];
 // TODO: this re should only accept valid js variable names so numbers/letter/underscore
 var cleanRe = /[\[\]\/]/g; // regular expression used to clean names with slashes
 var cleanReplacement = '_';
@@ -90,6 +91,7 @@ Question.prototype.getLabel = function(language)
   $.getJSON(formJSONUrl)
       .success(function(data){
               parseQuestions(data.children);
+              parseLanguages(data.children);
               // load count
               $.getJSON(mongoAPIUrl, {'count': 1})
                   .success(function(data){
@@ -107,7 +109,7 @@ function loadData(context, query)
     $.getJSON(mongoAPIUrl, {'query': query, 'limit':1})
             .success(function(data){
                 reDraw(context, data[0]);
-                
+
                 // check if we initialised the browsePos
                 if(false)//TODO: find a way to increment browsePos client-side
                 {
@@ -131,6 +133,16 @@ function loadData(context, query)
             .error(function(){
                 alert("BAD REQUEST");
             })
+}
+
+function setLanguage(language)
+{
+    var idx = languages.indexOf(language);
+    if(idx>-1)
+    {
+        $('span.language').hide();
+        $(('span.language-' + idx)).show();
+    }
 }
 
 function updatePosStatus()
@@ -219,6 +231,21 @@ function createTable()
     var dataContainer = $('#data');
     dataContainer.empty();
 
+    if(languages.length > 1)
+    {
+        var languageRow = $('<div class="row"><h4>Change Language</h4></div>');
+        var languageSelect = $('<select class="language"></select>');
+        var i;
+        for(i in languages)
+        {
+            var language = languages[i];
+            var languageOption = $('<option value="' + i +'">' + language + '</opton>');
+            languageSelect.append(languageOption);
+        }
+        languageRow.append(languageSelect);
+        dataContainer.append(languageRow);
+    }
+
     // status and navigation rows - have to separate top and bottom since jquery doesnt append the same object twice
     var topStatusNavRows = $('<div class="row"></div>');
     var statusStr = '<div class="span6"><div class="dataTables_info"><h4 class="record-pos">Record 1 of 6</h4></div></div>';
@@ -238,9 +265,21 @@ function createTable()
     for(key in questions)
     {
         var question = questions[key];
-        var questionLabel = question.getLabel();
-        var dataRow = $('<tr class=""><td>' + questionLabel + '</td><td data-key="' + key + '"></td></tr>');
-        tBody.append(dataRow);
+        var tdLabel = $('<td></td>');
+        var idx;
+        for(idx in languages)
+        {
+            var language = languages[idx];
+            var label = question.getLabel(language);
+            var style = "display:none;";
+            var spanLanguage = $('<span class="language language-' +idx +'" style="'+ style +'">'+ label +'</span>');
+            tdLabel.append(spanLanguage);
+        }
+        var trData = $('<tr class=""></tr>');
+        trData.append(tdLabel);
+        var tdData = $('<td data-key="' + key + '"></td>');
+        trData.append(tdData);
+        tBody.append(trData);
     }
     table.append(tHead);
     table.append(tBody);
@@ -254,11 +293,18 @@ function createTable()
 
     bottomStatusNavRows.append(bottomPager);
     dataContainer.append(bottomStatusNavRows);
+
+    $('select.language').change(function(){
+        setLanguage(languages[parseInt($(this).val())]);
+    });
+
+    // set default language
+    setLanguage(languages[0]);
 }
 
 function parseQuestions(children, prefix)
 {
-    var idx
+    var idx;
     for(idx in children)
     {
       var question = children[idx];
@@ -271,6 +317,29 @@ function parseQuestions(children, prefix)
           // TODO: question class that has accessor mesthods for type, label, language etc
           questions[((prefix?prefix:'') + question.name)] = new Question(question);
       }
+    }
+}
+
+function parseLanguages(children)
+{
+    // run through question objects, stop at first question with label object and check it for multiple languages
+    for(questionName in children)
+    {
+        var question = children[questionName];
+        if(question.hasOwnProperty("label"))
+        {
+            var labelProp = question["label"];
+            if(typeof(labelProp) == "string")
+                languages = ["default"];
+            else if(typeof(labelProp) == "object")
+            {
+                for(key in labelProp)
+                {
+                    languages.push(key)
+                }
+            }
+            break;
+        }
     }
 }
 </script>
