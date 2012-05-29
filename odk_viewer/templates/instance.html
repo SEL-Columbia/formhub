@@ -233,7 +233,8 @@ function createTable()
 
     if(languages.length > 1)
     {
-        var languageRow = $('<div class="row"><h4>Change Language</h4></div>');
+        var languageRow = $('<div class="row"></div>');
+        var languageStr = $('<div class="span6"><span>Change Language:</span> </div>')
         var languageSelect = $('<select class="language"></select>');
         var i;
         for(i in languages)
@@ -242,7 +243,8 @@ function createTable()
             var languageOption = $('<option value="' + i +'">' + language + '</opton>');
             languageSelect.append(languageOption);
         }
-        languageRow.append(languageSelect);
+        languageStr.append(languageSelect);
+        languageRow.append(languageStr);
         dataContainer.append(languageRow);
     }
 
