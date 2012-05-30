@@ -18,10 +18,6 @@ class TestDataView(MainTestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
 
-    def test_instance_view(self):
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 200)
-
     def test_restrict_for_anon(self):
         response = self.anon.get(self.url)
         self.assertEqual(response.status_code, 403)
