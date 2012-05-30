@@ -62,7 +62,7 @@ class MainTestCase(TestCase):
 
     def _submit_transport_instance_w_attachment(self):
         s = 'transport_2011-07-25_19-05-49'
-        media_file = "Desert.jpg"
+        media_file = "1335783522563.jpg"
         self._make_submission_w_attachment(os.path.join(self.this_directory, 'fixtures',
             'transportation', 'instances', s, s + '.xml'), os.path.join(self.this_directory, 'fixtures',
             'transportation', 'instances', s, media_file))
