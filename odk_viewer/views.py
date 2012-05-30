@@ -81,8 +81,8 @@ def average(values):
 
 
 def map_view(request, username, id_string):
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
-    owner = User.objects.get(username=username)
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
     context = RequestContext(request)
@@ -147,8 +147,8 @@ def survey_responses(request, instance_id):
 
 
 def csv_export(request, username, id_string):
-    owner = User.objects.get(username=username)
-    xform = XForm.objects.get(id_string=id_string, user=owner)
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
     valid, dd = dd_for_params(id_string, owner, request)
@@ -166,8 +166,8 @@ def csv_export(request, username, id_string):
 
 
 def xls_export(request, username, id_string):
-    owner = User.objects.get(username=username)
-    xform = XForm.objects.get(id_string=id_string, user=owner)
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
     valid, dd = dd_for_params(id_string, owner, request)
@@ -187,8 +187,8 @@ def xls_export(request, username, id_string):
 
 
 def zip_export(request, username, id_string):
-    owner = User.objects.get(username=username)
-    xform = XForm.objects.get(id_string=id_string, user=owner)
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
     dd = DataDictionary.objects.get(id_string=id_string,
@@ -264,8 +264,8 @@ def kml_export(request, username, id_string):
 
 @login_required
 def google_xls_export(request, username, id_string):
-    owner = User.objects.get(username=username)
-    xform = XForm.objects.get(id_string=id_string, user=owner)
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
     valid, dd = dd_for_params(id_string, owner, request)
@@ -305,9 +305,8 @@ def google_xls_export(request, username, id_string):
     return HttpResponseRedirect('https://docs.google.com')
 
 def data_view(request, username, id_string):
-    owner = User.objects.get(username=username)
-    xform = get_object_or_404(XForm, user__username=username,
-        id_string=id_string)
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
 
@@ -324,3 +323,16 @@ def attachment_url(request):
     media_url = attachment.media_file.url
     return redirect(media_url)
 
+def instance(request, username, id_string):
+    xform, is_owner, can_edit, can_view = get_xform_and_perms(\
+        username, id_string, request)
+    # no access
+    if not (xform.shared_data or can_view or
+            request.session.get('public_link')):
+        return HttpResponseForbidden('Not shared.')
+
+    return render_to_response('instance.html', {
+        'username': username,
+        'id_string': id_string,
+        'xform': xform
+    })
