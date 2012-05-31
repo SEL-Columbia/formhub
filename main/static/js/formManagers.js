@@ -1,6 +1,6 @@
 var constants = {
     //pyxform constants
-    NAME: "name", LABEL: "label", TYPE: "type",
+    NAME: "name", LABEL: "label", TYPE: "type", CHILDREN: "children",
     //formhub query syntax constants
     START: "start", LIMIT: "limit", COUNT: "count", FIELDS: "fields"
 };
@@ -20,7 +20,7 @@ FormJSONManager.prototype.loadFormJSON = function()
 {
     var thisManager = this;
     $.getJSON(thisManager.url, function(data){
-        thisManager._parseQuestions(data.children);
+        thisManager._parseQuestions(data[constants.CHILDREN]);
         thisManager._parseSupportedLanguages();
         thisManager.callback.call(thisManager);
     });
@@ -32,22 +32,22 @@ FormJSONManager.prototype._parseQuestions = function(questionData, parentQuestio
     for(idx in questionData)
     {
         var question = questionData[idx];
-        var questionName = question.name;
+        var questionName = question[constants.NAME];
         if(parentQuestionName && parentQuestionName !== "")
             questionName = parentQuestionName + "/" + questionName;
-        question.name = questionName;
+        question[constants.NAME] = questionName;
 
-        if(question.type != "group")
+        if(question[constants.TYPE] != "group")
         {
             this.questions[questionName] = question;
         }
         /// if question is a group, recurse to collect children
-        else if(question.type == "group" && question.hasOwnProperty("children"))
-            this._parseQuestions(question.children, question.name);
+        else if(question[constants.TYPE] == "group" && question.hasOwnProperty(constants.CHILDREN))
+            this._parseQuestions(question[constants.CHILDREN], question[constants.NAME]);
 
-        if(question.type == "select one")
+        if(question[constants.TYPE] == "select one")
             this.selectOneQuestions.push(question);
-        if(question.type == "geopoint" || question.type == "gps")
+        if(question[constants.TYPE] == "geopoint" || question[constants.TYPE] == "gps")
             this.geopointQuestions.push(question);
     }
 };
@@ -78,10 +78,10 @@ FormJSONManager.prototype.getQuestionByName = function(name)
 FormJSONManager.prototype.getChoices = function(question)
 {
     var choices = {};
-    for(i=0;i<question.children.length;i++)
+    for(i=0;i<question[constants.CHILDREN].length;i++)
     {
-        var choice = question.children[i];
-        choices[choice.name] =  choice;
+        var choice = question[constants.CHILDREN][i];
+        choices[choice[constants.NAME]] =  choice;
     }
     return choices;
 };
