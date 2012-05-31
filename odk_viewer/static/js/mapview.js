@@ -103,10 +103,9 @@ function loadResponseDataCallback()
         // add language selector
         if(formJSONMngr.supportedLanguages.length > 1)
         {
-            dropdownLabel = _createElementAndSetAttrs('li');
-            dropdownLink = _createElementAndSetAttrs('a', {"href": "#", "class":"language-label"}, "Language");
-            dropdownLabel.appendChild(dropdownLink);
-            navContainer.append(dropdownLabel);
+            $('<li />').html(
+                $('<a />', { text: "Language", href: '#'}).addClass("language-label")
+            ).appendTo(navContainer);
 
             dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown language-picker"});
             dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
@@ -146,10 +145,9 @@ function loadResponseDataCallback()
         // check if we have select one questions
         if(formJSONMngr.getNumSelectOneQuestions() > 0)
         {
-            dropdownLabel = _createElementAndSetAttrs('li');
-            dropdownLink = _createElementAndSetAttrs('a', {"href": "#"}, "View By");
-            dropdownLabel.appendChild(dropdownLink);
-            navContainer.append(dropdownLabel);
+            $('<li />').html(
+                $('<a />', { text: "View By", href: '#'})
+            ).appendTo(navContainer);
 
             dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown"});
             dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
