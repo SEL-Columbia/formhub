@@ -149,16 +149,21 @@ ul.inline ul.dropdown-menu {
 }
 
 .navbar-inner-map {
-	background-color: #012A39;
-	background-image: -khtml-gradient(linear, left top, left bottom, from(#025B7C), to(#012A39));
-	background-image: -moz-linear-gradient(top, #025B7C, #012A39);
-	background-image: -ms-linear-gradient(top, #025B7C, #012A39);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #025B7C), color-stop(100%, #012A39));
-	background-image: -webkit-linear-gradient(top, #025B7C, #012A39);
-	background-image: -o-linear-gradient(top, #025B7C, #012A39);
-	background-image: linear-gradient(top, #025B7C, #012A39);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#025B7C', endColorstr='#012A39', GradientType=0);
     margin-bottom: -18px;
+}
+
+.navbar-inner {
+    background-color: #fff;
+    background-image: url(/static/images/header_bg.png);
+    background-repeat: repeat-y;
+    background-position: center;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #666;
+}
+
+.navbar .nav > li > a {
+    text-shadow: none;
 }
 
 .navbar-inner-map .lead {
@@ -166,7 +171,21 @@ ul.inline ul.dropdown-menu {
 }
 
 .navbar .navbar-inner-map .nav > li > a {
-    color: #FFFFFF;
+
+}
+
+.navbar-inner-map .nav > li > a:hover {
+    background-color: transparent;
+    color: #666;
+    text-decoration: none;
+}
+
+.navbar-inner-map .nav > li.label > a {
+    color: #38ba7b;
+}
+
+.navbar .nav > li.label > a:hover {
+    color: #38ba7b;
 }
 
 .nav > li.lead {

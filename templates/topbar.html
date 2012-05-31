@@ -5,22 +5,23 @@
       {% if form_view %}
       <ul class="nav">
         <li>&nbsp;</li>
-        <li>
-            <img src='{{ profile.gravatar }}' alt='gravatar' width='30' height='30' />
-            &nbsp;
-            &nbsp;
-        </li>
-        <li>&nbsp;&nbsp;</li>
         <li class="lead">
           <a href="{% url main.views.profile content_user.username %}">{{ content_user.username }}</a>
         </li>
-        <li class="lead">
-          <a href="#">/</a>
+        <li class="">
+          <a href="#">&mdash;</a>
         </li>
+          <li class="lead">
+            <span class="">Map</span>
+          </li>
+          <li><a href="#"><span class="">({{ xform.submission_count }} submissions)</span></a></li>
+          <li class="lead">
+              <span class="">Form</span>
+          </li>
         <li class="lead">
-          <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
+          <a href="{% url main.views.show content_user.username xform.id_string %}">({{ xform.title }})</a>
         </li>
-        <li><a href="#"><span class="inverted">{{ xform.submission_count }} submissions</span></a></li>
+
       </ul>
       <ul class="nav pull-right">
         <li><a href="#" class="dropdown-toggle">Data</a></li>
