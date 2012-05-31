@@ -1,3 +1,10 @@
+var constants = {
+    //pyxform constants
+    NAME: "name", LABEL: "label", TYPE: "type",
+    //formhub query syntax constants
+    START: "start", LIMIT: "limit", COUNT: "count", FIELDS: "fields"
+};
+
 // used to load and manage form questions
 FormJSONManager = function(url, callback)
 {
@@ -7,7 +14,7 @@ FormJSONManager = function(url, callback)
     this.selectOneQuestions = [];
     this.supportedLanguages = [];
     this.questions = {};
-}
+};
 
 FormJSONManager.prototype.loadFormJSON = function()
 {
@@ -16,16 +23,17 @@ FormJSONManager.prototype.loadFormJSON = function()
         thisManager._parseQuestions(data.children);
         thisManager._parseSupportedLanguages();
         thisManager.callback.call(thisManager);
-    })
-}
+    });
+};
 
 FormJSONManager.prototype._parseQuestions = function(questionData, parentQuestionName)
 {
+    var idx;
     for(idx in questionData)
     {
         var question = questionData[idx];
         var questionName = question.name;
-        if(parentQuestionName && parentQuestionName != "")
+        if(parentQuestionName && parentQuestionName !== "")
             questionName = parentQuestionName + "/" + questionName;
         question.name = questionName;
 
@@ -42,17 +50,17 @@ FormJSONManager.prototype._parseQuestions = function(questionData, parentQuestio
         if(question.type == "geopoint" || question.type == "gps")
             this.geopointQuestions.push(question);
     }
-}
+};
 
 FormJSONManager.prototype.getNumSelectOneQuestions = function()
 {
     return this.selectOneQuestions.length;
-}
+};
 
 FormJSONManager.prototype.getSelectOneQuestions = function()
 {
     return this.selectOneQuestions;
-}
+};
 
 // TODO: This picks the first geopoint question regardless if there are multiple
 FormJSONManager.prototype.getGeoPointQuestion = function()
@@ -60,12 +68,12 @@ FormJSONManager.prototype.getGeoPointQuestion = function()
     if(this.geopointQuestions.length > 0)
         return this.geopointQuestions[0];
     return null;
-}
+};
 
 FormJSONManager.prototype.getQuestionByName = function(name)
 {
     return this.questions[name];
-}
+};
 
 FormJSONManager.prototype.getChoices = function(question)
 {
@@ -76,40 +84,42 @@ FormJSONManager.prototype.getChoices = function(question)
         choices[choice.name] =  choice;
     }
     return choices;
-}
+};
 
 FormJSONManager.prototype.setCurrentSelectOneQuestionName = function(name)
 {
     this._currentSelectOneQuestionName = name;
-}
+};
 
 FormJSONManager.prototype._parseSupportedLanguages = function()
 {
+    var questionName, key;
     // run through question objects, stop at first question with label object and check it for multiple languages
     for(questionName in this.questions)
     {
         var question = this.questions[questionName];
-        if(question.hasOwnProperty("label"))
+        if(question.hasOwnProperty(constants.LABEL))
         {
-            var labelProp = question["label"];
+            var labelProp = question[constants.LABEL];
             if(typeof(labelProp) == "string")
                 this.supportedLanguages = ["default"];
             else if(typeof(labelProp) == "object")
             {
                 for(key in labelProp)
                 {
-                    this.supportedLanguages.push(key)
+                    this.supportedLanguages.push(key);
                 }
             }
             break;
         }
     }
-}
+};
 
 /// pass a question object and get its label, if language is specified, try get label for that otherwise return the first label
 FormJSONManager.prototype.getMultilingualLabel = function(question, language)
 {
-    var labelProp = question["label"];
+    var labelProp = question[constants.LABEL];
+    var key;
 
     /// if plain string, return
     if(typeof(labelProp) == "string")
@@ -131,8 +141,8 @@ FormJSONManager.prototype.getMultilingualLabel = function(question, language)
 
     }
     // return raw name
-    return question["name"];
-}
+    return question[constants.NAME];
+};
 
 // used to manage response data loaded via ajax
 FormResponseManager = function(url, callback)
@@ -141,12 +151,13 @@ FormResponseManager = function(url, callback)
     this.callback = callback;
     this._select_one_filters = [];
     this._currentSelectOneQuestionName = null; // name of the currently selected "View By Question if any"
-}
+};
 
 // TODO: remove filter generation from within class, it should be application specific, right?
 FormResponseManager.prototype.loadResponseData = function(params, start, limit, fields)
 {
     var thisFormResponseMngr = this;
+    var idx;
 
     /// invalidate all derivative data 
     this.geoJSON = null;
@@ -173,53 +184,54 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
         }
     }
     var urlParams = {'query':JSON.stringify(params)};
-    start = parseInt(start);
+    start = parseInt(start,10);
         // use !isNaN so we also have zeros
     if(!isNaN(start))
-        urlParams['start'] = start;
-    limit = parseInt(limit)
+        urlParams[constants.START] = start;
+    limit = parseInt(limit, 10);
     if(!isNaN(limit))
-        urlParams['limit'] = limit;
+        urlParams[constants.LIMIT] = limit;
     // first do the count
-    urlParams['count'] = 1;
+    urlParams[constants.COUNT] = 1;
     $.getJSON(thisFormResponseMngr.url, urlParams).success(function(data){
-            thisFormResponseMngr.responseCount = data[0]['count']
-            urlParams['count'] = 0;
+            thisFormResponseMngr.responseCount = data[0][constants.COUNT];
+            urlParams[constants.COUNT] = 0;
             if(fields && fields.length > 0)
-                urlParams["fields"] = JSON.stringify(fields);
+                urlParams[constants.FIELDS] = JSON.stringify(fields);
             $.getJSON(thisFormResponseMngr.url, urlParams, function(data){
                 thisFormResponseMngr.responses = data;
                 thisFormResponseMngr.callback.call(thisFormResponseMngr);
-            })
-        })
-}
+            });
+        });
+};
 
 FormResponseManager.prototype.addResponseToSelectOneFilter = function(name)
 {
     if(this._select_one_filters.indexOf(name) == -1)
         this._select_one_filters.push(name);
-}
+};
 
 FormResponseManager.prototype.removeResponseFromSelectOneFilter = function(name)
 {
     var idx = this._select_one_filters.indexOf(name);
     if(idx > -1)
         this._select_one_filters.splice(idx, 1);
-}
+};
 
 FormResponseManager.prototype.clearSelectOneFilterResponses = function(name)
 {
     this._select_one_filters = [];
-}
+};
 
 /// this cannot be called before the form is loaded as we rely on the form to determine the gps field
 FormResponseManager.prototype._toGeoJSON = function()
 {
+    var idx;
     var features = [];
     var geopointQuestionName = null;
-    var geopointQuestion = formJSONMngr.getGeoPointQuestion()
+    var geopointQuestion = formJSONMngr.getGeoPointQuestion();
     if(geopointQuestion)
-        geopointQuestionName = geopointQuestion["name"];
+        geopointQuestionName = geopointQuestion[constants.NAME];
     for(idx in this.responses)
     {
         var response = this.responses[idx];
@@ -233,7 +245,7 @@ FormResponseManager.prototype._toGeoJSON = function()
                 var lng = parts[0];
                 var lat = parts[1];
 
-                var geometry = {"type":"Point", "coordinates": [lat, lng]}
+                var geometry = {"type":"Point", "coordinates": [lat, lng]};
                 var feature = {"type": "Feature", "id": response._id, "geometry":geometry, "properties":response};
                 features.push(feature);
             }
@@ -241,7 +253,7 @@ FormResponseManager.prototype._toGeoJSON = function()
     }
 
     this.geoJSON = {"type":"FeatureCollection", "features":features};
-}
+};
 
 /// this cannot be called before the form is loaded as we rely on the form to determine the gps field
 FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
@@ -250,14 +262,14 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
     var features = [];
     var latLngArray = [];
     var geopointQuestionName = null;
-    var geopointQuestion = formJSONMngr.getGeoPointQuestion()
+    var geopointQuestion = formJSONMngr.getGeoPointQuestion();
     // The following functions needed hexbin-js doesn't deal well with negatives
-    function fixlng(n) { return (n < 0 ? 360 + n : n); }; 
-    function fixlnginv(n) { return (n > 180 ? n - 360 : n); };
-    function fixlat(n) { return (n < 0 ? 90 + n : 90 + n); }; 
-    function fixlatinv(n) { return (n > 90 ? n - 90 : n - 90); };
+    function fixlng(n) { return (n < 0 ? 360 + n : n); } 
+    function fixlnginv(n) { return (n > 180 ? n - 360 : n); }
+    function fixlat(n) { return (n < 0 ? 90 + n : 90 + n); } 
+    function fixlatinv(n) { return (n > 90 ? n - 90 : n - 90); }
     if(geopointQuestion)
-        geopointQuestionName = geopointQuestion["name"];
+        geopointQuestionName = geopointQuestion[constants.NAME];
     _.each(responses, function(response) {
         var gps = response[geopointQuestionName];
         if(gps)
@@ -298,21 +310,21 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
     });
 
     this.hexGeoJSON = {"type":"FeatureCollection", "features":features};
-}
+};
 FormResponseManager.prototype.getAsGeoJSON = function()
 {
     if(!this.geoJSON)
         this._toGeoJSON();
 
     return this.geoJSON;
-}
+};
 FormResponseManager.prototype.getAsHexbinGeoJSON = function(latLongFilter)
 {
     if(!this.hexGeoJSON)
         this._toHexbinGeoJSON(latLongFilter);
 
     return this.hexGeoJSON;
-}
+};
 
 
 
@@ -320,12 +332,13 @@ FormResponseManager.prototype._toPivotJs = function(fields)
 {
     this.pivotJsData = null;
     var pivotData = [];
+    var idx;
 
     // first row is the titles
     var titles = [];
     for(i=0;i<fields.length;i++)
     {
-        titles.push(fields[i]["name"]);
+        titles.push(fields[i][constants.NAME]);
     }
     pivotData.push(titles);
 
@@ -337,9 +350,9 @@ FormResponseManager.prototype._toPivotJs = function(fields)
 
         for(i=0;i<fields.length;i++)
         {
-            var field = fields[i]
-            var title = field["name"];
-            var pivotType = field["type"];
+            var field = fields[i];
+            var title = field[constants.NAME];
+            var pivotType = field[constants.TYPE];
             var data = "";
             /// check if we have a response in for this title
             if(response.hasOwnProperty(title))
@@ -361,7 +374,7 @@ FormResponseManager.prototype._toPivotJs = function(fields)
     }
 
     this.pivotJsData = JSON.stringify(pivotData);
-}
+};
 
 /**
  * Return an object in the data Array
@@ -371,6 +384,7 @@ FormResponseManager.prototype._toDataTables = function(fields)
 {
     this.dtData = null;
     var aaData = [];
+    var idx;
 
     // now we do the data making sure its in the same order as the titles above
     for(idx in this.responses)
@@ -380,9 +394,9 @@ FormResponseManager.prototype._toDataTables = function(fields)
 
         for(i=0;i<fields.length;i++)
         {
-            var field = fields[i]
-            var title = field["name"];
-            var pivotType = field["type"];
+            var field = fields[i];
+            var title = field[constants.NAME];
+            var pivotType = field[constants.TYPE];
             var data = "";
             /// check if we have a response in for this title
             if(response.hasOwnProperty(title))
@@ -404,21 +418,21 @@ FormResponseManager.prototype._toDataTables = function(fields)
     }
 
     this.dtData = aaData;
-}
+};
 
 FormResponseManager.prototype.getAsPivotJs = function(fields)
 {
     if(!this.pivotJsData)
         this._toPivotJs(fields);
     return this.pivotJsData;
-}
+};
 
 FormResponseManager.prototype.getAsDataTables =  function(fields)
 {
     if(!this.dtData)
         this._toDataTables(fields);
     return this.dtData;
-}
+};
 
 function encodeForCSSclass (str) {
     str = (str + '').toString();
