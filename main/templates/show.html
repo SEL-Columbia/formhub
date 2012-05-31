@@ -104,32 +104,6 @@
         <p><a id="form-license_info" style="display:none" href="">License information</a></p>
         <br/>
         <ul class="inline">
-        <li>
-            <div class="input-prepend">
-                <span class="add-on">
-                    <a href="{% url download_xlsform content_user.username xform.id_string %}">
-                    Excel
-                    </a>
-                </span>
-                <input class="xxlarge" type="text" size="16" value="{{ base_url }}{% url download_xlsform content_user.username xform.id_string %}"/>
-            </div>
-            <br/>
-        </li>
-        <li class="inline dropdown" data-dropdown="dropdown">
-            <a class="dropdown-toggle btn small" href="#">Other</a>
-            <ul class="dropdown-menu">
-                <li>
-                <a href="{% url download_xform content_user.username xform.id_string %}">
-                  XForm
-                </a>
-                </li>
-                <li>
-                <a href="{% url download_jsonform content_user.username xform.id_string %}">
-                  Form JSON
-                </a>
-                </li>
-            </ul>
-        </li>
         {% if user.is_authenticated and content_user.username != user.username and xform.xls|length > 0 and not cloned %}
             <br/><br/>
             <li>
