@@ -7,6 +7,7 @@ from .xform import XForm
 from .attachment import Attachment
 from .survey_type import SurveyType
 from odk_logger.xform_instance_parser import InstanceParseError
+from odk_viewer.models import ParsedInstance
 
 
 @transaction.commit_on_success
@@ -38,5 +39,7 @@ def create_instance(username, xml_file, media_files, status=u'submitted_via_web'
         instance = Instance.objects.create(xml=xml, user=user, status=status)
         for f in media_files:
             Attachment.objects.get_or_create(instance=instance, media_file=f)
+        if instance.xform is not None:
+            pi, created = ParsedInstance.objects.get_or_create(instance=instance)
         return instance
     return None
