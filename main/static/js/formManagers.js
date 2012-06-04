@@ -199,6 +199,9 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
             if(fields && fields.length > 0)
                 urlParams[constants.FIELDS] = JSON.stringify(fields);
             $.getJSON(thisFormResponseMngr.url, urlParams, function(data){
+                // CREATE A Datavore table here; the mapping from form types to datavore types
+                // integer / float --> dv.type.numeric; select one --> dv.type.nominal;
+                // everything else --> dv.type.unknown 
                 thisFormResponseMngr.responses = data;
                 thisFormResponseMngr.callback.call(thisFormResponseMngr);
             });
