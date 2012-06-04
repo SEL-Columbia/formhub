@@ -210,13 +210,3 @@ def _remove_from_mongo(sender, **kwargs):
     xform_instances.remove(instance_id)
 
 pre_delete.connect(_remove_from_mongo, sender=ParsedInstance)
-
-
-def _parse_instance(sender, **kwargs):
-    # When an instance is saved, first delete the parsed_instance
-    # associated with it.
-    instance = kwargs["instance"]
-    if instance.xform is not None:
-        pi, created = ParsedInstance.objects.get_or_create(instance=instance)
-
-post_save.connect(_parse_instance, sender=Instance)
