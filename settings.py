@@ -6,6 +6,7 @@ from pymongo import Connection
 
 CURRENT_FILE = os.path.abspath(__file__)
 PROJECT_ROOT = os.path.dirname(CURRENT_FILE)
+PRINT_EXCEPTION = False
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -217,5 +218,5 @@ except ImportError:
     print("You can override the default settings by adding a "
           "local_settings.py file.")
 
-if DEBUG:
+if PRINT_EXCEPTION and DEBUG:
     MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
