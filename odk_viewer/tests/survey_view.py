@@ -31,6 +31,7 @@ class TestSurveyView(MainTestCase):
             }
         xml_str = u'<?xml version=\'1.0\' ?><%(survey_name)s id="%(id_string)s"><name>%(name)s</name></%(survey_name)s>' % info
         self.instance = Instance.objects.create(xml=xml_str, user=self.user)
+        ParsedInstance.objects.get_or_create(instance=self.instance)
         self.parsed_instance = ParsedInstance.objects.get(
                 instance=self.instance)
 
