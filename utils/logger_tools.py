@@ -7,7 +7,6 @@ import urllib2 as urllib
 from PIL import Image
 from cStringIO import StringIO
 import json
-import pyexiv2
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
