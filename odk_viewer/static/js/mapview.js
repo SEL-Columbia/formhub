@@ -92,6 +92,7 @@ function loadFormJSONCallback()
 function loadResponseDataCallback()
 {
     formResponseMngr.callback = null;// initial callback is for setup, subsequent reloads must set desired callback
+    var dropdownLabel, dropdownLink, dropDownContainer, dropDownCaret, dropDownCaretLink, idx;
 
     // get geoJSON data to setup points - relies on questions having been parsed
     var geoJSON = formResponseMngr.getAsGeoJSON();
@@ -105,15 +106,14 @@ function loadResponseDataCallback()
         // add language selector
         if(formJSONMngr.supportedLanguages.length > 1)
         {
-            var dropdownLabel = _createElementAndSetAttrs('li');
-            var dropdownLink = _createElementAndSetAttrs('a', {"href": "#", "class":"language-label"}, "Language");
-            dropdownLabel.appendChild(dropdownLink);
-            navContainer.append(dropdownLabel);
+            $('<li />').html(
+                $('<a />', { text: "Language", href: '#'}).addClass("language-label")
+            ).appendTo(navContainer);
 
-            var dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown language-picker"});
-            var dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
+            dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown language-picker"});
+            dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
                 "data-toggle":"dropdown"});
-            var dropdownCaret = _createElementAndSetAttrs('b', {"class":"caret"});
+            dropdownCaret = _createElementAndSetAttrs('b', {"class":"caret"});
             dropdownCaretLink.appendChild(dropdownCaret);
             dropDownContainer.appendChild(dropdownCaretLink);
 
@@ -121,7 +121,6 @@ function loadResponseDataCallback()
 
             // create links for select one questions
             selectOneQuestions = formJSONMngr.getSelectOneQuestions();
-            var idx;
             for(idx in formJSONMngr.supportedLanguages)
             {
                 var language = getLanguageAt(idx);
@@ -136,7 +135,7 @@ function loadResponseDataCallback()
 
             // attach callbacks
             $('.language-picker a.language').click(function(){
-                var languageIdx = parseInt($(this).attr('data'));
+                var languageIdx = parseInt($(this).attr('data'), 10);
                 setLanguage(languageIdx);
             });
 
@@ -149,15 +148,14 @@ function loadResponseDataCallback()
         // check if we have select one questions
         if(formJSONMngr.getNumSelectOneQuestions() > 0)
         {
-            var dropdownLabel = _createElementAndSetAttrs('li');
-            var dropdownLink = _createElementAndSetAttrs('a', {"href": "#"}, "View By");
-            dropdownLabel.appendChild(dropdownLink);
-            navContainer.append(dropdownLabel);
+            $('<li />').html(
+                $('<a />', { text: "View By", href: '#'})
+            ).appendTo(navContainer);
 
-            var dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown"});
-            var dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
+            dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown"});
+            dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
                 "data-toggle":"dropdown"});
-            var dropdownCaret = _createElementAndSetAttrs('b', {"class":"caret"});
+            dropdownCaret = _createElementAndSetAttrs('b', {"class":"caret"});
             dropdownCaretLink.appendChild(dropdownCaret);
             dropDownContainer.appendChild(dropdownCaretLink);
 
@@ -444,9 +442,9 @@ function JSONSurveyToHTML(data)
                 var style = "";
                 if(idx != currentLanguageIdx)
                 {
-                    style = "display: none"
+                    style = "display: none";
                 }
-                var span = _createElementAndSetAttrs('span', {"class": ("language language-" + idx), "style": style}, formJSONMngr.getMultilingualLabel(question, language));
+                span = _createElementAndSetAttrs('span', {"class": ("language language-" + idx), "style": style}, formJSONMngr.getMultilingualLabel(question, language));
                 td.appendChild(span);
             }
 
@@ -469,7 +467,7 @@ function getLanguageAt(idx)
 
 function rebuildLegend(questionName, questionColorMap)
 {
-    var response;
+    var response, language, spanAttrs;
     // TODO: consider creating container once and keeping a variable reference
     var question = formJSONMngr.getQuestionByName(questionName);
     var choices = formJSONMngr.getChoices(question);
@@ -493,10 +491,10 @@ function rebuildLegend(questionName, questionColorMap)
     var i;
     for(i=0;i<formJSONMngr.supportedLanguages.length;i++)
     {
-        var language = getLanguageAt(i);
-        var spanAttrs = {"class":("language language-" + i)};
+        language = getLanguageAt(i);
+        spanAttrs = {"class":("language language-" + i)};
         if(i != currentLanguageIdx)
-            spanAttrs["style"] = "display:none;";
+            spanAttrs.style = "display:none;";
         var questionLabel = formJSONMngr.getMultilingualLabel(question, language);
         var titleSpan = _createElementAndSetAttrs('span', spanAttrs, questionLabel);
         legendTitle.appendChild(titleSpan);
@@ -528,13 +526,13 @@ function rebuildLegend(questionName, questionColorMap)
         for(i=0;i<formJSONMngr.supportedLanguages.length;i++)
         {
             var itemLabel = response;
-            var language = getLanguageAt(i);
+            language = getLanguageAt(i);
             // check if the choices contain this response before we try to get the reponse's label
             if(choices.hasOwnProperty(response))
                 itemLabel = formJSONMngr.getMultilingualLabel(choices[response], language);
-            var spanAttrs = {"class":("item-label language language-" + i)};
+            spanAttrs = {"class":("item-label language language-" + i)};
             if(i != currentLanguageIdx)
-                spanAttrs["style"] = "display:none";
+                spanAttrs.style = "display:none";
             var responseText = _createElementAndSetAttrs('span', spanAttrs, itemLabel);
             legendAnchor.appendChild(responseText);
         }
@@ -555,7 +553,7 @@ function rebuildLegend(questionName, questionColorMap)
         // reload with new params
         formResponseMngr.callback = filterSelectOneCallback;
         fields = getBootstrapFields();
-        formResponseMngr.loadResponseData({}, 0, null, fields)
+        formResponseMngr.loadResponseData({}, 0, null, fields);
         formResponseMngr.loadResponseData({});
         refreshHexOverLay();
     });
@@ -567,17 +565,19 @@ function rebuildLegend(questionName, questionColorMap)
 function getBootstrapFields()
 {
     // we only want to load gps and select one data to begin with
-    fields = [];
+    var fields = [];
+    var idx, question;
+    if(!constants) throw "ERROR: constants not found; please include main/static/js/formManagers.js"; 
     for(idx in formJSONMngr.selectOneQuestions)
     {
-        var question = formJSONMngr.selectOneQuestions[idx];
-        fields.push(question["name"]);
+        question = formJSONMngr.selectOneQuestions[idx];
+        fields.push(question[constants.NAME]);
     }
 
     for(idx in formJSONMngr.geopointQuestions)
     {
-        var question = formJSONMngr.geopointQuestions[idx];
-        fields.push(question["name"]);
+        question = formJSONMngr.geopointQuestions[idx];
+        fields.push(question[constants.NAME]);
     }
     return fields;
 }
@@ -623,7 +623,7 @@ function _createSelectOneLi(question)
         var questionLabel = formJSONMngr.getMultilingualLabel(question, language);
         var spanAttrs = {"class":("language language-" + i)};
         if(i != currentLanguageIdx)
-            spanAttrs["style"] = "display:none";
+            spanAttrs.style = "display:none";
         var languageSpan = _createElementAndSetAttrs("span", spanAttrs, questionLabel);
         questionLink.appendChild(languageSpan);
     }
