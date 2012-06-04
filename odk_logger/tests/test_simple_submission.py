@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from pyxform import SurveyElementBuilder
 
-from odk_logger.models import create_instance, Instance
+from utils.logger_tools import create_instance
+from odk_logger.models import Instance
 from odk_viewer.models import DataDictionary
 
 
