@@ -174,24 +174,36 @@ ul.inline ul.dropdown-menu {
 
 }
 
-.navbar-inner-map .nav > li > a:hover {
+.navbar-inner .nav > li > a:hover {
     background-color: transparent;
     color: #666;
     text-decoration: none;
 }
 
-.navbar-inner-map .nav > li.label > a {
-    color: #38ba7b;
+.navbar .nav > li > a, .navbar .nav > li > span {
+    float: none;
+    padding: 10px 10px 11px;
+    line-height: 19px;
+    color: #898989;
+    text-decoration: none;
 }
 
-.navbar .nav > li.label > a:hover {
-    color: #38ba7b;
+.navbar .nav > li > a {
+    color: #898989;
+}
+
+.navbar .nav > li > span {
+    color: #2bb673;
+    display: block;
 }
 
 .nav > li.lead {
     font-size: 15px;
 }
 
+.navbar .nav .dropdown-toggle .caret, .navbar .nav .open.dropdown .caret {
+    border-top-color: #898989;
+}
 
 div.dataTables_length label {
     width: 460px;
