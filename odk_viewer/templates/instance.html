@@ -1,0 +1,348 @@
+{% extends 'base.html' %}
+
+{% block additional-headers %}
+<style type="text/css">
+
+</style>
+
+<script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
+<script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/sammy-0.7.1.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/sammy-plugins/sammy.meld-0.7.1.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Browse Form Data (<a href="{% url main.views.show username xform.id_string %}">{{ xform.title }}</a>)</h1>
+</div>
+<div id="data"></div>
+<script type="text/javascript">
+var formJSONUrl = "{% url odk_logger.views.download_jsonform username id_string %}";
+var mongoAPIUrl = "{% url main.views.api username id_string %}";
+var app; // sammy app
+var questions = {};
+var languages = [];
+// TODO: this re should only accept valid js variable names so numbers/letter/underscore
+var cleanRe = /[\[\]\/]/g; // regular expression used to clean names with slashes
+var cleanReplacement = '_';
+var positionTpl = "Record {pos} of {total}";
+var numRecords = null;
+var browsePos = null;
+
+Question = function(questionData)
+{
+    this.name = questionData.name;
+    this.type = questionData.type;
+    this.label = questionData.label;
+}
+
+Question.prototype.getLabel = function(language)
+{
+    /// if plain string, return
+    if(typeof(this.label) == "string")
+        return this.label;
+    else if(typeof(this.label) == "object")
+    {
+        if(language && this.label.hasOwnProperty(language))
+            return this.label[language];
+        else
+        {
+            var label = null;
+            for(key in this.label)
+            {
+                label = this.label[key];
+                break;// break at first instance and return that
+            }
+            return label;
+        }
+
+    }
+    // return raw name
+    return this.name;
+};
+
+(function($) {
+
+  app = $.sammy('#data', function() {
+      this.use('Meld');
+
+      // index route
+      this.get('#/', function(context) {
+          /// get the first response object
+          var query = '{}';
+          loadData(context);
+      });
+
+      // #/id route
+      this.get('#/:id', function(context) {
+          var id = this.params['id'];
+          var query = '{"_id": ' + id + '}';
+          loadData(context, query);
+      });
+
+      this.bind('error', {}, function(){
+          //alert('Invalid route requested')
+          app.setLocation('#/');
+      })
+
+  });
+
+  /// load form structure
+  $.getJSON(formJSONUrl)
+      .success(function(data){
+              parseQuestions(data.children);
+              parseLanguages(data.children);
+              // load count
+              $.getJSON(mongoAPIUrl, {'count': 1})
+                  .success(function(data){
+                          //todo: count num records before and num records after so we know our starting point
+                          numRecords = data[0]["count"];
+                          app.run('#/');
+                      })
+          });
+
+})(jQuery);
+
+function loadData(context, query)
+{
+    //TODO: show loader
+    $.getJSON(mongoAPIUrl, {'query': query, 'limit':1})
+            .success(function(data){
+                reDraw(context, data[0]);
+
+                // check if we initialised the browsePos
+                if(false)//TODO: find a way to increment browsePos client-side
+                {
+                    updatePrevNextControls(data[0]);
+
+                    // update pos status text
+                    updatePosStatus();
+                }
+                else
+                {
+                    $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$lt": ' + data[0]['_id'] +'}}', 'count': 1})
+                            .success(function(posData){
+                                browsePos = posData[0]["count"] + 1;
+                                updatePrevNextControls(data[0]);
+
+                                // update pos status text
+                                updatePosStatus();
+                            });
+                }
+            })
+            .error(function(){
+                alert("BAD REQUEST");
+            })
+}
+
+function setLanguage(language)
+{
+    var idx = languages.indexOf(language);
+    if(idx>-1)
+    {
+        $('span.language').hide();
+        $(('span.language-' + idx)).show();
+    }
+}
+
+function updatePosStatus()
+{
+    var posText = positionTpl.replace('{pos}', browsePos);
+    posText = posText.replace('{total}', numRecords);
+    $('.record-pos').html(posText);
+}
+
+function updatePrevNextControls(data)
+{
+    // load next record
+    $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$gt": ' + data['_id'] +'}}', 'limit': 1, 'sort': '{"_id":1}', 'fields':'["_id"]'})
+            .success(function(nextData){
+                var nextButton = $('li.next');
+                if(nextData.length > 0)
+                {
+                    nextButton.removeClass('disabled');
+                    nextButton.children('a').attr('href', '#/' + nextData[0]['_id']);
+                }
+                else
+                {
+                    nextButton.addClass('disabled');
+                    // make next url the current url
+                    nextButton.children('a').attr('href', '#/' + data['_id']);
+                }
+            });
+    // load previous record
+    $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$lt": ' + data['_id'] +'}}', 'limit': 1, 'sort': '{"_id":-1}', 'fields':'["_id"]'})
+            .success(function(prevData){
+                var prevButton = $('li.prev');
+                if(prevData.length > 0)
+                {
+                    prevButton.removeClass('disabled');
+                    prevButton.children('a').attr('href', '#/' + prevData[0]['_id']);
+                }
+                else
+                {
+                    prevButton.addClass('disabled');
+                    // make prev url the current url
+                    prevButton.children('a').attr('href', '#/' + data['_id']);
+                }
+
+                // if we haven't checked our position before
+                if(browsePos)
+                {
+                    // get num records before
+
+                }
+            });
+}
+
+function reDraw(context, data)
+{
+    // make sure we have some data, if the id was in valid we would gte a blank array
+    if(data)
+    {
+        var cleanData = {};
+        var key;
+        for(key in data)
+        {
+            var value = data[key];
+            var cleanKey = key.replace(cleanRe, cleanReplacement);
+            cleanData[cleanKey] = value;
+        }
+
+        // check if table has been created, if not reCreate
+        if($('#data table').length == 0)
+            createTable();
+        context.meld($('#data'), cleanData, {
+            selector: function(k) {
+                k = k.replace(cleanRe, cleanReplacement);
+                return '[data-key=' + k + ']';
+            }
+        });
+    }
+    else
+    {
+        $('#data').empty();
+        $('#data').html("<h3>The requested content was not found.<h3>");
+    }
+}
+
+function createTable()
+{
+    var dataContainer = $('#data');
+    dataContainer.empty();
+
+    if(languages.length > 1)
+    {
+        var languageRow = $('<div class="row"></div>');
+        var languageStr = $('<div class="span6"><span>Change Language:</span> </div>')
+        var languageSelect = $('<select class="language"></select>');
+        var i;
+        for(i in languages)
+        {
+            var language = languages[i];
+            var languageOption = $('<option value="' + i +'">' + language + '</opton>');
+            languageSelect.append(languageOption);
+        }
+        languageStr.append(languageSelect);
+        languageRow.append(languageStr);
+        dataContainer.append(languageRow);
+    }
+
+    // status and navigation rows - have to separate top and bottom since jquery doesnt append the same object twice
+    var topStatusNavRows = $('<div class="row"></div>');
+    var statusStr = '<div class="span6"><div class="dataTables_info"><h4 class="record-pos">Record 1 of 6</h4></div></div>';
+    var topStatus = $(statusStr);
+    topStatusNavRows.append(topStatus);
+
+    var pagerStr = '<div class="span6"><div class="dataTables_paginate paging_bootstrap pagination"><ul><li class="prev disabled"><a href="#">← Previous</a></li><li class="next disabled"><a href="#">Next → </a></li></ul></div></div>';
+    var topPager = $(pagerStr);
+
+    topStatusNavRows.append(topPager);
+    dataContainer.append(topStatusNavRows);
+
+    var table = $('<table id="data-table" class="table table-bordered table-striped"></table');
+    var tHead = $('<thead><tr><th class="header" width="50%">Question</th><th class="header">Response</th></tr></thead>');
+    var tBody = $('<tbody></tbody>');
+    var key;
+    for(key in questions)
+    {
+        var question = questions[key];
+        var tdLabel = $('<td></td>');
+        var idx;
+        for(idx in languages)
+        {
+            var language = languages[idx];
+            var label = question.getLabel(language);
+            var style = "display:none;";
+            var spanLanguage = $('<span class="language language-' +idx +'" style="'+ style +'">'+ label +'</span>');
+            tdLabel.append(spanLanguage);
+        }
+        var trData = $('<tr class=""></tr>');
+        trData.append(tdLabel);
+        var tdData = $('<td data-key="' + key + '"></td>');
+        trData.append(tdData);
+        tBody.append(trData);
+    }
+    table.append(tHead);
+    table.append(tBody);
+    dataContainer.append(table);
+
+    var bottomStatusNavRows = $('<div class="row"></div>');
+    var bottomStatus = $(statusStr);
+    bottomStatusNavRows.append(bottomStatus);
+
+    var bottomPager = $(pagerStr);
+
+    bottomStatusNavRows.append(bottomPager);
+    dataContainer.append(bottomStatusNavRows);
+
+    $('select.language').change(function(){
+        setLanguage(languages[parseInt($(this).val())]);
+    });
+
+    // set default language
+    setLanguage(languages[0]);
+}
+
+function parseQuestions(children, prefix)
+{
+    var idx;
+    for(idx in children)
+    {
+      var question = children[idx];
+      if(question.hasOwnProperty('children') && question.type == "group")
+      {
+          parseQuestions(question.children, (question.name + cleanReplacement));
+      }
+      else
+      {
+          // TODO: question class that has accessor mesthods for type, label, language etc
+          questions[((prefix?prefix:'') + question.name)] = new Question(question);
+      }
+    }
+}
+
+function parseLanguages(children)
+{
+    // run through question objects, stop at first question with label object and check it for multiple languages
+    for(questionName in children)
+    {
+        var question = children[questionName];
+        if(question.hasOwnProperty("label"))
+        {
+            var labelProp = question["label"];
+            if(typeof(labelProp) == "string")
+                languages = ["default"];
+            else if(typeof(labelProp) == "object")
+            {
+                for(key in labelProp)
+                {
+                    languages.push(key)
+                }
+            }
+            break;
+        }
+    }
+}
+</script>
+{% endblock %}

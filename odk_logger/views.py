@@ -53,7 +53,10 @@ def bulksubmission(request, username):
 
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
-    temp_postfile = request.FILES.pop("zip_submission_file", [])
+    try:
+        temp_postfile = request.FILES.pop("zip_submission_file", [])
+    except IOError:
+        return HttpResponseBadRequest("There was a problem receiving your ODK submission. [Error: IO Error reading data]")
     if len(temp_postfile) == 1:
         postfile = temp_postfile[0]
         tempdir = tempfile.gettempdir()
