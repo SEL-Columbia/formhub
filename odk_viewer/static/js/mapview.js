@@ -354,14 +354,12 @@ function constructHexBinOverLay() {
     hexbinData = formResponseMngr.getAsHexbinGeoJSON();
     var arr_to_latlng = function(arr) { return new L.LatLng(arr[0], arr[1]); };
     var hex_feature_to_polygon_fn = function(el) {
-        return new L.Polygon(_(el.geometry.coordinates).map(arr_to_latlng), {"id": el.properties.id});
+        return new L.Polygon(_(el.geometry.coordinates).map(arr_to_latlng), 
+                            {"id": el.properties.id});
     };
-    _(hexbinData.features).chain()
-        .map(hex_feature_to_polygon_fn)
-        .compact()
-        .each( function(x) {
-            hexbinLayerGroup.addLayer(x); 
-        });
+    _(hexbinData.features).each( function(x) {
+        hexbinLayerGroup.addLayer(hex_feature_to_polygon_fn(x)); 
+    });
 }
 
 function _recomputeHexColorsByRatio(questionName, responseNames) {
