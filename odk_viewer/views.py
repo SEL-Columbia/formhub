@@ -321,8 +321,8 @@ def attachment_url(request):
     media_file = request.GET.get('media_file')
     #TODO: how to make sure we have the right media file, this assumes duplicates are the same file
     result = Attachment.objects.filter(media_file=media_file)[0:1]
-    if(result.count()==0):
-        return HttpResponseNotFound("Attachment not found")
+    if result.count() == 0:
+        return HttpResponseNotFound('Attachment not found')
     attachment = result[0]
     media_url = attachment.media_file.url
     return redirect(media_url)
