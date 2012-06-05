@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 from django.core.files.storage import get_storage_class
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseForbidden,\
-         HttpResponseBadRequest, HttpResponseRedirect
+         HttpResponseBadRequest, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils import simplejson
@@ -319,7 +319,11 @@ def data_view(request, username, id_string):
 
 def attachment_url(request):
     media_file = request.GET.get('media_file')
-    attachment = get_object_or_404(Attachment, media_file=media_file)
+    #TODO: how to make sure we have the right media file, this assumes duplicates are the same file
+    result = Attachment.objects.filter(media_file=media_file)[0:1]
+    if result.count() == 0:
+        return HttpResponseNotFound('Attachment not found')
+    attachment = result[0]
     media_url = attachment.media_file.url
     return redirect(media_url)
 
