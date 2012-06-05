@@ -368,12 +368,14 @@ function _recomputeHexColorsByRatio(questionName, responseNames) {
         // count when instance.response[questionName] doesn't exist, and is therefore ``undefined''
     var hex_feature_to_polygon_properties = function(el) {
         // TODO: remove rawdata from properties, go through formJSONManager or somesuch instead
-        var numerator = _.reduce(el.properties.rawdata, function(numer, instance) {
+
+        /*var numerator = _.reduce(el.properties.rawdata, function(numer, instance) {
                             return numer + (_.contains(responseNames, instance.response[questionName]) ? 1 : 0);
                         }, 0.0);
         var denominator = el.properties.rawdata.length;
         var color = getProportionalColor(numerator / denominator, "greens");
-        return { fillColor: color, fillOpacity: 0.9, color: 'grey', weight: 1 };
+        return { fillColor: color, fillOpacity: 0.9, color: 'grey', weight: 1 };*/
+        return {};
                    
     };
     _rebuildHexOverLay(hex_feature_to_polygon_properties);
