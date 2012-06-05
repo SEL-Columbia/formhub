@@ -151,6 +151,8 @@ FormResponseManager = function(url, callback)
     this.callback = callback;
     this._select_one_filters = [];
     this._currentSelectOneQuestionName = null; // name of the currently selected "View By Question if any"
+    this.responses = [];
+    this._metaDataForResponses = [];
 };
 
 // TODO: remove filter generation from within class, it should be application specific, right?
@@ -290,7 +292,7 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
                 .yValue( function(d) { return d.lat; } )
                 ( latLngArray );
     countMax = d3.max( hexset, function(d) { return d.data.length; } );
-    _.each(hexset, function(hex) {
+    _.each(hexset, function(hex, idx) {
         if(hex.data.length) {
             var geometry = {"type":"Polygon", 
                             "coordinates": _(hex.points).map(function(d) {
@@ -301,6 +303,7 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
                            "geometry":geometry, 
                            "properties": {"rawdata" :_(hex.data).map(function(d) {
                                                 return {lat: fixlatinv(d.lat), lng: fixlnginv(d.lng), response: d.response}; }),
+                                           "id" : idx,
                                            "count" : hex.data.length,
                                            "countMax" : countMax
                                           }

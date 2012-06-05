@@ -67,9 +67,9 @@ function initialize() {
             layersControl.addBaseLayer(mapboxstreet, mapData.label);
 
             // only add default layer to map
-            if(idx == 0 && !custAdded)
+            if(idx === 0 && !custAdded)
                 map.addLayer(mapboxstreet);
-            else if (idx == mapboxMaps.length && custAdded)
+            else if (idx === mapboxMaps.length && custAdded)
                 map.addLayer(mapboxstreet);
                 $("input[name=leaflet-base-layers]").attr('checked', true);
         });
@@ -334,23 +334,34 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         map.fitBounds(latlngbounds);
     }
 }
-function _rebuildHexOverLay(hexdata, hex_feature_to_polygon_properties) {
-    hexbinLayerGroup.clearLayers();
-    var arr_to_latlng = function(arr) { return new L.LatLng(arr[0], arr[1]); };
-    var hex_feature_to_polygon_fn = function(el) {
-        return new L.Polygon(_(el.geometry.coordinates).map(arr_to_latlng),
-                                hex_feature_to_polygon_properties(el));
-    };
-    hexbinPolygons = _(hexdata.features).chain()
-                        .map(hex_feature_to_polygon_fn)
-                        .compact()
-                        .value();
-    _(hexbinPolygons).map(function(x) { hexbinLayerGroup.addLayer(x); });
+function _rebuildHexOverLay(hex_feature_to_polygon_properties) {
+    // assumption: _(hexbinLayerGroup._layer).chain().pluck('options').pluck('id').value() 
+    // is superset of _(hexdata.features).chain().pluck('properties').pluck('id').value()
+    var commonKey, styleOptions;
+    var leafletPolygonByID = {}; // caches leafletPolygons by commonKey to avoid search in 2nd loop 
+    _(hexbinLayerGroup._layers).each(function(hexbinLPolygon) {
+        leafletPolygonByID[hexbinLPolygon.options.id] = hexbinLPolygon;
+    });
+    _(hexbinData.features).each(function(geoJSONPolygon) {
+        commonKey = geoJSONPolygon.properties.id;
+        styleOptions = hex_feature_to_polygon_properties(geoJSONPolygon); 
+        styleOptions.id = commonKey;
+        leafletPolygonByID[commonKey].setStyle(styleOptions);
+    });
 }
-//TODO: build new Polygons here, and in _rebuildHexOverLay, just reset the properties
+
 function constructHexBinOverLay() {
     hexbinData = formResponseMngr.getAsHexbinGeoJSON();
-    _rebuildHexOverLay(hexbinData, function() { return {}; });
+    var arr_to_latlng = function(arr) { return new L.LatLng(arr[0], arr[1]); };
+    var hex_feature_to_polygon_fn = function(el) {
+        return new L.Polygon(_(el.geometry.coordinates).map(arr_to_latlng), {"id": el.properties.id});
+    };
+    _(hexbinData.features).chain()
+        .map(hex_feature_to_polygon_fn)
+        .compact()
+        .each( function(x) {
+            hexbinLayerGroup.addLayer(x); 
+        });
 }
 
 function _recomputeHexColorsByRatio(questionName, responseNames) {
@@ -367,7 +378,7 @@ function _recomputeHexColorsByRatio(questionName, responseNames) {
         return { fillColor: color, fillOpacity: 0.9, color: 'grey', weight: 1 };
                    
     };
-    _rebuildHexOverLay(hexbinData, hex_feature_to_polygon_properties);
+    _rebuildHexOverLay(hex_feature_to_polygon_properties);
 }
 
 function _hexOverLayByCount()
@@ -376,7 +387,7 @@ function _hexOverLayByCount()
         var color = getProportionalColor(el.properties.count / (el.properties.countMax * 1.2));
         return {fillColor: color, fillOpacity: 0.9, color:'grey', weight: 1};
     };
-    _rebuildHexOverLay(hexbinData, hex_feature_to_polygon_properties);
+    _rebuildHexOverLay(hex_feature_to_polygon_properties);
 }
 
 function refreshHexOverLay() { // refresh hex overlay, in any map state
