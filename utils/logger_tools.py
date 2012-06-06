@@ -18,7 +18,6 @@ from django.http import HttpResponse
 from odk_logger.models.xform import XLSFormError
 from utils.viewer_tools import get_path
 from pyxform.errors import PyXFormError
-from utils.geotag import set_gps_location
 
 
 def report_exception(subject, info, exc_info=None):
