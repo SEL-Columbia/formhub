@@ -1,7 +1,7 @@
 Formhub
 =======
 
-.. image:: https://secure.travis-ci.org/modilabs/formhub.png
+.. image:: https://secure.travis-ci.org/modilabs/formhub.png?branch=master
   :target: http://travis-ci.org/modilabs/formhub
 
 Installation
@@ -99,6 +99,3 @@ Code Structure
 * main - This app is the glue that brings odk_logger and odk_viewer
   together.
 
-In general, I think breaking these pieces into separate applications
-has been a mistake. I think we should move to having all of the code
-for formhub in a single Django application.

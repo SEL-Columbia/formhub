@@ -1,23 +1,72 @@
+from cStringIO import StringIO
 from datetime import date
+import decimal
+import json
 import os
+from PIL import Image
 import tempfile
 import traceback
-from PIL import Image
 import urllib2 as urllib
-from PIL import Image
-from cStringIO import StringIO
-import json
 
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.files.storage import get_storage_class
 from django.core.mail import mail_admins
 from django.core.servers.basehttp import FileWrapper
 from django.db import IntegrityError
+from django.db import transaction
 from django.http import HttpResponse
-from odk_logger.models.xform import XLSFormError
-from utils.viewer_tools import get_path
+from django.shortcuts import get_object_or_404
 from pyxform.errors import PyXFormError
+
+from odk_logger.models import Attachment
+from odk_logger.models import Instance
+from odk_viewer.models import ParsedInstance
+from odk_logger.models import SurveyType
+from odk_logger.models import XForm
+from odk_logger.models.xform import XLSFormError
+from odk_logger.xform_instance_parser import InstanceParseError
+from utils.viewer_tools import get_path
+
+
+@transaction.commit_on_success
+def create_instance(username, xml_file, media_files,
+        status=u'submitted_via_web'):
+    """
+    I used to check if this file had been submitted already, I've
+    taken this out because it was too slow. Now we're going to create
+    a way for an admin to mark duplicate instances. This should
+    simplify things a bit.
+    """
+    xml = xml_file.read()
+    xml_file.close()
+    user = get_object_or_404(User, username=username)
+    existing_instance_count = Instance.objects.filter(xml=xml,
+            user=user).count()
+    if existing_instance_count == 0:
+        proceed_to_create_instance = True
+    else:
+        existing_instance = Instance.objects.filter(xml=xml, user=user)[0]
+        if existing_instance.xform and\
+                not existing_instance.xform.has_start_time:
+            proceed_to_create_instance = True
+        else:
+            # Ignore submission as a duplicate IFF
+            #  * a submission's XForm collects start time
+            #  * the submitted XML is an exact match with one that
+            #    has already been submitted for that user.
+            proceed_to_create_instance = False
+
+    if proceed_to_create_instance:
+        instance = Instance.objects.create(xml=xml, user=user, status=status)
+        for f in media_files:
+            Attachment.objects.get_or_create(instance=instance, media_file=f)
+        if instance.xform is not None:
+            pi, created = ParsedInstance.objects.get_or_create(
+                    instance=instance)
+        return instance
+    return None
 
 
 def report_exception(subject, info, exc_info=None):
@@ -32,7 +81,6 @@ def report_exception(subject, info, exc_info=None):
     else:
         mail_admins(subject=subject, message=info)
 
-import decimal
 
 def round_down_geopoint(num):
     if num:
@@ -59,8 +107,10 @@ def response_with_mimetype_and_name(mimetype, name, extension=None,
             response['Content-Length'] = os.path.getsize(file_path)
     else:
         response = HttpResponse(mimetype=mimetype)
-    response['Content-Disposition'] = disposition_ext_and_date(name, extension, show_date)
+    response['Content-Disposition'] = disposition_ext_and_date(name, extension,
+            show_date)
     return response
+
 
 def disposition_ext_and_date(name, extension, show_date=True):
     if name == None:
@@ -68,6 +118,7 @@ def disposition_ext_and_date(name, extension, show_date=True):
     if show_date:
         name = "%s_%s" % (name, date.today().strftime("%Y_%m_%d"))
     return 'attachment; filename=%s.%s' % (name, extension)
+
 
 def store_temp_file(data):
     tmp = tempfile.TemporaryFile()
@@ -128,8 +179,8 @@ def _save_thumbnails(image, path, size, suffix, filename=None):
         fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
         image.thumbnail(get_dimensions(image.size, size), Image.ANTIALIAS)
         image.save(get_path(path, suffix))
-        
-        default_storage.save(get_path(filename, suffix), 
+
+        default_storage.save(get_path(filename, suffix),
                                 fs.open(get_path(path, suffix)))
     else:
         image.thumbnail(get_dimensions(image.size, size), Image.ANTIALIAS)
@@ -148,7 +199,7 @@ def resize(filename):
     fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
     loc_path = fs.path(filename)
 
-    [_save_thumbnails(image, loc_path, conf[key]['size'], conf[key]['suffix'], 
+    [_save_thumbnails(image, loc_path, conf[key]['size'], conf[key]['suffix'],
                                     filename=filename) for key in conf.keys()]
 
 def resize_local_env(filename):
@@ -157,5 +208,5 @@ def resize_local_env(filename):
     image = Image.open(path)
     conf = settings.THUMB_CONF
 
-    [_save_thumbnails(image, path, conf[key]['size'], conf[key]['suffix']) 
+    [_save_thumbnails(image, path, conf[key]['size'], conf[key]['suffix'])
                                                         for key in conf.keys()]
