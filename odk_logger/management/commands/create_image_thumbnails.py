@@ -5,7 +5,7 @@ from django.core.files.storage import get_storage_class
 from django.conf import settings
 
 from odk_logger.models.attachment import Attachment
-from utils.logger_tools import get_dimensions, resize, resize_local_env
+from utils.image_tools import get_dimensions, resize, resize_local_env
 from utils.model_tools import queryset_iterator
 from utils.viewer_tools import get_path
 
