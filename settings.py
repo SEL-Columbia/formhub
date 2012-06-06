@@ -199,7 +199,7 @@ GOOGLE_CLIENT_SECRET = '9reM29qpGFPyI8TBuB54Z4fk'
 # Place additional keys inorder both alphabeticall and in descending size 
 THUMB_CONF = {'large' : {'size': 1280, 'suffix': '-lrg'},
               'medium' : {'size': 640, 'suffix': '-med'},
-              'smaller' : {'size': 240, 'suffix': '-sml'} 
+              'smaller' : {'size': 240, 'suffix': '-sml'}
              }
 
 TESTING_MODE = False

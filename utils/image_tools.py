@@ -1,5 +1,12 @@
 from cStringIO import StringIO
 from PIL import Image
+import urllib2 as urllib
+
+from django.conf import settings
+from django.core.files.storage import get_storage_class
+
+from utils.viewer_tools import get_path
+
 
 def get_dimensions((width, height), longest_side):
     if width > height:
