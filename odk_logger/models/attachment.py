@@ -3,7 +3,7 @@ from django.core.files.storage import get_storage_class
 from django.db import models
 
 from instance import Instance
-from utils.logger_tools import get_dimensions, resize
+from utils.image_tools import get_dimensions, resize
 
 
 def upload_to(instance, filename):
