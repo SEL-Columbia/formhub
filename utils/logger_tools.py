@@ -3,6 +3,7 @@ import decimal
 import os
 import tempfile
 import traceback
+import urllib2 as urllib
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -16,7 +17,6 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from pyxform.errors import PyXFormError
 
-
 from odk_logger.models import Attachment
 from odk_logger.models import Instance
 from odk_viewer.models import ParsedInstance
@@ -24,6 +24,7 @@ from odk_logger.models import SurveyType
 from odk_logger.models import XForm
 from odk_logger.models.xform import XLSFormError
 from odk_logger.xform_instance_parser import InstanceParseError
+from utils.viewer_tools import get_path
 
 
 @transaction.commit_on_success
