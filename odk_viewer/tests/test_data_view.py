@@ -46,3 +46,13 @@ class TestDataView(MainTestCase):
         remove_perm('change_xform', self.user, self.xform)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 403)
+
+    def test_http_auth_for_has_permission(self):
+        self.user = self._create_user('alice', 'alice')
+        self._logout()
+        assign('change_xform', self.user, self.xform)
+        response = self.client.get(self.url, REMOTE_USER=self.user.username)
+        self.assertEqual(response.status_code, 200)
+        remove_perm('change_xform', self.user, self.xform)
+        response = self.client.get(self.url, REMOTE_USER=self.user.username)
+        self.assertEqual(response.status_code, 403)
