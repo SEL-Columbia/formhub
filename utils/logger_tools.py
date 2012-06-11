@@ -3,7 +3,6 @@ import decimal
 import os
 import tempfile
 import traceback
-import urllib2 as urllib
 
 from django.conf import settings
 from django.contrib.auth.models import User
