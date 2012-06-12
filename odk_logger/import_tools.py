@@ -7,7 +7,7 @@ import zipfile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from sqlalchemy import create_engine, MetaData, Table
 
-import models
+from utils.logger_tools import create_instance
 from odk_logger.xform_fs import XFormInstanceFS
 
 # odk
@@ -58,7 +58,7 @@ def import_instance(path_to_instance_folder, status, user):
     # todo: if an instance has been submitted make sure all the
     # files are in the database.
     # there shouldn't be any instances with a submitted status in the
-    instance = models.create_instance(user.username, xml_file, images, status)
+    instance = create_instance(user.username, xml_file, images, status)
     # close the files
     xml_file.close()
     for i in images: i.close()
@@ -103,7 +103,7 @@ def import_instances_from_zip(zipfile_path, user, status="zip"):
             # TODO: if an instance has been submitted make sure all the
             # files are in the database.
             # there shouldn't be any instances with a submitted status in the
-            instance = models.create_instance(user.username, xml_file, images, status)
+            instance = create_instance(user.username, xml_file, images, status)
             # close the files
             xml_file.close()
             for i in images: i.close()

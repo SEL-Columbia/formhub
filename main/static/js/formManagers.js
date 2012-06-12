@@ -118,8 +118,8 @@ FormJSONManager.prototype._parseSupportedLanguages = function()
 /// pass a question object and get its label, if language is specified, try get label for that otherwise return the first label
 FormJSONManager.prototype.getMultilingualLabel = function(question, language)
 {
-    var labelProp = question[constants.LABEL];
     var key;
+    var labelProp = question[constants.LABEL];
 
     /// if plain string, return
     if(typeof(labelProp) == "string")
@@ -156,8 +156,8 @@ FormResponseManager = function(url, callback)
 // TODO: remove filter generation from within class, it should be application specific, right?
 FormResponseManager.prototype.loadResponseData = function(params, start, limit, fields)
 {
-    var thisFormResponseMngr = this;
     var idx;
+    var thisFormResponseMngr = this;
 
     /// invalidate all derivative data 
     this.geoJSON = null;
@@ -229,15 +229,12 @@ FormResponseManager.prototype.clearSelectOneFilterResponses = function(name)
 /// this cannot be called before the form is loaded as we rely on the form to determine the gps field
 FormResponseManager.prototype._toGeoJSON = function()
 {
-    var idx;
     var features = [];
     var geopointQuestionName = null;
     var geopointQuestion = formJSONMngr.getGeoPointQuestion();
     if(geopointQuestion)
         geopointQuestionName = geopointQuestion[constants.NAME];
-    for(idx in this.responses)
-    {
-        var response = this.responses[idx];
+    _(this.responses).each(function (response) {
         var gps = response[geopointQuestionName];
         if(gps)
         {
@@ -253,7 +250,7 @@ FormResponseManager.prototype._toGeoJSON = function()
                 features.push(feature);
             }
         }
-    }
+    });
 
     this.geoJSON = {"type":"FeatureCollection", "features":features};
 };
@@ -261,7 +258,6 @@ FormResponseManager.prototype._toGeoJSON = function()
 /// this cannot be called before the form is loaded as we rely on the form to determine the gps field
 FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
 {
-    var responses = this.responses;
     var features = [];
     var latLngArray = [];
     var geopointQuestionName = null;
@@ -273,7 +269,7 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
     function fixlatinv(n) { return (n > 90 ? n - 90 : n - 90); }
     if(geopointQuestion)
         geopointQuestionName = geopointQuestion[constants.NAME];
-    _.each(responses, function(response) {
+    _(this.responses).each(function(response) {
         var gps = response[geopointQuestionName];
         if(gps)
         {
@@ -284,7 +280,7 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
                 var lat = parseFloat(parts[0]);
                 var lng = parseFloat(parts[1]);
                 if(latLongFilter===undefined || latLongFilter(lat, lng))
-                    latLngArray.push({ lat: fixlat(lat), lng: fixlng(lng), response: response});
+                    latLngArray.push({ lat: fixlat(lat), lng: fixlng(lng), response_id: response._id});
             }
         }
     });
@@ -293,7 +289,8 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
                 .yValue( function(d) { return d.lat; } )
                 ( latLngArray );
     countMax = d3.max( hexset, function(d) { return d.data.length; } );
-    _.each(hexset, function(hex) {
+    //var metaDataToBuild = [];
+    _.each(hexset, function(hex, idx) {
         if(hex.data.length) {
             var geometry = {"type":"Polygon", 
                             "coordinates": _(hex.points).map(function(d) {
@@ -302,15 +299,17 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
                             };
             var feature = {"type": "Feature", 
                            "geometry":geometry, 
-                           "properties": {"rawdata" :_(hex.data).map(function(d) {
-                                                return {lat: fixlatinv(d.lat), lng: fixlnginv(d.lng), response: d.response}; }),
+                           "properties": { "id" : idx,
+                                           "responseIDs" : _(hex.data).pluck('response_id'),
                                            "count" : hex.data.length,
                                            "countMax" : countMax
                                           }
                            };
-                features.push(feature);
+            features.push(feature);
+            //_(hex.data).each(function (d) { metaDataToBuild.push({"hexID": idx, "responseID": d.response_id}) });
         }
     });
+    //this._metaDataForResponses.hex = metaDataToBuild;
 
     this.hexGeoJSON = {"type":"FeatureCollection", "features":features};
 };
@@ -321,6 +320,7 @@ FormResponseManager.prototype.getAsGeoJSON = function()
 
     return this.geoJSON;
 };
+
 FormResponseManager.prototype.getAsHexbinGeoJSON = function(latLongFilter)
 {
     if(!this.hexGeoJSON)
@@ -329,13 +329,10 @@ FormResponseManager.prototype.getAsHexbinGeoJSON = function(latLongFilter)
     return this.hexGeoJSON;
 };
 
-
-
 FormResponseManager.prototype._toPivotJs = function(fields)
 {
     this.pivotJsData = null;
     var pivotData = [];
-    var idx;
 
     // first row is the titles
     var titles = [];
@@ -346,9 +343,7 @@ FormResponseManager.prototype._toPivotJs = function(fields)
     pivotData.push(titles);
 
     // now we do the data making sure its in the same order as the titles above
-    for(idx in this.responses)
-    {
-        var response = this.responses[idx];
+    _(this.responses).each(function (response) {
         var row = [];
 
         for(i=0;i<fields.length;i++)
@@ -374,7 +369,7 @@ FormResponseManager.prototype._toPivotJs = function(fields)
             row.push(data);
         }
         pivotData.push(row);
-    }
+    });
 
     this.pivotJsData = JSON.stringify(pivotData);
 };
@@ -387,12 +382,9 @@ FormResponseManager.prototype._toDataTables = function(fields)
 {
     this.dtData = null;
     var aaData = [];
-    var idx;
 
     // now we do the data making sure its in the same order as the titles above
-    for(idx in this.responses)
-    {
-        var response = this.responses[idx];
+    _(this.responses).each(function (response) {
         var row = [];
 
         for(i=0;i<fields.length;i++)
@@ -418,7 +410,7 @@ FormResponseManager.prototype._toDataTables = function(fields)
             row.push(data);
         }
         aaData.push(row);
-    }
+    });
 
     this.dtData = aaData;
 };

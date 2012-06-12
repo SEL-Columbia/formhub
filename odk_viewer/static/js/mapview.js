@@ -40,6 +40,7 @@ var legendContainerId = "legend";
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
 var currentLanguageIdx = -1;
+var custAdded = false;
 
 function initialize() {
     // Make a new Leaflet map in your container div
@@ -66,8 +67,11 @@ function initialize() {
             layersControl.addBaseLayer(mapboxstreet, mapData.label);
 
             // only add default layer to map
-            if(idx === 0)
+            if(idx === 0 && !custAdded)
                 map.addLayer(mapboxstreet);
+            else if (idx === mapboxMaps.length && custAdded)
+                map.addLayer(mapboxstreet);
+                $("input[name=leaflet-base-layers]").attr('checked', true);
         });
     });
 
@@ -103,10 +107,9 @@ function loadResponseDataCallback()
         // add language selector
         if(formJSONMngr.supportedLanguages.length > 1)
         {
-            dropdownLabel = _createElementAndSetAttrs('li');
-            dropdownLink = _createElementAndSetAttrs('a', {"href": "#", "class":"language-label"}, "Language");
-            dropdownLabel.appendChild(dropdownLink);
-            navContainer.append(dropdownLabel);
+            $('<li />').html(
+                $('<a />', { text: "Language", href: '#'}).addClass("language-label")
+            ).appendTo(navContainer);
 
             dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown language-picker"});
             dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
@@ -146,10 +149,9 @@ function loadResponseDataCallback()
         // check if we have select one questions
         if(formJSONMngr.getNumSelectOneQuestions() > 0)
         {
-            dropdownLabel = _createElementAndSetAttrs('li');
-            dropdownLink = _createElementAndSetAttrs('a', {"href": "#"}, "View By");
-            dropdownLabel.appendChild(dropdownLink);
-            navContainer.append(dropdownLabel);
+            $('<li />').html(
+                $('<a />', { text: "View By", href: '#'})
+            ).appendTo(navContainer);
 
             dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown"});
             dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
@@ -332,23 +334,32 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         map.fitBounds(latlngbounds);
     }
 }
-function _rebuildHexOverLay(hexdata, hex_feature_to_polygon_properties) {
-    hexbinLayerGroup.clearLayers();
-    var arr_to_latlng = function(arr) { return new L.LatLng(arr[0], arr[1]); };
-    var hex_feature_to_polygon_fn = function(el) {
-        return new L.Polygon(_(el.geometry.coordinates).map(arr_to_latlng),
-                                hex_feature_to_polygon_properties(el));
-    };
-    hexbinPolygons = _(hexdata.features).chain()
-                        .map(hex_feature_to_polygon_fn)
-                        .compact()
-                        .value();
-    _(hexbinPolygons).map(function(x) { hexbinLayerGroup.addLayer(x); });
+function _rebuildHexOverLay(hex_feature_to_polygon_properties) {
+    // assumption: _(hexbinLayerGroup._layer).chain().pluck('options').pluck('id').value() 
+    // is superset of _(hexdata.features).chain().pluck('properties').pluck('id').value()
+    var commonKey, styleOptions;
+    var leafletPolygonByID = {}; // caches leafletPolygons by commonKey to avoid search in 2nd loop 
+    _(hexbinLayerGroup._layers).each(function(hexbinLPolygon) {
+        leafletPolygonByID[hexbinLPolygon.options.id] = hexbinLPolygon;
+    });
+    _(hexbinData.features).each(function(geoJSONPolygon) {
+        commonKey = geoJSONPolygon.properties.id;
+        styleOptions = hex_feature_to_polygon_properties(geoJSONPolygon); 
+        styleOptions.id = commonKey;
+        leafletPolygonByID[commonKey].setStyle(styleOptions);
+    });
 }
-//TODO: build new Polygons here, and in _rebuildHexOverLay, just reset the properties
+
 function constructHexBinOverLay() {
     hexbinData = formResponseMngr.getAsHexbinGeoJSON();
-    _rebuildHexOverLay(hexbinData, function() { return {}; });
+    var arr_to_latlng = function(arr) { return new L.LatLng(arr[0], arr[1]); };
+    var hex_feature_to_polygon_fn = function(el) {
+        return new L.Polygon(_(el.geometry.coordinates).map(arr_to_latlng), 
+                            {"id": el.properties.id});
+    };
+    _(hexbinData.features).each( function(x) {
+        hexbinLayerGroup.addLayer(hex_feature_to_polygon_fn(x)); 
+    });
 }
 
 function _recomputeHexColorsByRatio(questionName, responseNames) {
@@ -357,15 +368,17 @@ function _recomputeHexColorsByRatio(questionName, responseNames) {
         // count when instance.response[questionName] doesn't exist, and is therefore ``undefined''
     var hex_feature_to_polygon_properties = function(el) {
         // TODO: remove rawdata from properties, go through formJSONManager or somesuch instead
-        var numerator = _.reduce(el.properties.rawdata, function(numer, instance) {
+
+        /*var numerator = _.reduce(el.properties.rawdata, function(numer, instance) {
                             return numer + (_.contains(responseNames, instance.response[questionName]) ? 1 : 0);
                         }, 0.0);
         var denominator = el.properties.rawdata.length;
         var color = getProportionalColor(numerator / denominator, "greens");
-        return { fillColor: color, fillOpacity: 0.9, color: 'grey', weight: 1 };
+        return { fillColor: color, fillOpacity: 0.9, color: 'grey', weight: 1 };*/
+        return {};
                    
     };
-    _rebuildHexOverLay(hexbinData, hex_feature_to_polygon_properties);
+    _rebuildHexOverLay(hex_feature_to_polygon_properties);
 }
 
 function _hexOverLayByCount()
@@ -374,7 +387,7 @@ function _hexOverLayByCount()
         var color = getProportionalColor(el.properties.count / (el.properties.countMax * 1.2));
         return {fillColor: color, fillOpacity: 0.9, color:'grey', weight: 1};
     };
-    _rebuildHexOverLay(hexbinData, hex_feature_to_polygon_properties);
+    _rebuildHexOverLay(hex_feature_to_polygon_properties);
 }
 
 function refreshHexOverLay() { // refresh hex overlay, in any map state
@@ -566,7 +579,7 @@ function getBootstrapFields()
     // we only want to load gps and select one data to begin with
     var fields = [];
     var idx, question;
-    if(!constants) console.log("ERROR: constants not found; please include main/static/js/formManagers.js"); 
+    if(!constants) throw "ERROR: constants not found; please include main/static/js/formManagers.js"; 
     for(idx in formJSONMngr.selectOneQuestions)
     {
         question = formJSONMngr.selectOneQuestions[idx];

@@ -23,7 +23,8 @@ from django.conf import settings
 from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
 
-from models import XForm, create_instance
+from utils.logger_tools import create_instance
+from models import XForm
 from main.models import UserProfile, MetaData
 from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
 from utils.decorators import is_owner
@@ -219,7 +220,8 @@ def download_jsonform(request, username, id_string):
 
 @is_owner
 def delete_xform(request, username, id_string):
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    xform = get_object_or_404(XForm, user__username=username,
+        id_string=id_string)
     xform.delete()
     return HttpResponseRedirect('/')
 
