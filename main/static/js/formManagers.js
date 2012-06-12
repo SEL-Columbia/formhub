@@ -304,11 +304,7 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
             });
             features.push({"type": "Feature", 
                            "geometry":geometry, 
-                           "properties": { "id" : hexID,
-                                           "responseIDs" : responseIDs,
-                                           "count" : hex.data.length,
-                                           "countMax" : countMax
-                                          }
+                           "properties": { "id" : hexID, "responseIDs" : responseIDs }
                            });
         }
     });
@@ -331,6 +327,12 @@ FormResponseManager.prototype.getAsHexbinGeoJSON = function(latLongFilter)
     return this.hexGeoJSON;
 };
 
+FormResponseManager.prototype.dvQuery = function(dvQueryObj)
+{
+    if (!this.dvResponseTable) this._toDatavore();
+    return this.dvResponseTable.query(dvQueryObj);
+};
+
 FormResponseManager.prototype._toDatavore = function(rebuildFlag)
 {
     var dvData = {}, qName = '';
@@ -339,8 +341,6 @@ FormResponseManager.prototype._toDatavore = function(rebuildFlag)
     // Datavore table should only be built once, unless rebuildFlag is passed in
     if (this.dvResponseTable && !rebuildFlag) return;
     // CREATE A Datavore table here; the mapping from form types to datavore types
-    // integer / float --> dv.type.numeric; select one --> dv.type.nominal;
-    // everything else --> dv.type.unknown 
     var typeMap = {"integer" : dv.type.numeric, "decimal" : dv.type.numeric,
                    "select one" : dv.type.nominal, 
                    "text" : dv.type.unknown, "select multiple" : dv.type.unknown,
@@ -359,7 +359,7 @@ FormResponseManager.prototype._toDatavore = function(rebuildFlag)
     var dvTable = dv.table();
     _(questions).each(function(question) {
         qName = question[constants.NAME];
-        dvTable.addColumn(qName, dvData[qName], typeMap[qName[constants.TYPE]]);
+        dvTable.addColumn(qName, dvData[qName], typeMap[question[constants.TYPE]]);
     });
     this.dvResponseTable = dvTable;
 };

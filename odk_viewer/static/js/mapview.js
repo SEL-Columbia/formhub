@@ -335,19 +335,12 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         map.fitBounds(latlngbounds);
     }
 }
-function _rebuildHexOverLay(hex_feature_to_polygon_properties) {
-    // assumption: _(hexbinLayerGroup._layer).chain().pluck('options').pluck('id').value() 
-    // is superset of _(hexdata.features).chain().pluck('properties').pluck('id').value()
-    var commonKey, styleOptions;
-    var leafletPolygonByID = {}; // caches leafletPolygons by commonKey to avoid search in 2nd loop 
+
+function _reStyleHexOverLay(newHexStylesByID) {
     _(hexbinLayerGroup._layers).each(function(hexbinLPolygon) {
-        leafletPolygonByID[hexbinLPolygon.options.id] = hexbinLPolygon;
-    });
-    _(hexbinData.features).each(function(geoJSONPolygon) {
-        commonKey = geoJSONPolygon.properties.id;
-        styleOptions = hex_feature_to_polygon_properties(geoJSONPolygon); 
-        styleOptions.id = commonKey;
-        leafletPolygonByID[commonKey].setStyle(styleOptions);
+        hexID = hexbinLPolygon.options.id;
+        if (newHexStylesByID[hexID])
+            hexbinLPolygon.setStyle(newHexStylesByID[hexID]);
     });
 }
 
@@ -364,31 +357,33 @@ function constructHexBinOverLay() {
 }
 
 function _recomputeHexColorsByRatio(questionName, responseNames) {
+    var newHexStyles = {};
     if (_(responseNames).contains(notSpecifiedCaption)) 
         responseNames.push(undefined); // hack? if notSpeciedCaption is in repsonseNames, then need to
         // count when instance.response[questionName] doesn't exist, and is therefore ``undefined''
-    var hex_feature_to_polygon_properties = function(el) {
-        // TODO: remove rawdata from properties, go through formJSONManager or somesuch instead
+    
+    var hexAndCountArrayNum = formResponseMngr.dvQuery({dims: ['hexID'], vals:[dv.count()], where:
+        function(table, row) { return _.contains(responseNames, table.get(questionName, row)); }});
+    var hexAndCountArrayDenom = formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]});      
 
-        /*var numerator = _.reduce(el.properties.rawdata, function(numer, instance) {
-                            return numer + (_.contains(responseNames, instance.response[questionName]) ? 1 : 0);
-                        }, 0.0);
-        var denominator = el.properties.rawdata.length;
-        var color = getProportionalColor(numerator / denominator, "greens");
-        return { fillColor: color, fillOpacity: 0.9, color: 'grey', weight: 1 };*/
-        return {};
-                   
-    };
-    _rebuildHexOverLay(hex_feature_to_polygon_properties);
+    _(hexAndCountArrayDenom[0]).each( function(hexID, idx) {
+        // note both are dense queries on datavore, the idx's match exactly
+        var ratio = hexAndCountArrayNum[1][idx] / hexAndCountArrayDenom[1][idx];
+        newHexStyles[hexID] = {  fillColor: getProportionalColor(ratio, "greens") };
+    });
+    _reStyleHexOverLay(newHexStyles);
 }
 
 function _hexOverLayByCount()
 {
-    var hex_feature_to_polygon_properties = function(el) {
-        var color = getProportionalColor(el.properties.count / (el.properties.countMax * 1.2));
-        return {fillColor: color, fillOpacity: 0.9, color:'grey', weight: 1};
-    };
-    _rebuildHexOverLay(hex_feature_to_polygon_properties);
+    var newHexStyles = {};
+    var hexAndCountArray = formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]});      
+    var totalCount = _.max(hexAndCountArray[1]);
+    _(hexAndCountArray[0]).each( function(hexID, idx) {
+        var color = getProportionalColor(hexAndCountArray[1][idx] / totalCount); 
+        newHexStyles[hexID] = {fillColor: color, fillOpacity: 0.9, color:'grey', weight: 1};
+    }); 
+    _reStyleHexOverLay(newHexStyles);
 }
 
 function refreshHexOverLay() { // refresh hex overlay, in any map state
