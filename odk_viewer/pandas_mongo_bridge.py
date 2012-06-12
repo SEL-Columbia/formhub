@@ -100,64 +100,54 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         # write all cursor's data to different sheets
         for section_name, records in data.iteritems():
             section = self.sections[section_name]
-            columns = section["columns"]
+            columns = section["columns"] + self.EXTRA_COLUMNS
             writer = XLSDataFrameWriter(records, columns)
             writer.writeToExcel(self.xls_writer, section_name, header=True, index=False)
             self.xls_writer.save()
 
     def _formatForDataframe(self, cursor):
         """
-        Do any housekeeping on mongo data to get it ready for a Pandas Dataframe
-
-        Assign each repeat as an additional dict for its particular section
-        1. Remove indexes from repeat column names i.e. parent[2]/child to parent/child
-        2. Split a select-multiple into its components
-        3. Associate any repeats with its parent by including parent_index and parent_table fields
+        Format each record by striping out repeats into individual records and adding indexes
 
         returns a dictionary with keys being the names of the sheet and values a list of dicts to feed into a DataFrame
         """
         data = {}
-        records_tpl = {} # blank template for initialising records
         for section_name in self.sections:
-            #HACK append extra columns here
-            self.sections[section_name]["columns"] += self.EXTRA_COLUMNS
-            data[section_name] = [{}]
-
-        records_tpl = copy.copy(data)
+            # append extra columns here
+            #self.sections[section_name]["columns"] += self.EXTRA_COLUMNS
+            data[section_name] = []
 
         for record in cursor:
             # from record, we'll end up with multiple records, one for each section we have
-            records = copy.copy(records_tpl)
 
-            # setup _index for the default section - NOT zero based
-            index = len(data[self.survey_name])
-            data[self.survey_name].update({"_index": len(data[self.survey_name])})
-            for key, val in record.iteritems():
-                current_section_name = None
+            # add records for the default section
+            columns = self.sections[self.survey_name]["columns"]
+            index = self._addDataToSection(data[self.survey_name], record, columns)
 
-                # remove indexes so we can match existing xpaths/columns
-                clean_xpath = remove_indexes_from_xpath(key)
-
-                # check in the columns for each of our sections to find a match
-                for section_name, xpath_and_columns in self.sections.iteritems():
-                    columns = xpath_and_columns["columns"]
-                    if clean_xpath in columns:
-                        current_section_name = section_name
-                        break
-
-                # we only consider items assigned to a section name for export,
-                if current_section_name:
-                    section = self.sections[current_section_name]
-                    is_repeat = section["is_repeat"]
-
-                    #data[current_section_name][len(data[current_section_name])-1].update({key: val})
-                    #index = len(records[current_section_name])-1
-
-            #TODO: figure how to append data from within previous loop to eliminate additional loop
-            #for section_name, r in records.iteritems():
-            #    data[section_name].append(r)
+            for sheet_name, sheet_attrs in self.sections.iteritems():
+                # skip default sheet_name i.e surveyname
+                if sheet_name != self.survey_name:
+                    xpath = sheet_attrs["xpath"]
+                    columns = sheet_attrs["columns"]
+                    repeat_records = record[xpath]
+                    for repeat_record in repeat_records:
+                        self._addDataToSection(data[sheet_name], repeat_record, columns, index)
 
         return data
+
+    def _addDataToSection(self, data_section, record, columns, parent_index = -1):
+        data_section.append({})
+        index = len(data_section)
+        #data_section[len(data_section)-1].update(record) # we could simply do this but end up with duplicate data from repeats
+        for column in columns:
+            try:
+                data_section[len(data_section)-1].update({column: record[column]})
+            except KeyError:
+                #TODO: none of the columns should be missing after we fix select multiples
+                #print "Missing column %s" % column
+                pass
+        data_section[len(data_section)-1].update({"_index": index, "_parent_index": parent_index})
+        return index
 
     def _generateSections(self):
         """
