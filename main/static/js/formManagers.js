@@ -199,11 +199,10 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
             if(fields && fields.length > 0)
                 urlParams[constants.FIELDS] = JSON.stringify(fields);
             $.getJSON(thisFormResponseMngr.url, urlParams, function(data){
-                // CREATE A Datavore table here; the mapping from form types to datavore types
-                // integer / float --> dv.type.numeric; select one --> dv.type.nominal;
-                // everything else --> dv.type.unknown 
                 thisFormResponseMngr.responses = data;
                 thisFormResponseMngr.callback.call(thisFormResponseMngr);
+                // load the dvResponseTable up asynchronously
+                setTimeout(thisFormResponseMngr._toDataVore(), 1);
             });
         });
 };
@@ -327,6 +326,33 @@ FormResponseManager.prototype.getAsHexbinGeoJSON = function(latLongFilter)
         this._toHexbinGeoJSON(latLongFilter);
 
     return this.hexGeoJSON;
+};
+
+FormResponseManager.prototype._toDataVore = function()
+{
+    var dvData = {}, qName = '';
+    var questions = formJSONMngr.questions;
+    var responses = this.responses;
+    // CREATE A Datavore table here; the mapping from form types to datavore types
+    // integer / float --> dv.type.numeric; select one --> dv.type.nominal;
+    // everything else --> dv.type.unknown 
+    var typeMap = {"integer" : dv.type.numeric, "decimal" : dv.type.numeric,
+                   "select one" : dv.type.nominal, 
+                   "text" : dv.type.unknown, "select multiple" : dv.type.unknown };
+    questions = _(questions).filter(function(q) { return typeMap[q[constants.TYPE]]; });
+    _(questions).each(function(question) {
+        qName = question[constants.NAME];
+        dvData[qName] = [];
+        _(responses).each( function (response) {
+            dvData[qName].push(response[qName]);
+        });
+    });
+    var dvTable = dv.table();
+    _(questions).each(function(question) {
+        qName = question[constants.NAME];
+        dvTable.addColumn(qName, dvData[qName], typeMap[qName[constants.TYPE]]);
+    });
+    this.dvResponseTable = dvTable;
 };
 
 FormResponseManager.prototype._toPivotJs = function(fields)

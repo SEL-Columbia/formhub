@@ -5,7 +5,7 @@ var map;
 var layersControl;
 // array of mapbox maps to use as base layers - the first one will be the default map
 var mapboxMaps = [
-    {'label': 'Mapbox Street', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-hgm23qjf.jsonp'},
+    {'label': 'Mapbox Streets', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-iuetkf9u.jsonp'},
     {'label': 'MapBox Streets Light', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-p543gvbh.jsonp'},
     {'label': 'MapBox Streets Zenburn', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-bjhr55gf.jsonp'}
 ];
@@ -67,11 +67,12 @@ function initialize() {
             layersControl.addBaseLayer(mapboxstreet, mapData.label);
 
             // only add default layer to map
-            if(idx === 0 && !custAdded)
+            if(idx === 0 && !custAdded) {
                 map.addLayer(mapboxstreet);
-            else if (idx === mapboxMaps.length && custAdded)
+            } else if (idx === mapboxMaps.length && custAdded) {
                 map.addLayer(mapboxstreet);
                 $("input[name=leaflet-base-layers]").attr('checked', true);
+            }
         });
     });
 

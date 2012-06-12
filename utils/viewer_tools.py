@@ -1,8 +1,17 @@
-from xml.dom import minidom
 import os, sys
+import traceback
+from xml.dom import minidom
+
+from django.conf import settings
+from django.core.files.storage import get_storage_class
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.mail import mail_admins
+
 import common_tags as tag
 
+
 SLASH = u"/"
+
 
 class MyError(Exception):
     pass
@@ -14,8 +23,18 @@ def image_urls_for_form(xform):
     ], [])
 
 
+def get_path(path, suffix):
+    fileName, fileExtension = os.path.splitext(path)
+    return fileName + suffix +  fileExtension
+
+
 def image_urls(instance):
-    return [a.media_file.url for a in instance.attachments.all()]
+    default_storage = get_storage_class()()
+    return [ default_storage.url(get_path(a.media_file.name,
+            settings.THUMB_CONF['medium']['suffix'])) if
+            default_storage.exists(get_path(a.media_file.name,
+            settings.THUMB_CONF['medium']['suffix'])) else
+            a.media_file.url for a in instance.attachments.all()]
 
 
 def parse_xform_instance(xml_str):
@@ -37,6 +56,7 @@ def parse_xform_instance(xml_str):
             })
     return survey_data
 
+
 def _path(node):
     n = node
     levels = []
@@ -44,6 +64,7 @@ def _path(node):
         levels = [n.nodeName] + levels
         n = n.parentNode
     return SLASH.join(levels[1:])
+
 
 def _path_value_pairs(node):
     """
@@ -63,6 +84,7 @@ def _path_value_pairs(node):
             for pair in _path_value_pairs(child):
                 yield pair
 
+
 def _all_attributes(node):
     """
     Go through an XML document returning all the attributes we see.
@@ -75,11 +97,8 @@ def _all_attributes(node):
             yield pair
 
 
-# test = {"one/two" : 1, "one/three" : 3, "two" : 2}
-# vardict = VariableDictionary(test)
-# print vardict["one"]._d, vardict["two"]
-
 class XFormParser(object):
+
     def __init__(self, xml):
         assert type(xml)==str or type(xml)==unicode, u"xml must be a string"
         self.doc = minidom.parseString(xml)
@@ -87,12 +106,17 @@ class XFormParser(object):
 
     def get_variable_list(self):
         """
-        Return a list of pairs [(path to variable1, attributes of variable1), ...].
+        Return a list of pairs [(path to variable1, attributes of variable1),
+        ...].
         """
         bindings = self.doc.getElementsByTagName(u"bind")
         attributes = [dict(_all_attributes(b)) for b in bindings]
-        # note: nodesets look like /water/source/blah we're returning source/blah
-        return [(SLASH.join(d.pop(u"nodeset").split(SLASH)[2:]), d) for d in attributes]
+        # note: nodesets look like /water/source/blah we're returning
+        # source/blah
+        return [
+            (SLASH.join(d.pop(u"nodeset").split(SLASH)[2:]), d)
+            for d in attributes
+        ]
 
     def get_variable_dictionary(self):
         d = {}
@@ -149,14 +173,6 @@ class XFormParser(object):
         return dict(get_pairs(self.follow("h:body")))
 
 
-# f = open(sys.argv[1])
-# xform = XFormParser(f.read())
-# f.close()
-# import json ; print json.dumps(xform.get_variable_dictionary(), indent=4)
-
-from django.conf import settings
-from django.core.mail import mail_admins
-import traceback
 def report_exception(subject, info, exc_info=None):
     if exc_info:
         cls, err = exc_info[:2]
@@ -169,9 +185,10 @@ def report_exception(subject, info, exc_info=None):
     else:
         mail_admins(subject=subject, message=info)
 
-from django.core.files.uploadedfile import InMemoryUploadedFile
+
 def django_file(path, field_name, content_type):
-    # adapted from here: http://groups.google.com/group/django-users/browse_thread/thread/834f988876ff3c45/
+    # adapted from here:
+    # http://groups.google.com/group/django-users/browse_thread/thread/834f988876ff3c45/
     f = open(path)
     return InMemoryUploadedFile(
         file=f,
@@ -181,4 +198,3 @@ def django_file(path, field_name, content_type):
         size=os.path.getsize(path),
         charset=None
         )
-
