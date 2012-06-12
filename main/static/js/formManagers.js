@@ -202,7 +202,7 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
                 thisFormResponseMngr.responses = data;
                 thisFormResponseMngr.callback.call(thisFormResponseMngr);
                 // load the dvResponseTable up asynchronously
-                setTimeout(thisFormResponseMngr._toDataVore(), 1);
+                _.defer(function() {thisFormResponseMngr._toDatavore();});
             });
         });
 };
@@ -288,29 +288,32 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
                 .yValue( function(d) { return d.lat; } )
                 ( latLngArray );
     countMax = d3.max( hexset, function(d) { return d.data.length; } );
-    //var metaDataToBuild = [];
+    var hexOfResponseID = {}, responseIDs = [], hexID = '';
     _.each(hexset, function(hex, idx) {
         if(hex.data.length) {
+            hexID = 'HEX: ' + idx;
             var geometry = {"type":"Polygon", 
                             "coordinates": _(hex.points).map(function(d) {
                                     return [fixlatinv(d.y), fixlnginv(d.x)];
                                     })
                             };
-            var feature = {"type": "Feature", 
+            responseIDs = [];
+            _(hex.data).each(function(d) {
+                responseIDs.push(d.response_id);
+                hexOfResponseID[d.response_id] = hexID; 
+            });
+            features.push({"type": "Feature", 
                            "geometry":geometry, 
-                           "properties": { "id" : idx,
-                                           "responseIDs" : _(hex.data).pluck('response_id'),
+                           "properties": { "id" : hexID,
+                                           "responseIDs" : responseIDs,
                                            "count" : hex.data.length,
                                            "countMax" : countMax
                                           }
-                           };
-            features.push(feature);
-            //_(hex.data).each(function (d) { metaDataToBuild.push({"hexID": idx, "responseID": d.response_id}) });
+                           });
         }
     });
-    //this._metaDataForResponses.hex = metaDataToBuild;
-
     this.hexGeoJSON = {"type":"FeatureCollection", "features":features};
+    this._addMetadataColumn("_id", "hexID", dv.type.nominal, hexOfResponseID);
 };
 FormResponseManager.prototype.getAsGeoJSON = function()
 {
@@ -328,18 +331,24 @@ FormResponseManager.prototype.getAsHexbinGeoJSON = function(latLongFilter)
     return this.hexGeoJSON;
 };
 
-FormResponseManager.prototype._toDataVore = function()
+FormResponseManager.prototype._toDatavore = function(rebuildFlag)
 {
     var dvData = {}, qName = '';
     var questions = formJSONMngr.questions;
     var responses = this.responses;
+    // Datavore table should only be built once, unless rebuildFlag is passed in
+    if (this.dvResponseTable && !rebuildFlag) return;
     // CREATE A Datavore table here; the mapping from form types to datavore types
     // integer / float --> dv.type.numeric; select one --> dv.type.nominal;
     // everything else --> dv.type.unknown 
     var typeMap = {"integer" : dv.type.numeric, "decimal" : dv.type.numeric,
                    "select one" : dv.type.nominal, 
-                   "text" : dv.type.unknown, "select multiple" : dv.type.unknown };
+                   "text" : dv.type.unknown, "select multiple" : dv.type.unknown,
+                   "_id" : dv.type.unknown };
+    // chuck all questions whose type isn't in typeMap; add an _id "question"
+    // TODO: if datavore is our only datastore, this chucking can be removed (with care)
     questions = _(questions).filter(function(q) { return typeMap[q[constants.TYPE]]; });
+    questions.push({'name' : "_id", 'type' : "_id"});
     _(questions).each(function(question) {
         qName = question[constants.NAME];
         dvData[qName] = [];
@@ -353,6 +362,17 @@ FormResponseManager.prototype._toDataVore = function()
         dvTable.addColumn(qName, dvData[qName], typeMap[qName[constants.TYPE]]);
     });
     this.dvResponseTable = dvTable;
+};
+
+FormResponseManager.prototype._addMetadataColumn = function(keyName, metaColumnName, metaColumnType, metaData)
+{
+    // Adds a metadata column, after aligning values according to keyName
+    if (!this.dvResponseTable) this._toDatavore();
+    var columnOfKeys = this.dvResponseTable[keyName];
+    if (!columnOfKeys ) { throw "No data for key " + keyName + " in dvReponseTable"; }
+    // question: Some of these are undefined; is that okay?
+    var colToAdd = _(columnOfKeys).map(function(key) { return metaData[key]; });
+    this.dvResponseTable.addColumn(metaColumnName, colToAdd, metaColumnType);
 };
 
 FormResponseManager.prototype._toPivotJs = function(fields)
