@@ -285,10 +285,16 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
             }
         }
     });
-    hexset = d3.layout.hexbin()
+    try {
+        hexset = d3.layout.hexbin()
                 .xValue( function(d) { return d.lng; } )
                 .yValue( function(d) { return d.lat; } )
                 ( latLngArray );
+    } catch (err) { 
+        this.hexGeoJSON = {"type": "FeatureCollection", "features": []};
+        this._addMetadataColumn("_id", "hexID", dv.type.nominal, _.map(latLngArray, function(x) { return undefined; }));
+        return;
+    };
     countMax = d3.max( hexset, function(d) { return d.data.length; } );
     _.each(hexset, function(hex) {
         if(hex.data.length) {
