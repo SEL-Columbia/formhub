@@ -44,6 +44,11 @@ def has_permission(xform, owner, request, shared=False):
             user.has_perm('odk_logger.view_xform', xform) or\
             user.has_perm('odk_logger.change_xform', xform)
 
+def has_edit_permission(xform, owner, request, shared=False):
+    user = request.user
+    return (shared and xform.shared_data) or owner == user or\
+            user.has_perm('odk_logger.change_xform', xform)
+
 
 def check_and_set_user_and_form(username, id_string, request):
     xform = get_object_or_404(XForm,

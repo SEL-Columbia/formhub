@@ -28,7 +28,7 @@ from models import XForm
 from main.models import UserProfile, MetaData
 from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
 from utils.decorators import is_owner
-from utils.user_auth import has_permission
+from utils.user_auth import has_permission, has_edit_permission
 from odk_logger.import_tools import import_instances_from_zip
 from odk_logger.xform_instance_parser import InstanceEmptyError
 from odk_logger.models.instance import FormInactiveError
@@ -236,7 +236,7 @@ def enter_data(request, username, id_string):
     owner = User.objects.get(username=username)
     xform = get_object_or_404(XForm, user__username=username,
                 id_string=id_string)
-    if not has_permission(xform, owner, request):
+    if not has_edit_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden('Not shared.')
     if not hasattr(settings, 'TOUCHFORMS_URL'):
         return HttpResponseRedirect(reverse('main.views.show',
