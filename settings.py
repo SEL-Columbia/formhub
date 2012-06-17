@@ -101,6 +101,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.RemoteUserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
 )
@@ -146,6 +147,7 @@ AUTH_PROFILE_MODULE = 'main.UserProfile'
 AUTHENTICATION_BACKENDS = (
     'main.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend',
+    'django.contrib.auth.backends.RemoteUserBackend',
 )
 
 # Settings for Django Registration
