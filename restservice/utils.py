@@ -7,11 +7,8 @@ def call_service(instance):
     if isinstance(instance, Instance):
         # registered services
         services = RestService.objects.filter(xform=instance.xform)
-        print services
         # call service send with url and data parameters
         for sv in services:
-            m = __import__(''.join(['restservice.services.', sv.name]), globals(),locals(), ['ServiceDefinition'])
-            print m.ServiceDefinition;
             # TODO: Queue service
-            service = m.ServiceDefinition()
+            service = sv.get_service_definition()()
             service.send(sv.service_url, instance)
