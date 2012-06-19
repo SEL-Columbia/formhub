@@ -2,7 +2,6 @@ from odk_logger.models.instance import Instance
 from restservice.models import RestService
 
 def call_service(instance):
-    print "call_service has been called!"
     # lookup service
     if isinstance(instance, Instance):
         # registered services
