@@ -10,7 +10,7 @@
   .leaflet-popup-content ul {list-style-type:none;}
   .navbar .nav.pull-right .dropdown-menu {max-height: 600px; width: 400px; overflow: auto;}
   .dropdown-menu a {white-space: normal; max-width: 600px;}
-  #legend {
+  #legend, #hex-legend {
       background-color: white;
       width: 200px;
       opacity: 0.95;
@@ -21,9 +21,11 @@
       z-index: 7;
       border-radius: 3px;
   }
-  #legend ul {list-style: none;margin: 0px}
+  #legend ul, #hex-legend ul {list-style: none;margin: 0px}
   #legend ul li {}
-  #legend span.legend-bullet {
+  #hex-legend ul { float: left; width: 100%; }
+  #hex-legend ul li {display:inline; }
+  #legend span.legend-bullet, #hex-legend span.legend-bullet {
       width: 15px;
       height: 15px;
       float: left;

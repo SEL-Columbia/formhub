@@ -372,6 +372,7 @@ function _recomputeHexColorsByRatio(questionName, responseNames) {
         newHexStyles[hexID] = {  fillColor: getProportionalColor(ratio, "greens") };
     });
     _reStyleHexOverLay(newHexStyles);
+    _rebuildHexLegend('proportion', questionName, responseNames);
 }
 
 function _hexOverLayByCount()
@@ -384,6 +385,7 @@ function _hexOverLayByCount()
         newHexStyles[hexID] = {fillColor: color, fillOpacity: 0.9, color:'grey', weight: 1};
     }); 
     _reStyleHexOverLay(newHexStyles);
+    _rebuildHexLegend('count');
 }
 
 function refreshHexOverLay() { // refresh hex overlay, in any map state
@@ -473,24 +475,32 @@ function getLanguageAt(idx)
     return language = formJSONMngr.supportedLanguages[idx];
 }
 
-function rebuildHexLegend(countOrProportion, questionName, responseNames)
+function _rebuildHexLegend(countOrProportion, questionName, responseNames)
 {
     var legendTemplate = '<div id="hex-legend" style="display:block">\n' +
                          '  <h4><%= title %> </h4>\n' +
+                         '  <ul class="hex-legend-list">\n' +
                          '<% _.each(hexes, function(hex) { %>' +
-                         '    <li> <div id="hex-with-color"' +
-                                        'background-color="<%= hex.color %>"> ' +
-                                    '<%= hex.text %> </div> </li>\n<% }); %>' +
-                         '</div>';
-    var proportionString = 'Proportion of surveys to where response was one of: ' + 
-            _.reduce(responseNames, function(a,b) { return (a && a + "; ") + b; }, '');
-    var templateFiller = {count: {'title' : 'Number of surveys:',
-                                  'hexes' : [{color: '#f0f', text: 100}, {color: '#fff', text: 1}]
-                                 },
-                          proportion: {'title' : proportionString,
-                                       'hexes' : [{color: '#00f', text: '100'}, {color: '#fff', text: '1'}]}
-                         };
-    return _.template(legendTemplate, templateFiller[countOrProportion]);
+                         '    <li> <span class="legend-bullet" style="background-color: <%= hex.color %>" />' +
+                                    '<%= hex.text %> </li>\n<% }); %>' +
+                         '  </ul>\n</div>';
+    var proportionString = 'Proportion of surveys to where response was one of: ' + _.reduce(responseNames, function(a,b) { return (a && a + "; ") + b; }, '');
+    var maxHexCount = _.max(formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]})[1]);
+    var templateFiller = {
+        count: {
+            title : 'Number of surveys:',
+            hexes : [{color: getProportionalColor(1), text: maxHexCount}, 
+                     {color: getProportionalColor(1/maxHexCount), text: 1}]
+        },
+        proportion: {
+            title : proportionString,
+            hexes : [{color: getProportionalColor(1, "greens"), text: '100%'}, 
+                     {color: getProportionalColor(0, "greens"), text: '0%'}]
+        }
+    };
+    $('#hex-legend').remove();
+    $(_.template(legendTemplate, templateFiller[countOrProportion]))
+        .appendTo($('#' + legendContainerId));
 }
 
 function rebuildLegend(questionName, questionColorMap)
