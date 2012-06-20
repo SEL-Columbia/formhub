@@ -473,6 +473,26 @@ function getLanguageAt(idx)
     return language = formJSONMngr.supportedLanguages[idx];
 }
 
+function rebuildHexLegend(countOrProportion, questionName, responseNames)
+{
+    var legendTemplate = '<div id="hex-legend" style="display:block">\n' +
+                         '  <h4><%= title %> </h4>\n' +
+                         '<% _.each(hexes, function(hex) { %>' +
+                         '    <li> <div id="hex-with-color"' +
+                                        'background-color="<%= hex.color %>"> ' +
+                                    '<%= hex.text %> </div> </li>\n<% }); %>' +
+                         '</div>';
+    var proportionString = 'Proportion of surveys to where response was one of: ' + 
+            _.reduce(responseNames, function(a,b) { return (a && a + "; ") + b; }, '');
+    var templateFiller = {count: {'title' : 'Number of surveys:',
+                                  'hexes' : [{color: '#f0f', text: 100}, {color: '#fff', text: 1}]
+                                 },
+                          proportion: {'title' : proportionString,
+                                       'hexes' : [{color: '#00f', text: '100'}, {color: '#fff', text: '1'}]}
+                         };
+    return _.template(legendTemplate, templateFiller[countOrProportion]);
+}
+
 function rebuildLegend(questionName, questionColorMap)
 {
     var response, language, spanAttrs;
