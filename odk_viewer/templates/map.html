@@ -29,16 +29,26 @@
       padding: 8px;
       border-radius: 3px;
   }
-  #legend ul, #hex-legend ul {list-style: none;margin: 0px}
+  #legend ul {list-style: none;margin: 0px}
   #legend ul li {}
-  #hex-legend ul { float: left; width: 100%; }
-  #hex-legend ul li {display:inline; }
-  #legend span.legend-bullet, #hex-legend span.legend-bullet {
+  #hex-legend .scale ul li {
+    display: block;
+    float: left;
+    width: 20px;
+    margin: 0 0 6px 0;
+    text-align: center;
+  }
+  #legend span.legend-bullet {
       width: 15px;
       height: 15px;
       float: left;
       margin-right: 5px;
       border-radius: 3px;
+  }
+  #hex-legend span {
+      width: 20px;
+      height: 15px;
+      float: left;
   }
   #legend span.item-label{
       padding: 0px 20px 0px 20px;

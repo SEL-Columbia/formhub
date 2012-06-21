@@ -432,7 +432,7 @@ function _recomputeHexColorsByRatio(questionName, responseNames) {
     _(hexAndCountArrayDenom[0]).each( function(hexID, idx) {
         // note both are dense queries on datavore, the idx's match exactly
         var ratio = hexAndCountArrayNum[1][idx] / hexAndCountArrayDenom[1][idx];
-        newHexStyles[hexID] = {  fillColor: getProportionalColor(ratio, "greens"), fillOpacity: 0.9, color:'grey', weight: 1 };
+        newHexStyles[hexID] = {  fillColor: colors.getProportional(ratio, "Set2"), fillOpacity: 0.9, color:'grey', weight: 1 };
     });
     _reStyleHexOverLay(newHexStyles);
     _rebuildHexLegend('proportion', questionName, responseNames);
@@ -444,7 +444,7 @@ function _hexOverLayByCount()
     var hexAndCountArray = formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]});      
     var totalCount = _.max(hexAndCountArray[1]);
     _(hexAndCountArray[0]).each( function(hexID, idx) {
-        var color = getProportionalColor(hexAndCountArray[1][idx] / totalCount); 
+        var color = colors.getProportional(hexAndCountArray[1][idx] / totalCount); 
         newHexStyles[hexID] = {fillColor: color, fillOpacity: 0.9, color:'grey', weight: 1};
     }); 
     _reStyleHexOverLay(newHexStyles);
@@ -548,23 +548,24 @@ function _rebuildHexLegend(countOrProportion, questionName, responseNames)
 {
     var legendTemplate = '<div id="hex-legend" style="display:block">\n' +
                          '  <h4><%= title %> </h4>\n' +
-                         '  <ul class="hex-legend-list">\n' +
+                         '  <div class="scale">\n' +
+                         '  <ul class="labels">\n' +
                          '<% _.each(hexes, function(hex) { %>' +
                          '    <li> <span class="legend-bullet" style="background-color: <%= hex.color %>" />' +
                                     '<%= hex.text %> </li>\n<% }); %>' +
-                         '  </ul>\n<div style="clear:both"></div>\n</div>';
+                         '  </div>\n  </ul>\n<div style="clear:both"></div>\n</div>';
     var proportionString = 'Proportion of surveys to where response was one of: ' + _.reduce(responseNames, function(a,b) { return (a && a + "; ") + b; }, '');
     var maxHexCount = _.max(formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]})[1]);
     var templateFiller = {
         count: {
             title : 'Number of surveys:',
-            hexes : [{color: getProportionalColor(1), text: maxHexCount}, 
-                     {color: getProportionalColor(1/maxHexCount), text: 1}]
+            hexes : [{color: colors.getProportional(1), text: maxHexCount}, 
+                     {color: colors.getProportional(1/maxHexCount), text: 1}]
         },
         proportion: {
             title : proportionString,
-            hexes : [{color: getProportionalColor(1, "greens"), text: '100%'}, 
-                     {color: getProportionalColor(0, "greens"), text: '0%'}]
+            hexes : [{color: colors.getProportional(1, "Set2"), text: '100%'}, 
+                     {color: colors.getProportional(0, "Set2"), text: '0%'}]
         }
     };
     $('#hex-legend').remove();
@@ -597,7 +598,7 @@ function rebuildLegend(questionName, questionColorMap)
             titleSpan.css('display', 'none');
         legendTitle.append(titleSpan);
     }
-    legendElement.append(legendTitle)
+    legendElement.append(legendTitle);
 
     legendUl = $('<ul></ul>').addClass('nav nav-pills nav-stacked');
     legendElement.append(legendUl);
@@ -611,11 +612,11 @@ function rebuildLegend(questionName, questionColorMap)
         // create the anchor
         var legendAnchor = $('<a></a>').addClass('legend-label').attr('href', 'javascript:;').attr('rel',response);
         if(formResponseMngr._select_one_filters.indexOf(response) > -1)
-            legendAnchor.addClass('active')
+            legendAnchor.addClass('active');
         else if(numResponses > 0)
-            legendAnchor.addClass('normal')
+            legendAnchor.addClass('normal');
         else
-            legendAnchor.addClass('inactive')
+            legendAnchor.addClass('inactive');
 
         var legendIcon = $('<span></span>').addClass('legend-bullet').css('background-color', color);
         legendAnchor.append(legendIcon);
@@ -767,24 +768,30 @@ function get_random_color(step, numOfSteps) {
     return (c);
 }
 
-function select_from_array(array, zero_to_one_inclusive) {
-    var epsilon = 0.00001;
-    return array[Math.floor(zero_to_one_inclusive * (array.length - epsilon))];
-
-}
-function getProportionalColor(zero_to_one, colorscheme) {
-    // http://colorbrewer2.org/index.php?type=sequential&scheme=Purples&n=9 -- with first white taken out
-    var proportionalColorSchemes = {"purples": ["#EFEDF5", "#DADAEB", "#BCBDDC", "#9E9AC8", "#807DBA", 
-                                                "#6A51A3", "#54278F", "#3F007D"],
-                                    "greens": ["#DEEBF7", "#C6DBEF", "#9ECAE1", "#6BAED6", "#4292C6", 
-                                                "#2171B5", "#08519C", "#08306B"]};
-    if (!colorscheme) colorscheme = "purples";
-    return select_from_array(proportionalColorSchemes[colorscheme], zero_to_one);
-}
-
-function getDichromaticColor(zero_to_one) {
-    // http://colorbrewer2.org/index.php?type=diverging&scheme=RdBu&n=11
-    var diverging = ["#67001F", "#B2182B", "#D6604D", "#F4A582", "#FDDBC7", "#F7F7F7", 
-                     "#D1E5F0", "#92C5DE", "#4393C3", "#2166AC", "#053061"];
-    return select_from_array(diverging, zero_to_one);
-}
+// COLORS MODULE
+var colors = (function() {
+    var colors = {}; 
+    var colorschemes = {proportional: {
+    // http://colorbrewer2.org/index.php?type=sequential
+        "Set1": ["#EFEDF5", "#DADAEB", "#BCBDDC", "#9E9AC8", "#807DBA", "#6A51A3", "#54278F", "#3F007D"], 
+        "Set2": ["#DEEBF7", "#C6DBEF", "#9ECAE1", "#6BAED6", "#4292C6", "#2171B5", "#08519C", "#08306B"]
+    }};
+    var defaultColorScheme = "Set1";
+    function select_from_colors(type, colorscheme, zero_to_one_inclusive) {
+        var epsilon = 0.00001;
+        var colorscheme = colorscheme || defaultColorScheme;
+        var colorsArr = colorschemes[type][colorscheme];
+        return colorsArr[Math.floor(zero_to_one_inclusive * (colorsArr.length - epsilon))];
+    }
+   
+    // METHODS FOR EXPORT 
+    colors.getNumProportional = function(colorscheme) {
+        var colorscheme = colorscheme || defaultColorScheme;
+        return proportionalColorSchemes[colorscheme].length;
+    };
+    colors.getProportional = function(zero_to_one, colorscheme) {
+        return select_from_colors('proportional', colorscheme, zero_to_one);
+    };
+    
+    return colors; 
+}());
