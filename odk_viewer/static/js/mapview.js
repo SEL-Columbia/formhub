@@ -116,6 +116,7 @@ function hexbinLayerAdded(layer)
     hexbinLayerGroupActive = true;
     if(elm.length > 0)
         elm.show();
+    refreshHexOverLay(); 
 }
 
 function hexbinLayerRemoved(layer)
@@ -381,9 +382,9 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     });
 
     /// need this here instead of the constructor so that we can catch the featureparse event
-    _.defer(refreshHexOverLay); // TODO: add a toggle to do this only if hexOn = true;
     geoJsonLayer.addGeoJSON(geoJSON);
     markerLayerGroup.addLayer(geoJsonLayer);
+    _.defer(refreshHexOverLay); 
 
     if(questionName)
         rebuildLegend(questionName, questionColorMap);
@@ -431,7 +432,7 @@ function _recomputeHexColorsByRatio(questionName, responseNames) {
     _(hexAndCountArrayDenom[0]).each( function(hexID, idx) {
         // note both are dense queries on datavore, the idx's match exactly
         var ratio = hexAndCountArrayNum[1][idx] / hexAndCountArrayDenom[1][idx];
-        newHexStyles[hexID] = {  fillColor: getProportionalColor(ratio, "greens") };
+        newHexStyles[hexID] = {  fillColor: getProportionalColor(ratio, "greens"), fillOpacity: 0.9, color:'grey', weight: 1 };
     });
     _reStyleHexOverLay(newHexStyles);
     _rebuildHexLegend('proportion', questionName, responseNames);
@@ -537,6 +538,12 @@ function getLanguageAt(idx)
     return language = formJSONMngr.supportedLanguages[idx];
 }
 
+function constructHexbinLegend()
+{
+    $('<div id="hex-legend" style="display:block"> </div>')
+        .appendTo(legendsContainer);
+}
+
 function _rebuildHexLegend(countOrProportion, questionName, responseNames)
 {
     var legendTemplate = '<div id="hex-legend" style="display:block">\n' +
@@ -562,7 +569,8 @@ function _rebuildHexLegend(countOrProportion, questionName, responseNames)
     };
     $('#hex-legend').remove();
     $(_.template(legendTemplate, templateFiller[countOrProportion]))
-        .appendTo(legendsContainer);
+            .appendTo(legendsContainer);
+    if(!hexbinLayerGroupActive) $('#hex-legend').hide();
 }
 
 function rebuildLegend(questionName, questionColorMap)
