@@ -83,9 +83,11 @@
 	    <i class="icon-map-marker"></i>
 	  </a>
           {% endif %}
+          {% if xform.submission_count > 0 %}
 	  <a class="btn" href="{% url main.views.form_photos content_user.username xform.id_string %}" data-original-title="View Photo" rel="tooltip" >
 	    <i class="icon-camera"></i>
 	  </a>
+          {% endif %}
 
 	  <a class="btn" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}" data-original-title="Enter Web Form" rel="tooltip">
 	    <i class="icon-edit"></i>
@@ -105,8 +107,8 @@
               <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">Cancel</a>
             </div>
           </div>
-          <a data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" class="btn btn-small btn-danger">
-            Delete
+          <a data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" class="btn">
+            <i class="icon-trash"></i>
           </a>              
         </div>
             {% endif %}                       
