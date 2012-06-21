@@ -116,6 +116,8 @@ function hexbinLayerAdded(layer)
     hexbinLayerGroupActive = true;
     if(elm.length > 0)
         elm.show();
+    else
+        constructHexbinLegend();
 }
 
 function hexbinLayerRemoved(layer)
@@ -537,6 +539,12 @@ function getLanguageAt(idx)
     return language = formJSONMngr.supportedLanguages[idx];
 }
 
+function constructHexbinLegend()
+{
+    $('<div id="hex-legend" style="display:block"> </div>')
+        .appendTo(legendsContainer);
+}
+
 function _rebuildHexLegend(countOrProportion, questionName, responseNames)
 {
     var legendTemplate = '<div id="hex-legend" style="display:block">\n' +
@@ -560,9 +568,11 @@ function _rebuildHexLegend(countOrProportion, questionName, responseNames)
                      {color: getProportionalColor(0, "greens"), text: '0%'}]
         }
     };
-    $('#hex-legend').remove();
-    $(_.template(legendTemplate, templateFiller[countOrProportion]))
-        .appendTo(legendsContainer);
+    if ($('#hex-legend').length) {
+        $('#hex-legend').remove();
+        $(_.template(legendTemplate, templateFiller[countOrProportion]))
+            .appendTo(legendsContainer);
+    }
 }
 
 function rebuildLegend(questionName, questionColorMap)
