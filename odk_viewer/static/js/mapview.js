@@ -489,7 +489,7 @@ function _rebuildHexLegend(countOrProportion, questionName, responseNames)
                          '<% _.each(hexes, function(hex) { %>' +
                          '    <li> <span class="legend-bullet" style="background-color: <%= hex.color %>" />' +
                                     '<%= hex.text %> </li>\n<% }); %>' +
-                         '  </ul>\n</div>';
+                         '  </ul>\n<div style="clear:both"></div>\n</div>';
     var proportionString = 'Proportion of surveys to where response was one of: ' + _.reduce(responseNames, function(a,b) { return (a && a + "; ") + b; }, '');
     var maxHexCount = _.max(formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]})[1]);
     var templateFiller = {
