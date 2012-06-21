@@ -36,11 +36,13 @@ var mapBoxAdditAttribution = " Map data (c) OpenStreetMap contributors, CC-BY-SA
 // map filter vars
 var navContainerSelector = ".nav.pull-right";
 var legendParentSelector = ".leaflet-control-container";
+var leafletControlsSelector = ".leaflet-control-container";
 var legendContainerId = "legend";
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
 var currentLanguageIdx = -1;
 var custAdded = false;
+var legendsContainer;
 
 function initialize() {
     // Make a new Leaflet map in your container div
@@ -76,7 +78,11 @@ function initialize() {
         });
     });
 
-    // load form structure/questions
+    // create legend container
+    $(leafletControlsSelector).append('<div class="legends-container"></div>');
+    legendsContainer = $($(leafletControlsSelector).children('div.legends-container')[0]);
+
+        // load form structure/questions
     formJSONMngr.loadFormJSON();
 }
 
@@ -504,6 +510,95 @@ function _rebuildHexLegend(countOrProportion, questionName, responseNames)
 }
 
 function rebuildLegend(questionName, questionColorMap)
+{
+    var i, response, spanAttrs;
+    var question = formJSONMngr.getQuestionByName(questionName);
+    var choices = formJSONMngr.getChoices(question);
+    var legendElement, legendTitle, legendUl;
+    formResponseMngr._currentSelectOneQuestionName = questionName; //TODO: this should be done somewhere else?
+
+    $('#legend').remove();
+
+    legendElement = $('<div></div>').attr('id', 'legend');
+    legendTitle = $('<h3></h3>');
+
+    for(i=0;i<formJSONMngr.supportedLanguages.length;i++)
+    {
+        var language, titleSpan;
+
+        language = getLanguageAt(i);
+        titleSpan = $('<span></span>').addClass('language').addClass('language-' + i)
+            .html(formJSONMngr.getMultilingualLabel(question, language));
+        if(i != currentLanguageIdx)
+            titleSpan.css('display', 'none');
+        legendTitle.append(titleSpan);
+    }
+    legendElement.append(legendTitle)
+
+    legendUl = $('<ul></ul>').addClass('nav nav-pills nav-stacked');
+    legendElement.append(legendUl);
+
+    for(response in questionColorMap)
+    {
+        var color = questionColorMap[response];
+        var responseLi = $('<li></li>');
+        var numResponses = question.responseCounts[response];
+        
+        // create the anchor
+        var legendAnchor = $('<a></a>').addClass('legend-label').attr('href', 'javascript:;').attr('rel',response);
+        if(formResponseMngr._select_one_filters.indexOf(response) > -1)
+            legendAnchor.addClass('active')
+        else if(numResponses > 0)
+            legendAnchor.addClass('normal')
+        else
+            legendAnchor.addClass('inactive')
+
+        var legendIcon = $('<span></span>').addClass('legend-bullet').css('background-color', color);
+        legendAnchor.append(legendIcon);
+
+        var responseCountSpan = $('<span></span>').addClass('legend-response-count').html(numResponses.toString());
+        legendAnchor.append(responseCountSpan);
+
+        // add a language span for each language
+        for(i=0;i<formJSONMngr.supportedLanguages.length;i++)
+        {
+            var itemLabel = response;
+            language = getLanguageAt(i);
+            // check if the choices contain this response before we try to get the reponse's label
+            if(choices.hasOwnProperty(response))
+                itemLabel = formJSONMngr.getMultilingualLabel(choices[response], language);
+            var responseText = $('<span></span>').addClass(('item-label language language-' + i)).html(itemLabel);
+            if(i != currentLanguageIdx)
+                responseText.css('display', 'none');
+            legendAnchor.append(responseText);
+        }
+
+        responseLi.append(legendAnchor);
+        legendUl.append(responseLi);
+    }
+
+    // add as the first element always
+    legendsContainer.prepend(legendElement);
+
+    // bind legend click event
+    $('a.legend-label').on('click', function(){
+        var elm = $(this);
+        var responseName = elm.attr('rel');
+        // if element class is normal add response other wise, remove
+        if(elm.hasClass('normal'))
+            formResponseMngr.addResponseToSelectOneFilter(responseName);
+        else
+            formResponseMngr.removeResponseFromSelectOneFilter(responseName);
+        // reload with new params
+        formResponseMngr.callback = filterSelectOneCallback;
+        fields = getBootstrapFields();
+        formResponseMngr.loadResponseData({}, 0, null, fields);
+        formResponseMngr.loadResponseData({});
+        refreshHexOverLay();
+    });
+}
+
+function rebuildLegend2(questionName, questionColorMap)
 {
     var response, language, spanAttrs;
     // TODO: consider creating container once and keeping a variable reference
