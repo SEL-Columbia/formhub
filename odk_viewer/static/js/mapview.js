@@ -35,8 +35,7 @@ var mapBoxAdditAttribution = " Map data (c) OpenStreetMap contributors, CC-BY-SA
 
 // map filter vars
 var navContainerSelector = ".nav.pull-right";
-var legendParentSelector = ".leaflet-control-container";
-var leafletControlsSelector = ".leaflet-control-container";
+var leafletControlSelector = ".leaflet-control-container";
 var legendContainerId = "legend";
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
@@ -79,8 +78,8 @@ function initialize() {
     });
 
     // create legend container
-    $(leafletControlsSelector).append('<div class="legends-container"></div>');
-    legendsContainer = $($(leafletControlsSelector).children('div.legends-container')[0]);
+    $(leafletControlSelector).append('<div class="legends-container"></div>');
+    legendsContainer = $($(leafletControlSelector).children('div.legends-container')[0]);
 
         // load form structure/questions
     formJSONMngr.loadFormJSON();
