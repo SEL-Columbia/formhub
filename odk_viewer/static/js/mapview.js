@@ -24,6 +24,8 @@ var circleStyle = {
 // TODO: can we get the entire URL from mongo API
 var amazonUrlPrefix = "https://formhub.s3.amazonaws.com/";
 var markerLayerGroup = new L.LayerGroup();
+var markerLayerGroupActive = false;
+var hexbinLayerGroupActive = false;
 var hexbinLayerGroup = new L.LayerGroup();
 var hexbinData = null;
 var markerLayerLabel = "Marker Layer";
@@ -46,6 +48,29 @@ var legendsContainer;
 function initialize() {
     // Make a new Leaflet map in your container div
     map = new L.Map(mapId).setView(centerLatLng, defaultZoom);
+
+    map.on('layeradd', function(layerEvent){
+        if(layerEvent.layer == hexbinLayerGroup)
+        {
+            hexbinLayerAdded(layerEvent.layer);
+        }
+        else if(layerEvent.layer == markerLayerGroup)
+        {
+            markerLayerAdded(layerEvent.layer);
+        }
+    });
+
+    map.on('layerremove', function(layerEvent){
+        if(layerEvent.layer == hexbinLayerGroup)
+        {
+            hexbinLayerRemoved(layerEvent.layer);
+        }
+        else if(layerEvent.layer == markerLayerGroup)
+        {
+            markerLayerRemoved(layerEvent.layer);
+        }
+    });
+
     var overlays = {};
     overlays[markerLayerLabel] = markerLayerGroup;
     overlays[hexbinLayerLabel] = hexbinLayerGroup;
@@ -81,8 +106,40 @@ function initialize() {
     $(leafletControlSelector).append('<div class="legends-container"></div>');
     legendsContainer = $($(leafletControlSelector).children('div.legends-container')[0]);
 
-        // load form structure/questions
+    // load form structure/questions
     formJSONMngr.loadFormJSON();
+}
+
+function hexbinLayerAdded(layer)
+{
+    var elm = $('#hex-legend');
+    hexbinLayerGroupActive = true;
+    if(elm.length > 0)
+        elm.show();
+}
+
+function hexbinLayerRemoved(layer)
+{
+    var elm = $('#hex-legend');
+    hexbinLayerGroupActive = false;
+    if(elm.length > 0)
+        elm.hide();
+}
+
+function markerLayerAdded(layer)
+{
+    var elm = $('#legend');
+    markerLayerGroupActive = true;
+    if(elm.length > 0)
+        elm.show();
+}
+
+function markerLayerRemoved(layer)
+{
+    var elm = $('#legend');
+    markerLayerGroupActive = false;
+    if(elm.length > 0)
+        elm.hide();
 }
 
 // callback called after form's structure has been loaded from form json url
