@@ -506,7 +506,7 @@ function _rebuildHexLegend(countOrProportion, questionName, responseNames)
     };
     $('#hex-legend').remove();
     $(_.template(legendTemplate, templateFiller[countOrProportion]))
-        .appendTo($('#' + legendContainerId));
+        .appendTo(legendsContainer);
 }
 
 function rebuildLegend(questionName, questionColorMap)
@@ -623,12 +623,7 @@ function getBootstrapFields()
 
 function clearLegend()
 {
-    var legendContainer = $(("#"+legendContainerId));
-    if(legendContainer.length > 0)
-    {
-        legendContainer.empty();
-        legendContainer.attr("style", "display:none");
-    }
+    $('#legend').remove();
 }
 
 function filterSelectOneCallback()
