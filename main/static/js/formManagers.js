@@ -4,7 +4,7 @@ var constants = {
     //formhub query syntax constants
     START: "start", LIMIT: "limit", COUNT: "count", FIELDS: "fields",
     //
-    GEOLOCATION: "geolocation"
+    GEOLOCATION: "_geolocation"
 };
 
 // used to load and manage form questions
