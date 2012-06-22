@@ -9,7 +9,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotAllowed
+    HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotAllowed, HttpResponseNotFound
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.contrib.auth.models import User
@@ -160,6 +160,8 @@ def submission(request, username=None):
         return HttpResponseBadRequest('Received empty submission. No instance was created')
     except FormInactiveError:
         return HttpResponseNotAllowed('Form is not active')
+    except XForm.DoesNotExist:
+        return HttpResponseNotFound('Form does not exist on this account')
     if instance == None:
         return HttpResponseBadRequest("Unable to create submission.")
     # ODK needs two things for a form to be considered successful
