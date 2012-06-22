@@ -85,8 +85,6 @@ function loadFormJSONCallback()
 {
     // we only want to load gps and select one data to begin with
     var fields = getBootstrapFields();
-    fields.push('_id');
-    fields.push(constants.GEOLOCATION);
 
     // load responses
     formResponseMngr.loadResponseData({}, 0, null, fields);
@@ -575,7 +573,7 @@ function rebuildLegend(questionName, questionColorMap)
 function getBootstrapFields()
 {
     // we only want to load gps and select one data to begin with
-    var fields = [];
+    var fields = ['_id', constants.GEOLOCATION];
     var idx, question;
     if(!constants) throw "ERROR: constants not found; please include main/static/js/formManagers.js"; 
     for(idx in formJSONMngr.selectOneQuestions)
