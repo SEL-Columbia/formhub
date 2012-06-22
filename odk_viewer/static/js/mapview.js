@@ -84,7 +84,7 @@ function initialize() {
 function loadFormJSONCallback()
 {
     // we only want to load gps and select one data to begin with
-    var fields = getBootstrapFields();
+    var fields = ['_id', constants.GEOLOCATION];
 
     // load responses
     formResponseMngr.loadResponseData({}, 0, null, fields);
