@@ -562,13 +562,13 @@ function rebuildLegend(questionName, questionColorMap)
         formResponseMngr.callback = filterSelectOneCallback;
         fields = getBootstrapFields();
         formResponseMngr.loadResponseData({}, 0, null, fields);
-        formResponseMngr.loadResponseData({});
         refreshHexOverLay();
     });
 }
 
 /**
  * Get fields we deem nesseceary to display map/legend
+ * TODO: cache bootstrap fields
  */
 function getBootstrapFields()
 {
