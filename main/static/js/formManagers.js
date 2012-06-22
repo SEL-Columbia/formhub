@@ -234,7 +234,7 @@ FormResponseManager.prototype._toGeoJSON = function()
     var geopointQuestionName = constants.GEOLOCATION;
     _(this.responses).each(function (response) {
         var gps = response[geopointQuestionName];
-        if(gps)
+        if(gps && gps[0] && gps[1])
         {
             var lat = gps[0];
             var lng = gps[1];
@@ -261,7 +261,7 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
     function fixlatinv(n) { return (n > 90 ? n - 90 : n - 90); }
     _(this.responses).each(function(response) {
         var gps = response[geopointQuestionName];
-        if(gps)
+        if(gps && gps[0] && gps[1])
         {
             var lat = gps[0];
             var lng = gps[1];
