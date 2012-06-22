@@ -236,10 +236,10 @@ FormResponseManager.prototype._toGeoJSON = function()
         var gps = response[geopointQuestionName];
         if(gps)
         {
-            var lng = gps[0];
-            var lat = gps[1];
+            var lat = gps[0];
+            var lng = gps[1];
 
-            var geometry = {"type":"Point", "coordinates": [lat, lng]};
+            var geometry = {"type":"Point", "coordinates": [lng, lat]};
             var feature = {"type": "Feature", "id": response._id, "geometry":geometry, "properties":response};
             features.push(feature);
         }
@@ -263,8 +263,8 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
         var gps = response[geopointQuestionName];
         if(gps)
         {
-            var lng = gps[0];
-            var lat = gps[1];
+            var lat = gps[0];
+            var lng = gps[1];
             if(latLongFilter===undefined || latLongFilter(lat, lng))
                 latLngArray.push({ lat: fixlat(lat), lng: fixlng(lng), response_id: response._id});
         }
