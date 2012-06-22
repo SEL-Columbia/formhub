@@ -2,7 +2,9 @@ var constants = {
     //pyxform constants
     NAME: "name", LABEL: "label", TYPE: "type", CHILDREN: "children",
     //formhub query syntax constants
-    START: "start", LIMIT: "limit", COUNT: "count", FIELDS: "fields"
+    START: "start", LIMIT: "limit", COUNT: "count", FIELDS: "fields",
+    //
+    GEOLOCATION: "_geolocation"
 };
 
 // used to load and manage form questions
@@ -229,25 +231,17 @@ FormResponseManager.prototype.clearSelectOneFilterResponses = function(name)
 FormResponseManager.prototype._toGeoJSON = function()
 {
     var features = [];
-    var geopointQuestionName = null;
-    var geopointQuestion = formJSONMngr.getGeoPointQuestion();
-    if(geopointQuestion)
-        geopointQuestionName = geopointQuestion[constants.NAME];
+    var geopointQuestionName = constants.GEOLOCATION;
     _(this.responses).each(function (response) {
         var gps = response[geopointQuestionName];
-        if(gps)
+        if(gps && gps[0] && gps[1])
         {
-            // split gps into its parts
-            var parts = gps.split(" ");
-            if(parts.length > 1)
-            {
-                var lng = parts[0];
-                var lat = parts[1];
+            var lat = gps[0];
+            var lng = gps[1];
 
-                var geometry = {"type":"Point", "coordinates": [lat, lng]};
-                var feature = {"type": "Feature", "id": response._id, "geometry":geometry, "properties":response};
-                features.push(feature);
-            }
+            var geometry = {"type":"Point", "coordinates": [lng, lat]};
+            var feature = {"type": "Feature", "id": response._id, "geometry":geometry, "properties":response};
+            features.push(feature);
         }
     });
 
@@ -259,28 +253,20 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
 {
     var features = [];
     var latLngArray = [];
-    var geopointQuestionName = null;
-    var geopointQuestion = formJSONMngr.getGeoPointQuestion();
+    var geopointQuestionName = constants.GEOLOCATION;
     // The following functions needed hexbin-js doesn't deal well with negatives
     function fixlng(n) { return (n < 0 ? 360 + n : n); } 
     function fixlnginv(n) { return (n > 180 ? n - 360 : n); }
     function fixlat(n) { return (n < 0 ? 90 + n : 90 + n); } 
     function fixlatinv(n) { return (n > 90 ? n - 90 : n - 90); }
-    if(geopointQuestion)
-        geopointQuestionName = geopointQuestion[constants.NAME];
     _(this.responses).each(function(response) {
         var gps = response[geopointQuestionName];
-        if(gps)
+        if(gps && gps[0] && gps[1])
         {
-            // split gps into its parts
-            var parts = gps.split(" ");
-            if(parts.length > 1)
-            {
-                var lat = parseFloat(parts[0]);
-                var lng = parseFloat(parts[1]);
-                if(latLongFilter===undefined || latLongFilter(lat, lng))
-                    latLngArray.push({ lat: fixlat(lat), lng: fixlng(lng), response_id: response._id});
-            }
+            var lat = gps[0];
+            var lng = gps[1];
+            if(latLongFilter===undefined || latLongFilter(lat, lng))
+                latLngArray.push({ lat: fixlat(lat), lng: fixlng(lng), response_id: response._id});
         }
     });
     try {
