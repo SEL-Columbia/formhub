@@ -95,3 +95,14 @@ class TestWaterSubmission(TestCase):
             postdata = create_post_data(path)
             response = self.client.post('/bob/submission', postdata)
             self.failUnlessEqual(response.status_code, 201)
+
+    def test_submission_for_missing_form(self):
+        xml_file = open(os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "Health_2011_03_13.xml_2011-03-15_20-30-28",
+            "Health_2011_03_13.xml_2011-03-15_20-30-28_invalid_id_string.xml"
+        ))
+
+        postdata = {"xml_submission_file": xml_file}
+        response = self.client.post('/bob/submission', postdata)
+        self.failUnlessEqual(response.status_code, 404)
