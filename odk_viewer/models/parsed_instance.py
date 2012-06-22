@@ -12,7 +12,7 @@ import json
 
 from utils.model_tools import queryset_iterator
 from odk_logger.models import Instance
-from common_tags import START_TIME, START, END_TIME, END, ID, UUID, ATTACHMENTS
+from common_tags import START_TIME, START, END_TIME, END, ID, UUID, ATTACHMENTS, GEOLOCATION
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
@@ -121,6 +121,7 @@ class ParsedInstance(models.Model):
                     ATTACHMENTS: [a.media_file.name for a in\
                             self.instance.attachments.all()],
                     self.STATUS: self.instance.status,
+                    GEOLOCATION: [self.lat, self.lng]
                     }
                 )
         return self._dict_cache
