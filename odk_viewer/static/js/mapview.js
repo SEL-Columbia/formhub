@@ -660,18 +660,18 @@ function rebuildLegend(questionName, questionColorMap)
         formResponseMngr.callback = filterSelectOneCallback;
         fields = getBootstrapFields();
         formResponseMngr.loadResponseData({}, 0, null, fields);
-        formResponseMngr.loadResponseData({});
         refreshHexOverLay();
     });
 }
 
 /**
  * Get fields we deem nesseceary to display map/legend
+ * TODO: cache bootstrap fields
  */
 function getBootstrapFields()
 {
     // we only want to load gps and select one data to begin with
-    var fields = [];
+    var fields = ['_id', constants.GEOLOCATION];
     var idx, question;
     if(!constants) throw "ERROR: constants not found; please include main/static/js/formManagers.js"; 
     for(idx in formJSONMngr.selectOneQuestions)
@@ -680,11 +680,6 @@ function getBootstrapFields()
         fields.push(question[constants.NAME]);
     }
 
-    for(idx in formJSONMngr.geopointQuestions)
-    {
-        question = formJSONMngr.geopointQuestions[idx];
-        fields.push(question[constants.NAME]);
-    }
     return fields;
 }
 
