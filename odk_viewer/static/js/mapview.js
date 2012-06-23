@@ -546,26 +546,34 @@ function constructHexbinLegend()
 
 function _rebuildHexLegend(countOrProportion, questionName, responseNames)
 {
-    var legendTemplate = '<div id="hex-legend" style="display:block">\n' +
-                         '  <h4><%= title %> </h4>\n' +
-                         '  <div class="scale">\n' +
-                         '  <ul class="labels">\n' +
-                         '<% _.each(hexes, function(hex) { %>' +
-                         '    <li> <span class="legend-bullet" style="background-color: <%= hex.color %>" />' +
-                                    '<%= hex.text %> </li>\n<% }); %>' +
-                         '  </div>\n  </ul>\n<div style="clear:both"></div>\n</div>';
-    var proportionString = 'Proportion of surveys to where response was one of: ' + _.reduce(responseNames, function(a,b) { return (a && a + "; ") + b; }, '');
+    var legendTemplate = 
+        '<div id="hex-legend" style="display:block">\n' +
+        '  <h4><%= title %> </h4>\n' +
+        '  <div class="scale">\n' +
+        '  <ul class="labels">\n' +
+        '<% _.each(hexes, function(hex) { %>' +
+        '    <li> <span style="background-color: <%= hex.color %>" />' +
+        '         <%= hex.text %> </li>\n<% }); %>' +
+        '  </div>\n  </ul>\n<div style="clear:both"></div>\n</div>';
+    var proportionString = 'Proportion of surveys with response(s): ' +
+            (responseNames && (responseNames.length == 1 ? responseNames[0] :
+            _.reduce(responseNames, 
+                     function(a,b) { return (a && a + ", or ") + b; }, '')));
     var maxHexCount = _.max(formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]})[1]);
+    var interval = function(scheme) { 
+        var len = colors.getNumProportional(scheme);
+        return _.map(_.range(1,len+1), function (v) { return v / len });
+    };
     var templateFiller = {
-        count: {
-            title : 'Number of surveys:',
-            hexes : [{color: colors.getProportional(1), text: maxHexCount}, 
-                     {color: colors.getProportional(1/maxHexCount), text: 1}]
+        count: { title : 'Number of surveys:',
+            hexes : _.map(interval("Set1"), function (i) {
+                      return  {color: colors.getProportional(i),
+                               text: '<' + Math.ceil(i * maxHexCount)}; })
         },
-        proportion: {
-            title : proportionString,
-            hexes : [{color: colors.getProportional(1, "Set2"), text: '100%'}, 
-                     {color: colors.getProportional(0, "Set2"), text: '0%'}]
+        proportion: { title : proportionString,
+            hexes : _.map(interval("Set2"), function (i) {
+                      return {color: colors.getProportional(i, "Set2"),
+                              text: '<' + Math.ceil(i * 100) + '%'}; })
         }
     };
     $('#hex-legend').remove();
@@ -576,7 +584,7 @@ function _rebuildHexLegend(countOrProportion, questionName, responseNames)
 
 function rebuildLegend(questionName, questionColorMap)
 {
-    var i, response, spanAttrs;
+    var i, response, spanAttrs, language;
     var question = formJSONMngr.getQuestionByName(questionName);
     var choices = formJSONMngr.getChoices(question);
     var legendElement, legendTitle, legendUl;
@@ -589,7 +597,7 @@ function rebuildLegend(questionName, questionColorMap)
 
     for(i=0;i<formJSONMngr.supportedLanguages.length;i++)
     {
-        var language, titleSpan;
+        var titleSpan;
 
         language = getLanguageAt(i);
         titleSpan = $('<span></span>').addClass('language').addClass('language-' + i)
@@ -779,15 +787,15 @@ var colors = (function() {
     var defaultColorScheme = "Set1";
     function select_from_colors(type, colorscheme, zero_to_one_inclusive) {
         var epsilon = 0.00001;
-        var colorscheme = colorscheme || defaultColorScheme;
+        colorscheme = colorscheme || defaultColorScheme;
         var colorsArr = colorschemes[type][colorscheme];
         return colorsArr[Math.floor(zero_to_one_inclusive * (colorsArr.length - epsilon))];
     }
    
     // METHODS FOR EXPORT 
     colors.getNumProportional = function(colorscheme) {
-        var colorscheme = colorscheme || defaultColorScheme;
-        return proportionalColorSchemes[colorscheme].length;
+        colorscheme = colorscheme || defaultColorScheme;
+        return colorschemes.proportional[colorscheme].length;
     };
     colors.getProportional = function(zero_to_one, colorscheme) {
         return select_from_colors('proportional', colorscheme, zero_to_one);
