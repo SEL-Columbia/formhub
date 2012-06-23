@@ -538,12 +538,6 @@ function getLanguageAt(idx)
     return language = formJSONMngr.supportedLanguages[idx];
 }
 
-function constructHexbinLegend()
-{
-    $('<div id="hex-legend" style="display:block"> </div>')
-        .appendTo(legendsContainer);
-}
-
 function _rebuildHexLegend(countOrProportion, questionName, responseNames)
 {
     var legendTemplate = 
