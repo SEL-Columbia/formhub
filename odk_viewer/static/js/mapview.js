@@ -24,6 +24,8 @@ var circleStyle = {
 // TODO: can we get the entire URL from mongo API
 var amazonUrlPrefix = "https://formhub.s3.amazonaws.com/";
 var markerLayerGroup = new L.LayerGroup();
+var markerLayerGroupActive = false;
+var hexbinLayerGroupActive = false;
 var hexbinLayerGroup = new L.LayerGroup();
 var hexbinData = null;
 var markerLayerLabel = "Marker Layer";
@@ -35,16 +37,40 @@ var mapBoxAdditAttribution = " Map data (c) OpenStreetMap contributors, CC-BY-SA
 
 // map filter vars
 var navContainerSelector = ".nav.pull-right";
-var legendParentSelector = ".leaflet-control-container";
+var leafletControlSelector = ".leaflet-control-container";
 var legendContainerId = "legend";
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
 var currentLanguageIdx = -1;
 var custAdded = false;
+var legendsContainer;
 
 function initialize() {
     // Make a new Leaflet map in your container div
     map = new L.Map(mapId).setView(centerLatLng, defaultZoom);
+
+    map.on('layeradd', function(layerEvent){
+        if(layerEvent.layer == hexbinLayerGroup)
+        {
+            hexbinLayerAdded(layerEvent.layer);
+        }
+        else if(layerEvent.layer == markerLayerGroup)
+        {
+            markerLayerAdded(layerEvent.layer);
+        }
+    });
+
+    map.on('layerremove', function(layerEvent){
+        if(layerEvent.layer == hexbinLayerGroup)
+        {
+            hexbinLayerRemoved(layerEvent.layer);
+        }
+        else if(layerEvent.layer == markerLayerGroup)
+        {
+            markerLayerRemoved(layerEvent.layer);
+        }
+    });
+
     var overlays = {};
     overlays[markerLayerLabel] = markerLayerGroup;
     overlays[hexbinLayerLabel] = hexbinLayerGroup;
@@ -76,8 +102,45 @@ function initialize() {
         });
     });
 
+    // create legend container
+    $(leafletControlSelector).append('<div class="legends-container"></div>');
+    legendsContainer = $($(leafletControlSelector).children('div.legends-container')[0]);
+
     // load form structure/questions
     formJSONMngr.loadFormJSON();
+}
+
+function hexbinLayerAdded(layer)
+{
+    var elm = $('#hex-legend');
+    hexbinLayerGroupActive = true;
+    if(elm.length > 0)
+        elm.show();
+    refreshHexOverLay(); 
+}
+
+function hexbinLayerRemoved(layer)
+{
+    var elm = $('#hex-legend');
+    hexbinLayerGroupActive = false;
+    if(elm.length > 0)
+        elm.hide();
+}
+
+function markerLayerAdded(layer)
+{
+    var elm = $('#legend');
+    markerLayerGroupActive = true;
+    if(elm.length > 0)
+        elm.show();
+}
+
+function markerLayerRemoved(layer)
+{
+    var elm = $('#legend');
+    markerLayerGroupActive = false;
+    if(elm.length > 0)
+        elm.hide();
 }
 
 // callback called after form's structure has been loaded from form json url
@@ -319,9 +382,9 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     });
 
     /// need this here instead of the constructor so that we can catch the featureparse event
-    _.defer(refreshHexOverLay); // TODO: add a toggle to do this only if hexOn = true;
     geoJsonLayer.addGeoJSON(geoJSON);
     markerLayerGroup.addLayer(geoJsonLayer);
+    _.defer(refreshHexOverLay); 
 
     if(questionName)
         rebuildLegend(questionName, questionColorMap);
@@ -369,9 +432,10 @@ function _recomputeHexColorsByRatio(questionName, responseNames) {
     _(hexAndCountArrayDenom[0]).each( function(hexID, idx) {
         // note both are dense queries on datavore, the idx's match exactly
         var ratio = hexAndCountArrayNum[1][idx] / hexAndCountArrayDenom[1][idx];
-        newHexStyles[hexID] = {  fillColor: getProportionalColor(ratio, "greens") };
+        newHexStyles[hexID] = {  fillColor: colors.getProportional(ratio, "Set2"), fillOpacity: 0.9, color:'grey', weight: 1 };
     });
     _reStyleHexOverLay(newHexStyles);
+    _rebuildHexLegend('proportion', questionName, responseNames);
 }
 
 function _hexOverLayByCount()
@@ -380,10 +444,11 @@ function _hexOverLayByCount()
     var hexAndCountArray = formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]});      
     var totalCount = _.max(hexAndCountArray[1]);
     _(hexAndCountArray[0]).each( function(hexID, idx) {
-        var color = getProportionalColor(hexAndCountArray[1][idx] / totalCount); 
+        var color = colors.getProportional(hexAndCountArray[1][idx] / totalCount); 
         newHexStyles[hexID] = {fillColor: color, fillOpacity: 0.9, color:'grey', weight: 1};
     }); 
     _reStyleHexOverLay(newHexStyles);
+    _rebuildHexLegend('count');
 }
 
 function refreshHexOverLay() { // refresh hex overlay, in any map state
@@ -473,63 +538,94 @@ function getLanguageAt(idx)
     return language = formJSONMngr.supportedLanguages[idx];
 }
 
+function _rebuildHexLegend(countOrProportion, questionName, responseNames)
+{
+    var legendTemplate = 
+        '<div id="hex-legend" style="display:block">\n' +
+        '  <h4><%= title %> </h4>\n' +
+        '  <div class="scale">\n' +
+        '  <ul class="labels">\n' +
+        '<% _.each(hexes, function(hex) { %>' +
+        '    <li> <span style="background-color: <%= hex.color %>" />' +
+        '         <%= hex.text %> </li>\n<% }); %>' +
+        '  </div>\n  </ul>\n<div style="clear:both"></div>\n</div>';
+    var proportionString = 'Proportion of surveys with response(s): ' +
+            (responseNames && (responseNames.length == 1 ? responseNames[0] :
+            _.reduce(responseNames, 
+                     function(a,b) { return (a && a + ", or ") + b; }, '')));
+    var maxHexCount = _.max(formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]})[1]);
+    var interval = function(scheme) { 
+        var len = colors.getNumProportional(scheme);
+        return _.map(_.range(1,len+1), function (v) { return v / len });
+    };
+    var templateFiller = {
+        count: { title : 'Number of surveys:',
+            hexes : _.map(interval("Set1"), function (i) {
+                      return  {color: colors.getProportional(i),
+                               text: '<' + Math.ceil(i * maxHexCount)}; })
+        },
+        proportion: { title : proportionString,
+            hexes : _.map(interval("Set2"), function (i) {
+                      return {color: colors.getProportional(i, "Set2"),
+                              text: '<' + Math.ceil(i * 100) + '%'}; })
+        }
+    };
+    $('#hex-legend').remove();
+    $(_.template(legendTemplate, templateFiller[countOrProportion]))
+            .appendTo(legendsContainer);
+    if(!hexbinLayerGroupActive) $('#hex-legend').hide();
+}
+
 function rebuildLegend(questionName, questionColorMap)
 {
-    var response, language, spanAttrs;
-    // TODO: consider creating container once and keeping a variable reference
+    var i, response, spanAttrs, language;
     var question = formJSONMngr.getQuestionByName(questionName);
     var choices = formJSONMngr.getChoices(question);
+    var legendElement, legendTitle, legendUl;
     formResponseMngr._currentSelectOneQuestionName = questionName; //TODO: this should be done somewhere else?
 
-    // TODO: consider creating container once and keeping a reference
-    // try find existing legend and destroy
-    var legendContainer = $(("#"+legendContainerId));
-    if(legendContainer.length > 0)
-        legendContainer.empty();
-    else
-    {
-        var container = _createElementAndSetAttrs('div', {"id":legendContainerId});
-        var legendParent = $(legendParentSelector);
-        legendParent.prepend(container);
-        legendContainer = $(container);
-    }
+    $('#legend').remove();
 
-    legendContainer.attr("style", "diplay:block");
-    var legendTitle = _createElementAndSetAttrs('h3', {});
-    var i;
+    legendElement = $('<div></div>').attr('id', 'legend');
+    legendTitle = $('<h3></h3>');
+
     for(i=0;i<formJSONMngr.supportedLanguages.length;i++)
     {
+        var titleSpan;
+
         language = getLanguageAt(i);
-        spanAttrs = {"class":("language language-" + i)};
+        titleSpan = $('<span></span>').addClass('language').addClass('language-' + i)
+            .html(formJSONMngr.getMultilingualLabel(question, language));
         if(i != currentLanguageIdx)
-            spanAttrs.style = "display:none;";
-        var questionLabel = formJSONMngr.getMultilingualLabel(question, language);
-        var titleSpan = _createElementAndSetAttrs('span', spanAttrs, questionLabel);
-        legendTitle.appendChild(titleSpan);
+            titleSpan.css('display', 'none');
+        legendTitle.append(titleSpan);
     }
-    var legendUl = _createElementAndSetAttrs('ul', {"class":"nav nav-pills nav-stacked"});
-    legendContainer.append(legendTitle);
-    legendContainer.append(legendUl);
+    legendElement.append(legendTitle);
+
+    legendUl = $('<ul></ul>').addClass('nav nav-pills nav-stacked');
+    legendElement.append(legendUl);
+
     for(response in questionColorMap)
     {
         var color = questionColorMap[response];
-        var responseLi = _createElementAndSetAttrs('li');
+        var responseLi = $('<li></li>');
         var numResponses = question.responseCounts[response];
+        
         // create the anchor
-        var anchorClass = 'legend-label';
+        var legendAnchor = $('<a></a>').addClass('legend-label').attr('href', 'javascript:;').attr('rel',response);
         if(formResponseMngr._select_one_filters.indexOf(response) > -1)
-            anchorClass += " active";
+            legendAnchor.addClass('active');
         else if(numResponses > 0)
-            anchorClass += " normal";
+            legendAnchor.addClass('normal');
         else
-            anchorClass += " inactive";
-        var legendAnchor = _createElementAndSetAttrs('a', {'class':anchorClass, 'href':'javascript:;', 'rel':response});
+            legendAnchor.addClass('inactive');
 
-        var legendIcon = _createElementAndSetAttrs('span', {"class": "legend-bullet", "style": "background-color: " + color});
-        legendAnchor.appendChild(legendIcon);
+        var legendIcon = $('<span></span>').addClass('legend-bullet').css('background-color', color);
+        legendAnchor.append(legendIcon);
 
-        var responseCountSpan = _createElementAndSetAttrs('span', {'class':'legend-response-count'}, numResponses.toString());
-        legendAnchor.appendChild(responseCountSpan);
+        var responseCountSpan = $('<span></span>').addClass('legend-response-count').html(numResponses.toString());
+        legendAnchor.append(responseCountSpan);
+
         // add a language span for each language
         for(i=0;i<formJSONMngr.supportedLanguages.length;i++)
         {
@@ -538,16 +634,18 @@ function rebuildLegend(questionName, questionColorMap)
             // check if the choices contain this response before we try to get the reponse's label
             if(choices.hasOwnProperty(response))
                 itemLabel = formJSONMngr.getMultilingualLabel(choices[response], language);
-            spanAttrs = {"class":("item-label language language-" + i)};
+            var responseText = $('<span></span>').addClass(('item-label language language-' + i)).html(itemLabel);
             if(i != currentLanguageIdx)
-                spanAttrs.style = "display:none";
-            var responseText = _createElementAndSetAttrs('span', spanAttrs, itemLabel);
-            legendAnchor.appendChild(responseText);
+                responseText.css('display', 'none');
+            legendAnchor.append(responseText);
         }
 
-        responseLi.appendChild(legendAnchor);
-        legendUl.appendChild(responseLi);
+        responseLi.append(legendAnchor);
+        legendUl.append(responseLi);
     }
+
+    // add as the first element always
+    legendsContainer.prepend(legendElement);
 
     // bind legend click event
     $('a.legend-label').on('click', function(){
@@ -587,12 +685,7 @@ function getBootstrapFields()
 
 function clearLegend()
 {
-    var legendContainer = $(("#"+legendContainerId));
-    if(legendContainer.length > 0)
-    {
-        legendContainer.empty();
-        legendContainer.attr("style", "display:none");
-    }
+    $('#legend').remove();
 }
 
 function filterSelectOneCallback()
@@ -672,24 +765,30 @@ function get_random_color(step, numOfSteps) {
     return (c);
 }
 
-function select_from_array(array, zero_to_one_inclusive) {
-    var epsilon = 0.00001;
-    return array[Math.floor(zero_to_one_inclusive * (array.length - epsilon))];
-
-}
-function getProportionalColor(zero_to_one, colorscheme) {
-    // http://colorbrewer2.org/index.php?type=sequential&scheme=Purples&n=9 -- with first white taken out
-    var proportionalColorSchemes = {"purples": ["#EFEDF5", "#DADAEB", "#BCBDDC", "#9E9AC8", "#807DBA", 
-                                                "#6A51A3", "#54278F", "#3F007D"],
-                                    "greens": ["#DEEBF7", "#C6DBEF", "#9ECAE1", "#6BAED6", "#4292C6", 
-                                                "#2171B5", "#08519C", "#08306B"]};
-    if (!colorscheme) colorscheme = "purples";
-    return select_from_array(proportionalColorSchemes[colorscheme], zero_to_one);
-}
-
-function getDichromaticColor(zero_to_one) {
-    // http://colorbrewer2.org/index.php?type=diverging&scheme=RdBu&n=11
-    var diverging = ["#67001F", "#B2182B", "#D6604D", "#F4A582", "#FDDBC7", "#F7F7F7", 
-                     "#D1E5F0", "#92C5DE", "#4393C3", "#2166AC", "#053061"];
-    return select_from_array(diverging, zero_to_one);
-}
+// COLORS MODULE
+var colors = (function() {
+    var colors = {}; 
+    var colorschemes = {proportional: {
+    // http://colorbrewer2.org/index.php?type=sequential
+        "Set1": ["#EFEDF5", "#DADAEB", "#BCBDDC", "#9E9AC8", "#807DBA", "#6A51A3", "#54278F", "#3F007D"], 
+        "Set2": ["#DEEBF7", "#C6DBEF", "#9ECAE1", "#6BAED6", "#4292C6", "#2171B5", "#08519C", "#08306B"]
+    }};
+    var defaultColorScheme = "Set1";
+    function select_from_colors(type, colorscheme, zero_to_one_inclusive) {
+        var epsilon = 0.00001;
+        colorscheme = colorscheme || defaultColorScheme;
+        var colorsArr = colorschemes[type][colorscheme];
+        return colorsArr[Math.floor(zero_to_one_inclusive * (colorsArr.length - epsilon))];
+    }
+   
+    // METHODS FOR EXPORT 
+    colors.getNumProportional = function(colorscheme) {
+        colorscheme = colorscheme || defaultColorScheme;
+        return colorschemes.proportional[colorscheme].length;
+    };
+    colors.getProportional = function(zero_to_one, colorscheme) {
+        return select_from_colors('proportional', colorscheme, zero_to_one);
+    };
+    
+    return colors; 
+}());
