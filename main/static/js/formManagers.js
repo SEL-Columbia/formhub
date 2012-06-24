@@ -2,7 +2,9 @@ var constants = {
     //pyxform constants
     NAME: "name", LABEL: "label", TYPE: "type", CHILDREN: "children",
     //formhub query syntax constants
-    START: "start", LIMIT: "limit", COUNT: "count", FIELDS: "fields"
+    START: "start", LIMIT: "limit", COUNT: "count", FIELDS: "fields",
+    //
+    GEOLOCATION: "_geolocation"
 };
 
 // used to load and manage form questions
@@ -201,6 +203,8 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
             $.getJSON(thisFormResponseMngr.url, urlParams, function(data){
                 thisFormResponseMngr.responses = data;
                 thisFormResponseMngr.callback.call(thisFormResponseMngr);
+                // load the dvResponseTable up asynchronously
+                _.defer(function() {thisFormResponseMngr._toDatavore();});
             });
         });
 };
@@ -226,31 +230,20 @@ FormResponseManager.prototype.clearSelectOneFilterResponses = function(name)
 /// this cannot be called before the form is loaded as we rely on the form to determine the gps field
 FormResponseManager.prototype._toGeoJSON = function()
 {
-    var idx;
     var features = [];
-    var geopointQuestionName = null;
-    var geopointQuestion = formJSONMngr.getGeoPointQuestion();
-    if(geopointQuestion)
-        geopointQuestionName = geopointQuestion[constants.NAME];
-    for(idx in this.responses)
-    {
-        var response = this.responses[idx];
+    var geopointQuestionName = constants.GEOLOCATION;
+    _(this.responses).each(function (response) {
         var gps = response[geopointQuestionName];
-        if(gps)
+        if(gps && gps[0] && gps[1])
         {
-            // split gps into its parts
-            var parts = gps.split(" ");
-            if(parts.length > 1)
-            {
-                var lng = parts[0];
-                var lat = parts[1];
+            var lat = gps[0];
+            var lng = gps[1];
 
-                var geometry = {"type":"Point", "coordinates": [lat, lng]};
-                var feature = {"type": "Feature", "id": response._id, "geometry":geometry, "properties":response};
-                features.push(feature);
-            }
+            var geometry = {"type":"Point", "coordinates": [lng, lat]};
+            var feature = {"type": "Feature", "id": response._id, "geometry":geometry, "properties":response};
+            features.push(feature);
         }
-    }
+    });
 
     this.geoJSON = {"type":"FeatureCollection", "features":features};
 };
@@ -258,58 +251,57 @@ FormResponseManager.prototype._toGeoJSON = function()
 /// this cannot be called before the form is loaded as we rely on the form to determine the gps field
 FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
 {
-    var responses = this.responses;
     var features = [];
     var latLngArray = [];
-    var geopointQuestionName = null;
-    var geopointQuestion = formJSONMngr.getGeoPointQuestion();
+    var geopointQuestionName = constants.GEOLOCATION;
     // The following functions needed hexbin-js doesn't deal well with negatives
     function fixlng(n) { return (n < 0 ? 360 + n : n); } 
     function fixlnginv(n) { return (n > 180 ? n - 360 : n); }
     function fixlat(n) { return (n < 0 ? 90 + n : 90 + n); } 
     function fixlatinv(n) { return (n > 90 ? n - 90 : n - 90); }
-    if(geopointQuestion)
-        geopointQuestionName = geopointQuestion[constants.NAME];
-    _.each(responses, function(response) {
+    _(this.responses).each(function(response) {
         var gps = response[geopointQuestionName];
-        if(gps)
+        if(gps && gps[0] && gps[1])
         {
-            // split gps into its parts
-            var parts = gps.split(" ");
-            if(parts.length > 1)
-            {
-                var lat = parseFloat(parts[0]);
-                var lng = parseFloat(parts[1]);
-                if(latLongFilter===undefined || latLongFilter(lat, lng))
-                    latLngArray.push({ lat: fixlat(lat), lng: fixlng(lng), response: response});
-            }
+            var lat = gps[0];
+            var lng = gps[1];
+            if(latLongFilter===undefined || latLongFilter(lat, lng))
+                latLngArray.push({ lat: fixlat(lat), lng: fixlng(lng), response_id: response._id});
         }
     });
-    hexset = d3.layout.hexbin()
+    try {
+        hexset = d3.layout.hexbin()
                 .xValue( function(d) { return d.lng; } )
                 .yValue( function(d) { return d.lat; } )
                 ( latLngArray );
+    } catch (err) { 
+        this.hexGeoJSON = {"type": "FeatureCollection", "features": []};
+        this._addMetadataColumn("_id", "hexID", dv.type.nominal, _.map(latLngArray, function(x) { return undefined; }));
+        return;
+    };
     countMax = d3.max( hexset, function(d) { return d.data.length; } );
-    _.each(hexset, function(hex) {
+    var hexOfResponseID = {}, responseIDs = [], hexID = '';
+    _.each(hexset, function(hex, idx) {
         if(hex.data.length) {
+            hexID = 'HEX: ' + idx;
             var geometry = {"type":"Polygon", 
                             "coordinates": _(hex.points).map(function(d) {
                                     return [fixlatinv(d.y), fixlnginv(d.x)];
                                     })
                             };
-            var feature = {"type": "Feature", 
+            responseIDs = [];
+            _(hex.data).each(function(d) {
+                responseIDs.push(d.response_id);
+                hexOfResponseID[d.response_id] = hexID; 
+            });
+            features.push({"type": "Feature", 
                            "geometry":geometry, 
-                           "properties": {"rawdata" :_(hex.data).map(function(d) {
-                                                return {lat: fixlatinv(d.lat), lng: fixlnginv(d.lng), response: d.response}; }),
-                                           "count" : hex.data.length,
-                                           "countMax" : countMax
-                                          }
-                           };
-                features.push(feature);
+                           "properties": { "id" : hexID, "responseIDs" : responseIDs }
+                           });
         }
     });
-
     this.hexGeoJSON = {"type":"FeatureCollection", "features":features};
+    this._addMetadataColumn("_id", "hexID", dv.type.nominal, hexOfResponseID);
 };
 FormResponseManager.prototype.getAsGeoJSON = function()
 {
@@ -327,11 +319,58 @@ FormResponseManager.prototype.getAsHexbinGeoJSON = function(latLongFilter)
     return this.hexGeoJSON;
 };
 
+FormResponseManager.prototype.dvQuery = function(dvQueryObj)
+{
+    if (!this.dvResponseTable) this._toDatavore();
+    return this.dvResponseTable.query(dvQueryObj);
+};
+
+FormResponseManager.prototype._toDatavore = function(rebuildFlag)
+{
+    var dvData = {}, qName = '';
+    var questions = formJSONMngr.questions;
+    var responses = this.responses;
+    // Datavore table should only be built once, unless rebuildFlag is passed in
+    if (this.dvResponseTable && !rebuildFlag) return;
+    // CREATE A Datavore table here; the mapping from form types to datavore types
+    var typeMap = {"integer" : dv.type.numeric, "decimal" : dv.type.numeric,
+                   "select one" : dv.type.nominal, 
+                   "text" : dv.type.unknown, "select multiple" : dv.type.unknown,
+                   "_id" : dv.type.unknown };
+    // chuck all questions whose type isn't in typeMap; add an _id "question"
+    // TODO: if datavore is our only datastore, this chucking can be removed (with care)
+    questions = _(questions).filter(function(q) { return typeMap[q[constants.TYPE]]; });
+    questions.push({'name' : "_id", 'type' : "_id"});
+    _(questions).each(function(question) {
+        qName = question[constants.NAME];
+        dvData[qName] = [];
+        _(responses).each( function (response) {
+            dvData[qName].push(response[qName]);
+        });
+    });
+    var dvTable = dv.table();
+    _(questions).each(function(question) {
+        qName = question[constants.NAME];
+        dvTable.addColumn(qName, dvData[qName], typeMap[question[constants.TYPE]]);
+    });
+    this.dvResponseTable = dvTable;
+};
+
+FormResponseManager.prototype._addMetadataColumn = function(keyName, metaColumnName, metaColumnType, metaData)
+{
+    // Adds a metadata column, after aligning values according to keyName
+    if (!this.dvResponseTable) this._toDatavore();
+    var columnOfKeys = this.dvResponseTable[keyName];
+    if (!columnOfKeys ) { throw "No data for key " + keyName + " in dvReponseTable"; }
+    // question: Some of these are undefined; is that okay?
+    var colToAdd = _(columnOfKeys).map(function(key) { return metaData[key]; });
+    this.dvResponseTable.addColumn(metaColumnName, colToAdd, metaColumnType);
+};
+
 FormResponseManager.prototype._toPivotJs = function(fields)
 {
     this.pivotJsData = null;
     var pivotData = [];
-    var idx;
 
     // first row is the titles
     var titles = [];
@@ -342,9 +381,7 @@ FormResponseManager.prototype._toPivotJs = function(fields)
     pivotData.push(titles);
 
     // now we do the data making sure its in the same order as the titles above
-    for(idx in this.responses)
-    {
-        var response = this.responses[idx];
+    _(this.responses).each(function (response) {
         var row = [];
 
         for(i=0;i<fields.length;i++)
@@ -370,7 +407,7 @@ FormResponseManager.prototype._toPivotJs = function(fields)
             row.push(data);
         }
         pivotData.push(row);
-    }
+    });
 
     this.pivotJsData = JSON.stringify(pivotData);
 };
@@ -383,12 +420,9 @@ FormResponseManager.prototype._toDataTables = function(fields)
 {
     this.dtData = null;
     var aaData = [];
-    var idx;
 
     // now we do the data making sure its in the same order as the titles above
-    for(idx in this.responses)
-    {
-        var response = this.responses[idx];
+    _(this.responses).each(function (response) {
         var row = [];
 
         for(i=0;i<fields.length;i++)
@@ -414,7 +448,7 @@ FormResponseManager.prototype._toDataTables = function(fields)
             row.push(data);
         }
         aaData.push(row);
-    }
+    });
 
     this.dtData = aaData;
 };

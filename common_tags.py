@@ -29,3 +29,4 @@ NAME = u"name"
 # extra fields that we're adding to our mongo doc
 ATTACHMENTS = u"_attachments"
 DATE = u"_date"
+GEOLOCATION = u"_geolocation"

@@ -1,17 +1,27 @@
 from cStringIO import StringIO
 from PIL import Image
+import urllib2 as urllib
+
+from django.conf import settings
+from django.core.files.storage import get_storage_class
+
+from utils.viewer_tools import get_path
+
 
 def get_dimensions((width, height), longest_side):
-    if width > height:
-        width = longest_side
-        height = (height/width) * longest_side
-    elif height >width:
-        height = longest_side
-        width = (width/height) * longest_side
-    else:
-        height = longest_side
-        width = longest_side
-    return (width, height)
+    try:
+        if width > height:
+            width = longest_side
+            height = (height/width) * longest_side
+        elif height >width:
+            height = longest_side
+            width = (width/height) * longest_side
+        else:
+            height = longest_side
+            width = longest_side
+        return (width, height)
+    except ZeroDivisionError:
+        return (longest_side, longest_side)
 
 
 def _save_thumbnails(image, path, size, suffix, filename=None):

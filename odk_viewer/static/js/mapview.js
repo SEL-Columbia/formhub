@@ -5,7 +5,7 @@ var map;
 var layersControl;
 // array of mapbox maps to use as base layers - the first one will be the default map
 var mapboxMaps = [
-    {'label': 'Mapbox Street', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-hgm23qjf.jsonp'},
+    {'label': 'Mapbox Streets', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-iuetkf9u.jsonp'},
     {'label': 'MapBox Streets Light', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-p543gvbh.jsonp'},
     {'label': 'MapBox Streets Zenburn', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-bjhr55gf.jsonp'}
 ];
@@ -67,11 +67,12 @@ function initialize() {
             layersControl.addBaseLayer(mapboxstreet, mapData.label);
 
             // only add default layer to map
-            if(idx == 0 && !custAdded)
+            if(idx === 0 && !custAdded) {
                 map.addLayer(mapboxstreet);
-            else if (idx == mapboxMaps.length && custAdded)
+            } else if (idx === mapboxMaps.length && custAdded) {
                 map.addLayer(mapboxstreet);
                 $("input[name=leaflet-base-layers]").attr('checked', true);
+            }
         });
     });
 
@@ -318,7 +319,7 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     });
 
     /// need this here instead of the constructor so that we can catch the featureparse event
-    refreshHexOverLay(); // TODO: add a toggle to do this only if hexOn = true;
+    _.defer(refreshHexOverLay); // TODO: add a toggle to do this only if hexOn = true;
     geoJsonLayer.addGeoJSON(geoJSON);
     markerLayerGroup.addLayer(geoJsonLayer);
 
@@ -334,49 +335,55 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         map.fitBounds(latlngbounds);
     }
 }
-function _rebuildHexOverLay(hexdata, hex_feature_to_polygon_properties) {
-    hexbinLayerGroup.clearLayers();
-    var arr_to_latlng = function(arr) { return new L.LatLng(arr[0], arr[1]); };
-    var hex_feature_to_polygon_fn = function(el) {
-        return new L.Polygon(_(el.geometry.coordinates).map(arr_to_latlng),
-                                hex_feature_to_polygon_properties(el));
-    };
-    hexbinPolygons = _(hexdata.features).chain()
-                        .map(hex_feature_to_polygon_fn)
-                        .compact()
-                        .value();
-    _(hexbinPolygons).map(function(x) { hexbinLayerGroup.addLayer(x); });
+
+function _reStyleHexOverLay(newHexStylesByID) {
+    _(hexbinLayerGroup._layers).each(function(hexbinLPolygon) {
+        hexID = hexbinLPolygon.options.id;
+        if (newHexStylesByID[hexID])
+            hexbinLPolygon.setStyle(newHexStylesByID[hexID]);
+    });
 }
-//TODO: build new Polygons here, and in _rebuildHexOverLay, just reset the properties
+
 function constructHexBinOverLay() {
     hexbinData = formResponseMngr.getAsHexbinGeoJSON();
-    _rebuildHexOverLay(hexbinData, function() { return {}; });
+    var arr_to_latlng = function(arr) { return new L.LatLng(arr[0], arr[1]); };
+    var hex_feature_to_polygon_fn = function(el) {
+        return new L.Polygon(_(el.geometry.coordinates).map(arr_to_latlng), 
+                            {"id": el.properties.id});
+    };
+    _(hexbinData.features).each( function(x) {
+        hexbinLayerGroup.addLayer(hex_feature_to_polygon_fn(x)); 
+    });
 }
 
 function _recomputeHexColorsByRatio(questionName, responseNames) {
+    var newHexStyles = {};
     if (_(responseNames).contains(notSpecifiedCaption)) 
         responseNames.push(undefined); // hack? if notSpeciedCaption is in repsonseNames, then need to
         // count when instance.response[questionName] doesn't exist, and is therefore ``undefined''
-    var hex_feature_to_polygon_properties = function(el) {
-        // TODO: remove rawdata from properties, go through formJSONManager or somesuch instead
-        var numerator = _.reduce(el.properties.rawdata, function(numer, instance) {
-                            return numer + (_.contains(responseNames, instance.response[questionName]) ? 1 : 0);
-                        }, 0.0);
-        var denominator = el.properties.rawdata.length;
-        var color = getProportionalColor(numerator / denominator, "greens");
-        return { fillColor: color, fillOpacity: 0.9, color: 'grey', weight: 1 };
-                   
-    };
-    _rebuildHexOverLay(hexbinData, hex_feature_to_polygon_properties);
+    
+    var hexAndCountArrayNum = formResponseMngr.dvQuery({dims: ['hexID'], vals:[dv.count()], where:
+        function(table, row) { return _.contains(responseNames, table.get(questionName, row)); }});
+    var hexAndCountArrayDenom = formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]});      
+
+    _(hexAndCountArrayDenom[0]).each( function(hexID, idx) {
+        // note both are dense queries on datavore, the idx's match exactly
+        var ratio = hexAndCountArrayNum[1][idx] / hexAndCountArrayDenom[1][idx];
+        newHexStyles[hexID] = {  fillColor: getProportionalColor(ratio, "greens") };
+    });
+    _reStyleHexOverLay(newHexStyles);
 }
 
 function _hexOverLayByCount()
 {
-    var hex_feature_to_polygon_properties = function(el) {
-        var color = getProportionalColor(el.properties.count / (el.properties.countMax * 1.2));
-        return {fillColor: color, fillOpacity: 0.9, color:'grey', weight: 1};
-    };
-    _rebuildHexOverLay(hexbinData, hex_feature_to_polygon_properties);
+    var newHexStyles = {};
+    var hexAndCountArray = formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]});      
+    var totalCount = _.max(hexAndCountArray[1]);
+    _(hexAndCountArray[0]).each( function(hexID, idx) {
+        var color = getProportionalColor(hexAndCountArray[1][idx] / totalCount); 
+        newHexStyles[hexID] = {fillColor: color, fillOpacity: 0.9, color:'grey', weight: 1};
+    }); 
+    _reStyleHexOverLay(newHexStyles);
 }
 
 function refreshHexOverLay() { // refresh hex overlay, in any map state
@@ -555,18 +562,18 @@ function rebuildLegend(questionName, questionColorMap)
         formResponseMngr.callback = filterSelectOneCallback;
         fields = getBootstrapFields();
         formResponseMngr.loadResponseData({}, 0, null, fields);
-        formResponseMngr.loadResponseData({});
         refreshHexOverLay();
     });
 }
 
 /**
  * Get fields we deem nesseceary to display map/legend
+ * TODO: cache bootstrap fields
  */
 function getBootstrapFields()
 {
     // we only want to load gps and select one data to begin with
-    var fields = [];
+    var fields = ['_id', constants.GEOLOCATION];
     var idx, question;
     if(!constants) throw "ERROR: constants not found; please include main/static/js/formManagers.js"; 
     for(idx in formJSONMngr.selectOneQuestions)
@@ -575,11 +582,6 @@ function getBootstrapFields()
         fields.push(question[constants.NAME]);
     }
 
-    for(idx in formJSONMngr.geopointQuestions)
-    {
-        question = formJSONMngr.geopointQuestions[idx];
-        fields.push(question[constants.NAME]);
-    }
     return fields;
 }
 
