@@ -384,7 +384,8 @@ def download_metadata(request, username, id_string, data_id):
         default_storage = get_storage_class()()
         if default_storage.exists(file_path):
             response = response_with_mimetype_and_name(data.data_file_type, 
-            filename, extension=extension, show_date=False, file_path=file_path)
+                filename, extension=extension, show_date=False, 
+                file_path=file_path)
             return response
         else:
             return HttpResponseNotFound()
@@ -412,7 +413,8 @@ def download_media_data(request, username, id_string, data_id):
         default_storage = get_storage_class()()
         if default_storage.exists(file_path):
             response = response_with_mimetype_and_name(data.data_file_type, 
-            filename, extension=extension, show_date=False, file_path=file_path)
+                filename, extension=extension, show_date=False, 
+                file_path=file_path)
             return response
         else:
             return HttpResponseNotFound()
