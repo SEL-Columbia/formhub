@@ -108,6 +108,8 @@ class TestFormMetadata(MainTestCase):
         name = self._add_metadata()
         response = self.client.get(self.doc_url)
         self.assertEqual(response.status_code, 200)
+        fileName, ext = os.path.splitext(response['Content-Disposition'])
+        self.assertEqual(ext, '.xls')
 
     def test_no_download_supporting_doc_for_anon(self):
         name = self._add_metadata()
@@ -118,6 +120,8 @@ class TestFormMetadata(MainTestCase):
         name = self._add_metadata(data_type='media')
         response = self.client.get(self.doc_url)
         self.assertEqual(response.status_code, 200)
+        fileName, ext = os.path.splitext(response['Content-Disposition'])
+        self.assertEqual(ext, '.png')
 
     def test_no_download_supporting_media_for_anon(self):
         name = self._add_metadata(data_type='media')
