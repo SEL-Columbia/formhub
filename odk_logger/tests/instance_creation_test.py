@@ -81,27 +81,6 @@ class TestWaterSubmission(TestCase):
         f.close()
         Instance.objects.create(xml=xml, user=self.user)
 
-    def test_instance_creation(self):
-        xml_file = open(os.path.join(
-                os.path.dirname(os.path.abspath(__file__)),
-                "Health_2011_03_13.xml_2011-03-15_20-30-28",
-                "Health_2011_03_13.xml_2011-03-15_20-30-28.xml"
-                ))
-        # note the "rb" mode is to open a binary file
-        image_file = open(
-            os.path.join(
-                os.path.dirname(os.path.abspath(__file__)),
-                "Health_2011_03_13.xml_2011-03-15_20-30-28",
-                "1300221157303.jpg"),
-            "rb")
-
-        # ODK Collect uses the name of the jpg file as the key in the
-        # post.
-        postdata = {"xml_submission_file": xml_file,
-                    "1300221157303.jpg": image_file}
-        response = self.client.post('/bob/submission', postdata)
-        self.failUnlessEqual(response.status_code, 201)
-
     def test_data_submission(self):
         subdirectories = ["Water_2011_03_17_2011-03-17_16-29-59"]
         for subdirectory in subdirectories:
