@@ -7,7 +7,7 @@ modilabs-python-utils==0.1.5
 PIL
 poster==0.8.1
 pymongo==2.1.1
--e git://github.com/modilabs/pyxform.git@v0.9.5#egg=pyxform
+pyxform==0.9.6
 South==0.7.3
 xlrd==0.7.1
 xlwt==0.7.2
