@@ -62,15 +62,6 @@ class TestWaterSubmission(TestCase):
         f.close()
         XForm.objects.create(xml=xml, user=self.user)
 
-    def test_xform_creation(self):
-        f = open(os.path.join(
-                os.path.dirname(os.path.abspath(__file__)),
-                "Water_Translated_2011_03_10.xml"
-                ))
-        xml = f.read()
-        f.close()
-        XForm.objects.create(xml=xml, user=self.user)
-
     def test_form_submission(self):
         # no more submission to non-existent form, we need to ensure the Water_Translated_2011_03_10 xform is valid
         f = open(os.path.join(
