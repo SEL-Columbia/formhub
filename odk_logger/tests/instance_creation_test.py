@@ -46,7 +46,7 @@ class TestWaterSubmission(TestCase):
         absolute_path = get_absolute_path("forms")
         open_forms = open_all_files(absolute_path)
         for path, open_file in open_forms.items():
-            XForm.objects.create(xml=open_file.read())
+            XForm.objects.create(xml=open_file.read(), user=self.user)
             open_file.close()
 
     def test_xform_creation(self):
@@ -99,10 +99,8 @@ class TestWaterSubmission(TestCase):
     def test_submission_for_missing_form(self):
         xml_file = open(os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
-            "Health_2011_03_13.xml_2011-03-15_20-30-28",
-            "Health_2011_03_13.xml_2011-03-15_20-30-28_invalid_id_string.xml"
+            "Health_2011_03_13_invalid_id_string.xml"
         ))
-
         postdata = {"xml_submission_file": xml_file}
         response = self.client.post('/bob/submission', postdata)
         self.failUnlessEqual(response.status_code, 404)
