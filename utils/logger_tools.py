@@ -153,3 +153,9 @@ def publish_form(callback):
             'type': 'alert-error',
             'text': unicode(e),
         }
+    except ProcessTimedOut as e:
+        # catch timeout errors
+        return {
+            'type': 'alert-error',
+            'text': 'Form validation timeout, please try again.',
+        }
