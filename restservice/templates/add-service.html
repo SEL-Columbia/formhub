@@ -14,6 +14,11 @@
         <input type="submit" class="btn large btn-primary" value="Add service" />
     </div>
     </form>
+    <ol>
+        {% for sv in list_services %}
+            <li>{{ sv }}</li>
+        {% endfor %}
+    </ol>
     </div>
     <script type="text/javascript">
     $(document).ready(function(){
