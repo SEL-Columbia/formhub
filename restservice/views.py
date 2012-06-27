@@ -42,6 +42,7 @@ def add_service(request, username, id_string):
         if request.is_ajax():
             response = {'status': context.status, 'message': context.message}
             return HttpResponse(simplejson.dumps(response))
+    context.list_services = RestService.objects.all()
     context.form = form
     context.username = username
     context.id_string = id_string
