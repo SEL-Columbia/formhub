@@ -31,6 +31,7 @@ def add_service(request, username, id_string):
                 context.status = 'success'
                 context.message \
                         = u"Successfully added service %s." % service_name
+                context.restservice = rs
         else:
             context.status = 'fail'
             context.message = u"Please fill in all required fields"
@@ -40,6 +41,8 @@ def add_service(request, username, id_string):
                                         .render(Context({'field': field}))
         if request.is_ajax():
             response = {'status': context.status, 'message': context.message}
+            if context.restservice:
+                response["restservice"] = u"%s" % context.restservice
             return HttpResponse(simplejson.dumps(response))
     context.list_services = RestService.objects.filter(xform=xform)
     context.form = form

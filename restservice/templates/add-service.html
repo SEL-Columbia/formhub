@@ -14,7 +14,7 @@
         <input type="submit" class="btn large btn-primary" value="Add service" />
     </div>
     </form>
-    <ol>
+    <ol id="restservice_list">
         {% for sv in list_services %}
             <li>{{ sv }}</li>
         {% endfor %}
@@ -34,6 +34,9 @@
                             $("#addserviceform").each(function(){
                                 this.reset();
                             });
+                            if(rs.restservice){
+                                $("#restservice_list").append("<li>" + rs.restservice + "</li>");
+                            }
                         }
                         $('#addserviceformstatus').html(rs.message);
                     }
