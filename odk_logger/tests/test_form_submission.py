@@ -2,7 +2,6 @@
 Testing POSTs to "/submission"
 """
 import os
-from django.core.urlresolvers import reverse
 from main.tests.test_base import MainTestCase
 
 class TestFormSubmission(MainTestCase):
