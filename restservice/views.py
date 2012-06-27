@@ -14,13 +14,12 @@ from restservice.models import RestService
 def add_service(request, username, id_string):
     context = RequestContext(request)
     form = RestServiceForm()
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
     if request.method == 'POST':
         form = RestServiceForm(request.POST)
         if form.is_valid():
             service_name = form.cleaned_data['service_name']
             service_url = form.cleaned_data['service_url']
-            xform = XForm.objects.get(user__username=username,\
-                id_string=id_string)
             try:
                 rs = RestService(service_url=service_url,
                                     name=service_name, xform=xform)
@@ -42,7 +41,7 @@ def add_service(request, username, id_string):
         if request.is_ajax():
             response = {'status': context.status, 'message': context.message}
             return HttpResponse(simplejson.dumps(response))
-    context.list_services = RestService.objects.all()
+    context.list_services = RestService.objects.filter(xform=xform)
     context.form = form
     context.username = username
     context.id_string = id_string
