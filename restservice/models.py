@@ -8,6 +8,7 @@ class RestService(models.Model):
 
     class Meta:
         app_label = 'restservice'
+        unique_together = ('service_url', 'xform', 'name')
 
     service_url = models.URLField("Service URL", verify_exists=False)
     xform = models.ForeignKey(XForm)
