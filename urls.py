@@ -46,6 +46,7 @@ urlpatterns = patterns('',
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/doc/(?P<data_id>[^/]+)', 'main.views.download_metadata'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/formid-media/(?P<data_id>[^/]+)', 'main.views.download_media_data'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/submission/(?P<uuid>[^/]+)$', 'main.views.show_submission'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/addservice$', 'restservice.views.add_service', name="add_restservice"),
 
     # stats
     url(r"^stats/submissions/$", 'staff.views.submissions'),
