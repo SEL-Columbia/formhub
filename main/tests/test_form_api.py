@@ -3,7 +3,13 @@ from django.utils import simplejson
 
 from test_base import MainTestCase
 from main.views import api
-from odk_viewer.models.parsed_instance import dict_for_mongo
+from odk_viewer.models.parsed_instance import ParsedInstance
+
+def dict_for_mongo_without_userform_id(parsed_instance):
+    d = parsed_instance.to_dict_for_mongo()
+    # remove _userform_id since its not returned by the API
+    d.pop(ParsedInstance.USERFORM_ID)
+    return d
 
 class TestFormAPI(MainTestCase):
 
@@ -20,8 +26,7 @@ class TestFormAPI(MainTestCase):
         # query string
         response = self.client.get(self.api_url, {})
         self.assertEqual(response.status_code, 200)
-        d = dict_for_mongo(
-                self.xform.surveys.all()[0].parsed_instance.to_dict())
+        d = dict_for_mongo_without_userform_id(self.xform.surveys.all()[0].parsed_instance)
         find_d = simplejson.loads(response.content)[0]
         self.assertEqual(sorted(find_d, key=find_d.get), sorted(d, key=d.get))
 
@@ -31,8 +36,7 @@ class TestFormAPI(MainTestCase):
         data = {'query': json}
         response = self.client.get(self.api_url, data)
         self.assertEqual(response.status_code, 200)
-        d = dict_for_mongo(
-                self.xform.surveys.all()[0].parsed_instance.to_dict())
+        d = dict_for_mongo_without_userform_id(self.xform.surveys.all()[0].parsed_instance)
         find_d = simplejson.loads(response.content)[0]
         self.assertEqual(sorted(find_d, key=find_d.get), sorted(d, key=d.get))
 
@@ -59,8 +63,7 @@ class TestFormAPI(MainTestCase):
         start = callback.__len__() + 1
         end = response.content.__len__() - 1
         content = response.content[start: end]
-        d = dict_for_mongo(
-                self.xform.surveys.all()[0].parsed_instance.to_dict())
+        d = dict_for_mongo_without_userform_id(self.xform.surveys.all()[0].parsed_instance)
         find_d = simplejson.loads(content)[0]
         self.assertEqual(sorted(find_d, key=find_d.get), sorted(d, key=d.get))
 
@@ -70,8 +73,7 @@ class TestFormAPI(MainTestCase):
         data = {'query': json, 'start': 0, 'limit': 10}
         response = self.client.get(self.api_url, data)
         self.assertEqual(response.status_code, 200)
-        d = dict_for_mongo(
-            self.xform.surveys.all()[0].parsed_instance.to_dict())
+        d = dict_for_mongo_without_userform_id(self.xform.surveys.all()[0].parsed_instance)
         find_d = simplejson.loads(response.content)[0]
         self.assertEqual(sorted(find_d, key=find_d.get), sorted(d, key=d.get))
 
