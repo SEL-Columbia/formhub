@@ -9,4 +9,3 @@ class ServiceDefinition(RestServiceInterface):
         valid_url = url % info
         http = httplib2.Http()
         resp, content = http.request(valid_url, 'GET')
-        print resp.status, content
