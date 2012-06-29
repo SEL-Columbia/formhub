@@ -1,6 +1,8 @@
+from django.core.urlresolvers import reverse
 import os
 from main.tests.test_base import MainTestCase
 from odk_logger.models.xform import XForm
+from restservice.views import add_service
 from restservice.RestServiceInterface import RestServiceInterface
 from restservice.models import RestService
 
@@ -30,3 +32,17 @@ class RestServiceTest(MainTestCase):
         self._create_rest_service()
         sv = self.restservice.get_service_definition()()
         self.assertEqual(isinstance(sv, RestServiceInterface), True)
+
+    def test_add_service(self):
+        add_service_url = reverse(add_service, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        })
+        response = self.client.get(add_service_url, {})
+        count = RestService.objects.all().count()
+        self.assertEqual(response.status_code, 200)
+        post_data = {'service_url': self.service_url,
+                     'service_name': self.service_name}
+        response = self.client.post(add_service_url, post_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEquals(RestService.objects.all().count(), count + 1)
