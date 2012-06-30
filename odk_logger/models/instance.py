@@ -90,5 +90,11 @@ class Instance(models.Model):
 from utils.stathat_api import stathat_count
 def stathat_form_submission(sender, instance, created, **kwargs):
     if created:
-       stathat_count('formhub-submissions')
+        stathat_count('formhub-submissions')
 post_save.connect(stathat_form_submission, sender=Instance)
+
+from restservice.utils import call_service
+def rest_service_form_submission(sender, instance, created, **kwargs):
+    if created:
+        call_service(instance)
+post_save.connect(rest_service_form_submission, sender=Instance)

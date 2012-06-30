@@ -283,25 +283,38 @@
         </div>
         <br/>
         <div class="clearfix bordered">
-                <h3 data-toggle="collapse" data-target="#docs_tab">Supporting Documents</h3>
-                <div id='docs_tab' class="collapse">
+            <h3 data-toggle="collapse" data-target="#docs_tab">Supporting Documents</h3>
+            <div id='docs_tab' class="collapse">
                 {% for doc in supporting_docs %}
                     <p><a href="{% url main.views.download_metadata content_user.username xform.id_string doc.id %}">{{ doc.data_value }}</a>
-                    {% if can_edit %}
-                    || <a href="{% url main.views.download_metadata content_user.username xform.id_string doc.id %}?del=true"> remove </a>
-                    {% endif %}
+                        {% if can_edit %}
+                            || <a href="{% url main.views.download_metadata content_user.username xform.id_string doc.id %}?del=true"> remove </a>
+                        {% endif %}
                     </p>
                 {% endfor %}
                 {% if can_edit %}
-                <form action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <table>
-                    {{ doc_form.as_table }}
-                    </table>
-                    <input type="submit" class="btn" value="Upload" />
-                </form>
+                    <form action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <table>
+                            {{ doc_form.as_table }}
+                        </table>
+                        <input type="submit" class="btn" value="Upload" />
+                    </form>
                 {% endif %}
-                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="clearfix bordered">
+            <h3 data-toggle="collapse" data-target="#restservice_tab">Rest Services</h3>
+            <div id='restservice_tab' class="collapse">
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        $.get('{% url restservice.views.add_service content_user.username xform.id_string %}', function(data){
+                          $('#restservice_tab').html(data);
+                        });
+                    });
+                 </script>
+            </div>
         </div>
         <br/>
         <div class="clearfix bordered">
