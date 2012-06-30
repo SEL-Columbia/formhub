@@ -12,4 +12,4 @@ install:
   - python manage.py migrate --noinput
 script: python manage.py test --noinput
 notifications:
-  irc: "irc.freenode.org#modilabs"
+  irc: "irc.freenode.org#moditest"

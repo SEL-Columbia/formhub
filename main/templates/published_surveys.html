@@ -83,13 +83,34 @@
 	    <i class="icon-map-marker"></i>
 	  </a>
           {% endif %}
+          {% if xform.submission_count > 0 %}
 	  <a class="btn" href="{% url main.views.form_photos content_user.username xform.id_string %}" data-original-title="View Photo" rel="tooltip" >
 	    <i class="icon-camera"></i>
 	  </a>
+          {% endif %}
 
 	  <a class="btn" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}" data-original-title="Enter Web Form" rel="tooltip">
 	    <i class="icon-edit"></i>
-	  </a>
+	  </a>                
+          <!-- DELETE -->
+             {% if xform.submission_count <= 0 %}
+          <div id="delete-{{ xform.id_string }}" class="modal hide fade">
+            <div class="modal-header">
+              <a data-dismiss="modal" class="close">&times;</a>
+              <h3>Delete Confirmation</h3>
+            </div>
+            <div class="modal-body">
+              <p>Are you sure you want to delete the form '{{ xform.title }}'? This form has <strong>{{ xform.submission_count|intcomma }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.</p>
+            </div>
+            <div class="modal-footer">
+              <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn btn-primary">Delete</a>
+              <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">Cancel</a>
+            </div>
+          </div>
+          <a data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" class="btn">
+            <i class="icon-trash"></i>
+          </a>
+            {% endif %}                       
             {% if xform.submission_count > 0 %}
       <a class="btn" href="{% url odk_viewer.views.data_view content_user.username xform.id_string %}" data-original-title="View Submitted Data" rel="tooltip">
         <i class="icon-th-list"></i>
