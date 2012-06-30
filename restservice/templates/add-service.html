@@ -1,0 +1,53 @@
+{% block content %}
+    <div id="addserviceformstatus">{{ status }}</div>
+    <div id="addserviceform-container">
+    <form name="addserviceform" id="addserviceform" action="{% url restservice.views.add_service username id_string %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+    <div class="tab-content bordered-side">
+        <div class="tab-pane active" id="upload">
+            <table class="narrow-labels">
+                {{ form.as_table }}
+            </table>
+        </div>
+    </div>
+    <div class="form-actions bordered-side bordered-bottom nomargintop">
+        <input type="submit" class="btn large btn-primary" value="Add service" />
+    </div>
+    </form>
+    <ol id="restservice_list">
+        {% for sv in list_services %}
+            <li>{{ sv }}</li>
+        {% endfor %}
+    </ol>
+    </div>
+    <script type="text/javascript">
+    $(document).ready(function(){
+       //$("#addserviceform")
+        $(document).on('submit', '#addserviceform', function(evt){
+            evt.preventDefault();
+            $.post(this.action, $(this).serialize(), function(data){
+                try{
+                    var rs = $.parseJSON(data);
+                    console.log(rs);
+                    if (rs.status){
+                        if(rs.status == 'success'){
+                            $("#addserviceform").each(function(){
+                                this.reset();
+                            });
+                            if(rs.restservice){
+                                $("#restservice_list").append("<li>" + rs.restservice + "</li>");
+                            }
+                        }
+                        $('#addserviceformstatus').html(rs.message);
+                    }
+
+                }catch (e){
+                    console.log(e);
+                }
+            });
+            console.log(this.action);
+            return false;
+        });
+    });
+    </script>
+{% endblock %}
