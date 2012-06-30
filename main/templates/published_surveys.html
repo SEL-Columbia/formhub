@@ -92,9 +92,9 @@
 	  <a class="btn" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}" data-original-title="Enter Web Form" rel="tooltip">
 	    <i class="icon-edit"></i>
 	  </a>                
-          <!-- DELETE --> 
-          <div id="delete-{{ xform.id_string }}" class="modal hide fade">
+          <!-- DELETE -->
              {% if xform.submission_count <= 0 %}
+          <div id="delete-{{ xform.id_string }}" class="modal hide fade">
             <div class="modal-header">
               <a data-dismiss="modal" class="close">&times;</a>
               <h3>Delete Confirmation</h3>
@@ -109,8 +109,7 @@
           </div>
           <a data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" class="btn">
             <i class="icon-trash"></i>
-          </a>              
-        </div>
+          </a>
             {% endif %}                       
             {% if xform.submission_count > 0 %}
       <a class="btn" href="{% url odk_viewer.views.data_view content_user.username xform.id_string %}" data-original-title="View Submitted Data" rel="tooltip">
