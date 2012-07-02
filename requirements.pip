@@ -3,6 +3,7 @@ django-guardian==1.0.3
 django-registration==0.7
 django-templated-email==0.4.1
 gdata==2.0.16
+httplib2==0.7.4
 modilabs-python-utils==0.1.5
 PIL==1.1.7
 poster==0.8.1
