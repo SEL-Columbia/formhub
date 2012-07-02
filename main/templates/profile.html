@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load i18n %}
 
 
 {% block content %}
@@ -26,7 +26,7 @@
           {% endif %}
           {% if is_owner %}
             <span class='right'>
-            <a href="{% url main.views.profile_settings content_user.username %}" class="btn btn-small">Edit Your Profile</a>
+            <a href="{% url main.views.profile_settings content_user.username %}" class="btn btn-small">{% trans "Edit Your Profile" %}</a>
             </span>
           {% endif %}
        </h1>
@@ -35,23 +35,23 @@
      <div class="row">
        <div class="span8">
 	 {% if profile.organization %}
-         <p><strong>Organization: </strong>{{ profile.organization}}</p>
+         <p><strong>{% trans "Organization:" %} </strong>{{ profile.organization}}</p>
 	 {% endif %}
 	 {% if location  %}
-         <p><strong>Location: </strong>{{ location }}</p>
+         <p><strong>{% trans "Location:" %} </strong>{{ location }}</p>
 	 {% endif %}
 	 {% if profile.home_page %}
-         <p><strong>Website: </strong><a href="{{ home_page }}">{{ profile.home_page }}</a></p>
+         <p><strong>{% trans "Website:" %}</strong><a href="{{ home_page }}">{{ profile.home_page }}</a></p>
 	 {% endif %}
 	 {% if profile.twitter %}
-         <p><strong>Twitter: </strong><a href="http://www.twitter.com/{{ profile.twitter }}">@{{ profile.twitter }}</a></p>
+         <p><strong>{% trans "Twitter:" %}</strong><a href="http://www.twitter.com/{{ profile.twitter }}">@{{ profile.twitter }}</a></p>
 	 {% endif %}
-         <p><strong>Member since: </strong>{{ content_user.date_joined|date:"F j, Y" }}</p>
+         <p><strong>{% trans "Member since:" %} </strong>{{ content_user.date_joined|date:"F j, Y" }}</p>
        </div>
        <div class="span4">
          <h2>
             <span class='right'>
-              {{ num_forms }} <small>Shared form{{ num_forms|pluralize }}</small>
+              {{ num_forms }} <small>{% trans "Shared form" %}{{ num_forms|pluralize }}</small>
             </span>
          </h2>
        </div>  
@@ -60,16 +60,16 @@
 
      <div class="row">
        <div class="span12">
-	 <h3>Shared Forms & Public Data <small>({{ num_forms }})</small></h3>
+	 <h3>{% trans "Shared Forms & Public Data" %} <small>({{ num_forms }})</small></h3>
 	 {% if forms %}
 	 <table class="table table-bordered table-striped">
 	   <thead>
 	    <tr>
-              <th>Name</th>
-              <th>Create Date</th>
-              <th>XLSForm</th>
-              <th>Public Data</th>
-              <th>View</th>
+              <th>{% trans "Name" %}</th>
+              <th>{% trans "Create Date" %}</th>
+              <th>{% trans "XLSForm" %}</th>
+              <th>{% trans "Public Data" %}</th>
+              <th>{% trans "View" %}</th>
 	    </tr>
 	  </thead>
 	  <tbody>
@@ -84,44 +84,44 @@
                 <td>
                     {% if form.shared %}
                     <a href="{% url download_xlsform content_user.username form.id_string %}">
-                        <button class="btn btn-small btn-success"><i class="icon-th icon-white"></i> XLS</button>
+                        <button class="btn btn-small btn-success"><i class="icon-th icon-white"></i> {% trans "XLS" %}</button>
                     </a>
                     {% else %}
-                        <span class="label label-warning">PRIVATE</span>
+                        <span class="label label-warning">{% trans "PRIVATE" %}</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if form.shared_data %}
                         <a href="{% url odk_viewer.views.csv_export content_user.username form.id_string %}">
-                            <button class="btn btn-small">csv</button>
+                            <button class="btn btn-small">{% trans "csv" %}</button>
                         </a>
                         <a href="{% url odk_viewer.views.xls_export content_user.username form.id_string %}">
-                            <button class="btn btn-small">xls</button>
+                            <button class="btn btn-small">{% trans "xls" %}</button>
                         </a>
                         <a href="{% url odk_viewer.views.kml_export content_user.username form.id_string %}">
-                            <button class="btn btn-small">kml</button>
+                            <button class="btn btn-small">{% trans "kml" %}</button>
                         </a>
                     {% else %}
-                        <span class="label label-warning">PRIVATE</span>
+                        <span class="label label-warning">{% trans "PRIVATE" %}</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if form.shared_data %}
 		    {% if form.data_dictionary.has_surveys_with_geopoints %}
                     <a href="{% url odk_viewer.views.map_view content_user.username form.id_string %}">
-                        <button class="btn btn-small btn-info"><i class="icon-map-marker icon-white"></i> Map</button>
+                        <button class="btn btn-small btn-info"><i class="icon-map-marker icon-white"></i> {% trans "Map" %}</button>
                     </a>
 		    {% endif %}
                     {% else %}
-                        <span class="label label-warning">PRIVATE</span>
-                    {% endif %}
+                        <span class="label label-warning">{% trans "PRIVATE" %}</span>
+                    {% endif %} 
                 </td>
             </tr>
         {% endfor %}
 	  </tbody>
 	</table>
     {% else %}
-        <h4>None public</h4>
+        <h4>{% trans "None public" %}</h4>
     {% endif %}
     </div> 
   </section>

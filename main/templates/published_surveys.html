@@ -1,8 +1,9 @@
 {% load humanize %}
 {% if user.xforms.count %}
+{% load i18n %}
 <section id="published-forms">
   <div class="page-header">
-    <h1>Published Forms <small>Export, map, and view submissions.</small></h1>
+    <h1>{% trans "Published Forms" %} <small>{% trans "Export, map, and view submissions." </small></h1>
   </div>
 
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>

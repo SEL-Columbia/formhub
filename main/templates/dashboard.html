@@ -2,16 +2,18 @@
 
 {% block content %}
 
+{% load i18n %}
+
 <section id="profile">
   <div class="row">
     <div class="span5">
-        <h1>Publish a Form <small>Upload XLSForm</small></h1>
-        For a quick introduction on how to publish a form check out
-        the <a href="{% url main.views.tutorial %}">tutorial</a>, and try publishing
+        <h1>{% trans "Publish a Form" %} <small>{% trans "Upload XLSForm" %}</small></h1>
+        {% trans "For a quick introduction on how to publish a form check out
+       the" %}<a href="{% url main.views.tutorial %}">tutorial</a>{% trans ", and try publishing" %}
         <a href="http://formhub.org/formhub_u/forms/tutorial/form.xls">tutorial.xls</a>.
         <br/>
         <br/>
-        Learn about the XLSForm syntax <a href="/syntax/">here</a>, email <a href="https://groups.google.com/forum/?fromgroups#!forum/formhub-users">formhub users mailing list</a> if you have questions, and checkout examples at: <br/><a href="https://formhub.org/formhub_u/">Formhub University</a>.
+        {% trans "Learn about the XLSForm syntax" %} <a href="/syntax/">{% trans "here" %}</a>{% trans ", email" %} <a href="https://groups.google.com/forum/?fromgroups#!forum/formhub-users">{% trans "formhub users mailing list" %trans}</a> {%trans "if you have questions, and checkout examples at:" %} <br/><a href="https://formhub.org/formhub_u/">Formhub {% trans "University" %}</a>.
         <br/>
         <br/>
         <form action="." method="post" enctype="multipart/form-data">
@@ -64,7 +66,7 @@
                 <span class="name">|&nbsp;{{ profile.name }}</span>
                 {% endif %}
             </h3>
-            <span><a href="/{{content_user.username}}/profile">View Profile Page</a></span>
+            <span><a href="/{{content_user.username}}/profile">{% trans "View Profile Page" %}</a></span>
         </div>
         </div>
         <div class="row">
@@ -80,13 +82,13 @@
         </div>
         <div class="row">
         <div class="span1">
-            <small>FORMS</small>
+            <small>{% trans "FORMS" %}</small>
         </div>
         <div class="span2">
-            <small>SHARED FORMS</small>
+            <small>{% trans "SHARED FORMS" %}</small>
         </div>
         <div class="span2">
-            <small>SUBMISSIONS</small>
+            <small>{% trans "SUBMISSIONS" %}</small>
         </div>
         </div>
         </div>
