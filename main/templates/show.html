@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load humanize %}
 {% block content %}
+{% load i18n %}
+
   {% if user.is_authenticated %}
     <script type="text/javascript" src="/static/js/form_actions.js"></script>
   {% endif %}
@@ -20,8 +22,8 @@
                 {% csrf_token %}
                 <input type="text" id="title"class="input-xxlarge present header" disabled="" rows="3" value="{{ xform.title }}" />
                 {% if can_edit %}
-                    <a id="title_edit" data-id="title" href="" class="btn small bind-edit">edit</a>
-                    <a id="title_save" data-id="title" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+                    <a id="title_edit" data-id="title" href="" class="btn small bind-edit">{% trans "edit" %}</a>
+                    <a id="title_save" data-id="title" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">{% trans "save" %}</a>
                 {% endif %}
             </form>
             </div>
@@ -30,24 +32,24 @@
     <div class="row">
       <div class="span8">
         {% if can_edit %}
-            <h4>Form ID: {{ xform.id_string }}</h4>
+            <h4>{% trans "Form ID:" %} {{ xform.id_string }}</h4>
         {% endif %}
-        <h3>Description</h3>
+        <h3>{% trans "Description" %}</h3>
         <div class="clearfix">
             <div class="input">
             <form>
                 {% csrf_token %}
-                <textarea id="description" class="input-xxlarge present" disabled="" rows="3" name="textarea">{% if xform.description %}{{ xform.description }}{% else %}None{% endif %}</textarea>
+                <textarea id="description" class="input-xxlarge present" disabled="" rows="3" name="textarea">{% if xform.description %}{{ xform.description }}{% else %}{% trans "None" %}{% endif %}</textarea>
                 {% if can_edit %}
-                    <a id="description_edit" data-id="description" href="" class="btn small bind-edit">edit</a>
-                    <a id="description_save" data-id="description" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+                    <a id="description_edit" data-id="description" href="" class="btn small bind-edit">{% trans "edit" %}</a>
+                    <a id="description_save" data-id="description" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">{% trans "save" %}</a>
                 {% endif %}
             </form>
             </div>
         </div>
       <div class="bordered">
         <h3>
-            XLSForm
+            {% trans "XLSForm" %}
             <span id="form-shared-public" class="label label-info">PUBLIC</span>
             <span id="form-shared-private" class="label label-warning">PRIVATE</span>
         </h3>
