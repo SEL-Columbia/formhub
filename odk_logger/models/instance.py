@@ -40,10 +40,7 @@ class Instance(models.Model):
         app_label = 'odk_logger'
 
     def _set_xform(self, doc):
-        try:
-            self.xform = XForm.objects.get(id_string=doc[XFORM_ID_STRING], user=self.user)
-        except XForm.DoesNotExist:
-            self.xform = None
+        self.xform = XForm.objects.get(id_string=doc[XFORM_ID_STRING], user=self.user)
 
     def get_root_node_name(self):
         self._set_parser()

@@ -45,48 +45,32 @@ class TestWaterSubmission(TestCase):
         self.user = User.objects.create(username="bob")
         absolute_path = get_absolute_path("forms")
         open_forms = open_all_files(absolute_path)
+        json = '{"default_language": "default", "id_string": "Water_2011_03_17", "children": [], ' \
+               '"name": "Water_2011_03_17", "title": "Water_2011_03_17", "type": "survey"}'
         for path, open_file in open_forms.items():
-            XForm.objects.create(xml=open_file.read())
+            xform = XForm.objects.create(xml=open_file.read(), user=self.user, json=json)
             open_file.close()
 
-    def test_xform_creation(self):
+        self._create_water_translated_form()
+
+    def _create_water_translated_form(self):
         f = open(os.path.join(
-                os.path.dirname(os.path.abspath(__file__)),
-                "Water_Translated_2011_03_10.xml"
-                ))
+            os.path.dirname(os.path.abspath(__file__)),
+            "Water_Translated_2011_03_10.xml"
+        ))
         xml = f.read()
         f.close()
-        XForm.objects.create(xml=xml)
+        XForm.objects.create(xml=xml, user=self.user)
 
     def test_form_submission(self):
+        # no more submission to non-existent form, we need to ensure the Water_Translated_2011_03_10 xform is valid
         f = open(os.path.join(
                 os.path.dirname(os.path.abspath(__file__)),
                 "Water_Translated_2011_03_10_2011-03-10_14-38-28.xml"
                 ))
         xml = f.read()
         f.close()
-        Instance.objects.create(xml=xml)
-
-    def test_instance_creation(self):
-        xml_file = open(os.path.join(
-                os.path.dirname(os.path.abspath(__file__)),
-                "Health_2011_03_13.xml_2011-03-15_20-30-28",
-                "Health_2011_03_13.xml_2011-03-15_20-30-28.xml"
-                ))
-        # note the "rb" mode is to open a binary file
-        image_file = open(
-            os.path.join(
-                os.path.dirname(os.path.abspath(__file__)),
-                "Health_2011_03_13.xml_2011-03-15_20-30-28",
-                "1300221157303.jpg"),
-            "rb")
-
-        # ODK Collect uses the name of the jpg file as the key in the
-        # post.
-        postdata = {"xml_submission_file": xml_file,
-                    "1300221157303.jpg": image_file}
-        response = self.client.post('/bob/submission', postdata)
-        self.failUnlessEqual(response.status_code, 201)
+        Instance.objects.create(xml=xml, user=self.user)
 
     def test_data_submission(self):
         subdirectories = ["Water_2011_03_17_2011-03-17_16-29-59"]
@@ -95,3 +79,12 @@ class TestWaterSubmission(TestCase):
             postdata = create_post_data(path)
             response = self.client.post('/bob/submission', postdata)
             self.failUnlessEqual(response.status_code, 201)
+
+    def test_submission_for_missing_form(self):
+        xml_file = open(os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "Health_2011_03_13_invalid_id_string.xml"
+        ))
+        postdata = {"xml_submission_file": xml_file}
+        response = self.client.post('/bob/submission', postdata)
+        self.failUnlessEqual(response.status_code, 404)
