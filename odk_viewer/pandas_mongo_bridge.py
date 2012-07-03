@@ -56,10 +56,44 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
     def exportTo(self, file_path):
         self.xls_writer = ExcelWriter(file_path)
 
+        # get total number of records
+
+        # query in batches and for each batch create an XLSDataFrameWriter and write to existing xls_writer object
+
         # get records from mongo - do this on export so we can batch if we choose to, as we should
-        cursor = self._queryMongo()
+        cursor = self._queryMongo() #TODO: query using ParsedInstance.query_mongo
+
+        records = self._formatForDataframe(cursor)
+
+        #writer = XLSDataFrameWriter(records, columns)
+
+        #writer.writeToExcel(self.xls_writer, )
+
+    def _formatForDataframe(self, cursor):
+        """
+        Do any housekeeping on mongo data to get it ready for a Pandas Dataframe
+
+        Assign each repeat as an additional dict for its particular section
+        1. Remove indexes from repeat column names i.e. parent[2]/child to parent/child
+        2. Split a select-multiple into its components
+        3. Associate any repeats with its parent by including parent_index and parent_table fields
+
+        returns a dictionary with keys being the names of the sheet and values a list of dicts to feed into a DataFrame
+        """
+        data = {}
+        for section_name in self.sections:
+            pass
+
+        for record in cursor:
+            for k, v in record.iteritems():
+                print "k: %s, v: %s" % (k, v)
+
+        return data
 
     def _generateSections(self):
+        """
+        Split survey questions into separate sections for each xls sheet and columns for each section
+        """
         # clear list
         self.sections = {}
 
@@ -102,5 +136,5 @@ class XLSDataFrameWriter:
     def __init__(self, records, columns):
         self.dataframe = DataFrame(records, columns=columns)
 
-    def write_to_excel(self, excel_writer, sheet_name, header=False, index=False):
+    def writeToExcel(self, excel_writer, sheet_name, header=False, index=False):
         self.dataframe.to_excel(excel_writer, sheet_name, header=header, index=index)
