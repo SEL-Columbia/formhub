@@ -1,4 +1,4 @@
-import settings
+import settings, re
 from pandas.core.frame import DataFrame
 from pandas.io.parsers import ExcelWriter
 from pyxform.survey import Survey
@@ -12,6 +12,20 @@ xform_instances = settings.MONGO_DB.instances
 
 # the bind type of select multiples that we use to compare
 MULTIPLE_SELECT_BIND_TYPE = u"select"
+
+def get_groupname_from_xpath(xpath):
+    # check if xpath has an index
+    match = re.match(r"(.+?)\[\d+\]/", xpath)
+    if match:
+        return match.groups()[0]
+    else:
+        #TODO: optimize re to capture entire group
+        # need to strip out the question name and leave just the group name
+        matches = re.findall(r"(.+?)/", xpath)
+        if len(matches) > 0:
+            return "/".join(matches)
+        else:
+            return None
 
 def survey_name_and_xpath_from_dd(dd):
     for e in dd.get_survey_elements():
@@ -86,7 +100,15 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
 
         for record in cursor:
             for k, v in record.iteritems():
-                print "k: %s, v: %s" % (k, v)
+                # need to figure if data is a repeat, perhaps by maintaining a list of repeat columns
+                group_name = get_groupname_from_xpath(k)
+
+                # check if group_name matches any of our section names so we know which section this column belongs to
+
+
+                # get xpath from key by removing any indexes
+
+                #print "k: %s, v: %s, group: %s" % (k, v, get_groupname_from_xpath(k))
 
         return data
 
