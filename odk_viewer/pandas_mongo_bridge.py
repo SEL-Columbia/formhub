@@ -13,6 +13,9 @@ xform_instances = settings.MONGO_DB.instances
 # the bind type of select multiples that we use to compare
 MULTIPLE_SELECT_BIND_TYPE = u"select"
 
+def remove_indexes_from_xpath(xpath):
+    return re.sub(r"\[\d+\]", "", xpath)
+
 def get_groupname_from_xpath(xpath):
     # check if xpath has an index
     match = re.match(r"(.+?)\[\d+\]/", xpath)
@@ -99,16 +102,22 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
             pass
 
         for record in cursor:
-            for k, v in record.iteritems():
-                # need to figure if data is a repeat, perhaps by maintaining a list of repeat columns
-                group_name = get_groupname_from_xpath(k)
+            for key, val in record.iteritems():
+                current_section_name = None
 
-                # check if group_name matches any of our section names so we know which section this column belongs to
+                # remove indexes so we can match existing xpaths/columns
+                clean_xpath = remove_indexes_from_xpath(key)
 
+                # check in the columns for each of our sections to find a match
+                for section_name, xpath_and_columns in self.sections.iteritems():
+                    columns = xpath_and_columns["columns"]
+                    if clean_xpath in columns:
+                        current_section_name = section_name
+                        break
 
-                # get xpath from key by removing any indexes
-
-                #print "k: %s, v: %s, group: %s" % (k, v, get_groupname_from_xpath(k))
+                # we only consider items assigned to a section name for export,
+                if current_section_name:
+                    pass
 
         return data
 
@@ -123,7 +132,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         self.survey_name, survey_xpath = survey_name_and_xpath_from_dd(dd) # also the default sheet name is excel
 
         # setup the default section
-        self.sections[self.survey_name] = {"xpath": survey_xpath, "columns": []}
+        self.sections[self.survey_name] = {"xpath": survey_xpath, "columns": [], "is_repeat": False}
 
         #TODO: check for 'MultipleChoiceQuestion's and collect its 'pyxform.question.Option's as columns, but to which sheet
         self.multi_selects = {}
@@ -138,7 +147,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                 # if a repeat we use its name
                 if isinstance(e, RepeatingSection):
                     sheet_name = e.name
-                    self.sections[sheet_name] = {"xpath": e.get_abbreviated_xpath(), "columns": []}
+                    self.sections[sheet_name] = {"xpath": e.get_abbreviated_xpath(), "columns": [],"is_repeat": True}
                     #self.sheet_names_list.append(sheet_name)
 
                 # for each child add to survey_sections
