@@ -61,6 +61,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
     This builder can choose to query the data in batches and write to a single ExcelWriter object using multiple
     instances of DataFrameXLSWriter
     """
+    EXTRA_COLUMNS = ["_index", "_parent_table_name", "_parent_index"]
 
     def __init__(self, username, id_string):
         AbstractDataFrameBuilder.__init__(self, username, id_string)
@@ -81,10 +82,15 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         cursor = self._queryMongo() #TODO: query using ParsedInstance.query_mongo
 
         data = self._formatForDataframe(cursor)
+        print "data: %s" % data
 
-        #writer = XLSDataFrameWriter(records, columns)
-
-        #writer.writeToExcel(self.xls_writer, )
+        # write all cursor data to different sheets
+        for section_name, records in data.iteritems():
+            section = self.sections[section_name]
+            columns = section["columns"]
+            writer = XLSDataFrameWriter(records, columns)
+            writer.writeToExcel(self.xls_writer, section_name, header=True, index=False)
+            self.xls_writer.save()
 
     def _formatForDataframe(self, cursor):
         """
@@ -99,7 +105,9 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         """
         data = {}
         for section_name in self.sections:
-            pass
+            #HACK append extra columns here
+            self.sections[section_name]["columns"] += (self.EXTRA_COLUMNS)
+            data[section_name] = [{}]
 
         for record in cursor:
             for key, val in record.iteritems():
@@ -117,7 +125,10 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
 
                 # we only consider items assigned to a section name for export,
                 if current_section_name:
-                    pass
+                    section = self.sections[current_section_name]
+                    is_repeat = section["is_repeat"]
+
+                    data[current_section_name][len(data[current_section_name])-1].update({key: val})
 
         return data
 
