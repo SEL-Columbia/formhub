@@ -27,6 +27,7 @@ from utils.logger_tools import response_with_mimetype_and_name, publish_form
 from utils.decorators import is_owner
 from utils.user_auth import check_and_set_user, set_profile_data,\
          has_permission, get_xform_and_perms, check_and_set_user_and_form
+from django.utils.translations import ugetext_lazy as _
 
 def home(request):
     context = RequestContext(request)
@@ -77,10 +78,10 @@ def clone_xlsform(request, username):
                 ).survey
             return {
                 'type': 'alert-success',
-                'text': 'Successfully cloned %s into your '\
+                'text': _(u'Successfully cloned %s into your '\
                         '<a href="%s">profile</a>.' % \
                         (survey.id_string, reverse(profile,
-                            kwargs={'username': to_username}))
+                            kwargs={'username': to_username})))
                 }
     context.message = publish_form(set_form)
     if request.is_ajax():
@@ -105,7 +106,7 @@ def profile(request, username):
             survey = form.publish(request.user).survey
             return {
                 'type': 'alert-success',
-                'text': 'Successfully published %s.' % survey.id_string,
+                'text': _(u'Successfully published %s.' % survey.id_string,)
                 }
         context.message = publish_form(set_form)
 
