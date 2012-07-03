@@ -49,7 +49,7 @@ def resize(filename):
     conf = settings.THUMB_CONF
 
     fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
-    loc_path = fs.path(filename)
+    loc_path = fs.path('dummy.jpg')
 
     [_save_thumbnails(image, loc_path, conf[key]['size'], conf[key]['suffix'],
                                     filename=filename) for key in conf.keys()]
