@@ -77,7 +77,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         # get records from mongo - do this on export so we can batch if we choose to, as we should
         cursor = self._queryMongo() #TODO: query using ParsedInstance.query_mongo
 
-        records = self._formatForDataframe(cursor)
+        data = self._formatForDataframe(cursor)
 
         #writer = XLSDataFrameWriter(records, columns)
 
