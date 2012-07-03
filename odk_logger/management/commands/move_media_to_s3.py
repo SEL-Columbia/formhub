@@ -8,6 +8,7 @@ from odk_logger.models.attachment import upload_to as attachment_upload_to
 from odk_logger.models.xform import XForm
 from odk_logger.models.xform import upload_to as xform_upload_to
 import sys
+from django.utils.translations import ugetext_lazy as _
 
 
 class Command(BaseCommand):
@@ -18,12 +19,12 @@ class Command(BaseCommand):
             fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
             s3 = get_storage_class('storages.backends.s3boto.S3BotoStorage')()
         except:
-            print "Missing necessary libraries. Try running: pip install -r requirements-s3.pip"
+            print _(u"Missing necessary libraries. Try running: pip install -r requirements-s3.pip")
             sys.exit(1)
 
         default_storage = get_storage_class()()
         if default_storage.__class__ != s3.__class__:
-            print "You must first set your default storage to s3 in your local_settings.py file."
+            print _(u"You must first set your default storage to s3 in your local_settings.py file.")
             sys.exit(1)
 
         classes_to_move = [

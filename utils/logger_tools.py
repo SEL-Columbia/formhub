@@ -24,6 +24,7 @@ from odk_logger.models import XForm
 from odk_logger.models.xform import XLSFormError
 from odk_logger.xform_instance_parser import InstanceParseError
 from utils.viewer_tools import get_path
+from django.utils.translations import ugetext_lazy as _
 
 
 @transaction.commit_on_success
@@ -139,13 +140,13 @@ def publish_form(callback):
     except IntegrityError as e:
         return {
             'type': 'alert-error',
-            'text': 'Form with this id already exists.',
+            'text': _(u'Form with this id already exists.'),
         }
     except ValidationError as e:
         # on clone invalid URL
         return {
             'type': 'alert-error',
-            'text': 'Invalid URL format.',
+            'text': _(u'Invalid URL format.'),
         }
     except AttributeError as e:
         # form.publish returned None, not sure why...

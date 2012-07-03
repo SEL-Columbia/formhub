@@ -8,6 +8,7 @@ from odk_logger.models.attachment import Attachment
 from utils.image_tools import get_dimensions, resize, resize_local_env
 from utils.model_tools import queryset_iterator
 from utils.viewer_tools import get_path
+from django.utils.translations import ugext_lazy as _
 
 class Command(BaseCommand):
     help = "Creates thumbnails for all form images and stores them"
@@ -27,8 +28,8 @@ class Command(BaseCommand):
                         resize_local_env(filename)
                     if default_storage.exists(get_path(filename,
                                     settings.THUMB_CONF['smaller']['suffix'])):
-                        print 'Thumbnails created for %s' % filename
+                        print _(u'Thumbnails created for %s') % filename
                     else:
-                        print 'Something didn\'t go right for %s' % filename
+                        print _(u'Something didn\'t go right for %s') % filename
                 except (IOError, OSError, ZeroDivisionError), e:
-                    print 'Error on %s: %s' % (filename, e)
+                    print _(u'Error on %s: %s') % (filename, e)
