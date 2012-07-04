@@ -1,4 +1,4 @@
-import settings, re
+import settings, re, copy
 from pandas.core.frame import DataFrame
 from pandas.io.parsers import ExcelWriter
 from pyxform.survey import Survey
@@ -17,18 +17,15 @@ def remove_indexes_from_xpath(xpath):
     return re.sub(r"\[\d+\]", "", xpath)
 
 def get_groupname_from_xpath(xpath):
-    # check if xpath has an index
-    match = re.match(r"(.+?)\[\d+\]/", xpath)
+    # remove indexes form xpath
+    clean_xpath = remove_indexes_from_xpath(xpath)
+
+    # match upto last /something
+    match = re.match(r"(.+)?/(\w.+)?", clean_xpath)
     if match:
         return match.groups()[0]
     else:
-        #TODO: optimize re to capture entire group
-        # need to strip out the question name and leave just the group name
-        matches = re.findall(r"(.+?)/", xpath)
-        if len(matches) > 0:
-            return "/".join(matches)
-        else:
-            return None
+        return None
 
 def survey_name_and_xpath_from_dd(dd):
     for e in dd.get_survey_elements():
@@ -37,6 +34,21 @@ def survey_name_and_xpath_from_dd(dd):
 
     # should never get here
     raise Exception
+
+def pos_and_parent_pos_from_repeat(repeat):
+    """
+    From an indexed repeat i.e. parent[2]/child/item get the position of its parent and its own position within a record
+    We don't use index since index its position in the entire set of records
+    """
+    parent_pos = 1
+    pos = 1
+    # check for a trailing ]
+    end = repeat.rfind("]")
+    # find the matching [
+    start = repeat.rfind("[")
+    if end > -1 and start > -1:
+        pass
+    return pos, parent_pos
 
 class AbstractDataFrameBuilder:
     """
@@ -74,8 +86,6 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
     def exportTo(self, file_path):
         self.xls_writer = ExcelWriter(file_path)
 
-        # get total number of records
-
         # query in batches and for each batch create an XLSDataFrameWriter and write to existing xls_writer object
 
         # get records from mongo - do this on export so we can batch if we choose to, as we should
@@ -84,7 +94,10 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         data = self._formatForDataframe(cursor)
         print "data: %s" % data
 
-        # write all cursor data to different sheets
+        #TODO: batching will not work as expected since indexes are calculated based the current batch, a new batch ..
+        #TODO: .. will re-calculate indexes and if they are going into the same excel file, we'll have duplicates
+        #TODO: .. possible solution - keep track of the lats index from each section
+        # write all cursor's data to different sheets
         for section_name, records in data.iteritems():
             section = self.sections[section_name]
             columns = section["columns"]
@@ -104,12 +117,21 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         returns a dictionary with keys being the names of the sheet and values a list of dicts to feed into a DataFrame
         """
         data = {}
+        records_tpl = {} # blank template for initialising records
         for section_name in self.sections:
             #HACK append extra columns here
-            self.sections[section_name]["columns"] += (self.EXTRA_COLUMNS)
+            self.sections[section_name]["columns"] += self.EXTRA_COLUMNS
             data[section_name] = [{}]
 
+        records_tpl = copy.copy(data)
+
         for record in cursor:
+            # from record, we'll end up with multiple records, one for each section we have
+            records = copy.copy(records_tpl)
+
+            # setup _index for the default section - NOT zero based
+            index = len(data[self.survey_name])
+            data[self.survey_name].update({"_index": len(data[self.survey_name])})
             for key, val in record.iteritems():
                 current_section_name = None
 
@@ -128,7 +150,12 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                     section = self.sections[current_section_name]
                     is_repeat = section["is_repeat"]
 
-                    data[current_section_name][len(data[current_section_name])-1].update({key: val})
+                    #data[current_section_name][len(data[current_section_name])-1].update({key: val})
+                    #index = len(records[current_section_name])-1
+
+            #TODO: figure how to append data from within previous loop to eliminate additional loop
+            #for section_name, r in records.iteritems():
+            #    data[section_name].append(r)
 
         return data
 
