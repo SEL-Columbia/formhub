@@ -4,9 +4,11 @@ from django.db.models.signals import post_save
 
 from .xform import XForm
 from .survey_type import SurveyType
-from odk_logger.xform_instance_parser import XFormInstanceParser, \
-     XFORM_ID_STRING
+from odk_logger.xform_instance_parser import XFormInstanceParser,\
+         XFORM_ID_STRING
+from restservice.utils import call_service
 from utils.model_tools import set_uuid
+from utils.stathat_api import stathat_count
 
 
 class FormInactiveError(Exception):
@@ -40,10 +42,8 @@ class Instance(models.Model):
         app_label = 'odk_logger'
 
     def _set_xform(self, doc):
-        try:
-            self.xform = XForm.objects.get(id_string=doc[XFORM_ID_STRING], user=self.user)
-        except XForm.DoesNotExist:
-            self.xform = None
+        self.xform = XForm.objects.get(id_string=doc[XFORM_ID_STRING],
+                user=self.user)
 
     def get_root_node_name(self):
         self._set_parser()
@@ -87,14 +87,16 @@ class Instance(models.Model):
         else:
             return self._parser.to_dict()
 
-from utils.stathat_api import stathat_count
+
 def stathat_form_submission(sender, instance, created, **kwargs):
     if created:
         stathat_count('formhub-submissions')
-post_save.connect(stathat_form_submission, sender=Instance)
 
-from restservice.utils import call_service
+
 def rest_service_form_submission(sender, instance, created, **kwargs):
     if created:
         call_service(instance)
+
+
+post_save.connect(stathat_form_submission, sender=Instance)
 post_save.connect(rest_service_form_submission, sender=Instance)
