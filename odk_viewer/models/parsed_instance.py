@@ -12,7 +12,7 @@ import json
 
 from utils.model_tools import queryset_iterator
 from odk_logger.models import Instance
-from common_tags import START_TIME, START, END_TIME, END, ID, UUID, ATTACHMENTS
+from common_tags import START_TIME, START, END_TIME, END, ID, UUID, ATTACHMENTS, GEOLOCATION
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
@@ -102,10 +102,20 @@ class ParsedInstance(models.Model):
                 fields_to_select).skip(start).limit(limit)
 
     def to_dict_for_mongo(self):
-        d = dict_for_mongo(self.to_dict())
-        d[self.USERFORM_ID] = u'%s_%s' % (self.instance.user.username,
-                self.instance.xform.id_string)
-        return d
+        d = self.to_dict()
+        d.update(
+            {
+                UUID: self.instance.uuid,
+                ID: self.instance.id,
+                self.USERFORM_ID: u'%s_%s' % (self.instance.user.username,
+                                         self.instance.xform.id_string),
+                ATTACHMENTS: [a.media_file.name for a in\
+                              self.instance.attachments.all()],
+                self.STATUS: self.instance.status,
+                GEOLOCATION: [self.lat, self.lng]
+            }
+        )
+        return dict_for_mongo(d)
 
     def update_mongo(self):
         d = self.to_dict_for_mongo()
@@ -114,15 +124,6 @@ class ParsedInstance(models.Model):
     def to_dict(self):
         if not hasattr(self, "_dict_cache"):
             self._dict_cache = self.instance.get_dict()
-            self._dict_cache.update(
-                {
-                    UUID: self.instance.uuid,
-                    ID: self.instance.id,
-                    ATTACHMENTS: [a.media_file.name for a in\
-                            self.instance.attachments.all()],
-                    self.STATUS: self.instance.status,
-                    }
-                )
         return self._dict_cache
 
     @classmethod
