@@ -78,10 +78,11 @@ def clone_xlsform(request, username):
                 ).survey
             return {
                 'type': 'alert-success',
-                'text': _(u'Successfully cloned %s into your '\
-                        '<a href="%s">profile</a>.' % \
-                        (survey.id_string, reverse(profile,
-                            kwargs={'username': to_username})))
+                'text': _(u'Successfully cloned %(id_string)s into your '\
+                        '<a href="%(profile_url)s">profile</a>.' % \
+                        {'id_string': survey.id_string,
+                         'profile_url': reverse(profile,
+                            kwargs={'username': to_username})})
                 }
     context.message = publish_form(set_form)
     if request.is_ajax():
