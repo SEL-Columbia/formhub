@@ -12,7 +12,7 @@ class InstanceEmptyError(InstanceParseError):
     pass
 
 
-def _xml_node_to_dict(node):
+def _xml_node_to_dict(node, repeats=[]):
     assert isinstance(node, minidom.Node)
     if len(node.childNodes) == 0:
         # there's no data for this leaf node
@@ -25,20 +25,26 @@ def _xml_node_to_dict(node):
         # this is an internal node
         value = {}
         for child in node.childNodes:
-            d = _xml_node_to_dict(child)
+            d = _xml_node_to_dict(child, repeats)
             if d is None:
                 continue
             child_name = child.nodeName
             assert d.keys() == [child_name]
-            if child_name not in value:
-                # copy the value into the dict
-                value[child_name] = d[child_name]
-            elif type(value[child_name]) == list:
-                # add to the existing list
-                value[child_name].append(d[child_name])
+            node_type = dict
+            # check if name is in list of repeats and make it a list if so
+            if child_name in repeats:
+                node_type = list
+
+            if node_type == dict:
+                if child_name not in value:
+                    value[child_name] = d[child_name]
+                else:
+                    raise Exception((u"Multiple nodes with the same name '%s' while not a repeat" % child_name))
             else:
-                # create a new list
-                value[child_name] = [value[child_name], d[child_name]]
+                if child_name not in value:
+                    value[child_name] = [d[child_name]]
+                else:
+                    value[child_name].append(d[child_name])
         if value == {}:
             return None
         else:
@@ -98,7 +104,8 @@ def _get_all_attributes(node):
 
 class XFormInstanceParser(object):
 
-    def __init__(self, xml_str):
+    def __init__(self, xml_str, data_dictionary):
+        self.dd = data_dictionary
         self.parse(xml_str)
 
     def parse(self, xml_str):
@@ -106,7 +113,8 @@ class XFormInstanceParser(object):
         clean_xml_str = re.sub(ur">\s+<", u"><", clean_xml_str)
         self._xml_obj = minidom.parseString(clean_xml_str)
         self._root_node = self._xml_obj.documentElement
-        self._dict = _xml_node_to_dict(self._root_node)
+        repeats = [e.name for e in self.dd.get_survey_elements_of_type(u"repeat")]
+        self._dict = _xml_node_to_dict(self._root_node, repeats)
         self._flat_dict = {}
         if self._dict is None:
             raise InstanceEmptyError
@@ -145,14 +153,14 @@ class XFormInstanceParser(object):
         return result
 
 
-def xform_instance_to_dict(xml_str):
-    parser = XFormInstanceParser(xml_str)
+def xform_instance_to_dict(xml_str, data_dictionary):
+    parser = XFormInstanceParser(xml_str, data_dictionary)
     return parser.to_dict()
 
-def xform_instance_to_flat_dict(xml_str):
-    parser = XFormInstanceParser(xml_str)
+def xform_instance_to_flat_dict(xml_str, data_dictionary):
+    parser = XFormInstanceParser(xml_str, data_dictionary)
     return parser.to_flat_dict()
 
-def parse_xform_instance(xml_str):
-    parser = XFormInstanceParser(xml_str)
+def parse_xform_instance(xml_str,data_dictionary):
+    parser = XFormInstanceParser(xml_str, data_dictionary)
     return parser.get_flat_dict_with_attributes()
