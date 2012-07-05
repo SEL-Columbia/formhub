@@ -24,7 +24,7 @@ from odk_logger.models import XForm
 from odk_logger.models.xform import XLSFormError
 from odk_logger.xform_instance_parser import InstanceParseError
 from utils.viewer_tools import get_path
-from django.utils.translations import ugetext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 
 @transaction.commit_on_success

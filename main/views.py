@@ -27,7 +27,7 @@ from utils.logger_tools import response_with_mimetype_and_name, publish_form
 from utils.decorators import is_owner
 from utils.user_auth import check_and_set_user, set_profile_data,\
          has_permission, get_xform_and_perms, check_and_set_user_and_form
-from django.utils.translations import ugetext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 def home(request):
     context = RequestContext(request)
