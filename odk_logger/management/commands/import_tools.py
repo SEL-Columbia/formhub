@@ -10,7 +10,7 @@ from odk_logger.models import Instance, XForm
 
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 
 IMAGES_DIR = os.path.join(settings.MEDIA_ROOT, "attachments")

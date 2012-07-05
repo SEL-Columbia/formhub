@@ -8,7 +8,7 @@ from odk_logger.models.attachment import upload_to as attachment_upload_to
 from odk_logger.models.xform import XForm
 from odk_logger.models.xform import upload_to as xform_upload_to
 import sys
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 
 class Command(BaseCommand):
