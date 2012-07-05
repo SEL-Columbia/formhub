@@ -263,3 +263,6 @@ class DataDictionary(XForm):
             self.has_start_time = True
         else:
             self.has_start_time = False
+
+    def get_survey_elements_of_type(self, element_type):
+        return [e for e in self.get_survey_elements() if e.type==element_type]
