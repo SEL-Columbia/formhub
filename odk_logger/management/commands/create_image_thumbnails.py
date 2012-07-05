@@ -8,7 +8,7 @@ from odk_logger.models.attachment import Attachment
 from utils.image_tools import get_dimensions, resize, resize_local_env
 from utils.model_tools import queryset_iterator
 from utils.viewer_tools import get_path
-from django.utils.translation import ugext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 class Command(BaseCommand):
     help = "Creates thumbnails for all form images and stores them"
