@@ -1,3 +1,5 @@
+{% load i18n %}
+
 {% extends 'base.html' %}
 
 {% block content %}
@@ -28,7 +30,7 @@
 
   <div class="page-header">
 <br>
-<h1>Submissions ({{stats.submission_count.total_submission_count}})</h1>
+<h1>{% trans "Submissions" %} ({{stats.submission_count.total_submission_count}})</h1>
   </div>
 
 
@@ -37,8 +39,8 @@
   <table id="stats-table" class="table table-bordered table-striped">
     <thead>
       <tr>
-        <th>User</th>
-        <th>Submissions</th>
+        <th>{% trans "User" %}</th>
+        <th>{% trans "Submissions" %}</th>
       </tr>
     </thead>
     <tbody>

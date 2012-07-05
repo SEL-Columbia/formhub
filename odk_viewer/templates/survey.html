@@ -1,4 +1,4 @@
-{% if image_urls %}
+{% load i18n %}{% if image_urls %}
 <ul class="media-grid">
 {% for image_url in image_urls %}
 <li><a href="#">
@@ -17,8 +17,8 @@
 <table class="table table-bordered table-striped">
   <thead>
     <tr>
-      <th>Question</th>
-      <th>Response</th>
+      <th>{% trans "Question" %}</th>
+      <th>{%trans "Response" %}</th>
     </tr>
   </thead>
   <tbody>{% for pair in label_value_pairs %}
