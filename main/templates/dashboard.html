@@ -8,12 +8,12 @@
   <div class="row">
     <div class="span5">
         <h1>{% trans "Publish a Form" %} <small>{% trans "Upload XLSForm" %}</small></h1>
-        {% trans "For a quick introduction on how to publish a form check out
-       the" %}<a href="{% url main.views.tutorial %}">tutorial</a>{% trans ", and try publishing" %}
+        {% trans "For a quick introduction on how to publish a form check out the" %}
+        <a href="{% url main.views.tutorial %}">tutorial</a>{% trans ", and try publishing" %}
         <a href="http://formhub.org/formhub_u/forms/tutorial/form.xls">tutorial.xls</a>.
         <br/>
         <br/>
-        {% trans "Learn about the XLSForm syntax" %} <a href="/syntax/">{% trans "here" %}</a>{% trans ", email" %} <a href="https://groups.google.com/forum/?fromgroups#!forum/formhub-users">{% trans "formhub users mailing list" %trans}</a> {%trans "if you have questions, and checkout examples at:" %} <br/><a href="https://formhub.org/formhub_u/">Formhub {% trans "University" %}</a>.
+        {% trans "Learn about the XLSForm syntax" %} <a href="/syntax/">{% trans "here" %}</a>, {% trans "email" %} <a href="https://groups.google.com/forum/?fromgroups#!forum/formhub-users">{% trans "formhub users mailing list" %}</a> {%trans "if you have questions, and checkout examples at:" %} <br/><a href="https://formhub.org/formhub_u/">{% trans "Formhub University" %}</a>.
         <br/>
         <br/>
         <form action="." method="post" enctype="multipart/form-data">
@@ -51,7 +51,7 @@
         <div class="row">
         <div class="span1">
             {% if not profile.gravatar_exists %}
-                <a style="display: inline-block;" title="Click to change your avatar" href="https://secure.gravatar.com/site/login" id="gravatar">
+                <a style="display: inline-block;" title="{% trans "Click to change your avatar" %}" href="https://secure.gravatar.com/site/login" id="gravatar">
             {% endif %}
             <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' />
             {% if not profile.gravatar_exists %}
