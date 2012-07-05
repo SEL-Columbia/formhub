@@ -32,4 +32,5 @@ class Command(BaseCommand):
                     else:
                         print _(u'Something didn\'t go right for %s') % filename
                 except (IOError, OSError, ZeroDivisionError), e:
-                    print _(u'Error on %s: %s') % (filename, e)
+                    print _(u'Error on %(filename)s: %(error)s') \
+                            % {'filename': filename, 'error': e}
