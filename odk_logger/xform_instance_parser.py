@@ -58,22 +58,29 @@ def _flatten_dict(d, prefix):
             for pair in _flatten_dict(value, new_prefix):
                 yield pair
         elif type(value) == list:
+            repeats = []
             for i, item in enumerate(value):
                 item_prefix = list(new_prefix)  # make a copy
                 # note on indexing xpaths: IE5 and later has
                 # implemented that [0] should be the first node, but
                 # according to the W3C standard it should have been
                 # [1]. I'm adding 1 to i to start at 1.
-                if i > 0:
+                #if i > 0:
                     # hack: removing [1] index to be consistent across
                     # surveys that have a single repitition of the
                     # loop versus mutliple.
-                    item_prefix[-1] += u"[%s]" % unicode(i + 1)
+                #    item_prefix[-1] += u"[%s]" % unicode(i + 1)
                 if type(item) == dict:
-                    for pair in _flatten_dict(item, item_prefix):
-                        yield pair
+                    repeat = {}
+                    for path, value in _flatten_dict(item, item_prefix):
+                        #print "path: %s, value: %s" % (path, value)
+                        #TODO: this only considers the first level of repeats
+                        repeat.update({u"/".join(path[1:]): value})
+                    repeats.append(repeat)
                 else:
-                    yield (item_prefix, item)
+                    #yield (item_prefix, item)
+                    repeats.append({u"/".join(item_prefix[1:]): item})
+            yield (new_prefix, repeats)
         else:
             yield (new_prefix, value)
 
