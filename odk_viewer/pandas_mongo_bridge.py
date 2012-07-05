@@ -99,11 +99,13 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         #TODO: .. possible solution - keep track of the lats index from each section
         # write all cursor's data to different sheets
         for section_name, records in data.iteritems():
-            section = self.sections[section_name]
-            columns = section["columns"] + self.EXTRA_COLUMNS
-            writer = XLSDataFrameWriter(records, columns)
-            writer.writeToExcel(self.xls_writer, section_name, header=True, index=False)
-            self.xls_writer.save()
+            # TODO: currently ignoring nested repeat data which will have no records
+            if len(records) > 0:
+                section = self.sections[section_name]
+                columns = section["columns"] + self.EXTRA_COLUMNS
+                writer = XLSDataFrameWriter(records, columns)
+                writer.writeToExcel(self.xls_writer, section_name, header=True, index=False)
+                self.xls_writer.save()
 
     def _formatForDataframe(self, cursor):
         """
@@ -129,9 +131,11 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                 if sheet_name != self.survey_name:
                     xpath = sheet_attrs["xpath"]
                     columns = sheet_attrs["columns"]
-                    repeat_records = record[xpath]
-                    for repeat_record in repeat_records:
-                        self._addDataToSection(data[sheet_name], repeat_record, columns, index)
+                    # TODO: handle nested repeats -ignoring nested repeats for now which will not be in the top level record, perhaps nest sections as well so we can recurse in and get them
+                    if record.has_key(xpath):
+                        repeat_records = record[xpath]
+                        for repeat_record in repeat_records:
+                            self._addDataToSection(data[sheet_name], repeat_record, columns, index)
 
         return data
 
@@ -144,7 +148,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                 data_section[len(data_section)-1].update({column: record[column]})
             except KeyError:
                 #TODO: none of the columns should be missing after we fix select multiples
-                #print "Missing column %s" % column
+                print "Missing column %s" % column
                 pass
         data_section[len(data_section)-1].update({"_index": index, "_parent_index": parent_index})
         return index
