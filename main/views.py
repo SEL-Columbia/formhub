@@ -252,11 +252,11 @@ def api(request, username=None, id_string=None):
     except ValueError, e:
         return HttpResponseBadRequest(e.message)
     records = list(record for record in cursor)
+    response_text = simplejson.dumps(records)
     if 'callback' in request.GET and request.GET.get('callback') != '':
         callback = request.GET.get('callback')
-        return HttpResponse("%s(%s)" % (callback, simplejson.dumps(records)), \
-                    mimetype='application/json')
-    return HttpResponse(simplejson.dumps(records))
+        response_text = ("%s(%s)" % (callback, response_text))
+    return HttpResponse(response_text, mimetype='application/json')
 
 
 @require_POST
