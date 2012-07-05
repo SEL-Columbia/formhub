@@ -102,7 +102,7 @@ class ParsedInstance(models.Model):
                 fields_to_select).skip(start).limit(limit)
 
     def to_dict_for_mongo(self):
-        d = self.to_dict(flat=False)
+        d = self.to_dict()
         d.update(
             {
                 UUID: self.instance.uuid,
@@ -121,16 +121,10 @@ class ParsedInstance(models.Model):
         d = self.to_dict_for_mongo()
         xform_instances.save(d)
 
-    def to_dict(self, flat=True):
-        if flat and not hasattr(self, "_dict_cache"):
-            self._dict_cache = self.instance.get_dict(force_new=True, flat=flat)
-        elif not flat and not hasattr(self, "_nested_dict_cache"):
-			self._nested_dict_cache = self.instance.get_dict(force_new=True, flat=flat)
-
-        if flat:
-            return self._dict_cache
-        else:
-            return self._nested_dict_cache
+    def to_dict(self):
+        if not hasattr(self, "_dict_cache"):
+            self._dict_cache = self.instance.get_dict()
+        return self._dict_cache
 
     @classmethod
     def dicts(cls, xform):
