@@ -101,6 +101,7 @@ class TestXFormInstanceParser(MainTestCase):
         )
         response = self._publish_xls_file(xls_file_path)
         self.assertEqual(response.status_code, 200)
+        self.xform = XForm.objects.get(user=self.user, id_string="new_repeat")
 
         # submit an instance
         xml_submission_file_path = os.path.join(
@@ -108,9 +109,9 @@ class TestXFormInstanceParser(MainTestCase):
             "../fixtures/new_repeats/instances/new_repeats_2012-07-05-14-33-53.xml"
         )
         self._make_submission(xml_submission_file_path)
+        self.assertEqual(self.response.status_code, 201)
 
         # load xml file to parse and compare
-        self.xform = XForm.objects.get(user=self.user, id_string="new_repeat")
         xml_file = open(xml_submission_file_path)
         self.xml = xml_file.read()
         xml_file.close()
