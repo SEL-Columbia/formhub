@@ -13,42 +13,13 @@ xform_instances = settings.MONGO_DB.instances
 # the bind type of select multiples that we use to compare
 MULTIPLE_SELECT_BIND_TYPE = u"select"
 
-def remove_indexes_from_xpath(xpath):
-    return re.sub(r"\[\d+\]", "", xpath)
-
-def get_groupname_from_xpath(xpath):
-    # remove indexes form xpath
-    clean_xpath = remove_indexes_from_xpath(xpath)
-
-    # match upto last /something
-    match = re.match(r"(.+)?/(\w.+)?", clean_xpath)
-    if match:
-        return match.groups()[0]
-    else:
-        return None
-
 def survey_name_and_xpath_from_dd(dd):
     for e in dd.get_survey_elements():
         if isinstance(e, Survey):
             return e.name, e.get_abbreviated_xpath()
 
     # should never get here
-    raise Exception
-
-def pos_and_parent_pos_from_repeat(repeat):
-    """
-    From an indexed repeat i.e. parent[2]/child/item get the position of its parent and its own position within a record
-    We don't use index since index its position in the entire set of records
-    """
-    parent_pos = 1
-    pos = 1
-    # check for a trailing ]
-    end = repeat.rfind("]")
-    # find the matching [
-    start = repeat.rfind("[")
-    if end > -1 and start > -1:
-        pass
-    return pos, parent_pos
+    raise Exception("DataDictionary has no Survey element")
 
 def get_valid_sheet_name(sheet_name, existing_name_list):
     # truncate sheet_name to XLSDataFrameBuilder.SHEET_NAME_MAX_CHARS
