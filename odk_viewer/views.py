@@ -22,6 +22,7 @@ from odk_logger.models import XForm, Instance, Attachment
 from odk_logger.xform_instance_parser import xform_instance_to_dict
 from odk_viewer.models import DataDictionary, ParsedInstance
 from pyxform import Section, Question
+from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder
 from utils.logger_tools import response_with_mimetype_and_name,\
          disposition_ext_and_date, round_down_geopoint
 from utils.viewer_tools import image_urls, image_urls_for_form
@@ -170,16 +171,16 @@ def xls_export(request, username, id_string):
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
-    valid, dd = dd_for_params(id_string, owner, request)
-    if not valid: return dd
-    ddw = XlsWriter()
-    ddw.set_data_dictionary(dd)
-    temp_file = ddw.save_workbook_to_file()
+
+    xls_df_builder = XLSDataFrameBuilder(username, id_string)
+    temp_file = NamedTemporaryFile(suffix=".xls")
+    xls_df_builder.export_to(temp_file.name)
+
     if request.GET.get('raw'):
         id_string = None
     response = response_with_mimetype_and_name('vnd.ms-excel', id_string,
         extension='xls')
-    response.write(temp_file.getvalue())
+    response.write(temp_file.read())
     temp_file.seek(0, os.SEEK_END)
     response['Content-Length'] = temp_file.tell()
     temp_file.close()

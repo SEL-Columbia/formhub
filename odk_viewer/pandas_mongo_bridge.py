@@ -61,7 +61,10 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
     This builder can choose to query the data in batches and write to a single ExcelWriter object using multiple
     instances of DataFrameXLSWriter
     """
-    EXTRA_COLUMNS = ["_index", "_parent_table_name", "_parent_index"]
+    INDEX_COLUMN = "index"
+    PARENT_TABLE_NAME_COLUMN = "_parent_table_name"
+    PARENT_INDEX_COLUMN = "_parent_index"
+    EXTRA_COLUMNS = [INDEX_COLUMN, PARENT_TABLE_NAME_COLUMN, PARENT_INDEX_COLUMN]
     SHEET_NAME_MAX_CHARS = 30
 
     def __init__(self, username, id_string):
@@ -125,11 +128,11 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                     if record.has_key(xpath):
                         repeat_records = record[xpath]
                         for repeat_record in repeat_records:
-                            self._add_data_for_section(data[sheet_name], repeat_record, columns, index)
+                            self._add_data_for_section(data[sheet_name], repeat_record, columns, index, self.survey_name)
 
         return data
 
-    def _add_data_for_section(self, data_section, record, columns, parent_index = -1):
+    def _add_data_for_section(self, data_section, record, columns, parent_index = -1, parent_table_name = None):
         data_section.append({})
         index = len(data_section)
         #data_section[len(data_section)-1].update(record) # we could simply do this but end up with duplicate data from repeats
@@ -151,10 +154,12 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
             try:
                 data_section[len(data_section)-1].update({column: record[column]})
             except KeyError:
-                #TODO: none of the columns should be missing after we fix select multiples
-                print "Missing column %s\n" % column
+                # a record may not have responses for some elements simply because they were not captured
                 pass
-        data_section[len(data_section)-1].update({"_index": index, "_parent_index": parent_index})
+
+        data_section[len(data_section)-1].update({XLSDataFrameBuilder.INDEX_COLUMN: index,
+                                                  XLSDataFrameBuilder.PARENT_INDEX_COLUMN: parent_index,
+                                                  XLSDataFrameBuilder.PARENT_TABLE_NAME_COLUMN: parent_table_name})
         return index
 
     def _generate_sections(self):
