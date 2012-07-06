@@ -96,7 +96,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
 
         #TODO: batching will not work as expected since indexes are calculated based the current batch, a new batch ..
         #TODO: .. will re-calculate indexes and if they are going into the same excel file, we'll have duplicates
-        #TODO: .. possible solution - keep track of the lats index from each section
+        #TODO: .. possible solution - keep track of the last index from each section
         # write all cursor's data to different sheets
         for section_name, records in data.iteritems():
             # TODO: currently ignoring nested repeat data which will have no records
@@ -121,13 +121,14 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
 
         for record in cursor:
             # from record, we'll end up with multiple records, one for each section we have
+            print "record: %s" % record
 
             # add records for the default section
             columns = self.sections[self.survey_name]["columns"]
             index = self._addDataToSection(data[self.survey_name], record, columns)
 
             for sheet_name, sheet_attrs in self.sections.iteritems():
-                # skip default sheet_name i.e surveyname
+                # skip default section i.e surveyname
                 if sheet_name != self.survey_name:
                     xpath = sheet_attrs["xpath"]
                     columns = sheet_attrs["columns"]
@@ -143,6 +144,20 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         data_section.append({})
         index = len(data_section)
         #data_section[len(data_section)-1].update(record) # we could simply do this but end up with duplicate data from repeats
+
+        # find any select multiple(s) and add additional columns to record
+        multi_select_keys = [key for key in record if key in self.multi_selects.keys()]
+        for key in multi_select_keys:
+            choices = self.multi_selects[key]
+
+            # split selected choices by spaces and join by / to the element's xpath
+            selections = ["%s/%s" % (key, r) for r in record[key].split(" ")]
+
+            # add columns to record for every choice, with default False and set to True for items in selections
+            record.update(dict([(choice, choice in selections) for choice in choices]))
+
+            # remove the column since we are adding separate columns for each choice
+            record.pop(key)
         for column in columns:
             try:
                 data_section[len(data_section)-1].update({column: record[column]})
@@ -166,7 +181,8 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         # setup the default section
         self.sections[self.survey_name] = {"xpath": survey_xpath, "columns": [], "is_repeat": False}
 
-        #TODO: check for 'MultipleChoiceQuestion's and collect its 'pyxform.question.Option's as columns, but to which sheet
+        #TODO: check for 'MultipleChoiceQuestion's and collect its 'pyxform.question.Option's as columns, but to
+        # which sheet
         self.multi_selects = {}
 
         # get form elements to split repeats into separate sheets and everything else in the main sheet
@@ -188,9 +204,12 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                     and not c.bind.get(u"type") == MULTIPLE_SELECT_BIND_TYPE:
                         self._addColumnToSection(sheet_name, c)
                     elif c.bind.get(u"type") == MULTIPLE_SELECT_BIND_TYPE:
+                        self.multi_selects[c.get_abbreviated_xpath()] = \
+                            [option.get_abbreviated_xpath() for option in c.children]
                         # if select multiple, get its choices and make them columns
                         for option in c.children:
                             self._addColumnToSection(sheet_name, option)
+        print "self.multi_selects: %s" % self.multi_selects
 
     def _addColumnToSection(self, sheet_name, column):
         self.sections[sheet_name]["columns"].append(column.get_abbreviated_xpath())
