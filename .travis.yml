@@ -7,6 +7,7 @@ before_install:
   - sudo apt-get install mongodb-10gen
   - sudo apt-get install default-jre
 install:
+  - pip install numpy --use-mirrors
   - pip install -r requirements.pip --use-mirrors
   - python manage.py syncdb --noinput
   - python manage.py migrate --noinput
