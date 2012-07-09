@@ -8,6 +8,9 @@ from django.core.files.storage import get_storage_class
 from utils.viewer_tools import get_path
 
 
+IMG_FILE_TYPE = '.jpg'
+
+
 def get_dimensions((width, height), longest_side):
     try:
         if width > height:
@@ -33,10 +36,10 @@ def _save_thumbnails(image, path, size, suffix, filename=None):
         image.save(get_path(path, suffix))
 
         default_storage.save(get_path(filename, suffix),
-                                fs.open(get_path(path, suffix)))
+                                fs.open(get_path(path, suffix, IMG_FILE_TYPE)))
     else:
         image.thumbnail(get_dimensions(image.size, size), Image.ANTIALIAS)
-        image.save(get_path(path, suffix))
+        image.save(get_path(path, suffix, IMG_FILE_TYPE))
 
 
 def resize(filename):
@@ -49,7 +52,7 @@ def resize(filename):
     conf = settings.THUMB_CONF
 
     fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
-    loc_path = fs.path('dummy.jpg')
+    loc_path = fs.path('dummy%s' % IMG_FILE_TYPE)
 
     [_save_thumbnails(image, loc_path, conf[key]['size'], conf[key]['suffix'],
                                     filename=filename) for key in conf.keys()]

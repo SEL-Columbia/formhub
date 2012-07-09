@@ -31,6 +31,6 @@ class Command(BaseCommand):
                         print _(u'Thumbnails created for %s') % filename
                     else:
                         print _(u'Something didn\'t go right for %s') % filename
-                except (IOError, OSError, ZeroDivisionError), e:
+                except (IOError, OSError), e:
                     print _(u'Error on %(filename)s: %(error)s') \
                             % {'filename': filename, 'error': e}
