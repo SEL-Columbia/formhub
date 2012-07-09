@@ -27,10 +27,11 @@ class Command(BaseCommand):
                     else:
                         resize_local_env(filename)
                     if default_storage.exists(get_path(filename,
-                                    settings.THUMB_CONF['smaller']['suffix'])):
+                            '%s.%s' % (settings.THUMB_CONF['smaller']['suffix'],
+                                    settings.IMG_FILE_TYPE))):
                         print _(u'Thumbnails created for %s') % filename
                     else:
-                        print _(u'Something didn\'t go right for %s') % filename
-                except (IOError, OSError, ZeroDivisionError), e:
+                        print _(u'Problem with the file %s') % filename
+                except (IOError, OSError), e:
                     print _(u'Error on %(filename)s: %(error)s') \
                             % {'filename': filename, 'error': e}
