@@ -12,19 +12,20 @@ IMG_FILE_TYPE = '.jpg'
 
 
 def get_dimensions((width, height), longest_side):
-    try:
-        if width > height:
-            width = longest_side
-            height = (height/width) * longest_side
-        elif height >width:
-            height = longest_side
-            width = (width/height) * longest_side
-        else:
-            height = longest_side
-            width = longest_side
-        return (width, height)
-    except ZeroDivisionError:
+    # If width or height are 0, due to JPEG file corruption, use rectangle
+    if width * height == 0:
         return (longest_side, longest_side)
+
+    if width > height:
+        width = longest_side
+        height = (height / width) * longest_side
+    elif height > width:
+        height = longest_side
+        width = (width / height) * longest_side
+    else:
+        height = longest_side
+        width = longest_side
+    return (width, height)
 
 
 def _save_thumbnails(image, path, size, suffix, filename=None):
