@@ -10,25 +10,49 @@
   .leaflet-popup-content ul {list-style-type:none;}
   .navbar .nav.pull-right .dropdown-menu {max-height: 600px; width: 400px; overflow: auto;}
   .dropdown-menu a {white-space: normal; max-width: 600px;}
-  #legend {
-      background-color: white;
+  .legends-container {
       width: 200px;
-      opacity: 0.95;
       position: absolute;
       bottom: 15px;
-      left: 15px;
-      padding: 8px;
       z-index: 7;
+      left: 15px;
+  }
+  .legends-container div {
+    margin-bottom: 8px;
+  }
+  .legends-container div:last-child {
+    margin-bottom: 0px;
+  }
+  #legend, #hex-legend {
+      background-color: white;
+      opacity: 0.95;
+      padding: 8px;
       border-radius: 3px;
   }
-  #legend ul {list-style: none;margin: 0px}
+  #legend ul, #hex-legend ul {list-style: none;margin: 0px}
   #legend ul li {}
+  #hex-legend .scale ul li {
+    display: block;
+    float: left;
+    width: 22px;
+    margin: 0 0 6px 0;
+    text-align: center;
+  }
+  #hex-legend .scale {
+    font-size: 60%;
+    margin: 5px 0 0 0;
+  }
   #legend span.legend-bullet {
       width: 15px;
       height: 15px;
       float: left;
       margin-right: 5px;
       border-radius: 3px;
+  }
+  #hex-legend span {
+      width: 22px;
+      height: 15px;
+      float: left;
   }
   #legend span.item-label{
       padding: 0px 20px 0px 20px;
