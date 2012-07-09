@@ -202,6 +202,7 @@ THUMB_CONF = {'large' : {'size': 1280, 'suffix': '-lrg'},
               'medium' : {'size': 640, 'suffix': '-med'},
               'smaller' : {'size': 240, 'suffix': '-sml'},
              }
+IMG_FILE_TYPE = 'jpg'
 
 TESTING_MODE = False
 if len(sys.argv)>=2 and (sys.argv[1]=="test" or sys.argv[1]=="test_all"):
