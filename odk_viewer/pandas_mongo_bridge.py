@@ -61,9 +61,9 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
     This builder can choose to query the data in batches and write to a single ExcelWriter object using multiple
     instances of DataFrameXLSWriter
     """
-    INDEX_COLUMN = "index"
-    PARENT_TABLE_NAME_COLUMN = "_parent_table_name"
-    PARENT_INDEX_COLUMN = "_parent_index"
+    INDEX_COLUMN = u"_index"
+    PARENT_TABLE_NAME_COLUMN = u"_parent_table_name"
+    PARENT_INDEX_COLUMN = u"_parent_index"
     EXTRA_COLUMNS = [INDEX_COLUMN, PARENT_TABLE_NAME_COLUMN, PARENT_INDEX_COLUMN]
     SHEET_NAME_MAX_CHARS = 30
 
