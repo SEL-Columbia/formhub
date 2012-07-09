@@ -12,9 +12,8 @@ IMG_FILE_TYPE = '.jpg'
 
 
 def get_dimensions((width, height), longest_side):
-    # If width or height are 0, due to JPEG file corruption, use rectangle
-    if width * height == 0:
-        return (longest_side, longest_side)
+    # Ensure conversion to float in operations
+    height = float(height)
 
     if width > height:
         width = longest_side
