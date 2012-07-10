@@ -75,24 +75,39 @@ class TestSurveyView(MainTestCase):
         # doesn't seem worth it.
 
     def test_dict_organizer(self):
+        self.survey = create_survey_from_xls("odk_viewer/tests/household.xls")
+        json_str = json.dumps(self.survey.to_json_dict())
+        self.data_dictionary = DataDictionary.objects.create(
+            xml=self.survey.to_xml(), json=json_str, user = self.user)
         serious_xml = u'''
-        <?xml version=\'1.0\' ?>
-          <household>
+        <?xml version='1.0' ?>
+          <household id="serious_survey">
             <number_of_members>10</number_of_members>
-            <man><name>Alex</name></man>
-            <man><name>Bob</name></man>
+            <man>
+              <name>Alex</name>
+            </man>
+            <man>
+              <name>Bob</name>
+            </man>
             <woman>
               <name>Carla</name>
-              <child><name>Danny</name></child>
-              <child><name>Ed</name></child>
+                <child>
+                  <name>Danny</name>
+                </child>
+                <child>
+                  <name>Ed</name>
+                </child>
             </woman>
             <woman>
               <name>Fran</name>
-              <child><name>Greg</name></child>
+                <child>
+                  <name>Greg</name>
+                </child>
             </woman>
-          </household>'''
+          </household>
+        '''
         serious_xml = re.sub(r">\s+<", "><", serious_xml)
-        d = xform_instance_to_dict(serious_xml)
+        d = xform_instance_to_dict(serious_xml, self.data_dictionary)
         dict_organizer = DictOrganizer()
         expected_dict = {
             u'household': [
