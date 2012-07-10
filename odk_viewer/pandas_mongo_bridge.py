@@ -90,6 +90,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         #TODO: .. possible solution - keep track of the last index from each section
 
         # write all cursor's data to different sheets
+        # TODO: for every repeat, the index should be re-calculated
         for section in self.sections:
             # TODO: currently ignoring nested repeat data which will have no records
             records = data[section["name"]]
