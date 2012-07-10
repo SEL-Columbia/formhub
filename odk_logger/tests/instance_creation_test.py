@@ -63,7 +63,7 @@ class TestWaterSubmission(TestCase):
         XForm.objects.create(xml=xml, user=self.user, json=self.json)
 
     def test_form_submission(self):
-        # no more submission to non-existent form, we need to ensure the Water_Translated_2011_03_10 xform is valid
+        # no more submission to non-existent form, setUp ensures the Water_Translated_2011_03_10 xform is valid
         f = open(os.path.join(
                 os.path.dirname(os.path.abspath(__file__)),
                 "Water_Translated_2011_03_10_2011-03-10_14-38-28.xml"
