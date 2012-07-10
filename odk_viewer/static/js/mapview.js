@@ -559,7 +559,7 @@ function _rebuildHexLegend(countOrProportion, questionName, responseNames)
         return _.map(_.range(1,len+1), function (v) { return v / len });
     };
     var templateFiller = {
-        count: { title : 'Number of surveys:',
+        count: { title : 'Number of submissions',
             hexes : _.map(interval("Set1"), function (i) {
                       return  {color: colors.getProportional(i),
                                text: '<' + Math.ceil(i * maxHexCount)}; })
