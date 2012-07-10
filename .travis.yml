@@ -6,6 +6,7 @@ before_install:
   - sudo sh -c "echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' >> /etc/apt/sources.list"
   - sudo apt-get install mongodb-10gen
   - sudo apt-get install default-jre
+  - sudo apt-get install gfortran libatlas-base-dev
 install:
   - pip install numpy --use-mirrors
   - pip install -r requirements.pip --use-mirrors
