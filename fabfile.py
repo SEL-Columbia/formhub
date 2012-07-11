@@ -11,15 +11,15 @@ DEFAULTS = {
 
 DEPLOYMENTS = {
     'dev': {
-        'host_string': 'wsgi@nmis-linode.mvpafrica.org',
-        'project': 'formhub_dev',
-        'branch': 'master',
+        'home': '/home/ubuntu/srv/',
+        'host_string': 'ubuntu@23.21.82.214', # TODO: switch to dev.formhub.org
+        'project': 'formhub-ec2',
+        'key_filename': os.path.expanduser('~/.ssh/modilabs.pem'),
     },
     'prod': {
         'home': '/home/ubuntu/srv/',
-        'host_string': 'ubuntu@23.21.134.243',
+        'host_string': 'ubuntu@formhub.org',
         'project': 'formhub-ec2',
-        'branch': 'master',
         'key_filename': os.path.expanduser('~/.ssh/modilabs.pem'),
     },
 }
@@ -53,10 +53,11 @@ def setup_env(deployment_name):
     env.pip_requirements_file = os.path.join(env.code_src, 'requirements.pip')
 
 
-def deploy(deployment_name):
+def deploy(deployment_name, branch='master'):
     setup_env(deployment_name)
     with cd(env.code_src):
-        run("git pull origin %(branch)s" % env)
+        run("git fetch origin")
+        run("git checkout origin/%s" % branch)
         run('find . -name "*.pyc" -exec rm -rf {} \;')
     run_in_virtualenv("pip install -r %s" % env.pip_requirements_file)
     with cd(env.code_src):
