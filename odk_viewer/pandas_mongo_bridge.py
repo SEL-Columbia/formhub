@@ -38,21 +38,22 @@ def get_valid_sheet_name(sheet_name, existing_name_list):
         i += 1
     return generated_name
 
-class AbstractDataFrameBuilder:
+class AbstractDataFrameBuilder(object):
     """
     Used to group functionality used by any DataFrameBuilder i.e. XLS, CSV and KML
     """
     def __init__(self, username, id_string):
-        self.set_up(username, id_string)
+        self.username = username
+        self.id_string = id_string
+        self._setup()
 
     def _query_mongo(self, filter_query = None):
         query = {ParsedInstance.USERFORM_ID: u'%s_%s' % (self.username, self.id_string)}
         cursor = xform_instances.find(query)
         return cursor
 
-    def set_up(self, username, id_string):
-        self.username = username
-        self.id_string = id_string
+    def _setup(self):
+        raise NotImplementedError("_setup must be implemented")
 
 class XLSDataFrameBuilder(AbstractDataFrameBuilder):
     """
@@ -68,10 +69,9 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
     SHEET_NAME_MAX_CHARS = 30
 
     def __init__(self, username, id_string):
-        AbstractDataFrameBuilder.__init__(self, username, id_string)
+        super(XLSDataFrameBuilder, self).__init__(username, id_string)
 
-    def set_up(self, username, id_string):
-        AbstractDataFrameBuilder.set_up(self, username, id_string)
+    def _setup(self):
         # need to split columns, with repeats in individual sheets and everything else on the default sheet
         self._generate_sections()
 
@@ -219,7 +219,14 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
     def _get_section(self, section_name):
         return self.sections[self.section_names_list[section_name]]
 
-class XLSDataFrameWriter:
+class CSVDataFrameBuilder(AbstractDataFrameBuilder):
+    def __init__(self, username, id_string):
+        super(CSVDataFrameBuilder, self).__init__(username, id_string)
+
+    def _setup(self):
+        pass
+
+class XLSDataFrameWriter(object):
     def __init__(self, records, columns):
         self.dataframe = DataFrame(records, columns=columns)
 

@@ -70,6 +70,11 @@ class TestPandasMongoBridge(MainTestCase):
         kids_details_columns = [k for k in data[u"kids_details"][0]]
         self.assertEqual(sorted(expected_kids_details_columns), sorted(kids_details_columns))
 
+    def test_incremental_parent_indexes(self):
+        """
+        To test fix that ensures parent indexes are incremented for each repeat
+        """
+
     def test_valid_sheet_name(self):
         sheet_names = ["sheet_1", "sheet_2"]
         desired_sheet_name = "sheet_3"
