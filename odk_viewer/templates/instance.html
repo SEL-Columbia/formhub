@@ -84,9 +84,18 @@ Question.prototype.getLabel = function(language)
       });
 
 
-      // Delete route
-      this.get('#delete/:id', function(context) {
+      // Delete modal
+      this.get('#del/:id', function(context) { with(this) {
       
+            $("#delete-modal").modal("show");
+       
+      }
+      });
+      
+      
+      // Delete route
+      this.get('#delete/:id', function(context) { 
+        
           var id = this.params['id'];
           var next = $('li.next').children('a').attr('href');
           next = next.replace("#/", "");
@@ -115,7 +124,6 @@ Question.prototype.getLabel = function(language)
                     updatePosStatus();
               })
       });
-      
       this.bind('error', {}, function(){
           //alert('Invalid route requested')
           app.setLocation('#/');
@@ -218,8 +226,8 @@ function updateButtons(data){
      //Make Delete Button visible and add link
     var deletebutton = $('a.btn-danger');
     deletebutton.removeClass('disabled');
-    deletebutton.attr('href', '#delete/' + data['_id']);
-    $('.bdel').attr('id', '#delete/' + data['_id']);
+    deletebutton.attr('href', '#del/' + data['_id']);
+    $('a.btn-primary').attr('href', '#delete/' + data['_id']);
 }
 
 function updatePrevNextControls(data)
@@ -420,4 +428,20 @@ function parseLanguages(children)
     }
 }
 </script>
+
+
+ <div id="delete-modal" class="modal hide fade">
+            <div class="modal-header">
+              <a data-dismiss="modal" class="close">&times;</a>
+              <h3>{% trans "Delete Confirmation" %}</h3>
+            </div>
+            <div class="modal-body">
+              <p>{% trans "Note that 'delete's are not yet supported. You will see all data when you download the form. Only fresh data in the map view and the web-data-view (for now) submissions associated with it that will also be deleted. " %} </p>
+              <p>{% trans "Are you sure you want to delete this data. If you are unsure about deleting this form press 'Cancel'." %}</p>
+            </div>
+            <div class="modal-footer">
+              <a href="#" onclick="$('#delete-modal').modal('hide');" class="btn btn-primary">{% trans "Delete" %}</a>
+              <a href="#" onclick="$('#delete-modal').modal('hide');" class="btn secondary">{% trans "Cancel" %}</a>
+            </div>
+          </div>
 {% endblock %}
