@@ -28,6 +28,7 @@ from utils.decorators import is_owner
 from utils.user_auth import check_and_set_user, set_profile_data,\
          has_permission, get_xform_and_perms, check_and_set_user_and_form
 from django.utils.translation import ugettext_lazy as _
+from datetime import datetime
 
 def home(request):
     context = RequestContext(request)
@@ -249,6 +250,8 @@ def api(request, username=None, id_string=None):
         if 'count' in request.GET:
             args["count"] = True if int(request.GET.get('count')) > 0 else False
         cursor = ParsedInstance.query_mongo(**args)
+        #print y.find({"deleted_at": {"$exists": true}})
+        print args["query"]
     except ValueError, e:
         return HttpResponseBadRequest(e.message)
     records = list(record for record in cursor)
@@ -478,3 +481,29 @@ def show_submission(request, username, id_string, uuid):
     submission = get_object_or_404(Instance, uuid=uuid)
     return HttpResponseRedirect(reverse(survey_responses,
                 kwargs={'instance_id': submission.pk}))
+
+
+@require_GET
+def delete_data(request, username=None, id_string=None):
+    xform, owner = check_and_set_user_and_form(username, id_string, request)
+    if not xform:
+        return HttpResponseForbidden('Not shared.')
+    try:
+        args = {"username": username, "id_string": id_string, "query": request.GET.get('query'),
+                "fields": request.GET.get('fields'), "sort": request.GET.get('sort')}
+
+        if 'limit' in request.GET:
+            args["limit"] = int(request.GET.get('limit'))
+        cursor = ParsedInstance.query_mongo(**args)
+    except ValueError, e:
+        return HttpResponseBadRequest(e.message)
+
+    today= datetime.today().strftime('%Y-%m-%dT%H:%M:%S')
+    ParsedInstance.edit_mongo(args['query'], '{ "$set": {"_deleted_at": "%s" }}' % today)
+
+    records = list(record for record in cursor)
+    response_text = simplejson.dumps(records)
+    if 'callback' in request.GET and request.GET.get('callback') != '':
+        callback = request.GET.get('callback')
+        response_text = ("%s(%s)" % (callback, response_text))
+    return HttpResponse(response_text, mimetype='application/json')
