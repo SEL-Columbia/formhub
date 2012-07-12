@@ -1,6 +1,9 @@
+import base64
 import re
 
-from django.http import HttpResponseRedirect
+from functools import wraps
+from django.contrib.auth import authenticate
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 
@@ -67,3 +70,32 @@ def get_xform_and_perms(username, id_string, request):
     can_view = can_edit or\
             request.user.has_perm('odk_logger.view_xform', xform)
     return [xform, is_owner, can_edit, can_view]
+
+
+def _helper_auth_helper(request):
+    if request.user and request.user.is_authenticated():
+        return None
+        # source, http://djangosnippets.org/snippets/243/
+    if 'HTTP_AUTHORIZATION' in request.META:
+        auth = request.META['HTTP_AUTHORIZATION'].split()
+        if len(auth) == 2 and auth[0].lower() == "basic":
+            uname, passwd = base64.b64decode(auth[1]).split(':')
+            user = authenticate(username=uname, password=passwd)
+            if user:
+                request.user = user
+                return None
+    realm = ""
+    response = HttpResponse()
+    response.status_code = 401
+    response['WWW-Authenticate'] = 'Basic realm="%s"' % realm
+    return response
+
+
+def basic_http_auth(func):
+    @wraps(func)
+    def inner(request, *args, **kwargs):
+        result = _helper_auth_helper(request)
+        if result is not None:
+            return result
+        return func(request, *args, **kwargs)
+    return  inner
