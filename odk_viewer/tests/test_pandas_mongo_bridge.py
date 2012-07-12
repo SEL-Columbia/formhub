@@ -95,8 +95,8 @@ class TestPandasMongoBridge(MainTestCase):
         self.assertEqual(sorted(expected_kids_details_columns), sorted(kids_details_columns))
 
     def test_csv_columns(self):
-        self._publish_new_repeats_form()
-        self._submit_new_repeats_instance()
+        self._publish_nested_repeats_form()
+        self._submit_nested_repeats_instance()
         dd = self.xform.data_dictionary()
         expected_columns = [u'info/name', u'info/age', u'kids/has_kids', u'kids/kids_details/kids_name',
                             u'kids/kids_details/kids_age', u'kids/kids_details[2]/kids_name',
@@ -107,6 +107,7 @@ class TestPandasMongoBridge(MainTestCase):
                             u'web_browsers/ie', u'web_browsers/safari', u'_xform_id_string',
                             u'_percentage_complete', u'_status', u'_id', u'_attachments', u'_potential_duplicates']
         columns = dd.get_keys()
+        print "columns: %s\n" % columns
         self.assertEqual(sorted(expected_columns), sorted(columns))
 
     def test_format_mongo_data_for_csv_columns(self):
