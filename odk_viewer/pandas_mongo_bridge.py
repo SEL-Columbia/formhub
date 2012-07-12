@@ -265,9 +265,12 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         super(CSVDataFrameBuilder, self).__init__(username, id_string)
 
     def _setup(self):
-        pass
+        self.dd = DataDictionary.objects.get(user__username=self.username,
+            id_string=self.id_string)
+        self.select_multiples = self._generate_select_multiples(self.dd)
 
-    def _reindex(key, value, parent_prefix = None):
+    @classmethod
+    def _reindex(cls, key, value, parent_prefix = None):
         """
         Flatten list columns by appending an index, otherwise return as is
         """
@@ -289,7 +292,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
                         new_prefix = xpaths[:-1]
                         if type(nested_val) is list:
                             # if nested_value is a list, rinse and repeat
-                            d.update(_reindex(nested_key, nested_val,
+                            d.update(cls._reindex(nested_key, nested_val,
                                 new_prefix))
                         else:
                             # it can only be a string
@@ -305,20 +308,52 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
             d[key] = value
         return d
 
+    @classmethod
+    def _generate_select_multiples(cls, dd):
+        return dict([(e.name, [c.get_abbreviated_xpath() for c in e.children]) for e in
+            dd.get_survey_elements() if e.bind.get("type")=="select"])
+
+    @classmethod
+    def _split_select_multiples(cls, record, select_multiples):
+        # find any select multiple(s) columns in this record
+        multi_select_columns = [key for key in record if key in
+            select_multiples.keys()]
+        for key in multi_select_columns:
+            choices = select_multiples[key]
+            # split selected choices by spaces and join by / to the element's
+            # xpath
+            selections = ["%s/%s" % (key, r) for r in record[key].split(" ")]
+
+            # add columns to record for every choice, with default False and
+            # set to True for items in selections
+            record.update(dict([(choice, choice in selections) for choice in
+                choices]))
+
+            # remove the column since we are adding separate columns for each
+            # choice
+            record.pop(key)
+        return record
+
     def _format_for_dataframe(self, cursor):
         # TODO: check for and handle empty results
         data = []
 
         for record in cursor:
             flat_dict = {}
+            # re index repeats
             for key, value in record.iteritems():
-                reindexed = _reindex(key, value)
+                reindexed = self._reindex(key, value)
                 flat_dict.update(reindexed)
+            # check for gps and split into components i.e. latitude, longitude, alt, precision
+
+            # split select multiples
+
             data.append(flat_dict)
         return data
 
     def export_to(self, file_path):
         cursor = self._query_mongo()
+        # generate list of select multiples to be used in format_for_dataframe
         data = self._format_for_dataframe(cursor)
         writer = CSVDataFrameWriter(data)
         writer.write_to_csv(file_path)
