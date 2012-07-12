@@ -21,3 +21,4 @@ from test_form_enter_data import TestFormEnterData
 from test_form_show_submission import TestFormShowSubmission
 from test_google_docs_export import TestGoogleDocsExport
 from test_form_api import TestFormAPI
+from test_http_auth import TestBasicHttpAuthentication
