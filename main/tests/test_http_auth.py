@@ -21,9 +21,9 @@ class TestBasicHttpAuthentication(MainTestCase):
         self.assertEqual(response.status_code, 401)
         # headers with invalid user/pass
         response = self.client.get(self.api_url,
-                                    self._set_auth_headers('x', 'y'))
+                                    **self._set_auth_headers('x', 'y'))
         self.assertEqual(response.status_code, 401)
         # headers with valid user/pass
         response = self.client.get(self.api_url,
-            self._set_auth_headers('bob', 'bob'))
+            **self._set_auth_headers('bob', 'bob'))
         self.assertEqual(response.status_code, 200)
