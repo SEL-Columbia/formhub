@@ -98,16 +98,48 @@ class TestPandasMongoBridge(MainTestCase):
         self._publish_nested_repeats_form()
         self._submit_nested_repeats_instance()
         dd = self.xform.data_dictionary()
-        expected_columns = [u'info/name', u'info/age', u'kids/has_kids', u'kids/kids_details/kids_name',
-                            u'kids/kids_details/kids_age', u'kids/kids_details[2]/kids_name',
-                            u'kids/kids_details[2]/kids_age', u'kids/kids_details[3]/kids_name',
-                            u'kids/kids_details[3]/kids_age', u'kids/kids_details[4]/kids_name',
-                            u'kids/kids_details[4]/kids_age', u'gps', u'gps_latitude', u'gps_longitude',
-                            u'gps_alt', u'gps_precision', u'web_browsers/firefox', u'web_browsers/chrome',
-                            u'web_browsers/ie', u'web_browsers/safari', u'_xform_id_string',
-                            u'_percentage_complete', u'_status', u'_id', u'_attachments', u'_potential_duplicates']
-        columns = dd.get_keys()
-        print "columns: %s\n" % columns
+        expected_columns = [u'kids/has_kids',
+                            u'kids/kids_details[1]/kids_name',
+                            u'kids/kids_details[1]/kids_age',
+                            u'kids/kids_details[1]/kids_immunization[1]/immunization_info',
+                            u'kids/kids_details[1]/kids_immunization[2]/immunization_info',
+                            u'kids/kids_details[1]/kids_immunization[3]/immunization_info',
+                            u'kids/kids_details[1]/kids_immunization[4]/immunization_info',
+                            u'kids/kids_details[2]/kids_name',
+                            u'kids/kids_details[2]/kids_age',
+                            u'kids/kids_details[2]/kids_immunization[1]/immunization_info',
+                            u'kids/kids_details[2]/kids_immunization[2]/immunization_info',
+                            u'kids/kids_details[2]/kids_immunization[3]/immunization_info',
+                            u'kids/kids_details[2]/kids_immunization[4]/immunization_info',
+                            u'kids/kids_details[3]/kids_name',
+                            u'kids/kids_details[3]/kids_age',
+                            u'kids/kids_details[3]/kids_immunization[1]/immunization_info',
+                            u'kids/kids_details[3]/kids_immunization[2]/immunization_info',
+                            u'kids/kids_details[3]/kids_immunization[3]/immunization_info',
+                            u'kids/kids_details[3]/kids_immunization[4]/immunization_info',
+                            u'kids/kids_details[4]/kids_name',
+                            u'kids/kids_details[4]/kids_age',
+                            u'kids/kids_details[4]/kids_immunization[1]/immunization_info',
+                            u'kids/kids_details[4]/kids_immunization[2]/immunization_info',
+                            u'kids/kids_details[4]/kids_immunization[3]/immunization_info',
+                            u'kids/kids_details[4]/kids_immunization[4]/immunization_info',
+                            u'kids/nested_group/nested_name',
+                            u'kids/nested_group/nested_age',
+                            u'gps',
+                            u'gps_latitude', u'gps_longitude',
+                            u'gps_alt', u'gps_precision',
+                            u'web_browsers/firefox',
+                            u'web_browsers/chrome',
+                            u'web_browsers/ie',
+                            u'web_browsers/safari',
+                            u'_xform_id_string',
+                            u'_percentage_complete',
+                            u'_status',
+                            u'_id',
+                            u'_attachments',
+                            u'_potential_duplicates'
+                            ]
+        columns = dd.get_headers()
         self.assertEqual(sorted(expected_columns), sorted(columns))
 
     def test_format_mongo_data_for_csv_columns(self):
@@ -123,6 +155,26 @@ class TestPandasMongoBridge(MainTestCase):
                           u'web_browsers/chrome': u'TRUE', u'web_browsers/ie': u'TRUE',
                           u'web_browsers/safari': u'FALSE', u'web_browsers/firefox': u'FALSE', u'info/name': u'Adam'}
         self.assertEqual(sorted(expected_data_0.keys()), sorted(data[0].keys()))
+
+    def test_split_select_multiples(self):
+        self._publish_nested_repeats_form()
+        dd = self.xform.data_dictionary()
+        self._submit_nested_repeats_instance()
+        csv_df_builder = CSVDataFrameBuilder(self.user.username, self.xform.id_string)
+        cursor = csv_df_builder._query_mongo()
+        record = cursor[0]
+        select_multiples = CSVDataFrameBuilder._generate_select_multiples(dd)
+        result = CSVDataFrameBuilder._split_select_multiples(record,
+            select_multiples)
+        expected_result = {
+            u'web_browsers/ie': True,
+            u'web_browsers/safari': True,
+            u'web_browsers/firefox': False,
+            u'web_browsers/chrome': False
+        }
+        # build a new dictionary only composed of the keys we want to use in the comparison
+        result = dict([(key, result[key]) for key in result.keys() if key in expected_result.keys()])
+        self.assertEqual(expected_result, result)
 
     def test_valid_sheet_name(self):
         sheet_names = ["sheet_1", "sheet_2"]
