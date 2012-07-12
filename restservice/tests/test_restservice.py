@@ -1,5 +1,6 @@
 from django.core.urlresolvers import reverse
 import os
+from main.views import show
 from main.tests.test_base import MainTestCase
 from odk_logger.models.xform import XForm
 from restservice.views import add_service
@@ -46,3 +47,16 @@ class RestServiceTest(MainTestCase):
         response = self.client.post(add_service_url, post_data)
         self.assertEqual(response.status_code, 200)
         self.assertEquals(RestService.objects.all().count(), count + 1)
+
+    def test_anon_service_view(self):
+        self.xform.shared = True
+        self.xform.save()
+        self._logout()
+        url = reverse(show, kwargs={
+            'username': self.xform.user.username,
+            'id_string': self.xform.id_string
+        })
+        response = self.client.get(url)
+        self.assertFalse('<h3 data-toggle="collapse" data-target='
+                         '"#restservice_tab">Rest Services</h3>' \
+                in response.content)
