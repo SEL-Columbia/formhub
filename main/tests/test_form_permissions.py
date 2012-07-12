@@ -245,7 +245,7 @@ class TestFormPermissions(MainTestCase):
 
     def test_anon_reject_api(self):
         response = self.anon.get(self.api_url)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
 
     def test_client_allow_api(self):
         response = self.client.get(self.api_url, {'query': '{}'})
