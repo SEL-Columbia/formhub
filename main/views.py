@@ -242,8 +242,13 @@ def api(request, username=None, id_string=None):
     if not xform:
         return HttpResponseForbidden('Not shared.')
     try:
-        args = {"username": username, "id_string": id_string, "query": request.GET.get('query'),
-                "fields": request.GET.get('fields'), "sort": request.GET.get('sort')}
+        args = {
+            'username': username,
+            'id_string': id_string,
+            'query': request.GET.get('query'),
+            'fields': request.GET.get('fields'),
+            'sort': request.GET.get('sort')
+        }
         if 'start' in request.GET:
             args["start"] = int(request.GET.get('start'))
         if 'limit' in request.GET:
@@ -252,7 +257,7 @@ def api(request, username=None, id_string=None):
             args["count"] = True if int(request.GET.get('count')) > 0 else False
         cursor = ParsedInstance.query_mongo(**args)
     except ValueError, e:
-        return HttpResponseBadRequest(e.message)
+        return HttpResponseBadRequest(e.__str__())
     records = list(record for record in cursor)
     response_text = simplejson.dumps(records)
     if 'callback' in request.GET and request.GET.get('callback') != '':
