@@ -317,11 +317,11 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
             data.append(flat_dict)
         return data
 
-    def export_to(self, file_path):
+    def export_to(self, file_object):
         cursor = self._query_mongo()
         data = self._format_for_dataframe(cursor)
         writer = CSVDataFrameWriter(data)
-        writer.write_to_csv(file_path)
+        writer.write_to_csv(file_object)
 
 class XLSDataFrameWriter(object):
     def __init__(self, records, columns):
