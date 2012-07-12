@@ -30,7 +30,7 @@ from main.models import UserProfile, MetaData
 from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
 from utils.decorators import is_owner
 from utils.user_auth import _helper_auth_helper, has_permission,\
-         has_edit_permission, HttpResponseNotAuthorized
+    has_edit_permission, HttpResponseNotAuthorized
 from odk_logger.import_tools import import_instances_from_zip
 from odk_logger.xform_instance_parser import InstanceEmptyError
 from odk_logger.models.instance import FormInactiveError
@@ -129,6 +129,51 @@ def submission(request, username=None):
     # for each key we have a list of values
     try:
         xml_file_list = request.FILES.pop("xml_submission_file", [])
+        if len(xml_file_list) != 1:
+            return HttpResponseBadRequest(
+                "There should be a single XML submission file."
+                )
+        # save this XML file and media files as attachments
+        media_files = request.FILES.values()
+        if not username:
+            uuid = request.POST.get('uuid')
+            if not uuid:
+                return HttpResponseBadRequest("Username or ID required.")
+            show_options = True
+            xform = XForm.objects.get(uuid=uuid)
+            username = xform.user.username
+        try:
+            instance = create_instance(
+                username,
+                xml_file_list[0],
+                media_files
+            )
+        except InstanceEmptyError:
+            return HttpResponseBadRequest(
+                'Received empty submission. No instance was created'
+            )
+        except FormInactiveError:
+            return HttpResponseNotAllowed('Form is not active')
+        except XForm.DoesNotExist:
+            return HttpResponseNotFound('Form does not exist on this account')
+
+        if instance is None:
+            return HttpResponseBadRequest("Unable to create submission.")
+
+        # ODK needs two things for a form to be considered successful
+        # 1) the status code needs to be 201 (created)
+        # 2) The location header needs to be set to the host it posted to
+        if show_options:
+            context.username = instance.user.username
+            context.id_string = instance.xform.id_string
+            context.domain = Site.objects.get(id=settings.SITE_ID).domain
+            response = render_to_response("submission.html",
+                context_instance=context)
+        else:
+            response = HttpResponse()
+        response.status_code = 201
+        response['Location'] = request.build_absolute_uri(request.path)
+        return response
     except IOError, e:
         if type(e) == tuple:
             e = e[1]
@@ -136,47 +181,9 @@ def submission(request, username=None):
             return HttpResponseBadRequest("File transfer interruption.")
         else:
             raise
-    if len(xml_file_list) != 1:
-        return HttpResponseBadRequest(
-            "There should be a single XML submission file."
-            )
-    # save this XML file and media files as attachments
-    media_files = request.FILES.values()
-    if not username:
-        uuid = request.POST.get('uuid')
-        if not uuid:
-            return HttpResponseBadRequest("Username or ID required.")
-        show_options = True
-        xform = XForm.objects.get(uuid=uuid)
-        username = xform.user.username
-    try:
-        instance = create_instance(
-                username,
-                xml_file_list[0],
-                media_files
-                )
-    except InstanceEmptyError:
-        return HttpResponseBadRequest('Received empty submission. No instance was created')
-    except FormInactiveError:
-        return HttpResponseNotAllowed('Form is not active')
-    except XForm.DoesNotExist:
-        return HttpResponseNotFound('Form does not exist on this account')
-    if instance == None:
-        return HttpResponseBadRequest("Unable to create submission.")
-    # ODK needs two things for a form to be considered successful
-    # 1) the status code needs to be 201 (created)
-    # 2) The location header needs to be set to the host it posted to
-    if show_options:
-        context.username = instance.user.username
-        context.id_string = instance.xform.id_string
-        context.domain = Site.objects.get(id=settings.SITE_ID).domain
-        response = render_to_response("submission.html",
-            context_instance=context)
-    else:
-        response = HttpResponse()
-    response.status_code = 201
-    response['Location'] = request.build_absolute_uri(request.path)
-    return response
+    finally:
+        if len(xml_file_list) and isinstance(xml_file_list, file):
+            xml_file_list[0].close()
 
 def download_xform(request, username, id_string):
     xform = get_object_or_404(XForm,

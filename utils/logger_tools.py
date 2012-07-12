@@ -38,7 +38,6 @@ def create_instance(username, xml_file, media_files,
     simplify things a bit.
     """
     xml = xml_file.read()
-    xml_file.close()
     user = get_object_or_404(User, username=username)
     existing_instance_count = Instance.objects.filter(xml=xml,
             user=user).count()
