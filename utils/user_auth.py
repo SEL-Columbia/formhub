@@ -5,10 +5,20 @@ from functools import wraps
 from django.contrib.auth import authenticate
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.shortcuts import get_object_or_404
 
 from main.models import UserProfile
 from odk_logger.models import XForm
+
+
+class HttpResponseNotAuthorized(HttpResponse):
+    status_code = 401
+
+    def __init__(self):
+        HttpResponse.__init__(self)
+        self['WWW-Authenticate'] =\
+                'Basic realm="%s"' % Site.objects.get_current().name
 
 
 def check_and_set_user(request, username):
@@ -25,7 +35,8 @@ def check_and_set_user(request, username):
 def set_profile_data(context, content_user):
     # create empty profile if none exists
     context.content_user = content_user
-    context.profile, created = UserProfile.objects.get_or_create(user=content_user)
+    context.profile, created = UserProfile.objects\
+            .get_or_create(user=content_user)
     context.location = ""
     if content_user.profile.city:
         context.location = content_user.profile.city
@@ -33,7 +44,8 @@ def set_profile_data(context, content_user):
         if content_user.profile.city:
             context.location += ", "
         context.location += content_user.profile.country
-    context.forms = content_user.xforms.filter(shared__exact=1).order_by('-date_created')
+    context.forms = content_user.xforms.filter(shared__exact=1)\
+            .order_by('-date_created')
     context.num_forms = len(context.forms)
     context.home_page = context.profile.home_page
     if context.home_page and re.match("http", context.home_page) == None:
@@ -84,10 +96,7 @@ def _helper_auth_helper(request):
             if user:
                 request.user = user
                 return None
-    realm = ""
-    response = HttpResponse()
-    response.status_code = 401
-    response['WWW-Authenticate'] = 'Basic realm="%s"' % realm
+    response = HttpResponseNotAuthorized()
     return response
 
 
