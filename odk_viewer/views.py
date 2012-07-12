@@ -152,17 +152,16 @@ def csv_export(request, username, id_string):
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
-    valid, dd = dd_for_params(id_string, owner, request)
-    if not valid: return dd
-    writer = CsvWriter(dd, dd.get_data_for_excel(), dd.get_keys(),\
-            dd.get_variable_name)
-    file_path = writer.get_default_file_path()
-    writer.write_to_file(file_path)
+
+    csv_dataframe_builder = CSvDataFrameBuilder(username, id_string)
+    temp_file = NamedTemporaryFile(suffix=".csv")
+    csv_dataframe_builder.export_to(temp_file)
     if request.GET.get('raw'):
         id_string = None
     response = response_with_mimetype_and_name('application/csv', id_string,
         extension='csv',
-        file_path=file_path, use_local_filesystem=True)
+        file_path=temp_file.name, use_local_filesystem=True)
+    temp_file.close()
     return response
 
 
