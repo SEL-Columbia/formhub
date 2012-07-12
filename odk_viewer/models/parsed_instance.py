@@ -91,7 +91,6 @@ class ParsedInstance(models.Model):
         if type(fields) == list and len(fields) > 0:
             fields_to_select = dict([(field, 1) for field in fields])
         sort = json.loads(sort, object_hook=json_util.object_hook) if sort else {}
-        print query
         if count:
             return [{"count":xform_instances.find(query,
                 fields_to_select).count()}]
