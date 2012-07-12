@@ -83,6 +83,8 @@ class ParsedInstance(models.Model):
         query = json.loads(query, object_hook=json_util.object_hook) if query else {}
         query = dict_for_mongo(query)
         query[cls.USERFORM_ID] = u'%s_%s' % (username, id_string)
+        #display only active elements
+        query.update({"_deleted_at": {"$exists": False}})
         # fields must be a string array i.e. '["name", "age"]'
         fields = json.loads(fields, object_hook=json_util.object_hook) if fields else []
         # TODO: current mongo (2.0.4 of this writing) cant mix including and excluding fields in a single query
@@ -205,6 +207,14 @@ class ParsedInstance(models.Model):
         # insert into Mongo
         self.update_mongo()
 
+    #Update row in MongoDB
+    @classmethod
+    def edit_mongo(cls, query, data):
+        query = json.loads(query, object_hook=json_util.object_hook) if query else {}
+        query = dict_for_mongo(query)  
+        data = json.loads(data, object_hook=json_util.object_hook) if query else {}
+        data = dict_for_mongo(data)
+        xform_instances.update(query, data)
 
 def _remove_from_mongo(sender, **kwargs):
     instance_id = kwargs.get('instance').instance.id
