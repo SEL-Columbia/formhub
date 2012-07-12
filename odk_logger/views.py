@@ -9,7 +9,8 @@ from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotAllowed, HttpResponseNotFound
+    HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotAllowed,\
+    HttpResponseNotFound
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.contrib.auth.models import User
@@ -28,18 +29,12 @@ from models import XForm
 from main.models import UserProfile, MetaData
 from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
 from utils.decorators import is_owner
-from utils.user_auth import has_permission, has_edit_permission
+from utils.user_auth import _helper_auth_helper, has_permission,\
+         has_edit_permission, HttpResponseNotAuthorized
 from odk_logger.import_tools import import_instances_from_zip
 from odk_logger.xform_instance_parser import InstanceEmptyError
 from odk_logger.models.instance import FormInactiveError
 
-class HttpResponseNotAuthorized(HttpResponse):
-    status_code = 401
-
-    def __init__(self, redirect_to):
-        HttpResponse.__init__(self)
-        self['WWW-Authenticate'] =\
-                'Basic realm="%s"' % Site.objects.get_current().name
 
 @require_POST
 @csrf_exempt
@@ -80,6 +75,7 @@ def bulksubmission(request, username):
     else:
         return HttpResponseBadRequest("There was a problem receiving your ODK submission. [Error: multiple submission files (?)]")
 
+
 @login_required
 def bulksubmission_form(request, username=None):
     if request.user.username == username:
@@ -90,35 +86,38 @@ def bulksubmission_form(request, username=None):
 
 @require_GET
 def formList(request, username):
-    render_formlist = False
+    """
+    This is where ODK Collect gets its download list.
+    """
     formlist_user = get_object_or_404(User, username=username)
     profile, created = UserProfile.objects.get_or_create(user=formlist_user)
+
     if profile.require_auth:
-        # source, http://djangosnippets.org/snippets/243/
-        if 'HTTP_AUTHORIZATION' in request.META:
-            auth = request.META['HTTP_AUTHORIZATION'].split()
-            # NOTE: We are only support BASIC authentication for now.
-            if len(auth) == 2 and auth[0].lower() == "basic":
-                uname, passwd = base64.b64decode(auth[1]).split(':')
-                # ensure listing this user's forms
-                if formlist_user.username == uname:
-                    user = authenticate(username=uname, password=passwd)
-                    if user is not None and user.is_active:
-                        render_formlist = True
-    else:
-        render_formlist = True
-    if render_formlist:
-        """This is where ODK Collect gets its download list."""
-        xforms = XForm.objects.filter(downloadable=True, user__username=username)
-        urls = [
-            {'url': request.build_absolute_uri(xform.url()), 'text': xform.title
-            , 'media': {'m': MetaData.media_upload(xform), 'user': xform.user, 
-            'id': xform.id_string}}
-            for xform in xforms
-        ]
-        return render_to_response("formList.xml", {'urls': urls, 'host': 
-                        'http://%s' % request.get_host()}, mimetype="text/xml")
-    return HttpResponseNotAuthorized('Must be logged in')
+        response = _helper_auth_helper(request)
+        if response:
+            return response
+
+        # unauthorized if user in auth request does not match user in path
+        # unauthorized if user not active
+        if formlist_user.username != request.user.username or\
+                not request.user.is_active:
+            return HttpResponseNotAuthorized()
+
+    xforms = XForm.objects.filter(downloadable=True, user__username=username)
+    urls = [{
+        'url': request.build_absolute_uri(xform.url()),
+        'text': xform.title,
+        'media': {
+            'm': MetaData.media_upload(xform),
+            'user': xform.user,
+            'id': xform.id_string
+        }
+    } for xform in xforms]
+
+    return render_to_response("formList.xml", {
+        'urls': urls,
+        'host': 'http://%s' % request.get_host()
+    }, mimetype="text/xml")
 
 
 @require_POST

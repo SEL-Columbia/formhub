@@ -26,7 +26,8 @@ from odk_viewer.views import image_urls_for_form, survey_responses
 from utils.logger_tools import response_with_mimetype_and_name, publish_form
 from utils.decorators import is_owner
 from utils.user_auth import check_and_set_user, set_profile_data,\
-         has_permission, get_xform_and_perms, check_and_set_user_and_form
+         has_permission, get_xform_and_perms, check_and_set_user_and_form,\
+         basic_http_auth
 from django.utils.translation import ugettext_lazy as _
 
 def home(request):
@@ -221,6 +222,7 @@ def show(request, username=None, id_string=None, uuid=None):
     return render_to_response("show.html", context_instance=context)
 
 
+@basic_http_auth
 @require_GET
 def api(request, username=None, id_string=None):
     '''

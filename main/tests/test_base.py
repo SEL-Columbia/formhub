@@ -1,3 +1,4 @@
+import base64
 import os
 from django.test import TestCase
 from django.contrib.auth.models import User
@@ -109,3 +110,8 @@ class MainTestCase(TestCase):
     def _internet_on(self, url='http://74.125.113.99'):
         # default value is some google IP
         return self._check_url(url)
+
+    def _set_auth_headers(self, username, password):
+        return {
+            'HTTP_AUTHORIZATION': 'Basic ' + base64.b64encode('%s:%s' % (username, password)),
+            }
