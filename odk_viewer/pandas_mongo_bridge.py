@@ -1,3 +1,4 @@
+from odk_logger.xform_instance_parser import _flatten_dict
 import settings, re, copy
 from pandas.core.frame import DataFrame
 from pandas.io.parsers import ExcelWriter
@@ -219,11 +220,62 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
     def _get_section(self, section_name):
         return self.sections[self.section_names_list[section_name]]
 
+def _reindex(key, value):
+    """
+    Flatten list columns by appending an index, otherwise return as is
+    """
+    d = {}
+
+    # check for lists
+    if type(value) is list:
+        print "LIST: %s\n" % value
+        for index, item in enumerate(value):
+            # for each list check for dict, we want to transform the key of this dict
+            if type(item) is dict:
+                for nested_key, nested_val in item.iteritems():
+                    # if nested_value is a list, rinse and repeat
+                    if type(nested_val) is list:
+                        d.update(_reindex(nested_key, nested_val))
+                    else:
+                        assert(isinstance(nested_val, basestring)) # it can only be a string
+                        xpaths = nested_key.split('/')
+                        assert(len(xpaths) > 1)# indexed repeats can only be second level so make sure we have at least 2 elements
+
+                        # append index to the second last column i.e. group name
+                        xpaths[-2] += "[%d]" % index
+                        # collapse xpath
+                        d[u"/".join(xpaths)] = nested_val
+    else:
+        # anything that's not a list will be in the top level dict so its safe to simply assign
+        d[key] = value
+    return d
+
 class CSVDataFrameBuilder(AbstractDataFrameBuilder):
     def __init__(self, username, id_string):
         super(CSVDataFrameBuilder, self).__init__(username, id_string)
 
     def _setup(self):
+        pass
+
+    def _format_for_dataframe(self, cursor):
+        # TODO: check for and handle empty results
+        data = []
+
+        for record in cursor:
+            print "record: %s\n" % record
+            flat_dict = {}
+            for key, value in record.iteritems():
+                reindexed = _reindex(key, value)
+                print "reindexed: %s" % reindexed
+                flat_dict.update(reindexed)
+            data.append(flat_dict)
+
+        cursor.rewind()
+        #print "[r for r in cursor]: %s" % [r for r in cursor]
+        print "data: %s" % data
+        return data
+
+    def export_to(self, file_path):
         pass
 
 class XLSDataFrameWriter(object):

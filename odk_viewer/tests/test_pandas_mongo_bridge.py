@@ -26,10 +26,34 @@ class TestPandasMongoBridge(MainTestCase):
         self._make_submission(xml_submission_file_path)
         self.assertEqual(self.response.status_code, 201)
 
-    def _query_mongo(self):
+    def _publish_nested_repeats_form(self):
+        xls_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "../fixtures/nested_repeats/nested_repeats.xls"
+        )
+        count = XForm.objects.count()
+        response = self._publish_xls_file(xls_file_path)
+        self.assertEqual(XForm.objects.count(), count + 1)
+        self.xform = XForm.objects.all().reverse()[0]
+        self.survey_name = u"new_repeats"
+
+    def _submit_nested_repeats_instance(self):
+        xml_submission_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "../fixtures/nested_repeats/instances/nested_repeats_01.xml"
+        )
+        self._make_submission(xml_submission_file_path)
+        self.assertEqual(self.response.status_code, 201)
+
+    def _xls_data_for_dataframe(self):
         xls_df_builder = XLSDataFrameBuilder(self.user.username, self.xform.id_string)
         cursor = xls_df_builder._query_mongo()
         return xls_df_builder._format_for_dataframe(cursor)
+
+    def _csv_data_for_dataframe(self):
+        csv_df_builder = CSVDataFrameBuilder(self.user.username, self.xform.id_string)
+        cursor = csv_df_builder._query_mongo()
+        return csv_df_builder._format_for_dataframe(cursor)
 
     def test_generated_sections(self):
         self._publish_new_repeats_form()
@@ -47,7 +71,7 @@ class TestPandasMongoBridge(MainTestCase):
         """
         self._publish_new_repeats_form()
         self._submit_new_repeats_instance()
-        data = self._query_mongo()
+        data = self._xls_data_for_dataframe()
         self.assertEqual(len(data[self.survey_name]), 1)
         self.assertEqual(len(data[u"kids_details"]), 2)
 
@@ -59,7 +83,7 @@ class TestPandasMongoBridge(MainTestCase):
         """
         self._publish_new_repeats_form()
         self._submit_new_repeats_instance()
-        data = self._query_mongo()
+        data = self._xls_data_for_dataframe()
         expected_default_columns = [u"gps", u"web_browsers/firefox", u"web_browsers/safari", u"web_browsers/ie",
                                     u"info/age", u"web_browsers/chrome", u"kids/has_kids",
                                     u"info/name"] + XLSDataFrameBuilder.EXTRA_COLUMNS
@@ -70,10 +94,34 @@ class TestPandasMongoBridge(MainTestCase):
         kids_details_columns = [k for k in data[u"kids_details"][0]]
         self.assertEqual(sorted(expected_kids_details_columns), sorted(kids_details_columns))
 
-    def test_incremental_parent_indexes(self):
-        """
-        To test fix that ensures parent indexes are incremented for each repeat
-        """
+    def test_csv_columns(self):
+        self._publish_new_repeats_form()
+        self._submit_new_repeats_instance()
+        dd = self.xform.data_dictionary()
+        expected_columns = [u'info/name', u'info/age', u'kids/has_kids', u'kids/kids_details/kids_name',
+                            u'kids/kids_details/kids_age', u'kids/kids_details[2]/kids_name',
+                            u'kids/kids_details[2]/kids_age', u'kids/kids_details[3]/kids_name',
+                            u'kids/kids_details[3]/kids_age', u'kids/kids_details[4]/kids_name',
+                            u'kids/kids_details[4]/kids_age', u'gps', u'gps_latitude', u'gps_longitude',
+                            u'gps_alt', u'gps_precision', u'web_browsers/firefox', u'web_browsers/chrome',
+                            u'web_browsers/ie', u'web_browsers/safari', u'_xform_id_string',
+                            u'_percentage_complete', u'_status', u'_id', u'_attachments', u'_potential_duplicates']
+        columns = dd.get_keys()
+        self.assertEqual(sorted(expected_columns), sorted(columns))
+
+    def test_format_mongo_data_for_csv_columns(self):
+        self._publish_nested_repeats_form()
+        self._submit_nested_repeats_instance()
+        dd = self.xform.data_dictionary()
+        columns = dd.get_keys()
+        data = self._csv_data_for_dataframe()
+        expected_data_0 = {u'gps': u'-1.2627557 36.7926442 0.0 30.0', u'kids/has_kids': u'1', u'_attachments': [],
+                          u'info/age': u'80', u'_xform_id_string': u'new_repeat', u'_status': u'submitted_via_web',
+                          u'kids/kids_details/kids_name': u'Abel', u'kids/kids_details/kids_age': u'50',
+                          u'kids/kids_details[2]/kids_name': u'Cain', u'kids/kids_details[2]/kids_age': u'76',
+                          u'web_browsers/chrome': u'TRUE', u'web_browsers/ie': u'TRUE',
+                          u'web_browsers/safari': u'FALSE', u'web_browsers/firefox': u'FALSE', u'info/name': u'Adam'}
+        self.assertEqual(sorted(expected_data_0.keys()), sorted(data[0].keys()))
 
     def test_valid_sheet_name(self):
         sheet_names = ["sheet_1", "sheet_2"]
