@@ -250,6 +250,8 @@ def api(request, username=None, id_string=None):
         if 'count' in request.GET:
             args["count"] = True if int(request.GET.get('count')) > 0 else False
         cursor = ParsedInstance.query_mongo(**args)
+        #print y.find({"deleted_at": {"$exists": true}})
+        print args["query"]
     except ValueError, e:
         return HttpResponseBadRequest(e.message)
     records = list(record for record in cursor)
