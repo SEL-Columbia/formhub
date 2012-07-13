@@ -116,7 +116,8 @@ class AbstractDataFrameBuilder(object):
         return cursor
 
     def _setup(self):
-        raise NotImplementedError("_setup must be implemented")
+        self.select_multiples = self._collect_select_multiples(self.dd)
+        self.gps_fields = self._collect_gps_fields(self.dd)
 
 
 class XLSDataFrameBuilder(AbstractDataFrameBuilder):
@@ -309,10 +310,9 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         super(CSVDataFrameBuilder, self).__init__(username, id_string)
 
     def _setup(self):
+        super(CSVDataFrameBuilder, self)._setup()
         self.dd = DataDictionary.objects.get(user__username=self.username,
             id_string=self.id_string)
-        self.select_multiples = self._collect_select_multiples(self.dd)
-        self.gps_fields = self._collect_gps_fields(self.dd)
 
     @classmethod
     def _reindex(cls, key, value, parent_prefix = None):
