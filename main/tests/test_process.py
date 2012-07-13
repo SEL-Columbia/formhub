@@ -1,12 +1,14 @@
-from test_base import MainTestCase
-from odk_viewer.models import DataDictionary
-from odk_logger.models import XForm
-import os
-import fnmatch
-from odk_viewer.views import xls_export, csv_export
-from django.core.urlresolvers import reverse
 import csv
+import fnmatch
 import json
+import os
+
+from django.core.urlresolvers import reverse
+
+from odk_logger.models import XForm
+from odk_viewer.models import DataDictionary
+from odk_viewer.views import csv_export, xls_export
+from test_base import MainTestCase
 
 
 class TestSite(MainTestCase):
@@ -37,7 +39,8 @@ class TestSite(MainTestCase):
             self._create_user_and_login()
             xls_url = 'http://formhub.org/pld/forms/transportation_2011_07_25/form.xls'
             pre_count = XForm.objects.count()
-            response = self.client.post('/%s/' % self.user.username, {'xls_url': xls_url})
+            response = self.client.post('/%s/' % self.user.username,
+                                        {'xls_url': xls_url})
             # make sure publishing the survey worked
             self.assertEqual(response.status_code, 200)
             self.assertEqual(XForm.objects.count(), pre_count + 1)
@@ -48,7 +51,8 @@ class TestSite(MainTestCase):
             self._create_user_and_login()
             xls_url = 'formhuborg/pld/forms/transportation_2011_07_25/form.xls'
             pre_count = XForm.objects.count()
-            response = self.client.post('/%s/' % self.user.username, {'xls_url': xls_url})
+            response = self.client.post('/%s/' % self.user.username,
+                                        {'xls_url': xls_url})
             # make sure publishing the survey worked
             self.assertEqual(response.status_code, 200)
             self.assertEqual(XForm.objects.count(), pre_count)
@@ -65,7 +69,8 @@ class TestSite(MainTestCase):
             for root, sub_folders, filenames in os.walk(root_dir):
                 # ignore files that don't end in '.xls'
                 for filename in fnmatch.filter(filenames, '*.xls'):
-                    success = self._publish_file(os.path.join(root, filename), False)
+                    success = self._publish_file(os.path.join(root, filename),
+                                                 False)
                     if success:
                         # delete it so we don't have id_string conflicts
                         if self.xform:
@@ -79,13 +84,15 @@ class TestSite(MainTestCase):
             self._create_user_and_login()
             xls_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0AgpC5gsTSm_4dFZQdzZZVGxlcEQ3aktBbFlyRXE3cFE&output=xls'
             pre_count = XForm.objects.count()
-            response = self.client.post('/%s/' % self.user.username, {'xls_url': xls_url})
+            response = self.client.post('/%s/' % self.user.username,
+                                        {'xls_url': xls_url})
             # make sure publishing the survey worked
             self.assertEqual(response.status_code, 200)
             self.assertEqual(XForm.objects.count(), pre_count+1)
 
     def test_not_logged_in_cannot_upload(self):
-        path = os.path.join(self.this_directory, "fixtures", "transportation", "transportation.xls")
+        path = os.path.join(self.this_directory, "fixtures", "transportation",
+                            "transportation.xls")
         if not path.startswith('/%s/' % self.user.username):
             path = os.path.join(self.this_directory, path)
         with open(path) as xls_file:
@@ -111,7 +118,8 @@ class TestSite(MainTestCase):
         return True
 
     def _publish_xls_file(self):
-        xls_path = os.path.join(self.this_directory, "fixtures", "transportation", "transportation.xls")
+        xls_path = os.path.join(self.this_directory, "fixtures",
+                                "transportation", "transportation.xls")
         self._publish_file(xls_path)
         self.assertEqual(self.xform.id_string, "transportation_2011_07_25")
 
@@ -133,7 +141,8 @@ class TestSite(MainTestCase):
 
     def _download_xform(self):
         response = self.anon.get(self.download_url)
-        xml_path = os.path.join(self.this_directory, "fixtures", "transportation", "transportation.xml")
+        xml_path = os.path.join(self.this_directory, "fixtures",
+                                "transportation", "transportation.xml")
         with open(xml_path) as xml_file:
             expected_content = xml_file.read()
         self.assertEqual(expected_content, response.content)
@@ -150,7 +159,8 @@ class TestSite(MainTestCase):
         qs = DataDictionary.objects.filter(user=self.user)
         self.assertEqual(qs.count(), 1)
         self.data_dictionary = DataDictionary.objects.all()[0]
-        with open(os.path.join(self.this_directory, "fixtures", "transportation", "headers.json")) as f:
+        with open(os.path.join(self.this_directory, "fixtures",
+                  "transportation", "headers.json")) as f:
             expected_list = json.load(f)
         self.assertEqual(self.data_dictionary.get_headers(), expected_list)
 
