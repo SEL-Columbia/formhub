@@ -36,10 +36,10 @@ def upload_to(instance, filename, username=None):
 
 class DataDictionary(XForm):
 
-    geodata_suffixes = [
+    GEODATA_SUFFIXES = [
         'latitude',
         'longitude',
-        'alt',
+        'altitude',
         'precision'
     ]
 
@@ -121,10 +121,18 @@ class DataDictionary(XForm):
             for child in survey_element.children:
                 result.append('/'.join([path, child.name]))
         elif survey_element.bind.get(u'type') == u'geopoint':
-            for suffix in self.geodata_suffixes:
-                result.append('_'.join([path, suffix]))
+            result += self.get_additional_geopoint_fields(path)
 
         return result
+
+    @classmethod
+    def get_additional_geopoint_fields(cls, field):
+        """
+        This will return a list of the additional fields that are
+        added per geopoint.  For example, given a field 'gps' it will
+        return '_gps_(suffix)' for suffix in DataDictionary.GEODATA_SUFFIXES
+        """
+        return ['_' + '_'.join([field, suffix]) for suffix in cls.GEODATA_SUFFIXES]
 
     def _additional_headers(self):
         return [u'_xform_id_string', u'_percentage_complete', u'_status',
