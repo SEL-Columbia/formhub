@@ -61,6 +61,52 @@ class AbstractDataFrameBuilder(object):
     def _fields_to_ignore(cls):
         return dict([(field, 0) for field in cls.INTERNAL_FIELDS])
 
+    @classmethod
+    def _collect_select_multiples(cls, dd):
+        return dict([(e.get_abbreviated_xpath(), [c.get_abbreviated_xpath() for c in e.children])
+            for e in dd.get_survey_elements() if e.bind.get("type")=="select"])
+
+    @classmethod
+    def _split_select_multiples(cls, record, select_multiples):
+        # find any select multiple(s) columns in this record
+        multi_select_columns = [key for key in record if key in
+            select_multiples.keys()]
+        for key, choices in select_multiples.items():
+            # split selected choices by spaces and join by / to the element's
+            # xpath
+            selections = ["%s/%s" % (key, r) for r in record[key].split(" ")]
+            # remove the column since we are adding separate columns for each
+            # choice
+            record.pop(key)
+
+            # add columns to record for every choice, with default False and
+            # set to True for items in selections
+            record.update(dict([(choice, choice in selections) for choice in
+                choices]))
+
+        return record
+
+    @classmethod
+    def _collect_gps_fields(cls, dd):
+        return [e.get_abbreviated_xpath() for e in dd.get_survey_elements()
+            if e.bind.get("type")=="geopoint"]
+
+    @classmethod
+    def _split_gps_fields(cls, record, gps_fields):
+        updated_gps_fields = {}
+        for key, value in record.iteritems():
+            if key in gps_fields:
+                gps_fields = DataDictionary.get_additional_geopoint_fields(key)
+                gps_parts = dict([(field, None) for field in gps_fields])
+                parts = value.split(' ')
+                # TODO: check whether or not we can have a gps recording
+                # from ODKCollect that has less than four components,
+                # for now we are assuming that this is not the case.
+                if len(parts) == 4:
+                    gps_parts = dict(zip(gps_fields, parts))
+                updated_gps_fields.update(gps_parts)
+        record.update(updated_gps_fields)
+
     def _query_mongo(self, filter_query=None, columns={}):
         if columns == {}:
             columns = self._fields_to_ignore()
@@ -172,23 +218,9 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         # this but end up with duplicate data from repeats
 
         # find any select multiple(s) and add additional columns to record
-        multi_select_keys = [key for key in record if key in
-                self.select_multiples.keys()]
-        for key in multi_select_keys:
-            choices = self.select_multiples[key]
-
-            # split selected choices by spaces and join by / to the element's
-            # xpath
-            selections = ["%s/%s" % (key, r) for r in record[key].split(" ")]
-
-            # add columns to record for every choice, with default False and
-            # set to True for items in selections
-            record.update(dict([(choice, choice in selections) for choice in
-                choices]))
-
-            # remove the column since we are adding separate columns for each
-            # choice
-            record.pop(key)
+        record = self._split_select_multiples(record, self.select_multiples)
+        # alt, precision
+        self._split_gps_fields(record, self.gps_fields)
         for column in columns:
             try:
                 data_section[len(data_section)-1].update({column:
@@ -322,52 +354,6 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
             # safe to simply assign
             d[key] = value
         return d
-
-    @classmethod
-    def _collect_select_multiples(cls, dd):
-        return dict([(e.get_abbreviated_xpath(), [c.get_abbreviated_xpath() for c in e.children])
-            for e in dd.get_survey_elements() if e.bind.get("type")=="select"])
-
-    @classmethod
-    def _collect_gps_fields(cls, dd):
-        return [e.get_abbreviated_xpath() for e in dd.get_survey_elements()
-            if e.bind.get("type")=="geopoint"]
-
-    @classmethod
-    def _split_select_multiples(cls, record, select_multiples):
-        # find any select multiple(s) columns in this record
-        multi_select_columns = [key for key in record if key in
-            select_multiples.keys()]
-        for key, choices in select_multiples.items():
-            # split selected choices by spaces and join by / to the element's
-            # xpath
-            selections = ["%s/%s" % (key, r) for r in record[key].split(" ")]
-            # remove the column since we are adding separate columns for each
-            # choice
-            record.pop(key)
-
-            # add columns to record for every choice, with default False and
-            # set to True for items in selections
-            record.update(dict([(choice, choice in selections) for choice in
-                choices]))
-
-        return record
-
-    @classmethod
-    def _split_gps_fields(cls, record, gps_fields):
-        updated_gps_fields = {}
-        for key, value in record.iteritems():
-            if key in gps_fields:
-                gps_fields = DataDictionary.get_additional_geopoint_fields(key)
-                gps_parts = dict([(field, None) for field in gps_fields])
-                parts = value.split(' ')
-                # TODO: check whether or not we can have a gps recording
-                # from ODKCollect that has less than four components,
-                # for now we are assuming that this is not the case.
-                if len(parts) == 4:
-                    gps_parts = dict(zip(gps_fields, parts))
-                updated_gps_fields.update(gps_parts)
-        record.update(updated_gps_fields)
 
     def _format_for_dataframe(self, cursor):
         # TODO: check for and handle empty results
