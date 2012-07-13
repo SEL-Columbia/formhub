@@ -24,8 +24,7 @@ class TestExports(MainTestCase):
                 'id_string': self.xform.id_string
             }))
         self.assertEqual(response.status_code, 200)
-        test_file_path = os.path.join(os.path.dirname(__file__), '..',
+        test_file_path = os.path.join(os.path.dirname(__file__),
             'fixtures', 'transportation.csv')
         with open(test_file_path, 'r') as test_file:
             self.assertEqual(response.content, test_file.read())
-        print response.content
