@@ -18,12 +18,20 @@ class TestBasicHttpAuthentication(MainTestCase):
 
     def test_http_auth(self):
         response = self.client.get(self.api_url)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 403)
         # headers with invalid user/pass
         response = self.client.get(self.api_url,
                                     **self._set_auth_headers('x', 'y'))
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 403)
         # headers with valid user/pass
         response = self.client.get(self.api_url,
             **self._set_auth_headers('bob', 'bob'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_http_auth_shared_data(self):
+        self.xform.shared_data = True
+        self.xform.save()
+        response = self.anon.get(self.api_url)
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(self.api_url)
         self.assertEqual(response.status_code, 200)
