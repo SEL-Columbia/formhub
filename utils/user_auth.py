@@ -84,7 +84,7 @@ def get_xform_and_perms(username, id_string, request):
     return [xform, is_owner, can_edit, can_view]
 
 
-def _helper_auth_helper(request):
+def helper_auth_helper(request):
     if request.user and request.user.is_authenticated():
         return None
         # source, http://djangosnippets.org/snippets/243/
@@ -103,7 +103,7 @@ def _helper_auth_helper(request):
 def basic_http_auth(func):
     @wraps(func)
     def inner(request, *args, **kwargs):
-        result = _helper_auth_helper(request)
+        result = helper_auth_helper(request)
         if result is not None:
             return result
         return func(request, *args, **kwargs)
