@@ -22,7 +22,8 @@ from odk_logger.models import XForm, Instance, Attachment
 from odk_logger.xform_instance_parser import xform_instance_to_dict
 from odk_viewer.models import DataDictionary, ParsedInstance
 from pyxform import Section, Question
-from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder
+from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder,\
+    CSVDataFrameBuilder
 from utils.logger_tools import response_with_mimetype_and_name,\
          disposition_ext_and_date, round_down_geopoint
 from utils.viewer_tools import image_urls, image_urls_for_form
@@ -153,14 +154,17 @@ def csv_export(request, username, id_string):
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
 
-    csv_dataframe_builder = CSvDataFrameBuilder(username, id_string)
+    csv_dataframe_builder = CSVDataFrameBuilder(username, id_string)
     temp_file = NamedTemporaryFile(suffix=".csv")
     csv_dataframe_builder.export_to(temp_file)
     if request.GET.get('raw'):
         id_string = None
     response = response_with_mimetype_and_name('application/csv', id_string,
-        extension='csv',
-        file_path=temp_file.name, use_local_filesystem=True)
+        extension='csv')
+    temp_file.seek(0)
+    response.write(temp_file.read())
+    temp_file.seek(0, os.SEEK_END)
+    response['Content-Length'] = temp_file.tell()
     temp_file.close()
     return response
 
