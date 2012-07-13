@@ -124,6 +124,7 @@ def formList(request, username):
 @csrf_exempt
 def submission(request, username=None):
     context = RequestContext(request)
+    xml_file_list = []
     media_files = []
     show_options = False
     # request.FILES is a django.utils.datastructures.MultiValueDict
