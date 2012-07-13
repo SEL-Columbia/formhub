@@ -29,7 +29,7 @@ from models import XForm
 from main.models import UserProfile, MetaData
 from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
 from utils.decorators import is_owner
-from utils.user_auth import _helper_auth_helper, has_permission,\
+from utils.user_auth import helper_auth_helper, has_permission,\
          has_edit_permission, HttpResponseNotAuthorized
 from odk_logger.import_tools import import_instances_from_zip
 from odk_logger.xform_instance_parser import InstanceEmptyError
@@ -93,7 +93,7 @@ def formList(request, username):
     profile, created = UserProfile.objects.get_or_create(user=formlist_user)
 
     if profile.require_auth:
-        response = _helper_auth_helper(request)
+        response = helper_auth_helper(request)
         if response:
             return response
 
