@@ -149,7 +149,7 @@ class TestPandasMongoBridge(MainTestCase):
         csv_df_builder = CSVDataFrameBuilder(self.user.username, self.xform.id_string)
         cursor = csv_df_builder._query_mongo()
         record = cursor[0]
-        select_multiples = CSVDataFrameBuilder._generate_select_multiples(dd)
+        select_multiples = CSVDataFrameBuilder._collect_select_multiples(dd)
         result = CSVDataFrameBuilder._split_select_multiples(record,
             select_multiples)
         expected_result = {
