@@ -41,6 +41,7 @@ def create_instance(username, xml_file, media_files,
     user = get_object_or_404(User, username=username)
     existing_instance_count = Instance.objects.filter(xml=xml,
             user=user).count()
+
     if existing_instance_count == 0:
         proceed_to_create_instance = True
     else:
