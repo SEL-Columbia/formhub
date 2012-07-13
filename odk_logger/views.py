@@ -184,9 +184,9 @@ def submission(request, username=None):
             raise
     finally:
         if len(xml_file_list):
-            [_file.close() for f in xml_file_list]
+            [_file.close() for _file in xml_file_list]
         if len(media_files):
-            [_file.close() for f in media_files]
+            [_file.close() for _file in media_files]
 
 def download_xform(request, username, id_string):
     xform = get_object_or_404(XForm,
