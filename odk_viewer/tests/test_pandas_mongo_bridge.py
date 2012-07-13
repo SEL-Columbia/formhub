@@ -100,50 +100,33 @@ class TestPandasMongoBridge(MainTestCase):
     def test_csv_columns(self):
         self._publish_nested_repeats_form()
         self._submit_nested_repeats_instance()
-        dd = self.xform.data_dictionary()
-        expected_columns = [u'kids/has_kids',
-                            u'kids/kids_details[1]/kids_name',
-                            u'kids/kids_details[1]/kids_age',
-                            u'kids/kids_details[1]/kids_immunization[1]/immunization_info',
-                            u'kids/kids_details[1]/kids_immunization[2]/immunization_info',
-                            u'kids/kids_details[1]/kids_immunization[3]/immunization_info',
-                            u'kids/kids_details[1]/kids_immunization[4]/immunization_info',
-                            u'kids/kids_details[2]/kids_name',
-                            u'kids/kids_details[2]/kids_age',
-                            u'kids/kids_details[2]/kids_immunization[1]/immunization_info',
-                            u'kids/kids_details[2]/kids_immunization[2]/immunization_info',
-                            u'kids/kids_details[2]/kids_immunization[3]/immunization_info',
-                            u'kids/kids_details[2]/kids_immunization[4]/immunization_info',
-                            u'kids/kids_details[3]/kids_name',
-                            u'kids/kids_details[3]/kids_age',
-                            u'kids/kids_details[3]/kids_immunization[1]/immunization_info',
-                            u'kids/kids_details[3]/kids_immunization[2]/immunization_info',
-                            u'kids/kids_details[3]/kids_immunization[3]/immunization_info',
-                            u'kids/kids_details[3]/kids_immunization[4]/immunization_info',
-                            u'kids/kids_details[4]/kids_name',
-                            u'kids/kids_details[4]/kids_age',
-                            u'kids/kids_details[4]/kids_immunization[1]/immunization_info',
-                            u'kids/kids_details[4]/kids_immunization[2]/immunization_info',
-                            u'kids/kids_details[4]/kids_immunization[3]/immunization_info',
-                            u'kids/kids_details[4]/kids_immunization[4]/immunization_info',
-                            u'kids/nested_group/nested_name',
-                            u'kids/nested_group/nested_age',
-                            u'gps',
-                            u'gps_latitude', u'gps_longitude',
-                            u'gps_alt', u'gps_precision',
-                            u'web_browsers/firefox',
-                            u'web_browsers/chrome',
-                            u'web_browsers/ie',
-                            u'web_browsers/safari',
-                            u'_xform_id_string',
-                            u'_percentage_complete',
-                            u'_status',
-                            u'_id',
-                            u'_attachments',
-                            u'_potential_duplicates'
-                            ]
-        columns = dd.get_headers()
-        #self.assertEqual(sorted(expected_columns), sorted(columns))
+        data = self._csv_data_for_dataframe()
+        columns = data[0].keys()
+        expected_columns = [
+            u'kids/has_kids',
+            u'kids/kids_details[1]/kids_name',
+            u'kids/kids_details[1]/kids_age',
+            u'kids/kids_details[1]/kids_immunization[1]/immunization_info',
+            u'kids/kids_details[1]/kids_immunization[2]/immunization_info',
+            u'kids/kids_details[1]/kids_immunization[3]/immunization_info',
+            u'kids/kids_details[2]/kids_name',
+            u'kids/kids_details[2]/kids_age',
+            u'kids/kids_details[2]/kids_immunization[1]/immunization_info',
+            u'kids/kids_details[2]/kids_immunization[2]/immunization_info',
+            u'kids/nested_group/nested_name',
+            u'kids/nested_group/nested_age',
+            u'gps',
+            u'_gps_latitude',
+            u'_gps_longitude',
+            u'_gps_altitude',
+            u'_gps_precision',
+            u'web_browsers/firefox',
+            u'web_browsers/chrome',
+            u'web_browsers/ie',
+            u'web_browsers/safari',
+        ]
+        self.maxDiff = None
+        self.assertEqual(sorted(expected_columns), sorted(columns))
 
     def test_format_mongo_data_for_csv_columns(self):
         self._publish_single_level_repeat_form()
