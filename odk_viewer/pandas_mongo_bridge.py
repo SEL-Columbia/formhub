@@ -44,6 +44,11 @@ def get_valid_sheet_name(sheet_name, existing_name_list):
 
 
 class AbstractDataFrameBuilder(object):
+
+    INTERNAL_FIELDS = ['_xform_id_string', '_percentage_complete', '_status',
+         '_id', '_attachments', '_potential_duplicates', '_geolocation',
+         '_uuid', '_userform_id']
+
     """
     Group functionality used by any DataFrameBuilder i.e. XLS, CSV and KML
     """
@@ -52,10 +57,16 @@ class AbstractDataFrameBuilder(object):
         self.id_string = id_string
         self._setup()
 
-    def _query_mongo(self, filter_query = None):
+    @classmethod
+    def _fields_to_ignore(cls):
+        return dict([(field, 0) for field in cls.INTERNAL_FIELDS])
+
+    def _query_mongo(self, filter_query=None, columns={}):
+        if columns == {}:
+            columns = self._fields_to_ignore()
         query = {ParsedInstance.USERFORM_ID: u'%s_%s' % (self.username,
             self.id_string)}
-        cursor = xform_instances.find(query)
+        cursor = xform_instances.find(query, columns)
         return cursor
 
     def _setup(self):
@@ -261,13 +272,15 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
 
 
 class CSVDataFrameBuilder(AbstractDataFrameBuilder):
+
     def __init__(self, username, id_string):
         super(CSVDataFrameBuilder, self).__init__(username, id_string)
 
     def _setup(self):
         self.dd = DataDictionary.objects.get(user__username=self.username,
             id_string=self.id_string)
-        self.select_multiples = self._generate_select_multiples(self.dd)
+        self.select_multiples = self._collect_select_multiples(self.dd)
+        self.gps_fields = self._collect_gps_fields(self.dd)
 
     @classmethod
     def _reindex(cls, key, value, parent_prefix = None):
@@ -280,6 +293,8 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         if type(value) is list:
             #print "LIST: %s\n" % value
             for index, item in enumerate(value):
+                # start at 1
+                index += 1
                 # for each list check for dict, we want to transform the key of
                 # this dict
                 if type(item) is dict:
@@ -309,44 +324,67 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         return d
 
     @classmethod
-    def _generate_select_multiples(cls, dd):
-        return dict([(e.name, [c.get_abbreviated_xpath() for c in e.children]) for e in
-            dd.get_survey_elements() if e.bind.get("type")=="select"])
+    def _collect_select_multiples(cls, dd):
+        return dict([(e.get_abbreviated_xpath(), [c.get_abbreviated_xpath() for c in e.children])
+            for e in dd.get_survey_elements() if e.bind.get("type")=="select"])
+
+    @classmethod
+    def _collect_gps_fields(cls, dd):
+        return [e.get_abbreviated_xpath() for e in dd.get_survey_elements()
+            if e.bind.get("type")=="geopoint"]
 
     @classmethod
     def _split_select_multiples(cls, record, select_multiples):
         # find any select multiple(s) columns in this record
         multi_select_columns = [key for key in record if key in
             select_multiples.keys()]
-        for key in multi_select_columns:
-            choices = select_multiples[key]
+        for key, choices in select_multiples.items():
             # split selected choices by spaces and join by / to the element's
             # xpath
             selections = ["%s/%s" % (key, r) for r in record[key].split(" ")]
+            # remove the column since we are adding separate columns for each
+            # choice
+            record.pop(key)
 
             # add columns to record for every choice, with default False and
             # set to True for items in selections
             record.update(dict([(choice, choice in selections) for choice in
                 choices]))
 
-            # remove the column since we are adding separate columns for each
-            # choice
-            record.pop(key)
         return record
+
+    @classmethod
+    def _split_gps_fields(cls, record, gps_fields):
+        updated_gps_fields = {}
+        for key, value in record.iteritems():
+            if key in gps_fields:
+                gps_fields = DataDictionary.get_additional_geopoint_fields(key)
+                gps_parts = dict([(field, None) for field in gps_fields])
+                parts = value.split(' ')
+                # TODO: check whether or not we can have a gps recording
+                # from ODKCollect that has less than four components,
+                # for now we are assuming that this is not the case.
+                if len(parts) == 4:
+                    gps_parts = dict(zip(gps_fields, parts))
+                updated_gps_fields.update(gps_parts)
+        record.update(updated_gps_fields)
 
     def _format_for_dataframe(self, cursor):
         # TODO: check for and handle empty results
         data = []
 
         for record in cursor:
+            # split select multiples
+            record = self._split_select_multiples(record,
+                self.select_multiples)
+            # check for gps and split into components i.e. latitude, longitude,
+            # alt, precision
+            self._split_gps_fields(record, self.gps_fields)
             flat_dict = {}
             # re index repeats
             for key, value in record.iteritems():
                 reindexed = self._reindex(key, value)
                 flat_dict.update(reindexed)
-            # check for gps and split into components i.e. latitude, longitude, alt, precision
-
-            # split select multiples
 
             data.append(flat_dict)
         return data
