@@ -1,7 +1,9 @@
+import re
 import settings
 from pandas.core.frame import DataFrame
 from pandas.io.parsers import ExcelWriter
 from pyxform.survey import Survey
+from pyxform.survey_element import SurveyElement
 from pyxform.section import Section, RepeatingSection
 from pyxform.question import Question
 from odk_viewer.models.data_dictionary import ParsedInstance, DataDictionary
@@ -12,7 +14,7 @@ xform_instances = settings.MONGO_DB.instances
 
 # the bind type of select multiples that we use to compare
 MULTIPLE_SELECT_BIND_TYPE = u"select"
-
+GEOPOINT_BIND_TYPE = u"geopoint"
 
 def survey_name_and_xpath_from_dd(dd):
     for e in dd.get_survey_elements():
@@ -57,6 +59,12 @@ class AbstractDataFrameBuilder(object):
         self.id_string = id_string
         self._setup()
 
+    def _setup(self):
+        self.dd = DataDictionary.objects.get(user__username=self.username,
+            id_string=self.id_string)
+        self.select_multiples = self._collect_select_multiples(self.dd)
+        self.gps_fields = self._collect_gps_fields(self.dd)
+
     @classmethod
     def _fields_to_ignore(cls):
         return dict([(field, 0) for field in cls.INTERNAL_FIELDS])
@@ -72,18 +80,23 @@ class AbstractDataFrameBuilder(object):
         multi_select_columns = [key for key in record if key in
             select_multiples.keys()]
         for key, choices in select_multiples.items():
-            # split selected choices by spaces and join by / to the element's
-            # xpath
-            selections = ["%s/%s" % (key, r) for r in record[key].split(" ")]
-            # remove the column since we are adding separate columns for each
-            # choice
-            record.pop(key)
+            if key in record:
+                # split selected choices by spaces and join by / to the element's
+                # xpath
+                selections = ["%s/%s" % (key, r) for r in record[key].split(" ")]
+                # remove the column since we are adding separate columns for each
+                # choice
+                record.pop(key)
+                # add columns to record for every choice, with default False and
+                # set to True for items in selections
+                record.update(dict([(choice, choice in selections) for choice in
+                    choices]))
 
-            # add columns to record for every choice, with default False and
-            # set to True for items in selections
-            record.update(dict([(choice, choice in selections) for choice in
-                choices]))
-
+            # recurse into repeats
+            for record_key, record_item in record.items():
+                if type(record_item) == list:
+                    for list_item in record_item:
+                        cls._split_select_multiples(list_item, select_multiples)
         return record
 
     @classmethod
@@ -96,7 +109,7 @@ class AbstractDataFrameBuilder(object):
         updated_gps_fields = {}
         for key, value in record.iteritems():
             if key in gps_fields:
-                gps_fields = DataDictionary.get_additional_geopoint_fields(key)
+                gps_fields = DataDictionary.get_additional_geopoint_xpaths(key)
                 gps_parts = dict([(field, None) for field in gps_fields])
                 parts = value.split(' ')
                 # TODO: check whether or not we can have a gps recording
@@ -105,6 +118,10 @@ class AbstractDataFrameBuilder(object):
                 if len(parts) == 4:
                     gps_parts = dict(zip(gps_fields, parts))
                 updated_gps_fields.update(gps_parts)
+            # check for repeats within record i.e. in value
+            if type(value) == list:
+                for list_item in  value:
+                    cls._split_gps_fields(list_item, gps_fields)
         record.update(updated_gps_fields)
 
     def _query_mongo(self, filter_query=None, columns={}):
@@ -114,10 +131,6 @@ class AbstractDataFrameBuilder(object):
             self.id_string)}
         cursor = xform_instances.find(query, columns)
         return cursor
-
-    def _setup(self):
-        self.select_multiples = self._collect_select_multiples(self.dd)
-        self.gps_fields = self._collect_gps_fields(self.dd)
 
 
 class XLSDataFrameBuilder(AbstractDataFrameBuilder):
@@ -138,6 +151,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         super(XLSDataFrameBuilder, self).__init__(username, id_string)
 
     def _setup(self):
+        super(XLSDataFrameBuilder, self)._setup()
         # need to split columns, with repeats in individual sheets and
         # everything else on the default sheet
         self._generate_sections()
@@ -248,12 +262,9 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         # dict of section name to their indexes within self.sections
         self.section_names_list = {}
 
-        dd = DataDictionary.objects.get(user__username=self.username,
-                id_string=self.id_string)
-
         # TODO: make sure survey name and any section name is a valid xml
         # sheet name i.e. 31 chars or less etc.
-        self.survey_name, survey_xpath = survey_name_and_xpath_from_dd(dd)
+        self.survey_name, survey_xpath = survey_name_and_xpath_from_dd(self.dd)
 
         # setup the default section
         self._create_section(self.survey_name, survey_xpath, False)
@@ -263,7 +274,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
 
         # get form elements to split repeats into separate section/sheets and
         # everything else in the default section
-        for e in dd.get_survey_elements():
+        for e in self.dd.get_survey_elements():
             # check for a Section or sub-classes of
             if isinstance(e, Section):
                 # always default to the main sheet
@@ -289,6 +300,13 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                         # columns
                         for option in c.children:
                             self._add_column_to_section(sheet_name, option)
+                    # split gps fields within this section
+                    if c.bind.get(u"type") == GEOPOINT_BIND_TYPE:
+                        # add columns for geopint components
+                        for xpath in\
+                            self.dd.get_additional_geopoint_xpaths(
+                            c.get_abbreviated_xpath()):
+                            self._add_column_to_section(sheet_name, xpath)
 
     def _create_section(self, section_name, xpath, is_repeat):
         index = len(self.sections)
@@ -297,8 +315,12 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         self.section_names_list[section_name] = index
 
     def _add_column_to_section(self, sheet_name, column):
-        self._get_section(sheet_name)["columns"].append(
+        if isinstance(column, SurveyElement):
+            self._get_section(sheet_name)["columns"].append(
                 column.get_abbreviated_xpath())
+        elif isinstance(column, basestring):
+            self._get_section(sheet_name)["columns"].append(
+                column)
 
     def _get_section(self, section_name):
         return self.sections[self.section_names_list[section_name]]
@@ -311,8 +333,6 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
 
     def _setup(self):
         super(CSVDataFrameBuilder, self)._setup()
-        self.dd = DataDictionary.objects.get(user__username=self.username,
-            id_string=self.id_string)
 
     @classmethod
     def _reindex(cls, key, value, parent_prefix = None):
@@ -323,7 +343,6 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
 
         # check for lists
         if type(value) is list:
-            #print "LIST: %s\n" % value
             for index, item in enumerate(value):
                 # start at 1
                 index += 1
@@ -364,7 +383,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
             record = self._split_select_multiples(record,
                 self.select_multiples)
             # check for gps and split into components i.e. latitude, longitude,
-            # alt, precision
+            # altitude, precision
             self._split_gps_fields(record, self.gps_fields)
             flat_dict = {}
             # re index repeats

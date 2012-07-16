@@ -43,6 +43,8 @@ class DataDictionary(XForm):
         'precision'
     ]
 
+    PREFIX_NAME_REGEX = re.compile(r'(?P<prefix>.+/)(?P<name>[^/]+)$')
+
     def __init__(self, *args, **kwargs):
         self.surveys_for_export = lambda d: d.surveys.all()
         super(DataDictionary, self).__init__(*args, **kwargs)
@@ -121,18 +123,27 @@ class DataDictionary(XForm):
             for child in survey_element.children:
                 result.append('/'.join([path, child.name]))
         elif survey_element.bind.get(u'type') == u'geopoint':
-            result += self.get_additional_geopoint_fields(path)
+            result += self.get_additional_geopoint_xpaths(path)
 
         return result
 
     @classmethod
-    def get_additional_geopoint_fields(cls, field):
+    def get_additional_geopoint_xpaths(cls, xpath):
         """
         This will return a list of the additional fields that are
-        added per geopoint.  For example, given a field 'gps' it will
-        return '_gps_(suffix)' for suffix in DataDictionary.GEODATA_SUFFIXES
+        added per geopoint.  For example, given a field 'group/gps' it will
+        return 'group/_gps_(suffix)' for suffix in DataDictionary.GEODATA_SUFFIXES
         """
-        return ['_' + '_'.join([field, suffix]) for suffix in cls.GEODATA_SUFFIXES]
+        match = cls.PREFIX_NAME_REGEX.match(xpath)
+        prefix = ''
+        name = ''
+        if match:
+            prefix = match.groupdict()['prefix']
+            name = match.groupdict()['name']
+        else:
+            name = xpath
+        # NOTE: these must be concatenated and not joined
+        return [prefix + '_' + name + '_' +  suffix for suffix in cls.GEODATA_SUFFIXES]
 
     def _additional_headers(self):
         return [u'_xform_id_string', u'_percentage_complete', u'_status',

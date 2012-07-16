@@ -45,6 +45,25 @@ class TestPandasMongoBridge(MainTestCase):
         self._make_submission(xml_submission_file_path)
         self.assertEqual(self.response.status_code, 201)
 
+    def _publish_grouped_gps_form(self):
+        xls_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "fixtures/grouped_gps.xls"
+        )
+        count = XForm.objects.count()
+        response = self._publish_xls_file(xls_file_path)
+        self.assertEqual(XForm.objects.count(), count + 1)
+        self.xform = XForm.objects.all().reverse()[0]
+        self.survey_name = u"grouped_gps"
+
+    def _submit_grouped_gps_instance(self):
+        xml_submission_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "fixtures/grouped_gps_01.xml"
+        )
+        self._make_submission(xml_submission_file_path)
+        self.assertEqual(self.response.status_code, 201)
+
     def _xls_data_for_dataframe(self):
         xls_df_builder = XLSDataFrameBuilder(self.user.username, self.xform.id_string)
         cursor = xls_df_builder._query_mongo()
@@ -78,16 +97,25 @@ class TestPandasMongoBridge(MainTestCase):
     def test_xls_columns(self):
         """
         Test that our expected columns are in the data
-
-
         """
         self._publish_single_level_repeat_form()
         self._submit_single_level_repeat_instance()
         data = self._xls_data_for_dataframe()
         # columns in the default sheet
-        expected_default_columns = [u"gps", u"web_browsers/firefox", u"web_browsers/safari", u"web_browsers/ie",
-                                    u"info/age", u"web_browsers/chrome", u"kids/has_kids",
-                                    u"info/name"] + XLSDataFrameBuilder.EXTRA_COLUMNS
+        expected_default_columns = [
+            u"gps",
+            u"_gps_latitude",
+            u"_gps_longitude",
+            u"_gps_altitude",
+            u"_gps_precision",
+            u"web_browsers/firefox",
+            u"web_browsers/safari",
+            u"web_browsers/ie",
+            u"info/age",
+            u"web_browsers/chrome",
+            u"kids/has_kids",
+            u"info/name"
+        ] + XLSDataFrameBuilder.EXTRA_COLUMNS
         default_columns = [k for k in data[self.survey_name][0]]
         self.assertEqual(sorted(expected_default_columns), sorted(default_columns))
 
@@ -96,6 +124,30 @@ class TestPandasMongoBridge(MainTestCase):
           + XLSDataFrameBuilder.EXTRA_COLUMNS
         kids_details_columns = [k for k in data[u"kids_details"][0]]
         self.assertEqual(sorted(expected_kids_details_columns), sorted(kids_details_columns))
+
+    def test_xls_columns_for_gps_within_groups(self):
+        """
+        Test that a valid xpath is generated for extra gps fields that are NOT
+        top level
+        """
+        self._publish_grouped_gps_form()
+        self._submit_grouped_gps_instance()
+        data = self._xls_data_for_dataframe()
+        # columns in the default sheet
+        expected_default_columns = [
+            u"gps_group/gps",
+            u"gps_group/_gps_latitude",
+            u"gps_group/_gps_longitude",
+            u"gps_group/_gps_altitude",
+            u"gps_group/_gps_precision",
+            u"web_browsers/firefox",
+            u"web_browsers/safari",
+            u"web_browsers/ie",
+            u"web_browsers/chrome",
+        ] + XLSDataFrameBuilder.EXTRA_COLUMNS
+        default_columns = [k for k in data[self.survey_name][0]]
+        self.assertEqual(sorted(expected_default_columns),
+            sorted(default_columns))
 
     def test_csv_columns(self):
         self._publish_nested_repeats_form()
@@ -120,6 +172,25 @@ class TestPandasMongoBridge(MainTestCase):
             u'_gps_longitude',
             u'_gps_altitude',
             u'_gps_precision',
+            u'web_browsers/firefox',
+            u'web_browsers/chrome',
+            u'web_browsers/ie',
+            u'web_browsers/safari',
+        ]
+        self.maxDiff = None
+        self.assertEqual(sorted(expected_columns), sorted(columns))
+
+    def test_csv_columns_for_gps_within_groups(self):
+        self._publish_grouped_gps_form()
+        self._submit_grouped_gps_instance()
+        data = self._csv_data_for_dataframe()
+        columns = data[0].keys()
+        expected_columns = [
+            u'gps_group/gps',
+            u'gps_group/_gps_latitude',
+            u'gps_group/_gps_longitude',
+            u'gps_group/_gps_altitude',
+            u'gps_group/_gps_precision',
             u'web_browsers/firefox',
             u'web_browsers/chrome',
             u'web_browsers/ie',
@@ -161,6 +232,103 @@ class TestPandasMongoBridge(MainTestCase):
         # build a new dictionary only composed of the keys we want to use in the comparison
         result = dict([(key, result[key]) for key in result.keys() if key in expected_result.keys()])
         self.assertEqual(expected_result, result)
+
+    def test_split_select_multiples_within_repeats(self):
+        self.maxDiff = None
+        record = {
+            'name': 'Tom',
+            'age': 23,
+            'browser_use': [
+                {
+                    'browser_use/year': '2010',
+                    'browser_use/browsers': 'firefox safari'
+                },
+                {
+                    'browser_use/year': '2011',
+                    'browser_use/browsers': 'firefox chrome'
+                }
+            ]
+        }
+        expected_result = {
+            'name': 'Tom',
+            'age': 23,
+            'browser_use': [
+                {
+                    'browser_use/year': '2010',
+                    'browser_use/browsers/firefox': True,
+                    'browser_use/browsers/safari': True,
+                    'browser_use/browsers/ie': False,
+                    'browser_use/browsers/chrome': False
+                },
+                {
+                    'browser_use/year': '2011',
+                    'browser_use/browsers/firefox': True,
+                    'browser_use/browsers/safari': False,
+                    'browser_use/browsers/ie': False,
+                    'browser_use/browsers/chrome': True
+                }
+            ]
+        }
+        select_multiples = {
+            'browser_use/browsers':
+                [
+                    'browser_use/browsers/firefox',
+                    'browser_use/browsers/safari',
+                    'browser_use/browsers/ie',
+                    'browser_use/browsers/chrome'
+                ]
+            }
+        result = CSVDataFrameBuilder._split_select_multiples(record,
+            select_multiples)
+        self.assertEqual(expected_result, result)
+
+    def test_split_gps_fields(self):
+        record = {
+            'gps': '5 6 7 8'
+        }
+        gps_fields = ['gps']
+        expected_result = {
+            'gps': '5 6 7 8',
+            '_gps_latitude': '5',
+            '_gps_longitude': '6',
+            '_gps_altitude': '7',
+            '_gps_precision': '8',
+        }
+        AbstractDataFrameBuilder._split_gps_fields(record, gps_fields)
+        self.assertEqual(expected_result, record)
+
+    def test_split_gps_fields_within_repeats(self):
+        record = {
+            'a_repeat': [
+                {
+                    'gps': '1 2 3 4'
+                },
+                {
+                    'gps': '5 6 7 8'
+                }
+            ]
+        }
+        gps_fields = ['gps']
+        expected_result = {
+            'a_repeat': [
+                {
+                    'gps': '1 2 3 4',
+                    '_gps_latitude': '1',
+                    '_gps_longitude': '2',
+                    '_gps_altitude': '3',
+                    '_gps_precision': '4',
+                },
+                {
+                    'gps': '5 6 7 8',
+                    '_gps_latitude': '5',
+                    '_gps_longitude': '6',
+                    '_gps_altitude': '7',
+                    '_gps_precision': '8',
+                }
+            ]
+        }
+        AbstractDataFrameBuilder._split_gps_fields(record, gps_fields)
+        self.assertEqual(expected_result, record)
 
     def test_valid_sheet_name(self):
         sheet_names = ["sheet_1", "sheet_2"]
