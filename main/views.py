@@ -286,6 +286,8 @@ def edit(request, username, id_string):
                 xform.shared = not xform.shared
             elif request.POST['toggle_shared'] == 'active':
                 xform.downloadable = not xform.downloadable
+            elif request.POST['toggle_shared'] == 'crowd':
+                xform.is_crowd_form = not xform.is_crowd_form
         elif request.POST.get('form-license'):
             MetaData.form_license(xform, request.POST['form-license'])
         elif request.POST.get('data-license'):
