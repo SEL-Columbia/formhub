@@ -153,7 +153,7 @@ def submission(request, username=None):
                 username,
                 xml_file_list[0],
                 media_files,
-                uuid
+                uuid=uuid
             )
         except InstanceInvalidUserError:
             return HttpResponseBadRequest("Username or ID required.")
