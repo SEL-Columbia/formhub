@@ -1,14 +1,9 @@
-#!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
-
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.query import QuerySet
-from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
-from django.conf import settings
 from django.db.models.signals import post_save
-
-from utils.model_tools import set_uuid
 
 import os
 import re
@@ -48,6 +43,12 @@ class XForm(models.Model):
     has_start_time = models.BooleanField(default=False)
     uuid = models.CharField(max_length=32, default=u'')
 
+    uuid_regex = re.compile(r'(<instance>.*id=")([^"]+")(.*</instance>)',
+                            re.DOTALL)
+    instance_id_regex = re.compile(r'<instance>.*id="([^"]+)".*</instance>',
+                                   re.DOTALL)
+    uuid_split_location = 3
+
     class Meta:
         app_label = 'odk_logger'
         unique_together = (("user", "id_string"),)
@@ -75,11 +76,16 @@ class XForm(models.Model):
         return DataDictionary.objects.get(pk=self.pk)
 
     def _set_id_string(self):
-        text = re.sub(r"\s+", " ", self.xml)
-        matches = re.findall(r'<instance>.*id="([^"]+)".*</instance>', text)
+        matches = self.instance_id_regex.findall(self.xml)
         if len(matches) != 1:
             raise XLSFormError("There should be a single id string.", text)
         self.id_string = matches[0]
+
+    def _set_uuid_in_xml(self):
+        split_xml = self.uuid_regex.split(self.xml)
+        split_xml[self.uuid_split_location:self.uuid_split_location] =\
+            ' uuid="%s"' % self.uuid
+        self.xml = ''.join(split_xml)
 
     def _set_title(self):
         text = re.sub(r"\s+", " ", self.xml)
@@ -92,8 +98,6 @@ class XForm(models.Model):
         super(XForm, self).save(*args, **kwargs)
 
     def save(self, *args, **kwargs):
-        set_uuid(self)
-        self._set_id_string()
         if getattr(settings, 'STRICT', True) and \
                 not re.search(r"^[\w-]+$", self.id_string):
             raise XLSFormError("In strict mode, the XForm ID must be a valid slug and contain no spaces.")

@@ -1,16 +1,19 @@
-from django.db import models
-from django.contrib.auth.models import User
-from odk_logger.models import XForm
-from pyxform import SurveyElementBuilder
-from pyxform.section import RepeatingSection
-from pyxform.question import Question
-from pyxform.builder import create_survey_from_xls
-from common_tags import ID
-from odk_viewer.models import ParsedInstance
-import re
 import os
-from utils.model_tools import queryset_iterator
+import re
+
+from django.contrib.auth.models import User
+from django.db import models
+from pyxform import SurveyElementBuilder
+from pyxform.builder import create_survey_from_xls
+from pyxform.question import Question
+from pyxform.section import RepeatingSection
+
+from common_tags import ID
+from odk_logger.models import XForm
+from odk_viewer.models import ParsedInstance
 from utils.export_tools import question_types_to_exclude, DictOrganizer
+from utils.model_tools import queryset_iterator, set_uuid
+
 
 class ColumnRename(models.Model):
     xpath = models.CharField(max_length=255, unique=True)
@@ -65,6 +68,9 @@ class DataDictionary(XForm):
             self.json = survey.to_json()
             self.xml = survey.to_xml()
             self._mark_start_time_boolean()
+            self._set_id_string()
+            set_uuid(self)
+            self._set_uuid_in_xml()
         super(DataDictionary, self).save(*args, **kwargs)
 
     def file_name(self):

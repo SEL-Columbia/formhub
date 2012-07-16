@@ -138,7 +138,10 @@ def submission(request, username=None):
         # save this XML file and media files as attachments
         media_files = request.FILES.values()
         if not username:
+            # get uuid from post request
             uuid = request.POST.get('uuid')
+
+            # TODO get uuid from form XML
             if not uuid:
                 return HttpResponseBadRequest("Username or ID required.")
             show_options = True
@@ -189,6 +192,7 @@ def submission(request, username=None):
         if len(media_files):
             [_file.close() for _file in media_files]
 
+
 def download_xform(request, username, id_string):
     xform = get_object_or_404(XForm,
             user__username=username, id_string=id_string)
@@ -197,6 +201,7 @@ def download_xform(request, username, id_string):
         show_date=False)
     response.content = xform.xml
     return response
+
 
 def download_xlsform(request, username, id_string):
     xform = get_object_or_404(XForm,
