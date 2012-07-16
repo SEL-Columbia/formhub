@@ -30,7 +30,7 @@ from odk_logger.xform_instance_parser import InstanceParseError,\
 from utils.viewer_tools import get_path
 
 
-uuid_regex = re.compile(r'(<instance>.*) (uuid=")([^"]+)"(.*</instance>)',
+uuid_regex = re.compile(r'<formhub><uuid>([^<]+)</uuid></formhub>',
     re.DOTALL)
 
 
@@ -54,7 +54,7 @@ def create_instance(username, xml_file, media_files,
         # parse UUID from uploaded XML
         split_xml = uuid_regex.split(xml)
         if len(split_xml) > 1:
-            uuid = split_xml[XForm.uuid_split_location]
+            uuid = split_xml[1]
 
     if not username and not uuid:
         raise InstanceInvalidUserError()
