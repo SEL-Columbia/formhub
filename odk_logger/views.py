@@ -91,24 +91,27 @@ def formList(request, username):
     """
     This is where ODK Collect gets its download list.
     """
-    formlist_user = get_object_or_404(User, username=username)
-    profile, created = UserProfile.objects.get_or_create(user=formlist_user)
-
-    if profile.require_auth:
-        response = helper_auth_helper(request)
-        if response:
-            return response
-
-        # unauthorized if user in auth request does not match user in path
-        # unauthorized if user not active
-        if formlist_user.username != request.user.username or\
-                not request.user.is_active:
-            return HttpResponseNotAuthorized()
-
-    xforms = XForm.objects.filter(downloadable=True, user__username=username)
     crowd_forms = XForm.objects.filter(is_crowd_form=True)\
                                 .exclude(user__username=username)
-    xforms = chain(xforms, crowd_forms)
+    if  username.lower() ==  'submit':
+        xforms = crowd_forms
+    else:
+        formlist_user = get_object_or_404(User, username=username)
+        profile, created = UserProfile.objects.get_or_create(user=formlist_user)
+
+        if profile.require_auth:
+            response = helper_auth_helper(request)
+            if response:
+                return response
+
+            # unauthorized if user in auth request does not match user in path
+            # unauthorized if user not active
+            if formlist_user.username != request.user.username or\
+                    not request.user.is_active:
+                return HttpResponseNotAuthorized()
+
+        xforms = XForm.objects.filter(downloadable=True, user__username=username)
+        xforms = chain(xforms, crowd_forms)
     urls = [{
         'url': request.build_absolute_uri(xform.url()),
         'text': xform.title if not xform.is_crowd_form else 'Crowd/%s' % xform.title,
