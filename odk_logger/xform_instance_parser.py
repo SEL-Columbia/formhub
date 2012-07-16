@@ -4,6 +4,10 @@ import re
 XFORM_ID_STRING = u"_xform_id_string"
 
 
+class XLSFormError(Exception):
+    pass
+
+
 class InstanceInvalidUserError(Exception):
     pass
 

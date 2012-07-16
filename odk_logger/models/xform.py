@@ -8,11 +8,8 @@ from django.db import models
 from django.db.models.query import QuerySet
 from django.db.models.signals import post_save
 
+from odk_logger.xform_instance_parser import XLSFormError
 from utils.stathat_api import stathat_count
-
-
-class XLSFormError(Exception):
-    pass
 
 
 def upload_to(instance, filename):
@@ -95,11 +92,12 @@ class XForm(models.Model):
         super(XForm, self).save(*args, **kwargs)
 
     def save(self, *args, **kwargs):
+        self._set_title()
+        self._set_id_string()
         if getattr(settings, 'STRICT', True) and \
                 not re.search(r"^[\w-]+$", self.id_string):
-            raise XLSFormError('In strict mode, the XForm ID must be a valid '
-                               'slug and contain no spaces.')
-        self._set_title()
+            raise XLSFormError('In strict mode, the XForm ID must be a vali'
+                               'd slug and contain no spaces.')
         super(XForm, self).save(*args, **kwargs)
 
     def __unicode__(self):
