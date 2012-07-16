@@ -4,6 +4,10 @@ import re
 XFORM_ID_STRING = u"_xform_id_string"
 
 
+class InstanceInvalidUserError(Exception):
+    pass
+
+
 class InstanceParseError(Exception):
     pass
 

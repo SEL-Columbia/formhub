@@ -32,7 +32,8 @@ from utils.decorators import is_owner
 from utils.user_auth import helper_auth_helper, has_permission,\
      has_edit_permission, HttpResponseNotAuthorized
 from odk_logger.import_tools import import_instances_from_zip
-from odk_logger.xform_instance_parser import InstanceEmptyError
+from odk_logger.xform_instance_parser import InstanceEmptyError,\
+     InstanceInvalidUserError
 from odk_logger.models.instance import FormInactiveError
 
 
@@ -126,7 +127,7 @@ def submission(request, username=None):
     context = RequestContext(request)
     xml_file_list = []
     media_files = []
-    show_options = False
+    html_response = False
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
     try:
@@ -137,22 +138,18 @@ def submission(request, username=None):
                 )
         # save this XML file and media files as attachments
         media_files = request.FILES.values()
-        if not username:
-            # get uuid from post request
-            uuid = request.POST.get('uuid')
 
-            # TODO get uuid from form XML
-            if not uuid:
-                return HttpResponseBadRequest("Username or ID required.")
-            show_options = True
-            xform = XForm.objects.get(uuid=uuid)
-            username = xform.user.username
+        # response as html if posting with a UUID
+        if not username and request.POST.get('uuid'):
+            html_response = True
         try:
             instance = create_instance(
                 username,
                 xml_file_list[0],
                 media_files
             )
+        except InstanceInvalidUserError:
+            return HttpResponseBadRequest("Username or ID required.")
         except InstanceEmptyError:
             return HttpResponseBadRequest(
                 'Received empty submission. No instance was created'
@@ -168,7 +165,7 @@ def submission(request, username=None):
         # ODK needs two things for a form to be considered successful
         # 1) the status code needs to be 201 (created)
         # 2) The location header needs to be set to the host it posted to
-        if show_options:
+        if html_response:
             context.username = instance.user.username
             context.id_string = instance.xform.id_string
             context.domain = Site.objects.get(id=settings.SITE_ID).domain

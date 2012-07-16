@@ -1,6 +1,7 @@
 from datetime import date
 import decimal
 import os
+import re
 import tempfile
 import traceback
 
@@ -14,6 +15,7 @@ from django.db import IntegrityError
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext_lazy as _
 from modilabs.utils.subprocess_timeout import ProcessTimedOut
 from pyxform.errors import PyXFormError
 
@@ -25,7 +27,10 @@ from odk_logger.models import XForm
 from odk_logger.models.xform import XLSFormError
 from odk_logger.xform_instance_parser import InstanceParseError
 from utils.viewer_tools import get_path
-from django.utils.translation import ugettext_lazy as _
+
+
+uuid_regex = re.compile(r'(<instance>.*) (uuid=")([^"]+)"(.*</instance>)',
+    re.DOTALL)
 
 
 @transaction.commit_on_success
@@ -38,6 +43,22 @@ def create_instance(username, xml_file, media_files,
     simplify things a bit.
     """
     xml = xml_file.read()
+
+    # check alternative form submission ids
+    if not username:
+        # get uuid from post request
+        uuid = request.POST.get('uuid')
+
+        if not uuid:
+            # parse UUID from uploaded XML
+            uuid = uuid_regex.split(xml).get(XForm.uuid_split_location)
+
+        if not uuid:
+            raise InstanceInvalidUserError()
+
+        xform = XForm.objects.get(uuid=uuid)
+        username = xform.user.username
+
     user = get_object_or_404(User, username=username)
     existing_instance_count = Instance.objects.filter(xml=xml,
             user=user).count()

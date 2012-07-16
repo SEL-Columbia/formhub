@@ -12,10 +12,12 @@ from odk_viewer.views import csv_export, xls_export
 from test_base import MainTestCase
 
 
+uuid_regex = re.compile(r'(</instance>.*uuid[^//]+="\')([^\']+)(\'".*)',
+    re.DOTALL)
+
+
 class TestSite(MainTestCase):
 
-    uuid_regex = re.compile(r'(<instance>.*) (uuid=")([^"]+)"(.*</instance>)',
-            re.DOTALL)
 
     def test_process(self, username=None, password=None):
         if username is not None:
@@ -149,14 +151,15 @@ class TestSite(MainTestCase):
                                 "transportation", "transportation.xml")
         with open(xml_path) as xml_file:
             expected_content = xml_file.read()
+
         # check for UUID and remove
-        split_response = self.uuid_regex.split(response.content)
+        split_response = uuid_regex.split(response.content)
         self.assertEqual(self.xform.uuid,
-                         unicode(split_response[XForm.uuid_split_location]))
+                         unicode(split_response[XForm.uuid_node_location]))
 
         # remove UUID
-        split_response[(XForm.uuid_split_location -
-            1):(XForm.uuid_split_location + 1)] = []
+        split_response[XForm.uuid_node_location:XForm.uuid_node_location + 1] \
+            = []
 
         # check content without UUID
         self.assertEqual(expected_content, ''.join(split_response))

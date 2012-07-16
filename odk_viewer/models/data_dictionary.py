@@ -50,6 +50,21 @@ class DataDictionary(XForm):
         self.surveys_for_export = lambda d: d.surveys.all()
         super(DataDictionary, self).__init__(*args, **kwargs)
 
+    def _set_uuid_in_xml(self):
+        """
+        Add bind to automatically set UUID node in XML.
+        """
+        file_name, file_ext = os.path.splitext(self.file_name())
+        split_xml = self.uuid_regex.split(self.xml)
+        split_xml[self.uuid_node_location:self.uuid_node_location] =\
+            ['<formhub><uuid/></formhub>']
+        split_xml[self.uuid_bind_location:self.uuid_bind_location] = [
+            '\n      <bind nodeset="/', file_name,
+            '/formhub/uuid" type="string" calculate="\'',
+            self.uuid, '\'" />'
+        ]
+        self.xml = ''.join(split_xml)
+
     class Meta:
         app_label = "odk_viewer"
         proxy = True

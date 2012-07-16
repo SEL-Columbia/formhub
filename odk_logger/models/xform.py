@@ -1,3 +1,6 @@
+import os
+import re
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -5,8 +8,11 @@ from django.db import models
 from django.db.models.query import QuerySet
 from django.db.models.signals import post_save
 
-import os
-import re
+from utils.stathat_api import stathat_count
+
+
+class XLSFormError(Exception):
+    pass
 
 
 def upload_to(instance, filename):
@@ -14,10 +20,6 @@ def upload_to(instance, filename):
         instance.user.username,
         'xls',
         os.path.split(filename)[1])
-
-
-class XLSFormError(Exception):
-    pass
 
 
 class XForm(models.Model):
@@ -36,18 +38,19 @@ class XForm(models.Model):
     # the following fields are filled in automatically
     id_string = models.SlugField(
         editable=False, verbose_name="ID"
-        )
+    )
     title = models.CharField(editable=False, max_length=64)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     has_start_time = models.BooleanField(default=False)
     uuid = models.CharField(max_length=32, default=u'')
 
-    uuid_regex = re.compile(r'(<instance>.*id=")([^"]+")(.*</instance>)',
+    uuid_regex = re.compile(r'(<instance>.*id="[^"]+">)(.*</instance>)(.*)',
                             re.DOTALL)
     instance_id_regex = re.compile(r'<instance>.*id="([^"]+)".*</instance>',
                                    re.DOTALL)
-    uuid_split_location = 3
+    uuid_node_location = 2
+    uuid_bind_location = 4
 
     class Meta:
         app_label = 'odk_logger'
@@ -57,7 +60,7 @@ class XForm(models.Model):
         ordering = ("id_string",)
         permissions = (
             ("view_xform", "Can view associated data"),
-            )
+        )
 
     def file_name(self):
         return self.id_string + ".xml"
@@ -68,8 +71,8 @@ class XForm(models.Model):
             kwargs={
                 "username": self.user.username,
                 "id_string": self.id_string
-                }
-            )
+            }
+        )
 
     def data_dictionary(self):
         from odk_viewer.models import DataDictionary
@@ -80,12 +83,6 @@ class XForm(models.Model):
         if len(matches) != 1:
             raise XLSFormError("There should be a single id string.", text)
         self.id_string = matches[0]
-
-    def _set_uuid_in_xml(self):
-        split_xml = self.uuid_regex.split(self.xml)
-        split_xml[self.uuid_split_location:self.uuid_split_location] =\
-            ' uuid="%s"' % self.uuid
-        self.xml = ''.join(split_xml)
 
     def _set_title(self):
         text = re.sub(r"\s+", " ", self.xml)
@@ -100,7 +97,8 @@ class XForm(models.Model):
     def save(self, *args, **kwargs):
         if getattr(settings, 'STRICT', True) and \
                 not re.search(r"^[\w-]+$", self.id_string):
-            raise XLSFormError("In strict mode, the XForm ID must be a valid slug and contain no spaces.")
+            raise XLSFormError('In strict mode, the XForm ID must be a valid '
+                               'slug and contain no spaces.')
         self._set_title()
         super(XForm, self).save(*args, **kwargs)
 
@@ -115,8 +113,10 @@ class XForm(models.Model):
         if self.submission_count() > 0:
             return self.surveys.order_by("-date_created")[0].date_created
 
-from utils.stathat_api import stathat_count
+
 def stathat_forms_created(sender, instance, created, **kwargs):
     if created:
-       stathat_count('formhub-forms-created')
+        stathat_count('formhub-forms-created')
+
+
 post_save.connect(stathat_forms_created, sender=XForm)
