@@ -26,7 +26,7 @@ from odk_logger.models import SurveyType
 from odk_logger.models import XForm
 from odk_logger.models.xform import XLSFormError
 from odk_logger.xform_instance_parser import InstanceParseError,\
-     InstanceInvalidUserError
+     InstanceInvalidUserError, IsNotCrowdformError
 from utils.viewer_tools import get_path
 
 
@@ -53,6 +53,8 @@ def create_instance(username, xml_file, media_files,
     if not uuid:
         # parse UUID from uploaded XML
         split_xml = uuid_regex.split(xml)
+
+        # check that xml has UUID, then it is a crowdform
         if len(split_xml) > 1:
             uuid = split_xml[1]
 
@@ -61,7 +63,13 @@ def create_instance(username, xml_file, media_files,
 
     if uuid:
         xform = XForm.objects.get(uuid=uuid)
-        username = xform.user.username
+        xform_username = xform.user.username
+
+        if xform_username != username and not xform.is_crowd_form:
+            return IsNotCrowdformError()
+
+        username = xform_username
+
 
     user = get_object_or_404(User, username=username)
     existing_instance_count = Instance.objects.filter(xml=xml,
