@@ -65,19 +65,22 @@ class TestPandasMongoBridge(MainTestCase):
         self.assertEqual(self.response.status_code, 201)
 
     def _xls_data_for_dataframe(self):
-        xls_df_builder = XLSDataFrameBuilder(self.user.username, self.xform.id_string)
+        xls_df_builder = XLSDataFrameBuilder(self.user.username,
+            self.xform.id_string)
         cursor = xls_df_builder._query_mongo()
         return xls_df_builder._format_for_dataframe(cursor)
 
     def _csv_data_for_dataframe(self):
-        csv_df_builder = CSVDataFrameBuilder(self.user.username, self.xform.id_string)
+        csv_df_builder = CSVDataFrameBuilder(self.user.username,
+            self.xform.id_string)
         cursor = csv_df_builder._query_mongo()
         return csv_df_builder._format_for_dataframe(cursor)
 
     def test_generated_sections(self):
         self._publish_single_level_repeat_form()
         self._submit_single_level_repeat_instance()
-        xls_df_builder = XLSDataFrameBuilder(self.user.username, self.xform.id_string)
+        xls_df_builder = XLSDataFrameBuilder(self.user.username,
+            self.xform.id_string)
         expected_section_keys = [self.survey_name, u"kids_details"]
         section_keys = [s[u"name"] for s in xls_df_builder.sections]
         self.assertEqual(sorted(expected_section_keys), sorted(section_keys))
@@ -86,7 +89,8 @@ class TestPandasMongoBridge(MainTestCase):
         """
         Test the number of rows in each sheet
 
-        We expect a single row in the main new_repeats sheet and 2 rows in the kids details sheet one for each repeat
+        We expect a single row in the main new_repeats sheet and 2 rows in the
+        kids details sheet one for each repeat
         """
         self._publish_single_level_repeat_form()
         self._submit_single_level_repeat_instance()
@@ -117,13 +121,16 @@ class TestPandasMongoBridge(MainTestCase):
             u"info/name"
         ] + XLSDataFrameBuilder.EXTRA_COLUMNS
         default_columns = [k for k in data[self.survey_name][0]]
-        self.assertEqual(sorted(expected_default_columns), sorted(default_columns))
+        self.assertEqual(sorted(expected_default_columns),
+            sorted(default_columns))
 
         # columns in the kids_details sheet
-        expected_kids_details_columns = [u"kids/kids_details/kids_name", u"kids/kids_details/kids_age"] \
+        expected_kids_details_columns = [u"kids/kids_details/kids_name",
+            u"kids/kids_details/kids_age"] \
           + XLSDataFrameBuilder.EXTRA_COLUMNS
         kids_details_columns = [k for k in data[u"kids_details"][0]]
-        self.assertEqual(sorted(expected_kids_details_columns), sorted(kids_details_columns))
+        self.assertEqual(sorted(expected_kids_details_columns),
+            sorted(kids_details_columns))
 
     def test_xls_columns_for_gps_within_groups(self):
         """
@@ -197,27 +204,41 @@ class TestPandasMongoBridge(MainTestCase):
             u'web_browsers/safari',
         ]
         self.maxDiff = None
-        self.assertEqual(sorted(expected_columns), sorted(columns))
+        self.assertEqual(expected_columns, columns)
 
     def test_format_mongo_data_for_csv_columns(self):
+        self.maxDiff = None
         self._publish_single_level_repeat_form()
         self._submit_single_level_repeat_instance()
         dd = self.xform.data_dictionary()
         columns = dd.get_keys()
         data = self._csv_data_for_dataframe()
-        expected_data_0 = {u'gps': u'-1.2627557 36.7926442 0.0 30.0', u'kids/has_kids': u'1', u'_attachments': [],
-                          u'info/age': u'80', u'_xform_id_string': u'new_repeat', u'_status': u'submitted_via_web',
-                          u'kids/kids_details/kids_name': u'Abel', u'kids/kids_details/kids_age': u'50',
-                          u'kids/kids_details[2]/kids_name': u'Cain', u'kids/kids_details[2]/kids_age': u'76',
-                          u'web_browsers/chrome': u'TRUE', u'web_browsers/ie': u'TRUE',
-                          u'web_browsers/safari': u'FALSE', u'web_browsers/firefox': u'FALSE', u'info/name': u'Adam'}
-        #self.assertEqual(sorted(expected_data_0.keys()), sorted(data[0].keys()))
+        expected_data_0 = {
+            u'gps': u'-1.2627557 36.7926442 0.0 30.0',
+            u'_gps_latitude': u'-1.2627557',
+            u'_gps_longitude': u'36.7926442',
+            u'_gps_altitude': u'0.0',
+            u'_gps_precision': u'30.0',
+            u'kids/has_kids': u'1',
+            u'info/age': u'80',
+            u'kids/kids_details[1]/kids_name': u'Abel',
+            u'kids/kids_details[1]/kids_age': u'50',
+            u'kids/kids_details[2]/kids_name': u'Cain',
+            u'kids/kids_details[2]/kids_age': u'76',
+            u'web_browsers/chrome': True,
+            u'web_browsers/ie': True,
+            u'web_browsers/safari': False,
+            u'web_browsers/firefox': False,
+            u'info/name': u'Adam'
+        }
+        self.assertEqual(expected_data_0, data[0])
 
     def test_split_select_multiples(self):
         self._publish_nested_repeats_form()
         dd = self.xform.data_dictionary()
         self._submit_nested_repeats_instance()
-        csv_df_builder = CSVDataFrameBuilder(self.user.username, self.xform.id_string)
+        csv_df_builder = CSVDataFrameBuilder(self.user.username,
+            self.xform.id_string)
         cursor = csv_df_builder._query_mongo()
         record = cursor[0]
         select_multiples = CSVDataFrameBuilder._collect_select_multiples(dd)
@@ -229,8 +250,10 @@ class TestPandasMongoBridge(MainTestCase):
             u'web_browsers/firefox': False,
             u'web_browsers/chrome': False
         }
-        # build a new dictionary only composed of the keys we want to use in the comparison
-        result = dict([(key, result[key]) for key in result.keys() if key in expected_result.keys()])
+        # build a new dictionary only composed of the keys we want to use in 
+        # the comparison
+        result = dict([(key, result[key]) for key in result.keys() if key in \
+            expected_result.keys()])
         self.assertEqual(expected_result, result)
 
     def test_split_select_multiples_within_repeats(self):
@@ -334,19 +357,23 @@ class TestPandasMongoBridge(MainTestCase):
         sheet_names = ["sheet_1", "sheet_2"]
         desired_sheet_name = "sheet_3"
         expected_sheet_name = "sheet_3"
-        generated_sheet_name = get_valid_sheet_name(desired_sheet_name, sheet_names)
+        generated_sheet_name = get_valid_sheet_name(desired_sheet_name,
+            sheet_names)
         self.assertEqual(generated_sheet_name, expected_sheet_name)
 
     def test_invalid_sheet_name(self):
         sheet_names = ["sheet_1", "sheet_2"]
         desired_sheet_name = "sheet_3_with_more_than_max_expected_length"
         expected_sheet_name = "sheet_3_with_more_than_max_exp"
-        generated_sheet_name = get_valid_sheet_name(desired_sheet_name, sheet_names)
+        generated_sheet_name = get_valid_sheet_name(desired_sheet_name,
+            sheet_names)
         self.assertEqual(generated_sheet_name, expected_sheet_name)
 
     def test_duplicate_sheet_name(self):
-        sheet_names = ["sheet_2_with_duplicate_sheet_n", "sheet_2_with_duplicate_sheet_1"]
+        sheet_names = ["sheet_2_with_duplicate_sheet_n",
+            "sheet_2_with_duplicate_sheet_1"]
         duplicate_sheet_name = "sheet_2_with_duplicate_sheet_n"
         expected_sheet_name  = "sheet_2_with_duplicate_sheet_2"
-        generated_sheet_name = get_valid_sheet_name(duplicate_sheet_name, sheet_names)
+        generated_sheet_name = get_valid_sheet_name(duplicate_sheet_name,
+            sheet_names)
         self.assertEqual(generated_sheet_name, expected_sheet_name)

@@ -12,12 +12,12 @@ import json
 
 from utils.model_tools import queryset_iterator
 from odk_logger.models import Instance
-from common_tags import START_TIME, START, END_TIME, END, ID, UUID, ATTACHMENTS, GEOLOCATION
+from common_tags import START_TIME, START, END_TIME, END, ID, UUID,\
+    ATTACHMENTS, GEOLOCATION, SUBMISSION_TIME, MONGO_STRFTIME
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
 key_whitelist = ['$or', '$and', '$exists', '$in', '$gt', '$gte', '$lt', '$lte']
-''
 
 class ParseError(Exception):
     pass
@@ -112,7 +112,9 @@ class ParsedInstance(models.Model):
                 ATTACHMENTS: [a.media_file.name for a in\
                               self.instance.attachments.all()],
                 self.STATUS: self.instance.status,
-                GEOLOCATION: [self.lat, self.lng]
+                GEOLOCATION: [self.lat, self.lng],
+                SUBMISSION_TIME:
+                self.instance.date_created.strftime(MONGO_STRFTIME),
             }
         )
         return dict_for_mongo(d)

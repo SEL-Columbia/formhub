@@ -149,7 +149,7 @@ class DataDictionary(XForm):
         return [u'_xform_id_string', u'_percentage_complete', u'_status',
                 u'_id', u'_attachments', u'_potential_duplicates']
 
-    def get_headers(self):
+    def get_headers(self, include_additional_headers=False):
         """
         Return a list of headers for a csv file.
         """
@@ -157,8 +157,10 @@ class DataDictionary(XForm):
             l = xpath.split('/')
             return '/'.join(l[2:])
 
-        return [shorten(xpath) for xpath in self.xpaths()] + \
-            self._additional_headers()
+        header_list = [shorten(xpath) for xpath in self.xpaths()]
+        if include_additional_headers:
+            header_list += self._additional_headers()
+        return header_list
 
     def get_keys(self):
         def remove_first_index(xpath):

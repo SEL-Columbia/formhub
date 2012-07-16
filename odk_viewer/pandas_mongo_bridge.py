@@ -1,3 +1,4 @@
+import json
 import re
 import settings
 from pandas.core.frame import DataFrame
@@ -47,16 +48,18 @@ def get_valid_sheet_name(sheet_name, existing_name_list):
 
 class AbstractDataFrameBuilder(object):
 
+    # TODO: use constants from comman_tags module!
     INTERNAL_FIELDS = ['_xform_id_string', '_percentage_complete', '_status',
          '_id', '_attachments', '_potential_duplicates', '_geolocation',
-         '_uuid', '_userform_id']
+         '_uuid', '_userform_id', '_submission_time']
 
     """
     Group functionality used by any DataFrameBuilder i.e. XLS, CSV and KML
     """
-    def __init__(self, username, id_string):
+    def __init__(self, username, id_string, filter_query):
         self.username = username
         self.id_string = id_string
+        self.filter_query = filter_query
         self._setup()
 
     def _setup(self):
@@ -96,7 +99,9 @@ class AbstractDataFrameBuilder(object):
             for record_key, record_item in record.items():
                 if type(record_item) == list:
                     for list_item in record_item:
-                        cls._split_select_multiples(list_item, select_multiples)
+                        if type(list_item) == dict:
+                            cls._split_select_multiples(list_item,
+                                select_multiples)
         return record
 
     @classmethod
@@ -121,15 +126,22 @@ class AbstractDataFrameBuilder(object):
             # check for repeats within record i.e. in value
             if type(value) == list:
                 for list_item in  value:
-                    cls._split_gps_fields(list_item, gps_fields)
+                    if type(list_item) == dict:
+                        cls._split_gps_fields(list_item,
+                            gps_fields)
         record.update(updated_gps_fields)
 
-    def _query_mongo(self, filter_query=None, columns={}):
+    def _query_mongo(self, columns={}):
         if columns == {}:
             columns = self._fields_to_ignore()
-        query = {ParsedInstance.USERFORM_ID: u'%s_%s' % (self.username,
-            self.id_string)}
-        cursor = xform_instances.find(query, columns)
+        # TODO: for now we force our ignored columns
+        self.filter_query.update({
+            "username": self.username,
+            "id_string": self.id_string,
+            "fields": json.dumps(columns)
+        })
+        # use ParsedInstance.query_mongo
+        cursor = ParsedInstance.query_mongo(**self.filter_query)
         return cursor
 
 
@@ -147,7 +159,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         PARENT_INDEX_COLUMN]
     SHEET_NAME_MAX_CHARS = 30
 
-    def __init__(self, username, id_string):
+    def __init__(self, username, id_string, filter_query=None):
         super(XLSDataFrameBuilder, self).__init__(username, id_string)
 
     def _setup(self):
@@ -164,7 +176,6 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
 
         # get records from mongo - do this on export so we can batch if we
         # choose to, as we should
-        #TODO: query using ParsedInstance.query_mongo
         cursor = self._query_mongo()
 
         data = self._format_for_dataframe(cursor)
@@ -328,8 +339,9 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
 
 class CSVDataFrameBuilder(AbstractDataFrameBuilder):
 
-    def __init__(self, username, id_string):
-        super(CSVDataFrameBuilder, self).__init__(username, id_string)
+    def __init__(self, username, id_string, filter_query):
+        super(CSVDataFrameBuilder, self).__init__(username,
+                id_string, filter_query)
 
     def _setup(self):
         super(CSVDataFrameBuilder, self)._setup()
@@ -376,6 +388,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
 
     def _format_for_dataframe(self, cursor):
         # TODO: check for and handle empty results
+        columns = self.dd.get_headers()
         data = []
 
         for record in cursor:
@@ -395,10 +408,11 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         return data
 
     def export_to(self, file_object):
+        columns = self.dd.get_headers()
         cursor = self._query_mongo()
         # generate list of select multiples to be used in format_for_dataframe
         data = self._format_for_dataframe(cursor)
-        writer = CSVDataFrameWriter(data)
+        writer = CSVDataFrameWriter(data, columns)
         writer.write_to_csv(file_object)
 
 class XLSDataFrameWriter(object):
@@ -411,8 +425,11 @@ class XLSDataFrameWriter(object):
                 index=index)
 
 class CSVDataFrameWriter(object):
-    def __init__(self, records):
-        self.dataframe = DataFrame(records)
+    def __init__(self, records, columns):
+        # TODO: if records is empty, raise a known exception
+        # catch it in the view and handle
+        assert(len(records) > 0)
+        self.dataframe = DataFrame(records, columns=columns)
 
     def write_to_csv(self, csv_file, index=False):
-        self.dataframe.to_csv(csv_file, index=index)
+        self.dataframe.to_csv(csv_file, index=index, na_rep='n/a')

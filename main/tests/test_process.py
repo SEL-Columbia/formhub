@@ -156,7 +156,7 @@ class TestSite(MainTestCase):
 
         # test to make sure the headers in the actual csv are as expected
         actual_csv = self._get_csv_()
-        self.assertEqual(actual_csv.next(), expected_list)
+        self.assertEqual(sorted(actual_csv.next()), sorted(expected_list))
 
     def _check_data_for_csv_export(self):
         data = [

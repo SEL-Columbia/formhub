@@ -30,3 +30,7 @@ NAME = u"name"
 ATTACHMENTS = u"_attachments"
 DATE = u"_date"
 GEOLOCATION = u"_geolocation"
+SUBMISSION_TIME = '_submission_time'
+
+# datetime format that we store in mongo
+MONGO_STRFTIME = '%Y-%m-%dT%H:%M:%S'

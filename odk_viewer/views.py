@@ -35,6 +35,7 @@ from odk_logger.views import download_jsonform
 # TODO: using from main.views import api breaks the application, why?
 import main
 
+
 def encode(time_str):
     time = strptime(time_str, "%Y_%m_%d_%H_%M_%S")
     return strftime("%Y-%m-%d %H:%M:%S", time)
@@ -69,6 +70,21 @@ def dd_for_params(id_string, owner, request):
         dd.surveys_for_export = lambda d: d.surveys.filter(
                 date_created__lte=end, date_created__gte=start)
     return [True, dd]
+
+def api_query_from_request(username, id_string, request):
+    args = {
+        "username": username,
+        "id_string": id_string,
+        "query": request.GET.get('query'),
+        "fields": request.GET.get('fields'),
+        "sort": request.GET.get('sort')}
+    if 'start' in request.GET:
+        args["start"] = int(request.GET.get('start'))
+    if 'limit' in request.GET:
+        args["limit"] = int(request.GET.get('limit'))
+    if 'count' in request.GET:
+        args["count"] = True if int(request.GET.get('count')) > 0 else False
+    return args
 
 def parse_label_for_display(pi, xpath):
     label = pi.data_dictionary.get_label(xpath)
@@ -153,8 +169,8 @@ def csv_export(request, username, id_string):
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
-
-    csv_dataframe_builder = CSVDataFrameBuilder(username, id_string)
+    params = api_query_from_request(username, id_string, request)
+    csv_dataframe_builder = CSVDataFrameBuilder(username, id_string, params)
     temp_file = NamedTemporaryFile(suffix=".csv")
     csv_dataframe_builder.export_to(temp_file)
     if request.GET.get('raw'):
