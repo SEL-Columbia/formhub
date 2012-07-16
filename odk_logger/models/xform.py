@@ -31,6 +31,7 @@ class XForm(models.Model):
     shared = models.BooleanField(default=False)
     shared_data = models.BooleanField(default=False)
     downloadable = models.BooleanField(default=True)
+    is_crowd_form =  models.BooleanField(default=False)
 
     # the following fields are filled in automatically
     id_string = models.SlugField(
