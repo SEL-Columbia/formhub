@@ -5,6 +5,7 @@ import tempfile
 import urllib, urllib2
 import zipfile
 
+from itertools import chain
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response, get_object_or_404
@@ -105,9 +106,12 @@ def formList(request, username):
             return HttpResponseNotAuthorized()
 
     xforms = XForm.objects.filter(downloadable=True, user__username=username)
+    crowd_forms = XForm.objects.filter(is_crowd_form=True)\
+                                .exclude(user__username=username)
+    xforms = chain(xforms, crowd_forms)
     urls = [{
         'url': request.build_absolute_uri(xform.url()),
-        'text': xform.title,
+        'text': xform.title if not xform.is_crowd_form else 'Crowd/%s' % xform.title,
         'media': {
             'm': MetaData.media_upload(xform),
             'user': xform.user,
