@@ -25,7 +25,8 @@ from odk_viewer.models import ParsedInstance
 from odk_logger.models import SurveyType
 from odk_logger.models import XForm
 from odk_logger.models.xform import XLSFormError
-from odk_logger.xform_instance_parser import InstanceParseError
+from odk_logger.xform_instance_parser import InstanceParseError,\
+     InstanceInvalidUserError
 from utils.viewer_tools import get_path
 
 

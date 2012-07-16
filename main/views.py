@@ -30,6 +30,7 @@ from utils.user_auth import check_and_set_user, set_profile_data,\
      check_and_set_user_and_form
 from django.utils.translation import ugettext_lazy as _
 
+
 def home(request):
     context = RequestContext(request)
     context.num_forms = Instance.objects.count()
