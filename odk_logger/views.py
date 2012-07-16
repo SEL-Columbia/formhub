@@ -139,14 +139,17 @@ def submission(request, username=None):
         # save this XML file and media files as attachments
         media_files = request.FILES.values()
 
+        # get uuid from post request
+        uuid = request.POST.get('uuid')
         # response as html if posting with a UUID
-        if not username and request.POST.get('uuid'):
+        if not username and uuid:
             html_response = True
         try:
             instance = create_instance(
                 username,
                 xml_file_list[0],
-                media_files
+                media_files,
+                uuid
             )
         except InstanceInvalidUserError:
             return HttpResponseBadRequest("Username or ID required.")

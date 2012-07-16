@@ -35,7 +35,7 @@ uuid_regex = re.compile(r'(<instance>.*) (uuid=")([^"]+)"(.*</instance>)',
 
 @transaction.commit_on_success
 def create_instance(username, xml_file, media_files,
-        status=u'submitted_via_web'):
+        status=u'submitted_via_web', uuid=None):
     """
     I used to check if this file had been submitted already, I've
     taken this out because it was too slow. Now we're going to create
@@ -46,12 +46,12 @@ def create_instance(username, xml_file, media_files,
 
     # check alternative form submission ids
     if not username:
-        # get uuid from post request
-        uuid = request.POST.get('uuid')
 
         if not uuid:
             # parse UUID from uploaded XML
-            uuid = uuid_regex.split(xml).get(XForm.uuid_split_location)
+            split_xml = uuid_regex.split(xml)
+            if len(split_xml) > 1:
+                uuid = split_xml[XForm.uuid_split_location]
 
         if not uuid:
             raise InstanceInvalidUserError()
