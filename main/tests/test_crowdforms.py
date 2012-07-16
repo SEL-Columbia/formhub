@@ -12,12 +12,12 @@ class TestCrowdforms(MainTestCase):
         self.xform.save()
 
     def test_owner_can_submit_form(self):
-        self._make_submissions()
+        self._make_submissions(add_uuid=True)
 
     def test_other_user_can_submit_form(self):
         self._create_user_and_login('alice', 'alice')
-        self._make_submissions()
+        self._make_submissions(add_uuid=True)
 
     def test_anonymous_can_submit(self):
         self._logout()
-        self._make_submissions('submit')
+        self._make_submissions('submit', add_uuid=True)

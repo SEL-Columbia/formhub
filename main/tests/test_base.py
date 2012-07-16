@@ -1,10 +1,15 @@
 import base64
 import os
-from django.test import TestCase
-from django.contrib.auth.models import User
-from django.test.client import Client
-from odk_logger.models import XForm, Instance, Attachment
+import re
+from tempfile import NamedTemporaryFile
 import urllib2
+
+from django.contrib.auth.models import User
+from django.test import TestCase
+from django.test.client import Client
+
+from odk_logger.models import XForm, Instance, Attachment
+
 
 class MainTestCase(TestCase):
 
@@ -79,13 +84,31 @@ class MainTestCase(TestCase):
         self._publish_transportation_form()
         self._submit_transport_instance()
 
-    def _make_submission(self, path, username=None):
+    def _make_submission(self, path, username=None, add_uuid=False):
+        # store temporary file with dynamic uuid
+        tmp_file = None
+        if add_uuid:
+            tmp_file = NamedTemporaryFile(delete=False)
+            split_xml = None
+            with open(path) as _file:
+                split_xml = re.split(r'(<transport>)', _file.read())
+            split_xml[1:1] = [
+                '<formhub><uuid>%s</uuid></formhub>' % self.xform.uuid
+            ]
+            tmp_file.write(''.join(split_xml))
+            path = tmp_file.name
+            tmp_file.close()
+
         with open(path) as f:
             post_data = {'xml_submission_file': f}
             if username is None:
                 username = self.user.username
             url = '/%s/submission' % username
             self.response = self.anon.post(url, post_data)
+
+        # remove temporary file if stored
+        if add_uuid:
+            os.unlink(tmp_file.name)
 
     def _make_submission_w_attachment(self, path, attachment_path):
         with open(path) as f:
@@ -94,12 +117,12 @@ class MainTestCase(TestCase):
             url = '/%s/submission' % self.user.username
             self.response = self.anon.post(url, post_data)
 
-    def _make_submissions(self, username=None):
+    def _make_submissions(self, username=None, add_uuid=False):
         paths = [os.path.join(self.this_directory, 'fixtures', 'transportation',
                 'instances', s, s + '.xml') for s in self.surveys]
         pre_count = Instance.objects.count()
         for path in paths:
-            self._make_submission(path, username)
+            self._make_submission(path, username, add_uuid)
         self.assertEqual(Instance.objects.count(), pre_count + 4)
         self.assertEqual(self.xform.surveys.count(), pre_count + 4)
 
