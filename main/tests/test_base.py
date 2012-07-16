@@ -8,6 +8,11 @@ import urllib2
 
 class MainTestCase(TestCase):
 
+    surveys = ['transport_2011-07-25_19-05-49',
+               'transport_2011-07-25_19-05-36',
+               'transport_2011-07-25_19-06-01',
+               'transport_2011-07-25_19-06-14',]
+
     def setUp(self):
         self.maxDiff = None
         self._create_user_and_login()
@@ -57,12 +62,12 @@ class MainTestCase(TestCase):
         self.xform = XForm.objects.all().reverse()[0]
 
     def _submit_transport_instance(self):
-        s = 'transport_2011-07-25_19-05-49'
+        s = self.surveys[0]
         self._make_submission(os.path.join(self.this_directory, 'fixtures',
                     'transportation', 'instances', s, s + '.xml'))
 
     def _submit_transport_instance_w_attachment(self):
-        s = 'transport_2011-07-25_19-05-49'
+        s = self.surveys[0]
         media_file = "1335783522563.jpg"
         self._make_submission_w_attachment(os.path.join(self.this_directory, 'fixtures',
             'transportation', 'instances', s, s + '.xml'), os.path.join(self.this_directory, 'fixtures',
@@ -74,10 +79,12 @@ class MainTestCase(TestCase):
         self._publish_transportation_form()
         self._submit_transport_instance()
 
-    def _make_submission(self, path):
+    def _make_submission(self, path, username=None):
         with open(path) as f:
             post_data = {'xml_submission_file': f}
-            url = '/%s/submission' % self.user.username
+            if username is None:
+                username = self.user.username
+            url = '/%s/submission' % username
             self.response = self.anon.post(url, post_data)
 
     def _make_submission_w_attachment(self, path, attachment_path):
@@ -87,16 +94,12 @@ class MainTestCase(TestCase):
             url = '/%s/submission' % self.user.username
             self.response = self.anon.post(url, post_data)
 
-    def _make_submissions(self):
-        surveys = ['transport_2011-07-25_19-05-49',
-                   'transport_2011-07-25_19-05-36',
-                   'transport_2011-07-25_19-06-01',
-                   'transport_2011-07-25_19-06-14',]
+    def _make_submissions(self, username=None):
         paths = [os.path.join(self.this_directory, 'fixtures', 'transportation',
-                'instances', s, s + '.xml') for s in surveys]
+                'instances', s, s + '.xml') for s in self.surveys]
         pre_count = Instance.objects.count()
         for path in paths:
-            self._make_submission(path)
+            self._make_submission(path, username)
         self.assertEqual(Instance.objects.count(), pre_count + 4)
         self.assertEqual(self.xform.surveys.count(), pre_count + 4)
 

@@ -42,27 +42,30 @@ def create_instance(username, xml_file, media_files,
     taken this out because it was too slow. Now we're going to create
     a way for an admin to mark duplicate instances. This should
     simplify things a bit.
+    Submission cases:
+        If there is a username and no uuid, submitting an old ODK form.
+        If there is no username and a uuid, submitting a touchform.
+        If there is a username and a uuid, submitting a new ODK form.
     """
     xml = xml_file.read()
 
     # check alternative form submission ids
-    if not username:
+    if not uuid:
+        # parse UUID from uploaded XML
+        split_xml = uuid_regex.split(xml)
+        if len(split_xml) > 1:
+            uuid = split_xml[XForm.uuid_split_location]
 
-        if not uuid:
-            # parse UUID from uploaded XML
-            split_xml = uuid_regex.split(xml)
-            if len(split_xml) > 1:
-                uuid = split_xml[XForm.uuid_split_location]
+    if not username and not uuid:
+        raise InstanceInvalidUserError()
 
-        if not uuid:
-            raise InstanceInvalidUserError()
-
+    if uuid:
         xform = XForm.objects.get(uuid=uuid)
         username = xform.user.username
 
     user = get_object_or_404(User, username=username)
     existing_instance_count = Instance.objects.filter(xml=xml,
-            user=user).count()
+        user=user).count()
 
     if existing_instance_count == 0:
         proceed_to_create_instance = True
