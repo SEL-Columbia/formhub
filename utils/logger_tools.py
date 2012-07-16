@@ -66,7 +66,7 @@ def create_instance(username, xml_file, media_files,
         xform_username = xform.user.username
 
         if xform_username != username and not xform.is_crowd_form:
-            return IsNotCrowdformError()
+            raise IsNotCrowdformError()
 
         username = xform_username
 

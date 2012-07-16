@@ -34,7 +34,7 @@ from utils.user_auth import helper_auth_helper, has_permission,\
      has_edit_permission, HttpResponseNotAuthorized
 from odk_logger.import_tools import import_instances_from_zip
 from odk_logger.xform_instance_parser import InstanceEmptyError,\
-     InstanceInvalidUserError
+     InstanceInvalidUserError, IsNotCrowdformError
 from odk_logger.models.instance import FormInactiveError
 
 
@@ -157,14 +157,18 @@ def submission(request, username=None):
             )
         except InstanceInvalidUserError:
             return HttpResponseBadRequest("Username or ID required.")
+        except IsNotCrowdformError:
+            return HttpResponseNotAllowed(
+                "Sorry but the crowd form you submitted to is closed."
+            )
         except InstanceEmptyError:
             return HttpResponseBadRequest(
-                'Received empty submission. No instance was created'
+                "Received empty submission. No instance was created"
             )
         except FormInactiveError:
-            return HttpResponseNotAllowed('Form is not active')
+            return HttpResponseNotAllowed("Form is not active")
         except XForm.DoesNotExist:
-            return HttpResponseNotFound('Form does not exist on this account')
+            return HttpResponseNotFound("Form does not exist on this account")
 
         if instance is None:
             return HttpResponseBadRequest("Unable to create submission.")
