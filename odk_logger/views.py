@@ -196,10 +196,8 @@ def submission(request, username=None):
         response.status_code = 201
         response['Location'] = request.build_absolute_uri(request.path)
         return response
-    except IOError, e:
-        if type(e) == tuple:
-            e = e[1]
-        if str(e) == 'request data read error':
+    except IOError as e:
+        if e == 'request data read error':
             return HttpResponseBadRequest("File transfer interruption.")
         else:
             raise
