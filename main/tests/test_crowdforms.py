@@ -25,7 +25,7 @@ class TestCrowdforms(MainTestCase):
     def _add_crowdform(self):
         self._create_user_and_login(self.alice, self.alice)
         self.assertEqual(len(MetaData.crowdform_users(self.xform)), 0)
-        self.client.get(reverse(edit, kwargs={
+        self.response = self.client.get(reverse(edit, kwargs={
             'username': self.xform.user.username,
             'id_string': self.xform.id_string
         }), {'crowdform_add': '1'})
@@ -70,9 +70,15 @@ class TestCrowdforms(MainTestCase):
 
     def test_user_add_crowdform(self):
         self._add_crowdform()
+        self.assertEqual(self.response.status_code, 302)
         meta = MetaData.crowdform_users(self.xform)
         self.assertEqual(len(meta), 1)
         self.assertEqual(meta[0].data_value, self.alice)
+
+    def test_disallow_access_to_closed_crowdform(self):
+        self._close_crowdform()
+        self._add_crowdform()
+        self.assertEqual(self.response.status_code, 403)
 
     def test_user_can_view_added_crowdform(self):
         self._add_crowdform()

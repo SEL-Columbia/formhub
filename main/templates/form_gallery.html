@@ -51,8 +51,8 @@
           <img src='{{ data_dictionary.user.profile.gravatar }}' alt='' width='20' height='20' />&nbsp;<a href="/{{ data_dictionary.user.username }}">{{ data_dictionary.user.username }}</a>
         </td>
         <td><a href="{% url main.views.show data_dictionary.user.username data_dictionary.id_string %}">{{ data_dictionary.title }}</a>
-            {% if data_dictionary.is_crowd_form %}| <a href="{% url main.views.edit data_dictionary.user.username data_dictionary.id_string %}?crowdform_add=1">{% trans "add crowdform"
-    %}</a>{% endif %}
+            {% if data_dictionary.is_crowd_form %}<br /><span class="label label">
+            <a href="{% url main.views.edit data_dictionary.user.username data_dictionary.id_string %}?crowdform_add=1">{% trans "add crowdform" %}</a>{% endif %}</span>
         </td>
         <td>{{ data_dictionary.description }}</td>
         <td>

@@ -272,16 +272,22 @@ def api(request, username=None, id_string=None):
 @login_required
 def edit(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
+
     if request.GET.get('crowdform_add'):
         # ensure is crowdform
         if xform.is_crowd_form:
-            MetaData.crowdform_users(xform, request.user.username)
-    elif username == request.user.username or\
+            request_username = request.user.username
+            MetaData.crowdform_users(xform, request_username)
+            return HttpResponseRedirect(reverse(show, kwargs={
+                'username': request_username,
+                'id_string': id_string
+            }))
+
+    if username == request.user.username or\
             request.user.has_perm('odk_logger.change_xform', xform):
         if request.POST.get('description'):
             xform.description = request.POST['description']
-        elif request.POST.get('title'):
-            xform.title = request.POST['title']
+            xform.update()
         elif request.POST.get('toggle_shared'):
             if request.POST['toggle_shared'] == 'data':
                 xform.shared_data = not xform.shared_data
@@ -291,6 +297,7 @@ def edit(request, username, id_string):
                 xform.downloadable = not xform.downloadable
             elif request.POST['toggle_shared'] == 'crowd':
                 xform.is_crowd_form = not xform.is_crowd_form
+            xform.update()
         elif request.POST.get('form-license'):
             MetaData.form_license(xform, request.POST['form-license'])
         elif request.POST.get('data-license'):
@@ -306,7 +313,6 @@ def edit(request, username, id_string):
                 MetaData.mapbox_layer_upload(xform, mapbox_layer.cleaned_data)
         elif request.FILES:
             MetaData.supporting_docs(xform, request.FILES['doc'])
-        xform.update()
         if request.is_ajax():
             return HttpResponse('Updated succeeded.')
         else:
