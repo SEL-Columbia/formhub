@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from main.models import MetaData
 from main.views import edit
 from odk_logger.views import formList
+from odk_logger.models import XForm
 from test_base import MainTestCase
 
 
@@ -16,6 +17,10 @@ class TestCrowdforms(MainTestCase):
         # turn on crowd forms for this form
         self.xform.is_crowd_form = True
         self.xform.save()
+        self.edit_url = reverse(edit, kwargs={
+            'username': self.xform.user.username,
+            'id_string': self.xform.id_string
+        })
         self.alice = 'alice'
         self.crowdform_count = 0
 
@@ -27,10 +32,7 @@ class TestCrowdforms(MainTestCase):
         self._create_user_and_login(self.alice, self.alice)
         self.assertEqual(len(MetaData.crowdform_users(self.xform)),
                          self.crowdform_count)
-        self.response = self.client.get(reverse(edit, kwargs={
-            'username': self.xform.user.username,
-            'id_string': self.xform.id_string
-        }), {'crowdform': 'add'})
+        self.response = self.client.get(self.edit_url, {'crowdform': 'add'})
         self.crowdform_count += 1
 
     def test_owner_can_submit_form(self):
@@ -101,10 +103,28 @@ class TestCrowdforms(MainTestCase):
 
     def test_user_delete_crowdform(self):
         self._add_crowdform()
-        self.response = self.client.get(reverse(edit, kwargs={
-            'username': self.xform.user.username,
-            'id_string': self.xform.id_string
-        }), {'crowdform': 'delete'})
+        self.response = self.client.get(self.edit_url, {'crowdform': 'delete'})
         meta = MetaData.crowdform_users(self.xform)
         self.assertEqual(len(meta), 0)
         self.assertEqual(self.response.status_code, 302)
+
+    def test_user_toggle_form_crowd_on(self):
+        self.xform.shared = False
+        self.xform.is_crowd_form = False
+        self.xform.save()
+        response = self.client.post(self.edit_url, {'toggle_shared': 'crowd'},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        xform = XForm.objects.get(pk=self.xform.pk)
+        self.assertEqual(xform.shared, True)
+        self.assertEqual(xform.is_crowd_form, True)
+
+    def test_user_toggle_form_crowd_off(self):
+        self.xform.shared = True
+        self.xform.save()
+        response = self.client.post(self.edit_url, {'toggle_shared': 'crowd'},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        xform = XForm.objects.get(pk=self.xform.pk)
+        self.assertEqual(xform.shared, True)
+        self.assertEqual(xform.is_crowd_form, False)
