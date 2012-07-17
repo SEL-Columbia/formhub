@@ -78,6 +78,28 @@ To run the test for a specific method in a specific class in a specific app, e.g
 
     python manage.py test main.TestFormErrors.test_submission_deactivated
 
+Deploying
+---------
+
+To deploy you will need Fabric:
+
+    pip install fabric
+
+You will need the appopriate .pem file in order to deploy to AWS. You will need
+to edit fabfile.py if you want to customize the deployments.
+
+To deploy master to the production server:
+
+    fab deploy:prod
+
+To deploy master to the development server:
+
+    fab deploy:dev
+
+To deploy a specific branch to the development server:
+
+    fab deploy:dev,branch=[BRANCH NAME]
+
 Contributing
 ------------
 

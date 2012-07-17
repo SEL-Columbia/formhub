@@ -17,8 +17,8 @@ from guardian.shortcuts import assign, remove_perm, get_users_with_perms
 
 from main.models import UserProfile, MetaData
 from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
-         SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
-         SourceForm, PermissionForm, MediaForm, MapboxLayerForm
+     SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
+     SourceForm, PermissionForm, MediaForm, MapboxLayerForm
 from odk_logger.models import Instance, XForm
 from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_viewer.models.data_dictionary import upload_to
@@ -26,7 +26,8 @@ from odk_viewer.views import image_urls_for_form, survey_responses
 from utils.logger_tools import response_with_mimetype_and_name, publish_form
 from utils.decorators import is_owner
 from utils.user_auth import check_and_set_user, set_profile_data,\
-         has_permission, get_xform_and_perms, check_and_set_user_and_form
+     has_permission, helper_auth_helper, get_xform_and_perms,\
+     check_and_set_user_and_form
 from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
 
@@ -224,7 +225,7 @@ def show(request, username=None, id_string=None, uuid=None):
 
 @require_GET
 def api(request, username=None, id_string=None):
-    '''
+    """
     Returns all results as JSON.  If a parameter string is passed,
     it takes the 'query' parameter, converts this string to a dictionary, an
     that is then used as a MongoDB query string.
@@ -236,13 +237,21 @@ def api(request, username=None, id_string=None):
     http://json.parser.online.fr/
 
     E.g. api?query='{"last_name": "Smith"}'
-    '''
+    """
+    helper_auth_helper(request)
     xform, owner = check_and_set_user_and_form(username, id_string, request)
+
     if not xform:
         return HttpResponseForbidden('Not shared.')
+
     try:
-        args = {"username": username, "id_string": id_string, "query": request.GET.get('query'),
-                "fields": request.GET.get('fields'), "sort": request.GET.get('sort')}
+        args = {
+            'username': username,
+            'id_string': id_string,
+            'query': request.GET.get('query'),
+            'fields': request.GET.get('fields'),
+            'sort': request.GET.get('sort')
+        }
         if 'start' in request.GET:
             args["start"] = int(request.GET.get('start'))
         if 'limit' in request.GET:
@@ -251,7 +260,7 @@ def api(request, username=None, id_string=None):
             args["count"] = True if int(request.GET.get('count')) > 0 else False
         cursor = ParsedInstance.query_mongo(**args)
     except ValueError, e:
-        return HttpResponseBadRequest(e.message)
+        return HttpResponseBadRequest(e.__str__())
     records = list(record for record in cursor)
     response_text = simplejson.dumps(records)
     if 'callback' in request.GET and request.GET.get('callback') != '':

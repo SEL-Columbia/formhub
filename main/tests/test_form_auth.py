@@ -20,7 +20,8 @@ class TestFormAuth(MainTestCase):
 
     def _set_auth_headers(self, username, password):
         return {
-            'HTTP_AUTHORIZATION': 'Basic ' + base64.b64encode('%s:%s' % (username, password)),
+            'HTTP_AUTHORIZATION': 'Basic ' + base64.b64encode('%s:%s' % (
+                username, password)),
         }
 
     def test_show_for_anon_when_require_auth_false(self):
@@ -41,21 +42,25 @@ class TestFormAuth(MainTestCase):
         self._create_user_and_login('alice', 'alice')
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, 401)
-        response = self.client.get(self.url, **self._set_auth_headers('alice', 'alice'))
+        response = self.client.get(self.url, **self._set_auth_headers('alice',
+                                                                      'alice'))
         self.assertEquals(response.status_code, 401)
 
     def test_show_for_user_when_require_auth_true(self):
         self._set_require_auth()
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 401)
-        response = self.client.get(self.url, **self._set_auth_headers('bob', 'bob'))
+        self.assertEquals(response.status_code, 200)
+        response = self.client.get(self.url, **self._set_auth_headers('bob',
+                                                                      'bob'))
         self.assertEquals(response.status_code, 200)
 
     def test_show_for_user_logged_out_when_require_auth_true(self):
+        self._logout()
         self._set_require_auth()
         response = self.anon.get(self.url)
         self.assertEquals(response.status_code, 401)
-        response = self.anon.get(self.url, **self._set_auth_headers('bob', 'bob'))
+        response = self.anon.get(self.url, **self._set_auth_headers('bob',
+                                                                    'bob'))
         self.assertEquals(response.status_code, 200)
 
     def test_login_redirect_redirects(self):
