@@ -234,7 +234,7 @@
               {% else %}
                 $('#form-shared-public').hide();
               {% endif %}
-              $.each(['form-shared', 'data-shared', 'active-form'], function(inx, el) {
+              $.each(['form-shared', 'data-shared', 'active-form', 'crowd-form'], function(inx, el) {
                 var cb = $('#' + el + ':checkbox');
                 cb.iphoneStyle({
                   onChange: function() {
@@ -402,6 +402,12 @@
           <div class="input">
             <input id="data-shared" type="checkbox"{% if xform.shared_data %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
           </div> 
+          <br/>
+          <label>{% trans "Crowd Form" %}&nbsp;</label>
+          <div class="input">
+            <input id="crowd-form" type="checkbox" {% if xform.is_crowd_form %}
+            checked="" {% endif %} data-url="{% url main.views.edit content_user.username xform.id_string  %}" />
+          </div>
           <br/>
           <label>{% trans "Form Active" %}&nbsp;</label>
           <div class="input">
