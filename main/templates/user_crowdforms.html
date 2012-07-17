@@ -36,10 +36,10 @@
         <td>
           {% if xform.shared_data %}
           {% if xform.submission_count %}
-              <a href="{% url odk_viewer.views.csv_export user.username xform.id_string %}"><button class="btn btn-small">{%  trans "csv" %}</button></a>
-              <a href="{% url odk_viewer.views.xls_export user.username xform.id_string %}"><button class="btn btn-small">{%  trans "xls" %}</button></a>
+              <a href="{% url odk_viewer.views.csv_export xform.user.username xform.id_string %}"><button class="btn btn-small">{%  trans "csv" %}</button></a>
+              <a href="{% url odk_viewer.views.xls_export xform.user.username xform.id_string %}"><button class="btn btn-small">{%  trans "xls" %}</button></a>
               {% if xform.data_dictionary.has_surveys_with_geopoints %}
-              <a href="{% url odk_viewer.views.kml_export user.username xform.id_string %}"><button class="btn btn-small">{%  trans "kml" %}</button></a>
+              <a href="{% url odk_viewer.views.kml_export xform.user.username xform.id_string %}"><button class="btn btn-small">{%  trans "kml" %}</button></a>
               {% endif %}
           {% endif %}
               <span class="label label-info">{%  trans "PUBLIC" %}</span>
@@ -52,7 +52,7 @@
           <div class=btn-group>
             <center>
               {% if xform.data_dictionary.has_surveys_with_geopoints %}
-          <a class="btn" href="{% url odk_viewer.views.map_view user.username xform.id_string %}" data-original-title="View Map" rel="tooltip">
+          <a class="btn" href="{% url odk_viewer.views.map_view xform.user.username xform.id_string %}" data-original-title="View Map" rel="tooltip">
             <i class="icon-map-marker"></i>
           </a>
           {% endif %}
