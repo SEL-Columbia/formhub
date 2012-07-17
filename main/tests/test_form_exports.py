@@ -73,7 +73,7 @@ class TestFormExports(MainTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self._num_rows(response.content, export_format), 10)
         # test restricting to between start time and end time
-        json = '{"_submission_time": {"$gte": "%s"}, "_submission_time": {"$lte": "%s"}}' %\
+        json = '{"_submission_time": {"$gte": "%s", "$lte": "%s"}}' %\
             (before_time, after_time)
         params= {'query': json}
         response = self.client.get(url, params)

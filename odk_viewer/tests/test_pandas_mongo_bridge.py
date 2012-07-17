@@ -1,4 +1,5 @@
 import os
+from tempfile import NamedTemporaryFile
 from odk_logger.models.xform import XForm
 from main.tests.test_base import MainTestCase
 from odk_viewer.pandas_mongo_bridge import *
@@ -41,6 +42,14 @@ class TestPandasMongoBridge(MainTestCase):
         xml_submission_file_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             "../fixtures/nested_repeats/instances/nested_repeats_01.xml"
+        )
+        self._make_submission(xml_submission_file_path)
+        self.assertEqual(self.response.status_code, 201)
+
+    def _submit_nested_repeats_instance_02(self):
+        xml_submission_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "../fixtures/nested_repeats/instances/nested_repeats_02.xml"
         )
         self._make_submission(xml_submission_file_path)
         self.assertEqual(self.response.status_code, 201)
@@ -156,36 +165,28 @@ class TestPandasMongoBridge(MainTestCase):
         self.assertEqual(sorted(expected_default_columns),
             sorted(default_columns))
 
-    def test_csv_columns(self):
+    def test_csv_dataframe_export_to(self):
         self._publish_nested_repeats_form()
         self._submit_nested_repeats_instance()
-        data = self._csv_data_for_dataframe()
-        columns = data[0].keys()
-        expected_columns = [
-            u'kids/has_kids',
-            u'kids/kids_details[1]/kids_name',
-            u'kids/kids_details[1]/kids_age',
-            u'kids/kids_details[1]/kids_immunization[1]/immunization_info',
-            u'kids/kids_details[1]/kids_immunization[2]/immunization_info',
-            u'kids/kids_details[1]/kids_immunization[3]/immunization_info',
-            u'kids/kids_details[2]/kids_name',
-            u'kids/kids_details[2]/kids_age',
-            u'kids/kids_details[2]/kids_immunization[1]/immunization_info',
-            u'kids/kids_details[2]/kids_immunization[2]/immunization_info',
-            u'kids/nested_group/nested_name',
-            u'kids/nested_group/nested_age',
-            u'gps',
-            u'_gps_latitude',
-            u'_gps_longitude',
-            u'_gps_altitude',
-            u'_gps_precision',
-            u'web_browsers/firefox',
-            u'web_browsers/chrome',
-            u'web_browsers/ie',
-            u'web_browsers/safari',
-        ]
-        self.maxDiff = None
-        self.assertEqual(sorted(expected_columns), sorted(columns))
+        self._submit_nested_repeats_instance_02()
+        csv_df_builder = CSVDataFrameBuilder(self.user.username,
+            self.xform.id_string)
+        temp_file = NamedTemporaryFile(suffix=".csv", delete=False)
+        csv_df_builder.export_to(temp_file)
+        csv_fixture_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "fixtures", "nested_repeats.csv"
+        )
+        temp_file.close()
+        fixture, output = '', ''
+        #with open(csv_fixture_path) as f:
+        #    fixture = f.read()
+        with open(temp_file.name) as f:
+            output = f.read()
+        with open('output.csv', 'w') as f:
+            f.write(output)
+        os.unlink(temp_file.name)
+        self.assertEqual(fixture, output)
 
     def test_csv_columns_for_gps_within_groups(self):
         self._publish_grouped_gps_form()
@@ -352,6 +353,58 @@ class TestPandasMongoBridge(MainTestCase):
         }
         AbstractDataFrameBuilder._split_gps_fields(record, gps_fields)
         self.assertEqual(expected_result, record)
+
+    def test_order_csv_columns(self):
+        xpaths = ["name", "age", "kids_details", "gps"]
+        expected_ordered_columns = {
+            'name': None,
+            'age': None,
+            'kids_details': [],
+            'gps': [
+                '_gps_longitude',
+                '_gps_latitude',
+                '_gps_altitude',
+                '_gps_precision',
+            ],
+        }
+        records = [
+            {
+                "name": "Tom",
+                "age": 25,
+                "kids_details": [
+                    {
+                        "kids_details/kids_name": "Dick",
+                        "kids_details/kids_age": "5"
+                    },
+                    {
+                        "kids_details/kids_name": "Harry",
+                        "kids_details/kids_age": "3"
+                    }
+                ]
+            },
+            {
+                "name": "Mike",
+                "age": 25,
+                "kids_details": [
+                    {
+                        "kids_details/kids_name": "Mikey",
+                        "kids_details/kids_age": "1"
+                    }
+                ]
+            }
+        ]
+        data = []
+        for record in records:
+            # re index repeats
+            flat_dict = {}
+            for key, value in record.iteritems():
+                reindexed = CSVDataFrameBuilder._reindex(key, value, expected_ordered_columns)
+                flat_dict.update(reindexed)
+
+            data.append(flat_dict)
+        import json
+        print json.dumps(data, indent=4, sort_keys=True)
+        print json.dumps(expected_ordered_columns, indent=4, sort_keys=True)
 
     def test_valid_sheet_name(self):
         sheet_names = ["sheet_1", "sheet_2"]
