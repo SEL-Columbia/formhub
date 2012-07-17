@@ -30,7 +30,7 @@ class TestCrowdforms(MainTestCase):
         self.response = self.client.get(reverse(edit, kwargs={
             'username': self.xform.user.username,
             'id_string': self.xform.id_string
-        }), {'crowdform_add': '1'})
+        }), {'crowdform': 'add'})
         self.crowdform_count += 1
 
     def test_owner_can_submit_form(self):
@@ -98,3 +98,13 @@ class TestCrowdforms(MainTestCase):
         self._add_crowdform()
         meta = MetaData.crowdform_users(self.xform)
         self.assertEqual(len(meta), 1)
+
+    def test_user_delete_crowdform(self):
+        self._add_crowdform()
+        self.response = self.client.get(reverse(edit, kwargs={
+            'username': self.xform.user.username,
+            'id_string': self.xform.id_string
+        }), {'crowdform': 'delete'})
+        meta = MetaData.crowdform_users(self.xform)
+        self.assertEqual(len(meta), 0)
+        self.assertEqual(self.response.status_code, 302)

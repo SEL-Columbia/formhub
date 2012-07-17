@@ -278,11 +278,21 @@ def api(request, username=None, id_string=None):
 def edit(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
 
-    if request.GET.get('crowdform_add'):
+    if request.GET.get('crowdform'):
+        crowdform_action = request.GET['crowdform']
+        request_username = request.user.username
+
         # ensure is crowdform
         if xform.is_crowd_form:
-            request_username = request.user.username
-            MetaData.crowdform_users(xform, request_username)
+            if crowdform_action == 'delete':
+                MetaData.objects.get(
+                    xform__id_string=id_string,
+                    data_value=request_username,
+                    data_type=MetaData.CROWDFORM_USERS
+                ).delete()
+            elif crowdform_action == 'add':
+                MetaData.crowdform_users(xform, request_username)
+
             return HttpResponseRedirect(reverse(profile, kwargs={
                 'username': request_username
             }))

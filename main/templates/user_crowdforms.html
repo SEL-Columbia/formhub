@@ -7,7 +7,7 @@
     <h1>{% trans "Crowdforms" %} <small>{% trans "List of crowdforms you have joined." %} </small></h1>
   </div>
   
-  <table id="forms-table" class="table table-bordered table-striped">
+  <table id="crowdforms-table" class="table table-bordered table-striped">
     <thead>
       <tr>
         <th>{%  trans "Name" %}</th>
@@ -77,9 +77,9 @@
           </center>
         </td>
         <td>
-          <a href="#delete-crowdform-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" class="btn">
-            <i class="icon-trash"></i>
-          </a>
+            <a data-backdrop="true" data-keyboard="true" class="btn" href="{% url main.views.edit xform.user.username xform.id_string %}?crowdform=delete">
+                <i class="icon-trash"></i>
+            </a>
 	    </div>
         </td>
       </tr>
