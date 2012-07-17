@@ -502,10 +502,10 @@ def delete_data(request, username=None, id_string=None):
         if 'limit' in request.GET:
             args["limit"] = int(request.GET.get('limit'))
         cursor = ParsedInstance.query_mongo(**args)
-    except ValueError, e:
-        return HttpResponseBadRequest(e.message)
+    except ValueError as e:
+        return HttpResponseBadRequest(e)
 
-    today= datetime.today().strftime('%Y-%m-%dT%H:%M:%S')
+    today = datetime.today().strftime('%Y-%m-%dT%H:%M:%S')
     ParsedInstance.edit_mongo(args['query'], '{ "$set": {"_deleted_at": "%s" }}' % today)
 
     records = list(record for record in cursor)
