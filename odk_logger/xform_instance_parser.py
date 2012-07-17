@@ -8,6 +8,10 @@ class XLSFormError(Exception):
     pass
 
 
+class IsNotCrowdformError(Exception):
+    pass
+
+
 class InstanceInvalidUserError(Exception):
     pass
 

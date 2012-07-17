@@ -117,14 +117,16 @@ class MainTestCase(TestCase):
             url = '/%s/submission' % self.user.username
             self.response = self.anon.post(url, post_data)
 
-    def _make_submissions(self, username=None, add_uuid=False):
+    def _make_submissions(self, username=None, add_uuid=False, should_store=True):
         paths = [os.path.join(self.this_directory, 'fixtures', 'transportation',
                 'instances', s, s + '.xml') for s in self.surveys]
         pre_count = Instance.objects.count()
         for path in paths:
             self._make_submission(path, username, add_uuid)
-        self.assertEqual(Instance.objects.count(), pre_count + 4)
-        self.assertEqual(self.xform.surveys.count(), pre_count + 4)
+        post_count = pre_count + len(self.surveys) if should_store\
+            else pre_count
+        self.assertEqual(Instance.objects.count(), post_count)
+        self.assertEqual(self.xform.surveys.count(), post_count)
 
     def _check_url(self, url, timeout=1):
         try:
