@@ -20,4 +20,4 @@ class TestCrowdforms(MainTestCase):
 
     def test_anonymous_can_submit(self):
         self._logout()
-        self._make_submissions('submit', add_uuid=True)
+        self._make_submissions('crowdforms', add_uuid=True)

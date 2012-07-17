@@ -104,6 +104,8 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail, UserProfileFormRe
         'about',
         'admin',
         'clients',
+        'crowdform',
+        'crowdforms',
         'data',
         'formhub',
         'forms',
