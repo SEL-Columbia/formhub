@@ -123,6 +123,11 @@ def profile(request, username):
         context.form = QuickConverterFile()
         context.form_url = QuickConverterURL()
         context.odk_url = request.build_absolute_uri("/%s" % request.user.username)
+        crowdforms = XForm.objects.filter(
+                metadata__data_type=MetaData.CROWDFORM_USERS,
+                metadata__data_value=username
+            )
+        context.crowdforms = crowdforms
     # for any other user -> profile
     profile, created = UserProfile.objects.get_or_create(user=content_user)
     set_profile_data(context, content_user)
@@ -278,9 +283,8 @@ def edit(request, username, id_string):
         if xform.is_crowd_form:
             request_username = request.user.username
             MetaData.crowdform_users(xform, request_username)
-            return HttpResponseRedirect(reverse(show, kwargs={
-                'username': request_username,
-                'id_string': id_string
+            return HttpResponseRedirect(reverse(profile, kwargs={
+                'username': request_username
             }))
 
     if username == request.user.username or\
