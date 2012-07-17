@@ -17,6 +17,7 @@ class TestCrowdforms(MainTestCase):
         self.xform.is_crowd_form = True
         self.xform.save()
         self.alice = 'alice'
+        self.crowdform_count = 0
 
     def _close_crowdform(self):
         self.xform.is_crowd_form = False
@@ -24,11 +25,13 @@ class TestCrowdforms(MainTestCase):
 
     def _add_crowdform(self):
         self._create_user_and_login(self.alice, self.alice)
-        self.assertEqual(len(MetaData.crowdform_users(self.xform)), 0)
+        self.assertEqual(len(MetaData.crowdform_users(self.xform)),
+                         self.crowdform_count)
         self.response = self.client.get(reverse(edit, kwargs={
             'username': self.xform.user.username,
             'id_string': self.xform.id_string
         }), {'crowdform_add': '1'})
+        self.crowdform_count += 1
 
     def test_owner_can_submit_form(self):
         self._make_submissions(add_uuid=True)
@@ -86,3 +89,12 @@ class TestCrowdforms(MainTestCase):
                                    kwargs={'username': self.alice}))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(self.xform.id_string in response.content)
+
+    def test_user_add_crowdform_duplicate_entry(self):
+        self._add_crowdform()
+        self.assertEqual(self.response.status_code, 302)
+        meta = MetaData.crowdform_users(self.xform)
+        self.assertEqual(len(meta), 1)
+        self._add_crowdform()
+        meta = MetaData.crowdform_users(self.xform)
+        self.assertEqual(len(meta), 1)
