@@ -269,11 +269,14 @@ def api(request, username=None, id_string=None):
     return HttpResponse(response_text, mimetype='application/json')
 
 
-@require_POST
 @login_required
 def edit(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
-    if username == request.user.username or\
+    if request.GET.get('crowdform_add'):
+        # ensure is crowdform
+        if xform.is_crowd_form:
+            MetaData.crowdform_users(xform, request.user.username)
+    elif username == request.user.username or\
             request.user.has_perm('odk_logger.change_xform', xform):
         if request.POST.get('description'):
             xform.description = request.POST['description']

@@ -91,10 +91,10 @@ def formList(request, username):
     """
     This is where ODK Collect gets its download list.
     """
-    crowd_forms = XForm.objects.filter(is_crowd_form=True)\
-                                .exclude(user__username=username)
-    if  username.lower() ==  'submit':
-        xforms = crowd_forms
+
+    if  username.lower() ==  'crowdforms':
+        xforms = XForm.objects.filter(is_crowd_form=True)\
+            .exclude(user__username=username)
     else:
         formlist_user = get_object_or_404(User, username=username)
         profile, created = UserProfile.objects.get_or_create(user=formlist_user)
@@ -111,7 +111,13 @@ def formList(request, username):
                 return HttpResponseNotAuthorized()
 
         xforms = XForm.objects.filter(downloadable=True, user__username=username)
-        xforms = chain(xforms, crowd_forms)
+
+        # retrieve crowd_forms for this user
+        crowdforms = XForm.objects.filter(
+            metadata__data_type=MetaData.CROWDFORM_USERS,
+            metadata__data_value=username
+        )
+        xforms = chain(xforms, crowdforms)
     urls = [{
         'url': request.build_absolute_uri(xform.url()),
         'text': xform.title if not xform.is_crowd_form else 'Crowd/%s' % xform.title,
