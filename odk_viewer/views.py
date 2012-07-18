@@ -31,7 +31,7 @@ from csv_writer import CsvWriter
 from xls_writer import XlsWriter
 from odk_logger.views import download_jsonform
 from main.models import TokenStorageModel
-from utils.google import google_export_xls
+from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
 import main
 

@@ -51,7 +51,7 @@ def google_auth_return(request):
         ts = TokenStorageModel.objects.get(id=request.user)
     except TokenStorageModel.DoesNotExist:
         ts = TokenStorageModel(id=request.user)
-    access_token = outh2_token.get_access_token(request.REQUEST)
+    access_token = oauth2_token.get_access_token(request.REQUEST)
     ts.token = gdata.gauth.token_to_blob(token=access_token)
     ts.save()
     return HttpResponseRedirect(reverse(home))
