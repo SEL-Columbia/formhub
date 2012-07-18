@@ -197,7 +197,7 @@ def submission(request, username=None):
         response['Location'] = request.build_absolute_uri(request.path)
         return response
     except IOError as e:
-        if e == 'request data read error':
+        if 'request data read error' in unicode(e):
             return HttpResponseBadRequest("File transfer interruption.")
         else:
             raise
