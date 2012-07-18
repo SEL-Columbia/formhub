@@ -25,7 +25,6 @@ class TestGoogleDocsExport(MainTestCase):
             'id_string': self.xform.id_string
         }))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['Location'], 'https://docs.google.com')
         # share the data, log out, and check the export
         self._share_form_data()
         self._logout()
