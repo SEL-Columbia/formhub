@@ -111,6 +111,7 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail, UserProfileFormRe
         'forms',
         'maps',
         'odk',
+        'people',
         'submit',
         'submission',
         'support',
