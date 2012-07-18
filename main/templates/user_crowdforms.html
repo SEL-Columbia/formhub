@@ -1,0 +1,91 @@
+{% load i18n %}
+{% load humanize %}
+
+{% if crowdforms %}
+<section id="crowdforms">
+  <div class="page-header">
+    <h1>{% trans "Crowdforms" %} <small>{% trans "List of crowdforms you have joined." %} </small></h1>
+  </div>
+  
+  <table id="crowdforms-table" class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>{%  trans "Name" %}</th>
+        <th>{%  trans "Submissions" %}</th>
+        <th>{%  trans "Last Submission" %}</th>
+        <th>{%  trans "Data" %}</th>
+        <th>{%  trans "View" %}</th>
+        <th>{%  trans "Remove" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for xform in crowdforms %}
+      <tr>
+        <td>
+            <a href="{% url main.views.show xform.user.username xform.id_string %}">{{ xform.title }}</a>
+            {% if xform.shared %}
+                <span class="label label-info">{%  trans "PUBLIC" %}</span>
+            {% endif %}
+        </td>
+        <td><center>{{ xform.submission_count|intcomma }}</center></td>
+        <td>
+          {% if xform.time_of_last_submission %}
+          {{ xform.time_of_last_submission|date:"N d, Y" }}
+          {% endif %}
+        </td>
+        <td>
+          {% if xform.shared_data %}
+          {% if xform.submission_count %}
+              <a href="{% url odk_viewer.views.csv_export xform.user.username xform.id_string %}"><button class="btn btn-small">{%  trans "csv" %}</button></a>
+              <a href="{% url odk_viewer.views.xls_export xform.user.username xform.id_string %}"><button class="btn btn-small">{%  trans "xls" %}</button></a>
+              {% if xform.data_dictionary.has_surveys_with_geopoints %}
+              <a href="{% url odk_viewer.views.kml_export xform.user.username xform.id_string %}"><button class="btn btn-small">{%  trans "kml" %}</button></a>
+              {% endif %}
+          {% endif %}
+              <span class="label label-info">{%  trans "PUBLIC" %}</span>
+          {% else %}
+              <span class="label label-warning">{%  trans "PRIVATE" %}</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if xform.shared_data %}
+          <div class=btn-group>
+            <center>
+              {% if xform.data_dictionary.has_surveys_with_geopoints %}
+          <a class="btn" href="{% url odk_viewer.views.map_view xform.user.username xform.id_string %}" data-original-title="View Map" rel="tooltip">
+            <i class="icon-map-marker"></i>
+          </a>
+          {% endif %}
+          {% if xform.submission_count > 0 %}
+          <a class="btn" href="{% url main.views.form_photos xform.user.username xform.id_string %}" data-original-title="View Photo" rel="tooltip" >
+            <i class="icon-camera"></i>
+          </a>
+          <a class="btn" href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}" data-original-title="Enter Web Form" rel="tooltip">
+            <i class="icon-edit"></i>
+          </a>                
+          </div>
+          <a class="btn" href="{% url odk_viewer.views.data_view xform.user.username xform.id_string %}" data-original-title="View Submitted Data" rel="tooltip">
+            <i class="icon-th-list"></i>
+          </a>
+          <a class="btn" href="{% url odk_viewer.views.instance xform.user.username xform.id_string %}" data-original-title="Browse Data (One by One)" rel="tooltip">
+            <i class="icon-list-alt"></i>
+          </a>
+          {% endif %}
+          {% else %}
+              <span class="label label-warning">{%  trans "PRIVATE" %}</span>
+          {% endif %}
+          </center>
+        </td>
+        <td>
+            <a data-backdrop="true" data-keyboard="true" class="btn" href="{% url main.views.edit xform.user.username xform.id_string %}?crowdform=delete">
+                <i class="icon-trash"></i>
+            </a>
+	    </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+<br/>
+{% endif %}
