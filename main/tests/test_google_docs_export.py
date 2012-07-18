@@ -1,7 +1,8 @@
 from django.core.urlresolvers import reverse
 
 from main.models import TokenStorageModel
-from main.google_export import token, refresh_access_token
+from utils.google import oauth2_token as token
+from main.google_export import refresh_access_token
 from odk_viewer.views import google_xls_export
 
 from test_base import MainTestCase

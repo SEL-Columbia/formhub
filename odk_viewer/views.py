@@ -30,8 +30,11 @@ from main.models import UserProfile, MetaData
 from csv_writer import CsvWriter
 from xls_writer import XlsWriter
 from odk_logger.views import download_jsonform
+from main.models import TokenStorageModel
+from utils.google import google_export_xls
 # TODO: using from main.views import api breaks the application, why?
 import main
+
 
 def encode(time_str):
     time = strptime(time_str, "%Y_%m_%d_%H_%M_%S")
@@ -276,32 +279,13 @@ def google_xls_export(request, username, id_string):
     ddw.set_data_dictionary(dd)
     temp_file = ddw.save_workbook_to_file()
     temp_file.close()
-    import gdata
-    import gdata.gauth
-    import gdata.docs
-    import gdata.data
-    import gdata.docs.client
-    import gdata.docs.data
-    from main.google_export import token, refresh_access_token, redirect_uri
-    from main.models import TokenStorageModel
     try:
         ts = TokenStorageModel.objects.get(id=request.user)
     except TokenStorageModel.DoesNotExist:
         return HttpResponseRedirect(redirect_uri)
     else:
-        stored_token = gdata.gauth.token_from_blob(ts.token)
-        if stored_token.refresh_token is not None and\
-           stored_token.access_token is not None:
-            token.refresh_token = stored_token.refresh_token
-            working_token = refresh_access_token(token, request.user)
-            docs_client = gdata.docs.client.DocsClient(source=token.user_agent)
-            docs_client = working_token.authorize(docs_client)
-            xls_doc = gdata.docs.data.Resource(
-                type='spreadsheet', title=xform.title)
-            media = gdata.data.MediaSource()
-            media.SetFileHandle(tmp.name, 'application/vnd.ms-excel')
-            xls_doc = docs_client.CreateResource(xls_doc, media=media)
-    os.unlink(tmp.name)
+        google_export_xls(tmp.name, xform.title, ts.token, blob=True)
+        os.unlink(tmp.name)
     return HttpResponseRedirect('https://docs.google.com')
 
 def data_view(request, username, id_string):
