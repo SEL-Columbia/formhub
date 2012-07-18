@@ -1,6 +1,7 @@
 from datetime import date
 import decimal
 import os
+import re
 import tempfile
 import traceback
 
@@ -14,6 +15,7 @@ from django.db import IntegrityError
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext_lazy as _
 from modilabs.utils.subprocess_timeout import ProcessTimedOut
 from pyxform.errors import PyXFormError
 
@@ -23,24 +25,54 @@ from odk_viewer.models import ParsedInstance
 from odk_logger.models import SurveyType
 from odk_logger.models import XForm
 from odk_logger.models.xform import XLSFormError
-from odk_logger.xform_instance_parser import InstanceParseError
+from odk_logger.xform_instance_parser import InstanceParseError,\
+     InstanceInvalidUserError, IsNotCrowdformError
 from utils.viewer_tools import get_path
-from django.utils.translation import ugettext_lazy as _
+
+
+uuid_regex = re.compile(r'<formhub><uuid>([^<]+)</uuid></formhub>',
+    re.DOTALL)
 
 
 @transaction.commit_on_success
 def create_instance(username, xml_file, media_files,
-        status=u'submitted_via_web'):
+        status=u'submitted_via_web', uuid=None):
     """
     I used to check if this file had been submitted already, I've
     taken this out because it was too slow. Now we're going to create
     a way for an admin to mark duplicate instances. This should
     simplify things a bit.
+    Submission cases:
+        If there is a username and no uuid, submitting an old ODK form.
+        If there is no username and a uuid, submitting a touchform.
+        If there is a username and a uuid, submitting a new ODK form.
     """
     xml = xml_file.read()
+
+    # check alternative form submission ids
+    if not uuid:
+        # parse UUID from uploaded XML
+        split_xml = uuid_regex.split(xml)
+
+        # check that xml has UUID, then it is a crowdform
+        if len(split_xml) > 1:
+            uuid = split_xml[1]
+
+    if not username and not uuid:
+        raise InstanceInvalidUserError()
+
+    if uuid:
+        xform = XForm.objects.get(uuid=uuid)
+        xform_username = xform.user.username
+
+        if xform_username != username and not xform.is_crowd_form:
+            raise IsNotCrowdformError()
+
+        username = xform_username
+
     user = get_object_or_404(User, username=username)
     existing_instance_count = Instance.objects.filter(xml=xml,
-            user=user).count()
+        user=user).count()
 
     if existing_instance_count == 0:
         proceed_to_create_instance = True
@@ -83,8 +115,9 @@ def report_exception(subject, info, exc_info=None):
 def round_down_geopoint(num):
     if num:
         decimal_mult = 1000000
-        return str(decimal.Decimal(int(num * decimal_mult))/decimal_mult)
+        return str(decimal.Decimal(int(num * decimal_mult)) / decimal_mult)
     return None
+
 
 def response_with_mimetype_and_name(mimetype, name, extension=None,
     show_date=True, file_path=None, use_local_filesystem=False,

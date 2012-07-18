@@ -7,7 +7,69 @@ Formhub
 Installation
 ------------
 
-On Ubuntu 10.04. First, I set up a new virtual environment:
+Ubuntu 12.04
+^^^^^^^^^^^^
+
+Install system libraries and start services:
+
+    # apt-get update
+
+    # apt-get upgrade
+
+    # apt-get install default-jre gcc git mongodb python-dev python-virtualenv
+
+    # start mongodb
+
+Make directory structure and Clone formhub:
+
+    $ mkdir -p srv/formhub-app
+
+    $ cd src/formhub-app
+
+    $ git clone git://github.com/modilabs/formhub.git
+
+Make virtual environment and install requirements:
+
+    $ virtualenv --no-site-packages project_env
+
+    $ source project_env/bin/activate
+
+    $ cd formhub
+
+    $ pip install -r requirements.pip
+
+(OPTIONAL) For MySQL, s3, ses:
+
+    # apt-get install libmysqlclient-dev mysql-server
+
+    $ pip install -r requirements-mysql.pip
+
+    $ pip install -r requirements-s3.pip
+
+    $ pip install -r requirements-ses.pip
+
+Create a database and start server:
+
+    create or update your local-settings.py file
+
+    $ python manage.py syncdb
+
+    $ python manage.py migrate
+
+    $ python manage.py run-server
+
+(OPTIONAL) Apache and system administration tools:
+
+    # apt-get install apache libapache2-mode-wsgi
+
+    # apt-get install htop monit
+
+    set up apache and monit
+
+Ubuntu 10.04
+^^^^^^^^^^^^
+
+First, I set up a new virtual environment:
 
     sudo apt-get install python-virtualenv
 
