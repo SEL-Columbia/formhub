@@ -111,12 +111,14 @@ class TestCrowdforms(MainTestCase):
     def test_user_toggle_form_crowd_on(self):
         self.xform.shared = False
         self.xform.is_crowd_form = False
+        self.xform.shared_data = False
         self.xform.save()
         response = self.client.post(self.edit_url, {'toggle_shared': 'crowd'},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         xform = XForm.objects.get(pk=self.xform.pk)
         self.assertEqual(xform.shared, True)
+        self.assertEqual(xform.shared_data, True)
         self.assertEqual(xform.is_crowd_form, True)
 
     def test_user_toggle_form_crowd_off(self):

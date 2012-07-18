@@ -316,6 +316,7 @@ def edit(request, username, id_string):
                 else:
                     xform.is_crowd_form = True
                     xform.shared = True
+                    xform.shared_data = True
         elif request.POST.get('form-license'):
             MetaData.form_license(xform, request.POST['form-license'])
         elif request.POST.get('data-license'):
