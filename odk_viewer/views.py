@@ -282,6 +282,9 @@ def google_xls_export(request, username, id_string):
     try:
         ts = TokenStorageModel.objects.get(id=request.user)
     except TokenStorageModel.DoesNotExist:
+        request.session["google_redirect_url"] =  reverse(google_xls_export,
+            kwargs={'username': username,
+                  'id_string': id_string})
         return HttpResponseRedirect(redirect_uri)
     else:
         google_export_xls(tmp.name, xform.title, ts.token, blob=True)
