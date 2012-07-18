@@ -57,3 +57,4 @@ def google_export_xls(filename, title, token, blob=True):
         media = gdata.data.MediaSource()
         media.SetFileHandle(filename, 'application/vnd.ms-excel')
         xls_doc = docs_client.CreateResource(xls_doc, media=media)
+        return xls_doc.find_html_link()

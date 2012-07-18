@@ -287,9 +287,9 @@ def google_xls_export(request, username, id_string):
                   'id_string': id_string})
         return HttpResponseRedirect(redirect_uri)
     else:
-        google_export_xls(tmp.name, xform.title, ts.token, blob=True)
+        url = google_export_xls(tmp.name, xform.title, ts.token, blob=True)
         os.unlink(tmp.name)
-    return HttpResponseRedirect('https://docs.google.com')
+    return HttpResponseRedirect(url)
 
 def data_view(request, username, id_string):
     owner = get_object_or_404(User, username=username)
