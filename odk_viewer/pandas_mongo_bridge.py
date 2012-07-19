@@ -85,7 +85,7 @@ class AbstractDataFrameBuilder(object):
             for e in dd.get_survey_elements() if e.bind.get("type")=="select"])
 
     @classmethod
-    def _split_select_multiples(cls, record, select_multiples, ordered_columns):
+    def _split_select_multiples(cls, record, select_multiples):
         # find any select multiple(s) columns in this record
         multi_select_columns = [key for key in record if key in
             select_multiples.keys()]
@@ -101,7 +101,6 @@ class AbstractDataFrameBuilder(object):
                 # set to True for items in selections
                 record.update(dict([(choice, choice in selections) for choice in
                     choices]))
-                ordered_columns[key] = choices
 
             # recurse into repeats
             for record_key, record_item in record.items():
@@ -109,7 +108,7 @@ class AbstractDataFrameBuilder(object):
                     for list_item in record_item:
                         if type(list_item) == dict:
                             cls._split_select_multiples(list_item,
-                                select_multiples, ordered_columns)
+                                select_multiples)
         return record
 
     @classmethod
@@ -118,7 +117,7 @@ class AbstractDataFrameBuilder(object):
             if e.bind.get("type")=="geopoint"]
 
     @classmethod
-    def _split_gps_fields(cls, record, gps_fields, ordered_columns):
+    def _split_gps_fields(cls, record, gps_fields):
         updated_gps_fields = {}
         for key, value in record.iteritems():
             if key in gps_fields:
@@ -131,13 +130,11 @@ class AbstractDataFrameBuilder(object):
                 if len(parts) == 4:
                     gps_parts = dict(zip(gps_xpaths, parts))
                 updated_gps_fields.update(gps_parts)
-                ordered_columns[key] = [key] + gps_xpaths
             # check for repeats within record i.e. in value
             if type(value) == list:
                 for list_item in  value:
                     if type(list_item) == dict:
-                        cls._split_gps_fields(list_item,
-                            gps_fields, ordered_columns)
+                        cls._split_gps_fields(list_item, gps_fields)
         record.update(updated_gps_fields)
 
     def _query_mongo(self, query='{}', start=0,
@@ -410,7 +407,6 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
 
     def _format_for_dataframe(self, cursor):
         # TODO: check for and handle empty results
-        columns = self.dd.get_headers()
         # TODO: move this functionality to a function perhaps of DataDict
         # get form elements to split repeats into separate section/sheets and
         # everything else in the default section
@@ -426,6 +422,14 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
                         if isinstance(c, Question) and not \
                                 question_types_to_exclude(c.type):
                             self.ordered_columns[c.get_abbreviated_xpath()] = None
+        # add ordered columns for select multiples
+        for key, choices in self.select_multiples.items():
+            self.ordered_columns[key] = choices
+        # add ordered columns for gps fields
+        import ipdb; ipdb.set_trace()
+        for key in self.gps_fields:
+            gps_xpaths = self.dd.get_additional_geopoint_xpaths(key)
+            self.ordered_columns[key] = [key] + gps_xpaths
         data = []
 
         for record in cursor:
@@ -433,10 +437,10 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
             record.pop(ID)
             # split select multiples
             record = self._split_select_multiples(record,
-                self.select_multiples, self.ordered_columns)
+                self.select_multiples)
             # check for gps and split into components i.e. latitude, longitude,
             # altitude, precision
-            self._split_gps_fields(record, self.gps_fields, self.ordered_columns)
+            self._split_gps_fields(record, self.gps_fields)
             flat_dict = {}
             # re index repeats
             for key, value in record.iteritems():
