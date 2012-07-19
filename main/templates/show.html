@@ -238,9 +238,21 @@
                 var cb = $('#' + el + ':checkbox');
                 cb.iphoneStyle({
                   onChange: function() {
+                    // a callback func
+                    var c = function(){}
+                    // if crowdform is toggled, change data and form status
+                    // appropriately
+                    if(el == 'crowd-form' && $('#crowd-form').attr('checked') == 'checked'){
+                        if($('#form-shared:checkbox').attr('checked') == undefined)
+                            $('#form-shared:checkbox').click()
+                        if($('#data-shared:checkbox').attr('checked') == undefined)
+                            $('#data-shared:checkbox').click()
+                    }
+ 
                     privacyEdit(cb.data('url'), el.split('-')[0]);
                     $('#' + el + '-public').toggle();
                     $('#' + el + '-private').toggle();
+                    
                   }
                 });
               });
@@ -366,30 +378,6 @@
         </div>
       </div>
       <div class="span4">
-        <script type="text/javascript" charset="utf-8">
-            $(document).ready(function() {
-              {% if xform.shared_data %}
-                $('#data-shared-private').hide();
-              {% else %}
-                $('#data-shared-public').hide();
-              {% endif %}
-              {% if xform.shared %}
-                $('#form-shared-private').hide();
-              {% else %}
-                $('#form-shared-public').hide();
-              {% endif %}
-              $.each(['form-shared', 'data-shared', 'active-form'], function(inx, el) {
-                var cb = $('#' + el + ':checkbox');
-                cb.iphoneStyle({
-                  onChange: function() {
-                    privacyEdit(cb.data('url'), el.split('-')[0]);
-                    $('#' + el + '-public').toggle();
-                    $('#' + el + '-private').toggle();
-                  }
-                });
-              });
-            });
-        </script>
         {% if is_owner %}
         <h3>{% trans "Settings" %}</h3>
         <div class="clearfix">
