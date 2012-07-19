@@ -2,7 +2,7 @@ import os, urllib2
 
 from django import forms
 from django.core.urlresolvers import reverse
-from django.core.files.storage import default_storage
+from django.core.files.storage import default_storage, get_storage_class
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseBadRequest, \
@@ -11,24 +11,25 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
 from django.utils import simplejson
+from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST
-from django.core.files.storage import get_storage_class
+from google_doc import GoogleDoc
 from guardian.shortcuts import assign, remove_perm, get_users_with_perms
 
-from main.models import UserProfile, MetaData
 from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
-         SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
-         SourceForm, PermissionForm, MediaForm, MapboxLayerForm
+     SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
+     SourceForm, PermissionForm, MediaForm, MapboxLayerForm
+from main.models import UserProfile, MetaData
 from odk_logger.models import Instance, XForm
 from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_viewer.models.data_dictionary import upload_to
 from odk_viewer.views import image_urls_for_form, survey_responses
-from utils.logger_tools import response_with_mimetype_and_name, publish_form
 from utils.decorators import is_owner
+from utils.logger_tools import response_with_mimetype_and_name, publish_form
 from utils.user_auth import check_and_set_user, set_profile_data,\
-         has_permission, get_xform_and_perms, check_and_set_user_and_form,\
-         basic_http_auth
-from django.utils.translation import ugettext_lazy as _
+     has_permission, helper_auth_helper, get_xform_and_perms,\
+     check_and_set_user_and_form
+
 
 def home(request):
     context = RequestContext(request)
@@ -122,6 +123,11 @@ def profile(request, username):
         context.form = QuickConverterFile()
         context.form_url = QuickConverterURL()
         context.odk_url = request.build_absolute_uri("/%s" % request.user.username)
+        crowdforms = XForm.objects.filter(
+                metadata__data_type=MetaData.CROWDFORM_USERS,
+                metadata__data_value=username
+            )
+        context.crowdforms = crowdforms
     # for any other user -> profile
     profile, created = UserProfile.objects.get_or_create(user=content_user)
     set_profile_data(context, content_user)
@@ -222,10 +228,9 @@ def show(request, username=None, id_string=None, uuid=None):
     return render_to_response("show.html", context_instance=context)
 
 
-@basic_http_auth
 @require_GET
 def api(request, username=None, id_string=None):
-    '''
+    """
     Returns all results as JSON.  If a parameter string is passed,
     it takes the 'query' parameter, converts this string to a dictionary, an
     that is then used as a MongoDB query string.
@@ -237,13 +242,21 @@ def api(request, username=None, id_string=None):
     http://json.parser.online.fr/
 
     E.g. api?query='{"last_name": "Smith"}'
-    '''
+    """
+    helper_auth_helper(request)
     xform, owner = check_and_set_user_and_form(username, id_string, request)
+
     if not xform:
         return HttpResponseForbidden('Not shared.')
+
     try:
-        args = {"username": username, "id_string": id_string, "query": request.GET.get('query'),
-                "fields": request.GET.get('fields'), "sort": request.GET.get('sort')}
+        args = {
+            'username': username,
+            'id_string': id_string,
+            'query': request.GET.get('query'),
+            'fields': request.GET.get('fields'),
+            'sort': request.GET.get('sort')
+        }
         if 'start' in request.GET:
             args["start"] = int(request.GET.get('start'))
         if 'limit' in request.GET:
@@ -252,7 +265,7 @@ def api(request, username=None, id_string=None):
             args["count"] = True if int(request.GET.get('count')) > 0 else False
         cursor = ParsedInstance.query_mongo(**args)
     except ValueError, e:
-        return HttpResponseBadRequest(e.message)
+        return HttpResponseBadRequest(e.__str__())
     records = list(record for record in cursor)
     response_text = simplejson.dumps(records)
     if 'callback' in request.GET and request.GET.get('callback') != '':
@@ -261,10 +274,29 @@ def api(request, username=None, id_string=None):
     return HttpResponse(response_text, mimetype='application/json')
 
 
-@require_POST
 @login_required
 def edit(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
+
+    if request.GET.get('crowdform'):
+        crowdform_action = request.GET['crowdform']
+        request_username = request.user.username
+
+        # ensure is crowdform
+        if xform.is_crowd_form:
+            if crowdform_action == 'delete':
+                MetaData.objects.get(
+                    xform__id_string=id_string,
+                    data_value=request_username,
+                    data_type=MetaData.CROWDFORM_USERS
+                ).delete()
+            elif crowdform_action == 'add':
+                MetaData.crowdform_users(xform, request_username)
+
+            return HttpResponseRedirect(reverse(profile, kwargs={
+                'username': request_username
+            }))
+
     if username == request.user.username or\
             request.user.has_perm('odk_logger.change_xform', xform):
         if request.POST.get('description'):
@@ -278,6 +310,13 @@ def edit(request, username, id_string):
                 xform.shared = not xform.shared
             elif request.POST['toggle_shared'] == 'active':
                 xform.downloadable = not xform.downloadable
+            elif request.POST['toggle_shared'] == 'crowd':
+                if xform.is_crowd_form:
+                    xform.is_crowd_form = False
+                else:
+                    xform.is_crowd_form = True
+                    xform.shared = True
+                    xform.shared_data = True
         elif request.POST.get('form-license'):
             MetaData.form_license(xform, request.POST['form-license'])
         elif request.POST.get('data-license'):
@@ -294,6 +333,7 @@ def edit(request, username, id_string):
         elif request.FILES:
             MetaData.supporting_docs(xform, request.FILES['doc'])
         xform.update()
+
         if request.is_ajax():
             return HttpResponse('Updated succeeded.')
         else:
@@ -325,9 +365,6 @@ def tutorial(request):
     return render_to_response('base.html', context_instance=context)
 
 
-from google_doc import GoogleDoc
-
-
 def syntax(request):
     url = 'https://docs.google.com/document/pub?id=1Dze4IZGr0IoIFuFAI_ohKR5mYUt4IAn5Y-uCJmnv1FQ'
     doc = GoogleDoc(url)
@@ -357,6 +394,7 @@ def form_gallery(request):
         )
     ]
     return render_to_response('form_gallery.html', context_instance=context)
+
 
 def download_metadata(request, username, id_string, data_id):
     data = get_object_or_404(MetaData, pk=data_id)
@@ -395,6 +433,7 @@ def download_metadata(request, username, id_string, data_id):
             return HttpResponseNotFound()
     return HttpResponseForbidden('Permission denied.')
 
+
 def download_media_data(request, username, id_string, data_id):
     data = get_object_or_404(MetaData, id=data_id)
     default_storage = get_storage_class()()
@@ -423,6 +462,7 @@ def download_media_data(request, username, id_string, data_id):
         else:
             return HttpResponseNotFound()
     return HttpResponseForbidden('Permission denied.')
+
 
 def form_photos(request, username, id_string):
     xform, owner = check_and_set_user_and_form(username, id_string, request)

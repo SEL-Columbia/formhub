@@ -108,5 +108,4 @@ def rest_service_form_submission(sender, instance, created, **kwargs):
         call_service(instance)
 
 
-post_save.connect(stathat_form_submission, sender=Instance)
 post_save.connect(rest_service_form_submission, sender=Instance)

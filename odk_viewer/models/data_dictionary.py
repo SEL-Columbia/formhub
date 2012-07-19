@@ -1,16 +1,19 @@
-from django.db import models
-from django.contrib.auth.models import User
-from odk_logger.models import XForm
-from pyxform import SurveyElementBuilder
-from pyxform.section import RepeatingSection
-from pyxform.question import Question
-from pyxform.builder import create_survey_from_xls
-from common_tags import ID
-from odk_viewer.models import ParsedInstance
-import re
 import os
-from utils.model_tools import queryset_iterator
+import re
+
+from django.contrib.auth.models import User
+from django.db import models
+from pyxform import SurveyElementBuilder
+from pyxform.builder import create_survey_from_xls
+from pyxform.question import Question
+from pyxform.section import RepeatingSection
+
+from common_tags import ID
+from odk_logger.models import XForm
+from odk_viewer.models import ParsedInstance
 from utils.export_tools import question_types_to_exclude, DictOrganizer
+from utils.model_tools import queryset_iterator, set_uuid
+
 
 class ColumnRename(models.Model):
     xpath = models.CharField(max_length=255, unique=True)
@@ -49,6 +52,21 @@ class DataDictionary(XForm):
         self.surveys_for_export = lambda d: d.surveys.all()
         super(DataDictionary, self).__init__(*args, **kwargs)
 
+    def _set_uuid_in_xml(self):
+        """
+        Add bind to automatically set UUID node in XML.
+        """
+        file_name, file_ext = os.path.splitext(self.file_name())
+        split_xml = self.uuid_regex.split(self.xml)
+        split_xml[self.uuid_node_location:self.uuid_node_location] =\
+            ['<formhub><uuid/></formhub>']
+        split_xml[self.uuid_bind_location:self.uuid_bind_location] = [
+            '\n      <bind nodeset="/', file_name,
+            '/formhub/uuid" type="string" calculate="\'',
+            self.uuid, '\'" />'
+        ]
+        self.xml = ''.join(split_xml)
+
     class Meta:
         app_label = "odk_viewer"
         proxy = True
@@ -67,6 +85,8 @@ class DataDictionary(XForm):
             self.json = survey.to_json()
             self.xml = survey.to_xml()
             self._mark_start_time_boolean()
+            set_uuid(self)
+            self._set_uuid_in_xml()
         super(DataDictionary, self).save(*args, **kwargs)
 
     def file_name(self):
