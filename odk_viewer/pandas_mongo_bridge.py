@@ -2,18 +2,17 @@ from itertools import chain
 import json
 import re
 import settings
-
 from pandas.core.frame import DataFrame
 from pandas.io.parsers import ExcelWriter
 from pyxform.survey import Survey
 from pyxform.survey_element import SurveyElement
 from pyxform.section import Section, RepeatingSection
 from pyxform.question import Question
-
 from odk_viewer.models.data_dictionary import ParsedInstance, DataDictionary
 from utils.export_tools import question_types_to_exclude
 from collections import OrderedDict
-from common_tags import ID, NA_REP
+from common_tags import ID, XFORM_ID_STRING, STATUS, ATTACHMENTS, GEOLOCATION,\
+UUID, SUBMISSION_TIME, NA_REP
 
 
 # this is Mongo Collection where we will store the parsed submissions
@@ -55,9 +54,8 @@ def get_valid_sheet_name(sheet_name, existing_name_list):
 class AbstractDataFrameBuilder(object):
 
     # TODO: use constants from comman_tags module!
-    INTERNAL_FIELDS = ['_xform_id_string', '_percentage_complete', '_status',
-         '_id', '_attachments', '_potential_duplicates', '_geolocation',
-         '_uuid', '_userform_id', '_submission_time']
+    INTERNAL_FIELDS = [XFORM_ID_STRING, STATUS, ID, ATTACHMENTS, GEOLOCATION,
+        UUID, SUBMISSION_TIME]
 
     """
     Group functionality used by any DataFrameBuilder i.e. XLS, CSV and KML
@@ -369,7 +367,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         d = {}
 
         # check for lists
-        if type(value) is list:
+        if type(value) is list and len(value) > 0:
             for index, item in enumerate(value):
                 # start at 1
                 index += 1
@@ -399,6 +397,8 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
                                 if not new_xpath in ordered_columns[key]:
                                     ordered_columns[key].append(new_xpath)
                             d[new_xpath] = nested_val
+                else:
+                    d[key] = value
         else:
             # anything that's not a list will be in the top level dict so its
             # safe to simply assign
@@ -406,16 +406,25 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         return d
 
     @classmethod
-    def _build_ordered_columns(cls, survey_element, ordered_columns):
+    def _build_ordered_columns(cls, survey_element, ordered_columns,
+            is_repeating_section=False):
+        """
+        Build a flat ordered dict of column groups
+
+        is_repeating_section ensures that child questions of repeating sections
+        are not considered as columns
+        """
         for child in survey_element.children:
             child_xpath = child.get_abbreviated_xpath()
             if isinstance(child, Section):
                 if isinstance(child, RepeatingSection):
                     ordered_columns[child.get_abbreviated_xpath()] = []
-                else:
-                    cls._build_ordered_columns(child, ordered_columns)
+                    is_repeating_section = True
+                cls._build_ordered_columns(child, ordered_columns,
+                        is_repeating_section)
             elif isinstance(child, Question) and not \
-                question_types_to_exclude(child.type):
+                question_types_to_exclude(child.type) and not\
+                    is_repeating_section:
                 ordered_columns[child.get_abbreviated_xpath()] = None
 
     def _format_for_dataframe(self, cursor):
@@ -430,10 +439,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
             gps_xpaths = self.dd.get_additional_geopoint_xpaths(key)
             self.ordered_columns[key] = [key] + gps_xpaths
         data = []
-
         for record in cursor:
-            # remove mongo internal _id field
-            record.pop(ID)
             # split select multiples
             record = self._split_select_multiples(record,
                 self.select_multiples)

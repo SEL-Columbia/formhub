@@ -179,12 +179,12 @@ class TestPandasMongoBridge(MainTestCase):
         )
         temp_file.close()
         fixture, output = '', ''
-        #with open(csv_fixture_path) as f:
-        #    fixture = f.read()
+        with open(csv_fixture_path) as f:
+            fixture = f.read()
         with open(temp_file.name) as f:
             output = f.read()
-        with open('output.csv', 'w') as f:
-            f.write(output)
+        #with open('output.csv', 'w') as f:
+        #    f.write(output)
         os.unlink(temp_file.name)
         self.assertEqual(fixture, output)
 
@@ -203,17 +203,20 @@ class TestPandasMongoBridge(MainTestCase):
             u'web_browsers/chrome',
             u'web_browsers/ie',
             u'web_browsers/safari',
-        ]
+        ] + AbstractDataFrameBuilder.INTERNAL_FIELDS
         self.maxDiff = None
-        self.assertEqual(expected_columns, columns)
+        self.assertEqual(sorted(expected_columns), sorted(columns))
 
-    def test_format_mongo_data_for_csv_columns(self):
+    def test_format_mongo_data_for_csv(self):
         self.maxDiff = None
         self._publish_single_level_repeat_form()
         self._submit_single_level_repeat_instance()
         dd = self.xform.data_dictionary()
         columns = dd.get_keys()
-        data = self._csv_data_for_dataframe()
+        data_0 = self._csv_data_for_dataframe()[0]
+        # remove AbstractDataFrameBuilder.INTERNAL_FIELDS
+        for key in AbstractDataFrameBuilder.INTERNAL_FIELDS:
+            data_0.pop(key)
         expected_data_0 = {
             u'gps': u'-1.2627557 36.7926442 0.0 30.0',
             u'_gps_latitude': u'-1.2627557',
@@ -232,7 +235,7 @@ class TestPandasMongoBridge(MainTestCase):
             u'web_browsers/firefox': False,
             u'info/name': u'Adam'
         }
-        self.assertEqual(expected_data_0, data[0])
+        self.assertEqual(expected_data_0, data_0)
 
     def test_split_select_multiples(self):
         self._publish_nested_repeats_form()
@@ -353,58 +356,6 @@ class TestPandasMongoBridge(MainTestCase):
         }
         AbstractDataFrameBuilder._split_gps_fields(record, gps_fields)
         self.assertEqual(expected_result, record)
-
-    def test_order_csv_columns(self):
-        xpaths = ["name", "age", "kids_details", "gps"]
-        expected_ordered_columns = {
-            'name': None,
-            'age': None,
-            'kids_details': [],
-            'gps': [
-                '_gps_longitude',
-                '_gps_latitude',
-                '_gps_altitude',
-                '_gps_precision',
-            ],
-        }
-        records = [
-            {
-                "name": "Tom",
-                "age": 25,
-                "kids_details": [
-                    {
-                        "kids_details/kids_name": "Dick",
-                        "kids_details/kids_age": "5"
-                    },
-                    {
-                        "kids_details/kids_name": "Harry",
-                        "kids_details/kids_age": "3"
-                    }
-                ]
-            },
-            {
-                "name": "Mike",
-                "age": 25,
-                "kids_details": [
-                    {
-                        "kids_details/kids_name": "Mikey",
-                        "kids_details/kids_age": "1"
-                    }
-                ]
-            }
-        ]
-        data = []
-        for record in records:
-            # re index repeats
-            flat_dict = {}
-            for key, value in record.iteritems():
-                reindexed = CSVDataFrameBuilder._reindex(key, value, expected_ordered_columns)
-                flat_dict.update(reindexed)
-
-            data.append(flat_dict)
-        import json
-        print json.dumps(data, indent=4, sort_keys=True)
-        print json.dumps(expected_ordered_columns, indent=4, sort_keys=True)
 
     def test_valid_sheet_name(self):
         sheet_names = ["sheet_1", "sheet_2"]

@@ -27,10 +27,14 @@ REGISTRATION = u"registration"
 NAME = u"name"
 
 # extra fields that we're adding to our mongo doc
+XFORM_ID_STRING = u"_xform_id_string"
+STATUS = u"_status"
 ATTACHMENTS = u"_attachments"
+UUID = u"_uuid"
+USERFORM_ID = u"_userform_id"
 DATE = u"_date"
 GEOLOCATION = u"_geolocation"
-SUBMISSION_TIME = '_submission_time'
+SUBMISSION_TIME = u'_submission_time'
 
 # datetime format that we store in mongo
 MONGO_STRFTIME = '%Y-%m-%dT%H:%M:%S'
