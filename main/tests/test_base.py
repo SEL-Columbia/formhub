@@ -15,7 +15,6 @@ class MainTestCase(TestCase):
 
     def tearDown(self):
         # clear mongo db after each test
-        import ipdb; ipdb.set_trace()
         _MONGO_CONNECTION[MONGO_TEST_DB_NAME].drop()
 
     def _create_user(self, username, password):

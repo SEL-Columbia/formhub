@@ -212,7 +212,7 @@ if len(sys.argv)>=2 and (sys.argv[1]=="test" or sys.argv[1]=="test_all"):
     MONGO_DB = _MONGO_CONNECTION[MONGO_TEST_DB_NAME]
 else:
     TESTING_MODE = False
-    MONGO_DB = _MONGO_CONNECTion[MONGO_DB_NAME]
+    MONGO_DB = _MONGO_CONNECTION[MONGO_DB_NAME]
 
 # Clear out the test database
 if TESTING_MODE:
