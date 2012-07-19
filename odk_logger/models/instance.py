@@ -29,15 +29,16 @@ class Instance(models.Model):
     xml = models.TextField()
     user = models.ForeignKey(User, related_name='surveys', null=True)
 
-    #using instances instead of surveys breaks django
+    # using instances instead of surveys breaks django
     xform = models.ForeignKey(XForm, null=True, related_name='surveys')
     start_time = models.DateTimeField(null=True)
     date = models.DateField(null=True)
     survey_type = models.ForeignKey(SurveyType)
 
-    #shows when we first received this instance
+    # shows when we first received this instance
     date_created = models.DateTimeField(auto_now_add=True)
-    #this will end up representing "date last parsed"
+
+    # this will end up representing "date last parsed"
     date_modified = models.DateTimeField(auto_now=True)
 
     # ODK keeps track of three statuses for an instance:

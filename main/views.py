@@ -26,7 +26,9 @@ from odk_viewer.views import image_urls_for_form, survey_responses
 from utils.logger_tools import response_with_mimetype_and_name, publish_form
 from utils.decorators import is_owner
 from utils.user_auth import check_and_set_user, set_profile_data,\
-         has_permission, get_xform_and_perms, check_and_set_user_and_form
+         has_permission, get_xform_and_perms, check_and_set_user_and_form,\
+         basic_http_auth
+from django.utils.translation import ugettext_lazy as _
 
 def home(request):
     context = RequestContext(request)
@@ -77,10 +79,11 @@ def clone_xlsform(request, username):
                 ).survey
             return {
                 'type': 'alert-success',
-                'text': 'Successfully cloned %s into your '\
-                        '<a href="%s">profile</a>.' % \
-                        (survey.id_string, reverse(profile,
-                            kwargs={'username': to_username}))
+                'text': _(u'Successfully cloned %(id_string)s into your '\
+                        '<a href="%(profile_url)s">profile</a>.' % \
+                        {'id_string': survey.id_string,
+                         'profile_url': reverse(profile,
+                            kwargs={'username': to_username})})
                 }
     context.message = publish_form(set_form)
     if request.is_ajax():
@@ -105,7 +108,7 @@ def profile(request, username):
             survey = form.publish(request.user).survey
             return {
                 'type': 'alert-success',
-                'text': 'Successfully published %s.' % survey.id_string,
+                'text': _(u'Successfully published %s.' % survey.id_string,)
                 }
         context.message = publish_form(set_form)
 
@@ -219,6 +222,7 @@ def show(request, username=None, id_string=None, uuid=None):
     return render_to_response("show.html", context_instance=context)
 
 
+@basic_http_auth
 @require_GET
 def api(request, username=None, id_string=None):
     '''
@@ -250,11 +254,11 @@ def api(request, username=None, id_string=None):
     except ValueError, e:
         return HttpResponseBadRequest(e.message)
     records = list(record for record in cursor)
+    response_text = simplejson.dumps(records)
     if 'callback' in request.GET and request.GET.get('callback') != '':
         callback = request.GET.get('callback')
-        return HttpResponse("%s(%s)" % (callback, simplejson.dumps(records)), \
-                    mimetype='application/json')
-    return HttpResponse(simplejson.dumps(records))
+        response_text = ("%s(%s)" % (callback, response_text))
+    return HttpResponse(response_text, mimetype='application/json')
 
 
 @require_POST
