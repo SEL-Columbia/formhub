@@ -351,8 +351,12 @@ function constructHexBinOverLay() {
         return new L.Polygon(_(el.geometry.coordinates).map(arr_to_latlng), 
                             {"id": el.properties.id});
     };
-    _(hexbinData.features).each( function(x) {
-        hexbinLayerGroup.addLayer(hex_feature_to_polygon_fn(x)); 
+    _(hexbinData.features).each( function(x, idx) {
+        var hexLayer = hex_feature_to_polygon_fn(x);
+        hexLayer.on('mouseover', function(e) {
+            console.log(e, idx);
+        });
+        hexbinLayerGroup.addLayer(hexLayer);
     });
 }
 
