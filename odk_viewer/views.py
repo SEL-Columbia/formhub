@@ -29,7 +29,6 @@ from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder,\
     CSVDataFrameBuilder
 from csv_writer import CsvWriter
 from xls_writer import XlsWriter
->>>>>>> 62a61eb21771acd8957aa08e9616f7e80ce59db9
 from utils.logger_tools import response_with_mimetype_and_name,\
          disposition_ext_and_date, round_down_geopoint
 from utils.viewer_tools import image_urls, image_urls_for_form
