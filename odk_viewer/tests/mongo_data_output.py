@@ -7,10 +7,13 @@ from django.test import TestCase, Client
 import common_tags
 from main.tests.test_base import MainTestCase
 from odk_logger.models import XForm
+from datetime import date
 
 '''
 Testing that data in parsed instance's mongo_dict is properly categorized.
 '''
+
+
 class TestMongoData(MainTestCase):
     def setUp(self):
         MainTestCase.setUp(self)
@@ -50,3 +53,14 @@ class TestMongoData(MainTestCase):
         for key, value in self.pi.to_dict_for_mongo().items():
             self.assertEquals(self.pi.to_dict_for_mongo(),
                     self.instances.find_one({key: value}))
+
+    def test_delete(self):
+        self.assertIn(self.pi.to_dict_for_mongo(), \
+                    list(self.instances.find({common_tags.DELETEDAT:\
+                         {"$exists": False}})))
+        p = self.pi.to_dict_for_mongo()
+        p.update({common_tags.DELETEDAT: date.today().strftime('%Y-%m-%d')})
+        self.instances.save(p)
+        self.assertEquals(self.pi.to_dict_for_mongo(),
+            self.instances.find_one({common_tags.DELETEDAT:
+                {"$exists": True}}))
