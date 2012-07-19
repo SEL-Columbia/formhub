@@ -15,7 +15,7 @@ class MainTestCase(TestCase):
 
     def tearDown(self):
         # clear mongo db after each test
-        _MONGO_CONNECTION[MONGO_TEST_DB_NAME].drop()
+        _MONGO_CONNECTION[MONGO_TEST_DB_NAME].instances.drop()
 
     def _create_user(self, username, password):
         user, created = User.objects.get_or_create(username=username)
