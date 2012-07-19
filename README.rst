@@ -182,4 +182,3 @@ Code Structure
 
 * main - This app is the glue that brings odk_logger and odk_viewer
   together.
-
