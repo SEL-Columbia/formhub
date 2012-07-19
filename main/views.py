@@ -129,7 +129,8 @@ def profile(request, username):
         context.form = QuickConverterFile()
         context.form_url = QuickConverterURL()
         context.odk_url = request.build_absolute_uri(
-            "/%s" % request.user.username
+            "/%s" % request.user.username)
+        crowdforms = XForm.objects.filter(
             metadata__data_type=MetaData.CROWDFORM_USERS,
             metadata__data_value=username
         )
