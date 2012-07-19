@@ -28,8 +28,28 @@ class TestFormAPIDelete(MainTestCase):
         self.xform.shared = True
         self.xform.save()
         self._create_user_and_login("jo")
-        
         json = '{"transport/available_transportation_types_to_referral_facility":"none"}'
         data = {'query': json}
         response = self.client.get(self.delete_url, data)
         self.assertEqual(response.status_code, 403)
+
+    def test_owner_can_delete(self):
+        #Test if Form owner can delete
+        #check record exist before delete and after delete
+        json = '{"transport/available_transportation_types_to_referral_facility":"none"}'
+        data = {'query': json}
+        args = {'username': self.user.username, 'id_string':
+                    self.xform.id_string, 'query': json, 'limit': 1, 'sort':
+                        '{"_id":-1}', 'fields': '["_id"]'}
+
+        #check if record exist before delete
+        before = ParsedInstance.query_mongo(**args)
+        self.assertEqual(before.count(), 1)
+
+        #Delete
+        response = self.client.get(self.delete_url, data)
+        self.assertEqual(response.status_code, 200)
+
+        #check if it exist after delete
+        after = ParsedInstance.query_mongo(**args)
+        self.assertEqual(after.count(), 0)
