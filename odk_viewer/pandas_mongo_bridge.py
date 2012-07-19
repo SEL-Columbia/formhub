@@ -405,28 +405,27 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
             d[key] = value
         return d
 
+    @classmethod
+    def _build_ordered_columns(cls, survey_element, ordered_columns):
+        for child in survey_element.children:
+            child_xpath = child.get_abbreviated_xpath()
+            if isinstance(child, Section):
+                if isinstance(child, RepeatingSection):
+                    ordered_columns[child.get_abbreviated_xpath()] = []
+                else:
+                    cls._build_ordered_columns(child, ordered_columns)
+            elif isinstance(child, Question) and not \
+                question_types_to_exclude(child.type):
+                ordered_columns[child.get_abbreviated_xpath()] = None
+
     def _format_for_dataframe(self, cursor):
         # TODO: check for and handle empty results
-        # TODO: move this functionality to a function perhaps of DataDict
-        # get form elements to split repeats into separate section/sheets and
-        # everything else in the default section
         self.ordered_columns = OrderedDict()
-        for e in self.dd.get_survey_elements():
-            # check for a Section or sub-classes of
-            if isinstance(e, Section):
-                # if a repeat we use its name
-                if isinstance(e, RepeatingSection):
-                    self.ordered_columns[e.get_abbreviated_xpath()] = []
-                else:
-                    for c in e.children:
-                        if isinstance(c, Question) and not \
-                                question_types_to_exclude(c.type):
-                            self.ordered_columns[c.get_abbreviated_xpath()] = None
+        self._build_ordered_columns(self.dd.survey, self.ordered_columns)
         # add ordered columns for select multiples
         for key, choices in self.select_multiples.items():
             self.ordered_columns[key] = choices
         # add ordered columns for gps fields
-        import ipdb; ipdb.set_trace()
         for key in self.gps_fields:
             gps_xpaths = self.dd.get_additional_geopoint_xpaths(key)
             self.ordered_columns[key] = [key] + gps_xpaths
