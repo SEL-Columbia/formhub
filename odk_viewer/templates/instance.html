@@ -10,6 +10,7 @@
 <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/sammy-0.7.1.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/sammy-plugins/sammy.meld-0.7.1.min.js"></script>
+
 {% endblock %}
 
 {% block content %}
@@ -20,6 +21,7 @@
 <script type="text/javascript">
 var formJSONUrl = "{% url odk_logger.views.download_jsonform username id_string %}";
 var mongoAPIUrl = "{% url main.views.api username id_string %}";
+var editAPIUrl = "{% url main.views.delete_data username id_string %}";
 var app; // sammy app
 var questions = {};
 var languages = [];
@@ -81,6 +83,47 @@ Question.prototype.getLabel = function(language)
           loadData(context, query);
       });
 
+
+      // Delete modal
+      this.get('#del/:id', function(context) { with(this) {
+      
+            $("#delete-modal").modal("show");
+       
+      }
+      });
+      
+      
+      // Delete route
+      this.get('#delete/:id', function(context) { 
+        
+          var id = this.params['id'];
+          var next = $('li.next').children('a').attr('href');
+          next = next.replace("#/", "");
+          
+          var prev = $('li.prev').children('a').attr('href');
+          prev = prev.replace("#/", "");
+
+          if(next > 0 && next != id ){
+            var next_prev = '{"_id": '  + next + '}';
+          }
+          else if(prev > 0 && prev != id ){
+            var next_prev = '{"_id": '  + prev + '}';
+          }
+          else{
+            var next_prev = '{}';
+          }
+
+          var query = '{"_id": '  + id + '}';
+          editData(context, query, next_prev);
+                    
+              // load count >> update record
+              $.getJSON(mongoAPIUrl, {'count': 1})
+                  .success(function(data){
+                    //todo: count num records before and num records after so we know our starting point
+                    numRecords = data[0]["count"];
+                    updatePosStatus();
+              })
+      });
       this.bind('error', {}, function(){
           //alert('Invalid route requested')
           app.setLocation('#/');
@@ -104,13 +147,31 @@ Question.prototype.getLabel = function(language)
 
 })(jQuery);
 
+function editData(context, query, next_prev){
+    //TODO: show loader
+    $.getJSON(editAPIUrl, {'query': query, 'limit':1})
+            .success(function(data){
+          
+              loadData(context, next_prev);
+                
+            })
+            .error(function(){
+               alert("BAD REQUEST");
+            })
+}
+
 function loadData(context, query)
 {
+
     //TODO: show loader
     $.getJSON(mongoAPIUrl, {'query': query, 'limit':1})
             .success(function(data){
                 reDraw(context, data[0]);
-
+                
+                //ADD EDIT AND BUTTON CHECK PERMISSION
+                updateButtons(data[0]);
+                    
+                //alert(data[0]['_id']);
                 // check if we initialised the browsePos
                 if(false)//TODO: find a way to increment browsePos client-side
                 {
@@ -151,6 +212,22 @@ function updatePosStatus()
     var posText = positionTpl.replace('{pos}', browsePos);
     posText = posText.replace('{total}', numRecords);
     $('.record-pos').html(posText);
+}
+
+function updateButtons(data){
+
+    //Make Edit Button visible and add link
+    /*
+    var editbutton = $('a.bind-edit');
+    editbutton.removeClass('disabled');
+    editbutton.attr('href', 'edit/' + data['_id']);
+    */
+    
+     //Make Delete Button visible and add link
+    var deletebutton = $('a.btn-danger');
+    deletebutton.removeClass('disabled');
+    deletebutton.attr('href', '#del/' + data['_id']);
+    $('a.btn-primary').attr('href', '#delete/' + data['_id']);
 }
 
 function updatePrevNextControls(data)
@@ -254,13 +331,18 @@ function createTable()
     var statusStr = '<div class="span6"><div class="dataTables_info"><h4 class="record-pos">Record 1 of 6</h4></div></div>';
     var topStatus = $(statusStr);
     topStatusNavRows.append(topStatus);
-
+    
     var pagerStr = '<div class="span6"><div class="dataTables_paginate paging_bootstrap pagination"><ul><li class="prev disabled"><a href="#">← Previous</a></li><li class="next disabled"><a href="#">Next → </a></li></ul></div></div>';
     var topPager = $(pagerStr);
-
+    
     topStatusNavRows.append(topPager);
     dataContainer.append(topStatusNavRows);
 
+    {% if can_edit %}
+        var editDelete = '<div class="row"><div class="span6"><a id="title_edit" href="#kate" class="btn small bind-edit disabled">{% trans "edit" %}</a>&nbsp;<a href="#"class="btn btn-small btn-danger">{% trans "Delete" %}</a></div></div>';
+        dataContainer.append(editDelete);
+    {% endif %}
+    
     var table = $('<table id="data-table" class="table table-bordered table-striped"></table');
     var tHead = $('<thead><tr><th class="header" width="50%">Question</th><th class="header">Response</th></tr></thead>');
     var tBody = $('<tbody></tbody>');
@@ -346,4 +428,20 @@ function parseLanguages(children)
     }
 }
 </script>
+
+
+ <div id="delete-modal" class="modal hide fade">
+            <div class="modal-header">
+              <a data-dismiss="modal" class="close">&times;</a>
+              <h3>{% trans "Delete Confirmation" %}</h3>
+            </div>
+            <div class="modal-body">
+              <p>{% trans "Note that 'delete' is not yet supported. You will see all data when you download the form. Only data in the map view and the web data view will be deleted (for now)." %} </p>
+              <p>{% trans "Are you sure you want to delete this data. If you are unsure about deleting this form press 'Cancel'." %}</p>
+            </div>
+            <div class="modal-footer">
+              <a href="#" onclick="$('#delete-modal').modal('hide');" class="btn btn-primary">{% trans "Delete" %}</a>
+              <a href="#" onclick="$('#delete-modal').modal('hide');" class="btn secondary">{% trans "Cancel" %}</a>
+            </div>
+          </div>
 {% endblock %}
