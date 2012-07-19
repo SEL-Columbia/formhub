@@ -175,8 +175,8 @@ def xls_export(request, username, id_string):
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
-
-    xls_df_builder = XLSDataFrameBuilder(username, id_string)
+    query = request.GET.get("query")
+    xls_df_builder = XLSDataFrameBuilder(username, id_string, query)
     temp_file = NamedTemporaryFile(suffix=".xls")
     xls_df_builder.export_to(temp_file.name)
 

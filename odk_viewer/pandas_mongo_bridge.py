@@ -188,7 +188,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
 
         # get records from mongo - do this on export so we can batch if we
         # choose to, as we should
-        cursor = self._query_mongo()
+        cursor = self._query_mongo(self.filter_query)
 
         data = self._format_for_dataframe(cursor)
 
