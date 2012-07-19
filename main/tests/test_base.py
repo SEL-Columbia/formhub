@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.test.client import Client
 from odk_logger.models import XForm, Instance, Attachment
 import urllib2
+from settings import _MONGO_CONNECTION, MONGO_TEST_DB_NAME
 
 class MainTestCase(TestCase):
 
@@ -11,6 +12,11 @@ class MainTestCase(TestCase):
         self.maxDiff = None
         self._create_user_and_login()
         self.base_url = 'http://testserver'
+
+    def tearDown(self):
+        # clear mongo db after each test
+        import ipdb; ipdb.set_trace()
+        _MONGO_CONNECTION[MONGO_TEST_DB_NAME].drop()
 
     def _create_user(self, username, password):
         user, created = User.objects.get_or_create(username=username)
