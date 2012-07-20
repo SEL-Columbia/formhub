@@ -354,5 +354,6 @@ def instance(request, username, id_string):
     return render_to_response('instance.html', {
         'username': username,
         'id_string': id_string,
-        'xform': xform
+        'xform': xform,
+        'can_edit': can_edit
     })

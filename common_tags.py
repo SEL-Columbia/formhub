@@ -13,11 +13,11 @@ LGA = u"lga"
 SURVEY_TYPE = u'_survey_type_slug'
 
 # Phone IMEI:
-DEVICE_ID = u"device_id" # This tag was used in Phase I
-IMEI = u"imei"           # This tag was used in Phase II
+DEVICE_ID = u"device_id"  # This tag was used in Phase I
+IMEI = u"imei"            # This tag was used in Phase II
 # Survey start time:
-START_TIME = u"start_time" # This tag was used in Phase I
-START = u"start"           # This tag was used in Phase II
+START_TIME = u"start_time"  # This tag was used in Phase I
+START = u"start"            # This tag was used in Phase II
 END_TIME = u"end_time"
 END = u"end"
 
@@ -41,3 +41,6 @@ MONGO_STRFTIME = '%Y-%m-%dT%H:%M:%S'
 
 # how to represent N/A in exports
 NA_REP = 'n/a'
+
+# marker for delete forms
+DELETEDAT = "_deleted_at"
