@@ -12,7 +12,6 @@ from odk_logger.models import XForm, Instance, Attachment
 import urllib2
 from settings import _MONGO_CONNECTION, MONGO_TEST_DB_NAME
 
->>>>>>> 62a61eb21771acd8957aa08e9616f7e80ce59db9
 
 class MainTestCase(TestCase):
 
