@@ -18,11 +18,5 @@
     "transport/keke_pepe/frequency_to_referral_facility", 
     "transport/lorry/frequency_to_referral_facility", 
     "transport/motorbike/frequency_to_referral_facility", 
-    "transport/taxi/frequency_to_referral_facility", 
-    "_xform_id_string",
-    "_percentage_complete",
-    "_status",
-    "_id",
-    "_attachments",
-    "_potential_duplicates"
+    "transport/taxi/frequency_to_referral_facility"
 ]

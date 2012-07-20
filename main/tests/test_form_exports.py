@@ -1,6 +1,7 @@
 from test_base import MainTestCase
 from odk_viewer.views import csv_export, xls_export, zip_export, kml_export
 from django.core.urlresolvers import reverse
+from common_tags import MONGO_STRFTIME
 
 import time
 import csv
@@ -46,21 +47,25 @@ class TestFormExports(MainTestCase):
         """
         time.sleep(1)
         # 1 survey exists before this time
-        before_time = time.strftime('%Y_%m_%d_%H_%M_%S')
+        before_time = time.strftime('%Y-%m-%dT%H:%M:%S')
         time.sleep(1)
         self._make_submissions()
         time.sleep(1)
         # 5 surveys exist before this time
-        after_time = time.strftime('%Y_%m_%d_%H_%M_%S')
+        after_time = time.strftime('%Y-%m-%dT%H:%M:%S')
         time.sleep(1)
         # 9 surveys exist in total
         self._make_submissions()
         # test restricting to before end time
-        response = self.client.get(url + '?end=%s' % before_time)
+        json = '{"_submission_time": {"$lte": "%s"}}' % before_time
+        params= {'query': json}
+        response = self.client.get(url, params)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self._num_rows(response.content, export_format), 2)
         # test restricting to after start time
-        response = self.client.get(url + '?start=%s' % before_time)
+        json = '{"_submission_time": {"$gte": "%s"}}' % before_time
+        params= {'query': json}
+        response = self.client.get(url, params)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self._num_rows(response.content, export_format), 9)
         # test no time restriction
@@ -68,8 +73,10 @@ class TestFormExports(MainTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self._num_rows(response.content, export_format), 10)
         # test restricting to between start time and end time
-        response = self.client.get(url + '?start=%s&end=%s' % (before_time,
-                    after_time))
+        json = '{"_submission_time": {"$gte": "%s", "$lte": "%s"}}' %\
+            (before_time, after_time)
+        params= {'query': json}
+        response = self.client.get(url, params)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self._num_rows(response.content, export_format), 5)
 

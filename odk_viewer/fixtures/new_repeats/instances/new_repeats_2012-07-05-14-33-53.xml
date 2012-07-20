@@ -1,0 +1,20 @@
+<?xml version='1.0' ?>
+<new_repeats id="new_repeat">
+<info>
+  <name>Adam</name>
+  <age>80</age>
+</info>
+<kids>
+  <has_kids>1</has_kids>
+  <kids_details>
+    <kids_name>Abel</kids_name>
+    <kids_age>50</kids_age>
+  </kids_details>
+  <kids_details>
+    <kids_name>Cain</kids_name>
+    <kids_age>76</kids_age>
+  </kids_details>
+</kids>
+<gps>-1.2627557 36.7926442 0.0 30.0</gps>
+<web_browsers>chrome ie</web_browsers>
+</new_repeats>

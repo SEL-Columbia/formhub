@@ -24,6 +24,9 @@ from odk_logger.models import XForm, Instance, Attachment
 from odk_logger.views import download_jsonform
 from odk_logger.xform_instance_parser import xform_instance_to_dict
 from odk_viewer.models import DataDictionary, ParsedInstance
+from pyxform import Section, Question
+from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder,\
+    CSVDataFrameBuilder
 from csv_writer import CsvWriter
 from xls_writer import XlsWriter
 from utils.logger_tools import response_with_mimetype_and_name,\
@@ -156,17 +159,19 @@ def csv_export(request, username, id_string):
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
-    valid, dd = dd_for_params(id_string, owner, request)
-    if not valid: return dd
-    writer = CsvWriter(dd, dd.get_data_for_excel(), dd.get_keys(),\
-            dd.get_variable_name)
-    file_path = writer.get_default_file_path()
-    writer.write_to_file(file_path)
+    query = request.GET.get("query")
+    csv_dataframe_builder = CSVDataFrameBuilder(username, id_string, query)
+    temp_file = NamedTemporaryFile(suffix=".csv")
+    csv_dataframe_builder.export_to(temp_file)
     if request.GET.get('raw'):
         id_string = None
     response = response_with_mimetype_and_name('application/csv', id_string,
-        extension='csv',
-        file_path=file_path, use_local_filesystem=True)
+        extension='csv')
+    temp_file.seek(0)
+    response.write(temp_file.read())
+    temp_file.seek(0, os.SEEK_END)
+    response['Content-Length'] = temp_file.tell()
+    temp_file.close()
     return response
 
 
@@ -175,16 +180,16 @@ def xls_export(request, username, id_string):
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
-    valid, dd = dd_for_params(id_string, owner, request)
-    if not valid: return dd
-    ddw = XlsWriter()
-    ddw.set_data_dictionary(dd)
-    temp_file = ddw.save_workbook_to_file()
+    query = request.GET.get("query")
+    xls_df_builder = XLSDataFrameBuilder(username, id_string, query)
+    temp_file = NamedTemporaryFile(suffix=".xls")
+    xls_df_builder.export_to(temp_file.name)
+
     if request.GET.get('raw'):
         id_string = None
     response = response_with_mimetype_and_name('vnd.ms-excel', id_string,
         extension='xls')
-    response.write(temp_file.getvalue())
+    response.write(temp_file.read())
     temp_file.seek(0, os.SEEK_END)
     response['Content-Length'] = temp_file.tell()
     temp_file.close()

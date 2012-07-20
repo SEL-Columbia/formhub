@@ -15,3 +15,6 @@ xlwt==0.7.2
 
 # sql alchemy was used for importing data from phones
 SQLAlchemy==0.7.1
+
+# new export code relies on
+pandas==0.8.0
