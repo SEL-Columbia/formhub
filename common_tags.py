@@ -35,6 +35,7 @@ USERFORM_ID = u"_userform_id"
 DATE = u"_date"
 GEOLOCATION = u"_geolocation"
 SUBMISSION_TIME = u'_submission_time'
+DELETEDAT = "_deleted_at"
 
 # datetime format that we store in mongo
 MONGO_STRFTIME = '%Y-%m-%dT%H:%M:%S'
