@@ -35,12 +35,10 @@ USERFORM_ID = u"_userform_id"
 DATE = u"_date"
 GEOLOCATION = u"_geolocation"
 SUBMISSION_TIME = u'_submission_time'
+DELETEDAT = "_deleted_at"  # marker for delete surveys
 
 # datetime format that we store in mongo
 MONGO_STRFTIME = '%Y-%m-%dT%H:%M:%S'
 
 # how to represent N/A in exports
 NA_REP = 'n/a'
-
-# marker for delete forms
-DELETEDAT = "_deleted_at"
