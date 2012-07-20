@@ -265,31 +265,82 @@ def kml_export(request, username, id_string):
     return response
 
 
-@login_required
+
+#@login_required
+#def google_xls_export(request, username, id_string):
+
+#    owner = get_object_or_404(User, username=username)
+#    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
+#    if not has_permission(xform, owner, request):
+#        return HttpResponseForbidden('Not shared.')
+#    valid, dd = dd_for_params(id_string, owner, request)
+#    if not valid: return dd
+#    ddw = XlsWriter()
+#    tmp = NamedTemporaryFile(delete=False)3
+#    ddw.set_file(tmp)
+#    ddw.set_data_dictionary(dd)
+#    temp_file = ddw.save_workbook_to_file()
+#    temp_file.close()
+#    try:
+#        ts = TokenStorageModel.objects.get(id=request.user)
+#    except TokenStorageModel.DoesNotExist:
+#        request.session["google_redirect_url"] =  reverse(google_xls_export,
+#            kwargs={'username': username,
+#                  'id_string': id_string})
+#        return HttpResponseRedirect(redirect_uri)
+#    else:
+#        url = google_export_xls(tmp.name, xform.title, ts.token, blob=True)
+#        os.unlink(tmp.name)
+#    return HttpResponseRedirect(url)
+
+#@login_required
 def google_xls_export(request, username, id_string):
-    owner = get_object_or_404(User, username=username)
-    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
-    if not has_permission(xform, owner, request):
-        return HttpResponseForbidden('Not shared.')
-    valid, dd = dd_for_params(id_string, owner, request)
-    if not valid: return dd
-    ddw = XlsWriter()
-    tmp = NamedTemporaryFile(delete=False)
-    ddw.set_file(tmp)
-    ddw.set_data_dictionary(dd)
-    temp_file = ddw.save_workbook_to_file()
-    temp_file.close()
-    try:
-        ts = TokenStorageModel.objects.get(id=request.user)
-    except TokenStorageModel.DoesNotExist:
-        request.session["google_redirect_url"] =  reverse(google_xls_export,
-            kwargs={'username': username,
-                  'id_string': id_string})
-        return HttpResponseRedirect(redirect_uri)
+    if request.user.is_authenticated():
+        owner = get_object_or_404(User, username=username)
+        xform = get_object_or_404(XForm, id_string=id_string, user=owner)
+        if not has_permission(xform, owner, request):
+            return HttpResponseForbidden('Not shared.')
+        valid, dd = dd_for_params(id_string, owner, request)
+        if not valid: return dd
+        ddw = XlsWriter()
+        tmp = NamedTemporaryFile(delete=False)
+        ddw.set_file(tmp)
+        ddw.set_data_dictionary(dd)
+        temp_file = ddw.save_workbook_to_file()
+        temp_file.close()
+        try:
+            ts = TokenStorageModel.objects.get(id=request.user)
+        except TokenStorageModel.DoesNotExist:
+            request.session["google_redirect_url"] =  reverse(google_xls_export,
+                kwargs={'username': username,
+                        'id_string': id_string})
+            return HttpResponseRedirect(redirect_uri)
+        else:
+            url = google_export_xls(tmp.name, xform.title, ts.token, blob=True)
+            os.unlink(tmp.name)
+        return HttpResponseRedirect(url)
     else:
-        url = google_export_xls(tmp.name, xform.title, ts.token, blob=True)
-        os.unlink(tmp.name)
-    return HttpResponseRedirect(url)
+        owner = get_object_or_404(User, username=username)
+        xform = get_object_or_404(XForm, id_string=id_string, user=owner)
+        if not has_permission(xform, owner, request):
+            return HttpResponseForbidden('Not shared.')
+        valid, dd = dd_for_params(id_string, owner, request)
+        if not valid: return dd
+        ddw = XlsWriter()
+        tmp = NamedTemporaryFile(delete=False)
+        ddw.set_file(tmp)
+        ddw.set_data_dictionary(dd)
+        temp_file = ddw.save_workbook_to_file()
+        temp_file.close()
+        if request.session.get('access_token'):
+            url = google_export_xls(tmp.name, xform.title, request.session.get('access_token'), blob=True)
+            os.unlink(tmp.name)
+            return HttpResponseRedirect(url)
+        else:
+            request.session["google_redirect_url"] =  reverse(google_xls_export,
+                kwargs={'username': username,
+                        'id_string': id_string})
+            return HttpResponseRedirect(redirect_uri)
 
 def data_view(request, username, id_string):
     owner = get_object_or_404(User, username=username)
