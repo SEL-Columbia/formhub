@@ -486,4 +486,5 @@ class CSVDataFrameWriter(object):
                 del(self.dataframe[col])
 
     def write_to_csv(self, csv_file, index=False):
-        self.dataframe.to_csv(csv_file, index=index, na_rep=NA_REP)
+        self.dataframe.to_csv(csv_file, index=index, na_rep=NA_REP,
+                              encoding='utf-8')
