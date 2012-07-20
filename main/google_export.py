@@ -69,9 +69,9 @@ def google_oauth2_request(request):
 
 #@login_required
 def google_auth_return(request):
+    if 'code' not in request.REQUEST:
+        return HttpResponse(u"Invalid Request")
     if request.user.is_authenticated():
-        if 'code' not in request.REQUEST:
-            return HttpResponse(u"Invalid Request")
         try:
             ts = TokenStorageModel.objects.get(id=request.user)
         except TokenStorageModel.DoesNotExist:
@@ -79,15 +79,12 @@ def google_auth_return(request):
         access_token = oauth2_token.get_access_token(request.REQUEST)
         ts.token = gdata.gauth.token_to_blob(token=access_token)
         ts.save()
-        if request.session.get('google_redirect_url'):
-            return HttpResponseRedirect(request.session.get('google_redirect_url'))
-        return HttpResponseRedirect(reverse(home))
     else:
-        if 'code' not in request.REQUEST:
-            return HttpResponse(u"Invalid Request")
         access_token = oauth2_token.get_access_token(request.REQUEST)
         request.session["access_token"] = gdata.gauth.token_to_blob(token=access_token)
-        return HttpResponseRedirect(reverse(home))
+    if request.session.get('google_redirect_url'):
+        return HttpResponseRedirect(request.session.get('google_redirect_url'))
+    return HttpResponseRedirect(reverse(home))
 
 
 def refresh_access_token(token, user):
