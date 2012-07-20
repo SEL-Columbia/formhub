@@ -93,6 +93,8 @@ Install the requirements:
 
     cd formhub
 
+    pip install numpy --use-mirrors
+
     pip install -r requirements.pip
 
 Install Mongodb:

@@ -1,2 +1,2 @@
-name,age,picture,has_children,gps,gps_latitude,gps_longitude,gps_alt,gps_precision,web_browsers/firefox,web_browsers/chrome,web_browsers/ie,web_browsers/safari,_xform_id_string,_percentage_complete,_status,_id,_attachments,_potential_duplicates
-n/a,n/a,n/a,n/a,41.017082473263144 28.969059996306896 39.5 55.0,41.017082473263144,28.969059996306896,39.5,55.0,n/a,n/a,n/a,n/a,tutorial,n/a,n/a,n/a,n/a,n/a
+name,age,picture,has_children,gps,_gps_latitude,_gps_longitude,_gps_altitude,_gps_precision,web_browsers/firefox,web_browsers/chrome,web_browsers/ie,web_browsers/safari
+n/a,n/a,n/a,n/a,41.017082473263144 28.969059996306896 39.5 55.0,41.017082473263144,28.969059996306896,39.5,55.0,n/a,n/a,n/a,n/a

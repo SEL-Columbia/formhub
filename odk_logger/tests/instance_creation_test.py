@@ -45,10 +45,10 @@ class TestWaterSubmission(TestCase):
         self.user = User.objects.create(username="bob")
         absolute_path = get_absolute_path("forms")
         open_forms = open_all_files(absolute_path)
-        json = '{"default_language": "default", "id_string": "Water_2011_03_17", "children": [], ' \
+        self.json = '{"default_language": "default", "id_string": "Water_2011_03_17", "children": [], ' \
                '"name": "Water_2011_03_17", "title": "Water_2011_03_17", "type": "survey"}'
         for path, open_file in open_forms.items():
-            xform = XForm.objects.create(xml=open_file.read(), user=self.user, json=json)
+            xform = XForm.objects.create(xml=open_file.read(), user=self.user, json=self.json)
             open_file.close()
 
         self._create_water_translated_form()
@@ -60,10 +60,10 @@ class TestWaterSubmission(TestCase):
         ))
         xml = f.read()
         f.close()
-        XForm.objects.create(xml=xml, user=self.user)
+        XForm.objects.create(xml=xml, user=self.user, json=self.json)
 
     def test_form_submission(self):
-        # no more submission to non-existent form, we need to ensure the Water_Translated_2011_03_10 xform is valid
+        # no more submission to non-existent form, setUp ensures the Water_Translated_2011_03_10 xform is valid
         f = open(os.path.join(
                 os.path.dirname(os.path.abspath(__file__)),
                 "Water_Translated_2011_03_10_2011-03-10_14-38-28.xml"

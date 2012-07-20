@@ -13,11 +13,11 @@ LGA = u"lga"
 SURVEY_TYPE = u'_survey_type_slug'
 
 # Phone IMEI:
-DEVICE_ID = u"device_id" # This tag was used in Phase I
-IMEI = u"imei"           # This tag was used in Phase II
+DEVICE_ID = u"device_id"  # This tag was used in Phase I
+IMEI = u"imei"            # This tag was used in Phase II
 # Survey start time:
-START_TIME = u"start_time" # This tag was used in Phase I
-START = u"start"           # This tag was used in Phase II
+START_TIME = u"start_time"  # This tag was used in Phase I
+START = u"start"            # This tag was used in Phase II
 END_TIME = u"end_time"
 END = u"end"
 
@@ -27,7 +27,18 @@ REGISTRATION = u"registration"
 NAME = u"name"
 
 # extra fields that we're adding to our mongo doc
+XFORM_ID_STRING = u"_xform_id_string"
+STATUS = u"_status"
 ATTACHMENTS = u"_attachments"
+UUID = u"_uuid"
+USERFORM_ID = u"_userform_id"
 DATE = u"_date"
 GEOLOCATION = u"_geolocation"
-DELETEDAT = "_deleted_at"
+SUBMISSION_TIME = u'_submission_time'
+DELETEDAT = "_deleted_at"  # marker for delete surveys
+
+# datetime format that we store in mongo
+MONGO_STRFTIME = '%Y-%m-%dT%H:%M:%S'
+
+# how to represent N/A in exports
+NA_REP = 'n/a'

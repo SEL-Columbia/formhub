@@ -191,6 +191,8 @@ LOGGING = {
 # MongoDB
 _MONGO_CONNECTION = Connection()
 MONGO_DB = None
+MONGO_DB_NAME = "formhub"
+MONGO_TEST_DB_NAME = "formhub_test"
 
 GOOGLE_STEP2_URI = 'http://formhub.org/gwelcome'
 GOOGLE_CLIENT_ID = '617113120802.apps.googleusercontent.com'
@@ -208,10 +210,10 @@ TESTING_MODE = False
 if len(sys.argv)>=2 and (sys.argv[1]=="test" or sys.argv[1]=="test_all"):
     # This trick works only when we run tests from the command line.
     TESTING_MODE = True
-    MONGO_DB = _MONGO_CONNECTION["formhub_test"]
+    MONGO_DB = _MONGO_CONNECTION[MONGO_TEST_DB_NAME]
 else:
     TESTING_MODE = False
-    MONGO_DB = _MONGO_CONNECTION["formhub"]
+    MONGO_DB = _MONGO_CONNECTION[MONGO_DB_NAME]
 
 # Clear out the test database
 if TESTING_MODE:
