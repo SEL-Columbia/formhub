@@ -42,7 +42,7 @@ var legendContainerId = "legend";
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
 var currentLanguageIdx = -1;
-var custAdded = false;
+var customMapBoxTileLayer;
 var legendsContainer;
 
 function initialize() {
@@ -84,22 +84,26 @@ function initialize() {
         layersControl.addBaseLayer(bingLayer, label);
     });
 
-    $.each(mapboxMaps, function(idx, mapData){
-        // Get metadata about the map from MapBox
-        wax.tilejson(mapData.url, function(tilejson) {
+    // Get metadata about the map from MapBox
+    var tileJSONAddFn = function(mapData, addToMap) { 
+        var innerFn = function(tilejson) {
             tilejson.attribution += mapBoxAdditAttribution;
-            var mapboxstreet = new wax.leaf.connector(tilejson);
-
-            layersControl.addBaseLayer(mapboxstreet, mapData.label);
-
-            // only add default layer to map
-            if(idx === 0 && !custAdded) {
-                map.addLayer(mapboxstreet);
-            } else if (idx === mapboxMaps.length && custAdded) {
-                map.addLayer(mapboxstreet);
-                $("input[name=leaflet-base-layers]").attr('checked', true);
+            var tileLayer = new wax.leaf.connector(tilejson);
+            
+            layersControl.addBaseLayer(tileLayer, mapData.label);
+            if(addToMap) {
+                map.addLayer(tileLayer);
+                // and radio box for this layer (last = just added)
+                $('input[name=leaflet-base-layers]:last').attr('checked',true); 
             }
-        });
+        };
+        return innerFn;
+    }; 
+    if (customMapBoxTileLayer) {
+        mapboxMaps = _.union([customMapBoxTileLayer], mapboxMaps);
+    }
+    _.each(mapboxMaps, function(mapData, idx) {
+        wax.tilejson(mapData.url, tileJSONAddFn(mapData, !idx)); //ie, only add idx 0
     });
 
     // create legend container
@@ -206,9 +210,9 @@ function loadResponseDataCallback()
 
             // set default language
             setLanguage(0);
-        }
-        else
+        } else {
             currentLanguageIdx = 0;// needed for non-multilingual forms
+        }
 
         // check if we have select one questions
         if(formJSONMngr.getNumSelectOneQuestions() > 0)
