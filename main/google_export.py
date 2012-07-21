@@ -15,7 +15,7 @@ from django.contrib.auth.decorators import login_required
 
 from gdata.spreadsheets import client
 
-from main.models import  TokenStorageModel
+from main.models import TokenStorageModel
 from main.views import home
 from utils.google import oauth2_token, get_refreshed_token, redirect_uri
 
@@ -28,16 +28,17 @@ def google_oauth2_request(request):
         except TokenStorageModel.DoesNotExist:
             pass
         else:
-            token  = ts.token
+            token = ts.token
     elif request.session.get('access_token'):
         token = request.session.get('access_token')
     if token is not None:
         stored_token = gdata.gauth.token_from_blob(token)
-        if stored_token.refresh_token is not None and\
-           stored_token.access_token is not None:
+        if stored_token.refresh_token is not None \
+                and stored_token.access_token is not None:
             oauth2_token.refresh_token = stored_token.refresh_token
             working_token = refresh_access_token(oauth2_token, request.user)
-            docs_client = client.SpreadsheetsClient(source=oauth2_token.user_agent)
+            docs_client = client.SpreadsheetsClient(
+                source=oauth2_token.user_agent)
             docs_client = working_token.authorize(docs_client)
             docs_feed = docs_client.GetSpreadsheets()
             _l = '<ul>'
@@ -62,7 +63,8 @@ def google_auth_return(request):
         ts.save()
     else:
         access_token = oauth2_token.get_access_token(request.REQUEST)
-        request.session["access_token"] = gdata.gauth.token_to_blob(token=access_token)
+        request.session["access_token"] =\
+            gdata.gauth.token_to_blob(token=access_token)
     if request.session.get('google_redirect_url'):
         return HttpResponseRedirect(request.session.get('google_redirect_url'))
     return HttpResponseRedirect(reverse(home))
