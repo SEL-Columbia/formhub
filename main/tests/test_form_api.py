@@ -26,7 +26,8 @@ class TestFormAPI(MainTestCase):
         # query string
         response = self.client.get(self.api_url, {})
         self.assertEqual(response.status_code, 200)
-        d = dict_for_mongo_without_userform_id(self.xform.surveys.all()[0].parsed_instance)
+        d = dict_for_mongo_without_userform_id(
+            self.xform.surveys.all()[0].parsed_instance)
         find_d = simplejson.loads(response.content)[0]
         self.assertEqual(sorted(find_d, key=find_d.get), sorted(d, key=d.get))
 

@@ -37,7 +37,7 @@ class TestSimpleSubmission(TestCase):
         {"id_string": "start_time", "children": [{"name": "start_time", "type": "start"}], "name": "start_time", "title": "start_time", "type": "survey"}
         """.strip()
         def get_xml_for_form(xform):
-            builder = SurveyElementBuilder()#question_type_dictionary=qtd)
+            builder = SurveyElementBuilder()
             sss = builder.create_survey_element_from_json(xform.json)
             xform.xml = sss.to_xml()
             xform._mark_start_time_boolean()

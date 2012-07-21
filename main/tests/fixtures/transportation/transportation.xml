@@ -3,7 +3,7 @@
     <h:title>transportation_2011_07_25</h:title>
     <model>
       <instance>
-        <transportation id="transportation_2011_07_25">
+        <transportation id="transportation_2011_07_25"><formhub><uuid/></formhub>
           <transport>
             <available_transportation_types_to_referral_facility/>
             <available_transportation_types_to_referral_facility_other/>
@@ -37,6 +37,7 @@
           </transport>
         </transportation>
       </instance>
+      <bind nodeset="/transportation/formhub/uuid" type="string" calculate="''" />
       <bind nodeset="/transportation/transport/available_transportation_types_to_referral_facility" type="select"/>
       <bind nodeset="/transportation/transport/available_transportation_types_to_referral_facility_other" relevant="selected(../available_transportation_types_to_referral_facility, 'other')" type="string"/>
       <bind nodeset="/transportation/transport/ambulance/frequency_to_referral_facility" relevant="selected(/transportation/transport/available_transportation_types_to_referral_facility, 'ambulance')" type="select1"/>

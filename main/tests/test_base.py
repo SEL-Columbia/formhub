@@ -1,17 +1,33 @@
 import base64
 import os
-from django.test import TestCase
-from django.contrib.auth.models import User
-from django.test.client import Client
-from odk_logger.models import XForm, Instance, Attachment
+import re
+from tempfile import NamedTemporaryFile
 import urllib2
 
+from django.contrib.auth.models import User
+from django.test import TestCase
+from django.test.client import Client
+
+from odk_logger.models import XForm, Instance, Attachment
+import urllib2
+from settings import _MONGO_CONNECTION, MONGO_TEST_DB_NAME
+
+
 class MainTestCase(TestCase):
+
+    surveys = ['transport_2011-07-25_19-05-49',
+               'transport_2011-07-25_19-05-36',
+               'transport_2011-07-25_19-06-01',
+               'transport_2011-07-25_19-06-14',]
 
     def setUp(self):
         self.maxDiff = None
         self._create_user_and_login()
         self.base_url = 'http://testserver'
+
+    def tearDown(self):
+        # clear mongo db after each test
+        _MONGO_CONNECTION[MONGO_TEST_DB_NAME].instances.drop()
 
     def _create_user(self, username, password):
         user, created = User.objects.get_or_create(username=username)
@@ -57,12 +73,12 @@ class MainTestCase(TestCase):
         self.xform = XForm.objects.all().reverse()[0]
 
     def _submit_transport_instance(self):
-        s = 'transport_2011-07-25_19-05-49'
+        s = self.surveys[0]
         self._make_submission(os.path.join(self.this_directory, 'fixtures',
                     'transportation', 'instances', s, s + '.xml'))
 
     def _submit_transport_instance_w_attachment(self):
-        s = 'transport_2011-07-25_19-05-49'
+        s = self.surveys[0]
         media_file = "1335783522563.jpg"
         self._make_submission_w_attachment(os.path.join(self.this_directory, 'fixtures',
             'transportation', 'instances', s, s + '.xml'), os.path.join(self.this_directory, 'fixtures',
@@ -74,11 +90,31 @@ class MainTestCase(TestCase):
         self._publish_transportation_form()
         self._submit_transport_instance()
 
-    def _make_submission(self, path):
+    def _make_submission(self, path, username=None, add_uuid=False):
+        # store temporary file with dynamic uuid
+        tmp_file = None
+        if add_uuid:
+            tmp_file = NamedTemporaryFile(delete=False)
+            split_xml = None
+            with open(path) as _file:
+                split_xml = re.split(r'(<transport>)', _file.read())
+            split_xml[1:1] = [
+                '<formhub><uuid>%s</uuid></formhub>' % self.xform.uuid
+            ]
+            tmp_file.write(''.join(split_xml))
+            path = tmp_file.name
+            tmp_file.close()
+
         with open(path) as f:
             post_data = {'xml_submission_file': f}
-            url = '/%s/submission' % self.user.username
+            if username is None:
+                username = self.user.username
+            url = '/%s/submission' % username
             self.response = self.anon.post(url, post_data)
+
+        # remove temporary file if stored
+        if add_uuid:
+            os.unlink(tmp_file.name)
 
     def _make_submission_w_attachment(self, path, attachment_path):
         with open(path) as f:
@@ -87,18 +123,16 @@ class MainTestCase(TestCase):
             url = '/%s/submission' % self.user.username
             self.response = self.anon.post(url, post_data)
 
-    def _make_submissions(self):
-        surveys = ['transport_2011-07-25_19-05-49',
-                   'transport_2011-07-25_19-05-36',
-                   'transport_2011-07-25_19-06-01',
-                   'transport_2011-07-25_19-06-14',]
+    def _make_submissions(self, username=None, add_uuid=False, should_store=True):
         paths = [os.path.join(self.this_directory, 'fixtures', 'transportation',
-                'instances', s, s + '.xml') for s in surveys]
+                'instances', s, s + '.xml') for s in self.surveys]
         pre_count = Instance.objects.count()
         for path in paths:
-            self._make_submission(path)
-        self.assertEqual(Instance.objects.count(), pre_count + 4)
-        self.assertEqual(self.xform.surveys.count(), pre_count + 4)
+            self._make_submission(path, username, add_uuid)
+        post_count = pre_count + len(self.surveys) if should_store\
+            else pre_count
+        self.assertEqual(Instance.objects.count(), post_count)
+        self.assertEqual(self.xform.surveys.count(), post_count)
 
     def _check_url(self, url, timeout=1):
         try:

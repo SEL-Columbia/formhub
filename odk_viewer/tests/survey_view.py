@@ -75,64 +75,111 @@ class TestSurveyView(MainTestCase):
         # doesn't seem worth it.
 
     def test_dict_organizer(self):
+        self.survey = create_survey_from_xls("odk_viewer/tests/household.xls")
+        json_str = json.dumps(self.survey.to_json_dict())
+        self.data_dictionary = DataDictionary.objects.create(
+            xml=self.survey.to_xml(), json=json_str, user = self.user)
         serious_xml = u'''
-        <?xml version=\'1.0\' ?>
-          <household>
-            <number_of_members>10</number_of_members>
-            <man><name>Alex</name></man>
-            <man><name>Bob</name></man>
-            <woman>
-              <name>Carla</name>
-              <child><name>Danny</name></child>
-              <child><name>Ed</name></child>
-            </woman>
-            <woman>
-              <name>Fran</name>
-              <child><name>Greg</name></child>
-            </woman>
-          </household>'''
+        <?xml version='1.0' ?>
+        <household id="serious_survey">
+          <number_of_members>7</number_of_members>
+          <man>
+            <name>Alex</name>
+          </man>
+          <man>
+            <name>Bob</name>
+          </man>
+          <woman>
+            <name>Carla</name>
+              <child>
+                <name>Danny</name>
+              </child>
+              <child>
+                <name>Ed</name>
+              </child>
+          </woman>
+          <woman>
+            <name>Fran</name>
+            <child>
+              <name>Greg</name>
+            </child>
+          </woman>
+          <ice_cream_flavors>
+            <number_for_vanilla>5</number_for_vanilla>
+            <number_for_strawberry>2</number_for_strawberry>
+          </ice_cream_flavors>
+        </household>
+        '''
         serious_xml = re.sub(r">\s+<", "><", serious_xml)
-        d = xform_instance_to_dict(serious_xml)
+        d = xform_instance_to_dict(serious_xml, self.data_dictionary)
         dict_organizer = DictOrganizer()
         expected_dict = {
             u'household': [
-                {u'_parent_table_name': u'',
-                 u'_parent_index': -1,
-                 u'number_of_members': u'10',
-                 u'_index': 0}
-                ],
+                {
+                    u'_parent_index': -1,
+                    u'number_of_members': u'7',
+                    u'_parent_table_name':
+                    u'', u'_index': 0
+                }
+            ],
             u'woman': [
-                {u'_parent_table_name': u'household',
-                 u'_parent_index': 0,
-                 u'name': u'Carla',
-                 u'_index': 0},
-                {u'_parent_table_name': u'household',
-                 u'_parent_index': 0,
-                 u'name': u'Fran',
-                 u'_index': 1}
-                ],
+                {
+                    u'_parent_index': 0,
+                    u'name': u'Carla',
+                    u'_parent_table_name': u'household',
+                    u'_index': 0
+                },
+                {
+                    u'_parent_index': 0,
+                    u'name': u'Fran',
+                    u'_parent_table_name': u'household',
+                    u'_index': 1
+                }
+            ],
+            u'ice_cream_flavors': [
+                {
+                    u'_parent_index': 0,
+                    u'number_for_strawberry': u'2',
+                    u'number_for_vanilla': u'5',
+                    u'_parent_table_name': u'household',
+                    u'_index': 0
+                }
+            ],
             u'man': [
-                {u'_parent_table_name': u'household',
-                 u'_parent_index': 0,
-                 u'name': u'Alex',
-                 u'_index': 0},
-                {u'_parent_table_name': u'household',
-                 u'_parent_index': 0,
-                 u'name': u'Bob',
-                 u'_index': 1}],
+                {
+                    u'_parent_index': 0,
+                    u'name': u'Alex',
+                    u'_parent_table_name': u'household',
+                    u'_index': 0
+                },
+                {
+                    u'_parent_index': 0,
+                    u'name': u'Bob',
+                    u'_parent_table_name': u'household',
+                    u'_index': 1
+                }
+            ],
             u'child': [
-                {u'_parent_table_name': u'woman',
-                 u'_parent_index': 0,
-                 u'name': u'Danny',
-                 u'_index': 0},
-                {u'_parent_table_name': u'woman',
-                 u'_parent_index': 0,
-                 u'name': u'Ed',
-                 u'_index': 1},
-                {u'_parent_table_name': u'woman',
-                 u'_parent_index': 1,
-                 u'name': u'Greg',
-                 u'_index': 2}]}
+                {
+                    u'_parent_index': 0,
+                    u'name': u'Danny',
+                    u'_parent_table_name': u'woman',
+                    u'_index': 0
+                },
+                {
+                    u'_parent_index': 0,
+                    u'name': u'Ed',
+                    u'_parent_table_name': u'woman',
+                    u'_index': 1
+                },
+                {
+                    u'_parent_index': 1,
+                    u'name': u'Greg',
+                    u'_parent_table_name': u'woman',
+                    u'_index': 2
+                }
+            ]
+        }
         self.assertEqual(
             dict_organizer.get_observation_from_dict(d),
             expected_dict

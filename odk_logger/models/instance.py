@@ -1,3 +1,5 @@
+import re
+from xml.dom import minidom
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -14,6 +16,13 @@ from utils.stathat_api import stathat_count
 class FormInactiveError(Exception):
     pass
 
+# need to establish id_string of the xform before we run get_dict since we now rely on data dictionary to parse the xml
+def get_id_string_from_xml_str(xml_str):
+    clean_xml_str = xml_str.strip()
+    clean_xml_str = re.sub(ur">\s+<", u"><", clean_xml_str)
+    xml_obj = minidom.parseString(clean_xml_str)
+    root_node = xml_obj.documentElement
+    return root_node.getAttribute(u"id")
 
 class Instance(models.Model):
     # I should rename this model, maybe Survey
@@ -42,8 +51,8 @@ class Instance(models.Model):
     class Meta:
         app_label = 'odk_logger'
 
-    def _set_xform(self, doc):
-        self.xform = XForm.objects.get(id_string=doc[XFORM_ID_STRING],
+    def _set_xform(self, id_string):
+        self.xform = XForm.objects.get(id_string=id_string,
                 user=self.user)
 
     def get_root_node_name(self):
@@ -66,8 +75,8 @@ class Instance(models.Model):
         self.date = None
 
     def save(self, *args, **kwargs):
+        self._set_xform(get_id_string_from_xml_str(self.xml))
         doc = self.get_dict()
-        self._set_xform(doc)
         if self.xform and not self.xform.downloadable:
             raise FormInactiveError()
         self._set_start_time(doc)
@@ -78,7 +87,7 @@ class Instance(models.Model):
 
     def _set_parser(self):
         if not hasattr(self, "_parser"):
-            self._parser = XFormInstanceParser(self.xml)
+            self._parser = XFormInstanceParser(self.xml, self.xform.data_dictionary())
 
     def get_dict(self, force_new=False, flat=True):
         """Return a python object representation of this instance's XML."""

@@ -5,6 +5,7 @@ import tempfile
 import urllib, urllib2
 import zipfile
 
+from itertools import chain
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response, get_object_or_404
@@ -32,7 +33,8 @@ from utils.decorators import is_owner
 from utils.user_auth import helper_auth_helper, has_permission,\
      has_edit_permission, HttpResponseNotAuthorized
 from odk_logger.import_tools import import_instances_from_zip
-from odk_logger.xform_instance_parser import InstanceEmptyError
+from odk_logger.xform_instance_parser import InstanceEmptyError,\
+     InstanceInvalidUserError, IsNotCrowdformError
 from odk_logger.models.instance import FormInactiveError
 
 
@@ -89,24 +91,36 @@ def formList(request, username):
     """
     This is where ODK Collect gets its download list.
     """
-    formlist_user = get_object_or_404(User, username=username)
-    profile, created = UserProfile.objects.get_or_create(user=formlist_user)
 
-    if profile.require_auth:
-        response = helper_auth_helper(request)
-        if response:
-            return response
+    if  username.lower() ==  'crowdforms':
+        xforms = XForm.objects.filter(is_crowd_form=True)\
+            .exclude(user__username=username)
+    else:
+        formlist_user = get_object_or_404(User, username=username)
+        profile, created = UserProfile.objects.get_or_create(user=formlist_user)
 
-        # unauthorized if user in auth request does not match user in path
-        # unauthorized if user not active
-        if formlist_user.username != request.user.username or\
-                not request.user.is_active:
-            return HttpResponseNotAuthorized()
+        if profile.require_auth:
+            response = helper_auth_helper(request)
+            if response:
+                return response
 
-    xforms = XForm.objects.filter(downloadable=True, user__username=username)
+            # unauthorized if user in auth request does not match user in path
+            # unauthorized if user not active
+            if formlist_user.username != request.user.username or\
+                    not request.user.is_active:
+                return HttpResponseNotAuthorized()
+
+        xforms = XForm.objects.filter(downloadable=True, user__username=username)
+
+        # retrieve crowd_forms for this user
+        crowdforms = XForm.objects.filter(
+            metadata__data_type=MetaData.CROWDFORM_USERS,
+            metadata__data_value=username
+        )
+        xforms = chain(xforms, crowdforms)
     urls = [{
         'url': request.build_absolute_uri(xform.url()),
-        'text': xform.title,
+        'text': xform.title if not xform.is_crowd_form else 'Crowd/%s' % xform.title,
         'media': {
             'm': MetaData.media_upload(xform),
             'user': xform.user,
@@ -126,7 +140,7 @@ def submission(request, username=None):
     context = RequestContext(request)
     xml_file_list = []
     media_files = []
-    show_options = False
+    html_response = False
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
     try:
@@ -137,27 +151,33 @@ def submission(request, username=None):
                 )
         # save this XML file and media files as attachments
         media_files = request.FILES.values()
-        if not username:
-            uuid = request.POST.get('uuid')
-            if not uuid:
-                return HttpResponseBadRequest("Username or ID required.")
-            show_options = True
-            xform = XForm.objects.get(uuid=uuid)
-            username = xform.user.username
+
+        # get uuid from post request
+        uuid = request.POST.get('uuid')
+        # response as html if posting with a UUID
+        if not username and uuid:
+            html_response = True
         try:
             instance = create_instance(
                 username,
                 xml_file_list[0],
-                media_files
+                media_files,
+                uuid=uuid
+            )
+        except InstanceInvalidUserError:
+            return HttpResponseBadRequest("Username or ID required.")
+        except IsNotCrowdformError:
+            return HttpResponseNotAllowed(
+                "Sorry but the crowd form you submitted to is closed."
             )
         except InstanceEmptyError:
             return HttpResponseBadRequest(
-                'Received empty submission. No instance was created'
+                "Received empty submission. No instance was created"
             )
         except FormInactiveError:
-            return HttpResponseNotAllowed('Form is not active')
+            return HttpResponseNotAllowed("Form is not active")
         except XForm.DoesNotExist:
-            return HttpResponseNotFound('Form does not exist on this account')
+            return HttpResponseNotFound("Form does not exist on this account")
 
         if instance is None:
             return HttpResponseBadRequest("Unable to create submission.")
@@ -165,7 +185,7 @@ def submission(request, username=None):
         # ODK needs two things for a form to be considered successful
         # 1) the status code needs to be 201 (created)
         # 2) The location header needs to be set to the host it posted to
-        if show_options:
+        if html_response:
             context.username = instance.user.username
             context.id_string = instance.xform.id_string
             context.domain = Site.objects.get(id=settings.SITE_ID).domain
@@ -176,10 +196,8 @@ def submission(request, username=None):
         response.status_code = 201
         response['Location'] = request.build_absolute_uri(request.path)
         return response
-    except IOError, e:
-        if type(e) == tuple:
-            e = e[1]
-        if str(e) == 'request data read error':
+    except IOError as e:
+        if 'request data read error' in unicode(e):
             return HttpResponseBadRequest("File transfer interruption.")
         else:
             raise
@@ -189,6 +207,7 @@ def submission(request, username=None):
         if len(media_files):
             [_file.close() for _file in media_files]
 
+
 def download_xform(request, username, id_string):
     xform = get_object_or_404(XForm,
             user__username=username, id_string=id_string)
@@ -197,6 +216,7 @@ def download_xform(request, username, id_string):
         show_date=False)
     response.content = xform.xml
     return response
+
 
 def download_xlsform(request, username, id_string):
     xform = get_object_or_404(XForm,

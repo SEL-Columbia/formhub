@@ -1,12 +1,12 @@
+from collections import defaultdict
+from datetime import date
 import json
 import os
 import urllib2
 import zipfile
 from tempfile import NamedTemporaryFile
 from time import strftime, strptime
-from datetime import date
 from urlparse import urlparse
-from collections import defaultdict
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -17,20 +17,22 @@ from django.http import HttpResponse, HttpResponseForbidden,\
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils import simplejson
+from pyxform import Section, Question
 
+from main.models import UserProfile, MetaData, TokenStorageModel
 from odk_logger.models import XForm, Instance, Attachment
+from odk_logger.views import download_jsonform
 from odk_logger.xform_instance_parser import xform_instance_to_dict
 from odk_viewer.models import DataDictionary, ParsedInstance
 from pyxform import Section, Question
+from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder,\
+    CSVDataFrameBuilder
+from csv_writer import CsvWriter
+from xls_writer import XlsWriter
 from utils.logger_tools import response_with_mimetype_and_name,\
          disposition_ext_and_date, round_down_geopoint
 from utils.viewer_tools import image_urls, image_urls_for_form
 from utils.user_auth import has_permission, get_xform_and_perms
-from main.models import UserProfile, MetaData
-from csv_writer import CsvWriter
-from xls_writer import XlsWriter
-from odk_logger.views import download_jsonform
-from main.models import TokenStorageModel
 from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
 import main
@@ -39,6 +41,7 @@ import main
 def encode(time_str):
     time = strptime(time_str, "%Y_%m_%d_%H_%M_%S")
     return strftime("%Y-%m-%d %H:%M:%S", time)
+
 
 def dd_for_params(id_string, owner, request):
     start = end = None
@@ -71,11 +74,13 @@ def dd_for_params(id_string, owner, request):
                 date_created__lte=end, date_created__gte=start)
     return [True, dd]
 
+
 def parse_label_for_display(pi, xpath):
     label = pi.data_dictionary.get_label(xpath)
     if not type(label) == dict:
         label = { 'Unknown': label }
     return label.items()
+
 
 def average(values):
     if len(values):
@@ -154,17 +159,19 @@ def csv_export(request, username, id_string):
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
-    valid, dd = dd_for_params(id_string, owner, request)
-    if not valid: return dd
-    writer = CsvWriter(dd, dd.get_data_for_excel(), dd.get_keys(),\
-            dd.get_variable_name)
-    file_path = writer.get_default_file_path()
-    writer.write_to_file(file_path)
+    query = request.GET.get("query")
+    csv_dataframe_builder = CSVDataFrameBuilder(username, id_string, query)
+    temp_file = NamedTemporaryFile(suffix=".csv")
+    csv_dataframe_builder.export_to(temp_file)
     if request.GET.get('raw'):
         id_string = None
     response = response_with_mimetype_and_name('application/csv', id_string,
-        extension='csv',
-        file_path=file_path, use_local_filesystem=True)
+        extension='csv')
+    temp_file.seek(0)
+    response.write(temp_file.read())
+    temp_file.seek(0, os.SEEK_END)
+    response['Content-Length'] = temp_file.tell()
+    temp_file.close()
     return response
 
 
@@ -173,16 +180,16 @@ def xls_export(request, username, id_string):
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden('Not shared.')
-    valid, dd = dd_for_params(id_string, owner, request)
-    if not valid: return dd
-    ddw = XlsWriter()
-    ddw.set_data_dictionary(dd)
-    temp_file = ddw.save_workbook_to_file()
+    query = request.GET.get("query")
+    xls_df_builder = XLSDataFrameBuilder(username, id_string, query)
+    temp_file = NamedTemporaryFile(suffix=".xls")
+    xls_df_builder.export_to(temp_file.name)
+
     if request.GET.get('raw'):
         id_string = None
     response = response_with_mimetype_and_name('vnd.ms-excel', id_string,
         extension='xls')
-    response.write(temp_file.getvalue())
+    response.write(temp_file.read())
     temp_file.seek(0, os.SEEK_END)
     response['Content-Length'] = temp_file.tell()
     temp_file.close()
@@ -232,10 +239,12 @@ def kml_export(request, username, id_string):
     data_for_template = []
 
     labels = {}
+
     def cached_get_labels(xpath):
         if xpath in labels.keys(): return labels[xpath]
         labels[xpath] = dd.get_label(xpath)
         return labels[xpath]
+
     for pi in pis:
         # read the survey instances
         data_for_display = pi.to_dict()
@@ -297,6 +306,7 @@ def google_xls_export(request, username, id_string):
     os.unlink(tmp.name)
     return HttpResponseRedirect(url)
 
+
 def data_view(request, username, id_string):
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
@@ -309,6 +319,7 @@ def data_view(request, username, id_string):
     context.jsonform_url = reverse(download_jsonform,\
         kwargs={"username": username, "id_string":id_string})
     return render_to_response("data_view.html", context_instance=context)
+
 
 def attachment_url(request):
     media_file = request.GET.get('media_file')
@@ -331,5 +342,6 @@ def instance(request, username, id_string):
     return render_to_response('instance.html', {
         'username': username,
         'id_string': id_string,
-        'xform': xform
+        'xform': xform,
+        'can_edit': can_edit
     })
