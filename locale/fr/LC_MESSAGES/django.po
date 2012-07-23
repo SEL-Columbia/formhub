@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-23 12:38+0300\n"
+"POT-Creation-Date: 2012-07-23 13:49+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,6 +55,10 @@ msgid "Successfully published %s."
 msgstr ""
 
 #: main/views.py:259 main/views.py:484 main/views.py:543
+#: odk_logger/views.py:264 odk_logger/views.py:296 odk_viewer/views.py:97
+#: odk_viewer/views.py:167 odk_viewer/views.py:188 odk_viewer/views.py:209
+#: odk_viewer/views.py:241 odk_viewer/views.py:294 odk_viewer/views.py:339
+#: odk_viewer/views.py:369
 msgid "Not shared."
 msgstr ""
 
@@ -911,6 +915,67 @@ msgstr ""
 msgid "to download the converted XForm"
 msgstr ""
 
+#: odk_logger/views.py:52
+#, python-format
+msgid "User %s not found"
+msgstr ""
+
+#: odk_logger/views.py:59
+msgid ""
+"There was a problem receiving your ODK submission. [Error: IO Error reading "
+"data]"
+msgstr ""
+
+#: odk_logger/views.py:74
+#, python-format
+msgid ""
+"Submission successful. Out of %(total)d survey instances, %(success)d were "
+"imported (%(rejected)d were rejected--duplicates, missing forms, etc.)"
+msgstr ""
+
+#: odk_logger/views.py:87
+msgid ""
+"There was a problem receiving your ODK submission. [Error: multiple "
+"submission files (?)]"
+msgstr ""
+
+#: odk_logger/views.py:164
+msgid "There should be a single XML submission file."
+msgstr ""
+
+#: odk_logger/views.py:182
+msgid "Username or ID required."
+msgstr ""
+
+#: odk_logger/views.py:185
+msgid "Sorry but the crowd form you submitted to is closed."
+msgstr ""
+
+#: odk_logger/views.py:189
+msgid "Received empty submission. No instance was created"
+msgstr ""
+
+#: odk_logger/views.py:192
+msgid "Form is not active"
+msgstr ""
+
+#: odk_logger/views.py:195
+msgid "Form does not exist on this account"
+msgstr ""
+
+#: odk_logger/views.py:199
+msgid "Unable to create submission."
+msgstr ""
+
+#: odk_logger/views.py:217
+msgid "File transfer interruption."
+msgstr ""
+
+#: odk_logger/views.py:253
+#, python-format
+msgid "No XLS file for your form <strong>%s</strong>"
+msgstr ""
+
 #: odk_logger/management/commands/create_image_thumbnails.py:32
 #, python-format
 msgid "Thumbnails created for %s"
@@ -1014,6 +1079,18 @@ msgstr ""
 msgid "List XForms"
 msgstr ""
 
+#: odk_viewer/views.py:58
+msgid "Start time format must be YY_MM_DD_hh_mm_ss"
+msgstr ""
+
+#: odk_viewer/views.py:69
+msgid "End time format must be YY_MM_DD_hh_mm_ss"
+msgstr ""
+
+#: odk_viewer/views.py:357
+msgid "Attachment not found"
+msgstr ""
+
 #: odk_viewer/templates/data_view.html:16
 msgid "Display Fields"
 msgstr ""
@@ -1041,6 +1118,27 @@ msgstr ""
 
 #: odk_viewer/templates/survey.html:21
 msgid "Response"
+msgstr ""
+
+#: restservice/forms.py:9
+msgid "Service Name"
+msgstr ""
+
+#: restservice/forms.py:11
+msgid "Service URL"
+msgstr ""
+
+#: restservice/views.py:30
+msgid "Service already defined."
+msgstr ""
+
+#: restservice/views.py:35
+#, python-format
+msgid "Successfully added service %s."
+msgstr ""
+
+#: restservice/views.py:39
+msgid "Please fill in all required fields"
 msgstr ""
 
 #: staff/templates/stats.html:4
