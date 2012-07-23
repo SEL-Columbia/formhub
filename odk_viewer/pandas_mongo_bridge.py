@@ -292,6 +292,9 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         # sheet name i.e. 31 chars or less etc.
         self.survey_name, survey_xpath = survey_name_and_xpath_from_dd(self.dd)
 
+        # generate a unique and valid xls sheet name
+        self.survey_name = get_valid_sheet_name(self.survey_name,
+                self.sections)
         # setup the default section
         self._create_section(self.survey_name, survey_xpath, False)
 
@@ -309,6 +312,8 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                 # if a repeat we use its name
                 if isinstance(e, RepeatingSection):
                     sheet_name = e.name
+                    sheet_name = get_valid_sheet_name(sheet_name,
+                            self.sections)
                     self._create_section(sheet_name, e.get_abbreviated_xpath(),
                             True)
 
