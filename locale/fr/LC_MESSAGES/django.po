@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-23 12:26+0300\n"
+"POT-Creation-Date: 2012-07-23 12:38+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,6 +52,22 @@ msgstr ""
 #: main/views.py:117
 #, python-format
 msgid "Successfully published %s."
+msgstr ""
+
+#: main/views.py:259 main/views.py:484 main/views.py:543
+msgid "Not shared."
+msgstr ""
+
+#: main/views.py:348
+msgid "Updated succeeded."
+msgstr ""
+
+#: main/views.py:354
+msgid "Update failed."
+msgstr ""
+
+#: main/views.py:447 main/views.py:478
+msgid "Permission denied."
 msgstr ""
 
 #: main/templates/dashboard.html:10
@@ -487,12 +503,24 @@ msgstr ""
 msgid "License:"
 msgstr ""
 
+#: main/templates/show.html:204
+msgid "View Photos"
+msgstr ""
+
 #: main/templates/show.html:205
 msgid "Photos"
 msgstr ""
 
+#: main/templates/show.html:207
+msgid "View Submitted Data"
+msgstr ""
+
 #: main/templates/show.html:208
 msgid "View Data"
+msgstr ""
+
+#: main/templates/show.html:210
+msgid "Browse Data (One by One)"
 msgstr ""
 
 #: main/templates/show.html:211
