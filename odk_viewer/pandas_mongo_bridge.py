@@ -50,6 +50,9 @@ def get_valid_sheet_name(sheet_name, existing_name_list):
         i += 1
     return generated_name
 
+def remove_dups_from_list_maintain_order(l):
+    return list(OrderedDict.fromkeys(l))
+
 
 class AbstractDataFrameBuilder(object):
 
@@ -338,12 +341,16 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         self.section_names_list[section_name] = index
 
     def _add_column_to_section(self, sheet_name, column):
+        section = self._get_section(sheet_name)
+        xpath = None
         if isinstance(column, SurveyElement):
-            self._get_section(sheet_name)["columns"].append(
-                column.get_abbreviated_xpath())
+            xpath = column.get_abbreviated_xpath()
         elif isinstance(column, basestring):
-            self._get_section(sheet_name)["columns"].append(
-                column)
+            xpath = column
+        assert(xpath)
+        # make sure column is not already in list
+        if xpath not in section["columns"]:
+            section["columns"].append(xpath)
 
     def _get_section(self, section_name):
         return self.sections[self.section_names_list[section_name]]
@@ -433,7 +440,9 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         self._build_ordered_columns(self.dd.survey, self.ordered_columns)
         # add ordered columns for select multiples
         for key, choices in self.select_multiples.items():
-            self.ordered_columns[key] = choices
+            # HACK to ensure choices are NOT duplicated
+            self.ordered_columns[key] = remove_dups_from_list_maintain_order(
+                choices)
         # add ordered columns for gps fields
         for key in self.gps_fields:
             gps_xpaths = self.dd.get_additional_geopoint_xpaths(key)

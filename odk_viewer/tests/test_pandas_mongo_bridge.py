@@ -357,6 +357,12 @@ class TestPandasMongoBridge(MainTestCase):
         AbstractDataFrameBuilder._split_gps_fields(record, gps_fields)
         self.assertEqual(expected_result, record)
 
+    def test_remove_dups_from_list_maintain_order(self):
+        l = ["a", "z", "b", "y", "c", "b", "x"]
+        result = remove_dups_from_list_maintain_order(l)
+        expected_result = ["a", "z", "b", "y", "c", "x"]
+        self.assertEqual(result, expected_result)
+
     def test_valid_sheet_name(self):
         sheet_names = ["sheet_1", "sheet_2"]
         desired_sheet_name = "sheet_3"
