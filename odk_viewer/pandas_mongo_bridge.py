@@ -50,6 +50,9 @@ def get_valid_sheet_name(sheet_name, existing_name_list):
         i += 1
     return generated_name
 
+def remove_dups_from_list_maintain_order(l):
+    return list(OrderedDict.fromkeys(l))
+
 
 class AbstractDataFrameBuilder(object):
 
@@ -433,7 +436,9 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         self._build_ordered_columns(self.dd.survey, self.ordered_columns)
         # add ordered columns for select multiples
         for key, choices in self.select_multiples.items():
-            self.ordered_columns[key] = choices
+            # HACK to ensure choices are NOT duplicated
+            self.ordered_columns[key] = remove_dups_from_list_maintain_order(
+                choices)
         # add ordered columns for gps fields
         for key in self.gps_fields:
             gps_xpaths = self.dd.get_additional_geopoint_xpaths(key)
