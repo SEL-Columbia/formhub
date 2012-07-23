@@ -2,7 +2,8 @@ import base64
 import json
 import os
 import tempfile
-import urllib, urllib2
+import urllib
+import urllib2
 import zipfile
 
 from itertools import chain
@@ -22,6 +23,7 @@ from django.core.files.storage import get_storage_class
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _, ugettext
 from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
 
@@ -31,10 +33,10 @@ from main.models import UserProfile, MetaData
 from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
 from utils.decorators import is_owner
 from utils.user_auth import helper_auth_helper, has_permission,\
-     has_edit_permission, HttpResponseNotAuthorized
+    has_edit_permission, HttpResponseNotAuthorized
 from odk_logger.import_tools import import_instances_from_zip
 from odk_logger.xform_instance_parser import InstanceEmptyError,\
-     InstanceInvalidUserError, IsNotCrowdformError
+    InstanceInvalidUserError, IsNotCrowdformError
 from odk_logger.models.instance import FormInactiveError
 
 
@@ -47,14 +49,16 @@ def bulksubmission(request, username):
     try:
         posting_user = User.objects.get(username=username)
     except User.DoesNotExist:
-        return HttpResponseBadRequest("User %s not found" % username)
+        return HttpResponseBadRequest(_(u"User %s not found") % username)
 
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
     try:
         temp_postfile = request.FILES.pop("zip_submission_file", [])
     except IOError:
-        return HttpResponseBadRequest("There was a problem receiving your ODK submission. [Error: IO Error reading data]")
+        return HttpResponseBadRequest(_(u"There was a problem receiving your "
+                                        u"ODK submission. [Error: IO Error "
+                                        u"reading data]"))
     if len(temp_postfile) == 1:
         postfile = temp_postfile[0]
         tempdir = tempfile.gettempdir()
@@ -63,19 +67,25 @@ def bulksubmission(request, username):
         our_tempfile.write(postfile.read())
         our_tempfile.close()
         our_tf = open(our_tfpath, 'rb')
-        total_count, success_count, errors = import_instances_from_zip(our_tf, user=posting_user)
+        total_count, success_count, errors = \
+            import_instances_from_zip(our_tf, user=posting_user)
         os.remove(our_tfpath)
         json_msg = {
-            'message': "Submission successful. Out of %d survey instances, %d were imported (%d were rejected--duplicates, missing forms, etc.)" % \
-                    (total_count, success_count, total_count - success_count),
-            'errors': "%d %s" % (len(errors), errors)
+            'message': ugettext(u"Submission successful. Out of %d survey "
+                                u"instances, %d were imported (%d were "
+                                u"rejected--duplicates, missing "
+                                u"forms, etc.)") %
+            (total_count, success_count, total_count - success_count),
+            'errors': u"%d %s" % (len(errors), errors)
         }
         response = HttpResponse(json.dumps(json_msg))
         response.status_code = 200
         response['Location'] = request.build_absolute_uri(request.path)
         return response
     else:
-        return HttpResponseBadRequest("There was a problem receiving your ODK submission. [Error: multiple submission files (?)]")
+        return HttpResponseBadRequest(_(u"There was a problem receiving your"
+                                        u" ODK submission. [Error: multiple "
+                                        u"submission files (?)]"))
 
 
 @login_required
@@ -92,12 +102,13 @@ def formList(request, username):
     This is where ODK Collect gets its download list.
     """
 
-    if  username.lower() ==  'crowdforms':
+    if  username.lower() == 'crowdforms':
         xforms = XForm.objects.filter(is_crowd_form=True)\
             .exclude(user__username=username)
     else:
         formlist_user = get_object_or_404(User, username=username)
-        profile, created = UserProfile.objects.get_or_create(user=formlist_user)
+        profile, created = \
+            UserProfile.objects.get_or_create(user=formlist_user)
 
         if profile.require_auth:
             response = helper_auth_helper(request)
@@ -110,7 +121,8 @@ def formList(request, username):
                     not request.user.is_active:
                 return HttpResponseNotAuthorized()
 
-        xforms = XForm.objects.filter(downloadable=True, user__username=username)
+        xforms = \
+            XForm.objects.filter(downloadable=True, user__username=username)
 
         # retrieve crowd_forms for this user
         crowdforms = XForm.objects.filter(
@@ -120,7 +132,8 @@ def formList(request, username):
         xforms = chain(xforms, crowdforms)
     urls = [{
         'url': request.build_absolute_uri(xform.url()),
-        'text': xform.title if not xform.is_crowd_form else 'Crowd/%s' % xform.title,
+        'text': xform.title if not xform.is_crowd_form else
+            'Crowd/%s' % xform.title,
         'media': {
             'm': MetaData.media_upload(xform),
             'user': xform.user,
@@ -147,8 +160,8 @@ def submission(request, username=None):
         xml_file_list = request.FILES.pop("xml_submission_file", [])
         if len(xml_file_list) != 1:
             return HttpResponseBadRequest(
-                "There should be a single XML submission file."
-                )
+                _(u"There should be a single XML submission file.")
+            )
         # save this XML file and media files as attachments
         media_files = request.FILES.values()
 
@@ -165,22 +178,24 @@ def submission(request, username=None):
                 uuid=uuid
             )
         except InstanceInvalidUserError:
-            return HttpResponseBadRequest("Username or ID required.")
+            return HttpResponseBadRequest(_(u"Username or ID required."))
         except IsNotCrowdformError:
             return HttpResponseNotAllowed(
-                "Sorry but the crowd form you submitted to is closed."
+                _(u"Sorry but the crowd form you submitted to is closed.")
             )
         except InstanceEmptyError:
             return HttpResponseBadRequest(
-                "Received empty submission. No instance was created"
+                _(u"Received empty submission. No instance was created")
             )
         except FormInactiveError:
-            return HttpResponseNotAllowed("Form is not active")
+            return HttpResponseNotAllowed(_(u"Form is not active"))
         except XForm.DoesNotExist:
-            return HttpResponseNotFound("Form does not exist on this account")
+            return HttpResponseNotFound(
+                _(u"Form does not exist on this account")
+            )
 
         if instance is None:
-            return HttpResponseBadRequest("Unable to create submission.")
+            return HttpResponseBadRequest(_(u"Unable to create submission."))
 
         # ODK needs two things for a form to be considered successful
         # 1) the status code needs to be 201 (created)
@@ -190,7 +205,7 @@ def submission(request, username=None):
             context.id_string = instance.xform.id_string
             context.domain = Site.objects.get(id=settings.SITE_ID).domain
             response = render_to_response("submission.html",
-                context_instance=context)
+                                          context_instance=context)
         else:
             response = HttpResponse()
         response.status_code = 201
@@ -198,7 +213,7 @@ def submission(request, username=None):
         return response
     except IOError as e:
         if 'request data read error' in unicode(e):
-            return HttpResponseBadRequest("File transfer interruption.")
+            return HttpResponseBadRequest(_(u"File transfer interruption."))
         else:
             raise
     finally:
@@ -210,39 +225,44 @@ def submission(request, username=None):
 
 def download_xform(request, username, id_string):
     xform = get_object_or_404(XForm,
-            user__username=username, id_string=id_string)
+                              user__username=username, id_string=id_string)
     # TODO: protect for users who have settings to use auth
     response = response_with_mimetype_and_name('xml', id_string,
-        show_date=False)
+                                               show_date=False)
     response.content = xform.xml
     return response
 
 
 def download_xlsform(request, username, id_string):
     xform = get_object_or_404(XForm,
-            user__username=username, id_string=id_string)
+                              user__username=username, id_string=id_string)
     owner = User.objects.get(username=username)
     if not has_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden('Not shared.')
     file_path = xform.xls.name
     default_storage = get_storage_class()()
     if default_storage.exists(file_path):
-        response = response_with_mimetype_and_name('vnd.ms-excel', id_string,
-                show_date=False, extension='xls', file_path=file_path)
+        response = \
+            response_with_mimetype_and_name('vnd.ms-excel', id_string,
+                                            show_date=False, extension='xls',
+                                            file_path=file_path)
         return response
     else:
         messages.add_message(request, messages.WARNING,
-                'No XLS file for your form <strong>%s</strong>' % id_string)
+                             _(u'No XLS file for your form '
+                               u'<strong>%s</strong>')
+                             % id_string)
         return HttpResponseRedirect("/%s" % username)
+
 
 def download_jsonform(request, username, id_string):
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, user__username=username,
-            id_string=id_string)
+                              id_string=id_string)
     if not has_permission(xform, owner, request, xform.shared):
-        return HttpResponseForbidden('Not shared.')
+        return HttpResponseForbidden(_(u'Not shared.'))
     response = response_with_mimetype_and_name('json', id_string,
-            show_date=False)
+                                               show_date=False)
     if 'callback' in request.GET and request.GET.get('callback') != '':
         callback = request.GET.get('callback')
         response.content = "%s(%s)" % (callback, xform.json)
@@ -250,12 +270,14 @@ def download_jsonform(request, username, id_string):
         response.content = xform.json
     return response
 
+
 @is_owner
 def delete_xform(request, username, id_string):
     xform = get_object_or_404(XForm, user__username=username,
-        id_string=id_string)
+                              id_string=id_string)
     xform.delete()
     return HttpResponseRedirect('/')
+
 
 @is_owner
 def toggle_downloadable(request, username, id_string):
@@ -264,15 +286,17 @@ def toggle_downloadable(request, username, id_string):
     xform.save()
     return HttpResponseRedirect("/%s" % username)
 
+
 def enter_data(request, username, id_string):
     owner = User.objects.get(username=username)
     xform = get_object_or_404(XForm, user__username=username,
-                id_string=id_string)
+                              id_string=id_string)
     if not has_edit_permission(xform, owner, request, xform.shared):
-        return HttpResponseForbidden('Not shared.')
+        return HttpResponseForbidden(_(u'Not shared.'))
     if not hasattr(settings, 'TOUCHFORMS_URL'):
         return HttpResponseRedirect(reverse('main.views.show',
-            kwargs={'username': username, 'id_string': id_string}))
+                                    kwargs={'username': username,
+                                            'id_string': id_string}))
     url = settings.TOUCHFORMS_URL
     register_openers()
     response = None
@@ -292,16 +316,17 @@ def enter_data(request, username, id_string):
             response = json.loads(response.read())
             context = RequestContext(request)
             owner = User.objects.get(username=username)
-            context.profile, created = UserProfile.objects.get_or_create(
-                    user=owner)
+            context.profile, created = \
+                UserProfile.objects.get_or_create(user=owner)
             context.xform = xform
             context.content_user = owner
             context.form_view = True
             context.touchforms = response['url']
             return render_to_response("form_entry.html",
-context_instance=context)
+                                      context_instance=context)
             #return HttpResponseRedirect(response['url'])
         except urllib2.URLError:
-            pass # this will happen if we could not connect to touchforms
+            pass  # this will happen if we could not connect to touchforms
     return HttpResponseRedirect(reverse('main.views.show',
-                kwargs={'username': username, 'id_string': id_string}))
+                                kwargs={'username': username,
+                                        'id_string': id_string}))
