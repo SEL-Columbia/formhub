@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-23 08:54+0000\n"
+"POT-Creation-Date: 2012-07-23 12:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,32 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
+
+#: main/forms.py:153
+#, python-format
+msgid "%s is a reserved name, please choose another"
+msgstr ""
+
+#: main/forms.py:156
+msgid "username may only contain alpha-numeric characters and underscores"
+msgstr ""
+
+#: main/forms.py:162
+#, python-format
+msgid "%s already exists"
+msgstr ""
+
+#: main/forms.py:174
+msgid "Source document"
+msgstr ""
+
+#: main/forms.py:178
+msgid "Supporting document"
+msgstr ""
+
+#: main/forms.py:182
+msgid "Media upload"
+msgstr ""
 
 #: main/views.py:85
 #, python-format
