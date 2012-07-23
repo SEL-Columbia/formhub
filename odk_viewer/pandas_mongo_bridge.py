@@ -341,12 +341,16 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         self.section_names_list[section_name] = index
 
     def _add_column_to_section(self, sheet_name, column):
+        section = self._get_section(sheet_name)
+        xpath = None
         if isinstance(column, SurveyElement):
-            self._get_section(sheet_name)["columns"].append(
-                column.get_abbreviated_xpath())
+            xpath = column.get_abbreviated_xpath()
         elif isinstance(column, basestring):
-            self._get_section(sheet_name)["columns"].append(
-                column)
+            xpath = column
+        assert(xpath)
+        # make sure column is not already in list
+        if xpath not in section["columns"]:
+            section["columns"].append(xpath)
 
     def _get_section(self, section_name):
         return self.sections[self.section_names_list[section_name]]
