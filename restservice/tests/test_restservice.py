@@ -7,6 +7,7 @@ from restservice.views import add_service
 from restservice.RestServiceInterface import RestServiceInterface
 from restservice.models import RestService
 
+
 class RestServiceTest(MainTestCase):
     def setUp(self):
         self.service_url = u'http://0.0.0.0:8001/%(id_string)s/post/%(uuid)s'
@@ -14,13 +15,13 @@ class RestServiceTest(MainTestCase):
         self._create_user_and_login()
         filename = u'dhisform.xls'
         this_directory = os.path.dirname(__file__)
-        path = os.path.join(this_directory, u'fixtures' , filename)
+        path = os.path.join(this_directory, u'fixtures', filename)
         self._publish_xls_file(path)
         self.xform = XForm.objects.all().reverse()[0]
 
     def _create_rest_service(self):
         rs = RestService(service_url=self.service_url,
-            xform=self.xform, name=self.service_name)
+                         xform=self.xform, name=self.service_name)
         rs.save()
         self.restservice = rs
 
@@ -58,5 +59,5 @@ class RestServiceTest(MainTestCase):
         })
         response = self.client.get(url)
         self.assertFalse('<h3 data-toggle="collapse" data-target='
-                         '"#restservice_tab">Rest Services</h3>' \
-                in response.content)
+                         '"#restservice_tab">Rest Services</h3>'
+                         in response.content)
