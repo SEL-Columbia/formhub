@@ -83,7 +83,7 @@ def clone_xlsform(request, username):
             return {
                 'type': 'alert-success',
                 'text': _(u'Successfully cloned %(id_string)s into your '
-                          '%(profile_url)s') % {
+                          u'%(profile_url)s') % {
                               'id_string': survey.id_string,
                               'profile_url': u'<a href="%s">profile</a>.' %
                               reverse(profile,
@@ -114,7 +114,7 @@ def profile(request, username):
             survey = form.publish(request.user).survey
             return {
                 'type': 'alert-success',
-                'text': _(u'Successfully published %s.' % survey.id_string,)
+                'text': _(u'Successfully published %s.') % survey.id_string
             }
         context.message = publish_form(set_form)
 
@@ -256,7 +256,7 @@ def api(request, username=None, id_string=None):
     xform, owner = check_and_set_user_and_form(username, id_string, request)
 
     if not xform:
-        return HttpResponseForbidden('Not shared.')
+        return HttpResponseForbidden(_(u'Not shared.'))
 
     try:
         args = {
@@ -345,13 +345,13 @@ def edit(request, username, id_string):
         xform.update()
 
         if request.is_ajax():
-            return HttpResponse('Updated succeeded.')
+            return HttpResponse(_(u'Updated succeeded.'))
         else:
             return HttpResponseRedirect(reverse(show, kwargs={
                 'username': username,
                 'id_string': id_string
             }))
-    return HttpResponseForbidden('Update failed.')
+    return HttpResponseForbidden(_(u'Update failed.'))
 
 
 def support(request):
@@ -444,7 +444,7 @@ def download_metadata(request, username, id_string, data_id):
             return response
         else:
             return HttpResponseNotFound()
-    return HttpResponseForbidden('Permission denied.')
+    return HttpResponseForbidden(_(u'Permission denied.'))
 
 
 def download_media_data(request, username, id_string, data_id):
@@ -475,13 +475,13 @@ def download_media_data(request, username, id_string, data_id):
             return response
         else:
             return HttpResponseNotFound()
-    return HttpResponseForbidden('Permission denied.')
+    return HttpResponseForbidden(_(u'Permission denied.'))
 
 
 def form_photos(request, username, id_string):
     xform, owner = check_and_set_user_and_form(username, id_string, request)
     if not xform:
-        return HttpResponseForbidden('Not shared.')
+        return HttpResponseForbidden(_(u'Not shared.'))
     context = RequestContext(request)
     context.form_view = True
     context.content_user = owner
@@ -540,7 +540,7 @@ def show_submission(request, username, id_string, uuid):
 def delete_data(request, username=None, id_string=None):
     xform, owner = check_and_set_user_and_form(username, id_string, request)
     if not xform:
-        return HttpResponseForbidden('Not shared.')
+        return HttpResponseForbidden(_(u'Not shared.'))
     try:
         args = {"username": username, "id_string": id_string,
                 "query": request.GET.get('query'),
