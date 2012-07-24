@@ -1,5 +1,6 @@
 from restservice.models import RestService
 
+
 def call_service(instance):
     # lookup service
     # registered services
