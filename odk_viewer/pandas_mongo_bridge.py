@@ -342,7 +342,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         get_column_count_exceeds_xls_limit()
 
     def get_column_count_exceeds_xls_limit(self):
-        if not hasattr(self, "column_count_exceeds_xls_limit")
+        if not hasattr(self, "column_count_exceeds_xls_limit"):
             self.column_count_exceeds_xls_limit = False
             for section in self.sections:
                 if len(section["columns"]) > XLS_COLUMN_COUNT_MAX:
