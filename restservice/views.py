@@ -5,6 +5,8 @@ from django.shortcuts import render_to_response
 from django.template.base import Template
 from django.template.context import RequestContext, Context
 from django.utils import simplejson
+from django.utils.translation import ugettext_lazy as _
+
 from odk_logger.models.xform import XForm
 from restservice.forms import RestServiceForm
 from restservice.models import RestService
@@ -22,23 +24,23 @@ def add_service(request, username, id_string):
             service_url = form.cleaned_data['service_url']
             try:
                 rs = RestService(service_url=service_url,
-                                    name=service_name, xform=xform)
+                                 name=service_name, xform=xform)
                 rs.save()
             except IntegrityError:
-                context.message = u"Service already defined."
+                context.message = _(u"Service already defined.")
                 context.status = 'fail'
             else:
                 context.status = 'success'
-                context.message \
-                        = u"Successfully added service %s." % service_name
+                context.message = \
+                    _(u"Successfully added service %s.") % service_name
                 context.restservice = rs
         else:
             context.status = 'fail'
-            context.message = u"Please fill in all required fields"
+            context.message = _(u"Please fill in all required fields")
             if form.errors:
                 for field in form:
                     context.message += Template(u"{{ field.errors }}")\
-                                        .render(Context({'field': field}))
+                        .render(Context({'field': field}))
         if request.is_ajax():
             response = {'status': context.status, 'message': context.message}
             if context.restservice:
