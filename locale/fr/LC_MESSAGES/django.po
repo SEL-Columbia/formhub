@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-23 13:49+0300\n"
+"POT-Creation-Date: 2012-07-24 11:47+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,8 +57,8 @@ msgstr ""
 #: main/views.py:259 main/views.py:484 main/views.py:543
 #: odk_logger/views.py:264 odk_logger/views.py:296 odk_viewer/views.py:97
 #: odk_viewer/views.py:167 odk_viewer/views.py:188 odk_viewer/views.py:209
-#: odk_viewer/views.py:241 odk_viewer/views.py:294 odk_viewer/views.py:339
-#: odk_viewer/views.py:369
+#: odk_viewer/views.py:241 odk_viewer/views.py:308 odk_viewer/views.py:327
+#: odk_viewer/views.py:357
 msgid "Not shared."
 msgstr ""
 
@@ -1087,7 +1087,7 @@ msgstr ""
 msgid "End time format must be YY_MM_DD_hh_mm_ss"
 msgstr ""
 
-#: odk_viewer/views.py:357
+#: odk_viewer/views.py:345
 msgid "Attachment not found"
 msgstr ""
 
@@ -1151,6 +1151,13 @@ msgstr ""
 
 #: templates/500.html:5
 msgid "500 Error"
+msgstr ""
+
+#: templates/500.html:9
+msgid ""
+"If you are getting this error while trying to submit a form, please do "
+"consider sending an email to support@formhub.org with your xlsform attached. "
+"Thank you for using formhub."
 msgstr ""
 
 #: templates/browser_message.html:19
