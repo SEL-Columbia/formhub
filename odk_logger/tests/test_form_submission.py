@@ -3,6 +3,7 @@ Testing POSTs to "/submission"
 """
 import os
 from main.tests.test_base import MainTestCase
+from odk_logger.models import XForm
 
 class TestFormSubmission(MainTestCase):
 
@@ -33,4 +34,16 @@ class TestFormSubmission(MainTestCase):
         self._make_submission(xml_submission_file_path)
         self.assertEqual(self.response.status_code, 404)
 
+    def test_form_post_with_uuid(self):
+        """
+        tests the way touch forms post
+        """
+        self.xform = XForm.objects.all().reverse()[0]
+        xml_submission_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "../fixtures/tutorial/instances/tutorial_2012-06-27_11-27-53.xml"
+        )
+        self._make_submission(xml_submission_file_path, add_uuid=True,
+                touchforms=True)
+        self.assertEqual(self.response.status_code, 201)
 
