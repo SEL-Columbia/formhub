@@ -18,7 +18,7 @@ class MainTestCase(TestCase):
     surveys = ['transport_2011-07-25_19-05-49',
                'transport_2011-07-25_19-05-36',
                'transport_2011-07-25_19-06-01',
-               'transport_2011-07-25_19-06-14',]
+               'transport_2011-07-25_19-06-14']
 
     def setUp(self):
         self.maxDiff = None
@@ -90,10 +90,11 @@ class MainTestCase(TestCase):
         self._publish_transportation_form()
         self._submit_transport_instance()
 
-    def _make_submission(self, path, username=None, add_uuid=False):
+    def _make_submission(self, path, username=None, add_uuid=False,
+                         touchforms=False):
         # store temporary file with dynamic uuid
         tmp_file = None
-        if add_uuid:
+        if add_uuid and not touchforms:
             tmp_file = NamedTemporaryFile(delete=False)
             split_xml = None
             with open(path) as _file:
@@ -107,13 +108,20 @@ class MainTestCase(TestCase):
 
         with open(path) as f:
             post_data = {'xml_submission_file': f}
+
             if username is None:
                 username = self.user.username
             url = '/%s/submission' % username
+
+            # touchforms submission
+            if add_uuid and touchforms:
+                post_data['uuid'] = self.xform.uuid
+            if touchforms:
+                url ='/submission'  # touchform has no username
             self.response = self.anon.post(url, post_data)
 
         # remove temporary file if stored
-        if add_uuid:
+        if add_uuid and not touchforms:
             os.unlink(tmp_file.name)
 
     def _make_submission_w_attachment(self, path, attachment_path):
