@@ -172,6 +172,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
     EXTRA_COLUMNS = [INDEX_COLUMN, PARENT_TABLE_NAME_COLUMN,
         PARENT_INDEX_COLUMN]
     SHEET_NAME_MAX_CHARS = 30
+    XLS_COLUMN_COUNT_MAX = 255
 
     def __init__(self, username, id_string, filter_query=None):
         super(XLSDataFrameBuilder, self).__init__(username, id_string,
@@ -338,6 +339,16 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                             self.dd.get_additional_geopoint_xpaths(
                             c.get_abbreviated_xpath()):
                             self._add_column_to_section(sheet_name, xpath)
+        get_column_count_exceeds_xls_limit()
+
+    def get_column_count_exceeds_xls_limit(self):
+        if not hasattr(self, "column_count_exceeds_xls_limit")
+            self.column_count_exceeds_xls_limit = False
+            for section in self.sections:
+                if len(section["columns"]) > XLS_COLUMN_COUNT_MAX:
+                    self.column_count_exceeds_xls_limit = True
+                    break
+        return self.column_count_exceeds_xls_limit
 
     def _create_section(self, section_name, xpath, is_repeat):
         index = len(self.sections)
