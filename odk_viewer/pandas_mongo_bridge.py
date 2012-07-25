@@ -54,6 +54,10 @@ def remove_dups_from_list_maintain_order(l):
     return list(OrderedDict.fromkeys(l))
 
 
+class NoRecordsFoundError(Exception):
+    pass
+
+
 class AbstractDataFrameBuilder(object):
 
     # TODO: use constants from comman_tags module!
@@ -142,6 +146,17 @@ class AbstractDataFrameBuilder(object):
         limit=ParsedInstance.DEFAULT_LIMIT, fields='[]'):
         # ParsedInstance.query_mongo takes params as json strings
         # so we dumps the fields dictionary
+        count_args = {
+            'username': self.username,
+            'id_string': self.id_string,
+            'query': query,
+            'fields': '[]',
+            'sort': '{}',
+            'count': True
+        }
+        count = ParsedInstance.query_mongo(**count_args)
+        if count[0]["count"] == 0:
+            raise NoRecordsFoundError("No records found for your query")
         query_args = {
             'username': self.username,
             'id_string': self.id_string,
