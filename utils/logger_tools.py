@@ -48,7 +48,7 @@ def create_instance(username, xml_file, media_files,
         If there is a username and a uuid, submitting a new ODK form.
     """
     xml = xml_file.read()
-
+    is_touchform = False
     # check alternative form submission ids
     if not uuid:
         # parse UUID from uploaded XML
@@ -57,6 +57,9 @@ def create_instance(username, xml_file, media_files,
         # check that xml has UUID, then it is a crowdform
         if len(split_xml) > 1:
             uuid = split_xml[1]
+    else:
+        # is a touchform
+        is_touchform = True
 
     if not username and not uuid:
         raise InstanceInvalidUserError()
@@ -65,7 +68,7 @@ def create_instance(username, xml_file, media_files,
         xform = XForm.objects.get(uuid=uuid)
         xform_username = xform.user.username
 
-        if xform_username != username and not xform.is_crowd_form:
+        if xform_username != username and not xform.is_crowd_form and not is_touchform:
             raise IsNotCrowdformError()
 
         username = xform_username

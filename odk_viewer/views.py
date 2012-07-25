@@ -20,7 +20,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils import simplejson
 from pyxform import Section, Question
 
-from main.models import UserProfile, MetaData
+from main.models import UserProfile, MetaData, TokenStorageModel
 from odk_logger.models import XForm, Instance, Attachment
 from odk_logger.views import download_jsonform
 from odk_logger.xform_instance_parser import xform_instance_to_dict
@@ -34,7 +34,7 @@ from utils.logger_tools import response_with_mimetype_and_name,\
     disposition_ext_and_date, round_down_geopoint
 from utils.viewer_tools import image_urls, image_urls_for_form
 from utils.user_auth import has_permission, get_xform_and_perms
-
+from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
 import main
 
@@ -299,8 +299,22 @@ def kml_export(request, username, id_string):
     return response
 
 
-@login_required
 def google_xls_export(request, username, id_string):
+    token = None
+    if request.user.is_authenticated():
+        try:
+            ts = TokenStorageModel.objects.get(id=request.user)
+        except TokenStorageModel.DoesNotExist:
+            pass
+        else:
+          token = ts.token
+    elif request.session.get('access_token'):
+        token = request.session.get('access_token')
+    if token is None:
+        request.session["google_redirect_url"] =  reverse(google_xls_export,
+                kwargs={'username': username,
+                      'id_string': id_string})
+        return HttpResponseRedirect(redirect_uri)
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
@@ -314,35 +328,9 @@ def google_xls_export(request, username, id_string):
     ddw.set_data_dictionary(dd)
     temp_file = ddw.save_workbook_to_file()
     temp_file.close()
-
-    import gdata
-    import gdata.gauth
-    import gdata.docs
-    import gdata.data
-    import gdata.docs.client
-    import gdata.docs.data
-    from main.google_export import token, refresh_access_token, redirect_uri
-    from main.models import TokenStorageModel
-
-    try:
-        ts = TokenStorageModel.objects.get(id=request.user)
-    except TokenStorageModel.DoesNotExist:
-        return HttpResponseRedirect(redirect_uri)
-    else:
-        stored_token = gdata.gauth.token_from_blob(ts.token)
-        if stored_token.refresh_token is not None and \
-                stored_token.access_token is not None:
-            token.refresh_token = stored_token.refresh_token
-            working_token = refresh_access_token(token, request.user)
-            docs_client = gdata.docs.client.DocsClient(source=token.user_agent)
-            docs_client = working_token.authorize(docs_client)
-            xls_doc = gdata.docs.data.Resource(
-                type='spreadsheet', title=xform.title)
-            media = gdata.data.MediaSource()
-            media.SetFileHandle(tmp.name, 'application/vnd.ms-excel')
-            xls_doc = docs_client.CreateResource(xls_doc, media=media)
+    url = google_export_xls(tmp.name, xform.title, token, blob=True)
     os.unlink(tmp.name)
-    return HttpResponseRedirect('https://docs.google.com')
+    return HttpResponseRedirect(url)
 
 
 def data_view(request, username, id_string):
