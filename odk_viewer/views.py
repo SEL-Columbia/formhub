@@ -188,13 +188,26 @@ def xls_export(request, username, id_string):
         return HttpResponseForbidden(_(u'Not shared.'))
     query = request.GET.get("query")
     xls_df_builder = XLSDataFrameBuilder(username, id_string, query)
-    temp_file = NamedTemporaryFile(suffix=".xls")
+    excel_defs = {
+      'xls': {
+        'suffix': '.xls',
+        'mime_type': 'vnd.ms-excel'
+      },
+      'xlsx': {
+        'suffix': '.xlsx',
+        'mime_type': 'vnd.openxmlformats' # TODO: check xlsx mime type
+      }
+    }
+    ext = 'xls'
+    if xls_df_builder.exceeds_xls_limits:
+        ext = 'xlsx'
+    temp_file = NamedTemporaryFile(suffix=excel_defs[ext]['suffix'])
     xls_df_builder.export_to(temp_file.name)
 
     if request.GET.get('raw'):
         id_string = None
-    response = response_with_mimetype_and_name('vnd.ms-excel', id_string,
-                                               extension='xls')
+    response = response_with_mimetype_and_name(excel_defs[ext]['mime_type'], id_string,
+                                               extension=ext)
     response.write(temp_file.read())
     temp_file.seek(0, os.SEEK_END)
     response['Content-Length'] = temp_file.tell()
