@@ -13,7 +13,8 @@ from django.contrib.auth.models import User
 from django.core.files.storage import get_storage_class
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseForbidden,\
-    HttpResponseRedirect, HttpResponseNotFound, HttpResponseBadRequest
+    HttpResponseRedirect, HttpResponseNotFound, HttpResponseBadRequest,\
+    HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
@@ -27,7 +28,7 @@ from odk_logger.xform_instance_parser import xform_instance_to_dict
 from odk_viewer.models import DataDictionary, ParsedInstance
 from pyxform import Section, Question
 from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder,\
-    CSVDataFrameBuilder
+    CSVDataFrameBuilder, NoRecordsFoundError
 from csv_writer import CsvWriter
 from xls_writer import XlsWriter
 from utils.logger_tools import response_with_mimetype_and_name,\
@@ -167,19 +168,21 @@ def csv_export(request, username, id_string):
         return HttpResponseForbidden(_(u'Not shared.'))
     query = request.GET.get("query")
     csv_dataframe_builder = CSVDataFrameBuilder(username, id_string, query)
-    temp_file = NamedTemporaryFile(suffix=".csv")
-    csv_dataframe_builder.export_to(temp_file)
-    if request.GET.get('raw'):
-        id_string = None
-    response = response_with_mimetype_and_name('application/csv', id_string,
-                                               extension='csv')
-    temp_file.seek(0)
-    response.write(temp_file.read())
-    temp_file.seek(0, os.SEEK_END)
-    response['Content-Length'] = temp_file.tell()
-    temp_file.close()
-    return response
-
+    try:
+        temp_file = NamedTemporaryFile(suffix=".csv")
+        csv_dataframe_builder.export_to(temp_file)
+        if request.GET.get('raw'):
+            id_string = None
+        response = response_with_mimetype_and_name('application/csv', id_string,
+                                                   extension='csv')
+        temp_file.seek(0)
+        response.write(temp_file.read())
+        temp_file.seek(0, os.SEEK_END)
+        response['Content-Length'] = temp_file.tell()
+        temp_file.close()
+        return response
+    except NoRecordsFoundError:
+        return HttpResponse(_("No records found to export"))
 
 def xls_export(request, username, id_string):
     owner = get_object_or_404(User, username=username)
@@ -202,19 +205,21 @@ def xls_export(request, username, id_string):
     ext = 'xls' if not force_xlsx else 'xlsx'
     if xls_df_builder.exceeds_xls_limits:
         ext = 'xlsx'
-    temp_file = NamedTemporaryFile(suffix=excel_defs[ext]['suffix'])
-    xls_df_builder.export_to(temp_file.name)
+    try:
+        temp_file = NamedTemporaryFile(suffix=excel_defs[ext]['suffix'])
+        xls_df_builder.export_to(temp_file.name)
 
-    if request.GET.get('raw'):
-        id_string = None
-    response = response_with_mimetype_and_name(excel_defs[ext]['mime_type'], id_string,
-                                               extension=ext)
-    response.write(temp_file.read())
-    temp_file.seek(0, os.SEEK_END)
-    response['Content-Length'] = temp_file.tell()
-    temp_file.close()
-    return response
-
+        if request.GET.get('raw'):
+            id_string = None
+        response = response_with_mimetype_and_name(excel_defs[ext]['mime_type'], id_string,
+                                                   extension=ext)
+        response.write(temp_file.read())
+        temp_file.seek(0, os.SEEK_END)
+        response['Content-Length'] = temp_file.tell()
+        temp_file.close()
+        return response
+    except NoRecordsFoundError:
+        return HttpResponse(_("No records found to export"))
 
 def zip_export(request, username, id_string):
     owner = get_object_or_404(User, username=username)
