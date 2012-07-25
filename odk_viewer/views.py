@@ -187,6 +187,7 @@ def xls_export(request, username, id_string):
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
     query = request.GET.get("query")
+    force_xlsx = request.GET.get('xlsx') == 'true'
     xls_df_builder = XLSDataFrameBuilder(username, id_string, query)
     excel_defs = {
       'xls': {
@@ -198,7 +199,7 @@ def xls_export(request, username, id_string):
         'mime_type': 'vnd.openxmlformats' # TODO: check xlsx mime type
       }
     }
-    ext = 'xls'
+    ext = 'xls' if not force_xlsx else 'xlsx'
     if xls_df_builder.exceeds_xls_limits:
         ext = 'xlsx'
     temp_file = NamedTemporaryFile(suffix=excel_defs[ext]['suffix'])
