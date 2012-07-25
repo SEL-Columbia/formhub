@@ -214,7 +214,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                 writer = XLSDataFrameWriter(records, columns)
                 writer.write_to_excel(self.xls_writer, section_name,
                         header=True, index=False)
-                self.xls_writer.save()
+        self.xls_writer.save()
 
     def _format_for_dataframe(self, cursor):
         """
