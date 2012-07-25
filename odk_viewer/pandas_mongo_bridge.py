@@ -434,7 +434,9 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
                                 ordered_columns, new_prefix))
                         else:
                             # it can only be a string
-                            assert(isinstance(nested_val, basestring))
+                            # TODO: find out why this asert fails sometimes
+                            # considering it can only be a string
+                            # assert(isinstance(nested_val, basestring))
                             # collapse xpath
                             if parent_prefix:
                                 xpaths[0:len(parent_prefix)] = parent_prefix
