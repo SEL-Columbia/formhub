@@ -199,7 +199,7 @@ def xls_export(request, username, id_string):
       }
     }
     ext = 'xls'
-    if xls_df_builder.column_count_exceeds_xls_limit:
+    if xls_df_builder.exceeds_xls_limits:
         ext = 'xlsx'
     temp_file = NamedTemporaryFile(suffix=excel_defs[ext]['suffix'])
     xls_df_builder.export_to(temp_file.name)

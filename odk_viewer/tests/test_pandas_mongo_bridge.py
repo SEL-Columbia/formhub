@@ -1,77 +1,53 @@
 import os
+from django.core.urlresolvers import reverse
 from tempfile import NamedTemporaryFile
 from odk_logger.models.xform import XForm
 from main.tests.test_base import MainTestCase
 from odk_viewer.pandas_mongo_bridge import *
+from odk_viewer.views import xls_export
+
 
 class TestPandasMongoBridge(MainTestCase):
     def setUp(self):
         self._create_user_and_login()
 
-    def _publish_single_level_repeat_form(self):
+    def _publish_xls_fixture_set_xform(self, fixture):
+        """
+        Publish an xls file at tests/fixtures/[fixture]/fixture.xls
+        """
         xls_file_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
-            "../fixtures/new_repeats/new_repeats.xls"
+            "fixtures", fixture, fixture + ".xls"
         )
         count = XForm.objects.count()
         response = self._publish_xls_file(xls_file_path)
         self.assertEqual(XForm.objects.count(), count + 1)
         self.xform = XForm.objects.all().reverse()[0]
+
+    def _submit_fixture_instance(self, fixture, instance):
+        """
+        Submit an instance at
+        tests/fixtures/[fixture]/instances/[fixture]_[instance].xml
+        """
+        xml_submission_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "fixtures", fixture, "instances",
+            fixture + "_" + instance + ".xml"
+        )
+        self._make_submission(xml_submission_file_path)
+        self.assertEqual(self.response.status_code, 201)
+
+    def _publish_single_level_repeat_form(self):
+        self._publish_xls_fixture_set_xform("new_repeats")
         self.survey_name = u"new_repeats"
 
-    def _submit_single_level_repeat_instance(self):
-        xml_submission_file_path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "../fixtures/new_repeats/instances/new_repeats_2012-07-05-14-33-53.xml"
-        )
-        self._make_submission(xml_submission_file_path)
-        self.assertEqual(self.response.status_code, 201)
-
     def _publish_nested_repeats_form(self):
-        xls_file_path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "../fixtures/nested_repeats/nested_repeats.xls"
-        )
-        count = XForm.objects.count()
-        response = self._publish_xls_file(xls_file_path)
-        self.assertEqual(XForm.objects.count(), count + 1)
-        self.xform = XForm.objects.all().reverse()[0]
+        self._publish_xls_fixture_set_xform("nested_repeats")
         self.survey_name = u"nested_repeats"
 
-    def _submit_nested_repeats_instance(self):
-        xml_submission_file_path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "../fixtures/nested_repeats/instances/nested_repeats_01.xml"
-        )
-        self._make_submission(xml_submission_file_path)
-        self.assertEqual(self.response.status_code, 201)
-
-    def _submit_nested_repeats_instance_02(self):
-        xml_submission_file_path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "../fixtures/nested_repeats/instances/nested_repeats_02.xml"
-        )
-        self._make_submission(xml_submission_file_path)
-        self.assertEqual(self.response.status_code, 201)
-
     def _publish_grouped_gps_form(self):
-        xls_file_path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "fixtures/grouped_gps.xls"
-        )
-        count = XForm.objects.count()
-        response = self._publish_xls_file(xls_file_path)
-        self.assertEqual(XForm.objects.count(), count + 1)
-        self.xform = XForm.objects.all().reverse()[0]
+        self._publish_xls_fixture_set_xform("grouped_gps")
         self.survey_name = u"grouped_gps"
-
-    def _submit_grouped_gps_instance(self):
-        xml_submission_file_path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "fixtures/grouped_gps_01.xml"
-        )
-        self._make_submission(xml_submission_file_path)
-        self.assertEqual(self.response.status_code, 201)
 
     def _xls_data_for_dataframe(self):
         xls_df_builder = XLSDataFrameBuilder(self.user.username,
@@ -87,7 +63,7 @@ class TestPandasMongoBridge(MainTestCase):
 
     def test_generated_sections(self):
         self._publish_single_level_repeat_form()
-        self._submit_single_level_repeat_instance()
+        self._submit_fixture_instance("new_repeats", "01")
         xls_df_builder = XLSDataFrameBuilder(self.user.username,
             self.xform.id_string)
         expected_section_keys = [self.survey_name, u"kids_details"]
@@ -102,7 +78,7 @@ class TestPandasMongoBridge(MainTestCase):
         kids details sheet one for each repeat
         """
         self._publish_single_level_repeat_form()
-        self._submit_single_level_repeat_instance()
+        self._submit_fixture_instance("new_repeats", "01")
         data = self._xls_data_for_dataframe()
         self.assertEqual(len(data[self.survey_name]), 1)
         self.assertEqual(len(data[u"kids_details"]), 2)
@@ -112,7 +88,7 @@ class TestPandasMongoBridge(MainTestCase):
         Test that our expected columns are in the data
         """
         self._publish_single_level_repeat_form()
-        self._submit_single_level_repeat_instance()
+        self._submit_fixture_instance("new_repeats", "01")
         data = self._xls_data_for_dataframe()
         # columns in the default sheet
         expected_default_columns = [
@@ -147,7 +123,7 @@ class TestPandasMongoBridge(MainTestCase):
         top level
         """
         self._publish_grouped_gps_form()
-        self._submit_grouped_gps_instance()
+        self._submit_fixture_instance("grouped_gps", "01")
         data = self._xls_data_for_dataframe()
         # columns in the default sheet
         expected_default_columns = [
@@ -165,10 +141,26 @@ class TestPandasMongoBridge(MainTestCase):
         self.assertEqual(sorted(expected_default_columns),
             sorted(default_columns))
 
+    def test_xlsx_output_when_data_exceeds_limits(self):
+        self._publish_xls_fixture_set_xform("xlsx_output")
+        self._submit_fixture_instance("xlsx_output", "01")
+        xls_builder = XLSDataFrameBuilder(username=self.user.username,
+                id_string=self.xform.id_string)
+        self.assertEqual(xls_builder.exceeds_xls_limits, True)
+        # test that the view returns an xlsx file instead
+        url = reverse(xls_export,
+            kwargs={
+                'username': self.user.username,
+                'id_string': self.xform.id_string
+            })
+        self.response = self.client.get(url)
+        self.assertEqual(self.response["content-type"],\
+               'application/vnd.openxmlformats')
+
     def test_csv_dataframe_export_to(self):
         self._publish_nested_repeats_form()
-        self._submit_nested_repeats_instance()
-        self._submit_nested_repeats_instance_02()
+        self._submit_fixture_instance("nested_repeats", "01")
+        self._submit_fixture_instance("nested_repeats", "02")
         csv_df_builder = CSVDataFrameBuilder(self.user.username,
             self.xform.id_string)
         temp_file = NamedTemporaryFile(suffix=".csv", delete=False)
@@ -190,7 +182,7 @@ class TestPandasMongoBridge(MainTestCase):
 
     def test_csv_columns_for_gps_within_groups(self):
         self._publish_grouped_gps_form()
-        self._submit_grouped_gps_instance()
+        self._submit_fixture_instance("grouped_gps", "01")
         data = self._csv_data_for_dataframe()
         columns = data[0].keys()
         expected_columns = [
@@ -210,7 +202,7 @@ class TestPandasMongoBridge(MainTestCase):
     def test_format_mongo_data_for_csv(self):
         self.maxDiff = None
         self._publish_single_level_repeat_form()
-        self._submit_single_level_repeat_instance()
+        self._submit_fixture_instance("new_repeats", "01")
         dd = self.xform.data_dictionary()
         columns = dd.get_keys()
         data_0 = self._csv_data_for_dataframe()[0]
@@ -240,7 +232,7 @@ class TestPandasMongoBridge(MainTestCase):
     def test_split_select_multiples(self):
         self._publish_nested_repeats_form()
         dd = self.xform.data_dictionary()
-        self._submit_nested_repeats_instance()
+        self._submit_fixture_instance("nested_repeats", "01")
         csv_df_builder = CSVDataFrameBuilder(self.user.username,
             self.xform.id_string)
         cursor = csv_df_builder._query_mongo()
