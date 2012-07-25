@@ -54,6 +54,10 @@ def remove_dups_from_list_maintain_order(l):
     return list(OrderedDict.fromkeys(l))
 
 
+class NoRecordsFoundError(Exception):
+    pass
+
+
 class AbstractDataFrameBuilder(object):
 
     # TODO: use constants from comman_tags module!
@@ -82,7 +86,8 @@ class AbstractDataFrameBuilder(object):
 
     @classmethod
     def _collect_select_multiples(cls, dd):
-        return dict([(e.get_abbreviated_xpath(), [c.get_abbreviated_xpath() for c in e.children])
+        return dict([(e.get_abbreviated_xpath(), [c.get_abbreviated_xpath()\
+                    for c in e.children])
             for e in dd.get_survey_elements() if e.bind.get("type")=="select"])
 
     @classmethod
@@ -92,15 +97,17 @@ class AbstractDataFrameBuilder(object):
             select_multiples.keys()]
         for key, choices in select_multiples.items():
             if key in record:
-                # split selected choices by spaces and join by / to the element's
-                # xpath
-                selections = ["%s/%s" % (key, r) for r in record[key].split(" ")]
-                # remove the column since we are adding separate columns for each
-                # choice
+                # split selected choices by spaces and join by / to the
+                # element's xpath
+                selections = ["%s/%s" % (key, r) for r in\
+                             record[key].split(" ")]
+                # remove the column since we are adding separate columns
+                # for each choice
                 record.pop(key)
-                # add columns to record for every choice, with default False and
-                # set to True for items in selections
-                record.update(dict([(choice, choice in selections) for choice in
+                # add columns to record for every choice, with default
+                # False and set to True for items in selections
+                record.update(dict([(choice, choice in selections)\
+                            for choice in
                     choices]))
 
             # recurse into repeats
@@ -142,6 +149,17 @@ class AbstractDataFrameBuilder(object):
         limit=ParsedInstance.DEFAULT_LIMIT, fields='[]'):
         # ParsedInstance.query_mongo takes params as json strings
         # so we dumps the fields dictionary
+        count_args = {
+            'username': self.username,
+            'id_string': self.id_string,
+            'query': query,
+            'fields': '[]',
+            'sort': '{}',
+            'count': True
+        }
+        count = ParsedInstance.query_mongo(**count_args)
+        if count[0]["count"] == 0:
+            raise NoRecordsFoundError("No records found for your query")
         query_args = {
             'username': self.username,
             'id_string': self.id_string,
@@ -249,7 +267,8 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                         repeat_records = record[xpath]
                         for repeat_record in repeat_records:
                             self._add_data_for_section(data[sheet_name],
-                                repeat_record, columns, index, self.survey_name)
+                                repeat_record, columns, index,\
+                                self.survey_name)
 
         return data
 
@@ -405,7 +424,8 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
                         xpaths = nested_key.split('/')
                         # second level so we must have at least 2 elements
                         assert(len(xpaths) > 1)
-                        # append index to the second last column i.e. group name
+                        # append index to the second last column i.e. group
+                        # name
                         xpaths[-2] += "[%d]" % index
                         new_prefix = xpaths[:-1]
                         if type(nested_val) is list:
@@ -489,7 +509,8 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         cursor = self._query_mongo(self.filter_query)
         # generate list of select multiples to be used in format_for_dataframe
         data = self._format_for_dataframe(cursor)
-        columns = list(chain.from_iterable([[xpath] if cols == None else cols for xpath, cols in self.ordered_columns.iteritems()]))
+        columns = list(chain.from_iterable([[xpath] if cols == None else cols\
+                    for xpath, cols in self.ordered_columns.iteritems()]))
         writer = CSVDataFrameWriter(data, columns)
         writer.write_to_csv(file_object)
 
