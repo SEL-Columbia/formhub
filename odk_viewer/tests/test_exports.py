@@ -28,3 +28,29 @@ class TestExports(MainTestCase):
             'fixtures', 'transportation.csv')
         with open(test_file_path, 'r') as test_file:
             self.assertEqual(response.content, test_file.read())
+
+    def test_responses_for_empty_exports(self):
+        self._create_user_and_login()
+        self._publish_transportation_form()
+        # TODO: make sure we have no records in mongo
+        # test csv
+        url = reverse(csv_export,
+            kwargs={
+                'username': self.user.username,
+                'id_string': self.xform.id_string
+            }
+        )
+        self.response = self.client.get(url)
+        self.assertEqual(self.response.status_code, 200)
+        # we get html response when we have no records
+        self.assertIn('text/html', self.response['content-type'])
+        # test xls
+        url = reverse(xls_export,
+            kwargs={
+                'username': self.user.username,
+                'id_string': self.xform.id_string
+            }
+        )
+        self.response = self.client.get(url)
+        self.assertEqual(self.response.status_code, 200)
+        self.assertIn('text/html', self.response['content-type'])
