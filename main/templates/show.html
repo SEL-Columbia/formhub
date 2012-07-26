@@ -211,6 +211,12 @@
                 <i class="icon-list-alt icon-white"></i> {% trans "Browse Data" %}
             </a>
         </div>
+        {% else %}
+            {% if can_edit %}
+
+            {% else %}
+                <span class="label label-warning">{% trans "NO DATA" %}</span>
+            {% endif %}
 		{% endif %}
 		{% endif %}
 		{% if can_edit %}
