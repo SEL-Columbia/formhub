@@ -92,6 +92,7 @@
                 </td>
                 <td>
                     {% if form.shared_data %}
+            {% if form.submission_count %}
                         <a href="{% url odk_viewer.views.csv_export content_user.username form.id_string %}">
                             <button class="btn btn-small">{% trans "csv" %}</button>
                         </a>
@@ -102,8 +103,11 @@
                             <button class="btn btn-small">{% trans "kml" %}</button>
                         </a>
                     {% else %}
-                        <span class="label label-warning">{% trans "PRIVATE" %}</span>
+                        <span class="label label-warning">{% trans "NO DATA" %}</span>
                     {% endif %}
+            {% else %}
+                <span class="label label-warning">{% trans "PRIVATE" %}</span>
+            {% endif %}
                 </td>
                 <td>
                     {% if form.shared_data %}
