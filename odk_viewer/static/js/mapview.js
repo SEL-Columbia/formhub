@@ -7,7 +7,8 @@ var layersControl;
 var mapboxMaps = [
     {'label': 'Mapbox Streets', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-iuetkf9u.jsonp'},
     {'label': 'MapBox Streets Light', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-p543gvbh.jsonp'},
-    {'label': 'MapBox Streets Zenburn', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-bjhr55gf.jsonp'}
+    {'label': 'MapBox Streets Zenburn', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-bjhr55gf.jsonp'},
+    {'label': 'Natural Earth II', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-1c1r9n5g.jsonp'}
 ];
 var allowResetZoomLevel = true; // used to allow zooming when first loaded
 var popupOffset = new L.Point(0, -10);
