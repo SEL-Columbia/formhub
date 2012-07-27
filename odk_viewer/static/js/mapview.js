@@ -77,7 +77,8 @@ function initialize() {
     overlays[hexbinLayerLabel] = hexbinLayerGroup;
     layersControl = new L.Control.Layers({}, overlays);
     map.addControl(layersControl);
-    map.addLayer(markerLayerGroup); //show marker layer by default
+    //show marker layer by default
+    map.addLayer(markerLayerGroup);
 
     // add bing maps layer
     $.each(bingMapTypeLabels, function(type, label) {
