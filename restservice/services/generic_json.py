@@ -11,7 +11,3 @@ class ServiceDefinition(RestServiceInterface):
         http = httplib2.Http()
         resp, content = http.request(valid_url, 'GET')
 
-
-
-        result = simplejson.load(urllib.urlopen(QUERY_URL))
-        result['myapplication']['system_memory']
