@@ -22,7 +22,7 @@ Install system libraries and start services:
 
 Make directory structure and Clone formhub:
 
-    $ mkdir -p srv/formhub-app
+    $ mkdir -p src/formhub-app
 
     $ cd src/formhub-app
 
@@ -35,6 +35,10 @@ Make virtual environment and install requirements:
     $ source project_env/bin/activate
 
     $ cd formhub
+
+(NB: there is a known bug that prevents numpy from installing correctly when in requirements.pip file)
+
+    $ pip install numpy
 
     $ pip install -r requirements.pip
 
@@ -56,7 +60,7 @@ Create a database and start server:
 
     $ python manage.py migrate
 
-    $ python manage.py run-server
+    $ python manage.py runserver
 
 (OPTIONAL) Apache and system administration tools:
 
