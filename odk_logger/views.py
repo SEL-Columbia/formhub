@@ -4,6 +4,7 @@ import os
 import tempfile
 import urllib
 import urllib2
+from xml.parsers.expat import ExpatError
 import zipfile
 
 from itertools import chain
