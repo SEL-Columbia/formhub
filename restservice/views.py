@@ -21,12 +21,7 @@ def add_service(request, username, id_string):
         form = RestServiceForm(request.POST)
         if form.is_valid():
             service_name = form.cleaned_data['service_name']
-            if service_name == 'json':
-                service_url = form.cleaned_data['service_url']+'/api'
-            if  service_name == 'xml':
-                service_url = form.cleaned_data['service_url']+'/xml'
-            else:
-                service_url = form.cleaned_data['service_url']
+            service_url = form.cleaned_data['service_url']
             try:
                 rs = RestService(service_url=service_url,
                                  name=service_name, xform=xform)

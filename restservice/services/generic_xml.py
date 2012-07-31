@@ -6,7 +6,8 @@ class ServiceDefinition(RestServiceInterface):
     id = u'xml'
 
     def send(self, url, instance):
-        info = {"id_string": instance.xform.id_string, "uuid": instance.uuid}
-        valid_url = url % info
+        post_data = {'xml_data': instance.xml}
+        headers = {"Content-Type": "application/xml"}
         http = httplib2.Http()
-        resp, content = http.request(valid_url, 'GET')
+        resp, content = http.request(url,body=instance.xml,
+                                     headers=headers)
