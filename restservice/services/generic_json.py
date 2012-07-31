@@ -1,13 +1,15 @@
 import httplib2
 from restservice.RestServiceInterface import RestServiceInterface
-
+import json
 
 class ServiceDefinition(RestServiceInterface):
     id = u'json'
 
     def send(self, url, instance):
-        info = {"id_string": instance.xform.id_string, "uuid": instance.uuid}
-        valid_url = url % info
+        post_data = dumps(instance.xform.id_string)
+        headers = {"Content-Type": "application/json"}
         http = httplib2.Http()
-        resp, content = http.request(valid_url, 'GET')
+        resp, content = http.request(uri=url, method='POST',headers=headers
+                                     body=post_data)
+        
 
