@@ -19,6 +19,7 @@ def add_service(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     if request.method == 'POST':
         form = RestServiceForm(request.POST)
+        context.restservice = None
         if form.is_valid():
             service_name = form.cleaned_data['service_name']
             service_url = form.cleaned_data['service_url']
