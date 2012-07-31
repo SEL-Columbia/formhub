@@ -31,6 +31,7 @@ from utils.logger_tools import response_with_mimetype_and_name, publish_form
 from utils.user_auth import check_and_set_user, set_profile_data,\
     has_permission, helper_auth_helper, get_xform_and_perms,\
     check_and_set_user_and_form
+from django.core import serializers
 
 
 def home(request):
@@ -236,7 +237,6 @@ def show(request, username=None, id_string=None, uuid=None):
         context.permission_form = PermissionForm(username)
     return render_to_response("show.html", context_instance=context)
 
-
 @require_GET
 def api(request, username=None, id_string=None):
     """
@@ -283,6 +283,43 @@ def api(request, username=None, id_string=None):
         response_text = ("%s(%s)" % (callback, response_text))
     return HttpResponse(response_text, mimetype='application/json')
 
+@require_GET
+def xml(request, username=None, id_string=None):
+    """
+    Returns all results as JSON.  If a parameter string is passed,
+    it takes the 'query' parameter, converts this string to a dictionary, an
+    that is then used as a MongoDB query string.
+    """
+    helper_auth_helper(request)
+    xform, owner = check_and_set_user_and_form(username, id_string, request)
+
+    if not xform:
+        return HttpResponseForbidden(_(u'Not shared.'))
+
+    try:
+        args = {
+            'username': username,
+            'id_string': id_string,
+            'query': request.GET.get('query'),
+            'fields': request.GET.get('fields'),
+            'sort': request.GET.get('sort')
+        }
+        if 'start' in request.GET:
+            args["start"] = int(request.GET.get('start'))
+        if 'limit' in request.GET:
+            args["limit"] = int(request.GET.get('limit'))
+        if 'count' in request.GET:
+            args["count"] = True if int(request.GET.get('count')) > 0\
+            else False
+        cursor = ParsedInstance.query_mongo(**args)
+    except ValueError, e:
+        return HttpResponseBadRequest(e.__str__())
+    records = list(record for record in cursor)
+    response_text = serializers.serialize("xml", records)
+    if 'callback' in request.GET and request.GET.get('callback') != '':
+        callback = request.GET.get('callback')
+        response_text = ("%s(%s)" % (callback, response_text))
+    return HttpResponse(response_text, mimetype='application/xml')
 
 @login_required
 def edit(request, username, id_string):
