@@ -95,6 +95,7 @@ def _flatten_dict(d, prefix):
         else:
             yield (new_prefix, value)
 
+
 def _flatten_dict_nest_repeats(d, prefix):
     """
     Return a list of XPath, value pairs.
@@ -123,6 +124,7 @@ def _flatten_dict_nest_repeats(d, prefix):
             yield (new_prefix, repeats)
         else:
             yield (new_prefix, value)
+
 
 def _get_all_attributes(node):
     """

@@ -4,6 +4,7 @@ import os
 import tempfile
 import urllib
 import urllib2
+from xml.parsers.expat import ExpatError
 import zipfile
 
 from itertools import chain
@@ -194,6 +195,8 @@ def submission(request, username=None):
             return HttpResponseNotFound(
                 _(u"Form does not exist on this account")
             )
+        except ExpatError:
+            return HttpResponseBadRequest(_(u"Improperly formatted XML."))
 
         if instance is None:
             return HttpResponseBadRequest(_(u"Unable to create submission."))
