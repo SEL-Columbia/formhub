@@ -142,7 +142,7 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail,
     ]
 
     username = forms.CharField(widget=forms.TextInput(), max_length=30)
-    email = forms.CharField(widget=forms.TextInput(), max_length=50)
+    email = forms.EmailField(widget=forms.TextInput())
 
     legal_usernames_re = re.compile("^\w+$")
 
