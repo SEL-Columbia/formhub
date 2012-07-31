@@ -374,6 +374,38 @@ class TestPandasMongoBridge(MainTestCase):
         AbstractDataFrameBuilder._split_gps_fields(record, gps_fields)
         self.assertEqual(expected_result, record)
 
+    def test_unicode_export(self):
+        unicode_char = unichr(40960)
+        # fake data
+        data = [{"key": unicode_char}]
+        columns = ["key"]
+        # test xls
+        xls_df_writer = XLSDataFrameWriter(data, columns)
+        temp_file = NamedTemporaryFile(suffix=".xls")
+        excel_writer = ExcelWriter(temp_file.name)
+        passed = False
+        try:
+            xls_df_writer.write_to_excel(excel_writer, "default")
+            passed = True
+        except UnicodeEncodeError:
+            pass
+        finally:
+            temp_file.close()
+        self.assertTrue(passed)
+        # test csv
+        passed = False
+        csv_df_writer = CSVDataFrameWriter(data, columns)
+        temp_file = NamedTemporaryFile(suffix=".csv")
+        try:
+            csv_df_writer.write_to_csv(temp_file)
+            passed = True
+        except UnicodeEncodeError:
+            pass
+        finally:
+            temp_file.close()
+        temp_file.close()
+        self.assertTrue(passed)
+
     def test_remove_dups_from_list_maintain_order(self):
         l = ["a", "z", "b", "y", "c", "b", "x"]
         result = remove_dups_from_list_maintain_order(l)
