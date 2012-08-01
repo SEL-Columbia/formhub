@@ -1,0 +1,1 @@
+script: ./bin/run_all_tests.sh

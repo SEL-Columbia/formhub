@@ -1,0 +1,23 @@
+Version 1.7
+- Added the --incrementalOutput flag to allow output to show progress per file. This is useful when running EnvJasmine in Maven.
+- Changed the "Failed: 0" output to not be red (it only becomes red if there are failing tests, less distracting).
+- Fixed a bug where improper character encoding would cause EnvJasmine to report false results in different environments.
+- Added support to execute ./bin/run_test.sh with an absolute path to a spec file previously this only worked with relative paths).
+- Added the ability to define a custom EnvJasmine.reporterClass in your config file (include/dependencies.js) to overwrite the default RhinoReporter (Thanks jakul!).
+- Added an optional RhinoSpecReporter to jasmine-rhino-reporter.js (this is an example of how you can write your own reporters, thanks jakul!).
+- Updated the tutorial to include creating a custom config file (Thanks zdk!).
+
+Version 1.6: Made the output more like RSpec. (12/02/2011)
+
+Version 1.5: Reengineered EnvJasmine to make each script to run withit its own context. This prevents conflicts in scripts modifying global objects, although your dependencies are still loaded globally.
+
+Version 1.4: Reengineered system to better integrate with maven (03/07/2011)
+
+Version 1.3: Added support for arbitrary file structures in specs directory (02/15/2011)
+
+Version 1.2: Improved Maven integration support (01/27/2011)
+
+Version 1.1: Added support for AJAX calls (01/24/2011)
+
+Version 1.0: Initial Release (01/07/2011)
+
