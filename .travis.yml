@@ -15,6 +15,5 @@ install:
   - python manage.py migrate --noinput
 script:
   - python manage.py test --noinput
-  - ./js_tests/EnvJasmine/bin/run_all_tests.sh
 notifications:
   irc: "irc.freenode.org#moditest"
