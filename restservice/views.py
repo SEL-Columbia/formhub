@@ -52,3 +52,18 @@ def add_service(request, username, id_string):
     context.username = username
     context.id_string = id_string
     return render_to_response("add-service.html", context_instance=context)
+
+
+def delete_service(request, username, id_string):
+    success = "FAILED"
+    if request.method == 'POST':
+        pk = request.POST.get('service-id')
+        if pk:
+            try:
+                rs = RestService.objects.get(pk=int(pk))
+            except RestService.DoesNotExist:
+                pass
+            else:
+                rs.delete()
+                success= "OK"
+    return HttpResponse(success)
