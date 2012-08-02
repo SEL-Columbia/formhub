@@ -111,7 +111,7 @@ table.narrow-labels label {
     width: 80px;
 }
 
-[class^="icon-"], [class*=" icon-"] {
+.dropdown-menu [class^="icon-"], .dropdown-menu [class*=" icon-"] {
     float: right;
     -webkit-mask-image: url("../img/glyphicons-halflings.png");
     background-color: #414042;
