@@ -7,6 +7,7 @@ from restservice.RestServiceInterface import RestServiceInterface
 
 class ServiceDefinition(RestServiceInterface):
     id = u'json'
+    verbose_name = u'JSON POST'
 
     def send(self, url, instance):
         args = {

@@ -4,9 +4,9 @@ from restservice.RestServiceInterface import RestServiceInterface
 
 class ServiceDefinition(RestServiceInterface):
     id = u'xml'
+    verbose_name = u'XML POST'
 
     def send(self, url, instance):
-        post_data = {'xml_data': instance.xml}
         headers = {"Content-Type": "application/xml"}
         http = httplib2.Http()
         resp, content = http.request(url,body=instance.xml,
