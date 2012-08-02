@@ -24,7 +24,7 @@ from django.core.files.storage import get_storage_class
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.translation import ugettext as _
 from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
 

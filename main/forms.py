@@ -9,7 +9,7 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.core.validators import URLValidator
 from django.forms import ModelForm
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _, ugettext_lazy
 
 from main.models import UserProfile, MetaData
 from odk_viewer.models import DataDictionary
@@ -171,15 +171,15 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail,
 
 
 class SourceForm(forms.Form):
-    source = forms.FileField(label=_(u"Source document"), required=True)
+    source = forms.FileField(label=ugettext_lazy(u"Source document"), required=True)
 
 
 class SupportDocForm(forms.Form):
-    doc = forms.FileField(label=_(u"Supporting document"), required=True)
+    doc = forms.FileField(label=ugettext_lazy(u"Supporting document"), required=True)
 
 
 class MediaForm(forms.Form):
-    media = forms.FileField(label=_(u"Media upload"), required=True)
+    media = forms.FileField(label=ugettext_lazy(u"Media upload"), required=True)
 
     def clean_media(self):
         data_type = self.cleaned_data['media'].content_type
