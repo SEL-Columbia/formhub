@@ -6,7 +6,7 @@ This is for all the extra things it needs beyond what bootstrap provides.
 
 /* for fixed top */
 body {
-    padding-top:40px;
+    padding-top:56px;
     font-family: 'Open Sans', sans-serif;
 }
 
@@ -366,5 +366,5 @@ section {
   color: #555;
 }
 #map_canvas {
-  margin-top: 40px;
+  margin-top: 56px;
 }
