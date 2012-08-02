@@ -339,13 +339,21 @@ function _rebuildMarkerLayer(geoJSON, questionName)
 
     L.geoJson(geoJSON, {
         style: function(feature) {
-            var response = feature.properties[questionName] || notSpecifiedCaption;
-            return _.defaults({fillColor: questionColorMap[response]}, circleStyle);
+            if(questionName) {
+                var response = feature.properties[questionName] || notSpecifiedCaption;
+                var question = formJSONMngr.getQuestionByName(questionName);
+                if (!responseCountValid) {
+                    question.responseCounts[response] += 1;
+                }
+                return _.defaults({fillColor: questionColorMap[response]}, circleStyle);
+            }
         },
         pointToLayer: function(feature, latlng) {
             var marker = L.circleMarker(latlng, circleStyle);
+            latLngArray.push(latlng);
             marker.on('click', function(e) {
-                var popup = L.popup().setContent("Loading...").setLatLng(latlng).openOn(map);
+                var popup = L.popup({offset: popupOffset})
+                    .setContent("Loading...").setLatLng(latlng).openOn(map);
                 console.log(feature.id);
                 $.getJSON(mongoAPIUrl, {'query': '{"_id":' + feature.id + '}'})
                     .done(function(data){
@@ -359,11 +367,9 @@ function _rebuildMarkerLayer(geoJSON, questionName)
             });
             return marker;
         }
-    }).addTo(map);
+    }).addTo(markerLayerGroup);
 
-    /// need this here instead of the constructor so that we can catch the featureparse event
     _.defer(refreshHexOverLay); // TODO: add a toggle to do this only if hexOn = true;
-
     if(questionName)
         rebuildLegend(questionName, questionColorMap);
     else
