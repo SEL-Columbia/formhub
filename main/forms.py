@@ -19,23 +19,27 @@ from registration.models import RegistrationProfile
 from utils.country_field import COUNTRIES
 
 FORM_LICENSES_CHOICES = (
-    ('No License', 'No License'),
-    ('https://creativecommons.org/licenses/by/3.0/', 'Attribution CC BY'),
+    ('No License', ugettext_lazy('No License')),
+    ('https://creativecommons.org/licenses/by/3.0/', 
+     ugettext_lazy('Attribution CC BY')),
     ('https://creativecommons.org/licenses/by-sa/3.0/',
-     'Attribution-ShareAlike CC BY-SA'),
+     ugettext_lazy('Attribution-ShareAlike CC BY-SA')),
 )
 
 DATA_LICENSES_CHOICES = (
-    ('No License', 'No License'),
-    ('http://opendatacommons.org/licenses/pddl/summary/', 'PDDL'),
-    ('http://opendatacommons.org/licenses/by/summary/', 'ODC-BY'),
-    ('http://opendatacommons.org/licenses/odbl/summary/', 'ODBL'),
+    ('No License', ugettext_lazy('No License')),
+    ('http://opendatacommons.org/licenses/pddl/summary/', 
+     ugettext_lazy('PDDL')),
+    ('http://opendatacommons.org/licenses/by/summary/',
+     ugettext_lazy('ODC-BY')),
+    ('http://opendatacommons.org/licenses/odbl/summary/', 
+     ugettext_lazy('ODBL')),
 )
 
 PERM_CHOICES = (
-    ('view', 'Can view'),
-    ('edit', 'Can edit'),
-    ('remove', 'Remove permissions'),
+    ('view', ugettext_lazy('Can view')),
+    ('edit', ugettext_lazy('Can edit')),
+    ('remove', ugettext_lazy('Remove permissions')),
 )
 
 
@@ -171,15 +175,18 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail,
 
 
 class SourceForm(forms.Form):
-    source = forms.FileField(label=ugettext_lazy(u"Source document"), required=True)
+    source = forms.FileField(label=ugettext_lazy(u"Source document"), 
+                             required=True)
 
 
 class SupportDocForm(forms.Form):
-    doc = forms.FileField(label=ugettext_lazy(u"Supporting document"), required=True)
+    doc = forms.FileField(label=ugettext_lazy(u"Supporting document"), 
+                          required=True)
 
 
 class MediaForm(forms.Form):
-    media = forms.FileField(label=ugettext_lazy(u"Media upload"), required=True)
+    media = forms.FileField(label=ugettext_lazy(u"Media upload"), 
+                            required=True)
 
     def clean_media(self):
         data_type = self.cleaned_data['media'].content_type
@@ -193,16 +200,18 @@ class MapboxLayerForm(forms.Form):
                                max_length=255)
     attribution = forms.CharField(widget=forms.TextInput(), required=False,
                                   max_length=255)
-    link = forms.URLField(verify_exists=False, label="Jsonp url",
+    link = forms.URLField(verify_exists=False,
+                          label=ugettext_lazy(u'JSONP url'),
                           required=True)
 
 
 class QuickConverterFile(forms.Form):
-    xls_file = forms.FileField(label="XLS File", required=False)
+    xls_file = forms.FileField(label=ugettext_lazy(u'XLS File'), required=False)
 
 
 class QuickConverterURL(forms.Form):
-    xls_url = forms.URLField(verify_exists=False, label="XLS URL",
+    xls_url = forms.URLField(verify_exists=False,
+                             label=ugettext_lazy('XLS URL'),
                              required=False)
 
 
