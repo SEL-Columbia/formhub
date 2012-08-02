@@ -111,6 +111,13 @@ table.narrow-labels label {
     width: 80px;
 }
 
+[class^="icon-"], [class*=" icon-"] {
+    float: right;
+    -webkit-mask-image: url("../img/glyphicons-halflings.png");
+    background-color: #414042;
+    background-image: none;
+}
+
 textarea[disabled].present, input[disabled].present {
     background-color: transparent;
     color: #444;
@@ -142,11 +149,31 @@ ul.inline ul.dropdown-menu {
     margin-top: -12px;
 }
 
+.dropdown-menu .icon-user {
+    -webkit-mask-position: -168px 0;
+}
+
+.dropdown-menu .icon-cog {
+    -webkit-mask-position: -432px 0;
+}
+
+.dropdown-menu .icon-off {
+    -webkit-mask-position: -384px 0;
+}
+
+.dropdown-menu li > a:hover > i, .dropdown-menu .active > a > i, .dropdown-menu .active > a:hover > i {
+    background-color: #32AF6E;
+}
+
 .topbar {
     position:fixed;
 }
 .topbar div > ul > li > img {
     margin-top: 5px;
+}
+
+.tooltip {
+    z-index: 1060;
 }
 
 .navbar-inner-map {
@@ -208,6 +235,11 @@ ul.inline ul.dropdown-menu {
 
 .nav > li.lead {
     font-size: 15px;
+}
+
+.dropdown-menu li > a:hover, .dropdown-menu .active > a, .dropdown-menu .active > a:hover {
+    color: #32af6e;
+    background-color: transparent;
 }
 
 .navbar .nav .dropdown-toggle .caret, .navbar .nav .open.dropdown .caret {
