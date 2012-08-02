@@ -30,6 +30,7 @@
             <nested_age>45</nested_age>
         </nested_group>
     </kids>
+    <address>1234</address>
     <gps>-1.2627557 36.7926442 0.0 30.0</gps>
     <web_browsers>ie safari</web_browsers>
 </nested_repeats>
