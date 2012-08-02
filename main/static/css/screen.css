@@ -7,6 +7,7 @@ This is for all the extra things it needs beyond what bootstrap provides.
 /* for fixed top */
 body {
     padding-top:40px;
+    font-family: 'Open Sans', sans-serif;
 }
 
 .centered {
@@ -154,12 +155,20 @@ ul.inline ul.dropdown-menu {
 
 .navbar-inner {
     background-color: #fff;
-    background-image: url(/static/images/header_bg.png);
-    background-repeat: repeat-y;
+    background-image: url(/static/images/header_bg.jpg);
+    background-repeat: repeat-x;
     background-position: center;
     border-bottom-width: 1px;
     border-bottom-style: solid;
     border-bottom-color: #666;
+}
+
+.navbar .brand {
+    padding: 10px 20px 10px;
+}
+
+.navbar .nav {
+    margin-top: 7px;
 }
 
 .navbar .nav > li > a {
@@ -176,7 +185,7 @@ ul.inline ul.dropdown-menu {
 
 .navbar-inner .nav > li > a:hover {
     background-color: transparent;
-    color: #666;
+    color: #fff;
     text-decoration: none;
 }
 
@@ -189,7 +198,7 @@ ul.inline ul.dropdown-menu {
 }
 
 .navbar .nav > li > a {
-    color: #898989;
+    color: #bcbec0;
 }
 
 .navbar .nav > li > span {
@@ -251,10 +260,6 @@ a#gravatar span.small-link {
 #formplayer {
     padding-top: 40px;
     height: 100%;
-}
-
-.brand img{
-    height: 14px;
 }
 
 h2 small {
