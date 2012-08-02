@@ -264,64 +264,32 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     /// remove existing geoJsonLayer
     markerLayerGroup.clearLayers();
 
-    var geoJsonLayer = new L.GeoJSON(null, {
-        pointToLayer: function (latlng){
-            var marker = new L.CircleMarker(latlng, circleStyle);
+    L.geoJson(geoJSON, {
+        style: function(feature) {
+            var response = feature.properties[questionName] || notSpecifiedCaption;
+            return _.defaults({fillColor: questionColorMap[response]}, circleStyle);
+        },
+        pointToLayer: function(feature, latlng) {
+            var marker = L.circleMarker(latlng, circleStyle);
+            marker.on('click', function(e) {
+                var popup = L.popup().setContent("Loading...").setLatLng(latlng).openOn(map);
+                console.log(feature.id);
+                $.getJSON(mongoAPIUrl, {'query': '{"_id":' + feature.id + '}'})
+                    .done(function(data){
+                        var content;
+                        if(data.length > 0)
+                            content = JSONSurveyToHTML(data[0]);
+                        else
+                            content = "An unexpected error occurred";
+                        popup.setContent(content);
+                    });
+            });
             return marker;
         }
-    });
-
-    geoJsonLayer.on("featureparse", function(geoJSONEvt){
-        var marker = geoJSONEvt.layer;
-        var latLng = marker._latlng;
-        latLngArray.push(latLng);
-
-        /// check if questionName is set
-        if(questionName)
-        {
-            var question = formJSONMngr.getQuestionByName(questionName);
-            var response = geoJSONEvt.properties[questionName];
-            // check if response is missing (user did not specify)
-            if(!response)
-                response = notSpecifiedCaption;
-            /// increment response count if its not been done before
-            if(!responseCountValid)
-                question.responseCounts[response] += 1;
-            var responseColor = questionColorMap[response];
-            var newStyle = {
-                color: '#fff',
-                border: circleStyle.border,
-                fillColor: responseColor,
-                fillOpacity: circleStyle.fillOpacity,
-                radius: circleStyle.opacity
-            };
-            marker.setStyle(newStyle);
-        }
-        marker.on('click', function(e){
-            var latLng = e.latlng;
-            var popup = new L.Popup({offset: popupOffset});
-            popup.setLatLng(latLng);
-
-            // open a loading popup so the user knows something is happening
-            popup.setContent("Loading...");
-            map.openPopup(popup);
-
-            $.getJSON(mongoAPIUrl, {'query': '{"_id":' + geoJSONEvt.id + '}'}).done(function(data){
-                var content;
-                if(data.length > 0)
-                    content = JSONSurveyToHTML(data[0]);
-                else
-                    content = "An unexpected error occurred";
-                popup.setContent(content);
-                //map.openPopup(popup);
-            });
-        });
-    });
+    }).addTo(map);
 
     /// need this here instead of the constructor so that we can catch the featureparse event
     _.defer(refreshHexOverLay); // TODO: add a toggle to do this only if hexOn = true;
-    geoJsonLayer.addGeoJSON(geoJSON);
-    markerLayerGroup.addLayer(geoJsonLayer);
 
     if(questionName)
         rebuildLegend(questionName, questionColorMap);
