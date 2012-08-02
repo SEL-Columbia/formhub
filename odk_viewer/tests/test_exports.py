@@ -1,9 +1,10 @@
 import os
 from main.tests.test_base import MainTestCase
 from django.core.urlresolvers import reverse
-from odk_logger.views import download_xlsform
 from odk_viewer.xls_writer import XlsWriter
 from odk_viewer.views import csv_export, xls_export
+from test_pandas_mongo_bridge import xls_filepath_from_fixture_name,\
+    xml_inst_filepath_from_fixture_name
 
 class TestExports(MainTestCase):
     def test_unique_xls_sheet_name(self):
