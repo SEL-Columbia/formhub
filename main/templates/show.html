@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load humanize %}
 {% block content %}
+{% load i18n %}
+
   {% if user.is_authenticated %}
     <script type="text/javascript" src="/static/js/form_actions.js"></script>
   {% endif %}
@@ -20,8 +22,8 @@
                 {% csrf_token %}
                 <input type="text" id="title"class="input-xxlarge present header" disabled="" rows="3" value="{{ xform.title }}" />
                 {% if can_edit %}
-                    <a id="title_edit" data-id="title" href="" class="btn small bind-edit">edit</a>
-                    <a id="title_save" data-id="title" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+                    <a id="title_edit" data-id="title" href="" class="btn small bind-edit">{% trans "edit" %}</a>
+                    <a id="title_save" data-id="title" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">{% trans "save" %}</a>
                 {% endif %}
             </form>
             </div>
@@ -30,31 +32,31 @@
     <div class="row">
       <div class="span8">
         {% if can_edit %}
-            <h4>Form ID: {{ xform.id_string }}</h4>
+            <h4>{% trans "Form ID:" %} {{ xform.id_string }}</h4>
         {% endif %}
-        <h3>Description</h3>
+        <h3>{% trans "Description" %}</h3>
         <div class="clearfix">
             <div class="input">
             <form>
                 {% csrf_token %}
-                <textarea id="description" class="input-xxlarge present" disabled="" rows="3" name="textarea">{% if xform.description %}{{ xform.description }}{% else %}None{% endif %}</textarea>
+                <textarea id="description" class="input-xxlarge present" disabled="" rows="3" name="textarea">{% if xform.description %}{{ xform.description }}{% else %}{% trans "None" %}{% endif %}</textarea>
                 {% if can_edit %}
-                    <a id="description_edit" data-id="description" href="" class="btn small bind-edit">edit</a>
-                    <a id="description_save" data-id="description" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+                    <a id="description_edit" data-id="description" href="" class="btn small bind-edit">{% trans "edit" %}</a>
+                    <a id="description_save" data-id="description" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">{% trans "save" %}</a>
                 {% endif %}
             </form>
             </div>
         </div>
       <div class="bordered">
         <h3>
-            XLSForm
-            <span id="form-shared-public" class="label label-info">PUBLIC</span>
-            <span id="form-shared-private" class="label label-warning">PRIVATE</span>
+            {% trans "XLSForm" %}
+            <span id="form-shared-public" class="label label-info">{% trans "PUBLIC" %}</span>
+            <span id="form-shared-private" class="label label-warning">{% trans "PRIVATE" %}</span>
         </h3>
         <br/>
         <div class="btn-toolbar" style="margin-bottom: 9px">
           <div class="btn-group">
-            <a class="btn btn-success" href="{% url download_xlsform content_user.username xform.id_string %}"><i class="icon-th icon-white"></i><font color=#FFF> XLSForm</font></a>
+            <a class="btn btn-success" href="{% url download_xlsform content_user.username xform.id_string %}"><i class="icon-th icon-white"></i><font color=#FFF> {% trans "XLSForm" %}</font></a>
             <button class="btn dropdown-toggle btn-success" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
@@ -65,7 +67,7 @@
             </ul>
           </div>
           <div class="btn-group">
-            <a class="btn" href="{% url download_xform content_user.username xform.id_string %}"><i class="icon-file"></i><font color=#000> XForm</font></a>
+            <a class="btn" href="{% url download_xform content_user.username xform.id_string %}"><i class="icon-file"></i><font color=#000> {% trans "XForm" %}</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
@@ -76,7 +78,7 @@
             </ul>
           </div>
           <div class="btn-group">
-            <a class="btn" href="{% url download_jsonform content_user.username xform.id_string %}"><i class="icon-file"></i><font color=#000> JSONForm</font></a>
+            <a class="btn" href="{% url download_jsonform content_user.username xform.id_string %}"><i class="icon-file"></i><font color=#000> {% trans "JSONForm" %}</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
@@ -90,24 +92,24 @@
     <br>
         </ul>
         <p>
-            License:
+            {% trans "License" %}:
             {% if can_edit %}
                 {% for field in form_license_form %}
                     {{ field }}
                 {% endfor %}
-                <a id="form-license_edit" data-id="form-license" href="" class="btn btn-small bind-edit">edit</a>
-                <a id="form-license_save" data-id="form-license" style="display:none" href="" class="btn btn-small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+                <a id="form-license_edit" data-id="form-license" href="" class="btn btn-small bind-edit">{% trans "edit" %}</a>
+                <a id="form-license_save" data-id="form-license" style="display:none" href="" class="btn btn-small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">{% trans "save" %}</a>
             {% else %}
                 {{ form_license|default:'No license' }}
             {% endif %}
         </p>
-        <p><a id="form-license_info" style="display:none" href="">License information</a></p>
+        <p><a id="form-license_info" style="display:none" href="">{% trans "License information" %}</a></p>
         <br/>
         <ul class="inline">
         {% if user.is_authenticated and content_user.username != user.username and xform.xls|length > 0 and not cloned %}
             <br/><br/>
             <li>
-                <a href="" data-url="{% url main.views.clone_xlsform xform.user.username %}" data-username="{{ xform.user.username }}" data-id="{{ xform.id_string }}" class="clonexls btn small">Clone</a>
+                <a href="" data-url="{% url main.views.clone_xlsform xform.user.username %}" data-username="{{ xform.user.username }}" data-id="{{ xform.id_string }}" class="clonexls btn small">{% trans "Clone" %}</a>
             </li>
         {% endif %}
         </ul>
@@ -115,16 +117,16 @@
       <br/>
       <div class="clearfix bordered">
         <h3>
-            Form Data
-            <span id="data-shared-public" class="label label-info">PUBLIC</span>
-            <span id="data-shared-private" class="label label-warning">PRIVATE</span>
+            {% trans "Form Data" %}
+            <span id="data-shared-public" class="label label-info">{% trans "PUBLIC" %}</span>
+            <span id="data-shared-private" class="label label-warning">{% trans "PRIVATE" %}</span>
         </h3>
         {% if xform.shared_data or can_view %}
         {% if xform.submission_count > 0 %}
         <br>
         <div class="btn-toolbar" style="margin-bottom: 9px">
           <div class="btn-group">
-            <a class="btn" href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export to csv File"><i class="icon-download-alt"></i> <font color=#000>csv</font></a>
+            <a class="btn" href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export to csv File"><i class="icon-download-alt"></i> <font color=#000>{% trans "csv" %}</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
@@ -135,7 +137,7 @@
             </ul>
           </div>
           <div class="btn-group">
-            <a class="btn" href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export to xls File"><i class="icon-download-alt"></i> <font color=#000>xls</font></a>
+            <a class="btn" href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export to xls File"><i class="icon-download-alt"></i> <font color=#000>{% trans "xls" %}</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
@@ -146,7 +148,7 @@
             </ul>
           </div>
           <div class="btn-group">
-            <a class="btn" href="{% url odk_viewer.views.kml_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export to kml File (Google Earth)"><i class="icon-download-alt"></i> <font color=#000>kml</font></a>
+            <a class="btn" href="{% url odk_viewer.views.kml_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export to kml File (Google Earth)"><i class="icon-download-alt"></i> <font color=#000>{% trans "kml" %}</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
@@ -158,7 +160,7 @@
           </div>
 
           <div class="btn-group">
-            <a class="btn" href="{% url odk_viewer.views.zip_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export a zip folder of attachments"><i class="icon-download-alt"></i> <font color=#000>zip</font></a>
+            <a class="btn" href="{% url odk_viewer.views.zip_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export a zip folder of attachments"><i class="icon-download-alt"></i> <font color=#000>{% trans "zip" %}</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
@@ -169,7 +171,7 @@
             </ul>
           </div>
           <div class="btn-group">
-            <a class="btn" href="{% url odk_viewer.views.google_xls_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export to google docs"><i class="icon-download-alt"></i> <font color=#000>gdocs</font></a>
+            <a class="btn" href="{% url odk_viewer.views.google_xls_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export to google docs" target="_blank"><i class="icon-download-alt"></i> <font color=#000>{% trans "gdocs" %}</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
                 <span class="caret"></span>
             </button>
@@ -180,41 +182,47 @@
             </ul>
           </div>
         </div>
-        <h4>Submissions: {{ xform.submission_count|intcomma }}</h4>
+        <h4>{% trans "Submissions:" %} {{ xform.submission_count|intcomma }}</h4>
         <br>
         <p>
-            License:
+            {% trans "License:" %}
             {% if can_edit %}
                 {% for field in data_license_form %}
                     {{ field }}
                 {% endfor %}
-                <a id="data-license_edit" data-id="data-license" href="" class="btn btn-small bind-edit">edit</a>
-                <a id="data-license_save" data-id="data-license" style="display:none" href="" class="btn btn-small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+                <a id="data-license_edit" data-id="data-license" href="" class="btn btn-small bind-edit">{% trans "edit" %}</a>
+                <a id="data-license_save" data-id="data-license" style="display:none" href="" class="btn btn-small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">{% trans "save" %}</a>
             {% else %}
                 {{ data_license|default:'No license' }}
             {% endif %}
         </p>
-        <p><a id="data-license_info" style="display:none" href="">License information</a></p>
+        <p><a id="data-license_info" style="display:none" href="">{% trans "License information" %}</a></p>
 	    <div class="btn-group" style="margin-bottom: 9px">
             <a class="btn btn-info" rel="tooltip" title="View Map" href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
-              <i class="icon-map-marker icon-white"></i> Map
+              <i class="icon-map-marker icon-white"></i> {% trans "Map" %}
             </a>
-            <a class="btn btn-info" btn-info  rel="tooltip" title="View Photos" href="{% url main.views.form_photos content_user.username xform.id_string %}">
-              <i class="icon-camera icon-white"></i> Photos
+            <a class="btn btn-info" btn-info  rel="tooltip" title="{% trans "View Photos" %}" href="{% url main.views.form_photos content_user.username xform.id_string %}">
+              <i class="icon-camera icon-white"></i> {% trans "Photos" %}
             </a>
-            <a class="btn btn-info" btn-info  rel="tooltip" title="View Submitted Data" href="{% url odk_viewer.views.data_view content_user.username xform.id_string %}">
-                <i class="icon-th-list icon-white"></i> View Data
+            <a class="btn btn-info" btn-info  rel="tooltip" title="{% trans "View Submitted Data" %}" href="{% url odk_viewer.views.data_view content_user.username xform.id_string %}">
+                <i class="icon-th-list icon-white"></i> {% trans "View Data" %}
             </a>
-            <a class="btn btn-info" btn-info  rel="tooltip" title="Browse Data (One by One)" href="{% url odk_viewer.views.instance content_user.username xform.id_string %}">
-                <i class="icon-list-alt icon-white"></i> Browse Data
+            <a class="btn btn-info" btn-info  rel="tooltip" title="{% trans "Browse Data (One by One)" %}" href="{% url odk_viewer.views.instance content_user.username xform.id_string %}">
+                <i class="icon-list-alt icon-white"></i> {% trans "Browse Data" %}
             </a>
         </div>
+        {% else %}
+            {% if can_edit %}
+
+            {% else %}
+                <span class="label label-warning">{% trans "NO DATA" %}</span>
+            {% endif %}
 		{% endif %}
 		{% endif %}
 		{% if can_edit %}
 	    <div class="btn-group" style="margin-bottom: 9px">
 		    <a class="btn btn-info" rel="tooltip" title="Webform" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
-		      <i class="icon-edit icon-white"></i> Enter Web Form
+		      <i class="icon-edit icon-white"></i> {% trans "Enter Web Form" %}
             </a>
         </div>
 		{% endif %}
@@ -232,13 +240,25 @@
               {% else %}
                 $('#form-shared-public').hide();
               {% endif %}
-              $.each(['form-shared', 'data-shared', 'active-form'], function(inx, el) {
+              $.each(['form-shared', 'data-shared', 'active-form', 'crowd-form'], function(inx, el) {
                 var cb = $('#' + el + ':checkbox');
                 cb.iphoneStyle({
                   onChange: function() {
+                    // a callback func
+                    var c = function(){}
+                    // if crowdform is toggled, change data and form status
+                    // appropriately
+                    if(el == 'crowd-form' && $('#crowd-form').attr('checked') == 'checked'){
+                        if($('#form-shared:checkbox').attr('checked') == undefined)
+                            $('#form-shared:checkbox').click()
+                        if($('#data-shared:checkbox').attr('checked') == undefined)
+                            $('#data-shared:checkbox').click()
+                    }
+ 
                     privacyEdit(cb.data('url'), el.split('-')[0]);
                     $('#' + el + '-public').toggle();
                     $('#' + el + '-private').toggle();
+                    
                   }
                 });
               });
@@ -256,7 +276,7 @@
     </div>
       <br/>
         <div class="clearfix bordered">
-                <h3 data-toggle="collapse" data-target="#source_tab">Source</h3>
+                <h3 data-toggle="collapse" data-target="#source_tab">{% trans "Source" %}</h3>
                 <div id='source_tab' class="collapse">
                 <form action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
 
@@ -266,8 +286,8 @@
                 {% csrf_token %}
                 <input type="text" id="source" class="input-xxlarge present" disabled="" rows="3" value="{{ source.data_value|default:"None provided" }}" />
                 {% if can_edit %}
-                    <a id="source_edit" data-id="source" href="" class="btn small bind-edit">edit</a>
-                    <a id="source_save" data-id="source" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">save</a>
+                    <a id="source_edit" data-id="source" href="" class="btn small bind-edit">{% trans "edit" %}</a>
+                    <a id="source_save" data-id="source" style="display:none" href="" class="btn small btn-primary bind-save" data-url="{% url main.views.edit content_user.username xform.id_string %}">{% trans "save" %}</a>
                 {% endif %}
 
 
@@ -283,34 +303,49 @@
         </div>
         <br/>
         <div class="clearfix bordered">
-                <h3 data-toggle="collapse" data-target="#docs_tab">Supporting Documents</h3>
+                <h3 data-toggle="collapse" data-target="#docs_tab">{% trans "Supporting Documents" %}</h3>
                 <div id='docs_tab' class="collapse">
                 {% for doc in supporting_docs %}
                     <p><a href="{% url main.views.download_metadata content_user.username xform.id_string doc.id %}">{{ doc.data_value }}</a>
                     {% if can_edit %}
-                    || <a href="{% url main.views.download_metadata content_user.username xform.id_string doc.id %}?del=true"> remove </a>
+                    || <a href="{% url main.views.download_metadata content_user.username xform.id_string doc.id %}?del=true"> {% trans "remove" %} </a>
                     {% endif %}
                     </p>
                 {% endfor %}
                 {% if can_edit %}
-                <form action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <table>
-                    {{ doc_form.as_table }}
-                    </table>
-                    <input type="submit" class="btn" value="Upload" />
-                </form>
+                    <form action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <table>
+                            {{ doc_form.as_table }}
+                        </table>
+                        <input type="submit" class="btn" value="Upload" />
+                    </form>
                 {% endif %}
-                </div>
+            </div>
         </div>
+        {% if is_owner %}
         <br/>
         <div class="clearfix bordered">
-            <h3 data-toggle="collapse" data-target="#media_tab">Media &nbsp;<small> jpeg/png/mp3 allowed </small></h3>
+            <h3 data-toggle="collapse" data-target="#restservice_tab">Rest Services</h3>
+            <div id='restservice_tab' class="collapse">
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        $.get('{% url restservice.views.add_service content_user.username xform.id_string %}', function(data){
+                          $('#restservice_tab').html(data);
+                        });
+                    });
+                 </script>
+            </div>
+        </div>
+        {% endif %}
+        <br/>
+        <div class="clearfix bordered">
+            <h3 data-toggle="collapse" data-target="#media_tab">Media &nbsp;<small> {% trans "jpeg/png/mp3 allowed" %} </small></h3>
             <div id='media_tab' class="collapse">
             {% for media in media_upload %}
               <p><a href="{% url main.views.download_media_data content_user.username xform.id_string media.id %}">{{ media.data_value }}</a>
               {% if can_edit %}
-              &ndash;<a href="{% url main.views.download_media_data content_user.username xform.id_string media.id %}?del=true"> remove </a>
+              &ndash;<a href="{% url main.views.download_media_data content_user.username xform.id_string media.id %}?del=true"> {% trans "remove" %} </a>
               {% endif %}
               </p>
             {% endfor %}
@@ -327,13 +362,13 @@
         </div>
         <br/>
         <div class="clearfix bordered">
-            <h3 data-toggle="collapse" data-target="#map_tab">Mapbox Layer</h3>
+            <h3 data-toggle="collapse" data-target="#map_tab">{% trans "Mapbox Layer" %}</h3>
             <div id='map_tab' class="collapse">
             {% if mapbox_layer %}
             <p><a href="{{ mapbox_layer.link }}" target="_blank">{{ mapbox_layer.map_name }}</a> &ndash;
             Attribution: {{ mapbox_layer.attribution }}
             {% if can_edit %}
-            &ndash;<a href="{% url main.views.download_metadata content_user.username xform.id_string mapbox_layer.id %}?map_name_del=true"> remove </a></p>
+            &ndash;<a href="{% url main.views.download_metadata content_user.username xform.id_string mapbox_layer.id %}?map_name_del=true"> {% trans "remove" %} </a></p>
             {% endif %}
             {% endif %}
             {% if can_edit %}
@@ -349,76 +384,58 @@
         </div>
       </div>
       <div class="span4">
-        <script type="text/javascript" charset="utf-8">
-            $(document).ready(function() {
-              {% if xform.shared_data %}
-                $('#data-shared-private').hide();
-              {% else %}
-                $('#data-shared-public').hide();
-              {% endif %}
-              {% if xform.shared %}
-                $('#form-shared-private').hide();
-              {% else %}
-                $('#form-shared-public').hide();
-              {% endif %}
-              $.each(['form-shared', 'data-shared', 'active-form'], function(inx, el) {
-                var cb = $('#' + el + ':checkbox');
-                cb.iphoneStyle({
-                  onChange: function() {
-                    privacyEdit(cb.data('url'), el.split('-')[0]);
-                    $('#' + el + '-public').toggle();
-                    $('#' + el + '-private').toggle();
-                  }
-                });
-              });
-            });
-        </script>
         {% if is_owner %}
-        <h3>Settings</h3>
+        <h3>{% trans "Settings" %}</h3>
         <div class="clearfix">
           <div class="input">
-          <label>Form Shared&nbsp;</label>
+          <label>{% trans "Form Shared" %}&nbsp;</label>
             <input id="form-shared" type="checkbox"{% if xform.shared %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
           </div> 
           <br/>
-          <label>Data Shared&nbsp;</label>
+          <label>{% trans "Data Shared" %}&nbsp;</label>
           <div class="input">
             <input id="data-shared" type="checkbox"{% if xform.shared_data %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
           </div> 
           <br/>
-          <label>Form Active&nbsp;</label>
+          <label>{% trans "Crowdform" %}&nbsp;</label>
+          <div class="input">
+            <input id="crowd-form" type="checkbox" {% if xform.is_crowd_form %}
+            checked="" {% endif %} data-url="{% url main.views.edit content_user.username xform.id_string  %}" />
+          </div>
+          <br/>
+          <label>{% trans "Form Active" %}&nbsp;</label>
           <div class="input">
             <input id="active-form" type="checkbox"{% if xform.downloadable %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
           </div> 
           <br/>
-          <label>Delete Form&nbsp;</label>
+          <label>{% trans "Delete Form" %}&nbsp;</label>
         <div class="input">
           <!-- DELETE -->
           <div id="delete-{{ xform.id_string }}" class="modal hide fade">
             <div class="modal-header">
               <a data-dismiss="modal" class="close">&times;</a>
-              <h3>Delete Confirmation</h3>
+              <h3>{% trans "Delete Confirmation" %}</h3>
             </div>
             <div class="modal-body">
-              <p>Are you sure you want to delete the form '{{ xform.title }}'? This form has <strong>{{ xform.submission_count|intcomma }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.</p>
+              <p>{% trans "Are you sure you want to delete the form" %} '{{ xform.title }}'? {% trans "This form has" %} <strong>{{ xform.submission_count|intcomma }}</strong> {% trans "submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead." %}</p>
             </div>
             <div class="modal-footer">
-              <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn btn-primary">Delete</a>
-              <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">Cancel</a>
+              <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn btn-primary">{% trans "Delete" %}</a>
+              <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">{% trans "Cancel" %}</a>
             </div>
           </div>
           <a data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" class="btn btn-small btn-danger">
-            Delete
+              {% trans "Delete" %}
           </a>
         </div>
         </div> 
         <br/>
         <div>
-            <h3>Sharing</h3>
-            Sharing by link is
+            <h3>{% trans "Sharing" %}</h3>
+            {% trans "Sharing by link is" %}
             <strong>
             {% if public_link %}
-                on with url <a href="{% url main.views.show xform.uuid %}">{{ base_url }}{% url main.views.show xform.uuid %}</a>
+                {% trans "on with url" %} <a href="{% url main.views.show xform.uuid %}">{{ base_url }}{% url main.views.show xform.uuid %}</a>
             {% else %}
                 off
             {% endif %}

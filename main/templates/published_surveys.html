@@ -1,8 +1,10 @@
 {% load humanize %}
 {% if user.xforms.count %}
+{% load i18n %}
+
 <section id="published-forms">
   <div class="page-header">
-    <h1>Published Forms <small>Export, map, and view submissions.</small></h1>
+    <h1>{% trans "Published Forms" %} <small>{% trans "Export, map, and view submissions." %} </small></h1>
   </div>
 
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
@@ -40,12 +42,12 @@
   <table id="forms-table" class="table table-bordered table-striped">
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Submissions</th>
-        <th>Last Submission</th>
-        <th>Data</th>
-        <th>View</th>
-        <th>Active</th>
+        <th>{%  trans "Name" %}</th>
+        <th>{%  trans "Submissions" %}</th>
+        <th>{%  trans "Last Submission" %}</th>
+        <th>{%  trans "Data" %}</th>
+        <th>{%  trans "View" %}</th>
+        <th>{%  trans "Active" %}</th>
       </tr>
     </thead>
     <tbody>
@@ -54,7 +56,7 @@
         <td>
             <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
             {% if xform.shared %}
-                <span class="label label-info">PUBLIC</span>
+                <span class="label label-info">{%  trans "PUBLIC" %}</span>
             {% endif %}
         </td>
         <td><center>{{ xform.submission_count|intcomma }}</center></td>
@@ -65,14 +67,14 @@
         </td>
         <td>
           {% if xform.submission_count %}
-              <a href="{% url odk_viewer.views.csv_export user.username xform.id_string %}"><button class="btn btn-small">csv</button></a>
-              <a href="{% url odk_viewer.views.xls_export user.username xform.id_string %}"><button class="btn btn-small">xls</button></a>
+              <a href="{% url odk_viewer.views.csv_export user.username xform.id_string %}"><button class="btn btn-small">{%  trans "csv" %}</button></a>
+              <a href="{% url odk_viewer.views.xls_export user.username xform.id_string %}"><button class="btn btn-small">{%  trans "xls" %}</button></a>
               {% if xform.data_dictionary.has_surveys_with_geopoints %}
-              <a href="{% url odk_viewer.views.kml_export user.username xform.id_string %}"><button class="btn btn-small">kml</button></a>
+              <a href="{% url odk_viewer.views.kml_export user.username xform.id_string %}"><button class="btn btn-small">{%  trans "kml" %}</button></a>
               {% endif %}
           {% endif %}
           {% if xform.shared_data %}
-              <span class="label label-info">PUBLIC</span>
+              <span class="label label-info">{%  trans "PUBLIC" %}</span>
           {% endif %}
         </td>
         <td>
@@ -83,16 +85,18 @@
 	    <i class="icon-map-marker"></i>
 	  </a>
           {% endif %}
+          {% if xform.submission_count > 0 %}
 	  <a class="btn" href="{% url main.views.form_photos content_user.username xform.id_string %}" data-original-title="View Photo" rel="tooltip" >
 	    <i class="icon-camera"></i>
 	  </a>
+          {% endif %}
 
 	  <a class="btn" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}" data-original-title="Enter Web Form" rel="tooltip">
 	    <i class="icon-edit"></i>
 	  </a>                
-          <!-- DELETE --> 
-          <div id="delete-{{ xform.id_string }}" class="modal hide fade">
+          <!-- DELETE -->
              {% if xform.submission_count <= 0 %}
+          <div id="delete-{{ xform.id_string }}" class="modal hide fade">
             <div class="modal-header">
               <a data-dismiss="modal" class="close">&times;</a>
               <h3>Delete Confirmation</h3>
@@ -105,10 +109,9 @@
               <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">Cancel</a>
             </div>
           </div>
-          <a data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" class="btn btn-small btn-danger">
-            Delete
-          </a>              
-        </div>
+          <a data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" class="btn">
+            <i class="icon-trash"></i>
+          </a>
             {% endif %}                       
             {% if xform.submission_count > 0 %}
       <a class="btn" href="{% url odk_viewer.views.data_view content_user.username xform.id_string %}" data-original-title="View Submitted Data" rel="tooltip">
@@ -130,14 +133,6 @@
   </table>
 
   <hr />
-
-  <p>
-    The url of this web application <strong>{{ odk_url }}</strong>
-    must be given to ODK Collect before it will get forms from and
-    submit data to formhub. In Collect's Main Menu, press the Menu
-    button. Select Server Preferences, then Server. Enter
-    <strong>{{ odk_url }}</strong> as the server.
-  </p>
 
 </section>
 

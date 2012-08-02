@@ -40,12 +40,14 @@ urlpatterns = patterns('',
     # form specific
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)$', 'main.views.show'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/api$', 'main.views.api'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/delete_api$', 'main.views.delete_data'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/edit$', 'main.views.edit'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/perms$', 'main.views.set_perm'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/photos', 'main.views.form_photos'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/doc/(?P<data_id>[^/]+)', 'main.views.download_metadata'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/formid-media/(?P<data_id>[^/]+)', 'main.views.download_media_data'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/submission/(?P<uuid>[^/]+)$', 'main.views.show_submission'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/addservice$', 'restservice.views.add_service', name="add_restservice"),
 
     # stats
     url(r"^stats/submissions/$", 'staff.views.submissions'),

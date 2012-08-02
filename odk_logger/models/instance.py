@@ -1,32 +1,44 @@
+import re
+from xml.dom import minidom
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 
 from .xform import XForm
 from .survey_type import SurveyType
-from odk_logger.xform_instance_parser import XFormInstanceParser, \
-     XFORM_ID_STRING
+from odk_logger.xform_instance_parser import XFormInstanceParser,\
+         XFORM_ID_STRING
+from restservice.utils import call_service
 from utils.model_tools import set_uuid
+from utils.stathat_api import stathat_count
 
 
 class FormInactiveError(Exception):
     pass
 
+# need to establish id_string of the xform before we run get_dict since we now rely on data dictionary to parse the xml
+def get_id_string_from_xml_str(xml_str):
+    clean_xml_str = xml_str.strip()
+    clean_xml_str = re.sub(ur">\s+<", u"><", clean_xml_str)
+    xml_obj = minidom.parseString(clean_xml_str)
+    root_node = xml_obj.documentElement
+    return root_node.getAttribute(u"id")
 
 class Instance(models.Model):
     # I should rename this model, maybe Survey
     xml = models.TextField()
     user = models.ForeignKey(User, related_name='surveys', null=True)
 
-    #using instances instead of surveys breaks django
+    # using instances instead of surveys breaks django
     xform = models.ForeignKey(XForm, null=True, related_name='surveys')
     start_time = models.DateTimeField(null=True)
     date = models.DateField(null=True)
     survey_type = models.ForeignKey(SurveyType)
 
-    #shows when we first received this instance
+    # shows when we first received this instance
     date_created = models.DateTimeField(auto_now_add=True)
-    #this will end up representing "date last parsed"
+
+    # this will end up representing "date last parsed"
     date_modified = models.DateTimeField(auto_now=True)
 
     # ODK keeps track of three statuses for an instance:
@@ -39,11 +51,9 @@ class Instance(models.Model):
     class Meta:
         app_label = 'odk_logger'
 
-    def _set_xform(self, doc):
-        try:
-            self.xform = XForm.objects.get(id_string=doc[XFORM_ID_STRING], user=self.user)
-        except XForm.DoesNotExist:
-            self.xform = None
+    def _set_xform(self, id_string):
+        self.xform = XForm.objects.get(id_string=id_string,
+                user=self.user)
 
     def get_root_node_name(self):
         self._set_parser()
@@ -65,8 +75,8 @@ class Instance(models.Model):
         self.date = None
 
     def save(self, *args, **kwargs):
+        self._set_xform(get_id_string_from_xml_str(self.xml))
         doc = self.get_dict()
-        self._set_xform(doc)
         if self.xform and not self.xform.downloadable:
             raise FormInactiveError()
         self._set_start_time(doc)
@@ -77,7 +87,7 @@ class Instance(models.Model):
 
     def _set_parser(self):
         if not hasattr(self, "_parser"):
-            self._parser = XFormInstanceParser(self.xml)
+            self._parser = XFormInstanceParser(self.xml, self.xform.data_dictionary())
 
     def get_dict(self, force_new=False, flat=True):
         """Return a python object representation of this instance's XML."""
@@ -87,8 +97,15 @@ class Instance(models.Model):
         else:
             return self._parser.to_dict()
 
-from utils.stathat_api import stathat_count
+
 def stathat_form_submission(sender, instance, created, **kwargs):
     if created:
-       stathat_count('formhub-submissions')
-post_save.connect(stathat_form_submission, sender=Instance)
+        stathat_count('formhub-submissions')
+
+
+def rest_service_form_submission(sender, instance, created, **kwargs):
+    if created:
+        call_service(instance)
+
+
+post_save.connect(rest_service_form_submission, sender=Instance)

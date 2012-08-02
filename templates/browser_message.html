@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <script type="text/javascript" charset="utf-8">
 	function closeBrowserAlertPopup() {
 		document.getElementById('browser-alert-popup').style.display = "none";
@@ -14,19 +16,19 @@
 	<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
 		<span class="ui-dialog-title" id="ui-dialog-title-1">Browser Error</span>
 		<a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button" onclick="closeBrowserAlertPopup()">
-			<span class="ui-icon ui-icon-closethick">close</span>
+			<span class="ui-icon ui-icon-closethick">{% trans "close" %}</span>
 		</a>
 	</div>
 	<div class="browser-message ui-dialog-content ui-widget-content" style="width: 638px; min-height: 99.5667px; height: 325px;">
 		<h2>
-			Recommended Browser Alert
+			{% trans "Recommended Browser Alert" %}
 		</h2>
 		<div>
 			<p>
-				Dear Sir or Madam,
+				{% trans "Dear Sir or Madam," %}
 			</p>
 			<p>
-				Our tests indicate that you are currently using a browser that does not support complex navigation. We highly recommend that you switch to one of the browsers below in order to take full advantage of the Nigeria MDGs Information System.
+				{% trans "Our tests indicate that you are currently using a browser that does not support complex navigation. We highly recommend that you switch to one of the browsers below in order to take full advantage of the Nigeria MDGs Information System." %}
 			</p>
 			<ul>
 				<li>
@@ -37,10 +39,10 @@
 				</li>
 			</ul>
 			<p>
-				Thank You,
+				{% trans "Thank You," %}
 			</p>
 			<p>
-				The NMIS Support Team
+				{% trans "The NMIS Support Team" %}
 			</p>
 		</div>
 	</div>

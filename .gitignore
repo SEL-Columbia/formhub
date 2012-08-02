@@ -13,6 +13,9 @@ xform_manager_dataset.json
 # folder to hold csv files
 csvs
 
+# pip build dir
+build
+
 # media folder used by tests
 # todo: figure out a way to clean this up rather than ignore it.
 /test_media

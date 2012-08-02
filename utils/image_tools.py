@@ -9,19 +9,16 @@ from utils.viewer_tools import get_path
 
 
 def get_dimensions((width, height), longest_side):
-    try:
-        if width > height:
-            width = longest_side
-            height = (height/width) * longest_side
-        elif height >width:
-            height = longest_side
-            width = (width/height) * longest_side
-        else:
-            height = longest_side
-            width = longest_side
-        return (width, height)
-    except ZeroDivisionError:
-        return (longest_side, longest_side)
+    if width > height:
+        width = longest_side
+        height = (height / width) * longest_side
+    elif height > width:
+        height = longest_side
+        width = (width / height) * longest_side
+    else:
+        height = longest_side
+        width = longest_side
+    return (width, height)
 
 
 def _save_thumbnails(image, path, size, suffix, filename=None):
@@ -29,7 +26,9 @@ def _save_thumbnails(image, path, size, suffix, filename=None):
     if filename:
         default_storage = get_storage_class()()
         fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
-        image.thumbnail(get_dimensions(image.size, size), Image.ANTIALIAS)
+        # Ensure conversion to float in operations
+        image.thumbnail(get_dimensions(image.size, float(size)),
+                Image.ANTIALIAS)
         image.save(get_path(path, suffix))
 
         default_storage.save(get_path(filename, suffix),
@@ -49,10 +48,11 @@ def resize(filename):
     conf = settings.THUMB_CONF
 
     fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
-    loc_path = fs.path(filename)
+    loc_path = fs.path('dummy.%s' % settings.IMG_FILE_TYPE)
 
-    [_save_thumbnails(image, loc_path, conf[key]['size'], conf[key]['suffix'],
-                                    filename=filename) for key in conf.keys()]
+    [_save_thumbnails(image, loc_path, conf[key]['size'],
+                '%s.%s' % (conf[key]['suffix'], settings.IMG_FILE_TYPE),
+                filename=filename) for key in conf.keys()]
 
 
 def resize_local_env(filename):

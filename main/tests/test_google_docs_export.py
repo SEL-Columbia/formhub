@@ -1,7 +1,8 @@
 from django.core.urlresolvers import reverse
 
 from main.models import TokenStorageModel
-from main.google_export import token, refresh_access_token
+from utils.google import oauth2_token as token
+from main.google_export import refresh_access_token
 from odk_viewer.views import google_xls_export
 
 from test_base import MainTestCase
@@ -24,7 +25,6 @@ class TestGoogleDocsExport(MainTestCase):
             'id_string': self.xform.id_string
         }))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['Location'], 'https://docs.google.com')
         # share the data, log out, and check the export
         self._share_form_data()
         self._logout()

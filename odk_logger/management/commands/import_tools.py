@@ -10,6 +10,7 @@ from odk_logger.models import Instance, XForm
 
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.utils.translation import ugettext as _
 
 
 IMAGES_DIR = os.path.join(settings.MEDIA_ROOT, "attachments")
@@ -22,15 +23,15 @@ class Command(BaseCommand):
         path = args[0]
         debug = False
         if debug:
-            print "[Importing XForm Instances from %s]\n" % path
+            print _(u"[Importing XForm Instances from %s]\n") % path
             im_count = len(glob.glob(os.path.join(IMAGES_DIR, '*')))
             instance_count = Instance.objects.count()
-            print "Before Parse:"
-            print " --> Images:    %d" % im_count
-            print " --> Instances: %d" % Instance.objects.count()
+            print _(u"Before Parse:")
+            print _(u" --> Images:    %d") % im_count
+            print _(u" --> Instances: %d") % Instance.objects.count()
         import_instances_from_zip(path)
         if debug:
             im_count2 = len(glob.glob(os.path.join(IMAGES_DIR, '*')))
-            print "After Parse:"
-            print " --> Images:    %d" % im_count2
-            print " --> Instances: %d" % Instance.objects.count()
+            print _(u"After Parse:")
+            print _(u" --> Images:    %d") % im_count2
+            print _(u" --> Instances: %d") % Instance.objects.count()

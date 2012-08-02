@@ -1,11 +1,13 @@
+{% load i18n %}
+
 <table class="pretty padded fullw">
   <thead>
     <tr>
-      <th>Downloadable by Phone</th>
-      <th>Form ID</th>
-      <th>Number of Submissions</th>
-      <th>Time of Last Submission</th>
-      <th>CSV</th>
+      <th>{% trans "Downloadable by Phone" %}</th>
+      <th>{% trans "Form ID" %}</th>
+      <th>{% trans "Number of Submissions" %}</th>
+      <th>{% trans "Time of Last Submission" %}</th>
+      <th>{% trans "CSV" %}</th>
     </tr>
   </thead>
   <tbody>
@@ -27,7 +29,7 @@
 	{{ xform.time_of_last_submission }}
 	{% endif %}
       </td>
-      <td><a href="#" class="button">Download CSV</a></td>
+      <td><a href="#" class="button">{% trans "Download CSV" %}</a></td>
     </tr>
     {% endfor %}
   </tbody>

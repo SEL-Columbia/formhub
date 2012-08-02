@@ -12,36 +12,33 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
+
 from gdata.spreadsheets import client
 
-from main.models import  TokenStorageModel
+from main.models import TokenStorageModel
 from main.views import home
-
-token = gdata.gauth.OAuth2Token(client_id=settings.GOOGLE_CLIENT_ID,
-    client_secret=settings.GOOGLE_CLIENT_SECRET,
-    scope=' '.join(['https://docs.google.com/feeds/',
-        'https://spreadsheets.google.com/feeds/']),
-    user_agent='formhub')
-
-redirect_uri = token.generate_authorize_url(
-    redirect_uri=settings.GOOGLE_STEP2_URI,
-    access_type='offline', approval_prompt='force')
+from utils.google import oauth2_token, get_refreshed_token, redirect_uri
 
 
-@login_required
 def google_oauth2_request(request):
-    try:
-        ts = TokenStorageModel.objects.get(id=request.user)
-    except TokenStorageModel.DoesNotExist:
-        pass
-    else:
-        stored_token = gdata.gauth.token_from_blob(ts.token)
-        print stored_token.refresh_token, stored_token.access_token
-        if stored_token.refresh_token is not None and\
-           stored_token.access_token is not None:
-            token.refresh_token = stored_token.refresh_token
-            working_token = refresh_access_token(token, request.user)
-            docs_client = client.SpreadsheetsClient(source=token.user_agent)
+    token = None
+    if request.user.is_authenticated():
+        try:
+            ts = TokenStorageModel.objects.get(id=request.user)
+        except TokenStorageModel.DoesNotExist:
+            pass
+        else:
+            token = ts.token
+    elif request.session.get('access_token'):
+        token = request.session.get('access_token')
+    if token is not None:
+        stored_token = gdata.gauth.token_from_blob(token)
+        if stored_token.refresh_token is not None \
+                and stored_token.access_token is not None:
+            oauth2_token.refresh_token = stored_token.refresh_token
+            working_token = refresh_access_token(oauth2_token, request.user)
+            docs_client = client.SpreadsheetsClient(
+                source=oauth2_token.user_agent)
             docs_client = working_token.authorize(docs_client)
             docs_feed = docs_client.GetSpreadsheets()
             _l = '<ul>'
@@ -50,42 +47,37 @@ def google_oauth2_request(request):
                 print entry.title.text
             _l += '</ul>'
             return HttpResponse(_l)
-    print redirect_uri
     return HttpResponseRedirect(redirect_uri)
 
 
-@login_required
 def google_auth_return(request):
     if 'code' not in request.REQUEST:
         return HttpResponse(u"Invalid Request")
-    try:
-        ts = TokenStorageModel.objects.get(id=request.user)
-    except TokenStorageModel.DoesNotExist:
-        ts = TokenStorageModel(id=request.user)
-    access_token = token.get_access_token(request.REQUEST)
-    ts.token = gdata.gauth.token_to_blob(token=access_token)
-    ts.save()
+    if request.user.is_authenticated():
+        try:
+            ts = TokenStorageModel.objects.get(id=request.user)
+        except TokenStorageModel.DoesNotExist:
+            ts = TokenStorageModel(id=request.user)
+        access_token = oauth2_token.get_access_token(request.REQUEST)
+        ts.token = gdata.gauth.token_to_blob(token=access_token)
+        ts.save()
+    else:
+        access_token = oauth2_token.get_access_token(request.REQUEST)
+        request.session["access_token"] =\
+            gdata.gauth.token_to_blob(token=access_token)
+    if request.session.get('google_redirect_url'):
+        return HttpResponseRedirect(request.session.get('google_redirect_url'))
     return HttpResponseRedirect(reverse(home))
 
 
 def refresh_access_token(token, user):
+    token = get_refreshed_token(token)
+    if not user.is_authenticated():
+        return token
     try:
         ts = TokenStorageModel.objects.get(id=user)
     except TokenStorageModel.DoesNotExist:
         ts = TokenStorageModel(id=user)
-    data = urllib.urlencode({
-        'client_id': settings.GOOGLE_CLIENT_ID,
-        'client_secret': settings.GOOGLE_CLIENT_SECRET,
-        'refresh_token': token.refresh_token,
-        'grant_type': 'refresh_token'})
-    request = urllib2.Request(
-        url='https://accounts.google.com/o/oauth2/token',
-        data=data)
-    request_open = urllib2.urlopen(request)
-    response = request_open.read()
-    request_open.close()
-    tokens = json.loads(response)
-    token.access_token = tokens['access_token']
     ts.token = gdata.gauth.token_to_blob(token)
     ts.save()
     return token

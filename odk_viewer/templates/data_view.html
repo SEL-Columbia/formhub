@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% block additional-headers %}
 <link rel="stylesheet" href="/static/css/pivot.css" />
 <link rel="stylesheet" href="/static/css/subnav.css" />
@@ -12,7 +13,7 @@
       <ul class="nav nav-pills">
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-            Display Fields
+           {% trans "Display Fields" %}
             <b class="caret"></b>
           </a>
           <ul class="dropdown-menu stop-propagation" style="overflow:auto;max-height:450px;padding:10px;">
