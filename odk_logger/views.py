@@ -72,10 +72,10 @@ def bulksubmission(request, username):
             import_instances_from_zip(our_tf, user=posting_user)
         os.remove(our_tfpath)
         json_msg = {
-            'message': ugettext(u"Submission successful. Out of %(total)d "
-                                u"survey instances, %(success)d were imported "
-                                u"(%(rejected)d were rejected--duplicates, "
-                                u"missing forms, etc.)") %
+            'message': _(u"Submission successful. Out of %(total)d "
+                         u"survey instances, %(success)d were imported "
+                         u"(%(rejected)d were rejected--duplicates, "
+                         u"missing forms, etc.)") %
             {'total': total_count, 'success': success_count,
              'rejected': total_count - success_count},
             'errors': u"%d %s" % (len(errors), errors)
@@ -254,8 +254,8 @@ def download_xlsform(request, username, id_string):
     else:
         messages.add_message(request, messages.WARNING,
                              _(u'No XLS file for your form '
-                               u'<strong>%s</strong>')
-                             % id_string)
+                               u'<strong>%(id)s</strong>')
+                             % {'id': id_string})
         return HttpResponseRedirect("/%s" % username)
 
 

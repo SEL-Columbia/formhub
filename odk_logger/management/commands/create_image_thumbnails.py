@@ -8,10 +8,12 @@ from odk_logger.models.attachment import Attachment
 from utils.image_tools import get_dimensions, resize, resize_local_env
 from utils.model_tools import queryset_iterator
 from utils.viewer_tools import get_path
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext_lazy
+
 
 class Command(BaseCommand):
-    help = "Creates thumbnails for all form images and stores them"
+    help = ugettext_lazy("Creates thumbnails for "
+                         "all form images and stores them")
 
     def handle(self, *args, **kwargs):
         fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
@@ -29,9 +31,11 @@ class Command(BaseCommand):
                     if default_storage.exists(get_path(filename,
                             '%s.%s' % (settings.THUMB_CONF['smaller']['suffix'],
                                     settings.IMG_FILE_TYPE))):
-                        print _(u'Thumbnails created for %s') % filename
+                        print (_(u'Thumbnails created for %(file)s') 
+                               % {'file': filename})
                     else:
-                        print _(u'Problem with the file %s') % filename
+                        print (_(u'Problem with the file %(file)s') 
+                               % {'file': filename})
                 except (IOError, OSError), e:
                     print _(u'Error on %(filename)s: %(error)s') \
                             % {'filename': filename, 'error': e}
