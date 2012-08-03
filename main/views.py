@@ -236,7 +236,6 @@ def show(request, username=None, id_string=None, uuid=None):
         context.permission_form = PermissionForm(username)
     return render_to_response("show.html", context_instance=context)
 
-
 @require_GET
 def api(request, username=None, id_string=None):
     """
@@ -282,7 +281,6 @@ def api(request, username=None, id_string=None):
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))
     return HttpResponse(response_text, mimetype='application/json')
-
 
 @login_required
 def edit(request, username, id_string):

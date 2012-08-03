@@ -1,3 +1,4 @@
+{% load i18n %}
 {% block content %}
     <div id="addserviceformstatus">{{ status }}</div>
     <div id="addserviceform-container">
@@ -16,13 +17,24 @@
     </form>
     <ol id="restservice_list">
         {% for sv in list_services %}
-            <li>{{ sv }}</li>
+            <li>{{ sv }}
+          
+              &nbsp;-&nbsp;<a href="#" data-url="{% url restservice.views.delete_service username=user.username id_string=id_string %}" data-id="{{ sv.pk }}" class="btn btn-mini btn-danger restserviceitem">{% trans "Delete" %}</a>
+            </li>
         {% endfor %}
     </ol>
     </div>
     <script type="text/javascript">
     $(document).ready(function(){
-       //$("#addserviceform")
+        $('a.restserviceitem').click(function(){
+            var el = $(this);
+            $.post(el.data('url'), "service-id=" + el.data('id'), function(data){
+                console.log(data);
+                el.parent().remove();
+            });
+            return false;
+        }
+        );
         $(document).on('submit', '#addserviceform', function(evt){
             evt.preventDefault();
             $.post(this.action, $(this).serialize(), function(data){
