@@ -105,7 +105,8 @@ def create_instance(username, xml_file, media_files,
 def report_exception(subject, info, exc_info=None):
     if exc_info:
         cls, err = exc_info[:2]
-        info += u"Exception in request: %s: %s" % (cls.__name__, err)
+        info += _(u"Exception in request: %(class)s: %(error)s") \
+                % {'class': cls.__name__, 'error': err}
         info += u"".join(traceback.format_exception(*exc_info))
 
     if settings.DEBUG or settings.TESTING_MODE:
@@ -195,5 +196,5 @@ def publish_form(callback):
         # catch timeout errors
         return {
             'type': 'alert-error',
-            'text': 'Form validation timeout, please try again.',
+            'text': _('Form validation timeout, please try again.'),
         }
