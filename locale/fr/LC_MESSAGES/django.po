@@ -167,7 +167,7 @@ msgstr ""
 
 #: main/templates/dashboard.html:69
 msgid "View Profile Page"
-msgstr ""
+msgstr "Voir le profil"
 
 #: main/templates/dashboard.html:85
 msgid "FORMS"
@@ -634,7 +634,7 @@ msgstr ""
 
 #: main/templates/show.html:388 templates/topbar.html:72
 msgid "Settings"
-msgstr ""
+msgstr "Préférences"
 
 #: main/templates/show.html:391
 msgid "Form Shared"
@@ -700,7 +700,7 @@ msgstr ""
 
 #: main/templates/support.html:5 templates/topbar.html:59
 msgid "Support"
-msgstr ""
+msgstr "Support"
 
 #: main/templates/support.html:9
 msgid "Thank you for using formhub!"
@@ -1486,36 +1486,36 @@ msgstr ""
 
 #: templates/topbar.html:55
 msgid "Forms"
-msgstr ""
+msgstr "Formulaires"
 
 #: templates/topbar.html:56
 msgid "People"
-msgstr ""
+msgstr "Utilisateurs"
 
 #: templates/topbar.html:57
 msgid "About"
-msgstr ""
+msgstr "À propos"
 
 #: templates/topbar.html:58
 msgid "Syntax"
-msgstr ""
+msgstr "Syntaxe"
 
 #: templates/topbar.html:60
 msgid "Blog"
-msgstr ""
+msgstr "Blog"
 
 #: templates/topbar.html:71
 msgid "Public profile"
-msgstr ""
+msgstr "Profil public"
 
 #: templates/topbar.html:75
 msgid "Sign out"
-msgstr ""
+msgstr "Se déconnecter"
 
 #: templates/topbar.html:79 templates/registration/login.html:7
 #: templates/registration/login.html:17
 msgid "Sign in"
-msgstr ""
+msgstr "Connexion"
 
 #: templates/registration/activate.html:7
 msgid "Account Activated"
