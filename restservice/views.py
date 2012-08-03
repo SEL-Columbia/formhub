@@ -31,8 +31,8 @@ def add_service(request, username, id_string):
                 context.status = 'fail'
             else:
                 context.status = 'success'
-                context.message = \
-                    _(u"Successfully added service %s.") % service_name
+                context.message = (_(u"Successfully added service %(name)s.") 
+                                   % {'name': service_name})
                 context.restservice = rs
         else:
             context.status = 'fail'

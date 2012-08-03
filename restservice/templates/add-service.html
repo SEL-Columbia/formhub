@@ -1,3 +1,4 @@
+{% load i18n %}
 {% block content %}
     <div id="addserviceformstatus">{{ status }}</div>
     <div id="addserviceform-container">
@@ -11,7 +12,7 @@
         </div>
     </div>
     <div class="form-actions bordered-side bordered-bottom nomargintop">
-        <input type="submit" class="btn large btn-primary" value="Add service" />
+        <input type="submit" class="btn large btn-primary" value="{% trans 'Add service' %}" />
     </div>
     </form>
     <ol id="restservice_list">
