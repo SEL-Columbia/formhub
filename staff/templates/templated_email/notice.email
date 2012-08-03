@@ -1,5 +1,6 @@
-{% block subject %}formhub notification for {{username}}{% endblock %}
+{% block subject %}{% blocktrans with username=username %}formhub notification for {{username}}{% endblocktrans %}{% endblock %}
 {% block plain %}
+{% blocktrans with full_name=full_name message=message %}
   Hi {{full_name}},
 
   {{message}}
@@ -8,8 +9,10 @@
   The Formhub Dev Team
 
   P.S. Please consider joining the formhub-users group, https://groups.google.com/group/formhub-users
+{% endblocktrans %}
 {% endblock %}
 {% block html %}
+{% blocktrans with full_name=full_name message=message %}
   <p>Hi {{full_name}},</p>
 
   <p>
@@ -25,4 +28,5 @@
   <p>
       P.S. Please consider joining the <a href="https://groups.google.com/group/formhub-users">formhub-users group</a>.
   </p>
+{% endblocktrans %}
 {% endblock %}
