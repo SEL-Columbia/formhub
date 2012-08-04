@@ -71,13 +71,12 @@ class PermissionForm(forms.Form):
 class UserProfileForm(ModelForm):
     class Meta:
         model = UserProfile
-        exclude = ('user',)
+        #exclude = ('user',)
+    email = forms.EmailField(widget=forms.TextInput())
 
 
 class UserProfileFormRegister(forms.Form):
     name = forms.CharField(widget=forms.TextInput(), required=False,
-                           max_length=255)
-    email = forms.EmailField(widget=forms.TextInput(), required=False,
                            max_length=255)
     city = forms.CharField(widget=forms.TextInput(), required=False,
                            max_length=255)
@@ -93,7 +92,6 @@ class UserProfileFormRegister(forms.Form):
     def save(self, new_user):
         new_profile = \
             UserProfile(user=new_user, name=self.cleaned_data['name'],
-                        email=self.cleaned_data['email'],
                         city=self.cleaned_data['city'],
                         country=self.cleaned_data['country'],
                         organization=self.cleaned_data['organization'],
