@@ -71,7 +71,7 @@ class PermissionForm(forms.Form):
 class UserProfileForm(ModelForm):
     class Meta:
         model = UserProfile
-        #exclude = ('user',)
+        exclude = ('user',)
     email = forms.EmailField(widget=forms.TextInput())
 
 

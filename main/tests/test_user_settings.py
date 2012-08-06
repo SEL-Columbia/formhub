@@ -29,9 +29,18 @@ class TestUserSettings(MainTestCase):
             'twitter': 'bobo',
             'home_page': 'bob.com',
             'require_auth': True,
+            'email': 'bob@bob.com'
         }
         response = self.client.post(self.settings_url, post_data)
         self.assertEqual(response.status_code, 302)
+        self.user = UserProfile.objects.get(pk=self.user.profile.pk).user
         for key, value in post_data.iteritems():
-            self.assertEqual(self.user.profile.__dict__[key], value)
+            try:
+                self.assertEqual(self.user.profile.__dict__[key], value)
+            except KeyError, e:
+                if key == 'email':
+                    users = UserProfile.objects.all()
+                    self.assertEqual(self.user.__dict__[key], value)
+                else:
+                    raise e
 
