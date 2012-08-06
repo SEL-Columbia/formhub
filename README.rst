@@ -195,12 +195,14 @@ Localization
 To generate a locale from scratch (ex. Spanish)
 
     django-admin.py makemessages -l es -e py,html,email,txt
-    django-admin.py makemessages -d djangojs -l es
+    for app in {main,odk_viewer} ; do cd ${app} && django-admin.py makemessages -d djangojs -l es && cd - ; done
 
 To update PO files
 
     django-admin.py makemessages -a
+    for app in {main,odk_viewer} ; do cd ${app} && django-admin.py makemessages -d djangojs -a && cd - ; done
 
 To compile MO files and update live translations
 
     django-admin.py compilemessages
+    for app in {main,odk_viewer} ; do cd ${app} && django-admin.py compilemessages && cd - ; done
