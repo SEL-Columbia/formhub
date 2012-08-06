@@ -1,13 +1,14 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block content %}
 <section id="register">
   <div class="page-header">
-    <h1>Edit User Profile</h1>
+    <h1>{%  trans "Edit User Profile" %}</h1>
   </div>
   <div class="row">
     <div class="span6">
-      <a class="btn" href="{% url auth_password_change %}">change password</a>
+      <a class="btn" href="{% url auth_password_change %}">{%  trans "change password" %}</a>
       <br/>
       <br/>
     </div>
@@ -19,7 +20,7 @@
         {% csrf_token %}
         <table>
           <tr>
-          <td><label>Username:</label></td>
+          <td><label>{%  trans "Username:" %}</label></td>
           <td><span class="uneditable-input">{{ content_user.username }}</span></td>
           </tr>
         {% for field in form %}
@@ -35,7 +36,7 @@
           </tr>
         {% endfor %}
         </table>
-        <input type="submit" class="btn btn-primary" value="Update" />
+        <input type="submit" class="btn btn-primary" value="{% trans 'Update' %}" />
       </form>
     </div>
   </div>

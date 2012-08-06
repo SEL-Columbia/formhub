@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-
+{% load i18n %}
 {% block content %}
 
 <section id="login">
   <div class="page-header">
-    <h1>Sign in</h1>
+    <h1>{% trans "Sign in" %}</h1>
   </div>
 
   <div class="row">
@@ -14,11 +14,13 @@
           {{ form.as_table }}
         </table>
         {% csrf_token %}
-        <input type="submit" class="btn btn-large btn-primary" value="Sign in" />
+        <input type="submit" class="btn btn-large btn-primary" value="{% trans 'Sign in' %}" />
         <input type="hidden" name="next" value="{{ next }}" />
       </form>
-      <p>Can't access your account? <a href="{% url auth_password_reset %}">Reset your password.</a></p>
-      <p>New to formhub? <a href="{% url registration_register %}">Create an account.</a></p>
+      {% url auth_password_reset as reset_url %}
+      <p>{% blocktrans %}Can't access your account? <a href="{{ reset_url }}">Reset your password.</a>{% endblocktrans %}</p>
+      {% url registration_register as registration_url %}
+      <p>{% blocktrans %}New to formhub? <a href="{{ registration_url }}">Create an account.</a>{% endblocktrans %}</p>
     </div>
   </div>
 </section>

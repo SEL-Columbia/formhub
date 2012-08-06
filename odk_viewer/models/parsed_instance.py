@@ -12,12 +12,12 @@ import json
 
 from utils.model_tools import queryset_iterator
 from odk_logger.models import Instance
-from common_tags import START_TIME, START, END_TIME, END, ID, UUID, ATTACHMENTS
+from common_tags import START_TIME, START, END_TIME, END, ID, UUID,\
+    ATTACHMENTS, GEOLOCATION, SUBMISSION_TIME, MONGO_STRFTIME
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
 key_whitelist = ['$or', '$and', '$exists', '$in', '$gt', '$gte', '$lt', '$lte']
-''
 
 class ParseError(Exception):
     pass
@@ -83,6 +83,8 @@ class ParsedInstance(models.Model):
         query = json.loads(query, object_hook=json_util.object_hook) if query else {}
         query = dict_for_mongo(query)
         query[cls.USERFORM_ID] = u'%s_%s' % (username, id_string)
+        #display only active elements
+        query.update({"_deleted_at": {"$exists": False}})
         # fields must be a string array i.e. '["name", "age"]'
         fields = json.loads(fields, object_hook=json_util.object_hook) if fields else []
         # TODO: current mongo (2.0.4 of this writing) cant mix including and excluding fields in a single query
@@ -102,10 +104,22 @@ class ParsedInstance(models.Model):
                 fields_to_select).skip(start).limit(limit)
 
     def to_dict_for_mongo(self):
-        d = dict_for_mongo(self.to_dict())
-        d[self.USERFORM_ID] = u'%s_%s' % (self.instance.user.username,
-                self.instance.xform.id_string)
-        return d
+        d = self.to_dict()
+        d.update(
+            {
+                UUID: self.instance.uuid,
+                ID: self.instance.id,
+                self.USERFORM_ID: u'%s_%s' % (self.instance.user.username,
+                                         self.instance.xform.id_string),
+                ATTACHMENTS: [a.media_file.name for a in\
+                              self.instance.attachments.all()],
+                self.STATUS: self.instance.status,
+                GEOLOCATION: [self.lat, self.lng],
+                SUBMISSION_TIME:
+                self.instance.date_created.strftime(MONGO_STRFTIME),
+            }
+        )
+        return dict_for_mongo(d)
 
     def update_mongo(self):
         d = self.to_dict_for_mongo()
@@ -114,15 +128,6 @@ class ParsedInstance(models.Model):
     def to_dict(self):
         if not hasattr(self, "_dict_cache"):
             self._dict_cache = self.instance.get_dict()
-            self._dict_cache.update(
-                {
-                    UUID: self.instance.uuid,
-                    ID: self.instance.id,
-                    ATTACHMENTS: [a.media_file.name for a in\
-                            self.instance.attachments.all()],
-                    self.STATUS: self.instance.status,
-                    }
-                )
         return self._dict_cache
 
     @classmethod
@@ -204,19 +209,17 @@ class ParsedInstance(models.Model):
         # insert into Mongo
         self.update_mongo()
 
+    #Update row in MongoDB
+    @classmethod
+    def edit_mongo(cls, query, data):
+        query = json.loads(query, object_hook=json_util.object_hook) if query else {}
+        query = dict_for_mongo(query)  
+        data = json.loads(data, object_hook=json_util.object_hook) if query else {}
+        data = dict_for_mongo(data)
+        xform_instances.update(query, data)
 
 def _remove_from_mongo(sender, **kwargs):
     instance_id = kwargs.get('instance').instance.id
     xform_instances.remove(instance_id)
 
 pre_delete.connect(_remove_from_mongo, sender=ParsedInstance)
-
-
-def _parse_instance(sender, **kwargs):
-    # When an instance is saved, first delete the parsed_instance
-    # associated with it.
-    instance = kwargs["instance"]
-    if instance.xform is not None:
-        pi, created = ParsedInstance.objects.get_or_create(instance=instance)
-
-post_save.connect(_parse_instance, sender=Instance)

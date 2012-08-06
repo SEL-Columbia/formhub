@@ -7,7 +7,73 @@ Formhub
 Installation
 ------------
 
-On Ubuntu 10.04. First, I set up a new virtual environment:
+Ubuntu 12.04
+^^^^^^^^^^^^
+
+Install system libraries and start services:
+
+    # apt-get update
+
+    # apt-get upgrade
+
+    # apt-get install default-jre gcc git mongodb python-dev python-virtualenv
+
+    # start mongodb
+
+Make directory structure and Clone formhub:
+
+    $ mkdir -p src/formhub-app
+
+    $ cd src/formhub-app
+
+    $ git clone git://github.com/modilabs/formhub.git
+
+Make virtual environment and install requirements:
+
+    $ virtualenv --no-site-packages project_env
+
+    $ source project_env/bin/activate
+
+    $ cd formhub
+
+(NB: there is a known bug that prevents numpy from installing correctly when in requirements.pip file)
+
+    $ pip install numpy
+
+    $ pip install -r requirements.pip
+
+(OPTIONAL) For MySQL, s3, ses:
+
+    # apt-get install libmysqlclient-dev mysql-server
+
+    $ pip install -r requirements-mysql.pip
+
+    $ pip install -r requirements-s3.pip
+
+    $ pip install -r requirements-ses.pip
+
+Create a database and start server:
+
+    create or update your local-settings.py file
+
+    $ python manage.py syncdb
+
+    $ python manage.py migrate
+
+    $ python manage.py runserver
+
+(OPTIONAL) Apache and system administration tools:
+
+    # apt-get install apache libapache2-mode-wsgi
+
+    # apt-get install htop monit
+
+    set up apache and monit
+
+Ubuntu 10.04
+^^^^^^^^^^^^
+
+First, I set up a new virtual environment:
 
     sudo apt-get install python-virtualenv
 
@@ -30,6 +96,8 @@ Second, I cloned the repo:
 Install the requirements:
 
     cd formhub
+
+    pip install numpy --use-mirrors
 
     pip install -r requirements.pip
 
@@ -78,6 +146,28 @@ To run the test for a specific method in a specific class in a specific app, e.g
 
     python manage.py test main.TestFormErrors.test_submission_deactivated
 
+Deploying
+---------
+
+To deploy you will need Fabric:
+
+    pip install fabric
+
+You will need the appopriate .pem file in order to deploy to AWS. You will need
+to edit fabfile.py if you want to customize the deployments.
+
+To deploy master to the production server:
+
+    fab deploy:prod
+
+To deploy master to the development server:
+
+    fab deploy:dev
+
+To deploy a specific branch to the development server:
+
+    fab deploy:dev,branch=[BRANCH NAME]
+
 Contributing
 ------------
 
@@ -99,3 +189,18 @@ Code Structure
 * main - This app is the glue that brings odk_logger and odk_viewer
   together.
 
+Localization
+------------
+
+To generate a locale from scratch (ex. Spanish)
+
+    django-admin.py makemessages -l es -e py,html,email,txt
+    django-admin.py makemessages -d djangojs -l es
+
+To update PO files
+
+    django-admin.py makemessages -a
+
+To compile MO files and update live translations
+
+    django-admin.py compilemessages

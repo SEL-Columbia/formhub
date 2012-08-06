@@ -1,6 +1,7 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% block title %}
-Update XForm {{xform.id_string}}
+{%  trans "Update XForm" %} {{xform.id_string}}
 {% endblock %}
 {% block content %}
 
@@ -14,7 +15,7 @@ Update XForm {{xform.id_string}}
 			<tr>
 				<td>
 					{% csrf_token %}
-					<input type="submit" value="Submit" />
+					<input type="submit" value="{% trans 'Submit' %}" />
 				</td>
 			</tr>
 		</tfoot>

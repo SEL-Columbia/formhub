@@ -1,33 +1,30 @@
 {% extends 'base.html' %}
 {% load humanize %}
 
+{% load i18n %}
+
 {% block content %}
     <br/>
-    <h1>Welcome to formhub! <small>&nbsp;The hub for your mobile data collection needs</small></h1>
-
-
+    <h1>{% trans "Welcome to formhub!" %}<small>&nbsp;{% trans "The hub for your mobile data collection needs" %}</small></h1>
 <div class="row">
   <div class="span5">
-<p>
-<em>
-formhub is a <strong>free</strong> hosted service that makes data collection <strong>simple</strong> and <strong> collaborative</strong></em>.
+<p><em>{% blocktrans %}formhub is a <strong>free</strong> hosted service that makes data collection <strong>simple</strong> and <strong>collaborative</strong>.{% endblocktrans %}</em></p>
+{% url registration_register as registration_register %}
+<p>{% blocktrans %}<strong>Simple.</strong>All you need to get started is an <a href="{{ registration_register }}">account</a> on formhub and the ability to author .xls files. Absolutely no technical setup required.{% endblocktrans %}</p>
+{% url syntax as syntax_url %}
+{% url forms_list as forms_url %}
+<p>{% blocktrans %}<strong>Collaborative.</strong> Share your data collection forms in <a href="{{ syntax_url }}">Excel</a>. <a href="{{ forms_url }}">Find</a>, grab and modify other <a href="{{ forms_url }}">peoples' forms</a> and quickly deploy it. Publish gathered data to share it with others via Excel, CSV, KML or an interactive map.{% endblocktrans %}
 </p>
 <p>
-  <strong>Simple.</strong> All you need to get started is an <a href="/accounts/register/">account</a> on formhub and the ability to author .xls files. Absolutely no technical setup required.
+<strong>{% trans "Mobile." %}</strong>
+  {% blocktrans %}formhub works seemlessly with <a href="http://www.opendatakit.org">ODK Collect</a> a robust and proven data collection platform for Android.{% endblocktrans %}  
 </p>
 <p>
-<strong>Collaborative.</strong> Share your data collection forms in <a href="/syntax">Excel</a>.  <a href="/forms">Find</a>, grab and modify other <a href='/forms/'>peoples' forms</a> and quickly deploy it. Publish gathered data to share it with others via Excel, CSV, KML or an interactive map.
+{% blocktrans %}For more info please read <a href="http://blog.formhub.org/2011/12/05/data-gatherers-of-the-world-unite/">here</a>.{% endblocktrans %}
 </p>
-<p>
-<strong>Mobile.</strong>
-  formhub works seemlessly with <a href="http://www.opendatakit.org">ODK Collect</a> a robust and proven data collection platform for Android.  
-</p>
-<p>
-For more info please read <a href="http://blog.formhub.org/2011/12/05/data-gatherers-of-the-world-unite/">here</a>.
-</p>
-<p><b>Not registered?</b></p>
+<p><b>{% trans "Not registered?" %}</b></p>
 <p style="font-size:larger">
- <a href="/accounts/register/" class="btn btn-primary">Create Account &raquo;</a>
+ <a href="/accounts/register/" class="btn btn-primary">{%  trans "Create Account" %} &raquo;</a>
 </p>
   </div>
  
@@ -48,13 +45,13 @@ For more info please read <a href="http://blog.formhub.org/2011/12/05/data-gathe
    </div>
    <div class="row" style="float:right">
      <div class="span3">
-       <h1><small>forms submitted</small></h1>
+       <h1><small>{%  trans "forms submitted" %}</small></h1>
      </div>
      <div class="span2">
-       <h1><small>shared forms</small></h1>
+       <h1><small>{% trans "shared forms" %}</small></h1>
      </div>
      <div class="span2">
-       <h1><small>formhubbers!</small></h1>
+       <h1><small>{% trans "formhubbers!" %}</small></h1>
      </div>
    </div>
  </div>

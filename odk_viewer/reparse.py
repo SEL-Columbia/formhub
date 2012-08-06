@@ -8,6 +8,7 @@ from surveyor_manager.models import Surveyor
 
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.utils.translation import ugettext as _
 
 import time, math
 
@@ -29,7 +30,7 @@ def reparse_all(*args, **kwargs):
     debug = kwargs.get('debug', False)
     
     if debug:
-        print "[Reparsing XForm Instances]\n"
+        print _("[Reparsing XForm Instances]\n")
         sim_reset = kwargs.get('reset', False)
         if sim_reset:
             print " --> %s" % reset_values.__doc__.strip()
@@ -48,7 +49,8 @@ def reparse_all(*args, **kwargs):
     
     if debug:
         cols, counts_2, end_time = get_counts()
-        print "That process took [%d ticks]" % math.floor(1000 * (end_time-start_time))
+        print (_("That process took [%(nb)d ticks]") 
+               % {'nb': math.floor(1000 * (end_time-start_time))})
         display_counts_as_table(cols, [counts_1, counts_2])
 
 

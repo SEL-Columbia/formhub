@@ -48,6 +48,7 @@ class XlsWriter(object):
             if key not in columns:
                 self.add_column(sheet_name, key)
         for j, column_name in enumerate(self._columns[sheet_name]):
+            # leaving this untranslated as I'm not sure it's in django context
             self._sheets[sheet_name].write(i, j, row.get(column_name, u"n/a"))
         self._current_index[sheet_name] += 1
 

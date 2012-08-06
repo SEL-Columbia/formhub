@@ -3,6 +3,7 @@ from main.views import edit
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
 from main.models import MetaData
+from odk_logger.views import delete_xform
 
 class TestFormEdit(MainTestCase):
 
@@ -110,3 +111,11 @@ class TestFormEdit(MainTestCase):
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).downloadable, False)
+
+    def test_delete_404(self):
+        bad_delete_url = reverse(delete_xform, kwargs={
+            'username': self.user.username,
+            'id_string': 'non_existent_id_string'
+        })
+        response = self.client.post(bad_delete_url)
+        self.assertEqual(response.status_code, 404)

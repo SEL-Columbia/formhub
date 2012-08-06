@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block content %}
 
@@ -19,7 +20,7 @@
                   "sPaginationType": "bootstrap",
                   "iDisplayLength": 25,
                   "bSort": true, 
-                  "oLanguage": {"sSearch": "Search:"},
+                  "oLanguage": {"sSearch": "{% trans 'Search:' %}"},
                   "oSearch": {"sSearch": ""},
 	          "aaSorting": [[ 1, "desc" ]]
           });
@@ -28,17 +29,14 @@
 
   <div class="page-header">
 <br>
-<h1>Submissions ({{stats.submission_count.total_submission_count}})</h1>
+<h1>{% blocktrans with nb_sub=stats.submission_count.total_submission_count %}Submissions ({{ nb_sub }}){% endblocktrans %}</h1>
   </div>
-
-
-
 
   <table id="stats-table" class="table table-bordered table-striped">
     <thead>
       <tr>
-        <th>User</th>
-        <th>Submissions</th>
+        <th>{% trans "User" %}</th>
+        <th>{% trans "Submissions" %}</th>
       </tr>
     </thead>
     <tbody>

@@ -4,11 +4,12 @@
 import os, glob
 from django.core.management.base import BaseCommand
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.utils.translation import ugettext_lazy
 from ... import models
 import utils.viewer_tools
 
 class Command(BaseCommand):
-    help = "Import a folder of ODK instances."
+    help = ugettext_lazy("Import a folder of ODK instances.")
 
     def handle(self, *args, **kwargs):
         path = args[0]

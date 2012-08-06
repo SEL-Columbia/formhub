@@ -1,0 +1,36 @@
+<?xml version='1.0' ?>
+<nested_repeats id="nested_repeats">
+    <kids>
+        <has_kids>1</has_kids>
+        <kids_details>
+            <kids_name>Hansel</kids_name>
+            <kids_age>2</kids_age>
+            <kids_immunization>
+                <immunization_info>Polio</immunization_info>
+            </kids_immunization>
+            <kids_immunization>
+                <immunization_info>Measles</immunization_info>
+            </kids_immunization>
+            <kids_immunization>
+                <immunization_info>Malaria</immunization_info>
+            </kids_immunization>
+        </kids_details>
+        <kids_details>
+            <kids_name>Gretel</kids_name>
+            <kids_age>1</kids_age>
+            <kids_immunization>
+                <immunization_info>TB</immunization_info>
+            </kids_immunization>
+            <kids_immunization>
+                <immunization_info>Rickets</immunization_info>
+            </kids_immunization>
+        </kids_details>
+        <nested_group>
+            <nested_name>The Witch</nested_name>
+            <nested_age>45</nested_age>
+        </nested_group>
+    </kids>
+    <address>1234</address>
+    <gps>-1.2627557 36.7926442 0.0 30.0</gps>
+    <web_browsers>ie safari</web_browsers>
+</nested_repeats>

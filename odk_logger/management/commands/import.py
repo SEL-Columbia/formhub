@@ -4,9 +4,11 @@
 import os, glob
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
+from django.utils.translation import ugettext_lazy, ugettext as _
+
 
 class Command(BaseCommand):
-    help = "Import ODK forms and instances."
+    help = ugettext_lazy("Import ODK forms and instances.")
 
     def handle(self, *args, **kwargs):
         path = args[0]

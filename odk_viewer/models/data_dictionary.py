@@ -1,16 +1,19 @@
-from django.db import models
-from django.contrib.auth.models import User
-from odk_logger.models import XForm
-from pyxform import SurveyElementBuilder
-from pyxform.section import RepeatingSection
-from pyxform.question import Question
-from pyxform.builder import create_survey_from_xls
-from common_tags import ID
-from odk_viewer.models import ParsedInstance
-import re
 import os
-from utils.model_tools import queryset_iterator
+import re
+
+from django.contrib.auth.models import User
+from django.db import models
+from pyxform import SurveyElementBuilder
+from pyxform.builder import create_survey_from_xls
+from pyxform.question import Question
+from pyxform.section import RepeatingSection
+
+from common_tags import ID
+from odk_logger.models import XForm
+from odk_viewer.models import ParsedInstance
 from utils.export_tools import question_types_to_exclude, DictOrganizer
+from utils.model_tools import queryset_iterator, set_uuid
+
 
 class ColumnRename(models.Model):
     xpath = models.CharField(max_length=255, unique=True)
@@ -36,16 +39,33 @@ def upload_to(instance, filename, username=None):
 
 class DataDictionary(XForm):
 
-    geodata_suffixes = [
+    GEODATA_SUFFIXES = [
         'latitude',
         'longitude',
-        'alt',
+        'altitude',
         'precision'
     ]
+
+    PREFIX_NAME_REGEX = re.compile(r'(?P<prefix>.+/)(?P<name>[^/]+)$')
 
     def __init__(self, *args, **kwargs):
         self.surveys_for_export = lambda d: d.surveys.all()
         super(DataDictionary, self).__init__(*args, **kwargs)
+
+    def _set_uuid_in_xml(self):
+        """
+        Add bind to automatically set UUID node in XML.
+        """
+        file_name, file_ext = os.path.splitext(self.file_name())
+        split_xml = self.uuid_regex.split(self.xml)
+        split_xml[self.uuid_node_location:self.uuid_node_location] =\
+            ['<formhub><uuid/></formhub>']
+        split_xml[self.uuid_bind_location:self.uuid_bind_location] = [
+            '\n      <bind nodeset="/', file_name,
+            '/formhub/uuid" type="string" calculate="\'',
+            self.uuid, '\'" />'
+        ]
+        self.xml = ''.join(split_xml)
 
     class Meta:
         app_label = "odk_viewer"
@@ -65,6 +85,8 @@ class DataDictionary(XForm):
             self.json = survey.to_json()
             self.xml = survey.to_xml()
             self._mark_start_time_boolean()
+            set_uuid(self)
+            self._set_uuid_in_xml()
         super(DataDictionary, self).save(*args, **kwargs)
 
     def file_name(self):
@@ -121,16 +143,33 @@ class DataDictionary(XForm):
             for child in survey_element.children:
                 result.append('/'.join([path, child.name]))
         elif survey_element.bind.get(u'type') == u'geopoint':
-            for suffix in self.geodata_suffixes:
-                result.append('_'.join([path, suffix]))
+            result += self.get_additional_geopoint_xpaths(path)
 
         return result
+
+    @classmethod
+    def get_additional_geopoint_xpaths(cls, xpath):
+        """
+        This will return a list of the additional fields that are
+        added per geopoint.  For example, given a field 'group/gps' it will
+        return 'group/_gps_(suffix)' for suffix in DataDictionary.GEODATA_SUFFIXES
+        """
+        match = cls.PREFIX_NAME_REGEX.match(xpath)
+        prefix = ''
+        name = ''
+        if match:
+            prefix = match.groupdict()['prefix']
+            name = match.groupdict()['name']
+        else:
+            name = xpath
+        # NOTE: these must be concatenated and not joined
+        return [prefix + '_' + name + '_' +  suffix for suffix in cls.GEODATA_SUFFIXES]
 
     def _additional_headers(self):
         return [u'_xform_id_string', u'_percentage_complete', u'_status',
                 u'_id', u'_attachments', u'_potential_duplicates']
 
-    def get_headers(self):
+    def get_headers(self, include_additional_headers=False):
         """
         Return a list of headers for a csv file.
         """
@@ -138,8 +177,10 @@ class DataDictionary(XForm):
             l = xpath.split('/')
             return '/'.join(l[2:])
 
-        return [shorten(xpath) for xpath in self.xpaths()] + \
-            self._additional_headers()
+        header_list = [shorten(xpath) for xpath in self.xpaths()]
+        if include_additional_headers:
+            header_list += self._additional_headers()
+        return header_list
 
     def get_keys(self):
         def remove_first_index(xpath):
@@ -263,3 +304,6 @@ class DataDictionary(XForm):
             self.has_start_time = True
         else:
             self.has_start_time = False
+
+    def get_survey_elements_of_type(self, element_type):
+        return [e for e in self.get_survey_elements() if e.type==element_type]

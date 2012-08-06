@@ -5,9 +5,10 @@ var map;
 var layersControl;
 // array of mapbox maps to use as base layers - the first one will be the default map
 var mapboxMaps = [
-    {'label': 'Mapbox Street', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-hgm23qjf.jsonp'},
+    {'label': 'Mapbox Streets', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-iuetkf9u.jsonp'},
     {'label': 'MapBox Streets Light', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-p543gvbh.jsonp'},
-    {'label': 'MapBox Streets Zenburn', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-bjhr55gf.jsonp'}
+    {'label': 'MapBox Streets Zenburn', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-bjhr55gf.jsonp'},
+    {'label': 'Natural Earth II', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-1c1r9n5g.jsonp'}
 ];
 var allowResetZoomLevel = true; // used to allow zooming when first loaded
 var popupOffset = new L.Point(0, -10);
@@ -24,6 +25,8 @@ var circleStyle = {
 // TODO: can we get the entire URL from mongo API
 var amazonUrlPrefix = "https://formhub.s3.amazonaws.com/";
 var markerLayerGroup = new L.LayerGroup();
+var markerLayerGroupActive = false;
+var hexbinLayerGroupActive = false;
 var hexbinLayerGroup = new L.LayerGroup();
 var hexbinData = null;
 var markerLayerLabel = "Marker Layer";
@@ -35,21 +38,47 @@ var mapBoxAdditAttribution = " Map data (c) OpenStreetMap contributors, CC-BY-SA
 
 // map filter vars
 var navContainerSelector = ".nav.pull-right";
-var legendParentSelector = ".leaflet-control-container";
+var leafletControlSelector = ".leaflet-control-container";
 var legendContainerId = "legend";
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
 var currentLanguageIdx = -1;
+var customMapBoxTileLayer;
+var legendsContainer;
 
 function initialize() {
     // Make a new Leaflet map in your container div
     map = new L.Map(mapId).setView(centerLatLng, defaultZoom);
+
+    map.on('layeradd', function(layerEvent){
+        if(layerEvent.layer == hexbinLayerGroup)
+        {
+            hexbinLayerAdded(layerEvent.layer);
+        }
+        else if(layerEvent.layer == markerLayerGroup)
+        {
+            markerLayerAdded(layerEvent.layer);
+        }
+    });
+
+    map.on('layerremove', function(layerEvent){
+        if(layerEvent.layer == hexbinLayerGroup)
+        {
+            hexbinLayerRemoved(layerEvent.layer);
+        }
+        else if(layerEvent.layer == markerLayerGroup)
+        {
+            markerLayerRemoved(layerEvent.layer);
+        }
+    });
+
     var overlays = {};
     overlays[markerLayerLabel] = markerLayerGroup;
     overlays[hexbinLayerLabel] = hexbinLayerGroup;
     layersControl = new L.Control.Layers({}, overlays);
     map.addControl(layersControl);
-    map.addLayer(markerLayerGroup); //show marker layer by default
+    //show marker layer by default
+    map.addLayer(markerLayerGroup);
 
     // add bing maps layer
     $.each(bingMapTypeLabels, function(type, label) {
@@ -57,22 +86,71 @@ function initialize() {
         layersControl.addBaseLayer(bingLayer, label);
     });
 
-    $.each(mapboxMaps, function(idx, mapData){
-        // Get metadata about the map from MapBox
-        wax.tilejson(mapData.url, function(tilejson) {
+    // add google sat layer
+    var ggl = new L.Google();
+    layersControl.addBaseLayer(ggl, "Google Satellite Map");
+
+    // Get metadata about the map from MapBox
+    var tileJSONAddFn = function(mapData, addToMap) { 
+        var innerFn = function(tilejson) {
             tilejson.attribution += mapBoxAdditAttribution;
-            var mapboxstreet = new wax.leaf.connector(tilejson);
-
-            layersControl.addBaseLayer(mapboxstreet, mapData.label);
-
-            // only add default layer to map
-            if(idx === 0)
-                map.addLayer(mapboxstreet);
-        });
+            var tileLayer = new wax.leaf.connector(tilejson);
+            
+            layersControl.addBaseLayer(tileLayer, mapData.label);
+            if(addToMap) {
+                map.addLayer(tileLayer);
+                // and radio box for this layer (last = just added)
+                $('input[name=leaflet-base-layers]:last').attr('checked',true); 
+            }
+        };
+        return innerFn;
+    }; 
+    if (customMapBoxTileLayer) {
+        mapboxMaps = _.union([customMapBoxTileLayer], mapboxMaps);
+    }
+    _.each(mapboxMaps, function(mapData, idx) {
+        wax.tilejson(mapData.url, tileJSONAddFn(mapData, !idx)); //ie, only add idx 0
     });
+
+    // create legend container
+    $(leafletControlSelector).append('<div class="legends-container"></div>');
+    legendsContainer = $($(leafletControlSelector).children('div.legends-container')[0]);
 
     // load form structure/questions
     formJSONMngr.loadFormJSON();
+}
+
+function hexbinLayerAdded(layer)
+{
+    var elm = $('#hex-legend');
+    hexbinLayerGroupActive = true;
+    if(elm.length > 0)
+        elm.show();
+    refreshHexOverLay(); 
+}
+
+function hexbinLayerRemoved(layer)
+{
+    var elm = $('#hex-legend');
+    hexbinLayerGroupActive = false;
+    if(elm.length > 0)
+        elm.hide();
+}
+
+function markerLayerAdded(layer)
+{
+    var elm = $('#legend');
+    markerLayerGroupActive = true;
+    if(elm.length > 0)
+        elm.show();
+}
+
+function markerLayerRemoved(layer)
+{
+    var elm = $('#legend');
+    markerLayerGroupActive = false;
+    if(elm.length > 0)
+        elm.hide();
 }
 
 // callback called after form's structure has been loaded from form json url
@@ -89,6 +167,7 @@ function loadFormJSONCallback()
 function loadResponseDataCallback()
 {
     formResponseMngr.callback = null;// initial callback is for setup, subsequent reloads must set desired callback
+    var dropdownLabel, dropdownLink, dropDownContainer, dropDownCaret, dropDownCaretLink, idx;
 
     // get geoJSON data to setup points - relies on questions having been parsed
     var geoJSON = formResponseMngr.getAsGeoJSON();
@@ -102,15 +181,14 @@ function loadResponseDataCallback()
         // add language selector
         if(formJSONMngr.supportedLanguages.length > 1)
         {
-            var dropdownLabel = _createElementAndSetAttrs('li');
-            var dropdownLink = _createElementAndSetAttrs('a', {"href": "#", "class":"language-label"}, "Language");
-            dropdownLabel.appendChild(dropdownLink);
-            navContainer.append(dropdownLabel);
+            $('<li />').html(
+                $('<a />', { text: "Language", href: '#'}).addClass("language-label")
+            ).appendTo(navContainer);
 
-            var dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown language-picker"});
-            var dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
+            dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown language-picker"});
+            dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
                 "data-toggle":"dropdown"});
-            var dropdownCaret = _createElementAndSetAttrs('b', {"class":"caret"});
+            dropdownCaret = _createElementAndSetAttrs('b', {"class":"caret"});
             dropdownCaretLink.appendChild(dropdownCaret);
             dropDownContainer.appendChild(dropdownCaretLink);
 
@@ -118,7 +196,6 @@ function loadResponseDataCallback()
 
             // create links for select one questions
             selectOneQuestions = formJSONMngr.getSelectOneQuestions();
-            var idx;
             for(idx in formJSONMngr.supportedLanguages)
             {
                 var language = getLanguageAt(idx);
@@ -133,28 +210,27 @@ function loadResponseDataCallback()
 
             // attach callbacks
             $('.language-picker a.language').click(function(){
-                var languageIdx = parseInt($(this).attr('data'));
+                var languageIdx = parseInt($(this).attr('data'), 10);
                 setLanguage(languageIdx);
             });
 
             // set default language
             setLanguage(0);
-        }
-        else
+        } else {
             currentLanguageIdx = 0;// needed for non-multilingual forms
+        }
 
         // check if we have select one questions
         if(formJSONMngr.getNumSelectOneQuestions() > 0)
         {
-            var dropdownLabel = _createElementAndSetAttrs('li');
-            var dropdownLink = _createElementAndSetAttrs('a', {"href": "#"}, "View By");
-            dropdownLabel.appendChild(dropdownLink);
-            navContainer.append(dropdownLabel);
+            $('<li />').html(
+                $('<a />', { text: "View By", href: '#'})
+            ).appendTo(navContainer);
 
-            var dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown"});
-            var dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
+            dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown"});
+            dropdownCaretLink = _createElementAndSetAttrs('a', {"href":"#", "class":"dropdown-toggle",
                 "data-toggle":"dropdown"});
-            var dropdownCaret = _createElementAndSetAttrs('b', {"class":"caret"});
+            dropdownCaret = _createElementAndSetAttrs('b', {"class":"caret"});
             dropdownCaretLink.appendChild(dropdownCaret);
             dropDownContainer.appendChild(dropdownCaretLink);
 
@@ -316,9 +392,9 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     });
 
     /// need this here instead of the constructor so that we can catch the featureparse event
-    refreshHexOverLay(); // TODO: add a toggle to do this only if hexOn = true;
     geoJsonLayer.addGeoJSON(geoJSON);
     markerLayerGroup.addLayer(geoJsonLayer);
+    _.defer(refreshHexOverLay); 
 
     if(questionName)
         rebuildLegend(questionName, questionColorMap);
@@ -332,49 +408,57 @@ function _rebuildMarkerLayer(geoJSON, questionName)
         map.fitBounds(latlngbounds);
     }
 }
-function _rebuildHexOverLay(hexdata, hex_feature_to_polygon_properties) {
-    hexbinLayerGroup.clearLayers();
-    var arr_to_latlng = function(arr) { return new L.LatLng(arr[0], arr[1]); };
-    var hex_feature_to_polygon_fn = function(el) {
-        return new L.Polygon(_(el.geometry.coordinates).map(arr_to_latlng),
-                                hex_feature_to_polygon_properties(el));
-    };
-    hexbinPolygons = _(hexdata.features).chain()
-                        .map(hex_feature_to_polygon_fn)
-                        .compact()
-                        .value();
-    _(hexbinPolygons).map(function(x) { hexbinLayerGroup.addLayer(x); });
+
+function _reStyleHexOverLay(newHexStylesByID) {
+    _(hexbinLayerGroup._layers).each(function(hexbinLPolygon) {
+        hexID = hexbinLPolygon.options.id;
+        if (newHexStylesByID[hexID])
+            hexbinLPolygon.setStyle(newHexStylesByID[hexID]);
+    });
 }
-//TODO: build new Polygons here, and in _rebuildHexOverLay, just reset the properties
+
 function constructHexBinOverLay() {
     hexbinData = formResponseMngr.getAsHexbinGeoJSON();
-    _rebuildHexOverLay(hexbinData, function() { return {}; });
+    var arr_to_latlng = function(arr) { return new L.LatLng(arr[0], arr[1]); };
+    var hex_feature_to_polygon_fn = function(el) {
+        return new L.Polygon(_(el.geometry.coordinates).map(arr_to_latlng), 
+                            {"id": el.properties.id});
+    };
+    _(hexbinData.features).each( function(x) {
+        hexbinLayerGroup.addLayer(hex_feature_to_polygon_fn(x)); 
+    });
 }
 
 function _recomputeHexColorsByRatio(questionName, responseNames) {
+    var newHexStyles = {};
     if (_(responseNames).contains(notSpecifiedCaption)) 
         responseNames.push(undefined); // hack? if notSpeciedCaption is in repsonseNames, then need to
         // count when instance.response[questionName] doesn't exist, and is therefore ``undefined''
-    var hex_feature_to_polygon_properties = function(el) {
-        // TODO: remove rawdata from properties, go through formJSONManager or somesuch instead
-        var numerator = _.reduce(el.properties.rawdata, function(numer, instance) {
-                            return numer + (_.contains(responseNames, instance.response[questionName]) ? 1 : 0);
-                        }, 0.0);
-        var denominator = el.properties.rawdata.length;
-        var color = getProportionalColor(numerator / denominator, "greens");
-        return { fillColor: color, fillOpacity: 0.9, color: 'grey', weight: 1 };
-                   
-    };
-    _rebuildHexOverLay(hexbinData, hex_feature_to_polygon_properties);
+    
+    var hexAndCountArrayNum = formResponseMngr.dvQuery({dims: ['hexID'], vals:[dv.count()], where:
+        function(table, row) { return _.contains(responseNames, table.get(questionName, row)); }});
+    var hexAndCountArrayDenom = formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]});      
+
+    _(hexAndCountArrayDenom[0]).each( function(hexID, idx) {
+        // note both are dense queries on datavore, the idx's match exactly
+        var ratio = hexAndCountArrayNum[1][idx] / hexAndCountArrayDenom[1][idx];
+        newHexStyles[hexID] = {  fillColor: colors.getProportional(ratio, "Set2"), fillOpacity: 0.9, color:'grey', weight: 1 };
+    });
+    _reStyleHexOverLay(newHexStyles);
+    _rebuildHexLegend('proportion', questionName, responseNames);
 }
 
 function _hexOverLayByCount()
 {
-    var hex_feature_to_polygon_properties = function(el) {
-        var color = getProportionalColor(el.properties.count / (el.properties.countMax * 1.2));
-        return {fillColor: color, fillOpacity: 0.9, color:'grey', weight: 1};
-    };
-    _rebuildHexOverLay(hexbinData, hex_feature_to_polygon_properties);
+    var newHexStyles = {};
+    var hexAndCountArray = formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]});      
+    var totalCount = _.max(hexAndCountArray[1]);
+    _(hexAndCountArray[0]).each( function(hexID, idx) {
+        var color = colors.getProportional(hexAndCountArray[1][idx] / totalCount); 
+        newHexStyles[hexID] = {fillColor: color, fillOpacity: 0.9, color:'grey', weight: 1};
+    }); 
+    _reStyleHexOverLay(newHexStyles);
+    _rebuildHexLegend('count');
 }
 
 function refreshHexOverLay() { // refresh hex overlay, in any map state
@@ -414,8 +498,8 @@ function JSONSurveyToHTML(data)
         for(idx in data._attachments)
         {
             var attachmentUrl = data._attachments[idx];
-            mediaContainer += '<li><a href="#">';
-            var imgSrc = amazonUrlPrefix + attachmentUrl;
+            var imgSrc = attachmentsBaseUrl + '?media_file=' + encodeURIComponent(attachmentUrl);
+            mediaContainer += '<li><a href="'+imgSrc+'" target="_blank">';
             var imgTag = _createElementAndSetAttrs('img', {"class":"thumbnail", "width":"210", "src": imgSrc});
             dummyContainer = _createElementAndSetAttrs('div', {});
             dummyContainer.appendChild(imgTag);
@@ -441,9 +525,9 @@ function JSONSurveyToHTML(data)
                 var style = "";
                 if(idx != currentLanguageIdx)
                 {
-                    style = "display: none"
+                    style = "display: none";
                 }
-                var span = _createElementAndSetAttrs('span', {"class": ("language language-" + idx), "style": style}, formJSONMngr.getMultilingualLabel(question, language));
+                span = _createElementAndSetAttrs('span', {"class": ("language language-" + idx), "style": style}, formJSONMngr.getMultilingualLabel(question, language));
                 td.appendChild(span);
             }
 
@@ -464,81 +548,114 @@ function getLanguageAt(idx)
     return language = formJSONMngr.supportedLanguages[idx];
 }
 
+function _rebuildHexLegend(countOrProportion, questionName, responseNames)
+{
+    var legendTemplate = 
+        '<div id="hex-legend" style="display:block">\n' +
+        '  <h4><%= title %> </h4>\n' +
+        '  <div class="scale">\n' +
+        '  <ul class="labels">\n' +
+        '<% _.each(hexes, function(hex) { %>' +
+        '    <li> <span style="background-color: <%= hex.color %>" />' +
+        '         <%= hex.text %> </li>\n<% }); %>' +
+        '  </div>\n  </ul>\n<div style="clear:both"></div>\n</div>';
+    var proportionString = 'Proportion of surveys with response(s): ' +
+            (responseNames && (responseNames.length == 1 ? responseNames[0] :
+            _.reduce(responseNames, 
+                     function(a,b) { return (a && a + ", or ") + b; }, '')));
+    var maxHexCount = _.max(formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]})[1]);
+    var interval = function(scheme) { 
+        var len = colors.getNumProportional(scheme);
+        return _.map(_.range(1,len+1), function (v) { return v / len });
+    };
+    var templateFiller = {
+        count: { title : 'Number of submissions',
+            hexes : _.map(interval("Set1"), function (i) {
+                      return  {color: colors.getProportional(i),
+                               text: '<' + Math.ceil(i * maxHexCount)}; })
+        },
+        proportion: { title : proportionString,
+            hexes : _.map(interval("Set2"), function (i) {
+                      return {color: colors.getProportional(i, "Set2"),
+                              text: '<' + Math.ceil(i * 100) + '%'}; })
+        }
+    };
+    $('#hex-legend').remove();
+    $(_.template(legendTemplate, templateFiller[countOrProportion]))
+            .appendTo(legendsContainer);
+    if(!hexbinLayerGroupActive) $('#hex-legend').hide();
+}
+
 function rebuildLegend(questionName, questionColorMap)
 {
-    var response;
-    // TODO: consider creating container once and keeping a variable reference
+    var i, response, spanAttrs, language;
     var question = formJSONMngr.getQuestionByName(questionName);
     var choices = formJSONMngr.getChoices(question);
+    var legendElement, legendTitle, legendUl;
     formResponseMngr._currentSelectOneQuestionName = questionName; //TODO: this should be done somewhere else?
 
-    // TODO: consider creating container once and keeping a reference
-    // try find existing legend and destroy
-    var legendContainer = $(("#"+legendContainerId));
-    if(legendContainer.length > 0)
-        legendContainer.empty();
-    else
-    {
-        var container = _createElementAndSetAttrs('div', {"id":legendContainerId});
-        var legendParent = $(legendParentSelector);
-        legendParent.prepend(container);
-        legendContainer = $(container);
-    }
+    $('#legend').remove();
 
-    legendContainer.attr("style", "diplay:block");
-    var legendTitle = _createElementAndSetAttrs('h3', {});
-    var i;
+    legendElement = $('<div></div>').attr('id', 'legend');
+    legendTitle = $('<h3></h3>');
+
     for(i=0;i<formJSONMngr.supportedLanguages.length;i++)
     {
-        var language = getLanguageAt(i);
-        var spanAttrs = {"class":("language language-" + i)};
+        var titleSpan;
+
+        language = getLanguageAt(i);
+        titleSpan = $('<span></span>').addClass('language').addClass('language-' + i)
+            .html(formJSONMngr.getMultilingualLabel(question, language));
         if(i != currentLanguageIdx)
-            spanAttrs["style"] = "display:none;";
-        var questionLabel = formJSONMngr.getMultilingualLabel(question, language);
-        var titleSpan = _createElementAndSetAttrs('span', spanAttrs, questionLabel);
-        legendTitle.appendChild(titleSpan);
+            titleSpan.css('display', 'none');
+        legendTitle.append(titleSpan);
     }
-    var legendUl = _createElementAndSetAttrs('ul', {"class":"nav nav-pills nav-stacked"});
-    legendContainer.append(legendTitle);
-    legendContainer.append(legendUl);
+    legendElement.append(legendTitle);
+
+    legendUl = $('<ul></ul>').addClass('nav nav-pills nav-stacked');
+    legendElement.append(legendUl);
+
     for(response in questionColorMap)
     {
         var color = questionColorMap[response];
-        var responseLi = _createElementAndSetAttrs('li');
+        var responseLi = $('<li></li>');
         var numResponses = question.responseCounts[response];
+        
         // create the anchor
-        var anchorClass = 'legend-label';
+        var legendAnchor = $('<a></a>').addClass('legend-label').attr('href', 'javascript:;').attr('rel',response);
         if(formResponseMngr._select_one_filters.indexOf(response) > -1)
-            anchorClass += " active";
+            legendAnchor.addClass('active');
         else if(numResponses > 0)
-            anchorClass += " normal";
+            legendAnchor.addClass('normal');
         else
-            anchorClass += " inactive";
-        var legendAnchor = _createElementAndSetAttrs('a', {'class':anchorClass, 'href':'javascript:;', 'rel':response});
+            legendAnchor.addClass('inactive');
 
-        var legendIcon = _createElementAndSetAttrs('span', {"class": "legend-bullet", "style": "background-color: " + color});
-        legendAnchor.appendChild(legendIcon);
+        var legendIcon = $('<span></span>').addClass('legend-bullet').css('background-color', color);
+        legendAnchor.append(legendIcon);
 
-        var responseCountSpan = _createElementAndSetAttrs('span', {'class':'legend-response-count'}, numResponses.toString());
-        legendAnchor.appendChild(responseCountSpan);
+        var responseCountSpan = $('<span></span>').addClass('legend-response-count').html(numResponses.toString());
+        legendAnchor.append(responseCountSpan);
+
         // add a language span for each language
         for(i=0;i<formJSONMngr.supportedLanguages.length;i++)
         {
             var itemLabel = response;
-            var language = getLanguageAt(i);
+            language = getLanguageAt(i);
             // check if the choices contain this response before we try to get the reponse's label
             if(choices.hasOwnProperty(response))
                 itemLabel = formJSONMngr.getMultilingualLabel(choices[response], language);
-            var spanAttrs = {"class":("item-label language language-" + i)};
+            var responseText = $('<span></span>').addClass(('item-label language language-' + i)).html(itemLabel);
             if(i != currentLanguageIdx)
-                spanAttrs["style"] = "display:none";
-            var responseText = _createElementAndSetAttrs('span', spanAttrs, itemLabel);
-            legendAnchor.appendChild(responseText);
+                responseText.css('display', 'none');
+            legendAnchor.append(responseText);
         }
 
-        responseLi.appendChild(legendAnchor);
-        legendUl.appendChild(responseLi);
+        responseLi.append(legendAnchor);
+        legendUl.append(responseLi);
     }
+
+    // add as the first element always
+    legendsContainer.prepend(legendElement);
 
     // bind legend click event
     $('a.legend-label').on('click', function(){
@@ -552,41 +669,33 @@ function rebuildLegend(questionName, questionColorMap)
         // reload with new params
         formResponseMngr.callback = filterSelectOneCallback;
         fields = getBootstrapFields();
-        formResponseMngr.loadResponseData({}, 0, null, fields)
-        formResponseMngr.loadResponseData({});
+        formResponseMngr.loadResponseData({}, 0, null, fields);
         refreshHexOverLay();
     });
 }
 
 /**
  * Get fields we deem nesseceary to display map/legend
+ * TODO: cache bootstrap fields
  */
 function getBootstrapFields()
 {
     // we only want to load gps and select one data to begin with
-    fields = [];
+    var fields = ['_id', constants.GEOLOCATION];
+    var idx, question;
+    if(!constants) throw "ERROR: constants not found; please include main/static/js/formManagers.js"; 
     for(idx in formJSONMngr.selectOneQuestions)
     {
-        var question = formJSONMngr.selectOneQuestions[idx];
-        fields.push(question["name"]);
+        question = formJSONMngr.selectOneQuestions[idx];
+        fields.push(question[constants.NAME]);
     }
 
-    for(idx in formJSONMngr.geopointQuestions)
-    {
-        var question = formJSONMngr.geopointQuestions[idx];
-        fields.push(question["name"]);
-    }
     return fields;
 }
 
 function clearLegend()
 {
-    var legendContainer = $(("#"+legendContainerId));
-    if(legendContainer.length > 0)
-    {
-        legendContainer.empty();
-        legendContainer.attr("style", "display:none");
-    }
+    $('#legend').remove();
 }
 
 function filterSelectOneCallback()
@@ -620,7 +729,7 @@ function _createSelectOneLi(question)
         var questionLabel = formJSONMngr.getMultilingualLabel(question, language);
         var spanAttrs = {"class":("language language-" + i)};
         if(i != currentLanguageIdx)
-            spanAttrs["style"] = "display:none";
+            spanAttrs.style = "display:none";
         var languageSpan = _createElementAndSetAttrs("span", spanAttrs, questionLabel);
         questionLink.appendChild(languageSpan);
     }
@@ -666,24 +775,30 @@ function get_random_color(step, numOfSteps) {
     return (c);
 }
 
-function select_from_array(array, zero_to_one_inclusive) {
-    var epsilon = 0.00001;
-    return array[Math.floor(zero_to_one_inclusive * (array.length - epsilon))];
-
-}
-function getProportionalColor(zero_to_one, colorscheme) {
-    // http://colorbrewer2.org/index.php?type=sequential&scheme=Purples&n=9 -- with first white taken out
-    var proportionalColorSchemes = {"purples": ["#EFEDF5", "#DADAEB", "#BCBDDC", "#9E9AC8", "#807DBA", 
-                                                "#6A51A3", "#54278F", "#3F007D"],
-                                    "greens": ["#DEEBF7", "#C6DBEF", "#9ECAE1", "#6BAED6", "#4292C6", 
-                                                "#2171B5", "#08519C", "#08306B"]};
-    if (!colorscheme) colorscheme = "purples";
-    return select_from_array(proportionalColorSchemes[colorscheme], zero_to_one);
-}
-
-function getDichromaticColor(zero_to_one) {
-    // http://colorbrewer2.org/index.php?type=diverging&scheme=RdBu&n=11
-    var diverging = ["#67001F", "#B2182B", "#D6604D", "#F4A582", "#FDDBC7", "#F7F7F7", 
-                     "#D1E5F0", "#92C5DE", "#4393C3", "#2166AC", "#053061"];
-    return select_from_array(diverging, zero_to_one);
-}
+// COLORS MODULE
+var colors = (function() {
+    var colors = {}; 
+    var colorschemes = {proportional: {
+    // http://colorbrewer2.org/index.php?type=sequential
+        "Set1": ["#EFEDF5", "#DADAEB", "#BCBDDC", "#9E9AC8", "#807DBA", "#6A51A3", "#54278F", "#3F007D"], 
+        "Set2": ["#DEEBF7", "#C6DBEF", "#9ECAE1", "#6BAED6", "#4292C6", "#2171B5", "#08519C", "#08306B"]
+    }};
+    var defaultColorScheme = "Set1";
+    function select_from_colors(type, colorscheme, zero_to_one_inclusive) {
+        var epsilon = 0.00001;
+        colorscheme = colorscheme || defaultColorScheme;
+        var colorsArr = colorschemes[type][colorscheme];
+        return colorsArr[Math.floor(zero_to_one_inclusive * (colorsArr.length - epsilon))];
+    }
+   
+    // METHODS FOR EXPORT 
+    colors.getNumProportional = function(colorscheme) {
+        colorscheme = colorscheme || defaultColorScheme;
+        return colorschemes.proportional[colorscheme].length;
+    };
+    colors.getProportional = function(zero_to_one, colorscheme) {
+        return select_from_colors('proportional', colorscheme, zero_to_one);
+    };
+    
+    return colors; 
+}());
