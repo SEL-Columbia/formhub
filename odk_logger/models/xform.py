@@ -58,7 +58,7 @@ class XForm(models.Model):
         verbose_name_plural = ugettext_lazy("XForms")
         ordering = ("id_string",)
         permissions = (
-            ("view_xform", ugettext_lazy("Can view associated data")),
+            ("view_xform", _("Can view associated data")),
         )
 
     def file_name(self):
