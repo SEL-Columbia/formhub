@@ -42,8 +42,8 @@ var mongoAPIUrl = "{{ mongo_api_url }}";
 var clientSideProcessingThreshold = 250; // If responses exceed this, we sort/search on server side
 var formJSONMngr = new FormJSONManager(formJSONUrl, loadFormJSONCallback);
 var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCallback);
-var instrcutionTpl = "Your survey has <strong>{numquestions}</strong> question(s) and <strong>{numsubmissions}</strong> submission(s). Please click on Display Fields above and select the questions you want to view responses for."
-var thresholdLimitMsgTpl = "NOTE: This is a beta feature and your survey contains more than <strong>{threshold}</strong> responses, search and sort features will not work.";
+var instrcutionTpl = "{% trans 'Your survey has <strong>{numquestions}</strong> question(s) and <strong>{numsubmissions}</strong> submission(s). Please click on Display Fields above and select the questions you want to view responses for.' %}"
+var thresholdLimitMsgTpl = "{% trans 'NOTE: This is a beta feature and your survey contains more than <strong>{threshold}</strong> responses, search and sort features will not work.' %}";
 
 $(document).ready(function(){
     // prevent dropdown from closing after selection
@@ -112,7 +112,7 @@ function loadResponseDataCallback()
                         [25, 50, 100, clientSideProcessingThreshold]],
                     "sPaginationType": "bootstrap",
                     "oLanguage": {
-                        "sLengthMenu": "_MENU_ records per page"
+                        "sLengthMenu": "{% trans '_MENU_ records per page' %}"
                     },
                     "bDeferRender": true, // defer the creation of the table elements for each row until they are needed for a draw
                     "bScrollAutoCss": true,

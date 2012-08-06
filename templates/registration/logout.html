@@ -1,13 +1,14 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block content %}
 <section id="logout">
   <div class="page-header">
-    <h1>Successful Logout</h1>
+    <h1>{% trans "Successful Logout" %}</h1>
   </div>
 
   <p>
-    Thank you for using formhub, please come again!
+    {% trans "Thank you for using formhub, please come again!" %}
   </p>
 </section>
 {% endblock %}

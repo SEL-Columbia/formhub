@@ -28,7 +28,7 @@
 
   <div class="page-header">
 <br>
-    <h1>{% trans "formhubbers" %} <small>({{users.count|intcomma}})</small></h1>
+    <h1>{% blocktrans count nb_users=users.count|intcomma %}formhubber <small>({{ nb_users }})</small>{% plural %}formhubbers <small>({{ nb_users }})</small>{% endblocktrans %}</h1>
   </div>
   <table id="people-table" class="table table-bordered table-striped">
     <thead>
@@ -43,7 +43,8 @@
     <tbody>
       {% for user in users %}
       <tr>
-        <td><img height='20' width='20' src="{{user.profile.gravatar}}"/>&nbsp; <a href="/{{user.username}}"/>{{ user.username }}</a></td>
+        {% url user_profile user.username as profile_url %}
+        <td><img height='20' width='20' src="{{user.profile.gravatar}}"/>&nbsp; <a href="{{profile_url}}"/>{{ user.username }}</a></td>
         <td>{{ user.profile.name }}</td>
         <td>{{ user.profile.organization }}</td>
         <td>{% if user.profile.city %}{{ user.profile.city }},{% endif %} {% if user.profile.country %}{{user.profile.country}}{% endif %}</td>

@@ -5,6 +5,7 @@ import tempfile
 import zipfile
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.utils.translation import ugettext as _
 from sqlalchemy import create_engine, MetaData, Table
 
 from utils.logger_tools import create_instance
@@ -45,7 +46,7 @@ def django_file(path, field_name, content_type):
 def import_instance(path_to_instance_folder, status, user):
     xml_files = glob.glob( os.path.join(path_to_instance_folder, "*.xml") )
     if len(xml_files)<1: return
-    if len(xml_files)>1: raise Exception("Too many XML files.")
+    if len(xml_files)>1: raise Exception(_("Too many XML files."))
     xml_file = django_file(xml_files[0],
                            field_name="xml_file",
                            content_type="text/xml")

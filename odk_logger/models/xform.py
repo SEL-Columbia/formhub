@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.query import QuerySet
 from django.db.models.signals import post_save
+from django.utils.translation import ugettext_lazy, ugettext as _
 
 from odk_logger.xform_instance_parser import XLSFormError
 from utils.stathat_api import stathat_count
@@ -35,7 +36,7 @@ class XForm(models.Model):
 
     # the following fields are filled in automatically
     id_string = models.SlugField(
-        editable=False, verbose_name="ID"
+        editable=False, verbose_name=ugettext_lazy("ID")
     )
     title = models.CharField(editable=False, max_length=64)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -53,11 +54,11 @@ class XForm(models.Model):
     class Meta:
         app_label = 'odk_logger'
         unique_together = (("user", "id_string"),)
-        verbose_name = "XForm"
-        verbose_name_plural = "XForms"
+        verbose_name = ugettext_lazy("XForm")
+        verbose_name_plural = ugettext_lazy("XForms")
         ordering = ("id_string",)
         permissions = (
-            ("view_xform", "Can view associated data"),
+            ("view_xform", _("Can view associated data")),
         )
 
     def file_name(self):
@@ -79,14 +80,14 @@ class XForm(models.Model):
     def _set_id_string(self):
         matches = self.instance_id_regex.findall(self.xml)
         if len(matches) != 1:
-            raise XLSFormError("There should be a single id string.", text)
+            raise XLSFormError(_("There should be a single id string."))
         self.id_string = matches[0]
 
     def _set_title(self):
         text = re.sub(r"\s+", " ", self.xml)
         matches = re.findall(r"<h:title>([^<]+)</h:title>", text)
         if len(matches) != 1:
-            raise XLSFormError("There should be a single title.", matches)
+            raise XLSFormError(_("There should be a single title."), matches)
         self.title = u"" if not matches else matches[0]
 
     def update(self, *args, **kwargs):
@@ -97,8 +98,8 @@ class XForm(models.Model):
         self._set_id_string()
         if getattr(settings, 'STRICT', True) and \
                 not re.search(r"^[\w-]+$", self.id_string):
-            raise XLSFormError('In strict mode, the XForm ID must be a vali'
-                               'd slug and contain no spaces.')
+            raise XLSFormError(_(u'In strict mode, the XForm ID must be a '
+                               'valid slug and contain no spaces.'))
         super(XForm, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -106,7 +107,7 @@ class XForm(models.Model):
 
     def submission_count(self):
         return self.surveys.count()
-    submission_count.short_description = "Submission Count"
+    submission_count.short_description = ugettext_lazy("Submission Count")
 
     def time_of_last_submission(self):
         if self.submission_count() > 0:
