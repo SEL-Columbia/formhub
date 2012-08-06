@@ -6,7 +6,7 @@
 
 <section id="shared-forms">
   <div class="page-header">
-    <h1>{% trans "Form Gallery" %}<small>{% trans "Shared Forms" %}</small></h1>
+    <h1>{% blocktrans %}Form Gallery <small>Shared Forms</small>{% endblocktrans %}</h1>
   </div>
     <div id="mfeedback">&nbsp;</div>
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
@@ -63,11 +63,11 @@
         <td>{{ data_dictionary.description }}</td>
         <td>
           {% if data_dictionary.xls %}
-            <a href="{% url download_xlsform data_dictionary.user.username data_dictionary.id_string %}"><button class="btn btn-small btn-success">Excel</button></a>
+            <a href="{% url download_xlsform data_dictionary.user.username data_dictionary.id_string %}"><button class="btn btn-small btn-success">{% trans "Excel" %}</button></a>
             {% if not data_dictionary.id_string in cloned %}
                 {% if loggedin_user and data_dictionary.xls|length > 0  and loggedin_user.username != data_dictionary.user.username %}
                     <a href="" data-url="{% url main.views.clone_xlsform data_dictionary.user.username %}" 
-                    data-username="{{ data_dictionary.user.username }}" data-id="{{ data_dictionary.id_string }}" class="clonexls btn small" onclick="$(this).hide()">Clone</a>
+                    data-username="{{ data_dictionary.user.username }}" data-id="{{ data_dictionary.id_string }}" class="clonexls btn small" onclick="$(this).hide()">{% trans "Clone" %}</a>
                 {% endif %}
             {% endif %}
           {% endif %}

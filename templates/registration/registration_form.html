@@ -1,16 +1,17 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block content %}
 <section id="register">
   <div class="page-header">
-    <h1>Register</h1>
+    <h1>{% trans "Register" %}</h1>
   </div>
 
   <div class="row">
     <div class="span8">
       <form class="well" method="post" action=".">
         {% csrf_token %}
-        <p>Fields marked wth an asterisk (*) are required.</p>
+        <p>{% trans "Fields marked wth an asterisk (*) are required." %}</p>
         <table>
         {% for field in form %}
             <tr>
@@ -25,8 +26,8 @@
             </tr>
         {% endfor %}
         </table>
-	<p>By clicking the Register button, you acknowledge that this is beta software; we make no guarantees about the reliability or continuity of our service. We reserve the right to pause or terminate your service, or delete your account and data, at any time without notice. We will not be liable for any losses, either direct or indirect, that such service interruption or data loss may cause you. Use the service at your own risk.</p>
-        <input type="submit" class="btn large btn-primary" value="Register" />
+	<p>{% blocktrans %}By clicking the Register button, you acknowledge that this is beta software; we make no guarantees about the reliability or continuity of our service. We reserve the right to pause or terminate your service, or delete your account and data, at any time without notice. We will not be liable for any losses, either direct or indirect, that such service interruption or data loss may cause you. Use the service at your own risk.{% endblocktrans %}</p>
+        <input type="submit" class="btn large btn-primary" value="{% trans 'Register' %}" />
       </form>
     </div>
   </div>

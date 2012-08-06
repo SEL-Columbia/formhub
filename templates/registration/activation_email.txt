@@ -1,6 +1,9 @@
-You have registered on {{ site.name }}. To activate your account
+{% load i18n %}
+{% url registration_activate activation_key as register_url %}
+{% blocktrans with site_name=site.name site_domain=site.domain expiration_days=expiration_days expiration_days_p=expiration_days|pluralize %}You have registered on {{ site_name }}. To activate your account
 please click on the link below:
 
-http://{{ site.domain }}{% url registration_activate activation_key %}
+http://{{ site_domain }}{{ register_url }}
 
-The link above is valid for {{ expiration_days }} day{{ expiration_days|pluralize }}.
+The link above is valid for {{ expiration_days }} day{{ expiration_days_p }}.
+{% endblocktrans %}
