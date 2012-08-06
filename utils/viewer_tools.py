@@ -6,6 +6,7 @@ from django.conf import settings
 from django.core.files.storage import get_storage_class
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.mail import mail_admins
+from django.utils.translation import ugettext as _
 
 import common_tags as tag
 
@@ -49,7 +50,7 @@ def parse_xform_instance(xml_str):
     # THIS IS OKAY FOR OUR USE CASE, BUT OTHER USERS SHOULD BEWARE.
     survey_data = dict(_path_value_pairs(root_node))
     assert len(list(_all_attributes(root_node)))==1, \
-        u"There should be exactly one attribute in this document."
+        _(u"There should be exactly one attribute in this document.")
     survey_data.update({
             tag.XFORM_ID_STRING : root_node.getAttribute(u"id"),
             tag.INSTANCE_DOC_NAME : root_node.nodeName,
@@ -100,7 +101,7 @@ def _all_attributes(node):
 class XFormParser(object):
 
     def __init__(self, xml):
-        assert type(xml)==str or type(xml)==unicode, u"xml must be a string"
+        assert type(xml)==str or type(xml)==unicode, _(u"xml must be a string")
         self.doc = minidom.parseString(xml)
         self.root_node = self.doc.documentElement
 
@@ -121,7 +122,7 @@ class XFormParser(object):
     def get_variable_dictionary(self):
         d = {}
         for path, attributes in self.get_variable_list():
-            assert path not in d, u"Paths should be unique."
+            assert path not in d, _(u"Paths should be unique.")
             d[path] = attributes
         return d
 
@@ -155,7 +156,7 @@ class XFormParser(object):
 
     def get_title(self):
         title = self.follow(u"h:head/h:title")
-        assert len(title.childNodes)==1, u"There should be a single title"
+        assert len(title.childNodes)==1, _(u"There should be a single title")
         return title.childNodes[0].nodeValue
 
     supported_controls = ["input", "select1", "select", "upload"]
@@ -176,7 +177,8 @@ class XFormParser(object):
 def report_exception(subject, info, exc_info=None):
     if exc_info:
         cls, err = exc_info[:2]
-        info += u"Exception in request: %s: %s" % (cls.__name__, err)
+        info += _(u"Exception in request: %(class)s: %(error)s") \
+                % {'class': cls.__name__, 'error': err}
         info += u"".join(traceback.format_exception(*exc_info))
 
     if settings.DEBUG:

@@ -4,6 +4,7 @@
 import os, glob
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
+from django.utils.translation import ugettext_lazy
 
 from settings import PROJECT_ROOT
 import os
@@ -13,7 +14,7 @@ from django.core.serializers import serialize
 from odk_logger.models import XForm, Instance, SurveyType
 
 class Command(BaseCommand):
-    help = "Export ODK forms and instances to JSON."
+    help = ugettext_lazy("Export ODK forms and instances to JSON.")
 
     def handle(self, *args, **kwargs):
         fixtures_dir = os.path.join(PROJECT_ROOT, "json_xform_fixtures")

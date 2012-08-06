@@ -13,7 +13,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
 from django.utils import simplejson
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_GET, require_POST
 from google_doc import GoogleDoc
 from guardian.shortcuts import assign, remove_perm, get_users_with_perms

@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response
 from django.template.base import Template
 from django.template.context import RequestContext, Context
 from django.utils import simplejson
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from odk_logger.models.xform import XForm
 from restservice.forms import RestServiceForm
@@ -32,8 +32,8 @@ def add_service(request, username, id_string):
                 context.status = 'fail'
             else:
                 context.status = 'success'
-                context.message = \
-                    _(u"Successfully added service %s.") % service_name
+                context.message = (_(u"Successfully added service %(name)s.") 
+                                   % {'name': service_name})
                 context.restservice = rs
         else:
             context.status = 'fail'
