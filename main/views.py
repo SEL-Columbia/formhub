@@ -157,12 +157,16 @@ def profile_settings(request, username):
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=profile)
         if form.is_valid():
+            # get user
+            # user.email = cleaned_email
+            form.instance.user.email = form.cleaned_data['email']
+            form.instance.user.save()
             form.save()
             return HttpResponseRedirect(reverse(
                 public_profile, kwargs={'username': request.user.username}
             ))
     else:
-        form = UserProfileForm(instance=profile)
+        form = UserProfileForm(instance=profile,initial= {"email": content_user.email})
     return render_to_response("settings.html", {'form': form},
                               context_instance=context)
 
