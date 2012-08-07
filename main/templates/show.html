@@ -13,7 +13,7 @@
 	<h3>
 	  <div style='vertical-align: middle'>      
 	  <img src='{{ content_user.profile.gravatar }}' alt='' width='20' height='20' /> 
-	  <a href="/{{content_user.username}}/">{{ content_user.username }}</a> (Owner) /
+	  <a href="{% url user_profile content_user.username %}">{{ content_user.username }}</a> ({% trans "Owner" %}) /
 	  </div>
 	</h3>
         <div class="clearfix">
@@ -126,7 +126,7 @@
         <br>
         <div class="btn-toolbar" style="margin-bottom: 9px">
           <div class="btn-group">
-            <a class="btn" href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export to csv File"><i class="icon-download-alt"></i> <font color=#000>{% trans "csv" %}</font></a>
+            <a class="btn" href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="{% trans 'Export to csv File' %}"><i class="icon-download-alt"></i> <font color=#000>{% trans "csv" %}</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
@@ -137,7 +137,7 @@
             </ul>
           </div>
           <div class="btn-group">
-            <a class="btn" href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export to xls File"><i class="icon-download-alt"></i> <font color=#000>{% trans "xls" %}</font></a>
+            <a class="btn" href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="{% trans 'Export to xls File' %}"><i class="icon-download-alt"></i> <font color=#000>{% trans "xls" %}</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
@@ -148,7 +148,7 @@
             </ul>
           </div>
           <div class="btn-group">
-            <a class="btn" href="{% url odk_viewer.views.kml_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export to kml File (Google Earth)"><i class="icon-download-alt"></i> <font color=#000>{% trans "kml" %}</font></a>
+            <a class="btn" href="{% url odk_viewer.views.kml_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="{% trans 'Export to kml File (Google Earth)' %}"><i class="icon-download-alt"></i> <font color=#000>{% trans "kml" %}</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
@@ -160,7 +160,7 @@
           </div>
 
           <div class="btn-group">
-            <a class="btn" href="{% url odk_viewer.views.zip_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export a zip folder of attachments"><i class="icon-download-alt"></i> <font color=#000>{% trans "zip" %}</font></a>
+            <a class="btn" href="{% url odk_viewer.views.zip_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="{% trans 'Export a zip folder of attachments' %}"><i class="icon-download-alt"></i> <font color=#000>{% trans "zip" %}</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
@@ -171,7 +171,7 @@
             </ul>
           </div>
           <div class="btn-group">
-            <a class="btn" href="{% url odk_viewer.views.google_xls_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="Export to google docs" target="_blank"><i class="icon-download-alt"></i> <font color=#000>{% trans "gdocs" %}</font></a>
+            <a class="btn" href="{% url odk_viewer.views.google_xls_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="{% trans 'Export to google docs' %}" target="_blank"><i class="icon-download-alt"></i> <font color=#000>{% trans "gdocs" %}</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
                 <span class="caret"></span>
             </button>
@@ -198,7 +198,7 @@
         </p>
         <p><a id="data-license_info" style="display:none" href="">{% trans "License information" %}</a></p>
 	    <div class="btn-group" style="margin-bottom: 9px">
-            <a class="btn btn-info" rel="tooltip" title="View Map" href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
+            <a class="btn btn-info" rel="tooltip" title="{% trans 'View Map' %}" href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
               <i class="icon-map-marker icon-white"></i> {% trans "Map" %}
             </a>
             <a class="btn btn-info" btn-info  rel="tooltip" title="{% trans "View Photos" %}" href="{% url main.views.form_photos content_user.username xform.id_string %}">
@@ -221,7 +221,7 @@
 		{% endif %}
 		{% if can_edit %}
 	    <div class="btn-group" style="margin-bottom: 9px">
-		    <a class="btn btn-info" rel="tooltip" title="Webform" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
+		    <a class="btn btn-info" rel="tooltip" title="{% trans 'Webform' %}" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
 		      <i class="icon-edit icon-white"></i> {% trans "Enter Web Form" %}
             </a>
         </div>
@@ -296,7 +296,7 @@
                     <table>
                     {{ source_form.as_table }}
                     </table>
-                    <input type="submit" class="btn" value="Upload" />
+                    <input type="submit" class="btn" value="{% trans 'Upload' %}" />
                 {% endif %}
             </form>
             </div>
@@ -318,7 +318,7 @@
                         <table>
                             {{ doc_form.as_table }}
                         </table>
-                        <input type="submit" class="btn" value="Upload" />
+                        <input type="submit" class="btn" value="{% trans 'Upload' %}" />
                     </form>
                 {% endif %}
             </div>
@@ -326,7 +326,7 @@
         {% if is_owner %}
         <br/>
         <div class="clearfix bordered">
-            <h3 data-toggle="collapse" data-target="#restservice_tab">Rest Services</h3>
+            <h3 data-toggle="collapse" data-target="#restservice_tab">{% trans "Rest Services" %}</h3>
             <div id='restservice_tab' class="collapse">
                 <script type="text/javascript">
                     $(document).ready(function() {
@@ -340,7 +340,7 @@
         {% endif %}
         <br/>
         <div class="clearfix bordered">
-            <h3 data-toggle="collapse" data-target="#media_tab">Media &nbsp;<small> {% trans "jpeg/png/mp3 allowed" %} </small></h3>
+            <h3 data-toggle="collapse" data-target="#media_tab">{% blocktrans %}Media &nbsp;<small>jpeg/png/mp3 allowed</small>{% endblocktrans %}</h3>
             <div id='media_tab' class="collapse">
             {% for media in media_upload %}
               <p><a href="{% url main.views.download_media_data content_user.username xform.id_string media.id %}">{{ media.data_value }}</a>
@@ -355,7 +355,7 @@
                 <table>
                 {{ media_form.as_table }}
                 </table>
-                <input type="submit" class="btn" value="Upload" />
+                <input type="submit" class="btn" value="{% trans 'Upload' %}" />
             </form>
             {% endif %}
             </div>
@@ -366,7 +366,7 @@
             <div id='map_tab' class="collapse">
             {% if mapbox_layer %}
             <p><a href="{{ mapbox_layer.link }}" target="_blank">{{ mapbox_layer.map_name }}</a> &ndash;
-            Attribution: {{ mapbox_layer.attribution }}
+            {% trans "Attribution:" %} {{ mapbox_layer.attribution }}
             {% if can_edit %}
             &ndash;<a href="{% url main.views.download_metadata content_user.username xform.id_string mapbox_layer.id %}?map_name_del=true"> {% trans "remove" %} </a></p>
             {% endif %}
@@ -377,7 +377,7 @@
                 <table>
                 {{ mapbox_layer_form.as_table }}
                 </table>
-                <input type="submit" class="btn" value="Upload" />
+                <input type="submit" class="btn" value="{% trans 'Upload' %}" />
             </form>
             {% endif %}
             </div>
@@ -417,7 +417,7 @@
               <h3>{% trans "Delete Confirmation" %}</h3>
             </div>
             <div class="modal-body">
-              <p>{% trans "Are you sure you want to delete the form" %} '{{ xform.title }}'? {% trans "This form has" %} <strong>{{ xform.submission_count|intcomma }}</strong> {% trans "submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead." %}</p>
+                <p>{% blocktrans with title=xform.title nb_sub=xform.submission_count|intcomma %}Are you sure you want to delete the form '{{ title }}'? This form has <strong>{{ nb_sub }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.{% endblocktrans %}</p>
             </div>
             <div class="modal-footer">
               <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn btn-primary">{% trans "Delete" %}</a>
@@ -432,12 +432,11 @@
         <br/>
         <div>
             <h3>{% trans "Sharing" %}</h3>
-            {% trans "Sharing by link is" %}
-            <strong>
             {% if public_link %}
-                {% trans "on with url" %} <a href="{% url main.views.show xform.uuid %}">{{ base_url }}{% url main.views.show xform.uuid %}</a>
+            {% url main.views.show xform.uuid as form_url %}
+            {% blocktrans %}Sharing by link is <strong>on with URL <a href="{{ form_url }}">{{ base_url }}{{ form_url }}</a></strong>{% endblocktrans %}
             {% else %}
-                off
+            {% blocktrans %}Sharing by link is <strong>off</strong>{% endblocktrans %}
             {% endif %}
             </strong>
             <br/>
@@ -446,7 +445,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="perm_type" value="link"/>
                 <input type="hidden" name="for_user" value="toggle"/>
-                <input type="submit" class="btn" value="Turn {% if public_link %}off{% else %}on{% endif %}" />
+                <input type="submit" class="btn" value="{% if public_link %}{% trans "Turn off" %}{% else %}{% trans "Turn on" %}{% endif %}" />
             </form>
             {% if users_with_perms|length %}
             <ul>
@@ -460,7 +459,7 @@
                 <table class="narrow-labels">
                 {{ permission_form.as_table }}
                 </table>
-                <input type="submit" class="btn" value="Submit" />
+                <input type="submit" class="btn" value="{% trans 'Submit' %}" />
             </form>
         </div>
         {% endif %}

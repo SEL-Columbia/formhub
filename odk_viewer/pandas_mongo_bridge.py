@@ -464,14 +464,18 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         for child in survey_element.children:
             child_xpath = child.get_abbreviated_xpath()
             if isinstance(child, Section):
+                child_is_repeating = False
                 if isinstance(child, RepeatingSection):
                     ordered_columns[child.get_abbreviated_xpath()] = []
-                    is_repeating_section = True
+                    child_is_repeating = True
                 cls._build_ordered_columns(child, ordered_columns,
-                        is_repeating_section)
+                    child_is_repeating)
             elif isinstance(child, Question) and not \
                 question_types_to_exclude(child.type) and not\
-                    is_repeating_section:
+                    is_repeating_section:# if is_repeating_section, its parent
+                    # already initiliased an empty list so we dont add it to our
+                    # list of columns, the repeating columns list will be
+                    # generated when we reindex
                 ordered_columns[child.get_abbreviated_xpath()] = None
 
     def _format_for_dataframe(self, cursor):

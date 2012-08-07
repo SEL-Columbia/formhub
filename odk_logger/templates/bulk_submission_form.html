@@ -1,6 +1,5 @@
-{% load i18n %}
-
 {% extends "base.html" %}
+{% load i18n %}
 {% block title %}
 {% trans "Update XForm" %} {{xform.id_string}}
 {% endblock %}
@@ -11,7 +10,7 @@
 		<form method="post" action="./bulk-submission" enctype="multipart/form-data">
 			<p>
 				<input type="file" name="zip_submission_file">
-				<input type="submit" value="Submit">
+				<input type="submit" value="{% trans 'Submit' %}">
 			</p>
 			{% csrf_token %}
 		</form>

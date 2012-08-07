@@ -8,5 +8,9 @@ def call_service(instance):
     # call service send with url and data parameters
     for sv in services:
         # TODO: Queue service
-        service = sv.get_service_definition()()
-        service.send(sv.service_url, instance)
+        try:
+            service = sv.get_service_definition()()
+            service.send(sv.service_url, instance)
+        except:
+            # TODO: Handle gracefully | requeue/resend
+            pass

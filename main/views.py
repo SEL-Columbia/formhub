@@ -13,7 +13,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
 from django.utils import simplejson
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_GET, require_POST
 from google_doc import GoogleDoc
 from guardian.shortcuts import assign, remove_perm, get_users_with_perms
@@ -157,12 +157,16 @@ def profile_settings(request, username):
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=profile)
         if form.is_valid():
+            # get user
+            # user.email = cleaned_email
+            form.instance.user.email = form.cleaned_data['email']
+            form.instance.user.save()
             form.save()
             return HttpResponseRedirect(reverse(
                 public_profile, kwargs={'username': request.user.username}
             ))
     else:
-        form = UserProfileForm(instance=profile)
+        form = UserProfileForm(instance=profile,initial= {"email": content_user.email})
     return render_to_response("settings.html", {'form': form},
                               context_instance=context)
 
@@ -236,7 +240,6 @@ def show(request, username=None, id_string=None, uuid=None):
         context.permission_form = PermissionForm(username)
     return render_to_response("show.html", context_instance=context)
 
-
 @require_GET
 def api(request, username=None, id_string=None):
     """
@@ -282,7 +285,6 @@ def api(request, username=None, id_string=None):
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))
     return HttpResponse(response_text, mimetype='application/json')
-
 
 @login_required
 def edit(request, username, id_string):

@@ -192,3 +192,19 @@ Code Structure
 
 * main - This app is the glue that brings odk_logger and odk_viewer
   together.
+
+Localization
+------------
+
+To generate a locale from scratch (ex. Spanish)
+
+    django-admin.py makemessages -l es -e py,html,email,txt
+    django-admin.py makemessages -d djangojs -l es
+
+To update PO files
+
+    django-admin.py makemessages -a
+
+To compile MO files and update live translations
+
+    django-admin.py compilemessages

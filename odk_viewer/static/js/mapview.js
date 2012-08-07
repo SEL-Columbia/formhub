@@ -86,6 +86,10 @@ function initialize() {
         layersControl.addBaseLayer(bingLayer, label);
     });
 
+    // add google sat layer
+    var ggl = new L.Google();
+    layersControl.addBaseLayer(ggl, "Google Satellite Map");
+
     // Get metadata about the map from MapBox
     var tileJSONAddFn = function(mapData, addToMap) { 
         var innerFn = function(tilejson) {
