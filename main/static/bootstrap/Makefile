@@ -4,6 +4,9 @@ BOOTSTRAP_MIN = ./css/bootstrap.min.css
 BOOTSTRAP_RESPONSIVE_LESS = ./less/responsive-custom.less
 BOOTSTRAP_RESPONSIVE = ./css/bootstrap-responsive.css
 BOOTSTRAP_RESPONSIVE_MIN = ./css/bootstrap-responsive.min.css
+SCREEN_LESS = ./less/screen.less
+SCREEN = ../css/screen.css
+SCREEN_MIN = ../css/screen.min.css
 BOOTSTRAP_JS = ./js/bootstrap.js
 BOOTSTRAP_JS_MIN = ./js/bootstrap.min.js
 DATE=$(shell date +%I:%M%p)
@@ -20,10 +23,12 @@ bootstrap:
 	mkdir -p ./css
 	mkdir -p ./js
 	cp src/img/* ./img/
-	lessc --compile ${BOOTSTRAP_LESS} > ${BOOTSTRAP}
+	lessc ${BOOTSTRAP_LESS} ${BOOTSTRAP}
 	recess --compress ${BOOTSTRAP} > ${BOOTSTRAP_MIN}
-	lessc --compile ${BOOTSTRAP_RESPONSIVE_LESS} > ${BOOTSTRAP_RESPONSIVE}
+	lessc ${BOOTSTRAP_RESPONSIVE_LESS} ${BOOTSTRAP_RESPONSIVE}
 	recess --compress ${BOOTSTRAP_RESPONSIVE} > ${BOOTSTRAP_RESPONSIVE_MIN}
+	lessc ${SCREEN_LESS} ${SCREEN}
+	recess --compress ${SCREEN} > ${SCREEN_MIN}
 	cat src/js/bootstrap-transition.js src/js/bootstrap-alert.js src/js/bootstrap-button.js src/js/bootstrap-carousel.js src/js/bootstrap-collapse.js src/js/bootstrap-dropdown.js src/js/bootstrap-modal.js src/js/bootstrap-tooltip.js src/js/bootstrap-popover.js src/js/bootstrap-scrollspy.js src/js/bootstrap-tab.js src/js/bootstrap-typeahead.js > ${BOOTSTRAP_JS}
 	uglifyjs -nc ${BOOTSTRAP_JS} > ./js/bootstrap.min.tmp.js
 	echo "/*!\n* Bootstrap.js by @fat & @mdo\n* Copyright 2012 Twitter, Inc.\n* http://www.apache.org/licenses/LICENSE-2.0.txt\n*/" > ./js/copyright.js
