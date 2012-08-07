@@ -1,0 +1,3 @@
+var SampleMockData = {
+    "key": "val"
+}

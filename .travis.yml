@@ -8,6 +8,8 @@ install:
   - pip install -r requirements.pip --use-mirrors
   - python manage.py syncdb --noinput
   - python manage.py migrate --noinput
-script: python manage.py test --noinput
+script:
+  - python manage.py test --noinput
+  - ./js_tests/EnvJasmine/bin/run_all_tests.sh --testDir=../ --configFile=../env_jasmine.conf.js
 notifications:
   irc: "irc.freenode.org#moditest"
