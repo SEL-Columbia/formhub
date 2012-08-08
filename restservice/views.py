@@ -19,6 +19,7 @@ def add_service(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     if request.method == 'POST':
         form = RestServiceForm(request.POST)
+        context.restservice = None
         if form.is_valid():
             service_name = form.cleaned_data['service_name']
             service_url = form.cleaned_data['service_url']
@@ -51,3 +52,18 @@ def add_service(request, username, id_string):
     context.username = username
     context.id_string = id_string
     return render_to_response("add-service.html", context_instance=context)
+
+
+def delete_service(request, username, id_string):
+    success = "FAILED"
+    if request.method == 'POST':
+        pk = request.POST.get('service-id')
+        if pk:
+            try:
+                rs = RestService.objects.get(pk=int(pk))
+            except RestService.DoesNotExist:
+                pass
+            else:
+                rs.delete()
+                success= "OK"
+    return HttpResponse(success)

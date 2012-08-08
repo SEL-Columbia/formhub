@@ -76,6 +76,7 @@ class UserProfileForm(ModelForm):
     class Meta:
         model = UserProfile
         exclude = ('user',)
+    email = forms.EmailField(widget=forms.TextInput())
 
 
 class UserProfileFormRegister(forms.Form):

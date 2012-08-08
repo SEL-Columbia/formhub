@@ -50,6 +50,8 @@ urlpatterns = patterns('',
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/formid-media/(?P<data_id>[^/]+)', 'main.views.download_media_data'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/submission/(?P<uuid>[^/]+)$', 'main.views.show_submission'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/addservice$', 'restservice.views.add_service', name="add_restservice"),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/delservice$',
+        'restservice.views.delete_service', name="delete_restservice"),
 
     # stats
     url(r"^stats/submissions/$", 'staff.views.submissions'),

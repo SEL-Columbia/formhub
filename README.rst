@@ -146,6 +146,10 @@ To run the test for a specific method in a specific class in a specific app, e.g
 
     python manage.py test main.TestFormErrors.test_submission_deactivated
 
+To run javascript tests enter the following, NOTE that the testDir and configFile paths are relative to the js_tests/EnvJasmine directory:
+
+    ./js_tests/EnvJasmine/bin/run_all_tests.sh --testDir=../ --configFile=../env_jasmine.conf.js
+
 Deploying
 ---------
 

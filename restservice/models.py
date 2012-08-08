@@ -17,9 +17,14 @@ class RestService(models.Model):
     name = models.CharField(max_length=50, choices=SERVICE_CHOICES)
 
     def __unicode__(self):
-        return u"%s:%s - %s" % (self.xform, self.name, self.service_url)
+        return u"%s:%s - %s" % (self.xform, self.long_name, self.service_url)
 
     def get_service_definition(self):
         m = __import__(''.join(['restservice.services.', self.name]),
                        globals(), locals(), ['ServiceDefinition'])
         return m.ServiceDefinition
+
+    @property
+    def long_name(self):
+        sv = self.get_service_definition()
+        return sv.verbose_name
