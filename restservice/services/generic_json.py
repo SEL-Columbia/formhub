@@ -9,22 +9,11 @@ class ServiceDefinition(RestServiceInterface):
     id = u'json'
     verbose_name = u'JSON POST'
 
-    def send(self, url, instance):
-        args = {
-            'username': instance.xform.user.username,
-            'id_string': instance.xform.id_string,
-            'query': '{"uuid": "%s"}' % instance.uuid,
-            'fields': None,
-            'sort': None
-        }
-        try:
-            cursor = ParsedInstance.query_mongo(**args)
-        except ValueError, e:
-            return
-        records = list(record for record in cursor)
-        post_data = simplejson.dumps(records)
+    def send(self, url, parsed_instance):
+        post_data = simplejson.dumps(parsed_instance.to_dict_for_mongo())
         headers = {"Content-Type": "application/json"}
         http = httplib2.Http()
-        resp, content = http.request(uri=url, method='POST',headers=headers,
+        resp, content = http.request(uri=url, method='POST',
+                                     headers=headers,
                                      body=post_data)
 
