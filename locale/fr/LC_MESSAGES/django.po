@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-03 14:03+0000\n"
+"POT-Creation-Date: 2012-08-06 13:10-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1366,48 +1366,6 @@ msgstr ""
 msgid "Submissions (%(nb_sub)s)"
 msgstr ""
 
-#: staff/templates/templated_email/notice.email:1
-#, python-format
-msgid "formhub notification for %(username)s"
-msgstr ""
-
-#: staff/templates/templated_email/notice.email:3
-#, python-format
-msgid ""
-"\n"
-"  Hi %(full_name)s,\n"
-"\n"
-"  %(message)s\n"
-"\n"
-"  Thanks for using formhub!\n"
-"  The Formhub Dev Team\n"
-"\n"
-"  P.S. Please consider joining the formhub-users group, https://groups."
-"google.com/group/formhub-users\n"
-msgstr ""
-
-#: staff/templates/templated_email/notice.email:15
-#, python-format
-msgid ""
-"\n"
-"  <p>Hi %(full_name)s,</p>\n"
-"\n"
-"  <p>\n"
-"      %(message)s\n"
-"  </p>\n"
-"\n"
-"  <p>\n"
-"      Thanks for using formhub!\n"
-"      <br/>\n"
-"      The Formhub Dev Team\n"
-"  </p>\n"
-"\n"
-"  <p>\n"
-"      P.S. Please consider joining the <a href=\"https://groups.google.com/"
-"group/formhub-users\">formhub-users group</a>.\n"
-"  </p>\n"
-msgstr ""
-
 #: templates/404.html:5
 msgid "404 Error"
 msgstr ""
@@ -1529,22 +1487,6 @@ msgid ""
 "        <a href=\"%(login_url)s\">here</a>."
 msgstr ""
 
-#: templates/registration/activation_email.txt:3
-#, python-format
-msgid ""
-"You have registered on %(site_name)s. To activate your account\n"
-"please click on the link below:\n"
-"\n"
-"http://%(site_domain)s%(register_url)s\n"
-"\n"
-"The link above is valid for %(expiration_days)s day%(expiration_days_p)s.\n"
-msgstr ""
-
-#: templates/registration/activation_email_subject.txt:1
-#, python-format
-msgid "Account activation on %(site_name)s"
-msgstr ""
-
 #: templates/registration/login.html:21
 #, python-format
 msgid ""
@@ -1606,8 +1548,27 @@ msgstr ""
 msgid "Password Reset"
 msgstr ""
 
+#: templates/registration/password_reset_form.html:11
+msgid ""
+"To reset your password please enter your email address below. A\n"
+"    message will be sent to your email address with a link for you to\n"
+"    reset your password."
+msgstr ""
+
 #: templates/registration/registration_complete.html:7
 msgid "Registration Email Sent"
+msgstr ""
+
+#: templates/registration/registration_complete.html:10
+msgid ""
+"A user account has been created for you and an email message has\n"
+"    been sent to the email address you provided."
+msgstr ""
+
+#: templates/registration/registration_complete.html:14
+msgid ""
+"To activate your account and complete the registration process,\n"
+"    you must click the activation link provided in the email."
 msgstr ""
 
 #: templates/registration/registration_form.html:7
