@@ -8,24 +8,29 @@ class Command(BaseCommand):
     help = "Insert all existing parsed instances into MongoDB"
     option_list = BaseCommand.option_list + (
             make_option('--batchsize',
-                default=1000,
+                type='int',
+                default=100,
                 help='Number of records to process per query'),
         )
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **kwargs):
+        print "kwargs: %s" % kwargs
         # num records per run
-        records_per_run = options.get("batchsize")
+        batchsize = kwargs['batchsize']
         start = 0;
-        end = start + records_per_run
+        end = start + batchsize
         # total number of records
         record_count = ParsedInstance.objects.count()
         i = 0
         while start < record_count:
-            print "Querying record %s to %s" % (start, end)
-            for pi in queryset_iterator(ParsedInstance.objects.all()[start:end]):
+            print "Querying record %s to %s" % (start, end-1)
+            queryset = ParsedInstance.objects.order_by('pk')[start:end]
+            for pi in queryset.iterator():
                 pi.update_mongo()
-                if (i + 1) % 1000 == 0:
+                i += 1
+                if (i % 1000) == 0:
                     print 'Updated %d records, flushing MongoDB...' % i
-                    settings._MONGO_CONNECTION.admin.command({'fsync': 1})
-            start = start + records_per_run
-            end = start + records_per_run
+                    #settings._MONGO_CONNECTION.admin.command({'fsync': 1})
+            start = start + batchsize
+            end = start + batchsize
+        settings._MONGO_CONNECTION.admin.command({'fsync': 1})
