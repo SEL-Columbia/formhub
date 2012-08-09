@@ -6,7 +6,8 @@ class ServiceDefinition(RestServiceInterface):
     id = u'f2dhis2'
     verbose_name = u'Formhub to DHIS2'
 
-    def send(self, url, instance):
+    def send(self, url, parsed_instance):
+        instance = parsed_instance.instance
         info = {"id_string": instance.xform.id_string, "uuid": instance.uuid}
         valid_url = url % info
         http = httplib2.Http()
