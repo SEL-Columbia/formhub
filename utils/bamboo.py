@@ -30,7 +30,7 @@ def get_new_bamboo_dataset(xform):
     except NoRecordsFoundError:
         return dataset_id
 
-    req = requests.post(url, files={'data.csv': csv_data.read()})
+    req = requests.post(url, files={'csv_file': csv_data.getvalue()})
 
     if req.status_code in (200, 201, 202):
         try:
