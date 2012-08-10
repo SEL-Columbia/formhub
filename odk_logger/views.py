@@ -103,7 +103,6 @@ def formList(request, username):
     """
     This is where ODK Collect gets its download list.
     """
-
     if  username.lower() == 'crowdforms':
         xforms = XForm.objects.filter(is_crowd_form=True)\
             .exclude(user__username=username)
@@ -125,28 +124,21 @@ def formList(request, username):
 
         xforms = \
             XForm.objects.filter(downloadable=True, user__username=username)
-
         # retrieve crowd_forms for this user
         crowdforms = XForm.objects.filter(
             metadata__data_type=MetaData.CROWDFORM_USERS,
             metadata__data_value=username
         )
         xforms = chain(xforms, crowdforms)
-    urls = [{
-        'url': request.build_absolute_uri(xform.url()),
-        'text': xform.title if not xform.is_crowd_form else
-            'Crowd/%s' % xform.title,
-        'media': {
-            'm': MetaData.media_upload(xform),
-            'user': xform.user,
-            'id': xform.id_string
-        }
-    } for xform in xforms]
-
-    return render_to_response("formList.xml", {
-        'urls': urls,
-        'host': 'http://%s' % request.get_host()
-    }, mimetype="text/xml")
+    response = render_to_response("xformsList.xml", {
+        #'urls': urls,
+        'host': request.build_absolute_uri()\
+            .replace(request.get_full_path(), ''),
+        'xforms': xforms, 'req': request
+    }, mimetype="text/xml; charset=utf-8")
+    response['X-OpenRosa-Version'] = '1.0'
+    # import ipdb; ipdb.set_trace()
+    return response
 
 
 @require_POST
