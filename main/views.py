@@ -464,7 +464,7 @@ def download_media_data(request, username, id_string, data_id):
             return HttpResponseServerError()
     xform = get_object_or_404(XForm,
                               user__username=username, id_string=id_string)
-    if username == request.user.username or xform.shared:
+    if username: # == request.user.username or xform.shared:
         file_path = data.data_file.name
         filename, extension = os.path.splitext(file_path.split('/')[-1])
         extension = extension.strip('.')
