@@ -438,7 +438,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
                             if not isinstance(nested_val, basestring):
                                 import logging
                                 logger = logging.getLogger("django.request")
-                                logger.error(("%s of type % is not a basestring" % (str(nested_val), type(nested_val))))
+                                logger.error(("%s of type %s is not a basestring" % (str(nested_val), type(nested_val))))
                             # collapse xpath
                             if parent_prefix:
                                 xpaths[0:len(parent_prefix)] = parent_prefix
