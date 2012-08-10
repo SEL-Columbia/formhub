@@ -433,7 +433,7 @@
         <div>
             <h3>{% trans "bamboo" %}</h3>
             {% if xform.bamboo_dataset %}
-            {% blocktrans %}bamboo dataset: <strong><a href="http://bamboo.io/datasets/{{ xform.bamboo_dataset }}/info">{{ xform.bamboo_dataset }}</a></strong>{% endblocktrans %}
+            {% blocktrans with dataset=xform.bamboo_dataset %}bamboo dataset: <strong><a href="http://bamboo.io/datasets/{{ dataset }}/info">{{ dataset }}</a></strong>{% endblocktrans %}
             {% else %}
             {% blocktrans %}bamboo link is <strong>not active</strong>{% endblocktrans %}
             {% if xform.submission_count = 0 %}<br />{% trans "bamboo requires at least one submission." %}
