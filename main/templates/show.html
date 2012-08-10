@@ -431,6 +431,21 @@
         </div> 
         <br/>
         <div>
+            <h3>{% trans "bamboo" %}</h3>
+            {% if xform.bamboo_dataset %}
+            {% blocktrans %}bamboo dataset: <strong><a href="http://bamboo.io/datasets/{{ xform.bamboo_dataset }}/info">{{ xform.bamboo_dataset }}</a></strong>{% endblocktrans %}
+            {% else %}
+            {% blocktrans %}bamboo link is <strong>not active</strong>{% endblocktrans %}
+            {% if xform.submission_count = 0 %}<br />{% trans "bamboo requires at least one submission." %}
+            {% else %}<form action="{% url main.views.link_to_bamboo content_user.username xform.id_string %}" method="post">
+                {% csrf_token %}
+                <input type="submit" class="btn" value="{% trans "Activate" %}" />
+            </form>
+            {% endif %}
+            {% endif %}  
+        </div>
+        <br />
+        <div>
             <h3>{% trans "Sharing" %}</h3>
             {% if public_link %}
             {% url main.views.show xform.uuid as form_url %}
