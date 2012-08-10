@@ -11,26 +11,46 @@ class Command(BaseCommand):
                 type='int',
                 default=100,
                 help='Number of records to process per query'),
+        ) + (
+        make_option('-u', '--username',
+            help='Username of the form user'),
+        ) + (
+        make_option('-i', '--id_string',
+            help='id string of the form'),
         )
 
     def handle(self, *args, **kwargs):
         print "kwargs: %s" % kwargs
+        ids = None
+        # check for username AND id_string - if one exists so must the other
+        if (kwargs.get('username') and not kwargs.get('id_string')) or (not\
+            kwargs.get('username') and kwargs.get('id_string')):
+            raise ValueError("username and idstring must either both be specified or neither")
+        elif kwargs.get('username') and kwargs.get('id_string'):
+            from odk_logger.models import XForm, Instance
+            xform = XForm.objects.get(user__username=kwargs.get('username'),
+                id_string=kwargs.get('id_string'))
+            ids = [i.pk for i in Instance.objects.filter(xform=xform)]
         # num records per run
         batchsize = kwargs['batchsize']
         start = 0;
         end = start + batchsize
+        filter_queryset = ParsedInstance.objects.all()
+        # instance ids for when we have a username and id_string
+        if ids:
+            filter_queryset = ParsedInstance.objects.filter(instance__in=ids)
         # total number of records
-        record_count = ParsedInstance.objects.count()
+        record_count = filter_queryset.count()
         i = 0
         while start < record_count:
             print "Querying record %s to %s" % (start, end-1)
-            queryset = ParsedInstance.objects.order_by('pk')[start:end]
+            queryset = filter_queryset.order_by('pk')[start:end]
             for pi in queryset.iterator():
                 pi.update_mongo()
                 i += 1
                 if (i % 1000) == 0:
                     print 'Updated %d records, flushing MongoDB...' % i
-                    #settings._MONGO_CONNECTION.admin.command({'fsync': 1})
+                    settings._MONGO_CONNECTION.admin.command({'fsync': 1})
             start = start + batchsize
-            end = start + batchsize
+            end = min(record_count, start + batchsize)
         settings._MONGO_CONNECTION.admin.command({'fsync': 1})
