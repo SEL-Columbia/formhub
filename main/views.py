@@ -32,6 +32,8 @@ from utils.user_auth import check_and_set_user, set_profile_data,\
     has_permission, helper_auth_helper, get_xform_and_perms,\
     check_and_set_user_and_form
 
+from django.conf import settings
+
 
 def home(request):
     context = RequestContext(request)
@@ -565,3 +567,13 @@ def delete_data(request, username=None, id_string=None):
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))
     return HttpResponse(response_text, mimetype='application/json')
+
+
+def chart(request, id_string):
+    context = RequestContext(request)
+    context.meteorURL = settings.METEORURL
+    context.hostURL = "http://"+request.META['HTTP_HOST']
+    content_user = request.user
+    set_profile_data(context, content_user)
+    context.xform_string = id_string
+    return render_to_response("chart.html", context_instance=context)

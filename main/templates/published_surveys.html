@@ -94,6 +94,13 @@
 	  <a class="btn" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}" data-original-title="{% trans 'Enter Web Form' %}" rel="tooltip">
 	    <i class="icon-edit"></i>
 	  </a>                
+        <!--here we add bamboo meteor client logic-->
+        {% if xform.submission_count > 0 and xform.shared %}
+	  <a class="btn" href="{% url main.views.chart xform.id_string %}" data-original-title="{%trans 'View Charts' %}" rel="tooltip">
+        <i class="icon-signal"></i>
+      </a>
+        {% endif %}
+      <!--========================================-->
           <!-- DELETE -->
              {% if xform.submission_count <= 0 %}
           <div id="delete-{{ xform.id_string }}" class="modal hide fade">
@@ -109,7 +116,7 @@
               <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">Cancel</a>
             </div>
           </div>
-          <a data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" class="btn">
+          <a data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" class="btn" data-original-title="{% trans 'Delete' %}" rel="tooltip">
             <i class="icon-trash"></i>
           </a>
             {% endif %}                       

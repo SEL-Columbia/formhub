@@ -83,5 +83,8 @@ urlpatterns = patterns('',
     # static media
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
+
+    # bamboo meteor client charting
+    url(r'^charting/(?P<id_string>.*)$', 'main.views.chart')
 )
 

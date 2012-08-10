@@ -300,3 +300,9 @@ section {
 #map_canvas {
   margin-top: 40px;
 }
+
+#meteorclient{
+    border:0px;
+    margin-left:-250px;
+}
+
