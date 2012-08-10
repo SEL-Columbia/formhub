@@ -10,7 +10,11 @@ from restservice.models import RestService
 
 
 def get_bamboo_url(xform):
-    service = RestService.objects.get(xform=xform, name='bamboo')
+    try:
+        service = RestService.objects.get(xform=xform, name='bamboo')
+    except RestService.DoesNotExists:
+        return 'http://bamboo.io'
+
     return service.service_url
 
 
@@ -18,10 +22,8 @@ def get_new_bamboo_dataset(xform):
 
     dataset_id = u''
 
-    try:
-        url = '%(url_root)s/datasets' % {'url_root': get_bamboo_url(xform)}
-    except RestService.DoesNotExists:
-        return dataset_id
+    url = '%(url_root)s/datasets' % {'url_root': get_bamboo_url(xform)}
+    
 
     try:
         csv_data = get_csv_data(xform)
@@ -30,7 +32,7 @@ def get_new_bamboo_dataset(xform):
 
     req = requests.post(url, files={'data.csv': csv_data.read()})
 
-    if req.status in (200, 201, 202):
+    if req.status_code in (200, 201, 202):
         try:
             dataset_id = json.loads(req.text).get('id')
         except:
