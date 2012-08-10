@@ -134,10 +134,22 @@ def formList(request, username):
         #'urls': urls,
         'host': request.build_absolute_uri()\
             .replace(request.get_full_path(), ''),
-        'xforms': xforms, 'req': request
+        'xforms': xforms
     }, mimetype="text/xml; charset=utf-8")
     response['X-OpenRosa-Version'] = '1.0'
-    # import ipdb; ipdb.set_trace()
+    return response
+
+
+@require_GET
+def xformsManifest(request, username, id_string):
+    xform = get_object_or_404(XForm, id_string=id_string, user__username=username)
+    response = render_to_response("xformsManifest.xml", {
+        #'urls': urls,
+        'host': request.build_absolute_uri()\
+            .replace(request.get_full_path(), ''),
+        'media_files': MetaData.media_upload(xform)
+    }, mimetype="text/xml; charset=utf-8")
+    response['X-OpenRosa-Version'] = '1.0'
     return response
 
 
