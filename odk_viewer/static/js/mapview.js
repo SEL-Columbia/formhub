@@ -391,11 +391,13 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     }
 }
 
-function _reStyleHexOverLay(newHexStylesByID) {
+function _reStyleAndBindPopupsToHexOverLay(newHexStylesByID, newHexPopupsByID) {
     _(hexbinLayerGroup._layers).each(function(hexbinLPolygon) {
         hexID = hexbinLPolygon.options.id;
         if (newHexStylesByID[hexID])
             hexbinLPolygon.setStyle(newHexStylesByID[hexID]);
+        if (newHexPopupsByID[hexID])
+            hexbinLPolygon.bindPopup(newHexPopupsByID[hexID], {offset: L.point(20,0)});
     });
 }
 
@@ -406,17 +408,24 @@ function constructHexBinOverLay() {
         return new L.Polygon(_(el.geometry.coordinates).map(arr_to_latlng), 
                             {"id": el.properties.id});
     };
+    var lazyClose = _.debounce(function() {map.closePopup();}, 3000);
     _(hexbinData.features).each( function(x, idx) {
         var hexLayer = hex_feature_to_polygon_fn(x);
-        hexLayer.on('mouseover', function(e) {
-            console.log(e, idx);
-        });
+        var lazyPopup = _.debounce(
+            function() {
+                hexLayer.openPopup();
+                lazyClose();
+            }, 1500, true);
+        hexLayer.on('mouseover', lazyPopup); 
         hexbinLayerGroup.addLayer(hexLayer);
     });
 }
 
+
+
 function _recomputeHexColorsByRatio(questionName, responseNames) {
     var newHexStyles = {};
+    var newPopupTexts = {};
     if (_(responseNames).contains(notSpecifiedCaption)) 
         responseNames.push(undefined); // hack? if notSpeciedCaption is in repsonseNames, then need to
         // count when instance.response[questionName] doesn't exist, and is therefore ``undefined''
@@ -429,21 +438,25 @@ function _recomputeHexColorsByRatio(questionName, responseNames) {
         // note both are dense queries on datavore, the idx's match exactly
         var ratio = hexAndCountArrayNum[1][idx] / hexAndCountArrayDenom[1][idx];
         newHexStyles[hexID] = {  fillColor: colors.getProportional(ratio, "Set2"), fillOpacity: 0.9, color:'grey', weight: 1 };
+        newPopupTexts[hexID] = hexAndCountArrayNum[1][idx] + " / " + hexAndCountArrayDenom[1][idx] + " (" + Math.round(ratio*100) + "%)";
     });
-    _reStyleHexOverLay(newHexStyles);
+    _reStyleAndBindPopupsToHexOverLay(newHexStyles, newPopupTexts);
     _rebuildHexLegend('proportion', questionName, responseNames);
 }
 
 function _hexOverLayByCount()
 {
     var newHexStyles = {};
+    var newPopupTexts = {};
     var hexAndCountArray = formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]});      
     var totalCount = _.max(hexAndCountArray[1]);
     _(hexAndCountArray[0]).each( function(hexID, idx) {
         var color = colors.getProportional(hexAndCountArray[1][idx] / totalCount); 
         newHexStyles[hexID] = {fillColor: color, fillOpacity: 0.9, color:'grey', weight: 1};
+        newPopupTexts[hexID] = hexAndCountArray[1][idx] + " submissions.";
+
     }); 
-    _reStyleHexOverLay(newHexStyles);
+    _reStyleAndBindPopupsToHexOverLay(newHexStyles, newPopupTexts);
     _rebuildHexLegend('count');
 }
 
