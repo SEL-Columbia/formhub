@@ -7,13 +7,13 @@ from django.core.urlresolvers import reverse
 from django.core.files.storage import default_storage, get_storage_class
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect, HttpResponseNotAllowed, \
-    HttpResponseForbidden, HttpResponseNotFound, HttpResponseServerError
+from django.http import (HttpResponse, HttpResponseBadRequest,
+    HttpResponseRedirect, HttpResponseNotAllowed, Http404,
+    HttpResponseForbidden, HttpResponseNotFound, HttpResponseServerError)
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
 from django.utils import simplejson
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_GET, require_POST
 from google_doc import GoogleDoc
 from guardian.shortcuts import assign, remove_perm, get_users_with_perms
@@ -157,12 +157,16 @@ def profile_settings(request, username):
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=profile)
         if form.is_valid():
+            # get user
+            # user.email = cleaned_email
+            form.instance.user.email = form.cleaned_data['email']
+            form.instance.user.save()
             form.save()
             return HttpResponseRedirect(reverse(
                 public_profile, kwargs={'username': request.user.username}
             ))
     else:
-        form = UserProfileForm(instance=profile)
+        form = UserProfileForm(instance=profile,initial= {"email": content_user.email})
     return render_to_response("settings.html", {'form': form},
                               context_instance=context)
 
@@ -236,7 +240,6 @@ def show(request, username=None, id_string=None, uuid=None):
         context.permission_form = PermissionForm(username)
     return render_to_response("show.html", context_instance=context)
 
-
 @require_GET
 def api(request, username=None, id_string=None):
     """
@@ -281,6 +284,34 @@ def api(request, username=None, id_string=None):
     if 'callback' in request.GET and request.GET.get('callback') != '':
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))
+    return HttpResponse(response_text, mimetype='application/json')
+
+
+@require_GET
+def public_api(request, username, id_string):
+    """
+    Returns public infomation about the forn as JSON
+    """
+
+    xform = get_object_or_404(XForm, 
+                              user__username=username, id_string=id_string)
+
+    DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+    exports = {'username': xform.user.username,
+               'id_string': xform.id_string,
+               'bamboo_dataset': xform.bamboo_dataset,
+               'shared': xform.shared,
+               'shared_data': xform.shared_data,
+               'downloadable': xform.downloadable,
+               'is_crowd_form': xform.is_crowd_form,
+               'title': xform.title,
+               'date_created': xform.date_created.strftime(DATETIME_FORMAT),
+               'date_modified': xform.date_modified.strftime(DATETIME_FORMAT),
+               'uuid': xform.uuid,
+               }
+
+    response_text = simplejson.dumps(exports)
+
     return HttpResponse(response_text, mimetype='application/json')
 
 
@@ -563,3 +594,20 @@ def delete_data(request, username=None, id_string=None):
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))
     return HttpResponse(response_text, mimetype='application/json')
+
+
+@require_POST
+@is_owner
+def link_to_bamboo(request, username, id_string):
+    xform = get_object_or_404(XForm,
+                              user__username=username, id_string=id_string)
+    
+    from utils.bamboo import get_new_bamboo_dataset
+    dataset_id = get_new_bamboo_dataset(xform)
+    xform.bamboo_dataset = dataset_id
+    xform.save()
+
+    return HttpResponseRedirect(reverse(show, kwargs={
+        'username': username,
+        'id_string': id_string
+    }))

@@ -3,7 +3,7 @@ import os
 from main.views import show
 from main.tests.test_base import MainTestCase
 from odk_logger.models.xform import XForm
-from restservice.views import add_service
+from restservice.views import add_service, delete_service
 from restservice.RestServiceInterface import RestServiceInterface
 from restservice.models import RestService
 
@@ -25,17 +25,7 @@ class RestServiceTest(MainTestCase):
         rs.save()
         self.restservice = rs
 
-    def test_create_rest_service(self):
-        count = RestService.objects.all().count()
-        self._create_rest_service()
-        self.assertEquals(RestService.objects.all().count(), count + 1)
-
-    def  test_service_definition(self):
-        self._create_rest_service()
-        sv = self.restservice.get_service_definition()()
-        self.assertEqual(isinstance(sv, RestServiceInterface), True)
-
-    def test_add_service(self):
+    def _add_rest_service(self):
         add_service_url = reverse(add_service, kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string
@@ -49,6 +39,20 @@ class RestServiceTest(MainTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEquals(RestService.objects.all().count(), count + 1)
 
+
+    def test_create_rest_service(self):
+        count = RestService.objects.all().count()
+        self._create_rest_service()
+        self.assertEquals(RestService.objects.all().count(), count + 1)
+
+    def  test_service_definition(self):
+        self._create_rest_service()
+        sv = self.restservice.get_service_definition()()
+        self.assertEqual(isinstance(sv, RestServiceInterface), True)
+
+    def test_add_service(self):
+       self._add_rest_service()
+
     def test_anon_service_view(self):
         self.xform.shared = True
         self.xform.save()
@@ -61,3 +65,18 @@ class RestServiceTest(MainTestCase):
         self.assertFalse('<h3 data-toggle="collapse" data-target='
                          '"#restservice_tab">Rest Services</h3>'
                          in response.content)
+
+    def test_delete_service(self):
+        self._add_rest_service()
+        count = RestService.objects.all().count()
+        service = RestService.objects.reverse()[0]
+        post_data = {'service-id': service.pk}
+        del_service_url = reverse(delete_service, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        })
+        response = self.client.post(del_service_url, post_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            RestService.objects.all().count(), count - 1
+        )

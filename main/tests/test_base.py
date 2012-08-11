@@ -59,6 +59,12 @@ class MainTestCase(TestCase):
             post_data = {'xls_file': xls_file}
             return self.client.post('/%s/' % self.user.username, post_data)
 
+    def _publish_xls_file_and_set_xform(self, path):
+        count = XForm.objects.count()
+        self.response = self._publish_xls_file(path)
+        self.assertEqual(XForm.objects.count(), count + 1)
+        self.xform = XForm.objects.all().reverse()[0]
+
     def _share_form_data(self, id_string='transportation_2011_07_25'):
         xform = XForm.objects.get(id_string=id_string)
         xform.shared_data = True

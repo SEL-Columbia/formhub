@@ -1,12 +1,16 @@
 from restservice.models import RestService
 
 
-def call_service(instance):
+def call_service(parsed_instance):
     # lookup service
-    # registered services
+    instance = parsed_instance.instance
     services = RestService.objects.filter(xform=instance.xform)
     # call service send with url and data parameters
     for sv in services:
         # TODO: Queue service
-        service = sv.get_service_definition()()
-        service.send(sv.service_url, instance)
+        try:
+            service = sv.get_service_definition()()
+            service.send(sv.service_url, parsed_instance)
+        except:
+            # TODO: Handle gracefully | requeue/resend
+            pass
