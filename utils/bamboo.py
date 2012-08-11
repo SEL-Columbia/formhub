@@ -12,7 +12,7 @@ from restservice.models import RestService
 def get_bamboo_url(xform):
     try:
         service = RestService.objects.get(xform=xform, name='bamboo')
-    except RestService.DoesNotExists:
+    except RestService.DoesNotExist:
         return 'http://bamboo.io'
 
     return service.service_url
