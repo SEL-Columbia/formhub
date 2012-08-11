@@ -362,7 +362,7 @@ function _rebuildMarkerLayer(geoJSON, questionName)
             marker.on('click', function(e) {
                 var popup = L.popup({offset: popupOffset})
                     .setContent("Loading...").setLatLng(latlng).openOn(map);
-                console.log(feature.id);
+                //console.log(feature.id);
                 $.getJSON(mongoAPIUrl, {'query': '{"_id":' + feature.id + '}'})
                     .done(function(data){
                         var content;
