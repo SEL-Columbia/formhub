@@ -1,18 +1,18 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block content %}
 <section id="registration-email-sent">
   <div class="page-header">
-    <h1>Registration Email Sent</h1>
+    <h1>{% trans "Registration Email Sent" %}</h1>
   </div>
-
   <p>
-    A user account has been created for you and an email message has
-    been sent to the email address you provided.
+      {% blocktrans %}A user account has been created for you and an email message has
+    been sent to the email address you provided.{% endblocktrans %}
   </p>
   <p>
-    To activate your account and complete the registration process,
-    you must click the activation link provided in the email.
+      {% blocktrans %}To activate your account and complete the registration process,
+    you must click the activation link provided in the email.{% endblocktrans %}
   </p>
 </section>
 {% endblock %}

@@ -16,9 +16,9 @@
       <td>
 	<a href={% url odk_logger.views.toggle_downloadable id_string=xform.id_string %} class="delete">
 	  {% if xform.downloadable %}
-	  [ yes ]
+	  [ {% trans 'yes' %} ]
 	  {% else %}
-	  [ no ]
+	  [ {% trans 'no' %} ]
 	  {% endif %}
 	</a>
       </td>

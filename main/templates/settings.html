@@ -23,6 +23,7 @@
           <td><label>{%  trans "Username:" %}</label></td>
           <td><span class="uneditable-input">{{ content_user.username }}</span></td>
           </tr>
+
         {% for field in form %}
           <tr>
             <td>
@@ -36,7 +37,7 @@
           </tr>
         {% endfor %}
         </table>
-        <input type="submit" class="btn btn-primary" value="Update" />
+        <input type="submit" class="btn btn-primary" value="{% trans 'Update' %}" />
       </form>
     </div>
   </div>

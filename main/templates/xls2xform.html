@@ -5,14 +5,15 @@
     <h1>{%  trans "XLS2XForm Converter" %}</h1>
   </div>
   <p>
-    {%  trans "If you're looking for the XLS2XForm converter you're in the right place.  We've incorporated the XLS2XForm converter into" %} formhub.
+    {% trans "If you're looking for the XLS2XForm converter you're in the right place. We've incorporated the XLS2XForm converter into formhub." %}
   </p>
   <p>
     {%  trans "To use it simply:" %}
     <ul>
-      <li><a href="/accounts/register/">{%  trans "Signup" %}</a> {%  trans "for a free account with" %} formhub</li>
-      <li>{%  trans "Upload your XLSForm to" %} formhub {%  trans "and it'll instantly be converted to an XForm which will be available on your phone." %}</li>
-      <li>{%  trans "If you want to download the XForm, click on the form name and click on" %} <b>{%  trans "other" %}</b> {%  trans "to download the converted XForm" %}</li>
+    {% url registration_register as registration_register %}
+      <li>{% blocktrans %}<a href="{{ registration_register }}">Signup</a> for a free account with formhub{% endblocktrans %}</li>
+      <li>{%  trans "Upload your XLSForm to formhub and it'll instantly be converted to an XForm which will be available on your phone." %}</li>
+      <li>{%  trans "If you want to download the XForm, click on the form name and click on <strong>other</strong> to download the converted XForm" %}</li>
     </ul>
 
   </p>

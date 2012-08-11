@@ -4,7 +4,7 @@
 {% if crowdforms %}
 <section id="crowdforms">
   <div class="page-header">
-    <h1>{% trans "Crowdforms" %} <small>{% trans "List of crowdforms you have joined." %} </small></h1>
+    <h1>{% blocktrans %}Crowdforms <small>List of crowdforms you have joined.</small>{% endblocktrans %}</h1>
   </div>
   
   <table id="crowdforms-table" class="table table-bordered table-striped">
@@ -52,22 +52,22 @@
           <div class=btn-group>
             <center>
               {% if xform.data_dictionary.has_surveys_with_geopoints %}
-          <a class="btn" href="{% url odk_viewer.views.map_view xform.user.username xform.id_string %}" data-original-title="View Map" rel="tooltip">
+          <a class="btn" href="{% url odk_viewer.views.map_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
             <i class="icon-map-marker"></i>
           </a>
           {% endif %}
           {% if xform.submission_count > 0 %}
-          <a class="btn" href="{% url main.views.form_photos xform.user.username xform.id_string %}" data-original-title="View Photo" rel="tooltip" >
+          <a class="btn" href="{% url main.views.form_photos xform.user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
             <i class="icon-camera"></i>
           </a>
-          <a class="btn" href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}" data-original-title="Enter Web Form" rel="tooltip">
+          <a class="btn" href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}" data-original-title="{% trans 'Enter Web Form' %}" rel="tooltip">
             <i class="icon-edit"></i>
           </a>                
           </div>
-          <a class="btn" href="{% url odk_viewer.views.data_view xform.user.username xform.id_string %}" data-original-title="View Submitted Data" rel="tooltip">
+          <a class="btn" href="{% url odk_viewer.views.data_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
             <i class="icon-th-list"></i>
           </a>
-          <a class="btn" href="{% url odk_viewer.views.instance xform.user.username xform.id_string %}" data-original-title="Browse Data (One by One)" rel="tooltip">
+          <a class="btn" href="{% url odk_viewer.views.instance xform.user.username xform.id_string %}" data-original-title="{% trans 'Browse Data (One by One)' %}" rel="tooltip">
             <i class="icon-list-alt"></i>
           </a>
           {% endif %}

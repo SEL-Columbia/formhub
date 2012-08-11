@@ -8,22 +8,19 @@
     <h1>{% trans "Welcome to formhub!" %}<small>&nbsp;{% trans "The hub for your mobile data collection needs" %}</small></h1>
 <div class="row">
   <div class="span5">
-<p>
-<em>
-{% trans "formhub is a" %} <strong>{% trans "free" %}</strong> {% trans "hosted service that makes data collection" %} <strong>{% trans "simple" %}</strong> {% trans "and" %} <strong>{% trans "collaborative" %}</strong></em>.
-</p>
-<p>
-  <strong>{% trans "Simple." %}</strong>{% trans "All you need to get started is an" %} <a href="/accounts/register/">{% trans "account" %}</a> {% trans "on formhub and the ability to author" %} .xls {% trans "files. Absolutely no technical setup required." %}
-</p>
-<p>
-<strong>{% trans "Collaborative." %}</strong> {% trans "Share your data collection forms in" %} <a href="/syntax">{% trans "Excel" %}</a>.  <a href="/forms">{% trans "Find" %}</a>, {% trans "grab and modify other" %} <a href='/forms/'>{% trans "peoples' forms" %}</a> {% trans "and quickly deploy it. Publish gathered data to share it with others via Excel, CSV, KML or an interactive map." %}
+<p><em>{% blocktrans %}formhub is a <strong>free</strong> hosted service that makes data collection <strong>simple</strong> and <strong>collaborative</strong>.{% endblocktrans %}</em></p>
+{% url registration_register as registration_register %}
+<p>{% blocktrans %}<strong>Simple.</strong>All you need to get started is an <a href="{{ registration_register }}">account</a> on formhub and the ability to author .xls files. Absolutely no technical setup required.{% endblocktrans %}</p>
+{% url syntax as syntax_url %}
+{% url forms_list as forms_url %}
+<p>{% blocktrans %}<strong>Collaborative.</strong> Share your data collection forms in <a href="{{ syntax_url }}">Excel</a>. <a href="{{ forms_url }}">Find</a>, grab and modify other <a href="{{ forms_url }}">peoples' forms</a> and quickly deploy it. Publish gathered data to share it with others via Excel, CSV, KML or an interactive map.{% endblocktrans %}
 </p>
 <p>
 <strong>{% trans "Mobile." %}</strong>
-  {% trans "formhub works seemlessly with" %} <a href="http://www.opendatakit.org">ODK Collect</a> {% trans "a robust and proven data collection platform for Android." %}  
+  {% blocktrans %}formhub works seemlessly with <a href="http://www.opendatakit.org">ODK Collect</a> a robust and proven data collection platform for Android.{% endblocktrans %}  
 </p>
 <p>
-{% trans "For more info please read" %} <a href="http://blog.formhub.org/2011/12/05/data-gatherers-of-the-world-unite/">{% trans "here" %}</a>.
+{% blocktrans %}For more info please read <a href="http://blog.formhub.org/2011/12/05/data-gatherers-of-the-world-unite/">here</a>.{% endblocktrans %}
 </p>
 <p><b>{% trans "Not registered?" %}</b></p>
 <p style="font-size:larger">

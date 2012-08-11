@@ -1,3 +1,11 @@
+
+// STRINGS
+var _rebuildHexLegend__p_str = gettext('Proportion of surveys with response(s): ');
+var getBootstrapFields__str = gettext("ERROR: constants not found; please include main/static/js/formManagers.js");
+var JSONSurveyToHTML__q_str = gettext("Question");
+var JSONSurveyToHTML__r_str = gettext("Response");
+
+
 var centerLatLng = new L.LatLng(!center.lat?0.0:center.lat, !center.lng?0.0:center.lng);
 var defaultZoom = 8;
 var mapId = 'map_canvas';
@@ -5,14 +13,14 @@ var map;
 var layersControl;
 // array of mapbox maps to use as base layers - the first one will be the default map
 var mapboxMaps = [
-    {'label': 'Mapbox Streets', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-iuetkf9u.jsonp'},
-    {'label': 'MapBox Streets Light', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-p543gvbh.jsonp'},
-    {'label': 'MapBox Streets Zenburn', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-bjhr55gf.jsonp'},
-    {'label': 'Natural Earth II', 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-1c1r9n5g.jsonp'}
+    {'label': gettext('Mapbox Streets'), 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-iuetkf9u.jsonp'},
+    {'label': gettext('MapBox Streets Light'), 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-p543gvbh.jsonp'},
+    {'label': gettext('MapBox Streets Zenburn'), 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-bjhr55gf.jsonp'},
+    {'label': gettext('Natural Earth II'), 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-1c1r9n5g.jsonp'}
 ];
 var allowResetZoomLevel = true; // used to allow zooming when first loaded
 var popupOffset = new L.Point(0, -10);
-var notSpecifiedCaption = "Not Specified";
+var notSpecifiedCaption = gettext("Not Specified");
 var colorPalette = ['#8DD3C7', '#FB8072', '#FFFFB3', '#BEBADA', '#80B1D3', '#FDB462', '#B3DE69', '#FCCDE5', '#D9D9D9',
     '#BC80BD', '#CCEBC5', '#FFED6F'];
 var circleStyle = {
@@ -29,12 +37,12 @@ var markerLayerGroupActive = false;
 var hexbinLayerGroupActive = false;
 var hexbinLayerGroup = new L.LayerGroup();
 var hexbinData = null;
-var markerLayerLabel = "Marker Layer";
+var markerLayerLabel = gettext("Marker Layer");
 var hexbinLayerLabel = "Hexbin Layer";
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
 var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekkywR';
-var bingMapTypeLabels = {'AerialWithLabels': 'Bing Satellite Map', 'Road': 'Bing Road Map'}; //Road, Aerial or AerialWithLabels
-var mapBoxAdditAttribution = " Map data (c) OpenStreetMap contributors, CC-BY-SA";
+var bingMapTypeLabels = {'AerialWithLabels': gettext('Bing Satellite Map'), 'Road': gettext('Bing Road Map')}; //Road, Aerial or AerialWithLabels
+var mapBoxAdditAttribution = gettext("Map data (c) OpenStreetMap contributors, CC-BY-SA");
 
 // map filter vars
 var navContainerSelector = ".nav.pull-right";
@@ -88,7 +96,7 @@ function initialize() {
 
     // add google sat layer
     var ggl = new L.Google();
-    layersControl.addBaseLayer(ggl, "Google Satellite Map");
+    layersControl.addBaseLayer(ggl, gettext("Google Satellite Map"));
 
     // Get metadata about the map from MapBox
     var tileJSONAddFn = function(mapData, addToMap) { 
@@ -182,7 +190,7 @@ function loadResponseDataCallback()
         if(formJSONMngr.supportedLanguages.length > 1)
         {
             $('<li />').html(
-                $('<a />', { text: "Language", href: '#'}).addClass("language-label")
+                $('<a />', { text: gettext("Language"), href: '#'}).addClass("language-label")
             ).appendTo(navContainer);
 
             dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown language-picker"});
@@ -224,7 +232,7 @@ function loadResponseDataCallback()
         if(formJSONMngr.getNumSelectOneQuestions() > 0)
         {
             $('<li />').html(
-                $('<a />', { text: "View By", href: '#'})
+                $('<a />', { text: gettext("View By"), href: '#'})
             ).appendTo(navContainer);
 
             dropDownContainer = _createElementAndSetAttrs('li', {"class":"dropdown"});
@@ -237,7 +245,7 @@ function loadResponseDataCallback()
             var questionUlContainer = _createElementAndSetAttrs("ul", {"class":"dropdown-menu"});
 
             // create an "All" link to reset the map
-            var questionLi = _createSelectOneLi({"name":"", "label":"None"});
+            var questionLi = _createSelectOneLi({"name":"", "label": gettext("None")});
             questionUlContainer.appendChild(questionLi);
 
             // create links for select one questions
@@ -259,7 +267,7 @@ function loadResponseDataCallback()
         }
     }
     else
-        throw "Container '" + navContainerSelector + "' not found";
+        throw interpolate(gettext("Container %(cont)s not found"), {cont: navContainerSelector}, true);
 
     // Bind a callback that executes when document.location.hash changes.
     $(window).bind( "hashchange", function(e) {
@@ -466,7 +474,7 @@ function toggleHexOverLay()
 function JSONSurveyToHTML(data)
 {
     var idx, dummyContainer, questionName, span;
-    var htmlContent = '<table class="table table-bordered table-striped"> <thead>\n<tr>\n<th>Question</th>\n<th>Response</th>\n</tr>\n</thead>\n<tbody>\n';
+    var htmlContent = '<table class="table table-bordered table-striped"> <thead>\n<tr>\n<th>' + JSONSurveyToHTML__q_str + '</th>\n<th>' + JSONSurveyToHTML__r_str + '</th>\n</tr>\n</thead>\n<tbody>\n';
 
     // add images if any
     // TODO: this assumes all attachments are images
@@ -528,6 +536,7 @@ function getLanguageAt(idx)
 
 function _rebuildHexLegend(countOrProportion, questionName, responseNames)
 {
+
     var legendTemplate = 
         '<div id="hex-legend" style="display:block">\n' +
         '  <h4><%= title %> </h4>\n' +
@@ -537,7 +546,8 @@ function _rebuildHexLegend(countOrProportion, questionName, responseNames)
         '    <li> <span style="background-color: <%= hex.color %>" />' +
         '         <%= hex.text %> </li>\n<% }); %>' +
         '  </div>\n  </ul>\n<div style="clear:both"></div>\n</div>';
-    var proportionString = 'Proportion of surveys with response(s): ' +
+
+    var proportionString = _rebuildHexLegend__p_str +
             (responseNames && (responseNames.length == 1 ? responseNames[0] :
             _.reduce(responseNames, 
                      function(a,b) { return (a && a + ", or ") + b; }, '')));
@@ -547,7 +557,7 @@ function _rebuildHexLegend(countOrProportion, questionName, responseNames)
         return _.map(_.range(1,len+1), function (v) { return v / len });
     };
     var templateFiller = {
-        count: { title : 'Number of submissions',
+        count: { title : gettext('Number of submissions'),
             hexes : _.map(interval("Set1"), function (i) {
                       return  {color: colors.getProportional(i),
                                text: '<' + Math.ceil(i * maxHexCount)}; })
@@ -661,7 +671,7 @@ function getBootstrapFields()
     // we only want to load gps and select one data to begin with
     var fields = ['_id', constants.GEOLOCATION];
     var idx, question;
-    if(!constants) throw "ERROR: constants not found; please include main/static/js/formManagers.js"; 
+    if(!constants) throw getBootstrapFields__str; 
     for(idx in formJSONMngr.selectOneQuestions)
     {
         question = formJSONMngr.selectOneQuestions[idx];
