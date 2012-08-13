@@ -411,25 +411,6 @@ def form_gallery(request):
 
 
 def download_metadata(request, username, id_string, data_id):
-    data = get_object_or_404(MetaData, pk=data_id)
-    default_storage = get_storage_class()()
-    if request.GET.get('del', False) and username == request.user.username:
-        try:
-            default_storage.delete(data.data_file.name)
-            data.delete()
-            return HttpResponseRedirect(reverse(show, kwargs={
-                'username': username,
-                'id_string': id_string
-            }))
-        except Exception, e:
-            return HttpResponseServerError()
-    elif request.GET.get('map_name_del', False) and\
-            username == request.user.username:
-        data.delete()
-        return HttpResponseRedirect(reverse(show, kwargs={
-            'username': username,
-            'id_string': id_string
-        }))
     xform = get_object_or_404(XForm,
                               user__username=username, id_string=id_string)
     if username == request.user.username or xform.shared:
@@ -446,6 +427,30 @@ def download_metadata(request, username, id_string, data_id):
             return response
         else:
             return HttpResponseNotFound()
+    return HttpResponseForbidden(_(u'Permission denied.'))
+
+
+@login_required()
+def delete_metadata(request, username, id_string, data_id):
+    data = get_object_or_404(MetaData, pk=data_id)
+    default_storage = get_storage_class()()
+    if request.GET.get('del', False) and username == request.user.username:
+        try:
+            default_storage.delete(data.data_file.name)
+            data.delete()
+            return HttpResponseRedirect(reverse(show, kwargs={
+                'username': username,
+                'id_string': id_string
+            }))
+        except Exception, e:
+            return HttpResponseServerError()
+    elif request.GET.get('map_name_del', False) and\
+         username == request.user.username:
+        data.delete()
+        return HttpResponseRedirect(reverse(show, kwargs={
+            'username': username,
+            'id_string': id_string
+        }))
     return HttpResponseForbidden(_(u'Permission denied.'))
 
 
