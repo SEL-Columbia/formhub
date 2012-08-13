@@ -565,3 +565,20 @@ def delete_data(request, username=None, id_string=None):
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))
     return HttpResponse(response_text, mimetype='application/json')
+
+
+@require_POST
+@is_owner
+def link_to_bamboo(request, username, id_string):
+    xform = get_object_or_404(XForm,
+                              user__username=username, id_string=id_string)
+    
+    from utils.bamboo import get_new_bamboo_dataset
+    dataset_id = get_new_bamboo_dataset(xform)
+    xform.bamboo_dataset = dataset_id
+    xform.save()
+
+    return HttpResponseRedirect(reverse(show, kwargs={
+        'username': username,
+        'id_string': id_string
+    }))
