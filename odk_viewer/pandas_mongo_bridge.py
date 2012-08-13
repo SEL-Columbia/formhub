@@ -433,8 +433,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
                             d.update(cls._reindex(nested_key, nested_val,
                                 ordered_columns, new_prefix))
                         else:
-                            # it can only be a string
-                            assert(isinstance(nested_val, basestring))
+                            # it can only be a scalar
                             # collapse xpath
                             if parent_prefix:
                                 xpaths[0:len(parent_prefix)] = parent_prefix
