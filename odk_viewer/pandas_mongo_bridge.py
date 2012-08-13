@@ -146,7 +146,7 @@ class AbstractDataFrameBuilder(object):
         record.update(updated_gps_fields)
 
     def _query_mongo(self, query='{}', start=0,
-        limit=ParsedInstance.DEFAULT_LIMIT, fields='[]'):
+        limit=ParsedInstance.DEFAULT_LIMIT, fields='[]', count=False):
         # ParsedInstance.query_mongo takes params as json strings
         # so we dumps the fields dictionary
         count_args = {
@@ -157,24 +157,29 @@ class AbstractDataFrameBuilder(object):
             'sort': '{}',
             'count': True
         }
-        count = ParsedInstance.query_mongo(**count_args)
-        if count[0]["count"] == 0:
+        count_object = ParsedInstance.query_mongo(**count_args)
+        record_count = count_object[0]["count"]
+        if record_count == 0:
             raise NoRecordsFoundError("No records found for your query")
-        query_args = {
-            'username': self.username,
-            'id_string': self.id_string,
-            'query': query,
-            'fields': fields,
-            #TODO: we might want to add this in for the user 
-            #to sepcify a sort order
-            'sort': '{}',
-            'start': start,
-            'limit': limit,
-            'count': False # TODO: we never count when exporting
-        }
-        # use ParsedInstance.query_mongo
-        cursor = ParsedInstance.query_mongo(**query_args)
-        return cursor
+        # if count was requested, return the count
+        if count:
+            return record_count
+        else:
+            query_args = {
+                'username': self.username,
+                'id_string': self.id_string,
+                'query': query,
+                'fields': fields,
+                #TODO: we might want to add this in for the user
+                #to sepcify a sort order
+                'sort': '{}',
+                'start': start,
+                'limit': limit,
+                'count': False
+            }
+            # use ParsedInstance.query_mongo
+            cursor = ParsedInstance.query_mongo(**query_args)
+            return cursor
 
 
 class XLSDataFrameBuilder(AbstractDataFrameBuilder):
@@ -192,6 +197,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
     SHEET_NAME_MAX_CHARS = 30
     XLS_SHEET_COUNT_LIMIT = 255
     XLS_COLUMN_COUNT_MAX = 255
+    CURRENT_INDEX_META = 'current_index'
 
     def __init__(self, username, id_string, filter_query=None):
         super(XLSDataFrameBuilder, self).__init__(username, id_string,
@@ -203,53 +209,56 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         # everything else on the default sheet
         self._generate_sections()
 
-    def export_to(self, file_path):
+    def export_to(self, file_path, batchsize=100):
         self.xls_writer = ExcelWriter(file_path)
+
+        # get record count
+        record_count = self._query_mongo(count=True)
 
         # query in batches and for each batch create an XLSDataFrameWriter and
         # write to existing xls_writer object
+        start = 0
+        header = True
+        while start < record_count:
+            cursor = self._query_mongo(self.filter_query, start=start,
+                limit=batchsize)
 
-        # get records from mongo - do this on export so we can batch if we
-        # choose to, as we should
-        cursor = self._query_mongo(self.filter_query)
+            data = self._format_for_dataframe(cursor)
 
-        data = self._format_for_dataframe(cursor)
-
-        #TODO: batching will not work as expected since indexes are calculated
-        # based the current batch, a new batch will re-calculate indexes and if
-        # they are going into the same excel file, we'll have duplicates
-        # possible solution - keep track of the last index from each section
-
-        # write all cursor's data to different sheets
-        # TODO: for every repeat, the index should be re-calculated
-        for section_name, section in self.sections.iteritems():
-            # TODO: currently ignoring nested repeat data which will have no
-            # records
-            records = data[section_name]
-            if len(records) > 0:
-                columns = section["columns"] + self.EXTRA_COLUMNS
-                writer = XLSDataFrameWriter(records, columns)
-                writer.write_to_excel(self.xls_writer, section_name,
-                        header=True, index=False)
+            # write all cursor's data to their respective sheets
+            for section_name, section in self.sections.iteritems():
+                records = data[section_name]
+                # TODO: currently ignoring nested repeats so ignore sections that have 0 records
+                if len(records) > 0:
+                    columns = section["columns"] + self.EXTRA_COLUMNS
+                    writer = XLSDataFrameWriter(records, columns)
+                    writer.write_to_excel(self.xls_writer, section_name,
+                            header=header, index=False)
+            header = False
+            # increment counter(s)
+            start += batchsize
         self.xls_writer.save()
 
     def _format_for_dataframe(self, cursor):
         """
         Format each record for consumption by a dataframe
 
-        returns a dictionary with keys being the names of the sheet and values
+        returns a dictionary with the key being the name of the sheet, and values
         a list of dicts to feed into a DataFrame
         """
         data = dict((section_name, []) for section_name in self.sections.keys())
+
+        default_section = self.sections[self.survey_name]
+        default_columns = default_section["columns"]
 
         for record in cursor:
             # from record, we'll end up with multiple records, one for each
             # section we have
 
             # add records for the default section
-            columns = self.sections[self.survey_name]["columns"]
-            index = self._add_data_for_section(data[self.survey_name],
-                record, columns)
+            self._add_data_for_section(data[self.survey_name],
+                record, default_columns, self.survey_name)
+            parent_index = default_section[self.CURRENT_INDEX_META]
 
             for sheet_name, section in self.sections.iteritems():
                 # skip default section i.e survey name
@@ -261,17 +270,19 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                     # nest sections as well so we can recurs in and get them
                     if record.has_key(xpath):
                         repeat_records = record[xpath]
+                        num_repeat_records = len(repeat_records)
                         for repeat_record in repeat_records:
                             self._add_data_for_section(data[sheet_name],
-                                repeat_record, columns, index,\
-                                self.survey_name)
+                                repeat_record, columns, sheet_name,
+                                parent_index, self.survey_name)
 
         return data
 
-    def _add_data_for_section(self, data_section, record, columns,
+    def _add_data_for_section(self, data_section, record, columns, section_name,
                 parent_index = -1, parent_table_name = None):
         data_section.append({})
-        index = len(data_section)
+        self.sections[section_name][self.CURRENT_INDEX_META] += 1
+        index = self.sections[section_name][self.CURRENT_INDEX_META]
         #data_section[len(data_section)-1].update(record) # we could simply do
         # this but end up with duplicate data from repeats
 
@@ -293,7 +304,6 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
             XLSDataFrameBuilder.INDEX_COLUMN: index,
             XLSDataFrameBuilder.PARENT_INDEX_COLUMN: parent_index,
             XLSDataFrameBuilder.PARENT_TABLE_NAME_COLUMN: parent_table_name})
-        return index
 
     def _generate_sections(self):
         """
@@ -302,9 +312,6 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         """
         # clear list
         self.sections = OrderedDict()
-
-        # TODO: make sure survey name and any section name is a valid xml
-        # sheet name i.e. 31 chars or less etc.
         self.survey_name, survey_xpath = survey_name_and_xpath_from_dd(self.dd)
 
         # generate a unique and valid xls sheet name
@@ -370,7 +377,8 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
     def _create_section(self, section_name, xpath, is_repeat):
         index = len(self.sections)
         self.sections[section_name] = {"name": section_name, "xpath": xpath,
-                              "columns": [], "is_repeat": is_repeat}
+                              "columns": [], "is_repeat": is_repeat,
+                              self.CURRENT_INDEX_META: 0}
 
     def _add_column_to_section(self, sheet_name, column):
         section = self.sections[sheet_name]
