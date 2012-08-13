@@ -280,13 +280,14 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         # alt, precision
         self._split_gps_fields(record, self.gps_fields)
         for column in columns:
+            data_value = None
             try:
-                data_section[len(data_section)-1].update({column:
-                    record[column]})
+                data_value = record[column]
             except KeyError:
                 # a record may not have responses for some elements simply
                 # because they were not captured
                 pass
+            data_section[len(data_section)-1].update({column: data_value})
 
         data_section[len(data_section)-1].update({
             XLSDataFrameBuilder.INDEX_COLUMN: index,
