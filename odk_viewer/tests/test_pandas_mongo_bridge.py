@@ -78,7 +78,7 @@ class TestPandasMongoBridge(MainTestCase):
         xls_df_builder = XLSDataFrameBuilder(self.user.username,
             self.xform.id_string)
         expected_section_keys = [self.survey_name, u"kids_details"]
-        section_keys = [s[u"name"] for s in xls_df_builder.sections]
+        section_keys = xls_df_builder.sections.keys()
         self.assertEqual(sorted(expected_section_keys), sorted(section_keys))
 
     def test_row_counts(self):

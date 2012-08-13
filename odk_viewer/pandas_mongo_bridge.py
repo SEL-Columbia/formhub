@@ -60,7 +60,7 @@ class NoRecordsFoundError(Exception):
 
 class AbstractDataFrameBuilder(object):
 
-    # TODO: use constants from comman_tags module!
+    # TODO: use constants from common_tags module!
     INTERNAL_FIELDS = [XFORM_ID_STRING, STATUS, ID, ATTACHMENTS, GEOLOCATION,
         UUID, SUBMISSION_TIME]
 
@@ -222,12 +222,11 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
 
         # write all cursor's data to different sheets
         # TODO: for every repeat, the index should be re-calculated
-        for section in self.sections:
+        for section_name, section in self.sections.iteritems():
             # TODO: currently ignoring nested repeat data which will have no
             # records
-            records = data[section["name"]]
+            records = data[section_name]
             if len(records) > 0:
-                section_name = section["name"]
                 columns = section["columns"] + self.EXTRA_COLUMNS
                 writer = XLSDataFrameWriter(records, columns)
                 writer.write_to_excel(self.xls_writer, section_name,
@@ -241,22 +240,19 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         returns a dictionary with keys being the names of the sheet and values
         a list of dicts to feed into a DataFrame
         """
-        data = {}
-        for section_name in self.section_names_list:
-            data[section_name] = []
+        data = dict((section_name, []) for section_name in self.sections.keys())
 
         for record in cursor:
             # from record, we'll end up with multiple records, one for each
             # section we have
 
             # add records for the default section
-            columns = self._get_section(self.survey_name)["columns"]
+            columns = self.sections[self.survey_name]["columns"]
             index = self._add_data_for_section(data[self.survey_name],
                 record, columns)
 
-            for sheet_name in self.section_names_list:
-                section = self._get_section(sheet_name)
-                # skip default section i.e surveyname
+            for sheet_name, section in self.sections.iteritems():
+                # skip default section i.e survey name
                 if sheet_name != self.survey_name:
                     xpath = section["xpath"]
                     columns = section["columns"]
@@ -304,10 +300,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         columns for each section
         """
         # clear list
-        self.sections = []
-
-        # dict of section name to their indexes within self.sections
-        self.section_names_list = {}
+        self.sections = OrderedDict()
 
         # TODO: make sure survey name and any section name is a valid xml
         # sheet name i.e. 31 chars or less etc.
@@ -315,7 +308,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
 
         # generate a unique and valid xls sheet name
         self.survey_name = get_valid_sheet_name(self.survey_name,
-                self.sections)
+                self.sections.keys())
         # setup the default section
         self._create_section(self.survey_name, survey_xpath, False)
 
@@ -334,7 +327,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                 if isinstance(e, RepeatingSection):
                     sheet_name = e.name
                     sheet_name = get_valid_sheet_name(sheet_name,
-                            self.sections)
+                            self.sections.keys())
                     self._create_section(sheet_name, e.get_abbreviated_xpath(),
                             True)
 
@@ -354,7 +347,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                             self._add_column_to_section(sheet_name, option)
                     # split gps fields within this section
                     if c.bind.get(u"type") == GEOPOINT_BIND_TYPE:
-                        # add columns for geopint components
+                        # add columns for geopoint components
                         for xpath in\
                             self.dd.get_additional_geopoint_xpaths(
                             c.get_abbreviated_xpath()):
@@ -367,7 +360,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
             if len(self.sections) > self.XLS_SHEET_COUNT_LIMIT:
                 self.exceeds_xls_limits = True
             else:
-                for section in self.sections:
+                for section in self.sections.itervalues():
                     if len(section["columns"]) > self.XLS_COLUMN_COUNT_MAX:
                         self.exceeds_xls_limits = True
                         break
@@ -375,12 +368,11 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
 
     def _create_section(self, section_name, xpath, is_repeat):
         index = len(self.sections)
-        self.sections.append({"name": section_name, "xpath": xpath,
-                              "columns": [], "is_repeat": is_repeat})
-        self.section_names_list[section_name] = index
+        self.sections[section_name] = {"name": section_name, "xpath": xpath,
+                              "columns": [], "is_repeat": is_repeat}
 
     def _add_column_to_section(self, sheet_name, column):
-        section = self._get_section(sheet_name)
+        section = self.sections[sheet_name]
         xpath = None
         if isinstance(column, SurveyElement):
             xpath = column.get_abbreviated_xpath()
@@ -390,9 +382,6 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         # make sure column is not already in list
         if xpath not in section["columns"]:
             section["columns"].append(xpath)
-
-    def _get_section(self, section_name):
-        return self.sections[self.section_names_list[section_name]]
 
 
 class CSVDataFrameBuilder(AbstractDataFrameBuilder):
