@@ -183,10 +183,18 @@ class TestFormMetadata(MainTestCase):
         self.assertEqual(len(MetaData.objects.filter(xform=self.xform,
             data_type='mapbox_layer')), self.count)
         self.assertEqual(response.status_code, 302)
-        # test for anon user mapbox_layer metadata delete
-        #name = self._add_metadata(data_type='media')
-        #response = self.anon.get(self.delete_doc_url + '?del=true')
-        #self.assertEqual(response.status_code, 403)
+
+    def test_anon_delete_mapbox_layer(self):
+        self._add_mapbox_layer()
+        doc = MetaData.objects.filter(data_type='mapbox_layer').reverse()[0]
+        self.delete_doc_url = reverse(delete_metadata, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'data_id': doc.id})
+        response = self.anon.get(self.delete_doc_url + '?map_name_del=true')
+        self.assertEqual(len(MetaData.objects.filter(xform=self.xform,
+            data_type='mapbox_layer')), self.count + 1)
+        self.assertEqual(response.status_code, 302)
 
     def test_user_source_edit_updates(self):
         desc = 'Snooky'
