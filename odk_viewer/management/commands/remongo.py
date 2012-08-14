@@ -20,7 +20,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **kwargs):
-        print "kwargs: %s" % kwargs
         ids = None
         # check for username AND id_string - if one exists so must the other
         if (kwargs.get('username') and not kwargs.get('id_string')) or (not\
@@ -43,13 +42,13 @@ class Command(BaseCommand):
         record_count = filter_queryset.count()
         i = 0
         while start < record_count:
-            print "Querying record %s to %s" % (start, end-1)
+            self.stdout.write("Querying record %s to %s\n" % (start, end-1))
             queryset = filter_queryset.order_by('pk')[start:end]
             for pi in queryset.iterator():
                 pi.update_mongo()
                 i += 1
                 if (i % 1000) == 0:
-                    print 'Updated %d records, flushing MongoDB...' % i
+                    self.stdout.write('Updated %d records, flushing MongoDB...\n' % i)
                     settings._MONGO_CONNECTION.admin.command({'fsync': 1})
             start = start + batchsize
             end = min(record_count, start + batchsize)
