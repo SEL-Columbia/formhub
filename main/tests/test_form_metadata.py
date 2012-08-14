@@ -160,11 +160,19 @@ class TestFormMetadata(MainTestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_delete_supporting_media(self):
+        count = MetaData.objects.filter(xform=self.xform,
+            data_type='media').count()
         name = self._add_metadata(data_type='media')
+        self.assertEqual(MetaData.objects.filter(xform=self.xform,
+            data_type='media').count(), count + 1)
         response = self.client.get(self.doc_url + '?del=true')
+        self.assertEqual(MetaData.objects.filter(xform=self.xform,
+            data_type='media').count(), count)
         self.assertEqual(response.status_code, 302)
         name = self._add_metadata(data_type='media')
         response = self.anon.get(self.doc_url + '?del=true')
+        self.assertEqual(MetaData.objects.filter(xform=self.xform,
+            data_type='media').count(), count + 1)
         self.assertEqual(response.status_code, 403)
 
     def _add_mapbox_layer(self):
