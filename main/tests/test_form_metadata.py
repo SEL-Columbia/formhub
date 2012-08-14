@@ -159,9 +159,9 @@ class TestFormMetadata(MainTestCase):
         response = self.anon.get(self.doc_url + '?del=true')
         self.assertEqual(response.status_code, 403)
 
-    def test_delete_mapbox_layer(self):
+    def _add_mapbox_layer(self):
         # check mapbox_layer metadata count
-        count = len(MetaData.objects.filter(xform=self.xform,
+        self.count = len(MetaData.objects.filter(xform=self.xform,
             data_type='mapbox_layer'))
         # add mapbox_layer metadata
         post_data = {'map_name': 'test_mapbox_layer',
@@ -169,7 +169,10 @@ class TestFormMetadata(MainTestCase):
         response = self.client.post(self.edit_url, post_data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(len(MetaData.objects.filter(xform=self.xform,
-            data_type='mapbox_layer')), count + 1)
+            data_type='mapbox_layer')), self.count + 1)
+
+    def test_delete_mapbox_layer(self):
+        self._add_mapbox_layer()
         # delete mapbox_layer metadata
         doc = MetaData.objects.filter(data_type='mapbox_layer').reverse()[0]
         self.delete_doc_url = reverse(delete_metadata, kwargs={
@@ -178,7 +181,7 @@ class TestFormMetadata(MainTestCase):
             'data_id': doc.id})
         response = self.client.get(self.delete_doc_url + '?map_name_del=true')
         self.assertEqual(len(MetaData.objects.filter(xform=self.xform,
-            data_type='mapbox_layer')), count)
+            data_type='mapbox_layer')), self.count)
         self.assertEqual(response.status_code, 302)
         # test for anon user mapbox_layer metadata delete
         #name = self._add_metadata(data_type='media')
