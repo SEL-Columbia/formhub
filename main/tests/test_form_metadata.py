@@ -144,12 +144,20 @@ class TestFormMetadata(MainTestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_delete_supporting_doc(self):
+        count = MetaData.objects.filter(xform=self.xform,
+            data_type='supporting_doc').count()
         name = self._add_metadata()
-        response = self.client.get(self.doc_url + '?del=true')
+        self.assertEqual(MetaData.objects.filter(xform=self.xform,
+            data_type='supporting_doc').count() , count + 1)
+        doc = MetaData.objects.filter(data_type='supporting_doc').reverse()[0]
+        self.delete_doc_url = reverse(delete_metadata, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'data_id': doc.id})
+        response = self.client.get(self.delete_doc_url + '?del=true')
+        self.assertEqual(MetaData.objects.filter(xform=self.xform,
+            data_type='supporting_doc').count(), count)
         self.assertEqual(response.status_code, 302)
-        name = self._add_metadata()
-        response = self.anon.get(self.doc_url + '?del=true')
-        self.assertEqual(response.status_code, 403)
 
     def test_delete_supporting_media(self):
         name = self._add_metadata(data_type='media')
