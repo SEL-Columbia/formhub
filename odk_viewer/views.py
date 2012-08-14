@@ -384,15 +384,6 @@ def instance(request, username, id_string):
     })
 
 def chart(request, username, id_string):
-    """
-    context = RequestContext(request)
-    context.meteorURL = settings.METEORURL
-    context.hostURL = "http://"+request.META['HTTP_HOST']
-    #content_user = request.user
-    set_profile_data(context, content_user)
-    context.xform_string = id_string
-    return render_to_response("chart.html", context_instance=context)
-    """
     context = RequestContext(request)
     context.meteorURL = settings.METEORURL
     context.hostURL = "http://"+request.META['HTTP_HOST']
