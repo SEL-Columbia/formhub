@@ -28,7 +28,7 @@ var languages = [];
 // TODO: this re should only accept valid js variable names so numbers/letter/underscore
 var cleanRe = /[\[\]\/]/g; // regular expression used to clean names with slashes
 var cleanReplacement = '_';
-var positionTpl = "Record {pos} of {total}";
+var positionTpl = "{% trans 'Record {pos} of {total}' %}";
 var numRecords = null;
 var browsePos = null;
 
@@ -156,7 +156,7 @@ function editData(context, query, next_prev){
                 
             })
             .error(function(){
-               alert("BAD REQUEST");
+               alert("{% trans 'BAD REQUEST' %}");
             })
 }
 
@@ -193,7 +193,7 @@ function loadData(context, query)
                 }
             })
             .error(function(){
-                alert("BAD REQUEST");
+                alert("{% trans 'BAD REQUEST' %}");
             })
 }
 
@@ -300,7 +300,7 @@ function reDraw(context, data)
     else
     {
         $('#data').empty();
-        $('#data').html("<h3>The requested content was not found.<h3>");
+        $('#data').html("<h3>{% trans 'The requested content was not found.' %}<h3>");
     }
 }
 
@@ -312,7 +312,7 @@ function createTable()
     if(languages.length > 1)
     {
         var languageRow = $('<div class="row"></div>');
-        var languageStr = $('<div class="span6"><span>Change Language:</span> </div>')
+        var languageStr = $('<div class="span6"><span>{% trans "Change Language:" %}</span> </div>')
         var languageSelect = $('<select class="language"></select>');
         var i;
         for(i in languages)
@@ -328,11 +328,11 @@ function createTable()
 
     // status and navigation rows - have to separate top and bottom since jquery doesnt append the same object twice
     var topStatusNavRows = $('<div class="row"></div>');
-    var statusStr = '<div class="span6"><div class="dataTables_info"><h4 class="record-pos">Record 1 of 6</h4></div></div>';
+    var statusStr = '<div class="span6"><div class="dataTables_info"><h4 class="record-pos">{% trans "Record 1 of 6" %}</h4></div></div>';
     var topStatus = $(statusStr);
     topStatusNavRows.append(topStatus);
     
-    var pagerStr = '<div class="span6"><div class="dataTables_paginate paging_bootstrap pagination"><ul><li class="prev disabled"><a href="#">← Previous</a></li><li class="next disabled"><a href="#">Next → </a></li></ul></div></div>';
+    var pagerStr = '<div class="span6"><div class="dataTables_paginate paging_bootstrap pagination"><ul><li class="prev disabled"><a href="#">{% trans "← Previous" %}</a></li><li class="next disabled"><a href="#">{% trans "Next →" %} </a></li></ul></div></div>';
     var topPager = $(pagerStr);
     
     topStatusNavRows.append(topPager);
@@ -344,7 +344,7 @@ function createTable()
     {% endif %}
     
     var table = $('<table id="data-table" class="table table-bordered table-striped"></table');
-    var tHead = $('<thead><tr><th class="header" width="50%">Question</th><th class="header">Response</th></tr></thead>');
+    var tHead = $('<thead><tr><th class="header" width="50%">{% trans "Question" %}</th><th class="header">{% trans "Response" %}</th></tr></thead>');
     var tBody = $('<tbody></tbody>');
     var key;
     for(key in questions)

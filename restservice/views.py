@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response
 from django.template.base import Template
 from django.template.context import RequestContext, Context
 from django.utils import simplejson
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from odk_logger.models.xform import XForm
 from restservice.forms import RestServiceForm
@@ -19,6 +19,7 @@ def add_service(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     if request.method == 'POST':
         form = RestServiceForm(request.POST)
+        context.restservice = None
         if form.is_valid():
             service_name = form.cleaned_data['service_name']
             service_url = form.cleaned_data['service_url']
@@ -31,8 +32,8 @@ def add_service(request, username, id_string):
                 context.status = 'fail'
             else:
                 context.status = 'success'
-                context.message = \
-                    _(u"Successfully added service %s.") % service_name
+                context.message = (_(u"Successfully added service %(name)s.") 
+                                   % {'name': service_name})
                 context.restservice = rs
         else:
             context.status = 'fail'
@@ -51,3 +52,18 @@ def add_service(request, username, id_string):
     context.username = username
     context.id_string = id_string
     return render_to_response("add-service.html", context_instance=context)
+
+
+def delete_service(request, username, id_string):
+    success = "FAILED"
+    if request.method == 'POST':
+        pk = request.POST.get('service-id')
+        if pk:
+            try:
+                rs = RestService.objects.get(pk=int(pk))
+            except RestService.DoesNotExist:
+                pass
+            else:
+                rs.delete()
+                success= "OK"
+    return HttpResponse(success)

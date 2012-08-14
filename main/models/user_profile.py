@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.translation import ugettext_lazy
 from utils.country_field import COUNTRIES
 from utils.gravatar import get_gravatar_img_link, gravatar_exists
 from django.db.models.signals import post_save
@@ -17,7 +18,7 @@ class UserProfile(models.Model):
     twitter = models.CharField(max_length=255, blank=True)
     description = models.CharField(max_length=255, blank=True)
     require_auth = models.BooleanField(default=False,
-            verbose_name="Require Phone Authentication")
+            verbose_name=ugettext_lazy("Require Phone Authentication"))
 
     @property
     def gravatar(self):

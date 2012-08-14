@@ -4,6 +4,7 @@ import os
 import tempfile
 import urllib
 import urllib2
+from xml.parsers.expat import ExpatError
 import zipfile
 
 from itertools import chain
@@ -23,7 +24,7 @@ from django.core.files.storage import get_storage_class
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.translation import ugettext as _
 from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
 
@@ -71,10 +72,10 @@ def bulksubmission(request, username):
             import_instances_from_zip(our_tf, user=posting_user)
         os.remove(our_tfpath)
         json_msg = {
-            'message': ugettext(u"Submission successful. Out of %(total)d "
-                                u"survey instances, %(success)d were imported "
-                                u"(%(rejected)d were rejected--duplicates, "
-                                u"missing forms, etc.)") %
+            'message': _(u"Submission successful. Out of %(total)d "
+                         u"survey instances, %(success)d were imported "
+                         u"(%(rejected)d were rejected--duplicates, "
+                         u"missing forms, etc.)") %
             {'total': total_count, 'success': success_count,
              'rejected': total_count - success_count},
             'errors': u"%d %s" % (len(errors), errors)
@@ -194,6 +195,8 @@ def submission(request, username=None):
             return HttpResponseNotFound(
                 _(u"Form does not exist on this account")
             )
+        except ExpatError:
+            return HttpResponseBadRequest(_(u"Improperly formatted XML."))
 
         if instance is None:
             return HttpResponseBadRequest(_(u"Unable to create submission."))
@@ -251,8 +254,8 @@ def download_xlsform(request, username, id_string):
     else:
         messages.add_message(request, messages.WARNING,
                              _(u'No XLS file for your form '
-                               u'<strong>%s</strong>')
-                             % id_string)
+                               u'<strong>%(id)s</strong>')
+                             % {'id': id_string})
         return HttpResponseRedirect("/%s" % username)
 
 

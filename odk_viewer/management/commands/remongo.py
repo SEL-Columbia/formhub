@@ -1,22 +1,23 @@
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from optparse import make_option
+from django.utils.translation import ugettext_lazy, ugettext as _
 from odk_viewer.models import ParsedInstance
 from utils.model_tools import queryset_iterator
 
 class Command(BaseCommand):
-    help = "Insert all existing parsed instances into MongoDB"
+    help = ugettext_lazy("Insert all existing parsed instances into MongoDB")
     option_list = BaseCommand.option_list + (
             make_option('--batchsize',
                 type='int',
                 default=100,
-                help='Number of records to process per query'),
+                help=ugettext_lazy("Number of records to process per query"),
         ) + (
         make_option('-u', '--username',
-            help='Username of the form user'),
+            help=ugettext_lazy("Username of the form user"),
         ) + (
         make_option('-i', '--id_string',
-            help='id string of the form'),
+            help=ugettext_lazy("id string of the form"),
         )
 
     def handle(self, *args, **kwargs):

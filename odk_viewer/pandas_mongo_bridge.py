@@ -12,7 +12,7 @@ from odk_viewer.models.data_dictionary import ParsedInstance, DataDictionary
 from utils.export_tools import question_types_to_exclude
 from collections import OrderedDict
 from common_tags import ID, XFORM_ID_STRING, STATUS, ATTACHMENTS, GEOLOCATION,\
-UUID, SUBMISSION_TIME, NA_REP
+UUID, SUBMISSION_TIME, NA_REP, BAMBOO_DATASET_ID
 
 
 # this is Mongo Collection where we will store the parsed submissions
@@ -62,7 +62,7 @@ class AbstractDataFrameBuilder(object):
 
     # TODO: use constants from comman_tags module!
     INTERNAL_FIELDS = [XFORM_ID_STRING, STATUS, ID, ATTACHMENTS, GEOLOCATION,
-        UUID, SUBMISSION_TIME]
+        UUID, SUBMISSION_TIME, BAMBOO_DATASET_ID]
 
     """
     Group functionality used by any DataFrameBuilder i.e. XLS, CSV and KML
@@ -433,10 +433,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
                             d.update(cls._reindex(nested_key, nested_val,
                                 ordered_columns, new_prefix))
                         else:
-                            # it can only be a string
-                            # TODO: find out why this asert fails sometimes
-                            # considering it can only be a string
-                            # assert(isinstance(nested_val, basestring))
+                            # it can only be a scalar
                             # collapse xpath
                             if parent_prefix:
                                 xpaths[0:len(parent_prefix)] = parent_prefix
@@ -466,14 +463,18 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         for child in survey_element.children:
             child_xpath = child.get_abbreviated_xpath()
             if isinstance(child, Section):
+                child_is_repeating = False
                 if isinstance(child, RepeatingSection):
                     ordered_columns[child.get_abbreviated_xpath()] = []
-                    is_repeating_section = True
+                    child_is_repeating = True
                 cls._build_ordered_columns(child, ordered_columns,
-                        is_repeating_section)
+                    child_is_repeating)
             elif isinstance(child, Question) and not \
                 question_types_to_exclude(child.type) and not\
-                    is_repeating_section:
+                    is_repeating_section:# if is_repeating_section, its parent
+                    # already initiliased an empty list so we dont add it to our
+                    # list of columns, the repeating columns list will be
+                    # generated when we reindex
                 ordered_columns[child.get_abbreviated_xpath()] = None
 
     def _format_for_dataframe(self, cursor):

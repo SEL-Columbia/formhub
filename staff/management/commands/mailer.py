@@ -4,13 +4,15 @@ from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.template.loader import get_template
+from django.utils.translation import ugettext as _, ugettext_lazy
+
 from templated_email import send_templated_mail
 
 from odk_viewer.models import ParsedInstance
 from utils.model_tools import queryset_iterator
 
 class Command(BaseCommand):
-    help = "Send an email to all formhub users"
+    help = ugettext_lazy("Send an email to all formhub users")
 
     option_list = BaseCommand.option_list + (
         make_option("-m", "--message",
@@ -24,14 +26,15 @@ class Command(BaseCommand):
         verbosity = kwargs.get('verbosity')
         get_template('templated_email/notice.email')
         if not message:
-            raise CommandError('message must be included in kwargs')
+            raise CommandError(_('message must be included in kwargs'))
         # get all users
         users = User.objects.all()
         for user in users:
             name = user.get_full_name()
             if not name or len(name) == 0: name = user.email
             if verbosity:
-                print 'Emailing name: %s, email: %s' % (name, user.email)
+                print _('Emailing name: %(name)s, email: %(email)s') \
+                      % {'name': name, 'email': user.email}
             # send each email separately so users cannot see eachother
             send_templated_mail(
                 template_name='notice',

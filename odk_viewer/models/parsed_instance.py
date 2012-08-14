@@ -10,10 +10,11 @@ from django.db.models.signals import post_save, pre_delete
 import json
 
 
+from restservice.utils import call_service
 from utils.model_tools import queryset_iterator
 from odk_logger.models import Instance
 from common_tags import START_TIME, START, END_TIME, END, ID, UUID,\
-    ATTACHMENTS, GEOLOCATION, SUBMISSION_TIME, MONGO_STRFTIME
+    ATTACHMENTS, GEOLOCATION, SUBMISSION_TIME, MONGO_STRFTIME, BAMBOO_DATASET_ID
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
@@ -109,6 +110,7 @@ class ParsedInstance(models.Model):
             {
                 UUID: self.instance.uuid,
                 ID: self.instance.id,
+                BAMBOO_DATASET_ID: self.instance.xform.bamboo_dataset,
                 self.USERFORM_ID: u'%s_%s' % (self.instance.user.username,
                                          self.instance.xform.id_string),
                 ATTACHMENTS: [a.media_file.name for a in\
@@ -223,3 +225,13 @@ def _remove_from_mongo(sender, **kwargs):
     xform_instances.remove(instance_id)
 
 pre_delete.connect(_remove_from_mongo, sender=ParsedInstance)
+
+
+def rest_service_form_submission(sender, **kwargs):
+    parsed_instance = kwargs.get('instance')
+    created = kwargs.get('created')
+    if created:
+        call_service(parsed_instance)
+
+
+post_save.connect(rest_service_form_submission, sender=ParsedInstance)

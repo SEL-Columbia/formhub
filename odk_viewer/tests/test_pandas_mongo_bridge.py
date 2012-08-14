@@ -6,6 +6,23 @@ from main.tests.test_base import MainTestCase
 from odk_viewer.pandas_mongo_bridge import *
 from odk_viewer.views import xls_export
 
+def xls_filepath_from_fixture_name(fixture_name):
+    """
+    Return an xls file path at tests/fixtures/[fixture]/fixture.xls
+    """
+    #TODO: currently this only works for fixtures in this app because of __file__
+    return os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "fixtures", fixture_name, fixture_name + ".xls"
+    )
+
+def xml_inst_filepath_from_fixture_name(fixture_name, instance_name):
+    return os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "fixtures", fixture_name, "instances",
+        fixture_name + "_" + instance_name + ".xml"
+    )
+
 
 class TestPandasMongoBridge(MainTestCase):
     def setUp(self):
@@ -15,10 +32,7 @@ class TestPandasMongoBridge(MainTestCase):
         """
         Publish an xls file at tests/fixtures/[fixture]/fixture.xls
         """
-        xls_file_path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "fixtures", fixture, fixture + ".xls"
-        )
+        xls_file_path = xls_filepath_from_fixture_name(fixture)
         count = XForm.objects.count()
         response = self._publish_xls_file(xls_file_path)
         self.assertEqual(XForm.objects.count(), count + 1)
@@ -29,11 +43,8 @@ class TestPandasMongoBridge(MainTestCase):
         Submit an instance at
         tests/fixtures/[fixture]/instances/[fixture]_[instance].xml
         """
-        xml_submission_file_path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "fixtures", fixture, "instances",
-            fixture + "_" + instance + ".xml"
-        )
+        xml_submission_file_path = xml_inst_filepath_from_fixture_name(fixture,
+            instance)
         self._make_submission(xml_submission_file_path)
         self.assertEqual(self.response.status_code, 201)
 
@@ -192,7 +203,7 @@ class TestPandasMongoBridge(MainTestCase):
         csv_df_builder.export_to(temp_file)
         csv_fixture_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
-            "fixtures", "nested_repeats.csv"
+            "fixtures", "nested_repeats", "nested_repeats.csv"
         )
         temp_file.close()
         fixture, output = '', ''
@@ -200,8 +211,6 @@ class TestPandasMongoBridge(MainTestCase):
             fixture = f.read()
         with open(temp_file.name) as f:
             output = f.read()
-        #with open('output.csv', 'w') as f:
-        #    f.write(output)
         os.unlink(temp_file.name)
         self.assertEqual(fixture, output)
 
@@ -373,6 +382,38 @@ class TestPandasMongoBridge(MainTestCase):
         }
         AbstractDataFrameBuilder._split_gps_fields(record, gps_fields)
         self.assertEqual(expected_result, record)
+
+    def test_unicode_export(self):
+        unicode_char = unichr(40960)
+        # fake data
+        data = [{"key": unicode_char}]
+        columns = ["key"]
+        # test xls
+        xls_df_writer = XLSDataFrameWriter(data, columns)
+        temp_file = NamedTemporaryFile(suffix=".xls")
+        excel_writer = ExcelWriter(temp_file.name)
+        passed = False
+        try:
+            xls_df_writer.write_to_excel(excel_writer, "default")
+            passed = True
+        except UnicodeEncodeError:
+            pass
+        finally:
+            temp_file.close()
+        self.assertTrue(passed)
+        # test csv
+        passed = False
+        csv_df_writer = CSVDataFrameWriter(data, columns)
+        temp_file = NamedTemporaryFile(suffix=".csv")
+        try:
+            csv_df_writer.write_to_csv(temp_file)
+            passed = True
+        except UnicodeEncodeError:
+            pass
+        finally:
+            temp_file.close()
+        temp_file.close()
+        self.assertTrue(passed)
 
     def test_remove_dups_from_list_maintain_order(self):
         l = ["a", "z", "b", "y", "c", "b", "x"]
