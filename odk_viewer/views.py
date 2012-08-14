@@ -38,6 +38,7 @@ from utils.user_auth import has_permission, get_xform_and_perms
 from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
 import main
+from django.conf import settings
 
 
 def encode(time_str):
@@ -381,3 +382,21 @@ def instance(request, username, id_string):
         'xform': xform,
         'can_edit': can_edit
     })
+
+def chart(request, username, id_string):
+    """
+    context = RequestContext(request)
+    context.meteorURL = settings.METEORURL
+    context.hostURL = "http://"+request.META['HTTP_HOST']
+    #content_user = request.user
+    set_profile_data(context, content_user)
+    context.xform_string = id_string
+    return render_to_response("chart.html", context_instance=context)
+    """
+    context = RequestContext(request)
+    context.meteorURL = settings.METEORURL
+    context.hostURL = "http://"+request.META['HTTP_HOST']
+    context.user_name = username
+    context.xform_string = id_string
+
+    return render_to_response('chart.html', context_instance=context)

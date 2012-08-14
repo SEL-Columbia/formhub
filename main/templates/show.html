@@ -211,7 +211,7 @@
                 <i class="icon-list-alt icon-white"></i> {% trans "Browse Data" %}
             </a>
         {% if xform.shared_data and xform.submission_count > 0 %}
-            <a class="btn btn-info" btn-info  rel="tooltip" title="{% trans "View Charts" %}" href="{% url main.views.chart xform.id_string %}">
+            <a class="btn btn-info" btn-info  rel="tooltip" title="{% trans "View Charts" %}" href="{% url odk_viewer.views.chart content_user.username xform.id_string %}">
                 <i class="icon-signal icon-white"></i> {% trans "View Charts" %}
             </a>
         {% endif %}

@@ -85,6 +85,6 @@ urlpatterns = patterns('',
         {'document_root': settings.MEDIA_ROOT}),
 
     # bamboo meteor client charting
-    url(r'^charting/(?P<id_string>.*)$', 'main.views.chart')
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/charting", 'odk_viewer.views.chart')
 )
 

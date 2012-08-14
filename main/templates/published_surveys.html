@@ -96,7 +96,7 @@
 	  </a>                
         <!--here we add bamboo meteor client logic-->
         {% if xform.submission_count > 0 and xform.shared %}
-	  <a class="btn" href="{% url main.views.chart xform.id_string %}" data-original-title="{%trans 'View Charts' %}" rel="tooltip">
+	  <a class="btn" href="{% url odk_viewer.views.chart content_user.username xform.id_string %}" data-original-title="{%trans 'View Charts' %}" rel="tooltip">
         <i class="icon-signal"></i>
       </a>
         {% endif %}
