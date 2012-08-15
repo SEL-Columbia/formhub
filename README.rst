@@ -146,6 +146,10 @@ To run the test for a specific method in a specific class in a specific app, e.g
 
     python manage.py test main.TestFormErrors.test_submission_deactivated
 
+To run javascript tests enter the following, NOTE that the testDir and configFile paths are relative to the js_tests/EnvJasmine directory:
+
+    ./js_tests/EnvJasmine/bin/run_all_tests.sh --testDir=../ --configFile=../env_jasmine.conf.js
+
 Deploying
 ---------
 
@@ -195,12 +199,14 @@ Localization
 To generate a locale from scratch (ex. Spanish)
 
     django-admin.py makemessages -l es -e py,html,email,txt
-    django-admin.py makemessages -d djangojs -l es
+    for app in {main,odk_viewer} ; do cd ${app} && django-admin.py makemessages -d djangojs -l es && cd - ; done
 
 To update PO files
 
     django-admin.py makemessages -a
+    for app in {main,odk_viewer} ; do cd ${app} && django-admin.py makemessages -d djangojs -a && cd - ; done
 
 To compile MO files and update live translations
 
     django-admin.py compilemessages
+    for app in {main,odk_viewer} ; do cd ${app} && django-admin.py compilemessages && cd - ; done

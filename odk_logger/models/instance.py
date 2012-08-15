@@ -8,7 +8,6 @@ from .xform import XForm
 from .survey_type import SurveyType
 from odk_logger.xform_instance_parser import XFormInstanceParser,\
          XFORM_ID_STRING
-from restservice.utils import call_service
 from utils.model_tools import set_uuid
 from utils.stathat_api import stathat_count
 
@@ -102,10 +101,3 @@ def stathat_form_submission(sender, instance, created, **kwargs):
     if created:
         stathat_count('formhub-submissions')
 
-
-def rest_service_form_submission(sender, instance, created, **kwargs):
-    if created:
-        call_service(instance)
-
-
-post_save.connect(rest_service_form_submission, sender=Instance)

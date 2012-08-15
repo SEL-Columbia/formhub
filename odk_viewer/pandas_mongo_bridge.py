@@ -12,7 +12,7 @@ from odk_viewer.models.data_dictionary import ParsedInstance, DataDictionary
 from utils.export_tools import question_types_to_exclude
 from collections import OrderedDict
 from common_tags import ID, XFORM_ID_STRING, STATUS, ATTACHMENTS, GEOLOCATION,\
-UUID, SUBMISSION_TIME, NA_REP
+UUID, SUBMISSION_TIME, NA_REP, BAMBOO_DATASET_ID
 
 
 # this is Mongo Collection where we will store the parsed submissions
@@ -62,7 +62,7 @@ class AbstractDataFrameBuilder(object):
 
     # TODO: use constants from comman_tags module!
     INTERNAL_FIELDS = [XFORM_ID_STRING, STATUS, ID, ATTACHMENTS, GEOLOCATION,
-        UUID, SUBMISSION_TIME]
+        UUID, SUBMISSION_TIME, BAMBOO_DATASET_ID]
 
     """
     Group functionality used by any DataFrameBuilder i.e. XLS, CSV and KML
@@ -433,8 +433,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
                             d.update(cls._reindex(nested_key, nested_val,
                                 ordered_columns, new_prefix))
                         else:
-                            # it can only be a string
-                            assert(isinstance(nested_val, basestring))
+                            # it can only be a scalar
                             # collapse xpath
                             if parent_prefix:
                                 xpaths[0:len(parent_prefix)] = parent_prefix
