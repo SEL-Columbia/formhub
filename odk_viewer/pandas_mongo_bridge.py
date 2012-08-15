@@ -12,7 +12,7 @@ from odk_viewer.models.data_dictionary import ParsedInstance, DataDictionary
 from utils.export_tools import question_types_to_exclude
 from collections import OrderedDict
 from common_tags import ID, XFORM_ID_STRING, STATUS, ATTACHMENTS, GEOLOCATION,\
-UUID, SUBMISSION_TIME, NA_REP
+UUID, SUBMISSION_TIME, NA_REP, BAMBOO_DATASET_ID
 
 
 # this is Mongo Collection where we will store the parsed submissions
@@ -62,7 +62,7 @@ class AbstractDataFrameBuilder(object):
 
     # TODO: use constants from common_tags module!
     INTERNAL_FIELDS = [XFORM_ID_STRING, STATUS, ID, ATTACHMENTS, GEOLOCATION,
-        UUID, SUBMISSION_TIME]
+        UUID, SUBMISSION_TIME, BAMBOO_DATASET_ID]
 
     """
     Group functionality used by any DataFrameBuilder i.e. XLS, CSV and KML
@@ -431,13 +431,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
                             d.update(cls._reindex(nested_key, nested_val,
                                 ordered_columns, new_prefix))
                         else:
-                            # it can only be a string
-                            #assert(isinstance(nested_val, basestring))
-                            if not isinstance(nested_val, basestring):
-                                import logging
-                                logger = logging.getLogger("django.request")
-                                logger.error(("%s=%s of type %s is not a basestring" % (str(nested_key), str(nested_val), type(nested_val))))
-                                raise Exception("Not a basestring")
+                            # it can only be a scalar
                             # collapse xpath
                             if parent_prefix:
                                 xpaths[0:len(parent_prefix)] = parent_prefix
@@ -446,7 +440,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
                             if key in ordered_columns.keys():
                                 if not new_xpath in ordered_columns[key]:
                                     ordered_columns[key].append(new_xpath)
-                            d[new_xpath] = str(nested_val)
+                            d[new_xpath] = nested_val
                 else:
                     d[key] = value
         else:

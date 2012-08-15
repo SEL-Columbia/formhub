@@ -7,9 +7,9 @@ from django.core.urlresolvers import reverse
 from django.core.files.storage import default_storage, get_storage_class
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect, HttpResponseNotAllowed, \
-    HttpResponseForbidden, HttpResponseNotFound, HttpResponseServerError
+from django.http import (HttpResponse, HttpResponseBadRequest,
+    HttpResponseRedirect, HttpResponseNotAllowed, Http404,
+    HttpResponseForbidden, HttpResponseNotFound, HttpResponseServerError)
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
 from django.utils import simplejson
@@ -285,6 +285,35 @@ def api(request, username=None, id_string=None):
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))
     return HttpResponse(response_text, mimetype='application/json')
+
+
+@require_GET
+def public_api(request, username, id_string):
+    """
+    Returns public infomation about the forn as JSON
+    """
+
+    xform = get_object_or_404(XForm, 
+                              user__username=username, id_string=id_string)
+
+    DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+    exports = {'username': xform.user.username,
+               'id_string': xform.id_string,
+               'bamboo_dataset': xform.bamboo_dataset,
+               'shared': xform.shared,
+               'shared_data': xform.shared_data,
+               'downloadable': xform.downloadable,
+               'is_crowd_form': xform.is_crowd_form,
+               'title': xform.title,
+               'date_created': xform.date_created.strftime(DATETIME_FORMAT),
+               'date_modified': xform.date_modified.strftime(DATETIME_FORMAT),
+               'uuid': xform.uuid,
+               }
+
+    response_text = simplejson.dumps(exports)
+
+    return HttpResponse(response_text, mimetype='application/json')
+
 
 @login_required
 def edit(request, username, id_string):
@@ -565,3 +594,20 @@ def delete_data(request, username=None, id_string=None):
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))
     return HttpResponse(response_text, mimetype='application/json')
+
+
+@require_POST
+@is_owner
+def link_to_bamboo(request, username, id_string):
+    xform = get_object_or_404(XForm,
+                              user__username=username, id_string=id_string)
+    
+    from utils.bamboo import get_new_bamboo_dataset
+    dataset_id = get_new_bamboo_dataset(xform)
+    xform.bamboo_dataset = dataset_id
+    xform.save()
+
+    return HttpResponseRedirect(reverse(show, kwargs={
+        'username': username,
+        'id_string': id_string
+    }))

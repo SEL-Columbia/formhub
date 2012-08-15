@@ -14,7 +14,7 @@ from restservice.utils import call_service
 from utils.model_tools import queryset_iterator
 from odk_logger.models import Instance
 from common_tags import START_TIME, START, END_TIME, END, ID, UUID,\
-    ATTACHMENTS, GEOLOCATION, SUBMISSION_TIME, MONGO_STRFTIME
+    ATTACHMENTS, GEOLOCATION, SUBMISSION_TIME, MONGO_STRFTIME, BAMBOO_DATASET_ID
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
@@ -110,6 +110,7 @@ class ParsedInstance(models.Model):
             {
                 UUID: self.instance.uuid,
                 ID: self.instance.id,
+                BAMBOO_DATASET_ID: self.instance.xform.bamboo_dataset,
                 self.USERFORM_ID: u'%s_%s' % (self.instance.user.username,
                                          self.instance.xform.id_string),
                 ATTACHMENTS: [a.media_file.name for a in\
