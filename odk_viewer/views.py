@@ -33,7 +33,8 @@ from csv_writer import CsvWriter
 from xls_writer import XlsWriter
 from utils.logger_tools import response_with_mimetype_and_name,\
     disposition_ext_and_date, round_down_geopoint
-from utils.viewer_tools import image_urls, image_urls_for_form
+from utils.viewer_tools import image_urls, image_urls_for_form,\
+    create_xls_export
 from utils.user_auth import has_permission, get_xform_and_perms
 from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
@@ -191,35 +192,29 @@ def xls_export(request, username, id_string):
         return HttpResponseForbidden(_(u'Not shared.'))
     query = request.GET.get("query")
     force_xlsx = request.GET.get('xlsx') == 'true'
-    xls_df_builder = XLSDataFrameBuilder(username, id_string, query)
     excel_defs = {
-      'xls': {
-        'suffix': '.xls',
-        'mime_type': 'vnd.ms-excel'
-      },
-      'xlsx': {
-        'suffix': '.xlsx',
-        'mime_type': 'vnd.openxmlformats' # TODO: check xlsx mime type
-      }
+        'xls': {
+            'suffix': '.xls',
+            'mime_type': 'vnd.ms-excel'
+        },
+        'xlsx': {
+            'suffix': '.xlsx',
+            'mime_type': 'vnd.openxmlformats'
+        }
     }
-    ext = 'xls' if not force_xlsx else 'xlsx'
-    if xls_df_builder.exceeds_xls_limits:
-        ext = 'xlsx'
     try:
-        temp_file = NamedTemporaryFile(suffix=excel_defs[ext]['suffix'])
-        xls_df_builder.export_to(temp_file.name)
-
-        if request.GET.get('raw'):
-            id_string = None
-        response = response_with_mimetype_and_name(excel_defs[ext]['mime_type'], id_string,
-                                                   extension=ext)
-        response.write(temp_file.read())
-        temp_file.seek(0, os.SEEK_END)
-        response['Content-Length'] = temp_file.tell()
-        temp_file.close()
-        return response
+        file_path = create_xls_export(user=owner, xform=xform, query=query,
+            xlsx=force_xlsx)
     except NoRecordsFoundError:
         return HttpResponse(_("No records found to export"))
+    else:
+        # get extension from file_path
+        path, ext = os.path.splitext(file_path)
+        if request.GET.get('raw'):
+            id_string = None
+        response = response_with_mimetype_and_name(excel_defs[ext]['mime_type'],
+            id_string, extension=ext, file_path=file_path)
+        return response
 
 def zip_export(request, username, id_string):
     owner = get_object_or_404(User, username=username)

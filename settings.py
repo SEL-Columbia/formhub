@@ -221,8 +221,11 @@ if TESTING_MODE:
     MONGO_DB.instances.drop()
     MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'test_media/')
     subprocess.call(["rm", "-r", MEDIA_ROOT])
+    EXPORT_DIR = os.path.join(PROJECT_ROOT, 'test_exports/')
+    subprocess.call(["rm", "-r", EXPORT_DIR])
 else:
     MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'media/')
+    EXPORT_DIR = os.path.join(PROJECT_ROOT, 'exports/')
 
 try:
     from local_settings import *
