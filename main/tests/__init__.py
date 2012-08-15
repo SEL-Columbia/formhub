@@ -1,6 +1,7 @@
 from test_crowdforms import TestCrowdforms
 from test_csv_export import TestExport
 from test_form_api import TestFormAPI
+from test_form_public_api import TestFormPublicAPI
 from test_form_auth import TestFormAuth
 from test_form_edit import TestFormEdit
 from test_form_enter_data import TestFormEnterData
