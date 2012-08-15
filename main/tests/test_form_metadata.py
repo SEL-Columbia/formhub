@@ -124,13 +124,6 @@ class TestFormMetadata(MainTestCase):
         fileName, ext = os.path.splitext(response['Content-Disposition'])
         self.assertEqual(ext, '.png')
 
-    '''
-    # odk collects needs to media download anonymously
-    def test_no_download_supporting_media_for_anon(self):
-        name = self._add_metadata(data_type='media')
-        response = self.anon.get(self.doc_url)
-        self.assertEqual(response.status_code, 403)'''
-
     def test_shared_download_supporting_doc_for_anon(self):
         name = self._add_metadata()
         self.xform.shared = True
