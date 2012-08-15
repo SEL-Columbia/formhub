@@ -8,6 +8,10 @@ class XLSFormError(Exception):
     pass
 
 
+class DuplicateInstance(Exception):
+    pass
+
+
 class IsNotCrowdformError(Exception):
     pass
 

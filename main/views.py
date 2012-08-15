@@ -440,25 +440,6 @@ def form_gallery(request):
 
 
 def download_metadata(request, username, id_string, data_id):
-    data = get_object_or_404(MetaData, pk=data_id)
-    default_storage = get_storage_class()()
-    if request.GET.get('del', False) and username == request.user.username:
-        try:
-            default_storage.delete(data.data_file.name)
-            data.delete()
-            return HttpResponseRedirect(reverse(show, kwargs={
-                'username': username,
-                'id_string': id_string
-            }))
-        except Exception, e:
-            return HttpResponseServerError()
-    elif request.GET.get('map_name_del', False) and\
-            username == request.user.username:
-        data.delete()
-        return HttpResponseRedirect(reverse(show, kwargs={
-            'username': username,
-            'id_string': id_string
-        }))
     xform = get_object_or_404(XForm,
                               user__username=username, id_string=id_string)
     if username == request.user.username or xform.shared:
@@ -478,8 +459,9 @@ def download_metadata(request, username, id_string, data_id):
     return HttpResponseForbidden(_(u'Permission denied.'))
 
 
-def download_media_data(request, username, id_string, data_id):
-    data = get_object_or_404(MetaData, id=data_id)
+@login_required()
+def delete_metadata(request, username, id_string, data_id):
+    data = get_object_or_404(MetaData, pk=data_id)
     default_storage = get_storage_class()()
     if request.GET.get('del', False) and username == request.user.username:
         try:
@@ -491,21 +473,45 @@ def download_media_data(request, username, id_string, data_id):
             }))
         except Exception, e:
             return HttpResponseServerError()
-    xform = get_object_or_404(XForm,
-                              user__username=username, id_string=id_string)
-    if username == request.user.username or xform.shared:
-        file_path = data.data_file.name
-        filename, extension = os.path.splitext(file_path.split('/')[-1])
-        extension = extension.strip('.')
-        default_storage = get_storage_class()()
-        if default_storage.exists(file_path):
-            response = response_with_mimetype_and_name(
-                data.data_file_type,
-                filename, extension=extension, show_date=False,
-                file_path=file_path)
-            return response
-        else:
-            return HttpResponseNotFound()
+    elif request.GET.get('map_name_del', False) and\
+         username == request.user.username:
+        data.delete()
+        return HttpResponseRedirect(reverse(show, kwargs={
+            'username': username,
+            'id_string': id_string
+        }))
+    return HttpResponseForbidden(_(u'Permission denied.'))
+
+
+def download_media_data(request, username, id_string, data_id):
+    data = get_object_or_404(MetaData, id=data_id)
+    default_storage = get_storage_class()()
+    if request.GET.get('del', False):
+        if username == request.user.username:
+            try:
+                default_storage.delete(data.data_file.name)
+                data.delete()
+                return HttpResponseRedirect(reverse(show, kwargs={
+                    'username': username,
+                    'id_string': id_string
+                }))
+            except Exception, e:
+                return HttpResponseServerError()
+    else:
+        xform = get_object_or_404(XForm,
+                                  user__username=username, id_string=id_string)
+        if username: # == request.user.username or xform.shared:
+            file_path = data.data_file.name
+            filename, extension = os.path.splitext(file_path.split('/')[-1])
+            extension = extension.strip('.')
+            if default_storage.exists(file_path):
+                response = response_with_mimetype_and_name(
+                    data.data_file_type,
+                    filename, extension=extension, show_date=False,
+                    file_path=file_path)
+                return response
+            else:
+                return HttpResponseNotFound()
     return HttpResponseForbidden(_(u'Permission denied.'))
 
 

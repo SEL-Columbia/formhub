@@ -308,7 +308,7 @@
                 {% for doc in supporting_docs %}
                     <p><a href="{% url main.views.download_metadata content_user.username xform.id_string doc.id %}">{{ doc.data_value }}</a>
                     {% if can_edit %}
-                    || <a href="{% url main.views.download_metadata content_user.username xform.id_string doc.id %}?del=true"> {% trans "remove" %} </a>
+                    || <a href="{% url main.views.delete_metadata content_user.username xform.id_string doc.id %}?del=true"> {% trans "remove" %} </a>
                     {% endif %}
                     </p>
                 {% endfor %}
@@ -368,7 +368,7 @@
             <p><a href="{{ mapbox_layer.link }}" target="_blank">{{ mapbox_layer.map_name }}</a> &ndash;
             {% trans "Attribution:" %} {{ mapbox_layer.attribution }}
             {% if can_edit %}
-            &ndash;<a href="{% url main.views.download_metadata content_user.username xform.id_string mapbox_layer.id %}?map_name_del=true"> {% trans "remove" %} </a></p>
+            &ndash;<a href="{% url main.views.delete_metadata content_user.username xform.id_string mapbox_layer.id %}?map_name_del=true"> {% trans "remove" %} </a></p>
             {% endif %}
             {% endif %}
             {% if can_edit %}
