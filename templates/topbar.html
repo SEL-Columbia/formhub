@@ -3,7 +3,7 @@
 <div class="navbar navbar-fixed-top" data-dropdown="dropdown" >
   <div class="navbar-inner{% if form_view %} navbar-inner-map{% endif %}">
     <div class="container">
-      <a class="brand" href="/" title="formhub"><img alt="formhub" src="{{ STATIC_URL }}images/logo.png" /></a>
+      <a class="brand" href="/" title="formhub"><img alt="formhub" src="/static/images/logo.png" /></a>
       {% if form_view %}
       <ul class="nav">
         <li>&nbsp;</li>
@@ -19,16 +19,10 @@
         <li class="lead">
           <a href="#">/</a>
         </li>
-          <li class="lead">
-            <span class="">Map</span>
-          </li>
-          <li><a href="#"><span class="">({{ xform.submission_count }} submissions)</span></a></li>
-          <li class="lead">
-              <span class="">Form</span>
-          </li>
         <li class="lead">
           <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
         </li>
+        <li><a href="#"><span class="">({{ xform.submission_count }} submissions)</span></a></li>
         <li><a href="#"><span class="inverted">{% blocktrans with nb_sub=xform.submission_count %}{{ nb_sub }} submissions{% endblocktrans %}</span></a></li>
       </ul>
       <ul class="nav pull-right">
