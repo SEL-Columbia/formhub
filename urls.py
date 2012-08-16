@@ -69,6 +69,7 @@ urlpatterns = patterns('',
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/instance", 'odk_viewer.views.instance'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/enter-data", 'odk_logger.views.enter_data'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/view-data", 'odk_viewer.views.data_view'),
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/xls-exports", 'odk_viewer.views.xls_export_list'),
 
     # odk data urls
     url(r"^submission$", 'odk_logger.views.submission'),

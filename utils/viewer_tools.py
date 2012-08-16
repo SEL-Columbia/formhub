@@ -207,6 +207,9 @@ def django_file(path, field_name, content_type):
 
 def create_xls_export(user, xform, query=None, xlsx=False):
     from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder
+    from odk_viewer.models import Export
+    from odk_viewer.models.export import XLS_EXPORT, CSV_EXPORT, KML_EXPORT
+
     username = user.username
     id_string = xform.id_string
     xls_df_builder = XLSDataFrameBuilder(username, id_string, query)
@@ -223,6 +226,7 @@ def create_xls_export(user, xform, query=None, xlsx=False):
         id_string,
         'xls',
         basename)
+    # TODO: if s3 storage, make private - how will we privatise local storage??
     storage = get_storage_class()()
     # seek to the beginning as required by storage classes
     temp_file.seek(0)
@@ -230,4 +234,6 @@ def create_xls_export(user, xform, query=None, xlsx=False):
         file_path,
         File(temp_file, file_path))
     temp_file.close()
+    export = Export.objects.create(xform=xform, filename=export_file_name,
+        export_type=XLS_EXPORT)
     return export_file_name

@@ -40,6 +40,8 @@ from utils.user_auth import has_permission, get_xform_and_perms
 from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
 import main
+from odk_viewer.models import Export
+from odk_viewer.models.export import XLS_EXPORT, CSV_EXPORT, KML_EXPORT
 
 
 def encode(time_str):
@@ -217,6 +219,18 @@ def xls_export(request, username, id_string):
         response = response_with_mimetype_and_name(excel_defs[ext][u'mime_type'],
             id_string, extension=ext, file_path=file_path)
         return response
+
+
+def xls_export_list(request, username, id_string):
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden(_(u'Not shared.'))
+    context = RequestContext(request)
+    exports = Export.objects.filter(xform=xform, export_type=XLS_EXPORT)
+    context.exports = exports
+    return render_to_response('xls_export_list.html', context_instance=context)
+
 
 def zip_export(request, username, id_string):
     owner = get_object_or_404(User, username=username)

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load i18n %}
+
+<section id="export-downloads">
+  <div class="page-header">
+    <h1>{% blocktrans %}Excel Exports{% endblocktrans %}</h1>
+  </div>
+    <div id="mfeedback">&nbsp;</div>
+  <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
+  <script type="text/javascript" language="javascript" src="/static/js/form_actions.js"></script>
+  <script type="text/javascript" charset="utf-8">
+
+        $.extend( $.fn.dataTableExt.oStdClasses, {
+          "sSortAsc": "header headerSortDown",
+          "sSortDesc": "header headerSortUp",
+          "sSortable": "header",
+          "sWrapper": "dataTables_wrapper form-inline"
+        } );
+
+	$(document).ready(function() {
+	  $('#forms-table').dataTable({
+                  "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+	          "bPaginate" : true,
+                  "sPaginationType": "bootstrap",// "iDisplayLength": 4, 
+                  "bSort": true, 
+                  "oLanguage": {"sSearch": "Search:"},
+                  "oSearch": {"sSearch": ""},
+      });
+      $('#forms-table_filter').addClass('row');
+      $('#mfeedback').hide();
+	} );
+  </script>
+
+  <table id="forms-table" class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>{% trans "Filename" %}</th>
+        <th>{% trans "Actions" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for export in exports %}
+      <tr>
+        <td><a href="{% url odk_viewer.views.download_export export.filename %}">{{ export.filename }}</a>
+        </td>
+        <td>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</section>
+{% endblock %}
