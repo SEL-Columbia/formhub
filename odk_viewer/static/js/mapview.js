@@ -345,65 +345,39 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     /// remove existing geoJsonLayer
     markerLayerGroup.clearLayers();
 
-    var geoJsonLayer = new L.GeoJSON(null, {
-        pointToLayer: function (latlng){
-            var marker = new L.CircleMarker(latlng, circleStyle);
+    L.geoJson(geoJSON, {
+        style: function(feature) {
+            if(questionName) {
+                var response = feature.properties[questionName] || notSpecifiedCaption;
+                var question = formJSONMngr.getQuestionByName(questionName);
+                if (!responseCountValid) {
+                    question.responseCounts[response] += 1;
+                }
+                return _.defaults({fillColor: questionColorMap[response]}, circleStyle);
+            }
+        },
+        pointToLayer: function(feature, latlng) {
+            var marker = L.circleMarker(latlng, circleStyle);
+            latLngArray.push(latlng);
+            marker.on('click', function(e) {
+                var popup = L.popup({offset: popupOffset})
+                    .setContent("Loading...").setLatLng(latlng).openOn(map);
+                //console.log(feature.id);
+                $.getJSON(mongoAPIUrl, {'query': '{"_id":' + feature.id + '}'})
+                    .done(function(data){
+                        var content;
+                        if(data.length > 0)
+                            content = JSONSurveyToHTML(data[0]);
+                        else
+                            content = "An unexpected error occurred";
+                        popup.setContent(content);
+                    });
+            });
             return marker;
         }
-    });
+    }).addTo(markerLayerGroup);
 
-    geoJsonLayer.on("featureparse", function(geoJSONEvt){
-        var marker = geoJSONEvt.layer;
-        var latLng = marker._latlng;
-        latLngArray.push(latLng);
-
-        /// check if questionName is set
-        if(questionName)
-        {
-            var question = formJSONMngr.getQuestionByName(questionName);
-            var response = geoJSONEvt.properties[questionName];
-            // check if response is missing (user did not specify)
-            if(!response)
-                response = notSpecifiedCaption;
-            /// increment response count if its not been done before
-            if(!responseCountValid)
-                question.responseCounts[response] += 1;
-            var responseColor = questionColorMap[response];
-            var newStyle = {
-                color: '#fff',
-                border: circleStyle.border,
-                fillColor: responseColor,
-                fillOpacity: circleStyle.fillOpacity,
-                radius: circleStyle.opacity
-            };
-            marker.setStyle(newStyle);
-        }
-        marker.on('click', function(e){
-            var latLng = e.latlng;
-            var popup = new L.Popup({offset: popupOffset});
-            popup.setLatLng(latLng);
-
-            // open a loading popup so the user knows something is happening
-            popup.setContent("Loading...");
-            map.openPopup(popup);
-
-            $.getJSON(mongoAPIUrl, {'query': '{"_id":' + geoJSONEvt.id + '}'}).done(function(data){
-                var content;
-                if(data.length > 0)
-                    content = JSONSurveyToHTML(data[0]);
-                else
-                    content = gettext("An unexpected error occurred");
-                popup.setContent(content);
-                //map.openPopup(popup);
-            });
-        });
-    });
-
-    /// need this here instead of the constructor so that we can catch the featureparse event
-    geoJsonLayer.addGeoJSON(geoJSON);
-    markerLayerGroup.addLayer(geoJsonLayer);
-    _.defer(refreshHexOverLay); 
-
+    _.defer(refreshHexOverLay); // TODO: add a toggle to do this only if hexOn = true;
     if(questionName)
         rebuildLegend(questionName, questionColorMap);
     else
@@ -432,8 +406,12 @@ function constructHexBinOverLay() {
         return new L.Polygon(_(el.geometry.coordinates).map(arr_to_latlng), 
                             {"id": el.properties.id});
     };
-    _(hexbinData.features).each( function(x) {
-        hexbinLayerGroup.addLayer(hex_feature_to_polygon_fn(x)); 
+    _(hexbinData.features).each( function(x, idx) {
+        var hexLayer = hex_feature_to_polygon_fn(x);
+        hexLayer.on('mouseover', function(e) {
+            //console.log(e, idx);
+        });
+        hexbinLayerGroup.addLayer(hexLayer);
     });
 }
 
