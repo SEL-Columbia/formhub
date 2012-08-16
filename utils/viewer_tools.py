@@ -228,4 +228,4 @@ def create_xls_export(user, xform, query=None, xlsx=False):
         file_path,
         File(temp_file, file_path))
     temp_file.close()
-    return export_file_name
+    return os.path.join(settings.EXPORT_DIR, export_file_name)

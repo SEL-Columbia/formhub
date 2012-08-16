@@ -8,6 +8,7 @@ from tempfile import NamedTemporaryFile
 from time import strftime, strptime
 from urlparse import urlparse
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.files.storage import get_storage_class
@@ -193,13 +194,13 @@ def xls_export(request, username, id_string):
     query = request.GET.get("query")
     force_xlsx = request.GET.get('xlsx') == 'true'
     excel_defs = {
-        'xls': {
-            'suffix': '.xls',
-            'mime_type': 'vnd.ms-excel'
+        u'xls': {
+            u'suffix': u'.xls',
+            u'mime_type': u'vnd.ms-excel'
         },
-        'xlsx': {
-            'suffix': '.xlsx',
-            'mime_type': 'vnd.openxmlformats'
+        u'xlsx': {
+            u'suffix': u'.xlsx',
+            u'mime_type': u'vnd.openxmlformats'
         }
     }
     try:
@@ -210,10 +211,12 @@ def xls_export(request, username, id_string):
     else:
         # get extension from file_path
         path, ext = os.path.splitext(file_path)
+        ext = ext[1:]
         if request.GET.get('raw'):
             id_string = None
-        response = response_with_mimetype_and_name(excel_defs[ext]['mime_type'],
-            id_string, extension=ext, file_path=file_path)
+        response = response_with_mimetype_and_name(excel_defs[ext][u'mime_type'],
+            id_string, extension=ext, file_path=file_path,
+            location=settings.EXPORT_DIR)
         return response
 
 def zip_export(request, username, id_string):

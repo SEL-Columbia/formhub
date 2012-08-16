@@ -7,4 +7,4 @@ class TestViewerTools(MainTestCase):
         self._publish_transportation_form()
         self._submit_transport_instance()
         xls_file_path = create_xls_export(self.user, self.xform)
-        print xls_file_path
+        self.assertTrue(os.path.exists(xls_file_path))
