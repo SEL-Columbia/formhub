@@ -125,14 +125,14 @@ def round_down_geopoint(num):
 
 def response_with_mimetype_and_name(mimetype, name, extension=None,
     show_date=True, file_path=None, use_local_filesystem=False,
-    full_mime=False, location=settings.MEDIA_ROOT):
+    full_mime=False):
     if extension == None:
         extension = mimetype
     if not full_mime:
         mimetype = "application/%s" % mimetype
     if file_path:
         if not use_local_filesystem:
-            default_storage = get_storage_class()(location=location)
+            default_storage = get_storage_class()()
             wrapper = FileWrapper(default_storage.open(file_path))
             response = HttpResponse(wrapper, mimetype=mimetype)
             response['Content-Length'] = default_storage.size(file_path)

@@ -219,13 +219,15 @@ def create_xls_export(user, xform, query=None, xlsx=False):
                              datetime.now().strftime("%Y_%m_%d_%H_%M_%S"), ext)
     file_path = os.path.join(
         username,
+        'exports',
+        id_string,
         'xls',
         basename)
-    storage = get_storage_class()(location=settings.EXPORT_DIR)
+    storage = get_storage_class()()
     # seek to the beginning as required by storage classes
     temp_file.seek(0)
     export_file_name = storage.save(
         file_path,
         File(temp_file, file_path))
     temp_file.close()
-    return os.path.join(settings.EXPORT_DIR, export_file_name)
+    return export_file_name

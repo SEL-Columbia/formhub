@@ -215,8 +215,7 @@ def xls_export(request, username, id_string):
         if request.GET.get('raw'):
             id_string = None
         response = response_with_mimetype_and_name(excel_defs[ext][u'mime_type'],
-            id_string, extension=ext, file_path=file_path,
-            location=settings.EXPORT_DIR)
+            id_string, extension=ext, file_path=file_path)
         return response
 
 def zip_export(request, username, id_string):
