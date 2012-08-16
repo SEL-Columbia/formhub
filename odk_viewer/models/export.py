@@ -21,7 +21,7 @@ class Export(models.Model):
 
     xform = models.ForeignKey(XForm)
     created_on = models.DateTimeField(auto_now=True, auto_now_add=True)
-    filename = models.FileField(upload_to=get_export_filename)
+    filename = models.CharField(max_length=255)
     export_type = models.CharField(
         max_length=10, choices=EXPORT_TYPES, default=XLS_EXPORT
     )
