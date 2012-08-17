@@ -118,7 +118,7 @@ class XForm(models.Model):
 
     @property
     def hash(self):
-        return u'%s' % md5(self.xml).hexdigest()
+        return u'%s' % md5(self.xml.encode('utf8')).hexdigest()
 
 
 def stathat_forms_created(sender, instance, created, **kwargs):
