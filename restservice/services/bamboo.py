@@ -21,7 +21,7 @@ class ServiceDefinition(RestServiceInterface):
             xform.save()
         else:
             post_data = simplejson.dumps(parsed_instance.to_dict_for_mongo())
-            url = ("%(root)s/datasets/%(dataset)s/append"
+            url = ("%(root)s/datasets/%(dataset)s"
             	   % {'root': url,
             	   	  'dataset': parsed_instance.instance.xform.bamboo_dataset})
             requests.post(url, data=post_data, 
