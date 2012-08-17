@@ -161,6 +161,8 @@ class TestSite(MainTestCase):
 """ % {'download_url': self.download_url, 'manifest_url': self.manifest_url,
        'hash': md5_hash}
         self.assertEqual(response.content, expected_content)
+        self.assertTrue(response.has_header('X-OpenRosa-Version'))
+        self.assertTrue(response.has_header('Date'))
 
     def _download_xform(self):
         response = self.anon.get(self.download_url)
