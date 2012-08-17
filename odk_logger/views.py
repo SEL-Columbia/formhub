@@ -37,7 +37,7 @@ from utils.user_auth import helper_auth_helper, has_permission,\
     has_edit_permission, HttpResponseNotAuthorized
 from odk_logger.import_tools import import_instances_from_zip
 from odk_logger.xform_instance_parser import InstanceEmptyError,\
-    InstanceInvalidUserError, IsNotCrowdformError
+    InstanceInvalidUserError, IsNotCrowdformError, DuplicateInstance
 from odk_logger.models.instance import FormInactiveError
 
 
@@ -197,6 +197,11 @@ def submission(request, username=None):
             )
         except ExpatError:
             return HttpResponseBadRequest(_(u"Improperly formatted XML."))
+        except DuplicateInstance:
+            response = HttpResponse(_(u"Duplicate submission"))
+            response.status_code = 202
+            response['Location'] = request.build_absolute_uri(request.path)
+            return response
 
         if instance is None:
             return HttpResponseBadRequest(_(u"Unable to create submission."))
