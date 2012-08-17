@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+{% load i18n %}
+<xforms xmlns="http://openrosa.org/xforms/xformsList">
+{% for xform in xforms %}
+  <xform>
+    <formID>{{ xform.id_string }}</formID>
+    <name>{% if xform.is_crowd_form %}{% trans "Crowd" %}/{% endif%}{{ xform.title }}</name>
+    <majorMinorVersion/>
+    <version/>
+    <hash>md5:{{ xform.hash }}</hash>
+    <descriptionText>{{ xform.description }}</descriptionText>
+    <downloadUrl>{{ host }}{{ xform.url }}</downloadUrl>
+    <manifestUrl>{{ host }}{% url odk_logger.views.xformsManifest xform.user.username xform.id_string %}</manifestUrl>
+  </xform>
+{% endfor %}
+</xforms>
