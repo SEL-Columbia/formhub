@@ -6,7 +6,9 @@ import urllib
 import urllib2
 from xml.parsers.expat import ExpatError
 import zipfile
+import pytz
 
+from datetime import datetime
 from itertools import chain
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
@@ -137,6 +139,9 @@ def formList(request, username):
         'xforms': xforms
     }, mimetype="text/xml; charset=utf-8")
     response['X-OpenRosa-Version'] = '1.0'
+    tz = pytz.timezone(settings.TIME_ZONE)
+    dt = datetime.now(tz).strftime('%a, %d %b %Y %H:%M:%S %Z')
+    response['Date'] = dt
     return response
 
 
@@ -150,6 +155,9 @@ def xformsManifest(request, username, id_string):
         'media_files': MetaData.media_upload(xform)
     }, mimetype="text/xml; charset=utf-8")
     response['X-OpenRosa-Version'] = '1.0'
+    tz = pytz.timezone(settings.TIME_ZONE)
+    dt = datetime.now(tz).strftime('%a, %d %b %Y %H:%M:%S %Z')
+    response['Date'] = dt
     return response
 
 
