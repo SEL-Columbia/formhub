@@ -26,7 +26,7 @@ from odk_logger.models import SurveyType
 from odk_logger.models import XForm
 from odk_logger.models.xform import XLSFormError
 from odk_logger.xform_instance_parser import InstanceParseError,\
-     InstanceInvalidUserError, IsNotCrowdformError
+     InstanceInvalidUserError, IsNotCrowdformError, DuplicateInstance
 from utils.viewer_tools import get_path
 
 
@@ -90,6 +90,7 @@ def create_instance(username, xml_file, media_files,
             #  * the submitted XML is an exact match with one that
             #    has already been submitted for that user.
             proceed_to_create_instance = False
+            raise DuplicateInstance()
 
     if proceed_to_create_instance:
         instance = Instance.objects.create(xml=xml, user=user, status=status)
