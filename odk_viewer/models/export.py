@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.files.storage import get_storage_class
+from django.db.models.signals import post_delete
 from odk_logger.models import XForm
 
 XLS_EXPORT = 'xls'
@@ -27,6 +29,12 @@ EXPORT_TYPES = [
 EXPORT_TYPE_DICT = dict(export_type for export_type in EXPORT_TYPES)
 
 
+def export_delete_callback(sender, **kwargs):
+    export = kwargs['instance']
+    storage = get_storage_class()()
+    storage.delete(export.filepath)
+
+
 class Export(models.Model):
     # max no. of export files a user can keep
     MAX_EXPORTS = 10
@@ -42,9 +50,33 @@ class Export(models.Model):
     class Meta:
         app_label = "odk_viewer"
 
-    # TODO: on create, limit exports to MAX_EXPORTS
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            # if new, check if we've hit our limit for exports for this form, if so, delete oldest
+            # TODO: let user know that last export will be deleted
+            num_existing_exports = Export.objects.filter(xform=self.xform,
+                export_type=self.export_type).count()
+
+            if num_existing_exports >= self.MAX_EXPORTS:
+                Export._delete_oldest_export(self.xform, self.export_type)
+
+        super(Export, self).save(*args, **kwargs)
+
+    @classmethod
+    def _delete_oldest_export(cls, xform, export_type):
+        oldest_export = Export.objects.filter(xform=xform,
+            export_type=export_type).order_by('created_on')[0]
+        oldest_export.delete()
 
     @property
     def is_pending(self):
         return self.filename is None or self.filename == ''
+
+    @property
+    def filepath(self):
+        return "%s/%s/%s/%s/%s" % (self.xform.user.username,
+                                   'exports', self.xform.id_string,
+                                   self.export_type, self.filename)
+
+post_delete.connect(export_delete_callback, sender=Export)
 

@@ -17,7 +17,7 @@ def add(a, b = None):
 
 @task()
 def create_xls_export(username, id_string, query=None, xlsx=False,
-                      export_id = None):
+                      export_id=-1):
     # we should re-query the db instead of passing model objects according to
     # http://docs.celeryproject.org/en/latest/userguide/tasks.html#state
     xform = XForm.objects.get(user__username=username, id_string=id_string)
@@ -43,12 +43,12 @@ def create_xls_export(username, id_string, query=None, xlsx=False,
         file_path,
         File(temp_file, file_path))
     temp_file.close()
-    export, existing = Export.objects.get_or_create(pk=export_id)
-    if not existing:
+    export, is_new = Export.objects.get_or_create(id=export_id)
+    if is_new:
         export.xform=xform
         export.export_type = XLS_EXPORT
     # always set the filename
     dir_name, basename = os.path.split(export_filename)
     export.filename = basename
     export.save()
-    return export_filename
+    return basename
