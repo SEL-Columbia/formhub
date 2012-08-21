@@ -233,4 +233,4 @@ except ImportError:
 if PRINT_EXCEPTION and DEBUG:
     MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
 
-METEORURL = "http://worldtalks.org:3000"
+METEORURL = "http://starscream.modilabs.org:3000"

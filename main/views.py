@@ -7,9 +7,9 @@ from django.core.urlresolvers import reverse
 from django.core.files.storage import default_storage, get_storage_class
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect, HttpResponseNotAllowed, \
-    HttpResponseForbidden, HttpResponseNotFound, HttpResponseServerError
+from django.http import (HttpResponse, HttpResponseBadRequest,
+    HttpResponseRedirect, HttpResponseNotAllowed, Http404,
+    HttpResponseForbidden, HttpResponseNotFound, HttpResponseServerError)
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
 from django.utils import simplejson
@@ -288,6 +288,35 @@ def api(request, username=None, id_string=None):
         response_text = ("%s(%s)" % (callback, response_text))
     return HttpResponse(response_text, mimetype='application/json')
 
+
+@require_GET
+def public_api(request, username, id_string):
+    """
+    Returns public infomation about the forn as JSON
+    """
+
+    xform = get_object_or_404(XForm, 
+                              user__username=username, id_string=id_string)
+
+    DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+    exports = {'username': xform.user.username,
+               'id_string': xform.id_string,
+               'bamboo_dataset': xform.bamboo_dataset,
+               'shared': xform.shared,
+               'shared_data': xform.shared_data,
+               'downloadable': xform.downloadable,
+               'is_crowd_form': xform.is_crowd_form,
+               'title': xform.title,
+               'date_created': xform.date_created.strftime(DATETIME_FORMAT),
+               'date_modified': xform.date_modified.strftime(DATETIME_FORMAT),
+               'uuid': xform.uuid,
+               }
+
+    response_text = simplejson.dumps(exports)
+
+    return HttpResponse(response_text, mimetype='application/json')
+
+
 @login_required
 def edit(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
@@ -413,25 +442,6 @@ def form_gallery(request):
 
 
 def download_metadata(request, username, id_string, data_id):
-    data = get_object_or_404(MetaData, pk=data_id)
-    default_storage = get_storage_class()()
-    if request.GET.get('del', False) and username == request.user.username:
-        try:
-            default_storage.delete(data.data_file.name)
-            data.delete()
-            return HttpResponseRedirect(reverse(show, kwargs={
-                'username': username,
-                'id_string': id_string
-            }))
-        except Exception, e:
-            return HttpResponseServerError()
-    elif request.GET.get('map_name_del', False) and\
-            username == request.user.username:
-        data.delete()
-        return HttpResponseRedirect(reverse(show, kwargs={
-            'username': username,
-            'id_string': id_string
-        }))
     xform = get_object_or_404(XForm,
                               user__username=username, id_string=id_string)
     if username == request.user.username or xform.shared:
@@ -451,8 +461,9 @@ def download_metadata(request, username, id_string, data_id):
     return HttpResponseForbidden(_(u'Permission denied.'))
 
 
-def download_media_data(request, username, id_string, data_id):
-    data = get_object_or_404(MetaData, id=data_id)
+@login_required()
+def delete_metadata(request, username, id_string, data_id):
+    data = get_object_or_404(MetaData, pk=data_id)
     default_storage = get_storage_class()()
     if request.GET.get('del', False) and username == request.user.username:
         try:
@@ -464,21 +475,45 @@ def download_media_data(request, username, id_string, data_id):
             }))
         except Exception, e:
             return HttpResponseServerError()
-    xform = get_object_or_404(XForm,
-                              user__username=username, id_string=id_string)
-    if username == request.user.username or xform.shared:
-        file_path = data.data_file.name
-        filename, extension = os.path.splitext(file_path.split('/')[-1])
-        extension = extension.strip('.')
-        default_storage = get_storage_class()()
-        if default_storage.exists(file_path):
-            response = response_with_mimetype_and_name(
-                data.data_file_type,
-                filename, extension=extension, show_date=False,
-                file_path=file_path)
-            return response
-        else:
-            return HttpResponseNotFound()
+    elif request.GET.get('map_name_del', False) and\
+         username == request.user.username:
+        data.delete()
+        return HttpResponseRedirect(reverse(show, kwargs={
+            'username': username,
+            'id_string': id_string
+        }))
+    return HttpResponseForbidden(_(u'Permission denied.'))
+
+
+def download_media_data(request, username, id_string, data_id):
+    data = get_object_or_404(MetaData, id=data_id)
+    default_storage = get_storage_class()()
+    if request.GET.get('del', False):
+        if username == request.user.username:
+            try:
+                default_storage.delete(data.data_file.name)
+                data.delete()
+                return HttpResponseRedirect(reverse(show, kwargs={
+                    'username': username,
+                    'id_string': id_string
+                }))
+            except Exception, e:
+                return HttpResponseServerError()
+    else:
+        xform = get_object_or_404(XForm,
+                                  user__username=username, id_string=id_string)
+        if username: # == request.user.username or xform.shared:
+            file_path = data.data_file.name
+            filename, extension = os.path.splitext(file_path.split('/')[-1])
+            extension = extension.strip('.')
+            if default_storage.exists(file_path):
+                response = response_with_mimetype_and_name(
+                    data.data_file_type,
+                    filename, extension=extension, show_date=False,
+                    file_path=file_path)
+                return response
+            else:
+                return HttpResponseNotFound()
     return HttpResponseForbidden(_(u'Permission denied.'))
 
 
@@ -569,3 +604,17 @@ def delete_data(request, username=None, id_string=None):
     return HttpResponse(response_text, mimetype='application/json')
 
 
+@require_POST
+@is_owner
+def link_to_bamboo(request, username, id_string):
+    xform = get_object_or_404(XForm,
+                              user__username=username, id_string=id_string)
+    from utils.bamboo import get_new_bamboo_dataset
+    dataset_id = get_new_bamboo_dataset(xform)
+    xform.bamboo_dataset = dataset_id
+    xform.save()
+
+    return HttpResponseRedirect(reverse(show, kwargs={
+        'username': username,
+        'id_string': id_string
+    }))

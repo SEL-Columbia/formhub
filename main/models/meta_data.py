@@ -1,7 +1,9 @@
+import os
+
 from django.db import models
 from odk_logger.models import XForm
-import os
-import json
+
+from hashlib import md5
 
 
 def upload_to(instance, filename):
@@ -50,6 +52,10 @@ class MetaData(models.Model):
     data_value = models.CharField(max_length=255)
     data_file = models.FileField(upload_to=upload_to, null=True)
     data_file_type = models.CharField(max_length=255, null=True)
+
+    @property
+    def hash(self):
+        return u'%s' % md5(self.data_file.read()).hexdigest()
 
     @staticmethod
     def public_link(xform, data_value=None):
