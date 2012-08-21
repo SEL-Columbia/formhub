@@ -37,10 +37,10 @@
 	} );
   </script>
 
-    <form action="" method="post" enctype="application/x-www-form-urlencoded">
+    <form action="{% url odk_viewer.views.create_export user.username xform.id_string export_type %}" method="post" enctype="application/x-www-form-urlencoded">
         {% csrf_token %}
             <span style='float:middle;'>
-	        <div class="form-actions bordered-side bordered-bottom nomargintop">
+	        <div>
                 <input type="submit" class="btn large btn-primary" value="{% trans 'New Export' %}" />
             </div>
             </span>

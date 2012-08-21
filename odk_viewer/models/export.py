@@ -18,16 +18,16 @@ EXPORT_DEFS = {
 }
 
 
-def get_export_filename(instance, filename):
-    pass
+EXPORT_TYPES = [
+    (XLS_EXPORT, 'Excel'),
+    #(CSV_EXPORT, 'csv'),
+    #(KML_EXPORT, 'kml'),
+]
+
+EXPORT_TYPE_DICT = dict(export_type for export_type in EXPORT_TYPES)
 
 
 class Export(models.Model):
-    EXPORT_TYPES = (
-        (XLS_EXPORT, 'Excel'),
-        (CSV_EXPORT, 'csv'),
-        (KML_EXPORT, 'kml'),
-    )
     # max no. of export files a user can keep
     MAX_EXPORTS = 10
 

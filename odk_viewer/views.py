@@ -1,6 +1,7 @@
 from collections import defaultdict
 from datetime import date
 import json
+from django.views.decorators.http import require_POST
 import os
 import urllib2
 import zipfile
@@ -41,7 +42,8 @@ from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
 import main
 from odk_viewer.models import Export
-from odk_viewer.models.export import XLS_EXPORT, CSV_EXPORT, KML_EXPORT
+from odk_viewer.models.export import XLS_EXPORT, CSV_EXPORT, KML_EXPORT,\
+    EXPORT_TYPE_DICT
 from utils.viewer_tools import export_def_from_filename
 
 
@@ -189,13 +191,14 @@ def csv_export(request, username, id_string):
     except NoRecordsFoundError:
         return HttpResponse(_("No records found to export"))
 
+
 def xls_export(request, username, id_string):
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
-    query = request.GET.get("query")
-    force_xlsx = request.GET.get('xlsx') == 'true'
+    query = request.POST.get("query")
+    force_xlsx = request.POST.get('xlsx') == 'true'
     excel_defs = {
         u'xls': {
             u'suffix': u'.xls',
@@ -222,27 +225,46 @@ def xls_export(request, username, id_string):
         return response
 
 
-def export_list(request, username, id_string, export_type):
+#@require_POST
+def create_export(request, username, id_string, export_type):
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
 
-    # TODO: should we check if user owns the form before creating new exports
-    if request.method == 'POST' and request.user.is_authenticated():
-        export = Export.objects.create(xform=xform, export_type=XLS_EXPORT)
+    if export_type not in EXPORT_TYPE_DICT.keys():
+        return HttpResponseBadRequest(_("%s is not a valid export type" % export_type))
+
+    # TODO: can anyone with access create a new export - especially for publicly accessible data
+    export = Export.objects.create(xform=xform, export_type=export_type)
+
+    result = None
+    if export_type == XLS_EXPORT:
         # start async export
         result = create_xls_export.apply_async(
             (), {
                 'username': username,
                 'id_string': id_string,
                 'export_id': export.id,
-            })
-        export.task_id = result.task_id
-        export.save()
-        return HttpResponseRedirect(
-            reverse(xls_export_list,kwargs={"username": username,
-                                            "id_string": id_string}))
+                })
+    export.task_id = result.task_id
+    export.save()
+    return HttpResponseRedirect(
+        reverse(export_list,
+            kwargs={"username": username,
+                    "id_string": id_string,
+                    "export_type": export_type
+            }
+        )
+    )
+
+
+def export_list(request, username, id_string, export_type):
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden(_(u'Not shared.'))
+
     context = RequestContext(request)
     context.user = owner
     context.xform = xform
@@ -252,6 +274,30 @@ def export_list(request, username, id_string, export_type):
         .order_by('-created_on')
     context.exports = exports
     return render_to_response('export_list.html', context_instance=context)
+
+
+def export_progress(request, export_id):
+    # find the export entry in the db
+    export = get_object_or_404(Export, pk=export_id)
+    xform = export.xform
+    owner = xform.user
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden(_(u'Not shared.'))
+    status = {
+        'complete': False,
+        'url': None,
+    }
+    # check if it has a filename set, if not its not yet ready
+    if export.filename:
+        status['complete'] = True
+        status['url'] = reverse(export_download, kwargs={
+            'username': owner.username,
+            'id_string': xform.id_string,
+            'export_type': export.export_type,
+            'filename': export.filename
+        })
+    return HttpResponse(simplejson.dumps(status), mimetype='application/json')
+
 
 def export_download(request, username, id_string, export_type, filename):
     owner = get_object_or_404(User, username=username)
