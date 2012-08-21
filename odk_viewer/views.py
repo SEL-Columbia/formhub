@@ -286,6 +286,7 @@ def export_progress(request, export_id):
     status = {
         'complete': False,
         'url': None,
+        'filename': None
     }
     # check if it has a filename set, if not its not yet ready
     if export.filename:
@@ -296,6 +297,7 @@ def export_progress(request, export_id):
             'export_type': export.export_type,
             'filename': export.filename
         })
+        status['filename'] = export.filename
     return HttpResponse(simplejson.dumps(status), mimetype='application/json')
 
 

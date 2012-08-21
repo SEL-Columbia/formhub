@@ -43,3 +43,8 @@ class Export(models.Model):
         app_label = "odk_viewer"
 
     # TODO: on create, limit exports to MAX_EXPORTS
+
+    @property
+    def is_pending(self):
+        return self.filename is None or self.filename == ''
+

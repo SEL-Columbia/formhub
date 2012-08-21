@@ -22,7 +22,7 @@
 
 	$(document).ready(function() {
 	  $('#forms-table').dataTable({
-              "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+              "sDom": "<'row'r>t<'row'<'span6'i><'span6'p>>",
 	          "bPaginate" : true,
                   "sPaginationType": "bootstrap",// "iDisplayLength": 4,
                   "bSort": true,
@@ -58,10 +58,11 @@
       {% for export in exports %}
       <tr>
         <td>
-            {% if export.filename %}
+            {% if not export.is_pending %}
             <a href="{% url odk_viewer.views.export_download user.username xform.id_string export.export_type export.filename %}">{{ export.filename }}</a>
             {% else %}
-            Pending...
+              <span class="status">{% trans "Pending ..." %}</span>
+              <a href="#" class="refresh-export-progress" data-role="refresh-export-progress" data-url="{% url odk_viewer.views.export_progress export.id %}">{% trans "Click to refresh" %}</a>
             {% endif %}
         </td>
         <td>{{ export.created_on }}</td>
