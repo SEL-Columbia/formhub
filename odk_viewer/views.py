@@ -222,7 +222,7 @@ def xls_export(request, username, id_string):
         return response
 
 
-def xls_export_list(request, username, id_string):
+def export_list(request, username, id_string, export_type):
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
@@ -246,10 +246,12 @@ def xls_export_list(request, username, id_string):
     context = RequestContext(request)
     context.user = owner
     context.xform = xform
-    exports = Export.objects.filter(xform=xform, export_type=XLS_EXPORT)\
+    # TODO: better output e.g. Excel instead of XLS
+    context.export_type = export_type
+    exports = Export.objects.filter(xform=xform, export_type=export_type)\
         .order_by('-created_on')
     context.exports = exports
-    return render_to_response('xls_export_list.html', context_instance=context)
+    return render_to_response('export_list.html', context_instance=context)
 
 def export_download(request, username, id_string, export_type, filename):
     owner = get_object_or_404(User, username=username)
