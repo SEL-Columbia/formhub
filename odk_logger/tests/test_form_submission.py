@@ -47,3 +47,23 @@ class TestFormSubmission(MainTestCase):
                 touchforms=True)
         self.assertEqual(self.response.status_code, 201)
 
+    def test_duplicate_submissions(self):
+        """
+        Test submissions for forms with start and end
+        """
+        xls_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "../fixtures/test_forms/survey_names/survey_names.xls"
+        )
+        self._publish_xls_file(xls_file_path)
+        xml_submission_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "../fixtures/test_forms/survey_names/instances/"
+            "survey_names_2012-08-17_11-24-53.xml"
+        )
+        self._make_submission(xml_submission_file_path)
+        self.assertEqual(self.response.status_code, 201)
+        self._make_submission(xml_submission_file_path)
+        self.assertEqual(self.response.status_code, 202)
+        #/fixtures/test_forms/survey_names
+

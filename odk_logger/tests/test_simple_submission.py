@@ -4,6 +4,7 @@ import glob
 from django.contrib.auth.models import User
 from django.test import TestCase
 from pyxform import SurveyElementBuilder
+from odk_logger.xform_instance_parser import DuplicateInstance
 
 from utils.logger_tools import create_instance
 from odk_logger.models import Instance
@@ -74,7 +75,10 @@ class TestSimpleSubmission(TestCase):
             st_xml = """
             <?xml version='1.0' ?><start_time id="start_time"><start_time>2012-01-11T%d:00:00.000</start_time></start_time>
             """.strip() % hour
-            create_instance(self.user.username, TempFileProxy(st_xml), [])
+            try:
+                create_instance(self.user.username, TempFileProxy(st_xml), [])
+            except DuplicateInstance:
+                pass
         self.assertEquals(0, self.xform2.surveys.count())
         submit_at_hour(11)
         self.assertEquals(1, self.xform2.surveys.count())
