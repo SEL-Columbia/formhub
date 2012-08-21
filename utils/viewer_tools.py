@@ -1,15 +1,12 @@
 import os
-from datetime import datetime
 import traceback
 from xml.dom import minidom
 
 from django.conf import settings
-from django.core.files.storage import get_storage_class
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.mail import mail_admins
 from django.utils.translation import ugettext as _
 from django.core.files.storage import get_storage_class
-from tempfile import NamedTemporaryFile
 from django.core.files.base import File
 
 import common_tags as tag
@@ -205,35 +202,10 @@ def django_file(path, field_name, content_type):
         charset=None
         )
 
-def create_xls_export(user, xform, query=None, xlsx=False):
-    from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder
-    from odk_viewer.models import Export
-    from odk_viewer.models.export import XLS_EXPORT, CSV_EXPORT, KML_EXPORT
-
-    username = user.username
-    id_string = xform.id_string
-    xls_df_builder = XLSDataFrameBuilder(username, id_string, query)
-    ext = 'xls' if not xlsx else 'xlsx'
-    if xls_df_builder.exceeds_xls_limits:
-        ext = 'xlsx'
-    temp_file = NamedTemporaryFile(suffix=("." + ext))
-    xls_df_builder.export_to(temp_file.name)
-    basename = "%s_%s.%s" % (id_string,
-                             datetime.now().strftime("%Y_%m_%d_%H_%M_%S"), ext)
-    file_path = os.path.join(
-        username,
-        'exports',
-        id_string,
-        'xls',
-        basename)
-    # TODO: if s3 storage, make private - how will we privatise local storage??
-    storage = get_storage_class()()
-    # seek to the beginning as required by storage classes
-    temp_file.seek(0)
-    export_file_name = storage.save(
-        file_path,
-        File(temp_file, file_path))
-    temp_file.close()
-    export = Export.objects.create(xform=xform, filename=export_file_name,
-        export_type=XLS_EXPORT)
-    return export_file_name
+def export_def_from_filename(filename):
+    from odk_viewer.models.export import EXPORT_DEFS
+    path, ext = os.path.splitext(filename)
+    ext = ext[1:]
+    # try get the def from extension
+    export_def = EXPORT_DEFS[ext]
+    return ext, export_def['mime_type']

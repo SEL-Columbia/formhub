@@ -34,14 +34,15 @@ from csv_writer import CsvWriter
 from xls_writer import XlsWriter
 from utils.logger_tools import response_with_mimetype_and_name,\
     disposition_ext_and_date, round_down_geopoint
-from utils.viewer_tools import image_urls, image_urls_for_form,\
-    create_xls_export
+from utils.viewer_tools import image_urls, image_urls_for_form
+from odk_viewer.tasks import create_xls_export
 from utils.user_auth import has_permission, get_xform_and_perms
 from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
 import main
 from odk_viewer.models import Export
 from odk_viewer.models.export import XLS_EXPORT, CSV_EXPORT, KML_EXPORT
+from utils.viewer_tools import export_def_from_filename
 
 
 def encode(time_str):
@@ -206,8 +207,8 @@ def xls_export(request, username, id_string):
         }
     }
     try:
-        file_path = create_xls_export(user=owner, xform=xform, query=query,
-            xlsx=force_xlsx)
+        file_path = create_xls_export(username=username, id_string=id_string,
+            query=query, xlsx=force_xlsx)
     except NoRecordsFoundError:
         return HttpResponse(_("No records found to export"))
     else:
@@ -226,10 +227,48 @@ def xls_export_list(request, username, id_string):
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
+
+    # TODO: should we check if user owns the form before creating new exports
+    if request.method == 'POST' and request.user.is_authenticated():
+        export = Export.objects.create(xform=xform, export_type=XLS_EXPORT)
+        # start async export
+        result = create_xls_export.apply_async(
+            (), {
+                'username': username,
+                'id_string': id_string,
+                'export_id': export.id,
+            })
+        export.task_id = result.task_id
+        export.save()
+        return HttpResponseRedirect(
+            reverse(xls_export_list,kwargs={"username": username,
+                                            "id_string": id_string}))
     context = RequestContext(request)
-    exports = Export.objects.filter(xform=xform, export_type=XLS_EXPORT)
+    context.user = owner
+    context.xform = xform
+    exports = Export.objects.filter(xform=xform, export_type=XLS_EXPORT)\
+        .order_by('-created_on')
     context.exports = exports
     return render_to_response('xls_export_list.html', context_instance=context)
+
+def export_download(request, username, id_string, export_type, filename):
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden(_(u'Not shared.'))
+
+    # find the export entry in the db
+    export = get_object_or_404(Export, filename=filename)
+
+    ext, mime_type = export_def_from_filename(export.filename)
+    file_path = "%s/%s/%s/%s/%s" % (username, 'exports', id_string,
+                                export.export_type, export.filename)
+    if request.GET.get('raw'):
+        id_string = None
+    basename = os.path.splitext(export.filename)[0]
+    response = response_with_mimetype_and_name(mime_type,
+        name=basename, extension=ext, file_path=file_path, show_date=False)
+    return response
 
 
 def zip_export(request, username, id_string):
