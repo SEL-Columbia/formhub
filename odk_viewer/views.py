@@ -397,7 +397,7 @@ def chart(request, username, id_string):
     try:
         context.hostURL = "http://"+request.META['HTTP_HOST']
     except:
-        context.hostURL = "http://starscream.modilabs.org"
+        context.hostURL = "/"
     context.user_name = username
     context.xform_string = id_string
     return render_to_response('chart.html', context_instance=context)
