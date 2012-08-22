@@ -384,10 +384,20 @@ def instance(request, username, id_string):
     })
 
 def chart(request, username, id_string):
+    # restriction
+    xform = get_object_or_404(XForm,
+                              user__username=username, id_string=id_string)
+    owner = User.objects.get(username=username)
+    if not has_permission(xform, owner, request, xform.shared):
+        return HttpResponseForbidden('Not shared.')
+
     context = RequestContext(request)
     context.meteorURL = settings.METEORURL
-    context.hostURL = "http://"+request.META['HTTP_HOST']
+    # for testing purpose only
+    try:
+        context.hostURL = "http://"+request.META['HTTP_HOST']
+    except:
+        context.hostURL = "http://starscream.modilabs.org"
     context.user_name = username
     context.xform_string = id_string
-
     return render_to_response('chart.html', context_instance=context)
