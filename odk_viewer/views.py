@@ -392,6 +392,8 @@ def chart(request, username, id_string):
         return HttpResponseForbidden('Not shared.')
 
     context = RequestContext(request)
+    if request.user.is_authenticated():
+        context.request_user = request.user.username
     context.meteorURL = settings.METEORURL
     # for testing purpose only
     try:
@@ -400,4 +402,8 @@ def chart(request, username, id_string):
         context.hostURL = "/"
     context.user_name = username
     context.xform_string = id_string
+    context.form_view = True
+    context.content_user = owner
+    context.xform = xform
+    context.profile, created = UserProfile.objects.get_or_create(user=owner)
     return render_to_response('chart.html', context_instance=context)

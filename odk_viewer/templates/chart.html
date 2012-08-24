@@ -3,7 +3,7 @@
 {% block extra %}
 {% load i18n %}
 
-<iframe src="{{meteorURL}}/#{{hostURL}}{% url odk_viewer.views.csv_export user_name xform_string %}" id="meteorclient"></iframe>
+<iframe src="{{meteorURL}}/#?user={{request_user}}&&?csvFile={{hostURL}}{% url odk_viewer.views.csv_export user_name xform_string %}" id="meteorclient"></iframe>
     <script type="text/javascript">
         $(window).bind('resize', function(){
             $('#meteorclient').height($(window).innerHeight()-40)
