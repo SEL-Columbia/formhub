@@ -352,37 +352,90 @@ class TestPandasMongoBridge(MainTestCase):
         self.assertEqual(expected_result, record)
 
     def test_split_gps_fields_within_repeats(self):
-        record = {
-            'a_repeat': [
+        record = \
+        {
+            'a_repeat':
+            [
                 {
-                    'gps': '1 2 3 4'
+                    'a_repeat/gps': '1 2 3 4'
                 },
                 {
-                    'gps': '5 6 7 8'
+                    'a_repeat/gps': '5 6 7 8'
                 }
             ]
         }
-        gps_fields = ['gps']
-        expected_result = {
-            'a_repeat': [
+        gps_fields = ['a_repeat/gps']
+        expected_result = \
+        {
+            'a_repeat':
+            [
                 {
-                    'gps': '1 2 3 4',
-                    '_gps_latitude': '1',
-                    '_gps_longitude': '2',
-                    '_gps_altitude': '3',
-                    '_gps_precision': '4',
+                    'a_repeat/gps': '1 2 3 4',
+                    'a_repeat/_gps_latitude': '1',
+                    'a_repeat/_gps_longitude': '2',
+                    'a_repeat/_gps_altitude': '3',
+                    'a_repeat/_gps_precision': '4',
                 },
                 {
-                    'gps': '5 6 7 8',
-                    '_gps_latitude': '5',
-                    '_gps_longitude': '6',
-                    '_gps_altitude': '7',
-                    '_gps_precision': '8',
+                    'a_repeat/gps': '5 6 7 8',
+                    'a_repeat/_gps_latitude': '5',
+                    'a_repeat/_gps_longitude': '6',
+                    'a_repeat/_gps_altitude': '7',
+                    'a_repeat/_gps_precision': '8',
                 }
             ]
         }
         AbstractDataFrameBuilder._split_gps_fields(record, gps_fields)
         self.assertEqual(expected_result, record)
+
+    def test_split_gps_fields_within_same_name_repeats(self):
+        # test hack that gracefully handles existing mongo'd responses where the name of the repeat is similar to one of its repeating questions
+        record = \
+        {
+            'gps':
+            [
+                {
+                    'gps/gps':
+                    [
+                        {
+                            'gps/gps': '1 2 3 4'
+                        }
+                    ]
+                },
+                {
+                    'gps/gps':
+                    [
+                        {
+                            'gps/gps': '5 6 7 8'
+                        }
+                    ]
+                }
+            ]
+        }
+        gps_fields = ['gps']
+        expected_result = \
+        {
+            'gps':
+            [
+                {
+                    'gps/gps': '1 2 3 4',
+                    'gps/_gps_latitude': '1',
+                    'gps/_gps_longitude': '2',
+                    'gps/_gps_altitude': '3',
+                    'gps/_gps_precision': '4',
+                },
+                {
+                    'gps/gps': '5 6 7 8',
+                    'gps/_gps_latitude': '5',
+                    'gps/_gps_longitude': '6',
+                    'gps/_gps_altitude': '7',
+                    'gps/_gps_precision': '8',
+                }
+            ]
+        }
+        AbstractDataFrameBuilder._split_gps_fields(record, gps_fields)
+        self.assertEqual(expected_result, record)
+
 
     def test_unicode_export(self):
         unicode_char = unichr(40960)

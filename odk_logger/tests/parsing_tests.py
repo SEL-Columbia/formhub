@@ -95,7 +95,7 @@ class TestXFormInstanceParser(MainTestCase):
             flat_dict_with_id.update(d[FLAT_DICT])
             self.assertEqual(parse_xform_instance(d[XML]), flat_dict_with_id)
 
-    def test_parsed_xml(self):
+    def _test_parsed_xml(self):
         self._create_user_and_login()
         # publish our form which contains some some repeats
         xls_file_path = os.path.join(

@@ -162,7 +162,6 @@ class XFormInstanceParser(object):
         self.parse(xml_str)
 
     def parse(self, xml_str):
-        import ipdb; ipdb.set_trace()
         clean_xml_str = xml_str.strip()
         clean_xml_str = re.sub(ur">\s+<", u"><", clean_xml_str)
         self._xml_obj = minidom.parseString(clean_xml_str)
