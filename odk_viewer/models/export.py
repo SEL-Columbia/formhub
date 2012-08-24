@@ -1,4 +1,5 @@
 from django.db import models
+from celery.result import AsyncResult
 from django.core.files.storage import get_storage_class
 from django.db.models.signals import post_delete
 from odk_logger.models import XForm
@@ -28,6 +29,10 @@ EXPORT_TYPES = [
 
 EXPORT_TYPE_DICT = dict(export_type for export_type in EXPORT_TYPES)
 
+EXPORT_PENDING = 0
+EXPORT_SUCCESSFUL = 1
+EXPORT_FAILED = 2
+
 
 def export_delete_callback(sender, **kwargs):
     export = kwargs['instance']
@@ -52,7 +57,8 @@ class Export(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            # if new, check if we've hit our limit for exports for this form, if so, delete oldest
+            # if new, check if we've hit our limit for exports for this form,
+            # if so, delete oldest
             # TODO: let user know that last export will be deleted
             num_existing_exports = Export.objects.filter(xform=self.xform,
                 export_type=self.export_type).count()
@@ -70,7 +76,18 @@ class Export(models.Model):
 
     @property
     def is_pending(self):
-        return self.filename is None or self.filename == ''
+        return self.status == EXPORT_PENDING
+
+    @property
+    def status(self):
+        result = AsyncResult(export.task_id)
+        if self.filename:
+            return EXPORT_SUCCESSFUL
+        elif (result and result.ready()) or not result:
+            # and not filename
+            return EXPORT_FAILED
+        else:
+            return EXPORT_PENDING
 
     @property
     def filepath(self):

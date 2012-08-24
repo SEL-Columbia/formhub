@@ -43,7 +43,7 @@ from utils.google import google_export_xls, redirect_uri
 import main
 from odk_viewer.models import Export
 from odk_viewer.models.export import XLS_EXPORT, CSV_EXPORT, KML_EXPORT,\
-    EXPORT_TYPE_DICT
+    EXPORT_TYPE_DICT, EXPORT_PENDING, EXPORT_SUCCESSFUL, EXPORT_FAILED
 from utils.viewer_tools import export_def_from_filename
 
 
@@ -288,9 +288,10 @@ def export_progress(request, export_id):
         'url': None,
         'filename': None
     }
-    # check if it has a filename set, if not its not yet ready
-    if export.filename:
-        status['complete'] = True
+
+    if export.status == EXPORT_COMPLETE:
+        status['complete'] = complete
+    if export.status == EXPORT_SUCCESSFUL:
         status['url'] = reverse(export_download, kwargs={
             'username': owner.username,
             'id_string': xform.id_string,
@@ -298,6 +299,7 @@ def export_progress(request, export_id):
             'filename': export.filename
         })
         status['filename'] = export.filename
+
     return HttpResponse(simplejson.dumps(status), mimetype='application/json')
 
 
