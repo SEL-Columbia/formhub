@@ -3,7 +3,7 @@
 <div class="navbar navbar-fixed-top" data-dropdown="dropdown" >
   <div class="navbar-inner{% if form_view %} navbar-inner-map{% endif %}">
     <div class="container">
-      <a class="brand" href="/" title="formhub"><img alt="formhub" src="{{ STATIC_URL }}images/logo.png" /></a>
+      <a class="brand" href="/" title="formhub"><img alt="formhub" src="/static/images/logo.png" /></a>
       {% if form_view %}
       <ul class="nav">
         <li>&nbsp;</li>
@@ -62,7 +62,8 @@
       </ul>
       <ul class="nav pull-right">
         {% if user.is_authenticated %}
-        <li><a href="{% url user_profile user.username %}">{{user.username}}</a></li>
+        <!-- <li><a id="new-form" href="#" rel="tooltip" title="{% trans "New Form" %}"><img src="{{ STATIC_URL }}images/upload-icon.png"></a></li> -->
+        <li><a href="/{{user.username}}">{{user.username}}</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <b class="caret"></b>
