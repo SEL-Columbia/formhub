@@ -388,7 +388,7 @@ class TestPandasMongoBridge(MainTestCase):
         AbstractDataFrameBuilder._split_gps_fields(record, gps_fields)
         self.assertEqual(expected_result, record)
 
-    def test_split_gps_fields_within_same_name_repeats(self):
+    def _test_split_gps_fields_within_same_name_repeats(self):
         # test hack that gracefully handles existing mongo'd responses where the name of the repeat is similar to one of its repeating questions
         record = \
         {
