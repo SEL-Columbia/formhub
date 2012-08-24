@@ -23,7 +23,7 @@ class Command(BaseCommand):
         # check for username AND id_string - if one exists so must the other
         if (kwargs.get('username') and not kwargs.get('id_string')) or (not\
             kwargs.get('username') and kwargs.get('id_string')):
-            raise ValueError("username and idstring must either both be specified or neither")
+            raise CommandError("username and idstring must either both be specified or neither")
         elif kwargs.get('username') and kwargs.get('id_string'):
             from odk_logger.models import XForm, Instance
             xform = XForm.objects.get(user__username=kwargs.get('username'),
