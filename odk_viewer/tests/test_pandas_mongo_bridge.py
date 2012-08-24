@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from tempfile import NamedTemporaryFile
 from odk_logger.models.xform import XForm
 from main.tests.test_base import MainTestCase
+from odk_logger.xform_instance_parser import xform_instance_to_dict
 from odk_viewer.pandas_mongo_bridge import *
 from odk_viewer.views import xls_export
 
@@ -414,6 +415,43 @@ class TestPandasMongoBridge(MainTestCase):
             temp_file.close()
         temp_file.close()
         self.assertTrue(passed)
+
+    def test_repeat_child_name_matches_repeat(self):
+        """
+        ParsedInstance.to_dict creates a list within a repeat if a child has the same name as the repeat
+         This test makes sure that doesnt happen
+        """
+        self.maxDiff = None
+        fixture = "repeat_child_name_matches_repeat"
+        # publish form so we have a dd to pass to xform inst. parser
+        self._publish_xls_fixture_set_xform(fixture)
+        submission_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "fixtures", fixture, fixture + ".xml"
+        )
+        # get submission xml str
+        with open(submission_path, "r") as f:
+            xml_str = f.read()
+        dict = xform_instance_to_dict(xml_str, self.xform.data_dictionary())
+        expected_dict = {
+            u'test_item_name_matches_repeat': {
+                u'formhub': {
+                    u'uuid': u'c911d71ce1ac48478e5f8bac99addc4e'
+                },
+                u'gps':
+                    [
+                        {
+                            u'info': u'Yo',
+                            u'gps': u'-1.2625149 36.7924478 0.0 30.0'
+                        },
+                        {
+                            u'info': u'What',
+                            u'gps': u'-1.2625072 36.7924328 0.0 30.0'
+                        }
+                    ]
+            }
+        }
+        self.assertEqual(dict, expected_dict)
 
     def test_remove_dups_from_list_maintain_order(self):
         l = ["a", "z", "b", "y", "c", "b", "x"]

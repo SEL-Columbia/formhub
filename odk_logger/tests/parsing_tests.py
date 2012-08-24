@@ -1,9 +1,12 @@
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
+from xml.dom import minidom
 import os
+import re
 from main.tests.test_base import MainTestCase
 from odk_logger.models.xform import XForm
 from odk_logger.xform_instance_parser import xform_instance_to_dict, \
-    xform_instance_to_flat_dict, parse_xform_instance, XFormInstanceParser
+    xform_instance_to_flat_dict, parse_xform_instance, XFormInstanceParser,\
+    xpath_from_xml_node
 from odk_logger.xform_instance_parser import XFORM_ID_STRING
 
 XML = u"xml"
@@ -92,7 +95,7 @@ class TestXFormInstanceParser(MainTestCase):
             flat_dict_with_id.update(d[FLAT_DICT])
             self.assertEqual(parse_xform_instance(d[XML]), flat_dict_with_id)
 
-    def setUp(self):
+    def test_parsed_xml(self):
         self._create_user_and_login()
         # publish our form which contains some some repeats
         xls_file_path = os.path.join(
@@ -160,4 +163,20 @@ class TestXFormInstanceParser(MainTestCase):
             u'info/name': u'Adam'
         }
         self.assertEqual(flat_dict, expected_flat_dict)
+
+    def test_xpath_from_xml_node(self):
+        xml_str = '<?xml version=\'1.0\' ?><test_item_name_matches_repeat id="repeat_child_name_matches_repeat"><formhub><uuid>c911d71ce1ac48478e5f8bac99addc4e</uuid></formhub><gps><gps>-1.2625149 36.7924478 0.0 30.0</gps><info>Yo</info></gps><gps><gps>-1.2625072 36.7924328 0.0 30.0</gps><info>What</info></gps></test_item_name_matches_repeat>'
+        clean_xml_str = xml_str.strip()
+        clean_xml_str = re.sub(ur">\s+<", u"><", clean_xml_str)
+        root_node = minidom.parseString(clean_xml_str).documentElement
+        # get the first top-level gps element
+        gps_node = root_node.firstChild.nextSibling
+        self.assertEqual(gps_node.nodeName, u'gps')
+        # get the info element within the gps element
+        info_node = gps_node.getElementsByTagName(u'info')[0]
+        # create an xpath that should look like gps/info
+        xpath = xpath_from_xml_node(info_node)
+        self.assertEqual(xpath, u'gps/info')
+
+
 
