@@ -14,7 +14,8 @@ from restservice.utils import call_service
 from utils.model_tools import queryset_iterator
 from odk_logger.models import Instance
 from common_tags import START_TIME, START, END_TIME, END, ID, UUID,\
-    ATTACHMENTS, GEOLOCATION, SUBMISSION_TIME, MONGO_STRFTIME, BAMBOO_DATASET_ID
+    ATTACHMENTS, GEOLOCATION, SUBMISSION_TIME, MONGO_STRFTIME,\
+    BAMBOO_DATASET_ID, DELETEDAT
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
@@ -85,7 +86,8 @@ class ParsedInstance(models.Model):
         query = dict_for_mongo(query)
         query[cls.USERFORM_ID] = u'%s_%s' % (username, id_string)
         #display only active elements
-        query.update({"_deleted_at": {"$exists": False}})
+        query.update(
+            {"$or": [{"_deleted_at": {"$exists": False}}, {"_deleted_at": None}]})
         # fields must be a string array i.e. '["name", "age"]'
         fields = json.loads(fields, object_hook=json_util.object_hook) if fields else []
         # TODO: current mongo (2.0.4 of this writing) cant mix including and excluding fields in a single query
@@ -106,6 +108,9 @@ class ParsedInstance(models.Model):
 
     def to_dict_for_mongo(self):
         d = self.to_dict()
+        deleted_at = None
+        if isinstance(self.instance.deleted_at, datetime.datetime):
+            deleted_at = self.instance.deleted_at.strftime(MONGO_STRFTIME)
         d.update(
             {
                 UUID: self.instance.uuid,
@@ -119,6 +124,7 @@ class ParsedInstance(models.Model):
                 GEOLOCATION: [self.lat, self.lng],
                 SUBMISSION_TIME:
                     self.instance.date_created.strftime(MONGO_STRFTIME),
+                DELETEDAT: deleted_at
             }
         )
         return dict_for_mongo(d)
