@@ -118,7 +118,7 @@ class ParsedInstance(models.Model):
                 self.STATUS: self.instance.status,
                 GEOLOCATION: [self.lat, self.lng],
                 SUBMISSION_TIME:
-                self.instance.date_created.strftime(MONGO_STRFTIME),
+                    self.instance.date_created.strftime(MONGO_STRFTIME),
             }
         )
         return dict_for_mongo(d)
