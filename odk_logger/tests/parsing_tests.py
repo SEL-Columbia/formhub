@@ -15,96 +15,15 @@ FLAT_DICT = u"flat_dict"
 ID = XFORM_ID_STRING
 
 class TestXFormInstanceParser(MainTestCase):
-
-    def _setUp(self):
-        self.inputs_and_outputs = [
-            {
-                XML: u"""<?xml version='1.0' ?><test id="test_id"><a>1</a><b>2</b></test>""",
-                DICT: {
-                    u"test": {
-                        u"a": u"1",
-                        u"b": u"2",
-                        }
-                    },
-                FLAT_DICT: {
-                    u"a": u"1",
-                    u"b": u"2",
-                    },
-                ID : u"test_id",
-                },
-            {
-                XML: u"""<?xml version='1.0' ?><test id="test_id"><a><b>2</b></a></test>""",
-                DICT: {
-                    u"test": {
-                        u"a" : {
-                            u"b" : u"2"
-                            }
-                        }
-                    },
-                FLAT_DICT: {
-                    u"a/b" : u"2"
-                    },
-                ID: u"test_id"
-                },
-            {
-                XML: u"""<?xml version='1.0' ?><test id="test_id"><b>1</b><b>2</b></test>""",
-                DICT: {
-                    u"test" : {
-                        u"b" : [u"1", u"2"]
-                        }
-                    },
-                FLAT_DICT: {
-                    #u"b":[u"1", u"2"]
-                    u"b":[{u"b": u"1"}, {u"b": u"2"}]
-                },
-                ID: u"test_id"
-                },
-            {
-                XML: u"""
-<?xml version='1.0' ?>
-<test id="test_id">
-  <a>
-    <b>1</b>
-  </a>
-  <a>
-    <b>2</b>
-  </a>
-</test>
-""",
-                DICT: {
-                    u"test" : {
-                        u"a" : [{u"b" : u"1"}, {u"b": u"2"}]
-                        }
-                    },
-                FLAT_DICT: {
-                    #u"a/b": u"1",
-                    #u"a[2]/b": u"2"
-                    u'a': [{u'a/b': u'1'}, {u'a/b': u'2'}]
-                    },
-                ID: u"test_id"
-                },
-
-            ]            
-
-    def _test_parse_xform_instance(self):
-        # todo: need to test id string as well
-        for d in self.inputs_and_outputs:
-            self.assertEqual(xform_instance_to_dict(d[XML]), d[DICT])
-            self.assertEqual(xform_instance_to_flat_dict(d[XML]), d[FLAT_DICT])
-            flat_dict_with_id = {ID: d[ID]}
-            flat_dict_with_id.update(d[FLAT_DICT])
-            self.assertEqual(parse_xform_instance(d[XML]), flat_dict_with_id)
-
-    def _test_parsed_xml(self):
+    def _publish_and_submit_new_repeats(self):
         self._create_user_and_login()
         # publish our form which contains some some repeats
         xls_file_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             "../fixtures/new_repeats/new_repeats.xls"
         )
-        response = self._publish_xls_file(xls_file_path)
-        self.assertEqual(response.status_code, 200)
-        self.xform = XForm.objects.get(user=self.user, id_string="new_repeat")
+        response = self._publish_xls_file_and_set_xform(xls_file_path)
+        self.assertEqual(self.response.status_code, 200)
 
         # submit an instance
         xml_submission_file_path = os.path.join(
@@ -120,6 +39,7 @@ class TestXFormInstanceParser(MainTestCase):
         xml_file.close()
 
     def test_parse_xform_nested_repeats(self):
+        self._publish_and_submit_new_repeats()
         parser = XFormInstanceParser(self.xml, self.xform.data_dictionary())
         dict = parser.to_dict()
         expected_dict = {
