@@ -1,0 +1,14 @@
+<?xml version='1.0' ?>
+<test_item_name_matches_repeat id="repeat_child_name_matches_repeat">
+    <formhub>
+        <uuid>c911d71ce1ac48478e5f8bac99addc4e</uuid>
+    </formhub>
+    <gps>
+        <gps>-1.2625149 36.7924478 0.0 30.0</gps>
+        <info>Yo</info>
+    </gps>
+    <gps>
+        <gps>-1.2625072 36.7924328 0.0 30.0</gps>
+        <info>What</info>
+    </gps>
+</test_item_name_matches_repeat>

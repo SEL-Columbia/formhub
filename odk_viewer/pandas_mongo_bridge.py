@@ -110,7 +110,7 @@ class AbstractDataFrameBuilder(object):
                             for choice in
                     choices]))
 
-            # recurse into repeats
+            # recurs into repeats
             for record_key, record_item in record.items():
                 if type(record_item) == list:
                     for list_item in record_item:
@@ -128,9 +128,10 @@ class AbstractDataFrameBuilder(object):
     def _split_gps_fields(cls, record, gps_fields):
         updated_gps_fields = {}
         for key, value in record.iteritems():
-            if key in gps_fields:
+            if key in gps_fields and isinstance(value, basestring):
                 gps_xpaths = DataDictionary.get_additional_geopoint_xpaths(key)
                 gps_parts = dict([(xpath, None) for xpath in gps_xpaths])
+                # hack, check if its a list and grab the object within that
                 parts = value.split(' ')
                 # TODO: check whether or not we can have a gps recording
                 # from ODKCollect that has less than four components,
@@ -139,8 +140,8 @@ class AbstractDataFrameBuilder(object):
                     gps_parts = dict(zip(gps_xpaths, parts))
                 updated_gps_fields.update(gps_parts)
             # check for repeats within record i.e. in value
-            if type(value) == list:
-                for list_item in  value:
+            elif type(value) == list:
+                for list_item in value:
                     if type(list_item) == dict:
                         cls._split_gps_fields(list_item, gps_fields)
         record.update(updated_gps_fields)
