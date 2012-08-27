@@ -1,5 +1,7 @@
+from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.utils import simplejson
+from odk_logger.models.instance import Instance
 
 from test_base import MainTestCase
 from main.views import delete_data
@@ -40,15 +42,22 @@ class TestFormAPIDelete(MainTestCase):
         data = {'query': json}
         args = {'username': self.user.username, 'id_string':
                     self.xform.id_string, 'query': json, 'limit': 1, 'sort':
-                        '{"_id":-1}', 'fields': '["_id"]'}
+                        '{"_id":-1}', 'fields': '["_id","_uuid"]'}
 
         #check if record exist before delete
         before = ParsedInstance.query_mongo(**args)
         self.assertEqual(before.count(), 1)
+        records = list(record for record in before)
+        uuid = records[0]['_uuid']
+        instance  = Instance.objects.get(uuid=uuid, xform=self.xform)
+        self.assertEqual(instance.deleted_at, None)
 
         #Delete
         response = self.client.get(self.delete_url, data)
         self.assertEqual(response.status_code, 200)
+        instance  = Instance.objects.get(uuid=uuid, xform=self.xform)
+        self.assertNotEqual(instance.deleted_at, None)
+        self.assertTrue(isinstance(instance.deleted_at, datetime))
 
         #check if it exist after delete
         after = ParsedInstance.query_mongo(**args)
