@@ -102,7 +102,7 @@ class Instance(models.Model):
             return self._parser.to_dict()
 
     @classmethod
-    def delete_by_uuid(cls, username, id_string, uuid):
+    def delete_by_uuid(cls, username, id_string, uuid, deleted_at=datetime.now()):
         # import ipdb; ipdb.set_trace()
         try:
             instance = cls.objects.get(
@@ -113,7 +113,7 @@ class Instance(models.Model):
         except cls.DoesNotExist:
             return False
         else:
-            instance.deleted_at = datetime.now()
+            instance.deleted_at = deleted_at
             #instance.save()
             super(Instance, instance).save()
         return True
