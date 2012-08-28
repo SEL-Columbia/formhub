@@ -12,9 +12,14 @@
       <form class="well" method="post" action=".">
         <table>
           {{ form.as_table }}
+          <tfoot>
+            <tr>
+              <td>&nbsp;</td>
+              <td><input type="submit" class="btn btn-large btn-primary" value="{% trans 'Sign in' %}" /></td>
+            </tr>
+          </tfoot>
         </table>
         {% csrf_token %}
-        <input type="submit" class="btn btn-large btn-primary" value="{% trans 'Sign in' %}" />
         <input type="hidden" name="next" value="{{ next }}" />
       </form>
       {% url auth_password_reset as reset_url %}

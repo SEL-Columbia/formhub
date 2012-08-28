@@ -18,6 +18,7 @@ var mapboxMaps = [
     {'label': gettext('MapBox Streets Zenburn'), 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-bjhr55gf.jsonp'},
     {'label': gettext('Natural Earth II'), 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-1c1r9n5g.jsonp'}
 ];
+var sslUrlPerfix = 'https://dnv9my2eseobd.cloudfront.net/'; // add trailing slash since its expected function that uses this
 var allowResetZoomLevel = true; // used to allow zooming when first loaded
 var popupOffset = new L.Point(0, -10);
 var notSpecifiedCaption = gettext("Not Specified");
@@ -53,6 +54,29 @@ var formResponseMngr = new FormResponseManager(mongoAPIUrl, loadResponseDataCall
 var currentLanguageIdx = -1;
 var customMapBoxTileLayer;
 var legendsContainer;
+
+var mapview = function() {
+
+    return {
+        isHttps: function(){
+            return location.protocol == 'https:';
+        }
+    }
+}();
+
+/**
+ *  for a url http://a.tiles.mapbox.com/v3/modilabs.map-iuetkf9u/{z}/{x}/{y}.png
+ *  return v3/modilabs.map-iuetkf9u/{z}/{x}/{y}.png,
+ *  is a regex that strips gets everything after the domain name
+ */
+mapview.getMapboxMapname = function(mapUrl) {
+    var matches = mapUrl.match(/(^.+?\..+?\/)(.+)/);
+    if(matches.length > 0)
+    {
+        return matches[2];
+    }
+    return null;
+}
 
 function initialize() {
     // Make a new Leaflet map in your container div
@@ -101,8 +125,18 @@ function initialize() {
     // Get metadata about the map from MapBox
     var tileJSONAddFn = function(mapData, addToMap) { 
         var innerFn = function(tilejson) {
+            var tileLayer, mapName;
+
             tilejson.attribution += mapBoxAdditAttribution;
-            var tileLayer = new wax.leaf.connector(tilejson);
+            // check if https and change tile array appropriately
+            if(mapview.isHttps())
+            {
+                /// get map url
+                mapName = mapview.getMapboxMapname(tilejson.tiles[0]);
+                /// replace our tile url with this
+                tilejson.tiles = [sslUrlPerfix + mapName];
+            }
+            tileLayer = new wax.leaf.connector(tilejson);
             
             layersControl.addBaseLayer(tileLayer, mapData.label);
             if(addToMap) {
@@ -117,6 +151,12 @@ function initialize() {
         mapboxMaps = _.union([customMapBoxTileLayer], mapboxMaps);
     }
     _.each(mapboxMaps, function(mapData, idx) {
+        // if https,
+        if(mapview.isHttps())
+        {
+            // change to ssl url
+            mapData.url = sslUrlPerfix + mapview.getMapboxMapname(mapData.url);
+        }
         wax.tilejson(mapData.url, tileJSONAddFn(mapData, !idx)); //ie, only add idx 0
     });
 
