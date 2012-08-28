@@ -125,7 +125,7 @@ function initialize() {
     // Get metadata about the map from MapBox
     var tileJSONAddFn = function(mapData, addToMap) { 
         var innerFn = function(tilejson) {
-            var tileLayer;
+            var tileLayer, mapName;
 
             tilejson.attribution += mapBoxAdditAttribution;
             // check if https and change tile array appropriately
