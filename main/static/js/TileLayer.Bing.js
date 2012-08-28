@@ -53,7 +53,8 @@ L.TileLayer.Bing = L.TileLayer.extend({
       jsonp: this._callbackId,
       include: 'ImageryProviders'
     },
-        url = "http://dev.virtualearth.net/REST/v1/Imagery/Metadata/" +
+        url = (document.location.protocol=="https:"?"https":"http") +
+            "://dev.virtualearth.net/REST/v1/Imagery/Metadata/" +
               this._mapType + L.Util.getParamString(params),
         script = document.createElement("script");
         
