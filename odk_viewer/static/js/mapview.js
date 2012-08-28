@@ -59,7 +59,7 @@ var mapview = function() {
 
     return {
         isHttps: function(){
-            return location.protocol == 'https:';
+            return true;//location.protocol == 'https:';
         }
     }
 }();
@@ -151,6 +151,12 @@ function initialize() {
         mapboxMaps = _.union([customMapBoxTileLayer], mapboxMaps);
     }
     _.each(mapboxMaps, function(mapData, idx) {
+        // if https,
+        if(mapview.isHttps())
+        {
+            // change to ssl url
+            mapData.url = sslUrlPerfix + mapview.getMapboxMapname(mapData.url);
+        }
         wax.tilejson(mapData.url, tileJSONAddFn(mapData, !idx)); //ie, only add idx 0
     });
 
