@@ -59,7 +59,7 @@ var mapview = function() {
 
     return {
         isHttps: function(){
-            return true;//location.protocol == 'https:';
+            return location.protocol == 'https:';
         }
     }
 }();
