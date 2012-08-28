@@ -29,9 +29,14 @@ def datetime_from_str(text):
     if text is None:
         return None
     date_time_str = text.split(".")[0]
-    return datetime.datetime.strptime(
-        date_time_str, '%Y-%m-%dT%H:%M:%S'
+    dt = None
+    try:
+        dt = datetime.datetime.strptime(
+            date_time_str, '%Y-%m-%dT%H:%M:%S'
         )
+    except Exception:
+        return None
+    return dt
 
 
 def dict_for_mongo(d):
