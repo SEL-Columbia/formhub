@@ -20,8 +20,10 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'db.sqlite3',                      # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2',
+        #'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'db.sqlite3',                      # Or path to database file
+        #if using sqlite3.
     }
 }
 
@@ -110,7 +112,8 @@ ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, 'templates')
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Put strings here, like "/home/html/django_templates" or
+    # "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
@@ -199,8 +202,9 @@ GOOGLE_STEP2_URI = 'http://formhub.org/gwelcome'
 GOOGLE_CLIENT_ID = '617113120802.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = '9reM29qpGFPyI8TBuB54Z4fk'
 
-# Changing the keys here will change order of evaluation and break functionality
-# Place additional keys inorder both alphabeticall and in descending size 
+# Changing the keys here will change order of evaluation and break
+# functionality.
+# Place additional keys inorder both alphabeticall and in descending size.
 THUMB_CONF = {'large' : {'size': 1280, 'suffix': '-lrg'},
               'medium' : {'size': 640, 'suffix': '-med'},
               'smaller' : {'size': 240, 'suffix': '-sml'},
@@ -233,4 +237,5 @@ except ImportError:
 if PRINT_EXCEPTION and DEBUG:
     MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
 
-METEORURL = "http://starscream.modilabs.org:3000"
+# URL for data charting API, default use charts.bamboo.io
+METEORURL = "http://charts.bamboo.io"
