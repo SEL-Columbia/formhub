@@ -12,7 +12,7 @@ from odk_viewer.models.data_dictionary import ParsedInstance, DataDictionary
 from utils.export_tools import question_types_to_exclude
 from collections import OrderedDict
 from common_tags import ID, XFORM_ID_STRING, STATUS, ATTACHMENTS, GEOLOCATION,\
-UUID, SUBMISSION_TIME, NA_REP, BAMBOO_DATASET_ID
+UUID, SUBMISSION_TIME, NA_REP, BAMBOO_DATASET_ID, DELETEDAT
 
 
 # this is Mongo Collection where we will store the parsed submissions
@@ -62,7 +62,7 @@ class AbstractDataFrameBuilder(object):
 
     # TODO: use constants from comman_tags module!
     INTERNAL_FIELDS = [XFORM_ID_STRING, STATUS, ID, ATTACHMENTS, GEOLOCATION,
-        UUID, SUBMISSION_TIME, BAMBOO_DATASET_ID]
+        UUID, SUBMISSION_TIME, BAMBOO_DATASET_ID, DELETEDAT]
 
     """
     Group functionality used by any DataFrameBuilder i.e. XLS, CSV and KML
@@ -110,7 +110,7 @@ class AbstractDataFrameBuilder(object):
                             for choice in
                     choices]))
 
-            # recurse into repeats
+            # recurs into repeats
             for record_key, record_item in record.items():
                 if type(record_item) == list:
                     for list_item in record_item:
@@ -128,9 +128,10 @@ class AbstractDataFrameBuilder(object):
     def _split_gps_fields(cls, record, gps_fields):
         updated_gps_fields = {}
         for key, value in record.iteritems():
-            if key in gps_fields:
+            if key in gps_fields and isinstance(value, basestring):
                 gps_xpaths = DataDictionary.get_additional_geopoint_xpaths(key)
                 gps_parts = dict([(xpath, None) for xpath in gps_xpaths])
+                # hack, check if its a list and grab the object within that
                 parts = value.split(' ')
                 # TODO: check whether or not we can have a gps recording
                 # from ODKCollect that has less than four components,
@@ -139,8 +140,8 @@ class AbstractDataFrameBuilder(object):
                     gps_parts = dict(zip(gps_xpaths, parts))
                 updated_gps_fields.update(gps_parts)
             # check for repeats within record i.e. in value
-            if type(value) == list:
-                for list_item in  value:
+            elif type(value) == list:
+                for list_item in value:
                     if type(list_item) == dict:
                         cls._split_gps_fields(list_item, gps_fields)
         record.update(updated_gps_fields)

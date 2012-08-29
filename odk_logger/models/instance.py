@@ -1,4 +1,6 @@
 import re
+
+from datetime import datetime
 from xml.dom import minidom
 from django.db import models
 from django.contrib.auth.models import User
@@ -39,6 +41,9 @@ class Instance(models.Model):
 
     # this will end up representing "date last parsed"
     date_modified = models.DateTimeField(auto_now=True)
+
+    # this will end up representing "date instance was deleted"
+    deleted_at = models.DateTimeField(null=True, default=None)
 
     # ODK keeps track of three statuses for an instance:
     # incomplete, submitted, complete
@@ -95,6 +100,23 @@ class Instance(models.Model):
             return self._parser.get_flat_dict_with_attributes()
         else:
             return self._parser.to_dict()
+
+    @classmethod
+    def delete_by_uuid(cls, username, id_string, uuid, deleted_at=datetime.now()):
+        # import ipdb; ipdb.set_trace()
+        try:
+            instance = cls.objects.get(
+                uuid=uuid,
+                xform__id_string=id_string,
+                xform__user__username=username
+            )
+        except cls.DoesNotExist:
+            return False
+        else:
+            instance.deleted_at = deleted_at
+            #instance.save()
+            super(Instance, instance).save()
+        return True
 
 
 def stathat_form_submission(sender, instance, created, **kwargs):
