@@ -94,13 +94,12 @@
 	  <a class="btn" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}" data-original-title="{% trans 'Enter Web Form' %}" rel="tooltip">
 	    <i class="icon-edit"></i>
 	  </a>                
-        <!--here we add bamboo meteor client logic-->
-        {% if xform.submission_count > 0 and xform.shared %}
-	  <a class="btn" href="{% url odk_viewer.views.chart content_user.username xform.id_string %}" data-original-title="{%trans 'View Charts' %}" rel="tooltip">
-        <i class="icon-signal"></i>
-      </a>
-        {% endif %}
-      <!--========================================-->
+      <!--here we add bamboo meteor client logic-->
+      {% if xform.submission_count > 0 and xform.shared_data %}
+	    <a class="btn" href="{% url odk_viewer.views.chart content_user.username xform.id_string %}" data-original-title="{%trans 'View Charts' %}" rel="tooltip">
+          <i class="icon-signal"></i>
+        </a>
+      {% endif %}
           <!-- DELETE -->
              {% if xform.submission_count <= 0 %}
           <div id="delete-{{ xform.id_string }}" class="modal hide fade">
