@@ -113,10 +113,10 @@ function initialize() {
     map.addLayer(markerLayerGroup);
 
     // add bing maps layer
-    $.each(bingMapTypeLabels, function(type, label) {
+    /** $.each(bingMapTypeLabels, function(type, label) {
         var bingLayer = new L.TileLayer.Bing(bingAPIKey, type); 
         layersControl.addBaseLayer(bingLayer, label);
-    });
+    });*/
 
     // add google sat layer
     var ggl = new L.Google();
