@@ -27,7 +27,6 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         attachments_qs = Attachment.objects.select_related(
             'instance', 'instance__xform')
-        print kwargs
         if kwargs.get('username'):
             username = kwargs.get('username')
             try:
@@ -60,8 +59,7 @@ class Command(BaseCommand):
                     else:
                         resize_local_env(filename)
                     if default_storage.exists(get_path(filename,
-                            '%s.%s' % (settings.THUMB_CONF['small']['suffix'],
-                                    settings.IMG_FILE_TYPE))):
+                            '%s' % settings.THUMB_CONF['small']['suffix'])):
                         print (_(u'Thumbnails created for %(file)s') 
                                % {'file': filename})
                     else:
