@@ -60,7 +60,7 @@ class Command(BaseCommand):
                     else:
                         resize_local_env(filename)
                     if default_storage.exists(get_path(filename,
-                            '%s.%s' % (settings.THUMB_CONF['smaller']['suffix'],
+                            '%s.%s' % (settings.THUMB_CONF['small']['suffix'],
                                     settings.IMG_FILE_TYPE))):
                         print (_(u'Thumbnails created for %(file)s') 
                                % {'file': filename})

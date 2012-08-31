@@ -203,7 +203,7 @@ GOOGLE_CLIENT_SECRET = '9reM29qpGFPyI8TBuB54Z4fk'
 # Place additional keys inorder both alphabeticall and in descending size 
 THUMB_CONF = {'large' : {'size': 1280, 'suffix': '-large'},
               'medium' : {'size': 640, 'suffix': '-medium'},
-              'smaller' : {'size': 240, 'suffix': '-small'},
+              'small' : {'size': 240, 'suffix': '-small'},
              }
 IMG_FILE_TYPE = 'jpg'
 
