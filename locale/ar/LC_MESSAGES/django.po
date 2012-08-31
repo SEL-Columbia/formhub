@@ -3,25 +3,23 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Matt Berg <mlberg@gmail.com>, 2012.
-#   <mberg@modilabs.org>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: formhub\n"
 "Report-Msgid-Bugs-To: https://github.com/modilabs/formhub/issues\n"
 "POT-Creation-Date: 2012-08-31 09:54+0000\n"
-"PO-Revision-Date: 2012-08-31 14:55+0000\n"
-"Last-Translator: Matt Berg <mlberg@gmail.com>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/formhub/language/fr/)\n"
+"PO-Revision-Date: 2012-08-31 10:19+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Arabic (http://www.transifex.com/projects/p/formhub/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5\n"
 
 #: main/forms.py:22 main/forms.py:30
 msgid "No License"
-msgstr "Aucune licence"
+msgstr ""
 
 #: main/forms.py:24
 msgid "Attribution CC BY"
@@ -33,7 +31,7 @@ msgstr ""
 
 #: main/forms.py:32
 msgid "PDDL"
-msgstr "Domaine Publique"
+msgstr ""
 
 #: main/forms.py:34
 msgid "ODC-BY"
@@ -160,7 +158,7 @@ msgstr ""
 
 #: main/templates/dashboard.html:41
 msgid "Publish"
-msgstr "Publier"
+msgstr ""
 
 #: main/templates/dashboard.html:54 main/templates/profile.html:13
 msgid "Click to change your avatar"
@@ -172,15 +170,15 @@ msgstr ""
 
 #: main/templates/dashboard.html:85
 msgid "FORMS"
-msgstr "FORMES"
+msgstr ""
 
 #: main/templates/dashboard.html:88
 msgid "SHARED FORMS"
-msgstr "FORMES COMMUNES"
+msgstr ""
 
 #: main/templates/dashboard.html:91
 msgid "SUBMISSIONS"
-msgstr "SOUMISSIONS"
+msgstr ""
 
 #: main/templates/dashboard.html:101
 #, python-format
@@ -303,6 +301,10 @@ msgid "formhubber <small>(%(nb_users)s)</small>"
 msgid_plural "formhubbers <small>(%(nb_users)s)</small>"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
 
 #: main/templates/people.html:38
 msgid "Organization"
@@ -350,6 +352,10 @@ msgid "%(num_forms)s <small>Shared form</small>"
 msgid_plural "%(num_forms)s <small>Shared forms</small>"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
 
 #: main/templates/profile.html:61
 #, python-format
@@ -582,7 +588,7 @@ msgstr ""
 
 #: main/templates/show.html:188
 msgid "License:"
-msgstr "Licence :"
+msgstr ""
 
 #: main/templates/show.html:204
 msgid "View Photos"
@@ -1345,19 +1351,19 @@ msgstr ""
 
 #: odk_viewer/templates/instance.html:342
 msgid "← Previous"
-msgstr "← Précédente"
+msgstr ""
 
 #: odk_viewer/templates/instance.html:342
 msgid "Next →"
-msgstr "Suivante →"
+msgstr ""
 
 #: odk_viewer/templates/instance.html:354 odk_viewer/templates/survey.html:20
 msgid "Question"
-msgstr "Question"
+msgstr ""
 
 #: odk_viewer/templates/instance.html:354 odk_viewer/templates/survey.html:21
 msgid "Response"
-msgstr "Réponse"
+msgstr ""
 
 #: odk_viewer/templates/instance.html:446
 msgid ""
@@ -1429,7 +1435,7 @@ msgid ""
 "  The Formhub Dev Team\n"
 "\n"
 "  P.S. Please consider joining the formhub-users group, https://groups.google.com/group/formhub-users\n"
-msgstr "\n  Bonjour %(full_name)s,\n\n  %(message)s\n\n  Merci d'avoir utilisé formhub !\n  L'équipe de développement de Formhub.\n\n  P.S. Pensez à rejoindre le groupe formhub-users, https://groups.google.com/group/formhub-users\n"
+msgstr ""
 
 #: staff/templates/templated_email/notice.email:15
 #, python-format
@@ -1450,15 +1456,15 @@ msgid ""
 "  <p>\n"
 "      P.S. Please consider joining the <a href=\"https://groups.google.com/group/formhub-users\">formhub-users group</a>.\n"
 "  </p>\n"
-msgstr "\n  <p>Bonjour %(full_name)s,</p>\n\n  <p>\n      %(message)s\n  </p>\n\n  <p>\n      Merci d'avoir utilisé formhub !\n      <br/>\n      L'équipe de développement de Formhub.\n  </p>\n\n  <p>\n      P.S. Pensez à rejoindre le <a href=\"https://groups.google.com/group/formhub-users\">groupe formhub-users</a>.\n  </p>\n"
+msgstr ""
 
 #: templates/404.html:5
 msgid "404 Error"
-msgstr "Érreur 404"
+msgstr ""
 
 #: templates/500.html:5
 msgid "500 Error"
-msgstr "Érreur 500"
+msgstr ""
 
 #: templates/500.html:9
 msgid ""
