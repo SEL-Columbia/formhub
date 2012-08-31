@@ -3,25 +3,24 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Matt Berg <mlberg@gmail.com>, 2012.
-#   <mberg@modilabs.org>, 2012.
+#   <worldwidespirit@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: formhub\n"
 "Report-Msgid-Bugs-To: https://github.com/modilabs/formhub/issues\n"
 "POT-Creation-Date: 2012-08-31 09:54+0000\n"
-"PO-Revision-Date: 2012-08-31 14:55+0000\n"
-"Last-Translator: Matt Berg <mlberg@gmail.com>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/formhub/language/fr/)\n"
+"PO-Revision-Date: 2012-08-31 18:14+0000\n"
+"Last-Translator: myf <worldwidespirit@gmail.com>\n"
+"Language-Team: Chinese (http://www.transifex.com/projects/p/formhub/language/zh/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"Language: zh\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 #: main/forms.py:22 main/forms.py:30
 msgid "No License"
-msgstr "Aucune licence"
+msgstr "无许可证"
 
 #: main/forms.py:24
 msgid "Attribution CC BY"
@@ -33,7 +32,7 @@ msgstr ""
 
 #: main/forms.py:32
 msgid "PDDL"
-msgstr "Domaine Publique"
+msgstr ""
 
 #: main/forms.py:34
 msgid "ODC-BY"
@@ -45,15 +44,15 @@ msgstr ""
 
 #: main/forms.py:40
 msgid "Can view"
-msgstr ""
+msgstr "可访问"
 
 #: main/forms.py:41
 msgid "Can edit"
-msgstr ""
+msgstr "可编辑"
 
 #: main/forms.py:42
 msgid "Remove permissions"
-msgstr ""
+msgstr "注销权限"
 
 #: main/forms.py:158
 #, python-format
@@ -79,7 +78,7 @@ msgstr ""
 
 #: main/forms.py:189
 msgid "Media upload"
-msgstr ""
+msgstr "上传文件"
 
 #: main/forms.py:205
 msgid "JSONP url"
@@ -87,11 +86,11 @@ msgstr ""
 
 #: main/forms.py:210 utils/quick_converter.py:8
 msgid "XLS File"
-msgstr ""
+msgstr "XLS文件"
 
 #: main/forms.py:215
 msgid "XLS URL"
-msgstr ""
+msgstr "XLS地址"
 
 #: main/views.py:85
 #, python-format
@@ -117,7 +116,7 @@ msgstr ""
 
 #: main/views.py:385
 msgid "Update failed."
-msgstr ""
+msgstr "上传失败"
 
 #: main/views.py:459 main/views.py:483 main/views.py:515
 msgid "Permission denied."
@@ -129,7 +128,7 @@ msgstr ""
 
 #: main/templates/dashboard.html:10
 msgid "Publish a Form <small>Upload XLSForm</small>"
-msgstr ""
+msgstr "发布表格<small>上传XLS表</small>"
 
 #: main/templates/dashboard.html:12
 #, python-format
@@ -152,35 +151,35 @@ msgstr ""
 #: main/templates/show.html.py:321 main/templates/show.html:358
 #: main/templates/show.html.py:380
 msgid "Upload"
-msgstr ""
+msgstr "上传"
 
 #: main/templates/dashboard.html:24
 msgid "URL"
-msgstr ""
+msgstr "URL地址"
 
 #: main/templates/dashboard.html:41
 msgid "Publish"
-msgstr "Publier"
+msgstr "发布"
 
 #: main/templates/dashboard.html:54 main/templates/profile.html:13
 msgid "Click to change your avatar"
-msgstr ""
+msgstr "换个人图像"
 
 #: main/templates/dashboard.html:69
 msgid "View Profile Page"
-msgstr ""
+msgstr "查看个人资料"
 
 #: main/templates/dashboard.html:85
 msgid "FORMS"
-msgstr "FORMES"
+msgstr "表格"
 
 #: main/templates/dashboard.html:88
 msgid "SHARED FORMS"
-msgstr "FORMES COMMUNES"
+msgstr ""
 
 #: main/templates/dashboard.html:91
 msgid "SUBMISSIONS"
-msgstr "SOUMISSIONS"
+msgstr ""
 
 #: main/templates/dashboard.html:101
 #, python-format
@@ -200,13 +199,13 @@ msgstr ""
 #: main/templates/form_gallery.html:41 main/templates/people.html:36
 #: staff/templates/submissions.html:38
 msgid "User"
-msgstr ""
+msgstr "用户"
 
 #: main/templates/form_gallery.html:42 main/templates/people.html:37
 #: main/templates/profile.html:66 main/templates/published_surveys.html:45
 #: main/templates/user_crowdforms.html:13
 msgid "Name"
-msgstr ""
+msgstr "姓名"
 
 #: main/templates/form_gallery.html:43 main/templates/show.html:37
 msgid "Description"
@@ -215,7 +214,7 @@ msgstr ""
 #: main/templates/form_gallery.html:44 main/templates/profile.html:68
 #: main/templates/show.html:52 main/templates/show.html.py:59
 msgid "XLSForm"
-msgstr ""
+msgstr "XLS表"
 
 #: main/templates/form_gallery.html:58
 msgid "add crowdform"
@@ -223,7 +222,7 @@ msgstr ""
 
 #: main/templates/form_gallery.html:66
 msgid "Excel"
-msgstr ""
+msgstr "Excel"
 
 #: main/templates/form_gallery.html:70 main/templates/show.html:112
 msgid "Clone"
@@ -263,7 +262,7 @@ msgstr ""
 
 #: main/templates/home.html:19
 msgid "Mobile."
-msgstr ""
+msgstr "手机"
 
 #: main/templates/home.html:20
 msgid ""
@@ -302,7 +301,6 @@ msgstr ""
 msgid "formhubber <small>(%(nb_users)s)</small>"
 msgid_plural "formhubbers <small>(%(nb_users)s)</small>"
 msgstr[0] ""
-msgstr[1] ""
 
 #: main/templates/people.html:38
 msgid "Organization"
@@ -349,7 +347,6 @@ msgstr ""
 msgid "%(num_forms)s <small>Shared form</small>"
 msgid_plural "%(num_forms)s <small>Shared forms</small>"
 msgstr[0] ""
-msgstr[1] ""
 
 #: main/templates/profile.html:61
 #, python-format
@@ -582,7 +579,7 @@ msgstr ""
 
 #: main/templates/show.html:188
 msgid "License:"
-msgstr "Licence :"
+msgstr ""
 
 #: main/templates/show.html:204
 msgid "View Photos"
@@ -1345,19 +1342,19 @@ msgstr ""
 
 #: odk_viewer/templates/instance.html:342
 msgid "← Previous"
-msgstr "← Précédente"
+msgstr ""
 
 #: odk_viewer/templates/instance.html:342
 msgid "Next →"
-msgstr "Suivante →"
+msgstr ""
 
 #: odk_viewer/templates/instance.html:354 odk_viewer/templates/survey.html:20
 msgid "Question"
-msgstr "Question"
+msgstr ""
 
 #: odk_viewer/templates/instance.html:354 odk_viewer/templates/survey.html:21
 msgid "Response"
-msgstr "Réponse"
+msgstr ""
 
 #: odk_viewer/templates/instance.html:446
 msgid ""
@@ -1429,7 +1426,7 @@ msgid ""
 "  The Formhub Dev Team\n"
 "\n"
 "  P.S. Please consider joining the formhub-users group, https://groups.google.com/group/formhub-users\n"
-msgstr "\n  Bonjour %(full_name)s,\n\n  %(message)s\n\n  Merci d'avoir utilisé formhub !\n  L'équipe de développement de Formhub.\n\n  P.S. Pensez à rejoindre le groupe formhub-users, https://groups.google.com/group/formhub-users\n"
+msgstr ""
 
 #: staff/templates/templated_email/notice.email:15
 #, python-format
@@ -1450,15 +1447,15 @@ msgid ""
 "  <p>\n"
 "      P.S. Please consider joining the <a href=\"https://groups.google.com/group/formhub-users\">formhub-users group</a>.\n"
 "  </p>\n"
-msgstr "\n  <p>Bonjour %(full_name)s,</p>\n\n  <p>\n      %(message)s\n  </p>\n\n  <p>\n      Merci d'avoir utilisé formhub !\n      <br/>\n      L'équipe de développement de Formhub.\n  </p>\n\n  <p>\n      P.S. Pensez à rejoindre le <a href=\"https://groups.google.com/group/formhub-users\">groupe formhub-users</a>.\n  </p>\n"
+msgstr ""
 
 #: templates/404.html:5
 msgid "404 Error"
-msgstr "Érreur 404"
+msgstr ""
 
 #: templates/500.html:5
 msgid "500 Error"
-msgstr "Érreur 500"
+msgstr ""
 
 #: templates/500.html:9
 msgid ""
