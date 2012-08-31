@@ -527,7 +527,7 @@ def form_photos(request, username, id_string):
     for instance in xform.surveys.all():
         for attachment in instance.attachments.all():
             url = reverse(attachment_url)
-            url = '%s?media_file=%s' % (url, attachment.media_file.name)
+            url = '%s?media_file=%s&' % (url, attachment.media_file.name)
             image_urls.append(url)
     context.images = image_urls
     context.profile, created = UserProfile.objects.get_or_create(user=owner)
