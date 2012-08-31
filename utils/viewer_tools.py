@@ -43,23 +43,6 @@ def image_urls(instance):
     return urls
 
 
-def image_url(attachment, suffix):
-    url = attachment.media_file.url
-    if suffix == 'original':
-        return url
-    else:
-        default_storage = get_storage_class()()
-        if settings.THUMB_CONF.has_key(suffix):
-            suffix = settings.THUMB_CONF[suffix]['suffix']
-            filename = attachment.media_file.name
-            if default_storage.exists(get_path(filename, suffix)):
-                url = default_storage.url(
-                    get_path(filename, suffix))
-            else:
-                pass
-    return url
-
-
 def parse_xform_instance(xml_str):
     """
     'xml_str' is a str object holding the XML of an XForm

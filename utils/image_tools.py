@@ -70,3 +70,24 @@ def resize_local_env(filename):
 
     [_save_thumbnails(image, path, conf[key]['size'], conf[key]['suffix'])
                                                         for key in conf.keys()]
+
+
+def image_url(attachment, suffix):
+    '''Return url of an image given size(@param suffix)
+    e.g large, medium, small, or generate required thumbnail
+    '''
+    url = attachment.media_file.url
+    if suffix == 'original':
+        return url
+    else:
+        default_storage = get_storage_class()()
+        if settings.THUMB_CONF.has_key(suffix):
+            size = settings.THUMB_CONF[suffix]['suffix']
+            filename = attachment.media_file.name
+            if default_storage.exists(get_path(filename, size)):
+                url = default_storage.url(
+                    get_path(filename, size))
+            else:
+                resize(filename)
+                return image_url(attachment, suffix)
+    return url
