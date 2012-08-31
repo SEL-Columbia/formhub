@@ -53,7 +53,7 @@ class Command(BaseCommand):
             filename = att.media_file.name
             default_storage = get_storage_class()()
             if not default_storage.exists(get_path(filename,
-                                    settings.THUMB_CONF['smaller']['suffix'])):
+                                    settings.THUMB_CONF['small']['suffix'])):
                 try:
                     if default_storage.__class__ != fs.__class__:
                         resize(filename)
