@@ -8,6 +8,15 @@ from django.core.files.storage import get_storage_class
 from utils.viewer_tools import get_path
 
 
+def flat( *nums ):
+    '''Build a tuple of ints from float or integer arguments.
+    Useful because PIL crop and resize require integer points.
+    source: https://gist.github.com/16a01455
+    '''
+
+    return tuple( int(round(n)) for n in nums )
+
+
 def get_dimensions((width, height), longest_side):
     if width > height:
         width = longest_side
@@ -18,7 +27,7 @@ def get_dimensions((width, height), longest_side):
     else:
         height = longest_side
         width = longest_side
-    return (width, height)
+    return flat(width, height)
 
 
 def _save_thumbnails(image, path, size, suffix, filename=None):
