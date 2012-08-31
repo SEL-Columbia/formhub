@@ -81,6 +81,7 @@ def image_url(attachment, suffix):
         return url
     else:
         default_storage = get_storage_class()()
+        fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
         if settings.THUMB_CONF.has_key(suffix):
             size = settings.THUMB_CONF[suffix]['suffix']
             filename = attachment.media_file.name
@@ -88,6 +89,9 @@ def image_url(attachment, suffix):
                 url = default_storage.url(
                     get_path(filename, size))
             else:
-                resize(filename)
+                if default_storage.__class__ != fs.__class__:
+                    resize(filename)
+                else:
+                    resize_local_env(filename)
                 return image_url(attachment, suffix)
     return url
