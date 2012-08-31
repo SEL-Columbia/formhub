@@ -39,7 +39,6 @@ def _save_thumbnails(image, path, size, suffix, filename=None):
         image.thumbnail(get_dimensions(image.size, float(size)),
                 Image.ANTIALIAS)
         image.save(get_path(path, suffix))
-
         default_storage.save(get_path(filename, suffix),
                                 fs.open(get_path(path, suffix)))
     else:
@@ -55,13 +54,12 @@ def resize(filename):
     img_file.close()
     image = Image.open(im)
     conf = settings.THUMB_CONF
-
     fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
     loc_path = fs.path('dummy.%s' % settings.IMG_FILE_TYPE)
 
-    [_save_thumbnails(image, loc_path, conf[key]['size'],
-                '%s.%s' % (conf[key]['suffix'], settings.IMG_FILE_TYPE),
-                filename=filename) for key in conf.keys()]
+    [_save_thumbnails(
+        image, loc_path, conf[key]['size'], conf[key]['suffix'],
+        filename=filename) for key in conf.keys()]
 
 
 def resize_local_env(filename):
