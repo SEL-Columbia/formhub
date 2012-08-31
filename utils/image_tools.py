@@ -59,7 +59,7 @@ def resize(filename):
 
     [_save_thumbnails(
         image, loc_path, conf[key]['size'], conf[key]['suffix'],
-        filename=filename) for key in conf.keys()]
+        filename=filename) for key in settings.THUMB_ORDER]
 
 
 def resize_local_env(filename):
@@ -68,8 +68,9 @@ def resize_local_env(filename):
     image = Image.open(path)
     conf = settings.THUMB_CONF
 
-    [_save_thumbnails(image, path, conf[key]['size'], conf[key]['suffix'])
-                                                        for key in conf.keys()]
+    [_save_thumbnails(
+        image, path, conf[key]['size'],
+        conf[key]['suffix']) for key in settings.THUMB_ORDER]
 
 
 def image_url(attachment, suffix):
