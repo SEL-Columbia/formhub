@@ -16,26 +16,24 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: static/js/mapview.js:3
 msgid "Proportion of surveys with response(s): "
-msgstr "Proportion de sondages avec réponse(s): "
+msgstr ""
 
 #: static/js/mapview.js:4
 msgid ""
 "ERROR: constants not found; please include main/static/js/formManagers.js"
 msgstr ""
-"ÉRREUR: constantes introuvables; merci d'inclure include main/static/js/"
-"formManagers.js"
 
 #: static/js/mapview.js:5
 msgid "Question"
-msgstr "Question"
+msgstr ""
 
 #: static/js/mapview.js:6
 msgid "Response"
-msgstr "Réponse"
+msgstr ""
 
 #: static/js/mapview.js:16
 msgid "Mapbox Streets"
@@ -55,7 +53,7 @@ msgstr ""
 
 #: static/js/mapview.js:24
 msgid "Not Specified"
-msgstr "Non spécifié"
+msgstr ""
 
 #: static/js/mapview.js:41
 msgid "Marker Layer"
@@ -79,23 +77,20 @@ msgstr ""
 
 #: static/js/mapview.js:222
 msgid "Language"
-msgstr "Langue"
+msgstr ""
 
 #: static/js/mapview.js:260
 msgid "View By"
-msgstr "Voir par"
+msgstr ""
 
 #: static/js/mapview.js:272
 msgid "None"
-msgstr "Aucun"
+msgstr ""
 
 #: static/js/mapview.js:293
 msgid "Container %(cont)s not found"
-msgstr "Container %(cont)s introuvable"
+msgstr ""
 
 #: static/js/mapview.js:590
 msgid "Number of submissions"
-msgstr "Nombre de soumissions"
-
-#~ msgid "An unexpected error occurred"
-#~ msgstr "Une erreur innatendue s'est produite"
+msgstr ""
