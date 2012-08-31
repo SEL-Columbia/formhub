@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: main/forms.py:22 main/forms.py:30
 msgid "No License"
@@ -167,7 +167,7 @@ msgstr ""
 
 #: main/templates/dashboard.html:69
 msgid "View Profile Page"
-msgstr "Voir le profil"
+msgstr ""
 
 #: main/templates/dashboard.html:85
 msgid "FORMS"
@@ -634,7 +634,7 @@ msgstr ""
 
 #: main/templates/show.html:388 templates/topbar.html:73
 msgid "Settings"
-msgstr "Préférences"
+msgstr ""
 
 #: main/templates/show.html:391
 msgid "Form Shared"
@@ -724,7 +724,7 @@ msgstr ""
 
 #: main/templates/support.html:5 templates/topbar.html:59
 msgid "Support"
-msgstr "Support"
+msgstr ""
 
 #: main/templates/support.html:9
 msgid "Thank you for using formhub!"
@@ -1483,41 +1483,40 @@ msgstr ""
 
 #: templates/topbar.html:55
 msgid "Forms"
-msgstr "Formulaires"
+msgstr ""
 
 #: templates/topbar.html:56
 msgid "People"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: templates/topbar.html:57
 msgid "About"
-msgstr "À propos"
+msgstr ""
 
 #: templates/topbar.html:58
 msgid "Syntax"
-msgstr "Syntaxe"
+msgstr ""
 
 #: templates/topbar.html:60
 msgid "Blog"
-msgstr "Blog"
+msgstr ""
 
 #: templates/topbar.html:65
-#, fuzzy
 msgid "New Form"
-msgstr "Formulaires"
+msgstr ""
 
 #: templates/topbar.html:72
 msgid "Public profile"
-msgstr "Profil public"
+msgstr ""
 
 #: templates/topbar.html:76
 msgid "Sign out"
-msgstr "Se déconnecter"
+msgstr ""
 
 #: templates/topbar.html:80 templates/registration/login.html:7
 #: templates/registration/login.html:18
 msgid "Sign in"
-msgstr "Connexion"
+msgstr ""
 
 #: templates/registration/activate.html:7
 msgid "Account Activated"

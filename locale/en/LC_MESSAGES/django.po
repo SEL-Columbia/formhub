@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-31 09:51+0000\n"
+"POT-Creation-Date: 2012-08-31 09:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
 
 #: main/forms.py:22 main/forms.py:30
 msgid "No License"
@@ -167,7 +166,7 @@ msgstr ""
 
 #: main/templates/dashboard.html:69
 msgid "View Profile Page"
-msgstr "Voir le profil"
+msgstr ""
 
 #: main/templates/dashboard.html:85
 msgid "FORMS"
@@ -634,7 +633,7 @@ msgstr ""
 
 #: main/templates/show.html:388 templates/topbar.html:73
 msgid "Settings"
-msgstr "Préférences"
+msgstr ""
 
 #: main/templates/show.html:391
 msgid "Form Shared"
@@ -724,7 +723,7 @@ msgstr ""
 
 #: main/templates/support.html:5 templates/topbar.html:59
 msgid "Support"
-msgstr "Support"
+msgstr ""
 
 #: main/templates/support.html:9
 msgid "Thank you for using formhub!"
@@ -1405,6 +1404,48 @@ msgstr ""
 msgid "Submissions (%(nb_sub)s)"
 msgstr ""
 
+#: staff/templates/templated_email/notice.email:1
+#, python-format
+msgid "formhub notification for %(username)s"
+msgstr ""
+
+#: staff/templates/templated_email/notice.email:3
+#, python-format
+msgid ""
+"\n"
+"  Hi %(full_name)s,\n"
+"\n"
+"  %(message)s\n"
+"\n"
+"  Thanks for using formhub!\n"
+"  The Formhub Dev Team\n"
+"\n"
+"  P.S. Please consider joining the formhub-users group, https://groups."
+"google.com/group/formhub-users\n"
+msgstr ""
+
+#: staff/templates/templated_email/notice.email:15
+#, python-format
+msgid ""
+"\n"
+"  <p>Hi %(full_name)s,</p>\n"
+"\n"
+"  <p>\n"
+"      %(message)s\n"
+"  </p>\n"
+"\n"
+"  <p>\n"
+"      Thanks for using formhub!\n"
+"      <br/>\n"
+"      The Formhub Dev Team\n"
+"  </p>\n"
+"\n"
+"  <p>\n"
+"      P.S. Please consider joining the <a href=\"https://groups.google.com/"
+"group/formhub-users\">formhub-users group</a>.\n"
+"  </p>\n"
+msgstr ""
+
 #: templates/404.html:5
 msgid "404 Error"
 msgstr ""
@@ -1483,41 +1524,40 @@ msgstr ""
 
 #: templates/topbar.html:55
 msgid "Forms"
-msgstr "Formulaires"
+msgstr ""
 
 #: templates/topbar.html:56
 msgid "People"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: templates/topbar.html:57
 msgid "About"
-msgstr "À propos"
+msgstr ""
 
 #: templates/topbar.html:58
 msgid "Syntax"
-msgstr "Syntaxe"
+msgstr ""
 
 #: templates/topbar.html:60
 msgid "Blog"
-msgstr "Blog"
+msgstr ""
 
 #: templates/topbar.html:65
-#, fuzzy
 msgid "New Form"
-msgstr "Formulaires"
+msgstr ""
 
 #: templates/topbar.html:72
 msgid "Public profile"
-msgstr "Profil public"
+msgstr ""
 
 #: templates/topbar.html:76
 msgid "Sign out"
-msgstr "Se déconnecter"
+msgstr ""
 
 #: templates/topbar.html:80 templates/registration/login.html:7
 #: templates/registration/login.html:18
 msgid "Sign in"
-msgstr "Connexion"
+msgstr ""
 
 #: templates/registration/activate.html:7
 msgid "Account Activated"
@@ -1529,6 +1569,22 @@ msgid ""
 "\n"
 "        Your account has been successfully activated. You may log in\n"
 "        <a href=\"%(login_url)s\">here</a>."
+msgstr ""
+
+#: templates/registration/activation_email.txt:3
+#, python-format
+msgid ""
+"You have registered on %(site_name)s. To activate your account\n"
+"please click on the link below:\n"
+"\n"
+"http://%(site_domain)s%(register_url)s\n"
+"\n"
+"The link above is valid for %(expiration_days)s day%(expiration_days_p)s.\n"
+msgstr ""
+
+#: templates/registration/activation_email_subject.txt:1
+#, python-format
+msgid "Account activation on %(site_name)s"
 msgstr ""
 
 #: templates/registration/login.html:26
