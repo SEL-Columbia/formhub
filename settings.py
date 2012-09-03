@@ -199,12 +199,12 @@ GOOGLE_STEP2_URI = 'http://formhub.org/gwelcome'
 GOOGLE_CLIENT_ID = '617113120802.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = '9reM29qpGFPyI8TBuB54Z4fk'
 
-# Changing the keys here will change order of evaluation and break functionality
-# Place additional keys inorder both alphabeticall and in descending size 
-THUMB_CONF = {'large' : {'size': 1280, 'suffix': '-lrg'},
-              'medium' : {'size': 640, 'suffix': '-med'},
-              'smaller' : {'size': 240, 'suffix': '-sml'},
+THUMB_CONF = {'large' : {'size': 1280, 'suffix': '-large'},
+              'medium' : {'size': 640, 'suffix': '-medium'},
+              'small' : {'size': 240, 'suffix': '-small'},
              }
+# order of thumbnails from largest to smallest
+THUMB_ORDER = ['large', 'medium', 'small']
 IMG_FILE_TYPE = 'jpg'
 
 TESTING_MODE = False

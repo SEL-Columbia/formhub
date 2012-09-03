@@ -25,7 +25,7 @@ from main.models import UserProfile, MetaData
 from odk_logger.models import Instance, XForm
 from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_viewer.models.data_dictionary import upload_to
-from odk_viewer.views import image_urls_for_form, survey_responses
+from odk_viewer.views import image_urls_for_form, survey_responses, attachment_url
 from utils.decorators import is_owner
 from utils.logger_tools import response_with_mimetype_and_name, publish_form
 from utils.user_auth import check_and_set_user, set_profile_data,\
@@ -523,7 +523,13 @@ def form_photos(request, username, id_string):
     context.form_view = True
     context.content_user = owner
     context.xform = xform
-    context.images = image_urls_for_form(xform)
+    image_urls = []
+    for instance in xform.surveys.all():
+        for attachment in instance.attachments.all():
+            url = reverse(attachment_url)
+            url = '%s?media_file=%s&' % (url, attachment.media_file.name)
+            image_urls.append(url)
+    context.images = image_urls
     context.profile, created = UserProfile.objects.get_or_create(user=owner)
     return render_to_response('form_photos.html', context_instance=context)
 
