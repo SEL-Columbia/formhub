@@ -72,7 +72,13 @@ def bulksubmission(request, username):
         our_tf = open(our_tfpath, 'rb')
         total_count, success_count, errors = \
             import_instances_from_zip(our_tf, user=posting_user)
-        os.remove(our_tfpath)
+        # chose the try approach as suggested by the link below
+        # http://stackoverflow.com/questions/82831
+        try:
+            os.remove(our_tfpath)
+        except IOError as e:
+            # TODO: log this Exception somewhere
+            pass
         json_msg = {
             'message': _(u"Submission successful. Out of %(total)d "
                          u"survey instances, %(success)d were imported "
