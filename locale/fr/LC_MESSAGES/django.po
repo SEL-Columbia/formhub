@@ -1,26 +1,27 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# 
+# Translators:
+# Matt Berg <mlberg@gmail.com>, 2012.
+#   <mberg@modilabs.org>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-31 09:51+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Project-Id-Version: formhub\n"
+"Report-Msgid-Bugs-To: https://github.com/modilabs/formhub/issues\n"
+"POT-Creation-Date: 2012-08-31 09:54+0000\n"
+"PO-Revision-Date: 2012-09-01 13:22+0000\n"
+"Last-Translator: formhub <mberg@modilabs.org>\n"
+"Language-Team: French (http://www.transifex.com/projects/p/formhub/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: main/forms.py:22 main/forms.py:30
 msgid "No License"
-msgstr ""
+msgstr "Aucune licence"
 
 #: main/forms.py:24
 msgid "Attribution CC BY"
@@ -32,7 +33,7 @@ msgstr ""
 
 #: main/forms.py:32
 msgid "PDDL"
-msgstr ""
+msgstr "Domaine Publique"
 
 #: main/forms.py:34
 msgid "ODC-BY"
@@ -44,15 +45,15 @@ msgstr ""
 
 #: main/forms.py:40
 msgid "Can view"
-msgstr ""
+msgstr "Peut voir"
 
 #: main/forms.py:41
 msgid "Can edit"
-msgstr ""
+msgstr "Pouvez modifier"
 
 #: main/forms.py:42
 msgid "Remove permissions"
-msgstr ""
+msgstr "Supprimer les autorisations"
 
 #: main/forms.py:158
 #, python-format
@@ -70,7 +71,7 @@ msgstr ""
 
 #: main/forms.py:179
 msgid "Source document"
-msgstr ""
+msgstr "Document source"
 
 #: main/forms.py:184
 msgid "Supporting document"
@@ -86,7 +87,7 @@ msgstr ""
 
 #: main/forms.py:210 utils/quick_converter.py:8
 msgid "XLS File"
-msgstr ""
+msgstr "Fichier XLS"
 
 #: main/forms.py:215
 msgid "XLS URL"
@@ -108,7 +109,7 @@ msgstr ""
 #: odk_viewer/views.py:260 odk_viewer/views.py:327 odk_viewer/views.py:346
 #: odk_viewer/views.py:376
 msgid "Not shared."
-msgstr ""
+msgstr "Pas partagé"
 
 #: main/views.py:379
 msgid "Updated succeeded."
@@ -133,17 +134,17 @@ msgstr ""
 #: main/templates/dashboard.html:12
 #, python-format
 msgid ""
-"For a quick introduction on how to publish a form check out the <a href="
-"\"%(tutorial_url)s\">tutorial</a>, and try publishing <a href=\"http://"
-"formhub.org/formhub_u/forms/tutorial/form.xls\">tutorial.xls</a>."
+"For a quick introduction on how to publish a form check out the <a "
+"href=\"%(tutorial_url)s\">tutorial</a>, and try publishing <a "
+"href=\"http://formhub.org/formhub_u/forms/tutorial/form.xls\">tutorial.xls</a>."
 msgstr ""
 
 #: main/templates/dashboard.html:16
 #, python-format
 msgid ""
-"Learn about the XLSForm syntax <a href=\"%(syntax_url)s\">here</a>, email <a "
-"href=\"https://groups.google.com/forum/?fromgroups#!forum/formhub-users"
-"\">formhub users mailing list</a> if you have questions, and checkout "
+"Learn about the XLSForm syntax <a href=\"%(syntax_url)s\">here</a>, email <a"
+" href=\"https://groups.google.com/forum/?fromgroups#!forum/formhub-"
+"users\">formhub users mailing list</a> if you have questions, and checkout "
 "examples at: <br/><a href=\"/formhub_u/\">Formhub University</a>."
 msgstr ""
 
@@ -159,7 +160,7 @@ msgstr ""
 
 #: main/templates/dashboard.html:41
 msgid "Publish"
-msgstr ""
+msgstr "Publier"
 
 #: main/templates/dashboard.html:54 main/templates/profile.html:13
 msgid "Click to change your avatar"
@@ -167,19 +168,19 @@ msgstr ""
 
 #: main/templates/dashboard.html:69
 msgid "View Profile Page"
-msgstr "Voir le profil"
+msgstr ""
 
 #: main/templates/dashboard.html:85
 msgid "FORMS"
-msgstr ""
+msgstr "FORMES"
 
 #: main/templates/dashboard.html:88
 msgid "SHARED FORMS"
-msgstr ""
+msgstr "FORMES COMMUNES"
 
 #: main/templates/dashboard.html:91
 msgid "SUBMISSIONS"
-msgstr ""
+msgstr "SOUMISSIONS"
 
 #: main/templates/dashboard.html:101
 #, python-format
@@ -238,26 +239,26 @@ msgstr ""
 
 #: main/templates/home.html:11
 msgid ""
-"formhub is a <strong>free</strong> hosted service that makes data collection "
-"<strong>simple</strong> and <strong>collaborative</strong>."
+"formhub is a <strong>free</strong> hosted service that makes data collection"
+" <strong>simple</strong> and <strong>collaborative</strong>."
 msgstr ""
 
 #: main/templates/home.html:13
 #, python-format
 msgid ""
-"<strong>Simple.</strong>All you need to get started is an <a href="
-"\"%(registration_register)s\">account</a> on formhub and the ability to "
-"author .xls files. Absolutely no technical setup required."
+"<strong>Simple.</strong>All you need to get started is an <a "
+"href=\"%(registration_register)s\">account</a> on formhub and the ability to"
+" author .xls files. Absolutely no technical setup required."
 msgstr ""
 
 #: main/templates/home.html:16
 #, python-format
 msgid ""
-"<strong>Collaborative.</strong> Share your data collection forms in <a href="
-"\"%(syntax_url)s\">Excel</a>. <a href=\"%(forms_url)s\">Find</a>, grab and "
-"modify other <a href=\"%(forms_url)s\">peoples' forms</a> and quickly deploy "
-"it. Publish gathered data to share it with others via Excel, CSV, KML or an "
-"interactive map."
+"<strong>Collaborative.</strong> Share your data collection forms in <a "
+"href=\"%(syntax_url)s\">Excel</a>. <a href=\"%(forms_url)s\">Find</a>, grab "
+"and modify other <a href=\"%(forms_url)s\">peoples' forms</a> and quickly "
+"deploy it. Publish gathered data to share it with others via Excel, CSV, KML"
+" or an interactive map."
 msgstr ""
 
 #: main/templates/home.html:19
@@ -337,7 +338,7 @@ msgstr ""
 
 #: main/templates/profile.html:45
 msgid "Twitter:"
-msgstr ""
+msgstr "Twitter:"
 
 #: main/templates/profile.html:47
 msgid "Member since:"
@@ -471,9 +472,9 @@ msgstr ""
 #: main/templates/published_surveys.html:105 main/templates/show.html:420
 #, python-format
 msgid ""
-"Are you sure you want to delete the form '%(title)s'? This form has <strong>"
-"%(nb_sub)s</strong> submissions associated with it that will also be "
-"deleted. If you are unsure about deleting this form press 'Cancel' and "
+"Are you sure you want to delete the form '%(title)s'? This form has "
+"<strong>%(nb_sub)s</strong> submissions associated with it that will also be"
+" deleted. If you are unsure about deleting this form press 'Cancel' and "
 "conside 'Archiving' the form instead."
 msgstr ""
 
@@ -581,7 +582,7 @@ msgstr ""
 
 #: main/templates/show.html:188
 msgid "License:"
-msgstr ""
+msgstr "Licence :"
 
 #: main/templates/show.html:204
 msgid "View Photos"
@@ -634,7 +635,7 @@ msgstr ""
 
 #: main/templates/show.html:388 templates/topbar.html:73
 msgid "Settings"
-msgstr "Préférences"
+msgstr ""
 
 #: main/templates/show.html:391
 msgid "Form Shared"
@@ -674,8 +675,8 @@ msgstr ""
 #: main/templates/show.html:436
 #, python-format
 msgid ""
-"bamboo dataset: <strong><a href=\"http://bamboo.io/datasets/%(dataset)s/info"
-"\">%(dataset)s</a></strong>"
+"bamboo dataset: <strong><a "
+"href=\"http://bamboo.io/datasets/%(dataset)s/info\">%(dataset)s</a></strong>"
 msgstr ""
 
 #: main/templates/show.html:438
@@ -697,8 +698,8 @@ msgstr ""
 #: main/templates/show.html:452
 #, python-format
 msgid ""
-"Sharing by link is <strong>on with URL <a href=\"%(form_url)s\">%(base_url)s"
-"%(form_url)s</a></strong>"
+"Sharing by link is <strong>on with URL <a "
+"href=\"%(form_url)s\">%(base_url)s%(form_url)s</a></strong>"
 msgstr ""
 
 #: main/templates/show.html:454
@@ -724,7 +725,7 @@ msgstr ""
 
 #: main/templates/support.html:5 templates/topbar.html:59
 msgid "Support"
-msgstr "Support"
+msgstr ""
 
 #: main/templates/support.html:9
 msgid "Thank you for using formhub!"
@@ -740,22 +741,24 @@ msgstr ""
 #, python-format
 msgid ""
 "For questions related to authoring XLSForms please first checkout our <a "
-"href=\"%(syntax)s\">syntax</a> page, then use the <a href=\"https://groups."
-"google.com/forum/#!forum/formhub-users\">formhub-users Google group</a>"
+"href=\"%(syntax)s\">syntax</a> page, then use the <a "
+"href=\"https://groups.google.com/forum/#!forum/formhub-users\">formhub-users"
+" Google group</a>"
 msgstr ""
 
 #: main/templates/support.html:15
 msgid ""
-"For help relating to using ODK Collect please contact the <a href=\"https://"
-"groups.google.com/forum/#!forum/opendatakit\">ODK Google group</a>"
+"For help relating to using ODK Collect please contact the <a "
+"href=\"https://groups.google.com/forum/#!forum/opendatakit\">ODK Google "
+"group</a>"
 msgstr ""
 
 #: main/templates/support.html:16
 msgid ""
 "For problems or suggestions related to the formhub service please email: <a "
-"href=\"mailto:support@formhub.org\">support@formhub.org</a> or <a href="
-"\"https://groups.google.com/forum/#!forum/formhub-users\">formhub-users "
-"Google group</a>"
+"href=\"mailto:support@formhub.org\">support@formhub.org</a> or <a "
+"href=\"https://groups.google.com/forum/#!forum/formhub-users\">formhub-users"
+" Google group</a>"
 msgstr ""
 
 #: main/templates/support.html:19
@@ -840,16 +843,16 @@ msgstr ""
 msgid ""
 "The second step is writing this survey in the xls2xform syntax. The idea "
 "behind this approach is that each question in the survey is a row in the "
-"spreadsheet. By using a spreadsheet we can expose most of the XForm features "
-"supported by ODK Collect. Check out the images to the right that show the "
+"spreadsheet. By using a spreadsheet we can expose most of the XForm features"
+" supported by ODK Collect. Check out the images to the right that show the "
 "xls2xform syntax for this survey."
 msgstr ""
 
 #: main/templates/tutorial.html:48
 #, python-format
 msgid ""
-"For more in depth information about the XLSForm syntax go <a href="
-"\"%(syntax_url)s\">here</a>."
+"For more in depth information about the XLSForm syntax go <a "
+"href=\"%(syntax_url)s\">here</a>."
 msgstr ""
 
 #: main/templates/tutorial.html:53
@@ -860,9 +863,9 @@ msgstr ""
 #, python-format
 msgid ""
 "After creating an account and signing into the site you can publish forms "
-"for use with ODK Collect. On the right, we submit <a href="
-"\"%(STATIC_URL)stutorial/tutorial.xls\">tutorial.xls</a>, described above, "
-"for publication."
+"for use with ODK Collect. On the right, we submit <a "
+"href=\"%(STATIC_URL)stutorial/tutorial.xls\">tutorial.xls</a>, described "
+"above, for publication."
 msgstr ""
 
 #: main/templates/tutorial.html:69
@@ -879,9 +882,9 @@ msgstr ""
 #, python-format
 msgid ""
 "The url of this web application must be given to ODK Collect before it will "
-"get forms from and submit data to formhub. In ODK Collect's Main Menu, press "
-"the Menu button. Select Server Preferences, then Server. Enter <strong>"
-"%(odk_url)s</strong> as the server."
+"get forms from and submit data to formhub. In ODK Collect's Main Menu, press"
+" the Menu button. Select Server Preferences, then Server. Enter "
+"<strong>%(odk_url)s</strong> as the server."
 msgstr ""
 
 #: main/templates/tutorial.html:98
@@ -893,7 +896,8 @@ msgid "Fill out the form on your phone."
 msgstr ""
 
 #: main/templates/tutorial.html:116
-msgid "After filling out the form on your phone submit the data to the server."
+msgid ""
+"After filling out the form on your phone submit the data to the server."
 msgstr ""
 
 #: main/templates/tutorial.html:124
@@ -1090,7 +1094,8 @@ msgstr ""
 
 #: odk_logger/management/commands/move_media_to_s3.py:15
 msgid ""
-"Moves all attachments and xls files to s3 from the local file system storage."
+"Moves all attachments and xls files to s3 from the local file system "
+"storage."
 msgstr ""
 
 #: odk_logger/management/commands/move_media_to_s3.py:23
@@ -1100,7 +1105,8 @@ msgstr ""
 
 #: odk_logger/management/commands/move_media_to_s3.py:28
 msgid ""
-"You must first set your default storage to s3 in your local_settings.py file."
+"You must first set your default storage to s3 in your local_settings.py "
+"file."
 msgstr ""
 
 #: odk_logger/management/commands/move_media_to_s3.py:37
@@ -1296,15 +1302,16 @@ msgstr ""
 
 #: odk_viewer/templates/data_view.html:45
 msgid ""
-"Your survey has <strong>{numquestions}</strong> question(s) and <strong>"
-"{numsubmissions}</strong> submission(s). Please click on Display Fields "
-"above and select the questions you want to view responses for."
+"Your survey has <strong>{numquestions}</strong> question(s) and "
+"<strong>{numsubmissions}</strong> submission(s). Please click on Display "
+"Fields above and select the questions you want to view responses for."
 msgstr ""
 
 #: odk_viewer/templates/data_view.html:46
 msgid ""
-"NOTE: This is a beta feature and your survey contains more than <strong>"
-"{threshold}</strong> responses, search and sort features will not work."
+"NOTE: This is a beta feature and your survey contains more than "
+"<strong>{threshold}</strong> responses, search and sort features will not "
+"work."
 msgstr ""
 
 #: odk_viewer/templates/data_view.html:115
@@ -1338,19 +1345,19 @@ msgstr ""
 
 #: odk_viewer/templates/instance.html:342
 msgid "← Previous"
-msgstr ""
+msgstr "← Précédente"
 
 #: odk_viewer/templates/instance.html:342
 msgid "Next →"
-msgstr ""
+msgstr "Suivante →"
 
 #: odk_viewer/templates/instance.html:354 odk_viewer/templates/survey.html:20
 msgid "Question"
-msgstr ""
+msgstr "Question"
 
 #: odk_viewer/templates/instance.html:354 odk_viewer/templates/survey.html:21
 msgid "Response"
-msgstr ""
+msgstr "Réponse"
 
 #: odk_viewer/templates/instance.html:446
 msgid ""
@@ -1405,19 +1412,59 @@ msgstr ""
 msgid "Submissions (%(nb_sub)s)"
 msgstr ""
 
+#: staff/templates/templated_email/notice.email:1
+#, python-format
+msgid "formhub notification for %(username)s"
+msgstr ""
+
+#: staff/templates/templated_email/notice.email:3
+#, python-format
+msgid ""
+"\n"
+"  Hi %(full_name)s,\n"
+"\n"
+"  %(message)s\n"
+"\n"
+"  Thanks for using formhub!\n"
+"  The Formhub Dev Team\n"
+"\n"
+"  P.S. Please consider joining the formhub-users group, https://groups.google.com/group/formhub-users\n"
+msgstr "\n  Bonjour %(full_name)s,\n\n  %(message)s\n\n  Merci d'avoir utilisé formhub !\n  L'équipe de développement de Formhub.\n\n  P.S. Pensez à rejoindre le groupe formhub-users, https://groups.google.com/group/formhub-users\n"
+
+#: staff/templates/templated_email/notice.email:15
+#, python-format
+msgid ""
+"\n"
+"  <p>Hi %(full_name)s,</p>\n"
+"\n"
+"  <p>\n"
+"      %(message)s\n"
+"  </p>\n"
+"\n"
+"  <p>\n"
+"      Thanks for using formhub!\n"
+"      <br/>\n"
+"      The Formhub Dev Team\n"
+"  </p>\n"
+"\n"
+"  <p>\n"
+"      P.S. Please consider joining the <a href=\"https://groups.google.com/group/formhub-users\">formhub-users group</a>.\n"
+"  </p>\n"
+msgstr "\n  <p>Bonjour %(full_name)s,</p>\n\n  <p>\n      %(message)s\n  </p>\n\n  <p>\n      Merci d'avoir utilisé formhub !\n      <br/>\n      L'équipe de développement de Formhub.\n  </p>\n\n  <p>\n      P.S. Pensez à rejoindre le <a href=\"https://groups.google.com/group/formhub-users\">groupe formhub-users</a>.\n  </p>\n"
+
 #: templates/404.html:5
 msgid "404 Error"
-msgstr ""
+msgstr "Érreur 404"
 
 #: templates/500.html:5
 msgid "500 Error"
-msgstr ""
+msgstr "Érreur 500"
 
 #: templates/500.html:9
 msgid ""
 "If you are getting this error while trying to submit a form, please do "
-"consider sending an email to support@formhub.org with your xlsform attached. "
-"Thank you for using formhub."
+"consider sending an email to support@formhub.org with your xlsform attached."
+" Thank you for using formhub."
 msgstr ""
 
 #: templates/browser_message.html:17
@@ -1454,14 +1501,14 @@ msgstr ""
 
 #: templates/footer.html:5
 msgid ""
-"Built by the <a href=\"http://modi.mech.columbia.edu/\">Modi Research Group</"
-"a> at Columbia University."
+"Built by the <a href=\"http://modi.mech.columbia.edu/\">Modi Research "
+"Group</a> at Columbia University."
 msgstr ""
 
 #: templates/footer.html:8
 msgid ""
-"Code (BSD License) at <a href=\"https://github.com/modilabs/formhub\">github."
-"com/modilabs/formhub</a>"
+"Code (BSD License) at <a "
+"href=\"https://github.com/modilabs/formhub\">github.com/modilabs/formhub</a>"
 msgstr ""
 
 #: templates/footer.html:10
@@ -1483,41 +1530,40 @@ msgstr ""
 
 #: templates/topbar.html:55
 msgid "Forms"
-msgstr "Formulaires"
+msgstr ""
 
 #: templates/topbar.html:56
 msgid "People"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: templates/topbar.html:57
 msgid "About"
-msgstr "À propos"
+msgstr ""
 
 #: templates/topbar.html:58
 msgid "Syntax"
-msgstr "Syntaxe"
+msgstr ""
 
 #: templates/topbar.html:60
 msgid "Blog"
-msgstr "Blog"
+msgstr ""
 
 #: templates/topbar.html:65
-#, fuzzy
 msgid "New Form"
-msgstr "Formulaires"
+msgstr ""
 
 #: templates/topbar.html:72
 msgid "Public profile"
-msgstr "Profil public"
+msgstr ""
 
 #: templates/topbar.html:76
 msgid "Sign out"
-msgstr "Se déconnecter"
+msgstr ""
 
 #: templates/topbar.html:80 templates/registration/login.html:7
 #: templates/registration/login.html:18
 msgid "Sign in"
-msgstr "Connexion"
+msgstr ""
 
 #: templates/registration/activate.html:7
 msgid "Account Activated"
@@ -1531,10 +1577,27 @@ msgid ""
 "        <a href=\"%(login_url)s\">here</a>."
 msgstr ""
 
+#: templates/registration/activation_email.txt:3
+#, python-format
+msgid ""
+"You have registered on %(site_name)s. To activate your account\n"
+"please click on the link below:\n"
+"\n"
+"http://%(site_domain)s%(register_url)s\n"
+"\n"
+"The link above is valid for %(expiration_days)s day%(expiration_days_p)s.\n"
+msgstr ""
+
+#: templates/registration/activation_email_subject.txt:1
+#, python-format
+msgid "Account activation on %(site_name)s"
+msgstr ""
+
 #: templates/registration/login.html:26
 #, python-format
 msgid ""
-"Can't access your account? <a href=\"%(reset_url)s\">Reset your password.</a>"
+"Can't access your account? <a href=\"%(reset_url)s\">Reset your "
+"password.</a>"
 msgstr ""
 
 #: templates/registration/login.html:28
@@ -1626,12 +1689,12 @@ msgstr ""
 
 #: templates/registration/registration_form.html:29
 msgid ""
-"By clicking the Register button, you acknowledge that this is beta software; "
-"we make no guarantees about the reliability or continuity of our service. We "
-"reserve the right to pause or terminate your service, or delete your account "
-"and data, at any time without notice. We will not be liable for any losses, "
-"either direct or indirect, that such service interruption or data loss may "
-"cause you. Use the service at your own risk."
+"By clicking the Register button, you acknowledge that this is beta software;"
+" we make no guarantees about the reliability or continuity of our service. "
+"We reserve the right to pause or terminate your service, or delete your "
+"account and data, at any time without notice. We will not be liable for any "
+"losses, either direct or indirect, that such service interruption or data "
+"loss may cause you. Use the service at your own risk."
 msgstr ""
 
 #: utils/country_field.py:6
@@ -2622,3 +2685,4 @@ msgstr ""
 #: utils/viewer_tools.py:159
 msgid "There should be a single title"
 msgstr ""
+

@@ -31,11 +31,16 @@ def get_path(path, suffix):
 
 def image_urls(instance):
     default_storage = get_storage_class()()
-    return [ default_storage.url(get_path(a.media_file.name,
-            settings.THUMB_CONF['medium']['suffix'])) if
-            default_storage.exists(get_path(a.media_file.name,
-            settings.THUMB_CONF['medium']['suffix'])) else
-            a.media_file.url for a in instance.attachments.all()]
+    urls = []
+    suffix = settings.THUMB_CONF['medium']['suffix']
+    for a in instance.attachments.all():
+        if default_storage.exists(get_path(a.media_file.name, suffix)):
+            url = default_storage.url(
+                get_path(a.media_file.name, suffix))
+        else:
+            url = a.media_file.url
+        urls.append(url)
+    return urls
 
 
 def parse_xform_instance(xml_str):

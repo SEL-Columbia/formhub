@@ -32,7 +32,8 @@ from django.utils.translation import ugettext as _
 from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
 
-from utils.logger_tools import create_instance
+from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
+    OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound
 from models import XForm
 from main.models import UserProfile, MetaData
 from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
@@ -74,7 +75,13 @@ def bulksubmission(request, username):
         our_tf = open(our_tfpath, 'rb')
         total_count, success_count, errors = \
             import_instances_from_zip(our_tf, user=posting_user)
-        os.remove(our_tfpath)
+        # chose the try approach as suggested by the link below
+        # http://stackoverflow.com/questions/82831
+        try:
+            os.remove(our_tfpath)
+        except IOError as e:
+            # TODO: log this Exception somewhere
+            pass
         json_msg = {
             'message': _(u"Submission successful. Out of %(total)d "
                          u"survey instances, %(success)d were imported "
@@ -181,7 +188,7 @@ def submission(request, username=None):
     try:
         xml_file_list = request.FILES.pop("xml_submission_file", [])
         if len(xml_file_list) != 1:
-            return HttpResponseBadRequest(
+            return OpenRosaResponseBadRequest(
                 _(u"There should be a single XML submission file.")
             )
         # save this XML file and media files as attachments
@@ -200,31 +207,31 @@ def submission(request, username=None):
                 uuid=uuid
             )
         except InstanceInvalidUserError:
-            return HttpResponseBadRequest(_(u"Username or ID required."))
+            return OpenRosaResponseBadRequest(_(u"Username or ID required."))
         except IsNotCrowdformError:
-            return HttpResponseNotAllowed(
+            return OpenRosaResponseNotAllowed(
                 _(u"Sorry but the crowd form you submitted to is closed.")
             )
         except InstanceEmptyError:
-            return HttpResponseBadRequest(
+            return OpenRosaResponseBadRequest(
                 _(u"Received empty submission. No instance was created")
             )
         except FormInactiveError:
-            return HttpResponseNotAllowed(_(u"Form is not active"))
+            return OpenRosaResponseNotAllowed(_(u"Form is not active"))
         except XForm.DoesNotExist:
-            return HttpResponseNotFound(
+            return OpenRosaResponseNotFound(
                 _(u"Form does not exist on this account")
             )
         except ExpatError:
-            return HttpResponseBadRequest(_(u"Improperly formatted XML."))
+            return OpenRosaResponseBadRequest(_(u"Improperly formatted XML."))
         except DuplicateInstance:
-            response = HttpResponse(_(u"Duplicate submission"))
+            response = OpenRosaResponse(_(u"Duplicate submission"))
             response.status_code = 202
             response['Location'] = request.build_absolute_uri(request.path)
             return response
 
         if instance is None:
-            return HttpResponseBadRequest(_(u"Unable to create submission."))
+            return OpenRosaResponseBadRequest(_(u"Unable to create submission."))
 
         # ODK needs two things for a form to be considered successful
         # 1) the status code needs to be 201 (created)
@@ -236,13 +243,13 @@ def submission(request, username=None):
             response = render_to_response("submission.html",
                                           context_instance=context)
         else:
-            response = HttpResponse()
+            response = OpenRosaResponse()
         response.status_code = 201
         response['Location'] = request.build_absolute_uri(request.path)
         return response
     except IOError as e:
         if 'request data read error' in unicode(e):
-            return HttpResponseBadRequest(_(u"File transfer interruption."))
+            return OpenRosaResponseBadRequest(_(u"File transfer interruption."))
         else:
             raise
     finally:
