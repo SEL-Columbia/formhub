@@ -30,6 +30,7 @@ from pyxform import Section, Question
 from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder,\
     CSVDataFrameBuilder, NoRecordsFoundError
 from csv_writer import CsvWriter
+from utils.image_tools import image_url
 from xls_writer import XlsWriter
 from utils.logger_tools import response_with_mimetype_and_name,\
     disposition_ext_and_date, round_down_geopoint
@@ -355,7 +356,7 @@ def data_view(request, username, id_string):
     return render_to_response("data_view.html", context_instance=context)
 
 
-def attachment_url(request):
+def attachment_url(request, size='medium'):
     media_file = request.GET.get('media_file')
     # TODO: how to make sure we have the right media file,
     # this assumes duplicates are the same file
@@ -363,7 +364,8 @@ def attachment_url(request):
     if result.count() == 0:
         return HttpResponseNotFound(_(u'Attachment not found'))
     attachment = result[0]
-    media_url = attachment.media_file.url
+
+    media_url = image_url(attachment, size)
     return redirect(media_url)
 
 
