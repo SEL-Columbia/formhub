@@ -166,9 +166,9 @@ def xformsManifest(request, username, id_string):
 @csrf_exempt
 def submission(request, username=None):
     authenticator = HttpDigestAuthenticator()
-    if not authenticator.authenticate(request):
-        return authenticator.build_challenge_response()
     if request.method == 'HEAD':
+        if not authenticator.authenticate(request):
+            return authenticator.build_challenge_response()
         return HttpResponse("OK", status=204)
     if request.method != 'POST':
         return HttpResponseNotAllowed('POST required')
