@@ -5,6 +5,7 @@ import os
 from main.tests.test_base import MainTestCase
 from odk_logger.models import XForm
 
+
 class TestFormSubmission(MainTestCase):
 
     def setUp(self):
@@ -29,7 +30,8 @@ class TestFormSubmission(MainTestCase):
     def test_form_post_to_missing_form(self):
         xml_submission_file_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
-            "../fixtures/tutorial/instances/tutorial_invalid_id_string_2012-06-27_11-27-53.xml"
+            "../fixtures/tutorial/instances/"
+            "tutorial_invalid_id_string_2012-06-27_11-27-53.xml"
         )
         self._make_submission(xml_submission_file_path)
         self.assertEqual(self.response.status_code, 404)
@@ -43,8 +45,9 @@ class TestFormSubmission(MainTestCase):
             os.path.dirname(os.path.abspath(__file__)),
             "../fixtures/tutorial/instances/tutorial_2012-06-27_11-27-53.xml"
         )
-        self._make_submission(xml_submission_file_path, add_uuid=True,
-                touchforms=True)
+        self._make_submission(
+            xml_submission_file_path, add_uuid=True,
+            touchforms=True)
         self.assertEqual(self.response.status_code, 201)
 
     def test_duplicate_submissions(self):
@@ -96,4 +99,3 @@ class TestFormSubmission(MainTestCase):
         self.anon = client
         self._make_submission(xml_submission_file_path)
         self.assertEqual(self.response.status_code, 201)
-
