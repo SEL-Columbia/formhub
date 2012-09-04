@@ -9,14 +9,14 @@ msgstr ""
 "Project-Id-Version: formhub\n"
 "Report-Msgid-Bugs-To: https://github.com/modilabs/formhub/issues\n"
 "POT-Creation-Date: 2012-08-31 09:54+0000\n"
-"PO-Revision-Date: 2012-08-31 18:12+0000\n"
+"PO-Revision-Date: 2012-08-31 20:39+0000\n"
 "Last-Translator: benedetoula <benedetoula@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/formhub/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: it\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: main/forms.py:22 main/forms.py:30
 msgid "No License"
@@ -248,7 +248,7 @@ msgid ""
 "<strong>Simple.</strong>All you need to get started is an <a "
 "href=\"%(registration_register)s\">account</a> on formhub and the ability to"
 " author .xls files. Absolutely no technical setup required."
-msgstr ""
+msgstr "<strong>Semplice.</strong>Tutto quello che ti serve per cominciare è un <a href=\"%(registration_register)s\">account</a> su formhub e la capacità di scrivere file .xls. Nessun setup tecnico necessario."
 
 #: main/templates/home.html:16
 #, python-format
@@ -258,7 +258,7 @@ msgid ""
 "and modify other <a href=\"%(forms_url)s\">peoples' forms</a> and quickly "
 "deploy it. Publish gathered data to share it with others via Excel, CSV, KML"
 " or an interactive map."
-msgstr ""
+msgstr "<strong>Collaborativa.</strong> Condividi i tuoi moduli per la raccolta dati in <a href=\"%(syntax_url)s\">Excel</a>. <a href=\"%(forms_url)s\">Trova</a>, seleziona e modifica <a href=\"%(forms_url)s\">moduli altrui</a> e pubblicali rapidamente. Pubblica i dati raccolti per condividerli con altri via Excel, CSV, KML o mappa interattiva. "
 
 #: main/templates/home.html:19
 msgid "Mobile."
@@ -501,217 +501,217 @@ msgstr ""
 
 #: main/templates/settings.html:40
 msgid "Update"
-msgstr ""
+msgstr "Aggiorna"
 
 #: main/templates/show.html:16
 msgid "Owner"
-msgstr ""
+msgstr "Proprietario"
 
 #: main/templates/show.html:25 main/templates/show.html.py:44
 #: main/templates/show.html:100 main/templates/show.html.py:193
 #: main/templates/show.html:289 odk_viewer/templates/instance.html:349
 msgid "edit"
-msgstr ""
+msgstr "Modifica"
 
 #: main/templates/show.html:26 main/templates/show.html.py:45
 #: main/templates/show.html:101 main/templates/show.html.py:194
 #: main/templates/show.html:290
 msgid "save"
-msgstr ""
+msgstr "Salva"
 
 #: main/templates/show.html:35
 msgid "Form ID:"
-msgstr ""
+msgstr "Modulo ID:"
 
 #: main/templates/show.html:42
 msgid "None"
-msgstr ""
+msgstr "Nessuna"
 
 #: main/templates/show.html:70 odk_logger/models/xform.py:60
 msgid "XForm"
-msgstr ""
+msgstr "XForm"
 
 #: main/templates/show.html:81
 msgid "JSONForm"
-msgstr ""
+msgstr "JSONForm"
 
 #: main/templates/show.html:95
 msgid "License"
-msgstr ""
+msgstr "Licenza"
 
 #: main/templates/show.html:106 main/templates/show.html.py:199
 msgid "License information"
-msgstr ""
+msgstr "Dettagli sulla licenza"
 
 #: main/templates/show.html:120
 msgid "Form Data"
-msgstr ""
+msgstr "Dati del Modulo"
 
 #: main/templates/show.html:129
 msgid "Export to csv File"
-msgstr ""
+msgstr "Esporta a File csv"
 
 #: main/templates/show.html:140
 msgid "Export to xls File"
-msgstr ""
+msgstr "Esporta a File xls"
 
 #: main/templates/show.html:151
 msgid "Export to kml File (Google Earth)"
-msgstr ""
+msgstr "Esporta a File kml (Google Earth)"
 
 #: main/templates/show.html:163
 msgid "Export a zip folder of attachments"
-msgstr ""
+msgstr "Esporta a cartella zip di allegati"
 
 #: main/templates/show.html:163
 msgid "zip"
-msgstr ""
+msgstr "zip"
 
 #: main/templates/show.html:174
 msgid "Export to google docs"
-msgstr ""
+msgstr "Esporta a google docs"
 
 #: main/templates/show.html:174
 msgid "gdocs"
-msgstr ""
+msgstr "gdocs"
 
 #: main/templates/show.html:185
 msgid "Submissions:"
-msgstr ""
+msgstr "Risposte:"
 
 #: main/templates/show.html:188
 msgid "License:"
-msgstr ""
+msgstr "Licenza:"
 
 #: main/templates/show.html:204
 msgid "View Photos"
-msgstr ""
+msgstr "Visualizza Foto"
 
 #: main/templates/show.html:205
 msgid "Photos"
-msgstr ""
+msgstr "Foto"
 
 #: main/templates/show.html:208
 msgid "View Data"
-msgstr ""
+msgstr "Visualizza Dati"
 
 #: main/templates/show.html:211
 msgid "Browse Data"
-msgstr ""
+msgstr "Sfoglia Dati"
 
 #: main/templates/show.html:224
 msgid "Webform"
-msgstr ""
+msgstr "Webform"
 
 #: main/templates/show.html:279
 msgid "Source"
-msgstr ""
+msgstr "Originale"
 
 #: main/templates/show.html:306
 msgid "Supporting Documents"
-msgstr ""
+msgstr "Documenti di Supporto"
 
 #: main/templates/show.html:311 main/templates/show.html.py:348
 #: main/templates/show.html:371
 msgid "remove"
-msgstr ""
+msgstr "rimuovi"
 
 #: main/templates/show.html:329
 msgid "Rest Services"
-msgstr ""
+msgstr "Servizi Rest"
 
 #: main/templates/show.html:343
 msgid "Media &nbsp;<small>jpeg/png/mp3 allowed</small>"
-msgstr ""
+msgstr "Media &nbsp;<small>jpeg/png/mp3 concessi</small>"
 
 #: main/templates/show.html:365
 msgid "Mapbox Layer"
-msgstr ""
+msgstr "Strato Mapbox"
 
 #: main/templates/show.html:369
 msgid "Attribution:"
-msgstr ""
+msgstr "Attribuzione:"
 
 #: main/templates/show.html:388 templates/topbar.html:73
 msgid "Settings"
-msgstr ""
+msgstr "Impostazioni"
 
 #: main/templates/show.html:391
 msgid "Form Shared"
-msgstr ""
+msgstr "Modulo Condiviso "
 
 #: main/templates/show.html:395
 msgid "Data Shared"
-msgstr ""
+msgstr "Dati Condivisi"
 
 #: main/templates/show.html:400
 msgid "Crowdform"
-msgstr ""
+msgstr "Crowdform"
 
 #: main/templates/show.html:406
 msgid "Form Active"
-msgstr ""
+msgstr "Modulo Attivo"
 
 #: main/templates/show.html:411
 msgid "Delete Form"
-msgstr ""
+msgstr "Elimina Modulo"
 
 #: main/templates/show.html:423 main/templates/show.html.py:428
 #: odk_viewer/templates/instance.html:349
 #: odk_viewer/templates/instance.html:449
 #: restservice/templates/add-service.html:22
 msgid "Delete"
-msgstr ""
+msgstr "Elimina"
 
 #: main/templates/show.html:424 odk_viewer/templates/instance.html:450
 msgid "Cancel"
-msgstr ""
+msgstr "Annulla"
 
 #: main/templates/show.html:434
 msgid "bamboo"
-msgstr ""
+msgstr "bamboo"
 
 #: main/templates/show.html:436
 #, python-format
 msgid ""
 "bamboo dataset: <strong><a "
 "href=\"http://bamboo.io/datasets/%(dataset)s/info\">%(dataset)s</a></strong>"
-msgstr ""
+msgstr "dati bamboo: <strong><a href=\"http://bamboo.io/datasets/%(dataset)s/info\">%(dataset)s</a></strong>"
 
 #: main/templates/show.html:438
 msgid "bamboo link is <strong>not active</strong>"
-msgstr ""
+msgstr "il link di bamboo <strong>non è attivo</strong>"
 
 #: main/templates/show.html:439
 msgid "bamboo requires at least one submission."
-msgstr ""
+msgstr "bamboo necessita almeno una risposta. "
 
 #: main/templates/show.html:442
 msgid "Activate"
-msgstr ""
+msgstr "Attiva"
 
 #: main/templates/show.html:449
 msgid "Sharing"
-msgstr ""
+msgstr "Condivisione"
 
 #: main/templates/show.html:452
 #, python-format
 msgid ""
 "Sharing by link is <strong>on with URL <a "
 "href=\"%(form_url)s\">%(base_url)s%(form_url)s</a></strong>"
-msgstr ""
+msgstr "La condivisione via link è <strong>attiva con URL <a href=\"%(form_url)s\">%(base_url)s%(form_url)s</a></strong>"
 
 #: main/templates/show.html:454
 msgid "Sharing by link is <strong>off</strong>"
-msgstr ""
+msgstr "La condivisione via link è <strong>inattiva</strong>"
 
 #: main/templates/show.html:463
 msgid "Turn off"
-msgstr ""
+msgstr "Disattiva"
 
 #: main/templates/show.html:463
 msgid "Turn on"
-msgstr ""
+msgstr "Attiva"
 
 #: main/templates/show.html:477
 #: odk_logger/templates/bulk_submission_form.html:13
@@ -980,122 +980,122 @@ msgstr ""
 msgid ""
 "There was a problem receiving your ODK submission. [Error: multiple "
 "submission files (?)]"
-msgstr ""
+msgstr "C'è stato un problema nella ricezione delle tue risposte ODK. [Errore: file multipli di risposta (?)]"
 
 #: odk_logger/views.py:177
 msgid "There should be a single XML submission file."
-msgstr ""
+msgstr "Ci dovrebbe essere un unico file XML di risposte. "
 
 #: odk_logger/views.py:195
 msgid "Username or ID required."
-msgstr ""
+msgstr "Nome utente o ID richiesti."
 
 #: odk_logger/views.py:198
 msgid "Sorry but the crowd form you submitted to is closed."
-msgstr ""
+msgstr "Spiacenti, ma il crowdform al quale hai inviato risposte è chiuso."
 
 #: odk_logger/views.py:202
 msgid "Received empty submission. No instance was created"
-msgstr ""
+msgstr "Ricevuta una risposta vuota. Non è stata creata nessuna istanza"
 
 #: odk_logger/views.py:205
 msgid "Form is not active"
-msgstr ""
+msgstr "Il modulo non è attivo"
 
 #: odk_logger/views.py:208
 msgid "Form does not exist on this account"
-msgstr ""
+msgstr "Il modulo non esiste in questo account"
 
 #: odk_logger/views.py:211
 msgid "Improperly formatted XML."
-msgstr ""
+msgstr "XML non formattato correttamente. "
 
 #: odk_logger/views.py:213
 msgid "Duplicate submission"
-msgstr ""
+msgstr "Risposte doppie"
 
 #: odk_logger/views.py:219
 msgid "Unable to create submission."
-msgstr ""
+msgstr "Impossibile creare le tue risposte. "
 
 #: odk_logger/views.py:237
 msgid "File transfer interruption."
-msgstr ""
+msgstr "Interruzione del transfer del file. "
 
 #: odk_logger/views.py:273
 #, python-format
 msgid "No XLS file for your form <strong>%(id)s</strong>"
-msgstr ""
+msgstr "No file XLS per il tuo modulo <strong>%(id)s</strong>"
 
 #: odk_logger/management/commands/create_image_thumbnails.py:15
 msgid "Creates thumbnails for all form images and stores them"
-msgstr ""
+msgstr "Crea icone per tutte le immagini dei moduli e le memorizza"
 
 #: odk_logger/management/commands/create_image_thumbnails.py:34
 #, python-format
 msgid "Thumbnails created for %(file)s"
-msgstr ""
+msgstr "Create icone per %(file)s"
 
 #: odk_logger/management/commands/create_image_thumbnails.py:37
 #, python-format
 msgid "Problem with the file %(file)s"
-msgstr ""
+msgstr "Problema con i file %(file)s"
 
 #: odk_logger/management/commands/create_image_thumbnails.py:40
 #, python-format
 msgid "Error on %(filename)s: %(error)s"
-msgstr ""
+msgstr "Errore in %(filename)s: %(error)s"
 
 #: odk_logger/management/commands/export_xforms_and_instances.py:17
 msgid "Export ODK forms and instances to JSON."
-msgstr ""
+msgstr "Esporta moduli e istanze ODK a JSON."
 
 #: odk_logger/management/commands/import.py:11
 #: odk_logger/management/commands/import_tools.py:20
 #: odk_viewer/management/commands/import.py:11
 msgid "Import ODK forms and instances."
-msgstr ""
+msgstr "Importa moduli e istanze ODK."
 
 #: odk_logger/management/commands/import_forms.py:11
 #: odk_viewer/management/commands/import_forms.py:11
 msgid "Import a folder of XForms for ODK."
-msgstr ""
+msgstr "Importa cartella di XForms per ODK."
 
 #: odk_logger/management/commands/import_instances.py:12
 #: odk_viewer/management/commands/import_instances.py:12
 msgid "Import a folder of ODK instances."
-msgstr ""
+msgstr "Importa cartella di istanze ODK."
 
 #: odk_logger/management/commands/import_tools.py:26
 #, python-format
 msgid "[Importing XForm Instances from %(path)s]\n"
-msgstr ""
+msgstr "[Importazione di istanze XForm da %(path)s]⏎\n"
 
 #: odk_logger/management/commands/import_tools.py:30
 msgid "Before Parse:"
-msgstr ""
+msgstr "Prima dell'analisi: "
 
 #: odk_logger/management/commands/import_tools.py:31
 #: odk_logger/management/commands/import_tools.py:38
 #, python-format
 msgid " --> Images:    %(nb)d"
-msgstr ""
+msgstr "--> Immagini: %(nb)d"
 
 #: odk_logger/management/commands/import_tools.py:32
 #: odk_logger/management/commands/import_tools.py:39
 #, python-format
 msgid " --> Instances: %(nb)d"
-msgstr ""
+msgstr "--> Istanze: %(nb)d"
 
 #: odk_logger/management/commands/import_tools.py:37
 msgid "After Parse:"
-msgstr ""
+msgstr "Dopo l'analisi:"
 
 #: odk_logger/management/commands/move_media_to_s3.py:15
 msgid ""
 "Moves all attachments and xls files to s3 from the local file system "
 "storage."
-msgstr ""
+msgstr "Sposta tutti gli allegati e file xls dal sistema locale di memoria a s3. "
 
 #: odk_logger/management/commands/move_media_to_s3.py:23
 msgid ""

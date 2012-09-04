@@ -3,19 +3,20 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+#   <prabhas.pokharel@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: formhub\n"
 "Report-Msgid-Bugs-To: https://github.com/modilabs/formhub/issues\n"
 "POT-Creation-Date: 2012-08-31 09:54+0000\n"
-"PO-Revision-Date: 2012-08-31 10:19+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2012-08-31 18:22+0000\n"
+"Last-Translator: prabhasp <prabhas.pokharel@gmail.com>\n"
 "Language-Team: Nepali (http://www.transifex.com/projects/p/formhub/language/ne/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ne\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: main/forms.py:22 main/forms.py:30
 msgid "No License"
@@ -43,11 +44,11 @@ msgstr ""
 
 #: main/forms.py:40
 msgid "Can view"
-msgstr ""
+msgstr "हेर्न पाउने"
 
 #: main/forms.py:41
 msgid "Can edit"
-msgstr ""
+msgstr "फेर्न पाउने    "
 
 #: main/forms.py:42
 msgid "Remove permissions"
@@ -65,7 +66,7 @@ msgstr ""
 #: main/forms.py:167
 #, python-format
 msgid "%s already exists"
-msgstr ""
+msgstr "%s पहिले देखि छ "
 
 #: main/forms.py:179
 msgid "Source document"
@@ -81,15 +82,15 @@ msgstr ""
 
 #: main/forms.py:205
 msgid "JSONP url"
-msgstr ""
+msgstr "JSONP url"
 
 #: main/forms.py:210 utils/quick_converter.py:8
 msgid "XLS File"
-msgstr ""
+msgstr "XLS File"
 
 #: main/forms.py:215
 msgid "XLS URL"
-msgstr ""
+msgstr "XLS URL"
 
 #: main/views.py:85
 #, python-format
