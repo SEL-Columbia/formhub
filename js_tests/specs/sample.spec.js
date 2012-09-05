@@ -13,27 +13,21 @@ describe("Sample", function () {
 });
 
 describe("FormJSON tests", function() {
-    FormJSONData.forEach(function(formJSONDatum) {
-        $.getJSON(formJSONDatum.url, function(data) {
-            console.log(data);
+    var sampleFormJSONManager = new FormJSONManager(FormJSONData.url);
+    
+    it ("checks that form json loads properly for init with no callback", function () {
+        runs(function () {
+            expect(sampleFormJSONManager).toBeDefined();
+            expect(sampleFormJSONManager.callback).toBeUndefined();
         });
-        it ("checks that form json loads properly for " + formJSONDatum.url, function () {
-            that = this; 
-            that.callbackCalled = false;
-            var mockCallBack = function () { that.callbackCalled = true; }
-            var sampleFormJSONManager = new FormJSONManager(formJSONDatum.url, mockCallBack);
-            runs(function () {
-                expect(sampleFormJSONManager).toBeDefined();
-                expect(sampleFormJSONManager.callback).toBeDefined();
-                sampleFormJSONManager.loadFormJSON();
-            });
-            waitsFor(function () {
-                return this.callBackCalled;
-            }, "Can sometimes take a while to load form.json", 20000);
-            runs(function() {
-                expect(sampleFormJSONManager.getGeoPointQuestion()).toEqual(formJSONDatum.geoPointQuestions[0]);
-                expect(sampleFormJSONManager.supportedLanguages).toEqual(formJSONDatum.supportedLanguages);
-            });
+    });
+    
+    sampleFormJSONManager._init(FormJSONData.actualJSON);
+    it ("checks that form json init parses geopoints and supportedLanguages ", function () {
+        runs(function() {
+            expect(sampleFormJSONManager.geopointQuestions).toEqual(FormJSONData.geoPointQuestions);
+            expect(sampleFormJSONManager.getGeoPointQuestion()).toEqual(FormJSONData.geoPointQuestions[0]);
+            expect(sampleFormJSONManager.supportedLanguages).toEqual(FormJSONData.supportedLanguages);
         });
     });
 });

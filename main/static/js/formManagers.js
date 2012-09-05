@@ -22,10 +22,16 @@ FormJSONManager.prototype.loadFormJSON = function()
 {
     var thisManager = this;
     $.getJSON(thisManager.url, function(data){
-        thisManager._parseQuestions(data[constants.CHILDREN]);
-        thisManager._parseSupportedLanguages();
-        thisManager.callback.call(thisManager);
+        thisManager._init(data);
     });
+};
+
+FormJSONManager.prototype._init = function(data)
+{
+    thisManager = this;
+    thisManager._parseQuestions(data[constants.CHILDREN]);
+    thisManager._parseSupportedLanguages();
+    if (thisManager.callback) thisManager.callback.call(thisManager);
 };
 
 FormJSONManager.prototype._parseQuestions = function(questionData, parentQuestionName)
