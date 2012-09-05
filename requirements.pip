@@ -21,6 +21,11 @@ SQLAlchemy==0.7.1
 pandas==0.8.0
 
 requests==0.13.6
+python-digest
+
+django-digest
+mocker
+decorator
 
 # devel only
 twill
