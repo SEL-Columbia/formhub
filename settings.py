@@ -138,7 +138,6 @@ INSTALLED_APPS = (
     'odk_viewer',
     'staff',
     'guardian',
-    'django_digest',
 )
 COMPRESS = True
 

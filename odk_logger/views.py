@@ -1,7 +1,5 @@
 import base64
 import json
-from django_digest import HttpDigestAuthenticator
-from django_digest.decorators import httpdigest
 import os
 import tempfile
 import urllib
@@ -170,15 +168,9 @@ def xformsManifest(request, username, id_string):
     return response
 
 
+@require_POST
 @csrf_exempt
 def submission(request, username=None):
-    authenticator = HttpDigestAuthenticator()
-    if request.method == 'HEAD':
-        if not authenticator.authenticate(request):
-            return authenticator.build_challenge_response()
-        return HttpResponse("OK", status=204)
-    if request.method != 'POST':
-        return HttpResponseNotAllowed('POST required')
     context = RequestContext(request)
     xml_file_list = []
     media_files = []
