@@ -63,6 +63,9 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
+#ENKETO URL
+ENKETO_URL = 'http://enketo.org/'
+
 # Login URLs
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/login_redirect/'

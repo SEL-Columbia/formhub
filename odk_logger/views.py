@@ -325,36 +325,46 @@ def enter_data(request, username, id_string):
         return HttpResponseRedirect(reverse('main.views.show',
                                     kwargs={'username': username,
                                             'id_string': id_string}))
-    url = settings.TOUCHFORMS_URL
+    url = settings.ENKETO_URL+'launch/launchSurvey'
     register_openers()
     response = None
-    with tempfile.TemporaryFile() as tmp:
-        tmp.write(xform.xml.encode('utf-8'))
-        tmp.seek(0)
-        values = {
-            'file': tmp,
-            'format': 'json',
-            'uuid': xform.uuid
-        }
-        data, headers = multipart_encode(values)
-        headers['User-Agent'] = 'formhub'
-        req = urllib2.Request(url, data, headers)
-        try:
-            response = urllib2.urlopen(req)
-            response = json.loads(response.read())
-            context = RequestContext(request)
-            owner = User.objects.get(username=username)
-            context.profile, created = \
-                UserProfile.objects.get_or_create(user=owner)
-            context.xform = xform
-            context.content_user = owner
-            context.form_view = True
-            context.touchforms = response['url']
-            return render_to_response("form_entry.html",
-                                      context_instance=context)
-            #return HttpResponseRedirect(response['url'])
-        except urllib2.URLError:
-            pass  # this will happen if we could not connect to touchforms
+    # see commit 220f2dad0e for tmp file creation
+    values = {
+        'format': 'json',
+        'form_id': xform.id_string,
+        'server_url' : 'http://formhub.org/' + username
+    }
+    data, headers = multipart_encode(values)
+    headers['User-Agent'] = 'formhub'
+    req = urllib2.Request(url, data, headers)
+    try:
+        response = urllib2.urlopen(req)
+        response = json.loads(response.read())
+        context = RequestContext(request)
+        owner = User.objects.get(username=username)
+        context.profile, created = \
+            UserProfile.objects.get_or_create(user=owner)
+        context.xform = xform
+        context.content_user = owner
+        context.form_view = True
+        if 'url' in response:
+            context.enketo = response['url']
+            #return render_to_response("form_entry.html",
+            #                          context_instance=context)
+            return HttpResponseRedirect(response['url'])
+        else:
+            json_msg = response['reason']
+            """
+            return HttpResponse("<script>$('body')</script>")
+            """
+            context.message = {'type':'alert-error',
+                                'text':"Enketo error, reason: " +
+                                    (response['reason'] and "Server not found.")}
+            messages.add_message(request, messages.WARNING,json_msg)
+            return render_to_response("profile.html",context_instance=context)
+
+    except urllib2.URLError:
+        pass  # this will happen if we could not connect to touchforms
     return HttpResponseRedirect(reverse('main.views.show',
                                 kwargs={'username': username,
                                         'id_string': id_string}))
