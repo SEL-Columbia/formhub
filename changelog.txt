@@ -14,3 +14,4 @@ v0.12.08
     * Implemented #578 Added a public JSON api for forms.
     * disabled bing maps
     * translations
+
