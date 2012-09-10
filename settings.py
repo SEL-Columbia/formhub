@@ -64,7 +64,7 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 STATIC_URL = '/static/'
 
 #ENKETO URL
-ENKETO_URL = 'http://enketo.org/'
+ENKETO_URL = 'http://enketo.formhub.org/'
 
 # Login URLs
 LOGIN_URL = '/accounts/login/'
