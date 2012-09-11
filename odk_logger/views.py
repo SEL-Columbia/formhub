@@ -325,14 +325,18 @@ def enter_data(request, username, id_string):
         return HttpResponseRedirect(reverse('main.views.show',
                                     kwargs={'username': username,
                                             'id_string': id_string}))
-    url = settings.ENKETO_URL+'launch/launchSurvey'
+    url = '%slaunch/launchSurvey' % settings.ENKETO_URL
     register_openers()
     response = None
     # see commit 220f2dad0e for tmp file creation
+    try:
+        formhub_url = "http://%s/" % request.META['HTTP_HOST']
+    except:
+        formhub_url = "http://formhub.org/"
     values = {
         'format': 'json',
         'form_id': xform.id_string,
-        'server_url' : 'http://formhub.org/' + username
+        'server_url' : formhub_url + username
     }
     data, headers = multipart_encode(values)
     headers['User-Agent'] = 'formhub'
