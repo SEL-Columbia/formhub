@@ -1,5 +1,5 @@
 // Load mocks for this spec
-EnvJasmine.load(EnvJasmine.mocksDir + "sample.mock.js");
+EnvJasmine.load(EnvJasmine.mocksDir + "formManagers.mock.js");
 EnvJasmine.load(EnvJasmine.jsDir + "main/static/js/formManagers.js");
 EnvJasmine.load(EnvJasmine.jsDir + "main/static/js/underscore-min.js");
 
