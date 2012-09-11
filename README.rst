@@ -12,68 +12,68 @@ Ubuntu 12.04
 
 Install system libraries and start services:
 
-    apt-get update
+    # apt-get update
 
-    apt-get upgrade
+    # apt-get upgrade
 
-    apt-get install default-jre gcc git mongodb python-dev python-virtualenv libjpeg-dev libfreetype6-dev zlib1g-dev
+    # apt-get install default-jre gcc git mongodb python-dev python-virtualenv libjpeg-dev libfreetype6-dev zlib1g-dev
 
-    start mongodb
+    # start mongodb
 
 Make directory structure and Clone formhub:
 
-    mkdir -p src/formhub-app
+    $ mkdir -p src/formhub-app
 
-    cd src/formhub-app
+    $ cd src/formhub-app
 
-    git clone git://github.com/modilabs/formhub.git
+    $ git clone git://github.com/modilabs/formhub.git
 
 Make virtual environment and install requirements:
 
-    virtualenv --no-site-packages project_env
+    $ virtualenv --no-site-packages project_env
 
-    source project_env/bin/activate
+    $ source project_env/bin/activate
 
-    cd formhub
+    $ cd formhub
 
 (NB: there is a known bug that prevents numpy from installing correctly when in requirements.pip file)
 
-    pip install numpy
+    $ pip install numpy
 (NB: PIL under virtualenv usually does not have some codecs compiled| to make sure jpeg codec is included)
 
-    sudo ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib/
+    $ sudo ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib/
 
-    sudo ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib/
+    $ sudo ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib/
 
-    sudo ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib/
+    $ sudo ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib/
 
-    pip install -r requirements.pip
+    $ pip install -r requirements.pip
 
 (OPTIONAL) For MySQL, s3, ses:
 
-    apt-get install libmysqlclient-dev mysql-server
+    # apt-get install libmysqlclient-dev mysql-server
 
-    pip install -r requirements-mysql.pip
+    $ pip install -r requirements-mysql.pip
 
-    pip install -r requirements-s3.pip
+    $ pip install -r requirements-s3.pip
 
-    pip install -r requirements-ses.pip
+    $ pip install -r requirements-ses.pip
 
 Create a database and start server:
 
     create or update your local-settings.py file
 
-    python manage.py syncdb
+    $ python manage.py syncdb
 
-    python manage.py migrate
+    $ python manage.py migrate
 
-    python manage.py runserver
+    $ python manage.py runserver
 
 (OPTIONAL) Apache and system administration tools:
 
-    apt-get install apache libapache2-mode-wsgi
+    # apt-get install apache libapache2-mode-wsgi
 
-    apt-get install htop monit
+    # apt-get install htop monit
 
     set up apache and monit
 
