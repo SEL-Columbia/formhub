@@ -5,6 +5,7 @@ from odk_logger.models import XForm
 from main.views import set_perm, show
 from main.models import MetaData
 from django.conf import settings
+from urlparse import urlparse
 
 class TestFormEnterData(MainTestCase):
 
@@ -21,20 +22,28 @@ class TestFormEnterData(MainTestCase):
             'id_string': self.xform.id_string
         })
 
-    def _running_touchforms(self):
-        if hasattr(settings, 'TOUCHFORMS_URL') and \
-            self._check_url(settings.TOUCHFORMS_URL):
+    def _running_enketo(self):
+        if hasattr(settings, 'ENKETO_URL') and \
+            self._check_url(settings.ENKETO_URL):
             return True
         return False
 
+    def test_running_enketo(self):
+        exist = self._running_enketo()
+        self.assertTrue(exist)
+
     def test_enter_data_redir(self):
         response = self.client.get(self.url)
-        status_code = 200 if self._running_touchforms() else 302
-        self.assertEqual(response.status_code, status_code)
+        #make sure response redirect to an enketo site
+        enketo_base_url = urlparse(settings.ENKETO_URL).netloc
+        redirected_base_url = urlparse(response['Location']).netloc
+        #TODO: checking if the form is valid on enketo side
+        self.assertIn(enketo_base_url, redirected_base_url)
+        self.assertEqual(response.status_code, 302)
 
     def test_enter_data_no_permission(self):
         response = self.anon.get(self.url)
-        status_code = 200 if self._running_touchforms() else 403
+        status_code = 200 if self._running_enketo() else 403
         self.assertEqual(response.status_code, 403)
 
     def test_public_with_link_to_share_toggle_on(self):
@@ -45,5 +54,5 @@ class TestFormEnterData(MainTestCase):
         response = self.anon.get(self.show_url)
         self.assertEqual(response.status_code, 302)
         response = self.anon.get(self.url)
-        status_code = 200 if self._running_touchforms() else 403
+        status_code = 200 if self._running_enketo() else 403
         self.assertEqual(response.status_code, status_code)

@@ -368,7 +368,8 @@ def enter_data(request, username, id_string):
             return render_to_response("profile.html",context_instance=context)
 
     except urllib2.URLError:
-        pass  # this will happen if we could not connect to touchforms
+        pass  # this will happen if we could not connect to enketo
+        #TODO: should we throw in another error message here
     return HttpResponseRedirect(reverse('main.views.show',
                                 kwargs={'username': username,
                                         'id_string': id_string}))
