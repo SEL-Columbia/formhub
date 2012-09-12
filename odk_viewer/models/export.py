@@ -9,7 +9,7 @@ CSV_EXPORT = 'csv'
 KML_EXPORT = 'kml'
 
 EXPORT_DEFS = {
-    'xls' : {
+    'xls': {
         'mime_type': 'vnd.ms-excel'
     },
     'xlsx': {
@@ -60,8 +60,8 @@ class Export(models.Model):
             # if new, check if we've hit our limit for exports for this form,
             # if so, delete oldest
             # TODO: let user know that last export will be deleted
-            num_existing_exports = Export.objects.filter(xform=self.xform,
-                export_type=self.export_type).count()
+            num_existing_exports = Export.objects.filter(
+                xform=self.xform, export_type=self.export_type).count()
 
             if num_existing_exports >= self.MAX_EXPORTS:
                 Export._delete_oldest_export(self.xform, self.export_type)
@@ -70,8 +70,8 @@ class Export(models.Model):
 
     @classmethod
     def _delete_oldest_export(cls, xform, export_type):
-        oldest_export = Export.objects.filter(xform=xform,
-            export_type=export_type).order_by('created_on')[0]
+        oldest_export = Export.objects.filter(
+            xform=xform, export_type=export_type).order_by('created_on')[0]
         oldest_export.delete()
 
     @property
@@ -96,4 +96,3 @@ class Export(models.Model):
                                    self.export_type, self.filename)
 
 post_delete.connect(export_delete_callback, sender=Export)
-

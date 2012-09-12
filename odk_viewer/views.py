@@ -298,6 +298,9 @@ def export_progress(request, export_id):
             'filename': export.filename
         })
         status['filename'] = export.filename
+    # mark as complete if it either failed or succeeded but NOT pending
+    if export.status == EXPORT_SUCCESSFUL or export.status == EXPORT_FAILED:
+        status['complete'] = True
 
     return HttpResponse(simplejson.dumps(status), mimetype='application/json')
 
