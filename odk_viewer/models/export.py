@@ -80,7 +80,7 @@ class Export(models.Model):
 
     @property
     def status(self):
-        result = AsyncResult(export.task_id)
+        result = AsyncResult(self.task_id)
         if self.filename:
             return EXPORT_SUCCESSFUL
         elif (result and result.ready()) or not result:
