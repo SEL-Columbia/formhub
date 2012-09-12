@@ -129,26 +129,16 @@ FormJSONManager.prototype.getMultilingualLabel = function(question, language)
     var key;
     var labelProp = question[constants.LABEL];
 
-    /// if plain string, return
+    // if plain string, its a "label" already, return
     if(typeof(labelProp) == "string")
         return labelProp;
+    // else pick out the right language if it exists
     else if(typeof(labelProp) == "object")
-    {
         if(language && labelProp.hasOwnProperty(language))
             return labelProp[language];
-        else
-        {
-            var label = null;
-            for(key in labelProp)
-            {
-                label = labelProp[key];
-                break;// break at first instance and return that
-            }
-            return label;
-        }
-
-    }
-    // return raw name
+        else // and if the given language isn't present, return the first label
+            return _.values(labelProp)[0]; 
+    // fallback (ie, no label) -- return raw name
     return question[constants.NAME];
 };
 
