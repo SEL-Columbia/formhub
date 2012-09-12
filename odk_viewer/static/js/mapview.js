@@ -119,7 +119,7 @@ function initialize() {
     });*/
 
     // add google sat layer
-    var ggl = new L.Google();
+    var ggl = new L.Google('HYBRID');
     layersControl.addBaseLayer(ggl, gettext("Google Satellite Map"));
 
     // Get metadata about the map from MapBox
