@@ -1,0 +1,17 @@
+v0.12.08
+=======
+    * Implemented #644 transparent OSM overlay for google satelitte view 
+    * Implemented #593 FormSubmission API according to https://bitbucket.org/javarosa/javarosa/wiki/OpenRosaRequest
+    * Implemented #498 Display thumbnails by default when displaying images, faster load time
+    * Fixed bug #531 timestamp format mismatch error on submissions
+    * Implemented https support for login and maps
+    * Fixed bug #592 corrent submissions count on instance delete
+    * Fixed bug #604 Fix repeats for exports
+    * Implemented new logo and header
+    * Implemented #491 Add hovers to hexbins
+    * Implemented #581 Implement xformsList endpoint, https://bitbucket.org/javarosa/javarosa/wiki/FormListAPI
+    * Implented #573 Integration of bamboo_dataset
+    * Implemented #578 Added a public JSON api for forms.
+    * disabled bing maps
+    * translations
+

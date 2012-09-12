@@ -54,13 +54,3 @@ class TestMongoData(MainTestCase):
             self.assertEquals(self.pi.to_dict_for_mongo(),
                     self.instances.find_one({key: value}))
 
-    def test_delete(self):
-        self.assertIn(self.pi.to_dict_for_mongo(), \
-                    list(self.instances.find({common_tags.DELETEDAT:\
-                         {"$exists": False}})))
-        p = self.pi.to_dict_for_mongo()
-        p.update({common_tags.DELETEDAT: date.today().strftime('%Y-%m-%d')})
-        self.instances.save(p)
-        self.assertEquals(self.pi.to_dict_for_mongo(),
-            self.instances.find_one({common_tags.DELETEDAT:
-                {"$exists": True}}))

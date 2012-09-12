@@ -83,6 +83,13 @@ Question.prototype.getLabel = function(language)
           loadData(context, query);
       });
 
+      // #uuid/uuid route
+      this.get('#uuid/:uuid', function(context) {
+          var uuid = this.params['uuid'];
+          var query = '{"_uuid": "' + uuid + '"}';
+          loadData(context, query);
+      });
+
 
       // Delete modal
       this.get('#del/:id', function(context) { with(this) {

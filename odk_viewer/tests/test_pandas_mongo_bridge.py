@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from tempfile import NamedTemporaryFile
 from odk_logger.models.xform import XForm
 from main.tests.test_base import MainTestCase
+from odk_logger.xform_instance_parser import xform_instance_to_dict
 from odk_viewer.pandas_mongo_bridge import *
 from odk_viewer.views import xls_export
 
@@ -351,37 +352,42 @@ class TestPandasMongoBridge(MainTestCase):
         self.assertEqual(expected_result, record)
 
     def test_split_gps_fields_within_repeats(self):
-        record = {
-            'a_repeat': [
+        record = \
+        {
+            'a_repeat':
+            [
                 {
-                    'gps': '1 2 3 4'
+                    'a_repeat/gps': '1 2 3 4'
                 },
                 {
-                    'gps': '5 6 7 8'
+                    'a_repeat/gps': '5 6 7 8'
                 }
             ]
         }
-        gps_fields = ['gps']
-        expected_result = {
-            'a_repeat': [
+        gps_fields = ['a_repeat/gps']
+        expected_result = \
+        {
+            'a_repeat':
+            [
                 {
-                    'gps': '1 2 3 4',
-                    '_gps_latitude': '1',
-                    '_gps_longitude': '2',
-                    '_gps_altitude': '3',
-                    '_gps_precision': '4',
+                    'a_repeat/gps': '1 2 3 4',
+                    'a_repeat/_gps_latitude': '1',
+                    'a_repeat/_gps_longitude': '2',
+                    'a_repeat/_gps_altitude': '3',
+                    'a_repeat/_gps_precision': '4',
                 },
                 {
-                    'gps': '5 6 7 8',
-                    '_gps_latitude': '5',
-                    '_gps_longitude': '6',
-                    '_gps_altitude': '7',
-                    '_gps_precision': '8',
+                    'a_repeat/gps': '5 6 7 8',
+                    'a_repeat/_gps_latitude': '5',
+                    'a_repeat/_gps_longitude': '6',
+                    'a_repeat/_gps_altitude': '7',
+                    'a_repeat/_gps_precision': '8',
                 }
             ]
         }
         AbstractDataFrameBuilder._split_gps_fields(record, gps_fields)
         self.assertEqual(expected_result, record)
+
 
     def test_unicode_export(self):
         unicode_char = unichr(40960)
@@ -414,6 +420,43 @@ class TestPandasMongoBridge(MainTestCase):
             temp_file.close()
         temp_file.close()
         self.assertTrue(passed)
+
+    def test_repeat_child_name_matches_repeat(self):
+        """
+        ParsedInstance.to_dict creates a list within a repeat if a child has the same name as the repeat
+         This test makes sure that doesnt happen
+        """
+        self.maxDiff = None
+        fixture = "repeat_child_name_matches_repeat"
+        # publish form so we have a dd to pass to xform inst. parser
+        self._publish_xls_fixture_set_xform(fixture)
+        submission_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "fixtures", fixture, fixture + ".xml"
+        )
+        # get submission xml str
+        with open(submission_path, "r") as f:
+            xml_str = f.read()
+        dict = xform_instance_to_dict(xml_str, self.xform.data_dictionary())
+        expected_dict = {
+            u'test_item_name_matches_repeat': {
+                u'formhub': {
+                    u'uuid': u'c911d71ce1ac48478e5f8bac99addc4e'
+                },
+                u'gps':
+                    [
+                        {
+                            u'info': u'Yo',
+                            u'gps': u'-1.2625149 36.7924478 0.0 30.0'
+                        },
+                        {
+                            u'info': u'What',
+                            u'gps': u'-1.2625072 36.7924328 0.0 30.0'
+                        }
+                    ]
+            }
+        }
+        self.assertEqual(dict, expected_dict)
 
     def test_remove_dups_from_list_maintain_order(self):
         l = ["a", "z", "b", "y", "c", "b", "x"]

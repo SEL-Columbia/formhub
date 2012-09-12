@@ -16,7 +16,7 @@ Install system libraries and start services:
 
     # apt-get upgrade
 
-    # apt-get install default-jre gcc git mongodb python-dev python-virtualenv
+    # apt-get install default-jre gcc git mongodb python-dev python-virtualenv libjpeg-dev libfreetype6-dev zlib1g-dev
 
     # start mongodb
 
@@ -39,6 +39,13 @@ Make virtual environment and install requirements:
 (NB: there is a known bug that prevents numpy from installing correctly when in requirements.pip file)
 
     $ pip install numpy
+(NB: PIL under virtualenv usually does not have some codecs compiled| to make sure jpeg codec is included)
+
+    $ sudo ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib/
+
+    $ sudo ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib/
+
+    $ sudo ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib/
 
     $ pip install -r requirements.pip
 
@@ -198,15 +205,15 @@ Localization
 
 To generate a locale from scratch (ex. Spanish)
 
-    django-admin.py makemessages -l es -e py,html,email,txt
+    django-admin.py makemessages -l es -e py,html,email,txt ;
     for app in {main,odk_viewer} ; do cd ${app} && django-admin.py makemessages -d djangojs -l es && cd - ; done
 
 To update PO files
 
-    django-admin.py makemessages -a
+    django-admin.py makemessages -a ;
     for app in {main,odk_viewer} ; do cd ${app} && django-admin.py makemessages -d djangojs -a && cd - ; done
 
 To compile MO files and update live translations
 
-    django-admin.py compilemessages
+    django-admin.py compilemessages ;
     for app in {main,odk_viewer} ; do cd ${app} && django-admin.py compilemessages && cd - ; done

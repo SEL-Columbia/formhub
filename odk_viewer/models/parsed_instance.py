@@ -14,11 +14,13 @@ from restservice.utils import call_service
 from utils.model_tools import queryset_iterator
 from odk_logger.models import Instance
 from common_tags import START_TIME, START, END_TIME, END, ID, UUID,\
-    ATTACHMENTS, GEOLOCATION, SUBMISSION_TIME, MONGO_STRFTIME, BAMBOO_DATASET_ID
+    ATTACHMENTS, GEOLOCATION, SUBMISSION_TIME, MONGO_STRFTIME,\
+    BAMBOO_DATASET_ID, DELETEDAT
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
 key_whitelist = ['$or', '$and', '$exists', '$in', '$gt', '$gte', '$lt', '$lte']
+
 
 class ParseError(Exception):
     pass
@@ -29,15 +31,21 @@ def datetime_from_str(text):
     if text is None:
         return None
     date_time_str = text.split(".")[0]
-    return datetime.datetime.strptime(
-        date_time_str, '%Y-%m-%dT%H:%M:%S'
+    dt = None
+    try:
+        dt = datetime.datetime.strptime(
+            date_time_str, '%Y-%m-%dT%H:%M:%S'
         )
+    except Exception:
+        return None
+    return dt
 
 
 def dict_for_mongo(d):
     for key, value in d.items():
         if type(value) == list:
-            value = [dict_for_mongo(e) if type(e) == dict else e for e in value]
+            value = [dict_for_mongo(e)
+                     if type(e) == dict else e for e in value]
         elif type(value) == dict:
             value = dict_for_mongo(value)
         elif key == '_id':
@@ -54,11 +62,12 @@ def dict_for_mongo(d):
 
 def _encode_for_mongo(key):
     return reduce(lambda s, c: re.sub(c[0], base64.b64encode(c[1]), s),
-            [(r'^\$', '$'), (r'\.', '.')], key)
+                  [(r'^\$', '$'), (r'\.', '.')], key)
 
 
 def _is_invalid_for_mongo(key):
-    return not key in key_whitelist and (key.startswith('$') or key.count('.') > 0)
+    return not key in \
+        key_whitelist and (key.startswith('$') or key.count('.') > 0)
 
 
 class ParsedInstance(models.Model):
@@ -78,47 +87,66 @@ class ParsedInstance(models.Model):
 
     @classmethod
     def query_mongo(cls, username, id_string, query, fields, sort, start=0,
-            limit=DEFAULT_LIMIT, count=False):
+                    limit=DEFAULT_LIMIT, count=False, hide_deleted=True):
         fields_to_select = {cls.USERFORM_ID: 0}
-        # TODO: give more detailed error messages to 3rd parties using the API when json.loads fails
-        query = json.loads(query, object_hook=json_util.object_hook) if query else {}
+        # TODO: give more detailed error messages to 3rd parties
+        # using the API when json.loads fails
+        query = json.loads(
+            query, object_hook=json_util.object_hook) if query else {}
         query = dict_for_mongo(query)
         query[cls.USERFORM_ID] = u'%s_%s' % (username, id_string)
-        #display only active elements
-        query.update({"_deleted_at": {"$exists": False}})
+        if hide_deleted:
+            #display only active elements
+            query.update(
+                {"$or":
+                 [{"_deleted_at": {"$exists": False}},
+                 {"_deleted_at": None}]
+                 }
+            )
         # fields must be a string array i.e. '["name", "age"]'
-        fields = json.loads(fields, object_hook=json_util.object_hook) if fields else []
-        # TODO: current mongo (2.0.4 of this writing) cant mix including and excluding fields in a single query
+        fields = json.loads(
+            fields, object_hook=json_util.object_hook) if fields else []
+        # TODO: current mongo (2.0.4 of this writing)
+        # cant mix including and excluding fields in a single query
         if type(fields) == list and len(fields) > 0:
             fields_to_select = dict([(field, 1) for field in fields])
-        sort = json.loads(sort, object_hook=json_util.object_hook) if sort else {}
+        sort = json.loads(
+            sort, object_hook=json_util.object_hook) if sort else {}
         if count:
-            return [{"count":xform_instances.find(query,
+            return [{"count":xform_instances.find(
+                query,
                 fields_to_select).count()}]
         elif type(sort) == dict and len(sort) == 1:
             sort_key = sort.keys()[0]
-            sort_dir = int(sort[sort_key]) # -1 for desc, 1 for asc
-            return xform_instances.find(query,
-                fields_to_select).skip(start).limit(limit).sort(sort_key, sort_dir)
+            sort_dir = int(sort[sort_key])  # -1 for desc, 1 for asc
+            return xform_instances.find(
+                query,
+                fields_to_select)\
+                .skip(start).limit(limit).sort(sort_key, sort_dir)
         else:
-            return xform_instances.find(query,
-                fields_to_select).skip(start).limit(limit)
+            return xform_instances.find(
+                query, fields_to_select).skip(start).limit(limit)
 
     def to_dict_for_mongo(self):
         d = self.to_dict()
+        deleted_at = None
+        if isinstance(self.instance.deleted_at, datetime.datetime):
+            deleted_at = self.instance.deleted_at.strftime(MONGO_STRFTIME)
         d.update(
             {
                 UUID: self.instance.uuid,
                 ID: self.instance.id,
                 BAMBOO_DATASET_ID: self.instance.xform.bamboo_dataset,
-                self.USERFORM_ID: u'%s_%s' % (self.instance.user.username,
-                                         self.instance.xform.id_string),
-                ATTACHMENTS: [a.media_file.name for a in\
+                self.USERFORM_ID: u'%s_%s' % (
+                    self.instance.user.username,
+                    self.instance.xform.id_string),
+                ATTACHMENTS: [a.media_file.name for a in
                               self.instance.attachments.all()],
                 self.STATUS: self.instance.status,
                 GEOLOCATION: [self.lat, self.lng],
                 SUBMISSION_TIME:
                 self.instance.date_created.strftime(MONGO_STRFTIME),
+                DELETEDAT: deleted_at
             }
         )
         return dict_for_mongo(d)
@@ -137,25 +165,27 @@ class ParsedInstance(models.Model):
         qs = cls.objects.filter(instance__xform=xform)
         for parsed_instance in queryset_iterator(qs):
             yield parsed_instance.to_dict()
-    
+
     def _get_name_for_type(self, type_value):
         """
-        We cannot assume that start time and end times always use the same XPath
-        This is causing problems for other peoples' forms.
-        
-        This is a quick fix to determine from the original XLSForm's JSON representation
-        what the 'name' was for a given type_value ('start' or 'end')
+        We cannot assume that start time and end times always use the same
+        XPath. This is causing problems for other peoples' forms.
+
+        This is a quick fix to determine from the original XLSForm's JSON
+        representation what the 'name' was for a given
+        type_value ('start' or 'end')
         """
         datadict = json.loads(self.instance.xform.json)
         for item in datadict['children']:
-            if type(item)==dict and item.get(u'type')==type_value:
+            if type(item) == dict and item.get(u'type') == type_value:
                 return item['name']
 
     def _set_start_time(self):
         doc = self.to_dict()
         start_time_key1 = self._get_name_for_type(START)
         start_time_key2 = self._get_name_for_type(START_TIME)
-        start_time_key = start_time_key1 or start_time_key2 # if both, can take either
+        # if both, can take either
+        start_time_key = start_time_key1 or start_time_key2
         if start_time_key is not None and start_time_key in doc:
             date_time_str = doc[start_time_key]
             self.start_time = datetime_from_str(date_time_str)
@@ -183,7 +213,7 @@ class ParsedInstance(models.Model):
         return DataDictionary.objects.get(
             user=self.instance.xform.user,
             id_string=self.instance.xform.id_string
-            )
+        )
 
     data_dictionary = property(get_data_dictionary)
 
@@ -193,10 +223,12 @@ class ParsedInstance(models.Model):
         doc = self.to_dict()
         xpath = self.data_dictionary.xpath_of_first_geopoint()
         text = doc.get(xpath, u'')
-        return dict(zip(
+        return dict(
+            zip(
                 [u'latitude', u'longitude', u'altitude', u'accuracy'],
                 text.split()
-                ))
+            )
+        )
 
     def _set_geopoint(self):
         g = self._get_geopoint()
@@ -214,11 +246,14 @@ class ParsedInstance(models.Model):
     #Update row in MongoDB
     @classmethod
     def edit_mongo(cls, query, data):
-        query = json.loads(query, object_hook=json_util.object_hook) if query else {}
-        query = dict_for_mongo(query)  
-        data = json.loads(data, object_hook=json_util.object_hook) if query else {}
+        query = json.loads(
+            query, object_hook=json_util.object_hook) if query else {}
+        query = dict_for_mongo(query)
+        data = json.loads(
+            data, object_hook=json_util.object_hook) if query else {}
         data = dict_for_mongo(data)
         xform_instances.update(query, data)
+
 
 def _remove_from_mongo(sender, **kwargs):
     instance_id = kwargs.get('instance').instance.id

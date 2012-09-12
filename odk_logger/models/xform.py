@@ -109,7 +109,7 @@ class XForm(models.Model):
         return getattr(self, "id_string", "")
 
     def submission_count(self):
-        return self.surveys.count()
+        return self.surveys.filter(deleted_at=None).count()
     submission_count.short_description = ugettext_lazy("Submission Count")
 
     def time_of_last_submission(self):
