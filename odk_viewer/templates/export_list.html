@@ -6,7 +6,7 @@
 
 <section id="export-downloads">
   <div class="page-header">
-    <h1>{{ export_type|upper }} {% blocktrans %}Exports{% endblocktrans %} (<a href="{% url main.views.show user.username xform.id_string %}">{{ xform.id_string }}</a>)</h1>
+    <h1>{{ export_type|upper }} {% blocktrans %}Exports{% endblocktrans %} (<a href="{% url main.views.show username xform.id_string %}">{{ xform.id_string }}</a>)</h1>
   </div>
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
@@ -37,7 +37,7 @@
 	} );
   </script>
 
-    <form action="{% url odk_viewer.views.create_export user.username xform.id_string export_type %}" method="post" enctype="application/x-www-form-urlencoded">
+    <form action="{% url odk_viewer.views.create_export username xform.id_string export_type %}" method="post" enctype="application/x-www-form-urlencoded">
         {% csrf_token %}
             <span style='float:middle;'>
 	        <div>
@@ -59,7 +59,7 @@
       <tr>
         <td>
             {% if not export.is_pending %}
-            <a href="{% url odk_viewer.views.export_download user.username xform.id_string export.export_type export.filename %}">{{ export.filename }}</a>
+            <a href="{% url odk_viewer.views.export_download username xform.id_string export.export_type export.filename %}">{{ export.filename }}</a>
             {% else %}
               <span class="status">{% trans "Pending ..." %}</span>
               <a href="#" class="refresh-export-progress" data-role="refresh-export-progress" data-url="{% url odk_viewer.views.export_progress export.id %}">{% trans "Click to refresh" %}</a>

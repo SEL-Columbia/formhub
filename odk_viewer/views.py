@@ -266,7 +266,7 @@ def export_list(request, username, id_string, export_type):
         return HttpResponseForbidden(_(u'Not shared.'))
 
     context = RequestContext(request)
-    context.user = owner
+    context.username = owner.username
     context.xform = xform
     # TODO: better output e.g. Excel instead of XLS
     context.export_type = export_type
@@ -289,8 +289,6 @@ def export_progress(request, export_id):
         'filename': None
     }
 
-    if export.status == EXPORT_COMPLETE:
-        status['complete'] = complete
     if export.status == EXPORT_SUCCESSFUL:
         status['url'] = reverse(export_download, kwargs={
             'username': owner.username,
