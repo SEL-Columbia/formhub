@@ -1,5 +1,6 @@
+from odk_viewer.models.export import XLS_EXPORT
 from test_base import MainTestCase
-from odk_viewer.views import csv_export, xls_export, zip_export, kml_export
+from odk_viewer.views import csv_export, xls_export, zip_export, kml_export, export_list
 from django.core.urlresolvers import reverse
 from common_tags import MONGO_STRFTIME
 
@@ -17,9 +18,10 @@ class TestFormExports(MainTestCase):
         self.csv_url = reverse(csv_export, kwargs={
                 'username': self.user.username,
                 'id_string': self.xform.id_string})
-        self.xls_url = reverse(xls_export, kwargs={
+        self.xls_url = reverse(export_list, kwargs={
                 'username': self.user.username,
-                'id_string': self.xform.id_string})
+                'id_string': self.xform.id_string,
+                'export_type': XLS_EXPORT})
 
     def _num_rows(self, content, export_format):
         def xls_rows(f):
