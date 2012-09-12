@@ -255,18 +255,19 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
     var latLngArray = [];
     var geopointQuestionName = constants.GEOLOCATION;
     // The following functions needed hexbin-js doesn't deal well with negatives
-    function fixlng(n) { return (n < 0 ? 360 + n : n); } 
-    function fixlnginv(n) { return (n > 180 ? n - 360 : n); }
-    function fixlat(n) { return (n < 0 ? 90 + n : 90 + n); } 
-    function fixlatinv(n) { return (n > 90 ? n - 90 : n - 90); }
+    function fixlng(n) { n = parseFloat(n); return (n < 0 ? 360 + n : n); } 
+    function fixlnginv(n) { n = parseFloat(n); return (n > 180 ? n - 360 : n); }
+    function fixlat(n) { n = parseFloat(n); return (n < 0 ? 90 + n : 90 + n); } 
+    function fixlatinv(n) { n = parseFloat(n); return (n > 90 ? n - 90 : n - 90); }
     _(this.responses).each(function(response) {
         var gps = response[geopointQuestionName];
         if(gps && gps[0] && gps[1])
         {
             var lat = gps[0];
             var lng = gps[1];
-            if(latLongFilter===undefined || latLongFilter(lat, lng))
+            if(latLongFilter===undefined || latLongFilter(lat, lng)) {
                 latLngArray.push({ lat: fixlat(lat), lng: fixlng(lng), response_id: response._id});
+            }
         }
     });
     try {
@@ -279,7 +280,6 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
         this._addMetadataColumn("_id", "hexID", dv.type.nominal, _.map(latLngArray, function(x) { return undefined; }));
         return;
     };
-    countMax = d3.max( hexset, function(d) { return d.data.length; } );
     var hexOfResponseID = {}, responseIDs = [], hexID = '';
     _.each(hexset, function(hex, idx) {
         if(hex.data.length) {

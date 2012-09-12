@@ -18,6 +18,7 @@ var mapboxMaps = [
     {'label': gettext('MapBox Streets Zenburn'), 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-bjhr55gf.jsonp'},
     {'label': gettext('Natural Earth II'), 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-1c1r9n5g.jsonp'}
 ];
+var sslUrlPerfix = 'https://dnv9my2eseobd.cloudfront.net/'; // add trailing slash since its expected function that uses this
 var allowResetZoomLevel = true; // used to allow zooming when first loaded
 var popupOffset = new L.Point(0, -10);
 var notSpecifiedCaption = gettext("Not Specified");
@@ -54,6 +55,29 @@ var currentLanguageIdx = -1;
 var customMapBoxTileLayer;
 var legendsContainer;
 
+var mapview = function() {
+
+    return {
+        isHttps: function(){
+            return location.protocol == 'https:';
+        }
+    }
+}();
+
+/**
+ *  for a url http://a.tiles.mapbox.com/v3/modilabs.map-iuetkf9u/{z}/{x}/{y}.png
+ *  return v3/modilabs.map-iuetkf9u/{z}/{x}/{y}.png,
+ *  is a regex that strips gets everything after the domain name
+ */
+mapview.getMapboxMapname = function(mapUrl) {
+    var matches = mapUrl.match(/(^.+?\..+?\/)(.+)/);
+    if(matches.length > 0)
+    {
+        return matches[2];
+    }
+    return null;
+}
+
 function initialize() {
     // Make a new Leaflet map in your container div
     map = new L.Map(mapId).setView(centerLatLng, defaultZoom);
@@ -89,20 +113,30 @@ function initialize() {
     map.addLayer(markerLayerGroup);
 
     // add bing maps layer
-    $.each(bingMapTypeLabels, function(type, label) {
+    /** $.each(bingMapTypeLabels, function(type, label) {
         var bingLayer = new L.TileLayer.Bing(bingAPIKey, type); 
         layersControl.addBaseLayer(bingLayer, label);
-    });
+    });*/
 
     // add google sat layer
-    var ggl = new L.Google();
+    var ggl = new L.Google('HYBRID');
     layersControl.addBaseLayer(ggl, gettext("Google Satellite Map"));
 
     // Get metadata about the map from MapBox
     var tileJSONAddFn = function(mapData, addToMap) { 
         var innerFn = function(tilejson) {
+            var tileLayer, mapName;
+
             tilejson.attribution += mapBoxAdditAttribution;
-            var tileLayer = new wax.leaf.connector(tilejson);
+            // check if https and change tile array appropriately
+            if(mapview.isHttps())
+            {
+                /// get map url
+                mapName = mapview.getMapboxMapname(tilejson.tiles[0]);
+                /// replace our tile url with this
+                tilejson.tiles = [sslUrlPerfix + mapName];
+            }
+            tileLayer = new wax.leaf.connector(tilejson);
             
             layersControl.addBaseLayer(tileLayer, mapData.label);
             if(addToMap) {
@@ -117,6 +151,12 @@ function initialize() {
         mapboxMaps = _.union([customMapBoxTileLayer], mapboxMaps);
     }
     _.each(mapboxMaps, function(mapData, idx) {
+        // if https,
+        if(mapview.isHttps())
+        {
+            // change to ssl url
+            mapData.url = sslUrlPerfix + mapview.getMapboxMapname(mapData.url);
+        }
         wax.tilejson(mapData.url, tileJSONAddFn(mapData, !idx)); //ie, only add idx 0
     });
 
@@ -391,11 +431,13 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     }
 }
 
-function _reStyleHexOverLay(newHexStylesByID) {
+function _reStyleAndBindPopupsToHexOverLay(newHexStylesByID, newHexPopupsByID) {
     _(hexbinLayerGroup._layers).each(function(hexbinLPolygon) {
         hexID = hexbinLPolygon.options.id;
         if (newHexStylesByID[hexID])
             hexbinLPolygon.setStyle(newHexStylesByID[hexID]);
+        if (newHexPopupsByID[hexID])
+            hexbinLPolygon.bindPopup(newHexPopupsByID[hexID], {offset: L.point(20,0)});
     });
 }
 
@@ -406,17 +448,24 @@ function constructHexBinOverLay() {
         return new L.Polygon(_(el.geometry.coordinates).map(arr_to_latlng), 
                             {"id": el.properties.id});
     };
+    var lazyClose = _.debounce(function() {map.closePopup();}, 3000);
     _(hexbinData.features).each( function(x, idx) {
         var hexLayer = hex_feature_to_polygon_fn(x);
-        hexLayer.on('mouseover', function(e) {
-            //console.log(e, idx);
-        });
+        var lazyPopup = _.debounce(
+            function() {
+                hexLayer.openPopup();
+                lazyClose();
+            }, 1500, true);
+        hexLayer.on('mouseover', lazyPopup); 
         hexbinLayerGroup.addLayer(hexLayer);
     });
 }
 
+
+
 function _recomputeHexColorsByRatio(questionName, responseNames) {
     var newHexStyles = {};
+    var newPopupTexts = {};
     if (_(responseNames).contains(notSpecifiedCaption)) 
         responseNames.push(undefined); // hack? if notSpeciedCaption is in repsonseNames, then need to
         // count when instance.response[questionName] doesn't exist, and is therefore ``undefined''
@@ -429,21 +478,25 @@ function _recomputeHexColorsByRatio(questionName, responseNames) {
         // note both are dense queries on datavore, the idx's match exactly
         var ratio = hexAndCountArrayNum[1][idx] / hexAndCountArrayDenom[1][idx];
         newHexStyles[hexID] = {  fillColor: colors.getProportional(ratio, "Set2"), fillOpacity: 0.9, color:'grey', weight: 1 };
+        newPopupTexts[hexID] = hexAndCountArrayNum[1][idx] + " / " + hexAndCountArrayDenom[1][idx] + " (" + Math.round(ratio*100) + "%)";
     });
-    _reStyleHexOverLay(newHexStyles);
+    _reStyleAndBindPopupsToHexOverLay(newHexStyles, newPopupTexts);
     _rebuildHexLegend('proportion', questionName, responseNames);
 }
 
 function _hexOverLayByCount()
 {
     var newHexStyles = {};
+    var newPopupTexts = {};
     var hexAndCountArray = formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]});      
     var totalCount = _.max(hexAndCountArray[1]);
     _(hexAndCountArray[0]).each( function(hexID, idx) {
         var color = colors.getProportional(hexAndCountArray[1][idx] / totalCount); 
         newHexStyles[hexID] = {fillColor: color, fillOpacity: 0.9, color:'grey', weight: 1};
+        newPopupTexts[hexID] = hexAndCountArray[1][idx] + " submissions.";
+
     }); 
-    _reStyleHexOverLay(newHexStyles);
+    _reStyleAndBindPopupsToHexOverLay(newHexStyles, newPopupTexts);
     _rebuildHexLegend('count');
 }
 

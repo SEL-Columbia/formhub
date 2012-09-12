@@ -25,7 +25,7 @@ from main.models import UserProfile, MetaData
 from odk_logger.models import Instance, XForm
 from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_viewer.models.data_dictionary import upload_to
-from odk_viewer.views import image_urls_for_form, survey_responses
+from odk_viewer.views import image_urls_for_form, survey_responses, attachment_url
 from utils.decorators import is_owner
 from utils.logger_tools import response_with_mimetype_and_name, publish_form
 from utils.user_auth import check_and_set_user, set_profile_data,\
@@ -523,7 +523,13 @@ def form_photos(request, username, id_string):
     context.form_view = True
     context.content_user = owner
     context.xform = xform
-    context.images = image_urls_for_form(xform)
+    image_urls = []
+    for instance in xform.surveys.all():
+        for attachment in instance.attachments.all():
+            url = reverse(attachment_url)
+            url = '%s?media_file=%s&' % (url, attachment.media_file.name)
+            image_urls.append(url)
+    context.images = image_urls
     context.profile, created = UserProfile.objects.get_or_create(user=owner)
     return render_to_response('form_photos.html', context_instance=context)
 
@@ -576,26 +582,31 @@ def show_submission(request, username, id_string, uuid):
 @require_GET
 def delete_data(request, username=None, id_string=None):
     xform, owner = check_and_set_user_and_form(username, id_string, request)
+    response_text = u''
     if not xform:
         return HttpResponseForbidden(_(u'Not shared.'))
     try:
-        args = {"username": username, "id_string": id_string,
+        query_args = {"username": username, "id_string": id_string,
                 "query": request.GET.get('query'),
                 "fields": request.GET.get('fields'),
                 "sort": request.GET.get('sort')}
 
         if 'limit' in request.GET:
-            args["limit"] = int(request.GET.get('limit'))
-        cursor = ParsedInstance.query_mongo(**args)
+            query_args["limit"] = int(request.GET.get('limit'))
+        cursor = ParsedInstance.query_mongo(**query_args)
     except ValueError as e:
         return HttpResponseBadRequest(e)
-
-    today = datetime.today().strftime('%Y-%m-%dT%H:%M:%S')
-    ParsedInstance.edit_mongo(
-        args['query'], '{ "$set": {"_deleted_at": "%s" }}' % today)
-
-    records = list(record for record in cursor)
-    response_text = simplejson.dumps(records)
+    else:
+        records = list(record for record in cursor)
+        if records.__len__():
+            today = datetime.today().strftime('%Y-%m-%dT%H:%M:%S')
+            ParsedInstance.edit_mongo(
+                query_args['query'], '{ "$set": {"_deleted_at": "%s" }}'\
+                    % today)
+            for record in records:
+                Instance.delete_by_uuid(
+                    username, id_string, uuid=record['_uuid'])
+            response_text = simplejson.dumps(records)
     if 'callback' in request.GET and request.GET.get('callback') != '':
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))
