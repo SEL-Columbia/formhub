@@ -2,6 +2,7 @@ import os
 from django.conf import settings
 from main.tests.test_base import MainTestCase
 from django.core.urlresolvers import reverse
+from odk_viewer.tasks import create_xls_export
 from odk_viewer.xls_writer import XlsWriter
 from odk_viewer.views import csv_export, xls_export
 from test_pandas_mongo_bridge import xls_filepath_from_fixture_name,\
@@ -76,3 +77,38 @@ class TestExports(MainTestCase):
         existing_export = Export.objects.create(xform=self.xform, export_type=XLS_EXPORT)
         export = generate_export(XLS_EXPORT, 'xls', self.user.username, self.xform.id_string, existing_export.id)
         self.assertEqual(existing_export.id, export.id)
+
+    def test_delete_file_on_export_delete(self):
+        self._publish_transportation_form()
+        self._submit_transport_instance()
+        export = create_xls_export(
+            self.user.username, self.xform.id_string)
+        self.assertTrue(os.path.exists(
+            os.path.join(
+                settings.MEDIA_ROOT,
+                export.filepath
+            )
+        ))
+        # delete export object
+        export.delete()
+        self.assertFalse(os.path.exists(
+            os.path.join(
+                settings.MEDIA_ROOT,
+                export.filepath
+            )
+        ))
+
+    def test_delete_oldest_export_on_limit(self):
+        self._publish_transportation_form()
+        self._submit_transport_instance()
+        # create first export
+        first_export = create_xls_export(
+            self.user.username, self.xform.id_string)
+        self.assertTrue(first_export.pk>0)
+        # create exports that exceed set limit
+        for i in range(Export.MAX_EXPORTS):
+            create_xls_export(
+                self.user.username, self.xform.id_string)
+        # first export should be deleted
+        exports = Export.objects.filter(id=first_export.id)
+        self.assertEqual(len(exports), 0)

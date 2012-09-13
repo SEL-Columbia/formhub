@@ -83,7 +83,7 @@ def generate_export(export_type, extension, username, id_string, export_id = Non
         export = Export.objects.get(id=export_id)
         is_new = False
     else:
-        export = Export.objects.create()
+        export = Export.objects.create(xform=xform, export_type=export_type)
     if is_new:
         export.xform = xform
         export.export_type = export_type
@@ -115,8 +115,8 @@ class Export(models.Model):
     class Meta:
         app_label = "odk_viewer"
 
-    def save2(self, *args, **kwargs):
-        if not self.pk:
+    def save(self, *args, **kwargs):
+        if not self.pk and self.xform:
             # if new, check if we've hit our limit for exports for this form,
             # if so, delete oldest
             # TODO: let user know that last export will be deleted
