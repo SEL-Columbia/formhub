@@ -37,7 +37,7 @@ from xls_writer import XlsWriter
 from utils.logger_tools import response_with_mimetype_and_name,\
     disposition_ext_and_date, round_down_geopoint
 from utils.viewer_tools import image_urls, image_urls_for_form
-from odk_viewer.tasks import create_xls_export
+from odk_viewer.tasks import create_xls_export, create_csv_export
 from utils.user_auth import has_permission, get_xform_and_perms
 from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
@@ -175,22 +175,20 @@ def csv_export(request, username, id_string):
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
     query = request.GET.get("query")
-    csv_dataframe_builder = CSVDataFrameBuilder(username, id_string, query)
+
     try:
-        temp_file = NamedTemporaryFile(suffix=".csv")
-        csv_dataframe_builder.export_to(temp_file)
-        if request.GET.get('raw'):
-            id_string = None
-        response = response_with_mimetype_and_name('application/csv', id_string,
-                                                   extension='csv')
-        temp_file.seek(0)
-        response.write(temp_file.read())
-        temp_file.seek(0, os.SEEK_END)
-        response['Content-Length'] = temp_file.tell()
-        temp_file.close()
-        return response
+        export = create_csv_export(username=username, id_string=id_string,
+            query=query)
     except NoRecordsFoundError:
         return HttpResponse(_("No records found to export"))
+    else:
+        # get extension from file_path
+        ext = CSV_EXPORT
+        if request.GET.get('raw'):
+            id_string = None
+        response = response_with_mimetype_and_name('application/csv',
+            id_string, extension=ext, file_path=export.filepath)
+        return response
 
 
 def xls_export(request, username, id_string):
@@ -239,7 +237,7 @@ def create_export(request, username, id_string, export_type):
     query = request.GET.get("query")
     force_xlsx = request.GET.get('xlsx') == 'true'
 
-    # TODO: can anyone with access create a new export - especially for publicly accessible data
+    # TODO: can anyone with access publicly available data create new exports?
     export = Export.objects.create(xform=xform, export_type=export_type)
 
     result = None
@@ -253,6 +251,15 @@ def create_export(request, username, id_string, export_type):
                 'xlsx': force_xlsx,
                 'export_id': export.id
                 })
+    elif export_type == CSV_EXPORT:
+        # start async export
+        result = create_csv_export.apply_async(
+            (), {
+                'username': username,
+                'id_string': id_string,
+                'query': query,
+                'export_id': export.id
+            })
     export.task_id = result.task_id
     export.save()
     return HttpResponseRedirect(
@@ -276,6 +283,7 @@ def export_list(request, username, id_string, export_type):
     context.xform = xform
     # TODO: better output e.g. Excel instead of XLS
     context.export_type = export_type
+    context.export_type_name = EXPORT_TYPE_DICT[export_type]
     exports = Export.objects.filter(xform=xform, export_type=export_type)\
         .order_by('-created_on')
     context.exports = exports

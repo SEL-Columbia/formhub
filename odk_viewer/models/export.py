@@ -23,7 +23,7 @@ EXPORT_DEFS = {
 
 EXPORT_TYPES = [
     (XLS_EXPORT, 'Excel'),
-    #(CSV_EXPORT, 'csv'),
+    (CSV_EXPORT, 'CSV'),
     #(KML_EXPORT, 'kml'),
 ]
 
