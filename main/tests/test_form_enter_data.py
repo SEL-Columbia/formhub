@@ -36,10 +36,11 @@ class TestFormEnterData(MainTestCase):
         return False
 
     def test_enketo_remote_server_responses(self):
+        testing_enketo_url = 'http://enketo-dev.formhub.org'
         time_stamp = time()
         form_id = "test_%s" % re.sub(re.compile("\."),"_",str(time()))
         server_url = "%s/%s" % (self.base_url,self.user.username)
-        enketo_url = '%slaunch/launchSurvey' % settings.ENKETO_URL
+        enketo_url = '%slaunch/launchSurvey' % testing_enketo_url
 
         values = {
             'format': 'json',
@@ -51,28 +52,28 @@ class TestFormEnterData(MainTestCase):
         try:
             response = urllib2.urlopen(req)
             response = json.loads(response.read())
+            return_url = response['url']
+            success = response['success']
+            self.assertTrue(success)
+            enketo_base_url = urlparse(settings.ENKETO_URL).netloc
+            return_base_url = urlparse(return_url).netloc
+            self.assertIn(enketo_base_url, return_base_url)
         except urllib2.URLError:
             pass
-        return_url = response['url']
-        success = response['success']
-        self.assertTrue(success)
-        enketo_base_url = urlparse(settings.ENKETO_URL).netloc
-        return_base_url = urlparse(return_url).netloc
-        self.assertIn(enketo_base_url, return_base_url)
 
         #second time
         req2 = urllib2.Request(enketo_url, data)
         try:
             response2 = urllib2.urlopen(req2)
             response2 = json.loads(response2.read())
+            return_url_2 = response2['url']
+            success2 = response2['success']
+            reason2 = response2['reason']
+            self.assertEqual(return_url, return_url_2)
+            self.assertFalse(success2)
+            self.assertEqual(reason2, "existing")
         except urllib2.URLError:
             pass
-        return_url_2 = response2['url']
-        success2 = response2['success']
-        reason2 = response2['reason']
-        self.assertEqual(return_url, return_url_2)
-        self.assertFalse(success2)
-        self.assertEqual(reason2, "existing")
 
         #error message
         values['server_url']=""
@@ -81,12 +82,12 @@ class TestFormEnterData(MainTestCase):
         try:
             response3 = urllib2.urlopen(req3)
             response3 = json.loads(response3.read())
+            success3 = response3['success']
+            reason3 = response3['reason']
+            self.assertFalse(success3)
+            self.assertEqual(reason3, "empty")
         except urllib2.URLError:
             pass
-        success3 = response3['success']
-        reason3 = response3['reason']
-        self.assertFalse(success3)
-        self.assertEqual(reason3, "empty")
 
 
 
