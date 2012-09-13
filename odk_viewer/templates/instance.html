@@ -297,6 +297,8 @@ function reDraw(context, data)
         // check if table has been created, if not reCreate
         if($('#data table').length == 0)
             createTable();
+        // clear data cells before we re-populate
+        $('#data table td[data-key]').html('');
         context.meld($('#data'), cleanData, {
             selector: function(k) {
                 k = k.replace(cleanRe, cleanReplacement);
