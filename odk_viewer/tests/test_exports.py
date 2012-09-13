@@ -43,7 +43,6 @@ class TestExports(MainTestCase):
         )
         self.response = self.client.get(url)
         self.assertEqual(self.response.status_code, 200)
-        # we get html response when we have no records
         self.assertIn('text/html', self.response['content-type'])
         # test xls
         url = reverse(xls_export,
@@ -54,4 +53,5 @@ class TestExports(MainTestCase):
         )
         self.response = self.client.get(url)
         self.assertEqual(self.response.status_code, 200)
-        self.assertIn('text/html', self.response['content-type'])
+        # we now get and empty xls file when we have no records
+        self.assertIn('application/vnd.ms-excel', self.response['content-type'])
