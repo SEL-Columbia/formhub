@@ -44,7 +44,8 @@ from utils.google import google_export_xls, redirect_uri
 import main
 from odk_viewer.models import Export
 from odk_viewer.models.export import XLS_EXPORT, CSV_EXPORT, KML_EXPORT,\
-    EXPORT_TYPE_DICT, EXPORT_PENDING, EXPORT_SUCCESSFUL, EXPORT_FAILED
+    EXPORT_TYPE_DICT, EXPORT_PENDING, EXPORT_SUCCESSFUL, EXPORT_FAILED,\
+    generate_export, EXPORT_DEFS
 from utils.viewer_tools import export_def_from_filename
 
 
@@ -175,15 +176,13 @@ def csv_export(request, username, id_string):
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
     query = request.GET.get("query")
+    ext = CSV_EXPORT
 
     try:
-        export = create_csv_export(username=username, id_string=id_string,
-            query=query)
+        export = generate_export(CSV_EXPORT, ext, username, id_string, None, query)
     except NoRecordsFoundError:
         return HttpResponse(_("No records found to export"))
     else:
-        # get extension from file_path
-        ext = CSV_EXPORT
         if request.GET.get('raw'):
             id_string = None
         response = response_with_mimetype_and_name('application/csv',
@@ -198,28 +197,18 @@ def xls_export(request, username, id_string):
         return HttpResponseForbidden(_(u'Not shared.'))
     query = request.GET.get("query")
     force_xlsx = request.GET.get('xlsx') == 'true'
-    excel_defs = {
-        u'xls': {
-            u'suffix': u'.xls',
-            u'mime_type': u'vnd.ms-excel'
-        },
-        u'xlsx': {
-            u'suffix': u'.xlsx',
-            u'mime_type': u'vnd.openxmlformats'
-        }
-    }
+    ext = 'xls' if not force_xlsx else 'xlsx'
     try:
-        export = create_xls_export(username=username, id_string=id_string,
-            query=query, xlsx=force_xlsx)
+        export = generate_export(XLS_EXPORT, ext, username, id_string, None, query)
     except NoRecordsFoundError:
         return HttpResponse(_("No records found to export"))
     else:
-        # get extension from file_path
+        # get extension from file_path, exporter could modify to xlsx if it exceeds limits
         path, ext = os.path.splitext(export.filename)
         ext = ext[1:]
         if request.GET.get('raw'):
             id_string = None
-        response = response_with_mimetype_and_name(excel_defs[ext][u'mime_type'],
+        response = response_with_mimetype_and_name(EXPORT_DEFS[ext][u'mime_type'],
             id_string, extension=ext, file_path=export.filepath)
         return response
 
@@ -234,8 +223,8 @@ def create_export(request, username, id_string, export_type):
     if export_type not in EXPORT_TYPE_DICT.keys():
         return HttpResponseBadRequest(_("%s is not a valid export type" % export_type))
 
-    query = request.GET.get("query")
-    force_xlsx = request.GET.get('xlsx') == 'true'
+    query = request.POST.get("query")
+    force_xlsx = request.POST.get('xlsx') == 'true'
 
     # TODO: can anyone with access publicly available data create new exports?
     export = Export.objects.create(xform=xform, export_type=export_type)

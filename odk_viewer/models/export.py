@@ -1,8 +1,13 @@
+import os
+from datetime import datetime
+from django.core.files.base import File
+from django.core.files.temp import NamedTemporaryFile
 from django.db import models
 from celery.result import AsyncResult
 from django.core.files.storage import get_storage_class
 from django.db.models.signals import post_delete
 from odk_logger.models import XForm
+from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder, CSVDataFrameBuilder, NoRecordsFoundError
 
 XLS_EXPORT = 'xls'
 CSV_EXPORT = 'csv'
@@ -34,6 +39,61 @@ EXPORT_SUCCESSFUL = 1
 EXPORT_FAILED = 2
 
 
+def _df_builder_for_export_type(export_type, username, id_string, filter_query=None):
+    if export_type == XLS_EXPORT:
+        return XLSDataFrameBuilder(username, id_string, filter_query)
+    elif export_type == CSV_EXPORT:
+        return CSVDataFrameBuilder(username, id_string, filter_query)
+    else:
+        raise ValueError
+
+
+def generate_export(export_type, extension, username, id_string, export_id = None, filter_query=None):
+    """
+    Create appropriate export object given the export type
+    """
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    df_builder = _df_builder_for_export_type(export_type, username, id_string, filter_query)
+    if hasattr(df_builder, 'get_exceeds_xls_limits') and df_builder.get_exceeds_xls_limits():
+        extension = 'xlsx'
+
+    temp_file = NamedTemporaryFile(suffix=("." + extension))
+    df_builder.export_to(temp_file.name)
+    basename = "%s_%s.%s" % (id_string,
+                             datetime.now().strftime("%Y_%m_%d_%H_%M_%S"), extension)
+    file_path = os.path.join(
+        username,
+        'exports',
+        id_string,
+        export_type,
+        basename)
+
+    # TODO: if s3 storage, make private - how will we protect local storage??
+    storage = get_storage_class()()
+    # seek to the beginning as required by storage classes
+    temp_file.seek(0)
+    export_filename = storage.save(
+        file_path,
+        File(temp_file, file_path))
+    temp_file.close()
+    # create export object
+    export = None
+    is_new = True
+    if export_id:
+        export = Export.objects.get(id=export_id)
+        is_new = False
+    else:
+        export = Export.objects.create()
+    if is_new:
+        export.xform = xform
+        export.export_type = export_type
+        # always set the filename
+    dir_name, basename = os.path.split(export_filename)
+    export.filename = basename
+    export.save()
+    return export
+
+
 def export_delete_callback(sender, **kwargs):
     export = kwargs['instance']
     storage = get_storage_class()()
@@ -55,7 +115,7 @@ class Export(models.Model):
     class Meta:
         app_label = "odk_viewer"
 
-    def save(self, *args, **kwargs):
+    def save2(self, *args, **kwargs):
         if not self.pk:
             # if new, check if we've hit our limit for exports for this form,
             # if so, delete oldest
