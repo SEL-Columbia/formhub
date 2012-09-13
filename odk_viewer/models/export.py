@@ -79,6 +79,10 @@ class Export(models.Model):
         return self.status == EXPORT_PENDING
 
     @property
+    def is_successful(self):
+        return self.status == EXPORT_SUCCESSFUL
+
+    @property
     def status(self):
         result = AsyncResult(self.task_id)
         if self.filename:
@@ -91,8 +95,10 @@ class Export(models.Model):
 
     @property
     def filepath(self):
-        return "%s/%s/%s/%s/%s" % (self.xform.user.username,
+        if self.status == EXPORT_SUCCESSFUL:
+            return "%s/%s/%s/%s/%s" % (self.xform.user.username,
                                    'exports', self.xform.id_string,
                                    self.export_type, self.filename)
+        return None
 
 post_delete.connect(export_delete_callback, sender=Export)

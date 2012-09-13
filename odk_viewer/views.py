@@ -198,8 +198,8 @@ def xls_export(request, username, id_string):
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
-    query = request.POST.get("query")
-    force_xlsx = request.POST.get('xlsx') == 'true'
+    query = request.GET.get("query")
+    force_xlsx = request.GET.get('xlsx') == 'true'
     excel_defs = {
         u'xls': {
             u'suffix': u'.xls',
@@ -211,22 +211,22 @@ def xls_export(request, username, id_string):
         }
     }
     try:
-        file_path = create_xls_export(username=username, id_string=id_string,
+        export = create_xls_export(username=username, id_string=id_string,
             query=query, xlsx=force_xlsx)
     except NoRecordsFoundError:
         return HttpResponse(_("No records found to export"))
     else:
         # get extension from file_path
-        path, ext = os.path.splitext(file_path)
+        path, ext = os.path.splitext(export.filename)
         ext = ext[1:]
         if request.GET.get('raw'):
             id_string = None
         response = response_with_mimetype_and_name(excel_defs[ext][u'mime_type'],
-            id_string, extension=ext, file_path=file_path)
+            id_string, extension=ext, file_path=export.filepath)
         return response
 
 
-#@require_POST
+@require_POST
 def create_export(request, username, id_string, export_type):
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
@@ -235,6 +235,9 @@ def create_export(request, username, id_string, export_type):
 
     if export_type not in EXPORT_TYPE_DICT.keys():
         return HttpResponseBadRequest(_("%s is not a valid export type" % export_type))
+
+    query = request.GET.get("query")
+    force_xlsx = request.GET.get('xlsx') == 'true'
 
     # TODO: can anyone with access create a new export - especially for publicly accessible data
     export = Export.objects.create(xform=xform, export_type=export_type)
@@ -246,7 +249,9 @@ def create_export(request, username, id_string, export_type):
             (), {
                 'username': username,
                 'id_string': id_string,
-                'export_id': export.id,
+                'query': query,
+                'xlsx': force_xlsx,
+                'export_id': export.id
                 })
     export.task_id = result.task_id
     export.save()

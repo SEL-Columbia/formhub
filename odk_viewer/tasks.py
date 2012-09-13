@@ -53,4 +53,4 @@ def create_xls_export(username, id_string, query=None, xlsx=False,
     dir_name, basename = os.path.split(export_filename)
     export.filename = basename
     export.save()
-    return basename
+    return export

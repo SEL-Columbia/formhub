@@ -59,7 +59,11 @@
       <tr>
         <td>
             {% if not export.is_pending %}
-            <a href="{% url odk_viewer.views.export_download username xform.id_string export.export_type export.filename %}">{{ export.filename }}</a>
+                {% if export.is_successful %}
+                    <a href="{% url odk_viewer.views.export_download username xform.id_string export.export_type export.filename %}">{{ export.filename }}</a>
+                {% else %}
+                    Failed
+                {% endif %}
             {% else %}
               <span class="status">{% trans "Pending ..." %}</span>
               <a href="#" class="refresh-export-progress" data-role="refresh-export-progress" data-url="{% url odk_viewer.views.export_progress export.id %}">{% trans "Click to refresh" %}</a>

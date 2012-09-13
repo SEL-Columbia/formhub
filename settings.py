@@ -229,7 +229,9 @@ if TESTING_MODE:
     subprocess.call(["rm", "-r", MEDIA_ROOT])
     MONGO_DB = _MONGO_CONNECTION[MONGO_TEST_DB_NAME]
     MONGO_DB.instances.drop()
-    BROKER_BACKEND = 'memory'
+    # need to have CELERY_ALWAYS_EAGER True and BROKER_BACKEND as memory to run taks immediately while testing
+    CELERY_ALWAYS_EAGER = True
+    #BROKER_BACKEND = 'memory'
 else:
     MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'media/')
     MONGO_DB = _MONGO_CONNECTION[MONGO_DB_NAME]
