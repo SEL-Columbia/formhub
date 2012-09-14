@@ -96,11 +96,10 @@ class Export(models.Model):
 
     xform = models.ForeignKey(XForm)
     created_on = models.DateTimeField(auto_now=True, auto_now_add=True)
-    # TODO: remove filename since it can be extracted from filepath
     filename = models.CharField(max_length=255, null=True, blank=True)
-    # need to set an explicit filepath since when an xform is deleted, it cascades its exports which then try to
-    # delete their files and try to access the now deleted xform
-    filepath = models.CharField(max_length=255, null=True, blank=True)
+    # need to save an the filedir since when an xform is deleted, it cascades its exports which then try to
+    # delete their files and try to access the deleted xform - bad things happen
+    filedir = models.CharField(max_length=255, null=True, blank=True)
     export_type = models.CharField(
         max_length=10, choices=EXPORT_TYPES, default=XLS_EXPORT
     )
@@ -120,7 +119,7 @@ class Export(models.Model):
             if num_existing_exports >= self.MAX_EXPORTS:
                 Export._delete_oldest_export(self.xform, self.export_type)
         if self.filename:
-            self._update_filepath()
+            self._update_filedir()
         super(Export, self).save(*args, **kwargs)
 
     @classmethod
@@ -148,10 +147,15 @@ class Export(models.Model):
         else:
             return EXPORT_PENDING
 
-    def _update_filepath(self):
+    def _update_filedir(self):
         assert(self.filename)
-        self.filepath = os.path.join(self.xform.user.username,
+        self.filedir = os.path.join(self.xform.user.username,
                                     'exports', self.xform.id_string,
-                                    self.export_type, self.filename)
+                                    self.export_type)
+    @property
+    def filepath(self):
+        if self.filedir and self.filename:
+            return os.path.join(self.filedir, self.filename)
+        return None
 
 post_delete.connect(export_delete_callback, sender=Export)
