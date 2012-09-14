@@ -94,7 +94,11 @@ class TestFormShow(MainTestCase):
 
     def test_show_link_if_owner(self):
         response = self.client.get(self.url)
-        self.assertContains(response, '/%s/data.csv' % self.xform.id_string)
+        self.assertContains(response, reverse(export_list, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': 'csv'
+        }))
         self.assertContains(response, reverse(export_list, kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string,
