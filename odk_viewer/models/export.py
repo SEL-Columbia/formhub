@@ -7,7 +7,7 @@ from celery.result import AsyncResult
 from django.core.files.storage import get_storage_class
 from django.db.models.signals import post_delete
 from odk_logger.models import XForm
-from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder, CSVDataFrameBuilder, NoRecordsFoundError
+from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder, CSVDataFrameBuilder
 
 XLS_EXPORT = 'xls'
 CSV_EXPORT = 'csv'
