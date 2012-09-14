@@ -22,14 +22,14 @@
 
 	$(document).ready(function() {
 	  $('#forms-table').dataTable({
-              "sDom": "<'row'r>t<'row'<'span6'i><'span6'p>>",
-	          "bPaginate" : true,
+              "sDom": "<'row'r>t<'row'<'span6'i>>",
+	          "bPaginate" : false,
                   "sPaginationType": "bootstrap",// "iDisplayLength": 4,
                   "bSort": true,
                   "oLanguage": {"sSearch": "Search:"},
                   "oSearch": {"sSearch": ""},
               "aoColumnDefs": [
-                  { "asSorting": [ "desc" ], "aTargets": [ 0 ] },
+                  { "asSorting": [ "asc" ], "aTargets": [ 0 ] },
               ]
       });
       $('#forms-table_filter').addClass('row');
@@ -49,6 +49,7 @@
   <table id="forms-table" class="table table-bordered table-striped">
     <thead>
       <tr>
+        <th>#</th>
         <th>{% trans "Filename" %}</th>
         <th>{% trans "Date Created" %}</th>
         <th>{% trans "Actions" %}</th>
@@ -57,6 +58,7 @@
     <tbody>
       {% for export in exports %}
       <tr>
+        <td>{{ forloop.counter }}</td>
         <td>
             {% if not export.is_pending %}
                 {% if export.is_successful %}
