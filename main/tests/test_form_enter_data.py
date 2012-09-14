@@ -36,7 +36,9 @@ class TestFormEnterData(MainTestCase):
         return False
 
     def test_enketo_remote_server_responses(self):
-        testing_enketo_url = 'http://enketo-dev.formhub.org'
+        #just in case if we want to shift the testing back to the main server
+        testing_enketo_url = settings.ENKETO_URL
+        #testing_enketo_url = 'http://enketo-dev.formhub.org'
         time_stamp = time()
         form_id = "test_%s" % re.sub(re.compile("\."),"_",str(time()))
         server_url = "%s/%s" % (self.base_url,self.user.username)
@@ -59,7 +61,7 @@ class TestFormEnterData(MainTestCase):
             return_base_url = urlparse(return_url).netloc
             self.assertIn(enketo_base_url, return_base_url)
         except urllib2.URLError:
-            pass
+            self.assertTrue(False)
 
         #second time
         req2 = urllib2.Request(enketo_url, data)
@@ -73,7 +75,7 @@ class TestFormEnterData(MainTestCase):
             self.assertFalse(success2)
             self.assertEqual(reason2, "existing")
         except urllib2.URLError:
-            pass
+            self.assertTrue(False)
 
         #error message
         values['server_url']=""
@@ -87,7 +89,7 @@ class TestFormEnterData(MainTestCase):
             self.assertFalse(success3)
             self.assertEqual(reason3, "empty")
         except urllib2.URLError:
-            pass
+            self.assertTrue(False)
 
 
 
@@ -118,17 +120,13 @@ class TestFormEnterData(MainTestCase):
             'perm_type': 'link'})
         self.assertEqual(response.status_code, 302)
         self.assertEqual(MetaData.public_link(self.xform), True)
+        #toggle shared on
+        self.xform.shared = True
+        self.xform.shared_data = True
+        self.xform.save()
         response = self.anon.get(self.show_url)
         self.assertEqual(response.status_code, 302)
         response = self.anon.get(self.url)
         status_code = 302 if self._running_enketo() else 403
         self.assertEqual(response.status_code, status_code)
 
-    def test_enketo_post_return(self):
-        #TODO: create a test case with name testuser and 
-        #id_string test_{UNIXTIME} to send to enketo
-        #and get the response back. 
-        #1) first time, return success
-        #2) second time, return already exist
-        #3) wrong one, return error
-        pass
