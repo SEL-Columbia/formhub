@@ -237,7 +237,7 @@ def create_export(request, username, id_string, export_type):
                 'username': username,
                 'id_string': id_string,
                 'query': query,
-                'xlsx': force_xlsx,
+                'force_xlsx': force_xlsx,
                 'export_id': export.id
                 })
     elif export_type == CSV_EXPORT:
@@ -317,13 +317,12 @@ def export_download(request, username, id_string, export_type, filename):
     export = get_object_or_404(Export, filename=filename)
 
     ext, mime_type = export_def_from_filename(export.filename)
-    file_path = "%s/%s/%s/%s/%s" % (username, 'exports', id_string,
-                                export.export_type, export.filename)
+
     if request.GET.get('raw'):
         id_string = None
     basename = os.path.splitext(export.filename)[0]
     response = response_with_mimetype_and_name(mime_type,
-        name=basename, extension=ext, file_path=file_path, show_date=False)
+        name=basename, extension=ext, file_path=export.filepath, show_date=False)
     return response
 
 
