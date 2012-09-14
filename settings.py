@@ -212,7 +212,7 @@ THUMB_ORDER = ['large', 'medium', 'small']
 IMG_FILE_TYPE = 'jpg'
 
 # celery
-#BROKER_BACKEND = "rabbitmq"
+BROKER_BACKEND = "rabbitmq"
 BROKER_URL = 'amqp://guest:guest@localhost:5672/'
 CELERY_RESULT_BACKEND = "amqp"  # telling Celery to report the results back to RabbitMQ
 
