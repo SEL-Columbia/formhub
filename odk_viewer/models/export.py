@@ -77,17 +77,7 @@ def generate_export(export_type, extension, username, id_string, export_id = Non
         File(temp_file, file_path))
     temp_file.close()
     # create export object
-    export = None
-    is_new = True
-    if export_id:
-        export = Export.objects.get(id=export_id)
-        is_new = False
-    else:
-        export = Export.objects.create(xform=xform, export_type=export_type)
-    if is_new:
-        export.xform = xform
-        export.export_type = export_type
-        # always set the filename
+    export, is_new = Export.objects.get_or_create(id=export_id, xform=xform, export_type=export_type)
     dir_name, basename = os.path.split(export_filename)
     export.filename = basename
     export.save()
