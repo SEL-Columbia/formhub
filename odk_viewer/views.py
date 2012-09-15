@@ -314,7 +314,7 @@ def export_download(request, username, id_string, export_type, filename):
         return HttpResponseForbidden(_(u'Not shared.'))
 
     # find the export entry in the db
-    export = get_object_or_404(Export, filename=filename)
+    export = get_object_or_404(Export, xform=xform, filename=filename)
 
     ext, mime_type = export_def_from_filename(export.filename)
 
@@ -324,6 +324,29 @@ def export_download(request, username, id_string, export_type, filename):
     response = response_with_mimetype_and_name(mime_type,
         name=basename, extension=ext, file_path=export.filepath, show_date=False)
     return response
+
+
+@require_POST
+def delete_export(request, username, id_string, export_type):
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden(_(u'Not shared.'))
+
+    export_id = request.POST.get('export_id')
+
+    # find the export entry in the db
+    export = get_object_or_404(Export, id=export_id)
+
+    export.delete()
+    return HttpResponseRedirect(
+        reverse(export_list,
+            kwargs={"username": username,
+                    "id_string": id_string,
+                    "export_type": export_type
+            }
+        )
+    )
 
 
 def zip_export(request, username, id_string):

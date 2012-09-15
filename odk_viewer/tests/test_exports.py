@@ -4,7 +4,7 @@ from main.tests.test_base import MainTestCase
 from django.core.urlresolvers import reverse
 from odk_viewer.tasks import create_xls_export
 from odk_viewer.xls_writer import XlsWriter
-from odk_viewer.views import csv_export, xls_export
+from odk_viewer.views import csv_export, xls_export, delete_export
 from test_pandas_mongo_bridge import xls_filepath_from_fixture_name,\
     xml_inst_filepath_from_fixture_name
 from odk_viewer.models.export import XLS_EXPORT, CSV_EXPORT, Export,\
@@ -111,4 +111,23 @@ class TestExports(MainTestCase):
                 self.user.username, self.xform.id_string)
         # first export should be deleted
         exports = Export.objects.filter(id=first_export.id)
+        self.assertEqual(len(exports), 0)
+
+    def test_delete_export_url(self):
+        self._publish_transportation_form()
+        self._submit_transport_instance()
+        # create export
+        export = create_xls_export(
+            self.user.username, self.xform.id_string)
+        exports = Export.objects.filter(id=export.id)
+        self.assertEqual(len(exports), 1)
+        delete_url = reverse(delete_export, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': 'xls'
+        })
+        post_data = {'export_id': export.id}
+        response = self.client.post(delete_url, post_data)
+        self.assertEqual(response.status_code, 304)
+        exports = Export.objects.filter(id=export.id)
         self.assertEqual(len(exports), 0)
