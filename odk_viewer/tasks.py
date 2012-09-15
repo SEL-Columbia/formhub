@@ -1,5 +1,4 @@
 from celery import task
-from odk_viewer.pandas_mongo_bridge import NoRecordsFoundError
 from odk_viewer.models.export import XLS_EXPORT, CSV_EXPORT, KML_EXPORT, generate_export
 
 
@@ -14,7 +13,7 @@ def create_xls_export(username, id_string, query=None, force_xlsx=False,
     # catch this since it potentially stops celery
     try:
         export = generate_export(XLS_EXPORT, ext, username, id_string, export_id, query)
-    except NoRecordsFoundError:
+    except Exception:
         return None
     else:
         return export
@@ -28,7 +27,7 @@ def create_csv_export(username, id_string, query=None,
         # though export is not available when for has 0 submissions, we
         # catch this since it potentially stops celery
         export = generate_export(CSV_EXPORT, 'csv', username, id_string, export_id, query)
-    except NoRecordsFoundError:
+    except Exception:
         return None
     else:
         return export
