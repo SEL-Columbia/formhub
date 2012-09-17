@@ -110,7 +110,6 @@ class MetaData(models.Model):
     def media_upload(xform, data_file=None):
         data_type = 'media'
         if data_file:
-	    import ipdb; ipdb.set_trace()
             if data_file.content_type in ['image/jpeg', 'image/png',
                                           'audio/mpeg', 'video/3gpp',
 					  'audio/wav']:
