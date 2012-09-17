@@ -3,6 +3,7 @@ from main.views import show, form_photos
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
 from odk_logger.views import download_xlsform, download_jsonform, download_xform
+from odk_viewer.views import export_list
 
 class TestFormShow(MainTestCase):
 
@@ -85,12 +86,24 @@ class TestFormShow(MainTestCase):
         self.xform.shared_data = True
         self.xform.save()
         response = self.anon.get(self.url)
-        self.assertContains(response, '/%s/data.csv' % self.xform.id_string)
+        self.assertContains(response, reverse(export_list, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': 'csv'
+        }))
 
     def test_show_link_if_owner(self):
         response = self.client.get(self.url)
-        self.assertContains(response, '/%s/data.csv' % self.xform.id_string)
-        self.assertContains(response, '/%s/data.xls' % self.xform.id_string)
+        self.assertContains(response, reverse(export_list, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': 'csv'
+        }))
+        self.assertContains(response, reverse(export_list, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': 'xls'
+        }))
         self.assertContains(response, '%s/map' % self.xform.id_string)
 
     def test_user_sees_edit_btn(self):
