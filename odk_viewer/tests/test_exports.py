@@ -128,6 +128,6 @@ class TestExports(MainTestCase):
         })
         post_data = {'export_id': export.id}
         response = self.client.post(delete_url, post_data)
-        self.assertEqual(response.status_code, 304)
+        self.assertEqual(response.status_code, 302)
         exports = Export.objects.filter(id=export.id)
         self.assertEqual(len(exports), 0)
