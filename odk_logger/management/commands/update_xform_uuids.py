@@ -17,10 +17,6 @@ class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('-f', '--file',
             help=ugettext_lazy("Path to csv file")),
-        make_option('-u', '--username',
-            help=ugettext_lazy("Username of the form user")),
-        make_option('-i', '--id_string',
-            help=ugettext_lazy("id string of the form")),
     )
 
     def handle(self, *args, **kwargs):
