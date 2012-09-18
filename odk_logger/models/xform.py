@@ -22,6 +22,10 @@ def upload_to(instance, filename):
         os.path.split(filename)[1])
 
 
+class DuplicateUUIDError(Exception):
+    pass
+
+
 class XForm(models.Model):
     CLONED_SUFFIX = '_cloned'
 
