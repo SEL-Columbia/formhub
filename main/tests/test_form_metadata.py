@@ -1,6 +1,7 @@
 from test_base import MainTestCase
 from main.models import MetaData
-from main.views import show, edit, download_metadata, download_media_data
+from main.views import show, edit, download_metadata, download_media_data,\
+    delete_metadata
 from django.core.urlresolvers import reverse
 import os
 
@@ -123,11 +124,6 @@ class TestFormMetadata(MainTestCase):
         fileName, ext = os.path.splitext(response['Content-Disposition'])
         self.assertEqual(ext, '.png')
 
-    def test_no_download_supporting_media_for_anon(self):
-        name = self._add_metadata(data_type='media')
-        response = self.anon.get(self.doc_url)
-        self.assertEqual(response.status_code, 403)
-
     def test_shared_download_supporting_doc_for_anon(self):
         name = self._add_metadata()
         self.xform.shared = True
@@ -143,36 +139,73 @@ class TestFormMetadata(MainTestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_delete_supporting_doc(self):
+        count = MetaData.objects.filter(xform=self.xform,
+            data_type='supporting_doc').count()
         name = self._add_metadata()
-        response = self.client.get(self.doc_url + '?del=true')
-        self.assertEqual(response.status_code, 302)
-        name = self._add_metadata()
-        response = self.anon.get(self.doc_url + '?del=true')
-        self.assertEqual(response.status_code, 403)
-
-    def test_delete_supporting_media(self):
-        name = self._add_metadata(data_type='media')
-        response = self.client.get(self.doc_url + '?del=true')
-        self.assertEqual(response.status_code, 302)
-        name = self._add_metadata(data_type='media')
-        response = self.anon.get(self.doc_url + '?del=true')
-        self.assertEqual(response.status_code, 403)
-
-    def test_delete_mapbox_layer(self):
-        self.post_data = {}
-        self.post_data['map_name'] = 'test_mapbox_layer'
-        self.post_data['link'] = 'http://0.0.0.0:8080'
-        response = self.client.post(self.edit_url, self.post_data)
-        self.doc = MetaData.objects.filter(data_type='mapbox_layer').reverse()[0]
-        self.doc_url = reverse(download_metadata, kwargs={
+        self.assertEqual(MetaData.objects.filter(xform=self.xform,
+            data_type='supporting_doc').count() , count + 1)
+        doc = MetaData.objects.filter(data_type='supporting_doc').reverse()[0]
+        self.delete_doc_url = reverse(delete_metadata, kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string,
-            'data_id': self.doc.id})
-        response = self.client.get(self.doc_url + '?map_name_del=true')
+            'data_id': doc.id})
+        response = self.client.get(self.delete_doc_url + '?del=true')
+        self.assertEqual(MetaData.objects.filter(xform=self.xform,
+            data_type='supporting_doc').count(), count)
+        self.assertEqual(response.status_code, 302)
+
+    def test_delete_supporting_media(self):
+        count = MetaData.objects.filter(xform=self.xform,
+            data_type='media').count()
+        name = self._add_metadata(data_type='media')
+        self.assertEqual(MetaData.objects.filter(xform=self.xform,
+            data_type='media').count(), count + 1)
+        response = self.client.get(self.doc_url + '?del=true')
+        self.assertEqual(MetaData.objects.filter(xform=self.xform,
+            data_type='media').count(), count)
         self.assertEqual(response.status_code, 302)
         name = self._add_metadata(data_type='media')
         response = self.anon.get(self.doc_url + '?del=true')
+        self.assertEqual(MetaData.objects.filter(xform=self.xform,
+            data_type='media').count(), count + 1)
         self.assertEqual(response.status_code, 403)
+
+    def _add_mapbox_layer(self):
+        # check mapbox_layer metadata count
+        self.count = len(MetaData.objects.filter(xform=self.xform,
+            data_type='mapbox_layer'))
+        # add mapbox_layer metadata
+        post_data = {'map_name': 'test_mapbox_layer',
+                     'link': 'http://0.0.0.0:8080'}
+        response = self.client.post(self.edit_url, post_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(MetaData.objects.filter(xform=self.xform,
+            data_type='mapbox_layer')), self.count + 1)
+
+    def test_delete_mapbox_layer(self):
+        self._add_mapbox_layer()
+        # delete mapbox_layer metadata
+        doc = MetaData.objects.filter(data_type='mapbox_layer').reverse()[0]
+        self.delete_doc_url = reverse(delete_metadata, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'data_id': doc.id})
+        response = self.client.get(self.delete_doc_url + '?map_name_del=true')
+        self.assertEqual(len(MetaData.objects.filter(xform=self.xform,
+            data_type='mapbox_layer')), self.count)
+        self.assertEqual(response.status_code, 302)
+
+    def test_anon_delete_mapbox_layer(self):
+        self._add_mapbox_layer()
+        doc = MetaData.objects.filter(data_type='mapbox_layer').reverse()[0]
+        self.delete_doc_url = reverse(delete_metadata, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'data_id': doc.id})
+        response = self.anon.get(self.delete_doc_url + '?map_name_del=true')
+        self.assertEqual(len(MetaData.objects.filter(xform=self.xform,
+            data_type='mapbox_layer')), self.count + 1)
+        self.assertEqual(response.status_code, 302)
 
     def test_user_source_edit_updates(self):
         desc = 'Snooky'

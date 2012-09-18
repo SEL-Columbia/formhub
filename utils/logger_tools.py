@@ -1,6 +1,7 @@
-from datetime import date
+from datetime import date, datetime
 import decimal
 import os
+import pytz
 import re
 import tempfile
 import traceback
@@ -26,9 +27,15 @@ from odk_logger.models import SurveyType
 from odk_logger.models import XForm
 from odk_logger.models.xform import XLSFormError
 from odk_logger.xform_instance_parser import InstanceParseError,\
-     InstanceInvalidUserError, IsNotCrowdformError
+     InstanceInvalidUserError, IsNotCrowdformError, DuplicateInstance
 from utils.viewer_tools import get_path
 
+
+OPEN_ROSA_VERSION_HEADER = 'X-OpenRosa-Version'
+HTTP_OPEN_ROSA_VERSION_HEADER = 'HTTP_X_OPENROSA_VERSION'
+OPEN_ROSA_VERSION = '1.0'
+DEFAULT_CONTENT_TYPE = 'text/xml; charset=utf-8'
+DEFAULT_CONTENT_LENGTH = 5000000
 
 uuid_regex = re.compile(r'<formhub><uuid>([^<]+)</uuid></formhub>',
     re.DOTALL)
@@ -90,6 +97,7 @@ def create_instance(username, xml_file, media_files,
             #  * the submitted XML is an exact match with one that
             #    has already been submitted for that user.
             proceed_to_create_instance = False
+            raise DuplicateInstance()
 
     if proceed_to_create_instance:
         instance = Instance.objects.create(xml=xml, user=user, status=status)
@@ -198,3 +206,33 @@ def publish_form(callback):
             'type': 'alert-error',
             'text': _('Form validation timeout, please try again.'),
         }
+
+
+class OpenRosaResponse(HttpResponse):
+    status_code = 201
+    def __init__(self, *args, **kwargs):
+        super(OpenRosaResponse, self).__init__(*args, **kwargs)
+
+        self[OPEN_ROSA_VERSION_HEADER] = OPEN_ROSA_VERSION
+        tz = pytz.timezone(settings.TIME_ZONE)
+        dt = datetime.now(tz).strftime('%a, %d %b %Y %H:%M:%S %Z')
+        self['Date'] = dt
+        self['X-OpenRosa-Accept-Content-Length'] = DEFAULT_CONTENT_LENGTH
+        self['Content-Type'] = DEFAULT_CONTENT_TYPE
+        # wrap content around xml
+        self.content = '''<?xml version='1.0' encoding='UTF-8' ?>
+<OpenRosaResponse xmlns="http://openrosa.org/http/response">
+        <message nature="">%s</message>
+</OpenRosaResponse>''' % self.content
+
+
+class OpenRosaResponseNotFound(OpenRosaResponse):
+    status_code = 404
+
+
+class OpenRosaResponseBadRequest(OpenRosaResponse):
+    status_code = 400
+
+
+class OpenRosaResponseNotAllowed(OpenRosaResponse):
+    status_code = 405

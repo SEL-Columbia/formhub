@@ -4,6 +4,7 @@ import json
 import os
 import re
 
+from hashlib import md5
 from django.core.urlresolvers import reverse
 
 from odk_logger.models import XForm
@@ -12,12 +13,11 @@ from odk_viewer.views import csv_export, xls_export
 from test_base import MainTestCase
 
 
-uuid_regex = re.compile(r'(</instance>.*uuid[^//]+="\')([^\']+)(\'".*)',
-    re.DOTALL)
+uuid_regex = re.compile(
+    r'(</instance>.*uuid[^//]+="\')([^\']+)(\'".*)', re.DOTALL)
 
 
 class TestSite(MainTestCase):
-
 
     def test_process(self, username=None, password=None):
         if username is not None:
@@ -33,24 +33,25 @@ class TestSite(MainTestCase):
         self._create_user_and_login()
         self._publish_xls_file()
         survey = 'transport_2011-07-25_19-05-49'
-        path = os.path.join(self.this_directory, 'fixtures', 'transportation',
+        path = os.path.join(
+            self.this_directory, 'fixtures', 'transportation',
             'instances', survey, survey + '.xml')
         with open(path) as f:
-            post_data = { 'xml_submission_file': f, 'uuid': self.xform.uuid }
+            post_data = {'xml_submission_file': f, 'uuid': self.xform.uuid}
             url = '/submission'
             self.response = self.anon.post(url, post_data)
 
     def test_url_upload(self):
         if self._internet_on():
             self._create_user_and_login()
-            xls_url = 'http://formhub.org/pld/forms/transportation_2011_07_25/form.xls'
+            xls_url = 'http://formhub.org' \
+                      '/pld/forms/transportation_2011_07_25/form.xls'
             pre_count = XForm.objects.count()
             response = self.client.post('/%s/' % self.user.username,
                                         {'xls_url': xls_url})
             # make sure publishing the survey worked
             self.assertEqual(response.status_code, 200)
             self.assertEqual(XForm.objects.count(), pre_count + 1)
-
 
     def test_bad_url_upload(self):
         if self._internet_on():
@@ -62,7 +63,6 @@ class TestSite(MainTestCase):
             # make sure publishing the survey worked
             self.assertEqual(response.status_code, 200)
             self.assertEqual(XForm.objects.count(), pre_count)
-
 
     # This method tests a large number of xls files.
     # create a directory /main/test/fixtures/online_xls
@@ -88,13 +88,13 @@ class TestSite(MainTestCase):
     def test_url_upload_non_dot_xls_path(self):
         if self._internet_on():
             self._create_user_and_login()
-            xls_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US&hl=en_US&key=0AgpC5gsTSm_4dFZQdzZZVGxlcEQ3aktBbFlyRXE3cFE&output=xls'
+            xls_url = 'http://formhub.org/formhub_u/forms/tutorial/form.xls'
             pre_count = XForm.objects.count()
             response = self.client.post('/%s/' % self.user.username,
                                         {'xls_url': xls_url})
             # make sure publishing the survey worked
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(XForm.objects.count(), pre_count+1)
+            self.assertEqual(XForm.objects.count(), pre_count + 1)
 
     def test_not_logged_in_cannot_upload(self):
         path = os.path.join(self.this_directory, "fixtures", "transportation",
@@ -117,7 +117,7 @@ class TestSite(MainTestCase):
             # print file location
             print '\nPublish Failure for file: %s' % xls_path
             if strict:
-                self.assertEqual(XForm.objects.count(), pre_count+1)
+                self.assertEqual(XForm.objects.count(), pre_count + 1)
             else:
                 return False
         self.xform = list(XForm.objects.all())[-1]
@@ -132,18 +132,34 @@ class TestSite(MainTestCase):
     def _check_formList(self):
         url = '/%s/formList' % self.user.username
         response = self.anon.get(url)
-        self.download_url = 'http://testserver/%s/forms/transportation_2011_07_25/form.xml' % self.user.username
-        expected_content = """<forms>
-  
-  <form url="%s">transportation_2011_07_25
-   
-  
-  
-  </form>
-  
-</forms>
-""" % self.download_url
+        self.download_url = \
+            'http://testserver/%s/forms/transportation_2011_07_25/form.xml'\
+            % self.user.username
+        self.manifest_url = \
+            'http://testserver/%s/xformsManifest/transportation_2011_07_25'\
+            % self.user.username
+        md5_hash = md5(self.xform.xml).hexdigest()
+        expected_content = """<?xml version='1.0' encoding='UTF-8' ?>
+
+<xforms xmlns="http://openrosa.org/xforms/xformsList">
+
+  <xform>
+    <formID>transportation_2011_07_25</formID>
+    <name>transportation_2011_07_25</name>
+    <majorMinorVersion/>
+    <version/>
+    <hash>md5:%(hash)s</hash>
+    <descriptionText></descriptionText>
+    <downloadUrl>%(download_url)s</downloadUrl>
+    <manifestUrl>%(manifest_url)s</manifestUrl>
+  </xform>
+
+</xforms>
+""" % {'download_url': self.download_url, 'manifest_url': self.manifest_url,
+       'hash': md5_hash}
         self.assertEqual(response.content, expected_content)
+        self.assertTrue(response.has_header('X-OpenRosa-Version'))
+        self.assertTrue(response.has_header('Date'))
 
     def _download_xform(self):
         response = self.anon.get(self.download_url)
@@ -187,25 +203,26 @@ class TestSite(MainTestCase):
 
     def _check_data_for_csv_export(self):
         data = [
-            {
-                "available_transportation_types_to_referral_facility/ambulance": True,
-                "available_transportation_types_to_referral_facility/bicycle": True,
-                "ambulance/frequency_to_referral_facility": "daily",
-                "bicycle/frequency_to_referral_facility": "weekly"
-                },
+            {"available_transportation_types_to_referral_facility/ambulance":
+             True,
+             "available_transportation_types_to_referral_facility/bicycle":
+                True,
+             "ambulance/frequency_to_referral_facility": "daily",
+             "bicycle/frequency_to_referral_facility": "weekly"
+             },
             {},
-            {
-                "available_transportation_types_to_referral_facility/ambulance": True,
-                "ambulance/frequency_to_referral_facility": "weekly",
-                },
-            {
-                "available_transportation_types_to_referral_facility/taxi": True,
-                "available_transportation_types_to_referral_facility/other": True,
-                "available_transportation_types_to_referral_facility_other": "camel",
-                "taxi/frequency_to_referral_facility": "daily",
-                "other/frequency_to_referral_facility": "other",
-                }
-            ]
+            {"available_transportation_types_to_referral_facility/ambulance":
+             True,
+             "ambulance/frequency_to_referral_facility": "weekly",
+             },
+            {"available_transportation_types_to_referral_facility/taxi": True,
+             "available_transportation_types_to_referral_facility/other": True,
+             "available_transportation_types_to_referral_facility_other":
+             "camel",
+             "taxi/frequency_to_referral_facility": "daily",
+             "other/frequency_to_referral_facility": "other",
+             }
+        ]
         for d_from_db in self.data_dictionary.get_data_for_excel():
             for k, v in d_from_db.items():
                 if k != u'_xform_id_string' and v:
@@ -226,27 +243,30 @@ class TestSite(MainTestCase):
                 "transport": {
                     "bicycle": {
                         "frequency_to_referral_facility": "weekly"
-                        },
+                    },
                     "ambulance": {
                         "frequency_to_referral_facility": "daily"
-                        },
-                    "available_transportation_types_to_referral_facility": "ambulance bicycle",
-                    }
+                    },
+                    "available_transportation_types_to_referral_facility":
+                    "ambulance bicycle",
                 }
             }
+        }
         self.assertEqual(instance.get_dict(flat=False), expected_dict)
         expected_dict = {
-            "transport/available_transportation_types_to_referral_facility": "ambulance bicycle",
+            "transport/available_transportation_types_to_referral_facility":
+            "ambulance bicycle",
             "transport/ambulance/frequency_to_referral_facility": "daily",
             "transport/bicycle/frequency_to_referral_facility": "weekly",
             "_xform_id_string": "transportation_2011_07_25",
-            }
+        }
         self.assertEqual(instance.get_dict(), expected_dict)
 
     def _get_csv_(self):
         # todo: get the csv.reader to handle unicode as done here:
         # http://docs.python.org/library/csv.html#examples
-        url = reverse(csv_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        url = reverse(csv_export, kwargs={
+            'username': self.user.username, 'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         actual_csv = response.content
@@ -255,7 +275,9 @@ class TestSite(MainTestCase):
 
     def _check_csv_export_first_pass(self):
         actual_csv = self._get_csv_()
-        f = open(os.path.join(self.this_directory, "fixtures", "transportation", "transportation.csv"), "r")
+        f = open(os.path.join(
+            self.this_directory, "fixtures",
+            "transportation", "transportation.csv"), "r")
         expected_csv = csv.reader(f)
         for actual_row, expected_row in zip(actual_csv, expected_csv):
             for actual_cell, expected_cell in zip(actual_row, expected_row):
@@ -263,7 +285,8 @@ class TestSite(MainTestCase):
         f.close()
 
     def _check_csv_export_second_pass(self):
-        url = reverse(csv_export, kwargs={'username': self.user.username, 'id_string': self.xform.id_string})
+        url = reverse(csv_export, kwargs={
+            'username': self.user.username, 'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         actual_csv = response.content
@@ -272,23 +295,26 @@ class TestSite(MainTestCase):
         headers = actual_csv.next()
         data = [
             {},
-            {
-                "available_transportation_types_to_referral_facility/ambulance": "True",
-                "available_transportation_types_to_referral_facility/bicycle": "True",
-                "ambulance/frequency_to_referral_facility": "daily",
-                "bicycle/frequency_to_referral_facility": "weekly"
-                },
-            {
-                "available_transportation_types_to_referral_facility/ambulance": "True",
-                "ambulance/frequency_to_referral_facility": "weekly",
-                },
-            {
-                "available_transportation_types_to_referral_facility/taxi": "True",
-                "available_transportation_types_to_referral_facility/other": "True",
-                "available_transportation_types_to_referral_facility_other": "camel",
-                "taxi/frequency_to_referral_facility": "daily",
-                }
-            ]
+            {"available_transportation_types_to_referral_facility/ambulance":
+             "True",
+             "available_transportation_types_to_referral_facility/bicycle":
+             "True",
+             "ambulance/frequency_to_referral_facility": "daily",
+             "bicycle/frequency_to_referral_facility": "weekly"
+             },
+            {"available_transportation_types_to_referral_facility/ambulance":
+             "True",
+             "ambulance/frequency_to_referral_facility": "weekly",
+             },
+            {"available_transportation_types_to_referral_facility/taxi":
+             "True",
+             "available_transportation_types_to_referral_facility/other":
+             "True",
+             "available_transportation_types_to_referral_facility_other":
+             "camel",
+             "taxi/frequency_to_referral_facility": "daily",
+             }
+        ]
 
         dd = DataDictionary.objects.get(pk=self.xform.pk)
         for row, expected_dict in zip(actual_csv, data):
@@ -296,7 +322,10 @@ class TestSite(MainTestCase):
             for k, v in d.items():
                 if v in ["n/a", "False"] or k in dd._additional_headers():
                     del d[k]
-            self.assertEqual(d, dict([("transport/" + k, v) for k, v in expected_dict.items()]))
+            self.assertEqual(
+                d,
+                dict([("transport/" + k, v) for k, v in expected_dict.items()])
+            )
 
     def _check_delete(self):
         self.assertEquals(self.user.xforms.count(), 1)

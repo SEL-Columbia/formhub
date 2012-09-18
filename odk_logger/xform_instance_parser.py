@@ -8,6 +8,10 @@ class XLSFormError(Exception):
     pass
 
 
+class DuplicateInstance(Exception):
+    pass
+
+
 class IsNotCrowdformError(Exception):
     pass
 
@@ -41,10 +45,11 @@ def _xml_node_to_dict(node, repeats=[]):
             if d is None:
                 continue
             child_name = child.nodeName
+            child_xpath = xpath_from_xml_node(child)
             assert d.keys() == [child_name]
             node_type = dict
             # check if name is in list of repeats and make it a list if so
-            if child_name in repeats:
+            if child_xpath in repeats:
                 node_type = list
 
             if node_type == dict:
@@ -125,6 +130,18 @@ def _flatten_dict_nest_repeats(d, prefix):
         else:
             yield (new_prefix, value)
 
+def _gather_parent_node_list(node):
+    node_names = []
+    # also check for grand-parent node to skip document element
+    if node.parentNode and node.parentNode.parentNode:
+        node_names.extend(_gather_parent_node_list(node.parentNode))
+    node_names.extend([node.nodeName])
+    return node_names
+
+def xpath_from_xml_node(node):
+    node_names = _gather_parent_node_list(node)
+    return "/".join(node_names[1:])
+
 
 def _get_all_attributes(node):
     """
@@ -149,7 +166,7 @@ class XFormInstanceParser(object):
         clean_xml_str = re.sub(ur">\s+<", u"><", clean_xml_str)
         self._xml_obj = minidom.parseString(clean_xml_str)
         self._root_node = self._xml_obj.documentElement
-        repeats = [e.name for e in self.dd.get_survey_elements_of_type(u"repeat")]
+        repeats = [e.get_abbreviated_xpath() for e in self.dd.get_survey_elements_of_type(u"repeat")]
         self._dict = _xml_node_to_dict(self._root_node, repeats)
         self._flat_dict = {}
         if self._dict is None:

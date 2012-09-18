@@ -1,0 +1,97 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-08-31 18:10+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5\n"
+
+#: static/js/mapview.js:3
+msgid "Proportion of surveys with response(s): "
+msgstr ""
+
+#: static/js/mapview.js:4
+msgid ""
+"ERROR: constants not found; please include main/static/js/formManagers.js"
+msgstr ""
+
+#: static/js/mapview.js:5
+msgid "Question"
+msgstr ""
+
+#: static/js/mapview.js:6
+msgid "Response"
+msgstr ""
+
+#: static/js/mapview.js:16
+msgid "Mapbox Streets"
+msgstr ""
+
+#: static/js/mapview.js:17
+msgid "MapBox Streets Light"
+msgstr ""
+
+#: static/js/mapview.js:18
+msgid "MapBox Streets Zenburn"
+msgstr ""
+
+#: static/js/mapview.js:19
+msgid "Natural Earth II"
+msgstr ""
+
+#: static/js/mapview.js:24
+msgid "Not Specified"
+msgstr ""
+
+#: static/js/mapview.js:41
+msgid "Marker Layer"
+msgstr ""
+
+#: static/js/mapview.js:45
+msgid "Bing Satellite Map"
+msgstr ""
+
+#: static/js/mapview.js:45
+msgid "Bing Road Map"
+msgstr ""
+
+#: static/js/mapview.js:46
+msgid "Map data (c) OpenStreetMap contributors, CC-BY-SA"
+msgstr ""
+
+#: static/js/mapview.js:120
+msgid "Google Satellite Map"
+msgstr ""
+
+#: static/js/mapview.js:222
+msgid "Language"
+msgstr ""
+
+#: static/js/mapview.js:260
+msgid "View By"
+msgstr ""
+
+#: static/js/mapview.js:272
+msgid "None"
+msgstr ""
+
+#: static/js/mapview.js:293
+msgid "Container %(cont)s not found"
+msgstr ""
+
+#: static/js/mapview.js:590
+msgid "Number of submissions"
+msgstr ""

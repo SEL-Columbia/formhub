@@ -1,4 +1,6 @@
 import re
+
+from datetime import datetime
 from xml.dom import minidom
 from django.db import models
 from django.contrib.auth.models import User
@@ -8,7 +10,6 @@ from .xform import XForm
 from .survey_type import SurveyType
 from odk_logger.xform_instance_parser import XFormInstanceParser,\
          XFORM_ID_STRING
-from restservice.utils import call_service
 from utils.model_tools import set_uuid
 from utils.stathat_api import stathat_count
 
@@ -40,6 +41,9 @@ class Instance(models.Model):
 
     # this will end up representing "date last parsed"
     date_modified = models.DateTimeField(auto_now=True)
+
+    # this will end up representing "date instance was deleted"
+    deleted_at = models.DateTimeField(null=True, default=None)
 
     # ODK keeps track of three statuses for an instance:
     # incomplete, submitted, complete
@@ -97,15 +101,25 @@ class Instance(models.Model):
         else:
             return self._parser.to_dict()
 
+    @classmethod
+    def delete_by_uuid(cls, username, id_string, uuid, deleted_at=datetime.now()):
+        # import ipdb; ipdb.set_trace()
+        try:
+            instance = cls.objects.get(
+                uuid=uuid,
+                xform__id_string=id_string,
+                xform__user__username=username
+            )
+        except cls.DoesNotExist:
+            return False
+        else:
+            instance.deleted_at = deleted_at
+            #instance.save()
+            super(Instance, instance).save()
+        return True
+
 
 def stathat_form_submission(sender, instance, created, **kwargs):
     if created:
         stathat_count('formhub-submissions')
 
-
-def rest_service_form_submission(sender, instance, created, **kwargs):
-    if created:
-        call_service(instance)
-
-
-post_save.connect(rest_service_form_submission, sender=Instance)

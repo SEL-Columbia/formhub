@@ -122,7 +122,7 @@ $(document).ready(function(){
     setHrefFromSelect('#form-license')
     setHrefFromSelect('#data-license')
 
-    $('#new-form').tooltip({'placement': 'left'})
+    //$('#new-form').tooltip({'placement': 'left'})
 });
 
 function setHrefFromSelect(id) {

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<manifest xmlns="http://openrosa.org/xforms/xformsManifest">
+    {% for media in media_files %}
+    <mediaFile>
+        <filename>{{ media.data_value }}</filename>
+        <hash>md5:{{ media.hash }}</hash>
+        <downloadUrl>{{ host }}{% url main.views.download_media_data media.xform.user.username media.xform.id_string media.id %}</downloadUrl>
+    </mediaFile>
+    {% endfor %}
+</manifest>

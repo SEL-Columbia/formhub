@@ -6,7 +6,9 @@ import urllib
 import urllib2
 from xml.parsers.expat import ExpatError
 import zipfile
+import pytz
 
+from datetime import datetime
 from itertools import chain
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
@@ -28,7 +30,8 @@ from django.utils.translation import ugettext as _
 from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
 
-from utils.logger_tools import create_instance
+from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
+    OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound
 from models import XForm
 from main.models import UserProfile, MetaData
 from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
@@ -37,7 +40,7 @@ from utils.user_auth import helper_auth_helper, has_permission,\
     has_edit_permission, HttpResponseNotAuthorized
 from odk_logger.import_tools import import_instances_from_zip
 from odk_logger.xform_instance_parser import InstanceEmptyError,\
-    InstanceInvalidUserError, IsNotCrowdformError
+    InstanceInvalidUserError, IsNotCrowdformError, DuplicateInstance
 from odk_logger.models.instance import FormInactiveError
 
 
@@ -70,7 +73,13 @@ def bulksubmission(request, username):
         our_tf = open(our_tfpath, 'rb')
         total_count, success_count, errors = \
             import_instances_from_zip(our_tf, user=posting_user)
-        os.remove(our_tfpath)
+        # chose the try approach as suggested by the link below
+        # http://stackoverflow.com/questions/82831
+        try:
+            os.remove(our_tfpath)
+        except IOError as e:
+            # TODO: log this Exception somewhere
+            pass
         json_msg = {
             'message': _(u"Submission successful. Out of %(total)d "
                          u"survey instances, %(success)d were imported "
@@ -103,7 +112,6 @@ def formList(request, username):
     """
     This is where ODK Collect gets its download list.
     """
-
     if  username.lower() == 'crowdforms':
         xforms = XForm.objects.filter(is_crowd_form=True)\
             .exclude(user__username=username)
@@ -125,28 +133,39 @@ def formList(request, username):
 
         xforms = \
             XForm.objects.filter(downloadable=True, user__username=username)
-
         # retrieve crowd_forms for this user
         crowdforms = XForm.objects.filter(
             metadata__data_type=MetaData.CROWDFORM_USERS,
             metadata__data_value=username
         )
         xforms = chain(xforms, crowdforms)
-    urls = [{
-        'url': request.build_absolute_uri(xform.url()),
-        'text': xform.title if not xform.is_crowd_form else
-            'Crowd/%s' % xform.title,
-        'media': {
-            'm': MetaData.media_upload(xform),
-            'user': xform.user,
-            'id': xform.id_string
-        }
-    } for xform in xforms]
+    response = render_to_response("xformsList.xml", {
+        #'urls': urls,
+        'host': request.build_absolute_uri()\
+            .replace(request.get_full_path(), ''),
+        'xforms': xforms
+    }, mimetype="text/xml; charset=utf-8")
+    response['X-OpenRosa-Version'] = '1.0'
+    tz = pytz.timezone(settings.TIME_ZONE)
+    dt = datetime.now(tz).strftime('%a, %d %b %Y %H:%M:%S %Z')
+    response['Date'] = dt
+    return response
 
-    return render_to_response("formList.xml", {
-        'urls': urls,
-        'host': 'http://%s' % request.get_host()
-    }, mimetype="text/xml")
+
+@require_GET
+def xformsManifest(request, username, id_string):
+    xform = get_object_or_404(XForm, id_string=id_string, user__username=username)
+    response = render_to_response("xformsManifest.xml", {
+        #'urls': urls,
+        'host': request.build_absolute_uri()\
+            .replace(request.get_full_path(), ''),
+        'media_files': MetaData.media_upload(xform)
+    }, mimetype="text/xml; charset=utf-8")
+    response['X-OpenRosa-Version'] = '1.0'
+    tz = pytz.timezone(settings.TIME_ZONE)
+    dt = datetime.now(tz).strftime('%a, %d %b %Y %H:%M:%S %Z')
+    response['Date'] = dt
+    return response
 
 
 @require_POST
@@ -161,7 +180,7 @@ def submission(request, username=None):
     try:
         xml_file_list = request.FILES.pop("xml_submission_file", [])
         if len(xml_file_list) != 1:
-            return HttpResponseBadRequest(
+            return OpenRosaResponseBadRequest(
                 _(u"There should be a single XML submission file.")
             )
         # save this XML file and media files as attachments
@@ -180,26 +199,31 @@ def submission(request, username=None):
                 uuid=uuid
             )
         except InstanceInvalidUserError:
-            return HttpResponseBadRequest(_(u"Username or ID required."))
+            return OpenRosaResponseBadRequest(_(u"Username or ID required."))
         except IsNotCrowdformError:
-            return HttpResponseNotAllowed(
+            return OpenRosaResponseNotAllowed(
                 _(u"Sorry but the crowd form you submitted to is closed.")
             )
         except InstanceEmptyError:
-            return HttpResponseBadRequest(
+            return OpenRosaResponseBadRequest(
                 _(u"Received empty submission. No instance was created")
             )
         except FormInactiveError:
-            return HttpResponseNotAllowed(_(u"Form is not active"))
+            return OpenRosaResponseNotAllowed(_(u"Form is not active"))
         except XForm.DoesNotExist:
-            return HttpResponseNotFound(
+            return OpenRosaResponseNotFound(
                 _(u"Form does not exist on this account")
             )
         except ExpatError:
-            return HttpResponseBadRequest(_(u"Improperly formatted XML."))
+            return OpenRosaResponseBadRequest(_(u"Improperly formatted XML."))
+        except DuplicateInstance:
+            response = OpenRosaResponse(_(u"Duplicate submission"))
+            response.status_code = 202
+            response['Location'] = request.build_absolute_uri(request.path)
+            return response
 
         if instance is None:
-            return HttpResponseBadRequest(_(u"Unable to create submission."))
+            return OpenRosaResponseBadRequest(_(u"Unable to create submission."))
 
         # ODK needs two things for a form to be considered successful
         # 1) the status code needs to be 201 (created)
@@ -211,13 +235,13 @@ def submission(request, username=None):
             response = render_to_response("submission.html",
                                           context_instance=context)
         else:
-            response = HttpResponse()
+            response = OpenRosaResponse()
         response.status_code = 201
         response['Location'] = request.build_absolute_uri(request.path)
         return response
     except IOError as e:
         if 'request data read error' in unicode(e):
-            return HttpResponseBadRequest(_(u"File transfer interruption."))
+            return OpenRosaResponseBadRequest(_(u"File transfer interruption."))
         else:
             raise
     finally:

@@ -83,6 +83,13 @@ Question.prototype.getLabel = function(language)
           loadData(context, query);
       });
 
+      // #uuid/uuid route
+      this.get('#uuid/:uuid', function(context) {
+          var uuid = this.params['uuid'];
+          var query = '{"_uuid": "' + uuid + '"}';
+          loadData(context, query);
+      });
+
 
       // Delete modal
       this.get('#del/:id', function(context) { with(this) {
@@ -290,6 +297,8 @@ function reDraw(context, data)
         // check if table has been created, if not reCreate
         if($('#data table').length == 0)
             createTable();
+        // clear data cells before we re-populate
+        $('#data table td[data-key]').html('');
         context.meld($('#data'), cleanData, {
             selector: function(k) {
                 k = k.replace(cleanRe, cleanReplacement);
