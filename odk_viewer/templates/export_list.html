@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load i18n %}
+
+<section id="export-downloads">
+  <div class="page-header">
+    <h1>{{ export_type_name|upper }} {% blocktrans %}Exports{% endblocktrans %} (<a href="{% url main.views.show username xform.id_string %}">{{ xform.id_string }}</a>)</h1>
+  </div>
+  <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
+  <script type="text/javascript" language="javascript" src="/static/js/form_actions.js"></script>
+
+    <form action="{% url odk_viewer.views.create_export username xform.id_string export_type %}" method="post" enctype="application/x-www-form-urlencoded">
+        {% csrf_token %}
+            <span style='float:middle;'>
+	        <div>
+                <input type="submit" class="btn large btn-primary" value="{% trans 'New Export' %}" />
+            </div>
+            </span>
+    </form>
+
+  <table id="forms-table" class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>{% trans "Filename" %}</th>
+        <th>{% trans "Date Created" %}</th>
+        <th>{% trans "Delete" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for export in exports %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>
+            {% if not export.is_pending %}
+                {% if export.is_successful %}
+                    <a href="{% url odk_viewer.views.export_download username xform.id_string export.export_type export.filename %}">{{ export.filename }}</a>
+                {% else %}
+                    Failed
+                {% endif %}
+            {% else %}
+              <span class="status">{% trans "Pending ..." %}</span>
+              <a href="#" class="refresh-export-progress" data-role="refresh-export-progress" data-url="{% url odk_viewer.views.export_progress export.id %}">{% trans "Click to refresh" %}</a>
+            {% endif %}
+        </td>
+        <td>{{ export.created_on }}</td>
+        <td>
+            <form action="{% url odk_viewer.views.delete_export username xform.id_string export_type %}" method="post" enctype="application/x-www-form-urlencoded">
+              {% csrf_token %}
+                <div id="delete-{{ export.id }}" class="modal hide fade">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h3>{% trans "Delete Export" %}</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>{% trans "Are you sure you want to delete this export?" %}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="btn" data-dismiss="modal">{% trans "Cancel" %}</a>
+                        <input type="submit" class="btn btn-primary" value="{% trans 'Delete' %}" />
+                    </div>
+                </div>
+              <span style="float:middle;">
+	            <div>
+                  <input type="hidden" name="export_id" value="{{ export.id }}">
+                  <a data-toggle="modal" href="#delete-{{ export.id }}" data-backdrop="true" data-keyboard="true" class="btn">
+                      <i class="icon-trash"></i>
+                  </a>
+                </div>
+              </span>
+            </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</section>
+{% endblock %}

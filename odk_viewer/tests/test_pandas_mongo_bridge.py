@@ -79,7 +79,7 @@ class TestPandasMongoBridge(MainTestCase):
         xls_df_builder = XLSDataFrameBuilder(self.user.username,
             self.xform.id_string)
         expected_section_keys = [self.survey_name, u"kids_details"]
-        section_keys = [s[u"name"] for s in xls_df_builder.sections]
+        section_keys = xls_df_builder.sections.keys()
         self.assertEqual(sorted(expected_section_keys), sorted(section_keys))
 
     def test_row_counts(self):
@@ -488,3 +488,23 @@ class TestPandasMongoBridge(MainTestCase):
         generated_sheet_name = get_valid_sheet_name(duplicate_sheet_name,
             sheet_names)
         self.assertEqual(generated_sheet_name, expected_sheet_name)
+
+    def test_query_mongo(self):
+        """
+        Test querying for record count and records using AbstractDataFrameBuilder._query_mongo
+        """
+        self._publish_single_level_repeat_form()
+        # submit 3 instances
+        for i in range(3):
+            self._submit_fixture_instance("new_repeats", "01")
+        df_builder = XLSDataFrameBuilder(self.user.username,
+            self.xform.id_string)
+        record_count = df_builder._query_mongo(count=True)
+        self.assertEqual(record_count, 3)
+        cursor = df_builder._query_mongo()
+        records = [record for record in cursor]
+        self.assertTrue(len(records), 3)
+        # test querying using limits
+        cursor = df_builder._query_mongo(start=2, limit=2)
+        records = [record for record in cursor]
+        self.assertTrue(len(records), 1)
