@@ -123,6 +123,47 @@ $(document).ready(function(){
     setHrefFromSelect('#data-license')
 
     //$('#new-form').tooltip({'placement': 'left'})
+
+    $('a[data-role=refresh-export-progress]').click(function(evt){
+        var progress_url;
+        var thisElm = $(this);
+        var parentElm = thisElm.parent();
+        var statusSpan = $(parentElm.children('span.status')[0]);
+
+        // change status to checking
+        statusSpan.html("Refreshing ...");
+        thisElm.hide();
+
+        evt.preventDefault();
+        progress_url = $(this).data('url');
+        $.getJSON(progress_url)
+            .success(function(data){
+                if(data.complete)
+                {
+                    if(data.url)
+                    {
+                        parentElm.empty();
+                        parentElm.append($('<a></a>').attr('href', data.url).html(data.filename));
+                    }
+                    else
+                    {
+                        // empty url means complete but export failed
+                        parentElm.empty();
+                        // translate
+                        parentElm.append("Failed ...");
+                    }
+                }
+                else
+                {
+                    statusSpan.html("Pending ...");
+                    thisElm.show();
+                }
+            })
+            .error(function(){
+                statusSpan.html("Unexpected Error, try again ...");
+                thisElm.show();
+            });
+    });
 });
 
 function setHrefFromSelect(id) {
