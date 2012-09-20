@@ -99,6 +99,7 @@ class TestFormEnterData(MainTestCase):
 
     def test_enter_data_redir(self):
         response = self.client.get(self.url)
+        print response
         #make sure response redirect to an enketo site
         enketo_base_url = urlparse(settings.ENKETO_URL).netloc
         redirected_base_url = urlparse(response['Location']).netloc
