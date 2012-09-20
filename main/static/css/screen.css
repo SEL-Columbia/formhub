@@ -350,6 +350,38 @@ section {
   -moz-border-radius: 6px;
   border-radius: 6px;
 }
+.popover.top .arrow {
+  bottom: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #bcbec0;
+}
+.popover.right .arrow {
+  top: 50%;
+  left: 0;
+  margin-top: -5px;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 5px solid #bcbec0;
+}
+.popover.bottom .arrow {
+  top: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #bcbec0;
+}
+.popover.left .arrow {
+  top: 50%;
+  right: 0;
+  margin-top: -5px;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 5px solid #bcbec0;
+}
 .popover-btns {
   top: -13px;
   left: 40px;
@@ -359,9 +391,35 @@ section {
   padding: 4px;
 }
 .popover-btns .popover-inner {
+  padding: 1px;
   width: 186px;
+  background: #bcbec0;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
 }
 /* prevent popover-btns from showing up over the modal mask */
 .modal-open .popover.popover-btns {
   z-index: 1010;
+}
+/* new icons */
+.btn .icon-view {
+  background-image: url("../images/view.png");
+  width: 40px;
+  height: 33px;
+  background-position: 0px 0px;
+}
+.btn:hover .icon-view {
+  background-image: url("../images/view-active.png");
+}
+.btn-flat {
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+.btn-flat:hover {
+  background: none;
 }

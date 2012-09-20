@@ -374,6 +374,13 @@ section {
     .border-radius(6px);
 }
 
+.popover {
+    &.top .arrow    { #popoverArrow > .top(5px, @grayLighter); }
+    &.right .arrow  { #popoverArrow > .right(5px, @grayLighter); }
+    &.bottom .arrow { #popoverArrow > .bottom(5px, @grayLighter); }
+    &.left .arrow   { #popoverArrow > .left(5px, @grayLighter);  }
+}
+
 .popover-btns {
     top: -13px;
     left: 40px;
@@ -382,11 +389,38 @@ section {
         padding: 4px;
     }
     .popover-inner{
+        padding: 1px;
         width: 186px;
+        background: @greyLightest;
+        .border-radius(3px);
+        .box-shadow(0 3px 10px rgba(0,0,0,0.3));
     }
 }
 
 /* prevent popover-btns from showing up over the modal mask */
 .modal-open {
     .popover.popover-btns       {  z-index: @zindexPopover }
+}
+
+/* new icons */
+.btn {
+    .icon-view {
+        background-image: url("../images/view.png");
+        width: 40px;
+        height: 33px;
+        background-position: 0px 0px;
+    }
+    &:hover .icon-view {
+        background-image: url("../images/view-active.png");
+    }
+}
+
+.btn-flat {
+    background: none;
+    border: none;
+    box-shadow: none
+}
+
+.btn-flat:hover {
+    background: none;
 }
