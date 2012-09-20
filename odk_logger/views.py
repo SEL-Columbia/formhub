@@ -335,7 +335,7 @@ def enter_data(request, username, id_string):
         formhub_url = "http://formhub.org/"
     values = {
         'format': 'json',
-        'form_id': xform.id_string,
+        'form_id': xform.id_string + "wtf",
         'server_url' : formhub_url + username
     }
     data, headers = multipart_encode(values)
