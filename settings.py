@@ -4,6 +4,9 @@ import sys
 
 from pymongo import Connection
 
+import djcelery
+djcelery.setup_loader()
+
 CURRENT_FILE = os.path.abspath(__file__)
 PROJECT_ROOT = os.path.dirname(CURRENT_FILE)
 PRINT_EXCEPTION = False
@@ -141,6 +144,7 @@ INSTALLED_APPS = (
     'odk_viewer',
     'staff',
     'guardian',
+    'djcelery',
 )
 COMPRESS = True
 
@@ -205,28 +209,38 @@ GOOGLE_CLIENT_SECRET = '9reM29qpGFPyI8TBuB54Z4fk'
 # Changing the keys here will change order of evaluation and break
 # functionality.
 # Place additional keys inorder both alphabeticall and in descending size.
-THUMB_CONF = {'large' : {'size': 1280, 'suffix': '-lrg'},
-              'medium' : {'size': 640, 'suffix': '-med'},
-              'smaller' : {'size': 240, 'suffix': '-sml'},
+THUMB_CONF = {'large' : {'size': 1280, 'suffix': '-large'},
+              'medium' : {'size': 640, 'suffix': '-medium'},
+              'small' : {'size': 240, 'suffix': '-small'},
              }
+# order of thumbnails from largest to smallest
+THUMB_ORDER = ['large', 'medium', 'small']
 IMG_FILE_TYPE = 'jpg'
+
+# celery
+BROKER_BACKEND = "rabbitmq"
+BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+CELERY_RESULT_BACKEND = "amqp"  # telling Celery to report the results back to RabbitMQ
 
 TESTING_MODE = False
 if len(sys.argv)>=2 and (sys.argv[1]=="test" or sys.argv[1]=="test_all"):
     # This trick works only when we run tests from the command line.
     TESTING_MODE = True
-    MONGO_DB = _MONGO_CONNECTION[MONGO_TEST_DB_NAME]
 else:
     TESTING_MODE = False
-    MONGO_DB = _MONGO_CONNECTION[MONGO_DB_NAME]
 
 # Clear out the test database
 if TESTING_MODE:
-    MONGO_DB.instances.drop()
     MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'test_media/')
     subprocess.call(["rm", "-r", MEDIA_ROOT])
+    MONGO_DB = _MONGO_CONNECTION[MONGO_TEST_DB_NAME]
+    MONGO_DB.instances.drop()
+    # need to have CELERY_ALWAYS_EAGER True and BROKER_BACKEND as memory to run taks immediately while testing
+    CELERY_ALWAYS_EAGER = True
+    #BROKER_BACKEND = 'memory'
 else:
     MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'media/')
+    MONGO_DB = _MONGO_CONNECTION[MONGO_DB_NAME]
 
 try:
     from local_settings import *
