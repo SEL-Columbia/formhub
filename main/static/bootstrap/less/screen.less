@@ -369,3 +369,24 @@ section {
 #map_canvas {
   margin-top: 56px;
 }
+
+.search-query {
+    .border-radius(6px);
+}
+
+.popover-btns {
+    top: -13px;
+    left: 40px;
+    z-index: @zindexPopover;
+    .popover-content {
+        padding: 4px;
+    }
+    .popover-inner{
+        width: 186px;
+    }
+}
+
+/* prevent popover-btns from showing up over the modal mask */
+.modal-open {
+    .popover.popover-btns       {  z-index: @zindexPopover }
+}

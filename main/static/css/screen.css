@@ -345,3 +345,23 @@ section {
 #map_canvas {
   margin-top: 56px;
 }
+.search-query {
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+}
+.popover-btns {
+  top: -13px;
+  left: 40px;
+  z-index: 1010;
+}
+.popover-btns .popover-content {
+  padding: 4px;
+}
+.popover-btns .popover-inner {
+  width: 186px;
+}
+/* prevent popover-btns from showing up over the modal mask */
+.modal-open .popover.popover-btns {
+  z-index: 1010;
+}
