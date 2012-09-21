@@ -166,7 +166,7 @@ ul.inline ul.dropdown-menu {
 .dropdown-menu li > a:hover > i,
 .dropdown-menu .active > a > i,
 .dropdown-menu .active > a:hover > i {
-  background-color: #32AF6E;
+  background-color: #32af6e;
 }
 .topbar {
   position: fixed;
@@ -419,6 +419,24 @@ section {
 .btn:hover .icon-view {
   background-image: url("../images/view-active.png");
 }
+.icon-large {
+  background-position: 50% 50%;
+}
+.icon-large.icon-map-marker {
+  background-image: url("../images/view_map.png");
+}
+.icon-large.icon-camera {
+  background-image: url("../images/view_photo.png");
+}
+.icon-large.icon-edit {
+  background-image: url("../images/view_edit.png");
+}
+.icon-large.icon-data {
+  background-image: url("../images/view_data.png");
+}
+.icon-large.icon-browse {
+  background-image: url("../images/view_browse.png");
+}
 .btn-flat {
   background: none;
   border: none;
@@ -432,24 +450,6 @@ section {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
-}
-.btn-flat .icon-large {
-  background-position: 50% 50%;
-}
-.btn-flat .icon-large.icon-map-marker {
-  background-image: url("../images/view_map.png");
-}
-.btn-flat .icon-large.icon-camera {
-  background-image: url("../images/view_photo.png");
-}
-.btn-flat .icon-large.icon-edit {
-  background-image: url("../images/view_edit.png");
-}
-.btn-flat .icon-large.icon-data {
-  background-image: url("../images/view_data.png");
-}
-.btn-flat .icon-large.icon-browse {
-  background-image: url("../images/view_browse.png");
 }
 .btn-flat:hover {
   background: none;
@@ -468,4 +468,31 @@ section {
 }
 .btn-flat:hover .icon-browse {
   background-image: url("../images/view_browse-active.png");
+}
+.data-download {
+  cursor: pointer;
+}
+.data-download .icon-download {
+  background-image: url("../images/data_download.png");
+  width: 21px;
+  height: 21px;
+}
+.data-download .download-nav {
+  text-transform: uppercase;
+  opacity: 0;
+  filter: alpha(opacity=0);
+}
+.data-download .download-nav li {
+  display: inline;
+  margin: 0px 2px;
+}
+.data-download:hover span {
+  color: #32af6e;
+}
+.data-download:hover .icon-download {
+  background-image: url("../images/data_download-active.png");
+}
+.data-download:hover .download-nav {
+  opacity: 1;
+  filter: alpha(opacity=100);
 }

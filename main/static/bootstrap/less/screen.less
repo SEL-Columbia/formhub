@@ -163,7 +163,7 @@ ul.inline ul.dropdown-menu {
 }
 
 .dropdown-menu li > a:hover > i, .dropdown-menu .active > a > i, .dropdown-menu .active > a:hover > i {
-    background-color: #32AF6E;
+    background-color: @linkColor;
 }
 
 .topbar {
@@ -420,6 +420,25 @@ section {
     }
 }
 
+.icon-large {
+    background-position: 50% 50%;
+    &.icon-map-marker {
+        background-image: url("../images/view_map.png");
+    }
+    &.icon-camera {
+        background-image: url("../images/view_photo.png");
+    }
+    &.icon-edit {
+        background-image: url("../images/view_edit.png");
+    }
+    &.icon-data {
+        background-image: url("../images/view_data.png");
+    }
+    &.icon-browse {
+        background-image: url("../images/view_browse.png");
+    }
+}
+
 .btn-flat {
     background: none;
     border: none;
@@ -427,24 +446,6 @@ section {
     .box-shadow(none);
     &.active, &:active {
         .box-shadow(none);
-    }
-    .icon-large {
-        background-position: 50% 50%;
-        &.icon-map-marker {
-            background-image: url("../images/view_map.png");
-        }
-        &.icon-camera {
-            background-image: url("../images/view_photo.png");
-        }
-        &.icon-edit {
-            background-image: url("../images/view_edit.png");
-        }
-        &.icon-data {
-            background-image: url("../images/view_data.png");
-        }
-        &.icon-browse {
-            background-image: url("../images/view_browse.png");
-        }
     }
     &:hover {
         background: none;
@@ -462,6 +463,34 @@ section {
         }
         .icon-browse {
             background-image: url("../images/view_browse-active.png");
+        }
+    }
+}
+
+.data-download {
+    cursor: pointer;
+    .icon-download {
+        background-image: url("../images/data_download.png");
+        width: 21px;
+        height: 21px;
+    }
+    .download-nav {
+        text-transform: uppercase;
+        .opacity(0);
+        li {
+            display: inline;
+            margin: 0px 2px;
+        }
+    }
+    &:hover {
+        span {
+            color: @linkColor;
+        }
+        .icon-download {
+            background-image: url("../images/data_download-active.png");
+        }
+        .download-nav {
+            .opacity(100);
         }
     }
 }
