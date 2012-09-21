@@ -353,34 +353,37 @@ section {
 .popover.top .arrow {
   bottom: 0;
   left: 50%;
-  margin-left: -5px;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 5px solid #bcbec0;
+  margin-left: -8px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #bcbec0;
 }
 .popover.right .arrow {
   top: 50%;
   left: 0;
-  margin-top: -5px;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-right: 5px solid #bcbec0;
+  margin-top: -8px;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 8px solid #bcbec0;
 }
 .popover.bottom .arrow {
   top: 0;
   left: 50%;
-  margin-left: -5px;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-bottom: 5px solid #bcbec0;
+  margin-left: -8px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #bcbec0;
 }
 .popover.left .arrow {
   top: 50%;
   right: 0;
-  margin-top: -5px;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 5px solid #bcbec0;
+  margin-top: -8px;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 8px solid #bcbec0;
+}
+.popover.top .arrow {
+  bottom: -4px;
 }
 .popover-btns {
   top: -13px;
@@ -392,7 +395,7 @@ section {
 }
 .popover-btns .popover-inner {
   padding: 1px;
-  width: 186px;
+  width: 224px;
   background: #bcbec0;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -405,11 +408,12 @@ section {
 .modal-open .popover.popover-btns {
   z-index: 1010;
 }
-/* new icons */
-.btn .icon-view {
-  background-image: url("../images/view.png");
+.icon-large {
   width: 40px;
   height: 33px;
+}
+.btn .icon-view {
+  background-image: url("../images/view.png");
   background-position: 0px 0px;
 }
 .btn:hover .icon-view {
@@ -418,8 +422,50 @@ section {
 .btn-flat {
   background: none;
   border: none;
+  padding: 4px 2px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
   box-shadow: none;
+}
+.btn-flat.active,
+.btn-flat:active {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+.btn-flat .icon-large {
+  background-position: 50% 50%;
+}
+.btn-flat .icon-large.icon-map-marker {
+  background-image: url("../images/view_map.png");
+}
+.btn-flat .icon-large.icon-camera {
+  background-image: url("../images/view_photo.png");
+}
+.btn-flat .icon-large.icon-edit {
+  background-image: url("../images/view_edit.png");
+}
+.btn-flat .icon-large.icon-data {
+  background-image: url("../images/view_data.png");
+}
+.btn-flat .icon-large.icon-browse {
+  background-image: url("../images/view_browse.png");
 }
 .btn-flat:hover {
   background: none;
+}
+.btn-flat:hover .icon-map-marker {
+  background-image: url("../images/view_map-active.png");
+}
+.btn-flat:hover .icon-camera {
+  background-image: url("../images/view_photo-active.png");
+}
+.btn-flat:hover .icon-edit {
+  background-image: url("../images/view_edit-active.png");
+}
+.btn-flat:hover .icon-data {
+  background-image: url("../images/view_data-active.png");
+}
+.btn-flat:hover .icon-browse {
+  background-image: url("../images/view_browse-active.png");
 }

@@ -375,10 +375,13 @@ section {
 }
 
 .popover {
-    &.top .arrow    { #popoverArrow > .top(5px, @grayLighter); }
-    &.right .arrow  { #popoverArrow > .right(5px, @grayLighter); }
-    &.bottom .arrow { #popoverArrow > .bottom(5px, @grayLighter); }
-    &.left .arrow   { #popoverArrow > .left(5px, @grayLighter);  }
+    &.top .arrow    { #popoverArrow > .top(8px, @grayLighter); }
+    &.right .arrow  { #popoverArrow > .right(8px, @grayLighter); }
+    &.bottom .arrow { #popoverArrow > .bottom(8px, @grayLighter); }
+    &.left .arrow   { #popoverArrow > .left(8px, @grayLighter);  }
+    &.top .arrow {
+        bottom: -4px;
+    }
 }
 
 .popover-btns {
@@ -390,7 +393,7 @@ section {
     }
     .popover-inner{
         padding: 1px;
-        width: 186px;
+        width: 224px;
         background: @greyLightest;
         .border-radius(3px);
         .box-shadow(0 3px 10px rgba(0,0,0,0.3));
@@ -402,12 +405,14 @@ section {
     .popover.popover-btns       {  z-index: @zindexPopover }
 }
 
-/* new icons */
+.icon-large {
+    width: 40px;
+    height: 33px;
+}
+
 .btn {
     .icon-view {
         background-image: url("../images/view.png");
-        width: 40px;
-        height: 33px;
         background-position: 0px 0px;
     }
     &:hover .icon-view {
@@ -418,9 +423,45 @@ section {
 .btn-flat {
     background: none;
     border: none;
-    box-shadow: none
-}
-
-.btn-flat:hover {
-    background: none;
+    padding: 4px 2px;
+    .box-shadow(none);
+    &.active, &:active {
+        .box-shadow(none);
+    }
+    .icon-large {
+        background-position: 50% 50%;
+        &.icon-map-marker {
+            background-image: url("../images/view_map.png");
+        }
+        &.icon-camera {
+            background-image: url("../images/view_photo.png");
+        }
+        &.icon-edit {
+            background-image: url("../images/view_edit.png");
+        }
+        &.icon-data {
+            background-image: url("../images/view_data.png");
+        }
+        &.icon-browse {
+            background-image: url("../images/view_browse.png");
+        }
+    }
+    &:hover {
+        background: none;
+        .icon-map-marker {
+            background-image: url("../images/view_map-active.png");
+        }
+        .icon-camera {
+            background-image: url("../images/view_photo-active.png");
+        }
+        .icon-edit {
+            background-image: url("../images/view_edit-active.png");
+        }
+        .icon-data{
+            background-image: url("../images/view_data-active.png");
+        }
+        .icon-browse {
+            background-image: url("../images/view_browse-active.png");
+        }
+    }
 }
