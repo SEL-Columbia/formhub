@@ -3,6 +3,7 @@ from PIL import Image
 
 from django.conf import settings
 from django.core.files.storage import get_storage_class
+import os
 import requests
 
 from utils.viewer_tools import get_path
@@ -55,8 +56,9 @@ def resize(filename):
         image = Image.open(im)
         conf = settings.THUMB_CONF
         fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
+        if not os.path.exists(os.path.abspath(settings.MEDIA_ROOT)):
+            os.makedirs(os.path.abspath(settings.MEDIA_ROOT))
         loc_path = fs.path('dummy.%s' % settings.IMG_FILE_TYPE)
-
         [_save_thumbnails(
             image, loc_path, conf[key]['size'], conf[key]['suffix'],
             filename=filename) for key in settings.THUMB_ORDER]
