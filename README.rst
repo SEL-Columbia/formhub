@@ -1,4 +1,5 @@
 HONEYBADGER DONT' CARE
+HONEBADGER DON'T GIVE A ****
 =======
 
 .. image:: https://secure.travis-ci.org/modilabs/formhub.png?branch=master
