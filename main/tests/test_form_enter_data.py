@@ -97,6 +97,11 @@ class TestFormEnterData(MainTestCase):
         exist = self._running_enketo()
         self.assertTrue(exist)
 
+    def test_mock_test(self)
+        response = self.client.get(self.url)
+        print response
+        self.assertEqual(1,1)
+
     def test_enter_data_redir(self):
         response = self.client.get(self.url)
         print response
