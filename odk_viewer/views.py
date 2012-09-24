@@ -512,3 +512,28 @@ def instance(request, username, id_string):
         'xform': xform,
         'can_edit': can_edit
     })
+
+def chart(request, username, id_string):
+    # restriction
+    xform = get_object_or_404(XForm,
+                              user__username=username, id_string=id_string)
+    owner = User.objects.get(username=username)
+    if not has_permission(xform, owner, request, xform.shared):
+        return HttpResponseForbidden('Not shared.')
+
+    context = RequestContext(request)
+    if request.user.is_authenticated():
+        context.request_user = request.user.username
+    context.meteorURL = settings.METEORURL
+    # for testing purpose only
+    try:
+        context.hostURL = "http://"+request.META['HTTP_HOST']
+    except:
+        context.hostURL = "/"
+    context.user_name = username
+    context.xform_string = id_string
+    context.form_view = True
+    context.content_user = owner
+    context.xform = xform
+    context.profile, created = UserProfile.objects.get_or_create(user=owner)
+    return render_to_response('chart.html', context_instance=context)

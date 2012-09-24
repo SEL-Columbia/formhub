@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block extra %}
+{% load i18n %}
+
+<iframe src="{{meteorURL}}/#?user={{request_user}}&&?csvFile={{hostURL}}{% url odk_viewer.views.csv_export user_name xform_string %}" id="meteorclient"></iframe>
+    <script type="text/javascript">
+        $(window).bind('resize', function(){
+            $('#meteorclient').height($(window).innerHeight()-40)
+                              .width($(window).innerWidth());
+                              //.css("margin-left",-($(window).innerWidth()/7.51));
+        });
+        $(window).trigger('resize');
+    </script>
+
+{% endblock %}

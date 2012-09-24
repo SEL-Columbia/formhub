@@ -210,6 +210,11 @@
             <a class="btn btn-info" btn-info  rel="tooltip" title="{% trans "Browse Data (One by One)" %}" href="{% url odk_viewer.views.instance content_user.username xform.id_string %}">
                 <i class="icon-list-alt icon-white"></i> {% trans "Browse Data" %}
             </a>
+        {% if xform.shared_data and xform.submission_count > 0 %}
+            <a class="btn btn-info" btn-info  rel="tooltip" title="{% trans "View Charts" %}" href="{% url odk_viewer.views.chart content_user.username xform.id_string %}">
+                <i class="icon-signal icon-white"></i> {% trans "View Charts" %}
+            </a>
+        {% endif %}
         </div>
         {% else %}
             {% if can_edit %}
@@ -226,6 +231,7 @@
             </a>
         </div>
 		{% endif %}
+
         <br>
       <div class="span4">
         <script type="text/javascript">

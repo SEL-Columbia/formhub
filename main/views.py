@@ -33,6 +33,8 @@ from utils.user_auth import check_and_set_user, set_profile_data,\
     has_permission, helper_auth_helper, get_xform_and_perms,\
     check_and_set_user_and_form
 
+from django.conf import settings
+
 
 def home(request):
     context = RequestContext(request)
