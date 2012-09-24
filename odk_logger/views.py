@@ -30,7 +30,8 @@ from django.utils.translation import ugettext as _
 from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
 
-from utils.logger_tools import create_instance
+from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
+    OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound
 from models import XForm
 from main.models import UserProfile, MetaData
 from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
@@ -72,7 +73,13 @@ def bulksubmission(request, username):
         our_tf = open(our_tfpath, 'rb')
         total_count, success_count, errors = \
             import_instances_from_zip(our_tf, user=posting_user)
-        os.remove(our_tfpath)
+        # chose the try approach as suggested by the link below
+        # http://stackoverflow.com/questions/82831
+        try:
+            os.remove(our_tfpath)
+        except IOError as e:
+            # TODO: log this Exception somewhere
+            pass
         json_msg = {
             'message': _(u"Submission successful. Out of %(total)d "
                          u"survey instances, %(success)d were imported "
@@ -173,7 +180,7 @@ def submission(request, username=None):
     try:
         xml_file_list = request.FILES.pop("xml_submission_file", [])
         if len(xml_file_list) != 1:
-            return HttpResponseBadRequest(
+            return OpenRosaResponseBadRequest(
                 _(u"There should be a single XML submission file.")
             )
         # save this XML file and media files as attachments
@@ -192,31 +199,31 @@ def submission(request, username=None):
                 uuid=uuid
             )
         except InstanceInvalidUserError:
-            return HttpResponseBadRequest(_(u"Username or ID required."))
+            return OpenRosaResponseBadRequest(_(u"Username or ID required."))
         except IsNotCrowdformError:
-            return HttpResponseNotAllowed(
+            return OpenRosaResponseNotAllowed(
                 _(u"Sorry but the crowd form you submitted to is closed.")
             )
         except InstanceEmptyError:
-            return HttpResponseBadRequest(
+            return OpenRosaResponseBadRequest(
                 _(u"Received empty submission. No instance was created")
             )
         except FormInactiveError:
-            return HttpResponseNotAllowed(_(u"Form is not active"))
+            return OpenRosaResponseNotAllowed(_(u"Form is not active"))
         except XForm.DoesNotExist:
-            return HttpResponseNotFound(
+            return OpenRosaResponseNotFound(
                 _(u"Form does not exist on this account")
             )
         except ExpatError:
-            return HttpResponseBadRequest(_(u"Improperly formatted XML."))
+            return OpenRosaResponseBadRequest(_(u"Improperly formatted XML."))
         except DuplicateInstance:
-            response = HttpResponse(_(u"Duplicate submission"))
+            response = OpenRosaResponse(_(u"Duplicate submission"))
             response.status_code = 202
             response['Location'] = request.build_absolute_uri(request.path)
             return response
 
         if instance is None:
-            return HttpResponseBadRequest(_(u"Unable to create submission."))
+            return OpenRosaResponseBadRequest(_(u"Unable to create submission."))
 
         # ODK needs two things for a form to be considered successful
         # 1) the status code needs to be 201 (created)
@@ -228,13 +235,13 @@ def submission(request, username=None):
             response = render_to_response("submission.html",
                                           context_instance=context)
         else:
-            response = HttpResponse()
+            response = OpenRosaResponse()
         response.status_code = 201
         response['Location'] = request.build_absolute_uri(request.path)
         return response
     except IOError as e:
         if 'request data read error' in unicode(e):
-            return HttpResponseBadRequest(_(u"File transfer interruption."))
+            return OpenRosaResponseBadRequest(_(u"File transfer interruption."))
         else:
             raise
     finally:
@@ -314,40 +321,55 @@ def enter_data(request, username, id_string):
                               id_string=id_string)
     if not has_edit_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden(_(u'Not shared.'))
-    if not hasattr(settings, 'TOUCHFORMS_URL'):
+    if not hasattr(settings, 'ENKETO_URL'):
         return HttpResponseRedirect(reverse('main.views.show',
                                     kwargs={'username': username,
                                             'id_string': id_string}))
-    url = settings.TOUCHFORMS_URL
+    url = '%slaunch/launchSurvey' % settings.ENKETO_URL
     register_openers()
     response = None
-    with tempfile.TemporaryFile() as tmp:
-        tmp.write(xform.xml.encode('utf-8'))
-        tmp.seek(0)
-        values = {
-            'file': tmp,
-            'format': 'json',
-            'uuid': xform.uuid
-        }
-        data, headers = multipart_encode(values)
-        headers['User-Agent'] = 'formhub'
-        req = urllib2.Request(url, data, headers)
-        try:
-            response = urllib2.urlopen(req)
-            response = json.loads(response.read())
-            context = RequestContext(request)
-            owner = User.objects.get(username=username)
-            context.profile, created = \
-                UserProfile.objects.get_or_create(user=owner)
-            context.xform = xform
-            context.content_user = owner
-            context.form_view = True
-            context.touchforms = response['url']
-            return render_to_response("form_entry.html",
-                                      context_instance=context)
-            #return HttpResponseRedirect(response['url'])
-        except urllib2.URLError:
-            pass  # this will happen if we could not connect to touchforms
+    # see commit 220f2dad0e for tmp file creation
+    try:
+        formhub_url = "http://%s/" % request.META['HTTP_HOST']
+    except:
+        formhub_url = "http://formhub.org/"
+    values = {
+        'format': 'json',
+        'form_id': xform.id_string,
+        'server_url' : formhub_url + username
+    }
+    data, headers = multipart_encode(values)
+    headers['User-Agent'] = 'formhub'
+    req = urllib2.Request(url, data, headers)
+    try:
+        response = urllib2.urlopen(req)
+        response = json.loads(response.read())
+        context = RequestContext(request)
+        owner = User.objects.get(username=username)
+        context.profile, created = \
+            UserProfile.objects.get_or_create(user=owner)
+        context.xform = xform
+        context.content_user = owner
+        context.form_view = True
+        if 'url' in response:
+            context.enketo = response['url']
+            #return render_to_response("form_entry.html",
+            #                          context_instance=context)
+            return HttpResponseRedirect(response['url'])
+        else:
+            json_msg = response['reason']
+            """
+            return HttpResponse("<script>$('body')</script>")
+            """
+            context.message = {'type':'alert-error',
+                                'text':"Enketo error, reason: " +
+                                    (response['reason'] and "Server not found.")}
+            messages.add_message(request, messages.WARNING,json_msg)
+            return render_to_response("profile.html",context_instance=context)
+
+    except urllib2.URLError:
+        pass  # this will happen if we could not connect to enketo
+        #TODO: should we throw in another error message here
     return HttpResponseRedirect(reverse('main.views.show',
                                 kwargs={'username': username,
                                         'id_string': id_string}))

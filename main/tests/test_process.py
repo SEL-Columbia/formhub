@@ -88,10 +88,7 @@ class TestSite(MainTestCase):
     def test_url_upload_non_dot_xls_path(self):
         if self._internet_on():
             self._create_user_and_login()
-            xls_url = 'https://docs.google.com/spreadsheet/pub?hl=en_US' \
-                      '&hl=en_US' \
-                      '&key=0AgpC5gsTSm_4dFZQdzZZVGxlcEQ3aktBbFlyRXE3cFE' \
-                      '&output=xls'
+            xls_url = 'http://formhub.org/formhub_u/forms/tutorial/form.xls'
             pre_count = XForm.objects.count()
             response = self.client.post('/%s/' % self.user.username,
                                         {'xls_url': xls_url})

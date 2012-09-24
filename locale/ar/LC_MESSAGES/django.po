@@ -1,0 +1,2694 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: formhub\n"
+"Report-Msgid-Bugs-To: https://github.com/modilabs/formhub/issues\n"
+"POT-Creation-Date: 2012-08-31 09:54+0000\n"
+"PO-Revision-Date: 2012-08-31 10:19+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Arabic (http://www.transifex.com/projects/p/formhub/language/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: main/forms.py:22 main/forms.py:30
+msgid "No License"
+msgstr ""
+
+#: main/forms.py:24
+msgid "Attribution CC BY"
+msgstr ""
+
+#: main/forms.py:26
+msgid "Attribution-ShareAlike CC BY-SA"
+msgstr ""
+
+#: main/forms.py:32
+msgid "PDDL"
+msgstr ""
+
+#: main/forms.py:34
+msgid "ODC-BY"
+msgstr ""
+
+#: main/forms.py:36
+msgid "ODBL"
+msgstr ""
+
+#: main/forms.py:40
+msgid "Can view"
+msgstr ""
+
+#: main/forms.py:41
+msgid "Can edit"
+msgstr ""
+
+#: main/forms.py:42
+msgid "Remove permissions"
+msgstr ""
+
+#: main/forms.py:158
+#, python-format
+msgid "%s is a reserved name, please choose another"
+msgstr ""
+
+#: main/forms.py:161
+msgid "username may only contain alpha-numeric characters and underscores"
+msgstr ""
+
+#: main/forms.py:167
+#, python-format
+msgid "%s already exists"
+msgstr ""
+
+#: main/forms.py:179
+msgid "Source document"
+msgstr ""
+
+#: main/forms.py:184
+msgid "Supporting document"
+msgstr ""
+
+#: main/forms.py:189
+msgid "Media upload"
+msgstr ""
+
+#: main/forms.py:205
+msgid "JSONP url"
+msgstr ""
+
+#: main/forms.py:210 utils/quick_converter.py:8
+msgid "XLS File"
+msgstr ""
+
+#: main/forms.py:215
+msgid "XLS URL"
+msgstr ""
+
+#: main/views.py:85
+#, python-format
+msgid "Successfully cloned %(id_string)s into your %(profile_url)s"
+msgstr ""
+
+#: main/views.py:117
+#, python-format
+msgid "Successfully published %s."
+msgstr ""
+
+#: main/views.py:262 main/views.py:521 main/views.py:581
+#: odk_logger/views.py:284 odk_logger/views.py:316 odk_viewer/views.py:98
+#: odk_viewer/views.py:168 odk_viewer/views.py:191 odk_viewer/views.py:228
+#: odk_viewer/views.py:260 odk_viewer/views.py:327 odk_viewer/views.py:346
+#: odk_viewer/views.py:376
+msgid "Not shared."
+msgstr ""
+
+#: main/views.py:379
+msgid "Updated succeeded."
+msgstr ""
+
+#: main/views.py:385
+msgid "Update failed."
+msgstr ""
+
+#: main/views.py:459 main/views.py:483 main/views.py:515
+msgid "Permission denied."
+msgstr ""
+
+#: main/models/user_profile.py:21
+msgid "Require Phone Authentication"
+msgstr ""
+
+#: main/templates/dashboard.html:10
+msgid "Publish a Form <small>Upload XLSForm</small>"
+msgstr ""
+
+#: main/templates/dashboard.html:12
+#, python-format
+msgid ""
+"For a quick introduction on how to publish a form check out the <a "
+"href=\"%(tutorial_url)s\">tutorial</a>, and try publishing <a "
+"href=\"http://formhub.org/formhub_u/forms/tutorial/form.xls\">tutorial.xls</a>."
+msgstr ""
+
+#: main/templates/dashboard.html:16
+#, python-format
+msgid ""
+"Learn about the XLSForm syntax <a href=\"%(syntax_url)s\">here</a>, email <a"
+" href=\"https://groups.google.com/forum/?fromgroups#!forum/formhub-"
+"users\">formhub users mailing list</a> if you have questions, and checkout "
+"examples at: <br/><a href=\"/formhub_u/\">Formhub University</a>."
+msgstr ""
+
+#: main/templates/dashboard.html:23 main/templates/show.html:299
+#: main/templates/show.html.py:321 main/templates/show.html:358
+#: main/templates/show.html.py:380
+msgid "Upload"
+msgstr ""
+
+#: main/templates/dashboard.html:24
+msgid "URL"
+msgstr ""
+
+#: main/templates/dashboard.html:41
+msgid "Publish"
+msgstr ""
+
+#: main/templates/dashboard.html:54 main/templates/profile.html:13
+msgid "Click to change your avatar"
+msgstr ""
+
+#: main/templates/dashboard.html:69
+msgid "View Profile Page"
+msgstr ""
+
+#: main/templates/dashboard.html:85
+msgid "FORMS"
+msgstr ""
+
+#: main/templates/dashboard.html:88
+msgid "SHARED FORMS"
+msgstr ""
+
+#: main/templates/dashboard.html:91
+msgid "SUBMISSIONS"
+msgstr ""
+
+#: main/templates/dashboard.html:101
+#, python-format
+msgid ""
+"\n"
+"The url of this web application <strong>%(odk_url)s</strong>\n"
+"must be given to ODK Collect before it will get forms from and\n"
+"submit data to formhub. In Collect's Main Menu, press the Menu\n"
+"button. Select Server Preferences, then Server. Enter\n"
+"<strong>%(odk_url)s</strong> as the server. "
+msgstr ""
+
+#: main/templates/form_gallery.html:9
+msgid "Form Gallery <small>Shared Forms</small>"
+msgstr ""
+
+#: main/templates/form_gallery.html:41 main/templates/people.html:36
+#: staff/templates/submissions.html:38
+msgid "User"
+msgstr ""
+
+#: main/templates/form_gallery.html:42 main/templates/people.html:37
+#: main/templates/profile.html:66 main/templates/published_surveys.html:45
+#: main/templates/user_crowdforms.html:13
+msgid "Name"
+msgstr ""
+
+#: main/templates/form_gallery.html:43 main/templates/show.html:37
+msgid "Description"
+msgstr ""
+
+#: main/templates/form_gallery.html:44 main/templates/profile.html:68
+#: main/templates/show.html:52 main/templates/show.html.py:59
+msgid "XLSForm"
+msgstr ""
+
+#: main/templates/form_gallery.html:58
+msgid "add crowdform"
+msgstr ""
+
+#: main/templates/form_gallery.html:66
+msgid "Excel"
+msgstr ""
+
+#: main/templates/form_gallery.html:70 main/templates/show.html:112
+msgid "Clone"
+msgstr ""
+
+#: main/templates/home.html:8
+msgid "Welcome to formhub!"
+msgstr ""
+
+#: main/templates/home.html:8
+msgid "The hub for your mobile data collection needs"
+msgstr ""
+
+#: main/templates/home.html:11
+msgid ""
+"formhub is a <strong>free</strong> hosted service that makes data collection"
+" <strong>simple</strong> and <strong>collaborative</strong>."
+msgstr ""
+
+#: main/templates/home.html:13
+#, python-format
+msgid ""
+"<strong>Simple.</strong>All you need to get started is an <a "
+"href=\"%(registration_register)s\">account</a> on formhub and the ability to"
+" author .xls files. Absolutely no technical setup required."
+msgstr ""
+
+#: main/templates/home.html:16
+#, python-format
+msgid ""
+"<strong>Collaborative.</strong> Share your data collection forms in <a "
+"href=\"%(syntax_url)s\">Excel</a>. <a href=\"%(forms_url)s\">Find</a>, grab "
+"and modify other <a href=\"%(forms_url)s\">peoples' forms</a> and quickly "
+"deploy it. Publish gathered data to share it with others via Excel, CSV, KML"
+" or an interactive map."
+msgstr ""
+
+#: main/templates/home.html:19
+msgid "Mobile."
+msgstr ""
+
+#: main/templates/home.html:20
+msgid ""
+"formhub works seemlessly with <a href=\"http://www.opendatakit.org\">ODK "
+"Collect</a> a robust and proven data collection platform for Android."
+msgstr ""
+
+#: main/templates/home.html:23
+msgid ""
+"For more info please read <a href=\"http://blog.formhub.org/2011/12/05/data-"
+"gatherers-of-the-world-unite/\">here</a>."
+msgstr ""
+
+#: main/templates/home.html:25
+msgid "Not registered?"
+msgstr ""
+
+#: main/templates/home.html:27
+msgid "Create Account"
+msgstr ""
+
+#: main/templates/home.html:48
+msgid "forms submitted"
+msgstr ""
+
+#: main/templates/home.html:51
+msgid "shared forms"
+msgstr ""
+
+#: main/templates/home.html:54
+msgid "formhubbers!"
+msgstr ""
+
+#: main/templates/people.html:31
+#, python-format
+msgid "formhubber <small>(%(nb_users)s)</small>"
+msgid_plural "formhubbers <small>(%(nb_users)s)</small>"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: main/templates/people.html:38
+msgid "Organization"
+msgstr ""
+
+#: main/templates/people.html:39
+msgid "Location"
+msgstr ""
+
+#: main/templates/people.html:40
+msgid "Member Since"
+msgstr ""
+
+#: main/templates/profile.html:17
+msgid "change"
+msgstr ""
+
+#: main/templates/profile.html:27
+msgid "Edit Your Profile"
+msgstr ""
+
+#: main/templates/profile.html:36
+msgid "Organization:"
+msgstr ""
+
+#: main/templates/profile.html:39
+msgid "Location:"
+msgstr ""
+
+#: main/templates/profile.html:42
+msgid "Website:"
+msgstr ""
+
+#: main/templates/profile.html:45
+msgid "Twitter:"
+msgstr ""
+
+#: main/templates/profile.html:47
+msgid "Member since:"
+msgstr ""
+
+#: main/templates/profile.html:52
+#, python-format
+msgid "%(num_forms)s <small>Shared form</small>"
+msgid_plural "%(num_forms)s <small>Shared forms</small>"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: main/templates/profile.html:61
+#, python-format
+msgid "Shared Forms & Public Data <small>(%(num_forms)s)</small>"
+msgstr ""
+
+#: main/templates/profile.html:67
+msgid "Create Date"
+msgstr ""
+
+#: main/templates/profile.html:69
+msgid "Public Data"
+msgstr ""
+
+#: main/templates/profile.html:70 main/templates/published_surveys.html:49
+#: main/templates/user_crowdforms.html:17
+msgid "View"
+msgstr ""
+
+#: main/templates/profile.html:85
+msgid "XLS"
+msgstr ""
+
+#: main/templates/profile.html:88 main/templates/profile.html.py:107
+#: main/templates/profile.html:118 main/templates/show.html:54
+#: main/templates/show.html.py:122 main/templates/user_crowdforms.html:47
+#: main/templates/user_crowdforms.html:75
+msgid "PRIVATE"
+msgstr ""
+
+#: main/templates/profile.html:95 main/templates/published_surveys.html:70
+#: main/templates/show.html:129 main/templates/user_crowdforms.html:39
+#: templates/topbar.html:36
+msgid "csv"
+msgstr ""
+
+#: main/templates/profile.html:98 main/templates/published_surveys.html:71
+#: main/templates/show.html:140 main/templates/user_crowdforms.html:40
+#: templates/topbar.html:41
+msgid "xls"
+msgstr ""
+
+#: main/templates/profile.html:101 main/templates/published_surveys.html:73
+#: main/templates/show.html:151 main/templates/user_crowdforms.html:42
+#: templates/topbar.html:46
+msgid "kml"
+msgstr ""
+
+#: main/templates/profile.html:104 main/templates/show.html:218
+msgid "NO DATA"
+msgstr ""
+
+#: main/templates/profile.html:114 main/templates/show.html:202
+msgid "Map"
+msgstr ""
+
+#: main/templates/profile.html:126
+msgid "None public"
+msgstr ""
+
+#: main/templates/published_surveys.html:7
+msgid "Published Forms <small>Export, map, and view submissions.</small>"
+msgstr ""
+
+#: main/templates/published_surveys.html:26
+#: staff/templates/submissions.html:23
+msgid "Search:"
+msgstr ""
+
+#: main/templates/published_surveys.html:35
+msgid "Show inactive:"
+msgstr ""
+
+#: main/templates/published_surveys.html:46
+#: main/templates/user_crowdforms.html:14 staff/templates/submissions.html:39
+msgid "Submissions"
+msgstr ""
+
+#: main/templates/published_surveys.html:47
+#: main/templates/user_crowdforms.html:15
+msgid "Last Submission"
+msgstr ""
+
+#: main/templates/published_surveys.html:48
+#: main/templates/user_crowdforms.html:16 templates/topbar.html:28
+msgid "Data"
+msgstr ""
+
+#: main/templates/published_surveys.html:50
+msgid "Active"
+msgstr ""
+
+#: main/templates/published_surveys.html:59
+#: main/templates/published_surveys.html:77 main/templates/show.html:53
+#: main/templates/show.html.py:121 main/templates/user_crowdforms.html:27
+#: main/templates/user_crowdforms.html:45
+msgid "PUBLIC"
+msgstr ""
+
+#: main/templates/published_surveys.html:84 main/templates/show.html:201
+#: main/templates/user_crowdforms.html:55
+msgid "View Map"
+msgstr ""
+
+#: main/templates/published_surveys.html:89
+#: main/templates/user_crowdforms.html:60
+msgid "View Photo"
+msgstr ""
+
+#: main/templates/published_surveys.html:94 main/templates/show.html:225
+#: main/templates/user_crowdforms.html:63
+msgid "Enter Web Form"
+msgstr ""
+
+#: main/templates/published_surveys.html:102 main/templates/show.html:417
+#: odk_viewer/templates/instance.html:443
+msgid "Delete Confirmation"
+msgstr ""
+
+#: main/templates/published_surveys.html:105 main/templates/show.html:420
+#, python-format
+msgid ""
+"Are you sure you want to delete the form '%(title)s'? This form has "
+"<strong>%(nb_sub)s</strong> submissions associated with it that will also be"
+" deleted. If you are unsure about deleting this form press 'Cancel' and "
+"conside 'Archiving' the form instead."
+msgstr ""
+
+#: main/templates/published_surveys.html:117 main/templates/show.html:207
+#: main/templates/user_crowdforms.html:67
+msgid "View Submitted Data"
+msgstr ""
+
+#: main/templates/published_surveys.html:120 main/templates/show.html:210
+#: main/templates/user_crowdforms.html:70
+msgid "Browse Data (One by One)"
+msgstr ""
+
+#: main/templates/settings.html:7
+msgid "Edit User Profile"
+msgstr ""
+
+#: main/templates/settings.html:11
+msgid "change password"
+msgstr ""
+
+#: main/templates/settings.html:23
+msgid "Username:"
+msgstr ""
+
+#: main/templates/settings.html:40
+msgid "Update"
+msgstr ""
+
+#: main/templates/show.html:16
+msgid "Owner"
+msgstr ""
+
+#: main/templates/show.html:25 main/templates/show.html.py:44
+#: main/templates/show.html:100 main/templates/show.html.py:193
+#: main/templates/show.html:289 odk_viewer/templates/instance.html:349
+msgid "edit"
+msgstr ""
+
+#: main/templates/show.html:26 main/templates/show.html.py:45
+#: main/templates/show.html:101 main/templates/show.html.py:194
+#: main/templates/show.html:290
+msgid "save"
+msgstr ""
+
+#: main/templates/show.html:35
+msgid "Form ID:"
+msgstr ""
+
+#: main/templates/show.html:42
+msgid "None"
+msgstr ""
+
+#: main/templates/show.html:70 odk_logger/models/xform.py:60
+msgid "XForm"
+msgstr ""
+
+#: main/templates/show.html:81
+msgid "JSONForm"
+msgstr ""
+
+#: main/templates/show.html:95
+msgid "License"
+msgstr ""
+
+#: main/templates/show.html:106 main/templates/show.html.py:199
+msgid "License information"
+msgstr ""
+
+#: main/templates/show.html:120
+msgid "Form Data"
+msgstr ""
+
+#: main/templates/show.html:129
+msgid "Export to csv File"
+msgstr ""
+
+#: main/templates/show.html:140
+msgid "Export to xls File"
+msgstr ""
+
+#: main/templates/show.html:151
+msgid "Export to kml File (Google Earth)"
+msgstr ""
+
+#: main/templates/show.html:163
+msgid "Export a zip folder of attachments"
+msgstr ""
+
+#: main/templates/show.html:163
+msgid "zip"
+msgstr ""
+
+#: main/templates/show.html:174
+msgid "Export to google docs"
+msgstr ""
+
+#: main/templates/show.html:174
+msgid "gdocs"
+msgstr ""
+
+#: main/templates/show.html:185
+msgid "Submissions:"
+msgstr ""
+
+#: main/templates/show.html:188
+msgid "License:"
+msgstr ""
+
+#: main/templates/show.html:204
+msgid "View Photos"
+msgstr ""
+
+#: main/templates/show.html:205
+msgid "Photos"
+msgstr ""
+
+#: main/templates/show.html:208
+msgid "View Data"
+msgstr ""
+
+#: main/templates/show.html:211
+msgid "Browse Data"
+msgstr ""
+
+#: main/templates/show.html:224
+msgid "Webform"
+msgstr ""
+
+#: main/templates/show.html:279
+msgid "Source"
+msgstr ""
+
+#: main/templates/show.html:306
+msgid "Supporting Documents"
+msgstr ""
+
+#: main/templates/show.html:311 main/templates/show.html.py:348
+#: main/templates/show.html:371
+msgid "remove"
+msgstr ""
+
+#: main/templates/show.html:329
+msgid "Rest Services"
+msgstr ""
+
+#: main/templates/show.html:343
+msgid "Media &nbsp;<small>jpeg/png/mp3 allowed</small>"
+msgstr ""
+
+#: main/templates/show.html:365
+msgid "Mapbox Layer"
+msgstr ""
+
+#: main/templates/show.html:369
+msgid "Attribution:"
+msgstr ""
+
+#: main/templates/show.html:388 templates/topbar.html:73
+msgid "Settings"
+msgstr ""
+
+#: main/templates/show.html:391
+msgid "Form Shared"
+msgstr ""
+
+#: main/templates/show.html:395
+msgid "Data Shared"
+msgstr ""
+
+#: main/templates/show.html:400
+msgid "Crowdform"
+msgstr ""
+
+#: main/templates/show.html:406
+msgid "Form Active"
+msgstr ""
+
+#: main/templates/show.html:411
+msgid "Delete Form"
+msgstr ""
+
+#: main/templates/show.html:423 main/templates/show.html.py:428
+#: odk_viewer/templates/instance.html:349
+#: odk_viewer/templates/instance.html:449
+#: restservice/templates/add-service.html:22
+msgid "Delete"
+msgstr ""
+
+#: main/templates/show.html:424 odk_viewer/templates/instance.html:450
+msgid "Cancel"
+msgstr ""
+
+#: main/templates/show.html:434
+msgid "bamboo"
+msgstr ""
+
+#: main/templates/show.html:436
+#, python-format
+msgid ""
+"bamboo dataset: <strong><a "
+"href=\"http://bamboo.io/datasets/%(dataset)s/info\">%(dataset)s</a></strong>"
+msgstr ""
+
+#: main/templates/show.html:438
+msgid "bamboo link is <strong>not active</strong>"
+msgstr ""
+
+#: main/templates/show.html:439
+msgid "bamboo requires at least one submission."
+msgstr ""
+
+#: main/templates/show.html:442
+msgid "Activate"
+msgstr ""
+
+#: main/templates/show.html:449
+msgid "Sharing"
+msgstr ""
+
+#: main/templates/show.html:452
+#, python-format
+msgid ""
+"Sharing by link is <strong>on with URL <a "
+"href=\"%(form_url)s\">%(base_url)s%(form_url)s</a></strong>"
+msgstr ""
+
+#: main/templates/show.html:454
+msgid "Sharing by link is <strong>off</strong>"
+msgstr ""
+
+#: main/templates/show.html:463
+msgid "Turn off"
+msgstr ""
+
+#: main/templates/show.html:463
+msgid "Turn on"
+msgstr ""
+
+#: main/templates/show.html:477
+#: odk_logger/templates/bulk_submission_form.html:13
+#: odk_logger/templates/form.html:18
+#: odk_logger/templates/submission_test_form.html:10
+#: templates/registration/password_reset_confirm.html:12
+#: templates/registration/password_reset_form.html:22
+msgid "Submit"
+msgstr ""
+
+#: main/templates/support.html:5 templates/topbar.html:59
+msgid "Support"
+msgstr ""
+
+#: main/templates/support.html:9
+msgid "Thank you for using formhub!"
+msgstr ""
+
+#: main/templates/support.html:9
+msgid ""
+"If you need any extra help or have questions about the service below please "
+"consider one of the support options below"
+msgstr ""
+
+#: main/templates/support.html:14
+#, python-format
+msgid ""
+"For questions related to authoring XLSForms please first checkout our <a "
+"href=\"%(syntax)s\">syntax</a> page, then use the <a "
+"href=\"https://groups.google.com/forum/#!forum/formhub-users\">formhub-users"
+" Google group</a>"
+msgstr ""
+
+#: main/templates/support.html:15
+msgid ""
+"For help relating to using ODK Collect please contact the <a "
+"href=\"https://groups.google.com/forum/#!forum/opendatakit\">ODK Google "
+"group</a>"
+msgstr ""
+
+#: main/templates/support.html:16
+msgid ""
+"For problems or suggestions related to the formhub service please email: <a "
+"href=\"mailto:support@formhub.org\">support@formhub.org</a> or <a "
+"href=\"https://groups.google.com/forum/#!forum/formhub-users\">formhub-users"
+" Google group</a>"
+msgstr ""
+
+#: main/templates/support.html:19
+msgid ""
+"We value your feedback and ideas in how to make this service better. Thank "
+"you!"
+msgstr ""
+
+#: main/templates/tutorial.html:5
+msgid "Introduction"
+msgstr ""
+
+#: main/templates/tutorial.html:8
+msgid ""
+"formhub aims to make collecting survey data with Android smart phones easy "
+"and free."
+msgstr ""
+
+#: main/templates/tutorial.html:11
+msgid "One uses formhub as follows:"
+msgstr ""
+
+#: main/templates/tutorial.html:13
+msgid "Translate survey into the xsl2xform syntax."
+msgstr ""
+
+#: main/templates/tutorial.html:14
+msgid "Upload XLSForm file to formhub."
+msgstr ""
+
+#: main/templates/tutorial.html:15 main/templates/tutorial.html.py:16
+msgid "Use"
+msgstr ""
+
+#: main/templates/tutorial.html:15
+msgid "to download form and submit data."
+msgstr ""
+
+#: main/templates/tutorial.html:16
+msgid "to download and map data submissions."
+msgstr ""
+
+#: main/templates/tutorial.html:18
+msgid "This tutorial will walk you through each stop of the way."
+msgstr ""
+
+#: main/templates/tutorial.html:24
+msgid "Translate survey into the XLSForm syntax"
+msgstr ""
+
+#: main/templates/tutorial.html:30
+msgid ""
+"The first step in collecting survey data is to actually write the survey. "
+"For this tutorial we will be using the following survey:"
+msgstr ""
+
+#: main/templates/tutorial.html:32
+msgid "What is your name?"
+msgstr ""
+
+#: main/templates/tutorial.html:33
+msgid "How old are you?"
+msgstr ""
+
+#: main/templates/tutorial.html:34
+msgid "May I take your picture?"
+msgstr ""
+
+#: main/templates/tutorial.html:35
+msgid "Do you have any children?"
+msgstr ""
+
+#: main/templates/tutorial.html:36
+msgid "Record your GPS coordinates."
+msgstr ""
+
+#: main/templates/tutorial.html:37
+msgid "What web browsers do you use?"
+msgstr ""
+
+#: main/templates/tutorial.html:39
+msgid ""
+"The second step is writing this survey in the xls2xform syntax. The idea "
+"behind this approach is that each question in the survey is a row in the "
+"spreadsheet. By using a spreadsheet we can expose most of the XForm features"
+" supported by ODK Collect. Check out the images to the right that show the "
+"xls2xform syntax for this survey."
+msgstr ""
+
+#: main/templates/tutorial.html:48
+#, python-format
+msgid ""
+"For more in depth information about the XLSForm syntax go <a "
+"href=\"%(syntax_url)s\">here</a>."
+msgstr ""
+
+#: main/templates/tutorial.html:53
+msgid "Upload XLSForm file to formhub"
+msgstr ""
+
+#: main/templates/tutorial.html:59
+#, python-format
+msgid ""
+"After creating an account and signing into the site you can publish forms "
+"for use with ODK Collect. On the right, we submit <a "
+"href=\"%(STATIC_URL)stutorial/tutorial.xls\">tutorial.xls</a>, described "
+"above, for publication."
+msgstr ""
+
+#: main/templates/tutorial.html:69
+msgid ""
+"After publishing our first form, a new table appears showing our new form. "
+"Next we need to use ODK Collect to submit data for this form..."
+msgstr ""
+
+#: main/templates/tutorial.html:80
+msgid "Use ODK Collect to download form and submit data"
+msgstr ""
+
+#: main/templates/tutorial.html:89
+#, python-format
+msgid ""
+"The url of this web application must be given to ODK Collect before it will "
+"get forms from and submit data to formhub. In ODK Collect's Main Menu, press"
+" the Menu button. Select Server Preferences, then Server. Enter "
+"<strong>%(odk_url)s</strong> as the server."
+msgstr ""
+
+#: main/templates/tutorial.html:98
+msgid "Download your published form to your phone."
+msgstr ""
+
+#: main/templates/tutorial.html:107
+msgid "Fill out the form on your phone."
+msgstr ""
+
+#: main/templates/tutorial.html:116
+msgid ""
+"After filling out the form on your phone submit the data to the server."
+msgstr ""
+
+#: main/templates/tutorial.html:124
+msgid "Use formhub to download and map data submissions"
+msgstr ""
+
+#: main/templates/tutorial.html:130
+msgid ""
+"After submitting data from ODK Collect to the server you can now download "
+"the data as a nicely formatted csv or xls file."
+msgstr ""
+
+#: main/templates/tutorial.html:140
+msgid "And look at submissions on a map:"
+msgstr ""
+
+#: main/templates/user_crowdforms.html:7
+msgid "Crowdforms <small>List of crowdforms you have joined.</small>"
+msgstr ""
+
+#: main/templates/user_crowdforms.html:18
+msgid "Remove"
+msgstr ""
+
+#: main/templates/xls2xform.html:5
+msgid "XLS2XForm Converter"
+msgstr ""
+
+#: main/templates/xls2xform.html:8
+msgid ""
+"If you're looking for the XLS2XForm converter you're in the right place. "
+"We've incorporated the XLS2XForm converter into formhub."
+msgstr ""
+
+#: main/templates/xls2xform.html:11
+msgid "To use it simply:"
+msgstr ""
+
+#: main/templates/xls2xform.html:14
+#, python-format
+msgid ""
+"<a href=\"%(registration_register)s\">Signup</a> for a free account with "
+"formhub"
+msgstr ""
+
+#: main/templates/xls2xform.html:15
+msgid ""
+"Upload your XLSForm to formhub and it'll instantly be converted to an XForm "
+"which will be available on your phone."
+msgstr ""
+
+#: main/templates/xls2xform.html:16
+msgid ""
+"If you want to download the XForm, click on the form name and click on "
+"<strong>other</strong> to download the converted XForm"
+msgstr ""
+
+#: odk_logger/import_tools.py:49
+msgid "Too many XML files."
+msgstr ""
+
+#: odk_logger/views.py:55
+#, python-format
+msgid "User %s not found"
+msgstr ""
+
+#: odk_logger/views.py:62
+msgid ""
+"There was a problem receiving your ODK submission. [Error: IO Error reading "
+"data]"
+msgstr ""
+
+#: odk_logger/views.py:77
+#, python-format
+msgid ""
+"Submission successful. Out of %(total)d survey instances, %(success)d were "
+"imported (%(rejected)d were rejected--duplicates, missing forms, etc.)"
+msgstr ""
+
+#: odk_logger/views.py:90
+msgid ""
+"There was a problem receiving your ODK submission. [Error: multiple "
+"submission files (?)]"
+msgstr ""
+
+#: odk_logger/views.py:177
+msgid "There should be a single XML submission file."
+msgstr ""
+
+#: odk_logger/views.py:195
+msgid "Username or ID required."
+msgstr ""
+
+#: odk_logger/views.py:198
+msgid "Sorry but the crowd form you submitted to is closed."
+msgstr ""
+
+#: odk_logger/views.py:202
+msgid "Received empty submission. No instance was created"
+msgstr ""
+
+#: odk_logger/views.py:205
+msgid "Form is not active"
+msgstr ""
+
+#: odk_logger/views.py:208
+msgid "Form does not exist on this account"
+msgstr ""
+
+#: odk_logger/views.py:211
+msgid "Improperly formatted XML."
+msgstr ""
+
+#: odk_logger/views.py:213
+msgid "Duplicate submission"
+msgstr ""
+
+#: odk_logger/views.py:219
+msgid "Unable to create submission."
+msgstr ""
+
+#: odk_logger/views.py:237
+msgid "File transfer interruption."
+msgstr ""
+
+#: odk_logger/views.py:273
+#, python-format
+msgid "No XLS file for your form <strong>%(id)s</strong>"
+msgstr ""
+
+#: odk_logger/management/commands/create_image_thumbnails.py:15
+msgid "Creates thumbnails for all form images and stores them"
+msgstr ""
+
+#: odk_logger/management/commands/create_image_thumbnails.py:34
+#, python-format
+msgid "Thumbnails created for %(file)s"
+msgstr ""
+
+#: odk_logger/management/commands/create_image_thumbnails.py:37
+#, python-format
+msgid "Problem with the file %(file)s"
+msgstr ""
+
+#: odk_logger/management/commands/create_image_thumbnails.py:40
+#, python-format
+msgid "Error on %(filename)s: %(error)s"
+msgstr ""
+
+#: odk_logger/management/commands/export_xforms_and_instances.py:17
+msgid "Export ODK forms and instances to JSON."
+msgstr ""
+
+#: odk_logger/management/commands/import.py:11
+#: odk_logger/management/commands/import_tools.py:20
+#: odk_viewer/management/commands/import.py:11
+msgid "Import ODK forms and instances."
+msgstr ""
+
+#: odk_logger/management/commands/import_forms.py:11
+#: odk_viewer/management/commands/import_forms.py:11
+msgid "Import a folder of XForms for ODK."
+msgstr ""
+
+#: odk_logger/management/commands/import_instances.py:12
+#: odk_viewer/management/commands/import_instances.py:12
+msgid "Import a folder of ODK instances."
+msgstr ""
+
+#: odk_logger/management/commands/import_tools.py:26
+#, python-format
+msgid "[Importing XForm Instances from %(path)s]\n"
+msgstr ""
+
+#: odk_logger/management/commands/import_tools.py:30
+msgid "Before Parse:"
+msgstr ""
+
+#: odk_logger/management/commands/import_tools.py:31
+#: odk_logger/management/commands/import_tools.py:38
+#, python-format
+msgid " --> Images:    %(nb)d"
+msgstr ""
+
+#: odk_logger/management/commands/import_tools.py:32
+#: odk_logger/management/commands/import_tools.py:39
+#, python-format
+msgid " --> Instances: %(nb)d"
+msgstr ""
+
+#: odk_logger/management/commands/import_tools.py:37
+msgid "After Parse:"
+msgstr ""
+
+#: odk_logger/management/commands/move_media_to_s3.py:15
+msgid ""
+"Moves all attachments and xls files to s3 from the local file system "
+"storage."
+msgstr ""
+
+#: odk_logger/management/commands/move_media_to_s3.py:23
+msgid ""
+"Missing necessary libraries. Try running: pip install -r requirements-s3.pip"
+msgstr ""
+
+#: odk_logger/management/commands/move_media_to_s3.py:28
+msgid ""
+"You must first set your default storage to s3 in your local_settings.py "
+"file."
+msgstr ""
+
+#: odk_logger/management/commands/move_media_to_s3.py:37
+#, python-format
+msgid "Moving %(class)ss to s3..."
+msgstr ""
+
+#: odk_logger/management/commands/move_media_to_s3.py:43
+#, python-format
+msgid ""
+"\t+ '%(fname)s'\n"
+"\t---> '%(url)s'"
+msgstr ""
+
+#: odk_logger/models/xform.py:41
+msgid "ID"
+msgstr ""
+
+#: odk_logger/models/xform.py:61
+msgid "XForms"
+msgstr ""
+
+#: odk_logger/models/xform.py:64
+msgid "Can view associated data"
+msgstr ""
+
+#: odk_logger/models/xform.py:86
+msgid "There should be a single id string."
+msgstr ""
+
+#: odk_logger/models/xform.py:93
+msgid "There should be a single title."
+msgstr ""
+
+#: odk_logger/models/xform.py:104
+msgid ""
+"In strict mode, the XForm ID must be a valid slug and contain no spaces."
+msgstr ""
+
+#: odk_logger/models/xform.py:113
+msgid "Submission Count"
+msgstr ""
+
+#: odk_logger/templates/base.html:9
+msgid "XForm Manager:"
+msgstr ""
+
+#: odk_logger/templates/base.html:15
+msgid "XForm Manager"
+msgstr ""
+
+#: odk_logger/templates/bulk_submission_form.html:4
+#: odk_logger/templates/form.html:4
+msgid "Update XForm"
+msgstr ""
+
+#: odk_logger/templates/list_xforms.html:6
+msgid "Downloadable by Phone"
+msgstr ""
+
+#: odk_logger/templates/list_xforms.html:7
+msgid "Form ID"
+msgstr ""
+
+#: odk_logger/templates/list_xforms.html:8
+msgid "Number of Submissions"
+msgstr ""
+
+#: odk_logger/templates/list_xforms.html:9
+msgid "Time of Last Submission"
+msgstr ""
+
+#: odk_logger/templates/list_xforms.html:10
+msgid "CSV"
+msgstr ""
+
+#: odk_logger/templates/list_xforms.html:19
+msgid "yes"
+msgstr ""
+
+#: odk_logger/templates/list_xforms.html:21
+msgid "no"
+msgstr ""
+
+#: odk_logger/templates/list_xforms.html:32
+msgid "Download CSV"
+msgstr ""
+
+#: odk_logger/templates/submission.html:3
+msgid "Your submission was successful!"
+msgstr ""
+
+#: odk_logger/templates/submission.html:5
+msgid "Return to the form page"
+msgstr ""
+
+#: odk_logger/templates/submission.html:6
+msgid "Fill the form out again"
+msgstr ""
+
+#: odk_logger/templates/submission_test_form.html:4
+msgid "List XForms"
+msgstr ""
+
+#: odk_viewer/reparse.py:33
+msgid "[Reparsing XForm Instances]\n"
+msgstr ""
+
+#: odk_viewer/reparse.py:52
+#, python-format
+msgid "That process took [%(nb)d ticks]"
+msgstr ""
+
+#: odk_viewer/views.py:59
+msgid "Start time format must be YY_MM_DD_hh_mm_ss"
+msgstr ""
+
+#: odk_viewer/views.py:70
+msgid "End time format must be YY_MM_DD_hh_mm_ss"
+msgstr ""
+
+#: odk_viewer/views.py:185 odk_viewer/views.py:222
+msgid "No records found to export"
+msgstr ""
+
+#: odk_viewer/views.py:364
+msgid "Attachment not found"
+msgstr ""
+
+#: odk_viewer/management/commands/mark_start_times.py:7
+msgid "This is a one-time command to mark start times of old surveys."
+msgstr ""
+
+#: odk_viewer/management/commands/mark_start_times.py:16
+#, python-format
+msgid "Could not mark start time for DD: %(data)s"
+msgstr ""
+
+#: odk_viewer/management/commands/push_develop.py:7
+msgid ""
+"\n"
+"    Run the tests locally. If there are no errors push to\n"
+"    develop, and update the staging server. (This should probably\n"
+"    update the develop server)\n"
+"    "
+msgstr ""
+
+#: odk_viewer/management/commands/relink.py:6
+msgid "Relink all instances with the current forms."
+msgstr ""
+
+#: odk_viewer/management/commands/remongo.py:9
+msgid "Insert all existing parsed instances into MongoDB"
+msgstr ""
+
+#: odk_viewer/management/commands/remongo.py:14
+msgid "Number of records to process per query"
+msgstr ""
+
+#: odk_viewer/management/commands/remongo.py:16
+msgid "Username of the form user"
+msgstr ""
+
+#: odk_viewer/management/commands/remongo.py:18
+msgid "id string of the form"
+msgstr ""
+
+#: odk_viewer/management/commands/reparse.py:9
+msgid "Delete and recreate parsed instances."
+msgstr ""
+
+#: odk_viewer/management/commands/set_uuid_in_xml.py:9
+msgid "Insert UUID into XML of all existing XForms"
+msgstr ""
+
+#: odk_viewer/management/commands/set_uuid_in_xml.py:12
+#, python-format
+msgid "%(nb)d XForms to update"
+msgstr ""
+
+#: odk_viewer/management/commands/set_uuid_in_xml.py:19
+#, python-format
+msgid "Updated %(nb)d XForms..."
+msgstr ""
+
+#: odk_viewer/management/commands/update_delete_from_mongo.py:12
+msgid "Update deleted records from mongo to sql instances"
+msgstr ""
+
+#: odk_viewer/templates/data_view.html:16
+msgid "Display Fields"
+msgstr ""
+
+#: odk_viewer/templates/data_view.html:45
+msgid ""
+"Your survey has <strong>{numquestions}</strong> question(s) and "
+"<strong>{numsubmissions}</strong> submission(s). Please click on Display "
+"Fields above and select the questions you want to view responses for."
+msgstr ""
+
+#: odk_viewer/templates/data_view.html:46
+msgid ""
+"NOTE: This is a beta feature and your survey contains more than "
+"<strong>{threshold}</strong> responses, search and sort features will not "
+"work."
+msgstr ""
+
+#: odk_viewer/templates/data_view.html:115
+msgid "_MENU_ records per page"
+msgstr ""
+
+#: odk_viewer/templates/instance.html:18
+msgid "Browse Form Data"
+msgstr ""
+
+#: odk_viewer/templates/instance.html:31
+msgid "Record {pos} of {total}"
+msgstr ""
+
+#: odk_viewer/templates/instance.html:166
+#: odk_viewer/templates/instance.html:203
+msgid "BAD REQUEST"
+msgstr ""
+
+#: odk_viewer/templates/instance.html:310
+msgid "The requested content was not found."
+msgstr ""
+
+#: odk_viewer/templates/instance.html:322
+msgid "Change Language:"
+msgstr ""
+
+#: odk_viewer/templates/instance.html:338
+msgid "Record 1 of 6"
+msgstr ""
+
+#: odk_viewer/templates/instance.html:342
+msgid "← Previous"
+msgstr ""
+
+#: odk_viewer/templates/instance.html:342
+msgid "Next →"
+msgstr ""
+
+#: odk_viewer/templates/instance.html:354 odk_viewer/templates/survey.html:20
+msgid "Question"
+msgstr ""
+
+#: odk_viewer/templates/instance.html:354 odk_viewer/templates/survey.html:21
+msgid "Response"
+msgstr ""
+
+#: odk_viewer/templates/instance.html:446
+msgid ""
+"Are you sure you want to delete this data. If you are unsure about deleting "
+"this form press 'Cancel'."
+msgstr ""
+
+#: restservice/forms.py:9
+msgid "Service Name"
+msgstr ""
+
+#: restservice/forms.py:12 restservice/models.py:14
+msgid "Service URL"
+msgstr ""
+
+#: restservice/views.py:31
+msgid "Service already defined."
+msgstr ""
+
+#: restservice/views.py:35
+#, python-format
+msgid "Successfully added service %(name)s."
+msgstr ""
+
+#: restservice/views.py:40
+msgid "Please fill in all required fields"
+msgstr ""
+
+#: restservice/templates/add-service.html:15
+msgid "Add service"
+msgstr ""
+
+#: staff/management/commands/mailer.py:15
+msgid "Send an email to all formhub users"
+msgstr ""
+
+#: staff/management/commands/mailer.py:29
+msgid "message must be included in kwargs"
+msgstr ""
+
+#: staff/management/commands/mailer.py:36
+#, python-format
+msgid "Emailing name: %(name)s, email: %(email)s"
+msgstr ""
+
+#: staff/templates/stats.html:4
+msgid "Stats"
+msgstr ""
+
+#: staff/templates/submissions.html:32
+#, python-format
+msgid "Submissions (%(nb_sub)s)"
+msgstr ""
+
+#: staff/templates/templated_email/notice.email:1
+#, python-format
+msgid "formhub notification for %(username)s"
+msgstr ""
+
+#: staff/templates/templated_email/notice.email:3
+#, python-format
+msgid ""
+"\n"
+"  Hi %(full_name)s,\n"
+"\n"
+"  %(message)s\n"
+"\n"
+"  Thanks for using formhub!\n"
+"  The Formhub Dev Team\n"
+"\n"
+"  P.S. Please consider joining the formhub-users group, https://groups.google.com/group/formhub-users\n"
+msgstr ""
+
+#: staff/templates/templated_email/notice.email:15
+#, python-format
+msgid ""
+"\n"
+"  <p>Hi %(full_name)s,</p>\n"
+"\n"
+"  <p>\n"
+"      %(message)s\n"
+"  </p>\n"
+"\n"
+"  <p>\n"
+"      Thanks for using formhub!\n"
+"      <br/>\n"
+"      The Formhub Dev Team\n"
+"  </p>\n"
+"\n"
+"  <p>\n"
+"      P.S. Please consider joining the <a href=\"https://groups.google.com/group/formhub-users\">formhub-users group</a>.\n"
+"  </p>\n"
+msgstr ""
+
+#: templates/404.html:5
+msgid "404 Error"
+msgstr ""
+
+#: templates/500.html:5
+msgid "500 Error"
+msgstr ""
+
+#: templates/500.html:9
+msgid ""
+"If you are getting this error while trying to submit a form, please do "
+"consider sending an email to support@formhub.org with your xlsform attached."
+" Thank you for using formhub."
+msgstr ""
+
+#: templates/browser_message.html:17
+msgid "Browser Error"
+msgstr ""
+
+#: templates/browser_message.html:19
+msgid "close"
+msgstr ""
+
+#: templates/browser_message.html:24
+msgid "Recommended Browser Alert"
+msgstr ""
+
+#: templates/browser_message.html:28
+msgid "Dear Sir or Madam,"
+msgstr ""
+
+#: templates/browser_message.html:31
+msgid ""
+"Our tests indicate that you are currently using a browser that does not "
+"support complex navigation. We highly recommend that you switch to one of "
+"the browsers below in order to take full advantage of the Nigeria MDGs "
+"Information System."
+msgstr ""
+
+#: templates/browser_message.html:42
+msgid "Thank You,"
+msgstr ""
+
+#: templates/browser_message.html:45
+msgid "The NMIS Support Team"
+msgstr ""
+
+#: templates/footer.html:5
+msgid ""
+"Built by the <a href=\"http://modi.mech.columbia.edu/\">Modi Research "
+"Group</a> at Columbia University."
+msgstr ""
+
+#: templates/footer.html:8
+msgid ""
+"Code (BSD License) at <a "
+"href=\"https://github.com/modilabs/formhub\">github.com/modilabs/formhub</a>"
+msgstr ""
+
+#: templates/footer.html:10
+msgid "Copyright &copy; 2012, formhub.org"
+msgstr ""
+
+#: templates/main_index.html:9
+msgid "View LGAs"
+msgstr ""
+
+#: templates/resources.html:4
+msgid "Resources"
+msgstr ""
+
+#: templates/topbar.html:25
+#, python-format
+msgid "%(nb_sub)s submissions"
+msgstr ""
+
+#: templates/topbar.html:55
+msgid "Forms"
+msgstr ""
+
+#: templates/topbar.html:56
+msgid "People"
+msgstr ""
+
+#: templates/topbar.html:57
+msgid "About"
+msgstr ""
+
+#: templates/topbar.html:58
+msgid "Syntax"
+msgstr ""
+
+#: templates/topbar.html:60
+msgid "Blog"
+msgstr ""
+
+#: templates/topbar.html:65
+msgid "New Form"
+msgstr ""
+
+#: templates/topbar.html:72
+msgid "Public profile"
+msgstr ""
+
+#: templates/topbar.html:76
+msgid "Sign out"
+msgstr ""
+
+#: templates/topbar.html:80 templates/registration/login.html:7
+#: templates/registration/login.html:18
+msgid "Sign in"
+msgstr ""
+
+#: templates/registration/activate.html:7
+msgid "Account Activated"
+msgstr ""
+
+#: templates/registration/activate.html:14
+#, python-format
+msgid ""
+"\n"
+"        Your account has been successfully activated. You may log in\n"
+"        <a href=\"%(login_url)s\">here</a>."
+msgstr ""
+
+#: templates/registration/activation_email.txt:3
+#, python-format
+msgid ""
+"You have registered on %(site_name)s. To activate your account\n"
+"please click on the link below:\n"
+"\n"
+"http://%(site_domain)s%(register_url)s\n"
+"\n"
+"The link above is valid for %(expiration_days)s day%(expiration_days_p)s.\n"
+msgstr ""
+
+#: templates/registration/activation_email_subject.txt:1
+#, python-format
+msgid "Account activation on %(site_name)s"
+msgstr ""
+
+#: templates/registration/login.html:26
+#, python-format
+msgid ""
+"Can't access your account? <a href=\"%(reset_url)s\">Reset your "
+"password.</a>"
+msgstr ""
+
+#: templates/registration/login.html:28
+#, python-format
+msgid "New to formhub? <a href=\"%(registration_url)s\">Create an account.</a>"
+msgstr ""
+
+#: templates/registration/logout.html:7
+msgid "Successful Logout"
+msgstr ""
+
+#: templates/registration/logout.html:11
+msgid "Thank you for using formhub, please come again!"
+msgstr ""
+
+#: templates/registration/password_change_done.html:6
+msgid "Password changed"
+msgstr ""
+
+#: templates/registration/password_change_form.html:7
+#: templates/registration/password_change_form.html:17
+msgid "Change Password"
+msgstr ""
+
+#: templates/registration/password_reset_complete.html:4
+msgid "Log In"
+msgstr ""
+
+#: templates/registration/password_reset_complete.html:8
+msgid "Password reset successfully"
+msgstr ""
+
+#: templates/registration/password_reset_complete.html:10
+msgid "Log in"
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:17
+msgid "Password reset failed"
+msgstr ""
+
+#: templates/registration/password_reset_done.html:7
+msgid "Email Sent"
+msgstr ""
+
+#: templates/registration/password_reset_done.html:10
+msgid "An email with password reset instructions has been sent."
+msgstr ""
+
+#: templates/registration/password_reset_email.html:2
+#, python-format
+msgid "Reset password at %(site_name)s"
+msgstr ""
+
+#: templates/registration/password_reset_form.html:7
+msgid "Password Reset"
+msgstr ""
+
+#: templates/registration/password_reset_form.html:11
+msgid ""
+"To reset your password please enter your email address below. A\n"
+"    message will be sent to your email address with a link for you to\n"
+"    reset your password."
+msgstr ""
+
+#: templates/registration/registration_complete.html:7
+msgid "Registration Email Sent"
+msgstr ""
+
+#: templates/registration/registration_complete.html:10
+msgid ""
+"A user account has been created for you and an email message has\n"
+"    been sent to the email address you provided."
+msgstr ""
+
+#: templates/registration/registration_complete.html:14
+msgid ""
+"To activate your account and complete the registration process,\n"
+"    you must click the activation link provided in the email."
+msgstr ""
+
+#: templates/registration/registration_form.html:7
+#: templates/registration/registration_form.html:30
+msgid "Register"
+msgstr ""
+
+#: templates/registration/registration_form.html:14
+msgid "Fields marked wth an asterisk (*) are required."
+msgstr ""
+
+#: templates/registration/registration_form.html:29
+msgid ""
+"By clicking the Register button, you acknowledge that this is beta software;"
+" we make no guarantees about the reliability or continuity of our service. "
+"We reserve the right to pause or terminate your service, or delete your "
+"account and data, at any time without notice. We will not be liable for any "
+"losses, either direct or indirect, that such service interruption or data "
+"loss may cause you. Use the service at your own risk."
+msgstr ""
+
+#: utils/country_field.py:6
+msgid "Andorra"
+msgstr ""
+
+#: utils/country_field.py:7
+msgid "United Arab Emirates"
+msgstr ""
+
+#: utils/country_field.py:8
+msgid "Afghanistan"
+msgstr ""
+
+#: utils/country_field.py:9
+msgid "Antigua & Barbuda"
+msgstr ""
+
+#: utils/country_field.py:10
+msgid "Anguilla"
+msgstr ""
+
+#: utils/country_field.py:11
+msgid "Albania"
+msgstr ""
+
+#: utils/country_field.py:12
+msgid "Armenia"
+msgstr ""
+
+#: utils/country_field.py:13
+msgid "Netherlands Antilles"
+msgstr ""
+
+#: utils/country_field.py:14
+msgid "Angola"
+msgstr ""
+
+#: utils/country_field.py:15
+msgid "Antarctica"
+msgstr ""
+
+#: utils/country_field.py:16
+msgid "Argentina"
+msgstr ""
+
+#: utils/country_field.py:17
+msgid "American Samoa"
+msgstr ""
+
+#: utils/country_field.py:18
+msgid "Austria"
+msgstr ""
+
+#: utils/country_field.py:19
+msgid "Australia"
+msgstr ""
+
+#: utils/country_field.py:20
+msgid "Aruba"
+msgstr ""
+
+#: utils/country_field.py:21
+msgid "Azerbaijan"
+msgstr ""
+
+#: utils/country_field.py:22
+msgid "Bosnia and Herzegovina"
+msgstr ""
+
+#: utils/country_field.py:23
+msgid "Barbados"
+msgstr ""
+
+#: utils/country_field.py:24
+msgid "Bangladesh"
+msgstr ""
+
+#: utils/country_field.py:25
+msgid "Belgium"
+msgstr ""
+
+#: utils/country_field.py:26
+msgid "Burkina Faso"
+msgstr ""
+
+#: utils/country_field.py:27
+msgid "Bulgaria"
+msgstr ""
+
+#: utils/country_field.py:28
+msgid "Bahrain"
+msgstr ""
+
+#: utils/country_field.py:29
+msgid "Burundi"
+msgstr ""
+
+#: utils/country_field.py:30
+msgid "Benin"
+msgstr ""
+
+#: utils/country_field.py:31
+msgid "Bermuda"
+msgstr ""
+
+#: utils/country_field.py:32
+msgid "Brunei Darussalam"
+msgstr ""
+
+#: utils/country_field.py:33
+msgid "Bolivia"
+msgstr ""
+
+#: utils/country_field.py:34
+msgid "Brazil"
+msgstr ""
+
+#: utils/country_field.py:35
+msgid "Bahama"
+msgstr ""
+
+#: utils/country_field.py:36
+msgid "Bhutan"
+msgstr ""
+
+#: utils/country_field.py:37
+msgid "Bouvet Island"
+msgstr ""
+
+#: utils/country_field.py:38
+msgid "Botswana"
+msgstr ""
+
+#: utils/country_field.py:39
+msgid "Belarus"
+msgstr ""
+
+#: utils/country_field.py:40
+msgid "Belize"
+msgstr ""
+
+#: utils/country_field.py:41
+msgid "Canada"
+msgstr ""
+
+#: utils/country_field.py:42
+msgid "Cocos (Keeling) Islands"
+msgstr ""
+
+#: utils/country_field.py:43
+msgid "Central African Republic"
+msgstr ""
+
+#: utils/country_field.py:44
+msgid "Congo"
+msgstr ""
+
+#: utils/country_field.py:45
+msgid "Switzerland"
+msgstr ""
+
+#: utils/country_field.py:46
+msgid "Ivory Coast"
+msgstr ""
+
+#: utils/country_field.py:47
+msgid "Cook Iislands"
+msgstr ""
+
+#: utils/country_field.py:48
+msgid "Chile"
+msgstr ""
+
+#: utils/country_field.py:49
+msgid "Cameroon"
+msgstr ""
+
+#: utils/country_field.py:50
+msgid "China"
+msgstr ""
+
+#: utils/country_field.py:51
+msgid "Colombia"
+msgstr ""
+
+#: utils/country_field.py:52
+msgid "Costa Rica"
+msgstr ""
+
+#: utils/country_field.py:53
+msgid "Cuba"
+msgstr ""
+
+#: utils/country_field.py:54
+msgid "Cape Verde"
+msgstr ""
+
+#: utils/country_field.py:55
+msgid "Christmas Island"
+msgstr ""
+
+#: utils/country_field.py:56
+msgid "Cyprus"
+msgstr ""
+
+#: utils/country_field.py:57
+msgid "Czech Republic"
+msgstr ""
+
+#: utils/country_field.py:58
+msgid "Germany"
+msgstr ""
+
+#: utils/country_field.py:59
+msgid "Djibouti"
+msgstr ""
+
+#: utils/country_field.py:60
+msgid "Denmark"
+msgstr ""
+
+#: utils/country_field.py:61
+msgid "Dominica"
+msgstr ""
+
+#: utils/country_field.py:62
+msgid "Dominican Republic"
+msgstr ""
+
+#: utils/country_field.py:63
+msgid "Algeria"
+msgstr ""
+
+#: utils/country_field.py:64
+msgid "Ecuador"
+msgstr ""
+
+#: utils/country_field.py:65
+msgid "Estonia"
+msgstr ""
+
+#: utils/country_field.py:66
+msgid "Egypt"
+msgstr ""
+
+#: utils/country_field.py:67
+msgid "Western Sahara"
+msgstr ""
+
+#: utils/country_field.py:68
+msgid "Eritrea"
+msgstr ""
+
+#: utils/country_field.py:69
+msgid "Spain"
+msgstr ""
+
+#: utils/country_field.py:70
+msgid "Ethiopia"
+msgstr ""
+
+#: utils/country_field.py:71
+msgid "Finland"
+msgstr ""
+
+#: utils/country_field.py:72
+msgid "Fiji"
+msgstr ""
+
+#: utils/country_field.py:73
+msgid "Falkland Islands (Malvinas)"
+msgstr ""
+
+#: utils/country_field.py:74
+msgid "Micronesia"
+msgstr ""
+
+#: utils/country_field.py:75
+msgid "Faroe Islands"
+msgstr ""
+
+#: utils/country_field.py:76
+msgid "France"
+msgstr ""
+
+#: utils/country_field.py:77
+msgid "France, Metropolitan"
+msgstr ""
+
+#: utils/country_field.py:78
+msgid "Gabon"
+msgstr ""
+
+#: utils/country_field.py:79
+msgid "United Kingdom (Great Britain)"
+msgstr ""
+
+#: utils/country_field.py:80
+msgid "Grenada"
+msgstr ""
+
+#: utils/country_field.py:81
+msgid "Georgia"
+msgstr ""
+
+#: utils/country_field.py:82
+msgid "French Guiana"
+msgstr ""
+
+#: utils/country_field.py:83
+msgid "Ghana"
+msgstr ""
+
+#: utils/country_field.py:84
+msgid "Gibraltar"
+msgstr ""
+
+#: utils/country_field.py:85
+msgid "Greenland"
+msgstr ""
+
+#: utils/country_field.py:86
+msgid "Gambia"
+msgstr ""
+
+#: utils/country_field.py:87
+msgid "Guinea"
+msgstr ""
+
+#: utils/country_field.py:88
+msgid "Guadeloupe"
+msgstr ""
+
+#: utils/country_field.py:89
+msgid "Equatorial Guinea"
+msgstr ""
+
+#: utils/country_field.py:90
+msgid "Greece"
+msgstr ""
+
+#: utils/country_field.py:91
+msgid "South Georgia and the South Sandwich Islands"
+msgstr ""
+
+#: utils/country_field.py:92
+msgid "Guatemala"
+msgstr ""
+
+#: utils/country_field.py:93
+msgid "Guam"
+msgstr ""
+
+#: utils/country_field.py:94
+msgid "Guinea-Bissau"
+msgstr ""
+
+#: utils/country_field.py:95
+msgid "Guyana"
+msgstr ""
+
+#: utils/country_field.py:96
+msgid "Hong Kong"
+msgstr ""
+
+#: utils/country_field.py:97
+msgid "Heard & McDonald Islands"
+msgstr ""
+
+#: utils/country_field.py:98
+msgid "Honduras"
+msgstr ""
+
+#: utils/country_field.py:99
+msgid "Croatia"
+msgstr ""
+
+#: utils/country_field.py:100
+msgid "Haiti"
+msgstr ""
+
+#: utils/country_field.py:101
+msgid "Hungary"
+msgstr ""
+
+#: utils/country_field.py:102
+msgid "Indonesia"
+msgstr ""
+
+#: utils/country_field.py:103
+msgid "Ireland"
+msgstr ""
+
+#: utils/country_field.py:104
+msgid "Israel"
+msgstr ""
+
+#: utils/country_field.py:105
+msgid "India"
+msgstr ""
+
+#: utils/country_field.py:106
+msgid "British Indian Ocean Territory"
+msgstr ""
+
+#: utils/country_field.py:107
+msgid "Iraq"
+msgstr ""
+
+#: utils/country_field.py:108
+msgid "Islamic Republic of Iran"
+msgstr ""
+
+#: utils/country_field.py:109
+msgid "Iceland"
+msgstr ""
+
+#: utils/country_field.py:110
+msgid "Italy"
+msgstr ""
+
+#: utils/country_field.py:111
+msgid "Jamaica"
+msgstr ""
+
+#: utils/country_field.py:112
+msgid "Jordan"
+msgstr ""
+
+#: utils/country_field.py:113
+msgid "Japan"
+msgstr ""
+
+#: utils/country_field.py:114
+msgid "Kenya"
+msgstr ""
+
+#: utils/country_field.py:115
+msgid "Kyrgyzstan"
+msgstr ""
+
+#: utils/country_field.py:116
+msgid "Cambodia"
+msgstr ""
+
+#: utils/country_field.py:117
+msgid "Kiribati"
+msgstr ""
+
+#: utils/country_field.py:118
+msgid "Comoros"
+msgstr ""
+
+#: utils/country_field.py:119
+msgid "St. Kitts and Nevis"
+msgstr ""
+
+#: utils/country_field.py:120
+msgid "Korea, Democratic People's Republic of"
+msgstr ""
+
+#: utils/country_field.py:121
+msgid "Korea, Republic of"
+msgstr ""
+
+#: utils/country_field.py:122
+msgid "Kuwait"
+msgstr ""
+
+#: utils/country_field.py:123
+msgid "Cayman Islands"
+msgstr ""
+
+#: utils/country_field.py:124
+msgid "Kazakhstan"
+msgstr ""
+
+#: utils/country_field.py:125
+msgid "Lao People's Democratic Republic"
+msgstr ""
+
+#: utils/country_field.py:126
+msgid "Lebanon"
+msgstr ""
+
+#: utils/country_field.py:127
+msgid "Saint Lucia"
+msgstr ""
+
+#: utils/country_field.py:128
+msgid "Liechtenstein"
+msgstr ""
+
+#: utils/country_field.py:129
+msgid "Sri Lanka"
+msgstr ""
+
+#: utils/country_field.py:130
+msgid "Liberia"
+msgstr ""
+
+#: utils/country_field.py:131
+msgid "Lesotho"
+msgstr ""
+
+#: utils/country_field.py:132
+msgid "Lithuania"
+msgstr ""
+
+#: utils/country_field.py:133
+msgid "Luxembourg"
+msgstr ""
+
+#: utils/country_field.py:134
+msgid "Latvia"
+msgstr ""
+
+#: utils/country_field.py:135
+msgid "Libyan Arab Jamahiriya"
+msgstr ""
+
+#: utils/country_field.py:136
+msgid "Morocco"
+msgstr ""
+
+#: utils/country_field.py:137
+msgid "Monaco"
+msgstr ""
+
+#: utils/country_field.py:138
+msgid "Moldova, Republic of"
+msgstr ""
+
+#: utils/country_field.py:139
+msgid "Madagascar"
+msgstr ""
+
+#: utils/country_field.py:140
+msgid "Marshall Islands"
+msgstr ""
+
+#: utils/country_field.py:141
+msgid "Mali"
+msgstr ""
+
+#: utils/country_field.py:142
+msgid "Mongolia"
+msgstr ""
+
+#: utils/country_field.py:143
+msgid "Myanmar"
+msgstr ""
+
+#: utils/country_field.py:144
+msgid "Macau"
+msgstr ""
+
+#: utils/country_field.py:145
+msgid "Northern Mariana Islands"
+msgstr ""
+
+#: utils/country_field.py:146
+msgid "Martinique"
+msgstr ""
+
+#: utils/country_field.py:147
+msgid "Mauritania"
+msgstr ""
+
+#: utils/country_field.py:148
+msgid "Monserrat"
+msgstr ""
+
+#: utils/country_field.py:149
+msgid "Malta"
+msgstr ""
+
+#: utils/country_field.py:150
+msgid "Mauritius"
+msgstr ""
+
+#: utils/country_field.py:151
+msgid "Maldives"
+msgstr ""
+
+#: utils/country_field.py:152
+msgid "Malawi"
+msgstr ""
+
+#: utils/country_field.py:153
+msgid "Mexico"
+msgstr ""
+
+#: utils/country_field.py:154
+msgid "Malaysia"
+msgstr ""
+
+#: utils/country_field.py:155
+msgid "Mozambique"
+msgstr ""
+
+#: utils/country_field.py:156
+msgid "Namibia"
+msgstr ""
+
+#: utils/country_field.py:157
+msgid "New Caledonia"
+msgstr ""
+
+#: utils/country_field.py:158
+msgid "Niger"
+msgstr ""
+
+#: utils/country_field.py:159
+msgid "Norfolk Island"
+msgstr ""
+
+#: utils/country_field.py:160
+msgid "Nigeria"
+msgstr ""
+
+#: utils/country_field.py:161
+msgid "Nicaragua"
+msgstr ""
+
+#: utils/country_field.py:162
+msgid "Netherlands"
+msgstr ""
+
+#: utils/country_field.py:163
+msgid "Norway"
+msgstr ""
+
+#: utils/country_field.py:164
+msgid "Nepal"
+msgstr ""
+
+#: utils/country_field.py:165
+msgid "Nauru"
+msgstr ""
+
+#: utils/country_field.py:166
+msgid "Niue"
+msgstr ""
+
+#: utils/country_field.py:167
+msgid "New Zealand"
+msgstr ""
+
+#: utils/country_field.py:168
+msgid "Oman"
+msgstr ""
+
+#: utils/country_field.py:169
+msgid "Panama"
+msgstr ""
+
+#: utils/country_field.py:170
+msgid "Peru"
+msgstr ""
+
+#: utils/country_field.py:171
+msgid "French Polynesia"
+msgstr ""
+
+#: utils/country_field.py:172
+msgid "Papua New Guinea"
+msgstr ""
+
+#: utils/country_field.py:173
+msgid "Philippines"
+msgstr ""
+
+#: utils/country_field.py:174
+msgid "Pakistan"
+msgstr ""
+
+#: utils/country_field.py:175
+msgid "Poland"
+msgstr ""
+
+#: utils/country_field.py:176
+msgid "St. Pierre & Miquelon"
+msgstr ""
+
+#: utils/country_field.py:177
+msgid "Pitcairn"
+msgstr ""
+
+#: utils/country_field.py:178
+msgid "Puerto Rico"
+msgstr ""
+
+#: utils/country_field.py:179
+msgid "Portugal"
+msgstr ""
+
+#: utils/country_field.py:180
+msgid "Palau"
+msgstr ""
+
+#: utils/country_field.py:181
+msgid "Paraguay"
+msgstr ""
+
+#: utils/country_field.py:182
+msgid "Qatar"
+msgstr ""
+
+#: utils/country_field.py:183
+msgid "Reunion"
+msgstr ""
+
+#: utils/country_field.py:184
+msgid "Romania"
+msgstr ""
+
+#: utils/country_field.py:185
+msgid "Russian Federation"
+msgstr ""
+
+#: utils/country_field.py:186
+msgid "Rwanda"
+msgstr ""
+
+#: utils/country_field.py:187
+msgid "Saudi Arabia"
+msgstr ""
+
+#: utils/country_field.py:188
+msgid "Solomon Islands"
+msgstr ""
+
+#: utils/country_field.py:189
+msgid "Seychelles"
+msgstr ""
+
+#: utils/country_field.py:190
+msgid "Sudan"
+msgstr ""
+
+#: utils/country_field.py:191
+msgid "Sweden"
+msgstr ""
+
+#: utils/country_field.py:192
+msgid "Singapore"
+msgstr ""
+
+#: utils/country_field.py:193
+msgid "St. Helena"
+msgstr ""
+
+#: utils/country_field.py:194
+msgid "Slovenia"
+msgstr ""
+
+#: utils/country_field.py:195
+msgid "Svalbard & Jan Mayen Islands"
+msgstr ""
+
+#: utils/country_field.py:196
+msgid "Slovakia"
+msgstr ""
+
+#: utils/country_field.py:197
+msgid "Sierra Leone"
+msgstr ""
+
+#: utils/country_field.py:198
+msgid "San Marino"
+msgstr ""
+
+#: utils/country_field.py:199
+msgid "Senegal"
+msgstr ""
+
+#: utils/country_field.py:200
+msgid "Somalia"
+msgstr ""
+
+#: utils/country_field.py:201
+msgid "Suriname"
+msgstr ""
+
+#: utils/country_field.py:202
+msgid "Sao Tome & Principe"
+msgstr ""
+
+#: utils/country_field.py:203
+msgid "El Salvador"
+msgstr ""
+
+#: utils/country_field.py:204
+msgid "Syrian Arab Republic"
+msgstr ""
+
+#: utils/country_field.py:205
+msgid "Swaziland"
+msgstr ""
+
+#: utils/country_field.py:206
+msgid "Turks & Caicos Islands"
+msgstr ""
+
+#: utils/country_field.py:207
+msgid "Chad"
+msgstr ""
+
+#: utils/country_field.py:208
+msgid "French Southern Territories"
+msgstr ""
+
+#: utils/country_field.py:209
+msgid "Togo"
+msgstr ""
+
+#: utils/country_field.py:210
+msgid "Thailand"
+msgstr ""
+
+#: utils/country_field.py:211
+msgid "Tajikistan"
+msgstr ""
+
+#: utils/country_field.py:212
+msgid "Tokelau"
+msgstr ""
+
+#: utils/country_field.py:213
+msgid "Turkmenistan"
+msgstr ""
+
+#: utils/country_field.py:214
+msgid "Tunisia"
+msgstr ""
+
+#: utils/country_field.py:215
+msgid "Tonga"
+msgstr ""
+
+#: utils/country_field.py:216
+msgid "East Timor"
+msgstr ""
+
+#: utils/country_field.py:217
+msgid "Turkey"
+msgstr ""
+
+#: utils/country_field.py:218
+msgid "Trinidad & Tobago"
+msgstr ""
+
+#: utils/country_field.py:219
+msgid "Tuvalu"
+msgstr ""
+
+#: utils/country_field.py:220
+msgid "Taiwan, Province of China"
+msgstr ""
+
+#: utils/country_field.py:221
+msgid "Tanzania, United Republic of"
+msgstr ""
+
+#: utils/country_field.py:222
+msgid "Ukraine"
+msgstr ""
+
+#: utils/country_field.py:223
+msgid "Uganda"
+msgstr ""
+
+#: utils/country_field.py:224
+msgid "United States Minor Outlying Islands"
+msgstr ""
+
+#: utils/country_field.py:225
+msgid "United States of America"
+msgstr ""
+
+#: utils/country_field.py:226
+msgid "Uruguay"
+msgstr ""
+
+#: utils/country_field.py:227
+msgid "Uzbekistan"
+msgstr ""
+
+#: utils/country_field.py:228
+msgid "Vatican City State (Holy See)"
+msgstr ""
+
+#: utils/country_field.py:229
+msgid "St. Vincent & the Grenadines"
+msgstr ""
+
+#: utils/country_field.py:230
+msgid "Venezuela"
+msgstr ""
+
+#: utils/country_field.py:231
+msgid "British Virgin Islands"
+msgstr ""
+
+#: utils/country_field.py:232
+msgid "United States Virgin Islands"
+msgstr ""
+
+#: utils/country_field.py:233
+msgid "Viet Nam"
+msgstr ""
+
+#: utils/country_field.py:234
+msgid "Vanuatu"
+msgstr ""
+
+#: utils/country_field.py:235
+msgid "Wallis & Futuna Islands"
+msgstr ""
+
+#: utils/country_field.py:236
+msgid "Samoa"
+msgstr ""
+
+#: utils/country_field.py:237
+msgid "Yemen"
+msgstr ""
+
+#: utils/country_field.py:238
+msgid "Mayotte"
+msgstr ""
+
+#: utils/country_field.py:239
+msgid "Yugoslavia"
+msgstr ""
+
+#: utils/country_field.py:240
+msgid "South Africa"
+msgstr ""
+
+#: utils/country_field.py:241
+msgid "Zambia"
+msgstr ""
+
+#: utils/country_field.py:242
+msgid "Zaire"
+msgstr ""
+
+#: utils/country_field.py:243
+msgid "Zimbabwe"
+msgstr ""
+
+#: utils/country_field.py:244
+msgid "Unknown or unspecified country"
+msgstr ""
+
+#: utils/logger_tools.py:109 utils/viewer_tools.py:180
+#, python-format
+msgid "Exception in request: %(class)s: %(error)s"
+msgstr ""
+
+#: utils/logger_tools.py:182
+msgid "Form with this id already exists."
+msgstr ""
+
+#: utils/logger_tools.py:188
+msgid "Invalid URL format."
+msgstr ""
+
+#: utils/logger_tools.py:200
+msgid "Form validation timeout, please try again."
+msgstr ""
+
+#: utils/viewer_tools.py:53
+msgid "There should be exactly one attribute in this document."
+msgstr ""
+
+#: utils/viewer_tools.py:104
+msgid "xml must be a string"
+msgstr ""
+
+#: utils/viewer_tools.py:125
+msgid "Paths should be unique."
+msgstr ""
+
+#: utils/viewer_tools.py:159
+msgid "There should be a single title"
+msgstr ""
+

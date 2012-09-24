@@ -1,12 +1,13 @@
-import os, sys
+import os
 import traceback
 from xml.dom import minidom
 
 from django.conf import settings
-from django.core.files.storage import get_storage_class
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.mail import mail_admins
 from django.utils.translation import ugettext as _
+from django.core.files.storage import get_storage_class
+from django.core.files.base import File
 
 import common_tags as tag
 
@@ -31,11 +32,16 @@ def get_path(path, suffix):
 
 def image_urls(instance):
     default_storage = get_storage_class()()
-    return [ default_storage.url(get_path(a.media_file.name,
-            settings.THUMB_CONF['medium']['suffix'])) if
-            default_storage.exists(get_path(a.media_file.name,
-            settings.THUMB_CONF['medium']['suffix'])) else
-            a.media_file.url for a in instance.attachments.all()]
+    urls = []
+    suffix = settings.THUMB_CONF['medium']['suffix']
+    for a in instance.attachments.all():
+        if default_storage.exists(get_path(a.media_file.name, suffix)):
+            url = default_storage.url(
+                get_path(a.media_file.name, suffix))
+        else:
+            url = a.media_file.url
+        urls.append(url)
+    return urls
 
 
 def parse_xform_instance(xml_str):
@@ -200,3 +206,11 @@ def django_file(path, field_name, content_type):
         size=os.path.getsize(path),
         charset=None
         )
+
+def export_def_from_filename(filename):
+    from odk_viewer.models.export import EXPORT_DEFS
+    path, ext = os.path.splitext(filename)
+    ext = ext[1:]
+    # try get the def from extension
+    export_def = EXPORT_DEFS[ext]
+    return ext, export_def['mime_type']

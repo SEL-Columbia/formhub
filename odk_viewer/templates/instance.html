@@ -32,38 +32,6 @@ var positionTpl = "{% trans 'Record {pos} of {total}' %}";
 var numRecords = null;
 var browsePos = null;
 
-Question = function(questionData)
-{
-    this.name = questionData.name;
-    this.type = questionData.type;
-    this.label = questionData.label;
-}
-
-Question.prototype.getLabel = function(language)
-{
-    /// if plain string, return
-    if(typeof(this.label) == "string")
-        return this.label;
-    else if(typeof(this.label) == "object")
-    {
-        if(language && this.label.hasOwnProperty(language))
-            return this.label[language];
-        else
-        {
-            var label = null;
-            for(key in this.label)
-            {
-                label = this.label[key];
-                break;// break at first instance and return that
-            }
-            return label;
-        }
-
-    }
-    // return raw name
-    return this.name;
-};
-
 (function($) {
 
   app = $.sammy('#data', function() {
@@ -93,20 +61,20 @@ Question.prototype.getLabel = function(language)
 
       // Delete modal
       this.get('#del/:id', function(context) { with(this) {
-      
+
             $("#delete-modal").modal("show");
-       
+
       }
       });
-      
-      
+
+
       // Delete route
-      this.get('#delete/:id', function(context) { 
-        
+      this.get('#delete/:id', function(context) {
+
           var id = this.params['id'];
           var next = $('li.next').children('a').attr('href');
           next = next.replace("#/", "");
-          
+
           var prev = $('li.prev').children('a').attr('href');
           prev = prev.replace("#/", "");
 
@@ -122,7 +90,7 @@ Question.prototype.getLabel = function(language)
 
           var query = '{"_id": '  + id + '}';
           editData(context, query, next_prev);
-                    
+
               // load count >> update record
               $.getJSON(mongoAPIUrl, {'count': 1})
                   .success(function(data){
@@ -158,9 +126,9 @@ function editData(context, query, next_prev){
     //TODO: show loader
     $.getJSON(editAPIUrl, {'query': query, 'limit':1})
             .success(function(data){
-          
+
               loadData(context, next_prev);
-                
+
             })
             .error(function(){
                alert("{% trans 'BAD REQUEST' %}");
@@ -174,10 +142,10 @@ function loadData(context, query)
     $.getJSON(mongoAPIUrl, {'query': query, 'limit':1})
             .success(function(data){
                 reDraw(context, data[0]);
-                
+
                 //ADD EDIT AND BUTTON CHECK PERMISSION
                 updateButtons(data[0]);
-                    
+
                 //alert(data[0]['_id']);
                 // check if we initialised the browsePos
                 if(false)//TODO: find a way to increment browsePos client-side
@@ -229,7 +197,7 @@ function updateButtons(data){
     editbutton.removeClass('disabled');
     editbutton.attr('href', 'edit/' + data['_id']);
     */
-    
+
      //Make Delete Button visible and add link
     var deletebutton = $('a.btn-danger');
     deletebutton.removeClass('disabled');
@@ -297,6 +265,8 @@ function reDraw(context, data)
         // check if table has been created, if not reCreate
         if($('#data table').length == 0)
             createTable();
+        // clear data cells before we re-populate
+        $('#data table td[data-key]').html('');
         context.meld($('#data'), cleanData, {
             selector: function(k) {
                 k = k.replace(cleanRe, cleanReplacement);
@@ -338,10 +308,10 @@ function createTable()
     var statusStr = '<div class="span6"><div class="dataTables_info"><h4 class="record-pos">{% trans "Record 1 of 6" %}</h4></div></div>';
     var topStatus = $(statusStr);
     topStatusNavRows.append(topStatus);
-    
+
     var pagerStr = '<div class="span6"><div class="dataTables_paginate paging_bootstrap pagination"><ul><li class="prev disabled"><a href="#">{% trans "← Previous" %}</a></li><li class="next disabled"><a href="#">{% trans "Next →" %} </a></li></ul></div></div>';
     var topPager = $(pagerStr);
-    
+
     topStatusNavRows.append(topPager);
     dataContainer.append(topStatusNavRows);
 
@@ -349,7 +319,7 @@ function createTable()
         var editDelete = '<div class="row"><div class="span6"><a id="title_edit" href="#kate" class="btn small bind-edit disabled">{% trans "edit" %}</a>&nbsp;<a href="#"class="btn btn-small btn-danger">{% trans "Delete" %}</a></div></div>';
         dataContainer.append(editDelete);
     {% endif %}
-    
+
     var table = $('<table id="data-table" class="table table-bordered table-striped"></table');
     var tHead = $('<thead><tr><th class="header" width="50%">{% trans "Question" %}</th><th class="header">{% trans "Response" %}</th></tr></thead>');
     var tBody = $('<tbody></tbody>');
@@ -394,24 +364,6 @@ function createTable()
     setLanguage(languages[0]);
 }
 
-function parseQuestions(children, prefix)
-{
-    var idx;
-    for(idx in children)
-    {
-      var question = children[idx];
-      if(question.hasOwnProperty('children') && question.type == "group")
-      {
-          parseQuestions(question.children, (question.name + cleanReplacement));
-      }
-      else
-      {
-          // TODO: question class that has accessor mesthods for type, label, language etc
-          questions[((prefix?prefix:'') + question.name)] = new Question(question);
-      }
-    }
-}
-
 function parseLanguages(children)
 {
     // run through question objects, stop at first question with label object and check it for multiple languages
@@ -450,4 +402,5 @@ function parseLanguages(children)
               <a href="#" onclick="$('#delete-modal').modal('hide');" class="btn secondary">{% trans "Cancel" %}</a>
             </div>
           </div>
+    <script type="text/javascript" charset="utf-8" src="/static/js/instance.js"></script>
 {% endblock %}
