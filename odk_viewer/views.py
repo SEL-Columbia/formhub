@@ -1,6 +1,7 @@
 from collections import defaultdict
 from datetime import date
 import json
+from django.views.decorators.http import require_POST
 import os
 import urllib2
 import zipfile
@@ -8,6 +9,7 @@ from tempfile import NamedTemporaryFile
 from time import strftime, strptime
 from urlparse import urlparse
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.files.storage import get_storage_class
@@ -35,10 +37,16 @@ from xls_writer import XlsWriter
 from utils.logger_tools import response_with_mimetype_and_name,\
     disposition_ext_and_date, round_down_geopoint
 from utils.viewer_tools import image_urls, image_urls_for_form
+from odk_viewer.tasks import create_xls_export, create_csv_export
 from utils.user_auth import has_permission, get_xform_and_perms
 from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
 import main
+from odk_viewer.models import Export
+from odk_viewer.models.export import XLS_EXPORT, CSV_EXPORT, KML_EXPORT,\
+    EXPORT_TYPE_DICT, EXPORT_PENDING, EXPORT_SUCCESSFUL, EXPORT_FAILED,\
+    generate_export, EXPORT_DEFS
+from utils.viewer_tools import export_def_from_filename
 
 
 def encode(time_str):
@@ -168,22 +176,19 @@ def csv_export(request, username, id_string):
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
     query = request.GET.get("query")
-    csv_dataframe_builder = CSVDataFrameBuilder(username, id_string, query)
+    ext = CSV_EXPORT
+
     try:
-        temp_file = NamedTemporaryFile(suffix=".csv")
-        csv_dataframe_builder.export_to(temp_file)
-        if request.GET.get('raw'):
-            id_string = None
-        response = response_with_mimetype_and_name('application/csv', id_string,
-                                                   extension='csv')
-        temp_file.seek(0)
-        response.write(temp_file.read())
-        temp_file.seek(0, os.SEEK_END)
-        response['Content-Length'] = temp_file.tell()
-        temp_file.close()
-        return response
+        export = generate_export(CSV_EXPORT, ext, username, id_string, None, query)
     except NoRecordsFoundError:
         return HttpResponse(_("No records found to export"))
+    else:
+        if request.GET.get('raw'):
+            id_string = None
+        response = response_with_mimetype_and_name('application/csv',
+            id_string, extension=ext, file_path=export.filepath)
+        return response
+
 
 def xls_export(request, username, id_string):
     owner = get_object_or_404(User, username=username)
@@ -192,35 +197,157 @@ def xls_export(request, username, id_string):
         return HttpResponseForbidden(_(u'Not shared.'))
     query = request.GET.get("query")
     force_xlsx = request.GET.get('xlsx') == 'true'
-    xls_df_builder = XLSDataFrameBuilder(username, id_string, query)
-    excel_defs = {
-      'xls': {
-        'suffix': '.xls',
-        'mime_type': 'vnd.ms-excel'
-      },
-      'xlsx': {
-        'suffix': '.xlsx',
-        'mime_type': 'vnd.openxmlformats' # TODO: check xlsx mime type
-      }
-    }
     ext = 'xls' if not force_xlsx else 'xlsx'
-    if xls_df_builder.exceeds_xls_limits:
-        ext = 'xlsx'
     try:
-        temp_file = NamedTemporaryFile(suffix=excel_defs[ext]['suffix'])
-        xls_df_builder.export_to(temp_file.name)
-
-        if request.GET.get('raw'):
-            id_string = None
-        response = response_with_mimetype_and_name(excel_defs[ext]['mime_type'], id_string,
-                                                   extension=ext)
-        response.write(temp_file.read())
-        temp_file.seek(0, os.SEEK_END)
-        response['Content-Length'] = temp_file.tell()
-        temp_file.close()
-        return response
+        export = generate_export(XLS_EXPORT, ext, username, id_string, None, query)
     except NoRecordsFoundError:
         return HttpResponse(_("No records found to export"))
+    else:
+        # get extension from file_path, exporter could modify to xlsx if it exceeds limits
+        path, ext = os.path.splitext(export.filename)
+        ext = ext[1:]
+        if request.GET.get('raw'):
+            id_string = None
+        response = response_with_mimetype_and_name(EXPORT_DEFS[ext][u'mime_type'],
+            id_string, extension=ext, file_path=export.filepath)
+        return response
+
+
+@require_POST
+def create_export(request, username, id_string, export_type):
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden(_(u'Not shared.'))
+
+    if export_type not in EXPORT_TYPE_DICT.keys():
+        return HttpResponseBadRequest(_("%s is not a valid export type" % export_type))
+
+    query = request.POST.get("query")
+    force_xlsx = request.POST.get('xlsx') == 'true'
+
+    # TODO: can anyone with access publicly available data create new exports?
+    export = Export.objects.create(xform=xform, export_type=export_type)
+
+    result = None
+    if export_type == XLS_EXPORT:
+        # start async export
+        result = create_xls_export.apply_async(
+            (), {
+                'username': username,
+                'id_string': id_string,
+                'query': query,
+                'force_xlsx': force_xlsx,
+                'export_id': export.id
+                })
+    elif export_type == CSV_EXPORT:
+        # start async export
+        result = create_csv_export.apply_async(
+            (), {
+                'username': username,
+                'id_string': id_string,
+                'query': query,
+                'export_id': export.id
+            })
+    export.task_id = result.task_id
+    export.save()
+    return HttpResponseRedirect(
+        reverse(export_list,
+            kwargs={"username": username,
+                    "id_string": id_string,
+                    "export_type": export_type
+            }
+        )
+    )
+
+
+def export_list(request, username, id_string, export_type):
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden(_(u'Not shared.'))
+
+    context = RequestContext(request)
+    context.username = owner.username
+    context.xform = xform
+    # TODO: better output e.g. Excel instead of XLS
+    context.export_type = export_type
+    context.export_type_name = EXPORT_TYPE_DICT[export_type]
+    exports = Export.objects.filter(xform=xform, export_type=export_type)\
+        .order_by('-created_on')
+    context.exports = exports
+    return render_to_response('export_list.html', context_instance=context)
+
+
+def export_progress(request, export_id):
+    # find the export entry in the db
+    export = get_object_or_404(Export, pk=export_id)
+    xform = export.xform
+    owner = xform.user
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden(_(u'Not shared.'))
+    status = {
+        'complete': False,
+        'url': None,
+        'filename': None
+    }
+
+    if export.status == EXPORT_SUCCESSFUL:
+        status['url'] = reverse(export_download, kwargs={
+            'username': owner.username,
+            'id_string': xform.id_string,
+            'export_type': export.export_type,
+            'filename': export.filename
+        })
+        status['filename'] = export.filename
+    # mark as complete if it either failed or succeeded but NOT pending
+    if export.status == EXPORT_SUCCESSFUL or export.status == EXPORT_FAILED:
+        status['complete'] = True
+
+    return HttpResponse(simplejson.dumps(status), mimetype='application/json')
+
+
+def export_download(request, username, id_string, export_type, filename):
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden(_(u'Not shared.'))
+
+    # find the export entry in the db
+    export = get_object_or_404(Export, xform=xform, filename=filename)
+
+    ext, mime_type = export_def_from_filename(export.filename)
+
+    if request.GET.get('raw'):
+        id_string = None
+    basename = os.path.splitext(export.filename)[0]
+    response = response_with_mimetype_and_name(mime_type,
+        name=basename, extension=ext, file_path=export.filepath, show_date=False)
+    return response
+
+
+@require_POST
+def delete_export(request, username, id_string, export_type):
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden(_(u'Not shared.'))
+
+    export_id = request.POST.get('export_id')
+
+    # find the export entry in the db
+    export = get_object_or_404(Export, id=export_id)
+
+    export.delete()
+    return HttpResponseRedirect(
+        reverse(export_list,
+            kwargs={"username": username,
+                    "id_string": id_string,
+                    "export_type": export_type
+            }
+        )
+    )
+
 
 def zip_export(request, username, id_string):
     owner = get_object_or_404(User, username=username)

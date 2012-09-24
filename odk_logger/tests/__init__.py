@@ -3,3 +3,4 @@ from instance_creation_test import *
 from test_simple_submission import *
 from test_import_tools import *
 from test_form_submission import *
+from test_update_xform_uuid import *
