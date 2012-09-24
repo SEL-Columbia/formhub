@@ -321,7 +321,7 @@ def enter_data(request, username, id_string):
                               id_string=id_string)
     if not has_edit_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden(_(u'Not shared.'))
-    if not hasattr(settings, 'TOUCHFORMS_URL'):
+    if not hasattr(settings, 'ENKETO_URL'):
         return HttpResponseRedirect(reverse('main.views.show',
                                     kwargs={'username': username,
                                             'id_string': id_string}))
