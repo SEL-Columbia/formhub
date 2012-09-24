@@ -127,7 +127,8 @@ function initialize() {
         var innerFn = function(tilejson) {
             var tileLayer, mapName;
 
-            tilejson.attribution += mapBoxAdditAttribution;
+            tilejson.attribution = tilejson.attribution?tilejson.attribution +
+                mapBoxAdditAttribution:mapBoxAdditAttribution;
             // check if https and change tile array appropriately
             if(mapview.isHttps())
             {
