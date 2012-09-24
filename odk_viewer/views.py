@@ -493,6 +493,8 @@ def attachment_url(request, size='medium'):
     attachment = result[0]
 
     media_url = image_url(attachment, size)
+    if size == 'original':
+        return render_to_response("image.html", {'image': media_url})
     return redirect(media_url)
 
 
