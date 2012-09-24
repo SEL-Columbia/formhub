@@ -5,11 +5,11 @@ EnvJasmine.load(EnvJasmine.jsDir + "odk_viewer/static/js/instance.js");
 
 describe("Instance View tests", function() {
     it("checks that parseQuestions builds hierachy's as expected", function() {
-        expect(QuestionData).toBeDefined();
+        expect(SurveyData.children).toBeDefined();
         expect(questions).toBeDefined();
-        parseQuestions(QuestionData);
+        parseQuestions(SurveyData.children);
         // must only have one question
         expect(Object.size(questions)).toEqual(1);
-        expect(questions['note_one_a_question']).toBeDefined();
+        expect(questions['note_one_a_group_a_question']).toBeDefined();
     });
 });

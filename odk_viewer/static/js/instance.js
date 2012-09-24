@@ -40,7 +40,7 @@ function parseQuestions(children, prefix, cleanReplacement)
         var question = children[idx];
         if(question.hasOwnProperty('children') && (question.type == "group" || question.type == "note"))
         {
-            parseQuestions(question.children, (question.name + cleanReplacement));
+            parseQuestions(question.children, ((prefix?prefix:'') + question.name + cleanReplacement));
         }
         else
         {
