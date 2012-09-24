@@ -493,6 +493,8 @@ def attachment_url(request, size='medium'):
     attachment = result[0]
 
     media_url = image_url(attachment, size)
+    if media_url is None:
+        return HttpResponseNotFound(_(u'Attachment not found'))
     return redirect(media_url)
 
 
