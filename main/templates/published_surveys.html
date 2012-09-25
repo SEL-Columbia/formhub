@@ -85,7 +85,7 @@
                                       <i class="icon-edit icon-large"></i>
                                   </a>
                                   <!-- DELETE -->
-                                  {% if xform.submission_count <= 0 %}
+                                  {% if xform.submission_count <= 0 and False %}
                                       <a class="btn btn-flat" data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" rel="tooltip" data-original-title="{% trans 'Delete Form' %}">
                                           <i class="icon-trash icon-large"></i>
                                       </a>
