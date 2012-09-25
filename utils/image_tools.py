@@ -1,9 +1,10 @@
 from cStringIO import StringIO
 from PIL import Image
-import urllib2 as urllib
 
 from django.conf import settings
 from django.core.files.storage import get_storage_class
+import os
+import requests
 
 from utils.viewer_tools import get_path
 
@@ -49,17 +50,18 @@ def _save_thumbnails(image, path, size, suffix, filename=None):
 def resize(filename):
     default_storage = get_storage_class()()
     path = default_storage.url(filename)
-    img_file = urllib.urlopen(path)
-    im = StringIO(img_file.read())
-    img_file.close()
-    image = Image.open(im)
-    conf = settings.THUMB_CONF
-    fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
-    loc_path = fs.path('dummy.%s' % settings.IMG_FILE_TYPE)
-
-    [_save_thumbnails(
-        image, loc_path, conf[key]['size'], conf[key]['suffix'],
-        filename=filename) for key in settings.THUMB_ORDER]
+    req = requests.get(path)
+    if req.status_code == 200:
+        im = StringIO(req.content)
+        image = Image.open(im)
+        conf = settings.THUMB_CONF
+        fs = get_storage_class('django.core.files.storage.FileSystemStorage')()
+        if not os.path.exists(os.path.abspath(settings.MEDIA_ROOT)):
+            os.makedirs(os.path.abspath(settings.MEDIA_ROOT))
+        loc_path = fs.path('dummy.%s' % settings.IMG_FILE_TYPE)
+        [_save_thumbnails(
+            image, loc_path, conf[key]['size'], conf[key]['suffix'],
+            filename=filename) for key in settings.THUMB_ORDER]
 
 
 def resize_local_env(filename):
@@ -86,13 +88,16 @@ def image_url(attachment, suffix):
         if settings.THUMB_CONF.has_key(suffix):
             size = settings.THUMB_CONF[suffix]['suffix']
             filename = attachment.media_file.name
-            if default_storage.exists(get_path(filename, size)):
-                url = default_storage.url(
-                    get_path(filename, size))
-            else:
-                if default_storage.__class__ != fs.__class__:
-                    resize(filename)
+            if default_storage.exists(filename):
+                if default_storage.exists(get_path(filename, size)):
+                    url = default_storage.url(
+                        get_path(filename, size))
                 else:
-                    resize_local_env(filename)
-                return image_url(attachment, suffix)
+                    if default_storage.__class__ != fs.__class__:
+                        resize(filename)
+                    else:
+                        resize_local_env(filename)
+                    return image_url(attachment, suffix)
+            else:
+                return None
     return url
