@@ -393,11 +393,7 @@ FormResponseManager.prototype._toPivotJs = function(fields)
                 /// if this is time(date + time) data remove the T inside datetime data
                 if(pivotType == "time")
                 {
-                    var pattern = /^\d{4}\-\d{2}\-\d{2}T/;
-                    if(pattern.test(data))
-                    {
-                        data = data.replace("T", " ");
-                    }
+                    data = fhUtils.DateTimeToISOString(data);
                 }
             }
             row.push(data);
@@ -434,11 +430,7 @@ FormResponseManager.prototype._toDataTables = function(fields)
                 /// if this is time(date + time) data remove the T inside datetime data
                 if(pivotType == "time")
                 {
-                    var pattern = /^\d{4}\-\d{2}\-\d{2}T/;
-                    if(pattern.test(data))
-                    {
-                        data = data.replace("T", " ");
-                    }
+                    data = fhUtils.DateTimeToISOString(data);
                 }
             }
             row.push(data);
