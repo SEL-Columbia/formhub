@@ -2,12 +2,15 @@
 
 {% block additional-headers %}
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" href="/static/galleria/themes/classic/galleria.classic.css">
+
 <style type="text/css">
     html { height: 100%; overflow: hidden }
     body { height: 100%; margin: 0; padding: 0 }
     #gallery { height: 100% }
 </style>
-<script type="text/javascript" src="/static/galleria/galleria-1.2.6.min.js"></script>
+    <script type="text/javascript" src="/static/galleria/galleria-1.2.8.min.js"></script>
+    <script type="text/javascript" src="/static/galleria/themes/classic/galleria.classic.min.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -15,13 +18,22 @@
     {% include "topbar.html" %}
     <div id="gallery">
     {% for image_url in images %}
-        <img src="{{ image_url }}">
+        <a href="{{ image_url.large }}">
+        <img longdesc={{ image_url.original }} src="{{ image_url.small }}">
+        </a>
     {% endfor %}
     </div>
 <script type="text/javascript">
-    Galleria.loadTheme('/static/galleria/theme/galleria.classic.min.js');
-    $("#gallery").galleria({
+    // Load the classic theme
+    // Galleria.loadTheme('/static/galleria/themes/classic/galleria.classic.min.js');
+    Galleria.configure({
+        transition: 'fade',
+        lightbox: false,
+        popupLinks: true,
+        showInfo: true
     });
+    // Initialize Galleria
+    Galleria.run('#gallery');
 </script>
 </body>
 {% endblock %}
