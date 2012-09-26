@@ -56,7 +56,9 @@
         <td>
             <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
             {% if xform.shared %}
-                <span class="label label-info">{%  trans "PUBLIC" %}</span>
+                <a href="#" rel="tooltip" title="{% trans 'Public' %}">
+                    <i class="icon-public icon-public-data"></i>
+                </a>
             {% endif %}
         </td>
         <td><center>{{ xform.submission_count|intcomma }}</center></td>
@@ -124,6 +126,11 @@
               <div class="data-download">
                   <i class="icon-download icon-large"></i>
                   <span class="">{% trans "Download" %}</span>
+                  {% if xform.shared_data %}
+                      <a href="#" rel="tooltip" title="{% trans 'Public' %}">
+                          <i class="icon-public icon-public-data"></i>
+                      </a>
+                  {% endif %}
                   <ul class="download-nav">
                       <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'csv' %}">{%  trans "csv" %}</a></li>
                       <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'xls' %}">{%  trans "xls" %}</a></li>
@@ -134,9 +141,6 @@
                       </li>
                   </ul>
               </div>
-          {% endif %}
-          {% if xform.shared_data %}
-              <span class="label label-info">{%  trans "PUBLIC" %}</span>
           {% endif %}
         </td>
           <td>

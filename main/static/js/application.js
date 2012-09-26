@@ -168,7 +168,7 @@ $(document).ready(function(){
     $(function () {
         $("a[rel=tooltip]").tooltip({
             live: true,
-            placement: 'below'
+            placement: 'top'
         })
     })
     $('.btn').tooltip();

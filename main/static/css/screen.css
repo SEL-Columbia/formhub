@@ -325,6 +325,10 @@ table.table thead .sorting_desc_disabled {
 table.dataTable th:active {
   outline: none;
 }
+#forms-table a,
+#crowdforms-table a {
+  font-weight: bold;
+}
 section {
   padding-top: 20px;
 }
@@ -437,6 +441,15 @@ section {
 .icon-large.icon-browse {
   background-image: url("../images/view_browse.png");
 }
+.icon-public {
+  background-position: 50% 50%;
+  margin-top: 2px;
+}
+.icon-public.icon-public-data {
+  width: 15px;
+  height: 15px;
+  background-image: url("../images/icon_public.png");
+}
 .btn-flat {
   background: none;
   border: none;
@@ -476,15 +489,18 @@ section {
   background-image: url("../images/data_download.png");
   width: 21px;
   height: 21px;
+  float: left;
+  margin: 4px 4px 0px 0px;
 }
 .data-download .download-nav {
   text-transform: uppercase;
   opacity: 0;
   filter: alpha(opacity=0);
+  margin-left: 0px;
 }
 .data-download .download-nav li {
   display: inline;
-  margin: 0px 2px;
+  margin-right: 4px;
 }
 .data-download:hover span {
   color: #32af6e;
