@@ -124,14 +124,17 @@
         <td>
           {% if xform.submission_count %}
               <div class="data-download">
-                  <i class="icon-download icon-large"></i>
-                  <span class="">{% trans "Download" %}</span>
-                  {% if xform.shared_data %}
+                  <span class="vertical-middle">
+                    <i class="icon-download icon-large"></i>
+                  </span>
+                  <span class="vertical-middle">
+                    <span class="">{% trans "Download" %}</span>
+                    {% if xform.shared_data %}
                       <a href="#" rel="tooltip" title="{% trans 'Public' %}">
                           <i class="icon-public icon-public-data"></i>
                       </a>
-                  {% endif %}
-                  <ul class="download-nav">
+                    {% endif %}
+                    <ul class="download-nav">
                       <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'csv' %}">{%  trans "csv" %}</a></li>
                       <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'xls' %}">{%  trans "xls" %}</a></li>
                       <li>
@@ -139,7 +142,8 @@
                               <a href="{% url odk_viewer.views.kml_export user.username xform.id_string %}">{%  trans "kml" %}</a>
                           {% endif %}
                       </li>
-                  </ul>
+                    </ul>
+                  </span>
               </div>
           {% endif %}
         </td>

@@ -409,6 +409,11 @@ section {
     .popover.popover-btns       {  z-index: @zindexPopover }
 }
 
+.vertical-middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+
 .icon-large {
     width: 40px;
     height: 33px;
@@ -488,7 +493,7 @@ section {
         width: 21px;
         height: 21px;
         float: left;
-        margin: 4px 4px 0px 0px;
+        margin: 4px 8px 0px 0px;
     }
     .download-nav {
         text-transform: uppercase;
@@ -509,5 +514,8 @@ section {
         .download-nav {
             .opacity(100);
         }
+    }
+    ul {
+        margin: 0;
     }
 }

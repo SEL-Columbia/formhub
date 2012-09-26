@@ -412,6 +412,10 @@ section {
 .modal-open .popover.popover-btns {
   z-index: 1010;
 }
+.vertical-middle {
+  display: table-cell;
+  vertical-align: middle;
+}
 .icon-large {
   width: 40px;
   height: 33px;
@@ -490,7 +494,7 @@ section {
   width: 21px;
   height: 21px;
   float: left;
-  margin: 4px 4px 0px 0px;
+  margin: 4px 8px 0px 0px;
 }
 .data-download .download-nav {
   text-transform: uppercase;
@@ -511,4 +515,7 @@ section {
 .data-download:hover .download-nav {
   opacity: 1;
   filter: alpha(opacity=100);
+}
+.data-download ul {
+  margin: 0;
 }
