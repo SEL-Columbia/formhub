@@ -41,7 +41,7 @@ class TestFormAPIDelete(MainTestCase):
         count = Instance.objects.filter(deleted_at=None).count()
         records = self._get_data()
         self.assertTrue(records.__len__() > 0)
-        query = '{"_id": %s' % records[0]["_id"]
+        query = '{"_id": %s}' % records[0]["_id"]
         response = self.anon.post(self.delete_url, {'query': query})
         self.assertEqual(response.status_code, 302)
         self.assertIn("accounts/login/?next=", response["Location"])
