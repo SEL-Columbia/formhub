@@ -53,10 +53,14 @@ class TestFormAPIDelete(MainTestCase):
         self.xform.shared = True
         self.xform.save()
         self._create_user_and_login("jo")
-        json = '{"transport/available_transportation_types_to_referral_facility":"none"}'
-        data = {'query': json}
-        response = self.client.get(self.delete_url, data)
+        count = Instance.objects.filter(deleted_at=None).count()
+        records = self._get_data()
+        self.assertTrue(records.__len__() > 0)
+        query = '{"_id": %s}' % records[0]["_id"]
+        response = self.client.post(self.delete_url, {'query': query})
         self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            Instance.objects.filter(deleted_at=None).count(), count)
 
     def test_owner_can_delete(self):
         #Test if Form owner can delete
