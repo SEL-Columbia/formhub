@@ -65,27 +65,19 @@ class TestFormAPIDelete(MainTestCase):
     def test_owner_can_delete(self):
         #Test if Form owner can delete
         #check record exist before delete and after delete
-        json = '{"transport/available_transportation_types_to_referral_facility":"none"}'
-        data = {'query': json}
-        args = {'username': self.user.username, 'id_string':
-                    self.xform.id_string, 'query': json, 'limit': 1, 'sort':
-                        '{"_id":-1}', 'fields': '["_id","_uuid"]'}
-
-        #check if record exist before delete
-        before = ParsedInstance.query_mongo(**args)
-        self.assertEqual(before.count(), 1)
-        records = list(record for record in before)
-        uuid = records[0]['_uuid']
-        instance  = Instance.objects.get(uuid=uuid, xform=self.xform)
-        self.assertEqual(instance.deleted_at, None)
-
-        #Delete
-        response = self.client.get(self.delete_url, data)
+        count = Instance.objects.filter(deleted_at=None).count()
+        records = self._get_data()
+        self.assertTrue(records.__len__() > 0)
+        query = '{"_id": %s}' % records[0]["_id"]
+        response = self.client.post(self.delete_url, {'query': query})
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            Instance.objects.filter(deleted_at=None).count(), count - 1)
+        uuid = records[0]['_uuid']
         instance  = Instance.objects.get(uuid=uuid, xform=self.xform)
         self.assertNotEqual(instance.deleted_at, None)
         self.assertTrue(isinstance(instance.deleted_at, datetime))
-
+        self.mongo_args.update({"query": query})
         #check if it exist after delete
-        after = ParsedInstance.query_mongo(**args)
+        after = ParsedInstance.query_mongo(**self.mongo_args)
         self.assertEqual(after.count(), 0)
