@@ -19,6 +19,14 @@ class TestFormAPIDelete(MainTestCase):
             'id_string': self.xform.id_string
         })
 
+    def test_get_request_does_not_delete(self):
+        # not allowed 405
+        count = Instance.objects.filter(deleted_at=None).count()
+        response = self.anon.get(self.delete_url)
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(
+            Instance.objects.filter(deleted_at=None).count(), count)
+
     def test_anon_user(self):
         #Only authenticated user are allowed to access the url
         response = self.anon.get(self.delete_url, {},
