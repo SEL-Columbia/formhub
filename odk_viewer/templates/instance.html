@@ -21,7 +21,7 @@
 <script type="text/javascript">
 var formJSONUrl = "{% url odk_logger.views.download_jsonform username id_string %}";
 var mongoAPIUrl = "{% url main.views.api username id_string %}";
-var editAPIUrl = "{% url main.views.delete_data username id_string %}";
+var deleteAPIUrl = "{% url main.views.delete_data username id_string %}";
 var app; // sammy app
 var questions = {};
 var languages = [];
@@ -124,7 +124,7 @@ var browsePos = null;
 
 function editData(context, query, next_prev){
     //TODO: show loader
-    $.getJSON(editAPIUrl, {'query': query, 'limit':1})
+    $.post(deleteAPIUrl, {'query': query, 'limit':1})
             .success(function(data){
 
               loadData(context, next_prev);
