@@ -151,7 +151,6 @@ class TestExports(MainTestCase):
         exports = Export.objects.all()
         params = {'export_ids': [e.id for e in exports]}
         response = self.client.get(progress_url, params)
-        import ipdb; ipdb.set_trace()
         content = json.loads(response.content)
         self.assertEqual(len(content), 2)
         self.assertEqual(sorted(['url', 'export_id', 'complete', 'filename']),
