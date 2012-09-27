@@ -43,7 +43,7 @@
                 {% endif %}
             {% else %}
               <span class="status">{% trans "Pending ..." %}</span>
-              <a href="#" class="refresh-export-progress" data-role="refresh-export-progress" data-url="{% url odk_viewer.views.export_progress username xform.id_string export.export_type %}?export_ids={{ export.id }}" data-export="{{ export.id }}">{% trans "Click to refresh" %}</a>
+              <a href="#" class="refresh-export-progress" data-role="refresh-export-progress" data-export="{{ export.id }}">{% trans "Click to refresh" %}</a>
             {% endif %}
         </td>
         <td>{{ export.created_on }}</td>
