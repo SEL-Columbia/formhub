@@ -605,8 +605,8 @@ def delete_data(request, username=None, id_string=None):
         query_args = {
             "username": username, "id_string": id_string,
             "query": query,
-            "fields": request.GET.get('fields'),
-            "sort": request.GET.get('sort')
+            "fields": request.POST.get('fields', None),
+            "sort": request.POST.get('sort', None)
         }
 
         if 'limit' in request.GET:
