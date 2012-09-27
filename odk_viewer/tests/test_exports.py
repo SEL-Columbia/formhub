@@ -148,9 +148,19 @@ class TestExports(MainTestCase):
             'id_string': self.xform.id_string,
             'export_type': 'xls'
         })
-        get_data = {'export_ids': [e.id for e in Export.objects.all()]}
-        response = self.client.get(progress_url, get_data)
+        exports = Export.objects.all()
+        params = {'export_ids': [e.id for e in exports]}
+        response = self.client.get(progress_url, params)
+        import ipdb; ipdb.set_trace()
         content = json.loads(response.content)
         self.assertEqual(len(content), 2)
         self.assertEqual(sorted(['url', 'export_id', 'complete', 'filename']),
             sorted(content[0].keys()))
+        # progress for single export, test that GET.getlist will work for a non-list object
+        params = {'export_ids': exports[0].id}
+        response = self.client.get(progress_url, params)
+        content = json.loads(response.content)
+        self.assertEqual(len(content), 1)
+        self.assertEqual(sorted(['url', 'export_id', 'complete', 'filename']),
+            sorted(content[0].keys()))
+
