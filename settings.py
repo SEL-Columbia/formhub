@@ -145,6 +145,7 @@ INSTALLED_APPS = (
     'staff',
     'guardian',
     'djcelery',
+    'stats',
 )
 COMPRESS = True
 
