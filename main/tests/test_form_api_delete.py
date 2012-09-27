@@ -18,6 +18,15 @@ class TestFormAPIDelete(MainTestCase):
             'username': self.user.username,
             'id_string': self.xform.id_string
         })
+        self.mongo_args = {
+            'username': self.user.username, 'id_string': self.xform.id_string,
+            'query': "{}", 'limit': 1,
+            'sort': '{"_id":-1}', 'fields': '["_id","_uuid"]'}
+
+    def _get_data(self):
+        cursor = ParsedInstance.query_mongo(**self.mongo_args)
+        records = list(record for record in cursor)
+        return records
 
     def test_get_request_does_not_delete(self):
         # not allowed 405
@@ -27,11 +36,17 @@ class TestFormAPIDelete(MainTestCase):
         self.assertEqual(
             Instance.objects.filter(deleted_at=None).count(), count)
 
-    def test_anon_user(self):
-        #Only authenticated user are allowed to access the url
-        response = self.anon.get(self.delete_url, {},
-                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 403)
+    def test_anon_user_delete(self):
+        # Only authenticated user are allowed to access the url
+        count = Instance.objects.filter(deleted_at=None).count()
+        records = self._get_data()
+        self.assertTrue(records.__len__() > 0)
+        query = '{"_id": %s' % records[0]["_id"]
+        response = self.anon.post(self.delete_url, {'query': query})
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("accounts/login/?next=", response["Location"])
+        self.assertEqual(
+            Instance.objects.filter(deleted_at=None).count(), count)
 
     def test_delete_shared(self):
         #Test if someone can delete a shared form
