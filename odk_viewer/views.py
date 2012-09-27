@@ -508,9 +508,11 @@ def instance(request, username, id_string):
             request.session.get('public_link')):
         return HttpResponseForbidden(_(u'Not shared.'))
 
+    context = RequestContext(request)
+
     return render_to_response('instance.html', {
         'username': username,
         'id_string': id_string,
         'xform': xform,
         'can_edit': can_edit
-    })
+    }, context_instance=context)
