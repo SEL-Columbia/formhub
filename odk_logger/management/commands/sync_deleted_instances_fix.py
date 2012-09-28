@@ -14,7 +14,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Reset all sql deletes to None
-        Instance.objects.exclude(deleted_at=None).update(deleted_at=None)
+        Instance.objects.exclude(
+            deleted_at=None, xform__downloadable=True).update(deleted_at=None)
 
         # Get all mongo deletes
         query = '{"$and": [{"_deleted_at": {"$exists": true}}, ' \
@@ -24,7 +25,12 @@ class Command(BaseCommand):
         cursor = xform_instances.find(query)
         for record in cursor:
             # update sql instance with deleted_at datetime from mongo
-            i = Instance.objects.get(uuid=record["_uuid"])
-            i.deleted_at = datetime.strptime(record["_deleted_at"],
-                                             "%Y-%m-%dT%H:%M:%S")
-            i.save()
+            try:
+                i = Instance.objects.get(
+                    uuid=record["_uuid"],  xform__downloadable=True)
+            except Instance.DoesNotExist:
+                continue
+            else:
+                i.deleted_at = datetime.strptime(record["_deleted_at"],
+                                                 "%Y-%m-%dT%H:%M:%S")
+                i.save()
