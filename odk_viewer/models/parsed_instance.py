@@ -11,6 +11,7 @@ import json
 
 
 from restservice.utils import call_service
+from stats.tasks import stat_log
 from utils.model_tools import queryset_iterator
 from odk_logger.models import Instance
 from common_tags import START_TIME, START, END_TIME, END, ID, UUID,\
@@ -20,6 +21,7 @@ from common_tags import START_TIME, START, END_TIME, END, ID, UUID,\
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
 key_whitelist = ['$or', '$and', '$exists', '$in', '$gt', '$gte', '$lt', '$lte']
+GLOBAL_SUBMISSION_STATS = u'global_submission_stats'
 
 
 class ParseError(Exception):
@@ -270,3 +272,15 @@ def rest_service_form_submission(sender, **kwargs):
 
 
 post_save.connect(rest_service_form_submission, sender=ParsedInstance)
+
+def submission_count(sender, **kwargs):
+    parsed_instance = kwargs.get('instance')
+    created = kwargs.get('created')
+    if created:
+        stat_log.delay(GLOBAL_SUBMISSION_STATS, 1)
+        key='%(username)s_%(xform_id_string)s_submissions'\
+            % {"username": parsed_instance.instance.xform.user.username,
+               "xform_id_string": parsed_instance.instance.xform.id_string}
+        stat_log.delay(key, 1)
+
+post_save.connect(submission_count, sender=ParsedInstance)
