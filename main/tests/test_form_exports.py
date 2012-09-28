@@ -1,4 +1,3 @@
-from odk_viewer.models.export import XLS_EXPORT
 from test_base import MainTestCase
 from odk_viewer.views import csv_export, xls_export, zip_export, kml_export
 from django.core.urlresolvers import reverse
