@@ -11,6 +11,7 @@ from django.utils.translation import ugettext_lazy, ugettext as _
 
 from odk_logger.xform_instance_parser import XLSFormError
 from utils.stathat_api import stathat_count
+from stats.tasks import stat_log
 
 from hashlib import md5
 
@@ -125,9 +126,10 @@ class XForm(models.Model):
         return u'%s' % md5(self.xml.encode('utf8')).hexdigest()
 
 
-def stathat_forms_created(sender, instance, created, **kwargs):
+def stats_forms_created(sender, instance, created, **kwargs):
     if created:
         stathat_count('formhub-forms-created')
+        stat_log.delay('formhub-forms-created', 1)
 
 
-post_save.connect(stathat_forms_created, sender=XForm)
+post_save.connect(stats_forms_created, sender=XForm)
