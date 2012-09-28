@@ -410,8 +410,8 @@ def tutorial(request):
 
 
 def syntax(request):
-    url = 'https://docs.google.com/document/pub?id=1Dze4IZGr0IoIFuFAI_ohKR5mY'\
-        'Ut4IAn5Y-uCJmnv1FQ'
+    url = 'https://docs.google.com/document/pub?id='\
+        '1xD5gSjeyjGjw-V9g5hXx7FWeasRvn-L6zeQJsNeAGBI'
     doc = GoogleDoc(url)
     context = RequestContext(request)
     context.content = doc.to_html()
