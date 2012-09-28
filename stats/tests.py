@@ -11,10 +11,9 @@ class StatsTest(TestCase):
     def test_statscount(self):
         StatsCount.objects.create(key="*", value=1)
         self.assertEqual(
-            StatsCount.objects.aggregate(Sum('value'))['value__sum'], 1)
+            StatsCount.stats.count(), 1)
 
     def test_task_stat_log(self):
-        count = StatsCount.objects.all().count()
         result = stat_log.delay("*", 1)
         self.assertEqual(
             (result.get().key, result.get().value), (u"*", 1))
