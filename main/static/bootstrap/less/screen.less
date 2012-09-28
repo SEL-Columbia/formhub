@@ -470,6 +470,10 @@ section {
     &.active, &:active {
         .box-shadow(none);
     }
+    &.inactive {
+        .opacity(40);
+        cursor: default;
+    }
     &:hover {
         background: none;
         .icon-map-marker {
@@ -486,6 +490,23 @@ section {
         }
         .icon-browse {
             background-image: url("../images/view_browse-active.png");
+        }
+        &.inactive {
+            .icon-map-marker {
+                background-image: url("../images/view_map.png");
+            }
+            .icon-camera {
+                background-image: url("../images/view_photo.png");
+            }
+            .icon-edit {
+                background-image: url("../images/view_edit.png");
+            }
+            .icon-data {
+                background-image: url("../images/view_data.png");
+            }
+            .icon-browse {
+                background-image: url("../images/view_browse.png");
+            }
         }
     }
 }

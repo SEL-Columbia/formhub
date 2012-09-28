@@ -472,6 +472,11 @@ section {
   -moz-box-shadow: none;
   box-shadow: none;
 }
+.btn-flat.inactive {
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+  cursor: default;
+}
 .btn-flat:hover {
   background: none;
 }
@@ -489,6 +494,21 @@ section {
 }
 .btn-flat:hover .icon-browse {
   background-image: url("../images/view_browse-active.png");
+}
+.btn-flat:hover.inactive .icon-map-marker {
+  background-image: url("../images/view_map.png");
+}
+.btn-flat:hover.inactive .icon-camera {
+  background-image: url("../images/view_photo.png");
+}
+.btn-flat:hover.inactive .icon-edit {
+  background-image: url("../images/view_edit.png");
+}
+.btn-flat:hover.inactive .icon-data {
+  background-image: url("../images/view_data.png");
+}
+.btn-flat:hover.inactive .icon-browse {
+  background-image: url("../images/view_browse.png");
 }
 .data-download {
   cursor: pointer;
