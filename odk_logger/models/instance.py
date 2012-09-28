@@ -1,3 +1,4 @@
+from django.conf import settings
 import re
 
 from datetime import datetime
@@ -103,7 +104,6 @@ class Instance(models.Model):
 
     @classmethod
     def delete_by_uuid(cls, username, id_string, uuid, deleted_at=datetime.now()):
-        # import ipdb; ipdb.set_trace()
         try:
             instance = cls.objects.get(
                 uuid=uuid,
@@ -113,8 +113,16 @@ class Instance(models.Model):
         except cls.DoesNotExist:
             return False
         else:
+            xform_instances = settings.MONGO_DB.instances
+            query = {
+                "_uuid": uuid, "_userform_id": "%s_%s" % (username, id_string)}
+            update_query = {
+                "$set": {
+                    "_deleted_at": deleted_at.strftime('%Y-%m-%dT%H:%M:%S')
+                }
+            }
+            xform_instances.update(query, update_query)
             instance.deleted_at = deleted_at
-            #instance.save()
             super(Instance, instance).save()
         return True
 

@@ -417,8 +417,8 @@ def tutorial(request):
 
 
 def syntax(request):
-    url = 'https://docs.google.com/document/pub?id=1Dze4IZGr0IoIFuFAI_ohKR5mY'\
-        'Ut4IAn5Y-uCJmnv1FQ'
+    url = 'https://docs.google.com/document/pub?id='\
+        '1xD5gSjeyjGjw-V9g5hXx7FWeasRvn-L6zeQJsNeAGBI'
     doc = GoogleDoc(url)
     context = RequestContext(request)
     context.content = doc.to_html()
@@ -592,8 +592,18 @@ def show_submission(request, username, id_string, uuid):
         survey_responses, kwargs={'instance_id': submission.pk}))
 
 
-@require_GET
+@require_POST
+@login_required
 def delete_data(request, username=None, id_string=None):
+    query = request.POST.get('query', None)
+    if query is None:
+        return HttpResponseBadRequest(_(u"Invalid query parameter"))
+
+    try:
+        simplejson.loads(query)
+    except ValueError:
+        return HttpResponseBadRequest(_(u"Invalid query parameter"))
+
     xform, owner = check_and_set_user_and_form(username, id_string, request)
     response_text = u''
     if not xform:
@@ -601,9 +611,10 @@ def delete_data(request, username=None, id_string=None):
     try:
         query_args = {
             "username": username, "id_string": id_string,
-            "query": request.GET.get('query'),
-            "fields": request.GET.get('fields'),
-            "sort": request.GET.get('sort')
+            "query": query,
+            "fields": request.POST.get('fields', None),
+            "sort": request.POST.get('sort', None),
+            "limit": 1
         }
 
         if 'limit' in request.GET:
@@ -614,10 +625,6 @@ def delete_data(request, username=None, id_string=None):
     else:
         records = list(record for record in cursor)
         if records.__len__():
-            today = datetime.today().strftime('%Y-%m-%dT%H:%M:%S')
-            ParsedInstance.edit_mongo(
-                query_args['query'],
-                '{ "$set": {"_deleted_at": "%s" }}' % today)
             for record in records:
                 Instance.delete_by_uuid(
                     username, id_string, uuid=record['_uuid'])

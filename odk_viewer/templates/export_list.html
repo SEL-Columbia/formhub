@@ -43,7 +43,7 @@
                 {% endif %}
             {% else %}
               <span class="status">{% trans "Pending ..." %}</span>
-              <a href="#" class="refresh-export-progress" data-role="refresh-export-progress" data-url="{% url odk_viewer.views.export_progress export.id %}">{% trans "Click to refresh" %}</a>
+              <a href="#" class="refresh-export-progress" data-role="refresh-export-progress" data-export="{{ export.id }}">{% trans "Click to refresh" %}</a>
             {% endif %}
         </td>
         <td>{{ export.created_on }}</td>
@@ -79,4 +79,12 @@
   </table>
 
 </section>
+<script type="text/javascript" charset="utf-8" src="/static/js/underscore-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/export_list.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+   fhExportList.init('{% url odk_viewer.views.export_progress username xform.id_string export_type %}', 8000)
+   setTimeout(fhExportList.autoRefresh, 5000)
+});
+</script>
 {% endblock %}

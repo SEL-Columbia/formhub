@@ -123,7 +123,7 @@ class GoogleDoc(object):
         section title. This makes for pretty urls.
         """
         self._sections = []
-        header = r'<h(?P<level>\d) class="c\d+">' \
+        header = r'<h(?P<level>\d) class="[^"]+">' \
             r'<a name="(?P<id>[^"]+)"></a>'      \
             r'<span>(?P<title>[^<]+)</span>'     \
             r'</h\d>'

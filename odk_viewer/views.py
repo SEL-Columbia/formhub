@@ -279,32 +279,38 @@ def export_list(request, username, id_string, export_type):
     return render_to_response('export_list.html', context_instance=context)
 
 
-def export_progress(request, export_id):
-    # find the export entry in the db
-    export = get_object_or_404(Export, pk=export_id)
-    xform = export.xform
-    owner = xform.user
+def export_progress(request, username, id_string, export_type):
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
-    status = {
-        'complete': False,
-        'url': None,
-        'filename': None
-    }
 
-    if export.status == EXPORT_SUCCESSFUL:
-        status['url'] = reverse(export_download, kwargs={
-            'username': owner.username,
-            'id_string': xform.id_string,
-            'export_type': export.export_type,
-            'filename': export.filename
-        })
-        status['filename'] = export.filename
-    # mark as complete if it either failed or succeeded but NOT pending
-    if export.status == EXPORT_SUCCESSFUL or export.status == EXPORT_FAILED:
-        status['complete'] = True
+    # find the export entry in the db
+    export_ids = request.GET.getlist('export_ids')
+    exports = Export.objects.filter(xform=xform, id__in=export_ids)
+    statuses = []
+    for export in exports:
+        status = {
+            'complete': False,
+            'url': None,
+            'filename': None,
+            'export_id': export.id
+        }
 
-    return HttpResponse(simplejson.dumps(status), mimetype='application/json')
+        if export.status == EXPORT_SUCCESSFUL:
+            status['url'] = reverse(export_download, kwargs={
+                'username': owner.username,
+                'id_string': xform.id_string,
+                'export_type': export.export_type,
+                'filename': export.filename
+            })
+            status['filename'] = export.filename
+        # mark as complete if it either failed or succeeded but NOT pending
+        if export.status == EXPORT_SUCCESSFUL or export.status == EXPORT_FAILED:
+            status['complete'] = True
+        statuses.append(status)
+
+    return HttpResponse(simplejson.dumps(statuses), mimetype='application/json')
 
 
 def export_download(request, username, id_string, export_type, filename):
@@ -508,9 +514,11 @@ def instance(request, username, id_string):
             request.session.get('public_link')):
         return HttpResponseForbidden(_(u'Not shared.'))
 
+    context = RequestContext(request)
+
     return render_to_response('instance.html', {
         'username': username,
         'id_string': id_string,
         'xform': xform,
         'can_edit': can_edit
-    })
+    }, context_instance=context)
