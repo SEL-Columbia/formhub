@@ -348,7 +348,7 @@ table.dataTable th:active {
 	outline: none;
 }
 
-#forms-table a, #crowdforms-table a {
+#forms-table a, #crowdforms-table a, #sharedforms-table a {
     font-weight: bold;
 }
 
@@ -407,6 +407,10 @@ section {
 /* prevent popover-btns from showing up over the modal mask */
 .modal-open {
     .popover.popover-btns       {  z-index: @zindexPopover }
+}
+
+.horizontal-center {
+    text-align: center;
 }
 
 .vertical-middle {
@@ -505,7 +509,7 @@ section {
         }
     }
     &:hover {
-        span {
+        span.download {
             color: @linkColor;
         }
         .icon-download {

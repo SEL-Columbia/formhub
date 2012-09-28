@@ -60,7 +60,7 @@
        <div class="span12">
 	 <h3>{% blocktrans %}Shared Forms & Public Data <small>({{ num_forms }})</small>{% endblocktrans %}</h3>
 	 {% if forms %}
-	 <table class="table table-bordered table-striped">
+	 <table id="sharedforms-table" class="table table-bordered table-striped">
 	   <thead>
 	    <tr>
               <th>{% trans "Name" %}</th>
@@ -89,20 +89,31 @@
                     {% endif %}
                 </td>
                 <td>
-                    {% if form.shared_data %}
-            {% if form.submission_count %}
-                        <a href="{% url odk_viewer.views.csv_export content_user.username form.id_string %}">
-                            <button class="btn btn-small">{% trans "csv" %}</button>
-                        </a>
-                        <a href="{% url odk_viewer.views.xls_export content_user.username form.id_string %}">
-                            <button class="btn btn-small">{% trans "xls" %}</button>
-                        </a>
-                        <a href="{% url odk_viewer.views.kml_export content_user.username form.id_string %}">
-                            <button class="btn btn-small">{% trans "kml" %}</button>
-                        </a>
-                    {% else %}
-                        <span class="label label-warning">{% trans "NO DATA" %}</span>
-                    {% endif %}
+            {% if form.shared_data %}
+                {% if form.submission_count %}
+                <div class="data-download">
+                  <span class="vertical-middle">
+                    <i class="icon-download icon-large"></i>
+                  </span>
+                  <span class="vertical-middle">
+                    <span class="download">{% trans "Download" %}</span>
+                      {% if xform.shared_data %}
+                          <span class="label label-info">{%  trans "PUBLIC" %}</span>
+                      {% endif %}
+                      <ul class="download-nav">
+                          <li><a href="{% url odk_viewer.views.export_list content_user.username form.id_string 'csv' %}">{%  trans "csv" %}</a></li>
+                          <li><a href="{% url odk_viewer.views.export_list content_user.username form.id_string 'xls' %}">{%  trans "xls" %}</a></li>
+                          <li>
+                              {% if xform.data_dictionary.has_surveys_with_geopoints %}
+                                  <a href="{% url odk_viewer.views.kml_export content_user.username form.id_string %}">{%  trans "kml" %}</a>
+                              {% endif %}
+                          </li>
+                      </ul>
+                  </span>
+                </div>
+                {% else %}
+                    <span class="label label-warning">{% trans "NO DATA" %}</span>
+                {% endif %}
             {% else %}
                 <span class="label label-warning">{% trans "PRIVATE" %}</span>
             {% endif %}
@@ -110,9 +121,9 @@
                 <td>
                     {% if form.shared_data %}
 		    {% if form.data_dictionary.has_surveys_with_geopoints %}
-                    <a href="{% url odk_viewer.views.map_view content_user.username form.id_string %}">
-                        <button class="btn btn-small btn-info"><i class="icon-map-marker icon-white"></i> {% trans "Map" %}</button>
-                    </a>
+                <a class="btn btn-flat" href="{% url odk_viewer.views.map_view content_user.username form.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
+                    <i class="icon-map-marker icon-large"></i>
+                </a>
 		    {% endif %}
                     {% else %}
                         <span class="label label-warning">{% trans "PRIVATE" %}</span>

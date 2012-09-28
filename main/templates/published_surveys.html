@@ -56,71 +56,69 @@
         <td>
             <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
             {% if xform.shared %}
-                <a href="#" rel="tooltip" title="{% trans 'Public' %}">
-                    <i class="icon-public icon-public-data"></i>
-                </a>
+                <span class="label label-info">{%  trans "PUBLIC" %}</span>
             {% endif %}
         </td>
         <td><center>{{ xform.submission_count|intcomma }}</center></td>
-          <td>
-              <div class="dropdown">
-                  <a class="btn btn-flat" href="#" rel="clickover-btns" data-target-selector="#view-options-{{ xform.id }}" data-placement="top">
-                      <i class="icon-view icon-large"></i>
-                  </a>
-                  <div id="view-options-{{ xform.id }}" class="popover popover-btns clickover fade">
-                      <div class="arrow"></div>
-                      <div class="popover-inner">
-                          <div class="popover-content">
-                              <div class="btn-group">
-                                  {% if xform.data_dictionary.has_surveys_with_geopoints %}
-                                      <a class="btn btn-flat" href="{% url odk_viewer.views.map_view user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
-                                          <i class="icon-map-marker icon-large"></i>
-                                      </a>
-                                  {% endif %}
-                                  {% if xform.submission_count > 0 %}
-                                      <a class="btn btn-flat" href="{% url main.views.form_photos content_user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
-                                          <i class="icon-camera icon-large"></i>
-                                      </a>
-                                  {% endif %}
-
-                                  <a class="btn btn-flat" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}" data-original-title="{% trans 'Enter Web Form' %}" rel="tooltip">
-                                      <i class="icon-edit icon-large"></i>
+        <td>
+          <div class="dropdown horizontal-center">
+              <a class="btn btn-flat" href="#" rel="clickover-btns" data-target-selector="#view-options-{{ xform.id }}" data-placement="top">
+                  <i class="icon-view icon-large"></i>
+              </a>
+              <div id="view-options-{{ xform.id }}" class="popover popover-btns clickover fade">
+                  <div class="arrow"></div>
+                  <div class="popover-inner">
+                      <div class="popover-content">
+                          <div class="btn-group">
+                              {% if xform.data_dictionary.has_surveys_with_geopoints %}
+                                  <a class="btn btn-flat" href="{% url odk_viewer.views.map_view user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
+                                      <i class="icon-map-marker icon-large"></i>
                                   </a>
-                                  <!-- DELETE -->
-                                  {% if xform.submission_count <= 0 and False %}
-                                      <a class="btn btn-flat" data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" rel="tooltip" data-original-title="{% trans 'Delete Form' %}">
-                                          <i class="icon-trash icon-large"></i>
-                                      </a>
-                                  {% endif %}
-                                  {% if xform.submission_count > 0 %}
-                                      <a class="btn btn-flat" href="{% url odk_viewer.views.data_view content_user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
-                                          <i class="icon-data icon-large"></i>
-                                      </a>
-                                      <a class="btn btn-flat" href="{% url odk_viewer.views.instance content_user.username xform.id_string %}" data-original-title="{% trans 'Browse Data (One by One)' %}" rel="tooltip">
-                                          <i class="icon-browse icon-large"></i>
-                                      </a>
-                                  {% endif %}
-                              </div>
+                              {% endif %}
+                              {% if xform.submission_count > 0 %}
+                                  <a class="btn btn-flat" href="{% url main.views.form_photos content_user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
+                                      <i class="icon-camera icon-large"></i>
+                                  </a>
+                              {% endif %}
+
+                              <a class="btn btn-flat" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}" data-original-title="{% trans 'Enter Web Form' %}" rel="tooltip">
+                                  <i class="icon-edit icon-large"></i>
+                              </a>
+                              <!-- DELETE -->
+                              {% if xform.submission_count <= 0 and False %}
+                                  <a class="btn btn-flat" data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" rel="tooltip" data-original-title="{% trans 'Delete Form' %}">
+                                      <i class="icon-trash icon-large"></i>
+                                  </a>
+                              {% endif %}
+                              {% if xform.submission_count > 0 %}
+                                  <a class="btn btn-flat" href="{% url odk_viewer.views.data_view content_user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
+                                      <i class="icon-data icon-large"></i>
+                                  </a>
+                                  <a class="btn btn-flat" href="{% url odk_viewer.views.instance content_user.username xform.id_string %}" data-original-title="{% trans 'Browse Data (One by One)' %}" rel="tooltip">
+                                      <i class="icon-browse icon-large"></i>
+                                  </a>
+                              {% endif %}
                           </div>
                       </div>
                   </div>
-                  {% if xform.submission_count <= 0 %}
-                      <div id="delete-{{ xform.id_string }}" class="modal hide fade">
-                          <div class="modal-header">
-                              <a data-dismiss="modal" class="close">&times;</a>
-                              <h3>{% trans "Delete Confirmation" %}</h3>
-                          </div>
-                          <div class="modal-body">
-                              <p>{% blocktrans with title=xform.title nb_sub=xform.submission_count|intcomma %}Are you sure you want to delete the form '{{ title }}'? This form has <strong>{{ nb_sub }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.{% endblocktrans %}</p>
-                          </div>
-                          <div class="modal-footer">
-                              <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn btn-primary">Delete</a>
-                              <a href="#" data-dismiss="modal" class="btn secondary">Cancel</a>
-                          </div>
-                      </div>
-                  {% endif %}
               </div>
-          </td>
+              {% if xform.submission_count <= 0 %}
+                  <div id="delete-{{ xform.id_string }}" class="modal hide fade">
+                      <div class="modal-header">
+                          <a data-dismiss="modal" class="close">&times;</a>
+                          <h3>{% trans "Delete Confirmation" %}</h3>
+                      </div>
+                      <div class="modal-body">
+                          <p>{% blocktrans with title=xform.title nb_sub=xform.submission_count|intcomma %}Are you sure you want to delete the form '{{ title }}'? This form has <strong>{{ nb_sub }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.{% endblocktrans %}</p>
+                      </div>
+                      <div class="modal-footer">
+                          <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn btn-primary">Delete</a>
+                          <a href="#" data-dismiss="modal" class="btn secondary">Cancel</a>
+                      </div>
+                  </div>
+              {% endif %}
+          </div>
+        </td>
         <td>
           {% if xform.submission_count %}
               <div class="data-download">
@@ -128,12 +126,10 @@
                     <i class="icon-download icon-large"></i>
                   </span>
                   <span class="vertical-middle">
-                    <span class="">{% trans "Download" %}</span>
-                    {% if xform.shared_data %}
-                      <a href="#" rel="tooltip" title="{% trans 'Public' %}">
-                          <i class="icon-public icon-public-data"></i>
-                      </a>
-                    {% endif %}
+                    <span class="download">{% trans "Download" %}</span>
+                      {% if xform.shared_data %}
+                          <span class="label label-info">{%  trans "PUBLIC" %}</span>
+                      {% endif %}
                     <ul class="download-nav">
                       <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'csv' %}">{%  trans "csv" %}</a></li>
                       <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'xls' %}">{%  trans "xls" %}</a></li>
