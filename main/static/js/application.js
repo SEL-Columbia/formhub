@@ -164,6 +164,33 @@ $(document).ready(function(){
                 thisElm.show();
             });
     });
+
+    $(function () {
+        $("a[rel=tooltip]").tooltip({
+            live: true,
+            placement: 'top'
+        })
+    })
+    $('.btn').tooltip();
+
+    $("a[rel=popover]")
+        .popover()
+        .click(function(e) {
+            e.preventDefault()
+        })
+
+    $("a[rel=clickover-btns]")
+        .clickoverbtns({
+            html: true,
+            title: false,
+            template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>',
+            content: function(){
+                return '<a href=="#">Click Me</a>'
+            }
+        })
+        .click(function(e) {
+            e.preventDefault()
+        })
 });
 
 function setHrefFromSelect(id) {
