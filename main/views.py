@@ -25,8 +25,11 @@ from main.models import UserProfile, MetaData
 from odk_logger.models import Instance, XForm
 from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_viewer.models.data_dictionary import upload_to
+from odk_viewer.models.parsed_instance import GLOBAL_SUBMISSION_STATS
 from odk_viewer.views import image_urls_for_form, survey_responses, \
     attachment_url
+from stats.models import StatsCount
+from stats.tasks import stat_log
 from utils.decorators import is_owner
 from utils.logger_tools import response_with_mimetype_and_name, publish_form
 from utils.user_auth import check_and_set_user, set_profile_data,\
@@ -36,7 +39,11 @@ from utils.user_auth import check_and_set_user, set_profile_data,\
 
 def home(request):
     context = RequestContext(request)
-    context.num_forms = Instance.objects.count()
+    submission_count = StatsCount.stats.count(GLOBAL_SUBMISSION_STATS)
+    if not submission_count:
+        submission_count = Instance.objects.count()
+        stat_log(GLOBAL_SUBMISSION_STATS, submission_count)
+    context.num_forms = submission_count
     context.num_users = User.objects.count()
     context.num_shared_forms = XForm.objects.filter(shared__exact=1).count()
     if request.user.username:
