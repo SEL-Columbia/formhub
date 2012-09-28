@@ -4,7 +4,8 @@ from main.tests.test_base import MainTestCase
 from django.core.urlresolvers import reverse
 from odk_viewer.tasks import create_xls_export
 from odk_viewer.xls_writer import XlsWriter
-from odk_viewer.views import csv_export, xls_export, delete_export
+from odk_viewer.views import csv_export, xls_export, delete_export,\
+    export_list
 from test_pandas_mongo_bridge import xls_filepath_from_fixture_name,\
     xml_inst_filepath_from_fixture_name
 from odk_viewer.models.export import XLS_EXPORT, CSV_EXPORT, Export,\
@@ -131,3 +132,32 @@ class TestExports(MainTestCase):
         self.assertEqual(response.status_code, 302)
         exports = Export.objects.filter(id=export.id)
         self.assertEqual(len(exports), 0)
+
+    def test_auto_export_if_none_exists(self):
+        self._publish_transportation_form()
+        self._submit_transport_instance()
+        # get export list url
+        num_exports = Export.objects.count()
+        export_list_url = reverse(export_list, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': XLS_EXPORT
+        })
+        response = self.client.get(export_list_url)
+        self.assertEqual(Export.objects.count(), num_exports+1)
+
+    def test_dont_auto_export_if_exports_exist(self):
+        self._publish_transportation_form()
+        self._submit_transport_instance()
+        # create export
+        export = create_xls_export(
+            self.user.username, self.xform.id_string)
+        # get export list url
+        num_exports = Export.objects.count()
+        export_list_url = reverse(export_list, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': XLS_EXPORT
+        })
+        response = self.client.get(export_list_url)
+        self.assertEqual(Export.objects.count(), num_exports)

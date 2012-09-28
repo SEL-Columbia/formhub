@@ -8,6 +8,7 @@ from django.core.mail import mail_admins
 from django.utils.translation import ugettext as _
 from django.core.files.storage import get_storage_class
 from django.core.files.base import File
+from odk_viewer.models.export import Export, XLS_EXPORT, CSV_EXPORT
 
 import common_tags as tag
 
@@ -214,3 +215,37 @@ def export_def_from_filename(filename):
     # try get the def from extension
     export_def = EXPORT_DEFS[ext]
     return ext, export_def['mime_type']
+
+def should_create_new_export(xform):
+    if Export.objects.count(xform=xform) == 0:
+        return True
+    elif False:
+        return True
+    return False
+
+def create_async_export(xform, export_type, query, force_xlsx):
+    export = Export.objects.create(xform=xform, export_type=export_type)
+
+    result = None
+    if export_type == XLS_EXPORT:
+        # start async export
+        result = create_xls_export.apply_async(
+            (), {
+                'username': username,
+                'id_string': id_string,
+                'query': query,
+                'force_xlsx': force_xlsx,
+                'export_id': export.id
+            })
+    elif export_type == CSV_EXPORT:
+        # start async export
+        result = create_csv_export.apply_async(
+            (), {
+                'username': username,
+                'id_string': id_string,
+                'query': query,
+                'export_id': export.id
+            })
+    export.task_id = result.task_id
+    export.save()
+    return export, result

@@ -36,7 +36,7 @@ from utils.image_tools import image_url
 from xls_writer import XlsWriter
 from utils.logger_tools import response_with_mimetype_and_name,\
     disposition_ext_and_date, round_down_geopoint
-from utils.viewer_tools import image_urls, image_urls_for_form
+from utils.viewer_tools import image_urls, image_urls_for_form, should_create_new_export
 from odk_viewer.tasks import create_xls_export, create_csv_export
 from utils.user_auth import has_permission, get_xform_and_perms
 from utils.google import google_export_xls, redirect_uri
@@ -266,6 +266,16 @@ def export_list(request, username, id_string, export_type):
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
+
+    if should_create_new_export(xform):
+        return HttpResponseRedirect(
+            reverse(export_list,
+                kwargs={"username": username,
+                        "id_string": id_string,
+                        "export_type": export_type
+                }
+            )
+        )
 
     context = RequestContext(request)
     context.username = owner.username
