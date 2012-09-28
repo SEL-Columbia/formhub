@@ -18,47 +18,66 @@ class TestFormAPIDelete(MainTestCase):
             'username': self.user.username,
             'id_string': self.xform.id_string
         })
+        self.mongo_args = {
+            'username': self.user.username, 'id_string': self.xform.id_string,
+            'query': "{}", 'limit': 1,
+            'sort': '{"_id":-1}', 'fields': '["_id","_uuid"]'}
 
-    def test_anon_user(self):
-        #Only authenticated user are allowed to access the url
-        response = self.anon.get(self.delete_url, {},
-                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 403)
+    def _get_data(self):
+        cursor = ParsedInstance.query_mongo(**self.mongo_args)
+        records = list(record for record in cursor)
+        return records
+
+    def test_get_request_does_not_delete(self):
+        # not allowed 405
+        count = Instance.objects.filter(deleted_at=None).count()
+        response = self.anon.get(self.delete_url)
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(
+            Instance.objects.filter(deleted_at=None).count(), count)
+
+    def test_anon_user_delete(self):
+        # Only authenticated user are allowed to access the url
+        count = Instance.objects.filter(deleted_at=None).count()
+        records = self._get_data()
+        self.assertTrue(records.__len__() > 0)
+        query = '{"_id": %s}' % records[0]["_id"]
+        response = self.anon.post(self.delete_url, {'query': query})
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("accounts/login/?next=", response["Location"])
+        self.assertEqual(
+            Instance.objects.filter(deleted_at=None).count(), count)
 
     def test_delete_shared(self):
         #Test if someone can delete a shared form
         self.xform.shared = True
         self.xform.save()
         self._create_user_and_login("jo")
-        json = '{"transport/available_transportation_types_to_referral_facility":"none"}'
-        data = {'query': json}
-        response = self.client.get(self.delete_url, data)
+        count = Instance.objects.filter(deleted_at=None).count()
+        records = self._get_data()
+        self.assertTrue(records.__len__() > 0)
+        query = '{"_id": %s}' % records[0]["_id"]
+        response = self.client.post(self.delete_url, {'query': query})
         self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            Instance.objects.filter(deleted_at=None).count(), count)
 
     def test_owner_can_delete(self):
         #Test if Form owner can delete
         #check record exist before delete and after delete
-        json = '{"transport/available_transportation_types_to_referral_facility":"none"}'
-        data = {'query': json}
-        args = {'username': self.user.username, 'id_string':
-                    self.xform.id_string, 'query': json, 'limit': 1, 'sort':
-                        '{"_id":-1}', 'fields': '["_id","_uuid"]'}
-
-        #check if record exist before delete
-        before = ParsedInstance.query_mongo(**args)
-        self.assertEqual(before.count(), 1)
-        records = list(record for record in before)
-        uuid = records[0]['_uuid']
-        instance  = Instance.objects.get(uuid=uuid, xform=self.xform)
-        self.assertEqual(instance.deleted_at, None)
-
-        #Delete
-        response = self.client.get(self.delete_url, data)
+        count = Instance.objects.filter(deleted_at=None).count()
+        records = self._get_data()
+        self.assertTrue(records.__len__() > 0)
+        query = '{"_id": %s}' % records[0]["_id"]
+        response = self.client.post(self.delete_url, {'query': query})
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            Instance.objects.filter(deleted_at=None).count(), count - 1)
+        uuid = records[0]['_uuid']
         instance  = Instance.objects.get(uuid=uuid, xform=self.xform)
         self.assertNotEqual(instance.deleted_at, None)
         self.assertTrue(isinstance(instance.deleted_at, datetime))
-
+        self.mongo_args.update({"query": query})
         #check if it exist after delete
-        after = ParsedInstance.query_mongo(**args)
+        after = ParsedInstance.query_mongo(**self.mongo_args)
         self.assertEqual(after.count(), 0)
