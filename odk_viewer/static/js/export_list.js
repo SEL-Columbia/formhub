@@ -90,7 +90,16 @@ var fhExportList =  (function(){
                         })
                     })
                     .error(function(){
-                        // @todo: update all with errors
+                        _.each(progress_elements, function(item){
+                            var anchor = $(item)
+                            var parent = anchor.parent()
+                            var statusElm = $(parent.children('span.status')[0])
+
+                            statusElm.html("Unexpected error ...")
+                            anchor.addClass('refresh-export-progress')
+                            anchor.removeClass('updating')
+                            anchor.show()
+                        })
                     })
             }
         },
