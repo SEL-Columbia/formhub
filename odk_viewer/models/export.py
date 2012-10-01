@@ -1,87 +1,9 @@
 import os
-from datetime import datetime
-from django.core.files.base import File
-from django.core.files.temp import NamedTemporaryFile
 from django.db import models
 from celery.result import AsyncResult
 from django.core.files.storage import get_storage_class
 from django.db.models.signals import post_delete
 from odk_logger.models import XForm
-from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder, CSVDataFrameBuilder
-
-XLS_EXPORT = 'xls'
-CSV_EXPORT = 'csv'
-KML_EXPORT = 'kml'
-
-EXPORT_DEFS = {
-    'xls': {
-        'mime_type': 'vnd.ms-excel'
-    },
-    'xlsx': {
-        'mime_type': 'vnd.openxmlformats'
-    },
-    'csv': {
-        'mime_type': 'application/csv'
-    }
-}
-
-
-EXPORT_TYPES = [
-    (XLS_EXPORT, 'Excel'),
-    (CSV_EXPORT, 'CSV'),
-    #(KML_EXPORT, 'kml'),
-]
-
-EXPORT_TYPE_DICT = dict(export_type for export_type in EXPORT_TYPES)
-
-EXPORT_PENDING = 0
-EXPORT_SUCCESSFUL = 1
-EXPORT_FAILED = 2
-
-
-def _df_builder_for_export_type(export_type, username, id_string, filter_query=None):
-    if export_type == XLS_EXPORT:
-        return XLSDataFrameBuilder(username, id_string, filter_query)
-    elif export_type == CSV_EXPORT:
-        return CSVDataFrameBuilder(username, id_string, filter_query)
-    else:
-        raise ValueError
-
-
-def generate_export(export_type, extension, username, id_string, export_id = None, filter_query=None):
-    """
-    Create appropriate export object given the export type
-    """
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
-    df_builder = _df_builder_for_export_type(export_type, username, id_string, filter_query)
-    if hasattr(df_builder, 'get_exceeds_xls_limits') and df_builder.get_exceeds_xls_limits():
-        extension = 'xlsx'
-
-    temp_file = NamedTemporaryFile(suffix=("." + extension))
-    df_builder.export_to(temp_file.name)
-    basename = "%s_%s.%s" % (id_string,
-                             datetime.now().strftime("%Y_%m_%d_%H_%M_%S"), extension)
-    file_path = os.path.join(
-        username,
-        'exports',
-        id_string,
-        export_type,
-        basename)
-
-    # TODO: if s3 storage, make private - how will we protect local storage??
-    storage = get_storage_class()()
-    # seek to the beginning as required by storage classes
-    temp_file.seek(0)
-    export_filename = storage.save(
-        file_path,
-        File(temp_file, file_path))
-    temp_file.close()
-    # create export object
-    export, is_new = Export.objects.get_or_create(id=export_id, xform=xform, export_type=export_type)
-    dir_name, basename = os.path.split(export_filename)
-    export.filename = basename
-    export.save()
-    return export
 
 
 def export_delete_callback(sender, **kwargs):
@@ -91,6 +13,31 @@ def export_delete_callback(sender, **kwargs):
 
 
 class Export(models.Model):
+    class ExportTypeError(Exception):
+        pass
+
+    XLS_EXPORT = 'xls'
+    CSV_EXPORT = 'csv'
+    KML_EXPORT = 'kml'
+
+    EXPORT_MIMES = {
+        'xls': 'vnd.ms-excel',
+        'xlsx': 'vnd.openxmlformats',
+        'csv': 'application/csv'
+    }
+
+    EXPORT_TYPES = [
+        (XLS_EXPORT, 'Excel'),
+        (CSV_EXPORT, 'CSV'),
+        #(KML_EXPORT, 'kml'),
+    ]
+
+    EXPORT_TYPE_DICT = dict(export_type for export_type in EXPORT_TYPES)
+
+    PENDING = 0
+    SUCCESSFUL = 1
+    FAILED = 2
+
     # max no. of export files a user can keep
     MAX_EXPORTS = 10
 
@@ -104,6 +51,8 @@ class Export(models.Model):
         max_length=10, choices=EXPORT_TYPES, default=XLS_EXPORT
     )
     task_id = models.CharField(max_length=255, null=True, blank=True)
+    # time of last submission when this export was created
+    time_of_last_submission = models.DateTimeField(null=True, default=None)
 
     class Meta:
         app_label = "odk_viewer"
@@ -118,6 +67,9 @@ class Export(models.Model):
 
             if num_existing_exports >= self.MAX_EXPORTS:
                 Export._delete_oldest_export(self.xform, self.export_type)
+
+            # update time_of_last_submission with xform.time_of_last_submission
+            self.time_of_last_submission = self.xform.time_of_last_submission()
         if self.filename:
             self._update_filedir()
         super(Export, self).save(*args, **kwargs)
@@ -130,22 +82,22 @@ class Export(models.Model):
 
     @property
     def is_pending(self):
-        return self.status == EXPORT_PENDING
+        return self.status == Export.PENDING
 
     @property
     def is_successful(self):
-        return self.status == EXPORT_SUCCESSFUL
+        return self.status == Export.SUCCESSFUL
 
     @property
     def status(self):
         result = AsyncResult(self.task_id)
         if self.filename:
-            return EXPORT_SUCCESSFUL
+            return Export.SUCCESSFUL
         elif (result and result.ready()) or not result:
             # and not filename
-            return EXPORT_FAILED
+            return Export.FAILED
         else:
-            return EXPORT_PENDING
+            return Export.PENDING
 
     def _update_filedir(self):
         assert(self.filename)
@@ -157,5 +109,19 @@ class Export(models.Model):
         if self.filedir and self.filename:
             return os.path.join(self.filedir, self.filename)
         return None
+
+    @classmethod
+    def exports_outdated(cls, xform):
+        # get newest export for xform
+        qs = Export.objects.filter(xform=xform).order_by('-created_on')[:1]
+        if qs.count() > 0 and qs[0].time_of_last_submission is not None \
+                and xform.time_of_last_submission() is not None:
+            export = qs[0]
+            # get last submission date stored in export
+            last_submission_time_at_export = export.time_of_last_submission
+            return last_submission_time_at_export < \
+                   xform.time_of_last_submission()
+        # return true if we can't determine the status, to force auto-generation
+        return True
 
 post_delete.connect(export_delete_callback, sender=Export)

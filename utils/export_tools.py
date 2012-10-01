@@ -1,3 +1,11 @@
+import os
+from datetime import datetime
+from django.core.files.base import File
+from django.core.files.temp import NamedTemporaryFile
+from django.core.files.storage import get_storage_class
+from odk_logger.models import XForm
+
+
 QUESTION_TYPES_TO_EXCLUDE = [
     u'note',
 ]
@@ -64,3 +72,68 @@ class DictOrganizer(object):
             }
         self._build_obs_from_dict(**kwargs)
         return result
+
+
+def _df_builder_for_export_type(export_type, username, id_string,
+                                filter_query=None):
+    from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder,\
+        CSVDataFrameBuilder
+    from odk_viewer.models import Export
+
+    if export_type == Export.XLS_EXPORT:
+        return XLSDataFrameBuilder(username, id_string, filter_query)
+    elif export_type == Export.CSV_EXPORT:
+        return CSVDataFrameBuilder(username, id_string, filter_query)
+    else:
+        raise ValueError
+
+
+def generate_export(export_type, extension, username, id_string,
+                    export_id = None, filter_query=None):
+    """
+    Create appropriate export object given the export type
+    """
+    from odk_viewer.models import Export
+
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    df_builder = _df_builder_for_export_type(export_type, username, id_string,
+        filter_query)
+    if hasattr(df_builder, 'get_exceeds_xls_limits')\
+            and df_builder.get_exceeds_xls_limits():
+        extension = 'xlsx'
+
+    temp_file = NamedTemporaryFile(suffix=("." + extension))
+    df_builder.export_to(temp_file.name)
+    basename = "%s_%s.%s" % (id_string,
+                             datetime.now().strftime("%Y_%m_%d_%H_%M_%S"),
+                             extension)
+    file_path = os.path.join(
+        username,
+        'exports',
+        id_string,
+        export_type,
+        basename)
+
+    # TODO: if s3 storage, make private - how will we protect local storage??
+    storage = get_storage_class()()
+    # seek to the beginning as required by storage classes
+    temp_file.seek(0)
+    export_filename = storage.save(
+        file_path,
+        File(temp_file, file_path))
+    temp_file.close()
+    # create export object
+    export, is_new = Export.objects.get_or_create(id=export_id, xform=xform,
+        export_type=export_type)
+    dir_name, basename = os.path.split(export_filename)
+    export.filename = basename
+    export.save()
+    return export
+
+
+def should_create_new_export(xform):
+    from odk_viewer.models import Export
+    if Export.objects.filter(xform=xform).count() == 0\
+            or Export.exports_outdated(xform):
+        return True
+    return False

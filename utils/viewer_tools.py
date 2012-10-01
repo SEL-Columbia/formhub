@@ -208,9 +208,9 @@ def django_file(path, field_name, content_type):
         )
 
 def export_def_from_filename(filename):
-    from odk_viewer.models.export import EXPORT_DEFS
+    from odk_viewer.models.export import Export
     path, ext = os.path.splitext(filename)
     ext = ext[1:]
     # try get the def from extension
-    export_def = EXPORT_DEFS[ext]
-    return ext, export_def['mime_type']
+    mime_type = Export.EXPORT_MIMES[ext]
+    return ext, mime_type
