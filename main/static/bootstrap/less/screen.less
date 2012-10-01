@@ -11,7 +11,6 @@ This is for all the extra things it needs beyond what bootstrap provides.
 /* for fixed top */
 body {
     padding-top:56px;
-    font-family: 'Open Sans', sans-serif;
 }
 
 .centered {
@@ -164,7 +163,7 @@ ul.inline ul.dropdown-menu {
 }
 
 .dropdown-menu li > a:hover > i, .dropdown-menu .active > a > i, .dropdown-menu .active > a:hover > i {
-    background-color: #32AF6E;
+    background-color: @linkColor;
 }
 
 .topbar {
@@ -184,12 +183,12 @@ ul.inline ul.dropdown-menu {
 
 .navbar-inner {
     background-color: #fff;
-    background-image: url(/static/images/header_bg.jpg);
-    background-repeat: repeat-x;
+    background-image: url(/static/images/header_bg.png);
+    background-repeat: repeat;
     background-position: center;
-    border-bottom-width: 1px;
+    border-bottom-width: 2px;
     border-bottom-style: solid;
-    border-bottom-color: #666;
+    border-bottom-color: #1e2533;
 }
 
 .navbar .brand {
@@ -349,6 +348,10 @@ table.dataTable th:active {
 	outline: none;
 }
 
+#forms-table a, #crowdforms-table a, #sharedforms-table a {
+    font-weight: bold;
+}
+
 section {
     padding-top: 20px;
 }
@@ -369,4 +372,175 @@ section {
 }
 #map_canvas {
   margin-top: 56px;
+}
+
+.search-query {
+    .border-radius(6px);
+}
+
+.popover {
+    &.top .arrow    { #popoverArrow > .top(8px, @grayLighter); }
+    &.right .arrow  { #popoverArrow > .right(8px, @grayLighter); }
+    &.bottom .arrow { #popoverArrow > .bottom(8px, @grayLighter); }
+    &.left .arrow   { #popoverArrow > .left(8px, @grayLighter);  }
+    &.top .arrow {
+        bottom: -4px;
+    }
+}
+
+.popover-btns {
+    top: -13px;
+    left: 40px;
+    z-index: @zindexPopover;
+    .popover-content {
+        padding: 4px;
+    }
+    .popover-inner{
+        padding: 1px;
+        width: 224px;
+        background: @greyLightest;
+        .border-radius(3px);
+        .box-shadow(0 3px 10px rgba(0,0,0,0.3));
+    }
+}
+
+/* prevent popover-btns from showing up over the modal mask */
+.modal-open {
+    .popover.popover-btns       {  z-index: @zindexPopover }
+}
+
+.horizontal-center {
+    text-align: center;
+}
+
+.vertical-middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.icon-large {
+    width: 40px;
+    height: 33px;
+}
+
+.btn {
+    .icon-view {
+        background-image: url("../images/view.png");
+        background-position: 0px 0px;
+    }
+    &:hover .icon-view {
+        background-image: url("../images/view-active.png");
+    }
+}
+
+.icon-large {
+    background-position: 50% 50%;
+    &.icon-map-marker {
+        background-image: url("../images/view_map.png");
+    }
+    &.icon-camera {
+        background-image: url("../images/view_photo.png");
+    }
+    &.icon-edit {
+        background-image: url("../images/view_edit.png");
+    }
+    &.icon-data {
+        background-image: url("../images/view_data.png");
+    }
+    &.icon-browse {
+        background-image: url("../images/view_browse.png");
+    }
+}
+
+.icon-public {
+    background-position: 50% 50%;
+    margin-top: 2px;
+    &.icon-public-data {
+        width: 15px;
+        height: 15px;
+        background-image: url("../images/icon_public.png");
+    }
+}
+
+.btn-flat {
+    background: none;
+    border: none;
+    padding: 4px 2px;
+    .box-shadow(none);
+    &.active, &:active {
+        .box-shadow(none);
+    }
+    &.inactive {
+        .opacity(40);
+        cursor: default;
+    }
+    &:hover {
+        background: none;
+        .icon-map-marker {
+            background-image: url("../images/view_map-active.png");
+        }
+        .icon-camera {
+            background-image: url("../images/view_photo-active.png");
+        }
+        .icon-edit {
+            background-image: url("../images/view_edit-active.png");
+        }
+        .icon-data{
+            background-image: url("../images/view_data-active.png");
+        }
+        .icon-browse {
+            background-image: url("../images/view_browse-active.png");
+        }
+        &.inactive {
+            .icon-map-marker {
+                background-image: url("../images/view_map.png");
+            }
+            .icon-camera {
+                background-image: url("../images/view_photo.png");
+            }
+            .icon-edit {
+                background-image: url("../images/view_edit.png");
+            }
+            .icon-data {
+                background-image: url("../images/view_data.png");
+            }
+            .icon-browse {
+                background-image: url("../images/view_browse.png");
+            }
+        }
+    }
+}
+
+.data-download {
+    cursor: pointer;
+    .icon-download {
+        background-image: url("../images/data_download.png");
+        width: 21px;
+        height: 21px;
+        float: left;
+        margin: 4px 8px 0px 0px;
+    }
+    .download-nav {
+        text-transform: uppercase;
+        .opacity(0);
+        margin-left: 0px;
+        li {
+            display: inline;
+            margin-right: 4px;
+        }
+    }
+    &:hover {
+        span.download {
+            color: @linkColor;
+        }
+        .icon-download {
+            background-image: url("../images/data_download-active.png");
+        }
+        .download-nav {
+            .opacity(100);
+        }
+    }
+    ul {
+        margin: 0;
+    }
 }

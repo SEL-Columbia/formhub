@@ -606,7 +606,8 @@ def delete_data(request, username=None, id_string=None):
             "username": username, "id_string": id_string,
             "query": query,
             "fields": request.POST.get('fields', None),
-            "sort": request.POST.get('sort', None)
+            "sort": request.POST.get('sort', None),
+            "limit": 1
         }
 
         if 'limit' in request.GET:
@@ -617,10 +618,6 @@ def delete_data(request, username=None, id_string=None):
     else:
         records = list(record for record in cursor)
         if records.__len__():
-            today = datetime.today().strftime('%Y-%m-%dT%H:%M:%S')
-            ParsedInstance.edit_mongo(
-                query_args['query'],
-                '{ "$set": {"_deleted_at": "%s" }}' % today)
             for record in records:
                 Instance.delete_by_uuid(
                     username, id_string, uuid=record['_uuid'])
