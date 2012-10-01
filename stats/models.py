@@ -17,7 +17,7 @@ class StatsCount(models.Model):
         app_label = 'stats'
 
     key = models.CharField(max_length=150)
-    value = models.SmallIntegerField(default=0)
+    value = models.IntegerField(default=0)
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
     objects = models.Manager()
