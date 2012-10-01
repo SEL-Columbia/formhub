@@ -134,6 +134,6 @@ def generate_export(export_type, extension, username, id_string,
 def should_create_new_export(xform):
     from odk_viewer.models import Export
     if Export.objects.filter(xform=xform).count() == 0\
-            or Export.has_new_submissions(xform):
+            or Export.exports_outdated(xform):
         return True
     return False

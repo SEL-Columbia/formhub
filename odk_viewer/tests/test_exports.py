@@ -192,13 +192,13 @@ class TestExports(MainTestCase):
             self.user.username, self.xform.id_string)
         num_exports = Export.objects.count()
         # check that our function knows there are no more submissions
-        self.assertFalse(Export.has_new_submissions(xform=self.xform))
+        self.assertFalse(Export.exports_outdated(xform=self.xform))
         # force new  last submission date on xform
         last_submission = self.xform.surveys.order_by('-date_created')[0]
         last_submission.date_created += datetime.timedelta(hours=1)
         last_submission.save()
         # check that our function knows data has changed
-        self.assertTrue(Export.has_new_submissions(xform=self.xform))
+        self.assertTrue(Export.exports_outdated(xform=self.xform))
         # check that requesting list url will generate a new export
         export_list_url = reverse(export_list, kwargs={
             'username': self.user.username,
@@ -207,3 +207,14 @@ class TestExports(MainTestCase):
         })
         response = self.client.get(export_list_url)
         self.assertEqual(Export.objects.count(), num_exports + 1)
+
+    def test_last_submission_time_empty(self):
+        self._publish_transportation_form()
+        self._submit_transport_instance()
+        # create export
+        export = create_xls_export(
+            self.user.username, self.xform.id_string)
+        # set time of last submission to None
+        export.time_of_last_submission = None
+        export.save()
+        self.assertTrue(Export.exports_outdated(xform=self.xform))

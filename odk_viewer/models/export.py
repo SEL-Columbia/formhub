@@ -108,14 +108,17 @@ class Export(models.Model):
         return None
 
     @classmethod
-    def has_new_submissions(cls, xform):
+    def exports_outdated(cls, xform):
         # get newest export for xform
-        qs = Export.objects.filter(xform=xform).order_by('-created_on')
-        if qs.count() > 0:
+        qs = Export.objects.filter(xform=xform).order_by('-created_on')[:1]
+        if qs.count() > 0 and qs[0].time_of_last_submission is not None \
+                and xform.time_of_last_submission() is not None:
             export = qs[0]
             # get last submission date stored in export
             last_submission_time_at_export = export.time_of_last_submission
-            return last_submission_time_at_export < xform.time_of_last_submission()
-        return False
+            return last_submission_time_at_export < \
+                   xform.time_of_last_submission()
+        # return true if we can't determine the status, to force auto-generation
+        return True
 
 post_delete.connect(export_delete_callback, sender=Export)
