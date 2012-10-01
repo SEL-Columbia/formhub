@@ -11,7 +11,7 @@ class StatsTest(TestCase):
     def test_statscount(self):
         StatsCount.objects.create(key="*", value=1)
         self.assertEqual(
-            StatsCount.stats.count(), 1)
+            StatsCount.stats.count(key="*"), 1)
 
     def test_task_stat_log(self):
         result = stat_log.delay("*", 1)
