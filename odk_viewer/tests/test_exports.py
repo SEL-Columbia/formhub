@@ -1,10 +1,12 @@
 import os
+import json
 from django.conf import settings
 from main.tests.test_base import MainTestCase
 from django.core.urlresolvers import reverse
 from odk_viewer.tasks import create_xls_export
 from odk_viewer.xls_writer import XlsWriter
-from odk_viewer.views import csv_export, xls_export, delete_export
+from odk_viewer.views import csv_export, xls_export, delete_export,\
+    export_progress
 from test_pandas_mongo_bridge import xls_filepath_from_fixture_name,\
     xml_inst_filepath_from_fixture_name
 from odk_viewer.models.export import XLS_EXPORT, CSV_EXPORT, Export,\
@@ -131,3 +133,33 @@ class TestExports(MainTestCase):
         self.assertEqual(response.status_code, 302)
         exports = Export.objects.filter(id=export.id)
         self.assertEqual(len(exports), 0)
+
+    def test_export_progress_output(self):
+        self._publish_transportation_form()
+        self._submit_transport_instance()
+        # create exports
+        for i in range(2):
+            create_xls_export(
+                self.user.username, self.xform.id_string)
+        self.assertEqual(Export.objects.count(), 2)
+        # progress for multiple exports
+        progress_url = reverse(export_progress, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': 'xls'
+        })
+        exports = Export.objects.all()
+        params = {'export_ids': [e.id for e in exports]}
+        response = self.client.get(progress_url, params)
+        content = json.loads(response.content)
+        self.assertEqual(len(content), 2)
+        self.assertEqual(sorted(['url', 'export_id', 'complete', 'filename']),
+            sorted(content[0].keys()))
+        # progress for single export, test that GET.getlist will work for a non-list object
+        params = {'export_ids': exports[0].id}
+        response = self.client.get(progress_url, params)
+        content = json.loads(response.content)
+        self.assertEqual(len(content), 1)
+        self.assertEqual(sorted(['url', 'export_id', 'complete', 'filename']),
+            sorted(content[0].keys()))
+

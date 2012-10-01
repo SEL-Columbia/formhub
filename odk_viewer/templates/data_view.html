@@ -237,7 +237,14 @@ function getCookieLabels()
         return null;
     else
     {
-        return  JSON.parse(labelCookie);
+        try
+        {
+            return  JSON.parse(labelCookie)
+        }
+        catch(err)
+        {
+            return null
+        }
     }
 }
 
