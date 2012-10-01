@@ -27,9 +27,13 @@ def create_async_export(xform, export_type, query, force_xlsx):
                 'query': query,
                 'export_id': export.id
             })
-    export.task_id = result.task_id
-    export.save()
-    return export, result
+    else:
+        raise Export.ExportTypeError
+    if result:
+        export.task_id = result.task_id
+        export.save()
+        return export, result
+    return None
 
 
 @task()

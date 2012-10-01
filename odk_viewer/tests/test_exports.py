@@ -218,3 +218,22 @@ class TestExports(MainTestCase):
         export.time_of_last_submission = None
         export.save()
         self.assertTrue(Export.exports_outdated(xform=self.xform))
+
+    def test_invalid_export_type(self):
+        self._publish_transportation_form()
+        self._submit_transport_instance()
+        export_list_url = reverse(export_list, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': 'invalid'
+        })
+        response = self.client.get(export_list_url)
+        self.assertEqual(response.status_code, 400)
+        # test create url
+        create_export_url = reverse(create_export, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': 'invalid'
+        })
+        response = self.client.post(create_export_url)
+        self.assertEqual(response.status_code, 400)

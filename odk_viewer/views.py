@@ -222,21 +222,22 @@ def create_export(request, username, id_string, export_type):
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
 
-    if export_type not in Export.EXPORT_TYPE_DICT.keys():
-        return HttpResponseBadRequest(_("%s is not a valid export type" % export_type))
-
     query = request.POST.get("query")
     force_xlsx = request.POST.get('xlsx') == 'true'
 
-    create_async_export(xform, export_type, query, force_xlsx)
-    return HttpResponseRedirect(
-        reverse(export_list,
-            kwargs={"username": username,
-                    "id_string": id_string,
-                    "export_type": export_type
-            }
+    try:
+        create_async_export(xform, export_type, query, force_xlsx)
+    except Export.ExportTypeError:
+        return HttpResponseBadRequest(_("%s is not a valid export type" % export_type))
+    else:
+        return HttpResponseRedirect(
+            reverse(export_list,
+                kwargs={"username": username,
+                        "id_string": id_string,
+                        "export_type": export_type
+                }
+            )
         )
-    )
 
 
 def export_list(request, username, id_string, export_type):
@@ -246,7 +247,10 @@ def export_list(request, username, id_string, export_type):
         return HttpResponseForbidden(_(u'Not shared.'))
 
     if should_create_new_export(xform):
-        create_async_export(xform, export_type, query=None, force_xlsx=False)
+        try:
+            create_async_export(xform, export_type, query=None, force_xlsx=False)
+        except Export.ExportTypeError:
+            return HttpResponseBadRequest(_("%s is not a valid export type" % export_type))
 
     context = RequestContext(request)
     context.username = owner.username

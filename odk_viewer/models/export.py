@@ -13,6 +13,9 @@ def export_delete_callback(sender, **kwargs):
 
 
 class Export(models.Model):
+    class ExportTypeError(Exception):
+        pass
+
     XLS_EXPORT = 'xls'
     CSV_EXPORT = 'csv'
     KML_EXPORT = 'kml'
