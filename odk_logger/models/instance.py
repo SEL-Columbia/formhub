@@ -6,11 +6,10 @@ from xml.dom import minidom
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
-
 from .xform import XForm
 from .survey_type import SurveyType
 from odk_logger.xform_instance_parser import XFormInstanceParser,\
-         XFORM_ID_STRING
+         XFORM_ID_STRING, clean_and_parse_xml
 from utils.model_tools import set_uuid
 from utils.stathat_api import stathat_count
 
@@ -18,13 +17,13 @@ from utils.stathat_api import stathat_count
 class FormInactiveError(Exception):
     pass
 
+
 # need to establish id_string of the xform before we run get_dict since we now rely on data dictionary to parse the xml
 def get_id_string_from_xml_str(xml_str):
-    clean_xml_str = xml_str.strip()
-    clean_xml_str = re.sub(ur">\s+<", u"><", clean_xml_str)
-    xml_obj = minidom.parseString(clean_xml_str)
+    xml_obj = clean_and_parse_xml(xml_str)
     root_node = xml_obj.documentElement
     return root_node.getAttribute(u"id")
+
 
 class Instance(models.Model):
     # I should rename this model, maybe Survey

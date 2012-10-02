@@ -1,5 +1,6 @@
 from xml.dom import minidom
 import re
+from django.utils.encoding import smart_unicode, smart_str
 
 XFORM_ID_STRING = u"_xform_id_string"
 
@@ -26,6 +27,13 @@ class InstanceParseError(Exception):
 
 class InstanceEmptyError(InstanceParseError):
     pass
+
+
+def clean_and_parse_xml(xml_string):
+    clean_xml_str = xml_string.strip()
+    clean_xml_str = re.sub(ur">\s+<", u"><", smart_unicode(clean_xml_str))
+    xml_obj = minidom.parseString(smart_str(clean_xml_str))
+    return xml_obj
 
 
 def _xml_node_to_dict(node, repeats=[]):
@@ -162,9 +170,7 @@ class XFormInstanceParser(object):
         self.parse(xml_str)
 
     def parse(self, xml_str):
-        clean_xml_str = xml_str.strip()
-        clean_xml_str = re.sub(ur">\s+<", u"><", clean_xml_str)
-        self._xml_obj = minidom.parseString(clean_xml_str)
+        self._xml_obj = clean_and_parse_xml(xml_str)
         self._root_node = self._xml_obj.documentElement
         repeats = [e.get_abbreviated_xpath() for e in self.dd.get_survey_elements_of_type(u"repeat")]
         self._dict = _xml_node_to_dict(self._root_node, repeats)
