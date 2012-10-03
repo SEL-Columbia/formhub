@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import tempfile
+import sys, traceback
 import urllib
 import urllib2
 from xml.parsers.expat import ExpatError
@@ -465,7 +466,7 @@ def edit_data(request, username, id_string, data_id):
 
     except urllib2.URLError, e:
         import pprint
-        logger.error(pprint.pformat(e))
+        logger.error(traceback.format_exc())
         logger.error(pprint.pformat(values))
         pass  # this will happen if we could not connect to enketo
         #TODO: should we throw in another error message here
