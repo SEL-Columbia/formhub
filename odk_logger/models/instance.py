@@ -78,6 +78,16 @@ class Instance(models.Model):
     def _set_date(self, doc):
         self.date = None
 
+    def _set_uuid(self):
+        if self.xml and not self.uuid:
+            p = re.compile(r".*(<meta>.*(<instanceID>uuid:(.*)</instanceID>))")
+            xml = re.sub(ur">\s+<", u"><", self.xml.strip())
+            matches = p.match(xml)
+            if matches and matches.groups().__len__() > 2:
+                self.uuid = matches.groups()[2]
+        set_uuid(self)
+
+
     def save(self, *args, **kwargs):
         self._set_xform(get_id_string_from_xml_str(self.xml))
         doc = self.get_dict()
@@ -86,7 +96,7 @@ class Instance(models.Model):
         self._set_start_time(doc)
         self._set_date(doc)
         self._set_survey_type(doc)
-        set_uuid(self)
+        self._set_uuid()
         super(Instance, self).save(*args, **kwargs)
 
     def _set_parser(self):
