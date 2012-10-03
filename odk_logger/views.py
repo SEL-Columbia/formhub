@@ -418,9 +418,10 @@ def edit_data(request, username, id_string, data_id):
         'format': 'json',
         'form_id': xform.id_string,
         'server_url' : formhub_url + username,
-        'instance': instance.xml
+        'instance': instance.xml,
+        'return_url': reverse('odk_viewer.views.instance', kwargs={'username': username,
+                                                                   'id_string': id_string})
     }
-
     data, headers = multipart_encode(values)
     headers['User-Agent'] = 'formhub'
     req = urllib2.Request(url, data, headers)
@@ -437,6 +438,11 @@ def edit_data(request, username, id_string, data_id):
         context.form_view = True
         if 'edit_url' in response:
             context.enketo = response['edit_url']
+
+            req = urllib2.Request(response['edit_url'], data, headers)
+
+            response = urllib2.urlopen(req)
+            response = json.loads(response.read())
             #return render_to_response("form_entry.html",
             #                          context_instance=context)
             return HttpResponseRedirect(response['edit_url'])
@@ -451,7 +457,7 @@ def edit_data(request, username, id_string, data_id):
             messages.add_message(request, messages.WARNING,json_msg)
             return render_to_response("profile.html",context_instance=context)
 
-    except urllib2.URLError:
+    except urllib2.URLError, e:
         pass  # this will happen if we could not connect to enketo
         #TODO: should we throw in another error message here
     return HttpResponseRedirect(reverse('main.views.show',
