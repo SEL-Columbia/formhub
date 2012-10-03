@@ -162,7 +162,7 @@ class ParsedInstance(models.Model):
                 self.USERFORM_ID: u'%s_%s' % (
                      self.instance.user.username, self.instance.xform.id_string),
             }
-            xform_intances.update(query, d)
+            xform_instances.update(query, d)
 
     def to_dict(self):
         if not hasattr(self, "_dict_cache"):
