@@ -34,7 +34,7 @@ def get_uuid_from_xml(xml):
     p = re.compile(r".*(<meta>.*(<instanceID>uuid:(.*)</instanceID>))")
     matches = p.match(xml)
     if matches and matches.groups().__len__() > 2:
-        return matches[2]
+        return matches.groups()[2]
     return None
 
 
