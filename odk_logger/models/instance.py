@@ -9,7 +9,7 @@ from django.db.models.signals import post_save
 from .xform import XForm
 from .survey_type import SurveyType
 from odk_logger.xform_instance_parser import XFormInstanceParser,\
-         XFORM_ID_STRING, clean_and_parse_xml
+         XFORM_ID_STRING, clean_and_parse_xml, get_uuid_from_xml
 from utils.model_tools import set_uuid
 from utils.stathat_api import stathat_count
 
@@ -80,11 +80,9 @@ class Instance(models.Model):
 
     def _set_uuid(self):
         if self.xml and not self.uuid:
-            p = re.compile(r".*(<meta>.*(<instanceID>uuid:(.*)</instanceID>))")
-            xml = re.sub(ur">\s+<", u"><", self.xml.strip())
-            matches = p.match(xml)
-            if matches and matches.groups().__len__() > 2:
-                self.uuid = matches.groups()[2]
+            uuid = get_uuid_from_xml(self.xml)
+            if  uuid is not None:
+                self.uuid = uuid
         set_uuid(self)
 
 
