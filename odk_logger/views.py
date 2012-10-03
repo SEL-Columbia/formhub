@@ -430,10 +430,10 @@ def edit_data(request, username, id_string, data_id):
     req = urllib2.Request(url, data, headers)
 
     try:
-        logger.log(url)
+        logger.error(url)
         response = urllib2.urlopen(req)
         response = json.loads(response.read())
-        logger.log(response)
+        logger.error(response)
         context = RequestContext(request)
         owner = User.objects.get(username=username)
         context.profile, created =\
@@ -448,7 +448,7 @@ def edit_data(request, username, id_string, data_id):
 
             response = urllib2.urlopen(req)
             response = json.loads(response.read())
-            logger.log(response)
+            logger.error(response)
             #return render_to_response("form_entry.html",
             #                          context_instance=context)
             return HttpResponseRedirect(response['edit_url'])
@@ -464,9 +464,9 @@ def edit_data(request, username, id_string, data_id):
             return render_to_response("profile.html",context_instance=context)
 
     except urllib2.URLError, e:
-        logger.log(e)
-        logger.log(e.url)
-        logger.log(e.read())
+        logger.error(e)
+        logger.error(e.url)
+        logger.error(e.read())
         pass  # this will happen if we could not connect to enketo
         #TODO: should we throw in another error message here
     return HttpResponseRedirect(reverse('main.views.show',
