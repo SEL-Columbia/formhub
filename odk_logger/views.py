@@ -464,9 +464,9 @@ def edit_data(request, username, id_string, data_id):
             return render_to_response("profile.html",context_instance=context)
 
     except urllib2.URLError, e:
-        logger.error(e)
-        logger.error(e.url)
-        logger.error(e.read())
+        import pprint
+        logger.error(pprint.pformat(e))
+        logger.error(pprint.pformat(values))
         pass  # this will happen if we could not connect to enketo
         #TODO: should we throw in another error message here
     return HttpResponseRedirect(reverse('main.views.show',
