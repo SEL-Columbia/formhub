@@ -439,7 +439,7 @@ def edit_data(request, username, id_string, data_id):
             context.enketo = response['edit_url']
             #return render_to_response("form_entry.html",
             #                          context_instance=context)
-            return HttpResponseRedirect(response['url'])
+            return HttpResponseRedirect(response['edit_url'])
         else:
             json_msg = response['reason']
             """
