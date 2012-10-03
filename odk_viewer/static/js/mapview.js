@@ -207,9 +207,10 @@ function loadFormJSONCallback()
 {
     // we only want to load gps and select one data to begin with
     var fields = getBootstrapFields();
+    var geoField = formJSONMngr.getGeoPointQuestion()[constants.NAME];
 
     // load responses
-    formResponseMngr.loadResponseData({}, 0, null, fields);
+    formResponseMngr.loadResponseData_(0, null, geoField, fields);
 }
 
 // callback called after response data has been loaded via the mongo form API

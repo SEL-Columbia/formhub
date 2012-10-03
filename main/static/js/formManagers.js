@@ -151,6 +151,36 @@ FormResponseManager = function(url, callback)
     this._currentSelectOneQuestionName = null; // name of the currently selected "View By Question if any"
 };
 
+FormResponseManager.prototype.loadResponseData_ = function(start, limit, geoPointField, otherFieldsToLoad)
+{
+    var idx;
+    var thisFormResponseMngr = this;
+    var urlParams = {}, geoParams = {};
+
+    // no invalidation -- no notion of "redoing things on view by" 
+
+    start = parseInt(start,10);
+    limit = parseInt(limit, 10);
+    // use !isNaN so we also have zeros
+    if(!isNaN(start)) urlParams[constants.START] = start;
+    if(!isNaN(limit)) urlParams[constants.LIMIT] = limit;
+
+
+    geoParams[constants.FIELDS] = JSON.stringify(["_id", geoPointField]); 
+    // first query the geo-data
+    $.getJSON(thisFormResponseMngr.url, geoParams).success(function(data) {
+            if(otherFieldsToLoad && otherFieldsToLoad.length > 0)
+                urlParams[constants.FIELDS] = JSON.stringify(otherFieldsToLoad);
+            $.getJSON(thisFormResponseMngr.url, urlParams, function(data){
+                thisFormResponseMngr.responses = data;
+                thisFormResponseMngr.responseCount = data.length;
+                thisFormResponseMngr.callback.call(thisFormResponseMngr);
+                // load the dvResponseTable up asynchronously
+                _.defer(function() {thisFormResponseMngr._toDatavore();});
+            });
+    });
+};
+
 // TODO: remove filter generation from within class, it should be application specific, right?
 FormResponseManager.prototype.loadResponseData = function(params, start, limit, fields)
 {
