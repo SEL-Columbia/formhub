@@ -152,9 +152,17 @@ class ParsedInstance(models.Model):
         )
         return dict_for_mongo(d)
 
-    def update_mongo(self):
+    def update_mongo(self, edit=False):
         d = self.to_dict_for_mongo()
-        xform_instances.save(d)
+        if not edit:
+            xform_instances.save(d)
+        else:
+            query = {
+                UUID: self.instance.uuid,
+                self.USERFORM_ID: u'%s_%s' % (
+                     self.instance.user.username, self.instance.xform.id_string),
+            }
+            xform_intances.update(query, d)
 
     def to_dict(self):
         if not hasattr(self, "_dict_cache"):
