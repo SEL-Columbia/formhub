@@ -29,6 +29,7 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
+from odk_viewer.models import ParsedInstance
 
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound
@@ -373,3 +374,81 @@ def enter_data(request, username, id_string):
     return HttpResponseRedirect(reverse('main.views.show',
                                 kwargs={'username': username,
                                         'id_string': id_string}))
+
+
+def edit_data(request, username, id_string, data_id):
+    owner = User.objects.get(username=username)
+    xform = get_object_or_404(XForm, user__username=username,
+        id_string=id_string)
+    if not has_edit_permission(xform, owner, request, xform.shared):
+        return HttpResponseForbidden(_(u'Not shared.'))
+    if not hasattr(settings, 'ENKETO_URL'):
+        return HttpResponseRedirect(reverse('main.views.show',
+            kwargs={'username': username,
+                    'id_string': id_string}))
+    try:
+        query_args = {
+            "username": username, "id_string": id_string,
+            "query": '{"_id": %s}' % data_id,
+            "fields": None,
+            "sort": None,
+            "limit": 1
+        }
+
+        if 'limit' in request.GET:
+            query_args["limit"] = int(request.GET.get('limit'))
+        cursor = ParsedInstance.query_mongo(**query_args)
+    except ValueError as e:
+        return HttpResponseBadRequest(e)
+    else:
+        records = list(record for record in cursor)
+        if records.__len__():
+            uuid = records[0]["_uuid"]
+    url = '%slaunch/launchSurvey' % settings.ENKETO_URL
+    register_openers()
+    response = None
+    # see commit 220f2dad0e for tmp file creation
+    try:
+        formhub_url = "http://%s/" % request.META['HTTP_HOST']
+    except:
+        formhub_url = "http://formhub.org/"
+    values = {
+        'format': 'json',
+        'form_id': xform.id_string,
+        'server_url' : formhub_url + username
+    }
+    data, headers = multipart_encode(values)
+    headers['User-Agent'] = 'formhub'
+    req = urllib2.Request(url, data, headers)
+    try:
+        response = urllib2.urlopen(req)
+        response = json.loads(response.read())
+        context = RequestContext(request)
+        owner = User.objects.get(username=username)
+        context.profile, created =\
+        UserProfile.objects.get_or_create(user=owner)
+        context.xform = xform
+        context.content_user = owner
+        context.form_view = True
+        if 'url' in response:
+            context.enketo = response['url']
+            #return render_to_response("form_entry.html",
+            #                          context_instance=context)
+            return HttpResponseRedirect(response['url'])
+        else:
+            json_msg = response['reason']
+            """
+            return HttpResponse("<script>$('body')</script>")
+            """
+            context.message = {'type':'alert-error',
+                               'text':"Enketo error, reason: " +
+                                      (response['reason'] and "Server not found.")}
+            messages.add_message(request, messages.WARNING,json_msg)
+            return render_to_response("profile.html",context_instance=context)
+
+    except urllib2.URLError:
+        pass  # this will happen if we could not connect to enketo
+        #TODO: should we throw in another error message here
+    return HttpResponseRedirect(reverse('main.views.show',
+        kwargs={'username': username,
+                'id_string': id_string}))
