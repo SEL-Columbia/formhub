@@ -444,7 +444,7 @@ def edit_data(request, username, id_string, data_id):
         context.form_view = True
         if 'edit_url' in response:
             context.enketo = response['edit_url']
-
+            logger.error(response['edit_url'])
             req = urllib2.Request(response['edit_url'], data, headers)
 
             response = urllib2.urlopen(req)
