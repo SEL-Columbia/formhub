@@ -32,7 +32,8 @@ from poster.streaminghttp import register_openers
 from odk_viewer.models import ParsedInstance
 
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
-    OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound
+    OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound,\
+    inject_instanceid
 from models import XForm, Instance
 from main.models import UserProfile, MetaData
 from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
@@ -418,7 +419,7 @@ def edit_data(request, username, id_string, data_id):
         'format': 'json',
         'form_id': xform.id_string,
         'server_url' : formhub_url + username,
-        'instance': instance.xml,
+        'instance': inject_instanceid(instance),
         'return_url': reverse('odk_viewer.views.instance', kwargs={'username': username,
                                                                    'id_string': id_string})
     }
