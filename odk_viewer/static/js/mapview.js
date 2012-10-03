@@ -381,26 +381,15 @@ function _recolorMarkerLayer(geoJSON, questionName)
     if(questionName)
     {
         var question = formJSONMngr.getQuestionByName(questionName);
-        /// check if response count has been calculated for this question
-        if(question.hasOwnProperty('responseCounts'))
-            responseCountValid = true;
-        else
-            question.responseCounts = {};
 
-        // formJSONMngr.getChoices returns an object NOT an array so we use children directly here
-        var choices = question.children;
-        // build an array of choice names so that we can append "Not Specified" to it
-        var choiceNames = [];
-        for(i=0;i < choices.length;i++)
-        {
-            var choice = choices[i];
-            choiceNames.push(choice.name);
-            if(!responseCountValid)
-                question.responseCounts[choice.name] = 0;
-        }
-        choiceNames.push(notSpecifiedCaption);
-        if(!responseCountValid)
-            question.responseCounts[notSpecifiedCaption] = 0;
+        // figure out the response counts
+        var dvCounts = formResponseMngr.dvQuery({dims:[questionName], vals:[dv.count()]});
+        var responseCounts = _.object(dvCounts[0], dvCounts[1]);
+        // and make sure every response has a count
+        var choiceNames = _.union(_.pluck(question.children, 'name'), [notSpecifiedCaption]);
+        var zeroCounts = _.object(_.map(choiceNames, function(choice) { return [choice, 0]; }));
+        question.responseCounts = _.defaults(responseCounts, zeroCounts);
+
         for(i=0;i < choiceNames.length;i++)
         {
             var choiceName = choiceNames[i];
