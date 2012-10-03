@@ -33,7 +33,7 @@ from odk_viewer.models import ParsedInstance
 
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound
-from models import XForm
+from models import XForm, Instance
 from main.models import UserProfile, MetaData
 from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
 from utils.decorators import is_owner
@@ -404,6 +404,8 @@ def edit_data(request, username, id_string, data_id):
         records = list(record for record in cursor)
         if records.__len__():
             uuid = records[0]["_uuid"]
+            instance = Instance.objects.get(xform=xform, uuid=uuid)
+
     url = '%slaunch/launchSurvey' % settings.ENKETO_URL
     register_openers()
     response = None
@@ -415,11 +417,14 @@ def edit_data(request, username, id_string, data_id):
     values = {
         'format': 'json',
         'form_id': xform.id_string,
-        'server_url' : formhub_url + username
+        'server_url' : formhub_url + username,
+        'instance': instance.xml
     }
+
     data, headers = multipart_encode(values)
     headers['User-Agent'] = 'formhub'
     req = urllib2.Request(url, data, headers)
+
     try:
         response = urllib2.urlopen(req)
         response = json.loads(response.read())
@@ -430,8 +435,8 @@ def edit_data(request, username, id_string, data_id):
         context.xform = xform
         context.content_user = owner
         context.form_view = True
-        if 'url' in response:
-            context.enketo = response['url']
+        if 'edit_url' in response:
+            context.enketo = response['edit_url']
             #return render_to_response("form_entry.html",
             #                          context_instance=context)
             return HttpResponseRedirect(response['url'])
