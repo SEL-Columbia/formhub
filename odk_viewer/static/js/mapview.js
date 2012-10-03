@@ -222,7 +222,7 @@ function loadResponseDataCallback()
     // get geoJSON data to setup points - relies on questions having been parsed
     var geoJSON = formResponseMngr.getAsGeoJSON();
 
-    _rebuildMarkerLayer(geoJSON);
+    _buildMarkerLayer(geoJSON);
 
     // just to make sure the nav container exists
     var navContainer = $(navContainerSelector);
@@ -336,7 +336,41 @@ function setLanguage(idx)
     }
 }
 
-function _rebuildMarkerLayer(geoJSON, questionName)
+function _buildMarkerLayer(geoJSON)
+{
+    var latLngArray = [];
+
+    L.geoJson(geoJSON, {
+        pointToLayer: function(feature, latlng) {
+            var marker = L.circleMarker(latlng, circleStyle);
+            latLngArray.push(latlng);
+            marker.on('click', function(e) {
+                var popup = L.popup({offset: popupOffset})
+                    .setContent("Loading...").setLatLng(latlng).openOn(map);
+                //console.log(feature.id);
+                $.getJSON(mongoAPIUrl, {'query': '{"_id":' + feature.id + '}'})
+                    .done(function(data){
+                        var content;
+                        if(data.length > 0)
+                            content = JSONSurveyToHTML(data[0]);
+                        else
+                            content = "An unexpected error occurred";
+                        popup.setContent(content);
+                    });
+            });
+            return marker;
+        }
+    }).addTo(markerLayerGroup);
+
+    _.defer(refreshHexOverLay); // TODO: add a toggle to do this only if hexOn = true;
+
+    // fitting to bounds with one point will zoom too far
+    // don't zoom when we "view by response"
+    var latlngbounds = new L.LatLngBounds(latLngArray);
+    map.fitBounds(latlngbounds);
+}
+
+function _recolorMarkerLayer(geoJSON, questionName)
 {
     var latLngArray = [];
     var questionColorMap = {};
@@ -382,55 +416,28 @@ function _rebuildMarkerLayer(geoJSON, questionName)
             /// save color for this choice
             questionColorMap[choiceName] = choiceColor;
         }
-    }
 
-    /// remove existing geoJsonLayer
-    markerLayerGroup.clearLayers();
-
-    L.geoJson(geoJSON, {
-        style: function(feature) {
-            if(questionName) {
+        // re-color the icons
+        markerLayerGroup.eachLayer(function(geoJSONLayer) {
+            geoJSONLayer.setStyle(function(feature) {
                 var response = feature.properties[questionName] || notSpecifiedCaption;
                 var question = formJSONMngr.getQuestionByName(questionName);
                 if (!responseCountValid) {
                     question.responseCounts[response] += 1;
                 }
                 return _.defaults({fillColor: questionColorMap[response]}, circleStyle);
-            }
-        },
-        pointToLayer: function(feature, latlng) {
-            var marker = L.circleMarker(latlng, circleStyle);
-            latLngArray.push(latlng);
-            marker.on('click', function(e) {
-                var popup = L.popup({offset: popupOffset})
-                    .setContent("Loading...").setLatLng(latlng).openOn(map);
-                //console.log(feature.id);
-                $.getJSON(mongoAPIUrl, {'query': '{"_id":' + feature.id + '}'})
-                    .done(function(data){
-                        var content;
-                        if(data.length > 0)
-                            content = JSONSurveyToHTML(data[0]);
-                        else
-                            content = "An unexpected error occurred";
-                        popup.setContent(content);
-                    });
             });
-            return marker;
-        }
-    }).addTo(markerLayerGroup);
-
-    _.defer(refreshHexOverLay); // TODO: add a toggle to do this only if hexOn = true;
-    if(questionName)
+        });
+        
+        // build the legend
         rebuildLegend(questionName, questionColorMap);
-    else
+    } else {
+        markerLayerGroup.eachLayer(function(geoJSONLayer) {
+            geoJSONLayer.setStyle(circleStyle);
+        });
         clearLegend();
-
-    // fitting to bounds with one point will zoom too far
-    // don't zoom when we "view by response"
-    if (latLngArray.length > 1 && allowResetZoomLevel) {
-        var latlngbounds = new L.LatLngBounds(latLngArray);
-        map.fitBounds(latlngbounds);
     }
+    _.defer(refreshHexOverLay); // TODO: add a toggle to do this only if hexOn = true;
 }
 
 function _reStyleAndBindPopupsToHexOverLay(newHexStylesByID, newHexPopupsByID) {
@@ -745,7 +752,7 @@ function filterSelectOneCallback()
 {
     // get geoJSON data to setup points - relies on questions having been parsed so has to be in/after the callback
     var geoJSON = formResponseMngr.getAsGeoJSON();
-    _rebuildMarkerLayer(geoJSON, formJSONMngr._currentSelectOneQuestionName);
+    _recolorMarkerLayer(geoJSON, formJSONMngr._currentSelectOneQuestionName);
 }
 
 function viewByChanged(questionName)
@@ -757,7 +764,7 @@ function viewByChanged(questionName)
     // get geoJSON data to setup points
     var geoJSON = formResponseMngr.getAsGeoJSON();
 
-    _rebuildMarkerLayer(geoJSON, questionName);
+    _recolorMarkerLayer(geoJSON, questionName);
 }
 
 function _createSelectOneLi(question)
