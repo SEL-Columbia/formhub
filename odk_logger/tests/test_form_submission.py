@@ -91,4 +91,13 @@ class TestFormSubmission(MainTestCase):
             key=GLOBAL_SUBMISSION_STATS).aggregate(Sum('value'))
         self.assertEqual(submission_count['value__sum'], 4)
 
-
+    def test_unicode_submission(self):
+        """Test xml submissions that contain unicode characters
+        """
+        xml_submission_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "../fixtures/tutorial/instances/"
+            "tutorial_unicode_submission.xml"
+        )
+        self._make_submission(xml_submission_file_path)
+        self.assertEqual(self.response.status_code, 201)
