@@ -370,7 +370,7 @@ function _buildMarkerLayer(geoJSON)
     map.fitBounds(latlngbounds);
 }
 
-function _recolorMarkerLayer(geoJSON, questionName, responseFilterList)
+function _recolorMarkerLayer(questionName, responseFilterList)
 {
     var latLngArray = [];
     var questionColorMap = {};
@@ -414,9 +414,12 @@ function _recolorMarkerLayer(geoJSON, questionName, responseFilterList)
                 if (!responseCountValid) {
                     question.responseCounts[response] += 1;
                 }
-                if (responseFilterList.length > 0 && _.indexOf(responseFilterList, response) === -1)
-                    return _.defaults({fillColor: '#ffffff', fillOpacity: 0, opacity:0}, circleStyle);    
-                return _.defaults({fillColor: questionColorMap[response]}, circleStyle);
+
+                if (responseFilterList.length > 0 && _.indexOf(responseFilterList, response) === -1) {
+                    return _.defaults({fillOpacity: 0, opacity:0.2}, circleStyle);
+                } else {
+                    return _.defaults({fillColor: questionColorMap[response]}, circleStyle);
+                }
             });
         });
         
@@ -707,9 +710,7 @@ function rebuildLegend(questionName, questionColorMap)
             formResponseMngr.addResponseToSelectOneFilter(responseName);
         else
             formResponseMngr.removeResponseFromSelectOneFilter(responseName);
-        // reload with new params
-        fields = getBootstrapFields();
-        filterSelectOneCallback();
+        _recolorMarkerLayer(formResponseMngr._currentSelectOneQuestionName, formResponseMngr._select_one_filters);
         refreshHexOverLay();
     });
 }
@@ -738,23 +739,14 @@ function clearLegend()
     $('#legend').remove();
 }
 
-function filterSelectOneCallback()
-{
-    // get geoJSON data to setup points - relies on questions having been parsed so has to be in/after the callback
-    var geoJSON = formResponseMngr.getAsGeoJSON();
-    _recolorMarkerLayer(geoJSON, formResponseMngr._currentSelectOneQuestionName, formResponseMngr._select_one_filters);
-}
-
 function viewByChanged(questionName)
 {
     allowResetZoomLevel = false; // disable zoom reset whenever this is clicked
     // update question name
     formJSONMngr.setCurrentSelectOneQuestionName(questionName);
     formResponseMngr.clearSelectOneFilterResponses();
-    // get geoJSON data to setup points
-    var geoJSON = formResponseMngr.getAsGeoJSON();
 
-    _recolorMarkerLayer(geoJSON, questionName, formResponseMngr._select_one_filters);
+    _recolorMarkerLayer(questionName, formResponseMngr._select_one_filters);
 }
 
 function _createSelectOneLi(question)
