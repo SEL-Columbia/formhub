@@ -29,7 +29,8 @@ var circleStyle = {
     border: 8,
     fillColor: '#ff3300',
     fillOpacity: 0.9,
-    radius: 8
+    radius: 8,
+    opacity: 0.5
 };
 // TODO: can we get the entire URL from mongo API
 var amazonUrlPrefix = "https://formhub.s3.amazonaws.com/";
@@ -347,7 +348,6 @@ function _buildMarkerLayer(geoJSON)
             marker.on('click', function(e) {
                 var popup = L.popup({offset: popupOffset})
                     .setContent("Loading...").setLatLng(latlng).openOn(map);
-                //console.log(feature.id);
                 $.getJSON(mongoAPIUrl, {'query': '{"_id":' + feature.id + '}'})
                     .done(function(data){
                         var content;
@@ -370,7 +370,7 @@ function _buildMarkerLayer(geoJSON)
     map.fitBounds(latlngbounds);
 }
 
-function _recolorMarkerLayer(geoJSON, questionName)
+function _recolorMarkerLayer(geoJSON, questionName, responseFilterList)
 {
     var latLngArray = [];
     var questionColorMap = {};
@@ -414,6 +414,8 @@ function _recolorMarkerLayer(geoJSON, questionName)
                 if (!responseCountValid) {
                     question.responseCounts[response] += 1;
                 }
+                if (responseFilterList.length > 0 && _.indexOf(responseFilterList, response) === -1)
+                    return _.defaults({fillColor: '#ffffff', fillOpacity: 0, opacity:0}, circleStyle);    
                 return _.defaults({fillColor: questionColorMap[response]}, circleStyle);
             });
         });
@@ -741,7 +743,7 @@ function filterSelectOneCallback()
 {
     // get geoJSON data to setup points - relies on questions having been parsed so has to be in/after the callback
     var geoJSON = formResponseMngr.getAsGeoJSON();
-    _recolorMarkerLayer(geoJSON, formJSONMngr._currentSelectOneQuestionName);
+    _recolorMarkerLayer(geoJSON, formResponseMngr._currentSelectOneQuestionName, formResponseMngr._select_one_filters);
 }
 
 function viewByChanged(questionName)
@@ -753,7 +755,7 @@ function viewByChanged(questionName)
     // get geoJSON data to setup points
     var geoJSON = formResponseMngr.getAsGeoJSON();
 
-    _recolorMarkerLayer(geoJSON, questionName);
+    _recolorMarkerLayer(geoJSON, questionName, formResponseMngr._select_one_filters);
 }
 
 function _createSelectOneLi(question)
