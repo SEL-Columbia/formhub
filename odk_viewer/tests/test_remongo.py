@@ -2,6 +2,8 @@ from django.conf import settings
 from main.tests.test_base import MainTestCase
 from odk_viewer.models import ParsedInstance
 from odk_viewer.management.commands.remongo import Command
+from django.core.management import call_command
+from common_tags import USERFORM_ID
 
 class TestRemongo(MainTestCase):
     def test_remongo_in_batches(self):
@@ -38,3 +40,12 @@ class TestRemongo(MainTestCase):
         # mongo db should now have 5 records
         count = settings.MONGO_DB.instances.count()
         self.assertEqual(count, 4)
+
+    def test_indexes_exist(self):
+        """
+        Make sure the required indexes are set, _userform_id as of now
+        """
+        call_command('remongo')
+        # if index exists, ensure index returns None
+        result = settings.MONGO_DB.instances.ensure_index(USERFORM_ID)
+        self.assertTrue(result is None)
