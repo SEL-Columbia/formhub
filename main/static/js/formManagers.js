@@ -94,11 +94,6 @@ FormJSONManager.prototype.getChoices = function(question)
     return choices;
 };
 
-FormJSONManager.prototype.setCurrentSelectOneQuestionName = function(name)
-{
-    this._currentSelectOneQuestionName = name;
-};
-
 FormJSONManager.prototype._parseSupportedLanguages = function()
 {
     var questionName, key;
@@ -176,6 +171,11 @@ FormResponseManager.prototype.loadResponseData = function(start, limit, geoPoint
                 _.defer(function() {thisFormResponseMngr._toDatavore();});
             });
     });
+};
+
+FormResponseManager.prototype.setCurrentSelectOneQuestionName = function(name)
+{
+    this._currentSelectOneQuestionName = name;
 };
 
 FormResponseManager.prototype.addResponseToSelectOneFilter = function(name)

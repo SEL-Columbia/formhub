@@ -416,7 +416,7 @@ function _recolorMarkerLayer(questionName, responseFilterList)
                 }
 
                 if (responseFilterList.length > 0 && _.indexOf(responseFilterList, response) === -1) {
-                    return _.defaults({fillOpacity: 0, opacity:0.2}, circleStyle);
+                    return _.defaults({fillOpacity: 0, opacity:0}, circleStyle);
                 } else {
                     return _.defaults({fillColor: questionColorMap[response]}, circleStyle);
                 }
@@ -743,7 +743,7 @@ function viewByChanged(questionName)
 {
     allowResetZoomLevel = false; // disable zoom reset whenever this is clicked
     // update question name
-    formJSONMngr.setCurrentSelectOneQuestionName(questionName);
+    formResponseMngr.setCurrentSelectOneQuestionName(questionName);
     formResponseMngr.clearSelectOneFilterResponses();
 
     _recolorMarkerLayer(questionName, formResponseMngr._select_one_filters);
