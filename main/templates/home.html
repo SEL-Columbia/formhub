@@ -10,7 +10,7 @@
   <div class="span5">
 <p><em>{% blocktrans %}formhub is a <strong>free</strong> hosted service that makes data collection <strong>simple</strong> and <strong>collaborative</strong>.{% endblocktrans %}</em></p>
 {% url registration_register as registration_register %}
-<p>{% blocktrans %}<strong>Simple.</strong>All you need to get started is an <a href="{{ registration_register }}">account</a> on formhub and the ability to author .xls files. Absolutely no technical setup required.{% endblocktrans %}</p>
+<p>{% blocktrans %}<strong>Simple.</strong> All you need to get started is an <a href="{{ registration_register }}">account</a> on formhub and the ability to author .xls files. Absolutely no technical setup required.{% endblocktrans %}</p>
 {% url syntax as syntax_url %}
 {% url forms_list as forms_url %}
 <p>{% blocktrans %}<strong>Collaborative.</strong> Share your data collection forms in <a href="{{ syntax_url }}">Excel</a>. <a href="{{ forms_url }}">Find</a>, grab and modify other <a href="{{ forms_url }}">peoples' forms</a> and quickly deploy it. Publish gathered data to share it with others via Excel, CSV, KML or an interactive map.{% endblocktrans %}
