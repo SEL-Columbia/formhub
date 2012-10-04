@@ -151,20 +151,17 @@ FormResponseManager = function(url, callback)
     this._currentSelectOneQuestionName = null; // name of the currently selected "View By Question if any"
 };
 
-FormResponseManager.prototype.loadResponseData_ = function(start, limit, geoPointField, otherFieldsToLoad)
+FormResponseManager.prototype.loadResponseData = function(start, limit, geoPointField, otherFieldsToLoad)
 {
     var idx;
     var thisFormResponseMngr = this;
     var urlParams = {}, geoParams = {};
-
-    // no invalidation -- no notion of "redoing things on view by" 
 
     start = parseInt(start,10);
     limit = parseInt(limit, 10);
     // use !isNaN so we also have zeros
     if(!isNaN(start)) urlParams[constants.START] = start;
     if(!isNaN(limit)) urlParams[constants.LIMIT] = limit;
-
 
     geoParams[constants.FIELDS] = JSON.stringify(["_id", geoPointField]); 
     // first query the geo-data
@@ -179,60 +176,6 @@ FormResponseManager.prototype.loadResponseData_ = function(start, limit, geoPoin
                 _.defer(function() {thisFormResponseMngr._toDatavore();});
             });
     });
-};
-
-// TODO: remove filter generation from within class, it should be application specific, right?
-FormResponseManager.prototype.loadResponseData = function(params, start, limit, fields)
-{
-    var idx;
-    var thisFormResponseMngr = this;
-
-    /// invalidate all derivative data 
-    this.geoJSON = null;
-    this.dtData = null;
-    //this.hexGeoJSON = null; // hexGeoJSON is actually not reset when there is a view-by
-
-    /// append select-one filters to params
-    if(formJSONMngr._currentSelectOneQuestionName)
-    {
-        var questionName = formJSONMngr._currentSelectOneQuestionName;
-        var orFilters = [];
-        for(idx in this._select_one_filters)
-        {
-            var responseName =  this._select_one_filters[idx];
-            if(responseName == notSpecifiedCaption)
-                orFilters.push(null);
-            else
-                orFilters.push(responseName);
-        }
-        if(orFilters.length > 0)
-        {
-            var inParam = {'$in': orFilters};
-            params[questionName] = inParam;
-        }
-    }
-    var urlParams = {'query':JSON.stringify(params)};
-    start = parseInt(start,10);
-        // use !isNaN so we also have zeros
-    if(!isNaN(start))
-        urlParams[constants.START] = start;
-    limit = parseInt(limit, 10);
-    if(!isNaN(limit))
-        urlParams[constants.LIMIT] = limit;
-    // first do the count
-    urlParams[constants.COUNT] = 1;
-    $.getJSON(thisFormResponseMngr.url, urlParams).success(function(data){
-            thisFormResponseMngr.responseCount = data[0][constants.COUNT];
-            urlParams[constants.COUNT] = 0;
-            if(fields && fields.length > 0)
-                urlParams[constants.FIELDS] = JSON.stringify(fields);
-            $.getJSON(thisFormResponseMngr.url, urlParams, function(data){
-                thisFormResponseMngr.responses = data;
-                thisFormResponseMngr.callback.call(thisFormResponseMngr);
-                // load the dvResponseTable up asynchronously
-                _.defer(function() {thisFormResponseMngr._toDatavore();});
-            });
-        });
 };
 
 FormResponseManager.prototype.addResponseToSelectOneFilter = function(name)

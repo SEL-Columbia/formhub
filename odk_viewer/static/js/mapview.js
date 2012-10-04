@@ -211,7 +211,7 @@ function loadFormJSONCallback()
     var geoField = formJSONMngr.getGeoPointQuestion()[constants.NAME];
 
     // load responses
-    formResponseMngr.loadResponseData_(0, null, geoField, fields);
+    formResponseMngr.loadResponseData(0, null, geoField, fields);
 }
 
 // callback called after response data has been loaded via the mongo form API
@@ -708,9 +708,8 @@ function rebuildLegend(questionName, questionColorMap)
         else
             formResponseMngr.removeResponseFromSelectOneFilter(responseName);
         // reload with new params
-        formResponseMngr.callback = filterSelectOneCallback;
         fields = getBootstrapFields();
-        formResponseMngr.loadResponseData({}, 0, null, fields);
+        filterSelectOneCallback();
         refreshHexOverLay();
     });
 }
