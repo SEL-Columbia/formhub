@@ -13,7 +13,8 @@ South==0.7.3
 xlrd==0.7.1
 xlwt==0.7.2
 openpyxl==1.5.8
-django-celery==3.0.4
+celery==3.0.11
+django-celery==3.0.10
 
 # sql alchemy was used for importing data from phones
 SQLAlchemy==0.7.1
