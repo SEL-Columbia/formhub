@@ -29,7 +29,8 @@ var circleStyle = {
     border: 8,
     fillColor: '#ff3300',
     fillOpacity: 0.9,
-    radius: 8
+    radius: 8,
+    opacity: 0.5
 };
 // TODO: can we get the entire URL from mongo API
 var amazonUrlPrefix = "https://formhub.s3.amazonaws.com/";
@@ -207,9 +208,10 @@ function loadFormJSONCallback()
 {
     // we only want to load gps and select one data to begin with
     var fields = getBootstrapFields();
+    var geoField = formJSONMngr.getGeoPointQuestion()[constants.NAME];
 
     // load responses
-    formResponseMngr.loadResponseData({}, 0, null, fields);
+    formResponseMngr.loadResponseData(0, null, geoField, fields);
 }
 
 // callback called after response data has been loaded via the mongo form API
@@ -221,7 +223,7 @@ function loadResponseDataCallback()
     // get geoJSON data to setup points - relies on questions having been parsed
     var geoJSON = formResponseMngr.getAsGeoJSON();
 
-    _rebuildMarkerLayer(geoJSON);
+    _buildMarkerLayer(geoJSON);
 
     // just to make sure the nav container exists
     var navContainer = $(navContainerSelector);
@@ -335,75 +337,17 @@ function setLanguage(idx)
     }
 }
 
-function _rebuildMarkerLayer(geoJSON, questionName)
+function _buildMarkerLayer(geoJSON)
 {
     var latLngArray = [];
-    var questionColorMap = {};
-    var randomColorStep = 0;
-    var paletteCounter = 0;
-    var responseCountValid = false;
-
-    if(questionName)
-    {
-        var question = formJSONMngr.getQuestionByName(questionName);
-        /// check if response count has been calculated for this question
-        if(question.hasOwnProperty('responseCounts'))
-            responseCountValid = true;
-        else
-            question.responseCounts = {};
-
-        // formJSONMngr.getChoices returns an object NOT an array so we use children directly here
-        var choices = question.children;
-        // build an array of choice names so that we can append "Not Specified" to it
-        var choiceNames = [];
-        for(i=0;i < choices.length;i++)
-        {
-            var choice = choices[i];
-            choiceNames.push(choice.name);
-            if(!responseCountValid)
-                question.responseCounts[choice.name] = 0;
-        }
-        choiceNames.push(notSpecifiedCaption);
-        if(!responseCountValid)
-            question.responseCounts[notSpecifiedCaption] = 0;
-        for(i=0;i < choiceNames.length;i++)
-        {
-            var choiceName = choiceNames[i];
-            var choiceColor = null;
-            // check if color palette has colors we haven't used
-            if(paletteCounter < colorPalette.length)
-                choiceColor = colorPalette[paletteCounter++];
-            else
-            {
-                // number of steps is reduced by the number of colors in our palette
-                choiceColor = get_random_color(randomColorStep++, (choiceNames.length - colorPalette.length));
-            }
-            /// save color for this choice
-            questionColorMap[choiceName] = choiceColor;
-        }
-    }
-
-    /// remove existing geoJsonLayer
-    markerLayerGroup.clearLayers();
 
     L.geoJson(geoJSON, {
-        style: function(feature) {
-            if(questionName) {
-                var response = feature.properties[questionName] || notSpecifiedCaption;
-                var question = formJSONMngr.getQuestionByName(questionName);
-                if (!responseCountValid) {
-                    question.responseCounts[response] += 1;
-                }
-                return _.defaults({fillColor: questionColorMap[response]}, circleStyle);
-            }
-        },
         pointToLayer: function(feature, latlng) {
             var marker = L.circleMarker(latlng, circleStyle);
             latLngArray.push(latlng);
             marker.on('click', function(e) {
                 var popup = L.popup({offset: popupOffset})
                     .setContent("Loading...").setLatLng(latlng).openOn(map);
-                //console.log(feature.id);
                 $.getJSON(mongoAPIUrl, {'query': '{"_id":' + feature.id + '}'})
                     .done(function(data){
                         var content;
@@ -419,17 +363,75 @@ function _rebuildMarkerLayer(geoJSON, questionName)
     }).addTo(markerLayerGroup);
 
     _.defer(refreshHexOverLay); // TODO: add a toggle to do this only if hexOn = true;
-    if(questionName)
-        rebuildLegend(questionName, questionColorMap);
-    else
-        clearLegend();
 
     // fitting to bounds with one point will zoom too far
     // don't zoom when we "view by response"
-    if (latLngArray.length > 1 && allowResetZoomLevel) {
-        var latlngbounds = new L.LatLngBounds(latLngArray);
-        map.fitBounds(latlngbounds);
+    var latlngbounds = new L.LatLngBounds(latLngArray);
+    map.fitBounds(latlngbounds);
+}
+
+function _recolorMarkerLayer(questionName, responseFilterList)
+{
+    var latLngArray = [];
+    var questionColorMap = {};
+    var randomColorStep = 0;
+    var paletteCounter = 0;
+    var responseCountValid = false;
+
+    if(questionName)
+    {
+        var question = formJSONMngr.getQuestionByName(questionName);
+
+        // figure out the response counts
+        var dvCounts = formResponseMngr.dvQuery({dims:[questionName], vals:[dv.count()]});
+        var responseCounts = _.object(dvCounts[0], dvCounts[1]);
+        // and make sure every response has a count
+        var choiceNames = _.union(_.pluck(question.children, 'name'), [notSpecifiedCaption]);
+        var zeroCounts = _.object(_.map(choiceNames, function(choice) { return [choice, 0]; }));
+        question.responseCounts = _.defaults(responseCounts, zeroCounts);
+
+        for(i=0;i < choiceNames.length;i++)
+        {
+            var choiceName = choiceNames[i];
+            var choiceColor = null;
+            // check if color palette has colors we haven't used
+            if(paletteCounter < colorPalette.length)
+                choiceColor = colorPalette[paletteCounter++];
+            else
+            {
+                // number of steps is reduced by the number of colors in our palette
+                choiceColor = get_random_color(randomColorStep++, (choiceNames.length - colorPalette.length));
+            }
+            /// save color for this choice
+            questionColorMap[choiceName] = choiceColor;
+        }
+
+        // re-color the icons
+        markerLayerGroup.eachLayer(function(geoJSONLayer) {
+            geoJSONLayer.setStyle(function(feature) {
+                var response = feature.properties[questionName] || notSpecifiedCaption;
+                var question = formJSONMngr.getQuestionByName(questionName);
+                if (!responseCountValid) {
+                    question.responseCounts[response] += 1;
+                }
+
+                if (responseFilterList.length > 0 && _.indexOf(responseFilterList, response) === -1) {
+                    return _.defaults({fillOpacity: 0, opacity:0}, circleStyle);
+                } else {
+                    return _.defaults({fillColor: questionColorMap[response]}, circleStyle);
+                }
+            });
+        });
+        
+        // build the legend
+        rebuildLegend(questionName, questionColorMap);
+    } else {
+        markerLayerGroup.eachLayer(function(geoJSONLayer) {
+            geoJSONLayer.setStyle(circleStyle);
+        });
+        clearLegend();
     }
+    _.defer(refreshHexOverLay); // TODO: add a toggle to do this only if hexOn = true;
 }
 
 function _reStyleAndBindPopupsToHexOverLay(newHexStylesByID, newHexPopupsByID) {
@@ -708,10 +710,7 @@ function rebuildLegend(questionName, questionColorMap)
             formResponseMngr.addResponseToSelectOneFilter(responseName);
         else
             formResponseMngr.removeResponseFromSelectOneFilter(responseName);
-        // reload with new params
-        formResponseMngr.callback = filterSelectOneCallback;
-        fields = getBootstrapFields();
-        formResponseMngr.loadResponseData({}, 0, null, fields);
+        _recolorMarkerLayer(formResponseMngr._currentSelectOneQuestionName, formResponseMngr._select_one_filters);
         refreshHexOverLay();
     });
 }
@@ -740,23 +739,14 @@ function clearLegend()
     $('#legend').remove();
 }
 
-function filterSelectOneCallback()
-{
-    // get geoJSON data to setup points - relies on questions having been parsed so has to be in/after the callback
-    var geoJSON = formResponseMngr.getAsGeoJSON();
-    _rebuildMarkerLayer(geoJSON, formJSONMngr._currentSelectOneQuestionName);
-}
-
 function viewByChanged(questionName)
 {
     allowResetZoomLevel = false; // disable zoom reset whenever this is clicked
     // update question name
-    formJSONMngr.setCurrentSelectOneQuestionName(questionName);
+    formResponseMngr.setCurrentSelectOneQuestionName(questionName);
     formResponseMngr.clearSelectOneFilterResponses();
-    // get geoJSON data to setup points
-    var geoJSON = formResponseMngr.getAsGeoJSON();
 
-    _rebuildMarkerLayer(geoJSON, questionName);
+    _recolorMarkerLayer(questionName, formResponseMngr._select_one_filters);
 }
 
 function _createSelectOneLi(question)
