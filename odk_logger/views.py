@@ -420,25 +420,29 @@ def edit_data(request, username, id_string, data_id):
         'form_id': xform.id_string,
         'server_url' : formhub_url + username,
         'instance': inject_instanceid(instance),
-        'return_url': reverse('odk_viewer.views.instance', kwargs={'username': username,
-                                                                   'id_string': id_string})
+        'return_url': request.build_absolute_uri(reverse('odk_viewer.views.instance',
+                    kwargs={'username': username,
+                            'id_string': id_string}))
     }
     data, headers = multipart_encode(values)
     headers['User-Agent'] = 'formhub'
     req = urllib2.Request(url, data, headers)
-
     try:
         response = urllib2.urlopen(req)
         response = json.loads(response.read())
         context = RequestContext(request)
         owner = User.objects.get(username=username)
         context.profile, created =\
-        UserProfile.objects.get_or_create(user=owner)
+                                  UserProfile.objects.get_or_create(user=owner)
         context.xform = xform
         context.content_user = owner
         context.form_view = True
         if 'edit_url' in response:
             context.enketo = response['edit_url']
+            # encode again because the generator in data has been accessed and
+            # is now empty
+            data, headers = multipart_encode(values)
+            headers['User-Agent'] = 'formhub'
 
             req = urllib2.Request(response['edit_url'], data, headers)
 
