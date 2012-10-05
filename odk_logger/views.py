@@ -1,7 +1,9 @@
 import base64
 import json
+import logging
 import os
 import tempfile
+import sys, traceback
 import urllib
 import urllib2
 from xml.parsers.expat import ExpatError
@@ -378,6 +380,7 @@ def enter_data(request, username, id_string):
 
 
 def edit_data(request, username, id_string, data_id):
+    logger = logging.getLogger('console_logger')
     owner = User.objects.get(username=username)
     xform = get_object_or_404(XForm, user__username=username,
         id_string=id_string)
@@ -415,21 +418,25 @@ def edit_data(request, username, id_string, data_id):
         formhub_url = "http://%s/" % request.META['HTTP_HOST']
     except:
         formhub_url = "http://formhub.org/"
+    injected_xml = inject_instanceid(instance)
     values = {
         'format': 'json',
         'form_id': xform.id_string,
         'server_url' : formhub_url + username,
-        'instance': inject_instanceid(instance),
+        'instance': injected_xml,
+        'instance_id': instance.uuid,
         'return_url': request.build_absolute_uri(reverse('odk_viewer.views.instance',
                     kwargs={'username': username,
-                            'id_string': id_string}))
+                            'id_string': id_string}) + "#/" +str(instance.id))
     }
     data, headers = multipart_encode(values)
     headers['User-Agent'] = 'formhub'
     req = urllib2.Request(url, data, headers)
     try:
+        logger.error(url)
         response = urllib2.urlopen(req)
         response = json.loads(response.read())
+        logger.error(response)
         context = RequestContext(request)
         owner = User.objects.get(username=username)
         context.profile, created =\
@@ -439,15 +446,17 @@ def edit_data(request, username, id_string, data_id):
         context.form_view = True
         if 'edit_url' in response:
             context.enketo = response['edit_url']
+            logger.error(response['edit_url'])
             # encode again because the generator in data has been accessed and
             # is now empty
-            data, headers = multipart_encode(values)
-            headers['User-Agent'] = 'formhub'
+            #data, headers = multipart_encode(values)
+            #headers['User-Agent'] = 'formhub'
 
-            req = urllib2.Request(response['edit_url'], data, headers)
+            #req = urllib2.Request(response['edit_url'], data, headers)
 
-            response = urllib2.urlopen(req)
-            response = json.loads(response.read())
+            #response = urllib2.urlopen(req)
+            #response = json.loads(response.read())
+            #logger.error(response)
             #return render_to_response("form_entry.html",
             #                          context_instance=context)
             return HttpResponseRedirect(response['edit_url'])
@@ -463,6 +472,9 @@ def edit_data(request, username, id_string, data_id):
             return render_to_response("profile.html",context_instance=context)
 
     except urllib2.URLError, e:
+        import pprint
+        logger.error(traceback.format_exc())
+        logger.error(pprint.pformat(values))
         pass  # this will happen if we could not connect to enketo
         #TODO: should we throw in another error message here
     return HttpResponseRedirect(reverse('main.views.show',
