@@ -410,7 +410,7 @@ def edit_data(request, username, id_string, data_id):
             uuid = records[0]["_uuid"]
             instance = Instance.objects.get(xform=xform, uuid=uuid)
 
-    url = '%slaunch/launchSurvey' % settings.ENKETO_URL
+    url = '%sdata/edit_url' % settings.ENKETO_URL
     register_openers()
     response = None
     # see commit 220f2dad0e for tmp file creation
