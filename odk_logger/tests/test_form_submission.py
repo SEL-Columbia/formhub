@@ -101,7 +101,7 @@ class TestFormSubmission(MainTestCase):
         """
         xml_submission_file_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
-            "..", "fixtures", "tutorial", "instances"
+            "..", "fixtures", "tutorial", "instances",
             "tutorial_unicode_submission.xml"
         )
         self._make_submission(xml_submission_file_path)
