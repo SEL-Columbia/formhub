@@ -103,6 +103,7 @@
                       <ul class="download-nav">
                           <li><a href="{% url odk_viewer.views.export_list content_user.username form.id_string 'csv' %}">{%  trans "csv" %}</a></li>
                           <li><a href="{% url odk_viewer.views.export_list content_user.username form.id_string 'xls' %}">{%  trans "xls" %}</a></li>
+                          <li><a href="{% url odk_viewer.views.export_list content_user.username form.id_string 'fcsv' %}">{%  trans "csv*" %}</a></li>
                           <li>
                               {% if xform.data_dictionary.has_surveys_with_geopoints %}
                                   <a href="{% url odk_viewer.views.kml_export content_user.username form.id_string %}">{%  trans "kml" %}</a>
@@ -139,5 +140,6 @@
     </div> 
   </section>
   {% endif %}
+  <p><em>{% trans "* Flat CSV Export" %}</em>: {% trans "All grouped data are flatten in a single CSV sheet." %}</p>
   {% endblock %}
   

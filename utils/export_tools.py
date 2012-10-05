@@ -77,13 +77,15 @@ class DictOrganizer(object):
 def _df_builder_for_export_type(export_type, username, id_string,
                                 filter_query=None):
     from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder,\
-        CSVDataFrameBuilder
+        CSVDataFrameBuilder, FlatCSVDataFrameBuilder
     from odk_viewer.models import Export
 
     if export_type == Export.XLS_EXPORT:
         return XLSDataFrameBuilder(username, id_string, filter_query)
     elif export_type == Export.CSV_EXPORT:
         return CSVDataFrameBuilder(username, id_string, filter_query)
+    elif export_type == Export.FLAT_CSV_EXPORT:
+        return FlatCSVDataFrameBuilder(username, id_string, filter_query)
     else:
         raise ValueError
 
