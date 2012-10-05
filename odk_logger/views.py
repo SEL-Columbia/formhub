@@ -418,14 +418,16 @@ def edit_data(request, username, id_string, data_id):
         formhub_url = "http://%s/" % request.META['HTTP_HOST']
     except:
         formhub_url = "http://formhub.org/"
+    injected_xml = inject_instanceid(instance)
     values = {
         'format': 'json',
         'form_id': xform.id_string,
         'server_url' : formhub_url + username,
-        'instance': inject_instanceid(instance),
+        'instance': injected_xml,
+        'instance_id': instance.uuid,
         'return_url': request.build_absolute_uri(reverse('odk_viewer.views.instance',
                     kwargs={'username': username,
-                            'id_string': id_string}))
+                            'id_string': id_string}) + "#/" +str(instance.id))
     }
     data, headers = multipart_encode(values)
     headers['User-Agent'] = 'formhub'
@@ -447,14 +449,14 @@ def edit_data(request, username, id_string, data_id):
             logger.error(response['edit_url'])
             # encode again because the generator in data has been accessed and
             # is now empty
-            data, headers = multipart_encode(values)
-            headers['User-Agent'] = 'formhub'
+            #data, headers = multipart_encode(values)
+            #headers['User-Agent'] = 'formhub'
 
-            req = urllib2.Request(response['edit_url'], data, headers)
+            #req = urllib2.Request(response['edit_url'], data, headers)
 
-            response = urllib2.urlopen(req)
-            response = json.loads(response.read())
-            logger.error(response)
+            #response = urllib2.urlopen(req)
+            #response = json.loads(response.read())
+            #logger.error(response)
             #return render_to_response("form_entry.html",
             #                          context_instance=context)
             return HttpResponseRedirect(response['edit_url'])
