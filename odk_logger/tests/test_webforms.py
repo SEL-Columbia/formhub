@@ -37,3 +37,26 @@ class TestWebforms(MainTestCase):
         self.assertTrue(matches != None)
         self.assertTrue(len(matches.groups()), 1)
         self.assertEqual(matches.groups()[0], instance.uuid)
+
+    def test_inject_instanceid_fail_if_exists(self):
+        xls_file_path = os.path.join(
+                    os.path.dirname(__file__),
+                    "..",
+                    "fixtures",
+                    "tutorial",
+                    "tutorial.xls"
+                )
+        self._publish_xls_file_and_set_xform(xls_file_path)
+        xml_file_path = os.path.join(
+                    os.path.dirname(__file__),
+                    "..",
+                    "fixtures",
+                    "tutorial",
+                    "instances",
+                    "tutorial_2012-06-27_11-27-53_w_uuid.xml"
+                )
+        self._make_submission(xml_file_path)
+        instance = Instance.objects.order_by('id').reverse()[0]
+        injected_xml_str = inject_instanceid(instance)
+        self.assertEqual(instance.xml, injected_xml_str)
+        # check that the xml is unmodified

@@ -252,11 +252,9 @@ class OpenRosaResponseNotAllowed(OpenRosaResponse):
 
 
 def inject_instanceid(instance):
-    xml = clean_and_parse_xml(instance.xml)
-    children = xml.childNodes
-    meta_tags = [child.nodeName for child in children if\
-                child.nodeName == "meta"]
-    if len(meta_tags) == 0:
+    if get_uuid_from_xml(instance.xml) is None:
+        xml = clean_and_parse_xml(instance.xml)
+        children = xml.childNodes
         # insert meta and instanceID
         text_node = xml.createTextNode(u"uuid:%s" % instance.uuid)
         instanceid_tag = xml.createElement("instanceID")
