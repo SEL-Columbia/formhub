@@ -211,7 +211,7 @@ function loadFormJSONCallback()
     var geoField = formJSONMngr.getGeoPointQuestion()[constants.NAME];
 
     // load responses
-    formResponseMngr.loadResponseData(0, null, geoField, fields);
+    formResponseMngr.loadResponseData({}, 0, null, geoField, fields);
 }
 
 // callback called after response data has been loaded via the mongo form API
