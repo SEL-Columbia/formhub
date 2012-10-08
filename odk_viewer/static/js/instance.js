@@ -38,7 +38,8 @@ function parseQuestions(children, prefix, cleanReplacement)
     for(idx in children)
     {
         var question = children[idx];
-        if(question.hasOwnProperty('children') && (question.type == "group" || question.type == "note"))
+        //@TODO: do we just want to add anything with children, concern could be it item has children and is alos avalid question - if thats possible
+        if(question.hasOwnProperty('children') && (question.type == "group" || question.type == "note" || question.type == "repeat"))
         {
             parseQuestions(question.children, ((prefix?prefix:'') + question.name + cleanReplacement));
         }
