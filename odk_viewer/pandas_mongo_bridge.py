@@ -670,6 +670,10 @@ class FlatCSVDataFrameBuilder(AbstractDataFrameBuilder):
             del(repeat_column_frame)
             # del(frames[repeat_column])
 
+        # remove columns we don't want
+        for col in self.INTERNAL_FIELDS:
+            if col in df.columns:
+                del(df[col])
 
-        df.to_csv(filename, na_rep=NA_REP, encoding='utf-8') # index=index
+        df.to_csv(filename, na_rep=NA_REP, encoding='utf-8', index=False)
         del(df)
