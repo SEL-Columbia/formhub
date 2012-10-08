@@ -16,6 +16,7 @@ from django.db import IntegrityError
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.utils.encoding import smart_unicode
 from django.utils.translation import ugettext as _
 from modilabs.utils.subprocess_timeout import ProcessTimedOut
 from pyxform.errors import PyXFormError
@@ -27,7 +28,8 @@ from odk_logger.models import SurveyType
 from odk_logger.models import XForm
 from odk_logger.models.xform import XLSFormError
 from odk_logger.xform_instance_parser import InstanceParseError,\
-     InstanceInvalidUserError, IsNotCrowdformError, DuplicateInstance
+     InstanceInvalidUserError, IsNotCrowdformError, DuplicateInstance,\
+     clean_and_parse_xml, get_uuid_from_xml
 from utils.viewer_tools import get_path
 
 
@@ -100,12 +102,23 @@ def create_instance(username, xml_file, media_files,
             raise DuplicateInstance()
 
     if proceed_to_create_instance:
-        instance = Instance.objects.create(xml=xml, user=user, status=status)
+        # check if its an edit submission
+        instance_id = get_uuid_from_xml(xml)
+        instances = Instance.objects.filter(uuid=instance_id)
+        if instances:
+            instance  = instances[0]
+            instance.xml = xml
+            instance.save()
+        else:
+            # check to see if instance
+            instance = Instance.objects.create(xml=xml, user=user, status=status)
         for f in media_files:
             Attachment.objects.get_or_create(instance=instance, media_file=f)
         if instance.xform is not None:
             pi, created = ParsedInstance.objects.get_or_create(
                     instance=instance)
+            if not created:
+                pi.update_mongo(edit=True)
         return instance
     return None
 
@@ -236,3 +249,18 @@ class OpenRosaResponseBadRequest(OpenRosaResponse):
 
 class OpenRosaResponseNotAllowed(OpenRosaResponse):
     status_code = 405
+
+
+def inject_instanceid(instance):
+    if get_uuid_from_xml(instance.xml) is None:
+        xml = clean_and_parse_xml(instance.xml)
+        children = xml.childNodes
+        # insert meta and instanceID
+        text_node = xml.createTextNode(u"uuid:%s" % instance.uuid)
+        instanceid_tag = xml.createElement("instanceID")
+        instanceid_tag.appendChild(text_node)
+        meta_tag = xml.createElement("meta")
+        meta_tag.appendChild(instanceid_tag)
+        xml.documentElement.appendChild(meta_tag)
+        return xml.toxml()
+    return instance.xml

@@ -94,11 +94,6 @@ FormJSONManager.prototype.getChoices = function(question)
     return choices;
 };
 
-FormJSONManager.prototype.setCurrentSelectOneQuestionName = function(name)
-{
-    this._currentSelectOneQuestionName = name;
-};
-
 FormJSONManager.prototype._parseSupportedLanguages = function()
 {
     var questionName, key;
@@ -151,58 +146,36 @@ FormResponseManager = function(url, callback)
     this._currentSelectOneQuestionName = null; // name of the currently selected "View By Question if any"
 };
 
-// TODO: remove filter generation from within class, it should be application specific, right?
-FormResponseManager.prototype.loadResponseData = function(params, start, limit, fields)
+FormResponseManager.prototype.loadResponseData = function(start, limit, geoPointField, otherFieldsToLoad)
 {
     var idx;
     var thisFormResponseMngr = this;
+    var urlParams = {}, geoParams = {};
 
-    /// invalidate all derivative data 
-    this.geoJSON = null;
-    this.dtData = null;
-    //this.hexGeoJSON = null; // hexGeoJSON is actually not reset when there is a view-by
-
-    /// append select-one filters to params
-    if(formJSONMngr._currentSelectOneQuestionName)
-    {
-        var questionName = formJSONMngr._currentSelectOneQuestionName;
-        var orFilters = [];
-        for(idx in this._select_one_filters)
-        {
-            var responseName =  this._select_one_filters[idx];
-            if(responseName == notSpecifiedCaption)
-                orFilters.push(null);
-            else
-                orFilters.push(responseName);
-        }
-        if(orFilters.length > 0)
-        {
-            var inParam = {'$in': orFilters};
-            params[questionName] = inParam;
-        }
-    }
-    var urlParams = {'query':JSON.stringify(params)};
     start = parseInt(start,10);
-        // use !isNaN so we also have zeros
-    if(!isNaN(start))
-        urlParams[constants.START] = start;
     limit = parseInt(limit, 10);
-    if(!isNaN(limit))
-        urlParams[constants.LIMIT] = limit;
-    // first do the count
-    urlParams[constants.COUNT] = 1;
-    $.getJSON(thisFormResponseMngr.url, urlParams).success(function(data){
-            thisFormResponseMngr.responseCount = data[0][constants.COUNT];
-            urlParams[constants.COUNT] = 0;
-            if(fields && fields.length > 0)
-                urlParams[constants.FIELDS] = JSON.stringify(fields);
+    // use !isNaN so we also have zeros
+    if(!isNaN(start)) urlParams[constants.START] = start;
+    if(!isNaN(limit)) urlParams[constants.LIMIT] = limit;
+
+    geoParams[constants.FIELDS] = JSON.stringify(["_id", geoPointField]); 
+    // first query the geo-data
+    $.getJSON(thisFormResponseMngr.url, geoParams).success(function(data) {
+            if(otherFieldsToLoad && otherFieldsToLoad.length > 0)
+                urlParams[constants.FIELDS] = JSON.stringify(otherFieldsToLoad);
             $.getJSON(thisFormResponseMngr.url, urlParams, function(data){
                 thisFormResponseMngr.responses = data;
+                thisFormResponseMngr.responseCount = data.length;
                 thisFormResponseMngr.callback.call(thisFormResponseMngr);
                 // load the dvResponseTable up asynchronously
                 _.defer(function() {thisFormResponseMngr._toDatavore();});
             });
-        });
+    });
+};
+
+FormResponseManager.prototype.setCurrentSelectOneQuestionName = function(name)
+{
+    this._currentSelectOneQuestionName = name;
 };
 
 FormResponseManager.prototype.addResponseToSelectOneFilter = function(name)
