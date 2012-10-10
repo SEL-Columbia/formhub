@@ -200,8 +200,14 @@ class XFormInstanceParser(object):
         self._attributes = {}
         all_attributes = list(_get_all_attributes(self._root_node))
         for key, value in all_attributes:
-            assert key not in self._attributes
-            self._attributes[key] = value
+            try:
+                assert key not in self._attributes
+                self._attributes[key] = value
+            except AssertionError:
+                import logging
+                logger = logging.getLogger("console_logger")
+                logger.debug(str(all_attributes))
+                raise AssertionError
 
     def get_xform_id_string(self):
         return self._attributes[u"id"]
