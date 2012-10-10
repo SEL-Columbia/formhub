@@ -200,8 +200,16 @@ class XFormInstanceParser(object):
         self._attributes = {}
         all_attributes = list(_get_all_attributes(self._root_node))
         for key, value in all_attributes:
-            assert key not in self._attributes
-            self._attributes[key] = value
+            # commented since enketo forms may have the template attribute in multiple xml tags and I dont see the harm in overiding attributes at this point
+            try:
+                assert key not in self._attributes
+            except AssertionError:
+                import logging
+                logger = logging.getLogger("console_logger")
+                logger.debug("Skipping duplicate attribute: %s with value %s" % (key, value))
+                logger.debug(str(all_attributes))
+            else:
+                self._attributes[key] = value
 
     def get_xform_id_string(self):
         return self._attributes[u"id"]
