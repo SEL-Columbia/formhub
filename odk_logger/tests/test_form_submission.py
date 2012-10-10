@@ -101,3 +101,42 @@ class TestFormSubmission(MainTestCase):
         )
         self._make_submission(xml_submission_file_path)
         self.assertEqual(self.response.status_code, 201)
+
+    def test_submission_w_mismatched_uuid(self):
+        """
+        test allowing submissions where xml's form uuid doesnt match any form's uuid for a user, as long as id_string can be matched
+        """
+        # submit instance with uuid that would not match the forms
+        xml_submission_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "..", "fixtures", "tutorial", "instances",
+            "tutorial_2012-06-27_11-27-53_w_xform_uuid.xml"
+        )
+        self._make_submission(xml_submission_file_path)
+        self.assertEqual(self.response.status_code, 201)
+
+    def test_fail_submission_if_no_username(self):
+        """
+        Test that a submission fails if no username is provided and the uuid's dont match
+        """
+        xml_submission_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "..", "fixtures", "tutorial", "instances",
+            "tutorial_2012-06-27_11-27-53_w_xform_uuid.xml"
+        )
+        # set touchforms to True to force submission to /submission, without username
+        self._make_submission(path=xml_submission_file_path, touchforms=True)
+        self.assertEqual(self.response.status_code, 404)
+
+    def test_fail_submission_if_bad_id_string(self):
+        """
+        Test that a submission fails if no username is provided and the uuid's dont match
+        """
+        xml_submission_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "..", "fixtures", "tutorial", "instances",
+            "tutorial_2012-06-27_11-27-53_bad_id_string.xml"
+        )
+        # set touchforms to True to force submission to /submission, without username
+        self._make_submission(path=xml_submission_file_path, touchforms=True)
+        self.assertEqual(self.response.status_code, 404)
