@@ -72,13 +72,16 @@ def create_instance(username, xml_file, media_files,
         raise InstanceInvalidUserError()
 
     if uuid:
-        xform = XForm.objects.get(uuid=uuid)
-        xform_username = xform.user.username
+        # try find the fomr by its uuid which is the ideal condition
+        if XForm.objects.filter(uuid=uuid).count() > 0:
+            xform = XForm.objects.get(uuid=uuid)
+            xform_username = xform.user.username
 
-        if xform_username != username and not xform.is_crowd_form and not is_touchform:
-            raise IsNotCrowdformError()
+            if xform_username != username and not xform.is_crowd_form and not is_touchform:
+                raise IsNotCrowdformError()
 
-        username = xform_username
+            username = xform_username
+    # else, since we have a username, the Instance creation logic will handle checking for the forms existence by its id_string
 
     user = get_object_or_404(User, username=username)
     existing_instance_count = Instance.objects.filter(xml=xml,
