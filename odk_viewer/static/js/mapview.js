@@ -57,12 +57,11 @@ var customMapBoxTileLayer;
 var legendsContainer;
 
 var mapview = function() {
-
     return {
         isHttps: function(){
             return location.protocol == 'https:';
         }
-    }
+    };
 }();
 
 /**
@@ -77,7 +76,7 @@ mapview.getMapboxMapname = function(mapUrl) {
         return matches[2];
     }
     return null;
-}
+};
 
 function initialize() {
     // Make a new Leaflet map in your container div
@@ -390,6 +389,7 @@ function _recolorMarkerLayer(questionName, responseFilterList)
         var zeroCounts = _.object(_.map(choiceNames, function(choice) { return [choice, 0]; }));
         question.responseCounts = _.defaults(responseCounts, zeroCounts);
 
+        // TODO: put the following for loop in the colors module
         for(i=0;i < choiceNames.length;i++)
         {
             var choiceName = choiceNames[i];
@@ -410,10 +410,6 @@ function _recolorMarkerLayer(questionName, responseFilterList)
         markerLayerGroup.eachLayer(function(geoJSONLayer) {
             geoJSONLayer.setStyle(function(feature) {
                 var response = feature.properties[questionName] || notSpecifiedCaption;
-                var question = formJSONMngr.getQuestionByName(questionName);
-                if (!responseCountValid) {
-                    question.responseCounts[response] += 1;
-                }
 
                 if (responseFilterList.length > 0 && _.indexOf(responseFilterList, response) === -1) {
                     return _.defaults({fillOpacity: 0, opacity:0}, circleStyle);
@@ -587,7 +583,7 @@ function JSONSurveyToHTML(data)
 
 function getLanguageAt(idx)
 {
-    return language = formJSONMngr.supportedLanguages[idx];
+    return formJSONMngr.supportedLanguages[idx];
 }
 
 function _rebuildHexLegend(countOrProportion, questionName, responseNames)
@@ -610,7 +606,7 @@ function _rebuildHexLegend(countOrProportion, questionName, responseNames)
     var maxHexCount = _.max(formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]})[1]);
     var interval = function(scheme) { 
         var len = colors.getNumProportional(scheme);
-        return _.map(_.range(1,len+1), function (v) { return v / len });
+        return _.map(_.range(1,len+1), function (v) { return v / len; });
     };
     var templateFiller = {
         count: { title : gettext('Number of submissions'),
