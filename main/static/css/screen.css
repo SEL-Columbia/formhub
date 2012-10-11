@@ -3,6 +3,12 @@ formhub-extras.css
 Made for formhub.org, which mostly uses bootstrap for css.
 This is for all the extra things it needs beyond what bootstrap provides.
 */
+
+body {
+	background-image: url("images/background.jpg");
+	background-repeat: repeat;
+}
+
 .clearfix {
   *zoom: 1;
 }
@@ -542,4 +548,79 @@ section {
 }
 .data-download ul {
   margin: 0;
+}
+
+/* New additions by Prajjwol */
+.title {
+   	color: #d96e27;
+	margin-top: 20px;
+	margin-bottom: 10px;
+	font-size: 24px;
+	font-weight: bold;
+	padding-bottom: 15px;
+}
+
+.title-grey {
+	font-size: 24px;
+	color: #999999;
+	text-align: center;
+	padding-top: 20px;
+	margin-bottom: 40px;
+}
+.display-unit {
+	padding: 30px;
+	background-color: #f0f3f5;
+	margin-bottom: 20px;
+	margin-top: 20px;
+}
+
+.display-unit p {
+	text-align: center;
+}
+.display-unit h2 {
+	text-align: center;
+	font-size: 24px;
+	font-weight: bold;
+}
+.main-display {
+	background-image: url("../images/masthead/main04.jpg");
+	background-repeat: no-repeat;
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+
+.main-display .content {
+	padding: 30px;
+}
+
+.formhub-stat {
+	margin-top: 50px;
+	padding-bottom: 30px;
+	font-size: 24px;
+	text-align: center;
+	color: #999999;
+}
+
+.formhub-stat .num {
+	color: #d96e27;
+	display: inline;
+}
+
+.separator {
+	border-top: 1px solid #ccc;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	display: block;
+}
+
+img.center {
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+
+img {
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
 }
