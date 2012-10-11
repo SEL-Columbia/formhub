@@ -384,6 +384,7 @@ function _recolorMarkerLayer(questionName, responseFilterList)
         // figure out the response counts
         var dvCounts = formResponseMngr.dvQuery({dims:[questionName], vals:[dv.count()]});
         var responseCounts = _.object(dvCounts[0], dvCounts[1]);
+        responseCounts[notSpecifiedCaption] = responseCounts[undefined]; //undefined = special case
         // and make sure every response has a count
         var choiceNames = _.union(_.pluck(question.children, 'name'), [notSpecifiedCaption]);
         var zeroCounts = _.object(_.map(choiceNames, function(choice) { return [choice, 0]; }));
