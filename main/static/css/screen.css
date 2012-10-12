@@ -619,8 +619,28 @@ img.center {
 	display: block;
 }
 
+img.left{
+	margin-left: 0px;
+	margin-right: auto;
+	display: block;
+}
+
 img {
 	margin-left: auto;
 	margin-right: auto;
 	display: block;
 }
+
+.navigation #navlist li{
+	list-style-type: none;
+	display: inline-block;
+	padding-right: 20px;
+	color:#d96e27 !important;
+	font-size: 18px;
+	margin-top: 10px;
+}
+
+.navigation #navlist li a:link {text-decoration:none; color:#d96e27 !important;}
+.navigation #navlist li a:visited {text-decoration:none;color:#d96e27 !important;}
+.navigation #navlist li a:hover {text-decoration:none;color:#32AF6E !important;}
+.navigation #navlist li a:active {text-decoration:none;color:#d96e27 !important;}
