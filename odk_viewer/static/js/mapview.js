@@ -466,12 +466,13 @@ function constructHexBinOverLay() {
 function _recomputeHexColorsByRatio(questionName, responseNames) {
     var newHexStyles = {};
     var newPopupTexts = {};
-    if (_(responseNames).contains(notSpecifiedCaption)) 
-        responseNames.push(undefined); // hack? if notSpeciedCaption is in repsonseNames, then need to
+    var myResponseNames = _.clone(responseNames);
+    if (_(myResponseNames).contains(notSpecifiedCaption)) 
+        myResponseNames.push(undefined); // hack? if notSpeciedCaption is in repsonseNames, then need to
         // count when instance.response[questionName] doesn't exist, and is therefore ``undefined''
     
     var hexAndCountArrayNum = formResponseMngr.dvQuery({dims: ['hexID'], vals:[dv.count()], where:
-        function(table, row) { return _.contains(responseNames, table.get(questionName, row)); }});
+        function(table, row) { return _.contains(myResponseNames, table.get(questionName, row)); }});
     var hexAndCountArrayDenom = formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]});      
 
     _(hexAndCountArrayDenom[0]).each( function(hexID, idx) {
@@ -481,7 +482,7 @@ function _recomputeHexColorsByRatio(questionName, responseNames) {
         newPopupTexts[hexID] = hexAndCountArrayNum[1][idx] + " / " + hexAndCountArrayDenom[1][idx] + " (" + Math.round(ratio*100) + "%)";
     });
     _reStyleAndBindPopupsToHexOverLay(newHexStyles, newPopupTexts);
-    _rebuildHexLegend('proportion', questionName, responseNames);
+    _rebuildHexLegend('proportion', questionName, myResponseNames);
 }
 
 function _hexOverLayByCount()
