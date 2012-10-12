@@ -590,7 +590,24 @@ section {
 }
 
 .main-display .content {
-	padding: 30px;
+	padding: 20px;
+}
+
+.main-display h1 {
+	font-size: 35px;
+	color: #fff;
+	font-weight: 500;
+	padding-bottom: 15px;
+}
+
+.main-display p {
+	font-size: 22px;
+	color: #fff;
+	padding-bottom: 5px;
+}
+
+.main-display .caption {
+	margin-top: 100px;
 }
 
 .formhub-stat {
@@ -632,7 +649,7 @@ img {
 }
 
 .navigation {
-	padding-bottom: 30px;
+	padding-bottom: 10px;
 }
 .navigation #navlist li{
 	list-style-type: none;
