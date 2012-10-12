@@ -631,6 +631,9 @@ img {
 	display: block;
 }
 
+.navigation {
+	padding-bottom: 30px;
+}
 .navigation #navlist li{
 	list-style-type: none;
 	display: inline-block;
