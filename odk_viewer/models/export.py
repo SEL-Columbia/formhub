@@ -18,6 +18,7 @@ class Export(models.Model):
 
     XLS_EXPORT = 'xls'
     CSV_EXPORT = 'csv'
+    FLAT_CSV_EXPORT = 'fcsv'
     KML_EXPORT = 'kml'
 
     EXPORT_MIMES = {
@@ -29,6 +30,7 @@ class Export(models.Model):
     EXPORT_TYPES = [
         (XLS_EXPORT, 'Excel'),
         (CSV_EXPORT, 'CSV'),
+        (FLAT_CSV_EXPORT, 'CSV*'),
         #(KML_EXPORT, 'kml'),
     ]
 

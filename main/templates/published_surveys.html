@@ -148,6 +148,7 @@
                     <ul class="download-nav">
                       <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'csv' %}">{%  trans "csv" %}</a></li>
                       <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'xls' %}">{%  trans "xls" %}</a></li>
+                      <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'fcsv' %}">{%  trans "csv*" %}</a></li>
                       <li>
                           {% if xform.data_dictionary.has_surveys_with_geopoints %}
                               <a href="{% url odk_viewer.views.kml_export user.username xform.id_string %}">{%  trans "kml" %}</a>

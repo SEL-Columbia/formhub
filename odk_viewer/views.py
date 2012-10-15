@@ -168,16 +168,21 @@ def survey_responses(request, instance_id):
     })
 
 
-def csv_export(request, username, id_string):
+def csv_export(request, username, id_string, flatten=False):
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
     query = request.GET.get("query")
     ext = Export.CSV_EXPORT
+    
+    if flatten:
+        export_type = Export.FLAT_CSV_EXPORT
+    else:
+        export_type = Export.CSV_EXPORT
 
     try:
-        export = generate_export(Export.CSV_EXPORT, ext, username, id_string,
+        export = generate_export(export_type, ext, username, id_string,
             None, query)
     except NoRecordsFoundError:
         return HttpResponse(_("No records found to export"))

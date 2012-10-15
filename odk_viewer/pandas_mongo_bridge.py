@@ -1,7 +1,8 @@
 from itertools import chain
-import json
-import re
+
 import settings
+import pandas as pd
+import numpy as np
 from pandas.core.frame import DataFrame
 from pandas.io.parsers import ExcelWriter
 from pyxform.survey import Survey
@@ -540,3 +541,139 @@ class CSVDataFrameWriter(object):
     def write_to_csv(self, csv_file, index=False):
         self.dataframe.to_csv(csv_file, index=index, na_rep=NA_REP,
                               encoding='utf-8')
+
+
+class FlatCSVDataFrameBuilder(AbstractDataFrameBuilder):
+
+    def __init__(self, username, id_string, query=None):
+
+        self.username = username
+        self.id_string = id_string
+        self.filter_query = query
+
+        # DataDict used only for geolocation
+        self.dd = DataDictionary.objects.get(user__username=self.username, 
+                                             id_string=self.id_string)
+
+        self.gps_fields = self._collect_gps_fields(self.dd)
+
+    def export_to(self, filename):
+        
+        cursor = self._query_mongo(self.filter_query)
+        cursor.batch_size(1000)
+        nb_submissions = cursor.count()
+
+        # base data holder to feed our DataFrame:
+        # dict with keys = columns and values are list of values
+        matrix = {}
+
+        # repeat data holder
+        # we store DataFrame inside those for later merging with main DF.
+        frames = {}
+
+        # loop on mongo records to build up matrix and frames
+        for record in cursor:
+            
+            # TODO: wtf?
+            self._split_gps_fields(record, self.gps_fields)
+            # pp(record)
+
+            # loop on columns as we index per-column in matrix
+            for column in record.keys():
+                # /!\   GEOLOCATION is special case: a list representing
+                #       a single data. It is decoupled above and thus not incl.
+                if column == GEOLOCATION:
+                    continue
+
+                # ref to cell data
+                record_data = record.get(column)
+
+                # we know it's a repeat as other would be just strings/None
+                # TODO: check there's no edge cases.
+                if (type(record_data) == list):
+                    # loop on each row of the repeat to assign it the record ID
+                    # it will be used to merge with main DF.
+                    # if len(record_data) and type(record_data[0]) is dict:
+                    record_data_dict = []
+
+                    # Convert value to dict if not yet, assigning real value
+                    # to a column-named filed (will be picked up by DF
+                    # then adds an ID field which will be used for the merge
+                    for single_row in record_data:
+                        if type(single_row) == dict:
+                            row_dict = single_row
+                            row_dict.update({ID: record.get(ID)})
+                            record_data_dict.append(row_dict)
+                            del(row_dict)
+                        del(single_row)
+
+                    # convert cell_data (repeat object) into a DataFrame.
+                    frame = pd.DataFrame(record_data_dict)
+
+                    # add DF to the list of repeat DF for latter merging.
+                    try:
+                        frames[column].append(frame)
+                    except KeyError:
+                        frames[column] = [frame]
+
+                    record_data = np.nan
+                    del(record_data_dict)
+                    del(frame)
+
+                # add cell data to the column-indexed matrix
+                try:
+                    matrix[column].append(record_data)
+                except KeyError:
+                    matrix[column] = [record_data]
+
+                del(column)
+                del(record_data)
+            del(record)
+
+        # fix missing data on matrix
+        del(cursor)
+
+        for column, row in matrix.iteritems():
+            nb_rows = len(row)
+            if nb_rows < nb_submissions:
+                for n in xrange(0, nb_submissions - nb_rows):
+                    matrix[column].append(None)
+            del(nb_rows)
+        del(nb_submissions)
+        del(row)
+        del(column)
+
+        # generate the main DataFrame from matrix
+        # TODO: pass columns list built from Xform not just data
+        df = pd.DataFrame(matrix)
+        del(matrix)
+
+ 
+        # loop on repeat-frames to merge them in
+        for repeat_column, repeat_frames in frames.iteritems():
+            # each item is a column-slug/list of DF.
+            # Each DF represent a single row in the repeat section.
+            # So we concatenate them into one larger DF.
+            repeat_column_frame = pd.concat(repeat_frames)
+
+            # we don't want to merge empty frames as it would fail for
+            # missing ID column.
+            if not repeat_column_frame.empty:
+            # merge the main DF with the column one
+            # this is a LEFT OUTER JOIN equivalent.
+            # JOIN is done on _id column.
+                df = df.merge(repeat_column_frame, 
+                              how='left',
+                              on=ID)
+
+            # get rid of the proxy
+            del(repeat_column_frame)
+            # del(frames[repeat_column])
+
+        # remove columns we don't want
+        for col in self.INTERNAL_FIELDS:
+            if col in df.columns:
+                del(df[col])
+
+        df.to_csv(filename, na_rep=NA_REP, encoding='utf-8', index=False)
+        del(df)
