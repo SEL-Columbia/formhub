@@ -11,7 +11,7 @@ def is_owner(view_func):
     @wraps(view_func, assigned=available_attrs(view_func))
     def _wrapped_view(request, *args, **kwargs):
         # assume username is first arg
-        if request.user.is_authenticated:
+        if request.user.is_authenticated():
             if request.user.username == kwargs['username']:
                 return view_func(request, *args, **kwargs)
             protocol = "https" if request.is_secure() else "http"
