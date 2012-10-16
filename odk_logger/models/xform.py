@@ -103,7 +103,12 @@ class XForm(models.Model):
 
     def save(self, *args, **kwargs):
         self._set_title()
+        old_id_string = self.id_string
         self._set_id_string()
+        # check if we have an existing id_string, if so, the one must match but only if xform is NOT new
+        if self.pk and old_id_string and old_id_string != self.id_string:
+            raise XLSFormError(_(u"Your updated form's id_string '%s' must match the existing forms' id_string '%s'." %
+                                 (self.id_string, old_id_string) ))
         if getattr(settings, 'STRICT', True) and \
                 not re.search(r"^[\w-]+$", self.id_string):
             raise XLSFormError(_(u'In strict mode, the XForm ID must be a '
