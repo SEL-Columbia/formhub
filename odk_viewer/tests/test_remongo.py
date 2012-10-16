@@ -47,5 +47,16 @@ class TestRemongo(MainTestCase):
         """
         call_command('remongo')
         # if index exists, ensure index returns None
-        result = settings.MONGO_DB.instances.ensure_index(USERFORM_ID)
-        self.assertTrue(result is None)
+        # list of indexes to check for
+        index_list = [USERFORM_ID]
+        # get index info
+        index_info = settings.MONGO_DB.instances.index_information()
+        # index_info looks like this - {u'_id_': {u'key': [(u'_id', 1)], u'v': 1}, u'_userform_id_1': {u'key': [(u'_userform_id', 1)], u'v': 1}}
+        # lets make a list of the indexes
+        existing_indexes = [v['key'][0][0] for v in index_info.itervalues() if v['key'][0][1] == 1]
+        all_indexes_found = True
+        for index_item in index_list:
+            if index_item not in existing_indexes:
+                all_indexes_found = False
+                break
+        self.assertTrue(all_indexes_found)
