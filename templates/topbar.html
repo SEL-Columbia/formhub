@@ -28,7 +28,6 @@
             <li class="lead">
               <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
             </li>
-            <li><a href="#"><span class="">({{ xform.submission_count }} submissions)</span></a></li>
             <li><a href="#"><span class="inverted">{% blocktrans with nb_sub=xform.submission_count %}{{ nb_sub }} submissions{% endblocktrans %}</span></a></li>
           </ul>
           <ul class="nav pull-right">
