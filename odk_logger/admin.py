@@ -1,5 +1,6 @@
 from django.contrib import admin
-from odk_logger.models import XForm
+import reversion
+from odk_logger.models import XForm, Instance
 
 
 class FormAdmin(admin.ModelAdmin):
@@ -15,3 +16,9 @@ class FormAdmin(admin.ModelAdmin):
         return qs.filter(user=request.user)
 
 admin.site.register(XForm, FormAdmin)
+
+
+class InstanceAdmin(reversion.admin.VersionAdmin):
+    pass
+
+admin.site.register(Instance, InstanceAdmin)
