@@ -54,6 +54,12 @@ class Instance(models.Model):
 
     class Meta:
         app_label = 'odk_logger'
+        ordering = ('date_modified', 'date_created')
+
+    def __unicode__(self):
+        return u"%s: %s submitted on %s" \
+               % (self.xform.id_string, self.uuid,
+                  self.date_created.strftime("%a, %d %b %Y %H:%M:%S %Z"))
 
     def _set_xform(self, id_string):
         self.xform = XForm.objects.get(id_string=id_string,
