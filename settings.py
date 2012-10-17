@@ -137,7 +137,6 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'registration',
-    'reversion',
     'restservice',
     'south',
     'main',
