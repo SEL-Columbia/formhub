@@ -9,3 +9,4 @@ from test_pandas_mongo_bridge import TestPandasMongoBridge
 from test_async_export import TestAsyncExport
 from test_viewer_tools import TestViewerTools
 from test_remongo import TestRemongo
+from test_parsed_instance import TestParsedInstance
