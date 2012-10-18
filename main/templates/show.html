@@ -89,7 +89,7 @@
             </ul>
         </div>
     </div>
-    {%  if xform.can_be_replaced %}
+    {%  if xform.can_be_replaced and xform.user ==  user %}
     <div class="xls-update">
         <h4>{% trans "Update XLS" %}</h4>
         <form action="{% url main.views.update_xform content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
