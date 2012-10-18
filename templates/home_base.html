@@ -16,7 +16,7 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
     <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/screen.css" rel="stylesheet">
-   	<link href="/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+   {# <link href="/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet"> #}
     <link href="/static/css/iphone-btn-style.css" rel="stylesheet"> 
  
     <!-- Le javascript --> 
@@ -24,7 +24,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
     <script src="/static/js/jquery.tablesorter.min.js"></script> 
     <script src="/static/js/slideshow.js"></script> 
-		<script src="/static/js/application.js"></script> 
+	<script src="/static/js/application.js"></script> 
     <script src="/static/js/iphone-style-checkboxes.js"></script> 
 
     <script src="/static/bootstrap/js/bootstrap.js"></script>
@@ -61,7 +61,7 @@ color: white;
 
   {% block body %}
   <body>
-    {% include "topbar.html" %}
+    {% include "home_topbar.html" %}
 
     <div class="container">
       {% block message %}
