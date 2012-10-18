@@ -6,6 +6,7 @@ import os
 import re
 from main.tests.test_base import MainTestCase
 from odk_logger.models import XForm, Instance
+from odk_logger.models.instance import InstanceHistory
 from odk_viewer.models.parsed_instance import GLOBAL_SUBMISSION_STATS,\
          ParsedInstance
 from stats.models import StatsCount
@@ -116,6 +117,7 @@ class TestFormSubmission(MainTestCase):
             "..", "fixtures", "tutorial", "instances",
             "tutorial_2012-06-27_11-27-53_w_uuid.xml"
         )
+        num_instances_history = InstanceHistory.objects.count()
         num_instances = Instance.objects.count()
         query_args = {
             'username': self.user.username,
@@ -131,6 +133,9 @@ class TestFormSubmission(MainTestCase):
         self._make_submission(xml_submission_file_path)
         self.assertEqual(self.response.status_code, 201)
         self.assertEqual(Instance.objects.count(), num_instances + 1)
+        # no new record in instances history
+        self.assertEqual(
+            InstanceHistory.objects.count(), num_instances_history)
         # check count of mongo instances after first submission
         cursor = ParsedInstance.query_mongo(**query_args)
         self.assertEqual(cursor[0]['count'], num_mongo_instances + 1 )
@@ -144,6 +149,9 @@ class TestFormSubmission(MainTestCase):
         self.assertEqual(self.response.status_code, 201)
         # we must have the same number of instances
         self.assertEqual(Instance.objects.count(), num_instances + 1)
+        # should be a new record in instances history
+        self.assertEqual(
+            InstanceHistory.objects.count(), num_instances_history + 1)
         cursor = ParsedInstance.query_mongo(**query_args)
         self.assertEqual(cursor[0]['count'], num_mongo_instances + 1 )
         # make sure we edited the mongo db record and NOT added a new row

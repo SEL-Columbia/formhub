@@ -23,6 +23,7 @@ from pyxform.errors import PyXFormError
 
 from odk_logger.models import Attachment
 from odk_logger.models import Instance
+from odk_logger.models.instance import InstanceHistory
 from odk_viewer.models import ParsedInstance
 from odk_logger.models import SurveyType
 from odk_logger.models import XForm
@@ -108,9 +109,11 @@ def create_instance(username, xml_file, media_files,
         if instances:
             instance  = instances[0]
             instance.xml = xml
+            InstanceHistory.objects.create(
+                xml=instance.xml, xform_instance=instance)
             instance.save()
         else:
-            # check to see if instance
+            # new submission
             instance = Instance.objects.create(xml=xml, user=user, status=status)
         for f in media_files:
             Attachment.objects.get_or_create(instance=instance, media_file=f)
