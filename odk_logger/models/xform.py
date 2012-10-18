@@ -130,6 +130,10 @@ class XForm(models.Model):
     def hash(self):
         return u'%s' % md5(self.xml.encode('utf8')).hexdigest()
 
+    @property
+    def can_be_replaced(self):
+        return self.submission_count() == 0
+
 
 def stats_forms_created(sender, instance, created, **kwargs):
     if created:
