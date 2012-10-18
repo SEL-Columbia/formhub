@@ -8,21 +8,25 @@ from main.views import api
 from odk_logger.models import XForm
 from odk_viewer.models.parsed_instance import _encode_for_mongo
 
+
 class TestParsedInstance(MainTestCase):
     def setUp(self):
         MainTestCase.setUp(self)
         self.instances = settings.MONGO_DB.instances
         self.instances.remove()
-        xls_path = os.path.join(self.this_directory, 'fixtures',
+        xls_path = os.path.join(
+            self.this_directory, 'fixtures',
             'userone',
             'userone_with_dot_name_fields.xls')
         count = XForm.objects.count()
         response = self._publish_xls_file(xls_path)
         self.assertEqual(XForm.objects.count(), count + 1)
         self.xform = XForm.objects.all().reverse()[0]
-        self._make_submission(os.path.join(self.this_directory, 'fixtures',
-            'userone',
-            'userone_with_dot_name_fields' + '.xml'))
+        self._make_submission(
+            os.path.join(
+                self.this_directory, 'fixtures',
+                'userone',
+                'userone_with_dot_name_fields' + '.xml'))
         self.pi = self.xform.surveys.all()[0].parsed_instance
 
     def test_apply_form_field_names(self):
