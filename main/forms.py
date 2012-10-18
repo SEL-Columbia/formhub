@@ -17,6 +17,7 @@ from odk_viewer.models.data_dictionary import upload_to
 from registration.forms import RegistrationFormUniqueEmail
 from registration.models import RegistrationProfile
 from utils.country_field import COUNTRIES
+from utils.logger_tools import publish_xls_form
 
 FORM_LICENSES_CHOICES = (
     ('No License', ugettext_lazy('No License')),
@@ -219,7 +220,7 @@ class QuickConverterURL(forms.Form):
 class QuickConverter(QuickConverterFile, QuickConverterURL):
     validate = URLValidator(verify_exists=True)
 
-    def publish(self, user):
+    def publish(self, user, id_string=None):
         if self.is_valid():
             cleaned_xls_file = self.cleaned_data['xls_file']
             if not cleaned_xls_file:
@@ -235,7 +236,5 @@ class QuickConverter(QuickConverterFile, QuickConverterURL):
                 xls_data = ContentFile(urllib2.urlopen(cleaned_url).read())
                 cleaned_xls_file = \
                     default_storage.save(cleaned_xls_file, xls_data)
-            return DataDictionary.objects.create(
-                user=user,
-                xls=cleaned_xls_file
-            )
+            # publish the xls
+            return publish_xls_form(cleaned_xls_file, user, id_string)

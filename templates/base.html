@@ -64,7 +64,7 @@ color: white;
 
     <div class="container">
       {% block message %}
-        {% if message %}
+        {% if message or messages %}
           {% include "message.html" %}
         {% endif %}
       {% endblock %}

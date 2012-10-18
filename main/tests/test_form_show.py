@@ -1,5 +1,7 @@
+from django.conf import settings
+import os
 from test_base import MainTestCase
-from main.views import show, form_photos
+from main.views import show, form_photos, update_xform
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
 from odk_logger.views import download_xlsform, download_jsonform, download_xform
@@ -10,7 +12,7 @@ class TestFormShow(MainTestCase):
     def setUp(self):
         MainTestCase.setUp(self)
         self._create_user_and_login()
-        self._publish_transportation_form_and_submit_instance()
+        self._publish_transportation_form()
         self.url = reverse(show, kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string
@@ -85,6 +87,7 @@ class TestFormShow(MainTestCase):
         self.xform.shared = True
         self.xform.shared_data = True
         self.xform.save()
+        self._submit_transport_instance()
         response = self.anon.get(self.url)
         self.assertContains(response, reverse(export_list, kwargs={
             'username': self.user.username,
@@ -93,6 +96,7 @@ class TestFormShow(MainTestCase):
         }))
 
     def test_show_link_if_owner(self):
+        self._submit_transport_instance()
         response = self.client.get(self.url)
         self.assertContains(response, reverse(export_list, kwargs={
             'username': self.user.username,
@@ -162,3 +166,57 @@ class TestFormShow(MainTestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response['Location'],
                 '%s%s' % (self.base_url, self.url))
+
+    def test_xls_replace_markup(self):
+        """
+        Check that update form is only shown when there are no submissions and the user is the owner
+        """
+        # when we have 0 submissions, update markup exists
+        self.xform.shared = True
+        self.xform.save()
+        response = self.client.get(self.url)
+        self.assertContains(response, "xls-update")
+        # a non owner can't see the markup
+        response = self.anon.get(self.url)
+        self.assertNotContains(response, "xls-update")
+        # when we have a submission, we cant update the xls form
+        self._submit_transport_instance()
+        response = self.client.get(self.url)
+        self.assertNotContains(response, "xls-update")
+
+    def test_non_owner_cannot_replace_form(self):
+        """
+        Test that a non owner cannot replace a shared xls form
+        """
+        xform_update_url = reverse(update_xform, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        })
+        self.xform.shared = True
+        self.xform.save()
+        # create and login another user
+        self._create_user_and_login('peter', 'peter')
+        response = self.client.post(xform_update_url)
+        # since we are logged in, we'll be re-directed to our profile page
+        self.assertRedirects(response, self.base_url,
+            status_code=302, target_status_code=302)
+
+    def test_replace_xform(self):
+        xform_update_url = reverse(update_xform, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        })
+        count = XForm.objects.count()
+        xls_path = os.path.join(self.this_directory, "fixtures",
+            "transportation", "transportation_updated.xls")
+        with open(xls_path, "r") as xls_file:
+            post_data = {'xls_file': xls_file}
+            response = self.client.post(xform_update_url, post_data)
+        self.assertEqual(XForm.objects.count(), count)
+        self.xform = XForm.objects.order_by('id').reverse()[0]
+        data_dictionary = self.xform.data_dictionary()
+        # look for the preferred_means question which is only in the updated xls
+        is_updated_form = len([e.name for e in data_dictionary.survey_elements
+                                 if e.name == u'preferred_means']) > 0
+        self.assertTrue(is_updated_form)
+
