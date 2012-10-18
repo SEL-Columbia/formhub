@@ -169,11 +169,16 @@ class TestFormShow(MainTestCase):
 
     def test_xls_replace_markup(self):
         """
-        Check that update form is only shown when there are no submissions
+        Check that update form is only shown when there are no submissions and the user is the owner
         """
         # when we have 0 submissions, update markup exists
+        self.xform.shared = True
+        self.xform.save()
         response = self.client.get(self.url)
         self.assertContains(response, "xls-update")
+        # a non owner can't see the markup
+        response = self.anon.get(self.url)
+        self.assertNotContains(response, "xls-update")
         # when we have a submission, we cant update the xls form
         self._submit_transport_instance()
         response = self.client.get(self.url)
