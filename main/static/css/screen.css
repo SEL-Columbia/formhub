@@ -552,13 +552,15 @@ section {
 
 /* New additions by Prajjwol */
 .title {
-   	color: #d96e27;
-	margin-top: 20px;
+  color: #d96e27;
+	margin-top: 10px;
 	margin-bottom: 10px;
 	font-size: 24px;
-	font-weight: bold;
+	font-weight: 600;
 	padding-bottom: 15px;
+	text-align: center;
 }
+
 
 .title-grey {
 	font-size: 24px;
@@ -568,32 +570,33 @@ section {
 	margin-bottom: 40px;
 }
 .display-unit {
-	padding: 30px;
+	padding: 10px 30px 30px 30px;
 	background-color: #f0f3f5;
-	margin-bottom: 20px;
+	margin-bottom: 30px;
 	margin-top: 20px;
 }
 
 .display-unit p {
 	text-align: center;
 }
+
 .display-unit h2 {
 	text-align: center;
 	font-size: 24px;
 	font-weight: bold;
 }
-.main-display {
+#main-display {
 	background-image: url("../images/masthead/main01.jpg");
 	background-repeat: no-repeat;
 	margin-top: 30px;
 	margin-bottom: 30px;
 }
 
-.main-display .content {
+#main-display .content {
 	padding: 40px;
 }
 
-.main-display h1 {
+#main-display h1 {
 	font-size: 40px;
 	color: #fff;
 	font-weight: 400;
@@ -601,7 +604,7 @@ section {
 	text-shadow: 1px 2px #000;
 }
 
-.main-display p {
+#main-display p {
 	font-size: 19px;
 	font-weight: 500;
 	color: #fff;
@@ -609,10 +612,14 @@ section {
 	text-shadow: 1px 2px #000;
 }
 
-.main-display .caption {
+#main-display .caption {
 	margin-top: 10%;
 }
 
+#main-display a:link {color : #fff; text-decoration: none;}
+
+#main-display a:visited, a:active, a:hover { color: #fff; text-decoration:none;}
+ 
 .formhub-stat {
 	margin-top: 50px;
 	padding-bottom: 30px;
@@ -664,13 +671,118 @@ img {
 	list-style-type: none;
 	display: inline-block;
 	padding-right: 20px;
-	color:#d96e27 !important;
+	color:#d96e27;
 	font-size: 18px;
 	margin-bottom: -3px;
 	vertical-align: middle;
 }
 
-.navigation #navlist li a:link {text-decoration:none; color:#d96e27;}
-.navigation #navlist li a:visited {text-decoration:none;color:#d96e27;}
-.navigation #navlist li a:hover {text-decoration:none;color:#32AF6E;}
-.navigation #navlist li a:active {text-decoration:none;color:#d96e27;}
+.navigation a:link {text-decoration:none; color:#d96e27;}
+.navigation a:visited {text-decoration:none; color:#d96e27;}
+.navigation a:active {text-decoration:none; color:#d96e27;}
+.navigation a:hover {text-decoration:none; color:#32AF6E;}
+
+/* Features */
+
+#section_features {
+  margin-left: auto;
+  margin-right: auto;
+  font: 15px/20px open sans, sans-serif;
+  font-weight: 300;
+  color: #44474a;
+}
+
+#section_features .topimage {
+  margin-bottom: 20px;
+  text-align: center;
+  height: 460px;
+}
+
+#section_features .bottom-text {
+  width: 940px;
+  vertical-align: top;
+  margin-left: auto;
+  margin-right: auto;
+}
+#section_features .bottom-text td {
+  vertical-align: top;
+  padding-left: 20px;
+  padding-right: 10px;
+  padding-top: 15px;
+  width: 300px;
+  height: 165px;
+  text-align: center;
+  
+}
+#section_features .bottom-text .featurehead {
+  font: 16px/1 open sans, sans-serif;
+  font-weight: 500;
+  color: #2899e1;
+}
+#section_features .bottom-text .featuresubhead {
+  font: 14px/19px open sans, sans-serif;
+  font-weight: 300;
+  color: #44474a;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+#section_features .bottom-text .feature_on {
+  background: url(../images/arrow.png) no-repeat 10px 0;
+}
+
+/*#section_features a:link, a:visited {
+  color: #d96e27; text-decoration: none;
+}*/
+
+#section_features a:hover,
+a:active,
+a:focus {
+  color: #be5d1c;
+  outline: 0;
+  text-decoration: none;
+}
+
+#section_featurelist {
+	width: 970px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  margin-top: 50px;
+  font: 15px/20px open sans, sans-serif;
+  font-weight: 300;
+  color: #44474a;
+	padding-left: 20px;
+}
+
+#section_featurelist .image {
+  width: 320px;
+  height: 200px;
+  display: table-cell;
+  text-align: center;
+}
+#section_featurelist .word {
+  width: 470px;
+  height: 200px;
+  vertical-align: top;
+  display: table-cell;
+  text-align: left;
+  padding: 15px 15px;
+}
+
+#section_featurelist img {
+  margin-bottom: 20px;
+}
+
+
+#section_featurelist .featurehead {
+  font: 22px/1 open sans, sans-serif;
+  font-weight: 500;
+  color: #2899e1;
+}
+#section_featurelist .featuresubhead {
+  font: 14px/19px open sans, sans-serif;
+  font-weight: 300;
+  color: #44474a;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

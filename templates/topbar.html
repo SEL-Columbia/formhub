@@ -3,19 +3,20 @@
 <div class = "container">
     <div class=" row-fluid">
 		<div class = "span12">
-      	  	<div class = "span2">
+      <div class = "span2">
 				<a class="brand" href="/" title="formhub"><img alt="formhub" src="/static/images/logo_new.png" class="left"/></a>
 			</div>
 			<div class = "span7">
 				<div class = "navigation">
 					<ul id = "navlist">
 						<li> <a href="/accounts/register/"> Sign Up </a> </li>
-						<li> <a href="http://blog.formhub.org/2011/12/05/data-gatherers-of-the-world-unite/"> Learn More </a> </li>
+						<li> <a href="#how_it_works"> Learn More </a> </li>
 						<li> <a href="http://blog.formhub.org/"> Blog </a></li>
+						<li><a href = "/faq.htm"> FAQ </a> </li>
 					</ul>
 				</div>
 			</div>
-			<div class = "span3"> <a href="{% url auth_login %}" class="btn btn-info pull-right">{%  trans "Log In" %}</a> </div>
+			<div class = "span3"> <a href="{% url auth_login %}" class="btn btn-info pull-right" id="login">{%  trans "Log In" %}</a> </div>
 		</div>
   </div>
 </div>
