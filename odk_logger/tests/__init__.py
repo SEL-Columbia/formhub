@@ -6,3 +6,4 @@ from test_form_submission import *
 from test_update_xform_uuid import *
 from test_command_syncd_deleted_instances_fix import *
 from test_webforms import *
+from test_publish_xls import *

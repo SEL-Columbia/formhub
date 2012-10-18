@@ -40,8 +40,7 @@ var browsePos = null;
       // index route
       this.get('#/', function(context) {
           /// get the first response object
-          var query = '{}';
-          loadData(context);
+          redirectToFirstId(context)
       });
 
       // #/id route
@@ -121,6 +120,18 @@ var browsePos = null;
           });
 
 })(jQuery);
+
+function redirectToFirstId(context)
+{
+    $.getJSON(mongoAPIUrl, {'limit': 1, 'fields': '["_id"]'})
+            .success(function(data){
+                if(data.length > 0)
+                    context.redirect('#/' + data[0]['_id']);
+            })
+            .error(function(){
+                app.run('#/');
+            })
+}
 
 function editData(context, query, next_prev){
     //TODO: show loader

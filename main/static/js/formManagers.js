@@ -146,31 +146,35 @@ FormResponseManager = function(url, callback)
     this._currentSelectOneQuestionName = null; // name of the currently selected "View By Question if any"
 };
 
-FormResponseManager.prototype.loadResponseData = function(start, limit, geoPointField, otherFieldsToLoad)
+FormResponseManager.prototype.loadResponseData = function(params, start, limit, geoPointField, otherFieldsToLoad)
 {
     var idx;
     var thisFormResponseMngr = this;
-    var urlParams = {}, geoParams = {};
+    var urlParams = params, geoParams = {};
 
     start = parseInt(start,10);
     limit = parseInt(limit, 10);
     // use !isNaN so we also have zeros
     if(!isNaN(start)) urlParams[constants.START] = start;
     if(!isNaN(limit)) urlParams[constants.LIMIT] = limit;
-
+    
+    /* TODO: re-enable geo-point pre-population once we work out making the rest of
+             the load happen after an asynchronous wait.
+       TODO: also make sure that if geoPointField is null / undefined, the call doesn't happen
     geoParams[constants.FIELDS] = JSON.stringify(["_id", geoPointField]); 
-    // first query the geo-data
+    // query the geo-data and queue the querying of all the data 
     $.getJSON(thisFormResponseMngr.url, geoParams).success(function(data) {
+            // make the callback before the full data is loaded*/
             if(otherFieldsToLoad && otherFieldsToLoad.length > 0)
                 urlParams[constants.FIELDS] = JSON.stringify(otherFieldsToLoad);
+            // TODO: make the full data load asynchronous 
             $.getJSON(thisFormResponseMngr.url, urlParams, function(data){
                 thisFormResponseMngr.responses = data;
                 thisFormResponseMngr.responseCount = data.length;
+                thisFormResponseMngr._toDatavore();
                 thisFormResponseMngr.callback.call(thisFormResponseMngr);
-                // load the dvResponseTable up asynchronously
-                _.defer(function() {thisFormResponseMngr._toDatavore();});
             });
-    });
+    /*});*/
 };
 
 FormResponseManager.prototype.setCurrentSelectOneQuestionName = function(name)

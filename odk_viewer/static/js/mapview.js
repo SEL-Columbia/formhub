@@ -57,12 +57,11 @@ var customMapBoxTileLayer;
 var legendsContainer;
 
 var mapview = function() {
-
     return {
         isHttps: function(){
             return location.protocol == 'https:';
         }
-    }
+    };
 }();
 
 /**
@@ -77,7 +76,7 @@ mapview.getMapboxMapname = function(mapUrl) {
         return matches[2];
     }
     return null;
-}
+};
 
 function initialize() {
     // Make a new Leaflet map in your container div
@@ -211,7 +210,7 @@ function loadFormJSONCallback()
     var geoField = formJSONMngr.getGeoPointQuestion()[constants.NAME];
 
     // load responses
-    formResponseMngr.loadResponseData(0, null, geoField, fields);
+    formResponseMngr.loadResponseData({}, 0, null, geoField, fields);
 }
 
 // callback called after response data has been loaded via the mongo form API
@@ -385,11 +384,13 @@ function _recolorMarkerLayer(questionName, responseFilterList)
         // figure out the response counts
         var dvCounts = formResponseMngr.dvQuery({dims:[questionName], vals:[dv.count()]});
         var responseCounts = _.object(dvCounts[0], dvCounts[1]);
+        responseCounts[notSpecifiedCaption] = responseCounts[undefined]; //undefined = special case
         // and make sure every response has a count
         var choiceNames = _.union(_.pluck(question.children, 'name'), [notSpecifiedCaption]);
         var zeroCounts = _.object(_.map(choiceNames, function(choice) { return [choice, 0]; }));
         question.responseCounts = _.defaults(responseCounts, zeroCounts);
 
+        // TODO: put the following for loop in the colors module
         for(i=0;i < choiceNames.length;i++)
         {
             var choiceName = choiceNames[i];
@@ -410,10 +411,6 @@ function _recolorMarkerLayer(questionName, responseFilterList)
         markerLayerGroup.eachLayer(function(geoJSONLayer) {
             geoJSONLayer.setStyle(function(feature) {
                 var response = feature.properties[questionName] || notSpecifiedCaption;
-                var question = formJSONMngr.getQuestionByName(questionName);
-                if (!responseCountValid) {
-                    question.responseCounts[response] += 1;
-                }
 
                 if (responseFilterList.length > 0 && _.indexOf(responseFilterList, response) === -1) {
                     return _.defaults({fillOpacity: 0, opacity:0}, circleStyle);
@@ -469,12 +466,13 @@ function constructHexBinOverLay() {
 function _recomputeHexColorsByRatio(questionName, responseNames) {
     var newHexStyles = {};
     var newPopupTexts = {};
-    if (_(responseNames).contains(notSpecifiedCaption)) 
-        responseNames.push(undefined); // hack? if notSpeciedCaption is in repsonseNames, then need to
+    var myResponseNames = _.clone(responseNames);
+    if (_(myResponseNames).contains(notSpecifiedCaption)) 
+        myResponseNames.push(undefined); // hack? if notSpeciedCaption is in repsonseNames, then need to
         // count when instance.response[questionName] doesn't exist, and is therefore ``undefined''
     
     var hexAndCountArrayNum = formResponseMngr.dvQuery({dims: ['hexID'], vals:[dv.count()], where:
-        function(table, row) { return _.contains(responseNames, table.get(questionName, row)); }});
+        function(table, row) { return _.contains(myResponseNames, table.get(questionName, row)); }});
     var hexAndCountArrayDenom = formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]});      
 
     _(hexAndCountArrayDenom[0]).each( function(hexID, idx) {
@@ -484,7 +482,7 @@ function _recomputeHexColorsByRatio(questionName, responseNames) {
         newPopupTexts[hexID] = hexAndCountArrayNum[1][idx] + " / " + hexAndCountArrayDenom[1][idx] + " (" + Math.round(ratio*100) + "%)";
     });
     _reStyleAndBindPopupsToHexOverLay(newHexStyles, newPopupTexts);
-    _rebuildHexLegend('proportion', questionName, responseNames);
+    _rebuildHexLegend('proportion', questionName, myResponseNames);
 }
 
 function _hexOverLayByCount()
@@ -587,7 +585,7 @@ function JSONSurveyToHTML(data)
 
 function getLanguageAt(idx)
 {
-    return language = formJSONMngr.supportedLanguages[idx];
+    return formJSONMngr.supportedLanguages[idx];
 }
 
 function _rebuildHexLegend(countOrProportion, questionName, responseNames)
@@ -610,7 +608,7 @@ function _rebuildHexLegend(countOrProportion, questionName, responseNames)
     var maxHexCount = _.max(formResponseMngr.dvQuery({dims:['hexID'], vals:[dv.count()]})[1]);
     var interval = function(scheme) { 
         var len = colors.getNumProportional(scheme);
-        return _.map(_.range(1,len+1), function (v) { return v / len });
+        return _.map(_.range(1,len+1), function (v) { return v / len; });
     };
     var templateFiller = {
         count: { title : gettext('Number of submissions'),

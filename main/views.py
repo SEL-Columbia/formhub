@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.core.files.storage import default_storage, get_storage_class
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseRedirect, HttpResponseNotAllowed, Http404, \
     HttpResponseForbidden, HttpResponseNotFound, HttpResponseServerError
@@ -649,3 +650,27 @@ def link_to_bamboo(request, username, id_string):
         'username': username,
         'id_string': id_string
     }))
+
+
+@require_POST
+@is_owner
+def update_xform(request, username, id_string):
+    xform = get_object_or_404(XForm,
+        user__username=username, id_string=id_string)
+
+    context = RequestContext(request)
+    def set_form():
+        form = QuickConverter(request.POST, request.FILES)
+        survey = form.publish(request.user, id_string).survey
+        return {
+            'type': 'alert-success',
+            'text': _(u'Successfully published %s.') % survey.id_string
+        }
+    message = publish_form(set_form)
+    messages.add_message(request, messages.INFO, message['text'],
+        extra_tags=message['type'])
+    return HttpResponseRedirect(reverse(show, kwargs={
+        'username': username,
+        'id_string': id_string
+    }))
+
