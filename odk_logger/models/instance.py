@@ -51,7 +51,7 @@ class Instance(models.Model):
     # we will add a fourth status: submitted_via_web
     status = models.CharField(max_length=20,
                               default=u'submitted_via_web')
-    uuid = models.CharField(max_length=32, default=u'')
+    uuid = models.CharField(max_length=36, default=u'')
 
     class Meta:
         app_label = 'odk_logger'
