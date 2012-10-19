@@ -16,8 +16,8 @@ Install system libraries and start services:
 
     $ apt-get install default-jre gcc git python-dev python-virtualenv libjpeg-dev libfreetype6-dev zlib1g-dev rabbitmq-server
 
-###Install Mongodb:
-^^^^^^^^^^^^^^^^^^^
+Install Mongodb:
+^^^^^^^^^^^^^^^^
 
 Ubuntu 12.04
 
