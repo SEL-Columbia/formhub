@@ -1,7 +1,8 @@
 <?xml version='1.0' ?>
 <tutorial id="tutorial">
   <meta>
-    <instanceID>uuid:729f173c688e482486a48661700455ff</instanceID>
+      <instanceID>uuid:2d8c59eb-94e9-485d-a679-b28ffe2e9b98</instanceID>
+      <deprecatedID>uuid:729f173c688e482486a48661700455ff</deprecatedID>
   </meta>
   <name>Dick n Harry</name>
   <age>23</age>
