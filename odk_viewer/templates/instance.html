@@ -34,19 +34,27 @@ var browsePos = null;
 
 (function($) {
 
+  var _isFirstLoad = true
+
   app = $.sammy('#data', function() {
       this.use('Meld');
 
       // index route
       this.get('#/', function(context) {
           /// get the first response object
-          redirectToFirstId(context)
+          // only re-direct if this is the first time
+          if(_isFirstLoad)
+              redirectToFirstId(context)
+          else
+              history.go(-2)// we first load instance, then redirect to instance#/ then to instance#/:id s we need to go back 2
+          _isFirstLoad = false
       });
 
       // #/id route
       this.get('#/:id', function(context) {
           var id = this.params['id'];
           var query = '{"_id": ' + id + '}';
+          _isFirstLoad = false
           loadData(context, query);
       });
 
@@ -54,6 +62,7 @@ var browsePos = null;
       this.get('#uuid/:uuid', function(context) {
           var uuid = this.params['uuid'];
           var query = '{"_uuid": "' + uuid + '"}';
+          _isFirstLoad = false
           loadData(context, query);
       });
 
@@ -100,7 +109,7 @@ var browsePos = null;
       });
       this.bind('error', {}, function(){
           //alert('Invalid route requested')
-          app.setLocation('#/');
+          //app.setLocation('#/');
       })
 
   });
@@ -115,6 +124,7 @@ var browsePos = null;
                   .success(function(data){
                           //todo: count num records before and num records after so we know our starting point
                           numRecords = data[0]["count"];
+                          // load id of first record
                           app.run('#/');
                       })
           });
@@ -123,7 +133,7 @@ var browsePos = null;
 
 function redirectToFirstId(context)
 {
-    $.getJSON(mongoAPIUrl, {'limit': 1, 'fields': '["_id"]'})
+    $.getJSON(mongoAPIUrl, {'limit': 1, 'fields': '["_id"]', 'sort': '{"_id": 1}'})
             .success(function(data){
                 if(data.length > 0)
                     context.redirect('#/' + data[0]['_id']);
