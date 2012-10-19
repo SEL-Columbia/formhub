@@ -47,7 +47,7 @@ Set up a new virtual environment:
 
     $ source formhub/bin/activate
 
-Make directory structure and Clone formhub:
+Make directory structure and clone formhub:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     $ mkdir -p ~/src/formhub-app
@@ -77,7 +77,7 @@ Install requirements:
 (OPTIONAL) For MySQL, s3, ses:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    # apt-get install libmysqlclient-dev mysql-server
+    $ apt-get install libmysqlclient-dev mysql-server
 
     $ pip install -r requirements-mysql.pip
 
@@ -94,8 +94,6 @@ Create a database and start server:
 
     $ python manage.py migrate
 
-    $ python manage.py runserver
-
 (OPTIONAL) Apache and system administration tools:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -110,7 +108,8 @@ And now you should be ready to run the server:
 (OPTIONAL) Re-compiling the less css files
 ---------------------------------------
 
-### Install nodejs
+Install nodejs
+^^^^^^^^^^^^^^
 
     $ sudo apt-get install python g++ make
 
@@ -124,7 +123,8 @@ And now you should be ready to run the server:
 
     $ sudo make install
 
-### Install recess, uglifyjs and less via npm (Node Package Manager)
+Install recess, uglifyjs and less via npm (Node Package Manager)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     $ sudo npm install -g recess
 
@@ -132,7 +132,8 @@ And now you should be ready to run the server:
 
     $ sudo npm install -g less
 
-### Compile the less files
+Compile the less files
+^^^^^^^^^^^^^^^^^^^^^^
 
     $ cd ~/src/formhub-app/formhub/main/static/bootstrap
 
