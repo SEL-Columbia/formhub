@@ -1,11 +1,8 @@
-import base64
 import json
 import os
 import tempfile
-import urllib
 import urllib2
 from xml.parsers.expat import ExpatError
-import zipfile
 import pytz
 
 from datetime import datetime
@@ -14,16 +11,13 @@ from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotAllowed,\
-    HttpResponseNotFound
+    HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
 from django.contrib.sites.models import Site
 from django.contrib import messages
 from django.core.files.storage import get_storage_class
-from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.translation import ugettext as _
@@ -34,7 +28,7 @@ from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound
 from models import XForm
 from main.models import UserProfile, MetaData
-from utils.logger_tools import response_with_mimetype_and_name, store_temp_file
+from utils.logger_tools import response_with_mimetype_and_name
 from utils.decorators import is_owner
 from utils.user_auth import helper_auth_helper, has_permission,\
     has_edit_permission, HttpResponseNotAuthorized
