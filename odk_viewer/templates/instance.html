@@ -281,7 +281,7 @@ function reDraw(context, data)
         context.meld($('#data'), cleanData, {
             selector: function(k) {
                 k = k.replace(cleanRe, cleanReplacement);
-                return '[data-key=' + k + ']';
+                return '[data-key="' + k + '"]';
             }
         });
     }
