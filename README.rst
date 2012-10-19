@@ -7,38 +7,58 @@ Formhub
 Installation
 ------------
 
+### Install system libraries and start services:
+
+    $ apt-get update
+
+    $ apt-get upgrade
+
+    $ apt-get install default-jre gcc git python-dev python-virtualenv libjpeg-dev libfreetype6-dev zlib1g-dev rabbitmq-server
+
+### Install Mongodb:
+
 Ubuntu 12.04
-^^^^^^^^^^^^
 
-Install system libraries and start services:
+    $ apt-get install mongodb
 
-    # apt-get update
+    $ start mongodb
 
-    # apt-get upgrade
+Ubuntu 10.04
 
-    # apt-get install default-jre gcc git mongodb python-dev python-virtualenv libjpeg-dev libfreetype6-dev zlib1g-dev
+    $ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
 
-    # start mongodb
+    $ echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' >> /etc/apt/sources.list
 
-Make directory structure and Clone formhub:
+    $ sudo apt-get update
 
-    $ mkdir -p src/formhub-app
+    $ sudo apt-get install mongodb-10gen
 
-    $ cd src/formhub-app
+
+### Set up a new virtual environment:
+
+    $ mkdir ~/virtual_environments
+
+    $ cd ~/virtual_environments
+
+    $ virtualenv --no-site-packages formhub
+
+    $ source formhub/bin/activate
+
+### Make directory structure and Clone formhub:
+
+    $ mkdir -p ~/src/formhub-app
+
+    $ cd ~/src/formhub-app
 
     $ git clone git://github.com/modilabs/formhub.git
 
-Make virtual environment and install requirements:
-
-    $ virtualenv --no-site-packages project_env
-
-    $ source project_env/bin/activate
-
-    $ cd formhub
+### Install requirements:
 
 (NB: there is a known bug that prevents numpy from installing correctly when in requirements.pip file)
+    $ pip install numpy  --use-mirrors
 
-    $ pip install numpy
+    $ pip install -r requirements.pip
+
 (NB: PIL under virtualenv usually does not have some codecs compiled| to make sure jpeg codec is included)
 
     $ sudo ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib/
@@ -49,7 +69,7 @@ Make virtual environment and install requirements:
 
     $ pip install -r requirements.pip
 
-(OPTIONAL) For MySQL, s3, ses:
+### (OPTIONAL) For MySQL, s3, ses:
 
     # apt-get install libmysqlclient-dev mysql-server
 
@@ -59,9 +79,9 @@ Make virtual environment and install requirements:
 
     $ pip install -r requirements-ses.pip
 
-Create a database and start server:
+### Create a database and start server:
 
-    create or update your local-settings.py file
+    create or update your local_settings.py file
 
     $ python manage.py syncdb
 
@@ -69,70 +89,46 @@ Create a database and start server:
 
     $ python manage.py runserver
 
-(OPTIONAL) Apache and system administration tools:
+### (OPTIONAL) Apache and system administration tools:
 
-    # apt-get install apache libapache2-mode-wsgi
+    $ apt-get install apache libapache2-mode-wsgi
 
-    # apt-get install htop monit
-
-    set up apache and monit
-
-Ubuntu 10.04
-^^^^^^^^^^^^
-
-First, I set up a new virtual environment:
-
-    sudo apt-get install python-virtualenv
-
-    cd ~/Documents
-
-    mkdir virtual_environments
-
-    cd virtual_environments
-
-    virtualenv --no-site-packages formhub
-
-    source formhub/bin/activate
-
-Second, I cloned the repo:
-
-    cd ~/Documents
-
-    git clone git@github.com:modilabs/formhub.git
-
-Install the requirements:
-
-    cd formhub
-
-    pip install numpy --use-mirrors
-
-    pip install -r requirements.pip
-
-Install Mongodb:
-
-    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
-
-    echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' >> /etc/apt/sources.list
-
-    sudo apt-get update
-    
-    sudo apt-get install mongodb-10gen
-
-If you don't already have a Java Runtime Environment installed this is
-necessary for running ODK Validate. A *.jar file used to validate
-XForms.
-
-    sudo apt-get install default-jre
-
-To create a database for your development server do the following:
-
-    python manage.py syncdb
-
-    python manage.py migrate
+    $ apt-get install htop monit
 
 And now you should be ready to run the server:
 
-    python manage.py runserver
+    $ python manage.py runserver
+
+(OPTIONAL) Re-compiling the less css files
+---------------------------------------
+
+### Install nodejs
+
+    $ sudo apt-get install python g++ make
+
+    $ mkdir ~/nodejs && cd $_
+
+    $ wget -N http://nodejs.org/dist/node-latest.tar.gz
+
+    $ tar xzvf node-latest.tar.gz && cd `ls -rd node-v*`
+
+    $ ./configure
+
+    $ sudo make install
+
+### Install recess, uglifyjs and less via npm (Node Package Manager)
+
+    $ sudo npm install -g recess
+
+    $ sudo npm install -g uglifyjs
+
+    $ sudo npm install -g less
+
+### Compile the less files
+
+    $ cd ~/src/formhub-app/formhub/main/static/bootstrap
+
+    $ make
 
 Running Tests
 -------------
