@@ -60,6 +60,7 @@ Install requirements:
 ^^^^^^^^^^^^^^^^^^^^^
 
 (NB: there is a known bug that prevents numpy from installing correctly when in requirements.pip file)
+
     $ pip install numpy  --use-mirrors
 
     $ pip install -r requirements.pip
@@ -73,6 +74,17 @@ Install requirements:
     $ sudo ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib/
 
     $ pip install -r requirements.pip
+
+Configure the celery daemon:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Copy the required files from the extras directory:
+
+    $ sudo cp ~/src/formhub-app/formhub/extras/celeryd/etc/init.d/celeryd /etc/init.d/celeryd
+
+    $ sudo cp ~/src/formhub-app/formhub/extras/celeryd/etc/default/celeryd /etc/default/celeryd
+
+Open /etc/default/celeryd and update the path to your formhub install directory, if you directory structure is identical to what is described above, you only need to update your username.
 
 (OPTIONAL) For MySQL, s3, ses:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -104,6 +116,29 @@ Create a database and start server:
 And now you should be ready to run the server:
 
     $ python manage.py runserver
+
+Running Tests
+-------------
+
+To run all tests enter the following:
+
+    python manage.py test
+
+To run the tests for a specific app, e.g. main, enter:
+
+    python manage.py test main
+
+To run the test for a specific class in a specific app, e.g. the class ``TestFormErrors`` in main, enter:
+
+    python manage.py test main.TestFormErrors
+
+To run the test for a specific method in a specific class in a specific app, e.g. the method ``test_submission_deactivated`` in the class ``TestFormErrors`` in main, enter:
+
+    python manage.py test main.TestFormErrors.test_submission_deactivated
+
+To run javascript tests enter the following, NOTE that the testDir and configFile paths are relative to the js_tests/EnvJasmine directory:
+
+    ./js_tests/EnvJasmine/bin/run_all_tests.sh --testDir=../ --configFile=../env_jasmine.conf.js
 
 (OPTIONAL) Re-compiling the less css files
 ---------------------------------------
@@ -138,29 +173,6 @@ Compile the less files
     $ cd ~/src/formhub-app/formhub/main/static/bootstrap
 
     $ make
-
-Running Tests
--------------
-
-To run all tests enter the following:
-
-    python manage.py test
-
-To run the tests for a specific app, e.g. main, enter:
-
-    python manage.py test main
-
-To run the test for a specific class in a specific app, e.g. the class ``TestFormErrors`` in main, enter:
-
-    python manage.py test main.TestFormErrors
-
-To run the test for a specific method in a specific class in a specific app, e.g. the method ``test_submission_deactivated`` in the class ``TestFormErrors`` in main, enter:
-
-    python manage.py test main.TestFormErrors.test_submission_deactivated
-
-To run javascript tests enter the following, NOTE that the testDir and configFile paths are relative to the js_tests/EnvJasmine directory:
-
-    ./js_tests/EnvJasmine/bin/run_all_tests.sh --testDir=../ --configFile=../env_jasmine.conf.js
 
 Deploying
 ---------
