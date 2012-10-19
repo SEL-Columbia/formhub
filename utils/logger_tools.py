@@ -27,7 +27,7 @@ from odk_logger.models import XForm
 from odk_logger.models.xform import XLSFormError
 from odk_logger.xform_instance_parser import InstanceInvalidUserError, \
     IsNotCrowdformError, DuplicateInstance, clean_and_parse_xml, \
-    get_uuid_from_xml
+    get_uuid_from_xml, get_deprecated_uuid_from_xml
 
 from odk_viewer.models import ParsedInstance, DataDictionary
 
@@ -106,13 +106,15 @@ def create_instance(username, xml_file, media_files,
 
     if proceed_to_create_instance:
         # check if its an edit submission
-        instance_id = get_uuid_from_xml(xml)
-        instances = Instance.objects.filter(uuid=instance_id)
+        new_uuid = get_uuid_from_xml(xml)
+        old_uuid = get_deprecated_uuid_from_xml(xml)
+        instances = Instance.objects.filter(uuid=old_uuid)
         if instances:
             instance = instances[0]
-            instance.xml = xml
             InstanceHistory.objects.create(
-                xml=instance.xml, xform_instance=instance)
+                xml=instance.xml, xform_instance=instance, uuid=old_uuid)
+            instance.xml = xml
+            instance.uuid = new_uuid
             instance.save()
         else:
             # new submission

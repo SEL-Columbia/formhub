@@ -37,6 +37,14 @@ def get_uuid_from_xml(xml):
         return matches.groups()[2]
     return None
 
+def get_deprecated_uuid_from_xml(xml):
+    xml = re.sub(ur">\s+<", u"><", smart_unicode(xml.strip()))
+    p = re.compile(r".*(<meta>.*(<deprecatedID>uuid:(.*)</deprecatedID>))")
+    matches = p.match(xml)
+    if matches and matches.groups().__len__() > 2:
+        return matches.groups()[2]
+    return None
+
 
 def clean_and_parse_xml(xml_string):
     clean_xml_str = xml_string.strip()
