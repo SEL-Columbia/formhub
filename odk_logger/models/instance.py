@@ -148,6 +148,8 @@ class InstanceHistory(models.Model):
     xform_instance = models.ForeignKey(
         Instance, related_name='submission_history')
     xml = models.TextField()
+    # old instance id
+    uuid = models.CharField(max_length=249, default=u'')
 
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
