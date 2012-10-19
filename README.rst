@@ -75,17 +75,6 @@ Install requirements:
 
     $ pip install -r requirements.pip
 
-Configure the celery daemon:
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Copy the required files from the extras directory:
-
-    $ sudo cp ~/src/formhub-app/formhub/extras/celeryd/etc/init.d/celeryd /etc/init.d/celeryd
-
-    $ sudo cp ~/src/formhub-app/formhub/extras/celeryd/etc/default/celeryd /etc/default/celeryd
-
-Open /etc/default/celeryd and update the path to your formhub install directory, if you directory structure is identical to what is described above, you only need to update your username.
-
 (OPTIONAL) For MySQL, s3, ses:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -105,6 +94,21 @@ Create a database and start server:
     $ python manage.py syncdb
 
     $ python manage.py migrate
+
+Configure the celery daemon:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Copy the required files from the extras directory:
+
+    $ sudo cp ~/src/formhub-app/formhub/extras/celeryd/etc/init.d/celeryd /etc/init.d/celeryd
+
+    $ sudo cp ~/src/formhub-app/formhub/extras/celeryd/etc/default/celeryd /etc/default/celeryd
+
+Open /etc/default/celeryd and update the path to your formhub install directory, if you directory structure is identical to what is described above, you only need to update your username.
+
+Start the celery daemon
+
+    $ sudo /etc/init.d/celeryd start
 
 (OPTIONAL) Apache and system administration tools:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
