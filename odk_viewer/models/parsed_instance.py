@@ -158,7 +158,7 @@ class ParsedInstance(models.Model):
             xform_instances.save(d)
         else:
             query = {
-                UUID: self.instance.uuid,
+                ID: self.instance.id,
                 self.USERFORM_ID: u'%s_%s' % (
                      self.instance.user.username, self.instance.xform.id_string),
             }
