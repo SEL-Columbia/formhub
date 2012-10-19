@@ -7,7 +7,8 @@ Formhub
 Installation
 ------------
 
-### Install system libraries and start services:
+Install system libraries and start services:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     $ apt-get update
 
@@ -15,7 +16,8 @@ Installation
 
     $ apt-get install default-jre gcc git python-dev python-virtualenv libjpeg-dev libfreetype6-dev zlib1g-dev rabbitmq-server
 
-### Install Mongodb:
+###Install Mongodb:
+^^^^^^^^^^^^^^^^^^^
 
 Ubuntu 12.04
 
@@ -34,7 +36,8 @@ Ubuntu 10.04
     $ sudo apt-get install mongodb-10gen
 
 
-### Set up a new virtual environment:
+Set up a new virtual environment:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     $ mkdir ~/virtual_environments
 
@@ -44,7 +47,8 @@ Ubuntu 10.04
 
     $ source formhub/bin/activate
 
-### Make directory structure and Clone formhub:
+Make directory structure and Clone formhub:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     $ mkdir -p ~/src/formhub-app
 
@@ -52,7 +56,8 @@ Ubuntu 10.04
 
     $ git clone git://github.com/modilabs/formhub.git
 
-### Install requirements:
+Install requirements:
+^^^^^^^^^^^^^^^^^^^^^
 
 (NB: there is a known bug that prevents numpy from installing correctly when in requirements.pip file)
     $ pip install numpy  --use-mirrors
@@ -69,7 +74,8 @@ Ubuntu 10.04
 
     $ pip install -r requirements.pip
 
-### (OPTIONAL) For MySQL, s3, ses:
+(OPTIONAL) For MySQL, s3, ses:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     # apt-get install libmysqlclient-dev mysql-server
 
@@ -79,7 +85,8 @@ Ubuntu 10.04
 
     $ pip install -r requirements-ses.pip
 
-### Create a database and start server:
+Create a database and start server:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     create or update your local_settings.py file
 
@@ -89,7 +96,8 @@ Ubuntu 10.04
 
     $ python manage.py runserver
 
-### (OPTIONAL) Apache and system administration tools:
+(OPTIONAL) Apache and system administration tools:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     $ apt-get install apache libapache2-mode-wsgi
 
