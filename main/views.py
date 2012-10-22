@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.contrib.contenttypes.models import ContentType
 import os
 import urllib2
 
@@ -143,6 +144,11 @@ def profile(request, username):
             metadata__data_value=username
         )
         context.crowdforms = crowdforms
+        # forms shared with user
+        xfct = ContentType.objects.get(app_label='odk_logger', model='xform')
+        context.forms_shared_with = [
+            xf.content_object for xf in
+            content_user.userobjectpermission_set.filter(content_type=xfct)]
     # for any other user -> profile
     profile, created = UserProfile.objects.get_or_create(user=content_user)
     set_profile_data(context, content_user)
