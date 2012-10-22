@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.contrib.contenttypes.models import ContentType
 import os
 import urllib2
 
@@ -150,6 +151,12 @@ def profile(request, username):
             metadata__data_value=username
         )
         context.crowdforms = crowdforms
+        # forms shared with user
+        xfct = ContentType.objects.get(app_label='odk_logger', model='xform')
+        fsw = {}
+        for xf in content_user.userobjectpermission_set.filter(content_type=xfct):
+            fsw[xf.content_object.pk] = xf.content_object
+        context.forms_shared_with = list(fsw.values())
     # for any other user -> profile
     profile, created = UserProfile.objects.get_or_create(user=content_user)
     set_profile_data(context, content_user)
@@ -567,9 +574,9 @@ def set_perm(request, username, id_string):
         return HttpResponseBadRequest()
     if perm_type in ['edit', 'view', 'remove']:
         user = User.objects.get(username=for_user)
-        if perm_type == 'edit':
+        if perm_type == 'edit' and not user.has_perm('change_xform', xform):
             assign('change_xform', user, xform)
-        elif perm_type == 'view':
+        elif perm_type == 'view' and not user.has_perm('view_xform', xform):
             assign('view_xform', user, xform)
         elif perm_type == 'remove':
             remove_perm('change_xform', user, xform)

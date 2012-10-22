@@ -1,5 +1,5 @@
 {% load humanize %}
-{% if user.xforms.count %}
+{% if user.xforms.count or forms_shared_with %}
 {% load i18n %}
 
 <section id="published-forms">
@@ -22,7 +22,7 @@
 	  var tbl = $('#forms-table').dataTable({
         "bPaginate": false,
         "sPaginationType": "bootstrap",
-        "bSort": true, 
+        "bSort": true,
         "oLanguage": {"sSearch": "{% trans 'Search:' %}"},
         "oSearch": {"sSearch": ""},
         "aoColumnDefs": [
@@ -165,6 +165,107 @@
           </td>
         <td>{{ xform.downloadable|lower }}</td>
       </tr>
+      {% endfor %}
+      {% for xform in forms_shared_with %}
+          <tr>
+              <td>
+                  <a href="{% url main.views.show xform.user.username xform.id_string %}">{{ xform.title }}</a> <span class="label label-info">{% trans "Shared With You" %}</span>
+                  {% if xform.shared %}
+                      <span class="label label-info">{%  trans "PUBLIC" %}</span>
+                  {% endif %}
+
+              </td>
+              <td><center>{{ xform.submission_count|intcomma }}</center></td>
+              <td>
+                  <div class="dropdown horizontal-center">
+                      <a class="btn btn-flat" href="#" rel="clickover-btns" data-target-selector="#view-options-{{ xform.id }}" data-placement="top">
+                          <i class="icon-view icon-large"></i>
+                      </a>
+                      <div id="view-options-{{ xform.id }}" class="popover popover-btns clickover fade">
+                          <div class="arrow"></div>
+                          <div class="popover-inner">
+                              <div class="popover-content">
+                                  <div class="btn-group">
+                                      {% if xform.data_dictionary.has_surveys_with_geopoints %}
+                                          <a class="btn btn-flat" href="{% url odk_viewer.views.map_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
+                                              <i class="icon-map-marker icon-large"></i>
+                                          </a>
+                                      {% else %}
+                                          <span class="btn btn-flat inactive">
+                                      <i class="icon-map-marker icon-large"></i>
+                                  </span>
+                                      {% endif %}
+                                      {% if xform.submission_count > 0 %}
+                                          <a class="btn btn-flat" href="{% url main.views.form_photos xform.user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
+                                              <i class="icon-camera icon-large"></i>
+                                          </a>
+                                      {% else %}
+                                          <span class="btn btn-flat inactive">
+                                      <i class="icon-camera icon-large"></i>
+                                  </span>
+                                      {% endif %}
+
+                                      <a class="btn btn-flat" href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}" data-original-title="{% trans 'Enter Web Form' %}" rel="tooltip">
+                                          <i class="icon-edit icon-large"></i>
+                                      </a>
+                                      {% if xform.submission_count > 0 %}
+                                          <a class="btn btn-flat" href="{% url odk_viewer.views.data_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
+                                              <i class="icon-data icon-large"></i>
+                                          </a>
+                                          <a class="btn btn-flat" href="{% url odk_viewer.views.instance xform.user.username xform.id_string %}" data-original-title="{% trans 'Browse Data (One by One)' %}" rel="tooltip">
+                                              <i class="icon-browse icon-large"></i>
+                                          </a>
+                                      {% else %}
+                                          <span class="btn btn-flat inactive">
+                                      <i class="icon-data icon-large"></i>
+                                  </span>
+                                          <span class="btn btn-flat inactive">
+                                      <i class="icon-browse icon-large"></i>
+                                  </span>
+                                      {% endif %}
+                                      <!-- DELETE -->
+                                      {% if xform.submission_count <= 0 and False %}
+                                          <a class="btn btn-flat" data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" rel="tooltip" data-original-title="{% trans 'Delete Form' %}">
+                                              <i class="icon-trash icon-large"></i>
+                                          </a>
+                                      {% endif %}
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </td>
+              <td>
+                  {% if xform.submission_count %}
+                      <div class="data-download">
+                  <span class="vertical-middle">
+                    <i class="icon-download icon-large"></i>
+                  </span>
+                  <span class="vertical-middle">
+                    <span class="download">{% trans "Download" %}</span>
+                      {% if xform.shared_data %}
+                          <span class="label label-info">{%  trans "PUBLIC" %}</span>
+                      {% endif %}
+                      <ul class="download-nav">
+                          <li><a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'csv' %}">{%  trans "csv" %}</a></li>
+                          <li><a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'xls' %}">{%  trans "xls" %}</a></li>
+                          <li>
+                              {% if xform.data_dictionary.has_surveys_with_geopoints %}
+                                  <a href="{% url odk_viewer.views.kml_export  xform.user.username xform.id_string %}">{%  trans "kml" %}</a>
+                              {% endif %}
+                          </li>
+                      </ul>
+                  </span>
+                      </div>
+                  {% endif %}
+              </td>
+              <td>
+                  {% if xform.time_of_last_submission %}
+                      {{ xform.time_of_last_submission|date:"N d, Y" }}
+                  {% endif %}
+              </td>
+              <td>{{ xform.downloadable|lower }}</td>
+          </tr>
       {% endfor %}
     </tbody>
   </table>
