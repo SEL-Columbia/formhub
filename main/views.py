@@ -25,6 +25,7 @@ from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
     SourceForm, PermissionForm, MediaForm, MapboxLayerForm
 from main.models import UserProfile, MetaData
 from odk_logger.models import Instance, XForm
+from odk_logger.views import enter_data
 from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_viewer.models.data_dictionary import upload_to
 from odk_viewer.models.parsed_instance import GLOBAL_SUBMISSION_STATS
@@ -116,15 +117,21 @@ def profile(request, username):
     content_user = None
     context.num_surveys = Instance.objects.count()
     context.form = QuickConverter()
-
     # xlsform submission...
     if request.method == 'POST' and request.user.is_authenticated():
         def set_form():
             form = QuickConverter(request.POST, request.FILES)
             survey = form.publish(request.user).survey
+
+            enketo_webform_url = reverse(
+                enter_data,
+                kwargs={'username': username, 'id_string': survey.id_string}
+            )
             return {
                 'type': 'alert-success',
-                'text': _(u'Successfully published %s.') % survey.id_string
+                'text': _(u'Successfully published %s.'
+                          u' <a href="%s">Enter Web Form</a>')\
+                        % (survey.id_string, enketo_webform_url)
             }
         context.message = publish_form(set_form)
 
@@ -669,9 +676,15 @@ def update_xform(request, username, id_string):
     def set_form():
         form = QuickConverter(request.POST, request.FILES)
         survey = form.publish(request.user, id_string).survey
+        enketo_webform_url = reverse(
+            enter_data,
+            kwargs={'username': username, 'id_string': survey.id_string}
+        )
         return {
             'type': 'alert-success',
-            'text': _(u'Successfully published %s.') % survey.id_string
+            'text': _(u'Successfully published %s.'
+                      u' <a href="%s">Enter Web Form</a>')\
+                    % (survey.id_string, enketo_webform_url)
         }
     message = publish_form(set_form)
     messages.add_message(request, messages.INFO, message['text'],
