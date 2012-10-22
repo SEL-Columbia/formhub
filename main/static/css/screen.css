@@ -543,3 +543,6 @@ section {
 .data-download ul {
   margin: 0;
 }
+.alert-success a {
+  color: #4169e1;
+}
