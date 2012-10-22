@@ -566,9 +566,9 @@ def set_perm(request, username, id_string):
         return HttpResponseBadRequest()
     if perm_type in ['edit', 'view', 'remove']:
         user = User.objects.get(username=for_user)
-        if perm_type == 'edit':
+        if perm_type == 'edit' and not user.has_perm('change_xform', xform):
             assign('change_xform', user, xform)
-        elif perm_type == 'view':
+        elif perm_type == 'view' and not user.has_perm('view_xform', xform):
             assign('view_xform', user, xform)
         elif perm_type == 'remove':
             remove_perm('change_xform', user, xform)
