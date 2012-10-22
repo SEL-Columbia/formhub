@@ -146,9 +146,10 @@ def profile(request, username):
         context.crowdforms = crowdforms
         # forms shared with user
         xfct = ContentType.objects.get(app_label='odk_logger', model='xform')
-        context.forms_shared_with = [
-            xf.content_object for xf in
-            content_user.userobjectpermission_set.filter(content_type=xfct)]
+        fsw = {}
+        for xf in content_user.userobjectpermission_set.filter(content_type=xfct):
+            fsw[xf.content_object.pk] = xf.content_object
+        context.forms_shared_with = list(fsw.values())
     # for any other user -> profile
     profile, created = UserProfile.objects.get_or_create(user=content_user)
     set_profile_data(context, content_user)
