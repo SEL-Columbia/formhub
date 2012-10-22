@@ -259,7 +259,7 @@ class TestFormPermissions(MainTestCase):
             'username': 'alice'
         })
         response = alice.get(dashboard_url)
-        self.assertContains(response, "%s</a><span class=\"label "
+        self.assertContains(response, "%s</a> <span class=\"label "
                                       "label-info\">Shared With "
                                       "You</span>" % self.xform.title
         )
