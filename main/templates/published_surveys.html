@@ -169,7 +169,7 @@
       {% for xform in forms_shared_with %}
           <tr>
               <td>
-                  <a href="{% url main.views.show xform.user.username xform.id_string %}">{{ xform.title }}</a><span class="label label-info">{% trans "Shared With You" %}</span>
+                  <a href="{% url main.views.show xform.user.username xform.id_string %}">{{ xform.title }}</a> <span class="label label-info">{% trans "Shared With You" %}</span>
                   {% if xform.shared %}
                       <span class="label label-info">{%  trans "PUBLIC" %}</span>
                   {% endif %}
