@@ -173,6 +173,31 @@ ul.inline ul.dropdown-menu {
 .dropdown-menu .active > a:hover > i {
   background-color: #32af6e;
 }
+.dropdown-menu.left-arrow::before {
+  position: absolute;
+  top: 9px;
+  left: -8px;
+  display: inline-block;
+  border-top: 7px solid transparent;
+  border-right: 7px solid #CCC;
+  border-bottom: 7px solid transparent;
+  border-left-color: rgba(0, 0, 0, 0.2);
+  content: '';
+}
+.dropdown-menu.left-arrow::after {
+  position: absolute;
+  top: 10px;
+  left: -6px;
+  display: inline-block;
+  border-top: 6px solid transparent;
+  border-right: 6px solid white;
+  border-bottom: 6px solid transparent;
+  content: '';
+}
+.dropdown-menu.form-options {
+  top: -7px;
+  left: 28px;
+}
 .dropdown-menu.form-options li > a {
   font-weight: normal !important;
 }

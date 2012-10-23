@@ -151,12 +151,13 @@
         </td>
         <td>{{ xform.downloadable|lower }}</td>
         <td>
+          {% comment %} #todo remove once we have implemented more options  {% endcomment %}
           {% if xform.submission_count <= 0 %}
           <div class="dropdown">
             <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
                 <i class="icon-options"></i>
             </a>
-            <ul class="dropdown-menu form-options" role="menu" aria-labelledby="dropdownMenu">
+            <ul class="dropdown-menu form-options left-arrow" role="menu" aria-labelledby="dropdownMenu">
                 {% if xform.submission_count <= 0 %}
                 <li><a tabindex="-1" href="#delete-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Delete' %}</a></li>
                 {% endif %}
@@ -284,12 +285,13 @@
               </td>
               <td>{{ xform.downloadable|lower }}</td>
               <td>
+                  {% comment %} #todo remove once we have implemented more options  {% endcomment %}
                   {% if xform.submission_count <= 0 %}
                       <div class="dropdown">
                           <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
                               <i class="icon-options"></i>
                           </a>
-                          <ul class="dropdown-menu form-options" role="menu" aria-labelledby="dropdownMenu">
+                          <ul class="dropdown-menu form-options left-arrow" role="menu" aria-labelledby="dropdownMenu">
                               {% if xform.submission_count <= 0 %}
                                   <li><a tabindex="-1" href="#delete-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Delete' %}</a></li>
                               {% endif %}

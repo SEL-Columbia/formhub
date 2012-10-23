@@ -169,15 +169,48 @@ ul.inline ul.dropdown-menu {
     background-color: @linkColor;
 }
 
+.dropdown-menu.left-arrow {
+    &::before {
+        position: absolute;
+        top: 9px;
+        left: -8px;
+        display: inline-block;
+        border-top: 7px solid transparent;
+        border-right: 7px solid #CCC;
+        border-bottom: 7px solid transparent;
+        border-left-color: rgba(0, 0, 0, 0.2);
+        content: '';
+    }
+    &::after {
+        position: absolute;
+        top: 10px;
+        left: -6px;
+        display: inline-block;
+        border-top: 6px solid transparent;
+        border-right: 6px solid white;
+        border-bottom: 6px solid transparent;
+        content: '';
+    }
+}
+
+.dropdown-menu.form-options {
+    top: -7px;
+    left: 28px;
+    li > a {
+        font-weight: normal !important;
+        &.confirm {
+            color: @red;
+        }
+        &:hover.confirm {
+            color: @pink;
+        }
+    }
+}
+
 .dropdown-menu.form-options li > a
 {
-    font-weight: normal !important;
-    &.confirm {
-        color: @red;
-    }
-    &:hover.confirm {
-        color: @pink;
-    }
+
+
 }
 
 .topbar {
