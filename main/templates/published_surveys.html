@@ -48,6 +48,7 @@
         <th>{%  trans "Data" %}</th>
         <th>{%  trans "Last Submission" %}</th>
         <th>{%  trans "Active" %}</th>
+        <th>&nbsp;</th>
       </tr>
     </thead>
     <tbody>
@@ -117,21 +118,6 @@
                       </div>
                   </div>
               </div>
-              {% if xform.submission_count <= 0 %}
-                  <div id="delete-{{ xform.id_string }}" class="modal hide fade">
-                      <div class="modal-header">
-                          <a data-dismiss="modal" class="close">&times;</a>
-                          <h3>{% trans "Delete Confirmation" %}</h3>
-                      </div>
-                      <div class="modal-body">
-                          <p>{% blocktrans with title=xform.title nb_sub=xform.submission_count|intcomma %}Are you sure you want to delete the form '{{ title }}'? This form has <strong>{{ nb_sub }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.{% endblocktrans %}</p>
-                      </div>
-                      <div class="modal-footer">
-                          <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn btn-primary">Delete</a>
-                          <a href="#" data-dismiss="modal" class="btn secondary">Cancel</a>
-                      </div>
-                  </div>
-              {% endif %}
           </div>
         </td>
         <td>
@@ -158,12 +144,44 @@
               </div>
           {% endif %}
         </td>
-          <td>
-              {% if xform.time_of_last_submission %}
-                  {{ xform.time_of_last_submission|date:"N d, Y" }}
-              {% endif %}
-          </td>
+        <td>
+          {% if xform.time_of_last_submission %}
+              {{ xform.time_of_last_submission|date:"N d, Y" }}
+          {% endif %}
+        </td>
         <td>{{ xform.downloadable|lower }}</td>
+        <td>
+          {% if xform.submission_count <= 0 %}
+          <div class="dropdown">
+            <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
+                <i class="icon-options"></i>
+            </a>
+            <ul class="dropdown-menu form-options" role="menu" aria-labelledby="dropdownMenu">
+                {% if xform.submission_count <= 0 %}
+                <li><a tabindex="-1" href="#delete-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Delete' %}</a></li>
+                {% endif %}
+            </ul>
+          </div>
+            {% if xform.submission_count <= 0 %}
+                <div id="delete-{{ xform.id_string }}" class="modal hide fade">
+                    <form action="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" method="post">
+                        {% csrf_token %}
+                      <div class="modal-header">
+                          <a data-dismiss="modal" class="close">&times;</a>
+                          <h3>{% trans "Delete Confirmation" %}</h3>
+                      </div>
+                      <div class="modal-body">
+                        <p>{% blocktrans with title=xform.title nb_sub=xform.submission_count|intcomma %}Are you sure you want to delete the form '{{ title }}'? This form has <strong>{{ nb_sub }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.{% endblocktrans %}</p>
+                      </div>
+                      <div class="modal-footer">
+                          <button class="btn btn-primary form-submit">Delete</button>
+                          <a href="#" data-dismiss="modal" class="btn secondary">Cancel</a>
+                      </div>
+                    </form>
+                </div>
+            {% endif %}
+        {% endif %}
+        </td>
       </tr>
       {% endfor %}
       {% for xform in forms_shared_with %}
@@ -265,6 +283,38 @@
                   {% endif %}
               </td>
               <td>{{ xform.downloadable|lower }}</td>
+              <td>
+                  {% if xform.submission_count <= 0 %}
+                      <div class="dropdown">
+                          <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
+                              <i class="icon-options"></i>
+                          </a>
+                          <ul class="dropdown-menu form-options" role="menu" aria-labelledby="dropdownMenu">
+                              {% if xform.submission_count <= 0 %}
+                                  <li><a tabindex="-1" href="#delete-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Delete' %}</a></li>
+                              {% endif %}
+                          </ul>
+                      </div>
+                      {% if xform.submission_count <= 0 %}
+                          <div id="delete-{{ xform.id_string }}" class="modal hide fade">
+                              <form action="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" method="post">
+                                  {% csrf_token %}
+                                  <div class="modal-header">
+                                      <a data-dismiss="modal" class="close">&times;</a>
+                                      <h3>{% trans "Delete Confirmation" %}</h3>
+                                  </div>
+                                  <div class="modal-body">
+                                      <p>{% blocktrans with title=xform.title nb_sub=xform.submission_count|intcomma %}Are you sure you want to delete the form '{{ title }}'? This form has <strong>{{ nb_sub }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.{% endblocktrans %}</p>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button class="btn btn-primary form-submit">Delete</button>
+                                      <a href="#" data-dismiss="modal" class="btn secondary">Cancel</a>
+                                  </div>
+                              </form>
+                          </div>
+                      {% endif %}
+                  {% endif %}
+              </td>
           </tr>
       {% endfor %}
     </tbody>

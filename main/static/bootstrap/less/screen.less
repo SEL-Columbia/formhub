@@ -26,6 +26,9 @@ body {
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
 }
 
+#forms-table a, #crowdforms-table a, #sharedforms-table a {
+    font-weight: bold;
+}
 
 .bordered {
     .border-radius(5px);
@@ -164,6 +167,17 @@ ul.inline ul.dropdown-menu {
 
 .dropdown-menu li > a:hover > i, .dropdown-menu .active > a > i, .dropdown-menu .active > a:hover > i {
     background-color: @linkColor;
+}
+
+.dropdown-menu.form-options li > a
+{
+    font-weight: normal !important;
+    &.confirm {
+        color: @red;
+    }
+    &:hover.confirm {
+        color: @pink;
+    }
 }
 
 .topbar {
@@ -348,10 +362,6 @@ table.dataTable th:active {
 	outline: none;
 }
 
-#forms-table a, #crowdforms-table a, #sharedforms-table a {
-    font-weight: bold;
-}
-
 section {
     padding-top: 20px;
 }
@@ -467,6 +477,12 @@ section {
     border: none;
     padding: 4px 2px;
     .box-shadow(none);
+    .icon-options {
+        background-image: url("../images/options_icon_sprite.png");
+        background-position: 0 0;
+        width: 14px;
+        height: 14px;
+    }
     &.active, &:active {
         .box-shadow(none);
     }
@@ -490,6 +506,9 @@ section {
         }
         .icon-browse {
             background-image: url("../images/view_browse-active.png");
+        }
+        .icon-options {
+            background-position: 0 -19px;
         }
         &.inactive {
             .icon-map-marker {

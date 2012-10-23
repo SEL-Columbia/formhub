@@ -423,17 +423,20 @@
         <div class="input">
           <!-- DELETE -->
           <div id="delete-{{ xform.id_string }}" class="modal hide fade">
-            <div class="modal-header">
-              <a data-dismiss="modal" class="close">&times;</a>
-              <h3>{% trans "Delete Confirmation" %}</h3>
-            </div>
-            <div class="modal-body">
-                <p>{% blocktrans with title=xform.title nb_sub=xform.submission_count|intcomma %}Are you sure you want to delete the form '{{ title }}'? This form has <strong>{{ nb_sub }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.{% endblocktrans %}</p>
-            </div>
-            <div class="modal-footer">
-              <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn btn-primary">{% trans "Delete" %}</a>
-              <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">{% trans "Cancel" %}</a>
-            </div>
+              <form action="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" method="post">
+              {% csrf_token %}
+                  <div class="modal-header">
+                      <a data-dismiss="modal" class="close">&times;</a>
+                      <h3>{% trans "Delete Confirmation" %}</h3>
+                  </div>
+                  <div class="modal-body">
+                      <p>{% blocktrans with title=xform.title nb_sub=xform.submission_count|intcomma %}Are you sure you want to delete the form '{{ title }}'? This form has <strong>{{ nb_sub }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.{% endblocktrans %}</p>
+                  </div>
+                  <div class="modal-footer">
+                      <button class="btn btn-primary form-submit">Delete</button>
+                      <a href="#" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn secondary">{% trans "Cancel" %}</a>
+                  </div>
+              </form>
           </div>
           <a data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" class="btn btn-small btn-danger">
               {% trans "Delete" %}
