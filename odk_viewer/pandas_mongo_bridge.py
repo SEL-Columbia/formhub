@@ -54,6 +54,17 @@ def remove_dups_from_list_maintain_order(l):
     return list(OrderedDict.fromkeys(l))
 
 
+def get_prefix_from_xpath(xpath):
+    xpath = str(xpath)
+    parts = xpath.rsplit('/', 1)
+    if len(parts) == 1:
+        return None
+    elif len(parts) == 2:
+        return '%s/' % parts[0]
+    else:
+        raise ValueError('%s cannot be prefixed, it returns %s' % (xpath, str(parts)))
+
+
 class NoRecordsFoundError(Exception):
     pass
 
@@ -91,9 +102,12 @@ class AbstractDataFrameBuilder(object):
             for e in dd.get_survey_elements() if e.bind.get("type")=="select"])
 
     @classmethod
-    def _split_select_multiples(cls, record, select_multiples):
+    def _split_select_multiples(cls, record, select_multiples, prefix=None):
+        """ Prefix contains the xpath and slash if we are within a repeat so that we can figure out which select multiples belong to which repeat
+        """
         for key, choices in select_multiples.items():
             # the select multiple might be blank or not exist in the record, need to make those False
+            selections = []
             if key in record:
                 # split selected choices by spaces and join by / to the
                 # element's xpath
@@ -102,19 +116,27 @@ class AbstractDataFrameBuilder(object):
                 # remove the column since we are adding separate columns
                 # for each choice
                 record.pop(key)
+            # only add if:
+            #  1. prefix is None AND key has no prefix or
+            #  2. prefix is not None and key's prefix matches this prefix
+            key_prefix = get_prefix_from_xpath(key)
+            if (prefix is None and key_prefix is None) or\
+               (prefix is not None and prefix == key_prefix):
                 # add columns to record for every choice, with default
                 # False and set to True for items in selections
                 record.update(dict([(choice, choice in selections)\
                             for choice in
-                    choices]))
+                choices]))
 
             # recurs into repeats
             for record_key, record_item in record.items():
                 if type(record_item) == list:
                     for list_item in record_item:
-                        if type(list_item) == dict:
+                        if type(list_item) == dict and len(list_item.keys()) > 0:
+                            # figure out the prefix
+                            this_prefix = get_prefix_from_xpath(list_item.keys()[0])
                             cls._split_select_multiples(list_item,
-                                select_multiples)
+                                select_multiples, this_prefix)
         return record
 
     @classmethod
