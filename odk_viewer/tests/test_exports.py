@@ -78,6 +78,14 @@ class TestExports(MainTestCase):
         path, ext = os.path.splitext(export.filename)
         self.assertEqual(ext, '.csv')
 
+        # test flat csv
+        export = generate_export(Export.FLAT_CSV_EXPORT, 'csv', self.user.username,
+            self.xform.id_string)
+        self.assertTrue(os.path.exists(os.path.join(settings.MEDIA_ROOT,
+            export.filepath)))
+        path, ext = os.path.splitext(export.filename)
+        self.assertEqual(ext, '.csv')
+
         # test xls with existing export_id
         existing_export = Export.objects.create(xform=self.xform,
             export_type=Export.XLS_EXPORT)
