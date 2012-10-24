@@ -92,10 +92,8 @@ class AbstractDataFrameBuilder(object):
 
     @classmethod
     def _split_select_multiples(cls, record, select_multiples):
-        # find any select multiple(s) columns in this record
-        multi_select_columns = [key for key in record if key in
-            select_multiples.keys()]
         for key, choices in select_multiples.items():
+            # the select multiple might be blank or not exist in the record, need to make those False
             if key in record:
                 # split selected choices by spaces and join by / to the
                 # element's xpath
