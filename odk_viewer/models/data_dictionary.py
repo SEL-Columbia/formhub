@@ -11,6 +11,7 @@ from pyxform.section import RepeatingSection
 from common_tags import ID
 from odk_logger.models import XForm
 from odk_viewer.models import ParsedInstance
+from odk_viewer.models.parsed_instance import _encode_for_mongo
 from utils.export_tools import question_types_to_exclude, DictOrganizer
 from utils.model_tools import queryset_iterator, set_uuid
 
@@ -102,6 +103,16 @@ class DataDictionary(XForm):
 
     def get_survey_elements(self):
         return self.survey.iter_descendants()
+
+    def get_mongo_field_names_dict(self):
+        """
+        Return a dictionary of fieldnames as saved in mongodb with
+        corresponding xform field names e.g {"Q1Lg==1": "Q1.1"}
+        """
+        names = {}
+        for elem in self.get_survey_elements():
+            names[_encode_for_mongo(unicode(elem.name))] = elem.name
+        return names
 
     survey_elements = property(get_survey_elements)
 

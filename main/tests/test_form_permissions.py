@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
 from odk_viewer.views import map_view, survey_responses
 from guardian.shortcuts import assign, remove_perm
-from main.views import set_perm, show, edit, api
+from main.views import set_perm, show, edit, api, profile
 from main.models import MetaData
 
 import os
@@ -94,14 +94,15 @@ class TestFormPermissions(MainTestCase):
         response = alice.get(self.url)
         self.assertEqual(response.status_code, 200)
 
-    def test_add_edit_to_user(self):
+    def test_add_view_to_user(self):
         user = self._create_user('alice', 'alice')
         response = self.client.post(self.perm_url, {'for_user': user.username,
             'perm_type': 'view'})
         self.assertEqual(response.status_code, 302)
         alice = self._login('alice', 'alice')
         response = alice.get(self.show_url)
-        self.assertNotContains(response, self.xform.id_string)
+        self.assertEqual(response.status_code, 302)
+        response = alice.get(self.show_normal_url)
         self.assertContains(response, 'Submissions:')
 
     def test_add_edit_to_user(self):
@@ -112,15 +113,6 @@ class TestFormPermissions(MainTestCase):
         alice = self._login('alice', 'alice')
         response = alice.post(self.edit_url)
         self.assertEqual(response.status_code, 302)
-
-    def test_add_edit_to_user(self):
-        user = self._create_user('alice', 'alice')
-        response = self.client.post(self.perm_url, {'for_user': user.username,
-            'perm_type': 'edit'})
-        self.assertEqual(response.status_code, 302)
-        alice = self._login('alice', 'alice')
-        response = alice.get(self.show_normal_url)
-        self.assertContains(response, 'Form ID: %s' % self.xform.id_string)
 
     def test_public_with_link_to_share(self):
         response = self.client.post(self.perm_url, {'for_user': 'all',
@@ -252,3 +244,22 @@ class TestFormPermissions(MainTestCase):
         self.assertEqual(response.status_code, 200)
         response = self.client.get(self.api_url)
         self.assertEqual(response.status_code, 200)
+
+    def test_view_shared_form(self):
+        user = self._create_user('alice', 'alice')
+        response = self.client.post(self.perm_url, {'for_user': user.username,
+                                                    'perm_type': 'view'})
+        self.assertEqual(response.status_code, 302)
+        alice = self._login('alice', 'alice')
+        response = alice.get(self.show_url)
+        self.assertEqual(response.status_code, 302)
+        response = alice.get(self.show_normal_url)
+        self.assertContains(response, 'Submissions:')
+        dashboard_url = reverse(profile, kwargs={
+            'username': 'alice'
+        })
+        response = alice.get(dashboard_url)
+        self.assertContains(response, "%s</a> <span class=\"label "
+                                      "label-info\">Shared With "
+                                      "You</span>" % self.xform.title
+        )

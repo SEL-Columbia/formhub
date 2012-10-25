@@ -7,38 +7,64 @@ Formhub
 Installation
 ------------
 
-Ubuntu 12.04
-^^^^^^^^^^^^
-
 Install system libraries and start services:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    # apt-get update
+    $ apt-get update
 
-    # apt-get upgrade
+    $ apt-get upgrade
 
-    # apt-get install default-jre gcc git mongodb python-dev python-virtualenv libjpeg-dev libfreetype6-dev zlib1g-dev
+    $ apt-get install default-jre gcc git python-dev python-virtualenv libjpeg-dev libfreetype6-dev zlib1g-dev rabbitmq-server
 
-    # start mongodb
+Install Mongodb:
+^^^^^^^^^^^^^^^^
 
-Make directory structure and Clone formhub:
+Ubuntu 12.04
 
-    $ mkdir -p src/formhub-app
+    $ apt-get install mongodb
 
-    $ cd src/formhub-app
+    $ start mongodb
+
+Ubuntu 10.04
+
+    $ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
+
+    $ echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' >> /etc/apt/sources.list
+
+    $ sudo apt-get update
+
+    $ sudo apt-get install mongodb-10gen
+
+
+Set up a new virtual environment:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    $ mkdir ~/virtual_environments
+
+    $ cd ~/virtual_environments
+
+    $ virtualenv --no-site-packages formhub
+
+    $ source formhub/bin/activate
+
+Make directory structure and clone formhub:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    $ mkdir -p ~/src/formhub-app
+
+    $ cd ~/src/formhub-app
 
     $ git clone git://github.com/modilabs/formhub.git
 
-Make virtual environment and install requirements:
-
-    $ virtualenv --no-site-packages project_env
-
-    $ source project_env/bin/activate
-
-    $ cd formhub
+Install requirements:
+^^^^^^^^^^^^^^^^^^^^^
 
 (NB: there is a known bug that prevents numpy from installing correctly when in requirements.pip file)
 
-    $ pip install numpy
+    $ pip install numpy  --use-mirrors
+
+    $ pip install -r requirements.pip
+
 (NB: PIL under virtualenv usually does not have some codecs compiled| to make sure jpeg codec is included)
 
     $ sudo ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib/
@@ -50,8 +76,9 @@ Make virtual environment and install requirements:
     $ pip install -r requirements.pip
 
 (OPTIONAL) For MySQL, s3, ses:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    # apt-get install libmysqlclient-dev mysql-server
+    $ apt-get install libmysqlclient-dev mysql-server
 
     $ pip install -r requirements-mysql.pip
 
@@ -60,79 +87,39 @@ Make virtual environment and install requirements:
     $ pip install -r requirements-ses.pip
 
 Create a database and start server:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    create or update your local-settings.py file
+    create or update your local_settings.py file
 
     $ python manage.py syncdb
 
     $ python manage.py migrate
 
-    $ python manage.py runserver
+Configure the celery daemon:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Copy the required files from the extras directory:
+
+    $ sudo cp ~/src/formhub-app/formhub/extras/celeryd/etc/init.d/celeryd /etc/init.d/celeryd
+
+    $ sudo cp ~/src/formhub-app/formhub/extras/celeryd/etc/default/celeryd /etc/default/celeryd
+
+Open /etc/default/celeryd and update the path to your formhub install directory, if you directory structure is identical to what is described above, you only need to update your username.
+
+Start the celery daemon
+
+    $ sudo /etc/init.d/celeryd start
 
 (OPTIONAL) Apache and system administration tools:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    # apt-get install apache libapache2-mode-wsgi
+    $ apt-get install apache libapache2-mode-wsgi
 
-    # apt-get install htop monit
-
-    set up apache and monit
-
-Ubuntu 10.04
-^^^^^^^^^^^^
-
-First, I set up a new virtual environment:
-
-    sudo apt-get install python-virtualenv
-
-    cd ~/Documents
-
-    mkdir virtual_environments
-
-    cd virtual_environments
-
-    virtualenv --no-site-packages formhub
-
-    source formhub/bin/activate
-
-Second, I cloned the repo:
-
-    cd ~/Documents
-
-    git clone git@github.com:modilabs/formhub.git
-
-Install the requirements:
-
-    cd formhub
-
-    pip install numpy --use-mirrors
-
-    pip install -r requirements.pip
-
-Install Mongodb:
-
-    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
-
-    echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' >> /etc/apt/sources.list
-
-    sudo apt-get update
-    
-    sudo apt-get install mongodb-10gen
-
-If you don't already have a Java Runtime Environment installed this is
-necessary for running ODK Validate. A *.jar file used to validate
-XForms.
-
-    sudo apt-get install default-jre
-
-To create a database for your development server do the following:
-
-    python manage.py syncdb
-
-    python manage.py migrate
+    $ apt-get install htop monit
 
 And now you should be ready to run the server:
 
-    python manage.py runserver
+    $ python manage.py runserver
 
 Running Tests
 -------------
@@ -156,6 +143,40 @@ To run the test for a specific method in a specific class in a specific app, e.g
 To run javascript tests enter the following, NOTE that the testDir and configFile paths are relative to the js_tests/EnvJasmine directory:
 
     ./js_tests/EnvJasmine/bin/run_all_tests.sh --testDir=../ --configFile=../env_jasmine.conf.js
+
+(OPTIONAL) Re-compiling the less css files
+---------------------------------------
+
+Install nodejs
+^^^^^^^^^^^^^^
+
+    $ sudo apt-get install python g++ make
+
+    $ mkdir ~/nodejs && cd $_
+
+    $ wget -N http://nodejs.org/dist/node-latest.tar.gz
+
+    $ tar xzvf node-latest.tar.gz && cd `ls -rd node-v*`
+
+    $ ./configure
+
+    $ sudo make install
+
+Install recess, uglifyjs and less via npm (Node Package Manager)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    $ sudo npm install -g recess
+
+    $ sudo npm install -g uglifyjs
+
+    $ sudo npm install -g less
+
+Compile the less files
+^^^^^^^^^^^^^^^^^^^^^^
+
+    $ cd ~/src/formhub-app/formhub/main/static/bootstrap
+
+    $ make
 
 Deploying
 ---------

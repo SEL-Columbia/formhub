@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.contrib.contenttypes.models import ContentType
 import os
 import urllib2
 
@@ -24,6 +25,7 @@ from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
     SourceForm, PermissionForm, MediaForm, MapboxLayerForm
 from main.models import UserProfile, MetaData
 from odk_logger.models import Instance, XForm
+from odk_logger.views import enter_data
 from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_viewer.models.data_dictionary import upload_to
 from odk_viewer.models.parsed_instance import GLOBAL_SUBMISSION_STATS
@@ -115,15 +117,21 @@ def profile(request, username):
     content_user = None
     context.num_surveys = Instance.objects.count()
     context.form = QuickConverter()
-
     # xlsform submission...
     if request.method == 'POST' and request.user.is_authenticated():
         def set_form():
             form = QuickConverter(request.POST, request.FILES)
             survey = form.publish(request.user).survey
+
+            enketo_webform_url = reverse(
+                enter_data,
+                kwargs={'username': username, 'id_string': survey.id_string}
+            )
             return {
                 'type': 'alert-success',
-                'text': _(u'Successfully published %s.') % survey.id_string
+                'text': _(u'Successfully published %s.'
+                          u' <a href="%s">Enter Web Form</a>')
+                        % (survey.id_string, enketo_webform_url)
             }
         context.message = publish_form(set_form)
 
@@ -143,6 +151,14 @@ def profile(request, username):
             metadata__data_value=username
         )
         context.crowdforms = crowdforms
+        # forms shared with user
+        xfct = ContentType.objects.get(app_label='odk_logger', model='xform')
+        fsw = {}
+        for xf in content_user.userobjectpermission_set\
+                .filter(content_type=xfct):
+            if isinstance(xf.content_object, XForm):
+                fsw[xf.content_object.pk] = xf.content_object
+        context.forms_shared_with = list(fsw.values())
     # for any other user -> profile
     profile, created = UserProfile.objects.get_or_create(user=content_user)
     set_profile_data(context, content_user)
@@ -560,9 +576,9 @@ def set_perm(request, username, id_string):
         return HttpResponseBadRequest()
     if perm_type in ['edit', 'view', 'remove']:
         user = User.objects.get(username=for_user)
-        if perm_type == 'edit':
+        if perm_type == 'edit' and not user.has_perm('change_xform', xform):
             assign('change_xform', user, xform)
-        elif perm_type == 'view':
+        elif perm_type == 'view' and not user.has_perm('view_xform', xform):
             assign('view_xform', user, xform)
         elif perm_type == 'remove':
             remove_perm('change_xform', user, xform)
@@ -655,22 +671,28 @@ def link_to_bamboo(request, username, id_string):
 @require_POST
 @is_owner
 def update_xform(request, username, id_string):
-    xform = get_object_or_404(XForm,
-        user__username=username, id_string=id_string)
+    xform = get_object_or_404(
+        XForm, user__username=username, id_string=id_string)
 
     context = RequestContext(request)
+
     def set_form():
         form = QuickConverter(request.POST, request.FILES)
         survey = form.publish(request.user, id_string).survey
+        enketo_webform_url = reverse(
+            enter_data,
+            kwargs={'username': username, 'id_string': survey.id_string}
+        )
         return {
             'type': 'alert-success',
-            'text': _(u'Successfully published %s.') % survey.id_string
+            'text': _(u'Successfully published %s.'
+                      u' <a href="%s">Enter Web Form</a>')
+                    % (survey.id_string, enketo_webform_url)
         }
     message = publish_form(set_form)
-    messages.add_message(request, messages.INFO, message['text'],
-        extra_tags=message['type'])
+    messages.add_message(
+        request, messages.INFO, message['text'], extra_tags=message['type'])
     return HttpResponseRedirect(reverse(show, kwargs={
         'username': username,
         'id_string': id_string
     }))
-

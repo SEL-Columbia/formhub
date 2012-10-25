@@ -54,11 +54,11 @@ class Command(BaseCommand):
         if form_already_exists:
             if options.has_key('replace') and options['replace']:
                 id_string = survey.id_string
-                self.stdout.write(_("Form already exists, replacing ..\n"))
+                self.stdout.write(_("Form already exist, replacing ..\n"))
             else:
                 raise CommandError(_("The form with id_string '%s' already exists, use the -r option to replace it.") % survey.id_string)
         else:
-            self.stdout.write(_("Form does NOT exists, publishing ..\n"))
+            self.stdout.write(_("Form does NOT exist, publishing ..\n"))
 
         # publish
         xls_file = django_file(xls_filepath, 'xls_file', 'application/vnd.ms-excel')

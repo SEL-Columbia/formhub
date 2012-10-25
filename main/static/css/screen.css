@@ -425,29 +425,35 @@ section {
   height: 33px;
 }
 .btn .icon-view {
-  background-image: url("../images/view.png");
-  background-position: 0px 0px;
+  background-image: url("../images/view_icons_sprite.png");
+  background-position: 0 -83px;
 }
 .btn:hover .icon-view {
-  background-image: url("../images/view-active.png");
+  background-image: url("../images/view_icons_sprite.png");
+  background-position: 0 0;
 }
 .icon-large {
   background-position: 50% 50%;
 }
 .icon-large.icon-map-marker {
-  background-image: url("../images/view_map.png");
+  background-image: url("../images/view_icons_sprite.png");
+  background-position: 0 -886px;
 }
 .icon-large.icon-camera {
-  background-image: url("../images/view_photo.png");
+  background-image: url("../images/view_icons_sprite.png");
+  background-position: 0 -1046px;
 }
 .icon-large.icon-edit {
-  background-image: url("../images/view_edit.png");
+  background-image: url("../images/view_icons_sprite.png");
+  background-position: 0 -726px;
 }
 .icon-large.icon-data {
-  background-image: url("../images/view_data.png");
+  background-image: url("../images/view_icons_sprite.png");
+  background-position: 0 -566px;
 }
 .icon-large.icon-browse {
-  background-image: url("../images/view_browse.png");
+  background-image: url("../images/view_icons_sprite.png");
+  background-position: 0 -246px;
 }
 .icon-public {
   background-position: 50% 50%;
@@ -481,34 +487,44 @@ section {
   background: none;
 }
 .btn-flat:hover .icon-map-marker {
-  background-image: url("../images/view_map-active.png");
+  background-image: url("../images/view_icons_sprite.png");
+  background-position: 0 -806px;
 }
 .btn-flat:hover .icon-camera {
-  background-image: url("../images/view_photo-active.png");
+  background-image: url("../images/view_icons_sprite.png");
+  background-position: 0 -966px;
 }
 .btn-flat:hover .icon-edit {
-  background-image: url("../images/view_edit-active.png");
+  background-image: url("../images/view_icons_sprite.png");
+  background-position: 0 -646px;
 }
 .btn-flat:hover .icon-data {
-  background-image: url("../images/view_data-active.png");
+  background-image: url("../images/view_icons_sprite.png");
+  background-position: 0 -486px;
 }
 .btn-flat:hover .icon-browse {
-  background-image: url("../images/view_browse-active.png");
+  background-image: url("../images/view_icons_sprite.png");
+  background-position: 0 -166px;
 }
 .btn-flat:hover.inactive .icon-map-marker {
-  background-image: url("../images/view_map.png");
+  background-image: url("../images/view_icons_sprite.png");
+  background-position: 0 -886px;
 }
 .btn-flat:hover.inactive .icon-camera {
-  background-image: url("../images/view_photo.png");
+  background-image: url("../images/view_icons_sprite.png");
+  background-position: 0 -1046px;
 }
 .btn-flat:hover.inactive .icon-edit {
-  background-image: url("../images/view_edit.png");
+  background-image: url("../images/view_icons_sprite.png");
+  background-position: 0 -726px;
 }
 .btn-flat:hover.inactive .icon-data {
-  background-image: url("../images/view_data.png");
+  background-image: url("../images/view_icons_sprite.png");
+  background-position: 0 -566px;
 }
 .btn-flat:hover.inactive .icon-browse {
-  background-image: url("../images/view_browse.png");
+  background-image: url("../images/view_icons_sprite.png");
+  background-position: 0 -246px;
 }
 .data-download {
   cursor: pointer;
@@ -542,4 +558,7 @@ section {
 }
 .data-download ul {
   margin: 0;
+}
+.alert-success a {
+  color: #4169e1;
 }

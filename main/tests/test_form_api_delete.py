@@ -80,4 +80,4 @@ class TestFormAPIDelete(MainTestCase):
         self.mongo_args.update({"query": query})
         #check if it exist after delete
         after = ParsedInstance.query_mongo(**self.mongo_args)
-        self.assertEqual(after.count(), 0)
+        self.assertEqual(len(after), 0)
