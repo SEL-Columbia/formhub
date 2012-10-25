@@ -821,8 +821,8 @@ a:focus {
   margin-bottom: 10px;
 }
 
-#faq {
-	width: 800px;
+#faq, #support{
+	width: 700px;
   margin-left: auto;
   margin-right: auto;
   text-align: left;
@@ -858,3 +858,18 @@ a:focus {
   visibility: hidden;
 }
 
+#support .header{
+	font-size: 22px;
+	font-weight:500;
+	color: #2798E1;
+	padding-top: 30px;
+	padding-bottom: 10px;
+}
+
+#support p { 
+	margin-bottom: 10px;
+}
+
+#support {
+	padding-bottom: 30px;
+}

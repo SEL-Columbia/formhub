@@ -396,6 +396,11 @@ def edit(request, username, id_string):
     return HttpResponseForbidden(_(u'Update failed.'))
 
 
+def getting_started(request):
+    context = RequestContext(request)
+    context.template = 'getting_started.html'
+    return render_to_response('base.html', context_instance=context)
+
 def support(request):
     context = RequestContext(request)
     context.template = 'support.html'

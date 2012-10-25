@@ -1,0 +1,147 @@
+{% load i18n %}
+
+<section id="introduction">
+  <div class="page-header">
+    <h1>{%  trans "Getting Started" %}</h1>
+  </div>
+
+  <p>{% blocktrans %}formhub aims to make collecting survey data with Android smart phones easy and free.{% endblocktrans %}
+  </p>
+  <p>
+    {% trans "One uses formhub as follows:" %}
+    <ol>
+      <li><a href="./#translate-survey">{%  trans "Translate survey into the xsl2xform syntax." %}</a></li>
+      <li><a href="./#publish-form">{%  trans "Upload XLSForm file to formhub." %}</a></li>
+      <li><a href="./#use-odk-collect">{%  trans "Use" %} ODK Collect {%  trans "to download form and submit data." %}</a></li>
+      <li><a href="./#analyze-survey-data">{%  trans "Use" %} formhub {%  trans "to download and map data submissions." %}</a></li>
+    </ol>
+    {%  trans "This tutorial will walk you through each stop of the way." %}
+  </p>
+</section>
+
+<section id="translate-survey">
+  <div class="page-header">
+    <h2>{%  trans "Translate survey into the XLSForm syntax" %}</h2>
+  </div>
+
+  <div class="row">
+    <div class="span6">
+      <p>
+        {%  blocktrans %}The first step in collecting survey data is to actually write the survey. For this tutorial we will be using the following survey:{% endblocktrans %}
+        <ol>
+          <li>{%  trans "What is your name?" %}</li>
+          <li>{%  trans "How old are you?" %}</li>
+          <li>{%  trans "May I take your picture?" %}</li>
+          <li>{%  trans "Do you have any children?" %}</li>
+          <li>{%  trans "Record your GPS coordinates." %}</li>
+          <li>{%  trans "What web browsers do you use?" %}</li>
+        </ol>
+        {% blocktrans %}The second step is writing this survey in the xls2xform syntax. The idea behind this approach is that each question in the survey is a row in the spreadsheet. By using a spreadsheet we can expose most of the XForm features supported by ODK Collect. Check out the images to the right that show the xls2xform syntax for this survey.{% endblocktrans %}
+      </p>
+    </div>
+    <div class="span10">
+      <img src="{{ STATIC_URL }}tutorial/survey_sheet.png" width="100%" /><br />
+      <img src="{{ STATIC_URL }}tutorial/choices_sheet.png" width="100%" /><br />
+    </div>
+  </div>
+  {% url main.views.syntax as syntax_url %}
+  {%  blocktrans %}For more in depth information about the XLSForm syntax go <a href="{{ syntax_url }}">here</a>.{% endblocktrans %}
+</section>
+
+<section id="publish-form">
+  <div class="page-header">
+    <h2>{%  trans "Upload XLSForm file to formhub" %}</h2>
+  </div>
+
+  <div class="row">
+    <div class="span6">
+      <p>
+        {%  blocktrans %}After creating an account and signing into the site you can publish forms for use with ODK Collect. On the right, we submit <a href="{{ STATIC_URL }}tutorial/tutorial.xls">tutorial.xls</a>, described above, for publication.{% endblocktrans %}
+      </p>
+    </div>
+    <div class="span10">
+      <img src="{{ STATIC_URL }}tutorial/publish_survey.png" width="100%" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <p>
+        {%  blocktrans %}After publishing our first form, a new table appears showing our new form. Next we need to use ODK Collect to submit data for this form...{% endblocktrans %}
+      </p>
+    </div>
+    <div class="span10">
+      <img src="{{ STATIC_URL }}tutorial/published_surveys.png" width="100%" />
+    </div>
+  </div>
+</section>
+
+<section id="use-odk-collect">
+  <div class="page-header">
+    <h2>{%  trans "Use ODK Collect to download form and submit data" %}</h2>
+  </div>
+
+  <div class="row">
+    <div class="span4">
+      <ul class="media-grid"><li><a href="">
+            <img width="210px" class="thumbnail" src="{{ STATIC_URL }}tutorial/server_preferences.png" alt="">
+      </a></li></ul>
+      <p>
+        {%  blocktrans %}The url of this web application must be given to ODK Collect before it will get forms from and submit data to formhub. In ODK Collect's Main Menu, press the Menu button. Select Server Preferences, then Server. Enter <strong>{{ odk_url }}</strong> as the server.{% endblocktrans %}
+      </p>
+    </div>
+
+    <div class="span4">
+      <ul class="media-grid"><li><a href="">
+            <img width="210px" class="thumbnail" src="{{ STATIC_URL }}tutorial/download.png" alt="">
+      </a></li></ul>
+      <p>
+        {%  trans "Download your published form to your phone." %}
+      </p>
+    </div>
+
+    <div class="span4">
+      <ul class="media-grid"><li><a href="">
+            <img width="210px" class="thumbnail" src="{{ STATIC_URL }}tutorial/question.png" alt="">
+      </a></li></ul>
+      <p>
+        {%  trans "Fill out the form on your phone." %}
+      </p>
+    </div>
+
+    <div class="span4">
+      <ul class="media-grid"><li><a href="">
+            <img width="210px" class="thumbnail" src="{{ STATIC_URL }}tutorial/send_finished_data.png" alt="">
+      </a></li></ul>
+      <p>
+        {%  blocktrans %}After filling out the form on your phone submit the data to the server.{% endblocktrans %}
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="analyze-survey-data">
+  <div class="page-header">
+    <h2>{%  trans "Use formhub to download and map data submissions" %}</h2>
+  </div>
+
+  <div class="row">
+    <div class="span6">
+      <p>
+        {%  blocktrans %}After submitting data from ODK Collect to the server you can now download the data as a nicely formatted csv or xls file.{% endblocktrans %}
+      </p>
+    </div>
+    <div class="span10">
+      <img src="{{ STATIC_URL }}tutorial/submitted_data.png" width="100%" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <p>
+        {%  trans "And look at submissions on a map:" %}
+      </p>
+    </div>
+    <div class="span10">
+      <img src="{{ STATIC_URL }}tutorial/map.png" width="100%" /><br />
+    </div>
+  </div>
+</section>
