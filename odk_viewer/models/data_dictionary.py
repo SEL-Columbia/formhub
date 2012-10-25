@@ -111,7 +111,7 @@ class DataDictionary(XForm):
         """
         names = {}
         for elem in self.get_survey_elements():
-            names[_encode_for_mongo(elem.name)] = elem.name
+            names[_encode_for_mongo(unicode(elem.name))] = elem.name
         return names
 
     survey_elements = property(get_survey_elements)
