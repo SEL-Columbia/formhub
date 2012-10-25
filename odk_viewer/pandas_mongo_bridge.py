@@ -119,8 +119,7 @@ class AbstractDataFrameBuilder(object):
                 # add columns to record for every choice, with default
                 # False and set to True for items in selections
                 record.update(dict([(choice, choice in selections)\
-                            for choice in
-                choices]))
+                            for choice in choices]))
 
             # recurs into repeats
             for record_key, record_item in record.items():
