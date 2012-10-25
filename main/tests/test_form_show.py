@@ -4,7 +4,8 @@ from test_base import MainTestCase
 from main.views import show, form_photos, update_xform
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
-from odk_logger.views import download_xlsform, download_jsonform, download_xform
+from odk_logger.views import download_xlsform, download_jsonform,\
+    download_xform, delete_xform
 from odk_viewer.views import export_list
 
 class TestFormShow(MainTestCase):
@@ -220,3 +221,33 @@ class TestFormShow(MainTestCase):
                                  if e.name == u'preferred_means']) > 0
         self.assertTrue(is_updated_form)
 
+    def test_xform_delete(self):
+        id_string = self.xform.id_string
+        form_exists = XForm.objects.filter(user=self.user,
+            id_string = id_string).count() == 1
+        self.assertTrue(form_exists)
+        xform_delete_url = reverse(delete_xform, kwargs={
+            'username': self.user.username,
+            'id_string': id_string
+        })
+        self.client.post(xform_delete_url)
+        form_deleted = XForm.objects.filter(user=self.user,
+            id_string = id_string).count() == 0
+        self.assertTrue(form_deleted)
+
+    def test_non_owner_cant_delete_xform(self):
+        id_string = self.xform.id_string
+        form_exists = XForm.objects.filter(user=self.user,
+            id_string = id_string).count() == 1
+        self.assertTrue(form_exists)
+        xform_delete_url = reverse(delete_xform, kwargs={
+            'username': self.user.username,
+            'id_string': id_string
+        })
+        # save current user before we re-assign
+        bob = self.user
+        self._create_user_and_login('alice', 'alice')
+        self.client.post(xform_delete_url)
+        form_deleted = XForm.objects.filter(user=bob,
+            id_string = id_string).count() == 0
+        self.assertFalse(form_deleted)

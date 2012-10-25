@@ -46,6 +46,11 @@ body {
   background-color: rgba(221, 221, 221, 0.6);
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
 }
+#forms-table a,
+#crowdforms-table a,
+#sharedforms-table a {
+  font-weight: bold;
+}
 .bordered {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -167,6 +172,40 @@ ul.inline ul.dropdown-menu {
 .dropdown-menu .active > a > i,
 .dropdown-menu .active > a:hover > i {
   background-color: #32af6e;
+}
+.dropdown-menu.left-arrow::before {
+  position: absolute;
+  top: 9px;
+  left: -8px;
+  display: inline-block;
+  border-top: 7px solid transparent;
+  border-right: 7px solid #CCC;
+  border-bottom: 7px solid transparent;
+  border-left-color: rgba(0, 0, 0, 0.2);
+  content: '';
+}
+.dropdown-menu.left-arrow::after {
+  position: absolute;
+  top: 10px;
+  left: -6px;
+  display: inline-block;
+  border-top: 6px solid transparent;
+  border-right: 6px solid white;
+  border-bottom: 6px solid transparent;
+  content: '';
+}
+.dropdown-menu.form-options {
+  top: -7px;
+  left: 28px;
+}
+.dropdown-menu.form-options li > a {
+  font-weight: normal !important;
+}
+.dropdown-menu.form-options li > a.confirm {
+  color: #9d261d;
+}
+.dropdown-menu.form-options li > a:hover.confirm {
+  color: #c3325f;
 }
 .topbar {
   position: fixed;
@@ -325,11 +364,6 @@ table.table thead .sorting_desc_disabled {
 table.dataTable th:active {
   outline: none;
 }
-#forms-table a,
-#crowdforms-table a,
-#sharedforms-table a {
-  font-weight: bold;
-}
 section {
   padding-top: 20px;
 }
@@ -472,6 +506,12 @@ section {
   -moz-box-shadow: none;
   box-shadow: none;
 }
+.btn-flat .icon-options {
+  background-image: url("../images/options_icon_sprite.png");
+  background-position: 0 0;
+  width: 14px;
+  height: 14px;
+}
 .btn-flat.active,
 .btn-flat:active {
   -webkit-box-shadow: none;
@@ -505,6 +545,9 @@ section {
 .btn-flat:hover .icon-browse {
   background-image: url("../images/view_icons_sprite.png");
   background-position: 0 -166px;
+}
+.btn-flat:hover .icon-options {
+  background-position: 0 -19px;
 }
 .btn-flat:hover.inactive .icon-map-marker {
   background-image: url("../images/view_icons_sprite.png");

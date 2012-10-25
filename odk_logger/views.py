@@ -294,6 +294,7 @@ def download_jsonform(request, username, id_string):
 
 
 @is_owner
+@require_POST
 def delete_xform(request, username, id_string):
     xform = get_object_or_404(XForm, user__username=username,
                               id_string=id_string)
