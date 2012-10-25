@@ -130,7 +130,7 @@ def profile(request, username):
             return {
                 'type': 'alert-success',
                 'text': _(u'Successfully published %s.'
-                          u' <a href="%s">Enter Web Form</a>')\
+                          u' <a href="%s">Enter Web Form</a>')
                         % (survey.id_string, enketo_webform_url)
             }
         context.message = publish_form(set_form)
@@ -154,8 +154,10 @@ def profile(request, username):
         # forms shared with user
         xfct = ContentType.objects.get(app_label='odk_logger', model='xform')
         fsw = {}
-        for xf in content_user.userobjectpermission_set.filter(content_type=xfct):
-            fsw[xf.content_object.pk] = xf.content_object
+        for xf in content_user.userobjectpermission_set\
+                .filter(content_type=xfct):
+            if isinstance(xf.content_object, XForm):
+                fsw[xf.content_object.pk] = xf.content_object
         context.forms_shared_with = list(fsw.values())
     # for any other user -> profile
     profile, created = UserProfile.objects.get_or_create(user=content_user)
@@ -669,10 +671,11 @@ def link_to_bamboo(request, username, id_string):
 @require_POST
 @is_owner
 def update_xform(request, username, id_string):
-    xform = get_object_or_404(XForm,
-        user__username=username, id_string=id_string)
+    xform = get_object_or_404(
+        XForm, user__username=username, id_string=id_string)
 
     context = RequestContext(request)
+
     def set_form():
         form = QuickConverter(request.POST, request.FILES)
         survey = form.publish(request.user, id_string).survey
@@ -683,14 +686,13 @@ def update_xform(request, username, id_string):
         return {
             'type': 'alert-success',
             'text': _(u'Successfully published %s.'
-                      u' <a href="%s">Enter Web Form</a>')\
+                      u' <a href="%s">Enter Web Form</a>')
                     % (survey.id_string, enketo_webform_url)
         }
     message = publish_form(set_form)
-    messages.add_message(request, messages.INFO, message['text'],
-        extra_tags=message['type'])
+    messages.add_message(
+        request, messages.INFO, message['text'], extra_tags=message['type'])
     return HttpResponseRedirect(reverse(show, kwargs={
         'username': username,
         'id_string': id_string
     }))
-
