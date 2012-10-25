@@ -15,7 +15,7 @@
         <th>{%  trans "View" %}</th>
         <th>{%  trans "Data" %}</th>
         <th>{%  trans "Last Submission" %}</th>
-        <th>{%  trans "Remove" %}</th>
+        <th>{%  trans "Options" %}</th>
       </tr>
     </thead>
     <tbody>
@@ -134,9 +134,14 @@
           {% endif %}
         </td>
         <td>
-            <a data-backdrop="true" data-keyboard="true" class="btn" href="{% url main.views.edit xform.user.username xform.id_string %}?crowdform=delete">
-                <i class="icon-trash"></i>
-            </a>
+            <div class="dropdown">
+                <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
+                    <i class="icon-options"></i>
+                </a>
+                <ul class="dropdown-menu form-options left-arrow" role="menu" aria-labelledby="dropdownMenu">
+                        <li><a tabindex="-1" href="{% url main.views.edit xform.user.username xform.id_string %}?crowdform=delete">{% trans 'Remove Crowdform' %}</a></li>
+                </ul>
+            </div>
 	    </div>
         </td>
       </tr>
