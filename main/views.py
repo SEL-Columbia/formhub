@@ -401,6 +401,10 @@ def support(request):
     context.template = 'support.html'
     return render_to_response('base.html', context_instance=context)
 
+def faq(request):
+    context = RequestContext(request)
+    context.template = 'faq.html'
+    return render_to_response('base.html', context_instance=context)
 
 def xls2xform(request):
     context = RequestContext(request)

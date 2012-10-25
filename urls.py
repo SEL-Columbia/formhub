@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     # main website views
     url(r'^$', 'main.views.home'),
     url(r'^tutorial/$', 'main.views.tutorial', name='tutorial'),
+    url(r'^faq/$', 'main.views.faq', name='faq'),
     url(r'^syntax/$', 'main.views.syntax', name='syntax'),
     url(r'^forms/$', 'main.views.form_gallery', name='forms_list'),
     url(r'^forms/(?P<uuid>[^/]+)$', 'main.views.show'),
