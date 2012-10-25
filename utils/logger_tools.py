@@ -108,7 +108,7 @@ def create_instance(username, xml_file, media_files,
     new_uuid = get_uuid_from_xml(xml)
     duplicate_instances = Instance.objects.filter(uuid=new_uuid)
     if duplicate_instances:
-        proceed_to_create_instance = False
+        raise DuplicateInstance()
 
     if proceed_to_create_instance:
         # check if its an edit submission
