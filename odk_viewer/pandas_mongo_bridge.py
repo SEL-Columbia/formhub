@@ -54,6 +54,17 @@ def remove_dups_from_list_maintain_order(l):
     return list(OrderedDict.fromkeys(l))
 
 
+def get_prefix_from_xpath(xpath):
+    xpath = str(xpath)
+    parts = xpath.rsplit('/', 1)
+    if len(parts) == 1:
+        return None
+    elif len(parts) == 2:
+        return '%s/' % parts[0]
+    else:
+        raise ValueError('%s cannot be prefixed, it returns %s' % (xpath, str(parts)))
+
+
 class NoRecordsFoundError(Exception):
     pass
 
@@ -92,10 +103,11 @@ class AbstractDataFrameBuilder(object):
 
     @classmethod
     def _split_select_multiples(cls, record, select_multiples):
-        # find any select multiple(s) columns in this record
-        multi_select_columns = [key for key in record if key in
-            select_multiples.keys()]
+        """ Prefix contains the xpath and slash if we are within a repeat so that we can figure out which select multiples belong to which repeat
+        """
         for key, choices in select_multiples.items():
+            # the select multiple might be blank or not exist in the record, need to make those False
+            selections = []
             if key in record:
                 # split selected choices by spaces and join by / to the
                 # element's xpath
@@ -107,8 +119,7 @@ class AbstractDataFrameBuilder(object):
                 # add columns to record for every choice, with default
                 # False and set to True for items in selections
                 record.update(dict([(choice, choice in selections)\
-                            for choice in
-                    choices]))
+                            for choice in choices]))
 
             # recurs into repeats
             for record_key, record_item in record.items():

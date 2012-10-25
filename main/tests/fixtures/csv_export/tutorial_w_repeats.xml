@@ -1,0 +1,1 @@
+<?xml version='1.0' ?><tutorial_w_repeats id="tutorial_w_repeats"><name>Bob</name><age>25</age><picture /><has_children>1</has_children><children><childs_name>Tom</childs_name><childs_age>12</childs_age></children><children><childs_name>Dick</childs_name><childs_age>5</childs_age></children><gps>-1.2625621 36.7921711 0.0 20.0</gps><web_browsers /></tutorial_w_repeats>
