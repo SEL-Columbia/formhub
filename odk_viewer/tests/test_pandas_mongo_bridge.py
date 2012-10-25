@@ -511,7 +511,7 @@ class TestPandasMongoBridge(MainTestCase):
 
 
     def test_prefix_from_xpath(self):
-        xpath = "parent/child/grandhild/"
+        xpath = "parent/child/grandhild"
         prefix = get_prefix_from_xpath(xpath)
         self.assertEqual(prefix, 'parent/child/')
         xpath = "parent/child"
