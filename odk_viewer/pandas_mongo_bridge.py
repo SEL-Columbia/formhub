@@ -102,7 +102,7 @@ class AbstractDataFrameBuilder(object):
             for e in dd.get_survey_elements() if e.bind.get("type")=="select"])
 
     @classmethod
-    def _split_select_multiples(cls, record, select_multiples, prefix=None):
+    def _split_select_multiples(cls, record, select_multiples):
         """ Prefix contains the xpath and slash if we are within a repeat so that we can figure out which select multiples belong to which repeat
         """
         for key, choices in select_multiples.items():
@@ -116,12 +116,6 @@ class AbstractDataFrameBuilder(object):
                 # remove the column since we are adding separate columns
                 # for each choice
                 record.pop(key)
-            # only add if:
-            #  1. prefix is None AND key has no prefix or
-            #  2. prefix is not None and key's prefix matches this prefix
-            key_prefix = get_prefix_from_xpath(key)
-            if (prefix is None and key_prefix is None) or\
-               (prefix is not None and prefix == key_prefix):
                 # add columns to record for every choice, with default
                 # False and set to True for items in selections
                 record.update(dict([(choice, choice in selections)\
@@ -132,11 +126,9 @@ class AbstractDataFrameBuilder(object):
             for record_key, record_item in record.items():
                 if type(record_item) == list:
                     for list_item in record_item:
-                        if type(list_item) == dict and len(list_item.keys()) > 0:
-                            # figure out the prefix
-                            this_prefix = get_prefix_from_xpath(list_item.keys()[0])
+                        if type(list_item) == dict:
                             cls._split_select_multiples(list_item,
-                                select_multiples, this_prefix)
+                                select_multiples)
         return record
 
     @classmethod
