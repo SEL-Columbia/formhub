@@ -858,9 +858,3 @@ a:focus {
   visibility: hidden;
 }
 
-#getting_started {
-	width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-	font-weight: 300;
-}
