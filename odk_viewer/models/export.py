@@ -111,9 +111,10 @@ class Export(models.Model):
         return None
 
     @classmethod
-    def exports_outdated(cls, xform):
+    def exports_outdated(cls, xform, export_type):
         # get newest export for xform
-        qs = Export.objects.filter(xform=xform).order_by('-created_on')[:1]
+        qs = Export.objects.filter(xform=xform, export_type=export_type)\
+             .order_by('-created_on')[:1]
         if qs.count() > 0 and qs[0].time_of_last_submission is not None \
                 and xform.time_of_last_submission() is not None:
             export = qs[0]

@@ -131,9 +131,9 @@ def generate_export(export_type, extension, username, id_string,
     return export
 
 
-def should_create_new_export(xform):
+def should_create_new_export(xform, export_type):
     from odk_viewer.models import Export
-    if Export.objects.filter(xform=xform).count() == 0\
-            or Export.exports_outdated(xform):
+    if Export.objects.filter(xform=xform, export_type=export_type).count() == 0\
+            or Export.exports_outdated(xform, export_type=export_type):
         return True
     return False
