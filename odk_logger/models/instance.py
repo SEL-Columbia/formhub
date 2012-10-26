@@ -8,8 +8,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from .xform import XForm
 from .survey_type import SurveyType
-from odk_logger.xform_instance_parser import XFormInstanceParser,\
-         XFORM_ID_STRING, clean_and_parse_xml
+from odk_logger.xform_instance_parser import XFormInstanceParser, \
+    clean_and_parse_xml, get_uuid_from_xml
 from utils.model_tools import set_uuid
 from utils.stathat_api import stathat_count
 
@@ -18,7 +18,8 @@ class FormInactiveError(Exception):
     pass
 
 
-# need to establish id_string of the xform before we run get_dict since we now rely on data dictionary to parse the xml
+# need to establish id_string of the xform before we run get_dict since
+# we now rely on data dictionary to parse the xml
 def get_id_string_from_xml_str(xml_str):
     xml_obj = clean_and_parse_xml(xml_str)
     root_node = xml_obj.documentElement
@@ -50,14 +51,14 @@ class Instance(models.Model):
     # we will add a fourth status: submitted_via_web
     status = models.CharField(max_length=20,
                               default=u'submitted_via_web')
-    uuid = models.CharField(max_length=32, default=u'')
+    uuid = models.CharField(max_length=249, default=u'')
 
     class Meta:
         app_label = 'odk_logger'
 
     def _set_xform(self, id_string):
-        self.xform = XForm.objects.get(id_string=id_string,
-                user=self.user)
+        self.xform = XForm.objects.get(
+            id_string=id_string, user=self.user)
 
     def get_root_node_name(self):
         self._set_parser()
@@ -78,6 +79,13 @@ class Instance(models.Model):
     def _set_date(self, doc):
         self.date = None
 
+    def _set_uuid(self):
+        if self.xml and not self.uuid:
+            uuid = get_uuid_from_xml(self.xml)
+            if  uuid is not None:
+                self.uuid = uuid
+        set_uuid(self)
+
     def save(self, *args, **kwargs):
         self._set_xform(get_id_string_from_xml_str(self.xml))
         doc = self.get_dict()
@@ -86,12 +94,13 @@ class Instance(models.Model):
         self._set_start_time(doc)
         self._set_date(doc)
         self._set_survey_type(doc)
-        set_uuid(self)
+        self._set_uuid()
         super(Instance, self).save(*args, **kwargs)
 
     def _set_parser(self):
         if not hasattr(self, "_parser"):
-            self._parser = XFormInstanceParser(self.xml, self.xform.data_dictionary())
+            self._parser = XFormInstanceParser(
+                self.xml, self.xform.data_dictionary())
 
     def get_dict(self, force_new=False, flat=True):
         """Return a python object representation of this instance's XML."""
@@ -102,7 +111,8 @@ class Instance(models.Model):
             return self._parser.to_dict()
 
     @classmethod
-    def delete_by_uuid(cls, username, id_string, uuid, deleted_at=datetime.now()):
+    def delete_by_uuid(cls, username, id_string, uuid,
+                       deleted_at=datetime.now()):
         try:
             instance = cls.objects.get(
                 uuid=uuid,
@@ -130,3 +140,16 @@ def stathat_form_submission(sender, instance, created, **kwargs):
     if created:
         stathat_count('formhub-submissions')
 
+
+class InstanceHistory(models.Model):
+    class Meta:
+        app_label = 'odk_logger'
+
+    xform_instance = models.ForeignKey(
+        Instance, related_name='submission_history')
+    xml = models.TextField()
+    # old instance id
+    uuid = models.CharField(max_length=249, default=u'')
+
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
