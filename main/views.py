@@ -43,7 +43,6 @@ def home(request):
     if not submission_count:
         submission_count = Instance.objects.count()
         stat_log(GLOBAL_SUBMISSION_STATS, submission_count)
-    context.home_page = True
     context.num_forms = submission_count
     context.num_users = User.objects.count()
     context.num_shared_forms = XForm.objects.filter(shared__exact=1).count()

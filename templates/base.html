@@ -16,7 +16,7 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
     <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/screen.css" rel="stylesheet">
-	{% if not home_page %}
+	{% if user.is_authenticated %}
 	   	<link href="/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 	{% endif %}
     <link href="/static/css/iphone-btn-style.css" rel="stylesheet"> 
@@ -63,12 +63,12 @@ color: white;
 
   {% block body %}
   <body>
-	{% if home_page %}
-  		{% include "home_topbar.html" %}
-  	{% endif %}
+	{% if not user.is_authenticated %}
+		{% include "home_topbar.html" %}
+	{% endif %}
     
-  	{% if not home_page %}
-  		{% include "topbar.html"%}
+  	{% if user.is_authenticated %}
+		{% include "topbar.html"%}
   	{% endif %}
 
     <div class="container">

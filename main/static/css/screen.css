@@ -172,7 +172,7 @@ ul.inline ul.dropdown-menu {
 .dropdown-menu li > a:hover > i,
 .dropdown-menu .active > a > i,
 .dropdown-menu .active > a:hover > i {
-  background-color: #32af6e;
+  background-color: #d96e27;
 }
 .topbar {
   position: fixed;
@@ -233,7 +233,7 @@ ul.inline ul.dropdown-menu {
 .dropdown-menu li > a:hover,
 .dropdown-menu .active > a,
 .dropdown-menu .active > a:hover {
-  color: #32af6e;
+  color: #d96e27;
   background-color: transparent;
 }
 .navbar .nav .dropdown-toggle .caret,
@@ -631,11 +631,11 @@ section {
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   background-color: #006dcc;
   *background-color: #29a0eb;
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#257ab5), to(#29a0eb));
-  background-image: -webkit-linear-gradient(top, #257ab5, #29a0eb);
-  background-image: -o-linear-gradient(top, #257ab5, #29a0eb);
-  background-image: linear-gradient(to bottom, #257ab5, #29a0eb);
-  background-image: -moz-linear-gradient(top, #257ab5, #29a0eb);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(29a0eb), to(#257ab5));
+  background-image: -webkit-linear-gradient(top, #29a0eb, #257ab5);
+  background-image: -o-linear-gradient(top, #29a0eb, #257ab5);
+  background-image: linear-gradient(to bottom, #29a0eb, #257ab5);
+  background-image: -moz-linear-gradient(top, #29a0eb, #257ab5);
   background-repeat: repeat-x;
   border-color: #29a0eb #29a0eb #002a80;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
