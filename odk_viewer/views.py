@@ -246,7 +246,7 @@ def export_list(request, username, id_string, export_type):
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
 
-    if should_create_new_export(xform):
+    if should_create_new_export(xform, export_type):
         try:
             create_async_export(xform, export_type, query=None, force_xlsx=False)
         except Export.ExportTypeError:
