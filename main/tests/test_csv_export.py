@@ -47,3 +47,19 @@ class TestExport(MainTestCase):
         with open(os.path.join(self.fixture_dir, 'export.csv')) as f:
             expected_content = f.read()
         self.assertEquals(response.content, expected_content)
+
+    def test_dotted_fields_csv_export_output(self):
+        path = os.path.join(os.path.dirname(__file__), 'fixtures', 'userone',
+                'userone_with_dot_name_fields.xls')
+        self._publish_xls_file_and_set_xform(path)
+        path = os.path.join(os.path.dirname(__file__), 'fixtures', 'userone',
+                'userone_with_dot_name_fields.xml')
+        self._make_submission(path)
+        url = reverse(csv_export, kwargs={'username': self.user.username,
+                                          'id_string': self.xform.id_string})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        with open(os.path.join(os.path.dirname(__file__), 'fixtures', 'userone',
+                    'userone_with_dot_name_fields.csv')) as f:
+            expected_content = f.read()
+        self.assertEquals(response.content, expected_content)
