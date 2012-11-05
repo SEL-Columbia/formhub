@@ -41,6 +41,9 @@ from utils.user_auth import check_and_set_user, set_profile_data,\
 
 
 def home(request):
+    if request.user.username:
+        return HttpResponseRedirect(
+            reverse(profile, kwargs={'username': request.user.username}))
     context = RequestContext(request)
     submission_count = StatsCount.stats.count(GLOBAL_SUBMISSION_STATS)
     if not submission_count:
@@ -49,11 +52,7 @@ def home(request):
     context.num_forms = submission_count
     context.num_users = User.objects.count()
     context.num_shared_forms = XForm.objects.filter(shared__exact=1).count()
-    if request.user.username:
-        return HttpResponseRedirect(
-            reverse(profile, kwargs={'username': request.user.username}))
-    else:
-        return render_to_response('home.html', context_instance=context)
+    return render_to_response('home.html', context_instance=context)
 
 
 @login_required
@@ -115,7 +114,6 @@ def clone_xlsform(request, username):
 def profile(request, username):
     context = RequestContext(request)
     content_user = None
-    context.num_surveys = Instance.objects.count()
     context.form = QuickConverter()
     # xlsform submission...
     if request.method == 'POST' and request.user.is_authenticated():
@@ -160,7 +158,6 @@ def profile(request, username):
                 fsw[xf.content_object.pk] = xf.content_object
         context.forms_shared_with = list(fsw.values())
     # for any other user -> profile
-    profile, created = UserProfile.objects.get_or_create(user=content_user)
     set_profile_data(context, content_user)
     return render_to_response("profile.html", context_instance=context)
 
