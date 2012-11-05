@@ -114,7 +114,6 @@ def clone_xlsform(request, username):
 def profile(request, username):
     context = RequestContext(request)
     content_user = None
-    context.num_surveys = Instance.objects.count()
     context.form = QuickConverter()
     # xlsform submission...
     if request.method == 'POST' and request.user.is_authenticated():
@@ -159,7 +158,6 @@ def profile(request, username):
                 fsw[xf.content_object.pk] = xf.content_object
         context.forms_shared_with = list(fsw.values())
     # for any other user -> profile
-    profile, created = UserProfile.objects.get_or_create(user=content_user)
     set_profile_data(context, content_user)
     return render_to_response("profile.html", context_instance=context)
 
