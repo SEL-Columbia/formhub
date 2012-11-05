@@ -823,13 +823,19 @@ a:focus {
 
 #faq, #support{
 	width: 700px;
-  margin-left: auto;
-  margin-right: auto;
   text-align: left;
   margin-top: 50px;
   font: 15px/20px open sans, sans-serif;
   font-weight: 300;
   color: #44474a;
+}
+
+#faq .title{
+	text-align: left;
+}
+
+#support .title{
+	text-align: left;
 }
 
 #faq .question {
