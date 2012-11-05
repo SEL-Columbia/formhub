@@ -74,9 +74,9 @@ def bulksubmission(request, username):
             # TODO: log this Exception somewhere
             pass
         json_msg = {
-            'message': _(u"Submission successful. Out of %(total)d "
-                         u"survey instances, %(success)d were imported "
-                         u"(%(rejected)d were rejected--duplicates, "
+            'message': _(u"Submission complete. Out of %(total)d "
+                         u"survey instances, %(success)d were imported, "
+                         u"(%(rejected)d were rejected as duplicates, "
                          u"missing forms, etc.)") %
             {'total': total_count, 'success': success_count,
              'rejected': total_count - success_count},

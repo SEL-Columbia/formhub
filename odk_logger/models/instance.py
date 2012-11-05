@@ -12,10 +12,14 @@ from odk_logger.xform_instance_parser import XFormInstanceParser, \
     clean_and_parse_xml, get_uuid_from_xml
 from utils.model_tools import set_uuid
 from utils.stathat_api import stathat_count
+from django.utils.translation import ugettext_lazy, ugettext as _
 
 
 class FormInactiveError(Exception):
-    pass
+    def __unicode__(self):
+        return _("Form is inactive")
+    def __str__(self):
+        return unicode(self).encode('utf-8')
 
 
 # need to establish id_string of the xform before we run get_dict since
