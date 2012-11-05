@@ -20,6 +20,7 @@
     </thead>
     <tbody>
         {% for xform in crowdforms %}
+            {% with has_surveys_with_geopoints=xform.data_dictionary.has_surveys_with_geopoints %}
       <tr>
         <td>
             <a href="{% url main.views.show xform.user.username xform.id_string %}">{{ xform.title }}</a>
@@ -39,7 +40,7 @@
                   <div class="popover-inner">
                       <div class="popover-content">
                           <div class="btn-group">
-                              {% if xform.data_dictionary.has_surveys_with_geopoints %}
+                              {% if has_surveys_with_geopoints %}
                                   <a class="btn btn-flat" href="{% url odk_viewer.views.map_view user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
                                       <i class="icon-map-marker icon-large"></i>
                                   </a>
@@ -119,7 +120,7 @@
                       <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'csv' %}">{%  trans "csv" %}</a></li>
                       <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'xls' %}">{%  trans "xls" %}</a></li>
                       <li>
-                          {% if xform.data_dictionary.has_surveys_with_geopoints %}
+                          {% if has_surveys_with_geopoints %}
                               <a href="{% url odk_viewer.views.kml_export user.username xform.id_string %}">{%  trans "kml" %}</a>
                           {% endif %}
                       </li>
@@ -145,6 +146,7 @@
 	    </div>
         </td>
       </tr>
+            {% endwith %}
       {% endfor %}
     </tbody>
   </table>
