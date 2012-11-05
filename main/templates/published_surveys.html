@@ -53,7 +53,7 @@
     </thead>
     <tbody>
       {% for xform in user.xforms.all %}
-          {% with submission_count=xform.submission_count %}
+          {% with submission_count=xform.submission_count time_of_last_submission=xform.time_of_last_submission %}
       <tr>
         <td>
             <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
@@ -146,8 +146,8 @@
           {% endif %}
         </td>
         <td>
-          {% if xform.time_of_last_submission %}
-              {{ xform.time_of_last_submission|date:"N d, Y" }}
+          {% if time_of_last_submission %}
+              {{ time_of_last_submission|date:"N d, Y" }}
           {% endif %}
         </td>
         <td>{{ xform.downloadable|lower }}</td>
@@ -188,7 +188,7 @@
       {% endwith %}
       {% endfor %}
       {% for xform in forms_shared_with %}
-          {% with submission_count=xform.submission_count %}
+          {% with submission_count=xform.submission_count time_of_last_submission=xform.time_of_last_submission %}
           <tr>
               <td>
                   <a href="{% url main.views.show xform.user.username xform.id_string %}">{{ xform.title }}</a> <span class="label label-info">{% trans "Shared With You" %}</span>
@@ -282,8 +282,8 @@
                   {% endif %}
               </td>
               <td>
-                  {% if xform.time_of_last_submission %}
-                      {{ xform.time_of_last_submission|date:"N d, Y" }}
+                  {% if time_of_last_submission %}
+                      {{ time_of_last_submission|date:"N d, Y" }}
                   {% endif %}
               </td>
               <td>{{ xform.downloadable|lower }}</td>
