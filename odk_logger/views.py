@@ -316,7 +316,7 @@ def toggle_downloadable(request, username, id_string):
 
 
 def enter_data(request, username, id_string):
-    owner = User.objects.get(username=username)
+    owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, user__username=username,
                               id_string=id_string)
     if not has_edit_permission(xform, owner, request, xform.shared):
