@@ -2,11 +2,11 @@ import os
 import re
 
 from django.conf import settings
+from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db import models
-from django.db.models.query import QuerySet
 from django.db.models.signals import post_save
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy, ugettext as _
 
 from odk_logger.xform_instance_parser import XLSFormError
@@ -123,8 +123,11 @@ class XForm(models.Model):
     submission_count.short_description = ugettext_lazy("Submission Count")
 
     def time_of_last_submission(self):
-        if self.submission_count() > 0:
-            return self.surveys.order_by("-date_created")[0].date_created
+        try:
+            return self.surveys.\
+                filter(deleted_at=None).latest("date_created").date_created
+        except ObjectDoesNotExist:
+            pass
 
     @property
     def hash(self):
