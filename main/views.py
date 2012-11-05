@@ -41,6 +41,9 @@ from utils.user_auth import check_and_set_user, set_profile_data,\
 
 
 def home(request):
+    if request.user.username:
+        return HttpResponseRedirect(
+            reverse(profile, kwargs={'username': request.user.username}))
     context = RequestContext(request)
     submission_count = StatsCount.stats.count(GLOBAL_SUBMISSION_STATS)
     if not submission_count:
@@ -49,11 +52,7 @@ def home(request):
     context.num_forms = submission_count
     context.num_users = User.objects.count()
     context.num_shared_forms = XForm.objects.filter(shared__exact=1).count()
-    if request.user.username:
-        return HttpResponseRedirect(
-            reverse(profile, kwargs={'username': request.user.username}))
-    else:
-        return render_to_response('home.html', context_instance=context)
+    return render_to_response('home.html', context_instance=context)
 
 
 @login_required
