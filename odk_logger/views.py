@@ -46,10 +46,7 @@ def bulksubmission(request, username):
     # puts it in a temp directory.
     # runs "import_tools(temp_directory)"
     # deletes
-    try:
-        posting_user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        return HttpResponseBadRequest(_(u"User %s not found") % username)
+    posting_user = get_object_or_404(User, username=username)
 
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
@@ -77,9 +74,9 @@ def bulksubmission(request, username):
             # TODO: log this Exception somewhere
             pass
         json_msg = {
-            'message': _(u"Submission successful. Out of %(total)d "
-                         u"survey instances, %(success)d were imported "
-                         u"(%(rejected)d were rejected--duplicates, "
+            'message': _(u"Submission complete. Out of %(total)d "
+                         u"survey instances, %(success)d were imported, "
+                         u"(%(rejected)d were rejected as duplicates, "
                          u"missing forms, etc.)") %
             {'total': total_count, 'success': success_count,
              'rejected': total_count - success_count},

@@ -1,6 +1,7 @@
 from xml.dom import minidom
 import re
 from django.utils.encoding import smart_unicode, smart_str
+from django.utils.translation import ugettext_lazy, ugettext as _
 
 XFORM_ID_STRING = u"_xform_id_string"
 
@@ -10,23 +11,38 @@ class XLSFormError(Exception):
 
 
 class DuplicateInstance(Exception):
-    pass
+    def __unicode__(self):
+        return _("Duplicate Instance")
+    def __str__(self):
+        return unicode(self).encode('utf-8')
 
 
 class IsNotCrowdformError(Exception):
-    pass
+    def __unicode__(self):
+        return _("The form is not a crowdform")
+    def __str__(self):
+        return unicode(self).encode('utf-8')
 
 
 class InstanceInvalidUserError(Exception):
-    pass
+    def __unicode__(self):
+        return _("Could not determine the user.")
+    def __str__(self):
+        return unicode(self).encode('utf-8')
 
 
 class InstanceParseError(Exception):
-    pass
+    def __unicode__(self):
+        return _("The instance could not be parsed.")
+    def __str__(self):
+        return unicode(self).encode('utf-8')
 
 
 class InstanceEmptyError(InstanceParseError):
-    pass
+    def __unicode__(self):
+        return _("Empty instance")
+    def __str__(self):
+        return unicode(self).encode('utf-8')
 
 
 def get_uuid_from_xml(xml):
