@@ -1,5 +1,5 @@
 {% load humanize %}
-{% if user.xforms.count %}
+{% if all_forms or forms_shared_with %}
 {% load i18n %}
 
 <section id="published-forms">
@@ -22,7 +22,7 @@
 	  var tbl = $('#forms-table').dataTable({
         "bPaginate": false,
         "sPaginationType": "bootstrap",
-        "bSort": true, 
+        "bSort": true,
         "oLanguage": {"sSearch": "{% trans 'Search:' %}"},
         "oSearch": {"sSearch": ""},
         "aoColumnDefs": [
@@ -48,10 +48,12 @@
         <th>{%  trans "Data" %}</th>
         <th>{%  trans "Last Submission" %}</th>
         <th>{%  trans "Active" %}</th>
+        <th>&nbsp;</th>
       </tr>
     </thead>
     <tbody>
       {% for xform in user.xforms.all %}
+          {% with submission_count=xform.submission_count time_of_last_submission=xform.time_of_last_submission has_surveys_with_geopoints=xform.data_dictionary.has_surveys_with_geopoints %}
       <tr>
         <td>
             <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
@@ -59,7 +61,7 @@
                 <span class="label label-info">{%  trans "PUBLIC" %}</span>
             {% endif %}
         </td>
-        <td><center>{{ xform.submission_count|intcomma }}</center></td>
+        <td><center>{{ submission_count|intcomma }}</center></td>
         <td>
           <div class="dropdown horizontal-center">
               <a class="btn btn-flat" href="#" rel="clickover-btns" data-target-selector="#view-options-{{ xform.id }}" data-placement="top">
@@ -70,7 +72,7 @@
                   <div class="popover-inner">
                       <div class="popover-content">
                           <div class="btn-group">
-                              {% if xform.data_dictionary.has_surveys_with_geopoints %}
+                              {% if has_surveys_with_geopoints %}
                                   <a class="btn btn-flat" href="{% url odk_viewer.views.map_view user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
                                       <i class="icon-map-marker icon-large"></i>
                                   </a>
@@ -79,7 +81,7 @@
                                       <i class="icon-map-marker icon-large"></i>
                                   </span>
                               {% endif %}
-                              {% if xform.submission_count > 0 %}
+                              {% if submission_count > 0 %}
                                   <a class="btn btn-flat" href="{% url main.views.form_photos content_user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
                                       <i class="icon-camera icon-large"></i>
                                   </a>
@@ -92,7 +94,7 @@
                               <a class="btn btn-flat" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}" data-original-title="{% trans 'Enter Web Form' %}" rel="tooltip">
                                   <i class="icon-edit icon-large"></i>
                               </a>
-                              {% if xform.submission_count > 0 %}
+                              {% if submission_count > 0 %}
                                   <a class="btn btn-flat" href="{% url odk_viewer.views.data_view content_user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
                                       <i class="icon-data icon-large"></i>
                                   </a>
@@ -108,7 +110,7 @@
                                   </span>
                               {% endif %}
                               <!-- DELETE -->
-                              {% if xform.submission_count <= 0 and False %}
+                              {% if submission_count <= 0 and False %}
                                   <a class="btn btn-flat" data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" rel="tooltip" data-original-title="{% trans 'Delete Form' %}">
                                       <i class="icon-trash icon-large"></i>
                                   </a>
@@ -117,25 +119,10 @@
                       </div>
                   </div>
               </div>
-              {% if xform.submission_count <= 0 %}
-                  <div id="delete-{{ xform.id_string }}" class="modal hide fade">
-                      <div class="modal-header">
-                          <a data-dismiss="modal" class="close">&times;</a>
-                          <h3>{% trans "Delete Confirmation" %}</h3>
-                      </div>
-                      <div class="modal-body">
-                          <p>{% blocktrans with title=xform.title nb_sub=xform.submission_count|intcomma %}Are you sure you want to delete the form '{{ title }}'? This form has <strong>{{ nb_sub }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.{% endblocktrans %}</p>
-                      </div>
-                      <div class="modal-footer">
-                          <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn btn-primary">Delete</a>
-                          <a href="#" data-dismiss="modal" class="btn secondary">Cancel</a>
-                      </div>
-                  </div>
-              {% endif %}
           </div>
         </td>
         <td>
-          {% if xform.submission_count %}
+          {% if submission_count %}
               <div class="data-download">
                   <span class="vertical-middle">
                     <i class="icon-download icon-large"></i>
@@ -149,7 +136,7 @@
                       <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'csv' %}">{%  trans "csv" %}</a></li>
                       <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'xls' %}">{%  trans "xls" %}</a></li>
                       <li>
-                          {% if xform.data_dictionary.has_surveys_with_geopoints %}
+                          {% if has_surveys_with_geopoints %}
                               <a href="{% url odk_viewer.views.kml_export user.username xform.id_string %}">{%  trans "kml" %}</a>
                           {% endif %}
                       </li>
@@ -158,13 +145,183 @@
               </div>
           {% endif %}
         </td>
-          <td>
-              {% if xform.time_of_last_submission %}
-                  {{ xform.time_of_last_submission|date:"N d, Y" }}
-              {% endif %}
-          </td>
+        <td>
+          {% if time_of_last_submission %}
+              {{ time_of_last_submission|date:"N d, Y" }}
+          {% endif %}
+        </td>
         <td>{{ xform.downloadable|lower }}</td>
+        <td>
+          {% comment %} #todo remove once we have implemented more options  {% endcomment %}
+          {% if submission_count <= 0 %}
+          <div class="dropdown">
+            <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
+                <i class="icon-options"></i>
+            </a>
+            <ul class="dropdown-menu form-options left-arrow" role="menu" aria-labelledby="dropdownMenu">
+                {% if submission_count <= 0 %}
+                <li><a tabindex="-1" href="#delete-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Delete' %}</a></li>
+                {% endif %}
+            </ul>
+          </div>
+            {% if submission_count <= 0 %}
+                <div id="delete-{{ xform.id_string }}" class="modal hide fade">
+                    <form action="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" method="post">
+                        {% csrf_token %}
+                      <div class="modal-header">
+                          <a data-dismiss="modal" class="close">&times;</a>
+                          <h3>{% trans "Delete Confirmation" %}</h3>
+                      </div>
+                      <div class="modal-body">
+                        <p>{% blocktrans with title=xform.title nb_sub=submission_count|intcomma %}Are you sure you want to delete the form '{{ title }}'? This form has <strong>{{ nb_sub }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.{% endblocktrans %}</p>
+                      </div>
+                      <div class="modal-footer">
+                          <button class="btn btn-primary form-submit">Delete</button>
+                          <a href="#" data-dismiss="modal" class="btn secondary">Cancel</a>
+                      </div>
+                    </form>
+                </div>
+            {% endif %}
+        {% endif %}
+        </td>
       </tr>
+      {% endwith %}
+      {% endfor %}
+      {% for xform in forms_shared_with %}
+          {% with submission_count=xform.submission_count time_of_last_submission=xform.time_of_last_submission has_surveys_with_geopoints=xform.data_dictionary.has_surveys_with_geopoints %}
+          <tr>
+              <td>
+                  <a href="{% url main.views.show xform.user.username xform.id_string %}">{{ xform.title }}</a> <span class="label label-info">{% trans "Shared With You" %}</span>
+                  {% if xform.shared %}
+                      <span class="label label-info">{%  trans "PUBLIC" %}</span>
+                  {% endif %}
+
+              </td>
+              <td><center>{{ submission_count|intcomma }}</center></td>
+              <td>
+                  <div class="dropdown horizontal-center">
+                      <a class="btn btn-flat" href="#" rel="clickover-btns" data-target-selector="#view-options-{{ xform.id }}" data-placement="top">
+                          <i class="icon-view icon-large"></i>
+                      </a>
+                      <div id="view-options-{{ xform.id }}" class="popover popover-btns clickover fade">
+                          <div class="arrow"></div>
+                          <div class="popover-inner">
+                              <div class="popover-content">
+                                  <div class="btn-group">
+                                      {% if has_surveys_with_geopoints %}
+                                          <a class="btn btn-flat" href="{% url odk_viewer.views.map_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
+                                              <i class="icon-map-marker icon-large"></i>
+                                          </a>
+                                      {% else %}
+                                          <span class="btn btn-flat inactive">
+                                      <i class="icon-map-marker icon-large"></i>
+                                  </span>
+                                      {% endif %}
+                                      {% if submission_count > 0 %}
+                                          <a class="btn btn-flat" href="{% url main.views.form_photos xform.user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
+                                              <i class="icon-camera icon-large"></i>
+                                          </a>
+                                      {% else %}
+                                          <span class="btn btn-flat inactive">
+                                      <i class="icon-camera icon-large"></i>
+                                  </span>
+                                      {% endif %}
+
+                                      <a class="btn btn-flat" href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}" data-original-title="{% trans 'Enter Web Form' %}" rel="tooltip">
+                                          <i class="icon-edit icon-large"></i>
+                                      </a>
+                                      {% if submission_count > 0 %}
+                                          <a class="btn btn-flat" href="{% url odk_viewer.views.data_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
+                                              <i class="icon-data icon-large"></i>
+                                          </a>
+                                          <a class="btn btn-flat" href="{% url odk_viewer.views.instance xform.user.username xform.id_string %}" data-original-title="{% trans 'Browse Data (One by One)' %}" rel="tooltip">
+                                              <i class="icon-browse icon-large"></i>
+                                          </a>
+                                      {% else %}
+                                          <span class="btn btn-flat inactive">
+                                      <i class="icon-data icon-large"></i>
+                                  </span>
+                                          <span class="btn btn-flat inactive">
+                                      <i class="icon-browse icon-large"></i>
+                                  </span>
+                                      {% endif %}
+                                      <!-- DELETE -->
+                                      {% if submission_count <= 0 and False %}
+                                          <a class="btn btn-flat" data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" rel="tooltip" data-original-title="{% trans 'Delete Form' %}">
+                                              <i class="icon-trash icon-large"></i>
+                                          </a>
+                                      {% endif %}
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </td>
+              <td>
+                  {% if submission_count %}
+                      <div class="data-download">
+                  <span class="vertical-middle">
+                    <i class="icon-download icon-large"></i>
+                  </span>
+                  <span class="vertical-middle">
+                    <span class="download">{% trans "Download" %}</span>
+                      {% if xform.shared_data %}
+                          <span class="label label-info">{%  trans "PUBLIC" %}</span>
+                      {% endif %}
+                      <ul class="download-nav">
+                          <li><a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'csv' %}">{%  trans "csv" %}</a></li>
+                          <li><a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'xls' %}">{%  trans "xls" %}</a></li>
+                          <li>
+                              {% if has_surveys_with_geopoints %}
+                                  <a href="{% url odk_viewer.views.kml_export  xform.user.username xform.id_string %}">{%  trans "kml" %}</a>
+                              {% endif %}
+                          </li>
+                      </ul>
+                  </span>
+                      </div>
+                  {% endif %}
+              </td>
+              <td>
+                  {% if time_of_last_submission %}
+                      {{ time_of_last_submission|date:"N d, Y" }}
+                  {% endif %}
+              </td>
+              <td>{{ xform.downloadable|lower }}</td>
+              <td>
+                  {% comment %} #todo remove once we have implemented more options  {% endcomment %}
+                  {% if submission_count <= 0 %}
+                      <div class="dropdown">
+                          <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
+                              <i class="icon-options"></i>
+                          </a>
+                          <ul class="dropdown-menu form-options left-arrow" role="menu" aria-labelledby="dropdownMenu">
+                              {% if submission_count <= 0 %}
+                                  <li><a tabindex="-1" href="#delete-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Delete' %}</a></li>
+                              {% endif %}
+                          </ul>
+                      </div>
+                      {% if submission_count <= 0 %}
+                          <div id="delete-{{ xform.id_string }}" class="modal hide fade">
+                              <form action="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" method="post">
+                                  {% csrf_token %}
+                                  <div class="modal-header">
+                                      <a data-dismiss="modal" class="close">&times;</a>
+                                      <h3>{% trans "Delete Confirmation" %}</h3>
+                                  </div>
+                                  <div class="modal-body">
+                                      <p>{% blocktrans with title=xform.title nb_sub=submission_count|intcomma %}Are you sure you want to delete the form '{{ title }}'? This form has <strong>{{ nb_sub }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.{% endblocktrans %}</p>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button class="btn btn-primary form-submit">Delete</button>
+                                      <a href="#" data-dismiss="modal" class="btn secondary">Cancel</a>
+                                  </div>
+                              </form>
+                          </div>
+                      {% endif %}
+                  {% endif %}
+              </td>
+          </tr>
+          {% endwith %}
       {% endfor %}
     </tbody>
   </table>

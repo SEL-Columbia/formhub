@@ -65,4 +65,5 @@ def deploy(deployment_name, branch='master'):
     with cd(env.code_src):
         run_in_virtualenv("python manage.py migrate")
         run_in_virtualenv("python manage.py collectstatic --noinput")
+    run("sudo /etc/init.d/celeryd restart")
     run('touch %s' % env.wsgi_config_file)

@@ -508,3 +508,15 @@ class TestPandasMongoBridge(MainTestCase):
         cursor = df_builder._query_mongo(start=2, limit=2)
         records = [record for record in cursor]
         self.assertTrue(len(records), 1)
+
+
+    def test_prefix_from_xpath(self):
+        xpath = "parent/child/grandhild"
+        prefix = get_prefix_from_xpath(xpath)
+        self.assertEqual(prefix, 'parent/child/')
+        xpath = "parent/child"
+        prefix = get_prefix_from_xpath(xpath)
+        self.assertEqual(prefix, 'parent/')
+        xpath = "parent"
+        prefix = get_prefix_from_xpath(xpath)
+        self.assertTrue(prefix is None)

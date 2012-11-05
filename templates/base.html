@@ -20,7 +20,6 @@
 	   	<link href="/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 	{% endif %}
     <link href="/static/css/iphone-btn-style.css" rel="stylesheet"> 
- 
     <!-- Le javascript --> 
 	<script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
@@ -73,7 +72,7 @@ color: white;
 
     <div class="container">
       {% block message %}
-        {% if message %}
+        {% if message or messages %}
           {% include "message.html" %}
         {% endif %}
       {% endblock %}

@@ -11,6 +11,7 @@ from django.db.models.signals import post_save, pre_delete
 
 from restservice.utils import call_service
 from stats.tasks import stat_log
+from utils.decorators import apply_form_field_names
 from utils.model_tools import queryset_iterator
 from odk_logger.models import Instance
 from common_tags import START_TIME, START, END_TIME, END, ID, UUID,\
@@ -87,6 +88,7 @@ class ParsedInstance(models.Model):
         app_label = "odk_viewer"
 
     @classmethod
+    @apply_form_field_names
     def query_mongo(cls, username, id_string, query, fields, sort, start=0,
                     limit=DEFAULT_LIMIT, count=False, hide_deleted=True):
         fields_to_select = {cls.USERFORM_ID: 0}
@@ -152,9 +154,17 @@ class ParsedInstance(models.Model):
         )
         return dict_for_mongo(d)
 
-    def update_mongo(self):
+    def update_mongo(self, edit=False):
         d = self.to_dict_for_mongo()
-        xform_instances.save(d)
+        if not edit:
+            xform_instances.save(d)
+        else:
+            query = {
+                ID: self.instance.id,
+                self.USERFORM_ID: u'%s_%s' % (
+                     self.instance.user.username, self.instance.xform.id_string),
+            }
+            xform_instances.update(query, d)
 
     def to_dict(self):
         if not hasattr(self, "_dict_cache"):

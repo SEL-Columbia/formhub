@@ -2,11 +2,11 @@ import os
 import re
 
 from django.conf import settings
+from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db import models
-from django.db.models.query import QuerySet
 from django.db.models.signals import post_save
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy, ugettext as _
 
 from odk_logger.xform_instance_parser import XLSFormError
@@ -103,7 +103,12 @@ class XForm(models.Model):
 
     def save(self, *args, **kwargs):
         self._set_title()
+        old_id_string = self.id_string
         self._set_id_string()
+        # check if we have an existing id_string, if so, the one must match but only if xform is NOT new
+        if self.pk and old_id_string and old_id_string != self.id_string:
+            raise XLSFormError(_(u"Your updated form's id_string '%s' must match the existing forms' id_string '%s'." %
+                                 (self.id_string, old_id_string) ))
         if getattr(settings, 'STRICT', True) and \
                 not re.search(r"^[\w-]+$", self.id_string):
             raise XLSFormError(_(u'In strict mode, the XForm ID must be a '
@@ -118,12 +123,19 @@ class XForm(models.Model):
     submission_count.short_description = ugettext_lazy("Submission Count")
 
     def time_of_last_submission(self):
-        if self.submission_count() > 0:
-            return self.surveys.order_by("-date_created")[0].date_created
+        try:
+            return self.surveys.\
+                filter(deleted_at=None).latest("date_created").date_created
+        except ObjectDoesNotExist:
+            pass
 
     @property
     def hash(self):
         return u'%s' % md5(self.xml.encode('utf8')).hexdigest()
+
+    @property
+    def can_be_replaced(self):
+        return self.submission_count() == 0
 
 
 def stats_forms_created(sender, instance, created, **kwargs):

@@ -1,3 +1,4 @@
+{% if message %}
 <div class="row">
     <div class="span12">
         <div class="alert alert-block {{ message.type }} fade in">
@@ -6,3 +7,15 @@
         </div>
     </div>
 </div>
+{% else %} {% if messages %}
+<div class="row">
+    <div class="span12">
+        {% for message in messages %}
+        <div class="alert alert-block {{ message.tags}} fade in">
+            <a class="close" href="#" data-dismiss="alert">×</a>
+            <p>{{ message|safe }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}{% endif %}

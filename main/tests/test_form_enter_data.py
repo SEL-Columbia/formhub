@@ -130,3 +130,11 @@ class TestFormEnterData(MainTestCase):
         status_code = 302 if self._running_enketo() else 403
         self.assertEqual(response.status_code, status_code)
 
+
+    def test_enter_data_non_existent_user(self):
+        url = reverse(enter_data, kwargs={
+            'username': 'nonexistentuser',
+            'id_string': self.xform.id_string
+        })
+        response = self.anon.get(url)
+        self.assertEqual(response.status_code, 404)

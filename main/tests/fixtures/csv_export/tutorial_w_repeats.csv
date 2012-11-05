@@ -1,0 +1,2 @@
+name,age,picture,has_children,children[1]/childs_age,children[1]/childs_name,children[2]/childs_age,children[2]/childs_name,gps,_gps_latitude,_gps_longitude,_gps_altitude,_gps_precision,web_browsers/firefox,web_browsers/chrome,web_browsers/ie,web_browsers/safari
+Bob,25,n/a,1,12,Tom,5,Dick,-1.2625621 36.7921711 0.0 20.0,-1.2625621,36.7921711,0.0,20.0,n/a,n/a,n/a,n/a

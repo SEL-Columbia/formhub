@@ -22,13 +22,14 @@ from pyxform.errors import PyXFormError
 
 from odk_logger.models import Attachment
 from odk_logger.models import Instance
-from odk_viewer.models import ParsedInstance
-from odk_logger.models import SurveyType
+from odk_logger.models.instance import InstanceHistory
 from odk_logger.models import XForm
 from odk_logger.models.xform import XLSFormError
-from odk_logger.xform_instance_parser import InstanceParseError,\
-     InstanceInvalidUserError, IsNotCrowdformError, DuplicateInstance
-from utils.viewer_tools import get_path
+from odk_logger.xform_instance_parser import InstanceInvalidUserError, \
+    IsNotCrowdformError, DuplicateInstance, clean_and_parse_xml, \
+    get_uuid_from_xml, get_deprecated_uuid_from_xml
+
+from odk_viewer.models import ParsedInstance, DataDictionary
 
 
 OPEN_ROSA_VERSION_HEADER = 'X-OpenRosa-Version'
@@ -38,12 +39,12 @@ DEFAULT_CONTENT_TYPE = 'text/xml; charset=utf-8'
 DEFAULT_CONTENT_LENGTH = 5000000
 
 uuid_regex = re.compile(r'<formhub><uuid>([^<]+)</uuid></formhub>',
-    re.DOTALL)
+                        re.DOTALL)
 
 
 @transaction.commit_on_success
 def create_instance(username, xml_file, media_files,
-        status=u'submitted_via_web', uuid=None):
+                    status=u'submitted_via_web', uuid=None):
     """
     I used to check if this file had been submitted already, I've
     taken this out because it was too slow. Now we're going to create
@@ -77,15 +78,16 @@ def create_instance(username, xml_file, media_files,
             xform = XForm.objects.get(uuid=uuid)
             xform_username = xform.user.username
 
-            if xform_username != username and not xform.is_crowd_form and not is_touchform:
+            if xform_username != username and not xform.is_crowd_form \
+                    and not is_touchform:
                 raise IsNotCrowdformError()
 
             username = xform_username
     # else, since we have a username, the Instance creation logic will handle checking for the forms existence by its id_string
 
     user = get_object_or_404(User, username=username)
-    existing_instance_count = Instance.objects.filter(xml=xml,
-        user=user).count()
+    existing_instance_count = Instance.objects.filter(
+        xml=xml, user=user).count()
 
     if existing_instance_count == 0:
         proceed_to_create_instance = True
@@ -102,13 +104,34 @@ def create_instance(username, xml_file, media_files,
             proceed_to_create_instance = False
             raise DuplicateInstance()
 
+    # get new and depracated uuid's
+    new_uuid = get_uuid_from_xml(xml)
+    duplicate_instances = Instance.objects.filter(uuid=new_uuid)
+    if duplicate_instances:
+        raise DuplicateInstance()
+
     if proceed_to_create_instance:
-        instance = Instance.objects.create(xml=xml, user=user, status=status)
+        # check if its an edit submission
+        old_uuid = get_deprecated_uuid_from_xml(xml)
+        instances = Instance.objects.filter(uuid=old_uuid)
+        if instances:
+            instance = instances[0]
+            InstanceHistory.objects.create(
+                xml=instance.xml, xform_instance=instance, uuid=old_uuid)
+            instance.xml = xml
+            instance.uuid = new_uuid
+            instance.save()
+        else:
+            # new submission
+            instance = Instance.objects.create(
+                xml=xml, user=user, status=status)
         for f in media_files:
             Attachment.objects.get_or_create(instance=instance, media_file=f)
         if instance.xform is not None:
             pi, created = ParsedInstance.objects.get_or_create(
-                    instance=instance)
+                instance=instance)
+            if not created:
+                pi.update_mongo(edit=True)
         return instance
     return None
 
@@ -116,8 +139,8 @@ def create_instance(username, xml_file, media_files,
 def report_exception(subject, info, exc_info=None):
     if exc_info:
         cls, err = exc_info[:2]
-        info += _(u"Exception in request: %(class)s: %(error)s") \
-                % {'class': cls.__name__, 'error': err}
+        info += _(u"Exception in request: %(class)s: %(error)s")\
+            % {'class': cls.__name__, 'error': err}
         info += u"".join(traceback.format_exception(*exc_info))
 
     if settings.DEBUG or settings.TESTING_MODE:
@@ -134,10 +157,10 @@ def round_down_geopoint(num):
     return None
 
 
-def response_with_mimetype_and_name(mimetype, name, extension=None,
-    show_date=True, file_path=None, use_local_filesystem=False,
-    full_mime=False):
-    if extension == None:
+def response_with_mimetype_and_name(
+        mimetype, name, extension=None, show_date=True, file_path=None,
+        use_local_filesystem=False, full_mime=False):
+    if extension is None:
         extension = mimetype
     if not full_mime:
         mimetype = "application/%s" % mimetype
@@ -153,13 +176,13 @@ def response_with_mimetype_and_name(mimetype, name, extension=None,
             response['Content-Length'] = os.path.getsize(file_path)
     else:
         response = HttpResponse(mimetype=mimetype)
-    response['Content-Disposition'] = disposition_ext_and_date(name, extension,
-            show_date)
+    response['Content-Disposition'] = disposition_ext_and_date(
+        name, extension, show_date)
     return response
 
 
 def disposition_ext_and_date(name, extension, show_date=True):
-    if name == None:
+    if name is None:
         return 'attachment;'
     if show_date:
         name = "%s_%s" % (name, date.today().strftime("%Y_%m_%d"))
@@ -210,9 +233,28 @@ def publish_form(callback):
             'text': _('Form validation timeout, please try again.'),
         }
 
+def publish_xls_form(xls_file, user, id_string=None):
+    """
+    Creates or updates a DataDictionary with supplied xls_file, user and optional id_string - if updating
+    """
+    # get or create DataDictionary based on user and id string
+    if id_string:
+        dd = DataDictionary.objects.get(user=user,
+            id_string=id_string)
+        dd.xls = xls_file
+        dd.save()
+        return dd
+    else:
+        return DataDictionary.objects.create(
+            user=user,
+            xls=xls_file
+        )
+
+
 
 class OpenRosaResponse(HttpResponse):
     status_code = 201
+
     def __init__(self, *args, **kwargs):
         super(OpenRosaResponse, self).__init__(*args, **kwargs)
 
@@ -239,3 +281,18 @@ class OpenRosaResponseBadRequest(OpenRosaResponse):
 
 class OpenRosaResponseNotAllowed(OpenRosaResponse):
     status_code = 405
+
+
+def inject_instanceid(instance):
+    if get_uuid_from_xml(instance.xml) is None:
+        xml = clean_and_parse_xml(instance.xml)
+        children = xml.childNodes
+        # insert meta and instanceID
+        text_node = xml.createTextNode(u"uuid:%s" % instance.uuid)
+        instanceid_tag = xml.createElement("instanceID")
+        instanceid_tag.appendChild(text_node)
+        meta_tag = xml.createElement("meta")
+        meta_tag.appendChild(instanceid_tag)
+        xml.documentElement.appendChild(meta_tag)
+        return xml.toxml()
+    return instance.xml
