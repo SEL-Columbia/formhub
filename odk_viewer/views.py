@@ -1,7 +1,4 @@
-from collections import defaultdict
-from datetime import date
 import json
-from django.views.decorators.http import require_POST
 import os
 import urllib2
 import zipfile
@@ -9,10 +6,8 @@ from tempfile import NamedTemporaryFile
 from time import strftime, strptime
 from urlparse import urlparse
 
-from django.conf import settings
-from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User
-from django.core.files.storage import get_storage_class
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseForbidden,\
     HttpResponseRedirect, HttpResponseNotFound, HttpResponseBadRequest,\
@@ -21,23 +16,18 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.utils import simplejson
-from pyxform import Section, Question
 
 from main.models import UserProfile, MetaData, TokenStorageModel
-from odk_logger.models import XForm, Instance, Attachment
+from odk_logger.models import XForm, Attachment
 from odk_logger.views import download_jsonform
-from odk_logger.xform_instance_parser import xform_instance_to_dict
 from odk_viewer.models import DataDictionary, ParsedInstance
-from pyxform import Section, Question
-from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder,\
-    CSVDataFrameBuilder, NoRecordsFoundError
-from csv_writer import CsvWriter
+from odk_viewer.pandas_mongo_bridge import NoRecordsFoundError
 from utils.image_tools import image_url
 from xls_writer import XlsWriter
 from utils.logger_tools import response_with_mimetype_and_name,\
     disposition_ext_and_date, round_down_geopoint
 from utils.viewer_tools import image_urls, image_urls_for_form
-from odk_viewer.tasks import create_xls_export, create_csv_export, create_async_export
+from odk_viewer.tasks import create_async_export
 from utils.user_auth import has_permission, get_xform_and_perms
 from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
@@ -73,7 +63,7 @@ def dd_for_params(id_string, owner, request):
         except ValueError:
             # bad format
             return [False,
-                    HttpReponseBadRequest(
+                    HttpResponseBadRequest(
                         _(u'End time format must be YY_MM_DD_hh_mm_ss'))
                     ]
         dd.surveys_for_export = \
@@ -177,8 +167,8 @@ def csv_export(request, username, id_string):
     ext = Export.CSV_EXPORT
 
     try:
-        export = generate_export(Export.CSV_EXPORT, ext, username, id_string,
-            None, query)
+        export = generate_export(
+            Export.CSV_EXPORT, ext, username, id_string, None, query)
     except NoRecordsFoundError:
         return HttpResponse(_("No records found to export"))
     else:
@@ -199,12 +189,13 @@ def xls_export(request, username, id_string):
     force_xlsx = request.GET.get('xlsx') == 'true'
     ext = 'xls' if not force_xlsx else 'xlsx'
     try:
-        export = generate_export(Export.XLS_EXPORT, ext, username, id_string,
-            None, query)
+        export = generate_export(
+            Export.XLS_EXPORT, ext, username, id_string, None, query)
     except NoRecordsFoundError:
         return HttpResponse(_("No records found to export"))
     else:
-        # get extension from file_path, exporter could modify to xlsx if it exceeds limits
+        # get extension from file_path, exporter could modify to
+        # xlsx if it exceeds limits
         path, ext = os.path.splitext(export.filename)
         ext = ext[1:]
         if request.GET.get('raw'):
@@ -228,15 +219,16 @@ def create_export(request, username, id_string, export_type):
     try:
         create_async_export(xform, export_type, query, force_xlsx)
     except Export.ExportTypeError:
-        return HttpResponseBadRequest(_("%s is not a valid export type" % export_type))
+        return HttpResponseBadRequest(
+            _("%s is not a valid export type" % export_type))
     else:
-        return HttpResponseRedirect(
-            reverse(export_list,
-                kwargs={"username": username,
-                        "id_string": id_string,
-                        "export_type": export_type
-                }
-            )
+        return HttpResponseRedirect(reverse(
+            export_list,
+            kwargs={
+                "username": username,
+                "id_string": id_string,
+                "export_type": export_type
+            })
         )
 
 
@@ -248,9 +240,11 @@ def export_list(request, username, id_string, export_type):
 
     if should_create_new_export(xform, export_type):
         try:
-            create_async_export(xform, export_type, query=None, force_xlsx=False)
+            create_async_export(
+                xform, export_type, query=None, force_xlsx=False)
         except Export.ExportTypeError:
-            return HttpResponseBadRequest(_("%s is not a valid export type" % export_type))
+            return HttpResponseBadRequest(
+                _("%s is not a valid export type" % export_type))
 
     context = RequestContext(request)
     context.username = owner.username
@@ -291,11 +285,13 @@ def export_progress(request, username, id_string, export_type):
             })
             status['filename'] = export.filename
         # mark as complete if it either failed or succeeded but NOT pending
-        if export.status == Export.SUCCESSFUL or export.status == Export.FAILED:
+        if export.status == Export.SUCCESSFUL \
+                or export.status == Export.FAILED:
             status['complete'] = True
         statuses.append(status)
 
-    return HttpResponse(simplejson.dumps(statuses), mimetype='application/json')
+    return HttpResponse(
+        simplejson.dumps(statuses), mimetype='application/json')
 
 
 def export_download(request, username, id_string, export_type, filename):
@@ -312,8 +308,9 @@ def export_download(request, username, id_string, export_type, filename):
     if request.GET.get('raw'):
         id_string = None
     basename = os.path.splitext(export.filename)[0]
-    response = response_with_mimetype_and_name(mime_type,
-        name=basename, extension=ext, file_path=export.filepath, show_date=False)
+    response = response_with_mimetype_and_name(
+        mime_type, name=basename, extension=ext,
+        file_path=export.filepath, show_date=False)
     return response
 
 
@@ -330,14 +327,13 @@ def delete_export(request, username, id_string, export_type):
     export = get_object_or_404(Export, id=export_id)
 
     export.delete()
-    return HttpResponseRedirect(
-        reverse(export_list,
-            kwargs={"username": username,
-                    "id_string": id_string,
-                    "export_type": export_type
-            }
-        )
-    )
+    return HttpResponseRedirect(reverse(
+        export_list,
+        kwargs={
+            "username": username,
+            "id_string": id_string,
+            "export_type": export_type
+        }))
 
 
 def zip_export(request, username, id_string):
@@ -432,13 +428,13 @@ def google_xls_export(request, username, id_string):
         except TokenStorageModel.DoesNotExist:
             pass
         else:
-          token = ts.token
+            token = ts.token
     elif request.session.get('access_token'):
         token = request.session.get('access_token')
     if token is None:
-        request.session["google_redirect_url"] =  reverse(google_xls_export,
-                kwargs={'username': username,
-                      'id_string': id_string})
+        request.session["google_redirect_url"] = reverse(
+            google_xls_export,
+            kwargs={'username': username, 'id_string': id_string})
         return HttpResponseRedirect(redirect_uri)
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
