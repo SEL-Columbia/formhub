@@ -55,7 +55,7 @@ body {
 #forms-table a,
 #crowdforms-table a,
 #sharedforms-table a {
-  font-weight: bold;
+  font-weight: 600;
 }
 .bordered {
   -webkit-border-radius: 5px;
@@ -941,5 +941,9 @@ a:focus {
 
 .alert-success a {
   color: #4169e1;
+}
+
+#profile img{
+	display: inline-block;
 }
 

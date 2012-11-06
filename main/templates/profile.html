@@ -12,7 +12,7 @@
          {% if is_owner and not profile.gravatar_exists %}
              <a style="display: inline-block;" title="{% trans 'Click to change your avatar' %}" href="https://secure.gravatar.com/site/login" id="gravatar">
          {% endif %}
-         <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' />
+         <img src='{{ profile.gravatar }}' alt='gravatar' width='60' height='60' />
          {% if is_owner and not profile.gravatar_exists %}
             <span class="small-link">{% trans "change" %}</span>
             </a>
