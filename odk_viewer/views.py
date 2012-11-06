@@ -31,7 +31,6 @@ from odk_viewer.tasks import create_async_export
 from utils.user_auth import has_permission, get_xform_and_perms
 from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
-from main.views import api as mongo_api_view
 from odk_viewer.models import Export
 from utils.export_tools import generate_export, should_create_new_export
 from utils.viewer_tools import export_def_from_filename
@@ -118,7 +117,7 @@ def map_view(request, username, id_string):
     context.jsonform_url = reverse(download_jsonform,
                                    kwargs={"username": username,
                                            "id_string": id_string})
-    context.mongo_api_url = reverse(mongo_api_view,
+    context.mongo_api_url = reverse('mongo_view_api',
                                     kwargs={"username": username,
                                             "id_string": id_string})
     context.mapbox_layer = MetaData.mapbox_layer_upload(xform)
@@ -461,7 +460,7 @@ def data_view(request, username, id_string):
         return HttpResponseForbidden(_(u'Not shared.'))
 
     context = RequestContext(request)
-    context.mongo_api_url = reverse(mongo_api_view,
+    context.mongo_api_url = reverse('mongo_view_api',
                                     kwargs={"username": username,
                                             "id_string": id_string})
     context.jsonform_url = reverse(download_jsonform,
