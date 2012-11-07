@@ -60,3 +60,11 @@ class TestImportingDatabase(MainTestCase):
         # by 1 (or 2) based on the b1 & b2 data sets
         self.assertEqual(instance_count, 2)
 
+    def test_badzipfile_import(self):
+        total, success, errors = import_instances_from_zip(
+            os.path.join(
+                CUR_DIR, "Water_Translated_2011_03_10.xml"), self.user)
+        self.assertEqual(total, 0)
+        self.assertEqual(success, 0)
+        expected_errors = [u'File is not a zip file']
+        self.assertEqual(errors, expected_errors)

@@ -113,6 +113,9 @@ def import_instances_from_zip(zipfile_path, user, status="zip"):
             else:
                 return 0
         total_count, success_count, errors = iterate_through_odk_instances(temp_directory, callback)
+    except zipfile.BadZipfile, e:
+        errors = [u"%s" % e]
+        return 0, 0, errors
     finally:
         shutil.rmtree(temp_directory)
     return (total_count, success_count, errors)
