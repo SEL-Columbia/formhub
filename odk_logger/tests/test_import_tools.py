@@ -14,25 +14,29 @@ from django.conf import settings
 
 
 def images_count(username="bob"):
-    images = glob.glob(os.path.join(settings.MEDIA_ROOT, username, 'attachments', '*'))
+    images = glob.glob(
+        os.path.join(settings.MEDIA_ROOT, username, 'attachments', '*'))
     return len(images)
 
 
 class TestImportingDatabase(MainTestCase):
+
     def setUp(self):
         MainTestCase.setUp(self)
         self._publish_xls_file(
-                               os.path.join(settings.PROJECT_ROOT, \
-                                    "odk_logger", "fixtures", "test_forms", "tutorial.xls"))
-    
+            os.path.join(
+                settings.PROJECT_ROOT,
+                "odk_logger", "fixtures", "test_forms", "tutorial.xls"))
+
     def tearDown(self):
         # delete everything we imported
-        Instance.objects.all().delete() # ?
+        Instance.objects.all().delete()  # ?
         if settings.TESTING_MODE:
-            images = glob.glob(os.path.join(settings.MEDIA_ROOT, 'attachments', '*'))
+            images = glob.glob(
+                os.path.join(settings.MEDIA_ROOT, 'attachments', '*'))
             for image in images:
                 os.remove(image)
-    
+
     def test_importing_b1_and_b2(self):
         """
         b1 and b2 are from the *same phone* at different times. (this
@@ -47,7 +51,8 @@ class TestImportingDatabase(MainTestCase):
         1 simple survey (marked as complete)
         """
         # import from sd card
-        import_instances_from_zip(os.path.join(DB_FIXTURES_PATH, "bulk_submission.zip"), self.user)
+        import_instances_from_zip(os.path.join(
+            DB_FIXTURES_PATH, "bulk_submission.zip"), self.user)
 
         instance_count = Instance.objects.count()
         image_count = images_count()
@@ -60,3 +65,11 @@ class TestImportingDatabase(MainTestCase):
         # by 1 (or 2) based on the b1 & b2 data sets
         self.assertEqual(instance_count, 2)
 
+    def test_badzipfile_import(self):
+        total, success, errors = import_instances_from_zip(
+            os.path.join(
+                CUR_DIR, "Water_Translated_2011_03_10.xml"), self.user)
+        self.assertEqual(total, 0)
+        self.assertEqual(success, 0)
+        expected_errors = [u'File is not a zip file']
+        self.assertEqual(errors, expected_errors)

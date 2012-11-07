@@ -1,13 +1,14 @@
 import os
-from django.core.management.base import CommandError
 from django.core.management import call_command
 from main.tests.test_base import MainTestCase
 from odk_logger.models.xform import XForm
 
+
 class TestPublishXLS(MainTestCase):
 
     def test_publish_xls(self):
-        xls_file_path = os.path.join(self.this_directory, "fixtures",
+        xls_file_path = os.path.join(
+            self.this_directory, "fixtures",
             "transportation", "transportation.xls")
         count = XForm.objects.count()
         call_command('publish_xls', xls_file_path, self.user.username)
@@ -15,12 +16,14 @@ class TestPublishXLS(MainTestCase):
 
     def test_publish_xls_replacement(self):
         count = XForm.objects.count()
-        xls_file_path = os.path.join(self.this_directory, "fixtures",
+        xls_file_path = os.path.join(
+            self.this_directory, "fixtures",
             "transportation", "transportation.xls")
         call_command('publish_xls', xls_file_path, self.user.username)
         self.assertEqual(XForm.objects.count(), count + 1)
         count = XForm.objects.count()
-        xls_file_path = os.path.join(self.this_directory, "fixtures",
+        xls_file_path = os.path.join(
+            self.this_directory, "fixtures",
             "transportation", "transportation_updated.xls")
         # call command without replace param
         failed = False
@@ -30,8 +33,8 @@ class TestPublishXLS(MainTestCase):
             failed = True
         self.assertTrue(failed)
         # now we call the command with the replace param
-        call_command('publish_xls', xls_file_path, self.user.username,
-            replace=True)
+        call_command(
+            'publish_xls', xls_file_path, self.user.username, replace=True)
         # count should remain the same
         self.assertEqual(XForm.objects.count(), count)
         # check if the extra field has been added
