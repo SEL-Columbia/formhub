@@ -3,6 +3,7 @@ from django.core.management import call_command
 from main.tests.test_base import MainTestCase
 from odk_logger.models import Instance
 
+
 class CommandSyncDeletedTests(MainTestCase):
 
     def setUp(self):
