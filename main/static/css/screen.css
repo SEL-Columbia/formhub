@@ -753,7 +753,6 @@ img.right{
 img {
 	margin-left: auto;
 	margin-right: auto;
-	display: block;
 }
 
 .navigation {
@@ -941,9 +940,5 @@ a:focus {
 
 .alert-success a {
   color: #4169e1;
-}
-
-#profile img{
-	display: inline-block;
 }
 
