@@ -44,7 +44,7 @@ urlpatterns = patterns('',
 
     # form specific
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)$', 'main.views.show'),
-    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/api$', 'main.views.api'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/api$', 'main.views.api', name='mongo_view_api'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/public_api$', 'main.views.public_api', name='public_api'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/delete_api$', 'main.views.delete_data'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/edit$', 'main.views.edit'),
