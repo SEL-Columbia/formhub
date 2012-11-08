@@ -683,8 +683,19 @@ section {
 #main-display .caption {
 	margin-top: 10%;
 }
-#main-display .caption #sign-up {padding: 15px; text-shadow: 1px 1px #000;}
+#main-display .caption #sign-up {
+	padding: 15px;
+	text-shadow: 0px 1px 0px #000000;
+	        filter: dropshadow(color=#000000, offx=0, offy=1);
+}
 
+#main-display .caption #sign-up em {
+	font-weight: 300;
+}
+
+#main-display .caption #sign-up strong {
+	font-weight: 600;
+}
 #login_btn, #main-display .btn-info {
   color: #ffffff;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -703,15 +714,15 @@ section {
 }
 
 #main-display .btn-info{
-	-webkit-box-shadow: 3px 2px 8px rgba(50, 50, 50, 0.4);
-	-moz-box-shadow:    3px 2px 8px rgba(50, 50, 50, 0.4);
-	box-shadow:         3px 2px 8px rgba(50, 50, 50, 0.4);
+	-webkit-box-shadow: 0px 1px 4px rgba(50, 50, 50, 0.98);
+	-moz-box-shadow:    0px 1px 4px rgba(50, 50, 50, 0.98);
+	box-shadow:         0px 1px 4px rgba(50, 50, 50, 0.98);
 }
 
 #main-display a:link {color : #fff; text-decoration: none;}
 
 #main-display a:visited, a:active, a:hover { color: #fff; text-decoration:none;}
- 
+
 .formhub-stat {
 	margin-top: 50px;
 	padding-bottom: 30px;
@@ -804,7 +815,7 @@ a:hover {text-decoration: none; color:#b65d22;}
   width: 300px;
   height: 165px;
   text-align: center;
-  
+
 }
 #section_features .bottom-text .featurehead {
   font: 16px/1 open sans, sans-serif;
@@ -925,7 +936,7 @@ a:focus {
 	padding-bottom: 10px;
 }
 
-#support p { 
+#support p {
 	margin-bottom: 10px;
 }
 #support .explanation {
