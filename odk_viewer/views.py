@@ -478,12 +478,18 @@ def attachment_url(request, size='medium'):
         return HttpResponseNotFound(_(u'Attachment not found'))
     attachment = result[0]
 
-    media_url = image_url(attachment, size)
-    if size == 'original':
-        return render_to_response("image.html", {'image': media_url})
-    if media_url is None:
-        return HttpResponseNotFound(_(u'Attachment not found'))
-    return redirect(media_url)
+    try:
+        media_url = image_url(attachment, size)
+    except:
+        # TODO: log this somewhere
+        # image not found, 404, S3ResponseError timeouts
+        pass
+    else:
+        if media_url:
+            if size == 'original':
+                return render_to_response("image.html", {'image': media_url})
+            return redirect(media_url)
+    return HttpResponseNotFound(_(u'Attachment not found'))
 
 
 def instance(request, username, id_string):
