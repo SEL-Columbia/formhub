@@ -888,11 +888,7 @@ a:focus {
   color: #44474a;
 }
 
-#faq .title{
-	text-align: left;
-}
-
-#support .title{
+#faq .title, #support .title{
 	text-align: left;
 }
 
@@ -926,15 +922,13 @@ a:focus {
 	font-size: 22px;
 	font-weight:500;
 	color: #2798E1;
-	padding-top: 30px;
 	padding-bottom: 10px;
 }
 
 #support p { 
 	margin-bottom: 10px;
 }
-
-#support {
+#support .explanation {
 	padding-bottom: 30px;
 }
 
