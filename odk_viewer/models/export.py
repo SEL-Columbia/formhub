@@ -4,6 +4,7 @@ from celery.result import AsyncResult
 from django.core.files.storage import get_storage_class
 from django.db.models.signals import post_delete
 from odk_logger.models import XForm
+from django.utils.translation import ugettext_lazy, ugettext as _
 
 
 def export_delete_callback(sender, **kwargs):
@@ -14,7 +15,10 @@ def export_delete_callback(sender, **kwargs):
 
 class Export(models.Model):
     class ExportTypeError(Exception):
-        pass
+        def __unicode__(self):
+            return _(u"Invalid export type specified")
+        def __str__(self):
+            return unicode(self).encode('utf-8')
 
     XLS_EXPORT = 'xls'
     CSV_EXPORT = 'csv'
@@ -56,6 +60,7 @@ class Export(models.Model):
 
     class Meta:
         app_label = "odk_viewer"
+        unique_together = (("xform", "filename"),)
 
     def save(self, *args, **kwargs):
         if not self.pk and self.xform:
@@ -124,5 +129,10 @@ class Export(models.Model):
                    xform.time_of_last_submission()
         # return true if we can't determine the status, to force auto-generation
         return True
+
+    @classmethod
+    def is_filename_unique(cls, xform, filename):
+        return Export.objects.filter(xform=xform,
+            filename=filename).count() == 0
 
 post_delete.connect(export_delete_callback, sender=Export)
