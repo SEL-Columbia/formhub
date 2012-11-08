@@ -21,12 +21,7 @@
 	   	<link href="/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 	{% endif %}
 	{% if not user.is_authenticated %}
-		<style type="text/css">
-		body {
-			background-image: url("../static/css/images/background.jpg");
-			background-repeat: repeat;
-		}
-		</style>
+		<link href="/static/css/bg.css" rel="stylesheet">
 	{% endif %}
     <link href="/static/css/iphone-btn-style.css" rel="stylesheet">
     <!-- Le javascript -->
