@@ -4,10 +4,11 @@ Made for formhub.org, which mostly uses bootstrap for css.
 This is for all the extra things it needs beyond what bootstrap provides.
 */
 
-body {
-	background-image: url("images/background.jpg");
-	background-repeat: repeat;
-}
+//body {
+//	background-image: url("images/background.jpg");
+//	background-repeat: repeat;
+//}
+
 
 .clearfix {
   *zoom: 1;
