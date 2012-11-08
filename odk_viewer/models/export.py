@@ -60,6 +60,7 @@ class Export(models.Model):
 
     class Meta:
         app_label = "odk_viewer"
+        unique_together = (("xform", "filename"),)
 
     def save(self, *args, **kwargs):
         if not self.pk and self.xform:
@@ -128,5 +129,10 @@ class Export(models.Model):
                    xform.time_of_last_submission()
         # return true if we can't determine the status, to force auto-generation
         return True
+
+    @classmethod
+    def is_filename_unique(cls, xform, filename):
+        return Export.objects.filter(xform=xform,
+            filename=filename).count() == 0
 
 post_delete.connect(export_delete_callback, sender=Export)

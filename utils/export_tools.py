@@ -3,6 +3,7 @@ from datetime import datetime
 from django.core.files.base import File
 from django.core.files.temp import NamedTemporaryFile
 from django.core.files.storage import get_storage_class
+import re
 from odk_logger.models import XForm
 
 
@@ -104,15 +105,20 @@ def generate_export(export_type, extension, username, id_string,
 
     temp_file = NamedTemporaryFile(suffix=("." + extension))
     df_builder.export_to(temp_file.name)
-    basename = "%s_%s.%s" % (id_string,
-                             datetime.now().strftime("%Y_%m_%d_%H_%M_%S"),
-                             extension)
+    basename = "%s_%s" % (id_string,
+                             datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+    filename = basename + "." + extension
+
+    # check filename is unique
+    while not Export.is_filename_unique(xform, filename):
+        filename = increment_index_in_filename(filename)
+
     file_path = os.path.join(
         username,
         'exports',
         id_string,
         export_type,
-        basename)
+        filename)
 
     # TODO: if s3 storage, make private - how will we protect local storage??
     storage = get_storage_class()()
@@ -137,3 +143,21 @@ def should_create_new_export(xform, export_type):
             or Export.exports_outdated(xform, export_type=export_type):
         return True
     return False
+
+def increment_index_in_filename(filename):
+    """
+    filename should be in the form file.ext or file-2.ext - we check for the dash and index and increment appropriately
+    """
+    # check for an index i.e. dash then number then dot extension
+    regex = re.compile(r"(.+?)\-(\d+)(\..+)")
+    match = regex.match(filename)
+    if match:
+        basename = match.groups()[0]
+        index = int(match.groups()[1]) + 1
+        ext = match.groups()[2]
+    else:
+        index = 1
+        # split filename from ext
+        basename, ext = os.path.splitext(filename)
+    new_filename = "%s-%d%s" % (basename, index, ext)
+    return new_filename

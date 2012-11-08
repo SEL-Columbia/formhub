@@ -1,15 +1,16 @@
+from sys import stdout
 import os
 import datetime
 import json
 from django.conf import settings
 from main.tests.test_base import MainTestCase
 from django.core.urlresolvers import reverse
-from odk_viewer.tasks import create_xls_export
+from odk_viewer.tasks import create_xls_export, create_csv_export
 from odk_viewer.xls_writer import XlsWriter
 from odk_viewer.views import csv_export, xls_export, delete_export,\
     export_list, create_export, export_progress
 from odk_viewer.models import Export
-from utils.export_tools import generate_export
+from utils.export_tools import generate_export, increment_index_in_filename
 
 class TestExports(MainTestCase):
     def setUp(self):
@@ -275,3 +276,34 @@ class TestExports(MainTestCase):
         })
         response = self.client.post(create_export_url)
         self.assertEqual(response.status_code, 400)
+
+    def test_add_index_to_filename(self):
+        filename = "file_name-123f.txt"
+        new_filename = increment_index_in_filename(filename)
+        expected_filename = "file_name-123f-1.txt"
+        self.assertEqual(new_filename, expected_filename)
+
+        # test file that already has an index
+        filename = "file_name-123.txt"
+        new_filename = increment_index_in_filename(filename)
+        expected_filename = "file_name-124.txt"
+        self.assertEqual(new_filename, expected_filename)
+
+    def test_duplicate_export_filename_is_renamed(self):
+        self._publish_transportation_form()
+        self._submit_transport_instance()
+        # create an export object in the db
+        # TODO: only works if the time we time we generate the basename is exact to the second with the time the 2nd export is created
+        basename = "%s_%s" % (self.xform.id_string,
+                              datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+        filename = basename + ".csv"
+        export = Export.objects.create(xform=self.xform,
+            export_type=Export.CSV_EXPORT, filename=filename)
+        # 2nd export
+        export_2 = create_csv_export(username=self.user.username,
+            id_string=self.xform.id_string)
+        if export.created_on.timetuple() == export_2.created_on.timetuple():
+            new_filename = increment_index_in_filename(filename)
+            self.assertEqual(new_filename, export_2.filename)
+        else:
+            stdout.write("duplicate export filename test skipped because export times differ.")
