@@ -53,7 +53,7 @@
             {% if not profile.gravatar_exists %}
                 <a style="display: inline-block;" title="{% trans "Click to change your avatar" %}" href="https://secure.gravatar.com/site/login" id="gravatar">
             {% endif %}
-            <img src='{{ profile.gravatar }}' alt='gravatar' width='40' height='40' />
+            <img src='{{ profile.gravatar }}' alt='gravatar' width='60' height='60' />
             {% if not profile.gravatar_exists %}
                </a>
                <script type="text/javascript">$('#gravatar').tooltip();</script>

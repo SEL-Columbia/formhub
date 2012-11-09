@@ -1,37 +1,43 @@
-<!DOCTYPE html> 
-<html lang="en"> 
-  <head> 
-    <meta charset="utf-8"> 
-    <title>formhub</title> 
-    <meta name="description" content=""> 
-    <meta name="author" content=""> 
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>formhub</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
     <meta name="google-site-verification" content="8pAiKPreksD8GiYnSCtWm9QG3i6wyuKg7E2Y95RTzRM" />
- 
-    <!-- Le HTML5 shim, for IE6-8 support of HTML elements --> 
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]--> 
- 
+    <![endif]-->
+
     <!-- Le styles -->
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
     <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/css/screen.min.css" rel="stylesheet">
-    <link href="/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
-    <link href="/static/css/iphone-btn-style.css" rel="stylesheet"> 
- 
-    <!-- Le javascript --> 
-    <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
-    <script src="/static/js/jquery.tablesorter.min.js"></script> 
-    <script src="/static/js/application.js"></script> 
-    <script src="/static/js/iphone-style-checkboxes.js"></script> 
+    <link href="/static/css/screen.css" rel="stylesheet">
+	{% if user.is_authenticated %}
+	   	<link href="/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+	{% endif %}
+	{% if not user.is_authenticated %}
+		<link href="/static/css/bg.css" rel="stylesheet">
+	{% endif %}
+    <link href="/static/css/iphone-btn-style.css" rel="stylesheet">
+    <!-- Le javascript -->
+	<script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="/static/js/jquery.tablesorter.min.js"></script>
+    <script src="/static/js/slideshow.js"></script>
+	<script src="/static/js/application.js"></script>
+    <script src="/static/js/iphone-style-checkboxes.js"></script>
 
     <script src="/static/bootstrap/js/bootstrap.js"></script>
- 
-    <!-- Le fav and touch icons --> 
-    <link rel="shortcut icon" type="image/x-icon" href="/static/images/favicon.ico"> 
-    <link rel="apple-touch-icon" href="/static/bootstrap/docs/assets/ico/bootstrap-apple-57x57.png"> 
-    <link rel="apple-touch-icon" sizes="72x72" href="/static/bootstrap/docs/assets/ico/bootstrap-apple-72x72.png"> 
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" type="image/x-icon" href="/static/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/static/bootstrap/docs/assets/ico/bootstrap-apple-57x57.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/static/bootstrap/docs/assets/ico/bootstrap-apple-72x72.png">
     <link rel="apple-touch-icon" sizes="114x114" href="/static/bootstrap/docs/assets/ico/bootstrap-apple-114x114.png">
 
     <!-- spot to insert stuff for google maps -->
@@ -41,6 +47,10 @@
 color: white;
 }
 </style>
+
+
+
+
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -56,11 +66,17 @@ color: white;
 
 </script>
 
-  </head> 
+  </head>
 
   {% block body %}
   <body>
-    {% include "topbar.html" %}
+	{% if not user.is_authenticated %}
+		{% include "home_topbar.html" %}
+	{% endif %}
+
+  	{% if user.is_authenticated %}
+		{% include "topbar.html"%}
+  	{% endif %}
 
     <div class="container">
       {% block message %}
