@@ -1,22 +1,46 @@
 {% load i18n %}
 
-<section id="introduction">
-  <div class="page-header">
-    <h1>{% trans "Support" %}</h1>
-  </div>
-
-  <p>
-      {% trans "Thank you for using formhub!"  %}<br><br>  {% trans "If you need any extra help or have questions about the service below please consider one of the support options below" %}:
-  </p>
-  <p>
-    <ul>
-        {% url syntax as syntax %}
-      <li>{% blocktrans %}For questions related to authoring XLSForms please first checkout our <a href="{{ syntax }}">syntax</a> page, then use the <a href="https://groups.google.com/forum/#!forum/formhub-users">formhub-users Google group</a>{% endblocktrans %}</li>
-      <li>{% blocktrans %}For help relating to using ODK Collect please contact the <a href="https://groups.google.com/forum/#!forum/opendatakit">ODK Google group</a>{% endblocktrans %}</li>
-      <li>{% blocktrans %}For problems or suggestions related to the formhub service please email: <a href="mailto:support@formhub.org">support@formhub.org</a> or <a href="https://groups.google.com/forum/#!forum/formhub-users">formhub-users Google group</a>{% endblocktrans %}</li>
-    </ul>
-
-    {% trans "We value your feedback and ideas in how to make this service better. Thank you!" %}
-  </p>
-</section>
-
+{# <section id="introduction"> #}
+{#   <div class="page-header"> #}
+{#     <h1>{% trans "Support" %}</h1> #}
+{#   </div> #}
+{#  #}
+{#   <p> #}
+{#       {% trans "Thank you for using formhub!"  %}<br><br>  {% trans "If you need any extra help or have questions about the service below please consider one of the support options below" %}: #}
+{#   </p> #}
+{#   <p> #}
+{#     <ul> #}
+{#         {% url syntax as syntax %} #}
+{#       <li>{% blocktrans %}For questions related to authoring XLSForms please first checkout our <a href="{{ syntax }}">syntax</a> page, then use the <a href="https://groups.google.com/forum/#!forum/formhub-users">formhub-users Google group</a>{% endblocktrans %}</li> #}
+{#       <li>{% blocktrans %}For help relating to using ODK Collect please contact the <a href="https://groups.google.com/forum/#!forum/opendatakit">ODK Google group</a>{% endblocktrans %}</li> #}
+{#       <li>{% blocktrans %}For problems or suggestions related to the formhub service please email: <a href="mailto:support@formhub.org">support@formhub.org</a> or <a href="https://groups.google.com/forum/#!forum/formhub-users">formhub-users Google group</a>{% endblocktrans %}</li> #}
+{#     </ul> #}
+{#  #}
+{#     {% trans "We value your feedback and ideas in how to make this service better. Thank you!" %} #}
+{#   </p> #}
+{# </section> #}
+<div id = "support">
+	<div class="title"> Support </div>
+	<div class="header"> Authoring with XLSForms </div>
+	<div class="explanation">
+	<p>Form authoring in formhub is based on the XLSForm standard. While there is an initial learning curve, we’ve found that XLS provides a great interface for authoring forms — whether it’s simple 5 question questionnaire or a complex survey with hundreds of questions. XLS also makes sharing and collaborating on forms easy. Whether you need help authoring your first form or want to pick up advanced tips,  please check out our <a href = "http://formhub.org/syntax"> XLForm Syntax page </a> and our gallery of sample forms on <a href ="http://formhub.org/formhub_u/">formhub University</a>. </p>
+	</div>
+	<div class="header">Getting Started</div>
+	<div class="explanation">
+	Need more help understanding what this is all about? We’ve created a comprehensive <a href="{% url main.views.getting_started %}"> getting started guide </a> to help you better understand how to get the most out of formhub.
+	</div>
+	<div class="header"> Getting Help </div>
+	<div class="explanation">
+	<p>If you need any extra help or have questions about authoring forms or using formhub please consider joining the formhub-users Google group <http://groups.google.com/forum/#!forum/formhub-users>.</p>
+	<p>For problems or suggestions related to the formhub service please email: For problems or suggestions related to the formhub service please email <a href="mailto:support@formhub.org">support@formhub.org </a> or use the formhub-users <a href = "https://groups.google.com/d/forum/formhub-users"> Google group </a>. For most problems, the Google group represents the option for getting a quick response.</p>
+	</div>
+	<div class="header"> Contribute </div>
+	<div class="explanation">
+	<p>Love formhub? Help us make it better!  formhub the free service, is based on an open-source data gathering platform that you are free to modify or run yourself.</p>
+	<p>If you’re interested finding out more, checkout formhub on <a href = "http://github.com/modilabs/formhub">github </a>, join the <a href = "http://groups.google.com/d/forum/formhub-dev">formhub developer Google group</a>  and review our <a href = "http://github.com/modilabs/formhub/wiki/Contributing-Code-to-Formhub">guide to contributing code </a> . To file a request or report a bug please use <a href ="http://github.com/modilabs/formhub/issues?state=open">our issue tracker</a>.  </p>
+	</div>
+	<div class="header">Extensible</div>
+	<div class="explanation">
+	<p> formhub is built to integrate seamlessly with other tools. Through APIs it’s possible to query formhub datasets externally and post formhub submissions to an external URl as they come in. For more info please see the <a href="http://github.com/modilabs/formhub/wiki/Formhub-Access-Points-%28API%29">formhub API docs</a>. </p>
+	</div>
+</div>

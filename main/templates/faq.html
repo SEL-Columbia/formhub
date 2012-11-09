@@ -1,0 +1,34 @@
+{% load i18n %}
+
+{% block content %}
+
+<div id="faq">
+	<div class="title">FAQ</div>
+		<div class="question">Why did we build formhub?</div>
+		<div class="answer"><p>Through our work at the Earth Institute we've seen firsthand that development is increasingly data driven. Much of our work involves empowering governments, NGOs and local communities with the tools to better collect data.  We believe timely and accurate data is the single greatest component of making socially impactful decisions. So we created formhub.</p>
+<p>After using formhub internally to successfully capture tens of thousands of surveys, we decided to make it available as a free and public service with the hope others would benefit from what we've developed. Our goal is making data collection simple&#8212;allowing more time for harder tasks like how to make an impact with the information.</p>
+		</div>
+		<div class="question">What are XLSForms all about?</div>
+		<div class="answer"><p>We developed XLSForms because of our need to author large, complex and multi-lingual surveys&#8212;a process that is unwieldy with web based form editors. Working across many sectors also means survey authoring is highly collaborative (ie, a lot of sending forms back and forth). As a result, we developed a standard using Excel, an interface everyone knows and is familiar with. While there is a bit of an initial learning curve, we're convinced that if you do a lot of data collection this is the way to go.  <a href="http://formhub.org/syntax/">Learn more about the XLSForm syntax.</a></p>
+		</div>
+		<div class="question">I've been using paper forms and surveys for years. Why should I switch to formhub?</div>
+		<div class="answer"><p>formhub is an evolutionary leap from paper surveys.</p>
+<p>It's faster. Writing a survey takes about the same time as a traditional paper survey. Surveying and transcripting are exponentially faster because they are combined into one step. Data can be analyzed as it is being collected.</p>
+<p>It's more accurate. formhub surveys incorporate skip logic that guides the data gatherer through the form and constraint checks to ensure data is entered properly. The need transcription is removed, greatly reducing the cost and improving the speed and accuracy of data collection.</p>
+<p>It's more informative. Collecting data on a mobile device lets you collect data in situ at the source, complete with accurate timestamps, GPS coordinates and photos.  formhub's data analysis tools give you access to powerful analysis methods that you don't need a degree statistics or a background in programming to understand.</p>
+<p>There's very little risk. Access your data via a password protected website and feel confident knowing your data is backed up constantly. No need to make sure paper surveys aren't blown off by the wind or damaged in storage.</p>
+</p>
+		</div>
+		<div class="question">I've collected some data already, can I use it in a formhub form?</div>
+		<div class="answer"><p>We are working on this. Please <a href="mailto: support@formhub.org">email us</a> if you have a question about your specific project.</p>
+		</div>
+		<div class="question">OK! I'm excited! How do I get started?</div>
+		<div class="answer"><p>Getting started is easy. <a href="https://formhub.org/accounts/register/">Sign up</a> for a formhub account and explore the introductory XLS form. To being collecting data, launch a webform URL. If you want to deploy onto an Android device, download ODK Collect and login with your formhub credentials. Any data you send will be instantly available to view in your account on formhub.org.</p>
+		</div>
+		<div class="question">I'm  a developer and would like to help out or add new features. What can I do?</div>
+		<div class="answer"><p>formhub is freely available under an opensource license. Our code is available on <a href="http://github.com/modilabs/formhub">GitHub</a>. formhub uses the django framework, stores survey data on mongodb, and has a UI built on HTML5 using standard libraries like jQuery, underscore, d3, and leaflet. The web forms engine is a separate product, made out of a javarosa-xpaths-processor written entirely in javascript and a php+js-heavy app named <a href="http://github.com/modilabs/enketo">enketo</a> which uses state-of-the-art HTML5 tools like application caches and local storage.</p>
+<p>It's easy to host your own formhub instance, and if you're a developer we'd welcome code contributions (just file a pull request, and as long as it has good tests, we will review it). Our other projects on github are at <a href="http://github.com/modilabs">github.com/modilabs</a></p>
+		</div>
+</div>
+
+{% endblock %}

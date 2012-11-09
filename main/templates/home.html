@@ -4,56 +4,249 @@
 {% load i18n %}
 
 {% block content %}
-    <br/>
-    <h1>{% trans "Welcome to formhub!" %}<small>&nbsp;{% trans "The hub for your mobile data collection needs" %}</small></h1>
-<div class="row">
-  <div class="span5">
-<p><em>{% blocktrans %}formhub is a <strong>free</strong> hosted service that makes data collection <strong>simple</strong> and <strong>collaborative</strong>.{% endblocktrans %}</em></p>
-{% url registration_register as registration_register %}
-<p>{% blocktrans %}<strong>Simple.</strong> All you need to get started is an <a href="{{ registration_register }}">account</a> on formhub and the ability to author .xls files. Absolutely no technical setup required.{% endblocktrans %}</p>
-{% url syntax as syntax_url %}
-{% url forms_list as forms_url %}
-<p>{% blocktrans %}<strong>Collaborative.</strong> Share your data collection forms in <a href="{{ syntax_url }}">Excel</a>. <a href="{{ forms_url }}">Find</a>, grab and modify other <a href="{{ forms_url }}">peoples' forms</a> and quickly deploy it. Publish gathered data to share it with others via Excel, CSV, KML or an interactive map.{% endblocktrans %}
-</p>
-<p>
-<strong>{% trans "Mobile." %}</strong>
-  {% blocktrans %}formhub works seemlessly with <a href="http://www.opendatakit.org">ODK Collect</a> a robust and proven data collection platform for Android.{% endblocktrans %}  
-</p>
-<p>
-{% blocktrans %}For more info please read <a href="http://blog.formhub.org/2011/12/05/data-gatherers-of-the-world-unite/">here</a>.{% endblocktrans %}
-</p>
-<p><b>{% trans "Not registered?" %}</b></p>
-<p style="font-size:larger">
- <a href="/accounts/register/" class="btn btn-primary">{%  trans "Create Account" %} &raquo;</a>
-</p>
-  </div>
- 
- <div class="span7">
-   <p><img src="/static/tutorial/submitted_data.png" width="100%"></p>
-   <br/>
-   <br/>
-   <div class="row" style="float:right">
-     <div class="span3">
-       <h1 class="short">{{ num_forms|intcomma }}</h1>
-     </div>
-     <div class="span2">
-       <h1 class="short">{{ num_shared_forms|intcomma }}</h1>
-     </div>
-     <div class="span2">
-       <h1 class="short">{{ num_users|intcomma }}</h1>
-     </div>
-   </div>
-   <div class="row" style="float:right">
-     <div class="span3">
-       <h1><small>{%  trans "forms submitted" %}</small></h1>
-     </div>
-     <div class="span2">
-       <h1><small>{% trans "shared forms" %}</small></h1>
-     </div>
-     <div class="span2">
-       <h1><small>{% trans "formhubbers!" %}</small></h1>
-     </div>
-   </div>
- </div>
+    <!-- <br/>
+            <h1>{% trans "Welcome to formhub!" %}<small>&nbsp;{% trans "The hub for your mobile data collection needs" %}</small></h1>
+        <div class="row">
+          <div class="span5">
+        <p><em>{% blocktrans %}formhub is a <strong>free</strong> hosted service that makes data collection <strong>simple</strong> and <strong>collaborative</strong>.{% endblocktrans %}</em></p>
+        {% url registration_register as registration_register %}
+        <p>{% blocktrans %}<strong>Simple.</strong> All you need to get started is an <a href="{{ registration_register }}">account</a> on formhub and the ability to author .xls files. Absolutely no technical setup required.{% endblocktrans %}</p>
+        {% url syntax as syntax_url %}
+        {% url forms_list as forms_url %}
+        <p>{% blocktrans %}<strong>Collaborative.</strong> Share your data collection forms in <a href="{{ syntax_url }}">Excel</a>. <a href="{{ forms_url }}">Find</a>, grab and modify other <a href="{{ forms_url }}">peoples' forms</a> and quickly deploy it. Publish gathered data to share it with others via Excel, CSV, KML or an interactive map.{% endblocktrans %}
+        </p>
+        <p>
+        <strong>{% trans "Mobile." %}</strong>
+          {% blocktrans %}formhub works seemlessly with <a href="http://www.opendatakit.org">ODK Collect</a> a robust and proven data collection platform for Android.{% endblocktrans %}
+        </p>
+        <p>
+        {% blocktrans %}For more info please read <a href="http://blog.formhub.org/2011/12/05/data-gatherers-of-the-world-unite/">here</a>.{% endblocktrans %}
+        </p>
+        <p><b>{% trans "Not registered?" %}</b></p>
+        <p style="font-size:larger">
+         <a href="/accounts/register/" class="btn btn-primary">{%  trans "Create Account" %} &raquo;</a>
+        </p>
+          </div>
+
+         <div class="span7">
+           <p><img src="/static/tutorial/submitted_data.png" width="100%"></p>
+           <br/>
+           <br/>
+           <div class="row" style="float:right">
+             <div class="span3">
+               <h1 class="short">{{ num_forms|intcomma }}</h1>
+             </div>
+             <div class="span2">
+               <h1 class="short">{{ num_shared_forms|intcomma }}</h1>
+             </div>
+             <div class="span2">
+               <h1 class="short">{{ num_users|intcomma }}</h1>
+             </div>
+           </div>
+           <div class="row" style="float:right">
+             <div class="span3">
+               <h1><small>{%  trans "forms submitted" %}</small></h1>
+             </div>
+             <div class="span2">
+               <h1><small>{% trans "shared forms" %}</small></h1>
+             </div>
+             <div class="span2">
+               <h1><small>{% trans "formhubbers!" %}</small></h1>
+             </div>
+           </div>
+         </div>
+        </div> -->
+
+<div id="main-display">
+	<div class="content">
+		<div class = "row-fluid">
+			<div class="span12">
+				<div class = "row-fluid">
+					<div class="span3">
+						<img src="/static/images/masthead/mobile.png" class="left">
+					</div>
+					<div class = "span9">
+						<div class = "caption">
+							<h1> Mobile data collection made easy </h1>
+							<p> formhub is built on a belief that data collection and analysis</p> <p> should be fast, flexible and reliable. And open source, of course. </p>
+							<p><a href="{% url auth_login %}" class="btn-large btn-info pull-left" id="sign-up"> <strong> Sign Up </strong> <em>(It's free!)  </em> </a> </p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
+
+<div class="display-unit" id = "how_it_works">
+	<div class="row-fluid">
+		<div class="title">
+			How it Works
+		</div>
+		<div class="span12">
+			<div class="span4">
+				<img src="/static/images/how_works/design.png" class="center">
+			</div>
+			<div class="span4">
+				<img src="/static/images/how_works/collect.png" class="center">
+			</div>
+			<div class="span4">
+				<img src="/static/images/how_works/analyze.png" class="center">
+			</div>
+		</div>
+		<div class="span12">
+			<div class="span4">
+				<h2>
+					Design
+				</h2>
+				<p>
+					Author surveys quickly and easily in Excel and have instant access on your Android phone. No advanced technical degree required.
+				</p>
+			</div>
+			<div class="span4">
+				<h2>
+					Collect
+				</h2>
+				<p>
+					Easily distribute your survey on an Android device or on the web. Data connection not needed.
+				</p>
+			</div>
+			<div class="span4">
+				<h2>
+					Analyze
+				</h2>
+				<p>
+					Visualize your data as it is collected, and gain understanding with our powerful insights tools.
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="row-fluid">
+	<div class="span12 title-grey">
+		<h2>Proudly used by </h2>
+	</div>
+	<div class="span12">
+		<div class="span2">
+			<img src="/static/images/used_by/1.png" class="center">
+		</div>
+		<div class="span4">
+			<img src="/static/images/used_by/2.png" class="center">
+		</div>
+		<div class="span2">
+			<img src="/static/images/used_by/3.png" class="center">
+		</div>
+		<div class="span2">
+			<img src="/static/images/used_by/4.png" class="center">
+		</div>
+		<div class="span2">
+			<img src="/static/images/used_by/5.png" class="center">
+		</div>
+	</div>
+	<div class="span12">
+		<div class="formhub-stat">
+			<div class="num">
+				{{ num_forms|intcomma }}
+			</div>forms submitted
+			<div class="num">
+				{{ num_shared_forms|intcomma }}
+			</div>shared forms
+			<div class="num">
+				{{ num_users|intcomma }}
+			</div>formhubbers.
+		</div>
+	</div>
+</div>
+
+<div class = "separator"> </div>
+
+<div class="clear" id="features"></div>
+
+<div class = "row">
+		<div class="title">Data Collection Simplified</span></div>
+
+		<div id="section_features">
+				<div class="topimage">
+					<img src="../static/images/features/1.jpg" id='featurescallout'>
+				</div>
+
+
+			<div class="bottom-text">
+				<table id='featuretable'>
+					<tr>
+						<td class="feature_on" id='feature1'>
+							<a href='javascript:userClickedFeature(1)'>
+							<div class="featurehead">Seemless workflow.</div>
+							<div class="featuresubhead">Create and deploy a survey in just a few minutes and see results as they are submitted. A secure and reliable data repository is automatically created with powerful analytical tools a click away.</div>
+							</a>
+						</td>
+
+						<td class="feature_off" id='feature2'>
+							<a href='javascript:userClickedFeature(2)'>
+							<div class="featurehead">Survey authoring evolved.</div>
+							<div class="featuresubhead">Write your survey questions in Excel and formhub automatically translates them into a ready-to-use forms. Build logic, add media, and create forms of any length. Collaborate using Google Docs.</div>
+							</a>
+						</td>
+
+						<td class="feature_off" id='feature3'>
+							<a href='javascript:userClickedFeature(3)'>
+							<div class="featurehead">Understand better.</div>
+							<div class="featuresubhead">Survey information comes in real-time. Watch as data is plotted on color-coded maps, indicators generate charts, and photos are uploaded. formhub's analysis toolkit will transform the way you work.</div>
+							</a>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+</div>
+
+<div class = "row">
+	<div class = "span12">
+			<div id="section_featurelist">
+					<div class="image">
+						<img src="/static/images/features/lock.png">
+					</div>
+					<div class="word">
+						<div class="featurehead"> Safe, secure and private. </div>
+						<div class="featuresubhead">All data transmission to and from formhub is secure with industry-standard encryption. Data is stored redundantly and all systems are backed up nightly. Additionally, data is only accessible to your password-protected account (with the default privacy settings).
+						</div>
+					</div>
+					<div class="clear"></div>
+					<div class="word">
+						<div class="featurehead">Offline & on the go.	</div>
+						<div class="featuresubhead"> Once you've uploaded your Excel-authored form, you can access it from any Android device using ODK Collect. Or generate a short URL and access the survey from a device with a web browser. Once cached, you can access the form and submit data while offline.
+						</div>
+					</div>
+					<div class="image">
+						<img src="/static/images/features/nosignal.png">
+					</div>
+					<div class="clear"></div>
+					<div class="image">
+						<img src="/static/images/features/map.png">
+					</div>
+					<div class="word">
+						<div class="featurehead">Built for sharing.</div>
+						<div class="featuresubhead">Since open data is a powerful force for development, we made sharing both data and surveys (ie, your XLSform) easy. You can share on the web or with other formhub users.
+						</div>
+					</div>
+					<div class="clear"></div>
+					<div class="word">
+						<div class="featurehead">Open source and extensible.</div>
+						<div class="featuresubhead">The code that powers formhub is available as a free and open-source basis. We believe that being open is critical to achieving our goal, to build the best data gathering platform, period. Additionally, powerful APIs make integration with external services simple.
+						</div>
+					</div>
+					<div class="image">
+							<img src="/static/images/features/checklist.png">
+					</div>
+			</div>
+		</div>
+</div>
+
+<br>
+<br>
+
+
 {% endblock %}

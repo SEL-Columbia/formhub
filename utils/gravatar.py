@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 
 DEFAULT_GRAVATAR = "https://formhub.org/static/images/formhub_avatar.png"
 GRAVATAR_ENDPOINT = "https://secure.gravatar.com/avatar/" 
-GRAVATAR_SIZE = str(40)
+GRAVATAR_SIZE = str(60)
 
 def get_gravatar_img_link(user):
     url = GRAVATAR_ENDPOINT +\
