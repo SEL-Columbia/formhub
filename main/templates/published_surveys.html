@@ -111,7 +111,7 @@
                               {% endif %}
                               <!-- DELETE -->
                               {% if submission_count <= 0 and False %}
-                                  <a class="btn btn-flat" data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" rel="tooltip" data-original-title="{% trans 'Delete Form' %}">
+                                  <a class="btn btn-flat" data-toggle="modal" href="#replace-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" rel="tooltip" data-original-title="{% trans 'Replace' %}">
                                       <i class="icon-trash icon-large"></i>
                                   </a>
                               {% endif %}
@@ -160,28 +160,25 @@
             </a>
             <ul class="dropdown-menu form-options left-arrow" role="menu" aria-labelledby="dropdownMenu">
                 {% if submission_count <= 0 %}
-                <li><a tabindex="-1" href="#delete-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Delete' %}</a></li>
+                <li><a tabindex="-1" href="#replace-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Replace' %}</a></li>
                 {% endif %}
             </ul>
           </div>
-            {% if submission_count <= 0 %}
-                <div id="delete-{{ xform.id_string }}" class="modal hide fade">
-                    <form action="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" method="post">
-                        {% csrf_token %}
-                      <div class="modal-header">
-                          <a data-dismiss="modal" class="close">&times;</a>
-                          <h3>{% trans "Delete Confirmation" %}</h3>
-                      </div>
-                      <div class="modal-body">
-                        <p>{% blocktrans with title=xform.title nb_sub=submission_count|intcomma %}Are you sure you want to delete the form '{{ title }}'? This form has <strong>{{ nb_sub }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.{% endblocktrans %}</p>
-                      </div>
-                      <div class="modal-footer">
-                          <button class="btn btn-primary form-submit">Delete</button>
-                          <a href="#" data-dismiss="modal" class="btn secondary">Cancel</a>
-                      </div>
-                    </form>
-                </div>
-            {% endif %}
+		  {% if xform.can_be_replaced and xform.user ==  user  %}
+		      <div id="replace-{{ xform.id_string }}" class="modal hide fade">
+		          <form action="{% url main.views.update_xform content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
+		              {% csrf_token %}
+		            <div class="modal-header">
+		                <a data-dismiss="modal" class="close">&times;</a>
+		                <h3>{% trans "Update XLS" %}</h3>
+		            </div>
+		            <div class="modal-footer">
+						<input type="file" name="xls_file" id="id_xls_file" />
+						<input type="submit" class="btn large btn-primary" value="{% trans "Update" %}" data-original-title="" />
+		            </div>
+		          </form>
+		      </div>
+		  {% endif %}
         {% endif %}
         </td>
       </tr>
