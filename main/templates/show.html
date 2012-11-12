@@ -11,8 +11,8 @@
       <!-- <img src='{{ content_user.profile.gravatar }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' /> -->
     <div id="mfeedback">&nbsp;</div>
 	<h3>
-	  <div style='vertical-align: middle'>      
-	  <img src='{{ content_user.profile.gravatar }}' alt='' width='20' height='20' /> 
+	  <div style='vertical-align: middle'>
+	  <img src='{{ content_user.profile.gravatar }}' alt='' width='20' height='20' />
 	  <a href="{% url user_profile content_user.username %}">{{ content_user.username }}</a> ({% trans "Owner" %}) /
 	  </div>
 	</h3>
@@ -28,7 +28,7 @@
             </form>
             </div>
         </div>
-    </div> 
+    </div>
     <div class="row">
       <div class="span8">
         {% if can_edit %}
@@ -61,7 +61,7 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-              <li>                    
+              <li>
                 <input class="input-xxlarge" type="text" size="16" value="{{ base_url }}{% url download_xlsform content_user.username xform.id_string %}"/>
               </li>
             </ul>
@@ -72,7 +72,7 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-              <li>                    
+              <li>
                 <input class="input-xxlarge" type="text" size="16" value="{{ base_url }}{% url download_xform content_user.username xform.id_string %}"/>
               </li>
             </ul>
@@ -83,23 +83,12 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-              <li>                    
+              <li>
                 <input class="input-xxlarge" type="text" size="16" value="{{ base_url }}{% url download_jsonform content_user.username xform.id_string %}"/>
               </li>
             </ul>
         </div>
     </div>
-    {%  if xform.can_be_replaced and xform.user ==  user %}
-    <div class="xls-update">
-        <h4>{% trans "Update XLS" %}</h4>
-        <form action="{% url main.views.update_xform content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <input type="file" name="xls_file" id="id_xls_file" />
-            <br />
-            <input type="submit" class="btn large btn-primary" value="{% trans "Update" %}" data-original-title="" />
-        </form>
-    </div>
-    {% endif %}
     <br>
         </ul>
         <p>
@@ -142,7 +131,7 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-              <li>                    
+              <li>
                 <input class="input-xxlarge" type="text" size="16" value="{{base_url}}{% url odk_viewer.views.export_list content_user.username xform.id_string 'csv' %}"/>
               </li>
             </ul>
@@ -153,7 +142,7 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-              <li>                    
+              <li>
                 <input class="input-xxlarge" type="text" size="16" value="{{base_url}}{% url odk_viewer.views.export_list content_user.username xform.id_string 'xls' %}"/>
               </li>
             </ul>
@@ -164,7 +153,7 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-              <li>                    
+              <li>
                 <input class="input-xxlarge" type="text" size="16" value="{{base_url}}{% url odk_viewer.views.kml_export content_user.username xform.id_string %}"/>
               </li>
             </ul>
@@ -176,7 +165,7 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-              <li>                    
+              <li>
                 <input class="input-xxlarge" type="text" size="16" value="{{base_url}}{% url odk_viewer.views.zip_export content_user.username xform.id_string %}"/>
               </li>
             </ul>
@@ -265,11 +254,11 @@
                         if($('#data-shared:checkbox').attr('checked') == undefined)
                             $('#data-shared:checkbox').click()
                     }
- 
+
                     privacyEdit(cb.data('url'), el.split('-')[0]);
                     $('#' + el + '-public').toggle();
                     $('#' + el + '-private').toggle();
-                    
+
                   }
                 });
               });
@@ -401,12 +390,12 @@
           <div class="input">
           <label>{% trans "Form Shared" %}&nbsp;</label>
             <input id="form-shared" type="checkbox"{% if xform.shared %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
-          </div> 
+          </div>
           <br/>
           <label>{% trans "Data Shared" %}&nbsp;</label>
           <div class="input">
             <input id="data-shared" type="checkbox"{% if xform.shared_data %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
-          </div> 
+          </div>
           <br/>
           <label>{% trans "Crowdform" %}&nbsp;</label>
           <div class="input">
@@ -417,7 +406,7 @@
           <label>{% trans "Form Active" %}&nbsp;</label>
           <div class="input">
             <input id="active-form" type="checkbox"{% if xform.downloadable %} checked=""{% endif %} data-url="{% url main.views.edit content_user.username xform.id_string %}" />
-          </div> 
+          </div>
           <br/>
           <label>{% trans "Delete Form" %}&nbsp;</label>
         <div class="input">
@@ -442,7 +431,7 @@
               {% trans "Delete" %}
           </a>
         </div>
-        </div> 
+        </div>
         <br/>
         <div>
             <h3>{% trans "bamboo" %}</h3>
@@ -456,7 +445,7 @@
                 <input type="submit" class="btn" value="{% trans "Activate" %}" />
             </form>
             {% endif %}
-            {% endif %}  
+            {% endif %}
         </div>
         <br />
         <div>
