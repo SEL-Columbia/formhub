@@ -126,7 +126,8 @@ def create_instance(username, xml_file, media_files,
             instance = Instance.objects.create(
                 xml=xml, user=user, status=status)
         for f in media_files:
-            Attachment.objects.get_or_create(instance=instance, media_file=f)
+            Attachment.objects.get_or_create(
+                instance=instance, media_file=f, mimetype=f.content_type)
         if instance.xform is not None:
             pi, created = ParsedInstance.objects.get_or_create(
                 instance=instance)
