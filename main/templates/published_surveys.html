@@ -208,7 +208,7 @@
           {% with submission_count=xform.submission_count time_of_last_submission=xform.time_of_last_submission has_surveys_with_geopoints=xform.data_dictionary.has_surveys_with_geopoints %}
           <tr>
               <td>
-                  <a href="{% url main.views.show xform.user.username xform.id_string %}">{{ xform.title }}</a> <span class="label label-info">{% trans "Shared With You" %}</span>
+                  <a href="{% url main.views.show xform.user.username xform.id_string %}">{{ xform.title }}</a> <span class="label label-info">{% trans "Shared by" %} {{ xform.user.username }}</span>
                   {% if xform.shared %}
                       <span class="label label-info">{%  trans "PUBLIC" %}</span>
                   {% endif %}
