@@ -17,6 +17,8 @@ def upload_to(instance, filename):
 class Attachment(models.Model):
     instance = models.ForeignKey(Instance, related_name="attachments")
     media_file = models.FileField(upload_to=upload_to)
+    mimetype = models.CharField(
+        max_length=20, null=False, blank=True, default='')
 
     class Meta:
         app_label = 'odk_logger'

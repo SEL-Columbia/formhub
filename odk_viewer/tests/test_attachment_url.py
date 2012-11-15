@@ -1,5 +1,6 @@
 from django.core.urlresolvers import reverse
 from main.tests.test_base import MainTestCase
+from odk_logger.models import Attachment
 from odk_viewer.views import attachment_url
 
 
@@ -21,3 +22,7 @@ class TestAttachmentUrl(MainTestCase):
         response = self.client.get(
             self.url, {"media_file": "non_existent_attachment.jpg"})
         self.assertEqual(response.status_code, 404)
+
+    def test_attachment_has_mimetype(self):
+        attachment = Attachment.objects.all().reverse()[0]
+        self.assertEqual(attachment.mimetype, 'image/jpeg')
