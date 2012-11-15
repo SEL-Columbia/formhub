@@ -610,7 +610,11 @@ section {
   margin: 0;
 }
 
-/* New additions by Prajjwol */
+#page-wrap{
+	background-color: white;
+	padding: 40px;
+}
+
 .title {
   color: #d96e27;
 	margin-top: 10px;
@@ -639,7 +643,8 @@ section {
 }
 
 .display-unit {
-	padding: 10px 30px 30px 30px;
+	padding: 30px 30px 30px 30px;
+
 	background-color: #f0f3f5;
 	margin-bottom: 30px;
 	margin-top: 20px;
@@ -670,7 +675,7 @@ section {
 	color: #fff;
 	font-weight: 400;
 	padding-bottom: 15px;
-	text-shadow: 1px 2px #000;
+	text-shadow: 1px 2px 4px #000;
 }
 
 #main-display p {
@@ -678,25 +683,27 @@ section {
 	font-weight: 500;
 	color: #fff;
 	padding-bottom: 5px;
-	text-shadow: 1px 2px #000;
+	text-shadow: 1px 2px 5px #000;
 }
 
 #main-display .caption {
 	margin-top: 10%;
 }
 #main-display .caption #sign-up {
-	padding: 15px;
-	text-shadow: 0px 1px 0px #000000;
-	        filter: dropshadow(color=#000000, offx=0, offy=1);
+	padding: 15px 25px 15px 25px;
+	font-size: 19px;
+	text-shadow: 0px 1px 1px #000;
 }
 
 #main-display .caption #sign-up em {
-	font-weight: 300;
+	font-family:Georgia, "Times New Roman", Serif;
+	-webkit-font-smoothing: antialiased;
 }
 
 #main-display .caption #sign-up strong {
 	font-weight: 600;
 }
+
 #login_btn, #main-display .btn-info {
   color: #ffffff;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -720,9 +727,42 @@ section {
 	box-shadow:         0px 1px 4px rgba(50, 50, 50, 0.98);
 }
 
+#topbar_login .btn {
+	-webkit-border-radius: 1em;
+	-moz-border-radius: 1em;
+	border-radius: 1em;
+	-webkit-box-shadow: 0px 0px 4px rgba(50, 50, 50, 0.27);
+	-moz-box-shadow:    0px 0px 4px rgba(50, 50, 50, 0.27);
+	box-shadow:         0px 0px 4px rgba(50, 50, 50, 0.27);
+}
+
+#topbar_login #login_btn {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+#topbar_login .btn-info {
+  border-color: #257ab5;
+}
+
 #main-display a:link {color : #fff; text-decoration: none;}
 
 #main-display a:visited, a:active, a:hover { color: #fff; text-decoration:none;}
+
+#used_by .row-fluid [class*="span"] {
+    height: 100px;
+    position: relative;
+}
+#used_by .row-fluid [class*="span"] .img-outer{
+    height: 100px;
+    line-height: 100px;
+    vertical-align: middle;
+}
+#used_by img.center{
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 25px;
+}
 
 .formhub-stat {
 	margin-top: 50px;
@@ -747,7 +787,7 @@ section {
 img.center {
 	margin-left: auto;
 	margin-right: auto;
-	display: block;
+	display: inline-block;
 }
 
 img.left{
