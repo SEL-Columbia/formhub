@@ -336,4 +336,4 @@ class TestSite(MainTestCase):
     def test_405_submission(self):
 	url = reverse(submission)
 	response = self.client.get(url)
-	self.assertContains(response, "405 Error: Method Not ALlowed", status_code=405)
+	self.assertContains(response, "405 Error: Method Not Allowed", status_code=405)
