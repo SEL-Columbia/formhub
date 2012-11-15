@@ -8,6 +8,7 @@ from hashlib import md5
 from django.core.urlresolvers import reverse
 
 from odk_logger.models import XForm
+from odk_logger.views import submission
 from odk_viewer.models import DataDictionary
 from odk_viewer.views import csv_export, xls_export
 from test_base import MainTestCase
@@ -331,3 +332,8 @@ class TestSite(MainTestCase):
         self.assertEquals(self.user.xforms.count(), 1)
         self.user.xforms.all()[0].delete()
         self.assertEquals(self.user.xforms.count(), 0)
+
+    def test_405_submission(self):
+	url = reverse(submission)
+	response = self.client.get(url)
+	self.assertContains(response, "405 Error: Method Not Allowed", status_code=405)
