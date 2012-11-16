@@ -12,9 +12,9 @@ for (var i=1; i<imageCount + 1; i++) {
 	images.push(staticImageDir + 'screens/' + i + '.jpg');
 }
 
-$.each(images, function (i, val) {
+/*$.each(images, function (i, val) {
   $('<img/>').attr('src', val);
-});
+});*/
 
 function rotateImage() {
 	$('#topslider').fadeOut(300, function() {
