@@ -191,7 +191,7 @@
           {% with submission_count=xform.submission_count time_of_last_submission=xform.time_of_last_submission has_surveys_with_geopoints=xform.data_dictionary.has_surveys_with_geopoints %}
           <tr>
               <td>
-                  <a href="{% url main.views.show xform.user.username xform.id_string %}">{{ xform.title }}</a> <span class="label label-info">{% trans "Shared With You" %}</span>
+                  <a href="{% url main.views.show xform.user.username xform.id_string %}">{{ xform.title }}</a> <span class="label label-info">{% trans "Shared by" %} {{ xform.user.username }}</span>
                   {% if xform.shared %}
                       <span class="label label-info">{%  trans "PUBLIC" %}</span>
                   {% endif %}
@@ -245,12 +245,6 @@
                                       <i class="icon-browse icon-large"></i>
                                   </span>
                                       {% endif %}
-                                      <!-- DELETE -->
-                                      {% if submission_count <= 0 and False %}
-                                          <a class="btn btn-flat" data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" rel="tooltip" data-original-title="{% trans 'Delete Form' %}">
-                                              <i class="icon-trash icon-large"></i>
-                                          </a>
-                                      {% endif %}
                                   </div>
                               </div>
                           </div>
@@ -287,38 +281,7 @@
                   {% endif %}
               </td>
               <td>{{ xform.downloadable|lower }}</td>
-              <td>
-                  {% comment %} #todo remove once we have implemented more options  {% endcomment %}
-                  {% if submission_count <= 0 %}
-                      <div class="dropdown">
-                          <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
-                              <i class="icon-options"></i>
-                          </a>
-                          <ul class="dropdown-menu form-options left-arrow" role="menu" aria-labelledby="dropdownMenu">
-                              {% if submission_count <= 0 %}
-                                  <li><a tabindex="-1" href="#delete-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Delete' %}</a></li>
-                              {% endif %}
-                          </ul>
-                      </div>
-                      {% if submission_count <= 0 %}
-                          <div id="delete-{{ xform.id_string }}" class="modal hide fade">
-                              <form action="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" method="post">
-                                  {% csrf_token %}
-                                  <div class="modal-header">
-                                      <a data-dismiss="modal" class="close">&times;</a>
-                                      <h3>{% trans "Delete Confirmation" %}</h3>
-                                  </div>
-                                  <div class="modal-body">
-                                      <p>{% blocktrans with title=xform.title nb_sub=submission_count|intcomma %}Are you sure you want to delete the form '{{ title }}'? This form has <strong>{{ nb_sub }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and conside 'Archiving' the form instead.{% endblocktrans %}</p>
-                                  </div>
-                                  <div class="modal-footer">
-                                      <button class="btn btn-primary form-submit">Delete</button>
-                                      <a href="#" data-dismiss="modal" class="btn secondary">Cancel</a>
-                                  </div>
-                              </form>
-                          </div>
-                      {% endif %}
-                  {% endif %}
+              <td> &nbsp;
               </td>
           </tr>
           {% endwith %}

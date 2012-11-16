@@ -8,16 +8,16 @@
 			</div>
 			<div class = "span7">
 				<div class = "navigation">
-					<ul id = "navlist">             
+					<ul id = "navlist">
 						<li> <a href="/accounts/register/"> Sign Up </a> </li>
 			            <li> <a href="{% url main.views.form_gallery %}">{% trans "Forms" %}</a></li>
 						<li> <a href = "{% url main.views.faq %}"> {% trans "FAQ" %} </a> </li>
 						<li> <a href="http://blog.formhub.org/"> Blog </a></li>
 						<li> <a href="{% url main.views.support %}">{% trans "Support" %}</a></li>
-					</ul>                           
+					</ul>
 				</div>
 			</div>
-			<div class = "span3"> <a href="{% url auth_login %}" class="btn btn-info pull-right" id="login_btn">{%  trans "Log In" %}</a> </div>
+			<div class = "span3" id = "topbar_login"> <a href="{% url auth_login %}" class="btn btn-info pull-right" id="login_btn">{%  trans "Log In" %}</a> </div>
 		</div>
   </div>
 </div>
