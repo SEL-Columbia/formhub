@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 from odk_viewer.tasks import create_xls_export, create_csv_export
 from odk_viewer.xls_writer import XlsWriter
 from odk_viewer.views import csv_export, xls_export, delete_export,\
-    export_list, create_export, export_progress
+    export_list, create_export, export_progress, export_download
 from odk_viewer.models import Export
 from utils.export_tools import generate_export, increment_index_in_filename
 
@@ -307,3 +307,48 @@ class TestExports(MainTestCase):
             self.assertEqual(new_filename, export_2.filename)
         else:
             stdout.write("duplicate export filename test skipped because export times differ.")
+
+    def test_export_download_url(self):
+        self._publish_transportation_form()
+        self._submit_transport_instance()
+        export = create_csv_export(username=self.user.username,
+            id_string=self.xform.id_string)
+        csv_export_url = reverse(export_download, kwargs={
+            "username": self.user.username,
+            "id_string": self.xform.id_string,
+            "export_type": Export.CSV_EXPORT,
+            "filename": export.filename
+        })
+        response = self.client.get(csv_export_url)
+        self.assertEqual(response.status_code, 200)
+        # test xls
+        export = create_xls_export(username=self.user.username,
+            id_string=self.xform.id_string)
+        xls_export_url = reverse(export_download, kwargs={
+            "username": self.user.username,
+            "id_string": self.xform.id_string,
+            "export_type": Export.XLS_EXPORT,
+            "filename": export.filename
+        })
+        response = self.client.get(xls_export_url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_404_on_export_io_error(self):
+        """
+        Test that we return a 404 when the response_with_mimetype_and_name encounters an IOError
+        """
+        self._publish_transportation_form()
+        self._submit_transport_instance()
+        export = create_csv_export(username=self.user.username,
+            id_string=self.xform.id_string)
+        export_url = reverse(export_download, kwargs={
+            "username": self.user.username,
+            "id_string": self.xform.id_string,
+            "export_type": Export.CSV_EXPORT,
+            "filename": export.filename
+        })
+        # delete the export
+        export.delete()
+        # access the export
+        response = self.client.get(export_url)
+        self.assertEqual(response.status_code, 404)
