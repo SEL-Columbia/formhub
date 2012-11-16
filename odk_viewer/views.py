@@ -307,13 +307,10 @@ def export_download(request, username, id_string, export_type, filename):
     if request.GET.get('raw'):
         id_string = None
     basename = os.path.splitext(export.filename)[0]
-    try:
-        response = response_with_mimetype_and_name(
-            mime_type, name=basename, extension=ext,
-            file_path=export.filepath, show_date=False)
-        return response
-    except IOError:
-        return HttpResponseNotFound(_(u"The export file could not be retrieved, please generate a new one"))
+    response = response_with_mimetype_and_name(
+        mime_type, name=basename, extension=ext,
+        file_path=export.filepath, show_date=False)
+    return response
 
 
 @require_POST
