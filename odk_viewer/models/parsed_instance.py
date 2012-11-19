@@ -250,20 +250,12 @@ class ParsedInstance(models.Model):
         self._set_start_time()
         self._set_end_time()
         self._set_geopoint()
+        edit = False
+        if self.pk:
+            edit = True
         super(ParsedInstance, self).save(*args, **kwargs)
         # insert into Mongo
-        self.update_mongo()
-
-    #Update row in MongoDB
-    @classmethod
-    def edit_mongo(cls, query, data):
-        query = json.loads(
-            query, object_hook=json_util.object_hook) if query else {}
-        query = dict_for_mongo(query)
-        data = json.loads(
-            data, object_hook=json_util.object_hook) if query else {}
-        data = dict_for_mongo(data)
-        xform_instances.update(query, data)
+        self.update_mongo(edit=edit)
 
 
 def _remove_from_mongo(sender, **kwargs):

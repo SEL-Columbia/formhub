@@ -132,7 +132,7 @@ def create_instance(username, xml_file, media_files,
             pi, created = ParsedInstance.objects.get_or_create(
                 instance=instance)
             if not created:
-                pi.update_mongo(edit=True)
+                pi.save()
         return instance
     return None
 
