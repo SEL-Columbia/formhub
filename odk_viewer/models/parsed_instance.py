@@ -76,6 +76,7 @@ class ParsedInstance(models.Model):
     USERFORM_ID = u'_userform_id'
     STATUS = u'_status'
     DEFAULT_LIMIT = 30000
+    DEFAULT_BATCHSIZE = 1000
 
     instance = models.OneToOneField(Instance, related_name="parsed_instance")
     start_time = models.DateTimeField(null=True)
@@ -115,20 +116,17 @@ class ParsedInstance(models.Model):
             fields_to_select = dict([(field, 1) for field in fields])
         sort = json.loads(
             sort, object_hook=json_util.object_hook) if sort else {}
+        cursor = xform_instances.find(query, fields_to_select)
         if count:
-            return [{"count":xform_instances.find(
-                query,
-                fields_to_select).count()}]
-        elif type(sort) == dict and len(sort) == 1:
+            return [{"count":cursor.count()}]
+        cursor.skip(start).limit(limit)
+        if type(sort) == dict and len(sort) == 1:
             sort_key = sort.keys()[0]
             sort_dir = int(sort[sort_key])  # -1 for desc, 1 for asc
-            return xform_instances.find(
-                query,
-                fields_to_select)\
-                .skip(start).limit(limit).sort(sort_key, sort_dir)
-        else:
-            return xform_instances.find(
-                query, fields_to_select).skip(start).limit(limit)
+            cursor.sort(sort_key, sort_dir)
+        # set batch size
+        cursor.batch_size = cls.DEFAULT_BATCHSIZE
+        return cursor
 
     def to_dict_for_mongo(self):
         d = self.to_dict()
@@ -250,20 +248,12 @@ class ParsedInstance(models.Model):
         self._set_start_time()
         self._set_end_time()
         self._set_geopoint()
+        edit = False
+        if self.pk:
+            edit = True
         super(ParsedInstance, self).save(*args, **kwargs)
         # insert into Mongo
-        self.update_mongo()
-
-    #Update row in MongoDB
-    @classmethod
-    def edit_mongo(cls, query, data):
-        query = json.loads(
-            query, object_hook=json_util.object_hook) if query else {}
-        query = dict_for_mongo(query)
-        data = json.loads(
-            data, object_hook=json_util.object_hook) if query else {}
-        data = dict_for_mongo(data)
-        xform_instances.update(query, data)
+        self.update_mongo(edit=edit)
 
 
 def _remove_from_mongo(sender, **kwargs):

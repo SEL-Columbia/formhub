@@ -11,6 +11,7 @@ from odk_viewer.models.parsed_instance import GLOBAL_SUBMISSION_STATS,\
     ParsedInstance
 from stats.models import StatsCount
 from odk_logger.xform_instance_parser import clean_and_parse_xml
+from common_tags import GEOLOCATION
 
 
 class TestFormSubmission(MainTestCase):
@@ -207,3 +208,39 @@ class TestFormSubmission(MainTestCase):
         # without username
         self._make_submission(path=xml_submission_file_path, touchforms=True)
         self.assertEqual(self.response.status_code, 404)
+
+    def test_edit_updated_geopoint_cache(self):
+        query_args = {
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'query': '{}',
+            'fields': '[]',
+            'sort': '[]',
+            'count': True
+        }
+        xml_submission_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "..", "fixtures", "tutorial", "instances",
+            "tutorial_2012-06-27_11-27-53_w_uuid.xml"
+        )
+        self._make_submission(xml_submission_file_path)
+        self.assertEqual(self.response.status_code, 201)
+        # query mongo for the _geopoint field
+        query_args['count'] = False
+        records = ParsedInstance.query_mongo(**query_args)
+        self.assertEqual(len(records), 1)
+        # submit the edited instance
+        xml_submission_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "..", "fixtures", "tutorial", "instances",
+            "tutorial_2012-06-27_11-27-53_w_uuid_edited.xml"
+        )
+        self._make_submission(xml_submission_file_path)
+        self.assertEqual(self.response.status_code, 201)
+        records = ParsedInstance.query_mongo(**query_args)
+        self.assertEqual(len(records), 1)
+        cached_geopoint = records[0][GEOLOCATION]
+        # the cached geopoint should equal the gps field
+        gps = records[0]['gps'].split(" ")
+        self.assertEqual(float(gps[0]), float(cached_geopoint[0]))
+        self.assertEqual(float(gps[1]), float(cached_geopoint[1]))
