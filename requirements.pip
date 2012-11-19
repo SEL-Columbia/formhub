@@ -20,7 +20,7 @@ django-celery==3.0.10
 SQLAlchemy==0.7.1
 
 # new export code relies on
-pandas==0.8.0
+pandas==0.9.1
 
 requests==0.13.6
 
