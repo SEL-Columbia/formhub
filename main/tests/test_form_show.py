@@ -1,7 +1,7 @@
 from django.conf import settings
 import os
 from test_base import MainTestCase
-from main.views import show, form_photos, update_xform
+from main.views import show, form_photos, update_xform, profile
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
 from odk_logger.views import download_xlsform, download_jsonform,\
@@ -175,15 +175,18 @@ class TestFormShow(MainTestCase):
         # when we have 0 submissions, update markup exists
         self.xform.shared = True
         self.xform.save()
-        response = self.client.get(self.url)
-        self.assertContains(response, "xls-update")
+        dashboard_url = reverse(profile, kwargs={
+            'username': 'bob'
+        })
+        response = self.client.get(dashboard_url)
+        self.assertContains(response, 'href="#replace-transportation_2011_07_25"')
         # a non owner can't see the markup
         response = self.anon.get(self.url)
-        self.assertNotContains(response, "xls-update")
+        self.assertNotContains(response, 'href="#replace-transportation_2011_07_25"')
         # when we have a submission, we cant update the xls form
         self._submit_transport_instance()
-        response = self.client.get(self.url)
-        self.assertNotContains(response, "xls-update")
+        response = self.client.get(dashboard_url)
+        self.assertNotContains(response, 'href="#replace-transportation_2011_07_25"')
 
     def test_non_owner_cannot_replace_form(self):
         """
