@@ -167,13 +167,28 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
             // make the callback before the full data is loaded*/
             if(otherFieldsToLoad && otherFieldsToLoad.length > 0)
                 urlParams[constants.FIELDS] = JSON.stringify(otherFieldsToLoad);
-            // TODO: make the full data load asynchronous 
-            $.getJSON(thisFormResponseMngr.url, urlParams, function(data){
-                thisFormResponseMngr.responses = data;
-                thisFormResponseMngr.responseCount = data.length;
-                thisFormResponseMngr._toDatavore();
-                thisFormResponseMngr.callback.call(thisFormResponseMngr);
-            });
+            // TODO: make the full data load asynchronous
+            try
+            {
+                $.getJSON(thisFormResponseMngr.url, urlParams, function(data){
+                    thisFormResponseMngr.responses = data;
+                    thisFormResponseMngr.responseCount = data.length;
+                    thisFormResponseMngr._toDatavore();
+                    thisFormResponseMngr.callback.call(thisFormResponseMngr);
+                });
+            }
+            catch(e)
+            {
+                // remove fields param
+                urlParams[constants.FIELDS] = undefined;
+                $.getJSON(thisFormResponseMngr.url, urlParams, function(data){
+                    thisFormResponseMngr.responses = data;
+                    thisFormResponseMngr.responseCount = data.length;
+                    thisFormResponseMngr._toDatavore();
+                    thisFormResponseMngr.callback.call(thisFormResponseMngr);
+                });
+            }
+
     /*});*/
 };
 
