@@ -14,7 +14,7 @@ from django.core.mail import mail_admins
 from django.core.servers.basehttp import FileWrapper
 from django.db import IntegrityError
 from django.db import transaction
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from modilabs.utils.subprocess_timeout import ProcessTimedOut
@@ -166,15 +166,18 @@ def response_with_mimetype_and_name(
     if not full_mime:
         mimetype = "application/%s" % mimetype
     if file_path:
-        if not use_local_filesystem:
-            default_storage = get_storage_class()()
-            wrapper = FileWrapper(default_storage.open(file_path))
-            response = HttpResponse(wrapper, mimetype=mimetype)
-            response['Content-Length'] = default_storage.size(file_path)
-        else:
-            wrapper = FileWrapper(file(file_path))
-            response = HttpResponse(wrapper, mimetype=mimetype)
-            response['Content-Length'] = os.path.getsize(file_path)
+        try:
+            if not use_local_filesystem:
+                default_storage = get_storage_class()()
+                wrapper = FileWrapper(default_storage.open(file_path))
+                response = HttpResponse(wrapper, mimetype=mimetype)
+                response['Content-Length'] = default_storage.size(file_path)
+            else:
+                wrapper = FileWrapper(file(file_path))
+                response = HttpResponse(wrapper, mimetype=mimetype)
+                response['Content-Length'] = os.path.getsize(file_path)
+        except IOError:
+            response = HttpResponseNotFound(_(u"The requested file could not be found."))
     else:
         response = HttpResponse(mimetype=mimetype)
     response['Content-Disposition'] = disposition_ext_and_date(
