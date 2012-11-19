@@ -168,27 +168,23 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
             if(otherFieldsToLoad && otherFieldsToLoad.length > 0)
                 urlParams[constants.FIELDS] = JSON.stringify(otherFieldsToLoad);
             // TODO: make the full data load asynchronous
-            try
-            {
-                $.getJSON(thisFormResponseMngr.url, urlParams, function(data){
-                    thisFormResponseMngr.responses = data;
-                    thisFormResponseMngr.responseCount = data.length;
-                    thisFormResponseMngr._toDatavore();
-                    thisFormResponseMngr.callback.call(thisFormResponseMngr);
-                });
-            }
-            catch(e)
-            {
-                // remove fields param
+            $.getJSON(thisFormResponseMngr.url, urlParams)
+            .success(function(data){
+                thisFormResponseMngr.responses = data;
+                thisFormResponseMngr.responseCount = data.length;
+                thisFormResponseMngr._toDatavore();
+                thisFormResponseMngr.callback.call(thisFormResponseMngr);
+            }).error(function(e){
+                // remove the fields param if we get an error and try again
                 urlParams[constants.FIELDS] = undefined;
-                $.getJSON(thisFormResponseMngr.url, urlParams, function(data){
-                    thisFormResponseMngr.responses = data;
-                    thisFormResponseMngr.responseCount = data.length;
-                    thisFormResponseMngr._toDatavore();
-                    thisFormResponseMngr.callback.call(thisFormResponseMngr);
-                });
-            }
-
+                $.getJSON(thisFormResponseMngr.url, urlParams)
+                .success(function(data){
+                        thisFormResponseMngr.responses = data;
+                        thisFormResponseMngr.responseCount = data.length;
+                        thisFormResponseMngr._toDatavore();
+                        thisFormResponseMngr.callback.call(thisFormResponseMngr);
+                    });
+            });
     /*});*/
 };
 
