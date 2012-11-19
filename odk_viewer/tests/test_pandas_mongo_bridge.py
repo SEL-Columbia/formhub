@@ -1,4 +1,5 @@
 import os
+import csv
 from django.core.urlresolvers import reverse
 from tempfile import NamedTemporaryFile
 from odk_logger.models.xform import XForm
@@ -6,6 +7,7 @@ from main.tests.test_base import MainTestCase
 from odk_logger.xform_instance_parser import xform_instance_to_dict
 from odk_viewer.pandas_mongo_bridge import *
 from odk_viewer.views import xls_export
+from common_tags import NA_REP
 
 def xls_filepath_from_fixture_name(fixture_name):
     """
@@ -201,7 +203,7 @@ class TestPandasMongoBridge(MainTestCase):
         csv_df_builder = CSVDataFrameBuilder(self.user.username,
             self.xform.id_string)
         temp_file = NamedTemporaryFile(suffix=".csv", delete=False)
-        csv_df_builder.export_to(temp_file)
+        csv_df_builder.export_to(temp_file.name)
         csv_fixture_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             "fixtures", "nested_repeats", "nested_repeats.csv"
@@ -520,3 +522,33 @@ class TestPandasMongoBridge(MainTestCase):
         xpath = "parent"
         prefix = get_prefix_from_xpath(xpath)
         self.assertTrue(prefix is None)
+
+    def test_csv_export_with_df_size_limit(self):
+        """
+        To fix pandas limitation of 30k rows on csv export, we specify a max number of records in a dataframe on export - lets test it
+        """
+        self._publish_single_level_repeat_form()
+        # submit 7 instances
+        for i in range(4):
+            self._submit_fixture_instance("new_repeats", "01")
+        self._submit_fixture_instance("new_repeats", "02")
+        for i in range(2):
+            self._submit_fixture_instance("new_repeats", "01")
+        csv_df_builder = CSVDataFrameBuilder(self.user.username,
+            self.xform.id_string)
+        record_count = csv_df_builder._query_mongo(count=True)
+        self.assertEqual(record_count, 7)
+        temp_file = NamedTemporaryFile(suffix=".csv", delete=False)
+        csv_df_builder.export_to(temp_file.name, data_frame_max_size=3)
+        csv_file = open(temp_file.name)
+        csv_reader = csv.reader(csv_file)
+        header = csv_reader.next()
+        self.assertEqual(len(header), 16)
+        rows = []
+        for row in csv_reader:
+            rows.append(row)
+        self.assertEqual(len(rows), 7)
+        self.assertEqual(rows[4][5], NA_REP)
+        # close and delete file
+        csv_file.close()
+        os.unlink(temp_file.name)
