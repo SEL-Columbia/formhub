@@ -519,13 +519,6 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
 
     def export_to(self, file_or_path, data_frame_max_size=30000):
         from math import ceil
-        # build the query, ideally set the start and limit params for batching
-        #cursor = self._query_mongo(self.filter_query)
-        # generate list of select multiples to be used in format_for_dataframe
-        #data = self._format_for_dataframe(cursor)
-        #columns = list(chain.from_iterable([[xpath] if cols == None else cols\
-        #            for xpath, cols in self.ordered_columns.iteritems()]))
-
         # get record count
         record_count = self._query_mongo(count=True)
 
