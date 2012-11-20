@@ -517,15 +517,38 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
             data.append(flat_dict)
         return data
 
-    def export_to(self, file_object):
-        # build the query, ideally set the start and limit params for batching
-        cursor = self._query_mongo(self.filter_query)
-        # generate list of select multiples to be used in format_for_dataframe
-        data = self._format_for_dataframe(cursor)
+    def export_to(self, file_or_path, data_frame_max_size=30000):
+        from math import ceil
+        # get record count
+        record_count = self._query_mongo(count=True)
+
+        # pandas will only export 30k records in a dataframe to a csv - we need to create multiple 30k dataframes if required
+        # we need to go through all the records though so that we can figure out the columns we need for repeats
+        datas = []
+        num_data_frames = int(ceil(float(record_count)/float(data_frame_max_size)))
+        for i in range(num_data_frames):
+            cursor = self._query_mongo(self.filter_query,
+                start=(i * data_frame_max_size), limit=data_frame_max_size)
+            data = self._format_for_dataframe(cursor)
+            datas.append(data)
+
         columns = list(chain.from_iterable([[xpath] if cols == None else cols\
-                    for xpath, cols in self.ordered_columns.iteritems()]))
-        writer = CSVDataFrameWriter(data, columns)
-        writer.write_to_csv(file_object)
+                                            for xpath, cols in self.ordered_columns.iteritems()]))
+
+        header = True
+        if hasattr(file_or_path, 'read'):
+            csv_file = file_or_path
+            close = False
+        else:
+            csv_file = open(file_or_path, "wb")
+            close = True
+
+        for data in datas:
+            writer = CSVDataFrameWriter(data, columns)
+            writer.write_to_csv(csv_file, header=header)
+            header = False
+        if close:
+            csv_file.close()
 
 class XLSDataFrameWriter(object):
     def __init__(self, records, columns):
@@ -548,6 +571,6 @@ class CSVDataFrameWriter(object):
             if col in self.dataframe.columns:
                 del(self.dataframe[col])
 
-    def write_to_csv(self, csv_file, index=False):
-        self.dataframe.to_csv(csv_file, index=index, na_rep=NA_REP,
+    def write_to_csv(self, csv_file, header=True, index=False):
+        self.dataframe.to_csv(csv_file, header=header, index=index, na_rep=NA_REP,
                               encoding='utf-8')
