@@ -266,7 +266,6 @@ def show(request, username=None, id_string=None, uuid=None):
 
 
 @require_GET
-@gzip_page
 def api(request, username=None, id_string=None):
     """
     Returns all results as JSON.  If a parameter string is passed,
