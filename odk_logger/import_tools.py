@@ -94,34 +94,38 @@ def import_instances_from_zip(zipfile_path, user, status="zip"):
         zf = zipfile.ZipFile(zipfile_path)
 
         zf.extractall(temp_directory)
-
-        def callback(xform_fs):
-            """
-            This callback is passed an instance of a XFormInstanceFS.
-            See xform_fs.py for more info.
-            """
-            xml_file = django_file(xform_fs.path,
-                                   field_name="xml_file",
-                                   content_type="text/xml")
-            images = [django_file(jpg, field_name="image",
-                      content_type="image/jpeg") for jpg in xform_fs.photos]
-            # TODO: if an instance has been submitted make sure all the
-            # files are in the database.
-            # there shouldn't be any instances with a submitted status in the
-            instance = create_instance(user.username, xml_file, images, status)
-            # close the files
-            xml_file.close()
-            for i in images:
-                i.close()
-            if instance:
-                return 1
-            else:
-                return 0
-        total_count, success_count, errors = iterate_through_odk_instances(
-            temp_directory, callback)
     except zipfile.BadZipfile, e:
         errors = [u"%s" % e]
         return 0, 0, errors
+    else:
+        return import_instances_from_path(temp_directory, user, status)
     finally:
         shutil.rmtree(temp_directory)
+
+def import_instances_from_path(path, user, status="zip"):
+    count = 0
+    def callback(xform_fs):
+        """
+        This callback is passed an instance of a XFormInstanceFS.
+        See xform_fs.py for more info.
+        """
+        xml_file = django_file(xform_fs.path,
+            field_name="xml_file",
+            content_type="text/xml")
+        images = [django_file(jpg, field_name="image",
+            content_type="image/jpeg") for jpg in xform_fs.photos]
+        # TODO: if an instance has been submitted make sure all the
+        # files are in the database.
+        # there shouldn't be any instances with a submitted status in the
+        instance = create_instance(user.username, xml_file, images, status)
+        # close the files
+        xml_file.close()
+        for i in images:
+            i.close()
+        if instance:
+            return 1
+        else:
+            return 0
+    total_count, success_count, errors = iterate_through_odk_instances(
+        path, callback)
     return (total_count, success_count, errors)
