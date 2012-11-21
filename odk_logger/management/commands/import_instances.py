@@ -1,38 +1,42 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4 coding=utf-8
-
-import os, glob
-from django.core.management.base import BaseCommand
+import os
+import glob
+from django.contrib.auth.models import User
+from django.core.management.base import BaseCommand, CommandError
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.utils.translation import ugettext_lazy
-from ... import models, utils
-
+from django.utils.translation import ugettext as _, ugettext_lazy
+from odk_logger. import_tools import django_file, import_instances_from_zip, import_instances_from_path
 
 class Command(BaseCommand):
-    help = ugettext_lazy("Import a folder of ODK instances.")
+    args = 'username path'
+    help = ugettext_lazy("Import a zip file, a directory containing zip files or a directory of ODK instances")
 
     def handle(self, *args, **kwargs):
-        path = args[0]
-        for instance in glob.glob( os.path.join(path, "*") ):
-            xml_files = glob.glob( os.path.join(instance, "*.xml") )
-            if len(xml_files)<1: continue
-            # we need to figure out what to do if there are multiple
-            # xml files in the same folder.
-            xml_file = utils.django_file(xml_files[0],
-                                         field_name="xml_file",
-                                         content_type="text/xml")
-            images = []
-            for jpg in glob.glob(os.path.join(instance, "*.jpg")):
-                images.append(
-                    utils.django_file(jpg,
-                                      field_name="image",
-                                      content_type="image/jpeg")
-                    )
-            try:
-                models.get_or_create_instance(xml_file, images)
-            except utils.MyError, e:
-                print e
+        if len(args) < 2:
+            raise CommandError(_("Usage: <command> username file/path."))
+        username = args[0]
+        path = args[1]
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise CommandError(_("The specified user '%s' does not exist.") % username)
 
-            # close the files
-            xml_file.close()
-            for i in images: i.close()
+        # make sure path exists
+        if not os.path.exists(path):
+            raise CommandError(_("The specified path '%s' does not exist.") % path)
+
+        for dir, subdirs, files in os.walk(path):
+            # check if the dir has an odk directory
+            if "odk" in subdirs:
+                # dont walk further down this dir
+                subdirs.remove("odk")
+                self.stdout.write(_("Importing from dir %s..\n") % dir)
+                (total_count, success_count, errors) = import_instances_from_path(dir, user)
+                self.stdout.write(_("Total: %d, Imported: %d, Errors: %s\n------------------------------\n") % (total_count, success_count, errors))
+            for file in files:
+                filepath = os.path.join(path, file)
+                if os.path.isfile(filepath) and os.path.splitext(filepath)[1].lower() == ".zip":
+                    self.stdout.write(_("Importing from zip at %s..\n") % filepath)
+                    (total_count, success_count, errors) = import_instances_from_zip(filepath, user)
+                    self.stdout.write(_("Total: %d, Imported: %d, Errors: %s\n------------------------------\n") % (total_count, success_count, errors))
