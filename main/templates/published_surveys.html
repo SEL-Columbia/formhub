@@ -161,6 +161,7 @@
             <ul class="dropdown-menu form-options left-arrow" role="menu" aria-labelledby="dropdownMenu">
                 {% if submission_count <= 0 %}
                 <li><a tabindex="-1" href="#delete-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Delete' %}</a></li>
+								<li><a tabindex="-1" href="#replace-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Replace' %}</a></li>
                 {% endif %}
             </ul>
           </div>
@@ -182,7 +183,25 @@
                     </form>
                 </div>
             {% endif %}
-        {% endif %}
+
+						{% if xform.can_be_replaced and xform.user ==  user  %}
+						<div id = "xls-update">
+							<div id="replace-{{ xform.id_string }}" class="modal hide fade">
+								<form action="{% url main.views.update_xform content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
+								{% csrf_token %}
+									<div class="modal-header">
+										<a data-dismiss="modal" class="close">&times;</a>
+										<h3>{% trans "Update XLS" %}</h3>
+									</div>
+									<div class="modal-body">
+										<input type="file" name="xls_file" id="id_xls_file" />
+										<input type="submit" class="btn large btn-primary" value="{% trans "Update" %}" data-original-title="" />
+									</div>
+								</form>
+							</div>
+						</div>
+						{% endif %}
+					{% endif %}
         </td>
       </tr>
       {% endwith %}
