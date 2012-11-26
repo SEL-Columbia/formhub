@@ -10,6 +10,11 @@
 <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/sammy-0.7.1.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/sammy-plugins/sammy.meld-0.7.1.min.js"></script>
+<script type="text/javascript">
+$("#data_table").load(function() {
+  $("#loading").hide();
+})();
+</script>
 
 {% endblock %}
 
@@ -25,11 +30,6 @@
 
 <div id="data"></div>
 <script type="text/javascript">
-
-$("#data_table").load(function() {
-  $("#loading").hide();
-})();
-
 var formJSONUrl = "{% url odk_logger.views.download_jsonform username id_string %}";
 var mongoAPIUrl = "{% url main.views.api username id_string %}";
 var deleteAPIUrl = "{% url main.views.delete_data username id_string %}";
