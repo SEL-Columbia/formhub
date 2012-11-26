@@ -2,11 +2,6 @@
 {% load i18n %}
 
 {% block additional-headers %}
-<script type="text/javascript">
-$("#data").load(function() {
-  $("#loading").hide();
-})();
-</script>
 <style type="text/css">
 
 </style>
@@ -435,4 +430,9 @@ function parseLanguages(children)
             </div>
           </div>
     <script type="text/javascript" charset="utf-8" src="/static/js/instance.js"></script>
+		<script type="text/javascript">
+		$("#data-table").load(function() {
+		  $("#loading").hide();
+		})();
+		</script>
 {% endblock %}
