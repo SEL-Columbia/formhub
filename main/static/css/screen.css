@@ -983,6 +983,11 @@ a:focus {
 #support .explanation {
 	padding-bottom: 30px;
 }
+#loading {
+  display: block;
+  text-align: center;
+	padding-bottom: 30px;
+}
 
 .alert-success a {
   color: #4169e1;
