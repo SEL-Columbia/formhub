@@ -15,7 +15,7 @@ xform_instances = settings.MONGO_DB.instances
 
 class Command(BaseCommand):
     args = '[username] [id_string]'
-    help = ugettext_lazy("Check the count of submissions in sqlite vs the mongo db for each form and optionally run remongo.")
+    help = ugettext_lazy("Check the count of submissions in sqlite vs the mongo db per form and optionally run remongo.")
     option_list = BaseCommand.option_list + (
         make_option('-r', '--remongo',
             action='store_true',
@@ -61,7 +61,7 @@ class Command(BaseCommand):
                            (user.username, xform.id_string, instance_count, mongo_count)
                     f.write(line)
                     found += 1
-                    total_to_remongo += instance_count
+                    total_to_remongo += (instance_count - mongo_count)
                     # should we remongo
                     if kwargs.has_key('remongo') and kwargs['remongo']:
                         self.stdout.write("Running remongo on %s\n-----------------------------------------------\n" %\
