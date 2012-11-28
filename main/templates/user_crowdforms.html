@@ -41,7 +41,7 @@
                       <div class="popover-content">
                           <div class="btn-group">
                               {% if has_surveys_with_geopoints %}
-                                  <a class="btn btn-flat" href="{% url odk_viewer.views.map_view user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
+				  <a class="btn btn-flat" href="{% url odk_viewer.views.map_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
                                       <i class="icon-map-marker icon-large"></i>
                                   </a>
                               {% else %}
@@ -50,7 +50,7 @@
                                   </span>
                               {% endif %}
                               {% if xform.submission_count > 0 %}
-                                  <a class="btn btn-flat" href="{% url main.views.form_photos content_user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
+				  <a class="btn btn-flat" href="{% url main.views.form_photos xform.user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
                                       <i class="icon-camera icon-large"></i>
                                   </a>
                               {% else %}
@@ -59,14 +59,14 @@
                                   </span>
                               {% endif %}
 
-                              <a class="btn btn-flat" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}" data-original-title="{% trans 'Enter Web Form' %}" rel="tooltip">
+			      <a class="btn btn-flat" href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}" data-original-title="{% trans 'Enter Web Form' %}" rel="tooltip">
                                   <i class="icon-edit icon-large"></i>
                               </a>
                               {% if xform.submission_count > 0 %}
-                                  <a class="btn btn-flat" href="{% url odk_viewer.views.data_view content_user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
+				  <a class="btn btn-flat" href="{% url odk_viewer.views.data_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
                                       <i class="icon-data icon-large"></i>
                                   </a>
-                                  <a class="btn btn-flat" href="{% url odk_viewer.views.instance content_user.username xform.id_string %}" data-original-title="{% trans 'Browse Data (One by One)' %}" rel="tooltip">
+				  <a class="btn btn-flat" href="{% url odk_viewer.views.instance xform.user.username xform.id_string %}" data-original-title="{% trans 'Browse Data (One by One)' %}" rel="tooltip">
                                       <i class="icon-browse icon-large"></i>
                                   </a>
                               {% else %}
@@ -117,11 +117,11 @@
                       <span class="label label-info">{%  trans "PUBLIC" %}</span>
                   {% endif %}
                   <ul class="download-nav">
-                      <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'csv' %}">{%  trans "csv" %}</a></li>
-                      <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'xls' %}">{%  trans "xls" %}</a></li>
+		      <li><a href="{% url odk_viewer.views.export_list xform.user.username xform.id_string 'csv' %}">{%  trans "csv" %}</a></li>
+		      <li><a href="{% url odk_viewer.views.export_list xform.user.username xform.id_string 'xls' %}">{%  trans "xls" %}</a></li>
                       <li>
                           {% if has_surveys_with_geopoints %}
-                              <a href="{% url odk_viewer.views.kml_export user.username xform.id_string %}">{%  trans "kml" %}</a>
+			      <a href="{% url odk_viewer.views.kml_export xform.user.username xform.id_string %}">{%  trans "kml" %}</a>
                           {% endif %}
                       </li>
                   </ul>
