@@ -17,6 +17,8 @@ class Command(BaseCommand):
         qs = XForm.objects.all()
         total = qs.count()
         done = 0
+        found = 0
+        total_to_remongo = 0
         with open("mongo_vs_instance_counts_report.txt", "w") as f:
             for xform in queryset_iterator(qs, 100):
                 # get the count
@@ -28,5 +30,9 @@ class Command(BaseCommand):
                     line = "%s @ %s\nInstance count: %d           Mongo count: %d\n--------------------------------------\n" %\
                            (user.username, xform.id_string, instance_count, mongo_count)
                     f.write(line)
+                    found += 1
+                    total_to_remongo += instance_count
                 done += 1
                 print "%f %% done ..." % ((float(done)/float(total)) * 100)
+            line  = "Total to remongo:          %d\nTotal Forms Found:           %d" % (total_to_remongo, found)
+            f.write(line)
