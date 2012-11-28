@@ -154,15 +154,9 @@ class ParsedInstance(models.Model):
 
     def update_mongo(self, edit=False):
         d = self.to_dict_for_mongo()
-        if not edit:
-            xform_instances.save(d)
-        else:
-            query = {
-                ID: self.instance.id,
-                self.USERFORM_ID: u'%s_%s' % (
-                     self.instance.user.username, self.instance.xform.id_string),
-            }
-            xform_instances.update(query, d)
+        # since our ddict always has an id, save will always result in an upsert op - so we dont need to worry whether its an edit or not
+        # http://api.mongodb.org/python/current/api/pymongo/collection.html#pymongo.collection.Collection.save
+        xform_instances.save(d)
 
     def to_dict(self):
         if not hasattr(self, "_dict_cache"):
