@@ -19,6 +19,8 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from modilabs.utils.subprocess_timeout import ProcessTimedOut
 from pyxform.errors import PyXFormError
+import sys
+import common_tags
 
 from odk_logger.models import Attachment
 from odk_logger.models import Instance
@@ -30,6 +32,7 @@ from odk_logger.xform_instance_parser import InstanceInvalidUserError, \
     get_uuid_from_xml, get_deprecated_uuid_from_xml
 
 from odk_viewer.models import ParsedInstance, DataDictionary
+from utils.model_tools import queryset_iterator
 
 
 OPEN_ROSA_VERSION_HEADER = 'X-OpenRosa-Version'
@@ -40,6 +43,8 @@ DEFAULT_CONTENT_LENGTH = 5000000
 
 uuid_regex = re.compile(r'<formhub><uuid>([^<]+)</uuid></formhub>',
                         re.DOTALL)
+
+mongo_instances = settings.MONGO_DB.instances
 
 
 @transaction.commit_on_success
@@ -300,3 +305,24 @@ def inject_instanceid(instance):
         xml.documentElement.appendChild(meta_tag)
         return xml.toxml()
     return instance.xml
+
+def update_mongo_for_xform(xform, only_update_missing=True):
+    sqlite_ids = set([i.id for i in Instance.objects.only('id').filter(xform=xform)])
+    sys.stdout.write("Total no of instances: %d\n" % len(sqlite_ids))
+    mongo_ids = set()
+    if only_update_missing:
+        sys.stdout.write("Only updating missing mongo instances\n")
+        user = xform.user
+        userform_id = "%s_%s" % (user.username, xform.id_string)
+        mongo_ids = set([rec[common_tags.ID] for rec in mongo_instances.find({common_tags.USERFORM_ID: userform_id},
+                {common_tags.ID: 1})])
+        sys.stdout.write("Total no of mongo instances: %d\n" % len(mongo_ids))
+        # get the difference
+        sqlite_ids = sqlite_ids.difference(mongo_ids)
+    # get instances
+    sys.stdout.write("Total no of instances to update: %d\n" % len(sqlite_ids))
+    instances = Instance.objects.only('id').in_bulk([id for id in sqlite_ids])
+    total = len(instances)
+    for id, instance in instances.items():
+        (pi, created) = ParsedInstance.objects.get_or_create(instance=instance)
+        pi.save()
