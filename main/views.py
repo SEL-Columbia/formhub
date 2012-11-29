@@ -575,7 +575,8 @@ def form_photos(request, username, id_string):
 def set_perm(request, username, id_string):
     xform = get_object_or_404(XForm,
                               user__username=username, id_string=id_string)
-    if not has_permission(xform, username, request):
+    if username != request.user.username\
+            and not has_permission(xform, username, request):
         return HttpResponseForbidden(_(u'Permission denied.'))
     try:
         perm_type = request.POST['perm_type']
