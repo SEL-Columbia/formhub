@@ -11,14 +11,6 @@
 <script type="text/javascript" charset="utf-8" src="/static/js/sammy-0.7.1.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/sammy-plugins/sammy.meld-0.7.1.min.js"></script>
 
-<script type="text/javascript">
-$(function(){
-  $("#data-table").load(function() {
-    $("#loading").hide();
-  });
-})();
-</script>
-
 {% endblock %}
 
 {% block content %}
@@ -422,13 +414,13 @@ function parseLanguages(children)
     }
 }
 
-// $("#loading").ajaxStart(function(){
-//    $(this).show();
-//  });
+$(document).ajaxStart(function(){
+   $("#loading").show();
+ });
 
-// $("#loading").ajaxComplete(function(){
-//    $(this).hide();
-//  });
+$(document).ajaxComplete(function(){
+   $("#loading").hide();
+ });
 </script>
 
 
