@@ -11,6 +11,12 @@
 <script type="text/javascript" charset="utf-8" src="/static/js/sammy-0.7.1.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/sammy-plugins/sammy.meld-0.7.1.min.js"></script>
 
+<script type="text/javascript">
+  $("#data-table").load(function() {
+    $("#loading").hide();
+  })();
+</script>
+
 {% endblock %}
 
 {% block content %}
@@ -438,9 +444,4 @@ function parseLanguages(children)
             </div>
           </div>
 <script type="text/javascript" charset="utf-8" src="/static/js/instance.js"></script>
-<script type="text/javascript">
-  $("#data-table").load(function() {
-    $("#loading").hide();
-  })();
-</script>
 {% endblock %}
