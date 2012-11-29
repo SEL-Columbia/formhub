@@ -83,7 +83,11 @@ class TestFormPermissions(MainTestCase):
 
     def test_require_owner_to_add_perm(self):
         response = self.anon.post(self.perm_url)
-        self.assertEqual(response.status_code, 302)
+        self.assertContains(response, 'Permission denied.', status_code=403)
+        self._create_user_and_login('alice');
+        response = self.client.post(self.perm_url)
+        self.assertContains(response, 'Permission denied.', status_code=403)
+
 
     def test_add_view_to_user(self):
         user = self._create_user('alice', 'alice')

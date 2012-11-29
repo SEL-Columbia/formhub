@@ -219,7 +219,7 @@
             {% endif %}
 		{% endif %}
 		{% endif %}
-		{% if can_edit %}
+		{% if can_edit or xform.is_crowd_form %}
 	    <div class="btn-group" style="margin-bottom: 9px">
 		    <a class="btn btn-info" rel="tooltip" title="{% trans 'Webform' %}" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
 		      <i class="icon-edit icon-white"></i> {% trans "Enter Web Form" %}
