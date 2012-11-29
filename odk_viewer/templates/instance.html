@@ -431,8 +431,9 @@ function parseLanguages(children)
           </div>
 <script type="text/javascript" charset="utf-8" src="/static/js/instance.js"></script>
 <script type="text/javascript">
-  $(".dataTables_paginate").load(function() {
-    $("#loading").hide();
-  })();
+$('#loading')
+  .ajaxStop(function() {
+      $(this).hide();
+  });
 </script>
 {% endblock %}
