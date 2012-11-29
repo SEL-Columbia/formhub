@@ -1,6 +1,5 @@
 import gc
 import uuid
-from odk_logger.models.xform import XForm, DuplicateUUIDError
 
 
 def generate_uuid_for_form():
@@ -34,6 +33,7 @@ def queryset_iterator(queryset, chunksize=100):
         gc.collect()
 
 def update_xform_uuid(username, id_string, new_uuid):
+    from odk_logger.models.xform import XForm, DuplicateUUIDError
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     # check for duplicate uuid
     count = XForm.objects.filter(uuid=new_uuid).count()
