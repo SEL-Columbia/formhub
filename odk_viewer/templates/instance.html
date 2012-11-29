@@ -12,9 +12,11 @@
 <script type="text/javascript" charset="utf-8" src="/static/js/sammy-plugins/sammy.meld-0.7.1.min.js"></script>
 
 <script type="text/javascript">
+$(function(){
   $("#data-table").load(function() {
     $("#loading").hide();
-  })();
+  });
+})();
 </script>
 
 {% endblock %}
