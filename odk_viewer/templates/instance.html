@@ -414,13 +414,13 @@ function parseLanguages(children)
     }
 }
 
-$("#loading").ajaxStart(function(){
-   $(this).show();
- });
+// $("#loading").ajaxStart(function(){
+//    $(this).show();
+//  });
 
-$("#loading").ajaxComplete(function(){
-   $(this).hide();
- });
+// $("#loading").ajaxComplete(function(){
+//    $(this).hide();
+//  });
 </script>
 
 
@@ -438,4 +438,9 @@ $("#loading").ajaxComplete(function(){
             </div>
           </div>
 <script type="text/javascript" charset="utf-8" src="/static/js/instance.js"></script>
+<script type="text/javascript">
+  $("table").load(function() {
+    $("#loading").hide();
+  })();
+</script>
 {% endblock %}
