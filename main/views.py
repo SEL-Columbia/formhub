@@ -572,10 +572,11 @@ def form_photos(request, username, id_string):
 
 
 @require_POST
-@is_owner
 def set_perm(request, username, id_string):
     xform = get_object_or_404(XForm,
                               user__username=username, id_string=id_string)
+    if not has_permission(xform, username, request):
+        return HttpResponseForbidden(_(u'Permission denied.'))
     try:
         perm_type = request.POST['perm_type']
         for_user = request.POST['for_user']
@@ -598,6 +599,10 @@ def set_perm(request, username, id_string):
         elif for_user == 'toggle':
             current = MetaData.public_link(xform)
             MetaData.public_link(xform, not current)
+    if request.is_ajax():
+        return HttpResponse(
+            simplejson.dumps(
+                {'status': 'success'}), mimetype='application/json')
     return HttpResponseRedirect(reverse(show, kwargs={
         'username': username,
         'id_string': id_string
