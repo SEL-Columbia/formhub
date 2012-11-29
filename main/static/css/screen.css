@@ -988,7 +988,9 @@ a:focus {
   text-align: center;
 	padding-bottom: 30px;
 }
-
+#loading p {
+    font-weight: bold;
+}
 .alert-success a {
   color: #4169e1;
 }
