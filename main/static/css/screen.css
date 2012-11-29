@@ -610,11 +610,6 @@ section {
   margin: 0;
 }
 
-#page-wrap{
-	background-color: white;
-	padding: 40px;
-}
-
 .title {
   color: #d96e27;
 	margin-top: 10px;
@@ -983,7 +978,14 @@ a:focus {
 #support .explanation {
 	padding-bottom: 30px;
 }
-
+#loading {
+  display: block;
+  text-align: center;
+	padding-bottom: 30px;
+}
+#loading p {
+    font-weight: bold;
+}
 .alert-success a {
   color: #4169e1;
 }
