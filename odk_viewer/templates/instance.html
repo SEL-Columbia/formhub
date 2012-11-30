@@ -17,6 +17,12 @@
 <div class="page-header">
     <h1>{% trans "Browse Form Data" %}(<a href="{% url main.views.show username xform.id_string %}">{{ xform.title }}</a>)</h1>
 </div>
+
+<div id="loading">
+  <p> Loading... </p>
+  <img id="loading-image" src="/static/images/ajax-loader.gif" alt="Loading..." />
+</div>
+
 <div id="data"></div>
 <script type="text/javascript">
 var formJSONUrl = "{% url odk_logger.views.download_jsonform username id_string %}";
@@ -423,5 +429,14 @@ function parseLanguages(children)
               <a href="#" onclick="$('#delete-modal').modal('hide');" class="btn secondary">{% trans "Cancel" %}</a>
             </div>
           </div>
-    <script type="text/javascript" charset="utf-8" src="/static/js/instance.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/instance.js"></script>
+<script type="text/javascript">
+$('#loading')
+    .ajaxStart(function() {
+        $(this).show();
+    })
+    .ajaxStop(function() {
+        $(this).hide();
+    });
+</script>
 {% endblock %}
