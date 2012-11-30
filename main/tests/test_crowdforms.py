@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from main.models import MetaData
@@ -130,3 +131,43 @@ class TestCrowdforms(MainTestCase):
         xform = XForm.objects.get(pk=self.xform.pk)
         self.assertEqual(xform.shared, True)
         self.assertEqual(xform.is_crowd_form, False)
+
+    def test_crowdform_for_new_user(self):
+        # initial
+        meta = MetaData.crowdform_users(self.xform)
+        self.assertEqual(len(meta), 0)
+
+        #save settings to be restored later
+        old_auto_add_cf = settings.AUTO_ADD_CROWDFORM
+        old_default_cf = settings.DEFAULT_CROWDFORM
+
+        # enable auto add crowdform
+        settings.AUTO_ADD_CROWDFORM = True
+        settings.DEFAULT_CROWDFORM = {
+            'xform_username': self.user.username,
+            'xform_id_string': self.xform.id_string}
+
+        # register new user
+        post_data = {
+            'username': self.alice,
+            'email': 'alice@columbia.edu',
+            'password1': 'bobbob',
+            'password2': 'bobbob',
+            'name': 'Alice',
+            'city': 'Ecila',
+            'country': 'US',
+            'organization': 'Alic Inc.',
+            'home_page': 'alice.com',
+            'twitter': 'alicerama'
+        }
+        url = '/accounts/register/'
+        self.response = self.client.post(url, post_data)
+
+        # check to ensure that crowd form was added
+        meta = MetaData.crowdform_users(self.xform)
+        self.assertEqual(len(meta), 1)
+        self.assertEqual(meta[0].data_value, self.alice)
+
+        # restore old settings
+        settings.AUTO_ADD_CROWDFORM = old_auto_add_cf
+        settings.DEFAULT_CROWDFORM = old_default_cf

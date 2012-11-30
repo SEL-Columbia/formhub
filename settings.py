@@ -226,6 +226,10 @@ BROKER_BACKEND = "rabbitmq"
 BROKER_URL = 'amqp://guest:guest@localhost:5672/'
 CELERY_RESULT_BACKEND = "amqp"  # telling Celery to report the results back to RabbitMQ
 
+# auto add crowdform to new registration
+AUTO_ADD_CROWDFORM = False
+DEFAULT_CROWDFORM = {'xform_username': 'bob', 'xform_id_string': 'transport'}
+
 TESTING_MODE = False
 if len(sys.argv)>=2 and (sys.argv[1]=="test" or sys.argv[1]=="test_all"):
     # This trick works only when we run tests from the command line.
