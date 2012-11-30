@@ -10,9 +10,10 @@ from django.core.files.storage import default_storage
 from django.core.validators import URLValidator
 from django.forms import ModelForm
 from django.utils.translation import ugettext as _, ugettext_lazy
+from django.conf import settings
 
 from main.models import UserProfile, MetaData
-from odk_viewer.models import DataDictionary
+from odk_logger.models import XForm
 from odk_viewer.models.data_dictionary import upload_to
 from registration.forms import RegistrationFormUniqueEmail
 from registration.models import RegistrationProfile
@@ -173,6 +174,20 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail,
             password=self.cleaned_data['password1'],
             email=self.cleaned_data['email'])
         UserProfileFormRegister.save(self, new_user)
+        if hasattr(settings, 'AUTO_ADD_CROWDFORM') and \
+                settings.AUTO_ADD_CROWDFORM and \
+                hasattr(settings, 'DEFAULT_CROWDFORM'):
+            try:
+                default_crowdform = settings.DEFAULT_CROWDFORM
+                if isinstance(default_crowdform, dict) and\
+                        default_crowdform.has_key('xform_username') and\
+                        default_crowdform.has_key('xform_id_string'):
+                    xform = XForm.objects.get(
+                        id_string=default_crowdform['xform_id_string'],
+                        user__username=default_crowdform['xform_username'])
+                    MetaData.crowdform_users(xform, new_user.username)
+            except XForm.DoesNotExist:
+                pass
         return new_user
 
 
