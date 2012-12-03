@@ -3,7 +3,9 @@ from django.utils import simplejson
 
 from test_base import MainTestCase
 from main.views import api
-from odk_viewer.models.parsed_instance import ParsedInstance
+from odk_viewer.models.parsed_instance import ParsedInstance, \
+    _encode_for_mongo, _decode_from_mongo
+import base64
 
 def dict_for_mongo_without_userform_id(parsed_instance):
     d = parsed_instance.to_dict_for_mongo()
@@ -98,3 +100,14 @@ class TestFormAPI(MainTestCase):
         find_d = simplejson.loads(response.content)[0]
         self.assertTrue(find_d.has_key('transport/available_transportation_types_to_referral_facility'))
         self.assertFalse(find_d.has_key('_attachments'))
+
+    def test_api_decode_from_mongo(self):
+        field = "$section1.group01.question1"
+        encoded = _encode_for_mongo(field)
+        self.assertEqual(encoded, ("%(dollar)ssection1%(dot)sgroup01%(dot)squestion1" % \
+                                   {"dollar": base64.b64encode("$"), \
+                                    "dot": base64.b64encode(".")}))
+        decoded = _decode_from_mongo(encoded)
+        self.assertEqual(field, decoded)
+
+
