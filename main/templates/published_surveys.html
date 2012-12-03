@@ -53,7 +53,7 @@
         });
 	});
   </script>
-
+{% if all_forms %}
   <table id="forms-table" class="table table-bordered table-striped forms-table">
     <thead>
       <tr>
@@ -73,7 +73,10 @@
         <td>
             <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
             {% if xform.shared %}
-                <span class="label label-info">{%  trans "PUBLIC" %}</span>
+                <span class="label label-info label-public">{%  trans "PUBLIC" %}</span>
+            {% endif %}
+            {% if xform.is_crowd_form %}
+                <span class="label label-crowdform">{%  trans "CROWDFORM" %}</span>
             {% endif %}
         </td>
         <td><center>{{ submission_count|intcomma }}</center></td>
@@ -145,7 +148,7 @@
                   <span class="vertical-middle">
                     <span class="download">{% trans "Download" %}</span>
                       {% if xform.shared_data %}
-                          <span class="label label-info">{%  trans "PUBLIC" %}</span>
+                          <span class="label label-info label-public">{%  trans "PUBLIC" %}</span>
                       {% endif %}
                     <ul class="download-nav">
                       <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'csv' %}">{%  trans "csv" %}</a></li>
@@ -224,8 +227,11 @@
 
     </tbody>
   </table>
+
+  {% endif %}
   <hr />
     </section>
+    {% if forms_shared_with %}
     <section id="forms-shared-with-you">
   <div class="page-header">
       <h1>{% blocktrans %}Shared Forms <small>List of forms shared with you.</small>{% endblocktrans %}</h1>
@@ -247,9 +253,12 @@
           {% with submission_count=xform.submission_count time_of_last_submission=xform.time_of_last_submission has_surveys_with_geopoints=xform.data_dictionary.has_surveys_with_geopoints %}
           <tr>
               <td>
-                  <a href="{% url main.views.show xform.user.username xform.id_string %}">{{ xform.title }}</a> <span class="label label-info">{% trans "Shared by" %} {{ xform.user.username }}</span>
+                  <a href="{% url main.views.show xform.user.username xform.id_string %}">{{ xform.title }}</a> <span class="label label-shared">{% trans "Shared by" %} {{ xform.user.username }}</span>
                   {% if xform.shared %}
-                      <span class="label label-info">{%  trans "PUBLIC" %}</span>
+                      <span class="label label-info label-public">{%  trans "PUBLIC" %}</span>
+                  {% endif %}
+                  {% if xform.is_crowd_form %}
+                      <span class="label label-crowdform">{%  trans "CROWDFORM" %}</span>
                   {% endif %}
 
               </td>
@@ -316,7 +325,7 @@
                   <span class="vertical-middle">
                     <span class="download">{% trans "Download" %}</span>
                       {% if xform.shared_data %}
-                          <span class="label label-info">{%  trans "PUBLIC" %}</span>
+                          <span class="label label-info label-public">{%  trans "PUBLIC" %}</span>
                       {% endif %}
                       <ul class="download-nav">
                           <li><a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'csv' %}">{%  trans "csv" %}</a></li>
@@ -354,23 +363,15 @@
   </table>
 <hr />
 </section>
+        {% endif %}
 {% endif %}
 {% if crowdforms %}
     <section id="crowdforms">
-        <script type="text/javascript">
-            var tbl = $('#crowdforms-table').dataTable({
-                "bPaginate": false,
-                "sPaginationType": "bootstrap",
-                "bSort": true,
-                "oLanguage": {"sSearch": "{% trans 'Search:' %}"},
-                "oSearch": {"sSearch": ""}});
-
-        </script>
         <div class="page-header">
             <h1>{% blocktrans %}Crowdforms <small>List of crowdforms you have joined.</small>{% endblocktrans %}</h1>
         </div>
 
-        <table id="crowdforms-table" class="table table-bordered table-striped">
+        <table id="crowdforms-table" class="table table-bordered table-striped forms-table">
             <thead>
             <tr>
                 <th>{%  trans "Name" %}</th>
@@ -378,6 +379,7 @@
                 <th>{%  trans "View" %}</th>
                 <th>{%  trans "Data" %}</th>
                 <th>{%  trans "Last Submission" %}</th>
+                <th>{%  trans "Active" %}</th>
                 <th>&nbsp;</th>
             </tr>
             </thead>
@@ -389,6 +391,9 @@
                             <a href="{% url main.views.show xform.user.username xform.id_string %}">{{ xform.title }}</a>
                             {% if xform.shared %}
                                 <span class="label label-info">{%  trans "PUBLIC" %}</span>
+                            {% endif %}
+                            {% if xform.is_crowd_form %}
+                                <span class="label">{%  trans "CROWDFORM" %}</span>
                             {% endif %}
                         </td>
                         <td><center>{{ xform.submission_count|intcomma }}</center></td>
@@ -497,6 +502,7 @@
                                 {{ xform.time_of_last_submission|date:"N d, Y" }}
                             {% endif %}
                         </td>
+                        <td>{{ xform.downloadable|lower }}</td>
                         <td>
                             <div class="dropdown">
                                 <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
