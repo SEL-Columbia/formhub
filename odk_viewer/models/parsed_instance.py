@@ -67,6 +67,13 @@ def _encode_for_mongo(key):
                   [(r'^\$', '$'), (r'\.', '.')], key)
 
 
+def _decode_from_mongo(key):
+    re_dollar = re.compile(r"^%s" % base64.b64encode("$"))
+    re_dot = re.compile(r"\%s" % base64.b64encode("."))
+    return reduce(lambda s, c: c[0].sub(c[1], s),
+        [(re_dollar, '$'), (re_dot, '.')], key)
+
+
 def _is_invalid_for_mongo(key):
     return not key in \
         key_whitelist and (key.startswith('$') or key.count('.') > 0)
@@ -113,7 +120,7 @@ class ParsedInstance(models.Model):
         # TODO: current mongo (2.0.4 of this writing)
         # cant mix including and excluding fields in a single query
         if type(fields) == list and len(fields) > 0:
-            fields_to_select = dict([(field, 1) for field in fields])
+            fields_to_select = dict([(_encode_for_mongo(field), 1) for field in fields])
         sort = json.loads(
             sort, object_hook=json_util.object_hook) if sort else {}
         cursor = xform_instances.find(query, fields_to_select)
@@ -122,8 +129,9 @@ class ParsedInstance(models.Model):
         cursor.skip(start).limit(limit)
         if type(sort) == dict and len(sort) == 1:
             sort_key = sort.keys()[0]
+            #todo: encode sort key if it has dots
             sort_dir = int(sort[sort_key])  # -1 for desc, 1 for asc
-            cursor.sort(sort_key, sort_dir)
+            cursor.sort(_encode_for_mongo(sort_key), sort_dir)
         # set batch size
         cursor.batch_size = cls.DEFAULT_BATCHSIZE
         return cursor
