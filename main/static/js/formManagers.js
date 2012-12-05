@@ -205,7 +205,11 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
             $.getJSON(url, params)
                 .success(successFnc)
                 .error(function(e){
-                    throw new Error("Failed to load data.")
+                    // cut the limit in half and re-try
+                    params[constants.LIMIT] = Math.round(params[constants.LIMIT]/2);
+                    // apply to global params for subsequent calls
+                    urlParams[constants.FIELDS] = params[constants.LIMIT];
+                    loadFnc(url, params);
                 });
         });
         return jqXHR;
