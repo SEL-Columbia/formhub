@@ -206,9 +206,9 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
                 .success(successFnc)
                 .error(function(e){
                     // cut the limit in half and re-try
-                    params[constants.LIMIT] = Math.round(params[constants.LIMIT]/2);
+                    params[constants.LIMIT] = Math.max(1, Math.round(params[constants.LIMIT]/2));
                     // apply to global params for subsequent calls
-                    urlParams[constants.FIELDS] = params[constants.LIMIT];
+                    urlParams[constants.LIMIT] = params[constants.LIMIT];
                     loadFnc(url, params);
                 });
         });
