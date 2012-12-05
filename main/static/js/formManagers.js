@@ -19,7 +19,7 @@ FormJSONManager = function(url, callback)
 };
 
 // break api loads into this batchsize
-FormJSONManager.BATCH_SIZE = 1000;
+FormJSONManager.BATCH_SIZE = 500;
 
 FormJSONManager.prototype.loadFormJSON = function()
 {
