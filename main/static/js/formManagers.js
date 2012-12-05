@@ -158,7 +158,7 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
 
     start = parseInt(start,10);
     limit = parseInt(limit, 10);
-    limit = limit?Math.min(limit, FormJSONManager.BATCH_SIZE):limit;
+    limit = limit?Math.min(limit, FormJSONManager.BATCH_SIZE):FormJSONManager.BATCH_SIZE;
     // use !isNaN so we also have zeros
     if(!isNaN(start)) urlParams[constants.START] = start;
     if(!isNaN(limit)) urlParams[constants.LIMIT] = limit;
