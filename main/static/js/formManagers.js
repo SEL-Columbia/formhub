@@ -165,12 +165,14 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
     
     /* TODO: re-enable geo-point pre-population once we work out making the rest of
              the load happen after an asynchronous wait.
-       TODO: also make sure that if geoPointField is null / undefined, the call doesn't happen
-    geoParams[constants.FIELDS] = JSON.stringify(["_id", geoPointField]); 
-    // query the geo-data and queue the querying of all the data */
+       TODO: also make sure that if geoPointField is null / undefined, the call doesn't happen*/
+    // query the geo-data and queue the querying of all the data
+    // make the callback before the full data is loaded
+    if(otherFieldsToLoad && otherFieldsToLoad.length > 0)
+        urlParams[constants.FIELDS] = JSON.stringify(otherFieldsToLoad);
+    // TODO: make the full data load asynchronous
     
     // cap limit to BATCH_SIZE
-
     var loadFnc = function(url, params)
     {
         return $.getJSON(url, params);
@@ -182,14 +184,11 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
         // remove the fields param if we get an error and try again
         urlParams[constants.FIELDS] = undefined;
         loadFnc(thisFormResponseMngr.url, urlParams)
-            .success(successFnc);
+            .success(successFnc)
+            .error(function(e){
+                console.log("Complete failure");
+            });
     });
-
-
-    // make the callback before the full data is loaded
-    if(otherFieldsToLoad && otherFieldsToLoad.length > 0)
-        urlParams[constants.FIELDS] = JSON.stringify(otherFieldsToLoad);
-    // TODO: make the full data load asynchronous
 
     var successFnc = function(data){
         // id data is an empty array, we are done
