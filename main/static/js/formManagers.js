@@ -158,6 +158,7 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
 
     start = parseInt(start,10);
     limit = parseInt(limit, 10);
+    // cap limit to BATCH_SIZE
     limit = limit?Math.min(limit, FormJSONManager.BATCH_SIZE):FormJSONManager.BATCH_SIZE;
     // use !isNaN so we also have zeros
     if(!isNaN(start)) urlParams[constants.START] = start;
@@ -171,27 +172,6 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
     if(otherFieldsToLoad && otherFieldsToLoad.length > 0)
         urlParams[constants.FIELDS] = JSON.stringify(otherFieldsToLoad);
     // TODO: make the full data load asynchronous
-    
-    // cap limit to BATCH_SIZE
-    var loadFnc = function(url, params)
-    {
-        var jqXHR = $.getJSON(url, params);
-        jqXHR.success(successFnc);
-        jqXHR.error(function(e){
-            // remove the fields param if we get an error and try again
-            params[constants.FIELDS] = undefined;
-            // change global urlParams as well for additional calls
-            urlParams[constants.FIELDS] = undefined;
-            // in case of failure - to avoid a loop lets call getJSON ourselves
-            $.getJSON(url, params)
-                .success(successFnc)
-                .error(function(e){
-                    console.log("Complete failure");
-                });
-        });
-    };
-
-    var jqXHR = loadFnc(thisFormResponseMngr.url, urlParams);
 
     var successFnc = function(data){
         // id data is an empty array, we are done
@@ -207,11 +187,31 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
             // append data
             all_data = all_data.concat(data)
             // calculate a new start position
-            var start = urlParams[constants.START] + data.length;
+            urlParams[constants.START] += data.length;
             loadFnc(thisFormResponseMngr.url, urlParams);
         }
     };
 
+    var loadFnc = function(url, params)
+    {
+        var jqXHR = $.getJSON(url, params);
+        jqXHR.success(successFnc);
+        jqXHR.error(function(e){
+            // remove the fields param if we get an error and try again
+            params[constants.FIELDS] = undefined;
+            // change global urlParams as well for additional calls
+            urlParams[constants.FIELDS] = undefined;
+            // in case of failure - to avoid a loop lets call getJSON ourselves
+            $.getJSON(url, params)
+                .success(successFnc)
+                .error(function(e){
+                    throw new Error("Failed to load data.")
+                });
+        });
+        return jqXHR;
+    };
+
+    var jqXHR = loadFnc(thisFormResponseMngr.url, urlParams);
 };
 
 FormResponseManager.prototype.setCurrentSelectOneQuestionName = function(name)
