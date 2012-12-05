@@ -18,6 +18,9 @@ FormJSONManager = function(url, callback)
     this.questions = {};
 };
 
+// break api loads into this batchsize
+FormJSONManager.BATCH_SIZE = 1000;
+
 FormJSONManager.prototype.loadFormJSON = function()
 {
     var thisManager = this;
@@ -148,12 +151,14 @@ FormResponseManager = function(url, callback)
 
 FormResponseManager.prototype.loadResponseData = function(params, start, limit, geoPointField, otherFieldsToLoad)
 {
-    var idx;
+    var idx, is_done;
     var thisFormResponseMngr = this;
     var urlParams = params, geoParams = {};
+    var all_data;
 
     start = parseInt(start,10);
     limit = parseInt(limit, 10);
+    limit = limit?Math.min(limit, FormJSONManager.BATCH_SIZE):limit;
     // use !isNaN so we also have zeros
     if(!isNaN(start)) urlParams[constants.START] = start;
     if(!isNaN(limit)) urlParams[constants.LIMIT] = limit;
@@ -162,29 +167,49 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
              the load happen after an asynchronous wait.
        TODO: also make sure that if geoPointField is null / undefined, the call doesn't happen
     geoParams[constants.FIELDS] = JSON.stringify(["_id", geoPointField]); 
-    // query the geo-data and queue the querying of all the data 
-    $.getJSON(thisFormResponseMngr.url, geoParams).success(function(data) {
-            // make the callback before the full data is loaded*/
-            if(otherFieldsToLoad && otherFieldsToLoad.length > 0)
-                urlParams[constants.FIELDS] = JSON.stringify(otherFieldsToLoad);
-            // TODO: make the full data load asynchronous
+    // query the geo-data and queue the querying of all the data */
+    
+    // cap limit to BATCH_SIZE
 
-            var successFnc = function(data){
-                thisFormResponseMngr.responses = data;
-                thisFormResponseMngr.responseCount = data.length;
-                thisFormResponseMngr._toDatavore();
-                thisFormResponseMngr.callback.call(thisFormResponseMngr);
-            };
+    var loadFnc = function(url, params)
+    {
+        return $.getJSON(url, params);
+    };
 
-            $.getJSON(thisFormResponseMngr.url, urlParams)
-                .success(successFnc)
-                .error(function(e){
-                    // remove the fields param if we get an error and try again
-                    urlParams[constants.FIELDS] = undefined;
-                    $.getJSON(thisFormResponseMngr.url, urlParams)
-                        .success(successFnc);
-            });
-    /*});*/
+    var jqXHR = loadFnc(thisFormResponseMngr.url, urlParams);
+    jqXHR.success(successFnc);
+    jqXHR.error(function(e){
+        // remove the fields param if we get an error and try again
+        urlParams[constants.FIELDS] = undefined;
+        loadFnc(thisFormResponseMngr.url, urlParams)
+            .success(successFnc);
+    });
+
+
+    // make the callback before the full data is loaded
+    if(otherFieldsToLoad && otherFieldsToLoad.length > 0)
+        urlParams[constants.FIELDS] = JSON.stringify(otherFieldsToLoad);
+    // TODO: make the full data load asynchronous
+
+    var successFnc = function(data){
+        // id data is an empty array, we are done
+        if(data.length === 0)
+        {
+            thisFormResponseMngr.responses = all_data;
+            thisFormResponseMngr.responseCount = data.length;
+            thisFormResponseMngr._toDatavore();
+            thisFormResponseMngr.callback.call(thisFormResponseMngr);
+        }
+        else
+        {
+            // append data
+            all_data = all_data.concat(data)
+            // calculate a new start position
+            var start = urlParams[constants.START] + data.length;
+            loadFnc(thisFormResponseMngr.url, urlParams);
+        }
+    };
+
 };
 
 FormResponseManager.prototype.setCurrentSelectOneQuestionName = function(name)
