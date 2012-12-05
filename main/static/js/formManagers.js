@@ -154,7 +154,7 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
     var idx, is_done;
     var thisFormResponseMngr = this;
     var urlParams = params, geoParams = {};
-    var all_data;
+    var all_data = [];
 
     start = parseInt(start,10);
     limit = parseInt(limit, 10);
