@@ -175,20 +175,23 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
     // cap limit to BATCH_SIZE
     var loadFnc = function(url, params)
     {
-        return $.getJSON(url, params);
+        var jqXHR = $.getJSON(url, params);
+        jqXHR.success(successFnc);
+        jqXHR.error(function(e){
+            // remove the fields param if we get an error and try again
+            params[constants.FIELDS] = undefined;
+            // change global urlParams as well for additional calls
+            urlParams[constants.FIELDS] = undefined;
+            // in case of failure - to avoid a loop lets call getJSON ourselves
+            $.getJSON(url, params)
+                .success(successFnc)
+                .error(function(e){
+                    console.log("Complete failure");
+                });
+        });
     };
 
     var jqXHR = loadFnc(thisFormResponseMngr.url, urlParams);
-    jqXHR.success(successFnc);
-    jqXHR.error(function(e){
-        // remove the fields param if we get an error and try again
-        urlParams[constants.FIELDS] = undefined;
-        loadFnc(thisFormResponseMngr.url, urlParams)
-            .success(successFnc)
-            .error(function(e){
-                console.log("Complete failure");
-            });
-    });
 
     var successFnc = function(data){
         // id data is an empty array, we are done
