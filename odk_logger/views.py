@@ -366,7 +366,12 @@ def enter_data(request, username, id_string):
             return render_to_response("profile.html", context_instance=context)
 
     except urllib2.URLError:
-        pass  # this will happen if we could not connect to enketo
+        # this will happen if we could not connect to enketo
+        messages.add_message(
+            request, messages.WARNING, _("Enketo error: Unable to open webform url."))
+    except ValueError, e:
+        messages.add_message(
+            request, messages.WARNING, _("Enketo error: enketo replied %s") % e)
         #TODO: should we throw in another error message here
     return HttpResponseRedirect(reverse('main.views.show',
                                 kwargs={'username': username,
@@ -459,7 +464,12 @@ def edit_data(request, username, id_string, data_id):
             return render_to_response("profile.html", context_instance=context)
 
     except urllib2.URLError:
-        pass  # this will happen if we could not connect to enketo
+        # this will happen if we could not connect to enketo
+        messages.add_message(
+            request, messages.WARNING, _("Enketo error: Unable to open webform url."))
+    except ValueError, e:
+        messages.add_message(
+            request, messages.WARNING, _("Enketo error: enketo replied %s") % e)
         #TODO: should we throw in another error message here
     return HttpResponseRedirect(
         reverse('main.views.show',
