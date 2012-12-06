@@ -42,7 +42,7 @@ def apply_form_field_names(func):
                         tmp_items = []
                         items = record[field]
                         for item in items:
-                            tmp_items.apend(_get_decoded_record(item))
+                            tmp_items.append(_get_decoded_record(item))
                         record[field] = tmp_items
                     if field not in field_names.values() and \
                             field in field_names.keys():
