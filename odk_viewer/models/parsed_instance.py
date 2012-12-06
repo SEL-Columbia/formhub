@@ -56,7 +56,7 @@ def dict_for_mongo(d):
             except ValueError:
                 # if it is not an int don't convert it
                 pass
-        elif _is_invalid_for_mongo(key):
+        if _is_invalid_for_mongo(key):
             del d[key]
             d[_encode_for_mongo(key)] = value
     return d
