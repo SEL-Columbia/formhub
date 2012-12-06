@@ -18,8 +18,8 @@ FormJSONManager = function(url, callback)
     this.questions = {};
 };
 
-// break api loads into this batchsize
-FormJSONManager.BATCH_SIZE = 500;
+// batch api loads into this batchsize
+FormJSONManager.BATCH_SIZE = 1000;
 
 FormJSONManager.prototype.loadFormJSON = function()
 {
@@ -151,7 +151,6 @@ FormResponseManager = function(url, callback)
 
 FormResponseManager.prototype.loadResponseData = function(params, start, limit, geoPointField, otherFieldsToLoad)
 {
-    var idx, is_done;
     var thisFormResponseMngr = this;
     var urlParams = params, geoParams = {};
     var all_data = [];
