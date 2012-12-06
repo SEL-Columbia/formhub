@@ -35,6 +35,20 @@ def is_owner(view_func):
 def apply_form_field_names(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
+        def _get_decoded_record(record):
+            if isinstance(record, dict):
+                for field in record:
+                    if isinstance(record[field], list):
+                        tmp_items = []
+                        items = record[field]
+                        for item in items:
+                            tmp_items.append(_get_decoded_record(item))
+                        record[field] = tmp_items
+                    if field not in field_names.values() and \
+                            field in field_names.keys():
+                        record[field_names[field]] = record.pop(field)
+            return record
+
         cursor = func(*args, **kwargs)
         if isinstance(cursor, Cursor) and \
                 kwargs.has_key('id_string') and kwargs.has_key('username'):
@@ -45,11 +59,7 @@ def apply_form_field_names(func):
             records = []
             field_names = dd.data_dictionary().get_mongo_field_names_dict()
             for record in cursor:
-                for field in record:
-                    if field not in field_names.values() and \
-                            field in field_names.keys():
-                        record[field_names[field]] = record.pop(field)
-                records.append(record)
+                records.append(_get_decoded_record(record))
             return records
         return cursor
     return wrapper
