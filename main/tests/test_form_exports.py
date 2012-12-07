@@ -7,6 +7,7 @@ import time
 import csv
 import tempfile
 from xlrd import open_workbook
+from utils.user_auth import http_auth_string
 
 class TestFormExports(MainTestCase):
 
@@ -165,3 +166,48 @@ class TestFormExports(MainTestCase):
                 'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_allow_csv_export_for_basic_auth(self):
+        extra = {
+            'HTTP_AUTHORIZATION': http_auth_string(self.login_username,
+                self.login_password)
+        }
+        response = self.anon.get(self.csv_url, **extra)
+        self.assertEqual(response.status_code, 200)
+
+    def test_allow_xls_export_for_basic_auth(self):
+        extra = {
+            'HTTP_AUTHORIZATION': http_auth_string(self.login_username,
+                self.login_password)
+        }
+        response = self.anon.get(self.xls_url, **extra)
+        self.assertEqual(response.status_code, 200)
+
+    def test_allow_zip_export_for_basic_auth(self):
+        extra = {
+            'HTTP_AUTHORIZATION': http_auth_string(self.login_username,
+                self.login_password)
+        }
+        url = reverse(zip_export, kwargs={'username': self.user.username,
+                                          'id_string': self.xform.id_string})
+        response = self.anon.get(url, **extra)
+        self.assertEqual(response.status_code, 200)
+
+    def test_allow_kml_export_for_basic_auth(self):
+        extra = {
+            'HTTP_AUTHORIZATION': http_auth_string(self.login_username,
+                self.login_password)
+        }
+        url = reverse(kml_export, kwargs={'username': self.user.username,
+                                          'id_string': self.xform.id_string})
+        response = self.anon.get(url, **extra)
+        self.assertEqual(response.status_code, 200)
+
+    def test_allow_export_download_for_basic_auth(self):
+        extra = {
+            'HTTP_AUTHORIZATION': http_auth_string(self.login_username,
+                self.login_password)
+        }
+        # create export
+
+
