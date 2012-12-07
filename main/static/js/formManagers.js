@@ -18,6 +18,9 @@ FormJSONManager = function(url, callback)
     this.questions = {};
 };
 
+// batch api loads into this batchsize
+FormJSONManager.BATCH_SIZE = 1000;
+
 FormJSONManager.prototype.loadFormJSON = function()
 {
     var thisManager = this;
@@ -148,43 +151,70 @@ FormResponseManager = function(url, callback)
 
 FormResponseManager.prototype.loadResponseData = function(params, start, limit, geoPointField, otherFieldsToLoad)
 {
-    var idx;
     var thisFormResponseMngr = this;
     var urlParams = params, geoParams = {};
+    var all_data = [];
 
     start = parseInt(start,10);
     limit = parseInt(limit, 10);
+    // cap limit to BATCH_SIZE
+    limit = limit?Math.min(limit, FormJSONManager.BATCH_SIZE):FormJSONManager.BATCH_SIZE;
     // use !isNaN so we also have zeros
     if(!isNaN(start)) urlParams[constants.START] = start;
     if(!isNaN(limit)) urlParams[constants.LIMIT] = limit;
     
     /* TODO: re-enable geo-point pre-population once we work out making the rest of
              the load happen after an asynchronous wait.
-       TODO: also make sure that if geoPointField is null / undefined, the call doesn't happen
-    geoParams[constants.FIELDS] = JSON.stringify(["_id", geoPointField]); 
-    // query the geo-data and queue the querying of all the data 
-    $.getJSON(thisFormResponseMngr.url, geoParams).success(function(data) {
-            // make the callback before the full data is loaded*/
-            if(otherFieldsToLoad && otherFieldsToLoad.length > 0)
-                urlParams[constants.FIELDS] = JSON.stringify(otherFieldsToLoad);
-            // TODO: make the full data load asynchronous
+       TODO: also make sure that if geoPointField is null / undefined, the call doesn't happen*/
+    // query the geo-data and queue the querying of all the data
+    // make the callback before the full data is loaded
+    if(otherFieldsToLoad && otherFieldsToLoad.length > 0)
+        urlParams[constants.FIELDS] = JSON.stringify(otherFieldsToLoad);
+    // TODO: make the full data load asynchronous
 
-            var successFnc = function(data){
-                thisFormResponseMngr.responses = data;
-                thisFormResponseMngr.responseCount = data.length;
-                thisFormResponseMngr._toDatavore();
-                thisFormResponseMngr.callback.call(thisFormResponseMngr);
-            };
+    var successFnc = function(data){
+        // id data is an empty array, we are done
+        if(data.length === 0)
+        {
+            thisFormResponseMngr.responses = all_data;
+            thisFormResponseMngr.responseCount = data.length;
+            thisFormResponseMngr._toDatavore();
+            thisFormResponseMngr.callback.call(thisFormResponseMngr);
+        }
+        else
+        {
+            // append data
+            all_data = all_data.concat(data)
+            // calculate a new start position
+            urlParams[constants.START] += data.length;
+            loadFnc(thisFormResponseMngr.url, urlParams);
+        }
+    };
 
-            $.getJSON(thisFormResponseMngr.url, urlParams)
+    var loadFnc = function(url, params)
+    {
+        var jqXHR = $.getJSON(url, params);
+        jqXHR.success(successFnc);
+        jqXHR.error(function(e){
+            // remove the fields param if we get an error and try again
+            params[constants.FIELDS] = undefined;
+            // change global urlParams as well for additional calls
+            urlParams[constants.FIELDS] = undefined;
+            // in case of failure - to avoid a loop lets call getJSON ourselves
+            $.getJSON(url, params)
                 .success(successFnc)
                 .error(function(e){
-                    // remove the fields param if we get an error and try again
-                    urlParams[constants.FIELDS] = undefined;
-                    $.getJSON(thisFormResponseMngr.url, urlParams)
-                        .success(successFnc);
-            });
-    /*});*/
+                    // cut the limit in half and re-try
+                    params[constants.LIMIT] = Math.max(1, Math.round(params[constants.LIMIT]/2));
+                    // apply to global params for subsequent calls
+                    urlParams[constants.LIMIT] = params[constants.LIMIT];
+                    loadFnc(url, params);
+                });
+        });
+        return jqXHR;
+    };
+
+    var jqXHR = loadFnc(thisFormResponseMngr.url, urlParams);
 };
 
 FormResponseManager.prototype.setCurrentSelectOneQuestionName = function(name)
