@@ -154,6 +154,8 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
     var thisFormResponseMngr = this;
     var urlParams = params, geoParams = {};
     var all_data = [];
+    var totalCount, progress = 0;
+    var $progressElm = $('#progress-modal .progress .bar');
 
     start = parseInt(start,10);
     limit = parseInt(limit, 10);
@@ -176,6 +178,10 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
         // id data is an empty array, we are done
         if(data.length === 0)
         {
+            if($progressElm.length > 0)
+            {
+                $progressElm.modal('toggle');
+            }
             thisFormResponseMngr.responses = all_data;
             thisFormResponseMngr.responseCount = data.length;
             thisFormResponseMngr._toDatavore();
@@ -184,7 +190,13 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
         else
         {
             // append data
-            all_data = all_data.concat(data)
+            all_data = all_data.concat(data);
+            // update progress bar
+            progress = (all_data.length / totalCount);
+            if($progressElm.length > 0)
+            {
+                $progressElm.css('width', (progress + '%'));
+            }
             // calculate a new start position
             urlParams[constants.START] += data.length;
             loadFnc(thisFormResponseMngr.url, urlParams);
@@ -214,7 +226,20 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
         return jqXHR;
     };
 
-    var jqXHR = loadFnc(thisFormResponseMngr.url, urlParams);
+    // load the count
+    var countParams = _.clone(params);
+    countParams['count'] = 1;
+    $.getJSON(thisFormResponseMngr.url, countParams)
+        .success(function(data){
+            totalCount = data[0].count;
+            // show the modal
+            if($progressElm.length > 0)
+            {
+                $progressElm.modal('toggle');
+            }
+            // start loading
+            loadFnc(thisFormResponseMngr.url, urlParams);
+        });
 };
 
 FormResponseManager.prototype.setCurrentSelectOneQuestionName = function(name)
