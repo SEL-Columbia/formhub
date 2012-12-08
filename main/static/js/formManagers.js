@@ -155,7 +155,7 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
     var urlParams = params, geoParams = {};
     var all_data = [];
     var totalCount, progress = 0;
-    var $progressElm = $('#progress-modal .progress .bar');
+    var $progressElm = $('#progress-modal');
 
     start = parseInt(start,10);
     limit = parseInt(limit, 10);
@@ -195,7 +195,7 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
             progress = Math.round((all_data.length / totalCount) * 100);
             if($progressElm.length > 0)
             {
-                $progressElm.css('width', (progress + '%'));
+                $progressElm.find('.progress .bar').css('width', (progress + '%'));
             }
             // calculate a new start position
             urlParams[constants.START] += data.length;
