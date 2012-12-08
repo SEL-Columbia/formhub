@@ -229,6 +229,10 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
     // load the count
     var countParams = _.clone(params);
     countParams['count'] = 1;
+    if(countParams.hasOwnProperty(constants.FIELDS))
+    {
+        delete(countParams[constants.FIELDS])
+    }
     $.getJSON(thisFormResponseMngr.url, countParams)
         .success(function(data){
             totalCount = data[0].count;
