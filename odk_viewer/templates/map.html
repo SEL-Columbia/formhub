@@ -95,7 +95,12 @@ function setMapHeight(){
       $('.navbar-inner').height()
   $('#map_canvas').height(newHeight);
 }
-$(document).ready(function() { setMapHeight(); });
+$(document).ready(function() {
+    setMapHeight();
+    $('#progress-modal').modal({
+        keyboard: false
+    });
+});
 $(window).resize(setMapHeight);
 </script>
 <script src="/static/js/mapview.js?ts=20121012170000" type="text/javascript"></script>
@@ -115,6 +120,11 @@ $(window).resize(setMapHeight);
     var customMapBoxTileLayer = {'label': '{{mapbox_layer.map_name}}', 'url': '{{mapbox_layer.link}}'};
   </script>
   {% endif %}
+  <div id="progress-modal" class="modal hide fade" data-keyboard="false">
+      <div class="progress progress-info progress-striped">
+          <div class="bar" style="width: 20%"></div>
+      </div>
+  </div>
   
   <div id="map_canvas" style="width:100%; height:100%;"></div>
 </body>
