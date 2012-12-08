@@ -180,7 +180,7 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
         {
             if($progressElm.length > 0)
             {
-                $progressElm.modal('toggle');
+                $progressElm.modal('hide');
             }
             thisFormResponseMngr.responses = all_data;
             thisFormResponseMngr.responseCount = data.length;
@@ -235,7 +235,7 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
             // show the modal
             if($progressElm.length > 0)
             {
-                $progressElm.modal('toggle');
+                $progressElm.modal('show');
             }
             // start loading
             loadFnc(thisFormResponseMngr.url, urlParams);
