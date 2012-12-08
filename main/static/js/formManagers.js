@@ -192,7 +192,7 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
             // append data
             all_data = all_data.concat(data);
             // update progress bar
-            progress = (all_data.length / totalCount);
+            progress = Math.round((all_data.length / totalCount) * 100);
             if($progressElm.length > 0)
             {
                 $progressElm.css('width', (progress + '%'));
