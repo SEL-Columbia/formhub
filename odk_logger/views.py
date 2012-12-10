@@ -248,9 +248,16 @@ def submission(request, username=None):
 
 
 def download_xform(request, username, id_string):
+    user = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm,
-                              user__username=username, id_string=id_string)
-    # TODO: protect for users who have settings to use auth
+                              user=user, id_string=id_string)
+    profile, created =\
+    UserProfile.objects.get_or_create(user=user)
+
+    if profile.require_auth:
+        response = helper_auth_helper(request)
+        if response:
+            return response
     response = response_with_mimetype_and_name('xml', id_string,
                                                show_date=False)
     response.content = xform.xml
@@ -261,6 +268,7 @@ def download_xlsform(request, username, id_string):
     xform = get_object_or_404(XForm,
                               user__username=username, id_string=id_string)
     owner = User.objects.get(username=username)
+    helper_auth_helper(request)
     if not has_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden('Not shared.')
     file_path = xform.xls.name
@@ -283,6 +291,7 @@ def download_jsonform(request, username, id_string):
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, user__username=username,
                               id_string=id_string)
+    helper_auth_helper(request)
     if not has_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden(_(u'Not shared.'))
     response = response_with_mimetype_and_name('json', id_string,
