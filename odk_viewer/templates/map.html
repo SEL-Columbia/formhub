@@ -71,7 +71,7 @@
   .progress {
       margin-bottom: 0;
   }
-  .progress-container {
+  #progress-container {
       position: absolute;
       z-index: 1050;
       width: 100%;
@@ -112,7 +112,7 @@ function setMapHeight(){
 
 function setProgressContainer(){
     var height = $(window).height() - $('.navbar-inner').height();
-    $('.progress-container').css('height', height);
+    $('#progress-container').css('height', height);
     $('#progress').css('margin-bottom', Math.round((height/2)));
 }
 $(document).ready(function() {
@@ -141,7 +141,7 @@ $(window).resize(function(){
     var customMapBoxTileLayer = {'label': '{{mapbox_layer.map_name}}', 'url': '{{mapbox_layer.link}}'};
   </script>
   {% endif %}
-  <div class="progress-container">
+  <div id="progress-container">
       <div id="progress" class="progress progress-info progress-striped">
           <div class="bar" style="width: 1%"></div>
       </div>
