@@ -39,6 +39,7 @@ from utils.logger_tools import response_with_mimetype_and_name, publish_form
 from utils.user_auth import check_and_set_user, set_profile_data,\
     has_permission, helper_auth_helper, get_xform_and_perms,\
     check_and_set_user_and_form
+from utils.log import audit_log, Actions
 
 
 def home(request):
@@ -136,6 +137,10 @@ def profile(request, username):
 
     # profile view...
     content_user = get_object_or_404(User, username=username)
+    audit = {}
+    audit_log(Actions.PROFILE_ACCESSED, request.user.username, content_user.username,
+        "Profile accessed by %(request_user)s"\
+        % {'request_user': request.user}, audit=audit)
     # for the same user -> dashboard
     if content_user == request.user:
         context.show_dashboard = True
