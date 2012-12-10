@@ -1,5 +1,5 @@
 from test_base import MainTestCase
-from odk_viewer.views import csv_export, xls_export, zip_export, kml_export
+from odk_viewer.views import csv_export, xls_export, zip_export, kml_export, export_download
 from django.core.urlresolvers import reverse
 from common_tags import MONGO_STRFTIME
 
@@ -7,6 +7,9 @@ import time
 import csv
 import tempfile
 from xlrd import open_workbook
+from utils.user_auth import http_auth_string
+from odk_viewer.tasks import create_csv_export
+from odk_viewer.models import Export
 
 class TestFormExports(MainTestCase):
 
@@ -164,4 +167,57 @@ class TestFormExports(MainTestCase):
         url = reverse(kml_export, kwargs={'username': self.user.username,
                 'id_string': self.xform.id_string})
         response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_allow_csv_export_for_basic_auth(self):
+        extra = {
+            'HTTP_AUTHORIZATION': http_auth_string(self.login_username,
+                self.login_password)
+        }
+        response = self.anon.get(self.csv_url, **extra)
+        self.assertEqual(response.status_code, 200)
+
+    def test_allow_xls_export_for_basic_auth(self):
+        extra = {
+            'HTTP_AUTHORIZATION': http_auth_string(self.login_username,
+                self.login_password)
+        }
+        response = self.anon.get(self.xls_url, **extra)
+        self.assertEqual(response.status_code, 200)
+
+    def test_allow_zip_export_for_basic_auth(self):
+        extra = {
+            'HTTP_AUTHORIZATION': http_auth_string(self.login_username,
+                self.login_password)
+        }
+        url = reverse(zip_export, kwargs={'username': self.user.username,
+                                          'id_string': self.xform.id_string})
+        response = self.anon.get(url, **extra)
+        self.assertEqual(response.status_code, 200)
+
+    def test_allow_kml_export_for_basic_auth(self):
+        extra = {
+            'HTTP_AUTHORIZATION': http_auth_string(self.login_username,
+                self.login_password)
+        }
+        url = reverse(kml_export, kwargs={'username': self.user.username,
+                                          'id_string': self.xform.id_string})
+        response = self.anon.get(url, **extra)
+        self.assertEqual(response.status_code, 200)
+
+    def test_allow_export_download_for_basic_auth(self):
+        extra = {
+            'HTTP_AUTHORIZATION': http_auth_string(self.login_username,
+                self.login_password)
+        }
+        # create export
+        export = create_csv_export(self.user.username, self.xform.id_string)
+        self.assertTrue(isinstance(export, Export))
+        url = reverse(export_download, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': export.export_type,
+            'filename': export.filename
+        })
+        response = self.anon.get(url, **extra)
         self.assertEqual(response.status_code, 200)

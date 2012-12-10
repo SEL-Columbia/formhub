@@ -7,6 +7,7 @@ from odk_logger.models import XForm
 from odk_logger.views import download_xlsform, download_jsonform,\
     download_xform, delete_xform
 from odk_viewer.views import export_list
+from utils.user_auth import http_auth_string
 
 class TestFormShow(MainTestCase):
 
@@ -48,6 +49,17 @@ class TestFormShow(MainTestCase):
         }))
         self.assertEqual(response.status_code, 200)
 
+    def test_dl_xls_for_basic_auth(self):
+        extra = {
+            'HTTP_AUTHORIZATION': http_auth_string(self.login_username,
+                self.login_password)
+        }
+        response = self.anon.get(reverse(download_xlsform, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        }), **extra)
+        self.assertEqual(response.status_code, 200)
+
     def test_dl_json_to_anon_if_public(self):
         self.xform.shared = True
         self.xform.save()
@@ -69,6 +81,17 @@ class TestFormShow(MainTestCase):
         self.assertEqual(response.content.startswith(callback + '('), True)
         self.assertEqual(response.content.endswith(')'), True)
 
+    def test_dl_json_for_basic_auth(self):
+        extra = {
+            'HTTP_AUTHORIZATION': http_auth_string(self.login_username,
+                self.login_password)
+        }
+        response = self.anon.get(reverse(download_jsonform, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        }), **extra)
+        self.assertEqual(response.status_code, 200)
+
     def test_dl_xform_to_anon_if_public(self):
         self.xform.shared = True
         self.xform.save()
@@ -76,6 +99,17 @@ class TestFormShow(MainTestCase):
             'username': self.user.username,
             'id_string': self.xform.id_string
         }))
+        self.assertEqual(response.status_code, 200)
+
+    def test_dl_xform_for_basic_auth(self):
+        extra = {
+            'HTTP_AUTHORIZATION': http_auth_string(self.login_username,
+                self.login_password)
+        }
+        response = self.anon.get(reverse(download_xform, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        }), **extra)
         self.assertEqual(response.status_code, 200)
 
     def test_show_private_if_shared_but_not_data(self):
