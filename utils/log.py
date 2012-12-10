@@ -1,7 +1,31 @@
 import logging
+from datetime import datetime
 
 
 clog = logging.getLogger('console_logger')
+
+class Enum(object):
+    __name__= "Enum"
+    def __init__(self, **enums):
+        self.enums = enums
+
+    def __getattr__(self, item):
+        return self.enums[item]
+
+    def __iter__(self):
+        return self.enums.itervalues()
+
+Actions = Enum(
+    PROFILE_ACCESSED="profile-accessed",
+    USER_LOGN="user-login",
+    USER_LOGOUT="user-logout",
+    FORM_PUBLISH="form-publish",
+    FORM_EDIT="form-edit",
+    FORM_DELETE="form-delete",
+    SUBMISSION_CREATE="submission-create",
+    SUBMISSION_EDIT="submission-edit",
+    SUBMISSION_DELETE="submission-delete",
+)
 
 
 class AuditLogHandler(logging.Handler):
@@ -12,9 +36,13 @@ class AuditLogHandler(logging.Handler):
 
     def _format(self, record):
         data = {
+            'action': record.formhub_action,
+            'user': record.request_username,
+            'account': record.account_username,
             'audit': {},
             'msg': record.msg,
-            'created_on': record.created,
+            # save as python datetime object to have mongo convert to ISO date and allow queries
+            'created_on': datetime.utcfromtimestamp(record.created),
             'levelno': record.levelno,
             'levelname': record.levelname,
             'args': record.args,
@@ -54,3 +82,23 @@ class AuditLogHandler(logging.Handler):
         mod = __import__('.'.join(names[:-1]), fromlist=names[-1:])
         return getattr(mod, names[-1])
 
+def audit_log(action, request_username, account_username, message, audit, level=logging.DEBUG):
+    """
+    Create a log message based on these params
+
+    @param action: Action performed e.g. form-deleted
+    @param request_username: User performing the action
+    @param account_username: The formhub account the action was performed on
+    @param message: The message to be displayed on the log
+    @param level: log level
+    @param audit: a dict of key/values of other info pertaining to the action e.g. form's id_string, submission uuid
+    @return: None
+    """
+    logger = logging.getLogger("audit_logger")
+    extra = {
+        'formhub_action': action,
+        'request_username': request_username,
+        'account_username': account_username,
+        'formhub_audit': audit
+    }
+    logger.log(level, message, extra=extra)
