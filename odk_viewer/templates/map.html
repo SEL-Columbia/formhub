@@ -68,6 +68,9 @@
       color: #666;
   }
   #legend .legend-response-count{float: right; font-weight: bold}
+  .progress {
+      margin-bottom: 0;
+  }
 </style>
 <link rel="stylesheet" href="/static/css/leaflet.css" />
 <!--[if lte IE 8]>
@@ -79,7 +82,7 @@
 <script type="text/javascript" src="/static/js/Google.js"></script>
 <script type="text/javascript" src="/static/js/wax.leaf.min.js"></script>
 <script type="text/javascript" src="/static/js/TileLayer.Bing.js"></script>
-<script type="text/javascript" src="/static/js/formManagers.js"></script>
+<script type="text/javascript" src="/static/js/formManagers.js?ts=201212081335"></script>
 <script type="text/javascript" src="/static/js/jquery.ba-bbq.min.js"></script>
 <script type="text/javascript">
 var center = {{ center|safe }};
@@ -95,7 +98,12 @@ function setMapHeight(){
       $('.navbar-inner').height()
   $('#map_canvas').height(newHeight);
 }
-$(document).ready(function() { setMapHeight(); });
+$(document).ready(function() {
+    setMapHeight();
+    $('#progress-modal').modal({
+        keyboard: false
+    });
+});
 $(window).resize(setMapHeight);
 </script>
 <script src="/static/js/mapview.js?ts=20121012170000" type="text/javascript"></script>
@@ -115,6 +123,11 @@ $(window).resize(setMapHeight);
     var customMapBoxTileLayer = {'label': '{{mapbox_layer.map_name}}', 'url': '{{mapbox_layer.link}}'};
   </script>
   {% endif %}
+  <div id="progress-modal" class="modal hide fade" data-backdrop="static">
+      <div class="progress progress-info progress-striped">
+          <div class="bar" style="width: 1%"></div>
+      </div>
+  </div>
   
   <div id="map_canvas" style="width:100%; height:100%;"></div>
 </body>
