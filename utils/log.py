@@ -17,14 +17,20 @@ class Enum(object):
 
 Actions = Enum(
     PROFILE_ACCESSED="profile-accessed",
+    PUBLIC_PROFILE_ACCESSED="public-profile-accessed",
+    PROFILE_SETTINGS_UPDATED="profile-settings-updated",
     USER_LOGN="user-login",
     USER_LOGOUT="user-logout",
+    FORM_ACCESSED="form-accessed",
     FORM_PUBLISH="form-publish",
     FORM_EDIT="form-edit",
     FORM_DELETE="form-delete",
+    FORM_ADD_CROWDFORM="form-add-crowdform",
+    FORM_REMOVE_CROWDFORM="form-remove-crowdform",
     SUBMISSION_CREATE="submission-create",
     SUBMISSION_EDIT="submission-edit",
     SUBMISSION_DELETE="submission-delete",
+    SUBMISSION_API_ACCESSED="submission-api-accessed"
 )
 
 
@@ -82,7 +88,7 @@ class AuditLogHandler(logging.Handler):
         mod = __import__('.'.join(names[:-1]), fromlist=names[-1:])
         return getattr(mod, names[-1])
 
-def audit_log(action, request_username, account_username, message, audit, level=logging.DEBUG):
+def audit_log(action, request_user, account_user, message, audit, level=logging.DEBUG):
     """
     Create a log message based on these params
 
@@ -97,8 +103,10 @@ def audit_log(action, request_username, account_username, message, audit, level=
     logger = logging.getLogger("audit_logger")
     extra = {
         'formhub_action': action,
-        'request_username': request_username,
-        'account_username': account_username,
+        'request_username': request_user.username if request_user.username
+            else str(request_user),
+        'account_username': account_user.username if account_user.username
+            else str(account_user),
         'formhub_audit': audit
     }
     logger.log(level, message, extra=extra)

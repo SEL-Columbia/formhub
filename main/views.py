@@ -138,9 +138,12 @@ def profile(request, username):
     # profile view...
     content_user = get_object_or_404(User, username=username)
     audit = {}
-    audit_log(Actions.PROFILE_ACCESSED, request.user.username, content_user.username,
-        "Profile accessed by %(request_user)s"\
-        % {'request_user': request.user}, audit=audit)
+    audit_log(Actions.PROFILE_ACCESSED, request.user, content_user,
+        _("Profile for account %(account_username)s accessed by %(request_username)s") %\
+        {
+            'account_username': content_user.username,
+            'request_username': request.user
+        }, audit=audit)
     # for the same user -> dashboard
     if content_user == request.user:
         context.show_dashboard = True
@@ -190,6 +193,14 @@ def profile_settings(request, username):
             form.instance.user.email = form.cleaned_data['email']
             form.instance.user.save()
             form.save()
+            # todo: add string rep. of settings to see what changed
+            audit = {}
+            audit_log(Actions.PROFILE_SETTINGS_UPDATED, request.user, content_user,
+                _("Profile settings for account %(account_username)s updated by %(request_username)s") %\
+                {
+                    'account_username': content_user.username,
+                    'request_username': request.user
+                }, audit=audit)
             return HttpResponseRedirect(reverse(
                 public_profile, kwargs={'username': request.user.username}
             ))
@@ -208,6 +219,13 @@ def public_profile(request, username):
     context = RequestContext(request)
     set_profile_data(context, content_user)
     context.is_owner = request.user == content_user
+    audit = {}
+    audit_log(Actions.PUBLIC_PROFILE_ACCESSED, request.user, content_user,
+        _("Public profile for account %(account_username)s accessed by %(request_username)s") %\
+        {
+            'account_username': content_user.username,
+            'request_username': request.user
+        }, audit=audit)
     return render_to_response("profile.html", context_instance=context)
 
 
@@ -267,6 +285,13 @@ def show(request, username=None, id_string=None, uuid=None):
             attach_perms=True
         ).items()
         context.permission_form = PermissionForm(username)
+    audit = {}
+    audit_log(Actions.FORM_ACCESSED, request.user, xform.user,
+        _("Form '%(id_string)s' accessed by %(request_username)s") %\
+        {
+            'id_string': xform.id_string,
+            'request_username': request.user
+        }, audit=audit)
     return render_to_response("show.html", context_instance=context)
 
 
@@ -339,15 +364,14 @@ def public_api(request, username, id_string):
                'date_modified': xform.date_modified.strftime(DATETIME_FORMAT),
                'uuid': xform.uuid,
                }
-
     response_text = simplejson.dumps(exports)
-
     return HttpResponse(response_text, mimetype='application/json')
 
 
 @login_required
 def edit(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
+    owner = xform.user
 
     if request.GET.get('crowdform'):
         crowdform_action = request.GET['crowdform']
@@ -361,7 +385,21 @@ def edit(request, username, id_string):
                     data_value=request_username,
                     data_type=MetaData.CROWDFORM_USERS
                 ).delete()
+                audit = {}
+                audit_log(Actions.FORM_REMOVE_CROWDFORM, request.user, owner,
+                    _("Form %(id_string)s removed from crowdforms by %(request_username)s") %\
+                    {
+                        'id_string': xform.id_string,
+                        'request_username': request.user
+                    }, audit=audit)
             elif crowdform_action == 'add':
+                audit = {}
+                audit_log(Actions.FORM_UNSET_CROWDFORM, request.user, owner,
+                    _("Form %(id_string)s added to crowdforms by %(request_username)s") %\
+                    {
+                        'id_string': xform.id_string,
+                        'request_username': request.user
+                    }, audit=audit)
                 MetaData.crowdform_users(xform, request_username)
 
             return HttpResponseRedirect(reverse(profile, kwargs={
