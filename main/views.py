@@ -139,10 +139,10 @@ def profile(request, username):
     content_user = get_object_or_404(User, username=username)
     audit = {}
     audit_log(Actions.PROFILE_ACCESSED, request.user, content_user,
-        _("Profile for account %(account_username)s accessed by %(request_username)s") %\
+        _("Profile for account %(account_username)s accessed by %(request_user)s") %\
         {
             'account_username': content_user.username,
-            'request_username': request.user
+            'request_user': request.user
         }, audit=audit)
     # for the same user -> dashboard
     if content_user == request.user:
@@ -196,10 +196,10 @@ def profile_settings(request, username):
             # todo: add string rep. of settings to see what changed
             audit = {}
             audit_log(Actions.PROFILE_SETTINGS_UPDATED, request.user, content_user,
-                _("Profile settings for account %(account_username)s updated by %(request_username)s") %\
+                _("Profile settings for account %(account_username)s updated by %(request_user)s") %\
                 {
                     'account_username': content_user.username,
-                    'request_username': request.user
+                    'request_user': request.user
                 }, audit=audit)
             return HttpResponseRedirect(reverse(
                 public_profile, kwargs={'username': request.user.username}
@@ -221,10 +221,10 @@ def public_profile(request, username):
     context.is_owner = request.user == content_user
     audit = {}
     audit_log(Actions.PUBLIC_PROFILE_ACCESSED, request.user, content_user,
-        _("Public profile for account %(account_username)s accessed by %(request_username)s") %\
+        _("Public profile for account %(account_username)s accessed by %(request_user)s") %\
         {
             'account_username': content_user.username,
-            'request_username': request.user
+            'request_user': request.user
         }, audit=audit)
     return render_to_response("profile.html", context_instance=context)
 
@@ -287,10 +287,10 @@ def show(request, username=None, id_string=None, uuid=None):
         context.permission_form = PermissionForm(username)
     audit = {}
     audit_log(Actions.FORM_ACCESSED, request.user, xform.user,
-        _("Form '%(id_string)s' accessed by %(request_username)s") %\
+        _("Form %(id_string)s accessed by %(request_user)s") %\
         {
             'id_string': xform.id_string,
-            'request_username': request.user
+            'request_user': request.user
         }, audit=audit)
     return render_to_response("show.html", context_instance=context)
 
@@ -345,7 +345,7 @@ def api(request, username=None, id_string=None):
 @require_GET
 def public_api(request, username, id_string):
     """
-    Returns public infomation about the forn as JSON
+    Returns public information about the form as JSON
     """
 
     xform = get_object_or_404(XForm,
@@ -385,21 +385,7 @@ def edit(request, username, id_string):
                     data_value=request_username,
                     data_type=MetaData.CROWDFORM_USERS
                 ).delete()
-                audit = {}
-                audit_log(Actions.FORM_REMOVE_CROWDFORM, request.user, owner,
-                    _("Form %(id_string)s removed from crowdforms by %(request_username)s") %\
-                    {
-                        'id_string': xform.id_string,
-                        'request_username': request.user
-                    }, audit=audit)
             elif crowdform_action == 'add':
-                audit = {}
-                audit_log(Actions.FORM_UNSET_CROWDFORM, request.user, owner,
-                    _("Form %(id_string)s added to crowdforms by %(request_username)s") %\
-                    {
-                        'id_string': xform.id_string,
-                        'request_username': request.user
-                    }, audit=audit)
                 MetaData.crowdform_users(xform, request_username)
 
             return HttpResponseRedirect(reverse(profile, kwargs={
@@ -409,17 +395,84 @@ def edit(request, username, id_string):
     if username == request.user.username or\
             request.user.has_perm('odk_logger.change_xform', xform):
         if request.POST.get('description'):
+            audit = {
+                'xform': xform.id_string
+            }
+            audit_log(Actions.FORM_EDITED, request.user, owner,
+                _("Description of form %(id_string)s updated by %(request_user)s from '%(old_description)s' to '%(new_description)s'") %\
+                {
+                    'id_string': xform.id_string,
+                    'request_user': request.user,
+                    'old_description': xform.description,
+                    'new_description': request.POST['description']
+                }, audit=audit)
             xform.description = request.POST['description']
         elif request.POST.get('title'):
+            audit = {
+                'xform': xform.id_string
+            }
+            audit_log(Actions.FORM_EDITED, request.user, owner,
+                _("Title of form %(id_string)s updated by %(request_user)s from '%(old_title)s' to '%(new_title)s'") %\
+                {
+                    'id_string': xform.id_string,
+                    'request_user': request.user,
+                    'old_title': xform.title,
+                    'new_title': request.POST.get('title')
+                }, audit=audit)
             xform.title = request.POST['title']
         elif request.POST.get('toggle_shared'):
             if request.POST['toggle_shared'] == 'data':
+                audit = {
+                    'xform': xform.id_string
+                }
+                audit_log(Actions.FORM_EDITED, request.user, owner,
+                    _("Data sharing updated for form %(id_string)s by %(request_user)s from '%(old_shared)s' to '%(new_shared)s'") %\
+                    {
+                        'id_string': xform.id_string,
+                        'request_user': request.user,
+                        'old_shared': _("shared") if xform.shared_data else _("not shared"),
+                        'new_shared': _("shared") if not xform.shared_data else _("not shared")
+                    }, audit=audit)
                 xform.shared_data = not xform.shared_data
             elif request.POST['toggle_shared'] == 'form':
+                audit = {
+                    'xform': xform.id_string
+                }
+                audit_log(Actions.FORM_EDITED, request.user, owner,
+                    _("Form %(id_string)s updated by %(request_user)s from '%(old_shared)s' to '%(new_shared)s'") %\
+                    {
+                        'id_string': xform.id_string,
+                        'request_user': request.user,
+                        'old_shared': _("shared") if xform.shared else _("not shared"),
+                        'new_shared': _("shared") if not xform.shared else _("not shared")
+                    }, audit=audit)
                 xform.shared = not xform.shared
             elif request.POST['toggle_shared'] == 'active':
-                xform.downloadable = not xform.downloadable
+                audit = {
+                    'xform': xform.id_string
+                }
+                audit_log(Actions.FORM_EDITED, request.user, owner,
+                    _("Form %(id_string)s updated by %(request_user)s from '%(old_shared)s' to '%(new_shared)s'") %\
+                    {
+                        'id_string': xform.id_string,
+                        'request_user': request.user,
+                        'old_shared': _("shared") if xform.shared else _("not shared"),
+                        'new_shared': _("shared") if not xform.shared else _("not shared")
+                    }, audit=audit)
+                xform.shared = not xform.shared
             elif request.POST['toggle_shared'] == 'crowd':
+                audit = {
+                    'xform': xform.id_string
+                }
+                audit_log(Actions.FORM_EDITED, request.user, owner,
+                    _("Crowdform status for form %(id_string)s updated by %(request_user)s from '%(old_status)s' to '%(new_status)s'") %\
+                    {
+                        'id_string': xform.id_string,
+                        'request_user': request.user,
+                        'old_status': _("crowdform") if not xform.is_crowd_form else _("not crowdform"),
+                        'new_status': _("crowdform") if xform.is_crowd_form else _("not crowdform"),
+                    }, audit=audit)
+                xform.shared = not xform.shared
                 if xform.is_crowd_form:
                     xform.is_crowd_form = False
                 else:
