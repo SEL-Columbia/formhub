@@ -811,7 +811,9 @@ def update_xform(request, username, id_string):
 
 @is_owner
 def activity(request, username):
+    owner = get_object_or_404(User, username=username)
     context = RequestContext(request)
+    context.user = owner
     return render_to_response('activity.html', context_instance=context)
 
 @is_owner
