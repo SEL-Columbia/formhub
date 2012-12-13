@@ -46,7 +46,27 @@
             label: 'Account Activity Grid',
             view: new recline.View.SlickGrid({
                 model: dataset,
-                state: {fitColumns: true}
+                state: {
+                    fitColumns: true,
+                    columnsWidth: [
+                        {
+                            column: 'created_on',
+                            width: 17
+                        },
+                        {
+                            column: 'action',
+                            width: 19
+                        },
+                        {
+                            column: 'user',
+                            width: 10
+                        },
+                        {
+                            column: 'msg',
+                            width: 64
+                        }
+                    ]
+                }
             })
         }
     ];
