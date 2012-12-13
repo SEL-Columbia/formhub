@@ -2,7 +2,7 @@ from datetime import datetime
 from django.contrib.contenttypes.models import ContentType
 import os
 import urllib2
-
+import json
 from django import forms
 from django.core.urlresolvers import reverse
 from django.core.files.storage import default_storage, get_storage_class
@@ -29,7 +29,8 @@ from odk_logger.models import Instance, XForm
 from odk_logger.views import enter_data
 from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_viewer.models.data_dictionary import upload_to
-from odk_viewer.models.parsed_instance import GLOBAL_SUBMISSION_STATS
+from odk_viewer.models.parsed_instance import GLOBAL_SUBMISSION_STATS,\
+    DATETIME_FORMAT
 from odk_viewer.views import image_urls_for_form, survey_responses, \
     attachment_url
 from stats.models import StatsCount
@@ -40,6 +41,7 @@ from utils.user_auth import check_and_set_user, set_profile_data,\
     has_permission, helper_auth_helper, get_xform_and_perms,\
     check_and_set_user_and_form
 from utils.log import audit_log, Actions
+from main.models import AuditLog
 
 
 def home(request):
@@ -805,3 +807,43 @@ def update_xform(request, username, id_string):
         'username': username,
         'id_string': id_string
     }))
+
+
+@is_owner
+def activity(request, username):
+    context = RequestContext(request)
+    return render_to_response('activity.html', context_instance=context)
+
+@is_owner
+def activity_api(request, username):
+    from bson.objectid import ObjectId
+    def stringify_unknowns(obj):
+        if isinstance(obj, ObjectId):
+            return str(obj)
+        if isinstance(obj, datetime):
+            return obj.strftime(DATETIME_FORMAT)
+        #raise TypeError
+        return None
+    try:
+        args = {
+            'username': username,
+            'query': json.loads(request.GET.get('query')) if request.GET.get('query') else {},
+            'fields': json.loads(request.GET.get('fields')) if request.GET.get('fields') else [],
+            'sort': json.loads(request.GET.get('sort')) if request.GET.get('sort') else {}
+        }
+        if 'start' in request.GET:
+            args["start"] = int(request.GET.get('start'))
+        if 'limit' in request.GET:
+            args["limit"] = int(request.GET.get('limit'))
+        if 'count' in request.GET:
+            args["count"] = True if int(request.GET.get('count')) > 0\
+            else False
+        cursor = AuditLog.query_mongo(**args)
+    except ValueError, e:
+        return HttpResponseBadRequest(e.__str__())
+    records = list(record for record in cursor)
+    response_text = simplejson.dumps(records, default=stringify_unknowns)
+    if 'callback' in request.GET and request.GET.get('callback') != '':
+        callback = request.GET.get('callback')
+        response_text = ("%s(%s)" % (callback, response_text))
+    return HttpResponse(response_text, mimetype='application/json')
