@@ -1,6 +1,7 @@
 from datetime import datetime
 from django.conf import settings
-from odk_viewer.models.parsed_instance import dict_for_mongo, _encode_for_mongo
+from odk_viewer.models.parsed_instance import dict_for_mongo, _encode_for_mongo,\
+    DATETIME_FORMAT
 
 audit = settings.MONGO_DB.auditlog
 DEFAULT_LIMIT = 1000
@@ -20,9 +21,14 @@ class AuditLog(object):
                     limit=DEFAULT_LIMIT, count=False):
         query = dict_for_mongo(query)
         query[cls.ACCOUNT] = username
-        # todo: if created on in query, convert to datetime object
-        #if query[cls.CREATED_ON]:
-        #    query[cls.CREATED_ON] = datetime.strptime(query[cls.CREATED_ON]["$gt"])
+        # hack: check for the created_on key in query and turn its values into dates
+        if query.has_key(cls.CREATED_ON):
+            for op, val in query[cls.CREATED_ON].iteritems():
+                try:
+                    query[cls.CREATED_ON][op] = datetime.strptime(val,
+                        DATETIME_FORMAT)
+                except ValueError, e:
+                    pass
 
         # TODO: current mongo (2.0.4 of this writing)
         # cant mix including and excluding fields in a single query
@@ -33,7 +39,7 @@ class AuditLog(object):
         if count:
             return [{"count":cursor.count()}]
 
-        cursor.skip(start).limit(limit)
+        cursor.skip(max(start,0)).limit(limit)
         if type(sort) == dict and len(sort) == 1:
             sort_key = sort.keys()[0]
             #todo: encode sort key if it has dots
