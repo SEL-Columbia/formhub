@@ -827,20 +827,20 @@ def activity_api(request, username):
         #raise TypeError
         return None
     try:
-        args = {
+        query_args = {
             'username': username,
             'query': json.loads(request.GET.get('query')) if request.GET.get('query') else {},
             'fields': json.loads(request.GET.get('fields')) if request.GET.get('fields') else [],
             'sort': json.loads(request.GET.get('sort')) if request.GET.get('sort') else {}
         }
         if 'start' in request.GET:
-            args["start"] = int(request.GET.get('start'))
+            query_args["start"] = int(request.GET.get('start'))
         if 'limit' in request.GET:
-            args["limit"] = int(request.GET.get('limit'))
+            query_args["limit"] = int(request.GET.get('limit'))
         if 'count' in request.GET:
-            args["count"] = True if int(request.GET.get('count')) > 0\
+            query_args["count"] = True if int(request.GET.get('count')) > 0\
             else False
-        cursor = AuditLog.query_mongo(**args)
+        cursor = AuditLog.query_mongo(**query_args)
     except ValueError, e:
         return HttpResponseBadRequest(e.__str__())
     records = list(record for record in cursor)
