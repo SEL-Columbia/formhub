@@ -50,6 +50,16 @@ this.recline.Backend.ActivityAPI = this.recline.Backend.ActivityAPI || {};
                 start: queryObj.from,
                 limit: queryObj.size
             };
+            // sort
+            if(queryObj.sort && queryObj.sort.length > 0)
+            {
+                var sort = queryObj.sort[0];
+                var field = sort.field;
+                var dirs = {'asc': 1, 'desc': -1};
+                var sortParam = {};
+                sortParam[field] = dirs[sort.order];
+                params['sort'] = JSON.stringify(sortParam);
+            }
             jqXHR = $.getJSON(dataset.url, params);
             return jqXHR.done(function(data) {
                 return deferred.resolve({
