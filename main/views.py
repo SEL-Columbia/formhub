@@ -816,6 +816,37 @@ def activity(request, username):
     context.user = owner
     return render_to_response('activity.html', context_instance=context)
 
+def activity_fields(request):
+    fields = [
+        {
+            'id': 'created_on',
+            'label': _('Performed On'),
+            'type': 'datetime',
+            'searchable': False
+        },
+        {
+            'id': 'action',
+            'label': _('Action'),
+            'type': 'string',
+            'searchable': True,
+            'options': sorted([Actions[e] for e in Actions.enums])
+        },
+        {
+            'id': 'user',
+            'label': 'Performed By',
+            'type': 'string',
+            'searchable': True
+        },
+        {
+            'id': 'msg',
+            'label': 'Description',
+            'type': 'string',
+            'searchable': True
+        },
+    ]
+    response_text = simplejson.dumps(fields)
+    return HttpResponse(response_text, mimetype='application/json')
+
 @is_owner
 def activity_api(request, username):
     from bson.objectid import ObjectId
