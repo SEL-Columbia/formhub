@@ -6,4 +6,4 @@
 	url = git://github.com/trevmex/EnvJasmine.git
 [submodule "main/static/recline"]
 	path = main/static/recline
-	url = git://github.com/okfn/recline.git
+	url = git@github.com:modilabs/recline.git
