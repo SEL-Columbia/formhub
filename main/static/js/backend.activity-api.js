@@ -14,7 +14,12 @@ this.recline.Backend.ActivityAPI = this.recline.Backend.ActivityAPI || {};
         {
             id: 'action',
             label: 'Action',
-            type: 'string'
+            type: 'string',
+            options: [
+                "profile-accessed",
+                "form-accessed",
+                "form-edited"
+            ]
         },
         {
             id: 'user',
@@ -56,7 +61,7 @@ this.recline.Backend.ActivityAPI = this.recline.Backend.ActivityAPI || {};
         {
             var filterParam = {$and: []};
             _.each(queryObj.filters, function(filter){
-                if(filter.type === "term")
+                if(filter.type === "term" || filter.type === "select_one")
                 {
                     var filterObj = {};
                     filterObj[filter.field] = filter.term;
@@ -97,6 +102,10 @@ this.recline.Backend.ActivityAPI = this.recline.Backend.ActivityAPI || {};
             total = data[0].count;
             // stop counting
             delete(params.count);
+            // todo: check for fields
+            if(queryObj.fields){
+
+            }
             params.start = queryObj.from;
             params.limit = queryObj.size;
             jqXHR = $.getJSON(dataset.url, params);
