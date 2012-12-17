@@ -5,38 +5,20 @@ this.recline.Backend.ActivityAPI = this.recline.Backend.ActivityAPI || {};
 (function($, my) {
     my.__type__ = 'ActivityAPI';
 
-    var fields = [
-        {
-            id: 'created_on',
-            label: 'Performed On',
-            type: 'datetime'
-        },
-        {
-            id: 'action',
-            label: 'Action',
-            type: 'string',
-            options: [
-                "profile-accessed",
-                "form-accessed",
-                "form-edited"
-            ]
-        },
-        {
-            id: 'user',
-            label: 'Performed By',
-            type: 'string'
-        },
-        {
-            id: 'msg',
-            label: 'Description',
-            type: 'string'
-        }
-    ];
+    my._fields = [];
 
     my.fetch = function(dataset){
         var deferred = $.Deferred();
-        deferred.resolve({
-            fields: fields
+        var jqXHR = $.getJSON(dataset.fieldUrl);
+        var self = this;
+        jqXHR.done(function(data){
+            self._fields = data;
+            deferred.resolve({
+                fields: data
+            });
+        });
+        jqXHR.fail(function(e){
+            deferred.reject(e);
         });
         return deferred.promise();
     };
@@ -48,10 +30,12 @@ this.recline.Backend.ActivityAPI = this.recline.Backend.ActivityAPI || {};
         var queryParam = {'$and': []};
         if(queryObj.q){
             var qParam = {$or: []};
-            _.each(fields, function(field){
+            _.each(this._fields, function(field){
                 var reParam = {};
-                reParam[field.id] = {$regex: queryObj.q, $options: "i"};
-                qParam['$or'].push(reParam);
+                if(field.searchable){
+                    reParam[field.id] = {$regex: queryObj.q, $options: "i"};
+                    qParam['$or'].push(reParam);
+                }
             });
             //params['query'] = JSON.stringify(qParam);
             queryParam['$and'].push(qParam);
