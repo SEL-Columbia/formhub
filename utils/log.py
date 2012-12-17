@@ -12,6 +12,9 @@ class Enum(object):
     def __getattr__(self, item):
         return self.enums[item]
 
+    def __getitem__(self, item):
+        return self.__getattr__(item)
+
     def __iter__(self):
         return self.enums.itervalues()
 
