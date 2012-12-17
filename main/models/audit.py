@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.conf import settings
 from odk_viewer.models.parsed_instance import dict_for_mongo, _encode_for_mongo,\
     DATETIME_FORMAT
@@ -23,12 +23,27 @@ class AuditLog(object):
         query[cls.ACCOUNT] = username
         # hack: check for the created_on key in query and turn its values into dates
         if query.has_key(cls.CREATED_ON):
-            for op, val in query[cls.CREATED_ON].iteritems():
+            if type(query[cls.CREATED_ON]) is dict:
+                for op, val in query[cls.CREATED_ON].iteritems():
+                    try:
+                        query[cls.CREATED_ON][op] = datetime.strptime(val,
+                            DATETIME_FORMAT)
+                    except ValueError, e:
+                        pass
+            elif isinstance(query[cls.CREATED_ON], basestring):
+                val = query[cls.CREATED_ON]
                 try:
-                    query[cls.CREATED_ON][op] = datetime.strptime(val,
+                    created_on = datetime.strptime(val,
                         DATETIME_FORMAT)
                 except ValueError, e:
                     pass
+                else:
+                    # create start and end times for the entire day
+                    start_time = created_on.replace(hour=0, minute=0,
+                        second=0, microsecond=0)
+                    end_time = start_time + timedelta(days=1)
+                    query[cls.CREATED_ON] = {"$gte": start_time,
+                                             "$lte": end_time}
 
         # TODO: current mongo (2.0.4 of this writing)
         # cant mix including and excluding fields in a single query
