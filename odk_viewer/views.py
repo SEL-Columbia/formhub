@@ -29,7 +29,7 @@ from utils.logger_tools import response_with_mimetype_and_name,\
     disposition_ext_and_date, round_down_geopoint
 from utils.viewer_tools import image_urls, image_urls_for_form
 from odk_viewer.tasks import create_async_export
-from utils.user_auth import has_permission, get_xform_and_perms
+from utils.user_auth import has_permission, get_xform_and_perms, helper_auth_helper
 from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
 from odk_viewer.models import Export
@@ -161,6 +161,7 @@ def survey_responses(request, instance_id):
 def csv_export(request, username, id_string):
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
+    helper_auth_helper(request)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
     query = request.GET.get("query")
@@ -183,6 +184,7 @@ def csv_export(request, username, id_string):
 def xls_export(request, username, id_string):
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
+    helper_auth_helper(request)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
     query = request.GET.get("query")
@@ -297,6 +299,7 @@ def export_progress(request, username, id_string, export_type):
 def export_download(request, username, id_string, export_type, filename):
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
+    helper_auth_helper(request)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
 
@@ -339,6 +342,7 @@ def delete_export(request, username, id_string, export_type):
 def zip_export(request, username, id_string):
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
+    helper_auth_helper(request)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
     dd = DataDictionary.objects.get(id_string=id_string,
@@ -371,6 +375,7 @@ def kml_export(request, username, id_string):
     context.message = "HELLO!!"
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
+    helper_auth_helper(request)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
     dd = DataDictionary.objects.get(id_string=id_string,

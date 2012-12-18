@@ -108,3 +108,8 @@ def basic_http_auth(func):
             return result
         return func(request, *args, **kwargs)
     return  inner
+
+def http_auth_string(username, password):
+    credentials = base64.b64encode('%s:%s' % (username, password)).strip()
+    auth_string = 'Basic %s' % credentials
+    return auth_string

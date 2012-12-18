@@ -46,6 +46,8 @@ class MainTestCase(TestCase):
         client.logout()
 
     def _create_user_and_login(self, username="bob", password="bob"):
+        self.login_username = username
+        self.login_password = password
         self.user = self._create_user(username, password)
         self.client = self._login(username, password)
         self.anon = Client()
