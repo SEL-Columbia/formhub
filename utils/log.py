@@ -27,11 +27,14 @@ Actions = Enum(
     FORM_ACCESSED="form-accessed",
     FORM_PUBLISHED="form-published",
     FORM_UPDATED="form-updated",
+    FORM_XLS_UPDATED="form-xls-updated",
     FORM_DELETED="form-deleted",
+    FORM_PERMISSIONS_UPDATED="form-permissions-updated",
     SUBMISSION_CREATED="submission-created",
     SUBMISSION_UPDATED="submission-updated",
     SUBMISSION_DELETED="submission-deleted",
-    SUBMISSION_API_ACCESSED="submission-api-accessed"
+    SUBMISSION_ACCESSED="submission-accessed",
+    BAMBOO_LINK_CREATED="bamboo-link-created"
 )
 
 

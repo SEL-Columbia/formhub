@@ -272,13 +272,6 @@ def show(request, username=None, id_string=None, uuid=None):
             attach_perms=True
         ).items()
         context.permission_form = PermissionForm(username)
-    audit = {}
-    audit_log(Actions.FORM_ACCESSED, request.user, xform.user,
-        _("Form %(id_string)s accessed.") %\
-        {
-            'id_string': xform.id_string,
-            'request_user': request.user
-        }, audit=audit)
     return render_to_response("show.html", context_instance=context)
 
 
@@ -618,7 +611,7 @@ def download_metadata(request, username, id_string, data_id):
                 _("Document '%(filename)s' for '%(id_string)s' downloaded.") %\
                 {
                     'id_string': xform.id_string,
-                    'filename': "%s.%s" % (filename, extension)
+                    'filename': "%s.%s" % os.path.basename(file_path)
                 }, audit=audit)
             response = response_with_mimetype_and_name(
                 data.data_file_type,
@@ -751,6 +744,7 @@ def form_photos(request, username, id_string):
 def set_perm(request, username, id_string):
     xform = get_object_or_404(XForm,
                               user__username=username, id_string=id_string)
+    owner = xform.user
     if username != request.user.username\
             and not has_permission(xform, username, request):
         return HttpResponseForbidden(_(u'Permission denied.'))
@@ -762,20 +756,56 @@ def set_perm(request, username, id_string):
     if perm_type in ['edit', 'view', 'remove']:
         user = User.objects.get(username=for_user)
         if perm_type == 'edit' and not user.has_perm('change_xform', xform):
+            audit = {
+                'xform': xform.id_string
+            }
+            audit_log(Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
+                _("Edit permissions on '%(id_string)s' assigned to '%(for_user)s'.") %\
+                {
+                    'id_string': xform.id_string,
+                    'for_user': for_user
+                }, audit=audit)
             assign('change_xform', user, xform)
         elif perm_type == 'view' and not user.has_perm('view_xform', xform):
+            audit = {
+                'xform': xform.id_string
+            }
+            audit_log(Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
+                _("View permissions on '%(id_string)s' assigned to '%(for_user)s'.") %\
+                {
+                    'id_string': xform.id_string,
+                    'for_user': for_user
+                }, audit=audit)
             assign('view_xform', user, xform)
         elif perm_type == 'remove':
+            audit = {
+                'xform': xform.id_string
+            }
+            audit_log(Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
+                _("All permissions on '%(id_string)s' removed from '%(for_user)s'.") %\
+                {
+                    'id_string': xform.id_string,
+                    'for_user': for_user
+                }, audit=audit)
             remove_perm('change_xform', user, xform)
             remove_perm('view_xform', user, xform)
     elif perm_type == 'link':
+        current = MetaData.public_link(xform)
         if for_user == 'all':
             MetaData.public_link(xform, True)
         elif for_user == 'none':
             MetaData.public_link(xform, False)
         elif for_user == 'toggle':
-            current = MetaData.public_link(xform)
             MetaData.public_link(xform, not current)
+        audit = {
+            'xform': xform.id_string
+        }
+        audit_log(Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
+            _("Public link on '%(id_string)s' %(action)s.") %\
+            {
+                'id_string': xform.id_string,
+                'action': "created" if for_user == "all" or (for_user == "toggle" and not current) else "removed"
+            }, audit=audit)
     if request.is_ajax():
         return HttpResponse(
             simplejson.dumps(
@@ -789,11 +819,21 @@ def set_perm(request, username, id_string):
 def show_submission(request, username, id_string, uuid):
     xform, is_owner, can_edit, can_view = get_xform_and_perms(
         username, id_string, request)
+    owner = xform.user
     # no access
     if not (xform.shared_data or can_view or
             request.session.get('public_link')):
         return HttpResponseRedirect(reverse(home))
     submission = get_object_or_404(Instance, uuid=uuid)
+    audit = {
+        'xform': xform.id_string
+    }
+    audit_log(Actions.SUBMISSION_ACCESSED, request.user, owner,
+        _("Submission '%(uuid)s' on '%(id_string)s' accessed.") %\
+        {
+            'id_string': xform.id_string,
+            'uuid': uuid
+        }, audit=audit)
     return HttpResponseRedirect(reverse(
         survey_responses, kwargs={'instance_id': submission.pk}))
 
@@ -834,6 +874,15 @@ def delete_data(request, username=None, id_string=None):
             for record in records:
                 Instance.delete_by_uuid(
                     username, id_string, uuid=record['_uuid'])
+                audit = {
+                    'xform': xform.id_string
+                }
+                audit_log(Actions.SUBMISSION_DELETED, request.user, owner,
+                    _("Deleted submission '%(uuid)s' on '%(id_string)s'.") %\
+                    {
+                        'id_string': xform.id_string,
+                        'uuid': record['_uuid']
+                    }, audit=audit)
             response_text = simplejson.dumps(records)
     if 'callback' in request.GET and request.GET.get('callback') != '':
         callback = request.GET.get('callback')
@@ -846,10 +895,19 @@ def delete_data(request, username=None, id_string=None):
 def link_to_bamboo(request, username, id_string):
     xform = get_object_or_404(XForm,
                               user__username=username, id_string=id_string)
+    owner = xform.user
     from utils.bamboo import get_new_bamboo_dataset
     dataset_id = get_new_bamboo_dataset(xform)
     xform.bamboo_dataset = dataset_id
     xform.save()
+    audit = {
+        'xform': xform.id_string
+    }
+    audit_log(Actions.BAMBOO_LINK_CREATED, request.user, owner,
+        _("Bamboo link created on '%(id_string)s'.") %\
+        {
+            'id_string': xform.id_string,
+        }, audit=audit)
 
     return HttpResponseRedirect(reverse(show, kwargs={
         'username': username,
@@ -862,6 +920,7 @@ def link_to_bamboo(request, username, id_string):
 def update_xform(request, username, id_string):
     xform = get_object_or_404(
         XForm, user__username=username, id_string=id_string)
+    owner = xform.user
 
     context = RequestContext(request)
 
@@ -872,6 +931,14 @@ def update_xform(request, username, id_string):
             enter_data,
             kwargs={'username': username, 'id_string': survey.id_string}
         )
+        audit = {
+            'xform': xform.id_string
+        }
+        audit_log(Actions.FORM_XLS_UPDATED, request.user, owner,
+            _("XLS Form for '%(id_string)s' updated.") %\
+            {
+                'id_string': xform.id_string,
+                }, audit=audit)
         return {
             'type': 'alert-success',
             'text': _(u'Successfully published %s.'
