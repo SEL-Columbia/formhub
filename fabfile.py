@@ -57,7 +57,7 @@ def deploy(deployment_name, branch='master'):
     setup_env(deployment_name)
     with cd(env.code_src):
         run("git fetch origin")
-        run("git checkout origin/%s" % branch)
+        run("git checkout %s" % branch)
         run("git submodule init")
         run("git submodule update")
         run('find . -name "*.pyc" -exec rm -rf {} \;')
