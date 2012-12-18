@@ -26,11 +26,11 @@ Actions = Enum(
     USER_LOGOUT="user-logout",
     FORM_ACCESSED="form-accessed",
     FORM_PUBLISHED="form-published",
-    FORM_EDITED="form-edited",
+    FORM_UPDATED="form-updated",
     FORM_DELETED="form-deleted",
-    SUBMISSION_CREATE="submission-created",
-    SUBMISSION_EDIT="submission-edited",
-    SUBMISSION_DELETE="submission-deleted",
+    SUBMISSION_CREATED="submission-created",
+    SUBMISSION_UPDATED="submission-updated",
+    SUBMISSION_DELETED="submission-deleted",
     SUBMISSION_API_ACCESSED="submission-api-accessed"
 )
 
