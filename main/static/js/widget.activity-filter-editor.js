@@ -89,7 +89,7 @@ this.recline.View = this.recline.View || {};
           </legend> \
           <select name="term" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}">\
             {{#options}}\
-            <option value="{{.}}" selected="selected">{{.}}</option>\
+            <option value="{{name}}" {{#selected}}selected{{/selected}}>{{name}}</option>\
             {{/options}}\
           </select>\
         </fieldset> \
@@ -116,6 +116,7 @@ this.recline.View = this.recline.View || {};
             });
         },
         onAddFilter: function(e) {
+            var self = this;
             e.preventDefault();
             var $target = $(e.target);
             $target.hide();
@@ -125,7 +126,9 @@ this.recline.View = this.recline.View || {};
             // check for options
             if(this.model.fields.get(field).has('options'))
             {
-                filter.options = this.model.fields.get(field).get('options');
+                filter.options = _.map(this.model.fields.get(field).get('options'), function(option){
+                    return {name: option, selected: false};
+                });
             }
             // check for datetime fields
             if(this.model.fields.get(field).get('type') == "date-time")
@@ -151,8 +154,13 @@ this.recline.View = this.recline.View || {};
 
                 switch (filterType) {
                     case 'term':
+                        filters[filterIndex].term = value;
+                        break;
                     case 'select_one':
                         filters[filterIndex].term = value;
+                        _.each(filters[filterIndex].options, function(option, idx){
+                           option.name==value?option.selected=true:option.selected=false;
+                        });
                         break;
                     case 'range':
                         filters[filterIndex][name] = value;
