@@ -94,6 +94,13 @@ def clone_xlsform(request, username):
                 user=request.user,
                 xls=xls_file
             ).survey
+            # log to cloner's account
+            audit = {}
+            audit_log(Actions.FORM_CLONED, request.user, request.user,
+                _("Cloned form '%(id_string)s'.") %\
+                {
+                    'id_string': xform.id_string,
+                }, audit, request)
             return {
                 'type': 'alert-success',
                 'text': _(u'Successfully cloned %(id_string)s into your '

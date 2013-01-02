@@ -30,6 +30,7 @@ Actions = Enum(
     FORM_UPDATED="form-updated",
     FORM_XLS_UPDATED="form-xls-updated",
     FORM_DELETED="form-deleted",
+    FORM_CLONED="form-cloned",
     FORM_PERMISSIONS_UPDATED="form-permissions-updated",
     SUBMISSION_CREATED="submission-created",
     SUBMISSION_UPDATED="submission-updated",
@@ -106,7 +107,6 @@ def audit_log(action, request_user, account_user, message, audit, request, level
     @return: None
     """
     logger = logging.getLogger("audit_logger")
-    import ipdb; ipdb.set_trace()
     extra = {
         'formhub_action': action,
         'request_username': request_user.username if request_user.username
