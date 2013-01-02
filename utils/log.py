@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from utils.viewer_tools import get_client_ip
 
 
 clog = logging.getLogger('console_logger')
@@ -92,7 +93,7 @@ class AuditLogHandler(logging.Handler):
         mod = __import__('.'.join(names[:-1]), fromlist=names[-1:])
         return getattr(mod, names[-1])
 
-def audit_log(action, request_user, account_user, message, audit, level=logging.DEBUG):
+def audit_log(action, request_user, account_user, message, audit, request, level=logging.DEBUG):
     """
     Create a log message based on these params
 
@@ -105,12 +106,14 @@ def audit_log(action, request_user, account_user, message, audit, level=logging.
     @return: None
     """
     logger = logging.getLogger("audit_logger")
+    import ipdb; ipdb.set_trace()
     extra = {
         'formhub_action': action,
         'request_username': request_user.username if request_user.username
             else str(request_user),
         'account_username': account_user.username if account_user.username
             else str(account_user),
+        'client_ip': get_client_ip(request),
         'formhub_audit': audit
     }
     logger.log(level, message, extra=extra)

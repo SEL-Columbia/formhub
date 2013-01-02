@@ -191,7 +191,7 @@ def profile_settings(request, username):
             # todo: add string rep. of settings to see what changed
             audit = {}
             audit_log(Actions.PROFILE_SETTINGS_UPDATED, request.user, content_user,
-                _("Profile settings updated."), audit=audit)
+                _("Profile settings updated."), audit, request)
             return HttpResponseRedirect(reverse(
                 public_profile, kwargs={'username': request.user.username}
             ))
@@ -212,7 +212,7 @@ def public_profile(request, username):
     context.is_owner = request.user == content_user
     audit = {}
     audit_log(Actions.PUBLIC_PROFILE_ACCESSED, request.user, content_user,
-        _("Public profile accessed."), audit=audit)
+        _("Public profile accessed."), audit, request)
     return render_to_response("profile.html", context_instance=context)
 
 
@@ -384,7 +384,7 @@ def edit(request, username, id_string):
                     'id_string': xform.id_string,
                     'old_description': xform.description,
                     'new_description': request.POST['description']
-                }, audit=audit)
+                }, audit, request)
             xform.description = request.POST['description']
         elif request.POST.get('title'):
             audit = {
@@ -396,7 +396,7 @@ def edit(request, username, id_string):
                     'id_string': xform.id_string,
                     'old_title': xform.title,
                     'new_title': request.POST.get('title')
-                }, audit=audit)
+                }, audit, request)
             xform.title = request.POST['title']
         elif request.POST.get('toggle_shared'):
             if request.POST['toggle_shared'] == 'data':
@@ -409,7 +409,7 @@ def edit(request, username, id_string):
                         'id_string': xform.id_string,
                         'old_shared': _("shared") if xform.shared_data else _("not shared"),
                         'new_shared': _("shared") if not xform.shared_data else _("not shared")
-                    }, audit=audit)
+                    }, audit, request)
                 xform.shared_data = not xform.shared_data
             elif request.POST['toggle_shared'] == 'form':
                 audit = {
@@ -421,7 +421,7 @@ def edit(request, username, id_string):
                         'id_string': xform.id_string,
                         'old_shared': _("shared") if xform.shared else _("not shared"),
                         'new_shared': _("shared") if not xform.shared else _("not shared")
-                    }, audit=audit)
+                    }, audit, request)
                 xform.shared = not xform.shared
             elif request.POST['toggle_shared'] == 'active':
                 audit = {
@@ -433,7 +433,7 @@ def edit(request, username, id_string):
                         'id_string': xform.id_string,
                         'old_shared': _("shared") if xform.downloadable else _("not shared"),
                         'new_shared': _("shared") if not xform.downloadable else _("not shared")
-                    }, audit=audit)
+                    }, audit, request)
                 xform.downloadable = not xform.downloadable
             elif request.POST['toggle_shared'] == 'crowd':
                 audit = {
@@ -445,7 +445,7 @@ def edit(request, username, id_string):
                         'id_string': xform.id_string,
                         'old_status': _("crowdform") if not xform.is_crowd_form else _("not crowdform"),
                         'new_status': _("crowdform") if xform.is_crowd_form else _("not crowdform"),
-                    }, audit=audit)
+                    }, audit, request)
                 if xform.is_crowd_form:
                     xform.is_crowd_form = False
                 else:
@@ -461,7 +461,7 @@ def edit(request, username, id_string):
                 {
                     'id_string': xform.id_string,
                     'form_license': request.POST['form-license'],
-                }, audit=audit)
+                }, audit, request)
             MetaData.form_license(xform, request.POST['form-license'])
         elif request.POST.get('data-license'):
             audit = {
@@ -472,7 +472,7 @@ def edit(request, username, id_string):
                 {
                     'id_string': xform.id_string,
                     'data_license': request.POST['data-license'],
-                }, audit=audit)
+                }, audit, request)
             MetaData.data_license(xform, request.POST['data-license'])
         elif request.POST.get('source') or request.FILES.get('source'):
             audit = {
@@ -483,7 +483,7 @@ def edit(request, username, id_string):
                 {
                     'id_string': xform.id_string,
                     'source': request.POST.get('source'),
-                }, audit=audit)
+                }, audit, request)
             MetaData.source(xform, request.POST.get('source'),
                             request.FILES.get('source'))
         elif request.FILES.get('media'):
@@ -494,7 +494,7 @@ def edit(request, username, id_string):
                 _("Media added to '%(id_string)s'.") %\
                 {
                     'id_string': xform.id_string
-                }, audit=audit)
+                }, audit, request)
             MetaData.media_upload(xform, request.FILES.get('media'))
         elif request.POST.get('map_name'):
             mapbox_layer = MapboxLayerForm(request.POST)
@@ -506,7 +506,7 @@ def edit(request, username, id_string):
                     _("Map layer added to '%(id_string)s'.") %\
                     {
                         'id_string': xform.id_string
-                    }, audit=audit)
+                    }, audit, request)
                 MetaData.mapbox_layer_upload(xform, mapbox_layer.cleaned_data)
         elif request.FILES:
             audit = {
@@ -516,7 +516,7 @@ def edit(request, username, id_string):
                 _("Supporting document added to '%(id_string)s'.") %\
                 {
                     'id_string': xform.id_string
-                }, audit=audit)
+                }, audit, request)
             MetaData.supporting_docs(xform, request.FILES['doc'])
         xform.update()
 
@@ -612,7 +612,7 @@ def download_metadata(request, username, id_string, data_id):
                 {
                     'id_string': xform.id_string,
                     'filename': "%s.%s" % os.path.basename(file_path)
-                }, audit=audit)
+                }, audit, request)
             response = response_with_mimetype_and_name(
                 data.data_file_type,
                 filename, extension=extension, show_date=False,
@@ -643,7 +643,7 @@ def delete_metadata(request, username, id_string, data_id):
                 {
                     'id_string': xform.id_string,
                     'filename': os.path.basename(data.data_file.name)
-                }, audit=audit)
+                }, audit, request)
             return HttpResponseRedirect(reverse(show, kwargs={
                 'username': username,
                 'id_string': id_string
@@ -659,7 +659,7 @@ def delete_metadata(request, username, id_string, data_id):
             _("Map layer deleted from '%(id_string)s'.") %\
             {
                 'id_string': xform.id_string,
-            }, audit=audit)
+            }, audit, request)
         return HttpResponseRedirect(reverse(show, kwargs={
             'username': username,
             'id_string': id_string
@@ -686,7 +686,7 @@ def download_media_data(request, username, id_string, data_id):
                     {
                         'id_string': xform.id_string,
                         'filename': os.path.basename(data.data_file.name)
-                    }, audit=audit)
+                    }, audit, request)
                 return HttpResponseRedirect(reverse(show, kwargs={
                     'username': username,
                     'id_string': id_string
@@ -707,7 +707,7 @@ def download_media_data(request, username, id_string, data_id):
                     {
                         'id_string': xform.id_string,
                         'filename': os.path.basename(file_path)
-                    }, audit=audit)
+                    }, audit, request)
                 response = response_with_mimetype_and_name(
                     data.data_file_type,
                     filename, extension=extension, show_date=False,
@@ -764,7 +764,7 @@ def set_perm(request, username, id_string):
                 {
                     'id_string': xform.id_string,
                     'for_user': for_user
-                }, audit=audit)
+                }, audit, request)
             assign('change_xform', user, xform)
         elif perm_type == 'view' and not user.has_perm('view_xform', xform):
             audit = {
@@ -775,7 +775,7 @@ def set_perm(request, username, id_string):
                 {
                     'id_string': xform.id_string,
                     'for_user': for_user
-                }, audit=audit)
+                }, audit, request)
             assign('view_xform', user, xform)
         elif perm_type == 'remove':
             audit = {
@@ -786,7 +786,7 @@ def set_perm(request, username, id_string):
                 {
                     'id_string': xform.id_string,
                     'for_user': for_user
-                }, audit=audit)
+                }, audit, request)
             remove_perm('change_xform', user, xform)
             remove_perm('view_xform', user, xform)
     elif perm_type == 'link':
@@ -805,7 +805,7 @@ def set_perm(request, username, id_string):
             {
                 'id_string': xform.id_string,
                 'action': "created" if for_user == "all" or (for_user == "toggle" and not current) else "removed"
-            }, audit=audit)
+            }, audit, request)
     if request.is_ajax():
         return HttpResponse(
             simplejson.dumps(
@@ -833,7 +833,7 @@ def show_submission(request, username, id_string, uuid):
         {
             'id_string': xform.id_string,
             'uuid': uuid
-        }, audit=audit)
+        }, audit, request)
     return HttpResponseRedirect(reverse(
         survey_responses, kwargs={'instance_id': submission.pk}))
 
@@ -882,7 +882,7 @@ def delete_data(request, username=None, id_string=None):
                     {
                         'id_string': xform.id_string,
                         'uuid': record['_uuid']
-                    }, audit=audit)
+                    }, audit, request)
             response_text = simplejson.dumps(records)
     if 'callback' in request.GET and request.GET.get('callback') != '':
         callback = request.GET.get('callback')
@@ -907,7 +907,7 @@ def link_to_bamboo(request, username, id_string):
         _("Bamboo link created on '%(id_string)s'.") %\
         {
             'id_string': xform.id_string,
-        }, audit=audit)
+        }, audit, request)
 
     return HttpResponseRedirect(reverse(show, kwargs={
         'username': username,
@@ -938,7 +938,7 @@ def update_xform(request, username, id_string):
             _("XLS Form for '%(id_string)s' updated.") %\
             {
                 'id_string': xform.id_string,
-                }, audit=audit)
+                }, audit, request)
         return {
             'type': 'alert-success',
             'text': _(u'Successfully published %s.'
