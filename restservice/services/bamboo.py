@@ -11,7 +11,6 @@ class ServiceDefinition(RestServiceInterface):
     verbose_name = u'bamboo POST'
 
     def send(self, url, parsed_instance):
-
         xform = parsed_instance.instance.xform
 
         # create dataset on bamboo first (including current submission)
@@ -21,7 +20,8 @@ class ServiceDefinition(RestServiceInterface):
             xform.save()
         else:
             post_data = simplejson.dumps(parsed_instance.to_dict_for_mongo())
-            url = ("%(root)sdatasets/%(dataset)s"
-                   % {'root': url, 'dataset':
-                      parsed_instance.instance.xform.bamboo_dataset})
+            url = '/'.join(
+                s.strip('/')
+                for s in [url, 'datasets',
+                          parsed_instance.instance.xform.bamboo_dataset])
             requests.put(url, data={'update': post_data})
