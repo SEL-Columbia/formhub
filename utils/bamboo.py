@@ -17,13 +17,20 @@ def get_bamboo_url(xform):
 
     return service.service_url
 
+def add_bamboo_restservice(xform, url):
+    try:
+        RestService.objects.get(xform=xform, name='bamboo', service_url=url)
+    except RestService.DoesNotExist:
+        service = RestService(name='bamboo', xform=xform, service_url=url)
+        service.service_url = url
+        service.save()
+
 
 def get_new_bamboo_dataset(xform):
 
     dataset_id = u''
-
-    url = '%(url_root)s/datasets' % {'url_root': get_bamboo_url(xform)}
-    
+    url_data = {'url_root': get_bamboo_url(xform)}
+    url = '%(url_root)s/datasets' % url_data
 
     try:
         csv_data = get_csv_data(xform)
@@ -37,6 +44,8 @@ def get_new_bamboo_dataset(xform):
             dataset_id = json.loads(req.text).get('id')
         except:
             pass
+        else:
+            add_bamboo_restservice(xform, url_data['url_root'])
     return dataset_id
 
 
