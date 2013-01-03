@@ -22,8 +22,6 @@ class ServiceDefinition(RestServiceInterface):
         else:
             post_data = simplejson.dumps(parsed_instance.to_dict_for_mongo())
             url = ("%(root)sdatasets/%(dataset)s"
-            	   % {'root': url,
-            	   	  'dataset': parsed_instance.instance.xform.bamboo_dataset})
-            requests.put(url, data=post_data,
-        				  headers={"Content-Type": "application/json"})
-
+                   % {'root': url, 'dataset':
+                      parsed_instance.instance.xform.bamboo_dataset})
+            requests.put(url, data={'update': post_data})
