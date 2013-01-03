@@ -99,7 +99,7 @@ def clone_xlsform(request, username):
             audit_log(Actions.FORM_CLONED, request.user, request.user,
                 _("Cloned form '%(id_string)s'.") %\
                 {
-                    'id_string': xform.id_string,
+                    'id_string': survey.id_string,
                 }, audit, request)
             return {
                 'type': 'alert-success',
@@ -131,7 +131,12 @@ def profile(request, username):
         def set_form():
             form = QuickConverter(request.POST, request.FILES)
             survey = form.publish(request.user).survey
-
+            audit = {}
+            audit_log(Actions.FORM_CLONED, request.user, survey.user,
+                _("Published form '%(id_string)s'.") %\
+                {
+                    'id_string': survey.id_string,
+                }, audit, request)
             enketo_webform_url = reverse(
                 enter_data,
                 kwargs={'username': username, 'id_string': survey.id_string}
