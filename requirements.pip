@@ -26,7 +26,7 @@ SQLAlchemy==0.7.1
 # new export code relies on
 pandas==0.9.1
 
-requests==0.13.6
+requests==0.14
 
 # devel only
 twill
