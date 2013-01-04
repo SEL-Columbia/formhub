@@ -35,6 +35,7 @@ from utils.google import google_export_xls, redirect_uri
 from odk_viewer.models import Export
 from utils.export_tools import generate_export, should_create_new_export
 from utils.viewer_tools import export_def_from_filename
+from utils.log import audit_log, Actions
 
 
 def encode(time_str):
@@ -122,6 +123,14 @@ def map_view(request, username, id_string):
                                     kwargs={"username": username,
                                             "id_string": id_string})
     context.mapbox_layer = MetaData.mapbox_layer_upload(xform)
+    audit = {
+        "xform": xform.id_string
+    }
+    audit_log(Actions.FORM_MAP_VIEWED, request.user, owner,
+        _("Requested map on '%(id_string)s'.") %\
+        {
+            'id_string': xform.id_string,
+        }, audit, request)
     return render_to_response('map.html', context_instance=context)
 
 
@@ -150,6 +159,16 @@ def survey_responses(request, instance_id):
          data_for_display[xpath]) for xpath in xpaths
     ]
     languages = label_value_pairs[-1][0]
+    audit = {
+        "xform": xform.id_string,
+        "instance_id": instance_id
+    }
+    audit_log(Actions.FORM_DATA_VIEWED, request.user, xform.user,
+        _("Requested survey with id '%(instance_id)s' on '%(id_string)s'.") %\
+        {
+            'id_string': xform.id_string,
+            'instance_id': instance_id
+        }, audit, request)
     return render_to_response('survey.html', {
         'label_value_pairs': label_value_pairs,
         'image_urls': image_urls(pi.instance),
@@ -173,6 +192,21 @@ def csv_export(request, username, id_string):
     except NoRecordsFoundError:
         return HttpResponse(_("No records found to export"))
     else:
+        audit = {
+            "xform": xform.id_string,
+            "export_type": Export.CSV_EXPORT
+        }
+        audit_log(Actions.EXPORT_CREATED, request.user, owner,
+            _("Created CSV export on '%(id_string)s'.") %\
+            {
+                'id_string': xform.id_string,
+            }, audit, request)
+        # log download as well
+        audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
+            _("Downloaded CSV export on '%(id_string)s'.") %\
+            {
+                'id_string': xform.id_string,
+            }, audit, request)
         if request.GET.get('raw'):
             id_string = None
         response = response_with_mimetype_and_name(
@@ -196,6 +230,21 @@ def xls_export(request, username, id_string):
     except NoRecordsFoundError:
         return HttpResponse(_("No records found to export"))
     else:
+        audit = {
+            "xform": xform.id_string,
+            "export_type": Export.XLS_EXPORT
+        }
+        audit_log(Actions.EXPORT_CREATED, request.user, owner,
+            _("Created XLS export on '%(id_string)s'.") %\
+            {
+                'id_string': xform.id_string,
+            }, audit, request)
+        # log download as well
+        audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
+            _("Downloaded XLS export on '%(id_string)s'.") %\
+            {
+                'id_string': xform.id_string,
+            }, audit, request)
         # get extension from file_path, exporter could modify to
         # xlsx if it exceeds limits
         path, ext = os.path.splitext(export.filename)
@@ -224,6 +273,16 @@ def create_export(request, username, id_string, export_type):
         return HttpResponseBadRequest(
             _("%s is not a valid export type" % export_type))
     else:
+        audit = {
+            "xform": xform.id_string,
+            "export_type": export_type
+        }
+        audit_log(Actions.EXPORT_CREATED, request.user, owner,
+            _("Created %(export_type)s export on '%(id_string)s'.") %\
+            {
+                'export_type': export_type.upper(),
+                'id_string': xform.id_string,
+            }, audit, request)
         return HttpResponseRedirect(reverse(
             export_list,
             kwargs={
@@ -308,6 +367,17 @@ def export_download(request, username, id_string, export_type, filename):
 
     ext, mime_type = export_def_from_filename(export.filename)
 
+    audit = {
+        "xform": xform.id_string,
+        "export_type": export.export_type
+    }
+    audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
+        _("Downloaded %(export_type)s export '%(filename)s' on '%(id_string)s'.") %\
+        {
+            'export_type': export.export_type.upper(),
+            'filename': export.filename,
+            'id_string': xform.id_string,
+        }, audit, request)
     if request.GET.get('raw'):
         id_string = None
     basename = os.path.splitext(export.filename)[0]
@@ -330,6 +400,17 @@ def delete_export(request, username, id_string, export_type):
     export = get_object_or_404(Export, id=export_id)
 
     export.delete()
+    audit = {
+        "xform": xform.id_string,
+        "export_type": export.export_type
+    }
+    audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
+        _("Deleted %(export_type)s export '%(filename)s' on '%(id_string)s'.") %\
+        {
+            'export_type': export.export_type.upper(),
+            'filename': export.filename,
+            'id_string': xform.id_string,
+        }, audit, request)
     return HttpResponseRedirect(reverse(
         export_list,
         kwargs={
@@ -361,6 +442,21 @@ def zip_export(request, username, id_string):
         z.write(f.name, urlparse(photo).path[1:])
         f.close()
     z.close()
+    audit = {
+        "xform": xform.id_string,
+        "export_type": Export.ZIP_EXPORT
+    }
+    audit_log(Actions.EXPORT_CREATED, request.user, owner,
+        _("Created ZIP export on '%(id_string)s'.") %\
+        {
+            'id_string': xform.id_string,
+        }, audit, request)
+    # log download as well
+    audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
+        _("Downloaded ZIP export on '%(id_string)s'.") %\
+        {
+            'id_string': xform.id_string,
+        }, audit, request)
     if request.GET.get('raw'):
         id_string = None
     response = response_with_mimetype_and_name('zip', id_string,
@@ -422,6 +518,21 @@ def kml_export(request, username, id_string):
                            mimetype="application/vnd.google-earth.kml+xml")
     response['Content-Disposition'] = \
         disposition_ext_and_date(id_string, 'kml')
+    audit = {
+        "xform": xform.id_string,
+        "export_type": Export.KML_EXPORT
+    }
+    audit_log(Actions.EXPORT_CREATED, request.user, owner,
+        _("Created KML export on '%(id_string)s'.") %\
+        {
+            'id_string': xform.id_string,
+        }, audit, request)
+    # log download as well
+    audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
+        _("Downloaded KML export on '%(id_string)s'.") %\
+        {
+            'id_string': xform.id_string,
+        }, audit, request)
     return response
 
 
@@ -456,6 +567,15 @@ def google_xls_export(request, username, id_string):
     temp_file.close()
     url = google_export_xls(tmp.name, xform.title, token, blob=True)
     os.unlink(tmp.name)
+    audit = {
+        "xform": xform.id_string,
+        "export_type": "google"
+    }
+    audit_log(Actions.EXPORT_CREATED, request.user, owner,
+        _("Created Google Docs export on '%(id_string)s'.") %\
+        {
+            'id_string': xform.id_string,
+        }, audit, request)
     return HttpResponseRedirect(url)
 
 
@@ -472,6 +592,14 @@ def data_view(request, username, id_string):
     context.jsonform_url = reverse(download_jsonform,
                                    kwargs={"username": username,
                                            "id_string": id_string})
+    audit = {
+        "xform": xform.id_string,
+    }
+    audit_log(Actions.FORM_DATA_VIEWED, request.user, owner,
+        _("Requested data view for '%(id_string)s'.") %\
+        {
+            'id_string': xform.id_string,
+        }, audit, request)
     return render_to_response("data_view.html", context_instance=context)
 
 
@@ -515,6 +643,14 @@ def instance(request, username, id_string):
 
     context = RequestContext(request)
 
+    audit = {
+        "xform": xform.id_string,
+    }
+    audit_log(Actions.FORM_DATA_VIEWED, request.user, xform.user,
+        _("Requested instance view for '%(id_string)s'.") %\
+        {
+            'id_string': xform.id_string,
+        }, audit, request)
     return render_to_response('instance.html', {
         'username': username,
         'id_string': id_string,

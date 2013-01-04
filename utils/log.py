@@ -3,8 +3,6 @@ from datetime import datetime
 from utils.viewer_tools import get_client_ip
 
 
-clog = logging.getLogger('console_logger')
-
 class Enum(object):
     __name__= "Enum"
     def __init__(self, **enums):
@@ -38,6 +36,12 @@ Actions = Enum(
     FORM_JSON_DOWNLOADED="form-json-downloaded",
     FORM_PERMISSIONS_UPDATED="form-permissions-updated",
     FORM_ENTER_DATA_REQUESTED="form-enter-data-requested",
+    FORM_MAP_VIEWED="form-map-viewed",
+    FORM_DATA_VIEWED="form-data-viewed",
+    EXPORT_CREATED="export-created",
+    EXPORT_DOWNLOADED="export-downloaded",
+    EXPORT_DELETED="export-deleted",
+    EXPORT_LIST_REQUESTED="export-list-requested",
     SUBMISSION_CREATED="submission-created",
     SUBMISSION_UPDATED="submission-updated",
     SUBMISSION_DELETED="submission-deleted",
@@ -94,7 +98,6 @@ class AuditLogHandler(logging.Handler):
         else:
             log_entry = model(data)
             log_entry.save()
-        clog.log(record.levelno, record.msg)
 
     def get_model(self, name):
         names = name.split('.')
