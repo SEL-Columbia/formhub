@@ -62,8 +62,9 @@ class RestServiceTest(MainTestCase):
         self._add_rest_service(self.service_url, self.service_name)
 
     def test_bamboo_service(self):
-        bamboo_url = 'http://bamboo.io/'
-        self._add_rest_service(bamboo_url, 'bamboo')
+        service_url = 'http://bamboo.io/'
+        service_name = 'bamboo'
+        # self._add_rest_service(service_url, service_name)
         self.wait(2)
         xml_submission1 = os.path.join(self.this_directory,
                                        u'fixtures',
@@ -71,20 +72,31 @@ class RestServiceTest(MainTestCase):
         xml_submission2 = os.path.join(self.this_directory,
                                        u'fixtures',
                                        u'dhisform_submission2.xml')
-        # make sure we got a bamboo_id
+        xml_submission3 = os.path.join(self.this_directory,
+                                       u'fixtures',
+                                       u'dhisform_submission3.xml')
+        # make a first submission without the service
         self._make_submission(xml_submission1)
         self.assertEqual(self.response.status_code, 201)
-        self.wait(5)
-        xform = XForm.objects.get(id=self.xform.id)
-        self.assertTrue(xform.bamboo_dataset)
 
-        # make sure update went trhought by counting rows on bamboo
+        # add rest service AFTER 1st submission
+        self._add_rest_service(service_url, service_name)
+
+        # submit another one.
         self._make_submission(xml_submission2)
         self.assertEqual(self.response.status_code, 201)
-        self.wait(2)
-        dataset = Dataset(connection=Connection(bamboo_url),
+        self.wait(3)
+        # it should have created the whole dataset
+        xform = XForm.objects.get(id=self.xform.id)
+        self.assertTrue(xform.bamboo_dataset)
+        dataset = Dataset(connection=Connection(service_url),
                           dataset_id=xform.bamboo_dataset)
         self.assertEqual(dataset.get_info()['num_rows'], 2)
+
+        # submit a third one. check that we have 3 records
+        self._make_submission(xml_submission3)
+        self.assertEqual(self.response.status_code, 201)
+        self.assertEqual(dataset.get_info()['num_rows'], 3)
 
     def test_anon_service_view(self):
         self.xform.shared = True
