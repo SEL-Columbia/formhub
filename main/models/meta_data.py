@@ -112,7 +112,8 @@ class MetaData(models.Model):
         if data_file:
             if data_file.content_type in ['image/jpeg', 'image/png',
                                           'audio/mpeg', 'video/3gpp',
-					  'audio/wav']:
+                                          'audio/wav',
+                                          'audio/x-m4a', 'audio/mp3']:
                 media = MetaData(data_type=data_type, xform=xform,
                                  data_value=data_file.name,
                                  data_file=data_file,
