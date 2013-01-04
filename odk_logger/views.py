@@ -333,14 +333,6 @@ def download_jsonform(request, username, id_string):
         callback = request.GET.get('callback')
         response.content = "%s(%s)" % (callback, xform.json)
     else:
-        audit = {
-            "xform": xform.id_string
-        }
-        audit_log(Actions.FORM_JSON_DOWNLOADED, request.user, owner,
-            _("Downloaded JSON for form '%(id_string)s'.") %\
-            {
-                "id_string": xform.id_string
-            }, audit, request)
         response.content = xform.json
     return response
 
@@ -524,7 +516,7 @@ def edit_data(request, username, id_string, data_id):
                 "data_id": data_id
             }
             audit_log(Actions.SUBMISSION_EDIT_REQUESTED, request.user, owner,
-                _("Requested to edit data with id %(data_id)s on '%(id_string)s'.") %\
+                _("Requested to edit data with id '%(data_id)s' on '%(id_string)s'.") %\
                 {
                     'id_string': xform.id_string,
                     'data_id': data_id
