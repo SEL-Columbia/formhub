@@ -889,10 +889,10 @@ def delete_data(request, username=None, id_string=None):
                     'xform': xform.id_string
                 }
                 audit_log(Actions.SUBMISSION_DELETED, request.user, owner,
-                    _("Deleted submission '%(uuid)s' on '%(id_string)s'.") %\
+                    _("Deleted submission with id '%(record_id)s' on '%(id_string)s'.") %\
                     {
                         'id_string': xform.id_string,
-                        'uuid': record['_uuid']
+                        'record_id': record['_id']
                     }, audit, request)
             response_text = simplejson.dumps(records)
     if 'callback' in request.GET and request.GET.get('callback') != '':
