@@ -191,6 +191,10 @@ $(document).ready(function(){
         .click(function(e) {
             e.preventDefault()
         })
+
+    $(".modal form").submit(function(){
+        $(this).parent(".modal").modal('hide');
+    });
 });
 
 function setHrefFromSelect(id) {
