@@ -124,7 +124,7 @@ def clone_xlsform(request, username):
 
 def profile(request, username):
     context = RequestContext(request)
-    content_user = None
+    content_user = get_object_or_404(User, username=username)
     context.form = QuickConverter()
     # xlsform submission...
     if request.method == 'POST' and request.user.is_authenticated():
@@ -132,7 +132,7 @@ def profile(request, username):
             form = QuickConverter(request.POST, request.FILES)
             survey = form.publish(request.user).survey
             audit = {}
-            audit_log(Actions.FORM_CLONED, request.user, survey.user,
+            audit_log(Actions.FORM_PUBLISHED, request.user, content_user,
                 _("Published form '%(id_string)s'.") %\
                 {
                     'id_string': survey.id_string,
@@ -150,7 +150,6 @@ def profile(request, username):
         context.message = publish_form(set_form)
 
     # profile view...
-    content_user = get_object_or_404(User, username=username)
     # for the same user -> dashboard
     if content_user == request.user:
         context.show_dashboard = True
