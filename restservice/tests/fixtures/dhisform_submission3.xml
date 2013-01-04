@@ -1,0 +1,11 @@
+<?xml version='1.0' ?>
+<dhis2form id="dhis2form">
+    <formhub>
+    </formhub>
+    <population_under_5>1000</population_under_5>
+    <total_population>2000</total_population>
+    <location>timbuktu</location>
+    <period>2012-05-24</period>
+    <meta>
+    </meta>
+</dhis2form>
