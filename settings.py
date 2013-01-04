@@ -111,6 +111,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'utils.middleware.HTTPResponseNotAllowedMiddleware',
+    'utils.middleware.AuditLogLogoutMiddleware'
 )
 
 ROOT_URLCONF = 'urls'
