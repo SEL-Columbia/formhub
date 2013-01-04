@@ -946,7 +946,7 @@ def update_xform(request, username, id_string):
             'xform': xform.id_string
         }
         audit_log(Actions.FORM_XLS_UPDATED, request.user, owner,
-            _("XLS Form for '%(id_string)s' updated.") %\
+            _("XLS for '%(id_string)s' updated.") %\
             {
                 'id_string': xform.id_string,
                 }, audit, request)
