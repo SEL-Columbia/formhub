@@ -623,7 +623,7 @@ def download_metadata(request, username, id_string, data_id):
                 _("Document '%(filename)s' for '%(id_string)s' downloaded.") %\
                 {
                     'id_string': xform.id_string,
-                    'filename': "%s.%s" % os.path.basename(file_path)
+                    'filename': "%s.%s" % (filename, extension)
                 }, audit, request)
             response = response_with_mimetype_and_name(
                 data.data_file_type,
