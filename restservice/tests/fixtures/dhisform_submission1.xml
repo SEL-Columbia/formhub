@@ -1,0 +1,11 @@
+<?xml version='1.0' ?>
+<dhis2form id="dhis2form">
+    <formhub>
+    </formhub>
+    <population_under_5>10</population_under_5>
+    <total_population>20</total_population>
+    <location>gao</location>
+    <period>2012-11-21</period>
+    <meta>
+    </meta>
+</dhis2form>

@@ -1,0 +1,11 @@
+<?xml version='1.0' ?>
+<dhis2form id="dhis2form">
+    <formhub>
+    </formhub>
+    <population_under_5>100</population_under_5>
+    <total_population>200</total_population>
+    <location>kidal</location>
+    <period>2012-01-24</period>
+    <meta>
+    </meta>
+</dhis2form>
