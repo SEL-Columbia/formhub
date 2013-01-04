@@ -17,7 +17,7 @@ class ServiceDefinition(RestServiceInterface):
 
         # create dataset on bamboo first (including current submission)
         if not xform.bamboo_dataset:
-            dataset_id = get_new_bamboo_dataset(xform)
+            dataset_id = get_new_bamboo_dataset(xform, force_last=True)
             xform.bamboo_dataset = dataset_id
             xform.save()
         else:
