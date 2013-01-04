@@ -22,5 +22,5 @@ class ServiceDefinition(RestServiceInterface):
             xform.save()
         else:
             dataset = Dataset(connection=Connection(url=get_bamboo_url(xform)),
-                              dataset_id=dataset_id)
-            dataset.update(rows=rows)
+                              dataset_id=xform.bamboo_dataset)
+            dataset.update_data(rows=rows)
