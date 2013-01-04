@@ -4,3 +4,6 @@
 [submodule "js_tests/EnvJasmine"]
 	path = js_tests/EnvJasmine
 	url = git://github.com/trevmex/EnvJasmine.git
+[submodule "main/static/recline"]
+	path = main/static/recline
+	url = git://github.com/modilabs/recline.git

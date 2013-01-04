@@ -188,6 +188,12 @@ LOGGING = {
              'class':'logging.StreamHandler',
              'formatter': 'verbose'
         },
+        'audit': {
+             'level':'DEBUG',
+             'class':'utils.log.AuditLogHandler',
+             'formatter': 'verbose',
+             'model': 'main.models.audit.AuditLog'
+        },
     },
     'loggers': {
         'django.request': {
@@ -197,6 +203,11 @@ LOGGING = {
         },
         'console_logger': {
             'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        'audit_logger': {
+            'handlers': ['audit'],
             'level': 'DEBUG',
             'propagate': True
         }

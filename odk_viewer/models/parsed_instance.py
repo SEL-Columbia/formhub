@@ -20,8 +20,9 @@ from common_tags import START_TIME, START, END_TIME, END, ID, UUID,\
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
-key_whitelist = ['$or', '$and', '$exists', '$in', '$gt', '$gte', '$lt', '$lte']
+key_whitelist = ['$or', '$and', '$exists', '$in', '$gt', '$gte', '$lt', '$lte', '$regex', '$options']
 GLOBAL_SUBMISSION_STATS = u'global_submission_stats'
+DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
 
 
 class ParseError(Exception):
@@ -36,7 +37,7 @@ def datetime_from_str(text):
     dt = None
     try:
         dt = datetime.datetime.strptime(
-            date_time_str, '%Y-%m-%dT%H:%M:%S'
+            date_time_str, DATETIME_FORMAT
         )
     except Exception:
         return None

@@ -214,3 +214,11 @@ def export_def_from_filename(filename):
     # try get the def from extension
     mime_type = Export.EXPORT_MIMES[ext]
     return ext, mime_type
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip

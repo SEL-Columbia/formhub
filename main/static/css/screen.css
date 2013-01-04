@@ -175,6 +175,9 @@ ul.inline ul.dropdown-menu {
 .dropdown-menu .icon-off {
   -webkit-mask-position: -384px 0;
 }
+.dropdown-menu .icon-eye-open {
+    -webkit-mask-position: -96px -120px;
+}
 .dropdown-menu li > a:hover > i,
 .dropdown-menu .active > a > i,
 .dropdown-menu .active > a:hover > i {
