@@ -38,6 +38,7 @@ from odk_logger.import_tools import import_instances_from_zip
 from odk_logger.xform_instance_parser import InstanceEmptyError,\
     InstanceInvalidUserError, IsNotCrowdformError, DuplicateInstance
 from odk_logger.models.instance import FormInactiveError
+from utils.log import audit_log, Actions
 
 
 @require_POST
@@ -82,6 +83,11 @@ def bulksubmission(request, username):
              'rejected': total_count - success_count},
             'errors': u"%d %s" % (len(errors), errors)
         }
+        audit = {
+            "bulk_submission_log": json_msg
+        }
+        audit_log(Actions.USER_BULK_SUBMISSION, request.user, posting_user,
+        _("Bulk submissions made."), audit, request)
         response = HttpResponse(json.dumps(json_msg))
         response.status_code = 200
         response['Location'] = request.build_absolute_uri(request.path)
@@ -132,6 +138,9 @@ def formList(request, username):
             metadata__data_value=username
         )
         xforms = chain(xforms, crowdforms)
+        audit = {}
+        audit_log(Actions.USER_FORMLIST_REQUESTED, request.user, formlist_user,
+            _("Formlist requested."), audit, request)
     response = render_to_response("xformsList.xml", {
         #'urls': urls,
         'host': request.build_absolute_uri().replace(
@@ -220,6 +229,14 @@ def submission(request, username=None):
             return OpenRosaResponseBadRequest(
                 _(u"Unable to create submission."))
 
+        audit = {
+            "xform": instance.xform.id_string
+        }
+        audit_log(Actions.SUBMISSION_CREATED, request.user, instance.xform.user,
+            _("Submission created on form %(id_string)s.") %\
+            {
+                "id_string": instance.xform.id_string
+            }, audit, request)
         # ODK needs two things for a form to be considered successful
         # 1) the status code needs to be 201 (created)
         # 2) The location header needs to be set to the host it posted to
@@ -258,6 +275,14 @@ def download_xform(request, username, id_string):
         response = helper_auth_helper(request)
         if response:
             return response
+    audit = {
+        "xform": xform.id_string
+    }
+    audit_log(Actions.FORM_XML_DOWNLOADED, request.user, xform.user,
+        _("XML for '%(id_string)s' downloaded.") %\
+        {
+            "id_string": xform.id_string
+        }, audit, request)
     response = response_with_mimetype_and_name('xml', id_string,
                                                show_date=False)
     response.content = xform.xml
@@ -274,6 +299,14 @@ def download_xlsform(request, username, id_string):
     file_path = xform.xls.name
     default_storage = get_storage_class()()
     if default_storage.exists(file_path):
+        audit = {
+            "xform": xform.id_string
+        }
+        audit_log(Actions.FORM_XLS_DOWNLOADED, request.user, xform.user,
+        _("XLS file for '%(id_string)s' downloaded.") %\
+        {
+            "id_string": xform.id_string
+        }, audit, request)
         response = \
             response_with_mimetype_and_name('vnd.ms-excel', id_string,
                                             show_date=False, extension='xls',
@@ -300,6 +333,14 @@ def download_jsonform(request, username, id_string):
         callback = request.GET.get('callback')
         response.content = "%s(%s)" % (callback, xform.json)
     else:
+        audit = {
+            "xform": xform.id_string
+        }
+        audit_log(Actions.FORM_JSON_DOWNLOADED, request.user, owner,
+            _("JSON for '%(id_string)s' downloaded.") %\
+            {
+                "id_string": xform.id_string
+            }, audit, request)
         response.content = xform.json
     return response
 
@@ -310,6 +351,12 @@ def delete_xform(request, username, id_string):
     xform = get_object_or_404(XForm, user__username=username,
                               id_string=id_string)
     xform.delete()
+    audit = {}
+    audit_log(Actions.FORM_DELETED, request.user, xform.user,
+        _("Form '%(id_string)s' deleted.") %\
+        {
+            'id_string': xform.id_string,
+        }, audit, request)
     return HttpResponseRedirect('/')
 
 
@@ -318,6 +365,13 @@ def toggle_downloadable(request, username, id_string):
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     xform.downloadable = not xform.downloadable
     xform.save()
+    audit = {}
+    audit_log(Actions.FORM_UPDATED, request.user, xform.user,
+        _("Form '%(id_string)s' made %(downloadable)s.") %\
+        {
+            'id_string': xform.id_string,
+            'downloadable': _("downloadable") if xform.downloadable else _("un-downloadable")
+        }, audit, request)
     return HttpResponseRedirect("/%s" % username)
 
 
@@ -358,6 +412,14 @@ def enter_data(request, username, id_string):
         context.content_user = owner
         context.form_view = True
         if 'url' in response:
+            audit = {
+                "xform": xform.id_string
+            }
+            audit_log(Actions.FORM_ENTER_DATA_REQUESTED, request.user, owner,
+                _("Enter data url requested for '%(id_string)s'.") %\
+                {
+                    'id_string': xform.id_string,
+                }, audit, request)
             context.enketo = response['url']
             #return render_to_response("form_entry.html",
             #                          context_instance=context)
@@ -457,6 +519,16 @@ def edit_data(request, username, id_string, data_id):
         context.content_user = owner
         context.form_view = True
         if 'edit_url' in response:
+            audit = {
+                "xform": xform.id_string,
+                "data_id": data_id
+            }
+            audit_log(Actions.SUBMISSION_EDIT_REQUESTED, request.user, owner,
+                _("Data edit requested for data with id %(data_id)s on '%(id_string)s'.") %\
+                {
+                    'id_string': xform.id_string,
+                    'data_id': data_id
+                }, audit, request)
             context.enketo = response['edit_url']
             return HttpResponseRedirect(response['edit_url'])
         else:

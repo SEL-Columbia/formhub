@@ -25,17 +25,24 @@ Actions = Enum(
     PROFILE_SETTINGS_UPDATED="profile-settings-updated",
     USER_LOGIN="user-login",
     USER_LOGOUT="user-logout",
+    USER_BULK_SUBMISSION="bulk-submissions-made",
+    USER_FORMLIST_REQUESTED="formlist-requested",
     FORM_ACCESSED="form-accessed",
     FORM_PUBLISHED="form-published",
     FORM_UPDATED="form-updated",
+    FORM_XLS_DOWNLOADED="form-xls-downloaded",
     FORM_XLS_UPDATED="form-xls-updated",
     FORM_DELETED="form-deleted",
     FORM_CLONED="form-cloned",
+    FORM_XML_DOWNLOADED="form-xml-downloaded",
+    FORM_JSON_DOWNLOADED="form-json-downloaded",
     FORM_PERMISSIONS_UPDATED="form-permissions-updated",
+    FORM_ENTER_DATA_REQUESTED="form-enter-data-requested",
     SUBMISSION_CREATED="submission-created",
     SUBMISSION_UPDATED="submission-updated",
     SUBMISSION_DELETED="submission-deleted",
     SUBMISSION_ACCESSED="submission-accessed",
+    SUBMISSION_EDIT_REQUESTED="submission-edit-requested",
     BAMBOO_LINK_CREATED="bamboo-link-created"
 )
 
@@ -114,6 +121,6 @@ def audit_log(action, request_user, account_user, message, audit, request, level
         'account_username': account_user.username if account_user.username
             else str(account_user),
         'client_ip': get_client_ip(request),
-        'formhub_audit': audit
+        'audit': audit
     }
     logger.log(level, message, extra=extra)
