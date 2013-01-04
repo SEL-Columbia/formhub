@@ -17,12 +17,12 @@ class AuditLog(object):
         return audit.save(self.data)
 
     @classmethod
-    def query_mongo(cls, username, query, fields, sort, start=0,
+    def query_mongo(cls, username, query=None, fields=None, sort=None, start=0,
                     limit=DEFAULT_LIMIT, count=False):
-        query = dict_for_mongo(query)
+        query = dict_for_mongo(query) if query else {}
         query[cls.ACCOUNT] = username
         # hack: check for the created_on key in query and turn its values into dates
-        if query.has_key(cls.CREATED_ON):
+        if type(query) == dict and query.has_key(cls.CREATED_ON):
             if type(query[cls.CREATED_ON]) is dict:
                 for op, val in query[cls.CREATED_ON].iteritems():
                     try:
