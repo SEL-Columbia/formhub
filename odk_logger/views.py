@@ -87,7 +87,7 @@ def bulksubmission(request, username):
             "bulk_submission_log": json_msg
         }
         audit_log(Actions.USER_BULK_SUBMISSION, request.user, posting_user,
-        _("Bulk submissions made."), audit, request)
+        _("Made bulk submissions."), audit, request)
         response = HttpResponse(json.dumps(json_msg))
         response.status_code = 200
         response['Location'] = request.build_absolute_uri(request.path)
@@ -140,7 +140,7 @@ def formList(request, username):
         xforms = chain(xforms, crowdforms)
         audit = {}
         audit_log(Actions.USER_FORMLIST_REQUESTED, request.user, formlist_user,
-            _("Formlist requested."), audit, request)
+            _("Requested forms list."), audit, request)
     response = render_to_response("xformsList.xml", {
         #'urls': urls,
         'host': request.build_absolute_uri().replace(
@@ -233,7 +233,7 @@ def submission(request, username=None):
             "xform": instance.xform.id_string
         }
         audit_log(Actions.SUBMISSION_CREATED, request.user, instance.xform.user,
-            _("Submission created on form %(id_string)s.") %\
+            _("Created submission on form %(id_string)s.") %\
             {
                 "id_string": instance.xform.id_string
             }, audit, request)
@@ -279,7 +279,7 @@ def download_xform(request, username, id_string):
         "xform": xform.id_string
     }
     audit_log(Actions.FORM_XML_DOWNLOADED, request.user, xform.user,
-        _("XML for '%(id_string)s' downloaded.") %\
+        _("Downloaded XML for form '%(id_string)s'.") %\
         {
             "id_string": xform.id_string
         }, audit, request)
@@ -303,7 +303,7 @@ def download_xlsform(request, username, id_string):
             "xform": xform.id_string
         }
         audit_log(Actions.FORM_XLS_DOWNLOADED, request.user, xform.user,
-        _("XLS file for '%(id_string)s' downloaded.") %\
+        _("Downloaded XLS file for form '%(id_string)s'.") %\
         {
             "id_string": xform.id_string
         }, audit, request)
@@ -337,7 +337,7 @@ def download_jsonform(request, username, id_string):
             "xform": xform.id_string
         }
         audit_log(Actions.FORM_JSON_DOWNLOADED, request.user, owner,
-            _("JSON for '%(id_string)s' downloaded.") %\
+            _("Downloaded JSON for form '%(id_string)s'.") %\
             {
                 "id_string": xform.id_string
             }, audit, request)
@@ -353,7 +353,7 @@ def delete_xform(request, username, id_string):
     xform.delete()
     audit = {}
     audit_log(Actions.FORM_DELETED, request.user, xform.user,
-        _("Form '%(id_string)s' deleted.") %\
+        _("Deleted form '%(id_string)s'.") %\
         {
             'id_string': xform.id_string,
         }, audit, request)
@@ -367,7 +367,7 @@ def toggle_downloadable(request, username, id_string):
     xform.save()
     audit = {}
     audit_log(Actions.FORM_UPDATED, request.user, xform.user,
-        _("Form '%(id_string)s' made %(downloadable)s.") %\
+        _("Made form '%(id_string)s' %(downloadable)s.") %\
         {
             'id_string': xform.id_string,
             'downloadable': _("downloadable") if xform.downloadable else _("un-downloadable")
@@ -416,7 +416,7 @@ def enter_data(request, username, id_string):
                 "xform": xform.id_string
             }
             audit_log(Actions.FORM_ENTER_DATA_REQUESTED, request.user, owner,
-                _("Enter data url requested for '%(id_string)s'.") %\
+                _("Requested enter data url for '%(id_string)s'.") %\
                 {
                     'id_string': xform.id_string,
                 }, audit, request)
@@ -524,7 +524,7 @@ def edit_data(request, username, id_string, data_id):
                 "data_id": data_id
             }
             audit_log(Actions.SUBMISSION_EDIT_REQUESTED, request.user, owner,
-                _("Data edit requested for data with id %(data_id)s on '%(id_string)s'.") %\
+                _("Requested to edit data with id %(data_id)s on '%(id_string)s'.") %\
                 {
                     'id_string': xform.id_string,
                     'data_id': data_id
