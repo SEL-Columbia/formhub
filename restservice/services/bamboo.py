@@ -1,9 +1,9 @@
 
-import requests
-from django.utils import simplejson
+from pybamboo.dataset import Dataset
+from pybamboo.connection import Connection
 
 from restservice.RestServiceInterface import RestServiceInterface
-from utils.bamboo import get_new_bamboo_dataset
+from utils.bamboo import get_new_bamboo_dataset, get_bamboo_url
 
 
 class ServiceDefinition(RestServiceInterface):
@@ -13,6 +13,7 @@ class ServiceDefinition(RestServiceInterface):
     def send(self, url, parsed_instance):
 
         xform = parsed_instance.instance.xform
+        rows = [parsed_instance.to_dict_for_mongo()]
 
         # create dataset on bamboo first (including current submission)
         if not xform.bamboo_dataset:
@@ -20,10 +21,6 @@ class ServiceDefinition(RestServiceInterface):
             xform.bamboo_dataset = dataset_id
             xform.save()
         else:
-            post_data = simplejson.dumps(parsed_instance.to_dict_for_mongo())
-            url = ("%(root)sdatasets/%(dataset)s"
-            	   % {'root': url,
-            	   	  'dataset': parsed_instance.instance.xform.bamboo_dataset})
-            requests.put(url, data=post_data,
-        				  headers={"Content-Type": "application/json"})
-
+            dataset = Dataset(connection=Connection(url=get_bamboo_url(xform)),
+                              dataset_id=xform.bamboo_dataset)
+            dataset.update_data(rows=rows)
