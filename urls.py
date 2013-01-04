@@ -41,6 +41,9 @@ urlpatterns = patterns('',
     url(r'^(?P<username>[^/]+)/profile$', 'main.views.public_profile', name='public_profile'),
     url(r'^(?P<username>[^/]+)/settings', 'main.views.profile_settings'),
     url(r'^(?P<username>[^/]+)/cloneform$', 'main.views.clone_xlsform'),
+    url(r'^(?P<username>[^/]+)/activity$', 'main.views.activity'),
+    url(r'^(?P<username>[^/]+)/activity/api$', 'main.views.activity_api'),
+    url(r'^activity/fields$', 'main.views.activity_fields'),
 
     # form specific
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)$', 'main.views.show'),

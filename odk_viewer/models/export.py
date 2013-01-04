@@ -23,6 +23,7 @@ class Export(models.Model):
     XLS_EXPORT = 'xls'
     CSV_EXPORT = 'csv'
     KML_EXPORT = 'kml'
+    ZIP_EXPORT = 'zip'
 
     EXPORT_MIMES = {
         'xls': 'vnd.ms-excel',

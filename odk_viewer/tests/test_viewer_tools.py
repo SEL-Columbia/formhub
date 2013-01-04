@@ -1,8 +1,9 @@
 import os
 from django.conf import settings
+from django.test.client import RequestFactory
 from main.tests.test_base import MainTestCase
 from odk_viewer.models.export import Export
-from utils.viewer_tools import export_def_from_filename
+from utils.viewer_tools import export_def_from_filename, get_client_ip
 from odk_viewer.tasks import create_xls_export
 
 
@@ -12,3 +13,10 @@ class TestViewerTools(MainTestCase):
         ext, mime_type = export_def_from_filename(filename)
         self.assertEqual(ext, 'xlsx')
         self.assertEqual(mime_type, 'vnd.openxmlformats')
+
+    def test_get_client_ip(self):
+        request = RequestFactory().get("/")
+        client_ip = get_client_ip(request)
+        self.assertIsNotNone(client_ip)
+        # will this always be 127.0.0.1
+        self.assertEqual(client_ip, "127.0.0.1")
