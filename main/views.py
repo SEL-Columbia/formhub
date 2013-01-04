@@ -61,6 +61,9 @@ def home(request):
 
 @login_required
 def login_redirect(request):
+    audit = {}
+    audit_log(Actions.USER_LOGIN, request.user, request.user,
+        _("Logged into account."), audit, request)
     return HttpResponseRedirect(reverse(profile,
                                 kwargs={'username': request.user.username}))
 
