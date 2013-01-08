@@ -914,7 +914,7 @@ def link_to_bamboo(request, username, id_string):
     }
 
     # try to delete the dataset first (in case it exists)
-    if delete_bamboo_dataset(xform):
+    if xform.bamboo_dataset and delete_bamboo_dataset(xform):
         xform.bamboo_dataset = u''
         xform.save()
         audit_log(Actions.BAMBOO_LINK_DELETED, request.user, owner,
