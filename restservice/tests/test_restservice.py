@@ -96,6 +96,7 @@ class RestServiceTest(MainTestCase):
         # submit a third one. check that we have 3 records
         self._make_submission(xml_submission3)
         self.assertEqual(self.response.status_code, 201)
+        self.wait(3)
         self.assertEqual(dataset.get_info()['num_rows'], 3)
 
         # test regeneration
