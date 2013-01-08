@@ -4,6 +4,7 @@ import csv
 
 from pybamboo.dataset import Dataset
 from pybamboo.connection import Connection
+from pybamboo.exceptions import ErrorParsingBambooData
 
 from odk_viewer.models import ParsedInstance
 from odk_viewer.pandas_mongo_bridge import (CSVDataFrameBuilder,
@@ -21,9 +22,14 @@ def get_bamboo_url(xform):
 
 
 def delete_bamboo_dataset(xform):
-    dataset = Dataset(connection=Connection(url=get_bamboo_url(xform)),
-                      dataset_id=xform.bamboo_dataset)
-    return dataset.delete()
+    if not xform.bamboo_dataset:
+        return False
+    try:
+        dataset = Dataset(connection=Connection(url=get_bamboo_url(xform)),
+                          dataset_id=xform.bamboo_dataset)
+        return dataset.delete()
+    except ErrorParsingBambooData:
+        return False
 
 
 def get_new_bamboo_dataset(xform, force_last=False):
