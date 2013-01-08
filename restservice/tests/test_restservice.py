@@ -108,6 +108,7 @@ class RestServiceTest(MainTestCase):
         response = self.client.post(regen_url, {})
         # deleting DS redirects to profile page
         self.assertEqual(response.status_code, 302)
+        self.wait(3)
         xform = XForm.objects.get(id=self.xform.id)
         self.assertTrue(xform.bamboo_dataset)
         dataset = Dataset(connection=Connection(service_url),
