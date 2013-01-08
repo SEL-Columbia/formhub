@@ -20,6 +20,12 @@ def get_bamboo_url(xform):
     return service.service_url
 
 
+def detele_bamboo_dataset(xform):
+    dataset = Dataset(connection=Connection(url=get_bamboo_url(xform)),
+                      dataset_id=xform.bamboo_dataset)
+    return dataset.delete()
+
+
 def get_new_bamboo_dataset(xform, force_last=False):
 
     dataset_id = u''

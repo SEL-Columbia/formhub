@@ -907,13 +907,25 @@ def link_to_bamboo(request, username, id_string):
     xform = get_object_or_404(XForm,
                               user__username=username, id_string=id_string)
     owner = xform.user
-    from utils.bamboo import get_new_bamboo_dataset
-    dataset_id = get_new_bamboo_dataset(xform)
-    xform.bamboo_dataset = dataset_id
-    xform.save()
+    from utils.bamboo import get_new_bamboo_dataset, detele_bamboo_dataset
+
     audit = {
         'xform': xform.id_string
     }
+
+    # try to delete the dataset first (in case it exists)
+    detele_bamboo_dataset(xform)
+    audit_log(Actions.BAMBOO_LINK_DELETED, request.user, owner,
+        _("Bamboo link deleted on '%(id_string)s'.")
+        % {'id_string': xform.id_string}, audit, request)
+
+    # create a new one from all the data
+    dataset_id = get_new_bamboo_dataset(xform)
+
+    # update XForm
+    xform.bamboo_dataset = dataset_id
+    xform.save()
+
     audit_log(Actions.BAMBOO_LINK_CREATED, request.user, owner,
         _("Bamboo link created on '%(id_string)s'.") %\
         {
