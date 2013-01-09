@@ -50,7 +50,7 @@ this.fh.constants = {
                 //@todo: using the fhType we can setup custom formatters here e.g. for photos and videos
                 field.type = my._fhToReclineType(fhField.type);
                 //@todo: check for multi-lang labels
-                field.label = fhField.label;
+                field.label = fhField.label?fhField.label:fhField.name; // some fields like start/end only have a name but no label
                 fields.push(field);
             }
         });
