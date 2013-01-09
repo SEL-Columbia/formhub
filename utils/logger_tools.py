@@ -60,6 +60,8 @@ def create_instance(username, xml_file, media_files,
         If there is no username and a uuid, submitting a touchform.
         If there is a username and a uuid, submitting a new ODK form.
     """
+    if username:
+        username = username.lower()
     xml = xml_file.read()
     is_touchform = False
     # check alternative form submission ids
