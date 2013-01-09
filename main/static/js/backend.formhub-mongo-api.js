@@ -39,7 +39,19 @@ this.fh.constants = {
         return fhType;
     };
 
-    my._parseFields = function(fhFields, parentXPath)
+    my._fhMultilangLabel = function(label, language)
+    {
+        if(_.isObject(label))
+        {
+            return label.hasOwnProperty(language)?label[language]:label[_.keys(label)[0]]
+        }
+        else
+        {
+            return label;
+        }
+    };
+
+    my._parseFields = function(fhFields, parentXPath, language)
     {
         var fields = [];
         _.each(fhFields, function(fhField, index){
@@ -62,32 +74,72 @@ this.fh.constants = {
             else
             {
                 var field = {};
+                var label;
                 newXPath.push(fhField.name);
                 field.id = newXPath.join("/");
+
                 //@todo: using the fhType we can setup custom formatters here e.g. for photos and videos
                 field.type = my._fhToReclineType(fhField.type);
-                //@todo: check for multi-lang labels
-                field.label = fhField.label?fhField.label:fhField.name; // some fields like start/end only have a name but no label
+
+                if(fhField.label)
+                {
+                    label = my._fhMultilangLabel(fhField.label, language);
+                }
+                else
+                {
+                    label = fhField.name;
+                }
+                field.label = label; // some fields like start/end only have a name but no label
                 fields.push(field);
             }
         });
         return fields;
     };
 
+    my._parseLanguages = function(fhFields)
+    {
+        var languages = [];
+        var multilangField = _.find(fhFields, function(fhField){
+            return _.isObject(fhField.label);
+        });
+        if(multilangField)
+        {
+            languages = _.map(multilangField.label, function(label, language){
+                return language;
+            });
+        }
+        else
+        {
+            languages = ["default"];
+        }
+        return languages;
+    };
+
     my._parseSchema = function(data)
     {
         var schema = {metadata: {}, fields: []};
+        var language;
         var self = this;
+        // parse languages - @todo: wasteful since we go through all fields looking for a multilang label, if a form doenst have one, we end up going through all the fields
+        schema.metadata.languages = self._parseLanguages(data.children);
+        // get metadata
         _.each(data, function(val, key){
-            if(key == fh.constants.CHILDREN)
-            {
-                schema.fields = self._parseFields(data.children);
-            }
-            else
+            if(key !== fh.constants.CHILDREN)
             {
                 schema.metadata[key] = val;
             }
         });
+        // @todo: review - check if we have a default langauge specified and its in our list of languages
+        if(schema.default_language && _.indexOf(schema.metadata.languages, schema.default_language)>-1)
+        {
+            language = schema.default_language;
+        }
+        else
+        {
+            language = schema.metadata.languages[0];
+        }
+        // parse fields
+        schema.fields = self._parseFields(data.children, null, language);
         return schema;
     };
 
