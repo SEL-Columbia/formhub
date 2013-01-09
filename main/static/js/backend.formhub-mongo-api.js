@@ -3,50 +3,67 @@ this.recline.Backend = this.recline.Backend || {};
 this.recline.Backend.FormhubMongoAPI = this.recline.Backend.FormhubMongoAPI || {};
 this.fh = this.fh || {};
 this.fh.constants = {
-
+    //pyxform constants
+    NAME: "name", LABEL: "label", TYPE: "type", CHILDREN: "children",
+    //formhub query syntax constants
+    START: "start", LIMIT: "limit", COUNT: "count", FIELDS: "fields",
+    // types
+    TEXT: "text", INTEGER: "integer", FLOAT: "float", DATE: "date",
+    TIME: "time", DATETIME: "datetime", GROUP: "group", NOTE: "note",
+    GEOPOINT: "geopoint", GPS: "gps", SELECT_ONE: "select_one"
 };
 
 (function($, my) {
     my.__type__ = 'Formhub';
 
-    my.fhReclineTypeMap = {
-        "text": "string",
-        "integer": "integer",
-        "float": "number",
-        "date": "date",
-        "time": "time",
-        "datetime": "date-time",
-        "geopoint": "geo_point",
-        "gps": "geo_point",
-        "select one": "string",
-        "select_one": "string",
-        "select multiple": "string",
-        "select all that apply": "string"
-    };
+    my.fhReclineTypeMap = {};
+    my.fhReclineTypeMap[fh.constants.TEXT] = "string";
+    my.fhReclineTypeMap[fh.constants.INTEGER] = "integer";
+    my.fhReclineTypeMap[fh.constants.FLOAT] = "number";
+    my.fhReclineTypeMap[fh.constants.DATE] = "date";
+    my.fhReclineTypeMap[fh.constants.TIME] = "time";
+    my.fhReclineTypeMap[fh.constants.DATETIME] = "date-time";
+    my.fhReclineTypeMap[fh.constants.GEOPOINT] = "geo_point";
+    my.fhReclineTypeMap[fh.constants.GPS] = "geo_point";
+    my.fhReclineTypeMap[fh.constants.SELECT_ONE] = "string";
+    my.fhReclineTypeMap["select one"] = "string";
+    my.fhReclineTypeMap["select multiple"] = "string";
+    my.fhReclineTypeMap["select all that apply"] = "string";
 
     my._fhToReclineType = function(fhType)
     {
         if(my.fhReclineTypeMap.hasOwnProperty(fhType))
         {
-            return my.fhReclineTypeMap[fhType];
+            return my.fhReclineTypeMap[fhType.toLowerCase()];
         }
         return fhType;
     };
 
-    my._parseFields = function(fhFields)
+    my._parseFields = function(fhFields, parentXPath)
     {
         var fields = [];
         _.each(fhFields, function(fhField, index){
-            if(fhField.type == "group")
+            var newXPath = [];
+            if(parentXPath)
+                newXPath.push(parentXPath);
+            if(_.indexOf([fh.constants.GROUP, fh.constants.NOTE], fhField.type) > -1)
             {
-                _.each(my._parseFields(fhField.children), function(field, index){
-                   fields.push(field);
-                });
+
+                // only add if we have children - notes dont have children
+                if(fhField.children)
+                {
+                    newXPath.push(fhField.name);
+                    newXPath = newXPath.join("/");
+                    _.each(my._parseFields(fhField.children, newXPath), function(field, index){
+                        fields.push(field);
+                    });
+                }
             }
             else
             {
                 var field = {};
-                field.id = fhField.name;
+                newXPath.push(fhField.name);
+                field.id = newXPath.join("/");
                 //@todo: using the fhType we can setup custom formatters here e.g. for photos and videos
                 field.type = my._fhToReclineType(fhField.type);
                 //@todo: check for multi-lang labels
@@ -62,7 +79,7 @@ this.fh.constants = {
         var schema = {metadata: {}, fields: []};
         var self = this;
         _.each(data, function(val, key){
-            if(key == "children")
+            if(key == fh.constants.CHILDREN)
             {
                 schema.fields = self._parseFields(data.children);
             }
@@ -97,6 +114,8 @@ this.fh.constants = {
         // query params
         var queryParam = {'$and': []};
         if(queryObj.q){
+            // @todo: need to know the list of fields to query
+            /*
             var qParam = {$or: []};
             _.each(this._fields, function(field){
                 var reParam = {};
@@ -107,6 +126,7 @@ this.fh.constants = {
             });
             //params['query'] = JSON.stringify(qParam);
             queryParam['$and'].push(qParam);
+            */
         }
         // filters
         if(queryObj.filters.length > 0)
@@ -116,7 +136,7 @@ this.fh.constants = {
                 if(filter.type === "term" || filter.type === "select_one")
                 {
                     var filterObj = {};
-                    filterObj[filter.field] = filter.term;
+                    filterObj[filter.field] ={$regex: filter.term, $options: "i"};
                     filterParam.$and.push(filterObj);
                 }
                 else if(filter.type === "range")
@@ -137,7 +157,7 @@ this.fh.constants = {
             params['query'] = queryParam.$and.length > 1?JSON.stringify(queryParam):JSON.stringify(queryParam.$and[0]);
         }
         // default sort
-        var sort = {field: "created_on", order: "desc"};
+        var sort = {field: "_submission_time", order: "desc"};
         var sortDirs = {asc: 1, desc: -1};
         if(queryObj.sort && queryObj.sort.length > 0)
         {
