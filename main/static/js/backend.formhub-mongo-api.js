@@ -164,91 +164,100 @@ this.fh.constants = {
     my.query = function(queryObj, dataset){
         var deferred, jqXHR, params = {};
         deferred = $.Deferred();
-        // query params
-        var queryParam = {'$and': []};
-        if(queryObj.q){
-            // @todo: need to know the list of fields to query
-            /*
-            var qParam = {$or: []};
-            _.each(this._fields, function(field){
-                var reParam = {};
-                if(field.searchable){
-                    reParam[field.id] = {$regex: queryObj.q, $options: "i"};
-                    qParam['$or'].push(reParam);
-                }
-            });
-            //params['query'] = JSON.stringify(qParam);
-            queryParam['$and'].push(qParam);
-            */
-        }
-        // filters
-        if(queryObj.filters.length > 0)
-        {
-            var filterParam = {$and: []};
-            _.each(queryObj.filters, function(filter){
-                if(filter.type === "term" || filter.type === "select_one")
-                {
-                    var filterObj = {};
-                    filterObj[filter.field] ={$regex: filter.term, $options: "i"};
-                    filterParam.$and.push(filterObj);
-                }
-                else if(filter.type === "range")
-                {
-                    var filterObj = {};
-                    filterObj[filter.field] = {$gte: filter.start, $lte: filter.stop};
-                    filterParam.$and.push(filterObj);
-                }
-            });
-            // make sure we have some filters before we add to our array
-            if(filterParam.$and.length > 0)
-            {
-                queryParam['$and'].push(filterParam.$and.length > 1?filterParam:filterParam.$and[0]);
-            }
-        }
-        if(queryParam.$and && queryParam.$and.length > 0)
-        {
-            params['query'] = queryParam.$and.length > 1?JSON.stringify(queryParam):JSON.stringify(queryParam.$and[0]);
-        }
-        // default sort
-        var sort = {field: "_submission_time", order: "desc"};
-        var sortDirs = {asc: 1, desc: -1};
-        if(queryObj.sort && queryObj.sort.length > 0)
-        {
-            sort = queryObj.sort[0];
-        }
-        var sortParam = {};
-        sortParam[sort.field] = sortDirs[sort.order];
-        params['sort'] = JSON.stringify(sortParam);
-        // do a count first
-        params['count'] = 1;
-        jqXHR = $.getJSON(dataset.dataUrl, params);
-        jqXHR.done(function(data) {
-            var total;
-            total = data[0].count;
-            // stop counting
-            delete(params.count);
-            // todo: check for fields
-            if(queryObj.fields){
 
+        if(queryObj.size > 0)
+        {
+            // query params
+            var queryParam = {'$and': []};
+            if(queryObj.q){
+                // @todo: need to know the list of fields to query
+                /*
+                 var qParam = {$or: []};
+                 _.each(this._fields, function(field){
+                 var reParam = {};
+                 if(field.searchable){
+                 reParam[field.id] = {$regex: queryObj.q, $options: "i"};
+                 qParam['$or'].push(reParam);
+                 }
+                 });
+                 //params['query'] = JSON.stringify(qParam);
+                 queryParam['$and'].push(qParam);
+                 */
             }
-            params.start = queryObj.from;
-            params.limit = queryObj.size;
+            // filters
+            if(queryObj.filters.length > 0)
+            {
+                var filterParam = {$and: []};
+                _.each(queryObj.filters, function(filter){
+                    if(filter.type === "term" || filter.type === "select_one")
+                    {
+                        var filterObj = {};
+                        filterObj[filter.field] ={$regex: filter.term, $options: "i"};
+                        filterParam.$and.push(filterObj);
+                    }
+                    else if(filter.type === "range")
+                    {
+                        var filterObj = {};
+                        filterObj[filter.field] = {$gte: filter.start, $lte: filter.stop};
+                        filterParam.$and.push(filterObj);
+                    }
+                });
+                // make sure we have some filters before we add to our array
+                if(filterParam.$and.length > 0)
+                {
+                    queryParam['$and'].push(filterParam.$and.length > 1?filterParam:filterParam.$and[0]);
+                }
+            }
+            if(queryParam.$and && queryParam.$and.length > 0)
+            {
+                params['query'] = queryParam.$and.length > 1?JSON.stringify(queryParam):JSON.stringify(queryParam.$and[0]);
+            }
+            // default sort
+            var sort = {field: "_submission_time", order: "desc"};
+            var sortDirs = {asc: 1, desc: -1};
+            if(queryObj.sort && queryObj.sort.length > 0)
+            {
+                sort = queryObj.sort[0];
+            }
+            var sortParam = {};
+            sortParam[sort.field] = sortDirs[sort.order];
+            params['sort'] = JSON.stringify(sortParam);
+            // do a count first
+            params['count'] = 1;
             jqXHR = $.getJSON(dataset.dataUrl, params);
             jqXHR.done(function(data) {
-                deferred.resolve({
-                    total: total,
-                    hits: data
+                var total;
+                total = data[0].count;
+                // stop counting
+                delete(params.count);
+                // todo: check for fields
+                if(queryObj.fields){
+
+                }
+                params.start = queryObj.from;
+                params.limit = queryObj.size;
+                jqXHR = $.getJSON(dataset.dataUrl, params);
+                jqXHR.done(function(data) {
+                    deferred.resolve({
+                        total: total,
+                        hits: data
+                    });
+                });
+                jqXHR.fail(function(e){
+                    e.message = "Failed to load records.";
+                    deferred.reject(e);
                 });
             });
-            jqXHR.fail(function(e){
-                e.message = "Failed to load records.";
-                return deferred.reject(e);
+            jqXHR.fail(function(e) {
+                e.message = "Failed to load record count.";
+                deferred.reject(e);
             });
-        });
-        jqXHR.fail(function(e) {
-            e.message = "Failed to load record count.";
-            return deferred.reject(e);
-        });
+        }
+        else
+        {
+            // we dont yet support summaries
+            deferred.resolve({});
+        }
         return deferred.promise();
     };
 }(jQuery, this.recline.Backend.FormhubMongoAPI));
