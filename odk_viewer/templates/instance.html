@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block additional-headers %}
-<style type="text/css">
+<style type="text/css" xmlns="http://www.w3.org/1999/html">
 
 </style>
 
@@ -15,10 +15,10 @@
 
 {% block content %}
 <div class="page-header">
-    <h1>
-        <a href="{% url main.views.show username id_string %}">{{ xform.title }}</a> &gt;
-        <a href="{% url odk_viewer.views.data_view username id_string %}">{% trans "Data View" %}</a> &gt;
-        {% trans "Browse Form Data" %}
+    <h1>{% trans "Browse Form Data" %}
+        <small><a href="{% url main.views.show username id_string %}">{{ xform.title }}</a></small>
+        <small> | </small>
+        <small><a href="{% url odk_viewer.views.data_view username id_string %}">{% trans "Data View" %}</a></small>
     </h1>
 </div>
 
