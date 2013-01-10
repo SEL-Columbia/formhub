@@ -37,6 +37,8 @@
     <script type="text/javascript">
         var formJSONUrl = "{{ jsonform_url }}";
         var mongoAPIUrl = "{{ mongo_api_url }}";
+        var views, sideBarViews, multiView, slickView;
+        var numDefaultColumns = 30;//number of columns to show by default
 
         var dataset = new recline.Model.Dataset({
             formUrl: formJSONUrl,
@@ -44,20 +46,21 @@
             backend: "FormhubMongoAPI"
         });
 
-        var views = [
+        slickView = new recline.View.SlickGrid({
+            model: dataset,
+            state: {
+                fitColumns: false
+            }
+        });
+
+        views = [
             {
                 id: 'grid',
                 label: 'Data Grid',
-                view: new recline.View.SlickGrid({
-                    model: dataset,
-                    state: {
-                        fitColumns: false
-                    }
-                })
+                view: slickView
             }
         ];
-
-        var sideBarViews = [{
+        sideBarViews = [{
             id: 'filterEditor',
             label: 'Filters',
             view: new recline.View.FilterEditor({
@@ -71,13 +74,23 @@
             })
         }];
 
-        var multiView = new recline.View.MultiView({
+        multiView = new recline.View.MultiView({
             model: dataset,
             views: views,
             sidebarViews: sideBarViews
         });
 
+        // attach callback field's reset so we can setup what columns to show
+        dataset.fields.on("reset", function(){
+            // use the first numDefaultColumns columns
+            var columnsToShow = _.first(_.map(dataset.fields.models, function(field){
+                return field.id;
+            }), numDefaultColumns);
+            slickView.setColumns(columnsToShow);
+        });
+
         $(document).ready(function(){
+            // attach to DOM
             $('#data-grid').append(multiView.el);
         });
     </script>
