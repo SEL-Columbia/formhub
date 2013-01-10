@@ -586,8 +586,8 @@ def data_view(request, username, id_string):
         return HttpResponseForbidden(_(u'Not shared.'))
 
     context = RequestContext(request)
-    context.username = username
-    context.id_string = id_string
+    context.user = owner
+    context.xform = xform
     audit = {
         "xform": xform.id_string,
     }
