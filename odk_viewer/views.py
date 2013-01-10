@@ -586,12 +586,8 @@ def data_view(request, username, id_string):
         return HttpResponseForbidden(_(u'Not shared.'))
 
     context = RequestContext(request)
-    context.mongo_api_url = reverse('mongo_view_api',
-                                    kwargs={"username": username,
-                                            "id_string": id_string})
-    context.jsonform_url = reverse(download_jsonform,
-                                   kwargs={"username": username,
-                                           "id_string": id_string})
+    context.user = owner
+    context.xform = xform
     audit = {
         "xform": xform.id_string,
     }
