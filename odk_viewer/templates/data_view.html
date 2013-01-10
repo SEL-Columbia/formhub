@@ -14,6 +14,7 @@
     <script src="/static/recline/vendor/backbone/0.9.2/backbone.js" type="text/javascript"></script>
     <script src="/static/recline/dist/recline.js" type="text/javascript"></script>
     <script src="/static/js/backend.formhub-mongo-api.js" type="text/javascript"></script>
+    <script src="/static/js/fh.multiview.js" type="text/javascript"></script>
     <script src="/static/js/datetimepicker/datepicker.js" type="text/javascript"></script>
     <style type="text/css">
         .recline-slickgrid {
@@ -75,7 +76,7 @@
             })
         }];
 
-        multiView = new recline.View.MultiView({
+        multiView = new fh.View.MultiView({
             model: dataset,
             views: views,
             sidebarViews: sideBarViews
