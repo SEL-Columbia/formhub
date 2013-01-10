@@ -35,10 +35,11 @@
         </div>
     </section>
     <script type="text/javascript">
-        var formJSONUrl = "{{ jsonform_url }}";
-        var mongoAPIUrl = "{{ mongo_api_url }}";
+        var formJSONUrl = "{% url odk_logger.views.download_jsonform username id_string %}";
+        var mongoAPIUrl = "{% url main.views.api username id_string %}";
         var views, sideBarViews, multiView, slickView;
         var numDefaultColumns = 30;//number of columns to show by default
+        var instance_view_url = "{% url odk_viewer.views.instance username id_string %}"
 
         var dataset = new recline.Model.Dataset({
             formUrl: formJSONUrl,
@@ -87,6 +88,13 @@
                 return field.id;
             }), numDefaultColumns);
             slickView.setColumns(columnsToShow);
+        });
+
+        // subscribe to the grids double click event to navigate to the instance view
+        slickView.on("doubleclick", function(record){
+            var record_id = record.get("_id");
+            if(record_id)
+                window.open(instance_view_url + "#/" + record_id, "_blank");
         });
 
         $(document).ready(function(){
