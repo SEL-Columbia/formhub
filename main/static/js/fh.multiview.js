@@ -5,7 +5,6 @@ this.fh.View = this.fh.View || {};
         template: ' \
   <div class="recline-data-explorer"> \
     <div class="alert-messages"></div> \
-    \
     <div class="header clearfix"> \
       <div class="navigation"> \
         <div class="btn-group" data-toggle="buttons-radio"> \
@@ -25,6 +24,7 @@ this.fh.View = this.fh.View || {};
         </div> \
       </div> \
     </div> \
+    <h4>Double click on any record to open it on a page where you can view, edit or delete it.</h4> \
     <div class="data-view-sidebar"></div> \
     <div class="data-view-container"></div> \
   </div> \

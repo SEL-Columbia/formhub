@@ -155,6 +155,7 @@ this.fh.constants = {
             });
         });
         jqXHR.fail(function(e){
+            e.message = "Failed to load form structure.";
             deferred.reject(e);
         });
         return deferred.promise();
@@ -233,14 +234,19 @@ this.fh.constants = {
             params.start = queryObj.from;
             params.limit = queryObj.size;
             jqXHR = $.getJSON(dataset.dataUrl, params);
-            return jqXHR.done(function(data) {
-                return deferred.resolve({
+            jqXHR.done(function(data) {
+                deferred.resolve({
                     total: total,
                     hits: data
                 });
             });
+            jqXHR.fail(function(e){
+                e.message = "Failed to load records.";
+                return deferred.reject(e);
+            });
         });
         jqXHR.fail(function(e) {
+            e.message = "Failed to load record count.";
             return deferred.reject(e);
         });
         return deferred.promise();
