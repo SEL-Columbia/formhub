@@ -208,25 +208,25 @@ class TestSite(MainTestCase):
              True,
              "available_transportation_types_to_referral_facility/bicycle":
                 True,
-             "ambulance/frequency_to_referral_facility": "daily",
-             "bicycle/frequency_to_referral_facility": "weekly"
+             "loop_over_transport_types_frequency/ambulance/frequency_to_referral_facility": "daily",
+             "loop_over_transport_types_frequency/bicycle/frequency_to_referral_facility": "weekly"
              },
             {},
             {"available_transportation_types_to_referral_facility/ambulance":
              True,
-             "ambulance/frequency_to_referral_facility": "weekly",
+             "loop_over_transport_types_frequency/ambulance/frequency_to_referral_facility": "weekly",
              },
             {"available_transportation_types_to_referral_facility/taxi": True,
              "available_transportation_types_to_referral_facility/other": True,
              "available_transportation_types_to_referral_facility_other":
              "camel",
-             "taxi/frequency_to_referral_facility": "daily",
-             "other/frequency_to_referral_facility": "other",
+             "loop_over_transport_types_frequency/taxi/frequency_to_referral_facility": "daily",
+             "loop_over_transport_types_frequency/other/frequency_to_referral_facility": "other",
              }
         ]
         for d_from_db in self.data_dictionary.get_data_for_excel():
             for k, v in d_from_db.items():
-                if k != u'_xform_id_string' and v:
+                if (k != u'_xform_id_string' and k != 'meta/instanceID') and v:
                     new_key = k[len('transport/'):]
                     d_from_db[new_key] = d_from_db[k]
                 del d_from_db[k]
@@ -240,26 +240,28 @@ class TestSite(MainTestCase):
         # fixed.
         instance = self.xform.surveys.all()[1]
         expected_dict = {
-            "transportation": {
-                "transport": {
-                    "bicycle": {
-                        "frequency_to_referral_facility": "weekly"
+            u"transportation": {
+                u"meta": {u"instanceID": u"uuid:f3d8dc65-91a6-4d0f-9e97-802128083390"},
+                u"transport": {
+                    u"loop_over_transport_types_frequency": {u"bicycle": {
+                        u"frequency_to_referral_facility": u"weekly"
                     },
-                    "ambulance": {
-                        "frequency_to_referral_facility": "daily"
-                    },
-                    "available_transportation_types_to_referral_facility":
-                    "ambulance bicycle",
+                    u"ambulance": {
+                        u"frequency_to_referral_facility": u"daily"
+                    }},
+                    u"available_transportation_types_to_referral_facility":
+                    u"ambulance bicycle",
                 }
             }
         }
         self.assertEqual(instance.get_dict(flat=False), expected_dict)
         expected_dict = {
-            "transport/available_transportation_types_to_referral_facility":
-            "ambulance bicycle",
-            "transport/ambulance/frequency_to_referral_facility": "daily",
-            "transport/bicycle/frequency_to_referral_facility": "weekly",
-            "_xform_id_string": "transportation_2011_07_25",
+            u"transport/available_transportation_types_to_referral_facility":
+            u"ambulance bicycle",
+            u"transport/loop_over_transport_types_frequency/ambulance/frequency_to_referral_facility": u"daily",
+            u"transport/loop_over_transport_types_frequency/bicycle/frequency_to_referral_facility": u"weekly",
+            u"_xform_id_string": u"transportation_2011_07_25",
+            u"meta/instanceID": u"uuid:f3d8dc65-91a6-4d0f-9e97-802128083390"
         }
         self.assertEqual(instance.get_dict(), expected_dict)
 
@@ -295,17 +297,19 @@ class TestSite(MainTestCase):
         actual_csv = csv.reader(actual_lines)
         headers = actual_csv.next()
         data = [
-            {},
+            {'meta/instanceID': 'uuid:5b2cc313-fc09-437e-8149-fcd32f695d41'},
             {"available_transportation_types_to_referral_facility/ambulance":
              "True",
              "available_transportation_types_to_referral_facility/bicycle":
              "True",
-             "ambulance/frequency_to_referral_facility": "daily",
-             "bicycle/frequency_to_referral_facility": "weekly"
+             "loop_over_transport_types_frequency/ambulance/frequency_to_referral_facility": "daily",
+             "loop_over_transport_types_frequency/bicycle/frequency_to_referral_facility": "weekly",
+             "meta/instanceID": "uuid:f3d8dc65-91a6-4d0f-9e97-802128083390"
              },
             {"available_transportation_types_to_referral_facility/ambulance":
              "True",
-             "ambulance/frequency_to_referral_facility": "weekly",
+             "loop_over_transport_types_frequency/ambulance/frequency_to_referral_facility": "weekly",
+             "meta/instanceID": "uuid:9c6f3468-cfda-46e8-84c1-75458e72805d"
              },
             {"available_transportation_types_to_referral_facility/taxi":
              "True",
@@ -313,7 +317,8 @@ class TestSite(MainTestCase):
              "True",
              "available_transportation_types_to_referral_facility_other":
              "camel",
-             "taxi/frequency_to_referral_facility": "daily",
+             "loop_over_transport_types_frequency/taxi/frequency_to_referral_facility": "daily",
+             "meta/instanceID": "uuid:9f0a1508-c3b7-4c99-be00-9b237c26bcbf"
              }
         ]
 
@@ -323,10 +328,13 @@ class TestSite(MainTestCase):
             for k, v in d.items():
                 if v in ["n/a", "False"] or k in dd._additional_headers():
                     del d[k]
-            self.assertEqual(
-                d,
-                dict([("transport/" + k, v) for k, v in expected_dict.items()])
-            )
+            l =  []
+            for k, v in expected_dict.items():
+                if k == 'meta/instanceID':
+                    l.append((k, v))
+                else:
+                    l.append(("transport/" + k, v))
+            self.assertEqual(d, dict(l))
 
     def _check_delete(self):
         self.assertEquals(self.user.xforms.count(), 1)
