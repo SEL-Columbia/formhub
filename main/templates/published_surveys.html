@@ -18,22 +18,22 @@
 
 
 	$(document).ready(function() {
-	  var tbl = $('.forms-table').dataTable({
+	  var tbl = $('#forms-table').dataTable({
         "bPaginate": false,
         "sPaginationType": "bootstrap",
         "bSort": true,
         "oLanguage": {"sSearch": "{% trans 'Search:' %}"},
         "oSearch": {"sSearch": ""},
         "aoColumnDefs": [
-            { "bVisible": false, "aTargets": [ 5 ] }
+            { "bVisible": false, "aTargets": [ 6 ] }
         ]
       });
-      tbl.fnFilter( 'true', 5, true);
+      tbl.fnFilter( 'true', 6, true);
       var tblFilter = $('#forms-table_filter');
       tblFilter.addClass('row');
       tblFilter.prepend('{% trans "Show inactive:" %} <input id="active-select" type="checkbox" />&nbsp;&nbsp;');
       $('#active-select').change(function() {
-          tbl.fnFilter('(true' + ($(this).is(':checked') ? '|false)' : ')'), 5, true);
+          tbl.fnFilter('(true' + ($(this).is(':checked') ? '|false)' : ')'), 6, true);
       });
 
         // remove shared forms
@@ -47,7 +47,6 @@
                 var remove_permission_xhr = $.post(url, data);
                 remove_permission_xhr.success(function (data) {
                     $(link).parents('tr').remove();
-                    console.log(data);
                 });
             };
         });
@@ -59,8 +58,9 @@
       <tr>
         <th>{%  trans "Name" %}</th>
         <th>{%  trans "Submissions" %}</th>
+        <th>{%  trans "Enter Data" %}</th>
         <th>{%  trans "View" %}</th>
-        <th>{%  trans "Data" %}</th>
+        <th>{%  trans "Download" %}</th>
         <th>{%  trans "Last Submission" %}</th>
         <th>{%  trans "Active" %}</th>
         <th>&nbsp;</th>
@@ -80,88 +80,39 @@
             {% endif %}
         </td>
         <td><center>{{ submission_count|intcomma }}</center></td>
+        <td><center><a class=btn href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}"><i class="icon-edit"></i> {% trans "Web" %}</a></center></td>
         <td>
-          <div class="dropdown horizontal-center">
-              <a class="btn btn-flat" href="#" rel="clickover-btns" data-target-selector="#view-options-{{ xform.id }}" data-placement="top">
-                  <i class="icon-view icon-large"></i>
-              </a>
-              <div id="view-options-{{ xform.id }}" class="popover popover-btns clickover fade">
-                  <div class="arrow"></div>
-                  <div class="popover-inner">
-                      <div class="popover-content">
-                          <div class="btn-group">
-                              {% if has_surveys_with_geopoints %}
-                                  <a class="btn btn-flat" href="{% url odk_viewer.views.map_view user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
-                                      <i class="icon-map-marker icon-large"></i>
-                                  </a>
-                              {% else %}
-                                  <span class="btn btn-flat inactive">
-                                      <i class="icon-map-marker icon-large"></i>
-                                  </span>
-                              {% endif %}
-                              {% if submission_count > 0 %}
-                                  <a class="btn btn-flat" href="{% url main.views.form_photos content_user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
-                                      <i class="icon-camera icon-large"></i>
-                                  </a>
-                              {% else %}
-                                  <span class="btn btn-flat inactive">
-                                      <i class="icon-camera icon-large"></i>
-                                  </span>
-                              {% endif %}
-
-                              <a class="btn btn-flat" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}" data-original-title="{% trans 'Enter Web Form' %}" rel="tooltip">
-                                  <i class="icon-edit icon-large"></i>
-                              </a>
-                              {% if submission_count > 0 %}
-                                  <a class="btn btn-flat" href="{% url odk_viewer.views.data_view content_user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
-                                      <i class="icon-data icon-large"></i>
-                                  </a>
-                                  <a class="btn btn-flat" href="{% url odk_viewer.views.instance content_user.username xform.id_string %}" data-original-title="{% trans 'Browse Data (One by One)' %}" rel="tooltip">
-                                      <i class="icon-browse icon-large"></i>
-                                  </a>
-                              {% else %}
-                                  <span class="btn btn-flat inactive">
-                                      <i class="icon-data icon-large"></i>
-                                  </span>
-                                  <span class="btn btn-flat inactive">
-                                      <i class="icon-browse icon-large"></i>
-                                  </span>
-                              {% endif %}
-                              <!-- DELETE -->
-                              {% if submission_count <= 0 and False %}
-                                  <a class="btn btn-flat" data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" rel="tooltip" data-original-title="{% trans 'Delete Form' %}">
-                                      <i class="icon-trash icon-large"></i>
-                                  </a>
-                              {% endif %}
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
+            <center>
+                {% if has_surveys_with_geopoints %}
+                    <a href="{% url odk_viewer.views.map_view user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
+                        <i class="icon-map-marker icon-large"></i>
+                    </a>
+                {% else %}
+                    <span><i class="icon-map-marker icon-large inactive"></i></span>
+                {% endif %}
+                {% if submission_count > 0 %}
+                    <a href="{% url main.views.form_photos content_user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
+                    <i class="icon-camera icon-large"></i>
+                    <a href="{% url odk_viewer.views.data_view content_user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
+                        <i class="icon-list icon-large inactive"></i>
+                    </a>
+                {% else %}
+                    <span><i class="icon-camera icon-large inactive"></i></span>
+                    <span><i class="icon-list icon-large inactive"></i></span>
+                {% endif %}
+            </center>
         </td>
         <td>
-          {% if submission_count %}
-              <div class="data-download">
-                  <span class="vertical-middle">
-                    <i class="icon-download icon-large"></i>
-                  </span>
-                  <span class="vertical-middle">
-                    <span class="download">{% trans "Download" %}</span>
-                      {% if xform.shared_data %}
-                          <span class="label label-info label-public">{%  trans "PUBLIC" %}</span>
-                      {% endif %}
-                    <ul class="download-nav">
-                      <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'csv' %}">{%  trans "csv" %}</a></li>
-                      <li><a href="{% url odk_viewer.views.export_list user.username xform.id_string 'xls' %}">{%  trans "xls" %}</a></li>
-                      <li>
-                          {% if has_surveys_with_geopoints %}
-                              <a href="{% url odk_viewer.views.kml_export user.username xform.id_string %}">{%  trans "kml" %}</a>
-                          {% endif %}
-                      </li>
-                    </ul>
-                  </span>
-              </div>
-          {% endif %}
+            {% if submission_count %}
+                <a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'csv' %}" class="download"><i class="icon-file-alt"></i> csv</a>
+                <a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'xls' %}" class="download"><i class="icon-table"></i> xls</a>
+                {% if has_surveys_with_geopoints %}
+                    <a href="{% url odk_viewer.views.kml_export  xform.user.username xform.id_string %}" class="download"><i class="icon-globe"></i> kml</a>
+                {% endif %}
+                {% if xform.shared_data %}
+                    <span class="label label-info label-public">{%  trans "PUBLIC" %}</span>
+                {% endif %}
+            {% endif %}
         </td>
         <td>
           {% if time_of_last_submission %}
@@ -170,17 +121,15 @@
         </td>
         <td>{{ xform.downloadable|lower }}</td>
         <td>
-          {% comment %} #todo remove once we have implemented more options  {% endcomment %}
-          {% if submission_count <= 0 %}
           <div class="dropdown">
             <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
-                <i class="icon-options"></i>
+                <i class="icon-cog"></i>
             </a>
             <ul class="dropdown-menu form-options left-arrow" role="menu" aria-labelledby="dropdownMenu">
                 {% if submission_count <= 0 %}
                 <li><a tabindex="-1" href="#delete-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Delete' %}</a></li>
-								<li><a tabindex="-1" href="#replace-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Replace' %}</a></li>
                 {% endif %}
+				<li><a tabindex="-1" href="#replace-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Replace' %}</a></li>
             </ul>
           </div>
             {% if submission_count <= 0 %}
@@ -201,25 +150,23 @@
                     </form>
                 </div>
             {% endif %}
-
-						{% if xform.can_be_replaced and xform.user ==  user  %}
-						<div id = "xls-update">
-							<div id="replace-{{ xform.id_string }}" class="modal hide fade">
-								<form action="{% url main.views.update_xform content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
-								{% csrf_token %}
-									<div class="modal-header">
-										<a data-dismiss="modal" class="close">&times;</a>
-										<h3>{% trans "Update XLS" %}</h3>
-									</div>
-									<div class="modal-body">
-										<input type="file" name="xls_file" id="id_xls_file" />
-										<input type="submit" class="btn large btn-primary" value="{% trans "Update" %}" data-original-title="" />
-									</div>
-								</form>
-							</div>
-						</div>
-						{% endif %}
-					{% endif %}
+              {% if xform.can_be_replaced and xform.user ==  user  %}
+                  <div id = "xls-update">
+                      <div id="replace-{{ xform.id_string }}" class="modal hide fade">
+                          <form action="{% url main.views.update_xform content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
+                              {% csrf_token %}
+                              <div class="modal-header">
+                                  <a data-dismiss="modal" class="close">&times;</a>
+                                  <h3>{% trans "Update XLS" %}</h3>
+                              </div>
+                              <div class="modal-body">
+                                  <input type="file" name="xls_file" id="id_xls_file" />
+                                  <input type="submit" class="btn large btn-primary" value="{% trans "Update" %}" data-original-title="" />
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+              {% endif %}
         </td>
       </tr>
       {% endwith %}
@@ -244,7 +191,6 @@
           <th>{%  trans "View" %}</th>
           <th>{%  trans "Data" %}</th>
           <th>{%  trans "Last Submission" %}</th>
-          <th>{%  trans "Active" %}</th>
           <th>&nbsp;</th>
       </tr>
       </thead>
@@ -264,80 +210,36 @@
               </td>
               <td><center>{{ submission_count|intcomma }}</center></td>
               <td>
-                  <div class="dropdown horizontal-center">
-                      <a class="btn btn-flat" href="#" rel="clickover-btns" data-target-selector="#view-options-{{ xform.id }}" data-placement="top">
-                          <i class="icon-view icon-large"></i>
-                      </a>
-                      <div id="view-options-{{ xform.id }}" class="popover popover-btns clickover fade">
-                          <div class="arrow"></div>
-                          <div class="popover-inner">
-                              <div class="popover-content">
-                                  <div class="btn-group">
-                                      {% if has_surveys_with_geopoints %}
-                                          <a class="btn btn-flat" href="{% url odk_viewer.views.map_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
-                                              <i class="icon-map-marker icon-large"></i>
-                                          </a>
-                                      {% else %}
-                                          <span class="btn btn-flat inactive">
-                                      <i class="icon-map-marker icon-large"></i>
-                                  </span>
-                                      {% endif %}
-                                      {% if submission_count > 0 %}
-                                          <a class="btn btn-flat" href="{% url main.views.form_photos xform.user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
-                                              <i class="icon-camera icon-large"></i>
-                                          </a>
-                                      {% else %}
-                                          <span class="btn btn-flat inactive">
-                                      <i class="icon-camera icon-large"></i>
-                                  </span>
-                                      {% endif %}
-
-                                      <a class="btn btn-flat" href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}" data-original-title="{% trans 'Enter Web Form' %}" rel="tooltip">
-                                          <i class="icon-edit icon-large"></i>
-                                      </a>
-                                      {% if submission_count > 0 %}
-                                          <a class="btn btn-flat" href="{% url odk_viewer.views.data_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
-                                              <i class="icon-data icon-large"></i>
-                                          </a>
-                                          <a class="btn btn-flat" href="{% url odk_viewer.views.instance xform.user.username xform.id_string %}" data-original-title="{% trans 'Browse Data (One by One)' %}" rel="tooltip">
-                                              <i class="icon-browse icon-large"></i>
-                                          </a>
-                                      {% else %}
-                                          <span class="btn btn-flat inactive">
-                                      <i class="icon-data icon-large"></i>
-                                  </span>
-                                          <span class="btn btn-flat inactive">
-                                      <i class="icon-browse icon-large"></i>
-                                  </span>
-                                      {% endif %}
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
+                  <center>
+                      {% if has_surveys_with_geopoints %}
+                          <a href="{% url odk_viewer.views.map_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
+                              <i class="icon-map-marker icon-large"></i>
+                          </a>
+                      {% else %}
+                          <span><i class="icon-map-marker icon-large inactive"></i></span>
+                      {% endif %}
+                      {% if submission_count > 0 %}
+                          <a href="{% url main.views.form_photos xform.user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
+                          <i class="icon-camera icon-large"></i>
+                          <a href="{% url odk_viewer.views.data_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
+                              <i class="icon-list icon-large inactive"></i>
+                          </a>
+                      {% else %}
+                          <span><i class="icon-camera icon-large inactive"></i></span>
+                          <span><i class="icon-list icon-large inactive"></i></span>
+                      {% endif %}
+                  </center>
               </td>
               <td>
-                  {% if submission_count %}
-                      <div class="data-download">
-                  <span class="vertical-middle">
-                    <i class="icon-download icon-large"></i>
-                  </span>
-                  <span class="vertical-middle">
-                    <span class="download">{% trans "Download" %}</span>
+                  {% if submission_count > 0 %}
+                      <a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'csv' %}" class="download"><i class="icon-file-alt"></i> csv</a>
+                      <a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'xls' %}" class="download"><i class="icon-table"></i> xls</a>
+                      {% if has_surveys_with_geopoints %}
+                          <a href="{% url odk_viewer.views.kml_export  xform.user.username xform.id_string %}" class="download"><i class="icon-globe"></i> kml</a>
+                      {% endif %}
                       {% if xform.shared_data %}
                           <span class="label label-info label-public">{%  trans "PUBLIC" %}</span>
                       {% endif %}
-                      <ul class="download-nav">
-                          <li><a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'csv' %}">{%  trans "csv" %}</a></li>
-                          <li><a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'xls' %}">{%  trans "xls" %}</a></li>
-                          <li>
-                              {% if has_surveys_with_geopoints %}
-                                  <a href="{% url odk_viewer.views.kml_export  xform.user.username xform.id_string %}">{%  trans "kml" %}</a>
-                              {% endif %}
-                          </li>
-                      </ul>
-                  </span>
-                      </div>
                   {% endif %}
               </td>
               <td>
@@ -345,16 +247,15 @@
                       {{ time_of_last_submission|date:"N d, Y" }}
                   {% endif %}
               </td>
-              <td>{{ xform.downloadable|lower }}</td>
               <td>
                   <div class="dropdown">
-                  <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
-                      <i class="icon-options"></i>
-                  </a>
-                  <ul class="dropdown-menu form-options left-arrow" role="menu" aria-labelledby="dropdownMenu">
-                      <li><a tabindex="-1" class='remove-shared-form' data-url="{% url main.views.set_perm xform.user.username xform.id_string %}" data-username="{{ content_user.username }}" href="{% url main.views.set_perm xform.user.username xform.id_string %}">{% trans 'Remove Shared Form' %}</a></li>
-                  </ul>
-              </div>
+                      <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
+                          <i class="icon-cog"></i>
+                      </a>
+                      <ul class="dropdown-menu form-options left-arrow" role="menu" aria-labelledby="dropdownMenu">
+                          <li><a tabindex="-1" class='remove-shared-form' data-url="{% url main.views.set_perm xform.user.username xform.id_string %}" data-username="{{ content_user.username }}" href="{% url main.views.set_perm xform.user.username xform.id_string %}">{% trans 'Remove Shared Form' %}</a></li>
+                      </ul>
+                  </div>
               </td>
           </tr>
           {% endwith %}
@@ -376,16 +277,16 @@
             <tr>
                 <th>{%  trans "Name" %}</th>
                 <th>{%  trans "Submissions" %}</th>
+                <th>{%  trans "Enter Data" %}</th>
                 <th>{%  trans "View" %}</th>
                 <th>{%  trans "Data" %}</th>
                 <th>{%  trans "Last Submission" %}</th>
-                <th>{%  trans "Active" %}</th>
                 <th>&nbsp;</th>
             </tr>
             </thead>
             <tbody>
             {% for xform in crowdforms %}
-                {% with has_surveys_with_geopoints=xform.data_dictionary.has_surveys_with_geopoints %}
+                {% with submission_count=xform.submission_count has_surveys_with_geopoints=xform.data_dictionary.has_surveys_with_geopoints %}
                     <tr>
                         <td>
                             <a href="{% url main.views.show xform.user.username xform.id_string %}">{{ xform.title }}</a>
@@ -396,105 +297,41 @@
                                 <span class="label">{%  trans "CROWDFORM" %}</span>
                             {% endif %}
                         </td>
-                        <td><center>{{ xform.submission_count|intcomma }}</center></td>
+                        <td><center>{{ submission_count|intcomma }}</center></td>
+                        <td><center><a class=btn href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}"><i class="icon-edit"></i> {% trans "Web" %}</a></center></td>
                         <!-- view options -->
                         <td>
-                            <div class="dropdown horizontal-center">
-                                <a class="btn btn-flat" href="#" rel="clickover-btns" data-target-selector="#crowd-view-options-{{ xform.id }}" data-placement="top">
-                                    <i class="icon-view icon-large"></i>
-                                </a>
-                                <div id="crowd-view-options-{{ xform.id }}" class="popover popover-btns clickover fade">
-                                    <div class="arrow"></div>
-                                    <div class="popover-inner">
-                                        <div class="popover-content">
-                                            <div class="btn-group">
-                                                {% if has_surveys_with_geopoints %}
-                                                    <a class="btn btn-flat" href="{% url odk_viewer.views.map_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
-                                                        <i class="icon-map-marker icon-large"></i>
-                                                    </a>
-                                                {% else %}
-                                                    <span class="btn btn-flat inactive">
-                                      <i class="icon-map-marker icon-large"></i>
-                                  </span>
-                                                {% endif %}
-                                                {% if xform.submission_count > 0 %}
-                                                    <a class="btn btn-flat" href="{% url main.views.form_photos xform.user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
-                                                        <i class="icon-camera icon-large"></i>
-                                                    </a>
-                                                {% else %}
-                                                    <span class="btn btn-flat inactive">
-                                      <i class="icon-camera icon-large"></i>
-                                  </span>
-                                                {% endif %}
-
-                                                <a class="btn btn-flat" href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}" data-original-title="{% trans 'Enter Web Form' %}" rel="tooltip">
-                                                    <i class="icon-edit icon-large"></i>
-                                                </a>
-                                                {% if xform.submission_count > 0 %}
-                                                    <a class="btn btn-flat" href="{% url odk_viewer.views.data_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
-                                                        <i class="icon-data icon-large"></i>
-                                                    </a>
-                                                    <a class="btn btn-flat" href="{% url odk_viewer.views.instance xform.user.username xform.id_string %}" data-original-title="{% trans 'Browse Data (One by One)' %}" rel="tooltip">
-                                                        <i class="icon-browse icon-large"></i>
-                                                    </a>
-                                                {% else %}
-                                                    <span class="btn btn-flat inactive">
-                                      <i class="icon-data icon-large"></i>
-                                  </span>
-                                                    <span class="btn btn-flat inactive">
-                                      <i class="icon-browse icon-large"></i>
-                                  </span>
-                                                {% endif %}
-                                                <!-- DELETE -->
-                                                {% if xform.submission_count <= 0 and False %}
-                                                    <a class="btn btn-flat" data-toggle="modal" href="#delete-{{ xform.id_string }}" data-backdrop="true" data-keyboard="true" rel="tooltip" data-original-title="{% trans 'Delete Form' %}">
-                                                        <i class="icon-trash icon-large"></i>
-                                                    </a>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {% if xform.submission_count <= 0 %}
-                                    <div id="delete-{{ xform.id_string }}" class="modal hide fade">
-                                        <div class="modal-header">
-                                            <a data-dismiss="modal" class="close">&times;</a>
-                                            <h3>{% trans "Delete Confirmation" %}</h3>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>{% blocktrans with title=xform.title nb_sub=xform.submission_count|intcomma %}Are you sure you want to delete the form '{{ title }}'? This form has <strong>{{ nb_sub }}</strong> submissions associated with it that will also be deleted. If you are unsure about deleting this form press 'Cancel' and consider 'Archiving' the form instead.{% endblocktrans %}</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <a href="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" onclick="$('#delete-{{ xform.id_string }}').modal('hide');" class="btn btn-primary">Delete</a>
-                                            <a href="#" data-dismiss="modal" class="btn secondary">Cancel</a>
-                                        </div>
-                                    </div>
+                            <center>
+                                {% if has_surveys_with_geopoints %}
+                                    <a href="{% url odk_viewer.views.map_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
+                                        <i class="icon-map-marker icon-large"></i>
+                                    </a>
+                                {% else %}
+                                    <span><i class="icon-map-marker icon-large inactive"></i></span>
                                 {% endif %}
-                            </div>
+                                {% if submission_count > 0 %}
+                                    <a href="{% url main.views.form_photos xform.user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
+                                    <i class="icon-camera icon-large"></i>
+                                    <a href="{% url odk_viewer.views.data_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
+                                        <i class="icon-list icon-large inactive"></i>
+                                    </a>
+                                {% else %}
+                                    <span><i class="icon-camera icon-large inactive"></i></span>
+                                    <span><i class="icon-list icon-large inactive"></i></span>
+                                {% endif %}
+                            </center>
                         </td>
                         <!-- end view options -->
                         <td>
-                            {% if xform.submission_count %}
-                                <div class="data-download">
-              <span class="vertical-middle">
-                <i class="icon-download icon-large"></i>
-              </span>
-              <span class="vertical-middle">
-                <span class="download">{% trans "Download" %}</span>
-                  {% if xform.shared_data %}
-                      <span class="label label-info">{%  trans "PUBLIC" %}</span>
-                  {% endif %}
-                  <ul class="download-nav">
-                      <li><a href="{% url odk_viewer.views.export_list xform.user.username xform.id_string 'csv' %}">{%  trans "csv" %}</a></li>
-                      <li><a href="{% url odk_viewer.views.export_list xform.user.username xform.id_string 'xls' %}">{%  trans "xls" %}</a></li>
-                      <li>
-                          {% if has_surveys_with_geopoints %}
-                              <a href="{% url odk_viewer.views.kml_export xform.user.username xform.id_string %}">{%  trans "kml" %}</a>
-                          {% endif %}
-                      </li>
-                  </ul>
-              </span>
-                                </div>
+                            {% if submission_count > 0 %}
+                                <a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'csv' %}" class="download"><i class="icon-file-alt"></i> csv</a>
+                                <a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'xls' %}" class="download"><i class="icon-table"></i> xls</a>
+                                {% if has_surveys_with_geopoints %}
+                                    <a href="{% url odk_viewer.views.kml_export  xform.user.username xform.id_string %}" class="download"><i class="icon-globe"></i> kml</a>
+                                {% endif %}
+                                {% if xform.shared_data %}
+                                    <span class="label label-info label-public">{%  trans "PUBLIC" %}</span>
+                                {% endif %}
                             {% endif %}
                         </td>
                         <td>
@@ -502,11 +339,10 @@
                                 {{ xform.time_of_last_submission|date:"N d, Y" }}
                             {% endif %}
                         </td>
-                        <td>{{ xform.downloadable|lower }}</td>
                         <td>
                             <div class="dropdown">
                                 <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
-                                    <i class="icon-options"></i>
+                                    <i class="icon-cog"></i>
                                 </a>
                                 <ul class="dropdown-menu form-options left-arrow" role="menu" aria-labelledby="dropdownMenu">
                                     <li><a tabindex="-1" href="{% url main.views.edit xform.user.username xform.id_string %}?crowdform=delete">{% trans 'Remove Crowdform' %}</a></li>
