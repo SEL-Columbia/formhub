@@ -121,17 +121,18 @@
         </td>
         <td>{{ xform.downloadable|lower }}</td>
         <td>
-          <div class="dropdown">
-            <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
-                <i class="icon-cog"></i>
-            </a>
-            <ul class="dropdown-menu form-options left-arrow" role="menu" aria-labelledby="dropdownMenu">
-                {% if submission_count <= 0 %}
-                <li><a tabindex="-1" href="#delete-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Delete' %}</a></li>
-                {% endif %}
-				<li><a tabindex="-1" href="#replace-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Replace' %}</a></li>
-            </ul>
-          </div>
+            {% if submission_count <= 0 %}
+            <div class="dropdown">
+                <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
+                    <i class="icon-cog"></i>
+                </a>
+                    <ul class="dropdown-menu form-options left-arrow" role="menu" aria-labelledby="dropdownMenu">
+                        <li><a tabindex="-1" href="#delete-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Delete' %}</a></li>
+                        <li><a tabindex="-1" href="#replace-{{ xform.id_string }}" class="confirm" role="button" data-toggle="modal">{% trans 'Replace' %}</a></li>
+                    </ul>
+
+                    </div>
+            {% endif %}
             {% if submission_count <= 0 %}
                 <div id="delete-{{ xform.id_string }}" class="modal hide fade">
                     <form action="{% url odk_logger.views.delete_xform username=user.username id_string=xform.id_string %}" method="post">
