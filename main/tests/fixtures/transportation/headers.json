@@ -10,13 +10,14 @@
     "transport/available_transportation_types_to_referral_facility/taxi", 
     "transport/available_transportation_types_to_referral_facility/other", 
     "transport/available_transportation_types_to_referral_facility_other", 
-    "transport/ambulance/frequency_to_referral_facility", 
-    "transport/bicycle/frequency_to_referral_facility", 
-    "transport/boat_canoe/frequency_to_referral_facility", 
-    "transport/bus/frequency_to_referral_facility", 
-    "transport/donkey_mule_cart/frequency_to_referral_facility", 
-    "transport/keke_pepe/frequency_to_referral_facility", 
-    "transport/lorry/frequency_to_referral_facility", 
-    "transport/motorbike/frequency_to_referral_facility", 
-    "transport/taxi/frequency_to_referral_facility"
+    "transport/loop_over_transport_types_frequency/ambulance/frequency_to_referral_facility", 
+    "transport/loop_over_transport_types_frequency/bicycle/frequency_to_referral_facility", 
+    "transport/loop_over_transport_types_frequency/boat_canoe/frequency_to_referral_facility", 
+    "transport/loop_over_transport_types_frequency/bus/frequency_to_referral_facility", 
+    "transport/loop_over_transport_types_frequency/donkey_mule_cart/frequency_to_referral_facility", 
+    "transport/loop_over_transport_types_frequency/keke_pepe/frequency_to_referral_facility", 
+    "transport/loop_over_transport_types_frequency/lorry/frequency_to_referral_facility", 
+    "transport/loop_over_transport_types_frequency/motorbike/frequency_to_referral_facility", 
+    "transport/loop_over_transport_types_frequency/taxi/frequency_to_referral_facility",
+    "meta/instanceID"
 ]
