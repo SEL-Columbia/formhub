@@ -50,6 +50,15 @@
                 });
             };
         });
+
+      // add datatables to the shared and crowd tables
+        $('#crowdforms-table, #shared-forms-table').dataTable({
+            "bPaginate": false,
+            "sPaginationType": "bootstrap",
+            "bSort": true,
+            "oLanguage": {"sSearch": "{% trans 'Search:' %}"},
+            "oSearch": {"sSearch": ""}
+        });
 	});
   </script>
 {% if all_forms %}
