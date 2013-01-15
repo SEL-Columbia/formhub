@@ -7,6 +7,3 @@
 [submodule "main/static/recline"]
 	path = main/static/recline
 	url = git://github.com/modilabs/recline.git
-[submodule "main/static/font-awesome"]
-	path = main/static/font-awesome
-	url = git://github.com/modilabs/Font-Awesome.git
