@@ -7,8 +7,6 @@ from bson import json_util
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save, pre_delete
-
-
 from restservice.utils import call_service
 from stats.tasks import stat_log
 from utils.decorators import apply_form_field_names
@@ -17,6 +15,8 @@ from odk_logger.models import Instance
 from common_tags import START_TIME, START, END_TIME, END, ID, UUID,\
     ATTACHMENTS, GEOLOCATION, SUBMISSION_TIME, MONGO_STRFTIME,\
     BAMBOO_DATASET_ID, DELETEDAT
+from django.utils.translation import ugettext as _
+
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
@@ -127,6 +127,10 @@ class ParsedInstance(models.Model):
         cursor = xform_instances.find(query, fields_to_select)
         if count:
             return [{"count":cursor.count()}]
+
+        if start < 0 or limit < 0:
+            raise ValueError(_("Invalid start/limit params"))
+
         cursor.skip(start).limit(limit)
         if type(sort) == dict and len(sort) == 1:
             sort_key = sort.keys()[0]
