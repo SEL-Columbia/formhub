@@ -7,6 +7,8 @@ from odk_logger.models.instance import Instance
 from odk_logger.views import edit_data
 from odk_viewer.models.parsed_instance import ParsedInstance
 from utils.logger_tools import inject_instanceid
+from odk_logger.xform_instance_parser import get_uuid_from_xml
+
 
 class TestWebforms(MainTestCase):
     def setUp(self):
@@ -29,16 +31,25 @@ class TestWebforms(MainTestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_inject_instanceid(self):
+        """
+        Test that 1 and only 1 instance id exists or is injected
+        """
         instance = Instance.objects.all().reverse()[0]
-        injected_xml_str = inject_instanceid(instance)
+        with open(
+            os.path.join(
+                os.path.dirname(__file__), "..", "fixtures",
+                "tutorial_2012-06-27_11-27-53.xml"),
+            "r") as xml_file:
+            xml_str = xml_file.read()
+        # test that we dont have an instance id
+        uuid = get_uuid_from_xml(xml_str)
+        self.assertIsNone(uuid)
+        injected_xml_str = inject_instanceid(xml_str, instance.uuid)
         # check that xml has the instanceid tag
-        regex = re.compile(r"^.+?uuid:(.+?)<")
-        matches = regex.match(injected_xml_str)
-        self.assertTrue(matches != None)
-        self.assertTrue(len(matches.groups()), 1)
-        self.assertEqual(matches.groups()[0], instance.uuid)
+        uuid = get_uuid_from_xml(injected_xml_str)
+        self.assertEqual(uuid, instance.uuid)
 
-    def test_inject_instanceid_fail_if_exists(self):
+    def test_dont_inject_instanceid_if_exists(self):
         xls_file_path = os.path.join(
                     os.path.dirname(__file__),
                     "..",
@@ -57,6 +68,6 @@ class TestWebforms(MainTestCase):
                 )
         self._make_submission(xml_file_path)
         instance = Instance.objects.order_by('id').reverse()[0]
-        injected_xml_str = inject_instanceid(instance)
-        self.assertEqual(instance.xml, injected_xml_str)
+        injected_xml_str = inject_instanceid(instance.xml, instance.uuid)
         # check that the xml is unmodified
+        self.assertEqual(instance.xml, injected_xml_str)
