@@ -17,7 +17,7 @@ from test_google_doc import TestGoogleDoc
 from test_gps import TestGPS
 from test_http_auth import TestBasicHttpAuthentication
 from test_kml_export import TestKMLExport
-from test_past_bugs import TestCSVExport, TestInputs
+from test_past_bugs import TestCSVExport, TestInputs, TestSubmissionBugs
 from test_process import TestSite
 from test_user_id_string_unique_together import TestUnique
 from test_user_login import TestUserLogin

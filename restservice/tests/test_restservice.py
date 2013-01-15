@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from pybamboo.connection import Connection
 from pybamboo.dataset import Dataset
 
-from main.views import show
+from main.views import show, link_to_bamboo
 from main.tests.test_base import MainTestCase
 from odk_logger.models.xform import XForm
 from restservice.views import add_service, delete_service
@@ -98,6 +98,24 @@ class RestServiceTest(MainTestCase):
         self.assertEqual(self.response.status_code, 201)
         self.wait(3)
         self.assertEqual(dataset.get_info()['num_rows'], 3)
+
+        # test regeneration
+        dsi = dataset.get_info()
+        regen_url = reverse(link_to_bamboo, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        })
+        response = self.client.post(regen_url, {})
+        # deleting DS redirects to profile page
+        self.assertEqual(response.status_code, 302)
+        self.wait(3)
+        xform = XForm.objects.get(id=self.xform.id)
+        self.assertTrue(xform.bamboo_dataset)
+        dataset = Dataset(connection=Connection(service_url),
+                          dataset_id=xform.bamboo_dataset)
+        new_dsi = dataset.get_info()
+        self.assertEqual(new_dsi['num_rows'], dsi['num_rows'])
+        self.assertNotEqual(new_dsi['id'], dsi['id'])
 
     def test_anon_service_view(self):
         self.xform.shared = True
