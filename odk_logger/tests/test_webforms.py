@@ -37,8 +37,8 @@ class TestWebforms(MainTestCase):
         instance = Instance.objects.all().reverse()[0]
         with open(
             os.path.join(
-                os.path.dirname(__file__), "..", "fixtures",
-                "tutorial_2012-06-27_11-27-53.xml"),
+                os.path.dirname(__file__), "..", "fixtures", "tutorial",
+                "instances", "tutorial_2012-06-27_11-27-53.xml"),
             "r") as xml_file:
             xml_str = xml_file.read()
         # test that we dont have an instance id
