@@ -80,6 +80,13 @@ class TestFormAPI(MainTestCase):
         find_d = simplejson.loads(response.content)[0]
         self.assertEqual(sorted(find_d, key=find_d.get), sorted(d, key=d.get))
 
+    def test_api_with_query_invalid_start_limit(self):
+        # query string
+        json = '{"transport/available_transportation_types_to_referral_facility":"none"}'
+        data = {'query': json, 'start': -100, 'limit': -100}
+        response = self.client.get(self.api_url, data)
+        self.assertEqual(response.status_code, 400)
+
     def test_api_count(self):
         # query string
         json = '{"transport/available_transportation_types_to_referral_facility":"none"}'
