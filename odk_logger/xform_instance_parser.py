@@ -1,4 +1,4 @@
-from xml.dom import minidom
+from xml.dom import minidom, Node
 import re
 from django.utils.encoding import smart_unicode, smart_str
 from django.utils.translation import ugettext_lazy, ugettext as _
@@ -45,20 +45,48 @@ class InstanceEmptyError(InstanceParseError):
         return unicode(self).encode('utf-8')
 
 
+def get_meta_from_xml(xml_str, meta_name):
+    xml = clean_and_parse_xml(xml_str)
+    children = xml.childNodes
+    # children ideally contains a single element that is the parent of all survey elements
+    if children.length == 0:
+        raise ValueError(_("XML string must have a survey element."))
+    survey_node = children[0]
+    meta_tags = [n for n in survey_node.childNodes if\
+                 n.nodeType == Node.ELEMENT_NODE and n.tagName.lower() == "meta"]
+    if len(meta_tags) == 0:
+        return None
+
+    # get the requested tag
+    meta_tag = meta_tags[0]
+    uuid_tags = [n for n in meta_tag.childNodes if\
+                   n.nodeType == Node.ELEMENT_NODE and\
+                   n.tagName.lower() == meta_name.lower()]
+    if len(uuid_tags) == 0:
+        return None
+
+    uuid_tag = uuid_tags[0]
+    return uuid_tag.firstChild.nodeValue.strip() if uuid_tag.firstChild\
+        else None
+
+
 def get_uuid_from_xml(xml):
-    xml = re.sub(ur">\s+<", u"><", smart_unicode(xml.strip()))
-    p = re.compile(r".*(<meta>.*(<instanceID>uuid:(.*)</instanceID>))")
-    matches = p.match(xml)
-    if matches and matches.groups().__len__() > 2:
-        return matches.groups()[2]
+    uuid = get_meta_from_xml(xml, "instanceID")
+    regex = re.compile(r"uuid:(.*)")
+    if uuid:
+        matches = regex.match(uuid)
+        if matches and len(matches.groups()) > 0:
+            return matches.groups()[0]
     return None
 
+
 def get_deprecated_uuid_from_xml(xml):
-    xml = re.sub(ur">\s+<", u"><", smart_unicode(xml.strip()))
-    p = re.compile(r".*(<meta>.*(<deprecatedID>uuid:(.*)</deprecatedID>))")
-    matches = p.match(xml)
-    if matches and matches.groups().__len__() > 2:
-        return matches.groups()[2]
+    uuid = get_meta_from_xml(xml, "deprecatedID")
+    regex = re.compile(r"uuid:(.*)")
+    if uuid:
+        matches = regex.match(uuid)
+        if matches and len(matches.groups()) > 0:
+            return matches.groups()[0]
     return None
 
 

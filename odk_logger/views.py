@@ -482,7 +482,7 @@ def edit_data(request, username, id_string, data_id):
         formhub_url = "http://%s/" % request.META['HTTP_HOST']
     except:
         formhub_url = "http://formhub.org/"
-    injected_xml = inject_instanceid(instance)
+    injected_xml = inject_instanceid(instance.xml, instance.uuid)
     values = {
         'format': 'json',
         'form_id': xform.id_string,
