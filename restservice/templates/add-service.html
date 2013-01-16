@@ -17,10 +17,7 @@
     </form>
     <ol id="restservice_list">
         {% for sv in list_services %}
-            <li>{{ sv }}
-          
-              &nbsp;-&nbsp;<a href="#" data-url="{% url restservice.views.delete_service username=user.username id_string=id_string %}" data-id="{{ sv.pk }}" class="btn btn-mini btn-danger restserviceitem">{% trans "Delete" %}</a>
-            </li>
+            {% include "service.html" %}
         {% endfor %}
     </ol>
     </div>
@@ -29,7 +26,6 @@
         $('a.restserviceitem').click(function(){
             var el = $(this);
             $.post(el.data('url'), "service-id=" + el.data('id'), function(data){
-                console.log(data);
                 el.parent().remove();
             });
             return false;
@@ -40,24 +36,21 @@
             $.post(this.action, $(this).serialize(), function(data){
                 try{
                     var rs = $.parseJSON(data);
-                    console.log(rs);
                     if (rs.status){
                         if(rs.status == 'success'){
                             $("#addserviceform").each(function(){
                                 this.reset();
                             });
                             if(rs.restservice){
-                                $("#restservice_list").append("<li>" + rs.restservice + "</li>");
+                                $("#restservice_list").append(rs.restservice);
                             }
                         }
                         $('#addserviceformstatus').html(rs.message);
                     }
 
                 }catch (e){
-                    console.log(e);
                 }
             });
-            console.log(this.action);
             return false;
         });
     });
