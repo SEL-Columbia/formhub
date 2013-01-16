@@ -7,7 +7,8 @@ from odk_logger.models.xform import XForm
 from odk_logger.xform_instance_parser import xform_instance_to_dict, \
     xform_instance_to_flat_dict, parse_xform_instance, XFormInstanceParser,\
     xpath_from_xml_node
-from odk_logger.xform_instance_parser import XFORM_ID_STRING
+from odk_logger.xform_instance_parser import XFORM_ID_STRING,\
+    get_uuid_from_xml, get_meta_from_xml, get_deprecated_uuid_from_xml
 
 XML = u"xml"
 DICT = u"dict"
@@ -104,3 +105,46 @@ class TestXFormInstanceParser(MainTestCase):
         # create an xpath that should look like gps/info
         xpath = xpath_from_xml_node(info_node)
         self.assertEqual(xpath, u'gps/info')
+
+    def test_get_meta_from_xml(self):
+        with open(
+            os.path.join(
+                os.path.dirname(__file__), "..", "fixtures", "tutorial",
+                "instances", "tutorial_2012-06-27_11-27-53_w_uuid_edited.xml"),
+            "r") as xml_file:
+            xml_str = xml_file.read()
+        instanceID = get_meta_from_xml(xml_str, "instanceID")
+        self.assertEqual(instanceID, "uuid:2d8c59eb-94e9-485d-a679-b28ffe2e9b98")
+        deprecatedID = get_meta_from_xml(xml_str, "deprecatedID")
+        self.assertEqual(deprecatedID, "uuid:729f173c688e482486a48661700455ff")
+
+    def test_get_meta_from_xml_without_uuid_returns_none(self):
+        with open(
+            os.path.join(
+                os.path.dirname(__file__), "..", "fixtures", "tutorial",
+                "instances", "tutorial_2012-06-27_11-27-53.xml"),
+            "r") as xml_file:
+            xml_str = xml_file.read()
+        instanceID = get_meta_from_xml(xml_str, "instanceID")
+        self.assertIsNone(instanceID)
+
+
+    def test_get_uuid_from_xml(self):
+        with open(
+            os.path.join(
+                os.path.dirname(__file__), "..", "fixtures", "tutorial",
+                "instances", "tutorial_2012-06-27_11-27-53_w_uuid.xml"),
+            "r") as xml_file:
+            xml_str = xml_file.read()
+        instanceID = get_uuid_from_xml(xml_str)
+        self.assertEqual(instanceID, "729f173c688e482486a48661700455ff")
+
+    def test_get_deprecated_uuid_from_xml(self):
+        with open(
+            os.path.join(
+                os.path.dirname(__file__), "..", "fixtures", "tutorial",
+                "instances", "tutorial_2012-06-27_11-27-53_w_uuid_edited.xml"),
+            "r") as xml_file:
+            xml_str = xml_file.read()
+        deprecatedID = get_deprecated_uuid_from_xml(xml_str)
+        self.assertEqual(deprecatedID, "729f173c688e482486a48661700455ff")
