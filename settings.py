@@ -215,7 +215,7 @@ LOGGING = {
 }
 
 # MongoDB
-_MONGO_CONNECTION = Connection()
+_MONGO_CONNECTION = Connection(safe=True, j=True)
 MONGO_DB = None
 MONGO_DB_NAME = "formhub"
 MONGO_TEST_DB_NAME = "formhub_test"
