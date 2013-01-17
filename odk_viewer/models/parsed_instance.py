@@ -173,9 +173,12 @@ class ParsedInstance(models.Model):
         )
         return dict_for_mongo(d)
 
-    def update_mongo(self):
+    def update_mongo(self, async=True):
         d = self.to_dict_for_mongo()
-        update_mongo_instance.apply_async((), {"record": d})
+        if async:
+            update_mongo_instance.apply_async((), {"record": d})
+        else:
+            update_mongo_instance(d)
 
     def to_dict(self):
         if not hasattr(self, "_dict_cache"):
@@ -257,13 +260,13 @@ class ParsedInstance(models.Model):
         self.lat = g.get(u'latitude')
         self.lng = g.get(u'longitude')
 
-    def save(self, *args, **kwargs):
+    def save(self, async=True, *args, **kwargs):
         self._set_start_time()
         self._set_end_time()
         self._set_geopoint()
         super(ParsedInstance, self).save(*args, **kwargs)
         # insert into Mongo
-        self.update_mongo()
+        self.update_mongo(async)
 
 
 def _remove_from_mongo(sender, **kwargs):
