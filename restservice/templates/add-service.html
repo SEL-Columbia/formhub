@@ -23,14 +23,15 @@
     </div>
     <script type="text/javascript">
     $(document).ready(function(){
-        $('a.restserviceitem').click(function(){
+        var attach_delete = function(){
             var el = $(this);
             $.post(el.data('url'), "service-id=" + el.data('id'), function(data){
                 el.parent().remove();
             });
             return false;
-        }
-        );
+        };
+
+        $('a.restserviceitem').click(attach_delete);
         $(document).on('submit', '#addserviceform', function(evt){
             evt.preventDefault();
             $.post(this.action, $(this).serialize(), function(data){
@@ -43,6 +44,7 @@
                             });
                             if(rs.restservice){
                                 $("#restservice_list").append(rs.restservice);
+                                $("#restservice_list a.restserviceitem").click(attach_delete);
                             }
                         }
                         $('#addserviceformstatus').html(rs.message);
