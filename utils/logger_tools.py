@@ -33,6 +33,7 @@ from odk_logger.xform_instance_parser import InstanceInvalidUserError, \
 
 from odk_viewer.models import ParsedInstance, DataDictionary
 from utils.model_tools import queryset_iterator
+from xml.dom import Node
 
 
 OPEN_ROSA_VERSION_HEADER = 'X-OpenRosa-Version'
@@ -294,19 +295,37 @@ class OpenRosaResponseNotAllowed(OpenRosaResponse):
     status_code = 405
 
 
-def inject_instanceid(instance):
-    if get_uuid_from_xml(instance.xml) is None:
-        xml = clean_and_parse_xml(instance.xml)
+def inject_instanceid(xml_str, uuid):
+    if get_uuid_from_xml(xml_str) is None:
+        xml = clean_and_parse_xml(xml_str)
         children = xml.childNodes
+        if children.length == 0:
+            raise ValueError(_("XML string must have a survey element."))
+
+        # check if we have a meta tag
+        survey_node = children.item(0)
+        meta_tags = [n for n in survey_node.childNodes if\
+                     n.nodeType == Node.ELEMENT_NODE and n.tagName.lower() == "meta"]
+        if len(meta_tags) == 0:
+            meta_tag = xml.createElement("meta")
+            xml.documentElement.appendChild(meta_tag)
+        else:
+            meta_tag = meta_tags[0]
+
+        # check if we have an instanceID tag
+        uuid_tags = [n for n in meta_tag.childNodes if\
+                       n.nodeType == Node.ELEMENT_NODE and\
+                       n.tagName == "instanceID"]
+        if len(uuid_tags) == 0:
+            uuid_tag = xml.createElement("instanceID")
+            meta_tag.appendChild(uuid_tag)
+        else:
+            uuid_tag = uuid_tags[0]
         # insert meta and instanceID
-        text_node = xml.createTextNode(u"uuid:%s" % instance.uuid)
-        instanceid_tag = xml.createElement("instanceID")
-        instanceid_tag.appendChild(text_node)
-        meta_tag = xml.createElement("meta")
-        meta_tag.appendChild(instanceid_tag)
-        xml.documentElement.appendChild(meta_tag)
+        text_node = xml.createTextNode(u"uuid:%s" % uuid)
+        uuid_tag.appendChild(text_node)
         return xml.toxml()
-    return instance.xml
+    return xml_str
 
 def update_mongo_for_xform(xform, only_update_missing=True):
     sqlite_ids = set([i.id for i in Instance.objects.only('id').filter(xform=xform)])

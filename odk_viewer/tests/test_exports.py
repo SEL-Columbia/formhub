@@ -2,6 +2,8 @@ from sys import stdout
 import os
 import datetime
 import json
+import StringIO
+import csv
 from django.conf import settings
 from main.tests.test_base import MainTestCase
 from django.core.urlresolvers import reverse
@@ -9,8 +11,12 @@ from odk_viewer.tasks import create_xls_export, create_csv_export
 from odk_viewer.xls_writer import XlsWriter
 from odk_viewer.views import csv_export, xls_export, delete_export,\
     export_list, create_export, export_progress, export_download
-from odk_viewer.models import Export
+from odk_viewer.models import Export, ParsedInstance
 from utils.export_tools import generate_export, increment_index_in_filename
+from odk_logger.models import Instance
+from main.views import delete_data
+from utils.logger_tools import inject_instanceid
+
 
 class TestExports(MainTestCase):
     def setUp(self):
@@ -352,3 +358,81 @@ class TestExports(MainTestCase):
         # access the export
         response = self.client.get(export_url)
         self.assertEqual(response.status_code, 404)
+
+    def test_deleted_submission_not_in_export(self):
+        self._publish_transportation_form()
+        initial_count = ParsedInstance.query_mongo(
+            self.user.username, self.xform.id_string, '{}', '[]', '{}',
+            count=True)[0]['count']
+        self._submit_transport_instance(0)
+        self._submit_transport_instance(1)
+        count = ParsedInstance.query_mongo(
+            self.user.username, self.xform.id_string, '{}', '[]', '{}',
+            count=True)[0]['count']
+        self.assertEqual(count, initial_count+2)
+        # get id of second submission
+        instance_id = Instance.objects.filter(
+            xform=self.xform).order_by('id').reverse()[0].id
+        delete_url = reverse(
+            delete_data, kwargs={"username": self.user.username,
+                                 "id_string": self.xform.id_string})
+        self.client.post(delete_url, {"query": '{"_id": %d}' % instance_id})
+        count = ParsedInstance.query_mongo(
+            self.user.username, self.xform.id_string, '{}', '[]', '{}',
+            count=True)[0]['count']
+        self.assertEqual(count, initial_count+1)
+        # create the export
+        csv_export_url = reverse(
+            csv_export, kwargs={"username": self.user.username,
+                                "id_string":self.xform.id_string})
+        response = self.client.get(csv_export_url)
+        self.assertEqual(response.status_code, 200)
+        f = StringIO.StringIO(response.content)
+        csv_reader = csv.reader(f)
+        num_rows = len([row for row in csv_reader])
+        f.close()
+        # number of rows == 2 i.e. initial_count + header plus one row
+        self.assertEqual(num_rows, initial_count + 2)
+
+    def test_edited_submissions_in_exports(self):
+        self._publish_transportation_form()
+        initial_count = ParsedInstance.query_mongo(
+            self.user.username, self.xform.id_string, '{}', '[]', '{}',
+            count=True)[0]['count']
+        instance_name = 'transport_2011-07-25_19-05-36'
+        path = os.path.join(
+            'main', 'tests', 'fixtures', 'transportation', 'instances_w_uuid',
+            instance_name, instance_name + '.xml')
+        self._make_submission(path)
+        count = ParsedInstance.query_mongo(
+            self.user.username, self.xform.id_string, '{}', '[]', '{}',
+            count=True)[0]['count']
+        self.assertEqual(count, initial_count+1)
+        instance = Instance.objects.filter(
+            xform=self.xform).order_by('id').reverse()[0]
+        # make edited submission - simulating what enketo would return
+        instance_name = 'transport_2011-07-25_19-05-36-edited'
+        path = os.path.join(
+            'main', 'tests', 'fixtures', 'transportation', 'instances_w_uuid',
+            instance_name, instance_name + '.xml')
+        self._make_submission(path)
+        count = ParsedInstance.query_mongo(
+            self.user.username, self.xform.id_string, '{}', '[]', '{}',
+            count=True)[0]['count']
+        self.assertEqual(count, initial_count+1)
+        # create the export
+        csv_export_url = reverse(
+            csv_export, kwargs={"username": self.user.username,
+                                "id_string":self.xform.id_string})
+        response = self.client.get(csv_export_url)
+        self.assertEqual(response.status_code, 200)
+        f = StringIO.StringIO(response.content)
+        csv_reader = csv.DictReader(f)
+        data = [row for row in csv_reader]
+        f.close()
+        num_rows = len(data)
+        # number of rows == initial_count + 1
+        self.assertEqual(num_rows, initial_count + 1)
+        self.assertEqual(
+            data[initial_count]['transport/ambulance/frequency_to_referral_facility'],
+            "monthly")

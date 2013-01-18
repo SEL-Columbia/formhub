@@ -53,11 +53,6 @@ body {
   background-color: rgba(221, 221, 221, 0.6);
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
 }
-#forms-table a,
-#crowdforms-table a,
-#sharedforms-table a {
-  font-weight: 600;
-}
 .bordered {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -135,9 +130,7 @@ table.narrow-labels label {
 .dropdown-menu [class^="icon-"],
 .dropdown-menu [class*=" icon-"] {
   float: right;
-  -webkit-mask-image: url("../img/glyphicons-halflings.png");
-  background-color: #414042;
-  background-image: none;
+  padding: 4px 0px;
 }
 textarea[disabled].present,
 input[disabled].present {
@@ -165,23 +158,6 @@ ul.inline li {
 }
 ul.inline ul.dropdown-menu {
   margin-top: -12px;
-}
-.dropdown-menu .icon-user {
-  -webkit-mask-position: -168px 0;
-}
-.dropdown-menu .icon-cog {
-  -webkit-mask-position: -432px 0;
-}
-.dropdown-menu .icon-off {
-  -webkit-mask-position: -384px 0;
-}
-.dropdown-menu .icon-eye-open {
-    -webkit-mask-position: -96px -120px;
-}
-.dropdown-menu li > a:hover > i,
-.dropdown-menu .active > a > i,
-.dropdown-menu .active > a:hover > i {
-  background-color: #d96e27;
 }
 .dropdown-menu.left-arrow::before {
   position: absolute;
@@ -468,6 +444,9 @@ section {
   width: 40px;
   height: 33px;
 }
+span > .inactive {
+    color: #C5C5C5;
+}
 .btn .icon-view {
   background-image: url("../images/view_icons_sprite.png");
   background-position: 0 -83px;
@@ -478,6 +457,7 @@ section {
 }
 .icon-large {
   background-position: 50% 50%;
+  padding: 0px 2px;
 }
 .icon-large.icon-map-marker {
   background-image: url("../images/view_icons_sprite.png");
@@ -578,6 +558,13 @@ section {
 .btn-flat:hover.inactive .icon-browse {
   background-image: url("../images/view_icons_sprite.png");
   background-position: 0 -246px;
+}
+a.download {
+    color: #333;
+    padding: 0px 1px;
+}
+a.download:hover {
+    color: #D96E27;
 }
 .data-download {
   cursor: pointer;
