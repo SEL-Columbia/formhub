@@ -328,8 +328,8 @@ def inject_instanceid(xml_str, uuid):
     return xml_str
 
 def update_mongo_for_xform(xform, only_update_missing=True):
-    sqlite_ids = set([i.id for i in Instance.objects.only('id').filter(xform=xform)])
-    sys.stdout.write("Total no of instances: %d\n" % len(sqlite_ids))
+    instance_ids = set([i.id for i in Instance.objects.only('id').filter(xform=xform)])
+    sys.stdout.write("Total no of instances: %d\n" % len(instance_ids))
     mongo_ids = set()
     if only_update_missing:
         sys.stdout.write("Only updating missing mongo instances\n")
@@ -339,11 +339,11 @@ def update_mongo_for_xform(xform, only_update_missing=True):
                 {common_tags.ID: 1})])
         sys.stdout.write("Total no of mongo instances: %d\n" % len(mongo_ids))
         # get the difference
-        sqlite_ids = sqlite_ids.difference(mongo_ids)
+        instance_ids = instance_ids.difference(mongo_ids)
     # get instances
-    sys.stdout.write("Total no of instances to update: %d\n" % len(sqlite_ids))
-    instances = Instance.objects.only('id').in_bulk([id for id in sqlite_ids])
+    sys.stdout.write("Total no of instances to update: %d\n" % len(instance_ids))
+    instances = Instance.objects.only('id').in_bulk([id for id in instance_ids])
     total = len(instances)
     for id, instance in instances.items():
         (pi, created) = ParsedInstance.objects.get_or_create(instance=instance)
-        pi.save()
+        pi.save(async=False)
