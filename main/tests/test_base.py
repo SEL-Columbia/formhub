@@ -80,13 +80,13 @@ class MainTestCase(TestCase):
         self.assertEqual(XForm.objects.count(), count + 1)
         self.xform = XForm.objects.all().reverse()[0]
 
-    def _submit_transport_instance(self):
-        s = self.surveys[0]
+    def _submit_transport_instance(self, survey_at=0):
+        s = self.surveys[survey_at]
         self._make_submission(os.path.join(self.this_directory, 'fixtures',
                     'transportation', 'instances', s, s + '.xml'))
 
-    def _submit_transport_instance_w_attachment(self):
-        s = self.surveys[0]
+    def _submit_transport_instance_w_attachment(self, survey_at=0):
+        s = self.surveys[survey_at]
         media_file = "1335783522563.jpg"
         self._make_submission_w_attachment(os.path.join(self.this_directory, 'fixtures',
             'transportation', 'instances', s, s + '.xml'), os.path.join(self.this_directory, 'fixtures',
