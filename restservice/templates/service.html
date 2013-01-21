@@ -1,0 +1,5 @@
+{% load i18n %}
+<li>{{ sv }}
+
+    &nbsp;-&nbsp;<a href="#" data-url="{% url restservice.views.delete_service username=username id_string=id_string %}" data-id="{{ sv.pk }}" class="btn btn-mini btn-danger restserviceitem">{% trans "Delete" %}</a>
+</li>
