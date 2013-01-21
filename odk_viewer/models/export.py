@@ -10,7 +10,8 @@ from django.utils.translation import ugettext_lazy, ugettext as _
 def export_delete_callback(sender, **kwargs):
     export = kwargs['instance']
     storage = get_storage_class()()
-    storage.delete(export.filepath)
+    if export.filepath and storage.exists(export.filepath):
+        storage.delete(export.filepath)
 
 
 class Export(models.Model):
