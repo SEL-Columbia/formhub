@@ -16,6 +16,7 @@ from utils.export_tools import generate_export, increment_index_in_filename
 from odk_logger.models import Instance
 from main.views import delete_data
 from utils.logger_tools import inject_instanceid
+from django.core.files.storage import get_storage_class
 
 
 class TestExports(MainTestCase):
@@ -97,20 +98,34 @@ class TestExports(MainTestCase):
         self._submit_transport_instance()
         export = create_xls_export(
             self.user.username, self.xform.id_string)
-        self.assertTrue(os.path.exists(
-            os.path.join(
-                settings.MEDIA_ROOT,
-                export.filepath
-            )
-        ))
+        storage = get_storage_class()()
+        self.assertTrue(storage.exists(export.filepath))
         # delete export object
         export.delete()
-        self.assertFalse(os.path.exists(
-            os.path.join(
-                settings.MEDIA_ROOT,
-                export.filepath
-            )
-        ))
+        self.assertFalse(storage.exists(export.filepath))
+
+    def test_graceful_exit_on_export_delete_if_file_doesnt_exist(self):
+        self._publish_transportation_form()
+        self._submit_transport_instance()
+        export = create_xls_export(
+            self.user.username, self.xform.id_string)
+        storage = get_storage_class()()
+        # delete file
+        storage.delete(export.filepath)
+        self.assertFalse(storage.exists(export.filepath))
+        # clear filename, like it would be in an incomplete export
+        export.filename = None
+        export.filedir = None
+        export.save()
+        # delete export record, which should try to delete file as well
+        delete_url = reverse(delete_export, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': 'xls'
+        })
+        post_data = {'export_id': export.id}
+        response = self.client.post(delete_url, post_data)
+        self.assertEqual(response.status_code, 302)
 
     def test_delete_oldest_export_on_limit(self):
         self._publish_transportation_form()
