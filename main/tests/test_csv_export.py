@@ -39,6 +39,7 @@ class TestExport(MainTestCase):
             u'/double_repeat/bed_net[1]/member[2]/name',
             u'/double_repeat/bed_net[2]/member[1]/name',
             u'/double_repeat/bed_net[2]/member[2]/name',
+            u'/double_repeat/meta/instanceID'
             ]
         self.assertEquals(dd.xpaths(repeat_iterations=2), xpaths)
         url = reverse(csv_export, kwargs={'username': self.user.username,
