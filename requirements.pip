@@ -12,6 +12,7 @@ modilabs-python-utils==0.1.5
 PIL==1.1.7
 poster==0.8.1
 pymongo==2.2.1
+# RODO: use version number
 -e git+https://github.com/modilabs/pyxform.git@master#egg=pyxform
 South==0.7.3
 xlrd==0.7.1
