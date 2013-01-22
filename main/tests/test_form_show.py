@@ -9,6 +9,7 @@ from odk_logger.views import download_xlsform, download_jsonform,\
 from odk_viewer.views import export_list
 from utils.user_auth import http_auth_string
 
+
 class TestFormShow(MainTestCase):
 
     def setUp(self):

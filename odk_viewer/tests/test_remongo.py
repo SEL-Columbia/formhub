@@ -1,3 +1,5 @@
+import os
+
 from django.conf import settings
 from main.tests.test_base import MainTestCase
 from odk_viewer.models import ParsedInstance
@@ -5,41 +7,43 @@ from odk_viewer.management.commands.remongo import Command
 from django.core.management import call_command
 from common_tags import USERFORM_ID
 
+
 class TestRemongo(MainTestCase):
     def test_remongo_in_batches(self):
       self._publish_transportation_form()
-      # submit 5 instances
-      for i in range(5):
-          self._submit_transport_instance()
-      self.assertEqual(ParsedInstance.objects.count(), 5)
+      # submit 4 instances
+      self._make_submissions()
+      self.assertEqual(ParsedInstance.objects.count(), 4)
       # clear mongo
       settings.MONGO_DB.instances.drop()
       c = Command()
       c.handle(batchsize=3)
       # mongo db should now have 5 records
       count = settings.MONGO_DB.instances.count()
-      self.assertEqual(count, 5)
+      self.assertEqual(count, 4)
 
     def test_remongo_with_username_id_string(self):
         self._publish_transportation_form()
-        # submit 5 instances
-        for i in range(5):
-            self._submit_transport_instance()
+        # submit 1 instances
+        s = self.surveys[0]
+        self._make_submission(os.path.join(self.this_directory, 'fixtures',
+                              'transportation', 'instances', s, s + '.xml'))
         # publish and submit for a different user
         self._logout()
         self._create_user_and_login("harry", "harry")
         self._publish_transportation_form()
-        for i in range(4):
-            self._submit_transport_instance()
-        self.assertEqual(ParsedInstance.objects.count(), 9)
+        s = self.surveys[1]
+        self._make_submission(os.path.join(self.this_directory, 'fixtures',
+                              'transportation', 'instances', s, s + '.xml'))
+        self.assertEqual(ParsedInstance.objects.count(), 2)
         # clear mongo
         settings.MONGO_DB.instances.drop()
         c = Command()
         c.handle(batchsize=3, username=self.user.username,
             id_string=self.xform.id_string)
-        # mongo db should now have 5 records
+        # mongo db should now have 2 records
         count = settings.MONGO_DB.instances.count()
-        self.assertEqual(count, 4)
+        self.assertEqual(count, 1)
 
     def test_indexes_exist(self):
         """

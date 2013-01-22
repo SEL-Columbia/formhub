@@ -117,7 +117,8 @@ class TestPandasMongoBridge(MainTestCase):
             u"info/age",
             u"web_browsers/chrome",
             u"kids/has_kids",
-            u"info/name"
+            u"info/name",
+            u"meta/instanceID"
         ] + XLSDataFrameBuilder.EXTRA_COLUMNS
         default_columns = [k for k in data[self.survey_name][0]]
         self.assertEqual(sorted(expected_default_columns),
@@ -150,6 +151,7 @@ class TestPandasMongoBridge(MainTestCase):
             u"web_browsers/safari",
             u"web_browsers/ie",
             u"web_browsers/chrome",
+            u"meta/instanceID"
         ] + XLSDataFrameBuilder.EXTRA_COLUMNS
         default_columns = [k for k in data[self.survey_name][0]]
         self.assertEqual(sorted(expected_default_columns),
@@ -543,7 +545,7 @@ class TestPandasMongoBridge(MainTestCase):
         csv_file = open(temp_file.name)
         csv_reader = csv.reader(csv_file)
         header = csv_reader.next()
-        self.assertEqual(len(header), 16)
+        self.assertEqual(len(header), 17)
         rows = []
         for row in csv_reader:
             rows.append(row)

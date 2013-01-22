@@ -3,6 +3,7 @@ from odk_viewer.views import csv_export, xls_export, zip_export, kml_export, exp
 from django.core.urlresolvers import reverse
 from common_tags import MONGO_STRFTIME
 
+import os
 import time
 import csv
 import tempfile
@@ -52,13 +53,17 @@ class TestFormExports(MainTestCase):
         # 1 survey exists before this time
         before_time = time.strftime('%Y-%m-%dT%H:%M:%S')
         time.sleep(1)
-        self._make_submissions()
+        s = self.surveys[1]
+        self._make_submission(os.path.join(self.this_directory, 'fixtures',
+                    'transportation', 'instances', s, s + '.xml'))
         time.sleep(1)
-        # 5 surveys exist before this time
+        # 2 surveys exist before this time
         after_time = time.strftime('%Y-%m-%dT%H:%M:%S')
         time.sleep(1)
-        # 9 surveys exist in total
-        self._make_submissions()
+        # 3 surveys exist in total
+        s = self.surveys[2]
+        self._make_submission(os.path.join(self.this_directory, 'fixtures',
+                    'transportation', 'instances', s, s + '.xml'))
         # test restricting to before end time
         json = '{"_submission_time": {"$lte": "%s"}}' % before_time
         params= {'query': json}
@@ -70,18 +75,18 @@ class TestFormExports(MainTestCase):
         params= {'query': json}
         response = self.client.get(url, params)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self._num_rows(response.content, export_format), 9)
+        self.assertEqual(self._num_rows(response.content, export_format), 3)
         # test no time restriction
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self._num_rows(response.content, export_format), 10)
+        self.assertEqual(self._num_rows(response.content, export_format), 4)
         # test restricting to between start time and end time
         json = '{"_submission_time": {"$gte": "%s", "$lte": "%s"}}' %\
             (before_time, after_time)
         params= {'query': json}
         response = self.client.get(url, params)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self._num_rows(response.content, export_format), 5)
+        self.assertEqual(self._num_rows(response.content, export_format), 2)
 
     def test_filter_by_date_csv(self):
         self._filter_export_test(self.csv_url, 'csv')

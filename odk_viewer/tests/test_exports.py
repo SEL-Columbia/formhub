@@ -448,6 +448,5 @@ class TestExports(MainTestCase):
         num_rows = len(data)
         # number of rows == initial_count + 1
         self.assertEqual(num_rows, initial_count + 1)
-        self.assertEqual(
-            data[initial_count]['transport/ambulance/frequency_to_referral_facility'],
-            "monthly")
+        key ='transport/loop_over_transport_types_frequency/ambulance/frequency_to_referral_facility'
+        self.assertEqual(data[initial_count][key], "monthly")
