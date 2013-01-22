@@ -10,6 +10,7 @@ from django.utils.translation import ugettext as _
 from odk_logger.models.xform import XForm
 from restservice.forms import RestServiceForm
 from restservice.models import RestService
+from django.template.loader import render_to_string
 
 
 @login_required
@@ -34,7 +35,10 @@ def add_service(request, username, id_string):
                 context.status = 'success'
                 context.message = (_(u"Successfully added service %(name)s.") 
                                    % {'name': service_name})
-                context.restservice = rs
+                service_tpl = render_to_string("service.html", {
+                    "sv": rs, "username": xform.user.username,
+                    "id_string": xform.id_string})
+                context.restservice = service_tpl
         else:
             context.status = 'fail'
             context.message = _(u"Please fill in all required fields")
