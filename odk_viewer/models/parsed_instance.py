@@ -12,6 +12,7 @@ from stats.tasks import stat_log
 from utils.decorators import apply_form_field_names
 from utils.model_tools import queryset_iterator
 from odk_logger.models import Instance
+from celery import task
 from common_tags import START_TIME, START, END_TIME, END, ID, UUID,\
     ATTACHMENTS, GEOLOCATION, SUBMISSION_TIME, MONGO_STRFTIME,\
     BAMBOO_DATASET_ID, DELETEDAT
@@ -78,6 +79,13 @@ def _decode_from_mongo(key):
 def _is_invalid_for_mongo(key):
     return not key in \
         key_whitelist and (key.startswith('$') or key.count('.') > 0)
+
+
+@task
+def update_mongo_instance(record):
+    # since our dict always has an id, save will always result in an upsert op - so we dont need to worry whether its an edit or not
+    # http://api.mongodb.org/python/current/api/pymongo/collection.html#pymongo.collection.Collection.save
+    return xform_instances.save(record)
 
 
 class ParsedInstance(models.Model):
@@ -165,11 +173,12 @@ class ParsedInstance(models.Model):
         )
         return dict_for_mongo(d)
 
-    def update_mongo(self, edit=False):
+    def update_mongo(self, async=True):
         d = self.to_dict_for_mongo()
-        # since our ddict always has an id, save will always result in an upsert op - so we dont need to worry whether its an edit or not
-        # http://api.mongodb.org/python/current/api/pymongo/collection.html#pymongo.collection.Collection.save
-        xform_instances.save(d)
+        if async:
+            update_mongo_instance.apply_async((), {"record": d})
+        else:
+            update_mongo_instance(d)
 
     def to_dict(self):
         if not hasattr(self, "_dict_cache"):
@@ -251,16 +260,13 @@ class ParsedInstance(models.Model):
         self.lat = g.get(u'latitude')
         self.lng = g.get(u'longitude')
 
-    def save(self, *args, **kwargs):
+    def save(self, async=True, *args, **kwargs):
         self._set_start_time()
         self._set_end_time()
         self._set_geopoint()
-        edit = False
-        if self.pk:
-            edit = True
         super(ParsedInstance, self).save(*args, **kwargs)
         # insert into Mongo
-        self.update_mongo(edit=edit)
+        self.update_mongo(async)
 
 
 def _remove_from_mongo(sender, **kwargs):
