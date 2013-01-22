@@ -89,7 +89,8 @@ def image_url(attachment, suffix):
             size = settings.THUMB_CONF[suffix]['suffix']
             filename = attachment.media_file.name
             if default_storage.exists(filename):
-                if default_storage.exists(get_path(filename, size)):
+                if default_storage.exists(get_path(filename, size)) and\
+                        default_storage.size(get_path(filename, size)) > 0:
                     url = default_storage.url(
                         get_path(filename, size))
                 else:
