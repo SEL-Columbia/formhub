@@ -70,19 +70,18 @@ class TestExports(MainTestCase):
 
     def test_create_export(self):
         self._publish_transportation_form_and_submit_instance()
+        storage = get_storage_class()()
         # test xls
         export = generate_export(Export.XLS_EXPORT, 'xls', self.user.username,
             self.xform.id_string)
-        self.assertTrue(os.path.exists(os.path.join(settings.MEDIA_ROOT,
-            export.filepath)))
+        self.assertTrue(storage.exists(export.filepath))
         path, ext = os.path.splitext(export.filename)
         self.assertEqual(ext, '.xls')
 
         # test csv
         export = generate_export(Export.CSV_EXPORT, 'csv', self.user.username,
             self.xform.id_string)
-        self.assertTrue(os.path.exists(os.path.join(settings.MEDIA_ROOT,
-            export.filepath)))
+        self.assertTrue(storage.exists(export.filepath))
         path, ext = os.path.splitext(export.filename)
         self.assertEqual(ext, '.csv')
 
