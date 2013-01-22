@@ -64,3 +64,36 @@ class TestRemongo(MainTestCase):
                 all_indexes_found = False
                 break
         self.assertTrue(all_indexes_found)
+
+    def test_sync_mongo_with_all_option_deletes_existing_records(self):
+        self._publish_transportation_form()
+        userform_id = "%s_%s" % (self.user.username, self.xform.id_string)
+        initial_mongo_count = settings.MONGO_DB.instances.find(
+            {USERFORM_ID: userform_id}).count()
+        for i in range(len(self.surveys)):
+            self._submit_transport_instance(i)
+        mongo_count = settings.MONGO_DB.instances.find(
+            {USERFORM_ID: userform_id}).count()
+        # check our mongo count
+        self.assertEqual(mongo_count, initial_mongo_count + len(self.surveys))
+        # add dummy instance
+        settings.MONGO_DB.instances.save(
+            {"_id": 12345, "_userform_id": userform_id})
+        # make sure the dummy is returned as part of the forms mongo instances
+        mongo_count = settings.MONGO_DB.instances.find(
+            {USERFORM_ID: userform_id}).count()
+        self.assertEqual(mongo_count,
+                         initial_mongo_count + len(self.surveys) + 1)
+        # call sync_mongo WITHOUT the all option
+        call_command("sync_mongo", remongo=True)
+        mongo_count = settings.MONGO_DB.instances.find(
+            {USERFORM_ID: userform_id}).count()
+        self.assertEqual(mongo_count,
+            initial_mongo_count + len(self.surveys) + 1)
+        # call sync_mongo WITH the all option
+        call_command("sync_mongo", remongo=True, update_all=True)
+        # check that we are back to just the submitted set
+        mongo_count = settings.MONGO_DB.instances.find(
+            {USERFORM_ID: userform_id}).count()
+        self.assertEqual(mongo_count,
+            initial_mongo_count + len(self.surveys))

@@ -331,19 +331,36 @@ def update_mongo_for_xform(xform, only_update_missing=True):
     instance_ids = set([i.id for i in Instance.objects.only('id').filter(xform=xform)])
     sys.stdout.write("Total no of instances: %d\n" % len(instance_ids))
     mongo_ids = set()
+    user = xform.user
+    userform_id = "%s_%s" % (user.username, xform.id_string)
     if only_update_missing:
         sys.stdout.write("Only updating missing mongo instances\n")
-        user = xform.user
-        userform_id = "%s_%s" % (user.username, xform.id_string)
         mongo_ids = set([rec[common_tags.ID] for rec in mongo_instances.find({common_tags.USERFORM_ID: userform_id},
                 {common_tags.ID: 1})])
         sys.stdout.write("Total no of mongo instances: %d\n" % len(mongo_ids))
         # get the difference
         instance_ids = instance_ids.difference(mongo_ids)
+    else:
+        # clear mongo records
+        mongo_instances.remove({common_tags.USERFORM_ID: userform_id})
     # get instances
     sys.stdout.write("Total no of instances to update: %d\n" % len(instance_ids))
     instances = Instance.objects.only('id').in_bulk([id for id in instance_ids])
     total = len(instances)
+    done = 0
     for id, instance in instances.items():
         (pi, created) = ParsedInstance.objects.get_or_create(instance=instance)
         pi.save(async=False)
+        done += 1
+        # if 1000 records are done, flush mongo
+        if (done % 1000) == 0:
+            sys.stdout.write('Updated %d records, flushing MongoDB...\n' % done)
+        settings._MONGO_CONNECTION.admin.command({'fsync': 1})
+        progress = "\r%.2f %% done..." % ((float(done)/float(total)) * 100)
+        sys.stdout.write(progress)
+        sys.stdout.flush()
+    # flush mongo again when done
+    settings._MONGO_CONNECTION.admin.command({'fsync': 1})
+    sys.stdout.write(
+        "\nUpdated %s\n------------------------------------------\n" %\
+        xform.id_string)
