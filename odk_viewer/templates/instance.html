@@ -274,6 +274,11 @@ function updatePrevNextControls(data)
             });
 }
 
+function _attachment_url(name, size)
+{
+    return '{% url odk_viewer.views.attachment_url %}' + size + '?media_file=' + '{{ username }}/attachments/' + name;
+}
+
 function reDraw(context, data)
 {
     // make sure we have some data, if the id was in valid we would gte a blank array
@@ -285,6 +290,23 @@ function reDraw(context, data)
         {
             var value = data[key];
             var cleanKey = key.replace(cleanRe, cleanReplacement);
+            // check if its an image, audio or video and create thumbs or links to
+            if(questions.hasOwnProperty(key))
+            {
+                if(questions[key].type == 'image')
+                {
+                    var src = _attachment_url(value, 'small');
+                    var href = _attachment_url(value, 'medium');
+                    var imgTag = $('<img/>').attr('src', src);
+                    value = $('<div>').append($('<a>').attr('href', href).attr('target', '_blank').append(imgTag)).html();
+                }
+                else if(questions[key].type == 'audio' || questions[key].type == 'video')
+                {
+                    var href = _attachment_url(value, 'medium');
+                    value = $('<div>').append($('<a>').attr('href', href).attr('target', '_blank').append(value)).html();
+                }
+            }
+
             cleanData[cleanKey] = value;
         }
 
