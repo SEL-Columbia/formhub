@@ -293,7 +293,7 @@ function reDraw(context, data)
             // check if its an image, audio or video and create thumbs or links to
             if(questions.hasOwnProperty(key))
             {
-                if(questions[key].type == 'image')
+                if(questions[key].type == 'image' || questions[key].type == 'photo')
                 {
                     var src = _attachment_url(value, 'small');
                     var href = _attachment_url(value, 'medium');
