@@ -1,7 +1,7 @@
 from django.conf import settings
 import os
 from test_base import MainTestCase
-from main.views import show, form_photos, update_xform, profile
+from main.views import show, form_photos, update_xform, profile, enketo_preview
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
 from odk_logger.views import download_xlsform, download_jsonform,\
@@ -289,3 +289,10 @@ class TestFormShow(MainTestCase):
         form_deleted = XForm.objects.filter(user=bob,
             id_string = id_string).count() == 0
         self.assertFalse(form_deleted)
+
+    def test_enketo_preview(self):
+        url = reverse(
+            enketo_preview, kwargs={'username': self.user.username,
+                                    'id_string': self.xform.id_string})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)

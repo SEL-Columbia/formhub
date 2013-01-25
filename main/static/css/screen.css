@@ -980,3 +980,14 @@ a:focus {
   color: #4169e1;
 }
 
+#preview-modal {
+    width: 750px;
+    margin-left: -375px;
+}
+
+#preview-modal iframe {
+    width: 100%;
+    border: none;
+    height: 600px;
+}
+

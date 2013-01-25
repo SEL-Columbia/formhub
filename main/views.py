@@ -42,6 +42,7 @@ from utils.user_auth import check_and_set_user, set_profile_data,\
     check_and_set_user_and_form
 from utils.log import audit_log, Actions
 from main.models import AuditLog
+from settings import ENKETO_PREVIEW_URL
 
 
 def home(request):
@@ -1050,3 +1051,16 @@ def activity_api(request, username):
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))
     return HttpResponse(response_text, mimetype='application/json')
+
+def enketo_preview(request, username, id_string):
+    xform = get_object_or_404(
+        XForm, user__username=username, id_string=id_string)
+    owner = xform.user
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden(_(u'Not shared.'))
+    enekto_preview_url = "%(enketo_url)s?server=%(profile_url)s&id=%(id_string)s" % {
+        'enketo_url': ENKETO_PREVIEW_URL,
+        'profile_url': request.build_absolute_uri(reverse(profile, kwargs={'username': owner.username})),
+        'id_string': xform.id_string
+    }
+    return HttpResponseRedirect(enekto_preview_url)
