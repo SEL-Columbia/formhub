@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: formhub\n"
 "Report-Msgid-Bugs-To: https://github.com/modilabs/formhub/issues\n"
 "POT-Creation-Date: 2012-08-31 09:54+0000\n"
-"PO-Revision-Date: 2012-08-31 20:39+0000\n"
+"PO-Revision-Date: 2012-09-06 23:39+0000\n"
 "Last-Translator: benedetoula <benedetoula@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/formhub/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -1100,33 +1100,33 @@ msgstr "Sposta tutti gli allegati e file xls dal sistema locale di memoria a s3.
 #: odk_logger/management/commands/move_media_to_s3.py:23
 msgid ""
 "Missing necessary libraries. Try running: pip install -r requirements-s3.pip"
-msgstr ""
+msgstr "Mancano le librerie necessarie. Prova ad eseguire: pip install -r requirements-s3.pip"
 
 #: odk_logger/management/commands/move_media_to_s3.py:28
 msgid ""
 "You must first set your default storage to s3 in your local_settings.py "
 "file."
-msgstr ""
+msgstr "È necessario impostare la memoria predefinita a s3 all'interno del file local_settings.py. "
 
 #: odk_logger/management/commands/move_media_to_s3.py:37
 #, python-format
 msgid "Moving %(class)ss to s3..."
-msgstr ""
+msgstr "Spostando %(class)ss a s3..."
 
 #: odk_logger/management/commands/move_media_to_s3.py:43
 #, python-format
 msgid ""
 "\t+ '%(fname)s'\n"
 "\t---> '%(url)s'"
-msgstr ""
+msgstr "»+ '%(fname)s'⏎ »---> '%(url)s'"
 
 #: odk_logger/models/xform.py:41
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: odk_logger/models/xform.py:61
 msgid "XForms"
-msgstr ""
+msgstr "XForms"
 
 #: odk_logger/models/xform.py:64
 msgid "Can view associated data"

@@ -5,13 +5,14 @@
 # Translators:
 # Matt Berg <mlberg@gmail.com>, 2012.
 #   <mberg@modilabs.org>, 2012.
+# renaud gaudin <rgaudin@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: formhub\n"
 "Report-Msgid-Bugs-To: https://github.com/modilabs/formhub/issues\n"
 "POT-Creation-Date: 2012-08-31 09:54+0000\n"
-"PO-Revision-Date: 2012-09-01 13:22+0000\n"
-"Last-Translator: formhub <mberg@modilabs.org>\n"
+"PO-Revision-Date: 2012-09-07 17:49+0000\n"
+"Last-Translator: renaud gaudin <rgaudin@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/formhub/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,11 +26,11 @@ msgstr "Aucune licence"
 
 #: main/forms.py:24
 msgid "Attribution CC BY"
-msgstr ""
+msgstr "Attribution CC BY"
 
 #: main/forms.py:26
 msgid "Attribution-ShareAlike CC BY-SA"
-msgstr ""
+msgstr "Attribution - Partage dans les Mêmes Conditions CC BY-SA"
 
 #: main/forms.py:32
 msgid "PDDL"
@@ -37,11 +38,11 @@ msgstr "Domaine Publique"
 
 #: main/forms.py:34
 msgid "ODC-BY"
-msgstr ""
+msgstr "ODC-BY"
 
 #: main/forms.py:36
 msgid "ODBL"
-msgstr ""
+msgstr "ODBL"
 
 #: main/forms.py:40
 msgid "Can view"
@@ -58,16 +59,16 @@ msgstr "Supprimer les autorisations"
 #: main/forms.py:158
 #, python-format
 msgid "%s is a reserved name, please choose another"
-msgstr ""
+msgstr "%s est un nom réservé ; merci d'en choisir un autre"
 
 #: main/forms.py:161
 msgid "username may only contain alpha-numeric characters and underscores"
-msgstr ""
+msgstr "Identifiant ne peut contenir que des caractères alpha numériques et des tirets bas"
 
 #: main/forms.py:167
 #, python-format
 msgid "%s already exists"
-msgstr ""
+msgstr "%s existe déjà"
 
 #: main/forms.py:179
 msgid "Source document"
@@ -75,15 +76,15 @@ msgstr "Document source"
 
 #: main/forms.py:184
 msgid "Supporting document"
-msgstr ""
+msgstr "Document de support"
 
 #: main/forms.py:189
 msgid "Media upload"
-msgstr ""
+msgstr "Fichier multimédia"
 
 #: main/forms.py:205
 msgid "JSONP url"
-msgstr ""
+msgstr "URL JSONP"
 
 #: main/forms.py:210 utils/quick_converter.py:8
 msgid "XLS File"
@@ -91,17 +92,17 @@ msgstr "Fichier XLS"
 
 #: main/forms.py:215
 msgid "XLS URL"
-msgstr ""
+msgstr "URL XLS"
 
 #: main/views.py:85
 #, python-format
 msgid "Successfully cloned %(id_string)s into your %(profile_url)s"
-msgstr ""
+msgstr "%(id_string)s a été cloné dans votre %(profile_url)s"
 
 #: main/views.py:117
 #, python-format
 msgid "Successfully published %s."
-msgstr ""
+msgstr "%s a été publié."
 
 #: main/views.py:262 main/views.py:521 main/views.py:581
 #: odk_logger/views.py:284 odk_logger/views.py:316 odk_viewer/views.py:98
@@ -113,23 +114,23 @@ msgstr "Pas partagé"
 
 #: main/views.py:379
 msgid "Updated succeeded."
-msgstr ""
+msgstr "Mise à jour réussie."
 
 #: main/views.py:385
 msgid "Update failed."
-msgstr ""
+msgstr "La mise à jour à échouée."
 
 #: main/views.py:459 main/views.py:483 main/views.py:515
 msgid "Permission denied."
-msgstr ""
+msgstr "Permission refusée."
 
 #: main/models/user_profile.py:21
 msgid "Require Phone Authentication"
-msgstr ""
+msgstr "Authentification téléphonique requise"
 
 #: main/templates/dashboard.html:10
 msgid "Publish a Form <small>Upload XLSForm</small>"
-msgstr ""
+msgstr "Publier un formulaire <small>Envoyer XLSForm</small>"
 
 #: main/templates/dashboard.html:12
 #, python-format
@@ -137,7 +138,7 @@ msgid ""
 "For a quick introduction on how to publish a form check out the <a "
 "href=\"%(tutorial_url)s\">tutorial</a>, and try publishing <a "
 "href=\"http://formhub.org/formhub_u/forms/tutorial/form.xls\">tutorial.xls</a>."
-msgstr ""
+msgstr "Consultez le <a href=\"%(tutorial_url)s\">tutoriel</a> pour une courte introduction à la publication de formulaires et pratiquer en publiant le fichier <a href=\"http://formhub.org/formhub_u/forms/tutorial/form.xls\">tutorial.xls</a>."
 
 #: main/templates/dashboard.html:16
 #, python-format
@@ -146,17 +147,17 @@ msgid ""
 " href=\"https://groups.google.com/forum/?fromgroups#!forum/formhub-"
 "users\">formhub users mailing list</a> if you have questions, and checkout "
 "examples at: <br/><a href=\"/formhub_u/\">Formhub University</a>."
-msgstr ""
+msgstr "Apprenez la syntaxe XLSForm syntax <a href=\"%(syntax_url)s\">ici</a> , contactez la <a href=\"https://groups.google.com/forum/?fromgroups#!forum/formhub-users\">liste de discussion formhub</a> si vous avez des questions, et étudiez les exemples sur : <br/><a href=\"/formhub_u/\">Formhub Université</a>."
 
 #: main/templates/dashboard.html:23 main/templates/show.html:299
 #: main/templates/show.html.py:321 main/templates/show.html:358
 #: main/templates/show.html.py:380
 msgid "Upload"
-msgstr ""
+msgstr "Envoi"
 
 #: main/templates/dashboard.html:24
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: main/templates/dashboard.html:41
 msgid "Publish"
@@ -164,11 +165,11 @@ msgstr "Publier"
 
 #: main/templates/dashboard.html:54 main/templates/profile.html:13
 msgid "Click to change your avatar"
-msgstr ""
+msgstr "Cliquez pour changer votre avatar"
 
 #: main/templates/dashboard.html:69
 msgid "View Profile Page"
-msgstr ""
+msgstr "Profil"
 
 #: main/templates/dashboard.html:85
 msgid "FORMS"
@@ -191,57 +192,57 @@ msgid ""
 "submit data to formhub. In Collect's Main Menu, press the Menu\n"
 "button. Select Server Preferences, then Server. Enter\n"
 "<strong>%(odk_url)s</strong> as the server. "
-msgstr ""
+msgstr "\nL'URL de cette application web <strong>%(odk_url)s</strong>\ndoit être fournit à ODK Collect afin qu'il puisse télécharger les formulaire \net donc les remplir. Dans le menu principal d'ODK Collect, pressez le bouton préférences et renseignez <strong>%(odk_url)s</strong> dans le champ Serveur."
 
 #: main/templates/form_gallery.html:9
 msgid "Form Gallery <small>Shared Forms</small>"
-msgstr ""
+msgstr "Gallerie de formulaire <small>Formulaires partagés</small>"
 
 #: main/templates/form_gallery.html:41 main/templates/people.html:36
 #: staff/templates/submissions.html:38
 msgid "User"
-msgstr ""
+msgstr "Utilisateur"
 
 #: main/templates/form_gallery.html:42 main/templates/people.html:37
 #: main/templates/profile.html:66 main/templates/published_surveys.html:45
 #: main/templates/user_crowdforms.html:13
 msgid "Name"
-msgstr ""
+msgstr "Nom"
 
 #: main/templates/form_gallery.html:43 main/templates/show.html:37
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #: main/templates/form_gallery.html:44 main/templates/profile.html:68
 #: main/templates/show.html:52 main/templates/show.html.py:59
 msgid "XLSForm"
-msgstr ""
+msgstr "XLSForm"
 
 #: main/templates/form_gallery.html:58
 msgid "add crowdform"
-msgstr ""
+msgstr "ajouter crowdform"
 
 #: main/templates/form_gallery.html:66
 msgid "Excel"
-msgstr ""
+msgstr "Excel"
 
 #: main/templates/form_gallery.html:70 main/templates/show.html:112
 msgid "Clone"
-msgstr ""
+msgstr "Cloner"
 
 #: main/templates/home.html:8
 msgid "Welcome to formhub!"
-msgstr ""
+msgstr "Bienvenue sur formhub!"
 
 #: main/templates/home.html:8
 msgid "The hub for your mobile data collection needs"
-msgstr ""
+msgstr "Le quartier général pour vos besoins de collecte de données mobile"
 
 #: main/templates/home.html:11
 msgid ""
 "formhub is a <strong>free</strong> hosted service that makes data collection"
 " <strong>simple</strong> and <strong>collaborative</strong>."
-msgstr ""
+msgstr "formhub est un service en ligne <strong>gratuit</strong> qui rend la collecte de données <strong>simple et collaborative</strong>."
 
 #: main/templates/home.html:13
 #, python-format
@@ -249,7 +250,7 @@ msgid ""
 "<strong>Simple.</strong>All you need to get started is an <a "
 "href=\"%(registration_register)s\">account</a> on formhub and the ability to"
 " author .xls files. Absolutely no technical setup required."
-msgstr ""
+msgstr "<strong>Simple.</strong>Tout ce dont vous avez besoin pour démarrer est  un <a href=\"%(registration_register)s\">compte</a> sur formhub et la possibilité de créer des fichiers .xls. Aucune installation technique n'est requise."
 
 #: main/templates/home.html:16
 #, python-format
@@ -259,82 +260,82 @@ msgid ""
 "and modify other <a href=\"%(forms_url)s\">peoples' forms</a> and quickly "
 "deploy it. Publish gathered data to share it with others via Excel, CSV, KML"
 " or an interactive map."
-msgstr ""
+msgstr "<strong>Collaboratif.</strong> Partagez vos formulaires de collecte avec <a href=\"%(syntax_url)s\">Excel</a>. <a href=\"%(forms_url)s\">Trouvez</a>, copiez et modifiez les <a href=\"%(forms_url)s\">formulaires d'autres</a> et déployez les rapidement. Publiez les données collectées et partagez les avec les autres utilisateurs via Excel, CSV, KML ou encore une carte interactive."
 
 #: main/templates/home.html:19
 msgid "Mobile."
-msgstr ""
+msgstr "Mobile."
 
 #: main/templates/home.html:20
 msgid ""
 "formhub works seemlessly with <a href=\"http://www.opendatakit.org\">ODK "
 "Collect</a> a robust and proven data collection platform for Android."
-msgstr ""
+msgstr "formhub s'intègre parfaitement à <a href=\"http://www.opendatakit.org\">ODK Collect</a>, une plateforme de collecte de données robuste et éprouvée pour Android."
 
 #: main/templates/home.html:23
 msgid ""
 "For more info please read <a href=\"http://blog.formhub.org/2011/12/05/data-"
 "gatherers-of-the-world-unite/\">here</a>."
-msgstr ""
+msgstr "Pour plus d'informations, voir <a href=\"http://blog.formhub.org/2011/12/05/data-gatherers-of-the-world-unite/\">l'article sur formhub</a>."
 
 #: main/templates/home.html:25
 msgid "Not registered?"
-msgstr ""
+msgstr "Non enregistré ?"
 
 #: main/templates/home.html:27
 msgid "Create Account"
-msgstr ""
+msgstr "Créer un compte"
 
 #: main/templates/home.html:48
 msgid "forms submitted"
-msgstr ""
+msgstr "formulaires soumis"
 
 #: main/templates/home.html:51
 msgid "shared forms"
-msgstr ""
+msgstr "formulaires partagés"
 
 #: main/templates/home.html:54
 msgid "formhubbers!"
-msgstr ""
+msgstr "formhubbeurs!"
 
 #: main/templates/people.html:31
 #, python-format
 msgid "formhubber <small>(%(nb_users)s)</small>"
 msgid_plural "formhubbers <small>(%(nb_users)s)</small>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "formhubbeur <small>(%(nb_users)s)</small>"
+msgstr[1] "formhubbeurs <small>(%(nb_users)s)</small>"
 
 #: main/templates/people.html:38
 msgid "Organization"
-msgstr ""
+msgstr "Organisation"
 
 #: main/templates/people.html:39
 msgid "Location"
-msgstr ""
+msgstr "Lieu"
 
 #: main/templates/people.html:40
 msgid "Member Since"
-msgstr ""
+msgstr "Membre depuis"
 
 #: main/templates/profile.html:17
 msgid "change"
-msgstr ""
+msgstr "changer"
 
 #: main/templates/profile.html:27
 msgid "Edit Your Profile"
-msgstr ""
+msgstr "Éditer votre profil"
 
 #: main/templates/profile.html:36
 msgid "Organization:"
-msgstr ""
+msgstr "Organisation :"
 
 #: main/templates/profile.html:39
 msgid "Location:"
-msgstr ""
+msgstr "Lieu :"
 
 #: main/templates/profile.html:42
 msgid "Website:"
-msgstr ""
+msgstr "Site web :"
 
 #: main/templates/profile.html:45
 msgid "Twitter:"
@@ -342,132 +343,132 @@ msgstr "Twitter:"
 
 #: main/templates/profile.html:47
 msgid "Member since:"
-msgstr ""
+msgstr "Membre depuis :"
 
 #: main/templates/profile.html:52
 #, python-format
 msgid "%(num_forms)s <small>Shared form</small>"
 msgid_plural "%(num_forms)s <small>Shared forms</small>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num_forms)s <small>formulaire partagé</small>"
+msgstr[1] "%(num_forms)s <small>formulaires partagés forms</small>"
 
 #: main/templates/profile.html:61
 #, python-format
 msgid "Shared Forms & Public Data <small>(%(num_forms)s)</small>"
-msgstr ""
+msgstr "Formulaires partagés avec données publiques <small>(%(num_forms)s)</small>"
 
 #: main/templates/profile.html:67
 msgid "Create Date"
-msgstr ""
+msgstr "Date de création"
 
 #: main/templates/profile.html:69
 msgid "Public Data"
-msgstr ""
+msgstr "Données publiques"
 
 #: main/templates/profile.html:70 main/templates/published_surveys.html:49
 #: main/templates/user_crowdforms.html:17
 msgid "View"
-msgstr ""
+msgstr "Voir"
 
 #: main/templates/profile.html:85
 msgid "XLS"
-msgstr ""
+msgstr "XLS"
 
 #: main/templates/profile.html:88 main/templates/profile.html.py:107
 #: main/templates/profile.html:118 main/templates/show.html:54
 #: main/templates/show.html.py:122 main/templates/user_crowdforms.html:47
 #: main/templates/user_crowdforms.html:75
 msgid "PRIVATE"
-msgstr ""
+msgstr "PRIVÉ"
 
 #: main/templates/profile.html:95 main/templates/published_surveys.html:70
 #: main/templates/show.html:129 main/templates/user_crowdforms.html:39
 #: templates/topbar.html:36
 msgid "csv"
-msgstr ""
+msgstr "csv"
 
 #: main/templates/profile.html:98 main/templates/published_surveys.html:71
 #: main/templates/show.html:140 main/templates/user_crowdforms.html:40
 #: templates/topbar.html:41
 msgid "xls"
-msgstr ""
+msgstr "xls"
 
 #: main/templates/profile.html:101 main/templates/published_surveys.html:73
 #: main/templates/show.html:151 main/templates/user_crowdforms.html:42
 #: templates/topbar.html:46
 msgid "kml"
-msgstr ""
+msgstr "kml"
 
 #: main/templates/profile.html:104 main/templates/show.html:218
 msgid "NO DATA"
-msgstr ""
+msgstr "PAS DE DONNÉE"
 
 #: main/templates/profile.html:114 main/templates/show.html:202
 msgid "Map"
-msgstr ""
+msgstr "Carte"
 
 #: main/templates/profile.html:126
 msgid "None public"
-msgstr ""
+msgstr "Aucune publique"
 
 #: main/templates/published_surveys.html:7
 msgid "Published Forms <small>Export, map, and view submissions.</small>"
-msgstr ""
+msgstr "Formulaires publiés <small>Export, carte et soumissions.</small>"
 
 #: main/templates/published_surveys.html:26
 #: staff/templates/submissions.html:23
 msgid "Search:"
-msgstr ""
+msgstr "Rechercher :"
 
 #: main/templates/published_surveys.html:35
 msgid "Show inactive:"
-msgstr ""
+msgstr "Afficher inactif :"
 
 #: main/templates/published_surveys.html:46
 #: main/templates/user_crowdforms.html:14 staff/templates/submissions.html:39
 msgid "Submissions"
-msgstr ""
+msgstr "Soumissions"
 
 #: main/templates/published_surveys.html:47
 #: main/templates/user_crowdforms.html:15
 msgid "Last Submission"
-msgstr ""
+msgstr "Dernière soumission"
 
 #: main/templates/published_surveys.html:48
 #: main/templates/user_crowdforms.html:16 templates/topbar.html:28
 msgid "Data"
-msgstr ""
+msgstr "Données"
 
 #: main/templates/published_surveys.html:50
 msgid "Active"
-msgstr ""
+msgstr "Actif"
 
 #: main/templates/published_surveys.html:59
 #: main/templates/published_surveys.html:77 main/templates/show.html:53
 #: main/templates/show.html.py:121 main/templates/user_crowdforms.html:27
 #: main/templates/user_crowdforms.html:45
 msgid "PUBLIC"
-msgstr ""
+msgstr "PUBLIQUE"
 
 #: main/templates/published_surveys.html:84 main/templates/show.html:201
 #: main/templates/user_crowdforms.html:55
 msgid "View Map"
-msgstr ""
+msgstr "Voir la carte"
 
 #: main/templates/published_surveys.html:89
 #: main/templates/user_crowdforms.html:60
 msgid "View Photo"
-msgstr ""
+msgstr "Voir les photos"
 
 #: main/templates/published_surveys.html:94 main/templates/show.html:225
 #: main/templates/user_crowdforms.html:63
 msgid "Enter Web Form"
-msgstr ""
+msgstr "Remplir le formulaire en ligne"
 
 #: main/templates/published_surveys.html:102 main/templates/show.html:417
 #: odk_viewer/templates/instance.html:443
 msgid "Delete Confirmation"
-msgstr ""
+msgstr "Confirmation de suppression"
 
 #: main/templates/published_surveys.html:105 main/templates/show.html:420
 #, python-format
@@ -476,109 +477,109 @@ msgid ""
 "<strong>%(nb_sub)s</strong> submissions associated with it that will also be"
 " deleted. If you are unsure about deleting this form press 'Cancel' and "
 "conside 'Archiving' the form instead."
-msgstr ""
+msgstr "Êtes vous sûr de vouloir supprimer le formulaire '%(title)s'?\nCe formulaire possède <strong>%(nb_sub)s</strong> soumissions qui seront aussi supprimées.\nDans le doute, annulez et considerez l'archivage."
 
 #: main/templates/published_surveys.html:117 main/templates/show.html:207
 #: main/templates/user_crowdforms.html:67
 msgid "View Submitted Data"
-msgstr ""
+msgstr "Voir les données soumises"
 
 #: main/templates/published_surveys.html:120 main/templates/show.html:210
 #: main/templates/user_crowdforms.html:70
 msgid "Browse Data (One by One)"
-msgstr ""
+msgstr "Consulter les données (une à une)"
 
 #: main/templates/settings.html:7
 msgid "Edit User Profile"
-msgstr ""
+msgstr "Éditer le profil utilisateur"
 
 #: main/templates/settings.html:11
 msgid "change password"
-msgstr ""
+msgstr "changer le mot de passe"
 
 #: main/templates/settings.html:23
 msgid "Username:"
-msgstr ""
+msgstr "Identifiant :"
 
 #: main/templates/settings.html:40
 msgid "Update"
-msgstr ""
+msgstr "Enregistrer"
 
 #: main/templates/show.html:16
 msgid "Owner"
-msgstr ""
+msgstr "Propriétaire"
 
 #: main/templates/show.html:25 main/templates/show.html.py:44
 #: main/templates/show.html:100 main/templates/show.html.py:193
 #: main/templates/show.html:289 odk_viewer/templates/instance.html:349
 msgid "edit"
-msgstr ""
+msgstr "modifier"
 
 #: main/templates/show.html:26 main/templates/show.html.py:45
 #: main/templates/show.html:101 main/templates/show.html.py:194
 #: main/templates/show.html:290
 msgid "save"
-msgstr ""
+msgstr "enregistrer"
 
 #: main/templates/show.html:35
 msgid "Form ID:"
-msgstr ""
+msgstr "Ident. Formulaire"
 
 #: main/templates/show.html:42
 msgid "None"
-msgstr ""
+msgstr "Aucun"
 
 #: main/templates/show.html:70 odk_logger/models/xform.py:60
 msgid "XForm"
-msgstr ""
+msgstr "XForm"
 
 #: main/templates/show.html:81
 msgid "JSONForm"
-msgstr ""
+msgstr "JSONForm"
 
 #: main/templates/show.html:95
 msgid "License"
-msgstr ""
+msgstr "Licence"
 
 #: main/templates/show.html:106 main/templates/show.html.py:199
 msgid "License information"
-msgstr ""
+msgstr "Informations sur la licence"
 
 #: main/templates/show.html:120
 msgid "Form Data"
-msgstr ""
+msgstr "Données du formulaire"
 
 #: main/templates/show.html:129
 msgid "Export to csv File"
-msgstr ""
+msgstr "Exporter vers fichier CSV"
 
 #: main/templates/show.html:140
 msgid "Export to xls File"
-msgstr ""
+msgstr "Exporter vers fichier XLS"
 
 #: main/templates/show.html:151
 msgid "Export to kml File (Google Earth)"
-msgstr ""
+msgstr "Exporter vers fichier KML (Google Earth)"
 
 #: main/templates/show.html:163
 msgid "Export a zip folder of attachments"
-msgstr ""
+msgstr "Exporter pièces jointes vers fichier ZIP"
 
 #: main/templates/show.html:163
 msgid "zip"
-msgstr ""
+msgstr "zip"
 
 #: main/templates/show.html:174
 msgid "Export to google docs"
-msgstr ""
+msgstr "Exporter vers Google Docs"
 
 #: main/templates/show.html:174
 msgid "gdocs"
-msgstr ""
+msgstr "gdocs"
 
 #: main/templates/show.html:185
 msgid "Submissions:"
-msgstr ""
+msgstr "Soumissions :"
 
 #: main/templates/show.html:188
 msgid "License:"
@@ -586,133 +587,133 @@ msgstr "Licence :"
 
 #: main/templates/show.html:204
 msgid "View Photos"
-msgstr ""
+msgstr "Voir les photos"
 
 #: main/templates/show.html:205
 msgid "Photos"
-msgstr ""
+msgstr "Photos"
 
 #: main/templates/show.html:208
 msgid "View Data"
-msgstr ""
+msgstr "Voir les données"
 
 #: main/templates/show.html:211
 msgid "Browse Data"
-msgstr ""
+msgstr "Consulter les données"
 
 #: main/templates/show.html:224
 msgid "Webform"
-msgstr ""
+msgstr "Formulaire en ligne"
 
 #: main/templates/show.html:279
 msgid "Source"
-msgstr ""
+msgstr "Source"
 
 #: main/templates/show.html:306
 msgid "Supporting Documents"
-msgstr ""
+msgstr "Documentation"
 
 #: main/templates/show.html:311 main/templates/show.html.py:348
 #: main/templates/show.html:371
 msgid "remove"
-msgstr ""
+msgstr "supprimer"
 
 #: main/templates/show.html:329
 msgid "Rest Services"
-msgstr ""
+msgstr "Services REST"
 
 #: main/templates/show.html:343
 msgid "Media &nbsp;<small>jpeg/png/mp3 allowed</small>"
-msgstr ""
+msgstr "Media &nbsp;<small>jpeg/png/mp3 autorisés</small>"
 
 #: main/templates/show.html:365
 msgid "Mapbox Layer"
-msgstr ""
+msgstr "Couche Mapbox"
 
 #: main/templates/show.html:369
 msgid "Attribution:"
-msgstr ""
+msgstr "Attribution :"
 
 #: main/templates/show.html:388 templates/topbar.html:73
 msgid "Settings"
-msgstr ""
+msgstr "Paramètres"
 
 #: main/templates/show.html:391
 msgid "Form Shared"
-msgstr ""
+msgstr "Formulaire partagé"
 
 #: main/templates/show.html:395
 msgid "Data Shared"
-msgstr ""
+msgstr "Données partagés"
 
 #: main/templates/show.html:400
 msgid "Crowdform"
-msgstr ""
+msgstr "Crowdform"
 
 #: main/templates/show.html:406
 msgid "Form Active"
-msgstr ""
+msgstr "Formulaire actif"
 
 #: main/templates/show.html:411
 msgid "Delete Form"
-msgstr ""
+msgstr "Supprimer formulaire"
 
 #: main/templates/show.html:423 main/templates/show.html.py:428
 #: odk_viewer/templates/instance.html:349
 #: odk_viewer/templates/instance.html:449
 #: restservice/templates/add-service.html:22
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
 #: main/templates/show.html:424 odk_viewer/templates/instance.html:450
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
 #: main/templates/show.html:434
 msgid "bamboo"
-msgstr ""
+msgstr "bamboo"
 
 #: main/templates/show.html:436
 #, python-format
 msgid ""
 "bamboo dataset: <strong><a "
 "href=\"http://bamboo.io/datasets/%(dataset)s/info\">%(dataset)s</a></strong>"
-msgstr ""
+msgstr "dataset bamboo : <strong><a href=\"http://bamboo.io/datasets/%(dataset)s/info\">%(dataset)s</a></strong>"
 
 #: main/templates/show.html:438
 msgid "bamboo link is <strong>not active</strong>"
-msgstr ""
+msgstr "Liaison bamboo <strong> inactive </strong>"
 
 #: main/templates/show.html:439
 msgid "bamboo requires at least one submission."
-msgstr ""
+msgstr "bamboo requière au moins une soumission"
 
 #: main/templates/show.html:442
 msgid "Activate"
-msgstr ""
+msgstr "Activer"
 
 #: main/templates/show.html:449
 msgid "Sharing"
-msgstr ""
+msgstr "Partage"
 
 #: main/templates/show.html:452
 #, python-format
 msgid ""
 "Sharing by link is <strong>on with URL <a "
 "href=\"%(form_url)s\">%(base_url)s%(form_url)s</a></strong>"
-msgstr ""
+msgstr "Le partage par lien est <strong>activé pour l'URL <a href=\"%(form_url)s\">%(base_url)s%(form_url)s</a></strong>"
 
 #: main/templates/show.html:454
 msgid "Sharing by link is <strong>off</strong>"
-msgstr ""
+msgstr "Le partage par lien est <strong>désactivé</strong>"
 
 #: main/templates/show.html:463
 msgid "Turn off"
-msgstr ""
+msgstr "Désactiver"
 
 #: main/templates/show.html:463
 msgid "Turn on"
-msgstr ""
+msgstr "Activer"
 
 #: main/templates/show.html:477
 #: odk_logger/templates/bulk_submission_form.html:13
@@ -721,21 +722,21 @@ msgstr ""
 #: templates/registration/password_reset_confirm.html:12
 #: templates/registration/password_reset_form.html:22
 msgid "Submit"
-msgstr ""
+msgstr "Envoyer"
 
 #: main/templates/support.html:5 templates/topbar.html:59
 msgid "Support"
-msgstr ""
+msgstr "Support"
 
 #: main/templates/support.html:9
 msgid "Thank you for using formhub!"
-msgstr ""
+msgstr "Merci d'avoir utilisé formhub !"
 
 #: main/templates/support.html:9
 msgid ""
 "If you need any extra help or have questions about the service below please "
 "consider one of the support options below"
-msgstr ""
+msgstr "Si vous avez besoin d'aide ou avez des questions à propos du service, merci de vous référer aux options ci-dessous"
 
 #: main/templates/support.html:14
 #, python-format
@@ -1230,11 +1231,11 @@ msgstr ""
 
 #: odk_viewer/views.py:185 odk_viewer/views.py:222
 msgid "No records found to export"
-msgstr ""
+msgstr "Aucun enregistrement à exporter"
 
 #: odk_viewer/views.py:364
 msgid "Attachment not found"
-msgstr ""
+msgstr "Pièce jointe introuvable"
 
 #: odk_viewer/management/commands/mark_start_times.py:7
 msgid "This is a one-time command to mark start times of old surveys."
@@ -1268,11 +1269,11 @@ msgstr ""
 
 #: odk_viewer/management/commands/remongo.py:16
 msgid "Username of the form user"
-msgstr ""
+msgstr "Identifiant du propriétaire du formulaire"
 
 #: odk_viewer/management/commands/remongo.py:18
 msgid "id string of the form"
-msgstr ""
+msgstr "Identifiant du formulaire"
 
 #: odk_viewer/management/commands/reparse.py:9
 msgid "Delete and recreate parsed instances."
@@ -1298,7 +1299,7 @@ msgstr ""
 
 #: odk_viewer/templates/data_view.html:16
 msgid "Display Fields"
-msgstr ""
+msgstr "Afficher les champs"
 
 #: odk_viewer/templates/data_view.html:45
 msgid ""
@@ -1316,7 +1317,7 @@ msgstr ""
 
 #: odk_viewer/templates/data_view.html:115
 msgid "_MENU_ records per page"
-msgstr ""
+msgstr "_MENU_ enregistrements par page"
 
 #: odk_viewer/templates/instance.html:18
 msgid "Browse Form Data"
@@ -1324,7 +1325,7 @@ msgstr ""
 
 #: odk_viewer/templates/instance.html:31
 msgid "Record {pos} of {total}"
-msgstr ""
+msgstr "Enregistrement {pos} sur {total}"
 
 #: odk_viewer/templates/instance.html:166
 #: odk_viewer/templates/instance.html:203
@@ -1337,11 +1338,11 @@ msgstr ""
 
 #: odk_viewer/templates/instance.html:322
 msgid "Change Language:"
-msgstr ""
+msgstr "Changer de langue :"
 
 #: odk_viewer/templates/instance.html:338
 msgid "Record 1 of 6"
-msgstr ""
+msgstr "Enregistrement 1 sur 6"
 
 #: odk_viewer/templates/instance.html:342
 msgid "← Previous"
@@ -1367,15 +1368,15 @@ msgstr ""
 
 #: restservice/forms.py:9
 msgid "Service Name"
-msgstr ""
+msgstr "Nom du service"
 
 #: restservice/forms.py:12 restservice/models.py:14
 msgid "Service URL"
-msgstr ""
+msgstr "URL du service"
 
 #: restservice/views.py:31
 msgid "Service already defined."
-msgstr ""
+msgstr "Service déjà défini"
 
 #: restservice/views.py:35
 #, python-format
@@ -1388,7 +1389,7 @@ msgstr ""
 
 #: restservice/templates/add-service.html:15
 msgid "Add service"
-msgstr ""
+msgstr "Ajouter service"
 
 #: staff/management/commands/mailer.py:15
 msgid "Send an email to all formhub users"
@@ -1503,7 +1504,7 @@ msgstr ""
 msgid ""
 "Built by the <a href=\"http://modi.mech.columbia.edu/\">Modi Research "
 "Group</a> at Columbia University."
-msgstr ""
+msgstr "Réalisé par le <a href=\"http://modi.mech.columbia.edu/\">Modi Research Group</a> de Columbia University."
 
 #: templates/footer.html:8
 msgid ""
@@ -1513,7 +1514,7 @@ msgstr ""
 
 #: templates/footer.html:10
 msgid "Copyright &copy; 2012, formhub.org"
-msgstr ""
+msgstr "Copyright &copy; 2012, formhub.org"
 
 #: templates/main_index.html:9
 msgid "View LGAs"
@@ -1534,19 +1535,19 @@ msgstr ""
 
 #: templates/topbar.html:56
 msgid "People"
-msgstr ""
+msgstr "Utilisateurs"
 
 #: templates/topbar.html:57
 msgid "About"
-msgstr ""
+msgstr "À propos"
 
 #: templates/topbar.html:58
 msgid "Syntax"
-msgstr ""
+msgstr "Syntaxe"
 
 #: templates/topbar.html:60
 msgid "Blog"
-msgstr ""
+msgstr "Blog"
 
 #: templates/topbar.html:65
 msgid "New Form"
@@ -1554,20 +1555,20 @@ msgstr ""
 
 #: templates/topbar.html:72
 msgid "Public profile"
-msgstr ""
+msgstr "Profil public"
 
 #: templates/topbar.html:76
 msgid "Sign out"
-msgstr ""
+msgstr "Déconnexion"
 
 #: templates/topbar.html:80 templates/registration/login.html:7
 #: templates/registration/login.html:18
 msgid "Sign in"
-msgstr ""
+msgstr "Connexion"
 
 #: templates/registration/activate.html:7
 msgid "Account Activated"
-msgstr ""
+msgstr "Compte activé"
 
 #: templates/registration/activate.html:14
 #, python-format
