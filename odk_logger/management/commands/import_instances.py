@@ -33,10 +33,16 @@ class Command(BaseCommand):
                 subdirs.remove("odk")
                 self.stdout.write(_("Importing from dir %s..\n") % dir)
                 (total_count, success_count, errors) = import_instances_from_path(dir, user)
-                self.stdout.write(_("Total: %d, Imported: %d, Errors: %s\n------------------------------\n") % (total_count, success_count, errors))
+                self.stdout.write(_("Total: %(total)d, Imported: %(imported)d, Errors: %(errors)s\n------------------------------\n")
+                                  % {'total': total_count,
+                                     'imported': success_count,
+                                     'errors': errors})
             for file in files:
                 filepath = os.path.join(path, file)
                 if os.path.isfile(filepath) and os.path.splitext(filepath)[1].lower() == ".zip":
                     self.stdout.write(_("Importing from zip at %s..\n") % filepath)
                     (total_count, success_count, errors) = import_instances_from_zip(filepath, user)
-                    self.stdout.write(_("Total: %d, Imported: %d, Errors: %s\n------------------------------\n") % (total_count, success_count, errors))
+                    self.stdout.write(_("Total: %(total)d, Imported: %(imported)d, Errors: %(errors)s\n------------------------------\n")
+                                  % {'total': total_count,
+                                     'imported': success_count,
+                                     'errors': errors})
