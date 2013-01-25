@@ -51,9 +51,9 @@ class XForm(models.Model):
     has_start_time = models.BooleanField(default=False)
     uuid = models.CharField(max_length=32, default=u'')
 
-    uuid_regex = re.compile(r'(<instance>.*id="[^"]+">)(.*</instance>)(.*)',
+    uuid_regex = re.compile(r'(<instance>.*?id="[^"]+">)(.*</instance>)(.*)',
                             re.DOTALL)
-    instance_id_regex = re.compile(r'<instance>.*id="([^"]+)".*</instance>',
+    instance_id_regex = re.compile(r'<instance>.*?id="([^"]+)".*</instance>',
                                    re.DOTALL)
     uuid_node_location = 2
     uuid_bind_location = 4
@@ -146,3 +146,4 @@ def stats_forms_created(sender, instance, created, **kwargs):
 
 
 post_save.connect(stats_forms_created, sender=XForm)
+

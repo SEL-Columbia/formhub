@@ -52,3 +52,17 @@ class TestSubmissionBugs(MainTestCase):
                 self.this_directory, 'fixtures',
                 'transportation', 'instances', s, s + '.xml'), 'BoB')
         self.assertEqual(Instance.objects.count(), count + 1)
+
+
+class TestCascading(MainTestCase):
+
+    def test_correct_id_string_picked(self):
+        XForm.objects.all().delete()
+        name = 'new_cascading_select.xls'
+        id_string = u'cascading_select_test'
+        self._publish_xls_file(os.path.join(
+            self.this_directory, 'fixtures', 'bug_fixes', name))
+        self.assertEqual(XForm.objects.count(), 1)
+        xform_id_string = XForm.objects.all()[0].id_string
+        self.assertEqual(xform_id_string, id_string)
+
