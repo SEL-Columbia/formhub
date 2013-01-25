@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: formhub\n"
 "Report-Msgid-Bugs-To: https://github.com/modilabs/formhub/issues\n"
 "POT-Creation-Date: 2012-08-31 09:54+0000\n"
-"PO-Revision-Date: 2012-09-02 03:03+0000\n"
+"PO-Revision-Date: 2012-09-04 16:27+0000\n"
 "Last-Translator: stukeil <sk3395@columbia.edu>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/formhub/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgstr "Sin Licencia"
 
 #: main/forms.py:24
 msgid "Attribution CC BY"
-msgstr ""
+msgstr "Atribución CC BY"
 
 #: main/forms.py:26
 msgid "Attribution-ShareAlike CC BY-SA"
@@ -62,7 +62,7 @@ msgstr "%s es una palabra reservada, favor de escoger una diferente"
 
 #: main/forms.py:161
 msgid "username may only contain alpha-numeric characters and underscores"
-msgstr "el nombre de usuario solo puede contener caracteres alfanuméricos y guión bajo"
+msgstr "el nombre de usuario únicamente puede contener caracteres alfanuméricos y guión bajo"
 
 #: main/forms.py:167
 #, python-format
@@ -117,15 +117,15 @@ msgstr "La actualización fue exitosa."
 
 #: main/views.py:385
 msgid "Update failed."
-msgstr "La actualización no ha sido realizada."
+msgstr "La actualización no pudo ser realizada."
 
 #: main/views.py:459 main/views.py:483 main/views.py:515
 msgid "Permission denied."
-msgstr "No tiene permiso."
+msgstr "No tiene permisos."
 
 #: main/models/user_profile.py:21
 msgid "Require Phone Authentication"
-msgstr "Requerir Autentificaron del Movil"
+msgstr "Requerir Autenticación de Teléfono Móvil"
 
 #: main/templates/dashboard.html:10
 msgid "Publish a Form <small>Upload XLSForm</small>"
@@ -137,7 +137,7 @@ msgid ""
 "For a quick introduction on how to publish a form check out the <a "
 "href=\"%(tutorial_url)s\">tutorial</a>, and try publishing <a "
 "href=\"http://formhub.org/formhub_u/forms/tutorial/form.xls\">tutorial.xls</a>."
-msgstr "Para una rápida introducción sobre como publicar un formulario, vaya a <a href=\"%(tutorial_url)s\">tutorial</a>, y intente publicar el formulario <a href=\"http://formhub.org/formhub_u/forms/tutorial/form.xls\">tutorial.xls</a>."
+msgstr "Para una rápida introducción sobre como publicar un formulario, vaya al <a href=\"%(tutorial_url)s\">tutorial</a>, e intente publicar el formulario <a href=\"http://formhub.org/formhub_u/forms/tutorial/form.xls\">tutorial.xls</a>."
 
 #: main/templates/dashboard.html:16
 #, python-format
@@ -146,13 +146,13 @@ msgid ""
 " href=\"https://groups.google.com/forum/?fromgroups#!forum/formhub-"
 "users\">formhub users mailing list</a> if you have questions, and checkout "
 "examples at: <br/><a href=\"/formhub_u/\">Formhub University</a>."
-msgstr "Aprenda la sintaxis de los FormulariosXLS <a href=\"%(syntax_url)s\">aquí</a>, correo electronico <a href=\"https://groups.google.com/forum/?fromgroups#!forum/formhub-users\">formhub users mailing list</a> if you have questions, and checkout examples at: <br/><a href=\"/formhub_u/\">Formhub University</a>."
+msgstr "Aprenda la sintaxis de los FormulariosXLS <a href=\"%(syntax_url)s\">aquí</a>, envíe un correo electrónico a <a href=\"https://groups.google.com/forum/?fromgroups#!forum/formhub-users\">lista de correo de usuarios formhub</a> si tiene preguntas, y explore nuestros ejemplos en: <br/><a href=\"/formhub_u/\">Universidad Formhub</a>."
 
 #: main/templates/dashboard.html:23 main/templates/show.html:299
 #: main/templates/show.html.py:321 main/templates/show.html:358
 #: main/templates/show.html.py:380
 msgid "Upload"
-msgstr "Cargar"
+msgstr "Carga"
 
 #: main/templates/dashboard.html:24
 msgid "URL"
@@ -168,7 +168,7 @@ msgstr "Seleccione para cambiar su avatar"
 
 #: main/templates/dashboard.html:69
 msgid "View Profile Page"
-msgstr "Ver Pagina de Perfil"
+msgstr "Ver Página de Perfil"
 
 #: main/templates/dashboard.html:85
 msgid "FORMS"
@@ -180,7 +180,7 @@ msgstr "FORMULARIOS COMPARTIDOS"
 
 #: main/templates/dashboard.html:91
 msgid "SUBMISSIONS"
-msgstr "ENVIOS"
+msgstr "ENVÍOS"
 
 #: main/templates/dashboard.html:101
 #, python-format
@@ -191,7 +191,7 @@ msgid ""
 "submit data to formhub. In Collect's Main Menu, press the Menu\n"
 "button. Select Server Preferences, then Server. Enter\n"
 "<strong>%(odk_url)s</strong> as the server. "
-msgstr "\nEl URL de esta aplicación web  <strong>%(odk_url)s</strong>\n debe compartirse a  ODK Collect antes de poder recibir formularios \ny enviar datos a formhub. En el menu principal de ODK Collect, seleccione el boton de menu. \nSeleccione la opcion  de preferncias de sevidor, seleccione osteriormente Servidor. Introduzca \n  <strong>%(odk_url)s</strong> como nombre de servidor."
+msgstr "\nEl URL de esta aplicación web  <strong>%(odk_url)s</strong>\n debe compartirse a  ODK Collect antes de poder recibir formularios \ny enviar datos a formhub. En el menú principal de ODK Collect, seleccione el botón de menú. \nSeleccione la opcion  de preferencias de sevidor, seleccione posteriormente la opción Servidor. Introduzca \n  <strong>%(odk_url)s</strong> como nombre de servidor."
 
 #: main/templates/form_gallery.html:9
 msgid "Form Gallery <small>Shared Forms</small>"
@@ -231,11 +231,11 @@ msgstr "Clonar"
 
 #: main/templates/home.html:8
 msgid "Welcome to formhub!"
-msgstr "Bienvenido a Formhub"
+msgstr "Bienvenido a Formhub!"
 
 #: main/templates/home.html:8
 msgid "The hub for your mobile data collection needs"
-msgstr "El centro de operaciones para sus necesidades de recolección de datos con movil"
+msgstr "El centro de operaciones para sus necesidades de recolección de datos con plataforma móvil"
 
 #: main/templates/home.html:11
 msgid ""
@@ -249,7 +249,7 @@ msgid ""
 "<strong>Simple.</strong>All you need to get started is an <a "
 "href=\"%(registration_register)s\">account</a> on formhub and the ability to"
 " author .xls files. Absolutely no technical setup required."
-msgstr "<strong>Sencillo.</strong>Lo unico que necesita para empezar es una <a href=\"%(registration_register)s\">cuenta de usuario</a> en formhub y la habilidad de crear archivos .xls. No se requiere ninguna instalación o configruación tecnica ."
+msgstr "<strong>Sencillo.</strong>Lo único que necesita para empezar es una <a href=\"%(registration_register)s\">cuenta de usuario</a> en formhub y la habilidad para crear archivos .xls. No se requiere ninguna instalación o configuración técnica ."
 
 #: main/templates/home.html:16
 #, python-format
@@ -259,23 +259,23 @@ msgid ""
 "and modify other <a href=\"%(forms_url)s\">peoples' forms</a> and quickly "
 "deploy it. Publish gathered data to share it with others via Excel, CSV, KML"
 " or an interactive map."
-msgstr "<strong>Colaborativo.</strong> Comparta sus formularios de recolección de datos en  <a href=\"%(syntax_url)s\">Excel</a>. <a href=\"%(forms_url)s\">Busque</a>, descarge y modifique los <a href=\"%(forms_url)s\">formularios</a> de otros y echelos a andar rapidamente. Publique los datos obtenidos para compartirlos con otros via Excel, CSV, KML o un mapa interactivo."
+msgstr "<strong>Colaborativo.</strong> Comparta sus formularios de recolección de datos en  <a href=\"%(syntax_url)s\">Excel</a>. <a href=\"%(forms_url)s\">Busque</a>, descarge y modifique los <a href=\"%(forms_url)s\">formularios</a> de otros y despliegelos rápidamente. Publique los datos obtenidos para compartirlos con otros vía Excel, CSV, KML o un mapa interactivo."
 
 #: main/templates/home.html:19
 msgid "Mobile."
-msgstr "Mobil"
+msgstr "Móvil"
 
 #: main/templates/home.html:20
 msgid ""
 "formhub works seemlessly with <a href=\"http://www.opendatakit.org\">ODK "
 "Collect</a> a robust and proven data collection platform for Android."
-msgstr "formhub trabaja sin problemas  con <a href=\"http://www.opendatakit.org\"> ODK Collect </ a> una plataforma de recolección de datos robusta y probada para Android."
+msgstr "formhub trabaja sin ningún problema con <a href=\"http://www.opendatakit.org\"> ODK Collect </ a> una plataforma de recolección de datos robusta y probada para teléfonos inteligentes Android."
 
 #: main/templates/home.html:23
 msgid ""
 "For more info please read <a href=\"http://blog.formhub.org/2011/12/05/data-"
 "gatherers-of-the-world-unite/\">here</a>."
-msgstr "Para mas información vaya <a href=\"http://blog.formhub.org/2011/12/05/data-gatherers-of-the-world-unite/\">aquí</a>."
+msgstr "Para mayor información diríjase al siguiente <a href=\"http://blog.formhub.org/2011/12/05/data-gatherers-of-the-world-unite/\">vinculo</a>."
 
 #: main/templates/home.html:25
 msgid "Not registered?"
@@ -295,14 +295,14 @@ msgstr "formularios compartidos"
 
 #: main/templates/home.html:54
 msgid "formhubbers!"
-msgstr "formhubbers!"
+msgstr "usuarios formhub"
 
 #: main/templates/people.html:31
 #, python-format
 msgid "formhubber <small>(%(nb_users)s)</small>"
 msgid_plural "formhubbers <small>(%(nb_users)s)</small>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<small>(%(nb_users)s)</small> usuario formhub"
+msgstr[1] "<small>(%(nb_users)s)</small> usuarios formhub"
 
 #: main/templates/people.html:38
 msgid "Organization"
@@ -322,7 +322,7 @@ msgstr "cambiar"
 
 #: main/templates/profile.html:27
 msgid "Edit Your Profile"
-msgstr "Modificar su Perfil"
+msgstr "Modificar su Perfil de Usuario"
 
 #: main/templates/profile.html:36
 msgid "Organization:"
@@ -431,7 +431,7 @@ msgstr "Envios"
 #: main/templates/published_surveys.html:47
 #: main/templates/user_crowdforms.html:15
 msgid "Last Submission"
-msgstr "Ultimo Envio"
+msgstr "Ultimo Envío"
 
 #: main/templates/published_surveys.html:48
 #: main/templates/user_crowdforms.html:16 templates/topbar.html:28
@@ -570,7 +570,7 @@ msgstr "zip"
 
 #: main/templates/show.html:174
 msgid "Export to google docs"
-msgstr "Exportar a google docs"
+msgstr "Exportar a Google Docs"
 
 #: main/templates/show.html:174
 msgid "gdocs"
@@ -685,7 +685,7 @@ msgstr "el enlace a bamboo esta <strong>inactivo</strong>"
 
 #: main/templates/show.html:439
 msgid "bamboo requires at least one submission."
-msgstr "bamboo require que se haya enviado un formulario"
+msgstr "bamboo require que se haya enviado al menos un formulario"
 
 #: main/templates/show.html:442
 msgid "Activate"
@@ -700,11 +700,11 @@ msgstr "Compartiendo"
 msgid ""
 "Sharing by link is <strong>on with URL <a "
 "href=\"%(form_url)s\">%(base_url)s%(form_url)s</a></strong>"
-msgstr "Comparir por enlace esta <strong>encendido con el URL <a href=\"%(form_url)s\">%(base_url)s%(form_url)s</a></strong>"
+msgstr "La opción de compartir por enlace esta <strong>encendida con el URL <a href=\"%(form_url)s\">%(base_url)s%(form_url)s</a></strong>"
 
 #: main/templates/show.html:454
 msgid "Sharing by link is <strong>off</strong>"
-msgstr "Compartir por enlace esta <strong>apagado</strong>"
+msgstr "La opción de compartir por enlace esta <strong>apagado</strong>"
 
 #: main/templates/show.html:463
 msgid "Turn off"
@@ -735,7 +735,7 @@ msgstr "Gracias por usar formhub!"
 msgid ""
 "If you need any extra help or have questions about the service below please "
 "consider one of the support options below"
-msgstr "Si necesita ayuda adicional o tiene preguntas sobre el servicio aqui abajo por favor considere alguna de las opciones de soporte aqui abajo"
+msgstr "Si necesita más ayuda o tiene preguntas sobre el servicio por favor considere alguna de las opciones de soporte listadas a continuación"
 
 #: main/templates/support.html:14
 #, python-format
@@ -744,7 +744,7 @@ msgid ""
 "href=\"%(syntax)s\">syntax</a> page, then use the <a "
 "href=\"https://groups.google.com/forum/#!forum/formhub-users\">formhub-users"
 " Google group</a>"
-msgstr "Para preguntas relacionadas a la creacion de FormularioXLS por favor revise nuestra pagina de <a href=\"%(syntax)s\">sintaxis</a>, si no es suficiente entonces use el <a href=\"https://groups.google.com/forum/#!forum/formhub-users\">grupo de usuarios Google de formhub</a>"
+msgstr "Para preguntas relacionadas a la creacion de FormularioXLS por favor revise nuestra página de <a href=\"%(syntax)s\">sintaxis</a>, si esto no es suficiente para sus necesidades entonces use el <a href=\"https://groups.google.com/forum/#!forum/formhub-users\">grupo de usuarios Google de formhub</a>"
 
 #: main/templates/support.html:15
 msgid ""
@@ -775,15 +775,15 @@ msgstr "Introducción"
 msgid ""
 "formhub aims to make collecting survey data with Android smart phones easy "
 "and free."
-msgstr "formhub busca hacer el proceso de recolección de datos con encuestas facil y gratuito con el uso de telefonos inteligentes Android."
+msgstr "formhub busca hacer del proceso de recolección de datos con encuestas, un proceso fácil y gratuito gracias al uso de teléfonos inteligentes Android."
 
 #: main/templates/tutorial.html:11
 msgid "One uses formhub as follows:"
-msgstr "El uso de formhub es como sigue:"
+msgstr "El uso de formhub se hace de la manera siguiente:"
 
 #: main/templates/tutorial.html:13
 msgid "Translate survey into the xsl2xform syntax."
-msgstr "Traducir encuesta a la sintaxis xls2xform"
+msgstr "Traducir la encuesta a la sintaxis xls2xform"
 
 #: main/templates/tutorial.html:14
 msgid "Upload XLSForm file to formhub."
@@ -799,11 +799,11 @@ msgstr "para descargar un formulario y enviar datos"
 
 #: main/templates/tutorial.html:16
 msgid "to download and map data submissions."
-msgstr "para descargar los datos enviados y ponerlos en mapa"
+msgstr "para descargar los datos enviados y ponerlos en un mapa"
 
 #: main/templates/tutorial.html:18
 msgid "This tutorial will walk you through each stop of the way."
-msgstr "Este tutorial lo guiara en cada paso."
+msgstr "Este tutorial lo guiara en cada parada del camino."
 
 #: main/templates/tutorial.html:24
 msgid "Translate survey into the XLSForm syntax"
@@ -857,7 +857,7 @@ msgstr "Para mayor información sobre la sintaxis de un FormularioXLS seleccione
 
 #: main/templates/tutorial.html:53
 msgid "Upload XLSForm file to formhub"
-msgstr "Cargue FormularioXLS a formhub"
+msgstr "Cargue el FormularioXLS a formhub"
 
 #: main/templates/tutorial.html:59
 #, python-format
@@ -866,7 +866,7 @@ msgid ""
 "for use with ODK Collect. On the right, we submit <a "
 "href=\"%(STATIC_URL)stutorial/tutorial.xls\">tutorial.xls</a>, described "
 "above, for publication."
-msgstr "Despues de crear una cuenta y de iniciar una sesion en el sitio, pude publicar formularios compatibles con ODK COllect. A la derecha, enviamos <a href=\"%(STATIC_URL)stutorial/tutorial.xls\">tutorial.xls</a>, descrita más arriba, para su publicación."
+msgstr "Despues de crear una cuenta y de iniciar una sesion en el sitio, puede publicar formularios compatibles con ODK Collect. En el lado derecho, enviamos el formulario <a href=\"%(STATIC_URL)stutorial/tutorial.xls\">tutorial.xls</a>, descrito más arriba, para su publicación."
 
 #: main/templates/tutorial.html:69
 msgid ""
@@ -876,7 +876,7 @@ msgstr "Después de publicar nuestro primer formulario, una nueva tabla con el f
 
 #: main/templates/tutorial.html:80
 msgid "Use ODK Collect to download form and submit data"
-msgstr "Use ODK COllect para descargar formularios y enviar datos"
+msgstr "Use ODK Collect para descargar formularios y enviar datos"
 
 #: main/templates/tutorial.html:89
 #, python-format
@@ -953,7 +953,7 @@ msgstr "Cargue su FormularioXLS a formhub y sera convertido de inmediato a XForm
 msgid ""
 "If you want to download the XForm, click on the form name and click on "
 "<strong>other</strong> to download the converted XForm"
-msgstr "Si desea descargar el formulario XForm, seleccione el nombre del formulario y en <strong>otros</strong> para descargar el formulario convertido XForm"
+msgstr "Si desea descargar el formulario XForm, seleccione el nombre del formulario y después la opción <strong>otros</strong> para descargar el formulario convertido XForm"
 
 #: odk_logger/import_tools.py:49
 msgid "Too many XML files."
@@ -968,24 +968,24 @@ msgstr "El usuario %s no fue encontrado"
 msgid ""
 "There was a problem receiving your ODK submission. [Error: IO Error reading "
 "data]"
-msgstr "Hubo un problema al recibir el envio de ODK.  [Error: E/S Error al leer los datos]"
+msgstr "Hubo un problema al recibir el envío de ODK.  [Error: E/S Error al leer los datos]"
 
 #: odk_logger/views.py:77
 #, python-format
 msgid ""
 "Submission successful. Out of %(total)d survey instances, %(success)d were "
 "imported (%(rejected)d were rejected--duplicates, missing forms, etc.)"
-msgstr "Envio exitoso.  %(total)d instancias de encuesta, %(success)d fueron importadas (%(rejected)d fueron rechazadas--duplicados, formularios faltantes, etc.)"
+msgstr "Envío exitoso.  %(total)d instancias de encuesta, %(success)d fueron importadas (%(rejected)d fueron rechazadas--duplicados, formularios faltantes, etc.)"
 
 #: odk_logger/views.py:90
 msgid ""
 "There was a problem receiving your ODK submission. [Error: multiple "
 "submission files (?)]"
-msgstr "Hubo un problema al recibir el envio de ODK. [Error: mas de un archivo enviado (?)]"
+msgstr "Hubo un problema al recibir el envío de ODK. [Error: mas de un archivo enviado (?)]"
 
 #: odk_logger/views.py:177
 msgid "There should be a single XML submission file."
-msgstr "Debería haber un solo archivo de envio XML."
+msgstr "Debería haber un solo archivo de envío XML."
 
 #: odk_logger/views.py:195
 msgid "Username or ID required."
@@ -997,7 +997,7 @@ msgstr "Lo sentimos pero el formulario colaborativo que envió esta cerrado"
 
 #: odk_logger/views.py:202
 msgid "Received empty submission. No instance was created"
-msgstr "El envio fue recibido sin información. La instancia no fue creada"
+msgstr "El envío fue recibido sin información. La instancia no fue creada"
 
 #: odk_logger/views.py:205
 msgid "Form is not active"
@@ -1013,11 +1013,11 @@ msgstr "El archivo XML no tiene el formato adecuado"
 
 #: odk_logger/views.py:213
 msgid "Duplicate submission"
-msgstr "Envio duplicado"
+msgstr "Envío duplicado"
 
 #: odk_logger/views.py:219
 msgid "Unable to create submission."
-msgstr "No fue posible generar el envio"
+msgstr "No fue posible generar el envío"
 
 #: odk_logger/views.py:237
 msgid "File transfer interruption."
@@ -1107,7 +1107,7 @@ msgstr "Faltan librerias necesarias. Intente ejecutar: pip install -r requiremen
 msgid ""
 "You must first set your default storage to s3 in your local_settings.py "
 "file."
-msgstr ""
+msgstr "Debe primero ajustar su medio de almacenamiento a s3 en su archivo local_settings.py"
 
 #: odk_logger/management/commands/move_media_to_s3.py:37
 #, python-format
@@ -1131,7 +1131,7 @@ msgstr "XForms"
 
 #: odk_logger/models/xform.py:64
 msgid "Can view associated data"
-msgstr "Pude ver datos asociados"
+msgstr "Puede ver datos asociados"
 
 #: odk_logger/models/xform.py:86
 msgid "There should be a single id string."
@@ -1139,12 +1139,12 @@ msgstr "Debería haber una cadena única de caracteres"
 
 #: odk_logger/models/xform.py:93
 msgid "There should be a single title."
-msgstr "Debería haber un titulo único"
+msgstr "Debería haber un título único"
 
 #: odk_logger/models/xform.py:104
 msgid ""
 "In strict mode, the XForm ID must be a valid slug and contain no spaces."
-msgstr ""
+msgstr "Cuando esta en modo estricto, el ID de su XForm debe ser una cadena de caracteres donde los espacios son remplazados por guiones o guiones bajos"
 
 #: odk_logger/models/xform.py:113
 msgid "Submission Count"
@@ -1177,7 +1177,7 @@ msgstr "Numero de Envios"
 
 #: odk_logger/templates/list_xforms.html:9
 msgid "Time of Last Submission"
-msgstr "Tiempo del ultimo envio "
+msgstr "Tiempo del ultimo envío "
 
 #: odk_logger/templates/list_xforms.html:10
 msgid "CSV"
@@ -1197,11 +1197,11 @@ msgstr "Descargar CSV"
 
 #: odk_logger/templates/submission.html:3
 msgid "Your submission was successful!"
-msgstr "Su envio fue exitoso"
+msgstr "Su envío fue exitoso!"
 
 #: odk_logger/templates/submission.html:5
 msgid "Return to the form page"
-msgstr "Regresar a la pagina del formulario"
+msgstr "Regresar a la página del formulario"
 
 #: odk_logger/templates/submission.html:6
 msgid "Fill the form out again"
@@ -1213,7 +1213,7 @@ msgstr "Listar XForms"
 
 #: odk_viewer/reparse.py:33
 msgid "[Reparsing XForm Instances]\n"
-msgstr ""
+msgstr "[Re-analizando la sintaxis de las Instancias XForm]\n"
 
 #: odk_viewer/reparse.py:52
 #, python-format
@@ -1243,7 +1243,7 @@ msgstr "Este es un comando de un solo uso para marcar el tiempo de inicio de vie
 #: odk_viewer/management/commands/mark_start_times.py:16
 #, python-format
 msgid "Could not mark start time for DD: %(data)s"
-msgstr ""
+msgstr "No se pudo marcar el tiempo de inicio para DD: %(data)s"
 
 #: odk_viewer/management/commands/push_develop.py:7
 msgid ""
@@ -1252,7 +1252,7 @@ msgid ""
 "    develop, and update the staging server. (This should probably\n"
 "    update the develop server)\n"
 "    "
-msgstr ""
+msgstr "\nEjecutar las pruebas localmente. Si no hay errores mueva al servidor de desarrollo, \ny actualice el servidor de prueba. (Esto debería probablemente\nactualizar el servidor de desarrollo)"
 
 #: odk_viewer/management/commands/relink.py:6
 msgid "Relink all instances with the current forms."
@@ -1260,7 +1260,7 @@ msgstr "Volver a asociar todas las instancias con los formularios actuales"
 
 #: odk_viewer/management/commands/remongo.py:9
 msgid "Insert all existing parsed instances into MongoDB"
-msgstr ""
+msgstr "Insertar todas las instancias cuya sintaxis ha sido analizada a MongoDB"
 
 #: odk_viewer/management/commands/remongo.py:14
 msgid "Number of records to process per query"
@@ -1276,11 +1276,11 @@ msgstr "cadena de caracteres de identificación del formulario"
 
 #: odk_viewer/management/commands/reparse.py:9
 msgid "Delete and recreate parsed instances."
-msgstr "Eliminar y recrear instancias de análisis"
+msgstr "Eliminar y recrear instancias de análisis sintáctico"
 
 #: odk_viewer/management/commands/set_uuid_in_xml.py:9
 msgid "Insert UUID into XML of all existing XForms"
-msgstr ""
+msgstr "Insertar UUID al XML de todas la XForms existentes"
 
 #: odk_viewer/management/commands/set_uuid_in_xml.py:12
 #, python-format
@@ -1305,7 +1305,7 @@ msgid ""
 "Your survey has <strong>{numquestions}</strong> question(s) and "
 "<strong>{numsubmissions}</strong> submission(s). Please click on Display "
 "Fields above and select the questions you want to view responses for."
-msgstr "Su encuesta tiene <strong>{numquestions}</strong> pregunta(s) y  and <strong>{numsubmissions}</strong> envio(s). Por favor seleccione Mostrar Campos arriba y escoja las preguntas de las cueles desea revisar las respuestas."
+msgstr "Su encuesta tiene <strong>{numquestions}</strong> pregunta(s) y  <strong>{numsubmissions}</strong> envío(s). Por favor seleccione la opción Mostrar Campos aquí arriba  y escoja las preguntas de las cuales desea revisar las respuestas."
 
 #: odk_viewer/templates/data_view.html:46
 msgid ""
@@ -1380,7 +1380,7 @@ msgstr "Este servicio ya ha sido definido"
 #: restservice/views.py:35
 #, python-format
 msgid "Successfully added service %(name)s."
-msgstr "Se añadió el servicio %(name)s exitosamente.."
+msgstr "Se añadió el servicio %(name)s exitosamente."
 
 #: restservice/views.py:40
 msgid "Please fill in all required fields"
@@ -1405,12 +1405,12 @@ msgstr "Nombre para enviar correo: %(name)s, correo: %(email)s"
 
 #: staff/templates/stats.html:4
 msgid "Stats"
-msgstr "Estadisticas"
+msgstr "Estadísticas"
 
 #: staff/templates/submissions.html:32
 #, python-format
 msgid "Submissions (%(nb_sub)s)"
-msgstr "Envios (%(nb_sub)s)"
+msgstr "Envíos (%(nb_sub)s)"
 
 #: staff/templates/templated_email/notice.email:1
 #, python-format
@@ -1429,7 +1429,7 @@ msgid ""
 "  The Formhub Dev Team\n"
 "\n"
 "  P.S. Please consider joining the formhub-users group, https://groups.google.com/group/formhub-users\n"
-msgstr ""
+msgstr "\nHola %(full_name)s,\n\n%(message)s\n\nGracias por usar formhub!\n\nEl equipo de desarrollo de Formhub\n\nP.S. Por favor considere unirse al grupo de usuarios Google de fromhub, https://groups.google.com/group/formhub-users\n"
 
 #: staff/templates/templated_email/notice.email:15
 #, python-format
@@ -1450,7 +1450,7 @@ msgid ""
 "  <p>\n"
 "      P.S. Please consider joining the <a href=\"https://groups.google.com/group/formhub-users\">formhub-users group</a>.\n"
 "  </p>\n"
-msgstr "\n <p>Hola %(full_name)s,</p>\n\n <p>\n %(message)s\n </p>\n \n <p>\nGracias por usar formhub!\n <br/>\nEl equpipo de desarrollo de Formhub\n\n</p>\n <p>\n P.S. Considere unirse al  <a href=\"https://groups.google.com/group/formhub-users\">grupo de usuarios Google de formhub</a>.\n </p>\n"
+msgstr "\n <p>Hola %(full_name)s,</p>\n\n <p>\n %(message)s\n </p>\n \n <p>\nGracias por usar formhub!\n <br/>\nEl equipo de desarrollo de Formhub\n\n</p>\n <p>\n P.S. Considere unirse al  <a href=\"https://groups.google.com/group/formhub-users\">grupo de usuarios Google de formhub</a>.\n </p>\n"
 
 #: templates/404.html:5
 msgid "404 Error"
@@ -1465,7 +1465,7 @@ msgid ""
 "If you are getting this error while trying to submit a form, please do "
 "consider sending an email to support@formhub.org with your xlsform attached."
 " Thank you for using formhub."
-msgstr "Si recibe este mensaje de error al tratar de enviar un formulario, or favor considere enviarnos un correo a support@formhub.org adjuntando su xlsform. Gracias por usar formhub."
+msgstr "Si recibe este mensaje de error al tratar de enviar un formulario, por favor considere enviarnos un correo a support@formhub.org adjuntando su xlsform. Gracias por usar formhub."
 
 #: templates/browser_message.html:17
 msgid "Browser Error"
@@ -1477,11 +1477,11 @@ msgstr "cerrar"
 
 #: templates/browser_message.html:24
 msgid "Recommended Browser Alert"
-msgstr ""
+msgstr "Alerta de Navegador Recomendada"
 
 #: templates/browser_message.html:28
 msgid "Dear Sir or Madam,"
-msgstr "Estimado/a señor o señora,"
+msgstr "Estimado/a Señor o Señora,"
 
 #: templates/browser_message.html:31
 msgid ""
@@ -1489,7 +1489,7 @@ msgid ""
 "support complex navigation. We highly recommend that you switch to one of "
 "the browsers below in order to take full advantage of the Nigeria MDGs "
 "Information System."
-msgstr "Nuestras pruebas indican que el navegador que utiliza actualmente no soporta elementos de navegacion complejos. Le recomendamos ampliamente que cambia a uno de los navegadores listados abajo para poder aprovechar elas ventajas del sistema de información de ODM de Nigeria. "
+msgstr "Nuestras pruebas indican que el navegador que utiliza actualmente no soporta elementos de navegacion complejos. Le recomendamos ampliamente que cambie a uno de los navegadores listados abajo para poder aprovechar las ventajas del sistema de información de los Objetivos Del Milenio de Nigeria. "
 
 #: templates/browser_message.html:42
 msgid "Thank You,"
@@ -1497,23 +1497,23 @@ msgstr "Gracias,"
 
 #: templates/browser_message.html:45
 msgid "The NMIS Support Team"
-msgstr ""
+msgstr "El equipo de soporte NMIS"
 
 #: templates/footer.html:5
 msgid ""
 "Built by the <a href=\"http://modi.mech.columbia.edu/\">Modi Research "
 "Group</a> at Columbia University."
-msgstr "Desarrollado por <a href=\"http://modi.mech.columbia.edu/\">Grupo de Investigación Modi</a> de la Universidad de Columbia."
+msgstr "Desarrollado por el <a href=\"http://modi.mech.columbia.edu/\">Grupo de Investigación Modi</a> de la Universidad de Columbia."
 
 #: templates/footer.html:8
 msgid ""
 "Code (BSD License) at <a "
 "href=\"https://github.com/modilabs/formhub\">github.com/modilabs/formhub</a>"
-msgstr ""
+msgstr "Codigo (Licencia BSD) disponible en <a href=\"https://github.com/modilabs/formhub\">github.com/modilabs/formhub</a>"
 
 #: templates/footer.html:10
 msgid "Copyright &copy; 2012, formhub.org"
-msgstr ""
+msgstr "Derechos de Autor &copy; 2012, formhub.org"
 
 #: templates/main_index.html:9
 msgid "View LGAs"
@@ -1526,7 +1526,7 @@ msgstr "Recursos"
 #: templates/topbar.html:25
 #, python-format
 msgid "%(nb_sub)s submissions"
-msgstr "%(nb_sub)s envios"
+msgstr "%(nb_sub)s envíos"
 
 #: templates/topbar.html:55
 msgid "Forms"
@@ -1685,7 +1685,7 @@ msgstr "Registrarse"
 
 #: templates/registration/registration_form.html:14
 msgid "Fields marked wth an asterisk (*) are required."
-msgstr "Los campos marcados con un asteriscos (*) son requeridos."
+msgstr "Los campos marcados con asterisco (*) son requeridos."
 
 #: templates/registration/registration_form.html:29
 msgid ""
@@ -1695,7 +1695,7 @@ msgid ""
 "account and data, at any time without notice. We will not be liable for any "
 "losses, either direct or indirect, that such service interruption or data "
 "loss may cause you. Use the service at your own risk."
-msgstr "Al seleccionar el botín de Registro, usted acepta que este es software beta; no podemos garantizar la confiabilidad o continuidad de nuestro servicio. Nos reservamos el derecho de interrumpir definida o indefinidamente nuestro servicio, y la eliminacion de su cuenta y datos en cualquier momento y sin previo aviso."
+msgstr "Al seleccionar el botón de Registro, usted acepta que este es software esta en estado beta; no podemos garantizar la confiabilidad o continuidad de nuestro servicio. Nos reservamos el derecho de interrumpir definida o indefinidamente nuestro servicio, y la eliminación de su cuenta y datos en cualquier momento y sin previo aviso."
 
 #: utils/country_field.py:6
 msgid "Andorra"
@@ -1727,7 +1727,7 @@ msgstr "Armenia"
 
 #: utils/country_field.py:13
 msgid "Netherlands Antilles"
-msgstr ""
+msgstr "Antillas Holandesas"
 
 #: utils/country_field.py:14
 msgid "Angola"
@@ -1759,7 +1759,7 @@ msgstr "Aruba"
 
 #: utils/country_field.py:21
 msgid "Azerbaijan"
-msgstr ""
+msgstr "Azerbaidjan"
 
 #: utils/country_field.py:22
 msgid "Bosnia and Herzegovina"
@@ -1787,7 +1787,7 @@ msgstr "Bulgaria"
 
 #: utils/country_field.py:28
 msgid "Bahrain"
-msgstr ""
+msgstr "Bahrain"
 
 #: utils/country_field.py:29
 msgid "Burundi"
@@ -1803,7 +1803,7 @@ msgstr "Bermuda"
 
 #: utils/country_field.py:32
 msgid "Brunei Darussalam"
-msgstr ""
+msgstr "Brunei Darussalam"
 
 #: utils/country_field.py:33
 msgid "Bolivia"
@@ -1815,15 +1815,15 @@ msgstr "Brasl"
 
 #: utils/country_field.py:35
 msgid "Bahama"
-msgstr ""
+msgstr "Bahama"
 
 #: utils/country_field.py:36
 msgid "Bhutan"
-msgstr ""
+msgstr "Bhutan"
 
 #: utils/country_field.py:37
 msgid "Bouvet Island"
-msgstr ""
+msgstr "Isla Bouvet"
 
 #: utils/country_field.py:38
 msgid "Botswana"
@@ -1843,11 +1843,11 @@ msgstr "Canada"
 
 #: utils/country_field.py:42
 msgid "Cocos (Keeling) Islands"
-msgstr ""
+msgstr "Islas de Cocos  (Keeling)"
 
 #: utils/country_field.py:43
 msgid "Central African Republic"
-msgstr ""
+msgstr "Republica Central Africana"
 
 #: utils/country_field.py:44
 msgid "Congo"
@@ -1863,7 +1863,7 @@ msgstr "Costa de Marfil"
 
 #: utils/country_field.py:47
 msgid "Cook Iislands"
-msgstr ""
+msgstr "Islas de Cook"
 
 #: utils/country_field.py:48
 msgid "Chile"
@@ -1895,7 +1895,7 @@ msgstr "Cabo Verde"
 
 #: utils/country_field.py:55
 msgid "Christmas Island"
-msgstr ""
+msgstr "Isla de Navidad"
 
 #: utils/country_field.py:56
 msgid "Cyprus"
@@ -1911,7 +1911,7 @@ msgstr "Alemania"
 
 #: utils/country_field.py:59
 msgid "Djibouti"
-msgstr ""
+msgstr "Djibouti"
 
 #: utils/country_field.py:60
 msgid "Denmark"
@@ -1943,7 +1943,7 @@ msgstr "Egipto"
 
 #: utils/country_field.py:67
 msgid "Western Sahara"
-msgstr ""
+msgstr "Sahara Occidental"
 
 #: utils/country_field.py:68
 msgid "Eritrea"
@@ -1955,7 +1955,7 @@ msgstr "España"
 
 #: utils/country_field.py:70
 msgid "Ethiopia"
-msgstr ""
+msgstr "Etiopía"
 
 #: utils/country_field.py:71
 msgid "Finland"
@@ -1975,7 +1975,7 @@ msgstr "Micronesia"
 
 #: utils/country_field.py:75
 msgid "Faroe Islands"
-msgstr ""
+msgstr "Islas Feroe"
 
 #: utils/country_field.py:76
 msgid "France"
@@ -1999,11 +1999,11 @@ msgstr "Granada"
 
 #: utils/country_field.py:81
 msgid "Georgia"
-msgstr ""
+msgstr "Georgia"
 
 #: utils/country_field.py:82
 msgid "French Guiana"
-msgstr ""
+msgstr "Guyana Francesa"
 
 #: utils/country_field.py:83
 msgid "Ghana"
@@ -2011,7 +2011,7 @@ msgstr "Ghana"
 
 #: utils/country_field.py:84
 msgid "Gibraltar"
-msgstr ""
+msgstr "Gibraltar"
 
 #: utils/country_field.py:85
 msgid "Greenland"
@@ -2023,11 +2023,11 @@ msgstr "Gambia"
 
 #: utils/country_field.py:87
 msgid "Guinea"
-msgstr ""
+msgstr "Guinea"
 
 #: utils/country_field.py:88
 msgid "Guadeloupe"
-msgstr ""
+msgstr "Guadalupe"
 
 #: utils/country_field.py:89
 msgid "Equatorial Guinea"
@@ -2039,7 +2039,7 @@ msgstr "Grecia"
 
 #: utils/country_field.py:91
 msgid "South Georgia and the South Sandwich Islands"
-msgstr ""
+msgstr "Georgia del Sur e Islas Sandwich del Sur"
 
 #: utils/country_field.py:92
 msgid "Guatemala"
@@ -2051,7 +2051,7 @@ msgstr "Guam"
 
 #: utils/country_field.py:94
 msgid "Guinea-Bissau"
-msgstr ""
+msgstr "Guinea-Bissau"
 
 #: utils/country_field.py:95
 msgid "Guyana"
@@ -2063,7 +2063,7 @@ msgstr "Hong Kong"
 
 #: utils/country_field.py:97
 msgid "Heard & McDonald Islands"
-msgstr ""
+msgstr " Islas Heard y McDonald"
 
 #: utils/country_field.py:98
 msgid "Honduras"
@@ -2099,7 +2099,7 @@ msgstr "India"
 
 #: utils/country_field.py:106
 msgid "British Indian Ocean Territory"
-msgstr ""
+msgstr "Territorio Oceánico Británico de la India"
 
 #: utils/country_field.py:107
 msgid "Iraq"
@@ -2135,7 +2135,7 @@ msgstr "Kenya"
 
 #: utils/country_field.py:115
 msgid "Kyrgyzstan"
-msgstr ""
+msgstr "Kirguistán"
 
 #: utils/country_field.py:116
 msgid "Cambodia"
@@ -2143,15 +2143,15 @@ msgstr "Cambodia"
 
 #: utils/country_field.py:117
 msgid "Kiribati"
-msgstr ""
+msgstr "Kiribati"
 
 #: utils/country_field.py:118
 msgid "Comoros"
-msgstr ""
+msgstr "Comoras"
 
 #: utils/country_field.py:119
 msgid "St. Kitts and Nevis"
-msgstr ""
+msgstr "St. Kitts y Nevis"
 
 #: utils/country_field.py:120
 msgid "Korea, Democratic People's Republic of"
@@ -2167,15 +2167,15 @@ msgstr "Kuwait"
 
 #: utils/country_field.py:123
 msgid "Cayman Islands"
-msgstr ""
+msgstr "Islas Caimán"
 
 #: utils/country_field.py:124
 msgid "Kazakhstan"
-msgstr ""
+msgstr "Kazajstán"
 
 #: utils/country_field.py:125
 msgid "Lao People's Democratic Republic"
-msgstr ""
+msgstr "Lao, República Democrática Popular"
 
 #: utils/country_field.py:126
 msgid "Lebanon"
@@ -2183,7 +2183,7 @@ msgstr "Libano"
 
 #: utils/country_field.py:127
 msgid "Saint Lucia"
-msgstr ""
+msgstr "Santa Lucía"
 
 #: utils/country_field.py:128
 msgid "Liechtenstein"
@@ -2211,11 +2211,11 @@ msgstr "Luxemburgo"
 
 #: utils/country_field.py:134
 msgid "Latvia"
-msgstr ""
+msgstr "Latvia"
 
 #: utils/country_field.py:135
 msgid "Libyan Arab Jamahiriya"
-msgstr ""
+msgstr "Libyan Arab Jamahiriya"
 
 #: utils/country_field.py:136
 msgid "Morocco"
@@ -2227,7 +2227,7 @@ msgstr "Monaco"
 
 #: utils/country_field.py:138
 msgid "Moldova, Republic of"
-msgstr ""
+msgstr "Moldavia, República de"
 
 #: utils/country_field.py:139
 msgid "Madagascar"
@@ -2235,7 +2235,7 @@ msgstr "Madagascar"
 
 #: utils/country_field.py:140
 msgid "Marshall Islands"
-msgstr ""
+msgstr "Islas Marshall"
 
 #: utils/country_field.py:141
 msgid "Mali"
@@ -2247,15 +2247,15 @@ msgstr "Mongolia"
 
 #: utils/country_field.py:143
 msgid "Myanmar"
-msgstr ""
+msgstr "Myanmar"
 
 #: utils/country_field.py:144
 msgid "Macau"
-msgstr ""
+msgstr "Macao"
 
 #: utils/country_field.py:145
 msgid "Northern Mariana Islands"
-msgstr ""
+msgstr "Islas Marianas del Norte"
 
 #: utils/country_field.py:146
 msgid "Martinique"
@@ -2267,7 +2267,7 @@ msgstr "Mauritania"
 
 #: utils/country_field.py:148
 msgid "Monserrat"
-msgstr ""
+msgstr "Monserrat"
 
 #: utils/country_field.py:149
 msgid "Malta"
@@ -2311,7 +2311,7 @@ msgstr "Niger"
 
 #: utils/country_field.py:159
 msgid "Norfolk Island"
-msgstr ""
+msgstr "Isla Norfolk"
 
 #: utils/country_field.py:160
 msgid "Nigeria"
@@ -2335,11 +2335,11 @@ msgstr "Nepal"
 
 #: utils/country_field.py:165
 msgid "Nauru"
-msgstr ""
+msgstr "Nauru"
 
 #: utils/country_field.py:166
 msgid "Niue"
-msgstr ""
+msgstr "Niue"
 
 #: utils/country_field.py:167
 msgid "New Zealand"
@@ -2359,15 +2359,15 @@ msgstr "Perú"
 
 #: utils/country_field.py:171
 msgid "French Polynesia"
-msgstr ""
+msgstr "Polinesia francesa"
 
 #: utils/country_field.py:172
 msgid "Papua New Guinea"
-msgstr ""
+msgstr "Papua Nueva Guinea"
 
 #: utils/country_field.py:173
 msgid "Philippines"
-msgstr ""
+msgstr "Filipinas"
 
 #: utils/country_field.py:174
 msgid "Pakistan"
@@ -2379,11 +2379,11 @@ msgstr "Polonia"
 
 #: utils/country_field.py:176
 msgid "St. Pierre & Miquelon"
-msgstr ""
+msgstr "San Pedro y Miquelón"
 
 #: utils/country_field.py:177
 msgid "Pitcairn"
-msgstr ""
+msgstr "Pitcairn"
 
 #: utils/country_field.py:178
 msgid "Puerto Rico"
@@ -2427,11 +2427,11 @@ msgstr "Arabia Saudita"
 
 #: utils/country_field.py:188
 msgid "Solomon Islands"
-msgstr ""
+msgstr "Islas Salomón"
 
 #: utils/country_field.py:189
 msgid "Seychelles"
-msgstr ""
+msgstr "Seychelles"
 
 #: utils/country_field.py:190
 msgid "Sudan"
@@ -2483,7 +2483,7 @@ msgstr "Surinam"
 
 #: utils/country_field.py:202
 msgid "Sao Tome & Principe"
-msgstr ""
+msgstr "Santo Tomé y Príncipe"
 
 #: utils/country_field.py:203
 msgid "El Salvador"
@@ -2547,7 +2547,7 @@ msgstr "Turquia"
 
 #: utils/country_field.py:218
 msgid "Trinidad & Tobago"
-msgstr ""
+msgstr "Trinidad y Tobago"
 
 #: utils/country_field.py:219
 msgid "Tuvalu"
@@ -2583,11 +2583,11 @@ msgstr "Uruguay"
 
 #: utils/country_field.py:227
 msgid "Uzbekistan"
-msgstr ""
+msgstr "Uzbekistán"
 
 #: utils/country_field.py:228
 msgid "Vatican City State (Holy See)"
-msgstr ""
+msgstr "Ciudad del Vaticano (Santa Sede)"
 
 #: utils/country_field.py:229
 msgid "St. Vincent & the Grenadines"
@@ -2615,7 +2615,7 @@ msgstr "Vanuatu"
 
 #: utils/country_field.py:235
 msgid "Wallis & Futuna Islands"
-msgstr ""
+msgstr "Wallis y Futuna"
 
 #: utils/country_field.py:236
 msgid "Samoa"
@@ -2627,7 +2627,7 @@ msgstr "Yemen"
 
 #: utils/country_field.py:238
 msgid "Mayotte"
-msgstr ""
+msgstr "Mayotte"
 
 #: utils/country_field.py:239
 msgid "Yugoslavia"
@@ -2684,5 +2684,5 @@ msgstr "Las rutas deben ser unicas"
 
 #: utils/viewer_tools.py:159
 msgid "There should be a single title"
-msgstr "Solo puede haber un titulo"
+msgstr "Solo puede haber un título"
 

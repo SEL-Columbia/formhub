@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: formhub\n"
 "Report-Msgid-Bugs-To: https://github.com/modilabs/formhub/issues\n"
 "POT-Creation-Date: 2012-08-31 09:54+0000\n"
-"PO-Revision-Date: 2012-08-31 20:28+0000\n"
+"PO-Revision-Date: 2012-09-06 21:46+0000\n"
 "Last-Translator: myf <worldwidespirit@gmail.com>\n"
 "Language-Team: Chinese (http://www.transifex.com/projects/p/formhub/language/zh/)\n"
 "MIME-Version: 1.0\n"
@@ -24,23 +24,23 @@ msgstr "无许可证"
 
 #: main/forms.py:24
 msgid "Attribution CC BY"
-msgstr ""
+msgstr "姓名标示 CC BY 许可证"
 
 #: main/forms.py:26
 msgid "Attribution-ShareAlike CC BY-SA"
-msgstr ""
+msgstr "姓名标示-ShareAlike CC BY-SA 许可证"
 
 #: main/forms.py:32
 msgid "PDDL"
-msgstr ""
+msgstr "PDDL"
 
 #: main/forms.py:34
 msgid "ODC-BY"
-msgstr ""
+msgstr "ODC-BY"
 
 #: main/forms.py:36
 msgid "ODBL"
-msgstr ""
+msgstr "ODBL"
 
 #: main/forms.py:40
 msgid "Can view"
@@ -136,7 +136,7 @@ msgid ""
 "For a quick introduction on how to publish a form check out the <a "
 "href=\"%(tutorial_url)s\">tutorial</a>, and try publishing <a "
 "href=\"http://formhub.org/formhub_u/forms/tutorial/form.xls\">tutorial.xls</a>."
-msgstr ""
+msgstr "查看发布表格的简介请看<a href=\"%(tutorial_url)s\">教程</a>，你可以试着发布 <a href=\"http://formhub.org/formhub_u/forms/tutorial/form.xls\">tutorial.xls</a>"
 
 #: main/templates/dashboard.html:16
 #, python-format
@@ -145,7 +145,7 @@ msgid ""
 " href=\"https://groups.google.com/forum/?fromgroups#!forum/formhub-"
 "users\">formhub users mailing list</a> if you have questions, and checkout "
 "examples at: <br/><a href=\"/formhub_u/\">Formhub University</a>."
-msgstr ""
+msgstr "去<a href=\"%(syntax_url)s\">这里</a>学XLSForm表语法。如有任何问题发邮件到<a href=\"https://groups.google.com/forum/?fromgroups#!forum/formhub-users\">formhub用户列表</a> 。你还可以到<a href=\"/formhub_u/\">Formhub学校</a>看看范例。"
 
 #: main/templates/dashboard.html:23 main/templates/show.html:299
 #: main/templates/show.html.py:321 main/templates/show.html:358
@@ -175,11 +175,11 @@ msgstr "表格"
 
 #: main/templates/dashboard.html:88
 msgid "SHARED FORMS"
-msgstr ""
+msgstr "共享表格"
 
 #: main/templates/dashboard.html:91
 msgid "SUBMISSIONS"
-msgstr ""
+msgstr "提交"
 
 #: main/templates/dashboard.html:101
 #, python-format
@@ -194,7 +194,7 @@ msgstr ""
 
 #: main/templates/form_gallery.html:9
 msgid "Form Gallery <small>Shared Forms</small>"
-msgstr ""
+msgstr "表格总揽<small>共享表格</small>"
 
 #: main/templates/form_gallery.html:41 main/templates/people.html:36
 #: staff/templates/submissions.html:38
@@ -209,7 +209,7 @@ msgstr "姓名"
 
 #: main/templates/form_gallery.html:43 main/templates/show.html:37
 msgid "Description"
-msgstr ""
+msgstr "详细"
 
 #: main/templates/form_gallery.html:44 main/templates/profile.html:68
 #: main/templates/show.html:52 main/templates/show.html.py:59
@@ -218,7 +218,7 @@ msgstr "XLS表"
 
 #: main/templates/form_gallery.html:58
 msgid "add crowdform"
-msgstr ""
+msgstr "添加Crowdform"
 
 #: main/templates/form_gallery.html:66
 msgid "Excel"
@@ -226,7 +226,7 @@ msgstr "Excel"
 
 #: main/templates/form_gallery.html:70 main/templates/show.html:112
 msgid "Clone"
-msgstr ""
+msgstr "复制"
 
 #: main/templates/home.html:8
 msgid "Welcome to formhub!"
@@ -234,13 +234,13 @@ msgstr "欢迎您访问formhub!"
 
 #: main/templates/home.html:8
 msgid "The hub for your mobile data collection needs"
-msgstr ""
+msgstr "你的手机数据收集枢纽需要"
 
 #: main/templates/home.html:11
 msgid ""
 "formhub is a <strong>free</strong> hosted service that makes data collection"
 " <strong>simple</strong> and <strong>collaborative</strong>."
-msgstr ""
+msgstr "formhub旨在使数据收集工作更<strong>简单</strong>，更<strong>合作化</strong>"
 
 #: main/templates/home.html:13
 #, python-format
@@ -248,7 +248,7 @@ msgid ""
 "<strong>Simple.</strong>All you need to get started is an <a "
 "href=\"%(registration_register)s\">account</a> on formhub and the ability to"
 " author .xls files. Absolutely no technical setup required."
-msgstr ""
+msgstr "<strong>简单</strong>您只需在formhub上<a href＝’%(registration_register)s‘>注册</a>一个账户，并能够写.xls（excel表）文件就行了，技术背景完全不需要。"
 
 #: main/templates/home.html:16
 #, python-format
@@ -258,7 +258,7 @@ msgid ""
 "and modify other <a href=\"%(forms_url)s\">peoples' forms</a> and quickly "
 "deploy it. Publish gathered data to share it with others via Excel, CSV, KML"
 " or an interactive map."
-msgstr ""
+msgstr "<strong>合作化</strong>上传<a href=\"%(syntax_url)s\">Excel表</a>来共同参与数据收集。<a href=\"%(forms_url)s\">查找</a>，下载并修改<a href=%(forms_url)s\">其他人的表格</a>并快速生成你的共享表。发布已收集的数据，通过Excel, CSV, KML或互动地图来和他人共享。"
 
 #: main/templates/home.html:19
 msgid "Mobile."
@@ -268,13 +268,13 @@ msgstr "手机"
 msgid ""
 "formhub works seemlessly with <a href=\"http://www.opendatakit.org\">ODK "
 "Collect</a> a robust and proven data collection platform for Android."
-msgstr ""
+msgstr "formhub和 <a href=\"http://www.opendatakit.org\">ODK Collect</a>的无缝衔接。ODK Collect是一个安卓系统上的数据收集系统。"
 
 #: main/templates/home.html:23
 msgid ""
 "For more info please read <a href=\"http://blog.formhub.org/2011/12/05/data-"
 "gatherers-of-the-world-unite/\">here</a>."
-msgstr ""
+msgstr "获取更多信息请访问<a href=\"http://blog.formhub.org/2011/12/05/data-gatherers-of-the-world-unite/\">这里</a>"
 
 #: main/templates/home.html:25
 msgid "Not registered?"
@@ -286,21 +286,21 @@ msgstr "建立一个账户"
 
 #: main/templates/home.html:48
 msgid "forms submitted"
-msgstr ""
+msgstr "已提交表格"
 
 #: main/templates/home.html:51
 msgid "shared forms"
-msgstr ""
+msgstr "共享表格"
 
 #: main/templates/home.html:54
 msgid "formhubbers!"
-msgstr ""
+msgstr "formhub人"
 
 #: main/templates/people.html:31
 #, python-format
 msgid "formhubber <small>(%(nb_users)s)</small>"
 msgid_plural "formhubbers <small>(%(nb_users)s)</small>"
-msgstr[0] ""
+msgstr[0] " formhub人 <small>(%(nb_users)s)</small>"
 
 #: main/templates/people.html:38
 msgid "Organization"
@@ -312,11 +312,11 @@ msgstr "地点"
 
 #: main/templates/people.html:40
 msgid "Member Since"
-msgstr ""
+msgstr "用户自"
 
 #: main/templates/profile.html:17
 msgid "change"
-msgstr ""
+msgstr "修改"
 
 #: main/templates/profile.html:27
 msgid "Edit Your Profile"
@@ -340,76 +340,76 @@ msgstr "Twitter:"
 
 #: main/templates/profile.html:47
 msgid "Member since:"
-msgstr ""
+msgstr "用户自"
 
 #: main/templates/profile.html:52
 #, python-format
 msgid "%(num_forms)s <small>Shared form</small>"
 msgid_plural "%(num_forms)s <small>Shared forms</small>"
-msgstr[0] ""
+msgstr[0] "%(num_forms)s <small>共享表格</small>"
 
 #: main/templates/profile.html:61
 #, python-format
 msgid "Shared Forms & Public Data <small>(%(num_forms)s)</small>"
-msgstr ""
+msgstr "共享表格和公共数据 <small>(%(num_forms)s)</small>"
 
 #: main/templates/profile.html:67
 msgid "Create Date"
-msgstr ""
+msgstr "创建日期"
 
 #: main/templates/profile.html:69
 msgid "Public Data"
-msgstr ""
+msgstr "公共数据"
 
 #: main/templates/profile.html:70 main/templates/published_surveys.html:49
 #: main/templates/user_crowdforms.html:17
 msgid "View"
-msgstr ""
+msgstr "查看"
 
 #: main/templates/profile.html:85
 msgid "XLS"
-msgstr ""
+msgstr "XLS表格"
 
 #: main/templates/profile.html:88 main/templates/profile.html.py:107
 #: main/templates/profile.html:118 main/templates/show.html:54
 #: main/templates/show.html.py:122 main/templates/user_crowdforms.html:47
 #: main/templates/user_crowdforms.html:75
 msgid "PRIVATE"
-msgstr ""
+msgstr "私有"
 
 #: main/templates/profile.html:95 main/templates/published_surveys.html:70
 #: main/templates/show.html:129 main/templates/user_crowdforms.html:39
 #: templates/topbar.html:36
 msgid "csv"
-msgstr ""
+msgstr "csv表格"
 
 #: main/templates/profile.html:98 main/templates/published_surveys.html:71
 #: main/templates/show.html:140 main/templates/user_crowdforms.html:40
 #: templates/topbar.html:41
 msgid "xls"
-msgstr ""
+msgstr "xls"
 
 #: main/templates/profile.html:101 main/templates/published_surveys.html:73
 #: main/templates/show.html:151 main/templates/user_crowdforms.html:42
 #: templates/topbar.html:46
 msgid "kml"
-msgstr ""
+msgstr "kml"
 
 #: main/templates/profile.html:104 main/templates/show.html:218
 msgid "NO DATA"
-msgstr ""
+msgstr "无数据"
 
 #: main/templates/profile.html:114 main/templates/show.html:202
 msgid "Map"
-msgstr ""
+msgstr "地图"
 
 #: main/templates/profile.html:126
 msgid "None public"
-msgstr ""
+msgstr "非公共"
 
 #: main/templates/published_surveys.html:7
 msgid "Published Forms <small>Export, map, and view submissions.</small>"
-msgstr ""
+msgstr "已发表表格<small>输出，地图，浏览数据</small>"
 
 #: main/templates/published_surveys.html:26
 #: staff/templates/submissions.html:23
@@ -418,17 +418,17 @@ msgstr "搜索"
 
 #: main/templates/published_surveys.html:35
 msgid "Show inactive:"
-msgstr ""
+msgstr "显示不活跃的"
 
 #: main/templates/published_surveys.html:46
 #: main/templates/user_crowdforms.html:14 staff/templates/submissions.html:39
 msgid "Submissions"
-msgstr ""
+msgstr "提交条目"
 
 #: main/templates/published_surveys.html:47
 #: main/templates/user_crowdforms.html:15
 msgid "Last Submission"
-msgstr ""
+msgstr "最后提交"
 
 #: main/templates/published_surveys.html:48
 #: main/templates/user_crowdforms.html:16 templates/topbar.html:28
@@ -437,14 +437,14 @@ msgstr "数据"
 
 #: main/templates/published_surveys.html:50
 msgid "Active"
-msgstr ""
+msgstr "活跃的"
 
 #: main/templates/published_surveys.html:59
 #: main/templates/published_surveys.html:77 main/templates/show.html:53
 #: main/templates/show.html.py:121 main/templates/user_crowdforms.html:27
 #: main/templates/user_crowdforms.html:45
 msgid "PUBLIC"
-msgstr ""
+msgstr "公共"
 
 #: main/templates/published_surveys.html:84 main/templates/show.html:201
 #: main/templates/user_crowdforms.html:55
@@ -459,12 +459,12 @@ msgstr "察看图片"
 #: main/templates/published_surveys.html:94 main/templates/show.html:225
 #: main/templates/user_crowdforms.html:63
 msgid "Enter Web Form"
-msgstr ""
+msgstr "输入网络表格"
 
 #: main/templates/published_surveys.html:102 main/templates/show.html:417
 #: odk_viewer/templates/instance.html:443
 msgid "Delete Confirmation"
-msgstr ""
+msgstr "删除确认"
 
 #: main/templates/published_surveys.html:105 main/templates/show.html:420
 #, python-format
@@ -473,12 +473,12 @@ msgid ""
 "<strong>%(nb_sub)s</strong> submissions associated with it that will also be"
 " deleted. If you are unsure about deleting this form press 'Cancel' and "
 "conside 'Archiving' the form instead."
-msgstr ""
+msgstr "你确定你要删除'%(title)s'表?此表一共有<strong>%(nb_sub)s</strong>条提交。 如果你还不确定，请按'取消'并考虑是否选择'备档‘。"
 
 #: main/templates/published_surveys.html:117 main/templates/show.html:207
 #: main/templates/user_crowdforms.html:67
 msgid "View Submitted Data"
-msgstr ""
+msgstr "看已提交的数据"
 
 #: main/templates/published_surveys.html:120 main/templates/show.html:210
 #: main/templates/user_crowdforms.html:70
@@ -571,11 +571,11 @@ msgstr "上传到谷歌文件"
 
 #: main/templates/show.html:174
 msgid "gdocs"
-msgstr ""
+msgstr "谷歌文件"
 
 #: main/templates/show.html:185
 msgid "Submissions:"
-msgstr ""
+msgstr "提交条目"
 
 #: main/templates/show.html:188
 msgid "License:"
@@ -595,19 +595,19 @@ msgstr "查看数据"
 
 #: main/templates/show.html:211
 msgid "Browse Data"
-msgstr ""
+msgstr "浏览数据"
 
 #: main/templates/show.html:224
 msgid "Webform"
-msgstr ""
+msgstr "网络表格"
 
 #: main/templates/show.html:279
 msgid "Source"
-msgstr ""
+msgstr "源"
 
 #: main/templates/show.html:306
 msgid "Supporting Documents"
-msgstr ""
+msgstr "支持文件"
 
 #: main/templates/show.html:311 main/templates/show.html.py:348
 #: main/templates/show.html:371
@@ -616,15 +616,15 @@ msgstr "删除"
 
 #: main/templates/show.html:329
 msgid "Rest Services"
-msgstr ""
+msgstr "REST服务"
 
 #: main/templates/show.html:343
 msgid "Media &nbsp;<small>jpeg/png/mp3 allowed</small>"
-msgstr ""
+msgstr "多媒体文件<small>jpeg/png/mp3</small>"
 
 #: main/templates/show.html:365
 msgid "Mapbox Layer"
-msgstr ""
+msgstr "Mapbox图层"
 
 #: main/templates/show.html:369
 msgid "Attribution:"
@@ -632,84 +632,84 @@ msgstr ""
 
 #: main/templates/show.html:388 templates/topbar.html:73
 msgid "Settings"
-msgstr ""
+msgstr "设置"
 
 #: main/templates/show.html:391
 msgid "Form Shared"
-msgstr ""
+msgstr "共享表格"
 
 #: main/templates/show.html:395
 msgid "Data Shared"
-msgstr ""
+msgstr "共享数据"
 
 #: main/templates/show.html:400
 msgid "Crowdform"
-msgstr ""
+msgstr "Crowdform"
 
 #: main/templates/show.html:406
 msgid "Form Active"
-msgstr ""
+msgstr "备档表格"
 
 #: main/templates/show.html:411
 msgid "Delete Form"
-msgstr ""
+msgstr "删除表格"
 
 #: main/templates/show.html:423 main/templates/show.html.py:428
 #: odk_viewer/templates/instance.html:349
 #: odk_viewer/templates/instance.html:449
 #: restservice/templates/add-service.html:22
 msgid "Delete"
-msgstr ""
+msgstr "删除"
 
 #: main/templates/show.html:424 odk_viewer/templates/instance.html:450
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 #: main/templates/show.html:434
 msgid "bamboo"
-msgstr ""
+msgstr "bamboo斑竹"
 
 #: main/templates/show.html:436
 #, python-format
 msgid ""
 "bamboo dataset: <strong><a "
 "href=\"http://bamboo.io/datasets/%(dataset)s/info\">%(dataset)s</a></strong>"
-msgstr ""
+msgstr "bamboo数据库:<strong><a href=\"http://bamboo.io/datasets/%(dataset)s/info\">%(dataset)s</a></strong>"
 
 #: main/templates/show.html:438
 msgid "bamboo link is <strong>not active</strong>"
-msgstr ""
+msgstr "bamboo链接<strong>没有激活</strong>"
 
 #: main/templates/show.html:439
 msgid "bamboo requires at least one submission."
-msgstr ""
+msgstr "bamboo需要至少一行数据"
 
 #: main/templates/show.html:442
 msgid "Activate"
-msgstr ""
+msgstr "激活"
 
 #: main/templates/show.html:449
 msgid "Sharing"
-msgstr ""
+msgstr "共享"
 
 #: main/templates/show.html:452
 #, python-format
 msgid ""
 "Sharing by link is <strong>on with URL <a "
 "href=\"%(form_url)s\">%(base_url)s%(form_url)s</a></strong>"
-msgstr ""
+msgstr "分享链接<strong>开启，地址：<a href=\"%(form_url)s\">%(base_url)s%(form_url)s</a></strong>"
 
 #: main/templates/show.html:454
 msgid "Sharing by link is <strong>off</strong>"
-msgstr ""
+msgstr "链接共享<strong>关闭</strong>"
 
 #: main/templates/show.html:463
 msgid "Turn off"
-msgstr ""
+msgstr "关闭"
 
 #: main/templates/show.html:463
 msgid "Turn on"
-msgstr ""
+msgstr "开启"
 
 #: main/templates/show.html:477
 #: odk_logger/templates/bulk_submission_form.html:13
@@ -718,21 +718,21 @@ msgstr ""
 #: templates/registration/password_reset_confirm.html:12
 #: templates/registration/password_reset_form.html:22
 msgid "Submit"
-msgstr ""
+msgstr "提交"
 
 #: main/templates/support.html:5 templates/topbar.html:59
 msgid "Support"
-msgstr ""
+msgstr "支持"
 
 #: main/templates/support.html:9
 msgid "Thank you for using formhub!"
-msgstr ""
+msgstr "谢谢你使用formhub！"
 
 #: main/templates/support.html:9
 msgid ""
 "If you need any extra help or have questions about the service below please "
 "consider one of the support options below"
-msgstr ""
+msgstr "如果你需要更多的帮助或是另有问题，请选择以下客户支持选项"
 
 #: main/templates/support.html:14
 #, python-format
@@ -766,7 +766,7 @@ msgstr ""
 
 #: main/templates/tutorial.html:5
 msgid "Introduction"
-msgstr ""
+msgstr "介绍"
 
 #: main/templates/tutorial.html:8
 msgid ""
@@ -776,11 +776,11 @@ msgstr ""
 
 #: main/templates/tutorial.html:11
 msgid "One uses formhub as follows:"
-msgstr ""
+msgstr "以下是formhub的一个实例"
 
 #: main/templates/tutorial.html:13
 msgid "Translate survey into the xsl2xform syntax."
-msgstr ""
+msgstr "把问卷转换为XForm格式"
 
 #: main/templates/tutorial.html:14
 msgid "Upload XLSForm file to formhub."
@@ -788,23 +788,23 @@ msgstr "上传XLS表格到formhub"
 
 #: main/templates/tutorial.html:15 main/templates/tutorial.html.py:16
 msgid "Use"
-msgstr ""
+msgstr "使用"
 
 #: main/templates/tutorial.html:15
 msgid "to download form and submit data."
-msgstr ""
+msgstr "下载表格并提交数据"
 
 #: main/templates/tutorial.html:16
 msgid "to download and map data submissions."
-msgstr ""
+msgstr "下载并在地图上标识调查地点"
 
 #: main/templates/tutorial.html:18
 msgid "This tutorial will walk you through each stop of the way."
-msgstr ""
+msgstr "本教程将带你一步一步走完使用formhub的过程"
 
 #: main/templates/tutorial.html:24
 msgid "Translate survey into the XLSForm syntax"
-msgstr ""
+msgstr "将此问卷转换为XLS表格式"
 
 #: main/templates/tutorial.html:30
 msgid ""
@@ -886,26 +886,26 @@ msgstr ""
 
 #: main/templates/tutorial.html:98
 msgid "Download your published form to your phone."
-msgstr ""
+msgstr "下载已发布的表格到收集"
 
 #: main/templates/tutorial.html:107
 msgid "Fill out the form on your phone."
-msgstr ""
+msgstr "在手机上填表"
 
 #: main/templates/tutorial.html:116
 msgid ""
 "After filling out the form on your phone submit the data to the server."
-msgstr ""
+msgstr "在手机上填好表格之后上传数据到服务器"
 
 #: main/templates/tutorial.html:124
 msgid "Use formhub to download and map data submissions"
-msgstr ""
+msgstr "使用formhub下载并在地图上标识数据地点"
 
 #: main/templates/tutorial.html:130
 msgid ""
 "After submitting data from ODK Collect to the server you can now download "
 "the data as a nicely formatted csv or xls file."
-msgstr ""
+msgstr "将ODK Collect数据上传至服务器之后，您可以以CSV或XLS格式来下载你的数据"
 
 #: main/templates/tutorial.html:140
 msgid "And look at submissions on a map:"
@@ -913,7 +913,7 @@ msgstr "在地图上查看条目"
 
 #: main/templates/user_crowdforms.html:7
 msgid "Crowdforms <small>List of crowdforms you have joined.</small>"
-msgstr ""
+msgstr "Crowdforms<small>加入的Crowdform</small>"
 
 #: main/templates/user_crowdforms.html:18
 msgid "Remove"
@@ -927,34 +927,34 @@ msgstr "XLS至Xform编译器"
 msgid ""
 "If you're looking for the XLS2XForm converter you're in the right place. "
 "We've incorporated the XLS2XForm converter into formhub."
-msgstr ""
+msgstr "在找XLS->Xform转换器？没问题，formhub内可以使用xls2xform转换器。"
 
 #: main/templates/xls2xform.html:11
 msgid "To use it simply:"
-msgstr ""
+msgstr "如要使用，你应该："
 
 #: main/templates/xls2xform.html:14
 #, python-format
 msgid ""
 "<a href=\"%(registration_register)s\">Signup</a> for a free account with "
 "formhub"
-msgstr ""
+msgstr "<a href=\"%(registration_register)s\">注册</a>一个formhub的免费账户"
 
 #: main/templates/xls2xform.html:15
 msgid ""
 "Upload your XLSForm to formhub and it'll instantly be converted to an XForm "
 "which will be available on your phone."
-msgstr ""
+msgstr "将XLS表上传至formhub，我们会自动把他转换成XForm表，你可以把他下载到手机里"
 
 #: main/templates/xls2xform.html:16
 msgid ""
 "If you want to download the XForm, click on the form name and click on "
 "<strong>other</strong> to download the converted XForm"
-msgstr ""
+msgstr "如果你想下载XForm表，点击表格名称然后点击<strong>其他</strong>"
 
 #: odk_logger/import_tools.py:49
 msgid "Too many XML files."
-msgstr ""
+msgstr "太多XML文件"
 
 #: odk_logger/views.py:55
 #, python-format
@@ -965,24 +965,24 @@ msgstr "用户：%s 没有找到"
 msgid ""
 "There was a problem receiving your ODK submission. [Error: IO Error reading "
 "data]"
-msgstr ""
+msgstr "接受ODK提交有误。[错误：IO读取数据]"
 
 #: odk_logger/views.py:77
 #, python-format
 msgid ""
 "Submission successful. Out of %(total)d survey instances, %(success)d were "
 "imported (%(rejected)d were rejected--duplicates, missing forms, etc.)"
-msgstr ""
+msgstr "提交成功。在所有%(total)d 调查问卷中，有%(success)d提交了(%(rejected)d被拒绝－重复，无表等等)"
 
 #: odk_logger/views.py:90
 msgid ""
 "There was a problem receiving your ODK submission. [Error: multiple "
 "submission files (?)]"
-msgstr ""
+msgstr "接受ODK提交有误。[错误：多个提交文件(?)]"
 
 #: odk_logger/views.py:177
 msgid "There should be a single XML submission file."
-msgstr ""
+msgstr "XML提交应为一个文件"
 
 #: odk_logger/views.py:195
 msgid "Username or ID required."
@@ -990,121 +990,121 @@ msgstr "需要用户名或ID"
 
 #: odk_logger/views.py:198
 msgid "Sorry but the crowd form you submitted to is closed."
-msgstr ""
+msgstr "对不起，您要提交的crowdform已经关闭。"
 
 #: odk_logger/views.py:202
 msgid "Received empty submission. No instance was created"
-msgstr ""
+msgstr "提交空白。不创建新数据"
 
 #: odk_logger/views.py:205
 msgid "Form is not active"
-msgstr ""
+msgstr "表格没有激活"
 
 #: odk_logger/views.py:208
 msgid "Form does not exist on this account"
-msgstr ""
+msgstr "该账户没有任何表格"
 
 #: odk_logger/views.py:211
 msgid "Improperly formatted XML."
-msgstr ""
+msgstr "XML格式有误"
 
 #: odk_logger/views.py:213
 msgid "Duplicate submission"
-msgstr ""
+msgstr "重复的提交"
 
 #: odk_logger/views.py:219
 msgid "Unable to create submission."
-msgstr ""
+msgstr "不能生成提交"
 
 #: odk_logger/views.py:237
 msgid "File transfer interruption."
-msgstr ""
+msgstr "上传中断"
 
 #: odk_logger/views.py:273
 #, python-format
 msgid "No XLS file for your form <strong>%(id)s</strong>"
-msgstr ""
+msgstr "你的表格<strong>%(id)s</strong>没有xls文件"
 
 #: odk_logger/management/commands/create_image_thumbnails.py:15
 msgid "Creates thumbnails for all form images and stores them"
-msgstr ""
+msgstr "生成并储存所有图片的缩略图"
 
 #: odk_logger/management/commands/create_image_thumbnails.py:34
 #, python-format
 msgid "Thumbnails created for %(file)s"
-msgstr ""
+msgstr "%(file)s的缩略图生成了"
 
 #: odk_logger/management/commands/create_image_thumbnails.py:37
 #, python-format
 msgid "Problem with the file %(file)s"
-msgstr ""
+msgstr "%(file)s文件出问题了"
 
 #: odk_logger/management/commands/create_image_thumbnails.py:40
 #, python-format
 msgid "Error on %(filename)s: %(error)s"
-msgstr ""
+msgstr "%(filename)s错误: %(error)s"
 
 #: odk_logger/management/commands/export_xforms_and_instances.py:17
 msgid "Export ODK forms and instances to JSON."
-msgstr ""
+msgstr "将ODK表输出为JSON"
 
 #: odk_logger/management/commands/import.py:11
 #: odk_logger/management/commands/import_tools.py:20
 #: odk_viewer/management/commands/import.py:11
 msgid "Import ODK forms and instances."
-msgstr ""
+msgstr "上传ODK表"
 
 #: odk_logger/management/commands/import_forms.py:11
 #: odk_viewer/management/commands/import_forms.py:11
 msgid "Import a folder of XForms for ODK."
-msgstr ""
+msgstr "上传ODK的XForm文件夹"
 
 #: odk_logger/management/commands/import_instances.py:12
 #: odk_viewer/management/commands/import_instances.py:12
 msgid "Import a folder of ODK instances."
-msgstr ""
+msgstr "上传ODK文件夹"
 
 #: odk_logger/management/commands/import_tools.py:26
 #, python-format
 msgid "[Importing XForm Instances from %(path)s]\n"
-msgstr ""
+msgstr "[从%(path)s上传XForm]\\n"
 
 #: odk_logger/management/commands/import_tools.py:30
 msgid "Before Parse:"
-msgstr ""
+msgstr "解析前:"
 
 #: odk_logger/management/commands/import_tools.py:31
 #: odk_logger/management/commands/import_tools.py:38
 #, python-format
 msgid " --> Images:    %(nb)d"
-msgstr ""
+msgstr "-->图像:  %(nb)d"
 
 #: odk_logger/management/commands/import_tools.py:32
 #: odk_logger/management/commands/import_tools.py:39
 #, python-format
 msgid " --> Instances: %(nb)d"
-msgstr ""
+msgstr "-->单表: %(nb)d"
 
 #: odk_logger/management/commands/import_tools.py:37
 msgid "After Parse:"
-msgstr ""
+msgstr "解析后"
 
 #: odk_logger/management/commands/move_media_to_s3.py:15
 msgid ""
 "Moves all attachments and xls files to s3 from the local file system "
 "storage."
-msgstr ""
+msgstr "把所有本地文件移至亚马逊s3"
 
 #: odk_logger/management/commands/move_media_to_s3.py:23
 msgid ""
 "Missing necessary libraries. Try running: pip install -r requirements-s3.pip"
-msgstr ""
+msgstr "缺失必要程序库。试一试 pip install -r requirements-s3.pip"
 
 #: odk_logger/management/commands/move_media_to_s3.py:28
 msgid ""
 "You must first set your default storage to s3 in your local_settings.py "
 "file."
-msgstr ""
+msgstr "你需要在local_settings.py文件里指定s3默认储存"
 
 #: odk_logger/management/commands/move_media_to_s3.py:37
 #, python-format
@@ -1116,27 +1116,27 @@ msgstr "将%(class)ss 移至s3..."
 msgid ""
 "\t+ '%(fname)s'\n"
 "\t---> '%(url)s'"
-msgstr ""
+msgstr "»+ '%(fname)s'\\n »---> '%(url)s'"
 
 #: odk_logger/models/xform.py:41
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: odk_logger/models/xform.py:61
 msgid "XForms"
-msgstr ""
+msgstr "XForm表"
 
 #: odk_logger/models/xform.py:64
 msgid "Can view associated data"
-msgstr ""
+msgstr "可以查看相关数据"
 
 #: odk_logger/models/xform.py:86
 msgid "There should be a single id string."
-msgstr ""
+msgstr "只能有一个ID"
 
 #: odk_logger/models/xform.py:93
 msgid "There should be a single title."
-msgstr ""
+msgstr "只能有一个标题"
 
 #: odk_logger/models/xform.py:104
 msgid ""
@@ -1145,15 +1145,15 @@ msgstr ""
 
 #: odk_logger/models/xform.py:113
 msgid "Submission Count"
-msgstr ""
+msgstr "提交条目总数"
 
 #: odk_logger/templates/base.html:9
 msgid "XForm Manager:"
-msgstr ""
+msgstr "XForm表管理员"
 
 #: odk_logger/templates/base.html:15
 msgid "XForm Manager"
-msgstr ""
+msgstr "XForm表管理员"
 
 #: odk_logger/templates/bulk_submission_form.html:4
 #: odk_logger/templates/form.html:4
@@ -1170,23 +1170,23 @@ msgstr "表格ID"
 
 #: odk_logger/templates/list_xforms.html:8
 msgid "Number of Submissions"
-msgstr ""
+msgstr "提交条目总数"
 
 #: odk_logger/templates/list_xforms.html:9
 msgid "Time of Last Submission"
-msgstr ""
+msgstr "上个提交时间"
 
 #: odk_logger/templates/list_xforms.html:10
 msgid "CSV"
-msgstr ""
+msgstr "CSV"
 
 #: odk_logger/templates/list_xforms.html:19
 msgid "yes"
-msgstr ""
+msgstr "是"
 
 #: odk_logger/templates/list_xforms.html:21
 msgid "no"
-msgstr ""
+msgstr "不是"
 
 #: odk_logger/templates/list_xforms.html:32
 msgid "Download CSV"
@@ -1210,12 +1210,12 @@ msgstr "XForm列表"
 
 #: odk_viewer/reparse.py:33
 msgid "[Reparsing XForm Instances]\n"
-msgstr ""
+msgstr "[重新解析XForm]\\n"
 
 #: odk_viewer/reparse.py:52
 #, python-format
 msgid "That process took [%(nb)d ticks]"
-msgstr ""
+msgstr "这个过程共用[%(nb)d ticks]"
 
 #: odk_viewer/views.py:59
 msgid "Start time format must be YY_MM_DD_hh_mm_ss"
@@ -1227,7 +1227,7 @@ msgstr "结束时间格式应为年_月_日_时_分_秒（每个数字两位）"
 
 #: odk_viewer/views.py:185 odk_viewer/views.py:222
 msgid "No records found to export"
-msgstr ""
+msgstr "没有可输出的记录"
 
 #: odk_viewer/views.py:364
 msgid "Attachment not found"
@@ -1235,12 +1235,12 @@ msgstr "没有找到附件"
 
 #: odk_viewer/management/commands/mark_start_times.py:7
 msgid "This is a one-time command to mark start times of old surveys."
-msgstr ""
+msgstr "这是一个用来标示旧调查问卷起始时间的一次性命令"
 
 #: odk_viewer/management/commands/mark_start_times.py:16
 #, python-format
 msgid "Could not mark start time for DD: %(data)s"
-msgstr ""
+msgstr "不能标示起始时间 DD:%(data)s"
 
 #: odk_viewer/management/commands/push_develop.py:7
 msgid ""
@@ -1253,11 +1253,11 @@ msgstr ""
 
 #: odk_viewer/management/commands/relink.py:6
 msgid "Relink all instances with the current forms."
-msgstr ""
+msgstr "以当前表格重新连接有关数据"
 
 #: odk_viewer/management/commands/remongo.py:9
 msgid "Insert all existing parsed instances into MongoDB"
-msgstr ""
+msgstr "将所有解析的数据输入到MongoDB里面"
 
 #: odk_viewer/management/commands/remongo.py:14
 msgid "Number of records to process per query"
@@ -1265,15 +1265,15 @@ msgstr ""
 
 #: odk_viewer/management/commands/remongo.py:16
 msgid "Username of the form user"
-msgstr ""
+msgstr "表格用户的用户名"
 
 #: odk_viewer/management/commands/remongo.py:18
 msgid "id string of the form"
-msgstr ""
+msgstr "表格的ID"
 
 #: odk_viewer/management/commands/reparse.py:9
 msgid "Delete and recreate parsed instances."
-msgstr ""
+msgstr "删除并重新解析数据"
 
 #: odk_viewer/management/commands/set_uuid_in_xml.py:9
 msgid "Insert UUID into XML of all existing XForms"
@@ -1282,12 +1282,12 @@ msgstr ""
 #: odk_viewer/management/commands/set_uuid_in_xml.py:12
 #, python-format
 msgid "%(nb)d XForms to update"
-msgstr ""
+msgstr "%(nb)d XForm要更新..."
 
 #: odk_viewer/management/commands/set_uuid_in_xml.py:19
 #, python-format
 msgid "Updated %(nb)d XForms..."
-msgstr ""
+msgstr "%(nb)d XForm已更新..."
 
 #: odk_viewer/management/commands/update_delete_from_mongo.py:12
 msgid "Update deleted records from mongo to sql instances"
@@ -1295,7 +1295,7 @@ msgstr ""
 
 #: odk_viewer/templates/data_view.html:16
 msgid "Display Fields"
-msgstr ""
+msgstr "显示项"
 
 #: odk_viewer/templates/data_view.html:45
 msgid ""
@@ -1317,7 +1317,7 @@ msgstr ""
 
 #: odk_viewer/templates/instance.html:18
 msgid "Browse Form Data"
-msgstr ""
+msgstr "浏览表格数据"
 
 #: odk_viewer/templates/instance.html:31
 msgid "Record {pos} of {total}"
@@ -1326,93 +1326,93 @@ msgstr ""
 #: odk_viewer/templates/instance.html:166
 #: odk_viewer/templates/instance.html:203
 msgid "BAD REQUEST"
-msgstr ""
+msgstr "不良请求"
 
 #: odk_viewer/templates/instance.html:310
 msgid "The requested content was not found."
-msgstr ""
+msgstr "需求内容没找到"
 
 #: odk_viewer/templates/instance.html:322
 msgid "Change Language:"
-msgstr ""
+msgstr "更换语言"
 
 #: odk_viewer/templates/instance.html:338
 msgid "Record 1 of 6"
-msgstr ""
+msgstr "1至6"
 
 #: odk_viewer/templates/instance.html:342
 msgid "← Previous"
-msgstr ""
+msgstr "上页"
 
 #: odk_viewer/templates/instance.html:342
 msgid "Next →"
-msgstr ""
+msgstr "下页"
 
 #: odk_viewer/templates/instance.html:354 odk_viewer/templates/survey.html:20
 msgid "Question"
-msgstr ""
+msgstr "问题"
 
 #: odk_viewer/templates/instance.html:354 odk_viewer/templates/survey.html:21
 msgid "Response"
-msgstr ""
+msgstr "答复"
 
 #: odk_viewer/templates/instance.html:446
 msgid ""
 "Are you sure you want to delete this data. If you are unsure about deleting "
 "this form press 'Cancel'."
-msgstr ""
+msgstr "确定要删除数据？如果不确定请点击'取消'"
 
 #: restservice/forms.py:9
 msgid "Service Name"
-msgstr ""
+msgstr "服务名称"
 
 #: restservice/forms.py:12 restservice/models.py:14
 msgid "Service URL"
-msgstr ""
+msgstr "服务URL地址"
 
 #: restservice/views.py:31
 msgid "Service already defined."
-msgstr ""
+msgstr "服务已经被定义"
 
 #: restservice/views.py:35
 #, python-format
 msgid "Successfully added service %(name)s."
-msgstr ""
+msgstr "成功添加%(name)s服务"
 
 #: restservice/views.py:40
 msgid "Please fill in all required fields"
-msgstr ""
+msgstr "请填写所有必要项"
 
 #: restservice/templates/add-service.html:15
 msgid "Add service"
-msgstr ""
+msgstr "添加服务"
 
 #: staff/management/commands/mailer.py:15
 msgid "Send an email to all formhub users"
-msgstr ""
+msgstr "给所有formhub用户发邮件"
 
 #: staff/management/commands/mailer.py:29
 msgid "message must be included in kwargs"
-msgstr ""
+msgstr "kwargs需要有提交信息"
 
 #: staff/management/commands/mailer.py:36
 #, python-format
 msgid "Emailing name: %(name)s, email: %(email)s"
-msgstr ""
+msgstr "发邮件 姓名%(name)s，电子邮件地址%(email)s"
 
 #: staff/templates/stats.html:4
 msgid "Stats"
-msgstr ""
+msgstr "统计"
 
 #: staff/templates/submissions.html:32
 #, python-format
 msgid "Submissions (%(nb_sub)s)"
-msgstr ""
+msgstr "提交条目(%(nb_sub)s)"
 
 #: staff/templates/templated_email/notice.email:1
 #, python-format
 msgid "formhub notification for %(username)s"
-msgstr ""
+msgstr "%(username)s的formhub提示"
 
 #: staff/templates/templated_email/notice.email:3
 #, python-format
@@ -1451,11 +1451,11 @@ msgstr ""
 
 #: templates/404.html:5
 msgid "404 Error"
-msgstr ""
+msgstr "404错误：未找到"
 
 #: templates/500.html:5
 msgid "500 Error"
-msgstr ""
+msgstr "500错误：无法处理"
 
 #: templates/500.html:9
 msgid ""
@@ -1466,19 +1466,19 @@ msgstr ""
 
 #: templates/browser_message.html:17
 msgid "Browser Error"
-msgstr ""
+msgstr "浏览器错误"
 
 #: templates/browser_message.html:19
 msgid "close"
-msgstr ""
+msgstr "关闭"
 
 #: templates/browser_message.html:24
 msgid "Recommended Browser Alert"
-msgstr ""
+msgstr "建议浏览器"
 
 #: templates/browser_message.html:28
 msgid "Dear Sir or Madam,"
-msgstr ""
+msgstr "尊敬的先生／女士："
 
 #: templates/browser_message.html:31
 msgid ""
@@ -1486,85 +1486,85 @@ msgid ""
 "support complex navigation. We highly recommend that you switch to one of "
 "the browsers below in order to take full advantage of the Nigeria MDGs "
 "Information System."
-msgstr ""
+msgstr "我们的测试结果表明您目前的浏览器无法处理复杂的任务。为了更好的使用尼日利亚千年计划信息系统，我们建议您在以下几个浏览器中选一。"
 
 #: templates/browser_message.html:42
 msgid "Thank You,"
-msgstr ""
+msgstr "谢谢"
 
 #: templates/browser_message.html:45
 msgid "The NMIS Support Team"
-msgstr ""
+msgstr "尼日利亚千年计划信息系统支持团队"
 
 #: templates/footer.html:5
 msgid ""
 "Built by the <a href=\"http://modi.mech.columbia.edu/\">Modi Research "
 "Group</a> at Columbia University."
-msgstr ""
+msgstr "哥伦比亚大学 <a href=\"http://modi.mech.columbia.edu/\">MODI研究小组</a>建"
 
 #: templates/footer.html:8
 msgid ""
 "Code (BSD License) at <a "
 "href=\"https://github.com/modilabs/formhub\">github.com/modilabs/formhub</a>"
-msgstr ""
+msgstr "源代码(BSD许可证)可由<a href=\"https://github.com/modilabs/formhub\">github.com/modilabs/formhub</a>下载"
 
 #: templates/footer.html:10
 msgid "Copyright &copy; 2012, formhub.org"
-msgstr ""
+msgstr "版权所有&copy; 2012, formhub.org"
 
 #: templates/main_index.html:9
 msgid "View LGAs"
-msgstr ""
+msgstr "浏览LGA"
 
 #: templates/resources.html:4
 msgid "Resources"
-msgstr ""
+msgstr "资源"
 
 #: templates/topbar.html:25
 #, python-format
 msgid "%(nb_sub)s submissions"
-msgstr ""
+msgstr "%(nb_sub)s 个提交"
 
 #: templates/topbar.html:55
 msgid "Forms"
-msgstr ""
+msgstr "表格"
 
 #: templates/topbar.html:56
 msgid "People"
-msgstr ""
+msgstr "人"
 
 #: templates/topbar.html:57
 msgid "About"
-msgstr ""
+msgstr "关于"
 
 #: templates/topbar.html:58
 msgid "Syntax"
-msgstr ""
+msgstr "格式"
 
 #: templates/topbar.html:60
 msgid "Blog"
-msgstr ""
+msgstr "博客"
 
 #: templates/topbar.html:65
 msgid "New Form"
-msgstr ""
+msgstr "新表格"
 
 #: templates/topbar.html:72
 msgid "Public profile"
-msgstr ""
+msgstr "公共个人资料"
 
 #: templates/topbar.html:76
 msgid "Sign out"
-msgstr ""
+msgstr "登出"
 
 #: templates/topbar.html:80 templates/registration/login.html:7
 #: templates/registration/login.html:18
 msgid "Sign in"
-msgstr ""
+msgstr "登入"
 
 #: templates/registration/activate.html:7
 msgid "Account Activated"
-msgstr ""
+msgstr "帐号被激活了"
 
 #: templates/registration/activate.html:14
 #, python-format
@@ -1583,106 +1583,106 @@ msgid ""
 "http://%(site_domain)s%(register_url)s\n"
 "\n"
 "The link above is valid for %(expiration_days)s day%(expiration_days_p)s.\n"
-msgstr ""
+msgstr "你已在%(site_name)s注册了，请点击以下链接来激活账户\\n\\nhttp://%(site_domain)s%(register_url)s\\n\\n以上链接有效日期%(expiration_days)s 天%(expiration_days_p)s.\\n"
 
 #: templates/registration/activation_email_subject.txt:1
 #, python-format
 msgid "Account activation on %(site_name)s"
-msgstr ""
+msgstr "%(site_name)s账户激活"
 
 #: templates/registration/login.html:26
 #, python-format
 msgid ""
 "Can't access your account? <a href=\"%(reset_url)s\">Reset your "
 "password.</a>"
-msgstr ""
+msgstr "不能访问你的账户?<a href=\"%(reset_url)s\">重设密码</a>"
 
 #: templates/registration/login.html:28
 #, python-format
 msgid "New to formhub? <a href=\"%(registration_url)s\">Create an account.</a>"
-msgstr ""
+msgstr "新来到formhub? <a href=\"%(registration_url)s\">新建一个账户</a>"
 
 #: templates/registration/logout.html:7
 msgid "Successful Logout"
-msgstr ""
+msgstr "成功登出"
 
 #: templates/registration/logout.html:11
 msgid "Thank you for using formhub, please come again!"
-msgstr ""
+msgstr "谢谢你使用formhub，欢迎再来！"
 
 #: templates/registration/password_change_done.html:6
 msgid "Password changed"
-msgstr ""
+msgstr "密码已改"
 
 #: templates/registration/password_change_form.html:7
 #: templates/registration/password_change_form.html:17
 msgid "Change Password"
-msgstr ""
+msgstr "修改密码"
 
 #: templates/registration/password_reset_complete.html:4
 msgid "Log In"
-msgstr ""
+msgstr "登入"
 
 #: templates/registration/password_reset_complete.html:8
 msgid "Password reset successfully"
-msgstr ""
+msgstr "修改密码成功"
 
 #: templates/registration/password_reset_complete.html:10
 msgid "Log in"
-msgstr ""
+msgstr "登入"
 
 #: templates/registration/password_reset_confirm.html:17
 msgid "Password reset failed"
-msgstr ""
+msgstr "密码修改失败"
 
 #: templates/registration/password_reset_done.html:7
 msgid "Email Sent"
-msgstr ""
+msgstr "邮件已发"
 
 #: templates/registration/password_reset_done.html:10
 msgid "An email with password reset instructions has been sent."
-msgstr ""
+msgstr "重设密码指导邮件已发出"
 
 #: templates/registration/password_reset_email.html:2
 #, python-format
 msgid "Reset password at %(site_name)s"
-msgstr ""
+msgstr "%(site_name)s 重设密码"
 
 #: templates/registration/password_reset_form.html:7
 msgid "Password Reset"
-msgstr ""
+msgstr "密码重设"
 
 #: templates/registration/password_reset_form.html:11
 msgid ""
 "To reset your password please enter your email address below. A\n"
 "    message will be sent to your email address with a link for you to\n"
 "    reset your password."
-msgstr ""
+msgstr "请在下面填写你的电子邮件地址以来重设密码。你会收到一封邮件内附密码重设链接。"
 
 #: templates/registration/registration_complete.html:7
 msgid "Registration Email Sent"
-msgstr ""
+msgstr "注册邮件已发出"
 
 #: templates/registration/registration_complete.html:10
 msgid ""
 "A user account has been created for you and an email message has\n"
 "    been sent to the email address you provided."
-msgstr ""
+msgstr "你的账户已经建立，我们已发邮件到你提供的地址。"
 
 #: templates/registration/registration_complete.html:14
 msgid ""
 "To activate your account and complete the registration process,\n"
 "    you must click the activation link provided in the email."
-msgstr ""
+msgstr "你需要点击你邮件中的激活链接来激活你的账号并完成注册。"
 
 #: templates/registration/registration_form.html:7
 #: templates/registration/registration_form.html:30
 msgid "Register"
-msgstr ""
+msgstr "注册"
 
 #: templates/registration/registration_form.html:14
 msgid "Fields marked wth an asterisk (*) are required."
-msgstr ""
+msgstr "带星号的(*)为必填"
 
 #: templates/registration/registration_form.html:29
 msgid ""
@@ -1696,990 +1696,990 @@ msgstr ""
 
 #: utils/country_field.py:6
 msgid "Andorra"
-msgstr ""
+msgstr "安道拉"
 
 #: utils/country_field.py:7
 msgid "United Arab Emirates"
-msgstr ""
+msgstr "阿拉伯联合酋长国"
 
 #: utils/country_field.py:8
 msgid "Afghanistan"
-msgstr ""
+msgstr "阿富汗"
 
 #: utils/country_field.py:9
 msgid "Antigua & Barbuda"
-msgstr ""
+msgstr "安提瓜和巴布达"
 
 #: utils/country_field.py:10
 msgid "Anguilla"
-msgstr ""
+msgstr "安圭拉"
 
 #: utils/country_field.py:11
 msgid "Albania"
-msgstr ""
+msgstr "阿尔巴尼亚"
 
 #: utils/country_field.py:12
 msgid "Armenia"
-msgstr ""
+msgstr "亚美尼亚"
 
 #: utils/country_field.py:13
 msgid "Netherlands Antilles"
-msgstr ""
+msgstr "荷属安的列斯"
 
 #: utils/country_field.py:14
 msgid "Angola"
-msgstr ""
+msgstr "安哥拉"
 
 #: utils/country_field.py:15
 msgid "Antarctica"
-msgstr ""
+msgstr "南极"
 
 #: utils/country_field.py:16
 msgid "Argentina"
-msgstr ""
+msgstr "阿根廷"
 
 #: utils/country_field.py:17
 msgid "American Samoa"
-msgstr ""
+msgstr "美属萨摩亚"
 
 #: utils/country_field.py:18
 msgid "Austria"
-msgstr ""
+msgstr "奥地利"
 
 #: utils/country_field.py:19
 msgid "Australia"
-msgstr ""
+msgstr "澳大利亚"
 
 #: utils/country_field.py:20
 msgid "Aruba"
-msgstr ""
+msgstr "阿鲁巴"
 
 #: utils/country_field.py:21
 msgid "Azerbaijan"
-msgstr ""
+msgstr "阿塞拜疆"
 
 #: utils/country_field.py:22
 msgid "Bosnia and Herzegovina"
-msgstr ""
+msgstr "波斯尼亚和黑塞哥维那"
 
 #: utils/country_field.py:23
 msgid "Barbados"
-msgstr ""
+msgstr "巴巴多斯"
 
 #: utils/country_field.py:24
 msgid "Bangladesh"
-msgstr ""
+msgstr "孟加拉"
 
 #: utils/country_field.py:25
 msgid "Belgium"
-msgstr ""
+msgstr "比利时"
 
 #: utils/country_field.py:26
 msgid "Burkina Faso"
-msgstr ""
+msgstr "布基纳法索"
 
 #: utils/country_field.py:27
 msgid "Bulgaria"
-msgstr ""
+msgstr "保加利亚"
 
 #: utils/country_field.py:28
 msgid "Bahrain"
-msgstr ""
+msgstr "巴林"
 
 #: utils/country_field.py:29
 msgid "Burundi"
-msgstr ""
+msgstr "布隆迪"
 
 #: utils/country_field.py:30
 msgid "Benin"
-msgstr ""
+msgstr "贝宁"
 
 #: utils/country_field.py:31
 msgid "Bermuda"
-msgstr ""
+msgstr "百慕大"
 
 #: utils/country_field.py:32
 msgid "Brunei Darussalam"
-msgstr ""
+msgstr "文莱"
 
 #: utils/country_field.py:33
 msgid "Bolivia"
-msgstr ""
+msgstr "玻利维亚"
 
 #: utils/country_field.py:34
 msgid "Brazil"
-msgstr ""
+msgstr "巴西"
 
 #: utils/country_field.py:35
 msgid "Bahama"
-msgstr ""
+msgstr "巴哈马"
 
 #: utils/country_field.py:36
 msgid "Bhutan"
-msgstr ""
+msgstr "不丹"
 
 #: utils/country_field.py:37
 msgid "Bouvet Island"
-msgstr ""
+msgstr "布韦岛"
 
 #: utils/country_field.py:38
 msgid "Botswana"
-msgstr ""
+msgstr "博茨瓦纳"
 
 #: utils/country_field.py:39
 msgid "Belarus"
-msgstr ""
+msgstr "白俄罗斯"
 
 #: utils/country_field.py:40
 msgid "Belize"
-msgstr ""
+msgstr "伯利兹"
 
 #: utils/country_field.py:41
 msgid "Canada"
-msgstr ""
+msgstr "加拿大"
 
 #: utils/country_field.py:42
 msgid "Cocos (Keeling) Islands"
-msgstr ""
+msgstr "科科岛"
 
 #: utils/country_field.py:43
 msgid "Central African Republic"
-msgstr ""
+msgstr "中非共和国"
 
 #: utils/country_field.py:44
 msgid "Congo"
-msgstr ""
+msgstr "刚果"
 
 #: utils/country_field.py:45
 msgid "Switzerland"
-msgstr ""
+msgstr "瑞士"
 
 #: utils/country_field.py:46
 msgid "Ivory Coast"
-msgstr ""
+msgstr "科特迪瓦"
 
 #: utils/country_field.py:47
 msgid "Cook Iislands"
-msgstr ""
+msgstr "库克群岛"
 
 #: utils/country_field.py:48
 msgid "Chile"
-msgstr ""
+msgstr "智利"
 
 #: utils/country_field.py:49
 msgid "Cameroon"
-msgstr ""
+msgstr "喀麦隆"
 
 #: utils/country_field.py:50
 msgid "China"
-msgstr ""
+msgstr "中国"
 
 #: utils/country_field.py:51
 msgid "Colombia"
-msgstr ""
+msgstr "哥伦比亚"
 
 #: utils/country_field.py:52
 msgid "Costa Rica"
-msgstr ""
+msgstr "哥斯达黎加"
 
 #: utils/country_field.py:53
 msgid "Cuba"
-msgstr ""
+msgstr "古巴"
 
 #: utils/country_field.py:54
 msgid "Cape Verde"
-msgstr ""
+msgstr "佛得角"
 
 #: utils/country_field.py:55
 msgid "Christmas Island"
-msgstr ""
+msgstr "圣诞岛"
 
 #: utils/country_field.py:56
 msgid "Cyprus"
-msgstr ""
+msgstr "塞浦路斯"
 
 #: utils/country_field.py:57
 msgid "Czech Republic"
-msgstr ""
+msgstr "捷克共和国"
 
 #: utils/country_field.py:58
 msgid "Germany"
-msgstr ""
+msgstr "德国"
 
 #: utils/country_field.py:59
 msgid "Djibouti"
-msgstr ""
+msgstr "吉布提"
 
 #: utils/country_field.py:60
 msgid "Denmark"
-msgstr ""
+msgstr "丹麦"
 
 #: utils/country_field.py:61
 msgid "Dominica"
-msgstr ""
+msgstr "多米尼克"
 
 #: utils/country_field.py:62
 msgid "Dominican Republic"
-msgstr ""
+msgstr "多米尼加共和国"
 
 #: utils/country_field.py:63
 msgid "Algeria"
-msgstr ""
+msgstr "阿尔及利亚"
 
 #: utils/country_field.py:64
 msgid "Ecuador"
-msgstr ""
+msgstr "厄瓜多尔"
 
 #: utils/country_field.py:65
 msgid "Estonia"
-msgstr ""
+msgstr "爱沙尼亚"
 
 #: utils/country_field.py:66
 msgid "Egypt"
-msgstr ""
+msgstr "埃及"
 
 #: utils/country_field.py:67
 msgid "Western Sahara"
-msgstr ""
+msgstr "西撒哈拉"
 
 #: utils/country_field.py:68
 msgid "Eritrea"
-msgstr ""
+msgstr "厄里特利亚"
 
 #: utils/country_field.py:69
 msgid "Spain"
-msgstr ""
+msgstr "西班牙"
 
 #: utils/country_field.py:70
 msgid "Ethiopia"
-msgstr ""
+msgstr "埃塞俄比亚"
 
 #: utils/country_field.py:71
 msgid "Finland"
-msgstr ""
+msgstr "芬兰"
 
 #: utils/country_field.py:72
 msgid "Fiji"
-msgstr ""
+msgstr "斐济"
 
 #: utils/country_field.py:73
 msgid "Falkland Islands (Malvinas)"
-msgstr ""
+msgstr "福克兰群岛(马尔维纳斯)"
 
 #: utils/country_field.py:74
 msgid "Micronesia"
-msgstr ""
+msgstr "密克罗尼西亚"
 
 #: utils/country_field.py:75
 msgid "Faroe Islands"
-msgstr ""
+msgstr "法罗群岛"
 
 #: utils/country_field.py:76
 msgid "France"
-msgstr ""
+msgstr "法国"
 
 #: utils/country_field.py:77
 msgid "France, Metropolitan"
-msgstr ""
+msgstr "法国本土"
 
 #: utils/country_field.py:78
 msgid "Gabon"
-msgstr ""
+msgstr "加蓬"
 
 #: utils/country_field.py:79
 msgid "United Kingdom (Great Britain)"
-msgstr ""
+msgstr "英国"
 
 #: utils/country_field.py:80
 msgid "Grenada"
-msgstr ""
+msgstr "格林纳达"
 
 #: utils/country_field.py:81
 msgid "Georgia"
-msgstr ""
+msgstr "格鲁吉亚"
 
 #: utils/country_field.py:82
 msgid "French Guiana"
-msgstr ""
+msgstr "法属圭亚那"
 
 #: utils/country_field.py:83
 msgid "Ghana"
-msgstr ""
+msgstr "加纳"
 
 #: utils/country_field.py:84
 msgid "Gibraltar"
-msgstr ""
+msgstr "直布罗陀"
 
 #: utils/country_field.py:85
 msgid "Greenland"
-msgstr ""
+msgstr "格陵兰"
 
 #: utils/country_field.py:86
 msgid "Gambia"
-msgstr ""
+msgstr "甘比亚"
 
 #: utils/country_field.py:87
 msgid "Guinea"
-msgstr ""
+msgstr "几内亚"
 
 #: utils/country_field.py:88
 msgid "Guadeloupe"
-msgstr ""
+msgstr "瓜德罗普"
 
 #: utils/country_field.py:89
 msgid "Equatorial Guinea"
-msgstr ""
+msgstr "赤道几内亚"
 
 #: utils/country_field.py:90
 msgid "Greece"
-msgstr ""
+msgstr "希腊"
 
 #: utils/country_field.py:91
 msgid "South Georgia and the South Sandwich Islands"
-msgstr ""
+msgstr "南乔治亚岛和南桑威奇群岛"
 
 #: utils/country_field.py:92
 msgid "Guatemala"
-msgstr ""
+msgstr "危地马拉"
 
 #: utils/country_field.py:93
 msgid "Guam"
-msgstr ""
+msgstr "关岛"
 
 #: utils/country_field.py:94
 msgid "Guinea-Bissau"
-msgstr ""
+msgstr "几内亚－比绍"
 
 #: utils/country_field.py:95
 msgid "Guyana"
-msgstr ""
+msgstr "圭亚那"
 
 #: utils/country_field.py:96
 msgid "Hong Kong"
-msgstr ""
+msgstr "中国香港"
 
 #: utils/country_field.py:97
 msgid "Heard & McDonald Islands"
-msgstr ""
+msgstr "赫德岛和麦克唐纳群岛"
 
 #: utils/country_field.py:98
 msgid "Honduras"
-msgstr ""
+msgstr "洪都拉斯"
 
 #: utils/country_field.py:99
 msgid "Croatia"
-msgstr ""
+msgstr "克罗地亚"
 
 #: utils/country_field.py:100
 msgid "Haiti"
-msgstr ""
+msgstr "海地"
 
 #: utils/country_field.py:101
 msgid "Hungary"
-msgstr ""
+msgstr "匈牙利"
 
 #: utils/country_field.py:102
 msgid "Indonesia"
-msgstr ""
+msgstr "印度尼西亚"
 
 #: utils/country_field.py:103
 msgid "Ireland"
-msgstr ""
+msgstr "爱尔兰"
 
 #: utils/country_field.py:104
 msgid "Israel"
-msgstr ""
+msgstr "以色列"
 
 #: utils/country_field.py:105
 msgid "India"
-msgstr ""
+msgstr "印度"
 
 #: utils/country_field.py:106
 msgid "British Indian Ocean Territory"
-msgstr ""
+msgstr "英属印度洋领地"
 
 #: utils/country_field.py:107
 msgid "Iraq"
-msgstr ""
+msgstr "伊拉克"
 
 #: utils/country_field.py:108
 msgid "Islamic Republic of Iran"
-msgstr ""
+msgstr "伊朗伊斯兰共和国"
 
 #: utils/country_field.py:109
 msgid "Iceland"
-msgstr ""
+msgstr "冰岛"
 
 #: utils/country_field.py:110
 msgid "Italy"
-msgstr ""
+msgstr "意大利"
 
 #: utils/country_field.py:111
 msgid "Jamaica"
-msgstr ""
+msgstr "牙买加"
 
 #: utils/country_field.py:112
 msgid "Jordan"
-msgstr ""
+msgstr "约旦"
 
 #: utils/country_field.py:113
 msgid "Japan"
-msgstr ""
+msgstr "日本"
 
 #: utils/country_field.py:114
 msgid "Kenya"
-msgstr ""
+msgstr "肯尼亚"
 
 #: utils/country_field.py:115
 msgid "Kyrgyzstan"
-msgstr ""
+msgstr "吉尔吉斯斯坦"
 
 #: utils/country_field.py:116
 msgid "Cambodia"
-msgstr ""
+msgstr "柬埔寨"
 
 #: utils/country_field.py:117
 msgid "Kiribati"
-msgstr ""
+msgstr "基里巴斯"
 
 #: utils/country_field.py:118
 msgid "Comoros"
-msgstr ""
+msgstr "科摩罗群岛"
 
 #: utils/country_field.py:119
 msgid "St. Kitts and Nevis"
-msgstr ""
+msgstr "圣基茨和尼维斯"
 
 #: utils/country_field.py:120
 msgid "Korea, Democratic People's Republic of"
-msgstr ""
+msgstr "朝鲜民主主义共和国"
 
 #: utils/country_field.py:121
 msgid "Korea, Republic of"
-msgstr ""
+msgstr "韩国"
 
 #: utils/country_field.py:122
 msgid "Kuwait"
-msgstr ""
+msgstr "科威特"
 
 #: utils/country_field.py:123
 msgid "Cayman Islands"
-msgstr ""
+msgstr "开曼群岛"
 
 #: utils/country_field.py:124
 msgid "Kazakhstan"
-msgstr ""
+msgstr "哈萨克斯坦"
 
 #: utils/country_field.py:125
 msgid "Lao People's Democratic Republic"
-msgstr ""
+msgstr "老挝人民民主共和国"
 
 #: utils/country_field.py:126
 msgid "Lebanon"
-msgstr ""
+msgstr "黎巴嫩"
 
 #: utils/country_field.py:127
 msgid "Saint Lucia"
-msgstr ""
+msgstr "圣卢西亚"
 
 #: utils/country_field.py:128
 msgid "Liechtenstein"
-msgstr ""
+msgstr "列支敦士登"
 
 #: utils/country_field.py:129
 msgid "Sri Lanka"
-msgstr ""
+msgstr "斯里兰卡"
 
 #: utils/country_field.py:130
 msgid "Liberia"
-msgstr ""
+msgstr "利比里亚"
 
 #: utils/country_field.py:131
 msgid "Lesotho"
-msgstr ""
+msgstr "莱索托"
 
 #: utils/country_field.py:132
 msgid "Lithuania"
-msgstr ""
+msgstr "立陶宛"
 
 #: utils/country_field.py:133
 msgid "Luxembourg"
-msgstr ""
+msgstr "卢森堡"
 
 #: utils/country_field.py:134
 msgid "Latvia"
-msgstr ""
+msgstr "拉脱维亚"
 
 #: utils/country_field.py:135
 msgid "Libyan Arab Jamahiriya"
-msgstr ""
+msgstr "利比亚"
 
 #: utils/country_field.py:136
 msgid "Morocco"
-msgstr ""
+msgstr "摩洛哥"
 
 #: utils/country_field.py:137
 msgid "Monaco"
-msgstr ""
+msgstr "摩纳哥"
 
 #: utils/country_field.py:138
 msgid "Moldova, Republic of"
-msgstr ""
+msgstr "摩尔多瓦共和国"
 
 #: utils/country_field.py:139
 msgid "Madagascar"
-msgstr ""
+msgstr "马达加斯加"
 
 #: utils/country_field.py:140
 msgid "Marshall Islands"
-msgstr ""
+msgstr "马绍尔群岛"
 
 #: utils/country_field.py:141
 msgid "Mali"
-msgstr ""
+msgstr "马里"
 
 #: utils/country_field.py:142
 msgid "Mongolia"
-msgstr ""
+msgstr "蒙古"
 
 #: utils/country_field.py:143
 msgid "Myanmar"
-msgstr ""
+msgstr "缅甸"
 
 #: utils/country_field.py:144
 msgid "Macau"
-msgstr ""
+msgstr "澳门"
 
 #: utils/country_field.py:145
 msgid "Northern Mariana Islands"
-msgstr ""
+msgstr "北马利亚那群岛"
 
 #: utils/country_field.py:146
 msgid "Martinique"
-msgstr ""
+msgstr "马提尼克"
 
 #: utils/country_field.py:147
 msgid "Mauritania"
-msgstr ""
+msgstr "毛里塔尼亚"
 
 #: utils/country_field.py:148
 msgid "Monserrat"
-msgstr ""
+msgstr "蒙塞拉特岛"
 
 #: utils/country_field.py:149
 msgid "Malta"
-msgstr ""
+msgstr "马耳他"
 
 #: utils/country_field.py:150
 msgid "Mauritius"
-msgstr ""
+msgstr "毛里求斯"
 
 #: utils/country_field.py:151
 msgid "Maldives"
-msgstr ""
+msgstr "马尔代夫"
 
 #: utils/country_field.py:152
 msgid "Malawi"
-msgstr ""
+msgstr "马拉维"
 
 #: utils/country_field.py:153
 msgid "Mexico"
-msgstr ""
+msgstr "墨西哥"
 
 #: utils/country_field.py:154
 msgid "Malaysia"
-msgstr ""
+msgstr "马来西亚"
 
 #: utils/country_field.py:155
 msgid "Mozambique"
-msgstr ""
+msgstr "莫桑比克"
 
 #: utils/country_field.py:156
 msgid "Namibia"
-msgstr ""
+msgstr "纳米比亚"
 
 #: utils/country_field.py:157
 msgid "New Caledonia"
-msgstr ""
+msgstr "新喀里多尼亚"
 
 #: utils/country_field.py:158
 msgid "Niger"
-msgstr ""
+msgstr "尼日尔"
 
 #: utils/country_field.py:159
 msgid "Norfolk Island"
-msgstr ""
+msgstr "诺福克岛"
 
 #: utils/country_field.py:160
 msgid "Nigeria"
-msgstr ""
+msgstr "尼日利亚"
 
 #: utils/country_field.py:161
 msgid "Nicaragua"
-msgstr ""
+msgstr "尼加拉瓜"
 
 #: utils/country_field.py:162
 msgid "Netherlands"
-msgstr ""
+msgstr "荷兰"
 
 #: utils/country_field.py:163
 msgid "Norway"
-msgstr ""
+msgstr "挪威"
 
 #: utils/country_field.py:164
 msgid "Nepal"
-msgstr ""
+msgstr "尼泊尔"
 
 #: utils/country_field.py:165
 msgid "Nauru"
-msgstr ""
+msgstr "瑙鲁"
 
 #: utils/country_field.py:166
 msgid "Niue"
-msgstr ""
+msgstr "纽埃"
 
 #: utils/country_field.py:167
 msgid "New Zealand"
-msgstr ""
+msgstr "新西兰"
 
 #: utils/country_field.py:168
 msgid "Oman"
-msgstr ""
+msgstr "阿曼"
 
 #: utils/country_field.py:169
 msgid "Panama"
-msgstr ""
+msgstr "巴拿马"
 
 #: utils/country_field.py:170
 msgid "Peru"
-msgstr ""
+msgstr "秘鲁"
 
 #: utils/country_field.py:171
 msgid "French Polynesia"
-msgstr ""
+msgstr "法属波利尼西亚"
 
 #: utils/country_field.py:172
 msgid "Papua New Guinea"
-msgstr ""
+msgstr "巴布亚新几内亚"
 
 #: utils/country_field.py:173
 msgid "Philippines"
-msgstr ""
+msgstr "菲律宾"
 
 #: utils/country_field.py:174
 msgid "Pakistan"
-msgstr ""
+msgstr "巴基斯坦"
 
 #: utils/country_field.py:175
 msgid "Poland"
-msgstr ""
+msgstr "波兰"
 
 #: utils/country_field.py:176
 msgid "St. Pierre & Miquelon"
-msgstr ""
+msgstr "圣皮埃尔和密克隆群岛"
 
 #: utils/country_field.py:177
 msgid "Pitcairn"
-msgstr ""
+msgstr "皮特凯恩岛"
 
 #: utils/country_field.py:178
 msgid "Puerto Rico"
-msgstr ""
+msgstr "波多黎各"
 
 #: utils/country_field.py:179
 msgid "Portugal"
-msgstr ""
+msgstr "葡萄牙"
 
 #: utils/country_field.py:180
 msgid "Palau"
-msgstr ""
+msgstr "帕劳"
 
 #: utils/country_field.py:181
 msgid "Paraguay"
-msgstr ""
+msgstr "巴拉圭"
 
 #: utils/country_field.py:182
 msgid "Qatar"
-msgstr ""
+msgstr "卡塔尔"
 
 #: utils/country_field.py:183
 msgid "Reunion"
-msgstr ""
+msgstr "留尼旺"
 
 #: utils/country_field.py:184
 msgid "Romania"
-msgstr ""
+msgstr "罗马尼亚"
 
 #: utils/country_field.py:185
 msgid "Russian Federation"
-msgstr ""
+msgstr "俄罗斯联邦"
 
 #: utils/country_field.py:186
 msgid "Rwanda"
-msgstr ""
+msgstr "卢旺达"
 
 #: utils/country_field.py:187
 msgid "Saudi Arabia"
-msgstr ""
+msgstr "沙特阿拉伯"
 
 #: utils/country_field.py:188
 msgid "Solomon Islands"
-msgstr ""
+msgstr "所罗门群岛"
 
 #: utils/country_field.py:189
 msgid "Seychelles"
-msgstr ""
+msgstr "塞舌尔"
 
 #: utils/country_field.py:190
 msgid "Sudan"
-msgstr ""
+msgstr "苏丹"
 
 #: utils/country_field.py:191
 msgid "Sweden"
-msgstr ""
+msgstr "瑞典"
 
 #: utils/country_field.py:192
 msgid "Singapore"
-msgstr ""
+msgstr "新加坡"
 
 #: utils/country_field.py:193
 msgid "St. Helena"
-msgstr ""
+msgstr "圣海伦娜"
 
 #: utils/country_field.py:194
 msgid "Slovenia"
-msgstr ""
+msgstr "斯洛文尼亚"
 
 #: utils/country_field.py:195
 msgid "Svalbard & Jan Mayen Islands"
-msgstr ""
+msgstr "斯瓦尔巴德和扬马延群岛"
 
 #: utils/country_field.py:196
 msgid "Slovakia"
-msgstr ""
+msgstr "斯洛文尼亚"
 
 #: utils/country_field.py:197
 msgid "Sierra Leone"
-msgstr ""
+msgstr "塞拉利昂"
 
 #: utils/country_field.py:198
 msgid "San Marino"
-msgstr ""
+msgstr "圣马力诺"
 
 #: utils/country_field.py:199
 msgid "Senegal"
-msgstr ""
+msgstr "塞内加尔"
 
 #: utils/country_field.py:200
 msgid "Somalia"
-msgstr ""
+msgstr "索马里"
 
 #: utils/country_field.py:201
 msgid "Suriname"
-msgstr ""
+msgstr "苏里南"
 
 #: utils/country_field.py:202
 msgid "Sao Tome & Principe"
-msgstr ""
+msgstr "圣多美和普林西比"
 
 #: utils/country_field.py:203
 msgid "El Salvador"
-msgstr ""
+msgstr "萨尔瓦多"
 
 #: utils/country_field.py:204
 msgid "Syrian Arab Republic"
-msgstr ""
+msgstr "叙利亚"
 
 #: utils/country_field.py:205
 msgid "Swaziland"
-msgstr ""
+msgstr "斯威士兰"
 
 #: utils/country_field.py:206
 msgid "Turks & Caicos Islands"
-msgstr ""
+msgstr "特克斯和凯科斯群岛"
 
 #: utils/country_field.py:207
 msgid "Chad"
-msgstr ""
+msgstr "乍得"
 
 #: utils/country_field.py:208
 msgid "French Southern Territories"
-msgstr ""
+msgstr "法属南部领地"
 
 #: utils/country_field.py:209
 msgid "Togo"
-msgstr ""
+msgstr "多哥"
 
 #: utils/country_field.py:210
 msgid "Thailand"
-msgstr ""
+msgstr "泰国"
 
 #: utils/country_field.py:211
 msgid "Tajikistan"
-msgstr ""
+msgstr "塔吉克斯坦"
 
 #: utils/country_field.py:212
 msgid "Tokelau"
-msgstr ""
+msgstr "托克劳群岛"
 
 #: utils/country_field.py:213
 msgid "Turkmenistan"
-msgstr ""
+msgstr "土库曼斯坦"
 
 #: utils/country_field.py:214
 msgid "Tunisia"
-msgstr ""
+msgstr "突尼斯"
 
 #: utils/country_field.py:215
 msgid "Tonga"
-msgstr ""
+msgstr "汤加"
 
 #: utils/country_field.py:216
 msgid "East Timor"
-msgstr ""
+msgstr "东帝汶"
 
 #: utils/country_field.py:217
 msgid "Turkey"
-msgstr ""
+msgstr "土耳其"
 
 #: utils/country_field.py:218
 msgid "Trinidad & Tobago"
-msgstr ""
+msgstr "特立尼达和多巴哥"
 
 #: utils/country_field.py:219
 msgid "Tuvalu"
-msgstr ""
+msgstr "图瓦卢"
 
 #: utils/country_field.py:220
 msgid "Taiwan, Province of China"
-msgstr ""
+msgstr "台湾"
 
 #: utils/country_field.py:221
 msgid "Tanzania, United Republic of"
-msgstr ""
+msgstr "坦桑尼亚"
 
 #: utils/country_field.py:222
 msgid "Ukraine"
-msgstr ""
+msgstr "乌克兰"
 
 #: utils/country_field.py:223
 msgid "Uganda"
-msgstr ""
+msgstr "乌干达"
 
 #: utils/country_field.py:224
 msgid "United States Minor Outlying Islands"
-msgstr ""
+msgstr "美国本土外小岛屿"
 
 #: utils/country_field.py:225
 msgid "United States of America"
-msgstr ""
+msgstr "美国"
 
 #: utils/country_field.py:226
 msgid "Uruguay"
-msgstr ""
+msgstr "乌拉圭"
 
 #: utils/country_field.py:227
 msgid "Uzbekistan"
-msgstr ""
+msgstr "乌兹别克斯坦"
 
 #: utils/country_field.py:228
 msgid "Vatican City State (Holy See)"
-msgstr ""
+msgstr "梵蒂冈"
 
 #: utils/country_field.py:229
 msgid "St. Vincent & the Grenadines"
-msgstr ""
+msgstr "圣文森特和格林那丁"
 
 #: utils/country_field.py:230
 msgid "Venezuela"
-msgstr ""
+msgstr "委内瑞拉"
 
 #: utils/country_field.py:231
 msgid "British Virgin Islands"
-msgstr ""
+msgstr "英属维京群岛"
 
 #: utils/country_field.py:232
 msgid "United States Virgin Islands"
-msgstr ""
+msgstr "美属维京群岛"
 
 #: utils/country_field.py:233
 msgid "Viet Nam"
-msgstr ""
+msgstr "越南"
 
 #: utils/country_field.py:234
 msgid "Vanuatu"
-msgstr ""
+msgstr "瓦努阿图"
 
 #: utils/country_field.py:235
 msgid "Wallis & Futuna Islands"
-msgstr ""
+msgstr "瓦利斯和富图纳群岛"
 
 #: utils/country_field.py:236
 msgid "Samoa"
-msgstr ""
+msgstr "萨摩亚"
 
 #: utils/country_field.py:237
 msgid "Yemen"
-msgstr ""
+msgstr "也门"
 
 #: utils/country_field.py:238
 msgid "Mayotte"
-msgstr ""
+msgstr "马约特"
 
 #: utils/country_field.py:239
 msgid "Yugoslavia"
-msgstr ""
+msgstr "南斯拉夫"
 
 #: utils/country_field.py:240
 msgid "South Africa"
-msgstr ""
+msgstr "南非"
 
 #: utils/country_field.py:241
 msgid "Zambia"
-msgstr ""
+msgstr "赞比亚"
 
 #: utils/country_field.py:242
 msgid "Zaire"
-msgstr ""
+msgstr "刚果(金沙萨)"
 
 #: utils/country_field.py:243
 msgid "Zimbabwe"
-msgstr ""
+msgstr "津巴布韦"
 
 #: utils/country_field.py:244
 msgid "Unknown or unspecified country"
-msgstr ""
+msgstr "未知或未标明地区"
 
 #: utils/logger_tools.py:109 utils/viewer_tools.py:180
 #, python-format
 msgid "Exception in request: %(class)s: %(error)s"
-msgstr ""
+msgstr "请求失败:%(class)s:%(error)s"
 
 #: utils/logger_tools.py:182
 msgid "Form with this id already exists."
-msgstr ""
+msgstr "拥有这个ID的表格已有"
 
 #: utils/logger_tools.py:188
 msgid "Invalid URL format."
-msgstr ""
+msgstr "URL地址格式无效"
 
 #: utils/logger_tools.py:200
 msgid "Form validation timeout, please try again."
-msgstr ""
+msgstr "表格验证超时，请重试"
 
 #: utils/viewer_tools.py:53
 msgid "There should be exactly one attribute in this document."
-msgstr ""
+msgstr "该文件内只能有一项"
 
 #: utils/viewer_tools.py:104
 msgid "xml must be a string"
-msgstr ""
+msgstr "xml应为字符"
 
 #: utils/viewer_tools.py:125
 msgid "Paths should be unique."
-msgstr ""
+msgstr "路径应是唯一的"
 
 #: utils/viewer_tools.py:159
 msgid "There should be a single title"
-msgstr ""
+msgstr "这里只能有一个标题"
 
