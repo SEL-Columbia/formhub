@@ -26,10 +26,10 @@ from clint.textui import puts, colored, indent
 from shell_command import shell_call
 
 # List of languages we care about
-LANGS = ['fr', 'es', 'it', 'nl', 'ar', 'zh', 'de', 'ne', 'pt', 'sw']
+LANGS = ['fr', 'es', 'it', 'nl', 'ar', 'zh', 'de', 'ne', 'pt', 'sw', 'kh']
 I18N_APPS = ['main', 'odk_viewer']
 
-TX_LOGIN_URL = u'https://www.transifex.com/accounts/signin'
+TX_LOGIN_URL = u'https://www.transifex.com/signin/'
 REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -47,7 +47,7 @@ def chdir(dirname):
         os.chdir(curdir)
 
 
-def download_with_login(url, login_url, login=None, 
+def download_with_login(url, login_url, login=None,
                               password=None, ext='',
                               username_field='username',
                               password_field='password',
@@ -99,7 +99,7 @@ def getlangs(lang):
         return LANGS
     if isinstance(lang, types.ListType):
         return lang
-    return [lang,]
+    return [lang, ]
 
 
 def add(lang):
@@ -128,22 +128,23 @@ def update(user, password, lang=None):
         url = (u'https://www.transifex.com/projects/p/formhub/'
                u'resource/django/l/%(lang)s/download/for_use/' % {'lang': loc})
         try:
-            tmp_po_file = download_with_login(url, TX_LOGIN_URL, 
-                                              login=user, password=password, 
+            tmp_po_file = download_with_login(url, TX_LOGIN_URL,
+                                              login=user, password=password,
                                               ext='po',
                                               username_field='identification',
                                               password_field='password',
-                                              form_id=2)
-            po_file = os.path.join(REPO_ROOT, 'locale', loc, 
+                                              form_id=1)
+            po_file = os.path.join(REPO_ROOT, 'locale', loc,
                                   'LC_MESSAGES', 'django.po')
             with indent(2):
                 puts(u"Copying downloaded file to %s" % po_file)
             shutil.move(tmp_po_file, po_file)
         except Exception as e:
             puts(colored.red(u"Unable to update %s "
-                             u"from Transifex: %r" %(loc, e)))
+                             u"from Transifex: %r" % (loc, e)))
         puts(colored.green("sucesssfuly retrieved %s" % loc))
     compile_mo(langs)
+
 
 def compile_mo(lang=None):
     langs = getlangs(lang)
@@ -151,15 +152,16 @@ def compile_mo(lang=None):
     for loc in langs:
         with indent(2):
             puts(u"Compiling %s" % loc)
-        shell_call(u"django-admin.py compilemessages -l %(lang)s " 
+        shell_call(u"django-admin.py compilemessages -l %(lang)s "
                    % {'lang': loc})
         for app in I18N_APPS:
             with indent(4):
                 puts(u"Compiling app %s" % app)
             with chdir(os.path.join(REPO_ROOT, app)):
-                shell_call(u"django-admin.py compilemessages -l %(lang)s" 
+                shell_call(u"django-admin.py compilemessages -l %(lang)s"
                            % {'lang': loc})
         puts(colored.green("sucesssfuly compiled %s" % loc))
+
 
 def usage(exit=True, code=1):
     print(u"i18n wrapper script for formhub.\n")
