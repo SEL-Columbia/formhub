@@ -143,9 +143,10 @@ def profile(request, username):
             )
             return {
                 'type': 'alert-success',
-                'text': _(u'Successfully published %s.'
-                          u' <a href="%s">Enter Web Form</a>')
-                        % (survey.id_string, enketo_webform_url)
+                'text': _(u'Successfully published %(form_id)s.'
+                          u' <a href="%(form_url)s">Enter Web Form</a>')
+                        % {'form_id': survey.id_string,
+                            'form_url': enketo_webform_url}
             }
         context.message = publish_form(set_form)
 
@@ -966,9 +967,10 @@ def update_xform(request, username, id_string):
                 }, audit, request)
         return {
             'type': 'alert-success',
-            'text': _(u'Successfully published %s.'
-                      u' <a href="%s">Enter Web Form</a>')
-                    % (survey.id_string, enketo_webform_url)
+            'text': _(u'Successfully published %(form_id)s.'
+                      u' <a href="%(form_url)s">Enter Web Form</a>')
+                    % {'form_id': survey.id_string,
+                       'form_url': enketo_webform_url}
         }
     message = publish_form(set_form)
     messages.add_message(
