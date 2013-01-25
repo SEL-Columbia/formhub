@@ -6,6 +6,8 @@ from odk_logger.models.instance import Instance
 from test_base import MainTestCase
 from main.views import delete_data
 from odk_viewer.models.parsed_instance import ParsedInstance
+import common_tags
+import settings
 
 
 class TestFormAPIDelete(MainTestCase):
@@ -81,3 +83,22 @@ class TestFormAPIDelete(MainTestCase):
         #check if it exist after delete
         after = ParsedInstance.query_mongo(**self.mongo_args)
         self.assertEqual(len(after), 0)
+
+    def test_delete_updates_mongo(self):
+        count = Instance.objects.filter(
+            xform=self.xform, deleted_at=None).count()
+        mongo_records = self._get_data()
+        num_mongo_records = len(mongo_records)
+        # delete
+        record_id = mongo_records[0][common_tags.ID]
+        query = '{"_id": %s}' % mongo_records[0][common_tags.ID]
+        response = self.client.post(self.delete_url, {'query': query})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            Instance.objects.filter(
+                xform=self.xform, deleted_at=None).count(), count - 1)
+        # check mongo record was deleted
+        cursor = settings.MONGO_DB.instances.find({common_tags.ID: record_id})
+        self.assertEqual(cursor.count(), 1)
+        record = cursor.next()
+        self.assertTrue(record[common_tags.DELETEDAT] != None)

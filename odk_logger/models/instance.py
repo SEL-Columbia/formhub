@@ -126,17 +126,9 @@ class Instance(models.Model):
         except cls.DoesNotExist:
             return False
         else:
-            xform_instances = settings.MONGO_DB.instances
-            query = {
-                "_uuid": uuid, "_userform_id": "%s_%s" % (username, id_string)}
-            update_query = {
-                "$set": {
-                    "_deleted_at": deleted_at.strftime('%Y-%m-%dT%H:%M:%S')
-                }
-            }
-            xform_instances.update(query, update_query)
             instance.deleted_at = deleted_at
             super(Instance, instance).save()
+            instance.parsed_instance.save()
         return True
 
 

@@ -15,7 +15,8 @@ xform_instances = settings.MONGO_DB.instances
 
 class Command(BaseCommand):
     args = '[username] [id_string]'
-    help = ugettext_lazy("Check the count of submissions in sqlite vs the mongo db per form and optionally run remongo.")
+    help = ugettext_lazy("Check the count of submissions in sqlite vs the "
+                         "mongo db per form and optionally run remongo.")
     option_list = BaseCommand.option_list + (
             make_option('-r', '--remongo',
                 action='store_true',
@@ -48,7 +49,9 @@ class Command(BaseCommand):
             try:
                 xform = XForm.objects.get(user=user, id_string=id_string)
             except XForm.DoesNotExist:
-                raise CommandError("Xform %s does not exist for user %s" % (id_string, user.username))
+                raise CommandError(
+                    "Xform %s does not exist for user %s" %\
+                    (id_string, user.username))
 
         remongo = kwargs["remongo"]
         update_all = kwargs["update_all"]
@@ -69,11 +72,14 @@ class Command(BaseCommand):
             user = xform.user
             instance_count = Instance.objects.filter(xform=xform).count()
             userform_id = "%s_%s" % (user.username, xform.id_string)
-            mongo_count = xform_instances.find({"_userform_id": userform_id}).count()
+            mongo_count = xform_instances.find(
+                {"_userform_id": userform_id}).count()
             if instance_count != mongo_count or update_all:
                 line = "user: %s, id_string: %s\nInstance count: %d\t" \
-                       "Mongo count: %d\n--------------------------------------\n" %\
-                       (user.username, xform.id_string, instance_count, mongo_count)
+                       "Mongo count: %d\n---------------------------------" \
+                       "-----\n" % (
+                    user.username, xform.id_string, instance_count,
+                    mongo_count)
                 self.stdout.write(line)
                 found += 1
                 total_to_remongo += (instance_count - mongo_count)
@@ -81,17 +87,21 @@ class Command(BaseCommand):
                 if remongo or (remongo and update_all):
                     if update_all:
                         self.stdout.write(
-                            "Updating all records for %s\n---------------------"
-                            "--------------------------\n" % xform.id_string)
+                            "Updating all records for %s\n--------------------"
+                            "---------------------------\n" % xform.id_string)
                     else:
                         self.stdout.write(
-                            "Updating missing records for %s\n-----------------"
-                            "------------------------------\n" %\
+                            "Updating missing records for %s\n----------------"
+                            "-------------------------------\n" %\
                             xform.id_string)
-                    update_mongo_for_xform(xform, only_update_missing=not update_all)
+                    update_mongo_for_xform(
+                        xform, only_update_missing=not update_all)
             done += 1
-            self.stdout.write("%.2f %% done ...\r" % ((float(done)/float(total)) * 100))
-        # only show stats if we are not updating mongo, the update function will show progress
+            self.stdout.write(
+                "%.2f %% done ...\r" % ((float(done)/float(total)) * 100))
+        # only show stats if we are not updating mongo, the update function
+        # will show progress
         if not remongo:
-            line  = "Total Forms out of sync: %d\nTotal to remongo: %d\n" % (found, total_to_remongo)
+            line  = "Total Forms out of sync: %d\nTotal to remongo: %d\n" % (
+                found, total_to_remongo)
             self.stdout.write(line)
