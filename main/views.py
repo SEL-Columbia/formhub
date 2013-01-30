@@ -572,6 +572,15 @@ def tutorial(request):
     return render_to_response('base.html', context_instance=context)
 
 
+def about_us(request):
+    context = RequestContext(request)
+    context.a_flatpage = '/about-us/'
+    username = request.user.username if request.user.username else \
+        'your-user-name'
+    context.odk_url = request.build_absolute_uri("/%s" % username)
+    return render_to_response('base.html', context_instance=context)
+
+
 def syntax(request):
     url = 'https://docs.google.com/document/pub?id='\
         '1xD5gSjeyjGjw-V9g5hXx7FWeasRvn-L6zeQJsNeAGBI'
