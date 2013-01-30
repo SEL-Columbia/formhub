@@ -42,6 +42,15 @@ class TestSite(MainTestCase):
             url = '/submission'
             self.response = self.anon.post(url, post_data)
 
+    def test_publish_xlsx_file(self):
+        self._create_user_and_login()
+        path = os.path.join(self.this_directory, 'fixtures', 'exp.xlsx')
+        pre_count = XForm.objects.count()
+        response = MainTestCase._publish_xls_file(self, path)
+        # make sure publishing the survey worked
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(XForm.objects.count(), pre_count + 1)
+
     def test_google_url_upload(self):
         if self._internet_on():
             self._create_user_and_login()
