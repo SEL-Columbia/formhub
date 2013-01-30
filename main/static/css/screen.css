@@ -800,7 +800,7 @@ img {
 	display: inline-block;
 	padding-right: 20px;
 	color:#d96e27;
-	font-size: 18px;
+	font-size: 17px;
 	margin-bottom: -3px;
 	vertical-align: middle;
 }
@@ -916,7 +916,7 @@ a:focus {
   margin-bottom: 10px;
 }
 
-#faq, #support{
+#faq, #support, #flatpage-content{
 	width: 700px;
   text-align: left;
   margin-top: 50px;
@@ -925,7 +925,7 @@ a:focus {
   color: #44474a;
 }
 
-#faq .title, #support .title{
+#flatpage-content .title, #faq .title, #support .title{
 	text-align: left;
 }
 
@@ -955,17 +955,17 @@ a:focus {
   visibility: hidden;
 }
 
-#support .header{
+#flatpage-content .header, #support .header{
 	font-size: 22px;
 	font-weight:500;
 	color: #2798E1;
 	padding-bottom: 10px;
 }
 
-#support p {
+#flatpage-content p, #support p {
 	margin-bottom: 10px;
 }
-#support .explanation {
+#flatpage-content p, #support .explanation {
 	padding-bottom: 30px;
 }
 #loading {

@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     # main website views
     url(r'^$', 'main.views.home'),
     url(r'^tutorial/$', 'main.views.tutorial', name='tutorial'),
+    url(r'^about-us/$', 'main.views.about_us', name='about-us'),
     url(r'^getting_started/$', 'main.views.getting_started', name='getting_started'),
     url(r'^faq/$', 'main.views.faq', name='faq'),
     url(r'^syntax/$', 'main.views.syntax', name='syntax'),
@@ -99,6 +100,8 @@ urlpatterns = patterns('',
     url(r"^(?P<username>\w+)/(?P<id_string>[^/]+)/toggle_downloadable/$", 'odk_logger.views.toggle_downloadable'),
 
     # static media
+    url(r'^static/(?P<path>.*)$', 'django.views.static.serve',
+        {'document_root': settings.MEDIA_ROOT}),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
 )
