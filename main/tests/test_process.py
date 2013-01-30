@@ -52,7 +52,7 @@ class TestSite(MainTestCase):
         self.assertEqual(XForm.objects.count(), pre_count + 1)
 
     def test_google_url_upload(self):
-        if self._internet_on():
+        if self._internet_on(url="http://google.com"):
             self._create_user_and_login()
             xls_url = "https://docs.google.com/spreadsheet/pub?"\
                 "key=0AvhZpT7ZLAWmdDhISGhqSjBOSl9XdXd5SHZHUUE2RFE&output=xls"
@@ -64,10 +64,10 @@ class TestSite(MainTestCase):
             self.assertEqual(XForm.objects.count(), pre_count + 1)
 
     def test_url_upload(self):
-        if self._internet_on():
+        if self._internet_on(url="http://google.com"):
             self._create_user_and_login()
             xls_url = 'http://formhub.org' \
-                      '/pld/forms/transportation_2011_07_25/form.xls'
+                      '/formhub_u/forms/tutorial/form.xls'
             pre_count = XForm.objects.count()
             response = self.client.post('/%s/' % self.user.username,
                                         {'xls_url': xls_url})
