@@ -932,7 +932,7 @@ def link_to_bamboo(request, username, id_string):
             % {'id_string': xform.id_string}, audit, request)
 
     # create a new one from all the data
-    dataset_id = get_new_bamboo_dataset(xform, force_last=True)
+    dataset_id = get_new_bamboo_dataset(xform)
 
     # update XForm
     xform.bamboo_dataset = dataset_id
