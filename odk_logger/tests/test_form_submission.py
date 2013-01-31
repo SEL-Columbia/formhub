@@ -109,6 +109,45 @@ class TestFormSubmission(MainTestCase):
         self._make_submission(xml_submission_file_path)
         self.assertEqual(self.response.status_code, 201)
 
+    def test_duplicate_submission_with_same_instanceID(self):
+        """Test duplicate xml submissions
+        """
+        xml_submission_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "..", "fixtures", "tutorial", "instances",
+            "tutorial_2012-06-27_11-27-53_w_uuid.xml"
+        )
+        self._make_submission(xml_submission_file_path)
+        self.assertEqual(self.response.status_code, 201)
+        self._make_submission(xml_submission_file_path)
+        self.assertEqual(self.response.status_code, 202)
+
+    def test_duplicate_submission_with_different_content(self):
+        """Test xml submissions with same instancID but different content
+        """
+        xml_submission_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "..", "fixtures", "tutorial", "instances",
+            "tutorial_2012-06-27_11-27-53_w_uuid.xml"
+        )
+        duplicate_xml_submission_file_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "..", "fixtures", "tutorial", "instances",
+            "tutorial_2012-06-27_11-27-53_w_uuid_same_instanceID.xml"
+        )
+        pre_count = Instance.objects.count()
+        self._make_submission(xml_submission_file_path)
+        self.assertEqual(self.response.status_code, 201)
+        self.assertEqual(Instance.objects.count(), pre_count + 1)
+        inst = Instance.objects.all().reverse()[0]
+        self._make_submission(duplicate_xml_submission_file_path)
+        self.assertEqual(self.response.status_code, 202)
+        self.assertEqual(Instance.objects.count(), pre_count + 1)
+        # this is exactly the same instance
+        anothe_inst = Instance.objects.all().reverse()[0]
+        # no change in xml content
+        self.assertEqual(inst.xml, anothe_inst.xml)
+
     def test_edited_submission(self):
         """
         Test submissions that have been edited
