@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>formhub</title>
+    <title>formhub: {{ flatpage.title }}</title>
     <meta name="description" content="">
     <meta name="author" content="">
     <meta name="google-site-verification" content="8pAiKPreksD8GiYnSCtWm9QG3i6wyuKg7E2Y95RTzRM" />
@@ -16,7 +16,7 @@
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
     <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/css/screen.css?v=acfb0dfc6991" rel="stylesheet">
+    <link href="/static/css/screen.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.0/css/font-awesome.css" rel="stylesheet">
     <!--[if lte IE 8]>
       <link href="//netdna.bootstrapcdn.com/font-awesome/3.0/css/font-awesome-ie7.css" rel="stylesheet">
@@ -72,7 +72,7 @@ color: white;
   </head>
 
   {% block body %}
-  <body>
+<body>
 	{% if not user.is_authenticated %}
 		{% include "home_topbar.html" %}
 	{% endif %}
@@ -82,23 +82,13 @@ color: white;
   	{% endif %}
 
     <div class="container">
-      {% block message %}
-        {% if message or messages %}
-          {% include "message.html" %}
-        {% endif %}
-      {% endblock %}
-      {% block content %}
-        {% if template %}{% include template %}{% endif %}
-        {% if a_flatpage %}
-            {% load flatpages %}
-            {% get_flatpages a_flatpage as flatpages %}
-            {% for page in flatpages%}
-                <h1 class="flatpage">{{ page.title }}</h1>
-                {{ page.content|safe }}
-            {% endfor %}
-        {% endif %}
-        {{ content|safe }}
-      {% endblock %}
+      <div class="page-header">
+        <h1>{{ flatpage.title }}</h1>
+      </div>
+      <div id="flatpage-content">
+        {{ flatpage.content|safe }}
+      </div>
+      <br/>
     </div>
 
     {% include "footer.html" %}
