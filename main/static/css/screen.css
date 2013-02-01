@@ -916,7 +916,7 @@ a:focus {
   margin-bottom: 10px;
 }
 
-#faq, #support, #flatpage-content{
+#faq, #support, #resources, #flatpage-content{
 	width: 700px;
   text-align: left;
   margin-top: 50px;
@@ -925,7 +925,7 @@ a:focus {
   color: #44474a;
 }
 
-#flatpage-content .title, #faq .title, #support .title{
+#flatpage-content .title, #faq .title, #support .title, #resources .title{
 	text-align: left;
 }
 
