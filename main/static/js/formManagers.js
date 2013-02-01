@@ -155,7 +155,7 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
     var urlParams = params, geoParams = {};
     var all_data = [];
     var totalCount, progress = 0;
-    var $progressElm = $('#progress-modal');
+    var $progressElm = $('#progress-container');
 
     start = parseInt(start,10);
     limit = parseInt(limit, 10);
@@ -180,7 +180,7 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
         {
             if($progressElm.length > 0)
             {
-                $progressElm.modal('hide');
+                $progressElm.hide();
             }
             thisFormResponseMngr.responses = all_data;
             thisFormResponseMngr.responseCount = data.length;
@@ -239,7 +239,7 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
             // show the modal
             if($progressElm.length > 0)
             {
-                $progressElm.modal('show');
+                $progressElm.show();
             }
             // start loading
             loadFnc(thisFormResponseMngr.url, urlParams);

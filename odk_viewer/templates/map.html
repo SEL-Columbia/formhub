@@ -71,6 +71,17 @@
   .progress {
       margin-bottom: 0;
   }
+  #progress-container {
+      position: absolute;
+      z-index: 1050;
+      width: 100%;
+  }
+  #progress {
+      position: relative;
+      top: 50%;
+      left: 25%;
+      width: 50%;
+  }
 </style>
 <link rel="stylesheet" href="/static/css/leaflet.css" />
 <!--[if lte IE 8]>
@@ -82,7 +93,7 @@
 <script type="text/javascript" src="/static/js/Google.js"></script>
 <script type="text/javascript" src="/static/js/wax.leaf.min.js"></script>
 <script type="text/javascript" src="/static/js/TileLayer.Bing.js"></script>
-<script type="text/javascript" src="/static/js/formManagers.js?ts=201212081335"></script>
+<script type="text/javascript" src="/static/js/formManagers.js?ts=201212101035"></script>
 <script type="text/javascript" src="/static/js/jquery.ba-bbq.min.js"></script>
 <script type="text/javascript">
 var center = {{ center|safe }};
@@ -95,16 +106,23 @@ $('#selectLanguage').live('change', function() {
 });
 function setMapHeight(){
   var newHeight = $(window).height()-
-      $('.navbar-inner').height()
+      $('.navbar-inner').height();
   $('#map_canvas').height(newHeight);
+}
+
+function setProgressContainer(){
+    var height = $(window).height() - $('.navbar-inner').height();
+    $('#progress-container').css('height', height);
+    $('#progress').css('margin-bottom', Math.round((height/2)));
 }
 $(document).ready(function() {
     setMapHeight();
-    $('#progress-modal').modal({
-        keyboard: false
-    });
+    setProgressContainer();
 });
-$(window).resize(setMapHeight);
+$(window).resize(function(){
+    setMapHeight();
+    setProgressContainer();
+});
 </script>
 <script src="/static/js/mapview.js?ts=20121012170000" type="text/javascript"></script>
 <script src="/static/js/underscore-min.js" type="text/javascript"></script>
@@ -123,8 +141,8 @@ $(window).resize(setMapHeight);
     var customMapBoxTileLayer = {'label': '{{mapbox_layer.map_name}}', 'url': '{{mapbox_layer.link}}'};
   </script>
   {% endif %}
-  <div id="progress-modal" class="modal hide fade" data-backdrop="static">
-      <div class="progress progress-info progress-striped">
+  <div id="progress-container">
+      <div id="progress" class="progress progress-info progress-striped">
           <div class="bar" style="width: 1%"></div>
       </div>
   </div>
