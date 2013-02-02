@@ -95,6 +95,9 @@ Create a database and start server:
 
     $ python manage.py migrate
 
+    Load resources link fixtures
+    $ python manage.py loaddata flatpages fixtures/flatpages/Flatpage.json
+
 Configure the celery daemon:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
