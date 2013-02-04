@@ -89,14 +89,6 @@ color: white;
       {% endblock %}
       {% block content %}
         {% if template %}{% include template %}{% endif %}
-        {% if a_flatpage %}
-            {% load flatpages %}
-            {% get_flatpages a_flatpage as flatpages %}
-            {% for page in flatpages%}
-                <h1 class="flatpage">{{ page.title }}</h1>
-                {{ page.content|safe }}
-            {% endfor %}
-        {% endif %}
         {{ content|safe }}
       {% endblock %}
     </div>

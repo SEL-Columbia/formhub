@@ -572,6 +572,10 @@ def tutorial(request):
     return render_to_response('base.html', context_instance=context)
 
 
+def resources(request):
+    context = RequestContext(request)
+    return render_to_response('resources.html', context_instance=context)
+
 def about_us(request):
     context = RequestContext(request)
     context.a_flatpage = '/about-us/'
