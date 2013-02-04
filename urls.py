@@ -7,6 +7,9 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    #change Language
+    (r'^i18n/', include('django.conf.urls.i18n')),
+    
     # django default stuff
     url(r'^accounts/', include('main.registration_urls')),
     url(r'^admin/', include(admin.site.urls)),
