@@ -148,6 +148,9 @@ INSTALLED_APPS = (
     'djcelery',
     'stats',
 )
+
+USE_THOUSAND_SEPARATOR = True
+
 COMPRESS = True
 
 # extra data stored with users
