@@ -1,17 +1,13 @@
 {% load i18n %}
+<div class="pinned">
 <form action="/i18n/setlang/" method="post">
    {% csrf_token %}
    <input name="next" type="hidden" value="{{ redirect_to }}" />
    <select name="language" onchange="this.form.submit();">
       {% get_language_info_list for LANGUAGES as languages %}
       {% for language in languages %}
-      <option value="{{ language.code }}">{{ language.name_local }} ({{ language.code }})</option>
+      <option value="{{ language.code }}" {% ifequal LANGUAGE_CODE language.code %}selected="true" {% endifequal %}>{{ language.name_local }} ({{ language.code }})</option>
       {% endfor %}
    </select>
 </form>
-
-    
-    
-
-
-
+</div>
