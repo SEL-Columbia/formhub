@@ -106,6 +106,14 @@ $(document).ready(function(){
         return false;
     });
 
+    $('.bind-save').prevAll('input[type="text"]').keypress(function(e) {   // an alternative to this specific binding would've been to
+        var code = (e.keyCode ? e.keyCode : e.which);                      // link the action to form submission instead of the button
+        if(code == 13) {                                                   // but it wouldn't work for the source form
+            $(this).nextAll('.bind-save').click();                         // (which has multiple submit buttons)
+            return false;
+        }
+    });
+
     $('.bind-add').click(function() {
         var addBtn = $(this);
         var type = addBtn.data('id');
