@@ -4,13 +4,14 @@
 # 
 # Translators:
 #   <benedetoula@gmail.com>, 2012.
+# renaud gaudin <rgaudin@gmail.com>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: formhub\n"
 "Report-Msgid-Bugs-To: https://github.com/modilabs/formhub/issues\n"
 "POT-Creation-Date: 2012-08-31 09:54+0000\n"
-"PO-Revision-Date: 2012-09-06 23:39+0000\n"
-"Last-Translator: benedetoula <benedetoula@gmail.com>\n"
+"PO-Revision-Date: 2013-01-25 14:02+0000\n"
+"Last-Translator: renaud gaudin <rgaudin@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/formhub/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -300,8 +301,8 @@ msgstr ""
 #, python-format
 msgid "formhubber <small>(%(nb_users)s)</small>"
 msgid_plural "formhubbers <small>(%(nb_users)s)</small>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "formhubber <small>(%(nb_users)s)</small>"
+msgstr[1] "formhubbers <small>(%(nb_users)s)</small>"
 
 #: main/templates/people.html:38
 msgid "Organization"
@@ -347,8 +348,8 @@ msgstr ""
 #, python-format
 msgid "%(num_forms)s <small>Shared form</small>"
 msgid_plural "%(num_forms)s <small>Shared forms</small>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num_forms)s <small>Shared form</small>"
+msgstr[1] "%(num_forms)s <small>Shared forms</small>"
 
 #: main/templates/profile.html:61
 #, python-format

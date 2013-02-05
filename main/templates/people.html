@@ -3,6 +3,8 @@
 {% block content %}
 {% load i18n %}
 
+
+
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
 
@@ -19,7 +21,7 @@
                   "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
 	          "bPaginate" : true,
                   "sPaginationType": "bootstrap",
-                  "bSort": true, 
+                  "bSort": true,
                   "oLanguage": {"sSearch": "Search:"},
                   "oSearch": {"sSearch": ""},
           });
@@ -28,7 +30,7 @@
 
   <div class="page-header">
 <br>
-    <h1>{% blocktrans count nb_users=users.count|intcomma %}formhubber <small>({{ nb_users }})</small>{% plural %}formhubbers <small>({{ nb_users }})</small>{% endblocktrans %}</h1>
+    <h1>{% blocktrans count nb_users=users.count %}formhubber <small>({{ nb_users }})</small>{% plural %}formhubbers <small>({{ nb_users }})</small>{% endblocktrans %}</h1>
   </div>
   <table id="people-table" class="table table-bordered table-striped">
     <thead>
