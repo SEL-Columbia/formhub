@@ -103,15 +103,18 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'django.middleware.locale.LocaleMiddleware',
+    'utils.middleware.LocaleMiddlewareWithTweaks',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'utils.middleware.HTTPResponseNotAllowedMiddleware',
 )
+
+LOCALE_PATHS = (os.path.join(PROJECT_ROOT, 'locale'), )
 
 ROOT_URLCONF = 'urls'
 
@@ -148,6 +151,9 @@ INSTALLED_APPS = (
     'djcelery',
     'stats',
 )
+
+USE_THOUSAND_SEPARATOR = True
+
 COMPRESS = True
 
 # extra data stored with users
