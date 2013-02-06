@@ -32,7 +32,7 @@
 	<script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="/static/js/jquery.tablesorter.min.js"></script>
-	<script src="/static/js/application.js"></script>
+	<script src="/static/js/application.js?v=d331f5a971fb"></script>
     <script src="/static/js/iphone-style-checkboxes.js"></script>
 
     <script src="/static/bootstrap/js/bootstrap.js"></script>
@@ -97,14 +97,6 @@ color: white;
       {% endblock %}
       {% block content %}
         {% if template %}{% include template %}{% endif %}
-        {% if a_flatpage %}
-            {% load flatpages %}
-            {% get_flatpages a_flatpage as flatpages %}
-            {% for page in flatpages%}
-                <h1 class="flatpage">{{ page.title }}</h1>
-                {{ page.content|safe }}
-            {% endfor %}
-        {% endif %}
         {{ content|safe }}
       {% endblock %}
     </div>

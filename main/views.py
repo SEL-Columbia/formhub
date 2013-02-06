@@ -284,6 +284,8 @@ def show(request, username=None, id_string=None, uuid=None):
             attach_perms=True
         ).items()
         context.permission_form = PermissionForm(username)
+    user_list = [u.username for u in User.objects.exclude(username=username)]
+    context.user_json_list = simplejson.dumps(user_list)
     return render_to_response("show.html", context_instance=context)
 
 
@@ -571,6 +573,10 @@ def tutorial(request):
     context.odk_url = request.build_absolute_uri("/%s" % username)
     return render_to_response('base.html', context_instance=context)
 
+
+def resources(request):
+    context = RequestContext(request)
+    return render_to_response('resources.html', context_instance=context)
 
 def about_us(request):
     context = RequestContext(request)

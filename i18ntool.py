@@ -26,7 +26,7 @@ from clint.textui import puts, colored, indent
 from shell_command import shell_call
 
 # List of languages we care about
-LANGS = ['fr', 'es', 'it', 'nl', 'ar', 'zh', 'de', 'ne', 'pt', 'sw', 'kh']
+LANGS = ['en', 'fr', 'es', 'it', 'nl', 'zh', 'ne', 'km']
 I18N_APPS = ['main', 'odk_viewer']
 
 TX_LOGIN_URL = u'https://www.transifex.com/signin/'

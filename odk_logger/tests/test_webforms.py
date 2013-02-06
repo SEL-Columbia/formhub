@@ -16,16 +16,11 @@ class TestWebforms(MainTestCase):
         self._publish_transportation_form_and_submit_instance()
 
     def test_edit_url(self):
-        instance = Instance.objects.all().reverse()[0]
-        query = json.dumps({'_uuid': instance.uuid})
-        cursor = ParsedInstance.query_mongo(self.user.username,
-            self.xform.id_string, query, '[]', '{}')
-        records = [record for record in cursor]
-        self.assertTrue(len(records) > 0)
+        instance = Instance.objects.order_by('id').reverse()[0]
         edit_url = reverse(edit_data, kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string,
-            'data_id': records[0]['_id']
+            'data_id': instance.id
         })
         response = self.client.get(edit_url)
         self.assertEqual(response.status_code, 302)

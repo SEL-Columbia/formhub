@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-25 10:56+0000\n"
+"POT-Creation-Date: 2013-02-05 14:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 #: static/js/mapview.js:3
 msgid "Proportion of surveys with response(s): "
@@ -71,6 +71,26 @@ msgstr ""
 msgid "Map data (c) OpenStreetMap contributors, CC-BY-SA"
 msgstr ""
 
-#: static/js/mapview.js:120
+#: static/js/mapview.js:123
 msgid "Google Satellite Map"
+msgstr ""
+
+#: static/js/mapview.js:235
+msgid "Language"
+msgstr ""
+
+#: static/js/mapview.js:277
+msgid "View By"
+msgstr ""
+
+#: static/js/mapview.js:290
+msgid "None"
+msgstr ""
+
+#: static/js/mapview.js:312
+msgid "Container %(cont)s not found"
+msgstr ""
+
+#: static/js/mapview.js:614
+msgid "Number of submissions"
 msgstr ""

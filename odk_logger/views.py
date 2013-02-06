@@ -445,6 +445,8 @@ def edit_data(request, username, id_string, data_id):
     owner = User.objects.get(username=username)
     xform = get_object_or_404(
         XForm, user__username=username, id_string=id_string)
+    instance = get_object_or_404(
+        Instance, pk=data_id, xform=xform)
     if not has_edit_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden(_(u'Not shared.'))
     if not hasattr(settings, 'ENKETO_URL'):
@@ -454,25 +456,6 @@ def edit_data(request, username, id_string, data_id):
                                            'id_string': id_string}
             )
         )
-    try:
-        query_args = {
-            "username": username, "id_string": id_string,
-            "query": '{"_id": %s}' % data_id,
-            "fields": None,
-            "sort": None,
-            "limit": 1
-        }
-
-        if 'limit' in request.GET:
-            query_args["limit"] = int(request.GET.get('limit'))
-        cursor = ParsedInstance.query_mongo(**query_args)
-    except ValueError as e:
-        return HttpResponseBadRequest(e)
-    else:
-        records = list(record for record in cursor)
-        if records.__len__():
-            uuid = records[0]["_uuid"]
-            instance = Instance.objects.get(xform=xform, uuid=uuid)
 
     url = '%sdata/edit_url' % settings.ENKETO_URL
     register_openers()
