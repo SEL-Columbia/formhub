@@ -50,7 +50,8 @@ mongo_instances = settings.MONGO_DB.instances
 
 @transaction.commit_on_success
 def create_instance(username, xml_file, media_files,
-                    status=u'submitted_via_web', uuid=None):
+                    status=u'submitted_via_web', uuid=None,
+                    date_created_override=None):
     """
     I used to check if this file had been submitted already, I've
     taken this out because it was too slow. Now we're going to create
@@ -136,6 +137,12 @@ def create_instance(username, xml_file, media_files,
         for f in media_files:
             Attachment.objects.get_or_create(
                 instance=instance, media_file=f, mimetype=f.content_type)
+
+        # override date created if required
+        if date_created_override:
+            instance.date_created = date_created_override
+            instance.save()
+
         if instance.xform is not None:
             pi, created = ParsedInstance.objects.get_or_create(
                 instance=instance)
@@ -261,7 +268,6 @@ def publish_xls_form(xls_file, user, id_string=None):
             user=user,
             xls=xls_file
         )
-
 
 
 class OpenRosaResponse(HttpResponse):
