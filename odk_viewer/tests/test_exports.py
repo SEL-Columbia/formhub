@@ -449,3 +449,24 @@ class TestExports(MainTestCase):
         self.assertEqual(num_rows, initial_count + 1)
         key ='transport/loop_over_transport_types_frequency/ambulance/frequency_to_referral_facility'
         self.assertEqual(data[initial_count][key], "monthly")
+
+    def test_export_ids_dont_have_comma_separation(self):
+        """
+        It seems using {{ }} to output numbers greater than 1000 formats the
+        number with a thousand separator
+        """
+        self._publish_transportation_form()
+        self._submit_transport_instance()
+        # create an in-complete export
+        export = Export.objects.create(id=1234, xform=self.xform,
+                              export_type=Export.XLS_EXPORT)
+        self.assertEqual(export.pk, 1234)
+        export_list_url = reverse(
+            export_list, kwargs={
+                "username": self.user.username,
+                "id_string": self.xform.id_string,
+                "export_type": Export.XLS_EXPORT
+            })
+        response = self.client.get(export_list_url)
+        self.assertContains(response, '#delete-1234')
+        self.assertNotContains(response, '#delete-1,234')
