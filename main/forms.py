@@ -60,18 +60,13 @@ class FormLicenseForm(forms.Form):
 
 
 class PermissionForm(forms.Form):
-
-    for_user = forms.ChoiceField(
-        widget=forms.Select())
-
+    for_user = forms.CharField(
+                    widget=forms.TextInput(attrs={'id':'autocomplete','data-provide':'typeahead', 'autocomplete':'off'}))
     perm_type = forms.ChoiceField(choices=PERM_CHOICES, widget=forms.Select())
 
     def __init__(self, username):
         self.username = username
         super(PermissionForm, self).__init__()
-        choices = [(u.username, u.username) for u in User.objects
-                   .order_by('username').exclude(username=username)]
-        self.fields['for_user'].choices = choices
 
 
 class UserProfileForm(ModelForm):

@@ -284,6 +284,8 @@ def show(request, username=None, id_string=None, uuid=None):
             attach_perms=True
         ).items()
         context.permission_form = PermissionForm(username)
+    user_list = [u.username for u in User.objects.exclude(username=username)]
+    context.user_json_list = simplejson.dumps(user_list)
     return render_to_response("show.html", context_instance=context)
 
 
