@@ -51,4 +51,5 @@ class Command(BaseCommand):
         remongo = kwargs["remongo"]
         update_all = kwargs["update_all"]
 
-        mongo_sync_status(remongo, update_all, user, xform)
+        report_string = mongo_sync_status(remongo, update_all, user, xform)
+        self.stdout.write(report_string)

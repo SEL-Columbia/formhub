@@ -74,19 +74,12 @@ def create_csv_export(username, id_string, query=None,
 
 @task
 def email_mongo_sync_status():
-    mongo_sync_log = StringIO()
-    old_stdout = sys.stdout
-    sys.stdout = mongo_sync_log
     # run function to check status
-    mongo_sync_status()
-    #restore stdout
-    sys.stdout = old_stdout
-    mongo_sync_log.seek(0)
-    sync_status = mongo_sync_log.read()
-    sync_status += "\nTo re-sync, ssh into the server and run\n\n" \
+    report_string = mongo_sync_status()
+    report_string += "\nTo re-sync, ssh into the server and run\n\n" \
                    "python manage.py sync_mongo -r [username] [id_string]\n\n" \
-                   "To update delete existing instances and re-create by " \
-                   "using the -a option \n\n" \
+                   "To force complete delete and re-creationuse the -a option" \
+                   " \n\n" \
                    "python manage.py sync_mongo -ra [username] [id_string]\n"
     # send email
-    mail_admins("Mongo DB sync status", sync_status)
+    mail_admins("Mongo DB sync status", report_string)

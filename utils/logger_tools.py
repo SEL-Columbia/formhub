@@ -386,6 +386,7 @@ def mongo_sync_status(remongo=False, update_all=False, user=None, xform=None):
     found = 0
     done = 0
     total_to_remongo = 0
+    report_string = ""
     for xform in queryset_iterator(qs, 100):
         # get the count
         user = xform.user
@@ -400,7 +401,7 @@ def mongo_sync_status(remongo=False, update_all=False, user=None, xform=None):
                    "-----\n" % (
                        user.username, xform.id_string, instance_count,
                        mongo_count)
-            sys.stdout.write(line)
+            report_string += line
             found += 1
             total_to_remongo += (instance_count - mongo_count)
 
@@ -425,4 +426,5 @@ def mongo_sync_status(remongo=False, update_all=False, user=None, xform=None):
     if not remongo:
         line  = "Total Forms out of sync: %d\nTotal to remongo: %d\n" % (
             found, total_to_remongo)
-        sys.stdout.write(line)
+        report_string += line
+    return report_string
