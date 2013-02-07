@@ -1,6 +1,7 @@
 import sys
 from StringIO import StringIO
 from celery import task
+from django.core.mail import mail_admins
 from odk_viewer.models import Export
 from utils.export_tools import generate_export
 from utils.logger_tools import mongo_sync_status
@@ -82,5 +83,10 @@ def email_mongo_sync_status():
     sys.stdout = old_stdout
     mongo_sync_log.seek(0)
     sync_status = mongo_sync_log.read()
-    with open("mongo_sync.log", "wb") as f:
-        f.write(sync_status)
+    sync_status += "\nTo re-sync, ssh into the server and run\n\n" \
+                   "python manage.py sync_mongo -r [username] [id_string]\n\n" \
+                   "To update delete existing instances and re-create by " \
+                   "using the -a option \n\n" \
+                   "python manage.py sync_mongo -ra [username] [id_string]\n"
+    # send email
+    mail_admins("Mongo DB sync status", sync_status)
