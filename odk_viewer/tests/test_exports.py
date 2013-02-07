@@ -468,5 +468,5 @@ class TestExports(MainTestCase):
                 "export_type": Export.XLS_EXPORT
             })
         response = self.client.get(export_list_url)
-        self.assertContains(response, '#delete-1234')
-        self.assertNotContains(response, '#delete-1,234')
+        self.assertContains(response, '#delete-1234"')
+        self.assertNotContains(response, '#delete-1,234"')
