@@ -424,7 +424,8 @@ def mongo_sync_status(remongo=False, update_all=False, user=None, xform=None):
     # only show stats if we are not updating mongo, the update function
     # will show progress
     if not remongo:
-        line  = "Total Forms out of sync: %d\nTotal to remongo: %d\n" % (
+        line  = "Total # of forms out of sync: %d\n" \
+                "Total # of records to remongo: %d\n" % (
             found, total_to_remongo)
         report_string += line
     return report_string
