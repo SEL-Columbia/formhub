@@ -43,14 +43,14 @@
                 {% endif %}
             {% else %}
               <span class="status">{% trans "Pending ..." %}</span>
-              <a href="#" class="refresh-export-progress" data-role="refresh-export-progress" data-export="{{ export.id|safe }}">{% trans "Click to refresh" %}</a>
+              <a href="#" class="refresh-export-progress" data-role="refresh-export-progress" data-export="{{ export.id|stringformat:"d" }}">{% trans "Click to refresh" %}</a>
             {% endif %}
         </td>
         <td>{{ export.created_on }}</td>
         <td>
             <form action="{% url odk_viewer.views.delete_export username xform.id_string export_type %}" method="post" enctype="application/x-www-form-urlencoded">
               {% csrf_token %}
-                <div id="delete-{{ export.id|safe }}" class="modal hide fade">
+                <div id="delete-{{ export.id|stringformat:"d" }}" class="modal hide fade">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         <h3>{% trans "Delete Export" %}</h3>
@@ -65,8 +65,8 @@
                 </div>
               <span style="float:middle;">
 	            <div>
-                  <input type="hidden" name="export_id" value="{{ export.id|safe }}">
-                  <a data-toggle="modal" href="#delete-{{ export.id|safe }}" data-backdrop="true" data-keyboard="true" class="btn">
+                  <input type="hidden" name="export_id" value="{{ export.id|stringformat:"d" }}">
+                  <a data-toggle="modal" href="#delete-{{ export.id|stringformat:"d" }}" data-backdrop="true" data-keyboard="true" class="btn">
                       <i class="icon-trash"></i>
                   </a>
                 </div>
