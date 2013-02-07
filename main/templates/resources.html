@@ -1,11 +1,9 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block content %}
-    <div class="page-header">
-      <h1>{% trans "Resources" %}<h1>
-    </div>
-<div id="support">
-    <h2 class="header">{% blocktrans %}Getting Started {% endblocktrans %}</h2>
+<div id="resources">
+    <div class="title">{% trans "Resources" %}</div>
+    <div class="header">{% blocktrans %}Getting Started {% endblocktrans %}</div>
 <div class="explanation">
   <p>{% blocktrans %}Need more help understanding what this is all about? We’ve created a
   comprehensive getting started guide to help you better understand how to get the most 
@@ -16,7 +14,7 @@
 </div>
 </div>
 <br/>
-<h2 class="header">{% blocktrans %}Authoring with XLSForms{% endblocktrans %}</h2>
+<div class="header">{% blocktrans %}Authoring with XLSForms{% endblocktrans %}</div>
 
 <div class="explanation">
   {% blocktrans %}
