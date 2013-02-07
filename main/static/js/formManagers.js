@@ -31,9 +31,13 @@ FormJSONManager.prototype.loadFormJSON = function()
 
 FormJSONManager.prototype._init = function(data)
 {
-    thisManager = this;
+    var thisManager = this;
+    thisManager.supportedLanguages = [];
     thisManager._parseQuestions(data[constants.CHILDREN]);
-    thisManager._parseSupportedLanguages();
+    if(this.supportedLanguages.length == 0)
+    {
+        this.supportedLanguages.push("default");
+    }
     if (thisManager.callback) thisManager.callback.call(thisManager);
 };
 
@@ -51,6 +55,8 @@ FormJSONManager.prototype._parseQuestions = function(questionData, parentQuestio
         if(question[constants.TYPE] != "group")
         {
             this.questions[questionName] = question;
+            // check language label and add to list of languages
+            this._parseSupportedLanguages(question);
         }
         /// if question is a group, recurse to collect children
         else if(question[constants.TYPE] == "group" && question.hasOwnProperty(constants.CHILDREN))
@@ -97,26 +103,21 @@ FormJSONManager.prototype.getChoices = function(question)
     return choices;
 };
 
-FormJSONManager.prototype._parseSupportedLanguages = function()
+FormJSONManager.prototype._parseSupportedLanguages = function(question)
 {
-    var questionName, key;
-    // run through question objects, stop at first question with label object and check it for multiple languages
-    for(questionName in this.questions)
+
+    if(question.hasOwnProperty(constants.LABEL))
     {
-        var question = this.questions[questionName];
-        if(question.hasOwnProperty(constants.LABEL))
+        var labelProp = question[constants.LABEL];
+        if(typeof(labelProp) == "object")
         {
-            var labelProp = question[constants.LABEL];
-            if(typeof(labelProp) == "string")
-                this.supportedLanguages = ["default"];
-            else if(typeof(labelProp) == "object")
+            for(key in labelProp)
             {
-                for(key in labelProp)
+                if(this.supportedLanguages.indexOf(key) == -1)
                 {
                     this.supportedLanguages.push(key);
                 }
             }
-            break;
         }
     }
 };
