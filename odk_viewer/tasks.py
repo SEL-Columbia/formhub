@@ -73,7 +73,6 @@ def create_csv_export(username, id_string, query=None,
 
 @task
 def email_mongo_sync_status():
-    import ipdb; ipdb.set_trace()
     mongo_sync_log = StringIO()
     old_stdout = sys.stdout
     sys.stdout = mongo_sync_log
