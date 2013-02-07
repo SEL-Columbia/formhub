@@ -1,6 +1,9 @@
+import sys
+from StringIO import StringIO
 from celery import task
 from odk_viewer.models import Export
 from utils.export_tools import generate_export
+from utils.logger_tools import mongo_sync_status
 
 
 def create_async_export(xform, export_type, query, force_xlsx):
@@ -67,3 +70,18 @@ def create_csv_export(username, id_string, query=None,
         return None
     else:
         return export
+
+@task
+def email_mongo_sync_status():
+    import ipdb; ipdb.set_trace()
+    mongo_sync_log = StringIO()
+    old_stdout = sys.stdout
+    sys.stdout = mongo_sync_log
+    # run function to check status
+    mongo_sync_status()
+    #restore stdout
+    sys.stdout = old_stdout
+    mongo_sync_log.seek(0)
+    sync_status = mongo_sync_log.read()
+    with open("mongo_sync.log", "wb") as f:
+        f.write(sync_status)
