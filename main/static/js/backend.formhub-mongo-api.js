@@ -39,35 +39,38 @@ this.fh.constants = {
         return fhType;
     };
 
-    my._fhMultilangLabel = function()
+    my._fhMultilangLabel = function(label, language)
     {
-        return "Label";
+        if(_.isObject(label))
+        {
+            return label.hasOwnProperty(language)?
+                label[language]:label[_.keys(label)[0]]
+        }
+        else
+        {
+            return label;
+        }
     };
 
-    my._parseFields = function(fhFields, parentXPath)
+    my._parseFields = function(fhFields, parentXPath, current_language)
     {
         var fields = [];
-        var languages = [];
         _.each(fhFields, function(fhField, index){
             var newXPath = [];
             if(parentXPath)
                 newXPath.push(parentXPath);
-            if(_.indexOf([fh.constants.GROUP, fh.constants.NOTE], fhField.type) > -1)
+            if(_.indexOf([fh.constants.GROUP, fh.constants.NOTE],
+                fhField.type) > -1)
             {
                 // only add if we have children - notes don't have children
                 if(fhField.children)
                 {
                     newXPath.push(fhField.name);
                     newXPath = newXPath.join("/");
-                    var childFields = my._parseFields(fhField.children, newXPath);
-                    _.each(childFields.fields, function(field, index){
-                        fields.push(field.fields);
-                    });
-                    _.each(childFields.languages, function(lang, index){
-                        if(languages.indexOf(lang) == -1)
-                        {
-                            languages.push(lang);
-                        }
+                    var childFields = my._parseFields(fhField.children,
+                        newXPath, current_language);
+                    _.each(childFields, function(field, index){
+                        fields.push(field);
                     });
                 }
             }
@@ -78,37 +81,38 @@ this.fh.constants = {
                 newXPath.push(fhField.name);
                 field.id = newXPath.join("/");
 
-                //@todo: using the fhType we can setup custom formatters here e.g. for photos and videos
-                field.type = my._fhToReclineType(fhField.type);
+                // todo: using the fhType we can setup custom formatters here e.g. for photos and videos
+                field.type = my._fhToReclineType(fhField[fh.constants.TYPE]);
 
-                if(fhField.label)
+                if(fhField.hasOwnProperty(fh.constants.LABEL))
                 {
                     // check if label is a string or object
-                    if(typeof(fhField.label) == "string")
+                    if(typeof(fhField[fh.constants.LABEL]) == "string")
                     {
-                        label = fhField.label;
+                        label = fhField[fh.constants.LABEL];
                     }
                     else
                     {
-                        _.each(_.keys(fhField.label), function(lang, index){
-                           if(languages.indexOf(lang) == -1)
-                           {
-                               languages.push(lang);
-                           }
-                        });
+                        label = my._fhMultilangLabel(fhField.label,
+                            current_language);
+                        field.multi_lang_labels = fhField.label;
                     }
-                    label = my._fhMultilangLabel;
                 }
                 else
                 {
                     // some fields like start/end only have a name but no label
                     label = fhField.name;
                 }
+                // hack: if the label is blank, use its name
+                if(!label)
+                {
+                    label = fhField.name
+                }
                 field.label = label;
                 fields.push(field);
             }
         });
-        return {fields: fields, languages: languages};
+        return fields;
     };
 
     my._parseLanguages = function(fhFields)
@@ -149,7 +153,7 @@ this.fh.constants = {
     my._parseSchema = function(data)
     {
         var schema = {metadata: {}, fields: []};
-        var language, parsed_fields, languages;
+        var language, fields, languages;
         var self = this;
         // get metadata
         _.each(data, function(val, key){
@@ -159,25 +163,27 @@ this.fh.constants = {
             }
         });
         // parse languages
-        languages = self._parseLanguages(data.children);
-        // parse fields
-        parsed_fields = self._parseFields(data.children, null);
-        // if no languages, assigna default
-        if(parsed_fields.languages.length == 0)
+        languages = my._parseLanguages(data.children);
+        // if no languages, assign a default
+        if(languages.length == 0)
         {
-            parsed_fields.languages = ["default"];
+            languages = ["default"];
         }
-        schema.fields = parsed_fields.fields;
-        schema.metadata.languages = parsed_fields.languages;
         // @todo: review - check if we have a default langauge specified and its in our list of languages
-        if(schema.hasOwnProperty('default_language') && _.indexOf(schema.metadata.languages, schema.default_language)>-1)
+        if(schema.hasOwnProperty('default_language') && _.indexOf(languages, schema.default_language)>-1)
         {
             language = schema.default_language;
         }
         else
         {
-            language = schema.metadata.languages[0];
+            language = languages[0];
         }
+        // parse fields
+        fields = my._parseFields(data.children, null, language);
+
+        // assign for recline
+        schema.fields = fields;
+        schema.metadata.languages = languages;
         schema.metadata.language = language;
         return schema;
     };
