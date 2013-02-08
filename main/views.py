@@ -781,7 +781,7 @@ def set_perm(request, username, id_string):
     except KeyError:
         return HttpResponseBadRequest()
     if perm_type in ['edit', 'view', 'remove']:
-        user = get_object_or_404(User, username=for_user)
+        user = User.objects.get(username=for_user)
         if perm_type == 'edit' and not user.has_perm('change_xform', xform):
             audit = {
                 'xform': xform.id_string
