@@ -39,35 +39,35 @@ this.fh.constants = {
         return fhType;
     };
 
-    my._fhMultilangLabel = function(label, language)
+    my._fhMultilangLabel = function()
     {
-        if(_.isObject(label))
-        {
-            return label.hasOwnProperty(language)?label[language]:label[_.keys(label)[0]]
-        }
-        else
-        {
-            return label;
-        }
+        return "Label";
     };
 
-    my._parseFields = function(fhFields, parentXPath, language)
+    my._parseFields = function(fhFields, parentXPath)
     {
         var fields = [];
+        var languages = [];
         _.each(fhFields, function(fhField, index){
             var newXPath = [];
             if(parentXPath)
                 newXPath.push(parentXPath);
             if(_.indexOf([fh.constants.GROUP, fh.constants.NOTE], fhField.type) > -1)
             {
-
-                // only add if we have children - notes dont have children
+                // only add if we have children - notes don't have children
                 if(fhField.children)
                 {
                     newXPath.push(fhField.name);
                     newXPath = newXPath.join("/");
-                    _.each(my._parseFields(fhField.children, newXPath), function(field, index){
-                        fields.push(field);
+                    var childFields = my._parseFields(fhField.children, newXPath);
+                    _.each(childFields.fields, function(field, index){
+                        fields.push(field.fields);
+                    });
+                    _.each(childFields.languages, function(lang, index){
+                        if(languages.indexOf(lang) == -1)
+                        {
+                            languages.push(lang);
+                        }
                     });
                 }
             }
@@ -83,45 +83,74 @@ this.fh.constants = {
 
                 if(fhField.label)
                 {
-                    label = my._fhMultilangLabel(fhField.label, language);
+                    // check if label is a string or object
+                    if(typeof(fhField.label) == "string")
+                    {
+                        label = fhField.label;
+                    }
+                    else
+                    {
+                        _.each(_.keys(fhField.label), function(lang, index){
+                           if(languages.indexOf(lang) == -1)
+                           {
+                               languages.push(lang);
+                           }
+                        });
+                    }
+                    label = my._fhMultilangLabel;
                 }
                 else
                 {
+                    // some fields like start/end only have a name but no label
                     label = fhField.name;
                 }
-                field.label = label; // some fields like start/end only have a name but no label
+                field.label = label;
                 fields.push(field);
             }
         });
-        return fields;
+        return {fields: fields, languages: languages};
     };
 
     my._parseLanguages = function(fhFields)
     {
         var languages = [];
-        var multilangField = _.find(fhFields, function(fhField){
-            return _.isObject(fhField.label);
+        var pushSafe = function(current_languages, language){
+            if(current_languages.indexOf(language) == -1)
+            {
+                current_languages.push(language);
+            }
+        };
+        _.each(fhFields, function(fhField, index){
+            // check if we are a group and have children to recurse
+            if(fhField.type == fh.constants.GROUP)
+            {
+                if(fhField.hasOwnProperty(fh.constants.CHILDREN))
+                {
+                    var childLanguages = my._parseLanguages(
+                        fhField[fh.constants.CHILDREN]);
+                    _.each(childLanguages, function(language){
+                        pushSafe(languages, language);
+                    });
+                }
+            }
+            else if(fhField.hasOwnProperty(fh.constants.LABEL))
+            {
+                if(typeof(fhField.label) == "object")
+                {
+                    _.each(_.keys(fhField.label), function(label){
+                        pushSafe(languages, label);
+                    });
+                }
+            }
         });
-        if(multilangField)
-        {
-            languages = _.map(multilangField.label, function(label, language){
-                return language;
-            });
-        }
-        else
-        {
-            languages = ["default"];
-        }
         return languages;
     };
 
     my._parseSchema = function(data)
     {
         var schema = {metadata: {}, fields: []};
-        var language;
+        var language, parsed_fields, languages;
         var self = this;
-        // parse languages - @todo: wasteful since we go through all fields looking for a multilang label, if a form doenst have one, we end up going through all the fields
-        schema.metadata.languages = self._parseLanguages(data.children);
         // get metadata
         _.each(data, function(val, key){
             if(key !== fh.constants.CHILDREN)
@@ -129,8 +158,19 @@ this.fh.constants = {
                 schema.metadata[key] = val;
             }
         });
+        // parse languages
+        languages = self._parseLanguages(data.children);
+        // parse fields
+        parsed_fields = self._parseFields(data.children, null);
+        // if no languages, assigna default
+        if(parsed_fields.languages.length == 0)
+        {
+            parsed_fields.languages = ["default"];
+        }
+        schema.fields = parsed_fields.fields;
+        schema.metadata.languages = parsed_fields.languages;
         // @todo: review - check if we have a default langauge specified and its in our list of languages
-        if(schema.default_language && _.indexOf(schema.metadata.languages, schema.default_language)>-1)
+        if(schema.hasOwnProperty('default_language') && _.indexOf(schema.metadata.languages, schema.default_language)>-1)
         {
             language = schema.default_language;
         }
@@ -138,8 +178,7 @@ this.fh.constants = {
         {
             language = schema.metadata.languages[0];
         }
-        // parse fields
-        schema.fields = self._parseFields(data.children, null, language);
+        schema.metadata.language = language;
         return schema;
     };
 
