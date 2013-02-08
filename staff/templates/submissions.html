@@ -45,7 +45,7 @@
       {% if k != 'total_submission_count' %}
       <tr>
         <td>{{k}}</td>
-        <td>{{v}}</td>
+        <td>{{v|stringformat:"d"}}</td>
       </tr>
       {% endif %}
       {% endfor %}
