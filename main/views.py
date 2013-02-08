@@ -781,41 +781,48 @@ def set_perm(request, username, id_string):
     except KeyError:
         return HttpResponseBadRequest()
     if perm_type in ['edit', 'view', 'remove']:
-        user = User.objects.get(username=for_user)
-        if perm_type == 'edit' and not user.has_perm('change_xform', xform):
-            audit = {
-                'xform': xform.id_string
-            }
-            audit_log(Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
-                _("Edit permissions on '%(id_string)s' assigned to '%(for_user)s'.") %\
-                {
-                    'id_string': xform.id_string,
-                    'for_user': for_user
-                }, audit, request)
-            assign('change_xform', user, xform)
-        elif perm_type == 'view' and not user.has_perm('view_xform', xform):
-            audit = {
-                'xform': xform.id_string
-            }
-            audit_log(Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
-                _("View permissions on '%(id_string)s' assigned to '%(for_user)s'.") %\
-                {
-                    'id_string': xform.id_string,
-                    'for_user': for_user
-                }, audit, request)
-            assign('view_xform', user, xform)
-        elif perm_type == 'remove':
-            audit = {
-                'xform': xform.id_string
-            }
-            audit_log(Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
-                _("All permissions on '%(id_string)s' removed from '%(for_user)s'.") %\
-                {
-                    'id_string': xform.id_string,
-                    'for_user': for_user
-                }, audit, request)
-            remove_perm('change_xform', user, xform)
-            remove_perm('view_xform', user, xform)
+        try:
+            user = User.objects.get(username=for_user)
+        except User.DoesNotExist:
+            messages.add_message(
+                request, messages.INFO,
+                _(u"Wrong username <b>%s</b>." % for_user),
+                extra_tags='alert-error')
+        else:
+            if perm_type == 'edit' and not user.has_perm('change_xform', xform):
+                audit = {
+                    'xform': xform.id_string
+                }
+                audit_log(Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
+                    _("Edit permissions on '%(id_string)s' assigned to '%(for_user)s'.") %\
+                    {
+                        'id_string': xform.id_string,
+                        'for_user': for_user
+                    }, audit, request)
+                assign('change_xform', user, xform)
+            elif perm_type == 'view' and not user.has_perm('view_xform', xform):
+                audit = {
+                    'xform': xform.id_string
+                }
+                audit_log(Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
+                    _("View permissions on '%(id_string)s' assigned to '%(for_user)s'.") %\
+                    {
+                        'id_string': xform.id_string,
+                        'for_user': for_user
+                    }, audit, request)
+                assign('view_xform', user, xform)
+            elif perm_type == 'remove':
+                audit = {
+                    'xform': xform.id_string
+                }
+                audit_log(Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
+                    _("All permissions on '%(id_string)s' removed from '%(for_user)s'.") %\
+                    {
+                        'id_string': xform.id_string,
+                        'for_user': for_user
+                    }, audit, request)
+                remove_perm('change_xform', user, xform)
+                remove_perm('view_xform', user, xform)
     elif perm_type == 'link':
         current = MetaData.public_link(xform)
         if for_user == 'all':
