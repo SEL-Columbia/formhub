@@ -333,6 +333,7 @@ def inject_instanceid(xml_str, uuid):
         return xml.toxml()
     return xml_str
 
+
 def update_mongo_for_xform(xform, only_update_missing=True):
     instance_ids = set([i.id for i in Instance.objects.only('id').filter(xform=xform)])
     sys.stdout.write("Total no of instances: %d\n" % len(instance_ids))
@@ -370,3 +371,61 @@ def update_mongo_for_xform(xform, only_update_missing=True):
     sys.stdout.write(
         "\nUpdated %s\n------------------------------------------\n" %\
         xform.id_string)
+
+
+def mongo_sync_status(remongo=False, update_all=False, user=None, xform=None):
+    qs = XForm.objects.only('id_string').select_related('user')
+    if user and not xform:
+        qs = qs.filter(user=user)
+    elif user and xform:
+        qs = qs.filter(user=user, id_string=xform.id_string)
+    else:
+        qs = qs.all()
+
+    total = qs.count()
+    found = 0
+    done = 0
+    total_to_remongo = 0
+    report_string = ""
+    for xform in queryset_iterator(qs, 100):
+        # get the count
+        user = xform.user
+        instance_count = Instance.objects.filter(xform=xform).count()
+        userform_id = "%s_%s" % (user.username, xform.id_string)
+        mongo_count = mongo_instances.find(
+            {common_tags.USERFORM_ID: userform_id}).count()
+
+        if instance_count != mongo_count or update_all:
+            line = "user: %s, id_string: %s\nInstance count: %d\t"\
+                   "Mongo count: %d\n---------------------------------"\
+                   "-----\n" % (
+                       user.username, xform.id_string, instance_count,
+                       mongo_count)
+            report_string += line
+            found += 1
+            total_to_remongo += (instance_count - mongo_count)
+
+            # should we remongo
+            if remongo or (remongo and update_all):
+                if update_all:
+                    sys.stdout.write(
+                        "Updating all records for %s\n--------------------"
+                        "---------------------------\n" % xform.id_string)
+                else:
+                    sys.stdout.write(
+                        "Updating missing records for %s\n----------------"
+                        "-------------------------------\n" %\
+                        xform.id_string)
+                update_mongo_for_xform(
+                    xform, only_update_missing=not update_all)
+        done += 1
+        sys.stdout.write(
+            "%.2f %% done ...\r" % ((float(done)/float(total)) * 100))
+    # only show stats if we are not updating mongo, the update function
+    # will show progress
+    if not remongo:
+        line  = "Total # of forms out of sync: %d\n" \
+                "Total # of records to remongo: %d\n" % (
+            found, total_to_remongo)
+        report_string += line
+    return report_string
