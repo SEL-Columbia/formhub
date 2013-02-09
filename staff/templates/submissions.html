@@ -2,32 +2,13 @@
 {% load i18n %}
 
 {% block content %}
-
+<style type="text/css">
+ .table td.right{
+    text-align:right;
+  }
+ </style>
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
   <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
-  <script type="text/javascript" charset="utf-8">
-
-        $.extend( $.fn.dataTableExt.oStdClasses, {
-          "sSortAsc": "header headerSortDown",
-          "sSortDesc": "header headerSortUp",
-          "sSortable": "header"
-        } );
-
-	$(document).ready(function() {
-	  $('#stats-table').dataTable({
-                  "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
-	          "bPaginate" : true,
-                  "sPaginationType": "bootstrap",
-                  "iDisplayLength": 25,
-                  "bSort": true, 
-                  "oLanguage": {"sSearch": "{% trans 'Search:' %}"},
-                  "aoColumns": [null, {"sType": "numeric"}],
-                  "oSearch": {"sSearch": ""},
-	          "aaSorting": [[ 1, "desc" ]]
-          });
-	});
-  </script>
-
   <div class="page-header">
 <br>
 <h1>{% blocktrans with nb_sub=stats.submission_count.total_submission_count %}Submissions ({{ nb_sub }}){% endblocktrans %}</h1>
@@ -53,6 +34,29 @@
   </table>
 
   <hr />
+  <script type="text/javascript" charset="utf-8">
+
+        $.extend( $.fn.dataTableExt.oStdClasses, {
+          "sSortAsc": "header headerSortDown",
+          "sSortDesc": "header headerSortUp",
+          "sSortable": "header"
+        } );
+
+	$(document).ready(function() {
+	  $('#stats-table').dataTable({
+                  "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
+	          "bPaginate" : true,
+                  "sPaginationType": "bootstrap",
+                  "iDisplayLength": 25,
+                  "bSort": true, 
+                  "oLanguage": {"sSearch": "{% trans 'Search:' %}"},
+                  "aoColumns": [null, {"sType": "numeric", "sClass": "right", "sWidth":"100px"}],
+                  "oSearch": {"sSearch": ""},
+	          "aaSorting": [[ 1, "desc" ]]
+          });
+	});
+  </script>
+
 
 
 {% endblock %}
