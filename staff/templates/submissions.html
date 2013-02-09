@@ -41,21 +41,6 @@
           "sSortDesc": "header headerSortUp",
           "sSortable": "header"
         } );
-	jQuery.fn.dataTableExt.oSort['numeric-comma-asc']  = function(a,b) {
-				var x = (a == "-") ? 0 : a.replace( /,/, "." );
-				var y = (b == "-") ? 0 : b.replace( /,/, "." );
-				x = parseFloat( x );
-				y = parseFloat( y );
-				return ((x < y) ? -1 : ((x > y) ?  1 : 0));
-			};
-			
-			jQuery.fn.dataTableExt.oSort['numeric-comma-desc'] = function(a,b) {
-				var x = (a == "-") ? 0 : a.replace( /,/, "." );
-				var y = (b == "-") ? 0 : b.replace( /,/, "." );
-				x = parseFloat( x );
-				y = parseFloat( y );
-				return ((x < y) ?  1 : ((x > y) ? -1 : 0));
-			};
 
 	$(document).ready(function() {
 	  $('#stats-table').dataTable({
@@ -65,7 +50,7 @@
                   "iDisplayLength": 25,
                   "bSort": true, 
                   "oLanguage": {"sSearch": "{% trans 'Search:' %}"},
-                  "aoColumns": [null, {"sType": "numeric-comma", "sClass": "right", "sWidth":"100px"}],
+                  "aoColumns": [null, {"sType": "numeric", "sClass": "right", "sWidth":"100px"}],
                   "oSearch": {"sSearch": ""},
 	          "aaSorting": [[ 1, "desc" ]]
           });
