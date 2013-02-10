@@ -353,7 +353,8 @@
             <form action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <table>
-                {{ media_form.as_table }}
+                <tbody><tr><th><label for="id_media">Media upload:</label></th><td><input type="file" multiple="" name="media" id="id_media"></td></tr>
+                </tbody>
                 </table>
                 <input type="submit" class="btn" value="{% trans 'Upload' %}" />
             </form>
