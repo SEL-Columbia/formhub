@@ -46,6 +46,7 @@ LANGUAGES = (
     ('en', 'English'),
     ('es', 'Spanish'),
     ('it', 'Italian'),
+    ('km', 'Khmer'),
 )
 
 SITE_ID = 1
