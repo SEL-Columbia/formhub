@@ -120,8 +120,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'utils.middleware.HTTPResponseNotAllowedMiddleware',
-    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
 )
 
 LOCALE_PATHS = (os.path.join(PROJECT_ROOT, 'locale'), )

@@ -36,7 +36,7 @@ class TestGPS(MainTestCase):
     def _check_link_to_map_view(self):
         response = self.client.get("/%s/" % self.user.username)
         map_url = 'href="/%s/forms/gps/map"' % self.user.username
-        self.assertTrue(map_url in response.content)
+        self.assertContains(response, map_url)
 
     def _check_lat_lng(self):
         expected_values = [
