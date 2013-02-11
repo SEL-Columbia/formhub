@@ -614,7 +614,7 @@ def attachment_url(request, size='medium'):
             attachment.mimetype = mimetype
             attachment.save()
     if not attachment.mimetype.startswith('image'):
-        redirect(attachment.media_file.url)
+        return redirect(attachment.media_file.url)
     try:
         media_url = image_url(attachment, size)
     except:
