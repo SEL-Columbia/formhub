@@ -236,7 +236,7 @@ def enketo_url(username, id_string):
     register_openers()
     response = None
 
-    formhub_url = "http://formhub.org/"
+    formhub_url = "https://dev.formhub.org/"
 
     values = {
         'form_id': id_string,
