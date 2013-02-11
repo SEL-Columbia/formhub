@@ -1,3 +1,4 @@
+{% load qrtag %}
 {% load humanize %}
 {% load i18n %}
 {% if all_forms or forms_shared_with or crowdforms%}
@@ -18,6 +19,15 @@
 
 
 	$(document).ready(function() {
+
+        
+        $(document).on("click", ".showqr", function () {
+             var myBookId = $(this).data('id');
+             //$('.img_holder').append(myBookId);
+             $("#img_holder").attr("src",myBookId);
+            $('#popupmodal').modal('show');
+        });
+	
 	  var tbl = $('#forms-table').dataTable({
         "bPaginate": false,
         "sPaginationType": "bootstrap",
@@ -59,6 +69,8 @@
             "oLanguage": {"sSearch": "{% trans 'Search:' %}"},
             "oSearch": {"sSearch": ""}
         });
+        
+
 	});
   </script>
 {% if all_forms %}
@@ -89,7 +101,12 @@
             {% endif %}
         </td>
         <td><center>{{ submission_count|intcomma }}</center></td>
-        <td><center><a class=btn href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}"><i class="icon-edit"></i> {% trans "Web" %}</a></center></td>
+        <td>
+            <center>
+                <a class=btn href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}"><i class="icon-edit"></i> {% trans "Web" %}</a>
+            <a data-toggle="modal" data-id="{% qrcode xform.id_string  xform.user.username %}"  title="Add this item" class="showqr btn btn-primary" href="#popupmodal">TEST</a>
+            </center>
+        </td>
         <td>
             <center>
                 {% if has_surveys_with_geopoints %}
@@ -362,10 +379,21 @@
                         </td>
                     </tr>
                 {% endwith %}
-            {% endfor %}
+               {% endfor %}
             </tbody>
         </table>
     </section>
     <hr />
 {% endif %}
 
+<div class="modal hide fade" id="popupmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    </div>
+    <div class="modal-body">
+         <img src="" id="img_holder"/>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn">Close</a>
+    </div>
+</div>
