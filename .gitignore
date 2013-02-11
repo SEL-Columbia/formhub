@@ -44,3 +44,5 @@ mongo_vs_instance_counts_report.txt
 *.tar.gz
 *~
 *orig
+
+*.swp

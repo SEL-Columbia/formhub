@@ -69,4 +69,5 @@ def deploy(deployment_name, branch='master'):
         run_in_virtualenv("python manage.py migrate")
         run_in_virtualenv("python manage.py collectstatic --noinput")
     run("sudo /etc/init.d/celeryd restart")
+    run("sudo /etc/init.d/celerybeat restart")
     run("sudo reload gunicorn-formhub")

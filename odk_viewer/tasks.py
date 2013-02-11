@@ -1,6 +1,10 @@
+import sys
+from StringIO import StringIO
 from celery import task
+from django.core.mail import mail_admins
 from odk_viewer.models import Export
 from utils.export_tools import generate_export
+from utils.logger_tools import mongo_sync_status
 
 
 def create_async_export(xform, export_type, query, force_xlsx):
@@ -67,3 +71,15 @@ def create_csv_export(username, id_string, query=None,
         return None
     else:
         return export
+
+@task
+def email_mongo_sync_status():
+    # run function to check status
+    report_string = mongo_sync_status()
+    report_string += "\nTo re-sync, ssh into the server and run\n\n" \
+                   "python manage.py sync_mongo -r [username] [id_string]\n\n" \
+                   "To force complete delete and re-creationuse the -a option" \
+                   " \n\n" \
+                   "python manage.py sync_mongo -ra [username] [id_string]\n"
+    # send email
+    mail_admins("Mongo DB sync status", report_string)
