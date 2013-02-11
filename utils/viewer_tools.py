@@ -228,7 +228,7 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-def enketo_url(url, id_string):
+def enketo_url(form_url, id_string):
     if not hasattr(settings, 'ENKETO_URL'):
         return False
 
@@ -238,7 +238,7 @@ def enketo_url(url, id_string):
 
     values = {
         'form_id': id_string,
-        'server_url': url
+        'server_url': form_url
     }
     data, headers = multipart_encode(values)
     headers['User-Agent'] = 'formhub'
