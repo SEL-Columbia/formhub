@@ -105,7 +105,7 @@
         <td>
             <center>
                 <a class=btn href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}"><i class="icon-edit"></i> {% trans "Web" %}</a>
-                <a data-toggle="modal" data-target="#popupmodal" class="showqr btn btn-primary" href="{% url get_qrcode xform.user.username xform.id_string %}"><i class="icon-tablet"></i> {% trans "Mobile" %}</a>
+                <a data-toggle="modal" data-target="#popupmodal" class="showqr btn" href="{% url get_qrcode xform.user.username xform.id_string %}"><i class="icon-tablet"></i> {% trans "Mobile" %}</a>
             </center>
         </td>
         <td>
@@ -387,7 +387,7 @@
     <hr />
 {% endif %}
 
-<div class="modal hide fade" id="popupmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal hide fade" id="popupmodal" style="width: auto;" tabindex="-1" role="dialog">
      <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3>{%  trans "Mobile Form" %}</h3>
@@ -395,8 +395,14 @@
     <div class="modal-body">
          <div class="img_holder"/> </div>
     </div>
-    <div class="modal-footer">
-        <h3>{%  trans "Download <button type='button'> SCAN QR Reader</button>" %}</h3>
-        
+    <div class="modal-footer" style="text-align: center;">
+        <h3>
+        {%  trans "DOWNLOAD " %}
+        <a class="btn" class="dropdown-toggle" data-toggle="dropdown" href="http://scan.me/apps/" data-original-title="{% trans 'Options' %}" rel="tooltip">
+            <i class="icon-qrcode"></i> 
+        {%  trans "  SCAN" %}
+        </a>
+        {%  trans " QR Reader" %}
+        </h3>
     </div>
 </div>
