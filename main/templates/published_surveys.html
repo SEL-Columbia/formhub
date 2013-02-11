@@ -24,7 +24,7 @@
         $(document).on("click", ".showqr", function () {
           div_target = $(this).attr('data-target')
           url = $(this).attr('href')
-          $(lv_target+" .img_holder").load(url)
+          $(div_target+" .img_holder").load(url)
         
         });
            
@@ -388,13 +388,15 @@
 {% endif %}
 
 <div class="modal hide fade" id="popupmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
+     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>{%  trans "Mobile Form" %}</h3>
     </div>
     <div class="modal-body">
          <div class="img_holder"/> </div>
     </div>
     <div class="modal-footer">
-        <a href="#" class="btn">Close</a>
+        <h3>{%  trans "Download <button type='button'> SCAN QR Reader</button>" %}</h3>
+        
     </div>
 </div>
