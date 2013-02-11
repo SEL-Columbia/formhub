@@ -509,7 +509,8 @@ def edit(request, username, id_string):
                 {
                     'id_string': xform.id_string
                 }, audit, request)
-            MetaData.media_upload(xform, request.FILES.get('media'))
+            for aFile in request.FILES.getlist("media"):
+              MetaData.media_upload(xform, aFile)
         elif request.POST.get('map_name'):
             mapbox_layer = MapboxLayerForm(request.POST)
             if mapbox_layer.is_valid():
