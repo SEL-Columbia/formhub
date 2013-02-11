@@ -86,6 +86,9 @@ this.fh.constants = {
 
                 if(fhField.hasOwnProperty(fh.constants.LABEL))
                 {
+                    // set fhLabel property to be used for language switching
+                    field.fhLabel = fhField.label;
+
                     // check if label is a string or object
                     if(typeof(fhField[fh.constants.LABEL]) == "string")
                     {
@@ -95,7 +98,6 @@ this.fh.constants = {
                     {
                         label = my._fhMultilangLabel(fhField.label,
                             current_language);
-                        field.multi_lang_labels = fhField.label;
                     }
                 }
                 else
