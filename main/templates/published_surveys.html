@@ -1,4 +1,3 @@
-{% load qrtag %}
 {% load humanize %}
 {% load i18n %}
 {% if all_forms or forms_shared_with or crowdforms%}
@@ -20,7 +19,6 @@
 
 	$(document).ready(function() {
 
-        
         $(document).on("click", ".showqr", function () {
           div_target = $(this).attr('data-target')
           url = $(this).attr('href')
@@ -28,7 +26,6 @@
         
         });
            
-	
 	  var tbl = $('#forms-table').dataTable({
         "bPaginate": false,
         "sPaginationType": "bootstrap",
@@ -392,13 +389,13 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3>{%  trans "Mobile Form" %}</h3>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" style="text-align: center;">
          <div class="img_holder"/> </div>
     </div>
     <div class="modal-footer" style="text-align: center;">
         <h3>
         {%  trans "DOWNLOAD " %}
-        <a class="btn" class="dropdown-toggle" data-toggle="dropdown" href="http://scan.me/apps/" data-original-title="{% trans 'Options' %}" rel="tooltip">
+        <a class="btn" class="dropdown-toggle" href="http://scan.me/apps/" target="_blank">
             <i class="icon-qrcode"></i> 
         {%  trans "  SCAN" %}
         </a>

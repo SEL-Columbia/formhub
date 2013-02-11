@@ -220,16 +220,29 @@
 		{% endif %}
 		{% endif %}
 		{% if can_edit or xform.is_crowd_form %}
-	    <div class="btn-group" style="margin-bottom: 9px">
+	    <div class="btn-toolbar" style="margin-bottom: 9px">
+          <div class="btn-group">
 		    <a class="btn btn-info" rel="tooltip" title="{% trans 'Webform' %}" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
 		      <i class="icon-edit icon-white"></i> {% trans "Enter Web Form" %}
             </a>
+          </div> 
+          <div class="btn-group">
+            <a data-toggle="modal" data-target="#popupmodal" class="showqr btn" href="{% url get_qrcode xform.user.username xform.id_string %}"><i class="icon-tablet"></i> {% trans "Mobile" %}</a>
+          </div>
         </div>
 		{% endif %}
         <br>
       <div class="span4">
         <script type="text/javascript">
             $(document).ready(function() {
+            
+                $(document).on("click", ".showqr", function () {
+                  div_target = $(this).attr('data-target')
+                  url = $(this).attr('href')
+                  $(div_target+" .img_holder").load(url)
+                
+                });
+        
               {% if xform.shared_data %}
                 $('#data-shared-private').hide();
               {% else %}
@@ -497,4 +510,24 @@
 			var usernames =  {{ user_json_list|safe }}
 			$('#autocomplete').typeahead({source: usernames})
   </script>
+  
+<div class="modal hide fade" id="popupmodal" style="width: auto;" tabindex="-1" role="dialog">
+     <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>{%  trans "Mobile Form" %}</h3>
+    </div>
+    <div class="modal-body" style="text-align: center;">
+         <div class="img_holder"/> </div>
+    </div>
+    <div class="modal-footer" style="text-align: center;">
+        <h3>
+        {%  trans "DOWNLOAD " %}
+        <a class="btn" class="dropdown-toggle" href="http://scan.me/apps/" target="_blank">
+            <i class="icon-qrcode"></i> 
+        {%  trans "  SCAN" %}
+        </a>
+        {%  trans " QR Reader" %}
+        </h3>
+    </div>
+</div>
 {% endblock %}
