@@ -96,8 +96,9 @@ def clone_xlsform(request, username):
             ).survey
             # log to cloner's account
             audit = {}
-            audit_log(Actions.FORM_CLONED, request.user, request.user,
-                _("Cloned form '%(id_string)s'.") %\
+            audit_log(
+                Actions.FORM_CLONED, request.user, request.user,
+                _("Cloned form '%(id_string)s'.") %
                 {
                     'id_string': survey.id_string,
                 }, audit, request)
@@ -132,8 +133,9 @@ def profile(request, username):
             form = QuickConverter(request.POST, request.FILES)
             survey = form.publish(request.user).survey
             audit = {}
-            audit_log(Actions.FORM_PUBLISHED, request.user, content_user,
-                _("Published form '%(id_string)s'.") %\
+            audit_log(
+                Actions.FORM_PUBLISHED, request.user, content_user,
+                _("Published form '%(id_string)s'.") %
                 {
                     'id_string': survey.id_string,
                 }, audit, request)
@@ -202,7 +204,8 @@ def profile_settings(request, username):
             form.save()
             # todo: add string rep. of settings to see what changed
             audit = {}
-            audit_log(Actions.PROFILE_SETTINGS_UPDATED, request.user, content_user,
+            audit_log(
+                Actions.PROFILE_SETTINGS_UPDATED, request.user, content_user,
                 _("Profile settings updated."), audit, request)
             return HttpResponseRedirect(reverse(
                 public_profile, kwargs={'username': request.user.username}
@@ -223,7 +226,8 @@ def public_profile(request, username):
     set_profile_data(context, content_user)
     context.is_owner = request.user == content_user
     audit = {}
-    audit_log(Actions.PUBLIC_PROFILE_ACCESSED, request.user, content_user,
+    audit_log(
+        Actions.PUBLIC_PROFILE_ACCESSED, request.user, content_user,
         _("Public profile accessed."), audit, request)
     return render_to_response("profile.html", context_instance=context)
 
@@ -392,8 +396,10 @@ def edit(request, username, id_string):
             audit = {
                 'xform': xform.id_string
             }
-            audit_log(Actions.FORM_UPDATED, request.user, owner,
-                _("Description for '%(id_string)s' updated from '%(old_description)s' to '%(new_description)s'.") %\
+            audit_log(
+                Actions.FORM_UPDATED, request.user, owner,
+                _("Description for '%(id_string)s' updated from "
+                    "'%(old_description)s' to '%(new_description)s'.") %
                 {
                     'id_string': xform.id_string,
                     'old_description': xform.description,
@@ -404,8 +410,10 @@ def edit(request, username, id_string):
             audit = {
                 'xform': xform.id_string
             }
-            audit_log(Actions.FORM_UPDATED, request.user, owner,
-                _("Title for '%(id_string)s' updated from '%(old_title)s' to '%(new_title)s'.") %\
+            audit_log(
+                Actions.FORM_UPDATED, request.user, owner,
+                _("Title for '%(id_string)s' updated from "
+                    "'%(old_title)s' to '%(new_title)s'.") %
                 {
                     'id_string': xform.id_string,
                     'old_title': xform.title,
@@ -417,48 +425,64 @@ def edit(request, username, id_string):
                 audit = {
                     'xform': xform.id_string
                 }
-                audit_log(Actions.FORM_UPDATED, request.user, owner,
-                    _("Data sharing updated for '%(id_string)s' from '%(old_shared)s' to '%(new_shared)s'.") %\
+                audit_log(
+                    Actions.FORM_UPDATED, request.user, owner,
+                    _("Data sharing updated for '%(id_string)s' from "
+                        "'%(old_shared)s' to '%(new_shared)s'.") %
                     {
                         'id_string': xform.id_string,
-                        'old_shared': _("shared") if xform.shared_data else _("not shared"),
-                        'new_shared': _("shared") if not xform.shared_data else _("not shared")
+                        'old_shared': _("shared")
+                        if xform.shared_data else _("not shared"),
+                        'new_shared': _("shared")
+                        if not xform.shared_data else _("not shared")
                     }, audit, request)
                 xform.shared_data = not xform.shared_data
             elif request.POST['toggle_shared'] == 'form':
                 audit = {
                     'xform': xform.id_string
                 }
-                audit_log(Actions.FORM_UPDATED, request.user, owner,
-                    _("Form sharing for '%(id_string)s' updated from '%(old_shared)s' to '%(new_shared)s'.") %\
+                audit_log(
+                    Actions.FORM_UPDATED, request.user, owner,
+                    _("Form sharing for '%(id_string)s' updated "
+                        "from '%(old_shared)s' to '%(new_shared)s'.") %
                     {
                         'id_string': xform.id_string,
-                        'old_shared': _("shared") if xform.shared else _("not shared"),
-                        'new_shared': _("shared") if not xform.shared else _("not shared")
+                        'old_shared': _("shared")
+                        if xform.shared else _("not shared"),
+                        'new_shared': _("shared")
+                        if not xform.shared else _("not shared")
                     }, audit, request)
                 xform.shared = not xform.shared
             elif request.POST['toggle_shared'] == 'active':
                 audit = {
                     'xform': xform.id_string
                 }
-                audit_log(Actions.FORM_UPDATED, request.user, owner,
-                    _("Active status for '%(id_string)s' updated from '%(old_shared)s' to '%(new_shared)s'.") %\
+                audit_log(
+                    Actions.FORM_UPDATED, request.user, owner,
+                    _("Active status for '%(id_string)s' updated from "
+                        "'%(old_shared)s' to '%(new_shared)s'.") %
                     {
                         'id_string': xform.id_string,
-                        'old_shared': _("shared") if xform.downloadable else _("not shared"),
-                        'new_shared': _("shared") if not xform.downloadable else _("not shared")
+                        'old_shared': _("shared")
+                        if xform.downloadable else _("not shared"),
+                        'new_shared': _("shared")
+                        if not xform.downloadable else _("not shared")
                     }, audit, request)
                 xform.downloadable = not xform.downloadable
             elif request.POST['toggle_shared'] == 'crowd':
                 audit = {
                     'xform': xform.id_string
                 }
-                audit_log(Actions.FORM_UPDATED, request.user, owner,
-                    _("Crowdform status for '%(id_string)s' updated from '%(old_status)s' to '%(new_status)s'.") %\
+                audit_log(
+                    Actions.FORM_UPDATED, request.user, owner,
+                    _("Crowdform status for '%(id_string)s' updated from "
+                        "'%(old_status)s' to '%(new_status)s'.") %
                     {
                         'id_string': xform.id_string,
-                        'old_status': _("crowdform") if not xform.is_crowd_form else _("not crowdform"),
-                        'new_status': _("crowdform") if xform.is_crowd_form else _("not crowdform"),
+                        'old_status': _("crowdform")
+                        if not xform.is_crowd_form else _("not crowdform"),
+                        'new_status': _("crowdform")
+                        if xform.is_crowd_form else _("not crowdform"),
                     }, audit, request)
                 if xform.is_crowd_form:
                     xform.is_crowd_form = False
@@ -470,8 +494,10 @@ def edit(request, username, id_string):
             audit = {
                 'xform': xform.id_string
             }
-            audit_log(Actions.FORM_UPDATED, request.user, owner,
-                _("Form License for '%(id_string)s' updated to '%(form_license)s'.") %\
+            audit_log(
+                Actions.FORM_UPDATED, request.user, owner,
+                _("Form License for '%(id_string)s' updated to "
+                    "'%(form_license)s'.") %
                 {
                     'id_string': xform.id_string,
                     'form_license': request.POST['form-license'],
@@ -481,8 +507,10 @@ def edit(request, username, id_string):
             audit = {
                 'xform': xform.id_string
             }
-            audit_log(Actions.FORM_UPDATED, request.user, owner,
-                _("Data license for '%(id_string)s' updated to '%(data_license)s'.") %\
+            audit_log(
+                Actions.FORM_UPDATED, request.user, owner,
+                _("Data license for '%(id_string)s' updated to "
+                    "'%(data_license)s'.") %
                 {
                     'id_string': xform.id_string,
                     'data_license': request.POST['data-license'],
@@ -492,8 +520,9 @@ def edit(request, username, id_string):
             audit = {
                 'xform': xform.id_string
             }
-            audit_log(Actions.FORM_UPDATED, request.user, owner,
-                _("Source for '%(id_string)s' updated to '%(source)s'.") %\
+            audit_log(
+                Actions.FORM_UPDATED, request.user, owner,
+                _("Source for '%(id_string)s' updated to '%(source)s'.") %
                 {
                     'id_string': xform.id_string,
                     'source': request.POST.get('source'),
@@ -504,8 +533,9 @@ def edit(request, username, id_string):
             audit = {
                 'xform': xform.id_string
             }
-            audit_log(Actions.FORM_UPDATED, request.user, owner,
-                _("Media added to '%(id_string)s'.") %\
+            audit_log(
+                Actions.FORM_UPDATED, request.user, owner,
+                _("Media added to '%(id_string)s'.") %
                 {
                     'id_string': xform.id_string
                 }, audit, request)
@@ -517,8 +547,9 @@ def edit(request, username, id_string):
                 audit = {
                     'xform': xform.id_string
                 }
-                audit_log(Actions.FORM_UPDATED, request.user, owner,
-                    _("Map layer added to '%(id_string)s'.") %\
+                audit_log(
+                    Actions.FORM_UPDATED, request.user, owner,
+                    _("Map layer added to '%(id_string)s'.") %
                     {
                         'id_string': xform.id_string
                     }, audit, request)
@@ -527,8 +558,9 @@ def edit(request, username, id_string):
             audit = {
                 'xform': xform.id_string
             }
-            audit_log(Actions.FORM_UPDATED, request.user, owner,
-                _("Supporting document added to '%(id_string)s'.") %\
+            audit_log(
+                Actions.FORM_UPDATED, request.user, owner,
+                _("Supporting document added to '%(id_string)s'.") %
                 {
                     'id_string': xform.id_string
                 }, audit, request)
@@ -550,15 +582,18 @@ def getting_started(request):
     context.template = 'getting_started.html'
     return render_to_response('base.html', context_instance=context)
 
+
 def support(request):
     context = RequestContext(request)
     context.template = 'support.html'
     return render_to_response('base.html', context_instance=context)
 
+
 def faq(request):
     context = RequestContext(request)
     context.template = 'faq.html'
     return render_to_response('base.html', context_instance=context)
+
 
 def xls2xform(request):
     context = RequestContext(request)
@@ -578,6 +613,7 @@ def tutorial(request):
 def resources(request):
     context = RequestContext(request)
     return render_to_response('resources.html', context_instance=context)
+
 
 def about_us(request):
     context = RequestContext(request)
@@ -635,8 +671,9 @@ def download_metadata(request, username, id_string, data_id):
             audit = {
                 'xform': xform.id_string
             }
-            audit_log(Actions.FORM_UPDATED, request.user, owner,
-                _("Document '%(filename)s' for '%(id_string)s' downloaded.") %\
+            audit_log(
+                Actions.FORM_UPDATED, request.user, owner,
+                _("Document '%(filename)s' for '%(id_string)s' downloaded.") %
                 {
                     'id_string': xform.id_string,
                     'filename': "%s.%s" % (filename, extension)
@@ -654,7 +691,7 @@ def download_metadata(request, username, id_string, data_id):
 @login_required()
 def delete_metadata(request, username, id_string, data_id):
     xform = get_object_or_404(XForm,
-        user__username=username, id_string=id_string)
+                              user__username=username, id_string=id_string)
     owner = xform.user
     data = get_object_or_404(MetaData, pk=data_id)
     default_storage = get_storage_class()()
@@ -666,8 +703,9 @@ def delete_metadata(request, username, id_string, data_id):
             audit = {
                 'xform': xform.id_string
             }
-            audit_log(Actions.FORM_UPDATED, request.user, owner,
-                _("Document '%(filename)s' deleted from '%(id_string)s'.") %\
+            audit_log(
+                Actions.FORM_UPDATED, request.user, owner,
+                _("Document '%(filename)s' deleted from '%(id_string)s'.") %
                 {
                     'id_string': xform.id_string,
                     'filename': os.path.basename(data.data_file.name)
@@ -683,8 +721,9 @@ def delete_metadata(request, username, id_string, data_id):
         audit = {
             'xform': xform.id_string
         }
-        audit_log(Actions.FORM_UPDATED, request.user, owner,
-            _("Map layer deleted from '%(id_string)s'.") %\
+        audit_log(
+            Actions.FORM_UPDATED, request.user, owner,
+            _("Map layer deleted from '%(id_string)s'.") %
             {
                 'id_string': xform.id_string,
             }, audit, request)
@@ -696,8 +735,8 @@ def delete_metadata(request, username, id_string, data_id):
 
 
 def download_media_data(request, username, id_string, data_id):
-    xform = get_object_or_404(XForm,
-        user__username=username, id_string=id_string)
+    xform = get_object_or_404(
+        XForm, user__username=username, id_string=id_string)
     owner = xform.user
     data = get_object_or_404(MetaData, id=data_id)
     default_storage = get_storage_class()()
@@ -709,8 +748,10 @@ def download_media_data(request, username, id_string, data_id):
                 audit = {
                     'xform': xform.id_string
                 }
-                audit_log(Actions.FORM_UPDATED, request.user, owner,
-                    _("Media download '%(filename)s' deleted from '%(id_string)s'.") %\
+                audit_log(
+                    Actions.FORM_UPDATED, request.user, owner,
+                    _("Media download '%(filename)s' deleted from "
+                        "'%(id_string)s'.") %
                     {
                         'id_string': xform.id_string,
                         'filename': os.path.basename(data.data_file.name)
@@ -730,8 +771,10 @@ def download_media_data(request, username, id_string, data_id):
                 audit = {
                     'xform': xform.id_string
                 }
-                audit_log(Actions.FORM_UPDATED, request.user, owner,
-                    _("Media '%(filename)s' downloaded from '%(id_string)s'.") %\
+                audit_log(
+                    Actions.FORM_UPDATED, request.user, owner,
+                    _("Media '%(filename)s' downloaded from "
+                        "'%(id_string)s'.") %
                     {
                         'id_string': xform.id_string,
                         'filename': os.path.basename(file_path)
@@ -782,41 +825,56 @@ def set_perm(request, username, id_string):
     except KeyError:
         return HttpResponseBadRequest()
     if perm_type in ['edit', 'view', 'remove']:
-        user = User.objects.get(username=for_user)
-        if perm_type == 'edit' and not user.has_perm('change_xform', xform):
-            audit = {
-                'xform': xform.id_string
-            }
-            audit_log(Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
-                _("Edit permissions on '%(id_string)s' assigned to '%(for_user)s'.") %\
-                {
-                    'id_string': xform.id_string,
-                    'for_user': for_user
-                }, audit, request)
-            assign('change_xform', user, xform)
-        elif perm_type == 'view' and not user.has_perm('view_xform', xform):
-            audit = {
-                'xform': xform.id_string
-            }
-            audit_log(Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
-                _("View permissions on '%(id_string)s' assigned to '%(for_user)s'.") %\
-                {
-                    'id_string': xform.id_string,
-                    'for_user': for_user
-                }, audit, request)
-            assign('view_xform', user, xform)
-        elif perm_type == 'remove':
-            audit = {
-                'xform': xform.id_string
-            }
-            audit_log(Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
-                _("All permissions on '%(id_string)s' removed from '%(for_user)s'.") %\
-                {
-                    'id_string': xform.id_string,
-                    'for_user': for_user
-                }, audit, request)
-            remove_perm('change_xform', user, xform)
-            remove_perm('view_xform', user, xform)
+        try:
+            user = User.objects.get(username=for_user)
+        except User.DoesNotExist:
+            messages.add_message(
+                request, messages.INFO,
+                _(u"Wrong username <b>%s</b>." % for_user),
+                extra_tags='alert-error')
+        else:
+            if perm_type == 'edit' and\
+                    not user.has_perm('change_xform', xform):
+                audit = {
+                    'xform': xform.id_string
+                }
+                audit_log(
+                    Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
+                    _("Edit permissions on '%(id_string)s' assigned to "
+                        "'%(for_user)s'.") %
+                    {
+                        'id_string': xform.id_string,
+                        'for_user': for_user
+                    }, audit, request)
+                assign('change_xform', user, xform)
+            elif perm_type == 'view' and\
+                    not user.has_perm('view_xform', xform):
+                audit = {
+                    'xform': xform.id_string
+                }
+                audit_log(
+                    Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
+                    _("View permissions on '%(id_string)s' "
+                        "assigned to '%(for_user)s'.") %
+                    {
+                        'id_string': xform.id_string,
+                        'for_user': for_user
+                    }, audit, request)
+                assign('view_xform', user, xform)
+            elif perm_type == 'remove':
+                audit = {
+                    'xform': xform.id_string
+                }
+                audit_log(
+                    Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
+                    _("All permissions on '%(id_string)s' "
+                        "removed from '%(for_user)s'.") %
+                    {
+                        'id_string': xform.id_string,
+                        'for_user': for_user
+                    }, audit, request)
+                remove_perm('change_xform', user, xform)
+                remove_perm('view_xform', user, xform)
     elif perm_type == 'link':
         current = MetaData.public_link(xform)
         if for_user == 'all':
@@ -828,11 +886,14 @@ def set_perm(request, username, id_string):
         audit = {
             'xform': xform.id_string
         }
-        audit_log(Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
-            _("Public link on '%(id_string)s' %(action)s.") %\
+        audit_log(
+            Actions.FORM_PERMISSIONS_UPDATED, request.user, owner,
+            _("Public link on '%(id_string)s' %(action)s.") %
             {
                 'id_string': xform.id_string,
-                'action': "created" if for_user == "all" or (for_user == "toggle" and not current) else "removed"
+                'action': "created"
+                if for_user == "all" or
+                (for_user == "toggle" and not current) else "removed"
             }, audit, request)
     if request.is_ajax():
         return HttpResponse(
@@ -856,8 +917,9 @@ def show_submission(request, username, id_string, uuid):
     audit = {
         'xform': xform.id_string
     }
-    audit_log(Actions.SUBMISSION_ACCESSED, request.user, owner,
-        _("Submission '%(uuid)s' on '%(id_string)s' accessed.") %\
+    audit_log(
+        Actions.SUBMISSION_ACCESSED, request.user, owner,
+        _("Submission '%(uuid)s' on '%(id_string)s' accessed.") %
         {
             'id_string': xform.id_string,
             'uuid': uuid
@@ -905,8 +967,10 @@ def delete_data(request, username=None, id_string=None):
                 audit = {
                     'xform': xform.id_string
                 }
-                audit_log(Actions.SUBMISSION_DELETED, request.user, owner,
-                    _("Deleted submission with id '%(record_id)s' on '%(id_string)s'.") %\
+                audit_log(
+                    Actions.SUBMISSION_DELETED, request.user, owner,
+                    _("Deleted submission with id '%(record_id)s' "
+                        "on '%(id_string)s'.") %
                     {
                         'id_string': xform.id_string,
                         'record_id': record['_id']
@@ -934,7 +998,8 @@ def link_to_bamboo(request, username, id_string):
     if xform.bamboo_dataset and delete_bamboo_dataset(xform):
         xform.bamboo_dataset = u''
         xform.save()
-        audit_log(Actions.BAMBOO_LINK_DELETED, request.user, owner,
+        audit_log(
+            Actions.BAMBOO_LINK_DELETED, request.user, owner,
             _("Bamboo link deleted on '%(id_string)s'.")
             % {'id_string': xform.id_string}, audit, request)
 
@@ -945,8 +1010,9 @@ def link_to_bamboo(request, username, id_string):
     xform.bamboo_dataset = dataset_id
     xform.save()
 
-    audit_log(Actions.BAMBOO_LINK_CREATED, request.user, owner,
-        _("Bamboo link created on '%(id_string)s'.") %\
+    audit_log(
+        Actions.BAMBOO_LINK_CREATED, request.user, owner,
+        _("Bamboo link created on '%(id_string)s'.") %
         {
             'id_string': xform.id_string,
         }, audit, request)
@@ -976,11 +1042,12 @@ def update_xform(request, username, id_string):
         audit = {
             'xform': xform.id_string
         }
-        audit_log(Actions.FORM_XLS_UPDATED, request.user, owner,
-            _("XLS for '%(id_string)s' updated.") %\
+        audit_log(
+            Actions.FORM_XLS_UPDATED, request.user, owner,
+            _("XLS for '%(id_string)s' updated.") %
             {
                 'id_string': xform.id_string,
-                }, audit, request)
+            }, audit, request)
         return {
             'type': 'alert-success',
             'text': _(u'Successfully published %(form_id)s.'
@@ -1003,6 +1070,7 @@ def activity(request, username):
     context = RequestContext(request)
     context.user = owner
     return render_to_response('activity.html', context_instance=context)
+
 
 def activity_fields(request):
     fields = [
@@ -1035,9 +1103,11 @@ def activity_fields(request):
     response_text = simplejson.dumps(fields)
     return HttpResponse(response_text, mimetype='application/json')
 
+
 @is_owner
 def activity_api(request, username):
     from bson.objectid import ObjectId
+
     def stringify_unknowns(obj):
         if isinstance(obj, ObjectId):
             return str(obj)
@@ -1048,17 +1118,20 @@ def activity_api(request, username):
     try:
         query_args = {
             'username': username,
-            'query': json.loads(request.GET.get('query')) if request.GET.get('query') else {},
-            'fields': json.loads(request.GET.get('fields')) if request.GET.get('fields') else [],
-            'sort': json.loads(request.GET.get('sort')) if request.GET.get('sort') else {}
+            'query': json.loads(request.GET.get('query'))
+            if request.GET.get('query') else {},
+            'fields': json.loads(request.GET.get('fields'))
+            if request.GET.get('fields') else [],
+            'sort': json.loads(request.GET.get('sort'))
+            if request.GET.get('sort') else {}
         }
         if 'start' in request.GET:
             query_args["start"] = int(request.GET.get('start'))
         if 'limit' in request.GET:
             query_args["limit"] = int(request.GET.get('limit'))
         if 'count' in request.GET:
-            query_args["count"] = True if int(request.GET.get('count')) > 0\
-            else False
+            query_args["count"] = True \
+                if int(request.GET.get('count')) > 0 else False
         cursor = AuditLog.query_mongo(**query_args)
     except ValueError, e:
         return HttpResponseBadRequest(e.__str__())
