@@ -1156,6 +1156,7 @@ def qrcode(request, username, id_string):
 
     url = enketo_url(formhuburl, id_string)
     image = generate_qrcode(url) 
+
     img = u"""<img class="qrcode" src="%s" alt="%s" /></br><a href="%s">%s</a>""" % (image, url, url, url)
     
     return HttpResponse(img, mimetype='text/html')
