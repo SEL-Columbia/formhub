@@ -22,11 +22,12 @@
 
         
         $(document).on("click", ".showqr", function () {
-             var myBookId = $(this).data('id');
-             //$('.img_holder').append(myBookId);
-             $("#img_holder").attr("src",myBookId);
-            $('#popupmodal').modal('show');
+          div_target = $(this).attr('data-target')
+          url = $(this).attr('href')
+          $(lv_target+" .img_holder").load(url)
+        
         });
+           
 	
 	  var tbl = $('#forms-table').dataTable({
         "bPaginate": false,
@@ -104,7 +105,7 @@
         <td>
             <center>
                 <a class=btn href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}"><i class="icon-edit"></i> {% trans "Web" %}</a>
-            <a data-toggle="modal" data-id="{% qrcode xform.id_string  xform.user.username %}"  title="Add this item" class="showqr btn btn-primary" href="#popupmodal">TEST</a>
+                <a data-toggle="modal" data-target="#popupmodal" class="showqr btn btn-primary" href="{% url get_qrcode xform.user.username xform.id_string %}"><i class="icon-tablet"></i> {% trans "Mobile" %}</a>
             </center>
         </td>
         <td>
@@ -391,7 +392,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
     </div>
     <div class="modal-body">
-         <img src="" id="img_holder"/>
+         <div class="img_holder"/> </div>
     </div>
     <div class="modal-footer">
         <a href="#" class="btn">Close</a>
