@@ -49,6 +49,12 @@
 .label a{
 color: white;
 }
+.pinned {  
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: auto;
+}
 </style>
 
 
@@ -73,6 +79,8 @@ color: white;
 
   {% block body %}
   <body>
+    {% include "change_language.html"%}
+    
 	{% if not user.is_authenticated %}
 		{% include "home_topbar.html" %}
 	{% endif %}
