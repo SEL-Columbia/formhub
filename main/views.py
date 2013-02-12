@@ -1146,14 +1146,6 @@ def activity_api(request, username):
 
 
 def qrcode(request, username, id_string):
-    owner = User.objects.get(username=username)
-    xform = get_object_or_404(
-        XForm, user__username=username, id_string=id_string)
-    instance = get_object_or_404(
-        Instance, pk=data_id, xform=xform)
-    if not has_edit_permission(xform, owner, request, xform.shared):
-        return HttpResponse("The form youre trying to access is not shared", mimetype='text/html')
-        
     try:
         formhub_url = "http://%s/" % request.META['HTTP_HOST']
     except:
