@@ -284,7 +284,7 @@ function loadResponseDataCallback()
             dropdownCaretLink.appendChild(dropdownCaret);
             dropDownContainer.appendChild(dropdownCaretLink);
 
-            var questionUlContainer = _createElementAndSetAttrs("ul", {"class":"dropdown-menu"});
+            var questionUlContainer = _createElementAndSetAttrs("ul", {"class":"dropdown-menu questions"});
 
             // create an "All" link to reset the map
             var questionLi = _createSelectOneLi({"name":"", "label": gettext("None")});
