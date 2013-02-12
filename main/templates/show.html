@@ -198,9 +198,13 @@
         </p>
         <p><a id="data-license_info" style="display:none" href="">{% trans "License information" %}</a></p>
 	    <div class="btn-group" style="margin-bottom: 9px">
-            <a class="btn btn-info" rel="tooltip" title="{% trans 'View Map' %}" href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
+       {% for xform in user.xforms.all %}
+						{% if xform.data_dictionary.has_surveys_with_geopoints %}
+						<a class="btn btn-info" rel="tooltip" title="{% trans 'View Map' %}" href="{% url odk_viewer.views.map_view content_user.username xform.id_string %}">
               <i class="icon-map-marker icon-white"></i> {% trans "Map" %}
             </a>
+            {% endif %}
+				{% endfor %}
             <a class="btn btn-info" btn-info  rel="tooltip" title="{% trans "View Photos" %}" href="{% url main.views.form_photos content_user.username xform.id_string %}">
               <i class="icon-camera icon-white"></i> {% trans "Photos" %}
             </a>
