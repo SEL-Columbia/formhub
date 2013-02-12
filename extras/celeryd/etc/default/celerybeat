@@ -14,8 +14,8 @@ CELERYBEAT_LOG_FILE="/var/log/celery/beat.log"
 CELERYBEAT_PID_FILE="/var/run/celery/beat.pid"
 
 # Workers should run as an unprivileged user.
-CELERYD_USER="<username>"
-CELERYD_GROUP="<username>"
+CELERYBEAT_USER="<username>"
+CELERYBEAT_GROUP="<username>"
 
 # Name of the projects settings module.
 export DJANGO_SETTINGS_MODULE="settings"
