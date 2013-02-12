@@ -39,7 +39,7 @@ This is for all the extra things it needs beyond what bootstrap provides.
 }
 /* for fixed top */
 body {
-  padding-top: 56px;
+  padding-top: 28px;
 }
 .centered {
   text-align: center;
@@ -978,5 +978,8 @@ a:focus {
 }
 .alert-success a {
   color: #4169e1;
+}
+#language-bar{
+  text-align: right;
 }
 
