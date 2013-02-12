@@ -9,7 +9,7 @@
 	<div class="span8">
 		<form method="post" action="./bulk-submission" enctype="multipart/form-data">
 			<p>
-				<input type="file" name="zip_submission_file">
+      <input type="file" name="zip_submission_file"><br />
 				<input type="submit" value="{% trans 'Submit' %}">
 			</p>
 			{% csrf_token %}
