@@ -983,3 +983,6 @@ a:focus {
   text-align: right;
 }
 
+#language-bar select{
+  width: 110px;
+}
