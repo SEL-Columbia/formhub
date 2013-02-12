@@ -43,6 +43,8 @@ from utils.user_auth import check_and_set_user, set_profile_data,\
 from utils.log import audit_log, Actions
 from main.models import AuditLog
 
+from utils.viewer_tools import enketo_url
+from utils.qrcode import generate_qrcode
 
 def home(request):
     if request.user.username:
@@ -1141,3 +1143,18 @@ def activity_api(request, username):
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))
     return HttpResponse(response_text, mimetype='application/json')
+
+
+def qrcode(request, username, id_string):
+    try:
+        formhub_url = "http://%s/" % request.META['HTTP_HOST']
+    except:
+        formhub_url = "http://formhub.org/"
+    formhuburl = formhub_url + username
+
+    url = enketo_url(formhuburl, id_string)
+    image = generate_qrcode(url)
+
+    img = u"""<img class="qrcode" src="%s" alt="%s" /></br><a href="%s" target="_blank">%s</a>""" % (image, url, url, url)
+
+    return HttpResponse(img, mimetype='text/html')

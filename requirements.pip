@@ -28,6 +28,8 @@ pandas==0.9.1
 
 requests==0.14
 
+elaphe
+
 # devel only
 twill
 clint
