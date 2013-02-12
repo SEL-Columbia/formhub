@@ -43,7 +43,8 @@ this.fh.constants = {
     {
         if(_.isObject(label))
         {
-            return label.hasOwnProperty(language)?label[language]:label[_.keys(label)[0]]
+            return label.hasOwnProperty(language)?
+                label[language]:label[_.keys(label)[0]]
         }
         else
         {
@@ -51,22 +52,24 @@ this.fh.constants = {
         }
     };
 
-    my._parseFields = function(fhFields, parentXPath, language)
+    my._parseFields = function(fhFields, parentXPath, current_language)
     {
         var fields = [];
         _.each(fhFields, function(fhField, index){
             var newXPath = [];
             if(parentXPath)
                 newXPath.push(parentXPath);
-            if(_.indexOf([fh.constants.GROUP, fh.constants.NOTE], fhField.type) > -1)
+            if(_.indexOf([fh.constants.GROUP, fh.constants.NOTE],
+                fhField.type) > -1)
             {
-
-                // only add if we have children - notes dont have children
+                // only add if we have children - notes don't have children
                 if(fhField.children)
                 {
                     newXPath.push(fhField.name);
                     newXPath = newXPath.join("/");
-                    _.each(my._parseFields(fhField.children, newXPath), function(field, index){
+                    var childFields = my._parseFields(fhField.children,
+                        newXPath, current_language);
+                    _.each(childFields, function(field, index){
                         fields.push(field);
                     });
                 }
@@ -78,18 +81,36 @@ this.fh.constants = {
                 newXPath.push(fhField.name);
                 field.id = newXPath.join("/");
 
-                //@todo: using the fhType we can setup custom formatters here e.g. for photos and videos
-                field.type = my._fhToReclineType(fhField.type);
+                // todo: using the fhType we can setup custom formatters here e.g. for photos and videos
+                field.type = my._fhToReclineType(fhField[fh.constants.TYPE]);
 
-                if(fhField.label)
+                if(fhField.hasOwnProperty(fh.constants.LABEL))
                 {
-                    label = my._fhMultilangLabel(fhField.label, language);
+                    // set fhLabel property to be used for language switching
+                    field.fhLabel = fhField.label;
+
+                    // check if label is a string or object
+                    if(typeof(fhField[fh.constants.LABEL]) == "string")
+                    {
+                        label = fhField[fh.constants.LABEL];
+                    }
+                    else
+                    {
+                        label = my._fhMultilangLabel(fhField.label,
+                            current_language);
+                    }
                 }
                 else
                 {
+                    // some fields like start/end only have a name but no label
                     label = fhField.name;
                 }
-                field.label = label; // some fields like start/end only have a name but no label
+                // hack: if the label is blank, use its name
+                if(!label)
+                {
+                    label = fhField.name
+                }
+                field.label = label;
                 fields.push(field);
             }
         });
@@ -99,29 +120,43 @@ this.fh.constants = {
     my._parseLanguages = function(fhFields)
     {
         var languages = [];
-        var multilangField = _.find(fhFields, function(fhField){
-            return _.isObject(fhField.label);
+        var pushSafe = function(current_languages, language){
+            if(current_languages.indexOf(language) == -1)
+            {
+                current_languages.push(language);
+            }
+        };
+        _.each(fhFields, function(fhField, index){
+            // check if we are a group and have children to recurse
+            if(fhField.type == fh.constants.GROUP)
+            {
+                if(fhField.hasOwnProperty(fh.constants.CHILDREN))
+                {
+                    var childLanguages = my._parseLanguages(
+                        fhField[fh.constants.CHILDREN]);
+                    _.each(childLanguages, function(language){
+                        pushSafe(languages, language);
+                    });
+                }
+            }
+            else if(fhField.hasOwnProperty(fh.constants.LABEL))
+            {
+                if(typeof(fhField.label) == "object")
+                {
+                    _.each(_.keys(fhField.label), function(label){
+                        pushSafe(languages, label);
+                    });
+                }
+            }
         });
-        if(multilangField)
-        {
-            languages = _.map(multilangField.label, function(label, language){
-                return language;
-            });
-        }
-        else
-        {
-            languages = ["default"];
-        }
         return languages;
     };
 
     my._parseSchema = function(data)
     {
         var schema = {metadata: {}, fields: []};
-        var language;
+        var language, fields, languages;
         var self = this;
-        // parse languages - @todo: wasteful since we go through all fields looking for a multilang label, if a form doenst have one, we end up going through all the fields
-        schema.metadata.languages = self._parseLanguages(data.children);
         // get metadata
         _.each(data, function(val, key){
             if(key !== fh.constants.CHILDREN)
@@ -129,17 +164,29 @@ this.fh.constants = {
                 schema.metadata[key] = val;
             }
         });
+        // parse languages
+        languages = my._parseLanguages(data.children);
+        // if no languages, assign a default
+        if(languages.length == 0)
+        {
+            languages = ["default"];
+        }
         // @todo: review - check if we have a default langauge specified and its in our list of languages
-        if(schema.default_language && _.indexOf(schema.metadata.languages, schema.default_language)>-1)
+        if(schema.hasOwnProperty('default_language') && _.indexOf(languages, schema.default_language)>-1)
         {
             language = schema.default_language;
         }
         else
         {
-            language = schema.metadata.languages[0];
+            language = languages[0];
         }
         // parse fields
-        schema.fields = self._parseFields(data.children, null, language);
+        fields = my._parseFields(data.children, null, language);
+
+        // assign for recline
+        schema.fields = fields;
+        schema.metadata.languages = languages;
+        schema.metadata.language = language;
         return schema;
     };
 
