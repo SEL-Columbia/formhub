@@ -991,9 +991,3 @@ a:focus {
 .label a{
 color: white;
 }
-.pinned {  
-    position: fixed;
-    right: 0;
-    top: 0;
-    width: auto;
-}
