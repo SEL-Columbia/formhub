@@ -16,6 +16,10 @@ class TestAttachmentUrl(MainTestCase):
     def test_attachment_url(self):
         response = self.client.get(
             self.url, {"media_file": self.attachment_media_file})
+        print response
+        print response.content
+        print self.url
+        print self.attachment_media_file
         self.assertEqual(response.status_code, 302) #redirects to amazon
 
     def test_attachment_not_found(self):
