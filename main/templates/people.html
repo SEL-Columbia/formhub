@@ -5,28 +5,28 @@
 
 
 
-  <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
-  <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
+<script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
+<script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
 
-  <script type="text/javascript" charset="utf-8">
+<script type="text/javascript" charset="utf-8">
 
-        $.extend( $.fn.dataTableExt.oStdClasses, {
-          "sSortAsc": "header headerSortDown",
-          "sSortDesc": "header headerSortUp",
-          "sSortable": "header"
-        } );
+      $.extend( $.fn.dataTableExt.oStdClasses, {
+        "sSortAsc": "header headerSortDown",
+        "sSortDesc": "header headerSortUp",
+        "sSortable": "header"
+      } );
 
-	$(document).ready(function() {
-	  $('#people-table').dataTable({
-                  "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
-	          "bPaginate" : true,
-                  "sPaginationType": "bootstrap",
-                  "bSort": true,
-                  "oLanguage": {"sSearch": "Search:"},
-                  "oSearch": {"sSearch": ""},
-          });
-	});
-  </script>
+$(document).ready(function() {
+  $('#people-table').dataTable({
+                "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+          "bPaginate" : true,
+                "sPaginationType": "bootstrap",
+                "bSort": true,
+                "oLanguage": {"sSearch": "Search:"},
+                "oSearch": {"sSearch": ""},
+        });
+});
+</script>
 
   <div class="page-header">
 <br>
