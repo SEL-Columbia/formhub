@@ -101,7 +101,8 @@ def bulksubmission(request, username):
 @login_required
 def bulksubmission_form(request, username=None):
     if request.user.username == username:
-        return render_to_response("bulk_submission_form.html")
+        context = RequestContext(request)
+        return render_to_response("bulk_submission_form.html",context_instance=context)
     else:
         return HttpResponseRedirect('/%s' % request.user.username)
 
