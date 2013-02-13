@@ -3,13 +3,6 @@ formhub-extras.css
 Made for formhub.org, which mostly uses bootstrap for css.
 This is for all the extra things it needs beyond what bootstrap provides.
 */
-
-//body {
-//	background-image: url("images/background.jpg");
-//	background-repeat: repeat;
-//}
-
-
 .clearfix {
   *zoom: 1;
 }
@@ -350,6 +343,9 @@ table.table thead .sorting_desc_disabled {
 table.dataTable th:active {
   outline: none;
 }
+.table td.right{
+   text-align:right;
+ }
 section {
   padding-top: 20px;
 }
@@ -985,4 +981,19 @@ a:focus {
 
 #language-bar select{
   width: 110px;
+}
+/* Recline CSS properties */
+.recline-slickgrid {
+    height: 550px;
+}
+/* Recline End */
+
+.label a{
+color: white;
+}
+.pinned {  
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: auto;
 }

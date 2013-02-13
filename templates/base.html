@@ -22,17 +22,18 @@
       <link href="//netdna.bootstrapcdn.com/font-awesome/3.0/css/font-awesome-ie7.css" rel="stylesheet">
     <![endif]-->
 	{% if user.is_authenticated %}
-	   	<link href="/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+	  <link href="/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 	{% endif %}
 	{% if not user.is_authenticated %}
 		<link href="/static/css/bg.css" rel="stylesheet">
 	{% endif %}
     <link href="/static/css/iphone-btn-style.css" rel="stylesheet">
+
     <!-- Le javascript -->
-	<script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
+		<script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="/static/js/jquery.tablesorter.min.js"></script>
-	<script src="/static/js/application.js?v=e78f17a2352b"></script>
+    <script src="/static/js/application.js?v=e78f17a2352b"></script>
     <script src="/static/js/iphone-style-checkboxes.js"></script>
 
     <script src="/static/bootstrap/js/bootstrap.js"></script>
@@ -45,13 +46,6 @@
 
     <!-- spot to insert stuff for google maps -->
     {% block additional-headers %}{% endblock %}
-<style type="text/css">
-.label a{
-color: white;
-}
-</style>
-
-
 
 
 <script type="text/javascript">
