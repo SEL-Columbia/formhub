@@ -8,7 +8,7 @@ from odk_logger.views import download_xlsform, download_jsonform,\
     download_xform, delete_xform
 from odk_viewer.views import export_list
 from utils.user_auth import http_auth_string
-from odk_viewer.models import ParsedInstance
+from odk_viewer.models import ParsedInstance, DataDictionary
 
 
 class TestFormShow(MainTestCase):
@@ -145,7 +145,14 @@ class TestFormShow(MainTestCase):
             'id_string': self.xform.id_string,
             'export_type': 'xls'
         }))
-        self.assertContains(response, '%s/map' % self.xform.id_string)
+        
+    def test_show_map_btn_if_has_geopoints(self):
+        self._submit_transport_instance()
+        response = self.client.get(self.url)
+        self.assertEqual(DataDictionary.objects.count(), 1)
+        dd = DataDictionary.objects.all()[0]
+        if dd.has_surveys_with_geopoints() == True:
+            self.assertContains(response, '%s/map' % self.xform.id_string)
 
     def test_user_sees_edit_btn(self):
         response = self.client.get(self.url)
