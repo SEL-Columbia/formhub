@@ -10,6 +10,7 @@ from odk_viewer.views import attachment_url
 class TestAttachmentUrl(MainTestCase):
 
     def setUp(self):
+        self.attachment_count = 0
         MainTestCase.setUp(self)
         self._create_user_and_login()
         self._publish_transportation_form()
@@ -17,6 +18,8 @@ class TestAttachmentUrl(MainTestCase):
         self.url = reverse(attachment_url)
 
     def test_attachment_url(self):
+        self.assertEqual(
+            Attachment.objects.count(), self.attachment_count + 1)
         response = self.client.get(
             self.url, {"media_file": self.attachment_media_file})
         print response
