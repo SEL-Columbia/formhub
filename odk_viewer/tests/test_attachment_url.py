@@ -1,4 +1,7 @@
+import os
+
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from main.tests.test_base import MainTestCase
 from odk_logger.models import Attachment
 from odk_viewer.views import attachment_url
@@ -30,3 +33,12 @@ class TestAttachmentUrl(MainTestCase):
     def test_attachment_has_mimetype(self):
         attachment = Attachment.objects.all().reverse()[0]
         self.assertEqual(attachment.mimetype, 'image/jpeg')
+
+    def tearDown(self):
+        path = os.path.join(settings.MEDIA_ROOT, self.user.username)
+        for root, dirs, files in os.walk(path, topdown=False):
+            for name in files:
+                os.remove(os.path.join(root, name))
+            for name in dirs:
+                os.rmdir(os.path.join(root, name))
+
