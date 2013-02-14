@@ -5,8 +5,10 @@ import os
 import re
 
 from hashlib import md5
+from StringIO import StringIO
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from xlrd import open_workbook
 
 from odk_logger.models import XForm
 from odk_logger.views import submission
@@ -380,6 +382,35 @@ class TestSite(MainTestCase):
                 else:
                     l.append(("transport/" + k, v))
             self.assertEqual(d, dict(l))
+
+    def test_xls_export_content(self):
+        self._publish_xls_file()
+        self._make_submissions()
+        self._update_dynamic_data()
+        self._check_xls_export()
+
+    def _check_xls_export(self):
+        xls_export_url = reverse(
+            xls_export, kwargs={'username': self.user.username,
+                                'id_string': self.xform.id_string})
+        response = self.client.get(xls_export_url)
+        expected_xls = open_workbook(os.path.join(self.this_directory, "fixtures", "transportation",
+                "transportation_export.xls"))
+        actual_xls = open_workbook(file_contents=response.content)
+        actual_sheet = actual_xls.sheet_by_index(0)
+        expected_sheet = expected_xls.sheet_by_index(0)
+
+        # check headers
+        self.assertEqual(actual_sheet.row_values(0),
+                         expected_sheet.row_values(0))
+
+        # check cell data
+        self.assertEqual(actual_sheet.ncols, expected_sheet.ncols)
+        self.assertEqual(actual_sheet.nrows, expected_sheet.nrows)
+        for i in range(1, actual_sheet.nrows):
+            actual_row = actual_sheet.row_values(i)
+            expected_row = expected_sheet.row_values(i)
+            self.assertEqual(actual_row, expected_row)
 
     def _check_delete(self):
         self.assertEquals(self.user.xforms.count(), 1)

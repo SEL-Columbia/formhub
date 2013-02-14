@@ -317,6 +317,11 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
             XLSDataFrameBuilder.PARENT_INDEX_COLUMN: parent_index,
             XLSDataFrameBuilder.PARENT_TABLE_NAME_COLUMN: parent_table_name})
 
+        # add ADDITIONAL_COLUMNS
+        data_section[len(data_section)-1].update(
+            dict([(column, record[column] if record.has_key(column) else None)
+                  for column in self.ADDITIONAL_COLUMNS]))
+
     def _generate_sections(self):
         """
         Split survey questions into separate sections for each xls sheet and
@@ -372,6 +377,8 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                             self.dd.get_additional_geopoint_xpaths(
                             c.get_abbreviated_xpath()):
                             self._add_column_to_section(sheet_name, xpath)
+        for section_name in self.sections:
+            self.sections[section_name]['columns'] += self.ADDITIONAL_COLUMNS
         self.get_exceeds_xls_limits()
 
     def get_exceeds_xls_limits(self):
