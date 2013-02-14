@@ -53,7 +53,7 @@ def create_xls_export(username, id_string, query=None, force_xlsx=False,
         export = generate_export(Export.XLS_EXPORT, ext, username, id_string,
             export_id, query)
     except Exception:
-        return None
+        raise
     else:
         return export
 
