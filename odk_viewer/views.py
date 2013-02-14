@@ -626,7 +626,7 @@ def attachment_url(request, size='medium'):
             if size == 'original':
                 return render_to_response("image.html", {'image': media_url})
             return redirect(media_url)
-    return HttpResponseNotFound(_(u'Attachment not found'))
+    return HttpResponseNotFound(_(u'Error: Attachment not found'))
 
 
 def instance(request, username, id_string):
