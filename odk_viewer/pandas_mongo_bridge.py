@@ -12,7 +12,7 @@ from odk_viewer.models.data_dictionary import ParsedInstance, DataDictionary
 from utils.export_tools import question_types_to_exclude
 from collections import OrderedDict
 from common_tags import ID, XFORM_ID_STRING, STATUS, ATTACHMENTS, GEOLOCATION,\
-UUID, SUBMISSION_TIME, NA_REP, BAMBOO_DATASET_ID, DELETEDAT
+    UUID, SUBMISSION_TIME, NA_REP, BAMBOO_DATASET_ID, DELETEDAT
 
 
 # this is Mongo Collection where we will store the parsed submissions
@@ -70,10 +70,10 @@ class NoRecordsFoundError(Exception):
 
 
 class AbstractDataFrameBuilder(object):
-
-    # TODO: use constants from common_tags module!
-    INTERNAL_FIELDS = [XFORM_ID_STRING, STATUS, ID, ATTACHMENTS, GEOLOCATION,
-        UUID, SUBMISSION_TIME, BAMBOO_DATASET_ID, DELETEDAT]
+    IGNORED_COLUMNS = [XFORM_ID_STRING, STATUS, ID, ATTACHMENTS, GEOLOCATION,
+                       BAMBOO_DATASET_ID, DELETEDAT]
+    # fields NOT within the form def that we want to include
+    ADDITIONAL_COLUMNS = [UUID, SUBMISSION_TIME]
 
     """
     Group functionality used by any DataFrameBuilder i.e. XLS, CSV and KML
@@ -260,8 +260,8 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         """
         data = dict((section_name, []) for section_name in self.sections.keys())
 
-        default_section = self.sections[self.survey_name]
-        default_columns = default_section["columns"]
+        main_section = self.sections[self.survey_name]
+        main_sections_columns = main_section["columns"]
 
         for record in cursor:
             # from record, we'll end up with multiple records, one for each
@@ -269,8 +269,8 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
 
             # add records for the default section
             self._add_data_for_section(data[self.survey_name],
-                record, default_columns, self.survey_name)
-            parent_index = default_section[self.CURRENT_INDEX_META]
+                record, main_sections_columns, self.survey_name)
+            parent_index = main_section[self.CURRENT_INDEX_META]
 
             for sheet_name, section in self.sections.iteritems():
                 # skip default section i.e survey name
@@ -468,7 +468,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         Build a flat ordered dict of column groups
 
         is_repeating_section ensures that child questions of repeating sections
-        are not considered as columns
+        are not considered columns
         """
         for child in survey_element.children:
             child_xpath = child.get_abbreviated_xpath()
@@ -522,7 +522,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         # get record count
         record_count = self._query_mongo(count=True)
 
-        # pandas will only export 30k records in a dataframe to a csv - we need to create multiple 30k dataframes if required
+        # pandas will only export 30k records in a dataframe to a csv - we need to create multiple 30k dataframes if required,
         # we need to go through all the records though so that we can figure out the columns we need for repeats
         datas = []
         num_data_frames = int(ceil(float(record_count)/float(data_frame_max_size)))
@@ -534,6 +534,9 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
 
         columns = list(chain.from_iterable([[xpath] if cols == None else cols\
                                             for xpath, cols in self.ordered_columns.iteritems()]))
+
+        # add extra columns
+        columns += [col for col in self.ADDITIONAL_COLUMNS]
 
         header = True
         if hasattr(file_or_path, 'read'):
@@ -567,7 +570,7 @@ class CSVDataFrameWriter(object):
         self.dataframe = DataFrame(records, columns=columns)
 
         # remove columns we don't want
-        for col in AbstractDataFrameBuilder.INTERNAL_FIELDS:
+        for col in AbstractDataFrameBuilder.IGNORED_COLUMNS:
             if col in self.dataframe.columns:
                 del(self.dataframe[col])
 

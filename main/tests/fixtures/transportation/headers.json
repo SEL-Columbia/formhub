@@ -19,5 +19,7 @@
     "transport/loop_over_transport_types_frequency/lorry/frequency_to_referral_facility", 
     "transport/loop_over_transport_types_frequency/motorbike/frequency_to_referral_facility", 
     "transport/loop_over_transport_types_frequency/taxi/frequency_to_referral_facility",
-    "meta/instanceID"
+    "meta/instanceID",
+    "_uuid",
+    "_submission_time"
 ]

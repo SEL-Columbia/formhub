@@ -8,7 +8,7 @@ from pyxform.builder import create_survey_from_xls
 from pyxform.question import Question
 from pyxform.section import RepeatingSection
 
-from common_tags import ID
+from common_tags import ID, UUID, SUBMISSION_TIME
 from odk_logger.models import XForm
 from odk_viewer.models import ParsedInstance
 from odk_viewer.models.parsed_instance import _encode_for_mongo
@@ -190,6 +190,7 @@ class DataDictionary(XForm):
             return '/'.join(l[2:])
 
         header_list = [shorten(xpath) for xpath in self.xpaths()]
+        header_list += [UUID, SUBMISSION_TIME]
         if include_additional_headers:
             header_list += self._additional_headers()
         return header_list
