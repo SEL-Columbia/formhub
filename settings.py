@@ -1,3 +1,5 @@
+# vim: set fileencoding=utf-8
+
 import os
 import subprocess
 import sys
@@ -41,12 +43,14 @@ TIME_ZONE = 'America/New_York'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
+ugettext = lambda s: s
+
 LANGUAGES = (
-    ('fr', 'French'),
-    ('en', 'English'),
-    ('es', 'Spanish'),
-    ('it', 'Italian'),
-    ('km', 'Khmer'),
+    ('fr', u'Français'),
+    ('en', u'English'),
+    ('es', u'Español'),
+    ('it', u'Italiano'),
+    ('km', u'ភាសាខ្មែរ'),
 )
 
 SITE_ID = 1
