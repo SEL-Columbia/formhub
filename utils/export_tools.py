@@ -130,8 +130,7 @@ def generate_export(export_type, extension, username, id_string,
     temp_file.close()
     # get or create export object
     if(export_id):
-        export, is_new = Export.objects.get_or_create(id=export_id, xform=xform,
-            export_type=export_type)
+        export = Export.objects.get(id=export_id)
     else:
         export = Export.objects.create(xform=xform,
             export_type=export_type)
