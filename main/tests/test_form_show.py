@@ -145,14 +145,7 @@ class TestFormShow(MainTestCase):
             'id_string': self.xform.id_string,
             'export_type': 'xls'
         }))
-        
-    def test_show_map_btn_if_has_geopoints(self):
-        self._submit_transport_instance()
-        response = self.client.get(self.url)
-        self.assertEqual(DataDictionary.objects.count(), 1)
-        dd = DataDictionary.objects.all()[0]
-        if dd.has_surveys_with_geopoints() == True:
-            self.assertContains(response, '%s/map' % self.xform.id_string)
+        self.assertNotContains(response, '%s/map' % self.xform.id_string)
 
     def test_user_sees_edit_btn(self):
         response = self.client.get(self.url)
