@@ -5,6 +5,7 @@ from django.core.mail import mail_admins
 from odk_viewer.models import Export
 from utils.export_tools import generate_export
 from utils.logger_tools import mongo_sync_status
+from pandas_mongo_bridge import NoRecordsFoundError
 
 
 def create_async_export(xform, export_type, query, force_xlsx):
@@ -52,8 +53,9 @@ def create_xls_export(username, id_string, query=None, force_xlsx=False,
     try:
         export = generate_export(Export.XLS_EXPORT, ext, username, id_string,
             export_id, query)
-    except Exception:
-        return None
+    except NoRecordsFoundError:
+        # raise for now to let celery know we failed - doesnt seem to break celery
+        raise
     else:
         return export
 
@@ -67,8 +69,9 @@ def create_csv_export(username, id_string, query=None,
         # catch this since it potentially stops celery
         export = generate_export(Export.CSV_EXPORT, 'csv', username, id_string,
             export_id, query)
-    except Exception:
-        return None
+    except NoRecordsFoundError:
+        # raise for now to let celery know we failed - doesnt seem to break celery
+        raise
     else:
         return export
 
