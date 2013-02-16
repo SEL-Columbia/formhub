@@ -58,7 +58,7 @@ def create_xls_export(username, id_string, export_id, query=None,
     # catch this since it potentially stops celery
     try:
         export = generate_export(Export.XLS_EXPORT, ext, username, id_string,
-            export_id, query)
+                                 export_id, query)
     except NoRecordsFoundError:
         # raise for now to let celery know we failed - doesnt seem to break celery
         raise
@@ -73,7 +73,7 @@ def create_csv_export(username, id_string, export_id, query=None):
         # though export is not available when for has 0 submissions, we
         # catch this since it potentially stops celery
         export = generate_export(Export.CSV_EXPORT, 'csv', username, id_string,
-            export_id, query)
+                                 export_id, query)
     except NoRecordsFoundError:
         # raise for now to let celery know we failed - doesnt seem to break celery
         raise

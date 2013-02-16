@@ -156,7 +156,8 @@ def should_create_new_export(xform, export_type):
 
 def increment_index_in_filename(filename):
     """
-    filename should be in the form file.ext or file-2.ext - we check for the dash and index and increment appropriately
+    filename should be in the form file.ext or file-2.ext - we check for the
+    dash and index and increment appropriately
     """
     # check for an index i.e. dash then number then dot extension
     regex = re.compile(r"(.+?)\-(\d+)(\..+)")
