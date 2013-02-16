@@ -9,7 +9,7 @@ import csv
 import tempfile
 from xlrd import open_workbook
 from utils.user_auth import http_auth_string
-from odk_viewer.tasks import create_csv_export
+from utils.export_tools import generate_export
 from odk_viewer.models import Export
 
 class TestFormExports(MainTestCase):
@@ -216,7 +216,8 @@ class TestFormExports(MainTestCase):
                 self.login_password)
         }
         # create export
-        export = create_csv_export(self.user.username, self.xform.id_string)
+        export = generate_export(Export.CSV_EXPORT, 'csv', self.user.username,
+                                 self.xform.id_string)
         self.assertTrue(isinstance(export, Export))
         url = reverse(export_download, kwargs={
             'username': self.user.username,

@@ -59,6 +59,8 @@ class Export(models.Model):
     task_id = models.CharField(max_length=255, null=True, blank=True)
     # time of last submission when this export was created
     time_of_last_submission = models.DateTimeField(null=True, default=None)
+    # status
+    internal_status = models.SmallIntegerField(max_length=1, default=PENDING)
 
     class Meta:
         app_label = "odk_viewer"
@@ -78,6 +80,7 @@ class Export(models.Model):
             # update time_of_last_submission with xform.time_of_last_submission
             self.time_of_last_submission = self.xform.time_of_last_submission()
         if self.filename:
+            self.internal_status = Export.SUCCESSFUL
             self._update_filedir()
         super(Export, self).save(*args, **kwargs)
 
@@ -97,11 +100,10 @@ class Export(models.Model):
 
     @property
     def status(self):
-        result = AsyncResult(self.task_id)
         if self.filename:
+            # need to have this since existing models will have their internal_status set to PENDING - the default
             return Export.SUCCESSFUL
-        elif (result and result.ready()) or not result:
-            # and not filename
+        elif self.internal_status == Export.FAILED:
             return Export.FAILED
         else:
             return Export.PENDING
