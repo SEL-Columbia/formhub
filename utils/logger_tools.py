@@ -226,7 +226,7 @@ def publish_form(callback):
     except (PyXFormError, XLSFormError) as e:
         return {
             'type': 'alert-error',
-            'text': unicode(e),
+            'text': unicode(e.message, 'utf-8'),
         }
     except IntegrityError as e:
         return {
@@ -243,7 +243,7 @@ def publish_form(callback):
         # form.publish returned None, not sure why...
         return {
             'type': 'alert-error',
-            'text': unicode(e),
+            'text': unicode(e.message, 'utf-8'),
         }
     except ProcessTimedOut as e:
         # catch timeout errors
