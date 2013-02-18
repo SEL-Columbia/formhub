@@ -221,12 +221,17 @@ def store_temp_file(data):
 
 
 def publish_form(callback):
+    def _message_as_unicode(message):
+        if isinstance(message, str):
+            return unicode(e.message, 'utf-8')
+        return message
+    
     try:
         return callback()
     except (PyXFormError, XLSFormError) as e:
         return {
             'type': 'alert-error',
-            'text': unicode(e.message, 'utf-8'),
+            'text': _message_as_unicode(e.message)
         }
     except IntegrityError as e:
         return {
@@ -243,13 +248,13 @@ def publish_form(callback):
         # form.publish returned None, not sure why...
         return {
             'type': 'alert-error',
-            'text': unicode(e.message, 'utf-8'),
+            'text': _message_as_unicode(e.message)
         }
     except ProcessTimedOut as e:
         # catch timeout errors
         return {
             'type': 'alert-error',
-            'text': _('Form validation timeout, please try again.'),
+            'text': _(u'Form validation timeout, please try again.'),
         }
 
 def publish_xls_form(xls_file, user, id_string=None):
