@@ -13,12 +13,14 @@ class TestExport(MainTestCase):
         self._create_user_and_login()
         self.fixture_dir = os.path.join(self.this_directory, 'fixtures',
                 'csv_export')
+        self._submission_time='2013-02-18 15:54:01'
 
     def test_csv_export_output(self):
         path = os.path.join(self.fixture_dir, 'tutorial_w_repeats.xls')
         self._publish_xls_file_and_set_xform(path)
         path = os.path.join(self.fixture_dir, 'tutorial_w_repeats.xml')
-        self._make_submission(path)
+        self._make_submission(
+            path, forced_submission_time=self._submission_time)
         url = reverse(csv_export, kwargs={'username': self.user.username,
                                           'id_string': self.xform.id_string})
         response = self.client.get(url)
@@ -31,7 +33,8 @@ class TestExport(MainTestCase):
         path = os.path.join(self.fixture_dir, 'double_repeat.xls')
         self._publish_xls_file(path)
         path = os.path.join(self.fixture_dir, 'instance.xml')
-        self._make_submission(path)
+        self._make_submission(
+            path, forced_submission_time=self._submission_time)
         self.maxDiff = None
         dd = DataDictionary.objects.all()[0]
         xpaths = [
@@ -55,7 +58,8 @@ class TestExport(MainTestCase):
         self._publish_xls_file_and_set_xform(path)
         path = os.path.join(os.path.dirname(__file__), 'fixtures', 'userone',
                 'userone_with_dot_name_fields.xml')
-        self._make_submission(path)
+        self._make_submission(
+            path, forced_submission_time=self._submission_time)
         url = reverse(csv_export, kwargs={'username': self.user.username,
                                           'id_string': self.xform.id_string})
         response = self.client.get(url)
