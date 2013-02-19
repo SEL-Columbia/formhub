@@ -17,6 +17,7 @@ from main.views import delete_data
 from utils.logger_tools import inject_instanceid
 from django.core.files.storage import get_storage_class
 from odk_viewer.pandas_mongo_bridge import NoRecordsFoundError
+from odk_viewer.tasks import create_xls_export
 
 
 class TestExports(MainTestCase):
@@ -488,9 +489,21 @@ class TestExports(MainTestCase):
         # generate an export that fails because of the NoRecordsFound exception
         export = Export.objects.create(xform=self.xform,
             export_type=Export.XLS_EXPORT)
+        # check that progress url says pending
+        progress_url = reverse(export_progress, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': 'xls'
+        })
+        params = {'export_ids': [export.id]}
+        response = self.client.get(progress_url, params)
+        status = json.loads(response.content)[0]
+        self.assertEqual(status["complete"], False)
+        self.assertEqual(status["filename"], None)
+
         try:
-             generate_export(
-                Export.XLS_EXPORT, 'xls', self.user.username,
+            create_xls_export(
+                self.user.username,
                 self.xform.id_string, export.id)
         except NoRecordsFoundError:
             pass
@@ -508,10 +521,9 @@ class TestExports(MainTestCase):
 
         # make a submission and create a valid export
         self._submit_transport_instance()
-        export = generate_export(
-            Export.XLS_EXPORT, 'xls', self.user.username,
-            self.xform.id_string)
-        self.assertIsNotNone(export)
+        create_xls_export(
+            self.user.username,
+            self.xform.id_string, export.id)
         params = {'export_ids': [export.id]}
         response = self.client.get(progress_url, params)
         status = json.loads(response.content)[0]
