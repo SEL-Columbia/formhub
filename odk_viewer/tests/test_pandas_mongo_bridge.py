@@ -30,6 +30,7 @@ def xml_inst_filepath_from_fixture_name(fixture_name, instance_name):
 class TestPandasMongoBridge(MainTestCase):
     def setUp(self):
         self._create_user_and_login()
+        self._submission_time='2013-02-18 15:54:01'
 
     def _publish_xls_fixture_set_xform(self, fixture):
         """
@@ -41,14 +42,16 @@ class TestPandasMongoBridge(MainTestCase):
         self.assertEqual(XForm.objects.count(), count + 1)
         self.xform = XForm.objects.all().reverse()[0]
 
-    def _submit_fixture_instance(self, fixture, instance):
+    def _submit_fixture_instance(
+            self, fixture, instance, submission_time=None):
         """
         Submit an instance at
         tests/fixtures/[fixture]/instances/[fixture]_[instance].xml
         """
         xml_submission_file_path = xml_inst_filepath_from_fixture_name(fixture,
             instance)
-        self._make_submission(xml_submission_file_path)
+        self._make_submission(
+            xml_submission_file_path, forced_submission_time=submission_time)
         self.assertEqual(self.response.status_code, 201)
 
     def _publish_single_level_repeat_form(self):
@@ -119,15 +122,19 @@ class TestPandasMongoBridge(MainTestCase):
             u"kids/has_kids",
             u"info/name",
             u"meta/instanceID"
-        ] + XLSDataFrameBuilder.EXTRA_COLUMNS
+        ] + AbstractDataFrameBuilder.ADDITIONAL_COLUMNS +\
+                                   XLSDataFrameBuilder.EXTRA_COLUMNS
+        # get the header
         default_columns = [k for k in data[self.survey_name][0]]
         self.assertEqual(sorted(expected_default_columns),
             sorted(default_columns))
 
         # columns in the kids_details sheet
-        expected_kids_details_columns = [u"kids/kids_details/kids_name",
-            u"kids/kids_details/kids_age"] \
-          + XLSDataFrameBuilder.EXTRA_COLUMNS
+        expected_kids_details_columns = [
+            u"kids/kids_details/kids_name",
+            u"kids/kids_details/kids_age"
+        ] + AbstractDataFrameBuilder.ADDITIONAL_COLUMNS +\
+                                        XLSDataFrameBuilder.EXTRA_COLUMNS
         kids_details_columns = [k for k in data[u"kids_details"][0]]
         self.assertEqual(sorted(expected_kids_details_columns),
             sorted(kids_details_columns))
@@ -152,7 +159,8 @@ class TestPandasMongoBridge(MainTestCase):
             u"web_browsers/ie",
             u"web_browsers/chrome",
             u"meta/instanceID"
-        ] + XLSDataFrameBuilder.EXTRA_COLUMNS
+        ] + AbstractDataFrameBuilder.ADDITIONAL_COLUMNS +\
+                                   XLSDataFrameBuilder.EXTRA_COLUMNS
         default_columns = [k for k in data[self.survey_name][0]]
         self.assertEqual(sorted(expected_default_columns),
             sorted(default_columns))
@@ -200,8 +208,10 @@ class TestPandasMongoBridge(MainTestCase):
 
     def test_csv_dataframe_export_to(self):
         self._publish_nested_repeats_form()
-        self._submit_fixture_instance("nested_repeats", "01")
-        self._submit_fixture_instance("nested_repeats", "02")
+        self._submit_fixture_instance(
+            "nested_repeats", "01", submission_time=self._submission_time)
+        self._submit_fixture_instance(
+            "nested_repeats", "02", submission_time=self._submission_time)
         csv_df_builder = CSVDataFrameBuilder(self.user.username,
             self.xform.id_string)
         temp_file = NamedTemporaryFile(suffix=".csv", delete=False)
@@ -234,7 +244,8 @@ class TestPandasMongoBridge(MainTestCase):
             u'web_browsers/chrome',
             u'web_browsers/ie',
             u'web_browsers/safari',
-        ] + AbstractDataFrameBuilder.INTERNAL_FIELDS
+        ] + AbstractDataFrameBuilder.ADDITIONAL_COLUMNS +\
+                           AbstractDataFrameBuilder.IGNORED_COLUMNS
         self.maxDiff = None
         self.assertEqual(sorted(expected_columns), sorted(columns))
 
@@ -246,7 +257,9 @@ class TestPandasMongoBridge(MainTestCase):
         columns = dd.get_keys()
         data_0 = self._csv_data_for_dataframe()[0]
         # remove AbstractDataFrameBuilder.INTERNAL_FIELDS
-        for key in AbstractDataFrameBuilder.INTERNAL_FIELDS:
+        for key in AbstractDataFrameBuilder.IGNORED_COLUMNS:
+            data_0.pop(key)
+        for key in AbstractDataFrameBuilder.ADDITIONAL_COLUMNS:
             data_0.pop(key)
         expected_data_0 = {
             u'gps': u'-1.2627557 36.7926442 0.0 30.0',
@@ -264,7 +277,7 @@ class TestPandasMongoBridge(MainTestCase):
             u'web_browsers/ie': True,
             u'web_browsers/safari': False,
             u'web_browsers/firefox': False,
-            u'info/name': u'Adam'
+            u'info/name': u'Adam',
         }
         self.assertEqual(expected_data_0, data_0)
 
@@ -527,7 +540,8 @@ class TestPandasMongoBridge(MainTestCase):
 
     def test_csv_export_with_df_size_limit(self):
         """
-        To fix pandas limitation of 30k rows on csv export, we specify a max number of records in a dataframe on export - lets test it
+        To fix pandas limitation of 30k rows on csv export, we specify a max
+        number of records in a dataframe on export - lets test it
         """
         self._publish_single_level_repeat_form()
         # submit 7 instances
@@ -545,7 +559,8 @@ class TestPandasMongoBridge(MainTestCase):
         csv_file = open(temp_file.name)
         csv_reader = csv.reader(csv_file)
         header = csv_reader.next()
-        self.assertEqual(len(header), 17)
+        self.assertEqual(
+            len(header), 17 + len(AbstractDataFrameBuilder.ADDITIONAL_COLUMNS))
         rows = []
         for row in csv_reader:
             rows.append(row)

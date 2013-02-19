@@ -22,6 +22,7 @@ from odk_viewer.pandas_mongo_bridge import NoRecordsFoundError
 class TestExports(MainTestCase):
     def setUp(self):
         super(TestExports, self).setUp()
+        self._submission_time='2013-02-18 15:54:01'
 
     def test_unique_xls_sheet_name(self):
         xls_writer = XlsWriter()
@@ -32,7 +33,13 @@ class TestExports(MainTestCase):
         self.assertEqual(len(sheet_names_set), 2)
 
     def test_csv_http_response(self):
-        self._publish_transportation_form_and_submit_instance()
+        self._publish_transportation_form()
+        survey = self.surveys[0]
+        self._make_submission(
+            os.path.join(
+                self.this_directory, 'fixtures', 'transportation',
+                'instances', survey, survey + '.xml'),
+            forced_submission_time=self._submission_time)
         response = self.client.get(reverse(csv_export,
             kwargs={
                 'username': self.user.username,

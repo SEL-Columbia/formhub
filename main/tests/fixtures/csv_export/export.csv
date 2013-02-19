@@ -1,2 +1,2 @@
-bed_net[1]/member[1]/name,bed_net[1]/member[2]/name,bed_net[2]/member[1]/name,meta/instanceID
-Andrew,Bob,Carl,uuid:4e274a99-f7a9-467c-bb44-9f9a8ceee9a7
+bed_net[1]/member[1]/name,bed_net[1]/member[2]/name,bed_net[2]/member[1]/name,meta/instanceID,_uuid,_submission_time
+Andrew,Bob,Carl,uuid:4e274a99-f7a9-467c-bb44-9f9a8ceee9a7,4e274a99-f7a9-467c-bb44-9f9a8ceee9a7,2013-02-18T15:54:01
