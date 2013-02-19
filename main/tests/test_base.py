@@ -64,7 +64,7 @@ class MainTestCase(TestCase):
     def _publish_xlsx_file(self):
         path = os.path.join(self.this_directory, 'fixtures', 'exp.xlsx')
         pre_count = XForm.objects.count()
-        response = self._publish_xls_file(path)
+        response = MainTestCase._publish_xls_file(self, path)
         # make sure publishing the survey worked
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.count(), pre_count + 1)
