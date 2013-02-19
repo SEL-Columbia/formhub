@@ -82,6 +82,10 @@ Install requirements:
 
     $ pip install -r requirements-mysql.pip
 
+NOTE: If you inted to use special characters from other languages within your forms, or are unsure if you will, you shoud ensure your databse uses the utf-8 characterset by default e.g. for mysql
+
+    $ mysql> CREATE DATABASE formhub CHARACTER SET utf8;
+
     $ pip install -r requirements-s3.pip
 
     $ pip install -r requirements-ses.pip

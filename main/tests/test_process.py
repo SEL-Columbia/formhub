@@ -5,33 +5,55 @@ import os
 import re
 
 from hashlib import md5
+from StringIO import StringIO
 from django.core.urlresolvers import reverse
+from django.conf import settings
+from xlrd import open_workbook
 
 from odk_logger.models import XForm
 from odk_logger.views import submission
 from odk_viewer.models import DataDictionary
 from odk_viewer.views import csv_export, xls_export
 from test_base import MainTestCase
+from common_tags import UUID, SUBMISSION_TIME
 
 
 uuid_regex = re.compile(
     r'(</instance>.*uuid[^//]+="\')([^\']+)(\'".*)', re.DOTALL)
-
+xform_instances = settings.MONGO_DB.instances
 
 class TestSite(MainTestCase):
+    uuid_to_submission_times = {
+        '5b2cc313-fc09-437e-8149-fcd32f695d41': '2013-02-14T15:37:21',
+        'f3d8dc65-91a6-4d0f-9e97-802128083390': '2013-02-14T15:37:22',
+        '9c6f3468-cfda-46e8-84c1-75458e72805d': '2013-02-14T15:37:23',
+        '9f0a1508-c3b7-4c99-be00-9b237c26bcbf': '2013-02-14T15:37:24'
+    }
+
+    def setUp(self):
+        super(TestSite, self).setUp()
+
+    def tearDown(self):
+        super(TestSite, self).tearDown()
 
     def test_process(self, username=None, password=None):
-        if username is not None:
-            self._create_user_and_login(username, password)
         self._publish_xls_file()
         self._check_formList()
         self._download_xform()
         self._make_submissions()
+        self._update_dynamic_data()
         self._check_csv_export()
         self._check_delete()
 
+    def _update_dynamic_data(self):
+        """
+        Update stuff like submission time so we can compare within out fixtures
+        """
+        for uuid, submission_time in self.uuid_to_submission_times.iteritems():
+            xform_instances.update(
+                {UUID: uuid}, {'$set': {SUBMISSION_TIME: submission_time}})
+
     def test_uuid_submit(self):
-        self._create_user_and_login()
         self._publish_xls_file()
         survey = 'transport_2011-07-25_19-05-49'
         path = os.path.join(
@@ -47,7 +69,6 @@ class TestSite(MainTestCase):
 
     def test_google_url_upload(self):
         if self._internet_on(url="http://google.com"):
-            self._create_user_and_login()
             xls_url = "https://docs.google.com/spreadsheet/pub?"\
                 "key=0AvhZpT7ZLAWmdDhISGhqSjBOSl9XdXd5SHZHUUE2RFE&output=xls"
             pre_count = XForm.objects.count()
@@ -59,7 +80,6 @@ class TestSite(MainTestCase):
 
     def test_url_upload(self):
         if self._internet_on(url="http://google.com"):
-            self._create_user_and_login()
             xls_url = 'http://formhub.org' \
                       '/formhub_u/forms/tutorial/form.xls'
             pre_count = XForm.objects.count()
@@ -71,7 +91,6 @@ class TestSite(MainTestCase):
 
     def test_bad_url_upload(self):
         if self._internet_on():
-            self._create_user_and_login()
             xls_url = 'formhuborg/pld/forms/transportation_2011_07_25/form.xls'
             pre_count = XForm.objects.count()
             response = self.client.post('/%s/' % self.user.username,
@@ -103,7 +122,6 @@ class TestSite(MainTestCase):
 
     def test_url_upload_non_dot_xls_path(self):
         if self._internet_on():
-            self._create_user_and_login()
             xls_url = 'http://formhub.org/formhub_u/forms/tutorial/form.xls'
             pre_count = XForm.objects.count()
             response = self.client.post('/%s/' % self.user.username,
@@ -312,19 +330,26 @@ class TestSite(MainTestCase):
         actual_csv = csv.reader(actual_lines)
         headers = actual_csv.next()
         data = [
-            {'meta/instanceID': 'uuid:5b2cc313-fc09-437e-8149-fcd32f695d41'},
+            {'meta/instanceID': 'uuid:5b2cc313-fc09-437e-8149-fcd32f695d41',
+             '_uuid': '5b2cc313-fc09-437e-8149-fcd32f695d41',
+             '_submission_time': '2013-02-14T15:37:21'
+             },
             {"available_transportation_types_to_referral_facility/ambulance":
              "True",
              "available_transportation_types_to_referral_facility/bicycle":
              "True",
              "loop_over_transport_types_frequency/ambulance/frequency_to_referral_facility": "daily",
              "loop_over_transport_types_frequency/bicycle/frequency_to_referral_facility": "weekly",
-             "meta/instanceID": "uuid:f3d8dc65-91a6-4d0f-9e97-802128083390"
+             "meta/instanceID": "uuid:f3d8dc65-91a6-4d0f-9e97-802128083390",
+             '_uuid': 'f3d8dc65-91a6-4d0f-9e97-802128083390',
+             '_submission_time': '2013-02-14T15:37:22'
              },
             {"available_transportation_types_to_referral_facility/ambulance":
              "True",
              "loop_over_transport_types_frequency/ambulance/frequency_to_referral_facility": "weekly",
-             "meta/instanceID": "uuid:9c6f3468-cfda-46e8-84c1-75458e72805d"
+             "meta/instanceID": "uuid:9c6f3468-cfda-46e8-84c1-75458e72805d",
+             '_uuid': '9c6f3468-cfda-46e8-84c1-75458e72805d',
+             '_submission_time': '2013-02-14T15:37:23'
              },
             {"available_transportation_types_to_referral_facility/taxi":
              "True",
@@ -333,7 +358,9 @@ class TestSite(MainTestCase):
              "available_transportation_types_to_referral_facility_other":
              "camel",
              "loop_over_transport_types_frequency/taxi/frequency_to_referral_facility": "daily",
-             "meta/instanceID": "uuid:9f0a1508-c3b7-4c99-be00-9b237c26bcbf"
+             "meta/instanceID": "uuid:9f0a1508-c3b7-4c99-be00-9b237c26bcbf",
+             '_uuid': '9f0a1508-c3b7-4c99-be00-9b237c26bcbf',
+             '_submission_time': '2013-02-14T15:37:24'
              }
         ]
 
@@ -345,11 +372,40 @@ class TestSite(MainTestCase):
                     del d[k]
             l =  []
             for k, v in expected_dict.items():
-                if k == 'meta/instanceID':
+                if k == 'meta/instanceID' or k.startswith("_"):
                     l.append((k, v))
                 else:
                     l.append(("transport/" + k, v))
             self.assertEqual(d, dict(l))
+
+    def test_xls_export_content(self):
+        self._publish_xls_file()
+        self._make_submissions()
+        self._update_dynamic_data()
+        self._check_xls_export()
+
+    def _check_xls_export(self):
+        xls_export_url = reverse(
+            xls_export, kwargs={'username': self.user.username,
+                                'id_string': self.xform.id_string})
+        response = self.client.get(xls_export_url)
+        expected_xls = open_workbook(os.path.join(self.this_directory, "fixtures", "transportation",
+                "transportation_export.xls"))
+        actual_xls = open_workbook(file_contents=response.content)
+        actual_sheet = actual_xls.sheet_by_index(0)
+        expected_sheet = expected_xls.sheet_by_index(0)
+
+        # check headers
+        self.assertEqual(actual_sheet.row_values(0),
+                         expected_sheet.row_values(0))
+
+        # check cell data
+        self.assertEqual(actual_sheet.ncols, expected_sheet.ncols)
+        self.assertEqual(actual_sheet.nrows, expected_sheet.nrows)
+        for i in range(1, actual_sheet.nrows):
+            actual_row = actual_sheet.row_values(i)
+            expected_row = expected_sheet.row_values(i)
+            self.assertEqual(actual_row, expected_row)
 
     def _check_delete(self):
         self.assertEquals(self.user.xforms.count(), 1)

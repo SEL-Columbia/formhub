@@ -107,7 +107,7 @@ class MainTestCase(TestCase):
         self._submit_transport_instance()
 
     def _make_submission(self, path, username=None, add_uuid=False,
-                         touchforms=False):
+                         touchforms=False, forced_submission_time=None):
         # store temporary file with dynamic uuid
         tmp_file = None
         if add_uuid and not touchforms:
@@ -136,6 +136,11 @@ class MainTestCase(TestCase):
                 url ='/submission'  # touchform has no username
             self.response = self.anon.post(url, post_data)
 
+        if forced_submission_time:
+            instance = Instance.objects.order_by('-pk').all()[0]
+            instance.date_created = forced_submission_time
+            instance.save()
+            instance.parsed_instance.save()
         # remove temporary file if stored
         if add_uuid and not touchforms:
             os.unlink(tmp_file.name)
