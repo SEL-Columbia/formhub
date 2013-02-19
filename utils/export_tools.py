@@ -98,16 +98,6 @@ def generate_export(export_type, extension, username, id_string,
 
     xform = XForm.objects.get(user__username=username, id_string=id_string)
 
-    # get or create export object
-    if(export_id):
-        export = Export.objects.get(id=export_id)
-    else:
-        export = Export.objects.create(xform=xform,
-            export_type=export_type)
-        # set to failed until we succeed
-    export.internal_status = Export.FAILED
-    export.save()
-
     df_builder = _df_builder_for_export_type(export_type, username, id_string,
         filter_query)
     if hasattr(df_builder, 'get_exceeds_xls_limits')\
@@ -141,6 +131,14 @@ def generate_export(export_type, extension, username, id_string,
     temp_file.close()
 
     dir_name, basename = os.path.split(export_filename)
+
+    # get or create export object
+    if(export_id):
+        export = Export.objects.get(id=export_id)
+    else:
+        export = Export.objects.create(xform=xform,
+            export_type=export_type)
+
     export.filename = basename
     export.internal_status = Export.SUCCESSFUL
     export.save()
