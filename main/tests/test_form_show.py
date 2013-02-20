@@ -42,6 +42,17 @@ class TestFormShow(MainTestCase):
         response = self.anon.get(self.url)
         self.assertEqual(response.status_code, 200)
 
+    def test_dl_xlsx_xlsform(self):
+        self._publish_xlsx_file()
+        response = self.client.get(reverse(download_xlsform, kwargs={
+            'username': self.user.username,
+            'id_string': 'exp_one'
+        }))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response['Content-Disposition'],
+            "attachment; filename=exp_one.xlsx")
+
     def test_dl_xls_to_anon_if_public(self):
         self.xform.shared = True
         self.xform.save()
