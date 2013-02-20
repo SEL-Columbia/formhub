@@ -1,6 +1,5 @@
 from itertools import chain
-import json
-import re
+import time
 import settings
 from pandas.core.frame import DataFrame
 from pandas.io.parsers import ExcelWriter
@@ -221,7 +220,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         # everything else on the default sheet
         self._generate_sections()
 
-    def export_to(self, file_path, batchsize=100):
+    def export_to(self, file_path, batchsize=1000):
         self.xls_writer = ExcelWriter(file_path)
 
         # get record count
@@ -249,6 +248,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
             header = False
             # increment counter(s)
             start += batchsize
+            time.sleep(0.1)
         self.xls_writer.save()
 
     def _format_for_dataframe(self, cursor):
