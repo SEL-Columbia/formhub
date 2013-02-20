@@ -153,8 +153,9 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'registration',
-    'restservice',
     'south',
+    'django_nose',
+    'restservice',
     'main',
     'odk_logger',
     'odk_viewer',
@@ -259,6 +260,7 @@ CELERY_RESULT_BACKEND = "amqp"  # telling Celery to report the results back to R
 AUTO_ADD_CROWDFORM = False
 DEFAULT_CROWDFORM = {'xform_username': 'bob', 'xform_id_string': 'transport'}
 
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 TESTING_MODE = False
 if len(sys.argv)>=2 and (sys.argv[1]=="test" or sys.argv[1]=="test_all"):
     # This trick works only when we run tests from the command line.
