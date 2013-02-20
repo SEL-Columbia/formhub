@@ -73,3 +73,19 @@ class TestUserProfile(TestCase):
         response = self.client.get(reverse(profile,
             kwargs={'username': 'nonuser'}))
         self.assertEqual(response.status_code, 404)
+
+    def test_show_single_at_sign_in_twitter_link(self):
+        self._login_user_and_profile()
+        response = self.client.get(
+            reverse(profile, kwargs={
+                'username': "bob"
+            }))
+        self.assertContains(response, ">@boberama")
+        # add the @ sign
+        self.user.profile.twitter = "@boberama"
+        self.user.profile.save()
+        response = self.client.get(
+            reverse(profile, kwargs={
+                'username': "bob"
+            }))
+        self.assertContains(response, ">@boberama")

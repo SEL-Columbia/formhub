@@ -41,9 +41,11 @@
 	 {% if profile.home_page %}
          <p><strong>{% trans "Website:" %}</strong><a href="{{ home_page }}">{{ profile.home_page }}</a></p>
 	 {% endif %}
-	 {% if profile.twitter %}
-         <p><strong>{% trans "Twitter:" %}</strong><a href="http://www.twitter.com/{{ profile.twitter }}">@{{ profile.twitter }}</a></p>
-	 {% endif %}
+     {% with twitter=profile.twitter_clean %}
+	   {% if twitter %}
+         <p><strong>{% trans "Twitter:" %}</strong><a href="http://www.twitter.com/{{ twitter }}">@{{ twitter }}</a></p>
+	   {% endif %}
+     {% endwith %}
          <p><strong>{% trans "Member since:" %} </strong>{{ content_user.date_joined|date:"F j, Y" }}</p>
        </div>
        <div class="span4">
