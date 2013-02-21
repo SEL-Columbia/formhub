@@ -261,6 +261,7 @@ AUTO_ADD_CROWDFORM = False
 DEFAULT_CROWDFORM = {'xform_username': 'bob', 'xform_id_string': 'transport'}
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = ['--with-fixture-bundling']
 
 TESTING_MODE = False
 if len(sys.argv)>=2 and (sys.argv[1]=="test" or sys.argv[1]=="test_all"):

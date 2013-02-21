@@ -5,7 +5,8 @@ from tempfile import NamedTemporaryFile
 import urllib2
 
 from django.contrib.auth.models import User
-from django.test import TestCase
+# from django.test import TestCase
+from django_nose import FastFixtureTestCase as TestCase
 from django.test.client import Client
 
 from odk_logger.models import XForm, Instance, Attachment
