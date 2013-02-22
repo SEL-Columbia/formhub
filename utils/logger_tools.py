@@ -251,6 +251,12 @@ def publish_form(callback):
             'type': 'alert-error',
             'text': _('Form validation timeout, please try again.'),
         }
+    except Exception, e:
+        report_exception("ERROR: XLSForm publishing Exception", e)
+        return {
+            'type': 'alert-error',
+            'text': unicode(e)
+        }
 
 def publish_xls_form(xls_file, user, id_string=None):
     """
