@@ -28,6 +28,12 @@ class UserProfile(models.Model):
     def gravatar_exists(self):
         return gravatar_exists(self.user)
 
+    @property
+    def twitter_clean(self):
+        if self.twitter.startswith("@"):
+            return self.twitter[1:]
+        return self.twitter
+
     class Meta:
         app_label = 'main'
 

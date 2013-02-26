@@ -97,6 +97,17 @@ def generate_export(export_type, extension, username, id_string,
     from odk_viewer.models import Export
 
     xform = XForm.objects.get(user__username=username, id_string=id_string)
+
+    # get or create export object
+    if(export_id):
+        export = Export.objects.get(id=export_id)
+    else:
+        export = Export.objects.create(xform=xform,
+            export_type=export_type)
+        # set to failed until we succeed
+    export.internal_status = Export.FAILED
+    export.save()
+
     df_builder = _df_builder_for_export_type(export_type, username, id_string,
         filter_query)
     if hasattr(df_builder, 'get_exceeds_xls_limits')\
@@ -128,14 +139,10 @@ def generate_export(export_type, extension, username, id_string,
         file_path,
         File(temp_file, file_path))
     temp_file.close()
-    # get or create export object
-    if(export_id):
-        export = Export.objects.get(id=export_id)
-    else:
-        export = Export.objects.create(xform=xform,
-            export_type=export_type)
+
     dir_name, basename = os.path.split(export_filename)
     export.filename = basename
+    export.internal_status = Export.SUCCESSFUL
     export.save()
     return export
 
@@ -149,7 +156,8 @@ def should_create_new_export(xform, export_type):
 
 def increment_index_in_filename(filename):
     """
-    filename should be in the form file.ext or file-2.ext - we check for the dash and index and increment appropriately
+    filename should be in the form file.ext or file-2.ext - we check for the
+    dash and index and increment appropriately
     """
     # check for an index i.e. dash then number then dot extension
     regex = re.compile(r"(.+?)\-(\d+)(\..+)")

@@ -308,9 +308,13 @@ def download_xlsform(request, username, id_string):
         {
             "id_string": xform.id_string
         }, audit, request)
+        split_path = file_path.split(os.extsep)
+        extension = 'xls'
+        if len(split_path) > 1:
+            extension = split_path[len(split_path) - 1]
         response = \
             response_with_mimetype_and_name('vnd.ms-excel', id_string,
-                                            show_date=False, extension='xls',
+                                            show_date=False, extension=extension,
                                             file_path=file_path)
         return response
     else:
