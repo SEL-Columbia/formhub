@@ -8,7 +8,7 @@ from odk_logger.views import download_xlsform, download_jsonform,\
     download_xform, delete_xform
 from odk_viewer.views import export_list
 from utils.user_auth import http_auth_string
-from odk_viewer.models import ParsedInstance, DataDictionary
+from odk_viewer.models import ParsedInstance
 
 
 class TestFormShow(MainTestCase):
