@@ -5,7 +5,8 @@ from tempfile import NamedTemporaryFile
 import urllib2
 
 from django.contrib.auth.models import User
-from django.test import TestCase
+# from django.test import TestCase
+from django_nose import FastFixtureTestCase as TestCase
 from django.test.client import Client
 
 from odk_logger.models import XForm, Instance, Attachment
@@ -61,6 +62,14 @@ class MainTestCase(TestCase):
             post_data = {'xls_file': xls_file}
             return self.client.post('/%s/' % self.user.username, post_data)
 
+    def _publish_xlsx_file(self):
+        path = os.path.join(self.this_directory, 'fixtures', 'exp.xlsx')
+        pre_count = XForm.objects.count()
+        response = MainTestCase._publish_xls_file(self, path)
+        # make sure publishing the survey worked
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(XForm.objects.count(), pre_count + 1)
+
     def _publish_xls_file_and_set_xform(self, path):
         count = XForm.objects.count()
         self.response = self._publish_xls_file(path)
@@ -99,7 +108,7 @@ class MainTestCase(TestCase):
         self._submit_transport_instance()
 
     def _make_submission(self, path, username=None, add_uuid=False,
-                         touchforms=False):
+                         touchforms=False, forced_submission_time=None):
         # store temporary file with dynamic uuid
         tmp_file = None
         if add_uuid and not touchforms:
@@ -128,6 +137,11 @@ class MainTestCase(TestCase):
                 url ='/submission'  # touchform has no username
             self.response = self.anon.post(url, post_data)
 
+        if forced_submission_time:
+            instance = Instance.objects.order_by('-pk').all()[0]
+            instance.date_created = forced_submission_time
+            instance.save()
+            instance.parsed_instance.save()
         # remove temporary file if stored
         if add_uuid and not touchforms:
             os.unlink(tmp_file.name)
