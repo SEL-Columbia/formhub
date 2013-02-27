@@ -255,7 +255,7 @@ def publish_form(callback):
         report_exception("ERROR: XLSForm publishing Exception", e)
         return {
             'type': 'alert-error',
-            'text': unicode(e)
+            'text': e
         }
 
 def publish_xls_form(xls_file, user, id_string=None):
