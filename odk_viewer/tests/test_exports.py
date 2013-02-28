@@ -4,6 +4,7 @@ import datetime
 import json
 import StringIO
 import csv
+from time import sleep
 from django.conf import settings
 from main.tests.test_base import MainTestCase
 from django.core.urlresolvers import reverse
@@ -517,3 +518,88 @@ class TestExports(MainTestCase):
         status = json.loads(response.content)[0]
         self.assertEqual(status["complete"], True)
         self.assertIsNotNone(status["filename"])
+
+    def test_404_when_export_has_no_records(self):
+        self._publish_transportation_form()
+        csv_export_url = reverse(csv_export, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        })
+        response = self.client.get(csv_export_url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_direct_export_returns_newset_export_if_not_updated_since(self):
+        self._publish_transportation_form()
+        self._submit_transport_instance()
+        self.assertEqual(self.response.status_code, 201)
+        self._submit_transport_instance_w_uuid("transport_2011-07-25_19-05-36")
+        self.assertEqual(self.response.status_code, 201)
+
+        initial_num_csv_exports = Export.objects.filter(
+            xform=self.xform, export_type=Export.CSV_EXPORT).count()
+        initial_num_xls_exports = Export.objects.filter(
+            xform=self.xform, export_type=Export.XLS_EXPORT).count()
+        # request a direct csv export
+        csv_export_url = reverse(csv_export, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        })
+        xls_export_url = reverse(xls_export, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        })
+        response = self.client.get(csv_export_url)
+        self.assertEqual(response.status_code, 200)
+        # we should have initial_num_exports + 1 exports
+        num_csv_exports = Export.objects.filter(
+            xform=self.xform, export_type=Export.CSV_EXPORT).count()
+        self.assertEqual(num_csv_exports, initial_num_csv_exports + 1)
+
+        # request another export without changing the data
+        response = self.client.get(csv_export_url)
+        self.assertEqual(response.status_code, 200)
+        # we should still only have a single export object
+        num_csv_exports = Export.objects.filter(
+            xform=self.xform, export_type=Export.CSV_EXPORT).count()
+        self.assertEqual(num_csv_exports, initial_num_csv_exports + 1)
+
+        # this should not affect a direct XLS export and XLS should still re-generate
+        response = self.client.get(xls_export_url)
+        self.assertEqual(response.status_code, 200)
+        num_xls_exports = Export.objects.filter(
+            xform=self.xform, export_type=Export.XLS_EXPORT).count()
+        self.assertEqual(num_xls_exports, initial_num_xls_exports + 1)
+
+        # make sure xls doesnt re-generate if data hasn't changed
+        response = self.client.get(xls_export_url)
+        self.assertEqual(response.status_code, 200)
+        num_xls_exports = Export.objects.filter(
+            xform=self.xform, export_type=Export.XLS_EXPORT).count()
+        self.assertEqual(num_xls_exports, initial_num_xls_exports + 1)
+
+        # check that data edits cause a re-generation
+        self._submit_transport_instance_w_uuid(
+            "transport_2011-07-25_19-05-36-edited")
+        self.assertEqual(self.response.status_code, 201)
+        self.client.get(csv_export_url)
+        self.assertEqual(response.status_code, 200)
+        # we should have an extra export now that the data has been updated
+        num_csv_exports = Export.objects.filter(
+            xform=self.xform, export_type=Export.CSV_EXPORT).count()
+        self.assertEqual(num_csv_exports, initial_num_csv_exports + 2)
+
+        # and when we delete
+        delete_url = reverse(delete_data, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        })
+        query = json.dumps(
+            {'_uuid': Instance.objects.latest('date_modified').uuid})
+        response = self.client.post(delete_url, {'query': query})
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(csv_export_url)
+        self.assertEqual(response.status_code, 200)
+        # we should have an extra export now that the data has been updated by the delete
+        num_csv_exports = Export.objects.filter(
+            xform=self.xform, export_type=Export.CSV_EXPORT).count()
+        self.assertEqual(num_csv_exports, initial_num_csv_exports + 3)

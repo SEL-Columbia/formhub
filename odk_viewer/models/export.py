@@ -77,8 +77,9 @@ class Export(models.Model):
             if num_existing_exports >= self.MAX_EXPORTS:
                 Export._delete_oldest_export(self.xform, self.export_type)
 
-            # update time_of_last_submission with xform.time_of_last_submission
-            self.time_of_last_submission = self.xform.time_of_last_submission()
+            # update time_of_last_submission with xform.time_of_last_submission_update
+            self.time_of_last_submission = self.xform.\
+                time_of_last_submission_update()
         if self.filename:
             self.internal_status = Export.SUCCESSFUL
             self._update_filedir()
@@ -125,12 +126,12 @@ class Export(models.Model):
         qs = Export.objects.filter(xform=xform, export_type=export_type)\
              .order_by('-created_on')[:1]
         if qs.count() > 0 and qs[0].time_of_last_submission is not None \
-                and xform.time_of_last_submission() is not None:
+                and xform.time_of_last_submission_update() is not None:
             export = qs[0]
-            # get last submission date stored in export
+            # get last submission/edit date of the export
             last_submission_time_at_export = export.time_of_last_submission
             return last_submission_time_at_export < \
-                   xform.time_of_last_submission()
+                   xform.time_of_last_submission_update()
         # return true if we can't determine the status, to force auto-generation
         return True
 

@@ -154,6 +154,17 @@ def should_create_new_export(xform, export_type):
         return True
     return False
 
+
+def newset_export_for(xform, export_type):
+    """
+    Make sure you check that an export exists before calling this,
+    it will a DoesNotExist exception otherwise
+    """
+    from odk_viewer.models import Export
+    return Export.objects.filter(xform=xform, export_type=export_type)\
+           .latest('created_on')
+
+
 def increment_index_in_filename(filename):
     """
     filename should be in the form file.ext or file-2.ext - we check for the

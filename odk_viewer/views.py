@@ -33,7 +33,8 @@ from utils.user_auth import has_permission, get_xform_and_perms, helper_auth_hel
 from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
 from odk_viewer.models import Export
-from utils.export_tools import generate_export, should_create_new_export
+from utils.export_tools import generate_export, should_create_new_export,\
+    newset_export_for
 from utils.viewer_tools import export_def_from_filename
 from utils.log import audit_log, Actions
 
@@ -186,33 +187,38 @@ def csv_export(request, username, id_string):
     query = request.GET.get("query")
     ext = Export.CSV_EXPORT
 
-    try:
-        export = generate_export(
-            Export.CSV_EXPORT, ext, username, id_string, None, query)
-    except NoRecordsFoundError:
-        return HttpResponse(_("No records found to export"))
-    else:
-        audit = {
-            "xform": xform.id_string,
-            "export_type": Export.CSV_EXPORT
-        }
-        audit_log(Actions.EXPORT_CREATED, request.user, owner,
+    audit = {
+        "xform": xform.id_string,
+        "export_type": Export.CSV_EXPORT
+    }
+
+    # check if we need to re-generate
+    if should_create_new_export(xform, Export.CSV_EXPORT):
+        try:
+            export = generate_export(
+                Export.CSV_EXPORT, ext, username, id_string, None, query)
+            audit_log(Actions.EXPORT_CREATED, request.user, owner,
             _("Created CSV export on '%(id_string)s'.") %\
             {
                 'id_string': xform.id_string,
             }, audit, request)
-        # log download as well
-        audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
-            _("Downloaded CSV export on '%(id_string)s'.") %\
-            {
-                'id_string': xform.id_string,
-            }, audit, request)
-        if request.GET.get('raw'):
-            id_string = None
-        response = response_with_mimetype_and_name(
-            Export.EXPORT_MIMES[ext], id_string, extension=ext,
-            file_path=export.filepath)
-        return response
+        except NoRecordsFoundError:
+            return HttpResponseNotFound(_("No records found to export"))
+    else:
+        export = newset_export_for(xform, Export.CSV_EXPORT)
+
+    # log download as well
+    audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
+        _("Downloaded CSV export on '%(id_string)s'.") %\
+        {
+            'id_string': xform.id_string,
+        }, audit, request)
+    if request.GET.get('raw'):
+        id_string = None
+    response = response_with_mimetype_and_name(
+        Export.EXPORT_MIMES[ext], id_string, extension=ext,
+        file_path=export.filepath)
+    return response
 
 
 def xls_export(request, username, id_string):
@@ -224,37 +230,43 @@ def xls_export(request, username, id_string):
     query = request.GET.get("query")
     force_xlsx = request.GET.get('xlsx') == 'true'
     ext = 'xls' if not force_xlsx else 'xlsx'
-    try:
-        export = generate_export(
-            Export.XLS_EXPORT, ext, username, id_string, None, query)
-    except NoRecordsFoundError:
-        return HttpResponse(_("No records found to export"))
+
+    audit = {
+        "xform": xform.id_string,
+        "export_type": Export.XLS_EXPORT
+    }
+
+    # check if we need to re-generate
+    if should_create_new_export(xform, Export.XLS_EXPORT):
+        try:
+            export = generate_export(
+                Export.XLS_EXPORT, ext, username, id_string, None, query)
+            audit_log(Actions.EXPORT_CREATED, request.user, owner,
+                _("Created XLS export on '%(id_string)s'.") %\
+                {
+                    'id_string': xform.id_string,
+                    }, audit, request)
+        except NoRecordsFoundError:
+            return HttpResponseNotFound(_("No records found to export"))
     else:
-        audit = {
-            "xform": xform.id_string,
-            "export_type": Export.XLS_EXPORT
-        }
-        audit_log(Actions.EXPORT_CREATED, request.user, owner,
-            _("Created XLS export on '%(id_string)s'.") %\
-            {
-                'id_string': xform.id_string,
-            }, audit, request)
-        # log download as well
-        audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
-            _("Downloaded XLS export on '%(id_string)s'.") %\
-            {
-                'id_string': xform.id_string,
-            }, audit, request)
-        # get extension from file_path, exporter could modify to
-        # xlsx if it exceeds limits
-        path, ext = os.path.splitext(export.filename)
-        ext = ext[1:]
-        if request.GET.get('raw'):
-            id_string = None
-        response = response_with_mimetype_and_name(
-            Export.EXPORT_MIMES[ext], id_string, extension=ext,
-            file_path=export.filepath)
-        return response
+        export = newset_export_for(xform, Export.XLS_EXPORT)
+
+    # log download as well
+    audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
+        _("Downloaded XLS export on '%(id_string)s'.") %\
+        {
+            'id_string': xform.id_string,
+        }, audit, request)
+    # get extension from file_path, exporter could modify to
+    # xlsx if it exceeds limits
+    path, ext = os.path.splitext(export.filename)
+    ext = ext[1:]
+    if request.GET.get('raw'):
+        id_string = None
+    response = response_with_mimetype_and_name(
+        Export.EXPORT_MIMES[ext], id_string, extension=ext,
+        file_path=export.filepath)
+    return response
 
 
 @require_POST
