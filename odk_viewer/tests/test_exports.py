@@ -482,7 +482,7 @@ class TestExports(MainTestCase):
     def test_export_progress_updates(self):
         """
         Test that after generate_export is called, we change out state to
-        started and after its complete, we change it to complete, if we fail
+        pending and after its complete, we change it to complete, if we fail
         between the two, updates, we have failed
         """
         self._publish_transportation_form()
