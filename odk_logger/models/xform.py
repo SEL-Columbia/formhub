@@ -132,8 +132,8 @@ class XForm(models.Model):
 
     def time_of_last_submission_update(self):
         try:
-            return self.surveys.\
-            filter(deleted_at=None).latest("date_modified").date_created
+            # we also consider deleted surveys in this case
+            return self.surveys.latest("date_modified").date_modified
         except ObjectDoesNotExist:
             pass
 
