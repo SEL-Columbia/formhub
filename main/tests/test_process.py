@@ -8,12 +8,14 @@ from hashlib import md5
 from StringIO import StringIO
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.core.files.uploadedfile import UploadedFile
 from xlrd import open_workbook
 
 from odk_logger.models import XForm
 from odk_logger.views import submission
 from odk_viewer.models import DataDictionary
 from odk_viewer.views import csv_export, xls_export
+from main.models import MetaData
 from test_base import MainTestCase
 from common_tags import UUID, SUBMISSION_TIME
 
@@ -65,12 +67,7 @@ class TestSite(MainTestCase):
             self.response = self.anon.post(url, post_data)
 
     def test_publish_xlsx_file(self):
-        path = os.path.join(self.this_directory, 'fixtures', 'exp.xlsx')
-        pre_count = XForm.objects.count()
-        response = MainTestCase._publish_xls_file(self, path)
-        # make sure publishing the survey worked
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(XForm.objects.count(), pre_count + 1)
+        self._publish_xlsx_file()
 
     def test_google_url_upload(self):
         if self._internet_on(url="http://google.com"):
@@ -422,3 +419,20 @@ class TestSite(MainTestCase):
         response = self.client.get(url)
         self.assertContains(
             response, "405 Error: Method Not Allowed", status_code=405)
+
+
+    def test_metadata_file_hash(self):
+        self._publish_transportation_form()
+        src = os.path.join(self.this_directory, "fixtures", "transportation","screenshot.png")
+        uf = UploadedFile(file=open(src), content_type='image/png')
+        count = MetaData.objects.count()
+        rs = MetaData.media_upload(self.xform, uf)
+        # assert successful insert of new metadata record
+        self.assertEqual(MetaData.objects.count(), count + 1)
+        md = MetaData.objects.get(xform=self.xform, data_value='screenshot.png')
+        # assert checksum string has been generated, hash length > 1
+        self.assertTrue(len(md.hash) > 16)
+        md.data_file.storage.delete(md.data_file.name)
+        md = MetaData.objects.get(xform=self.xform, data_value='screenshot.png')
+        self.assertEqual(len(md.hash), 0)
+

@@ -5,7 +5,8 @@ from tempfile import NamedTemporaryFile
 import urllib2
 
 from django.contrib.auth.models import User
-from django.test import TestCase
+# from django.test import TestCase
+from django_nose import FastFixtureTestCase as TestCase
 from django.test.client import Client
 
 from odk_logger.models import XForm, Instance, Attachment
@@ -60,6 +61,14 @@ class MainTestCase(TestCase):
         with open(path) as xls_file:
             post_data = {'xls_file': xls_file}
             return self.client.post('/%s/' % self.user.username, post_data)
+
+    def _publish_xlsx_file(self):
+        path = os.path.join(self.this_directory, 'fixtures', 'exp.xlsx')
+        pre_count = XForm.objects.count()
+        response = MainTestCase._publish_xls_file(self, path)
+        # make sure publishing the survey worked
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(XForm.objects.count(), pre_count + 1)
 
     def _publish_xls_file_and_set_xform(self, path):
         count = XForm.objects.count()

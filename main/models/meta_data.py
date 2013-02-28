@@ -55,7 +55,9 @@ class MetaData(models.Model):
 
     @property
     def hash(self):
-        return u'%s' % md5(self.data_file.read()).hexdigest()
+        if self.data_file.storage.exists(self.data_file):
+            return u'%s' % md5(self.data_file.read()).hexdigest()
+        return u''
 
     @staticmethod
     def public_link(xform, data_value=None):
