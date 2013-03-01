@@ -81,8 +81,7 @@ class Export(models.Model):
             self.time_of_last_submission = self.xform.\
                 time_of_last_submission_update()
         if self.filename:
-            self.internal_status = Export.SUCCESSFUL
-            self._update_filedir()
+            self.set_filename(self.filename)
         super(Export, self).save(*args, **kwargs)
 
     @classmethod
@@ -108,6 +107,11 @@ class Export(models.Model):
             return Export.FAILED
         else:
             return Export.PENDING
+
+    def set_filename(self, filename):
+        self.filename = filename
+        self.internal_status = Export.SUCCESSFUL
+        self._update_filedir()
 
     def _update_filedir(self):
         assert(self.filename)

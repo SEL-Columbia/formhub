@@ -136,12 +136,13 @@ def generate_export(export_type, extension, username, id_string,
     if(export_id):
         export = Export.objects.get(id=export_id)
     else:
-        export = Export.objects.create(xform=xform,
-            export_type=export_type)
+        export = Export(xform=xform, export_type=export_type)
 
-    export.filename = basename
+    export.set_filename(basename)
     export.internal_status = Export.SUCCESSFUL
-    export.save()
+    # dont persist exports that have a filter
+    if filter_query == None:
+        export.save()
     return export
 
 

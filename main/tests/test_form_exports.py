@@ -89,7 +89,6 @@ class TestFormExports(MainTestCase):
         self.assertEqual(self._num_rows(response.content, export_format), 2)
 
     def test_filter_by_date_csv(self):
-        #import ipdb; ipdb.set_trace()
         self._filter_export_test(self.csv_url, 'csv')
 
     def test_filter_by_date_xls(self):

@@ -179,7 +179,6 @@ def survey_responses(request, instance_id):
 
 
 def data_export(request, username, id_string, export_type):
-    #import ipdb; ipdb.set_trace()
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     helper_auth_helper(request)
@@ -197,8 +196,8 @@ def data_export(request, username, id_string, export_type):
         "xform": xform.id_string,
         "export_type": export_type
     }
-    # check if we need to re-generate
-    if should_create_new_export(xform, export_type):
+    # check if we need to re-generate, we always re-generate if a filter is specified
+    if should_create_new_export(xform, export_type) or query:
         try:
             export = generate_export(
                 export_type, extension, username, id_string, None, query)
