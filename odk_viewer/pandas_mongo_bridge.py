@@ -527,7 +527,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
     def export_to(self, file_or_path, data_frame_max_size=30000):
         from math import ceil
         # get record count
-        record_count = self._query_mongo(count=True)
+        record_count = self._query_mongo(query=self.filter_query, count=True)
 
         # pandas will only export 30k records in a dataframe to a csv - we need to create multiple 30k dataframes if required,
         # we need to go through all the records though so that we can figure out the columns we need for repeats

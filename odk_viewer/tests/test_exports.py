@@ -9,8 +9,8 @@ from django.conf import settings
 from main.tests.test_base import MainTestCase
 from django.core.urlresolvers import reverse
 from odk_viewer.xls_writer import XlsWriter
-from odk_viewer.views import csv_export, xls_export, delete_export,\
-    export_list, create_export, export_progress, export_download
+from odk_viewer.views import delete_export, export_list, create_export,\
+    export_progress, export_download
 from odk_viewer.models import Export, ParsedInstance
 from utils.export_tools import generate_export, increment_index_in_filename
 from odk_logger.models import Instance
@@ -41,7 +41,7 @@ class TestExports(MainTestCase):
                 self.this_directory, 'fixtures', 'transportation',
                 'instances', survey, survey + '.xml'),
             forced_submission_time=self._submission_time)
-        response = self.client.get(reverse(csv_export,
+        response = self.client.get(reverse('csv_export',
             kwargs={
                 'username': self.user.username,
                 'id_string': self.xform.id_string
@@ -54,26 +54,15 @@ class TestExports(MainTestCase):
 
     def test_responses_for_empty_exports(self):
         self._publish_transportation_form()
-        # test csv
-        url = reverse(csv_export,
+        # test csv though xls uses the same view
+        url = reverse('csv_export',
             kwargs={
                 'username': self.user.username,
                 'id_string': self.xform.id_string
             }
         )
         self.response = self.client.get(url)
-        self.assertEqual(self.response.status_code, 200)
-        self.assertIn('text/html', self.response['content-type'])
-        # test xls
-        url = reverse(xls_export,
-            kwargs={
-                'username': self.user.username,
-                'id_string': self.xform.id_string
-            }
-        )
-        self.response = self.client.get(url)
-        self.assertEqual(self.response.status_code, 200)
-        # we a htl response when we have no records
+        self.assertEqual(self.response.status_code, 404)
         self.assertIn('text/html', self.response['content-type'])
 
     def test_create_export(self):
@@ -405,7 +394,7 @@ class TestExports(MainTestCase):
         self.assertEqual(count, initial_count+1)
         # create the export
         csv_export_url = reverse(
-            csv_export, kwargs={"username": self.user.username,
+            'csv_export', kwargs={"username": self.user.username,
                                 "id_string":self.xform.id_string})
         response = self.client.get(csv_export_url)
         self.assertEqual(response.status_code, 200)
@@ -444,7 +433,7 @@ class TestExports(MainTestCase):
         self.assertEqual(count, initial_count+1)
         # create the export
         csv_export_url = reverse(
-            csv_export, kwargs={"username": self.user.username,
+            'csv_export', kwargs={"username": self.user.username,
                                 "id_string":self.xform.id_string})
         response = self.client.get(csv_export_url)
         self.assertEqual(response.status_code, 200)
@@ -519,15 +508,6 @@ class TestExports(MainTestCase):
         self.assertEqual(status["complete"], True)
         self.assertIsNotNone(status["filename"])
 
-    def test_404_when_export_has_no_records(self):
-        self._publish_transportation_form()
-        csv_export_url = reverse(csv_export, kwargs={
-            'username': self.user.username,
-            'id_string': self.xform.id_string
-        })
-        response = self.client.get(csv_export_url)
-        self.assertEqual(response.status_code, 404)
-
     def test_direct_export_returns_newset_export_if_not_updated_since(self):
         self._publish_transportation_form()
         self._submit_transport_instance()
@@ -540,11 +520,11 @@ class TestExports(MainTestCase):
         initial_num_xls_exports = Export.objects.filter(
             xform=self.xform, export_type=Export.XLS_EXPORT).count()
         # request a direct csv export
-        csv_export_url = reverse(csv_export, kwargs={
+        csv_export_url = reverse('csv_export', kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string
         })
-        xls_export_url = reverse(xls_export, kwargs={
+        xls_export_url = reverse('xls_export', kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string
         })

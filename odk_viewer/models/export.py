@@ -123,17 +123,18 @@ class Export(models.Model):
     @classmethod
     def exports_outdated(cls, xform, export_type):
         # get newest export for xform
-        qs = Export.objects.filter(xform=xform, export_type=export_type)\
-             .order_by('-created_on')[:1]
-        if qs.count() > 0 and qs[0].time_of_last_submission is not None \
-                and xform.time_of_last_submission_update() is not None:
-            export = qs[0]
-            # get last submission/edit date of the export
-            last_submission_time_at_export = export.time_of_last_submission
-            return last_submission_time_at_export < \
-                   xform.time_of_last_submission_update()
-        # return true if we can't determine the status, to force auto-generation
-        return True
+        try:
+            latest_export = Export.objects.filter(xform=xform, export_type=export_type).latest('created_on')
+        except cls.DoesNotExist:
+            return True
+        else:
+            if latest_export.time_of_last_submission is not None \
+               and xform.time_of_last_submission_update() is not None:
+               return latest_export.time_of_last_submission <\
+                      xform.time_of_last_submission_update()
+            else:
+                # return true if we can't determine the status, to force auto-generation
+                return True
 
     @classmethod
     def is_filename_unique(cls, xform, filename):

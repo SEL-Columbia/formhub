@@ -1,5 +1,5 @@
 from test_base import MainTestCase
-from odk_viewer.views import csv_export, xls_export, zip_export, kml_export, export_download
+from odk_viewer.views import zip_export, kml_export, export_download
 from django.core.urlresolvers import reverse
 from common_tags import MONGO_STRFTIME
 
@@ -18,10 +18,10 @@ class TestFormExports(MainTestCase):
         MainTestCase.setUp(self)
         self._create_user_and_login()
         self._publish_transportation_form_and_submit_instance()
-        self.csv_url = reverse(csv_export, kwargs={
+        self.csv_url = reverse('csv_export', kwargs={
                 'username': self.user.username,
                 'id_string': self.xform.id_string})
-        self.xls_url = reverse(xls_export, kwargs={
+        self.xls_url = reverse('xls_export', kwargs={
                 'username': self.user.username,
                 'id_string': self.xform.id_string})
 
@@ -89,6 +89,7 @@ class TestFormExports(MainTestCase):
         self.assertEqual(self._num_rows(response.content, export_format), 2)
 
     def test_filter_by_date_csv(self):
+        #import ipdb; ipdb.set_trace()
         self._filter_export_test(self.csv_url, 'csv')
 
     def test_filter_by_date_xls(self):
