@@ -44,8 +44,8 @@ class XFormInstanceFS(object):
         with open(filepath, 'r') as ff:
             fxml = ff.read()
             if not fxml.strip().startswith('<?xml'):
-                return True
-        return False
+                return False
+        return True
 
     def __str__(self):
         return "<XForm XML: %s>" % self.xform_id
