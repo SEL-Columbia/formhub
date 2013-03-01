@@ -260,7 +260,7 @@ CELERY_RESULT_BACKEND = "amqp"  # telling Celery to report the results back to R
 AUTO_ADD_CROWDFORM = False
 DEFAULT_CROWDFORM = {'xform_username': 'bob', 'xform_id_string': 'transport'}
 
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+#TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--with-fixture-bundling']
 
 TESTING_MODE = False
