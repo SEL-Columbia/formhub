@@ -54,31 +54,36 @@ def create_xls_export(username, id_string, export_id, query=None,
     # http://docs.celeryproject.org/en/latest/userguide/tasks.html#state
     ext = 'xls' if not force_xlsx else 'xlsx'
 
+    export = Export.objects.get(id=export_id)
     # though export is not available when for has 0 submissions, we
     # catch this since it potentially stops celery
     try:
-        export = generate_export(Export.XLS_EXPORT, ext, username, id_string,
+        gen_export = generate_export(Export.XLS_EXPORT, ext, username, id_string,
                                  export_id, query)
-    except NoRecordsFoundError:
+    except (Exception, NoRecordsFoundError) as e:
+        export.internal_status = Export.FAILED
+        export.save()
         # raise for now to let celery know we failed - doesnt seem to break celery
         raise
     else:
-        return export.id
+        return gen_export.id
 
 @task()
 def create_csv_export(username, id_string, export_id, query=None):
     # we re-query the db instead of passing model objects according to
     # http://docs.celeryproject.org/en/latest/userguide/tasks.html#state
+
+    export = Export.objects.get(id=export_id)
     try:
         # though export is not available when for has 0 submissions, we
         # catch this since it potentially stops celery
-        export = generate_export(Export.CSV_EXPORT, 'csv', username, id_string,
+        gen_export = generate_export(Export.CSV_EXPORT, 'csv', username, id_string,
                                  export_id, query)
-    except NoRecordsFoundError:
-        # raise for now to let celery know we failed - doesnt seem to break celery
-        raise
+    except (Exception, NoRecordsFoundError) as e:
+        export.internal_status = Export.FAILED
+        export.save()
     else:
-        return export.id
+        return gen_export.id
 
 @task()
 def email_mongo_sync_status():
