@@ -43,7 +43,7 @@ class XFormInstanceFS(object):
             return False
         with open(filepath, 'r') as ff:
             fxml = ff.read()
-            if fxml.find("""<?xml version='1.0' ?>""") == 0:
+            if not fxml.strip().startswith('<?xml'):
                 return True
         return False
 
