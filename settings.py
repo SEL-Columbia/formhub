@@ -276,7 +276,7 @@ if TESTING_MODE:
     subprocess.call(["rm", "-r", MEDIA_ROOT])
     MONGO_DB = _MONGO_CONNECTION[MONGO_TEST_DB_NAME]
     MONGO_DB.instances.drop()
-    # need to have CELERY_ALWAYS_EAGER True and BROKER_BACKEND as memory to run taks immediately while testing
+    # need to have CELERY_ALWAYS_EAGER True and BROKER_BACKEND as memory to run tasks immediately while testing
     CELERY_ALWAYS_EAGER = True
     BROKER_BACKEND = 'memory'
     TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
