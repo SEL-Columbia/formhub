@@ -110,6 +110,11 @@ def _xml_node_to_dict(node, repeats=[]):
         # this is an internal node
         value = {}
         for child in node.childNodes:
+
+            # handle CDATA text section
+            if child.nodeType == child.CDATA_SECTION_NODE:
+                return {child.parentNode.nodeName: child.nodeValue}
+
             d = _xml_node_to_dict(child, repeats)
             if d is None:
                 continue
