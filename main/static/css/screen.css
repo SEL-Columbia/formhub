@@ -371,9 +371,6 @@ section {
 .footer p {
   color: #555;
 }
-#map_canvas {
-  margin-top: 56px;
-}
 .search-query {
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
