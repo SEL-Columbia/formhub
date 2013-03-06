@@ -20,14 +20,11 @@ class TestGoogleDocsExport(MainTestCase):
         self._make_submissions()
 
         initial_token_count = TokenStorageModel.objects.all().count()
-        self.assertIsNone(self.token.access_token)
         self.token = refresh_access_token(self.token, self.user)
         self.assertIsNotNone(self.token.access_token)
         self.assertEqual(
             TokenStorageModel.objects.all().count(), initial_token_count + 1)
 
-        self.assertEqual(
-            TokenStorageModel.objects.all().count(), initial_token_count + 1)
         response = self.client.get(reverse(google_xls_export, kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string
