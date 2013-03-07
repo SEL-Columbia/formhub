@@ -1,6 +1,7 @@
 
 import os
 import time
+import logging
 
 from django.core.urlresolvers import reverse
 from pybamboo.connection import Connection
@@ -12,6 +13,9 @@ from odk_logger.models.xform import XForm
 from restservice.views import add_service, delete_service
 from restservice.RestServiceInterface import RestServiceInterface
 from restservice.models import RestService
+
+
+console_logger = logging.getLogger("console_logger")
 
 
 class RestServiceTest(MainTestCase):
@@ -94,6 +98,7 @@ class RestServiceTest(MainTestCase):
         # it should have created the whole dataset
         xform = XForm.objects.get(id=self.xform.id)
         self.assertTrue(xform.bamboo_dataset)
+        console_logger.info("Dataset: %s" % xform.bamboo_dataset)
         dataset = Dataset(connection=Connection(service_url),
                           dataset_id=xform.bamboo_dataset)
         self.assertEqual(dataset.get_info()['num_rows'], 2)
