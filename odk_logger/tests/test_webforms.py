@@ -1,7 +1,6 @@
 import json
 import os
 import re
-import logging
 from django.core.urlresolvers import reverse
 from main.tests.test_base import MainTestCase
 from odk_logger.models.instance import Instance
@@ -25,8 +24,6 @@ class TestWebforms(MainTestCase):
         })
         response = self.client.get(edit_url)
         self.assertEqual(response.status_code, 302)
-        logger = logging.getLogger(name="console_logger")
-        logger.info(response.content)
 
     def test_inject_instanceid(self):
         """
