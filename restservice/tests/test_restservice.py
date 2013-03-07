@@ -65,7 +65,7 @@ class RestServiceTest(MainTestCase):
         service_url = 'http://bamboo.io/'
         service_name = 'bamboo'
         # self._add_rest_service(service_url, service_name)
-        self.wait(2)
+        #self.wait(2)
         xml_submission1 = os.path.join(self.this_directory,
                                        u'fixtures',
                                        u'dhisform_submission1.xml')
@@ -75,6 +75,11 @@ class RestServiceTest(MainTestCase):
         xml_submission3 = os.path.join(self.this_directory,
                                        u'fixtures',
                                        u'dhisform_submission3.xml')
+
+        # make sure xform doesnt have a bamboo dataset
+        self.xform.bamboo_dataset = ''
+        self.xform.save()
+
         # make a first submission without the service
         self._make_submission(xml_submission1)
         self.assertEqual(self.response.status_code, 201)
