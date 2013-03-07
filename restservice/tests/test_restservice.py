@@ -15,9 +15,6 @@ from restservice.RestServiceInterface import RestServiceInterface
 from restservice.models import RestService
 
 
-console_logger = logging.getLogger("console_logger")
-
-
 class RestServiceTest(MainTestCase):
     def setUp(self):
         self.service_url = u'http://0.0.0.0:8001/%(id_string)s/post/%(uuid)s'
@@ -94,11 +91,11 @@ class RestServiceTest(MainTestCase):
         # submit another one.
         self._make_submission(xml_submission2)
         self.assertEqual(self.response.status_code, 201)
-        self.wait(3)
+        self.wait(5)
         # it should have created the whole dataset
         xform = XForm.objects.get(id=self.xform.id)
-        self.assertTrue(xform.bamboo_dataset)
-        console_logger.info("Dataset: %s" % xform.bamboo_dataset)
+        self.assertTrue(
+            xform.bamboo_dataset != '' and xform.bamboo_dataset is not None)
         dataset = Dataset(connection=Connection(service_url),
                           dataset_id=xform.bamboo_dataset)
         self.assertEqual(dataset.get_info()['num_rows'], 2)
@@ -106,7 +103,7 @@ class RestServiceTest(MainTestCase):
         # submit a third one. check that we have 3 records
         self._make_submission(xml_submission3)
         self.assertEqual(self.response.status_code, 201)
-        self.wait(3)
+        self.wait(5)
         self.assertEqual(dataset.get_info()['num_rows'], 3)
 
         # test regeneration
@@ -118,7 +115,7 @@ class RestServiceTest(MainTestCase):
         response = self.client.post(regen_url, {})
         # deleting DS redirects to profile page
         self.assertEqual(response.status_code, 302)
-        self.wait(3)
+        self.wait(5)
         xform = XForm.objects.get(id=self.xform.id)
         self.assertTrue(xform.bamboo_dataset)
         dataset = Dataset(connection=Connection(service_url),
