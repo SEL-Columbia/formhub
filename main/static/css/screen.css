@@ -32,7 +32,7 @@ This is for all the extra things it needs beyond what bootstrap provides.
 }
 /* for fixed top */
 body {
-  padding-top: 65px !important;
+  padding-top: 55px !important;
 }
 .centered {
   text-align: center;
