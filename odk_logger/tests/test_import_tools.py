@@ -33,7 +33,8 @@ class TestImportingDatabase(MainTestCase):
         Instance.objects.all().delete()  # ?
         if settings.TESTING_MODE:
             images = glob.glob(
-                os.path.join(settings.MEDIA_ROOT, 'attachments', '*'))
+                os.path.join(
+                    settings.MEDIA_ROOT, self.user.username, 'attachments', '*'))
             for image in images:
                 os.remove(image)
 
@@ -59,7 +60,6 @@ class TestImportingDatabase(MainTestCase):
 
         instance_count = Instance.objects.count()
         image_count = images_count()
-
         #Images are not duplicated
         # TODO: Figure out how to get this test passing.
         self.assertEqual(image_count, initial_image_count + 2)
