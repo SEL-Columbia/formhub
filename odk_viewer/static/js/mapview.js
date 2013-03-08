@@ -111,7 +111,27 @@ function initialize() {
     map.addControl(layersControl);
     //show marker layer by default
     map.addLayer(markerLayerGroup);
-
+		
+		var hexButton = function () {
+			if(!map.hasLayer(hexbinLayerGroup)) {
+				return map.addLayer(hexbinLayerGroup);
+			}
+			else if (map.hasLayer(hexbinLayerGroup)) {
+				return map.removeLayer(hexbinLayerGroup);
+			}
+		};
+		
+		var markerButton = function () {
+			if(!map.hasLayer(markerLayerGroup)) {
+				return map.addLayer(markerLayerGroup);
+			}
+			else{
+				return map.removeLayer(markerLayerGroup);
+			}
+		};
+		
+    map.addControl(layerButtonControl(hexButton, markerButton));
+		
     // add bing maps layer
     /** $.each(bingMapTypeLabels, function(type, label) {
         var bingLayer = new L.TileLayer.Bing(bingAPIKey, type); 

@@ -71,3 +71,29 @@ body { height: 100%; margin: 0; padding: 0 }
 	width:100%; 
 	height:100%;
 }
+
+.layer-button-container{
+	background-color: rgba(255, 255, 255, 0.8);
+	box-shadow: 0 0 8px rgba(0,0,0,0.4);
+	border: 1px solid #888;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	margin-left: 13px !important;
+}
+
+.layer-button-container .layer-hexbinButton{
+	background-image: url(images/hexbin_overlay.png);
+	background-repeat:no-repeat;
+	background-position: center;
+	width: 22px;
+	height: 22px;
+	border-bottom: 1px solid #aaa;
+}
+
+.layer-button-container .layer-markerButton{
+	background-image: url(images/marker_overlay.png);
+	background-repeat:no-repeat;
+	background-position: center;
+	width: 21px;
+	height: 21px;
+}
