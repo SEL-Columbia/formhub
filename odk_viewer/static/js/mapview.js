@@ -103,6 +103,26 @@ function initialize() {
             markerLayerRemoved(layerEvent.layer);
         }
     });
+		
+		var hexButton = function () {
+			if(!map.hasLayer(hexbinLayerGroup)) {
+				return map.addLayer(hexbinLayerGroup);
+			}
+			else if (map.hasLayer(hexbinLayerGroup)) {
+				return map.removeLayer(hexbinLayerGroup);
+			}
+		};
+		
+		var markerButton = function () {
+			if(!map.hasLayer(markerLayerGroup)) {
+				return map.addLayer(markerLayerGroup);
+			}
+			else{
+				return map.removeLayer(markerLayerGroup);
+			}
+		};
+		
+    map.addControl(layerButtonControl(markerButton, hexButton));
 
     var overlays = {};
     overlays[markerLayerLabel] = markerLayerGroup;
