@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
 from odk_logger.views import download_xlsform, download_jsonform,\
     download_xform, delete_xform
-from odk_viewer.views import export_list
+from odk_viewer.views import export_list, map_view
 from utils.user_auth import http_auth_string
 from odk_viewer.models import ParsedInstance
 
@@ -156,7 +156,40 @@ class TestFormShow(MainTestCase):
             'id_string': self.xform.id_string,
             'export_type': 'xls'
         }))
-        self.assertContains(response, '%s/map' % self.xform.id_string)
+        self.assertNotContains(response, reverse(map_view, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        }))
+
+        # check that a form with geopoints has the map url
+        response = self._publish_xls_file(
+            os.path.join(
+                os.path.dirname(__file__), "fixtures", "gps", "gps.xls"))
+        self.assertEqual(response.status_code, 200)
+        self.xform = XForm.objects.latest('date_created')
+
+        show_url = reverse(show, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        })
+        map_url = reverse(map_view, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        })
+        response = self.client.get(show_url)
+        # check that map url doesnt show before we have submissions
+        self.assertNotContains(response, map_url)
+
+        # make a submission
+        self._make_submission(
+            os.path.join(
+                os.path.dirname(__file__), "fixtures", "gps", "instances", "gps_1980-01-23_20-52-08.xml")
+        )
+        self.assertEqual(self.response.status_code, 201)
+
+        # get new show view
+        response = self.client.get(show_url)
+        self.assertContains(response, map_url)
 
     def test_user_sees_edit_btn(self):
         response = self.client.get(self.url)
