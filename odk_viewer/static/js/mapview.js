@@ -103,14 +103,6 @@ function initialize() {
             markerLayerRemoved(layerEvent.layer);
         }
     });
-
-    var overlays = {};
-    overlays[markerLayerLabel] = markerLayerGroup;
-    overlays[hexbinLayerLabel] = hexbinLayerGroup;
-    layersControl = new L.Control.Layers({}, overlays);
-    map.addControl(layersControl);
-    //show marker layer by default
-    map.addLayer(markerLayerGroup);
 		
 		var hexButton = function () {
 			if(!map.hasLayer(hexbinLayerGroup)) {
@@ -131,7 +123,15 @@ function initialize() {
 		};
 		
     map.addControl(layerButtonControl(hexButton, markerButton));
-		
+
+    var overlays = {};
+    overlays[markerLayerLabel] = markerLayerGroup;
+    overlays[hexbinLayerLabel] = hexbinLayerGroup;
+    layersControl = new L.Control.Layers({}, overlays);
+    map.addControl(layersControl);
+    //show marker layer by default
+    map.addLayer(markerLayerGroup);
+
     // add bing maps layer
     /** $.each(bingMapTypeLabels, function(type, label) {
         var bingLayer = new L.TileLayer.Bing(bingAPIKey, type); 

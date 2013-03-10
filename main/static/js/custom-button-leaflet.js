@@ -1,6 +1,6 @@
 var layerButtonControl = function(hexLayer, markerLayer) {
 	var control = new (L.Control.extend({
-		options: { position: 'topleft' },
+		options: { position: 'topright' },
 		
 		onAdd: function (map) {
 			  var container = L.DomUtil.create('div', 'layer-button-container');
