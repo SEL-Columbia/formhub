@@ -32,7 +32,7 @@ This is for all the extra things it needs beyond what bootstrap provides.
 }
 /* for fixed top */
 body {
-  padding-top: 28px;
+  padding-top: 55px !important;
 }
 .centered {
   text-align: center;
@@ -197,6 +197,14 @@ ul.inline ul.dropdown-menu {
 }
 .navbar-inner-map {
   margin-bottom: -18px;
+	padding: 0 !important;
+}
+/*.navbar-inner-map .btn {
+	padding-bottom: 3px;
+}*/
+.navbar-fixed-top{
+	position: fixed !important;
+	margin: auto !important;
 }
 .navbar-inner {
   background-color: #fff;
@@ -362,9 +370,6 @@ section {
 }
 .footer p {
   color: #555;
-}
-#map_canvas {
-  margin-top: 56px;
 }
 .search-query {
   -webkit-border-radius: 6px;

@@ -44,7 +44,7 @@ var hexbinLayerLabel = "Hexbin Layer";
 // TODO: generate new api key for formhub at https://www.bingmapsportal.com/application/index/1121012?status=NoStatus
 var bingAPIKey = 'AtyTytHaexsLBZRFM6xu9DGevbYyVPykavcwVWG6wk24jYiEO9JJSmZmLuekkywR';
 var bingMapTypeLabels = {'AerialWithLabels': gettext('Bing Satellite Map'), 'Road': gettext('Bing Road Map')}; //Road, Aerial or AerialWithLabels
-var mapBoxAdditAttribution = gettext("Map data (c) OpenStreetMap contributors, CC-BY-SA");
+var mapBoxAdditAttribution = gettext(" Map data (c) OpenStreetMap contributors, CC-BY-SA");
 
 // map filter vars
 var navContainerSelector = ".nav.pull-right";
