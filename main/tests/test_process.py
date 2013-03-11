@@ -201,22 +201,30 @@ class TestSite(MainTestCase):
 
     def _download_xform(self):
         response = self.anon.get(self.download_url)
+        response_doc = minidom.parseString(response.content)
+
         xml_path = os.path.join(self.this_directory, "fixtures",
                                 "transportation", "transportation.xml")
         with open(xml_path) as xml_file:
-            expected_content = xml_file.read()
+            expected_doc = minidom.parseString(xml_file.read())
+
+        model_node = [
+                     n for n in
+                     response_doc.getElementsByTagName("h:head")[0].childNodes
+                     if n.nodeType == Node.ELEMENT_NODE and
+                        n.tagName == "model"][0]
 
         # check for UUID and remove
-        split_response = uuid_regex.split(response.content)
-        self.assertEqual(self.xform.uuid,
-                         unicode(split_response[XForm.uuid_node_location]))
-
-        # remove UUID
-        split_response[XForm.uuid_node_location:XForm.uuid_node_location + 1] \
-            = []
+        uuid_nodes = [node for node in model_node.childNodes
+                      if node.nodeType == Node.ELEMENT_NODE and
+                         node.getAttribute("nodeset") ==\
+                           "/transportation/formhub/uuid"]
+        self.assertEqual(len(uuid_nodes), 1)
+        uuid_node = uuid_nodes[0]
+        uuid_node.setAttribute("calculate", "''")
 
         # check content without UUID
-        self.assertEqual(expected_content, ''.join(split_response))
+        self.assertEqual(response_doc.toxml(), expected_doc.toxml())
 
     def _check_csv_export(self):
         self._check_data_dictionary()

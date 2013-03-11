@@ -114,7 +114,7 @@ class DataDictionary(XForm):
         calculate_node.setAttribute("calculate", "'%s'" % self.uuid)
         model_node.appendChild(calculate_node)
 
-        self.xml = doc.toprettyxml()
+        self.xml = doc.toprettyxml(indent="  ", encoding='utf-8')
 
     class Meta:
         app_label = "odk_viewer"
