@@ -1,6 +1,7 @@
 import os
 import re
 
+from xml.dom import minidom, Node
 from django.contrib.auth.models import User
 from django.db import models
 from pyxform import SurveyElementBuilder
@@ -14,6 +15,7 @@ from odk_viewer.models import ParsedInstance
 from odk_viewer.models.parsed_instance import _encode_for_mongo
 from utils.export_tools import question_types_to_exclude, DictOrganizer
 from utils.model_tools import queryset_iterator, set_uuid
+from odk_logger.xform_instance_parser import clean_and_parse_xml
 
 
 class ColumnRename(models.Model):
@@ -58,15 +60,61 @@ class DataDictionary(XForm):
         Add bind to automatically set UUID node in XML.
         """
         file_name, file_ext = os.path.splitext(self.file_name())
-        split_xml = self.uuid_regex.split(self.xml)
-        split_xml[self.uuid_node_location:self.uuid_node_location] =\
-            ['<formhub><uuid/></formhub>']
-        split_xml[self.uuid_bind_location:self.uuid_bind_location] = [
-            '\n      <bind nodeset="/', file_name,
-            '/formhub/uuid" type="string" calculate="\'',
-            self.uuid, '\'" />'
-        ]
-        self.xml = ''.join(split_xml)
+
+        doc = clean_and_parse_xml(self.xml)
+        model_nodes = doc.getElementsByTagName("model")
+        if len(model_nodes) != 1:
+            raise Exception(u"xml contains multiple model nodes")
+
+        model_node = model_nodes[0]
+        instance_nodes = [node for node in model_node.childNodes if
+                          node.nodeType == Node.ELEMENT_NODE and
+                          node.tagName.lower() == "instance" and
+                          not node.hasAttribute("id")]
+
+        if len(instance_nodes) != 1:
+            raise Exception(u"Multiple instance nodes without the id "
+                            u"attribute, can't tell which is the main one")
+
+        instance_node = instance_nodes[0]
+
+        # get the first child whose id attribute matches our id_string
+        survey_nodes = [node for node in instance_node.childNodes
+                        if node.nodeType == Node.ELEMENT_NODE and
+                           node.tagName == file_name]
+
+        if len(survey_nodes) != 1:
+            raise Exception(
+                u"Multiple survey nodes with the id '%s'" % self.id_string)
+
+        survey_node = survey_nodes[0]
+        formhub_nodes = [n for n in survey_node.childNodes
+                         if n.nodeType == Node.ELEMENT_NODE and
+                            n.tagName=="formhub"]
+
+        if len(formhub_nodes) > 1:
+            raise Exception(u"Multiple formhub nodes within main instance node")
+        elif len(formhub_nodes) == 1:
+            formhub_node = formhub_nodes[0]
+        else:
+            formhub_node = survey_node.insertBefore(
+                doc.createElement("formhub"), survey_node.firstChild)
+
+        uuid_nodes = [node for node in formhub_node.childNodes if
+                      node.nodeType == Node.ELEMENT_NODE and
+                      node.tagName == "uuid"]
+
+        if len(uuid_nodes) == 0:
+            formhub_node.appendChild(doc.createElement("uuid"))
+
+        # append the calculate bind node
+        calculate_node = doc.createElement("bind")
+        calculate_node.setAttribute("nodeset", "/%s/formhub/uuid" % file_name)
+        calculate_node.setAttribute("type", "string")
+        calculate_node.setAttribute("calculate", "'%s'" % self.uuid)
+        model_node.appendChild(calculate_node)
+
+        self.xml = doc.toprettyxml()
 
     class Meta:
         app_label = "odk_viewer"
