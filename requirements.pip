@@ -20,6 +20,7 @@ openpyxl==1.5.8
 celery==3.0.11
 django-celery==3.0.10
 django-nose
+httpretty
 # sql alchemy was used for importing data from phones
 SQLAlchemy==0.7.1
 
