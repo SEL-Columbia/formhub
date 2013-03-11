@@ -6,6 +6,7 @@ import re
 
 from hashlib import md5
 from StringIO import StringIO
+from xml.dom import minidom, Node
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.core.files.uploadedfile import UploadedFile
@@ -18,6 +19,7 @@ from odk_viewer.views import csv_export, xls_export
 from main.models import MetaData
 from test_base import MainTestCase
 from common_tags import UUID, SUBMISSION_TIME
+from odk_logger.xform_instance_parser import clean_and_parse_xml
 
 
 uuid_regex = re.compile(
@@ -420,7 +422,6 @@ class TestSite(MainTestCase):
         self.assertContains(
             response, "405 Error: Method Not Allowed", status_code=405)
 
-
     def test_metadata_file_hash(self):
         self._publish_transportation_form()
         src = os.path.join(self.this_directory, "fixtures", "transportation","screenshot.png")
@@ -436,3 +437,50 @@ class TestSite(MainTestCase):
         md = MetaData.objects.get(xform=self.xform, data_value='screenshot.png')
         self.assertEqual(len(md.hash), 0)
 
+    def test_uuid_injection_in_cascading_select(self):
+        """Test that the uuid is injected in the right instance node for
+        forms with a cascading select"""
+        pre_count = XForm.objects.count()
+        xls_path = os.path.join(
+            self.this_directory, "fixtures", "cascading_selects",
+            "new_cascading_select.xls")
+        file_name, file_ext = os.path.splitext(os.path.split(xls_path)[1])
+        self.response = MainTestCase._publish_xls_file(self, xls_path)
+        post_count = XForm.objects.count()
+        self.assertEqual(post_count, pre_count + 1)
+        xform = XForm.objects.latest('date_created')
+
+        # check that the uuid is within the main instance/ the one without an id attribute
+        xml = clean_and_parse_xml(xform.xml)
+
+        # check for instance nodes that are direct children of the model node
+        model_node = xml.getElementsByTagName("model")[0]
+        instance_nodes = [node for node in model_node.childNodes if
+                          node.nodeType == Node.ELEMENT_NODE and
+                          node.tagName.lower() == "instance" and
+                          not node.hasAttribute("id")]
+        self.assertEqual(len(instance_nodes), 1)
+        instance_node = instance_nodes[0]
+
+        # get the first element whose id attribute is equal to our form's id_string
+        form_nodes = [node for node in instance_node.childNodes if
+                 node.nodeType == Node.ELEMENT_NODE and
+                 node.getAttribute("id") == xform.id_string]
+        form_node = form_nodes[0]
+
+        # find the formhub node that has a uuid child node
+        formhub_nodes = form_node.getElementsByTagName("formhub")
+        self.assertEqual(len(formhub_nodes), 1)
+        uuid_nodes = formhub_nodes[0].getElementsByTagName("uuid")
+        self.assertEqual(len(uuid_nodes), 1)
+
+        # check for the calculate bind
+        calculate_bind_nodes = [node for node in model_node.childNodes if
+                                node.nodeType == Node.ELEMENT_NODE and
+                                node.tagName == "bind" and
+                                node.getAttribute("nodeset") ==
+                                    "/%s/formhub/uuid" % file_name]
+        self.assertEqual(len(calculate_bind_nodes), 1)
+        calculate_bind_node = calculate_bind_nodes[0]
+        self.assertEqual(
+            calculate_bind_node.getAttribute("calculate"), "'%s'" % xform.uuid)
