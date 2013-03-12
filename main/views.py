@@ -1153,10 +1153,13 @@ def qrcode(request, username, id_string):
     except:
         formhub_url = "http://formhub.org/"
     formhuburl = formhub_url + username
-
     url = enketo_url(formhuburl, id_string)
-    image = generate_qrcode(url)
+    if url:
+        image = generate_qrcode(url)
+        results = """<img class="qrcode" src="%s" alt="%s" />
+                   </br><a href="%s" target="_blank">%s</a>""" % (image, url, url, url)
+    else:
+        error_msg = _(u"Error Generating QRCODE")
+        results = """<div class="alert alert-error">%s</div>""" % error_msg
 
-    img = u"""<img class="qrcode" src="%s" alt="%s" /></br><a href="%s" target="_blank">%s</a>""" % (image, url, url, url)
-
-    return HttpResponse(img, mimetype='text/html')
+    return HttpResponse(results, mimetype='text/html')
