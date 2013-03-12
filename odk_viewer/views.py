@@ -411,7 +411,8 @@ def export_download(request, username, id_string, export_type, filename):
 
     # find the export entry in the db
     export = get_object_or_404(Export, xform=xform, filename=filename)
-    if export_type == Export.GDOC_EXPORT:
+
+    if export_type == Export.GDOC_EXPORT and export.export_url is not None:
         return HttpResponseRedirect(export.export_url)
 
     ext, mime_type = export_def_from_filename(export.filename)
