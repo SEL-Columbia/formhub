@@ -13,6 +13,7 @@ from odk_logger.models.xform import XForm
 from restservice.views import add_service, delete_service
 from restservice.RestServiceInterface import RestServiceInterface
 from restservice.models import RestService
+from nose import SkipTest
 
 
 class RestServiceTest(MainTestCase):
@@ -63,6 +64,8 @@ class RestServiceTest(MainTestCase):
         self._add_rest_service(self.service_url, self.service_name)
 
     def test_bamboo_service(self):
+        # comment out when we can test or mock it differently
+        raise SkipTest
         service_url = 'http://bamboo.io/'
         service_name = 'bamboo'
         # self._add_rest_service(service_url, service_name)
