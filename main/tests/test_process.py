@@ -206,7 +206,7 @@ class TestSite(MainTestCase):
         xml_path = os.path.join(self.this_directory, "fixtures",
                                 "transportation", "transportation.xml")
         with open(xml_path) as xml_file:
-            expected_doc = minidom.parseString(xml_file.read())
+            expected_doc = minidom.parse(xml_file)
 
         model_node = [
                      n for n in
