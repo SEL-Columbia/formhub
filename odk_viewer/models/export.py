@@ -25,6 +25,7 @@ class Export(models.Model):
     CSV_EXPORT = 'csv'
     KML_EXPORT = 'kml'
     ZIP_EXPORT = 'zip'
+    GDOC_EXPORT = 'gdoc'
 
     EXPORT_MIMES = {
         'xls': 'vnd.ms-excel',
@@ -35,6 +36,7 @@ class Export(models.Model):
     EXPORT_TYPES = [
         (XLS_EXPORT, 'Excel'),
         (CSV_EXPORT, 'CSV'),
+        (GDOC_EXPORT, 'GDOC'),
         #(KML_EXPORT, 'kml'),
     ]
 
@@ -61,6 +63,7 @@ class Export(models.Model):
     time_of_last_submission = models.DateTimeField(null=True, default=None)
     # status
     internal_status = models.SmallIntegerField(max_length=1, default=PENDING)
+    export_url = models.URLField(null=True, default=None)
 
     class Meta:
         app_label = "odk_viewer"
@@ -81,7 +84,7 @@ class Export(models.Model):
             self.time_of_last_submission = self.xform.time_of_last_submission()
         if self.filename:
             self.internal_status = Export.SUCCESSFUL
-            self._update_filedir()
+            #self._update_filedir()
         super(Export, self).save(*args, **kwargs)
 
     @classmethod
@@ -117,6 +120,13 @@ class Export(models.Model):
     def filepath(self):
         if self.filedir and self.filename:
             return os.path.join(self.filedir, self.filename)
+        return None
+
+    @property
+    def full_filepath(self):
+        if self.filepath:
+            default_storage = get_storage_class()()
+            return default_storage.path(self.filepath)
         return None
 
     @classmethod
