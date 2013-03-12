@@ -43,9 +43,9 @@ class XFormInstanceFS(object):
             return False
         with open(filepath, 'r') as ff:
             fxml = ff.read()
-            if fxml.find("""<?xml version='1.0' ?>""") == 0:
-                return True
-        return False
+            if not fxml.strip().startswith('<?xml'):
+                return False
+        return True
 
     def __str__(self):
         return "<XForm XML: %s>" % self.xform_id
