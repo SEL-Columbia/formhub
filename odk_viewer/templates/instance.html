@@ -90,27 +90,16 @@ var browsePos = null;
 
           var prev = $('li.prev').children('a').attr('href');
           prev = prev.replace("#/", "");
+          var redirect_route = '#/';
 
           if(next > 0 && next != id ){
-            var next_prev = '{"_id": '  + next + '}';
+              redirect_route = '#/'  + next;
           }
           else if(prev > 0 && prev != id ){
-            var next_prev = '{"_id": '  + prev + '}';
-          }
-          else{
-            var next_prev = '{}';
+              redirect_route = '#/'  + prev;
           }
 
-          var query = '{"_id": '  + id + '}';
-          editData(context, query, next_prev);
-
-              // load count >> update record
-              $.getJSON(mongoAPIUrl, {'count': 1})
-                  .success(function(data){
-                    //todo: count num records before and num records after so we know our starting point
-                    numRecords = data[0]["count"];
-                    updatePosStatus();
-              })
+          deleteData(context, id, redirect_route);
       });
       this.bind('error', {}, function(){
           //alert('Invalid route requested')
@@ -148,13 +137,18 @@ function redirectToFirstId(context)
             })
 }
 
-function editData(context, query, next_prev){
+function deleteData(context, data_id, redirect_route){
     //TODO: show loader
-    $.post(deleteAPIUrl, {'query': query, 'limit':1})
+    $.post(deleteAPIUrl, {'id': data_id})
             .success(function(data){
-
-              loadData(context, next_prev);
-
+                // update data count
+                $.getJSON(mongoAPIUrl, {'count': 1})
+                        .success(function(data){
+                            //todo: count num records before and num records after so we know our starting point
+                            numRecords = data[0]["count"];
+                            // redirect
+                            context.redirect(redirect_route);
+                        })
             })
             .error(function(){
                alert("{% trans 'BAD REQUEST' %}");
@@ -187,9 +181,6 @@ function loadData(context, query)
                             .success(function(posData){
                                 browsePos = posData[0]["count"] + 1;
                                 updatePrevNextControls(data[0]);
-
-                                // update pos status text
-                                updatePosStatus();
                             });
                 }
             })
@@ -248,6 +239,8 @@ function updatePrevNextControls(data)
                     // make next url the current url
                     nextButton.children('a').attr('href', '#/' + data['_id']);
                 }
+                // update pos status text
+                updatePosStatus();
             });
     // load previous record
     $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$lt": ' + data['_id'] +'}}', 'limit': 1, 'sort': '{"_id":-1}', 'fields':'["_id"]'})
@@ -264,6 +257,8 @@ function updatePrevNextControls(data)
                     // make prev url the current url
                     prevButton.children('a').attr('href', '#/' + data['_id']);
                 }
+                // update pos status text
+                updatePosStatus();
 
                 // if we haven't checked our position before
                 if(browsePos)
