@@ -85,7 +85,11 @@ def _is_invalid_for_mongo(key):
 def update_mongo_instance(record):
     # since our dict always has an id, save will always result in an upsert op - so we dont need to worry whether its an edit or not
     # http://api.mongodb.org/python/current/api/pymongo/collection.html#pymongo.collection.Collection.save
-    return xform_instances.save(record)
+    try:
+        return xform_instances.save(record)
+    except Exception:
+        # todo: mail admins about the exception
+        pass
 
 
 class ParsedInstance(models.Model):
