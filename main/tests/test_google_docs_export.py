@@ -18,8 +18,13 @@ class TestGoogleDocsExport(MainTestCase):
     def test_google_docs_export(self):
         self._publish_transportation_form()
         self._make_submissions()
-        self._refresh_token()
-        self.assertEqual(TokenStorageModel.objects.all().count(), 1)
+
+        initial_token_count = TokenStorageModel.objects.all().count()
+        self.token = refresh_access_token(self.token, self.user)
+        self.assertIsNotNone(self.token.access_token)
+        self.assertEqual(
+            TokenStorageModel.objects.all().count(), initial_token_count + 1)
+
         response = self.client.get(reverse(google_xls_export, kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string
@@ -33,10 +38,3 @@ class TestGoogleDocsExport(MainTestCase):
             'id_string': self.xform.id_string
         }))
         self.assertEqual(response.status_code, 302)
-
-    def _refresh_token(self):
-        self.assertEqual(TokenStorageModel.objects.all().count(), 0)
-        self.assertIsNone(self.token.access_token)
-        self.token = refresh_access_token(self.token, self.user)
-        self.assertIsNotNone(self.token.access_token)
-        self.assertEqual(TokenStorageModel.objects.all().count(), 1)

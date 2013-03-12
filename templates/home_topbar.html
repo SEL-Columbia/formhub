@@ -1,25 +1,25 @@
 {% load i18n %}
 
 <div class = "container">
-    <div class=" row-fluid">
+	<div class=" row-fluid">
 		<div class = "span12">
-      <div class = "span2">
+			<div class = "span2">
 				<a class="brand" href="/" title="formhub"><img alt="formhub" src="/static/images/logo_new.png" class="left"/></a>
 			</div>
-			<div class = "span8">
-				<div class = "navigation">
-					<ul id = "navlist">
-						<li> <a href="/accounts/register/"> Sign Up </a> </li>
-            <li> <a href="{% url main.views.form_gallery %}">{% trans "Forms" %}</a></li>
-            <li> <a href="{% url main.views.members_list %}">{% trans "People" %}</a></li>
-						<li> <a href="{% url main.views.faq %}"> {% trans "FAQ" %} </a> </li>
-            <li><a href="/resources/">{% trans "Resources" %}</a></li>
-						<li> <a href="http://blog.formhub.org/"> Blog </a></li>
-						<li> <a href="{% url main.views.support %}">{% trans "Support" %}</a></li>
-					</ul>
-				</div>
+		<div class = "span8">
+			<div class = "navigation">
+				<ul id = "navlist">
+					<li> <a href="/accounts/register/"> Sign Up </a> </li>
+					<li> <a href="{% url main.views.form_gallery %}">{% trans "Forms" %}</a></li>
+					<li> <a href="{% url main.views.members_list %}">{% trans "People" %}</a></li>
+					<li> <a href="{% url main.views.faq %}"> {% trans "FAQ" %} </a> </li>
+					<li> <a href="/resources/">{% trans "Resources" %}</a></li>
+					<li> <a href="http://blog.formhub.org/"> Blog </a></li>
+					<li> <a href="{% url main.views.support %}">{% trans "Support" %}</a></li>
+				</ul>
 			</div>
-			<div class = "span2" id = "topbar_login"> <a href="{% url auth_login %}" class="btn btn-info pull-right" id="login_btn">{%  trans "Log In" %}</a> </div>
 		</div>
-  </div>
+		<div class = "span2" id = "topbar_login"> <a href="{% url auth_login %}" class="btn btn-info pull-right" id="login_btn">{%  trans "Log In" %}</a> </div>
+		</div> <!-- Span 12 -->
+	</div> <!-- row fluid -->
 </div>
