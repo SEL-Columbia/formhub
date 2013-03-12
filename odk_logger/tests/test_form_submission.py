@@ -89,14 +89,15 @@ class TestFormSubmission(MainTestCase):
         submission_count = StatsCount.objects.filter(
             key=GLOBAL_SUBMISSION_STATS).aggregate(Sum('value'))
         self.assertIsNotNone(submission_count['value__sum'])
-        self.assertEqual(submission_count['value__sum'], 4)
+        stat_submission_count = submission_count['value__sum']
 
         # deleting submissions should not reduce submission counter
         Instance.objects.all().delete()
         self.assertEqual(Instance.objects.count(), 0)
         submission_count = StatsCount.objects.filter(
             key=GLOBAL_SUBMISSION_STATS).aggregate(Sum('value'))
-        self.assertEqual(submission_count['value__sum'], 4)
+        self.assertEqual(
+            submission_count['value__sum'], stat_submission_count)
 
     def test_unicode_submission(self):
         """Test xml submissions that contain unicode characters

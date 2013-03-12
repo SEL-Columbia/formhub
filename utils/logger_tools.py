@@ -147,7 +147,7 @@ def create_instance(username, xml_file, media_files,
             pi, created = ParsedInstance.objects.get_or_create(
                 instance=instance)
             if not created:
-                pi.save()
+                pi.save(async=False)
         return instance
     return None
 
