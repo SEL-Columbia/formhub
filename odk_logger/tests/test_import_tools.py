@@ -33,7 +33,8 @@ class TestImportingDatabase(MainTestCase):
         Instance.objects.all().delete()  # ?
         if settings.TESTING_MODE:
             images = glob.glob(
-                os.path.join(settings.MEDIA_ROOT, 'attachments', '*'))
+                os.path.join(
+                    settings.MEDIA_ROOT, self.user.username, 'attachments', '*'))
             for image in images:
                 os.remove(image)
 
@@ -51,19 +52,21 @@ class TestImportingDatabase(MainTestCase):
         1 simple survey (marked as complete)
         """
         # import from sd card
+        initial_instance_count = Instance.objects.count()
+        initial_image_count = images_count()
+
         import_instances_from_zip(os.path.join(
             DB_FIXTURES_PATH, "bulk_submission.zip"), self.user)
 
         instance_count = Instance.objects.count()
         image_count = images_count()
-
         #Images are not duplicated
         # TODO: Figure out how to get this test passing.
-        self.assertEqual(image_count, 2)
+        self.assertEqual(image_count, initial_image_count + 2)
 
         # Instance count should have incremented
         # by 1 (or 2) based on the b1 & b2 data sets
-        self.assertEqual(instance_count, 2)
+        self.assertEqual(instance_count, initial_instance_count + 2)
 
     def test_badzipfile_import(self):
         total, success, errors = import_instances_from_zip(
