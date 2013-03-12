@@ -1,3 +1,4 @@
+
 import os
 import time
 import logging
@@ -13,61 +14,8 @@ from restservice.views import add_service, delete_service
 from restservice.RestServiceInterface import RestServiceInterface
 from restservice.models import RestService
 
-from httpretty import HTTPretty
-from httpretty import httprettified
-
-
-ds_response_1 = '''
-{"attribution": null, "description": null, "updated_at": "2013-03-11 12:46:57", "parent_ids": [], "num_columns": 7, "id": "040f0544fe1a4dfbbb3573a0e0d9bb6c", "license": null, "created_at": "2013-03-11 12:46:56", "label": null, "state": "ready", "num_rows": 2, "schema": {"total_population": {"olap_type": "measure", "cardinality": 2, "simpletype": "integer", "label": "total_population"}, "meta_instanceid": {"olap_type": "dimension", "cardinality": 1, "simpletype": "string", "label": "meta/instanceID"}, "location": {"olap_type": "dimension", "cardinality": 2, "simpletype": "string", "label": "location"}, "_submission_time": {"olap_type": "measure", "cardinality": 1, "simpletype": "datetime", "label": "_submission_time"}, "_uuid": {"olap_type": "dimension", "cardinality": 2, "simpletype": "string", "label": "_uuid"}, "population_under_5": {"olap_type": "measure", "cardinality": 2, "simpletype": "integer", "label": "population_under_5"}, "period": {"olap_type": "measure", "cardinality": 2, "simpletype": "datetime", "label": "period"}}}
-'''
-
-ds_response_2 = '''
-{"attribution": null, "description": null, "updated_at": "2013-03-11 12:47:03", "parent_ids": [], "num_columns": 7, "id": "040f0544fe1a4dfbbb3573a0e0d9bb6c", "license": null, "created_at": "2013-03-11 12:46:56", "label": null, "state": "ready", "num_rows": 3, "schema": {"total_population": {"olap_type": "measure", "cardinality": 3, "simpletype": "integer", "label": "total_population"}, "meta_instanceid": {"olap_type": "dimension", "cardinality": 1, "simpletype": "string", "label": "meta/instanceID"}, "location": {"olap_type": "dimension", "cardinality": 3, "simpletype": "string", "label": "location"}, "_submission_time": {"olap_type": "measure", "cardinality": 2, "simpletype": "datetime", "label": "_submission_time"}, "_uuid": {"olap_type": "dimension", "cardinality": 3, "simpletype": "string", "label": "_uuid"}, "population_under_5": {"olap_type": "measure", "cardinality": 3, "simpletype": "integer", "label": "population_under_5"}, "period": {"olap_type": "measure", "cardinality": 3, "simpletype": "datetime", "label": "period"}}}
-'''
-
-ds_response_4 = '''
-{"attribution": null, "description": null, "updated_at": "2013-03-11 12:47:10", "parent_ids": [], "num_columns": 7, "id": "2a26de008c7e4291bc3481f39115ecc1", "license": null, "created_at": "2013-03-11 12:47:09", "label": null, "state": "ready", "num_rows": 3, "schema": {"total_population": {"olap_type": "measure", "cardinality": 3, "simpletype": "integer", "label": "total_population"}, "meta_instanceid": {"olap_type": "dimension", "cardinality": 1, "simpletype": "string", "label": "meta/instanceID"}, "location": {"olap_type": "dimension", "cardinality": 3, "simpletype": "string", "label": "location"}, "_submission_time": {"olap_type": "measure", "cardinality": 2, "simpletype": "datetime", "label": "_submission_time"}, "_uuid": {"olap_type": "dimension", "cardinality": 3, "simpletype": "string", "label": "_uuid"}, "population_under_5": {"olap_type": "measure", "cardinality": 3, "simpletype": "integer", "label": "population_under_5"}, "period": {"olap_type": "measure", "cardinality": 3, "simpletype": "datetime", "label": "period"}}}
-'''
-
 
 class RestServiceTest(MainTestCase):
-
-    @httprettified
-    def _bamboo_htpp_mock(self):
-        HTTPretty.register_uri(
-            HTTPretty.POST, "http://bamboo.io/datasets",
-            responses=[
-                HTTPretty.Response(
-                    body=u'{"id": "040f0544fe1a4dfbbb3573a0e0d9bb6c"}',
-                    content_type=u'application/json', status=201),
-                HTTPretty.Response(body=u'{"id": "2a26de008c7e4291bc3481f39115ecc1"}',
-                    content_type=u'application/json', status=201),
-        ])
-        HTTPretty.register_uri(
-            HTTPretty.GET, "http://bamboo.io/datasets/040f0544fe1a4dfbbb3573a0e0d9bb6c/info",
-            responses=[
-                HTTPretty.Response(
-                    body=ds_response_1, content_type=u'application/json', status=200),
-                HTTPretty.Response(
-                    body=ds_response_2, content_type=u'application/json', status=200),
-                HTTPretty.Response(
-                    body=ds_response_2, content_type=u'application/json', status=200),
-        ])
-        HTTPretty.register_uri(
-            HTTPretty.GET, "http://bamboo.io/datasets/2a26de008c7e4291bc3481f39115ecc1/info",
-            responses=[
-                HTTPretty.Response(
-                    body=ds_response_4, content_type=u'application/json', status=200),
-        ])
-        HTTPretty.register_uri(
-            HTTPretty.PUT, "http://bamboo.io/datasets/040f0544fe1a4dfbbb3573a0e0d9bb6c",
-            responses=[
-                HTTPretty.Response(
-                    body=u'{"id": "040f0544fe1a4dfbbb3573a0e0d9bb6c"}',
-                    content_type=u'application/json', status=201),
-        ])
-
-
     def setUp(self):
         self.service_url = u'http://0.0.0.0:8001/%(id_string)s/post/%(uuid)s'
         self.service_name = u'f2dhis2'
@@ -115,7 +63,6 @@ class RestServiceTest(MainTestCase):
         self._add_rest_service(self.service_url, self.service_name)
 
     def test_bamboo_service(self):
-        self._bamboo_htpp_mock()
         service_url = 'http://bamboo.io/'
         service_name = 'bamboo'
         # self._add_rest_service(service_url, service_name)
@@ -176,7 +123,6 @@ class RestServiceTest(MainTestCase):
         new_dsi = dataset.get_info()
         self.assertEqual(new_dsi['num_rows'], dsi['num_rows'])
         self.assertNotEqual(new_dsi['id'], dsi['id'])
-        p
 
     def test_anon_service_view(self):
         self.xform.shared = True
