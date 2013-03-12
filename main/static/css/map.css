@@ -78,7 +78,7 @@ body { height: 100%; margin: 0; padding: 0 }
 .layer-button-container{
 	background-color: rgba(255, 255, 255, 0.9);
 	box-shadow: 0 0 8px rgba(0,0,0,0.4);
-	border: 1px solid .888;
+	border: 1px solid #888;
 	-webkit-border-radius: 8px;
 	border-radius: 8px;
 }
