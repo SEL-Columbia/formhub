@@ -5,6 +5,7 @@ from django.core.files.storage import get_storage_class
 from django.db.models.signals import post_delete
 from odk_logger.models import XForm
 from django.utils.translation import ugettext_lazy, ugettext as _
+from tempfile import NamedTemporaryFile
 
 
 def export_delete_callback(sender, **kwargs):
@@ -126,7 +127,16 @@ class Export(models.Model):
     def full_filepath(self):
         if self.filepath:
             default_storage = get_storage_class()()
-            return default_storage.path(self.filepath)
+            try:
+                return default_storage.path(self.filepath)
+            except NotImplementedError:
+                # read file from s3
+                name, ext = os.path.splitext(self.filepath)
+                tmp = NamedTemporaryFile(suffix=ext, delete=False)
+                f = default_storage.open(self.filepath)
+                tmp.write(f.read())
+                tmp.close()
+                return tmp.name
         return None
 
     @classmethod
