@@ -18,6 +18,7 @@ var layerButtonControl = function(markerLayer, hexLayer) {
 				.on(button, 'dblclick', L.DomEvent.stopPropagation);
 			return button;
 		}
+	
 	}));
 				
 	return control;

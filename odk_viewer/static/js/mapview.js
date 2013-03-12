@@ -106,31 +106,32 @@ function initialize() {
 		
 		var hexButton = function () {
 			if(!map.hasLayer(hexbinLayerGroup)) {
+				$('div.layer-hexbinButton').toggleClass('layer-hexbinButton-active');
 				return map.addLayer(hexbinLayerGroup);
 			}
 			else if (map.hasLayer(hexbinLayerGroup)) {
+				$('div.layer-hexbinButton').toggleClass('layer-hexbinButton-active');
 				return map.removeLayer(hexbinLayerGroup);
 			}
 		};
 		
 		var markerButton = function () {
 			if(!map.hasLayer(markerLayerGroup)) {
+				$('div.layer-markerButton').toggleClass('layer-markerButton-active');
 				return map.addLayer(markerLayerGroup);
 			}
 			else{
+				$('div.layer-markerButton').toggleClass('layer-markerButton-active');
 				return map.removeLayer(markerLayerGroup);
 			}
 		};
 		
     map.addControl(layerButtonControl(markerButton, hexButton));
-
-    var overlays = {};
-    overlays[markerLayerLabel] = markerLayerGroup;
-    overlays[hexbinLayerLabel] = hexbinLayerGroup;
-    layersControl = new L.Control.Layers({}, overlays);
+    layersControl = new L.Control.Layers();
     map.addControl(layersControl);
     //show marker layer by default
     map.addLayer(markerLayerGroup);
+		$('div.layer-markerButton').addClass('layer-markerButton-active');
 
     // add bing maps layer
     /** $.each(bingMapTypeLabels, function(type, label) {
