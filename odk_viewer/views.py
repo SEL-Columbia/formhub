@@ -293,7 +293,33 @@ def create_export(request, username, id_string, export_type):
         )
 
 
+def _get_google_token(request, redirect_to_url):
+    token = None
+    if request.user.is_authenticated():
+        try:
+            ts = TokenStorageModel.objects.get(id=request.user)
+        except TokenStorageModel.DoesNotExist:
+            pass
+        else:
+            token = ts.token
+    elif request.session.get('access_token'):
+        token = request.session.get('access_token')
+    if token is None:
+        request.session["google_redirect_url"] = redirect_to_url
+        return HttpResponseRedirect(redirect_uri)
+    return token
+
+
 def export_list(request, username, id_string, export_type):
+    if export_type == Export.GDOC_EXPORT:
+        redirect_url = reverse(
+            export_list,
+            kwargs={
+                'username': username, 'id_string': id_string,
+                'export_type': export_type})
+        token = _get_google_token(request, redirect_url)
+        if isinstance(token, HttpResponse):
+            return token
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
@@ -345,6 +371,27 @@ def export_progress(request, username, id_string, export_type):
                 'filename': export.filename
             })
             status['filename'] = export.filename
+            if export.export_type == Export.GDOC_EXPORT and \
+                    export.export_url is None:
+                redirect_url = reverse(
+                    export_progress,
+                    kwargs={
+                        'username': username, 'id_string': id_string,
+                        'export_type': export_type})
+                token = _get_google_token(request, redirect_url)
+                if isinstance(token, HttpResponse):
+                    return token
+                status['url'] = None
+                try:
+                    url = google_export_xls(
+                        export.full_filepath, xform.title, token, blob=True)
+                except Exception, e:
+                    status['error'] = True
+                    status['message'] = e.message
+                else:
+                    export.export_url = url
+                    export.save()
+                    status['url'] = url
         # mark as complete if it either failed or succeeded but NOT pending
         if export.status == Export.SUCCESSFUL \
                 or export.status == Export.FAILED:
