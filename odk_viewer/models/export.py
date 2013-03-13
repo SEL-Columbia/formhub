@@ -31,13 +31,15 @@ class Export(models.Model):
     EXPORT_MIMES = {
         'xls': 'vnd.ms-excel',
         'xlsx': 'vnd.openxmlformats',
-        'csv': 'application/csv'
+        'csv': 'application/csv',
+        'zip': 'application/zip'
     }
 
     EXPORT_TYPES = [
         (XLS_EXPORT, 'Excel'),
         (CSV_EXPORT, 'CSV'),
         (GDOC_EXPORT, 'GDOC'),
+        (ZIP_EXPORT, 'ZIP'),
         #(KML_EXPORT, 'kml'),
     ]
 
