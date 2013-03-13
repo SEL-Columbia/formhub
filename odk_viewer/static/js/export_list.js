@@ -75,6 +75,10 @@ var fhExportList =  (function(){
                                     parent.empty()
                                     // translate
                                     parent.append("Failed ...")
+                                    if(status.error)
+                                    {
+                                      parent.append(status.message);
+                                    }
                                 }
                             }
                             else

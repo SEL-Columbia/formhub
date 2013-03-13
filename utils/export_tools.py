@@ -139,6 +139,7 @@ def generate_export(export_type, extension, username, id_string,
         export = Export.objects.create(xform=xform,
             export_type=export_type)
 
+    export.filedir = dir_name
     export.filename = basename
     export.internal_status = Export.SUCCESSFUL
     export.save()
