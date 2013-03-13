@@ -5,6 +5,7 @@ from django.db import transaction
 from django.core.mail import mail_admins
 from odk_viewer.models import Export
 from utils.export_tools import generate_export
+from utils.export_tools import generate_attachments_zip_export
 from utils.logger_tools import mongo_sync_status
 from pandas_mongo_bridge import NoRecordsFoundError
 
@@ -32,6 +33,15 @@ def create_async_export(xform, export_type, query, force_xlsx):
     elif export_type == Export.CSV_EXPORT:
         # start async export
         result = create_csv_export.apply_async(
+            (), {
+                'username': username,
+                'id_string': id_string,
+                'export_id': export.id,
+                'query': query
+            }, countdown=10)
+    elif export_type == Export.ZIP_EXPORT:
+        # start async export
+        result = create_zip_export.apply_async(
             (), {
                 'username': username,
                 'id_string': id_string,
@@ -68,6 +78,7 @@ def create_xls_export(username, id_string, export_id, query=None,
     else:
         return gen_export.id
 
+
 @task()
 def create_csv_export(username, id_string, export_id, query=None):
     # we re-query the db instead of passing model objects according to
@@ -84,6 +95,20 @@ def create_csv_export(username, id_string, export_id, query=None):
         export.save()
     else:
         return gen_export.id
+
+
+@task()
+def create_zip_export(username, id_string, export_id, query=None):
+    export = Export.objects.get(id=export_id)
+    try:
+        gen_export = generate_attachments_zip_export(
+            Export.ZIP_EXPORT, 'zip', username, id_string, export_id, query)
+    except (Exception, NoRecordsFoundError) as e:
+        export.internal_status = Export.FAILED
+        export.save()
+    else:
+        return gen_export.id
+
 
 @task()
 def email_mongo_sync_status():
