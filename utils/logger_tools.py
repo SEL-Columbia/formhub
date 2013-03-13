@@ -48,7 +48,7 @@ uuid_regex = re.compile(r'<formhub><uuid>([^<]+)</uuid></formhub>',
 mongo_instances = settings.MONGO_DB.instances
 
 
-@transaction.commit_on_success
+@transaction.commit_manually
 def create_instance(username, xml_file, media_files,
                     status=u'submitted_via_web', uuid=None,
                     date_created_override=None):
@@ -117,6 +117,12 @@ def create_instance(username, xml_file, media_files,
     new_uuid = get_uuid_from_xml(xml)
     duplicate_instances = Instance.objects.filter(uuid=new_uuid)
     if duplicate_instances:
+        for f in media_files:
+            Attachment.objects.get_or_create(
+                instance=duplicate_instances[0],
+                media_file=f, mimetype=f.content_type)
+        # ensure we have saved the extra attachments
+        transaction.commit()
         raise DuplicateInstance()
 
     if proceed_to_create_instance:
@@ -148,6 +154,8 @@ def create_instance(username, xml_file, media_files,
                 instance=instance)
             if not created:
                 pi.save(async=False)
+        # commit all changes
+        transaction.commit()
         return instance
     return None
 
