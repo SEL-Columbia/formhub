@@ -19,7 +19,7 @@ def create_async_export(xform, export_type, query, force_xlsx):
 
     export = _create_export(xform, export_type)
     result = None
-    if export_type == Export.XLS_EXPORT:
+    if export_type in [Export.XLS_EXPORT, Export.GDOC_EXPORT]:
         # start async export
         result = create_xls_export.apply_async(
             (), {

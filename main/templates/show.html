@@ -171,7 +171,7 @@
             </ul>
           </div>
           <div class="btn-group">
-            <a class="btn" href="{% url odk_viewer.views.google_xls_export content_user.username xform.id_string %}" rel="tooltip" data-original-title="{% trans 'Export to google docs' %}" target="_blank"><i class="icon-download-alt"></i> <font color=#000>{% trans "gdocs" %}</font></a>
+            <a class="btn" href="{% url odk_viewer.views.export_list content_user.username xform.id_string 'gdoc' %}" rel="tooltip" data-original-title="{% trans 'Export to google docs' %}" target="_blank"><i class="icon-download-alt"></i> <font color=#000>{% trans "gdocs" %}</font></a>
             <button class="btn dropdown-toggle" data-toggle="dropdown">
                 <span class="caret"></span>
             </button>
