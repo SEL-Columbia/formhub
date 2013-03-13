@@ -5,6 +5,7 @@ from django.core.files.storage import get_storage_class
 from django.db.models.signals import post_delete
 from odk_logger.models import XForm
 from django.utils.translation import ugettext_lazy, ugettext as _
+from tempfile import NamedTemporaryFile
 
 
 def export_delete_callback(sender, **kwargs):
@@ -25,6 +26,7 @@ class Export(models.Model):
     CSV_EXPORT = 'csv'
     KML_EXPORT = 'kml'
     ZIP_EXPORT = 'zip'
+    GDOC_EXPORT = 'gdoc'
 
     EXPORT_MIMES = {
         'xls': 'vnd.ms-excel',
@@ -35,6 +37,7 @@ class Export(models.Model):
     EXPORT_TYPES = [
         (XLS_EXPORT, 'Excel'),
         (CSV_EXPORT, 'CSV'),
+        (GDOC_EXPORT, 'GDOC'),
         #(KML_EXPORT, 'kml'),
     ]
 
@@ -61,6 +64,7 @@ class Export(models.Model):
     time_of_last_submission = models.DateTimeField(null=True, default=None)
     # status
     internal_status = models.SmallIntegerField(max_length=1, default=PENDING)
+    export_url = models.URLField(null=True, default=None)
 
     class Meta:
         app_label = "odk_viewer"
@@ -81,7 +85,7 @@ class Export(models.Model):
             self.time_of_last_submission = self.xform.\
                 time_of_last_submission_update()
         if self.filename:
-            self.set_filename(self.filename)
+            self.internal_status = Export.SUCCESSFUL
         super(Export, self).save(*args, **kwargs)
 
     @classmethod
@@ -122,6 +126,22 @@ class Export(models.Model):
     def filepath(self):
         if self.filedir and self.filename:
             return os.path.join(self.filedir, self.filename)
+        return None
+
+    @property
+    def full_filepath(self):
+        if self.filepath:
+            default_storage = get_storage_class()()
+            try:
+                return default_storage.path(self.filepath)
+            except NotImplementedError:
+                # read file from s3
+                name, ext = os.path.splitext(self.filepath)
+                tmp = NamedTemporaryFile(suffix=ext, delete=False)
+                f = default_storage.open(self.filepath)
+                tmp.write(f.read())
+                tmp.close()
+                return tmp.name
         return None
 
     @classmethod

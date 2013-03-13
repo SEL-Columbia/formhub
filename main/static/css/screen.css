@@ -925,6 +925,7 @@ a:focus {
   font-weight: 300;
   color: #44474a;
 }
+#resources{width:auto}
 
 #resources .title, #faq .title, #support .title{
 	text-align: left;

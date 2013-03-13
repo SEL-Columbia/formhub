@@ -137,8 +137,8 @@ def generate_export(export_type, extension, username, id_string,
         export = Export.objects.get(id=export_id)
     else:
         export = Export(xform=xform, export_type=export_type)
-
-    export.set_filename(basename)
+    export.filedir = dir_name
+    export.filename = basename
     export.internal_status = Export.SUCCESSFUL
     # dont persist exports that have a filter
     if filter_query == None:
