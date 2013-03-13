@@ -17,6 +17,7 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.utils import simplejson
+from django.core.files.storage import get_storage_class
 
 from main.models import UserProfile, MetaData, TokenStorageModel
 from odk_logger.models import XForm, Attachment
@@ -483,14 +484,10 @@ def zip_export(request, username, id_string):
     # create zip_file
     tmp = NamedTemporaryFile()
     z = zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED)
-    photos = image_urls_for_form(xform)
-    for photo in photos:
-        f = NamedTemporaryFile()
-        req = urllib2.Request(photo)
-        f.write(urllib2.urlopen(req).read())
-        f.seek(0)
-        z.write(f.name, urlparse(photo).path[1:])
-        f.close()
+    for attachment in  Attachment.objects.filter(instance__xform=xform):
+        default_storage = get_storage_class()()
+        if default_storage.exists(attachment.media_file.name):
+            z.write(attachment.full_filepath, attachment.media_file.name)
     z.close()
     audit = {
         "xform": xform.id_string,
