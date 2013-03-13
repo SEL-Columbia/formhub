@@ -2,6 +2,7 @@ import sys
 from StringIO import StringIO
 from celery import task
 from django.db import transaction
+from django.conf import settings
 from django.core.mail import mail_admins
 from odk_viewer.models import Export
 from utils.export_tools import generate_export
@@ -107,8 +108,21 @@ def create_zip_export(username, id_string, export_id, query=None):
         export.internal_status = Export.FAILED
         export.save()
     else:
+        delete_export.apply_async(
+            (), {'export_id': gen_export.id}, countdown=settings.ZIP_EXPORT_COUNTDOWN)
         return gen_export.id
 
+
+@task()
+def delete_export(export_id):
+    try:
+        export = Export.objects.get(id=export_id)
+    except Export.DoesNotExist:
+        pass
+    else:
+        export.delete()
+        return True
+    return False
 
 @task()
 def email_mongo_sync_status():
