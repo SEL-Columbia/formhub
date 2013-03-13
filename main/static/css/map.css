@@ -84,6 +84,11 @@ body { height: 100%; margin: 0; padding: 0 }
 }
 
 .layer-button-container  .layer-markerButton.layer-markerButton-active{
+	background-color: rgba(153, 153, 153, 0.2);
+	-moz-border-radius-topleft: 8px;
+	-moz-border-radius-topright: 8px;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
 	background-image: url(images/marker_overlay_active.png);
 	background-repeat:no-repeat;
 	background-position: center;
@@ -109,6 +114,11 @@ body { height: 100%; margin: 0; padding: 0 }
 }
 
 .layer-button-container .layer-hexbinButton.layer-hexbinButton-active{
+	background-color: rgba(153, 153, 153, 0.2);
+	-moz-border-radius-bottomleft: 8px;
+	-moz-border-radius-bottomright: 8px;
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 8px;
 	background-image: url(images/hexbin_overlay_active.png);
 	background-repeat:no-repeat;
 	background-position: center;
