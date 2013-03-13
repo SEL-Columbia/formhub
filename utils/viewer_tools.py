@@ -1,8 +1,11 @@
 import json
 import os
 import traceback
+import zipfile
 from xml.dom import minidom
 import urllib2
+
+from tempfile import NamedTemporaryFile
 
 from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -252,3 +255,16 @@ def enketo_url(form_url, id_string):
             return False
     except urllib2.URLError:
         return False
+
+
+def create_attachments_zipfile(attachments):
+    # create zip_file
+    tmp = NamedTemporaryFile(delete=False)
+    z = zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED)
+    for attachment in attachments:
+        default_storage = get_storage_class()()
+        if default_storage.exists(attachment.media_file.name):
+            z.write(attachment.full_filepath, attachment.media_file.name)
+    z.close()
+    return tmp.name
+

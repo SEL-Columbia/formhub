@@ -2,7 +2,6 @@ import json
 import mimetypes
 import os
 import urllib2
-import zipfile
 from tempfile import NamedTemporaryFile
 from time import strftime, strptime
 from urlparse import urlparse
@@ -36,6 +35,7 @@ from utils.google import google_export_xls, redirect_uri
 from odk_viewer.models import Export
 from utils.export_tools import generate_export, should_create_new_export
 from utils.viewer_tools import export_def_from_filename
+from utils.viewer_tools import create_attachments_zipfile
 from utils.log import audit_log, Actions
 
 
@@ -481,14 +481,8 @@ def zip_export(request, username, id_string):
                                     user=owner)
     if request.GET.get('raw'):
         id_string = None
-    # create zip_file
-    tmp = NamedTemporaryFile()
-    z = zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED)
-    for attachment in  Attachment.objects.filter(instance__xform=xform):
-        default_storage = get_storage_class()()
-        if default_storage.exists(attachment.media_file.name):
-            z.write(attachment.full_filepath, attachment.media_file.name)
-    z.close()
+    attachments = Attachment.objects.filter(instance__xform=xform)
+    zip_file = create_attachments_zipfile(attachments)
     audit = {
         "xform": xform.id_string,
         "export_type": Export.ZIP_EXPORT
@@ -507,7 +501,7 @@ def zip_export(request, username, id_string):
     if request.GET.get('raw'):
         id_string = None
     response = response_with_mimetype_and_name('zip', id_string,
-                                               file_path=tmp.name,
+                                               file_path=zip_file,
                                                use_local_filesystem=True)
     return response
 
