@@ -4,7 +4,8 @@ from django.core.files.base import File
 from django.core.files.temp import NamedTemporaryFile
 from django.core.files.storage import get_storage_class
 import re
-from odk_logger.models import XForm
+from odk_logger.models import XForm, Attachment
+from utils.viewer_tools import create_attachments_zipfile
 
 
 QUESTION_TYPES_TO_EXCLUDE = [
@@ -171,3 +172,44 @@ def increment_index_in_filename(filename):
         basename, ext = os.path.splitext(filename)
     new_filename = "%s-%d%s" % (basename, index, ext)
     return new_filename
+
+
+def generate_attachments_zip_export(
+        export_type, extension, username, id_string,
+                    export_id = None, filter_query=None):
+    from odk_viewer.models import Export
+
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    attachments = Attachment.objects.filter(instance__xform=xform)
+    zip_file = create_attachments_zipfile(attachments)
+    basename = "%s_%s" % (id_string,
+                             datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+    filename = basename + "." + extension
+    file_path = os.path.join(
+        username,
+        'exports',
+        id_string,
+        export_type,
+        filename)
+
+    storage = get_storage_class()()
+    temp_file = open(zip_file)
+    export_filename = storage.save(
+        file_path,
+        File(temp_file, file_path))
+    temp_file.close()
+
+    dir_name, basename = os.path.split(export_filename)
+
+    # get or create export object
+    if(export_id):
+        export = Export.objects.get(id=export_id)
+    else:
+        export = Export.objects.create(xform=xform,
+            export_type=export_type)
+
+    export.filedir = dir_name
+    export.filename = basename
+    export.internal_status = Export.SUCCESSFUL
+    export.save()
+    return export
