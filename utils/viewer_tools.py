@@ -1,8 +1,11 @@
 import json
 import os
 import traceback
+import zipfile
 from xml.dom import minidom
 import urllib2
+
+from tempfile import NamedTemporaryFile
 
 from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -32,7 +35,7 @@ def image_urls_for_form(xform):
 
 def get_path(path, suffix):
     fileName, fileExtension = os.path.splitext(path)
-    return fileName + suffix +  fileExtension
+    return fileName + suffix + fileExtension
 
 
 def image_urls(instance):
@@ -60,19 +63,19 @@ def parse_xform_instance(xml_str):
     # NOTE: THIS WILL DESTROY ANY DATA COLLECTED WITH REPEATABLE NODES
     # THIS IS OKAY FOR OUR USE CASE, BUT OTHER USERS SHOULD BEWARE.
     survey_data = dict(_path_value_pairs(root_node))
-    assert len(list(_all_attributes(root_node)))==1, \
+    assert len(list(_all_attributes(root_node))) == 1, \
         _(u"There should be exactly one attribute in this document.")
     survey_data.update({
-            tag.XFORM_ID_STRING : root_node.getAttribute(u"id"),
-            tag.INSTANCE_DOC_NAME : root_node.nodeName,
-            })
+        tag.XFORM_ID_STRING: root_node.getAttribute(u"id"),
+        tag.INSTANCE_DOC_NAME: root_node.nodeName,
+    })
     return survey_data
 
 
 def _path(node):
     n = node
     levels = []
-    while n.nodeType!=n.DOCUMENT_NODE:
+    while n.nodeType != n.DOCUMENT_NODE:
         levels = [n.nodeName] + levels
         n = n.parentNode
     return SLASH.join(levels[1:])
@@ -83,11 +86,11 @@ def _path_value_pairs(node):
     Using a depth first traversal of the xml nodes build up a python
     object in parent that holds the tree structure of the data.
     """
-    if len(node.childNodes)==0:
+    if len(node.childNodes) == 0:
         # there's no data for this leaf node
         yield _path(node), None
-    elif len(node.childNodes)==1 and \
-            node.childNodes[0].nodeType==node.TEXT_NODE:
+    elif len(node.childNodes) == 1 and \
+            node.childNodes[0].nodeType == node.TEXT_NODE:
         # there is data for this leaf node
         yield _path(node), node.childNodes[0].nodeValue
     else:
@@ -112,7 +115,8 @@ def _all_attributes(node):
 class XFormParser(object):
 
     def __init__(self, xml):
-        assert type(xml)==str or type(xml)==unicode, _(u"xml must be a string")
+        assert type(xml) == str or type(xml) == unicode, \
+            _(u"xml must be a string")
         self.doc = minidom.parseString(xml)
         self.root_node = self.doc.documentElement
 
@@ -148,10 +152,11 @@ class XFormParser(object):
         for name in path.split(SLASH):
             count[name] = 0
             for child in element.childNodes:
-                if isinstance(child, minidom.Element) and child.tagName==name:
+                if isinstance(child, minidom.Element) and\
+                        child.tagName == name:
                     count[name] += 1
                     element = child
-            assert count[name]==1
+            assert count[name] == 1
         return element
 
     def get_id_string(self):
@@ -160,14 +165,14 @@ class XFormParser(object):
         attribute 'id'.
         """
         instance = self.follow(u"h:head/model/instance")
-        children = [child for child in instance.childNodes \
-                        if isinstance(child, minidom.Element)]
-        assert len(children)==1
+        children = [child for child in instance.childNodes
+                    if isinstance(child, minidom.Element)]
+        assert len(children) == 1
         return children[0].getAttribute(u"id")
 
     def get_title(self):
         title = self.follow(u"h:head/h:title")
-        assert len(title.childNodes)==1, _(u"There should be a single title")
+        assert len(title.childNodes) == 1, _(u"There should be a single title")
         return title.childNodes[0].nodeValue
 
     supported_controls = ["input", "select1", "select", "upload"]
@@ -176,8 +181,9 @@ class XFormParser(object):
         def get_pairs(e):
             result = []
             if hasattr(e, "tagName") and e.tagName in self.supported_controls:
-                result.append( (e.getAttribute("ref"),
-                                get_text(follow(e, "label").childNodes)) )
+                result.append((
+                    e.getAttribute("ref"),
+                    get_text(follow(e, "label").childNodes)))
             if e.hasChildNodes:
                 for child in e.childNodes:
                     result.extend(get_pairs(child))
@@ -189,7 +195,7 @@ def report_exception(subject, info, exc_info=None):
     if exc_info:
         cls, err = exc_info[:2]
         info += _(u"Exception in request: %(class)s: %(error)s") \
-                % {'class': cls.__name__, 'error': err}
+            % {'class': cls.__name__, 'error': err}
         info += u"".join(traceback.format_exception(*exc_info))
 
     if settings.DEBUG:
@@ -210,7 +216,8 @@ def django_file(path, field_name, content_type):
         content_type=content_type,
         size=os.path.getsize(path),
         charset=None
-        )
+    )
+
 
 def export_def_from_filename(filename):
     from odk_viewer.models.export import Export
@@ -220,6 +227,7 @@ def export_def_from_filename(filename):
     mime_type = Export.EXPORT_MIMES[ext]
     return ext, mime_type
 
+
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -227,6 +235,7 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
 
 def enketo_url(form_url, id_string):
     if not hasattr(settings, 'ENKETO_URL'):
@@ -252,3 +261,15 @@ def enketo_url(form_url, id_string):
             return False
     except urllib2.URLError:
         return False
+
+
+def create_attachments_zipfile(attachments):
+    # create zip_file
+    tmp = NamedTemporaryFile(delete=False)
+    z = zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED)
+    for attachment in attachments:
+        default_storage = get_storage_class()()
+        if default_storage.exists(attachment.media_file.name):
+            z.write(attachment.full_filepath, attachment.media_file.name)
+    z.close()
+    return tmp.name
