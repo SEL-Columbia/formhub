@@ -117,4 +117,26 @@ class TestFormAPI(MainTestCase):
         decoded = _decode_from_mongo(encoded)
         self.assertEqual(field, decoded)
 
+    def test_api_with_or_query(self):
+        """Test that an or query is interpreted correctly since we use an
+        internal or query to filter out deleted records"""
+        for i in range(1, 3):
+            self._submit_transport_instance(i)
+        #record 0: does NOT have the 'transport/loop_over_transport_types_frequency/ambulance/frequency_to_referral_facility' field
+        #record 1 'transport/loop_over_transport_types_frequency/ambulance/frequency_to_referral_facility': 'daily'
+        #record 2 'transport/loop_over_transport_types_frequency/ambulance/frequency_to_referral_facility': 'weekly'
+        params = {
+            'query':
+                '{"$or": [{"transport/loop_over_transport_types_frequency/ambulance/frequency_to_referral_facility": "weekly"}, '
+                '{"transport/loop_over_transport_types_frequency/ambulance/frequency_to_referral_facility": "daily"}]}'}
+        response = self.client.get(self.api_url, params)
+        self.assertEqual(response.status_code, 200)
+        data = simplejson.loads(response.content)
+        self.assertEqual(len(data), 2)
 
+        # check that blank params give us all our records i.e. 3
+        params = {}
+        response = self.client.get(self.api_url, params)
+        self.assertEqual(response.status_code, 200)
+        data = simplejson.loads(response.content)
+        self.assertEqual(len(data), 3)

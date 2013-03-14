@@ -3,7 +3,6 @@ import csv
 from StringIO import StringIO
 from django.core.urlresolvers import reverse
 from odk_logger.models.xform import XForm
-from odk_viewer.views import csv_export
 from odk_viewer.models import DataDictionary
 from test_base import MainTestCase
 
@@ -21,7 +20,7 @@ class TestExport(MainTestCase):
         path = os.path.join(self.fixture_dir, 'tutorial_w_repeats.xml')
         self._make_submission(
             path, forced_submission_time=self._submission_time)
-        url = reverse(csv_export, kwargs={'username': self.user.username,
+        url = reverse('csv_export', kwargs={'username': self.user.username,
                                           'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -45,7 +44,7 @@ class TestExport(MainTestCase):
             u'/double_repeat/meta/instanceID'
             ]
         self.assertEquals(dd.xpaths(repeat_iterations=2), xpaths)
-        url = reverse(csv_export, kwargs={'username': self.user.username,
+        url = reverse('csv_export', kwargs={'username': self.user.username,
                 'id_string': 'double_repeat'})
         response = self.client.get(url)
         with open(os.path.join(self.fixture_dir, 'export.csv')) as f:
@@ -60,7 +59,7 @@ class TestExport(MainTestCase):
                 'userone_with_dot_name_fields.xml')
         self._make_submission(
             path, forced_submission_time=self._submission_time)
-        url = reverse(csv_export, kwargs={'username': self.user.username,
+        url = reverse('csv_export', kwargs={'username': self.user.username,
                                           'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
