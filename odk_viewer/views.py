@@ -2,7 +2,6 @@ import json
 import mimetypes
 import os
 import urllib2
-import zipfile
 from tempfile import NamedTemporaryFile
 from time import strftime, strptime
 from urlparse import urlparse
@@ -17,6 +16,7 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.utils import simplejson
+from django.core.files.storage import get_storage_class
 
 from main.models import UserProfile, MetaData, TokenStorageModel
 from odk_logger.models import XForm, Attachment
@@ -33,9 +33,11 @@ from utils.user_auth import has_permission, get_xform_and_perms, helper_auth_hel
 from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
 from odk_viewer.models import Export
-from utils.export_tools import generate_export, should_create_new_export,\
-    newset_export_for
+from utils.export_tools import generate_export, should_create_new_export
+from utils.export_tools import kml_export_data
+from utils.export_tools import newset_export_for
 from utils.viewer_tools import export_def_from_filename
+from utils.viewer_tools import create_attachments_zipfile
 from utils.log import audit_log, Actions
 
 
@@ -455,18 +457,8 @@ def zip_export(request, username, id_string):
                                     user=owner)
     if request.GET.get('raw'):
         id_string = None
-    # create zip_file
-    tmp = NamedTemporaryFile()
-    z = zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED)
-    photos = image_urls_for_form(xform)
-    for photo in photos:
-        f = NamedTemporaryFile()
-        req = urllib2.Request(photo)
-        f.write(urllib2.urlopen(req).read())
-        f.seek(0)
-        z.write(f.name, urlparse(photo).path[1:])
-        f.close()
-    z.close()
+    attachments = Attachment.objects.filter(instance__xform=xform)
+    zip_file = create_attachments_zipfile(attachments)
     audit = {
         "xform": xform.id_string,
         "export_type": Export.ZIP_EXPORT
@@ -485,7 +477,7 @@ def zip_export(request, username, id_string):
     if request.GET.get('raw'):
         id_string = None
     response = response_with_mimetype_and_name('zip', id_string,
-                                               file_path=tmp.name,
+                                               file_path=zip_file,
                                                use_local_filesystem=True)
     return response
 
@@ -499,45 +491,7 @@ def kml_export(request, username, id_string):
     helper_auth_helper(request)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
-    dd = DataDictionary.objects.get(id_string=id_string,
-                                    user=owner)
-    pis = ParsedInstance.objects.filter(instance__user=owner,
-                                        instance__xform__id_string=id_string,
-                                        lat__isnull=False, lng__isnull=False)
-    data_for_template = []
-
-    labels = {}
-
-    def cached_get_labels(xpath):
-        if xpath in labels.keys():
-            return labels[xpath]
-        labels[xpath] = dd.get_label(xpath)
-        return labels[xpath]
-
-    for pi in pis:
-        # read the survey instances
-        data_for_display = pi.to_dict()
-        xpaths = data_for_display.keys()
-        xpaths.sort(cmp=pi.data_dictionary.get_xpath_cmp())
-        label_value_pairs = [
-            (cached_get_labels(xpath),
-             data_for_display[xpath]) for xpath in xpaths
-            if not xpath.startswith(u"_")]
-        table_rows = []
-        for key, value in label_value_pairs:
-            table_rows.append('<tr><td>%s</td><td>%s</td></tr>' % (key, value))
-        img_urls = image_urls(pi.instance)
-        img_url = img_urls[0] if img_urls else ""
-        data_for_template.append({
-            'name': id_string,
-            'id': pi.id,
-            'lat': pi.lat,
-            'lng': pi.lng,
-            'image_urls': img_urls,
-            'table': '<table border="1"><a href="#"><img width="210" '
-                     'class="thumbnail" src="%s" alt=""></a>%s'
-                     '</table>' % (img_url, ''.join(table_rows))})
-    context.data = data_for_template
+    context.data = kml_export_data(id_string, user=owner)
     response = \
         render_to_response("survey.kml", context_instance=context,
                            mimetype="application/vnd.google-earth.kml+xml")

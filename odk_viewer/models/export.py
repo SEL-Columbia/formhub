@@ -32,14 +32,17 @@ class Export(models.Model):
     EXPORT_MIMES = {
         'xls': 'vnd.ms-excel',
         'xlsx': 'vnd.openxmlformats',
-        'csv': 'application/csv'
+        'csv': 'application/csv',
+        'zip': 'application/zip',
+        'kml': 'application/vnd.google-earth.kml+xml'
     }
 
     EXPORT_TYPES = [
         (XLS_EXPORT, 'Excel'),
         (CSV_EXPORT, 'CSV'),
         (GDOC_EXPORT, 'GDOC'),
-        #(KML_EXPORT, 'kml'),
+        (ZIP_EXPORT, 'ZIP'),
+        (KML_EXPORT, 'kml'),
     ]
 
     EXPORT_TYPE_DICT = dict(export_type for export_type in EXPORT_TYPES)
