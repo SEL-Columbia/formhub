@@ -226,7 +226,7 @@ def publish_form(callback):
     except (PyXFormError, XLSFormError) as e:
         return {
             'type': 'alert-error',
-            'text': unicode(e),
+            'text': e
         }
     except IntegrityError as e:
         return {
@@ -243,19 +243,19 @@ def publish_form(callback):
         # form.publish returned None, not sure why...
         return {
             'type': 'alert-error',
-            'text': unicode(e),
+            'text': e
         }
     except ProcessTimedOut as e:
         # catch timeout errors
         return {
             'type': 'alert-error',
-            'text': _('Form validation timeout, please try again.'),
+            'text': _(u'Form validation timeout, please try again.'),
         }
     except Exception, e:
         report_exception("ERROR: XLSForm publishing Exception", e)
         return {
             'type': 'alert-error',
-            'text': unicode(e)
+            'text': e
         }
 
 def publish_xls_form(xls_file, user, id_string=None):
