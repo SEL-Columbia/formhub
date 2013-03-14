@@ -7,6 +7,7 @@ from django.core.mail import mail_admins
 from odk_viewer.models import Export
 from utils.export_tools import generate_export
 from utils.export_tools import generate_attachments_zip_export
+from utils.export_tools import generate_kml_export
 from utils.logger_tools import mongo_sync_status
 from pandas_mongo_bridge import NoRecordsFoundError
 
@@ -43,6 +44,15 @@ def create_async_export(xform, export_type, query, force_xlsx):
     elif export_type == Export.ZIP_EXPORT:
         # start async export
         result = create_zip_export.apply_async(
+            (), {
+                'username': username,
+                'id_string': id_string,
+                'export_id': export.id,
+                'query': query
+            }, countdown=10)
+    elif export_type == Export.KML_EXPORT:
+        # start async export
+        result = create_kml_export.apply_async(
             (), {
                 'username': username,
                 'id_string': id_string,
@@ -94,6 +104,25 @@ def create_csv_export(username, id_string, export_id, query=None):
     except (Exception, NoRecordsFoundError) as e:
         export.internal_status = Export.FAILED
         export.save()
+    else:
+        return gen_export.id
+
+
+@task()
+def create_kml_export(username, id_string, export_id, query=None):
+    # we re-query the db instead of passing model objects according to
+    # http://docs.celeryproject.org/en/latest/userguide/tasks.html#state
+
+    export = Export.objects.get(id=export_id)
+    try:
+        # though export is not available when for has 0 submissions, we
+        # catch this since it potentially stops celery
+        gen_export = generate_kml_export(Export.KML_EXPORT, 'kml', username, id_string,
+                                 export_id, query)
+    except (Exception, NoRecordsFoundError) as e:
+        export.internal_status = Export.FAILED
+        export.save()
+        raise e
     else:
         return gen_export.id
 

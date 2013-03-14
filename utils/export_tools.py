@@ -1,9 +1,11 @@
 import os
+import re
 from datetime import datetime
 from django.core.files.base import File
 from django.core.files.temp import NamedTemporaryFile
 from django.core.files.storage import get_storage_class
-import re
+from django.contrib.auth.models import User
+from django.shortcuts import render_to_response
 from odk_logger.models import XForm, Attachment
 from utils.viewer_tools import create_attachments_zipfile
 from utils.viewer_tools import image_urls
@@ -219,7 +221,47 @@ def generate_attachments_zip_export(
 def generate_kml_export(
         export_type, extension, username, id_string, export_id = None,
         filter_query=None):
-    pass
+    from odk_viewer.models import Export
+
+    user = User.objects.get(username=username)
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    response = render_to_response(
+        'survey.kml', {'data': kml_export_data(id_string, user)})
+
+    basename = "%s_%s" % (id_string,
+                             datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+    filename = basename + "." + extension
+    file_path = os.path.join(
+        username,
+        'exports',
+        id_string,
+        export_type,
+        filename)
+
+    storage = get_storage_class()()
+    temp_file = NamedTemporaryFile(suffix=extension)
+    temp_file.write(response.content)
+    temp_file.seek(0)
+    export_filename = storage.save(
+        file_path,
+        File(temp_file, file_path))
+    temp_file.close()
+
+    dir_name, basename = os.path.split(export_filename)
+
+    # get or create export object
+    if(export_id):
+        export = Export.objects.get(id=export_id)
+    else:
+        export = Export.objects.create(xform=xform,
+            export_type=export_type)
+
+    export.filedir = dir_name
+    export.filename = basename
+    export.internal_status = Export.SUCCESSFUL
+    export.save()
+
+    return export
 
 
 def kml_export_data(id_string, user):
