@@ -43,7 +43,10 @@ def _save_thumbnails(image, path, size, suffix, filename=None):
         default_storage.save(get_path(filename, suffix),
                                 fs.open(get_path(path, suffix)))
     else:
-        image.thumbnail(get_dimensions(image.size, size), Image.ANTIALIAS)
+        try:
+            image.thumbnail(get_dimensions(image.size, size), Image.ANTIALIAS)
+        except ZeroDivisionError:
+            pass
         image.save(get_path(path, suffix))
 
 
