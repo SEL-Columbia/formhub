@@ -79,12 +79,13 @@ def create_xls_export(username, id_string, export_id, query=None,
     # though export is not available when for has 0 submissions, we
     # catch this since it potentially stops celery
     try:
-        gen_export = generate_export(Export.XLS_EXPORT, ext, username, id_string,
-                                 export_id, query)
+        gen_export = generate_export(
+            Export.XLS_EXPORT, ext, username, id_string, export_id, query)
     except (Exception, NoRecordsFoundError) as e:
         export.internal_status = Export.FAILED
         export.save()
-        # raise for now to let celery know we failed - doesnt seem to break celery
+        #raise for now to let celery know we failed
+        # - doesnt seem to break celery
         raise
     else:
         return gen_export.id
@@ -99,11 +100,12 @@ def create_csv_export(username, id_string, export_id, query=None):
     try:
         # though export is not available when for has 0 submissions, we
         # catch this since it potentially stops celery
-        gen_export = generate_export(Export.CSV_EXPORT, 'csv', username, id_string,
-                                 export_id, query)
+        gen_export = generate_export(
+            Export.CSV_EXPORT, 'csv', username, id_string, export_id, query)
     except (Exception, NoRecordsFoundError) as e:
         export.internal_status = Export.FAILED
         export.save()
+        raise
     else:
         return gen_export.id
 
@@ -117,12 +119,12 @@ def create_kml_export(username, id_string, export_id, query=None):
     try:
         # though export is not available when for has 0 submissions, we
         # catch this since it potentially stops celery
-        gen_export = generate_kml_export(Export.KML_EXPORT, 'kml', username, id_string,
-                                 export_id, query)
+        gen_export = generate_kml_export(
+            Export.KML_EXPORT, 'kml', username, id_string, export_id, query)
     except (Exception, NoRecordsFoundError) as e:
         export.internal_status = Export.FAILED
         export.save()
-        raise e
+        raise
     else:
         return gen_export.id
 
@@ -136,9 +138,11 @@ def create_zip_export(username, id_string, export_id, query=None):
     except (Exception, NoRecordsFoundError) as e:
         export.internal_status = Export.FAILED
         export.save()
+        raise
     else:
         delete_export.apply_async(
-            (), {'export_id': gen_export.id}, countdown=settings.ZIP_EXPORT_COUNTDOWN)
+            (), {'export_id': gen_export.id},
+            countdown=settings.ZIP_EXPORT_COUNTDOWN)
         return gen_export.id
 
 
@@ -153,14 +157,15 @@ def delete_export(export_id):
         return True
     return False
 
+
 @task()
 def email_mongo_sync_status():
     # run function to check status
     report_string = mongo_sync_status()
-    report_string += "\nTo re-sync, ssh into the server and run\n\n" \
-                   "python manage.py sync_mongo -r [username] [id_string]\n\n" \
-                   "To force complete delete and re-creationuse the -a option" \
-                   " \n\n" \
-                   "python manage.py sync_mongo -ra [username] [id_string]\n"
+    report_string += "\nTo re-sync, ssh into the server and run\n\n"\
+        "python manage.py sync_mongo -r [username] [id_string]\n\n"\
+        "To force complete delete and re-creationuse the -a option"\
+        " \n\n"\
+        "python manage.py sync_mongo -ra [username] [id_string]\n"
     # send email
     mail_admins("Mongo DB sync status", report_string)
