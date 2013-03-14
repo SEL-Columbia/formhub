@@ -264,7 +264,6 @@ DEFAULT_CROWDFORM = {'xform_username': 'bob', 'xform_id_string': 'transport'}
 ZIP_EXPORT_COUNTDOWN = 3600  # 1 hour
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-
 NOSE_ARGS = ['--with-fixture-bundling']
 
 TESTING_MODE = False
@@ -283,7 +282,7 @@ if TESTING_MODE:
     # need to have CELERY_ALWAYS_EAGER True and BROKER_BACKEND as memory to run tasks immediately while testing
     CELERY_ALWAYS_EAGER = True
     BROKER_BACKEND = 'memory'
-    TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
+    #TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
 else:
     MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'media/')
     MONGO_DB = _MONGO_CONNECTION[MONGO_DB_NAME]
