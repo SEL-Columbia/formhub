@@ -1,5 +1,4 @@
 import json
-import mimetypes
 import os
 import urllib2
 import zipfile
@@ -657,12 +656,6 @@ def attachment_url(request, size='medium'):
     if result.count() == 0:
         return HttpResponseNotFound(_(u'Attachment not found'))
     attachment = result[0]
-    if attachment.mimetype == '':
-        # guess mimetype
-        mimetype, encoding = mimetypes.guess_type(attachment.media_file.name)
-        if mimetype:
-            attachment.mimetype = mimetype
-            attachment.save()
     if not attachment.mimetype.startswith('image'):
         return redirect(attachment.media_file.url)
     try:
