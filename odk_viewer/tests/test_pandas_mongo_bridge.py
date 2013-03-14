@@ -6,7 +6,6 @@ from odk_logger.models.xform import XForm
 from main.tests.test_base import MainTestCase
 from odk_logger.xform_instance_parser import xform_instance_to_dict
 from odk_viewer.pandas_mongo_bridge import *
-from odk_viewer.views import xls_export
 from common_tags import NA_REP
 
 def xls_filepath_from_fixture_name(fixture_name):
@@ -172,7 +171,7 @@ class TestPandasMongoBridge(MainTestCase):
                 id_string=self.xform.id_string)
         self.assertEqual(xls_builder.exceeds_xls_limits, True)
         # test that the view returns an xlsx file instead
-        url = reverse(xls_export,
+        url = reverse('xls_export',
             kwargs={
                 'username': self.user.username,
                 'id_string': self.xform.id_string
@@ -191,7 +190,7 @@ class TestPandasMongoBridge(MainTestCase):
         xls_builder = XLSDataFrameBuilder(username=self.user.username,
                 id_string=self.xform.id_string)
         # test that the view returns an xlsx file instead
-        url = reverse(xls_export,
+        url = reverse('xls_export',
             kwargs={
                 'username': self.user.username,
                 'id_string': self.xform.id_string

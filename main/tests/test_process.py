@@ -15,7 +15,6 @@ from xlrd import open_workbook
 from odk_logger.models import XForm
 from odk_logger.views import submission
 from odk_viewer.models import DataDictionary
-from odk_viewer.views import csv_export, xls_export
 from main.models import MetaData
 from test_base import MainTestCase
 from common_tags import UUID, SUBMISSION_TIME
@@ -313,7 +312,7 @@ class TestSite(MainTestCase):
     def _get_csv_(self):
         # todo: get the csv.reader to handle unicode as done here:
         # http://docs.python.org/library/csv.html#examples
-        url = reverse(csv_export, kwargs={
+        url = reverse('csv_export', kwargs={
             'username': self.user.username, 'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -333,7 +332,7 @@ class TestSite(MainTestCase):
         f.close()
 
     def _check_csv_export_second_pass(self):
-        url = reverse(csv_export, kwargs={
+        url = reverse('csv_export', kwargs={
             'username': self.user.username, 'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -398,7 +397,7 @@ class TestSite(MainTestCase):
 
     def _check_xls_export(self):
         xls_export_url = reverse(
-            xls_export, kwargs={'username': self.user.username,
+            'xls_export', kwargs={'username': self.user.username,
                                 'id_string': self.xform.id_string})
         response = self.client.get(xls_export_url)
         expected_xls = open_workbook(os.path.join(self.this_directory, "fixtures", "transportation",
