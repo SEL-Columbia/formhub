@@ -19,6 +19,7 @@ class Export(models.Model):
     class ExportTypeError(Exception):
         def __unicode__(self):
             return _(u"Invalid export type specified")
+
         def __str__(self):
             return unicode(self).encode('utf-8')
 
@@ -56,8 +57,9 @@ class Export(models.Model):
     xform = models.ForeignKey(XForm)
     created_on = models.DateTimeField(auto_now=True, auto_now_add=True)
     filename = models.CharField(max_length=255, null=True, blank=True)
-    # need to save an the filedir since when an xform is deleted, it cascades its exports which then try to
-    # delete their files and try to access the deleted xform - bad things happen
+    # need to save an the filedir since when an xform is deleted, it cascades
+    # its exports which then try to delete their files and try to access the
+    # deleted xform - bad things happen
     filedir = models.CharField(max_length=255, null=True, blank=True)
     export_type = models.CharField(
         max_length=10, choices=EXPORT_TYPES, default=XLS_EXPORT
@@ -84,7 +86,8 @@ class Export(models.Model):
             if num_existing_exports >= self.MAX_EXPORTS:
                 Export._delete_oldest_export(self.xform, self.export_type)
 
-            # update time_of_last_submission with xform.time_of_last_submission_update
+            # update time_of_last_submission with
+            # xform.time_of_last_submission_update
             self.time_of_last_submission = self.xform.\
                 time_of_last_submission_update()
         if self.filename:
@@ -108,7 +111,8 @@ class Export(models.Model):
     @property
     def status(self):
         if self.filename:
-            # need to have this since existing models will have their internal_status set to PENDING - the default
+            # need to have this since existing models will have their
+            # internal_status set to PENDING - the default
             return Export.SUCCESSFUL
         elif self.internal_status == Export.FAILED:
             return Export.FAILED
@@ -125,6 +129,7 @@ class Export(models.Model):
         self.filedir = os.path.join(self.xform.user.username,
                                     'exports', self.xform.id_string,
                                     self.export_type)
+
     @property
     def filepath(self):
         if self.filedir and self.filename:
@@ -151,21 +156,23 @@ class Export(models.Model):
     def exports_outdated(cls, xform, export_type):
         # get newest export for xform
         try:
-            latest_export = Export.objects.filter(xform=xform, export_type=export_type).latest('created_on')
+            latest_export = Export.objects.filter(
+                xform=xform, export_type=export_type).latest('created_on')
         except cls.DoesNotExist:
             return True
         else:
             if latest_export.time_of_last_submission is not None \
-               and xform.time_of_last_submission_update() is not None:
-               return latest_export.time_of_last_submission <\
-                      xform.time_of_last_submission_update()
+                    and xform.time_of_last_submission_update() is not None:
+                return latest_export.time_of_last_submission <\
+                    xform.time_of_last_submission_update()
             else:
-                # return true if we can't determine the status, to force auto-generation
+                # return true if we can't determine the status, to force
+                # auto-generation
                 return True
 
     @classmethod
     def is_filename_unique(cls, xform, filename):
-        return Export.objects.filter(xform=xform,
-            filename=filename).count() == 0
+        return Export.objects.filter(
+            xform=xform, filename=filename).count() == 0
 
 post_delete.connect(export_delete_callback, sender=Export)
