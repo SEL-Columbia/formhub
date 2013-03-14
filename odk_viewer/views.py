@@ -34,6 +34,7 @@ from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
 from odk_viewer.models import Export
 from utils.export_tools import generate_export, should_create_new_export
+from utils.export_tools import kml_export_data
 from utils.viewer_tools import export_def_from_filename
 from utils.viewer_tools import create_attachments_zipfile
 from utils.log import audit_log, Actions
@@ -515,45 +516,7 @@ def kml_export(request, username, id_string):
     helper_auth_helper(request)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
-    dd = DataDictionary.objects.get(id_string=id_string,
-                                    user=owner)
-    pis = ParsedInstance.objects.filter(instance__user=owner,
-                                        instance__xform__id_string=id_string,
-                                        lat__isnull=False, lng__isnull=False)
-    data_for_template = []
-
-    labels = {}
-
-    def cached_get_labels(xpath):
-        if xpath in labels.keys():
-            return labels[xpath]
-        labels[xpath] = dd.get_label(xpath)
-        return labels[xpath]
-
-    for pi in pis:
-        # read the survey instances
-        data_for_display = pi.to_dict()
-        xpaths = data_for_display.keys()
-        xpaths.sort(cmp=pi.data_dictionary.get_xpath_cmp())
-        label_value_pairs = [
-            (cached_get_labels(xpath),
-             data_for_display[xpath]) for xpath in xpaths
-            if not xpath.startswith(u"_")]
-        table_rows = []
-        for key, value in label_value_pairs:
-            table_rows.append('<tr><td>%s</td><td>%s</td></tr>' % (key, value))
-        img_urls = image_urls(pi.instance)
-        img_url = img_urls[0] if img_urls else ""
-        data_for_template.append({
-            'name': id_string,
-            'id': pi.id,
-            'lat': pi.lat,
-            'lng': pi.lng,
-            'image_urls': img_urls,
-            'table': '<table border="1"><a href="#"><img width="210" '
-                     'class="thumbnail" src="%s" alt=""></a>%s'
-                     '</table>' % (img_url, ''.join(table_rows))})
-    context.data = data_for_template
+    context.data = kml_export_data(id_string, user=owner)
     response = \
         render_to_response("survey.kml", context_instance=context,
                            mimetype="application/vnd.google-earth.kml+xml")

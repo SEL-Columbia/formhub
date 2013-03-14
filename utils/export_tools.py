@@ -6,6 +6,7 @@ from django.core.files.storage import get_storage_class
 import re
 from odk_logger.models import XForm, Attachment
 from utils.viewer_tools import create_attachments_zipfile
+from utils.viewer_tools import image_urls
 
 
 QUESTION_TYPES_TO_EXCLUDE = [
@@ -175,8 +176,8 @@ def increment_index_in_filename(filename):
 
 
 def generate_attachments_zip_export(
-        export_type, extension, username, id_string,
-                    export_id = None, filter_query=None):
+        export_type, extension, username, id_string, export_id = None,
+        filter_query=None):
     from odk_viewer.models import Export
 
     xform = XForm.objects.get(user__username=username, id_string=id_string)
@@ -213,3 +214,52 @@ def generate_attachments_zip_export(
     export.internal_status = Export.SUCCESSFUL
     export.save()
     return export
+
+
+def generate_kml_export(
+        export_type, extension, username, id_string, export_id = None,
+        filter_query=None):
+    pass
+
+
+def kml_export_data(id_string, user):
+    from odk_viewer.models import DataDictionary, ParsedInstance
+    dd = DataDictionary.objects.get(id_string=id_string,
+                                    user=user)
+    pis = ParsedInstance.objects.filter(instance__user=user,
+                                        instance__xform__id_string=id_string,
+                                        lat__isnull=False, lng__isnull=False)
+    data_for_template = []
+
+    labels = {}
+
+    def cached_get_labels(xpath):
+        if xpath in labels.keys():
+            return labels[xpath]
+        labels[xpath] = dd.get_label(xpath)
+        return labels[xpath]
+
+    for pi in pis:
+        # read the survey instances
+        data_for_display = pi.to_dict()
+        xpaths = data_for_display.keys()
+        xpaths.sort(cmp=pi.data_dictionary.get_xpath_cmp())
+        label_value_pairs = [
+            (cached_get_labels(xpath),
+             data_for_display[xpath]) for xpath in xpaths
+            if not xpath.startswith(u"_")]
+        table_rows = []
+        for key, value in label_value_pairs:
+            table_rows.append('<tr><td>%s</td><td>%s</td></tr>' % (key, value))
+        img_urls = image_urls(pi.instance)
+        img_url = img_urls[0] if img_urls else ""
+        data_for_template.append({
+            'name': id_string,
+            'id': pi.id,
+            'lat': pi.lat,
+            'lng': pi.lng,
+            'image_urls': img_urls,
+            'table': '<table border="1"><a href="#"><img width="210" '
+                     'class="thumbnail" src="%s" alt=""></a>%s'
+                     '</table>' % (img_url, ''.join(table_rows))})
+        return data_for_template
