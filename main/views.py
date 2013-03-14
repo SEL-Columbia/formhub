@@ -978,10 +978,12 @@ def delete_data(request, username=None, id_string=None):
                         'record_id': record['_id']
                     }, audit, request)
             response_text = simplejson.dumps(records)
-    if 'callback' in request.GET and request.GET.get('callback') != '':
-        callback = request.GET.get('callback')
-        response_text = ("%s(%s)" % (callback, response_text))
-    return HttpResponse(response_text, mimetype='application/json')
+            if 'callback' in request.GET and request.GET.get('callback') != '':
+                callback = request.GET.get('callback')
+                response_text = ("%s(%s)" % (callback, response_text))
+            return HttpResponse(response_text, mimetype='application/json')
+        else:
+            return HttpResponseNotFound(_("No records found for your query."))
 
 
 @require_POST

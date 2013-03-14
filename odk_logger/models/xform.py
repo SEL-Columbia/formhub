@@ -134,6 +134,13 @@ class XForm(models.Model):
         except ObjectDoesNotExist:
             pass
 
+    def time_of_last_submission_update(self):
+        try:
+            # we also consider deleted surveys in this case
+            return self.surveys.latest("date_modified").date_modified
+        except ObjectDoesNotExist:
+            pass
+
     @property
     def hash(self):
         return u'%s' % md5(self.xml.encode('utf8')).hexdigest()
