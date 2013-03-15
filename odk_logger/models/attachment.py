@@ -22,3 +22,19 @@ class Attachment(models.Model):
 
     class Meta:
         app_label = 'odk_logger'
+
+    @property
+    def full_filepath(self):
+        if self.media_file:
+            default_storage = get_storage_class()()
+            try:
+                return default_storage.path(self.media_file.name)
+            except NotImplementedError:
+                # read file from s3
+                name, ext = os.path.splitext(self.media_file.name)
+                tmp = NamedTemporaryFile(suffix=ext, delete=False)
+                f = default_storage.open(self.media_file.name)
+                tmp.write(f.read())
+                tmp.close()
+                return tmp.name
+        return None

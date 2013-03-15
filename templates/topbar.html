@@ -38,12 +38,12 @@
               </a>
               <ul class="dropdown-menu">
                 <li>
-                    <a href="{% url odk_viewer.views.csv_export content_user.username xform.id_string %}">
+                    <a href="{% url csv_export content_user.username xform.id_string %}">
                         {% trans "csv" %}
                     </a>
                 </li>
                 <li>
-                    <a href="{% url odk_viewer.views.xls_export content_user.username xform.id_string %}">
+                    <a href="{% url xls_export content_user.username xform.id_string %}">
                         {% trans "xls" %}
                     </a>
                 </li>
