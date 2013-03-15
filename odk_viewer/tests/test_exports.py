@@ -586,9 +586,8 @@ class TestExports(MainTestCase):
             'username': self.user.username,
             'id_string': self.xform.id_string
         })
-        query = json.dumps(
-            {'_uuid': Instance.objects.latest('date_modified').uuid})
-        response = self.client.post(delete_url, {'query': query})
+        instance = Instance.objects.latest('date_modified')
+        response = self.client.post(delete_url, {'id': instance.id})
         self.assertEqual(response.status_code, 200)
         response = self.client.get(csv_export_url)
         self.assertEqual(response.status_code, 200)
