@@ -180,6 +180,12 @@ this.recline.View = this.recline.View || {};
                 v[field] = args.item[field];
                 model.set(v);
             });
+            
+            this.grid.onDblClick.subscribe(function (e, args){
+                var cell = this.getCellFromEvent(e)
+                var record = this.getData().getModel(cell.row);
+                self.trigger("doubleclick", record);
+            });
 
             this.columnpicker = new Slick.Controls.FHColumnPicker(columns, this.grid,
                 _.extend(options,{state:this.state}));
