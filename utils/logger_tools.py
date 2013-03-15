@@ -14,6 +14,7 @@ from django.core.mail import mail_admins
 from django.core.servers.basehttp import FileWrapper
 from django.db import IntegrityError
 from django.db import transaction
+from django.db.models.signals import pre_delete
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
@@ -30,6 +31,8 @@ from odk_logger.models.xform import XLSFormError
 from odk_logger.xform_instance_parser import InstanceInvalidUserError, \
     IsNotCrowdformError, DuplicateInstance, clean_and_parse_xml, \
     get_uuid_from_xml, get_deprecated_uuid_from_xml
+from odk_viewer.models.parsed_instance import _remove_from_mongo
+from odk_viewer.models.parsed_instance import xform_instances
 
 from odk_viewer.models import ParsedInstance, DataDictionary
 from utils.model_tools import queryset_iterator
@@ -459,3 +462,20 @@ def mongo_sync_status(remongo=False, update_all=False, user=None, xform=None):
             found, total_to_remongo)
         report_string += line
     return report_string
+
+
+def remove_xform(xform):
+    # disconnect parsed instance pre delete signal
+    pre_delete.disconnect(_remove_from_mongo, sender=ParsedInstance)
+
+    # delete instances from mongo db
+    query = {
+        ParsedInstance.USERFORM_ID:
+        "%s_%s" % (xform.user.username, xform.id_string)}
+    xform_instances.remove(query, j=True)
+
+    # delete xform, and all related models
+    xform.delete()
+
+    # reconnect parsed instance pre delete signal?
+    pre_delete.connect(_remove_from_mongo, sender=ParsedInstance)
