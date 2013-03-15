@@ -115,21 +115,15 @@ class Instance(models.Model):
             return self._parser.to_dict()
 
     @classmethod
-    def delete_by_uuid(cls, username, id_string, uuid,
-                       deleted_at=datetime.now()):
+    def set_deleted_at(cls, instance_id, deleted_at=datetime.now()):
         try:
-            instance = cls.objects.get(
-                uuid=uuid,
-                xform__id_string=id_string,
-                xform__user__username=username
-            )
+            instance = cls.objects.get(id=instance_id)
         except cls.DoesNotExist:
-            return False
+            pass
         else:
             instance.deleted_at = deleted_at
-            super(Instance, instance).save()
+            instance.save()
             instance.parsed_instance.save()
-        return True
 
 
 def stathat_form_submission(sender, instance, created, **kwargs):

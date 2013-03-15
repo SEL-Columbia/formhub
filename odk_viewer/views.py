@@ -28,7 +28,8 @@ from utils.logger_tools import response_with_mimetype_and_name,\
     disposition_ext_and_date, round_down_geopoint
 from utils.viewer_tools import image_urls, image_urls_for_form
 from odk_viewer.tasks import create_async_export
-from utils.user_auth import has_permission, get_xform_and_perms, helper_auth_helper
+from utils.user_auth import has_permission, get_xform_and_perms,\
+    helper_auth_helper
 from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
 from odk_viewer.models import Export

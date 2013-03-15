@@ -943,57 +943,32 @@ def show_submission(request, username, id_string, uuid):
 @require_POST
 @login_required
 def delete_data(request, username=None, id_string=None):
-    query = request.POST.get('query', None)
-    if query is None:
-        return HttpResponseBadRequest(_(u"Invalid query parameter"))
-
-    try:
-        simplejson.loads(query)
-    except ValueError:
-        return HttpResponseBadRequest(_(u"Invalid query parameter"))
-
     xform, owner = check_and_set_user_and_form(username, id_string, request)
     response_text = u''
     if not xform:
         return HttpResponseForbidden(_(u'Not shared.'))
-    try:
-        query_args = {
-            "username": username, "id_string": id_string,
-            "query": query,
-            "fields": request.POST.get('fields', None),
-            "sort": request.POST.get('sort', None),
-            "limit": 1
-        }
 
-        if 'limit' in request.GET:
-            query_args["limit"] = int(request.GET.get('limit'))
-        cursor = ParsedInstance.query_mongo(**query_args)
-    except ValueError as e:
-        return HttpResponseBadRequest(e)
-    else:
-        records = list(record for record in cursor)
-        if records.__len__():
-            for record in records:
-                Instance.delete_by_uuid(
-                    username, id_string, uuid=record['_uuid'])
-                audit = {
-                    'xform': xform.id_string
-                }
-                audit_log(
-                    Actions.SUBMISSION_DELETED, request.user, owner,
-                    _("Deleted submission with id '%(record_id)s' "
-                        "on '%(id_string)s'.") %
-                    {
-                        'id_string': xform.id_string,
-                        'record_id': record['_id']
-                    }, audit, request)
-            response_text = simplejson.dumps(records)
-            if 'callback' in request.GET and request.GET.get('callback') != '':
-                callback = request.GET.get('callback')
-                response_text = ("%s(%s)" % (callback, response_text))
-            return HttpResponse(response_text, mimetype='application/json')
-        else:
-            return HttpResponseNotFound(_("No records found for your query."))
+    data_id = request.POST.get('id')
+    if not data_id:
+        return HttpResponseBadRequest(_(u"id must be specified"))
+
+    Instance.set_deleted_at(data_id)
+    audit = {
+        'xform': xform.id_string
+    }
+    audit_log(
+        Actions.SUBMISSION_DELETED, request.user, owner,
+        _("Deleted submission with id '%(record_id)s' "
+            "on '%(id_string)s'.") %
+        {
+            'id_string': xform.id_string,
+            'record_id': data_id
+        }, audit, request)
+    response_text = simplejson.dumps({"success": "Deleted data %s" % data_id})
+    if 'callback' in request.GET and request.GET.get('callback') != '':
+        callback = request.GET.get('callback')
+        response_text = ("%s(%s)" % (callback, response_text))
+    return HttpResponse(response_text, mimetype='application/json')
 
 
 @require_POST
