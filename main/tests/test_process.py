@@ -15,7 +15,6 @@ from xlrd import open_workbook
 from odk_logger.models import XForm
 from odk_logger.views import submission
 from odk_viewer.models import DataDictionary
-from odk_viewer.views import csv_export, xls_export
 from main.models import MetaData
 from test_base import MainTestCase
 from common_tags import UUID, SUBMISSION_TIME
@@ -313,7 +312,7 @@ class TestSite(MainTestCase):
     def _get_csv_(self):
         # todo: get the csv.reader to handle unicode as done here:
         # http://docs.python.org/library/csv.html#examples
-        url = reverse(csv_export, kwargs={
+        url = reverse('csv_export', kwargs={
             'username': self.user.username, 'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -333,7 +332,7 @@ class TestSite(MainTestCase):
         f.close()
 
     def _check_csv_export_second_pass(self):
-        url = reverse(csv_export, kwargs={
+        url = reverse('csv_export', kwargs={
             'username': self.user.username, 'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -398,7 +397,7 @@ class TestSite(MainTestCase):
 
     def _check_xls_export(self):
         xls_export_url = reverse(
-            xls_export, kwargs={'username': self.user.username,
+            'xls_export', kwargs={'username': self.user.username,
                                 'id_string': self.xform.id_string})
         response = self.client.get(xls_export_url)
         expected_xls = open_workbook(os.path.join(self.this_directory, "fixtures", "transportation",
@@ -429,6 +428,19 @@ class TestSite(MainTestCase):
         response = self.client.get(url)
         self.assertContains(
             response, "405 Error: Method Not Allowed", status_code=405)
+
+    def test_publish_bad_xls_with_unicode_in_error(self):
+        """
+        Check that publishing a bad xls where the error has a unicode character
+        returns a 200, thus showing a readable error to the user
+        """
+        self._create_user_and_login()
+        path = os.path.join(
+            self.this_directory, 'fixtures',
+            'form_with_unicode_in_relevant_column.xlsx')
+        response = MainTestCase._publish_xls_file(self, path)
+        # make sure we get a 200 response
+        self.assertEqual(response.status_code, 200)
 
     def test_metadata_file_hash(self):
         self._publish_transportation_form()

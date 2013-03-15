@@ -1,10 +1,14 @@
 import os
+import re
 from datetime import datetime
 from django.core.files.base import File
 from django.core.files.temp import NamedTemporaryFile
 from django.core.files.storage import get_storage_class
-import re
-from odk_logger.models import XForm
+from django.contrib.auth.models import User
+from django.shortcuts import render_to_response
+from odk_logger.models import XForm, Attachment
+from utils.viewer_tools import create_attachments_zipfile
+from utils.viewer_tools import image_urls
 
 
 QUESTION_TYPES_TO_EXCLUDE = [
@@ -136,13 +140,13 @@ def generate_export(export_type, extension, username, id_string,
     if(export_id):
         export = Export.objects.get(id=export_id)
     else:
-        export = Export.objects.create(xform=xform,
-            export_type=export_type)
-
+        export = Export(xform=xform, export_type=export_type)
     export.filedir = dir_name
     export.filename = basename
     export.internal_status = Export.SUCCESSFUL
-    export.save()
+    # dont persist exports that have a filter
+    if filter_query == None:
+        export.save()
     return export
 
 
@@ -152,6 +156,17 @@ def should_create_new_export(xform, export_type):
             or Export.exports_outdated(xform, export_type=export_type):
         return True
     return False
+
+
+def newset_export_for(xform, export_type):
+    """
+    Make sure you check that an export exists before calling this,
+    it will a DoesNotExist exception otherwise
+    """
+    from odk_viewer.models import Export
+    return Export.objects.filter(xform=xform, export_type=export_type)\
+           .latest('created_on')
+
 
 def increment_index_in_filename(filename):
     """
@@ -171,3 +186,133 @@ def increment_index_in_filename(filename):
         basename, ext = os.path.splitext(filename)
     new_filename = "%s-%d%s" % (basename, index, ext)
     return new_filename
+
+
+def generate_attachments_zip_export(
+        export_type, extension, username, id_string, export_id = None,
+        filter_query=None):
+    from odk_viewer.models import Export
+
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    attachments = Attachment.objects.filter(instance__xform=xform)
+    zip_file = create_attachments_zipfile(attachments)
+    basename = "%s_%s" % (id_string,
+                             datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+    filename = basename + "." + extension
+    file_path = os.path.join(
+        username,
+        'exports',
+        id_string,
+        export_type,
+        filename)
+
+    storage = get_storage_class()()
+    temp_file = open(zip_file)
+    export_filename = storage.save(
+        file_path,
+        File(temp_file, file_path))
+    temp_file.close()
+
+    dir_name, basename = os.path.split(export_filename)
+
+    # get or create export object
+    if(export_id):
+        export = Export.objects.get(id=export_id)
+    else:
+        export = Export.objects.create(xform=xform,
+            export_type=export_type)
+
+    export.filedir = dir_name
+    export.filename = basename
+    export.internal_status = Export.SUCCESSFUL
+    export.save()
+    return export
+
+
+def generate_kml_export(
+        export_type, extension, username, id_string, export_id = None,
+        filter_query=None):
+    from odk_viewer.models import Export
+
+    user = User.objects.get(username=username)
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    response = render_to_response(
+        'survey.kml', {'data': kml_export_data(id_string, user)})
+
+    basename = "%s_%s" % (id_string,
+                             datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+    filename = basename + "." + extension
+    file_path = os.path.join(
+        username,
+        'exports',
+        id_string,
+        export_type,
+        filename)
+
+    storage = get_storage_class()()
+    temp_file = NamedTemporaryFile(suffix=extension)
+    temp_file.write(response.content)
+    temp_file.seek(0)
+    export_filename = storage.save(
+        file_path,
+        File(temp_file, file_path))
+    temp_file.close()
+
+    dir_name, basename = os.path.split(export_filename)
+
+    # get or create export object
+    if(export_id):
+        export = Export.objects.get(id=export_id)
+    else:
+        export = Export.objects.create(xform=xform,
+            export_type=export_type)
+
+    export.filedir = dir_name
+    export.filename = basename
+    export.internal_status = Export.SUCCESSFUL
+    export.save()
+
+    return export
+
+
+def kml_export_data(id_string, user):
+    from odk_viewer.models import DataDictionary, ParsedInstance
+    dd = DataDictionary.objects.get(id_string=id_string,
+                                    user=user)
+    pis = ParsedInstance.objects.filter(instance__user=user,
+                                        instance__xform__id_string=id_string,
+                                        lat__isnull=False, lng__isnull=False)
+    data_for_template = []
+
+    labels = {}
+
+    def cached_get_labels(xpath):
+        if xpath in labels.keys():
+            return labels[xpath]
+        labels[xpath] = dd.get_label(xpath)
+        return labels[xpath]
+
+    for pi in pis:
+        # read the survey instances
+        data_for_display = pi.to_dict()
+        xpaths = data_for_display.keys()
+        xpaths.sort(cmp=pi.data_dictionary.get_xpath_cmp())
+        label_value_pairs = [
+            (cached_get_labels(xpath),
+             data_for_display[xpath]) for xpath in xpaths
+            if not xpath.startswith(u"_")]
+        table_rows = []
+        for key, value in label_value_pairs:
+            table_rows.append('<tr><td>%s</td><td>%s</td></tr>' % (key, value))
+        img_urls = image_urls(pi.instance)
+        img_url = img_urls[0] if img_urls else ""
+        data_for_template.append({
+            'name': id_string,
+            'id': pi.id,
+            'lat': pi.lat,
+            'lng': pi.lng,
+            'image_urls': img_urls,
+            'table': '<table border="1"><a href="#"><img width="210" '
+                     'class="thumbnail" src="%s" alt=""></a>%s'
+                     '</table>' % (img_url, ''.join(table_rows))})
+        return data_for_template

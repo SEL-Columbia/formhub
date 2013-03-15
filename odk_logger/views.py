@@ -8,6 +8,7 @@ import pytz
 from datetime import datetime
 from itertools import chain
 from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest, \
@@ -172,9 +173,12 @@ def xformsManifest(request, username, id_string):
     return response
 
 
-@require_POST
+@require_http_methods(["HEAD", "POST"])
 @csrf_exempt
 def submission(request, username=None):
+    if request.method == 'HEAD':
+        # TODO Http Digest Authentication
+        return OpenRosaResponse(status=204)
     context = RequestContext(request)
     xml_file_list = []
     media_files = []

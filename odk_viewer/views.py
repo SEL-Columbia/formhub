@@ -1,7 +1,6 @@
 import json
 import os
 import urllib2
-import zipfile
 from tempfile import NamedTemporaryFile
 from time import strftime, strptime
 from urlparse import urlparse
@@ -16,6 +15,7 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.utils import simplejson
+from django.core.files.storage import get_storage_class
 
 from main.models import UserProfile, MetaData, TokenStorageModel
 from odk_logger.models import XForm, Attachment
@@ -33,7 +33,10 @@ from utils.google import google_export_xls, redirect_uri
 # TODO: using from main.views import api breaks the application, why?
 from odk_viewer.models import Export
 from utils.export_tools import generate_export, should_create_new_export
+from utils.export_tools import kml_export_data
+from utils.export_tools import newset_export_for
 from utils.viewer_tools import export_def_from_filename
+from utils.viewer_tools import create_attachments_zipfile
 from utils.log import audit_log, Actions
 
 
@@ -176,84 +179,58 @@ def survey_responses(request, instance_id):
     })
 
 
-def csv_export(request, username, id_string):
+def data_export(request, username, id_string, export_type):
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     helper_auth_helper(request)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
     query = request.GET.get("query")
-    ext = Export.CSV_EXPORT
+    extension = export_type
 
-    try:
-        export = generate_export(
-            Export.CSV_EXPORT, ext, username, id_string, None, query)
-    except NoRecordsFoundError:
-        return HttpResponse(_("No records found to export"))
-    else:
-        audit = {
-            "xform": xform.id_string,
-            "export_type": Export.CSV_EXPORT
-        }
-        audit_log(Actions.EXPORT_CREATED, request.user, owner,
-            _("Created CSV export on '%(id_string)s'.") %\
-            {
-                'id_string': xform.id_string,
-            }, audit, request)
-        # log download as well
-        audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
-            _("Downloaded CSV export on '%(id_string)s'.") %\
-            {
-                'id_string': xform.id_string,
-            }, audit, request)
-        if request.GET.get('raw'):
-            id_string = None
-        response = response_with_mimetype_and_name(
-            Export.EXPORT_MIMES[ext], id_string, extension=ext,
-            file_path=export.filepath)
-        return response
-
-
-def xls_export(request, username, id_string):
-    owner = get_object_or_404(User, username=username)
-    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
-    helper_auth_helper(request)
-    if not has_permission(xform, owner, request):
-        return HttpResponseForbidden(_(u'Not shared.'))
-    query = request.GET.get("query")
+    # check if we should force xlsx
     force_xlsx = request.GET.get('xlsx') == 'true'
-    ext = 'xls' if not force_xlsx else 'xlsx'
-    try:
-        export = generate_export(
-            Export.XLS_EXPORT, ext, username, id_string, None, query)
-    except NoRecordsFoundError:
-        return HttpResponse(_("No records found to export"))
+    if export_type == Export.XLS_EXPORT and force_xlsx:
+        extension = 'xlsx'
+
+    audit = {
+        "xform": xform.id_string,
+        "export_type": export_type
+    }
+    # check if we need to re-generate, we always re-generate if a filter is specified
+    if should_create_new_export(xform, export_type) or query:
+        try:
+            export = generate_export(
+                export_type, extension, username, id_string, None, query)
+            audit_log(Actions.EXPORT_CREATED, request.user, owner,
+                _("Created %(export_type)s export on '%(id_string)s'.") %\
+                {
+                    'id_string': xform.id_string,
+                    'export_type': export_type.upper()
+                }, audit, request)
+        except NoRecordsFoundError:
+            return HttpResponseNotFound(_("No records found to export"))
     else:
-        audit = {
-            "xform": xform.id_string,
-            "export_type": Export.XLS_EXPORT
-        }
-        audit_log(Actions.EXPORT_CREATED, request.user, owner,
-            _("Created XLS export on '%(id_string)s'.") %\
-            {
-                'id_string': xform.id_string,
-            }, audit, request)
-        # log download as well
-        audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
-            _("Downloaded XLS export on '%(id_string)s'.") %\
-            {
-                'id_string': xform.id_string,
-            }, audit, request)
-        # get extension from file_path, exporter could modify to
-        # xlsx if it exceeds limits
-        path, ext = os.path.splitext(export.filename)
-        ext = ext[1:]
-        if request.GET.get('raw'):
-            id_string = None
-        response = response_with_mimetype_and_name(
-            Export.EXPORT_MIMES[ext], id_string, extension=ext,
-            file_path=export.filepath)
-        return response
+        export = newset_export_for(xform, export_type)
+
+    # log download as well
+    audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
+        _("Downloaded %(export_type)s export on '%(id_string)s'.") %\
+        {
+            'id_string': xform.id_string,
+            'export_type': export_type.upper()
+        }, audit, request)
+
+    # get extension from file_path, exporter could modify to
+    # xlsx if it exceeds limits
+    path, ext = os.path.splitext(export.filename)
+    ext = ext[1:]
+    if request.GET.get('raw'):
+        id_string = None
+    response = response_with_mimetype_and_name(
+        Export.EXPORT_MIMES[ext], id_string, extension=ext,
+        file_path=export.filepath)
+    return response
 
 
 @require_POST
@@ -479,18 +456,8 @@ def zip_export(request, username, id_string):
                                     user=owner)
     if request.GET.get('raw'):
         id_string = None
-    # create zip_file
-    tmp = NamedTemporaryFile()
-    z = zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED)
-    photos = image_urls_for_form(xform)
-    for photo in photos:
-        f = NamedTemporaryFile()
-        req = urllib2.Request(photo)
-        f.write(urllib2.urlopen(req).read())
-        f.seek(0)
-        z.write(f.name, urlparse(photo).path[1:])
-        f.close()
-    z.close()
+    attachments = Attachment.objects.filter(instance__xform=xform)
+    zip_file = create_attachments_zipfile(attachments)
     audit = {
         "xform": xform.id_string,
         "export_type": Export.ZIP_EXPORT
@@ -509,7 +476,7 @@ def zip_export(request, username, id_string):
     if request.GET.get('raw'):
         id_string = None
     response = response_with_mimetype_and_name('zip', id_string,
-                                               file_path=tmp.name,
+                                               file_path=zip_file,
                                                use_local_filesystem=True)
     return response
 
@@ -523,45 +490,7 @@ def kml_export(request, username, id_string):
     helper_auth_helper(request)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
-    dd = DataDictionary.objects.get(id_string=id_string,
-                                    user=owner)
-    pis = ParsedInstance.objects.filter(instance__user=owner,
-                                        instance__xform__id_string=id_string,
-                                        lat__isnull=False, lng__isnull=False)
-    data_for_template = []
-
-    labels = {}
-
-    def cached_get_labels(xpath):
-        if xpath in labels.keys():
-            return labels[xpath]
-        labels[xpath] = dd.get_label(xpath)
-        return labels[xpath]
-
-    for pi in pis:
-        # read the survey instances
-        data_for_display = pi.to_dict()
-        xpaths = data_for_display.keys()
-        xpaths.sort(cmp=pi.data_dictionary.get_xpath_cmp())
-        label_value_pairs = [
-            (cached_get_labels(xpath),
-             data_for_display[xpath]) for xpath in xpaths
-            if not xpath.startswith(u"_")]
-        table_rows = []
-        for key, value in label_value_pairs:
-            table_rows.append('<tr><td>%s</td><td>%s</td></tr>' % (key, value))
-        img_urls = image_urls(pi.instance)
-        img_url = img_urls[0] if img_urls else ""
-        data_for_template.append({
-            'name': id_string,
-            'id': pi.id,
-            'lat': pi.lat,
-            'lng': pi.lng,
-            'image_urls': img_urls,
-            'table': '<table border="1"><a href="#"><img width="210" '
-                     'class="thumbnail" src="%s" alt=""></a>%s'
-                     '</table>' % (img_url, ''.join(table_rows))})
-    context.data = data_for_template
+    context.data = kml_export_data(id_string, user=owner)
     response = \
         render_to_response("survey.kml", context_instance=context,
                            mimetype="application/vnd.google-earth.kml+xml")
