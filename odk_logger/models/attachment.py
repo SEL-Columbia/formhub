@@ -1,4 +1,5 @@
 import os
+import mimetypes
 
 from django.core.files.storage import get_storage_class
 from django.db import models
@@ -22,6 +23,14 @@ class Attachment(models.Model):
 
     class Meta:
         app_label = 'odk_logger'
+
+    def save(self, *args, **kwargs):
+        if self.media_file and self.mimetype == '':
+            # guess mimetype
+            mimetype, encoding = mimetypes.guess_type(self.media_file.name)
+            if mimetype:
+                self.mimetype = mimetype
+        super(Attachment, self).save(*args, **kwargs)
 
     @property
     def full_filepath(self):

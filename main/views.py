@@ -793,21 +793,31 @@ def download_media_data(request, username, id_string, data_id):
 
 def form_photos(request, username, id_string):
     xform, owner = check_and_set_user_and_form(username, id_string, request)
+
     if not xform:
         return HttpResponseForbidden(_(u'Not shared.'))
+
     context = RequestContext(request)
     context.form_view = True
     context.content_user = owner
     context.xform = xform
     image_urls = []
+
     for instance in xform.surveys.all():
         for attachment in instance.attachments.all():
+            # skip if not image e.g video or file
+            if not attachment.mimetype.startswith('image'):
+                continue
+
             data = {}
+
             for i in ['small', 'medium', 'large', 'original']:
                 url = reverse(attachment_url, kwargs={'size': i})
                 url = '%s?media_file=%s' % (url, attachment.media_file.name)
                 data[i] = url
+
             image_urls.append(data)
+
     context.images = image_urls
     context.profile, created = UserProfile.objects.get_or_create(user=owner)
     return render_to_response('form_photos.html', context_instance=context)
