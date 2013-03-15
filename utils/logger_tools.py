@@ -205,7 +205,8 @@ def response_with_mimetype_and_name(
                 response = HttpResponse(wrapper, mimetype=mimetype)
                 response['Content-Length'] = os.path.getsize(file_path)
         except IOError:
-            response = HttpResponseNotFound(_(u"The requested file could not be found."))
+            response = HttpResponseNotFound(
+                _(u"The requested file could not be found."))
     else:
         response = HttpResponse(mimetype=mimetype)
     response['Content-Disposition'] = disposition_ext_and_date(
@@ -271,14 +272,15 @@ def publish_form(callback):
             'text': e
         }
 
+
 def publish_xls_form(xls_file, user, id_string=None):
-    """
-    Creates or updates a DataDictionary with supplied xls_file, user and optional id_string - if updating
+    """ Creates or updates a DataDictionary with supplied xls_file,
+        user and optional id_string - if updating
     """
     # get or create DataDictionary based on user and id string
     if id_string:
-        dd = DataDictionary.objects.get(user=user,
-            id_string=id_string)
+        dd = DataDictionary.objects.get(
+            user=user, id_string=id_string)
         dd.xls = xls_file
         dd.save()
         return dd
@@ -329,8 +331,10 @@ def inject_instanceid(xml_str, uuid):
 
         # check if we have a meta tag
         survey_node = children.item(0)
-        meta_tags = [n for n in survey_node.childNodes if\
-                     n.nodeType == Node.ELEMENT_NODE and n.tagName.lower() == "meta"]
+        meta_tags = [
+            n for n in survey_node.childNodes
+            if n.nodeType == Node.ELEMENT_NODE
+            and n.tagName.lower() == "meta"]
         if len(meta_tags) == 0:
             meta_tag = xml.createElement("meta")
             xml.documentElement.appendChild(meta_tag)
@@ -338,9 +342,10 @@ def inject_instanceid(xml_str, uuid):
             meta_tag = meta_tags[0]
 
         # check if we have an instanceID tag
-        uuid_tags = [n for n in meta_tag.childNodes if\
-                       n.nodeType == Node.ELEMENT_NODE and\
-                       n.tagName == "instanceID"]
+        uuid_tags = [
+            n for n in meta_tag.childNodes
+            if n.nodeType == Node.ELEMENT_NODE
+            and n.tagName == "instanceID"]
         if len(uuid_tags) == 0:
             uuid_tag = xml.createElement("instanceID")
             meta_tag.appendChild(uuid_tag)
@@ -354,14 +359,17 @@ def inject_instanceid(xml_str, uuid):
 
 
 def update_mongo_for_xform(xform, only_update_missing=True):
-    instance_ids = set([i.id for i in Instance.objects.only('id').filter(xform=xform)])
+    instance_ids = set(
+        [i.id for i in Instance.objects.only('id').filter(xform=xform)])
     sys.stdout.write("Total no of instances: %d\n" % len(instance_ids))
     mongo_ids = set()
     user = xform.user
     userform_id = "%s_%s" % (user.username, xform.id_string)
     if only_update_missing:
         sys.stdout.write("Only updating missing mongo instances\n")
-        mongo_ids = set([rec[common_tags.ID] for rec in mongo_instances.find({common_tags.USERFORM_ID: userform_id},
+        mongo_ids = set(
+            [rec[common_tags.ID] for rec in mongo_instances.find(
+                {common_tags.USERFORM_ID: userform_id},
                 {common_tags.ID: 1})])
         sys.stdout.write("Total no of mongo instances: %d\n" % len(mongo_ids))
         # get the difference
@@ -370,8 +378,10 @@ def update_mongo_for_xform(xform, only_update_missing=True):
         # clear mongo records
         mongo_instances.remove({common_tags.USERFORM_ID: userform_id})
     # get instances
-    sys.stdout.write("Total no of instances to update: %d\n" % len(instance_ids))
-    instances = Instance.objects.only('id').in_bulk([id for id in instance_ids])
+    sys.stdout.write(
+        "Total no of instances to update: %d\n" % len(instance_ids))
+    instances = Instance.objects.only('id').in_bulk(
+        [id for id in instance_ids])
     total = len(instances)
     done = 0
     for id, instance in instances.items():
@@ -380,16 +390,17 @@ def update_mongo_for_xform(xform, only_update_missing=True):
         done += 1
         # if 1000 records are done, flush mongo
         if (done % 1000) == 0:
-            sys.stdout.write('Updated %d records, flushing MongoDB...\n' % done)
+            sys.stdout.write(
+                'Updated %d records, flushing MongoDB...\n' % done)
         settings._MONGO_CONNECTION.admin.command({'fsync': 1})
-        progress = "\r%.2f %% done..." % ((float(done)/float(total)) * 100)
+        progress = "\r%.2f %% done..." % ((float(done) / float(total)) * 100)
         sys.stdout.write(progress)
         sys.stdout.flush()
     # flush mongo again when done
     settings._MONGO_CONNECTION.admin.command({'fsync': 1})
     sys.stdout.write(
-        "\nUpdated %s\n------------------------------------------\n" %\
-        xform.id_string)
+        "\nUpdated %s\n------------------------------------------\n"
+        % xform.id_string)
 
 
 def mongo_sync_status(remongo=False, update_all=False, user=None, xform=None):
@@ -433,18 +444,18 @@ def mongo_sync_status(remongo=False, update_all=False, user=None, xform=None):
                 else:
                     sys.stdout.write(
                         "Updating missing records for %s\n----------------"
-                        "-------------------------------\n" %\
-                        xform.id_string)
+                        "-------------------------------\n"
+                        % xform.id_string)
                 update_mongo_for_xform(
                     xform, only_update_missing=not update_all)
         done += 1
         sys.stdout.write(
-            "%.2f %% done ...\r" % ((float(done)/float(total)) * 100))
+            "%.2f %% done ...\r" % ((float(done) / float(total)) * 100))
     # only show stats if we are not updating mongo, the update function
     # will show progress
     if not remongo:
-        line  = "Total # of forms out of sync: %d\n" \
-                "Total # of records to remongo: %d\n" % (
+        line = "Total # of forms out of sync: %d\n" \
+            "Total # of records to remongo: %d\n" % (
             found, total_to_remongo)
         report_string += line
     return report_string
