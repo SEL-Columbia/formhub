@@ -38,28 +38,30 @@ class TestFormAPIDelete(MainTestCase):
         self.assertEqual(
             Instance.objects.filter(deleted_at=None).count(), count)
 
-    def test_anon_user_delete(self):
+    def test_anon_user_cant_delete(self):
         # Only authenticated user are allowed to access the url
         count = Instance.objects.filter(deleted_at=None).count()
-        records = self._get_data()
-        self.assertTrue(records.__len__() > 0)
-        query = '{"_id": %s}' % records[0]["_id"]
-        response = self.anon.post(self.delete_url, {'query': query})
+        instance = Instance.objects.filter(
+            xform=self.xform).latest('date_created')
+        # delete
+        params = {'id': instance.id}
+        response = self.anon.post(self.delete_url, params)
         self.assertEqual(response.status_code, 302)
         self.assertIn("accounts/login/?next=", response["Location"])
         self.assertEqual(
             Instance.objects.filter(deleted_at=None).count(), count)
 
     def test_delete_shared(self):
-        #Test if someone can delete a shared form
+        #Test if someone can delete data from a shared form
         self.xform.shared = True
         self.xform.save()
         self._create_user_and_login("jo")
         count = Instance.objects.filter(deleted_at=None).count()
-        records = self._get_data()
-        self.assertTrue(records.__len__() > 0)
-        query = '{"_id": %s}' % records[0]["_id"]
-        response = self.client.post(self.delete_url, {'query': query})
+        instance = Instance.objects.filter(
+            xform=self.xform).latest('date_created')
+        # delete
+        params = {'id': instance.id}
+        response = self.client.post(self.delete_url, params)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(
             Instance.objects.filter(deleted_at=None).count(), count)
@@ -68,37 +70,39 @@ class TestFormAPIDelete(MainTestCase):
         #Test if Form owner can delete
         #check record exist before delete and after delete
         count = Instance.objects.filter(deleted_at=None).count()
-        records = self._get_data()
-        self.assertTrue(records.__len__() > 0)
-        query = '{"_id": %s}' % records[0]["_id"]
-        response = self.client.post(self.delete_url, {'query': query})
+        instance = Instance.objects.filter(
+            xform=self.xform).latest('date_created')
+        # delete
+        params = {'id': instance.id}
+        response = self.client.post(self.delete_url, params)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             Instance.objects.filter(deleted_at=None).count(), count - 1)
-        uuid = records[0]['_uuid']
-        instance  = Instance.objects.get(uuid=uuid, xform=self.xform)
-        self.assertNotEqual(instance.deleted_at, None)
+        instance  = Instance.objects.get(id=instance.id)
         self.assertTrue(isinstance(instance.deleted_at, datetime))
+        query = '{"_id": %s}' % instance.id
         self.mongo_args.update({"query": query})
-        #check if it exist after delete
+        #check that query_mongo will not return the deleted record
         after = ParsedInstance.query_mongo(**self.mongo_args)
-        self.assertEqual(len(after), 0)
+        self.assertEqual(len(after), count - 1)
 
     def test_delete_updates_mongo(self):
         count = Instance.objects.filter(
             xform=self.xform, deleted_at=None).count()
-        mongo_records = self._get_data()
-        num_mongo_records = len(mongo_records)
+        instance = Instance.objects.filter(
+            xform=self.xform).latest('date_created')
         # delete
-        record_id = mongo_records[0][common_tags.ID]
-        query = '{"_id": %s}' % mongo_records[0][common_tags.ID]
-        response = self.client.post(self.delete_url, {'query': query})
+        params = {'id': instance.id}
+        response = self.client.post(self.delete_url, params)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             Instance.objects.filter(
                 xform=self.xform, deleted_at=None).count(), count - 1)
-        # check mongo record was deleted
-        cursor = settings.MONGO_DB.instances.find({common_tags.ID: record_id})
+        # check that instance's deleted_at is set
+        instance  = Instance.objects.get(id=instance.id)
+        self.assertTrue(isinstance(instance.deleted_at, datetime))
+        # check mongo record was marked as deleted
+        cursor = settings.MONGO_DB.instances.find({common_tags.ID: instance.id})
         self.assertEqual(cursor.count(), 1)
         record = cursor.next()
-        self.assertTrue(record[common_tags.DELETEDAT] != None)
+        self.assertIsNotNone(record[common_tags.DELETEDAT])
