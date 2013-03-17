@@ -123,7 +123,7 @@ class DataDictionary(XForm):
         inlineOutput = output_re.sub('\g<1>', prettyXml)
         inlineOutput = re.compile(
             '<label>\s*\n*\s*\n*\s*</label>').sub('<label></label>', inlineOutput)
-        #self.xml = inlineOutput
+        self.xml = inlineOutput
 
     class Meta:
         app_label = "odk_viewer"
