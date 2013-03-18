@@ -1,9 +1,14 @@
+import os
+import hashlib
+
 from test_base import MainTestCase
 from main.models import MetaData
 from main.views import show, edit, download_metadata, download_media_data,\
     delete_metadata
+
+from django.core.files.base import File
 from django.core.urlresolvers import reverse
-import os
+
 
 class TestFormMetadata(MainTestCase):
 
@@ -230,3 +235,17 @@ class TestFormMetadata(MainTestCase):
         name = self._add_metadata('source')
         self.assertNotEqual(MetaData.source(self.xform).data_file, None)
         self.assertEqual(MetaData.source(self.xform).data_value, desc)
+
+    def test_media_file_hash(self):
+        name = "screenshot.png"
+        media_file = os.path.join(
+            self.this_directory, 'fixtures', 'transportation', name)
+        m = MetaData.objects.create(
+            data_type='media', xform=self.xform, data_value=name,
+            data_file=File(open(media_file), name),
+            data_file_type='image/png')
+        f = open(media_file)
+        media_hash = hashlib.md5(f.read()).hexdigest()
+        f.close()
+        meta_hash = m.hash
+        self.assertEqual(meta_hash, media_hash)
