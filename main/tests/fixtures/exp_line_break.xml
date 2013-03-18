@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:orx="http://openrosa.org/xforms/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>exp_line_break</h:title>
+    <model>
+      <itext>
+        <translation default="true()" lang="default">
+          <text id="/exp_line_break/item:label">
+            <value form="audio">jr://audio/ulibuy.m4a</value>
+            <value>Item Bought</value>
+          </text>
+        </translation>
+      </itext>
+      <instance>
+        <exp_line_break id="exp_line_break">
+          <formhub>
+            <uuid/>
+          </formhub>
+          <start/>
+          <end/>
+          <today/>
+          <deviceid/>
+          <subscriberid/>
+          <imei/>
+          <phonenumber/>
+          <expense_date/>
+          <item/>
+          <amount/>
+          <expense_type/>
+          <photo/>
+          <kind/>
+          <required/>
+          <meta>
+            <instanceID/>
+          </meta>
+        </exp_line_break>
+      </instance>
+      <bind jr:preload="timestamp" jr:preloadParams="start" nodeset="/exp_line_break/start" type="dateTime"/>
+      <bind jr:preload="timestamp" jr:preloadParams="end" nodeset="/exp_line_break/end" type="dateTime"/>
+      <bind jr:preload="date" jr:preloadParams="today" nodeset="/exp_line_break/today" type="date"/>
+      <bind jr:preload="property" jr:preloadParams="deviceid" nodeset="/exp_line_break/deviceid" type="string"/>
+      <bind jr:preload="property" jr:preloadParams="subscriberid" nodeset="/exp_line_break/subscriberid" type="string"/>
+      <bind jr:preload="property" jr:preloadParams="deviceid" nodeset="/exp_line_break/imei" type="string"/>
+      <bind jr:preload="property" jr:preloadParams="phonenumber" nodeset="/exp_line_break/phonenumber" type="string"/>
+      <bind nodeset="/exp_line_break/expense_date" required="true()" type="date"/>
+      <bind nodeset="/exp_line_break/item" required="true()" type="string"/>
+      <bind nodeset="/exp_line_break/amount" required="true()" type="decimal"/>
+      <bind nodeset="/exp_line_break/expense_type" required="true()" type="select1"/>
+      <bind nodeset="/exp_line_break/photo" type="binary"/>
+      <bind nodeset="/exp_line_break/kind" type="select1"/>
+      <bind nodeset="/exp_line_break/required" required="true()" type="select1"/>
+      <bind calculate="concat('uuid:', uuid())" nodeset="/exp_line_break/meta/instanceID" readonly="true()" type="string"/>
+      <bind calculate="'663123a849e54bffa8f9832ef016bfac'" nodeset="/exp_line_break/formhub/uuid" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/exp_line_break/expense_date">
+      <label>Expense Date</label>
+    </input>
+    <input ref="/exp_line_break/item">
+      <label ref="jr:itext('/exp_line_break/item:label')"/>
+    </input>
+    <input ref="/exp_line_break/amount">
+      <label>Amount Spent on <output value="/exp_line_break/item"/>.</label>
+    </input>
+    <select1 ref="/exp_line_break/expense_type">
+      <label>Expense type</label>
+      <item>
+        <label>Food</label>
+        <value>food</value>
+      </item>
+      <item>
+        <label>Clothing</label>
+        <value>clothing</value>
+      </item>
+      <item>
+        <label>Service</label>
+        <value>service</value>
+      </item>
+      <item>
+        <label>transport</label>
+        <value>transport</value>
+      </item>
+      <item>
+        <label>Tool</label>
+        <value>tool</value>
+      </item>
+      <item>
+        <label>Medical</label>
+        <value>medical</value>
+      </item>
+      <item>
+        <label>other</label>
+        <value>other</value>
+      </item>
+    </select1>
+    <upload mediatype="image/*" ref="/exp_line_break/photo">
+      <label>photo</label>
+    </upload>
+    <select1 ref="/exp_line_break/kind">
+      <label>kind of expense</label>
+      <item>
+        <label>Essential</label>
+        <value>essential</value>
+      </item>
+      <item>
+        <label>One Off</label>
+        <value>one_off</value>
+      </item>
+      <item>
+        <label>monthly</label>
+        <value>monthly</value>
+      </item>
+      <item>
+        <label>yearly</label>
+        <value>yearly</value>
+      </item>
+    </select1>
+    <select1 ref="/exp_line_break/required">
+      <label>required</label>
+      <item>
+        <label>Yes</label>
+        <value>yes</value>
+      </item>
+      <item>
+        <label>No</label>
+        <value>no</value>
+      </item>
+    </select1>
+  </h:body>
+</h:html>
