@@ -1,6 +1,7 @@
 import os
 import mimetypes
 
+from tempfile import NamedTemporaryFile
 from django.core.files.storage import get_storage_class
 from django.db import models
 
