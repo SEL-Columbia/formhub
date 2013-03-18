@@ -19,6 +19,7 @@ from utils.logger_tools import inject_instanceid
 from django.core.files.storage import get_storage_class
 from odk_viewer.pandas_mongo_bridge import NoRecordsFoundError
 from odk_viewer.tasks import create_xls_export
+from xlrd import open_workbook
 
 
 class TestExports(MainTestCase):
@@ -595,3 +596,79 @@ class TestExports(MainTestCase):
         num_csv_exports = Export.objects.filter(
             xform=self.xform, export_type=Export.CSV_EXPORT).count()
         self.assertEqual(num_csv_exports, initial_num_csv_exports + 3)
+        
+    def test_column_header_delimeter_export_option(self):
+        def _get_csv_data(filepath):
+            storage = get_storage_class()()
+            csv_file = storage.open(export.filepath)
+            reader = csv.DictReader(csv_file)
+            data = reader.next()
+            csv_file.close()
+            return data
+
+        def _get_xls_header(filepath):
+            storage = get_storage_class()()
+            with storage.open(export.filepath) as f:
+                workbook = open_workbook(file_contents=f.read())
+            transportation_sheet = workbook.sheet_by_name("transportation")
+            self.assertTrue(transportation_sheet.nrows > 0)
+            return transportation_sheet.row_values(0)
+
+        self._publish_transportation_form()
+        self._submit_transport_instance()
+        create_csv_export_url = reverse(create_export, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': 'csv'
+        })
+        default_params = {}
+        custom_params = {
+            'options[group_delimeter]': '.',
+            'options[split_select_multiples]': 'yes'
+        }
+        # test default group delimeter
+        response = self.client.post(create_csv_export_url, default_params)
+        self.assertEqual(response.status_code, 302)
+        export = Export.objects.filter(
+            xform=self.xform, export_type='csv').latest('created_on')
+        self.assertTrue(bool(export.filepath))
+        data = _get_csv_data(export.filepath)
+        self.assertTrue(
+            data.has_key(
+                'transport/available_transportation_types_to_referral_facility/lorry'))
+
+        # test dot delimeter
+        response = self.client.post(create_csv_export_url, custom_params)
+        self.assertEqual(response.status_code, 302)
+        export = Export.objects.filter(
+            xform=self.xform, export_type='csv').latest('created_on')
+        self.assertTrue(bool(export.filepath))
+        data = _get_csv_data(export.filepath)
+        self.assertTrue(
+            data.has_key(
+                'transport.available_transportation_types_to_referral_facility.lorry'))
+
+        # test xls with default params
+        create_csv_export_url = reverse(create_export, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': 'xls'
+        })
+        response = self.client.post(create_csv_export_url, default_params)
+        self.assertEqual(response.status_code, 302)
+        export = Export.objects.filter(
+            xform=self.xform, export_type='xls').latest('created_on')
+        self.assertTrue(bool(export.filepath))
+        header = _get_xls_header(export.filepath)
+        self.assertTrue(
+            header.count("transport/available_transportation_types_to_referral_facility/lorry") > 0)
+            
+        # test xls with custom options
+        response = self.client.post(create_csv_export_url, custom_params)
+        self.assertEqual(response.status_code, 302)
+        export = Export.objects.filter(
+            xform=self.xform, export_type='xls').latest('created_on')
+        self.assertTrue(bool(export.filepath))
+        header = _get_xls_header(export.filepath)
+        self.assertTrue(
+            header.count("transport.available_transportation_types_to_referral_facility.lorry") > 0)

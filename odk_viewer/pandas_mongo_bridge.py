@@ -21,6 +21,14 @@ xform_instances = settings.MONGO_DB.instances
 MULTIPLE_SELECT_BIND_TYPE = u"select"
 GEOPOINT_BIND_TYPE = u"geopoint"
 
+
+# column group delimeters
+GROUP_DELIMETER_SLASH = '/'
+GROUP_DELIMETER_DOT   = '.'
+DEFAULT_GROUP_DELIMETER = GROUP_DELIMETER_SLASH
+GROUP_DELIMETERS = [GROUP_DELIMETER_SLASH, GROUP_DELIMETER_DOT]
+
+
 def survey_name_and_xpath_from_dd(dd):
     for e in dd.get_survey_elements():
         if isinstance(e, Survey):
@@ -77,10 +85,13 @@ class AbstractDataFrameBuilder(object):
     """
     Group functionality used by any DataFrameBuilder i.e. XLS, CSV and KML
     """
-    def __init__(self, username, id_string, filter_query=None):
+    def __init__(self, username, id_string, filter_query=None,
+        group_delimeter=DEFAULT_GROUP_DELIMETER, split_select_multiples=True):
         self.username = username
         self.id_string = id_string
         self.filter_query = filter_query
+        self.group_delimeter = group_delimeter
+        self.split_select_multiples = split_select_multiples
         self._setup()
 
     def _setup(self):
@@ -210,9 +221,11 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
     XLS_COLUMN_COUNT_MAX = 255
     CURRENT_INDEX_META = 'current_index'
 
-    def __init__(self, username, id_string, filter_query=None):
+    def __init__(self, username, id_string, filter_query=None,
+                 group_delimeter=DEFAULT_GROUP_DELIMETER,
+                 split_select_multiples=True):
         super(XLSDataFrameBuilder, self).__init__(username, id_string,
-            filter_query)
+            filter_query, group_delimeter, split_select_multiples)
 
     def _setup(self):
         super(XLSDataFrameBuilder, self)._setup()
@@ -241,7 +254,11 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                 records = data[section_name]
                 # TODO: currently ignoring nested repeats so ignore sections that have 0 records
                 if len(records) > 0:
-                    columns = section["columns"] + self.EXTRA_COLUMNS
+                    # use a different group delimeter if needed
+                    columns = section["columns"]
+                    if self.group_delimeter != DEFAULT_GROUP_DELIMETER:
+                        columns = [self.group_delimeter.join(col.split("/")) for col in columns ]
+                    columns = columns + self.EXTRA_COLUMNS
                     writer = XLSDataFrameWriter(records, columns)
                     writer.write_to_excel(self.xls_writer, section_name,
                             header=header, index=False)
@@ -414,9 +431,11 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
 
 class CSVDataFrameBuilder(AbstractDataFrameBuilder):
 
-    def __init__(self, username, id_string, filter_query=None):
+    def __init__(self, username, id_string, filter_query=None,
+                 group_delimeter=DEFAULT_GROUP_DELIMETER,
+                 split_select_multiples=True):
         super(CSVDataFrameBuilder, self).__init__(username,
-            id_string, filter_query)
+            id_string, filter_query, group_delimeter, split_select_multiples)
         self.ordered_columns = OrderedDict()
 
     def _setup(self):
@@ -539,8 +558,12 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
             data = self._format_for_dataframe(cursor)
             datas.append(data)
 
-        columns = list(chain.from_iterable([[xpath] if cols == None else cols\
+        columns = list(chain.from_iterable([[ xpath ] if cols == None else cols\
                                             for xpath, cols in self.ordered_columns.iteritems()]))
+
+        # use a different group delimeter if needed
+        if self.group_delimeter != DEFAULT_GROUP_DELIMETER:
+            columns = [self.group_delimeter.join(col.split("/")) for col in columns ]
 
         # add extra columns
         columns += [col for col in self.ADDITIONAL_COLUMNS]
