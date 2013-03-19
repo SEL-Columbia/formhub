@@ -55,6 +55,8 @@ Make directory structure and clone formhub:
     $ cd ~/src/formhub-app
 
     $ git clone git://github.com/modilabs/formhub.git
+    $ git submodule init
+    $ git submodule update
 
 Install requirements:
 ^^^^^^^^^^^^^^^^^^^^^
