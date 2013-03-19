@@ -315,8 +315,9 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         #data_section[len(data_section)-1].update(record) # we could simply do
         # this but end up with duplicate data from repeats
 
-        # find any select multiple(s) and add additional columns to record
-        record = self._split_select_multiples(record, self.select_multiples)
+        if self.split_select_multiples:
+            # find any select multiple(s) and add additional columns to record
+            record = self._split_select_multiples(record, self.select_multiples)
         # alt, precision
         self._split_gps_fields(record, self.gps_fields)
         for column in columns:
@@ -327,7 +328,8 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                 # a record may not have responses for some elements simply
                 # because they were not captured
                 pass
-            data_section[len(data_section)-1].update({column: data_value})
+            data_section[
+                len(data_section)-1].update({self.group_delimeter.join(column.split('/')) if self.group_delimeter != DEFAULT_GROUP_DELIMETER else column: data_value})
 
         data_section[len(data_section)-1].update({
             XLSDataFrameBuilder.INDEX_COLUMN: index,
@@ -383,10 +385,13 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                         self.select_multiples[c.get_abbreviated_xpath()] = \
                         [option.get_abbreviated_xpath() for option in
                                 c.children]
-                        # if select multiple, get its choices and make them
-                        # columns
-                        for option in c.children:
-                            self._add_column_to_section(sheet_name, option)
+                        if self.split_select_multiples:
+                            # if select multiple, get its choices and make them
+                            # columns
+                            for option in c.children:
+                                self._add_column_to_section(sheet_name, option)
+                        else:
+                            self._add_column_to_section(sheet_name, c)
                     # split gps fields within this section
                     if c.bind.get(u"type") == GEOPOINT_BIND_TYPE:
                         # add columns for geopoint components
@@ -518,10 +523,11 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         self.ordered_columns = OrderedDict()
         self._build_ordered_columns(self.dd.survey, self.ordered_columns)
         # add ordered columns for select multiples
-        for key, choices in self.select_multiples.items():
-            # HACK to ensure choices are NOT duplicated
-            self.ordered_columns[key] = remove_dups_from_list_maintain_order(
-                choices)
+        if self.split_select_multiples:
+            for key, choices in self.select_multiples.items():
+                # HACK to ensure choices are NOT duplicated
+                self.ordered_columns[key] = remove_dups_from_list_maintain_order(
+                    choices)
         # add ordered columns for gps fields
         for key in self.gps_fields:
             gps_xpaths = self.dd.get_additional_geopoint_xpaths(key)
@@ -529,8 +535,9 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         data = []
         for record in cursor:
             # split select multiples
-            record = self._split_select_multiples(record,
-                self.select_multiples)
+            if self.split_select_multiples:
+                record = self._split_select_multiples(record,
+                    self.select_multiples)
             # check for gps and split into components i.e. latitude, longitude,
             # altitude, precision
             self._split_gps_fields(record, self.gps_fields)
@@ -540,6 +547,9 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
                 reindexed = self._reindex(key, value, self.ordered_columns)
                 flat_dict.update(reindexed)
 
+            # if delimetr is diferent, replace within record as well
+            if self.group_delimeter != DEFAULT_GROUP_DELIMETER:
+                flat_dict = dict((self.group_delimeter.join(k.split('/')), v) for k, v in flat_dict.iteritems())
             data.append(flat_dict)
         return data
 

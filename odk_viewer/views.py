@@ -250,8 +250,9 @@ def create_export(request, username, id_string, export_type):
         return HttpResponseBadRequest(
             _("%s is not a valid delimeter" % delimeter))
 
+    # default is True, so when dont_.. is yes split_select_multiples becomes False
     split_select_multiples = request.POST.get(
-        "options[split_select_multiples]", "yes") == "yes"
+        "options[dont_split_select_multiples]", "no") == "no"
     
     options = {
         'group_delimeter': group_delimeter,
