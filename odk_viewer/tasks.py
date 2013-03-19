@@ -29,8 +29,8 @@ def create_async_export(xform, export_type, query, force_xlsx, options=None):
         'query': query,
     }
     if export_type in [Export.XLS_EXPORT, Export.GDOC_EXPORT, Export.CSV_EXPORT]:
-        if options and options.has_key("group_delimeter"):
-            arguments["group_delimeter"] = options["group_delimeter"]
+        if options and options.has_key("group_delimiter"):
+            arguments["group_delimiter"] = options["group_delimiter"]
         if options and options.has_key("split_select_multiples"):
             arguments["split_select_multiples"] =\
                 options["split_select_multiples"]
@@ -71,7 +71,7 @@ def create_async_export(xform, export_type, query, force_xlsx, options=None):
 
 @task()
 def create_xls_export(username, id_string, export_id, query=None,
-                      force_xlsx=False, group_delimeter='/',
+                      force_xlsx=False, group_delimiter='/',
                       split_select_multiples=True):
     # we re-query the db instead of passing model objects according to
     # http://docs.celeryproject.org/en/latest/userguide/tasks.html#state
@@ -83,7 +83,7 @@ def create_xls_export(username, id_string, export_id, query=None,
     try:
         gen_export = generate_export(
             Export.XLS_EXPORT, ext, username, id_string, export_id, query,
-            group_delimeter, split_select_multiples)
+            group_delimiter, split_select_multiples)
     except (Exception, NoRecordsFoundError) as e:
         export.internal_status = Export.FAILED
         export.save()
@@ -96,7 +96,7 @@ def create_xls_export(username, id_string, export_id, query=None,
 
 @task()
 def create_csv_export(username, id_string, export_id, query=None,
-                      group_delimeter='/', split_select_multiples=True):
+                      group_delimiter='/', split_select_multiples=True):
     # we re-query the db instead of passing model objects according to
     # http://docs.celeryproject.org/en/latest/userguide/tasks.html#state
     export = Export.objects.get(id=export_id)
@@ -105,7 +105,7 @@ def create_csv_export(username, id_string, export_id, query=None,
         # catch this since it potentially stops celery
         gen_export = generate_export(
             Export.CSV_EXPORT, 'csv', username, id_string, export_id, query,
-            group_delimeter, split_select_multiples)
+            group_delimiter, split_select_multiples)
     except (Exception, NoRecordsFoundError) as e:
         export.internal_status = Export.FAILED
         export.save()

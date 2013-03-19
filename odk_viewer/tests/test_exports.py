@@ -615,7 +615,7 @@ class TestExports(MainTestCase):
         column1 = transportation_sheet.row_values(1)
         return dict(zip(headers, column1))
     
-    def test_column_header_delimeter_export_option(self):
+    def test_column_header_delimiter_export_option(self):
         self._publish_transportation_form()
         # survey 1 has ambulance and bicycle as values for
         # transport/available_transportation_types_to_referral_facility
@@ -627,9 +627,9 @@ class TestExports(MainTestCase):
         })
         default_params = {}
         custom_params = {
-            'options[group_delimeter]': '.',
+            'options[group_delimiter]': '.',
         }
-        # test csv with default group delimeter
+        # test csv with default group delimiter
         response = self.client.post(create_csv_export_url, default_params)
         self.assertEqual(response.status_code, 302)
         export = Export.objects.filter(
@@ -642,7 +642,7 @@ class TestExports(MainTestCase):
         self.assertEqual(
             data['transport/available_transportation_types_to_referral_facility/ambulance'], 'True')
 
-        # test csv with dot delimeter
+        # test csv with dot delimiter
         response = self.client.post(create_csv_export_url, custom_params)
         self.assertEqual(response.status_code, 302)
         export = Export.objects.filter(
@@ -655,7 +655,7 @@ class TestExports(MainTestCase):
         self.assertEqual(
             data['transport.available_transportation_types_to_referral_facility.ambulance'], 'True')
 
-        # test xls with default group delimeter
+        # test xls with default group delimiter
         create_csv_export_url = reverse(create_export, kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string,
@@ -673,7 +673,7 @@ class TestExports(MainTestCase):
         self.assertEqual(
             data["transport/available_transportation_types_to_referral_facility/ambulance"], 1)
             
-        # test xls with dot delimeter
+        # test xls with dot delimiter
         response = self.client.post(create_csv_export_url, custom_params)
         self.assertEqual(response.status_code, 302)
         export = Export.objects.filter(
