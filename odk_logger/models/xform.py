@@ -39,7 +39,7 @@ class XForm(models.Model):
     shared = models.BooleanField(default=False)
     shared_data = models.BooleanField(default=False)
     downloadable = models.BooleanField(default=True)
-    is_crowd_form =  models.BooleanField(default=False)
+    is_crowd_form = models.BooleanField(default=False)
 
     # the following fields are filled in automatically
     id_string = models.SlugField(
@@ -109,11 +109,13 @@ class XForm(models.Model):
         self._set_title()
         old_id_string = self.id_string
         self._set_id_string()
-        # check if we have an existing id_string, if so, the one must match but only if xform is NOT new
+        # check if we have an existing id_string,
+        # if so, the one must match but only if xform is NOT new
         if self.pk and old_id_string and old_id_string != self.id_string:
-            raise XLSFormError(_(u"Your updated form's id_string '%(new_id)s' must match the existing forms' id_string '%(old_id)s'." %
-                                 {'new_id': self.id_string,
-                                  'old_id': old_id_string} ))
+            raise XLSFormError(
+                _(u"Your updated form's id_string '%(new_id)s' must match "
+                  "the existing forms' id_string '%(old_id)s'." %
+                  {'new_id': self.id_string, 'old_id': old_id_string}))
         if getattr(settings, 'STRICT', True) and \
                 not re.search(r"^[\w-]+$", self.id_string):
             raise XLSFormError(_(u'In strict mode, the XForm ID must be a '
@@ -157,4 +159,3 @@ def stats_forms_created(sender, instance, created, **kwargs):
 
 
 post_save.connect(stats_forms_created, sender=XForm)
-

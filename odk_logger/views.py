@@ -28,7 +28,7 @@ from odk_viewer.models import ParsedInstance
 
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound,\
-    inject_instanceid
+    inject_instanceid, remove_xform
 from models import XForm, Instance
 from main.models import UserProfile, MetaData
 from utils.logger_tools import response_with_mimetype_and_name
@@ -351,7 +351,10 @@ def download_jsonform(request, username, id_string):
 def delete_xform(request, username, id_string):
     xform = get_object_or_404(XForm, user__username=username,
                               id_string=id_string)
-    xform.delete()
+
+    # delete xform and submissions
+    remove_xform(xform)
+
     audit = {}
     audit_log(Actions.FORM_DELETED, request.user, xform.user,
         _("Deleted form '%(id_string)s'.") %\
