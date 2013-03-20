@@ -222,11 +222,12 @@ class TestPandasMongoBridge(MainTestCase):
         temp_file.close()
         fixture, output = '', ''
         with open(csv_fixture_path) as f:
-            fixture = f.read()
+            fixture_dict = csv.DictReader(f).next()
         with open(temp_file.name) as f:
-            output = f.read()
+            output_dict = csv.DictReader(f).next()
         os.unlink(temp_file.name)
-        self.assertEqual(fixture, output)
+        self.maxDiff = None
+        self.assertEqual(fixture_dict, output_dict)
 
     def test_csv_columns_for_gps_within_groups(self):
         self._publish_grouped_gps_form()
@@ -568,3 +569,51 @@ class TestPandasMongoBridge(MainTestCase):
         # close and delete file
         csv_file.close()
         os.unlink(temp_file.name)
+
+    def test_column_indices_in_groups_within_repeats(self):
+        self._publish_xls_fixture_set_xform("groups_in_repeats")
+        self._submit_fixture_instance("groups_in_repeats", "01")
+        dd = self.xform.data_dictionary()
+        columns = dd.get_keys()
+        data_0 = self._csv_data_for_dataframe()[0]
+        # remove dynamic fields
+        ignore_list = [
+            '_uuid', 'meta/instanceID', 'formhub/uuid', '_submission_time',
+            '_id', '_bamboo_dataset_id']
+        for item in ignore_list:
+            data_0.pop(item)
+        expected_data_0 = {
+#            u'_id': 1,
+#            u'_uuid': u'ba6bc9d7-b46a-4d25-955e-99ec94e7b2f6',
+            u'_deleted_at': None,
+            u'_xform_id_string': u'groups_in_repeats',
+            u'_status': u'submitted_via_web',
+#            u'_bamboo_dataset_id': u'',
+#            u'_submission_time': u'2013-03-20T10:50:08',
+            u'name': u'Abe',
+            u'age': u'88',
+            u'has_children': u'1',
+#            u'meta/instanceID': u'uuid:ba6bc9d7-b46a-4d25-955e-99ec94e7b2f6',
+#            u'formhub/uuid': u'1c491d705d514354acd4a9e34fe7526d',
+            u'_attachments': [],
+            u'children[1]/childs_info/name': u'Cain',
+            u'children[2]/childs_info/name': u'Abel',
+            u'children[1]/childs_info/age': u'56',
+            u'children[2]/childs_info/age': u'48',
+            u'children[1]/immunization/immunization_received/polio_1': True,
+            u'children[1]/immunization/immunization_received/polio_2': False,
+            u'children[2]/immunization/immunization_received/polio_1': True,
+            u'children[2]/immunization/immunization_received/polio_2': True,
+            u'web_browsers/chrome': True,
+            u'web_browsers/firefox': False,
+            u'web_browsers/ie': False,
+            u'web_browsers/safari': False,
+            u'gps': u'-1.2626156 36.7923571 0.0 30.0',
+            u'_geolocation': [u'-1.2626156', u'36.7923571'],
+            u'_gps_latitude': u'-1.2626156',
+            u'_gps_longitude': u'36.7923571',
+            u'_gps_altitude': u'0.0',
+            u'_gps_precision': u'30.0',
+        }
+        self.maxDiff = None
+        self.assertEqual(data_0, expected_data_0)

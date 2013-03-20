@@ -432,18 +432,21 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         # check for lists
         if type(value) is list and len(value) > 0:
             for index, item in enumerate(value):
+                #import ipdb; ipdb.set_trace()
                 # start at 1
                 index += 1
                 # for each list check for dict, we want to transform the key of
                 # this dict
                 if type(item) is dict:
                     for nested_key, nested_val in item.iteritems():
-                        xpaths = nested_key.split('/')
-                        # second level so we must have at least 2 elements
-                        assert(len(xpaths) > 1)
-                        # append index to the second last column i.e. group
-                        # name
-                        xpaths[-2] += "[%d]" % index
+                        # given the key "children/details" and nested_key/ abbreviated xpath "children/details/immunization/polio_1", generate ["children", index, "immunization/polio_1"]
+                        xpaths = [
+                            "%s[%s]" % (
+                                nested_key[:nested_key.index(key) + len(key)],
+                                index), 
+                            nested_key[nested_key.index(key) + len(key)+1:]]
+                        # re-create xpath the split on /
+                        xpaths = "/".join(xpaths).split("/")
                         new_prefix = xpaths[:-1]
                         if type(nested_val) is list:
                             # if nested_value is a list, rinse and repeat
@@ -496,8 +499,6 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
 
     def _format_for_dataframe(self, cursor):
         # TODO: check for and handle empty results
-        self.ordered_columns = OrderedDict()
-        self._build_ordered_columns(self.dd.survey, self.ordered_columns)
         # add ordered columns for select multiples
         for key, choices in self.select_multiples.items():
             # HACK to ensure choices are NOT duplicated
@@ -529,6 +530,9 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         # get record count
         record_count = self._query_mongo(query=self.filter_query, count=True)
 
+        self.ordered_columns = OrderedDict()
+        self._build_ordered_columns(self.dd.survey, self.ordered_columns)
+        
         # pandas will only export 30k records in a dataframe to a csv - we need to create multiple 30k dataframes if required,
         # we need to go through all the records though so that we can figure out the columns we need for repeats
         datas = []
