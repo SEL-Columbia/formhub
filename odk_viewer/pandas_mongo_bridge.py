@@ -21,6 +21,25 @@ xform_instances = settings.MONGO_DB.instances
 MULTIPLE_SELECT_BIND_TYPE = u"select"
 GEOPOINT_BIND_TYPE = u"geopoint"
 
+<<<<<<< HEAD
+=======
+
+# column group delimiters
+GROUP_DELIMITER_SLASH = '/'
+GROUP_DELIMITER_DOT   = '.'
+DEFAULT_GROUP_DELIMITER = GROUP_DELIMITER_SLASH
+GROUP_DELIMITERS = [GROUP_DELIMITER_SLASH, GROUP_DELIMITER_DOT]
+
+
+def survey_name_and_xpath_from_dd(dd):
+    for e in dd.get_survey_elements():
+        if isinstance(e, Survey):
+            return e.name, e.get_abbreviated_xpath()
+
+    # should never get here
+    raise Exception("DataDictionary has no Survey element")
+
+>>>>>>> 833_964_export_options
 
 def get_valid_sheet_name(sheet_name, existing_name_list):
     # truncate sheet_name to XLSDataFrameBuilder.SHEET_NAME_MAX_CHARS
@@ -69,10 +88,13 @@ class AbstractDataFrameBuilder(object):
     """
     Group functionality used by any DataFrameBuilder i.e. XLS, CSV and KML
     """
-    def __init__(self, username, id_string, filter_query=None):
+    def __init__(self, username, id_string, filter_query=None,
+        group_delimiter=DEFAULT_GROUP_DELIMITER, split_select_multiples=True):
         self.username = username
         self.id_string = id_string
         self.filter_query = filter_query
+        self.group_delimiter = group_delimiter
+        self.split_select_multiples = split_select_multiples
         self._setup()
 
     def _setup(self):
@@ -202,9 +224,11 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
     XLS_COLUMN_COUNT_MAX = 255
     CURRENT_INDEX_META = 'current_index'
 
-    def __init__(self, username, id_string, filter_query=None):
+    def __init__(self, username, id_string, filter_query=None,
+                 group_delimiter=DEFAULT_GROUP_DELIMITER,
+                 split_select_multiples=True):
         super(XLSDataFrameBuilder, self).__init__(username, id_string,
-            filter_query)
+            filter_query, group_delimiter, split_select_multiples)
 
     def _setup(self):
         super(XLSDataFrameBuilder, self)._setup()
@@ -233,7 +257,11 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                 records = data[section_name]
                 # TODO: currently ignoring nested repeats so ignore sections that have 0 records
                 if len(records) > 0:
-                    columns = section["columns"] + self.EXTRA_COLUMNS
+                    # use a different group delimiter if needed
+                    columns = section["columns"]
+                    if self.group_delimiter != DEFAULT_GROUP_DELIMITER:
+                        columns = [self.group_delimiter.join(col.split("/")) for col in columns ]
+                    columns = columns + self.EXTRA_COLUMNS
                     writer = XLSDataFrameWriter(records, columns)
                     writer.write_to_excel(self.xls_writer, section_name,
                             header=header, index=False)
@@ -290,8 +318,9 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         #data_section[len(data_section)-1].update(record) # we could simply do
         # this but end up with duplicate data from repeats
 
-        # find any select multiple(s) and add additional columns to record
-        record = self._split_select_multiples(record, self.select_multiples)
+        if self.split_select_multiples:
+            # find any select multiple(s) and add additional columns to record
+            record = self._split_select_multiples(record, self.select_multiples)
         # alt, precision
         self._split_gps_fields(record, self.gps_fields)
         for column in columns:
@@ -302,7 +331,8 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                 # a record may not have responses for some elements simply
                 # because they were not captured
                 pass
-            data_section[len(data_section)-1].update({column: data_value})
+            data_section[
+                len(data_section)-1].update({self.group_delimiter.join(column.split('/')) if self.group_delimiter != DEFAULT_GROUP_DELIMITER else column: data_value})
 
         data_section[len(data_section)-1].update({
             XLSDataFrameBuilder.INDEX_COLUMN: index,
@@ -367,8 +397,11 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
                             child.children]
                     # if select multiple, get its choices and make them
                     # columns
-                    for option in child.children:
-                        self._add_column_to_section(section_name, option)
+                    if self.split_select_multiples:
+                        for option in child.children:
+                            self._add_column_to_section(section_name, option)
+                    else:
+                        self._add_column_to_section(section_name, child)
 
                 # split gps fields within this section
                 if child.bind.get(u"type") == GEOPOINT_BIND_TYPE:
@@ -411,9 +444,11 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
 
 class CSVDataFrameBuilder(AbstractDataFrameBuilder):
 
-    def __init__(self, username, id_string, filter_query=None):
+    def __init__(self, username, id_string, filter_query=None,
+                 group_delimiter=DEFAULT_GROUP_DELIMITER,
+                 split_select_multiples=True):
         super(CSVDataFrameBuilder, self).__init__(username,
-            id_string, filter_query)
+            id_string, filter_query, group_delimiter, split_select_multiples)
         self.ordered_columns = OrderedDict()
 
     def _setup(self):
@@ -496,10 +531,11 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
     def _format_for_dataframe(self, cursor):
         # TODO: check for and handle empty results
         # add ordered columns for select multiples
-        for key, choices in self.select_multiples.items():
-            # HACK to ensure choices are NOT duplicated
-            self.ordered_columns[key] = remove_dups_from_list_maintain_order(
-                choices)
+        if self.split_select_multiples:
+            for key, choices in self.select_multiples.items():
+                # HACK to ensure choices are NOT duplicated
+                self.ordered_columns[key] = remove_dups_from_list_maintain_order(
+                    choices)
         # add ordered columns for gps fields
         for key in self.gps_fields:
             gps_xpaths = self.dd.get_additional_geopoint_xpaths(key)
@@ -507,8 +543,9 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         data = []
         for record in cursor:
             # split select multiples
-            record = self._split_select_multiples(record,
-                self.select_multiples)
+            if self.split_select_multiples:
+                record = self._split_select_multiples(record,
+                    self.select_multiples)
             # check for gps and split into components i.e. latitude, longitude,
             # altitude, precision
             self._split_gps_fields(record, self.gps_fields)
@@ -518,6 +555,9 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
                 reindexed = self._reindex(key, value, self.ordered_columns)
                 flat_dict.update(reindexed)
 
+            # if delimetr is diferent, replace within record as well
+            if self.group_delimiter != DEFAULT_GROUP_DELIMITER:
+                flat_dict = dict((self.group_delimiter.join(k.split('/')), v) for k, v in flat_dict.iteritems())
             data.append(flat_dict)
         return data
 
@@ -539,8 +579,12 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
             data = self._format_for_dataframe(cursor)
             datas.append(data)
 
-        columns = list(chain.from_iterable([[xpath] if cols == None else cols\
+        columns = list(chain.from_iterable([[ xpath ] if cols == None else cols\
                                             for xpath, cols in self.ordered_columns.iteritems()]))
+
+        # use a different group delimiter if needed
+        if self.group_delimiter != DEFAULT_GROUP_DELIMITER:
+            columns = [self.group_delimiter.join(col.split("/")) for col in columns ]
 
         # add extra columns
         columns += [col for col in self.ADDITIONAL_COLUMNS]
