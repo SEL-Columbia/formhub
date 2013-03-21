@@ -21,25 +21,12 @@ xform_instances = settings.MONGO_DB.instances
 MULTIPLE_SELECT_BIND_TYPE = u"select"
 GEOPOINT_BIND_TYPE = u"geopoint"
 
-<<<<<<< HEAD
-=======
-
 # column group delimiters
 GROUP_DELIMITER_SLASH = '/'
 GROUP_DELIMITER_DOT   = '.'
 DEFAULT_GROUP_DELIMITER = GROUP_DELIMITER_SLASH
 GROUP_DELIMITERS = [GROUP_DELIMITER_SLASH, GROUP_DELIMITER_DOT]
 
-
-def survey_name_and_xpath_from_dd(dd):
-    for e in dd.get_survey_elements():
-        if isinstance(e, Survey):
-            return e.name, e.get_abbreviated_xpath()
-
-    # should never get here
-    raise Exception("DataDictionary has no Survey element")
-
->>>>>>> 833_964_export_options
 
 def get_valid_sheet_name(sheet_name, existing_name_list):
     # truncate sheet_name to XLSDataFrameBuilder.SHEET_NAME_MAX_CHARS
