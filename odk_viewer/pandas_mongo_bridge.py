@@ -432,7 +432,6 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         # check for lists
         if type(value) is list and len(value) > 0:
             for index, item in enumerate(value):
-                #import ipdb; ipdb.set_trace()
                 # start at 1
                 index += 1
                 # for each list check for dict, we want to transform the key of
