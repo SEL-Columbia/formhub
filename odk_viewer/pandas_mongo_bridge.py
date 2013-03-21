@@ -21,14 +21,6 @@ xform_instances = settings.MONGO_DB.instances
 MULTIPLE_SELECT_BIND_TYPE = u"select"
 GEOPOINT_BIND_TYPE = u"geopoint"
 
-def survey_name_and_xpath_from_dd(dd):
-    for e in dd.get_survey_elements():
-        if isinstance(e, Survey):
-            return e.name, e.get_abbreviated_xpath()
-
-    # should never get here
-    raise Exception("DataDictionary has no Survey element")
-
 
 def get_valid_sheet_name(sheet_name, existing_name_list):
     # truncate sheet_name to XLSDataFrameBuilder.SHEET_NAME_MAX_CHARS
@@ -329,57 +321,62 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         """
         # clear list
         self.sections = OrderedDict()
-        self.survey_name, survey_xpath = survey_name_and_xpath_from_dd(self.dd)
-
-        # generate a unique and valid xls sheet name
-        self.survey_name = get_valid_sheet_name(self.survey_name,
-                self.sections.keys())
-        # setup the default section
-        self._create_section(self.survey_name, survey_xpath, False)
 
         # dict of select multiple elements
         self.select_multiples = {}
 
-        # get form elements to split repeats into separate section/sheets and
-        # everything else in the default section
-        for e in self.dd.get_survey_elements():
-            # check for a Section or sub-classes of
-            if isinstance(e, Section):
-                # always default to the main sheet
-                sheet_name = self.survey_name
+        survey_element = self.dd.survey
+        self.survey_name = get_valid_sheet_name(
+            survey_element.name, self.sections.keys())
+        self._create_section(
+            self.survey_name, survey_element.get_abbreviated_xpath(), False)
+        # build sections
+        self._build_sections_recursive(self.survey_name, self.dd.get_survey())
 
-                # if a repeat we use its name
-                if isinstance(e, RepeatingSection):
-                    sheet_name = e.name
-                    sheet_name = get_valid_sheet_name(sheet_name,
-                            self.sections.keys())
-                    self._create_section(sheet_name, e.get_abbreviated_xpath(),
-                            True)
-
-                # for each child add to survey_sections
-                for c in e.children:
-                    if isinstance(c, Question) and not \
-                            question_types_to_exclude(c.type)\
-                    and not c.bind.get(u"type") == MULTIPLE_SELECT_BIND_TYPE:
-                            self._add_column_to_section(sheet_name, c)
-                    elif c.bind.get(u"type") == MULTIPLE_SELECT_BIND_TYPE:
-                        self.select_multiples[c.get_abbreviated_xpath()] = \
-                        [option.get_abbreviated_xpath() for option in
-                                c.children]
-                        # if select multiple, get its choices and make them
-                        # columns
-                        for option in c.children:
-                            self._add_column_to_section(sheet_name, option)
-                    # split gps fields within this section
-                    if c.bind.get(u"type") == GEOPOINT_BIND_TYPE:
-                        # add columns for geopoint components
-                        for xpath in\
-                            self.dd.get_additional_geopoint_xpaths(
-                            c.get_abbreviated_xpath()):
-                            self._add_column_to_section(sheet_name, xpath)
         for section_name in self.sections:
             self.sections[section_name]['columns'] += self.ADDITIONAL_COLUMNS
         self.get_exceeds_xls_limits()
+
+    def _build_sections_recursive(self, section_name, element, is_repeating=False):
+        """Builds a section's children and recurses any repeating sections
+        to build those as a separate section
+        """
+        for child in element.children:
+            # if a section, recurse
+            if isinstance(child, Section):
+                new_is_repeating = isinstance(child, RepeatingSection)
+                new_section_name = section_name
+                # if its repeating, build a new section
+                if new_is_repeating:
+                    new_section_name = get_valid_sheet_name(
+                        child.name, self.sections.keys())
+                    self._create_section(new_section_name,
+                        child.get_abbreviated_xpath(), True)
+
+                self._build_sections_recursive(
+                    new_section_name, child, new_is_repeating)
+            else:
+                # add to survey_sections
+                if isinstance(child, Question) and not \
+                        question_types_to_exclude(child.type)\
+                and not child.bind.get(u"type") == MULTIPLE_SELECT_BIND_TYPE:
+                        self._add_column_to_section(section_name, child)
+                elif child.bind.get(u"type") == MULTIPLE_SELECT_BIND_TYPE:
+                    self.select_multiples[child.get_abbreviated_xpath()] = \
+                    [option.get_abbreviated_xpath() for option in
+                            child.children]
+                    # if select multiple, get its choices and make them
+                    # columns
+                    for option in child.children:
+                        self._add_column_to_section(section_name, option)
+
+                # split gps fields within this section
+                if child.bind.get(u"type") == GEOPOINT_BIND_TYPE:
+                    # add columns for geopoint components
+                    for xpath in\
+                        self.dd.get_additional_geopoint_xpaths(
+                        child.get_abbreviated_xpath()):
+                        self._add_column_to_section(section_name, xpath)
 
     def get_exceeds_xls_limits(self):
         if not hasattr(self, "exceeds_xls_limits"):
