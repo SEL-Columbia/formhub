@@ -23,7 +23,8 @@ from guardian.shortcuts import assign, remove_perm, get_users_with_perms
 
 from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
     SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
-    SourceForm, PermissionForm, MediaForm, MapboxLayerForm
+    SourceForm, PermissionForm, MediaForm, MapboxLayerForm, \
+    ActivateSMSSupportFom
 from main.models import UserProfile, MetaData
 from odk_logger.models import Instance, XForm
 from odk_logger.views import enter_data
@@ -277,6 +278,9 @@ def show(request, username=None, id_string=None, uuid=None):
     context.media_upload = MetaData.media_upload(xform)
     context.mapbox_layer = MetaData.mapbox_layer_upload(xform)
     if is_owner:
+        context.sms_support_form = ActivateSMSSupportFom(
+            initial={'enable_sms_support': xform.allows_sms,
+                     'sms_id_string': xform.sms_id_string})
         context.form_license_form = FormLicenseForm(
             initial={'value': context.form_license})
         context.data_license_form = DataLicenseForm(
@@ -531,6 +535,26 @@ def edit(request, username, id_string):
                 }, audit, request)
             MetaData.source(xform, request.POST.get('source'),
                             request.FILES.get('source'))
+        elif request.POST.get('enable_sms_support') is not None:
+            sms_support_form = ActivateSMSSupportFom(request.POST)
+            if sms_support_form.is_valid():
+                audit = {
+                    'xform': xform.id_string
+                }
+                enabled = sms_support_form.cleaned_data.get('enable_sms_support')
+                if enabled:
+                    audit_action = Actions.SMS_SUPPORT_ACTIVATED
+                    audit_message = _(u"SMS Support Activated on")
+                else:
+                     audit_action = Actions.SMS_SUPPORT_DEACTIVATED
+                     audit_message = _(u"SMS Support Deactivated on")
+                audit_log(
+                    audit_action, request.user, owner,
+                    audit_message
+                    % {'id_string': xform.id_string}, audit, request)
+                xform.allows_sms = enabled
+                xform.sms_id_string = sms_support_form.cleaned_data.get('sms_id_string')
+                xform.save()
         elif request.FILES.get('media'):
             audit = {
                 'xform': xform.id_string

@@ -227,7 +227,7 @@
 		    <a class="btn btn-info" rel="tooltip" title="{% trans 'Webform' %}" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
 		      <i class="icon-edit icon-white"></i> {% trans "Enter Web Form" %}
             </a>
-          </div> 
+          </div>
           <div class="btn-group">
             <a data-toggle="modal" data-target="#popupmodal" class="showqr btn" href="{% url get_qrcode xform.user.username xform.id_string %}"><i class="icon-tablet"></i> {% trans "Mobile" %}</a>
           </div>
@@ -237,14 +237,14 @@
       <div class="span4">
         <script type="text/javascript">
             $(document).ready(function() {
-            
+
                 $(document).on("click", ".showqr", function () {
                   div_target = $(this).attr('data-target')
                   url = $(this).attr('href')
                   $(div_target+" .img_holder").load(url)
-                
+
                 });
-        
+
               {% if xform.shared_data %}
                 $('#data-shared-private').hide();
               {% else %}
@@ -398,6 +398,25 @@
             {% endif %}
             </div>
         </div>
+        <br/>
+        <div class="clearfix bordered">
+                <h3 data-toggle="collapse" data-target="#sms_tab">{% trans "SMS Support" %}</h3>
+                <div id='sms_tab' class="collapse">
+                <form action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
+
+                {% if xform.allows_sms %}
+                    <p>{% blocktrans %}This form has enabled SMS submissions.{% endblocktrans %} {% blocktrans with id_string=xform.sms_id_string %}Submit to this form using the “<em>{{ id_string }}</em>” identifier.{% endblocktrans %}</p>
+                {% endif %}
+                {% if can_edit %}
+                    {% csrf_token %}
+                    <table>
+                    {{ sms_support_form.as_table }}
+                    </table>
+                    <input type="submit" class="btn" value="{% trans "Toggle SMS Support" %}" />
+                {% endif %}
+            </form>
+            </div>
+        </div>
       </div>
       <div class="span4">
         {% if is_owner %}
@@ -512,7 +531,7 @@
 			var usernames =  {{ user_json_list|safe }}
 			$('#autocomplete').typeahead({source: usernames})
   </script>
-  
+
 <div class="modal hide fade" id="popupmodal" style="width: auto; left:36%; margin-left: auto; margin-right: auto;" tabindex="-1" role="dialog">
      <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -522,13 +541,13 @@
          <div class="img_holder"/> </div>
     </div>
     <div class="modal-footer" style="text-align: center;">
-        
+
         {%  trans "DOWNLOAD " %}
         <a class="btn" href="http://scan.me/apps/" target="_blank">
-            <i class="icon-qrcode"></i> 
+            <i class="icon-qrcode"></i>
         {%  trans " Scan - QR Reader" %}
         </a>
-        
+
     </div>
 </div>
 {% endblock %}

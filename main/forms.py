@@ -22,7 +22,7 @@ from utils.logger_tools import publish_xls_form
 
 FORM_LICENSES_CHOICES = (
     ('No License', ugettext_lazy('No License')),
-    ('https://creativecommons.org/licenses/by/3.0/', 
+    ('https://creativecommons.org/licenses/by/3.0/',
      ugettext_lazy('Attribution CC BY')),
     ('https://creativecommons.org/licenses/by-sa/3.0/',
      ugettext_lazy('Attribution-ShareAlike CC BY-SA')),
@@ -30,11 +30,11 @@ FORM_LICENSES_CHOICES = (
 
 DATA_LICENSES_CHOICES = (
     ('No License', ugettext_lazy('No License')),
-    ('http://opendatacommons.org/licenses/pddl/summary/', 
+    ('http://opendatacommons.org/licenses/pddl/summary/',
      ugettext_lazy('PDDL')),
     ('http://opendatacommons.org/licenses/by/summary/',
      ugettext_lazy('ODC-BY')),
-    ('http://opendatacommons.org/licenses/odbl/summary/', 
+    ('http://opendatacommons.org/licenses/odbl/summary/',
      ugettext_lazy('ODBL')),
 )
 
@@ -187,17 +187,17 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail,
 
 
 class SourceForm(forms.Form):
-    source = forms.FileField(label=ugettext_lazy(u"Source document"), 
+    source = forms.FileField(label=ugettext_lazy(u"Source document"),
                              required=True)
 
 
 class SupportDocForm(forms.Form):
-    doc = forms.FileField(label=ugettext_lazy(u"Supporting document"), 
+    doc = forms.FileField(label=ugettext_lazy(u"Supporting document"),
                           required=True)
 
 
 class MediaForm(forms.Form):
-    media = forms.FileField(label=ugettext_lazy(u"Media upload"), 
+    media = forms.FileField(label=ugettext_lazy(u"Media upload"),
                             required=True)
 
     def clean_media(self):
@@ -248,3 +248,20 @@ class QuickConverter(QuickConverterFile, QuickConverterURL):
                     default_storage.save(cleaned_xls_file, xls_data)
             # publish the xls
             return publish_xls_form(cleaned_xls_file, user, id_string)
+
+
+class ActivateSMSSupportFom(forms.Form):
+
+    enable_sms_support = forms.BooleanField(required=True,
+                                            label=ugettext_lazy(u"Activate SMS Support?"))
+    sms_id_string = forms.CharField(max_length=50, required=True,
+                                    label=ugettext_lazy(u"SMS Keyword"))
+
+    def clean_sms_id_string(self):
+        sms_id_string = self.cleaned_data.get('sms_id_string', '').strip()
+
+        if not re.match(r'^[a-z0-9\_\-]+$', sms_id_string):
+            raise forms.ValidationError(u"id_string can only contain alphanum"
+                                        u" characters")
+
+        return sms_id_string
