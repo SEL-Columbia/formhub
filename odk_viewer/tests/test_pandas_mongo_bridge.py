@@ -568,3 +568,139 @@ class TestPandasMongoBridge(MainTestCase):
         # close and delete file
         csv_file.close()
         os.unlink(temp_file.name)
+
+    def test_csv_column_indices_in_groups_within_repeats(self):
+        self._publish_xls_fixture_set_xform("groups_in_repeats")
+        self._submit_fixture_instance("groups_in_repeats", "01")
+        dd = self.xform.data_dictionary()
+        columns = dd.get_keys()
+        data_0 = self._csv_data_for_dataframe()[0]
+        # remove dynamic fields
+        ignore_list = [
+            '_uuid', 'meta/instanceID', 'formhub/uuid', '_submission_time',
+            '_id', '_bamboo_dataset_id']
+        for item in ignore_list:
+            data_0.pop(item)
+        expected_data_0 = {
+#            u'_id': 1,
+#            u'_uuid': u'ba6bc9d7-b46a-4d25-955e-99ec94e7b2f6',
+            u'_deleted_at': None,
+            u'_xform_id_string': u'groups_in_repeats',
+            u'_status': u'submitted_via_web',
+#            u'_bamboo_dataset_id': u'',
+#            u'_submission_time': u'2013-03-20T10:50:08',
+            u'name': u'Abe',
+            u'age': u'88',
+            u'has_children': u'1',
+#            u'meta/instanceID': u'uuid:ba6bc9d7-b46a-4d25-955e-99ec94e7b2f6',
+#            u'formhub/uuid': u'1c491d705d514354acd4a9e34fe7526d',
+            u'_attachments': [],
+            u'children[1]/childs_info/name': u'Cain',
+            u'children[2]/childs_info/name': u'Abel',
+            u'children[1]/childs_info/age': u'56',
+            u'children[2]/childs_info/age': u'48',
+            u'children[1]/immunization/immunization_received/polio_1': True,
+            u'children[1]/immunization/immunization_received/polio_2': False,
+            u'children[2]/immunization/immunization_received/polio_1': True,
+            u'children[2]/immunization/immunization_received/polio_2': True,
+            u'web_browsers/chrome': True,
+            u'web_browsers/firefox': False,
+            u'web_browsers/ie': False,
+            u'web_browsers/safari': False,
+            u'gps': u'-1.2626156 36.7923571 0.0 30.0',
+            u'_geolocation': [u'-1.2626156', u'36.7923571'],
+            u'_gps_latitude': u'-1.2626156',
+            u'_gps_longitude': u'36.7923571',
+            u'_gps_altitude': u'0.0',
+            u'_gps_precision': u'30.0',
+        }
+        self.maxDiff = None
+        self.assertEqual(data_0, expected_data_0)
+
+    # todo: test nested repeats as well on xls
+    def test_xls_groups_within_repeats(self):
+        self._publish_xls_fixture_set_xform("groups_in_repeats")
+        self._submit_fixture_instance("groups_in_repeats", "01")
+        dd = self.xform.data_dictionary()
+        columns = dd.get_keys()
+        data = self._xls_data_for_dataframe()
+        # remove dynamic fields
+        ignore_list = [
+            '_uuid', 'meta/instanceID', 'formhub/uuid', '_submission_time',
+            '_id', '_bamboo_dataset_id']
+        for item in ignore_list:
+            # pop unwanted keys from main section
+            for d in data["groups_in_repeats"]:
+                if d.has_key(item):
+                    d.pop(item)
+            # pop unwanted keys from children's section
+            for d in data["children"]:
+                if d.has_key(item):
+                    d.pop(item)
+        # todo: add _id to xls export
+        expected_data = {
+            u"groups_in_repeats":
+            [
+                {
+#                        u'_submission_time': u'2013-03-21T02:57:37',
+                    u'picture': None,
+                    u'has_children': u'1',
+                    u'name': u'Abe',
+                    u'age': u'88',
+                    u'web_browsers/chrome': True,
+                    u'web_browsers/safari': False,
+                    u'web_browsers/ie': False,
+                    u'web_browsers/firefox': False,
+                    u'gps': u'-1.2626156 36.7923571 0.0 30.0',
+                    u'_gps_latitude': u'-1.2626156',
+                    u'_gps_longitude': u'36.7923571',
+                    u'_gps_altitude': u'0.0',
+                    u'_gps_precision': u'30.0',
+#                        u'meta/instanceID': u'uuid:ba6bc9d7-b46a-4d25-955e-99ec94e7b2f6',
+#                        u'_uuid': u'ba6bc9d7-b46a-4d25-955e-99ec94e7b2f6',
+                    u'_index': 1,
+                    u'_parent_table_name': None,
+                    u'_parent_index': -1
+                }
+            ]
+            ,
+            u"children":
+            [
+                {
+                    u'children/childs_info/name': u'Cain',
+                    u'children/childs_info/age': u'56',
+                    u'children/immunization/immunization_received/polio_1': True,
+                    u'children/immunization/immunization_received/polio_2': False,
+                    u'_index': 1,
+                    u'_parent_table_name': u'groups_in_repeats',
+                    u'_parent_index': 1,
+#                        u'_submission_time': None,
+#                        u'_uuid': None,
+                },
+                {
+                    u'children/childs_info/name': u'Able',
+                    u'children/childs_info/age': u'48',
+                    u'children/immunization/immunization_received/polio_1': True,
+                    u'children/immunization/immunization_received/polio_2': True,
+                    u'_index': 2,
+                    u'_parent_table_name': u'groups_in_repeats',
+                    u'_parent_index': 1,
+#                        u'_submission_time': None,
+#                        u'_uuid': None,
+                }
+            ]
+        }
+        self.maxDiff = None
+        self.assertEqual(
+            data["groups_in_repeats"][0], expected_data["groups_in_repeats"][0])
+        # each of the children should have children/... keys, we can guratnee the order so we cant check the values, just make sure they are not none
+        self.assertEqual(len(data["children"]), 2)
+        for child in data["children"]:
+            self.assertTrue(child.has_key("children/childs_info/name"))
+            self.assertIsNotNone(child["children/childs_info/name"])
+            self.assertTrue(child.has_key("children/childs_info/age"))
+            self.assertIsNotNone(child["children/childs_info/name"])
+            self.assertTrue(child.has_key("children/immunization/immunization_received/polio_1"))
+            self.assertEqual(type(child["children/immunization/immunization_received/polio_1"]), bool)
+            self.assertTrue(child.has_key("children/immunization/immunization_received/polio_2"))
+            self.assertEqual(type(child["children/immunization/immunization_received/polio_2"]), bool)

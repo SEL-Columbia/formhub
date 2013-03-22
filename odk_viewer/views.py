@@ -243,9 +243,24 @@ def create_export(request, username, id_string, export_type):
 
     query = request.POST.get("query")
     force_xlsx = request.POST.get('xlsx') == 'true'
+    
+    # export options
+    group_delimiter = request.POST.get("options[group_delimiter]", '/')
+    if group_delimiter not in ['.', '/']:
+        return HttpResponseBadRequest(
+            _("%s is not a valid delimiter" % delimiter))
+
+    # default is True, so when dont_.. is yes split_select_multiples becomes False
+    split_select_multiples = request.POST.get(
+        "options[dont_split_select_multiples]", "no") == "no"
+    
+    options = {
+        'group_delimiter': group_delimiter,
+        'split_select_multiples': split_select_multiples
+    }
 
     try:
-        create_async_export(xform, export_type, query, force_xlsx)
+        create_async_export(xform, export_type, query, force_xlsx, options)
     except Export.ExportTypeError:
         return HttpResponseBadRequest(
             _("%s is not a valid export type" % export_type))

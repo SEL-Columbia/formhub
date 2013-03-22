@@ -15,11 +15,37 @@
     <form action="{% url odk_viewer.views.create_export username xform.id_string export_type %}" method="post" enctype="application/x-www-form-urlencoded">
         {% csrf_token %}
             <span style='float:middle;'>
-	        <div>
+              <div>
                 <input type="submit" class="btn large btn-primary" value="{% trans 'New Export' %}" />
+                <a href="#advanced-export-modal" role="button" class="btn" data-toggle="modal">{% trans "Advanced Export" %}</a>
             </div>
             </span>
     </form>
+    
+    <div id="advanced-export-modal" class="modal hide fade">
+      <form action="{% url odk_viewer.views.create_export username xform.id_string export_type %}" method="post" enctype="application/x-www-form-urlencoded">
+        {% csrf_token %}
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h3>{% trans "Advanced Export" %}</h3>
+        </div>
+        <div class="modal-body">
+          <label>{% trans "Delimiter to use to separate group names from field names" %}</label>
+          <select id="options-group_delimiter" name="options[group_delimiter]" class="span2">
+            <option value=".">. ({% trans "Dot" %})</option>
+            <option value="/" selected>/ ({% trans "Slash" %})</option>
+          </select>
+          <label class="checkbox">
+            <input type="checkbox" name="options[dont_split_select_multiples]" value="yes" />
+            {% trans "DONT split select multiple choice answers into separate columns" %}
+          </label>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Cancel" %}</button>
+          <input type="submit" class="btn large btn-primary" value="{% trans "Create Export" %}" />
+        </div>
+      </form>
+    </div>
 
   <table id="forms-table" class="table table-bordered table-striped">
     <thead>

@@ -80,30 +80,38 @@ class DictOrganizer(object):
 
 
 def _df_builder_for_export_type(export_type, username, id_string,
-                                filter_query=None):
+                                group_delimiter, split_select_multiples,
+                                filter_query=None,):
     from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder,\
-        CSVDataFrameBuilder
+        CSVDataFrameBuilder, GROUP_DELIMITER_SLASH,\
+        GROUP_DELIMITER_DOT, DEFAULT_GROUP_DELIMITER
     from odk_viewer.models import Export
 
     if export_type == Export.XLS_EXPORT:
-        return XLSDataFrameBuilder(username, id_string, filter_query)
+        return XLSDataFrameBuilder(
+            username, id_string, filter_query, group_delimiter,
+            split_select_multiples)
     elif export_type == Export.CSV_EXPORT:
-        return CSVDataFrameBuilder(username, id_string, filter_query)
+        return CSVDataFrameBuilder(
+            username, id_string, filter_query, group_delimiter,
+            split_select_multiples)
     else:
         raise ValueError
 
 
 def generate_export(export_type, extension, username, id_string,
-                    export_id = None, filter_query=None):
+                    export_id = None, filter_query=None,
+                    group_delimiter='/',
+                    split_select_multiples=True):
     """
     Create appropriate export object given the export type
     """
     from odk_viewer.models import Export
-
     xform = XForm.objects.get(user__username=username, id_string=id_string)
 
-    df_builder = _df_builder_for_export_type(export_type, username, id_string,
-        filter_query)
+    df_builder = _df_builder_for_export_type(
+        export_type, username, id_string, group_delimiter,
+        split_select_multiples, filter_query)
     if hasattr(df_builder, 'get_exceeds_xls_limits')\
             and df_builder.get_exceeds_xls_limits():
         extension = 'xlsx'
