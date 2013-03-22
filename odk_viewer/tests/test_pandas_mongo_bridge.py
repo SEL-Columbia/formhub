@@ -568,7 +568,6 @@ class TestPandasMongoBridge(MainTestCase):
         # close and delete file
         csv_file.close()
         os.unlink(temp_file.name)
-<<<<<<< Local Changes
 
     def test_csv_column_indices_in_groups_within_repeats(self):
         self._publish_xls_fixture_set_xform("groups_in_repeats")
@@ -705,5 +704,3 @@ class TestPandasMongoBridge(MainTestCase):
             self.assertEqual(type(child["children/immunization/immunization_received/polio_1"]), bool)
             self.assertTrue(child.has_key("children/immunization/immunization_received/polio_2"))
             self.assertEqual(type(child["children/immunization/immunization_received/polio_2"]), bool)
-=======
->>>>>>> External Changes
