@@ -222,12 +222,11 @@ class TestPandasMongoBridge(MainTestCase):
         temp_file.close()
         fixture, output = '', ''
         with open(csv_fixture_path) as f:
-            fixture_dict = csv.DictReader(f).next()
+            fixture = f.read()
         with open(temp_file.name) as f:
-            output_dict = csv.DictReader(f).next()
+            output = f.read()
         os.unlink(temp_file.name)
-        self.maxDiff = None
-        self.assertEqual(fixture_dict, output_dict)
+        self.assertEqual(fixture, output)
 
     def test_csv_columns_for_gps_within_groups(self):
         self._publish_grouped_gps_form()
@@ -569,6 +568,7 @@ class TestPandasMongoBridge(MainTestCase):
         # close and delete file
         csv_file.close()
         os.unlink(temp_file.name)
+<<<<<<< Local Changes
 
     def test_csv_column_indices_in_groups_within_repeats(self):
         self._publish_xls_fixture_set_xform("groups_in_repeats")
@@ -619,7 +619,7 @@ class TestPandasMongoBridge(MainTestCase):
         self.assertEqual(data_0, expected_data_0)
 
     # todo: test nested repeats as well on xls
-    def test_xls_column_indices_in_groups_within_repeats(self):
+    def test_xls_groups_within_repeats(self):
         self._publish_xls_fixture_set_xform("groups_in_repeats")
         self._submit_fixture_instance("groups_in_repeats", "01")
         dd = self.xform.data_dictionary()
@@ -705,3 +705,5 @@ class TestPandasMongoBridge(MainTestCase):
             self.assertEqual(type(child["children/immunization/immunization_received/polio_1"]), bool)
             self.assertTrue(child.has_key("children/immunization/immunization_received/polio_2"))
             self.assertEqual(type(child["children/immunization/immunization_received/polio_2"]), bool)
+=======
+>>>>>>> External Changes
