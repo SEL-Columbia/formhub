@@ -104,11 +104,15 @@ def clone_xlsform(request, username):
                 {
                     'id_string': survey.id_string,
                 }, audit, request)
+            clone_form_url = reverse(show, kwargs={'username': to_username,'id_string': xform.id_string + XForm.CLONED_SUFFIX })
             return {
                 'type': 'alert-success',
-                'text': _(u'Successfully cloned %(id_string)s into your '
+                'text': _(u'Successfully cloned to %(form_url)s into your '
                           u'%(profile_url)s') % {
-                              'id_string': survey.id_string,
+                              'form_url': u'<a href="%(url)s">%(id_string)s</a> ' % {
+                                'id_string': survey.id_string,
+                                'url': clone_form_url
+                              },
                               'profile_url': u'<a href="%s">profile</a>.' %
                               reverse(profile,
                                       kwargs={'username': to_username})
