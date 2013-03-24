@@ -13,12 +13,13 @@ from odk_viewer.views import delete_export, export_list, create_export,\
     export_progress, export_download
 from odk_viewer.models import Export, ParsedInstance
 from utils.export_tools import generate_export, increment_index_in_filename
-from odk_logger.models import Instance
+from odk_logger.models import Instance, XForm
 from main.views import delete_data
 from utils.logger_tools import inject_instanceid
 from django.core.files.storage import get_storage_class
 from odk_viewer.pandas_mongo_bridge import NoRecordsFoundError
 from odk_viewer.tasks import create_xls_export
+from xlrd import open_workbook
 
 
 class TestExports(MainTestCase):
@@ -595,3 +596,169 @@ class TestExports(MainTestCase):
         num_csv_exports = Export.objects.filter(
             xform=self.xform, export_type=Export.CSV_EXPORT).count()
         self.assertEqual(num_csv_exports, initial_num_csv_exports + 3)
+       
+    def _get_csv_data(self, filepath):
+        storage = get_storage_class()()
+        csv_file = storage.open(filepath)
+        reader = csv.DictReader(csv_file)
+        data = reader.next()
+        csv_file.close()
+        return data
+        
+    def _get_xls_data(self, filepath):
+        storage = get_storage_class()()
+        with storage.open(filepath) as f:
+            workbook = open_workbook(file_contents=f.read())
+        transportation_sheet = workbook.sheet_by_name("transportation")
+        self.assertTrue(transportation_sheet.nrows > 1)
+        headers = transportation_sheet.row_values(0)
+        column1 = transportation_sheet.row_values(1)
+        return dict(zip(headers, column1))
+    
+    def test_column_header_delimiter_export_option(self):
+        self._publish_transportation_form()
+        # survey 1 has ambulance and bicycle as values for
+        # transport/available_transportation_types_to_referral_facility
+        self._submit_transport_instance(survey_at=1)
+        create_csv_export_url = reverse(create_export, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': 'csv'
+        })
+        default_params = {}
+        custom_params = {
+            'options[group_delimiter]': '.',
+        }
+        # test csv with default group delimiter
+        response = self.client.post(create_csv_export_url, default_params)
+        self.assertEqual(response.status_code, 302)
+        export = Export.objects.filter(
+            xform=self.xform, export_type='csv').latest('created_on')
+        self.assertTrue(bool(export.filepath))
+        data = self._get_csv_data(export.filepath)
+        self.assertTrue(
+            data.has_key(
+                'transport/available_transportation_types_to_referral_facility/ambulance'))
+        self.assertEqual(
+            data['transport/available_transportation_types_to_referral_facility/ambulance'], 'True')
+
+        # test csv with dot delimiter
+        response = self.client.post(create_csv_export_url, custom_params)
+        self.assertEqual(response.status_code, 302)
+        export = Export.objects.filter(
+            xform=self.xform, export_type='csv').latest('created_on')
+        self.assertTrue(bool(export.filepath))
+        data = self._get_csv_data(export.filepath)
+        self.assertTrue(
+            data.has_key(
+                'transport.available_transportation_types_to_referral_facility.ambulance'))
+        self.assertEqual(
+            data['transport.available_transportation_types_to_referral_facility.ambulance'], 'True')
+
+        # test xls with default group delimiter
+        create_csv_export_url = reverse(create_export, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': 'xls'
+        })
+        response = self.client.post(create_csv_export_url, default_params)
+        self.assertEqual(response.status_code, 302)
+        export = Export.objects.filter(
+            xform=self.xform, export_type='xls').latest('created_on')
+        self.assertTrue(bool(export.filepath))
+        data = self._get_xls_data(export.filepath)
+        self.assertTrue(
+            data.has_key("transport/available_transportation_types_to_referral_facility/ambulance"))
+        # xlrd reader seems to convert bools into integers i.e. 0 or 1
+        self.assertEqual(
+            data["transport/available_transportation_types_to_referral_facility/ambulance"], 1)
+            
+        # test xls with dot delimiter
+        response = self.client.post(create_csv_export_url, custom_params)
+        self.assertEqual(response.status_code, 302)
+        export = Export.objects.filter(
+            xform=self.xform, export_type='xls').latest('created_on')
+        self.assertTrue(bool(export.filepath))
+        data = self._get_xls_data(export.filepath)
+        self.assertTrue(
+            data.has_key("transport.available_transportation_types_to_referral_facility.ambulance"))
+        # xlrd reader seems to convert bools into integers i.e. 0 or 1
+        self.assertEqual(
+            data["transport.available_transportation_types_to_referral_facility.ambulance"], 1)
+            
+    def test_split_select_multiple_export_option(self):
+        self._publish_transportation_form()
+        self._submit_transport_instance(survey_at=1)
+        create_csv_export_url = reverse(create_export, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': 'csv'
+        })
+        default_params = {}
+        custom_params = {
+            'options[dont_split_select_multiples]': 'yes'
+        }
+        # test csv with default split select multiples
+        response = self.client.post(create_csv_export_url, default_params)
+        self.assertEqual(response.status_code, 302)
+        export = Export.objects.filter(
+            xform=self.xform, export_type='csv').latest('created_on')
+        self.assertTrue(bool(export.filepath))
+        data = self._get_csv_data(export.filepath)
+        # we should have transport/available_transportation_types_to_referral_facility/ambulance as a separate column
+        self.assertTrue(
+            data.has_key(
+                'transport/available_transportation_types_to_referral_facility/ambulance'))
+                
+        # test csv without default split select multiples
+        response = self.client.post(create_csv_export_url, custom_params)
+        self.assertEqual(response.status_code, 302)
+        export = Export.objects.filter(
+            xform=self.xform, export_type='csv').latest('created_on')
+        self.assertTrue(bool(export.filepath))
+        data = self._get_csv_data(export.filepath)
+        # transport/available_transportation_types_to_referral_facility/ambulance should not be in its own column
+        self.assertFalse(
+            data.has_key(
+                'transport/available_transportation_types_to_referral_facility/ambulance'))
+        # transport/available_transportation_types_to_referral_facility should be a column
+        self.assertTrue(
+            data.has_key(
+                'transport/available_transportation_types_to_referral_facility'))
+        # check that ambulance is one the values within the transport/available_transportation_types_to_referral_facility column
+        self.assertTrue("ambulance" in data['transport/available_transportation_types_to_referral_facility'].split(" "))
+
+        create_xls_export_url = reverse(create_export, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+            'export_type': 'xls'
+        })
+        # test xls with default split select multiples
+        response = self.client.post(create_xls_export_url, default_params)
+        self.assertEqual(response.status_code, 302)
+        export = Export.objects.filter(
+            xform=self.xform, export_type='xls').latest('created_on')
+        self.assertTrue(bool(export.filepath))
+        data = self._get_xls_data(export.filepath)
+        # we should have transport/available_transportation_types_to_referral_facility/ambulance as a separate column
+        self.assertTrue(
+            data.has_key(
+                'transport/available_transportation_types_to_referral_facility/ambulance'))
+
+        # test xls without default split select multiples
+        response = self.client.post(create_xls_export_url, custom_params)
+        self.assertEqual(response.status_code, 302)
+        export = Export.objects.filter(
+            xform=self.xform, export_type='xls').latest('created_on')
+        self.assertTrue(bool(export.filepath))
+        data = self._get_xls_data(export.filepath)
+        # transport/available_transportation_types_to_referral_facility/ambulance should NOT be in its own column
+        self.assertFalse(
+            data.has_key(
+                'transport/available_transportation_types_to_referral_facility/ambulance'))
+        # transport/available_transportation_types_to_referral_facility should be a column
+        self.assertTrue(
+            data.has_key(
+                'transport/available_transportation_types_to_referral_facility'))
+        # check that ambulance is one the values within the transport/available_transportation_types_to_referral_facility column
+        self.assertTrue("ambulance" in data['transport/available_transportation_types_to_referral_facility'].split(" "))

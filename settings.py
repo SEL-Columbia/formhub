@@ -255,6 +255,7 @@ IMG_FILE_TYPE = 'jpg'
 BROKER_BACKEND = "rabbitmq"
 BROKER_URL = 'amqp://guest:guest@localhost:5672/'
 CELERY_RESULT_BACKEND = "amqp"  # telling Celery to report the results back to RabbitMQ
+CELERY_ALWAYS_EAGER = False
 
 # auto add crowdform to new registration
 AUTO_ADD_CROWDFORM = False

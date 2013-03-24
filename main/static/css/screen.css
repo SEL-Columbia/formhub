@@ -988,6 +988,10 @@ a:focus {
 #language-bar select{
   width: 110px;
 }
+/* Dropbox Chooser */
+.dropbox-chooser{
+	margin: 12px auto 12px auto;
+}
 /* Recline CSS properties */
 .recline-slickgrid {
     height: 550px;
