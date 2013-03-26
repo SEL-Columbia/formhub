@@ -1,23 +1,20 @@
 from datetime import datetime
 from django.contrib.contenttypes.models import ContentType
 import os
-import urllib2
 import json
-from django import forms
 from django.core.urlresolvers import reverse
 from django.core.files.storage import default_storage, get_storage_class
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect, HttpResponseNotAllowed, Http404, \
-    HttpResponseForbidden, HttpResponseNotFound, HttpResponseServerError
+    HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotFound,\
+    HttpResponseServerError
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
 from django.utils import simplejson
 from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_GET, require_POST
-from django.views.decorators.gzip import gzip_page
 from google_doc import GoogleDoc
 from guardian.shortcuts import assign, remove_perm, get_users_with_perms
 
@@ -32,7 +29,6 @@ from odk_viewer.models.data_dictionary import upload_to
 from odk_viewer.models.parsed_instance import GLOBAL_SUBMISSION_STATS,\
     DATETIME_FORMAT
 from odk_viewer.views import survey_responses, attachment_url
-from utils.viewer_tools import image_urls_for_form
 from stats.models import StatsCount
 from stats.tasks import stat_log
 from utils.decorators import is_owner
@@ -45,6 +41,7 @@ from main.models import AuditLog
 
 from utils.viewer_tools import enketo_url
 from utils.qrcode import generate_qrcode
+
 
 def home(request):
     if request.user.username:
@@ -104,19 +101,20 @@ def clone_xlsform(request, username):
                 {
                     'id_string': survey.id_string,
                 }, audit, request)
-            clone_form_url = reverse(show, kwargs={'username': to_username,'id_string': xform.id_string + XForm.CLONED_SUFFIX })
+            clone_form_url = reverse(
+                show, kwargs={
+                    'username': to_username,
+                    'id_string': xform.id_string + XForm.CLONED_SUFFIX})
             return {
                 'type': 'alert-success',
                 'text': _(u'Successfully cloned to %(form_url)s into your '
-                          u'%(profile_url)s') % {
-                              'form_url': u'<a href="%(url)s">%(id_string)s</a> ' % {
-                                'id_string': survey.id_string,
-                                'url': clone_form_url
-                              },
-                              'profile_url': u'<a href="%s">profile</a>.' %
-                              reverse(profile,
-                                      kwargs={'username': to_username})
-                          }
+                          u'%(profile_url)s') %
+                {'form_url': u'<a href="%(url)s">%(id_string)s</a> ' % {
+                 'id_string': survey.id_string,
+                 'url': clone_form_url
+                 },
+                'profile_url': u'<a href="%s">profile</a>.' %
+                reverse(profile, kwargs={'username': to_username})}
             }
     context.message = publish_form(set_form)
     if request.is_ajax():
@@ -355,7 +353,7 @@ def public_api(request, username, id_string):
     xform = get_object_or_404(XForm,
                               user__username=username, id_string=id_string)
 
-    DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+    _DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
     exports = {'username': xform.user.username,
                'id_string': xform.id_string,
                'bamboo_dataset': xform.bamboo_dataset,
@@ -364,8 +362,8 @@ def public_api(request, username, id_string):
                'downloadable': xform.downloadable,
                'is_crowd_form': xform.is_crowd_form,
                'title': xform.title,
-               'date_created': xform.date_created.strftime(DATETIME_FORMAT),
-               'date_modified': xform.date_modified.strftime(DATETIME_FORMAT),
+               'date_created': xform.date_created.strftime(_DATETIME_FORMAT),
+               'date_modified': xform.date_modified.strftime(_DATETIME_FORMAT),
                'uuid': xform.uuid,
                }
     response_text = simplejson.dumps(exports)
@@ -546,7 +544,7 @@ def edit(request, username, id_string):
                     'id_string': xform.id_string
                 }, audit, request)
             for aFile in request.FILES.getlist("media"):
-              MetaData.media_upload(xform, aFile)
+                MetaData.media_upload(xform, aFile)
         elif request.POST.get('map_name'):
             mapbox_layer = MapboxLayerForm(request.POST)
             if mapbox_layer.is_valid():
@@ -672,8 +670,8 @@ def download_metadata(request, username, id_string, data_id):
         file_path = data.data_file.name
         filename, extension = os.path.splitext(file_path.split('/')[-1])
         extension = extension.strip('.')
-        default_storage = get_storage_class()()
-        if default_storage.exists(file_path):
+        dfs = get_storage_class()()
+        if dfs.exists(file_path):
             audit = {
                 'xform': xform.id_string
             }
@@ -700,11 +698,11 @@ def delete_metadata(request, username, id_string, data_id):
                               user__username=username, id_string=id_string)
     owner = xform.user
     data = get_object_or_404(MetaData, pk=data_id)
-    default_storage = get_storage_class()()
+    dfs = get_storage_class()()
     req_username = request.user.username
     if request.GET.get('del', False) and username == req_username:
         try:
-            default_storage.delete(data.data_file.name)
+            dfs.delete(data.data_file.name)
             data.delete()
             audit = {
                 'xform': xform.id_string
@@ -720,7 +718,7 @@ def delete_metadata(request, username, id_string, data_id):
                 'username': username,
                 'id_string': id_string
             }))
-        except Exception, e:
+        except Exception:
             return HttpResponseServerError()
     elif request.GET.get('map_name_del', False) and username == req_username:
         data.delete()
@@ -745,11 +743,11 @@ def download_media_data(request, username, id_string, data_id):
         XForm, user__username=username, id_string=id_string)
     owner = xform.user
     data = get_object_or_404(MetaData, id=data_id)
-    default_storage = get_storage_class()()
+    dfs = get_storage_class()()
     if request.GET.get('del', False):
         if username == request.user.username:
             try:
-                default_storage.delete(data.data_file.name)
+                dfs.delete(data.data_file.name)
                 data.delete()
                 audit = {
                     'xform': xform.id_string
@@ -766,14 +764,14 @@ def download_media_data(request, username, id_string, data_id):
                     'username': username,
                     'id_string': id_string
                 }))
-            except Exception, e:
+            except Exception:
                 return HttpResponseServerError()
     else:
         if username:  # == request.user.username or xform.shared:
             file_path = data.data_file.name
             filename, extension = os.path.splitext(file_path.split('/')[-1])
             extension = extension.strip('.')
-            if default_storage.exists(file_path):
+            if dfs.exists(file_path):
                 audit = {
                     'xform': xform.id_string
                 }
@@ -1023,8 +1021,6 @@ def update_xform(request, username, id_string):
         XForm, user__username=username, id_string=id_string)
     owner = xform.user
 
-    context = RequestContext(request)
-
     def set_form():
         form = QuickConverter(request.POST, request.FILES)
         survey = form.publish(request.user, id_string).survey
@@ -1146,7 +1142,8 @@ def qrcode(request, username, id_string):
     if url:
         image = generate_qrcode(url)
         results = """<img class="qrcode" src="%s" alt="%s" />
-                   </br><a href="%s" target="_blank">%s</a>""" % (image, url, url, url)
+                   </br><a href="%s" target="_blank">%s</a>""" \
+            % (image, url, url, url)
     else:
         error_msg = _(u"Error Generating QRCODE")
         results = """<div class="alert alert-error">%s</div>""" % error_msg
