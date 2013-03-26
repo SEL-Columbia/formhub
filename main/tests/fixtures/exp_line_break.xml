@@ -61,7 +61,7 @@
       <label ref="jr:itext('/exp_line_break/item:label')"/>
     </input>
     <input ref="/exp_line_break/amount">
-      <label>Amount Spent on <output value="/exp_line_break/item"/>.</label>
+      <label>Amount Spent on <output value=" /exp_line_break/item "/>.</label>
     </input>
     <select1 ref="/exp_line_break/expense_type">
       <label>Expense type</label>
