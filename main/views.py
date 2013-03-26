@@ -31,8 +31,8 @@ from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_viewer.models.data_dictionary import upload_to
 from odk_viewer.models.parsed_instance import GLOBAL_SUBMISSION_STATS,\
     DATETIME_FORMAT
-from odk_viewer.views import image_urls_for_form, survey_responses, \
-    attachment_url
+from odk_viewer.views import survey_responses, attachment_url
+from utils.viewer_tools import image_urls_for_form
 from stats.models import StatsCount
 from stats.tasks import stat_log
 from utils.decorators import is_owner
