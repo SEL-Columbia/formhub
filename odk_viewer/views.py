@@ -222,6 +222,9 @@ def data_export(request, username, id_string, export_type):
             'export_type': export_type.upper()
         }, audit, request)
 
+    if not export.filename:
+        # tends to happen when using newset_export_for.
+        return HttpResponseNotFound("File does not exist!")
     # get extension from file_path, exporter could modify to
     # xlsx if it exceeds limits
     path, ext = os.path.splitext(export.filename)
@@ -243,7 +246,7 @@ def create_export(request, username, id_string, export_type):
 
     query = request.POST.get("query")
     force_xlsx = request.POST.get('xlsx') == 'true'
-    
+
     # export options
     group_delimiter = request.POST.get("options[group_delimiter]", '/')
     if group_delimiter not in ['.', '/']:
@@ -253,7 +256,7 @@ def create_export(request, username, id_string, export_type):
     # default is True, so when dont_.. is yes split_select_multiples becomes False
     split_select_multiples = request.POST.get(
         "options[dont_split_select_multiples]", "no") == "no"
-    
+
     options = {
         'group_delimiter': group_delimiter,
         'split_select_multiples': split_select_multiples
