@@ -264,6 +264,9 @@ DEFAULT_CROWDFORM = {'xform_username': 'bob', 'xform_id_string': 'transport'}
 # duration to keep zip exports before deletio (in seconds)
 ZIP_EXPORT_COUNTDOWN = 3600  # 1 hour
 
+# default content length for submission requests
+DEFAULT_CONTENT_LENGTH = 10000000
+
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--with-fixture-bundling']
 
