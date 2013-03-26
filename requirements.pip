@@ -12,7 +12,7 @@ modilabs-python-utils==0.1.5
 PIL==1.1.7
 poster==0.8.1
 pymongo==2.2.1
-pyxform==0.9.11
+pyxform==0.9.13
 South==0.7.6
 xlrd==0.8.0
 xlwt==0.7.2
