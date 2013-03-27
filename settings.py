@@ -25,8 +25,8 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'db.sqlite3',                      # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
     }
 }
 
@@ -102,7 +102,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'mlfs33^s1l4xf6a36$0#j%dd*sisfoi&)&4s-v=91#^l01v)*j'
@@ -111,7 +111,7 @@ SECRET_KEY = 'mlfs33^s1l4xf6a36$0#j%dd*sisfoi&)&4s-v=91#^l01v)*j'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    # 'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -132,7 +132,8 @@ ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, 'templates')
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Put strings here, like "/home/html/django_templates"
+    # or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
@@ -191,7 +192,8 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+            'format': '%(levelname)s %(asctime)s %(module)s' +
+                      ' %(process)d %(thread)d %(message)s'
         },
         'simple': {
             'format': '%(levelname)s %(message)s'
@@ -203,15 +205,15 @@ LOGGING = {
             'class': 'django.utils.log.AdminEmailHandler'
         },
         'console': {
-             'level':'DEBUG',
-             'class':'logging.StreamHandler',
-             'formatter': 'verbose'
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
         },
         'audit': {
-             'level':'DEBUG',
-             'class':'utils.log.AuditLogHandler',
-             'formatter': 'verbose',
-             'model': 'main.models.audit.AuditLog'
+            'level': 'DEBUG',
+            'class': 'utils.log.AuditLogHandler',
+            'formatter': 'verbose',
+            'model': 'main.models.audit.AuditLog'
         },
     },
     'loggers': {
@@ -243,10 +245,11 @@ GOOGLE_STEP2_URI = 'http://formhub.org/gwelcome'
 GOOGLE_CLIENT_ID = '617113120802.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = '9reM29qpGFPyI8TBuB54Z4fk'
 
-THUMB_CONF = {'large' : {'size': 1280, 'suffix': '-large'},
-              'medium' : {'size': 640, 'suffix': '-medium'},
-              'small' : {'size': 240, 'suffix': '-small'},
-             }
+THUMB_CONF = {
+    'large': {'size': 1280, 'suffix': '-large'},
+    'medium': {'size': 640, 'suffix': '-medium'},
+    'small': {'size': 240, 'suffix': '-small'},
+}
 # order of thumbnails from largest to smallest
 THUMB_ORDER = ['large', 'medium', 'small']
 IMG_FILE_TYPE = 'jpg'
@@ -254,7 +257,7 @@ IMG_FILE_TYPE = 'jpg'
 # celery
 BROKER_BACKEND = "rabbitmq"
 BROKER_URL = 'amqp://guest:guest@localhost:5672/'
-CELERY_RESULT_BACKEND = "amqp"  # telling Celery to report the results back to RabbitMQ
+CELERY_RESULT_BACKEND = "amqp"  # telling Celery to report results to RabbitMQ
 CELERY_ALWAYS_EAGER = False
 
 # auto add crowdform to new registration
@@ -264,11 +267,14 @@ DEFAULT_CROWDFORM = {'xform_username': 'bob', 'xform_id_string': 'transport'}
 # duration to keep zip exports before deletio (in seconds)
 ZIP_EXPORT_COUNTDOWN = 3600  # 1 hour
 
+# default content length for submission requests
+DEFAULT_CONTENT_LENGTH = 10000000
+
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--with-fixture-bundling']
 
 TESTING_MODE = False
-if len(sys.argv)>=2 and (sys.argv[1]=="test" or sys.argv[1]=="test_all"):
+if len(sys.argv) >= 2 and (sys.argv[1] == "test" or sys.argv[1] == "test_all"):
     # This trick works only when we run tests from the command line.
     TESTING_MODE = True
 else:
@@ -276,16 +282,17 @@ else:
 
 # Clear out the test database
 if TESTING_MODE:
-    MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'test_media/')
+    MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'test_media/')
     subprocess.call(["rm", "-r", MEDIA_ROOT])
     MONGO_DB = _MONGO_CONNECTION[MONGO_TEST_DB_NAME]
     MONGO_DB.instances.drop()
-    # need to have CELERY_ALWAYS_EAGER True and BROKER_BACKEND as memory to run tasks immediately while testing
+    # need to have CELERY_ALWAYS_EAGER True and BROKER_BACKEND as memory
+    # to run tasks immediately while testing
     CELERY_ALWAYS_EAGER = True
     BROKER_BACKEND = 'memory'
     #TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
 else:
-    MEDIA_ROOT  = os.path.join(PROJECT_ROOT, 'media/')
+    MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media/')
     MONGO_DB = _MONGO_CONNECTION[MONGO_DB_NAME]
 
 try:
