@@ -161,7 +161,8 @@ class XForm(models.Model):
             'date': 'date',
             'time': 'datetime',
             'dateTime': 'datetime',
-            'select': 'list'
+            'select': 'list',
+            'boolean': 'boolean'
             # everything else is a 'string'
         }
         BIND_TYPE_TO_OLAP = {
@@ -172,10 +173,9 @@ class XForm(models.Model):
         BIND_TYPE_TO_FORMAT = {
             'time': 'hh:mm:ss'
         }
-        def parse_to_sdf(element):
-            bind_type = element.bind.get("type")
+        def parse_to_sdf(bind_type, label):
             sdf = {}
-            sdf["label"] = element.label
+            sdf["label"] = label
             sdf["simpletype"] = BIND_TYPE_TO_SIMPLE_TYPE.get(bind_type, "string")
             sdf["olap_type"] = BIND_TYPE_TO_OLAP.get(bind_type, "dimension")
             format = BIND_TYPE_TO_FORMAT.get(bind_type)
@@ -187,10 +187,29 @@ class XForm(models.Model):
         elements = [el for el in data_dictionary.survey_elements if\
             isinstance(el, Question)]
         sdf = {}
-        for el in elements:
+        for element in elements:
+            bind_type = element.bind.get("type")
+            label = element.label
             # bamboo converts slashes to underscrore, lets do the same
-            key = "_".join(el.get_abbreviated_xpath().split("/"))
-            sdf[key] = parse_to_sdf(el)
+            key = "_".join(element.get_abbreviated_xpath().split("/"))
+            sdf[key] = parse_to_sdf(bind_type, label)
+            # if its a geopoint, split it into its components
+            if bind_type == "geopoint":
+                for part in ["latitude", "longitude", "altitude", "precision"]:
+                    sdf["_%s_%s" % (key, part)] = parse_to_sdf(
+                        "decimal", "_%s_%s" % (element.name, part))
+
+            # if is a select multiple, create question for each choice
+            if bind_type == "select":
+                choices = dict([(c.name, c.label) for c in element.children])
+                for name, label in choices.iteritems():
+                    sdf["%s_%s" % (key, name)] = parse_to_sdf("boolean", label)
+
+        # add _uuid and _submission_time
+        # todo: how do we combine this with extra fields from export code
+        extra_fields = {'_uuid': 'string', '_submission_time': 'dateTime'}
+        for name, bind_type in extra_fields.iteritems():
+            sdf[name] = parse_to_sdf(bind_type, name)
         return json.dumps(sdf)
 
     @property

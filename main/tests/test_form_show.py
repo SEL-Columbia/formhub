@@ -440,13 +440,74 @@ class TestFormShow(MainTestCase):
                 'simpletype': 'list',
                 'label': u'6. What web browsers do you use?'
             },
+            u'web_browsers_chrome':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'boolean',
+                'label': u'Google Chrome'
+            },
+            u'web_browsers_firefox':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'boolean',
+                'label': u'Mozilla Firefox'
+            },
+            u'web_browsers_safari':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'boolean',
+                'label': u'Safari'
+            },
+            u'web_browsers_ie':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'boolean',
+                'label': u'Internet Explorer'
+            },
             u'gps':
             {
                 'olap_type': 'dimension',
                 'simpletype': 'string',
                 'label': u'5. Record your GPS coordinates.'
+            },
+            u'_gps_latitude':
+            {
+                'olap_type': 'measure',
+                'simpletype': 'float',
+                'label': u'_gps_latitude'
+            },
+            u'_gps_longitude':
+            {
+                'olap_type': 'measure',
+                'simpletype': 'float',
+                'label': u'_gps_longitude'
+            },
+            u'_gps_altitude':
+            {
+                'olap_type': 'measure',
+                'simpletype': 'float',
+                'label': u'_gps_altitude'
+            },
+            u'_gps_precision':
+            {
+                'olap_type': 'measure',
+                'simpletype': 'float',
+                'label': u'_gps_precision'
+            },
+            u'_uuid':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'string',
+                'label': u'_uuid'
+            },
+            u'_submission_time':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'datetime',
+                'label': u'_submission_time'
             }
         }
+        self.maxDiff = None
         self.assertEqual(schema, expected_schema)
     
     def test_dl_sdf_anon_if_not_shared(self):
