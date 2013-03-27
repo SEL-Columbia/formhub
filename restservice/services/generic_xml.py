@@ -10,5 +10,5 @@ class ServiceDefinition(RestServiceInterface):
         instance = parsed_instance.instance
         headers = {"Content-Type": "application/xml"}
         http = httplib2.Http()
-        resp, content = http.request(url,body=instance.xml,
-                                     headers=headers)
+        resp, content = http.request(
+            url, method="POST", body=instance.xml, headers=headers)

@@ -1,7 +1,6 @@
 
 import os
 import time
-import logging
 
 from django.core.urlresolvers import reverse
 from pybamboo.connection import Connection
@@ -154,3 +153,12 @@ class RestServiceTest(MainTestCase):
         self.assertEqual(
             RestService.objects.all().count(), count - 1
         )
+
+    def test_add_rest_service_with_wrong_id_string(self):
+        add_service_url = reverse(add_service, kwargs={
+            'username': self.user.username,
+            'id_string': 'wrong_id_string'})
+        post_data = {'service_url': self.service_url,
+                     'service_name': self.service_name}
+        response = self.client.post(add_service_url, post_data)
+        self.assertEqual(response.status_code, 404)
