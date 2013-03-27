@@ -174,7 +174,6 @@ class XForm(models.Model):
         }
         def parse_to_sdf(element):
             bind_type = element.bind.get("type")
-            vals = (bind_type, element.name)
             sdf = {}
             sdf["label"] = element.label
             sdf["simpletype"] = BIND_TYPE_TO_SIMPLE_TYPE.get(bind_type, "string")
