@@ -24,47 +24,6 @@ def upload_to(instance, filename):
         os.path.split(filename)[1])
 
 
-def data_dictionary_to_sdf(data_dictionary):
-    BIND_TYPE_TO_SIMPLE_TYPE = {
-        'int': 'integer',
-        'decimal': 'float',
-        'date': 'date',
-        'time': 'datetime',
-        'dateTime': 'datetime',
-        'select': 'list'
-        # everything else is a 'string'
-    }
-    BIND_TYPE_TO_OLAP = {
-        'int': 'measure',
-        'decimal': 'measure'
-        # everything else is a dimension
-    }
-    BIND_TYPE_TO_FORMAT = {
-        'time': 'hh:mm:ss'
-    }
-    def parse_to_sdf(element):
-        bind_type = element.bind.get("type")
-        vals = (bind_type, element.name)
-        sdf = {}
-        sdf["label"] = element.label
-        sdf["simpletype"] = BIND_TYPE_TO_SIMPLE_TYPE.get(bind_type, "string")
-        sdf["olap_type"] = BIND_TYPE_TO_OLAP.get(bind_type, "dimension")
-        format = BIND_TYPE_TO_FORMAT.get(bind_type)
-        if format:
-            sdf["format"] = format
-        return sdf
-
-    from pyxform.question import Question
-    elements = [el for el in data_dictionary.survey_elements if\
-        isinstance(el, Question)]
-    sdf = {}
-    for el in elements:
-        # bamboo converts slashes to underscrore, lets do the same
-        key = "_".join(el.get_abbreviated_xpath().split("/"))
-        sdf[key] = parse_to_sdf(el)
-    return json.dumps(sdf)
-
-
 class DuplicateUUIDError(Exception):
     pass
 
@@ -76,6 +35,7 @@ class XForm(models.Model):
     json = models.TextField(default=u'')
     description = models.TextField(default=u'', null=True)
     xml = models.TextField()
+    _sdf = models.TextField(null=True)
 
     user = models.ForeignKey(User, related_name='xforms', null=True)
     shared = models.BooleanField(default=False)
@@ -193,9 +153,53 @@ class XForm(models.Model):
     def can_be_replaced(self):
         return self.submission_count() == 0
 
+    @classmethod
+    def data_dictionary_to_sdf(cls, data_dictionary):
+        BIND_TYPE_TO_SIMPLE_TYPE = {
+            'int': 'integer',
+            'decimal': 'float',
+            'date': 'date',
+            'time': 'datetime',
+            'dateTime': 'datetime',
+            'select': 'list'
+            # everything else is a 'string'
+        }
+        BIND_TYPE_TO_OLAP = {
+            'int': 'measure',
+            'decimal': 'measure'
+            # everything else is a dimension
+        }
+        BIND_TYPE_TO_FORMAT = {
+            'time': 'hh:mm:ss'
+        }
+        def parse_to_sdf(element):
+            bind_type = element.bind.get("type")
+            vals = (bind_type, element.name)
+            sdf = {}
+            sdf["label"] = element.label
+            sdf["simpletype"] = BIND_TYPE_TO_SIMPLE_TYPE.get(bind_type, "string")
+            sdf["olap_type"] = BIND_TYPE_TO_OLAP.get(bind_type, "dimension")
+            format = BIND_TYPE_TO_FORMAT.get(bind_type)
+            if format:
+                sdf["format"] = format
+            return sdf
+
+        from pyxform.question import Question
+        elements = [el for el in data_dictionary.survey_elements if\
+            isinstance(el, Question)]
+        sdf = {}
+        for el in elements:
+            # bamboo converts slashes to underscrore, lets do the same
+            key = "_".join(el.get_abbreviated_xpath().split("/"))
+            sdf[key] = parse_to_sdf(el)
+        return json.dumps(sdf)
+
     @property
     def sdf(self):
-        return data_dictionary_to_sdf(self.data_dictionary())
+        if not self._sdf:
+            self._sdf = self.data_dictionary_to_sdf(self.data_dictionary())
+            self.save()
+        return self._sdf
 
 
 def stats_forms_created(sender, instance, created, **kwargs):

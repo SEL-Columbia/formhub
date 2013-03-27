@@ -142,6 +142,7 @@ class DataDictionary(XForm):
             survey = create_survey_from_xls(self.xls)
             self.json = survey.to_json()
             self.xml = survey.to_xml()
+            self._sdf = XForm.data_dictionary_to_sdf(self)
             self._mark_start_time_boolean()
             set_uuid(self)
             self._set_uuid_in_xml()
