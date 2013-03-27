@@ -1,11 +1,13 @@
-from django.conf import settings
 import os
+import json
+
+from django.conf import settings
 from test_base import MainTestCase
 from main.views import show, form_photos, update_xform, profile
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
 from odk_logger.views import download_xlsform, download_jsonform,\
-    download_xform, delete_xform
+    download_xform, delete_xform, download_sdf
 from odk_viewer.views import export_list, map_view
 from utils.user_auth import http_auth_string
 from odk_viewer.models import ParsedInstance
@@ -357,3 +359,182 @@ class TestFormShow(MainTestCase):
             self.user.username, self.xform.id_string, '{}', '[]', '{}',
             count=True)[0]["count"]
         self.assertEqual(mongo_count, initial_mongo_count)
+
+    def test_dl_sdf(self):
+        xls_path = os.path.join(
+            self.this_directory, "fixtures", "tutorial_sdf.xls")
+        self._publish_xls_file_and_set_xform(xls_path)
+        url = reverse(download_sdf, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        })
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        schema = json.loads(response.content)
+        expected_schema =\
+        {
+            u'date_time_now': 
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'datetime',
+                'label': u'10. What about now?'
+            },
+            u'picture':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'string',
+                'label': u'3. May I take your picture?'
+            },
+            u'date_today':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'date',
+                'label': u'9. Whats the date today?'
+            },
+            u'name':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'string',
+                'label': u'1. What is your name?'
+            },
+            u'age':
+            {
+                'olap_type': 'measure',
+                'simpletype': 'integer',
+                'label': u'2. How old are you?'
+            },
+            u'meta_instanceID':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'string',
+                'label': u''
+            },
+            u'time_now':
+            {
+                'olap_type': 'dimension',
+                'format': 'hh:mm:ss',
+                'simpletype': 'datetime',
+                'label': u'8. What time is it now'
+            },
+            u'amount':
+            {
+                'olap_type': 'measure',
+                'simpletype': 'float',
+                'label': u'7. How much did you spend on food yesterday?'
+            },
+            u'meals_group_breakfast':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'string',
+                'label': u'11.1 What did you have for breakfast?'
+            },
+            u'has_children':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'string',
+                'label': u'4. Do you have any children?'
+            },
+            u'web_browsers':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'list',
+                'label': u'6. What web browsers do you use?'
+            },
+            u'web_browsers_chrome':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'boolean',
+                'label': u'Google Chrome'
+            },
+            u'web_browsers_firefox':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'boolean',
+                'label': u'Mozilla Firefox'
+            },
+            u'web_browsers_safari':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'boolean',
+                'label': u'Safari'
+            },
+            u'web_browsers_ie':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'boolean',
+                'label': u'Internet Explorer'
+            },
+            u'gps':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'string',
+                'label': u'5. Record your GPS coordinates.'
+            },
+            u'_gps_latitude':
+            {
+                'olap_type': 'measure',
+                'simpletype': 'float',
+                'label': u'_gps_latitude'
+            },
+            u'_gps_longitude':
+            {
+                'olap_type': 'measure',
+                'simpletype': 'float',
+                'label': u'_gps_longitude'
+            },
+            u'_gps_altitude':
+            {
+                'olap_type': 'measure',
+                'simpletype': 'float',
+                'label': u'_gps_altitude'
+            },
+            u'_gps_precision':
+            {
+                'olap_type': 'measure',
+                'simpletype': 'float',
+                'label': u'_gps_precision'
+            },
+            u'_uuid':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'string',
+                'label': u'_uuid'
+            },
+            u'_submission_time':
+            {
+                'olap_type': 'dimension',
+                'simpletype': 'datetime',
+                'label': u'_submission_time'
+            }
+        }
+        self.maxDiff = None
+        self.assertEqual(schema, expected_schema)
+    
+    def test_dl_sdf_anon_if_not_shared(self):
+        url = reverse(download_sdf, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        })
+        response = self.anon.get(url)
+        self.assertEqual(response.status_code, 403)
+
+    def test_dl_sdf_anon_if_public(self):
+        self.xform.shared = True
+        self.xform.save()
+        url = reverse(download_sdf, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        })
+        response = self.anon.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_dl_sdf_for_basic_auth(self):
+        extra = {
+            'HTTP_AUTHORIZATION': http_auth_string(self.login_username,
+                self.login_password)
+        }
+        response = self.anon.get(reverse(download_xlsform, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        }), **extra)
+        self.assertEqual(response.status_code, 200)

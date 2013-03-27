@@ -1,5 +1,6 @@
 import os
 import re
+import json
 
 from django.conf import settings
 from django.db import models
@@ -34,6 +35,7 @@ class XForm(models.Model):
     json = models.TextField(default=u'')
     description = models.TextField(default=u'', null=True)
     xml = models.TextField()
+    _sdf = models.TextField(null=True)
 
     user = models.ForeignKey(User, related_name='xforms', null=True)
     shared = models.BooleanField(default=False)
@@ -150,6 +152,72 @@ class XForm(models.Model):
     @property
     def can_be_replaced(self):
         return self.submission_count() == 0
+
+    @classmethod
+    def data_dictionary_to_sdf(cls, data_dictionary):
+        BIND_TYPE_TO_SIMPLE_TYPE = {
+            'int': 'integer',
+            'decimal': 'float',
+            'date': 'date',
+            'time': 'datetime',
+            'dateTime': 'datetime',
+            'select': 'list',
+            'boolean': 'boolean'
+            # everything else is a 'string'
+        }
+        BIND_TYPE_TO_OLAP = {
+            'int': 'measure',
+            'decimal': 'measure'
+            # everything else is a dimension
+        }
+        BIND_TYPE_TO_FORMAT = {
+            'time': 'hh:mm:ss'
+        }
+        def parse_to_sdf(bind_type, label):
+            sdf = {}
+            sdf["label"] = label
+            sdf["simpletype"] = BIND_TYPE_TO_SIMPLE_TYPE.get(bind_type, "string")
+            sdf["olap_type"] = BIND_TYPE_TO_OLAP.get(bind_type, "dimension")
+            format = BIND_TYPE_TO_FORMAT.get(bind_type)
+            if format:
+                sdf["format"] = format
+            return sdf
+
+        from pyxform.question import Question
+        elements = [el for el in data_dictionary.survey_elements if\
+            isinstance(el, Question)]
+        sdf = {}
+        for element in elements:
+            bind_type = element.bind.get("type")
+            label = element.label
+            # bamboo converts slashes to underscrore, lets do the same
+            key = "_".join(element.get_abbreviated_xpath().split("/"))
+            sdf[key] = parse_to_sdf(bind_type, label)
+            # if its a geopoint, split it into its components
+            if bind_type == "geopoint":
+                for part in ["latitude", "longitude", "altitude", "precision"]:
+                    sdf["_%s_%s" % (key, part)] = parse_to_sdf(
+                        "decimal", "_%s_%s" % (element.name, part))
+
+            # if is a select multiple, create question for each choice
+            if bind_type == "select":
+                choices = dict([(c.name, c.label) for c in element.children])
+                for name, label in choices.iteritems():
+                    sdf["%s_%s" % (key, name)] = parse_to_sdf("boolean", label)
+
+        # add _uuid and _submission_time
+        # todo: how do we combine this with extra fields from export code
+        extra_fields = {'_uuid': 'string', '_submission_time': 'dateTime'}
+        for name, bind_type in extra_fields.iteritems():
+            sdf[name] = parse_to_sdf(bind_type, name)
+        return json.dumps(sdf)
+
+    @property
+    def sdf(self):
+        if not self._sdf:
+            self._sdf = self.data_dictionary_to_sdf(self.data_dictionary())
+            self.save()
+        return self._sdf
 
 
 def stats_forms_created(sender, instance, created, **kwargs):

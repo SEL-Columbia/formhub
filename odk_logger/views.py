@@ -346,6 +346,23 @@ def download_jsonform(request, username, id_string):
     return response
 
 
+def download_sdf(request, username, id_string):
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, user__username=username,
+                              id_string=id_string)
+    helper_auth_helper(request)
+    if not has_permission(xform, owner, request, xform.shared):
+        return HttpResponseForbidden(_(u'Not shared.'))
+    response = response_with_mimetype_and_name('json', "%s.sdf" % (id_string),
+                                               show_date=False)
+    if 'callback' in request.GET and request.GET.get('callback') != '':
+        callback = request.GET.get('callback')
+        response.content = "%s(%s)" % (callback, xform.sdf)
+    else:
+        response.content = xform.sdf
+    return response
+
+
 @is_owner
 @require_POST
 def delete_xform(request, username, id_string):
