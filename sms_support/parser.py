@@ -28,7 +28,8 @@ class SMSCastingError(ValueError):
 
     def __init__(self, message, question=None):
         if question:
-            message = u"%s: %s" % (question, message)
+            message = _(u"%(question)s: %(message)s") % {'question': question,
+                                                         'message': message}
         super(SMSCastingError, self).__init__(message)
 
 
@@ -79,13 +80,13 @@ def parse_sms_text(xform, identity, text):
         # xlsf_constraint=question.get('constraint')
 
         if xlsf_required and not len(value):
-            raise SMSCastingError(u"Required field missing", xlsf_name)
+            raise SMSCastingError(_(u"Required field missing"), xlsf_name)
 
         def safe_wrap(func):
             try:
                 return func()
             except Exception as e:
-                raise SMSCastingError(u"%(error)s" % {'error': e.message},
+                raise SMSCastingError(_(u"%(error)s") % {'error': e.message},
                                       xlsf_name)
 
         def media_value(value, medias):
@@ -99,10 +100,9 @@ def parse_sms_text(xform, identity, text):
                                base64.b64decode(b64content)))
                 return filename
             except Exception as e:
-                raise SMSCastingError(u"Media file format "
-                                      u"incorrect. %(except)r"
-                                      % {'except': e},
-                                      xlsf_name)
+                raise SMSCastingError(_(u"Media file format "
+                                      u"incorrect. %(except)r")
+                                      % {'except': e}, xlsf_name)
 
         if xlsf_type == 'text':
             return safe_wrap(lambda: unicode(value))
@@ -114,8 +114,8 @@ def parse_sms_text(xform, identity, text):
             for choice in xlsf_choices:
                 if choice.get('sms_id') == value:
                     return choice.get('name')
-            raise SMSCastingError(u"No matching choice "
-                                  u"for '%(input)s'"
+            raise SMSCastingError(_(u"No matching choice "
+                                    u"for '%(input)s'")
                                   % {'input': value},
                                   xlsf_name)
         elif xlsf_type == 'select all that apply':
@@ -127,7 +127,7 @@ def parse_sms_text(xform, identity, text):
                         ret_values.append(choice.get('name'))
             return u" ".join(ret_values)
         elif xlsf_type == 'geopoint':
-            err_msg = u"Incorrect geopoint coordinates."
+            err_msg = _(u"Incorrect geopoint coordinates.")
             geodata = [s.strip() for s in value.split()]
             if len(geodata) < 2 and len(geodata) > 4:
                 raise SMSCastingError(err_msg, xlsf_name)
@@ -160,7 +160,7 @@ def parse_sms_text(xform, identity, text):
         elif xlsf_type == 'datetime':
             return safe_wrap(lambda: datetime.strptime(value,
                                                        xlsf_datetime_fmt))
-        raise SMSCastingError(u"Unsuported column '%(type)s'"
+        raise SMSCastingError(_(u"Unsuported column '%(type)s'")
                               % {'type': xlsf_type}, xlsf_name)
 
     def get_meta_value(xlsf_type, identity):
@@ -280,8 +280,8 @@ def process_incoming_smses(username, incomings,
         if not xform.allows_sms:
             responses.append((SMS_SUBMISSION_REFUSED,
                              _(u"The form '%(id_string)s' does not "
-                               u"accept SMS submissions."
-                               % {'id_string': xform.id_string})))
+                             u"accept SMS submissions.")
+                             % {'id_string': xform.id_string}))
             return
 
         # parse text into a dict object of groups with values
