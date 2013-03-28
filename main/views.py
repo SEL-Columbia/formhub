@@ -116,6 +116,11 @@ def clone_xlsform(request, username):
                                       kwargs={'username': to_username})
                           }
             }
+    form_result = publish_form(set_form)
+    if form_result['type'] == 'alert-success':
+        from sms_support.tools import check_form_sms_compatibility
+        form_result = check_form_sms_compatibility(form_result)
+    context.message = form_result
     if request.is_ajax():
         res = loader.render_to_string(
             'message.html',
