@@ -9,7 +9,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     #change Language
     (r'^i18n/', include('django.conf.urls.i18n')),
-    
+
     # django default stuff
     url(r'^accounts/', include('main.registration_urls')),
     url(r'^admin/', include(admin.site.urls)),
@@ -40,7 +40,7 @@ urlpatterns = patterns('',
     url(r'^login_redirect/$', 'main.views.login_redirect'),
     url(r"^attachment/$", 'odk_viewer.views.attachment_url'),
     url(r"^attachment/(?P<size>[^/]+)$", 'odk_viewer.views.attachment_url'),
-    url(r'^jsi18n/$', 'django.views.i18n.javascript_catalog', 
+    url(r'^jsi18n/$', 'django.views.i18n.javascript_catalog',
         {'packages': ('main', 'odk_viewer',)}),
     url(r'^(?P<username>[^/]+)/$', 'main.views.profile', name='user_profile'),
     url(r'^(?P<username>[^/]+)/profile$', 'main.views.public_profile', name='public_profile'),
@@ -103,6 +103,13 @@ urlpatterns = patterns('',
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/form\.json", 'odk_logger.views.download_jsonform', name="download_jsonform"),
     url(r"^(?P<username>\w+)/delete/(?P<id_string>[^/]+)/$", 'odk_logger.views.delete_xform'),
     url(r"^(?P<username>\w+)/(?P<id_string>[^/]+)/toggle_downloadable/$", 'odk_logger.views.toggle_downloadable'),
+
+    # SMS support
+    url(r"^(?P<username>[^/]+)/sms_submission$", 'sms_support.views.import_submission'),
+    url(r"^(?P<username>[^/]+)/sms_multiple_submissions$", 'sms_support.views.import_multiple_submissions'),
+
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/sms_submission$', 'sms_support.views.import_submission_for_form'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/sms_multiple_submissions$', 'sms_support.views.import_multiple_submissions_for_form'),
 
     # static media
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',

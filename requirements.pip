@@ -34,3 +34,6 @@ elaphe
 twill
 clint
 shell_command
+
+# sms support
+dict2xml

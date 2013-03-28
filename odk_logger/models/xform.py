@@ -1,5 +1,6 @@
 import os
 import re
+import json
 
 from django.conf import settings
 from django.db import models
@@ -127,7 +128,14 @@ class XForm(models.Model):
             raise XLSFormError(_(u'In strict mode, the XForm ID must be a '
                                'valid slug and contain no spaces.'))
         if not self.sms_id_string:
-            self.sms_id_string = self.id_string
+            try:
+                # try to guess the form's wanted sms_id_string
+                # from it's json rep (from XLSForm)
+                # otherwise, use id_string to ensure uniqueness
+                self.sms_id_string = json.loads(self.json).get('sms_keyword',
+                                                               self.id_string)
+            except:
+                self.sms_id_string = self.id_string
         super(XForm, self).save(*args, **kwargs)
 
     def __unicode__(self):
