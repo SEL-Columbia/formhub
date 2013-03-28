@@ -12,9 +12,12 @@ from django.utils.translation import ugettext as _
 
 from odk_logger.models import XForm
 
-from tools import (SMS_API_ERROR, SMS_PARSING_ERROR, SMS_SUBMISSION_REFUSED,
-                   sms_media_to_file,
-                   generate_instance)
+from sms_support.tools import (SMS_API_ERROR, SMS_PARSING_ERROR,
+                               SMS_SUBMISSION_REFUSED, sms_media_to_file,
+                               generate_instance, DEFAULT_SEPARATOR,
+                               NA_VALUE, META_FIELDS,
+                               MEDIA_TYPES, DEFAULT_DATE_FORMAT,
+                               DEFAULT_DATETIME_FORMAT)
 
 
 class SMSSyntaxError(ValueError):
@@ -29,14 +32,6 @@ class SMSCastingError(ValueError):
         super(SMSCastingError, self).__init__(message)
 
 
-DEFAULT_SEPARATOR = '+'
-NA_VALUE = 'n/a'
-BASE64_ALPHABET = None
-META_FIELDS = ('start', 'end', 'today', 'deviceid', 'subscriberid',
-               'imei', 'phonenumber')
-MEDIA_TYPES = ('audio', 'video', 'photo')
-
-
 def json2xform(jsform, form_id):
     dd = {'form_id': form_id}
     xml_head = u"<?xml version='1.0' ?>\n<%(form_id)s id='%(form_id)s'>\n" % dd
@@ -49,7 +44,8 @@ def parse_sms_text(xform, identity, text):
 
     json_survey = json.loads(xform.json)
 
-    separator = json_survey.get('sms_separator', DEFAULT_SEPARATOR)
+    separator = json_survey.get('sms_separator', DEFAULT_SEPARATOR) \
+        or DEFAULT_SEPARATOR
 
     try:
         allow_medias = bool(json_survey.get('sms_allow_medias', False))
@@ -57,8 +53,11 @@ def parse_sms_text(xform, identity, text):
         raise
         allow_medias = False
 
-    xlsf_date_fmt = json_survey.get('sms_date_format', '%Y-%m-%d')
-    xlsf_datetime_fmt = json_survey.get('sms_date_format', '%Y-%m-%d-%H:%M')
+    xlsf_date_fmt = json_survey.get('sms_date_format', DEFAULT_DATE_FORMAT) \
+        or DEFAULT_DATE_FORMAT
+    xlsf_datetime_fmt = json_survey.get('sms_date_format',
+                                        DEFAULT_DATETIME_FORMAT) \
+        or DEFAULT_DATETIME_FORMAT
 
     # extract SMS data into indexed groups of values
     groups = {}
@@ -162,8 +161,7 @@ def parse_sms_text(xform, identity, text):
             return safe_wrap(lambda: datetime.strptime(value,
                                                        xlsf_datetime_fmt))
         raise SMSCastingError(u"Unsuported column '%(type)s'"
-                              % {'type': xlsf_type},
-                              xlsf_name)
+                              % {'type': xlsf_type}, xlsf_name)
 
     def get_meta_value(xlsf_type, identity):
         ''' XLSForm Meta field value '''

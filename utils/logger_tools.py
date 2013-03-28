@@ -248,7 +248,7 @@ def publish_form(callback):
     except IntegrityError as e:
         return {
             'type': 'alert-error',
-            'text': _(u'Form with this id already exists.'),
+            'text': _(u'Form with this id or SMS-keyword already exists.'),
         }
     except ValidationError as e:
         # on clone invalid URL

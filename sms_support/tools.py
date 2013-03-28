@@ -4,6 +4,7 @@
 
 import mimetypes
 import io
+import copy
 from xml.parsers.expat import ExpatError
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -19,6 +20,10 @@ from odk_logger.xform_instance_parser import (InstanceEmptyError,
 from odk_logger.models.instance import FormInactiveError
 from odk_logger.models import XForm
 from utils.log import audit_log, Actions
+# from parser import (DEFAULT_DATETIME_FORMAT,
+#                     DEFAULT_DATE_FORMAT,
+#                     SENSITIVE_FIELDS,
+#                     DEFAULT_SEPARATOR)
 
 
 SMS_API_ERROR = 'SMS_API_ERROR'
@@ -26,6 +31,18 @@ SMS_PARSING_ERROR = 'SMS_PARSING_ERROR'
 SMS_SUBMISSION_ACCEPTED = 'SMS_SUBMISSION_ACCEPTED'
 SMS_SUBMISSION_REFUSED = 'SMS_SUBMISSION_REFUSED'
 SMS_INTERNAL_ERROR = 'SMS_INTERNAL_ERROR'
+
+BASE64_ALPHABET = ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                   'abcdefghijklmnopqrstuvwxyz0123456789+/=')
+DEFAULT_SEPARATOR = '+'
+NA_VALUE = 'n/a'
+BASE64_ALPHABET = None
+META_FIELDS = ('start', 'end', 'today', 'deviceid', 'subscriberid',
+               'imei', 'phonenumber')
+MEDIA_TYPES = ('audio', 'video', 'photo')
+DEFAULT_DATE_FORMAT = '%Y-%m-%d'
+DEFAULT_DATETIME_FORMAT = '%Y-%m-%d-%H:%M'
+SENSITIVE_FIELDS = ('text', 'select all that apply', 'geopoint', 'barcode')
 
 
 def sms_media_to_file(file_object, name):
@@ -101,3 +118,135 @@ def generate_instance(username, xml_file, media_files, uuid=None):
         [_file.close() for _file in media_files]
 
     return (SMS_SUBMISSION_ACCEPTED, _(u"Success"))
+
+
+def check_form_sms_compatibility(form):
+    ''' Tests all SMS related rules on the XForm representation
+
+        Returns a view-compatible dict(type, text) with warnings or
+        a success message '''
+
+    json_survey = form.get('form_o')
+    # from pprint import pprint as pp ; pp(json_survey)
+
+    def prep_return(msg, comp=None):
+
+        from django.core.urlresolvers import reverse
+
+        error = 'alert-error'
+        warning = ''
+        success = 'alert-success'
+        outro = (u"<br />Please check the <a href=\"%(syntax_url)s"
+                 u"#sms_support\">"
+                 u"SMS Syntax Page</a>." % {'syntax_url': reverse('syntax')})
+
+        # no compatibility at all
+        if not comp:
+            alert = error
+            msg = (u"%(prefix)s %(msg)s"
+                   % {'prefix': u"SMS compatibility:",
+                      'msg': msg})
+        # no blocker but could be improved
+        elif comp == 1:
+            alert = warning
+            msg = (u"%(prefix)s <ul>%(msg)s</ul>"
+                   % {'prefix': u"Your form can be used with SMS, "
+                                u"knowing that:", 'msg': msg})
+        # SMS compatible
+        else:
+            outro = u""
+            alert = success
+
+        return {'type': alert,
+                'text': u"%(intro)s<br />%(msg)s%(outro)s"
+                        % {'intro': form['text'], 'msg': msg, 'outro': outro}}
+
+    # first level children. should be groups
+    groups = json_survey.get('children', [{}])
+
+    ## BLOCKERS
+    # overload SENSITIVE_FIELDS if date or datetime format contain spaces.
+    sensitive_fields = copy.copy(SENSITIVE_FIELDS)
+    date_format = json_survey.get('sms_date_format', DEFAULT_DATE_FORMAT) \
+        or DEFAULT_DATE_FORMAT
+    datetime_format = json_survey.get('sms_datetime_format',
+                                      DEFAULT_DATETIME_FORMAT) \
+        or DEFAULT_DATETIME_FORMAT
+    if len(date_format.split()) > 1:
+        sensitive_fields += ('date', )
+    if len(datetime_format.split()) > 1:
+        sensitive_fields += ('datetime', )
+
+    # must not contain out-of-group questions
+    if sum([1 for e in groups if e.get('type') != 'group']):
+        return prep_return(_(u"All your questions must be in groups."))
+    # all groups must have an sms_id
+    bad_groups = [e.get('name') for e in groups if not e.get('sms_id', '')
+                  and not e.get('name', '') == 'meta']
+    if len(bad_groups):
+        return prep_return(_(u"All your groups must have an 'sms_id' "
+                             u"(use 'meta' prefixed ones for non-fillable "
+                             u"groups). %s" % bad_groups[-1]))
+    # has sensitive (space containing) fields in non-last position
+    for group in groups:
+        fields = group.get('children', [{}])
+        last_pos = len(fields) - 1
+        for idx, field in enumerate(fields):
+            if idx != last_pos and field.get('type', '') in sensitive_fields:
+                return prep_return(_(u"Questions for which values can contain "
+                                     u"spaces are only allowed on last "
+                                     u"position of group (%s)"
+                                     % field.get('name')))
+    # separator is not set or is within BASE64 alphabet and sms_allow_media
+    separator = json_survey.get('sms_separator', DEFAULT_SEPARATOR) \
+        or DEFAULT_SEPARATOR
+    sms_allow_media = bool(json_survey.get('sms_allow_media', False) or False)
+    if sms_allow_media and separator in BASE64_ALPHABET:
+        return prep_return(_(u"When allowing medias ('sms_allow_media'), your "
+                             u"separator (%s) must be outside Base64 alphabet "
+                             u"(letters, digits and +/=). "
+                             u"You case use '#' instead." % separator))
+
+    ## WARNINGS
+    warnings = []
+    # sms_separator not set
+    if not json_survey.get('sms_separator', ''):
+        warnings.append(u"<li>You have not set a separator. Default '+' "
+                        u"separator will be used.</li>")
+    # has date field with no sms_date_format
+    if not json_survey.get('sms_date_format', ''):
+        for group in groups:
+            if sum([1 for e in group.get('children', [{}])
+                    if e.get('type') == 'date']):
+                warnings.append(u"<li>You have 'date' fields without "
+                                u"explicitly setting a date format. "
+                                u"Default (%s) will be used.</li>"
+                                % DEFAULT_DATE_FORMAT)
+                break
+    # has datetime field with no datetime format
+    if not json_survey.get('sms_date_format', ''):
+        for group in groups:
+            if sum([1 for e in group.get('children', [{}])
+                    if e.get('type') == 'datetime']):
+                warnings.append(u"<li>You have 'datetime' fields without "
+                                u"explicitly setting a datetime format. "
+                                u"Default (%s) will be used.</li>"
+                                % DEFAULT_DATETIME_FORMAT)
+                break
+
+    # date or datetime format contain space
+    if 'date' in sensitive_fields:
+        warnings.append(u"<li>'sms_date_format' contains space which will "
+                        u"require 'date' questions to be positioned at "
+                        u"the end of groups (%s).</li>" % date_format)
+    if 'datetime' in sensitive_fields:
+        warnings.append(u"<li>'sms_datetime_format' contains space which will "
+                        u"require 'datetime' questions to be positioned at "
+                        u"the end of groups (%s).</li>" % datetime_format)
+
+    if len(warnings):
+        return prep_return(u"".join(warnings), comp=1)
+
+    ## GOOD to go
+    return prep_return(_(u"Note that your form is also SMS comptatible."),
+                       form['type'])

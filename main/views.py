@@ -116,7 +116,6 @@ def clone_xlsform(request, username):
                                       kwargs={'username': to_username})
                           }
             }
-    context.message = publish_form(set_form)
     if request.is_ajax():
         res = loader.render_to_string(
             'message.html',
@@ -152,9 +151,14 @@ def profile(request, username):
                 'text': _(u'Successfully published %(form_id)s.'
                           u' <a href="%(form_url)s">Enter Web Form</a>')
                         % {'form_id': survey.id_string,
-                            'form_url': enketo_webform_url}
+                            'form_url': enketo_webform_url},
+                'form_o': survey
             }
-        context.message = publish_form(set_form)
+        form_result = publish_form(set_form)
+        if form_result['type'] == 'alert-success':
+            from sms_support.tools import check_form_sms_compatibility
+            form_result = check_form_sms_compatibility(form_result)
+        context.message = form_result
 
     # profile view...
     # for the same user -> dashboard
