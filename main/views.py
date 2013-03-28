@@ -4,6 +4,7 @@ import os
 import urllib2
 import json
 from django import forms
+from django.db import IntegrityError
 from django.core.urlresolvers import reverse
 from django.core.files.storage import default_storage, get_storage_class
 from django.contrib.auth.decorators import login_required
@@ -552,9 +553,19 @@ def edit(request, username, id_string):
                     audit_action, request.user, owner,
                     audit_message
                     % {'id_string': xform.id_string}, audit, request)
+                # stored previous states to be able to rollback form status
+                # in case we can't save.
+                pe = xform.allows_sms
+                pid = xform.sms_id_string
                 xform.allows_sms = enabled
                 xform.sms_id_string = sms_support_form.cleaned_data.get('sms_id_string')
-                xform.save()
+                try:
+                    xform.save()
+                except IntegrityError:
+                    # unfortunately, there's no feedback mechanism here
+                    xform.allows_sms = pe
+                    xform.sms_id_string = pid
+
         elif request.FILES.get('media'):
             audit = {
                 'xform': xform.id_string
