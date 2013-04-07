@@ -140,7 +140,7 @@ def survey_responses(request, instance_id):
                             pi.instance.xform.id_string, request)
     # no access
     if not (xform.shared_data or can_view or
-            request.session.get('public_link') == xforn.uuid):
+            request.session.get('public_link') == xform.uuid):
         return HttpResponseRedirect('/')
     data = pi.to_dict()
 

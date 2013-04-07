@@ -43,37 +43,6 @@ class TestFormShow(MainTestCase):
         response = self.anon.get(self.url)
         self.assertEqual(response.status_code, 200)
 
-    def test_show_if_shared_by_link(self):
-        MetaData.public_link(self.xform, True)
-        self.xform.save()
-        self.url = reverse(show, kwargs={
-            'uuid': self.xform.uuid
-        })
-        response = self.anon.get(self.url)
-        # redirect to form page
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(
-            response["Location"].rfind("/bob/forms/transportation_2011_07_25") >= 0)
-        # make sure we can access it
-        self.url = reverse(show, kwargs={
-            'username': self.user.username,
-            'id_string': self.xform.id_string
-        })
-        response = self.anon.get(self.url)
-        self.assertEqual(response.status_code, 200)
-        # publish a second form and make sure the user cant access it via the shared link
-        self._publish_xls_file(
-            os.path.join(self.this_directory, "fixtures", "csv_export",
-            "tutorial.xls"))
-        xform_2 = XForm.objects.order_by('pk').reverse()[0]
-        url_2 = reverse(show, kwargs={
-            'username': self.user.username,
-            'id_string': xform_2.id_string
-        })
-        response = self.anon.get(url_2)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response["Location"], "http://testserver/")
-
     def test_dl_xlsx_xlsform(self):
         self._publish_xlsx_file()
         response = self.client.get(reverse(download_xlsform, kwargs={

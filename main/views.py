@@ -250,7 +250,7 @@ def dashboard(request):
 def show(request, username=None, id_string=None, uuid=None):
     if uuid:
         xform = get_object_or_404(XForm, uuid=uuid)
-        request.session['public_link'] = xform.uuid
+        request.session['public_link'] = xform.uuid if MetaData.public_link(xform) else False
         return HttpResponseRedirect(reverse(show, kwargs={
             'username': xform.user.username,
             'id_string': xform.id_string
@@ -260,7 +260,7 @@ def show(request, username=None, id_string=None, uuid=None):
     # no access
     if not (
         xform.shared or can_view or\
-        request.session.get('public_link') == xform.uuid):
+        request.session.get('public_link')):
         return HttpResponseRedirect(reverse(home))
     context = RequestContext(request)
     context.cloned = len(
