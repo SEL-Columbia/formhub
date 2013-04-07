@@ -250,7 +250,7 @@ def dashboard(request):
 def show(request, username=None, id_string=None, uuid=None):
     if uuid:
         xform = get_object_or_404(XForm, uuid=uuid)
-        request.session['public_link'] = MetaData.public_link(xform)
+        request.session['public_link'] = xform.uuid
         return HttpResponseRedirect(reverse(show, kwargs={
             'username': xform.user.username,
             'id_string': xform.id_string
@@ -258,7 +258,9 @@ def show(request, username=None, id_string=None, uuid=None):
     xform, is_owner, can_edit, can_view = get_xform_and_perms(
         username, id_string, request)
     # no access
-    if not (xform.shared or can_view or request.session.get('public_link')):
+    if not (
+        xform.shared or can_view or\
+        request.session.get('public_link') == xform.uuid):
         return HttpResponseRedirect(reverse(home))
     context = RequestContext(request)
     context.cloned = len(
@@ -925,7 +927,7 @@ def show_submission(request, username, id_string, uuid):
     owner = xform.user
     # no access
     if not (xform.shared_data or can_view or
-            request.session.get('public_link')):
+            request.session.get('public_link') == xform.uuid):
         return HttpResponseRedirect(reverse(home))
     submission = get_object_or_404(Instance, uuid=uuid)
     audit = {
