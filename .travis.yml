@@ -4,7 +4,7 @@ services:
 python:
   - "2.7"
 before_install:
-  - sudo apt-get install gfortran libatlas-base-dev
+  - sudo apt-get install gfortran libatlas-base-dev libjpeg-dev
 install:
   - pip install numpy --use-mirrors
   - pip install -r requirements.pip --use-mirrors
