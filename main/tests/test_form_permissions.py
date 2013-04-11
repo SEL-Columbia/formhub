@@ -147,6 +147,23 @@ class TestFormPermissions(MainTestCase):
         self.assertNotEqual(response['Location'],
                 '%s%s' % (self.base_url, self.show_normal_url))
 
+    def test_only_access_shared_link_form(self):
+        response = self.client.post(self.perm_url, {'for_user': 'all',
+            'perm_type': 'link'})
+        self.assertEqual(MetaData.public_link(self.xform), True)
+        # publish a second form to make sure the user cant access other forms
+        self._publish_xls_file(
+            os.path.join(self.this_directory, "fixtures", "csv_export",
+            "tutorial.xls"))
+        xform_2 = XForm.objects.order_by('pk').reverse()[0]
+        url_2 = reverse(show, kwargs={
+            'username': self.user.username,
+            'id_string': xform_2.id_string
+        })
+        response = self.anon.get(url_2)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response["Location"], "%s/" % self.base_url)
+
     def test_public_with_link_to_share_toggle_on(self):
         response = self.client.post(self.perm_url, {'for_user': 'toggle',
             'perm_type': 'link'})
