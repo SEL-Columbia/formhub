@@ -63,7 +63,7 @@
         <td>{{ data_dictionary.description }}</td>
         <td>
           {% if data_dictionary.xls %}
-            <a href="{% url download_xlsform data_dictionary.user.username data_dictionary.id_string %}"><button class="btn btn-small btn-success">{% trans "Excel" %}</button></a>
+            <a href="{% url download_xlsform data_dictionary.user.username data_dictionary.id_string %}" class="btn btn-small btn-success">{% trans "Excel" %}</a>
             {% if not data_dictionary.id_string in cloned %}
                 {% if loggedin_user and data_dictionary.xls|length > 0  and loggedin_user.username != data_dictionary.user.username %}
                     <a href="" data-url="{% url main.views.clone_xlsform data_dictionary.user.username %}" 
