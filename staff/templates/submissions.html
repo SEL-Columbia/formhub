@@ -2,8 +2,8 @@
 {% load i18n %}
 
 {% block content %}
-  <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
-  <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
+  <script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
   <div class="page-header">
 <br>
 <h1>{% blocktrans with nb_sub=stats.submission_count.total_submission_count %}Submissions ({{ nb_sub }}){% endblocktrans %}</h1>
