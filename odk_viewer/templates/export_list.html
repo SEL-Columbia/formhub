@@ -8,9 +8,9 @@
   <div class="page-header">
     <h1>{{ export_type_name|upper }} {% blocktrans %}Exports{% endblocktrans %} (<a href="{% url main.views.show username xform.id_string %}">{{ xform.id_string }}</a>)</h1>
   </div>
-  <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
-  <script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
-  <script type="text/javascript" language="javascript" src="/static/js/form_actions.js"></script>
+  <script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
+  <script type="text/javascript" src="/static/js/form_actions.js"></script>
 
     <form action="{% url odk_viewer.views.create_export username xform.id_string export_type %}" method="post" enctype="application/x-www-form-urlencoded">
         {% csrf_token %}
