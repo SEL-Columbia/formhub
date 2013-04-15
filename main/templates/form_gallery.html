@@ -48,7 +48,7 @@
       {% for data_dictionary in shared_forms %}
       <tr>
         <td>
-          <img src='{{ data_dictionary.user.profile.gravatar }}' alt='' width='20' height='20' />&nbsp;<a href="/{{ data_dictionary.user.username }}">{{ data_dictionary.user.username }}</a>
+          <img src='{{ data_dictionary.user.profile.gravatar }}' alt='gravatar' width='20' height='20' />&nbsp;<a href="/{{ data_dictionary.user.username }}">{{ data_dictionary.user.username }}</a>
         </td>
         <td><a href="{% url main.views.show data_dictionary.user.username data_dictionary.id_string %}">{{ data_dictionary.title }}</a>
             {% if loggedin_user and data_dictionary.is_crowd_form %}

@@ -15,7 +15,7 @@
     <div id="gallery">
     {% for image_url in images %}
         <a href="{{ image_url.large }}">
-        <img longdesc={{ image_url.original }} src="{{ image_url.small }}">
+            <img longdesc={{ image_url.original }} src="{{ image_url.small }}" alt="{{ image_url.original }}">
         </a>
     {% endfor %}
     </div>
