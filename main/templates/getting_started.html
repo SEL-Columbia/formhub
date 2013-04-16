@@ -40,8 +40,8 @@
       </p>
     </div>
     <div class="span10">
-      <img src="{{ STATIC_URL }}tutorial/survey_sheet.png" width="100%" /><br />
-      <img src="{{ STATIC_URL }}tutorial/choices_sheet.png" width="100%" /><br />
+      <img src="{{ STATIC_URL }}tutorial/survey_sheet.png" width="100%" alt="survey sheet" /><br />
+      <img src="{{ STATIC_URL }}tutorial/choices_sheet.png" width="100%" alt="choices sheet" /><br />
     </div>
   </div>
   {% url main.views.syntax as syntax_url %}
@@ -60,7 +60,7 @@
       </p>
     </div>
     <div class="span10">
-      <img src="{{ STATIC_URL }}tutorial/publish_survey.png" width="100%" />
+      <img src="{{ STATIC_URL }}tutorial/publish_survey.png" width="100%" alt="publish survey" />
     </div>
   </div>
   <div class="row">
@@ -70,7 +70,7 @@
       </p>
     </div>
     <div class="span10">
-      <img src="{{ STATIC_URL }}tutorial/published_surveys.png" width="100%" />
+      <img src="{{ STATIC_URL }}tutorial/published_surveys.png" width="100%" alt="published surveys" />
     </div>
   </div>
 </section>
@@ -83,7 +83,7 @@
   <div class="row">
     <div class="span4">
       <ul class="media-grid"><li><a href="">
-            <img width="210px" class="thumbnail" src="{{ STATIC_URL }}tutorial/server_preferences.png" alt="">
+            <img width="210px" class="thumbnail" src="{{ STATIC_URL }}tutorial/server_preferences.png" alt="server preferences">
       </a></li></ul>
       <p>
         {%  blocktrans %}The url of this web application must be given to ODK Collect before it will get forms from and submit data to formhub. In ODK Collect's Main Menu, press the Menu button. Select Server Preferences, then Server. Enter <strong>{{ odk_url }}</strong> as the server.{% endblocktrans %}
@@ -92,7 +92,7 @@
 
     <div class="span4">
       <ul class="media-grid"><li><a href="">
-            <img width="210px" class="thumbnail" src="{{ STATIC_URL }}tutorial/download.png" alt="">
+            <img width="210px" class="thumbnail" src="{{ STATIC_URL }}tutorial/download.png" alt="download">
       </a></li></ul>
       <p>
         {%  trans "Download your published form to your phone." %}
@@ -101,7 +101,7 @@
 
     <div class="span4">
       <ul class="media-grid"><li><a href="">
-            <img width="210px" class="thumbnail" src="{{ STATIC_URL }}tutorial/question.png" alt="">
+            <img width="210px" class="thumbnail" src="{{ STATIC_URL }}tutorial/question.png" alt="question">
       </a></li></ul>
       <p>
         {%  trans "Fill out the form on your phone." %}
@@ -110,7 +110,7 @@
 
     <div class="span4">
       <ul class="media-grid"><li><a href="">
-            <img width="210px" class="thumbnail" src="{{ STATIC_URL }}tutorial/send_finished_data.png" alt="">
+            <img width="210px" class="thumbnail" src="{{ STATIC_URL }}tutorial/send_finished_data.png" alt="send finished data">
       </a></li></ul>
       <p>
         {%  blocktrans %}After filling out the form on your phone submit the data to the server.{% endblocktrans %}
@@ -131,7 +131,7 @@
       </p>
     </div>
     <div class="span10">
-      <img src="{{ STATIC_URL }}tutorial/submitted_data.png" width="100%" />
+      <img src="{{ STATIC_URL }}tutorial/submitted_data.png" width="100%" alt="submitted data" />
     </div>
   </div>
   <div class="row">
@@ -141,7 +141,7 @@
       </p>
     </div>
     <div class="span10">
-      <img src="{{ STATIC_URL }}tutorial/map.png" width="100%" /><br />
+      <img src="{{ STATIC_URL }}tutorial/map.png" width="100%" alt="map" /><br />
     </div>
   </div>
 </section>

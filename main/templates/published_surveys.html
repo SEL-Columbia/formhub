@@ -1,14 +1,14 @@
 {% load humanize %}
 {% load i18n %}
 {% if all_forms or forms_shared_with or crowdforms%}
-<script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
-<script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
+<script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
 
 <section id="published-forms">
   <div class="page-header">
     <h1>{% blocktrans %}Published Forms <small>Export, map, and view submissions.</small>{% endblocktrans %}</h1>
   </div>
-  <script type="text/javascript" charset="utf-8">
+  <script type="text/javascript">
 
         $.extend( $.fn.dataTableExt.oStdClasses, {
           "sSortAsc": "header headerSortDown",

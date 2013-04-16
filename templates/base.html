@@ -69,9 +69,6 @@
 	{% if not user.is_authenticated %}
 	<body style="padding-top: 20px !important">
 		{% include "change_language.html"%}
-	{% endif %}
-	{% if not user.is_authenticated %}
-	<body>
 		{% include "home_topbar.html" %}
 	{% endif %}
 
