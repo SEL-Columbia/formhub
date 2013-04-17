@@ -150,6 +150,10 @@ def profile(request, username):
             )
             return {
                 'type': 'alert-success',
+                'preview_url': reverse(enketo_preview, kwargs={
+                    'username': username,
+                    'id_string': survey.id_string
+                }),
                 'text': _(u'Successfully published %(form_id)s.'
                           u' <a href="%(form_url)s">Enter Web Form</a>'
                           u' or <a href="#preview-modal" data-toggle="modal">Preview Web Form</a>')
