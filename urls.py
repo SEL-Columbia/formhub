@@ -70,6 +70,10 @@ urlpatterns = patterns('',
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/update$', 'main.views.update_xform'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/preview$', 'main.views.enketo_preview'),
 
+    # briefcase api urls
+    url(r"^(?P<username>\w+)/view/submissionList$",
+        'odk_logger.views.view_submission_list'),
+
     # stats
     url(r"^stats/submissions/$", 'staff.views.submissions'),
 

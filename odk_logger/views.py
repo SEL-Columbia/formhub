@@ -555,3 +555,15 @@ def edit_data(request, username, id_string, data_id):
         reverse('main.views.show',
                 kwargs={'username': username,
                         'id_string': id_string}))
+
+
+def view_submission_list(request, username):
+    context = RequestContext(request)
+    id_string = request.GET.get('formId', None)
+    xform = get_object_or_404(
+        XForm, id_string=id_string, user__username=username)
+    context.instances = xform.surveys.all()
+    context.resumptionCursor = 'opaquedata'
+    return render_to_response(
+        'submissionList.xml', context_instance=context,
+        mimetype="text/xml; charset=utf-8")
