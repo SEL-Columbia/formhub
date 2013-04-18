@@ -239,7 +239,12 @@ LOGGING = {
 }
 
 # MongoDB
-_MONGO_CONNECTION = Connection(safe=True, j=True)
+try:
+    MONGO_CONNECTION = Connection(safe=True, j=True)
+except Exception, ex:
+    # give a change to be defined in local_settings
+    MONGO_CONNECTION = None
+
 MONGO_DB = None
 MONGO_DB_NAME = "formhub"
 MONGO_TEST_DB_NAME = "formhub_test"
@@ -283,11 +288,19 @@ if len(sys.argv) >= 2 and (sys.argv[1] == "test" or sys.argv[1] == "test_all"):
 else:
     TESTING_MODE = False
 
+try:
+    from local_settings import *
+    MONGO_CONNECTION = MONGO_CONNECTION
+except ImportError:
+    print("You can override the default settings by adding a "
+          "local_settings.py file.")
+
+
 # Clear out the test database
 if TESTING_MODE:
     MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'test_media/')
     subprocess.call(["rm", "-r", MEDIA_ROOT])
-    MONGO_DB = _MONGO_CONNECTION[MONGO_TEST_DB_NAME]
+    MONGO_DB = MONGO_CONNECTION[MONGO_TEST_DB_NAME]
     MONGO_DB.instances.drop()
     # need to have CELERY_ALWAYS_EAGER True and BROKER_BACKEND as memory
     # to run tasks immediately while testing
@@ -296,13 +309,11 @@ if TESTING_MODE:
     #TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
 else:
     MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media/')
-    MONGO_DB = _MONGO_CONNECTION[MONGO_DB_NAME]
-
-try:
-    from local_settings import *
-except ImportError:
-    print("You can override the default settings by adding a "
-          "local_settings.py file.")
+    MONGO_DB = MONGO_CONNECTION[MONGO_DB_NAME]
 
 if PRINT_EXCEPTION and DEBUG:
     MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
+
+# backward compatiblity
+_MONGO_CONNECTION = MONGO_CONNECTION
+
