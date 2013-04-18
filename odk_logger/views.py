@@ -24,7 +24,6 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
-from odk_viewer.models import ParsedInstance
 
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound,\
@@ -72,7 +71,7 @@ def bulksubmission(request, username):
         # http://stackoverflow.com/questions/82831
         try:
             os.remove(our_tfpath)
-        except IOError as e:
+        except IOError:
             # TODO: log this Exception somewhere
             pass
         json_msg = {
@@ -88,7 +87,7 @@ def bulksubmission(request, username):
             "bulk_submission_log": json_msg
         }
         audit_log(Actions.USER_BULK_SUBMISSION, request.user, posting_user,
-        _("Made bulk submissions."), audit, request)
+                  _("Made bulk submissions."), audit, request)
         response = HttpResponse(json.dumps(json_msg))
         response.status_code = 200
         response['Location'] = request.build_absolute_uri(request.path)
@@ -103,7 +102,8 @@ def bulksubmission(request, username):
 def bulksubmission_form(request, username=None):
     if request.user.username == username:
         context = RequestContext(request)
-        return render_to_response("bulk_submission_form.html",context_instance=context)
+        return render_to_response(
+            "bulk_submission_form.html", context_instance=context)
     else:
         return HttpResponseRedirect('/%s' % request.user.username)
 
@@ -113,7 +113,7 @@ def formList(request, username):
     """
     This is where ODK Collect gets its download list.
     """
-    if  username.lower() == 'crowdforms':
+    if username.lower() == 'crowdforms':
         xforms = XForm.objects.filter(is_crowd_form=True)\
             .exclude(user__username=username)
     else:
@@ -142,7 +142,7 @@ def formList(request, username):
         xforms = chain(xforms, crowdforms)
         audit = {}
         audit_log(Actions.USER_FORMLIST_REQUESTED, request.user, formlist_user,
-            _("Requested forms list."), audit, request)
+                  _("Requested forms list."), audit, request)
     response = render_to_response("xformsList.xml", {
         #'urls': urls,
         'host': request.build_absolute_uri().replace(
@@ -237,8 +237,9 @@ def submission(request, username=None):
         audit = {
             "xform": instance.xform.id_string
         }
-        audit_log(Actions.SUBMISSION_CREATED, request.user, instance.xform.user,
-            _("Created submission on form %(id_string)s.") %\
+        audit_log(
+            Actions.SUBMISSION_CREATED, request.user, instance.xform.user,
+            _("Created submission on form %(id_string)s.") %
             {
                 "id_string": instance.xform.id_string
             }, audit, request)
@@ -274,7 +275,7 @@ def download_xform(request, username, id_string):
     xform = get_object_or_404(XForm,
                               user=user, id_string=id_string)
     profile, created =\
-    UserProfile.objects.get_or_create(user=user)
+        UserProfile.objects.get_or_create(user=user)
 
     if profile.require_auth:
         response = helper_auth_helper(request)
@@ -283,8 +284,9 @@ def download_xform(request, username, id_string):
     audit = {
         "xform": xform.id_string
     }
-    audit_log(Actions.FORM_XML_DOWNLOADED, request.user, xform.user,
-        _("Downloaded XML for form '%(id_string)s'.") %\
+    audit_log(
+        Actions.FORM_XML_DOWNLOADED, request.user, xform.user,
+        _("Downloaded XML for form '%(id_string)s'.") %
         {
             "id_string": xform.id_string
         }, audit, request)
@@ -307,19 +309,19 @@ def download_xlsform(request, username, id_string):
         audit = {
             "xform": xform.id_string
         }
-        audit_log(Actions.FORM_XLS_DOWNLOADED, request.user, xform.user,
-        _("Downloaded XLS file for form '%(id_string)s'.") %\
-        {
-            "id_string": xform.id_string
-        }, audit, request)
+        audit_log(
+            Actions.FORM_XLS_DOWNLOADED, request.user, xform.user,
+            _("Downloaded XLS file for form '%(id_string)s'.") %
+            {
+                "id_string": xform.id_string
+            }, audit, request)
         split_path = file_path.split(os.extsep)
         extension = 'xls'
         if len(split_path) > 1:
             extension = split_path[len(split_path) - 1]
-        response = \
-            response_with_mimetype_and_name('vnd.ms-excel', id_string,
-                                            show_date=False, extension=extension,
-                                            file_path=file_path)
+        response = response_with_mimetype_and_name(
+            'vnd.ms-excel', id_string, show_date=False, extension=extension,
+            file_path=file_path)
         return response
     else:
         messages.add_message(request, messages.WARNING,
@@ -356,8 +358,9 @@ def delete_xform(request, username, id_string):
     remove_xform(xform)
 
     audit = {}
-    audit_log(Actions.FORM_DELETED, request.user, xform.user,
-        _("Deleted form '%(id_string)s'.") %\
+    audit_log(
+        Actions.FORM_DELETED, request.user, xform.user,
+        _("Deleted form '%(id_string)s'.") %
         {
             'id_string': xform.id_string,
         }, audit, request)
@@ -370,11 +373,13 @@ def toggle_downloadable(request, username, id_string):
     xform.downloadable = not xform.downloadable
     xform.save()
     audit = {}
-    audit_log(Actions.FORM_UPDATED, request.user, xform.user,
-        _("Made form '%(id_string)s' %(downloadable)s.") %\
+    audit_log(
+        Actions.FORM_UPDATED, request.user, xform.user,
+        _("Made form '%(id_string)s' %(downloadable)s.") %
         {
             'id_string': xform.id_string,
-            'downloadable': _("downloadable") if xform.downloadable else _("un-downloadable")
+            'downloadable':
+            _("downloadable") if xform.downloadable else _("un-downloadable")
         }, audit, request)
     return HttpResponseRedirect("/%s" % username)
 
@@ -419,8 +424,9 @@ def enter_data(request, username, id_string):
             audit = {
                 "xform": xform.id_string
             }
-            audit_log(Actions.FORM_ENTER_DATA_REQUESTED, request.user, owner,
-                _("Requested enter data url for '%(id_string)s'.") %\
+            audit_log(
+                Actions.FORM_ENTER_DATA_REQUESTED, request.user, owner,
+                _("Requested enter data url for '%(id_string)s'.") %
                 {
                     'id_string': xform.id_string,
                 }, audit, request)
@@ -443,10 +449,12 @@ def enter_data(request, username, id_string):
     except urllib2.URLError:
         # this will happen if we could not connect to enketo
         messages.add_message(
-            request, messages.WARNING, _("Enketo error: Unable to open webform url."))
+            request, messages.WARNING,
+            _("Enketo error: Unable to open webform url."))
     except ValueError, e:
         messages.add_message(
-            request, messages.WARNING, _("Enketo error: enketo replied %s") % e)
+            request, messages.WARNING,
+            _("Enketo error: enketo replied %s") % e)
         #TODO: should we throw in another error message here
     return HttpResponseRedirect(reverse('main.views.show',
                                 kwargs={'username': username,
@@ -510,8 +518,10 @@ def edit_data(request, username, id_string, data_id):
                 "xform": xform.id_string,
                 "data_id": data_id
             }
-            audit_log(Actions.SUBMISSION_EDIT_REQUESTED, request.user, owner,
-                _("Requested to edit data with id '%(data_id)s' on '%(id_string)s'.") %\
+            audit_log(
+                Actions.SUBMISSION_EDIT_REQUESTED, request.user, owner,
+                _("Requested to edit data with id "
+                  "'%(data_id)s' on '%(id_string)s'.") %
                 {
                     'id_string': xform.id_string,
                     'data_id': data_id
@@ -534,10 +544,12 @@ def edit_data(request, username, id_string, data_id):
     except urllib2.URLError:
         # this will happen if we could not connect to enketo
         messages.add_message(
-            request, messages.WARNING, _("Enketo error: Unable to open webform url."))
+            request, messages.WARNING,
+            _("Enketo error: Unable to open webform url."))
     except ValueError, e:
         messages.add_message(
-            request, messages.WARNING, _("Enketo error: enketo replied %s") % e)
+            request, messages.WARNING,
+            _("Enketo error: enketo replied %s") % e)
         #TODO: should we throw in another error message here
     return HttpResponseRedirect(
         reverse('main.views.show',
