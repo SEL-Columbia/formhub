@@ -1,0 +1,7 @@
+<idChunk xmlns="http://opendatakit.org/submissions">
+    <idList>
+        <id>uuid:5b2cc313-fc09-437e-8149-fcd32f695d41</id>
+        <id>uuid:f3d8dc65-91a6-4d0f-9e97-802128083390</id>
+    </idList>
+    <resumptionCursor>{{resumptionCursor}}</resumptionCursor>
+</idChunk>
