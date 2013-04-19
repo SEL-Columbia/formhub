@@ -617,8 +617,10 @@ def view_download_submission(request, username):
     instance = get_object_or_404(
         Instance, xform__id_string=id_string, uuid=uuid,
         user__username=username)
-    context.submission_data = \
-        instance.xml.replace(u"<?xml version='1.0' ?>", u'').strip()
+    submission_xml_root_node = instance.get_root_node()
+    submission_xml_root_node.setAttribute(
+        'instanceID', u'uuid:%s' % instance.uuid)
+    context.submission_data = submission_xml_root_node.toxml()
     context.media_files = Attachment.objects.filter(instance=instance)
     context.host = request.build_absolute_uri().replace(
         request.get_full_path(), '')
