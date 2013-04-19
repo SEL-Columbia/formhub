@@ -587,6 +587,8 @@ def view_submission_list(request, username):
     if instances.count():
         last_instance = instances[instances.count() - 1]
         context.resumptionCursor = last_instance.pk
+    elif instances.count() == 0 and cursor:
+        context.resumptionCursor = cursor
     else:
         context.resumptionCursor = 0
 
