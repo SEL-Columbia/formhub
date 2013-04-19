@@ -583,12 +583,11 @@ def view_submission_list(request, username):
             instances = instances[:num_entries]
     context.instances = instances
 
-    if not num_entries and not cursor:
-        context.resumptionCursor = 'opaquedata'
+    if instances.count():
+        last_instance = instances[instances.count() - 1]
+        context.resumptionCursor = last_instance.pk
     else:
-        if instances.count():
-            last_instance = instances[instances.count() - 1]
-            context.resumptionCursor = last_instance.pk
+        context.resumptionCursor = 0
 
     return render_to_response(
         'submissionList.xml', context_instance=context,

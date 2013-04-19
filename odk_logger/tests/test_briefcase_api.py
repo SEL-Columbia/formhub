@@ -27,14 +27,22 @@ class TestBriefcaseAPI(MainTestCase):
         submission_list_path = os.path.join(
             self.this_directory, 'fixtures', 'transportation',
             'view', 'submissionList.xml')
+        instances = Instance.objects.filter(xform=self.xform)
+        self.assertTrue(instances.count() > 0)
+        last_index = instances[instances.count() - 1].pk
         with codecs.open(submission_list_path, 'rb', encoding='utf-8') as f:
             expected_submission_list = f.read()
+            expected_submission_list = \
+                expected_submission_list.replace(
+                    '{{resumptionCursor}}', '%s' % last_index)
             self.assertEqual(response.content, expected_submission_list)
 
     def test_view_submissionList_numEntries(self):
         params = {'formId': self.xform.id_string}
         params['numEntries'] = 2
-        last_index = Instance.objects.filter(xform=self.xform)[:2][1].pk
+        instances = Instance.objects.filter(xform=self.xform)
+        self.assertTrue(instances.count() > 1)
+        last_index = instances[:2][1].pk
         for index in range(1, 3):
             response = self.client.get(
                 self._submission_list_url,
