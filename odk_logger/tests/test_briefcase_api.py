@@ -82,8 +82,5 @@ class TestBriefcaseAPI(MainTestCase):
             'view', 'downloadSubmission.xml')
         with codecs.open(download_submission_path, encoding='utf-8') as f:
             text = f.read()
-            print text
-            print "_______________"
-            print response.content
             self.assertContains(response, instanceId, status_code=200)
             self.assertMultiLineEqual(response.content, text)
