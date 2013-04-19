@@ -38,6 +38,7 @@ from odk_logger.import_tools import import_instances_from_zip
 from odk_logger.xform_instance_parser import InstanceEmptyError,\
     InstanceInvalidUserError, IsNotCrowdformError, DuplicateInstance
 from odk_logger.models.instance import FormInactiveError
+from odk_logger.models.attachment import Attachment
 from utils.log import audit_log, Actions
 
 
@@ -591,4 +592,36 @@ def view_submission_list(request, username):
 
     return render_to_response(
         'submissionList.xml', context_instance=context,
+        mimetype="text/xml; charset=utf-8")
+
+
+def view_download_submission(request, username):
+
+    def extract_uuid(text):
+        text = text[text.find("@key="):-1].replace("@key=", "")
+        if text.startswith("uuid:"):
+            text = text.replace("uuid:", "")
+        return text
+
+    context = RequestContext(request)
+    formId = request.GET.get('formId', None)
+    if not isinstance(formId, basestring):
+        return HttpResponseBadRequest()
+
+    id_string = formId[0:formId.find('[')]
+    form_id_parts = formId.split('/')
+    if form_id_parts.__len__() < 2:
+        return HttpResponseBadRequest()
+
+    uuid = extract_uuid(form_id_parts[1])
+    instance = get_object_or_404(
+        Instance, xform__id_string=id_string, uuid=uuid,
+        user__username=username)
+    context.submission_data = \
+        instance.xml.replace(u"<?xml version='1.0' ?>", u'').strip()
+    context.media_files = Attachment.objects.filter(instance=instance)
+    context.host = request.build_absolute_uri().replace(
+        request.get_full_path(), '')
+    return render_to_response(
+        'downloadSubmission.xml', context_instance=context,
         mimetype="text/xml; charset=utf-8")

@@ -73,6 +73,8 @@ urlpatterns = patterns('',
     # briefcase api urls
     url(r"^(?P<username>\w+)/view/submissionList$",
         'odk_logger.views.view_submission_list'),
+    url(r"^(?P<username>\w+)/view/downloadSubmission$",
+        'odk_logger.views.view_download_submission'),
 
     # stats
     url(r"^stats/submissions/$", 'staff.views.submissions'),
