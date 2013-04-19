@@ -562,8 +562,34 @@ def view_submission_list(request, username):
     id_string = request.GET.get('formId', None)
     xform = get_object_or_404(
         XForm, id_string=id_string, user__username=username)
-    context.instances = xform.surveys.all()
-    context.resumptionCursor = 'opaquedata'
+    num_entries = request.GET.get('numEntries', None)
+    cursor = request.GET.get('cursor', None)
+    instances = xform.surveys.all()
+
+    if cursor:
+        try:
+            cursor = int(cursor)
+        except ValueError:
+            pass
+        else:
+            instances = instances.filter(pk__gt=cursor)
+
+    if num_entries:
+        try:
+            num_entries = int(num_entries)
+        except ValueError:
+            pass
+        else:
+            instances = instances[:num_entries]
+    context.instances = instances
+
+    if not num_entries and not cursor:
+        context.resumptionCursor = 'opaquedata'
+    else:
+        if instances.count():
+            last_instance = instances[instances.count() - 1]
+            context.resumptionCursor = last_instance.pk
+
     return render_to_response(
         'submissionList.xml', context_instance=context,
         mimetype="text/xml; charset=utf-8")
