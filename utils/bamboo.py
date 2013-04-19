@@ -127,6 +127,7 @@ def get_csv_data(xform, force_last=False):
                   % {'id_string': xform.id_string, 'id': xform.id})
 
         new_buff = getbuff()
+        buff.seek(0)
         reader = csv.reader(buff)
         writer = csv.writer(new_buff)
 
@@ -140,6 +141,7 @@ def get_csv_data(xform, force_last=False):
                         row[idx] = (u'%(prefix)s%(col)s'
                                     % {'prefix': prefix, 'col': col})
             writer.writerow(row)
+
         return new_buff.getvalue()
     else:
         raise NoRecordsFoundError
