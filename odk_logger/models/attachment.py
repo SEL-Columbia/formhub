@@ -2,11 +2,11 @@ import os
 import mimetypes
 
 from tempfile import NamedTemporaryFile
+from hashlib import md5
 from django.core.files.storage import get_storage_class
 from django.db import models
 
 from instance import Instance
-from utils.image_tools import get_dimensions, resize
 
 
 def upload_to(instance, filename):
@@ -48,3 +48,13 @@ class Attachment(models.Model):
                 tmp.close()
                 return tmp.name
         return None
+
+    @property
+    def file_hash(self):
+        if self.media_file.storage.exists(self.media_file.name):
+            return u'%s' % md5(self.media_file.read()).hexdigest()
+        return u''
+
+    @property
+    def filename(self):
+        return os.path.basename(self.media_file.name)
