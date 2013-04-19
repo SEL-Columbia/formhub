@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<submission xmlns="http://opendatakit.org/submissions" xmlns:orx="http://openrosa.org/xforms>
+<submission xmlns="http://opendatakit.org/submissions" xmlns:orx="http://openrosa.org/xforms">
     <data>
         <transportation id="transportation_2011_07_25"><transport><available_transportation_types_to_referral_facility>none</available_transportation_types_to_referral_facility><loop_over_transport_types_frequency><ambulance /><bicycle /><boat_canoe /><bus /><donkey_mule_cart /><keke_pepe /><lorry /><motorbike /><taxi /><other /></loop_over_transport_types_frequency></transport><meta><instanceID>uuid:5b2cc313-fc09-437e-8149-fcd32f695d41</instanceID></meta></transportation>
     </data>

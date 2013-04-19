@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<submission xmlns="http://opendatakit.org/submissions" xmlns:orx="http://openrosa.org/xforms>
+<submission xmlns="http://opendatakit.org/submissions" xmlns:orx="http://openrosa.org/xforms">
     <data>
         {{ submission_data|safe }}
     </data>
@@ -7,5 +7,5 @@
         <filename>{{ media.filename|safe }}</filename>
         <hash>md5:{{ media.file_hash }}</hash>
         <downloadUrl>{{ host }}{% url odk_viewer.views.attachment_url 'original' %}?media_file={{ media.media_file.name|safe }}</downloadUrl>
-    </mediaFile>{% endfor %}
+    {% endfor %}</mediaFile>
 </submission>
