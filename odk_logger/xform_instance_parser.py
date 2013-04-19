@@ -247,6 +247,9 @@ class XFormInstanceParser(object):
             self._flat_dict[u"/".join(path[1:])] = value
         self._set_attributes()
 
+    def get_root_node(self):
+        return self._root_node
+
     def get_root_node_name(self):
         return self._root_node.nodeName
 

@@ -1,18 +1,13 @@
-from django.conf import settings
-import re
-
 from datetime import datetime
-from xml.dom import minidom
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
 from .xform import XForm
 from .survey_type import SurveyType
 from odk_logger.xform_instance_parser import XFormInstanceParser, \
     clean_and_parse_xml, get_uuid_from_xml
 from utils.model_tools import set_uuid
 from utils.stathat_api import stathat_count
-from django.utils.translation import ugettext_lazy, ugettext as _
+from django.utils.translation import ugettext as _
 
 
 class FormInactiveError(Exception):
@@ -69,6 +64,10 @@ class Instance(models.Model):
         self._set_parser()
         return self._parser.get_root_node_name()
 
+    def get_root_node(self):
+        self._set_parser()
+        return self._parser.get_root_node()
+
     def get(self, abbreviated_xpath):
         self._set_parser()
         return self._parser.get(abbreviated_xpath)
@@ -87,7 +86,7 @@ class Instance(models.Model):
     def _set_uuid(self):
         if self.xml and not self.uuid:
             uuid = get_uuid_from_xml(self.xml)
-            if  uuid is not None:
+            if uuid is not None:
                 self.uuid = uuid
         set_uuid(self)
 
