@@ -42,25 +42,44 @@ class TestBriefcaseAPI(MainTestCase):
             self.assertEqual(response.content, expected_submission_list)
 
     def test_view_submissionList_numEntries(self):
+        def get_last_index(xform, last_index=None):
+            instances = Instance.objects.filter(xform=xform)
+            if not last_index and instances.count():
+                return instances[instances.count() - 1].pk
+            elif last_index:
+                instances = instances.filter(pk__gt=last_index)
+                if instances.count():
+                    return instances[instances.count() - 1].pk
+                else:
+                    return get_last_index(xform)
+            return 0
         self._make_submissions()
         params = {'formId': self.xform.id_string}
         params['numEntries'] = 2
         instances = Instance.objects.filter(xform=self.xform)
         self.assertTrue(instances.count() > 1)
         last_index = instances[:2][1].pk
-        for index in range(1, 3):
+        last_expected_submission_list = ""
+        for index in range(1, 5):
             response = self.client.get(
                 self._submission_list_url,
                 data=params)
             self.assertEqual(response.status_code, 200)
+            if index > 2:
+                last_index = get_last_index(self.xform, last_index)
+            filename = 'submissionList-%s.xml' % index
+            if index == 4:
+                self.assertEqual(
+                    response.content, last_expected_submission_list)
+                continue
             # set cursor for second request
             params['cursor'] = last_index
             submission_list_path = os.path.join(
                 self.this_directory, 'fixtures', 'transportation',
-                'view', 'submissionList-%s.xml' % index)
+                'view', filename)
             with codecs.open(submission_list_path, encoding='utf-8') as f:
                 expected_submission_list = f.read()
-                expected_submission_list = \
+                last_expected_submission_list = expected_submission_list = \
                     expected_submission_list.replace(
                         '{{resumptionCursor}}', '%s' % last_index)
                 self.assertEqual(response.content, expected_submission_list)
