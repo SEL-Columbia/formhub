@@ -21,7 +21,8 @@ class ServiceDefinition(RestServiceInterface):
 
         for row in rows:
             for col, value in row.items():
-                if col.startswith('_') or col.startswith('meta_'):
+                if col.startswith('_') or col.startswith('meta_') \
+                    or col.startswith('meta/'):
                     new_col = (u'%(prefix)s%(col)s'
                                % {'prefix': prefix, 'col': col})
                     row.update({new_col: value})
