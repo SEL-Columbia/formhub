@@ -1,4 +1,3 @@
-import os
 import re
 import urllib2
 from urlparse import urlparse
@@ -22,7 +21,7 @@ from utils.logger_tools import publish_xls_form
 
 FORM_LICENSES_CHOICES = (
     ('No License', ugettext_lazy('No License')),
-    ('https://creativecommons.org/licenses/by/3.0/', 
+    ('https://creativecommons.org/licenses/by/3.0/',
      ugettext_lazy('Attribution CC BY')),
     ('https://creativecommons.org/licenses/by-sa/3.0/',
      ugettext_lazy('Attribution-ShareAlike CC BY-SA')),
@@ -30,11 +29,11 @@ FORM_LICENSES_CHOICES = (
 
 DATA_LICENSES_CHOICES = (
     ('No License', ugettext_lazy('No License')),
-    ('http://opendatacommons.org/licenses/pddl/summary/', 
+    ('http://opendatacommons.org/licenses/pddl/summary/',
      ugettext_lazy('PDDL')),
     ('http://opendatacommons.org/licenses/by/summary/',
      ugettext_lazy('ODC-BY')),
-    ('http://opendatacommons.org/licenses/odbl/summary/', 
+    ('http://opendatacommons.org/licenses/odbl/summary/',
      ugettext_lazy('ODBL')),
 )
 
@@ -61,7 +60,13 @@ class FormLicenseForm(forms.Form):
 
 class PermissionForm(forms.Form):
     for_user = forms.CharField(
-                    widget=forms.TextInput(attrs={'id':'autocomplete','data-provide':'typeahead', 'autocomplete':'off'}))
+        widget=forms.TextInput(
+            attrs={
+                'id': 'autocomplete',
+                'data-provide': 'typeahead',
+                'autocomplete': 'off'
+            })
+    )
     perm_type = forms.ChoiceField(choices=PERM_CHOICES, widget=forms.Select())
 
     def __init__(self, username):
@@ -158,7 +163,7 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail,
                 _(u'username may only contain alpha-numeric characters and '
                   u'underscores'))
         try:
-            user = User.objects.get(username=username)
+            User.objects.get(username=username)
         except User.DoesNotExist:
             return username
         raise forms.ValidationError(_(u'%s already exists') % username)
@@ -175,8 +180,8 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail,
             try:
                 default_crowdform = settings.DEFAULT_CROWDFORM
                 if isinstance(default_crowdform, dict) and\
-                        default_crowdform.has_key('xform_username') and\
-                        default_crowdform.has_key('xform_id_string'):
+                        'xform_username' in default_crowdform and\
+                        'xform_id_string' in default_crowdform:
                     xform = XForm.objects.get(
                         id_string=default_crowdform['xform_id_string'],
                         user__username=default_crowdform['xform_username'])
@@ -187,17 +192,17 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail,
 
 
 class SourceForm(forms.Form):
-    source = forms.FileField(label=ugettext_lazy(u"Source document"), 
+    source = forms.FileField(label=ugettext_lazy(u"Source document"),
                              required=True)
 
 
 class SupportDocForm(forms.Form):
-    doc = forms.FileField(label=ugettext_lazy(u"Supporting document"), 
+    doc = forms.FileField(label=ugettext_lazy(u"Supporting document"),
                           required=True)
 
 
 class MediaForm(forms.Form):
-    media = forms.FileField(label=ugettext_lazy(u"Media upload"), 
+    media = forms.FileField(label=ugettext_lazy(u"Media upload"),
                             required=True)
 
     def clean_media(self):
@@ -218,7 +223,8 @@ class MapboxLayerForm(forms.Form):
 
 
 class QuickConverterFile(forms.Form):
-    xls_file = forms.FileField(label=ugettext_lazy(u'XLS File'), required=False)
+    xls_file = forms.FileField(
+        label=ugettext_lazy(u'XLS File'), required=False)
 
 
 class QuickConverterURL(forms.Form):
@@ -227,7 +233,14 @@ class QuickConverterURL(forms.Form):
                              required=False)
 
 
-class QuickConverter(QuickConverterFile, QuickConverterURL):
+class QuickConverterDropboxURL(forms.Form):
+    dropbox_xls_url = forms.URLField(
+        verify_exists=False,
+        label=ugettext_lazy('XLS URL'), required=False)
+
+
+class QuickConverter(QuickConverterFile, QuickConverterURL,
+                     QuickConverterDropboxURL):
     validate = URLValidator(verify_exists=True)
 
     def publish(self, user, id_string=None):
@@ -235,6 +248,8 @@ class QuickConverter(QuickConverterFile, QuickConverterURL):
             cleaned_xls_file = self.cleaned_data['xls_file']
             if not cleaned_xls_file:
                 cleaned_url = self.cleaned_data['xls_url']
+                if cleaned_url.strip() == u'':
+                    cleaned_url = self.cleaned_data['dropbox_xls_url']
                 cleaned_xls_file = urlparse(cleaned_url)
                 cleaned_xls_file = \
                     '_'.join(cleaned_xls_file.path.split('/')[-2:])
