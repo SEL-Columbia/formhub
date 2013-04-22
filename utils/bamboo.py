@@ -137,7 +137,8 @@ def get_csv_data(xform, force_last=False):
             if is_header:
                 is_header = False
                 for idx, col in enumerate(row):
-                    if col.startswith('_') or col.startswith('meta_'):
+                    if col.startswith('_') or col.startswith('meta_') \
+                        or col.startswith('meta/'):
                         row[idx] = (u'%(prefix)s%(col)s'
                                     % {'prefix': prefix, 'col': col})
             writer.writerow(row)
