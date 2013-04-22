@@ -622,6 +622,9 @@ def view_download_submission(request, username):
     submission_xml_root_node = instance.get_root_node()
     submission_xml_root_node.setAttribute(
         'instanceID', u'uuid:%s' % instance.uuid)
+    submission_xml_root_node.setAttribute(
+        'submissionDate', instance.date_created.isoformat()
+    )
     context.submission_data = submission_xml_root_node.toxml()
     context.media_files = Attachment.objects.filter(instance=instance)
     context.host = request.build_absolute_uri().replace(

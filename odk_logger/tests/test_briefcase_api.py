@@ -89,6 +89,7 @@ class TestBriefcaseAPI(MainTestCase):
         self.maxDiff = None
         self._submit_transport_instance_w_attachment()
         instanceId = u'5b2cc313-fc09-437e-8149-fcd32f695d41'
+        instance =  Instance.objects.get(uuid=instanceId)
         formId = u'%(formId)s[@version=null and @uiVersion=null]/' \
                  u'%(formId)s[@key=uuid:%(instanceId)s]' % {
                  'formId': self.xform.id_string,
@@ -101,5 +102,7 @@ class TestBriefcaseAPI(MainTestCase):
             'view', 'downloadSubmission.xml')
         with codecs.open(download_submission_path, encoding='utf-8') as f:
             text = f.read()
+            text = text.replace(u'{{submissionDate}}',
+                                instance.date_created.isoformat())
             self.assertContains(response, instanceId, status_code=200)
             self.assertMultiLineEqual(response.content, text)
