@@ -15,6 +15,18 @@ class ServiceDefinition(RestServiceInterface):
         xform = parsed_instance.instance.xform
         rows = [parsed_instance.to_dict_for_mongo()]
 
+        # prefix meta columns names for bamboo
+        prefix = (u'%(id_string)s_%(id)s'
+                  % {'id_string': xform.id_string, 'id': xform.id})
+
+        for row in rows:
+            for col, value in row.items():
+                if col.startswith('_') or col.startswith('meta_'):
+                    new_col = (u'%(prefix)s%(col)s'
+                               % {'prefix': prefix, 'col': col})
+                    row.update({new_col: value})
+                    del(row[col])
+
         # create dataset on bamboo first (including current submission)
         if not xform.bamboo_dataset:
             dataset_id = get_new_bamboo_dataset(xform, force_last=True)
