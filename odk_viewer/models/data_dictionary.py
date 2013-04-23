@@ -55,11 +55,13 @@ class DataDictionary(XForm):
         self.surveys_for_export = lambda d: d.surveys.all()
         super(DataDictionary, self).__init__(*args, **kwargs)
 
-    def _set_uuid_in_xml(self):
+    def _set_uuid_in_xml(self, file_name=None):
         """
         Add bind to automatically set UUID node in XML.
         """
-        file_name, file_ext = os.path.splitext(self.file_name())
+        if not file_name:
+            file_name = self.file_name()
+        file_name, file_ext = os.path.splitext(file_name)
 
         doc = clean_and_parse_xml(self.xml)
         model_nodes = doc.getElementsByTagName("model")
@@ -117,8 +119,8 @@ class DataDictionary(XForm):
         self.xml = doc.toprettyxml(indent="  ", encoding='utf-8')
         # hack
         # http://ronrothman.com/public/leftbraned/xml-dom-minidom-toprettyxml-and-silly-whitespace/
-        text_re = re.compile('>\n\s+([^<>\s].*?)\n\s+</', re.DOTALL)  
-        output_re = re.compile('\n.*(<output.*>)\n(  )*') 
+        text_re = re.compile('>\n\s+([^<>\s].*?)\n\s+</', re.DOTALL)
+        output_re = re.compile('\n.*(<output.*>)\n(  )*')
         prettyXml = text_re.sub('>\g<1></', self.xml)
         inlineOutput = output_re.sub('\g<1>', prettyXml)
         inlineOutput = re.compile(
