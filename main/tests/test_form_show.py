@@ -9,6 +9,7 @@ from odk_logger.views import download_xlsform, download_jsonform,\
 from odk_viewer.views import export_list, map_view
 from utils.user_auth import http_auth_string
 from odk_viewer.models import ParsedInstance
+from main.models import MetaData
 
 
 class TestFormShow(MainTestCase):

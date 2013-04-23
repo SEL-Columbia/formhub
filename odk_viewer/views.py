@@ -1,9 +1,7 @@
 import json
 import os
-import urllib2
 from tempfile import NamedTemporaryFile
 from time import strftime, strptime
-from urlparse import urlparse
 
 from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User
@@ -15,7 +13,6 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.utils import simplejson
-from django.core.files.storage import get_storage_class
 
 from main.models import UserProfile, MetaData, TokenStorageModel
 from odk_logger.models import XForm, Attachment
@@ -26,7 +23,7 @@ from utils.image_tools import image_url
 from xls_writer import XlsWriter
 from utils.logger_tools import response_with_mimetype_and_name,\
     disposition_ext_and_date, round_down_geopoint
-from utils.viewer_tools import image_urls, image_urls_for_form
+from utils.viewer_tools import image_urls
 from odk_viewer.tasks import create_async_export
 from utils.user_auth import has_permission, get_xform_and_perms,\
     helper_auth_helper
@@ -130,10 +127,8 @@ def map_view(request, username, id_string):
         "xform": xform.id_string
     }
     audit_log(Actions.FORM_MAP_VIEWED, request.user, owner,
-        _("Requested map on '%(id_string)s'.") %\
-        {
-            'id_string': xform.id_string,
-        }, audit, request)
+              _("Requested map on '%(id_string)s'.")
+              % {'id_string': xform.id_string}, audit, request)
     return render_to_response('map.html', context_instance=context)
 
 
@@ -145,7 +140,7 @@ def survey_responses(request, instance_id):
                             pi.instance.xform.id_string, request)
     # no access
     if not (xform.shared_data or can_view or
-            request.session.get('public_link')):
+            request.session.get('public_link') == xform.uuid):
         return HttpResponseRedirect('/')
     data = pi.to_dict()
 
@@ -166,8 +161,9 @@ def survey_responses(request, instance_id):
         "xform": xform.id_string,
         "instance_id": instance_id
     }
-    audit_log(Actions.FORM_DATA_VIEWED, request.user, xform.user,
-        _("Requested survey with id '%(instance_id)s' on '%(id_string)s'.") %\
+    audit_log(
+        Actions.FORM_DATA_VIEWED, request.user, xform.user,
+        _("Requested survey with id '%(instance_id)s' on '%(id_string)s'.") %
         {
             'id_string': xform.id_string,
             'instance_id': instance_id
@@ -198,13 +194,15 @@ def data_export(request, username, id_string, export_type):
         "xform": xform.id_string,
         "export_type": export_type
     }
-    # check if we need to re-generate, we always re-generate if a filter is specified
+    # check if we need to re-generate,
+    # we always re-generate if a filter is specified
     if should_create_new_export(xform, export_type) or query:
         try:
             export = generate_export(
                 export_type, extension, username, id_string, None, query)
-            audit_log(Actions.EXPORT_CREATED, request.user, owner,
-                _("Created %(export_type)s export on '%(id_string)s'.") %\
+            audit_log(
+                Actions.EXPORT_CREATED, request.user, owner,
+                _("Created %(export_type)s export on '%(id_string)s'.") %
                 {
                     'id_string': xform.id_string,
                     'export_type': export_type.upper()
@@ -215,13 +213,17 @@ def data_export(request, username, id_string, export_type):
         export = newset_export_for(xform, export_type)
 
     # log download as well
-    audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
-        _("Downloaded %(export_type)s export on '%(id_string)s'.") %\
+    audit_log(
+        Actions.EXPORT_DOWNLOADED, request.user, owner,
+        _("Downloaded %(export_type)s export on '%(id_string)s'.") %
         {
             'id_string': xform.id_string,
             'export_type': export_type.upper()
         }, audit, request)
 
+    if not export.filename:
+        # tends to happen when using newset_export_for.
+        return HttpResponseNotFound("File does not exist!")
     # get extension from file_path, exporter could modify to
     # xlsx if it exceeds limits
     path, ext = os.path.splitext(export.filename)
@@ -244,8 +246,24 @@ def create_export(request, username, id_string, export_type):
     query = request.POST.get("query")
     force_xlsx = request.POST.get('xlsx') == 'true'
 
+    # export options
+    group_delimiter = request.POST.get("options[group_delimiter]", '/')
+    if group_delimiter not in ['.', '/']:
+        return HttpResponseBadRequest(
+            _("%s is not a valid delimiter" % group_delimiter))
+
+    # default is True, so when dont_.. is yes
+    # split_select_multiples becomes False
+    split_select_multiples = request.POST.get(
+        "options[dont_split_select_multiples]", "no") == "no"
+
+    options = {
+        'group_delimiter': group_delimiter,
+        'split_select_multiples': split_select_multiples
+    }
+
     try:
-        create_async_export(xform, export_type, query, force_xlsx)
+        create_async_export(xform, export_type, query, force_xlsx, options)
     except Export.ExportTypeError:
         return HttpResponseBadRequest(
             _("%s is not a valid export type" % export_type))
@@ -254,8 +272,9 @@ def create_export(request, username, id_string, export_type):
             "xform": xform.id_string,
             "export_type": export_type
         }
-        audit_log(Actions.EXPORT_CREATED, request.user, owner,
-            _("Created %(export_type)s export on '%(id_string)s'.") %\
+        audit_log(
+            Actions.EXPORT_CREATED, request.user, owner,
+            _("Created %(export_type)s export on '%(id_string)s'.") %
             {
                 'export_type': export_type.upper(),
                 'id_string': xform.id_string,
@@ -398,8 +417,10 @@ def export_download(request, username, id_string, export_type, filename):
         "xform": xform.id_string,
         "export_type": export.export_type
     }
-    audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
-        _("Downloaded %(export_type)s export '%(filename)s' on '%(id_string)s'.") %\
+    audit_log(
+        Actions.EXPORT_DOWNLOADED, request.user, owner,
+        _("Downloaded %(export_type)s export '%(filename)s' "
+          "on '%(id_string)s'.") %
         {
             'export_type': export.export_type.upper(),
             'filename': export.filename,
@@ -431,8 +452,10 @@ def delete_export(request, username, id_string, export_type):
         "xform": xform.id_string,
         "export_type": export.export_type
     }
-    audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
-        _("Deleted %(export_type)s export '%(filename)s' on '%(id_string)s'.") %\
+    audit_log(
+        Actions.EXPORT_DOWNLOADED, request.user, owner,
+        _("Deleted %(export_type)s export '%(filename)s'"
+          " on '%(id_string)s'.") %
         {
             'export_type': export.export_type.upper(),
             'filename': export.filename,
@@ -453,8 +476,6 @@ def zip_export(request, username, id_string):
     helper_auth_helper(request)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
-    dd = DataDictionary.objects.get(id_string=id_string,
-                                    user=owner)
     if request.GET.get('raw'):
         id_string = None
     attachments = Attachment.objects.filter(instance__xform=xform)
@@ -463,14 +484,16 @@ def zip_export(request, username, id_string):
         "xform": xform.id_string,
         "export_type": Export.ZIP_EXPORT
     }
-    audit_log(Actions.EXPORT_CREATED, request.user, owner,
-        _("Created ZIP export on '%(id_string)s'.") %\
+    audit_log(
+        Actions.EXPORT_CREATED, request.user, owner,
+        _("Created ZIP export on '%(id_string)s'.") %
         {
             'id_string': xform.id_string,
         }, audit, request)
     # log download as well
-    audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
-        _("Downloaded ZIP export on '%(id_string)s'.") %\
+    audit_log(
+        Actions.EXPORT_DOWNLOADED, request.user, owner,
+        _("Downloaded ZIP export on '%(id_string)s'.") %
         {
             'id_string': xform.id_string,
         }, audit, request)
@@ -501,14 +524,16 @@ def kml_export(request, username, id_string):
         "xform": xform.id_string,
         "export_type": Export.KML_EXPORT
     }
-    audit_log(Actions.EXPORT_CREATED, request.user, owner,
-        _("Created KML export on '%(id_string)s'.") %\
+    audit_log(
+        Actions.EXPORT_CREATED, request.user, owner,
+        _("Created KML export on '%(id_string)s'.") %
         {
             'id_string': xform.id_string,
         }, audit, request)
     # log download as well
-    audit_log(Actions.EXPORT_DOWNLOADED, request.user, owner,
-        _("Downloaded KML export on '%(id_string)s'.") %\
+    audit_log(
+        Actions.EXPORT_DOWNLOADED, request.user, owner,
+        _("Downloaded KML export on '%(id_string)s'.") %
         {
             'id_string': xform.id_string,
         }, audit, request)
@@ -550,8 +575,9 @@ def google_xls_export(request, username, id_string):
         "xform": xform.id_string,
         "export_type": "google"
     }
-    audit_log(Actions.EXPORT_CREATED, request.user, owner,
-        _("Created Google Docs export on '%(id_string)s'.") %\
+    audit_log(
+        Actions.EXPORT_CREATED, request.user, owner,
+        _("Created Google Docs export on '%(id_string)s'.") %
         {
             'id_string': xform.id_string,
         }, audit, request)
@@ -570,8 +596,9 @@ def data_view(request, username, id_string):
     audit = {
         "xform": xform.id_string,
     }
-    audit_log(Actions.FORM_DATA_VIEWED, request.user, owner,
-        _("Requested data view for '%(id_string)s'.") %\
+    audit_log(
+        Actions.FORM_DATA_VIEWED, request.user, owner,
+        _("Requested data view for '%(id_string)s'.") %
         {
             'id_string': xform.id_string,
         }, audit, request)
@@ -607,7 +634,7 @@ def instance(request, username, id_string):
         username, id_string, request)
     # no access
     if not (xform.shared_data or can_view or
-            request.session.get('public_link')):
+            request.session.get('public_link') == xform.uuid):
         return HttpResponseForbidden(_(u'Not shared.'))
 
     context = RequestContext(request)
@@ -615,8 +642,9 @@ def instance(request, username, id_string):
     audit = {
         "xform": xform.id_string,
     }
-    audit_log(Actions.FORM_DATA_VIEWED, request.user, xform.user,
-        _("Requested instance view for '%(id_string)s'.") %\
+    audit_log(
+        Actions.FORM_DATA_VIEWED, request.user, xform.user,
+        _("Requested instance view for '%(id_string)s'.") %
         {
             'id_string': xform.id_string,
         }, audit, request)

@@ -552,7 +552,7 @@ function JSONSurveyToHTML(data)
 
     // add images if any
     // TODO: this assumes all attachments are images
-    if(data._attachments.length > 0)
+    if(data._attachments && data._attachments.length > 0)
     {
         var mediaContainer = '<ul class="media-grid">';
         for(idx in data._attachments)
@@ -590,10 +590,32 @@ function JSONSurveyToHTML(data)
                 span = _createElementAndSetAttrs('span', {"class": ("language language-" + idx), "style": style}, formJSONMngr.getMultilingualLabel(question, language));
                 td.appendChild(span);
             }
+            response.appendChild(td);
 
-            response.appendChild(td);
-            td = _createElementAndSetAttrs('td', {}, data[questionName]);
-            response.appendChild(td);
+            if(formJSONMngr.getTypeOfQuestion(questionName) === 'repeat') {
+                var repeatList = data[questionName];
+                td = $('<td></td>').appendTo(response);
+                _.each(repeatList, function (repeatEl, idx) {
+                    var thisID = questionName.replace(/\//g,'-') + "-" + idx;
+                    var collapseButton = $('<a>Child ' + (idx+1) + '</a>') // 1-indexed
+                                         .addClass('btn')
+                                         .attr('id', 'collapse-' + thisID) 
+                                         .appendTo(td);
+                    var collapseDiv = $('<div></div>')
+                                          .attr('id', thisID) 
+                                          .hide()
+                                          .appendTo(td);
+                    var table = $(JSONSurveyToHTML(repeatEl)).appendTo(collapseDiv);
+                    $('.leaflet-popup-content')
+                        .on('click', 
+                            '#collapse-' + thisID, 
+                            function() {$('#' + thisID).toggle();}
+                        );
+                });
+            } else {
+                td = _createElementAndSetAttrs('td', {}, data[questionName]);
+                response.appendChild(td);
+            }
             dummyContainer = _createElementAndSetAttrs('div', {});
             dummyContainer.appendChild(response);
             htmlContent += dummyContainer.innerHTML;

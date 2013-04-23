@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.db.utils import IntegrityError
 from django.shortcuts import render_to_response
+from django.shortcuts import get_object_or_404
 from django.template.base import Template
 from django.template.context import RequestContext, Context
 from django.utils import simplejson
@@ -17,7 +18,8 @@ from django.template.loader import render_to_string
 def add_service(request, username, id_string):
     context = RequestContext(request)
     form = RestServiceForm()
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    xform = get_object_or_404(
+        XForm, user__username=username, id_string=id_string)
     if request.method == 'POST':
         form = RestServiceForm(request.POST)
         context.restservice = None
@@ -33,7 +35,7 @@ def add_service(request, username, id_string):
                 context.status = 'fail'
             else:
                 context.status = 'success'
-                context.message = (_(u"Successfully added service %(name)s.") 
+                context.message = (_(u"Successfully added service %(name)s.")
                                    % {'name': service_name})
                 service_tpl = render_to_string("service.html", {
                     "sv": rs, "username": xform.user.username,
@@ -69,5 +71,5 @@ def delete_service(request, username, id_string):
                 pass
             else:
                 rs.delete()
-                success= "OK"
+                success = "OK"
     return HttpResponse(success)

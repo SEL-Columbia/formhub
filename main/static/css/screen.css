@@ -34,7 +34,7 @@ This is for all the extra things it needs beyond what bootstrap provides.
 body {
   padding-top: 55px !important;
 }
-.centered {
+.centered, tr td.centered {
   text-align: center;
 }
 .pagination a:hover,
@@ -987,6 +987,10 @@ a:focus {
 
 #language-bar select{
   width: 110px;
+}
+/* Dropbox Chooser */
+.dropbox-chooser{
+	margin: 12px auto 12px auto;
 }
 /* Recline CSS properties */
 .recline-slickgrid {

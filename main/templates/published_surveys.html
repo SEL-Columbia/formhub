@@ -1,14 +1,14 @@
 {% load humanize %}
 {% load i18n %}
 {% if all_forms or forms_shared_with or crowdforms%}
-<script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.js"></script>
-<script type="text/javascript" language="javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
+<script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
 
 <section id="published-forms">
   <div class="page-header">
     <h1>{% blocktrans %}Published Forms <small>Export, map, and view submissions.</small>{% endblocktrans %}</h1>
   </div>
-  <script type="text/javascript" charset="utf-8">
+  <script type="text/javascript">
 
         $.extend( $.fn.dataTableExt.oStdClasses, {
           "sSortAsc": "header headerSortDown",
@@ -98,15 +98,12 @@
                 <span class="label label-crowdform">{%  trans "CROWDFORM" %}</span>
             {% endif %}
         </td>
-        <td><center>{{ submission_count|intcomma }}</center></td>
-        <td>
-            <center>
-                <a class=btn href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}"><i class="icon-edit"></i> {% trans "Web" %}</a>
+        <td class="centered">{{ submission_count|intcomma }}</td>
+        <td class="centered">
+                <a class="btn" href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}"><i class="icon-edit"></i> {% trans "Web" %}</a>
                 <a data-toggle="modal" data-target="#popupmodal" class="showqr btn" href="{% url get_qrcode xform.user.username xform.id_string %}"><i class="icon-tablet"></i> {% trans "Mobile" %}</a>
-            </center>
         </td>
-        <td>
-            <center>
+        <td class="centered">
                 {% if has_surveys_with_geopoints %}
                     <a href="{% url odk_viewer.views.map_view user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
                         <i class="icon-map-marker icon-large"></i>
@@ -124,7 +121,6 @@
                     <span><i class="icon-camera icon-large inactive"></i></span>
                     <span><i class="icon-list icon-large inactive"></i></span>
                 {% endif %}
-            </center>
         </td>
         <td>
             {% if submission_count %}
@@ -147,7 +143,7 @@
         <td>
             {% if submission_count <= 0 %}
             <div class="dropdown">
-                <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
+                <a class="btn btn-flat dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
                     <i class="icon-cog"></i>
                 </a>
                     <ul class="dropdown-menu form-options left-arrow" role="menu" aria-labelledby="dropdownMenu">
@@ -233,9 +229,8 @@
                   {% endif %}
 
               </td>
-              <td><center>{{ submission_count|intcomma }}</center></td>
-              <td>
-                  <center>
+              <td class="centered">{{ submission_count|intcomma }}</td>
+              <td class="centered">
                       {% if has_surveys_with_geopoints %}
                           <a href="{% url odk_viewer.views.map_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
                               <i class="icon-map-marker icon-large"></i>
@@ -253,7 +248,6 @@
                           <span><i class="icon-camera icon-large inactive"></i></span>
                           <span><i class="icon-list icon-large inactive"></i></span>
                       {% endif %}
-                  </center>
               </td>
               <td>
                   {% if submission_count > 0 %}
@@ -274,7 +268,7 @@
               </td>
               <td>
                   <div class="dropdown">
-                      <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
+                      <a class="btn btn-flat dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
                           <i class="icon-cog"></i>
                       </a>
                       <ul class="dropdown-menu form-options left-arrow" role="menu" aria-labelledby="dropdownMenu">
@@ -322,11 +316,10 @@
                                 <span class="label">{%  trans "CROWDFORM" %}</span>
                             {% endif %}
                         </td>
-                        <td><center>{{ submission_count|intcomma }}</center></td>
-                        <td><center><a class=btn href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}"><i class="icon-edit"></i> {% trans "Web" %}</a></center></td>
+                        <td class="centered">{{ submission_count|intcomma }}</td>
+                        <td class="centered"><a class="btn" href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}"><i class="icon-edit"></i> {% trans "Web" %}</a></td>
                         <!-- view options -->
-                        <td>
-                            <center>
+                        <td class="centered">
                                 {% if has_surveys_with_geopoints %}
                                     <a href="{% url odk_viewer.views.map_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
                                         <i class="icon-map-marker icon-large"></i>
@@ -344,7 +337,6 @@
                                     <span><i class="icon-camera icon-large inactive"></i></span>
                                     <span><i class="icon-list icon-large inactive"></i></span>
                                 {% endif %}
-                            </center>
                         </td>
                         <!-- end view options -->
                         <td>
@@ -366,7 +358,7 @@
                         </td>
                         <td>
                             <div class="dropdown">
-                                <a class="btn btn-flat" class="dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
+                                <a class="btn btn-flat dropdown-toggle" data-toggle="dropdown" href="#" data-original-title="{% trans 'Options' %}" rel="tooltip">
                                     <i class="icon-cog"></i>
                                 </a>
                                 <ul class="dropdown-menu form-options left-arrow" role="menu" aria-labelledby="dropdownMenu">

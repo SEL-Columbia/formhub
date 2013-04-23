@@ -59,7 +59,7 @@ FormJSONManager.prototype._parseQuestions = function(questionData, parentQuestio
             this._parseSupportedLanguages(question);
         }
         /// if question is a group, recurse to collect children
-        else if(question[constants.TYPE] == "group" && question.hasOwnProperty(constants.CHILDREN))
+        if((question[constants.TYPE] == "group" || question[constants.TYPE] == "repeat") && question.hasOwnProperty(constants.CHILDREN))
             this._parseQuestions(question[constants.CHILDREN], question[constants.NAME]);
 
         if(question[constants.TYPE] == "select one")
@@ -67,6 +67,20 @@ FormJSONManager.prototype._parseQuestions = function(questionData, parentQuestio
         if(question[constants.TYPE] == "geopoint" || question[constants.TYPE] == "gps")
             this.geopointQuestions.push(question);
     }
+};
+
+
+FormJSONManager.prototype.getTypeOfQuestion = function(questionName) {
+    var question = _(this.questions).find(function(q) {
+        return q.name===questionName;
+    });
+    return question.type;
+};
+
+FormJSONManager.prototype.getQuestionsOfType = function(type) {
+    return _(this.questions).filter(function(q) {
+        return q.type===type;
+    });
 };
 
 FormJSONManager.prototype.getNumSelectOneQuestions = function()

@@ -84,7 +84,7 @@ def get_csv_data(xform, force_last=False):
 
             if headers_to_use is None:
                 headers_to_use = [key for key in rows[0].keys()
-                                    if not key.startswith('_')]
+                                  if not key.startswith('_')]
 
             w = csv.DictWriter(csv_buf, fieldnames=headers_to_use,
                                extrasaction='ignore', lineterminator='\n')
@@ -104,20 +104,45 @@ def get_csv_data(xform, force_last=False):
     # prepare/generate a standard CSV export.
     # note that it omits the current submission (if called from rest)
     csv_dataframe_builder = CSVDataFrameBuilder(xform.user.username,
-                                                    xform.id_string, '')
+                                                xform.id_string)
     try:
         csv_dataframe_builder.export_to(buff)
         if force_last:
             # requested to add last submission to the buffer
             buff.write(get_csv_data_manual(xform,
                                            only_last=True, with_header=False,
-                                           headers_to_use=get_headers_from(buff)))
+                                           headers_to_use=
+                                           get_headers_from(buff)))
     except NoRecordsFoundError:
         # verify that we don't have a single submission before giving up
         get_csv_data_manual(xform, with_header=True)
 
     if buff.len:
-        return buff.getvalue()
+
+        # rewrite CSV header so that meta fields (starting with _ or meta)
+        # are prefixed to ensure that the dataset will be joinable to
+        # another formhub dataset
+
+        prefix = (u'%(id_string)s_%(id)s'
+                  % {'id_string': xform.id_string, 'id': xform.id})
+
+        new_buff = getbuff()
+        buff.seek(0)
+        reader = csv.reader(buff)
+        writer = csv.writer(new_buff)
+
+        is_header = True
+
+        for row in reader:
+            if is_header:
+                is_header = False
+                for idx, col in enumerate(row):
+                    if col.startswith('_') or col.startswith('meta_') \
+                        or col.startswith('meta/'):
+                        row[idx] = (u'%(prefix)s%(col)s'
+                                    % {'prefix': prefix, 'col': col})
+            writer.writerow(row)
+
+        return new_buff.getvalue()
     else:
         raise NoRecordsFoundError
-

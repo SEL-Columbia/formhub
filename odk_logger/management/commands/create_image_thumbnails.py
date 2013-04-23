@@ -8,7 +8,7 @@ from django.conf import settings
 
 from odk_logger.models.attachment import Attachment
 from odk_logger.models.xform import XForm
-from utils.image_tools import get_dimensions, resize, resize_local_env
+from utils.image_tools import resize, resize_local_env
 from utils.model_tools import queryset_iterator
 from utils.viewer_tools import get_path
 from django.utils.translation import ugettext as _, ugettext_lazy
@@ -19,9 +19,11 @@ class Command(BaseCommand):
                          "all form images and stores them")
     option_list = BaseCommand.option_list + (
         make_option('-u', '--username',
-            help=ugettext_lazy("Username of the form user")),
+                    help=ugettext_lazy("Username of the form user")),
         make_option('-i', '--id_string',
-            help=ugettext_lazy("id string of the form"))
+                    help=ugettext_lazy("id string of the form")),
+        make_option('-f', '--force', action='store_false',
+                    help=ugettext_lazy("regenerate thumbnails if they exist."))
     )
 
     def handle(self, *args, **kwargs):
@@ -51,20 +53,28 @@ class Command(BaseCommand):
         for att in queryset_iterator(attachments_qs):
             filename = att.media_file.name
             default_storage = get_storage_class()()
-            if not default_storage.exists(get_path(filename,
-                                    settings.THUMB_CONF['small']['suffix'])):
+            full_path = get_path(filename,
+                                 settings.THUMB_CONF['small']['suffix'])
+            if kwargs.get('force') is not None:
+                for s in ['small', 'medium', 'large']:
+                    fp = get_path(filename,
+                                  settings.THUMB_CONF[s]['suffix'])
+                    if default_storage.exists(fp):
+                        default_storage.delete(fp)
+            if not default_storage.exists(full_path):
                 try:
                     if default_storage.__class__ != fs.__class__:
                         resize(filename)
                     else:
                         resize_local_env(filename)
-                    if default_storage.exists(get_path(filename,
+                    if default_storage.exists(get_path(
+                            filename,
                             '%s' % settings.THUMB_CONF['small']['suffix'])):
-                        print (_(u'Thumbnails created for %(file)s') 
+                        print (_(u'Thumbnails created for %(file)s')
                                % {'file': filename})
                     else:
-                        print (_(u'Problem with the file %(file)s') 
+                        print (_(u'Problem with the file %(file)s')
                                % {'file': filename})
                 except (IOError, OSError), e:
                     print _(u'Error on %(filename)s: %(error)s') \
-                            % {'filename': filename, 'error': e}
+                        % {'filename': filename, 'error': e}

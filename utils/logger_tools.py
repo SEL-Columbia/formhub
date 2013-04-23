@@ -43,7 +43,7 @@ OPEN_ROSA_VERSION_HEADER = 'X-OpenRosa-Version'
 HTTP_OPEN_ROSA_VERSION_HEADER = 'HTTP_X_OPENROSA_VERSION'
 OPEN_ROSA_VERSION = '1.0'
 DEFAULT_CONTENT_TYPE = 'text/xml; charset=utf-8'
-DEFAULT_CONTENT_LENGTH = 5000000
+DEFAULT_CONTENT_LENGTH = settings.DEFAULT_CONTENT_LENGTH
 
 uuid_regex = re.compile(r'<formhub><uuid>([^<]+)</uuid></formhub>',
                         re.DOTALL)
