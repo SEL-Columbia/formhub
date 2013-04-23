@@ -119,5 +119,13 @@ class TestBriefcaseAPI(MainTestCase):
             'transportation.xml')
         with codecs.open(form_def_path, encoding='utf-8') as f:
             params = {'form_def_file': f, 'dataFile': ''}
-            self.client.post(self._form_upload_url, data=params)
-        self.assertEqual(XForm.objects.count(), count + 1)
+            response = self.client.post(self._form_upload_url, data=params)
+            self.assertEqual(XForm.objects.count(), count + 1)
+            self.assertContains(
+                response, "successfully published.", status_code=201)
+        with codecs.open(form_def_path, encoding='utf-8') as f:
+            params = {'form_def_file': f, 'dataFile': ''}
+            response = self.client.post(self._form_upload_url, data=params)
+            self.assertContains(
+                response,
+                u'Form with this id already exists.', status_code=400)

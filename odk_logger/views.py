@@ -28,7 +28,7 @@ from poster.streaminghttp import register_openers
 
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound,\
-    inject_instanceid, remove_xform, publish_xml_form
+    inject_instanceid, remove_xform, publish_xml_form, publish_form
 from models import XForm, Instance
 from main.models import UserProfile, MetaData
 from utils.logger_tools import response_with_mimetype_and_name
@@ -645,6 +645,14 @@ def view_download_submission(request, username):
 @require_http_methods(["HEAD", "POST"])
 @csrf_exempt
 def form_upload(request, username):
+    class DoXmlFormUpload():
+        def __init__(self, xml_file, user):
+            self.xml_file = xml_file
+            self.user = user
+
+        def publish(self):
+            return publish_xml_form(self.xml_file, self.user)
+
     posting_user = get_object_or_404(User, username=username)
     if request.method == 'HEAD':
         response = OpenRosaResponse(status=204)
@@ -654,6 +662,12 @@ def form_upload(request, username):
     xform_def = request.FILES.get('form_def_file', None)
     content = u""
     if isinstance(xform_def, File):
-        dd = publish_xml_form(xform_def, posting_user)
-        content = _(u"%s successfully published." % dd.id_string)
-    return OpenRosaResponse(content)
+        do_form_upload = DoXmlFormUpload(xform_def, posting_user)
+        dd = publish_form(do_form_upload.publish)
+        status = 201
+        if isinstance(dd, XForm):
+            content = _(u"%s successfully published." % dd.id_string)
+        else:
+            content = dd['text']
+            status = 400
+    return OpenRosaResponse(content, status=status)
