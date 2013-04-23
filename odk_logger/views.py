@@ -19,6 +19,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.contrib import messages
 from django.core.files.storage import get_storage_class
+from django.core.files import File
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.translation import ugettext as _
@@ -27,7 +28,7 @@ from poster.streaminghttp import register_openers
 
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound,\
-    inject_instanceid, remove_xform
+    inject_instanceid, remove_xform, publish_xml_form
 from models import XForm, Instance
 from main.models import UserProfile, MetaData
 from utils.logger_tools import response_with_mimetype_and_name
@@ -179,7 +180,14 @@ def xformsManifest(request, username, id_string):
 def submission(request, username=None):
     if request.method == 'HEAD':
         # TODO Http Digest Authentication
-        return OpenRosaResponse(status=204)
+        response = OpenRosaResponse(status=204)
+        if username:
+            response['Location'] = request.build_absolute_uri().replace(
+                request.get_full_path(), '/%s/submission' % username)
+        else:
+            response['Location'] = request.build_absolute_uri().replace(
+                request.get_full_path(), '/submission')
+        return response
     context = RequestContext(request)
     xml_file_list = []
     media_files = []
@@ -632,3 +640,20 @@ def view_download_submission(request, username):
     return render_to_response(
         'downloadSubmission.xml', context_instance=context,
         mimetype="text/xml; charset=utf-8")
+
+
+@require_http_methods(["HEAD", "POST"])
+@csrf_exempt
+def form_upload(request, username):
+    posting_user = get_object_or_404(User, username=username)
+    if request.method == 'HEAD':
+        response = OpenRosaResponse(status=204)
+        response['Location'] = request.build_absolute_uri().replace(
+            request.get_full_path(), '/%s/formUpload' % posting_user.username)
+        return response
+    xform_def = request.FILES.get('form_def_file', None)
+    content = u""
+    if isinstance(xform_def, File):
+        dd = publish_xml_form(xform_def, posting_user)
+        content = _(u"%s successfully published." % dd.id_string)
+    return OpenRosaResponse(content)

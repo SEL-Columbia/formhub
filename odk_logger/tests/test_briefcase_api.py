@@ -7,19 +7,24 @@ from main.tests.test_base import MainTestCase
 
 from odk_logger.views import view_submission_list
 from odk_logger.views import view_download_submission
+from odk_logger.views import form_upload
 from odk_logger.models import Instance
+from odk_logger.models import XForm
 
 
 class TestBriefcaseAPI(MainTestCase):
     def setUp(self):
         super(MainTestCase, self).setUp()
         self._create_user_and_login()
-        self._publish_transportation_form()
+        #self._publish_transportation_form()
         self._submission_list_url = reverse(
             view_submission_list,
             kwargs={'username': self.user.username})
         self._download_submission_url = reverse(
             view_download_submission,
+            kwargs={'username': self.user.username})
+        self._form_upload_url = reverse(
+            form_upload,
             kwargs={'username': self.user.username})
 
     def test_view_submissionList(self):
@@ -89,7 +94,7 @@ class TestBriefcaseAPI(MainTestCase):
         self.maxDiff = None
         self._submit_transport_instance_w_attachment()
         instanceId = u'5b2cc313-fc09-437e-8149-fcd32f695d41'
-        instance =  Instance.objects.get(uuid=instanceId)
+        instance = Instance.objects.get(uuid=instanceId)
         formId = u'%(formId)s[@version=null and @uiVersion=null]/' \
                  u'%(formId)s[@key=uuid:%(instanceId)s]' % {
                  'formId': self.xform.id_string,
@@ -106,3 +111,13 @@ class TestBriefcaseAPI(MainTestCase):
                                 instance.date_created.isoformat())
             self.assertContains(response, instanceId, status_code=200)
             self.assertMultiLineEqual(response.content, text)
+
+    def test_form_upload(self):
+        count = XForm.objects.count()
+        form_def_path = os.path.join(
+            self.this_directory, 'fixtures', 'transportation',
+            'transportation.xml')
+        with codecs.open(form_def_path, encoding='utf-8') as f:
+            params = {'form_def_file': f, 'dataFile': ''}
+            self.client.post(self._form_upload_url, data=params)
+        self.assertEqual(XForm.objects.count(), count + 1)

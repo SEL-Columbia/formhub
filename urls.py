@@ -75,6 +75,10 @@ urlpatterns = patterns('',
         'odk_logger.views.view_submission_list'),
     url(r"^(?P<username>\w+)/view/downloadSubmission$",
         'odk_logger.views.view_download_submission'),
+    url(r"^(?P<username>\w+)/formUpload$",
+        'odk_logger.views.form_upload'),
+    url(r"^(?P<username>\w+)/upload$",
+        'odk_logger.views.form_upload'),
 
     # stats
     url(r"^stats/submissions/$", 'staff.views.submissions'),
