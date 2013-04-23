@@ -35,7 +35,7 @@ from odk_viewer.models.parsed_instance import _remove_from_mongo
 from odk_viewer.models.parsed_instance import xform_instances
 
 from odk_viewer.models import ParsedInstance, DataDictionary
-from utils.model_tools import queryset_iterator
+from utils.model_tools import queryset_iterator, set_uuid
 from xml.dom import Node
 
 
@@ -292,6 +292,24 @@ def publish_xls_form(xls_file, user, id_string=None):
             user=user,
             xls=xls_file
         )
+
+
+def publish_xml_form(xml_file, user, id_string=None):
+    if id_string:
+        dd = DataDictionary.objects.get(user=user, id_string=id_string)
+        dd.xml = xml_file.read()
+        dd._mark_start_time_boolean()
+        set_uuid(dd)
+        dd._set_uuid_in_xml()
+        dd.save()
+        return dd
+    else:
+        dd = DataDictionary(user=user, xml=xml_file.read())
+        dd._mark_start_time_boolean()
+        set_uuid(dd)
+        dd._set_uuid_in_xml(file_name=xml_file.name)
+        dd.save()
+        return dd
 
 
 class OpenRosaResponse(HttpResponse):
