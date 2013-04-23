@@ -8,6 +8,7 @@ from main.tests.test_base import MainTestCase
 from odk_logger.views import view_submission_list
 from odk_logger.views import view_download_submission
 from odk_logger.views import form_upload
+from odk_logger.views import submission
 from odk_logger.models import Instance
 from odk_logger.models import XForm
 
@@ -17,8 +18,14 @@ class TestBriefcaseAPI(MainTestCase):
         super(MainTestCase, self).setUp()
         self._create_user_and_login()
         #self._publish_transportation_form()
+        self.form_def_path = os.path.join(
+            self.this_directory, 'fixtures', 'transportation',
+            'transportation.xml')
         self._submission_list_url = reverse(
             view_submission_list,
+            kwargs={'username': self.user.username})
+        self._submission_url = reverse(
+            submission,
             kwargs={'username': self.user.username})
         self._download_submission_url = reverse(
             view_download_submission,
@@ -112,20 +119,35 @@ class TestBriefcaseAPI(MainTestCase):
             self.assertContains(response, instanceId, status_code=200)
             self.assertMultiLineEqual(response.content, text)
 
-    def test_form_upload(self):
+    def _publish_xml_form(self):
         count = XForm.objects.count()
-        form_def_path = os.path.join(
-            self.this_directory, 'fixtures', 'transportation',
-            'transportation.xml')
-        with codecs.open(form_def_path, encoding='utf-8') as f:
+        with codecs.open(self.form_def_path, encoding='utf-8') as f:
             params = {'form_def_file': f, 'dataFile': ''}
             response = self.client.post(self._form_upload_url, data=params)
             self.assertEqual(XForm.objects.count(), count + 1)
             self.assertContains(
                 response, "successfully published.", status_code=201)
-        with codecs.open(form_def_path, encoding='utf-8') as f:
+
+    def test_form_upload(self):
+        self._publish_xml_form()
+        with codecs.open(self.form_def_path, encoding='utf-8') as f:
             params = {'form_def_file': f, 'dataFile': ''}
             response = self.client.post(self._form_upload_url, data=params)
             self.assertContains(
                 response,
                 u'Form with this id already exists.', status_code=400)
+
+    def test_submission_with_instance_id_on_root_node(self):
+        message = u"Successful submission."
+        instanceId = u'5b2cc313-fc09-437e-8149-fcd32f695d41'
+        self.assertRaises(
+            Instance.DoesNotExist, Instance.objects.get, uuid=instanceId)
+        submission_path = os.path.join(
+            self.this_directory, 'fixtures', 'transportation',
+            'submission_with_instance_id_on_root_node.xml')
+        with codecs.open(submission_path, encoding='utf-8') as f:
+            post_data = {'xml_submission_file': f}
+            response = self.client.post(self._submission_url, post_data)
+            self.assertContains(response, message, status_code=201)
+            instances = Instance.objects.get(uuid=instanceId)
+            self.assertEqual(instances.count(), 1)
