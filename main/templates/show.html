@@ -414,7 +414,21 @@
                     </table>
                     <input type="submit" class="btn" value="{% trans "Toggle SMS Support" %}" />
                 {% endif %}
-            </form>
+            	</form>
+            	{% if xform.allows_sms %}
+            	<div class="sms_autodoc">{% autoescape off %}
+            	<h4 class="">Expected Format:</h4>
+            	<p class="sms_autodoc_line_names alert alert-info">{{ sms_support_doc.line_names }}</p>
+            	<ul class="sms_autodoc_helpers">
+            	{% for helper in sms_support_doc.helpers %}
+            		<li class="sms_autodoc_helper"><sup class="sms_autodoc_helper_indice">{{ forloop.counter0 }}</sup> <span class="sms_autodoc_helper_name">{{ helper.0 }}:</span> <span class="sms_autodoc_helper_text">{{helper.1}}</span></li>
+            	{% endfor %}
+            	</ul>
+            	<h4>Example:</h4>
+        		<p class="sms_autodoc_line_example alert alert-success">{{ sms_support_doc.line_values }}</p>
+            	{% endautoescape %}
+            	</div>
+            	{% endif %}
             </div>
         </div>
       </div>

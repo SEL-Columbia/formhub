@@ -45,6 +45,10 @@ from main.models import AuditLog
 from utils.viewer_tools import enketo_url
 from utils.qrcode import generate_qrcode
 
+from sms_support.tools import check_form_sms_compatibility
+from sms_support.autodoc import get_autodoc_for
+
+
 
 def home(request):
     if request.user.username:
@@ -121,7 +125,6 @@ def clone_xlsform(request, username):
             }
     form_result = publish_form(set_form)
     if form_result['type'] == 'alert-success':
-        from sms_support.tools import check_form_sms_compatibility
         form_result = check_form_sms_compatibility(form_result)
     context.message = form_result
     if request.is_ajax():
@@ -164,7 +167,6 @@ def profile(request, username):
             }
         form_result = publish_form(set_form)
         if form_result['type'] == 'alert-success':
-            from sms_support.tools import check_form_sms_compatibility
             form_result = check_form_sms_compatibility(form_result)
         context.message = form_result
 
@@ -309,6 +311,7 @@ def show(request, username=None, id_string=None, uuid=None):
             attach_perms=True
         ).items()
         context.permission_form = PermissionForm(username)
+    context.sms_support_doc = get_autodoc_for(xform)
     user_list = [u.username for u in User.objects.exclude(username=username)]
     context.user_json_list = simplejson.dumps(user_list)
     return render_to_response("show.html", context_instance=context)

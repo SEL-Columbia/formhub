@@ -31,6 +31,7 @@ SMS_INTERNAL_ERROR = 'SMS_INTERNAL_ERROR'
 BASE64_ALPHABET = ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'
                    'abcdefghijklmnopqrstuvwxyz0123456789+/=')
 DEFAULT_SEPARATOR = '+'
+DEFAULT_ALLOW_MEDIAS = False
 NA_VALUE = 'n/a'
 BASE64_ALPHABET = None
 META_FIELDS = ('start', 'end', 'today', 'deviceid', 'subscriberid',
@@ -197,7 +198,8 @@ def check_form_sms_compatibility(form):
     # separator is not set or is within BASE64 alphabet and sms_allow_media
     separator = json_survey.get('sms_separator', DEFAULT_SEPARATOR) \
         or DEFAULT_SEPARATOR
-    sms_allow_media = bool(json_survey.get('sms_allow_media', False) or False)
+    sms_allow_media = bool(json_survey.get('sms_allow_media',
+                           DEFAULT_ALLOW_MEDIAS) or DEFAULT_ALLOW_MEDIAS)
     if sms_allow_media and separator in BASE64_ALPHABET:
         return prep_return(_(u"When allowing medias ('sms_allow_media'), your "
                              u"separator (%s) must be outside Base64 alphabet "
