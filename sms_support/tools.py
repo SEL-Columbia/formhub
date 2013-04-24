@@ -20,10 +20,6 @@ from odk_logger.xform_instance_parser import (InstanceEmptyError,
 from odk_logger.models.instance import FormInactiveError
 from odk_logger.models import XForm
 from utils.log import audit_log, Actions
-# from parser import (DEFAULT_DATETIME_FORMAT,
-#                     DEFAULT_DATE_FORMAT,
-#                     SENSITIVE_FIELDS,
-#                     DEFAULT_SEPARATOR)
 
 
 SMS_API_ERROR = 'SMS_API_ERROR'
@@ -117,7 +113,8 @@ def generate_instance(username, xml_file, media_files, uuid=None):
     if len(media_files):
         [_file.close() for _file in media_files]
 
-    return (SMS_SUBMISSION_ACCEPTED, _(u"Success"))
+    return (SMS_SUBMISSION_ACCEPTED, _(u"[SUCCESS] Your submission "
+                                       u"has been accepted."))
 
 
 def check_form_sms_compatibility(form):
