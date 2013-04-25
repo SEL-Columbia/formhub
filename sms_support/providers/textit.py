@@ -1,0 +1,132 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# vim: ai ts=4 sts=4 et sw=4 nu
+
+""" Nyaruka's TextIt gateway
+
+    Supports Receiving and sending reply SMS from/to the TextIt App.
+
+    See: https://textit.in/api/v1/webhook/ """
+
+import json
+import datetime
+import dateutil
+
+import requests
+from django.http import HttpResponse
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.translation import ugettext as _
+
+from odk_logger.models import XForm
+from sms_support.tools import SMS_API_ERROR, SMS_SUBMISSION_ACCEPTED
+from sms_support.parser import process_incoming_smses
+
+TEXTIT_URL = 'https://api.textit.in/api/v1/sms.json'
+
+
+def get_token_for(xform):
+
+    return 'xxx'
+
+
+def get_xform_for(username, sms_text, id_string=None):
+    if not id_string is None:
+        try:
+            return XForm.objects.get(user__username=username,
+                                     id_string=id_string)
+        except XForm.DoesNotExist:
+            return None
+
+    try:
+        keyword = sms_text.split(' ', 1)[0]
+    except IndexError:
+        keyword = ''
+
+    try:
+        return XForm.objects.get(user__username=username,
+                                 sms_id_string=keyword)
+    except XForm.DoesNotExist:
+        return None
+
+
+def send_sms_via_textit(phone, text, relayer=None, xform=None):
+
+    textit_token = get_token_for(xform=xform, service='textit')
+
+    payload = {'phone': phone, 'text': text}
+    if relayer:
+        payload.update({'relayer': relayer})
+    headers = {'content-type': 'application/json',
+               'Authorization': 'Token %s' % textit_token}
+    requests.post(TEXTIT_URL, data=json.dumps(payload), headers=headers)
+
+
+def get_response(code, message=None, payload={}):
+
+    if code == SMS_API_ERROR:
+        message = None
+    elif code != SMS_SUBMISSION_ACCEPTED:
+        message = _(u"[ERROR] %s") % message
+
+    # send a response
+    if message:
+        send_sms_via_textit(**payload)
+
+    return HttpResponse()
+
+
+@require_POST
+@csrf_exempt
+def import_submission(request, username):
+    """ Proxy to import_submission_for_form with None as id_string """
+    return import_submission_for_form(request, username, None)
+
+
+@require_POST
+@csrf_exempt
+def import_submission_for_form(request, username, id_string):
+    """ Retrieve and process submission from SMSSync Request """
+
+    sms_event = request.POST.get('event', '').strip()
+
+    if not sms_event == 'mo_sms':
+        return HttpResponse()
+
+    sms_identity = request.POST.get('phone', '').strip()
+    sms_relayer = request.POST.get('relayer', '').strip()
+    sms_text = request.POST.get('text', '').strip()
+    now_time = datetime.datetime.now().isoformat()
+    sent_time = request.POST.get('time', now_time).strip()
+    xform = get_xform_for(username, sms_text, id_string)
+
+    try:
+        sms_time = dateutil.parser.parse(sent_time)
+    except ValueError:
+        sms_time = datetime.datetime.now()
+
+    return process_message_for_textit(username=username,
+                                      sms_identity=sms_identity,
+                                      sms_text=sms_text,
+                                      sms_time=sms_time,
+                                      id_string=id_string,
+                                      payload={'phone': sms_identity,
+                                               'relayer': sms_relayer,
+                                               'xform': xform})
+
+
+def process_message_for_textit(username, sms_identity, sms_text, sms_time,
+                               id_string, payload={}):
+    """ Process a text instance and return in SMSSync expected format """
+
+    if not sms_identity or not sms_text:
+        return get_response(SMS_API_ERROR,
+                            None,
+                            _(u"`identity` and `message` are "
+                              u"both required and must not be "
+                              u"empty."))
+
+    incomings = [(sms_identity, sms_text, payload)]
+    response = process_incoming_smses(username, incomings, id_string)[-1]
+
+    return get_response(*response, payload=payload)

@@ -11,21 +11,26 @@ from telerivet import (import_submission as imp_sub_telerivet,
                        import_submission_for_form as imp_sub_form_telerivet)
 from twilio import (import_submission as imp_sub_twilio,
                     import_submission_for_form as imp_sub_form_twilio)
+from textit import (import_submission as imp_sub_textit,
+                    import_submission_for_form as imp_sub_form_textit)
 
 SMSSYNC = 'smssync'
 TELERIVET = 'telerivet'
 TWILIO = 'twilio'
+TEXTIT = 'textit'
 
 IMP_FUNC = {
     SMSSYNC: imp_sub_smssync,
     TELERIVET: imp_sub_telerivet,
-    TWILIO: imp_sub_twilio
+    TWILIO: imp_sub_twilio,
+    TEXTIT: imp_sub_textit
 }
 
 IMP_FORM_FUNC = {
     SMSSYNC: imp_sub_form_smssync,
     TELERIVET: imp_sub_form_telerivet,
-    TWILIO: imp_sub_form_twilio
+    TWILIO: imp_sub_form_twilio,
+    TEXTIT: imp_sub_form_textit
 }
 
 
