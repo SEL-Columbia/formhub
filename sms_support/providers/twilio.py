@@ -23,14 +23,15 @@ from sms_support.tools import SMS_API_ERROR, SMS_SUBMISSION_ACCEPTED
 from sms_support.parser import process_incoming_smses
 
 
-def get_response(code, message=None):
+def get_response(data):
 
     xml_head = u'<?xml version="1.0" encoding="UTF-8" ?>'
     response_dict = {'Response': {}}
+    message = data.get('text')
 
-    if code == SMS_API_ERROR:
+    if data.get('code') == SMS_API_ERROR:
         message = None
-    elif code != SMS_SUBMISSION_ACCEPTED:
+    elif data.get('code') != SMS_SUBMISSION_ACCEPTED:
         message = _(u"[ERROR] %s") % message
 
     if message:
@@ -74,12 +75,12 @@ def process_message_for_twilio(username,
     """ Process a text instance and return in SMSSync expected format """
 
     if not sms_identity or not sms_text:
-        return get_response(SMS_API_ERROR,
-                            _(u"`identity` and `message` are "
-                              u"both required and must not be "
-                              u"empty."))
+        return get_response({'code': SMS_API_ERROR,
+                             'text': _(u"`identity` and `message` are "
+                                       u"both required and must not be "
+                                       u"empty.")})
 
     incomings = [(sms_identity, sms_text)]
     response = process_incoming_smses(username, incomings, id_string)[-1]
 
-    return get_response(*response)
+    return get_response(response)

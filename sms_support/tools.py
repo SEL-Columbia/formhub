@@ -31,7 +31,7 @@ SMS_INTERNAL_ERROR = 'SMS_INTERNAL_ERROR'
 BASE64_ALPHABET = ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'
                    'abcdefghijklmnopqrstuvwxyz0123456789+/=')
 DEFAULT_SEPARATOR = '+'
-DEFAULT_ALLOW_MEDIAS = False
+DEFAULT_ALLOW_MEDIA = False
 NA_VALUE = 'n/a'
 BASE64_ALPHABET = None
 META_FIELDS = ('start', 'end', 'today', 'deviceid', 'subscriberid',
@@ -40,6 +40,15 @@ MEDIA_TYPES = ('audio', 'video', 'photo')
 DEFAULT_DATE_FORMAT = '%Y-%m-%d'
 DEFAULT_DATETIME_FORMAT = '%Y-%m-%d-%H:%M'
 SENSITIVE_FIELDS = ('text', 'select all that apply', 'geopoint', 'barcode')
+
+
+def get_sms_instance_id(instance):
+    """ Human-friendly unique ID of a submission for latter ref/update
+
+        For now, we strip down to the first 8 chars of the UUID.
+        Until we figure out what we really want (might as well be used
+            by formhub XML) """
+    return instance.uuid[:8]
 
 
 def sms_media_to_file(file_object, name):
@@ -79,26 +88,32 @@ def generate_instance(username, xml_file, media_files, uuid=None):
             uuid=uuid
         )
     except InstanceInvalidUserError:
-        return (SMS_SUBMISSION_REFUSED, _(u"Username or ID required."))
+        return {'code': SMS_SUBMISSION_REFUSED,
+                'text': _(u"Username or ID required.")}
     except IsNotCrowdformError:
-        return (SMS_SUBMISSION_REFUSED,
-                _(u"Sorry but the crowd form you submitted to is closed."))
+        return {'code': SMS_SUBMISSION_REFUSED,
+                'text': _(u"Sorry but the crowd form you "
+                          u"submitted to is closed.")}
     except InstanceEmptyError:
-        return (SMS_INTERNAL_ERROR,
-                _(u"Received empty submission. No instance was created"))
+        return {'code': SMS_INTERNAL_ERROR,
+                'text': _(u"Received empty submission. "
+                          u"No instance was created")}
     except FormInactiveError:
-        return (SMS_SUBMISSION_REFUSED, _(u"Form is not active"))
+        return {'code': SMS_SUBMISSION_REFUSED,
+                'text': _(u"Form is not active")}
     except XForm.DoesNotExist:
-        return (SMS_SUBMISSION_REFUSED,
-                _(u"Form does not exist on this account"))
+        return {'code': SMS_SUBMISSION_REFUSED,
+                'text': _(u"Form does not exist on this account")}
     except ExpatError:
-        return (SMS_INTERNAL_ERROR, _(u"Improperly formatted XML."))
+        return {'code': SMS_INTERNAL_ERROR,
+                'text': _(u"Improperly formatted XML.")}
     except DuplicateInstance:
-        return (SMS_SUBMISSION_REFUSED, _(u"Duplicate submission"))
+        return {'code': SMS_SUBMISSION_REFUSED,
+                'text': _(u"Duplicate submission")}
 
     if instance is None:
-        return (SMS_INTERNAL_ERROR,
-                _(u"Unable to create submission."))
+        return {'code': SMS_INTERNAL_ERROR,
+                'text': _(u"Unable to create submission.")}
 
     user = User.objects.get(username=username)
 
@@ -114,8 +129,9 @@ def generate_instance(username, xml_file, media_files, uuid=None):
     if len(media_files):
         [_file.close() for _file in media_files]
 
-    return (SMS_SUBMISSION_ACCEPTED, _(u"[SUCCESS] Your submission "
-                                       u"has been accepted."))
+    return {'code': SMS_SUBMISSION_ACCEPTED,
+            'text': _(u"[SUCCESS] Your submission has been accepted."),
+            'id': get_sms_instance_id(instance)}
 
 
 def check_form_sms_compatibility(form):
@@ -199,7 +215,7 @@ def check_form_sms_compatibility(form):
     separator = json_survey.get('sms_separator', DEFAULT_SEPARATOR) \
         or DEFAULT_SEPARATOR
     sms_allow_media = bool(json_survey.get('sms_allow_media',
-                           DEFAULT_ALLOW_MEDIAS) or DEFAULT_ALLOW_MEDIAS)
+                           DEFAULT_ALLOW_MEDIA) or DEFAULT_ALLOW_MEDIA)
     if sms_allow_media and separator in BASE64_ALPHABET:
         return prep_return(_(u"When allowing medias ('sms_allow_media'), your "
                              u"separator (%s) must be outside Base64 alphabet "

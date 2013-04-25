@@ -13,9 +13,9 @@ from tools import SMS_API_ERROR
 from parser import process_incoming_smses
 
 
-def get_response(code, message=None):
-    response = {'status': code,
-                'message': message}
+def get_response(data):
+    response = {'status': data.get('code'),
+                'message': data.get('text')}
     return HttpResponse(json.dumps(response), mimetype='application/json')
 
 
@@ -50,15 +50,15 @@ def import_submission_for_form(request, username, id_string):
     sms_text = request.GET.get('text', '').strip()
 
     if not sms_identity or not sms_text:
-        return get_response(SMS_API_ERROR,
-                            _(u"`identity` and `message` are "
-                              u"both required and must not be "
-                              u"empty."))
+        return get_response({'code': SMS_API_ERROR,
+                             'text': _(u"`identity` and `message` are "
+                                       u"both required and must not be "
+                                       u"empty.")})
 
     incomings = [(sms_identity, sms_text)]
     response = process_incoming_smses(username, incomings, id_string)[-1]
 
-    return get_response(*response)
+    return get_response(response)
 
 
 @require_POST
@@ -68,7 +68,9 @@ def import_multiple_submissions_for_form(request, username, id_string):
     messages = json.loads(request.POST.get('messages', '[]'))
     incomings = [(m.get('identity', ''), m.get('text', '')) for m in messages]
 
-    responses = [{'status': s, 'message': m} for s, m
+    responses = [{'status': d.get('code'),
+                  'message': d.get('text'),
+                  'instanceID': d.get('id')} for d
                  in process_incoming_smses(username, incomings, id_string)]
 
     return HttpResponse(json.dumps(responses), mimetype='application/json')

@@ -14,7 +14,7 @@
 import json
 import datetime
 
-from tools import (DEFAULT_SEPARATOR, DEFAULT_ALLOW_MEDIAS, MEDIA_TYPES,
+from tools import (DEFAULT_SEPARATOR, DEFAULT_ALLOW_MEDIA, MEDIA_TYPES,
                    DEFAULT_DATE_FORMAT, DEFAULT_DATETIME_FORMAT)
 
 
@@ -161,7 +161,7 @@ def get_autodoc_for(xform):
     separator = json_survey.get('sms_separator', DEFAULT_SEPARATOR) \
         or DEFAULT_SEPARATOR
     sms_allow_media = bool(json_survey.get('sms_allow_media',
-                           DEFAULT_ALLOW_MEDIAS) or DEFAULT_ALLOW_MEDIAS)
+                           DEFAULT_ALLOW_MEDIA) or DEFAULT_ALLOW_MEDIA)
 
     helpers = []
     line_names = (u'<span class="sms_autodoc_keyword">%(keyword)s</span>'

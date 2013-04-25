@@ -20,12 +20,12 @@ from sms_support.tools import SMS_API_ERROR, SMS_SUBMISSION_ACCEPTED
 from sms_support.parser import process_incoming_smses
 
 
-def get_response(code, dest, message=None):
-
-    if code == SMS_API_ERROR:
+def get_response(data):
+    message = data.get('text')
+    if data.get('code') == SMS_API_ERROR:
         success = False
         message = None
-    elif code != SMS_SUBMISSION_ACCEPTED:
+    elif data.get('code') != SMS_SUBMISSION_ACCEPTED:
         success = True
         message = _(u"[ERROR] %s") % message
     else:
@@ -37,7 +37,7 @@ def get_response(code, dest, message=None):
             "task": "send"}}
 
     if message:
-        response['payload'].update({"messages": [{"to": dest,
+        response['payload'].update({"messages": [{"to": data.get('identity'),
                                                   "message": message}]})
     return HttpResponse(json.dumps(response), mimetype='application/json')
 
@@ -75,13 +75,13 @@ def process_message_for_smssync(username,
     """ Process a text instance and return in SMSSync expected format """
 
     if not sms_identity or not sms_text:
-        return get_response(SMS_API_ERROR,
-                            None,
-                            _(u"`identity` and `message` are "
-                              u"both required and must not be "
-                              u"empty."))
+        return get_response({'code': SMS_API_ERROR,
+                             'text': _(u"`identity` and `message` are "
+                                       u"both required and must not be "
+                                       u"empty.")})
 
     incomings = [(sms_identity, sms_text)]
     response = process_incoming_smses(username, incomings, id_string)[-1]
+    response.update({'identity': sms_identity})
 
-    return get_response(response[0], sms_identity, response[1])
+    return get_response(response)

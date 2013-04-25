@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # vim: ai ts=4 sts=4 et sw=4 nu
 
+import re
 import json
 import base64
 import StringIO
@@ -17,7 +18,8 @@ from sms_support.tools import (SMS_API_ERROR, SMS_PARSING_ERROR,
                                generate_instance, DEFAULT_SEPARATOR,
                                NA_VALUE, META_FIELDS,
                                MEDIA_TYPES, DEFAULT_DATE_FORMAT,
-                               DEFAULT_DATETIME_FORMAT)
+                               DEFAULT_DATETIME_FORMAT,
+                               SMS_SUBMISSION_ACCEPTED)
 
 
 class SMSSyntaxError(ValueError):
@@ -49,10 +51,10 @@ def parse_sms_text(xform, identity, text):
         or DEFAULT_SEPARATOR
 
     try:
-        allow_medias = bool(json_survey.get('sms_allow_medias', False))
+        allow_media = bool(json_survey.get('sms_allow_media', False))
     except:
         raise
-        allow_medias = False
+        allow_media = False
 
     xlsf_date_fmt = json_survey.get('sms_date_format', DEFAULT_DATE_FORMAT) \
         or DEFAULT_DATE_FORMAT
@@ -210,7 +212,7 @@ def parse_sms_text(xform, identity, text):
                 # 'note' ones are just meant to be displayed on device
                 continue
 
-            if not allow_medias and question_type in MEDIA_TYPES:
+            if not allow_media and question_type in MEDIA_TYPES:
                 # if medias for SMS has not been explicitly allowed
                 # they are considered excluded.
                 continue
@@ -247,6 +249,8 @@ def process_incoming_smses(username, incomings,
     xforms = []
     medias = []
     responses = []
+    resp_str = {'success': _(u"[SUCCESS] Your submission has been accepted. "
+                             u"It's ID is {{ id }}.")}
 
     def process_incoming(incoming, id_string):
         # assign variables
@@ -257,14 +261,15 @@ def process_incoming_smses(username, incomings,
             if len(incoming) >= 3:
                 id_string = incoming[2]
         else:
-            responses.append((SMS_API_ERROR,
-                             _(u"Missing 'identity' or 'text' field.")))
+            responses.append({'code': SMS_API_ERROR,
+                              'text': _(u"Missing 'identity' "
+                                        u"or 'text' field.")})
             return
 
         if not len(identity.strip()) or not len(text.strip()):
-            responses.append((SMS_PARSING_ERROR,
-                             _(u"'identity' and 'text' fields can "
-                               u"not be empty.")))
+            responses.append({'code': SMS_PARSING_ERROR,
+                              'text': _(u"'identity' and 'text' fields can "
+                                        u"not be empty.")})
             return
 
         # if no id_string has been supplied
@@ -278,23 +283,28 @@ def process_incoming_smses(username, incomings,
                                       id_string=id_string)
 
         if not xform.allows_sms:
-            responses.append((SMS_SUBMISSION_REFUSED,
-                             _(u"The form '%(id_string)s' does not "
-                             u"accept SMS submissions.")
-                             % {'id_string': xform.id_string}))
+            responses.append({'code': SMS_SUBMISSION_REFUSED,
+                              'text': _(u"The form '%(id_string)s' does not "
+                                        u"accept SMS submissions.")
+                             % {'id_string': xform.id_string}})
             return
 
         # parse text into a dict object of groups with values
         json_submission, medias_submission = parse_sms_text(xform,
                                                             identity, text)
 
+        # retrieve sms_response if exist in the form.
+        json_survey = json.loads(xform.json)
+        if json_survey.get('sms_response'):
+            resp_str.update({'success': json_survey.get('sms_response')})
+
         # check that the form contains at least one filled group
         meta_groups = sum([1 for k in json_submission.keys()
                            if k.startswith('meta')])
         if len(json_submission.keys()) <= meta_groups:
-            responses.append((SMS_PARSING_ERROR,
-                             _(u"There must be at least one group of "
-                               u"questions filled.")))
+            responses.append({'code': SMS_PARSING_ERROR,
+                              'text': _(u"There must be at least one group of "
+                                        u"questions filled.")})
             return
 
         # convert dict object into an XForm string
@@ -309,14 +319,20 @@ def process_incoming_smses(username, incomings,
         try:
             process_incoming(incoming, id_string)
         except Exception as e:
-            responses.append((SMS_PARSING_ERROR, str(e)))
+            responses.append({'code': SMS_PARSING_ERROR, 'text': str(e)})
 
     for idx, xform in enumerate(xforms):
         # generate_instance expects media as a request.FILES.values() list
         xform_medias = [sms_media_to_file(f, n) for n, f in medias[idx]]
         # create the instance in the data base
-        responses.append(generate_instance(username=username,
-                                           xml_file=xform,
-                                           media_files=xform_medias))
+        response = generate_instance(username=username,
+                                     xml_file=xform,
+                                     media_files=xform_medias)
+        if response.get('code') == SMS_SUBMISSION_ACCEPTED:
+            success_response = re.sub(r'{{\s*[i,d,I,D]{2}\s*}}',
+                                      response.get('id'),
+                                      resp_str.get('success'), re.I)
+            response.update({'text': success_response})
+        responses.append(response)
 
     return responses

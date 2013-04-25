@@ -26,7 +26,6 @@ TEXTIT_URL = 'https://api.textit.in/api/v1/sms.json'
 
 
 def get_token_for(xform):
-
     return 'xxx'
 
 
@@ -62,16 +61,17 @@ def send_sms_via_textit(phone, text, relayer=None, xform=None):
     requests.post(TEXTIT_URL, data=json.dumps(payload), headers=headers)
 
 
-def get_response(code, message=None, payload={}):
+def get_response(data):
 
-    if code == SMS_API_ERROR:
+    message = data.get('text')
+    if data.get('code') == SMS_API_ERROR:
         message = None
-    elif code != SMS_SUBMISSION_ACCEPTED:
+    elif data.get('code') != SMS_SUBMISSION_ACCEPTED:
         message = _(u"[ERROR] %s") % message
 
     # send a response
     if message:
-        send_sms_via_textit(**payload)
+        send_sms_via_textit(**data.get('payload', {}))
 
     return HttpResponse()
 
@@ -120,13 +120,13 @@ def process_message_for_textit(username, sms_identity, sms_text, sms_time,
     """ Process a text instance and return in SMSSync expected format """
 
     if not sms_identity or not sms_text:
-        return get_response(SMS_API_ERROR,
-                            None,
-                            _(u"`identity` and `message` are "
-                              u"both required and must not be "
-                              u"empty."))
+        return get_response({'code': SMS_API_ERROR,
+                             'text': _(u"`identity` and `message` are "
+                                       u"both required and must not be "
+                                       u"empty.")})
 
     incomings = [(sms_identity, sms_text, payload)]
     response = process_incoming_smses(username, incomings, id_string)[-1]
+    response.update({'payload': payload})
 
     return get_response(*response, payload=payload)
