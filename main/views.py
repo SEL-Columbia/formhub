@@ -1049,7 +1049,7 @@ def update_xform(request, username, id_string):
             'type': 'alert-success',
             'text': _(u'Successfully published %(form_id)s.'
                       u' <a href="%(form_url)s">Enter Web Form</a>'
-                      u'or <a href="#preview-modal" data-toggle="modal">Preview Web Form</a>')
+                      u' or <a href="#preview-modal" data-toggle="modal">Preview Web Form</a>')
                     % {'form_id': survey.id_string,
                        'form_url': enketo_webform_url}
         }
