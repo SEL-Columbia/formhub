@@ -71,6 +71,18 @@
 
 	});
   </script>
+{% if message and message.preview_url %}
+    <div id="preview-modal" class="modal hide fade">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>{{ message.published_survey.title }} - {% trans "Preview" %}</h3>
+        </div>
+        <div class="modal-body">
+            <iframe src="{{message.preview_url}}"></iframe>
+        </div>
+        <div class="modal-footer"></div>
+    </div>
+{% endif %}
 {% if all_forms %}
   <table id="forms-table" class="table table-bordered table-striped forms-table">
     <thead>

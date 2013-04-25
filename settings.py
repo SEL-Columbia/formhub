@@ -80,6 +80,7 @@ STATIC_URL = '/static/'
 
 #ENKETO URL
 ENKETO_URL = 'http://enketo.formhub.org/'
+ENKETO_PREVIEW_URL = ENKETO_URL + 'webform/preview'
 
 # Login URLs
 LOGIN_URL = '/accounts/login/'
