@@ -19,18 +19,19 @@ TELERIVET = 'telerivet'
 TWILIO = 'twilio'
 TEXTIT = 'textit'
 
-IMP_FUNC = {
-    SMSSYNC: imp_sub_smssync,
-    TELERIVET: imp_sub_telerivet,
-    TWILIO: imp_sub_twilio,
-    TEXTIT: imp_sub_textit
-}
-
-IMP_FORM_FUNC = {
-    SMSSYNC: imp_sub_form_smssync,
-    TELERIVET: imp_sub_form_telerivet,
-    TWILIO: imp_sub_form_twilio,
-    TEXTIT: imp_sub_form_textit
+PROVIDERS = {
+    SMSSYNC: {'name': u"SMS Sync",
+              'imp': imp_sub_smssync,
+              'imp_form': imp_sub_form_smssync},
+    TELERIVET: {'name': u"Telerivet",
+                'imp': imp_sub_telerivet,
+                'imp_form': imp_sub_form_telerivet},
+    TWILIO: {'name': u"Twilio",
+             'imp': imp_sub_twilio,
+             'imp_form': imp_sub_form_twilio},
+    TEXTIT: {'name': u"Text It",
+             'imp': imp_sub_textit,
+             'imp_form': imp_sub_form_textit}
 }
 
 
@@ -44,11 +45,12 @@ def unknown_service(request, username=None, id_string=None):
 @csrf_exempt
 def import_submission(request, username, service):
     """ Proxy to the service's import_submission view """
-    return IMP_FUNC.get(service.lower(), unknown_service)(request, username)
+    return PROVIDERS.get(service.lower(), {}) \
+                    .get('imp', unknown_service)(request, username)
 
 
 @csrf_exempt
 def import_submission_for_form(request, username, id_string, service):
     """ Proxy to the service's import_submission_for_form view """
-    return IMP_FORM_FUNC.get(service.lower(),
-                             unknown_service)(request, username, None)
+    return PROVIDERS.get(service.lower(), {}) \
+                    .get('imp_form', unknown_service)(request, username, None)
