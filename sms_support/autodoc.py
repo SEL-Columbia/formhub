@@ -22,7 +22,7 @@ def get_sample_data_for(question, json_survey, as_names=False):
 
     """ return an example data for a particular question.
 
-        If as_names is True, returns the name (not sms_id) of the question """
+        If as_names is True, returns the name (not sms_field) of the question """
 
     xlsf_name = question.get('name')
     xlsf_type = question.get('type')
@@ -47,10 +47,10 @@ def get_sample_data_for(question, json_survey, as_names=False):
     elif xlsf_type == 'decimal':
         return safe_wrap(1.2)
     elif xlsf_type == 'select one':
-        return safe_wrap(u' '.join([c.get('sms_id')
+        return safe_wrap(u' '.join([c.get('sms_option')
                                     for c in xlsf_choices][:1]))
     elif xlsf_type == 'select all that apply':
-        return safe_wrap(u' '.join([c.get('sms_id')
+        return safe_wrap(u' '.join([c.get('sms_option')
                                     for c in xlsf_choices][:2]))
     elif xlsf_type == 'geopoint':
         return safe_wrap('12.65 -8')
@@ -100,9 +100,9 @@ def get_helper_text(question, json_survey):
         helper = u'Select one of the following:'
         helper += u'<ul>'
         helper += u''.join([u'<li><span class="sms_autodoc_helper_choice_id">'
-                            u'%(sms_id)s</span> <span class="sms_autodoc_'
+                            u'%(sms_option)s</span> <span class="sms_autodoc_'
                             u'helper_choice_label">%(label)s</span></li>'
-                            % {'sms_id': c.get('sms_id'),
+                            % {'sms_option': c.get('sms_option'),
                                'label': c.get('label')}
                            for c in xlsf_choices])
         helper += u'</ul>'
@@ -111,9 +111,9 @@ def get_helper_text(question, json_survey):
         helper = u'Select none, one or more in:'
         helper += u'<ul>'
         helper += u''.join([u'<li><span class="sms_autodoc_helper_choice_id">'
-                            u'%(sms_id)s</span> <span class="sms_autodoc_'
+                            u'%(sms_option)s</span> <span class="sms_autodoc_'
                             u'helper_choice_label">%(label)s</span></li>'
-                            % {'sms_id': c.get('sms_id'),
+                            % {'sms_option': c.get('sms_option'),
                                'label': c.get('label')}
                            for c in xlsf_choices])
         helper += u'</ul>'
@@ -173,16 +173,16 @@ def get_autodoc_for(xform):
                                u'<br />Omit if using a form-aware URL.'))
 
     for group in json_survey.get('children', {}):
-        sms_id = group.get('sms_id', '')
-        if not sms_id or sms_id.lower() == 'meta':
+        sms_field = group.get('sms_field', '')
+        if not sms_field or sms_field.lower() == 'meta':
             continue
 
         line_values += (u'<span class="group"><span class="group_id">'
-                        u'%(sep)s%(sms_id)s</span> '
-                        % {'sep': separator, 'sms_id': group.get('sms_id')})
+                        u'%(sep)s%(sms_field)s</span> '
+                        % {'sep': separator, 'sms_field': group.get('sms_field')})
         line_names += (u'<span class="group"><span class="group_id">'
-                       u'%(sep)s%(sms_id)s</span> '
-                       % {'sep': separator, 'sms_id': group.get('sms_id')})
+                       u'%(sep)s%(sms_field)s</span> '
+                       % {'sep': separator, 'sms_field': group.get('sms_field')})
 
         for question in group.get('children', {}):
             type_id = question.get('type')

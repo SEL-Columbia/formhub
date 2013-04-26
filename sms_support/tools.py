@@ -134,13 +134,17 @@ def generate_instance(username, xml_file, media_files, uuid=None):
             'id': get_sms_instance_id(instance)}
 
 
-def check_form_sms_compatibility(form):
+def check_form_sms_compatibility(form, json_survey=None):
     ''' Tests all SMS related rules on the XForm representation
 
         Returns a view-compatible dict(type, text) with warnings or
         a success message '''
 
-    json_survey = form.get('form_o')
+    if json_survey is None:
+        json_survey = form.get('form_o')
+        form_text = u"%s<br />" % form['text']
+    else:
+        form_text = u""
     # from pprint import pprint as pp ; pp(json_survey)
 
     def prep_return(msg, comp=None):
@@ -172,8 +176,8 @@ def check_form_sms_compatibility(form):
             alert = success
 
         return {'type': alert,
-                'text': u"%(intro)s<br />%(msg)s%(outro)s"
-                        % {'intro': form['text'], 'msg': msg, 'outro': outro}}
+                'text': u"%(intro)s%(msg)s%(outro)s"
+                        % {'intro': form_text, 'msg': msg, 'outro': outro}}
 
     # first level children. should be groups
     groups = json_survey.get('children', [{}])
@@ -194,11 +198,11 @@ def check_form_sms_compatibility(form):
     # must not contain out-of-group questions
     if sum([1 for e in groups if e.get('type') != 'group']):
         return prep_return(_(u"All your questions must be in groups."))
-    # all groups must have an sms_id
-    bad_groups = [e.get('name') for e in groups if not e.get('sms_id', '')
+    # all groups must have an sms_field
+    bad_groups = [e.get('name') for e in groups if not e.get('sms_field', '')
                   and not e.get('name', '') == 'meta']
     if len(bad_groups):
-        return prep_return(_(u"All your groups must have an 'sms_id' "
+        return prep_return(_(u"All your groups must have an 'sms_field' "
                              u"(use 'meta' prefixed ones for non-fillable "
                              u"groups). %s" % bad_groups[-1]))
     # has sensitive (space containing) fields in non-last position

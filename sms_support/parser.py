@@ -114,7 +114,7 @@ def parse_sms_text(xform, identity, text):
             return safe_wrap(lambda: float(value))
         elif xlsf_type == 'select one':
             for choice in xlsf_choices:
-                if choice.get('sms_id') == value:
+                if choice.get('sms_option') == value:
                     return choice.get('name')
             raise SMSCastingError(_(u"No matching choice "
                                     u"for '%(input)s'")
@@ -125,7 +125,7 @@ def parse_sms_text(xform, identity, text):
             ret_values = []
             for indiv_value in values:
                 for choice in xlsf_choices:
-                    if choice.get('sms_id') == indiv_value:
+                    if choice.get('sms_option') == indiv_value:
                         ret_values.append(choice.get('name'))
             return u" ".join(ret_values)
         elif xlsf_type == 'geopoint':
@@ -190,7 +190,7 @@ def parse_sms_text(xform, identity, text):
             continue
 
         # retrieve part of SMS text for this group
-        group_id = expected_group.get('sms_id')
+        group_id = expected_group.get('sms_field')
         answers = groups.get(group_id)
         if not group_id or (not answers and not group_id.startswith('meta')):
             # group is not meant to be filled by SMS
