@@ -409,14 +409,16 @@
                 {% endif %}
                 {% if can_edit %}
                     {% csrf_token %}
+                    <input type="hidden" name="enable_sms_support_trigger" value="yes" />
                     <table>
                     {{ sms_support_form.as_table }}
                     </table>
                     <input type="submit" class="btn" value="{% trans "Toggle SMS Support" %}" />
                 {% endif %}
             	</form>
+            	{% autoescape off %}
             	{% if xform.allows_sms %}
-            	<div class="sms_autodoc">{% autoescape off %}
+            	<div class="sms_autodoc">
             	<h4 class="">Expected Format:</h4>
             	<p class="sms_autodoc_line_names alert alert-info">{{ sms_support_doc.line_names }}</p>
             	<ul class="sms_autodoc_helpers">
@@ -426,9 +428,11 @@
             	</ul>
             	<h4>Example:</h4>
         		<p class="sms_autodoc_line_example alert alert-success">{{ sms_support_doc.line_values }}</p>
-            	{% endautoescape %}
             	</div>
+            	{% else %}
+            		<p class="alert {{ sms_compatible.type }}">{{ sms_compatible.text }}</p>
             	{% endif %}
+            	{% endautoescape %}
             </div>
         </div>
       </div>

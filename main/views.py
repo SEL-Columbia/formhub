@@ -298,6 +298,9 @@ def show(request, username=None, id_string=None, uuid=None):
         context.sms_support_form = ActivateSMSSupportFom(
             initial={'enable_sms_support': xform.allows_sms,
                      'sms_id_string': xform.sms_id_string})
+        if not xform.allows_sms:
+            context.sms_compatible = check_form_sms_compatibility(None,
+                json_survey=json.loads(xform.json))
         context.form_license_form = FormLicenseForm(
             initial={'value': context.form_license})
         context.data_license_form = DataLicenseForm(
@@ -553,7 +556,7 @@ def edit(request, username, id_string):
                 }, audit, request)
             MetaData.source(xform, request.POST.get('source'),
                             request.FILES.get('source'))
-        elif request.POST.get('enable_sms_support') is not None:
+        elif request.POST.get('enable_sms_support_trigger') is not None:
             sms_support_form = ActivateSMSSupportFom(request.POST)
             if sms_support_form.is_valid():
                 audit = {
@@ -576,6 +579,11 @@ def edit(request, username, id_string):
                 pid = xform.sms_id_string
                 xform.allows_sms = enabled
                 xform.sms_id_string = sms_support_form.cleaned_data.get('sms_id_string')
+                compat = check_form_sms_compatibility(None,
+                                                      json.loads(xform.json))
+                if compat['type'] == 'alert-error':
+                    xform.allows_sms = False
+                    xform.sms_id_string = pid
                 try:
                     xform.save()
                 except IntegrityError:
