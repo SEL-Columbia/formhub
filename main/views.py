@@ -41,6 +41,7 @@ from utils.user_auth import check_and_set_user, set_profile_data,\
     check_and_set_user_and_form
 from utils.log import audit_log, Actions
 from main.models import AuditLog
+from settings import ENKETO_PREVIEW_URL
 
 from utils.viewer_tools import enketo_url
 from utils.qrcode import generate_qrcode
@@ -160,8 +161,13 @@ def profile(request, username):
             )
             return {
                 'type': 'alert-success',
+                'preview_url': reverse(enketo_preview, kwargs={
+                    'username': username,
+                    'id_string': survey.id_string
+                }),
                 'text': _(u'Successfully published %(form_id)s.'
-                          u' <a href="%(form_url)s">Enter Web Form</a>')
+                          u' <a href="%(form_url)s">Enter Web Form</a>'
+                          u' or <a href="#preview-modal" data-toggle="modal">Preview Web Form</a>')
                         % {'form_id': survey.id_string,
                             'form_url': enketo_webform_url},
                 'form_o': survey
@@ -1106,7 +1112,8 @@ def update_xform(request, username, id_string):
         return {
             'type': 'alert-success',
             'text': _(u'Successfully published %(form_id)s.'
-                      u' <a href="%(form_url)s">Enter Web Form</a>')
+                      u' <a href="%(form_url)s">Enter Web Form</a>'
+                      u' or <a href="#preview-modal" data-toggle="modal">Preview Web Form</a>')
                     % {'form_id': survey.id_string,
                        'form_url': enketo_webform_url}
         }
@@ -1215,3 +1222,17 @@ def qrcode(request, username, id_string):
         results = """<div class="alert alert-error">%s</div>""" % error_msg
 
     return HttpResponse(results, mimetype='text/html')
+
+
+def enketo_preview(request, username, id_string):
+    xform = get_object_or_404(
+        XForm, user__username=username, id_string=id_string)
+    owner = xform.user
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden(_(u'Not shared.'))
+    enekto_preview_url = "%(enketo_url)s?server=%(profile_url)s&id=%(id_string)s" % {
+        'enketo_url': ENKETO_PREVIEW_URL,
+        'profile_url': request.build_absolute_uri(reverse(profile, kwargs={'username': owner.username})),
+        'id_string': xform.id_string
+    }
+    return HttpResponseRedirect(enekto_preview_url)

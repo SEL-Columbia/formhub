@@ -222,16 +222,31 @@
 		{% endif %}
 		{% endif %}
 		{% if can_edit or xform.is_crowd_form %}
-	    <div class="btn-toolbar" style="margin-bottom: 9px">
-          <div class="btn-group">
-		    <a class="btn btn-info" rel="tooltip" title="{% trans 'Webform' %}" href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
-		      <i class="icon-edit icon-white"></i> {% trans "Enter Web Form" %}
-            </a>
+          <div class="btn-toolbar" style="margin-bottom: 9px">
+              <span><!-- break the .btn-group + .btn-group rule that shows a margin before this group --></span>
+
+              <div class="btn-group" style="margin-bottom: 9px">
+                  <a class="btn btn-info" rel="tooltip" title="{% trans 'Webform' %}"
+                     href="{% url odk_logger.views.enter_data content_user.username xform.id_string %}">
+                      <i class="icon-edit icon-white"></i> {% trans "Enter Web Form" %}
+                  </a>
+                  <a data-toggle="modal" data-target="#popupmodal" class="showqr btn btn-info" href="{% url get_qrcode xform.user.username xform.id_string %}"><i class="icon-tablet"></i> {% trans "Mobile" %}</a>
+                  <a class="btn btn-info" rel="tooltip" title="{% trans 'Preview Form' %}" href="#preview-modal"
+                     data-toggle="modal">
+                      <i class="icon-check icon-white"></i> {% trans "Preview Form" %}
+                  </a>
+              </div>
+              <div id="preview-modal" class="modal hide fade">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                      <h3>{{ xform.title }} - {% trans "Preview" %}</h3>
+                  </div>
+                  <div class="modal-body">
+                      <iframe src="{% url main.views.enketo_preview content_user.username xform.id_string %}"></iframe>
+                  </div>
+                  <div class="modal-footer"></div>
+              </div>
           </div>
-          <div class="btn-group">
-            <a data-toggle="modal" data-target="#popupmodal" class="showqr btn" href="{% url get_qrcode xform.user.username xform.id_string %}"><i class="icon-tablet"></i> {% trans "Mobile" %}</a>
-          </div>
-        </div>
 		{% endif %}
         <br>
       <div class="span4">

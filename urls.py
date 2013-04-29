@@ -68,6 +68,7 @@ urlpatterns = patterns('',
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/delservice$',
         'restservice.views.delete_service', name="delete_restservice"),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/update$', 'main.views.update_xform'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/preview$', 'main.views.enketo_preview'),
 
     # stats
     url(r"^stats/submissions/$", 'staff.views.submissions'),

@@ -1002,6 +1002,18 @@ a:focus {
 color: white;
 }
 
+#preview-modal {
+    width: 750px;
+    margin-left: -375px;
+}
+
+#preview-modal iframe {
+    width: 100%;
+    border: none;
+    height: 600px;
+}
+
+
 /* SMS Support Automatic Documentation */
 .sms_autodoc .sms_autodoc_line_names, .sms_autodoc .sms_autodoc_line_example {
 	font-family: monospace;
