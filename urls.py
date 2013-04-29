@@ -105,15 +105,15 @@ urlpatterns = patterns('',
     url(r"^(?P<username>\w+)/(?P<id_string>[^/]+)/toggle_downloadable/$", 'odk_logger.views.toggle_downloadable'),
 
     # SMS support
-    url(r"^(?P<username>[^/]+)/sms_submission$", 'sms_support.views.import_submission'),
-    url(r"^(?P<username>[^/]+)/sms_multiple_submissions$", 'sms_support.views.import_multiple_submissions'),
+    url(r"^(?P<username>[^/]+)/sms_submission$", 'sms_support.views.import_submission', name='sms_submission'),
+    url(r"^(?P<username>[^/]+)/sms_multiple_submissions$", 'sms_support.views.import_multiple_submissions', name='sms_submissions'),
 
-    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/sms_submission$', 'sms_support.views.import_submission_for_form'),
-    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/sms_multiple_submissions$', 'sms_support.views.import_multiple_submissions_for_form'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/sms_submission$', 'sms_support.views.import_submission_for_form', name='sms_submission_form'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/sms_multiple_submissions$', 'sms_support.views.import_multiple_submissions_for_form', name='sms_submissions_form'),
 
     # SMS Gateway APIs
-    url(r"^(?P<username>[^/]+)/sms_submission/(?P<service>[a-z]+)/?$", 'sms_support.providers.import_submission'),
-    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/sms_submission/(?P<service>[a-z]+)/?$', 'sms_support.providers.import_submission_for_form'),
+    url(r"^(?P<username>[^/]+)/sms_submission/(?P<service>[a-z]+)/?$", 'sms_support.providers.import_submission', name='sms_submission_api'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/sms_submission/(?P<service>[a-z]+)/?$', 'sms_support.providers.import_submission_for_form', name='sms_submission_form_api'),
 
     # static media
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',
