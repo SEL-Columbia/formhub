@@ -28,7 +28,8 @@ def import_submission(request, username):
 
     :returns: a JSON dict with:
         'status': one of 'ACCEPTED', 'REJECTED', 'PARSING_FAILED'
-        'message': Error message if not ACCEPTED. """
+        'message': Error message if not ACCEPTED.
+        'instanceID: Unique submission ID if ACCEPTED. """
 
     return import_submission_for_form(request, username, None)
 
@@ -38,13 +39,16 @@ def import_submission(request, username):
 def import_multiple_submissions(request, username):
     ''' Process several POSTED SMS texts as XForm submissions
 
-        :param json messages: JSON list of {"identity": "x", "text": "x"} '''
+        :param json messages: JSON list of {"identity": "x", "text": "x"}
+        :returns json list of
+            {"status": "x", "message": "x", "instanceID": "x"} '''
 
     return import_multiple_submissions_for_form(request, username, None)
 
 
 @require_GET
 def import_submission_for_form(request, username, id_string):
+    """ idem import_submission with a defined id_string """
 
     sms_identity = request.GET.get('identity', '').strip()
     sms_text = request.GET.get('text', '').strip()
@@ -64,6 +68,7 @@ def import_submission_for_form(request, username, id_string):
 @require_POST
 @csrf_exempt
 def import_multiple_submissions_for_form(request, username, id_string):
+    """ idem import_multiple_submissions with a defined id_string """
 
     messages = json.loads(request.POST.get('messages', '[]'))
     incomings = [(m.get('identity', ''), m.get('text', '')) for m in messages]

@@ -1065,3 +1065,7 @@ color: white;
 	font-family: monospace;
 	font-weight: bold;
 }
+
+.sms_autodoc .sms_autodoc_params {
+	font-family: monospace;
+}

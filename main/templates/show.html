@@ -419,20 +419,42 @@
             	{% autoescape off %}
             	{% if xform.allows_sms %}
             	<div class="sms_autodoc">
-            	<h4 class="">Expected Format:</h4>
+            	<h4>{% trans "Expected Format:" %}</h4>
             	<p class="sms_autodoc_line_names alert alert-info">{{ sms_support_doc.line_names }}</p>
             	<ul class="sms_autodoc_helpers">
             	{% for helper in sms_support_doc.helpers %}
             		<li class="sms_autodoc_helper"><sup class="sms_autodoc_helper_indice">{{ forloop.counter0 }}</sup> <span class="sms_autodoc_helper_name">{{ helper.0 }}:</span> <span class="sms_autodoc_helper_text">{{helper.1}}</span></li>
             	{% endfor %}
             	</ul>
-            	<h4>Example:</h4>
+            	<h4>{% trans "Example" %}</h4>
         		<p class="sms_autodoc_line_example alert alert-success">{{ sms_support_doc.line_values }}</p>
-            	</div>
             	{% else %}
             		<p class="alert {{ sms_compatible.type }}">{{ sms_compatible.text }}</p>
             	{% endif %}
+            	<h4>{% trans "Usage" %}</h4>
+            	<p>Note that for each case, you can select either the simplest form of the URL (containing only your username) or the one including the <em>id_string</em> of the form.</p>
+            	<p>The latter works without specifyin the <em>SMS Keyword</em> in front of every message.</p>
+            	<p>You would use it when your SMS Setup/Provider is used for only one form.</p>
+            	<select id="sms_support_api"><option>{% trans "Select an SMS API" %}</option>{% for provider in sms_providers_doc %}<option value="{{ provider.id }}">{{ provider.name }}</option>{% endfor %}<option value="generic">{% trans "Generic SMS API" %}</option></select>
+            	<div style="display:none;" class="sms_support_api_doc" id="sms_support_api_doc_generic">
+            		<p>{% trans "Use the Generic SMS API to write your own wrapper around Formhub." %}</p>
+            		<ul>
+            			<p>{% trans "Single SMS Submission" %}<br />[<strong>GET</strong>] <span class="sms_autodoc_example">{{ url_root }}{% url sms_submission username=content_user.username %}</span><br />
+							[<strong>GET</strong>] <span class="sms_autodoc_example">{{ url_root }}{% url sms_submission_form username=content_user.username id_string=xform.id_string %}</span><br />
+            				{% trans "Params:" %} <span class="sms_autodoc_params">{"identity": "SENDER PHONE NUMBER", "text": "TEXT MESSAGE"}<br />
+            				{% trans "Returns:" %} <span class="sms_autodoc_params">{"status": "STATUS", "message": "MESSAGE", "instanceID": "INSTANCEID"}</p>
+            			<p>{% trans "Multiple SMS Submissions at once" %}<br />[<strong>POST</strong>] <span class="sms_autodoc_example">{{ url_root }}{% url sms_submissions username=content_user.username %}</span><br/>
+            				[<strong>POST</strong>] <span class="sms_autodoc_example">{{ url_root }}{% url sms_submissions_form username=content_user.username id_string=xform.id_string %}</span><br />
+            				{% trans "Params:" %} <span class="sms_autodoc_params">{"messages": [{"identity": "SENDER PHONE NUMBER", "text": "TEXT MESSAGE"}, ]<br />
+            				{% trans "Returns:" %} <span class="sms_autodoc_params">[{"status": "STATUS", "message": "MESSAGE", "instanceID": "INSTANCEID"}, ]</p>
+            		</ul>
+            		<p><span class="sms_autodoc_params">STATUS</span>: {% trans "One of" %} <span class="sms_autodoc_params">ACCEPTED, REJECTED, PARSING_FAILED</span><br />
+            		   <span class="sms_autodoc_params">MESSAGE</span>: {% trans "Either an error or success message. Suitable for end user." %}<br />
+            		   <span class="sms_autodoc_params">INSTANCEID</span>: {% trans "Only if successful. A unique ID of the submission." %}</p>
+            	</div>
+            	{% for provider in sms_providers_doc %}<div style="display:none;" class="sms_support_api_doc" id="sms_support_api_doc_{{ provider.id }}">{{ provider.doc }}</div>{% endfor %}
             	{% endautoescape %}
+            	</div>
             </div>
         </div>
       </div>
@@ -548,6 +570,15 @@
 
 			var usernames =  {{ user_json_list|safe }}
 			$('#autocomplete').typeahead({source: usernames})
+
+		// SMS documentation switcher
+		$('#sms_support_api').change(function() {
+			$('.sms_support_api_doc').each(function (){
+				$(this).toggle(false);
+			});
+			var selected = $(this).val();
+			$('#sms_support_api_doc_' + selected).toggle(true);
+		});
   </script>
 
 <div class="modal hide fade" id="popupmodal" style="width: auto; left:36%; margin-left: auto; margin-right: auto;" tabindex="-1" role="dialog">

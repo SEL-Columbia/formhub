@@ -22,7 +22,7 @@ def get_sample_data_for(question, json_survey, as_names=False):
 
     """ return an example data for a particular question.
 
-        If as_names is True, returns the name (not sms_field) of the question """
+        If as_names is True, returns name (not sms_field) of the question """
 
     xlsf_name = question.get('name')
     xlsf_type = question.get('type')
@@ -179,10 +179,12 @@ def get_autodoc_for(xform):
 
         line_values += (u'<span class="group"><span class="group_id">'
                         u'%(sep)s%(sms_field)s</span> '
-                        % {'sep': separator, 'sms_field': group.get('sms_field')})
+                        % {'sep': separator,
+                           'sms_field': group.get('sms_field')})
         line_names += (u'<span class="group"><span class="group_id">'
                        u'%(sep)s%(sms_field)s</span> '
-                       % {'sep': separator, 'sms_field': group.get('sms_field')})
+                       % {'sep': separator,
+                          'sms_field': group.get('sms_field')})
 
         for question in group.get('children', {}):
             type_id = question.get('type')

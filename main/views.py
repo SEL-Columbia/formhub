@@ -47,6 +47,7 @@ from utils.qrcode import generate_qrcode
 
 from sms_support.tools import check_form_sms_compatibility
 from sms_support.autodoc import get_autodoc_for
+from sms_support.providers import providers_doc
 
 
 
@@ -301,6 +302,13 @@ def show(request, username=None, id_string=None, uuid=None):
         if not xform.allows_sms:
             context.sms_compatible = check_form_sms_compatibility(None,
                 json_survey=json.loads(xform.json))
+        else:
+            url_root = request.build_absolute_uri('/')[:-1]
+            context.sms_providers_doc = providers_doc(
+                url_root=url_root,
+                username=username,
+                id_string=id_string)
+            context.url_root = url_root
         context.form_license_form = FormLicenseForm(
             initial={'value': context.form_license})
         context.data_license_form = DataLicenseForm(

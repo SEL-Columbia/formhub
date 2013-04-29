@@ -12,12 +12,43 @@ import json
 import datetime
 
 from django.http import HttpResponse
+from django.core.urlresolvers import reverse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.translation import ugettext as _
 
 from sms_support.tools import SMS_API_ERROR, SMS_SUBMISSION_ACCEPTED
 from sms_support.parser import process_incoming_smses
+
+
+def autodoc(url_root, username, id_string):
+    urla = url_root + reverse('sms_submission_api',
+                              kwargs={'username': username,
+                                      'service': 'smssync'})
+    urlb = url_root + reverse('sms_submission_form_api',
+                              kwargs={'username': username,
+                                      'id_string': id_string,
+                                      'service': 'smssync'})
+    doc = (u'<p>' +
+           _(u"%(service)s Instructions:")
+           % {'service': u'<a href="http://smssync.ushahidi.com/">'
+                         u'Ushaidi\'s SMS Sync</a>'}
+           + u'</p><ol><li>' +
+           _(u"Download the SMS Sync App on your phone serving as a gateway.")
+           + '</li><li>' +
+           _(u"Configure the app to point to one of the following URLs")
+           + u'<br /><span class="sms_autodoc_example">%(urla)s'
+           + u'<br />%(urlb)s</span><br />' +
+           _(u"Optionnaly set a keyword to prevent non-formhub "
+             u"messages to be sent.")
+           + '</li><li>' +
+           _(u"In the preferences, tick the box to allow "
+             u"replies from the server.")
+           + '</li></ol><p>' +
+           _(u"That's it. Now Send an SMS Formhub submission to the number "
+             u"of that phone. It will create a submission on Formhub.")
+           + u'</p>') % {'urla': urla, 'urlb': urlb}
+    return doc
 
 
 def get_response(data):

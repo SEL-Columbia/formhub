@@ -6,13 +6,17 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from smssync import (import_submission as imp_sub_smssync,
-                     import_submission_for_form as imp_sub_form_smssync)
+                     import_submission_for_form as imp_sub_form_smssync,
+                     autodoc as autodoc_smssync)
 from telerivet import (import_submission as imp_sub_telerivet,
-                       import_submission_for_form as imp_sub_form_telerivet)
+                       import_submission_for_form as imp_sub_form_telerivet,
+                       autodoc as autodoc_telerivet)
 from twilio import (import_submission as imp_sub_twilio,
-                    import_submission_for_form as imp_sub_form_twilio)
+                    import_submission_for_form as imp_sub_form_twilio,
+                    autodoc as autodoc_twilio)
 from textit import (import_submission as imp_sub_textit,
-                    import_submission_for_form as imp_sub_form_textit)
+                    import_submission_for_form as imp_sub_form_textit,
+                    autodoc as autodoc_textit)
 
 SMSSYNC = 'smssync'
 TELERIVET = 'telerivet'
@@ -22,16 +26,20 @@ TEXTIT = 'textit'
 PROVIDERS = {
     SMSSYNC: {'name': u"SMS Sync",
               'imp': imp_sub_smssync,
-              'imp_form': imp_sub_form_smssync},
+              'imp_form': imp_sub_form_smssync,
+              'doc': autodoc_smssync},
     TELERIVET: {'name': u"Telerivet",
                 'imp': imp_sub_telerivet,
-                'imp_form': imp_sub_form_telerivet},
+                'imp_form': imp_sub_form_telerivet,
+                'doc': autodoc_telerivet},
     TWILIO: {'name': u"Twilio",
              'imp': imp_sub_twilio,
-             'imp_form': imp_sub_form_twilio},
+             'imp_form': imp_sub_form_twilio,
+             'doc': autodoc_twilio},
     TEXTIT: {'name': u"Text It",
              'imp': imp_sub_textit,
-             'imp_form': imp_sub_form_textit}
+             'imp_form': imp_sub_form_textit,
+             'doc': autodoc_textit}
 }
 
 
@@ -54,3 +62,10 @@ def import_submission_for_form(request, username, id_string, service):
     """ Proxy to the service's import_submission_for_form view """
     return PROVIDERS.get(service.lower(), {}) \
                     .get('imp_form', unknown_service)(request, username, None)
+
+
+def providers_doc(url_root, username, id_string):
+    return [{'id': pid,
+             'name': p.get('name'),
+             'doc': p.get('doc')(url_root, username, id_string)}
+            for pid, p in PROVIDERS.items()]

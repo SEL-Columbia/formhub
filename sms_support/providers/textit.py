@@ -14,6 +14,7 @@ import dateutil
 
 import requests
 from django.http import HttpResponse
+from django.core.urlresolvers import reverse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.translation import ugettext as _
@@ -23,6 +24,31 @@ from sms_support.tools import SMS_API_ERROR, SMS_SUBMISSION_ACCEPTED
 from sms_support.parser import process_incoming_smses
 
 TEXTIT_URL = 'https://api.textit.in/api/v1/sms.json'
+
+
+def autodoc(url_root, username, id_string):
+    urla = url_root + reverse('sms_submission_api',
+                              kwargs={'username': username,
+                                      'service': 'textit'})
+    urlb = url_root + reverse('sms_submission_form_api',
+                              kwargs={'username': username,
+                                      'id_string': id_string,
+                                      'service': 'textit'})
+    doc = (u'<p>' +
+           _(u"%(service)s Instructions:")
+           % {'service': u'<a href="https://textit.in">'
+                         u'TextIt\'s Webhook API</a>'}
+           + u'</p><ol><li>' +
+           _(u"Sign in to TextIt.in and go to Account Page.")
+           + u'</li><li>' +
+           _(u"Tick “Incoming SMS Messages” and set Webhook URL to either:")
+           + u'<br /><span class="sms_autodoc_example">%(urla)s'
+           + u'<br />%(urlb)s</span><br />'
+           + u'</li></ol><p>' +
+           _(u"That's it. Now Send an SMS Formhub submission to your TextIt"
+             u" phone number. It will create a submission on Formhub.")
+           + u'</p>') % {'urla': urla, 'urlb': urlb}
+    return doc
 
 
 def get_token_for(xform):
