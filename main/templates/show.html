@@ -457,15 +457,15 @@
             			<p>{% trans "Single SMS Submission" %}<br />[<strong>GET</strong>] <span class="sms_autodoc_example">{{ url_root }}{% url sms_submission username=content_user.username %}</span><br />
 							[<strong>GET</strong>] <span class="sms_autodoc_example">{{ url_root }}{% url sms_submission_form username=content_user.username id_string=xform.id_string %}</span><br />
             				{% trans "Params:" %} <span class="sms_autodoc_params">{"identity": "SENDER PHONE NUMBER", "text": "TEXT MESSAGE"}<br />
-            				{% trans "Returns:" %} <span class="sms_autodoc_params">{"status": "STATUS", "message": "MESSAGE", "instanceID": "INSTANCEID"}</p>
+            				{% trans "Returns:" %} <span class="sms_autodoc_params">{"status": "STATUS", "message": "MESSAGE", "id": "ID"}</p>
             			<p>{% trans "Multiple SMS Submissions at once" %}<br />[<strong>POST</strong>] <span class="sms_autodoc_example">{{ url_root }}{% url sms_submissions username=content_user.username %}</span><br/>
             				[<strong>POST</strong>] <span class="sms_autodoc_example">{{ url_root }}{% url sms_submissions_form username=content_user.username id_string=xform.id_string %}</span><br />
             				{% trans "Params:" %} <span class="sms_autodoc_params">{"messages": [{"identity": "SENDER PHONE NUMBER", "text": "TEXT MESSAGE"}, ]<br />
-            				{% trans "Returns:" %} <span class="sms_autodoc_params">[{"status": "STATUS", "message": "MESSAGE", "instanceID": "INSTANCEID"}, ]</p>
+            				{% trans "Returns:" %} <span class="sms_autodoc_params">[{"status": "STATUS", "message": "MESSAGE", "id": "ID"}, ]</p>
             		</ul>
             		<p><span class="sms_autodoc_params">STATUS</span>: {% trans "One of" %} <span class="sms_autodoc_params">ACCEPTED, REJECTED, PARSING_FAILED</span><br />
             		   <span class="sms_autodoc_params">MESSAGE</span>: {% trans "Either an error or success message. Suitable for end user." %}<br />
-            		   <span class="sms_autodoc_params">INSTANCEID</span>: {% trans "Only if successful. A unique ID of the submission." %}</p>
+            		   <span class="sms_autodoc_params">ID</span>: {% trans "Only if successful. A unique ID of the submission." %}</p>
             	</div>
             	{% for provider in sms_providers_doc %}<div style="display:none;" class="sms_support_api_doc" id="sms_support_api_doc_{{ provider.id }}">{{ provider.doc }}</div>{% endfor %}
             	{% endautoescape %}
