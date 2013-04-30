@@ -141,11 +141,10 @@ def check_form_sms_compatibility(form, json_survey=None):
         a success message '''
 
     if json_survey is None:
-        json_survey = form.get('form_o')
+        json_survey = form.get('form_o', {})
         form_text = u"%s<br />" % form['text']
     else:
         form_text = u""
-    # from pprint import pprint as pp ; pp(json_survey)
 
     def prep_return(msg, comp=None):
 
