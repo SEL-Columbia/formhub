@@ -20,7 +20,7 @@ class TestUnique(MainTestCase):
 
         # second time
         response = self._publish_xls_file(xls_path)
-        self.assertIn("already exists." in response.content)
+        self.assertIn("already exists.", response.content)
         self.assertEquals(XForm.objects.count(), 1)
         self.client.logout()
 
