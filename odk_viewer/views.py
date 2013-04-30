@@ -186,7 +186,7 @@ def data_export(request, username, id_string, export_type):
     extension = export_type
 
     # check if we should force xlsx
-    force_xlsx = request.GET.get('xlsx') == 'true'
+    force_xlsx = request.GET.get('xls') != 'true'
     if export_type == Export.XLS_EXPORT and force_xlsx:
         extension = 'xlsx'
 
@@ -244,7 +244,7 @@ def create_export(request, username, id_string, export_type):
         return HttpResponseForbidden(_(u'Not shared.'))
 
     query = request.POST.get("query")
-    force_xlsx = request.POST.get('xlsx') == 'true'
+    force_xlsx = request.POST.get('xls') != 'true'
 
     # export options
     group_delimiter = request.POST.get("options[group_delimiter]", '/')
@@ -324,7 +324,7 @@ def export_list(request, username, id_string, export_type):
     if should_create_new_export(xform, export_type):
         try:
             create_async_export(
-                xform, export_type, query=None, force_xlsx=False)
+                xform, export_type, query=None, force_xlsx=True)
         except Export.ExportTypeError:
             return HttpResponseBadRequest(
                 _("%s is not a valid export type" % export_type))

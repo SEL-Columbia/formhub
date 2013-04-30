@@ -596,7 +596,17 @@ class TestExports(MainTestCase):
         num_csv_exports = Export.objects.filter(
             xform=self.xform, export_type=Export.CSV_EXPORT).count()
         self.assertEqual(num_csv_exports, initial_num_csv_exports + 3)
-       
+
+    def test_exports_outdated_only_considers_successful_exports(self):
+        self._publish_transportation_form()
+        self._submit_transport_instance()
+        # create a bad export
+        export = Export.objects.create(
+            xform=self.xform, export_type=Export.XLS_EXPORT,
+            internal_status=Export.FAILED)
+        self.assertTrue(
+            Export.exports_outdated(self.xform, export.export_type))
+
     def _get_csv_data(self, filepath):
         storage = get_storage_class()()
         csv_file = storage.open(filepath)
