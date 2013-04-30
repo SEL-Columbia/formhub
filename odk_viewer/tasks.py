@@ -34,7 +34,7 @@ def create_async_export(xform, export_type, query, force_xlsx, options=None):
         if options and options.has_key("split_select_multiples"):
             arguments["split_select_multiples"] =\
                 options["split_select_multiples"]
-        
+
         # start async export
         if export_type in [Export.XLS_EXPORT, Export.GDOC_EXPORT]:
             result = create_xls_export.apply_async((), arguments, countdown=10)
@@ -71,7 +71,7 @@ def create_async_export(xform, export_type, query, force_xlsx, options=None):
 
 @task()
 def create_xls_export(username, id_string, export_id, query=None,
-                      force_xlsx=False, group_delimiter='/',
+                      force_xlsx=True, group_delimiter='/',
                       split_select_multiples=True):
     # we re-query the db instead of passing model objects according to
     # http://docs.celeryproject.org/en/latest/userguide/tasks.html#state
