@@ -165,6 +165,7 @@ INSTALLED_APPS = (
     'guardian',
     'djcelery',
     'stats',
+    'sms_support'
 )
 
 USE_THOUSAND_SEPARATOR = True
