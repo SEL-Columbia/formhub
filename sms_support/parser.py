@@ -267,7 +267,7 @@ def process_incoming_smses(username, incomings,
             return
 
         if not len(identity.strip()) or not len(text.strip()):
-            responses.append({'code': SMS_PARSING_ERROR,
+            responses.append({'code': SMS_API_ERROR,
                               'text': _(u"'identity' and 'text' fields can "
                                         u"not be empty.")})
             return
@@ -306,6 +306,22 @@ def process_incoming_smses(username, incomings,
                               'text': _(u"There must be at least one group of "
                                         u"questions filled.")})
             return
+
+        # check that required fields have been filled
+        required_fields = [f.get('name')
+                           for g in json_survey.get('children', {})
+                           for f in g.get('children', {})
+                           if f.get('bind', {}).get('required', 'no') == 'yes']
+        submitted_fields = {}
+        for group in json_submission.values():
+            submitted_fields.update(group)
+
+        for field in required_fields:
+            if not submitted_fields.get(field):
+                responses.append({'code': SMS_SUBMISSION_REFUSED,
+                                  'text': _(u"Required field `%(field)s` is  "
+                                            u"missing.") % {'field': field}})
+                return
 
         # convert dict object into an XForm string
         xml_submission = json2xform(jsform=json_submission,
