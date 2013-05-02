@@ -267,8 +267,12 @@ class QuickConverter(QuickConverterFile, QuickConverterURL,
 
 class ActivateSMSSupportFom(forms.Form):
 
-    enable_sms_support = forms.BooleanField(required=False,
-                                            label=ugettext_lazy(u"Activate SMS Support?"))
+    enable_sms_support = forms.TypedChoiceField(coerce=lambda x: x == 'True',
+                                                choices=((False, 'No'),
+                                                         (True, 'Yes')),
+                                                widget=forms.Select,
+                                                label=ugettext_lazy(
+                                                    u"Enable SMS Support"))
     sms_id_string = forms.CharField(max_length=50, required=True,
                                     label=ugettext_lazy(u"SMS Keyword"))
 
