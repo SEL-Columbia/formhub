@@ -1,5 +1,6 @@
 import os
 import re
+import json
 
 from django.conf import settings
 from django.db import models
@@ -40,8 +41,14 @@ class XForm(models.Model):
     shared_data = models.BooleanField(default=False)
     downloadable = models.BooleanField(default=True)
     is_crowd_form = models.BooleanField(default=False)
+    allows_sms = models.BooleanField(default=False)
 
     # the following fields are filled in automatically
+    sms_id_string = models.SlugField(
+        editable=False,
+        verbose_name=ugettext_lazy("SMS ID"),
+        default=''
+    )
     id_string = models.SlugField(
         editable=False, verbose_name=ugettext_lazy("ID")
     )
@@ -61,7 +68,7 @@ class XForm(models.Model):
 
     class Meta:
         app_label = 'odk_logger'
-        unique_together = (("user", "id_string"),)
+        unique_together = (("user", "id_string"), ("user", "sms_id_string"))
         verbose_name = ugettext_lazy("XForm")
         verbose_name_plural = ugettext_lazy("XForms")
         ordering = ("id_string",)
@@ -120,6 +127,15 @@ class XForm(models.Model):
                 not re.search(r"^[\w-]+$", self.id_string):
             raise XLSFormError(_(u'In strict mode, the XForm ID must be a '
                                'valid slug and contain no spaces.'))
+        if not self.sms_id_string:
+            try:
+                # try to guess the form's wanted sms_id_string
+                # from it's json rep (from XLSForm)
+                # otherwise, use id_string to ensure uniqueness
+                self.sms_id_string = json.loads(self.json).get('sms_keyword',
+                                                               self.id_string)
+            except:
+                self.sms_id_string = self.id_string
         super(XForm, self).save(*args, **kwargs)
 
     def __unicode__(self):

@@ -1012,3 +1012,72 @@ color: white;
     border: none;
     height: 600px;
 }
+
+
+/* SMS Support Automatic Documentation */
+.sms_autodoc .sms_autodoc_line_names, .sms_autodoc .sms_autodoc_line_example {
+	font-family: monospace;
+	/*padding: 0.5em;*/
+	/*border: 1px dotted black;*/
+}
+
+.sms_autodoc .sms_autodoc_keyword {
+	font-weight: bold;
+}
+
+.sms_autodoc .group_id {
+	font-weight: bold;
+	color: red;
+}
+
+.sms_autodoc .sms_autodoc_helper_indice {
+
+}
+
+.sms_autodoc .sms_autodoc_helper_name {
+	font-weight: bold;
+}
+
+.sms_autodoc .sms_autodoc_helper_text {
+
+}
+
+.sms_autodoc .sms_autodoc_helper_type {
+	font-style: italic;
+}
+
+.sms_autodoc .sms_autodoc_helper_type:before {
+	font-style: normal;
+	content: "[";
+}
+
+.sms_autodoc .sms_autodoc_helper_type:after {
+	font-style: normal;
+	content: "]";
+}
+
+.sms_autodoc .sms_autodoc_helper_choice_label {
+	font-style: italic;
+}
+
+.sms_autodoc .sms_autodoc_helper_choice_label:before {
+	font-style: normal;
+	content: "(";
+}
+.sms_autodoc .sms_autodoc_helper_choice_label:after {
+	font-style: normal;
+	content: ")";
+}
+
+.sms_autodoc .sms_autodoc_helper_choice_id {
+	font-weight: bold;
+}
+
+.sms_autodoc .sms_autodoc_example {
+	font-family: monospace;
+	font-weight: bold;
+}
+
+.sms_autodoc .sms_autodoc_params {
+	font-family: monospace;
+}
