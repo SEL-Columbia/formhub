@@ -263,3 +263,24 @@ class QuickConverter(QuickConverterFile, QuickConverterURL,
                     default_storage.save(cleaned_xls_file, xls_data)
             # publish the xls
             return publish_xls_form(cleaned_xls_file, user, id_string)
+
+
+class ActivateSMSSupportFom(forms.Form):
+
+    enable_sms_support = forms.TypedChoiceField(coerce=lambda x: x == 'True',
+                                                choices=((False, 'No'),
+                                                         (True, 'Yes')),
+                                                widget=forms.Select,
+                                                label=ugettext_lazy(
+                                                    u"Enable SMS Support"))
+    sms_id_string = forms.CharField(max_length=50, required=True,
+                                    label=ugettext_lazy(u"SMS Keyword"))
+
+    def clean_sms_id_string(self):
+        sms_id_string = self.cleaned_data.get('sms_id_string', '').strip()
+
+        if not re.match(r'^[a-z0-9\_\-]+$', sms_id_string):
+            raise forms.ValidationError(u"id_string can only contain alphanum"
+                                        u" characters")
+
+        return sms_id_string

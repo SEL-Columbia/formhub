@@ -2,6 +2,8 @@ from datetime import datetime
 from django.contrib.contenttypes.models import ContentType
 import os
 import json
+from django import forms
+from django.db import IntegrityError
 from django.core.urlresolvers import reverse
 from django.core.files.storage import default_storage, get_storage_class
 from django.contrib.auth.decorators import login_required
@@ -20,7 +22,8 @@ from guardian.shortcuts import assign, remove_perm, get_users_with_perms
 
 from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
     SupportDocForm, QuickConverterFile, QuickConverterURL, QuickConverter,\
-    SourceForm, PermissionForm, MediaForm, MapboxLayerForm
+    SourceForm, PermissionForm, MediaForm, MapboxLayerForm, \
+    ActivateSMSSupportFom
 from main.models import UserProfile, MetaData
 from odk_logger.models import Instance, XForm
 from odk_logger.views import enter_data
@@ -42,6 +45,11 @@ from settings import ENKETO_PREVIEW_URL
 
 from utils.viewer_tools import enketo_url
 from utils.qrcode import generate_qrcode
+
+from sms_support.tools import check_form_sms_compatibility
+from sms_support.autodoc import get_autodoc_for
+from sms_support.providers import providers_doc
+
 
 
 def home(request):
@@ -117,7 +125,10 @@ def clone_xlsform(request, username):
                 'profile_url': u'<a href="%s">profile</a>.' %
                 reverse(profile, kwargs={'username': to_username})}
             }
-    context.message = publish_form(set_form)
+    form_result = publish_form(set_form)
+    if form_result['type'] == 'alert-success':
+        form_result = check_form_sms_compatibility(form_result)
+    context.message = form_result
     if request.is_ajax():
         res = loader.render_to_string(
             'message.html',
@@ -158,9 +169,13 @@ def profile(request, username):
                           u' <a href="%(form_url)s">Enter Web Form</a>'
                           u' or <a href="#preview-modal" data-toggle="modal">Preview Web Form</a>')
                         % {'form_id': survey.id_string,
-                            'form_url': enketo_webform_url}
+                            'form_url': enketo_webform_url},
+                'form_o': survey
             }
-        context.message = publish_form(set_form)
+        form_result = publish_form(set_form)
+        if form_result['type'] == 'alert-success':
+            form_result = check_form_sms_compatibility(form_result)
+        context.message = form_result
 
     # profile view...
     # for the same user -> dashboard
@@ -287,6 +302,19 @@ def show(request, username=None, id_string=None, uuid=None):
     context.media_upload = MetaData.media_upload(xform)
     context.mapbox_layer = MetaData.mapbox_layer_upload(xform)
     if is_owner:
+        context.sms_support_form = ActivateSMSSupportFom(
+            initial={'enable_sms_support': xform.allows_sms,
+                     'sms_id_string': xform.sms_id_string})
+        if not xform.allows_sms:
+            context.sms_compatible = check_form_sms_compatibility(None,
+                json_survey=json.loads(xform.json))
+        else:
+            url_root = request.build_absolute_uri('/')[:-1]
+            context.sms_providers_doc = providers_doc(
+                url_root=url_root,
+                username=username,
+                id_string=id_string)
+            context.url_root = url_root
         context.form_license_form = FormLicenseForm(
             initial={'value': context.form_license})
         context.data_license_form = DataLicenseForm(
@@ -300,6 +328,7 @@ def show(request, username=None, id_string=None, uuid=None):
             attach_perms=True
         ).items()
         context.permission_form = PermissionForm(username)
+    context.sms_support_doc = get_autodoc_for(xform)
     user_list = [u.username for u in User.objects.exclude(username=username)]
     context.user_json_list = simplejson.dumps(user_list)
     return render_to_response("show.html", context_instance=context)
@@ -541,6 +570,41 @@ def edit(request, username, id_string):
                 }, audit, request)
             MetaData.source(xform, request.POST.get('source'),
                             request.FILES.get('source'))
+        elif request.POST.get('enable_sms_support_trigger') is not None:
+            sms_support_form = ActivateSMSSupportFom(request.POST)
+            if sms_support_form.is_valid():
+                audit = {
+                    'xform': xform.id_string
+                }
+                enabled = sms_support_form.cleaned_data.get('enable_sms_support')
+                if enabled:
+                    audit_action = Actions.SMS_SUPPORT_ACTIVATED
+                    audit_message = _(u"SMS Support Activated on")
+                else:
+                     audit_action = Actions.SMS_SUPPORT_DEACTIVATED
+                     audit_message = _(u"SMS Support Deactivated on")
+                audit_log(
+                    audit_action, request.user, owner,
+                    audit_message
+                    % {'id_string': xform.id_string}, audit, request)
+                # stored previous states to be able to rollback form status
+                # in case we can't save.
+                pe = xform.allows_sms
+                pid = xform.sms_id_string
+                xform.allows_sms = enabled
+                xform.sms_id_string = sms_support_form.cleaned_data.get('sms_id_string')
+                compat = check_form_sms_compatibility(None,
+                                                      json.loads(xform.json))
+                if compat['type'] == 'alert-error':
+                    xform.allows_sms = False
+                    xform.sms_id_string = pid
+                try:
+                    xform.save()
+                except IntegrityError:
+                    # unfortunately, there's no feedback mechanism here
+                    xform.allows_sms = pe
+                    xform.sms_id_string = pid
+
         elif request.FILES.get('media'):
             audit = {
                 'xform': xform.id_string

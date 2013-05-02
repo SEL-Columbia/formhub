@@ -1,7 +1,6 @@
 from test_base import MainTestCase
 import os
 from odk_logger.models import XForm
-from django.db import IntegrityError
 
 
 class TestUnique(MainTestCase):
@@ -21,7 +20,7 @@ class TestUnique(MainTestCase):
 
         # second time
         response = self._publish_xls_file(xls_path)
-        self.assertTrue("Form with this id already exists." in response.content)
+        self.assertIn("already exists.", response.content)
         self.assertEquals(XForm.objects.count(), 1)
         self.client.logout()
 
