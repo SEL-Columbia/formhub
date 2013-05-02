@@ -154,7 +154,7 @@ def check_form_sms_compatibility(form, json_survey=None):
         warning = ''
         success = 'alert-success'
         outro = (u"<br />Please check the <a href=\"%(syntax_url)s"
-                 u"#sms_support\">"
+                 u"#9-sms-support\">"
                  u"SMS Syntax Page</a>." % {'syntax_url': reverse('syntax')})
 
         # no compatibility at all
