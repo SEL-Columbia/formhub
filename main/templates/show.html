@@ -415,7 +415,7 @@
         </div>
         <br/>
         <div class="clearfix bordered">
-                <h3 data-toggle="collapse" data-target="#sms_tab">{% trans "SMS Support" %}</h3>
+                <h3 data-toggle="collapse" data-target="#sms_tab">{% trans "SMS Support" %} (<acronym title="SMS Support is in beta stage now. Please use carefully as API and IDs might change.">beta</acronym>)</h3>
                 <div id='sms_tab' class="collapse">
                 <form action="{% url main.views.edit content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
 
