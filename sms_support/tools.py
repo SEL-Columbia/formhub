@@ -266,5 +266,4 @@ def check_form_sms_compatibility(form, json_survey=None):
         return prep_return(u"".join(warnings), comp=1)
 
     ## GOOD to go
-    return prep_return(_(u"Note that your form is also SMS comptatible."),
-                       form['type'])
+    return prep_return(_(u"Note that your form is also SMS comptatible."), 2)

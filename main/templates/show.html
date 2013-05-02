@@ -432,8 +432,8 @@
                 {% endif %}
             	</form>
             	{% autoescape off %}
-            	{% if xform.allows_sms %}
             	<div class="sms_autodoc">
+            	{% if xform.allows_sms %}
             	<h4>{% trans "Expected Format:" %}</h4>
             	<p class="sms_autodoc_line_names alert alert-info">{{ sms_support_doc.line_names }}</p>
             	<ul class="sms_autodoc_helpers">
