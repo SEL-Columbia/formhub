@@ -76,6 +76,8 @@ def get_xform_for(username, sms_text, id_string=None):
 
 
 def send_sms_via_textit(phone, text, relayer=None, xform=None):
+    # not supported yet.
+    return
 
     textit_token = get_token_for(xform=xform, service='textit')
 
@@ -97,7 +99,10 @@ def get_response(data):
 
     # send a response
     if message:
-        send_sms_via_textit(**data.get('payload', {}))
+        payload = data.get('payload', {})
+        payload.update({'text': message})
+        if payload.get('phone'):
+            send_sms_via_textit(**payload)
 
     return HttpResponse()
 
@@ -155,4 +160,4 @@ def process_message_for_textit(username, sms_identity, sms_text, sms_time,
     response = process_incoming_smses(username, incomings, id_string)[-1]
     response.update({'payload': payload})
 
-    return get_response(*response, payload=payload)
+    return get_response(response)
