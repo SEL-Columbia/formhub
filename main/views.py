@@ -203,16 +203,22 @@ def profile(request, username):
         context.form_url = QuickConverterURL()
         context.odk_url = request.build_absolute_uri(
             "/%s" % request.user.username)
+        from django.db.models import Count
+        xforms = XForm.objects.filter(
+            user=content_user, surveys__deleted_at=None).select_related('user')\
+                .annotate(submission_count=Count('surveys'))
+        context.user_xforms = xforms
         crowdforms = XForm.objects.filter(
             metadata__data_type=MetaData.CROWDFORM_USERS,
-            metadata__data_value=username
-        )
+            metadata__data_value=username,
+            surveys__deleted_at=None
+        ).select_related('user').annotate(submission_count=Count('surveys'))
         context.crowdforms = crowdforms
         # forms shared with user
         xfct = ContentType.objects.get(app_label='odk_logger', model='xform')
         xfs = content_user.userobjectpermission_set.filter(content_type=xfct)
         context.forms_shared_with = XForm.objects.filter(
-            pk__in=[xf.object_pk for xf in xfs])
+            pk__in=[xf.object_pk for xf in xfs]).select_related('user')
     # for any other user -> profile
     set_profile_data(context, content_user)
     return render_to_response("profile.html", context_instance=context)
