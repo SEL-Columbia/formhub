@@ -94,7 +94,9 @@ class XForm(models.Model):
 
     @property
     def has_surveys_with_geopoints(self):
-        return self.data_dictionary().has_surveys_with_geopoints()
+        from odk_viewer.models import ParsedInstance
+        return ParsedInstance.objects.filter(
+            instance__xform=self, lat__isnull=False).count() > 0
 
     def _set_id_string(self):
         matches = self.instance_id_regex.findall(self.xml)
