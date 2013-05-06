@@ -210,12 +210,9 @@ def profile(request, username):
         context.crowdforms = crowdforms
         # forms shared with user
         xfct = ContentType.objects.get(app_label='odk_logger', model='xform')
-        fsw = {}
-        for xf in content_user.userobjectpermission_set\
-                .filter(content_type=xfct):
-            if isinstance(xf.content_object, XForm):
-                fsw[xf.content_object.pk] = xf.content_object
-        context.forms_shared_with = list(fsw.values())
+        xfs = content_user.userobjectpermission_set.filter(content_type=xfct)
+        context.forms_shared_with = XForm.objects.filter(
+            pk__in=[xf.object_pk for xf in xfs])
     # for any other user -> profile
     set_profile_data(context, content_user)
     return render_to_response("profile.html", context_instance=context)
