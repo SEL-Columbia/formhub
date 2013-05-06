@@ -17,7 +17,6 @@ class TestBriefcaseAPI(MainTestCase):
     def setUp(self):
         super(MainTestCase, self).setUp()
         self._create_user_and_login()
-        #self._publish_transportation_form()
         self.form_def_path = os.path.join(
             self.this_directory, 'fixtures', 'transportation',
             'transportation.xml')
@@ -35,6 +34,7 @@ class TestBriefcaseAPI(MainTestCase):
             kwargs={'username': self.user.username})
 
     def test_view_submissionList(self):
+        self._publish_transportation_form()
         self._make_submissions()
         response = self.client.get(
             self._submission_list_url,
@@ -65,6 +65,7 @@ class TestBriefcaseAPI(MainTestCase):
                 else:
                     return get_last_index(xform)
             return 0
+        self._publish_transportation_form()
         self._make_submissions()
         params = {'formId': self.xform.id_string}
         params['numEntries'] = 2
@@ -98,6 +99,7 @@ class TestBriefcaseAPI(MainTestCase):
             last_index += 2
 
     def test_view_downloadSubmission(self):
+        self._publish_transportation_form()
         self.maxDiff = None
         self._submit_transport_instance_w_attachment()
         instanceId = u'5b2cc313-fc09-437e-8149-fcd32f695d41'
@@ -138,16 +140,17 @@ class TestBriefcaseAPI(MainTestCase):
                 u'Form with this id already exists.', status_code=400)
 
     def test_submission_with_instance_id_on_root_node(self):
+        self._publish_transportation_form()
         message = u"Successful submission."
         instanceId = u'5b2cc313-fc09-437e-8149-fcd32f695d41'
         self.assertRaises(
             Instance.DoesNotExist, Instance.objects.get, uuid=instanceId)
         submission_path = os.path.join(
             self.this_directory, 'fixtures', 'transportation',
-            'submission_with_instance_id_on_root_node.xml')
+            'view', 'submission.xml')
+        count = Instance.objects.count()
         with codecs.open(submission_path, encoding='utf-8') as f:
             post_data = {'xml_submission_file': f}
             response = self.client.post(self._submission_url, post_data)
             self.assertContains(response, message, status_code=201)
-            instances = Instance.objects.get(uuid=instanceId)
-            self.assertEqual(instances.count(), 1)
+            self.assertEqual(Instance.objects.count(), count + 1)

@@ -238,6 +238,8 @@ def submission(request, username=None):
             response.status_code = 202
             response['Location'] = request.build_absolute_uri(request.path)
             return response
+        except Exception, e:
+            raise
 
         if instance is None:
             return OpenRosaResponseBadRequest(
@@ -262,7 +264,7 @@ def submission(request, username=None):
             response = render_to_response("submission.html",
                                           context_instance=context)
         else:
-            response = OpenRosaResponse()
+            response = OpenRosaResponse(_("Successful submission."))
         response.status_code = 201
         response['Location'] = request.build_absolute_uri(request.path)
         return response
