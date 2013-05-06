@@ -9,6 +9,7 @@ from odk_logger.views import view_submission_list
 from odk_logger.views import view_download_submission
 from odk_logger.views import form_upload
 from odk_logger.views import submission
+from odk_logger.models import Attachment
 from odk_logger.models import Instance
 from odk_logger.models import XForm
 
@@ -154,3 +155,25 @@ class TestBriefcaseAPI(MainTestCase):
             response = self.client.post(self._submission_url, post_data)
             self.assertContains(response, message, status_code=201)
             self.assertEqual(Instance.objects.count(), count + 1)
+
+    def test_encrypted_submissions(self):
+        self._publish_transportation_form()
+        message = u"Successful submission."
+        files = {}
+        for filename in ['submission.xml', 'submission.xml.enc']:
+            files[filename] = os.path.join(
+                self.this_directory, 'fixtures', 'transportation',
+                'instances_encrypted', filename)
+        count = Instance.objects.count()
+        acount = Attachment.objects.count()
+        #with open(files['submission.xml.enc']) as ef:
+        with codecs.open(files['submission.xml'], encoding='utf-8') as f:
+            ef = open(files['submission.xml.enc'])
+            post_data = {
+                'xml_submission_file': f,
+                'submission.xml.enc': ef}
+            import ipdb; ipdb.set_trace()
+            response = self.client.post(self._submission_url, post_data)
+            self.assertContains(response, message, status_code=201)
+            self.assertEqual(Instance.objects.count(), count + 1)
+            self.assertEqual(Attachment.objects.count(), acount + 1)
