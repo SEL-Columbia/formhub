@@ -10,12 +10,16 @@ var defaultZoom = 8;
 var mapId = 'map_canvas';
 var map;
 var layersControl;
-// array of mapbox maps to use as base layers - the first one will be the default map
+var languageBasedLayers = {
+  fr: {label: "Mapbox Streets (Français)", url: 'http://a.tiles.mapbox.com/v3/modilabs.map-vdpjhtgz.jsonp'},
+  es: {label: "Mapbox Streets (Español)", url: 'http://a.tiles.mapbox.com/v3/modilabs.map-5gjzjlah.jsonp'}
+}
+// array of mapbox maps to use as base layers - the first one will be the default map unless a langauge is specified, in which case that languages, map will be the default
 var mapboxMaps = [
-    {'label': gettext('Mapbox Streets'), 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-iuetkf9u.jsonp'},
-    {'label': gettext('MapBox Streets Light'), 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-p543gvbh.jsonp'},
-    {'label': gettext('MapBox Streets Zenburn'), 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-bjhr55gf.jsonp'},
-    {'label': gettext('Natural Earth II'), 'url': 'http://a.tiles.mapbox.com/v3/modilabs.map-1c1r9n5g.jsonp'}
+    {label: gettext('Mapbox Streets'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-iuetkf9u.jsonp'},
+    {label: gettext('MapBox Streets Light'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-p543gvbh.jsonp'},
+    {label: gettext('MapBox Streets Zenburn'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-bjhr55gf.jsonp'},
+    {label: gettext('Natural Earth II'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-1c1r9n5g.jsonp'}
 ];
 var sslUrlPerfix = 'https://dnv9my2eseobd.cloudfront.net/'; // add trailing slash since its expected function that uses this
 var allowResetZoomLevel = true; // used to allow zooming when first loaded
@@ -168,8 +172,22 @@ function initialize() {
         };
         return innerFn;
     };
+    var defaultMap;
+    // add langauge based maps
+    _.each(languageBasedLayers, function(mapData, language){
+      mapboxMaps.push(mapData);
+      if(language_code === language)
+      {
+        defaultMap = mapData;
+      }
+    });
     if (customMapBoxTileLayer) {
         mapboxMaps = _.union([customMapBoxTileLayer], mapboxMaps);
+        defaultMap = customMapBoxTileLayer;
+    }
+    if(defaultMap === undefined)
+    {
+      defaultMap = mapboxMaps[0];
     }
     _.each(mapboxMaps, function(mapData, idx) {
         // if https,
@@ -178,7 +196,7 @@ function initialize() {
             // change to ssl url
             mapData.url = sslUrlPerfix + mapview.getMapboxMapname(mapData.url);
         }
-        wax.tilejson(mapData.url, tileJSONAddFn(mapData, !idx)); //ie, only add idx 0
+        wax.tilejson(mapData.url, tileJSONAddFn(mapData, defaultMap == mapData)); //ie, only add the default
     });
 
     // create legend container
