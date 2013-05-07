@@ -134,6 +134,35 @@ def generate_instance(username, xml_file, media_files, uuid=None):
             'id': get_sms_instance_id(instance)}
 
 
+def is_sms_related(json_survey):
+    ''' Whether a form is considered to want sms Support
+
+        return True if one sms-related field is defined. '''
+
+    def treat(value, key=None):
+        if key is None:
+            return False
+        if key in ('sms_field', 'sms_option') and value:
+            if not value.lower() in ('no', 'false'):
+                return True
+
+    def walk(dl):
+        if not isinstance(dl, (dict, list)):
+            return False
+        iterator = [(None, e) for e in dl] \
+            if isinstance(dl, list) else dl.items()
+        for k, v in iterator:
+            if k == 'parent':
+                continue
+            if treat(v, k):
+                return True
+            if walk(v):
+                return True
+        return False
+
+    return walk(json_survey)
+
+
 def check_form_sms_compatibility(form, json_survey=None):
     ''' Tests all SMS related rules on the XForm representation
 
@@ -150,8 +179,8 @@ def check_form_sms_compatibility(form, json_survey=None):
 
         from django.core.urlresolvers import reverse
 
-        error = 'alert-error'
-        warning = ''
+        error = 'alert-info'
+        warning = 'alert-info'
         success = 'alert-success'
         outro = (u"<br />Please check the <a href=\"%(syntax_url)s"
                  u"#9-sms-support\">"
@@ -161,7 +190,9 @@ def check_form_sms_compatibility(form, json_survey=None):
         if not comp:
             alert = error
             msg = (u"%(prefix)s %(msg)s"
-                   % {'prefix': u"SMS compatibility:",
+                   % {'prefix': u"Your Form is <strong>not SMS-compatible"
+                                u"</strong>. If you want to later enable "
+                                u"SMS Support, please fix:<br />",
                       'msg': msg})
         # no blocker but could be improved
         elif comp == 1:
@@ -175,7 +206,7 @@ def check_form_sms_compatibility(form, json_survey=None):
             alert = success
 
         return {'type': alert,
-                'text': u"%(intro)s%(msg)s%(outro)s"
+                'text': u"%(msg)s%(outro)s"
                         % {'intro': form_text, 'msg': msg, 'outro': outro}}
 
     # first level children. should be groups
