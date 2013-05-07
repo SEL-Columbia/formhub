@@ -157,7 +157,15 @@ class TestBriefcaseAPI(MainTestCase):
             self.assertEqual(Instance.objects.count(), count + 1)
 
     def test_encrypted_submissions(self):
-        self._publish_transportation_form()
+        self._publish_xls_file(os.path.join(
+            self.this_directory, 'fixtures', 'transportation',
+            'transportation_encrypted.xls'
+        ))
+        self.assertTrue(
+            XForm.objects.get(id_string='transportation_encrypted'))
+        uuid = "c15252fe-b6f3-4853-8f04-bf89dc73985a"
+        with self.assertRaises(Instance.DoesNotExist):
+            Instance.objects.get(uuid=uuid)
         message = u"Successful submission."
         files = {}
         for filename in ['submission.xml', 'submission.xml.enc']:
@@ -166,14 +174,13 @@ class TestBriefcaseAPI(MainTestCase):
                 'instances_encrypted', filename)
         count = Instance.objects.count()
         acount = Attachment.objects.count()
-        #with open(files['submission.xml.enc']) as ef:
-        with codecs.open(files['submission.xml'], encoding='utf-8') as f:
-            ef = open(files['submission.xml.enc'])
-            post_data = {
-                'xml_submission_file': f,
-                'submission.xml.enc': ef}
-            import ipdb; ipdb.set_trace()
-            response = self.client.post(self._submission_url, post_data)
-            self.assertContains(response, message, status_code=201)
-            self.assertEqual(Instance.objects.count(), count + 1)
-            self.assertEqual(Attachment.objects.count(), acount + 1)
+        with open(files['submission.xml.enc']) as ef:
+            with codecs.open(files['submission.xml']) as f:
+                post_data = {
+                    'xml_submission_file': f,
+                    'submission.xml.enc': ef}
+                response = self.client.post(self._submission_url, post_data)
+                self.assertContains(response, message, status_code=201)
+                self.assertEqual(Instance.objects.count(), count + 1)
+                self.assertEqual(Attachment.objects.count(), acount + 1)
+                self.assertTrue(Instance.objects.get(uuid=uuid))
