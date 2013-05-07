@@ -130,7 +130,7 @@ def clone_xlsform(request, username):
         # comment the following condition (and else)
         # when we want to enable sms check for all.
         # until then, it checks if form barely related to sms
-        if is_sms_related(form_result['form_o']):
+        if is_sms_related(form_result.get('form_o')):
             form_result_sms = check_form_sms_compatibility(form_result)
             context.message_list = [form_result, form_result_sms]
         else:
@@ -185,7 +185,7 @@ def profile(request, username):
             # comment the following condition (and else)
             # when we want to enable sms check for all.
             # until then, it checks if form barely related to sms
-            if is_sms_related(form_result['form_o']):
+            if is_sms_related(form_result.get('form_o')):
                 form_result_sms = check_form_sms_compatibility(form_result)
                 context.message_list = [form_result, form_result_sms]
             else:
