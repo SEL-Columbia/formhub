@@ -78,7 +78,7 @@
 
     <div class="container">
       {% block message %}
-        {% if message or messages %}
+        {% if message or messages or message_list %}
           {% include "message.html" %}
         {% endif %}
       {% endblock %}

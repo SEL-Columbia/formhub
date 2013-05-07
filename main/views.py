@@ -46,7 +46,7 @@ from settings import ENKETO_PREVIEW_URL
 from utils.viewer_tools import enketo_url
 from utils.qrcode import generate_qrcode
 
-from sms_support.tools import check_form_sms_compatibility
+from sms_support.tools import check_form_sms_compatibility, is_sms_related
 from sms_support.autodoc import get_autodoc_for
 from sms_support.providers import providers_doc
 
@@ -127,8 +127,17 @@ def clone_xlsform(request, username):
             }
     form_result = publish_form(set_form)
     if form_result['type'] == 'alert-success':
-        form_result = check_form_sms_compatibility(form_result)
-    context.message = form_result
+        # comment the following condition (and else)
+        # when we want to enable sms check for all.
+        # until then, it checks if form barely related to sms
+        if is_sms_related(form_result['form_o']):
+            form_result_sms = check_form_sms_compatibility(form_result)
+            del(form_result['form_o'])
+            context.message_list = [form_result, form_result_sms]
+        else:
+            context.message = form_result
+    else:
+        context.message = form_result
     if request.is_ajax():
         res = loader.render_to_string(
             'message.html',
@@ -174,8 +183,17 @@ def profile(request, username):
             }
         form_result = publish_form(set_form)
         if form_result['type'] == 'alert-success':
-            form_result = check_form_sms_compatibility(form_result)
-        context.message = form_result
+            # comment the following condition (and else)
+            # when we want to enable sms check for all.
+            # until then, it checks if form barely related to sms
+            if is_sms_related(form_result['form_o']):
+                form_result_sms = check_form_sms_compatibility(form_result)
+                del(form_result['form_o'])
+                context.message_list = [form_result, form_result_sms]
+            else:
+                context.message = form_result
+        else:
+            context.message = form_result
 
     # profile view...
     # for the same user -> dashboard
@@ -328,7 +346,8 @@ def show(request, username=None, id_string=None, uuid=None):
             attach_perms=True
         ).items()
         context.permission_form = PermissionForm(username)
-    context.sms_support_doc = get_autodoc_for(xform)
+    if xform.allows_sms:
+        context.sms_support_doc = get_autodoc_for(xform)
     user_list = [u.username for u in User.objects.exclude(username=username)]
     context.user_json_list = simplejson.dumps(user_list)
     return render_to_response("show.html", context_instance=context)
