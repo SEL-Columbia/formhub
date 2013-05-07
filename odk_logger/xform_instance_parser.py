@@ -52,16 +52,19 @@ def get_meta_from_xml(xml_str, meta_name):
     if children.length == 0:
         raise ValueError(_("XML string must have a survey element."))
     survey_node = children[0]
-    meta_tags = [n for n in survey_node.childNodes if\
-                 n.nodeType == Node.ELEMENT_NODE and n.tagName.lower() == "meta"]
+    meta_tags = [n for n in survey_node.childNodes if
+                 n.nodeType == Node.ELEMENT_NODE and
+                 (n.tagName.lower() == "meta" or
+                     n.tagName.lower() == "orx:meta")]
     if len(meta_tags) == 0:
         return None
 
     # get the requested tag
     meta_tag = meta_tags[0]
-    uuid_tags = [n for n in meta_tag.childNodes if\
-                   n.nodeType == Node.ELEMENT_NODE and\
-                   n.tagName.lower() == meta_name.lower()]
+    uuid_tags = [n for n in meta_tag.childNodes if
+                 n.nodeType == Node.ELEMENT_NODE and
+                 (n.tagName.lower() == meta_name.lower() or
+                 n.tagName.lower() == u'orx:%s' % meta_name.lower())]
     if len(uuid_tags) == 0:
         return None
 
