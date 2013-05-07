@@ -132,7 +132,6 @@ def clone_xlsform(request, username):
         # until then, it checks if form barely related to sms
         if is_sms_related(form_result['form_o']):
             form_result_sms = check_form_sms_compatibility(form_result)
-            del(form_result['form_o'])
             context.message_list = [form_result, form_result_sms]
         else:
             context.message = form_result
@@ -188,7 +187,6 @@ def profile(request, username):
             # until then, it checks if form barely related to sms
             if is_sms_related(form_result['form_o']):
                 form_result_sms = check_form_sms_compatibility(form_result)
-                del(form_result['form_o'])
                 context.message_list = [form_result, form_result_sms]
             else:
                 context.message = form_result
