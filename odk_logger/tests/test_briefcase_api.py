@@ -9,7 +9,6 @@ from odk_logger.views import view_submission_list
 from odk_logger.views import view_download_submission
 from odk_logger.views import form_upload
 from odk_logger.views import submission
-from odk_logger.models import Attachment
 from odk_logger.models import Instance
 from odk_logger.models import XForm
 
@@ -18,21 +17,18 @@ class TestBriefcaseAPI(MainTestCase):
     def setUp(self):
         super(MainTestCase, self).setUp()
         self._create_user_and_login()
+        self._logout()
         self.form_def_path = os.path.join(
             self.this_directory, 'fixtures', 'transportation',
             'transportation.xml')
         self._submission_list_url = reverse(
-            view_submission_list,
-            kwargs={'username': self.user.username})
+            view_submission_list, kwargs={'username': self.user.username})
         self._submission_url = reverse(
-            submission,
-            kwargs={'username': self.user.username})
+            submission, kwargs={'username': self.user.username})
         self._download_submission_url = reverse(
-            view_download_submission,
-            kwargs={'username': self.user.username})
+            view_download_submission, kwargs={'username': self.user.username})
         self._form_upload_url = reverse(
-            form_upload,
-            kwargs={'username': self.user.username})
+            form_upload, kwargs={'username': self.user.username})
 
     def test_view_submissionList(self):
         self._publish_xml_form()
@@ -156,32 +152,3 @@ class TestBriefcaseAPI(MainTestCase):
             response = self.client.post(self._submission_url, post_data)
             self.assertContains(response, message, status_code=201)
             self.assertEqual(Instance.objects.count(), count + 1)
-
-    def test_encrypted_submissions(self):
-        self._publish_xls_file(os.path.join(
-            self.this_directory, 'fixtures', 'transportation',
-            'transportation_encrypted.xls'
-        ))
-        self.assertTrue(
-            XForm.objects.get(id_string='transportation_encrypted'))
-        uuid = "c15252fe-b6f3-4853-8f04-bf89dc73985a"
-        with self.assertRaises(Instance.DoesNotExist):
-            Instance.objects.get(uuid=uuid)
-        message = u"Successful submission."
-        files = {}
-        for filename in ['submission.xml', 'submission.xml.enc']:
-            files[filename] = os.path.join(
-                self.this_directory, 'fixtures', 'transportation',
-                'instances_encrypted', filename)
-        count = Instance.objects.count()
-        acount = Attachment.objects.count()
-        with open(files['submission.xml.enc']) as ef:
-            with codecs.open(files['submission.xml']) as f:
-                post_data = {
-                    'xml_submission_file': f,
-                    'submission.xml.enc': ef}
-                response = self.client.post(self._submission_url, post_data)
-                self.assertContains(response, message, status_code=201)
-                self.assertEqual(Instance.objects.count(), count + 1)
-                self.assertEqual(Attachment.objects.count(), acount + 1)
-                self.assertTrue(Instance.objects.get(uuid=uuid))
