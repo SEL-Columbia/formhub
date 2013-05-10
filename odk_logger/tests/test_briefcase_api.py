@@ -35,7 +35,7 @@ class TestBriefcaseAPI(MainTestCase):
             kwargs={'username': self.user.username})
 
     def test_view_submissionList(self):
-        self._publish_transportation_form()
+        self._publish_xml_form()
         self._make_submissions()
         response = self.client.get(
             self._submission_list_url,
@@ -66,7 +66,7 @@ class TestBriefcaseAPI(MainTestCase):
                 else:
                     return get_last_index(xform)
             return 0
-        self._publish_transportation_form()
+        self._publish_xml_form()
         self._make_submissions()
         params = {'formId': self.xform.id_string}
         params['numEntries'] = 2
@@ -100,7 +100,7 @@ class TestBriefcaseAPI(MainTestCase):
             last_index += 2
 
     def test_view_downloadSubmission(self):
-        self._publish_transportation_form()
+        self._publish_xml_form()
         self.maxDiff = None
         self._submit_transport_instance_w_attachment()
         instanceId = u'5b2cc313-fc09-437e-8149-fcd32f695d41'
@@ -130,6 +130,7 @@ class TestBriefcaseAPI(MainTestCase):
             self.assertEqual(XForm.objects.count(), count + 1)
             self.assertContains(
                 response, "successfully published.", status_code=201)
+        self.xform = XForm.objects.order_by('pk').reverse()[0]
 
     def test_form_upload(self):
         self._publish_xml_form()
@@ -141,7 +142,7 @@ class TestBriefcaseAPI(MainTestCase):
                 u'Form with this id already exists.', status_code=400)
 
     def test_submission_with_instance_id_on_root_node(self):
-        self._publish_transportation_form()
+        self._publish_xml_form()
         message = u"Successful submission."
         instanceId = u'5b2cc313-fc09-437e-8149-fcd32f695d41'
         self.assertRaises(
