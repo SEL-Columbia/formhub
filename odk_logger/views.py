@@ -671,5 +671,9 @@ def form_upload(request, username):
             content = _(u"%s successfully published." % dd.id_string)
         else:
             content = dd['text']
-            status = 400
+            if isinstance(content, Exception):
+                content = content.message
+                status = 500
+            else:
+                status = 400
     return OpenRosaResponse(content, status=status)
