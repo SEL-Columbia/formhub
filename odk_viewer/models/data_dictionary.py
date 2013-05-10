@@ -109,12 +109,14 @@ class DataDictionary(XForm):
 
         if len(uuid_nodes) == 0:
             formhub_node.appendChild(doc.createElement("uuid"))
-        # append the calculate bind node
-        calculate_node = doc.createElement("bind")
-        calculate_node.setAttribute("nodeset", "/%s/formhub/uuid" % file_name)
-        calculate_node.setAttribute("type", "string")
-        calculate_node.setAttribute("calculate", "'%s'" % self.uuid)
-        model_node.appendChild(calculate_node)
+        if len(formhub_nodes) == 0:
+            # append the calculate bind node
+            calculate_node = doc.createElement("bind")
+            calculate_node.setAttribute(
+                "nodeset", "/%s/formhub/uuid" % file_name)
+            calculate_node.setAttribute("type", "string")
+            calculate_node.setAttribute("calculate", "'%s'" % self.uuid)
+            model_node.appendChild(calculate_node)
 
         self.xml = doc.toprettyxml(indent="  ", encoding='utf-8')
         # hack
