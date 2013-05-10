@@ -8,6 +8,7 @@ from pyxform import SurveyElementBuilder
 from pyxform.builder import create_survey_from_xls
 from pyxform.question import Question
 from pyxform.section import RepeatingSection
+from pyxform.xform2json import create_survey_element_from_xml
 
 from common_tags import ID, UUID, SUBMISSION_TIME
 from odk_logger.models import XForm
@@ -108,7 +109,6 @@ class DataDictionary(XForm):
 
         if len(uuid_nodes) == 0:
             formhub_node.appendChild(doc.createElement("uuid"))
-
         # append the calculate bind node
         calculate_node = doc.createElement("bind")
         calculate_node.setAttribute("nodeset", "/%s/formhub/uuid" % file_name)
@@ -154,8 +154,13 @@ class DataDictionary(XForm):
 
     def get_survey(self):
         if not hasattr(self, "_survey"):
-            builder = SurveyElementBuilder()
-            self._survey = builder.create_survey_element_from_json(self.json)
+            try:
+                builder = SurveyElementBuilder()
+                self._survey = \
+                    builder.create_survey_element_from_json(self.json)
+            except ValueError:
+                xml = bytes(bytearray(self.xml, encoding='utf-8'))
+                self._survey = create_survey_element_from_xml(xml)
         return self._survey
 
     survey = property(get_survey)
