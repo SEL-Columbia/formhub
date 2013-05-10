@@ -166,6 +166,7 @@ INSTALLED_APPS = (
     'djcelery',
     'stats',
     'sms_support'
+    'django_digest',
 )
 
 USE_THOUSAND_SEPARATOR = True

@@ -41,6 +41,7 @@ from odk_logger.xform_instance_parser import InstanceEmptyError,\
 from odk_logger.models.instance import FormInactiveError
 from odk_logger.models.attachment import Attachment
 from utils.log import audit_log, Actions
+from django_digest import HttpDigestAuthenticator
 
 
 @require_POST
@@ -178,8 +179,12 @@ def xformsManifest(request, username, id_string):
 @require_http_methods(["HEAD", "POST"])
 @csrf_exempt
 def submission(request, username=None):
+    authenticator = HttpDigestAuthenticator()
     if request.method == 'HEAD':
         # TODO Http Digest Authentication
+        if username is None:
+            if not authenticator.authenticate(request):
+                return authenticator.build_challenge_response()
         response = OpenRosaResponse(status=204)
         if username:
             response['Location'] = request.build_absolute_uri().replace(
