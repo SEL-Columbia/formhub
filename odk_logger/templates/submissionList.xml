@@ -1,6 +1,6 @@
 <idChunk xmlns="http://opendatakit.org/submissions">
     <idList>{% for instance in instances %}
-        <id>uuid:{{ instance.uuid}}</id>{% endfor %}
+        <id>uuid:{{ instance.uuid|safe}}</id>{% endfor %}
     </idList>
-    <resumptionCursor>{{ resumptionCursor }}</resumptionCursor>
+    <resumptionCursor>{{ resumptionCursor|safe }}</resumptionCursor>
 </idChunk>
