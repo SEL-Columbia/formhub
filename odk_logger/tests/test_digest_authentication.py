@@ -2,6 +2,7 @@ import os
 
 from django_digest.test import Client as DigestClient
 from main.tests.test_base import MainTestCase
+from main.models import UserProfile
 
 
 class TestDigestAuthentication(MainTestCase):
@@ -39,25 +40,40 @@ class TestDigestAuthentication(MainTestCase):
         extra = {
             'REQUEST_METHOD': 'HEAD',
         }
-
+        self._set_require_auth()
         client = self._authenticated_client(url, extra=extra)
         self.anon = client
         self._make_submission(xml_submission_file_path, add_uuid=True)
         self.assertEqual(self.response.status_code, 201)
 
+    def _set_require_auth(self, auth=True):
+        profile, created = \
+            UserProfile.objects.get_or_create(user=self.user)
+        profile.require_auth = auth
+        profile.save()
+
     def test_fail_authenticated_submissions_to_wrong_account(self):
-        self.user.require_auth = True
-        self.user.save()
+        username = 'dennis'
+        prev_user = self.user
+        # set require_auth b4 we switch user
+        self._set_require_auth()
+        self._create_user_and_login(username=username, password=username)
+        self._set_require_auth()
         s = self.surveys[0]
         xml_submission_file_path = os.path.join(
             self.this_directory, 'fixtures',
             'transportation', 'instances', s, s + '.xml'
         )
-        url = '/submission'
+        url = '/%s/submission' % prev_user.username
         extra = {
             'REQUEST_METHOD': 'HEAD',
         }
-        client = self._authenticated_client(url, extra=extra)
+        client = self._authenticated_client(
+            url, username=username, password=username, extra=extra)
+        self._make_submission(xml_submission_file_path, add_uuid=True)
+        # Not allowed
+        self.assertEqual(self.response.status_code, 401)
         self.anon = client
         self._make_submission(xml_submission_file_path, add_uuid=True)
-        import ipdb; ipdb.set_trace()
+        # Not allowed
+        self.assertEqual(self.response.status_code, 405)

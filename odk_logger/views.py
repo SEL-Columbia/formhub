@@ -188,14 +188,15 @@ def xformsManifest(request, username, id_string):
 @require_http_methods(["HEAD", "POST"])
 @csrf_exempt
 def submission(request, username=None):
-    formlist_user = get_object_or_404(User, username=username)
-    profile, created = \
-        UserProfile.objects.get_or_create(user=formlist_user)
+    if username:
+        formlist_user = get_object_or_404(User, username=username)
+        profile, created = \
+            UserProfile.objects.get_or_create(user=formlist_user)
 
-    if profile.require_auth:
-        authenticator = HttpDigestAuthenticator()
-        if not authenticator.authenticate(request):
-            return authenticator.build_challenge_response()
+        if profile.require_auth:
+            authenticator = HttpDigestAuthenticator()
+            if not authenticator.authenticate(request):
+                return authenticator.build_challenge_response()
     if request.method == 'HEAD':
         response = OpenRosaResponse(status=204)
         if username:
