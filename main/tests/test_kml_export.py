@@ -1,33 +1,36 @@
 import os
 from django.core.urlresolvers import reverse
 from odk_viewer.views import kml_export
-from odk_viewer.models import DataDictionary
 from test_base import MainTestCase
 
 
 class TestKMLExport(MainTestCase):
+    def _publish_survey(self):
+        self.this_directory = os.path.dirname(__file__)
+        xls_path = os.path.join(
+            self.this_directory, "fixtures", "gps", "gps.xls")
+        MainTestCase._publish_xls_file(self, xls_path)
 
-    def setUp(self):
-        self._create_user_and_login()
-        self.fixtures = os.path.join(self.this_directory, 'fixtures', 'kml_export')
-        path = os.path.join(self.fixtures, 'double_repeat.xls')
-        self._publish_xls_file(path)
-        path = os.path.join(self.fixtures, 'instance.xml')
-        self._make_submission(path)
-        self.maxDiff = None
+    def _make_submissions(self):
+        surveys = ['gps_1980-01-23_20-52-08',
+                   'gps_1980-01-23_21-21-33', ]
+        for survey in surveys:
+            path = os.path.join(
+                self.this_directory,
+                'fixtures', 'gps', 'instances', survey + '.xml')
+            self._make_submission(path)
 
     def test_kml_export(self):
-        dd = DataDictionary.objects.all()[0]
-        xpaths = [
-            u'/double_repeat/bed_net[1]/member[1]/name',
-            u'/double_repeat/bed_net[1]/member[2]/name',
-            u'/double_repeat/bed_net[2]/member[1]/name',
-            u'/double_repeat/bed_net[2]/member[2]/name',
-            u'/double_repeat/meta/instanceID'
-            ]
-        self.assertEquals(dd.xpaths(repeat_iterations=2), xpaths)
-        url = reverse(kml_export, kwargs={'username': self.user.username, 'id_string': 'double_repeat'})
+        self._publish_survey()
+        self._make_submissions()
+        self.fixtures = os.path.join(
+            self.this_directory, 'fixtures', 'kml_export')
+        url = reverse(
+            kml_export,
+            kwargs={
+                'username': self.user.username, 'id_string': 'gps'})
         response = self.client.get(url)
+        expected_content = ''
         with open(os.path.join(self.fixtures, 'export.kml')) as f:
             expected_content = f.read()
-        self.assertEquals(response.content, expected_content)
+        self.assertMultiLineEqual(response.content, expected_content.strip())
