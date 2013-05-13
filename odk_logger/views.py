@@ -594,7 +594,7 @@ def view_submission_list(request, username):
         XForm, id_string=id_string, user__username=username)
     num_entries = request.GET.get('numEntries', None)
     cursor = request.GET.get('cursor', None)
-    instances = xform.surveys.all()
+    instances = xform.surveys.all().order_by('pk')
 
     if cursor:
         try:
