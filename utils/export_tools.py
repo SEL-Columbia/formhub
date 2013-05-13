@@ -323,4 +323,4 @@ def kml_export_data(id_string, user):
             'table': '<table border="1"><a href="#"><img width="210" '
                      'class="thumbnail" src="%s" alt=""></a>%s'
                      '</table>' % (img_url, ''.join(table_rows))})
-        return data_for_template
+    return data_for_template
