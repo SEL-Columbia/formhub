@@ -21,6 +21,7 @@ from django.contrib import messages
 from django.core.files.storage import get_storage_class
 from django.core.files import File
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
 from django.conf import settings
 from django.utils.translation import ugettext as _
 from poster.encode import multipart_encode
@@ -229,7 +230,7 @@ def submission(request, username=None):
                 username,
                 xml_file_list[0],
                 media_files,
-                uuid=uuid
+                uuid=uuid, request=request
             )
         except InstanceInvalidUserError:
             return OpenRosaResponseBadRequest(_(u"Username or ID required."))
@@ -254,6 +255,8 @@ def submission(request, username=None):
             response.status_code = 202
             response['Location'] = request.build_absolute_uri(request.path)
             return response
+        except PermissionDenied, e:
+            return OpenRosaResponseNotAllowed(e.message)
         except Exception, e:
             raise
 

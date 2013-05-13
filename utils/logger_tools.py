@@ -9,6 +9,7 @@ import traceback
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.core.exceptions import PermissionDenied
 from django.core.files.storage import get_storage_class
 from django.core.mail import mail_admins
 from django.core.servers.basehttp import FileWrapper
@@ -27,6 +28,7 @@ import common_tags
 from odk_logger.models import Attachment
 from odk_logger.models import Instance
 from odk_logger.models.instance import InstanceHistory
+from odk_logger.models.instance import get_id_string_from_xml_str
 from odk_logger.models import XForm
 from odk_logger.models.xform import XLSFormError
 from odk_logger.xform_instance_parser import InstanceInvalidUserError, \
@@ -55,7 +57,7 @@ mongo_instances = settings.MONGO_DB.instances
 @transaction.commit_manually
 def create_instance(username, xml_file, media_files,
                     status=u'submitted_via_web', uuid=None,
-                    date_created_override=None):
+                    date_created_override=None, request=None):
     """
     I used to check if this file had been submitted already, I've
     taken this out because it was too slow. Now we're going to create
@@ -99,6 +101,19 @@ def create_instance(username, xml_file, media_files,
                 username = xform_username
         # else, since we have a username, the Instance creation logic will
         # handle checking for the forms existence by its id_string
+        if username and request and request.user.is_authenticated():
+            id_string = get_id_string_from_xml_str(xml)
+            xform = XForm.objects.get(
+                id_string=id_string, user__username=username)
+            if not xform.is_crowd_form and not is_touchform \
+                    and xform.user.profile.require_auth \
+                    and xform.user != request.user:
+                raise PermissionDenied(
+                    _(u"%(request_user)s is not allowed to make submissions "
+                      u"to %(form_user)s's %(form_title)s form." % {
+                          'request_user': request.user,
+                          'form_user': xform.user,
+                          'form_title': xform.title}))
 
         user = get_object_or_404(User, username=username)
         existing_instance_count = Instance.objects.filter(
