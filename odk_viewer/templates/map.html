@@ -21,6 +21,7 @@
 	var center = {{ center|safe }};
 	var formJSONUrl = "{{ jsonform_url }}";
 	var mongoAPIUrl = "{{ mongo_api_url }}";
+  var language_code = "{{LANGUAGE_CODE}}";
 	var attachmentsBaseUrl = "{% url odk_viewer.views.attachment_url %}";
 	$('#selectLanguage').live('change', function() {
 	    $('.language').hide();
@@ -50,10 +51,10 @@
 {% block body %}
 <body onload="initialize()">
   {% include "topbar.html" %}
-  
+
   {% if mapbox_layer %}
   <script type="text/javascript">
-    var customMapBoxTileLayer = {'label': '{{mapbox_layer.map_name}}', 'url': '{{mapbox_layer.link}}'};
+    var customMapBoxTileLayer = {label: '{{mapbox_layer.map_name}}', url: '{{mapbox_layer.link}}'};
   </script>
   {% endif %}
   <div id="progress-modal" class="modal hide fade" data-backdrop="static">
