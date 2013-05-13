@@ -125,9 +125,9 @@ def formList(request, username):
             UserProfile.objects.get_or_create(user=formlist_user)
 
         if profile.require_auth:
-            response = helper_auth_helper(request)
-            if response:
-                return response
+            authenticator = HttpDigestAuthenticator()
+            if not authenticator.authenticate(request):
+                return authenticator.build_challenge_response()
 
             # unauthorized if user in auth request does not match user in path
             # unauthorized if user not active
@@ -163,6 +163,14 @@ def formList(request, username):
 def xformsManifest(request, username, id_string):
     xform = get_object_or_404(
         XForm, id_string=id_string, user__username=username)
+    formlist_user = xform.user
+    profile, created = \
+        UserProfile.objects.get_or_create(user=formlist_user)
+
+    if profile.require_auth:
+        authenticator = HttpDigestAuthenticator()
+        if not authenticator.authenticate(request):
+            return authenticator.build_challenge_response()
     response = render_to_response("xformsManifest.xml", {
         #'urls': urls,
         'host': request.build_absolute_uri().replace(
