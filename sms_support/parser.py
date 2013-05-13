@@ -249,6 +249,7 @@ def process_incoming_smses(username, incomings,
     xforms = []
     medias = []
     responses = []
+    json_submissions = []
     resp_str = {'success': _(u"[SUCCESS] Your submission has been accepted. "
                              u"It's ID is {{ id }}.")}
 
@@ -330,6 +331,7 @@ def process_incoming_smses(username, incomings,
         # process_incoming expectes submission to be a file-like object
         xforms.append(StringIO.StringIO(xml_submission))
         medias.append(medias_submission)
+        json_submissions.append(json_submission)
 
     for incoming in incomings:
         try:
@@ -348,6 +350,13 @@ def process_incoming_smses(username, incomings,
             success_response = re.sub(r'{{\s*[i,d,I,D]{2}\s*}}',
                                       response.get('id'),
                                       resp_str.get('success'), re.I)
+
+            # extend success_response with data from the answers
+            data = {}
+            for g in json_submissions[idx].values():
+                data.update(g)
+            success_response = success_response.replace('${',
+                                                        '{').format(**data)
             response.update({'text': success_response})
         responses.append(response)
 
