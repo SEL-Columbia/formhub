@@ -5,6 +5,7 @@ from main.models import UserProfile
 from main.views import login_redirect
 import base64
 
+
 class TestFormAuth(MainTestCase):
 
     def setUp(self):
@@ -48,10 +49,8 @@ class TestFormAuth(MainTestCase):
 
     def test_show_for_user_when_require_auth_true(self):
         self._set_require_auth()
+        self.client = self._get_authenticated_client(self.url, 'bob', 'bob')
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
-        response = self.client.get(self.url, **self._set_auth_headers('bob',
-                                                                      'bob'))
         self.assertEquals(response.status_code, 200)
 
     def test_show_for_user_logged_out_when_require_auth_true(self):
@@ -59,8 +58,8 @@ class TestFormAuth(MainTestCase):
         self._set_require_auth()
         response = self.anon.get(self.url)
         self.assertEquals(response.status_code, 401)
-        response = self.anon.get(self.url, **self._set_auth_headers('bob',
-                                                                    'bob'))
+        self.anon = self._get_authenticated_client(self.url, 'bob', 'bob')
+        response = self.anon.get(self.url)
         self.assertEquals(response.status_code, 200)
 
     def test_login_redirect_redirects(self):
