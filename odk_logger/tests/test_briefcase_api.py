@@ -2,6 +2,7 @@ import os
 import codecs
 
 from django.core.urlresolvers import reverse
+from django_digest.test import Client as DigestClient
 
 from main.tests.test_base import MainTestCase
 
@@ -14,6 +15,16 @@ from odk_logger.models import XForm
 
 
 class TestBriefcaseAPI(MainTestCase):
+    def _authenticated_client(
+            self, url, username='bob', password='bob', extra={}):
+        client = DigestClient()
+        # request with no credentials
+        req = client.get(url, {}, **extra)
+        self.assertEqual(req.status_code, 401)
+        # apply credentials
+        client.set_authorization(username, password, 'Digest')
+        return client
+
     def setUp(self):
         super(MainTestCase, self).setUp()
         self._create_user_and_login()
@@ -29,6 +40,8 @@ class TestBriefcaseAPI(MainTestCase):
             view_download_submission, kwargs={'username': self.user.username})
         self._form_upload_url = reverse(
             form_upload, kwargs={'username': self.user.username})
+        self.client = self._authenticated_client(self._submission_list_url)
+        self.anon = self.client
 
     def test_view_submissionList(self):
         self._publish_xml_form()

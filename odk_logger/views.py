@@ -589,6 +589,12 @@ def edit_data(request, username, id_string, data_id):
 
 
 def view_submission_list(request, username):
+    form_user = get_object_or_404(User, username=username)
+    profile, created = \
+        UserProfile.objects.get_or_create(user=form_user)
+    authenticator = HttpDigestAuthenticator()
+    if not authenticator.authenticate(request):
+        return authenticator.build_challenge_response()
     context = RequestContext(request)
     id_string = request.GET.get('formId', None)
     xform = get_object_or_404(
@@ -635,6 +641,12 @@ def view_download_submission(request, username):
             text = text.replace("uuid:", "")
         return text
 
+    form_user = get_object_or_404(User, username=username)
+    profile, created = \
+        UserProfile.objects.get_or_create(user=form_user)
+    authenticator = HttpDigestAuthenticator()
+    if not authenticator.authenticate(request):
+        return authenticator.build_challenge_response()
     context = RequestContext(request)
     formId = request.GET.get('formId', None)
     if not isinstance(formId, basestring):
@@ -675,16 +687,21 @@ def form_upload(request, username):
         def publish(self):
             return publish_xml_form(self.xml_file, self.user)
 
-    posting_user = get_object_or_404(User, username=username)
+    form_user = get_object_or_404(User, username=username)
+    profile, created = \
+        UserProfile.objects.get_or_create(user=form_user)
+    authenticator = HttpDigestAuthenticator()
+    if not authenticator.authenticate(request):
+        return authenticator.build_challenge_response()
     if request.method == 'HEAD':
         response = OpenRosaResponse(status=204)
         response['Location'] = request.build_absolute_uri().replace(
-            request.get_full_path(), '/%s/formUpload' % posting_user.username)
+            request.get_full_path(), '/%s/formUpload' % form_user.username)
         return response
     xform_def = request.FILES.get('form_def_file', None)
     content = u""
     if isinstance(xform_def, File):
-        do_form_upload = DoXmlFormUpload(xform_def, posting_user)
+        do_form_upload = DoXmlFormUpload(xform_def, form_user)
         dd = publish_form(do_form_upload.publish)
         status = 201
         if isinstance(dd, XForm):
