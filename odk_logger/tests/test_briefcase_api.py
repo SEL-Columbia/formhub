@@ -148,7 +148,8 @@ class TestBriefcaseAPI(MainTestCase):
             response = self.client.post(self._form_upload_url, data=params)
             self.assertContains(
                 response,
-                u'Form with this id already exists.', status_code=400)
+                u'Form with this id or SMS-keyword already exists',
+                status_code=400)
 
     def test_submission_with_instance_id_on_root_node(self):
         self._publish_xml_form()
