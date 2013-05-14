@@ -3,15 +3,17 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-#   <benedetoula@gmail.com>, 2012.
-# renaud gaudin <rgaudin@gmail.com>, 2013.
+# Translators:
+# benedetoula <benedetoula@gmail.com>, 2013
+# benedetoula <benedetoula@gmail.com>, 2012
+# renaud gaudin <rgaudin@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: formhub\n"
 "Report-Msgid-Bugs-To: https://github.com/modilabs/formhub/issues\n"
 "POT-Creation-Date: 2012-08-31 09:54+0000\n"
-"PO-Revision-Date: 2013-01-25 14:02+0000\n"
-"Last-Translator: renaud gaudin <rgaudin@gmail.com>\n"
+"PO-Revision-Date: 2013-04-29 08:17+0000\n"
+"Last-Translator: formhub <mberg@modilabs.org>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/formhub/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -263,39 +265,39 @@ msgstr "<strong>Collaborativa.</strong> Condividi i tuoi moduli per la raccolta 
 
 #: main/templates/home.html:19
 msgid "Mobile."
-msgstr ""
+msgstr "Dispositivo."
 
 #: main/templates/home.html:20
 msgid ""
 "formhub works seemlessly with <a href=\"http://www.opendatakit.org\">ODK "
 "Collect</a> a robust and proven data collection platform for Android."
-msgstr ""
+msgstr "formhub si integra perfettamente con <a href=\"http://www.opendatakit.org\">ODK Collect</a> una piattaforma Android robusta e comprovata per raccogliere dati. "
 
 #: main/templates/home.html:23
 msgid ""
 "For more info please read <a href=\"http://blog.formhub.org/2011/12/05/data-"
 "gatherers-of-the-world-unite/\">here</a>."
-msgstr ""
+msgstr "Per maggiori informazioni, cliccare <a href=\"http://blog.formhub.org/2011/12/05/data-gatherers-of-the-world-unite/\">qui</a>."
 
 #: main/templates/home.html:25
 msgid "Not registered?"
-msgstr ""
+msgstr "Utente non registrato? "
 
 #: main/templates/home.html:27
 msgid "Create Account"
-msgstr ""
+msgstr "Crea Account"
 
 #: main/templates/home.html:48
 msgid "forms submitted"
-msgstr ""
+msgstr "moduli presentati"
 
 #: main/templates/home.html:51
 msgid "shared forms"
-msgstr ""
+msgstr "moduli condivisi"
 
 #: main/templates/home.html:54
 msgid "formhubbers!"
-msgstr ""
+msgstr "formhubbers!"
 
 #: main/templates/people.html:31
 #, python-format
@@ -306,43 +308,43 @@ msgstr[1] "formhubbers <small>(%(nb_users)s)</small>"
 
 #: main/templates/people.html:38
 msgid "Organization"
-msgstr ""
+msgstr "Organizzazione"
 
 #: main/templates/people.html:39
 msgid "Location"
-msgstr ""
+msgstr "Luogo"
 
 #: main/templates/people.html:40
 msgid "Member Since"
-msgstr ""
+msgstr "Membro da"
 
 #: main/templates/profile.html:17
 msgid "change"
-msgstr ""
+msgstr "modifica"
 
 #: main/templates/profile.html:27
 msgid "Edit Your Profile"
-msgstr ""
+msgstr "Modifica Profilo"
 
 #: main/templates/profile.html:36
 msgid "Organization:"
-msgstr ""
+msgstr "Organizzazione:"
 
 #: main/templates/profile.html:39
 msgid "Location:"
-msgstr ""
+msgstr "Luogo:"
 
 #: main/templates/profile.html:42
 msgid "Website:"
-msgstr ""
+msgstr "Sito Internet:"
 
 #: main/templates/profile.html:45
 msgid "Twitter:"
-msgstr ""
+msgstr "Twitter:"
 
 #: main/templates/profile.html:47
 msgid "Member since:"
-msgstr ""
+msgstr "Membro da:"
 
 #: main/templates/profile.html:52
 #, python-format
@@ -354,120 +356,120 @@ msgstr[1] "%(num_forms)s <small>Shared forms</small>"
 #: main/templates/profile.html:61
 #, python-format
 msgid "Shared Forms & Public Data <small>(%(num_forms)s)</small>"
-msgstr ""
+msgstr "Moduli & Dati Condivisi <small>(%(num_forms)s)</small>"
 
 #: main/templates/profile.html:67
 msgid "Create Date"
-msgstr ""
+msgstr "Crea Data"
 
 #: main/templates/profile.html:69
 msgid "Public Data"
-msgstr ""
+msgstr "Dati Pubblici"
 
 #: main/templates/profile.html:70 main/templates/published_surveys.html:49
 #: main/templates/user_crowdforms.html:17
 msgid "View"
-msgstr ""
+msgstr "Mostra"
 
 #: main/templates/profile.html:85
 msgid "XLS"
-msgstr ""
+msgstr "XLS"
 
 #: main/templates/profile.html:88 main/templates/profile.html.py:107
 #: main/templates/profile.html:118 main/templates/show.html:54
 #: main/templates/show.html.py:122 main/templates/user_crowdforms.html:47
 #: main/templates/user_crowdforms.html:75
 msgid "PRIVATE"
-msgstr ""
+msgstr "PRIVATO"
 
 #: main/templates/profile.html:95 main/templates/published_surveys.html:70
 #: main/templates/show.html:129 main/templates/user_crowdforms.html:39
 #: templates/topbar.html:36
 msgid "csv"
-msgstr ""
+msgstr "csv"
 
 #: main/templates/profile.html:98 main/templates/published_surveys.html:71
 #: main/templates/show.html:140 main/templates/user_crowdforms.html:40
 #: templates/topbar.html:41
 msgid "xls"
-msgstr ""
+msgstr "xls"
 
 #: main/templates/profile.html:101 main/templates/published_surveys.html:73
 #: main/templates/show.html:151 main/templates/user_crowdforms.html:42
 #: templates/topbar.html:46
 msgid "kml"
-msgstr ""
+msgstr "klm"
 
 #: main/templates/profile.html:104 main/templates/show.html:218
 msgid "NO DATA"
-msgstr ""
+msgstr "SENZA DATI"
 
 #: main/templates/profile.html:114 main/templates/show.html:202
 msgid "Map"
-msgstr ""
+msgstr "Mappa"
 
 #: main/templates/profile.html:126
 msgid "None public"
-msgstr ""
+msgstr "Nessuno pubblico"
 
 #: main/templates/published_surveys.html:7
 msgid "Published Forms <small>Export, map, and view submissions.</small>"
-msgstr ""
+msgstr "Moduli Pubblicati <small>Esporta, mappa, e mostra risposte.</small>"
 
 #: main/templates/published_surveys.html:26
 #: staff/templates/submissions.html:23
 msgid "Search:"
-msgstr ""
+msgstr "Cerca:"
 
 #: main/templates/published_surveys.html:35
 msgid "Show inactive:"
-msgstr ""
+msgstr "Mostra inattivi:"
 
 #: main/templates/published_surveys.html:46
 #: main/templates/user_crowdforms.html:14 staff/templates/submissions.html:39
 msgid "Submissions"
-msgstr ""
+msgstr "Risposte:"
 
 #: main/templates/published_surveys.html:47
 #: main/templates/user_crowdforms.html:15
 msgid "Last Submission"
-msgstr ""
+msgstr "Ultima Risposta:"
 
 #: main/templates/published_surveys.html:48
 #: main/templates/user_crowdforms.html:16 templates/topbar.html:28
 msgid "Data"
-msgstr ""
+msgstr "Dati"
 
 #: main/templates/published_surveys.html:50
 msgid "Active"
-msgstr ""
+msgstr "Attivo"
 
 #: main/templates/published_surveys.html:59
 #: main/templates/published_surveys.html:77 main/templates/show.html:53
 #: main/templates/show.html.py:121 main/templates/user_crowdforms.html:27
 #: main/templates/user_crowdforms.html:45
 msgid "PUBLIC"
-msgstr ""
+msgstr "PUBBLICO"
 
 #: main/templates/published_surveys.html:84 main/templates/show.html:201
 #: main/templates/user_crowdforms.html:55
 msgid "View Map"
-msgstr ""
+msgstr "Mostra Mappa"
 
 #: main/templates/published_surveys.html:89
 #: main/templates/user_crowdforms.html:60
 msgid "View Photo"
-msgstr ""
+msgstr "Mostra Immagine"
 
 #: main/templates/published_surveys.html:94 main/templates/show.html:225
 #: main/templates/user_crowdforms.html:63
 msgid "Enter Web Form"
-msgstr ""
+msgstr "Apri Modulo Web"
 
 #: main/templates/published_surveys.html:102 main/templates/show.html:417
 #: odk_viewer/templates/instance.html:443
 msgid "Delete Confirmation"
-msgstr ""
+msgstr "Conferma Elimina"
 
 #: main/templates/published_surveys.html:105 main/templates/show.html:420
 #, python-format
@@ -476,29 +478,29 @@ msgid ""
 "<strong>%(nb_sub)s</strong> submissions associated with it that will also be"
 " deleted. If you are unsure about deleting this form press 'Cancel' and "
 "conside 'Archiving' the form instead."
-msgstr ""
+msgstr "Sei certo di voler eliminare il modulo '%(title)s'? Questo modulo ha <strong>%(nb_sub)s</strong> risposte che verranno a loro volta eliminate. Se non sei sicuro di voler eliminare questo modulo, clicca 'Annulla' e scegli 'Archivia' modulo."
 
 #: main/templates/published_surveys.html:117 main/templates/show.html:207
 #: main/templates/user_crowdforms.html:67
 msgid "View Submitted Data"
-msgstr ""
+msgstr "Mostra Dati Inviati"
 
 #: main/templates/published_surveys.html:120 main/templates/show.html:210
 #: main/templates/user_crowdforms.html:70
 msgid "Browse Data (One by One)"
-msgstr ""
+msgstr "Consulta Dati (uno per volta)"
 
 #: main/templates/settings.html:7
 msgid "Edit User Profile"
-msgstr ""
+msgstr "Modifica Profilo Utente"
 
 #: main/templates/settings.html:11
 msgid "change password"
-msgstr ""
+msgstr "cambia password"
 
 #: main/templates/settings.html:23
 msgid "Username:"
-msgstr ""
+msgstr "Username:"
 
 #: main/templates/settings.html:40
 msgid "Update"
@@ -721,21 +723,21 @@ msgstr "Attiva"
 #: templates/registration/password_reset_confirm.html:12
 #: templates/registration/password_reset_form.html:22
 msgid "Submit"
-msgstr ""
+msgstr "Invia"
 
 #: main/templates/support.html:5 templates/topbar.html:59
 msgid "Support"
-msgstr ""
+msgstr "Aiuto"
 
 #: main/templates/support.html:9
 msgid "Thank you for using formhub!"
-msgstr ""
+msgstr "Grazie per aver usato formhub!"
 
 #: main/templates/support.html:9
 msgid ""
 "If you need any extra help or have questions about the service below please "
 "consider one of the support options below"
-msgstr ""
+msgstr "Se hai bisogno di maggior aiuto o hai domande a proposito di questo servizio, per favore considera una delle opzioni di supporto qui sotto"
 
 #: main/templates/support.html:14
 #, python-format
@@ -744,14 +746,14 @@ msgid ""
 "href=\"%(syntax)s\">syntax</a> page, then use the <a "
 "href=\"https://groups.google.com/forum/#!forum/formhub-users\">formhub-users"
 " Google group</a>"
-msgstr ""
+msgstr "Per domande legate a XLSForms, visita la nostra pagina di <a href=\"%(syntax)s\">sintassi</a>, poi visita e serviti del <a href=\"https://groups.google.com/forum/#!forum/formhub-users\">Google group formhub-users</a>"
 
 #: main/templates/support.html:15
 msgid ""
 "For help relating to using ODK Collect please contact the <a "
 "href=\"https://groups.google.com/forum/#!forum/opendatakit\">ODK Google "
 "group</a>"
-msgstr ""
+msgstr "Per domande sull'utilizzo di ODK Collect, per piacere contatta <a href=\"https://groups.google.com/forum/#!forum/opendatakit\">ODK Google group</a>"
 
 #: main/templates/support.html:16
 msgid ""
@@ -759,85 +761,85 @@ msgid ""
 "href=\"mailto:support@formhub.org\">support@formhub.org</a> or <a "
 "href=\"https://groups.google.com/forum/#!forum/formhub-users\">formhub-users"
 " Google group</a>"
-msgstr ""
+msgstr "Per problemi o suggerimenti riguardanti formhub, puoi contattarci via email a: <a href=\"mailto:support@formhub.org\">support@formhub.org</a> o tramite il <a href=\"https://groups.google.com/forum/#!forum/formhub-users\">Google group formhub-users</a>"
 
 #: main/templates/support.html:19
 msgid ""
 "We value your feedback and ideas in how to make this service better. Thank "
 "you!"
-msgstr ""
+msgstr "Apprezziamo il vostro feedback e idee su come migliorare questo servizio. Grazie!"
 
 #: main/templates/tutorial.html:5
 msgid "Introduction"
-msgstr ""
+msgstr "Introduzione"
 
 #: main/templates/tutorial.html:8
 msgid ""
 "formhub aims to make collecting survey data with Android smart phones easy "
 "and free."
-msgstr ""
+msgstr "formhub mira a rendere la raccolta dati via sondaggio, con telefoni cellulari Android, facile e gratuita."
 
 #: main/templates/tutorial.html:11
 msgid "One uses formhub as follows:"
-msgstr ""
+msgstr "formhub si usa come segue:"
 
 #: main/templates/tutorial.html:13
 msgid "Translate survey into the xsl2xform syntax."
-msgstr ""
+msgstr "Traduci sondaggio in sintassi xsl2xform. "
 
 #: main/templates/tutorial.html:14
 msgid "Upload XLSForm file to formhub."
-msgstr ""
+msgstr "Carica il file XLSForm su formhub."
 
 #: main/templates/tutorial.html:15 main/templates/tutorial.html.py:16
 msgid "Use"
-msgstr ""
+msgstr "Usa"
 
 #: main/templates/tutorial.html:15
 msgid "to download form and submit data."
-msgstr ""
+msgstr "per scaricare modulo e inviare i dati. "
 
 #: main/templates/tutorial.html:16
 msgid "to download and map data submissions."
-msgstr ""
+msgstr "per scaricare e mappare le risposte inviate."
 
 #: main/templates/tutorial.html:18
 msgid "This tutorial will walk you through each stop of the way."
-msgstr ""
+msgstr "Questa guida ti accompagnerà attraverso ogni tappa del percorso. "
 
 #: main/templates/tutorial.html:24
 msgid "Translate survey into the XLSForm syntax"
-msgstr ""
+msgstr "Traduci sondaggio in sintassi XLSForm. "
 
 #: main/templates/tutorial.html:30
 msgid ""
 "The first step in collecting survey data is to actually write the survey. "
 "For this tutorial we will be using the following survey:"
-msgstr ""
+msgstr "Il primo passaggio nel raccogliere dati per indagine é quello di scrivere il sondaggio. Per questa guida useremo il seguente sondaggio:"
 
 #: main/templates/tutorial.html:32
 msgid "What is your name?"
-msgstr ""
+msgstr "Come ti chiami?"
 
 #: main/templates/tutorial.html:33
 msgid "How old are you?"
-msgstr ""
+msgstr "Quanti anni hai?"
 
 #: main/templates/tutorial.html:34
 msgid "May I take your picture?"
-msgstr ""
+msgstr "Posso farti una foto?"
 
 #: main/templates/tutorial.html:35
 msgid "Do you have any children?"
-msgstr ""
+msgstr "Hai figli?"
 
 #: main/templates/tutorial.html:36
 msgid "Record your GPS coordinates."
-msgstr ""
+msgstr "Registra le tue coordinate GPS. "
 
 #: main/templates/tutorial.html:37
 msgid "What web browsers do you use?"
-msgstr ""
+msgstr "Che programma browser per il Web usi?"
 
 #: main/templates/tutorial.html:39
 msgid ""
@@ -846,18 +848,18 @@ msgid ""
 "spreadsheet. By using a spreadsheet we can expose most of the XForm features"
 " supported by ODK Collect. Check out the images to the right that show the "
 "xls2xform syntax for this survey."
-msgstr ""
+msgstr "Il secondo passaggio è quello di scrivere il sondaggio in sintassi xls2xform. L'idea di fondo dietro a questo approccio è che ogni domanda del sondaggio è una riga nello spreadsheet. Grazie all'uso di uno spreadsheet, possiamo utilizzare il maggior numero di funzionalità supportate da ODK Collect. Guarda le immagini sulla destra che illustrano la sintassi xls2xform per questo sondaggio. "
 
 #: main/templates/tutorial.html:48
 #, python-format
 msgid ""
 "For more in depth information about the XLSForm syntax go <a "
 "href=\"%(syntax_url)s\">here</a>."
-msgstr ""
+msgstr "Per informazioni più dettagliate sulla sintassi XLSForm naviga <a href=\"%(syntax_url)s\">qui</a>."
 
 #: main/templates/tutorial.html:53
 msgid "Upload XLSForm file to formhub"
-msgstr ""
+msgstr "Carica file XLSForm su formhub. "
 
 #: main/templates/tutorial.html:59
 #, python-format
@@ -866,17 +868,17 @@ msgid ""
 "for use with ODK Collect. On the right, we submit <a "
 "href=\"%(STATIC_URL)stutorial/tutorial.xls\">tutorial.xls</a>, described "
 "above, for publication."
-msgstr ""
+msgstr "Dopo aver creato un account e aver effettuato il log-in sul sito, puoi pubblicare questionari da utilizzare con ODK Collect. Sulla destra, selezioniamo <a href=\"%(STATIC_URL)stutorial/tutorial.xls\">tutorial.xls</a>,  da pubblicare, secondo quanto descritto sopra. "
 
 #: main/templates/tutorial.html:69
 msgid ""
 "After publishing our first form, a new table appears showing our new form. "
 "Next we need to use ODK Collect to submit data for this form..."
-msgstr ""
+msgstr "Dopo aver pubblicato il nostro primo modulo, appare una nuova tabella con il nostro questionario. Ora abbiamo bisogno di utilizzare ODK Collect per inviare le risposte a questo modulo..."
 
 #: main/templates/tutorial.html:80
 msgid "Use ODK Collect to download form and submit data"
-msgstr ""
+msgstr "Usa ODK Collect per scaricare il modulo e inviare i dati"
 
 #: main/templates/tutorial.html:89
 #, python-format
@@ -885,97 +887,97 @@ msgid ""
 "get forms from and submit data to formhub. In ODK Collect's Main Menu, press"
 " the Menu button. Select Server Preferences, then Server. Enter "
 "<strong>%(odk_url)s</strong> as the server."
-msgstr ""
+msgstr "L'indirizzo URL di questa applicazione web deve essere fornito a ODK Collect prima di poter scaricare moduli da e inviare dati a formhub. Nel menú principale di ODK Collect, clicca su Menu. Seleziona Server Preferences e successivamente Server. Inserisci <strong>%(odk_url)s</strong> come server."
 
 #: main/templates/tutorial.html:98
 msgid "Download your published form to your phone."
-msgstr ""
+msgstr "Scarica il modulo pubblicato sul tuo telefono. "
 
 #: main/templates/tutorial.html:107
 msgid "Fill out the form on your phone."
-msgstr ""
+msgstr "Compila il questionario sul telefono. "
 
 #: main/templates/tutorial.html:116
 msgid ""
 "After filling out the form on your phone submit the data to the server."
-msgstr ""
+msgstr "Dopo aver completato il modulo sul tuo telefono, invia i dati al server. "
 
 #: main/templates/tutorial.html:124
 msgid "Use formhub to download and map data submissions"
-msgstr ""
+msgstr "Usa formhub per scaricare e mappare i dati delle risposte"
 
 #: main/templates/tutorial.html:130
 msgid ""
 "After submitting data from ODK Collect to the server you can now download "
 "the data as a nicely formatted csv or xls file."
-msgstr ""
+msgstr "Dopo aver inviato i dati da ODK Collect al server, è possibile scaricare i dati come file cvs o xls ben formattato. "
 
 #: main/templates/tutorial.html:140
 msgid "And look at submissions on a map:"
-msgstr ""
+msgstr "E visualizzare le riposte su una mappa:"
 
 #: main/templates/user_crowdforms.html:7
 msgid "Crowdforms <small>List of crowdforms you have joined.</small>"
-msgstr ""
+msgstr "Crowdforms <small>Lista di crowdforms a cui hai aderito.</small>"
 
 #: main/templates/user_crowdforms.html:18
 msgid "Remove"
-msgstr ""
+msgstr "Rimuovi"
 
 #: main/templates/xls2xform.html:5
 msgid "XLS2XForm Converter"
-msgstr ""
+msgstr "Convertitore XLS2XForm"
 
 #: main/templates/xls2xform.html:8
 msgid ""
 "If you're looking for the XLS2XForm converter you're in the right place. "
 "We've incorporated the XLS2XForm converter into formhub."
-msgstr ""
+msgstr "Se stai cercando il convertitore XLS2XForm sei nel poste giusto. Abbiamo infatti incorporato il convertitore XLS2XForm in formhub. "
 
 #: main/templates/xls2xform.html:11
 msgid "To use it simply:"
-msgstr ""
+msgstr "Per usarlo, semplicemente:"
 
 #: main/templates/xls2xform.html:14
 #, python-format
 msgid ""
 "<a href=\"%(registration_register)s\">Signup</a> for a free account with "
 "formhub"
-msgstr ""
+msgstr "<a href=\"%(registration_register)s\">Registrati</a> per avere un account gratuito con formhub"
 
 #: main/templates/xls2xform.html:15
 msgid ""
 "Upload your XLSForm to formhub and it'll instantly be converted to an XForm "
 "which will be available on your phone."
-msgstr ""
+msgstr "Carica il tuo file XLSForm su formhub e sarà immediatamente convertito a un file XForm che sarà disponibile sul tuo telefono. "
 
 #: main/templates/xls2xform.html:16
 msgid ""
 "If you want to download the XForm, click on the form name and click on "
 "<strong>other</strong> to download the converted XForm"
-msgstr ""
+msgstr "Se vuoi scaricare il file XForm, clicca sul nome del modulo e clicca su  <strong>altro</strong> per scaricare il file XForm convertito"
 
 #: odk_logger/import_tools.py:49
 msgid "Too many XML files."
-msgstr ""
+msgstr "Troppi file XML."
 
 #: odk_logger/views.py:55
 #, python-format
 msgid "User %s not found"
-msgstr ""
+msgstr "Utente %s non trovato"
 
 #: odk_logger/views.py:62
 msgid ""
 "There was a problem receiving your ODK submission. [Error: IO Error reading "
 "data]"
-msgstr ""
+msgstr "C'è stato un problema nel ricevere la tua risposta ODK. [Errore: IO Errore nel leggere i dati]"
 
 #: odk_logger/views.py:77
 #, python-format
 msgid ""
 "Submission successful. Out of %(total)d survey instances, %(success)d were "
 "imported (%(rejected)d were rejected--duplicates, missing forms, etc.)"
-msgstr ""
+msgstr "Invio avvenuto con successo. Di %(total)d istanze di sondaggio, %(success)d sono state importate (%(rejected)d sono state respinte--duplicati, moduli mancanti, etc.)"
 
 #: odk_logger/views.py:90
 msgid ""
@@ -1131,119 +1133,119 @@ msgstr "XForms"
 
 #: odk_logger/models/xform.py:64
 msgid "Can view associated data"
-msgstr ""
+msgstr "Puoi visualizzare i dati associati"
 
 #: odk_logger/models/xform.py:86
 msgid "There should be a single id string."
-msgstr ""
+msgstr "Ci dovrebbe essere una sola stringa id. "
 
 #: odk_logger/models/xform.py:93
 msgid "There should be a single title."
-msgstr ""
+msgstr "Ci dovrebbe essere un solo titolo. "
 
 #: odk_logger/models/xform.py:104
 msgid ""
 "In strict mode, the XForm ID must be a valid slug and contain no spaces."
-msgstr ""
+msgstr "In modalità strict, la XForm ID deve essere un valido slug e non deve contenere spazi. "
 
 #: odk_logger/models/xform.py:113
 msgid "Submission Count"
-msgstr ""
+msgstr "Conto Risposte"
 
 #: odk_logger/templates/base.html:9
 msgid "XForm Manager:"
-msgstr ""
+msgstr "XForm Manager:"
 
 #: odk_logger/templates/base.html:15
 msgid "XForm Manager"
-msgstr ""
+msgstr "XForm Manager"
 
 #: odk_logger/templates/bulk_submission_form.html:4
 #: odk_logger/templates/form.html:4
 msgid "Update XForm"
-msgstr ""
+msgstr "Aggiorna XForm"
 
 #: odk_logger/templates/list_xforms.html:6
 msgid "Downloadable by Phone"
-msgstr ""
+msgstr "Scaricabile da Telefono"
 
 #: odk_logger/templates/list_xforms.html:7
 msgid "Form ID"
-msgstr ""
+msgstr "Modulo ID"
 
 #: odk_logger/templates/list_xforms.html:8
 msgid "Number of Submissions"
-msgstr ""
+msgstr "Numero di Risposte"
 
 #: odk_logger/templates/list_xforms.html:9
 msgid "Time of Last Submission"
-msgstr ""
+msgstr "Ora dell'Ultima Risposta"
 
 #: odk_logger/templates/list_xforms.html:10
 msgid "CSV"
-msgstr ""
+msgstr "CSV"
 
 #: odk_logger/templates/list_xforms.html:19
 msgid "yes"
-msgstr ""
+msgstr "si"
 
 #: odk_logger/templates/list_xforms.html:21
 msgid "no"
-msgstr ""
+msgstr "no"
 
 #: odk_logger/templates/list_xforms.html:32
 msgid "Download CSV"
-msgstr ""
+msgstr "Scarica CSV"
 
 #: odk_logger/templates/submission.html:3
 msgid "Your submission was successful!"
-msgstr ""
+msgstr "La tua risposta è stata inviata con successo! "
 
 #: odk_logger/templates/submission.html:5
 msgid "Return to the form page"
-msgstr ""
+msgstr "Ritorna alla pagina contenente il modulo"
 
 #: odk_logger/templates/submission.html:6
 msgid "Fill the form out again"
-msgstr ""
+msgstr "Riempi il modulo nuovamente"
 
 #: odk_logger/templates/submission_test_form.html:4
 msgid "List XForms"
-msgstr ""
+msgstr "Elenco XForms"
 
 #: odk_viewer/reparse.py:33
 msgid "[Reparsing XForm Instances]\n"
-msgstr ""
+msgstr "[Rileggendo Istanze XForm]⏎\n"
 
 #: odk_viewer/reparse.py:52
 #, python-format
 msgid "That process took [%(nb)d ticks]"
-msgstr ""
+msgstr "Questo processo ha richiesto [%(nb)d ticks]"
 
 #: odk_viewer/views.py:59
 msgid "Start time format must be YY_MM_DD_hh_mm_ss"
-msgstr ""
+msgstr "Il formato dell'ora iniziale deve essere YY_MM_DD_hh_mm_ss"
 
 #: odk_viewer/views.py:70
 msgid "End time format must be YY_MM_DD_hh_mm_ss"
-msgstr ""
+msgstr "L'ora finale deve essere YY_MM_DD_hh_mm_ss"
 
 #: odk_viewer/views.py:185 odk_viewer/views.py:222
 msgid "No records found to export"
-msgstr ""
+msgstr "Non ci sono record da esportare"
 
 #: odk_viewer/views.py:364
 msgid "Attachment not found"
-msgstr ""
+msgstr "Allegato non trovato"
 
 #: odk_viewer/management/commands/mark_start_times.py:7
 msgid "This is a one-time command to mark start times of old surveys."
-msgstr ""
+msgstr "Questo è un comando singolo per registrare gli orari iniziali di vecchi sondaggi. "
 
 #: odk_viewer/management/commands/mark_start_times.py:16
 #, python-format
 msgid "Could not mark start time for DD: %(data)s"
-msgstr ""
+msgstr "Non è stato possible registrare il tempo iniziale per DD: %(data)s"
 
 #: odk_viewer/management/commands/push_develop.py:7
 msgid ""
@@ -1252,170 +1254,170 @@ msgid ""
 "    develop, and update the staging server. (This should probably\n"
 "    update the develop server)\n"
 "    "
-msgstr ""
+msgstr "\n    Esegui i test a livello locale. Se non ci sono errori, carica per\n    sviluppare, e aggiorna lo staging server. (Questo dovrebbe \n    aggiornare anche il develop server)\n    "
 
 #: odk_viewer/management/commands/relink.py:6
 msgid "Relink all instances with the current forms."
-msgstr ""
+msgstr "Ricollega tutte le istanze con i moduli attuali. "
 
 #: odk_viewer/management/commands/remongo.py:9
 msgid "Insert all existing parsed instances into MongoDB"
-msgstr ""
+msgstr "Inserisci tutte le istanze esistenti analizzate in MongoDB"
 
 #: odk_viewer/management/commands/remongo.py:14
 msgid "Number of records to process per query"
-msgstr ""
+msgstr "Numero di record da da elaborare per query"
 
 #: odk_viewer/management/commands/remongo.py:16
 msgid "Username of the form user"
-msgstr ""
+msgstr "Username dell'utente del modulo"
 
 #: odk_viewer/management/commands/remongo.py:18
 msgid "id string of the form"
-msgstr ""
+msgstr "stringa id del modulo"
 
 #: odk_viewer/management/commands/reparse.py:9
 msgid "Delete and recreate parsed instances."
-msgstr ""
+msgstr "Elimina e ricrea i casi analizzati."
 
 #: odk_viewer/management/commands/set_uuid_in_xml.py:9
 msgid "Insert UUID into XML of all existing XForms"
-msgstr ""
+msgstr "Inserisci UUID nel XML di ogni XForms esistente. "
 
 #: odk_viewer/management/commands/set_uuid_in_xml.py:12
 #, python-format
 msgid "%(nb)d XForms to update"
-msgstr ""
+msgstr "%(nb)d XForms da aggiornare"
 
 #: odk_viewer/management/commands/set_uuid_in_xml.py:19
 #, python-format
 msgid "Updated %(nb)d XForms..."
-msgstr ""
+msgstr "Aggiornati %(nb)d file XForms..."
 
 #: odk_viewer/management/commands/update_delete_from_mongo.py:12
 msgid "Update deleted records from mongo to sql instances"
-msgstr ""
+msgstr "Aggiorna archivi eliminati da mongo alle istanze sql"
 
 #: odk_viewer/templates/data_view.html:16
 msgid "Display Fields"
-msgstr ""
+msgstr "Mostra Campi"
 
 #: odk_viewer/templates/data_view.html:45
 msgid ""
 "Your survey has <strong>{numquestions}</strong> question(s) and "
 "<strong>{numsubmissions}</strong> submission(s). Please click on Display "
 "Fields above and select the questions you want to view responses for."
-msgstr ""
+msgstr "Il tuo sondaggio ha <strong>{numquestions}</strong> domanda/e e <strong>{numsubmissions}</strong> risposta/e. Clicca su Mostra Campi qui sopra e seleziona le domande per le quali vuoi visualizzare responsi. "
 
 #: odk_viewer/templates/data_view.html:46
 msgid ""
 "NOTE: This is a beta feature and your survey contains more than "
 "<strong>{threshold}</strong> responses, search and sort features will not "
 "work."
-msgstr ""
+msgstr "NOTA: Questa é una funzionalità beta e il tuo sondaggio contiene più di <strong>{threshold}</strong> risposte, le funzionalità di ricerca e ordinamento non potranno funzionare. "
 
 #: odk_viewer/templates/data_view.html:115
 msgid "_MENU_ records per page"
-msgstr ""
+msgstr "_MENU_ record per pagina"
 
 #: odk_viewer/templates/instance.html:18
 msgid "Browse Form Data"
-msgstr ""
+msgstr "Sfoglia Dati Modulo"
 
 #: odk_viewer/templates/instance.html:31
 msgid "Record {pos} of {total}"
-msgstr ""
+msgstr "Record {pos} di {total}"
 
 #: odk_viewer/templates/instance.html:166
 #: odk_viewer/templates/instance.html:203
 msgid "BAD REQUEST"
-msgstr ""
+msgstr "RICHIESTA NON VALIDA"
 
 #: odk_viewer/templates/instance.html:310
 msgid "The requested content was not found."
-msgstr ""
+msgstr "Il contenuto richiesto non è stato trovato. "
 
 #: odk_viewer/templates/instance.html:322
 msgid "Change Language:"
-msgstr ""
+msgstr "Cambia Lingua:"
 
 #: odk_viewer/templates/instance.html:338
 msgid "Record 1 of 6"
-msgstr ""
+msgstr "Record 1 di 6"
 
 #: odk_viewer/templates/instance.html:342
 msgid "← Previous"
-msgstr ""
+msgstr "← Precedente"
 
 #: odk_viewer/templates/instance.html:342
 msgid "Next →"
-msgstr ""
+msgstr "Successivo →"
 
 #: odk_viewer/templates/instance.html:354 odk_viewer/templates/survey.html:20
 msgid "Question"
-msgstr ""
+msgstr "Domanda"
 
 #: odk_viewer/templates/instance.html:354 odk_viewer/templates/survey.html:21
 msgid "Response"
-msgstr ""
+msgstr "Risposta"
 
 #: odk_viewer/templates/instance.html:446
 msgid ""
 "Are you sure you want to delete this data. If you are unsure about deleting "
 "this form press 'Cancel'."
-msgstr ""
+msgstr "Sei sicuro di voler eliminare questi dati? Se sei incerto se rimuovere questo modulo, clicca 'Annulla'. "
 
 #: restservice/forms.py:9
 msgid "Service Name"
-msgstr ""
+msgstr "Nome del Servizio"
 
 #: restservice/forms.py:12 restservice/models.py:14
 msgid "Service URL"
-msgstr ""
+msgstr "URL del Servizio"
 
 #: restservice/views.py:31
 msgid "Service already defined."
-msgstr ""
+msgstr "Servizio già definito. "
 
 #: restservice/views.py:35
 #, python-format
 msgid "Successfully added service %(name)s."
-msgstr ""
+msgstr "Aggiunto con successo il servizio %(name)s."
 
 #: restservice/views.py:40
 msgid "Please fill in all required fields"
-msgstr ""
+msgstr "Si prega di compilare tutti i campi obbligatori"
 
 #: restservice/templates/add-service.html:15
 msgid "Add service"
-msgstr ""
+msgstr "Aggiungi servizio"
 
 #: staff/management/commands/mailer.py:15
 msgid "Send an email to all formhub users"
-msgstr ""
+msgstr "Manda un email a tutti gli utenti di formhub"
 
 #: staff/management/commands/mailer.py:29
 msgid "message must be included in kwargs"
-msgstr ""
+msgstr "il messaggio deve essere incluso in kwargs"
 
 #: staff/management/commands/mailer.py:36
 #, python-format
 msgid "Emailing name: %(name)s, email: %(email)s"
-msgstr ""
+msgstr "Nome: %(name)s, email: %(email)s"
 
 #: staff/templates/stats.html:4
 msgid "Stats"
-msgstr ""
+msgstr "Statistiche "
 
 #: staff/templates/submissions.html:32
 #, python-format
 msgid "Submissions (%(nb_sub)s)"
-msgstr ""
+msgstr "Risposte inviate (%(nb_sub)s)"
 
 #: staff/templates/templated_email/notice.email:1
 #, python-format
 msgid "formhub notification for %(username)s"
-msgstr ""
+msgstr "notifiche formhub per %(username)s"
 
 #: staff/templates/templated_email/notice.email:3
 #, python-format
@@ -1429,7 +1431,7 @@ msgid ""
 "  The Formhub Dev Team\n"
 "\n"
 "  P.S. Please consider joining the formhub-users group, https://groups.google.com/group/formhub-users\n"
-msgstr ""
+msgstr "\n⏎ Ciao %(full_name)s,⏎ ⏎ %(message)s⏎ ⏎ Grazie per aver usato formhub!⏎ Formhub Dev Team⏎ ⏎ P.S. Ti consigliamo di entrare nel gruppo formhub-users, https://groups.google.com/group/formhub-users⏎\n"
 
 #: staff/templates/templated_email/notice.email:15
 #, python-format
@@ -1450,38 +1452,38 @@ msgid ""
 "  <p>\n"
 "      P.S. Please consider joining the <a href=\"https://groups.google.com/group/formhub-users\">formhub-users group</a>.\n"
 "  </p>\n"
-msgstr ""
+msgstr "\n⏎ <p>Ciao %(full_name)s,</p>⏎ ⏎ <p>⏎ %(message)s⏎ </p>⏎ ⏎ <p>⏎ Grazie per aver usato formhub!⏎ <br/>⏎ Formhub Dev Team⏎ </p>⏎ ⏎ <p>⏎ P.S. Ti consigliamo di entrare nel gruppo <a href=\"https://groups.google.com/group/formhub-users\">formhub-users</a>.⏎ </p>⏎\n"
 
 #: templates/404.html:5
 msgid "404 Error"
-msgstr ""
+msgstr "Errore 404"
 
 #: templates/500.html:5
 msgid "500 Error"
-msgstr ""
+msgstr "Errore 500"
 
 #: templates/500.html:9
 msgid ""
 "If you are getting this error while trying to submit a form, please do "
 "consider sending an email to support@formhub.org with your xlsform attached."
 " Thank you for using formhub."
-msgstr ""
+msgstr "Se hai incontrato questo errore mentre cercavi di inviare un modulo, ti consigliamo di mandare un email a support@formhub.org con allegato il tuo file xlsform. Grazie per aver usato formhub. "
 
 #: templates/browser_message.html:17
 msgid "Browser Error"
-msgstr ""
+msgstr "Errore di Browser. "
 
 #: templates/browser_message.html:19
 msgid "close"
-msgstr ""
+msgstr "chiudi"
 
 #: templates/browser_message.html:24
 msgid "Recommended Browser Alert"
-msgstr ""
+msgstr "Avvertenza Browser Consigliato"
 
 #: templates/browser_message.html:28
 msgid "Dear Sir or Madam,"
-msgstr ""
+msgstr "Gentili Signori e Signore,"
 
 #: templates/browser_message.html:31
 msgid ""
@@ -1489,85 +1491,85 @@ msgid ""
 "support complex navigation. We highly recommend that you switch to one of "
 "the browsers below in order to take full advantage of the Nigeria MDGs "
 "Information System."
-msgstr ""
+msgstr "I nostri test indicano che state utilizzando un browser che non supporta la navigazione complessa. Vi consigliamo vivamente di passare ad uno dei browser qui di seguito al fine di trarre il massimo vantaggio dal Nigeria MDGs Information System.  "
 
 #: templates/browser_message.html:42
 msgid "Thank You,"
-msgstr ""
+msgstr "Grazie, "
 
 #: templates/browser_message.html:45
 msgid "The NMIS Support Team"
-msgstr ""
+msgstr "NMIS Support Team"
 
 #: templates/footer.html:5
 msgid ""
 "Built by the <a href=\"http://modi.mech.columbia.edu/\">Modi Research "
 "Group</a> at Columbia University."
-msgstr ""
+msgstr "Realizzato da il <a href=\"http://modi.mech.columbia.edu/\">Modi Research Group</a> alla Columbia University di New York."
 
 #: templates/footer.html:8
 msgid ""
 "Code (BSD License) at <a "
 "href=\"https://github.com/modilabs/formhub\">github.com/modilabs/formhub</a>"
-msgstr ""
+msgstr "Codici (BSD License) disponibili presso <a href=\"https://github.com/modilabs/formhub\">github.com/modilabs/formhub</a>"
 
 #: templates/footer.html:10
 msgid "Copyright &copy; 2012, formhub.org"
-msgstr ""
+msgstr "Copyright &copy; 2012, formhub.org"
 
 #: templates/main_index.html:9
 msgid "View LGAs"
-msgstr ""
+msgstr "Visualizza LGAs"
 
 #: templates/resources.html:4
 msgid "Resources"
-msgstr ""
+msgstr "Risorse"
 
 #: templates/topbar.html:25
 #, python-format
 msgid "%(nb_sub)s submissions"
-msgstr ""
+msgstr "%(nb_sub)s risposte"
 
 #: templates/topbar.html:55
 msgid "Forms"
-msgstr ""
+msgstr "Moduli"
 
 #: templates/topbar.html:56
 msgid "People"
-msgstr ""
+msgstr "Persone"
 
 #: templates/topbar.html:57
 msgid "About"
-msgstr ""
+msgstr "Info"
 
 #: templates/topbar.html:58
 msgid "Syntax"
-msgstr ""
+msgstr "Sintassi"
 
 #: templates/topbar.html:60
 msgid "Blog"
-msgstr ""
+msgstr "Blog"
 
 #: templates/topbar.html:65
 msgid "New Form"
-msgstr ""
+msgstr "Nuovo Modulo"
 
 #: templates/topbar.html:72
 msgid "Public profile"
-msgstr ""
+msgstr "Profilo pubblico"
 
 #: templates/topbar.html:76
 msgid "Sign out"
-msgstr ""
+msgstr "Esci"
 
 #: templates/topbar.html:80 templates/registration/login.html:7
 #: templates/registration/login.html:18
 msgid "Sign in"
-msgstr ""
+msgstr "Accedi"
 
 #: templates/registration/activate.html:7
 msgid "Account Activated"
-msgstr ""
+msgstr "Account Attivato"
 
 #: templates/registration/activate.html:14
 #, python-format
@@ -1575,7 +1577,7 @@ msgid ""
 "\n"
 "        Your account has been successfully activated. You may log in\n"
 "        <a href=\"%(login_url)s\">here</a>."
-msgstr ""
+msgstr "\n⏎ Il tuo account è stato attivato con successo. Puoi ora accedere⏎ <a href=\"%(login_url)s\">qui</a>."
 
 #: templates/registration/activation_email.txt:3
 #, python-format
@@ -1586,106 +1588,106 @@ msgid ""
 "http://%(site_domain)s%(register_url)s\n"
 "\n"
 "The link above is valid for %(expiration_days)s day%(expiration_days_p)s.\n"
-msgstr ""
+msgstr "Ti sei registrato su %(site_name)s. Per attivare il tuo account\nsi prega di cliccare al link qui sotto:\n\nhttp://%(site_domain)s%(register_url)s\n\nIl link riportato qui sopra è valido per %(expiration_days)s day%(expiration_days_p)s.\n"
 
 #: templates/registration/activation_email_subject.txt:1
 #, python-format
 msgid "Account activation on %(site_name)s"
-msgstr ""
+msgstr "Attivazione account su %(site_name)s"
 
 #: templates/registration/login.html:26
 #, python-format
 msgid ""
 "Can't access your account? <a href=\"%(reset_url)s\">Reset your "
 "password.</a>"
-msgstr ""
+msgstr "Non riesci ad accedere al tuo account? <a href=\"%(reset_url)s\">Effettua il reset della tua password.</a>"
 
 #: templates/registration/login.html:28
 #, python-format
 msgid "New to formhub? <a href=\"%(registration_url)s\">Create an account.</a>"
-msgstr ""
+msgstr "Prima volta su formhub? <a href=\"%(registration_url)s\">Crea un account.</a>"
 
 #: templates/registration/logout.html:7
 msgid "Successful Logout"
-msgstr ""
+msgstr "Uscito con successo"
 
 #: templates/registration/logout.html:11
 msgid "Thank you for using formhub, please come again!"
-msgstr ""
+msgstr "Grazie per aver scelto formhub, ti aspettiamo di nuovo!"
 
 #: templates/registration/password_change_done.html:6
 msgid "Password changed"
-msgstr ""
+msgstr "Password modificata"
 
 #: templates/registration/password_change_form.html:7
 #: templates/registration/password_change_form.html:17
 msgid "Change Password"
-msgstr ""
+msgstr "Modifica Password"
 
 #: templates/registration/password_reset_complete.html:4
 msgid "Log In"
-msgstr ""
+msgstr "Accedi"
 
 #: templates/registration/password_reset_complete.html:8
 msgid "Password reset successfully"
-msgstr ""
+msgstr "Il reset della password è stato effettuato con successo "
 
 #: templates/registration/password_reset_complete.html:10
 msgid "Log in"
-msgstr ""
+msgstr "Accedi"
 
 #: templates/registration/password_reset_confirm.html:17
 msgid "Password reset failed"
-msgstr ""
+msgstr "Il reset della password è fallito"
 
 #: templates/registration/password_reset_done.html:7
 msgid "Email Sent"
-msgstr ""
+msgstr "Email inviato"
 
 #: templates/registration/password_reset_done.html:10
 msgid "An email with password reset instructions has been sent."
-msgstr ""
+msgstr "Un email con istruzioni su come fare il reset della password è stato inviato. "
 
 #: templates/registration/password_reset_email.html:2
 #, python-format
 msgid "Reset password at %(site_name)s"
-msgstr ""
+msgstr "Effettua il reset della password su %(site_name)s"
 
 #: templates/registration/password_reset_form.html:7
 msgid "Password Reset"
-msgstr ""
+msgstr "Reset Password"
 
 #: templates/registration/password_reset_form.html:11
 msgid ""
 "To reset your password please enter your email address below. A\n"
 "    message will be sent to your email address with a link for you to\n"
 "    reset your password."
-msgstr ""
+msgstr "Per effettuare il reset della tua password, ti preghiamo di inserire il tuo indirizzo email qui sotto. Un\n    messaggio sarà inviato al tuo indirizzo email contenente un link per\n    effettuare il reset della tua password."
 
 #: templates/registration/registration_complete.html:7
 msgid "Registration Email Sent"
-msgstr ""
+msgstr "Email di Registrazione Inviato"
 
 #: templates/registration/registration_complete.html:10
 msgid ""
 "A user account has been created for you and an email message has\n"
 "    been sent to the email address you provided."
-msgstr ""
+msgstr "È stato creato per te un nuovo account e un email è\n    stato inviato all'indirizzo email che hai fornito."
 
 #: templates/registration/registration_complete.html:14
 msgid ""
 "To activate your account and complete the registration process,\n"
 "    you must click the activation link provided in the email."
-msgstr ""
+msgstr "Per attivare il tuo account e completare il processo di registrazione,\n    devi cliccare il link di attivazione contenuto nell'email."
 
 #: templates/registration/registration_form.html:7
 #: templates/registration/registration_form.html:30
 msgid "Register"
-msgstr ""
+msgstr "Registrati"
 
 #: templates/registration/registration_form.html:14
 msgid "Fields marked wth an asterisk (*) are required."
-msgstr ""
+msgstr "I campi contrassegnati da un asterisco (*) sono obbligatori. "
 
 #: templates/registration/registration_form.html:29
 msgid ""
@@ -1695,994 +1697,994 @@ msgid ""
 "account and data, at any time without notice. We will not be liable for any "
 "losses, either direct or indirect, that such service interruption or data "
 "loss may cause you. Use the service at your own risk."
-msgstr ""
+msgstr "Cliccando sul pulsante Registrati, riconosci che si tratta di un software in versione beta; non offriamo alcuna garanzia circa l'affidabilità o la continuità del nostro servizio. Ci riserviamo il diritto di sospendere o interrompere il servizio, o cancellare il tuo account e i tuoi dati, in qualsiasi momento e senza preavviso. Non ci riteniamo inoltre responsabili per perdite o danni, diretti o indiretti, causati dall'interruzione di tale servizio. Utilizza questo servizio a tuo rischio."
 
 #: utils/country_field.py:6
 msgid "Andorra"
-msgstr ""
+msgstr "Andorra"
 
 #: utils/country_field.py:7
 msgid "United Arab Emirates"
-msgstr ""
+msgstr "Emirati Arabi"
 
 #: utils/country_field.py:8
 msgid "Afghanistan"
-msgstr ""
+msgstr "Afghanistan"
 
 #: utils/country_field.py:9
 msgid "Antigua & Barbuda"
-msgstr ""
+msgstr "Antigua & Barbuda"
 
 #: utils/country_field.py:10
 msgid "Anguilla"
-msgstr ""
+msgstr "Anguilla"
 
 #: utils/country_field.py:11
 msgid "Albania"
-msgstr ""
+msgstr "Albania"
 
 #: utils/country_field.py:12
 msgid "Armenia"
-msgstr ""
+msgstr "Armenia"
 
 #: utils/country_field.py:13
 msgid "Netherlands Antilles"
-msgstr ""
+msgstr "Antille Olandesi"
 
 #: utils/country_field.py:14
 msgid "Angola"
-msgstr ""
+msgstr "Angola"
 
 #: utils/country_field.py:15
 msgid "Antarctica"
-msgstr ""
+msgstr "Antartica"
 
 #: utils/country_field.py:16
 msgid "Argentina"
-msgstr ""
+msgstr "Argentina"
 
 #: utils/country_field.py:17
 msgid "American Samoa"
-msgstr ""
+msgstr "Samoa Americane"
 
 #: utils/country_field.py:18
 msgid "Austria"
-msgstr ""
+msgstr "Austria"
 
 #: utils/country_field.py:19
 msgid "Australia"
-msgstr ""
+msgstr "Australia"
 
 #: utils/country_field.py:20
 msgid "Aruba"
-msgstr ""
+msgstr "Aruba"
 
 #: utils/country_field.py:21
 msgid "Azerbaijan"
-msgstr ""
+msgstr "Azerbaijan"
 
 #: utils/country_field.py:22
 msgid "Bosnia and Herzegovina"
-msgstr ""
+msgstr "Bosnia ed Erzegovina"
 
 #: utils/country_field.py:23
 msgid "Barbados"
-msgstr ""
+msgstr "Barbados"
 
 #: utils/country_field.py:24
 msgid "Bangladesh"
-msgstr ""
+msgstr "Bangladesh"
 
 #: utils/country_field.py:25
 msgid "Belgium"
-msgstr ""
+msgstr "Belgio"
 
 #: utils/country_field.py:26
 msgid "Burkina Faso"
-msgstr ""
+msgstr "Burkina Faso"
 
 #: utils/country_field.py:27
 msgid "Bulgaria"
-msgstr ""
+msgstr "Bulgaria"
 
 #: utils/country_field.py:28
 msgid "Bahrain"
-msgstr ""
+msgstr "Bahrain"
 
 #: utils/country_field.py:29
 msgid "Burundi"
-msgstr ""
+msgstr "Burundi"
 
 #: utils/country_field.py:30
 msgid "Benin"
-msgstr ""
+msgstr "Benin"
 
 #: utils/country_field.py:31
 msgid "Bermuda"
-msgstr ""
+msgstr "Bermuda"
 
 #: utils/country_field.py:32
 msgid "Brunei Darussalam"
-msgstr ""
+msgstr "Brunei Darussalam"
 
 #: utils/country_field.py:33
 msgid "Bolivia"
-msgstr ""
+msgstr "Bolivia"
 
 #: utils/country_field.py:34
 msgid "Brazil"
-msgstr ""
+msgstr "Brasile"
 
 #: utils/country_field.py:35
 msgid "Bahama"
-msgstr ""
+msgstr "Bahama"
 
 #: utils/country_field.py:36
 msgid "Bhutan"
-msgstr ""
+msgstr "Bhutan"
 
 #: utils/country_field.py:37
 msgid "Bouvet Island"
-msgstr ""
+msgstr "Isola Bouvet"
 
 #: utils/country_field.py:38
 msgid "Botswana"
-msgstr ""
+msgstr "Botswana"
 
 #: utils/country_field.py:39
 msgid "Belarus"
-msgstr ""
+msgstr "Bielorussia"
 
 #: utils/country_field.py:40
 msgid "Belize"
-msgstr ""
+msgstr "Belize"
 
 #: utils/country_field.py:41
 msgid "Canada"
-msgstr ""
+msgstr "Canada"
 
 #: utils/country_field.py:42
 msgid "Cocos (Keeling) Islands"
-msgstr ""
+msgstr "Cocos (Keeling)"
 
 #: utils/country_field.py:43
 msgid "Central African Republic"
-msgstr ""
+msgstr "Repubblica Centrafricana"
 
 #: utils/country_field.py:44
 msgid "Congo"
-msgstr ""
+msgstr "Congo"
 
 #: utils/country_field.py:45
 msgid "Switzerland"
-msgstr ""
+msgstr "Svizzera"
 
 #: utils/country_field.py:46
 msgid "Ivory Coast"
-msgstr ""
+msgstr "Costa d'Avorio"
 
 #: utils/country_field.py:47
 msgid "Cook Iislands"
-msgstr ""
+msgstr "Isole Cook"
 
 #: utils/country_field.py:48
 msgid "Chile"
-msgstr ""
+msgstr "Chile"
 
 #: utils/country_field.py:49
 msgid "Cameroon"
-msgstr ""
+msgstr "Cameroon"
 
 #: utils/country_field.py:50
 msgid "China"
-msgstr ""
+msgstr "Cina"
 
 #: utils/country_field.py:51
 msgid "Colombia"
-msgstr ""
+msgstr "Colombia"
 
 #: utils/country_field.py:52
 msgid "Costa Rica"
-msgstr ""
+msgstr "Costa Rica"
 
 #: utils/country_field.py:53
 msgid "Cuba"
-msgstr ""
+msgstr "Cuba"
 
 #: utils/country_field.py:54
 msgid "Cape Verde"
-msgstr ""
+msgstr "Capo Verde"
 
 #: utils/country_field.py:55
 msgid "Christmas Island"
-msgstr ""
+msgstr "Isola di Natale"
 
 #: utils/country_field.py:56
 msgid "Cyprus"
-msgstr ""
+msgstr "Cipro"
 
 #: utils/country_field.py:57
 msgid "Czech Republic"
-msgstr ""
+msgstr "Repubblica Ceca"
 
 #: utils/country_field.py:58
 msgid "Germany"
-msgstr ""
+msgstr "Germania"
 
 #: utils/country_field.py:59
 msgid "Djibouti"
-msgstr ""
+msgstr "Gibuti"
 
 #: utils/country_field.py:60
 msgid "Denmark"
-msgstr ""
+msgstr "Danimarca"
 
 #: utils/country_field.py:61
 msgid "Dominica"
-msgstr ""
+msgstr "Dominica"
 
 #: utils/country_field.py:62
 msgid "Dominican Republic"
-msgstr ""
+msgstr "Repubblica Dominicana"
 
 #: utils/country_field.py:63
 msgid "Algeria"
-msgstr ""
+msgstr "Algeria"
 
 #: utils/country_field.py:64
 msgid "Ecuador"
-msgstr ""
+msgstr "Ecuador"
 
 #: utils/country_field.py:65
 msgid "Estonia"
-msgstr ""
+msgstr "Estonia"
 
 #: utils/country_field.py:66
 msgid "Egypt"
-msgstr ""
+msgstr "Egitto"
 
 #: utils/country_field.py:67
 msgid "Western Sahara"
-msgstr ""
+msgstr "Sahara occidentale"
 
 #: utils/country_field.py:68
 msgid "Eritrea"
-msgstr ""
+msgstr "Eritrea"
 
 #: utils/country_field.py:69
 msgid "Spain"
-msgstr ""
+msgstr "Spagna"
 
 #: utils/country_field.py:70
 msgid "Ethiopia"
-msgstr ""
+msgstr "Etiopia"
 
 #: utils/country_field.py:71
 msgid "Finland"
-msgstr ""
+msgstr "Finlandia"
 
 #: utils/country_field.py:72
 msgid "Fiji"
-msgstr ""
+msgstr "Fiji"
 
 #: utils/country_field.py:73
 msgid "Falkland Islands (Malvinas)"
-msgstr ""
+msgstr "Isole Falkland (Malvinas)"
 
 #: utils/country_field.py:74
 msgid "Micronesia"
-msgstr ""
+msgstr "Micronesia"
 
 #: utils/country_field.py:75
 msgid "Faroe Islands"
-msgstr ""
+msgstr "Isole Faroe"
 
 #: utils/country_field.py:76
 msgid "France"
-msgstr ""
+msgstr "Francia"
 
 #: utils/country_field.py:77
 msgid "France, Metropolitan"
-msgstr ""
+msgstr "Francia, Metropolitan"
 
 #: utils/country_field.py:78
 msgid "Gabon"
-msgstr ""
+msgstr "Gabon"
 
 #: utils/country_field.py:79
 msgid "United Kingdom (Great Britain)"
-msgstr ""
+msgstr "Regno Unito (Gran Bretagna)"
 
 #: utils/country_field.py:80
 msgid "Grenada"
-msgstr ""
+msgstr "Grenada"
 
 #: utils/country_field.py:81
 msgid "Georgia"
-msgstr ""
+msgstr "Georgia"
 
 #: utils/country_field.py:82
 msgid "French Guiana"
-msgstr ""
+msgstr "Guyana Francese"
 
 #: utils/country_field.py:83
 msgid "Ghana"
-msgstr ""
+msgstr "Ghana"
 
 #: utils/country_field.py:84
 msgid "Gibraltar"
-msgstr ""
+msgstr "Gibilterra"
 
 #: utils/country_field.py:85
 msgid "Greenland"
-msgstr ""
+msgstr "Groenlandia"
 
 #: utils/country_field.py:86
 msgid "Gambia"
-msgstr ""
+msgstr "Gambia"
 
 #: utils/country_field.py:87
 msgid "Guinea"
-msgstr ""
+msgstr "Guinea"
 
 #: utils/country_field.py:88
 msgid "Guadeloupe"
-msgstr ""
+msgstr "Guadalupa"
 
 #: utils/country_field.py:89
 msgid "Equatorial Guinea"
-msgstr ""
+msgstr "Guinea Equatoriale"
 
 #: utils/country_field.py:90
 msgid "Greece"
-msgstr ""
+msgstr "Grecia"
 
 #: utils/country_field.py:91
 msgid "South Georgia and the South Sandwich Islands"
-msgstr ""
+msgstr "Georgia del Sud e isole Sandwich del Sud"
 
 #: utils/country_field.py:92
 msgid "Guatemala"
-msgstr ""
+msgstr "Guatemala"
 
 #: utils/country_field.py:93
 msgid "Guam"
-msgstr ""
+msgstr "Guam"
 
 #: utils/country_field.py:94
 msgid "Guinea-Bissau"
-msgstr ""
+msgstr "Guinea-Bissau"
 
 #: utils/country_field.py:95
 msgid "Guyana"
-msgstr ""
+msgstr "Guyana"
 
 #: utils/country_field.py:96
 msgid "Hong Kong"
-msgstr ""
+msgstr "Hong Kong"
 
 #: utils/country_field.py:97
 msgid "Heard & McDonald Islands"
-msgstr ""
+msgstr "Isole Heard e McDonald"
 
 #: utils/country_field.py:98
 msgid "Honduras"
-msgstr ""
+msgstr "Honduras"
 
 #: utils/country_field.py:99
 msgid "Croatia"
-msgstr ""
+msgstr "Croazia"
 
 #: utils/country_field.py:100
 msgid "Haiti"
-msgstr ""
+msgstr "Haiti"
 
 #: utils/country_field.py:101
 msgid "Hungary"
-msgstr ""
+msgstr "Ungaria"
 
 #: utils/country_field.py:102
 msgid "Indonesia"
-msgstr ""
+msgstr "Indonesia"
 
 #: utils/country_field.py:103
 msgid "Ireland"
-msgstr ""
+msgstr "Irlanda"
 
 #: utils/country_field.py:104
 msgid "Israel"
-msgstr ""
+msgstr "Israele"
 
 #: utils/country_field.py:105
 msgid "India"
-msgstr ""
+msgstr "India"
 
 #: utils/country_field.py:106
 msgid "British Indian Ocean Territory"
-msgstr ""
+msgstr "Territorio britannico dell'Oceano Indiano"
 
 #: utils/country_field.py:107
 msgid "Iraq"
-msgstr ""
+msgstr "Iraq"
 
 #: utils/country_field.py:108
 msgid "Islamic Republic of Iran"
-msgstr ""
+msgstr "Repubblica Islamica dell'Iran"
 
 #: utils/country_field.py:109
 msgid "Iceland"
-msgstr ""
+msgstr "Islanda"
 
 #: utils/country_field.py:110
 msgid "Italy"
-msgstr ""
+msgstr "Italia"
 
 #: utils/country_field.py:111
 msgid "Jamaica"
-msgstr ""
+msgstr "Giamaica"
 
 #: utils/country_field.py:112
 msgid "Jordan"
-msgstr ""
+msgstr "Giordania"
 
 #: utils/country_field.py:113
 msgid "Japan"
-msgstr ""
+msgstr "Giappone"
 
 #: utils/country_field.py:114
 msgid "Kenya"
-msgstr ""
+msgstr "Kenya"
 
 #: utils/country_field.py:115
 msgid "Kyrgyzstan"
-msgstr ""
+msgstr "Kirghizistan"
 
 #: utils/country_field.py:116
 msgid "Cambodia"
-msgstr ""
+msgstr "Cambogia"
 
 #: utils/country_field.py:117
 msgid "Kiribati"
-msgstr ""
+msgstr "Kiribati"
 
 #: utils/country_field.py:118
 msgid "Comoros"
-msgstr ""
+msgstr "Comoros"
 
 #: utils/country_field.py:119
 msgid "St. Kitts and Nevis"
-msgstr ""
+msgstr "St. Kitts e Nevis"
 
 #: utils/country_field.py:120
 msgid "Korea, Democratic People's Republic of"
-msgstr ""
+msgstr "Corea, Repubblica Popolare Democratica di"
 
 #: utils/country_field.py:121
 msgid "Korea, Republic of"
-msgstr ""
+msgstr "Corea, Repubblica della"
 
 #: utils/country_field.py:122
 msgid "Kuwait"
-msgstr ""
+msgstr "Kuwait"
 
 #: utils/country_field.py:123
 msgid "Cayman Islands"
-msgstr ""
+msgstr "Isole Cayman"
 
 #: utils/country_field.py:124
 msgid "Kazakhstan"
-msgstr ""
+msgstr "Kazakistan"
 
 #: utils/country_field.py:125
 msgid "Lao People's Democratic Republic"
-msgstr ""
+msgstr "Repubblica Democratica Popolare del Laos"
 
 #: utils/country_field.py:126
 msgid "Lebanon"
-msgstr ""
+msgstr "Libano"
 
 #: utils/country_field.py:127
 msgid "Saint Lucia"
-msgstr ""
+msgstr "Saint Lucia"
 
 #: utils/country_field.py:128
 msgid "Liechtenstein"
-msgstr ""
+msgstr "Liechtenstein"
 
 #: utils/country_field.py:129
 msgid "Sri Lanka"
-msgstr ""
+msgstr "Sri Lanka"
 
 #: utils/country_field.py:130
 msgid "Liberia"
-msgstr ""
+msgstr "Liberia"
 
 #: utils/country_field.py:131
 msgid "Lesotho"
-msgstr ""
+msgstr "Lesotho"
 
 #: utils/country_field.py:132
 msgid "Lithuania"
-msgstr ""
+msgstr "Lituania"
 
 #: utils/country_field.py:133
 msgid "Luxembourg"
-msgstr ""
+msgstr "Lussemburgo"
 
 #: utils/country_field.py:134
 msgid "Latvia"
-msgstr ""
+msgstr "Lettonia"
 
 #: utils/country_field.py:135
 msgid "Libyan Arab Jamahiriya"
-msgstr ""
+msgstr "Libia"
 
 #: utils/country_field.py:136
 msgid "Morocco"
-msgstr ""
+msgstr "Marocco"
 
 #: utils/country_field.py:137
 msgid "Monaco"
-msgstr ""
+msgstr "Monaco"
 
 #: utils/country_field.py:138
 msgid "Moldova, Republic of"
-msgstr ""
+msgstr "Moldova, Repubblica di"
 
 #: utils/country_field.py:139
 msgid "Madagascar"
-msgstr ""
+msgstr "Madagascar"
 
 #: utils/country_field.py:140
 msgid "Marshall Islands"
-msgstr ""
+msgstr "Isole Marshall"
 
 #: utils/country_field.py:141
 msgid "Mali"
-msgstr ""
+msgstr "Mali"
 
 #: utils/country_field.py:142
 msgid "Mongolia"
-msgstr ""
+msgstr "Mongolia"
 
 #: utils/country_field.py:143
 msgid "Myanmar"
-msgstr ""
+msgstr "Myanmar"
 
 #: utils/country_field.py:144
 msgid "Macau"
-msgstr ""
+msgstr "Macau"
 
 #: utils/country_field.py:145
 msgid "Northern Mariana Islands"
-msgstr ""
+msgstr "Isole Mariana del Nord"
 
 #: utils/country_field.py:146
 msgid "Martinique"
-msgstr ""
+msgstr "Martinica"
 
 #: utils/country_field.py:147
 msgid "Mauritania"
-msgstr ""
+msgstr "Mauritania"
 
 #: utils/country_field.py:148
 msgid "Monserrat"
-msgstr ""
+msgstr "Monserrat"
 
 #: utils/country_field.py:149
 msgid "Malta"
-msgstr ""
+msgstr "Malta"
 
 #: utils/country_field.py:150
 msgid "Mauritius"
-msgstr ""
+msgstr "Mauritius"
 
 #: utils/country_field.py:151
 msgid "Maldives"
-msgstr ""
+msgstr "Maldive"
 
 #: utils/country_field.py:152
 msgid "Malawi"
-msgstr ""
+msgstr "Malawi"
 
 #: utils/country_field.py:153
 msgid "Mexico"
-msgstr ""
+msgstr "Messico"
 
 #: utils/country_field.py:154
 msgid "Malaysia"
-msgstr ""
+msgstr "Malaysia"
 
 #: utils/country_field.py:155
 msgid "Mozambique"
-msgstr ""
+msgstr "Mozambico"
 
 #: utils/country_field.py:156
 msgid "Namibia"
-msgstr ""
+msgstr "Namibia"
 
 #: utils/country_field.py:157
 msgid "New Caledonia"
-msgstr ""
+msgstr "Nuova Caledonia"
 
 #: utils/country_field.py:158
 msgid "Niger"
-msgstr ""
+msgstr "Niger"
 
 #: utils/country_field.py:159
 msgid "Norfolk Island"
-msgstr ""
+msgstr "Norfolk Island"
 
 #: utils/country_field.py:160
 msgid "Nigeria"
-msgstr ""
+msgstr "Nigeria"
 
 #: utils/country_field.py:161
 msgid "Nicaragua"
-msgstr ""
+msgstr "Nicaragua"
 
 #: utils/country_field.py:162
 msgid "Netherlands"
-msgstr ""
+msgstr "Paesi Bassi"
 
 #: utils/country_field.py:163
 msgid "Norway"
-msgstr ""
+msgstr "Norvegia"
 
 #: utils/country_field.py:164
 msgid "Nepal"
-msgstr ""
+msgstr "Nepal"
 
 #: utils/country_field.py:165
 msgid "Nauru"
-msgstr ""
+msgstr "Nauru"
 
 #: utils/country_field.py:166
 msgid "Niue"
-msgstr ""
+msgstr "Niue"
 
 #: utils/country_field.py:167
 msgid "New Zealand"
-msgstr ""
+msgstr "Nuova Zelanda"
 
 #: utils/country_field.py:168
 msgid "Oman"
-msgstr ""
+msgstr "Oman"
 
 #: utils/country_field.py:169
 msgid "Panama"
-msgstr ""
+msgstr "Panama"
 
 #: utils/country_field.py:170
 msgid "Peru"
-msgstr ""
+msgstr "Perù"
 
 #: utils/country_field.py:171
 msgid "French Polynesia"
-msgstr ""
+msgstr "Polinesia Francese"
 
 #: utils/country_field.py:172
 msgid "Papua New Guinea"
-msgstr ""
+msgstr "Papua Nuova Guinea"
 
 #: utils/country_field.py:173
 msgid "Philippines"
-msgstr ""
+msgstr "Filippine"
 
 #: utils/country_field.py:174
 msgid "Pakistan"
-msgstr ""
+msgstr "Pakistan"
 
 #: utils/country_field.py:175
 msgid "Poland"
-msgstr ""
+msgstr "Polonia"
 
 #: utils/country_field.py:176
 msgid "St. Pierre & Miquelon"
-msgstr ""
+msgstr "St. Pierre e Miquelon"
 
 #: utils/country_field.py:177
 msgid "Pitcairn"
-msgstr ""
+msgstr "Pitcairn"
 
 #: utils/country_field.py:178
 msgid "Puerto Rico"
-msgstr ""
+msgstr "Porto Rico"
 
 #: utils/country_field.py:179
 msgid "Portugal"
-msgstr ""
+msgstr "Portogallo"
 
 #: utils/country_field.py:180
 msgid "Palau"
-msgstr ""
+msgstr "Palau"
 
 #: utils/country_field.py:181
 msgid "Paraguay"
-msgstr ""
+msgstr "Paraguay"
 
 #: utils/country_field.py:182
 msgid "Qatar"
-msgstr ""
+msgstr "Qatar"
 
 #: utils/country_field.py:183
 msgid "Reunion"
-msgstr ""
+msgstr "Reunion"
 
 #: utils/country_field.py:184
 msgid "Romania"
-msgstr ""
+msgstr "Romania"
 
 #: utils/country_field.py:185
 msgid "Russian Federation"
-msgstr ""
+msgstr "Federazione Russa"
 
 #: utils/country_field.py:186
 msgid "Rwanda"
-msgstr ""
+msgstr "Rwanda"
 
 #: utils/country_field.py:187
 msgid "Saudi Arabia"
-msgstr ""
+msgstr "Arabia Saudita"
 
 #: utils/country_field.py:188
 msgid "Solomon Islands"
-msgstr ""
+msgstr "Isole Salomone"
 
 #: utils/country_field.py:189
 msgid "Seychelles"
-msgstr ""
+msgstr "Seychelles"
 
 #: utils/country_field.py:190
 msgid "Sudan"
-msgstr ""
+msgstr "Sudan"
 
 #: utils/country_field.py:191
 msgid "Sweden"
-msgstr ""
+msgstr "Svezia"
 
 #: utils/country_field.py:192
 msgid "Singapore"
-msgstr ""
+msgstr "Singapore"
 
 #: utils/country_field.py:193
 msgid "St. Helena"
-msgstr ""
+msgstr "St. Helena"
 
 #: utils/country_field.py:194
 msgid "Slovenia"
-msgstr ""
+msgstr "Slovenia"
 
 #: utils/country_field.py:195
 msgid "Svalbard & Jan Mayen Islands"
-msgstr ""
+msgstr "Svalbard e Jan Mayen"
 
 #: utils/country_field.py:196
 msgid "Slovakia"
-msgstr ""
+msgstr "Slovacchia"
 
 #: utils/country_field.py:197
 msgid "Sierra Leone"
-msgstr ""
+msgstr "Sierra Leone"
 
 #: utils/country_field.py:198
 msgid "San Marino"
-msgstr ""
+msgstr "San Marino"
 
 #: utils/country_field.py:199
 msgid "Senegal"
-msgstr ""
+msgstr "Senegal"
 
 #: utils/country_field.py:200
 msgid "Somalia"
-msgstr ""
+msgstr "Somalia"
 
 #: utils/country_field.py:201
 msgid "Suriname"
-msgstr ""
+msgstr "Suriname"
 
 #: utils/country_field.py:202
 msgid "Sao Tome & Principe"
-msgstr ""
+msgstr "Sao Tome e Principe"
 
 #: utils/country_field.py:203
 msgid "El Salvador"
-msgstr ""
+msgstr "El Salvador"
 
 #: utils/country_field.py:204
 msgid "Syrian Arab Republic"
-msgstr ""
+msgstr "Repubblica Araba Siriana"
 
 #: utils/country_field.py:205
 msgid "Swaziland"
-msgstr ""
+msgstr "Swaziland"
 
 #: utils/country_field.py:206
 msgid "Turks & Caicos Islands"
-msgstr ""
+msgstr "Turks & Caicos"
 
 #: utils/country_field.py:207
 msgid "Chad"
-msgstr ""
+msgstr "Chad"
 
 #: utils/country_field.py:208
 msgid "French Southern Territories"
-msgstr ""
+msgstr "Territori Francesi del Sud"
 
 #: utils/country_field.py:209
 msgid "Togo"
-msgstr ""
+msgstr "Togo"
 
 #: utils/country_field.py:210
 msgid "Thailand"
-msgstr ""
+msgstr "Tailandia"
 
 #: utils/country_field.py:211
 msgid "Tajikistan"
-msgstr ""
+msgstr "Tajikistan"
 
 #: utils/country_field.py:212
 msgid "Tokelau"
-msgstr ""
+msgstr "Tokelau"
 
 #: utils/country_field.py:213
 msgid "Turkmenistan"
-msgstr ""
+msgstr "Turkmenistan"
 
 #: utils/country_field.py:214
 msgid "Tunisia"
-msgstr ""
+msgstr "Tunisia"
 
 #: utils/country_field.py:215
 msgid "Tonga"
-msgstr ""
+msgstr "Tonga"
 
 #: utils/country_field.py:216
 msgid "East Timor"
-msgstr ""
+msgstr "Timor Est"
 
 #: utils/country_field.py:217
 msgid "Turkey"
-msgstr ""
+msgstr "Turchia"
 
 #: utils/country_field.py:218
 msgid "Trinidad & Tobago"
-msgstr ""
+msgstr "Trinidad e Tobago"
 
 #: utils/country_field.py:219
 msgid "Tuvalu"
-msgstr ""
+msgstr "Tuvalu"
 
 #: utils/country_field.py:220
 msgid "Taiwan, Province of China"
-msgstr ""
+msgstr "Taiwan, Provincia della Cina"
 
 #: utils/country_field.py:221
 msgid "Tanzania, United Republic of"
-msgstr ""
+msgstr "Tanzania, Repubblica unita di"
 
 #: utils/country_field.py:222
 msgid "Ukraine"
-msgstr ""
+msgstr "Ucraina"
 
 #: utils/country_field.py:223
 msgid "Uganda"
-msgstr ""
+msgstr "Uganda"
 
 #: utils/country_field.py:224
 msgid "United States Minor Outlying Islands"
-msgstr ""
+msgstr "Isole Minori degli Stati Uniti"
 
 #: utils/country_field.py:225
 msgid "United States of America"
-msgstr ""
+msgstr "Stati Uniti d'America"
 
 #: utils/country_field.py:226
 msgid "Uruguay"
-msgstr ""
+msgstr "Uruguay"
 
 #: utils/country_field.py:227
 msgid "Uzbekistan"
-msgstr ""
+msgstr "Uzbekistan"
 
 #: utils/country_field.py:228
 msgid "Vatican City State (Holy See)"
-msgstr ""
+msgstr "Città del Vaticano (Santa Sede)"
 
 #: utils/country_field.py:229
 msgid "St. Vincent & the Grenadines"
-msgstr ""
+msgstr "St. Vincent e Grenadine"
 
 #: utils/country_field.py:230
 msgid "Venezuela"
-msgstr ""
+msgstr "Venezuela"
 
 #: utils/country_field.py:231
 msgid "British Virgin Islands"
-msgstr ""
+msgstr "Isole Vergini Britanniche "
 
 #: utils/country_field.py:232
 msgid "United States Virgin Islands"
-msgstr ""
+msgstr "Isole Vergini Americane"
 
 #: utils/country_field.py:233
 msgid "Viet Nam"
-msgstr ""
+msgstr "Viet Nam"
 
 #: utils/country_field.py:234
 msgid "Vanuatu"
-msgstr ""
+msgstr "Vanuatu"
 
 #: utils/country_field.py:235
 msgid "Wallis & Futuna Islands"
-msgstr ""
+msgstr "Wallis & Futuna"
 
 #: utils/country_field.py:236
 msgid "Samoa"
-msgstr ""
+msgstr "Samoa"
 
 #: utils/country_field.py:237
 msgid "Yemen"
-msgstr ""
+msgstr "Yemen"
 
 #: utils/country_field.py:238
 msgid "Mayotte"
-msgstr ""
+msgstr "Mayotte"
 
 #: utils/country_field.py:239
 msgid "Yugoslavia"
-msgstr ""
+msgstr "Jugoslavia"
 
 #: utils/country_field.py:240
 msgid "South Africa"
-msgstr ""
+msgstr "Sudafrica"
 
 #: utils/country_field.py:241
 msgid "Zambia"
-msgstr ""
+msgstr "Zambia"
 
 #: utils/country_field.py:242
 msgid "Zaire"
-msgstr ""
+msgstr "Zaire"
 
 #: utils/country_field.py:243
 msgid "Zimbabwe"
-msgstr ""
+msgstr "Zimbabwe"
 
 #: utils/country_field.py:244
 msgid "Unknown or unspecified country"
-msgstr ""
+msgstr "Paese sconosciuto o non specificato"
 
 #: utils/logger_tools.py:109 utils/viewer_tools.py:180
 #, python-format
 msgid "Exception in request: %(class)s: %(error)s"
-msgstr ""
+msgstr "Eccezione alla richiesta: %(class)s: %(error)s"
 
 #: utils/logger_tools.py:182
 msgid "Form with this id already exists."
-msgstr ""
+msgstr "Un modulo con questa id esiste già."
 
 #: utils/logger_tools.py:188
 msgid "Invalid URL format."
-msgstr ""
+msgstr "Formato URL invalido. "
 
 #: utils/logger_tools.py:200
 msgid "Form validation timeout, please try again."
-msgstr ""
+msgstr "Durante la convalida del modulo è avvenuto un timeout, si prega di riprovare."
 
 #: utils/viewer_tools.py:53
 msgid "There should be exactly one attribute in this document."
-msgstr ""
+msgstr "Ci dovrebbe essere precisamente un attributo in questo documento."
 
 #: utils/viewer_tools.py:104
 msgid "xml must be a string"
-msgstr ""
+msgstr "xml deve essere una stringa"
 
 #: utils/viewer_tools.py:125
 msgid "Paths should be unique."
-msgstr ""
+msgstr "I percorsi devono essere univoci."
 
 #: utils/viewer_tools.py:159
 msgid "There should be a single title"
-msgstr ""
+msgstr "Ci dovrebbe essere un singolo titolo"
 

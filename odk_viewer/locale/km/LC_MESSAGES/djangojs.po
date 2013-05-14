@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-05 14:00+0000\n"
+"POT-Creation-Date: 2013-05-14 15:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -68,29 +68,9 @@ msgid "Bing Road Map"
 msgstr ""
 
 #: static/js/mapview.js:47
-msgid "Map data (c) OpenStreetMap contributors, CC-BY-SA"
+msgid " Map data (c) OpenStreetMap contributors, CC-BY-SA"
 msgstr ""
 
-#: static/js/mapview.js:123
+#: static/js/mapview.js:141
 msgid "Google Satellite Map"
-msgstr ""
-
-#: static/js/mapview.js:235
-msgid "Language"
-msgstr ""
-
-#: static/js/mapview.js:277
-msgid "View By"
-msgstr ""
-
-#: static/js/mapview.js:290
-msgid "None"
-msgstr ""
-
-#: static/js/mapview.js:312
-msgid "Container %(cont)s not found"
-msgstr ""
-
-#: static/js/mapview.js:614
-msgid "Number of submissions"
 msgstr ""

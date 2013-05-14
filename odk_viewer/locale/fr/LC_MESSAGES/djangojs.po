@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-05 13:58+0000\n"
+"POT-Creation-Date: 2013-05-14 15:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,32 +70,27 @@ msgid "Bing Road Map"
 msgstr ""
 
 #: static/js/mapview.js:47
-msgid "Map data (c) OpenStreetMap contributors, CC-BY-SA"
+msgid " Map data (c) OpenStreetMap contributors, CC-BY-SA"
 msgstr ""
 
-#: static/js/mapview.js:123
+#: static/js/mapview.js:141
 msgid "Google Satellite Map"
 msgstr ""
 
-#: static/js/mapview.js:235
-msgid "Language"
-msgstr "Langue"
+#~ msgid "Language"
+#~ msgstr "Langue"
 
-#: static/js/mapview.js:277
-msgid "View By"
-msgstr "Voir par"
+#~ msgid "View By"
+#~ msgstr "Voir par"
 
-#: static/js/mapview.js:290
-msgid "None"
-msgstr "Aucun"
+#~ msgid "None"
+#~ msgstr "Aucun"
 
-#: static/js/mapview.js:312
-msgid "Container %(cont)s not found"
-msgstr "Container %(cont)s introuvable"
+#~ msgid "Container %(cont)s not found"
+#~ msgstr "Container %(cont)s introuvable"
 
-#: static/js/mapview.js:614
-msgid "Number of submissions"
-msgstr "Nombre de soumissions"
+#~ msgid "Number of submissions"
+#~ msgstr "Nombre de soumissions"
 
 #~ msgid "An unexpected error occurred"
 #~ msgstr "Une erreur innatendue s'est produite"

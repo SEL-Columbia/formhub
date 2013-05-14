@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Translators:
 msgid ""
 msgstr ""
 "Project-Id-Version: formhub\n"
 "Report-Msgid-Bugs-To: https://github.com/modilabs/formhub/issues\n"
 "POT-Creation-Date: 2012-08-31 09:54+0000\n"
-"PO-Revision-Date: 2013-02-05 12:10+0000\n"
-"Last-Translator: renaud gaudin <rgaudin@gmail.com>\n"
+"PO-Revision-Date: 2013-04-29 08:17+0000\n"
+"Last-Translator: formhub <mberg@modilabs.org>\n"
 "Language-Team: Khmer (http://www.transifex.com/projects/p/formhub/language/km/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
