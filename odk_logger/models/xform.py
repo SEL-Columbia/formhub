@@ -42,6 +42,7 @@ class XForm(models.Model):
     downloadable = models.BooleanField(default=True)
     is_crowd_form = models.BooleanField(default=False)
     allows_sms = models.BooleanField(default=False)
+    encrypted = models.BooleanField(default=False)
 
     # the following fields are filled in automatically
     sms_id_string = models.SlugField(
@@ -109,6 +110,14 @@ class XForm(models.Model):
             raise XLSFormError(_("There should be a single title."), matches)
         self.title = u"" if not matches else matches[0]
 
+    def _set_encrypted_field(self):
+        if self.json and self.json != '':
+            json_dict = json.loads(self.json)
+            if 'submission_url' in json_dict and 'public_key' in json_dict:
+                self.encrypted = True
+            else:
+                self.encrypted = False
+
     def update(self, *args, **kwargs):
         super(XForm, self).save(*args, **kwargs)
 
@@ -116,6 +125,7 @@ class XForm(models.Model):
         self._set_title()
         old_id_string = self.id_string
         self._set_id_string()
+        self._set_encrypted_field()
         # check if we have an existing id_string,
         # if so, the one must match but only if xform is NOT new
         if self.pk and old_id_string and old_id_string != self.id_string:

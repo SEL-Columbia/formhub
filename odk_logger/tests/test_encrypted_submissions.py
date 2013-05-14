@@ -23,8 +23,8 @@ class TestEncryptedForms(MainTestCase):
             self.this_directory, 'fixtures', 'transportation',
             'transportation_encrypted.xls'
         ))
-        self.assertTrue(
-            XForm.objects.get(id_string='transportation_encrypted'))
+        xform = XForm.objects.get(id_string='transportation_encrypted')
+        self.assertTrue(xform.encrypted)
         uuid = "c15252fe-b6f3-4853-8f04-bf89dc73985a"
         with self.assertRaises(Instance.DoesNotExist):
             Instance.objects.get(uuid=uuid)
