@@ -309,9 +309,9 @@ def download_xform(request, username, id_string):
         UserProfile.objects.get_or_create(user=user)
 
     if profile.require_auth:
-        response = helper_auth_helper(request)
-        if response:
-            return response
+        authenticator = HttpDigestAuthenticator()
+        if not authenticator.authenticate(request):
+            return authenticator.build_challenge_response()
     audit = {
         "xform": xform.id_string
     }
