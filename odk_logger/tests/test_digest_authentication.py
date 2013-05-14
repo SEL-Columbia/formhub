@@ -18,7 +18,7 @@ class TestDigestAuthentication(MainTestCase):
         req = client.get(url, {}, **extra)
         self.assertEqual(req.status_code, 401)
         # apply credentials
-        client.set_authorization('bob', 'bob', 'Digest')
+        client.set_authorization(username, password, 'Digest')
         req = client.get(url, {}, **extra)
         # if 204 authorization successfull, proceed
         self.assertEqual(req.status_code, 204)
