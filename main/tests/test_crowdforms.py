@@ -54,7 +54,7 @@ class TestCrowdforms(MainTestCase):
 
     def test_anonymous_can_submit(self):
         self._logout()
-        self._make_submissions('AnonymousUser', add_uuid=True)
+        self._make_submissions('crowdforms', add_uuid=True)
         self.assertEqual(self.response.status_code, 201)
 
     def test_allow_owner_submit_to_closed_crowdform(self):

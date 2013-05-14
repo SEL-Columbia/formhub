@@ -188,8 +188,8 @@ def xformsManifest(request, username, id_string):
 @require_http_methods(["HEAD", "POST"])
 @csrf_exempt
 def submission(request, username=None):
-    if username:
-        formlist_user = get_object_or_404(User, username=username)
+    if username and username.lower() != 'crowdforms':
+        formlist_user = get_object_or_404(User, username=username.lower())
         profile, created = \
             UserProfile.objects.get_or_create(user=formlist_user)
 
