@@ -122,7 +122,7 @@
             <span id="data-shared-private" class="label label-warning">{% trans "PRIVATE" %}</span>
         </h3>
         {% if xform.shared_data or can_view %}
-        {% if xform.submission_count > 0 %}
+        {% if not xform.encrypted and xform.submission_count > 0 %}
         <br>
         <div class="btn-toolbar" style="margin-bottom: 9px">
           <div class="btn-group">

@@ -116,14 +116,14 @@
                 <a data-toggle="modal" data-target="#popupmodal" class="showqr btn" href="{% url get_qrcode xform.user.username xform.id_string %}"><i class="icon-tablet"></i> {% trans "Mobile" %}</a>
         </td>
         <td class="centered">
-                {% if has_surveys_with_geopoints %}
+                {% if not xform.encrypted and has_surveys_with_geopoints %}
                     <a href="{% url odk_viewer.views.map_view user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
                         <i class="icon-map-marker icon-large"></i>
                     </a>
                 {% else %}
                     <span><i class="icon-map-marker icon-large inactive"></i></span>
                 {% endif %}
-                {% if submission_count > 0 %}
+                {% if  not xform.encrypted and submission_count > 0 %}
                     <a href="{% url main.views.form_photos content_user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
                     <i class="icon-camera icon-large"></i>
                     <a href="{% url odk_viewer.views.data_view content_user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
@@ -135,7 +135,7 @@
                 {% endif %}
         </td>
         <td>
-            {% if submission_count %}
+            {% if  not xform.encrypted and submission_count %}
                 <a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'csv' %}" class="download"><i class="icon-file-alt"></i> csv</a>
                 <a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'xls' %}" class="download"><i class="icon-table"></i> xls</a>
                 {% if has_surveys_with_geopoints %}
@@ -243,7 +243,7 @@
               </td>
               <td class="centered">{{ submission_count|intcomma }}</td>
               <td class="centered">
-                      {% if has_surveys_with_geopoints %}
+                      {% if not xform.encrypted and has_surveys_with_geopoints %}
                           <a href="{% url odk_viewer.views.map_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
                               <i class="icon-map-marker icon-large"></i>
                           </a>
@@ -262,7 +262,7 @@
                       {% endif %}
               </td>
               <td>
-                  {% if submission_count > 0 %}
+                  {% if not xform.encrypted and submission_count > 0 %}
                       <a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'csv' %}" class="download"><i class="icon-file-alt"></i> csv</a>
                       <a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'xls' %}" class="download"><i class="icon-table"></i> xls</a>
                       {% if has_surveys_with_geopoints %}
@@ -332,7 +332,7 @@
                         <td class="centered"><a class="btn" href="{% url odk_logger.views.enter_data xform.user.username xform.id_string %}"><i class="icon-edit"></i> {% trans "Web" %}</a></td>
                         <!-- view options -->
                         <td class="centered">
-                                {% if has_surveys_with_geopoints %}
+                                {% if not xform.encrypted and has_surveys_with_geopoints %}
                                     <a href="{% url odk_viewer.views.map_view xform.user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">
                                         <i class="icon-map-marker icon-large"></i>
                                     </a>
@@ -352,7 +352,7 @@
                         </td>
                         <!-- end view options -->
                         <td>
-                            {% if submission_count > 0 %}
+                            {% if not xform.encrypted and submission_count > 0 %}
                                 <a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'csv' %}" class="download"><i class="icon-file-alt"></i> csv</a>
                                 <a href="{% url odk_viewer.views.export_list  xform.user.username xform.id_string 'xls' %}" class="download"><i class="icon-table"></i> xls</a>
                                 {% if has_surveys_with_geopoints %}
