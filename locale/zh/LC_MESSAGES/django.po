@@ -3,14 +3,16 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-#   <worldwidespirit@gmail.com>, 2012.
+# Translators:
+# renaud gaudin <rgaudin@gmail.com>, 2013
+# myf <worldwidespirit@gmail.com>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: formhub\n"
 "Report-Msgid-Bugs-To: https://github.com/modilabs/formhub/issues\n"
 "POT-Creation-Date: 2012-08-31 09:54+0000\n"
-"PO-Revision-Date: 2012-09-06 21:46+0000\n"
-"Last-Translator: myf <worldwidespirit@gmail.com>\n"
+"PO-Revision-Date: 2013-05-14 16:06+0000\n"
+"Last-Translator: renaud gaudin <rgaudin@gmail.com>\n"
 "Language-Team: Chinese (http://www.transifex.com/projects/p/formhub/language/zh/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1067,7 +1069,7 @@ msgstr "上传ODK文件夹"
 #: odk_logger/management/commands/import_tools.py:26
 #, python-format
 msgid "[Importing XForm Instances from %(path)s]\n"
-msgstr "[从%(path)s上传XForm]\\n"
+msgstr "[从%(path)s上传XForm]\n"
 
 #: odk_logger/management/commands/import_tools.py:30
 msgid "Before Parse:"
@@ -1210,7 +1212,7 @@ msgstr "XForm列表"
 
 #: odk_viewer/reparse.py:33
 msgid "[Reparsing XForm Instances]\n"
-msgstr "[重新解析XForm]\\n"
+msgstr "[重新解析XForm]\n"
 
 #: odk_viewer/reparse.py:52
 #, python-format
@@ -1583,7 +1585,7 @@ msgid ""
 "http://%(site_domain)s%(register_url)s\n"
 "\n"
 "The link above is valid for %(expiration_days)s day%(expiration_days_p)s.\n"
-msgstr "你已在%(site_name)s注册了，请点击以下链接来激活账户\\n\\nhttp://%(site_domain)s%(register_url)s\\n\\n以上链接有效日期%(expiration_days)s 天%(expiration_days_p)s.\\n"
+msgstr "你已在%(site_name)s注册\n请点击以下链接来激活账户\n\nhttp://%(site_domain)s%(register_url)s\n\n以上链接有效日期%(expiration_days)s 天%(expiration_days_p)s.\n"
 
 #: templates/registration/activation_email_subject.txt:1
 #, python-format

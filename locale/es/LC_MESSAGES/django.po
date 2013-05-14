@@ -3,15 +3,16 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-#   <mberg@modilabs.org>, 2012.
-#   <sk3395@columbia.edu>, 2012.
+# Translators:
+# formhub <mberg@modilabs.org>, 2012
+# stukeil <sk3395@columbia.edu>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: formhub\n"
 "Report-Msgid-Bugs-To: https://github.com/modilabs/formhub/issues\n"
 "POT-Creation-Date: 2012-08-31 09:54+0000\n"
-"PO-Revision-Date: 2012-09-04 16:27+0000\n"
-"Last-Translator: stukeil <sk3395@columbia.edu>\n"
+"PO-Revision-Date: 2013-04-29 08:17+0000\n"
+"Last-Translator: formhub <mberg@modilabs.org>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/formhub/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
