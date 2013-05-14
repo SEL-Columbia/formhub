@@ -1,129 +1,359 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 msgid ""
 msgstr ""
 "Project-Id-Version: formhub\n"
-"Report-Msgid-Bugs-To: https://github.com/modilabs/formhub/issues\n"
-"POT-Creation-Date: 2012-08-31 09:54+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-05-14 15:57+0000\n"
 "PO-Revision-Date: 2013-02-05 12:10+0000\n"
 "Last-Translator: renaud gaudin <rgaudin@gmail.com>\n"
-"Language-Team: Khmer (http://www.transifex.com/projects/p/formhub/language/km/)\n"
+"Language-Team: Khmer (http://www.transifex.com/projects/p/formhub/language/"
+"km/)\n"
+"Language: km\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: km\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: main/forms.py:22 main/forms.py:30
+#: main/forms.py:23 main/forms.py:31
 msgid "No License"
 msgstr "គ្មាន​អាជ្ញាប័ណ្ណ"
 
-#: main/forms.py:24
+#: main/forms.py:25
 msgid "Attribution CC BY"
 msgstr "Attribution CC BY"
 
-#: main/forms.py:26
+#: main/forms.py:27
 msgid "Attribution-ShareAlike CC BY-SA"
 msgstr "Attribution-ShareAlike CC BY-SA"
 
-#: main/forms.py:32
+#: main/forms.py:33
 msgid "PDDL"
 msgstr "PDDL"
 
-#: main/forms.py:34
+#: main/forms.py:35
 msgid "ODC-BY"
 msgstr "ODC-BY"
 
-#: main/forms.py:36
+#: main/forms.py:37
 msgid "ODBL"
 msgstr "ODBL"
 
-#: main/forms.py:40
+#: main/forms.py:41
 msgid "Can view"
 msgstr "អាច​មើល"
 
-#: main/forms.py:41
+#: main/forms.py:42
 msgid "Can edit"
 msgstr "អាច​កែ"
 
-#: main/forms.py:42
+#: main/forms.py:43
 msgid "Remove permissions"
 msgstr "ដក​សិទ្ធិ"
 
-#: main/forms.py:158
+#: main/forms.py:160
 #, python-format
 msgid "%s is a reserved name, please choose another"
 msgstr "%s គឺ​ជា​ឈ្មោះ​បម្រុង​ទុក សូម​ជ្រើស​ឈ្មោះ​ផ្សេង"
 
-#: main/forms.py:161
+#: main/forms.py:163
 msgid "username may only contain alpha-numeric characters and underscores"
 msgstr "ឈ្មោះ​អ្នក​ប្រើ​អាច​មាន​តែ​តួអក្សរ​ជា​លេខ​អាល់ហ្វា និង​សញ្ញា (_)"
 
-#: main/forms.py:167
+#: main/forms.py:169
 #, python-format
 msgid "%s already exists"
 msgstr "មាន %s រួច​ហើយ"
 
-#: main/forms.py:179
+#: main/forms.py:195
 msgid "Source document"
 msgstr "ឯកសារ​ប្រភព"
 
-#: main/forms.py:184
+#: main/forms.py:200
 msgid "Supporting document"
 msgstr "ឯកសារ​​គាំទ្រ"
 
-#: main/forms.py:189
+#: main/forms.py:205
 msgid "Media upload"
 msgstr "ផ្ទុក​មេឌៀឡើង"
 
-#: main/forms.py:205
+#: main/forms.py:221
 msgid "JSONP url"
 msgstr "url JSONP"
 
-#: main/forms.py:210 utils/quick_converter.py:8
+#: main/forms.py:227 utils/quick_converter.py:8
 msgid "XLS File"
 msgstr "ឯកសារ XLS"
 
-#: main/forms.py:215
+#: main/forms.py:232 main/forms.py:239
 msgid "XLS URL"
 msgstr "URL XLS "
 
-#: main/views.py:85
+#: main/forms.py:275
+#, fuzzy
+msgid "Enable SMS Support"
+msgstr "ក្រុម​គាំទ្រ NMIS"
+
+#: main/forms.py:277
+msgid "SMS Keyword"
+msgstr ""
+
+#: main/views.py:109
 #, python-format
-msgid "Successfully cloned %(id_string)s into your %(profile_url)s"
+msgid "Cloned form '%(id_string)s'."
+msgstr ""
+
+#: main/views.py:119
+#, fuzzy, python-format
+msgid "Successfully cloned to %(form_url)s into your %(profile_url)s"
 msgstr "បាន​ក្លូន %(id_string)s ដោយ​ជោគជ័យ​ក្នុង %(profile_url)s របស់​អ្នក"
 
-#: main/views.py:117
+#: main/views.py:162
 #, python-format
-msgid "Successfully published %s."
-msgstr "បាន​បោះពុម្ព %s ដោយ​ជោគជ័យ"
+msgid "Published form '%(id_string)s'."
+msgstr ""
 
-#: main/views.py:262 main/views.py:521 main/views.py:581
-#: odk_logger/views.py:284 odk_logger/views.py:316 odk_viewer/views.py:98
-#: odk_viewer/views.py:168 odk_viewer/views.py:191 odk_viewer/views.py:228
-#: odk_viewer/views.py:260 odk_viewer/views.py:327 odk_viewer/views.py:346
-#: odk_viewer/views.py:376
+#: main/views.py:176 main/views.py:1131
+#, python-format
+msgid ""
+"Successfully published %(form_id)s. <a href=\"%(form_url)s\">Enter Web Form</"
+"a> or <a href=\"#preview-modal\" data-toggle=\"modal\">Preview Web Form</a>"
+msgstr ""
+
+#: main/views.py:250
+msgid "Profile settings updated."
+msgstr ""
+
+#: main/views.py:272
+#, fuzzy
+msgid "Public profile accessed."
+msgstr "ប្រវត្តិ​រូប​សាធារណៈ"
+
+#: main/views.py:373 main/views.py:889 main/views.py:1040 main/views.py:1249
+#: odk_logger/views.py:338 odk_logger/views.py:387 odk_logger/views.py:463
+#: odk_viewer/views.py:96 odk_viewer/views.py:184 odk_viewer/views.py:244
+#: odk_viewer/views.py:322 odk_viewer/views.py:348 odk_viewer/views.py:406
+#: odk_viewer/views.py:443 odk_viewer/views.py:478 odk_viewer/views.py:516
+#: odk_viewer/views.py:562 odk_viewer/views.py:591 odk_viewer/views.py:638
 msgid "Not shared."
 msgstr "មិន​បានចែករំលែក។"
 
-#: main/views.py:379
+#: main/views.py:459
+#, python-format
+msgid ""
+"Description for '%(id_string)s' updated from '%(old_description)s' to "
+"'%(new_description)s'."
+msgstr ""
+
+#: main/views.py:473
+#, python-format
+msgid ""
+"Title for '%(id_string)s' updated from '%(old_title)s' to '%(new_title)s'."
+msgstr ""
+
+#: main/views.py:488
+#, python-format
+msgid ""
+"Data sharing updated for '%(id_string)s' from '%(old_shared)s' to "
+"'%(new_shared)s'."
+msgstr ""
+
+#: main/views.py:492 main/views.py:494 main/views.py:508 main/views.py:510
+#: main/views.py:524 main/views.py:526
+#, fuzzy
+msgid "shared"
+msgstr "មិន​បានចែករំលែក។"
+
+#: main/views.py:493 main/views.py:495 main/views.py:509 main/views.py:511
+#: main/views.py:525 main/views.py:527
+#, fuzzy
+msgid "not shared"
+msgstr "មិន​បានចែករំលែក។"
+
+#: main/views.py:504
+#, python-format
+msgid ""
+"Form sharing for '%(id_string)s' updated from '%(old_shared)s' to "
+"'%(new_shared)s'."
+msgstr ""
+
+#: main/views.py:520
+#, python-format
+msgid ""
+"Active status for '%(id_string)s' updated from '%(old_shared)s' to "
+"'%(new_shared)s'."
+msgstr ""
+
+#: main/views.py:536
+#, python-format
+msgid ""
+"Crowdform status for '%(id_string)s' updated from '%(old_status)s' to "
+"'%(new_status)s'."
+msgstr ""
+
+#: main/views.py:540 main/views.py:542
+#, fuzzy
+msgid "crowdform"
+msgstr "Crowdform"
+
+#: main/views.py:541 main/views.py:543
+#, fuzzy
+msgid "not crowdform"
+msgstr "បន្ថែម crowdform"
+
+#: main/views.py:557
+#, python-format
+msgid "Form License for '%(id_string)s' updated to '%(form_license)s'."
+msgstr ""
+
+#: main/views.py:570
+#, python-format
+msgid "Data license for '%(id_string)s' updated to '%(data_license)s'."
+msgstr ""
+
+#: main/views.py:583
+#, python-format
+msgid "Source for '%(id_string)s' updated to '%(source)s'."
+msgstr ""
+
+#: main/views.py:599
+msgid "SMS Support Activated on"
+msgstr ""
+
+#: main/views.py:602
+msgid "SMS Support Deactivated on"
+msgstr ""
+
+#: main/views.py:631
+#, python-format
+msgid "Media added to '%(id_string)s'."
+msgstr ""
+
+#: main/views.py:645
+#, python-format
+msgid "Map layer added to '%(id_string)s'."
+msgstr ""
+
+#: main/views.py:656
+#, python-format
+msgid "Supporting document added to '%(id_string)s'."
+msgstr ""
+
+#: main/views.py:664
 msgid "Updated succeeded."
 msgstr "បាន​ធ្វើបច្ចុប្បន្ន​ភាព​ជោគជ័យ។"
 
-#: main/views.py:385
+#: main/views.py:670
 msgid "Update failed."
 msgstr "​ការ​ធ្វើ​បច្ចុប្បន្ន​ភាព​​បាន​បរាជ័យ​។"
 
-#: main/views.py:459 main/views.py:483 main/views.py:515
+#: main/views.py:769
+#, python-format
+msgid "Document '%(filename)s' for '%(id_string)s' downloaded."
+msgstr ""
+
+#: main/views.py:781 main/views.py:827 main/views.py:882 main/views.py:924
 msgid "Permission denied."
 msgstr "មិនមាន​សិទ្ធិ"
+
+#: main/views.py:801
+#, python-format
+msgid "Document '%(filename)s' deleted from '%(id_string)s'."
+msgstr ""
+
+#: main/views.py:819
+#, python-format
+msgid "Map layer deleted from '%(id_string)s'."
+msgstr ""
+
+#: main/views.py:846
+#, python-format
+msgid "Media download '%(filename)s' deleted from '%(id_string)s'."
+msgstr ""
+
+#: main/views.py:869
+#, python-format
+msgid "Media '%(filename)s' downloaded from '%(id_string)s'."
+msgstr ""
+
+#: main/views.py:936
+#, python-format
+msgid "Wrong username <b>%s</b>."
+msgstr ""
+
+#: main/views.py:946
+#, python-format
+msgid "Edit permissions on '%(id_string)s' assigned to '%(for_user)s'."
+msgstr ""
+
+#: main/views.py:960
+#, python-format
+msgid "View permissions on '%(id_string)s' assigned to '%(for_user)s'."
+msgstr ""
+
+#: main/views.py:973
+#, python-format
+msgid "All permissions on '%(id_string)s' removed from '%(for_user)s'."
+msgstr ""
+
+#: main/views.py:994
+#, python-format
+msgid "Public link on '%(id_string)s' %(action)s."
+msgstr ""
+
+#: main/views.py:1025
+#, python-format
+msgid "Submission '%(uuid)s' on '%(id_string)s' accessed."
+msgstr ""
+
+#: main/views.py:1044
+msgid "id must be specified"
+msgstr ""
+
+#: main/views.py:1052
+#, python-format
+msgid "Deleted submission with id '%(record_id)s' on '%(id_string)s'."
+msgstr ""
+
+#: main/views.py:1083
+#, python-format
+msgid "Bamboo link deleted on '%(id_string)s'."
+msgstr ""
+
+#: main/views.py:1095
+#, python-format
+msgid "Bamboo link created on '%(id_string)s'."
+msgstr ""
+
+#: main/views.py:1125
+#, python-format
+msgid "XLS for '%(id_string)s' updated."
+msgstr ""
+
+#: main/views.py:1158
+msgid "Performed On"
+msgstr ""
+
+#: main/views.py:1164
+#, fuzzy
+msgid "Action"
+msgstr "ទីតាំង"
+
+#: main/views.py:1238
+msgid "Error Generating QRCODE"
+msgstr ""
 
 #: main/models/user_profile.py:21
 msgid "Require Phone Authentication"
 msgstr "ទាមទារ​ការ​ផ្ទៀងផ្ទាត់​តាម​ទូរស័ព្ទ"
+
+#: main/templates/activity.html:24 templates/topbar.html:80
+#, fuzzy
+msgid "Account Activity"
+msgstr "បាន​ធ្វើ​ឲ្យ​គណនី​សកម្ម"
 
 #: main/templates/dashboard.html:10
 msgid "Publish a Form <small>Upload XLSForm</small>"
@@ -132,23 +362,30 @@ msgstr "បោះពុម្ព​សំណុំបែបបទ <small>ផ្�
 #: main/templates/dashboard.html:12
 #, python-format
 msgid ""
-"For a quick introduction on how to publish a form check out the <a "
-"href=\"%(tutorial_url)s\">tutorial</a>, and try publishing <a "
-"href=\"http://formhub.org/formhub_u/forms/tutorial/form.xls\">tutorial.xls</a>."
-msgstr "ចំពោះ​ការ​ណែនាំ​អំពី​វិធី​បោះពុម្ព​សំណុំ​បែបបទ​ សូម​ពិនិត្យ​មើល <a href=\"%(tutorial_url)s\">ឯកសារ​បង្រៀនal</a> ហើយ​សាកល្បង​បោះពុម្ព <a href=\"http://formhub.org/formhub_u/forms/tutorial/form.xls\">tutorial.xls</a> ។"
+"For a quick introduction on how to publish a form check out the <a href="
+"\"%(tutorial_url)s\">tutorial</a>, and try publishing <a href=\"http://"
+"formhub.org/formhub_u/forms/tutorial/form.xls\">tutorial.xls</a>."
+msgstr ""
+"ចំពោះ​ការ​ណែនាំ​អំពី​វិធី​បោះពុម្ព​សំណុំ​បែបបទ​ សូម​ពិនិត្យ​មើល <a href=\"%(tutorial_url)s\">ឯកសារ​"
+"បង្រៀនal</a> ហើយ​សាកល្បង​បោះពុម្ព <a href=\"http://formhub.org/formhub_u/forms/"
+"tutorial/form.xls\">tutorial.xls</a> ។"
 
 #: main/templates/dashboard.html:16
 #, python-format
 msgid ""
-"Learn about the XLSForm syntax <a href=\"%(syntax_url)s\">here</a>, email <a"
-" href=\"https://groups.google.com/forum/?fromgroups#!forum/formhub-"
-"users\">formhub users mailing list</a> if you have questions, and checkout "
+"Learn about the XLSForm syntax <a href=\"%(syntax_url)s\">here</a>, email <a "
+"href=\"https://groups.google.com/forum/?fromgroups#!forum/formhub-users"
+"\">formhub users mailing list</a> if you have questions, and checkout "
 "examples at: <br/><a href=\"/formhub_u/\">Formhub University</a>."
-msgstr "ស្វែងយល់​បន្ថែម​អំពី​វាក្យសម្ពន្ធ​ XLSForm <a href=\"%(syntax_url)s\">នៅ​ទី​នេះ</a> ផ្ញើ​អ៊ីមែល​មក​បញ្ជី​សំបុត្រ​រួម​អ្នក​ប្រើ formhub <a href=\"https://groups.google.com/forum/?fromgroups#!forum/formhub-users\"></a> បើ​អ្នកមាន​សំណួរ ពិនិត្យ​ឧទាហរណ៍​នៅ៖ <br/><a href=\"/formhub_u/\">សកលវិទ្យាល័យ Formhub</a>។"
+msgstr ""
+"ស្វែងយល់​បន្ថែម​អំពី​វាក្យសម្ពន្ធ​ XLSForm <a href=\"%(syntax_url)s\">នៅ​ទី​នេះ</a> ផ្ញើ​អ៊ីមែល​"
+"មក​បញ្ជី​សំបុត្រ​រួម​អ្នក​ប្រើ formhub <a href=\"https://groups.google.com/forum/?"
+"fromgroups#!forum/formhub-users\"></a> បើ​អ្នកមាន​សំណួរ ពិនិត្យ​ឧទាហរណ៍​នៅ៖ <br/><a "
+"href=\"/formhub_u/\">សកលវិទ្យាល័យ Formhub</a>។"
 
-#: main/templates/dashboard.html:23 main/templates/show.html:299
-#: main/templates/show.html.py:321 main/templates/show.html:358
-#: main/templates/show.html.py:380
+#: main/templates/dashboard.html:23 main/templates/show.html:329
+#: main/templates/show.html.py:351 main/templates/show.html:389
+#: main/templates/show.html.py:411
 msgid "Upload"
 msgstr "ផ្ទុក​ឡើង"
 
@@ -156,31 +393,35 @@ msgstr "ផ្ទុក​ឡើង"
 msgid "URL"
 msgstr "URL"
 
-#: main/templates/dashboard.html:41
+#: main/templates/dashboard.html:25
+msgid "Dropbox"
+msgstr ""
+
+#: main/templates/dashboard.html:45
 msgid "Publish"
 msgstr "បោះពុម្ព"
 
-#: main/templates/dashboard.html:54 main/templates/profile.html:13
+#: main/templates/dashboard.html:58 main/templates/profile.html:13
 msgid "Click to change your avatar"
 msgstr "ចុច ដើម្បី​ប្ដូរ​រូប​​សម្គាល់​របស់​អ្នក"
 
-#: main/templates/dashboard.html:69
+#: main/templates/dashboard.html:73
 msgid "View Profile Page"
 msgstr "មើល​ទំព័រ​ប្រវត្តិ​រូប"
 
-#: main/templates/dashboard.html:85
+#: main/templates/dashboard.html:89
 msgid "FORMS"
 msgstr "សំណុំ​បែបបទ"
 
-#: main/templates/dashboard.html:88
+#: main/templates/dashboard.html:92
 msgid "SHARED FORMS"
 msgstr "សំណុំ​បែបបទ​បាន​ចែករំលែក"
 
-#: main/templates/dashboard.html:91
+#: main/templates/dashboard.html:95
 msgid "SUBMISSIONS"
 msgstr "ការ​ដាក់​ស្នើ"
 
-#: main/templates/dashboard.html:101
+#: main/templates/dashboard.html:104
 #, python-format
 msgid ""
 "\n"
@@ -189,20 +430,27 @@ msgid ""
 "submit data to formhub. In Collect's Main Menu, press the Menu\n"
 "button. Select Server Preferences, then Server. Enter\n"
 "<strong>%(odk_url)s</strong> as the server. "
-msgstr "\nurl របស់​កម្មវិធី​បណ្ដាញ​នេះ <strong>%(odk_url)s</strong>\nត្រូវ​តែ​ផ្ដល់​ទៅ​​​ ODK Collect មុន​នឹង​​វា​ទទួល​​សំណុំ​បែបបទ​ ហើយ​\nដាក់​ស្នើ​ទិន្នន័យ​ទៅ formhub ។ នៅ​ក្នុង​ម៉ឺនុយ​មេ​​​របស់ Collect ចុច​ប៊ូតុង​\n​ម៉ឺនុយ​។​ជ្រើស​ចំណូល​ចិត្ត​​ម៉ាស៊ីន​មេ បន្ទាប់​មក​ម៉ាស៊ីន​មេ​។ បញ្ចូល\n<strong>%(odk_url)s</strong> ជា​ម៉ាស៊ីន​មេ​។"
+msgstr ""
+"\n"
+"url របស់​កម្មវិធី​បណ្ដាញ​នេះ <strong>%(odk_url)s</strong>\n"
+"ត្រូវ​តែ​ផ្ដល់​ទៅ​​​ ODK Collect មុន​នឹង​​វា​ទទួល​​សំណុំ​បែបបទ​ ហើយ​\n"
+"ដាក់​ស្នើ​ទិន្នន័យ​ទៅ formhub ។ នៅ​ក្នុង​ម៉ឺនុយ​មេ​​​របស់ Collect ចុច​ប៊ូតុង​\n"
+"​ម៉ឺនុយ​។​ជ្រើស​ចំណូល​ចិត្ត​​ម៉ាស៊ីន​មេ បន្ទាប់​មក​ម៉ាស៊ីន​មេ​។ បញ្ចូល\n"
+"<strong>%(odk_url)s</strong> ជា​ម៉ាស៊ីន​មេ​។"
 
 #: main/templates/form_gallery.html:9
 msgid "Form Gallery <small>Shared Forms</small>"
 msgstr "វិចិត្រសាល​សំណុំ​បែបបទ <small>សំណុំ​បែបបទ​បាន​ចែករំលែក</small>"
 
-#: main/templates/form_gallery.html:41 main/templates/people.html:36
-#: staff/templates/submissions.html:38
+#: main/templates/form_gallery.html:41 main/templates/people.html:38
+#: staff/templates/submissions.html:15
 msgid "User"
 msgstr "អ្នក​ប្រើ"
 
-#: main/templates/form_gallery.html:42 main/templates/people.html:37
-#: main/templates/profile.html:66 main/templates/published_surveys.html:45
-#: main/templates/user_crowdforms.html:13
+#: main/templates/form_gallery.html:42 main/templates/people.html:39
+#: main/templates/profile.html:68 main/templates/published_surveys.html:90
+#: main/templates/published_surveys.html:222
+#: main/templates/published_surveys.html:309
 msgid "Name"
 msgstr "ឈ្មោះ"
 
@@ -210,7 +458,7 @@ msgstr "ឈ្មោះ"
 msgid "Description"
 msgstr "ការពិពណ៌នា"
 
-#: main/templates/form_gallery.html:44 main/templates/profile.html:68
+#: main/templates/form_gallery.html:44 main/templates/profile.html:70
 #: main/templates/show.html:52 main/templates/show.html.py:59
 msgid "XLSForm"
 msgstr "XLSForm"
@@ -227,89 +475,188 @@ msgstr "Excel"
 msgid "Clone"
 msgstr "ក្លូន"
 
-#: main/templates/home.html:8
-msgid "Welcome to formhub!"
-msgstr "សូមស្វាគមន៍​ម​ក​កាន់ formhub!"
+#: main/templates/getting_started.html:5
+msgid "Getting Started"
+msgstr ""
 
-#: main/templates/home.html:8
-msgid "The hub for your mobile data collection needs"
-msgstr "មជ្ឈមណ្ឌល​សម្រាប់​តម្រូវការ​ប្រមូល​ផ្ដុំ​ទិន្នន័យ​ទូរស័ព្ទ​ចល័ត​របស់​អ្នក"
-
-#: main/templates/home.html:11
+#: main/templates/getting_started.html:8 main/templates/tutorial.html:8
 msgid ""
-"formhub is a <strong>free</strong> hosted service that makes data collection"
-" <strong>simple</strong> and <strong>collaborative</strong>."
-msgstr "formhub គឺ​ជា​សេវាកម្ម​បាន​បង្ហោះ <strong>ឥត​គិត​ថ្លៃ</strong> ដែល​ធ្វើ​ឲ្យ​ការ​ប្រមូល​ទិន្នន័យ <strong>សាមញ្ញ</strong> និង <strong>សហការ</strong>។"
+"formhub aims to make collecting survey data with Android smart phones easy "
+"and free."
+msgstr ""
+"formhub មាន​បំណង​ធ្វើ​ឲ្យ​ការ​ប្រមូល​ទិន្នន័យ​ស្ទង់មតិ​​ជា​មួយ​ទូរស័ព្ទ​ទំនើប​​ដែល​ដំណើរការ​ដោយ Android ​​"
+"ងាយស្រួល និង​ឥត​គិត​ថ្លៃ។"
 
-#: main/templates/home.html:13
+#: main/templates/getting_started.html:11 main/templates/tutorial.html:11
+msgid "One uses formhub as follows:"
+msgstr "ប្រើ formhub ដូច​ខាង​ក្រោម៖"
+
+#: main/templates/getting_started.html:13 main/templates/tutorial.html:13
+msgid "Translate survey into the xsl2xform syntax."
+msgstr "បកប្រែ​ការ​ស្ទង់មតិ​ជា​វាក្យសម្ពន្ធ xsl2xform ។"
+
+#: main/templates/getting_started.html:14 main/templates/tutorial.html:14
+msgid "Upload XLSForm file to formhub."
+msgstr "ផ្ទុក​ឡើង​​ឯកសារ XLSForm ទៅ formhub ។"
+
+#: main/templates/getting_started.html:15
+#: main/templates/getting_started.html:16 main/templates/tutorial.html:15
+#: main/templates/tutorial.html.py:16
+msgid "Use"
+msgstr "ប្រើ"
+
+#: main/templates/getting_started.html:15 main/templates/tutorial.html:15
+msgid "to download form and submit data."
+msgstr "ដើម្បី​ទាញ​យក​សំណុំ​បែប​បទ និង​ដាក់​ស្នើ​ទិន្នន័យ​។"
+
+#: main/templates/getting_started.html:16 main/templates/tutorial.html:16
+msgid "to download and map data submissions."
+msgstr "ដើម្បី​ទាញ​យក និង​ផ្គូផ្គង​ការ​ដាក់​ស្នើ​ទិន្នន័យ។"
+
+#: main/templates/getting_started.html:18 main/templates/tutorial.html:18
+msgid "This tutorial will walk you through each stop of the way."
+msgstr "ការ​ណែ​នាំ​នេះ​នឹង​នាំ​អ្នក​តាម​ជំហាន​នីមួយៗ​។"
+
+#: main/templates/getting_started.html:24 main/templates/tutorial.html:24
+msgid "Translate survey into the XLSForm syntax"
+msgstr "បកប្រែ​ការ​ស្ទង់មតិ​ជា​វាក្យសម្ពន្ធ XLSForm"
+
+#: main/templates/getting_started.html:30 main/templates/tutorial.html:30
+msgid ""
+"The first step in collecting survey data is to actually write the survey. "
+"For this tutorial we will be using the following survey:"
+msgstr ""
+"ជំហាន​ដំបូង​ក្នុង​ការ​ប្រមូល​ទិន្នន័យ​ស្ទង់​មតិ​គឺ​​ត្រូវ​សរសេរ​ការ​ស្ទង់​មតិ​ជាក់លាក់​។ ​ចំពោះ​ការ​ណែនាំ​នេះ យើង​នឹង​ប្រើ​​"
+"ការ​ស្ទង់​មតិ​ដូច​ខាង​ក្រោម៖"
+
+#: main/templates/getting_started.html:32 main/templates/tutorial.html:32
+msgid "What is your name?"
+msgstr "តើ​អ្នក​ឈ្មោះ​អ្វី?"
+
+#: main/templates/getting_started.html:33 main/templates/tutorial.html:33
+msgid "How old are you?"
+msgstr "តើ​អ្នកមាន​អាយុ​ប៉ុន្មាន​ឆ្នាំ?"
+
+#: main/templates/getting_started.html:34 main/templates/tutorial.html:34
+msgid "May I take your picture?"
+msgstr "តើ​ខ្ញុំ​អាច​ថត​រូប​អ្នក​បាន​ទេ?"
+
+#: main/templates/getting_started.html:35 main/templates/tutorial.html:35
+msgid "Do you have any children?"
+msgstr "តើ​អ្នកមាន​កូន​ដែរ​ឬទេ?"
+
+#: main/templates/getting_started.html:36 main/templates/tutorial.html:36
+msgid "Record your GPS coordinates."
+msgstr "កត់ត្រា​កូអរដោណេ​ GPS របស់​អ្នក។"
+
+#: main/templates/getting_started.html:37 main/templates/tutorial.html:37
+msgid "What web browsers do you use?"
+msgstr "តើ​អ្នក​ប្រើ​កម្មវិធី​អ៊ីនធឺណិត​អ្វី?"
+
+#: main/templates/getting_started.html:39 main/templates/tutorial.html:39
+msgid ""
+"The second step is writing this survey in the xls2xform syntax. The idea "
+"behind this approach is that each question in the survey is a row in the "
+"spreadsheet. By using a spreadsheet we can expose most of the XForm features "
+"supported by ODK Collect. Check out the images to the right that show the "
+"xls2xform syntax for this survey."
+msgstr ""
+"ជំហាន​ទី​ពី​​គឺ​សរសេរ​ការ​ស្ទង់​មតិ​នេះ​ជា​វាក្យសម្ពន្ធ xls2xform ។ គំនិត​ខាង​​ក្រោយ​វិធី​សាស្ត្រ​នេះ​គឺ​ថា​សំណួរ​នីមួយៗ​"
+"ក្នុង​ការ​ស្ទង់មតិ​​គឺ​ជា​ជួរ​ដេក​ក្នុង​សៀវភៅ​បញ្ជី​។ ដោយ​ប្រើ​សៀវភៅ​បញ្ជី​ យើង​អាច​បង្ហាញ​លក្ខណៈ​របស់ XForm ដែល​"
+"បាន​គាំទ្រ​ដោយ​ ODK Collect ។ ពិនិត្យ​រូបភាព​នៅ​ខាង​ស្ដាំ ដែល​បង្ហាញ​វាក្យសម្ពន្ធ xls2xform សម្រាប់​"
+"ការ​ស្ទង់​មតិ​នេះ​។"
+
+#: main/templates/getting_started.html:48 main/templates/tutorial.html:48
 #, python-format
 msgid ""
-"<strong>Simple.</strong>All you need to get started is an <a "
-"href=\"%(registration_register)s\">account</a> on formhub and the ability to"
-" author .xls files. Absolutely no technical setup required."
-msgstr "<strong>សាមញ្ញ​។</strong>អ្វីៗ​ដែល​អ្នក​ត្រូវ​ចាប់ផ្ដើម​គឺ​នៅ​ក្នុង​គណនី <a href=\"%(registration_register)s\"></a> នៅ​លើ formhub និង​សមត្ថភាព​ចំពោះ​អ្នកនិពន្ធ​​ឯកសារ .xls ។ មិន​ចាំបាច់​រៀបចំ​​បច្ចេកទេស។"
+"For more in depth information about the XLSForm syntax go <a href="
+"\"%(syntax_url)s\">here</a>."
+msgstr ""
+"ចំពោះ​ព័ត៌មាន​ស៊ីជម្រៅ​​អំពី​វាក្យសម្ពន្ធ XLSForm មើល​<a href=\"%(syntax_url)s\">ទី​នេះ</a>។"
 
-#: main/templates/home.html:16
+#: main/templates/getting_started.html:53 main/templates/tutorial.html:53
+msgid "Upload XLSForm file to formhub"
+msgstr "ផ្ទុក​​​ឯកសារ XLSForm ឡើង​ទៅ formhub"
+
+#: main/templates/getting_started.html:59 main/templates/tutorial.html:59
 #, python-format
 msgid ""
-"<strong>Collaborative.</strong> Share your data collection forms in <a "
-"href=\"%(syntax_url)s\">Excel</a>. <a href=\"%(forms_url)s\">Find</a>, grab "
-"and modify other <a href=\"%(forms_url)s\">peoples' forms</a> and quickly "
-"deploy it. Publish gathered data to share it with others via Excel, CSV, KML"
-" or an interactive map."
-msgstr "<strong>សហការ​។</strong> ចែករំលែក​សំណុំ​បែបបទ​ប្រមូល​ទិន្នន័យ​របស់​អ្នក​​ជា <a href=\"%(syntax_url)s\">Excel</a>។ រក<a href=\"%(forms_url)s\"></a> យក និង​កែប្រែ​សំណុំ​បែបបទ​​របស់​មនុស្ស​ផ្សេង <a href=\"%(forms_url)s\"></a> ហើយ​ចែកចាយ​ភ្លាម​ៗ​។ បោះពុម្ព​ទិន្នន័យ​ដែល​បាន​ប្រមូល​ ដើម្បី​ចែករំលែក​ជា​មួយ​អ្នក​ផ្សេង​តាម​រយៈ​​ឯកសារ Excel, CSV, KML ឬ​ផែនទី។"
+"After creating an account and signing into the site you can publish forms "
+"for use with ODK Collect. On the right, we submit <a href="
+"\"%(STATIC_URL)stutorial/tutorial.xls\">tutorial.xls</a>, described above, "
+"for publication."
+msgstr ""
+"បន្ទាំប់​ពី​បង្កើត​គណនី និង​ចូល​​តំបន់បណ្ដាញ​ អ្នក​អាច​បោះពុម្ព​សំណុំ​បែបបទ​​សម្រាប់​ប្រើ​ជា​មួយ ODK Collect ។ នៅ​"
+"ខាង​ស្ដាំ​ យើង​ដាក់​ស្នើ <a href=\"%(STATIC_URL)stutorial/tutorial.xls\">tutorial."
+"xls</a> ដូច​បាន​រៀបរាប់​ពី​ខាង​លើ សម្រាប់​បោះពុម្ព។"
 
-#: main/templates/home.html:19
-msgid "Mobile."
-msgstr "ទូរស័ព្ទ​ចល័ត។"
-
-#: main/templates/home.html:20
+#: main/templates/getting_started.html:69 main/templates/tutorial.html:69
 msgid ""
-"formhub works seemlessly with <a href=\"http://www.opendatakit.org\">ODK "
-"Collect</a> a robust and proven data collection platform for Android."
-msgstr "formhub ដំណើរការ​យ៉ាង​ល្អ​ជា​មួយ <a href=\"http://www.opendatakit.org\">ODK Collect</a> ជា​កម្មវិធី​ប្រមូល​ទិន្នន័យ​ដែល​មាន​​ពិសោធន៍ និង​​ប្រសិទ្ធភាព​សម្រាប់ Android ។"
+"After publishing our first form, a new table appears showing our new form. "
+"Next we need to use ODK Collect to submit data for this form..."
+msgstr ""
+"បន្ទាប់​ពី​បោះពុម្ព​សំណុំ​បែបបទ​ដំបូង​របស់​យើង តារាង​ថ្មី​មួយ​លេច​ឡើង ដោយ​បង្ហាញ​សំណុំ​បែបបទ​ថ្មី​របស់​យើង​។ បន្ទាប់មក​"
+"យើង​ចាំបាច់​ត្រូវ​ប្រើ ODK Collect ដើម្បី​ដាក់​ស្នើ​ទិន្នន័យ​សម្រាប់​សំណុំ​បែបបទនេះ..."
 
-#: main/templates/home.html:23
+#: main/templates/getting_started.html:80 main/templates/tutorial.html:80
+msgid "Use ODK Collect to download form and submit data"
+msgstr "ប្រើ ODK Collect ដើម្បី​ទាញ​យក​សំណុំ​បែបបទ និង​ដាក់​ស្នើ​ទិន្នន័យ"
+
+#: main/templates/getting_started.html:89 main/templates/tutorial.html:89
+#, python-format
 msgid ""
-"For more info please read <a href=\"http://blog.formhub.org/2011/12/05/data-"
-"gatherers-of-the-world-unite/\">here</a>."
-msgstr "ចំពោះ​ព័ត៌មាន​បន្ថែម សូម​អាន <a href=\"http://blog.formhub.org/2011/12/05/data-gatherers-of-the-world-unite/\">នៅ​ទីនេះ</a> ។"
+"The url of this web application must be given to ODK Collect before it will "
+"get forms from and submit data to formhub. In ODK Collect's Main Menu, press "
+"the Menu button. Select Server Preferences, then Server. Enter <strong>"
+"%(odk_url)s</strong> as the server."
+msgstr ""
+"url នៃ​កម្មវិធី​​បណ្ដាញ​នេះ​ត្រូវ​តែ​បាន​​ផ្ដល់​ទៅ ODK Collect មុន​នឹង​វា​ទទួល​សំណុំ​បែបបទ​ និង​ដាក់​ស្នើ​ទិន្នន័យ​"
+"ទៅ formhub ។ នៅ​ក្នុង​ម៉ឺនុយ​មេ​​របស់ ODK Collect ចុច​ប៊ូតុង​​ម៉ឺនុយ​។ ជ្រើស​ចំណូល​ចិត្ត​ម៉ាស៊ីន​មេ បន្ទាប់​មក​ម៉ាស៊ីន​"
+"មេ​។ បញ្ចូល​ <strong>%(odk_url)s</strong> ជា​ម៉ាស៊ីន​មេ​។"
 
-#: main/templates/home.html:25
-msgid "Not registered?"
-msgstr "មិន​បាន​ចុះឈ្មោះ?"
+#: main/templates/getting_started.html:98 main/templates/tutorial.html:98
+msgid "Download your published form to your phone."
+msgstr "ទាញ​យក​​សំណុំ​បែបបទ​បាន​បោះពុម្ព​​របស់​អ្នក​ដាក់​ក្នុង​ទូរស័ព្ទ។"
 
-#: main/templates/home.html:27
-msgid "Create Account"
-msgstr "បង្កើត​គណនី"
+#: main/templates/getting_started.html:107 main/templates/tutorial.html:107
+msgid "Fill out the form on your phone."
+msgstr "បំពេញ​សំណុំ​បែបបទ​លើ​ទូរស័ព្ទ​របស់​អ្នក។"
 
-#: main/templates/home.html:48
-msgid "forms submitted"
-msgstr "បាន​ដាក់​ស្នើ​សំណុំបែបបទ"
+#: main/templates/getting_started.html:116 main/templates/tutorial.html:116
+msgid "After filling out the form on your phone submit the data to the server."
+msgstr "បន្ទាប់​ពី​បំពេញ​សំណុំ​បែបបទ​លើ​ទូរស័ព្ទ​របស់​អ្នក​ ដាក់​ស្នើ​ទិន្នន័យ​ទៅ​ម៉ាស៊ីន​មេ។"
 
-#: main/templates/home.html:51
-msgid "shared forms"
-msgstr "សំណុំ​បែបបទ​បាន​ចែករំលែក"
+#: main/templates/getting_started.html:124 main/templates/tutorial.html:124
+msgid "Use formhub to download and map data submissions"
+msgstr "ប្រើ formhub ដើម្បី​ទាញ​យក​ និង​ផ្គូផ្គង​ការ​ដាក់​ស្នើ​ទិន្នន័យ"
 
-#: main/templates/home.html:54
-msgid "formhubbers!"
-msgstr "អ្នក​ប្រើ formhub!"
+#: main/templates/getting_started.html:130 main/templates/tutorial.html:130
+msgid ""
+"After submitting data from ODK Collect to the server you can now download "
+"the data as a nicely formatted csv or xls file."
+msgstr ""
+"បន្ទាប់​ពី​ដាក់​ស្នើ​​ទិន្នន័យ​ពី​ ODK Collect ទៅ​ម៉ាស៊ីន​មេ​ ឥឡូវ​អ្នក​អាច​ទាញ​យក​ទិន្នន័យ​ជា​ឯកសារ csv ឬ xls "
+"មាន​ទ្រង់ទ្រាយ​យ៉ាង​ស្អាត។"
 
-#: main/templates/people.html:31
+#: main/templates/getting_started.html:140 main/templates/tutorial.html:140
+msgid "And look at submissions on a map:"
+msgstr "និង​មើល​​ការ​ដាក់​ស្នើ​លើ​ផែនទី៖"
+
+#: main/templates/people.html:33
 #, python-format
 msgid "formhubber <small>(%(nb_users)s)</small>"
 msgid_plural "formhubbers <small>(%(nb_users)s)</small>"
 msgstr[0] "អ្នក​ប្រើ formhub <small>(%(nb_users)s)</small>"
 
-#: main/templates/people.html:38
+#: main/templates/people.html:40
 msgid "Organization"
 msgstr "ស្ថាបន"
 
-#: main/templates/people.html:39
+#: main/templates/people.html:41
 msgid "Location"
 msgstr "ទីតាំង"
 
-#: main/templates/people.html:40
+#: main/templates/people.html:42
 msgid "Member Since"
 msgstr "សមាជិក​តាំង​ពី"
 
@@ -333,156 +680,287 @@ msgstr "ទីតាំង​៖​"
 msgid "Website:"
 msgstr "តំបន់​បណ្តាញ៖"
 
-#: main/templates/profile.html:45
+#: main/templates/profile.html:46
 msgid "Twitter:"
 msgstr "Twitter ៖"
 
-#: main/templates/profile.html:47
+#: main/templates/profile.html:49
 msgid "Member since:"
 msgstr "សមាជិក​តាំង​ពី​៖"
 
-#: main/templates/profile.html:52
+#: main/templates/profile.html:54
 #, python-format
 msgid "%(num_forms)s <small>Shared form</small>"
 msgid_plural "%(num_forms)s <small>Shared forms</small>"
 msgstr[0] "សំណុំ​បែបបទ​បាន​ចែករំលែក %(num_forms)s"
 
-#: main/templates/profile.html:61
+#: main/templates/profile.html:63
 #, python-format
 msgid "Shared Forms & Public Data <small>(%(num_forms)s)</small>"
 msgstr "សំណុំ​បែបបទ​បាន​ចែករំលែក និង​ទិន្នន័យ​សាធារណៈ <small>(%(num_forms)s)</small>"
 
-#: main/templates/profile.html:67
+#: main/templates/profile.html:69
 msgid "Create Date"
 msgstr "កាលបរិច្ឆេទ​បង្កើត"
 
-#: main/templates/profile.html:69
+#: main/templates/profile.html:71
 msgid "Public Data"
 msgstr "ទិន្នន័យ​​សាធារណៈ"
 
-#: main/templates/profile.html:70 main/templates/published_surveys.html:49
-#: main/templates/user_crowdforms.html:17
+#: main/templates/profile.html:72 main/templates/published_surveys.html:93
+#: main/templates/published_surveys.html:224
+#: main/templates/published_surveys.html:312
 msgid "View"
 msgstr "មើល"
 
-#: main/templates/profile.html:85
+#: main/templates/profile.html:87
 msgid "XLS"
 msgstr "XLS"
 
-#: main/templates/profile.html:88 main/templates/profile.html.py:107
-#: main/templates/profile.html:118 main/templates/show.html:54
-#: main/templates/show.html.py:122 main/templates/user_crowdforms.html:47
-#: main/templates/user_crowdforms.html:75
+#: main/templates/profile.html:90 main/templates/profile.html.py:120
+#: main/templates/profile.html:131 main/templates/show.html:54
+#: main/templates/show.html.py:122
 msgid "PRIVATE"
 msgstr "ឯកជន"
 
-#: main/templates/profile.html:95 main/templates/published_surveys.html:70
-#: main/templates/show.html:129 main/templates/user_crowdforms.html:39
-#: templates/topbar.html:36
-msgid "csv"
-msgstr "csv"
+#: main/templates/profile.html:101 main/templates/published_surveys.html:94
+#, fuzzy
+msgid "Download"
+msgstr "​​ទាញយក​ CSV"
 
-#: main/templates/profile.html:98 main/templates/published_surveys.html:71
-#: main/templates/show.html:140 main/templates/user_crowdforms.html:40
-#: templates/topbar.html:41
-msgid "xls"
-msgstr "xls"
-
-#: main/templates/profile.html:101 main/templates/published_surveys.html:73
-#: main/templates/show.html:151 main/templates/user_crowdforms.html:42
-#: templates/topbar.html:46
-msgid "kml"
-msgstr "kml"
-
-#: main/templates/profile.html:104 main/templates/show.html:218
-msgid "NO DATA"
-msgstr "គ្មាន​ទិន្នន័យ"
-
-#: main/templates/profile.html:114 main/templates/show.html:202
-msgid "Map"
-msgstr "ផែនទី"
-
-#: main/templates/profile.html:126
-msgid "None public"
-msgstr "គ្មាន​អ្វី​ជា​សាធារណៈ"
-
-#: main/templates/published_surveys.html:7
-msgid "Published Forms <small>Export, map, and view submissions.</small>"
-msgstr "សំណុំ​បែបបទ​បាន​ដាក់​ស្នើ <small>នាំចេញ ផែនទី និង​មើល​​ការ​ដាក់​ស្នើ។</small>"
-
-#: main/templates/published_surveys.html:26
-#: staff/templates/submissions.html:23
-msgid "Search:"
-msgstr "ស្វែងរក៖"
-
-#: main/templates/published_surveys.html:35
-msgid "Show inactive:"
-msgstr "បង្ហាញ​អសកម្ម៖"
-
-#: main/templates/published_surveys.html:46
-#: main/templates/user_crowdforms.html:14 staff/templates/submissions.html:39
-msgid "Submissions"
-msgstr "ការ​ដាក់​ស្នើ៖"
-
-#: main/templates/published_surveys.html:47
-#: main/templates/user_crowdforms.html:15
-msgid "Last Submission"
-msgstr "ការ​ដាក់​ស្នើ​ចុងក្រោយ"
-
-#: main/templates/published_surveys.html:48
-#: main/templates/user_crowdforms.html:16 templates/topbar.html:28
-msgid "Data"
-msgstr "ទិន្នន័យ​"
-
-#: main/templates/published_surveys.html:50
-msgid "Active"
-msgstr "សកម្ម"
-
-#: main/templates/published_surveys.html:59
-#: main/templates/published_surveys.html:77 main/templates/show.html:53
-#: main/templates/show.html.py:121 main/templates/user_crowdforms.html:27
-#: main/templates/user_crowdforms.html:45
+#: main/templates/profile.html:103 main/templates/published_surveys.html:107
+#: main/templates/published_surveys.html:145
+#: main/templates/published_surveys.html:237
+#: main/templates/published_surveys.html:272
+#: main/templates/published_surveys.html:325
+#: main/templates/published_surveys.html:362 main/templates/show.html:53
+#: main/templates/show.html.py:121
 msgid "PUBLIC"
 msgstr "សាធារណៈ"
 
-#: main/templates/published_surveys.html:84 main/templates/show.html:201
-#: main/templates/user_crowdforms.html:55
+#: main/templates/profile.html:106 main/templates/show.html:129
+#: templates/topbar.html:42
+msgid "csv"
+msgstr "csv"
+
+#: main/templates/profile.html:107 main/templates/show.html:140
+#: templates/topbar.html:47
+msgid "xls"
+msgstr "xls"
+
+#: main/templates/profile.html:110 main/templates/show.html:151
+#: templates/topbar.html:52
+msgid "kml"
+msgstr "kml"
+
+#: main/templates/profile.html:117 main/templates/show.html:220
+msgid "NO DATA"
+msgstr "គ្មាន​ទិន្នន័យ"
+
+#: main/templates/profile.html:126 main/templates/published_surveys.html:120
+#: main/templates/published_surveys.html:247
+#: main/templates/published_surveys.html:336 main/templates/show.html:202
 msgid "View Map"
 msgstr "មើល​ផែនទី"
 
-#: main/templates/published_surveys.html:89
-#: main/templates/user_crowdforms.html:60
+#: main/templates/profile.html:139
+msgid "None public"
+msgstr "គ្មាន​អ្វី​ជា​សាធារណៈ"
+
+#: main/templates/published_surveys.html:9
+msgid "Published Forms <small>Export, map, and view submissions.</small>"
+msgstr "សំណុំ​បែបបទ​បាន​ដាក់​ស្នើ <small>នាំចេញ ផែនទី និង​មើល​​ការ​ដាក់​ស្នើ។</small>"
+
+#: main/templates/published_surveys.html:33
+#: main/templates/published_surveys.html:67
+#: staff/templates/submissions.html:47
+msgid "Search:"
+msgstr "ស្វែងរក៖"
+
+#: main/templates/published_surveys.html:42
+msgid "Show inactive:"
+msgstr "បង្ហាញ​អសកម្ម៖"
+
+#: main/templates/published_surveys.html:78 main/templates/show.html:242
+msgid "Preview"
+msgstr ""
+
+#: main/templates/published_surveys.html:91
+#: main/templates/published_surveys.html:223
+#: main/templates/published_surveys.html:310
+#: staff/templates/submissions.html:16
+msgid "Submissions"
+msgstr "ការ​ដាក់​ស្នើ៖"
+
+#: main/templates/published_surveys.html:92
+#: main/templates/published_surveys.html:311
+#, fuzzy
+msgid "Enter Data"
+msgstr "ទិន្នន័យ​​សំណុំ​បែបបទ"
+
+#: main/templates/published_surveys.html:95
+#: main/templates/published_surveys.html:226
+#: main/templates/published_surveys.html:314
+msgid "Last Submission"
+msgstr "ការ​ដាក់​ស្នើ​ចុងក្រោយ"
+
+#: main/templates/published_surveys.html:96
+msgid "Active"
+msgstr "សកម្ម"
+
+#: main/templates/published_surveys.html:110
+#: main/templates/published_surveys.html:240
+#: main/templates/published_surveys.html:328
+msgid "CROWDFORM"
+msgstr ""
+
+#: main/templates/published_surveys.html:115
+#: main/templates/published_surveys.html:332
+#, fuzzy
+msgid "Web"
+msgstr "Webform"
+
+#: main/templates/published_surveys.html:116 main/templates/show.html:233
+#, fuzzy
+msgid "Mobile"
+msgstr "ទូរស័ព្ទ​ចល័ត។"
+
+#: main/templates/published_surveys.html:127
+#: main/templates/published_surveys.html:254
+#: main/templates/published_surveys.html:343
 msgid "View Photo"
 msgstr "មើល​រូបថត"
 
-#: main/templates/published_surveys.html:94 main/templates/show.html:225
-#: main/templates/user_crowdforms.html:63
-msgid "Enter Web Form"
-msgstr "បញ្ចូល​សំណុំ​បែប​បទ​បណ្ដាញ"
-
-#: main/templates/published_surveys.html:102 main/templates/show.html:417
-#: odk_viewer/templates/instance.html:443
-msgid "Delete Confirmation"
-msgstr "បញ្ជាក់​ការ​លុប"
-
-#: main/templates/published_surveys.html:105 main/templates/show.html:420
-#, python-format
-msgid ""
-"Are you sure you want to delete the form '%(title)s'? This form has "
-"<strong>%(nb_sub)s</strong> submissions associated with it that will also be"
-" deleted. If you are unsure about deleting this form press 'Cancel' and "
-"conside 'Archiving' the form instead."
-msgstr "តើ​អ្នក​ប្រាកដ​ជា​ចង់​លុប​សំណុំ​បែបបទ '%(title)s'? សំណុំ​បែបបទ​នេះ​មានការ​ដាក់​ស្នើ​ <strong>%(nb_sub)s</strong> ដែល​បាន​ភ្ជាប់​ជា​មួយ​វា​នឹង​ត្រូវ​លុប​ដែរ​។ បើ​អ្នក​មិន​ប្រាកដ​អំពី​ការ​លុប​សំណុំ​បែប​បទ​នេះ ចុច​'បោះបង់' និង​គិត​អំពី'ការ​ទុក​​សំណុំ​បែបបទ​ក្នុង​ប័ណ្ណសារ' ជំនួស​វិញ។"
-
-#: main/templates/published_surveys.html:117 main/templates/show.html:207
-#: main/templates/user_crowdforms.html:67
+#: main/templates/published_surveys.html:129
+#: main/templates/published_surveys.html:256
+#: main/templates/published_surveys.html:345 main/templates/show.html:209
 msgid "View Submitted Data"
 msgstr "មើល​ទិន្នន័យ​បាន​ដាក់​ស្នើ"
 
-#: main/templates/published_surveys.html:120 main/templates/show.html:210
-#: main/templates/user_crowdforms.html:70
-msgid "Browse Data (One by One)"
-msgstr "រក​មើល​ទិន្នន័យ (ម្ដងមួយៗ)"
+#: main/templates/published_surveys.html:158
+#: main/templates/published_surveys.html:283
+#: main/templates/published_surveys.html:373
+msgid "Options"
+msgstr ""
+
+#: main/templates/published_surveys.html:162 main/templates/show.html:521
+#: odk_viewer/templates/export_list.html:56
+#: odk_viewer/templates/export_list.html:89
+#: odk_viewer/templates/instance.html:362
+#: odk_viewer/templates/instance.html:447 restservice/templates/service.html:4
+msgid "Delete"
+msgstr "លុប​"
+
+#: main/templates/published_surveys.html:163
+msgid "Replace"
+msgstr ""
+
+#: main/templates/published_surveys.html:174 main/templates/show.html:509
+#: odk_viewer/templates/instance.html:441
+msgid "Delete Confirmation"
+msgstr "បញ្ជាក់​ការ​លុប"
+
+#: main/templates/published_surveys.html:177 main/templates/show.html:512
+#, fuzzy, python-format
+msgid ""
+"Are you sure you want to delete the form '%(title)s'? This form has <strong>"
+"%(nb_sub)s</strong> submissions associated with it that will also be "
+"deleted. If you are unsure about deleting this form press 'Cancel' and "
+"consider 'Archiving' the form instead."
+msgstr ""
+"តើ​អ្នក​ប្រាកដ​ជា​ចង់​លុប​សំណុំ​បែបបទ '%(title)s'? សំណុំ​បែបបទ​នេះ​មានការ​ដាក់​ស្នើ​ <strong>"
+"%(nb_sub)s</strong> ដែល​បាន​ភ្ជាប់​ជា​មួយ​វា​នឹង​ត្រូវ​លុប​ដែរ​។ បើ​អ្នក​មិន​ប្រាកដ​អំពី​ការ​លុប​សំណុំ​បែប​បទ​"
+"នេះ ចុច​'បោះបង់' និង​គិត​អំពី'ការ​ទុក​​សំណុំ​បែបបទ​ក្នុង​ប័ណ្ណសារ' ជំនួស​វិញ។"
+
+#: main/templates/published_surveys.html:193
+#, fuzzy
+msgid "Update XLS"
+msgstr "ធ្វើ​បច្ចុប្បន្នភាព"
+
+#: main/templates/published_surveys.html:197 main/templates/settings.html:40
+msgid "Update"
+msgstr "ធ្វើ​បច្ចុប្បន្នភាព"
+
+#: main/templates/published_surveys.html:217
+#, fuzzy
+msgid "Shared Forms <small>List of forms shared with you.</small>"
+msgstr "Crowdforms <small>បញ្ជី crowdforms ដែល​អ្នក​បាន​ភ្ជាប់។</small>"
+
+#: main/templates/published_surveys.html:225
+#: main/templates/published_surveys.html:313 templates/topbar.html:34
+msgid "Data"
+msgstr "ទិន្នន័យ​"
+
+#: main/templates/published_surveys.html:235
+#, fuzzy
+msgid "Shared by"
+msgstr "​បាន​ចែករំលែកសំណុំ​បែបបទ"
+
+#: main/templates/published_surveys.html:287
+#, fuzzy
+msgid "Remove Shared Form"
+msgstr "សំណុំ​បែបបទ​បាន​ចែករំលែក"
+
+#: main/templates/published_surveys.html:303
+msgid "Crowdforms <small>List of crowdforms you have joined.</small>"
+msgstr "Crowdforms <small>បញ្ជី crowdforms ដែល​អ្នក​បាន​ភ្ជាប់។</small>"
+
+#: main/templates/published_surveys.html:377
+#, fuzzy
+msgid "Remove Crowdform"
+msgstr "Crowdform"
+
+#: main/templates/published_surveys.html:394 main/templates/show.html:602
+#, fuzzy
+msgid "Mobile Form"
+msgstr "ទូរស័ព្ទ​ចល័ត។"
+
+#: main/templates/published_surveys.html:401 main/templates/show.html:609
+msgid "DOWNLOAD "
+msgstr ""
+
+#: main/templates/published_surveys.html:404 main/templates/show.html:612
+msgid " Scan - QR Reader"
+msgstr ""
+
+#: main/templates/resources.html:5 templates/home_topbar.html:16
+#: templates/topbar.html:63
+msgid "Resources"
+msgstr "ធនធាន"
+
+#: main/templates/resources.html:6
+msgid "Getting Started "
+msgstr ""
+
+#: main/templates/resources.html:11
+msgid ""
+"Need more help understanding what this is all about? We’ve created a\n"
+"  comprehensive getting started guide to help you better understand how to "
+"get the most \n"
+"  out of formhub."
+msgstr ""
+
+#: main/templates/resources.html:20
+msgid "Authoring with XLSForms"
+msgstr ""
+
+#: main/templates/resources.html:23
+msgid ""
+"\n"
+"  Form authoring in formhub is based on the XLSForm standard. While there is "
+"an initial \n"
+"  learning curve, we’ve found that XLS provides a great interface for "
+"authoring forms — whether it’s\n"
+"  simple 5 question questionnaire or a complex survey with hundreds of "
+"questions. XLS also makes \n"
+"  sharing and collaborating on forms easy. Whether you need help authoring "
+"your first form or want \n"
+"  to pick up advanced tips, please check out our <a href=\"/syntax\">XLForm "
+"Syntax page</a> and\n"
+"  our gallery of sample forms on <a href=\"/formhub_u\">formhub University</"
+"a>.\n"
+"  "
+msgstr ""
 
 #: main/templates/settings.html:7
 msgid "Edit User Profile"
@@ -496,23 +974,19 @@ msgstr "ប្ដូរ​ពាក្យ​សម្ងាត់"
 msgid "Username:"
 msgstr "ឈ្មោះ​អ្នក​ប្រើ​៖"
 
-#: main/templates/settings.html:40
-msgid "Update"
-msgstr "ធ្វើ​បច្ចុប្បន្នភាព"
-
 #: main/templates/show.html:16
 msgid "Owner"
 msgstr "ម្ចាស់"
 
 #: main/templates/show.html:25 main/templates/show.html.py:44
 #: main/templates/show.html:100 main/templates/show.html.py:193
-#: main/templates/show.html:289 odk_viewer/templates/instance.html:349
+#: main/templates/show.html:319 odk_viewer/templates/instance.html:362
 msgid "edit"
 msgstr "កែ"
 
 #: main/templates/show.html:26 main/templates/show.html.py:45
 #: main/templates/show.html:101 main/templates/show.html.py:194
-#: main/templates/show.html:290
+#: main/templates/show.html:320
 msgid "save"
 msgstr "រក្សាទុក"
 
@@ -524,7 +998,7 @@ msgstr "លេខ​សម្គាល់​សំណុំបែបបទ៖"
 msgid "None"
 msgstr "គ្មាន"
 
-#: main/templates/show.html:70 odk_logger/models/xform.py:60
+#: main/templates/show.html:70 odk_logger/models/xform.py:72
 msgid "XForm"
 msgstr "XForm"
 
@@ -545,12 +1019,12 @@ msgid "Form Data"
 msgstr "ទិន្នន័យ​​សំណុំ​បែបបទ"
 
 #: main/templates/show.html:129
-msgid "Export to csv File"
-msgstr "នាំ​ចេញ​ជា​ឯកសារ csv"
+msgid "csv exports"
+msgstr ""
 
 #: main/templates/show.html:140
-msgid "Export to xls File"
-msgstr "នាំចេញ​ជា​ឯកសារ xls"
+msgid "xls exports"
+msgstr ""
 
 #: main/templates/show.html:151
 msgid "Export to kml File (Google Earth)"
@@ -580,138 +1054,230 @@ msgstr "ការ​ដាក់​ស្នើ៖"
 msgid "License:"
 msgstr "អាជ្ញាបណ្ណ៖"
 
-#: main/templates/show.html:204
+#: main/templates/show.html:203
+msgid "Map"
+msgstr "ផែនទី"
+
+#: main/templates/show.html:206
 msgid "View Photos"
 msgstr "មើល​រូបថត"
 
-#: main/templates/show.html:205
+#: main/templates/show.html:207
 msgid "Photos"
 msgstr "រូប​ថត"
 
-#: main/templates/show.html:208
+#: main/templates/show.html:210
 msgid "View Data"
 msgstr "មើល​ទិន្នន័យ​"
 
-#: main/templates/show.html:211
+#: main/templates/show.html:212
+msgid "Browse Data (One by One)"
+msgstr "រក​មើល​ទិន្នន័យ (ម្ដងមួយៗ)"
+
+#: main/templates/show.html:213
 msgid "Browse Data"
 msgstr "រកមើល​ទិន្នន័យ​"
 
-#: main/templates/show.html:224
+#: main/templates/show.html:229
 msgid "Webform"
 msgstr "Webform"
 
-#: main/templates/show.html:279
+#: main/templates/show.html:231
+msgid "Enter Web Form"
+msgstr "បញ្ចូល​សំណុំ​បែប​បទ​បណ្ដាញ"
+
+#: main/templates/show.html:234 main/templates/show.html.py:236
+#, fuzzy
+msgid "Preview Form"
+msgstr "សំណុំ​បែបបទ​ថ្មី"
+
+#: main/templates/show.html:309
 msgid "Source"
 msgstr "ប្រភព"
 
-#: main/templates/show.html:306
+#: main/templates/show.html:336
 msgid "Supporting Documents"
 msgstr "ឯកសារ​គាំទ្រ"
 
-#: main/templates/show.html:311 main/templates/show.html.py:348
-#: main/templates/show.html:371
+#: main/templates/show.html:341 main/templates/show.html.py:378
+#: main/templates/show.html:402
 msgid "remove"
 msgstr "លុប​ចេញ"
 
-#: main/templates/show.html:329
+#: main/templates/show.html:359
 msgid "Rest Services"
 msgstr "សេវាកម្ម​នៅ​សល់"
 
-#: main/templates/show.html:343
-msgid "Media &nbsp;<small>jpeg/png/mp3 allowed</small>"
+#: main/templates/show.html:373
+#, fuzzy
+msgid "Media &nbsp;<small>jpeg/png/mp3/wav/3gp allowed</small>"
 msgstr "បាន​អនុញ្ញាតមេឌៀ &nbsp;<small>jpeg/png/mp3​</small>"
 
-#: main/templates/show.html:365
+#: main/templates/show.html:396
 msgid "Mapbox Layer"
 msgstr "ស្រទាប់ Mapbox"
 
-#: main/templates/show.html:369
+#: main/templates/show.html:400
 msgid "Attribution:"
 msgstr "ការ​ទទួលស្គាល់៖"
 
-#: main/templates/show.html:388 templates/topbar.html:73
+#: main/templates/show.html:418
+#, fuzzy
+msgid "SMS Support"
+msgstr "គាំទ្រ"
+
+#: main/templates/show.html:423
+msgid "This form has enabled SMS submissions."
+msgstr ""
+
+#: main/templates/show.html:423
+#, python-format
+msgid "Submit to this form using the “<em>%(id_string)s</em>” identifier."
+msgstr ""
+
+#: main/templates/show.html:431
+msgid "Save Changes"
+msgstr ""
+
+#: main/templates/show.html:437
+msgid "Expected Format:"
+msgstr ""
+
+#: main/templates/show.html:444
+msgid "Example"
+msgstr ""
+
+#: main/templates/show.html:449
+msgid "Usage"
+msgstr ""
+
+#: main/templates/show.html:453
+msgid "Select an SMS API"
+msgstr ""
+
+#: main/templates/show.html:453
+msgid "Generic SMS API"
+msgstr ""
+
+#: main/templates/show.html:455
+msgid "Use the Generic SMS API to write your own wrapper around Formhub."
+msgstr ""
+
+#: main/templates/show.html:457
+#, fuzzy
+msgid "Single SMS Submission"
+msgstr "ពេល​វេលា​​​ដាក់​ស្នើ​ចុង​ក្រោយ"
+
+#: main/templates/show.html:459 main/templates/show.html.py:463
+msgid "Params:"
+msgstr ""
+
+#: main/templates/show.html:460 main/templates/show.html.py:464
+msgid "Returns:"
+msgstr ""
+
+#: main/templates/show.html:461
+msgid "Multiple SMS Submissions at once"
+msgstr ""
+
+#: main/templates/show.html:466
+msgid "One of"
+msgstr ""
+
+#: main/templates/show.html:467
+msgid "Either an error or success message. Suitable for end user."
+msgstr ""
+
+#: main/templates/show.html:468
+msgid "Only if successful. A unique ID of the submission."
+msgstr ""
+
+#: main/templates/show.html:478 templates/topbar.html:79
 msgid "Settings"
 msgstr "ការ​កំណត់"
 
-#: main/templates/show.html:391
+#: main/templates/show.html:481
 msgid "Form Shared"
 msgstr "​បាន​ចែករំលែកសំណុំ​បែបបទ"
 
-#: main/templates/show.html:395
+#: main/templates/show.html:485
 msgid "Data Shared"
 msgstr "បាន​ចែករំលែកទិន្នន័យ​​"
 
-#: main/templates/show.html:400
+#: main/templates/show.html:490
 msgid "Crowdform"
 msgstr "Crowdform"
 
-#: main/templates/show.html:406
+#: main/templates/show.html:496
 msgid "Form Active"
 msgstr "សំណុំ​បែបបទ​សកម្ម"
 
-#: main/templates/show.html:411
+#: main/templates/show.html:501
 msgid "Delete Form"
 msgstr "លុប​​សំណុំ​បែបបទ"
 
-#: main/templates/show.html:423 main/templates/show.html.py:428
-#: odk_viewer/templates/instance.html:349
-#: odk_viewer/templates/instance.html:449
-#: restservice/templates/add-service.html:22
-msgid "Delete"
-msgstr "លុប​"
-
-#: main/templates/show.html:424 odk_viewer/templates/instance.html:450
+#: main/templates/show.html:516 odk_viewer/templates/export_list.html:44
+#: odk_viewer/templates/export_list.html:88
+#: odk_viewer/templates/instance.html:448
 msgid "Cancel"
 msgstr "បោះបង់"
 
-#: main/templates/show.html:434
+#: main/templates/show.html:527
 msgid "bamboo"
 msgstr "bamboo"
 
-#: main/templates/show.html:436
+#: main/templates/show.html:529
 #, python-format
 msgid ""
-"bamboo dataset: <strong><a "
-"href=\"http://bamboo.io/datasets/%(dataset)s/info\">%(dataset)s</a></strong>"
-msgstr "សំណុំ​ទិន្នន័យ bamboo ៖ <strong><a href=\"http://bamboo.io/datasets/%(dataset)s/info\">%(dataset)s</a></strong>"
+"bamboo dataset: <strong><a href=\"http://bamboo.io/datasets/%(dataset)s/info"
+"\">%(dataset)s</a></strong>"
+msgstr ""
+"សំណុំ​ទិន្នន័យ bamboo ៖ <strong><a href=\"http://bamboo.io/datasets/%(dataset)s/info"
+"\">%(dataset)s</a></strong>"
 
-#: main/templates/show.html:438
+#: main/templates/show.html:531
 msgid "bamboo link is <strong>not active</strong>"
 msgstr "តំណ bamboo គឺ<strong>មិន​សកម្ម</strong>"
 
-#: main/templates/show.html:439
+#: main/templates/show.html:534
 msgid "bamboo requires at least one submission."
 msgstr "bamboo ទាមទារ​យ៉ាងហោចណាស់​ការ​ដាក់​ស្នើ​មួយ។"
 
-#: main/templates/show.html:442
+#: main/templates/show.html:538
+msgid "Regenerate"
+msgstr ""
+
+#: main/templates/show.html:540
 msgid "Activate"
 msgstr "ធ្វើ​ឲ្យ​សកម្ម"
 
-#: main/templates/show.html:449
+#: main/templates/show.html:547
 msgid "Sharing"
 msgstr "ចែក​រំលែក"
 
-#: main/templates/show.html:452
+#: main/templates/show.html:550
 #, python-format
 msgid ""
-"Sharing by link is <strong>on with URL <a "
-"href=\"%(form_url)s\">%(base_url)s%(form_url)s</a></strong>"
-msgstr "ការ​ចែករំលែក​តាម​តំណ​គឺ<strong>បើក​ជា​មួយ URL <a href=\"%(form_url)s\">%(base_url)s%(form_url)s</a></strong>"
+"Sharing by link is <strong>on with URL <a href=\"%(form_url)s\">%(base_url)s"
+"%(form_url)s</a></strong>"
+msgstr ""
+"ការ​ចែករំលែក​តាម​តំណ​គឺ<strong>បើក​ជា​មួយ URL <a href=\"%(form_url)s\">%(base_url)s"
+"%(form_url)s</a></strong>"
 
-#: main/templates/show.html:454
+#: main/templates/show.html:552
 msgid "Sharing by link is <strong>off</strong>"
 msgstr "ការ​ចែករំលែក​តាម​តំណ​គឺ<strong>បិទ</strong>"
 
-#: main/templates/show.html:463
+#: main/templates/show.html:561
 msgid "Turn off"
 msgstr "បិទ"
 
-#: main/templates/show.html:463
+#: main/templates/show.html:561
 msgid "Turn on"
 msgstr "បើក"
 
-#: main/templates/show.html:477
-#: odk_logger/templates/bulk_submission_form.html:13
+#: main/templates/show.html:575
+#: odk_logger/templates/bulk_submission_form.html:15
 #: odk_logger/templates/form.html:18
 #: odk_logger/templates/submission_test_form.html:10
 #: templates/registration/password_reset_confirm.html:12
@@ -719,204 +1285,9 @@ msgstr "បើក"
 msgid "Submit"
 msgstr "ដាក់​ស្នើ"
 
-#: main/templates/support.html:5 templates/topbar.html:59
-msgid "Support"
-msgstr "គាំទ្រ"
-
-#: main/templates/support.html:9
-msgid "Thank you for using formhub!"
-msgstr "សូម​អរគុណ​ចំពោះ​ការ​ប្រើ formhub!"
-
-#: main/templates/support.html:9
-msgid ""
-"If you need any extra help or have questions about the service below please "
-"consider one of the support options below"
-msgstr "បើ​អ្នក​ត្រូវ​ការ​ជំនួយ​បន្ថែម​ ឬ​មាន​​សំណួរ​អំពី​សេវាកម្ម​ខាង​ក្រោម សូម​គិត​អំពី​ជម្រើស​នៃ​ជំនួយ​មួយ​ក្នុង​ចំណោម​ជម្រើស​ជា​ច្រើន​​​ដូច​ខាង​ក្រោម"
-
-#: main/templates/support.html:14
-#, python-format
-msgid ""
-"For questions related to authoring XLSForms please first checkout our <a "
-"href=\"%(syntax)s\">syntax</a> page, then use the <a "
-"href=\"https://groups.google.com/forum/#!forum/formhub-users\">formhub-users"
-" Google group</a>"
-msgstr "ចំពោះ​សំណួរ​ទាក់ទង​នឹង​ការ​បង្កើត​ XLSForms ដំបូង​សូម​ពិនិត្យ​មើល​ទំព័រ <a href=\"%(syntax)s\">វាក្យសម្ពន្ធ</a> របស់​យើង បន្ទាប់​មក​ប្រើ​<a href=\"https://groups.google.com/forum/#!forum/formhub-users\">ក្រុម​ Google អ្នក​ប្រើ formhub</a>"
-
-#: main/templates/support.html:15
-msgid ""
-"For help relating to using ODK Collect please contact the <a "
-"href=\"https://groups.google.com/forum/#!forum/opendatakit\">ODK Google "
-"group</a>"
-msgstr "ចំពោះ​ជំនួយ​ទាក់ទង​នឹង​ការ​ប្រើ ODK Collect សូម​ទាក់ទង​​<a href=\"https://groups.google.com/forum/#!forum/opendatakit\">ក្រុម​ Google ODK</a>"
-
-#: main/templates/support.html:16
-msgid ""
-"For problems or suggestions related to the formhub service please email: <a "
-"href=\"mailto:support@formhub.org\">support@formhub.org</a> or <a "
-"href=\"https://groups.google.com/forum/#!forum/formhub-users\">formhub-users"
-" Google group</a>"
-msgstr "ចំពោះ​បញ្ហា ឬ​សំណើ​ទាក់ទង​នឹង​សេវាកម្ម formhub សូម​ផ្ញើ​អ៊ីមែល​៖ <a href=\"mailto:support@formhub.org\">support@formhub.org</a> ឬ​<a href=\"https://groups.google.com/forum/#!forum/formhub-users\">ក្រុម Google អ្នក​ប្រើ​ formhub</a>"
-
-#: main/templates/support.html:19
-msgid ""
-"We value your feedback and ideas in how to make this service better. Thank "
-"you!"
-msgstr "យើង​វាយតម្លៃ​មតិ​ត្រឡប់ និង​គំនិត​របស់​អ្នក​​ដើម្បី​ធ្វើ​ឲ្យ​សេវាកម្ម​នេះ​កាន់តែ​ប្រសើរ​។ សូម​អរគុណ!"
-
 #: main/templates/tutorial.html:5
 msgid "Introduction"
 msgstr "សេចក្ដី​ណែនាំ"
-
-#: main/templates/tutorial.html:8
-msgid ""
-"formhub aims to make collecting survey data with Android smart phones easy "
-"and free."
-msgstr "formhub មាន​បំណង​ធ្វើ​ឲ្យ​ការ​ប្រមូល​ទិន្នន័យ​ស្ទង់មតិ​​ជា​មួយ​ទូរស័ព្ទ​ទំនើប​​ដែល​ដំណើរការ​ដោយ Android ​​ងាយស្រួល និង​ឥត​គិត​ថ្លៃ។"
-
-#: main/templates/tutorial.html:11
-msgid "One uses formhub as follows:"
-msgstr "ប្រើ formhub ដូច​ខាង​ក្រោម៖"
-
-#: main/templates/tutorial.html:13
-msgid "Translate survey into the xsl2xform syntax."
-msgstr "បកប្រែ​ការ​ស្ទង់មតិ​ជា​វាក្យសម្ពន្ធ xsl2xform ។"
-
-#: main/templates/tutorial.html:14
-msgid "Upload XLSForm file to formhub."
-msgstr "ផ្ទុក​ឡើង​​ឯកសារ XLSForm ទៅ formhub ។"
-
-#: main/templates/tutorial.html:15 main/templates/tutorial.html.py:16
-msgid "Use"
-msgstr "ប្រើ"
-
-#: main/templates/tutorial.html:15
-msgid "to download form and submit data."
-msgstr "ដើម្បី​ទាញ​យក​សំណុំ​បែប​បទ និង​ដាក់​ស្នើ​ទិន្នន័យ​។"
-
-#: main/templates/tutorial.html:16
-msgid "to download and map data submissions."
-msgstr "ដើម្បី​ទាញ​យក និង​ផ្គូផ្គង​ការ​ដាក់​ស្នើ​ទិន្នន័យ។"
-
-#: main/templates/tutorial.html:18
-msgid "This tutorial will walk you through each stop of the way."
-msgstr "ការ​ណែ​នាំ​នេះ​នឹង​នាំ​អ្នក​តាម​ជំហាន​នីមួយៗ​។"
-
-#: main/templates/tutorial.html:24
-msgid "Translate survey into the XLSForm syntax"
-msgstr "បកប្រែ​ការ​ស្ទង់មតិ​ជា​វាក្យសម្ពន្ធ XLSForm"
-
-#: main/templates/tutorial.html:30
-msgid ""
-"The first step in collecting survey data is to actually write the survey. "
-"For this tutorial we will be using the following survey:"
-msgstr "ជំហាន​ដំបូង​ក្នុង​ការ​ប្រមូល​ទិន្នន័យ​ស្ទង់​មតិ​គឺ​​ត្រូវ​សរសេរ​ការ​ស្ទង់​មតិ​ជាក់លាក់​។ ​ចំពោះ​ការ​ណែនាំ​នេះ យើង​នឹង​ប្រើ​​ការ​ស្ទង់​មតិ​ដូច​ខាង​ក្រោម៖"
-
-#: main/templates/tutorial.html:32
-msgid "What is your name?"
-msgstr "តើ​អ្នក​ឈ្មោះ​អ្វី?"
-
-#: main/templates/tutorial.html:33
-msgid "How old are you?"
-msgstr "តើ​អ្នកមាន​អាយុ​ប៉ុន្មាន​ឆ្នាំ?"
-
-#: main/templates/tutorial.html:34
-msgid "May I take your picture?"
-msgstr "តើ​ខ្ញុំ​អាច​ថត​រូប​អ្នក​បាន​ទេ?"
-
-#: main/templates/tutorial.html:35
-msgid "Do you have any children?"
-msgstr "តើ​អ្នកមាន​កូន​ដែរ​ឬទេ?"
-
-#: main/templates/tutorial.html:36
-msgid "Record your GPS coordinates."
-msgstr "កត់ត្រា​កូអរដោណេ​ GPS របស់​អ្នក។"
-
-#: main/templates/tutorial.html:37
-msgid "What web browsers do you use?"
-msgstr "តើ​អ្នក​ប្រើ​កម្មវិធី​អ៊ីនធឺណិត​អ្វី?"
-
-#: main/templates/tutorial.html:39
-msgid ""
-"The second step is writing this survey in the xls2xform syntax. The idea "
-"behind this approach is that each question in the survey is a row in the "
-"spreadsheet. By using a spreadsheet we can expose most of the XForm features"
-" supported by ODK Collect. Check out the images to the right that show the "
-"xls2xform syntax for this survey."
-msgstr "ជំហាន​ទី​ពី​​គឺ​សរសេរ​ការ​ស្ទង់​មតិ​នេះ​ជា​វាក្យសម្ពន្ធ xls2xform ។ គំនិត​ខាង​​ក្រោយ​វិធី​សាស្ត្រ​នេះ​គឺ​ថា​សំណួរ​នីមួយៗ​ក្នុង​ការ​ស្ទង់មតិ​​គឺ​ជា​ជួរ​ដេក​ក្នុង​សៀវភៅ​បញ្ជី​។ ដោយ​ប្រើ​សៀវភៅ​បញ្ជី​ យើង​អាច​បង្ហាញ​លក្ខណៈ​របស់ XForm ដែល​បាន​គាំទ្រ​ដោយ​ ODK Collect ។ ពិនិត្យ​រូបភាព​នៅ​ខាង​ស្ដាំ ដែល​បង្ហាញ​វាក្យសម្ពន្ធ xls2xform សម្រាប់​ការ​ស្ទង់​មតិ​នេះ​។"
-
-#: main/templates/tutorial.html:48
-#, python-format
-msgid ""
-"For more in depth information about the XLSForm syntax go <a "
-"href=\"%(syntax_url)s\">here</a>."
-msgstr "ចំពោះ​ព័ត៌មាន​ស៊ីជម្រៅ​​អំពី​វាក្យសម្ពន្ធ XLSForm មើល​<a href=\"%(syntax_url)s\">ទី​នេះ</a>។"
-
-#: main/templates/tutorial.html:53
-msgid "Upload XLSForm file to formhub"
-msgstr "ផ្ទុក​​​ឯកសារ XLSForm ឡើង​ទៅ formhub"
-
-#: main/templates/tutorial.html:59
-#, python-format
-msgid ""
-"After creating an account and signing into the site you can publish forms "
-"for use with ODK Collect. On the right, we submit <a "
-"href=\"%(STATIC_URL)stutorial/tutorial.xls\">tutorial.xls</a>, described "
-"above, for publication."
-msgstr "បន្ទាំប់​ពី​បង្កើត​គណនី និង​ចូល​​តំបន់បណ្ដាញ​ អ្នក​អាច​បោះពុម្ព​សំណុំ​បែបបទ​​សម្រាប់​ប្រើ​ជា​មួយ ODK Collect ។ នៅ​ខាង​ស្ដាំ​ យើង​ដាក់​ស្នើ <a href=\"%(STATIC_URL)stutorial/tutorial.xls\">tutorial.xls</a> ដូច​បាន​រៀបរាប់​ពី​ខាង​លើ សម្រាប់​បោះពុម្ព។"
-
-#: main/templates/tutorial.html:69
-msgid ""
-"After publishing our first form, a new table appears showing our new form. "
-"Next we need to use ODK Collect to submit data for this form..."
-msgstr "បន្ទាប់​ពី​បោះពុម្ព​សំណុំ​បែបបទ​ដំបូង​របស់​យើង តារាង​ថ្មី​មួយ​លេច​ឡើង ដោយ​បង្ហាញ​សំណុំ​បែបបទ​ថ្មី​របស់​យើង​។ បន្ទាប់មក​យើង​ចាំបាច់​ត្រូវ​ប្រើ ODK Collect ដើម្បី​ដាក់​ស្នើ​ទិន្នន័យ​សម្រាប់​សំណុំ​បែបបទនេះ..."
-
-#: main/templates/tutorial.html:80
-msgid "Use ODK Collect to download form and submit data"
-msgstr "ប្រើ ODK Collect ដើម្បី​ទាញ​យក​សំណុំ​បែបបទ និង​ដាក់​ស្នើ​ទិន្នន័យ"
-
-#: main/templates/tutorial.html:89
-#, python-format
-msgid ""
-"The url of this web application must be given to ODK Collect before it will "
-"get forms from and submit data to formhub. In ODK Collect's Main Menu, press"
-" the Menu button. Select Server Preferences, then Server. Enter "
-"<strong>%(odk_url)s</strong> as the server."
-msgstr "url នៃ​កម្មវិធី​​បណ្ដាញ​នេះ​ត្រូវ​តែ​បាន​​ផ្ដល់​ទៅ ODK Collect មុន​នឹង​វា​ទទួល​សំណុំ​បែបបទ​ និង​ដាក់​ស្នើ​ទិន្នន័យ​ទៅ formhub ។ នៅ​ក្នុង​ម៉ឺនុយ​មេ​​របស់ ODK Collect ចុច​ប៊ូតុង​​ម៉ឺនុយ​។ ជ្រើស​ចំណូល​ចិត្ត​ម៉ាស៊ីន​មេ បន្ទាប់​មក​ម៉ាស៊ីន​មេ​។ បញ្ចូល​ <strong>%(odk_url)s</strong> ជា​ម៉ាស៊ីន​មេ​។"
-
-#: main/templates/tutorial.html:98
-msgid "Download your published form to your phone."
-msgstr "ទាញ​យក​​សំណុំ​បែបបទ​បាន​បោះពុម្ព​​របស់​អ្នក​ដាក់​ក្នុង​ទូរស័ព្ទ។"
-
-#: main/templates/tutorial.html:107
-msgid "Fill out the form on your phone."
-msgstr "បំពេញ​សំណុំ​បែបបទ​លើ​ទូរស័ព្ទ​របស់​អ្នក។"
-
-#: main/templates/tutorial.html:116
-msgid ""
-"After filling out the form on your phone submit the data to the server."
-msgstr "បន្ទាប់​ពី​បំពេញ​សំណុំ​បែបបទ​លើ​ទូរស័ព្ទ​របស់​អ្នក​ ដាក់​ស្នើ​ទិន្នន័យ​ទៅ​ម៉ាស៊ីន​មេ។"
-
-#: main/templates/tutorial.html:124
-msgid "Use formhub to download and map data submissions"
-msgstr "ប្រើ formhub ដើម្បី​ទាញ​យក​ និង​ផ្គូផ្គង​ការ​ដាក់​ស្នើ​ទិន្នន័យ"
-
-#: main/templates/tutorial.html:130
-msgid ""
-"After submitting data from ODK Collect to the server you can now download "
-"the data as a nicely formatted csv or xls file."
-msgstr "បន្ទាប់​ពី​ដាក់​ស្នើ​​ទិន្នន័យ​ពី​ ODK Collect ទៅ​ម៉ាស៊ីន​មេ​ ឥឡូវ​អ្នក​អាច​ទាញ​យក​ទិន្នន័យ​ជា​ឯកសារ csv ឬ xls មាន​ទ្រង់ទ្រាយ​យ៉ាង​ស្អាត។"
-
-#: main/templates/tutorial.html:140
-msgid "And look at submissions on a map:"
-msgstr "និង​មើល​​ការ​ដាក់​ស្នើ​លើ​ផែនទី៖"
-
-#: main/templates/user_crowdforms.html:7
-msgid "Crowdforms <small>List of crowdforms you have joined.</small>"
-msgstr "Crowdforms <small>បញ្ជី crowdforms ដែល​អ្នក​បាន​ភ្ជាប់។</small>"
-
-#: main/templates/user_crowdforms.html:18
-msgid "Remove"
-msgstr "លុប​ចេញ"
 
 #: main/templates/xls2xform.html:5
 msgid "XLS2XForm Converter"
@@ -926,7 +1297,9 @@ msgstr "កម្មវិធី​បម្លែង XLS2XForm"
 msgid ""
 "If you're looking for the XLS2XForm converter you're in the right place. "
 "We've incorporated the XLS2XForm converter into formhub."
-msgstr "បើ​អ្នក​កំពុង​រក​មើល​កម្មវិធី​បម្លែង XLS2XForm អ្នក​ចូល​មក​​​​កន្លែង​ត្រឹមត្រូវ​​ហើយ​។ យើង​បាន​រួម​បញ្ចូល​កម្មវិធី​បម្លែង XLS2XForm ក្នុង formhub ។"
+msgstr ""
+"បើ​អ្នក​កំពុង​រក​មើល​កម្មវិធី​បម្លែង XLS2XForm អ្នក​ចូល​មក​​​​កន្លែង​ត្រឹមត្រូវ​​ហើយ​។ យើង​បាន​រួម​បញ្ចូល​កម្មវិធី​"
+"បម្លែង XLS2XForm ក្នុង formhub ។"
 
 #: main/templates/xls2xform.html:11
 msgid "To use it simply:"
@@ -937,108 +1310,243 @@ msgstr "ដើម្បី​ប្រើ​វា​យ៉ាង​ងាយ​
 msgid ""
 "<a href=\"%(registration_register)s\">Signup</a> for a free account with "
 "formhub"
-msgstr "<a href=\"%(registration_register)s\">ចុះ​ឈ្មោះ</a> គណនី​ដោយ​ឥត​គិត​ថ្លៃ​ជា​មួយ formhub"
+msgstr ""
+"<a href=\"%(registration_register)s\">ចុះ​ឈ្មោះ</a> គណនី​ដោយ​ឥត​គិត​ថ្លៃ​ជា​មួយ formhub"
 
 #: main/templates/xls2xform.html:15
 msgid ""
 "Upload your XLSForm to formhub and it'll instantly be converted to an XForm "
 "which will be available on your phone."
-msgstr "ផ្ទុក​ XLSForm របស់​អ្នក​​ឡើង​ទៅ​ formhub វា​នឹង​ត្រូវ​បាន​បម្លែង​ទៅ XForm ភ្លាមៗ ដែល​នឹង​អាច​ប្រើ​បាន​លើ​ទូរស័ព្ទ​របស់​អ្នក។"
+msgstr ""
+"ផ្ទុក​ XLSForm របស់​អ្នក​​ឡើង​ទៅ​ formhub វា​នឹង​ត្រូវ​បាន​បម្លែង​ទៅ XForm ភ្លាមៗ ដែល​នឹង​អាច​ប្រើ​បាន​"
+"លើ​ទូរស័ព្ទ​របស់​អ្នក។"
 
 #: main/templates/xls2xform.html:16
 msgid ""
 "If you want to download the XForm, click on the form name and click on "
 "<strong>other</strong> to download the converted XForm"
-msgstr "បើ​អ្នក​ចង់​ទាញ​យក XForm ចុច​ឈ្មោះ​សំណុំ​បែបបទ ហើយ​ចុច<strong>ផ្សេង​ទៀត</strong> ដើម្បី​ទាញ​យក​ XForm ដែល​បាន​បម្លែង"
+msgstr ""
+"បើ​អ្នក​ចង់​ទាញ​យក XForm ចុច​ឈ្មោះ​សំណុំ​បែបបទ ហើយ​ចុច<strong>ផ្សេង​ទៀត</strong> ដើម្បី​ទាញ​យក​ "
+"XForm ដែល​បាន​បម្លែង"
 
-#: odk_logger/import_tools.py:49
+#: odk_logger/import_tools.py:51
 msgid "Too many XML files."
 msgstr "មាន​ឯកសារ XML ច្រើន​ពេក។"
 
-#: odk_logger/views.py:55
-#, python-format
-msgid "User %s not found"
-msgstr "រក​មិន​ឃើញ​អ្នក​ប្រើ %s"
-
-#: odk_logger/views.py:62
+#: odk_logger/views.py:58
 msgid ""
 "There was a problem receiving your ODK submission. [Error: IO Error reading "
 "data]"
 msgstr "មាន​បញ្ហា​ក្នុង​ការ​ទទួល​ការ​ដាក់​ស្នើ ODK របស់​អ្នក​។ [កំហុស​៖ IO កំហុស​ក្នុង​ការ​អាន​ទិន្នន័យ]"
 
-#: odk_logger/views.py:77
-#, python-format
+#: odk_logger/views.py:79
+#, fuzzy, python-format
 msgid ""
-"Submission successful. Out of %(total)d survey instances, %(success)d were "
-"imported (%(rejected)d were rejected--duplicates, missing forms, etc.)"
-msgstr "ការ​ដាក់​ស្នើ​ជោគជ័យ​។ ធាតុ​ស្ទង់​មតិ​នៃ %(total)d , បាន​នាំចូល %(success)d បាន​បដិសេធ (%(rejected)d ​--ស្ទួន បាត់​សំណុំ​បែបបទ ។ល។)"
+"Submission complete. Out of %(total)d survey instances, %(success)d were "
+"imported, (%(rejected)d were rejected as duplicates, missing forms, etc.)"
+msgstr ""
+"ការ​ដាក់​ស្នើ​ជោគជ័យ​។ ធាតុ​ស្ទង់​មតិ​នៃ %(total)d , បាន​នាំចូល %(success)d បាន​បដិសេធ "
+"(%(rejected)d ​--ស្ទួន បាត់​សំណុំ​បែបបទ ។ល។)"
 
-#: odk_logger/views.py:90
+#: odk_logger/views.py:91
+#, fuzzy
+msgid "Made bulk submissions."
+msgstr "ការ​ដាក់​ស្នើ %(nb_sub)s"
+
+#: odk_logger/views.py:97
 msgid ""
 "There was a problem receiving your ODK submission. [Error: multiple "
 "submission files (?)]"
 msgstr "មាន​បញ្ហា​ក្នុង​ការ​ទទួល​ការ​ដាក់​ស្នើ ODK របស់​អ្នក​។ [កំហុស​៖ ឯកសារ​ដាក់​ស្នើ​ច្រើន(?)]"
 
-#: odk_logger/views.py:177
+#: odk_logger/views.py:145
+msgid "Requested forms list."
+msgstr ""
+
+#: odk_logger/views.py:192
 msgid "There should be a single XML submission file."
 msgstr "គួរ​​មាន​​ឯកសារ​ដាក់​ស្នើ​ XML តែ​មួយ។"
 
-#: odk_logger/views.py:195
+#: odk_logger/views.py:210 sms_support/tools.py:92
 msgid "Username or ID required."
 msgstr "ទាមទារ​ឈ្មោះ​អ្នក​ប្រើ ឬ​លេខ​សម្គាល់។"
 
-#: odk_logger/views.py:198
+#: odk_logger/views.py:213 sms_support/tools.py:95
 msgid "Sorry but the crowd form you submitted to is closed."
 msgstr "សូម​ទោស ប៉ុន្តែ​សំណុំ​បែបបទ​ជា​ក្រុម​ដែល​អ្នក​បាន​ដាក់ស្នើ​ត្រូវ​បាន​បិទ​។"
 
-#: odk_logger/views.py:202
+#: odk_logger/views.py:217 sms_support/tools.py:99
 msgid "Received empty submission. No instance was created"
 msgstr "បាន​ទទួល​ការ​ដាក់​ស្នើ​ទទេ​។ គ្មាន​ធាតុ​បាន​បង្កើត"
 
-#: odk_logger/views.py:205
+#: odk_logger/views.py:220 sms_support/tools.py:103
 msgid "Form is not active"
 msgstr "សំណុំ​បែបបទ​មិន​សកម្ម"
 
-#: odk_logger/views.py:208
+#: odk_logger/views.py:223 sms_support/tools.py:106
 msgid "Form does not exist on this account"
 msgstr "មិន​ទាន់​មាន​សំណុំ​បែបបទ​ក្នុង​គណនី​នេះ"
 
-#: odk_logger/views.py:211
+#: odk_logger/views.py:226 sms_support/tools.py:109
 msgid "Improperly formatted XML."
 msgstr "XML មាន​ទ្រង់ទ្រាយ​មិន​ត្រឹមត្រូវ។"
 
-#: odk_logger/views.py:213
+#: odk_logger/views.py:228 sms_support/tools.py:112
 msgid "Duplicate submission"
 msgstr "ចម្លង​ការ​ដាក់ស្នើ"
 
-#: odk_logger/views.py:219
+#: odk_logger/views.py:235 sms_support/tools.py:116
 msgid "Unable to create submission."
 msgstr "មិន​អាច​បង្កើត​ការ​ដាក់​ស្នើ។"
 
-#: odk_logger/views.py:237
+#: odk_logger/views.py:241 sms_support/tools.py:125
+#, python-format
+msgid "Created submission on form %(id_string)s."
+msgstr ""
+
+#: odk_logger/views.py:262
 msgid "File transfer interruption."
 msgstr "ផ្អាក​ការ​ផ្ទេរ​ឯកសារ។"
 
-#: odk_logger/views.py:273
+#: odk_logger/views.py:287
+#, python-format
+msgid "Downloaded XML for form '%(id_string)s'."
+msgstr ""
+
+#: odk_logger/views.py:311
+#, fuzzy, python-format
+msgid "Downloaded XLS file for form '%(id_string)s'."
+msgstr "គ្មាន​ឯកសារ XLS សម្រាប់​សំណុំ​បែបបទ​របស់​អ្នក <strong>%(id)s</strong>"
+
+#: odk_logger/views.py:326
 #, python-format
 msgid "No XLS file for your form <strong>%(id)s</strong>"
 msgstr "គ្មាន​ឯកសារ XLS សម្រាប់​សំណុំ​បែបបទ​របស់​អ្នក <strong>%(id)s</strong>"
 
-#: odk_logger/management/commands/create_image_thumbnails.py:15
+#: odk_logger/views.py:360
+#, python-format
+msgid "Deleted form '%(id_string)s'."
+msgstr ""
+
+#: odk_logger/views.py:374
+#, python-format
+msgid "Made form '%(id_string)s' %(downloadable)s."
+msgstr ""
+
+#: odk_logger/views.py:377
+#, fuzzy
+msgid "downloadable"
+msgstr "អាច​ទាញ​យក​បាន​តាម​ទូរស័ព្ទ"
+
+#: odk_logger/views.py:377
+#, fuzzy
+msgid "un-downloadable"
+msgstr "អាច​ទាញ​យក​បាន​តាម​ទូរស័ព្ទ"
+
+#: odk_logger/views.py:423
+#, python-format
+msgid "Requested enter data url for '%(id_string)s'."
+msgstr ""
+
+#: odk_logger/views.py:446 odk_logger/views.py:537
+msgid "Enketo error: Unable to open webform url."
+msgstr ""
+
+#: odk_logger/views.py:449 odk_logger/views.py:540
+#, python-format
+msgid "Enketo error: enketo replied %s"
+msgstr ""
+
+#: odk_logger/views.py:514
+#, python-format
+msgid "Requested to edit data with id '%(data_id)s' on '%(id_string)s'."
+msgstr ""
+
+#: odk_logger/xform_instance_parser.py:15
+#, fuzzy
+msgid "Duplicate Instance"
+msgstr "ចម្លង​ការ​ដាក់ស្នើ"
+
+#: odk_logger/xform_instance_parser.py:22
+msgid "The form is not a crowdform"
+msgstr ""
+
+#: odk_logger/xform_instance_parser.py:29
+msgid "Could not determine the user."
+msgstr ""
+
+#: odk_logger/xform_instance_parser.py:36
+msgid "The instance could not be parsed."
+msgstr ""
+
+#: odk_logger/xform_instance_parser.py:43
+msgid "Empty instance"
+msgstr ""
+
+#: odk_logger/xform_instance_parser.py:53 utils/logger_tools.py:333
+msgid "XML string must have a survey element."
+msgstr ""
+
+#: odk_logger/management/commands/create_backup.py:10
+msgid "Create a zip backup of a form and all its submissions"
+msgstr ""
+
+#: odk_logger/management/commands/create_backup.py:17
+#: odk_logger/management/commands/publish_xls.py:38
+#: odk_logger/management/commands/restore_backup.py:17
+msgid "You must provide the username to publish the form to."
+msgstr ""
+
+#: odk_logger/management/commands/create_backup.py:23
+#: odk_logger/management/commands/publish_xls.py:43
+#: odk_logger/management/commands/restore_backup.py:23
+#, python-format
+msgid "The user '%s' does not exist."
+msgstr ""
+
+#: odk_logger/management/commands/create_backup.py:28
+#, fuzzy
+msgid "You must provide the id_string of the form."
+msgstr "ឃ្លា​លេខ​សម្គាល់​នៃ​សំណុំ​បែបបទ"
+
+#: odk_logger/management/commands/create_backup.py:33
+#, python-format
+msgid "The id_string '%s' does not exist."
+msgstr ""
+
+#: odk_logger/management/commands/create_backup.py:39
+msgid "You must provide the path to save the restore file to."
+msgstr ""
+
+#: odk_logger/management/commands/create_image_thumbnails.py:18
 msgid "Creates thumbnails for all form images and stores them"
 msgstr "បង្កើត​រូបភាព​តូច​ៗ​សម្រាប់​រូបភាព​សំណុំ​បែបបទ​ទាំងអស់ ហើយ​​រក្សាទុក​ពួកវា"
 
-#: odk_logger/management/commands/create_image_thumbnails.py:34
+#: odk_logger/management/commands/create_image_thumbnails.py:22
+#: odk_viewer/management/commands/remongo.py:17
+msgid "Username of the form user"
+msgstr "ឈ្មោះ​អ្នក​ប្រើ​​របស់​​អ្នក​ប្រើ​សំណុំ​បែបបទ"
+
+#: odk_logger/management/commands/create_image_thumbnails.py:24
+#: odk_viewer/management/commands/remongo.py:19
+msgid "id string of the form"
+msgstr "ឃ្លា​លេខ​សម្គាល់​នៃ​សំណុំ​បែបបទ"
+
+#: odk_logger/management/commands/create_image_thumbnails.py:26
+msgid "regenerate thumbnails if they exist."
+msgstr ""
+
+#: odk_logger/management/commands/create_image_thumbnails.py:73
 #, python-format
 msgid "Thumbnails created for %(file)s"
 msgstr "បាន​បង្កើត​រូបភាព​តូច​សម្រាប់ %(file)s"
 
-#: odk_logger/management/commands/create_image_thumbnails.py:37
+#: odk_logger/management/commands/create_image_thumbnails.py:76
 #, python-format
 msgid "Problem with the file %(file)s"
 msgstr "មាន​បញ្ហា​ជា​មួយ​ឯកសារ %(file)s"
 
-#: odk_logger/management/commands/create_image_thumbnails.py:40
+#: odk_logger/management/commands/create_image_thumbnails.py:79
 #, python-format
 msgid "Error on %(filename)s: %(error)s"
 msgstr "កំហុស​នៅ​លើ %(filename)s: %(error)s"
@@ -1058,40 +1566,81 @@ msgstr "នាំចូល​សំណុំ​បែបបទ ODK និង​�
 msgid "Import a folder of XForms for ODK."
 msgstr "នាំចូល​ថត​នៃ​ XForms សម្រាប់ ODK ។"
 
-#: odk_logger/management/commands/import_instances.py:12
-#: odk_viewer/management/commands/import_instances.py:12
-msgid "Import a folder of ODK instances."
-msgstr "នាំចូល​ថត​នៃ​ធាតុ ODK ។"
+#: odk_logger/management/commands/import_instances.py:13
+msgid ""
+"Import a zip file, a directory containing zip files or a directory of ODK "
+"instances"
+msgstr ""
 
-#: odk_logger/management/commands/import_tools.py:26
+#: odk_logger/management/commands/import_instances.py:17
+msgid "Usage: <command> username file/path."
+msgstr ""
+
+#: odk_logger/management/commands/import_instances.py:23
+#, python-format
+msgid "The specified user '%s' does not exist."
+msgstr ""
+
+#: odk_logger/management/commands/import_instances.py:27
+#, python-format
+msgid "The specified path '%s' does not exist."
+msgstr ""
+
+#: odk_logger/management/commands/import_instances.py:34
+#, python-format
+msgid "Importing from dir %s..\n"
+msgstr ""
+
+#: odk_logger/management/commands/import_instances.py:36
+#: odk_logger/management/commands/import_instances.py:45
+#, python-format
+msgid ""
+"Total: %(total)d, Imported: %(imported)d, Errors: %(errors)s\n"
+"------------------------------\n"
+msgstr ""
+
+#: odk_logger/management/commands/import_instances.py:43
+#, python-format
+msgid "Importing from zip at %s..\n"
+msgstr ""
+
+#: odk_logger/management/commands/import_tools.py:24
+msgid "path(xform instances) username"
+msgstr ""
+
+#: odk_logger/management/commands/import_tools.py:30
+#, python-format
+msgid "Invalid username %s"
+msgstr ""
+
+#: odk_logger/management/commands/import_tools.py:33
 #, python-format
 msgid "[Importing XForm Instances from %(path)s]\n"
 msgstr "[នាំចូល​ធាតុ XForm ពី %(path)s]\n"
 
-#: odk_logger/management/commands/import_tools.py:30
+#: odk_logger/management/commands/import_tools.py:37
 msgid "Before Parse:"
 msgstr "មុន​ពេល​ញែក៖"
 
-#: odk_logger/management/commands/import_tools.py:31
 #: odk_logger/management/commands/import_tools.py:38
+#: odk_logger/management/commands/import_tools.py:45
 #, python-format
 msgid " --> Images:    %(nb)d"
 msgstr ""
 
-#: odk_logger/management/commands/import_tools.py:32
 #: odk_logger/management/commands/import_tools.py:39
+#: odk_logger/management/commands/import_tools.py:46
 #, python-format
 msgid " --> Instances: %(nb)d"
 msgstr " --> ធាតុ៖ %(nb)d"
 
-#: odk_logger/management/commands/import_tools.py:37
+#: odk_logger/management/commands/import_tools.py:44
 msgid "After Parse:"
 msgstr "បន្ទាប់ពី​ញែក៖"
 
 #: odk_logger/management/commands/move_media_to_s3.py:15
 msgid ""
-"Moves all attachments and xls files to s3 from the local file system "
-"storage."
+"Moves all attachments and xls files to s3 from the local file system storage."
 msgstr "ផ្លាស់ទី​ឯកសារ​ភ្ជាប់ និង​ឯកសារ xls ទាំងអស់​ទៅ s3 ពី​​កន្លែង​ផ្ទុក​ប្រព័ន្ធ​ឯកសារ​មូលដ្ឋាន។"
 
 #: odk_logger/management/commands/move_media_to_s3.py:23
@@ -1101,8 +1650,7 @@ msgstr "បាត់​បណ្ណាល័យ​ដែល​ចាំបាច
 
 #: odk_logger/management/commands/move_media_to_s3.py:28
 msgid ""
-"You must first set your default storage to s3 in your local_settings.py "
-"file."
+"You must first set your default storage to s3 in your local_settings.py file."
 msgstr "ដំបូង ​អ្នក​ត្រូវ​កំណត់​​ទំហំ​ផ្ទុក​លំនាំដើម​របស់​អ្នក​សិន​ក្នុង​ឯកសារ local_settings.py ។"
 
 #: odk_logger/management/commands/move_media_to_s3.py:37
@@ -1115,46 +1663,111 @@ msgstr "កំពុង​ផ្លាស់ទី %(class)ss ទៅ s3..."
 msgid ""
 "\t+ '%(fname)s'\n"
 "\t---> '%(url)s'"
-msgstr "\t+ '%(fname)s'\n\t---> '%(url)s'"
+msgstr ""
+"\t+ '%(fname)s'\n"
+"\t---> '%(url)s'"
 
-#: odk_logger/models/xform.py:41
+#: odk_logger/management/commands/publish_xls.py:14
+msgid "Publish an XLS file with the option of replacing anexisting one"
+msgstr ""
+
+#: odk_logger/management/commands/publish_xls.py:21
+msgid "Replace existing form if any"
+msgstr ""
+
+#: odk_logger/management/commands/publish_xls.py:28
+msgid "You must provide the path to the xls file."
+msgstr ""
+
+#: odk_logger/management/commands/publish_xls.py:32
+#, python-format
+msgid "The xls file '%s' does not exist."
+msgstr ""
+
+#: odk_logger/management/commands/publish_xls.py:57
+msgid "Form already exist, replacing ..\n"
+msgstr ""
+
+#: odk_logger/management/commands/publish_xls.py:59
+#, python-format
+msgid ""
+"The form with id_string '%s' already exists, use the -r option to replace it."
+msgstr ""
+
+#: odk_logger/management/commands/publish_xls.py:61
+msgid "Form does NOT exist, publishing ..\n"
+msgstr ""
+
+#: odk_logger/management/commands/publish_xls.py:66
+msgid "Done..\n"
+msgstr ""
+
+#: odk_logger/management/commands/restore_backup.py:10
+msgid "Restore a zip backup of a form and all its submissions"
+msgstr ""
+
+#: odk_logger/management/commands/restore_backup.py:28
+msgid "You must provide the path to restore from."
+msgstr ""
+
+#: odk_logger/management/commands/sync_deleted_instances_fix.py:12
+msgid "Fixes deleted instances by syncing deleted items from mongo."
+msgstr ""
+
+#: odk_logger/management/commands/update_xform_uuids.py:16
+msgid "Use a csv file with username, id_string and new_uuid to set new uuids"
+msgstr ""
+
+#: odk_logger/management/commands/update_xform_uuids.py:19
+#, fuzzy
+msgid "Path to csv file"
+msgstr "នាំ​ចេញ​ជា​ឯកសារ csv"
+
+#: odk_logger/models/instance.py:20
+#, fuzzy
+msgid "Form is inactive"
+msgstr "សំណុំ​បែបបទ​មិន​សកម្ម"
+
+#: odk_logger/models/xform.py:49
+msgid "SMS ID"
+msgstr ""
+
+#: odk_logger/models/xform.py:53
 msgid "ID"
 msgstr "លេខ​សម្គាល់"
 
-#: odk_logger/models/xform.py:61
+#: odk_logger/models/xform.py:73
 msgid "XForms"
 msgstr "XForms"
 
-#: odk_logger/models/xform.py:64
+#: odk_logger/models/xform.py:76
 msgid "Can view associated data"
 msgstr "អាច​មើល​ទិន្នន័យ​ដែល​បាន​ភ្ជាប់"
 
-#: odk_logger/models/xform.py:86
+#: odk_logger/models/xform.py:102
 msgid "There should be a single id string."
 msgstr "គួរ​មាន​ឃ្លា​លេខ​សម្គាល់​តែ​មួយ។"
 
-#: odk_logger/models/xform.py:93
+#: odk_logger/models/xform.py:109
 msgid "There should be a single title."
 msgstr "គួរ​​មាន​​ចំណង​ជើង​តែមួយ​។"
 
-#: odk_logger/models/xform.py:104
+#: odk_logger/models/xform.py:123
+#, python-format
+msgid ""
+"Your updated form's id_string '%(new_id)s' must match the existing forms' "
+"id_string '%(old_id)s'."
+msgstr ""
+
+#: odk_logger/models/xform.py:128
 msgid ""
 "In strict mode, the XForm ID must be a valid slug and contain no spaces."
 msgstr "ក្នុង​របៀប​តឹងរ៉ឹង លេខ​សម្គាល់​ XForm ត្រូវ​តែ​ជា​ការ​បញ្ចូល​ត្រឹមត្រូវ និង​​ដកឃ្លា"
 
-#: odk_logger/models/xform.py:113
+#: odk_logger/models/xform.py:146
 msgid "Submission Count"
 msgstr "ចំនួន​ដាក់​ស្នើ"
 
-#: odk_logger/templates/base.html:9
-msgid "XForm Manager:"
-msgstr "កម្មវិធី​គ្រប់គ្រង XForm ៖"
-
-#: odk_logger/templates/base.html:15
-msgid "XForm Manager"
-msgstr "កម្មវិធី​គ្រប់គ្រង XForm"
-
-#: odk_logger/templates/bulk_submission_form.html:4
 #: odk_logger/templates/form.html:4
 msgid "Update XForm"
 msgstr "ធ្វើ​បច្ចុប្បន្នភាព XForm"
@@ -1216,21 +1829,101 @@ msgstr "[ញែក​ធាតុ XForm ឡើង​វិញ]\n"
 msgid "That process took [%(nb)d ticks]"
 msgstr "ដំណើរការ​នោះ​ចំណាយ​ [%(nb)d នាទី]"
 
-#: odk_viewer/views.py:59
+#: odk_viewer/views.py:57
 msgid "Start time format must be YY_MM_DD_hh_mm_ss"
 msgstr "ទ្រង់ទ្រាយ​ពេលវេលា​ចាប់ផ្ដើម​​ត្រូវ​តែ YY_MM_DD_hh_mm_ss"
 
-#: odk_viewer/views.py:70
+#: odk_viewer/views.py:68
 msgid "End time format must be YY_MM_DD_hh_mm_ss"
 msgstr "ទ្រង់ទ្រាយ​ពេលវេលា​បញ្ចប់​ត្រូវ​តែ​ YY_MM_DD_hh_mm_ss"
 
-#: odk_viewer/views.py:185 odk_viewer/views.py:222
+#: odk_viewer/views.py:130
+#, python-format
+msgid "Requested map on '%(id_string)s'."
+msgstr ""
+
+#: odk_viewer/views.py:166
+#, python-format
+msgid "Requested survey with id '%(instance_id)s' on '%(id_string)s'."
+msgstr ""
+
+#: odk_viewer/views.py:205 odk_viewer/views.py:277
+#, python-format
+msgid "Created %(export_type)s export on '%(id_string)s'."
+msgstr ""
+
+#: odk_viewer/views.py:211
 msgid "No records found to export"
 msgstr "រក​មិន​ឃើញ​កំណត់​ត្រា​ត្រូវ​នាំចេញ"
 
-#: odk_viewer/views.py:364
+#: odk_viewer/views.py:218
+#, python-format
+msgid "Downloaded %(export_type)s export on '%(id_string)s'."
+msgstr ""
+
+#: odk_viewer/views.py:253
+#, python-format
+msgid "%s is not a valid delimiter"
+msgstr ""
+
+#: odk_viewer/views.py:269 odk_viewer/views.py:330
+#, python-format
+msgid "%s is not a valid export type"
+msgstr ""
+
+#: odk_viewer/views.py:422
+#, python-format
+msgid "Downloaded %(export_type)s export '%(filename)s' on '%(id_string)s'."
+msgstr ""
+
+#: odk_viewer/views.py:457
+#, python-format
+msgid "Deleted %(export_type)s export '%(filename)s' on '%(id_string)s'."
+msgstr ""
+
+#: odk_viewer/views.py:489
+#, python-format
+msgid "Created ZIP export on '%(id_string)s'."
+msgstr ""
+
+#: odk_viewer/views.py:496
+#, python-format
+msgid "Downloaded ZIP export on '%(id_string)s'."
+msgstr ""
+
+#: odk_viewer/views.py:529
+#, python-format
+msgid "Created KML export on '%(id_string)s'."
+msgstr ""
+
+#: odk_viewer/views.py:536
+#, python-format
+msgid "Downloaded KML export on '%(id_string)s'."
+msgstr ""
+
+#: odk_viewer/views.py:580
+#, python-format
+msgid "Created Google Docs export on '%(id_string)s'."
+msgstr ""
+
+#: odk_viewer/views.py:601
+#, python-format
+msgid "Requested data view for '%(id_string)s'."
+msgstr ""
+
+#: odk_viewer/views.py:614
 msgid "Attachment not found"
 msgstr "រក​មិន​ឃើញ​ឯកសារ​ភ្ជាប់"
+
+#: odk_viewer/views.py:629
+#, fuzzy
+msgid "Error: Attachment not found"
+msgstr "រក​មិន​ឃើញ​ឯកសារ​ភ្ជាប់"
+
+#: odk_viewer/views.py:647
+#, python-format
+msgid "Requested instance view for '%(id_string)s'."
+msgstr ""
 
 #: odk_viewer/management/commands/mark_start_times.py:7
 msgid "This is a one-time command to mark start times of old surveys."
@@ -1254,21 +1947,13 @@ msgstr ""
 msgid "Relink all instances with the current forms."
 msgstr "តភ្ជាប់​ធាតុ​ទាំងអស់​ឡើង​​ជា​មួយ​សំណុំ​បែបបទ​បច្ចុប្បន្ន។"
 
-#: odk_viewer/management/commands/remongo.py:9
+#: odk_viewer/management/commands/remongo.py:10
 msgid "Insert all existing parsed instances into MongoDB"
 msgstr "បញ្ចូល​ធាតុ​បាន​ញែក​ដែល​មាន​ស្រាប់​ទាំងអស់​​ក្នុង MongoDB"
 
-#: odk_viewer/management/commands/remongo.py:14
+#: odk_viewer/management/commands/remongo.py:15
 msgid "Number of records to process per query"
 msgstr "ចំនួន​កំណត់​ត្រា​ត្រូវ​ដំណើរការ​ក្នុង​មួយ​​ចម្រោះ​"
-
-#: odk_viewer/management/commands/remongo.py:16
-msgid "Username of the form user"
-msgstr "ឈ្មោះ​អ្នក​ប្រើ​​របស់​​អ្នក​ប្រើ​សំណុំ​បែបបទ"
-
-#: odk_viewer/management/commands/remongo.py:18
-msgid "id string of the form"
-msgstr "ឃ្លា​លេខ​សម្គាល់​នៃ​សំណុំ​បែបបទ"
 
 #: odk_viewer/management/commands/reparse.py:9
 msgid "Delete and recreate parsed instances."
@@ -1288,77 +1973,149 @@ msgstr "%(nb)d XForms ត្រូវ​ធ្វើ​បច្ចុប្ប�
 msgid "Updated %(nb)d XForms..."
 msgstr "បាន​ធ្វើ​បច្ចុប្បន្នភាព %(nb)d XForms..."
 
+#: odk_viewer/management/commands/sync_mongo.py:13
+msgid ""
+"Check the count of submissions in sqlite vs the mongo db per form and "
+"optionally run remongo."
+msgstr ""
+
+#: odk_viewer/management/commands/sync_mongo.py:20
+msgid "Whether to run remongo on the found set."
+msgstr ""
+
+#: odk_viewer/management/commands/sync_mongo.py:27
+msgid ""
+"Update all instances for the selected form(s), including existing ones. Will "
+"delete and re-create mongo records. Only makes sense when used with the -r "
+"option"
+msgstr ""
+
 #: odk_viewer/management/commands/update_delete_from_mongo.py:12
 msgid "Update deleted records from mongo to sql instances"
 msgstr "ធ្វើ​បច្ចុប្បន្នភាព​កំណត់​ដែល​បាន​លុប​ពី​ធាតុ mongo ទៅ sql"
 
-#: odk_viewer/templates/data_view.html:16
-msgid "Display Fields"
-msgstr "បង្ហាញ​វាល​"
+#: odk_viewer/models/export.py:21
+msgid "Invalid export type specified"
+msgstr ""
 
-#: odk_viewer/templates/data_view.html:45
-msgid ""
-"Your survey has <strong>{numquestions}</strong> question(s) and "
-"<strong>{numsubmissions}</strong> submission(s). Please click on Display "
-"Fields above and select the questions you want to view responses for."
-msgstr "ការ​ស្ទង់មតិ​​របស់​អ្នក​មាន​​ <strong>{numquestions}</strong> សំណួរ និង​​ការ​ដាក់ស្នើ <strong>{numsubmissions}</strong>។ សូម​ចុច​​បង្ហាញ​វាល​ខាង​លើ ហើយ​ជ្រើស​សំណួរ​ដែល​អ្នក​ចង់​ការ​ឆ្លើយតប​។"
+#: odk_viewer/models/parsed_instance.py:143
+msgid "Invalid start/limit params"
+msgstr ""
 
-#: odk_viewer/templates/data_view.html:46
-msgid ""
-"NOTE: This is a beta feature and your survey contains more than "
-"<strong>{threshold}</strong> responses, search and sort features will not "
-"work."
-msgstr "ចំណាំ៖ នេះ​​ជា​លក្ខណៈ​បែតា ហើយ​ការ​ស្ទង់មតិ​របស់​អ្នក​មាន​ការ​ឆ្លើយតប​ច្រើន​ជាង <strong>{threshold}</strong> ការ​ស្វែងរក និង​តម្រៀប​លក្ខណៈ​​នឹង​មិន​ដំណើរការ​ទេ។"
+#: odk_viewer/templates/data_view.html:31
+#: odk_viewer/templates/instance.html:16
+#, fuzzy
+msgid "Data View"
+msgstr "មើល"
 
-#: odk_viewer/templates/data_view.html:115
-msgid "_MENU_ records per page"
-msgstr "_MENU_ កំណត់​ត្រា​ក្នុង​មួយ​ទំព័រ"
+#: odk_viewer/templates/export_list.html:9
+msgid "Exports"
+msgstr ""
 
-#: odk_viewer/templates/instance.html:18
+#: odk_viewer/templates/export_list.html:19
+#, fuzzy
+msgid "New Export"
+msgstr "សំណុំ​បែបបទ​ថ្មី"
+
+#: odk_viewer/templates/export_list.html:20
+#: odk_viewer/templates/export_list.html:30
+msgid "Advanced Export"
+msgstr ""
+
+#: odk_viewer/templates/export_list.html:33
+msgid "Delimiter to use to separate group names from field names"
+msgstr ""
+
+#: odk_viewer/templates/export_list.html:35
+msgid "Dot"
+msgstr ""
+
+#: odk_viewer/templates/export_list.html:36
+msgid "Slash"
+msgstr ""
+
+#: odk_viewer/templates/export_list.html:40
+msgid "DONT split select multiple choice answers into separate columns"
+msgstr ""
+
+#: odk_viewer/templates/export_list.html:45
+#, fuzzy
+msgid "Create Export"
+msgstr "បង្កើត​គណនី"
+
+#: odk_viewer/templates/export_list.html:54
+#, fuzzy
+msgid "Filename"
+msgstr "ស៊ូរីណាមី"
+
+#: odk_viewer/templates/export_list.html:55
+#, fuzzy
+msgid "Date Created"
+msgstr "កាលបរិច្ឆេទ​បង្កើត"
+
+#: odk_viewer/templates/export_list.html:71
+msgid "Pending ..."
+msgstr ""
+
+#: odk_viewer/templates/export_list.html:72
+msgid "Click to refresh"
+msgstr ""
+
+#: odk_viewer/templates/export_list.html:82
+#, fuzzy
+msgid "Delete Export"
+msgstr "លុប​​សំណុំ​បែបបទ"
+
+#: odk_viewer/templates/export_list.html:85
+msgid "Are you sure you want to delete this export?"
+msgstr ""
+
+#: odk_viewer/templates/instance.html:13
 msgid "Browse Form Data"
 msgstr "រក​​ទិន្នន័យ​សំណុំបែបបទ"
 
-#: odk_viewer/templates/instance.html:31
+#: odk_viewer/templates/instance.html:36
 msgid "Record {pos} of {total}"
 msgstr "កំណត់​ត្រា {pos} នៃ {total}"
 
-#: odk_viewer/templates/instance.html:166
-#: odk_viewer/templates/instance.html:203
+#: odk_viewer/templates/instance.html:154
+#: odk_viewer/templates/instance.html:188
 msgid "BAD REQUEST"
 msgstr "សំណើ​មិន​ត្រឹមត្រូវ"
 
-#: odk_viewer/templates/instance.html:310
+#: odk_viewer/templates/instance.html:323
 msgid "The requested content was not found."
 msgstr "រក​មិន​ឃើញ​ខ្លឹមសារ​ដែល​បាន​ស្នើ​។"
 
-#: odk_viewer/templates/instance.html:322
+#: odk_viewer/templates/instance.html:335
 msgid "Change Language:"
 msgstr "ប្ដូរ​ភាសា​៖"
 
-#: odk_viewer/templates/instance.html:338
+#: odk_viewer/templates/instance.html:351
 msgid "Record 1 of 6"
 msgstr "កំណត់​​ត្រា ១ នៃ​ ៦"
 
-#: odk_viewer/templates/instance.html:342
+#: odk_viewer/templates/instance.html:355
 msgid "← Previous"
 msgstr "← មុន"
 
-#: odk_viewer/templates/instance.html:342
+#: odk_viewer/templates/instance.html:355
 msgid "Next →"
 msgstr "បន្ទាប់ →"
 
-#: odk_viewer/templates/instance.html:354 odk_viewer/templates/survey.html:20
+#: odk_viewer/templates/instance.html:367 odk_viewer/templates/survey.html:20
 msgid "Question"
 msgstr "សំណួរ"
 
-#: odk_viewer/templates/instance.html:354 odk_viewer/templates/survey.html:21
+#: odk_viewer/templates/instance.html:367 odk_viewer/templates/survey.html:21
 msgid "Response"
 msgstr "ការ​ឆ្លើយតប"
 
-#: odk_viewer/templates/instance.html:446
+#: odk_viewer/templates/instance.html:444
+#, fuzzy
 msgid ""
-"Are you sure you want to delete this data. If you are unsure about deleting "
-"this form press 'Cancel'."
+"Are you sure you want to delete this record. If you are unsure about "
+"deleting this record press 'Cancel'."
 msgstr "តើ​អ្នក​ប្រាកដ​ជា​ចង់​លុប​ទិន្នន័យ​នេះ​។ បើ​អ្នក​មិន​ប្រាកដ​អំពី​ការ​លុប​សំណុំ​បែបបទ​នេះ​ទេ ចុច​'បោះបង់'។"
 
 #: restservice/forms.py:9
@@ -1369,22 +2126,199 @@ msgstr "ឈ្មោះ​សេវាកម្ម"
 msgid "Service URL"
 msgstr "URL សេវាកម្ម"
 
-#: restservice/views.py:31
+#: restservice/views.py:34
 msgid "Service already defined."
 msgstr "បាន​កំណត់​សេវាកម្ម​រួច​ហើយ។"
 
-#: restservice/views.py:35
+#: restservice/views.py:38
 #, python-format
 msgid "Successfully added service %(name)s."
 msgstr "បាន​បន្ថែម​សេវាកម្ម​ដោយ​ជោគជ័យ %(name)s ។"
 
-#: restservice/views.py:40
+#: restservice/views.py:46
 msgid "Please fill in all required fields"
 msgstr "សូម​បំពេញ​វាល​ដែល​ទាមទារ​ទាំងអស់"
 
 #: restservice/templates/add-service.html:15
 msgid "Add service"
 msgstr "បន្ថែម​សេវាកម្ម"
+
+#: sms_support/parser.py:33
+#, python-format
+msgid "%(question)s: %(message)s"
+msgstr ""
+
+#: sms_support/parser.py:85
+msgid "Required field missing"
+msgstr ""
+
+#: sms_support/parser.py:91
+#, python-format
+msgid "%(error)s"
+msgstr ""
+
+#: sms_support/parser.py:105
+#, python-format
+msgid "Media file format incorrect. %(except)r"
+msgstr ""
+
+#: sms_support/parser.py:119
+#, python-format
+msgid "No matching choice for '%(input)s'"
+msgstr ""
+
+#: sms_support/parser.py:132
+#, fuzzy
+msgid "Incorrect geopoint coordinates."
+msgstr "កត់ត្រា​កូអរដោណេ​ GPS របស់​អ្នក។"
+
+#: sms_support/parser.py:165
+#, python-format
+msgid "Unsuported column '%(type)s'"
+msgstr ""
+
+#: sms_support/parser.py:253
+msgid "[SUCCESS] Your submission has been accepted. It's ID is {{ id }}."
+msgstr ""
+
+#: sms_support/parser.py:266
+msgid "Missing 'identity' or 'text' field."
+msgstr ""
+
+#: sms_support/parser.py:272
+msgid "'identity' and 'text' fields can not be empty."
+msgstr ""
+
+#: sms_support/parser.py:288
+#, python-format
+msgid "The form '%(id_string)s' does not accept SMS submissions."
+msgstr ""
+
+#: sms_support/parser.py:307
+msgid "There must be at least one group of questions filled."
+msgstr ""
+
+#: sms_support/parser.py:323
+#, python-format
+msgid "Required field `%(field)s` is  missing."
+msgstr ""
+
+#: sms_support/tools.py:133
+msgid "[SUCCESS] Your submission has been accepted."
+msgstr ""
+
+#: sms_support/tools.py:230
+msgid "All your questions must be in groups."
+msgstr ""
+
+#: sms_support/tools.py:235
+#, python-format
+msgid ""
+"All your groups must have an 'sms_field' (use 'meta' prefixed ones for non-"
+"fillable groups). %s"
+msgstr ""
+
+#: sms_support/tools.py:244
+#, python-format
+msgid ""
+"Questions for which values can contain spaces are only allowed on last "
+"position of group (%s)"
+msgstr ""
+
+#: sms_support/tools.py:254
+#, python-format
+msgid ""
+"When allowing medias ('sms_allow_media'), your separator (%s) must be "
+"outside Base64 alphabet (letters, digits and +/=). You case use '#' instead."
+msgstr ""
+
+#: sms_support/tools.py:300
+msgid "Note that your form is also SMS comptatible."
+msgstr ""
+
+#: sms_support/views.py:58 sms_support/providers/smssync.py:110
+#: sms_support/providers/telerivet.py:98 sms_support/providers/textit.py:155
+#: sms_support/providers/twilio.py:106
+msgid "`identity` and `message` are both required and must not be empty."
+msgstr ""
+
+#: sms_support/providers/smssync.py:33 sms_support/providers/telerivet.py:33
+#: sms_support/providers/textit.py:38 sms_support/providers/twilio.py:36
+#, python-format
+msgid "%(service)s Instructions:"
+msgstr ""
+
+#: sms_support/providers/smssync.py:37
+msgid "Download the SMS Sync App on your phone serving as a gateway."
+msgstr ""
+
+#: sms_support/providers/smssync.py:39
+msgid "Configure the app to point to one of the following URLs"
+msgstr ""
+
+#: sms_support/providers/smssync.py:42
+msgid "Optionnaly set a keyword to prevent non-formhub messages to be sent."
+msgstr ""
+
+#: sms_support/providers/smssync.py:45
+msgid "In the preferences, tick the box to allow replies from the server."
+msgstr ""
+
+#: sms_support/providers/smssync.py:48
+msgid ""
+"That's it. Now Send an SMS Formhub submission to the number of that phone. "
+"It will create a submission on Formhub."
+msgstr ""
+
+#: sms_support/providers/smssync.py:61 sms_support/providers/telerivet.py:54
+#: sms_support/providers/textit.py:98 sms_support/providers/twilio.py:62
+#, python-format
+msgid "[ERROR] %s"
+msgstr ""
+
+#: sms_support/providers/telerivet.py:37
+msgid "Sign in to Telerivet.com and go to Service Page."
+msgstr ""
+
+#: sms_support/providers/telerivet.py:39
+msgid "Follow instructions to add an application with either URL:"
+msgstr ""
+
+#: sms_support/providers/telerivet.py:43
+msgid ""
+"That's it. Now Send an SMS Formhub submission to your Telerivet phone "
+"number. It will create a submission on Formhub."
+msgstr ""
+
+#: sms_support/providers/textit.py:42
+msgid "Sign in to TextIt.in and go to Account Page."
+msgstr ""
+
+#: sms_support/providers/textit.py:44
+msgid "Tick “Incoming SMS Messages” and set Webhook URL to either:"
+msgstr ""
+
+#: sms_support/providers/textit.py:48
+msgid ""
+"That's it. Now Send an SMS Formhub submission to your TextIt phone number. "
+"It will create a submission on Formhub."
+msgstr ""
+
+#: sms_support/providers/twilio.py:40
+msgid "Sign in to Twilio.com and go your Application."
+msgstr ""
+
+#: sms_support/providers/twilio.py:42
+msgid ""
+"Follow instructions to add one of the following URLs, selecting the HTTP "
+"POST method:"
+msgstr ""
+
+#: sms_support/providers/twilio.py:47
+msgid ""
+"That's it. Now Send an SMS Formhub submission to your Twilio phone number. "
+"It will create a submission on Formhub."
+msgstr ""
 
 #: staff/management/commands/mailer.py:15
 msgid "Send an email to all formhub users"
@@ -1403,7 +2337,7 @@ msgstr "ឈ្មោះ​ផ្ញើ​អ៊ីមែល​៖ %(name)s អ�
 msgid "Stats"
 msgstr "ស្ថានភាព"
 
-#: staff/templates/submissions.html:32
+#: staff/templates/submissions.html:9
 #, python-format
 msgid "Submissions (%(nb_sub)s)"
 msgstr "ការ​ដាក់​ស្នើ (%(nb_sub)s)"
@@ -1424,7 +2358,8 @@ msgid ""
 "  Thanks for using formhub!\n"
 "  The Formhub Dev Team\n"
 "\n"
-"  P.S. Please consider joining the formhub-users group, https://groups.google.com/group/formhub-users\n"
+"  P.S. Please consider joining the formhub-users group, https://groups."
+"google.com/group/formhub-users\n"
 msgstr ""
 
 #: staff/templates/templated_email/notice.email:15
@@ -1444,13 +2379,18 @@ msgid ""
 "  </p>\n"
 "\n"
 "  <p>\n"
-"      P.S. Please consider joining the <a href=\"https://groups.google.com/group/formhub-users\">formhub-users group</a>.\n"
+"      P.S. Please consider joining the <a href=\"https://groups.google.com/"
+"group/formhub-users\">formhub-users group</a>.\n"
 "  </p>\n"
 msgstr ""
 
 #: templates/404.html:5
 msgid "404 Error"
 msgstr "កំហុស 404"
+
+#: templates/405.html:5
+msgid "405 Error: Method Not Allowed!"
+msgstr ""
 
 #: templates/500.html:5
 msgid "500 Error"
@@ -1459,9 +2399,11 @@ msgstr "កំហុស 500"
 #: templates/500.html:9
 msgid ""
 "If you are getting this error while trying to submit a form, please do "
-"consider sending an email to support@formhub.org with your xlsform attached."
-" Thank you for using formhub."
-msgstr "បើ​អ្នក​ទទួល​កំហុស​នេះ​ខណៈ​ដែល​ព្យាយាម​ដាក់​ស្នើ​សំណុំ​បែបបទ សូម​ផ្ញើ​អ៊ីមែល​ទៅ support@formhub.org ដោយ​ភ្ជាប់​ xlsform របស់​អ្នក​។ សូម​អរគុណ​ចំពោះ​ការ​ប្រើ formhub ។"
+"consider sending an email to support@formhub.org with your xlsform attached. "
+"Thank you for using formhub."
+msgstr ""
+"បើ​អ្នក​ទទួល​កំហុស​នេះ​ខណៈ​ដែល​ព្យាយាម​ដាក់​ស្នើ​សំណុំ​បែបបទ សូម​ផ្ញើ​អ៊ីមែល​ទៅ support@formhub.org ដោយ​"
+"ភ្ជាប់​ xlsform របស់​អ្នក​។ សូម​អរគុណ​ចំពោះ​ការ​ប្រើ formhub ។"
 
 #: templates/browser_message.html:17
 msgid "Browser Error"
@@ -1485,7 +2427,10 @@ msgid ""
 "support complex navigation. We highly recommend that you switch to one of "
 "the browsers below in order to take full advantage of the Nigeria MDGs "
 "Information System."
-msgstr "ការ​សាកល្បង​របស់​យើង​បង្ហាញ​ថា បច្ចុប្បន្ន​អ្នក​កំពុង​ប្រើ​កម្មវិធី​អ៊ីនធឺណិត​ដែល​មិន​គាំទ្រ​ការ​រុករក​ស្មុគស្មាញ​។ យើង​ផ្ដល់​អនុសាសន៍​ឲ្យ​ប្ដូរ​មក​ប្រើ​កម្មវិធី​អ៊ីនធឺណិត​​មួយ​ក្នុង​ចំណោម​កម្មវិធី​អ៊ីនធឺណិត​ខាង​ក្រោម​ ដើម្បី​ទទួល​បាន​ផលប្រយោជន៍​ពេញលេញ​នៃ​ប្រព័ន្ធ​ព័ត៌មាន​ MDGs របស់​នីហ្សេរីយ៉ា​។"
+msgstr ""
+"ការ​សាកល្បង​របស់​យើង​បង្ហាញ​ថា បច្ចុប្បន្ន​អ្នក​កំពុង​ប្រើ​កម្មវិធី​អ៊ីនធឺណិត​ដែល​មិន​គាំទ្រ​ការ​រុករក​ស្មុគស្មាញ​។ យើង​"
+"ផ្ដល់​អនុសាសន៍​ឲ្យ​ប្ដូរ​មក​ប្រើ​កម្មវិធី​អ៊ីនធឺណិត​​មួយ​ក្នុង​ចំណោម​កម្មវិធី​អ៊ីនធឺណិត​ខាង​ក្រោម​ ដើម្បី​ទទួល​បាន​ផលប្រយោជន៍​"
+"ពេញលេញ​នៃ​ប្រព័ន្ធ​ព័ត៌មាន​ MDGs របស់​នីហ្សេរីយ៉ា​។"
 
 #: templates/browser_message.html:42
 msgid "Thank You,"
@@ -1497,66 +2442,76 @@ msgstr "ក្រុម​គាំទ្រ NMIS"
 
 #: templates/footer.html:5
 msgid ""
-"Built by the <a href=\"http://modi.mech.columbia.edu/\">Modi Research "
-"Group</a> at Columbia University."
-msgstr "បង្កើត​ដោយ <a href=\"http://modi.mech.columbia.edu/\">ក្រុម​ស្រាវជ្រាវ Modi</a> នៅ​សកលវិទ្យាល័យ​កូឡុំប៊ី។"
+"Built by the <a href=\"http://modi.mech.columbia.edu/\">Modi Research Group</"
+"a> at Columbia University."
+msgstr ""
+"បង្កើត​ដោយ <a href=\"http://modi.mech.columbia.edu/\">ក្រុម​ស្រាវជ្រាវ Modi</a> នៅ​"
+"សកលវិទ្យាល័យ​កូឡុំប៊ី។"
 
 #: templates/footer.html:8
 msgid ""
-"Code (BSD License) at <a "
-"href=\"https://github.com/modilabs/formhub\">github.com/modilabs/formhub</a>"
-msgstr "កូដ (អាជ្ញាប័ណ្ណ BSD) នៅ <a href=\"https://github.com/modilabs/formhub\">github.com/modilabs/formhub</a>"
+"Code (BSD License) at <a href=\"https://github.com/modilabs/formhub\">github."
+"com/modilabs/formhub</a>"
+msgstr ""
+"កូដ (អាជ្ញាប័ណ្ណ BSD) នៅ <a href=\"https://github.com/modilabs/formhub\">github."
+"com/modilabs/formhub</a>"
 
 #: templates/footer.html:10
-msgid "Copyright &copy; 2012, formhub.org"
+#, fuzzy
+msgid "Copyright &copy; 2012-2013, formhub.org"
 msgstr "រក្សាសិទ្ធិ​ &copy; 2012, formhub.org"
+
+#: templates/home_topbar.html:13 templates/topbar.html:61
+msgid "Forms"
+msgstr "សំណុំ​​បែបបទ"
+
+#: templates/home_topbar.html:14 templates/topbar.html:62
+msgid "People"
+msgstr "មនុស្ស"
+
+#: templates/home_topbar.html:15
+msgid "FAQ"
+msgstr ""
+
+#: templates/home_topbar.html:18 templates/topbar.html:65
+msgid "Support"
+msgstr "គាំទ្រ"
+
+#: templates/home_topbar.html:22
+#: templates/registration/password_reset_complete.html:4
+msgid "Log In"
+msgstr "ចូល"
 
 #: templates/main_index.html:9
 msgid "View LGAs"
 msgstr "មើល LGAs"
 
-#: templates/resources.html:4
-msgid "Resources"
-msgstr "ធនធាន"
-
-#: templates/topbar.html:25
+#: templates/topbar.html:31
 #, python-format
 msgid "%(nb_sub)s submissions"
 msgstr "ការ​ដាក់​ស្នើ %(nb_sub)s"
 
-#: templates/topbar.html:55
-msgid "Forms"
-msgstr "សំណុំ​​បែបបទ"
-
-#: templates/topbar.html:56
-msgid "People"
-msgstr "មនុស្ស"
-
-#: templates/topbar.html:57
-msgid "About"
-msgstr "អំពី"
-
-#: templates/topbar.html:58
+#: templates/topbar.html:64
 msgid "Syntax"
 msgstr "វាក្យ​សម្ពន្ធ​​"
 
-#: templates/topbar.html:60
+#: templates/topbar.html:66
 msgid "Blog"
 msgstr "ប្លុក"
 
-#: templates/topbar.html:65
+#: templates/topbar.html:71
 msgid "New Form"
 msgstr "សំណុំ​បែបបទ​ថ្មី"
 
-#: templates/topbar.html:72
+#: templates/topbar.html:78
 msgid "Public profile"
 msgstr "ប្រវត្តិ​រូប​សាធារណៈ"
 
-#: templates/topbar.html:76
+#: templates/topbar.html:83
 msgid "Sign out"
 msgstr "ចេញ"
 
-#: templates/topbar.html:80 templates/registration/login.html:7
+#: templates/topbar.html:87 templates/registration/login.html:7
 #: templates/registration/login.html:18
 msgid "Sign in"
 msgstr "ចូល"
@@ -1582,7 +2537,13 @@ msgid ""
 "http://%(site_domain)s%(register_url)s\n"
 "\n"
 "The link above is valid for %(expiration_days)s day%(expiration_days_p)s.\n"
-msgstr "អ្នក​បាន​ចុះ​ឈ្មោះ​លើ %(site_name)s ។ ដើម្បី​ធ្វើ​ឲ្យ​គណនី​របស់​អ្នក​សកម្ម\nសូម​ចុច​តំណ​ខាង​ក្រោម៖\n\nhttp://%(site_domain)s%(register_url)s\n\n​តំណ​ខាង​លើ​មាន​សុពល​ភាព​រយៈ​ពេល %(expiration_days)s day%(expiration_days_p)s.\n"
+msgstr ""
+"អ្នក​បាន​ចុះ​ឈ្មោះ​លើ %(site_name)s ។ ដើម្បី​ធ្វើ​ឲ្យ​គណនី​របស់​អ្នក​សកម្ម\n"
+"សូម​ចុច​តំណ​ខាង​ក្រោម៖\n"
+"\n"
+"http://%(site_domain)s%(register_url)s\n"
+"\n"
+"​តំណ​ខាង​លើ​មាន​សុពល​ភាព​រយៈ​ពេល %(expiration_days)s day%(expiration_days_p)s.\n"
 
 #: templates/registration/activation_email_subject.txt:1
 #, python-format
@@ -1592,9 +2553,9 @@ msgstr "ការ​ធ្វើ​​ឲ្យ​គណនី​សកម្ម
 #: templates/registration/login.html:26
 #, python-format
 msgid ""
-"Can't access your account? <a href=\"%(reset_url)s\">Reset your "
-"password.</a>"
-msgstr "មិន​អាច​ចូល​គណនី​របស់​អ្នក? <a href=\"%(reset_url)s\">កំណត់​ពាក្យ​សម្ងាត់​របស់​អ្នក​ឡើងវិញ។</a>"
+"Can't access your account? <a href=\"%(reset_url)s\">Reset your password.</a>"
+msgstr ""
+"មិន​អាច​ចូល​គណនី​របស់​អ្នក? <a href=\"%(reset_url)s\">កំណត់​ពាក្យ​សម្ងាត់​របស់​អ្នក​ឡើងវិញ។</a>"
 
 #: templates/registration/login.html:28
 #, python-format
@@ -1618,10 +2579,6 @@ msgstr "បាន​ប្ដូរ​ពាក្យសម្ងាត់"
 msgid "Change Password"
 msgstr "ប្ដូរ​ពាក្យ​សម្ងាត់"
 
-#: templates/registration/password_reset_complete.html:4
-msgid "Log In"
-msgstr "ចូល"
-
 #: templates/registration/password_reset_complete.html:8
 msgid "Password reset successfully"
 msgstr "បាន​កំណត់​ពាក្យ​សម្ងាត់​ឡើងវិញ​​ជោគជ័យ"
@@ -1642,10 +2599,24 @@ msgstr "បាន​ផ្ញើ​អ៊ីមែល"
 msgid "An email with password reset instructions has been sent."
 msgstr "បាន​ផ្ញើ​អ៊ីមែល​ដែល​មាន​ការ​ណែនាំ​កំណត់​ពាក្យ​សម្ងាត់​ឡើង​វិញ។"
 
-#: templates/registration/password_reset_email.html:2
+#: templates/registration/password_reset_email.html:3
 #, python-format
-msgid "Reset password at %(site_name)s"
-msgstr "កំណត់​ពាក្យ​សម្ងាត់​ឡើង​វិញ​នៅ %(site_name)s"
+msgid ""
+"\n"
+"    Hi %(user)s,\n"
+"\n"
+"    You recently requested a link to reset your %(site_name)s password for "
+"the username %(user)s.\n"
+"    Please set a new password by following the link below:\n"
+msgstr ""
+
+#: templates/registration/password_reset_email.html:13
+#, python-format
+msgid ""
+"\n"
+"    Thanks,\n"
+"    - The %(site_name)s Team.\n"
+msgstr ""
 
 #: templates/registration/password_reset_form.html:7
 msgid "Password Reset"
@@ -1685,1000 +2656,1238 @@ msgstr "វាល​ដែល​មាន​សញ្ញា​ (*) ជា​វ�
 
 #: templates/registration/registration_form.html:29
 msgid ""
-"By clicking the Register button, you acknowledge that this is beta software;"
-" we make no guarantees about the reliability or continuity of our service. "
-"We reserve the right to pause or terminate your service, or delete your "
-"account and data, at any time without notice. We will not be liable for any "
-"losses, either direct or indirect, that such service interruption or data "
-"loss may cause you. Use the service at your own risk."
-msgstr "ដោយ​ចុច​ប៊ូតុង​ ចុះ​ឈ្មោះ អ្នក​​ដឹង​ថា នេះ​ជា​កម្មវិធី​បែតា យើង​មិន​ធានា​លើ​ភាព​ទុក​ចិត្ត ឬ​បន្ត​សេវាកម្ម​របស់​យើង​ទេ​។ យើង​រក្សាសិទ្ធិ​ក្នុង​ការ​ផ្អាក ឬ​បញ្ចប់​សេវាកម្ម​របស់​យើង ឬ​លុប​គណនី​ និង​ទិន្នន័យ​របស់​​អ្នក​នៅ​ពេល​ណាមួយ​ដោយ​មិន​ជូន​ដំណឹង​ជា​មុន​។ យើង​នឹង​ទទួល​ខុស​ត្រូវ​ក្នុង​ការ​បាត់បង់​​ទិន្នន័យ​ទាំង​ដោយ​ផ្ទាល់ ឬ​ប្រយោល​ ដែល​បណ្ដាល​មក​​ការ​ផ្អាក​សេវាកម្ម ឬ​ធ្វើ​ឲ្យ​អ្នក​បាត់បង់​ទិន្នន័យ​។ ប្រើ​សេវាកម្ម​ប្រឈម​នឹង​គ្រោះ​ថ្នាក់​ផ្ទាល់ខ្លួន។"
-
-#: utils/country_field.py:6
-msgid "Andorra"
-msgstr "អង់ដូរ៉ា"
+"By clicking the Register button, you acknowledge that this is beta software; "
+"we make no guarantees about the reliability or continuity of our service. We "
+"reserve the right to pause or terminate your service, or delete your account "
+"and data, at any time without notice. We will not be liable for any losses, "
+"either direct or indirect, that such service interruption or data loss may "
+"cause you. Use the service at your own risk."
+msgstr ""
+"ដោយ​ចុច​ប៊ូតុង​ ចុះ​ឈ្មោះ អ្នក​​ដឹង​ថា នេះ​ជា​កម្មវិធី​បែតា យើង​មិន​ធានា​លើ​ភាព​ទុក​ចិត្ត ឬ​បន្ត​សេវាកម្ម​របស់​យើង​"
+"ទេ​។ យើង​រក្សាសិទ្ធិ​ក្នុង​ការ​ផ្អាក ឬ​បញ្ចប់​សេវាកម្ម​របស់​យើង ឬ​លុប​គណនី​ និង​ទិន្នន័យ​របស់​​អ្នក​នៅ​ពេល​ណាមួយ​ដោយ​"
+"មិន​ជូន​ដំណឹង​ជា​មុន​។ យើង​នឹង​ទទួល​ខុស​ត្រូវ​ក្នុង​ការ​បាត់បង់​​ទិន្នន័យ​ទាំង​ដោយ​ផ្ទាល់ ឬ​ប្រយោល​ ដែល​បណ្ដាល​មក​​ការ​ផ្អាក​"
+"សេវាកម្ម ឬ​ធ្វើ​ឲ្យ​អ្នក​បាត់បង់​ទិន្នន័យ​។ ប្រើ​សេវាកម្ម​ប្រឈម​នឹង​គ្រោះ​ថ្នាក់​ផ្ទាល់ខ្លួន។"
 
 #: utils/country_field.py:7
-msgid "United Arab Emirates"
-msgstr "អេមីរ៉ែទអារ៉ាប់រួម"
-
-#: utils/country_field.py:8
 msgid "Afghanistan"
 msgstr "អាហ្គានីស្ថាន"
 
-#: utils/country_field.py:9
-msgid "Antigua & Barbuda"
-msgstr "អង់ទីគ័រ និង​បាបុយដា"
-
-#: utils/country_field.py:10
-msgid "Anguilla"
-msgstr "អង់ហ្គីឡា"
-
-#: utils/country_field.py:11
+#: utils/country_field.py:8
 msgid "Albania"
 msgstr "អាល់បានី"
 
+#: utils/country_field.py:9
+msgid "Algeria"
+msgstr "អាល់ហ្សេរី"
+
+#: utils/country_field.py:10
+msgid "American Samoa"
+msgstr "សាម៉ូអា ​អាមេរិក"
+
+#: utils/country_field.py:11
+msgid "Andorra"
+msgstr "អង់ដូរ៉ា"
+
 #: utils/country_field.py:12
-msgid "Armenia"
-msgstr "អារមេនី"
-
-#: utils/country_field.py:13
-msgid "Netherlands Antilles"
-msgstr "ហូល្លង់ អង់ទីល"
-
-#: utils/country_field.py:14
 msgid "Angola"
 msgstr "អង់ហ្គោឡា"
 
-#: utils/country_field.py:15
+#: utils/country_field.py:13
+msgid "Anguilla"
+msgstr "អង់ហ្គីឡា"
+
+#: utils/country_field.py:14
 msgid "Antarctica"
 msgstr "អង់តាកទិក"
+
+#: utils/country_field.py:15
+#, fuzzy
+msgid "Antigua and Barbuda"
+msgstr "អង់ទីគ័រ និង​បាបុយដា"
 
 #: utils/country_field.py:16
 msgid "Argentina"
 msgstr "អាហ្សង់ទីន"
 
 #: utils/country_field.py:17
-msgid "American Samoa"
-msgstr "សាម៉ូអា ​អាមេរិក"
+msgid "Armenia"
+msgstr "អារមេនី"
 
 #: utils/country_field.py:18
-msgid "Austria"
-msgstr "អូទ្រីស"
+msgid "Aruba"
+msgstr "អារូបា"
 
 #: utils/country_field.py:19
 msgid "Australia"
 msgstr "អូស្ត្រាលី"
 
 #: utils/country_field.py:20
-msgid "Aruba"
-msgstr "អារូបា"
+msgid "Austria"
+msgstr "អូទ្រីស"
 
 #: utils/country_field.py:21
 msgid "Azerbaijan"
 msgstr "អាហ្ស៊ែរបែហ្សង់"
 
 #: utils/country_field.py:22
-msgid "Bosnia and Herzegovina"
-msgstr "បូស្ន៊ី និង​​ហឺហ្ស៊េហ្គោវីណា"
+#, fuzzy
+msgid "Bahamas"
+msgstr "បាហាម៉ា"
 
 #: utils/country_field.py:23
-msgid "Barbados"
-msgstr "បារបាដូស"
+msgid "Bahrain"
+msgstr "បារ៉ែន"
 
 #: utils/country_field.py:24
 msgid "Bangladesh"
 msgstr "បង់ក្លាដេស"
 
 #: utils/country_field.py:25
-msgid "Belgium"
-msgstr "បែល​ហ្ស៊ិក"
+msgid "Barbados"
+msgstr "បារបាដូស"
 
 #: utils/country_field.py:26
-msgid "Burkina Faso"
-msgstr "ប៊ូរគីណាហ្វាសូ"
-
-#: utils/country_field.py:27
-msgid "Bulgaria"
-msgstr "ប៊ុលហ្គារី"
-
-#: utils/country_field.py:28
-msgid "Bahrain"
-msgstr "បារ៉ែន"
-
-#: utils/country_field.py:29
-msgid "Burundi"
-msgstr "ប៊ូរុនឌី"
-
-#: utils/country_field.py:30
-msgid "Benin"
-msgstr "បេណាំង"
-
-#: utils/country_field.py:31
-msgid "Bermuda"
-msgstr "ប៊េរមូដា"
-
-#: utils/country_field.py:32
-msgid "Brunei Darussalam"
-msgstr "ប៊្រុយណេ​​ដារូសាឡាម"
-
-#: utils/country_field.py:33
-msgid "Bolivia"
-msgstr "បូលីវី"
-
-#: utils/country_field.py:34
-msgid "Brazil"
-msgstr "ប្រេស៊ីល"
-
-#: utils/country_field.py:35
-msgid "Bahama"
-msgstr "បាហាម៉ា"
-
-#: utils/country_field.py:36
-msgid "Bhutan"
-msgstr "ប៊ូតាន"
-
-#: utils/country_field.py:37
-msgid "Bouvet Island"
-msgstr "កោះ​ប៊ូវ៉េត"
-
-#: utils/country_field.py:38
-msgid "Botswana"
-msgstr "បុតស្វាណា"
-
-#: utils/country_field.py:39
 msgid "Belarus"
 msgstr "បេឡារុស្ស"
 
-#: utils/country_field.py:40
+#: utils/country_field.py:27
+msgid "Belgium"
+msgstr "បែល​ហ្ស៊ិក"
+
+#: utils/country_field.py:28
 msgid "Belize"
 msgstr "បេលីហ្ស"
 
+#: utils/country_field.py:29
+msgid "Benin"
+msgstr "បេណាំង"
+
+#: utils/country_field.py:30
+msgid "Bermuda"
+msgstr "ប៊េរមូដា"
+
+#: utils/country_field.py:31
+msgid "Bhutan"
+msgstr "ប៊ូតាន"
+
+#: utils/country_field.py:32
+msgid "Bolivia"
+msgstr "បូលីវី"
+
+#: utils/country_field.py:33
+msgid "Bonaire, Sint Eustatius and Saba"
+msgstr ""
+
+#: utils/country_field.py:34
+msgid "Bosnia and Herzegovina"
+msgstr "បូស្ន៊ី និង​​ហឺហ្ស៊េហ្គោវីណា"
+
+#: utils/country_field.py:35
+msgid "Botswana"
+msgstr "បុតស្វាណា"
+
+#: utils/country_field.py:36
+msgid "Brazil"
+msgstr "ប្រេស៊ីល"
+
+#: utils/country_field.py:37
+msgid "British Indian Ocean Territory"
+msgstr "អាណាចក្រ​ចក្រភព​អង់គ្លេស​នៅ​មហាសមុទ្រ​ឥណ្ឌា"
+
+#: utils/country_field.py:38
+msgid "Brunei Darussalam"
+msgstr "ប៊្រុយណេ​​ដារូសាឡាម"
+
+#: utils/country_field.py:39
+msgid "Bulgaria"
+msgstr "ប៊ុលហ្គារី"
+
+#: utils/country_field.py:40
+msgid "Burkina Faso"
+msgstr "ប៊ូរគីណាហ្វាសូ"
+
 #: utils/country_field.py:41
+msgid "Burundi"
+msgstr "ប៊ូរុនឌី"
+
+#: utils/country_field.py:42
+msgid "Cambodia"
+msgstr "កម្ពុជា"
+
+#: utils/country_field.py:43
+msgid "Cameroon"
+msgstr "កាមេរ៉ូន"
+
+#: utils/country_field.py:44
 msgid "Canada"
 msgstr "កាណាដា"
 
-#: utils/country_field.py:42
-msgid "Cocos (Keeling) Islands"
-msgstr "កោះ​កូកូស (Keeling)"
+#: utils/country_field.py:45
+msgid "Cape Verde"
+msgstr "កាបវែ"
 
-#: utils/country_field.py:43
+#: utils/country_field.py:46
+msgid "Cayman Islands"
+msgstr "កោះ​កៃម៉ាន"
+
+#: utils/country_field.py:47
 msgid "Central African Republic"
 msgstr "សាធារណរដ្ឋ​អាហ្វ្រិក​កណ្ដាល"
 
-#: utils/country_field.py:44
-msgid "Congo"
-msgstr "កុងហ្គោ"
-
-#: utils/country_field.py:45
-msgid "Switzerland"
-msgstr "ស្វ៊ីស"
-
-#: utils/country_field.py:46
-msgid "Ivory Coast"
-msgstr "កូតឌីវ័រ"
-
-#: utils/country_field.py:47
-msgid "Cook Iislands"
-msgstr "កោះ​ខូក"
-
 #: utils/country_field.py:48
-msgid "Chile"
-msgstr "ឈីលី"
+msgid "Chad"
+msgstr "ឆាដ"
 
 #: utils/country_field.py:49
-msgid "Cameroon"
-msgstr "កាមេរ៉ូន"
+msgid "Chile"
+msgstr "ឈីលី"
 
 #: utils/country_field.py:50
 msgid "China"
 msgstr "ចិន"
 
 #: utils/country_field.py:51
-msgid "Colombia"
-msgstr "កូឡុំប៊ី"
-
-#: utils/country_field.py:52
-msgid "Costa Rica"
-msgstr "កូស្តារីកា"
-
-#: utils/country_field.py:53
-msgid "Cuba"
-msgstr "គុយបា"
-
-#: utils/country_field.py:54
-msgid "Cape Verde"
-msgstr "កាបវែ"
-
-#: utils/country_field.py:55
 msgid "Christmas Island"
 msgstr "កោះ​គ្រីស្តម៉ាស"
 
+#: utils/country_field.py:52
+msgid "Cocos (Keeling) Islands"
+msgstr "កោះ​កូកូស (Keeling)"
+
+#: utils/country_field.py:53
+msgid "Colombia"
+msgstr "កូឡុំប៊ី"
+
+#: utils/country_field.py:54
+msgid "Comoros"
+msgstr "កុំម៉ូរ៉ូស"
+
+#: utils/country_field.py:55
+msgid "Congo"
+msgstr "កុងហ្គោ"
+
 #: utils/country_field.py:56
+#, fuzzy
+msgid "Congo, The Democratic Republic of the"
+msgstr "សាធារណរដ្ឋ​ប្រជាធិបតេយ្យ​កូរ៉េ"
+
+#: utils/country_field.py:57
+#, fuzzy
+msgid "Cook Islands"
+msgstr "កោះ​ខូក"
+
+#: utils/country_field.py:58
+msgid "Costa Rica"
+msgstr "កូស្តារីកា"
+
+#: utils/country_field.py:59
+msgid "Ivory Coast"
+msgstr "កូតឌីវ័រ"
+
+#: utils/country_field.py:60
+msgid "Croatia"
+msgstr "ក្រូអាត"
+
+#: utils/country_field.py:61
+msgid "Cuba"
+msgstr "គុយបា"
+
+#: utils/country_field.py:62
+msgid "Curacao"
+msgstr ""
+
+#: utils/country_field.py:63
 msgid "Cyprus"
 msgstr "ស៊ីពរ៍"
 
-#: utils/country_field.py:57
+#: utils/country_field.py:64
 msgid "Czech Republic"
 msgstr "សាធារណ​រដ្ឋ​ឆេក"
 
-#: utils/country_field.py:58
-msgid "Germany"
-msgstr "អាល្លឺម៉ង់"
-
-#: utils/country_field.py:59
-msgid "Djibouti"
-msgstr "ហ្ស៊ីបូទី"
-
-#: utils/country_field.py:60
+#: utils/country_field.py:65
 msgid "Denmark"
 msgstr "ដាណឺម៉ាក"
 
-#: utils/country_field.py:61
+#: utils/country_field.py:66
+msgid "Djibouti"
+msgstr "ហ្ស៊ីបូទី"
+
+#: utils/country_field.py:67
 msgid "Dominica"
 msgstr "ដូមីនីកា"
 
-#: utils/country_field.py:62
+#: utils/country_field.py:68
 msgid "Dominican Republic"
 msgstr "សាធារណរដ្ឋ​ដូមីនីកែន"
 
-#: utils/country_field.py:63
-msgid "Algeria"
-msgstr "អាល់ហ្សេរី"
-
-#: utils/country_field.py:64
+#: utils/country_field.py:69
 msgid "Ecuador"
 msgstr "អេក្វាឌ័រ"
 
-#: utils/country_field.py:65
-msgid "Estonia"
-msgstr "អេស្តូនី"
-
-#: utils/country_field.py:66
+#: utils/country_field.py:70
 msgid "Egypt"
 msgstr "អេហ្ស៊ីប"
 
-#: utils/country_field.py:67
-msgid "Western Sahara"
-msgstr "សាហារ៉ា​ខាង​លិច"
+#: utils/country_field.py:71
+msgid "El Salvador"
+msgstr "អែលសាល់វ៉ាឌ័រ"
 
-#: utils/country_field.py:68
+#: utils/country_field.py:72
+msgid "Equatorial Guinea"
+msgstr "ហ្គីណេ​អេក្វាទ័រ"
+
+#: utils/country_field.py:73
 msgid "Eritrea"
 msgstr "អេរីទ្រា"
 
-#: utils/country_field.py:69
-msgid "Spain"
-msgstr "អេស៉្បាញ"
+#: utils/country_field.py:74
+msgid "Estonia"
+msgstr "អេស្តូនី"
 
-#: utils/country_field.py:70
+#: utils/country_field.py:75
 msgid "Ethiopia"
 msgstr "អេត្យូពី"
 
-#: utils/country_field.py:71
-msgid "Finland"
-msgstr "ហ្វាំងឡង់"
-
-#: utils/country_field.py:72
-msgid "Fiji"
-msgstr "ហ្វីហ្ស៊ី\t"
-
-#: utils/country_field.py:73
+#: utils/country_field.py:76
 msgid "Falkland Islands (Malvinas)"
 msgstr "កោះ​ហ្វ៉កឡង់ (ម៉ាល់វីណា)"
 
-#: utils/country_field.py:74
-msgid "Micronesia"
-msgstr "មីក្រូណេស៊ី"
-
-#: utils/country_field.py:75
+#: utils/country_field.py:77
 msgid "Faroe Islands"
 msgstr "កោះ​ហ្វារ៉ូ"
 
-#: utils/country_field.py:76
+#: utils/country_field.py:78
+msgid "Fiji"
+msgstr "ហ្វីហ្ស៊ី\t"
+
+#: utils/country_field.py:79
+msgid "Finland"
+msgstr "ហ្វាំងឡង់"
+
+#: utils/country_field.py:80
 msgid "France"
 msgstr "បារាំង"
 
-#: utils/country_field.py:77
-msgid "France, Metropolitan"
-msgstr "បារាំង"
-
-#: utils/country_field.py:78
-msgid "Gabon"
-msgstr "ហ្គាបុង"
-
-#: utils/country_field.py:79
-msgid "United Kingdom (Great Britain)"
-msgstr "ចក្រភព​អង់គ្លេស"
-
-#: utils/country_field.py:80
-msgid "Grenada"
-msgstr "ហ្គ្រីណាដា"
-
 #: utils/country_field.py:81
-msgid "Georgia"
-msgstr "ហ្សកហ្ស៊ី"
-
-#: utils/country_field.py:82
 msgid "French Guiana"
 msgstr "ហ្គូអ៊ីយ៉ាណា បារាំង"
 
+#: utils/country_field.py:82
+msgid "French Polynesia"
+msgstr "ប៉ូលីនេស៊ី​បារាំង"
+
 #: utils/country_field.py:83
-msgid "Ghana"
-msgstr "ហ្គាណា"
+msgid "French Southern Territories"
+msgstr "អាណាចក្រ​ខាង​ត្បូង​របស់​ បារាំង"
 
 #: utils/country_field.py:84
-msgid "Gibraltar"
-msgstr "ហ្គីប្រាល់តា"
+msgid "Gabon"
+msgstr "ហ្គាបុង"
 
 #: utils/country_field.py:85
-msgid "Greenland"
-msgstr "ហ្គ្រីនលែន"
-
-#: utils/country_field.py:86
 msgid "Gambia"
 msgstr "ហ្គាំប៊ី"
 
+#: utils/country_field.py:86
+msgid "Georgia"
+msgstr "ហ្សកហ្ស៊ី"
+
 #: utils/country_field.py:87
-msgid "Guinea"
-msgstr "ហ្គីណេ"
+msgid "Germany"
+msgstr "អាល្លឺម៉ង់"
 
 #: utils/country_field.py:88
-msgid "Guadeloupe"
-msgstr "ហ្គូអាដឺលូប៉េ"
+msgid "Ghana"
+msgstr "ហ្គាណា"
 
 #: utils/country_field.py:89
-msgid "Equatorial Guinea"
-msgstr "ហ្គីណេ​អេក្វាទ័រ"
+msgid "Gibraltar"
+msgstr "ហ្គីប្រាល់តា"
 
 #: utils/country_field.py:90
 msgid "Greece"
 msgstr "ក្រិក"
 
 #: utils/country_field.py:91
-msgid "South Georgia and the South Sandwich Islands"
-msgstr "កោះ​ហ្សកហ្ស៊ី​ខាងត្បូង និង​ស៊េនវិច​ខាងត្បូង"
+msgid "Greenland"
+msgstr "ហ្គ្រីនលែន"
 
 #: utils/country_field.py:92
-msgid "Guatemala"
-msgstr "ហ្គាតេម៉ាឡា"
+msgid "Grenada"
+msgstr "ហ្គ្រីណាដា"
 
 #: utils/country_field.py:93
+msgid "Guadeloupe"
+msgstr "ហ្គូអាដឺលូប៉េ"
+
+#: utils/country_field.py:94
 msgid "Guam"
 msgstr "ហ្គាម"
 
-#: utils/country_field.py:94
+#: utils/country_field.py:95
+msgid "Guatemala"
+msgstr "ហ្គាតេម៉ាឡា"
+
+#: utils/country_field.py:96
+msgid "Guernsey"
+msgstr ""
+
+#: utils/country_field.py:97
+msgid "Guinea"
+msgstr "ហ្គីណេ"
+
+#: utils/country_field.py:98
 msgid "Guinea-Bissau"
 msgstr "ហ្គីណេប៊ីសៅ"
 
-#: utils/country_field.py:95
+#: utils/country_field.py:99
 msgid "Guyana"
 msgstr "ហ្គីយ៉ាណា"
-
-#: utils/country_field.py:96
-msgid "Hong Kong"
-msgstr "ហុងកុង"
-
-#: utils/country_field.py:97
-msgid "Heard & McDonald Islands"
-msgstr "កោះ​ហឺដ និង​ម៉ាក់ដូណាល់"
-
-#: utils/country_field.py:98
-msgid "Honduras"
-msgstr "ហុងឌូរ៉ាស់"
-
-#: utils/country_field.py:99
-msgid "Croatia"
-msgstr "ក្រូអាត"
 
 #: utils/country_field.py:100
 msgid "Haiti"
 msgstr "ហៃទី"
 
 #: utils/country_field.py:101
+#, fuzzy
+msgid "Heard Island and McDonald Islands"
+msgstr "កោះ​ហឺដ និង​ម៉ាក់ដូណាល់"
+
+#: utils/country_field.py:102
+#, fuzzy
+msgid "Holy See (Vatican City State)"
+msgstr "រដ្ឋ​វ៉ាទីកង់ (Holy See)"
+
+#: utils/country_field.py:103
+msgid "Honduras"
+msgstr "ហុងឌូរ៉ាស់"
+
+#: utils/country_field.py:104
+msgid "Hong Kong"
+msgstr "ហុងកុង"
+
+#: utils/country_field.py:105
 msgid "Hungary"
 msgstr "ហុងគ្រី"
 
-#: utils/country_field.py:102
-msgid "Indonesia"
-msgstr "ឥណ្ឌូណេស៊ី"
-
-#: utils/country_field.py:103
-msgid "Ireland"
-msgstr "អៀរឡង់"
-
-#: utils/country_field.py:104
-msgid "Israel"
-msgstr "អ៊ីស្រាអែល"
-
-#: utils/country_field.py:105
-msgid "India"
-msgstr "ឥណ្ឌា"
-
 #: utils/country_field.py:106
-msgid "British Indian Ocean Territory"
-msgstr "អាណាចក្រ​ចក្រភព​អង់គ្លេស​នៅ​មហាសមុទ្រ​ឥណ្ឌា"
-
-#: utils/country_field.py:107
-msgid "Iraq"
-msgstr "អ៊ីរ៉ាក់"
-
-#: utils/country_field.py:108
-msgid "Islamic Republic of Iran"
-msgstr "​សាធារណរដ្ឋ​អ៊ីស្លាម​អ៊ីរ៉ង់"
-
-#: utils/country_field.py:109
 msgid "Iceland"
 msgstr "អ៊ីស្លង់"
 
+#: utils/country_field.py:107
+msgid "India"
+msgstr "ឥណ្ឌា"
+
+#: utils/country_field.py:108
+msgid "Indonesia"
+msgstr "ឥណ្ឌូណេស៊ី"
+
+#: utils/country_field.py:109
+msgid "Installations in International Waters"
+msgstr ""
+
 #: utils/country_field.py:110
+#, fuzzy
+msgid "Iran, Islamic Republic of"
+msgstr "​សាធារណរដ្ឋ​អ៊ីស្លាម​អ៊ីរ៉ង់"
+
+#: utils/country_field.py:111
+msgid "Iraq"
+msgstr "អ៊ីរ៉ាក់"
+
+#: utils/country_field.py:112
+msgid "Ireland"
+msgstr "អៀរឡង់"
+
+#: utils/country_field.py:113
+msgid "Isle of Man"
+msgstr ""
+
+#: utils/country_field.py:114
+msgid "Israel"
+msgstr "អ៊ីស្រាអែល"
+
+#: utils/country_field.py:115
 msgid "Italy"
 msgstr "អ៊ីតាលី"
 
-#: utils/country_field.py:111
+#: utils/country_field.py:116
 msgid "Jamaica"
 msgstr "ចា​ម៉ៃកា"
 
-#: utils/country_field.py:112
-msgid "Jordan"
-msgstr "ហ្ស៊កដង់"
-
-#: utils/country_field.py:113
+#: utils/country_field.py:117
 msgid "Japan"
 msgstr "ជប៉ុន"
 
-#: utils/country_field.py:114
-msgid "Kenya"
-msgstr "កេនយ៉ា"
-
-#: utils/country_field.py:115
-msgid "Kyrgyzstan"
-msgstr "គៀរហ្គីស្តង់"
-
-#: utils/country_field.py:116
-msgid "Cambodia"
-msgstr "កម្ពុជា"
-
-#: utils/country_field.py:117
-msgid "Kiribati"
-msgstr "គិរិបាទី"
-
 #: utils/country_field.py:118
-msgid "Comoros"
-msgstr "កុំម៉ូរ៉ូស"
+msgid "Jersey"
+msgstr ""
 
 #: utils/country_field.py:119
-msgid "St. Kitts and Nevis"
-msgstr "សង់ឃីត និង​ណេវីស"
+msgid "Jordan"
+msgstr "ហ្ស៊កដង់"
 
 #: utils/country_field.py:120
-msgid "Korea, Democratic People's Republic of"
-msgstr "សាធារណរដ្ឋ​ប្រជាធិបតេយ្យ​កូរ៉េ"
-
-#: utils/country_field.py:121
-msgid "Korea, Republic of"
-msgstr "សាធារណរដ្ឋ​កូរ៉េ"
-
-#: utils/country_field.py:122
-msgid "Kuwait"
-msgstr "កូវ៉ែត"
-
-#: utils/country_field.py:123
-msgid "Cayman Islands"
-msgstr "កោះ​កៃម៉ាន"
-
-#: utils/country_field.py:124
 msgid "Kazakhstan"
 msgstr "កាហ្សាក់ស្តង់"
 
+#: utils/country_field.py:121
+msgid "Kenya"
+msgstr "កេនយ៉ា"
+
+#: utils/country_field.py:122
+msgid "Kiribati"
+msgstr "គិរិបាទី"
+
+#: utils/country_field.py:123
+msgid "Korea, Democratic People's Republic of"
+msgstr "សាធារណរដ្ឋ​ប្រជាធិបតេយ្យ​កូរ៉េ"
+
+#: utils/country_field.py:124
+msgid "Korea, Republic of"
+msgstr "សាធារណរដ្ឋ​កូរ៉េ"
+
 #: utils/country_field.py:125
+msgid "Kuwait"
+msgstr "កូវ៉ែត"
+
+#: utils/country_field.py:126
+msgid "Kyrgyzstan"
+msgstr "គៀរហ្គីស្តង់"
+
+#: utils/country_field.py:127
 msgid "Lao People's Democratic Republic"
 msgstr "សាធារណរដ្ឋ​ប្រជាធិបតេយ្យ​ប្រជាមានិត​ឡាវ"
 
-#: utils/country_field.py:126
-msgid "Lebanon"
-msgstr "លីបង់"
-
-#: utils/country_field.py:127
-msgid "Saint Lucia"
-msgstr "សង់លូស៊ីយ៉ា"
-
 #: utils/country_field.py:128
-msgid "Liechtenstein"
-msgstr "លិចទេនស្តែន"
-
-#: utils/country_field.py:129
-msgid "Sri Lanka"
-msgstr "ស្រីលង្កា"
-
-#: utils/country_field.py:130
-msgid "Liberia"
-msgstr "លីបេរីយ៉ា"
-
-#: utils/country_field.py:131
-msgid "Lesotho"
-msgstr "ឡេសូតូ"
-
-#: utils/country_field.py:132
-msgid "Lithuania"
-msgstr "លីទុយអានី"
-
-#: utils/country_field.py:133
-msgid "Luxembourg"
-msgstr "លុចហ្សំបួរ"
-
-#: utils/country_field.py:134
 msgid "Latvia"
 msgstr "ឡេតូនី"
 
-#: utils/country_field.py:135
+#: utils/country_field.py:129
+msgid "Lebanon"
+msgstr "លីបង់"
+
+#: utils/country_field.py:130
+msgid "Lesotho"
+msgstr "ឡេសូតូ"
+
+#: utils/country_field.py:131
+msgid "Liberia"
+msgstr "លីបេរីយ៉ា"
+
+#: utils/country_field.py:132
 msgid "Libyan Arab Jamahiriya"
 msgstr "ចាម៉ាអ៊ិរីយ៉ា​អារ៉ាប់ លីប៊ី"
 
+#: utils/country_field.py:133
+msgid "Liechtenstein"
+msgstr "លិចទេនស្តែន"
+
+#: utils/country_field.py:134
+msgid "Lithuania"
+msgstr "លីទុយអានី"
+
+#: utils/country_field.py:135
+msgid "Luxembourg"
+msgstr "លុចហ្សំបួរ"
+
 #: utils/country_field.py:136
-msgid "Morocco"
-msgstr "ម៉ារ៉ុក"
+#, fuzzy
+msgid "Macao"
+msgstr "ម៉ាកាវ"
 
 #: utils/country_field.py:137
-msgid "Monaco"
-msgstr "ម៉ូណាកូ"
+msgid "Macedonia, The former Yugoslav Republic of"
+msgstr ""
 
 #: utils/country_field.py:138
-msgid "Moldova, Republic of"
-msgstr "សាធារណរដ្ឋ​ម៉ុលដូវ៉ា"
-
-#: utils/country_field.py:139
 msgid "Madagascar"
 msgstr "ម៉ាដាហ្គាស្ការ"
 
-#: utils/country_field.py:140
-msgid "Marshall Islands"
-msgstr "កោះ​ម៉ាស្យល"
-
-#: utils/country_field.py:141
-msgid "Mali"
-msgstr "ម៉ាលី"
-
-#: utils/country_field.py:142
-msgid "Mongolia"
-msgstr "ម៉ុងហ្គោលី"
-
-#: utils/country_field.py:143
-msgid "Myanmar"
-msgstr "មីយ៉ាន់ម៉ា"
-
-#: utils/country_field.py:144
-msgid "Macau"
-msgstr "ម៉ាកាវ"
-
-#: utils/country_field.py:145
-msgid "Northern Mariana Islands"
-msgstr "កោះ​ម៉ារៀណា​ភាគ​ខាង​ជើង"
-
-#: utils/country_field.py:146
-msgid "Martinique"
-msgstr "ម៉ារទីនីគ"
-
-#: utils/country_field.py:147
-msgid "Mauritania"
-msgstr "ម៉ូរីតានី"
-
-#: utils/country_field.py:148
-msgid "Monserrat"
-msgstr "ម៉ុនសេរ៉ាត"
-
-#: utils/country_field.py:149
-msgid "Malta"
-msgstr "ម៉ាល់តា"
-
-#: utils/country_field.py:150
-msgid "Mauritius"
-msgstr "ម៉ូរីទុស"
-
-#: utils/country_field.py:151
-msgid "Maldives"
-msgstr "ម៉ាល់ឌីវ"
-
-#: utils/country_field.py:152
+#: utils/country_field.py:139
 msgid "Malawi"
 msgstr "ម៉ាឡាវី"
 
-#: utils/country_field.py:153
-msgid "Mexico"
-msgstr "ម៉ិចស៊ិក"
-
-#: utils/country_field.py:154
+#: utils/country_field.py:140
 msgid "Malaysia"
 msgstr "ម៉ាឡេស៊ី"
 
+#: utils/country_field.py:141
+msgid "Maldives"
+msgstr "ម៉ាល់ឌីវ"
+
+#: utils/country_field.py:142
+msgid "Mali"
+msgstr "ម៉ាលី"
+
+#: utils/country_field.py:143
+msgid "Malta"
+msgstr "ម៉ាល់តា"
+
+#: utils/country_field.py:144
+msgid "Marshall Islands"
+msgstr "កោះ​ម៉ាស្យល"
+
+#: utils/country_field.py:145
+msgid "Martinique"
+msgstr "ម៉ារទីនីគ"
+
+#: utils/country_field.py:146
+msgid "Mauritania"
+msgstr "ម៉ូរីតានី"
+
+#: utils/country_field.py:147
+msgid "Mauritius"
+msgstr "ម៉ូរីទុស"
+
+#: utils/country_field.py:148
+msgid "Mayotte"
+msgstr "ម៉ាយុត"
+
+#: utils/country_field.py:149
+msgid "Mexico"
+msgstr "ម៉ិចស៊ិក"
+
+#: utils/country_field.py:150
+msgid "Micronesia, Federated States of"
+msgstr ""
+
+#: utils/country_field.py:151
+msgid "Moldova, Republic of"
+msgstr "សាធារណរដ្ឋ​ម៉ុលដូវ៉ា"
+
+#: utils/country_field.py:152
+msgid "Monaco"
+msgstr "ម៉ូណាកូ"
+
+#: utils/country_field.py:153
+msgid "Mongolia"
+msgstr "ម៉ុងហ្គោលី"
+
+#: utils/country_field.py:154
+msgid "Montenegro"
+msgstr ""
+
 #: utils/country_field.py:155
+#, fuzzy
+msgid "Montserrat"
+msgstr "ម៉ុនសេរ៉ាត"
+
+#: utils/country_field.py:156
+msgid "Morocco"
+msgstr "ម៉ារ៉ុក"
+
+#: utils/country_field.py:157
 msgid "Mozambique"
 msgstr "ម៉ូហ្សាំប៊ិក"
 
-#: utils/country_field.py:156
+#: utils/country_field.py:158
+msgid "Myanmar"
+msgstr "មីយ៉ាន់ម៉ា"
+
+#: utils/country_field.py:159
 msgid "Namibia"
 msgstr "ណាមីប៊ី"
 
-#: utils/country_field.py:157
-msgid "New Caledonia"
-msgstr "ញូវ​កាលេដូនី"
-
-#: utils/country_field.py:158
-msgid "Niger"
-msgstr "នីហ្សេរ"
-
-#: utils/country_field.py:159
-msgid "Norfolk Island"
-msgstr "កោះ​ណរហ្វក"
-
 #: utils/country_field.py:160
-msgid "Nigeria"
-msgstr "នីហ្សេរីយ៉ា"
+msgid "Nauru"
+msgstr "ណូរុ"
 
 #: utils/country_field.py:161
-msgid "Nicaragua"
-msgstr "នីការ៉ាហ្គ័រ"
+msgid "Nepal"
+msgstr "នេប៉ាល់"
 
 #: utils/country_field.py:162
 msgid "Netherlands"
 msgstr "ហូឡង់"
 
 #: utils/country_field.py:163
-msgid "Norway"
-msgstr "ន័រវែស"
+msgid "New Caledonia"
+msgstr "ញូវ​កាលេដូនី"
 
 #: utils/country_field.py:164
-msgid "Nepal"
-msgstr "នេប៉ាល់"
-
-#: utils/country_field.py:165
-msgid "Nauru"
-msgstr "ណូរុ"
-
-#: utils/country_field.py:166
-msgid "Niue"
-msgstr "នីវ"
-
-#: utils/country_field.py:167
 msgid "New Zealand"
 msgstr "ញូវ​ហ្សេលែន"
 
+#: utils/country_field.py:165
+msgid "Nicaragua"
+msgstr "នីការ៉ាហ្គ័រ"
+
+#: utils/country_field.py:166
+msgid "Niger"
+msgstr "នីហ្សេរ"
+
+#: utils/country_field.py:167
+msgid "Nigeria"
+msgstr "នីហ្សេរីយ៉ា"
+
 #: utils/country_field.py:168
+msgid "Niue"
+msgstr "នីវ"
+
+#: utils/country_field.py:169
+msgid "Norfolk Island"
+msgstr "កោះ​ណរហ្វក"
+
+#: utils/country_field.py:170
+msgid "Northern Mariana Islands"
+msgstr "កោះ​ម៉ារៀណា​ភាគ​ខាង​ជើង"
+
+#: utils/country_field.py:171
+msgid "Norway"
+msgstr "ន័រវែស"
+
+#: utils/country_field.py:172
 msgid "Oman"
 msgstr "អូម៉ង់"
 
-#: utils/country_field.py:169
-msgid "Panama"
-msgstr "ប៉ាណាម៉ា"
-
-#: utils/country_field.py:170
-msgid "Peru"
-msgstr "ប៉េរូ"
-
-#: utils/country_field.py:171
-msgid "French Polynesia"
-msgstr "ប៉ូលីនេស៊ី​បារាំង"
-
-#: utils/country_field.py:172
-msgid "Papua New Guinea"
-msgstr "ប៉ាពូញូវហ្គីណេ"
-
 #: utils/country_field.py:173
-msgid "Philippines"
-msgstr "ហ្វីលីពីន"
-
-#: utils/country_field.py:174
 msgid "Pakistan"
 msgstr "ប៉ាគីស្ថាន"
 
-#: utils/country_field.py:175
-msgid "Poland"
-msgstr "ប៉ូឡូញ"
-
-#: utils/country_field.py:176
-msgid "St. Pierre & Miquelon"
-msgstr "សង់ព្យែរ និង​មីគីឡុង"
-
-#: utils/country_field.py:177
-msgid "Pitcairn"
-msgstr "ពីតខាយរិន"
-
-#: utils/country_field.py:178
-msgid "Puerto Rico"
-msgstr "ព័រតូរីកូ"
-
-#: utils/country_field.py:179
-msgid "Portugal"
-msgstr "ព័រទុយហ្គាល់"
-
-#: utils/country_field.py:180
+#: utils/country_field.py:174
 msgid "Palau"
 msgstr "ប៉ាឡូ"
 
-#: utils/country_field.py:181
+#: utils/country_field.py:175
+msgid "Palestinian Territory, Occupied"
+msgstr ""
+
+#: utils/country_field.py:176
+msgid "Panama"
+msgstr "ប៉ាណាម៉ា"
+
+#: utils/country_field.py:177
+msgid "Papua New Guinea"
+msgstr "ប៉ាពូញូវហ្គីណេ"
+
+#: utils/country_field.py:178
 msgid "Paraguay"
 msgstr "ប៉ារ៉ាហ្គាយ"
 
+#: utils/country_field.py:179
+msgid "Peru"
+msgstr "ប៉េរូ"
+
+#: utils/country_field.py:180
+msgid "Philippines"
+msgstr "ហ្វីលីពីន"
+
+#: utils/country_field.py:181
+msgid "Pitcairn"
+msgstr "ពីតខាយរិន"
+
 #: utils/country_field.py:182
+msgid "Poland"
+msgstr "ប៉ូឡូញ"
+
+#: utils/country_field.py:183
+msgid "Portugal"
+msgstr "ព័រទុយហ្គាល់"
+
+#: utils/country_field.py:184
+msgid "Puerto Rico"
+msgstr "ព័រតូរីកូ"
+
+#: utils/country_field.py:185
 msgid "Qatar"
 msgstr "កាតា"
 
-#: utils/country_field.py:183
+#: utils/country_field.py:186
 msgid "Reunion"
 msgstr "រេអុយញ៉ុង"
 
-#: utils/country_field.py:184
+#: utils/country_field.py:187
 msgid "Romania"
 msgstr "រូម៉ានី"
 
-#: utils/country_field.py:185
+#: utils/country_field.py:188
 msgid "Russian Federation"
 msgstr "សហព័ន្ធ​រុស្ស៊ី"
 
-#: utils/country_field.py:186
+#: utils/country_field.py:189
 msgid "Rwanda"
 msgstr "រវ៉ាន់ដា"
 
-#: utils/country_field.py:187
-msgid "Saudi Arabia"
-msgstr "អារ៉ាប៊ីសាអ៊ូឌីត"
-
-#: utils/country_field.py:188
-msgid "Solomon Islands"
-msgstr "កោះ​សូឡូម៉ូន"
-
-#: utils/country_field.py:189
-msgid "Seychelles"
-msgstr "សីស្ហែល"
-
 #: utils/country_field.py:190
-msgid "Sudan"
-msgstr "ស៊ូដង់"
-
-#: utils/country_field.py:191
-msgid "Sweden"
-msgstr "ស៊ុយអែត"
-
-#: utils/country_field.py:192
-msgid "Singapore"
-msgstr "សិង្ហបុរី"
-
-#: utils/country_field.py:193
-msgid "St. Helena"
+#, fuzzy
+msgid "Saint Helena"
 msgstr "សង់​ហេឡេណា"
 
+#: utils/country_field.py:191
+#, fuzzy
+msgid "Saint Kitts and Nevis"
+msgstr "សង់ឃីត និង​ណេវីស"
+
+#: utils/country_field.py:192
+msgid "Saint Lucia"
+msgstr "សង់លូស៊ីយ៉ា"
+
+#: utils/country_field.py:193
+#, fuzzy
+msgid "Saint Pierre and Miquelon"
+msgstr "សង់ព្យែរ និង​មីគីឡុង"
+
 #: utils/country_field.py:194
-msgid "Slovenia"
-msgstr "ស្លូវ៉ានី"
+#, fuzzy
+msgid "Saint Vincent and the Grenadines"
+msgstr "សាំង​វីនសេន និង​ឌឹ​ហ្គ្រីណាឌីនីស"
 
 #: utils/country_field.py:195
-msgid "Svalbard & Jan Mayen Islands"
-msgstr "ស្វាប៊ឺត និង​ហ្យង់ម៉ាយេន"
+msgid "Samoa"
+msgstr "សាម៉ូអា"
 
 #: utils/country_field.py:196
-msgid "Slovakia"
-msgstr "ស្លូវ៉ាគី"
-
-#: utils/country_field.py:197
-msgid "Sierra Leone"
-msgstr "សេរ៉ាឡេអូន"
-
-#: utils/country_field.py:198
 msgid "San Marino"
 msgstr "សាន់ម៉ារីណូ"
+
+#: utils/country_field.py:197
+#, fuzzy
+msgid "Sao Tome and Principe"
+msgstr "សៅតុម​ & ព្រីនស៊ីពី"
+
+#: utils/country_field.py:198
+msgid "Saudi Arabia"
+msgstr "អារ៉ាប៊ីសាអ៊ូឌីត"
 
 #: utils/country_field.py:199
 msgid "Senegal"
 msgstr "សេណេហ្គាល់"
 
 #: utils/country_field.py:200
+msgid "Serbia"
+msgstr ""
+
+#: utils/country_field.py:201
+msgid "Seychelles"
+msgstr "សីស្ហែល"
+
+#: utils/country_field.py:202
+msgid "Sierra Leone"
+msgstr "សេរ៉ាឡេអូន"
+
+#: utils/country_field.py:203
+msgid "Singapore"
+msgstr "សិង្ហបុរី"
+
+#: utils/country_field.py:204
+msgid "Sint Maarten (Dutch Part)"
+msgstr ""
+
+#: utils/country_field.py:205
+msgid "Slovakia"
+msgstr "ស្លូវ៉ាគី"
+
+#: utils/country_field.py:206
+msgid "Slovenia"
+msgstr "ស្លូវ៉ានី"
+
+#: utils/country_field.py:207
+msgid "Solomon Islands"
+msgstr "កោះ​សូឡូម៉ូន"
+
+#: utils/country_field.py:208
 msgid "Somalia"
 msgstr "សូម៉ាលី"
 
-#: utils/country_field.py:201
-msgid "Suriname"
-msgstr "ស៊ូរីណាមី"
-
-#: utils/country_field.py:202
-msgid "Sao Tome & Principe"
-msgstr "សៅតុម​ & ព្រីនស៊ីពី"
-
-#: utils/country_field.py:203
-msgid "El Salvador"
-msgstr "អែលសាល់វ៉ាឌ័រ"
-
-#: utils/country_field.py:204
-msgid "Syrian Arab Republic"
-msgstr "សាធារណរដ្ឋ​អារ៉ាប់ ស៊ីរី"
-
-#: utils/country_field.py:205
-msgid "Swaziland"
-msgstr "ស្វាហ្ស៊ីឡង់"
-
-#: utils/country_field.py:206
-msgid "Turks & Caicos Islands"
-msgstr "កោះ​កៃកូស និងទូក"
-
-#: utils/country_field.py:207
-msgid "Chad"
-msgstr "ឆាដ"
-
-#: utils/country_field.py:208
-msgid "French Southern Territories"
-msgstr "អាណាចក្រ​ខាង​ត្បូង​របស់​ បារាំង"
-
 #: utils/country_field.py:209
-msgid "Togo"
-msgstr "តូហ្គោ"
-
-#: utils/country_field.py:210
-msgid "Thailand"
-msgstr "ថៃ"
-
-#: utils/country_field.py:211
-msgid "Tajikistan"
-msgstr "តាហ្ស៊ីគីស្តង់"
-
-#: utils/country_field.py:212
-msgid "Tokelau"
-msgstr "តូកេឡាអ៊ូ"
-
-#: utils/country_field.py:213
-msgid "Turkmenistan"
-msgstr "ទួគមេនីស្តង់"
-
-#: utils/country_field.py:214
-msgid "Tunisia"
-msgstr "ទុយណេស៊ី"
-
-#: utils/country_field.py:215
-msgid "Tonga"
-msgstr "តុងហ្គា"
-
-#: utils/country_field.py:216
-msgid "East Timor"
-msgstr "ទីម័រ​ខាង​កើត"
-
-#: utils/country_field.py:217
-msgid "Turkey"
-msgstr "តួកគី"
-
-#: utils/country_field.py:218
-msgid "Trinidad & Tobago"
-msgstr "ទ្រីនីដាត និង​តូបាហ្គោ"
-
-#: utils/country_field.py:219
-msgid "Tuvalu"
-msgstr "ទុយវ៉ាលុយ"
-
-#: utils/country_field.py:220
-msgid "Taiwan, Province of China"
-msgstr "តៃវ៉ាន់​ ខេត្ត​របស់​ចិន"
-
-#: utils/country_field.py:221
-msgid "Tanzania, United Republic of"
-msgstr "សាធារណរដ្ឋ​តង់ហ្សានី"
-
-#: utils/country_field.py:222
-msgid "Ukraine"
-msgstr "អ៊ុយក្រែន"
-
-#: utils/country_field.py:223
-msgid "Uganda"
-msgstr "អ៊ូហ្គង់ដា"
-
-#: utils/country_field.py:224
-msgid "United States Minor Outlying Islands"
-msgstr "កោះ​ឆ្ងាយៗ​របស់​សហរដ្ឋ​អាមេរិក"
-
-#: utils/country_field.py:225
-msgid "United States of America"
-msgstr "សហរដ្ឋអាមេរិក"
-
-#: utils/country_field.py:226
-msgid "Uruguay"
-msgstr "អ៊ុយរ៉ាហ្គាយ"
-
-#: utils/country_field.py:227
-msgid "Uzbekistan"
-msgstr "អ៊ូហ្សបេគីស្តង់"
-
-#: utils/country_field.py:228
-msgid "Vatican City State (Holy See)"
-msgstr "រដ្ឋ​វ៉ាទីកង់ (Holy See)"
-
-#: utils/country_field.py:229
-msgid "St. Vincent & the Grenadines"
-msgstr "សាំង​វីនសេន និង​ឌឹ​ហ្គ្រីណាឌីនីស"
-
-#: utils/country_field.py:230
-msgid "Venezuela"
-msgstr "វេណេហ៊្សុយអេឡា"
-
-#: utils/country_field.py:231
-msgid "British Virgin Islands"
-msgstr "កោះ​វឺជីន អង់គ្លេស"
-
-#: utils/country_field.py:232
-msgid "United States Virgin Islands"
-msgstr "កោះ​វឺជិន​​ សហរដ្ឋអាមេរិក"
-
-#: utils/country_field.py:233
-msgid "Viet Nam"
-msgstr "វៀតណាម"
-
-#: utils/country_field.py:234
-msgid "Vanuatu"
-msgstr "វ៉ានុយអាទុយ"
-
-#: utils/country_field.py:235
-msgid "Wallis & Futuna Islands"
-msgstr "កោះ​វ៉ាលីស និង​ហ្វូតូណា"
-
-#: utils/country_field.py:236
-msgid "Samoa"
-msgstr "សាម៉ូអា"
-
-#: utils/country_field.py:237
-msgid "Yemen"
-msgstr "យេមែន"
-
-#: utils/country_field.py:238
-msgid "Mayotte"
-msgstr "ម៉ាយុត"
-
-#: utils/country_field.py:239
-msgid "Yugoslavia"
-msgstr "យូហ្គោស្លាវី"
-
-#: utils/country_field.py:240
 msgid "South Africa"
 msgstr "អាហ្វ្រិក​ខាង​ត្បូង"
 
+#: utils/country_field.py:210
+msgid "South Georgia and the South Sandwich Islands"
+msgstr "កោះ​ហ្សកហ្ស៊ី​ខាងត្បូង និង​ស៊េនវិច​ខាងត្បូង"
+
+#: utils/country_field.py:211
+#, fuzzy
+msgid "South Sudan"
+msgstr "ស៊ូដង់"
+
+#: utils/country_field.py:212
+msgid "Spain"
+msgstr "អេស៉្បាញ"
+
+#: utils/country_field.py:213
+msgid "Sri Lanka"
+msgstr "ស្រីលង្កា"
+
+#: utils/country_field.py:214
+msgid "Sudan"
+msgstr "ស៊ូដង់"
+
+#: utils/country_field.py:215
+msgid "Suriname"
+msgstr "ស៊ូរីណាមី"
+
+#: utils/country_field.py:216
+#, fuzzy
+msgid "Svalbard and Jan Mayen"
+msgstr "ស្វាប៊ឺត និង​ហ្យង់ម៉ាយេន"
+
+#: utils/country_field.py:217
+msgid "Swaziland"
+msgstr "ស្វាហ្ស៊ីឡង់"
+
+#: utils/country_field.py:218
+msgid "Sweden"
+msgstr "ស៊ុយអែត"
+
+#: utils/country_field.py:219
+msgid "Switzerland"
+msgstr "ស្វ៊ីស"
+
+#: utils/country_field.py:220
+msgid "Syrian Arab Republic"
+msgstr "សាធារណរដ្ឋ​អារ៉ាប់ ស៊ីរី"
+
+#: utils/country_field.py:221
+msgid "Taiwan, Province of China"
+msgstr "តៃវ៉ាន់​ ខេត្ត​របស់​ចិន"
+
+#: utils/country_field.py:222
+msgid "Tajikistan"
+msgstr "តាហ្ស៊ីគីស្តង់"
+
+#: utils/country_field.py:223
+msgid "Tanzania, United Republic of"
+msgstr "សាធារណរដ្ឋ​តង់ហ្សានី"
+
+#: utils/country_field.py:224
+msgid "Thailand"
+msgstr "ថៃ"
+
+#: utils/country_field.py:225
+msgid "Timor-Leste"
+msgstr ""
+
+#: utils/country_field.py:226
+msgid "Togo"
+msgstr "តូហ្គោ"
+
+#: utils/country_field.py:227
+msgid "Tokelau"
+msgstr "តូកេឡាអ៊ូ"
+
+#: utils/country_field.py:228
+msgid "Tonga"
+msgstr "តុងហ្គា"
+
+#: utils/country_field.py:229
+#, fuzzy
+msgid "Trinidad and Tobago"
+msgstr "ទ្រីនីដាត និង​តូបាហ្គោ"
+
+#: utils/country_field.py:230
+msgid "Tunisia"
+msgstr "ទុយណេស៊ី"
+
+#: utils/country_field.py:231
+msgid "Turkey"
+msgstr "តួកគី"
+
+#: utils/country_field.py:232
+msgid "Turkmenistan"
+msgstr "ទួគមេនីស្តង់"
+
+#: utils/country_field.py:233
+#, fuzzy
+msgid "Turks and Caicos Islands"
+msgstr "កោះ​កៃកូស និងទូក"
+
+#: utils/country_field.py:234
+msgid "Tuvalu"
+msgstr "ទុយវ៉ាលុយ"
+
+#: utils/country_field.py:235
+msgid "Uganda"
+msgstr "អ៊ូហ្គង់ដា"
+
+#: utils/country_field.py:236
+msgid "Ukraine"
+msgstr "អ៊ុយក្រែន"
+
+#: utils/country_field.py:237
+msgid "United Arab Emirates"
+msgstr "អេមីរ៉ែទអារ៉ាប់រួម"
+
+#: utils/country_field.py:238
+#, fuzzy
+msgid "United Kingdom"
+msgstr "ចក្រភព​អង់គ្លេស"
+
+#: utils/country_field.py:239
+#, fuzzy
+msgid "United States"
+msgstr "សហរដ្ឋអាមេរិក"
+
+#: utils/country_field.py:240
+msgid "United States Minor Outlying Islands"
+msgstr "កោះ​ឆ្ងាយៗ​របស់​សហរដ្ឋ​អាមេរិក"
+
 #: utils/country_field.py:241
+msgid "Uruguay"
+msgstr "អ៊ុយរ៉ាហ្គាយ"
+
+#: utils/country_field.py:242
+msgid "Uzbekistan"
+msgstr "អ៊ូហ្សបេគីស្តង់"
+
+#: utils/country_field.py:243
+msgid "Vanuatu"
+msgstr "វ៉ានុយអាទុយ"
+
+#: utils/country_field.py:244
+msgid "Venezuela"
+msgstr "វេណេហ៊្សុយអេឡា"
+
+#: utils/country_field.py:245
+msgid "Viet Nam"
+msgstr "វៀតណាម"
+
+#: utils/country_field.py:246
+#, fuzzy
+msgid "Virgin Islands, British"
+msgstr "កោះ​វឺជីន អង់គ្លេស"
+
+#: utils/country_field.py:247
+#, fuzzy
+msgid "Virgin Islands, U.S."
+msgstr "កោះ​វឺជីន អង់គ្លេស"
+
+#: utils/country_field.py:248
+#, fuzzy
+msgid "Wallis and Futuna"
+msgstr "កោះ​វ៉ាលីស និង​ហ្វូតូណា"
+
+#: utils/country_field.py:249
+msgid "Western Sahara"
+msgstr "សាហារ៉ា​ខាង​លិច"
+
+#: utils/country_field.py:250
+msgid "Yemen"
+msgstr "យេមែន"
+
+#: utils/country_field.py:251
 msgid "Zambia"
 msgstr "ហ្សាំប៊ី"
 
-#: utils/country_field.py:242
-msgid "Zaire"
-msgstr "ហ្សៃ"
-
-#: utils/country_field.py:243
+#: utils/country_field.py:252
 msgid "Zimbabwe"
 msgstr "ហ្ស៊ីមបាវ៉េ"
 
-#: utils/country_field.py:244
+#: utils/country_field.py:253
 msgid "Unknown or unspecified country"
 msgstr "ប្រទេស​មិន​​បាន​បញ្ជាក់ ឬ​មិន​ស្គាល់"
 
-#: utils/logger_tools.py:109 utils/viewer_tools.py:180
+#: utils/logger_tools.py:174 utils/viewer_tools.py:197
 #, python-format
 msgid "Exception in request: %(class)s: %(error)s"
 msgstr "ករណី​លើកលែង​ក្នុង​សំណើ៖ %(class)s: %(error)s"
 
-#: utils/logger_tools.py:182
-msgid "Form with this id already exists."
+#: utils/logger_tools.py:212
+#, fuzzy
+msgid "The requested file could not be found."
+msgstr "រក​មិន​ឃើញ​ខ្លឹមសារ​ដែល​បាន​ស្នើ​។"
+
+#: utils/logger_tools.py:251
+#, fuzzy
+msgid "Form with this id or SMS-keyword already exists."
 msgstr "មាន​សំណុំ​បែបបទ​ដែល​មាន​លេខ​សម្គាល់​នេះ​រួច​ហើយ។"
 
-#: utils/logger_tools.py:188
+#: utils/logger_tools.py:257
 msgid "Invalid URL format."
 msgstr "ទ្រង់ទ្រាយ URL មិន​ត្រឹមត្រូវ។"
 
-#: utils/logger_tools.py:200
+#: utils/logger_tools.py:269
 msgid "Form validation timeout, please try again."
 msgstr "សំណុំ​បែប​បទ​អស់​សុពលភាព សូម​ព្យាយាម​ម្ដងទៀត។"
 
-#: utils/viewer_tools.py:53
+#: utils/viewer_tools.py:67
 msgid "There should be exactly one attribute in this document."
 msgstr "គួរ​តែ​មាន​និមិត្តសញ្ញា​ជាក់លាក់​មួយ​ក្នុង​ឯកសារ។"
 
-#: utils/viewer_tools.py:104
+#: utils/viewer_tools.py:119
 msgid "xml must be a string"
 msgstr "xml ត្រូវ​តែ​ជា​ឃ្លា"
 
-#: utils/viewer_tools.py:125
+#: utils/viewer_tools.py:140
 msgid "Paths should be unique."
 msgstr "ផ្លូវ​គួរ​មាន​តែ​មួយ​គត់។"
 
-#: utils/viewer_tools.py:159
+#: utils/viewer_tools.py:175
 msgid "There should be a single title"
 msgstr "គួរ​​មាន​ចំណង​ជើង​តែ​មួយ"
 
+#~ msgid "Successfully published %s."
+#~ msgstr "បាន​បោះពុម្ព %s ដោយ​ជោគជ័យ"
+
+#~ msgid "Welcome to formhub!"
+#~ msgstr "សូមស្វាគមន៍​ម​ក​កាន់ formhub!"
+
+#~ msgid "The hub for your mobile data collection needs"
+#~ msgstr "មជ្ឈមណ្ឌល​សម្រាប់​តម្រូវការ​ប្រមូល​ផ្ដុំ​ទិន្នន័យ​ទូរស័ព្ទ​ចល័ត​របស់​អ្នក"
+
+#~ msgid ""
+#~ "formhub is a <strong>free</strong> hosted service that makes data "
+#~ "collection <strong>simple</strong> and <strong>collaborative</strong>."
+#~ msgstr ""
+#~ "formhub គឺ​ជា​សេវាកម្ម​បាន​បង្ហោះ <strong>ឥត​គិត​ថ្លៃ</strong> ដែល​ធ្វើ​ឲ្យ​ការ​ប្រមូល​ទិន្នន័យ "
+#~ "<strong>សាមញ្ញ</strong> និង <strong>សហការ</strong>។"
+
+#~ msgid ""
+#~ "<strong>Simple.</strong>All you need to get started is an <a href="
+#~ "\"%(registration_register)s\">account</a> on formhub and the ability to "
+#~ "author .xls files. Absolutely no technical setup required."
+#~ msgstr ""
+#~ "<strong>សាមញ្ញ​។</strong>អ្វីៗ​ដែល​អ្នក​ត្រូវ​ចាប់ផ្ដើម​គឺ​នៅ​ក្នុង​គណនី <a href="
+#~ "\"%(registration_register)s\"></a> នៅ​លើ formhub និង​សមត្ថភាព​ចំពោះ​អ្នកនិពន្ធ​​"
+#~ "ឯកសារ .xls ។ មិន​ចាំបាច់​រៀបចំ​​បច្ចេកទេស។"
+
+#~ msgid ""
+#~ "<strong>Collaborative.</strong> Share your data collection forms in <a "
+#~ "href=\"%(syntax_url)s\">Excel</a>. <a href=\"%(forms_url)s\">Find</a>, "
+#~ "grab and modify other <a href=\"%(forms_url)s\">peoples' forms</a> and "
+#~ "quickly deploy it. Publish gathered data to share it with others via "
+#~ "Excel, CSV, KML or an interactive map."
+#~ msgstr ""
+#~ "<strong>សហការ​។</strong> ចែករំលែក​សំណុំ​បែបបទ​ប្រមូល​ទិន្នន័យ​របស់​អ្នក​​ជា <a href="
+#~ "\"%(syntax_url)s\">Excel</a>។ រក<a href=\"%(forms_url)s\"></a> យក និង​កែប្រែ​"
+#~ "សំណុំ​បែបបទ​​របស់​មនុស្ស​ផ្សេង <a href=\"%(forms_url)s\"></a> ហើយ​ចែកចាយ​ភ្លាម​ៗ​។ បោះពុម្ព​"
+#~ "ទិន្នន័យ​ដែល​បាន​ប្រមូល​ ដើម្បី​ចែករំលែក​ជា​មួយ​អ្នក​ផ្សេង​តាម​រយៈ​​ឯកសារ Excel, CSV, KML ឬ​ផែនទី។"
+
+#~ msgid ""
+#~ "formhub works seemlessly with <a href=\"http://www.opendatakit.org\">ODK "
+#~ "Collect</a> a robust and proven data collection platform for Android."
+#~ msgstr ""
+#~ "formhub ដំណើរការ​យ៉ាង​ល្អ​ជា​មួយ <a href=\"http://www.opendatakit.org\">ODK "
+#~ "Collect</a> ជា​កម្មវិធី​ប្រមូល​ទិន្នន័យ​ដែល​មាន​​ពិសោធន៍ និង​​ប្រសិទ្ធភាព​សម្រាប់ Android ។"
+
+#~ msgid ""
+#~ "For more info please read <a href=\"http://blog.formhub.org/2011/12/05/"
+#~ "data-gatherers-of-the-world-unite/\">here</a>."
+#~ msgstr ""
+#~ "ចំពោះ​ព័ត៌មាន​បន្ថែម សូម​អាន <a href=\"http://blog.formhub.org/2011/12/05/data-"
+#~ "gatherers-of-the-world-unite/\">នៅ​ទីនេះ</a> ។"
+
+#~ msgid "Not registered?"
+#~ msgstr "មិន​បាន​ចុះឈ្មោះ?"
+
+#~ msgid "forms submitted"
+#~ msgstr "បាន​ដាក់​ស្នើ​សំណុំបែបបទ"
+
+#~ msgid "formhubbers!"
+#~ msgstr "អ្នក​ប្រើ formhub!"
+
+#~ msgid "Export to xls File"
+#~ msgstr "នាំចេញ​ជា​ឯកសារ xls"
+
+#~ msgid "Thank you for using formhub!"
+#~ msgstr "សូម​អរគុណ​ចំពោះ​ការ​ប្រើ formhub!"
+
+#~ msgid ""
+#~ "If you need any extra help or have questions about the service below "
+#~ "please consider one of the support options below"
+#~ msgstr ""
+#~ "បើ​អ្នក​ត្រូវ​ការ​ជំនួយ​បន្ថែម​ ឬ​មាន​​សំណួរ​អំពី​សេវាកម្ម​ខាង​ក្រោម សូម​គិត​អំពី​ជម្រើស​នៃ​ជំនួយ​មួយ​ក្នុង​ចំណោម​ជម្រើស​"
+#~ "ជា​ច្រើន​​​ដូច​ខាង​ក្រោម"
+
+#~ msgid ""
+#~ "For questions related to authoring XLSForms please first checkout our <a "
+#~ "href=\"%(syntax)s\">syntax</a> page, then use the <a href=\"https://"
+#~ "groups.google.com/forum/#!forum/formhub-users\">formhub-users Google "
+#~ "group</a>"
+#~ msgstr ""
+#~ "ចំពោះ​សំណួរ​ទាក់ទង​នឹង​ការ​បង្កើត​ XLSForms ដំបូង​សូម​ពិនិត្យ​មើល​ទំព័រ <a href=\"%(syntax)s"
+#~ "\">វាក្យសម្ពន្ធ</a> របស់​យើង បន្ទាប់​មក​ប្រើ​<a href=\"https://groups.google.com/"
+#~ "forum/#!forum/formhub-users\">ក្រុម​ Google អ្នក​ប្រើ formhub</a>"
+
+#~ msgid ""
+#~ "For help relating to using ODK Collect please contact the <a href="
+#~ "\"https://groups.google.com/forum/#!forum/opendatakit\">ODK Google group</"
+#~ "a>"
+#~ msgstr ""
+#~ "ចំពោះ​ជំនួយ​ទាក់ទង​នឹង​ការ​ប្រើ ODK Collect សូម​ទាក់ទង​​<a href=\"https://groups.google."
+#~ "com/forum/#!forum/opendatakit\">ក្រុម​ Google ODK</a>"
+
+#~ msgid ""
+#~ "For problems or suggestions related to the formhub service please email: "
+#~ "<a href=\"mailto:support@formhub.org\">support@formhub.org</a> or <a href="
+#~ "\"https://groups.google.com/forum/#!forum/formhub-users\">formhub-users "
+#~ "Google group</a>"
+#~ msgstr ""
+#~ "ចំពោះ​បញ្ហា ឬ​សំណើ​ទាក់ទង​នឹង​សេវាកម្ម formhub សូម​ផ្ញើ​អ៊ីមែល​៖ <a href=\"mailto:"
+#~ "support@formhub.org\">support@formhub.org</a> ឬ​<a href=\"https://groups."
+#~ "google.com/forum/#!forum/formhub-users\">ក្រុម Google អ្នក​ប្រើ​ formhub</a>"
+
+#~ msgid ""
+#~ "We value your feedback and ideas in how to make this service better. "
+#~ "Thank you!"
+#~ msgstr "យើង​វាយតម្លៃ​មតិ​ត្រឡប់ និង​គំនិត​របស់​អ្នក​​ដើម្បី​ធ្វើ​ឲ្យ​សេវាកម្ម​នេះ​កាន់តែ​ប្រសើរ​។ សូម​អរគុណ!"
+
+#~ msgid "Remove"
+#~ msgstr "លុប​ចេញ"
+
+#~ msgid "User %s not found"
+#~ msgstr "រក​មិន​ឃើញ​អ្នក​ប្រើ %s"
+
+#~ msgid "Import a folder of ODK instances."
+#~ msgstr "នាំចូល​ថត​នៃ​ធាតុ ODK ។"
+
+#~ msgid "XForm Manager:"
+#~ msgstr "កម្មវិធី​គ្រប់គ្រង XForm ៖"
+
+#~ msgid "XForm Manager"
+#~ msgstr "កម្មវិធី​គ្រប់គ្រង XForm"
+
+#~ msgid "Display Fields"
+#~ msgstr "បង្ហាញ​វាល​"
+
+#~ msgid ""
+#~ "Your survey has <strong>{numquestions}</strong> question(s) and "
+#~ "<strong>{numsubmissions}</strong> submission(s). Please click on Display "
+#~ "Fields above and select the questions you want to view responses for."
+#~ msgstr ""
+#~ "ការ​ស្ទង់មតិ​​របស់​អ្នក​មាន​​ <strong>{numquestions}</strong> សំណួរ និង​​ការ​ដាក់ស្នើ "
+#~ "<strong>{numsubmissions}</strong>។ សូម​ចុច​​បង្ហាញ​វាល​ខាង​លើ ហើយ​ជ្រើស​សំណួរ​ដែល​អ្នក​ចង់​ការ​"
+#~ "ឆ្លើយតប​។"
+
+#~ msgid ""
+#~ "NOTE: This is a beta feature and your survey contains more than "
+#~ "<strong>{threshold}</strong> responses, search and sort features will not "
+#~ "work."
+#~ msgstr ""
+#~ "ចំណាំ៖ នេះ​​ជា​លក្ខណៈ​បែតា ហើយ​ការ​ស្ទង់មតិ​របស់​អ្នក​មាន​ការ​ឆ្លើយតប​ច្រើន​ជាង "
+#~ "<strong>{threshold}</strong> ការ​ស្វែងរក និង​តម្រៀប​លក្ខណៈ​​នឹង​មិន​ដំណើរការ​ទេ។"
+
+#~ msgid "_MENU_ records per page"
+#~ msgstr "_MENU_ កំណត់​ត្រា​ក្នុង​មួយ​ទំព័រ"
+
+#~ msgid "About"
+#~ msgstr "អំពី"
+
+#~ msgid "Reset password at %(site_name)s"
+#~ msgstr "កំណត់​ពាក្យ​សម្ងាត់​ឡើង​វិញ​នៅ %(site_name)s"
+
+#~ msgid "Netherlands Antilles"
+#~ msgstr "ហូល្លង់ អង់ទីល"
+
+#~ msgid "Bouvet Island"
+#~ msgstr "កោះ​ប៊ូវ៉េត"
+
+#~ msgid "Micronesia"
+#~ msgstr "មីក្រូណេស៊ី"
+
+#~ msgid "France, Metropolitan"
+#~ msgstr "បារាំង"
+
+#~ msgid "East Timor"
+#~ msgstr "ទីម័រ​ខាង​កើត"
+
+#~ msgid "United States Virgin Islands"
+#~ msgstr "កោះ​វឺជិន​​ សហរដ្ឋអាមេរិក"
+
+#~ msgid "Yugoslavia"
+#~ msgstr "យូហ្គោស្លាវី"
+
+#~ msgid "Zaire"
+#~ msgstr "ហ្សៃ"
