@@ -205,13 +205,13 @@ def profile(request, username):
             "/%s" % request.user.username)
         from django.db.models import Count
         xforms = XForm.objects.filter(
-            user=content_user, surveys__deleted_at=None).select_related('user')\
+            user=content_user, surveys__is_deleted=False).select_related('user')\
                 .annotate(submission_count=Count('surveys'))
         context.user_xforms = xforms
         crowdforms = XForm.objects.filter(
             metadata__data_type=MetaData.CROWDFORM_USERS,
             metadata__data_value=username,
-            surveys__deleted_at=None
+            surveys__is_deleted=False
         ).select_related('user').annotate(submission_count=Count('surveys'))
         context.crowdforms = crowdforms
         # forms shared with user
