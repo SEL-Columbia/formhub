@@ -1081,3 +1081,8 @@ color: white;
 .sms_autodoc .sms_autodoc_params {
 	font-family: monospace;
 }
+
+
+.gdoctoc {
+	position: absolute;
+}
