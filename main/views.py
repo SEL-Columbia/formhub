@@ -718,8 +718,11 @@ def about_us(request):
 
 
 def syntax(request):
-    url = 'https://docs.google.com/document/pub?id='\
-        '1xD5gSjeyjGjw-V9g5hXx7FWeasRvn-L6zeQJsNeAGBI'
+    if 'fr' in request.LANGUAGE_CODE.lower():
+        doc_id = '1EhJTsqX3noztyW-UdKRBABhIln6R3TAvXv58DTZWCU4'
+    else:
+        doc_id = '1xD5gSjeyjGjw-V9g5hXx7FWeasRvn-L6zeQJsNeAGBI'
+    url = 'https://docs.google.com/document/pub?id=%s' % doc_id
     doc = GoogleDoc(url)
     context = RequestContext(request)
     context.content = doc.to_html()
