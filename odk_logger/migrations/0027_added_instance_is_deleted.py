@@ -11,7 +11,7 @@ class Migration(SchemaMigration):
         # Adding field 'Instance.is_deleted'
         db.add_column('odk_logger_instance', 'is_deleted',
                       self.gf('django.db.models.fields.BooleanField')(default=False),
-                      keep_default=False)
+                      keep_default=True)
         # Adding index on 'Instance', fields ['xform']
         db.create_index('odk_logger_instance', ['xform_id', 'is_deleted'])
 

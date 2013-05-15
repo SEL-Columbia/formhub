@@ -211,7 +211,7 @@ def profile(request, username):
                         'submission_count': 'SELECT COUNT(*) FROM '
                         'odk_logger_instance WHERE '
                         'odk_logger_instance.xform_id=odk_logger_xform.id '
-                        'AND odk_logger_instance.is_deleted=False'
+                        'AND odk_logger_instance.is_deleted=0'
                     })
         context.user_xforms = xforms
         crowdforms = XForm.objects.filter(
@@ -223,7 +223,7 @@ def profile(request, username):
                     'submission_count': 'SELECT COUNT(*) FROM '
                     'odk_logger_instance WHERE '
                     'odk_logger_instance.xform_id=odk_logger_xform.id '
-                    'AND odk_logger_instance.is_deleted=False'
+                    'AND odk_logger_instance.is_deleted=0'
                 })
         context.crowdforms = crowdforms
         # forms shared with user
@@ -237,7 +237,7 @@ def profile(request, username):
                     'submission_count': 'SELECT COUNT(*) FROM '
                     'odk_logger_instance WHERE '
                     'odk_logger_instance.xform_id=odk_logger_xform.id '
-                    'AND odk_logger_instance.is_deleted=False'
+                    'AND odk_logger_instance.is_deleted=0'
                 })
     # for any other user -> profile
     set_profile_data(context, content_user)

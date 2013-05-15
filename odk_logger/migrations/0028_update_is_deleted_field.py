@@ -11,7 +11,7 @@ class Migration(SchemaMigration):
     
     def forwards(self, orm):
         # update values
-        db.execute("UPDATE odk_logger_instance SET is_deleted=%s WHERE deleted_at IS NOT NULL", [1])
+        db.execute("UPDATE odk_logger_instance SET is_deleted=%s WHERE deleted_at IS NOT NULL", [True])
 
     def backwards(self, orm):
         pass
