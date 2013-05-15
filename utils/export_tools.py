@@ -79,6 +79,110 @@ class DictOrganizer(object):
         return result
 
 
+def dict_to_joined_export(data, index, indices, name):
+    """
+    Converts a dict into one or more tabular based datasets
+    
+    E.g.
+    d =
+    {
+        'name': 'Abe',
+        'age': 35,
+        'children':[
+            {
+                'name': 'Mike',
+                'age': 5,
+                'cartoons':[
+                    {
+                        'name': 'Tom & Jerry',
+                        'why': 'Tom is silly'
+                    },
+                    {
+                        'name': 'Flinstones',
+                        'why': 'I like bamb bam'
+                    }
+                ]
+            },
+            {
+                'name': 'John',
+                'age': 2,
+                'cartoons':[]
+            }
+        ]
+    }
+    Becomes
+    {
+        'name': 'Abe',
+        'age': 35,
+        'index': <index>,
+        'parent_index': None,
+        'parent_table': None,
+        'children':
+        [
+            {
+                'name': 'Mike',
+                'age': 5,
+                'index': 0,
+                'parent_index': <index>,
+                'parent_table': 'survey'
+            },
+            {
+                'name': 'John',
+                'age': 2,
+                'index': 1,
+                'parent_index': <index>,
+                'parent_table': 'survey'
+            }
+        ],
+        'cartoons':
+        [
+            {
+                'name': 'Tom & Jerry',
+                'why': 'Tom is silly',
+                'index': 0,
+                'parent_index': 0,
+                'parent_table': 'children'
+            },
+            {
+                'name': 'Flinstones',
+                'why': 'I like bamb bam',
+                'index': 1,
+                'parent_index': 0,
+                'parent_table': 'children'
+            }
+        ]
+    }
+    """
+    output = {}
+    for key, val in data.iteritems():
+        if isinstance(val, list):
+            output[key] = []
+            for child in val:
+                if not indices.has_key(key):
+                    indices[key] = 0
+                indices[key] += 1
+                child_index = indices[key]
+                new_output = dict_to_joined_export(
+                    child, child_index, indices, key)
+                d = {'index': child_index, 'parent_index': index, 'parent_table': name}
+                # iterate over keys within new_output and append to main output
+                for out_key, out_val in new_output.iteritems():
+                    if isinstance(out_val, list):
+                        if not output.has_key(out_key):
+                            output[out_key] = []
+                        output[out_key].extend(out_val)
+                    else:
+                        d[out_key] = out_val#str(out_val)
+                output[key].append(d)
+        else:
+            output[key] = val#str(val)
+    return output
+
+
+def dict_to_flat_export(d, parent_index=0):
+    pass
+
+
 def _df_builder_for_export_type(export_type, username, id_string,
                                 group_delimiter, split_select_multiples,
                                 filter_query=None,):

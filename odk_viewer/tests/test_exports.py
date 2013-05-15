@@ -772,3 +772,174 @@ class TestExports(MainTestCase):
                 'transport/available_transportation_types_to_referral_facility'))
         # check that ambulance is one the values within the transport/available_transportation_types_to_referral_facility column
         self.assertTrue("ambulance" in data['transport/available_transportation_types_to_referral_facility'].split(" "))
+
+    def test_dict_to_joined_export_works(self):
+        from utils.export_tools import dict_to_joined_export
+        data =\
+        {
+            'name': 'Abe',
+            'age': 35,
+            'children':
+            [
+                {
+                    'children/name': 'Mike',
+                    'children/age': 5,
+                    'children/cartoons':
+                    [
+                        {
+                            'children/cartoons/name': 'Tom & Jerry',
+                            'children/cartoons/why': 'Tom is silly',
+                        },
+                        {
+                            'children/cartoons/name': 'Flinstones',
+                            'children/cartoons/why': 'I like bamb bam',
+                        }
+                    ]
+                },
+                {
+                    'children/name': 'John',
+                    'children/age': 2,
+                    'children/cartoons':[]
+                },
+                {
+                    'children/name': 'Imora',
+                    'children/age': 3,
+                    'children/cartoons':
+                    [
+                        {
+                            'children/cartoons/name': 'Shrek',
+                            'children/cartoons/why': 'He\'s so funny'
+                        },
+                        {
+                            'children/cartoons/name': 'Dexter\'s Lab',
+                            'children/cartoons/why': 'He thinks hes smart',
+                            'children/cartoons/characters':
+                            [
+                                {
+                                    'children/cartoons/characters/name': 'Dee Dee',
+                                    'children/cartoons/characters/good_or_evil': 'good'
+                                },
+                                {
+                                    'children/cartoons/characters/name': 'Dexter',
+                                    'children/cartoons/characters/good_or_evil': 'evil'
+                                },
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+        expected_output =\
+        {
+            'name': 'Abe',
+            'age': 35,
+            'index': 1,
+            'parent_index': None,
+            'parent_table': None,
+            'children':
+            [
+                {
+                    'children/name': 'Mike',
+                    'children/age': 5,
+                    'index': 1,
+                    'parent_index': 1,
+                    'parent_table': 'survey'
+                },
+                {
+                    'children/name': 'John',
+                    'children/age': 2,
+                    'index': 2,
+                    'parent_index': 1,
+                    'parent_table': 'survey'
+                },
+                {
+                    'children/name': 'Imora',
+                    'children/age': 3,
+                    'index': 3,
+                    'parent_index': 1,
+                    'parent_table': 'survey'
+                },
+            ],
+            'children/cartoons':
+            [
+                {
+                    'children/cartoons/name': 'Tom & Jerry',
+                    'children/cartoons/why': 'Tom is silly',
+                    'index': 1,
+                    'parent_index': 1,
+                    'parent_table': 'children'
+                },
+                {
+                    'children/cartoons/name': 'Flinstones',
+                    'children/cartoons/why': 'I like bamb bam',
+                    'index': 2,
+                    'parent_index': 1,
+                    'parent_table': 'children'
+                },
+                {
+                    'children/cartoons/name': 'Shrek',
+                    'children/cartoons/why': 'He\'s so funny',
+                    'index': 3,
+                    'parent_index': 3,
+                    'parent_table': 'children'
+                },
+                {
+                    'children/cartoons/name': 'Dexter\'s Lab',
+                    'children/cartoons/why': 'He thinks hes smart',
+                    'index': 4,
+                    'parent_index': 3,
+                    'parent_table': 'children'
+                }
+            ],
+            'children/cartoons/characters':
+            [
+                {
+                    'children/cartoons/characters/name': 'Dee Dee',
+                    'children/cartoons/characters/good_or_evil': 'good',
+                    'index': 1,
+                    'parent_index': 4,
+                    'parent_table': 'children/cartoons'
+                },
+                {
+                    'children/cartoons/characters/name': 'Dexter',
+                    'children/cartoons/characters/good_or_evil': 'evil',
+                    'index': 2,
+                    'parent_index': 4,
+                    'parent_table': 'children/cartoons'
+                }
+            ]
+        }
+        indices = {'survey': 0}
+        output = dict_to_joined_export(data, 1, indices, 'survey')
+        self.assertEqual(output['name'], expected_output['name'])
+        # 1st level
+        self.assertEqual(len(output['children']), 3)
+        for child in enumerate(['Mike', 'John', 'Imora']):
+            index = child[0]
+            name = child[1]
+            self.assertEqual(
+                filter(
+                    lambda x: x['children/name'] == name,
+                    output['children'])[0],
+                expected_output['children'][index])
+        # 2nd level
+        self.assertEqual(len(output['children/cartoons']), 4)
+        for cartoon in enumerate(['Tom & Jerry', 'Flinstones', 'Shrek', 'Dexter\'s Lab']):
+            index = cartoon[0]
+            name = cartoon[1]
+            self.assertEqual(
+                filter(
+                    lambda x: x['children/cartoons/name'] == name,
+                    output['children/cartoons'])[0],
+                expected_output['children/cartoons'][index])
+        # 3rd level
+        self.assertEqual(len(output['children/cartoons/characters']), 2)
+        for characters in enumerate(['Dee Dee', 'Dexter']):
+            index = characters[0]
+            name = characters[1]
+            self.assertEqual(
+                filter(
+                    lambda x: x['children/cartoons/characters/name'] == name,
+                    output['children/cartoons/characters'])[0],
+                expected_output['children/cartoons/characters'][index])
+        
