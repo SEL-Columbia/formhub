@@ -23,7 +23,7 @@ class Section(dict):
         return render_to_string('section.html', self)
 
     def url(self):
-        return '<a href="#%(id)s">%(title)s</a>' % self
+        return u'<a href="#%(id)s">%(title)s</a>' % self
 
 
 class TreeNode(list):
@@ -134,11 +134,12 @@ class GoogleDoc(object):
                 # hack: cause we started with h3 in google docs
                 level=int(l.pop(0)) - 2,
                 id=l.pop(0),
-                title=l.pop(0),
+                title=l.pop(0).decode('utf8'),
                 content=l.pop(0),
                 )
             section['id'] = slugify(section['title'])
-            self._sections.append(section)
+            if section['level'] >= 1:
+                self._sections.append(section)
 
     def _construct_section_tree(self):
         """
