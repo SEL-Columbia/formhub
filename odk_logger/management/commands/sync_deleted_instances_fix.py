@@ -31,6 +31,6 @@ class Command(BaseCommand):
             except Instance.DoesNotExist:
                 continue
             else:
-                i.deleted_at = datetime.strptime(record["_deleted_at"],
+                deleted_at = datetime.strptime(record["_deleted_at"],
                                                  "%Y-%m-%dT%H:%M:%S")
-                i.save()
+                i.set_deleted(deleted_at)
