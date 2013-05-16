@@ -21,7 +21,8 @@ from django.utils.translation import ugettext as _
 
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
-key_whitelist = ['$or', '$and', '$exists', '$in', '$gt', '$gte', '$lt', '$lte', '$regex', '$options']
+key_whitelist = ['$or', '$and', '$exists', '$in', '$gt', '$gte',
+                 '$lt', '$lte', '$regex', '$options']
 GLOBAL_SUBMISSION_STATS = u'global_submission_stats'
 DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
 
@@ -73,7 +74,7 @@ def _decode_from_mongo(key):
     re_dollar = re.compile(r"^%s" % base64.b64encode("$"))
     re_dot = re.compile(r"\%s" % base64.b64encode("."))
     return reduce(lambda s, c: c[0].sub(c[1], s),
-        [(re_dollar, '$'), (re_dot, '.')], key)
+                  [(re_dollar, '$'), (re_dot, '.')], key)
 
 
 def _is_invalid_for_mongo(key):
@@ -83,7 +84,8 @@ def _is_invalid_for_mongo(key):
 
 @task
 def update_mongo_instance(record):
-    # since our dict always has an id, save will always result in an upsert op - so we dont need to worry whether its an edit or not
+    # since our dict always has an id, save will always result in an upsert op
+    # - so we dont need to worry whether its an edit or not
     # http://api.mongodb.org/python/current/api/pymongo/collection.html#pymongo.collection.Collection.save
     try:
         return xform_instances.save(record)
@@ -132,12 +134,13 @@ class ParsedInstance(models.Model):
         # TODO: current mongo (2.0.4 of this writing)
         # cant mix including and excluding fields in a single query
         if type(fields) == list and len(fields) > 0:
-            fields_to_select = dict([(_encode_for_mongo(field), 1) for field in fields])
+            fields_to_select = dict(
+                [(_encode_for_mongo(field), 1) for field in fields])
         sort = json.loads(
             sort, object_hook=json_util.object_hook) if sort else {}
         cursor = xform_instances.find(query, fields_to_select)
         if count:
-            return [{"count":cursor.count()}]
+            return [{"count": cursor.count()}]
 
         if start < 0 or limit < 0:
             raise ValueError(_("Invalid start/limit params"))
@@ -222,9 +225,9 @@ class ParsedInstance(models.Model):
 
     def _set_end_time(self):
         doc = self.to_dict()
-        end_time_key1 = self._get_name_for_type(START)
-        end_time_key2 = self._get_name_for_type(START_TIME)
-        end_time_key = end_time_key1 or end_time_key2
+        # end_time_key1 = self._get_name_for_type(START)
+        # end_time_key2 = self._get_name_for_type(START_TIME)
+        # end_time_key = end_time_key1 or end_time_key2
 
         if END_TIME in doc:
             date_time_str = doc[END_TIME]
@@ -288,12 +291,13 @@ def rest_service_form_submission(sender, **kwargs):
 
 post_save.connect(rest_service_form_submission, sender=ParsedInstance)
 
+
 def submission_count(sender, **kwargs):
     parsed_instance = kwargs.get('instance')
     created = kwargs.get('created')
     if created:
         stat_log.delay(GLOBAL_SUBMISSION_STATS, 1)
-        key='%(username)s_%(xform_id_string)s_submissions'\
+        key = '%(username)s_%(xform_id_string)s_submissions'\
             % {"username": parsed_instance.instance.xform.user.username,
                "xform_id_string": parsed_instance.instance.xform.id_string}
         stat_log.delay(key, 1)

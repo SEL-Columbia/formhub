@@ -12,7 +12,8 @@ modilabs-python-utils==0.1.5
 PIL==1.1.7
 poster==0.8.1
 pymongo==2.2.1
-pyxform==0.9.16
+lxml
+pyxform==0.9.17
 South==0.7.6
 xlrd==0.8.0
 xlwt==0.7.2
@@ -20,6 +21,8 @@ openpyxl==1.5.8
 celery==3.0.11
 django-celery==3.0.10
 django-nose
+python_digest
+django_digest
 # sql alchemy was used for importing data from phones
 SQLAlchemy==0.7.1
 

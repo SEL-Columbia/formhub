@@ -165,7 +165,8 @@ INSTALLED_APPS = (
     'guardian',
     'djcelery',
     'stats',
-    'sms_support'
+    'sms_support',
+    'django_digest',
 )
 
 USE_THOUSAND_SEPARATOR = True
