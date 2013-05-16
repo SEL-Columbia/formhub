@@ -50,6 +50,7 @@ class Instance(models.Model):
 
     # this will end up representing "date instance was deleted"
     deleted_at = models.DateTimeField(null=True, default=None)
+    is_deleted = models.BooleanField(null=False, default=False)
 
     # ODK keeps track of three statuses for an instance:
     # incomplete, submitted, complete
@@ -115,6 +116,12 @@ class Instance(models.Model):
         else:
             return self._parser.to_dict()
 
+    def set_deleted(self, deleted_at=datetime.now()):
+        self.deleted_at = deleted_at
+        self.is_deleted = True
+        self.save()
+        self.parsed_instance.save()
+
     @classmethod
     def set_deleted_at(cls, instance_id, deleted_at=datetime.now()):
         try:
@@ -122,9 +129,7 @@ class Instance(models.Model):
         except cls.DoesNotExist:
             pass
         else:
-            instance.deleted_at = deleted_at
-            instance.save()
-            instance.parsed_instance.save()
+            instance.set_deleted(deleted_at)
 
 
 def stathat_form_submission(sender, instance, created, **kwargs):
