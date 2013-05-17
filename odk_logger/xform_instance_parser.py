@@ -80,12 +80,26 @@ def get_meta_from_xml(xml_str, meta_name):
 
 
 def get_uuid_from_xml(xml):
-    uuid = get_meta_from_xml(xml, "instanceID")
-    regex = re.compile(r"uuid:(.*)")
-    if uuid:
+    def _uuid_only(uuid, regex):
         matches = regex.match(uuid)
         if matches and len(matches.groups()) > 0:
             return matches.groups()[0]
+        return None
+    uuid = get_meta_from_xml(xml, "instanceID")
+    regex = re.compile(r"uuid:(.*)")
+    if uuid:
+        return _uuid_only(uuid, regex)
+    # check in survey_node attributes
+    xml = clean_and_parse_xml(xml)
+    children = xml.childNodes
+    # children ideally contains a single element
+    # that is the parent of all survey elements
+    if children.length == 0:
+        raise ValueError(_("XML string must have a survey element."))
+    survey_node = children[0]
+    uuid = survey_node.getAttribute('instanceID')
+    if uuid != '':
+        return _uuid_only(uuid, regex)
     return None
 
 
