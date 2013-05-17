@@ -13,7 +13,8 @@ PIL==1.1.7
 poster==0.8.1
 pymongo==2.2.1
 lxml
-pyxform==0.9.17
+#pyxform==0.9.17
+-e git+https://github.com/modilabs/pyxform.git@master#egg=pyxform
 South==0.7.6
 xlrd==0.8.0
 xlwt==0.7.2
