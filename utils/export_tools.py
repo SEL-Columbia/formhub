@@ -1,6 +1,11 @@
 import os
 import re
+import csv
 from datetime import datetime
+from pyxform.survey import Survey
+from pyxform.survey_element import SurveyElement
+from pyxform.section import Section, RepeatingSection
+from pyxform.question import Question
 from django.core.files.base import File
 from django.core.files.temp import NamedTemporaryFile
 from django.core.files.storage import get_storage_class
@@ -9,11 +14,19 @@ from django.shortcuts import render_to_response
 from odk_logger.models import XForm, Attachment
 from utils.viewer_tools import create_attachments_zipfile
 from utils.viewer_tools import image_urls
+from zipfile import ZipFile
+from common_tags import ID, XFORM_ID_STRING, STATUS, ATTACHMENTS, GEOLOCATION,\
+    BAMBOO_DATASET_ID, DELETEDAT
+from odk_viewer.models.parsed_instance import _is_invalid_for_mongo,\
+    _encode_for_mongo, _decode_from_mongo
 
 
 QUESTION_TYPES_TO_EXCLUDE = [
     u'note',
 ]
+# the bind type of select multiples that we use to compare
+MULTIPLE_SELECT_BIND_TYPE = u"select"
+GEOPOINT_BIND_TYPE = u"geopoint"
 
 
 def question_types_to_exclude(_type):
@@ -81,77 +94,7 @@ class DictOrganizer(object):
 
 def dict_to_joined_export(data, index, indices, name):
     """
-    Converts a dict into one or more tabular based datasets
-    
-    E.g.
-    d =
-    {
-        'name': 'Abe',
-        'age': 35,
-        'children':[
-            {
-                'name': 'Mike',
-                'age': 5,
-                'cartoons':[
-                    {
-                        'name': 'Tom & Jerry',
-                        'why': 'Tom is silly'
-                    },
-                    {
-                        'name': 'Flinstones',
-                        'why': 'I like bamb bam'
-                    }
-                ]
-            },
-            {
-                'name': 'John',
-                'age': 2,
-                'cartoons':[]
-            }
-        ]
-    }
-    Becomes
-    {
-        'name': 'Abe',
-        'age': 35,
-        'index': <index>,
-        'parent_index': None,
-        'parent_table': None,
-        'children':
-        [
-            {
-                'name': 'Mike',
-                'age': 5,
-                'index': 0,
-                'parent_index': <index>,
-                'parent_table': 'survey'
-            },
-            {
-                'name': 'John',
-                'age': 2,
-                'index': 1,
-                'parent_index': <index>,
-                'parent_table': 'survey'
-            }
-        ],
-        'cartoons':
-        [
-            {
-                'name': 'Tom & Jerry',
-                'why': 'Tom is silly',
-                'index': 0,
-                'parent_index': 0,
-                'parent_table': 'children'
-            },
-            {
-                'name': 'Flinstones',
-                'why': 'I like bamb bam',
-                'index': 1,
-                'parent_index': 0,
-                'parent_table': 'children'
-            }
-        ]
-    }
+    Converts a dict into one or more tabular datasets
     """
     output = {}
     for key, val in data.iteritems():
@@ -172,11 +115,207 @@ def dict_to_joined_export(data, index, indices, name):
                             output[out_key] = []
                         output[out_key].extend(out_val)
                     else:
-                        d[out_key] = out_val#str(out_val)
+                        d.update(out_val)
                 output[key].append(d)
         else:
-            output[key] = val#str(val)
+            if not output.has_key(name):
+                output[name] = {}
+            output[name][key] = val#str(val)
     return output
+
+
+class ExportBuilder(object):
+    IGNORED_COLUMNS = [XFORM_ID_STRING, STATUS, ATTACHMENTS, GEOLOCATION,
+                       BAMBOO_DATASET_ID, DELETEDAT]
+    EXTRA_FIELDS = [ID, 'index', 'parent_index', 'parent_table']
+    split_select_multiples = True
+
+    def set_survey(self, survey):
+        from odk_viewer.models import DataDictionary
+
+        def build_sections(
+            section_name, survey_element, sections, select_multiples,
+                gps_fields, encoded_fields):
+            for child in survey_element.children:
+                # if a section, recurs
+                if isinstance(child, Section):
+                    # if its repeating, build a new section
+                    if isinstance(child, RepeatingSection):
+                        # section_name in recursive call changes
+                        sections[child.get_abbreviated_xpath()] = []
+                        build_sections(
+                            child.get_abbreviated_xpath(), child, sections,
+                            select_multiples, gps_fields, encoded_fields)
+                    else:
+                        # its a group, recurs with the same section name
+                        build_sections(
+                            section_name, child, sections, select_multiples,
+                            gps_fields, encoded_fields)
+                elif isinstance(child, Question) and child.bind.get(u"type")\
+                        not in QUESTION_TYPES_TO_EXCLUDE:
+                    # add to survey_sections
+                    if isinstance(child, Question):
+                        child_xpath = child.get_abbreviated_xpath()
+                        sections[section_name].append({
+                            'name': child.name,
+                            'xpath': child_xpath})
+
+                        if _is_invalid_for_mongo(child.name):
+                            if section_name not in encoded_fields:
+                                encoded_fields[section_name] = {}
+                            encoded_fields[section_name].update(
+                                {child_xpath: _encode_for_mongo(child_xpath)})
+
+                    # if its a select multiple, make columns out of its choices
+                    if child.bind.get(u"type") == MULTIPLE_SELECT_BIND_TYPE:
+                        sections[section_name].extend(
+                            [{
+                                'name': c.name,
+                                'xpath': c.get_abbreviated_xpath()}
+                                for c in child.children])
+                        select_multiples[section_name] =\
+                            {
+                                child.get_abbreviated_xpath():
+                                [
+                                    c.get_abbreviated_xpath() for
+                                    c in child.children
+                                ]
+                            }
+
+                    # split gps fields within this section
+                    if child.bind.get(u"type") == GEOPOINT_BIND_TYPE:
+                        # add columns for geopoint components
+                        xpaths = DataDictionary.get_additional_geopoint_xpaths(
+                            child.get_abbreviated_xpath())
+                        sections[section_name].extend(
+                            [{'name': xpath, 'xpath': xpath}
+                             for xpath in xpaths])
+                        gps_fields[section_name] =\
+                            {
+                                child.get_abbreviated_xpath(): xpaths
+                            }
+
+        self.survey = survey
+        self.sections = {self.survey.name: []}
+        self.select_multiples = {}
+        self.gps_fields = {}
+        self.encoded_fields = {}
+        build_sections(
+            self.survey.name, self.survey, self.sections,
+            self.select_multiples, self.gps_fields, self.encoded_fields)
+
+    @classmethod
+    def split_select_multiples(cls, row, select_multiples):
+        # for each select_multiple, get the associated data and split it
+        for xpath, choices in select_multiples.iteritems():
+            # get the data matching this xpath
+            data = row.get(xpath)
+            selections = []
+            if data:
+                selections = [
+                    '{0}/{1}'.format(
+                        xpath, selection) for selection in data.split(',')]
+            row.update(
+                dict([(choice, choice in selections) for choice in choices]))
+        return row
+
+    @classmethod
+    def split_gps_components(cls, row, gps_fields):
+        # for each gps_field, get associated data and split it
+        for xpath, gps_components in gps_fields.iteritems():
+            data = row.get(xpath)
+            if data:
+                gps_parts = data.split()
+                if len(gps_parts) > 0:
+                    row.update(zip(gps_components, gps_parts))
+        return row
+
+    @classmethod
+    def decode_mongo_encoded_fields(cls, row, encoded_fields):
+        # for each gps_field, get associated data and split it
+        for xpath, encoded_xpath in encoded_fields.iteritems():
+            if row.get(encoded_xpath):
+                val = row.pop(encoded_xpath)
+                row.update({xpath: val})
+        return row
+
+    def pre_process_row(self, row, section):
+        """
+        Split select multiples, gps and decode . and $
+        """
+        if self.split_select_multiples and\
+                section in self.select_multiples:
+            row = ExportBuilder.split_select_multiples(
+                row, self.select_multiples[section])
+
+        if section in self.gps_fields:
+            row = ExportBuilder.split_gps_components(
+                row, self.gps_fields[section])
+
+        if section in self.encoded_fields:
+            row = ExportBuilder.split_gps_components(
+                row, self.encoded_fields[section])
+
+        return row
+
+    def to_zipped_csv(self, path, data):
+        def write_row(row, csv_writer, fields):
+            csv_writer.writerow([row.get(field, None) for field in fields])
+
+        csv_defs = {}
+        for section in self.sections.iterkeys():
+            csv_file = NamedTemporaryFile(suffix=(".csv"))
+            csv_writer = csv.writer(csv_file)
+            csv_defs[section] = {'csv_file': csv_file, 'csv_writer': csv_writer}
+
+        # write headers
+        for section, elements in self.sections.iteritems():
+            fields = [
+                element['xpath'] for element in elements]\
+                    + self.EXTRA_FIELDS
+            csv_defs[section]['csv_writer'].writerow(fields)
+
+        index = 1
+        indices = {}
+        survey_name = self.survey.name
+        for d in data:
+            output = dict_to_joined_export(d, index, indices, survey_name)
+            # attach meta fields (index, parent_index, parent_table)
+            # output has keys for every section
+            if survey_name not in output:
+                output[survey_name] = {}
+            output[survey_name]['index'] = index
+            for section_name, csv_def in csv_defs.iteritems():
+                # get data for this section and write to csv
+                fields = [
+                    element['xpath'] for element in
+                    self.sections[section_name]] + self.EXTRA_FIELDS
+                csv_writer = csv_def['csv_writer']
+                # section name might not exist within the output, e.g. data was
+                # not provided for said repeat - write test to check this
+                row = output.get(section_name, None)
+                if type(row) == dict:
+                    write_row(
+                        self.pre_process_row(row, section_name),
+                        csv_writer, fields)
+                elif type(row) == list:
+                    for child_row in row:
+                        write_row(
+                            self.pre_process_row(child_row, section_name),
+                            csv_writer, fields)
+            index += 1
+
+        # write zipfile
+        with ZipFile(path, 'w') as zip_file:
+            for section_name, csv_def in csv_defs.iteritems():
+                csv_file = csv_def['csv_file']
+                csv_file.seek(0)
+                zip_file.write(
+                    csv_file.name, "_".join(section_name.split("/")) + ".csv")
+
+        # close files when we are done
+        for section_name, csv_def in csv_defs.iteritems():
+            csv_def['csv_file'].close()
 
 
 def dict_to_flat_export(d, parent_index=0):

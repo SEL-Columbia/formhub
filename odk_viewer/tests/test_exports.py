@@ -4,13 +4,19 @@ import datetime
 import json
 import StringIO
 import csv
+import tempfile
+import zipfile
+import shutil
 from time import sleep
+from pyxform.builder import create_survey_from_xls
 from django.conf import settings
 from main.tests.test_base import MainTestCase
 from django.core.urlresolvers import reverse
+from django.core.files.temp import NamedTemporaryFile
 from odk_viewer.xls_writer import XlsWriter
 from odk_viewer.views import delete_export, export_list, create_export,\
     export_progress, export_download
+from pyxform import SurveyElementBuilder
 from odk_viewer.models import Export, ParsedInstance
 from utils.export_tools import generate_export, increment_index_in_filename
 from odk_logger.models import Instance, XForm
@@ -20,6 +26,8 @@ from django.core.files.storage import get_storage_class
 from odk_viewer.pandas_mongo_bridge import NoRecordsFoundError
 from odk_viewer.tasks import create_xls_export
 from xlrd import open_workbook
+from utils.export_tools import dict_to_joined_export, ExportBuilder
+from odk_viewer.models.parsed_instance import _encode_for_mongo
 
 
 class TestExports(MainTestCase):
@@ -774,7 +782,6 @@ class TestExports(MainTestCase):
         self.assertTrue("ambulance" in data['transport/available_transportation_types_to_referral_facility'].split(" "))
 
     def test_dict_to_joined_export_works(self):
-        from utils.export_tools import dict_to_joined_export
         data =\
         {
             'name': 'Abe',
@@ -831,11 +838,10 @@ class TestExports(MainTestCase):
         }
         expected_output =\
         {
-            'name': 'Abe',
-            'age': 35,
-            'index': 1,
-            'parent_index': None,
-            'parent_table': None,
+            'survey': {
+              'name': 'Abe',
+              'age': 35,
+            },
             'children':
             [
                 {
@@ -909,9 +915,10 @@ class TestExports(MainTestCase):
                 }
             ]
         }
-        indices = {'survey': 0}
-        output = dict_to_joined_export(data, 1, indices, 'survey')
-        self.assertEqual(output['name'], expected_output['name'])
+        survey_name = 'survey'
+        indices = {survey_name: 0}
+        output = dict_to_joined_export(data, 1, indices, survey_name)
+        self.assertEqual(output[survey_name], expected_output[survey_name])
         # 1st level
         self.assertEqual(len(output['children']), 3)
         for child in enumerate(['Mike', 'John', 'Imora']):
@@ -942,4 +949,332 @@ class TestExports(MainTestCase):
                     lambda x: x['children/cartoons/characters/name'] == name,
                     output['children/cartoons/characters'])[0],
                 expected_output['children/cartoons/characters'][index])
-        
+
+
+class TestExportBuilder(MainTestCase):
+    data = [
+        {
+            'name': 'Abe',
+            'age': 35,
+            'children':
+            [
+                {
+                    'children/name': 'Mike',
+                    'children/age': 5,
+                    'children/fav_colors': 'red,blue',
+                    'children/cartoons':
+                    [
+                        {
+                            'children/cartoons/name': 'Tom & Jerry',
+                            'children/cartoons/why': 'Tom is silly',
+                        },
+                        {
+                            'children/cartoons/name': 'Flinstones',
+                            'children/cartoons/why': 'I like bamb bam',
+                        }
+                    ]
+                },
+                {
+                    'children/name': 'John',
+                    'children/age': 2,
+                    'children/cartoons':[]
+                },
+                {
+                    'children/name': 'Imora',
+                    'children/age': 3,
+                    'children/cartoons':
+                    [
+                        {
+                            'children/cartoons/name': 'Shrek',
+                            'children/cartoons/why': 'He\'s so funny'
+                        },
+                        {
+                            'children/cartoons/name': 'Dexter\'s Lab',
+                            'children/cartoons/why': 'He thinks hes smart',
+                            'children/cartoons/characters':
+                            [
+                                {
+                                    'children/cartoons/characters/name': 'Dee Dee',
+                                    'children/cartoons/characters/good_or_evil': 'good'
+                                },
+                                {
+                                    'children/cartoons/characters/name': 'Dexter',
+                                    'children/cartoons/characters/good_or_evil': 'evil'
+                                },
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            # blank data just to be sure
+            'children': []
+        }
+    ]
+
+    def _create_childrens_survey(self):
+        survey = create_survey_from_xls(
+            os.path.join(
+                os.path.abspath('./'), 'odk_logger', 'tests', 'fixtures',
+                'childrens_survey.xls'))
+        return survey
+
+    def test_build_sections_from_survey(self):
+        survey = self._create_childrens_survey()
+        export_builder = ExportBuilder()
+        export_builder.set_survey(survey)
+        # test that we generate the proper sections
+        expected_sections = [
+            survey.name, 'children', 'children/cartoons',
+            'children/cartoons/characters']
+        self.assertEqual(
+            sorted(expected_sections), sorted(export_builder.sections.keys()))
+        # main section should have split geolocations
+        expected_element_names = [
+            'name', 'age', 'geolocation', '_geolocation_longitude',
+            '_geolocation_latitude', '_geolocation_altitude',
+            '_geolocation_precision', 'tel/tel.office', 'tel/tel.mobile',
+            'meta/instanceID']
+        element_names = [
+            element['xpath'] for element in
+            export_builder.sections[survey.name]]
+        # fav_colors should have its choices split
+        self.assertEqual(
+            sorted(expected_element_names), sorted(element_names))
+        expected_element_names = [
+            'children/name', 'children/age', 'children/fav_colors',
+            'children/fav_colors/red', 'children/fav_colors/blue',
+            'children/fav_colors/pink']
+        element_names = [
+            element['xpath'] for element in
+            export_builder.sections['children']]
+        self.assertEqual(
+            sorted(expected_element_names), sorted(element_names))
+        expected_element_names = [
+            'children/cartoons/name', 'children/cartoons/why']
+        element_names = [
+            element['xpath'] for element in
+            export_builder.sections['children/cartoons']]
+        self.assertEqual(
+            sorted(expected_element_names), sorted(element_names))
+        expected_element_names = [
+            'children/cartoons/characters/name',
+            'children/cartoons/characters/good_or_evil']
+        element_names = [
+            element['xpath'] for element in
+            export_builder.sections['children/cartoons/characters']]
+        self.assertEqual(
+            sorted(expected_element_names), sorted(element_names))
+
+    def test_zipped_csv_export_works(self):
+        survey = self._create_childrens_survey()
+        export_builder = ExportBuilder()
+        export_builder.set_survey(survey)
+        temp_zip_file = NamedTemporaryFile(suffix='.zip')
+        export_builder.to_zipped_csv(temp_zip_file.name, self.data)
+        temp_zip_file.seek(0)
+        temp_dir = tempfile.mkdtemp()
+        zip_file = zipfile.ZipFile(temp_zip_file.name, "r")
+        zip_file.extractall(temp_dir)
+        zip_file.close()
+        temp_zip_file.close()
+        # check that each file exists
+        self.assertTrue(
+            os.path.exists(
+                os.path.join(temp_dir, "{0}.csv".format(survey.name))))
+        self.assertTrue(
+            os.path.exists(
+                os.path.join(temp_dir, "children.csv")))
+        self.assertTrue(
+            os.path.exists(
+                os.path.join(temp_dir, "children_cartoons.csv")))
+        self.assertTrue(
+            os.path.exists(
+                os.path.join(temp_dir, "children_cartoons_characters.csv")))
+        # TODO: check the data using a csv.DictReader
+        shutil.rmtree(temp_dir)
+
+    def test_generation_of_multi_selects_works(self):
+        survey = self._create_childrens_survey()
+        export_builder = ExportBuilder()
+        export_builder.set_survey(survey)
+        expected_select_multiples =\
+            {
+                'children':
+                {
+                    'children/fav_colors':
+                    [
+                        'children/fav_colors/red', 'children/fav_colors/blue',
+                        'children/fav_colors/pink'
+                    ]
+                }
+            }
+        select_multiples = export_builder.select_multiples
+        self.assertTrue(select_multiples.has_key('children'))
+        self.assertTrue(
+            select_multiples['children'].has_key('children/fav_colors'))
+        self.assertEqual(
+            sorted(select_multiples['children']['children/fav_colors']),
+            sorted(
+                expected_select_multiples['children']['children/fav_colors']))
+
+    def test_split_select_multiples_works(self):
+        select_multiples =\
+            {
+                'children/fav_colors': [
+                    'children/fav_colors/red', 'children/fav_colors/blue',
+                    'children/fav_colors/pink']
+            }
+        row = \
+            {
+                'children/name': 'Mike',
+                'children/age': 5,
+                'children/fav_colors': 'red,blue'
+            }
+        new_row = ExportBuilder.split_select_multiples(
+            row, select_multiples)
+        expected_row = \
+            {
+                'children/name': 'Mike',
+                'children/age': 5,
+                'children/fav_colors': 'red,blue',
+                'children/fav_colors/red': True,
+                'children/fav_colors/blue': True,
+                'children/fav_colors/pink': False
+            }
+        self.assertEqual(new_row, expected_row)
+
+    def test_split_select_multiples_works_when_data_is_blank(self):
+        select_multiples =\
+            {
+                'children/fav_colors': [
+                    'children/fav_colors/red', 'children/fav_colors/blue',
+                    'children/fav_colors/pink']
+            }
+        row = \
+            {
+                'children/name': 'Mike',
+                'children/age': 5,
+                'children/fav_colors': ''
+            }
+        new_row = ExportBuilder.split_select_multiples(
+            row, select_multiples)
+        expected_row = \
+            {
+                'children/name': 'Mike',
+                'children/age': 5,
+                'children/fav_colors': '',
+                'children/fav_colors/red': False,
+                'children/fav_colors/blue': False,
+                'children/fav_colors/pink': False
+            }
+        self.assertEqual(new_row, expected_row)
+
+    def test_generation_of_gps_fields_works(self):
+        survey = self._create_childrens_survey()
+        export_builder = ExportBuilder()
+        export_builder.set_survey(survey)
+        expected_gps_fields =\
+            {
+                'childrens_survey':
+                {
+                    'geolocation':
+                    [
+                        '_geolocation_latitude', '_geolocation_longitude',
+                        '_geolocation_altitude', '_geolocation_precision'
+                    ]
+                }
+            }
+        gps_fields = export_builder.gps_fields
+        self.assertTrue(gps_fields.has_key('childrens_survey'))
+        self.assertEqual(
+            sorted(gps_fields['childrens_survey']),
+            sorted(expected_gps_fields['childrens_survey']))
+
+    def test_split_gps_components_works(self):
+        gps_fields =\
+            {
+                'geolocation':
+                [
+                    '_geolocation_latitude', '_geolocation_longitude',
+                    '_geolocation_altitude', '_geolocation_precision'
+                ]
+            }
+        row = \
+            {
+                'geolocation': '1.0 36.1 2000 20',
+            }
+        new_row = ExportBuilder.split_gps_components(
+            row, gps_fields)
+        expected_row = \
+            {
+                'geolocation': '1.0 36.1 2000 20',
+                '_geolocation_latitude': '1.0',
+                '_geolocation_longitude': '36.1',
+                '_geolocation_altitude': '2000',
+                '_geolocation_precision': '20'
+            }
+        self.assertEqual(new_row, expected_row)
+
+    def test_split_gps_components_works_when_gps_data_is_blank(self):
+        gps_fields =\
+            {
+                'geolocation':
+                [
+                    '_geolocation_latitude', '_geolocation_longitude',
+                    '_geolocation_altitude', '_geolocation_precision'
+                ]
+            }
+        row = \
+            {
+                'geolocation': '',
+            }
+        new_row = ExportBuilder.split_gps_components(
+            row, gps_fields)
+        expected_row = \
+            {
+                'geolocation': '',
+            }
+        self.assertEqual(new_row, expected_row)
+
+    def test_generation_of_mongo_encoded_fields_works(self):
+        survey = self._create_childrens_survey()
+        export_builder = ExportBuilder()
+        export_builder.set_survey(survey)
+        expected_encoded_fields =\
+            {
+                'childrens_survey':
+                {
+                    'tel/tel.office': 'tel/{0}'.format(
+                        _encode_for_mongo('tel.office')),
+                    'tel/tel.mobile': 'tel/{0}'.format(
+                        _encode_for_mongo('tel.mobile')),
+                }
+            }
+        encoded_fields = export_builder.encoded_fields
+        self.assertTrue('childrens_survey' in encoded_fields)
+        self.assertEqual(
+            encoded_fields['childrens_survey'],
+            expected_encoded_fields['childrens_survey'])
+
+    def test_decode_fields_names_encoded_for_mongo(self):
+        encoded_fields = \
+            {
+                'tel/tel.office': 'tel/{0}'.format(
+                    _encode_for_mongo('tel.office'))
+            }
+        row = \
+            {
+                'name': 'Abe',
+                'age': 35,
+                'tel/{0}'.format(_encode_for_mongo('tel.office')): '123-456-789'
+            }
+        new_row = ExportBuilder.decode_mongo_encoded_fields(row, encoded_fields)
+        expected_row = \
+            {
+                'name': 'Abe',
+                'age': 35,
+                'tel/tel.office': '123-456-789'
+            }
+        self.assertEqual(new_row, expected_row)
