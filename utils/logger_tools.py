@@ -332,11 +332,11 @@ def publish_xml_form(xml_file, user, id_string=None):
         return dd
 
 
-class OpenRosaResponse(HttpResponse):
+class BaseOpenRosaResponse(HttpResponse):
     status_code = 201
 
     def __init__(self, *args, **kwargs):
-        super(OpenRosaResponse, self).__init__(*args, **kwargs)
+        super(BaseOpenRosaResponse, self).__init__(*args, **kwargs)
 
         self[OPEN_ROSA_VERSION_HEADER] = OPEN_ROSA_VERSION
         tz = pytz.timezone(settings.TIME_ZONE)
@@ -344,6 +344,13 @@ class OpenRosaResponse(HttpResponse):
         self['Date'] = dt
         self['X-OpenRosa-Accept-Content-Length'] = DEFAULT_CONTENT_LENGTH
         self['Content-Type'] = DEFAULT_CONTENT_TYPE
+
+
+class OpenRosaResponse(BaseOpenRosaResponse):
+    status_code = 201
+
+    def __init__(self, *args, **kwargs):
+        super(OpenRosaResponse, self).__init__(*args, **kwargs)
         # wrap content around xml
         self.content = '''<?xml version='1.0' encoding='UTF-8' ?>
 <OpenRosaResponse xmlns="http://openrosa.org/http/response">
