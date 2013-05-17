@@ -605,7 +605,7 @@ class TestExports(MainTestCase):
             xform=self.xform, export_type=Export.CSV_EXPORT).count()
         self.assertEqual(num_csv_exports, initial_num_csv_exports + 3)
 
-    def test_exports_outdated_only_considers_successful_exports(self):
+    def test_exports_outdated_doesnt_consider_failed_exports(self):
         self._publish_transportation_form()
         self._submit_transport_instance()
         # create a bad export
@@ -613,6 +613,16 @@ class TestExports(MainTestCase):
             xform=self.xform, export_type=Export.XLS_EXPORT,
             internal_status=Export.FAILED)
         self.assertTrue(
+            Export.exports_outdated(self.xform, export.export_type))
+
+    def test_exports_outdated_considers_pending_exports(self):
+        self._publish_transportation_form()
+        self._submit_transport_instance()
+        # create a pending export
+        export = Export.objects.create(
+            xform=self.xform, export_type=Export.XLS_EXPORT,
+            internal_status=Export.PENDING)
+        self.assertFalse(
             Export.exports_outdated(self.xform, export.export_type))
 
     def _get_csv_data(self, filepath):

@@ -159,7 +159,9 @@ class Export(models.Model):
         # get newest export for xform
         try:
             latest_export = Export.objects.filter(
-                xform=xform, export_type=export_type, internal_status=Export.SUCCESSFUL).latest('created_on')
+                xform=xform, export_type=export_type,
+                internal_status__in=[Export.SUCCESSFUL, Export.PENDING])\
+                .latest('created_on')
         except cls.DoesNotExist:
             return True
         else:
