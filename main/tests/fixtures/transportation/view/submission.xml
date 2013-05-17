@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<transportation id="transportation_2011_07_25" instanceID="uuid:5b2cc313-fc09-437e-8149-fcd32f695d41" submissionDate="2013-03-26T07:30:43"><transport><available_transportation_types_to_referral_facility>none</available_transportation_types_to_referral_facility><loop_over_transport_types_frequency><ambulance/><bicycle/><boat_canoe/><bus/><donkey_mule_cart/><keke_pepe/><lorry/><motorbike/><taxi/><other/></loop_over_transport_types_frequency></transport></transportation>

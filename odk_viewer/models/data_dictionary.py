@@ -8,6 +8,7 @@ from pyxform import SurveyElementBuilder
 from pyxform.builder import create_survey_from_xls
 from pyxform.question import Question
 from pyxform.section import RepeatingSection
+from pyxform.xform2json import create_survey_element_from_xml
 
 from common_tags import ID, UUID, SUBMISSION_TIME
 from odk_logger.models import XForm
@@ -55,11 +56,13 @@ class DataDictionary(XForm):
         self.surveys_for_export = lambda d: d.surveys.all()
         super(DataDictionary, self).__init__(*args, **kwargs)
 
-    def _set_uuid_in_xml(self):
+    def _set_uuid_in_xml(self, file_name=None):
         """
         Add bind to automatically set UUID node in XML.
         """
-        file_name, file_ext = os.path.splitext(self.file_name())
+        if not file_name:
+            file_name = self.file_name()
+        file_name, file_ext = os.path.splitext(file_name)
 
         doc = clean_and_parse_xml(self.xml)
         model_nodes = doc.getElementsByTagName("model")
@@ -106,19 +109,20 @@ class DataDictionary(XForm):
 
         if len(uuid_nodes) == 0:
             formhub_node.appendChild(doc.createElement("uuid"))
-
-        # append the calculate bind node
-        calculate_node = doc.createElement("bind")
-        calculate_node.setAttribute("nodeset", "/%s/formhub/uuid" % file_name)
-        calculate_node.setAttribute("type", "string")
-        calculate_node.setAttribute("calculate", "'%s'" % self.uuid)
-        model_node.appendChild(calculate_node)
+        if len(formhub_nodes) == 0:
+            # append the calculate bind node
+            calculate_node = doc.createElement("bind")
+            calculate_node.setAttribute(
+                "nodeset", "/%s/formhub/uuid" % file_name)
+            calculate_node.setAttribute("type", "string")
+            calculate_node.setAttribute("calculate", "'%s'" % self.uuid)
+            model_node.appendChild(calculate_node)
 
         self.xml = doc.toprettyxml(indent="  ", encoding='utf-8')
         # hack
         # http://ronrothman.com/public/leftbraned/xml-dom-minidom-toprettyxml-and-silly-whitespace/
-        text_re = re.compile('>\n\s+([^<>\s].*?)\n\s+</', re.DOTALL)  
-        output_re = re.compile('\n.*(<output.*>)\n(  )*') 
+        text_re = re.compile('>\n\s+([^<>\s].*?)\n\s+</', re.DOTALL)
+        output_re = re.compile('\n.*(<output.*>)\n(  )*')
         prettyXml = text_re.sub('>\g<1></', self.xml)
         inlineOutput = output_re.sub('\g<1>', prettyXml)
         inlineOutput = re.compile(
@@ -152,8 +156,13 @@ class DataDictionary(XForm):
 
     def get_survey(self):
         if not hasattr(self, "_survey"):
-            builder = SurveyElementBuilder()
-            self._survey = builder.create_survey_element_from_json(self.json)
+            try:
+                builder = SurveyElementBuilder()
+                self._survey = \
+                    builder.create_survey_element_from_json(self.json)
+            except ValueError:
+                xml = bytes(bytearray(self.xml, encoding='utf-8'))
+                self._survey = create_survey_element_from_xml(xml)
         return self._survey
 
     survey = property(get_survey)

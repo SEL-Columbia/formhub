@@ -1,7 +1,8 @@
-from xml.dom import minidom, Node
 import re
+import dateutil.parser
+from xml.dom import minidom, Node
 from django.utils.encoding import smart_unicode, smart_str
-from django.utils.translation import ugettext_lazy, ugettext as _
+from django.utils.translation import ugettext as _
 
 XFORM_ID_STRING = u"_xform_id_string"
 
@@ -13,6 +14,7 @@ class XLSFormError(Exception):
 class DuplicateInstance(Exception):
     def __unicode__(self):
         return _("Duplicate Instance")
+
     def __str__(self):
         return unicode(self).encode('utf-8')
 
@@ -20,6 +22,7 @@ class DuplicateInstance(Exception):
 class IsNotCrowdformError(Exception):
     def __unicode__(self):
         return _("The form is not a crowdform")
+
     def __str__(self):
         return unicode(self).encode('utf-8')
 
@@ -27,6 +30,7 @@ class IsNotCrowdformError(Exception):
 class InstanceInvalidUserError(Exception):
     def __unicode__(self):
         return _("Could not determine the user.")
+
     def __str__(self):
         return unicode(self).encode('utf-8')
 
@@ -34,6 +38,7 @@ class InstanceInvalidUserError(Exception):
 class InstanceParseError(Exception):
     def __unicode__(self):
         return _("The instance could not be parsed.")
+
     def __str__(self):
         return unicode(self).encode('utf-8')
 
@@ -41,6 +46,7 @@ class InstanceParseError(Exception):
 class InstanceEmptyError(InstanceParseError):
     def __unicode__(self):
         return _("Empty instance")
+
     def __str__(self):
         return unicode(self).encode('utf-8')
 
@@ -48,20 +54,24 @@ class InstanceEmptyError(InstanceParseError):
 def get_meta_from_xml(xml_str, meta_name):
     xml = clean_and_parse_xml(xml_str)
     children = xml.childNodes
-    # children ideally contains a single element that is the parent of all survey elements
+    # children ideally contains a single element
+    # that is the parent of all survey elements
     if children.length == 0:
         raise ValueError(_("XML string must have a survey element."))
     survey_node = children[0]
-    meta_tags = [n for n in survey_node.childNodes if\
-                 n.nodeType == Node.ELEMENT_NODE and n.tagName.lower() == "meta"]
+    meta_tags = [n for n in survey_node.childNodes if
+                 n.nodeType == Node.ELEMENT_NODE and
+                 (n.tagName.lower() == "meta" or
+                     n.tagName.lower() == "orx:meta")]
     if len(meta_tags) == 0:
         return None
 
     # get the requested tag
     meta_tag = meta_tags[0]
-    uuid_tags = [n for n in meta_tag.childNodes if\
-                   n.nodeType == Node.ELEMENT_NODE and\
-                   n.tagName.lower() == meta_name.lower()]
+    uuid_tags = [n for n in meta_tag.childNodes if
+                 n.nodeType == Node.ELEMENT_NODE and
+                 (n.tagName.lower() == meta_name.lower() or
+                 n.tagName.lower() == u'orx:%s' % meta_name.lower())]
     if len(uuid_tags) == 0:
         return None
 
@@ -71,12 +81,41 @@ def get_meta_from_xml(xml_str, meta_name):
 
 
 def get_uuid_from_xml(xml):
-    uuid = get_meta_from_xml(xml, "instanceID")
-    regex = re.compile(r"uuid:(.*)")
-    if uuid:
+    def _uuid_only(uuid, regex):
         matches = regex.match(uuid)
         if matches and len(matches.groups()) > 0:
             return matches.groups()[0]
+        return None
+    uuid = get_meta_from_xml(xml, "instanceID")
+    regex = re.compile(r"uuid:(.*)")
+    if uuid:
+        return _uuid_only(uuid, regex)
+    # check in survey_node attributes
+    xml = clean_and_parse_xml(xml)
+    children = xml.childNodes
+    # children ideally contains a single element
+    # that is the parent of all survey elements
+    if children.length == 0:
+        raise ValueError(_("XML string must have a survey element."))
+    survey_node = children[0]
+    uuid = survey_node.getAttribute('instanceID')
+    if uuid != '':
+        return _uuid_only(uuid, regex)
+    return None
+
+
+def get_submission_date_from_xml(xml):
+    # check in survey_node attributes
+    xml = clean_and_parse_xml(xml)
+    children = xml.childNodes
+    # children ideally contains a single element
+    # that is the parent of all survey elements
+    if children.length == 0:
+        raise ValueError(_("XML string must have a survey element."))
+    survey_node = children[0]
+    submissionDate = survey_node.getAttribute('submissionDate')
+    if submissionDate != '':
+        return dateutil.parser.parse(submissionDate)
     return None
 
 
@@ -130,7 +169,8 @@ def _xml_node_to_dict(node, repeats=[]):
                 if child_name not in value:
                     value[child_name] = d[child_name]
                 else:
-                    raise Exception((u"Multiple nodes with the same name '%s' while not a repeat" % child_name))
+                    raise Exception(_(u"Multiple nodes with the same name '%s'"
+                                      u" while not a repeat" % child_name))
             else:
                 if child_name not in value:
                     value[child_name] = [d[child_name]]
@@ -193,7 +233,8 @@ def _flatten_dict_nest_repeats(d, prefix):
                 item_prefix = list(new_prefix)  # make a copy
                 if type(item) == dict:
                     repeat = {}
-                    for path, value in _flatten_dict_nest_repeats(item, item_prefix):
+                    for path, value in \
+                            _flatten_dict_nest_repeats(item, item_prefix):
                         #print "path: %s, value: %s" % (path, value)
                         #TODO: this only considers the first level of repeats
                         repeat.update({u"/".join(path[1:]): value})
@@ -204,6 +245,7 @@ def _flatten_dict_nest_repeats(d, prefix):
         else:
             yield (new_prefix, value)
 
+
 def _gather_parent_node_list(node):
     node_names = []
     # also check for grand-parent node to skip document element
@@ -211,6 +253,7 @@ def _gather_parent_node_list(node):
         node_names.extend(_gather_parent_node_list(node.parentNode))
     node_names.extend([node.nodeName])
     return node_names
+
 
 def xpath_from_xml_node(node):
     node_names = _gather_parent_node_list(node)
@@ -238,7 +281,8 @@ class XFormInstanceParser(object):
     def parse(self, xml_str):
         self._xml_obj = clean_and_parse_xml(xml_str)
         self._root_node = self._xml_obj.documentElement
-        repeats = [e.get_abbreviated_xpath() for e in self.dd.get_survey_elements_of_type(u"repeat")]
+        repeats = [e.get_abbreviated_xpath()
+                   for e in self.dd.get_survey_elements_of_type(u"repeat")]
         self._dict = _xml_node_to_dict(self._root_node, repeats)
         self._flat_dict = {}
         if self._dict is None:
@@ -246,6 +290,9 @@ class XFormInstanceParser(object):
         for path, value in _flatten_dict_nest_repeats(self._dict, []):
             self._flat_dict[u"/".join(path[1:])] = value
         self._set_attributes()
+
+    def get_root_node(self):
+        return self._root_node
 
     def get_root_node_name(self):
         return self._root_node.nodeName
@@ -266,13 +313,16 @@ class XFormInstanceParser(object):
         self._attributes = {}
         all_attributes = list(_get_all_attributes(self._root_node))
         for key, value in all_attributes:
-            # commented since enketo forms may have the template attribute in multiple xml tags and I dont see the harm in overiding attributes at this point
+            # commented since enketo forms may have the template attribute in
+            # multiple xml tags and I dont see the harm in overiding
+            # attributes at this point
             try:
                 assert key not in self._attributes
             except AssertionError:
                 import logging
                 logger = logging.getLogger("console_logger")
-                logger.debug("Skipping duplicate attribute: %s with value %s" % (key, value))
+                logger.debug("Skipping duplicate attribute: %s"
+                             " with value %s" % (key, value))
                 logger.debug(str(all_attributes))
             else:
                 self._attributes[key] = value
@@ -290,10 +340,12 @@ def xform_instance_to_dict(xml_str, data_dictionary):
     parser = XFormInstanceParser(xml_str, data_dictionary)
     return parser.to_dict()
 
+
 def xform_instance_to_flat_dict(xml_str, data_dictionary):
     parser = XFormInstanceParser(xml_str, data_dictionary)
     return parser.to_flat_dict()
 
-def parse_xform_instance(xml_str,data_dictionary):
+
+def parse_xform_instance(xml_str, data_dictionary):
     parser = XFormInstanceParser(xml_str, data_dictionary)
     return parser.get_flat_dict_with_attributes()

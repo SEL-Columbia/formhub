@@ -49,3 +49,8 @@ celerybeat-schedule
 .venv
 *.ropeproject
 .noseids
+
+gunicorn_cfg.py
+run_gunicorn.sh
+static
+celerybeat-schedule
