@@ -14,7 +14,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
-from django.template import RequestContext
+from django.template import RequestContext, loader
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.contrib import messages
@@ -29,6 +29,7 @@ from poster.streaminghttp import register_openers
 
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound,\
+    BaseOpenRosaResponse, \
     inject_instanceid, remove_xform, publish_xml_form, publish_form
 from models import XForm, Instance
 from main.models import UserProfile, MetaData
@@ -284,7 +285,14 @@ def submission(request, username=None):
             response = render_to_response("submission.html",
                                           context_instance=context)
         else:
-            response = OpenRosaResponse(_("Successful submission."))
+            context.message = _("Successful submission.")
+            context.formid = instance.xform.id_string
+            context.encrypted = instance.xform.encrypted
+            context.instanceID = u'uuid:%s' % instance.uuid
+            context.submissionDate = instance.date_created.isoformat()
+            context.markedAsCompleteDate = instance.date_modified.isoformat()
+            t = loader.get_template('submission.xml')
+            response = BaseOpenRosaResponse(t.render(context))
         response.status_code = 201
         response['Location'] = request.build_absolute_uri(request.path)
         return response

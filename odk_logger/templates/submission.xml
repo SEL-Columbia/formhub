@@ -1,0 +1,4 @@
+<OpenRosaResponse xmlns="http://openrosa.org/http/response">
+    <message>{{message}}</message>
+    <submissionMetadata xmlns="http://www.opendatakit.org/xforms" id="{{formid}}" {% if version %} version="{{verison}}"{% endif %}{% if encrypeted %} encrypted="yes"{% endif %} instanceID="{{ instanceID }}" submissionDate="{{submissionDate}}" isComplete="true" markedAsCompleteDate="{{markedAsCompleteDate}}"/>
+</OpenRosaResponse>

@@ -165,4 +165,5 @@ class TestBriefcaseAPI(MainTestCase):
             post_data = {'xml_submission_file': f}
             response = self.client.post(self._submission_url, post_data)
             self.assertContains(response, message, status_code=201)
+            self.assertContains(response, instanceId, status_code=201)
             self.assertEqual(Instance.objects.count(), count + 1)
