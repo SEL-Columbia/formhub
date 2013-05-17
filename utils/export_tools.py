@@ -2,8 +2,7 @@ import os
 import re
 import csv
 from datetime import datetime
-from pyxform.survey import Survey
-from pyxform.survey_element import SurveyElement
+from django.conf import settings
 from pyxform.section import Section, RepeatingSection
 from pyxform.question import Question
 from django.core.files.base import File
@@ -16,10 +15,13 @@ from utils.viewer_tools import create_attachments_zipfile
 from utils.viewer_tools import image_urls
 from zipfile import ZipFile
 from common_tags import ID, XFORM_ID_STRING, STATUS, ATTACHMENTS, GEOLOCATION,\
-    BAMBOO_DATASET_ID, DELETEDAT
+    BAMBOO_DATASET_ID, DELETEDAT, USERFORM_ID
 from odk_viewer.models.parsed_instance import _is_invalid_for_mongo,\
-    _encode_for_mongo, _decode_from_mongo
+    _encode_for_mongo, dict_for_mongo
 
+
+# this is Mongo Collection where we will store the parsed submissions
+xform_instances = settings.MONGO_DB.instances
 
 QUESTION_TYPES_TO_EXCLUDE = [
     u'note',
@@ -97,30 +99,32 @@ def dict_to_joined_export(data, index, indices, name):
     Converts a dict into one or more tabular datasets
     """
     output = {}
-    for key, val in data.iteritems():
-        if isinstance(val, list):
-            output[key] = []
-            for child in val:
-                if not indices.has_key(key):
-                    indices[key] = 0
-                indices[key] += 1
-                child_index = indices[key]
-                new_output = dict_to_joined_export(
-                    child, child_index, indices, key)
-                d = {'index': child_index, 'parent_index': index, 'parent_table': name}
-                # iterate over keys within new_output and append to main output
-                for out_key, out_val in new_output.iteritems():
-                    if isinstance(out_val, list):
-                        if not output.has_key(out_key):
-                            output[out_key] = []
-                        output[out_key].extend(out_val)
-                    else:
-                        d.update(out_val)
-                output[key].append(d)
-        else:
-            if not output.has_key(name):
-                output[name] = {}
-            output[name][key] = val#str(val)
+    # TODO: test for _geolocation and attachment lists
+    if isinstance(data, dict):
+        for key, val in data.iteritems():
+            if isinstance(val, list):
+                output[key] = []
+                for child in val:
+                    if not indices.has_key(key):
+                        indices[key] = 0
+                    indices[key] += 1
+                    child_index = indices[key]
+                    new_output = dict_to_joined_export(
+                        child, child_index, indices, key)
+                    d = {'index': child_index, 'parent_index': index, 'parent_table': name}
+                    # iterate over keys within new_output and append to main output
+                    for out_key, out_val in new_output.iteritems():
+                        if isinstance(out_val, list):
+                            if not output.has_key(out_key):
+                                output[out_key] = []
+                            output[out_key].extend(out_val)
+                        else:
+                            d.update(out_val)
+                    output[key].append(d)
+            else:
+                if name not in output:
+                    output[name] = {}
+                output[name][key] = val#str(val)
     return output
 
 
@@ -260,7 +264,9 @@ class ExportBuilder(object):
 
     def to_zipped_csv(self, path, data):
         def write_row(row, csv_writer, fields):
-            csv_writer.writerow([row.get(field, None) for field in fields])
+            csv_writer.writerow(
+                [u"{0}".format(row.get(field, '')).encode('utf-8')
+                 for field in fields])
 
         csv_defs = {}
         for section in self.sections.iterkeys():
@@ -397,6 +403,74 @@ def generate_export(export_type, extension, username, id_string,
     export.internal_status = Export.SUCCESSFUL
     # dont persist exports that have a filter
     if filter_query == None:
+        export.save()
+    return export
+
+
+def query_mongo(username, id_string, query=None, hide_deleted=True):
+    if query is None:
+        query = {}
+    query = dict_for_mongo(query)
+    query[USERFORM_ID] = u'{0}_{1}'.format(username, id_string)
+    if hide_deleted:
+        #display only active elements
+        deleted_at_query = {
+            "$or": [{"_deleted_at": {"$exists": False}},
+                    {"_deleted_at": None}]}
+        # join existing query with deleted_at_query on an $and
+        query = {"$and": [query, deleted_at_query]}
+    return xform_instances.find(query)
+
+
+def generate_csv_zip_export(username, id_string, export_id=None,
+                            filter_query=None):
+    from odk_viewer.models import Export
+    export_type = Export.CSV_ZIP_EXPORT
+    extension = 'zip'
+    # query mongo for the cursor
+    records = query_mongo(username, id_string, filter_query)
+    xform = XForm.objects.get(user__username=username, id_string=id_string)
+    survey = xform.data_dictionary().survey
+    export_builder = ExportBuilder()
+    export_builder.set_survey(survey)
+    temp_file = NamedTemporaryFile(suffix='.zip')
+    export_builder.to_zipped_csv(temp_file.name, records)
+
+    basename = "{0}_{1}".format(
+        id_string, datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+    filename = basename + "." + extension
+
+    # check filename is unique
+    while not Export.is_filename_unique(xform, filename):
+        filename = increment_index_in_filename(filename)
+
+    file_path = os.path.join(
+        username,
+        'exports',
+        id_string,
+        export_type,
+        filename)
+
+    storage = get_storage_class()()
+    # seek to the beginning as required by storage classes
+    temp_file.seek(0)
+    export_filename = storage.save(
+        file_path,
+        File(temp_file, file_path))
+    temp_file.close()
+
+    dir_name, basename = os.path.split(export_filename)
+
+    # get or create export object
+    if(export_id):
+        export = Export.objects.get(id=export_id)
+    else:
+        export = Export(xform=xform, export_type=export_type)
+    export.filedir = dir_name
+    export.filename = basename
+    export.internal_status = Export.SUCCESSFUL
+    # dont persist exports that have a filter
+    if filter_query is None:
         export.save()
     return export
 

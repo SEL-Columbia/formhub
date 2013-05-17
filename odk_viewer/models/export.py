@@ -28,6 +28,7 @@ class Export(models.Model):
     KML_EXPORT = 'kml'
     ZIP_EXPORT = 'zip'
     GDOC_EXPORT = 'gdoc'
+    CSV_ZIP_EXPORT = 'csv_zip'
 
     EXPORT_MIMES = {
         'xls': 'vnd.ms-excel',
@@ -43,6 +44,7 @@ class Export(models.Model):
         (GDOC_EXPORT, 'GDOC'),
         (ZIP_EXPORT, 'ZIP'),
         (KML_EXPORT, 'kml'),
+        (CSV_ZIP_EXPORT, 'CSV ZIP'),
     ]
 
     EXPORT_TYPE_DICT = dict(export_type for export_type in EXPORT_TYPES)

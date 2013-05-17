@@ -18,7 +18,8 @@ from odk_viewer.views import delete_export, export_list, create_export,\
     export_progress, export_download
 from pyxform import SurveyElementBuilder
 from odk_viewer.models import Export, ParsedInstance
-from utils.export_tools import generate_export, increment_index_in_filename
+from utils.export_tools import generate_export, increment_index_in_filename,\
+    dict_to_joined_export, ExportBuilder, generate_csv_zip_export
 from odk_logger.models import Instance, XForm
 from main.views import delete_data
 from utils.logger_tools import inject_instanceid
@@ -26,7 +27,6 @@ from django.core.files.storage import get_storage_class
 from odk_viewer.pandas_mongo_bridge import NoRecordsFoundError
 from odk_viewer.tasks import create_xls_export
 from xlrd import open_workbook
-from utils.export_tools import dict_to_joined_export, ExportBuilder
 from odk_viewer.models.parsed_instance import _encode_for_mongo
 
 
@@ -783,138 +783,140 @@ class TestExports(MainTestCase):
 
     def test_dict_to_joined_export_works(self):
         data =\
-        {
-            'name': 'Abe',
-            'age': 35,
-            'children':
-            [
-                {
-                    'children/name': 'Mike',
-                    'children/age': 5,
-                    'children/cartoons':
-                    [
-                        {
-                            'children/cartoons/name': 'Tom & Jerry',
-                            'children/cartoons/why': 'Tom is silly',
-                        },
-                        {
-                            'children/cartoons/name': 'Flinstones',
-                            'children/cartoons/why': 'I like bamb bam',
-                        }
-                    ]
-                },
-                {
-                    'children/name': 'John',
-                    'children/age': 2,
-                    'children/cartoons':[]
-                },
-                {
-                    'children/name': 'Imora',
-                    'children/age': 3,
-                    'children/cartoons':
-                    [
-                        {
-                            'children/cartoons/name': 'Shrek',
-                            'children/cartoons/why': 'He\'s so funny'
-                        },
-                        {
-                            'children/cartoons/name': 'Dexter\'s Lab',
-                            'children/cartoons/why': 'He thinks hes smart',
-                            'children/cartoons/characters':
-                            [
-                                {
-                                    'children/cartoons/characters/name': 'Dee Dee',
-                                    'children/cartoons/characters/good_or_evil': 'good'
-                                },
-                                {
-                                    'children/cartoons/characters/name': 'Dexter',
-                                    'children/cartoons/characters/good_or_evil': 'evil'
-                                },
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
+            {
+                'name': 'Abe',
+                'age': 35,
+                '_geolocation': [None, None],
+                'attachments': ['abcd.jpg', 'efgh.jpg'],
+                'children':
+                [
+                    {
+                        'children/name': 'Mike',
+                        'children/age': 5,
+                        'children/cartoons':
+                        [
+                            {
+                                'children/cartoons/name': 'Tom & Jerry',
+                                'children/cartoons/why': 'Tom is silly',
+                            },
+                            {
+                                'children/cartoons/name': 'Flinstones',
+                                'children/cartoons/why': u"I like bamb bam\u0107",
+                            }
+                        ]
+                    },
+                    {
+                        'children/name': 'John',
+                        'children/age': 2,
+                        'children/cartoons':[]
+                    },
+                    {
+                        'children/name': 'Imora',
+                        'children/age': 3,
+                        'children/cartoons':
+                        [
+                            {
+                                'children/cartoons/name': 'Shrek',
+                                'children/cartoons/why': 'He\'s so funny'
+                            },
+                            {
+                                'children/cartoons/name': 'Dexter\'s Lab',
+                                'children/cartoons/why': 'He thinks hes smart',
+                                'children/cartoons/characters':
+                                [
+                                    {
+                                        'children/cartoons/characters/name': 'Dee Dee',
+                                        'children/cartoons/characters/good_or_evil': 'good'
+                                    },
+                                    {
+                                        'children/cartoons/characters/name': 'Dexter',
+                                        'children/cartoons/characters/good_or_evil': 'evil'
+                                    },
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         expected_output =\
-        {
-            'survey': {
-              'name': 'Abe',
-              'age': 35,
-            },
-            'children':
-            [
-                {
-                    'children/name': 'Mike',
-                    'children/age': 5,
-                    'index': 1,
-                    'parent_index': 1,
-                    'parent_table': 'survey'
+            {
+                'survey': {
+                  'name': 'Abe',
+                  'age': 35
                 },
-                {
-                    'children/name': 'John',
-                    'children/age': 2,
-                    'index': 2,
-                    'parent_index': 1,
-                    'parent_table': 'survey'
-                },
-                {
-                    'children/name': 'Imora',
-                    'children/age': 3,
-                    'index': 3,
-                    'parent_index': 1,
-                    'parent_table': 'survey'
-                },
-            ],
-            'children/cartoons':
-            [
-                {
-                    'children/cartoons/name': 'Tom & Jerry',
-                    'children/cartoons/why': 'Tom is silly',
-                    'index': 1,
-                    'parent_index': 1,
-                    'parent_table': 'children'
-                },
-                {
-                    'children/cartoons/name': 'Flinstones',
-                    'children/cartoons/why': 'I like bamb bam',
-                    'index': 2,
-                    'parent_index': 1,
-                    'parent_table': 'children'
-                },
-                {
-                    'children/cartoons/name': 'Shrek',
-                    'children/cartoons/why': 'He\'s so funny',
-                    'index': 3,
-                    'parent_index': 3,
-                    'parent_table': 'children'
-                },
-                {
-                    'children/cartoons/name': 'Dexter\'s Lab',
-                    'children/cartoons/why': 'He thinks hes smart',
-                    'index': 4,
-                    'parent_index': 3,
-                    'parent_table': 'children'
-                }
-            ],
-            'children/cartoons/characters':
-            [
-                {
-                    'children/cartoons/characters/name': 'Dee Dee',
-                    'children/cartoons/characters/good_or_evil': 'good',
-                    'index': 1,
-                    'parent_index': 4,
-                    'parent_table': 'children/cartoons'
-                },
-                {
-                    'children/cartoons/characters/name': 'Dexter',
-                    'children/cartoons/characters/good_or_evil': 'evil',
-                    'index': 2,
-                    'parent_index': 4,
-                    'parent_table': 'children/cartoons'
-                }
-            ]
-        }
+                'children':
+                [
+                    {
+                        'children/name': 'Mike',
+                        'children/age': 5,
+                        'index': 1,
+                        'parent_index': 1,
+                        'parent_table': 'survey'
+                    },
+                    {
+                        'children/name': 'John',
+                        'children/age': 2,
+                        'index': 2,
+                        'parent_index': 1,
+                        'parent_table': 'survey'
+                    },
+                    {
+                        'children/name': 'Imora',
+                        'children/age': 3,
+                        'index': 3,
+                        'parent_index': 1,
+                        'parent_table': 'survey'
+                    },
+                ],
+                'children/cartoons':
+                [
+                    {
+                        'children/cartoons/name': 'Tom & Jerry',
+                        'children/cartoons/why': 'Tom is silly',
+                        'index': 1,
+                        'parent_index': 1,
+                        'parent_table': 'children'
+                    },
+                    {
+                        'children/cartoons/name': 'Flinstones',
+                        'children/cartoons/why': u"I like bamb bam\u0107",
+                        'index': 2,
+                        'parent_index': 1,
+                        'parent_table': 'children'
+                    },
+                    {
+                        'children/cartoons/name': 'Shrek',
+                        'children/cartoons/why': 'He\'s so funny',
+                        'index': 3,
+                        'parent_index': 3,
+                        'parent_table': 'children'
+                    },
+                    {
+                        'children/cartoons/name': 'Dexter\'s Lab',
+                        'children/cartoons/why': 'He thinks hes smart',
+                        'index': 4,
+                        'parent_index': 3,
+                        'parent_table': 'children'
+                    }
+                ],
+                'children/cartoons/characters':
+                [
+                    {
+                        'children/cartoons/characters/name': 'Dee Dee',
+                        'children/cartoons/characters/good_or_evil': 'good',
+                        'index': 1,
+                        'parent_index': 4,
+                        'parent_table': 'children/cartoons'
+                    },
+                    {
+                        'children/cartoons/characters/name': 'Dexter',
+                        'children/cartoons/characters/good_or_evil': 'evil',
+                        'index': 2,
+                        'parent_index': 4,
+                        'parent_table': 'children/cartoons'
+                    }
+                ]
+            }
         survey_name = 'survey'
         indices = {survey_name: 0}
         output = dict_to_joined_export(data, 1, indices, survey_name)
@@ -931,7 +933,8 @@ class TestExports(MainTestCase):
                 expected_output['children'][index])
         # 2nd level
         self.assertEqual(len(output['children/cartoons']), 4)
-        for cartoon in enumerate(['Tom & Jerry', 'Flinstones', 'Shrek', 'Dexter\'s Lab']):
+        for cartoon in enumerate(
+                ['Tom & Jerry', 'Flinstones', 'Shrek', 'Dexter\'s Lab']):
             index = cartoon[0]
             name = cartoon[1]
             self.assertEqual(
@@ -949,6 +952,17 @@ class TestExports(MainTestCase):
                     lambda x: x['children/cartoons/characters/name'] == name,
                     output['children/cartoons/characters'])[0],
                 expected_output['children/cartoons/characters'][index])
+
+    def test_generate_csv_zip_export(self):
+        # publish xls form
+        self._publish_transportation_form_and_submit_instance()
+        # create export db object
+        export = generate_csv_zip_export(
+            self.user.username, self.xform.id_string)
+        storage = get_storage_class()()
+        self.assertTrue(storage.exists(export.filepath))
+        path, ext = os.path.splitext(export.filename)
+        self.assertEqual(ext, '.zip')
 
 
 class TestExportBuilder(MainTestCase):
@@ -970,7 +984,7 @@ class TestExportBuilder(MainTestCase):
                         },
                         {
                             'children/cartoons/name': 'Flinstones',
-                            'children/cartoons/why': 'I like bamb bam',
+                            'children/cartoons/why': u"I like bamb bam\u0107", # throw in a unicode character
                         }
                     ]
                 },
