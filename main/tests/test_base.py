@@ -5,12 +5,12 @@ from tempfile import NamedTemporaryFile
 import urllib2
 
 from django.contrib.auth.models import User
+from django_digest.test import Client as DigestClient
 # from django.test import TestCase
 from django_nose import FastFixtureTestCase as TestCase
 from django.test.client import Client
 
 from odk_logger.models import XForm, Instance, Attachment
-import urllib2
 from settings import _MONGO_CONNECTION, MONGO_TEST_DB_NAME
 
 
@@ -183,3 +183,13 @@ class MainTestCase(TestCase):
         return {
             'HTTP_AUTHORIZATION': 'Basic ' + base64.b64encode('%s:%s' % (username, password)),
             }
+
+    def _get_authenticated_client(
+            self, url, username='bob', password='bob', extra={}):
+        client = DigestClient()
+        # request with no credentials
+        req = client.get(url, {}, **extra)
+        self.assertEqual(req.status_code, 401)
+        # apply credentials
+        client.set_authorization(username, password, 'Digest')
+        return client

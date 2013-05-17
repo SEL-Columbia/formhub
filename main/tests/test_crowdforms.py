@@ -68,12 +68,6 @@ class TestCrowdforms(MainTestCase):
         self._make_submissions(add_uuid=True, should_store=False)
         self.assertEqual(self.response.status_code, 405)
 
-    def test_disallow_other_user_submit_to_closed_crowdform(self):
-        self._close_crowdform()
-        self._logout()
-        self._make_submissions('crowdforms', add_uuid=True, should_store=False)
-        self.assertEqual(self.response.status_code, 405)
-
     def test_user_add_crowdform(self):
         self._add_crowdform()
         self.assertEqual(self.response.status_code, 302)
@@ -114,7 +108,8 @@ class TestCrowdforms(MainTestCase):
         self.xform.is_crowd_form = False
         self.xform.shared_data = False
         self.xform.save()
-        response = self.client.post(self.edit_url, {'toggle_shared': 'crowd'},
+        response = self.client.post(
+            self.edit_url, {'toggle_shared': 'crowd'},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         xform = XForm.objects.get(pk=self.xform.pk)
@@ -125,7 +120,8 @@ class TestCrowdforms(MainTestCase):
     def test_user_toggle_form_crowd_off(self):
         self.xform.shared = True
         self.xform.save()
-        response = self.client.post(self.edit_url, {'toggle_shared': 'crowd'},
+        response = self.client.post(
+            self.edit_url, {'toggle_shared': 'crowd'},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         xform = XForm.objects.get(pk=self.xform.pk)

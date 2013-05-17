@@ -9,6 +9,7 @@ import traceback
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.core.exceptions import PermissionDenied
 from django.core.files.storage import get_storage_class
 from django.core.mail import mail_admins
 from django.core.servers.basehttp import FileWrapper
@@ -20,22 +21,25 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from modilabs.utils.subprocess_timeout import ProcessTimedOut
 from pyxform.errors import PyXFormError
+from pyxform.xform2json import create_survey_element_from_xml
 import sys
 import common_tags
 
 from odk_logger.models import Attachment
 from odk_logger.models import Instance
 from odk_logger.models.instance import InstanceHistory
+from odk_logger.models.instance import get_id_string_from_xml_str
 from odk_logger.models import XForm
 from odk_logger.models.xform import XLSFormError
 from odk_logger.xform_instance_parser import InstanceInvalidUserError, \
     IsNotCrowdformError, DuplicateInstance, clean_and_parse_xml, \
-    get_uuid_from_xml, get_deprecated_uuid_from_xml
+    get_uuid_from_xml, get_deprecated_uuid_from_xml, \
+    get_submission_date_from_xml
 from odk_viewer.models.parsed_instance import _remove_from_mongo
 from odk_viewer.models.parsed_instance import xform_instances
 
 from odk_viewer.models import ParsedInstance, DataDictionary
-from utils.model_tools import queryset_iterator
+from utils.model_tools import queryset_iterator, set_uuid
 from xml.dom import Node
 
 
@@ -54,7 +58,7 @@ mongo_instances = settings.MONGO_DB.instances
 @transaction.commit_manually
 def create_instance(username, xml_file, media_files,
                     status=u'submitted_via_web', uuid=None,
-                    date_created_override=None):
+                    date_created_override=None, request=None):
     """
     I used to check if this file had been submitted already, I've
     taken this out because it was too slow. Now we're going to create
@@ -98,6 +102,19 @@ def create_instance(username, xml_file, media_files,
                 username = xform_username
         # else, since we have a username, the Instance creation logic will
         # handle checking for the forms existence by its id_string
+        if username and request and request.user.is_authenticated():
+            id_string = get_id_string_from_xml_str(xml)
+            xform = XForm.objects.get(
+                id_string=id_string, user__username=username)
+            if not xform.is_crowd_form and not is_touchform \
+                    and xform.user.profile.require_auth \
+                    and xform.user != request.user:
+                raise PermissionDenied(
+                    _(u"%(request_user)s is not allowed to make submissions "
+                      u"to %(form_user)s's %(form_title)s form." % {
+                          'request_user': request.user,
+                          'form_user': xform.user,
+                          'form_title': xform.title}))
 
         user = get_object_or_404(User, username=username)
         existing_instance_count = Instance.objects.filter(
@@ -134,6 +151,8 @@ def create_instance(username, xml_file, media_files,
             # check if its an edit submission
             old_uuid = get_deprecated_uuid_from_xml(xml)
             instances = Instance.objects.filter(uuid=old_uuid)
+            if not date_created_override:
+                date_created_override = get_submission_date_from_xml(xml)
             if instances:
                 instance = instances[0]
                 InstanceHistory.objects.create(
@@ -294,11 +313,33 @@ def publish_xls_form(xls_file, user, id_string=None):
         )
 
 
-class OpenRosaResponse(HttpResponse):
+def publish_xml_form(xml_file, user, id_string=None):
+    xml = xml_file.read()
+    survey = create_survey_element_from_xml(xml)
+    form_json = survey.to_json()
+    if id_string:
+        dd = DataDictionary.objects.get(user=user, id_string=id_string)
+        dd.xml = xml
+        dd.json = form_json
+        dd._mark_start_time_boolean()
+        set_uuid(dd)
+        dd._set_uuid_in_xml()
+        dd.save()
+        return dd
+    else:
+        dd = DataDictionary(user=user, xml=xml, json=form_json)
+        dd._mark_start_time_boolean()
+        set_uuid(dd)
+        dd._set_uuid_in_xml(file_name=xml_file.name)
+        dd.save()
+        return dd
+
+
+class BaseOpenRosaResponse(HttpResponse):
     status_code = 201
 
     def __init__(self, *args, **kwargs):
-        super(OpenRosaResponse, self).__init__(*args, **kwargs)
+        super(BaseOpenRosaResponse, self).__init__(*args, **kwargs)
 
         self[OPEN_ROSA_VERSION_HEADER] = OPEN_ROSA_VERSION
         tz = pytz.timezone(settings.TIME_ZONE)
@@ -306,6 +347,13 @@ class OpenRosaResponse(HttpResponse):
         self['Date'] = dt
         self['X-OpenRosa-Accept-Content-Length'] = DEFAULT_CONTENT_LENGTH
         self['Content-Type'] = DEFAULT_CONTENT_TYPE
+
+
+class OpenRosaResponse(BaseOpenRosaResponse):
+    status_code = 201
+
+    def __init__(self, *args, **kwargs):
+        super(OpenRosaResponse, self).__init__(*args, **kwargs)
         # wrap content around xml
         self.content = '''<?xml version='1.0' encoding='UTF-8' ?>
 <OpenRosaResponse xmlns="http://openrosa.org/http/response">
