@@ -33,7 +33,8 @@ from odk_logger.models import XForm
 from odk_logger.models.xform import XLSFormError
 from odk_logger.xform_instance_parser import InstanceInvalidUserError, \
     IsNotCrowdformError, DuplicateInstance, clean_and_parse_xml, \
-    get_uuid_from_xml, get_deprecated_uuid_from_xml
+    get_uuid_from_xml, get_deprecated_uuid_from_xml, \
+    get_submission_date_from_xml
 from odk_viewer.models.parsed_instance import _remove_from_mongo
 from odk_viewer.models.parsed_instance import xform_instances
 
@@ -150,6 +151,8 @@ def create_instance(username, xml_file, media_files,
             # check if its an edit submission
             old_uuid = get_deprecated_uuid_from_xml(xml)
             instances = Instance.objects.filter(uuid=old_uuid)
+            if not date_created_override:
+                date_created_override = get_submission_date_from_xml(xml)
             if instances:
                 instance = instances[0]
                 InstanceHistory.objects.create(

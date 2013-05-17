@@ -1,5 +1,6 @@
-from xml.dom import minidom, Node
 import re
+import dateutil.parser
+from xml.dom import minidom, Node
 from django.utils.encoding import smart_unicode, smart_str
 from django.utils.translation import ugettext as _
 
@@ -100,6 +101,21 @@ def get_uuid_from_xml(xml):
     uuid = survey_node.getAttribute('instanceID')
     if uuid != '':
         return _uuid_only(uuid, regex)
+    return None
+
+
+def get_submission_date_from_xml(xml):
+    # check in survey_node attributes
+    xml = clean_and_parse_xml(xml)
+    children = xml.childNodes
+    # children ideally contains a single element
+    # that is the parent of all survey elements
+    if children.length == 0:
+        raise ValueError(_("XML string must have a survey element."))
+    survey_node = children[0]
+    submissionDate = survey_node.getAttribute('submissionDate')
+    if submissionDate != '':
+        return dateutil.parser.parse(submissionDate)
     return None
 
 
