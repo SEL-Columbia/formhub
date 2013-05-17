@@ -28,6 +28,7 @@ class Export(models.Model):
     KML_EXPORT = 'kml'
     ZIP_EXPORT = 'zip'
     GDOC_EXPORT = 'gdoc'
+    CSV_ZIP_EXPORT = 'csv_zip'
 
     EXPORT_MIMES = {
         'xls': 'vnd.ms-excel',
@@ -43,6 +44,7 @@ class Export(models.Model):
         (GDOC_EXPORT, 'GDOC'),
         (ZIP_EXPORT, 'ZIP'),
         (KML_EXPORT, 'kml'),
+        (CSV_ZIP_EXPORT, 'CSV ZIP'),
     ]
 
     EXPORT_TYPE_DICT = dict(export_type for export_type in EXPORT_TYPES)
@@ -157,7 +159,9 @@ class Export(models.Model):
         # get newest export for xform
         try:
             latest_export = Export.objects.filter(
-                xform=xform, export_type=export_type, internal_status=Export.SUCCESSFUL).latest('created_on')
+                xform=xform, export_type=export_type,
+                internal_status__in=[Export.SUCCESSFUL, Export.PENDING])\
+                .latest('created_on')
         except cls.DoesNotExist:
             return True
         else:

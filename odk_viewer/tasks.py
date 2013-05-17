@@ -5,9 +5,9 @@ from django.db import transaction
 from django.conf import settings
 from django.core.mail import mail_admins
 from odk_viewer.models import Export
-from utils.export_tools import generate_export
-from utils.export_tools import generate_attachments_zip_export
-from utils.export_tools import generate_kml_export
+from utils.export_tools import generate_export,\
+    generate_attachments_zip_export, generate_kml_export,\
+    generate_csv_zip_export
 from utils.logger_tools import mongo_sync_status
 from pandas_mongo_bridge import NoRecordsFoundError
 
@@ -54,6 +54,10 @@ def create_async_export(xform, export_type, query, force_xlsx, options=None):
     elif export_type == Export.KML_EXPORT:
         # start async export
         result = create_kml_export.apply_async(
+            (), arguments, countdown=10)
+    elif export_type == Export.CSV_ZIP_EXPORT:
+        # start async export
+        result = create_csv_zip_export.apply_async(
             (), arguments, countdown=10)
     else:
         raise Export.ExportTypeError
@@ -147,6 +151,20 @@ def create_zip_export(username, id_string, export_id, query=None):
         delete_export.apply_async(
             (), {'export_id': gen_export.id},
             countdown=settings.ZIP_EXPORT_COUNTDOWN)
+        return gen_export.id
+
+
+@task()
+def create_csv_zip_export(username, id_string, export_id, query=None):
+    export = Export.objects.get(id=export_id)
+    try:
+        gen_export = generate_csv_zip_export(
+            username, id_string, export_id, query)
+    except (Exception, NoRecordsFoundError) as e:
+        export.internal_status = Export.FAILED
+        export.save()
+        raise
+    else:
         return gen_export.id
 
 
