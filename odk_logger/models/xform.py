@@ -94,7 +94,9 @@ class XForm(models.Model):
 
     @property
     def has_surveys_with_geopoints(self):
-        return self.data_dictionary().has_surveys_with_geopoints()
+        from odk_viewer.models import ParsedInstance
+        return ParsedInstance.objects.filter(
+            instance__xform=self, lat__isnull=False).count() > 0
 
     def _set_id_string(self):
         matches = self.instance_id_regex.findall(self.xml)
@@ -142,13 +144,13 @@ class XForm(models.Model):
         return getattr(self, "id_string", "")
 
     def submission_count(self):
-        return self.surveys.filter(deleted_at=None).count()
+        return self.surveys.filter(is_deleted=False).count()
     submission_count.short_description = ugettext_lazy("Submission Count")
 
     def time_of_last_submission(self):
         try:
             return self.surveys.\
-                filter(deleted_at=None).latest("date_created").date_created
+                filter(is_deleted=False).latest("date_created").date_created
         except ObjectDoesNotExist:
             pass
 

@@ -263,7 +263,7 @@ class ParsedInstance(models.Model):
         self.lat = g.get(u'latitude')
         self.lng = g.get(u'longitude')
 
-    def save(self, async=True, *args, **kwargs):
+    def save(self, async=False, *args, **kwargs):
         self._set_start_time()
         self._set_end_time()
         self._set_geopoint()
