@@ -266,7 +266,7 @@ def enketo_url(form_url, id_string):
 def create_attachments_zipfile(attachments):
     # create zip_file
     tmp = NamedTemporaryFile(delete=False)
-    z = zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED)
+    z = zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
     for attachment in attachments:
         default_storage = get_storage_class()()
         if default_storage.exists(attachment.media_file.name):
