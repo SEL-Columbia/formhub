@@ -728,6 +728,10 @@ def tutorial(request):
 
 def resources(request):
     context = RequestContext(request)
+    if 'fr' in request.LANGUAGE_CODE.lower():
+        context.deck_id = 'a351f6b0a3730130c98b12e3c5740641'
+    else:
+        context.deck_id = '1a33a070416b01307b8022000a1de118'
     return render_to_response('resources.html', context_instance=context)
 
 
