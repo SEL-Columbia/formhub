@@ -177,7 +177,11 @@ class XForm(models.Model):
 
     @property
     def can_be_replaced(self):
-        return self.submission_count() == 0
+        if hasattr(self.submission_count, '__call__'):
+            num_submissions = self.submission_count()
+        else:
+            num_submissions = self.submission_count
+        return num_submissions == 0
 
 
 def stats_forms_created(sender, instance, created, **kwargs):
