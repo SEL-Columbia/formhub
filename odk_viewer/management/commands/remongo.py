@@ -49,7 +49,7 @@ class Command(BaseCommand):
                 i += 1
                 if (i % 1000) == 0:
                     print 'Updated %d records, flushing MongoDB...' % i
-                    settings._MONGO_CONNECTION.admin.command({'fsync': 1})
+                    settings.MONGO_CONNECTION.admin.command({'fsync': 1})
             start = start + batchsize
             end = min(record_count, start + batchsize)
         # add indexes after writing so the writing operation above is not slowed

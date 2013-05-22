@@ -28,5 +28,9 @@ DATABASES = {
 
 TOUCHFORMS_URL = 'http://localhost:9000/'
 
-MONGO_DB_NAME = "formhub"
-MONGO_SETTINGS = ('localhost', 27017,)
+MONGO_DATABASE = {
+    'HOST': 'localhost',
+    'NAME': 'formhub',
+    'USER': '',
+    'PASSWORD': ''
+}

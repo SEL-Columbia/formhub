@@ -238,8 +238,12 @@ LOGGING = {
     }
 }
 
-MONGO_SETTINGS = ('localhost', 27017,)
-MONGO_DB_NAME = "formhub"
+MONGO_DATABASE = {
+    'HOST': 'localhost',
+    'NAME': 'formhub',
+    'USER': '',
+    'PASSWORD': ''
+}
 
 GOOGLE_STEP2_URI = 'http://formhub.org/gwelcome'
 GOOGLE_CLIENT_ID = '617113120802.apps.googleusercontent.com'
@@ -283,7 +287,7 @@ else:
 if TESTING_MODE:
     MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'test_media/')
     subprocess.call(["rm", "-r", MEDIA_ROOT])
-    MONGO_DB_NAME = "formhub_test"
+    MONGO_DATABASE['NAME'] = "formhub_test"
     # need to have CELERY_ALWAYS_EAGER True and BROKER_BACKEND as memory
     # to run tasks immediately while testing
     CELERY_ALWAYS_EAGER = True
@@ -302,8 +306,15 @@ except ImportError:
           "local_settings.py file.")
 
 # MongoDB
-_MONGO_CONNECTION = MongoClient(*MONGO_SETTINGS, safe=True, j=True)
-MONGO_DB = _MONGO_CONNECTION[MONGO_DB_NAME]
+if MONGO_DATABASE.get('USER') and MONGO_DATABASE.get('PASSWORD'):
+    MONGO_CONNECTION_URL = "mongodb://{0}:{1}@{2}".format(
+        MONGO_DATABASE['USER'], MONGO_DATABASE['PASSWORD'],
+        MONGO_DATABASE['HOST'])
+else:
+    MONGO_CONNECTION_URL = "mongodb://{0}".format(MONGO_DATABASE['HOST'])
+
+MONGO_CONNECTION = MongoClient(MONGO_CONNECTION_URL, safe=True, j=True)
+MONGO_DB = MONGO_CONNECTION[MONGO_DATABASE['NAME']]
 
 # Clear out the test database
 if TESTING_MODE:
