@@ -240,6 +240,7 @@ LOGGING = {
 
 MONGO_DATABASE = {
     'HOST': 'localhost',
+    'PORT': 27017,
     'NAME': 'formhub',
     'USER': '',
     'PASSWORD': ''
@@ -307,11 +308,10 @@ except ImportError:
 
 # MongoDB
 if MONGO_DATABASE.get('USER') and MONGO_DATABASE.get('PASSWORD'):
-    MONGO_CONNECTION_URL = "mongodb://{0}:{1}@{2}".format(
-        MONGO_DATABASE['USER'], MONGO_DATABASE['PASSWORD'],
-        MONGO_DATABASE['HOST'])
+    MONGO_CONNECTION_URL = "mongodb://%(USER)s:%(PASSWORD)s@%(HOST)s:%(PORT)s"\
+                           % MONGO_DATABASE
 else:
-    MONGO_CONNECTION_URL = "mongodb://{0}".format(MONGO_DATABASE['HOST'])
+    MONGO_CONNECTION_URL = "mongodb://%(HOST)s:%(PORT)s" % MONGO_DATABASE
 
 MONGO_CONNECTION = MongoClient(MONGO_CONNECTION_URL, safe=True, j=True)
 MONGO_DB = MONGO_CONNECTION[MONGO_DATABASE['NAME']]
