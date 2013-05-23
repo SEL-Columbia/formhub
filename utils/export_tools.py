@@ -132,7 +132,13 @@ class ExportBuilder(object):
     IGNORED_COLUMNS = [XFORM_ID_STRING, STATUS, ATTACHMENTS, GEOLOCATION,
                        BAMBOO_DATASET_ID, DELETEDAT]
     EXTRA_FIELDS = [ID, 'index', 'parent_index', 'parent_table']
-    split_select_multiples = True
+    SPLIT_SELECT_MULTIPLES = True
+
+    # column group delimiters
+    GROUP_DELIMITER_SLASH = '/'
+    GROUP_DELIMITER_DOT = '.'
+    DEFAULT_GROUP_DELIMITER = GROUP_DELIMITER_SLASH
+    GROUP_DELIMITERS = [GROUP_DELIMITER_SLASH, GROUP_DELIMITER_DOT]
 
     def set_survey(self, survey):
         from odk_viewer.models import DataDictionary
@@ -247,7 +253,7 @@ class ExportBuilder(object):
         """
         Split select multiples, gps and decode . and $
         """
-        if self.split_select_multiples and\
+        if self.SPLIT_SELECT_MULTIPLES and\
                 section in self.select_multiples:
             row = ExportBuilder.split_select_multiples(
                 row, self.select_multiples[section])
@@ -270,7 +276,7 @@ class ExportBuilder(object):
 
         csv_defs = {}
         for section in self.sections.iterkeys():
-            csv_file = NamedTemporaryFile(suffix=(".csv"))
+            csv_file = NamedTemporaryFile(suffix=".csv")
             csv_writer = csv.writer(csv_file)
             csv_defs[section] = {'csv_file': csv_file, 'csv_writer': csv_writer}
 
