@@ -137,15 +137,21 @@ class ExportBuilder(object):
     # column group delimiters
     GROUP_DELIMITER_SLASH = '/'
     GROUP_DELIMITER_DOT = '.'
-    DEFAULT_GROUP_DELIMITER = GROUP_DELIMITER_SLASH
+    GROUP_DELIMITER = GROUP_DELIMITER_SLASH
     GROUP_DELIMITERS = [GROUP_DELIMITER_SLASH, GROUP_DELIMITER_DOT]
+
+    @classmethod
+    def format_field_title(cls, abbreviated_xpath, field_delimiter):
+        if field_delimiter != '/':
+            return field_delimiter.join(abbreviated_xpath.split('/'))
+        return abbreviated_xpath
 
     def set_survey(self, survey):
         from odk_viewer.models import DataDictionary
 
         def build_sections(
             section_name, survey_element, sections, select_multiples,
-                gps_fields, encoded_fields):
+                gps_fields, encoded_fields, field_delimiter='/'):
             for child in survey_element.children:
                 # if a section, recurs
                 if isinstance(child, Section):
@@ -155,19 +161,22 @@ class ExportBuilder(object):
                         sections[child.get_abbreviated_xpath()] = []
                         build_sections(
                             child.get_abbreviated_xpath(), child, sections,
-                            select_multiples, gps_fields, encoded_fields)
+                            select_multiples, gps_fields, encoded_fields,
+                            field_delimiter)
                     else:
                         # its a group, recurs with the same section name
                         build_sections(
                             section_name, child, sections, select_multiples,
-                            gps_fields, encoded_fields)
+                            gps_fields, encoded_fields,
+                            field_delimiter)
                 elif isinstance(child, Question) and child.bind.get(u"type")\
                         not in QUESTION_TYPES_TO_EXCLUDE:
                     # add to survey_sections
                     if isinstance(child, Question):
                         child_xpath = child.get_abbreviated_xpath()
                         sections[section_name].append({
-                            'name': child.name,
+                            'title': ExportBuilder.format_field_title(
+                                child.get_abbreviated_xpath(), field_delimiter),
                             'xpath': child_xpath})
 
                         if _is_invalid_for_mongo(child.name):
@@ -180,7 +189,9 @@ class ExportBuilder(object):
                     if child.bind.get(u"type") == MULTIPLE_SELECT_BIND_TYPE:
                         sections[section_name].extend(
                             [{
-                                'name': c.name,
+                                'title': ExportBuilder.format_field_title(
+                                    c.get_abbreviated_xpath(),
+                                    field_delimiter),
                                 'xpath': c.get_abbreviated_xpath()}
                                 for c in child.children])
                         select_multiples[section_name] =\
@@ -198,8 +209,14 @@ class ExportBuilder(object):
                         xpaths = DataDictionary.get_additional_geopoint_xpaths(
                             child.get_abbreviated_xpath())
                         sections[section_name].extend(
-                            [{'name': xpath, 'xpath': xpath}
-                             for xpath in xpaths])
+                            [
+                                {
+                                    'title': ExportBuilder.format_field_title(
+                                        xpath, field_delimiter),
+                                    'xpath': xpath
+                                }
+                                for xpath in xpaths
+                            ])
                         gps_fields[section_name] =\
                             {
                                 child.get_abbreviated_xpath(): xpaths
@@ -212,7 +229,8 @@ class ExportBuilder(object):
         self.encoded_fields = {}
         build_sections(
             self.survey.name, self.survey, self.sections,
-            self.select_multiples, self.gps_fields, self.encoded_fields)
+            self.select_multiples, self.gps_fields, self.encoded_fields,
+            self.GROUP_DELIMITER)
 
     @classmethod
     def split_select_multiples(cls, row, select_multiples):
@@ -282,9 +300,8 @@ class ExportBuilder(object):
 
         # write headers
         for section, elements in self.sections.iteritems():
-            fields = [
-                element['xpath'] for element in elements]\
-                    + self.EXTRA_FIELDS
+            fields =\
+                [element['xpath'] for element in elements] + self.EXTRA_FIELDS
             csv_defs[section]['csv_writer'].writerow(fields)
 
         index = 1

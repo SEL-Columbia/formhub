@@ -1056,9 +1056,9 @@ class TestExportBuilder(MainTestCase):
             sorted(expected_sections), sorted(export_builder.sections.keys()))
         # main section should have split geolocations
         expected_element_names = [
-            'name', 'age', 'geolocation', '_geolocation_longitude',
-            '_geolocation_latitude', '_geolocation_altitude',
-            '_geolocation_precision', 'tel/tel.office', 'tel/tel.mobile',
+            'name', 'age', 'geo/geolocation', 'geo/_geolocation_longitude',
+            'geo/_geolocation_latitude', 'geo/_geolocation_altitude',
+            'geo/_geolocation_precision', 'tel/tel.office', 'tel/tel.mobile',
             'meta/instanceID']
         element_names = [
             element['xpath'] for element in
@@ -1203,10 +1203,10 @@ class TestExportBuilder(MainTestCase):
             {
                 'childrens_survey':
                 {
-                    'geolocation':
+                    'geo/geolocation':
                     [
-                        '_geolocation_latitude', '_geolocation_longitude',
-                        '_geolocation_altitude', '_geolocation_precision'
+                        'geo/_geolocation_latitude', 'geo/_geolocation_longitude',
+                        'geo/_geolocation_altitude', 'geo/_geolocation_precision'
                     ]
                 }
             }
@@ -1219,46 +1219,46 @@ class TestExportBuilder(MainTestCase):
     def test_split_gps_components_works(self):
         gps_fields =\
             {
-                'geolocation':
+                'geo/geolocation':
                 [
-                    '_geolocation_latitude', '_geolocation_longitude',
-                    '_geolocation_altitude', '_geolocation_precision'
+                    'geo/_geolocation_latitude', 'geo/_geolocation_longitude',
+                    'geo/_geolocation_altitude', 'geo/_geolocation_precision'
                 ]
             }
         row = \
             {
-                'geolocation': '1.0 36.1 2000 20',
+                'geo/geolocation': '1.0 36.1 2000 20',
             }
         new_row = ExportBuilder.split_gps_components(
             row, gps_fields)
         expected_row = \
             {
-                'geolocation': '1.0 36.1 2000 20',
-                '_geolocation_latitude': '1.0',
-                '_geolocation_longitude': '36.1',
-                '_geolocation_altitude': '2000',
-                '_geolocation_precision': '20'
+                'geo/geolocation': '1.0 36.1 2000 20',
+                'geo/_geolocation_latitude': '1.0',
+                'geo/_geolocation_longitude': '36.1',
+                'geo/_geolocation_altitude': '2000',
+                'geo/_geolocation_precision': '20'
             }
         self.assertEqual(new_row, expected_row)
 
     def test_split_gps_components_works_when_gps_data_is_blank(self):
         gps_fields =\
             {
-                'geolocation':
+                'geo/geolocation':
                 [
-                    '_geolocation_latitude', '_geolocation_longitude',
-                    '_geolocation_altitude', '_geolocation_precision'
+                    'geo/_geolocation_latitude', 'geo/_geolocation_longitude',
+                    'geo/_geolocation_altitude', 'geo/_geolocation_precision'
                 ]
             }
         row = \
             {
-                'geolocation': '',
+                'geo/geolocation': '',
             }
         new_row = ExportBuilder.split_gps_components(
             row, gps_fields)
         expected_row = \
             {
-                'geolocation': '',
+                'geo/geolocation': '',
             }
         self.assertEqual(new_row, expected_row)
 
@@ -1302,3 +1302,67 @@ class TestExportBuilder(MainTestCase):
                 'tel/tel.office': '123-456-789'
             }
         self.assertEqual(new_row, expected_row)
+
+    def test_generate_field_title(self):
+        field_name = ExportBuilder.format_field_title("child/age", ".")
+        expected_field_name = "child.age"
+        self.assertEqual(field_name, expected_field_name)
+
+    def test_delimiter_replacement_works_existing_fields(self):
+        survey = self._create_childrens_survey()
+        export_builder = ExportBuilder()
+        export_builder.GROUP_DELIMITER = "."
+        export_builder.set_survey(survey)
+        expected_sections =\
+            {
+                'children':
+                [
+                    {
+                        'title': 'children.name',
+                        'xpath': 'children/name'
+                    }
+                ]
+            }
+        self.assertEqual(
+            export_builder.sections['children'][0]['title'],
+            expected_sections['children'][0]['title'])
+
+    def test_delimiter_replacement_works_generated_multi_select_fields(self):
+        survey = self._create_childrens_survey()
+        export_builder = ExportBuilder()
+        export_builder.GROUP_DELIMITER = "."
+        export_builder.set_survey(survey)
+        expected_sections =\
+            {
+                'children':
+                [
+                    {
+                        'title': 'children.fav_colors.red',
+                        'xpath': 'children/fav_colors/red'
+                    }
+                ]
+            }
+        match = filter(lambda x: expected_sections['children'][0]['xpath']
+                       == x['xpath'], export_builder.sections['children'])[0]
+        self.assertEqual(
+            expected_sections['children'][0]['title'], match['title'])
+
+    def test_delimiter_replacement_works_generated_gps_fields(self):
+        survey = self._create_childrens_survey()
+        export_builder = ExportBuilder()
+        export_builder.GROUP_DELIMITER = "."
+        export_builder.set_survey(survey)
+        expected_sections =\
+            {
+                'childrens_survey':
+                [
+                    {
+                        'title': 'geo._geolocation_latitude',
+                        'xpath': 'geo/_geolocation_latitude'
+                    }
+                ]
+            }
+        match = filter(
+            lambda x: expected_sections['childrens_survey'][0]['xpath'] == x['xpath'], export_builder.sections['childrens_survey'])[0]
+        self.assertEqual(
+            expected_sections['childrens_survey'][0]['title'], match['title'])
