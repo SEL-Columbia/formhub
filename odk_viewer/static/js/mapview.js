@@ -19,7 +19,7 @@ var mapboxMaps = [
     {label: gettext('Mapbox Streets'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-iuetkf9u.jsonp'},
     {label: gettext('MapBox Streets Light'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-p543gvbh.jsonp'},
     {label: gettext('MapBox Streets Zenburn'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-bjhr55gf.jsonp'},
-    {label: gettext('Natural Earth II'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-1c1r9n5g.jsonp'}
+    {label: gettext('Cloudless Earth'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-aef58tqo.jsonp'}
 ];
 var sslUrlPerfix = 'https://dnv9my2eseobd.cloudfront.net/'; // add trailing slash since its expected function that uses this
 var allowResetZoomLevel = true; // used to allow zooming when first loaded
