@@ -245,6 +245,8 @@ def profile(request, username):
 
 
 def members_list(request):
+    if not request.user.is_staff and not request.user.is_superuser:
+        return HttpResponseForbidden(_(u'Forbidden.'))
     context = RequestContext(request)
     users = User.objects.all()
     context.template = 'people.html'
