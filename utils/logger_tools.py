@@ -443,12 +443,12 @@ def update_mongo_for_xform(xform, only_update_missing=True):
         if (done % 1000) == 0:
             sys.stdout.write(
                 'Updated %d records, flushing MongoDB...\n' % done)
-        settings._MONGO_CONNECTION.admin.command({'fsync': 1})
+        settings.MONGO_CONNECTION.admin.command({'fsync': 1})
         progress = "\r%.2f %% done..." % ((float(done) / float(total)) * 100)
         sys.stdout.write(progress)
         sys.stdout.flush()
     # flush mongo again when done
-    settings._MONGO_CONNECTION.admin.command({'fsync': 1})
+    settings.MONGO_CONNECTION.admin.command({'fsync': 1})
     sys.stdout.write(
         "\nUpdated %s\n------------------------------------------\n"
         % xform.id_string)
