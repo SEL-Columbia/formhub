@@ -4,7 +4,7 @@ import os
 import subprocess
 import sys
 
-from pymongo import Connection
+from pymongo import MongoClient
 
 import djcelery
 djcelery.setup_loader()
@@ -132,7 +132,7 @@ LOCALE_PATHS = (os.path.join(PROJECT_ROOT, 'locale'), )
 ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
-    os.path.join(PROJECT_ROOT, 'templates')
+    os.path.join(PROJECT_ROOT, 'templates'),
     # Put strings here, like "/home/html/django_templates"
     # or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
@@ -238,11 +238,13 @@ LOGGING = {
     }
 }
 
-# MongoDB
-_MONGO_CONNECTION = Connection(safe=True, j=True)
-MONGO_DB = None
-MONGO_DB_NAME = "formhub"
-MONGO_TEST_DB_NAME = "formhub_test"
+MONGO_DATABASE = {
+    'HOST': 'localhost',
+    'PORT': 27017,
+    'NAME': 'formhub',
+    'USER': '',
+    'PASSWORD': ''
+}
 
 GOOGLE_STEP2_URI = 'http://formhub.org/gwelcome'
 GOOGLE_CLIENT_ID = '617113120802.apps.googleusercontent.com'
@@ -283,12 +285,10 @@ if len(sys.argv) >= 2 and (sys.argv[1] == "test" or sys.argv[1] == "test_all"):
 else:
     TESTING_MODE = False
 
-# Clear out the test database
 if TESTING_MODE:
     MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'test_media/')
     subprocess.call(["rm", "-r", MEDIA_ROOT])
-    MONGO_DB = _MONGO_CONNECTION[MONGO_TEST_DB_NAME]
-    MONGO_DB.instances.drop()
+    MONGO_DATABASE['NAME'] = "formhub_test"
     # need to have CELERY_ALWAYS_EAGER True and BROKER_BACKEND as memory
     # to run tasks immediately while testing
     CELERY_ALWAYS_EAGER = True
@@ -296,7 +296,9 @@ if TESTING_MODE:
     #TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
 else:
     MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media/')
-    MONGO_DB = _MONGO_CONNECTION[MONGO_DB_NAME]
+
+if PRINT_EXCEPTION and DEBUG:
+    MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
 
 try:
     from local_settings import *
@@ -304,5 +306,16 @@ except ImportError:
     print("You can override the default settings by adding a "
           "local_settings.py file.")
 
-if PRINT_EXCEPTION and DEBUG:
-    MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
+# MongoDB
+if MONGO_DATABASE.get('USER') and MONGO_DATABASE.get('PASSWORD'):
+    MONGO_CONNECTION_URL = (
+        "mongodb://%(USER)s:%(PASSWORD)s@%(HOST)s:%(PORT)s") % MONGO_DATABASE
+else:
+    MONGO_CONNECTION_URL = "mongodb://%(HOST)s:%(PORT)s" % MONGO_DATABASE
+
+MONGO_CONNECTION = MongoClient(MONGO_CONNECTION_URL, safe=True, j=True)
+MONGO_DB = MONGO_CONNECTION[MONGO_DATABASE['NAME']]
+
+# Clear out the test database
+if TESTING_MODE:
+    MONGO_DB.instances.drop()
