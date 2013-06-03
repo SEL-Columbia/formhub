@@ -308,8 +308,8 @@ except ImportError:
 
 # MongoDB
 if MONGO_DATABASE.get('USER') and MONGO_DATABASE.get('PASSWORD'):
-    MONGO_CONNECTION_URL = "mongodb://%(USER)s:%(PASSWORD)s@%(HOST)s:%(PORT)s"\
-                           % MONGO_DATABASE
+    MONGO_CONNECTION_URL = (
+        "mongodb://%(USER)s:%(PASSWORD)s@%(HOST)s:%(PORT)s") % MONGO_DATABASE
 else:
     MONGO_CONNECTION_URL = "mongodb://%(HOST)s:%(PORT)s" % MONGO_DATABASE
 
