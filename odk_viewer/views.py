@@ -623,8 +623,6 @@ def attachment_url(request, size='medium'):
         pass
     else:
         if media_url:
-            if size == 'original':
-                return render_to_response("image.html", {'image': media_url})
             return redirect(media_url)
     return HttpResponseNotFound(_(u'Error: Attachment not found'))
 
