@@ -97,9 +97,13 @@ Create a database and start server:
 
     create or update your local_settings.py file
 
-    $ python manage.py syncdb
+    $ python manage.py syncdb --noinput
 
     $ python manage.py migrate
+
+    Optional: create a super user
+
+    $ python manage.py createsuperuser
 
 Configure the celery daemon:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
