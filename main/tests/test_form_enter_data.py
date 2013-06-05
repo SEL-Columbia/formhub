@@ -1,4 +1,5 @@
 from test_base import MainTestCase
+from nose import SkipTest
 from odk_logger.views import enter_data
 from django.core.urlresolvers import reverse
 from odk_logger.models import XForm
@@ -54,6 +55,12 @@ class TestFormEnterData(MainTestCase):
         try:
             response = urllib2.urlopen(req)
             response = json.loads(response.read())
+            success = response['success']
+            if not success and 'reason' in response:
+                fail_msg = "This enketo installation is for use by "\
+                            "formhub.org users only."
+                if response['reason'].startswith(fail_msg):
+                    raise SkipTest
             return_url = response['url']
             success = response['success']
             self.assertTrue(success)
