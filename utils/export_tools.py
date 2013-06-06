@@ -1,6 +1,8 @@
 import os
 import re
 import csv
+from openpyxl.workbook import Workbook
+from openpyxl.writer.excel import ExcelWriter
 from datetime import datetime
 from django.conf import settings
 from pyxform.section import Section, RepeatingSection
@@ -140,6 +142,8 @@ class ExportBuilder(object):
     GROUP_DELIMITER = GROUP_DELIMITER_SLASH
     GROUP_DELIMITERS = [GROUP_DELIMITER_SLASH, GROUP_DELIMITER_DOT]
 
+    XLS_SHEET_NAME_MAX_CHARS = 31
+
     @classmethod
     def format_field_title(cls, abbreviated_xpath, field_delimiter):
         if field_delimiter != '/':
@@ -150,51 +154,53 @@ class ExportBuilder(object):
         from odk_viewer.models import DataDictionary
 
         def build_sections(
-            section_name, survey_element, sections, select_multiples,
+                current_section, survey_element, sections, select_multiples,
                 gps_fields, encoded_fields, field_delimiter='/'):
             for child in survey_element.children:
+                current_section_name = current_section['name']
                 # if a section, recurs
                 if isinstance(child, Section):
                     # if its repeating, build a new section
                     if isinstance(child, RepeatingSection):
                         # section_name in recursive call changes
-                        sections[child.get_abbreviated_xpath()] = []
+                        section = {
+                            'name': child.get_abbreviated_xpath(),
+                            'elements': []}
+                        self.sections.append(section)
                         build_sections(
-                            child.get_abbreviated_xpath(), child, sections,
-                            select_multiples, gps_fields, encoded_fields,
-                            field_delimiter)
+                            section, child, sections, select_multiples,
+                            gps_fields, encoded_fields, field_delimiter)
                     else:
-                        # its a group, recurs with the same section name
+                        # its a group, recurs using the same section
                         build_sections(
-                            section_name, child, sections, select_multiples,
-                            gps_fields, encoded_fields,
-                            field_delimiter)
+                            current_section, child, sections, select_multiples,
+                            gps_fields, encoded_fields, field_delimiter)
                 elif isinstance(child, Question) and child.bind.get(u"type")\
                         not in QUESTION_TYPES_TO_EXCLUDE:
                     # add to survey_sections
                     if isinstance(child, Question):
                         child_xpath = child.get_abbreviated_xpath()
-                        sections[section_name].append({
+                        current_section['elements'].append({
                             'title': ExportBuilder.format_field_title(
                                 child.get_abbreviated_xpath(), field_delimiter),
                             'xpath': child_xpath})
 
                         if _is_invalid_for_mongo(child.name):
-                            if section_name not in encoded_fields:
-                                encoded_fields[section_name] = {}
-                            encoded_fields[section_name].update(
+                            if current_section_name not in encoded_fields:
+                                encoded_fields[current_section_name] = {}
+                            encoded_fields[current_section_name].update(
                                 {child_xpath: _encode_for_mongo(child_xpath)})
 
                     # if its a select multiple, make columns out of its choices
                     if child.bind.get(u"type") == MULTIPLE_SELECT_BIND_TYPE:
-                        sections[section_name].extend(
+                        current_section['elements'].extend(
                             [{
                                 'title': ExportBuilder.format_field_title(
                                     c.get_abbreviated_xpath(),
                                     field_delimiter),
                                 'xpath': c.get_abbreviated_xpath()}
                                 for c in child.children])
-                        select_multiples[section_name] =\
+                        select_multiples[current_section_name] =\
                             {
                                 child.get_abbreviated_xpath():
                                 [
@@ -208,7 +214,7 @@ class ExportBuilder(object):
                         # add columns for geopoint components
                         xpaths = DataDictionary.get_additional_geopoint_xpaths(
                             child.get_abbreviated_xpath())
-                        sections[section_name].extend(
+                        current_section['elements'].extend(
                             [
                                 {
                                     'title': ExportBuilder.format_field_title(
@@ -217,20 +223,26 @@ class ExportBuilder(object):
                                 }
                                 for xpath in xpaths
                             ])
-                        gps_fields[section_name] =\
+                        gps_fields[current_section_name] =\
                             {
                                 child.get_abbreviated_xpath(): xpaths
                             }
 
         self.survey = survey
-        self.sections = {self.survey.name: []}
         self.select_multiples = {}
         self.gps_fields = {}
         self.encoded_fields = {}
+        main_section = {'name': survey.name, 'elements': []}
+        self.sections = [main_section]
         build_sections(
-            self.survey.name, self.survey, self.sections,
+            main_section, self.survey, self.sections,
             self.select_multiples, self.gps_fields, self.encoded_fields,
             self.GROUP_DELIMITER)
+
+    def section_by_name(self, name):
+        matches = filter(lambda s: s['name'] == name, self.sections)
+        assert(len(matches) == 1)
+        return matches[0]
 
     @classmethod
     def split_select_multiples(cls, row, select_multiples):
@@ -293,16 +305,18 @@ class ExportBuilder(object):
                  for field in fields])
 
         csv_defs = {}
-        for section in self.sections.iterkeys():
+        for section in self.sections:
             csv_file = NamedTemporaryFile(suffix=".csv")
             csv_writer = csv.writer(csv_file)
-            csv_defs[section] = {'csv_file': csv_file, 'csv_writer': csv_writer}
+            csv_defs[section['name']] = {
+                'csv_file': csv_file, 'csv_writer': csv_writer}
 
         # write headers
-        for section, elements in self.sections.iteritems():
-            fields =\
-                [element['xpath'] for element in elements] + self.EXTRA_FIELDS
-            csv_defs[section]['csv_writer'].writerow(fields)
+        for section in self.sections:
+            fields = [
+                element['title'] for element in
+                section['elements']] + self.EXTRA_FIELDS
+            csv_defs[section['name']]['csv_writer'].writerow(fields)
 
         index = 1
         indices = {}
@@ -314,11 +328,13 @@ class ExportBuilder(object):
             if survey_name not in output:
                 output[survey_name] = {}
             output[survey_name]['index'] = index
-            for section_name, csv_def in csv_defs.iteritems():
+            for section in self.sections:
                 # get data for this section and write to csv
+                section_name = section['name']
+                csv_def = csv_defs[section_name]
                 fields = [
                     element['xpath'] for element in
-                    self.sections[section_name]] + self.EXTRA_FIELDS
+                    section['elements']] + self.EXTRA_FIELDS
                 csv_writer = csv_def['csv_writer']
                 # section name might not exist within the output, e.g. data was
                 # not provided for said repeat - write test to check this
@@ -345,6 +361,87 @@ class ExportBuilder(object):
         # close files when we are done
         for section_name, csv_def in csv_defs.iteritems():
             csv_def['csv_file'].close()
+
+    @classmethod
+    def get_valid_sheet_name(cls, desired_name, work_sheet_titles):
+        # a sheet name has to be <= 31 characters and not a duplicate of an
+        # existing sheet
+        # truncate sheet_name to XLSDataFrameBuilder.SHEET_NAME_MAX_CHARS
+        new_sheet_name = unique_sheet_name = \
+            desired_name[:cls.XLS_SHEET_NAME_MAX_CHARS]
+
+        # make sure its unique within the list
+        i = 1
+        generated_name = new_sheet_name
+        while generated_name in work_sheet_titles:
+            digit_length = len(str(i))
+            allowed_name_len = cls.XLS_SHEET_NAME_MAX_CHARS - \
+                digit_length
+            # make name the required len
+            if len(generated_name) > allowed_name_len:
+                generated_name = generated_name[:allowed_name_len]
+            generated_name = "{0}{1}".format(generated_name, i)
+            i += 1
+        return generated_name
+
+    def to_xls_export(self, path, data):
+        def write_row(data, work_sheet, fields):
+            work_sheet.append([data.get(f) for f in fields])
+
+        wb = Workbook(optimized_write=True)
+        work_sheets = {}
+        work_sheet_titles = []
+        for section in self.sections:
+            section_name = section['name']
+            work_sheet_title = ExportBuilder.get_valid_sheet_name(
+                "_".join(section_name.split("/")), work_sheet_titles)
+            work_sheet_titles.append(work_sheet_title)
+            work_sheets[section_name] = wb.create_sheet(
+                title=work_sheet_title)
+
+        # write the headers
+        for section in self.sections:
+            section_name = section['name']
+            headers = [
+                element['title'] for element in
+                section['elements']] + self.EXTRA_FIELDS
+            # get the worksheet
+            ws = work_sheets[section_name]
+            ws.append(headers)
+
+        index = 1
+        indices = {}
+        survey_name = self.survey.name
+        for d in data:
+            output = dict_to_joined_export(d, index, indices, survey_name)
+            # attach meta fields (index, parent_index, parent_table)
+            # output has keys for every section
+            if survey_name not in output:
+                output[survey_name] = {}
+            output[survey_name]['index'] = index
+            for section in self.sections:
+                # get data for this section and write to xls
+                section_name = section['name']
+                fields = [
+                    element['xpath'] for element in
+                    section['elements']] + self.EXTRA_FIELDS
+
+                ws = work_sheets[section_name]
+                # section might not exist within the output, e.g. data was
+                # not provided for said repeat - write test to check this
+                row = output.get(section_name, None)
+                if type(row) == dict:
+                    write_row(
+                        self.pre_process_row(row, section_name),
+                        ws, fields)
+                elif type(row) == list:
+                    for child_row in row:
+                        write_row(
+                            self.pre_process_row(child_row, section_name),
+                            ws, fields)
+            index += 1
+
+        wb.save(filename=path)
 
 
 def dict_to_flat_export(d, parent_index=0):
