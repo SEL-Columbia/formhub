@@ -107,14 +107,16 @@ def dict_to_joined_export(data, index, indices, name):
             if isinstance(val, list):
                 output[key] = []
                 for child in val:
-                    if not indices.has_key(key):
+                    if key not in indices:
                         indices[key] = 0
                     indices[key] += 1
                     child_index = indices[key]
                     new_output = dict_to_joined_export(
                         child, child_index, indices, key)
-                    d = {'index': child_index, 'parent_index': index, 'parent_table': name}
-                    # iterate over keys within new_output and append to main output
+                    d = {'index': child_index, 'parent_index': index,
+                         'parent_table': name}
+                    # iterate over keys within new_output and append to
+                    # main output
                     for out_key, out_val in new_output.iteritems():
                         if isinstance(out_val, list):
                             if not output.has_key(out_key):
@@ -126,7 +128,7 @@ def dict_to_joined_export(data, index, indices, name):
             else:
                 if name not in output:
                     output[name] = {}
-                output[name][key] = val#str(val)
+                output[name][key] = val
     return output
 
 
@@ -364,7 +366,7 @@ class ExportBuilder(object):
             csv_def['csv_file'].close()
 
     @classmethod
-    def get_valid_sheet_name(cls, desired_name, work_sheet_titles):
+    def get_valid_sheet_name(cls, desired_name, existing_names):
         # a sheet name has to be <= 31 characters and not a duplicate of an
         # existing sheet
         # truncate sheet_name to XLSDataFrameBuilder.SHEET_NAME_MAX_CHARS
@@ -374,7 +376,7 @@ class ExportBuilder(object):
         # make sure its unique within the list
         i = 1
         generated_name = new_sheet_name
-        while generated_name in work_sheet_titles:
+        while generated_name in existing_names:
             digit_length = len(str(i))
             allowed_name_len = cls.XLS_SHEET_NAME_MAX_CHARS - \
                 digit_length
@@ -386,17 +388,21 @@ class ExportBuilder(object):
         return generated_name
 
     def to_xls_export(self, path, data, *args):
-        def write_row(data, work_sheet, fields):
+        def write_row(data, work_sheet, fields, work_sheet_titles):
+            # update parent_table with the generated sheet's title
+            data['parent_table'] = work_sheet_titles.get(
+                data.get('parent_table'))
             work_sheet.append([data.get(f) for f in fields])
 
         wb = Workbook(optimized_write=True)
         work_sheets = {}
-        work_sheet_titles = []
+        # map of section_names to generated_names
+        work_sheet_titles = {}
         for section in self.sections:
             section_name = section['name']
             work_sheet_title = ExportBuilder.get_valid_sheet_name(
-                "_".join(section_name.split("/")), work_sheet_titles)
-            work_sheet_titles.append(work_sheet_title)
+                "_".join(section_name.split("/")), work_sheet_titles.values())
+            work_sheet_titles[section_name] = work_sheet_title
             work_sheets[section_name] = wb.create_sheet(
                 title=work_sheet_title)
 
@@ -434,12 +440,12 @@ class ExportBuilder(object):
                 if type(row) == dict:
                     write_row(
                         self.pre_process_row(row, section_name),
-                        ws, fields)
+                        ws, fields, work_sheet_titles)
                 elif type(row) == list:
                     for child_row in row:
                         write_row(
                             self.pre_process_row(child_row, section_name),
-                            ws, fields)
+                            ws, fields, work_sheet_titles)
             index += 1
 
         wb.save(filename=path)

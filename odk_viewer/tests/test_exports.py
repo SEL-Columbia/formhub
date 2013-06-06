@@ -1040,6 +1040,63 @@ class TestExportBuilder(MainTestCase):
             'children': []
         }
     ]
+    long_survey_data = [
+        {
+            'name': 'Abe',
+            'age': 35,
+            'childrens_survey_with_a_very_lo':
+            [
+                {
+                    'childrens_survey_with_a_very_lo/name': 'Mike',
+                    'childrens_survey_with_a_very_lo/age': 5,
+                    'childrens_survey_with_a_very_lo/fav_colors': 'red,blue',
+                    'childrens_survey_with_a_very_lo/cartoons':
+                    [
+                        {
+                            'childrens_survey_with_a_very_lo/cartoons/name': 'Tom & Jerry',
+                            'childrens_survey_with_a_very_lo/cartoons/why': 'Tom is silly',
+                        },
+                        {
+                            'childrens_survey_with_a_very_lo/cartoons/name': 'Flinstones',
+                            'childrens_survey_with_a_very_lo/cartoons/why': u"I like bam bam\u0107"
+                            # throw in a unicode character
+                        }
+                    ]
+                },
+                {
+                    'childrens_survey_with_a_very_lo/name': 'John',
+                    'childrens_survey_with_a_very_lo/age': 2,
+                    'childrens_survey_with_a_very_lo/cartoons': []
+                },
+                {
+                    'childrens_survey_with_a_very_lo/name': 'Imora',
+                    'childrens_survey_with_a_very_lo/age': 3,
+                    'childrens_survey_with_a_very_lo/cartoons':
+                    [
+                        {
+                            'childrens_survey_with_a_very_lo/cartoons/name': 'Shrek',
+                            'childrens_survey_with_a_very_lo/cartoons/why': 'He\'s so funny'
+                        },
+                        {
+                            'childrens_survey_with_a_very_lo/cartoons/name': 'Dexter\'s Lab',
+                            'childrens_survey_with_a_very_lo/cartoons/why': 'He thinks hes smart',
+                            'childrens_survey_with_a_very_lo/cartoons/characters':
+                            [
+                                {
+                                    'childrens_survey_with_a_very_lo/cartoons/characters/name': 'Dee Dee',
+                                    'children/cartoons/characters/good_or_evil': 'good'
+                                },
+                                {
+                                    'childrens_survey_with_a_very_lo/cartoons/characters/name': 'Dexter',
+                                    'children/cartoons/characters/good_or_evil': 'evil'
+                                },
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 
     def _create_childrens_survey(self):
         survey = create_survey_from_xls(
@@ -1500,4 +1557,32 @@ class TestExportBuilder(MainTestCase):
                                 'childrens_survey_with_a_very_l2',
                                 'childrens_survey_with_a_very_l3']
         self.assertEqual(wb.get_sheet_names(), expected_sheet_names)
+        xls_file.close()
+
+    def test_child_record_parent_table_is_updated_when_sheet_is_renamed(self):
+        survey = create_survey_from_xls(
+            os.path.join(
+                os.path.abspath('./'), 'odk_logger', 'tests', 'fixtures',
+                'childrens_survey_with_a_very_long_name.xls'))
+        export_builder = ExportBuilder()
+        export_builder.set_survey(survey)
+        xls_file = NamedTemporaryFile(suffix='.xls')
+        filename = xls_file.name
+        export_builder.to_xls_export(filename, self.long_survey_data)
+        xls_file.seek(0)
+        wb = load_workbook(filename)
+
+        # get the children's sheet
+        ws1 = wb.get_sheet_by_name('childrens_survey_with_a_very_l1')
+
+        # parent_table is in cell J2
+        parent_table_name = ws1.cell('J2').value
+        expected_parent_table_name = 'childrens_survey_with_a_very_lo'
+        self.assertEqual(parent_table_name, expected_parent_table_name)
+
+        # get cartoons sheet
+        ws2 = wb.get_sheet_by_name('childrens_survey_with_a_very_l2')
+        parent_table_name = ws2.cell('F2').value
+        expected_parent_table_name = 'childrens_survey_with_a_very_l1'
+        self.assertEqual(parent_table_name, expected_parent_table_name)
         xls_file.close()
