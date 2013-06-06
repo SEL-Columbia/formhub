@@ -298,7 +298,7 @@ class ExportBuilder(object):
 
         return row
 
-    def to_zipped_csv(self, path, data):
+    def to_zipped_csv(self, path, data, *args):
         def write_row(row, csv_writer, fields):
             csv_writer.writerow(
                 [u"{0}".format(row.get(field, '')).encode('utf-8')
@@ -384,7 +384,7 @@ class ExportBuilder(object):
             i += 1
         return generated_name
 
-    def to_xls_export(self, path, data):
+    def to_xls_export(self, path, data, *args):
         def write_row(data, work_sheet, fields):
             work_sheet.append([data.get(f) for f in fields])
 
@@ -443,52 +443,53 @@ class ExportBuilder(object):
 
         wb.save(filename=path)
 
+    def to_flat_csv_export(
+            self, path, data, username, id_string, filter_query):
+        from odk_viewer.pandas_mongo_bridge import CSVDataFrameBuilder
+
+        csv_builder = CSVDataFrameBuilder(
+            username, id_string, filter_query, self.GROUP_DELIMITER,
+            self.SPLIT_SELECT_MULTIPLES)
+        csv_builder.export_to(path)
+
 
 def dict_to_flat_export(d, parent_index=0):
     pass
 
 
-def _df_builder_for_export_type(export_type, username, id_string,
-                                group_delimiter, split_select_multiples,
-                                filter_query=None,):
-    from odk_viewer.pandas_mongo_bridge import XLSDataFrameBuilder,\
-        CSVDataFrameBuilder, GROUP_DELIMITER_SLASH,\
-        GROUP_DELIMITER_DOT, DEFAULT_GROUP_DELIMITER
-    from odk_viewer.models import Export
-
-    if export_type == Export.XLS_EXPORT:
-        return XLSDataFrameBuilder(
-            username, id_string, filter_query, group_delimiter,
-            split_select_multiples)
-    elif export_type == Export.CSV_EXPORT:
-        return CSVDataFrameBuilder(
-            username, id_string, filter_query, group_delimiter,
-            split_select_multiples)
-    else:
-        raise ValueError
-
-
 def generate_export(export_type, extension, username, id_string,
-                    export_id = None, filter_query=None,
-                    group_delimiter='/',
+                    export_id=None, filter_query=None, group_delimiter='/',
                     split_select_multiples=True):
     """
     Create appropriate export object given the export type
     """
     from odk_viewer.models import Export
+    export_type_func_map = {
+        Export.XLS_EXPORT: 'to_xls_export',
+        Export.CSV_EXPORT: 'to_flat_csv_export',
+        Export.CSV_ZIP_EXPORT: 'to_zipped_csv',
+    }
+
     xform = XForm.objects.get(user__username=username, id_string=id_string)
 
-    df_builder = _df_builder_for_export_type(
-        export_type, username, id_string, group_delimiter,
-        split_select_multiples, filter_query)
-    if hasattr(df_builder, 'get_exceeds_xls_limits')\
-            and df_builder.get_exceeds_xls_limits():
-        extension = 'xlsx'
+    # query mongo for the cursor
+    records = query_mongo(username, id_string, filter_query)
+
+    export_builder = ExportBuilder()
+    export_builder.GROUP_DELIMITER = group_delimiter
+    export_builder.SPLIT_SELECT_MULTIPLES = split_select_multiples
+    export_builder.set_survey(xform.data_dictionary().survey)
 
     temp_file = NamedTemporaryFile(suffix=("." + extension))
-    df_builder.export_to(temp_file.name)
-    basename = "%s_%s" % (id_string,
-                             datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+
+    # get the export function by export type
+    func = getattr(export_builder, export_type_func_map[export_type])
+    func.__call__(
+        temp_file.name, records, username, id_string, filter_query)
+
+    # generate filename
+    basename = "%s_%s" % (
+        id_string, datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
     filename = basename + "." + extension
 
     # check filename is unique
@@ -540,59 +541,6 @@ def query_mongo(username, id_string, query=None, hide_deleted=True):
         # join existing query with deleted_at_query on an $and
         query = {"$and": [query, deleted_at_query]}
     return xform_instances.find(query)
-
-
-def generate_csv_zip_export(username, id_string, export_id=None,
-                            filter_query=None):
-    from odk_viewer.models import Export
-    export_type = Export.CSV_ZIP_EXPORT
-    extension = 'zip'
-    # query mongo for the cursor
-    records = query_mongo(username, id_string, filter_query)
-    xform = XForm.objects.get(user__username=username, id_string=id_string)
-    survey = xform.data_dictionary().survey
-    export_builder = ExportBuilder()
-    export_builder.set_survey(survey)
-    temp_file = NamedTemporaryFile(suffix='.zip')
-    export_builder.to_zipped_csv(temp_file.name, records)
-
-    basename = "{0}_{1}".format(
-        id_string, datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
-    filename = basename + "." + extension
-
-    # check filename is unique
-    while not Export.is_filename_unique(xform, filename):
-        filename = increment_index_in_filename(filename)
-
-    file_path = os.path.join(
-        username,
-        'exports',
-        id_string,
-        export_type,
-        filename)
-
-    storage = get_storage_class()()
-    # seek to the beginning as required by storage classes
-    temp_file.seek(0)
-    export_filename = storage.save(
-        file_path,
-        File(temp_file, file_path))
-    temp_file.close()
-
-    dir_name, basename = os.path.split(export_filename)
-
-    # get or create export object
-    if(export_id):
-        export = Export.objects.get(id=export_id)
-    else:
-        export = Export(xform=xform, export_type=export_type)
-    export.filedir = dir_name
-    export.filename = basename
-    export.internal_status = Export.SUCCESSFUL
-    # dont persist exports that have a filter
-    if filter_query is None:
-        export.save()
-    return export
 
 
 def should_create_new_export(xform, export_type):

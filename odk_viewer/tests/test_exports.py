@@ -20,7 +20,7 @@ from odk_viewer.views import delete_export, export_list, create_export,\
 from pyxform import SurveyElementBuilder
 from odk_viewer.models import Export, ParsedInstance
 from utils.export_tools import generate_export, increment_index_in_filename,\
-    dict_to_joined_export, ExportBuilder, generate_csv_zip_export
+    dict_to_joined_export, ExportBuilder
 from odk_logger.models import Instance, XForm
 from main.views import delete_data
 from utils.logger_tools import inject_instanceid
@@ -968,8 +968,10 @@ class TestExports(MainTestCase):
         # publish xls form
         self._publish_transportation_form_and_submit_instance()
         # create export db object
-        export = generate_csv_zip_export(
-            self.user.username, self.xform.id_string)
+        export = generate_export(
+            Export.CSV_ZIP_EXPORT, "zip", self.user.username,
+            self.xform.id_string, group_delimiter='/',
+            split_select_multiples=True)
         storage = get_storage_class()()
         self.assertTrue(storage.exists(export.filepath))
         path, ext = os.path.splitext(export.filename)
