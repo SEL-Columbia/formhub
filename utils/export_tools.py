@@ -192,7 +192,8 @@ class ExportBuilder(object):
                                 {child_xpath: _encode_for_mongo(child_xpath)})
 
                     # if its a select multiple, make columns out of its choices
-                    if child.bind.get(u"type") == MULTIPLE_SELECT_BIND_TYPE:
+                    if child.bind.get(u"type") == MULTIPLE_SELECT_BIND_TYPE\
+                            and self.SPLIT_SELECT_MULTIPLES:
                         current_section['elements'].extend(
                             [{
                                 'title': ExportBuilder.format_field_title(
