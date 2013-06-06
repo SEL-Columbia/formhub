@@ -988,7 +988,7 @@ class TestExportBuilder(MainTestCase):
                 {
                     'children/name': 'Mike',
                     'children/age': 5,
-                    'children/fav_colors': 'red,blue',
+                    'children/fav_colors': 'red blue',
                     'children/cartoons':
                     [
                         {
@@ -1049,7 +1049,7 @@ class TestExportBuilder(MainTestCase):
                 {
                     'childrens_survey_with_a_very_lo/name': 'Mike',
                     'childrens_survey_with_a_very_lo/age': 5,
-                    'childrens_survey_with_a_very_lo/fav_colors': 'red,blue',
+                    'childrens_survey_with_a_very_lo/fav_colors': 'red blue',
                     'childrens_survey_with_a_very_lo/cartoons':
                     [
                         {
@@ -1215,7 +1215,7 @@ class TestExportBuilder(MainTestCase):
             {
                 'children/name': 'Mike',
                 'children/age': 5,
-                'children/fav_colors': 'red,blue'
+                'children/fav_colors': 'red blue'
             }
         new_row = ExportBuilder.split_select_multiples(
             row, select_multiples)
@@ -1223,7 +1223,7 @@ class TestExportBuilder(MainTestCase):
             {
                 'children/name': 'Mike',
                 'children/age': 5,
-                'children/fav_colors': 'red,blue',
+                'children/fav_colors': 'red blue',
                 'children/fav_colors/red': True,
                 'children/fav_colors/blue': True,
                 'children/fav_colors/pink': False
@@ -1456,8 +1456,9 @@ class TestExportBuilder(MainTestCase):
             u'name', u'age', u'geo/geolocation', u'geo/_geolocation_latitude',
             u'geo/_geolocation_longitude', u'geo/_geolocation_altitude',
             u'geo/_geolocation_precision', u'tel/tel.office',
-            u'tel/tel.mobile', u'meta/instanceID', u'_id', u'index',
-            u'parent_index', u'parent_table']
+            u'tel/tel.mobile', u'_id', u'meta/instanceID', u'_uuid',
+            u'_submission_time', u'_index', u'_parent_index',
+            u'_parent_table_name']
         column_headers = [c[0].value for c in main_sheet.columns]
         self.assertEqual(sorted(column_headers),
                          sorted(expected_column_headers))
@@ -1466,8 +1467,9 @@ class TestExportBuilder(MainTestCase):
         expected_column_headers = [
             u'children/name', u'children/age', u'children/fav_colors',
             u'children/fav_colors/red', u'children/fav_colors/blue',
-            u'children/fav_colors/pink', u'_id', u'index', u'parent_index',
-            u'parent_table']
+            u'children/fav_colors/pink', u'_id', u'_uuid',
+            u'_submission_time', u'_index', u'_parent_index',
+            u'_parent_table_name']
         column_headers = [c[0].value for c in childrens_sheet.columns]
         self.assertEqual(sorted(column_headers),
                          sorted(expected_column_headers))
@@ -1475,7 +1477,8 @@ class TestExportBuilder(MainTestCase):
         cartoons_sheet = wb.get_sheet_by_name('children_cartoons')
         expected_column_headers = [
             u'children/cartoons/name', u'children/cartoons/why', u'_id',
-            u'index', u'parent_index', u'parent_table']
+            u'_uuid', u'_submission_time', u'_index', u'_parent_index',
+            u'_parent_table_name']
         column_headers = [c[0].value for c in cartoons_sheet.columns]
         self.assertEqual(sorted(column_headers),
                          sorted(expected_column_headers))
@@ -1483,8 +1486,9 @@ class TestExportBuilder(MainTestCase):
         characters_sheet = wb.get_sheet_by_name('children_cartoons_characters')
         expected_column_headers = [
             u'children/cartoons/characters/name',
-            u'children/cartoons/characters/good_or_evil', u'_id', u'index',
-            u'parent_index', u'parent_table']
+            u'children/cartoons/characters/good_or_evil', u'_id', u'_uuid',
+            u'_submission_time', u'_index', u'_parent_index',
+            u'_parent_table_name']
         column_headers = [c[0].value for c in characters_sheet.columns]
         self.assertEqual(sorted(column_headers),
                          sorted(expected_column_headers))
@@ -1508,8 +1512,9 @@ class TestExportBuilder(MainTestCase):
             u'name', u'age', u'geo.geolocation', u'geo._geolocation_latitude',
             u'geo._geolocation_longitude', u'geo._geolocation_altitude',
             u'geo._geolocation_precision', u'tel.tel.office',
-            u'tel.tel.mobile', u'meta.instanceID', u'_id', u'index',
-            u'parent_index', u'parent_table']
+            u'tel.tel.mobile', u'_id', u'meta.instanceID', u'_uuid',
+            u'_submission_time', u'_index', u'_parent_index',
+            u'_parent_table_name']
         column_headers = [c[0].value for c in main_sheet.columns]
         self.assertEqual(sorted(column_headers),
                          sorted(expected_column_headers))
@@ -1575,14 +1580,14 @@ class TestExportBuilder(MainTestCase):
         # get the children's sheet
         ws1 = wb.get_sheet_by_name('childrens_survey_with_a_very_l1')
 
-        # parent_table is in cell J2
-        parent_table_name = ws1.cell('J2').value
+        # parent_table is in cell K2
+        parent_table_name = ws1.cell('K2').value
         expected_parent_table_name = 'childrens_survey_with_a_very_lo'
         self.assertEqual(parent_table_name, expected_parent_table_name)
 
         # get cartoons sheet
         ws2 = wb.get_sheet_by_name('childrens_survey_with_a_very_l2')
-        parent_table_name = ws2.cell('F2').value
+        parent_table_name = ws2.cell('G2').value
         expected_parent_table_name = 'childrens_survey_with_a_very_l1'
         self.assertEqual(parent_table_name, expected_parent_table_name)
         xls_file.close()

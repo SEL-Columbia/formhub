@@ -1,3 +1,4 @@
+from unittest import skip
 from test_base import MainTestCase
 from odk_logger.models import XForm
 from django.core.urlresolvers import reverse
@@ -23,7 +24,12 @@ class TestFormErrors(MainTestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(XForm.objects.count(), count)
 
+    @skip
     def test_dl_no_xls(self):
+        """
+        Exports are built from the JSON form structure so we dont need the
+        xls to generate an export
+        """
         self._create_xform()
         self.xform.shared_data = True
         self.xform.save()

@@ -2,7 +2,8 @@ import os
 import re
 import csv
 from openpyxl.workbook import Workbook
-from openpyxl.writer.excel import ExcelWriter
+import json
+from bson import json_util
 from datetime import datetime
 from django.conf import settings
 from pyxform.section import Section, RepeatingSection
@@ -17,7 +18,8 @@ from utils.viewer_tools import create_attachments_zipfile
 from utils.viewer_tools import image_urls
 from zipfile import ZipFile
 from common_tags import ID, XFORM_ID_STRING, STATUS, ATTACHMENTS, GEOLOCATION,\
-    BAMBOO_DATASET_ID, DELETEDAT, USERFORM_ID
+    BAMBOO_DATASET_ID, DELETEDAT, USERFORM_ID, INDEX, PARENT_INDEX,\
+    PARENT_TABLE_NAME, SUBMISSION_TIME, UUID
 from odk_viewer.models.parsed_instance import _is_invalid_for_mongo,\
     _encode_for_mongo, dict_for_mongo
 
@@ -113,8 +115,8 @@ def dict_to_joined_export(data, index, indices, name):
                     child_index = indices[key]
                     new_output = dict_to_joined_export(
                         child, child_index, indices, key)
-                    d = {'index': child_index, 'parent_index': index,
-                         'parent_table': name}
+                    d = {INDEX: child_index, PARENT_INDEX: index,
+                         PARENT_TABLE_NAME: name}
                     # iterate over keys within new_output and append to
                     # main output
                     for out_key, out_val in new_output.iteritems():
@@ -135,7 +137,9 @@ def dict_to_joined_export(data, index, indices, name):
 class ExportBuilder(object):
     IGNORED_COLUMNS = [XFORM_ID_STRING, STATUS, ATTACHMENTS, GEOLOCATION,
                        BAMBOO_DATASET_ID, DELETEDAT]
-    EXTRA_FIELDS = [ID, 'index', 'parent_index', 'parent_table']
+    # fields we export but are not within the form's structure
+    EXTRA_FIELDS = [ID, UUID, SUBMISSION_TIME, INDEX, PARENT_TABLE_NAME,
+                    PARENT_INDEX]
     SPLIT_SELECT_MULTIPLES = True
 
     # column group delimiters
@@ -257,7 +261,7 @@ class ExportBuilder(object):
             if data:
                 selections = [
                     '{0}/{1}'.format(
-                        xpath, selection) for selection in data.split(',')]
+                        xpath, selection) for selection in data.split()]
             row.update(
                 dict([(choice, choice in selections) for choice in choices]))
         return row
@@ -330,7 +334,8 @@ class ExportBuilder(object):
             # output has keys for every section
             if survey_name not in output:
                 output[survey_name] = {}
-            output[survey_name]['index'] = index
+            output[survey_name][INDEX] = index
+            output[survey_name][PARENT_INDEX] = -1
             for section in self.sections:
                 # get data for this section and write to csv
                 section_name = section['name']
@@ -390,8 +395,8 @@ class ExportBuilder(object):
     def to_xls_export(self, path, data, *args):
         def write_row(data, work_sheet, fields, work_sheet_titles):
             # update parent_table with the generated sheet's title
-            data['parent_table'] = work_sheet_titles.get(
-                data.get('parent_table'))
+            data[PARENT_TABLE_NAME] = work_sheet_titles.get(
+                data.get(PARENT_TABLE_NAME))
             work_sheet.append([data.get(f) for f in fields])
 
         wb = Workbook(optimized_write=True)
@@ -425,7 +430,8 @@ class ExportBuilder(object):
             # output has keys for every section
             if survey_name not in output:
                 output[survey_name] = {}
-            output[survey_name]['index'] = index
+            output[survey_name][INDEX] = index
+            output[survey_name][PARENT_INDEX] = -1
             for section in self.sections:
                 # get data for this section and write to xls
                 section_name = section['name']
@@ -536,8 +542,8 @@ def generate_export(export_type, extension, username, id_string,
 
 
 def query_mongo(username, id_string, query=None, hide_deleted=True):
-    if query is None:
-        query = {}
+    query = json.loads(query, object_hook=json_util.object_hook)\
+        if query else {}
     query = dict_for_mongo(query)
     query[USERFORM_ID] = u'{0}_{1}'.format(username, id_string)
     if hide_deleted:
