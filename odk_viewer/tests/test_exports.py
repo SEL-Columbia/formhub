@@ -502,12 +502,8 @@ class TestExports(MainTestCase):
         self.assertEqual(status["complete"], False)
         self.assertEqual(status["filename"], None)
 
-        try:
-            create_xls_export(
-                self.user.username,
-                self.xform.id_string, export.id)
-        except NoRecordsFoundError:
-            pass
+        export.internal_status = Export.FAILED
+        export.save()
         # check that progress url says failed
         progress_url = reverse(export_progress, kwargs={
             'username': self.user.username,
@@ -860,23 +856,23 @@ class TestExports(MainTestCase):
                     {
                         'children/name': 'Mike',
                         'children/age': 5,
-                        'index': 1,
-                        'parent_index': 1,
-                        'parent_table': 'survey'
+                        '_index': 1,
+                        '_parent_table_name': 'survey',
+                        '_parent_index': 1
                     },
                     {
                         'children/name': 'John',
                         'children/age': 2,
-                        'index': 2,
-                        'parent_index': 1,
-                        'parent_table': 'survey'
+                        '_index': 2,
+                        '_parent_table_name': 'survey',
+                        '_parent_index': 1
                     },
                     {
                         'children/name': 'Imora',
                         'children/age': 3,
-                        'index': 3,
-                        'parent_index': 1,
-                        'parent_table': 'survey'
+                        '_index': 3,
+                        '_parent_table_name': 'survey',
+                        '_parent_index': 1
                     },
                 ],
                 'children/cartoons':
@@ -884,30 +880,30 @@ class TestExports(MainTestCase):
                     {
                         'children/cartoons/name': 'Tom & Jerry',
                         'children/cartoons/why': 'Tom is silly',
-                        'index': 1,
-                        'parent_index': 1,
-                        'parent_table': 'children'
+                        '_index': 1,
+                        '_parent_table_name': 'children',
+                        '_parent_index': 1
                     },
                     {
                         'children/cartoons/name': 'Flinstones',
                         'children/cartoons/why': u"I like bamb bam\u0107",
-                        'index': 2,
-                        'parent_index': 1,
-                        'parent_table': 'children'
+                        '_index': 2,
+                        '_parent_table_name': 'children',
+                        '_parent_index': 1
                     },
                     {
                         'children/cartoons/name': 'Shrek',
                         'children/cartoons/why': 'He\'s so funny',
-                        'index': 3,
-                        'parent_index': 3,
-                        'parent_table': 'children'
+                        '_index': 3,
+                        '_parent_table_name': 'children',
+                        '_parent_index': 3
                     },
                     {
                         'children/cartoons/name': 'Dexter\'s Lab',
                         'children/cartoons/why': 'He thinks hes smart',
-                        'index': 4,
-                        'parent_index': 3,
-                        'parent_table': 'children'
+                        '_index': 4,
+                        '_parent_table_name': 'children',
+                        '_parent_index': 3
                     }
                 ],
                 'children/cartoons/characters':
@@ -915,16 +911,16 @@ class TestExports(MainTestCase):
                     {
                         'children/cartoons/characters/name': 'Dee Dee',
                         'children/cartoons/characters/good_or_evil': 'good',
-                        'index': 1,
-                        'parent_index': 4,
-                        'parent_table': 'children/cartoons'
+                        '_index': 1,
+                        '_parent_table_name': 'children/cartoons',
+                        '_parent_index': 4
                     },
                     {
                         'children/cartoons/characters/name': 'Dexter',
                         'children/cartoons/characters/good_or_evil': 'evil',
-                        'index': 2,
-                        'parent_index': 4,
-                        'parent_table': 'children/cartoons'
+                        '_index': 2,
+                        '_parent_table_name': 'children/cartoons',
+                        '_parent_index': 4
                     }
                 ]
             }
