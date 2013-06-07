@@ -24,3 +24,20 @@ def create_organization(name, creator):
     team.permissions.add(permission)
     creator.groups.add(team)
     return organization_profile
+
+
+def create_organization_team(organization, name, permission_names=[]):
+    team = Team.objects.create(organization=organization, name=name)
+    content_type = ContentType.objects.get(
+        app_label='api', model='organizationprofile')
+    if permission_names:
+        # get permission objects
+        perms = Permission.objects.filter(
+            codename__in=permission_names, content_type=content_type)
+        if perms:
+            team.permissions.add(*tuple(perms))
+    return team
+
+
+def add_user_to_team(team, user):
+    user.groups.add(team)
