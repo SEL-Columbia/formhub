@@ -1,6 +1,8 @@
+from django.contrib.auth.models import Permission
 from main.tests.test_base import MainTestCase
 from api.models import Team, OrganizationProfile
-from api.utils import create_organization
+from api.utils import create_organization, add_user_to_team
+from api.utils import create_organization_team
 
 
 class TestModels(MainTestCase):
@@ -21,3 +23,28 @@ class TestModels(MainTestCase):
         self.assertIsInstance(team, Team)
         self.assertIn(team.group_ptr, self.user.groups.all())
         self.assertTrue(self.user.has_perm('api.is_org_owner'))
+
+    def test_create_organization_team(self):
+        profile = create_organization("modilabs", self.user)
+        organization = profile.user
+        team_name = 'dev'
+        perms = ['is_org_owner', ]
+        create_organization_team(organization, team_name, perms)
+        team_name = "modilabs#%s" % team_name
+        dev_team = Team.objects.get(organization=organization, name=team_name)
+        self.assertIsInstance(dev_team, Team)
+        self.assertIsInstance(
+            dev_team.permissions.get(codename='is_org_owner'), Permission)
+
+    def test_assign_user_to_team(self):
+        # create the organization
+        profile = create_organization("modilabs", self.user)
+        organization = profile.user
+        user_deno = self._create_user('deno', 'deno')
+
+        # create another team
+        team_name = 'managers'
+        team = create_organization_team(
+            organization, team_name)
+        add_user_to_team(team, user_deno)
+        self.assertIn(team.group_ptr, user_deno.groups.all())
