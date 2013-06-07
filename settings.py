@@ -162,6 +162,7 @@ INSTALLED_APPS = (
     'odk_logger',
     'odk_viewer',
     'staff',
+    'api',
     'guardian',
     'djcelery',
     'stats',
