@@ -13,6 +13,8 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.utils import simplejson
+from django.core.files.storage import FileSystemStorage
+from django.core.files.storage import get_storage_class
 
 from main.models import UserProfile, MetaData, TokenStorageModel
 from odk_logger.models import XForm, Attachment
@@ -428,6 +430,10 @@ def export_download(request, username, id_string, export_type, filename):
         }, audit, request)
     if request.GET.get('raw'):
         id_string = None
+
+    default_storage = get_storage_class()()
+    if not isinstance(default_storage, FileSystemStorage):
+        return HttpResponseRedirect(default_storage.url(export.filepath))
     basename = os.path.splitext(export.filename)[0]
     response = response_with_mimetype_and_name(
         mime_type, name=basename, extension=ext,
