@@ -38,6 +38,11 @@ SUBMISSION_TIME = u'_submission_time'
 DELETEDAT = "_deleted_at"  # marker for delete surveys
 BAMBOO_DATASET_ID = u"_bamboo_dataset_id"
 
+META_INSTANCE_ID = u"meta/instanceID"
+INDEX = u"_index"
+PARENT_INDEX = u"_parent_index"
+PARENT_TABLE_NAME = u"_parent_table_name"
+
 # datetime format that we store in mongo
 MONGO_STRFTIME = '%Y-%m-%dT%H:%M:%S'
 

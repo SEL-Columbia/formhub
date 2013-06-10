@@ -7,6 +7,7 @@ import csv
 import tempfile
 import zipfile
 import shutil
+from openpyxl import load_workbook
 from time import sleep
 from pyxform.builder import create_survey_from_xls
 from django.conf import settings
@@ -19,7 +20,7 @@ from odk_viewer.views import delete_export, export_list, create_export,\
 from pyxform import SurveyElementBuilder
 from odk_viewer.models import Export, ParsedInstance
 from utils.export_tools import generate_export, increment_index_in_filename,\
-    dict_to_joined_export, ExportBuilder, generate_csv_zip_export
+    dict_to_joined_export, ExportBuilder
 from odk_logger.models import Instance, XForm
 from main.views import delete_data
 from utils.logger_tools import inject_instanceid
@@ -501,12 +502,8 @@ class TestExports(MainTestCase):
         self.assertEqual(status["complete"], False)
         self.assertEqual(status["filename"], None)
 
-        try:
-            create_xls_export(
-                self.user.username,
-                self.xform.id_string, export.id)
-        except NoRecordsFoundError:
-            pass
+        export.internal_status = Export.FAILED
+        export.save()
         # check that progress url says failed
         progress_url = reverse(export_progress, kwargs={
             'username': self.user.username,
@@ -859,23 +856,23 @@ class TestExports(MainTestCase):
                     {
                         'children/name': 'Mike',
                         'children/age': 5,
-                        'index': 1,
-                        'parent_index': 1,
-                        'parent_table': 'survey'
+                        '_index': 1,
+                        '_parent_table_name': 'survey',
+                        '_parent_index': 1
                     },
                     {
                         'children/name': 'John',
                         'children/age': 2,
-                        'index': 2,
-                        'parent_index': 1,
-                        'parent_table': 'survey'
+                        '_index': 2,
+                        '_parent_table_name': 'survey',
+                        '_parent_index': 1
                     },
                     {
                         'children/name': 'Imora',
                         'children/age': 3,
-                        'index': 3,
-                        'parent_index': 1,
-                        'parent_table': 'survey'
+                        '_index': 3,
+                        '_parent_table_name': 'survey',
+                        '_parent_index': 1
                     },
                 ],
                 'children/cartoons':
@@ -883,30 +880,30 @@ class TestExports(MainTestCase):
                     {
                         'children/cartoons/name': 'Tom & Jerry',
                         'children/cartoons/why': 'Tom is silly',
-                        'index': 1,
-                        'parent_index': 1,
-                        'parent_table': 'children'
+                        '_index': 1,
+                        '_parent_table_name': 'children',
+                        '_parent_index': 1
                     },
                     {
                         'children/cartoons/name': 'Flinstones',
                         'children/cartoons/why': u"I like bamb bam\u0107",
-                        'index': 2,
-                        'parent_index': 1,
-                        'parent_table': 'children'
+                        '_index': 2,
+                        '_parent_table_name': 'children',
+                        '_parent_index': 1
                     },
                     {
                         'children/cartoons/name': 'Shrek',
                         'children/cartoons/why': 'He\'s so funny',
-                        'index': 3,
-                        'parent_index': 3,
-                        'parent_table': 'children'
+                        '_index': 3,
+                        '_parent_table_name': 'children',
+                        '_parent_index': 3
                     },
                     {
                         'children/cartoons/name': 'Dexter\'s Lab',
                         'children/cartoons/why': 'He thinks hes smart',
-                        'index': 4,
-                        'parent_index': 3,
-                        'parent_table': 'children'
+                        '_index': 4,
+                        '_parent_table_name': 'children',
+                        '_parent_index': 3
                     }
                 ],
                 'children/cartoons/characters':
@@ -914,16 +911,16 @@ class TestExports(MainTestCase):
                     {
                         'children/cartoons/characters/name': 'Dee Dee',
                         'children/cartoons/characters/good_or_evil': 'good',
-                        'index': 1,
-                        'parent_index': 4,
-                        'parent_table': 'children/cartoons'
+                        '_index': 1,
+                        '_parent_table_name': 'children/cartoons',
+                        '_parent_index': 4
                     },
                     {
                         'children/cartoons/characters/name': 'Dexter',
                         'children/cartoons/characters/good_or_evil': 'evil',
-                        'index': 2,
-                        'parent_index': 4,
-                        'parent_table': 'children/cartoons'
+                        '_index': 2,
+                        '_parent_table_name': 'children/cartoons',
+                        '_parent_index': 4
                     }
                 ]
             }
@@ -967,8 +964,10 @@ class TestExports(MainTestCase):
         # publish xls form
         self._publish_transportation_form_and_submit_instance()
         # create export db object
-        export = generate_csv_zip_export(
-            self.user.username, self.xform.id_string)
+        export = generate_export(
+            Export.CSV_ZIP_EXPORT, "zip", self.user.username,
+            self.xform.id_string, group_delimiter='/',
+            split_select_multiples=True)
         storage = get_storage_class()()
         self.assertTrue(storage.exists(export.filepath))
         path, ext = os.path.splitext(export.filename)
@@ -985,7 +984,7 @@ class TestExportBuilder(MainTestCase):
                 {
                     'children/name': 'Mike',
                     'children/age': 5,
-                    'children/fav_colors': 'red,blue',
+                    'children/fav_colors': 'red blue',
                     'children/cartoons':
                     [
                         {
@@ -994,14 +993,15 @@ class TestExportBuilder(MainTestCase):
                         },
                         {
                             'children/cartoons/name': 'Flinstones',
-                            'children/cartoons/why': u"I like bamb bam\u0107", # throw in a unicode character
+                            'children/cartoons/why': u"I like bam bam\u0107"
+                            # throw in a unicode character
                         }
                     ]
                 },
                 {
                     'children/name': 'John',
                     'children/age': 2,
-                    'children/cartoons':[]
+                    'children/cartoons': []
                 },
                 {
                     'children/name': 'Imora',
@@ -1036,6 +1036,63 @@ class TestExportBuilder(MainTestCase):
             'children': []
         }
     ]
+    long_survey_data = [
+        {
+            'name': 'Abe',
+            'age': 35,
+            'childrens_survey_with_a_very_lo':
+            [
+                {
+                    'childrens_survey_with_a_very_lo/name': 'Mike',
+                    'childrens_survey_with_a_very_lo/age': 5,
+                    'childrens_survey_with_a_very_lo/fav_colors': 'red blue',
+                    'childrens_survey_with_a_very_lo/cartoons':
+                    [
+                        {
+                            'childrens_survey_with_a_very_lo/cartoons/name': 'Tom & Jerry',
+                            'childrens_survey_with_a_very_lo/cartoons/why': 'Tom is silly',
+                        },
+                        {
+                            'childrens_survey_with_a_very_lo/cartoons/name': 'Flinstones',
+                            'childrens_survey_with_a_very_lo/cartoons/why': u"I like bam bam\u0107"
+                            # throw in a unicode character
+                        }
+                    ]
+                },
+                {
+                    'childrens_survey_with_a_very_lo/name': 'John',
+                    'childrens_survey_with_a_very_lo/age': 2,
+                    'childrens_survey_with_a_very_lo/cartoons': []
+                },
+                {
+                    'childrens_survey_with_a_very_lo/name': 'Imora',
+                    'childrens_survey_with_a_very_lo/age': 3,
+                    'childrens_survey_with_a_very_lo/cartoons':
+                    [
+                        {
+                            'childrens_survey_with_a_very_lo/cartoons/name': 'Shrek',
+                            'childrens_survey_with_a_very_lo/cartoons/why': 'He\'s so funny'
+                        },
+                        {
+                            'childrens_survey_with_a_very_lo/cartoons/name': 'Dexter\'s Lab',
+                            'childrens_survey_with_a_very_lo/cartoons/why': 'He thinks hes smart',
+                            'childrens_survey_with_a_very_lo/cartoons/characters':
+                            [
+                                {
+                                    'childrens_survey_with_a_very_lo/cartoons/characters/name': 'Dee Dee',
+                                    'children/cartoons/characters/good_or_evil': 'good'
+                                },
+                                {
+                                    'childrens_survey_with_a_very_lo/cartoons/characters/name': 'Dexter',
+                                    'children/cartoons/characters/good_or_evil': 'evil'
+                                },
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 
     def _create_childrens_survey(self):
         survey = create_survey_from_xls(
@@ -1053,41 +1110,41 @@ class TestExportBuilder(MainTestCase):
             survey.name, 'children', 'children/cartoons',
             'children/cartoons/characters']
         self.assertEqual(
-            sorted(expected_sections), sorted(export_builder.sections.keys()))
+            expected_sections, [s['name'] for s in export_builder.sections])
         # main section should have split geolocations
         expected_element_names = [
-            'name', 'age', 'geolocation', '_geolocation_longitude',
-            '_geolocation_latitude', '_geolocation_altitude',
-            '_geolocation_precision', 'tel/tel.office', 'tel/tel.mobile',
+            'name', 'age', 'geo/geolocation', 'geo/_geolocation_longitude',
+            'geo/_geolocation_latitude', 'geo/_geolocation_altitude',
+            'geo/_geolocation_precision', 'tel/tel.office', 'tel/tel.mobile',
             'meta/instanceID']
-        element_names = [
-            element['xpath'] for element in
-            export_builder.sections[survey.name]]
+        section = export_builder.section_by_name(survey.name)
+        element_names = [element['xpath'] for element in section['elements']]
         # fav_colors should have its choices split
         self.assertEqual(
             sorted(expected_element_names), sorted(element_names))
+
         expected_element_names = [
             'children/name', 'children/age', 'children/fav_colors',
             'children/fav_colors/red', 'children/fav_colors/blue',
             'children/fav_colors/pink']
-        element_names = [
-            element['xpath'] for element in
-            export_builder.sections['children']]
+        section = export_builder.section_by_name('children')
+        element_names = [element['xpath'] for element in section['elements']]
         self.assertEqual(
             sorted(expected_element_names), sorted(element_names))
+
         expected_element_names = [
             'children/cartoons/name', 'children/cartoons/why']
-        element_names = [
-            element['xpath'] for element in
-            export_builder.sections['children/cartoons']]
+        section = export_builder.section_by_name('children/cartoons')
+        element_names = [element['xpath'] for element in section['elements']]
+
         self.assertEqual(
             sorted(expected_element_names), sorted(element_names))
+
         expected_element_names = [
             'children/cartoons/characters/name',
             'children/cartoons/characters/good_or_evil']
-        element_names = [
-            element['xpath'] for element in
-            export_builder.sections['children/cartoons/characters']]
+        section = export_builder.section_by_name('children/cartoons/characters')
+        element_names = [element['xpath'] for element in section['elements']]
         self.assertEqual(
             sorted(expected_element_names), sorted(element_names))
 
@@ -1154,7 +1211,7 @@ class TestExportBuilder(MainTestCase):
             {
                 'children/name': 'Mike',
                 'children/age': 5,
-                'children/fav_colors': 'red,blue'
+                'children/fav_colors': 'red blue'
             }
         new_row = ExportBuilder.split_select_multiples(
             row, select_multiples)
@@ -1162,7 +1219,7 @@ class TestExportBuilder(MainTestCase):
             {
                 'children/name': 'Mike',
                 'children/age': 5,
-                'children/fav_colors': 'red,blue',
+                'children/fav_colors': 'red blue',
                 'children/fav_colors/red': True,
                 'children/fav_colors/blue': True,
                 'children/fav_colors/pink': False
@@ -1203,10 +1260,10 @@ class TestExportBuilder(MainTestCase):
             {
                 'childrens_survey':
                 {
-                    'geolocation':
+                    'geo/geolocation':
                     [
-                        '_geolocation_latitude', '_geolocation_longitude',
-                        '_geolocation_altitude', '_geolocation_precision'
+                        'geo/_geolocation_latitude', 'geo/_geolocation_longitude',
+                        'geo/_geolocation_altitude', 'geo/_geolocation_precision'
                     ]
                 }
             }
@@ -1219,46 +1276,46 @@ class TestExportBuilder(MainTestCase):
     def test_split_gps_components_works(self):
         gps_fields =\
             {
-                'geolocation':
+                'geo/geolocation':
                 [
-                    '_geolocation_latitude', '_geolocation_longitude',
-                    '_geolocation_altitude', '_geolocation_precision'
+                    'geo/_geolocation_latitude', 'geo/_geolocation_longitude',
+                    'geo/_geolocation_altitude', 'geo/_geolocation_precision'
                 ]
             }
         row = \
             {
-                'geolocation': '1.0 36.1 2000 20',
+                'geo/geolocation': '1.0 36.1 2000 20',
             }
         new_row = ExportBuilder.split_gps_components(
             row, gps_fields)
         expected_row = \
             {
-                'geolocation': '1.0 36.1 2000 20',
-                '_geolocation_latitude': '1.0',
-                '_geolocation_longitude': '36.1',
-                '_geolocation_altitude': '2000',
-                '_geolocation_precision': '20'
+                'geo/geolocation': '1.0 36.1 2000 20',
+                'geo/_geolocation_latitude': '1.0',
+                'geo/_geolocation_longitude': '36.1',
+                'geo/_geolocation_altitude': '2000',
+                'geo/_geolocation_precision': '20'
             }
         self.assertEqual(new_row, expected_row)
 
     def test_split_gps_components_works_when_gps_data_is_blank(self):
         gps_fields =\
             {
-                'geolocation':
+                'geo/geolocation':
                 [
-                    '_geolocation_latitude', '_geolocation_longitude',
-                    '_geolocation_altitude', '_geolocation_precision'
+                    'geo/_geolocation_latitude', 'geo/_geolocation_longitude',
+                    'geo/_geolocation_altitude', 'geo/_geolocation_precision'
                 ]
             }
         row = \
             {
-                'geolocation': '',
+                'geo/geolocation': '',
             }
         new_row = ExportBuilder.split_gps_components(
             row, gps_fields)
         expected_row = \
             {
-                'geolocation': '',
+                'geo/geolocation': '',
             }
         self.assertEqual(new_row, expected_row)
 
@@ -1302,3 +1359,231 @@ class TestExportBuilder(MainTestCase):
                 'tel/tel.office': '123-456-789'
             }
         self.assertEqual(new_row, expected_row)
+
+    def test_generate_field_title(self):
+        field_name = ExportBuilder.format_field_title("child/age", ".")
+        expected_field_name = "child.age"
+        self.assertEqual(field_name, expected_field_name)
+
+    def test_delimiter_replacement_works_existing_fields(self):
+        survey = self._create_childrens_survey()
+        export_builder = ExportBuilder()
+        export_builder.GROUP_DELIMITER = "."
+        export_builder.set_survey(survey)
+        expected_sections =\
+            [
+                {
+                    'name': 'children',
+                    'elements': [
+                        {
+                            'title': 'children.name',
+                            'xpath': 'children/name'
+                        }
+                    ]
+                }
+            ]
+        children_section = export_builder.section_by_name('children')
+        self.assertEqual(
+            children_section['elements'][0]['title'],
+            expected_sections[0]['elements'][0]['title'])
+
+    def test_delimiter_replacement_works_generated_multi_select_fields(self):
+        survey = self._create_childrens_survey()
+        export_builder = ExportBuilder()
+        export_builder.GROUP_DELIMITER = "."
+        export_builder.set_survey(survey)
+        expected_section =\
+            {
+                'name': 'children',
+                'elements': [
+                    {
+                        'title': 'children.fav_colors.red',
+                        'xpath': 'children/fav_colors/red'
+                    }
+                ]
+            }
+        childrens_section = export_builder.section_by_name('children')
+        match = filter(lambda x: expected_section['elements'][0]['xpath']
+                       == x['xpath'], childrens_section['elements'])[0]
+        self.assertEqual(
+            expected_section['elements'][0]['title'], match['title'])
+
+    def test_delimiter_replacement_works_for_generated_gps_fields(self):
+        survey = self._create_childrens_survey()
+        export_builder = ExportBuilder()
+        export_builder.GROUP_DELIMITER = "."
+        export_builder.set_survey(survey)
+        expected_section = \
+            {
+                'name': 'childrens_survey',
+                'elements': [
+                    {
+                        'title': 'geo._geolocation_latitude',
+                        'xpath': 'geo/_geolocation_latitude'
+                    }
+                ]
+            }
+        main_section = export_builder.section_by_name('childrens_survey')
+        match = filter(
+            lambda x: (expected_section['elements'][0]['xpath']
+                       == x['xpath']), main_section['elements'])[0]
+        self.assertEqual(
+            expected_section['elements'][0]['title'], match['title'])
+
+    def test_to_xls_export_works(self):
+        survey = self._create_childrens_survey()
+        export_builder = ExportBuilder()
+        export_builder.set_survey(survey)
+        xls_file = NamedTemporaryFile(suffix='.xls')
+        filename = xls_file.name
+        export_builder.to_xls_export(filename, self.data)
+        xls_file.seek(0)
+        wb = load_workbook(filename)
+        # check that we have childrens_survey, children, children_cartoons
+        # and children_cartoons_characters sheets
+        expected_sheet_names = ['childrens_survey', 'children',
+                                'children_cartoons',
+                                'children_cartoons_characters']
+        self.assertEqual(wb.get_sheet_names(), expected_sheet_names)
+
+        # check header columns
+        main_sheet = wb.get_sheet_by_name('childrens_survey')
+        expected_column_headers = [
+            u'name', u'age', u'geo/geolocation', u'geo/_geolocation_latitude',
+            u'geo/_geolocation_longitude', u'geo/_geolocation_altitude',
+            u'geo/_geolocation_precision', u'tel/tel.office',
+            u'tel/tel.mobile', u'_id', u'meta/instanceID', u'_uuid',
+            u'_submission_time', u'_index', u'_parent_index',
+            u'_parent_table_name']
+        column_headers = [c[0].value for c in main_sheet.columns]
+        self.assertEqual(sorted(column_headers),
+                         sorted(expected_column_headers))
+
+        childrens_sheet = wb.get_sheet_by_name('children')
+        expected_column_headers = [
+            u'children/name', u'children/age', u'children/fav_colors',
+            u'children/fav_colors/red', u'children/fav_colors/blue',
+            u'children/fav_colors/pink', u'_id', u'_uuid',
+            u'_submission_time', u'_index', u'_parent_index',
+            u'_parent_table_name']
+        column_headers = [c[0].value for c in childrens_sheet.columns]
+        self.assertEqual(sorted(column_headers),
+                         sorted(expected_column_headers))
+
+        cartoons_sheet = wb.get_sheet_by_name('children_cartoons')
+        expected_column_headers = [
+            u'children/cartoons/name', u'children/cartoons/why', u'_id',
+            u'_uuid', u'_submission_time', u'_index', u'_parent_index',
+            u'_parent_table_name']
+        column_headers = [c[0].value for c in cartoons_sheet.columns]
+        self.assertEqual(sorted(column_headers),
+                         sorted(expected_column_headers))
+
+        characters_sheet = wb.get_sheet_by_name('children_cartoons_characters')
+        expected_column_headers = [
+            u'children/cartoons/characters/name',
+            u'children/cartoons/characters/good_or_evil', u'_id', u'_uuid',
+            u'_submission_time', u'_index', u'_parent_index',
+            u'_parent_table_name']
+        column_headers = [c[0].value for c in characters_sheet.columns]
+        self.assertEqual(sorted(column_headers),
+                         sorted(expected_column_headers))
+
+        xls_file.close()
+
+    def test_to_xls_export_respects_custom_field_delimiter(self):
+        survey = self._create_childrens_survey()
+        export_builder = ExportBuilder()
+        export_builder.GROUP_DELIMITER = ExportBuilder.GROUP_DELIMITER_DOT
+        export_builder.set_survey(survey)
+        xls_file = NamedTemporaryFile(suffix='.xls')
+        filename = xls_file.name
+        export_builder.to_xls_export(filename, self.data)
+        xls_file.seek(0)
+        wb = load_workbook(filename)
+
+        # check header columns
+        main_sheet = wb.get_sheet_by_name('childrens_survey')
+        expected_column_headers = [
+            u'name', u'age', u'geo.geolocation', u'geo._geolocation_latitude',
+            u'geo._geolocation_longitude', u'geo._geolocation_altitude',
+            u'geo._geolocation_precision', u'tel.tel.office',
+            u'tel.tel.mobile', u'_id', u'meta.instanceID', u'_uuid',
+            u'_submission_time', u'_index', u'_parent_index',
+            u'_parent_table_name']
+        column_headers = [c[0].value for c in main_sheet.columns]
+        self.assertEqual(sorted(column_headers),
+                         sorted(expected_column_headers))
+        xls_file.close()
+
+    def test_get_valid_sheet_name_catches_duplicates(self):
+        work_sheets = {'childrens_survey': "Worksheet"}
+        desired_sheet_name = "childrens_survey"
+        expected_sheet_name = "childrens_survey1"
+        generated_sheet_name = ExportBuilder.get_valid_sheet_name(
+            desired_sheet_name, work_sheets)
+        self.assertEqual(generated_sheet_name, expected_sheet_name)
+
+    def test_get_valid_sheet_name_catches_long_names(self):
+        desired_sheet_name = "childrens_survey_with_a_very_long_name"
+        expected_sheet_name = "childrens_survey_with_a_very_lo"
+        generated_sheet_name = ExportBuilder.get_valid_sheet_name(
+            desired_sheet_name, [])
+        self.assertEqual(generated_sheet_name, expected_sheet_name)
+
+    def test_get_valid_sheet_name_catches_long_duplicate_names(self):
+        work_sheet_titles = ['childrens_survey_with_a_very_lo']
+        desired_sheet_name = "childrens_survey_with_a_very_long_name"
+        expected_sheet_name = "childrens_survey_with_a_very_l1"
+        generated_sheet_name = ExportBuilder.get_valid_sheet_name(
+            desired_sheet_name, work_sheet_titles)
+        self.assertEqual(generated_sheet_name, expected_sheet_name)
+
+    def test_to_xls_export_generates_valid_sheet_names(self):
+        survey = create_survey_from_xls(
+            os.path.join(
+                os.path.abspath('./'), 'odk_logger', 'tests', 'fixtures',
+                'childrens_survey_with_a_very_long_name.xls'))
+        export_builder = ExportBuilder()
+        export_builder.set_survey(survey)
+        xls_file = NamedTemporaryFile(suffix='.xls')
+        filename = xls_file.name
+        export_builder.to_xls_export(filename, self.data)
+        xls_file.seek(0)
+        wb = load_workbook(filename)
+        # check that we have childrens_survey, children, children_cartoons
+        # and children_cartoons_characters sheets
+        expected_sheet_names = ['childrens_survey_with_a_very_lo',
+                                'childrens_survey_with_a_very_l1',
+                                'childrens_survey_with_a_very_l2',
+                                'childrens_survey_with_a_very_l3']
+        self.assertEqual(wb.get_sheet_names(), expected_sheet_names)
+        xls_file.close()
+
+    def test_child_record_parent_table_is_updated_when_sheet_is_renamed(self):
+        survey = create_survey_from_xls(
+            os.path.join(
+                os.path.abspath('./'), 'odk_logger', 'tests', 'fixtures',
+                'childrens_survey_with_a_very_long_name.xls'))
+        export_builder = ExportBuilder()
+        export_builder.set_survey(survey)
+        xls_file = NamedTemporaryFile(suffix='.xls')
+        filename = xls_file.name
+        export_builder.to_xls_export(filename, self.long_survey_data)
+        xls_file.seek(0)
+        wb = load_workbook(filename)
+
+        # get the children's sheet
+        ws1 = wb.get_sheet_by_name('childrens_survey_with_a_very_l1')
+
+        # parent_table is in cell K2
+        parent_table_name = ws1.cell('K2').value
+        expected_parent_table_name = 'childrens_survey_with_a_very_lo'
+        self.assertEqual(parent_table_name, expected_parent_table_name)
+
+        # get cartoons sheet
+        ws2 = wb.get_sheet_by_name('childrens_survey_with_a_very_l2')
+        parent_table_name = ws2.cell('G2').value
+        expected_parent_table_name = 'childrens_survey_with_a_very_l1'
+        self.assertEqual(parent_table_name, expected_parent_table_name)
+        xls_file.close()
