@@ -41,3 +41,7 @@ def create_organization_team(organization, name, permission_names=[]):
 
 def add_user_to_team(team, user):
     user.groups.add(team)
+
+
+def create_organization_project(organization, project_name):
+    pass

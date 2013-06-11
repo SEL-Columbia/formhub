@@ -36,7 +36,7 @@ class OrganizationProfile(UserProfile):
 class Project(models.Model):
     """
     - @name
-    - belongs to an organization
+    - @organization
     - @creator
     - @teams - permissions?
     - its own team?
@@ -50,6 +50,16 @@ class Project(models.Model):
         - do we add a team to atasoils?
         - do we have a atasoils project team auto created?
     """
+    class Meta:
+        app_label = 'api'
+        unique_together = (('name', 'organization'),)
+
+    name = models.CharField(max_length=255)
+    organization = models.ForeignKey(User)
+    creator = models.ForeignKey(User)
+
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
 
 
 class Team(Group):
