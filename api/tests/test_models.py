@@ -36,15 +36,18 @@ class TestModels(MainTestCase):
         self.assertIsInstance(
             dev_team.permissions.get(codename='is_org_owner'), Permission)
 
+    def _create_organization(self, org_name, user):
+        profile = create_organization(org_name, user)
+        self.organization = profile.user
+        return self.organization
+
     def test_assign_user_to_team(self):
         # create the organization
-        profile = create_organization("modilabs", self.user)
-        organization = profile.user
+        organization = self._create_organization("modilabs", self.user)
         user_deno = self._create_user('deno', 'deno')
 
         # create another team
         team_name = 'managers'
-        team = create_organization_team(
-            organization, team_name)
+        team = create_organization_team(organization, team_name)
         add_user_to_team(team, user_deno)
         self.assertIn(team.group_ptr, user_deno.groups.all())
