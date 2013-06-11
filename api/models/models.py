@@ -32,31 +32,26 @@ class OrganizationProfile(UserProfile):
         for group in user.groups.filter('%s#' % self.user.username):
             user.groups.remove(group)
 
+    def is_organization_owner(self, user):
+        """Checks if user is in the organization owners team
+
+        :param user: User to check
+
+        :returns: Boolean whether user has organization level permissions
+        """
+        has_owner_group = user.groups.filter(
+            name='%s#%s' % (self.user.username, Team.OWNER_TEAM_NAME))
+        return True if has_owner_group else False
+
 
 class Project(models.Model):
-    """
-    - @name
-    - @organization
-    - @creator
-    - @teams - permissions?
-    - its own team?
-
-    Larry owns modlabs organization
-    Larry creates a project 'atasoils' to modilabs
-    - create a project  ata_soils
-        - name = ata_soils
-        - creator = larry
-        - who has access to atasoils?
-        - do we add a team to atasoils?
-        - do we have a atasoils project team auto created?
-    """
     class Meta:
         app_label = 'api'
         unique_together = (('name', 'organization'),)
 
     name = models.CharField(max_length=255)
-    organization = models.ForeignKey(User)
-    creator = models.ForeignKey(User)
+    organization = models.ForeignKey(User, related_name='project_organization')
+    created_by = models.ForeignKey(User, related_name='project_creator')
 
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)

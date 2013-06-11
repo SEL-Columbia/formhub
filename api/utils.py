@@ -1,4 +1,4 @@
-from api.models import OrganizationProfile, Team
+from api.models import OrganizationProfile, Team, Project
 
 from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
@@ -43,5 +43,19 @@ def add_user_to_team(team, user):
     user.groups.add(team)
 
 
-def create_organization_project(organization, project_name):
-    pass
+def create_organization_project(organization, project_name, created_by):
+    """Creates a project for a given organization
+    :param organization: User organization
+    :param project_name
+    :param created_by: User with permissions to create projects within the
+                       organization
+
+    :returns: a Project instance
+    """
+    profile = OrganizationProfile.objects.get(user=organization)
+    if not profile.is_organization_owner(created_by):
+        return None
+    project = Project.objects.create(
+        name=project_name,
+        organization=organization, created_by=created_by)
+    return project
