@@ -7,7 +7,7 @@ from django.core.mail import mail_admins
 from odk_viewer.models import Export
 from utils.export_tools import generate_export,\
     generate_attachments_zip_export, generate_kml_export
-from utils.logger_tools import mongo_sync_status
+from utils.logger_tools import mongo_sync_status, report_exception
 from pandas_mongo_bridge import NoRecordsFoundError
 
 
@@ -86,8 +86,10 @@ def create_xls_export(username, id_string, export_id, query=None,
     except (Exception, NoRecordsFoundError) as e:
         export.internal_status = Export.FAILED
         export.save()
+        # mail admins
+        report_exception("XLS Export Exception", e)
         #raise for now to let celery know we failed
-        # - doesnt seem to break celery
+        # - doesnt seem to break celery`
         raise
     else:
         return gen_export.id
@@ -108,6 +110,8 @@ def create_csv_export(username, id_string, export_id, query=None,
     except (Exception, NoRecordsFoundError) as e:
         export.internal_status = Export.FAILED
         export.save()
+        # mail admins
+        report_exception("CSV Export Exception", e)
         raise
     else:
         return gen_export.id
@@ -127,6 +131,8 @@ def create_kml_export(username, id_string, export_id, query=None):
     except (Exception, NoRecordsFoundError) as e:
         export.internal_status = Export.FAILED
         export.save()
+        # mail admins
+        report_exception("KML Export Exception", e)
         raise
     else:
         return gen_export.id
@@ -141,6 +147,8 @@ def create_zip_export(username, id_string, export_id, query=None):
     except (Exception, NoRecordsFoundError) as e:
         export.internal_status = Export.FAILED
         export.save()
+        # mail admins
+        report_exception("ZIP Export Exception", e)
         raise
     else:
         delete_export.apply_async(
@@ -162,6 +170,8 @@ def create_csv_zip_export(username, id_string, export_id, query=None,
     except (Exception, NoRecordsFoundError) as e:
         export.internal_status = Export.FAILED
         export.save()
+        # mail admins
+        report_exception("CSV ZIP Export Exception", e)
         raise
     else:
         return gen_export.id
