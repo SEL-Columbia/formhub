@@ -1,5 +1,4 @@
 import sys
-from StringIO import StringIO
 from celery import task
 from django.db import transaction
 from django.conf import settings
@@ -87,7 +86,14 @@ def create_xls_export(username, id_string, export_id, query=None,
         export.internal_status = Export.FAILED
         export.save()
         # mail admins
-        report_exception("XLS Export Exception", e)
+        details = {
+            'export_id': export_id,
+            'username': username,
+            'id_string': id_string
+        }
+        report_exception("XLS Export Exception: Export ID - "
+                         "%(export_id)s, /%(username)s/%(id_string)s"
+                         % details, e, sys.exc_info())
         #raise for now to let celery know we failed
         # - doesnt seem to break celery`
         raise
@@ -111,7 +117,14 @@ def create_csv_export(username, id_string, export_id, query=None,
         export.internal_status = Export.FAILED
         export.save()
         # mail admins
-        report_exception("CSV Export Exception", e)
+        details = {
+            'export_id': export_id,
+            'username': username,
+            'id_string': id_string
+        }
+        report_exception("CSV Export Exception: Export ID - "
+                         "%(export_id)s, /%(username)s/%(id_string)s"
+                         % details, e, sys.exc_info())
         raise
     else:
         return gen_export.id
@@ -132,7 +145,14 @@ def create_kml_export(username, id_string, export_id, query=None):
         export.internal_status = Export.FAILED
         export.save()
         # mail admins
-        report_exception("KML Export Exception", e)
+        details = {
+            'export_id': export_id,
+            'username': username,
+            'id_string': id_string
+        }
+        report_exception("KML Export Exception: Export ID - "
+                         "%(export_id)s, /%(username)s/%(id_string)s"
+                         % details, e, sys.exc_info())
         raise
     else:
         return gen_export.id
@@ -148,7 +168,14 @@ def create_zip_export(username, id_string, export_id, query=None):
         export.internal_status = Export.FAILED
         export.save()
         # mail admins
-        report_exception("ZIP Export Exception", e)
+        details = {
+            'export_id': export_id,
+            'username': username,
+            'id_string': id_string
+        }
+        report_exception("Zip Export Exception: Export ID - "
+                         "%(export_id)s, /%(username)s/%(id_string)s"
+                         % details, e)
         raise
     else:
         delete_export.apply_async(
@@ -171,7 +198,14 @@ def create_csv_zip_export(username, id_string, export_id, query=None,
         export.internal_status = Export.FAILED
         export.save()
         # mail admins
-        report_exception("CSV ZIP Export Exception", e)
+        details = {
+            'export_id': export_id,
+            'username': username,
+            'id_string': id_string
+        }
+        report_exception("CSV ZIP Export Exception: Export ID - "
+                         "%(export_id)s, /%(username)s/%(id_string)s"
+                         % details, e, sys.exc_info())
         raise
     else:
         return gen_export.id
