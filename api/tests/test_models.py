@@ -2,7 +2,7 @@ from django.contrib.auth.models import Permission
 from main.tests.test_base import MainTestCase
 from api.models import Team, OrganizationProfile, Project
 from api.utils import create_organization, add_user_to_team
-from api.utils import create_organization_team
+from api.utils import create_organization_team, add_team_to_project
 from api.utils import create_organization_project
 
 
@@ -69,3 +69,13 @@ class TestModels(MainTestCase):
         project = create_organization_project(
             organization, project_name, user_deno)
         self.assertIsNone(project)
+
+    def test_add_team_to_project(self):
+        organization = self._create_organization("modilabs", self.user)
+        project_name = "demo"
+        team_name = "enumerators"
+        project = self._create_project(organization, project_name, self.user)
+        team = create_organization_team(organization, team_name)
+        result = add_team_to_project(team, project)
+        self.assertTrue(result)
+        self.assertIn(project, team.projects.all())

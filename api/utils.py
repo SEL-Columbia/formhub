@@ -59,3 +59,18 @@ def create_organization_project(organization, project_name, created_by):
         name=project_name,
         organization=organization, created_by=created_by)
     return project
+
+
+def add_team_to_project(team, project):
+    """Adds a  team to a project
+
+    :param team:
+    :param project:
+
+    :returns: True if successful or project has already been added to the team
+    """
+    if isinstance(team, Team) and isinstance(project, Project):
+        if not team.projects.filter(pk=project.pk):
+            team.projects.add(project)
+        return True
+    return False
