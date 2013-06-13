@@ -53,11 +53,15 @@ class TestModels(MainTestCase):
         add_user_to_team(team, user_deno)
         self.assertIn(team.group_ptr, user_deno.groups.all())
 
+    def _create_project(iself, organization, project_name, user):
+        project = create_organization_project(
+            organization, project_name, user)
+        return project
+
     def test_create_organization_project(self):
         organization = self._create_organization("modilabs", self.user)
         project_name = "demo"
-        project = create_organization_project(
-            organization, project_name, self.user)
+        project = self._create_project(organization, project_name, self.user)
         self.assertIsInstance(project, Project)
         self.assertEqual(project.name, project_name)
 
