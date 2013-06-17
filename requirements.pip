@@ -41,3 +41,8 @@ shell_command
 
 # sms support
 dict2xml
+
+# api support
+djangorestframework
+markdown
+django-filter
