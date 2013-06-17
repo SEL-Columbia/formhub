@@ -8,6 +8,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ('url', 'username', 'email', 'groups')
+        lookup_field = 'username'
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
@@ -21,6 +22,8 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     email = serializers.Field(source='user.email')
     website = serializers.Field(source='home_page')
     gravatar = serializers.Field(source='gravatar')
+    user = serializers.HyperlinkedRelatedField(
+        view_name='user-detail', lookup_field='username')
 
     class Meta:
         model = UserProfile

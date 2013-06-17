@@ -8,6 +8,7 @@ from main.models import UserProfile
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    lookup_field = 'username'
 
 
 class GroupViewSet(viewsets.ModelViewSet):
