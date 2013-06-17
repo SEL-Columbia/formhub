@@ -1,14 +1,17 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.conf import settings
 
+from api.urls import router
+
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    #change Language
+    # change Language
     (r'^i18n/', include('django.conf.urls.i18n')),
+    url('^api/', include(router.urls)),
 
     # django default stuff
     url(r'^accounts/', include('main.registration_urls')),
@@ -131,5 +134,6 @@ urlpatterns = patterns('',
         {'document_root': settings.MEDIA_ROOT}),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 )
 
