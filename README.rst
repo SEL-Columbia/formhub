@@ -10,30 +10,30 @@ Installation
 Install system libraries and start services:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    $ apt-get update
+    # apt-get update
 
-    $ apt-get upgrade
+    # apt-get upgrade
 
-    $ apt-get install default-jre gcc git python-dev python-virtualenv libjpeg-dev libfreetype6-dev zlib1g-dev rabbitmq-server
+    # apt-get install default-jre gcc git python-dev python-virtualenv libjpeg-dev libfreetype6-dev zlib1g-dev rabbitmq-server
 
 Install Mongodb:
 ^^^^^^^^^^^^^^^^
 
 Ubuntu 12.04
 
-    $ apt-get install mongodb
+    # apt-get install mongodb
 
-    $ start mongodb
+    # start mongodb
 
 Ubuntu 10.04
 
-    $ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
+    # apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
 
-    $ echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' >> /etc/apt/sources.list
+    # echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' >> /etc/apt/sources.list
 
-    $ sudo apt-get update
+    # apt-get update
 
-    $ sudo apt-get install mongodb-10gen
+    # apt-get install mongodb-10gen
 
 
 Set up a new virtual environment:
@@ -82,7 +82,7 @@ Install requirements:
 (OPTIONAL) For MySQL, s3, ses:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    $ apt-get install libmysqlclient-dev mysql-server
+    # apt-get install libmysqlclient-dev mysql-server
 
     $ pip install -r requirements-mysql.pip
 
@@ -125,9 +125,9 @@ Start the celery daemon
 (OPTIONAL) Apache and system administration tools:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    $ apt-get install apache libapache2-mode-wsgi
+    # apt-get install apache libapache2-mode-wsgi
 
-    $ apt-get install htop monit
+    # apt-get install htop monit
 
 And now you should be ready to run the server:
 
