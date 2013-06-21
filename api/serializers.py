@@ -6,6 +6,8 @@ from rest_framework import serializers
 from main.models import UserProfile
 from main.forms import UserProfileForm, RegistrationFormUserProfile
 
+from odk_logger.models import XForm
+
 
 class UserProfileSerializer(serializers.ModelSerializer):
     username = serializers.WritableField(source='user.username')
@@ -69,3 +71,14 @@ class UserProfileSerializer(serializers.ModelSerializer):
                 twitter=attrs.get('twitter', u''))
             return profile
         return attrs
+
+
+class XFormSerializer(serializers.ModelSerializer):
+    owner = serializers.Field(source='user.username')
+
+    class Meta:
+        model = XForm
+        read_only_fields = (
+            'id', 'json', 'xml', 'date_created', 'date_modified',
+            'encrypted')
+        exclude = ('user', 'has_start_time', )
