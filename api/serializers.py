@@ -74,11 +74,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class XFormSerializer(serializers.ModelSerializer):
+    formid = serializers.Field(source='id')
     owner = serializers.Field(source='user.username')
 
     class Meta:
         model = XForm
         read_only_fields = (
-            'id', 'json', 'xml', 'date_created', 'date_modified',
-            'encrypted')
-        exclude = ('user', 'has_start_time', )
+            'json', 'xml', 'date_created', 'date_modified', 'encrypted')
+        exclude = ('id', 'user', 'has_start_time', )
