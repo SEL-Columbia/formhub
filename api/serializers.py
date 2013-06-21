@@ -76,9 +76,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class XFormSerializer(serializers.ModelSerializer):
     formid = serializers.Field(source='id')
     owner = serializers.Field(source='user.username')
+    public = serializers.BooleanField(
+        source='shared', widget=widgets.CheckboxInput())
+    public_data = serializers.BooleanField(
+        source='shared_data')
 
     class Meta:
         model = XForm
         read_only_fields = (
             'json', 'xml', 'date_created', 'date_modified', 'encrypted')
-        exclude = ('id', 'user', 'has_start_time', )
+        exclude = ('id', 'user', 'has_start_time', 'shared', 'shared_data')
