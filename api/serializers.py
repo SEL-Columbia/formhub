@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from main.models import UserProfile
-from main.forms import RegistrationFormUserProfile
+from main.forms import UserProfileForm, RegistrationFormUserProfile
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -33,8 +33,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     def restore_object(self, attrs, instance=None):
         params = copy.deepcopy(attrs)
-        if instance:
-            pass  # TODO: updates
         username = attrs['user.username']
         password = attrs['user.password']
         name = attrs['name']
@@ -47,6 +45,15 @@ class UserProfileSerializer(serializers.ModelSerializer):
         params.update({
             'email': email, 'username': username,
             'password1': password, 'password2': password})
+        if instance:
+            form = UserProfileForm(params, instance=instance)
+            if form.is_valid():
+                # get user
+                # user.email = cleaned_email
+                form.instance.user.email = form.cleaned_data['email']
+                form.instance.user.save()
+                instance = form.save()
+            return instance  # TODO: updates
         form = RegistrationFormUserProfile(params)
         if form.is_valid():
             new_user = User(username=username, first_name=first_name,
