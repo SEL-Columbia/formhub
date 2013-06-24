@@ -9,7 +9,7 @@ from main.forms import UserProfileForm, RegistrationFormUserProfile
 from odk_logger.models import XForm
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
+class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     username = serializers.WritableField(source='user.username')
     email = serializers.WritableField(source='user.email')
     website = serializers.WritableField(source='home_page', required=False)
@@ -19,7 +19,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('username', 'name', 'password', 'email', 'city',
+        fields = ('url', 'username', 'name', 'password', 'email', 'city',
                   'country',
                   'organization', 'website', 'twitter', 'gravatar',
                   'require_auth')
@@ -73,7 +73,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return attrs
 
 
-class XFormSerializer(serializers.ModelSerializer):
+class XFormSerializer(serializers.HyperlinkedModelSerializer):
     formid = serializers.Field(source='id')
     owner = serializers.Field(source='user.username')
     public = serializers.BooleanField(
