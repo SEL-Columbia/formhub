@@ -8,6 +8,8 @@ from main.forms import UserProfileForm, RegistrationFormUserProfile
 
 from odk_logger.models import XForm
 
+from api.models import Project
+
 
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     username = serializers.WritableField(source='user.username')
@@ -86,3 +88,14 @@ class XFormSerializer(serializers.HyperlinkedModelSerializer):
         read_only_fields = (
             'json', 'xml', 'date_created', 'date_modified', 'encrypted')
         exclude = ('id', 'user', 'has_start_time', 'shared', 'shared_data')
+
+
+class ProjectSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.HyperlinkedRelatedField(
+        view_name='userprofile-detail', source='organization')
+    created_by = serializers.HyperlinkedRelatedField(
+        view_name='userprofile-detail')
+
+    class Meta:
+        model = Project
+        exclude = ('organization',)
