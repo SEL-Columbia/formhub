@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     # change Language
     (r'^i18n/', include('django.conf.urls.i18n')),
     url('^api/', include(router.urls)),
-    url('^api/v0.1/', include(router.urls)),
+    url('^api/v1/', include(router.urls)),
 
     # django default stuff
     url(r'^accounts/', include('main.registration_urls')),
