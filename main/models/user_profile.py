@@ -24,6 +24,9 @@ class UserProfile(models.Model):
     address = models.CharField(max_length=255, blank=True)
     phonenumber = models.CharField(max_length=30, blank=True)
 
+    def __unicode__(self):
+        return u'%s[%s]' % (self.name, self.user.username)
+
     @property
     def gravatar(self):
         return get_gravatar_img_link(self.user)
