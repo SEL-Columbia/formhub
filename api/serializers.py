@@ -27,9 +27,9 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     website = serializers.WritableField(source='home_page', required=False)
     gravatar = serializers.Field(source='gravatar')
     password = serializers.WritableField(
-        source='user.password', widget=widgets.PasswordInput())
+        source='user.password', widget=widgets.PasswordInput(), required=False)
     user = serializers.HyperlinkedRelatedField(
-        view_name='user-detail', lookup_field='username')
+        view_name='user-detail', lookup_field='username', read_only=True)
 
     class Meta:
         model = UserProfile
@@ -48,30 +48,38 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
         return ret
 
     def restore_object(self, attrs, instance=None):
+        def _get_first_last_names(name):
+            name_split = name.split()
+            first_name = name_split[0]
+            last_name = u''
+            if len(name_split) > 1:
+                last_name = u' '.join(name_split[1:])
+            return first_name, last_name
         params = copy.deepcopy(attrs)
-        username = attrs['user.username']
-        password = attrs['user.password']
-        name = attrs['name']
-        name_split = name.split()
-        first_name = name_split[0]
-        last_name = u''
-        if len(name_split) > 1:
-            last_name = u' '.join(name_split[1:])
-        email = attrs['user.email']
-        params.update({
-            'email': email, 'username': username,
-            'password1': password, 'password2': password})
+        username = attrs.get('user.username', None)
+        password = attrs.get('user.password', None)
+        name = attrs.get('name', None)
+        email = attrs.get('user.email', None)
+        if email:
+            params['email'] = email
+        if password:
+            params.update({'password1': password, 'password2': password})
         if instance:
             form = UserProfileForm(params, instance=instance)
             if form.is_valid():
                 # get user
-                # user.email = cleaned_email
-                form.instance.user.email = form.cleaned_data['email']
+                if email:
+                    form.instance.user.email = form.cleaned_data['email']
+                if name:
+                    first_name, last_name = _get_first_last_names(name)
+                    form.instance.user.first_name = first_name
+                    form.instance.user.last_name = last_name
                 form.instance.user.save()
                 instance = form.save()
             return instance  # TODO: updates
         form = RegistrationFormUserProfile(params)
         if form.is_valid():
+            first_name, last_name = _get_first_last_names(name)
             new_user = User(username=username, first_name=first_name,
                             last_name=last_name, email=email)
             new_user.set_password(password)
