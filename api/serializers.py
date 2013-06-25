@@ -1,6 +1,8 @@
 import copy
+
 from django.forms import widgets
 from django.contrib.auth.models import User
+
 from rest_framework import serializers
 
 from main.models import UserProfile
@@ -11,6 +13,14 @@ from odk_logger.models import XForm
 from api.models import Project
 
 
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name')
+        #exclude = ('groups', 'user_permissions')
+        lookup_field = 'username'
+
+
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     username = serializers.WritableField(source='user.username')
     email = serializers.WritableField(source='user.email')
@@ -18,13 +28,15 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     gravatar = serializers.Field(source='gravatar')
     password = serializers.WritableField(
         source='user.password', widget=widgets.PasswordInput())
+    user = serializers.HyperlinkedRelatedField(
+        view_name='user-detail', lookup_field='username')
 
     class Meta:
         model = UserProfile
         fields = ('url', 'username', 'name', 'password', 'email', 'city',
-                  'country',
-                  'organization', 'website', 'twitter', 'gravatar',
-                  'require_auth')
+                  'country', 'organization', 'website', 'twitter', 'gravatar',
+                  'require_auth', 'user')
+        lookup_field = 'user'
 
     def to_native(self, obj):
         """
