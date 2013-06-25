@@ -66,17 +66,22 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
             params.update({'password1': password, 'password2': password})
         if instance:
             form = UserProfileForm(params, instance=instance)
-            if form.is_valid():
-                # get user
-                if email:
-                    form.instance.user.email = form.cleaned_data['email']
-                if name:
-                    first_name, last_name = _get_first_last_names(name)
-                    form.instance.user.first_name = first_name
-                    form.instance.user.last_name = last_name
-                form.instance.user.save()
+            # form.is_valid affects instance object for partial updates [PATCH]
+            # so only use it for full updates [PUT], i.e shallow copy effect
+            if not self.partial and form.is_valid():
                 instance = form.save()
-            return instance  # TODO: updates
+            # get user
+            if email:
+                instance.user.email = form.cleaned_data['email']
+            if name:
+                first_name, last_name = _get_first_last_names(name)
+                instance.user.first_name = first_name
+                instance.user.last_name = last_name
+            if email or name:
+                instance.user.save()
+            return super(
+                UserProfileSerializer, self).restore_object(attrs, instance)
+            #return instance  # TODO: updates
         form = RegistrationFormUserProfile(params)
         if form.is_valid():
             first_name, last_name = _get_first_last_names(name)
