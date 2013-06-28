@@ -11,6 +11,7 @@ from main.forms import UserProfileForm, RegistrationFormUserProfile
 from odk_logger.models import XForm
 
 from api.models import Project
+from api.fields import HyperlinkedMultiIdentityField
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -116,10 +117,14 @@ class XFormSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
+    url = HyperlinkedMultiIdentityField(
+        view_name='project-detail',
+        lookup_fields=(('pk', 'pk'), ('owner', 'organization')))
     owner = serializers.HyperlinkedRelatedField(
-        view_name='userprofile-detail', source='organization')
+        view_name='user-detail',
+        source='organization', lookup_field='username')
     created_by = serializers.HyperlinkedRelatedField(
-        view_name='userprofile-detail')
+        view_name='user-detail', lookup_field='username')
 
     class Meta:
         model = Project
