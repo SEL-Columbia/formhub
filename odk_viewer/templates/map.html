@@ -35,6 +35,43 @@
 	      $('.navbar-inner').height()
 	  $('#map_canvas').height(newHeight);
 	}
+
+	function exitModal(modalElem) {
+		$(modalElem).empty();
+		$(modalElem).modal('hide');
+	}
+
+	function displayEnketoModal(url) {
+		console.log("displayEnketoModal with: " + url);
+    	var modalVisible = null;
+    	$("#enketo-modal").empty();
+
+    	var closeButton = $("<button class='btn' style='position: absolute; top: 0;right: 0;'>Close</button>");
+    	closeButton.click(function () {
+    		var modalElem = $(this).parent();
+    		exitModal(modalElem);
+    	});
+
+    	var aFrame = $('<iframe src="' + url + '" style="width:100%; min-height:300px;overflow-x: hidden; overflow-y: scroll" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"></iframe>');
+    	// event fired when src attr changes
+    	aFrame.load(function(){
+    		// first time is the real load.
+			if (modalVisible === null) {
+				modalVisible = true;
+				return;
+			}
+			// second time is the redirect. close the modal
+			if (modalVisible === true) {
+				modalVisible = false;
+				exitModal($("#enketo-modal"));
+				return;
+			}
+		});
+		$("#enketo-modal").append(closeButton);
+    	$("#enketo-modal").append(aFrame);
+		$("#enketo-modal").modal();
+	}
+
 	$(document).ready(function() {
 	    setMapHeight();
 	    $('#progress-modal').modal({
@@ -43,9 +80,10 @@
 
 	    // add a submission button
 	    $('.add-submission').click(function () {
-        	console.log("Creating Submission at: " + enketoAddUrl);
-			$("#enketoModal").modal({remote: enketoAddUrl});
-		});
+	    	var url = "https://formhub.org/reg/forms/my_super_tutorial/enter-data";
+	    	// var url = enketoAddUrl;
+			displayEnketoModal(url);
+    	});
 	});
 
 	$(window).resize(setMapHeight);
@@ -72,8 +110,8 @@
           <div class="bar" style="width: 1%"></div>
       </div>
   </div>
-
   <div id="map_canvas"></div>
-  <div id="enketoModal"></div>
+  <div id="enketo-modal" class="modal hide fade">
+  </div>
 </body>
 {% endblock %}
