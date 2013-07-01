@@ -125,3 +125,7 @@ body { height: 100%; margin: 0; padding: 0 }
     width: 34px;
     height: 34px;
 }
+
+.navbar button.add-submission {
+	margin-top: 7px;
+}

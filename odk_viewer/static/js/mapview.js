@@ -138,7 +138,7 @@ function initialize() {
 
     // add bing maps layer
     /** $.each(bingMapTypeLabels, function(type, label) {
-        var bingLayer = new L.TileLayer.Bing(bingAPIKey, type); 
+        var bingLayer = new L.TileLayer.Bing(bingAPIKey, type);
         layersControl.addBaseLayer(bingLayer, label);
     });*/
 
@@ -393,6 +393,14 @@ function _buildMarkerLayer(geoJSON)
                         else
                             content = "An unexpected error occurred";
                         popup.setContent(content);
+
+                        // click on the Edit button
+                        $('button.edit-submission').click(function () {
+                            var data_id = $(this).data('id');
+                            var url = enketoEditUrl + data_id;
+                            console.log("Editing Submission at: " + url);
+                            $("#enketoModal").modal({remote: url});
+                        });
                     });
             });
             return marker;
@@ -566,7 +574,7 @@ function toggleHexOverLay()
 function JSONSurveyToHTML(data)
 {
     var idx, dummyContainer, questionName, span;
-    var htmlContent = '<table class="table table-bordered table-striped"> <thead>\n<tr>\n<th>' + JSONSurveyToHTML__q_str + '</th>\n<th>' + JSONSurveyToHTML__r_str + '</th>\n</tr>\n</thead>\n<tbody>\n';
+    var htmlContent = '<p><button class="edit-submission btn btn-danger" data-id="' + data._id + '">Edit Data</button></p><table class="table table-bordered table-striped"> <thead>\n<tr>\n<th>' + JSONSurveyToHTML__q_str + '</th>\n<th>' + JSONSurveyToHTML__r_str + '</th>\n</tr>\n</thead>\n<tbody>\n';
 
     // add images if any
     // TODO: this assumes all attachments are images
@@ -617,16 +625,16 @@ function JSONSurveyToHTML(data)
                     var thisID = questionName.replace(/\//g,'-') + "-" + idx;
                     var collapseButton = $('<a>Child ' + (idx+1) + '</a>') // 1-indexed
                                          .addClass('btn')
-                                         .attr('id', 'collapse-' + thisID) 
+                                         .attr('id', 'collapse-' + thisID)
                                          .appendTo(td);
                     var collapseDiv = $('<div></div>')
-                                          .attr('id', thisID) 
+                                          .attr('id', thisID)
                                           .hide()
                                           .appendTo(td);
                     var table = $(JSONSurveyToHTML(repeatEl)).appendTo(collapseDiv);
                     $('.leaflet-popup-content')
-                        .on('click', 
-                            '#collapse-' + thisID, 
+                        .on('click',
+                            '#collapse-' + thisID,
                             function() {$('#' + thisID).toggle();}
                         );
                 });
@@ -881,7 +889,7 @@ var colors = (function() {
         return colorsArr[Math.floor(zero_to_one_inclusive * (colorsArr.length - epsilon))];
     }
 
-    // METHODS FOR EXPORT 
+    // METHODS FOR EXPORT
     colors.getNumProportional = function(colorscheme) {
         colorscheme = colorscheme || defaultColorScheme;
         return colorschemes.proportional[colorscheme].length;

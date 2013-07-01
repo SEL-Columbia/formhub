@@ -121,6 +121,13 @@ def map_view(request, username, id_string):
     context.jsonform_url = reverse(download_jsonform,
                                    kwargs={"username": username,
                                            "id_string": id_string})
+    context.enketo_edit_url = reverse('edit_data',
+                                   kwargs={"username": username,
+                                           "id_string": id_string,
+                                           "data_id": 0})
+    context.enketo_add_url = reverse('enter_data',
+                                   kwargs={"username": username,
+                                           "id_string": id_string})
     context.mongo_api_url = reverse('mongo_view_api',
                                     kwargs={"username": username,
                                             "id_string": id_string})

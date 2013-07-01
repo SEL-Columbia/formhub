@@ -20,6 +20,9 @@
 <script type="text/javascript">
 	var center = {{ center|safe }};
 	var formJSONUrl = "{{ jsonform_url }}";
+	var enketoAddUrl = "{{ enketo_add_url }}";
+	var enketoEditUrl = "{{ enketo_edit_url }}";
+	enketoEditUrl = enketoEditUrl.slice(0, enketoEditUrl.length -1);
 	var mongoAPIUrl = "{{ mongo_api_url }}";
   var language_code = "{{LANGUAGE_CODE}}";
 	var attachmentsBaseUrl = "{% url odk_viewer.views.attachment_url %}";
@@ -37,7 +40,14 @@
 	    $('#progress-modal').modal({
 	        keyboard: false
 	    });
+
+	    // add a submission button
+	    $('.add-submission').click(function () {
+        	console.log("Creating Submission at: " + enketoAddUrl);
+			$("#enketoModal").modal({remote: enketoAddUrl});
+		});
 	});
+
 	$(window).resize(setMapHeight);
 </script>
 <script src="/static/js/mapview.js?ts=201305301330" type="text/javascript"></script>
@@ -62,7 +72,8 @@
           <div class="bar" style="width: 1%"></div>
       </div>
   </div>
-  
+
   <div id="map_canvas"></div>
+  <div id="enketoModal"></div>
 </body>
 {% endblock %}
