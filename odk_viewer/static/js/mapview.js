@@ -11,15 +11,15 @@ var mapId = 'map_canvas';
 var map;
 var layersControl;
 var languageBasedLayers = {
-  fr: {label: "Mapbox Streets (Français)", url: 'http://a.tiles.mapbox.com/v3/modilabs.map-vdpjhtgz.jsonp'},
-  es: {label: "Mapbox Streets (Español)", url: 'http://a.tiles.mapbox.com/v3/modilabs.map-5gjzjlah.jsonp'}
+  fr: {label: "Mapbox Streets (Français)", url: 'http://a.tiles.mapbox.com/v3/modilabs.map-vdpjhtgz.json'},
+  es: {label: "Mapbox Streets (Español)", url: 'http://a.tiles.mapbox.com/v3/modilabs.map-5gjzjlah.json'}
 };
 // array of mapbox maps to use as base layers - the first one will be the default map unless a langauge is specified, in which case that languages, map will be the default
 var mapboxMaps = [
-    {label: gettext('Mapbox Streets'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-iuetkf9u.jsonp'},
-    {label: gettext('MapBox Streets Light'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-p543gvbh.jsonp'},
-    {label: gettext('MapBox Streets Zenburn'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-bjhr55gf.jsonp'},
-    {label: gettext('Cloudless Earth'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-aef58tqo.jsonp'}
+    {label: gettext('Mapbox Streets'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-iuetkf9u.json'},
+    {label: gettext('MapBox Streets Light'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-p543gvbh.json'},
+    {label: gettext('MapBox Streets Zenburn'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-bjhr55gf.json'},
+    {label: gettext('Cloudless Earth'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-aef58tqo.json'}
 ];
 var sslUrlPerfix = 'https://dnv9my2eseobd.cloudfront.net/'; // add trailing slash since its expected function that uses this
 var allowResetZoomLevel = true; // used to allow zooming when first loaded
