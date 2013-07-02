@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_save
 
 from main.models import UserProfile
+from odk_logger.models import XForm
 
 
 class OrganizationProfile(UserProfile):
@@ -99,3 +100,13 @@ class Team(Group):
         if not self.name.startswith('#'.join([self.organization.username])):
             self.name = u'%s#%s' % (self.organization.username, self.name)
         super(Team, self).save(*args, **kwargs)
+
+
+class ProjectXForm(models.Model):
+    xform = models.ForeignKey(XForm)
+    project = models.ForeignKey(Project)
+    created_by = models.ForeignKey(User)
+
+    class Meta:
+        app_label = 'api'
+        unique_together = ('xform', 'project')
