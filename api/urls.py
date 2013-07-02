@@ -7,6 +7,16 @@ class MultiLookupRouter(routers.DefaultRouter):
     def __init__(self, *args, **kwargs):
         super(MultiLookupRouter, self).__init__(*args, **kwargs)
         self.routes = []
+        # List route.
+        self.routes.append(routers.Route(
+            url=r'^{prefix}$',
+            mapping={
+                'get': 'list',
+                'post': 'create'
+            },
+            name='{basename}-list',
+            initkwargs={'suffix': 'List'}
+        ))
         # Detail route.
         self.routes.append(routers.Route(
             url=r'^{prefix}/{lookup}$',
@@ -18,16 +28,6 @@ class MultiLookupRouter(routers.DefaultRouter):
             },
             name='{basename}-detail',
             initkwargs={'suffix': 'Instance'}
-        ))
-        # List route.
-        self.routes.append(routers.Route(
-            url=r'^{prefix}$',
-            mapping={
-                'get': 'list',
-                'post': 'create'
-            },
-            name='{basename}-list',
-            initkwargs={'suffix': 'List'}
         ))
         self.lookups_routes = []
         self.lookups_routes.append(routers.Route(
@@ -65,7 +65,8 @@ class MultiLookupRouter(routers.DefaultRouter):
         ret = []
         lookup_fields = getattr(viewset, 'lookup_fields', None)
         if lookup_fields:
-            ret = self.lookups_routes
+            ret.append(self.routes[0])
+            ret.extend(self.lookups_routes)
         else:
             ret = super(MultiLookupRouter, self).get_routes(viewset)
         return ret
@@ -73,6 +74,10 @@ class MultiLookupRouter(routers.DefaultRouter):
     def get_urls(self):
         ret = []
 
+        if self.include_root_view:
+            root_url = url(r'^$', self.get_api_root_view(),
+                           name=self.root_view_name)
+            ret.append(root_url)
         for prefix, viewset, basename in self.registry:
             lookup = self.get_lookup_regex(viewset)
             lookups = self.get_lookup_regexes(viewset)
