@@ -23,15 +23,6 @@ def create_organization(name, creator):
     organization = User.objects.create(username=name)
     organization_profile = OrganizationProfile.objects.create(
         user=organization, creator=creator)
-    team = Team.objects.create(
-        name=Team.OWNER_TEAM_NAME, organization=organization)
-    content_type = ContentType.objects.get(
-        app_label='api', model='organizationprofile')
-    permission, created = Permission.objects.get_or_create(
-        codename="is_org_owner", name="Organization Owner",
-        content_type=content_type)
-    team.permissions.add(permission)
-    creator.groups.add(team)
     return organization_profile
 
 

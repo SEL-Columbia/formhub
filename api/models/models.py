@@ -1,5 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
+from django.contrib.contenttypes.models import ContentType
+from django.db.models.signals import post_save
 
 from main.models import UserProfile
 
@@ -42,6 +44,21 @@ class OrganizationProfile(UserProfile):
         has_owner_group = user.groups.filter(
             name='%s#%s' % (self.user.username, Team.OWNER_TEAM_NAME))
         return True if has_owner_group else False
+
+
+def create_owner_team_and_permissions(sender, instance, created, **kwargs):
+        if created:
+            team = Team.objects.create(
+                name=Team.OWNER_TEAM_NAME, organization=instance.user)
+            content_type = ContentType.objects.get(
+                app_label='api', model='organizationprofile')
+            permission, created = Permission.objects.get_or_create(
+                codename="is_org_owner", name="Organization Owner",
+                content_type=content_type)
+            team.permissions.add(permission)
+            instance.creator.groups.add(team)
+post_save.connect(
+    create_owner_team_and_permissions, sender=OrganizationProfile)
 
 
 class Project(models.Model):
