@@ -79,5 +79,6 @@ class Team(Group):
     def save(self, *args, **kwargs):
         # allow use of same name in different organizations/users
         # concat with #
-        self.name = u'%s#%s' % (self.organization.username, self.name)
+        if not self.name.startswith('#'.join([self.organization.username])):
+            self.name = u'%s#%s' % (self.organization.username, self.name)
         super(Team, self).save(*args, **kwargs)
