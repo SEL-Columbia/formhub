@@ -13,6 +13,8 @@ from odk_logger.models import XForm
 from api.models import Project, OrganizationProfile
 from api.fields import HyperlinkedMultiIdentityField
 
+from api import utils
+
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -61,6 +63,8 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
         password = attrs.get('user.password', None)
         name = attrs.get('name', None)
         email = attrs.get('user.email', None)
+        if username:
+            params['username'] = username
         if email:
             params['email'] = email
         if password:
@@ -98,6 +102,8 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
                 home_page=attrs.get('home_page', u''),
                 twitter=attrs.get('twitter', u''))
             return profile
+        else:
+            self.errors.update(form.errors)
         return attrs
 
 
@@ -131,6 +137,28 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
         exclude = ('organization',)
 
 
-class OrganizationSerializer(UserProfileSerializer):
+class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
+    org = serializers.WritableField(source='user.username')
+    user = serializers.HyperlinkedRelatedField(
+        view_name='user-detail', lookup_field='username', read_only=True)
+    creator = serializers.HyperlinkedRelatedField(
+        view_name='user-detail', lookup_field='username', read_only=True)
+
     class Meta:
         model = OrganizationProfile
+        lookup_field = 'user'
+
+    def restore_object(self, attrs, instance=None):
+        if instance:
+            return super(OrganizationSerializer, self)\
+                .restore_object(attrs, instance)
+        org = attrs.get('user.username', None)
+        creator = None
+        if 'request' in self.context:
+            creator = self.context['request'].user
+        if org and creator:
+            orgprofile = utils.create_organization_object(org, creator, attrs)
+            return orgprofile
+        else:
+            self.errors['org'] = u'org is required!'
+        return attrs
