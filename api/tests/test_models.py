@@ -1,6 +1,7 @@
+from django.db import IntegrityError
 from django.contrib.auth.models import Permission
 from main.tests.test_base import MainTestCase
-from api.models import Team, OrganizationProfile, Project
+from api.models import Team, OrganizationProfile, Project, ProjectXForm
 from api import utils
 
 
@@ -77,3 +78,17 @@ class TestModels(MainTestCase):
         result = utils.add_team_to_project(team, project)
         self.assertTrue(result)
         self.assertIn(project, team.projects.all())
+
+    def test_add_form_to_project(self):
+        organization = self._create_organization("modilabs", self.user)
+        project_name = "demo"
+        project = self._create_project(organization, project_name, self.user)
+        self._publish_transportation_form()
+        count = ProjectXForm.objects.count()
+        project_xform = utils.add_xform_to_project(
+            self.xform, project, self.user)
+        self.assertEqual(ProjectXForm.objects.count(), count + 1)
+        self.assertIsInstance(project_xform, ProjectXForm)
+        with self.assertRaises(IntegrityError):
+            utils.add_xform_to_project(
+                self.xform, project, self.user)
