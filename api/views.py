@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 
 from rest_framework import viewsets
+from rest_framework.response import Response
+
 from api import serializers as api_serializers
 from api import mixins
 
@@ -39,3 +41,12 @@ class ProjectViewSet(mixins.MultiLookupMixin, viewsets.ModelViewSet):
     serializer_class = api_serializers.ProjectSerializer
     lookup_fields = ('owner', 'pk')
     lookup_field = 'owner'
+
+    def list(self, request, **kwargs):
+        filter = {}
+        if 'owner' in kwargs:
+            filter['organization__username'] = kwargs['owner']
+        qs = self.filter_queryset(self.get_queryset())
+        self.object_list = qs.filter(**filter)
+        serializer = self.get_serializer(self.object_list, many=True)
+        return Response(serializer.data)
