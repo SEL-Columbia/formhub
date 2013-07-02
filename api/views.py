@@ -25,7 +25,7 @@ class UserProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
 
 class OrgProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
     queryset = OrganizationProfile.objects.all()
-    serializer_class = api_serializers.UserProfileSerializer
+    serializer_class = api_serializers.OrganizationSerializer
     lookup_field = 'user'
 
 
