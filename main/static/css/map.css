@@ -126,6 +126,16 @@ body { height: 100%; margin: 0; padding: 0 }
     height: 34px;
 }
 
-.navbar button.add-submission {
+.navbar button.refresh-map {
 	margin-top: 7px;
+}
+
+body .enketo-modal {
+	min-width: 500px;
+	min-height: 60%;
+}
+
+body .leaflet-draw-edit-edit,
+body .leaflet-draw-edit-remove {
+	display: none;
 }

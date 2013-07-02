@@ -13,7 +13,7 @@ var layersControl;
 var languageBasedLayers = {
   fr: {label: "Mapbox Streets (Français)", url: 'http://a.tiles.mapbox.com/v3/modilabs.map-vdpjhtgz.jsonp'},
   es: {label: "Mapbox Streets (Español)", url: 'http://a.tiles.mapbox.com/v3/modilabs.map-5gjzjlah.jsonp'}
-}
+};
 // array of mapbox maps to use as base layers - the first one will be the default map unless a langauge is specified, in which case that languages, map will be the default
 var mapboxMaps = [
     {label: gettext('Mapbox Streets'), url: 'http://a.tiles.mapbox.com/v3/modilabs.map-iuetkf9u.jsonp'},
@@ -132,15 +132,50 @@ function initialize() {
     map.addControl(layerButtonControl(markerButton, hexButton));
     layersControl = new L.Control.Layers();
     map.addControl(layersControl);
+
     //show marker layer by default
     map.addLayer(markerLayerGroup);
     $('div.layer-markerButton').addClass('layer-markerButton-active');
 
-    // add bing maps layer
-    /** $.each(bingMapTypeLabels, function(type, label) {
-        var bingLayer = new L.TileLayer.Bing(bingAPIKey, type);
-        layersControl.addBaseLayer(bingLayer, label);
-    });*/
+    var drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+    var drawControl = new L.Control.Draw({
+        draw: {
+            polyline: false,
+            polygon: false,
+            rectangle: false,
+            circle: false,
+            marker: {
+                title: "Add a submission on a specific location"
+            }
+        },
+        edit: {
+            featureGroup: drawnItems,
+            remove: false,
+            edit: false
+        }
+    });
+    map.addControl(drawControl);
+
+    map.on('draw:created', function (e) {
+        var type = e.layerType,
+            layer = e.layer;
+
+        if (type === 'marker') {
+            // fire the modal
+            var url = getAddUrl(e.layer._latlng);
+            displayEnketoModal(url, true);
+        }
+
+        // keep the icon on the map.
+        map.addLayer(layer);
+    });
+
+    // // add bing maps layer
+    // * $.each(bingMapTypeLabels, function(type, label) {
+    //     var bingLayer = new L.TileLayer.Bing(bingAPIKey, type);
+    //     layersControl.addBaseLayer(bingLayer, label);
+    // });
 
     // add google sat layer
     var ggl = new L.Google('HYBRID');
@@ -161,7 +196,10 @@ function initialize() {
                 /// replace our tile url with this
                 tilejson.tiles = [sslUrlPerfix + mapName];
             }
-            tileLayer = new wax.leaf.connector(tilejson);
+            // Changed this to mapbox.tileLayer since it doesn't
+            // seem to work on Leaflet 0.6.2.
+            // tileLayer = new wax.leaf.connector(tilejson);
+            tileLayer = L.mapbox.tileLayer(mapData.url);
 
             layersControl.addBaseLayer(tileLayer, mapData.label);
             if(addToMap) {
@@ -383,25 +421,26 @@ function _buildMarkerLayer(geoJSON)
             var marker = L.circleMarker(latlng, circleStyle);
             latLngArray.push(latlng);
             marker.on('click', function(e) {
-                var popup = L.popup({offset: popupOffset})
-                    .setContent("Loading...").setLatLng(latlng).openOn(map);
-                $.getJSON(mongoAPIUrl, {'query': '{"_id":' + feature.id + '}'})
-                    .done(function(data){
-                        var content;
-                        if(data.length > 0)
-                            content = JSONSurveyToHTML(data[0]);
-                        else
-                            content = "An unexpected error occurred";
-                        popup.setContent(content);
 
-                        // click on the Edit button
-                        $('button.edit-submission').click(function () {
-                            console.log("Editing Submission");
-                            var data_id = $(this).data('id');
-                            var url = enketoEditUrl + data_id;
-                            displayEnketoModal(url);
-                        });
-                    });
+                displayEnketoModal(getEditUrl(feature.id), false);
+                // var popup = L.popup({offset: popupOffset})
+                //     .setContent("Loading...").setLatLng(latlng).openOn(map);
+                // $.getJSON(mongoAPIUrl, {'query': '{"_id":' + feature.id + '}'})
+                //     .done(function(data){
+                //         var content;
+                //         if(data.length > 0)
+                //             content = JSONSurveyToHTML(data[0]);
+                //         else
+                //             content = "An unexpected error occurred";
+                //         popup.setContent(content);
+
+                //         // click on the Edit button
+                //         $('button.edit-submission').click(function () {
+                //             var data_id = $(this).data('id');
+                //             var url = enketoEditUrl + data_id;
+                //             displayEnketoModal(url);
+                //         });
+                //     });
             });
             return marker;
         }
