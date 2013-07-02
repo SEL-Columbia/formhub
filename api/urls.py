@@ -103,6 +103,7 @@ class MultiLookupRouter(routers.DefaultRouter):
 
 router = MultiLookupRouter()
 router.register(r'users', api_views.UserProfileViewSet)
+router.register(r'orgs', api_views.OrgProfileViewSet)
 router.register(r'u', api_views.UserViewSet)
 router.register(r'forms', api_views.XFormViewSet)
 router.register(r'projects', api_views.ProjectViewSet)

@@ -8,7 +8,7 @@ from main.models import UserProfile
 
 from odk_logger.models import XForm
 
-from api.models import Project
+from api.models import Project, OrganizationProfile
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -19,6 +19,12 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class UserProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
+    serializer_class = api_serializers.UserProfileSerializer
+    lookup_field = 'user'
+
+
+class OrgProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
+    queryset = OrganizationProfile.objects.all()
     serializer_class = api_serializers.UserProfileSerializer
     lookup_field = 'user'
 

@@ -10,7 +10,7 @@ from main.forms import UserProfileForm, RegistrationFormUserProfile
 
 from odk_logger.models import XForm
 
-from api.models import Project
+from api.models import Project, OrganizationProfile
 from api.fields import HyperlinkedMultiIdentityField
 
 
@@ -129,3 +129,8 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Project
         exclude = ('organization',)
+
+
+class OrganizationSerializer(UserProfileSerializer):
+    class Meta:
+        model = OrganizationProfile
