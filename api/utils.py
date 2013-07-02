@@ -4,6 +4,15 @@ from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
 
 
+def _get_first_last_names(name):
+    name_split = name.split()
+    first_name = name_split[0]
+    last_name = u''
+    if len(name_split) > 1:
+        last_name = u' '.join(name_split[1:])
+    return first_name, last_name
+
+
 def create_organization(name, creator):
     """
     Organization created by a user
@@ -24,6 +33,23 @@ def create_organization(name, creator):
     team.permissions.add(permission)
     creator.groups.add(team)
     return organization_profile
+
+
+def create_organization_object(org_name, creator, attrs={}):
+    '''Creates an OrganizationProfile object without saving to the database'''
+    name = attrs.get('name', org_name)
+    first_name, last_name = _get_first_last_names(name)
+    new_user = User(username=org_name, first_name=first_name,
+                    last_name=last_name, email=attrs.get('email', u''))
+    new_user.save()
+    profile = OrganizationProfile(
+        user=new_user, name=name, creator=creator,
+        city=attrs.get('city', u''),
+        country=attrs.get('country', u''),
+        organization=attrs.get('organization', u''),
+        home_page=attrs.get('home_page', u''),
+        twitter=attrs.get('twitter', u''))
+    return profile
 
 
 def create_organization_team(organization, name, permission_names=[]):
