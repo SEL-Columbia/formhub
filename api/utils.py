@@ -1,4 +1,4 @@
-from api.models import OrganizationProfile, Team, Project
+from api.models import OrganizationProfile, Team, Project, ProjectXForm
 
 from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
@@ -91,3 +91,11 @@ def add_team_to_project(team, project):
             team.projects.add(project)
         return True
     return False
+
+
+def add_xform_to_project(xform, project, creator):
+    """Adds an xform to a project"""
+    instance = ProjectXForm.objects.create(
+        xform=xform, project=project, created_by=creator)
+    instance.save()
+    return instance
