@@ -153,12 +153,20 @@ class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
             return super(OrganizationSerializer, self)\
                 .restore_object(attrs, instance)
         org = attrs.get('user.username', None)
+        org_exists = False
+        try:
+            User.objects.get(username=org)
+        except User.DoesNotExist:
+            pass
+        else:
+            self.errors['org'] = u'Organization %s already exists.' % org
+            org_exists = True
         creator = None
         if 'request' in self.context:
             creator = self.context['request'].user
-        if org and creator:
+        if org and creator and not org_exists:
             orgprofile = utils.create_organization_object(org, creator, attrs)
             return orgprofile
-        else:
+        if not org:
             self.errors['org'] = u'org is required!'
         return attrs
