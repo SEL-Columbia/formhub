@@ -235,6 +235,28 @@ def check_form_sms_compatibility(form, json_survey=None):
         return prep_return(_(u"All your groups must have an 'sms_field' "
                              u"(use 'meta' prefixed ones for non-fillable "
                              u"groups). %s" % bad_groups[-1]))
+    # all select_one or select_multiple fields muts have sms_option for each.
+    for group in groups:
+        fields = group.get('children', [{}])
+        for field in fields:
+            xlsf_type = field.get('type')
+            xlsf_name = field.get('name')
+            xlsf_choices = field.get('children')
+            if xlsf_type in ('select one', 'select all that apply'):
+                nb_choices = len(xlsf_choices)
+                options = list(set([c.get('sms_option', '') or None for c in xlsf_choices]))
+                try:
+                    options.remove(None)
+                except ValueError:
+                    pass
+                nb_options = len(options)
+                if nb_choices != nb_options:
+                    return prep_return(
+                        _(u"Not all options in the choices list for "
+                          u"<strong>%s</strong> have an "
+                          u"<em>sms_option</em> value.") % xlsf_name
+                    )
+
     # has sensitive (space containing) fields in non-last position
     for group in groups:
         fields = group.get('children', [{}])
