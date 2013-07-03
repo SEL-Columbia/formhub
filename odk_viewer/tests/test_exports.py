@@ -793,14 +793,14 @@ class TestExports(MainTestCase):
         data =\
             {
                 'name': 'Abe',
-                'age': 35,
+                'age': '35',
                 '_geolocation': [None, None],
                 'attachments': ['abcd.jpg', 'efgh.jpg'],
                 'children':
                 [
                     {
                         'children/name': 'Mike',
-                        'children/age': 5,
+                        'children/age': '5',
                         'children/cartoons':
                         [
                             {
@@ -815,12 +815,12 @@ class TestExports(MainTestCase):
                     },
                     {
                         'children/name': 'John',
-                        'children/age': 2,
+                        'children/age': '2',
                         'children/cartoons':[]
                     },
                     {
                         'children/name': 'Imora',
-                        'children/age': 3,
+                        'children/age': '3',
                         'children/cartoons':
                         [
                             {
@@ -850,27 +850,27 @@ class TestExports(MainTestCase):
             {
                 'survey': {
                   'name': 'Abe',
-                  'age': 35
+                  'age': '35'
                 },
                 'children':
                 [
                     {
                         'children/name': 'Mike',
-                        'children/age': 5,
+                        'children/age': '5',
                         '_index': 1,
                         '_parent_table_name': 'survey',
                         '_parent_index': 1
                     },
                     {
                         'children/name': 'John',
-                        'children/age': 2,
+                        'children/age': '2',
                         '_index': 2,
                         '_parent_table_name': 'survey',
                         '_parent_index': 1
                     },
                     {
                         'children/name': 'Imora',
-                        'children/age': 3,
+                        'children/age': '3',
                         '_index': 3,
                         '_parent_table_name': 'survey',
                         '_parent_index': 1
@@ -1582,7 +1582,7 @@ class TestExportBuilder(MainTestCase):
                 'childrens_survey_with_a_very_long_name.xls'))
         export_builder = ExportBuilder()
         export_builder.set_survey(survey)
-        xls_file = NamedTemporaryFile(suffix='.xls')
+        xls_file = NamedTemporaryFile(suffix='.xlsx')
         filename = xls_file.name
         export_builder.to_xls_export(filename, self.long_survey_data)
         xls_file.seek(0)
@@ -1602,3 +1602,69 @@ class TestExportBuilder(MainTestCase):
         expected_parent_table_name = 'childrens_survey_with_a_very_l1'
         self.assertEqual(parent_table_name, expected_parent_table_name)
         xls_file.close()
+
+    def test_type_conversion(self):
+        submission_1 = {
+            "_id": 579827,
+            "geolocation": "-1.2625482 36.7924794 0.0 21.0",
+            "_bamboo_dataset_id": "",
+            "meta/instanceID": "uuid:2a8129f5-3091-44e1-a579-bed2b07a12cf",
+            "name": "Smith",
+            "formhub/uuid": "633ec390e024411ba5ce634db7807e62",
+            "_submission_time": "2013-07-03T08:25:30",
+            "age": "107",
+            "_uuid": "2a8129f5-3091-44e1-a579-bed2b07a12cf",
+            "when": "2013-07-03",
+            "_deleted_at": None,
+            "amount": "250.0",
+            "_geolocation": [
+                "-1.2625482",
+                "36.7924794"
+            ],
+            "_xform_id_string": "test_data_types",
+            "_userform_id": "larryweya_test_data_types",
+            "_status": "submitted_via_web",
+            "precisely": "2013-07-03T15:24:00.000+03",
+            "really": "15:24:00.000+03"
+        }
+
+        submission_2 = {
+            "_id": 579828,
+            "_submission_time": "2013-07-03T08:26:10",
+            "_uuid": "5b4752eb-e13c-483e-87cb-e67ca6bb61e5",
+            "_bamboo_dataset_id": "",
+            "_deleted_at": None,
+            "_xform_id_string": "test_data_types",
+            "_userform_id": "larryweya_test_data_types",
+            "_status": "submitted_via_web",
+            "meta/instanceID": "uuid:5b4752eb-e13c-483e-87cb-e67ca6bb61e5",
+            "formhub/uuid": "633ec390e024411ba5ce634db7807e62",
+            "amount": "",
+        }
+
+        survey = create_survey_from_xls(
+            os.path.join(
+                os.path.abspath('./'), 'odk_viewer', 'tests', 'fixtures',
+                'test_data_types/test_data_types.xls'))
+        export_builder = ExportBuilder()
+        export_builder.set_survey(survey)
+        # format submission 1 for export
+        survey_name = survey.name
+        indices = {survey_name: 0}
+        data = dict_to_joined_export(submission_1, 1, indices, survey_name)
+        new_row = export_builder.pre_process_row(data[survey_name],
+                                                 export_builder.sections[0])
+        self.assertIsInstance(new_row['age'], int)
+        self.assertIsInstance(new_row['when'], datetime.date)
+        self.assertIsInstance(new_row['precisely'], datetime.datetime)
+        self.assertIsInstance(new_row['amount'], float)
+        self.assertIsInstance(new_row['_submission_time'], datetime.datetime)
+        #self.assertIsInstance(new_row['really'], datetime.time)
+
+        # check missing values dont break and empty values return blank strings
+        indices = {survey_name: 0}
+        data = dict_to_joined_export(submission_2, 1, indices, survey_name)
+        new_row = export_builder.pre_process_row(data[survey_name],
+                                                 export_builder.sections[0])
+        self.assertIsInstance(new_row['amount'], basestring)
+        self.assertEqual(new_row['amount'], '')
