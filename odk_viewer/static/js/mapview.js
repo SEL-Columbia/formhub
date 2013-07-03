@@ -3,6 +3,11 @@ var _rebuildHexLegend__p_str = gettext('Proportion of surveys with response(s): 
 var getBootstrapFields__str = gettext("ERROR: constants not found; please include main/static/js/formManagers.js");
 var JSONSurveyToHTML__q_str = gettext("Question");
 var JSONSurveyToHTML__r_str = gettext("Response");
+var hideZeroedValues_str = gettext("Hide empty (0) Values");
+var displayZeroedValues_str = gettext("Display empty (0) Values");
+
+// Global toggle on whether to display question values which have 0 submissions
+var displayZeroedValues = false;
 
 
 var centerLatLng = new L.LatLng(!center.lat?0.0:center.lat, !center.lng?0.0:center.lng);
@@ -138,7 +143,7 @@ function initialize() {
 
     // add bing maps layer
     /** $.each(bingMapTypeLabels, function(type, label) {
-        var bingLayer = new L.TileLayer.Bing(bingAPIKey, type); 
+        var bingLayer = new L.TileLayer.Bing(bingAPIKey, type);
         layersControl.addBaseLayer(bingLayer, label);
     });*/
 
@@ -617,16 +622,16 @@ function JSONSurveyToHTML(data)
                     var thisID = questionName.replace(/\//g,'-') + "-" + idx;
                     var collapseButton = $('<a>Child ' + (idx+1) + '</a>') // 1-indexed
                                          .addClass('btn')
-                                         .attr('id', 'collapse-' + thisID) 
+                                         .attr('id', 'collapse-' + thisID)
                                          .appendTo(td);
                     var collapseDiv = $('<div></div>')
-                                          .attr('id', thisID) 
+                                          .attr('id', thisID)
                                           .hide()
                                           .appendTo(td);
                     var table = $(JSONSurveyToHTML(repeatEl)).appendTo(collapseDiv);
                     $('.leaflet-popup-content')
-                        .on('click', 
-                            '#collapse-' + thisID, 
+                        .on('click',
+                            '#collapse-' + thisID,
                             function() {$('#' + thisID).toggle();}
                         );
                 });
@@ -723,6 +728,10 @@ function rebuildLegend(questionName, questionColorMap)
         var responseLi = $('<li></li>');
         var numResponses = question.responseCounts[response];
 
+        if (numResponses == 0 && !displayZeroedValues) {
+            continue;
+        }
+
         // create the anchor
         var legendAnchor = $('<a></a>').addClass('legend-label').attr('href', 'javascript:;').attr('rel',response);
         if(formResponseMngr._select_one_filters.indexOf(response) > -1)
@@ -755,6 +764,19 @@ function rebuildLegend(questionName, questionColorMap)
         responseLi.append(legendAnchor);
         legendUl.append(responseLi);
     }
+
+    var toggleZeroedValuesLi = $('<li />');
+    var toggleZeroedValuesA = $('<a />');
+    toggleZeroedValuesA.addClass('legend-label');
+    toggleZeroedValuesA.addClass(displayZeroedValues ? 'active' : 'inactive');
+    toggleZeroedValuesA.html(displayZeroedValues ? hideZeroedValues_str : displayZeroedValues_str);
+    toggleZeroedValuesLi.append(toggleZeroedValuesA);
+    legendUl.append(toggleZeroedValuesLi);
+    toggleZeroedValuesA.click(function () {
+        displayZeroedValues = !displayZeroedValues;
+        rebuildLegend(questionName, questionColorMap);
+    });
+
 
     // add as the first element always
     legendsContainer.prepend(legendElement);
@@ -881,7 +903,7 @@ var colors = (function() {
         return colorsArr[Math.floor(zero_to_one_inclusive * (colorsArr.length - epsilon))];
     }
 
-    // METHODS FOR EXPORT 
+    // METHODS FOR EXPORT
     colors.getNumProportional = function(colorscheme) {
         colorscheme = colorscheme || defaultColorScheme;
         return colorschemes.proportional[colorscheme].length;
