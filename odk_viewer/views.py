@@ -131,6 +131,9 @@ def map_view(request, username, id_string):
     context.mongo_api_url = reverse('mongo_view_api',
                                     kwargs={"username": username,
                                             "id_string": id_string})
+    context.delete_data_url = reverse('delete_data',
+                                      kwargs={"username": username,
+                                              "id_string": id_string})
     context.mapbox_layer = MetaData.mapbox_layer_upload(xform)
     audit = {
         "xform": xform.id_string

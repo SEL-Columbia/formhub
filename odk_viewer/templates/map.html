@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block additional-headers %}
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
@@ -28,9 +29,11 @@
 	var enketoEditUrl = "{{ enketo_edit_url }}";
 	enketoEditUrl = enketoEditUrl.slice(0, enketoEditUrl.length -1);
 	var mongoAPIUrl = "{{ mongo_api_url }}";
+	var deleteAPIUrl = "{{ delete_data_url }}";
     var language_code = "{{LANGUAGE_CODE}}";
 	var attachmentsBaseUrl = "{% url odk_viewer.views.attachment_url %}";
 	var modalVisible = null;
+	var idToDelete = null;
 	$('#selectLanguage').live('change', function() {
 	    $('.language').hide();
 	    $('.' + $(this).val()).show();
@@ -79,6 +82,47 @@
 		highlightRefresh();
 	}
 
+	function displayDataModal(feature_id) {
+		var modalElem = $("#enketo-modal");
+		// hide modal if exist
+		exitModal(modalElem);
+
+		addModalCloseButton(modalElem);
+
+		// set temporary content
+		var tempContent = $("<h3>Loading...</h3>");
+		modalElem.append(tempContent);
+
+		// launch the modal
+		modalElem.modal();
+
+		// launch data async retrieval
+		$.getJSON(mongoAPIUrl, {'query': '{"_id":' + feature_id + '}'})
+        .done(function(data){
+            var content;
+            if(data.length > 0)
+                content = JSONSurveyToHTML(data[0]);
+            else
+                content = $("<p>An unexpected error occurred</p>");
+            // replace content in modal
+            modalElem.empty();
+            addModalCloseButton(modalElem);
+            modalElem.append(content);
+
+            // click on the Edit button
+            $('button.edit-submission').click(function () {
+                var data_id = $(this).data('id');
+                var url = enketoEditUrl + data_id;
+                displayEnketoModal(url);
+            });
+
+            $('button.del-submission').click(function () {
+                var data_id = $(this).data('id');
+                requestDataDeletion(data_id);
+            });
+        });
+	}
+
 	function getEditUrl(submission_id) {
 		return enketoEditUrl + submission_id;
 	}
@@ -101,6 +145,14 @@
 		modalVisible = null;
 	}
 
+	function addModalCloseButton(modalElem, addedPoint) {
+    	var closeButton = $("<button class='btn' style='position: absolute; top: 0;right: 0;'>Close</button>");
+    	closeButton.click(function () {
+    		exitModal($(this).parent(), addedPoint);
+    	});
+    	modalElem.append(closeButton);
+	}
+
 	function displayEnketoModal(url, addedPoint) {
 		// small screens (phones) go straight to the target URL.
 		if ($(document).width() < 700) {
@@ -112,13 +164,7 @@
     		exitModal($(this), addedPoint);
     	});
 
-    	var closeButton = $("<button class='btn' style='position: absolute; top: 0;right: 0;'>Close</button>");
-    	closeButton.click(function () {
-    		var modalElem = $(this).parent();
-    		exitModal(modalElem, addedPoint);
-    	});
-
-    	var aFrame = $('<iframe src="' + url + '" style="width:100%; min-height:300px;overflow-x: hidden; overflow-y: scroll" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"></iframe>');
+    	var aFrame = $('<iframe src="' + url + '" style="width:100%; min-height:300px;overflow-x: hidden; overflow-y: scroll height:100%;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"></iframe>');
     	// event fired when src attr changes
     	aFrame.load(function(){
     		// first time is the real load.
@@ -133,9 +179,27 @@
 				return;
 			}
 		});
-		$("#enketo-modal").append(closeButton);
+		addModalCloseButton($("#enketo-modal"), addedPoint);
     	$("#enketo-modal").append(aFrame);
 		$("#enketo-modal").modal();
+	}
+
+	function requestDataDeletion(feature_id) {
+		$('#enketo-modal').modal('hide');
+		idToDelete = feature_id;
+		$('#delete-modal').modal();
+	}
+
+	function deleteData(){
+    	$.post(deleteAPIUrl, {'id': idToDelete})
+            .success(function(data){
+            	highlightRefresh();
+            })
+            .error(function(){
+               alert("{% trans 'BAD REQUEST' %}");
+        	});
+        idToDelete = null;
+        $('#delete-modal').modal('hide');
 	}
 
 	$(document).ready(function() {
@@ -146,7 +210,7 @@
 
 	    // add a submission button
 	    $('.refresh-map').click(function () {
-	    	btn.removeClass('btn-warning');
+	    	$(this).removeClass('btn-warning');
 	    	refreshMap();
     	});
 	});
@@ -176,7 +240,19 @@
       </div>
   </div>
   <div id="map_canvas"></div>
-  <div id="enketo-modal" class="modal hide fade enketo-modal">
-  </div>
+  <div id="enketo-modal" class="modal hide enketo-modal"></div>
+	<div id="delete-modal" class="modal hide fade">
+	    <div class="modal-header">
+	      <a data-dismiss="modal" class="close">&times;</a>
+	      <h3>{% trans "Delete Confirmation" %}</h3>
+	    </div>
+	    <div class="modal-body">
+	      <p>{% trans "Are you sure you want to delete this record. If you are unsure about deleting this record press 'Cancel'." %}</p>
+	    </div>
+	    <div class="modal-footer">
+	      <a href="#" onclick="deleteData();" class="btn btn-primary">{% trans "Delete" %}</a>
+	      <a href="#" onclick="$('#delete-modal').modal('hide');" class="btn secondary">{% trans "Cancel" %}</a>
+	    </div>
+	</div>
 </body>
 {% endblock %}
