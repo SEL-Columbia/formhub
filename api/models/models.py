@@ -59,7 +59,8 @@ def create_owner_team_and_permissions(sender, instance, created, **kwargs):
             team.permissions.add(permission)
             instance.creator.groups.add(team)
 post_save.connect(
-    create_owner_team_and_permissions, sender=OrganizationProfile)
+    create_owner_team_and_permissions, sender=OrganizationProfile,
+    dispatch_uid='create_owner_team_and_permissions')
 
 
 class Project(models.Model):
