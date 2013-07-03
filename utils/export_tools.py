@@ -207,14 +207,10 @@ class ExportBuilder(object):
                                     field_delimiter),
                                 'xpath': c.get_abbreviated_xpath()}
                                 for c in child.children])
-                        select_multiples[current_section_name] =\
-                            {
-                                child.get_abbreviated_xpath():
-                                [
-                                    c.get_abbreviated_xpath() for
-                                    c in child.children
-                                ]
-                            }
+                        _append_xpaths_to_section(
+                            current_section_name, select_multiples,
+                            child.get_abbreviated_xpath(),
+                            [c.get_abbreviated_xpath() for c in child.children])
 
                     # split gps fields within this section
                     if child.bind.get(u"type") == GEOPOINT_BIND_TYPE:
@@ -230,10 +226,16 @@ class ExportBuilder(object):
                                 }
                                 for xpath in xpaths
                             ])
-                        gps_fields[current_section_name] =\
-                            {
-                                child.get_abbreviated_xpath(): xpaths
-                            }
+                        _append_xpaths_to_section(
+                            current_section_name,gps_fields,
+                            child.get_abbreviated_xpath(), xpaths)
+
+        def _append_xpaths_to_section(current_section_name, field_list, xpath,
+                                   xpaths):
+            if current_section_name not in field_list:
+                field_list[current_section_name] = {}
+            field_list[
+                current_section_name][xpath] = xpaths
 
         self.survey = survey
         self.select_multiples = {}
