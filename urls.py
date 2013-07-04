@@ -135,6 +135,7 @@ urlpatterns = patterns('',
         {'document_root': settings.MEDIA_ROOT}),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^favicon\.ico', 'django.views.generic.simple.redirect_to', {'url': '/static/images/favicon.ico'})
 )
 
