@@ -109,6 +109,9 @@
             {% if xform.is_crowd_form %}
                 <span class="label label-crowdform">{%  trans "CROWDFORM" %}</span>
             {% endif %}
+            {% if xform.encrypted %}
+                <span class="label label-important icon-lock label-encrypted">&nbsp;&nbsp;{%  trans "ENCRYPTED" %}</span>
+            {% endif %}
         </td>
         <td class="centered">{{ submission_count|intcomma }}</td>
         <td class="centered">
@@ -143,6 +146,9 @@
                 {% endif %}
                 {% if xform.shared_data %}
                     <span class="label label-info label-public">{%  trans "PUBLIC" %}</span>
+                {% endif %}
+                {% if xform.encrypted %}
+                    <span class="label label-important icon-lock label-encrypted">&nbsp;&nbsp;{%  trans "ENCRYPTED" %}</span>
                 {% endif %}
             {% endif %}
         </td>
@@ -239,6 +245,9 @@
                   {% if xform.is_crowd_form %}
                       <span class="label label-crowdform">{%  trans "CROWDFORM" %}</span>
                   {% endif %}
+                    {% if xform.encrypted %}
+                        <span class="label label-important icon-lock label-encrypted">&nbsp;&nbsp;{%  trans "ENCRYPTED" %}</span>
+                    {% endif %}
 
               </td>
               <td class="centered">{{ submission_count|intcomma }}</td>
