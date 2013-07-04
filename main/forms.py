@@ -10,7 +10,6 @@ from django.core.validators import URLValidator
 from django.forms import ModelForm
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.conf import settings
-from recaptcha.client import captcha
 
 from main.models import UserProfile, MetaData
 from odk_logger.models import XForm
@@ -168,6 +167,8 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail,
         # don't check captcha if it's disabled
         if not settings.REGISTRATION_REQUIRE_CAPTCHA:
             return cleaned_data
+
+        from recaptcha.client import captcha
 
         response = captcha.submit(
             cleaned_data.get('recaptcha_challenge_field'),
