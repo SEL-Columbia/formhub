@@ -300,6 +300,11 @@ else:
 if PRINT_EXCEPTION and DEBUG:
     MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
 
+# re-captcha in registrations
+REGISTRATION_REQUIRE_CAPTCHA = False
+RECAPTCHA_PRIVATE_KEY = ''
+RECAPTCHA_PUBLIC_KEY = '6Ld52OMSAAAAAJJ4W-0TFDTgbznnWWFf0XuOSaB6'
+
 try:
     from local_settings import *
 except ImportError:

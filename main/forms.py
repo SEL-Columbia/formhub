@@ -10,6 +10,7 @@ from django.core.validators import URLValidator
 from django.forms import ModelForm
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.conf import settings
+from recaptcha.client import captcha
 
 from main.models import UserProfile, MetaData
 from odk_logger.models import XForm
@@ -82,6 +83,10 @@ class UserProfileForm(ModelForm):
 
 
 class UserProfileFormRegister(forms.Form):
+
+    REGISTRATION_REQUIRE_CAPTCHA = settings.REGISTRATION_REQUIRE_CAPTCHA
+    RECAPTCHA_PUBLIC_KEY = settings.RECAPTCHA_PUBLIC_KEY
+
     name = forms.CharField(widget=forms.TextInput(), required=False,
                            max_length=255)
     city = forms.CharField(widget=forms.TextInput(), required=False,
@@ -94,6 +99,10 @@ class UserProfileFormRegister(forms.Form):
                                 max_length=255)
     twitter = forms.CharField(widget=forms.TextInput(), required=False,
                               max_length=255)
+
+    recaptcha_challenge_field = forms.CharField(required=False, max_length=512)
+    recaptcha_response_field = forms.CharField(max_length=100,
+                                               required=settings.REGISTRATION_REQUIRE_CAPTCHA)
 
     def save(self, new_user):
         new_profile = \
@@ -152,6 +161,24 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail,
     email = forms.EmailField(widget=forms.TextInput())
 
     legal_usernames_re = re.compile("^\w+$")
+
+    def clean(self):
+        cleaned_data = super(UserProfileFormRegister, self).clean()
+
+        # don't check captcha if it's disabled
+        if not settings.REGISTRATION_REQUIRE_CAPTCHA:
+            return cleaned_data
+
+        response = captcha.submit(
+            cleaned_data.get('recaptcha_challenge_field'),
+            cleaned_data.get('recaptcha_response_field'),
+            settings.RECAPTCHA_PRIVATE_KEY,
+            None)
+
+        if not response.is_valid:
+            raise forms.ValidationError(_(u"The Captcha is invalid. "
+                                          u"Please, try again."))
+        return cleaned_data
 
     def clean_username(self):
         username = self.cleaned_data['username'].lower()
