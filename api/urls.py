@@ -31,13 +31,23 @@ class MultiLookupRouter(routers.DefaultRouter):
         # Dynamically generated routes.
         # Generated using @action or @link decorators on methods of the viewset
         self.lookups_routes.append(routers.Route(
-            url=r'^{prefix}/{lookups}/{methodname}{trailing_slash}$',
+            url=[
+                r'^{prefix}/{lookups}/{methodname}{trailing_slash}$',
+                r'^{prefix}/{lookups}/{methodname}/{extra}{trailing_slash}$'],
             mapping={
                 '{httpmethod}': '{methodname}',
             },
             name='{basename}-{methodnamehyphen}',
             initkwargs={}
         ))
+
+    def get_extra_lookup_regexes(self, route):
+        ret = []
+        base_regex = '(?P<{lookup_field}>[^/]+)'
+        if 'extra_lookup_fields' in route.initkwargs:
+            for lookup_field in route.initkwargs['extra_lookup_fields']:
+                ret.append(base_regex.format(lookup_field=lookup_field))
+        return '/'.join(ret)
 
     def get_lookup_regexes(self, viewset):
         ret = []
@@ -65,10 +75,19 @@ class MultiLookupRouter(routers.DefaultRouter):
                 for httpmethods, methodname in dynamic_routes:
                     initkwargs = route.initkwargs.copy()
                     initkwargs.update(getattr(viewset, methodname).kwargs)
+                    mapping = dict(
+                        (httpmethod, methodname) for httpmethod in httpmethods)
+                    name = routers.replace_methodname(route.name, methodname)
+                    if 'extra_lookup_fields' in initkwargs:
+                        uri = route.url[1]
+                        uri = routers.replace_methodname(uri, methodname)
+                        ret.append(routers.Route(
+                            url=uri, mapping=mapping, name='%s-extra' % name,
+                            initkwargs=initkwargs,
+                        ))
+                    uri = routers.replace_methodname(route.url[0], methodname)
                     ret.append(routers.Route(
-                        url=routers.replace_methodname(route.url, methodname),
-                        mapping=dict((httpmethod, methodname) for httpmethod in httpmethods),
-                        name=routers.replace_methodname(route.name, methodname),
+                        url=uri, mapping=mapping, name=name,
                         initkwargs=initkwargs,
                     ))
             else:
@@ -109,7 +128,8 @@ class MultiLookupRouter(routers.DefaultRouter):
                     prefix=prefix,
                     lookup=lookup,
                     lookups=lookups,
-                    trailing_slash=self.trailing_slash
+                    trailing_slash=self.trailing_slash,
+                    extra=self.get_extra_lookup_regexes(route)
                 )
                 view = viewset.as_view(mapping, **route.initkwargs)
                 name = route.name.format(basename=basename)
