@@ -52,6 +52,7 @@
             {% trans "XLSForm" %}
             <span id="form-shared-public" class="label label-info">{% trans "PUBLIC" %}</span>
             <span id="form-shared-private" class="label label-warning">{% trans "PRIVATE" %}</span>
+            <span id="form-encrypted" class="label label-important icon-lock label-encrypted">&nbsp;&nbsp;{% trans "ENCRYPTED" %}</span>
         </h3>
         <br/>
         <div class="btn-toolbar" style="margin-bottom: 9px">
@@ -120,6 +121,7 @@
             {% trans "Form Data" %}
             <span id="data-shared-public" class="label label-info">{% trans "PUBLIC" %}</span>
             <span id="data-shared-private" class="label label-warning">{% trans "PRIVATE" %}</span>
+            <span id="data-encrypted" class="label label-important icon-lock label-encrypted">&nbsp;&nbsp;{% trans "ENCRYPTED" %}</span>
         </h3>
         {% if xform.shared_data or can_view %}
         {% if not xform.encrypted and xform.submission_count > 0 %}
@@ -280,6 +282,10 @@
                 $('#form-shared-private').hide();
               {% else %}
                 $('#form-shared-public').hide();
+              {% endif %}
+              {% if not xform.encrypted %}
+                $('#form-encrypted').hide();
+                $('#data-encrypted').hide();
               {% endif %}
               $.each(['form-shared', 'data-shared', 'active-form', 'crowd-form'], function(inx, el) {
                 var cb = $('#' + el + ':checkbox');
