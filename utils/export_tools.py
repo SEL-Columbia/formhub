@@ -147,7 +147,7 @@ class ExportBuilder(object):
     GROUP_DELIMITER_DOT = '.'
     GROUP_DELIMITER = GROUP_DELIMITER_SLASH
     GROUP_DELIMITERS = [GROUP_DELIMITER_SLASH, GROUP_DELIMITER_DOT]
-    TYPES_TO_CONVERT = ['int', 'decimal', 'date', 'dateTime']
+    TYPES_TO_CONVERT = ['int', 'decimal', 'date']#, 'dateTime']
     CONVERT_FUNCS = {
         'int': lambda x: int(x),
         'decimal': lambda x: float(x),
@@ -343,10 +343,10 @@ class ExportBuilder(object):
                 row[elm['xpath']] = ExportBuilder.convert_type(
                     value, elm['type'])
 
-        # convert submission type
-        if row.get(SUBMISSION_TIME):
-            row[SUBMISSION_TIME] = ExportBuilder.convert_type(
-                row[SUBMISSION_TIME], 'dateTime')
+        # convert submission type - xls truncates this to just date
+        #if row.get(SUBMISSION_TIME):
+        #    row[SUBMISSION_TIME] = ExportBuilder.convert_type(
+        #        row[SUBMISSION_TIME], 'dateTime')
 
         return row
 
