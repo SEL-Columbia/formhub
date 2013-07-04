@@ -3,7 +3,11 @@ var _rebuildHexLegend__p_str = gettext('Proportion of surveys with response(s): 
 var getBootstrapFields__str = gettext("ERROR: constants not found; please include main/static/js/formManagers.js");
 var JSONSurveyToHTML__q_str = gettext("Question");
 var JSONSurveyToHTML__r_str = gettext("Response");
+var hideZeroedValues_str = gettext("Hide options without data");
+var displayZeroedValues_str = gettext("Display options without data");
 
+// Global toggle on whether to display question values which have 0 submissions
+var displayZeroedValues = false;
 
 var centerLatLng = new L.LatLng(!center.lat?0.0:center.lat, !center.lng?0.0:center.lng);
 var defaultZoom = 8;
@@ -773,6 +777,10 @@ function rebuildLegend(questionName, questionColorMap)
         var responseLi = $('<li></li>');
         var numResponses = question.responseCounts[response];
 
+        if (numResponses == 0 && !displayZeroedValues) {
+            continue;
+        }
+
         // create the anchor
         var legendAnchor = $('<a></a>').addClass('legend-label').attr('href', 'javascript:;').attr('rel',response);
         if(formResponseMngr._select_one_filters.indexOf(response) > -1)
@@ -805,6 +813,19 @@ function rebuildLegend(questionName, questionColorMap)
         responseLi.append(legendAnchor);
         legendUl.append(responseLi);
     }
+
+    var toggleZeroedValuesLi = $('<li />');
+    var toggleZeroedValuesA = $('<a />');
+    toggleZeroedValuesA.addClass('legend-label');
+    toggleZeroedValuesA.addClass(displayZeroedValues ? 'active' : 'inactive');
+    toggleZeroedValuesA.html(displayZeroedValues ? hideZeroedValues_str : displayZeroedValues_str);
+    toggleZeroedValuesLi.append(toggleZeroedValuesA);
+    legendUl.append(toggleZeroedValuesLi);
+    toggleZeroedValuesA.click(function () {
+        displayZeroedValues = !displayZeroedValues;
+        rebuildLegend(questionName, questionColorMap);
+    });
+
 
     // add as the first element always
     legendsContainer.prepend(legendElement);

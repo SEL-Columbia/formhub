@@ -29,6 +29,7 @@ from odk_viewer.pandas_mongo_bridge import NoRecordsFoundError
 from odk_viewer.tasks import create_xls_export
 from xlrd import open_workbook
 from odk_viewer.models.parsed_instance import _encode_for_mongo
+from odk_logger.xform_instance_parser import XFormInstanceParser
 
 
 class TestExports(MainTestCase):
@@ -1126,7 +1127,9 @@ class TestExportBuilder(MainTestCase):
         expected_element_names = [
             'children/name', 'children/age', 'children/fav_colors',
             'children/fav_colors/red', 'children/fav_colors/blue',
-            'children/fav_colors/pink']
+            'children/fav_colors/pink', 'children/ice_creams',
+            'children/ice_creams/vanilla', 'children/ice_creams/strawberry',
+            'children/ice_creams/chocolate']
         section = export_builder.section_by_name('children')
         element_names = [element['xpath'] for element in section['elements']]
         self.assertEqual(
@@ -1188,17 +1191,27 @@ class TestExportBuilder(MainTestCase):
                     [
                         'children/fav_colors/red', 'children/fav_colors/blue',
                         'children/fav_colors/pink'
+                    ],
+                    'children/ice_creams':
+                    [
+                        'children/ice_creams/vanilla',
+                        'children/ice_creams/strawberry',
+                        'children/ice_creams/chocolate'
                     ]
                 }
             }
         select_multiples = export_builder.select_multiples
-        self.assertTrue(select_multiples.has_key('children'))
-        self.assertTrue(
-            select_multiples['children'].has_key('children/fav_colors'))
+        self.assertTrue('children' in select_multiples)
+        self.assertTrue('children/fav_colors' in select_multiples['children'])
+        self.assertTrue('children/ice_creams' in select_multiples['children'])
         self.assertEqual(
             sorted(select_multiples['children']['children/fav_colors']),
             sorted(
                 expected_select_multiples['children']['children/fav_colors']))
+        self.assertEqual(
+            sorted(select_multiples['children']['children/ice_creams']),
+            sorted(
+                expected_select_multiples['children']['children/ice_creams']))
 
     def test_split_select_multiples_works(self):
         select_multiples =\
@@ -1463,7 +1476,9 @@ class TestExportBuilder(MainTestCase):
         expected_column_headers = [
             u'children/name', u'children/age', u'children/fav_colors',
             u'children/fav_colors/red', u'children/fav_colors/blue',
-            u'children/fav_colors/pink', u'_id', u'_uuid',
+            u'children/fav_colors/pink', u'children/ice_creams',
+            u'children/ice_creams/vanilla', u'children/ice_creams/strawberry',
+            u'children/ice_creams/chocolate', u'_id', u'_uuid',
             u'_submission_time', u'_index', u'_parent_index',
             u'_parent_table_name']
         column_headers = [c[0].value for c in childrens_sheet.columns]
