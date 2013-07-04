@@ -3,8 +3,8 @@ var _rebuildHexLegend__p_str = gettext('Proportion of surveys with response(s): 
 var getBootstrapFields__str = gettext("ERROR: constants not found; please include main/static/js/formManagers.js");
 var JSONSurveyToHTML__q_str = gettext("Question");
 var JSONSurveyToHTML__r_str = gettext("Response");
-var hideZeroedValues_str = gettext("Hide empty (0) Values");
-var displayZeroedValues_str = gettext("Display empty (0) Values");
+var hideZeroedValues_str = gettext("Hide options without data");
+var displayZeroedValues_str = gettext("Display options without data");
 
 // Global toggle on whether to display question values which have 0 submissions
 var displayZeroedValues = false;
