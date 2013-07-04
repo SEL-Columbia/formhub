@@ -3,6 +3,10 @@ from api.models import OrganizationProfile, Team, Project, ProjectXForm
 from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
 
+from main.forms import QuickConverter
+from odk_logger.models import XForm
+from formhub.utils.logger_tools import publish_form
+
 
 def _get_first_last_names(name):
     name_split = name.split()
@@ -99,3 +103,13 @@ def add_xform_to_project(xform, project, creator):
         xform=xform, project=project, created_by=creator)
     instance.save()
     return instance
+
+
+def publish_project_xform(request, project):
+    def set_form():
+        form = QuickConverter(request.POST, request.FILES)
+        return form.publish(project.organization)
+    xform = publish_form(set_form)
+    if isinstance(xform, XForm):
+        add_xform_to_project(xform, project, request.user)
+    return xform
