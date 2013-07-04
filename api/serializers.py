@@ -119,7 +119,8 @@ class XFormSerializer(serializers.HyperlinkedModelSerializer):
         model = XForm
         read_only_fields = (
             'json', 'xml', 'date_created', 'date_modified', 'encrypted')
-        exclude = ('id', 'user', 'has_start_time', 'shared', 'shared_data')
+        exclude = ('id', 'json', 'xml', 'xls', 'user',
+                   'has_start_time', 'shared', 'shared_data')
 
 
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
