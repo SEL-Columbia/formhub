@@ -39,11 +39,19 @@ class XFormViewSet(viewsets.ModelViewSet):
     serializer_class = api_serializers.XFormSerializer
 
 
+def extra_kwargs(**kwargs):
+    def decorator(func):
+        func.extra_kwargs = kwargs
+        return func
+    return decorator
+
+
 class ProjectViewSet(mixins.MultiLookupMixin, viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = api_serializers.ProjectSerializer
     lookup_fields = ('owner', 'pk')
     lookup_field = 'owner'
+    extra_lookup_fields = None
 
     def list(self, request, **kwargs):
         filter = {}
@@ -54,7 +62,7 @@ class ProjectViewSet(mixins.MultiLookupMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(self.object_list, many=True)
         return Response(serializer.data)
 
-    @action(methods=['POST', 'GET'])
+    @action(methods=['POST', 'GET'], extra_lookup_fields=['formid', ])
     def forms(self, request, **kwargs):
         project = get_object_or_404(
             Project, pk=kwargs.get('pk', None),
@@ -66,7 +74,15 @@ class ProjectViewSet(mixins.MultiLookupMixin, viewsets.ModelViewSet):
                 return Response(serializer.data, status=201)
             return Response(survey, status=400)
         filter = {'project': project}
-        qs = ProjectXForm.objects.filter(**filter)
-        data = [px.xform for px in qs]
-        serializer = api_serializers.XFormSerializer(data, many=True)
+        many = True
+        if 'formid' in kwargs:
+            many = False
+            filter['xform__pk'] = int(kwargs.get('formid'))
+        if many:
+            qs = ProjectXForm.objects.filter(**filter)
+            data = [px.xform for px in qs]
+        else:
+            qs = get_object_or_404(ProjectXForm, **filter)
+            data = qs.xform
+        serializer = api_serializers.XFormSerializer(data, many=many)
         return Response(serializer.data)
