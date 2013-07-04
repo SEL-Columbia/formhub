@@ -146,7 +146,9 @@
 	}
 
 	function addModalCloseButton(modalElem, addedPoint) {
-    	var closeButton = $("<button class='btn' style='position: absolute; top: 0;right: 0;'>Close</button>");
+    	var closeButton = $("<button />");
+    	closeButton.addClass('btn modal-close-button');
+    	closeButton.html("Close");
     	closeButton.click(function () {
     		exitModal($(this).parent(), addedPoint);
     	});
@@ -164,7 +166,15 @@
     		exitModal($(this), addedPoint);
     	});
 
-    	var aFrame = $('<iframe src="' + url + '" style="width:100%; min-height:300px;overflow-x: hidden; overflow-y: scroll height:100%;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"></iframe>');
+    	var aFrame = $('<iframe />');
+    	aFrame.attr('src', url);
+    	aFrame.attr('scrolling', 'no');
+    	aFrame.attr('marginwidth', 0);
+    	aFrame.attr('marginheight', 0);
+    	aFrame.attr('frameborder', 0);
+    	aFrame.attr('vspace', 0);
+    	aFrame.attr('hspace', 0);
+
     	// event fired when src attr changes
     	aFrame.load(function(){
     		// first time is the real load.

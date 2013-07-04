@@ -140,6 +140,20 @@ body .enketo-modal {
 	height: 80%;
 }
 
+body .enketo-modal iframe {
+	width:100%;
+	min-height:300px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	height:100%;
+}
+
+body .modal-close-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
 body .leaflet-draw-edit-edit,
 body .leaflet-draw-edit-remove {
 	display: none;
