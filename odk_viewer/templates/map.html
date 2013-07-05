@@ -151,13 +151,14 @@
 	}
 
 	function addModalCloseButton(modalElem, addedPoint) {
+        var modalHeader = $('<div>').addClass('modal-header').attr('style', 'border-bottom: none');
     	var closeButton = $("<button />");
-    	closeButton.addClass('btn modal-close-button');
-    	closeButton.html("Close");
+    	closeButton.addClass('close').attr('data-dismiss', 'modal').html('&times;');
     	closeButton.click(function () {
     		exitModal($(this).parent(), addedPoint);
     	});
-    	modalElem.append(closeButton);
+        modalHeader.append(closeButton);
+    	modalElem.append(modalHeader);
 	}
 
 	function displayEnketoModal(url, addedPoint) {
