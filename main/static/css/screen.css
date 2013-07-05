@@ -967,7 +967,7 @@ a:focus {
 #resources p, #support p {
 	margin-bottom: 10px;
 }
-#resources p, #support .explanation {
+#resources p, #support .explanation , #resources .explanation{
 	padding-bottom: 30px;
 }
 #loading {
