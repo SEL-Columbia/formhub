@@ -157,6 +157,11 @@ class XForm(models.Model):
         return self.surveys.filter(is_deleted=False).count()
     submission_count.short_description = ugettext_lazy("Submission Count")
 
+    def geocoded_submission_count(self):
+        from odk_viewer.models import ParsedInstance
+        return ParsedInstance.objects.filter(instance__in=self.surveys.filter(is_deleted=False), lat__isnull=False).count()
+    geocoded_submission_count.short_description = ugettext_lazy("Geocoded Submission Count")
+
     def time_of_last_submission(self):
         try:
             return self.surveys.\
