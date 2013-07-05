@@ -143,8 +143,6 @@ body .enketo-modal {
 body .enketo-modal iframe {
 	width:100%;
 	min-height:300px;
-	overflow-x: hidden;
-	overflow-y: scroll;
 	height:100%;
 }
 
