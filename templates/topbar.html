@@ -28,7 +28,7 @@
             <li class="lead">
               <a href="{% url main.views.show content_user.username xform.id_string %}">{{ xform.title }}</a>
             </li>
-            <li><a href="#"><span class="inverted">{% blocktrans with nb_sub=xform.submission_count %}{{ nb_sub }} submissions{% endblocktrans %}</span></a></li>
+            <li><a href="#"><span class="inverted" title="{% blocktrans with nb_geo_sub=xform.geocoded_submission_count nb_sub=xform.submission_count %}{{ nb_geo_sub }} submissions with geo data out of {{ nb_sub}} total.{% endblocktrans %}">{% blocktrans with nb_geo_sub=xform.geocoded_submission_count nb_sub=xform.submission_count %}{{ nb_geo_sub }}/{{ nb_sub}} submissions{% endblocktrans %}</span></a></li>
             <li class="lead"><button class="refresh-map btn btn-small"><i class="icon icon-refresh"></i> Refresh Map Data</button></li>
           </ul>
           <ul class="nav pull-right">
