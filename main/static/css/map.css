@@ -134,17 +134,13 @@ body .enketo-modal {
 	min-width: 500px;
 	min-height: 60%;
 	top: 10%;
-	margin: auto;
-	left: 10%;
-	width: 80%;
+	margin-top: auto;
 	height: 80%;
 }
 
 body .enketo-modal iframe {
 	width:100%;
 	min-height:300px;
-	overflow-x: hidden;
-	overflow-y: scroll;
 	height:100%;
 }
 

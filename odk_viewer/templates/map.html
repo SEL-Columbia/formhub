@@ -84,6 +84,10 @@
 
 	function displayDataModal(feature_id) {
 		var modalElem = $("#enketo-modal");
+
+		// restore non-iframe style
+		modalElem.css('overflow', 'auto');
+
 		// hide modal if exist
 		exitModal(modalElem);
 
@@ -140,19 +144,21 @@
 
 	function exitModal(modalElem, addedPoint) {
 		$(modalElem).empty();
+		modalElem.css('overflow', 'auto');
 		$(modalElem).modal('hide');
 		cleanUpMap(addedPoint);
 		modalVisible = null;
 	}
 
 	function addModalCloseButton(modalElem, addedPoint) {
+        var modalHeader = $('<div>').addClass('modal-header').attr('style', 'border-bottom: none');
     	var closeButton = $("<button />");
-    	closeButton.addClass('btn modal-close-button');
-    	closeButton.html("Close");
+    	closeButton.addClass('close').attr('data-dismiss', 'modal').html('&times;');
     	closeButton.click(function () {
     		exitModal($(this).parent(), addedPoint);
     	});
-    	modalElem.append(closeButton);
+        modalHeader.append(closeButton);
+    	modalElem.append(modalHeader);
 	}
 
 	function displayEnketoModal(url, addedPoint) {
@@ -168,7 +174,7 @@
 
     	var aFrame = $('<iframe />');
     	aFrame.attr('src', url);
-    	aFrame.attr('scrolling', 'no');
+    	aFrame.attr('scrolling', 'yes');
     	aFrame.attr('marginwidth', 0);
     	aFrame.attr('marginheight', 0);
     	aFrame.attr('frameborder', 0);
@@ -191,6 +197,7 @@
 		});
 		addModalCloseButton($("#enketo-modal"), addedPoint);
     	$("#enketo-modal").append(aFrame);
+    	$("#enketo-modal").css('overflow', 'hidden');
 		$("#enketo-modal").modal();
 	}
 
