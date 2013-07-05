@@ -42,3 +42,6 @@ shell_command
 
 # sms support
 dict2xml
+
+# captcha
+recaptcha-client
