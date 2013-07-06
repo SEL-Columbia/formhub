@@ -102,7 +102,8 @@ Create a database and start server:
     $ python manage.py syncdb --noinput
     $ python manage.py migrate
 
-    Optional: create a super user
+
+    optional: create a super user
 
 .. code-block:: sh
 
