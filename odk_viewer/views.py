@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime
 from tempfile import NamedTemporaryFile
 from time import strftime, strptime
 
@@ -38,6 +39,7 @@ from utils.export_tools import newset_export_for
 from utils.viewer_tools import export_def_from_filename
 from utils.viewer_tools import create_attachments_zipfile
 from utils.log import audit_log, Actions
+from common_tags import SUBMISSION_TIME
 
 
 def encode(time_str):
@@ -208,7 +210,28 @@ def data_export(request, username, id_string, export_type):
     }
     # check if we need to re-generate,
     # we always re-generate if a filter is specified
-    if should_create_new_export(xform, export_type) or query:
+    if should_create_new_export(xform, export_type) or query or\
+                    'start' in request.GET or 'end' in request.GET:
+        format_date_for_mongo = lambda x, datetime: datetime.strptime(
+            x, '%y_%m_%d_%H_%M_%S').strftime('%Y-%m-%dT%H:%M:%S')
+        # check for start and end params
+        if 'start' in request.GET or 'end' in request.GET:
+            if not query:
+                query = '{}'
+            query = json.loads(query)
+            query[SUBMISSION_TIME] = {}
+            try:
+                if request.GET.get('start'):
+                    query[SUBMISSION_TIME]['$gte'] = format_date_for_mongo(
+                        request.GET['start'], datetime)
+                if request.GET.get('end'):
+                    query[SUBMISSION_TIME]['$lte'] = format_date_for_mongo(
+                        request.GET['end'], datetime)
+            except ValueError:
+                return HttpResponseBadRequest(
+                    _("Dates must be in the format YY_MM_DD_hh_mm_ss"))
+            else:
+                query = json.dumps(query)
         try:
             export = generate_export(
                 export_type, extension, username, id_string, None, query)
