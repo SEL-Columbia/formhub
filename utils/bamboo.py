@@ -118,7 +118,6 @@ def get_csv_data(xform, force_last=False):
         get_csv_data_manual(xform, with_header=True)
 
     if buff.len:
-
         # rewrite CSV header so that meta fields (starting with _ or meta)
         # are prefixed to ensure that the dataset will be joinable to
         # another formhub dataset
@@ -137,8 +136,8 @@ def get_csv_data(xform, force_last=False):
             if is_header:
                 is_header = False
                 for idx, col in enumerate(row):
-                    if col.startswith('_') or col.startswith('meta_') \
-                        or col.startswith('meta/'):
+                    if col.startswith('_') or col.startswith('meta_')\
+                            or col.startswith('meta/'):
                         row[idx] = (u'%(prefix)s%(col)s'
                                     % {'prefix': prefix, 'col': col})
             writer.writerow(row)
