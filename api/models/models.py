@@ -95,6 +95,10 @@ class Team(Group):
         # return a clear group name without username to user for viewing
         return self.name.split('#')[1]
 
+    @property
+    def team_name(self):
+        return self.__unicode__()
+
     def save(self, *args, **kwargs):
         # allow use of same name in different organizations/users
         # concat with #
