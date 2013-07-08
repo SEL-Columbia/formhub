@@ -45,3 +45,5 @@ dict2xml
 
 # captcha
 recaptcha-client
+
+unicodecsv

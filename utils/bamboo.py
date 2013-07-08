@@ -1,6 +1,6 @@
 
 import StringIO
-import csv
+import unicodecsv
 
 from pybamboo.dataset import Dataset
 from pybamboo.connection import Connection
@@ -86,8 +86,10 @@ def get_csv_data(xform, force_last=False):
                 headers_to_use = [key for key in rows[0].keys()
                                   if not key.startswith('_')]
 
-            w = csv.DictWriter(csv_buf, fieldnames=headers_to_use,
-                               extrasaction='ignore', lineterminator='\n')
+            w = unicodecsv.DictWriter(csv_buf, fieldnames=headers_to_use,
+                                      extrasaction='ignore',
+                                      lineterminator='\n',
+                                      encoding='utf-8')
             if with_header:
                 w.writeheader()
             w.writerows(rows)
@@ -127,8 +129,8 @@ def get_csv_data(xform, force_last=False):
 
         new_buff = getbuff()
         buff.seek(0)
-        reader = csv.reader(buff)
-        writer = csv.writer(new_buff)
+        reader = unicodecsv.reader(buff, encoding='utf-8')
+        writer = unicodecsv.writer(new_buff, encoding='utf-8')
 
         is_header = True
 
