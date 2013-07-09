@@ -41,7 +41,7 @@ from utils.user_auth import check_and_set_user, set_profile_data,\
     check_and_set_user_and_form
 from utils.log import audit_log, Actions
 from main.models import AuditLog
-from settings import ENKETO_PREVIEW_URL
+from django.conf import settings
 
 from utils.viewer_tools import enketo_url
 from utils.qrcode import generate_qrcode
@@ -1280,7 +1280,7 @@ def enketo_preview(request, username, id_string):
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
     enekto_preview_url = "%(enketo_url)s?server=%(profile_url)s&id=%(id_string)s" % {
-        'enketo_url': ENKETO_PREVIEW_URL,
+        'enketo_url': settings.ENKETO_PREVIEW_URL,
         'profile_url': request.build_absolute_uri(reverse(profile, kwargs={'username': owner.username})),
         'id_string': xform.id_string
     }

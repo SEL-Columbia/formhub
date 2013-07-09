@@ -10,7 +10,8 @@ import djcelery
 djcelery.setup_loader()
 
 CURRENT_FILE = os.path.abspath(__file__)
-PROJECT_ROOT = os.path.dirname(CURRENT_FILE)
+PROJECT_ROOT = os.path.realpath(
+    os.path.join(os.path.dirname(CURRENT_FILE), '..'))
 PRINT_EXCEPTION = False
 
 DEBUG = True
@@ -129,7 +130,9 @@ MIDDLEWARE_CLASSES = (
 
 LOCALE_PATHS = (os.path.join(PROJECT_ROOT, 'locale'), )
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'formhub.urls'
+USE_TZ = True
+
 
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, 'templates'),
