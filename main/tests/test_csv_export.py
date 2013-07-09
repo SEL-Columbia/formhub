@@ -12,7 +12,7 @@ class TestExport(MainTestCase):
         self._create_user_and_login()
         self.fixture_dir = os.path.join(self.this_directory, 'fixtures',
                 'csv_export')
-        self._submission_time='2013-02-18 15:54:01'
+        self._submission_time='2013-02-18 15:54:01Z'
 
     def test_csv_export_output(self):
         path = os.path.join(self.fixture_dir, 'tutorial_w_repeats.xls')
