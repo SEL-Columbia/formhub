@@ -1,10 +1,10 @@
 # pybamboo has deps in common but on newer versions.
 # on top so those will be overwritten
 pybamboo==0.5.7
-
+Distribute
 Django
 django-guardian==1.0.3
-django-registration==0.7
+django-registration
 django-templated-email==0.4.1
 gdata==2.0.16
 httplib2==0.7.4
