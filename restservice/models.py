@@ -1,4 +1,3 @@
-from django.conf.locale import sv
 from django.db import models
 from django.utils.translation import ugettext_lazy
 from odk_logger.models.xform import XForm
