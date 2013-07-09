@@ -1,6 +1,5 @@
 from datetime import datetime
 from django.core.urlresolvers import reverse
-from django.utils import simplejson
 from odk_logger.models.instance import Instance
 
 from test_base import MainTestCase

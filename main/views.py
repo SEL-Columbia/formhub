@@ -14,7 +14,6 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseServerError
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
-from django.utils import simplejson
 from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_GET, require_POST
 from google_doc import GoogleDoc
@@ -372,7 +371,7 @@ def show(request, username=None, id_string=None, uuid=None):
     if xform.allows_sms:
         context.sms_support_doc = get_autodoc_for(xform)
     user_list = [u.username for u in User.objects.exclude(username=username)]
-    context.user_json_list = simplejson.dumps(user_list)
+    context.user_json_list = json.dumps(user_list)
     return render_to_response("show.html", context_instance=context)
 
 
@@ -416,7 +415,7 @@ def api(request, username=None, id_string=None):
     except ValueError, e:
         return HttpResponseBadRequest(e.__str__())
     records = list(record for record in cursor)
-    response_text = simplejson.dumps(records)
+    response_text = json.dumps(records)
     if 'callback' in request.GET and request.GET.get('callback') != '':
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))
@@ -445,7 +444,7 @@ def public_api(request, username, id_string):
                'date_modified': xform.date_modified.strftime(_DATETIME_FORMAT),
                'uuid': xform.uuid,
                }
-    response_text = simplejson.dumps(exports)
+    response_text = json.dumps(exports)
     return HttpResponse(response_text, mimetype='application/json')
 
 
@@ -1032,7 +1031,7 @@ def set_perm(request, username, id_string):
             }, audit, request)
     if request.is_ajax():
         return HttpResponse(
-            simplejson.dumps(
+            json.dumps(
                 {'status': 'success'}), mimetype='application/json')
     return HttpResponseRedirect(reverse(show, kwargs={
         'username': username,
@@ -1087,7 +1086,7 @@ def delete_data(request, username=None, id_string=None):
             'id_string': xform.id_string,
             'record_id': data_id
         }, audit, request)
-    response_text = simplejson.dumps({"success": "Deleted data %s" % data_id})
+    response_text = json.dumps({"success": "Deleted data %s" % data_id})
     if 'callback' in request.GET and request.GET.get('callback') != '':
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))
@@ -1211,7 +1210,7 @@ def activity_fields(request):
             'searchable': True
         },
     ]
-    response_text = simplejson.dumps(fields)
+    response_text = json.dumps(fields)
     return HttpResponse(response_text, mimetype='application/json')
 
 
@@ -1247,7 +1246,7 @@ def activity_api(request, username):
     except ValueError, e:
         return HttpResponseBadRequest(e.__str__())
     records = list(record for record in cursor)
-    response_text = simplejson.dumps(records, default=stringify_unknowns)
+    response_text = json.dumps(records, default=stringify_unknowns)
     if 'callback' in request.GET and request.GET.get('callback') != '':
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))

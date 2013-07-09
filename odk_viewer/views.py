@@ -13,7 +13,6 @@ from django.http import HttpResponseForbidden,\
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
-from django.utils import simplejson
 from django.core.files.storage import FileSystemStorage
 from django.core.files.storage import get_storage_class
 
@@ -430,7 +429,7 @@ def export_progress(request, username, id_string, export_type):
         statuses.append(status)
 
     return HttpResponse(
-        simplejson.dumps(statuses), mimetype='application/json')
+        json.dumps(statuses), mimetype='application/json')
 
 
 def export_download(request, username, id_string, export_type, filename):
