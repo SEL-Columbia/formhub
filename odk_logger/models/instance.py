@@ -1,6 +1,6 @@
-from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 from .xform import XForm
 from .survey_type import SurveyType
 from odk_logger.xform_instance_parser import XFormInstanceParser, \
@@ -115,14 +115,14 @@ class Instance(models.Model):
         else:
             return self._parser.to_dict()
 
-    def set_deleted(self, deleted_at=datetime.now()):
+    def set_deleted(self, deleted_at=timezone.now()):
         self.deleted_at = deleted_at
         self.is_deleted = True
         self.save()
         self.parsed_instance.save()
 
     @classmethod
-    def set_deleted_at(cls, instance_id, deleted_at=datetime.now()):
+    def set_deleted_at(cls, instance_id, deleted_at=timezone.now()):
         try:
             instance = cls.objects.get(id=instance_id)
         except cls.DoesNotExist:
