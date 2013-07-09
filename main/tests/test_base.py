@@ -11,7 +11,7 @@ from django_nose import FastFixtureTestCase as TestCase
 from django.test.client import Client
 
 from odk_logger.models import XForm, Instance, Attachment
-from settings import MONGO_DB
+from django.conf import settings
 
 
 class MainTestCase(TestCase):
@@ -28,7 +28,7 @@ class MainTestCase(TestCase):
 
     def tearDown(self):
         # clear mongo db after each test
-        MONGO_DB.instances.drop()
+        settings.MONGO_DB.instances.drop()
 
     def _create_user(self, username, password):
         user, created = User.objects.get_or_create(username=username)
