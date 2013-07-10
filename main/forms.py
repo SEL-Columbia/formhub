@@ -203,20 +203,6 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail,
             password=self.cleaned_data['password1'],
             email=self.cleaned_data['email'])
         UserProfileFormRegister.save(self, new_user)
-        if hasattr(settings, 'AUTO_ADD_CROWDFORM') and \
-                settings.AUTO_ADD_CROWDFORM and \
-                hasattr(settings, 'DEFAULT_CROWDFORM'):
-            try:
-                default_crowdform = settings.DEFAULT_CROWDFORM
-                if isinstance(default_crowdform, dict) and\
-                        'xform_username' in default_crowdform and\
-                        'xform_id_string' in default_crowdform:
-                    xform = XForm.objects.get(
-                        id_string=default_crowdform['xform_id_string'],
-                        user__username=default_crowdform['xform_username'])
-                    MetaData.crowdform_users(xform, new_user.username)
-            except XForm.DoesNotExist:
-                pass
         return new_user
 
 

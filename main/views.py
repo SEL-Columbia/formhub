@@ -49,6 +49,27 @@ from sms_support.tools import check_form_sms_compatibility, is_sms_related
 from sms_support.autodoc import get_autodoc_for
 from sms_support.providers import providers_doc
 
+from registration.signals import user_registered
+from django.dispatch import receiver
+
+
+@receiver(user_registered, dispatch_uid='auto_add_crowdform')
+def auto_add_crowd_form_to_registered_user(sender, **kwargs):
+    new_user = kwargs.get('user')
+    if hasattr(settings, 'AUTO_ADD_CROWDFORM') and \
+            settings.AUTO_ADD_CROWDFORM and \
+            hasattr(settings, 'DEFAULT_CROWDFORM'):
+        try:
+            default_crowdform = settings.DEFAULT_CROWDFORM
+            if isinstance(default_crowdform, dict) and\
+                    'xform_username' in default_crowdform and\
+                    'xform_id_string' in default_crowdform:
+                xform = XForm.objects.get(
+                    id_string=default_crowdform['xform_id_string'],
+                    user__username=default_crowdform['xform_username'])
+                MetaData.crowdform_users(xform, new_user.username)
+        except XForm.DoesNotExist:
+            pass
 
 
 def home(request):
