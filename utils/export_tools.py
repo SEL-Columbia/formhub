@@ -365,10 +365,10 @@ class ExportBuilder(object):
 
         # write headers
         for section in self.sections:
-            fields = [
-                element['title'] for element in
-                section['elements']] + self.EXTRA_FIELDS
-            csv_defs[section['name']]['csv_writer'].writerow(fields)
+            fields = [element['title'] for element in section['elements']]\
+                + self.EXTRA_FIELDS
+            csv_defs[section['name']]['csv_writer'].writerow(
+                [f.encode('utf-8') for f in fields])
 
         index = 1
         indices = {}
@@ -573,7 +573,7 @@ def generate_export(export_type, extension, username, id_string,
     dir_name, basename = os.path.split(export_filename)
 
     # get or create export object
-    if(export_id):
+    if export_id:
         export = Export.objects.get(id=export_id)
     else:
         export = Export(xform=xform, export_type=export_type)

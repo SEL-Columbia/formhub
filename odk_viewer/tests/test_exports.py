@@ -1179,6 +1179,47 @@ class TestExportBuilder(MainTestCase):
         # TODO: check the data using a csv.DictReader
         shutil.rmtree(temp_dir)
 
+    def test_zipped_csv_export_works_with_unicode(self):
+        """
+        cvs writer doesnt handle unicode we we have to encode to ascii
+        """
+        survey = create_survey_from_xls(
+            os.path.join(
+                os.path.abspath('./'), 'odk_logger', 'tests', 'fixtures',
+                'childrens_survey_unicode.xls'))
+        export_builder = ExportBuilder()
+        export_builder.set_survey(survey)
+        temp_zip_file = NamedTemporaryFile(suffix='.zip')
+        export_builder.to_zipped_csv(temp_zip_file.name, self.data)
+        temp_zip_file.seek(0)
+        temp_dir = tempfile.mkdtemp()
+        zip_file = zipfile.ZipFile(temp_zip_file.name, "r")
+        zip_file.extractall(temp_dir)
+        zip_file.close()
+        temp_zip_file.close()
+        # check that the children's file (which has the unicode header) exists
+        self.assertTrue(
+            os.path.exists(
+                os.path.join(temp_dir, "children.csv")))
+        # check file's contents
+        with open(os.path.join(temp_dir, "children.csv")) as csv_file:
+            reader = csv.reader(csv_file)
+            expected_headers = ['children/name', 'children/age',
+                                'children/fav_colors',
+                                u'children/fav_colors/red\u2019s',
+                                u'children/fav_colors/blue\u2019s',
+                                u'children/fav_colors/pink\u2019s',
+                                'children/ice_creams',
+                                'children/ice_creams/vanilla',
+                                'children/ice_creams/strawberry',
+                                'children/ice_creams/chocolate', '_id',
+                                '_uuid', '_submission_time', '_index',
+                                '_parent_table_name', '_parent_index']
+            rows = [row for row in reader]
+            actual_headers = [h.decode('utf-8') for h in rows[0]]
+            self.assertEqual(sorted(actual_headers), sorted(expected_headers))
+        shutil.rmtree(temp_dir)
+
     def test_generation_of_multi_selects_works(self):
         survey = self._create_childrens_survey()
         export_builder = ExportBuilder()
