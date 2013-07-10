@@ -980,12 +980,14 @@ class TestExportBuilder(MainTestCase):
         {
             'name': 'Abe',
             'age': 35,
+            'tel/telLg==office': '020123456',
             'children':
             [
                 {
                     'children/name': 'Mike',
                     'children/age': 5,
                     'children/fav_colors': 'red blue',
+                    'children/iceLg==creams': 'vanilla chocolate',
                     'children/cartoons':
                     [
                         {
@@ -1127,9 +1129,9 @@ class TestExportBuilder(MainTestCase):
         expected_element_names = [
             'children/name', 'children/age', 'children/fav_colors',
             'children/fav_colors/red', 'children/fav_colors/blue',
-            'children/fav_colors/pink', 'children/ice_creams',
-            'children/ice_creams/vanilla', 'children/ice_creams/strawberry',
-            'children/ice_creams/chocolate']
+            'children/fav_colors/pink', 'children/ice.creams',
+            'children/ice.creams/vanilla', 'children/ice.creams/strawberry',
+            'children/ice.creams/chocolate']
         section = export_builder.section_by_name('children')
         element_names = [element['xpath'] for element in section['elements']]
         self.assertEqual(
@@ -1163,20 +1165,126 @@ class TestExportBuilder(MainTestCase):
         zip_file.extractall(temp_dir)
         zip_file.close()
         temp_zip_file.close()
+
+        # generate data to compare with
+        index = 1
+        indices = {}
+        survey_name = survey.name
+        outputs = []
+        for d in self.data:
+            outputs.append(
+                dict_to_joined_export(d, index, indices, survey_name))
+            index += 1
+
         # check that each file exists
         self.assertTrue(
             os.path.exists(
                 os.path.join(temp_dir, "{0}.csv".format(survey.name))))
+        with open(
+                os.path.join(
+                    temp_dir, "{0}.csv".format(survey.name))) as csv_file:
+            reader = csv.reader(csv_file)
+            rows = [r for r in reader]
+
+            # open comparison file
+            with open(
+                os.path.join(
+                    os.path.abspath('./'), 'odk_logger', 'tests', 'fixtures',
+                    'csvs', 'childrens_survey.csv')) as fixture_csv:
+                fixture_reader = csv.reader(fixture_csv)
+                expected_rows = [r for r in fixture_reader]
+                self.assertEqual(rows, expected_rows)
+
         self.assertTrue(
             os.path.exists(
                 os.path.join(temp_dir, "children.csv")))
+        with open(os.path.join(temp_dir, "children.csv")) as csv_file:
+            reader = csv.reader(csv_file)
+            rows = [r for r in reader]
+
+            # open comparison file
+            with open(
+                os.path.join(
+                    os.path.abspath('./'), 'odk_logger', 'tests', 'fixtures',
+                    'csvs', 'children.csv')) as fixture_csv:
+                fixture_reader = csv.reader(fixture_csv)
+                expected_rows = [r for r in fixture_reader]
+                self.assertEqual(rows, expected_rows)
+
         self.assertTrue(
             os.path.exists(
                 os.path.join(temp_dir, "children_cartoons.csv")))
+        with open(os.path.join(temp_dir, "children_cartoons.csv")) as csv_file:
+            reader = csv.reader(csv_file)
+            rows = [r for r in reader]
+
+            # open comparison file
+            with open(
+                os.path.join(
+                    os.path.abspath('./'), 'odk_logger', 'tests', 'fixtures',
+                    'csvs', 'children_cartoons.csv')) as fixture_csv:
+                fixture_reader = csv.reader(fixture_csv)
+                expected_rows = [r for r in fixture_reader]
+                self.assertEqual(rows, expected_rows)
+
         self.assertTrue(
             os.path.exists(
                 os.path.join(temp_dir, "children_cartoons_characters.csv")))
-        # TODO: check the data using a csv.DictReader
+        with open(os.path.join(
+                temp_dir, "children_cartoons_characters.csv")) as csv_file:
+            reader = csv.reader(csv_file)
+            rows = [r for r in reader]
+
+            # open comparison file
+            with open(
+                os.path.join(
+                    os.path.abspath('./'), 'odk_logger', 'tests', 'fixtures',
+                    'csvs', 'children_cartoons_characters.csv')) as fixture_csv:
+                fixture_reader = csv.reader(fixture_csv)
+                expected_rows = [r for r in fixture_reader]
+                self.assertEqual(rows, expected_rows)
+
+        shutil.rmtree(temp_dir)
+
+    def test_zipped_csv_export_works_with_unicode(self):
+        """
+        cvs writer doesnt handle unicode we we have to encode to ascii
+        """
+        survey = create_survey_from_xls(
+            os.path.join(
+                os.path.abspath('./'), 'odk_logger', 'tests', 'fixtures',
+                'childrens_survey_unicode.xls'))
+        export_builder = ExportBuilder()
+        export_builder.set_survey(survey)
+        temp_zip_file = NamedTemporaryFile(suffix='.zip')
+        export_builder.to_zipped_csv(temp_zip_file.name, self.data)
+        temp_zip_file.seek(0)
+        temp_dir = tempfile.mkdtemp()
+        zip_file = zipfile.ZipFile(temp_zip_file.name, "r")
+        zip_file.extractall(temp_dir)
+        zip_file.close()
+        temp_zip_file.close()
+        # check that the children's file (which has the unicode header) exists
+        self.assertTrue(
+            os.path.exists(
+                os.path.join(temp_dir, "children.csv")))
+        # check file's contents
+        with open(os.path.join(temp_dir, "children.csv")) as csv_file:
+            reader = csv.reader(csv_file)
+            expected_headers = ['children/name', 'children/age',
+                                'children/fav_colors',
+                                u'children/fav_colors/red\u2019s',
+                                u'children/fav_colors/blue\u2019s',
+                                u'children/fav_colors/pink\u2019s',
+                                'children/ice_creams',
+                                'children/ice_creams/vanilla',
+                                'children/ice_creams/strawberry',
+                                'children/ice_creams/chocolate', '_id',
+                                '_uuid', '_submission_time', '_index',
+                                '_parent_table_name', '_parent_index']
+            rows = [row for row in reader]
+            actual_headers = [h.decode('utf-8') for h in rows[0]]
+            self.assertEqual(sorted(actual_headers), sorted(expected_headers))
         shutil.rmtree(temp_dir)
 
     def test_generation_of_multi_selects_works(self):
@@ -1192,26 +1300,26 @@ class TestExportBuilder(MainTestCase):
                         'children/fav_colors/red', 'children/fav_colors/blue',
                         'children/fav_colors/pink'
                     ],
-                    'children/ice_creams':
+                    'children/ice.creams':
                     [
-                        'children/ice_creams/vanilla',
-                        'children/ice_creams/strawberry',
-                        'children/ice_creams/chocolate'
+                        'children/ice.creams/vanilla',
+                        'children/ice.creams/strawberry',
+                        'children/ice.creams/chocolate'
                     ]
                 }
             }
         select_multiples = export_builder.select_multiples
         self.assertTrue('children' in select_multiples)
         self.assertTrue('children/fav_colors' in select_multiples['children'])
-        self.assertTrue('children/ice_creams' in select_multiples['children'])
+        self.assertTrue('children/ice.creams' in select_multiples['children'])
         self.assertEqual(
             sorted(select_multiples['children']['children/fav_colors']),
             sorted(
                 expected_select_multiples['children']['children/fav_colors']))
         self.assertEqual(
-            sorted(select_multiples['children']['children/ice_creams']),
+            sorted(select_multiples['children']['children/ice.creams']),
             sorted(
-                expected_select_multiples['children']['children/ice_creams']))
+                expected_select_multiples['children']['children/ice.creams']))
 
     def test_split_select_multiples_works(self):
         select_multiples =\
@@ -1476,9 +1584,9 @@ class TestExportBuilder(MainTestCase):
         expected_column_headers = [
             u'children/name', u'children/age', u'children/fav_colors',
             u'children/fav_colors/red', u'children/fav_colors/blue',
-            u'children/fav_colors/pink', u'children/ice_creams',
-            u'children/ice_creams/vanilla', u'children/ice_creams/strawberry',
-            u'children/ice_creams/chocolate', u'_id', u'_uuid',
+            u'children/fav_colors/pink', u'children/ice.creams',
+            u'children/ice.creams/vanilla', u'children/ice.creams/strawberry',
+            u'children/ice.creams/chocolate', u'_id', u'_uuid',
             u'_submission_time', u'_index', u'_parent_index',
             u'_parent_table_name']
         column_headers = [c[0].value for c in childrens_sheet.columns]

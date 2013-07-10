@@ -294,7 +294,6 @@ class ExportBuilder(object):
 
     @classmethod
     def decode_mongo_encoded_fields(cls, row, encoded_fields):
-        # for each gps_field, get associated data and split it
         for xpath, encoded_xpath in encoded_fields.iteritems():
             if row.get(encoded_xpath):
                 val = row.pop(encoded_xpath)
@@ -320,6 +319,12 @@ class ExportBuilder(object):
         Split select multiples, gps and decode . and $
         """
         section_name = section['name']
+
+        # first decode fields so that subsequent lookups have decoded field names
+        if section_name in self.encoded_fields:
+            row = ExportBuilder.decode_mongo_encoded_fields(
+                row, self.encoded_fields[section_name])
+
         if self.SPLIT_SELECT_MULTIPLES and\
                 section_name in self.select_multiples:
             row = ExportBuilder.split_select_multiples(
@@ -328,10 +333,6 @@ class ExportBuilder(object):
         if section_name in self.gps_fields:
             row = ExportBuilder.split_gps_components(
                 row, self.gps_fields[section_name])
-
-        if section_name in self.encoded_fields:
-            row = ExportBuilder.split_gps_components(
-                row, self.encoded_fields[section_name])
 
         # convert to native types
         for elm in section['elements']:
@@ -351,10 +352,15 @@ class ExportBuilder(object):
         return row
 
     def to_zipped_csv(self, path, data, *args):
+        def encode_if_str(row, key):
+            val = row.get(key)
+            if isinstance(val, basestring):
+                return val.encode('utf-8')
+            return val
+
         def write_row(row, csv_writer, fields):
             csv_writer.writerow(
-                [u"{0}".format(row.get(field, '')).encode('utf-8')
-                 for field in fields])
+                [encode_if_str(row, field) for field in fields])
 
         csv_defs = {}
         for section in self.sections:
@@ -365,10 +371,10 @@ class ExportBuilder(object):
 
         # write headers
         for section in self.sections:
-            fields = [
-                element['title'] for element in
-                section['elements']] + self.EXTRA_FIELDS
-            csv_defs[section['name']]['csv_writer'].writerow(fields)
+            fields = [element['title'] for element in section['elements']]\
+                + self.EXTRA_FIELDS
+            csv_defs[section['name']]['csv_writer'].writerow(
+                [f.encode('utf-8') for f in fields])
 
         index = 1
         indices = {}
@@ -573,7 +579,7 @@ def generate_export(export_type, extension, username, id_string,
     dir_name, basename = os.path.split(export_filename)
 
     # get or create export object
-    if(export_id):
+    if export_id:
         export = Export.objects.get(id=export_id)
     else:
         export = Export(xform=xform, export_type=export_type)
