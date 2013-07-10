@@ -60,7 +60,8 @@ def get_new_bamboo_dataset(xform, force_last=False):
     try:
         content_data = get_csv_data(xform, force_last=force_last)
         dataset = Dataset(connection=Connection(url=get_bamboo_url(xform)),
-                          content=content_data)
+                          content=content_data,
+                          na_values=['n/a'])
     except NoRecordsFoundError:
         return dataset_id
 
