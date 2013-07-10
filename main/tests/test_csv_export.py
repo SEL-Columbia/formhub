@@ -2,6 +2,7 @@ import os
 import csv
 from StringIO import StringIO
 from django.core.urlresolvers import reverse
+from django.utils.dateparse import parse_datetime
 from odk_logger.models.xform import XForm
 from odk_viewer.models import DataDictionary
 from test_base import MainTestCase
@@ -12,7 +13,7 @@ class TestExport(MainTestCase):
         self._create_user_and_login()
         self.fixture_dir = os.path.join(self.this_directory, 'fixtures',
                 'csv_export')
-        self._submission_time='2013-02-18 15:54:01Z'
+        self._submission_time = parse_datetime('2013-02-18 15:54:01Z')
 
     def test_csv_export_output(self):
         path = os.path.join(self.fixture_dir, 'tutorial_w_repeats.xls')
