@@ -10,7 +10,7 @@
   <p>
     {%  trans "To use it simply:" %}
     <ul>
-    {% url registration_register as registration_register %}
+    {% url "registration_register" as registration_register %}
       <li>{% blocktrans %}<a href="{{ registration_register }}">Signup</a> for a free account with formhub{% endblocktrans %}</li>
       <li>{%  trans "Upload your XLSForm to formhub and it'll instantly be converted to an XForm which will be available on your phone." %}</li>
       <li>{%  trans "If you want to download the XForm, click on the form name and click on <strong>other</strong> to download the converted XForm" %}</li>

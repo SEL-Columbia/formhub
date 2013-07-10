@@ -11,9 +11,9 @@
 {% block content %}
 <div class="page-header">
     <h1>{% trans "Browse Form Data" %}
-        <small><a href="{% url main.views.show username id_string %}">{{ xform.title }}</a></small>
+        <small><a href="{% url "main.views.show" username id_string %}">{{ xform.title }}</a></small>
         <small> | </small>
-        <small><a href="{% url odk_viewer.views.data_view username id_string %}">{% trans "Data View" %}</a></small>
+        <small><a href="{% url "odk_viewer.views.data_view" username id_string %}">{% trans "Data View" %}</a></small>
     </h1>
 </div>
 
@@ -24,9 +24,9 @@
 
 <div id="data"></div>
 <script type="text/javascript">
-var formJSONUrl = "{% url odk_logger.views.download_jsonform username id_string %}";
-var mongoAPIUrl = "{% url main.views.api username id_string %}";
-var deleteAPIUrl = "{% url main.views.delete_data username id_string %}";
+var formJSONUrl = "{% url "odk_logger.views.download_jsonform" username id_string %}";
+var mongoAPIUrl = "{% url "main.views.api" username id_string %}";
+var deleteAPIUrl = "{% url "main.views.delete_data" username id_string %}";
 var app; // sammy app
 var questions = {};
 var languages = [];
@@ -236,7 +236,7 @@ function updatePrevNextControls(data)
                 else
                 {
                     nextButton.addClass('disabled');
-                    // make next url the current url
+                    // make next url "the" current url
                     nextButton.children('a').attr('href', '#/' + data['_id']);
                 }
                 // update pos status text
@@ -254,7 +254,7 @@ function updatePrevNextControls(data)
                 else
                 {
                     prevButton.addClass('disabled');
-                    // make prev url the current url
+                    // make prev url "the" current url
                     prevButton.children('a').attr('href', '#/' + data['_id']);
                 }
                 // update pos status text
@@ -271,7 +271,7 @@ function updatePrevNextControls(data)
 
 function _attachment_url(name, size)
 {
-    return '{% url odk_viewer.views.attachment_url %}' + size + '?media_file=' + '{{ username }}/attachments/' + name;
+    return '{% url "odk_viewer.views.attachment_url" %}' + size + '?media_file=' + '{{ username }}/attachments/' + name;
 }
 
 function reDraw(context, data)
