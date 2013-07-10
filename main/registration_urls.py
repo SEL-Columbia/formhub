@@ -13,7 +13,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
 
 from registration.backends.default.views import ActivationView
-from registration.backends.default.views import RegistrationView
+from main.registration_views import FHRegistrationView
 
 from main.forms import RegistrationFormUserProfile
 
@@ -57,7 +57,7 @@ urlpatterns = patterns(
         auth_views.password_reset_done,
         name='auth_password_reset_done'),
     url(r'^register/$',
-        RegistrationView.as_view(form_class=RegistrationFormUserProfile),
+        FHRegistrationView.as_view(form_class=RegistrationFormUserProfile),
         name='registration_register'),
     url(r'^register/complete/$',
         TemplateView.as_view(
