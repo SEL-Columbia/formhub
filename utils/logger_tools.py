@@ -223,7 +223,7 @@ def response_with_mimetype_and_name(
                 response = HttpResponse(wrapper, mimetype=mimetype)
                 response['Content-Length'] = default_storage.size(file_path)
             else:
-                wrapper = FileWrapper(file(file_path))
+                wrapper = FileWrapper(open(file_path))
                 response = HttpResponse(wrapper, mimetype=mimetype)
                 response['Content-Length'] = os.path.getsize(file_path)
         except IOError:
