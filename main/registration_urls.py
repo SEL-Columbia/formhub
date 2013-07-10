@@ -19,6 +19,10 @@ from main.forms import RegistrationFormUserProfile
 
 urlpatterns = patterns(
     '',
+    url(r'^activate/complete/$',
+        TemplateView.as_view(
+            template_name='registration/activation_complete.html'),
+        name='registration_activation_complete'),
     # Activation keys get matched by \w+ instead of the more specific
     # [a-fA-F0-9]{40} because a bad activation key should still get to the view
     # that way it can return a sensible "invalid key" message instead of a
