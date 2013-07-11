@@ -20,6 +20,7 @@ from django.http import HttpResponse, HttpResponseNotFound, \
     StreamingHttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 from modilabs.utils.subprocess_timeout import ProcessTimedOut
 from pyxform.errors import PyXFormError
 from pyxform.xform2json import create_survey_element_from_xml
@@ -171,6 +172,10 @@ def create_instance(username, xml_file, media_files,
 
             # override date created if required
             if date_created_override:
+                if not timezone.is_aware(date_created_override):
+                    # default to utc?
+                    date_created_override = timezone.make_aware(
+                        date_created_override, timezone.utc)
                 instance.date_created = date_created_override
                 instance.save()
 
