@@ -12,6 +12,7 @@ from time import sleep
 from pyxform.builder import create_survey_from_xls
 from django.conf import settings
 from main.tests.test_base import MainTestCase
+from django.utils.dateparse import parse_datetime
 from django.core.urlresolvers import reverse
 from django.core.files.temp import NamedTemporaryFile
 from odk_viewer.xls_writer import XlsWriter
@@ -35,7 +36,7 @@ from odk_logger.xform_instance_parser import XFormInstanceParser
 class TestExports(MainTestCase):
     def setUp(self):
         super(TestExports, self).setUp()
-        self._submission_time='2013-02-18 15:54:01'
+        self._submission_time = parse_datetime('2013-02-18 15:54:01Z')
 
     def test_unique_xls_sheet_name(self):
         xls_writer = XlsWriter()
@@ -61,8 +62,9 @@ class TestExports(MainTestCase):
         self.assertEqual(response.status_code, 200)
         test_file_path = os.path.join(os.path.dirname(__file__),
             'fixtures', 'transportation.csv')
+        content = self._get_response_content(response)
         with open(test_file_path, 'r') as test_file:
-            self.assertEqual(response.content, test_file.read())
+            self.assertEqual(content, test_file.read())
 
     def test_responses_for_empty_exports(self):
         self._publish_transportation_form()
@@ -411,7 +413,7 @@ class TestExports(MainTestCase):
                                 "id_string":self.xform.id_string})
         response = self.client.get(csv_export_url)
         self.assertEqual(response.status_code, 200)
-        f = StringIO.StringIO(response.content)
+        f = StringIO.StringIO(self._get_response_content(response))
         csv_reader = csv.reader(f)
         num_rows = len([row for row in csv_reader])
         f.close()
@@ -450,7 +452,7 @@ class TestExports(MainTestCase):
                                 "id_string":self.xform.id_string})
         response = self.client.get(csv_export_url)
         self.assertEqual(response.status_code, 200)
-        f = StringIO.StringIO(response.content)
+        f = StringIO.StringIO(self._get_response_content(response))
         csv_reader = csv.DictReader(f)
         data = [row for row in csv_reader]
         f.close()
@@ -630,7 +632,7 @@ class TestExports(MainTestCase):
         data = reader.next()
         csv_file.close()
         return data
-        
+
     def _get_xls_data(self, filepath):
         storage = get_storage_class()()
         with storage.open(filepath) as f:
@@ -640,7 +642,7 @@ class TestExports(MainTestCase):
         headers = transportation_sheet.row_values(0)
         column1 = transportation_sheet.row_values(1)
         return dict(zip(headers, column1))
-    
+
     def test_column_header_delimiter_export_option(self):
         self._publish_transportation_form()
         # survey 1 has ambulance and bicycle as values for
@@ -698,7 +700,7 @@ class TestExports(MainTestCase):
         # xlrd reader seems to convert bools into integers i.e. 0 or 1
         self.assertEqual(
             data["transport/available_transportation_types_to_referral_facility/ambulance"], 1)
-            
+
         # test xls with dot delimiter
         response = self.client.post(create_csv_export_url, custom_params)
         self.assertEqual(response.status_code, 302)
@@ -711,7 +713,7 @@ class TestExports(MainTestCase):
         # xlrd reader seems to convert bools into integers i.e. 0 or 1
         self.assertEqual(
             data["transport.available_transportation_types_to_referral_facility.ambulance"], 1)
-            
+
     def test_split_select_multiple_export_option(self):
         self._publish_transportation_form()
         self._submit_transport_instance(survey_at=1)
@@ -735,7 +737,7 @@ class TestExports(MainTestCase):
         self.assertTrue(
             data.has_key(
                 'transport/available_transportation_types_to_referral_facility/ambulance'))
-                
+
         # test csv without default split select multiples
         response = self.client.post(create_csv_export_url, custom_params)
         self.assertEqual(response.status_code, 302)
