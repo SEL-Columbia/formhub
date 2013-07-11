@@ -1,3 +1,5 @@
+from cStringIO import StringIO
+
 from test_base import MainTestCase
 from odk_viewer.views import zip_export, kml_export, export_download
 from django.core.urlresolvers import reverse
@@ -26,6 +28,18 @@ class TestFormExports(MainTestCase):
         self.xls_url = reverse('xls_export', kwargs={
                 'username': self.user.username,
                 'id_string': self.xform.id_string})
+
+    def _get_response_content(self, response):
+        contents = u''
+        if response.streaming:
+            actual_content = StringIO()
+            for content in response.streaming_content:
+                actual_content.write(content)
+            contents = actual_content.getvalue()
+            actual_content.close()
+        else:
+            contents = response.content
+        return contents
 
     def _num_rows(self, content, export_format):
         def xls_rows(f):
@@ -57,36 +71,42 @@ class TestFormExports(MainTestCase):
         start_time = timezone.now().strftime('%y_%m_%d_%H_%M_%S')
         time.sleep(1)
         s = self.surveys[1]
-        self._make_submission(os.path.join(self.this_directory, 'fixtures',
-                    'transportation', 'instances', s, s + '.xml'))
+        self._make_submission(
+            os.path.join(self.this_directory, 'fixtures',
+                         'transportation', 'instances', s, s + '.xml'))
         time.sleep(1)
         # 2 surveys exist before this time
         end_time = timezone.now().strftime('%y_%m_%d_%H_%M_%S')
         time.sleep(1)
         # 3 surveys exist in total
         s = self.surveys[2]
-        self._make_submission(os.path.join(self.this_directory, 'fixtures',
-                    'transportation', 'instances', s, s + '.xml'))
+        self._make_submission(
+            os.path.join(self.this_directory, 'fixtures',
+                         'transportation', 'instances', s, s + '.xml'))
         # test restricting to before end time
         params = {'end': end_time}
         response = self.client.get(url, params)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self._num_rows(response.content, export_format), 3)
+        content = self._get_response_content(response)
+        self.assertEqual(self._num_rows(content, export_format), 3)
         # test restricting to after start time, thus excluding the initial
         # submission
         params = {'start': start_time}
         response = self.client.get(url, params)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self._num_rows(response.content, export_format), 3)
+        content = self._get_response_content(response)
+        self.assertEqual(self._num_rows(content, export_format), 3)
         # test no time restriction
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self._num_rows(response.content, export_format), 4)
+        content = self._get_response_content(response)
+        self.assertEqual(self._num_rows(content, export_format), 4)
         # test restricting to between start time and end time
         params = {'start': start_time, 'end': end_time}
         response = self.client.get(url, params)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self._num_rows(response.content, export_format), 2)
+        content = self._get_response_content(response)
+        self.assertEqual(self._num_rows(content, export_format), 2)
 
     def test_filter_by_date_csv(self):
         self._filter_export_test(self.csv_url, 'csv')
