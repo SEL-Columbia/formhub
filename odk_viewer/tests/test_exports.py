@@ -1893,3 +1893,22 @@ class TestExportBuilder(MainTestCase):
                                                  export_builder.sections[0])
         self.assertIsInstance(new_row['amount'], basestring)
         self.assertEqual(new_row['amount'], '')
+
+    def test_convert_types(self):
+        val = '1'
+        expected_val = 1
+        converted_val = ExportBuilder.convert_type(val, 'int')
+        self.assertIsInstance(converted_val, int)
+        self.assertEqual(converted_val, expected_val)
+
+        val = '1.2'
+        expected_val = 1.2
+        converted_val = ExportBuilder.convert_type(val, 'decimal')
+        self.assertIsInstance(converted_val, float)
+        self.assertEqual(converted_val, expected_val)
+
+        val = '2012-06-23'
+        expected_val = datetime.date(2012, 6, 23)
+        converted_val = ExportBuilder.convert_type(val, 'date')
+        self.assertIsInstance(converted_val, datetime.date)
+        self.assertEqual(converted_val, expected_val)
