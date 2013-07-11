@@ -1,4 +1,5 @@
 import base64
+import datetime
 import re
 import json
 
@@ -14,7 +15,7 @@ from utils.model_tools import queryset_iterator
 from odk_logger.models import Instance
 from celery import task
 from common_tags import START_TIME, START, END_TIME, END, ID, UUID,\
-    ATTACHMENTS, GEOLOCATION, SUBMISSION_TIME,\
+    ATTACHMENTS, GEOLOCATION, SUBMISSION_TIME, MONGO_STRFTIME,\
     BAMBOO_DATASET_ID, DELETEDAT
 from django.utils.translation import ugettext as _
 
@@ -155,6 +156,8 @@ class ParsedInstance(models.Model):
     def to_dict_for_mongo(self):
         d = self.to_dict()
         deleted_at = None
+        if isinstance(self.instance.deleted_at, datetime.datetime):
+            deleted_at = self.instance.deleted_at.strftime(MONGO_STRFTIME)
         d.update(
             {
                 UUID: self.instance.uuid,
@@ -168,7 +171,7 @@ class ParsedInstance(models.Model):
                 self.STATUS: self.instance.status,
                 GEOLOCATION: [self.lat, self.lng],
                 SUBMISSION_TIME:
-                self.instance.date_created,
+                self.instance.date_created.strftime(MONGO_STRFTIME),
                 DELETEDAT: deleted_at
             }
         )
