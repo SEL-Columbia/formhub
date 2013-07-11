@@ -190,14 +190,16 @@ def create_instance(username, xml_file, media_files,
 def report_exception(subject, info, exc_info=None):
     if exc_info:
         cls, err = exc_info[:2]
-        message = _(u"%(exception)s - Exception in request:"
+        message = _(u"Exception in request:"
                     u" %(class)s: %(error)s")\
-            % {'exception': info, 'class': cls.__name__, 'error': err}
+            % {'class': cls.__name__, 'error': err}
         message += u"".join(traceback.format_exception(*exc_info))
+    else:
+        message = u"%s" % info
 
     if settings.DEBUG or settings.TESTING_MODE:
-        print subject
-        print info
+        sys.stdout.write("Subject: %s\n" % subject)
+        sys.stdout.write("Message: %s\n" % message)
     else:
         mail_admins(subject=subject, message=message)
 
