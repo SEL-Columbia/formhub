@@ -153,7 +153,7 @@ class ExportBuilder(object):
         'decimal': lambda x: float(x),
         'date': lambda x: datetime.strptime(x, '%Y-%m-%j').date(),
         'dateTime': lambda x: datetime.strptime(
-            x[:19], '%Y-%m-%jT%H:%M:%S')
+            x[:19], '%Y-%m-%dT%H:%M:%S')
     }
 
     XLS_SHEET_NAME_MAX_CHARS = 31
