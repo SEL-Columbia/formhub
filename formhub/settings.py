@@ -328,7 +328,8 @@ if MONGO_DATABASE.get('USER') and MONGO_DATABASE.get('PASSWORD'):
 else:
     MONGO_CONNECTION_URL = "mongodb://%(HOST)s:%(PORT)s" % MONGO_DATABASE
 
-MONGO_CONNECTION = MongoClient(MONGO_CONNECTION_URL, safe=True, j=True)
+MONGO_CONNECTION = MongoClient(
+    MONGO_CONNECTION_URL, safe=True, j=True, tz_aware=True)
 MONGO_DB = MONGO_CONNECTION[MONGO_DATABASE['NAME']]
 
 # Clear out the test database
