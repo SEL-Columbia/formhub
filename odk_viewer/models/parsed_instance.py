@@ -3,6 +3,7 @@ import datetime
 import re
 import json
 
+from dateutil import parser
 from bson import json_util
 from django.conf import settings
 from django.db import models
@@ -35,12 +36,9 @@ def datetime_from_str(text):
     # Assumes text looks like 2011-01-01T09:50:06.966
     if text is None:
         return None
-    date_time_str = text.split(".")[0]
     dt = None
     try:
-        dt = datetime.datetime.strptime(
-            date_time_str, DATETIME_FORMAT
-        )
+        dt = parser.parse(text)
     except Exception:
         return None
     return dt
