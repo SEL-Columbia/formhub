@@ -1,5 +1,3 @@
-from cStringIO import StringIO
-
 from test_base import MainTestCase
 from odk_viewer.views import zip_export, kml_export, export_download
 from django.core.urlresolvers import reverse
@@ -28,18 +26,6 @@ class TestFormExports(MainTestCase):
         self.xls_url = reverse('xls_export', kwargs={
                 'username': self.user.username,
                 'id_string': self.xform.id_string})
-
-    def _get_response_content(self, response):
-        contents = u''
-        if response.streaming:
-            actual_content = StringIO()
-            for content in response.streaming_content:
-                actual_content.write(content)
-            contents = actual_content.getvalue()
-            actual_content.close()
-        else:
-            contents = response.content
-        return contents
 
     def _num_rows(self, content, export_format):
         def xls_rows(f):

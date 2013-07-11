@@ -4,6 +4,8 @@ import re
 from tempfile import NamedTemporaryFile
 import urllib2
 
+from cStringIO import StringIO
+
 from django.contrib.auth.models import User
 from django_digest.test import Client as DigestClient
 # from django.test import TestCase
@@ -193,3 +195,15 @@ class MainTestCase(TestCase):
         # apply credentials
         client.set_authorization(username, password, 'Digest')
         return client
+
+    def _get_response_content(self, response):
+        contents = u''
+        if response.streaming:
+            actual_content = StringIO()
+            for content in response.streaming_content:
+                actual_content.write(content)
+            contents = actual_content.getvalue()
+            actual_content.close()
+        else:
+            contents = response.content
+        return contents
