@@ -16,7 +16,8 @@ from django.core.servers.basehttp import FileWrapper
 from django.db import IntegrityError
 from django.db import transaction
 from django.db.models.signals import pre_delete
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, \
+    StreamingHttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from modilabs.utils.subprocess_timeout import ProcessTimedOut
@@ -220,11 +221,11 @@ def response_with_mimetype_and_name(
             if not use_local_filesystem:
                 default_storage = get_storage_class()()
                 wrapper = FileWrapper(default_storage.open(file_path))
-                response = HttpResponse(wrapper, mimetype=mimetype)
+                response = StreamingHttpResponse(wrapper, mimetype=mimetype)
                 response['Content-Length'] = default_storage.size(file_path)
             else:
                 wrapper = FileWrapper(open(file_path))
-                response = HttpResponse(wrapper, mimetype=mimetype)
+                response = StreamingHttpResponse(wrapper, mimetype=mimetype)
                 response['Content-Length'] = os.path.getsize(file_path)
         except IOError:
             response = HttpResponseNotFound(
