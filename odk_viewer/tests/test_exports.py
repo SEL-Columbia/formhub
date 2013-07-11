@@ -32,6 +32,67 @@ from odk_viewer.models.parsed_instance import _encode_for_mongo
 from odk_logger.xform_instance_parser import XFormInstanceParser
 
 
+class TestExportList(MainTestCase):
+    def setUp(self):
+        super(TestExportList, self).setUp()
+        self._publish_transportation_form()
+        survey = self.surveys[0]
+        self._make_submission(
+            os.path.join(
+                self.this_directory, 'fixtures', 'transportation',
+                'instances', survey, survey + '.xml'))
+
+    def test_csv_export_list(self):
+        kwargs = {'username': self.user.username,
+                  'id_string': self.xform.id_string,
+                  'export_type': Export.CSV_EXPORT}
+
+        # test csv
+        url = reverse(export_list, kwargs=kwargs)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_xls_export_list(self):
+        kwargs = {'username': self.user.username,
+                  'id_string': self.xform.id_string,
+                  'export_type': Export.XLS_EXPORT}
+        url = reverse(export_list, kwargs=kwargs)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_kml_export_list(self):
+        kwargs = {'username': self.user.username,
+                  'id_string': self.xform.id_string,
+                  'export_type': Export.KML_EXPORT}
+        url = reverse(export_list, kwargs=kwargs)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_zip_export_list(self):
+        kwargs = {'username': self.user.username,
+                  'id_string': self.xform.id_string,
+                  'export_type': Export.ZIP_EXPORT}
+        url = reverse(export_list, kwargs=kwargs)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_gdoc_export_list(self):
+        kwargs = {'username': self.user.username,
+                  'id_string': self.xform.id_string,
+                  'export_type': Export.GDOC_EXPORT}
+        url = reverse(export_list, kwargs=kwargs)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+
+    def test_xsv_zip_export_list(self):
+        kwargs = {'username': self.user.username,
+                  'id_string': self.xform.id_string,
+                  'export_type': Export.CSV_ZIP_EXPORT}
+        url = reverse(export_list, kwargs=kwargs)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+
 class TestExports(MainTestCase):
     def setUp(self):
         super(TestExports, self).setUp()

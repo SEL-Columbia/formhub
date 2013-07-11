@@ -28,7 +28,7 @@ class Export(models.Model):
     KML_EXPORT = 'kml'
     ZIP_EXPORT = 'zip'
     GDOC_EXPORT = 'gdoc'
-    CSV_ZIP_EXPORT = 'csv.zip'
+    CSV_ZIP_EXPORT = 'csv_zip'
 
     EXPORT_MIMES = {
         'xls': 'vnd.ms-excel',
