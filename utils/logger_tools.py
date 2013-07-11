@@ -456,7 +456,7 @@ def update_mongo_for_xform(xform, only_update_missing=True):
 
 
 def mongo_sync_status(remongo=False, update_all=False, user=None, xform=None):
-    qs = XForm.objects.only('id_string').select_related('user')
+    qs = XForm.objects.only('id_string', 'user').select_related('user')
     if user and not xform:
         qs = qs.filter(user=user)
     elif user and xform:
