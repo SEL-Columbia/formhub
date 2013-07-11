@@ -1086,3 +1086,6 @@ color: white;
 .gdoctoc {
 	position: absolute;
 }
+.toggler {
+  cursor: pointer;
+}

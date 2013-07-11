@@ -135,7 +135,7 @@ class RestServiceTest(MainTestCase):
             'id_string': self.xform.id_string
         })
         response = self.client.get(url)
-        self.assertFalse('<h3 data-toggle="collapse" data-target='
+        self.assertFalse('<h3 data-toggle="collapse" class="toggler" data-target='
                          '"#restservice_tab">Rest Services</h3>'
                          in response.content)
 
