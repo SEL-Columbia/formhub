@@ -151,7 +151,7 @@ class ExportBuilder(object):
     CONVERT_FUNCS = {
         'int': lambda x: int(x),
         'decimal': lambda x: float(x),
-        'date': lambda x: datetime.strptime(x, '%Y-%m-%j').date(),
+        'date': lambda x: datetime.strptime(x, '%Y-%m-%d').date(),
         'dateTime': lambda x: datetime.strptime(
             x[:19], '%Y-%m-%dT%H:%M:%S')
     }
