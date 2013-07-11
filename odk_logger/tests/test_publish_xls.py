@@ -1,9 +1,11 @@
 import os
+import sys
 import codecs
 
 from django.core.management import call_command
 from main.tests.test_base import MainTestCase
 from odk_logger.models.xform import XForm
+from utils.logger_tools import report_exception
 
 
 class TestPublishXLS(MainTestCase):
@@ -66,3 +68,23 @@ class TestPublishXLS(MainTestCase):
             with codecs.open(test_xml_file_path, 'rb', encoding="utf-8") as actual_file:
                 self.assertMultiLineEqual(expected_file.read(), actual_file.read())
         os.remove(test_xml_file_path)
+
+    def test_report_exception_with_exc_info(self):
+        e = Exception("A test exception")
+        try:
+            raise e
+        except Exception as e:
+            exc_info = sys.exc_info()
+            try:
+                report_exception(subject="Test report exception", info=e,
+                                 exc_info=exc_info)
+            except Exception as e:
+                raise AssertionError("%s" % e)
+
+    def test_report_exception_without_exc_info(self):
+        e = Exception("A test exception")
+        try:
+            report_exception(subject="Test report exception", info=e)
+        except Exception as e:
+            raise AssertionError("%s" % e)
+
