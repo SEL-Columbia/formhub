@@ -1096,6 +1096,34 @@ class TestExportBuilder(MainTestCase):
             ]
         }
     ]
+    data_utf8 = [
+        {
+            'name': 'Abe',
+            'age': 35,
+            'tel/telLg==office': '020123456',
+            'children':
+            [
+                {
+                    'children/name': 'Mike',
+                    'children/age': 5,
+                    'children/fav_colors': u'red\u2019s blue\u2019s',
+                    'children/iceLg==creams': 'vanilla chocolate',
+                    'children/cartoons':
+                    [
+                        {
+                            'children/cartoons/name': 'Tom & Jerry',
+                            'children/cartoons/why': 'Tom is silly',
+                        },
+                        {
+                            'children/cartoons/name': 'Flinstones',
+                            'children/cartoons/why': u"I like bam bam\u0107"
+                            # throw in a unicode character
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 
     def _create_childrens_survey(self):
         survey = create_survey_from_xls(
@@ -1257,7 +1285,7 @@ class TestExportBuilder(MainTestCase):
         export_builder = ExportBuilder()
         export_builder.set_survey(survey)
         temp_zip_file = NamedTemporaryFile(suffix='.zip')
-        export_builder.to_zipped_csv(temp_zip_file.name, self.data)
+        export_builder.to_zipped_csv(temp_zip_file.name, self.data_utf8)
         temp_zip_file.seek(0)
         temp_dir = tempfile.mkdtemp()
         zip_file = zipfile.ZipFile(temp_zip_file.name, "r")
@@ -1285,7 +1313,37 @@ class TestExportBuilder(MainTestCase):
             rows = [row for row in reader]
             actual_headers = [h.decode('utf-8') for h in rows[0]]
             self.assertEqual(sorted(actual_headers), sorted(expected_headers))
+            data = dict(zip(rows[0], rows[1]))
+            self.assertEqual(
+                data[u'children/fav_colors/red\u2019s'.encode('utf-8')],
+                'True')
+            self.assertEqual(
+                data[u'children/fav_colors/blue\u2019s'.encode('utf-8')],
+                'True')
+            self.assertEqual(
+                data[u'children/fav_colors/pink\u2019s'.encode('utf-8')],
+                'False')
+            # check that red and blue are set to true
         shutil.rmtree(temp_dir)
+
+    def test_xls_export_works_with_unicode(self):
+        survey = create_survey_from_xls(
+            os.path.join(
+                os.path.abspath('./'), 'odk_logger', 'tests', 'fixtures',
+                'childrens_survey_unicode.xls'))
+        export_builder = ExportBuilder()
+        export_builder.set_survey(survey)
+        temp_xls_file = NamedTemporaryFile(suffix='.xlsx')
+        export_builder.to_xls_export(temp_xls_file.name, self.data_utf8)
+        temp_xls_file.seek(0)
+        # check that values for red\u2019s and blue\u2019s are set to true
+        wb = load_workbook(temp_xls_file.name)
+        children_sheet = wb.get_sheet_by_name("children")
+        data = dict([(r[0].value, r[1].value) for r in children_sheet.columns])
+        self.assertTrue(data[u'children/fav_colors/red\u2019s'])
+        self.assertTrue(data[u'children/fav_colors/blue\u2019s'])
+        self.assertFalse(data[u'children/fav_colors/pink\u2019s'])
+        temp_xls_file.close()
 
     def test_generation_of_multi_selects_works(self):
         survey = self._create_childrens_survey()

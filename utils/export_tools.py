@@ -275,7 +275,7 @@ class ExportBuilder(object):
             selections = []
             if data:
                 selections = [
-                    '{0}/{1}'.format(
+                    u'{0}/{1}'.format(
                         xpath, selection) for selection in data.split()]
             row.update(
                 dict([(choice, choice in selections) for choice in choices]))
@@ -301,7 +301,7 @@ class ExportBuilder(object):
         return row
 
     @classmethod
-    def convert_type(self, value, data_type):
+    def convert_type(cls, value, data_type):
         """
         Convert data to its native type e.g. string '1' to int 1
         @param value: the string value to convert
