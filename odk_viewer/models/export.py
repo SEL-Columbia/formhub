@@ -28,15 +28,15 @@ class Export(models.Model):
     KML_EXPORT = 'kml'
     ZIP_EXPORT = 'zip'
     GDOC_EXPORT = 'gdoc'
-    CSV_ZIP_EXPORT = 'csv.zip'
+    CSV_ZIP_EXPORT = 'csv_zip'
 
     EXPORT_MIMES = {
         'xls': 'vnd.ms-excel',
         'xlsx': 'vnd.openxmlformats',
-        'csv': 'application/csv',
-        'zip': 'application/zip',
-        'csv.zip': 'application/zip',
-        'kml': 'application/vnd.google-earth.kml+xml'
+        'csv': 'csv',
+        'zip': 'zip',
+        'csv_zip': 'zip',
+        'kml': 'vnd.google-earth.kml+xml'
     }
 
     EXPORT_TYPES = [

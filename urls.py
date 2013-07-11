@@ -86,7 +86,7 @@ urlpatterns = patterns('',
     # exporting stuff
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.csv$", 'odk_viewer.views.data_export', name='csv_export', kwargs={'export_type': 'csv'}),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.xls", 'odk_viewer.views.data_export', name='xls_export', kwargs={'export_type': 'xls'}),
-    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.csv.zip", 'odk_viewer.views.data_export', name='csv_zip_export', kwargs={'export_type': 'csv.zip'}),
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.csv.zip", 'odk_viewer.views.data_export', name='csv_zip_export', kwargs={'export_type': 'csv_zip'}),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.kml$", 'odk_viewer.views.kml_export'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.zip", 'odk_viewer.views.zip_export'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/gdocs$", 'odk_viewer.views.google_xls_export'),

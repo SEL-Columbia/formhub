@@ -32,6 +32,123 @@ from odk_viewer.models.parsed_instance import _encode_for_mongo
 from odk_logger.xform_instance_parser import XFormInstanceParser
 
 
+class TestExportList(MainTestCase):
+    def setUp(self):
+        super(TestExportList, self).setUp()
+        self._publish_transportation_form()
+        survey = self.surveys[0]
+        self._make_submission(
+            os.path.join(
+                self.this_directory, 'fixtures', 'transportation',
+                'instances', survey, survey + '.xml'))
+
+    def test_csv_export_list(self):
+        kwargs = {'username': self.user.username,
+                  'id_string': self.xform.id_string,
+                  'export_type': Export.CSV_EXPORT}
+
+        # test csv
+        url = reverse(export_list, kwargs=kwargs)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_xls_export_list(self):
+        kwargs = {'username': self.user.username,
+                  'id_string': self.xform.id_string,
+                  'export_type': Export.XLS_EXPORT}
+        url = reverse(export_list, kwargs=kwargs)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_kml_export_list(self):
+        kwargs = {'username': self.user.username,
+                  'id_string': self.xform.id_string,
+                  'export_type': Export.KML_EXPORT}
+        url = reverse(export_list, kwargs=kwargs)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_zip_export_list(self):
+        kwargs = {'username': self.user.username,
+                  'id_string': self.xform.id_string,
+                  'export_type': Export.ZIP_EXPORT}
+        url = reverse(export_list, kwargs=kwargs)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_gdoc_export_list(self):
+        kwargs = {'username': self.user.username,
+                  'id_string': self.xform.id_string,
+                  'export_type': Export.GDOC_EXPORT}
+        url = reverse(export_list, kwargs=kwargs)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+
+    def test_xsv_zip_export_list(self):
+        kwargs = {'username': self.user.username,
+                  'id_string': self.xform.id_string,
+                  'export_type': Export.CSV_ZIP_EXPORT}
+        url = reverse(export_list, kwargs=kwargs)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+
+class TestDataExportURL(MainTestCase):
+    def setUp(self):
+        super(TestDataExportURL, self).setUp()
+        self._publish_transportation_form()
+        survey = self.surveys[0]
+        self._make_submission(
+            os.path.join(
+                self.this_directory, 'fixtures', 'transportation',
+                'instances', survey, survey + '.xml'))
+
+    def _filename_from_disposition(self, content_disposition):
+        filename_pos = content_disposition.index('filename=')
+        self.assertTrue(filename_pos != -1)
+        return content_disposition[filename_pos + len('filename='):]
+
+    def test_csv_export_url(self):
+        url = reverse('csv_export', kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+        })
+        response = self.client.get(url)
+        headers = dict(response.items())
+        self.assertEqual(headers['Content-Type'], 'application/csv')
+        content_disposition = headers['Content-Disposition']
+        filename = self._filename_from_disposition(content_disposition)
+        basename, ext = os.path.splitext(filename)
+        self.assertEqual(ext, '.csv')
+
+    def test_xls_export_url(self):
+        url = reverse('xls_export', kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+        })
+        response = self.client.get(url)
+        headers = dict(response.items())
+        self.assertEqual(headers['Content-Type'],
+                         'application/vnd.openxmlformats')
+        content_disposition = headers['Content-Disposition']
+        filename = self._filename_from_disposition(content_disposition)
+        basename, ext = os.path.splitext(filename)
+        self.assertEqual(ext, '.xlsx')
+
+    def test_csv_zip_export_url(self):
+        url = reverse('csv_zip_export', kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+        })
+        response = self.client.get(url)
+        headers = dict(response.items())
+        self.assertEqual(headers['Content-Type'], 'application/zip')
+        content_disposition = headers['Content-Disposition']
+        filename = self._filename_from_disposition(content_disposition)
+        basename, ext = os.path.splitext(filename)
+        self.assertEqual(ext, '.zip')
+
+
 class TestExports(MainTestCase):
     def setUp(self):
         super(TestExports, self).setUp()
