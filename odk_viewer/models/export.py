@@ -33,10 +33,10 @@ class Export(models.Model):
     EXPORT_MIMES = {
         'xls': 'vnd.ms-excel',
         'xlsx': 'vnd.openxmlformats',
-        'csv': 'application/csv',
-        'zip': 'application/zip',
-        'csv.zip': 'application/zip',
-        'kml': 'application/vnd.google-earth.kml+xml'
+        'csv': 'csv',
+        'zip': 'zip',
+        'csv_zip': 'zip',
+        'kml': 'vnd.google-earth.kml+xml'
     }
 
     EXPORT_TYPES = [
