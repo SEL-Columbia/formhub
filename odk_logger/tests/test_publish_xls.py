@@ -2,6 +2,7 @@ import os
 import codecs
 
 from django.core.management import call_command
+from django.core.management.base import CommandError
 from main.tests.test_base import MainTestCase
 from odk_logger.models.xform import XForm
 
@@ -28,12 +29,8 @@ class TestPublishXLS(MainTestCase):
             self.this_directory, "fixtures",
             "transportation", "transportation_updated.xls")
         # call command without replace param
-        failed = False
-        try:
+        with self.assertRaises(CommandError):
             call_command('publish_xls', xls_file_path, self.user.username)
-        except SystemExit:
-            failed = True
-        self.assertTrue(failed)
         # now we call the command with the replace param
         call_command(
             'publish_xls', xls_file_path, self.user.username, replace=True)
