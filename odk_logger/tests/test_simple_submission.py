@@ -73,7 +73,7 @@ class TestSimpleSubmission(TestCase):
         """
         def submit_at_hour(hour):
             st_xml = """
-            <?xml version='1.0' ?><start_time id="start_time"><start_time>2012-01-11T%d:00:00.000</start_time></start_time>
+            <?xml version='1.0' ?><start_time id="start_time"><start_time>2012-01-11T%d:00:00.000+00</start_time></start_time>
             """.strip() % hour
             try:
                 create_instance(self.user.username, TempFileProxy(st_xml), [])

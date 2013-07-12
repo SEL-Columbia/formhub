@@ -10,7 +10,7 @@
   <div class="row">
     <div class="span8">
       <p>
-        {% url auth_login as login_url %}
+        {% url "auth_login" as login_url %}
         {% blocktrans %}
         Your account has been successfully activated. You may log in
         <a href="{{ login_url }}">here</a>.{% endblocktrans %}

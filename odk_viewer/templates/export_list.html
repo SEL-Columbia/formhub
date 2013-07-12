@@ -6,13 +6,13 @@
 
 <section id="export-downloads">
   <div class="page-header">
-    <h1>{{ export_type_name|upper }} {% blocktrans %}Exports{% endblocktrans %} (<a href="{% url main.views.show username xform.id_string %}">{{ xform.id_string }}</a>)</h1>
+    <h1>{{ export_type_name|upper }} {% blocktrans %}Exports{% endblocktrans %} (<a href="{% url "main.views.show" username xform.id_string %}">{{ xform.id_string }}</a>)</h1>
   </div>
   <script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
   <script type="text/javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
   <script type="text/javascript" src="/static/js/form_actions.js"></script>
 
-    <form action="{% url odk_viewer.views.create_export username xform.id_string export_type %}" method="post" enctype="application/x-www-form-urlencoded">
+    <form action="{% url "odk_viewer.views.create_export" username xform.id_string export_type %}" method="post" enctype="application/x-www-form-urlencoded">
         {% csrf_token %}
             <span style='float:middle;'>
               <div>
@@ -23,7 +23,7 @@
     </form>
     
     <div id="advanced-export-modal" class="modal hide fade">
-      <form action="{% url odk_viewer.views.create_export username xform.id_string export_type %}" method="post" enctype="application/x-www-form-urlencoded">
+      <form action="{% url "odk_viewer.views.create_export" username xform.id_string export_type %}" method="post" enctype="application/x-www-form-urlencoded">
         {% csrf_token %}
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -63,7 +63,7 @@
         <td>
             {% if not export.is_pending %}
                 {% if export.is_successful %}
-                    <a href="{% url odk_viewer.views.export_download username xform.id_string export.export_type export.filename %}">{{ export.filename }}</a>
+                    <a href="{% url "odk_viewer.views.export_download" username xform.id_string export.export_type export.filename %}">{{ export.filename }}</a>
                 {% else %}
                     Failed
                 {% endif %}
@@ -74,7 +74,7 @@
         </td>
         <td>{{ export.created_on }}</td>
         <td>
-            <form action="{% url odk_viewer.views.delete_export username xform.id_string export_type %}" method="post" enctype="application/x-www-form-urlencoded">
+            <form action="{% url "odk_viewer.views.delete_export" username xform.id_string export_type %}" method="post" enctype="application/x-www-form-urlencoded">
               {% csrf_token %}
                 <div id="delete-{{ export.id|stringformat:"d" }}" class="modal hide fade">
                     <div class="modal-header">
@@ -109,7 +109,7 @@
 <script type="text/javascript" charset="utf-8" src="/static/js/export_list.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
-   fhExportList.init('{% url odk_viewer.views.export_progress username xform.id_string export_type %}', 8000)
+   fhExportList.init('{% url "odk_viewer.views.export_progress" username xform.id_string export_type %}', 8000)
    setTimeout(fhExportList.autoRefresh, 5000)
 });
 </script>

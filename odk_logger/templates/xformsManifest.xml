@@ -4,7 +4,7 @@
     <mediaFile>
         <filename>{{ media.data_value }}</filename>
         <hash>md5:{{ media.hash }}</hash>
-        <downloadUrl>{{ host }}{% url main.views.download_media_data media.xform.user.username media.xform.id_string media.id %}</downloadUrl>
+        <downloadUrl>{{ host }}{% url "main.views.download_media_data" media.xform.user.username media.xform.id_string media.id %}</downloadUrl>
     </mediaFile>
     {% endfor %}
 </manifest>

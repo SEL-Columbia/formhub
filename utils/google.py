@@ -10,7 +10,7 @@ import gdata.data
 import gdata.docs.client
 import gdata.docs.data
 
-import settings
+from django.conf import settings
 
 oauth2_token = gdata.gauth.OAuth2Token(
     client_id=settings.GOOGLE_CLIENT_ID,

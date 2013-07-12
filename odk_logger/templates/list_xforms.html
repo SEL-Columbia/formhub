@@ -14,7 +14,7 @@
     {% for xform in xforms %}
     <tr>
       <td>
-	<a href={% url odk_logger.views.toggle_downloadable id_string=xform.id_string %} class="delete">
+	<a href={% url "odk_logger.views.toggle_downloadable" id_string=xform.id_string %} class="delete">
 	  {% if xform.downloadable %}
 	  [ {% trans 'yes' %} ]
 	  {% else %}

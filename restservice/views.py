@@ -1,3 +1,4 @@
+import json
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.db.utils import IntegrityError
@@ -5,7 +6,6 @@ from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.template.base import Template
 from django.template.context import RequestContext, Context
-from django.utils import simplejson
 from django.utils.translation import ugettext as _
 
 from odk_logger.models.xform import XForm
@@ -52,7 +52,7 @@ def add_service(request, username, id_string):
             response = {'status': context.status, 'message': context.message}
             if context.restservice:
                 response["restservice"] = u"%s" % context.restservice
-            return HttpResponse(simplejson.dumps(response))
+            return HttpResponse(json.dumps(response))
     context.list_services = RestService.objects.filter(xform=xform)
     context.form = form
     context.username = username

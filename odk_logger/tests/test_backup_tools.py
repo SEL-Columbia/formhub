@@ -31,11 +31,13 @@ class TestBackupTools(MainTestCase):
             xml_file_path, field_name="xml_file", content_type="text/xml")
         media_files = []
         date_created = datetime.strptime("2013-01-01 12:00:00",
-            "%Y-%m-%d %H:%M:%S")
-        instance = create_instance(self.user.username, xml_file, media_files,
+                                         "%Y-%m-%d %H:%M:%S")
+        instance = create_instance(
+            self.user.username, xml_file, media_files,
             date_created_override=date_created)
         self.assertIsNotNone(instance)
-        self.assertEqual(instance.date_created, date_created)
+        self.assertEqual(instance.date_created.strftime("%Y-%m-%d %H:%M:%S"),
+                         date_created.strftime("%Y-%m-%d %H:%M:%S"))
 
     def test_date_created_from_filename(self):
         date_str = "2012-01-02-12-35-48"
@@ -50,8 +52,6 @@ class TestBackupTools(MainTestCase):
 
     def test_backup_then_restore_from_zip(self):
         self._publish_transportation_form()
-        query_set = Instance.objects.filter(
-            xform=self.xform)
         initial_instance_count = Instance.objects.filter(
             xform=self.xform).count()
 
@@ -59,7 +59,7 @@ class TestBackupTools(MainTestCase):
         for i in range(len(self.surveys)):
             self._submit_transport_instance(i)
 
-        instance_count =  Instance.objects.filter(
+        instance_count = Instance.objects.filter(
             xform=self.xform).count()
         self.assertEqual(
             instance_count, initial_instance_count + len(self.surveys))

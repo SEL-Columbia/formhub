@@ -6,6 +6,6 @@
     {% for media in media_files %}<mediaFile>
         <filename>{{ media.filename|safe }}</filename>
         <hash>md5:{{ media.file_hash }}</hash>
-        <downloadUrl>{{ host }}{% url odk_viewer.views.attachment_url 'original' %}?media_file={{ media.media_file.name|safe }}</downloadUrl>
+        <downloadUrl>{{ host }}{% url "odk_viewer.views.attachment_url" 'original' %}?media_file={{ media.media_file.name|safe }}</downloadUrl>
     </mediaFile>{% endfor %}
 </submission>

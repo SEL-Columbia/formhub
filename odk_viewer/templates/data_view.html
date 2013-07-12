@@ -28,7 +28,7 @@
 {% block content %}
     <section id="data-view">
         <div class="page-header">
-            <h1>{%  trans "Data View" %} <small><a href="{% url main.views.show owner.username xform.id_string %}">{{ xform.title }}</a></small></h1>
+            <h1>{%  trans "Data View" %} <small><a href="{% url "main.views.show" owner.username xform.id_string %}">{{ xform.title }}</a></small></h1>
         </div>
         <div class="row">
         <span class="span12">
@@ -38,11 +38,11 @@
         </div>
     </section>
     <script type="text/javascript">
-        var formJSONUrl = "{% url odk_logger.views.download_jsonform owner.username xform.id_string %}";
-        var mongoAPIUrl = "{% url main.views.api owner.username xform.id_string %}";
+        var formJSONUrl = "{% url "odk_logger.views.download_jsonform" owner.username xform.id_string %}";
+        var mongoAPIUrl = "{% url "main.views.api" owner.username xform.id_string %}";
         var views, sideBarViews, multiView, slickView;
         var numDefaultColumns = 30;//number of columns to show by default
-        var instance_view_url = "{% url odk_viewer.views.instance owner.username xform.id_string %}"
+        var instance_view_url = "{% url "odk_viewer.views.instance" owner.username xform.id_string %}"
     </script>
     <script src="/static/js/data_view.js" type="text/javascript"></script>
 {% endblock %}

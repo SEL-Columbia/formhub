@@ -145,6 +145,6 @@ def restore_backup_from_path(dir_path, username, status):
                     num_restored += 1
                 except Exception as e:
                     sys.stderr.write(
-                        "Couldn't restote %s, create instance said: %s\n" %
+                        "Could not restore %s, create instance said: %s\n" %
                         (file_name, e))
     return num_instances, num_restored
