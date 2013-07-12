@@ -128,7 +128,7 @@ MIDDLEWARE_CLASSES = (
     'utils.middleware.HTTPResponseNotAllowedMiddleware',
 )
 
-LOCALE_PATHS = (os.path.join(PROJECT_ROOT, 'locale'), )
+LOCALE_PATHS = (os.path.join(PROJECT_ROOT, 'formhub', 'locale'), )
 
 ROOT_URLCONF = 'formhub.urls'
 USE_TZ = True
