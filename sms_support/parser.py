@@ -88,7 +88,7 @@ def parse_sms_text(xform, identity, text):
             try:
                 return func()
             except Exception as e:
-                raise SMSCastingError(_(u"%(error)s") % {'error': e.message},
+                raise SMSCastingError(_(u"%(error)s") % {'error': e},
                                       xlsf_name)
 
         def media_value(value, medias):

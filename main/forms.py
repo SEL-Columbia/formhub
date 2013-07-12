@@ -103,8 +103,8 @@ class UserProfileFormRegister(forms.Form):
                               max_length=255)
 
     recaptcha_challenge_field = forms.CharField(required=False, max_length=512)
-    recaptcha_response_field = forms.CharField(max_length=100,
-                                               required=settings.REGISTRATION_REQUIRE_CAPTCHA)
+    recaptcha_response_field = forms.CharField(
+        max_length=100, required=settings.REGISTRATION_REQUIRE_CAPTCHA)
 
     def save(self, new_user):
         new_profile = \
@@ -203,20 +203,6 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail,
             password=self.cleaned_data['password1'],
             email=self.cleaned_data['email'])
         UserProfileFormRegister.save(self, new_user)
-        if hasattr(settings, 'AUTO_ADD_CROWDFORM') and \
-                settings.AUTO_ADD_CROWDFORM and \
-                hasattr(settings, 'DEFAULT_CROWDFORM'):
-            try:
-                default_crowdform = settings.DEFAULT_CROWDFORM
-                if isinstance(default_crowdform, dict) and\
-                        'xform_username' in default_crowdform and\
-                        'xform_id_string' in default_crowdform:
-                    xform = XForm.objects.get(
-                        id_string=default_crowdform['xform_id_string'],
-                        user__username=default_crowdform['xform_username'])
-                    MetaData.crowdform_users(xform, new_user.username)
-            except XForm.DoesNotExist:
-                pass
         return new_user
 
 
@@ -246,8 +232,7 @@ class MapboxLayerForm(forms.Form):
                                max_length=255)
     attribution = forms.CharField(widget=forms.TextInput(), required=False,
                                   max_length=255)
-    link = forms.URLField(verify_exists=False,
-                          label=ugettext_lazy(u'JSONP url'),
+    link = forms.URLField(label=ugettext_lazy(u'JSONP url'),
                           required=True)
 
 
@@ -257,20 +242,18 @@ class QuickConverterFile(forms.Form):
 
 
 class QuickConverterURL(forms.Form):
-    xls_url = forms.URLField(verify_exists=False,
-                             label=ugettext_lazy('XLS URL'),
+    xls_url = forms.URLField(label=ugettext_lazy('XLS URL'),
                              required=False)
 
 
 class QuickConverterDropboxURL(forms.Form):
     dropbox_xls_url = forms.URLField(
-        verify_exists=False,
         label=ugettext_lazy('XLS URL'), required=False)
 
 
 class QuickConverter(QuickConverterFile, QuickConverterURL,
                      QuickConverterDropboxURL):
-    validate = URLValidator(verify_exists=True)
+    validate = URLValidator()
 
     def publish(self, user, id_string=None):
         if self.is_valid():

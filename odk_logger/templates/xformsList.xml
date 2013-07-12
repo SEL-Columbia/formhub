@@ -10,7 +10,7 @@
     <hash>md5:{{ xform.hash }}</hash>
     <descriptionText>{{ xform.description }}</descriptionText>
     <downloadUrl>{{ host }}{{ xform.url }}</downloadUrl>
-    <manifestUrl>{{ host }}{% url odk_logger.views.xformsManifest xform.user.username xform.id_string %}</manifestUrl>
+    <manifestUrl>{{ host }}{% url "odk_logger.views.xformsManifest" xform.user.username xform.id_string %}</manifestUrl>
   </xform>
 {% endfor %}
 </xforms>

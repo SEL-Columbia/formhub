@@ -45,7 +45,7 @@ $(document).ready(function() {
     <tbody>
       {% for user in users %}
       <tr>
-        {% url user_profile user.username as profile_url %}
+        {% url "user_profile" user.username as profile_url %}
         <td><img height='20' width='20' src="{{user.profile.gravatar}}" alt="gravatar" />&nbsp; <a href="{{profile_url}}"/>{{ user.username }}</a></td>
         <td>{{ user.profile.name }}</td>
         <td>{{ user.profile.organization }}</td>

@@ -1,13 +1,12 @@
 from datetime import datetime
 from django.core.urlresolvers import reverse
-from django.utils import simplejson
 from odk_logger.models.instance import Instance
 
 from test_base import MainTestCase
 from main.views import delete_data
 from odk_viewer.models.parsed_instance import ParsedInstance
 import common_tags
-import settings
+from django.conf import settings
 
 
 class TestFormAPIDelete(MainTestCase):

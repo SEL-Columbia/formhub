@@ -1,4 +1,3 @@
-from django.conf.locale import sv
 from django.db import models
 from django.utils.translation import ugettext_lazy
 from odk_logger.models.xform import XForm
@@ -11,8 +10,7 @@ class RestService(models.Model):
         app_label = 'restservice'
         unique_together = ('service_url', 'xform', 'name')
 
-    service_url = models.URLField(ugettext_lazy("Service URL"),
-                                  verify_exists=False)
+    service_url = models.URLField(ugettext_lazy("Service URL"))
     xform = models.ForeignKey(XForm)
     name = models.CharField(max_length=50, choices=SERVICE_CHOICES)
 

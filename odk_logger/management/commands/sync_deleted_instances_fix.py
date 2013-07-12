@@ -1,9 +1,10 @@
 #!/usr/bin/env python
-# vim: ai ts=4 sts=4 et sw=4 coding=utf-8
-from datetime import datetime
+# vim: ai ts=4 sts=4 et sw=4 fileencoding=utf-8
 import json
 from django.conf import settings
 from django.core.management import BaseCommand
+from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 from django.utils.translation import ugettext_lazy
 from odk_logger.models import Instance
 
@@ -31,6 +32,8 @@ class Command(BaseCommand):
             except Instance.DoesNotExist:
                 continue
             else:
-                deleted_at = datetime.strptime(record["_deleted_at"],
-                                                 "%Y-%m-%dT%H:%M:%S")
+                deleted_at = parse_datetime(record["_deleted_at"])
+                if not timezone.is_aware(deleted_at):
+                    deleted_at = timezone.make_aware(
+                        deleted_at, timezone.utc)
                 i.set_deleted(deleted_at)
