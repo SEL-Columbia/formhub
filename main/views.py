@@ -1120,7 +1120,8 @@ def link_to_bamboo(request, username, id_string):
     xform = get_object_or_404(XForm,
                               user__username=username, id_string=id_string)
     owner = xform.user
-    from utils.bamboo import get_new_bamboo_dataset, delete_bamboo_dataset
+    from utils.bamboo import (get_new_bamboo_dataset,
+                              delete_bamboo_dataset, ensure_rest_service)
 
     audit = {
         'xform': xform.id_string
@@ -1141,6 +1142,7 @@ def link_to_bamboo(request, username, id_string):
     # update XForm
     xform.bamboo_dataset = dataset_id
     xform.save()
+    ensure_rest_service(xform)
 
     audit_log(
         Actions.BAMBOO_LINK_CREATED, request.user, owner,

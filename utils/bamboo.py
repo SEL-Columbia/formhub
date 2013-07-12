@@ -14,8 +14,8 @@ from restservice.models import RestService
 
 def get_bamboo_url(xform):
     try:
-        service = RestService.objects.get(xform=xform, name='bamboo')
-    except RestService.DoesNotExist:
+        service = list(RestService.objects.filter(xform=xform, name='bamboo')).pop()
+    except IndexError:
         return 'http://bamboo.io'
 
     return service.service_url
@@ -32,6 +32,27 @@ def delete_bamboo_dataset(xform):
         return False
 
 
+def ensure_rest_service(xform):
+    ''' creates Bamboo RestService if doesn't exist '''
+    bb_url = get_bamboo_url(xform)
+    services = RestService.objects.filter(xform=xform, name='bamboo')
+
+    # do nothing if there's already a restservice for that.
+    if services.filter(service_url=bb_url).count():
+        return True
+
+    # there is no service ; let's create a default one.
+    if not services.count():
+        RestService.objects.create(xform=xform,
+                                   name='bamboo',
+                                   service_url=bb_url)
+        return True
+
+    # we have existing services with non-default URL
+    # do nothing as the user probably knows what to do.
+    return False
+
+
 def get_new_bamboo_dataset(xform, force_last=False):
 
     dataset_id = u''
@@ -39,7 +60,8 @@ def get_new_bamboo_dataset(xform, force_last=False):
     try:
         content_data = get_csv_data(xform, force_last=force_last)
         dataset = Dataset(connection=Connection(url=get_bamboo_url(xform)),
-                          content=content_data)
+                          content=content_data,
+                          na_values=['n/a'])
     except NoRecordsFoundError:
         return dataset_id
 

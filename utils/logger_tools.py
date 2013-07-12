@@ -196,15 +196,18 @@ def create_instance(username, xml_file, media_files,
 def report_exception(subject, info, exc_info=None):
     if exc_info:
         cls, err = exc_info[:2]
-        info += _(u"Exception in request: %(class)s: %(error)s")\
+        message = _(u"Exception in request:"
+                    u" %(class)s: %(error)s")\
             % {'class': cls.__name__, 'error': err}
-        info += u"".join(traceback.format_exception(*exc_info))
+        message += u"".join(traceback.format_exception(*exc_info))
+    else:
+        message = u"%s" % info
 
     if settings.DEBUG or settings.TESTING_MODE:
-        print subject
-        print info
+        sys.stdout.write("Subject: %s\n" % subject)
+        sys.stdout.write("Message: %s\n" % message)
     else:
-        mail_admins(subject=subject, message=info)
+        mail_admins(subject=subject, message=message)
 
 
 def round_down_geopoint(num):

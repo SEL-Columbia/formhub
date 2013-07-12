@@ -1,0 +1,4 @@
+children/name,children/age,children/fav_colors,children/fav_colors/red,children/fav_colors/blue,children/fav_colors/pink,children/ice.creams,children/ice.creams/vanilla,children/ice.creams/strawberry,children/ice.creams/chocolate,_id,_uuid,_submission_time,_index,_parent_table_name,_parent_index
+Mike,5,red blue,True,True,False,vanilla chocolate,True,False,True,,,,1,childrens_survey,1
+John,2,,False,False,False,,False,False,False,,,,2,childrens_survey,1
+Imora,3,,False,False,False,,False,False,False,,,,3,childrens_survey,1
