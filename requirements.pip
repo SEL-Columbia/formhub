@@ -2,9 +2,9 @@
 # on top so those will be overwritten
 pybamboo==0.5.7
 Distribute
-Django
-django-guardian==1.0.3
-django-registration
+Django==1.5.1
+django-guardian==1.1.1
+django-registration==1.0
 django-templated-email==0.4.1
 gdata==2.0.16
 httplib2==0.7.4
