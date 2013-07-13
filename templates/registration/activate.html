@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<section id="login">
+  <div class="page-header">
+    <h1>{% trans "Account Activated" %}</h1>
+  </div>
+
+  <div class="row">
+    <div class="span8">
+      <p>
+        {% url "auth_login" as login_url %}
+        {% blocktrans %}
+        Your account has been successfully activated. You may log in
+        <a href="{{ login_url }}">here</a>.{% endblocktrans %}
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}
