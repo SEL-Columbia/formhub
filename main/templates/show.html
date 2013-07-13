@@ -323,7 +323,7 @@
     </div>
       <br/>
         <div class="clearfix bordered">
-                <h3 data-toggle="collapse" data-target="#source_tab">{% trans "Source" %}</h3>
+                <h3 data-toggle="collapse" class="toggler" data-target="#source_tab">{% trans "Source" %}</h3>
                 <div id='source_tab' class="collapse">
                 <form action="{% url "main.views.edit" content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
 
@@ -350,7 +350,7 @@
         </div>
         <br/>
         <div class="clearfix bordered">
-                <h3 data-toggle="collapse" data-target="#docs_tab">{% trans "Supporting Documents" %}</h3>
+                <h3 data-toggle="collapse" class="toggler" data-target="#docs_tab">{% trans "Supporting Documents" %}</h3>
                 <div id='docs_tab' class="collapse">
                 {% for doc in supporting_docs %}
                     <p><a href="{% url "main.views.download_metadata" content_user.username xform.id_string doc.id %}">{{ doc.data_value }}</a>
@@ -373,7 +373,7 @@
         {% if is_owner %}
         <br/>
         <div class="clearfix bordered">
-            <h3 data-toggle="collapse" data-target="#restservice_tab">{% trans "Rest Services" %}</h3>
+            <h3 data-toggle="collapse" class="toggler" data-target="#restservice_tab">{% trans "Rest Services" %}</h3>
             <div id='restservice_tab' class="collapse">
                 <script type="text/javascript">
                     $(document).ready(function() {
@@ -387,7 +387,7 @@
         {% endif %}
         <br/>
         <div class="clearfix bordered">
-            <h3 data-toggle="collapse" data-target="#media_tab">{% blocktrans %}Media &nbsp;<small>jpeg/png/mp3/wav/3gp allowed</small>{% endblocktrans %}</h3>
+            <h3 data-toggle="collapse" class="toggler" data-target="#media_tab">{% blocktrans %}Media &nbsp;<small>jpeg/png/mp3/wav/3gp allowed</small>{% endblocktrans %}</h3>
             <div id='media_tab' class="collapse">
             {% for media in media_upload %}
               <p><a href="{% url "main.views.download_media_data" content_user.username xform.id_string media.id %}">{{ media.data_value }}</a>
@@ -410,7 +410,7 @@
         </div>
         <br/>
         <div class="clearfix bordered">
-            <h3 data-toggle="collapse" data-target="#map_tab">{% trans "Mapbox Layer" %}</h3>
+            <h3 data-toggle="collapse" class="toggler" data-target="#map_tab">{% trans "Mapbox Layer" %}</h3>
             <div id='map_tab' class="collapse">
             {% if mapbox_layer %}
             <p><a href="{{ mapbox_layer.link }}" target="_blank">{{ mapbox_layer.map_name }}</a> &ndash;
@@ -432,7 +432,7 @@
         </div>
         <br/>
         <div class="clearfix bordered">
-                <h3 data-toggle="collapse" data-target="#sms_tab">{% trans "SMS Support" %} (<acronym title="SMS Support is in beta stage now. Please use carefully as API and IDs might change.">beta</acronym>)</h3>
+                <h3 data-toggle="collapse" class="toggler" data-target="#sms_tab">{% trans "SMS Support" %} (<acronym title="SMS Support is in beta stage now. Please use carefully as API and IDs might change.">beta</acronym>)</h3>
                 <div id='sms_tab' class="collapse">
                 <form action="{% url "main.views.edit" content_user.username xform.id_string %}" method="post" enctype="multipart/form-data">
 
