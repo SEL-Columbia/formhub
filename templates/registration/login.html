@@ -22,9 +22,9 @@
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}" />
       </form>
-      {% url auth_password_reset as reset_url %}
+      {% url "auth_password_reset" as reset_url %}
       <p>{% blocktrans %}Can't access your account? <a href="{{ reset_url }}">Reset your password.</a>{% endblocktrans %}</p>
-      {% url registration_register as registration_url %}
+      {% url "registration_register" as registration_url %}
       <p>{% blocktrans %}New to formhub? <a href="{{ registration_url }}">Create an account.</a>{% endblocktrans %}</p>
     </div>
   </div>

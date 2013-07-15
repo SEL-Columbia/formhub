@@ -1,13 +1,16 @@
 import json
 import os
 import re
+
 from django.core.urlresolvers import reverse
+from mock import patch
+
 from main.tests.test_base import MainTestCase
 from odk_logger.models.instance import Instance
 from odk_logger.views import edit_data
+from odk_logger.xform_instance_parser import get_uuid_from_xml
 from odk_viewer.models.parsed_instance import ParsedInstance
 from utils.logger_tools import inject_instanceid
-from odk_logger.xform_instance_parser import get_uuid_from_xml
 
 
 class TestWebforms(MainTestCase):
@@ -15,7 +18,14 @@ class TestWebforms(MainTestCase):
         super(TestWebforms, self).setUp()
         self._publish_transportation_form_and_submit_instance()
 
-    def test_edit_url(self):
+    def __load_fixture(self, *path):
+        with open(os.path.join(os.path.dirname(__file__), *path), 'r') as f:
+            return f.read()
+
+    @patch('urllib2.urlopen')
+    def test_edit_url(self, mock_urlopen):
+        mock_urlopen.return_value.read.return_value = self.__load_fixture(
+            'fixtures', 'enketo_response.json')
         instance = Instance.objects.order_by('id').reverse()[0]
         edit_url = reverse(edit_data, kwargs={
             'username': self.user.username,
@@ -30,12 +40,9 @@ class TestWebforms(MainTestCase):
         Test that 1 and only 1 instance id exists or is injected
         """
         instance = Instance.objects.all().reverse()[0]
-        with open(
-            os.path.join(
-                os.path.dirname(__file__), "..", "fixtures", "tutorial",
-                "instances", "tutorial_2012-06-27_11-27-53.xml"),
-            "r") as xml_file:
-            xml_str = xml_file.read()
+        xml_str = self.__load_fixture("..", "fixtures", "tutorial",
+                                      "instances",
+                                      "tutorial_2012-06-27_11-27-53.xml")
         # test that we dont have an instance id
         uuid = get_uuid_from_xml(xml_str)
         self.assertIsNone(uuid)
@@ -46,21 +53,19 @@ class TestWebforms(MainTestCase):
 
     def test_dont_inject_instanceid_if_exists(self):
         xls_file_path = os.path.join(
-                    os.path.dirname(__file__),
-                    "..",
-                    "fixtures",
-                    "tutorial",
-                    "tutorial.xls"
-                )
+            os.path.dirname(__file__),
+            '..',
+            'fixtures',
+            'tutorial',
+            'tutorial.xls')
         self._publish_xls_file_and_set_xform(xls_file_path)
         xml_file_path = os.path.join(
-                    os.path.dirname(__file__),
-                    "..",
-                    "fixtures",
-                    "tutorial",
-                    "instances",
-                    "tutorial_2012-06-27_11-27-53_w_uuid.xml"
-                )
+            os.path.dirname(__file__),
+            '..',
+            'fixtures',
+            'tutorial',
+            'instances',
+            'tutorial_2012-06-27_11-27-53_w_uuid.xml')
         self._make_submission(xml_file_path)
         instance = Instance.objects.order_by('id').reverse()[0]
         injected_xml_str = inject_instanceid(instance.xml, instance.uuid)

@@ -125,3 +125,52 @@ body { height: 100%; margin: 0; padding: 0 }
     width: 34px;
     height: 34px;
 }
+
+.navbar button.refresh-map {
+	margin-top: 7px;
+}
+
+body .enketo-modal {
+	min-width: 500px;
+	min-height: 60%;
+	top: 10%;
+	margin-top: auto;
+	height: 80%;
+}
+
+body .enketo-modal iframe {
+	width:100%;
+	min-height:300px;
+	height:100%;
+}
+
+body .modal-close-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+body .leaflet-draw-edit-edit,
+body .leaflet-draw-edit-remove {
+	display: none;
+}
+
+.inner-modal {
+	padding: 1em;
+}
+
+.inner-modal ul {
+	list-style: none;
+	margin: 0;
+}
+
+.inner-modal ul li {
+	display: inline;
+	padding: 0;
+	margin: 0;
+	margin-right: 1em;
+}
+
+body #progress-modal {
+	margin-top: 5px;
+}

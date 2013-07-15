@@ -1,6 +1,7 @@
 from test_base import MainTestCase
 from odk_viewer.views import zip_export, kml_export, export_download
 from django.core.urlresolvers import reverse
+from django.utils import timezone
 from common_tags import MONGO_STRFTIME
 
 import os
@@ -11,6 +12,7 @@ from xlrd import open_workbook
 from utils.user_auth import http_auth_string
 from utils.export_tools import generate_export
 from odk_viewer.models import Export
+
 
 class TestFormExports(MainTestCase):
 
@@ -28,6 +30,7 @@ class TestFormExports(MainTestCase):
     def _num_rows(self, content, export_format):
         def xls_rows(f):
             return open_workbook(file_contents=f).sheets()[0].nrows
+
         def csv_rows(f):
             with tempfile.TemporaryFile() as tmp:
                 tmp.write(f.encode('utf-8'))
@@ -51,42 +54,45 @@ class TestFormExports(MainTestCase):
         """
         time.sleep(1)
         # 1 survey exists before this time
-        before_time = time.strftime('%Y-%m-%dT%H:%M:%S')
+        start_time = timezone.now().strftime('%y_%m_%d_%H_%M_%S')
         time.sleep(1)
         s = self.surveys[1]
-        self._make_submission(os.path.join(self.this_directory, 'fixtures',
-                    'transportation', 'instances', s, s + '.xml'))
+        self._make_submission(
+            os.path.join(self.this_directory, 'fixtures',
+                         'transportation', 'instances', s, s + '.xml'))
         time.sleep(1)
         # 2 surveys exist before this time
-        after_time = time.strftime('%Y-%m-%dT%H:%M:%S')
+        end_time = timezone.now().strftime('%y_%m_%d_%H_%M_%S')
         time.sleep(1)
         # 3 surveys exist in total
         s = self.surveys[2]
-        self._make_submission(os.path.join(self.this_directory, 'fixtures',
-                    'transportation', 'instances', s, s + '.xml'))
+        self._make_submission(
+            os.path.join(self.this_directory, 'fixtures',
+                         'transportation', 'instances', s, s + '.xml'))
         # test restricting to before end time
-        json = '{"_submission_time": {"$lte": "%s"}}' % before_time
-        params= {'query': json}
+        params = {'end': end_time}
         response = self.client.get(url, params)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self._num_rows(response.content, export_format), 2)
-        # test restricting to after start time
-        json = '{"_submission_time": {"$gte": "%s"}}' % before_time
-        params= {'query': json}
+        content = self._get_response_content(response)
+        self.assertEqual(self._num_rows(content, export_format), 3)
+        # test restricting to after start time, thus excluding the initial
+        # submission
+        params = {'start': start_time}
         response = self.client.get(url, params)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self._num_rows(response.content, export_format), 3)
+        content = self._get_response_content(response)
+        self.assertEqual(self._num_rows(content, export_format), 3)
         # test no time restriction
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self._num_rows(response.content, export_format), 4)
+        content = self._get_response_content(response)
+        self.assertEqual(self._num_rows(content, export_format), 4)
         # test restricting to between start time and end time
-        json = '{"_submission_time": {"$gte": "%s", "$lte": "%s"}}' %\
-            (before_time, after_time)
-        params= {'query': json}
+        params = {'start': start_time, 'end': end_time}
         response = self.client.get(url, params)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self._num_rows(response.content, export_format), 2)
+        content = self._get_response_content(response)
+        self.assertEqual(self._num_rows(content, export_format), 2)
 
     def test_filter_by_date_csv(self):
         self._filter_export_test(self.csv_url, 'csv')

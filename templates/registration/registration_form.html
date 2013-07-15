@@ -14,6 +14,7 @@
         <p>{% trans "Fields marked wth an asterisk (*) are required." %}</p>
         <table>
         {% for field in form %}
+        	{% if not field.name == "recaptcha_challenge_field" and not field.name == "recaptcha_response_field" %}
             <tr>
                 <td>
                     {{ field.label_tag }}
@@ -24,8 +25,15 @@
                     {% if field.field.required %}*{% endif %}
                 </td>
             </tr>
+            {% endif %}
         {% endfor %}
         </table>
+        {% if form.REGISTRATION_REQUIRE_CAPTCHA %}
+	        {% if form.non_field_errors %}
+	        <p class="alert alert-warning">{{ form.non_field_errors.0 }}</p>
+	        {% endif %}
+			{{ form.RECAPTCHA_HTML|safe }}
+		{% endif %}
 	<p>{% blocktrans %}By clicking the Register button, you acknowledge that this is beta software; we make no guarantees about the reliability or continuity of our service. We reserve the right to pause or terminate your service, or delete your account and data, at any time without notice. We will not be liable for any losses, either direct or indirect, that such service interruption or data loss may cause you. Use the service at your own risk.{% endblocktrans %}</p>
         <input type="submit" class="btn large btn-primary" value="{% trans 'Register' %}" />
       </form>

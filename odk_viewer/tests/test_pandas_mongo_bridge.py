@@ -1,5 +1,6 @@
 import os
 import csv
+from django.utils.dateparse import parse_datetime
 from django.core.urlresolvers import reverse
 from tempfile import NamedTemporaryFile
 from odk_logger.models.xform import XForm
@@ -29,7 +30,7 @@ def xml_inst_filepath_from_fixture_name(fixture_name, instance_name):
 class TestPandasMongoBridge(MainTestCase):
     def setUp(self):
         self._create_user_and_login()
-        self._submission_time='2013-02-18 15:54:01'
+        self._submission_time=parse_datetime('2013-02-18 15:54:01Z')
 
     def _publish_xls_fixture_set_xform(self, fixture):
         """
@@ -297,7 +298,7 @@ class TestPandasMongoBridge(MainTestCase):
             u'web_browsers/firefox': False,
             u'web_browsers/chrome': False
         }
-        # build a new dictionary only composed of the keys we want to use in 
+        # build a new dictionary only composed of the keys we want to use in
         # the comparison
         result = dict([(key, result[key]) for key in result.keys() if key in \
             expected_result.keys()])

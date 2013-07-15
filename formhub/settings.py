@@ -10,7 +10,8 @@ import djcelery
 djcelery.setup_loader()
 
 CURRENT_FILE = os.path.abspath(__file__)
-PROJECT_ROOT = os.path.dirname(CURRENT_FILE)
+PROJECT_ROOT = os.path.realpath(
+    os.path.join(os.path.dirname(CURRENT_FILE), '..'))
 PRINT_EXCEPTION = False
 
 DEBUG = True
@@ -127,9 +128,11 @@ MIDDLEWARE_CLASSES = (
     'utils.middleware.HTTPResponseNotAllowedMiddleware',
 )
 
-LOCALE_PATHS = (os.path.join(PROJECT_ROOT, 'locale'), )
+LOCALE_PATHS = (os.path.join(PROJECT_ROOT, 'formhub', 'locale'), )
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'formhub.urls'
+USE_TZ = True
+
 
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, 'templates'),
@@ -216,9 +219,15 @@ LOGGING = {
             'format': '%(levelname)s %(message)s'
         },
     },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
+            'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         },
         'console': {
@@ -314,6 +323,12 @@ else:
 if PRINT_EXCEPTION and DEBUG:
     MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
 
+# re-captcha in registrations
+REGISTRATION_REQUIRE_CAPTCHA = False
+RECAPTCHA_USE_SSL = False
+RECAPTCHA_PRIVATE_KEY = ''
+RECAPTCHA_PUBLIC_KEY = '6Ld52OMSAAAAAJJ4W-0TFDTgbznnWWFf0XuOSaB6'
+
 try:
     from local_settings import *
 except ImportError:
@@ -327,7 +342,8 @@ if MONGO_DATABASE.get('USER') and MONGO_DATABASE.get('PASSWORD'):
 else:
     MONGO_CONNECTION_URL = "mongodb://%(HOST)s:%(PORT)s" % MONGO_DATABASE
 
-MONGO_CONNECTION = MongoClient(MONGO_CONNECTION_URL, safe=True, j=True)
+MONGO_CONNECTION = MongoClient(
+    MONGO_CONNECTION_URL, safe=True, j=True, tz_aware=True)
 MONGO_DB = MONGO_CONNECTION[MONGO_DATABASE['NAME']]
 
 # Clear out the test database

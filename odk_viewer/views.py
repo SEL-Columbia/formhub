@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime
 from tempfile import NamedTemporaryFile
 from time import strftime, strptime
 
@@ -12,7 +13,8 @@ from django.http import HttpResponseForbidden,\
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
-from django.utils import simplejson
+from django.core.files.storage import FileSystemStorage
+from django.core.files.storage import get_storage_class
 
 from main.models import UserProfile, MetaData, TokenStorageModel
 from odk_logger.models import XForm, Attachment
@@ -36,6 +38,7 @@ from utils.export_tools import newset_export_for
 from utils.viewer_tools import export_def_from_filename
 from utils.viewer_tools import create_attachments_zipfile
 from utils.log import audit_log, Actions
+from common_tags import SUBMISSION_TIME
 
 
 def encode(time_str):
@@ -119,9 +122,19 @@ def map_view(request, username, id_string):
     context.jsonform_url = reverse(download_jsonform,
                                    kwargs={"username": username,
                                            "id_string": id_string})
+    context.enketo_edit_url = reverse('edit_data',
+                                   kwargs={"username": username,
+                                           "id_string": id_string,
+                                           "data_id": 0})
+    context.enketo_add_url = reverse('enter_data',
+                                   kwargs={"username": username,
+                                           "id_string": id_string})
     context.mongo_api_url = reverse('mongo_view_api',
                                     kwargs={"username": username,
                                             "id_string": id_string})
+    context.delete_data_url = reverse('delete_data',
+                                      kwargs={"username": username,
+                                              "id_string": id_string})
     context.mapbox_layer = MetaData.mapbox_layer_upload(xform)
     audit = {
         "xform": xform.id_string
@@ -189,6 +202,8 @@ def data_export(request, username, id_string, export_type):
     force_xlsx = request.GET.get('xls') != 'true'
     if export_type == Export.XLS_EXPORT and force_xlsx:
         extension = 'xlsx'
+    elif export_type == Export.CSV_ZIP_EXPORT:
+        extension = 'zip'
 
     audit = {
         "xform": xform.id_string,
@@ -196,7 +211,28 @@ def data_export(request, username, id_string, export_type):
     }
     # check if we need to re-generate,
     # we always re-generate if a filter is specified
-    if should_create_new_export(xform, export_type) or query:
+    if should_create_new_export(xform, export_type) or query or\
+                    'start' in request.GET or 'end' in request.GET:
+        format_date_for_mongo = lambda x, datetime: datetime.strptime(
+            x, '%y_%m_%d_%H_%M_%S').strftime('%Y-%m-%dT%H:%M:%S')
+        # check for start and end params
+        if 'start' in request.GET or 'end' in request.GET:
+            if not query:
+                query = '{}'
+            query = json.loads(query)
+            query[SUBMISSION_TIME] = {}
+            try:
+                if request.GET.get('start'):
+                    query[SUBMISSION_TIME]['$gte'] = format_date_for_mongo(
+                        request.GET['start'], datetime)
+                if request.GET.get('end'):
+                    query[SUBMISSION_TIME]['$lte'] = format_date_for_mongo(
+                        request.GET['end'], datetime)
+            except ValueError:
+                return HttpResponseBadRequest(
+                    _("Dates must be in the format YY_MM_DD_hh_mm_ss"))
+            else:
+                query = json.dumps(query)
         try:
             export = generate_export(
                 export_type, extension, username, id_string, None, query)
@@ -395,7 +431,7 @@ def export_progress(request, username, id_string, export_type):
         statuses.append(status)
 
     return HttpResponse(
-        simplejson.dumps(statuses), mimetype='application/json')
+        json.dumps(statuses), mimetype='application/json')
 
 
 def export_download(request, username, id_string, export_type, filename):
@@ -428,6 +464,10 @@ def export_download(request, username, id_string, export_type, filename):
         }, audit, request)
     if request.GET.get('raw'):
         id_string = None
+
+    default_storage = get_storage_class()()
+    if not isinstance(default_storage, FileSystemStorage):
+        return HttpResponseRedirect(default_storage.url(export.filepath))
     basename = os.path.splitext(export.filename)[0]
     response = response_with_mimetype_and_name(
         mime_type, name=basename, extension=ext,

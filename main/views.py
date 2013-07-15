@@ -14,7 +14,6 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseServerError
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
-from django.utils import simplejson
 from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_GET, require_POST
 from google_doc import GoogleDoc
@@ -41,7 +40,7 @@ from utils.user_auth import check_and_set_user, set_profile_data,\
     check_and_set_user_and_form
 from utils.log import audit_log, Actions
 from main.models import AuditLog
-from settings import ENKETO_PREVIEW_URL
+from django.conf import settings
 
 from utils.viewer_tools import enketo_url
 from utils.qrcode import generate_qrcode
@@ -50,6 +49,27 @@ from sms_support.tools import check_form_sms_compatibility, is_sms_related
 from sms_support.autodoc import get_autodoc_for
 from sms_support.providers import providers_doc
 
+from registration.signals import user_registered
+from django.dispatch import receiver
+
+
+@receiver(user_registered, dispatch_uid='auto_add_crowdform')
+def auto_add_crowd_form_to_registered_user(sender, **kwargs):
+    new_user = kwargs.get('user')
+    if hasattr(settings, 'AUTO_ADD_CROWDFORM') and \
+            settings.AUTO_ADD_CROWDFORM and \
+            hasattr(settings, 'DEFAULT_CROWDFORM'):
+        try:
+            default_crowdform = settings.DEFAULT_CROWDFORM
+            if isinstance(default_crowdform, dict) and\
+                    'xform_username' in default_crowdform and\
+                    'xform_id_string' in default_crowdform:
+                xform = XForm.objects.get(
+                    id_string=default_crowdform['xform_id_string'],
+                    user__username=default_crowdform['xform_username'])
+                MetaData.crowdform_users(xform, new_user.username)
+        except XForm.DoesNotExist:
+            pass
 
 
 def home(request):
@@ -372,7 +392,7 @@ def show(request, username=None, id_string=None, uuid=None):
     if xform.allows_sms:
         context.sms_support_doc = get_autodoc_for(xform)
     user_list = [u.username for u in User.objects.exclude(username=username)]
-    context.user_json_list = simplejson.dumps(user_list)
+    context.user_json_list = json.dumps(user_list)
     return render_to_response("show.html", context_instance=context)
 
 
@@ -416,7 +436,7 @@ def api(request, username=None, id_string=None):
     except ValueError, e:
         return HttpResponseBadRequest(e.__str__())
     records = list(record for record in cursor)
-    response_text = simplejson.dumps(records)
+    response_text = json.dumps(records)
     if 'callback' in request.GET and request.GET.get('callback') != '':
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))
@@ -445,7 +465,7 @@ def public_api(request, username, id_string):
                'date_modified': xform.date_modified.strftime(_DATETIME_FORMAT),
                'uuid': xform.uuid,
                }
-    response_text = simplejson.dumps(exports)
+    response_text = json.dumps(exports)
     return HttpResponse(response_text, mimetype='application/json')
 
 
@@ -1032,7 +1052,7 @@ def set_perm(request, username, id_string):
             }, audit, request)
     if request.is_ajax():
         return HttpResponse(
-            simplejson.dumps(
+            json.dumps(
                 {'status': 'success'}), mimetype='application/json')
     return HttpResponseRedirect(reverse(show, kwargs={
         'username': username,
@@ -1087,7 +1107,7 @@ def delete_data(request, username=None, id_string=None):
             'id_string': xform.id_string,
             'record_id': data_id
         }, audit, request)
-    response_text = simplejson.dumps({"success": "Deleted data %s" % data_id})
+    response_text = json.dumps({"success": "Deleted data %s" % data_id})
     if 'callback' in request.GET and request.GET.get('callback') != '':
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))
@@ -1100,7 +1120,8 @@ def link_to_bamboo(request, username, id_string):
     xform = get_object_or_404(XForm,
                               user__username=username, id_string=id_string)
     owner = xform.user
-    from utils.bamboo import get_new_bamboo_dataset, delete_bamboo_dataset
+    from utils.bamboo import (get_new_bamboo_dataset,
+                              delete_bamboo_dataset, ensure_rest_service)
 
     audit = {
         'xform': xform.id_string
@@ -1121,6 +1142,7 @@ def link_to_bamboo(request, username, id_string):
     # update XForm
     xform.bamboo_dataset = dataset_id
     xform.save()
+    ensure_rest_service(xform)
 
     audit_log(
         Actions.BAMBOO_LINK_CREATED, request.user, owner,
@@ -1211,7 +1233,7 @@ def activity_fields(request):
             'searchable': True
         },
     ]
-    response_text = simplejson.dumps(fields)
+    response_text = json.dumps(fields)
     return HttpResponse(response_text, mimetype='application/json')
 
 
@@ -1247,7 +1269,7 @@ def activity_api(request, username):
     except ValueError, e:
         return HttpResponseBadRequest(e.__str__())
     records = list(record for record in cursor)
-    response_text = simplejson.dumps(records, default=stringify_unknowns)
+    response_text = json.dumps(records, default=stringify_unknowns)
     if 'callback' in request.GET and request.GET.get('callback') != '':
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))
@@ -1280,7 +1302,7 @@ def enketo_preview(request, username, id_string):
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
     enekto_preview_url = "%(enketo_url)s?server=%(profile_url)s&id=%(id_string)s" % {
-        'enketo_url': ENKETO_PREVIEW_URL,
+        'enketo_url': settings.ENKETO_PREVIEW_URL,
         'profile_url': request.build_absolute_uri(reverse(profile, kwargs={'username': owner.username})),
         'id_string': xform.id_string
     }

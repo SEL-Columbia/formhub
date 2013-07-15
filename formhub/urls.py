@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, include, url
+from django.conf.urls import patterns, include, url
 from django.conf import settings
 
 from api.urls import router
@@ -59,7 +59,7 @@ urlpatterns = patterns('',
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/qrcode$', 'main.views.qrcode', name='get_qrcode'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/api$', 'main.views.api', name='mongo_view_api'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/public_api$', 'main.views.public_api', name='public_api'),
-    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/delete_data$', 'main.views.delete_data'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/delete_data$', 'main.views.delete_data', name='delete_data'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/edit$', 'main.views.edit'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/perms$', 'main.views.set_perm'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/bamboo$', 'main.views.link_to_bamboo'),
@@ -90,14 +90,15 @@ urlpatterns = patterns('',
     # exporting stuff
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.csv$", 'odk_viewer.views.data_export', name='csv_export', kwargs={'export_type': 'csv'}),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.xls", 'odk_viewer.views.data_export', name='xls_export', kwargs={'export_type': 'xls'}),
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.csv.zip", 'odk_viewer.views.data_export', name='csv_zip_export', kwargs={'export_type': 'csv_zip'}),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.kml$", 'odk_viewer.views.kml_export'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.zip", 'odk_viewer.views.zip_export'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/gdocs$", 'odk_viewer.views.google_xls_export'),
     url(r"^odk_viewer/survey/(?P<instance_id>\d+)/$", 'odk_viewer.views.survey_responses'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/map", 'odk_viewer.views.map_view'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/instance", 'odk_viewer.views.instance'),
-    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/enter-data", 'odk_logger.views.enter_data'),
-    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/edit-data/(?P<data_id>\d+)$", 'odk_logger.views.edit_data'),
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/enter-data", 'odk_logger.views.enter_data', name='enter_data'),
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/edit-data/(?P<data_id>\d+)$", 'odk_logger.views.edit_data', name='edit_data'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/view-data", 'odk_viewer.views.data_view'),
     url(r"^(?P<username>\w+)/exports/(?P<id_string>[^/]+)/(?P<export_type>\w+)/new$", 'odk_viewer.views.create_export'),
     url(r"^(?P<username>\w+)/exports/(?P<id_string>[^/]+)/(?P<export_type>\w+)/delete$", 'odk_viewer.views.delete_export'),

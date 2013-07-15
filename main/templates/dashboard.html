@@ -8,11 +8,11 @@
   <div class="row">
     <div class="span5">
         <h1>{% blocktrans %}Publish a Form <small>Upload XLSForm</small>{% endblocktrans %}</h1>
-        {%url tutorial as tutorial_url %}
+        {% url "tutorial" as tutorial_url %}
         {% blocktrans %}For a quick introduction on how to publish a form check out the <a href="{{ tutorial_url }}">tutorial</a>, and try publishing <a href="http://formhub.org/formhub_u/forms/tutorial/form.xls">tutorial.xls</a>.{% endblocktrans %}
         <br/>
         <br/>
-        {% url syntax as syntax_url %}
+        {% url "syntax" as syntax_url %}
         {% blocktrans %}Learn about the XLSForm syntax <a href="{{ syntax_url }}">here</a>, email <a href="https://groups.google.com/forum/?fromgroups#!forum/formhub-users">formhub users mailing list</a> if you have questions, and checkout examples at: <br/><a href="/formhub_u/">Formhub University</a>.{% endblocktrans %}
         <br/>
         <br/>
@@ -65,12 +65,12 @@
         </div>
         <div class="span4">
             <h3 class="short">
-                <a href="{% url public_profile content_user.username %}">{{ content_user.username }}</a>
+                <a href="{% url "public_profile" content_user.username %}">{{ content_user.username }}</a>
                 {% if profile.name %}
                 <span class="name">|&nbsp;{{ profile.name }}</span>
                 {% endif %}
             </h3>
-            <span><a href="{% url public_profile content_user.username %}">{% trans "View Profile Page" %}</a></span>
+            <span><a href="{% url "public_profile" content_user.username %}">{% trans "View Profile Page" %}</a></span>
         </div>
         </div>
         <div class="row">
@@ -102,7 +102,7 @@
 {% include "published_surveys.html" %}
 <p>
 {% blocktrans with odk_url=odk_url %}
-The url of this web application <strong>{{ odk_url }}</strong>
+The url "of" this web application <strong>{{ odk_url }}</strong>
 must be given to ODK Collect before it will get forms from and
 submit data to formhub. In Collect's Main Menu, press the Menu
 button. Select Server Preferences, then Server. Enter

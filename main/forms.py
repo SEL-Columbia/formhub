@@ -10,6 +10,7 @@ from django.core.validators import URLValidator
 from django.forms import ModelForm
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.conf import settings
+from recaptcha.client import captcha
 
 from main.models import UserProfile, MetaData
 from odk_logger.models import XForm
@@ -82,6 +83,12 @@ class UserProfileForm(ModelForm):
 
 
 class UserProfileFormRegister(forms.Form):
+
+    REGISTRATION_REQUIRE_CAPTCHA = settings.REGISTRATION_REQUIRE_CAPTCHA
+    RECAPTCHA_PUBLIC_KEY = settings.RECAPTCHA_PUBLIC_KEY
+    RECAPTCHA_HTML = captcha.displayhtml(settings.RECAPTCHA_PUBLIC_KEY,
+                                         use_ssl=settings.RECAPTCHA_USE_SSL)
+
     name = forms.CharField(widget=forms.TextInput(), required=False,
                            max_length=255)
     city = forms.CharField(widget=forms.TextInput(), required=False,
@@ -94,6 +101,10 @@ class UserProfileFormRegister(forms.Form):
                                 max_length=255)
     twitter = forms.CharField(widget=forms.TextInput(), required=False,
                               max_length=255)
+
+    recaptcha_challenge_field = forms.CharField(required=False, max_length=512)
+    recaptcha_response_field = forms.CharField(
+        max_length=100, required=settings.REGISTRATION_REQUIRE_CAPTCHA)
 
     def save(self, new_user):
         new_profile = \
@@ -153,6 +164,24 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail,
 
     legal_usernames_re = re.compile("^\w+$")
 
+    def clean(self):
+        cleaned_data = super(UserProfileFormRegister, self).clean()
+
+        # don't check captcha if it's disabled
+        if not settings.REGISTRATION_REQUIRE_CAPTCHA:
+            return cleaned_data
+
+        response = captcha.submit(
+            cleaned_data.get('recaptcha_challenge_field'),
+            cleaned_data.get('recaptcha_response_field'),
+            settings.RECAPTCHA_PRIVATE_KEY,
+            None)
+
+        if not response.is_valid:
+            raise forms.ValidationError(_(u"The Captcha is invalid. "
+                                          u"Please, try again."))
+        return cleaned_data
+
     def clean_username(self):
         username = self.cleaned_data['username'].lower()
         if username in self._reserved_usernames:
@@ -174,20 +203,6 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail,
             password=self.cleaned_data['password1'],
             email=self.cleaned_data['email'])
         UserProfileFormRegister.save(self, new_user)
-        if hasattr(settings, 'AUTO_ADD_CROWDFORM') and \
-                settings.AUTO_ADD_CROWDFORM and \
-                hasattr(settings, 'DEFAULT_CROWDFORM'):
-            try:
-                default_crowdform = settings.DEFAULT_CROWDFORM
-                if isinstance(default_crowdform, dict) and\
-                        'xform_username' in default_crowdform and\
-                        'xform_id_string' in default_crowdform:
-                    xform = XForm.objects.get(
-                        id_string=default_crowdform['xform_id_string'],
-                        user__username=default_crowdform['xform_username'])
-                    MetaData.crowdform_users(xform, new_user.username)
-            except XForm.DoesNotExist:
-                pass
         return new_user
 
 
@@ -217,8 +232,7 @@ class MapboxLayerForm(forms.Form):
                                max_length=255)
     attribution = forms.CharField(widget=forms.TextInput(), required=False,
                                   max_length=255)
-    link = forms.URLField(verify_exists=False,
-                          label=ugettext_lazy(u'JSONP url'),
+    link = forms.URLField(label=ugettext_lazy(u'JSONP url'),
                           required=True)
 
 
@@ -228,20 +242,18 @@ class QuickConverterFile(forms.Form):
 
 
 class QuickConverterURL(forms.Form):
-    xls_url = forms.URLField(verify_exists=False,
-                             label=ugettext_lazy('XLS URL'),
+    xls_url = forms.URLField(label=ugettext_lazy('XLS URL'),
                              required=False)
 
 
 class QuickConverterDropboxURL(forms.Form):
     dropbox_xls_url = forms.URLField(
-        verify_exists=False,
         label=ugettext_lazy('XLS URL'), required=False)
 
 
 class QuickConverter(QuickConverterFile, QuickConverterURL,
                      QuickConverterDropboxURL):
-    validate = URLValidator(verify_exists=True)
+    validate = URLValidator()
 
     def publish(self, user, id_string=None):
         if self.is_valid():

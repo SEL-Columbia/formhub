@@ -1,6 +1,6 @@
 from itertools import chain
 import time
-import settings
+from django.conf import settings
 from pandas.core.frame import DataFrame
 from pandas.io.parsers import ExcelWriter
 from pyxform.survey import Survey
@@ -461,7 +461,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
                         xpaths = [
                             "%s[%s]" % (
                                 nested_key[:nested_key.index(key) + len(key)],
-                                index), 
+                                index),
                             nested_key[nested_key.index(key) + len(key)+1:]]
                         # re-create xpath the split on /
                         xpaths = "/".join(xpaths).split("/")
@@ -555,7 +555,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
 
         self.ordered_columns = OrderedDict()
         self._build_ordered_columns(self.dd.survey, self.ordered_columns)
-        
+
         # pandas will only export 30k records in a dataframe to a csv - we need to create multiple 30k dataframes if required,
         # we need to go through all the records though so that we can figure out the columns we need for repeats
         datas = []

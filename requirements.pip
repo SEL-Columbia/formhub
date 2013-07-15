@@ -1,13 +1,15 @@
 # pybamboo has deps in common but on newer versions.
 # on top so those will be overwritten
-pybamboo==0.5.7
+pybamboo==0.5.8.1
 
-Django==1.3
-django-guardian==1.0.3
-django-registration==0.7
+Distribute
+Django==1.5.1
+django-guardian==1.1.1
+django-registration==1.0
 django-templated-email==0.4.1
 gdata==2.0.16
 httplib2==0.7.4
+mock==1.0.1
 modilabs-python-utils==0.1.5
 PIL==1.1.7
 poster==0.8.1
@@ -28,7 +30,7 @@ django_digest
 SQLAlchemy==0.7.1
 
 # new export code relies on
-pandas==0.9.1
+pandas==0.11.0
 
 requests==0.14
 
@@ -46,3 +48,7 @@ dict2xml
 djangorestframework
 markdown
 django-filter
+# captcha
+recaptcha-client
+
+unicodecsv

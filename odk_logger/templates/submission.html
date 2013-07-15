@@ -2,8 +2,8 @@
 
 <p>{% trans "Your submission was successful!" %}</p>
 <ul>
-    <li><a class="webform-link" href="http://{{ domain }}{% url main.views.show username id_string %}">{% trans "Return to the form page" %}</a></li>
-    <li><a class="webform-link" href="http://{{ domain }}{% url odk_logger.views.enter_data username id_string %}">{% trans "Fill the form out again" %}</a></li>
+    <li><a class="webform-link" href="http://{{ domain }}{% url "main.views.show" username id_string %}">{% trans "Return to the form page" %}</a></li>
+    <li><a class="webform-link" href="http://{{ domain }}{% url "odk_logger.views.enter_data" username id_string %}">{% trans "Fill the form out again" %}</a></li>
 </ul>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script> 
 <script type="text/javascript">

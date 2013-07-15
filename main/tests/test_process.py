@@ -316,7 +316,7 @@ class TestSite(MainTestCase):
             'username': self.user.username, 'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        actual_csv = response.content
+        actual_csv = self._get_response_content(response)
         actual_lines = actual_csv.split("\n")
         return csv.reader(actual_lines)
 
@@ -336,7 +336,7 @@ class TestSite(MainTestCase):
             'username': self.user.username, 'id_string': self.xform.id_string})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        actual_csv = response.content
+        actual_csv = self._get_response_content(response)
         actual_lines = actual_csv.split("\n")
         actual_csv = csv.reader(actual_lines)
         headers = actual_csv.next()
@@ -398,11 +398,13 @@ class TestSite(MainTestCase):
     def _check_xls_export(self):
         xls_export_url = reverse(
             'xls_export', kwargs={'username': self.user.username,
-                                'id_string': self.xform.id_string})
+            'id_string': self.xform.id_string})
         response = self.client.get(xls_export_url)
-        expected_xls = open_workbook(os.path.join(self.this_directory, "fixtures", "transportation",
-                "transportation_export.xls"))
-        actual_xls = open_workbook(file_contents=response.content)
+        expected_xls = open_workbook(os.path.join(
+            self.this_directory, "fixtures", "transportation",
+            "transportation_export.xls"))
+        content = self._get_response_content(response)
+        actual_xls = open_workbook(file_contents=content)
         actual_sheet = actual_xls.sheet_by_index(0)
         expected_sheet = expected_xls.sheet_by_index(0)
 

@@ -1,9 +1,10 @@
+import json
 
 from django.core.urlresolvers import reverse
-from django.utils import simplejson
 
 from test_base import MainTestCase
 from main.views import public_api
+
 
 class TestFormPublicAPI(MainTestCase):
 
@@ -17,11 +18,11 @@ class TestFormPublicAPI(MainTestCase):
         })
 
     def test_api(self):
-        
+
         response = self.client.get(self.public_api_url, {})
         self.assertEqual(response.status_code, 200)
 
-        data = simplejson.loads(response.content)
+        data = json.loads(response.content)
 
         for field in ('username', 'id_string', 'bamboo_dataset', 'shared',
                       'shared_data', 'downloadable', 'is_crowd_form',
@@ -30,5 +31,3 @@ class TestFormPublicAPI(MainTestCase):
 
         self.assertEqual(data.get('username'), self.user.username)
         self.assertEqual(data.get('id_string'), self.xform.id_string)
-
-    

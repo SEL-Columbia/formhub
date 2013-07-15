@@ -2,7 +2,7 @@
 {% block content %}
     <div id="addserviceformstatus">{{ status }}</div>
     <div id="addserviceform-container">
-    <form name="addserviceform" id="addserviceform" action="{% url restservice.views.add_service username id_string %}" method="post" enctype="multipart/form-data">
+    <form name="addserviceform" id="addserviceform" action="{% url "restservice.views.add_service" username id_string %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
     <div class="tab-content bordered-side">
         <div class="tab-pane active" id="upload">

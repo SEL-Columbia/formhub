@@ -16,9 +16,11 @@ from django.core.servers.basehttp import FileWrapper
 from django.db import IntegrityError
 from django.db import transaction
 from django.db.models.signals import pre_delete
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, \
+    StreamingHttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 from modilabs.utils.subprocess_timeout import ProcessTimedOut
 from pyxform.errors import PyXFormError
 from pyxform.xform2json import create_survey_element_from_xml
@@ -170,6 +172,10 @@ def create_instance(username, xml_file, media_files,
 
             # override date created if required
             if date_created_override:
+                if not timezone.is_aware(date_created_override):
+                    # default to utc?
+                    date_created_override = timezone.make_aware(
+                        date_created_override, timezone.utc)
                 instance.date_created = date_created_override
                 instance.save()
 
@@ -190,15 +196,18 @@ def create_instance(username, xml_file, media_files,
 def report_exception(subject, info, exc_info=None):
     if exc_info:
         cls, err = exc_info[:2]
-        info += _(u"Exception in request: %(class)s: %(error)s")\
+        message = _(u"Exception in request:"
+                    u" %(class)s: %(error)s")\
             % {'class': cls.__name__, 'error': err}
-        info += u"".join(traceback.format_exception(*exc_info))
+        message += u"".join(traceback.format_exception(*exc_info))
+    else:
+        message = u"%s" % info
 
     if settings.DEBUG or settings.TESTING_MODE:
-        print subject
-        print info
+        sys.stdout.write("Subject: %s\n" % subject)
+        sys.stdout.write("Message: %s\n" % message)
     else:
-        mail_admins(subject=subject, message=info)
+        mail_admins(subject=subject, message=message)
 
 
 def round_down_geopoint(num):
@@ -220,11 +229,11 @@ def response_with_mimetype_and_name(
             if not use_local_filesystem:
                 default_storage = get_storage_class()()
                 wrapper = FileWrapper(default_storage.open(file_path))
-                response = HttpResponse(wrapper, mimetype=mimetype)
+                response = StreamingHttpResponse(wrapper, mimetype=mimetype)
                 response['Content-Length'] = default_storage.size(file_path)
             else:
-                wrapper = FileWrapper(file(file_path))
-                response = HttpResponse(wrapper, mimetype=mimetype)
+                wrapper = FileWrapper(open(file_path))
+                response = StreamingHttpResponse(wrapper, mimetype=mimetype)
                 response['Content-Length'] = os.path.getsize(file_path)
         except IOError:
             response = HttpResponseNotFound(
@@ -455,7 +464,7 @@ def update_mongo_for_xform(xform, only_update_missing=True):
 
 
 def mongo_sync_status(remongo=False, update_all=False, user=None, xform=None):
-    qs = XForm.objects.only('id_string').select_related('user')
+    qs = XForm.objects.only('id_string', 'user').select_related('user')
     if user and not xform:
         qs = qs.filter(user=user)
     elif user and xform:
