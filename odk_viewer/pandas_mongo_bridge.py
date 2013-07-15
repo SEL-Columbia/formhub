@@ -591,6 +591,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         if close:
             csv_file.close()
 
+
 class XLSDataFrameWriter(object):
     def __init__(self, records, columns):
         self.dataframe = DataFrame(records, columns=columns)
@@ -599,6 +600,7 @@ class XLSDataFrameWriter(object):
         index=False):
         self.dataframe.to_excel(excel_writer, sheet_name, header=header,
                 index=index)
+
 
 class CSVDataFrameWriter(object):
     def __init__(self, records, columns):
