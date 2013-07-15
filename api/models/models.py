@@ -75,6 +75,9 @@ class Project(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
+    def __unicode__(self):
+        return u'%s|%s' % (self.organization, self.name)
+
 
 class Team(Group):
     """
