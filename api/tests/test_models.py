@@ -2,7 +2,7 @@ from django.db import IntegrityError
 from django.contrib.auth.models import Permission
 from main.tests.test_base import MainTestCase
 from api.models import Team, OrganizationProfile, Project, ProjectXForm
-from api import utils
+from api import tools as utils
 
 
 class TestModels(MainTestCase):

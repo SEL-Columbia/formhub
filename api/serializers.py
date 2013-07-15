@@ -14,7 +14,7 @@ from api.models import Project, OrganizationProfile, Team
 from api.fields import HyperlinkedMultiIdentityField,\
     HyperlinkedMultiRelatedField
 
-from api import utils
+from api import tools as utils
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):

@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from main.forms import QuickConverter
 from odk_logger.models import XForm
-from formhub.utils.logger_tools import publish_form
+from utils.logger_tools import publish_form
 
 
 def _get_first_last_names(name):
