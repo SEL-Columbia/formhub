@@ -50,6 +50,12 @@ class XFormViewSet(viewsets.ModelViewSet):
     queryset = XForm.objects.all()
     serializer_class = api_serializers.XFormSerializer
 
+    def list(self, request, **kwargs):
+        qs = self.filter_queryset(self.get_queryset())
+        self.object_list = qs.filter(user=request.user)
+        serializer = self.get_serializer(self.object_list, many=True)
+        return Response(serializer.data)
+
 
 def extra_kwargs(**kwargs):
     def decorator(func):
