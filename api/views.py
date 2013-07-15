@@ -127,6 +127,8 @@ class TeamViewSet(viewsets.ModelViewSet):
         filter = {}
         if 'owner' in kwargs:
             filter['organization__username'] = kwargs['owner']
+        if not filter:
+            filter['user'] = request.user
         qs = self.filter_queryset(self.get_queryset())
         self.object_list = qs.filter(**filter)
         serializer = self.get_serializer(self.object_list, many=True)
