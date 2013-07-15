@@ -83,7 +83,8 @@ class ProjectViewSet(mixins.MultiLookupMixin, viewsets.ModelViewSet):
         if request.method.upper() == 'POST':
             survey = utils.publish_project_xform(request, project)
             if isinstance(survey, XForm):
-                serializer = api_serializers.XFormSerializer(survey)
+                serializer = api_serializers.XFormSerializer(
+                    survey, context={'request': request})
                 return Response(serializer.data, status=201)
             return Response(survey, status=400)
         filter = {'project': project}
@@ -97,7 +98,8 @@ class ProjectViewSet(mixins.MultiLookupMixin, viewsets.ModelViewSet):
         else:
             qs = get_object_or_404(ProjectXForm, **filter)
             data = qs.xform
-        serializer = api_serializers.XFormSerializer(data, many=many)
+        serializer = api_serializers.XFormSerializer(
+            data, many=many, context={'request': request})
         return Response(serializer.data)
 
 
