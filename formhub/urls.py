@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.conf import settings
+from django.views.generic import RedirectView
 
 from api.urls import router
 
@@ -137,6 +138,6 @@ urlpatterns = patterns('',
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^favicon\.ico', 'django.views.generic.simple.redirect_to', {'url': '/static/images/favicon.ico'})
+    url(r'^favicon\.ico', RedirectView.as_view(url='/static/images/favicon.ico'))
 )
 
