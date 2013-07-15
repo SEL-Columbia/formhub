@@ -21,11 +21,23 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = api_serializers.UserSerializer
     lookup_field = 'username'
 
+    def list(self, request, **kwargs):
+        qs = self.filter_queryset(self.get_queryset())
+        self.object_list = qs.filter(username=request.user.username)
+        serializer = self.get_serializer(self.object_list, many=True)
+        return Response(serializer.data)
+
 
 class UserProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = api_serializers.UserProfileSerializer
     lookup_field = 'user'
+
+    def list(self, request, **kwargs):
+        qs = self.filter_queryset(self.get_queryset())
+        self.object_list = qs.filter(user__username=request.user.username)
+        serializer = self.get_serializer(self.object_list, many=True)
+        return Response(serializer.data)
 
 
 class OrgProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
