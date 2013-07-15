@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import url
+from django.conf.urls import url
 from rest_framework import routers
 from api import views as api_views
 
