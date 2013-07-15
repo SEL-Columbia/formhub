@@ -75,7 +75,9 @@ class ProjectViewSet(mixins.MultiLookupMixin, viewsets.ModelViewSet):
         filter = {}
         if 'owner' in kwargs:
             filter['organization__username'] = kwargs['owner']
-        qs = self.filter_queryset(self.get_queryset())
+        filter['created_by'] = request.user
+        qs = self.get_queryset()
+        qs = self.filter_queryset(qs)
         self.object_list = qs.filter(**filter)
         serializer = self.get_serializer(self.object_list, many=True)
         return Response(serializer.data)
