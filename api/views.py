@@ -57,13 +57,6 @@ class XFormViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-def extra_kwargs(**kwargs):
-    def decorator(func):
-        func.extra_kwargs = kwargs
-        return func
-    return decorator
-
-
 class ProjectViewSet(mixins.MultiLookupMixin, viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = api_serializers.ProjectSerializer
