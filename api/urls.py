@@ -143,3 +143,12 @@ router.register(r'u', api_views.UserViewSet)
 router.register(r'forms', api_views.XFormViewSet)
 router.register(r'projects', api_views.ProjectViewSet)
 router.register(r'teams', api_views.TeamViewSet)
+#router.register(r'data', api_views.DataList, base_name='data')
+router.urls.append(
+    url(r'^data$', api_views.DataList.as_view(), name='data-list'))
+router.urls.append(
+    url(r'^data/(?P<formid>[^/]+)$',
+        api_views.DataList.as_view(), name='data-list'))
+router.urls.append(
+    url(r'^data/(?P<formid>[^/]+)(?P<dataid>[^/]+)$',
+        api_views.DataList.as_view(), name='data-detail'))

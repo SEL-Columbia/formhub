@@ -2,8 +2,11 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 
 from rest_framework import viewsets
+from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from api import serializers as api_serializers
 from api import mixins
@@ -11,7 +14,7 @@ from api import tools as utils
 
 from main.models import UserProfile
 
-from odk_logger.models import XForm
+from odk_logger.models import XForm, Instance
 
 from api.models import Project, OrganizationProfile, ProjectXForm, Team
 
@@ -128,3 +131,29 @@ class TeamViewSet(viewsets.ModelViewSet):
         self.object_list = qs.filter(**filter)
         serializer = self.get_serializer(self.object_list, many=True)
         return Response(serializer.data)
+
+
+class DataList(APIView):
+    queryset = Instance.objects.all()
+
+    def _get_formlist_data_points(self, request):
+        xforms = []
+        # list public points incase anonymous user
+        if request.user.is_anonymous():
+            xforms = XForm.public_forms().order_by('?')[:10]
+        else:
+            # list data points authenticated user has access to
+            xforms = XForm.objects.filter(user=request.user)
+        rs = {}
+        for xform in xforms:
+            point = {u"%s" % xform.id_string:
+                     reverse("data-list", kwargs={"formid": xform.pk},
+                             request=request)}
+            rs.update(point)
+        return rs
+
+    def get(self, request, formid=None, dataid=None, **kwargs):
+        data = None
+        if not formid and not dataid:
+            data = self._get_formlist_data_points(request)
+        return Response(data)
