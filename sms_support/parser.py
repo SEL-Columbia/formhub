@@ -202,6 +202,9 @@ def parse_sms_text(xform, identity, text):
 
         # retrieve question definition for each answer
         egroups = expected_group.get('children', [{}])
+
+        # number of intermediate, omited questions (medias)
+        step_back = 0
         for idx, question in enumerate(egroups):
 
             real_value = None
@@ -215,7 +218,13 @@ def parse_sms_text(xform, identity, text):
             if not allow_media and question_type in MEDIA_TYPES:
                 # if medias for SMS has not been explicitly allowed
                 # they are considered excluded.
+                step_back += 1
                 continue
+
+            # pop the number of skipped questions
+            # so that out index is valid even if the form
+            # contain medias questions (and medias are disabled)
+            sidx = idx - step_back
 
             if question_type in META_FIELDS:
                 # some question are not to be fed by users
@@ -226,9 +235,9 @@ def parse_sms_text(xform, identity, text):
                 # Only last answer/question of each group is allowed
                 # to have multiple spaces
                 if idx == len(egroups) - 1:
-                    answer = u" ".join(answers[idx:])
+                    answer = u" ".join(answers[sidx:])
                 else:
-                    answer = answers[idx]
+                    answer = answers[sidx]
 
             if real_value is None:
                 # retrieve actual value and fail if it doesn't meet reqs.
