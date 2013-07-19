@@ -118,7 +118,7 @@ def process_message_for_textit(username, sms_identity, sms_text, sms_time,
                                        u"both required and must not be "
                                        u"empty.")})
 
-    incomings = [(sms_identity, sms_text, payload)]
+    incomings = [(sms_identity, sms_text)]
     response = process_incoming_smses(username, incomings, id_string)[-1]
     response.update({'payload': payload})
 
