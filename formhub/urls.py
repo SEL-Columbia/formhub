@@ -12,8 +12,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # change Language
     (r'^i18n/', include('django.conf.urls.i18n')),
-    url('^api/', include(router.urls)),
     url('^api/v1/', include(router.urls)),
+    url(r'^api-docs/', include('rest_framework_swagger.urls', namespace='swagger')),
 
     # django default stuff
     url(r'^accounts/', include('main.registration_urls')),
