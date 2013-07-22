@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 
@@ -15,6 +17,7 @@ from api import tools as utils
 from main.models import UserProfile
 
 from odk_logger.models import XForm, Instance
+from odk_viewer.models import ParsedInstance
 
 from api.models import Project, OrganizationProfile, ProjectXForm, Team
 
@@ -152,8 +155,27 @@ class DataList(APIView):
             rs.update(point)
         return rs
 
+    def _get_form_data(self, xform, **kwargs):
+        margs = {
+            'username': xform.user.username,
+            'id_string': xform.id_string,
+            'query': kwargs.get('query', None),
+            'fields': kwargs.get('fields', None),
+            'sort': kwargs.get('sort', None)
+        }
+        cursor = ParsedInstance.query_mongo(**margs)
+        records = list(record for record in cursor)
+        return records
+
     def get(self, request, formid=None, dataid=None, **kwargs):
         data = None
+        xform = None
+        query = None
         if not formid and not dataid:
             data = self._get_formlist_data_points(request)
+        if formid:
+            xform = get_object_or_404(XForm, pk=int(formid))
+        if xform and dataid:
+            query = json.dumps({'_id': int(dataid)})
+        data = self._get_form_data(xform, query=query)
         return Response(data)
