@@ -150,5 +150,5 @@ router.urls.append(
     url(r'^data/(?P<formid>[^/]+)$',
         api_views.DataList.as_view(), name='data-list'))
 router.urls.append(
-    url(r'^data/(?P<formid>[^/]+)(?P<dataid>[^/]+)$',
+    url(r'^data/(?P<formid>[^/]+)/(?P<dataid>[^/]+)$',
         api_views.DataList.as_view(), name='data-detail'))
