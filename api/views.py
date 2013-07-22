@@ -139,6 +139,9 @@ class TeamViewSet(viewsets.ModelViewSet):
 
 
 class DataList(APIView):
+    """
+    This is a custom view that displays submissions for a specific form.
+    """
     queryset = Instance.objects.all()
 
     def _get_formlist_data_points(self, request):
@@ -170,6 +173,13 @@ class DataList(APIView):
         return records
 
     def get(self, request, formid=None, dataid=None, **kwargs):
+        """
+        Display submission data.
+        If no parameter is given, it displays a dictionary of public data urls.
+
+        formid - primary key for the form
+        dataid - primary key for the data submission
+        """
         data = None
         xform = None
         query = None
