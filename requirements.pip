@@ -45,7 +45,8 @@ shell_command
 dict2xml
 
 # api support
-djangorestframework
+djangorestframework==2.3.6
+django-rest-swagger==0.1.3
 markdown
 django-filter
 # captcha

@@ -172,6 +172,7 @@ INSTALLED_APPS = (
     'sms_support',
     'django_digest',
     'rest_framework',
+    'rest_framework_swagger',
 )
 
 REST_FRAMEWORK = {
@@ -183,9 +184,22 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
     ]
 }
+
+SWAGGER_SETTINGS = {
+    "exclude_namespaces": [],    # List URL namespaces to ignore
+    "api_version": '0.1 alpha',  # Specify your API's version (optional)
+    "enabled_methods": [         # Methods to enable in UI
+        'get',
+        'post',
+        'put',
+        'patch',
+        'delete'
+    ],
+}
+
 USE_THOUSAND_SEPARATOR = True
 
 COMPRESS = True
