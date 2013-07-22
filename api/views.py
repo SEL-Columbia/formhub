@@ -8,12 +8,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework import exceptions
 
 from api import serializers as api_serializers
 from api import mixins
 from api import tools as utils
 
+from utils.user_auth import check_and_set_form_by_id
 from main.models import UserProfile
 
 from odk_logger.models import XForm, Instance
@@ -174,8 +175,11 @@ class DataList(APIView):
         if not formid and not dataid:
             data = self._get_formlist_data_points(request)
         if formid:
-            xform = get_object_or_404(XForm, pk=int(formid))
+            xform = check_and_set_form_by_id(int(formid), request)
+            if not xform:
+                raise exceptions.PermissionDenied()
         if xform and dataid:
             query = json.dumps({'_id': int(dataid)})
-        data = self._get_form_data(xform, query=query)
+        if xform:
+            data = self._get_form_data(xform, query=query)
         return Response(data)
