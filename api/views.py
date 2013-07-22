@@ -185,4 +185,6 @@ class DataList(APIView):
             query = json.dumps({'_id': int(dataid)})
         if xform:
             data = self._get_form_data(xform, query=query)
+        if dataid and len(data):
+            data = data[0]
         return Response(data)
