@@ -268,7 +268,7 @@
 
                 $(document).on("click", ".showqr", function () {
                   div_target = $(this).attr('data-target')
-                  url "=" $(this).attr('href')
+                  url = $(this).attr('href')
                   $(div_target+" .img_holder").load(url)
 
                 });
