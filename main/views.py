@@ -2,7 +2,6 @@ from datetime import datetime
 from django.contrib.contenttypes.models import ContentType
 import os
 import json
-from django import forms
 from django.db import IntegrityError
 from django.core.urlresolvers import reverse
 from django.core.files.storage import default_storage, get_storage_class
@@ -195,9 +194,10 @@ def profile(request, username):
                 }),
                 'text': _(u'Successfully published %(form_id)s.'
                           u' <a href="%(form_url)s">Enter Web Form</a>'
-                          u' or <a href="#preview-modal" data-toggle="modal">Preview Web Form</a>')
-                        % {'form_id': survey.id_string,
-                            'form_url': enketo_webform_url},
+                          u' or <a href="#preview-modal" data-toggle="modal">'
+                          u'Preview Web Form</a>')
+                % {'form_id': survey.id_string,
+                    'form_url': enketo_webform_url},
                 'form_o': survey
             }
         form_result = publish_form(set_form)
@@ -223,16 +223,15 @@ def profile(request, username):
         context.form_url = QuickConverterURL()
         context.odk_url = request.build_absolute_uri(
             "/%s" % request.user.username)
-        from django.db.models import Count
         xforms = XForm.objects.filter(user=content_user)\
             .select_related('user')\
-                .extra(
-                    select={
-                        'submission_count': 'SELECT COUNT(*) FROM '
-                        'odk_logger_instance WHERE '
-                        'odk_logger_instance.xform_id=odk_logger_xform.id '
-                        'AND odk_logger_instance.is_deleted=\'0\''
-                    })
+            .extra(
+                select={
+                    'submission_count': 'SELECT COUNT(*) FROM '
+                    'odk_logger_instance WHERE '
+                    'odk_logger_instance.xform_id=odk_logger_xform.id '
+                    'AND odk_logger_instance.is_deleted=\'0\''
+                })
         context.user_xforms = xforms
         crowdforms = XForm.objects.filter(
             metadata__data_type=MetaData.CROWDFORM_USERS,
@@ -332,7 +331,8 @@ def dashboard(request):
 def show(request, username=None, id_string=None, uuid=None):
     if uuid:
         xform = get_object_or_404(XForm, uuid=uuid)
-        request.session['public_link'] = xform.uuid if MetaData.public_link(xform) else False
+        request.session['public_link'] = \
+            xform.uuid if MetaData.public_link(xform) else False
         return HttpResponseRedirect(reverse(show, kwargs={
             'username': xform.user.username,
             'id_string': xform.id_string
@@ -340,9 +340,7 @@ def show(request, username=None, id_string=None, uuid=None):
     xform, is_owner, can_edit, can_view = get_xform_and_perms(
         username, id_string, request)
     # no access
-    if not (
-        xform.shared or can_view or\
-        request.session.get('public_link')):
+    if not (xform.shared or can_view or request.session.get('public_link')):
         return HttpResponseRedirect(reverse(home))
     context = RequestContext(request)
     context.cloned = len(
@@ -367,8 +365,8 @@ def show(request, username=None, id_string=None, uuid=None):
             initial={'enable_sms_support': xform.allows_sms,
                      'sms_id_string': xform.sms_id_string})
         if not xform.allows_sms:
-            context.sms_compatible = check_form_sms_compatibility(None,
-                json_survey=json.loads(xform.json))
+            context.sms_compatible = check_form_sms_compatibility(
+                None, json_survey=json.loads(xform.json))
         else:
             url_root = request.build_absolute_uri('/')[:-1]
             context.sms_providers_doc = providers_doc(
@@ -638,13 +636,14 @@ def edit(request, username, id_string):
                 audit = {
                     'xform': xform.id_string
                 }
-                enabled = sms_support_form.cleaned_data.get('enable_sms_support')
+                enabled = \
+                    sms_support_form.cleaned_data.get('enable_sms_support')
                 if enabled:
                     audit_action = Actions.SMS_SUPPORT_ACTIVATED
                     audit_message = _(u"SMS Support Activated on")
                 else:
-                     audit_action = Actions.SMS_SUPPORT_DEACTIVATED
-                     audit_message = _(u"SMS Support Deactivated on")
+                    audit_action = Actions.SMS_SUPPORT_DEACTIVATED
+                    audit_message = _(u"SMS Support Deactivated on")
                 audit_log(
                     audit_action, request.user, owner,
                     audit_message
@@ -654,7 +653,8 @@ def edit(request, username, id_string):
                 pe = xform.allows_sms
                 pid = xform.sms_id_string
                 xform.allows_sms = enabled
-                xform.sms_id_string = sms_support_form.cleaned_data.get('sms_id_string')
+                xform.sms_id_string = \
+                    sms_support_form.cleaned_data.get('sms_id_string')
                 compat = check_form_sms_compatibility(None,
                                                       json.loads(xform.json))
                 if compat['type'] == 'alert-error':
@@ -1184,7 +1184,8 @@ def update_xform(request, username, id_string):
             'type': 'alert-success',
             'text': _(u'Successfully published %(form_id)s.'
                       u' <a href="%(form_url)s">Enter Web Form</a>'
-                      u' or <a href="#preview-modal" data-toggle="modal">Preview Web Form</a>')
+                      u' or <a href="#preview-modal" data-toggle="modal">'
+                      u'Preview Web Form</a>')
                     % {'form_id': survey.id_string,
                        'form_url': enketo_webform_url}
         }
@@ -1301,9 +1302,11 @@ def enketo_preview(request, username, id_string):
     owner = xform.user
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
-    enekto_preview_url = "%(enketo_url)s?server=%(profile_url)s&id=%(id_string)s" % {
+    enekto_preview_url = \
+        "%(enketo_url)s?server=%(profile_url)s&id=%(id_string)s" % {
         'enketo_url': settings.ENKETO_PREVIEW_URL,
-        'profile_url': request.build_absolute_uri(reverse(profile, kwargs={'username': owner.username})),
+        'profile_url': request.build_absolute_uri(
+            reverse(profile, kwargs={'username': owner.username})),
         'id_string': xform.id_string
-    }
+        }
     return HttpResponseRedirect(enekto_preview_url)
