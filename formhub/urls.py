@@ -54,6 +54,7 @@ urlpatterns = patterns('',
     url(r'^(?P<username>[^/]+)/activity$', 'main.views.activity'),
     url(r'^(?P<username>[^/]+)/activity/api$', 'main.views.activity_api'),
     url(r'^activity/fields$', 'main.views.activity_fields'),
+    url(r'^(?P<username>[^/]+)/api-token$', 'main.views.api_token'),
 
     # form specific
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)$', 'main.views.show'),
@@ -137,7 +138,6 @@ urlpatterns = patterns('',
         {'document_root': settings.MEDIA_ROOT}),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^favicon\.ico', RedirectView.as_view(url='/static/images/favicon.ico'))
 )
 

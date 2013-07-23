@@ -50,6 +50,7 @@ from sms_support.providers import providers_doc
 
 from registration.signals import user_registered
 from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
 
 
 @receiver(user_registered, dispatch_uid='auto_add_crowdform')
@@ -392,6 +393,14 @@ def show(request, username=None, id_string=None, uuid=None):
     user_list = [u.username for u in User.objects.exclude(username=username)]
     context.user_json_list = json.dumps(user_list)
     return render_to_response("show.html", context_instance=context)
+
+
+@require_GET
+def api_token(request, username=None):
+    user = get_object_or_404(User, username=username)
+    context = RequestContext(request)
+    context.token_key, created = Token.objects.get_or_create(user=user)
+    return render_to_response("api_token.html", context_instance=context)
 
 
 @require_GET
