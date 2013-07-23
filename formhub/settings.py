@@ -173,6 +173,7 @@ INSTALLED_APPS = (
     'django_digest',
     'rest_framework',
     'rest_framework_swagger',
+    'rest_framework.authtoken',
 )
 
 REST_FRAMEWORK = {
@@ -185,12 +186,17 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly'
-    ]
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    )
 }
 
 SWAGGER_SETTINGS = {
     "exclude_namespaces": [],    # List URL namespaces to ignore
-    "api_version": '0.1 alpha',  # Specify your API's version (optional)
+    "api_version": '1.0',  # Specify your API's version (optional)
     "enabled_methods": [         # Methods to enable in UI
         'get',
         'post',
