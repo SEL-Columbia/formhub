@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy
 from utils.country_field import COUNTRIES
 from utils.gravatar import get_gravatar_img_link, gravatar_exists
 from django.db.models.signals import post_save
+from rest_framework.authtoken.models import Token
 
 
 class UserProfile(models.Model):
@@ -51,3 +52,9 @@ def stathat_user_signups(sender, instance, created, **kwargs):
     if created:
         stathat_count('formhub-signups')
 post_save.connect(stathat_user_signups, sender=UserProfile)
+
+
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+post_save.connect(create_auth_token, sender=User)
