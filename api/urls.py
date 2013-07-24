@@ -137,13 +137,13 @@ class MultiLookupRouter(routers.DefaultRouter):
         return ret
 
 router = MultiLookupRouter(trailing_slash=False)
-router.register(r'users', api_views.UserProfileViewSet)
+router.register(r'users', api_views.UserListViewSet)
+router.register(r'profiles', api_views.UserProfileViewSet)
 router.register(r'orgs', api_views.OrgProfileViewSet)
-router.register(r'u', api_views.UserViewSet)
 router.register(r'forms', api_views.XFormViewSet)
 router.register(r'projects', api_views.ProjectViewSet)
 router.register(r'teams', api_views.TeamViewSet)
-#router.register(r'data', api_views.DataList, base_name='data')
+router.register(r'data', api_views.DataList, base_name='data')
 router.urls.append(
     url(r'^data$', api_views.DataList.as_view(), name='data-list'))
 router.urls.append(

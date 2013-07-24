@@ -24,16 +24,13 @@ from odk_viewer.models import ParsedInstance
 from api.models import Project, OrganizationProfile, ProjectXForm, Team
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserListViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    List and Retrieve user's first and last names only.
+    """
     queryset = User.objects.all()
     serializer_class = api_serializers.UserSerializer
     lookup_field = 'username'
-
-    def list(self, request, **kwargs):
-        qs = self.filter_queryset(self.get_queryset())
-        self.object_list = qs.filter(username=request.user.username)
-        serializer = self.get_serializer(self.object_list, many=True)
-        return Response(serializer.data)
 
 
 class UserProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
