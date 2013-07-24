@@ -75,7 +75,13 @@ class XFormViewSet(viewsets.ReadOnlyModelViewSet):
         return user.xforms.all()
 
 
-class ProjectViewSet(mixins.MultiLookupMixin, viewsets.ModelViewSet):
+class ProjectViewSet(mixins.MultiLookupMixin,
+                     mixins.CreateModelMixin,
+                     mixins.RetrieveModelMixin,
+                     mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    List, Retrieve, Create new projects.
+    """
     queryset = Project.objects.all()
     serializer_class = api_serializers.ProjectSerializer
     lookup_fields = ('owner', 'pk')
@@ -95,6 +101,11 @@ class ProjectViewSet(mixins.MultiLookupMixin, viewsets.ModelViewSet):
 
     @action(methods=['POST', 'GET'], extra_lookup_fields=['formid', ])
     def forms(self, request, **kwargs):
+        """
+        POST - publish xlsform file to a specific project.
+
+        xls_file -- xlsform file object
+        """
         project = get_object_or_404(
             Project, pk=kwargs.get('pk', None),
             organization__username=kwargs.get('owner', None))
