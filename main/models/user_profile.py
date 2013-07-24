@@ -24,6 +24,7 @@ class UserProfile(models.Model):
         verbose_name=ugettext_lazy("Require Phone Authentication"))
     address = models.CharField(max_length=255, blank=True)
     phonenumber = models.CharField(max_length=30, blank=True)
+    created_by = models.ForeignKey(User, null=True)
 
     def __unicode__(self):
         return u'%s[%s]' % (self.name, self.user.username)
