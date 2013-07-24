@@ -134,11 +134,23 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
         view_name='user-detail',
         source='organization', lookup_field='username')
     created_by = serializers.HyperlinkedRelatedField(
-        view_name='user-detail', lookup_field='username')
+        view_name='user-detail', lookup_field='username', read_only=True)
 
     class Meta:
         model = Project
-        exclude = ('organization',)
+        exclude = ('organization', 'created_by')
+
+    def restore_object(self, attrs, instance=None):
+        if instance:
+            return super(ProjectSerializer, self)\
+                .restore_object(attrs, instance)
+        if 'request' in self.context:
+            created_by = self.context['request'].user
+            return Project(
+                name=attrs.get('name'),
+                organization=attrs.get('organization'),
+                created_by=created_by,)
+        return attrs
 
 
 class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
