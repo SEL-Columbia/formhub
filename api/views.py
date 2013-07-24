@@ -63,15 +63,16 @@ class OrgProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
         return user.organizationprofile_set.all()
 
 
-class XFormViewSet(viewsets.ModelViewSet):
+class XFormViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    List and Retrieve published forms metadata.
+    """
     queryset = XForm.objects.all()
     serializer_class = api_serializers.XFormSerializer
 
-    def list(self, request, **kwargs):
-        qs = self.filter_queryset(self.get_queryset())
-        self.object_list = qs.filter(user=request.user)
-        serializer = self.get_serializer(self.object_list, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        user = self.request.user
+        return user.xforms.all()
 
 
 class ProjectViewSet(mixins.MultiLookupMixin, viewsets.ModelViewSet):
