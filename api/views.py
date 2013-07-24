@@ -51,6 +51,9 @@ class UserProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
 
 
 class OrgProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
+    """
+    List, Retrieve, Update, Create/Register new organizations
+    """
     queryset = OrganizationProfile.objects.all()
     serializer_class = api_serializers.OrganizationSerializer
     lookup_field = 'user'
