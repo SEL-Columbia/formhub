@@ -39,6 +39,7 @@ def create_organization_object(org_name, creator, attrs={}):
     new_user.save()
     profile = OrganizationProfile(
         user=new_user, name=name, creator=creator,
+        created_by=creator,
         city=attrs.get('city', u''),
         country=attrs.get('country', u''),
         organization=attrs.get('organization', u''),

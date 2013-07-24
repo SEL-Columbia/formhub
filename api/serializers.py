@@ -95,8 +95,10 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
                             last_name=last_name, email=email)
             new_user.set_password(password)
             new_user.save()
+            created_by = self.context['request'].user
             profile = UserProfile(
                 user=new_user, name=attrs.get('name', u''),
+                created_by=created_by,
                 city=attrs.get('city', u''),
                 country=attrs.get('country', u''),
                 organization=attrs.get('organization', u''),
