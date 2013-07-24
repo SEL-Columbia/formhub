@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.decorators import action
 from rest_framework import exceptions
+from rest_framework import permissions
 
 from api import serializers as api_serializers
 from api import mixins
@@ -31,12 +32,14 @@ class UserListViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = api_serializers.UserSerializer
     lookup_field = 'username'
+    permission_classes = [permissions.DjangoModelPermissions, ]
 
 
 class UserProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = api_serializers.UserProfileSerializer
     lookup_field = 'user'
+    permission_classes = [permissions.DjangoModelPermissions, ]
 
     def list(self, request, **kwargs):
         qs = self.filter_queryset(self.get_queryset())
