@@ -36,16 +36,18 @@ class UserListViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class UserProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
+    """
+    List, Retrieve, Update, Create/Register new users.
+    """
     queryset = UserProfile.objects.all()
     serializer_class = api_serializers.UserProfileSerializer
     lookup_field = 'user'
     permission_classes = [permissions.DjangoModelPermissions, ]
+    ordering = ('user__username', )
 
-    def list(self, request, **kwargs):
-        qs = self.filter_queryset(self.get_queryset())
-        self.object_list = qs.filter(user__username=request.user.username)
-        serializer = self.get_serializer(self.object_list, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        user = self.request.user
+        return user.userprofile_set.all()
 
 
 class OrgProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
