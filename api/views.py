@@ -55,6 +55,10 @@ class OrgProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
     serializer_class = api_serializers.OrganizationSerializer
     lookup_field = 'user'
 
+    def get_queryset(self):
+        user = self.request.user
+        return user.organizationprofile_set.all()
+
 
 class XFormViewSet(viewsets.ModelViewSet):
     queryset = XForm.objects.all()
