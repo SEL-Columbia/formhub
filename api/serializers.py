@@ -151,6 +151,7 @@ class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = OrganizationProfile
         lookup_field = 'user'
+        exclude = ('created_by', 'is_organization', 'organization')
 
     def restore_object(self, attrs, instance=None):
         if instance:
@@ -169,6 +170,7 @@ class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
         if 'request' in self.context:
             creator = self.context['request'].user
         if org and creator and not org_exists:
+            attrs['organization'] = attrs.get('name')
             orgprofile = utils.create_organization_object(org, creator, attrs)
             return orgprofile
         if not org:
