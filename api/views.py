@@ -88,6 +88,10 @@ class ProjectViewSet(mixins.MultiLookupMixin,
     lookup_field = 'owner'
     extra_lookup_fields = None
 
+    def get_queryset(self):
+        user = self.request.user
+        return user.project_creator.all()
+
     def list(self, request, **kwargs):
         filter = {}
         if 'owner' in kwargs:
