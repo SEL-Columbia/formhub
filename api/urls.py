@@ -123,7 +123,7 @@ class MultiLookupRouter(routers.DefaultRouter):
 
             * [/api/v1/users](/api/v1/users) - List, Retrieve username, first
             and last name
-            * [/api/v1/profiles|accounts](/api/v1/profiles) - List, Create,
+            * [/api/v1/profiles](/api/v1/profiles) - List, Create,
             Update, user information
             * [/api/v1/orgs](/api/v1/orgs) - List, Retrieve, Create,
             Update organization and organization info
