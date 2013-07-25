@@ -12,6 +12,13 @@
     <![endif]-->
 	  <link href="/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 {% endblock %}
+{% block script %}
+{{ block.super }}
+    <style type='text/css'>
+        pre code .pln{color:#d14;}
+        pre code .pun{color:#32af8d;}
+    </style>
+{% endblock %}
 {% block branding %}
     <a class='brand' href='https://formhub.org'>Formhub</a>
 {% endblock %}
