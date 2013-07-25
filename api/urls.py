@@ -202,7 +202,7 @@ class MultiLookupRouter(routers.DefaultRouter):
         return ret
 
 router = MultiLookupRouter(trailing_slash=False)
-router.register(r'users', api_views.UserListViewSet)
+router.register(r'users', api_views.UserViewSet)
 router.register(r'profiles', api_views.UserProfileViewSet)
 router.register(r'orgs', api_views.OrgProfileViewSet)
 router.register(r'forms', api_views.XFormViewSet)

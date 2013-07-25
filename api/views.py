@@ -25,9 +25,48 @@ from odk_viewer.models import ParsedInstance
 from api.models import Project, OrganizationProfile, ProjectXForm, Team
 
 
-class UserListViewSet(viewsets.ReadOnlyModelViewSet):
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    List and Retrieve user's first and last names only.
+    This endpoint allows you to list and retrieve user's first and last names.
+
+    ## List Users
+    > Example
+    >
+    >       curl -X GET https://formhub.org/api/v1/users
+
+    > Response:
+
+    >       [
+    >            {
+    >                "username": "demo",
+    >                "first_name": "First",
+    >                "last_name": "Last"
+    >            },
+    >            {
+    >                "username": "another_demo",
+    >                "first_name": "Another",
+    >                "last_name": "Demo"
+    >            },
+    >            ...
+    >        ]
+
+
+    ## Retrieve a specific user info
+
+    <pre class="prettyprint"><b>GET</b> /api/v1/users/{username}</pre>
+
+    > Example:
+    >
+    >        curl -X GET https://formhub.org/api/v1/users/demo
+
+    > Response:
+    >
+    >       {
+    >           "username": "demo",
+    >           "first_name": "First",
+    >           "last_name": "Last"
+    >       }
+
     """
     queryset = User.objects.all()
     serializer_class = api_serializers.UserSerializer
