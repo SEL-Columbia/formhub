@@ -251,7 +251,132 @@ class ProjectViewSet(mixins.MultiLookupMixin,
                      mixins.RetrieveModelMixin,
                      mixins.ListModelMixin, viewsets.GenericViewSet):
     """
-    List, Retrieve, Create new projects.
+List, Retrieve, Update, Create Project and Project Forms
+
+Where:
+
+- `owner` - is the organization to which the project(s) belong to.
+- `pk` - is the project id
+- `formid` - is the form id
+
+## Register a new Organization Project
+<pre class="prettyprint">
+<b>POST</b> /api/v1/projects/<code>{owner}</code></pre>
+> Example
+>
+>       {
+>           "url": "http://localhost/api/v1/projects/modilabs/1",
+>           "owner": "http://localhost/api/v1/users/modilabs",
+>           "name": "project 1",
+>           "date_created": "2013-07-24T13:37:39Z",
+>           "date_modified": "2013-07-24T13:37:39Z"
+>       }
+
+## List of Organization's Projects
+
+<pre class="prettyprint"><b>GET</b> /api/v1/projects <b>or</b>
+<b>GET</b> /api/v1/projects/<code>{owner}</code></pre>
+> Example
+>
+>       curl -X GET https://formhub.org/api/v1/projects
+>       curl -X GET https://formhub.org/api/v1/projects/modilabs
+
+> Response
+>
+>       [
+>           {
+>               "url": "http://localhost/api/v1/projects/modilabs/1",
+>               "owner": "http://localhost/api/v1/users/modilabs",
+>               "name": "project 1",
+>               "date_created": "2013-07-24T13:37:39Z",
+>               "date_modified": "2013-07-24T13:37:39Z"
+>           },
+>           {
+>               "url": "http://localhost/api/v1/projects/modilabs/4",
+>               "owner": "http://localhost/api/v1/users/modilabs",
+>               "name": "project 2",
+>               "date_created": "2013-07-24T13:59:10Z",
+>               "date_modified": "2013-07-24T13:59:10Z"
+>           }, ...
+>       ]
+
+## Retrieve Project Information
+
+<pre class="prettyprint">
+<b>GET</b> /api/v1/projects/<code>{owner}</code>/<code>{pk}</code></pre>
+> Example
+>
+>       curl -X GET https://formhub.org/api/v1/projects/modilabs/1
+
+> Response
+>
+>       {
+>           "url": "http://localhost/api/v1/projects/modilabs/1",
+>           "owner": "http://localhost/api/v1/users/modilabs",
+>           "name": "project 1",
+>           "date_created": "2013-07-24T13:37:39Z",
+>           "date_modified": "2013-07-24T13:37:39Z"
+>       }
+
+## Upload XLSForm to a project
+
+<pre class="prettyprint">
+<b>GET</b> /api/v1/projects/<code>{owner}</code>/<code>{pk}</code>/forms</pre>
+> Example
+>
+>       curl -X POST -F xls_file=@/path/to/form.xls https://formhub.org/api/v1/projects/modilabs/1/forms
+
+> Response
+>
+>       {
+>           "url": "http://localhost/api/v1/forms/28058",
+>           "formid": 28058,
+>           "uuid": "853196d7d0a74bca9ecfadbf7e2f5c1f",
+>           "id_string": "Birds",
+>           "sms_id_string": "Birds",
+>           "title": "Birds",
+>           "allows_sms": false,
+>           "bamboo_dataset": "",
+>           "description": "",
+>           "downloadable": true,
+>           "encrypted": false,
+>           "is_crowd_form": false,
+>           "owner": "modilabs",
+>           "public": false,
+>           "public_data": false,
+>           "date_created": "2013-07-25T14:14:22.892Z",
+>           "date_modified": "2013-07-25T14:14:22.892Z"
+>       }
+
+## Get Form Information for a project
+
+<pre class="prettyprint">
+<b>GET</b> /api/v1/projects/<code>{owner}</code>/<code>{pk}</code>/forms/<code>{formid}</code></pre>
+> Example
+>
+>       curl -X GET https://formhub.org/api/v1/projects/modilabs/1/forms/28058
+
+> Response
+>
+>       {
+>           "url": "http://localhost/api/v1/forms/28058",
+>           "formid": 28058,
+>           "uuid": "853196d7d0a74bca9ecfadbf7e2f5c1f",
+>           "id_string": "Birds",
+>           "sms_id_string": "Birds",
+>           "title": "Birds",
+>           "allows_sms": false,
+>           "bamboo_dataset": "",
+>           "description": "",
+>           "downloadable": true,
+>           "encrypted": false,
+>           "is_crowd_form": false,
+>           "owner": "modilabs",
+>           "public": false,
+>           "public_data": false,
+>           "date_created": "2013-07-25T14:14:22.892Z",
+>           "date_modified": "2013-07-25T14:14:22.892Z"
+>       }
     """
     queryset = Project.objects.all()
     serializer_class = api_serializers.ProjectSerializer
