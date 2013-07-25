@@ -34,6 +34,10 @@ class UserListViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = 'username'
     permission_classes = [permissions.DjangoModelPermissions, ]
 
+    def get_queryset(self):
+        user = self.request.user
+        return User.objects.filter(pk__in=user.userprofile_set.values('user'))
+
 
 class UserProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
     """
