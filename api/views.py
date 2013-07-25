@@ -80,7 +80,71 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
 class UserProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
     """
-    List, Retrieve, Update, Create/Register new users.
+    List, Retrieve, Update, Create/Register users.
+
+    ## Register a new User
+    <pre class="prettyprint"><b>POST</b> /api/v1/profiles</pre>
+    > Example
+    >
+    >        {
+    >            "username": "demo",
+    >            "name": "Demo User",
+    >            "email": "demo@localhost.com",
+    >            "city": "Kisumu",
+    >            "country": "KE",
+    >            ...
+    >        }
+
+    ## List User Profiles
+    <pre class="prettyprint"><b>GET</b> /api/v1/profiles</pre>
+    > Example
+    >
+    >       curl -X GET https://formhub.org/api/v1/profiles
+
+    > Response
+    >
+    >       [
+    >        {
+    >            "url": "https://formhub.org/api/v1/profiles/demo",
+    >            "username": "demo",
+    >            "name": "Demo User",
+    >            "email": "demo@localhost.com",
+    >            "city": "",
+    >            "country": "",
+    >            "organization": "",
+    >            "website": "",
+    >            "twitter": "",
+    >            "gravatar": "https://secure.gravatar.com/avatar/xxxxxx",
+    >            "require_auth": false,
+    >            "user": "https://formhub.org/api/v1/users/demo"
+    >        },
+    >        {
+    >           ...}, ...
+    >       ]
+
+    ## Retrieve User Profile Information
+
+    <pre class="prettyprint"><b>GET</b> /api/v1/profiles/{username}</pre>
+    > Example
+    >
+    >       curl -X GET https://formhub.org/api/v1/profiles/demo
+
+    > Response
+    >
+    >        {
+    >            "url": "https://formhub.org/api/v1/profiles/demo",
+    >            "username": "demo",
+    >            "name": "Demo User",
+    >            "email": "demo@localhost.com",
+    >            "city": "",
+    >            "country": "",
+    >            "organization": "",
+    >            "website": "",
+    >            "twitter": "",
+    >            "gravatar": "https://secure.gravatar.com/avatar/xxxxxx",
+    >            "require_auth": false,
+    >            "user": "https://formhub.org/api/v1/users/demo"
+    >        }
     """
     queryset = UserProfile.objects.all()
     serializer_class = api_serializers.UserProfileSerializer
