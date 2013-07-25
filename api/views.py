@@ -236,7 +236,63 @@ class OrgProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
 
 class XFormViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    List and Retrieve published forms metadata.
+List, Retrieve Published Forms.
+
+Where:
+
+- `owner` - is the organization to which the project(s) belong to.
+- `pk` - is the project id
+- `formid` - is the form id
+
+## Get Form Information
+
+<pre class="prettyprint">
+<b>GET</b> /api/v1/forms/<code>{formid}</code>
+<b>GET</b> /api/v1/projects/<code>{owner}</code>/<code>{pk}</code>/forms/<code>{formid}</code></pre>
+> Example
+>
+>       curl -X GET https://formhub.org/api/v1/forms/28058
+
+> Response
+>
+>       {
+>           "url": "http://localhost/api/v1/forms/28058",
+>           "formid": 28058,
+>           "uuid": "853196d7d0a74bca9ecfadbf7e2f5c1f",
+>           "id_string": "Birds",
+>           "sms_id_string": "Birds",
+>           "title": "Birds",
+>           "allows_sms": false,
+>           "bamboo_dataset": "",
+>           "description": "",
+>           "downloadable": true,
+>           "encrypted": false,
+>           "is_crowd_form": false,
+>           "owner": "modilabs",
+>           "public": false,
+>           "public_data": false,
+>           "date_created": "2013-07-25T14:14:22.892Z",
+>           "date_modified": "2013-07-25T14:14:22.892Z"
+>       }
+
+## List Forms
+<pre class="prettyprint">
+<b>GET</b> /api/v1/forms/<code>{formid}</code></pre>
+> Example
+>
+>       curl -X GET https://formhub.org/api/v1/forms
+
+> Response
+>
+>       [{
+>           "url": "http://localhost/api/v1/forms/28058",
+>           "formid": 28058,
+>           "uuid": "853196d7d0a74bca9ecfadbf7e2f5c1f",
+>           "id_string": "Birds",
+>           "sms_id_string": "Birds",
+>           "title": "Birds",
+>           ...
+>       }, ...]
     """
     queryset = XForm.objects.all()
     serializer_class = api_serializers.XFormSerializer
