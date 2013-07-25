@@ -1,5 +1,7 @@
 from django.conf.urls import url
 from rest_framework import routers
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from api import views as api_views
 
 
@@ -103,6 +105,27 @@ class MultiLookupRouter(routers.DefaultRouter):
         else:
             ret = super(MultiLookupRouter, self).get_routes(viewset)
         return ret
+
+    def get_api_root_view(self):
+        """
+        Return a view to use as the API root.
+        """
+        api_root_dict = {}
+        list_name = self.routes[0].name
+        for prefix, viewset, basename in self.registry:
+            api_root_dict[prefix] = list_name.format(basename=basename)
+
+        class FormhubApi(api_views.APIView):
+            _ignore_model_permissions = True
+
+            def get(self, request, format=None):
+                ret = {}
+                for key, url_name in api_root_dict.items():
+                    ret[key] = reverse(
+                        url_name, request=request, format=format)
+                return Response(ret)
+
+        return FormhubApi.as_view()
 
     def get_urls(self):
         ret = []
