@@ -51,44 +51,6 @@ def autodoc(url_root, username, id_string):
     return doc
 
 
-def get_token_for(xform):
-    return 'xxx'
-
-
-def get_xform_for(username, sms_text, id_string=None):
-    if not id_string is None:
-        try:
-            return XForm.objects.get(user__username=username,
-                                     id_string=id_string)
-        except XForm.DoesNotExist:
-            return None
-
-    try:
-        keyword = sms_text.split(' ', 1)[0]
-    except IndexError:
-        keyword = ''
-
-    try:
-        return XForm.objects.get(user__username=username,
-                                 sms_id_string=keyword)
-    except XForm.DoesNotExist:
-        return None
-
-
-def send_sms_via_textit(phone, text, relayer=None, xform=None):
-    # not supported yet.
-    return
-
-    textit_token = get_token_for(xform=xform, service='textit')
-
-    payload = {'phone': phone, 'text': text}
-    if relayer:
-        payload.update({'relayer': relayer})
-    headers = {'content-type': 'application/json',
-               'Authorization': 'Token %s' % textit_token}
-    requests.post(TEXTIT_URL, data=json.dumps(payload), headers=headers)
-
-
 def get_response(data):
 
     message = data.get('text')
@@ -102,7 +64,9 @@ def get_response(data):
         payload = data.get('payload', {})
         payload.update({'text': message})
         if payload.get('phone'):
-            send_sms_via_textit(**payload)
+            response = {"phone": [payload.get('phone')],
+                        "text": payload.get('text')}
+            return HttpResponse(json.dumps(response), mimetype='application/json')
 
     return HttpResponse()
 
@@ -129,7 +93,6 @@ def import_submission_for_form(request, username, id_string):
     sms_text = request.POST.get('text', '').strip()
     now_time = datetime.datetime.now().isoformat()
     sent_time = request.POST.get('time', now_time).strip()
-    xform = get_xform_for(username, sms_text, id_string)
 
     try:
         sms_time = dateutil.parser.parse(sent_time)
@@ -142,8 +105,7 @@ def import_submission_for_form(request, username, id_string):
                                       sms_time=sms_time,
                                       id_string=id_string,
                                       payload={'phone': sms_identity,
-                                               'relayer': sms_relayer,
-                                               'xform': xform})
+                                               'relayer': sms_relayer})
 
 
 def process_message_for_textit(username, sms_identity, sms_text, sms_time,
@@ -156,7 +118,7 @@ def process_message_for_textit(username, sms_identity, sms_text, sms_time,
                                        u"both required and must not be "
                                        u"empty.")})
 
-    incomings = [(sms_identity, sms_text, payload)]
+    incomings = [(sms_identity, sms_text)]
     response = process_incoming_smses(username, incomings, id_string)[-1]
     response.update({'payload': payload})
 
