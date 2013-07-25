@@ -116,6 +116,48 @@ class MultiLookupRouter(routers.DefaultRouter):
             api_root_dict[prefix] = list_name.format(basename=basename)
 
         class FormhubApi(api_views.APIView):
+            """
+            ## JSON Rest API
+
+            Formhub provides the following JSON api endpoints:
+
+            * [/api/v1/users](/api/v1/users) - List, Retrieve username, first
+            and last name
+            * [/api/v1/profiles|accounts](/api/v1/profiles) - List, Create,
+            Update, user information
+            * [/api/v1/orgs](/api/v1/orgs) - List, Retrieve, Create,
+            Update organization and organization info
+            * [/api/v1/projects](/api/v1/projects) - List, Retrieve, Create,
+             Update organization projects, forms
+            * [/api/v1/forms](/api/v1/projects) - List, Retrieve
+            xlsforms information
+            * [/api/v1/data](/api/v1/data) - List, Retrieve submission data
+
+            ## Status Codes
+
+            * **200** - Successful
+            * **201** - Resource successfully created, usually by POST requests
+            * **204** - Resouce successfully deleted
+            * **403** - Permission denied to resource
+            * **404** - Resource was not found
+
+            ## Authentication
+
+            Formhub JSON API enpoints support both Basic authentication
+            and API Token Authentication through the `Authorization` header.
+
+            ### Basic Authentication
+
+            Example using curl:
+
+                curl -X GET https://formhub.org/api/v1 -u username:password
+
+            ### Token Authentication
+
+            Example using curl:
+
+                curl -X GET https://formhub.org/api/v1 -H "Authorization: Token TOKEN_KEY"
+            """
             _ignore_model_permissions = True
 
             def get(self, request, format=None):
