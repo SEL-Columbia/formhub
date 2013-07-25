@@ -129,7 +129,7 @@ class MultiLookupRouter(routers.DefaultRouter):
             Update organization and organization info
             * [/api/v1/projects](/api/v1/projects) - List, Retrieve, Create,
              Update organization projects, forms
-            * [/api/v1/forms](/api/v1/projects) - List, Retrieve
+            * [/api/v1/forms](/api/v1/forms) - List, Retrieve
             xlsforms information
             * [/api/v1/data](/api/v1/data) - List, Retrieve submission data
 
