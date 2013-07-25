@@ -24,7 +24,7 @@ var fhExportList =  (function(){
 
             /// if export_id is set refresh only the matching element else refresh all
             if(export_id)
-                selector += 'a[data-export=' + export_id + ']'
+                selector = 'a[data-export=' + export_id + ']'
 
             progress_elements = $(selector)
 
@@ -119,6 +119,9 @@ var fhExportList =  (function(){
 })();
 
 $(document).ready(function(){
+    fhExportList.init(progress_url, 8000);
+    setTimeout(fhExportList.autoRefresh, 5000);
+
     $('a[data-role=refresh-export-progress]').click(function(evt){
         var anchor = $(this);
 
