@@ -159,7 +159,71 @@ class UserProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
 
 class OrgProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
     """
-    List, Retrieve, Update, Create/Register new organizations
+    List, Retrieve, Update, Create/Register Organizations
+
+    ## Register a new Organization
+    <pre class="prettyprint"><b>POST</b> /api/v1/orgs</pre>
+    > Example
+    >
+    >        {
+    >            "org": "modilabs",
+    >            "name": "Modi Labs Research",
+    >            "email": "modilabs@localhost.com",
+    >            "city": "New York",
+    >            "country": "US",
+    >            ...
+    >        }
+
+    ## List of Organizations
+    <pre class="prettyprint"><b>GET</b> /api/v1/orgs</pre>
+    > Example
+    >
+    >       curl -X GET https://formhub.org/api/v1/orgs
+
+    > Response
+    >
+    >       [
+    >        {
+    >            "url": "https://formhub.org/api/v1/orgs/modilabs",
+    >            "org": "modilabs",
+    >            "name": "Modi Labs Research",
+    >            "email": "modilabs@localhost.com",
+    >            "city": "New York",
+    >            "country": "US",
+    >            "website": "",
+    >            "twitter": "",
+    >            "gravatar": "https://secure.gravatar.com/avatar/xxxxxx",
+    >            "require_auth": false,
+    >            "user": "https://formhub.org/api/v1/users/modilabs"
+    >            "creator": "https://formhub.org/api/v1/users/demo"
+    >        },
+    >        {
+    >           ...}, ...
+    >       ]
+
+    ## Retrieve Organization Profile Information
+
+    <pre class="prettyprint"><b>GET</b> /api/v1/orgs/{username}</pre>
+    > Example
+    >
+    >       curl -X GET https://formhub.org/api/v1/orgs/modilabs
+
+    > Response
+    >
+    >        {
+    >            "url": "https://formhub.org/api/v1/orgs/modilabs",
+    >            "org": "modilabs",
+    >            "name": "Modi Labs Research",
+    >            "email": "modilabs@localhost.com",
+    >            "city": "New York",
+    >            "country": "US",
+    >            "website": "",
+    >            "twitter": "",
+    >            "gravatar": "https://secure.gravatar.com/avatar/xxxxxx",
+    >            "require_auth": false,
+    >            "user": "https://formhub.org/api/v1/users/modilabs"
+    >            "creator": "https://formhub.org/api/v1/users/demo"
+    >        }
     """
     queryset = OrganizationProfile.objects.all()
     serializer_class = api_serializers.OrganizationSerializer
