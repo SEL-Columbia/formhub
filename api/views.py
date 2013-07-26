@@ -608,6 +608,7 @@ Shows teams details and the projects the team is assigned to, where:
   >       curl -X GET https://formhub.org/api/v1/teams/bruize/1
 
   > Response
+  >
   >        {
   >            "url": "http://localhost/api/v1/teams/bruize/1",
   >            "name": "Owners",
@@ -621,6 +622,11 @@ Shows teams details and the projects the team is assigned to, where:
     lookup_field = 'owner'
     extra_lookup_fields = None
 
+    def get_queryset(self):
+        user = self.request.user
+        orgs = user.organizationprofile_set.values('user')
+        return Team.objects.filter(organization__in=orgs)
+
     def get_object(self):
         filter = {
             'organization__username': self.kwargs['owner'],
@@ -633,8 +639,6 @@ Shows teams details and the projects the team is assigned to, where:
         filter = {}
         if 'owner' in kwargs:
             filter['organization__username'] = kwargs['owner']
-        if not filter:
-            filter['user'] = request.user
         qs = self.filter_queryset(self.get_queryset())
         self.object_list = qs.filter(**filter)
         serializer = self.get_serializer(self.object_list, many=True)
