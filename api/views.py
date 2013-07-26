@@ -522,6 +522,17 @@ Where:
             user = User.objects.get(pk=-1)
         return user.project_creator.all()
 
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get('pk', None)
+        if pk is not None:
+            try:
+                int(pk)
+            except ValueError:
+                raise exceptions.ParseError(
+                    detail=_(u"The path parameter {pk} "
+                             u"should be a number, '%s' given instead." % pk))
+        return super(ProjectViewSet, self).get_object(queryset)
+
     def list(self, request, **kwargs):
         filter = {}
         if 'owner' in kwargs:
