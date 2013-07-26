@@ -6,12 +6,14 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
 from rest_framework import viewsets
+from rest_framework import exceptions
+from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.decorators import action
-from rest_framework import exceptions
-from rest_framework import permissions
+from rest_framework.settings import api_settings
+from rest_framework.renderers import BaseRenderer
 
 from api import serializers as api_serializers
 from api import mixins
@@ -235,6 +237,15 @@ class OrgProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
         return user.organizationprofile_set.all()
 
 
+class SurveyRenderer(BaseRenderer):
+    media_type = 'application/xml'
+    format = 'xml'
+    charset = 'utf-8'
+
+    def render(self, data, accepted_media_type=None, renderer_context=None):
+        return data
+
+
 class XFormViewSet(viewsets.ReadOnlyModelViewSet):
     """
 List, Retrieve Published Forms.
@@ -295,6 +306,7 @@ Where:
 >           ...
 >       }, ...]
     """
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES + [SurveyRenderer]
     queryset = XForm.objects.all()
     serializer_class = api_serializers.XFormSerializer
 
