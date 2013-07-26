@@ -301,6 +301,17 @@ Where:
         user = self.request.user
         return user.xforms.all()
 
+    @action(methods=['GET'])
+    def form(self, request, format=None, **kwargs):
+        if not format:
+            format = 'json'
+        self.object = self.get_object()
+        if format == 'xml':
+            data = self.object.xml
+        else:
+            data = json.loads(self.object.json)
+        return Response(data)
+
 
 class ProjectViewSet(mixins.MultiLookupMixin,
                      mixins.CreateModelMixin,
