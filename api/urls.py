@@ -2,6 +2,7 @@ from django.conf.urls import url
 from rest_framework import routers
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from rest_framework.urlpatterns import format_suffix_patterns
 from api import views as api_views
 
 
@@ -199,6 +200,8 @@ class MultiLookupRouter(routers.DefaultRouter):
                 view = viewset.as_view(mapping, **route.initkwargs)
                 name = route.name.format(basename=basename)
                 ret.append(url(regex, view, name=name))
+        if self.include_format_suffixes:
+            ret = format_suffix_patterns(ret)
         return ret
 
 router = MultiLookupRouter(trailing_slash=False)
