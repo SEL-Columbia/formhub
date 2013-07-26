@@ -274,7 +274,7 @@ Where:
 > Response
 >
 >       {
->           "url": "http://localhost/api/v1/forms/modilabs/28058",
+>           "url": "https://formhub.org/api/v1/forms/modilabs/28058",
 >           "formid": 28058,
 >           "uuid": "853196d7d0a74bca9ecfadbf7e2f5c1f",
 >           "id_string": "Birds",
@@ -286,7 +286,7 @@ Where:
 >           "downloadable": true,
 >           "encrypted": false,
 >           "is_crowd_form": false,
->           "owner": "http://localhost/api/v1/users/modilabs",
+>           "owner": "https://formhub.org/api/v1/users/modilabs",
 >           "public": false,
 >           "public_data": false,
 >           "date_created": "2013-07-25T14:14:22.892Z",
@@ -304,7 +304,7 @@ Where:
 > Response
 >
 >       [{
->           "url": "http://localhost/api/v1/forms/modilabs/28058",
+>           "url": "https://formhub.org/api/v1/forms/modilabs/28058",
 >           "formid": 28058,
 >           "uuid": "853196d7d0a74bca9ecfadbf7e2f5c1f",
 >           "id_string": "Birds",
@@ -400,8 +400,8 @@ Where:
 > Example
 >
 >       {
->           "url": "http://localhost/api/v1/projects/modilabs/1",
->           "owner": "http://localhost/api/v1/users/modilabs",
+>           "url": "https://formhub.org/api/v1/projects/modilabs/1",
+>           "owner": "https://formhub.org/api/v1/users/modilabs",
 >           "name": "project 1",
 >           "date_created": "2013-07-24T13:37:39Z",
 >           "date_modified": "2013-07-24T13:37:39Z"
@@ -420,15 +420,15 @@ Where:
 >
 >       [
 >           {
->               "url": "http://localhost/api/v1/projects/modilabs/1",
->               "owner": "http://localhost/api/v1/users/modilabs",
+>               "url": "https://formhub.org/api/v1/projects/modilabs/1",
+>               "owner": "https://formhub.org/api/v1/users/modilabs",
 >               "name": "project 1",
 >               "date_created": "2013-07-24T13:37:39Z",
 >               "date_modified": "2013-07-24T13:37:39Z"
 >           },
 >           {
->               "url": "http://localhost/api/v1/projects/modilabs/4",
->               "owner": "http://localhost/api/v1/users/modilabs",
+>               "url": "https://formhub.org/api/v1/projects/modilabs/4",
+>               "owner": "https://formhub.org/api/v1/users/modilabs",
 >               "name": "project 2",
 >               "date_created": "2013-07-24T13:59:10Z",
 >               "date_modified": "2013-07-24T13:59:10Z"
@@ -446,8 +446,8 @@ Where:
 > Response
 >
 >       {
->           "url": "http://localhost/api/v1/projects/modilabs/1",
->           "owner": "http://localhost/api/v1/users/modilabs",
+>           "url": "https://formhub.org/api/v1/projects/modilabs/1",
+>           "owner": "https://formhub.org/api/v1/users/modilabs",
 >           "name": "project 1",
 >           "date_created": "2013-07-24T13:37:39Z",
 >           "date_modified": "2013-07-24T13:37:39Z"
@@ -464,7 +464,7 @@ Where:
 > Response
 >
 >       {
->           "url": "http://localhost/api/v1/forms/28058",
+>           "url": "https://formhub.org/api/v1/forms/28058",
 >           "formid": 28058,
 >           "uuid": "853196d7d0a74bca9ecfadbf7e2f5c1f",
 >           "id_string": "Birds",
@@ -494,7 +494,7 @@ Where:
 > Response
 >
 >       {
->           "url": "http://localhost/api/v1/forms/28058",
+>           "url": "https://formhub.org/api/v1/forms/28058",
 >           "formid": 28058,
 >           "uuid": "853196d7d0a74bca9ecfadbf7e2f5c1f",
 >           "id_string": "Birds",
@@ -603,15 +603,15 @@ Provides a json list of teams within a specified organization
   >
   >        [
   >            {
-  >                "url": "http://localhost/api/v1/teams/bruize/1",
+  >                "url": "https://formhub.org/api/v1/teams/bruize/1",
   >                "name": "Owners",
-  >                "organization": "http://localhost/api/v1/users/bruize",
+  >                "organization": "https://formhub.org/api/v1/users/bruize",
   >                "projects": []
   >            },
   >            {
-  >                "url": "http://localhost/api/v1/teams/bruize/2",
+  >                "url": "https://formhub.org/api/v1/teams/bruize/2",
   >                "name": "demo team",
-  >                "organization": "http://localhost/api/v1/users/bruize",
+  >                "organization": "https://formhub.org/api/v1/users/bruize",
   >                "projects": []
   >            }
   >        ]
@@ -634,9 +634,9 @@ Shows teams details and the projects the team is assigned to, where:
   > Response
   >
   >        {
-  >            "url": "http://localhost/api/v1/teams/bruize/1",
+  >            "url": "https://formhub.org/api/v1/teams/bruize/1",
   >            "name": "Owners",
-  >            "organization": "http://localhost/api/v1/users/bruize",
+  >            "organization": "https://formhub.org/api/v1/users/bruize",
   >            "projects": []
   >        }
     """
@@ -688,9 +688,9 @@ This is a json list of the data end points of your forms
   > Response
   >
   >        {
-  >            "dhis2form": "http://localhost/api/v1/data/4240",
-  >            "exp_one": "http://localhost/api/v1/data/13789",
-  >            "userone": "http://localhost/api/v1/data/10417",
+  >            "dhis2form": "https://formhub.org/api/v1/data/4240",
+  >            "exp_one": "https://formhub.org/api/v1/data/13789",
+  >            "userone": "https://formhub.org/api/v1/data/10417",
   >        }
 
 ## Get Submitted data for a specific form
