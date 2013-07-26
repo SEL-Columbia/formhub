@@ -305,6 +305,47 @@ Where:
 >           "title": "Birds",
 >           ...
 >       }, ...]
+
+## Get `JSON` | `XML` Form Representation
+  <pre class="prettyprint">
+  <b>GET</b> /api/v1/forms/<code>{formid}</code>/form.<code>{format}</code></pre>
+  > JSON Example
+  >
+  >       curl -X GET https://formhub.org/api/v1/forms/28058/form.json
+
+  > Response
+  >
+  >        {
+  >            "name": "Birds",
+  >            "title": "Birds",
+  >            "default_language": "default",
+  >            "id_string": "Birds",
+  >            "type": "survey",
+  >            "children": [
+  >                {
+  >                    "type": "text",
+  >                    "name": "name",
+  >                    "label": "1. What is your name?"
+  >                },
+  >                ...
+  >                ]
+  >        }
+
+  > XML Example
+  >
+  >       curl -X GET https://formhub.org/api/v1/forms/28058/form.xml
+
+  > Response
+  >
+  >        <?xml version="1.0" encoding="utf-8"?>
+  >        <h:html xmlns="http://www.w3.org/2002/xforms" ...>
+  >          <h:head>
+  >            <h:title>Birds</h:title>
+  >            <model>
+  >              <itext>
+  >                 .....
+  >          </h:body>
+  >        </h:html>
     """
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES + [SurveyRenderer]
     queryset = XForm.objects.all()
