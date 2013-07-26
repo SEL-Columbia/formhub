@@ -1,5 +1,6 @@
 import json
 
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
@@ -299,7 +300,10 @@ Where:
 
     def get_queryset(self):
         user = self.request.user
-        return user.xforms.all()
+        user_forms = user.xforms.values('pk')
+        project_forms = user.projectxform_set.values('xform')
+        return XForm.objects.filter(
+            Q(pk__in=user_forms) | Q(pk__in=project_forms))
 
     @action(methods=['GET'])
     def form(self, request, format=None, **kwargs):
