@@ -135,9 +135,9 @@ class MultiLookupRouter(routers.DefaultRouter):
 
             ## Status Codes
 
-            * **200** - Successful
-            * **201** - Resource successfully created, usually by POST requests
-            * **204** - Resouce successfully deleted
+            * **200** - Successful [`GET`, `PATCH`, `PUT`]
+            * **201** - Resource successfully created [`POST`]
+            * **204** - Resouce successfully deleted [`DELETE`]
             * **403** - Permission denied to resource
             * **404** - Resource was not found
 
