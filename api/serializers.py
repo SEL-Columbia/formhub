@@ -111,8 +111,13 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class XFormSerializer(serializers.HyperlinkedModelSerializer):
+    url = HyperlinkedMultiIdentityField(
+        view_name='xform-detail',
+        lookup_fields=(('pk', 'pk'), ('owner', 'user')))
     formid = serializers.Field(source='id')
-    owner = serializers.Field(source='user.username')
+    owner = serializers.HyperlinkedRelatedField(
+        view_name='user-detail',
+        source='user', lookup_field='username')
     public = serializers.BooleanField(
         source='shared', widget=widgets.CheckboxInput())
     public_data = serializers.BooleanField(

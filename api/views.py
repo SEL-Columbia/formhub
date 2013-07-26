@@ -252,13 +252,13 @@ class SurveyRenderer(BaseRenderer):
         return data
 
 
-class XFormViewSet(viewsets.ReadOnlyModelViewSet):
+class XFormViewSet(mixins.MultiLookupMixin, viewsets.ReadOnlyModelViewSet):
     """
 List, Retrieve Published Forms.
 
 Where:
 
-- `owner` - is the organization to which the project(s) belong to.
+- `owner` - is the organization or user to which the form(s) belong to.
 - `pk` - is the project id
 - `formid` - is the form id
 
@@ -274,7 +274,7 @@ Where:
 > Response
 >
 >       {
->           "url": "http://localhost/api/v1/forms/28058",
+>           "url": "http://localhost/api/v1/forms/modilabs/28058",
 >           "formid": 28058,
 >           "uuid": "853196d7d0a74bca9ecfadbf7e2f5c1f",
 >           "id_string": "Birds",
@@ -286,7 +286,7 @@ Where:
 >           "downloadable": true,
 >           "encrypted": false,
 >           "is_crowd_form": false,
->           "owner": "modilabs",
+>           "owner": "http://localhost/api/v1/users/modilabs",
 >           "public": false,
 >           "public_data": false,
 >           "date_created": "2013-07-25T14:14:22.892Z",
@@ -295,15 +295,16 @@ Where:
 
 ## List Forms
 <pre class="prettyprint">
-<b>GET</b> /api/v1/forms/<code>{formid}</code></pre>
+<b>GET</b> /api/v1/forms
+<b>GET</b> /api/v1/forms/<code>{owner}</code></pre>
 > Example
 >
->       curl -X GET https://formhub.org/api/v1/forms
+>       curl -X GET https://formhub.org/api/v1/forms/modilabs
 
 > Response
 >
 >       [{
->           "url": "http://localhost/api/v1/forms/28058",
+>           "url": "http://localhost/api/v1/forms/modilabs/28058",
 >           "formid": 28058,
 >           "uuid": "853196d7d0a74bca9ecfadbf7e2f5c1f",
 >           "id_string": "Birds",
@@ -314,7 +315,7 @@ Where:
 
 ## Get `JSON` | `XML` Form Representation
   <pre class="prettyprint">
-  <b>GET</b> /api/v1/forms/<code>{formid}</code>/form.<code>{format}</code></pre>
+  <b>GET</b> /api/v1/forms/<code>{owner}</code>/<code>{formid}</code>/form.<code>{format}</code></pre>
   > JSON Example
   >
   >       curl -X GET https://formhub.org/api/v1/forms/28058/form.json
@@ -339,7 +340,7 @@ Where:
 
   > XML Example
   >
-  >       curl -X GET https://formhub.org/api/v1/forms/28058/form.xml
+  >       curl -X GET https://formhub.org/api/v1/forms/modilabs/28058/form.xml
 
   > Response
   >
@@ -356,6 +357,8 @@ Where:
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES + [SurveyRenderer]
     queryset = XForm.objects.all()
     serializer_class = api_serializers.XFormSerializer
+    lookup_fields = ('owner', 'pk')
+    lookup_field = 'owner'
 
     def get_queryset(self):
         user = self.request.user
