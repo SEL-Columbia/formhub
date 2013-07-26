@@ -585,7 +585,119 @@ class TeamViewSet(viewsets.ModelViewSet):
 
 class DataList(APIView):
     """
-    This is a custom view that displays submissions for a specific form.
+This endpoint provides access to submitted data in JSON format.
+
+## GET JSON List of data end points
+This is a json list of the data end points of your forms
+ and/or including public forms and forms shared with you.
+<pre class="prettyprint">
+  <b>GET</b> /api/v1/data</pre>
+
+  > Example
+  >
+  >       curl -X GET https://formhub.org/api/v1/data
+
+  > Response
+  >
+  >        {
+  >            "dhis2form": "http://localhost/api/v1/data/4240",
+  >            "exp_one": "http://localhost/api/v1/data/13789",
+  >            "userone": "http://localhost/api/v1/data/10417",
+  >        }
+
+## Get Submitted data for a specific form
+Provides a list of json submitted data for a specific form,
+ where `formid` is the identifying number for a specific form.
+ <pre class="prettyprint">
+  <b>GET</b> /api/v1/data/<code>{formid}</code></pre>
+  > Example
+  >
+  >       curl -X GET https://formhub.org/api/v1/data/22845
+
+  > Response
+  >
+  >        [
+  >            {
+  >                "_id": 4503,
+  >                "_bamboo_dataset_id": "",
+  >                "_deleted_at": null,
+  >                "expense_type": "service",
+  >                "_xform_id_string": "exp",
+  >                "_geolocation": [
+  >                    null,
+  >                    null
+  >                ],
+  >                "end": "2013-01-03T10:26:25.674+03",
+  >                "start": "2013-01-03T10:25:17.409+03",
+  >                "expense_date": "2011-12-23",
+  >                "_status": "submitted_via_web",
+  >                "today": "2013-01-03",
+  >                "_uuid": "2e599f6fe0de42d3a1417fb7d821c859",
+  >                "imei": "351746052013466",
+  >                "formhub/uuid": "46ea15e2b8134624a47e2c4b77eef0d4",
+  >                "kind": "monthly",
+  >                "_submission_time": "2013-01-03T02:27:19",
+  >                "required": "yes",
+  >                "_attachments": [],
+  >                "item": "Rent",
+  >                "amount": "35000.0",
+  >                "deviceid": "351746052013466",
+  >                "subscriberid": "639027...60317"
+  >            },
+  >            {
+  >                ....
+  >                "subscriberid": "639027...60317"
+  >            }
+  >        ]
+
+## Get a single data submission for a given form
+
+Get a single specific submission json data providing `formid`
+ and `dataid` as url path parameters, where:
+
+* `formid` is the identifying number for a specific form
+* `dataid` is the unique id of the data, the value of `_id` or `_uuid`
+
+ <pre class="prettyprint">
+  <b>GET</b> /api/v1/data/<code>{formid}</code>/<code>{dataid}</code></pre>
+  > Example
+  >
+  >       curl -X GET https://formhub.org/api/v1/data/22845/4503
+
+  > Response
+  >
+  >            {
+  >                "_id": 4503,
+  >                "_bamboo_dataset_id": "",
+  >                "_deleted_at": null,
+  >                "expense_type": "service",
+  >                "_xform_id_string": "exp",
+  >                "_geolocation": [
+  >                    null,
+  >                    null
+  >                ],
+  >                "end": "2013-01-03T10:26:25.674+03",
+  >                "start": "2013-01-03T10:25:17.409+03",
+  >                "expense_date": "2011-12-23",
+  >                "_status": "submitted_via_web",
+  >                "today": "2013-01-03",
+  >                "_uuid": "2e599f6fe0de42d3a1417fb7d821c859",
+  >                "imei": "351746052013466",
+  >                "formhub/uuid": "46ea15e2b8134624a47e2c4b77eef0d4",
+  >                "kind": "monthly",
+  >                "_submission_time": "2013-01-03T02:27:19",
+  >                "required": "yes",
+  >                "_attachments": [],
+  >                "item": "Rent",
+  >                "amount": "35000.0",
+  >                "deviceid": "351746052013466",
+  >                "subscriberid": "639027...60317"
+  >            },
+  >            {
+  >                ....
+  >                "subscriberid": "639027...60317"
+  >            }
+  >        ]
     """
     queryset = Instance.objects.all()
 
