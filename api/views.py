@@ -673,34 +673,38 @@ Shows teams details and the projects the team is assigned to, where:
 
 class DataList(APIView):
     """
-This endpoint provides access to submitted data in JSON format.
+This endpoint provides access to submitted data in JSON format. Where:
+
+* `owner` - is organization or user whom the data belongs to
+* `formid` - the form unique identifier
+* `dataid` - submission data unique identifier
 
 ## GET JSON List of data end points
-This is a json list of the data end points of your forms
- and/or including public forms and forms shared with you.
+This is a json list of the data end points of `owner` forms
+ and/or including public forms and forms shared with `owner`.
 <pre class="prettyprint">
-  <b>GET</b> /api/v1/data</pre>
+  <b>GET</b> /api/v1/data
+  <b>GET</b> /api/v1/data/<code>{owner}</code></pre>
 
   > Example
   >
-  >       curl -X GET https://formhub.org/api/v1/data
+  >       curl -X GET https://formhub.org/api/v1/data/modilabs
 
   > Response
   >
   >        {
-  >            "dhis2form": "https://formhub.org/api/v1/data/4240",
-  >            "exp_one": "https://formhub.org/api/v1/data/13789",
-  >            "userone": "https://formhub.org/api/v1/data/10417",
+  >            "dhis2form": "https://formhub.org/api/v1/data/modilabs/4240",
+  >            "exp_one": "https://formhub.org/api/v1/data/modilabs/13789",
+  >            "userone": "https://formhub.org/api/v1/data/modilabs/10417",
   >        }
 
 ## Get Submitted data for a specific form
-Provides a list of json submitted data for a specific form,
- where `formid` is the identifying number for a specific form.
+Provides a list of json submitted data for a specific form.
  <pre class="prettyprint">
-  <b>GET</b> /api/v1/data/<code>{formid}</code></pre>
+  <b>GET</b> /api/v1/data/<code>{owner}</code>/<code>{formid}</code></pre>
   > Example
   >
-  >       curl -X GET https://formhub.org/api/v1/data/22845
+  >       curl -X GET https://formhub.org/api/v1/data/modilabs/22845
 
   > Response
   >
@@ -743,14 +747,15 @@ Provides a list of json submitted data for a specific form,
 Get a single specific submission json data providing `formid`
  and `dataid` as url path parameters, where:
 
-* `formid` is the identifying number for a specific form
-* `dataid` is the unique id of the data, the value of `_id` or `_uuid`
+* `owner` - is organization or user whom the data belongs to
+* `formid` - is the identifying number for a specific form
+* `dataid` - is the unique id of the data, the value of `_id` or `_uuid`
 
  <pre class="prettyprint">
-  <b>GET</b> /api/v1/data/<code>{formid}</code>/<code>{dataid}</code></pre>
+  <b>GET</b> /api/v1/data/<code>{owner}</code>/<code>{formid}</code>/<code>{dataid}</code></pre>
   > Example
   >
-  >       curl -X GET https://formhub.org/api/v1/data/22845/4503
+  >       curl -X GET https://formhub.org/api/v1/data/modilabs/22845/4503
 
   > Response
   >
@@ -789,18 +794,19 @@ Get a single specific submission json data providing `formid`
     """
     queryset = Instance.objects.all()
 
-    def _get_formlist_data_points(self, request):
+    def _get_formlist_data_points(self, request, owner=None):
         xforms = []
         # list public points incase anonymous user
         if request.user.is_anonymous():
             xforms = XForm.public_forms().order_by('?')[:10]
         else:
-            # list data points authenticated user has access to
-            xforms = XForm.objects.filter(user=request.user)
+            xforms = XForm.objects.filter(user__username=owner)
         rs = {}
         for xform in xforms:
             point = {u"%s" % xform.id_string:
-                     reverse("data-list", kwargs={"formid": xform.pk},
+                     reverse("data-list", kwargs={
+                             "formid": xform.pk,
+                             "owner": xform.user.username},
                              request=request)}
             rs.update(point)
         return rs
@@ -813,11 +819,12 @@ Get a single specific submission json data providing `formid`
             'fields': kwargs.get('fields', None),
             'sort': kwargs.get('sort', None)
         }
+        # TODO: Possibly add "url" field to all data records
         cursor = ParsedInstance.query_mongo(**margs)
         records = list(record for record in cursor)
         return records
 
-    def get(self, request, formid=None, dataid=None, **kwargs):
+    def get(self, request, owner=None, formid=None, dataid=None, **kwargs):
         """
         Display submission data.
         If no parameter is given, it displays a dictionary of public data urls.
@@ -828,8 +835,10 @@ Get a single specific submission json data providing `formid`
         data = None
         xform = None
         query = None
+        if owner is None and not request.user.is_anonymous():
+            owner = request.user.username
         if not formid and not dataid:
-            data = self._get_formlist_data_points(request)
+            data = self._get_formlist_data_points(request, owner)
         if formid:
             xform = check_and_set_form_by_id(int(formid), request)
             if not xform:

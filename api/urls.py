@@ -217,8 +217,8 @@ router.register(r'data', api_views.DataList, base_name='data')
 router.urls.append(
     url(r'^data$', api_views.DataList.as_view(), name='data-list'))
 router.urls.append(
-    url(r'^data/(?P<formid>[^/]+)$',
+    url(r'^data/(?P<owner>[^/]+)/(?P<formid>[^/]+)$',
         api_views.DataList.as_view(), name='data-list'))
 router.urls.append(
-    url(r'^data/(?P<formid>[^/]+)/(?P<dataid>[^/]+)$',
+    url(r'^data/(?P<owner>[^/]+)/(?P<formid>[^/]+)/(?P<dataid>[^/]+)$',
         api_views.DataList.as_view(), name='data-detail'))
