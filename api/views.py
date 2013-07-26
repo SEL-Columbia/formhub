@@ -78,6 +78,8 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        if user.is_anonymous():
+            user = User.objects.get(pk=-1)
         return User.objects.filter(pk__in=user.userprofile_set.values('user'))
 
 
@@ -157,6 +159,8 @@ class UserProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        if user.is_anonymous():
+            user = User.objects.get(pk=-1)
         return user.userprofile_set.all()
 
 
@@ -234,6 +238,8 @@ class OrgProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        if user.is_anonymous():
+            user = User.objects.get(pk=-1)
         return user.organizationprofile_set.all()
 
 
@@ -353,6 +359,8 @@ Where:
 
     def get_queryset(self):
         user = self.request.user
+        if user.is_anonymous():
+            user = User.objects.get(pk=-1)
         user_forms = user.xforms.values('pk')
         project_forms = user.projectxform_set.values('xform')
         return XForm.objects.filter(
@@ -510,13 +518,15 @@ Where:
 
     def get_queryset(self):
         user = self.request.user
+        if user.is_anonymous():
+            user = User.objects.get(pk=-1)
         return user.project_creator.all()
 
     def list(self, request, **kwargs):
         filter = {}
         if 'owner' in kwargs:
             filter['organization__username'] = kwargs['owner']
-        filter['created_by'] = request.user
+        # filter['created_by'] = request.user
         qs = self.get_queryset()
         qs = self.filter_queryset(qs)
         self.object_list = qs.filter(**filter)
@@ -624,6 +634,8 @@ Shows teams details and the projects the team is assigned to, where:
 
     def get_queryset(self):
         user = self.request.user
+        if user.is_anonymous():
+            user = User.objects.get(pk=-1)
         orgs = user.organizationprofile_set.values('user')
         return Team.objects.filter(organization__in=orgs)
 
