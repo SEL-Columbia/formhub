@@ -4,13 +4,13 @@ from rest_framework.mixins import *
 
 
 class ObjectLookupMixin(object):
-    def get_object(self):
+    def get_object(self, queryset=None):
         """
         Incase the lookup is on an object that has been hyperlinked
         then update the queryset filter appropriately
         """
-        queryset = self.get_queryset()
-        queryset = self.filter_queryset(queryset)
+        if queryset is None:
+            queryset = self.filter_queryset(self.get_queryset())
         filter = {}
         serializer = self.get_serializer()
         lookup_field = self.lookup_field
@@ -59,9 +59,9 @@ class ObjectLookupMixin(object):
 
 
 class MultiLookupMixin(object):
-    def get_object(self):
-        queryset = self.get_queryset()
-        queryset = self.filter_queryset(queryset)
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.filter_queryset(self.get_queryset())
         filter = {}
         serializer = self.get_serializer()
         lookup_fields = getattr(self, 'lookup_fields', [])
