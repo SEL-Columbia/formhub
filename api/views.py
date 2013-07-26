@@ -557,6 +557,64 @@ Where:
 
 
 class TeamViewSet(viewsets.ModelViewSet):
+    """
+This endpoint allows you to create, update and view team information.
+
+## GET List of Teams within an Organization.
+Provides a json list of teams within a specified organization
+ and the projects the team is assigned to, where:
+
+* `org` - is the unique organization name identifier
+
+<pre class="prettyprint">
+  <b>GET</b> /api/v1/teams
+  <b>GET</b> /api/v1/teams/<code>{org}</code>
+  </pre>
+
+  > Example
+  >
+  >       curl -X GET https://formhub.org/api/v1/teams/bruize
+
+  > Response
+  >
+  >        [
+  >            {
+  >                "url": "http://localhost/api/v1/teams/bruize/1",
+  >                "name": "Owners",
+  >                "organization": "http://localhost/api/v1/users/bruize",
+  >                "projects": []
+  >            },
+  >            {
+  >                "url": "http://localhost/api/v1/teams/bruize/2",
+  >                "name": "demo team",
+  >                "organization": "http://localhost/api/v1/users/bruize",
+  >                "projects": []
+  >            }
+  >        ]
+
+## GET Team Info for a specific team.
+
+Shows teams details and the projects the team is assigned to, where:
+
+* `org` - is the unique organization name identifier
+* `pk` - unique identifier for the team
+
+<pre class="prettyprint">
+  <b>GET</b> /api/v1/teams/<code>{org}</code>/<code>{pk}</code>
+  </pre>
+
+  > Example
+  >
+  >       curl -X GET https://formhub.org/api/v1/teams/bruize/1
+
+  > Response
+  >        {
+  >            "url": "http://localhost/api/v1/teams/bruize/1",
+  >            "name": "Owners",
+  >            "organization": "http://localhost/api/v1/users/bruize",
+  >            "projects": []
+  >        }
+    """
     queryset = Team.objects.all()
     serializer_class = api_serializers.TeamSerializer
     lookup_fields = ('owner', 'pk')
