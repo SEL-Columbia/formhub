@@ -36,7 +36,7 @@ from main.models import UserProfile, MetaData
 from utils.logger_tools import response_with_mimetype_and_name
 from utils.decorators import is_owner
 from utils.user_auth import helper_auth_helper, has_permission,\
-    has_edit_permission, HttpResponseNotAuthorized
+    has_edit_permission, HttpResponseNotAuthorized, add_cors_headers
 from odk_logger.import_tools import import_instances_from_zip
 from odk_logger.xform_instance_parser import InstanceEmptyError,\
     InstanceInvalidUserError, IsNotCrowdformError, DuplicateInstance
@@ -374,15 +374,22 @@ def download_jsonform(request, username, id_string):
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, user__username=username,
                               id_string=id_string)
+    if request.method == "OPTIONS":
+        response = HttpResponse()
+        add_cors_headers(response)
+        return response
     helper_auth_helper(request)
     if not has_permission(xform, owner, request, xform.shared):
-        return HttpResponseForbidden(_(u'Not shared.'))
+        response = HttpResponseForbidden(_(u'Not shared.'))
+        add_cors_headers(response)
+        return response
     response = response_with_mimetype_and_name('json', id_string,
                                                show_date=False)
     if 'callback' in request.GET and request.GET.get('callback') != '':
         callback = request.GET.get('callback')
         response.content = "%s(%s)" % (callback, xform.json)
     else:
+        add_cors_headers(response)
         response.content = xform.json
     return response
 
