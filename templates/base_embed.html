@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>formhub map</title>
+<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+<!--[if lt IE 9]>
+  <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<meta name="google-site-verification" content="8pAiKPreksD8GiYnSCtWm9QG3i6wyuKg7E2Y95RTzRM" />
+
+<link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+
+<script type="text/javascript" src="{% url "django.views.i18n.javascript_catalog" %}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="/static/bootstrap/js/bootstrap.js"></script>
+
+{% block additional-headers %}{% endblock %}
+</head>
+
+{% block body %}
+<div class="container">
+{% block content %}
+    {% if template %}{% include template %}{% endif %}
+    {{ content|safe }}
+{% endblock %}
+</div>
+</body>
+{% endblock %}
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-83697-18']);
+  _gaq.push(['_setDomainName', 'formhub.org']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</html>
