@@ -44,6 +44,7 @@ from odk_logger.models.instance import FormInactiveError
 from odk_logger.models.attachment import Attachment
 from utils.log import audit_log, Actions
 from django_digest import HttpDigestAuthenticator
+from utils.viewer_tools import enketo_url
 
 
 @require_POST
@@ -429,29 +430,18 @@ def enter_data(request, username, id_string):
                               id_string=id_string)
     if not has_edit_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden(_(u'Not shared.'))
-    if not hasattr(settings, 'ENKETO_URL'):
-        return HttpResponseRedirect(reverse('main.views.show',
-                                    kwargs={'username': username,
-                                            'id_string': id_string}))
-    url = '%slaunch/launchSurvey' % settings.ENKETO_URL
-    register_openers()
-    response = None
-    # see commit 220f2dad0e for tmp file creation
     try:
         formhub_url = "http://%s/" % request.META['HTTP_HOST']
     except:
         formhub_url = "http://formhub.org/"
-    values = {
-        'format': 'json',
-        'form_id': xform.id_string,
-        'server_url': formhub_url + username
-    }
-    data, headers = multipart_encode(values)
-    headers['User-Agent'] = 'formhub'
-    req = urllib2.Request(url, data, headers)
     try:
-        response = urllib2.urlopen(req)
-        response = json.loads(response.read())
+        url = enketo_url(formhub_url + username, xform.id_string)
+        if not url:
+            return HttpResponseRedirect(reverse('main.views.show',
+                                        kwargs={'username': username,
+                                                'id_string': id_string}))
+        return HttpResponseRedirect(url)
+    except Exception, e:
         context = RequestContext(request)
         owner = User.objects.get(username=username)
         context.profile, created = \
@@ -459,42 +449,13 @@ def enter_data(request, username, id_string):
         context.xform = xform
         context.content_user = owner
         context.form_view = True
-        if 'url' in response:
-            audit = {
-                "xform": xform.id_string
-            }
-            audit_log(
-                Actions.FORM_ENTER_DATA_REQUESTED, request.user, owner,
-                _("Requested enter data url for '%(id_string)s'.") %
-                {
-                    'id_string': xform.id_string,
-                }, audit, request)
-            context.enketo = response['url']
-            #return render_to_response("form_entry.html",
-            #                          context_instance=context)
-            return HttpResponseRedirect(response['url'])
-        else:
-            json_msg = response['reason']
-            """
-            return HttpResponse("<script>$('body')</script>")
-            """
-            context.message = {
-                'type': 'alert-error',
-                'text': "Enketo error, reason: " + (
-                    response['reason'] and "Server not found.")}
-            messages.add_message(request, messages.WARNING, json_msg)
-            return render_to_response("profile.html", context_instance=context)
-
-    except urllib2.URLError:
-        # this will happen if we could not connect to enketo
-        messages.add_message(
-            request, messages.WARNING,
-            _("Enketo error: Unable to open webform url."))
-    except ValueError, e:
+        context.message = {
+            'type': 'alert-error',
+            'text': u"Enketo error, reason: %s" % e}
         messages.add_message(
             request, messages.WARNING,
             _("Enketo error: enketo replied %s") % e)
-        #TODO: should we throw in another error message here
+        return render_to_response("profile.html", context_instance=context)
     return HttpResponseRedirect(reverse('main.views.show',
                                 kwargs={'username': username,
                                         'id_string': id_string}))
