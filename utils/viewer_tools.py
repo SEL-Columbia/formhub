@@ -166,7 +166,7 @@ def enketo_url(form_url, id_string):
         'server_url': form_url
     }
     req = requests.post(url, data=values,
-                        auth=(settings.ENKETO_TOKEN, ''), verify=False)
+                        auth=(settings.ENKETO_API_TOKEN, ''), verify=False)
     if req.status_code in [200, 201]:
         if 'url' in req.json:
             return req.json['url']
