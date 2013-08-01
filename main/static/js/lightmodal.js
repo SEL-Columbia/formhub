@@ -41,7 +41,7 @@ function initializeModal(modal, easyClose) {
     if (easyClose !== true && easyClose !== false)
         easyClose = false;
     $(modal).easyModal({
-        top: 100,
+        top: 20,
         autoOpen: false,
         overlayOpacity: 0.9,
         overlayColor: "#333",
