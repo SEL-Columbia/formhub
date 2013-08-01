@@ -155,11 +155,11 @@ def get_client_ip(request):
 
 
 def enketo_url(form_url, id_string):
-    if not hasattr(settings, 'ENKETO_URL'):
+    if not hasattr(settings, 'ENKETO_URL')\
+            and not hasattr(settings, 'ENKETO_API_SURVEY_PATH'):
         return False
 
-    url = urljoin(
-        urljoin(settings.ENKETO_URL, settings.ENKETO_API_PATH), 'survey')
+    url = urljoin(settings.ENKETO_URL, settings.ENKETO_API_SURVEY_PATH)
 
     values = {
         'form_id': id_string,
