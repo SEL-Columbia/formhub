@@ -1,6 +1,6 @@
 [submodule "main/static/bootstrap/src"]
 	path = main/static/bootstrap/src
-	url = git://github.com/twitter/bootstrap.git
+	url = git://github.com/twbs/bootstrap.git
 [submodule "js_tests/EnvJasmine"]
 	path = js_tests/EnvJasmine
 	url = git://github.com/trevmex/EnvJasmine.git
