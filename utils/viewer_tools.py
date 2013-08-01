@@ -1,20 +1,17 @@
-import json
 import os
 import traceback
+import requests
 import zipfile
-from xml.dom import minidom
-import urllib2
 
+from xml.dom import minidom
 from tempfile import NamedTemporaryFile
+from urlparse import urljoin
 
 from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.mail import mail_admins
 from django.utils.translation import ugettext as _
 from django.core.files.storage import get_storage_class
-
-from poster.encode import multipart_encode
-from poster.streaminghttp import register_openers
 
 import common_tags as tag
 
@@ -161,26 +158,22 @@ def enketo_url(form_url, id_string):
     if not hasattr(settings, 'ENKETO_URL'):
         return False
 
-    url = '%slaunch/launchSurvey' % settings.ENKETO_URL
-    register_openers()
-    response = None
+    url = urljoin(
+        urljoin(settings.ENKETO_URL, settings.ENKETO_API_PATH), 'survey')
 
     values = {
         'form_id': id_string,
         'server_url': form_url
     }
-    data, headers = multipart_encode(values)
-    headers['User-Agent'] = 'formhub'
-    req = urllib2.Request(url, data, headers)
-    try:
-        response = urllib2.urlopen(req)
-        response = json.loads(response.read())
-        if 'url' in response:
-            return response['url']
-        else:
-            return False
-    except urllib2.URLError:
-        return False
+    req = requests.post(url, data=values,
+                        auth=(settings.ENKETO_TOKEN, ''), verify=False)
+    if req.status_code in [200, 201]:
+        if 'url' in req.json:
+            return req.json['url']
+    else:
+        if req.json and 'message' in req.json:
+            raise Exception(req.json['message'])
+    return False
 
 
 def create_attachments_zipfile(attachments):
