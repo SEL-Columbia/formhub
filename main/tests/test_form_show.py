@@ -106,6 +106,19 @@ class TestFormShow(MainTestCase):
         }), **extra)
         self.assertEqual(response.status_code, 200)
 
+    def test_dl_json_for_cors_options(self):
+        response = self.anon.options(reverse(download_jsonform, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        }))
+        allowed_headers = ['Accept', 'Origin', 'X-Requested-With',
+                           'Authorization']
+        provided_headers = [h.strip() for h in
+                           response['Access-Control-Allow-Headers'].split(',')]
+        self.assertListEqual(allowed_headers, provided_headers)
+        self.assertEqual(response['Access-Control-Allow-Methods'], 'GET')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
+
     def test_dl_xform_to_anon_if_public(self):
         self.xform.shared = True
         self.xform.save()
