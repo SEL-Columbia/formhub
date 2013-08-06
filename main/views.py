@@ -1301,12 +1301,9 @@ def enketo_preview(request, username, id_string):
     owner = xform.user
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
-    enekto_preview_url = "%(enketo_url)s?server_url=%(profile_url)s"\
-                         "&form_id=%(id_string)s" % {
-                             'enketo_url': settings.ENKETO_PREVIEW_URL,
-                             'profile_url': request.build_absolute_uri(
-                                 reverse(profile,
-                                         kwargs={'username': owner.username})),
-                             'id_string': xform.id_string
-                         }
+    enekto_preview_url = "%(enketo_url)s?server=%(profile_url)s&id=%(id_string)s" % {
+        'enketo_url': settings.ENKETO_PREVIEW_URL,
+        'profile_url': request.build_absolute_uri(reverse(profile, kwargs={'username': owner.username})),
+        'id_string': xform.id_string
+    }
     return HttpResponseRedirect(enekto_preview_url)
