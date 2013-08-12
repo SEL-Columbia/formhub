@@ -80,7 +80,8 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         user = self.request.user
         if user.is_anonymous():
             user = User.objects.get(pk=-1)
-        return User.objects.filter(pk__in=user.userprofile_set.values('user'))
+        return User.objects.filter(
+            Q(pk__in=user.userprofile_set.values('user')) | Q(pk=user.pk))
 
 
 class UserProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
