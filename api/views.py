@@ -162,7 +162,8 @@ class UserProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
         user = self.request.user
         if user.is_anonymous():
             user = User.objects.get(pk=-1)
-        return user.userprofile_set.all()
+        return UserProfile.objects.filter(
+            Q(user__in=user.userprofile_set.values('user')) | Q(user=user))
 
 
 class OrgProfileViewSet(mixins.ObjectLookupMixin, viewsets.ModelViewSet):
