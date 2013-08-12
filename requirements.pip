@@ -1,6 +1,7 @@
 # pybamboo has deps in common but on newer versions.
 # on top so those will be overwritten
 pybamboo==0.5.8.1
+pytz==2013b
 
 Distribute
 Django==1.5.1
