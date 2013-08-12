@@ -142,3 +142,13 @@ class TestFormAPI(MainTestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
         self.assertEqual(len(data), 3)
+
+    def test_api_cors_options(self):
+        response = self.anon.options(self.api_url)
+        allowed_headers = ['Accept', 'Origin', 'X-Requested-With',
+                           'Authorization']
+        provided_headers = [h.strip() for h in
+                           response['Access-Control-Allow-Headers'].split(',')]
+        self.assertListEqual(allowed_headers, provided_headers)
+        self.assertEqual(response['Access-Control-Allow-Methods'], 'GET')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')

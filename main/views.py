@@ -14,7 +14,8 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import loader, RequestContext
 from django.utils.translation import ugettext as _
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET, require_POST,\
+    require_http_methods
 from google_doc import GoogleDoc
 from guardian.shortcuts import assign, remove_perm, get_users_with_perms
 
@@ -36,7 +37,7 @@ from utils.decorators import is_owner
 from utils.logger_tools import response_with_mimetype_and_name, publish_form
 from utils.user_auth import check_and_set_user, set_profile_data,\
     has_permission, helper_auth_helper, get_xform_and_perms,\
-    check_and_set_user_and_form
+    check_and_set_user_and_form, add_cors_headers
 from utils.log import audit_log, Actions
 from main.models import AuditLog
 from django.conf import settings
@@ -142,8 +143,8 @@ def clone_xlsform(request, username):
                  'id_string': survey.id_string,
                  'url': clone_form_url
                  },
-                'profile_url': u'<a href="%s">profile</a>.' %
-                reverse(profile, kwargs={'username': to_username})}
+                    'profile_url': u'<a href="%s">profile</a>.' %
+                    reverse(profile, kwargs={'username': to_username})}
             }
     form_result = publish_form(set_form)
     if form_result['type'] == 'alert-success':
@@ -403,7 +404,7 @@ def api_token(request, username=None):
     return render_to_response("api_token.html", context_instance=context)
 
 
-@require_GET
+@require_http_methods(["GET", "OPTIONS"])
 def api(request, username=None, id_string=None):
     """
     Returns all results as JSON.  If a parameter string is passed,
@@ -418,6 +419,11 @@ def api(request, username=None, id_string=None):
 
     E.g. api?query='{"last_name": "Smith"}'
     """
+    if request.method == "OPTIONS":
+        response = HttpResponse()
+        add_cors_headers(response)
+        return response
+    helper_auth_helper(request)
     helper_auth_helper(request)
     xform, owner = check_and_set_user_and_form(username, id_string, request)
 
@@ -447,7 +453,9 @@ def api(request, username=None, id_string=None):
     if 'callback' in request.GET and request.GET.get('callback') != '':
         callback = request.GET.get('callback')
         response_text = ("%s(%s)" % (callback, response_text))
-    return HttpResponse(response_text, mimetype='application/json')
+    response = HttpResponse(response_text, mimetype='application/json')
+    add_cors_headers(response)
+    return response
 
 
 @require_GET
@@ -1313,9 +1321,9 @@ def enketo_preview(request, username, id_string):
         return HttpResponseForbidden(_(u'Not shared.'))
     enekto_preview_url = \
         "%(enketo_url)s?server=%(profile_url)s&id=%(id_string)s" % {
-        'enketo_url': settings.ENKETO_PREVIEW_URL,
-        'profile_url': request.build_absolute_uri(
-            reverse(profile, kwargs={'username': owner.username})),
-        'id_string': xform.id_string
+            'enketo_url': settings.ENKETO_PREVIEW_URL,
+            'profile_url': request.build_absolute_uri(
+                reverse(profile, kwargs={'username': owner.username})),
+            'id_string': xform.id_string
         }
     return HttpResponseRedirect(enekto_preview_url)

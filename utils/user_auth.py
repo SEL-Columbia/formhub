@@ -114,9 +114,20 @@ def basic_http_auth(func):
         if result is not None:
             return result
         return func(request, *args, **kwargs)
-    return  inner
+    return inner
+
 
 def http_auth_string(username, password):
     credentials = base64.b64encode('%s:%s' % (username, password)).strip()
     auth_string = 'Basic %s' % credentials
     return auth_string
+
+
+def add_cors_headers(response):
+    response['Access-Control-Allow-Origin'] = '*'
+    response['Access-Control-Allow-Methods'] = 'GET'
+    response['Access-Control-Allow-Headers'] = ('Accept, Origin,'
+                                                ' X-Requested-With,'
+                                                ' Authorization')
+    response['Content-Type'] = 'application/json'
+    return response
