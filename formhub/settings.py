@@ -160,6 +160,10 @@ INSTALLED_APPS = (
     'registration',
     'south',
     'django_nose',
+    'django_digest',
+    'rest_framework',
+    'rest_framework_swagger',
+    'rest_framework.authtoken',
     'restservice',
     'main',
     'odk_logger',
@@ -170,10 +174,6 @@ INSTALLED_APPS = (
     'djcelery',
     'stats',
     'sms_support',
-    'django_digest',
-    'rest_framework',
-    'rest_framework_swagger',
-    'rest_framework.authtoken',
 )
 
 REST_FRAMEWORK = {
