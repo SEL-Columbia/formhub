@@ -78,6 +78,10 @@ class MultiLookupMixin(object):
                     if k.source:
                         lookup_field = k.source
                     lookup_field = '%s__%s' % (lookup_field, k.lookup_field)
+            if self.kwargs.get(field, None) is None:
+                raise ParseError(
+                    'Expected URL keyword argument `%s`.' % field
+                )
             filter[lookup_field] = self.kwargs[field]
         # lookup_field = self.lookup_field
         return get_object_or_404(queryset,  **filter)
