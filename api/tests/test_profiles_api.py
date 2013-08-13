@@ -19,7 +19,8 @@ class IntegrationTestProfileAPI(IntegrationTestAPICase):
 
     def test_profiles_list(self):
         self._login_user_and_profile()
-        response = self.client.get('/api/v1/profiles')
+        request = self.factory.get('/', **self.extra)
+        response = self.view(request)
         data = [
             {
                 'url': 'http://testserver/api/v1/profiles/bob',
