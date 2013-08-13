@@ -1,4 +1,6 @@
+import os
 import json
+from django.conf import settings
 
 from django.test import TestCase
 from django.test import RequestFactory
@@ -8,6 +10,7 @@ from django.contrib.auth.models import Permission
 
 from api.models import OrganizationProfile
 from api.views import OrgProfileViewSet
+from api.views import ProjectViewSet
 
 
 class TestAPICase(TestCase):
@@ -89,3 +92,35 @@ class TestAPICase(TestCase):
         self.company_data = response.data
         self.organization = OrganizationProfile.objects.get(
             user__username=data['org'])
+
+    def _publish_xls_form_to_project(self):
+        self._project_create()
+        view = ProjectViewSet.as_view({
+            'post': 'forms'
+        })
+        data = {
+            'url': 'http://testserver/api/v1/forms/bob/1',
+            'formid': 1,
+            'owner': 'http://testserver/api/v1/users/bob',
+            'public': False,
+            'public_data': False,
+            'description': u'',
+            'downloadable': True,
+            'is_crowd_form': False,
+            'allows_sms': False,
+            'encrypted': False,
+            'sms_id_string': u'transportation_2011_07_25',
+            'id_string': u'transportation_2011_07_25',
+            'title': u'transportation_2011_07_25',
+            'bamboo_dataset': u''
+        }
+        path = os.path.join(
+            settings.PROJECT_ROOT, "main", "tests", "fixtures",
+            "transportation", "transportation.xls")
+        with open(path) as xls_file:
+            post_data = {'xls_file': xls_file}
+            request = self.factory.post('/', data=post_data, **self.extra)
+            response = view(request, owner='bob', pk=1)
+            self.assertEqual(response.status_code, 201)
+            self.assertDictContainsSubset(data, response.data)
+            self.form_data = response.data
