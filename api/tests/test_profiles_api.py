@@ -8,17 +8,17 @@ from api.tests.test_api import IntegrationTestAPICase
 from api.views import UserProfileViewSet
 
 
-class IntegrationTestProfileAPI(IntegrationTestAPICase):
+class TestProfilesAPI(IntegrationTestAPICase):
     def setUp(self):
-        super(IntegrationTestAPICase, self).setUp()
+        super(TestProfilesAPI, self).setUp()
         self.view = UserProfileViewSet.as_view({
             'get': 'list',
             'post': 'create'
         })
         self.factory = RequestFactory()
+        self._login_user_and_profile()
 
     def test_profiles_list(self):
-        self._login_user_and_profile()
         request = self.factory.get('/', **self.extra)
         response = self.view(request)
         data = [
@@ -41,8 +41,16 @@ class IntegrationTestProfileAPI(IntegrationTestAPICase):
         self.assertEqual(response.data, data)
 
     def test_profiles_get(self):
-        self._login_user_and_profile()
-        response = self.client.get('/api/v1/profiles/bob', **self.extra)
+        view = UserProfileViewSet.as_view({
+            'get': 'retrieve'
+        })
+        request = self.factory.get('/', **self.extra)
+        response = view(request)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data, {'detail': 'Expected URL keyword argument `user`.'})
+        request = self.factory.get('/', **self.extra)
+        response = view(request, user='bob')
         data = {
             'url': 'http://testserver/api/v1/profiles/bob',
             'username': u'bob',
@@ -61,7 +69,6 @@ class IntegrationTestProfileAPI(IntegrationTestAPICase):
         self.assertEqual(response.data, data)
 
     def test_profile_create(self):
-        self._login_user_and_profile()
         request = self.factory.get('/', **self.extra)
         response = self.view(request)
         self.assertEqual(response.status_code, 200)
