@@ -9,6 +9,13 @@ from api.views import UserProfileViewSet
 
 
 class IntegrationTestProfileAPI(IntegrationTestAPICase):
+    def setUp(self):
+        super(IntegrationTestAPICase, self).setUp()
+        self.view = UserProfileViewSet.as_view({
+            'get': 'list',
+            'post': 'create'
+        })
+        self.factory = RequestFactory()
 
     def test_profiles_list(self):
         self._login_user_and_profile()
@@ -54,10 +61,8 @@ class IntegrationTestProfileAPI(IntegrationTestAPICase):
 
     def test_profile_create(self):
         self._login_user_and_profile()
-        factory = RequestFactory()
-        request = factory.get('/', **self.extra)
-        view = UserProfileViewSet.as_view({'get': 'list'})
-        response = view(request)
+        request = self.factory.get('/', **self.extra)
+        response = self.view(request)
         self.assertEqual(response.status_code, 200)
         data = {
             'username': u'deno',
@@ -72,11 +77,10 @@ class IntegrationTestProfileAPI(IntegrationTestAPICase):
             'password': 'denodeno',
         }
         # response = self.client.post(
-        view = UserProfileViewSet.as_view({'post': 'create'})
-        request = factory.post(
+        request = self.factory.post(
             '/api/v1/profiles', data=json.dumps(data),
             content_type="application/json", **self.extra)
-        response = view(request)
+        response = self.view(request)
         self.assertEqual(response.status_code, 201)
         del data['password']
         profile = UserProfile.objects.get(user__username=data['username'])
