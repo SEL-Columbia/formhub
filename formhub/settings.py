@@ -82,7 +82,7 @@ STATIC_URL = '/static/'
 #ENKETO URL
 ENKETO_URL = 'http://enketo.formhub.org/'
 ENKETO_API_SURVEY_PATH = '/api_v1/survey'
-ENKETO_API_INSTANCE_PATH = '/api_v1/survey'
+ENKETO_API_INSTANCE_PATH = '/api_v1/instance'
 ENKETO_PREVIEW_URL = ENKETO_URL + 'webform/preview'
 ENKETO_API_TOKEN = ''
 
