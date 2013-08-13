@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers, mixins
+from rest_framework.exceptions import ParseError
 from rest_framework.mixins import *
 
 
@@ -9,6 +10,10 @@ class ObjectLookupMixin(object):
         Incase the lookup is on an object that has been hyperlinked
         then update the queryset filter appropriately
         """
+        if self.kwargs.get(self.lookup_field, None) is None:
+            raise ParseError(
+                'Expected URL keyword argument `%s`.' % self.lookup_field
+            )
         if queryset is None:
             queryset = self.filter_queryset(self.get_queryset())
         filter = {}
