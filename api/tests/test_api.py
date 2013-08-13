@@ -1,8 +1,13 @@
+import json
+
 from django.test import TestCase
 from django.test import RequestFactory
 
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
+
+from api.models import OrganizationProfile
+from api.views import OrgProfileViewSet
 
 
 class TestAPICase(TestCase):
@@ -47,3 +52,40 @@ class TestAPICase(TestCase):
             self.extra = {
                 'HTTP_AUTHORIZATION': 'Token %s' % self.user.auth_token}
             self._set_api_permissions(self.user)
+
+    def _org_create(self):
+        view = OrgProfileViewSet.as_view({
+            'get': 'list',
+            'post': 'create'
+        })
+        request = self.factory.get('/', **self.extra)
+        response = view(request)
+        self.assertEqual(response.status_code, 200)
+        data = {
+            'org': u'denoinc',
+            'name': u'Dennis',
+            # 'email': u'info@deno.com',
+            'city': u'Denoville',
+            'country': u'US',
+            #'organization': u'Dono Inc.',
+            'home_page': u'deno.com',
+            'twitter': u'denoinc',
+            'description': u'',
+            'address': u'',
+            'phonenumber': u'',
+            'require_auth': False,
+            # 'password': 'denodeno',
+        }
+        # response = self.client.post(
+        request = self.factory.post(
+            '/', data=json.dumps(data),
+            content_type="application/json", **self.extra)
+        response = view(request)
+        self.assertEqual(response.status_code, 201)
+        data['url'] = 'http://testserver/api/v1/orgs/denoinc'
+        data['user'] = 'http://testserver/api/v1/users/denoinc'
+        data['creator'] = 'http://testserver/api/v1/users/bob'
+        self.assertEqual(response.data, data)
+        self.company_data = response.data
+        self.organization = OrganizationProfile.objects.get(
+            user__username=data['org'])
