@@ -656,6 +656,10 @@ Shows teams details and the projects the team is assigned to, where:
         return Team.objects.filter(organization__in=orgs)
 
     def get_object(self):
+        if 'owner' not in self.kwargs and 'pk' not in self.kwargs:
+            raise exceptions.ParseError(
+                'Expected URL keyword argument `owner` and `pk`.'
+            )
         filter = {
             'organization__username': self.kwargs['owner'],
             'pk': self.kwargs['pk']
