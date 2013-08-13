@@ -93,6 +93,23 @@ class TestAPICase(TestCase):
         self.organization = OrganizationProfile.objects.get(
             user__username=data['org'])
 
+    def _project_create(self):
+        view = ProjectViewSet.as_view({
+            'post': 'create'
+        })
+        data = {
+            'name': u'demo',
+            'owner': 'http://testserver/api/v1/users/bob'
+        }
+        request = self.factory.post(
+            '/', data=json.dumps(data),
+            content_type="application/json", **self.extra)
+        response = view(request, owner='bob')
+        self.assertEqual(response.status_code, 201)
+        data['url'] = 'http://testserver/api/v1/projects/bob/%s' % 1
+        self.assertDictContainsSubset(data, response.data)
+        self.project_data = response.data
+
     def _publish_xls_form_to_project(self):
         self._project_create()
         view = ProjectViewSet.as_view({

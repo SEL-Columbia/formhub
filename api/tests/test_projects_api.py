@@ -34,20 +34,6 @@ class TestProjectsAPI(TestAPICase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, self.project_data)
 
-    def _project_create(self):
-        data = {
-            'name': u'demo',
-            'owner': 'http://testserver/api/v1/users/bob'
-        }
-        request = self.factory.post(
-            '/', data=json.dumps(data),
-            content_type="application/json", **self.extra)
-        response = self.view(request, owner='bob')
-        self.assertEqual(response.status_code, 201)
-        data['url'] = 'http://testserver/api/v1/projects/bob/%s' % 1
-        self.assertDictContainsSubset(data, response.data)
-        self.project_data = response.data
-
     def test_projects_create(self):
         self._project_create()
 
