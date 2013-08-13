@@ -1,22 +1,18 @@
 import json
 
-from django.test import RequestFactory
-
 from main.models import UserProfile
 
-from api.tests.test_api import IntegrationTestAPICase
+from api.tests.test_api import TestAPICase
 from api.views import UserProfileViewSet
 
 
-class TestProfilesAPI(IntegrationTestAPICase):
+class TestProfilesAPI(TestAPICase):
     def setUp(self):
         super(TestProfilesAPI, self).setUp()
         self.view = UserProfileViewSet.as_view({
             'get': 'list',
             'post': 'create'
         })
-        self.factory = RequestFactory()
-        self._login_user_and_profile()
 
     def test_profiles_list(self):
         request = self.factory.get('/', **self.extra)

@@ -1,9 +1,16 @@
 from django.test import TestCase
+from django.test import RequestFactory
+
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
 
 
-class IntegrationTestAPICase(TestCase):
+class TestAPICase(TestCase):
+
+    def setUp(self):
+        super(TestAPICase, self).setUp()
+        self.factory = RequestFactory()
+        self._login_user_and_profile()
 
     def _set_api_permissions(self, user):
         add_userprofile = Permission.objects.get(
