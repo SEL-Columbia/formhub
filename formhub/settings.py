@@ -305,6 +305,7 @@ if TESTING_MODE:
     # to run tasks immediately while testing
     CELERY_ALWAYS_EAGER = True
     BROKER_BACKEND = 'memory'
+    ENKETO_API_TOKEN = 'abc'
     #TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
 else:
     MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media/')
