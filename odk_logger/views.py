@@ -531,6 +531,8 @@ def view_submission_list(request, username):
     id_string = request.GET.get('formId', None)
     xform = get_object_or_404(
         XForm, id_string=id_string, user__username=username)
+    if not has_permission(xform, form_user, request, xform.shared_data):
+        return HttpResponseForbidden('Not shared.')
     num_entries = request.GET.get('numEntries', None)
     cursor = request.GET.get('cursor', None)
     instances = xform.surveys.all().order_by('pk')
@@ -593,6 +595,9 @@ def view_download_submission(request, username):
     instance = get_object_or_404(
         Instance, xform__id_string=id_string, uuid=uuid,
         user__username=username)
+    xform = instance.xform
+    if not has_permission(xform, form_user, request, xform.shared_data):
+        return HttpResponseForbidden('Not shared.')
     submission_xml_root_node = instance.get_root_node()
     submission_xml_root_node.setAttribute(
         'instanceID', u'uuid:%s' % instance.uuid)
@@ -625,6 +630,10 @@ def form_upload(request, username):
     authenticator = HttpDigestAuthenticator()
     if not authenticator.authenticate(request):
         return authenticator.build_challenge_response()
+    if form_user != request.user:
+        return HttpResponseForbidden(
+            _(u"Not allowed to upload form[s] to %(user)s account." %
+              {'user': form_user}))
     if request.method == 'HEAD':
         response = OpenRosaResponse(status=204)
         response['Location'] = request.build_absolute_uri().replace(
