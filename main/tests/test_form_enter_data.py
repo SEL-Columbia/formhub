@@ -2,6 +2,8 @@ import re
 
 from urlparse import urlparse
 from time import time
+
+from django.test import RequestFactory
 from django.core.urlresolvers import reverse
 from django.core.validators import URLValidator
 from django.conf import settings
@@ -46,7 +48,13 @@ class TestFormEnterData(MainTestCase):
         self.assertIsNone(URLValidator()(url))
 
     def test_enter_data_redir(self):
-        response = self.client.get(self.url)
+        if not self._running_enketo():
+            raise SkipTest
+        factory = RequestFactory()
+        request = factory.get('/')
+        request.user = self.user
+        response = enter_data(
+            request, self.user.username, self.xform.id_string)
         #make sure response redirect to an enketo site
         enketo_base_url = urlparse(settings.ENKETO_URL).netloc
         redirected_base_url = urlparse(response['Location']).netloc
