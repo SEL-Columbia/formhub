@@ -438,8 +438,11 @@ def enter_data(request, username, id_string):
         formhub_url = "http://%s/" % request.META['HTTP_HOST']
     except:
         formhub_url = "http://formhub.org/"
+    form_url = formhub_url + username
+    if settings.TESTING_MODE:
+        form_url = "https://testserver.com/bob"
     try:
-        url = enketo_url(formhub_url + username, xform.id_string)
+        url = enketo_url(form_url, xform.id_string)
         if not url:
             return HttpResponseRedirect(reverse('main.views.show',
                                         kwargs={'username': username,
@@ -458,7 +461,7 @@ def enter_data(request, username, id_string):
             'text': u"Enketo error, reason: %s" % e}
         messages.add_message(
             request, messages.WARNING,
-            _("Enketo error: enketo replied %s") % e)
+            _("Enketo error: enketo replied %s") % e, fail_silently=True)
         return render_to_response("profile.html", context_instance=context)
     return HttpResponseRedirect(reverse('main.views.show',
                                 kwargs={'username': username,
@@ -495,8 +498,11 @@ def edit_data(request, username, id_string, data_id):
                 'username': username,
                 'id_string': id_string}
         ) + "#/" + str(instance.id))
+    form_url = formhub_url + username
+    if settings.TESTING_MODE:
+        form_url = "https://testserver.com/bob"
     url = enketo_url(
-        formhub_url + username, xform.id_string, instance_xml=injected_xml,
+        form_url, xform.id_string, instance_xml=injected_xml,
         instance_id=instance.uuid, return_url=return_url
     )
     try:
