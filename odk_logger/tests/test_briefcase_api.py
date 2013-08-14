@@ -63,6 +63,18 @@ class TestBriefcaseAPI(MainTestCase):
                     '{{resumptionCursor}}', '%s' % last_index)
             self.assertEqual(response.content, expected_submission_list)
 
+    def test_view_submissionList_OtherUser(self):
+        self._publish_xml_form()
+        self._make_submissions()
+        # deno cannot view bob's submissionList
+        self._create_user('deno', 'deno')
+        client = self._authenticated_client(
+            self._submission_list_url, 'deno', 'deno')
+        response = client.get(
+            self._submission_list_url,
+            data={'formId': self.xform.id_string})
+        self.assertEqual(response.status_code, 403)
+
     def test_view_submissionList_numEntries(self):
         def get_last_index(xform, last_index=None):
             instances = Instance.objects.filter(xform=xform)
@@ -116,8 +128,8 @@ class TestBriefcaseAPI(MainTestCase):
         instance = Instance.objects.get(uuid=instanceId)
         formId = u'%(formId)s[@version=null and @uiVersion=null]/' \
                  u'%(formId)s[@key=uuid:%(instanceId)s]' % {
-                 'formId': self.xform.id_string,
-                 'instanceId': instanceId}
+                     'formId': self.xform.id_string,
+                     'instanceId': instanceId}
         params = {'formId': formId}
         response = self.client.get(self._download_submission_url, data=params)
         text = "uuid:%s" % instanceId
@@ -130,6 +142,35 @@ class TestBriefcaseAPI(MainTestCase):
                                 instance.date_created.isoformat())
             self.assertContains(response, instanceId, status_code=200)
             self.assertMultiLineEqual(response.content, text)
+
+    def test_view_downloadSubmission_OtherUser(self):
+        self._publish_xml_form()
+        self.maxDiff = None
+        self._submit_transport_instance_w_attachment()
+        instanceId = u'5b2cc313-fc09-437e-8149-fcd32f695d41'
+        formId = u'%(formId)s[@version=null and @uiVersion=null]/' \
+                 u'%(formId)s[@key=uuid:%(instanceId)s]' % {
+                     'formId': self.xform.id_string,
+                     'instanceId': instanceId}
+        params = {'formId': formId}
+        # deno cannot view bob's downloadSubmission
+        self._create_user('deno', 'deno')
+        client = self._authenticated_client(
+            self._submission_list_url, 'deno', 'deno')
+        response = client.get(self._download_submission_url, data=params)
+        self.assertEqual(response.status_code, 403)
+
+    def test_publish_xml_form_OtherUser(self):
+        # deno cannot publish form to bob's account
+        self._create_user('deno', 'deno')
+        client = self._authenticated_client(
+            self._submission_list_url, 'deno', 'deno')
+        count = XForm.objects.count()
+        with codecs.open(self.form_def_path, encoding='utf-8') as f:
+            params = {'form_def_file': f, 'dataFile': ''}
+            response = client.post(self._form_upload_url, data=params)
+            self.assertNotEqual(XForm.objects.count(), count + 1)
+            self.assertEqual(response.status_code, 403)
 
     def _publish_xml_form(self):
         count = XForm.objects.count()
