@@ -33,4 +33,4 @@ PROJET_ENV="PRODUCTION"
 # Name of the projects settings module.
 # in this case is just settings and not the full path because it will change the dir to
 # the project folder first.
-export DJANGO_SETTINGS_MODULE="settings"
+export DJANGO_SETTINGS_MODULE="formhub.settings"
