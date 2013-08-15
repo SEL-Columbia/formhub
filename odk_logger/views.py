@@ -469,6 +469,7 @@ def enter_data(request, username, id_string):
 
 
 def edit_data(request, username, id_string, data_id):
+    context = RequestContext(request)
     owner = User.objects.get(username=username)
     xform = get_object_or_404(
         XForm, user__username=username, id_string=id_string)
@@ -501,19 +502,22 @@ def edit_data(request, username, id_string, data_id):
     form_url = formhub_url + username
     if settings.TESTING_MODE:
         form_url = "https://testserver.com/bob"
-    url = enketo_url(
-        form_url, xform.id_string, instance_xml=injected_xml,
-        instance_id=instance.uuid, return_url=return_url
-    )
     try:
-        if url:
-            context = RequestContext(request)
-            context.enketo = url
-            return HttpResponseRedirect(url)
+        url = enketo_url(
+            form_url, xform.id_string, instance_xml=injected_xml,
+            instance_id=instance.uuid, return_url=return_url
+        )
     except Exception, e:
+        context.message = {
+            'type': 'alert-error',
+            'text': u"Enketo error, reason: %s" % e}
         messages.add_message(
             request, messages.WARNING,
-            _("Enketo error: enketo replied %s") % e)
+            _("Enketo error: enketo replied %s") % e, fail_silently=True)
+    else:
+        if url:
+            context.enketo = url
+            return HttpResponseRedirect(url)
     return HttpResponseRedirect(
         reverse('main.views.show',
                 kwargs={'username': username,
