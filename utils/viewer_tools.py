@@ -176,13 +176,23 @@ def enketo_url(form_url, id_string, instance_xml=None,
     req = requests.post(url, data=values,
                         auth=(settings.ENKETO_API_TOKEN, ''), verify=False)
     if req.status_code in [200, 201]:
-        if 'edit_url' in req.json:
-            return req.json['edit_url']
-        if 'url' in req.json:
-            return req.json['url']
+        try:
+            response = req.json()
+        except ValueError:
+            pass
+        else:
+            if 'edit_url' in response:
+                return response['edit_url']
+            if 'url' in response:
+                return response['url']
     else:
-        if req.json and 'message' in req.json:
-            raise Exception(req.json['message'])
+        try:
+            response = req.json()
+        except ValueError:
+            pass
+        else:
+            if 'message' in response:
+                raise Exception(response['message'])
     return False
 
 

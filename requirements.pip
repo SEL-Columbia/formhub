@@ -32,7 +32,7 @@ SQLAlchemy==0.7.1
 # new export code relies on
 pandas==0.11.0
 
-requests==0.14
+requests==1.2.3
 
 elaphe==0.5.3
 
