@@ -1,16 +1,23 @@
-import json
 import os
-import re
+import requests
 
 from django.core.urlresolvers import reverse
-from mock import patch
 
 from main.tests.test_base import MainTestCase
 from odk_logger.models.instance import Instance
 from odk_logger.views import edit_data
 from odk_logger.xform_instance_parser import get_uuid_from_xml
-from odk_viewer.models.parsed_instance import ParsedInstance
 from utils.logger_tools import inject_instanceid
+
+from httmock import urlmatch, HTTMock
+
+
+@urlmatch(netloc=r'(.*\.)?enketo\.formhub\.org$')
+def enketo_edit_mock(url, request):
+    response = requests.Response()
+    response.status_code = 201
+    response._content = '{"edit_url": "https://hmh2a.enketo.formhub.org"}'
+    return response
 
 
 class TestWebforms(MainTestCase):
@@ -22,18 +29,22 @@ class TestWebforms(MainTestCase):
         with open(os.path.join(os.path.dirname(__file__), *path), 'r') as f:
             return f.read()
 
-    @patch('urllib2.urlopen')
-    def test_edit_url(self, mock_urlopen):
-        mock_urlopen.return_value.read.return_value = self.__load_fixture(
-            'fixtures', 'enketo_response.json')
+    # @patch('urllib2.urlopen')
+    # def test_edit_url(self, mock_urlopen):
+    def test_edit_url(self):
+        ''' mock_urlopen.return_value.read.return_value = self.__load_fixture(
+            'fixtures', 'enketo_response.json')'''
         instance = Instance.objects.order_by('id').reverse()[0]
         edit_url = reverse(edit_data, kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string,
             'data_id': instance.id
         })
-        response = self.client.get(edit_url)
-        self.assertEqual(response.status_code, 302)
+        with HTTMock(enketo_edit_mock):
+            response = self.client.get(edit_url)
+            self.assertEqual(response.status_code, 302)
+            self.assertEqual(response['location'],
+                             'https://hmh2a.enketo.formhub.org')
 
     def test_inject_instanceid(self):
         """
