@@ -154,7 +154,8 @@ def get_client_ip(request):
     return ip
 
 
-def enketo_url(form_url, id_string):
+def enketo_url(form_url, id_string, instance_xml=None,
+               instance_id=None, return_url=None):
     if not hasattr(settings, 'ENKETO_URL')\
             and not hasattr(settings, 'ENKETO_API_SURVEY_PATH'):
         return False
@@ -165,14 +166,33 @@ def enketo_url(form_url, id_string):
         'form_id': id_string,
         'server_url': form_url
     }
+    if instance_id is not None and instance_xml is not None:
+        url = urljoin(settings.ENKETO_URL, settings.ENKETO_API_INSTANCE_PATH)
+        values.update({
+            'instance': instance_xml,
+            'instance_id': instance_id,
+            'return_url': return_url
+        })
     req = requests.post(url, data=values,
                         auth=(settings.ENKETO_API_TOKEN, ''), verify=False)
     if req.status_code in [200, 201]:
-        if 'url' in req.json:
-            return req.json['url']
+        try:
+            response = req.json()
+        except ValueError:
+            pass
+        else:
+            if 'edit_url' in response:
+                return response['edit_url']
+            if 'url' in response:
+                return response['url']
     else:
-        if req.json and 'message' in req.json:
-            raise Exception(req.json['message'])
+        try:
+            response = req.json()
+        except ValueError:
+            pass
+        else:
+            if 'message' in response:
+                raise Exception(response['message'])
     return False
 
 
