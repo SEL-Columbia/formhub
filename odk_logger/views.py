@@ -1,7 +1,6 @@
 import json
 import os
 import tempfile
-import urllib2
 from xml.parsers.expat import ExpatError
 import pytz
 
@@ -24,8 +23,6 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.conf import settings
 from django.utils.translation import ugettext as _
-from poster.encode import multipart_encode
-from poster.streaminghttp import register_openers
 
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound,\
@@ -441,8 +438,11 @@ def enter_data(request, username, id_string):
         formhub_url = "http://%s/" % request.META['HTTP_HOST']
     except:
         formhub_url = "http://formhub.org/"
+    form_url = formhub_url + username
+    if settings.TESTING_MODE:
+        form_url = "https://testserver.com/bob"
     try:
-        url = enketo_url(formhub_url + username, xform.id_string)
+        url = enketo_url(form_url, xform.id_string)
         if not url:
             return HttpResponseRedirect(reverse('main.views.show',
                                         kwargs={'username': username,
@@ -461,7 +461,7 @@ def enter_data(request, username, id_string):
             'text': u"Enketo error, reason: %s" % e}
         messages.add_message(
             request, messages.WARNING,
-            _("Enketo error: enketo replied %s") % e)
+            _("Enketo error: enketo replied %s") % e, fail_silently=True)
         return render_to_response("profile.html", context_instance=context)
     return HttpResponseRedirect(reverse('main.views.show',
                                 kwargs={'username': username,
@@ -469,6 +469,7 @@ def enter_data(request, username, id_string):
 
 
 def edit_data(request, username, id_string, data_id):
+    context = RequestContext(request)
     owner = User.objects.get(username=username)
     xform = get_object_or_404(
         XForm, user__username=username, id_string=id_string)
@@ -485,79 +486,38 @@ def edit_data(request, username, id_string, data_id):
         )
 
     url = '%sdata/edit_url' % settings.ENKETO_URL
-    register_openers()
-    response = None
     # see commit 220f2dad0e for tmp file creation
     try:
         formhub_url = "http://%s/" % request.META['HTTP_HOST']
     except:
         formhub_url = "http://formhub.org/"
     injected_xml = inject_instanceid(instance.xml, instance.uuid)
-    values = {
-        'format': 'json',
-        'form_id': xform.id_string,
-        'server_url': formhub_url + username,
-        'instance': injected_xml,
-        'instance_id': instance.uuid,
-        'return_url': request.build_absolute_uri(
-            reverse(
-                'odk_viewer.views.instance',
-                kwargs={
-                    'username': username,
-                    'id_string': id_string}
-            ) + "#/" + str(instance.id))
-    }
-    data, headers = multipart_encode(values)
-    headers['User-Agent'] = 'formhub'
-    req = urllib2.Request(url, data, headers)
+    return_url = request.build_absolute_uri(
+        reverse(
+            'odk_viewer.views.instance',
+            kwargs={
+                'username': username,
+                'id_string': id_string}
+        ) + "#/" + str(instance.id))
+    form_url = formhub_url + username
+    if settings.TESTING_MODE:
+        form_url = "https://testserver.com/bob"
     try:
-        response = urllib2.urlopen(req)
-        response = json.loads(response.read())
-        context = RequestContext(request)
-        owner = User.objects.get(username=username)
-        context.profile, created = \
-            UserProfile.objects.get_or_create(user=owner)
-        context.xform = xform
-        context.content_user = owner
-        context.form_view = True
-        if 'edit_url' in response:
-            audit = {
-                "xform": xform.id_string,
-                "data_id": data_id
-            }
-            audit_log(
-                Actions.SUBMISSION_EDIT_REQUESTED, request.user, owner,
-                _("Requested to edit data with id "
-                  "'%(data_id)s' on '%(id_string)s'.") %
-                {
-                    'id_string': xform.id_string,
-                    'data_id': data_id
-                }, audit, request)
-            context.enketo = response['edit_url']
-            return HttpResponseRedirect(response['edit_url'])
-        else:
-            json_msg = response['reason']
-            """
-            return HttpResponse("<script>$('body')</script>")
-            """
-            context.message = {
-                'type': 'alert-error',
-                'text': "Enketo error, reason: " + (
-                    response['reason'] and "Server not found.")
-            }
-            messages.add_message(request, messages.WARNING, json_msg)
-            return render_to_response("profile.html", context_instance=context)
-
-    except urllib2.URLError:
-        # this will happen if we could not connect to enketo
+        url = enketo_url(
+            form_url, xform.id_string, instance_xml=injected_xml,
+            instance_id=instance.uuid, return_url=return_url
+        )
+    except Exception, e:
+        context.message = {
+            'type': 'alert-error',
+            'text': u"Enketo error, reason: %s" % e}
         messages.add_message(
             request, messages.WARNING,
-            _("Enketo error: Unable to open webform url."))
-    except ValueError, e:
-        messages.add_message(
-            request, messages.WARNING,
-            _("Enketo error: enketo replied %s") % e)
-        #TODO: should we throw in another error message here
+            _("Enketo error: enketo replied %s") % e, fail_silently=True)
+    else:
+        if url:
+            context.enketo = url
+            return HttpResponseRedirect(url)
     return HttpResponseRedirect(
         reverse('main.views.show',
                 kwargs={'username': username,
