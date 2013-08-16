@@ -1,5 +1,8 @@
 from django.conf.urls import patterns, include, url
 from django.conf import settings
+from django.views.generic import RedirectView
+
+from api.urls import router
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -7,8 +10,13 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    #change Language
+    # change Language
     (r'^i18n/', include('django.conf.urls.i18n')),
+    url('^api/v1/', include(router.urls)),
+    #url(r'^api-docs/', include('rest_framework_swagger.urls', namespace='swagger')),
+    url(r'^api-docs/', RedirectView.as_view(url='/api/v1/')),
+    url(r'^api/', RedirectView.as_view(url='/api/v1/')),
+    url(r'^api/v1', RedirectView.as_view(url='/api/v1/')),
 
     # django default stuff
     url(r'^accounts/', include('main.registration_urls')),
@@ -49,6 +57,7 @@ urlpatterns = patterns('',
     url(r'^(?P<username>[^/]+)/activity$', 'main.views.activity'),
     url(r'^(?P<username>[^/]+)/activity/api$', 'main.views.activity_api'),
     url(r'^activity/fields$', 'main.views.activity_fields'),
+    url(r'^(?P<username>[^/]+)/api-token$', 'main.views.api_token'),
 
     # form specific
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)$', 'main.views.show'),
@@ -132,5 +141,6 @@ urlpatterns = patterns('',
         {'document_root': settings.MEDIA_ROOT}),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
+    url(r'^favicon\.ico', RedirectView.as_view(url='/static/images/favicon.ico'))
 )
 
