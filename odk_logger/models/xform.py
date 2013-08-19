@@ -159,8 +159,11 @@ class XForm(models.Model):
 
     def geocoded_submission_count(self):
         from odk_viewer.models import ParsedInstance
-        return ParsedInstance.objects.filter(instance__in=self.surveys.filter(is_deleted=False), lat__isnull=False).count()
-    geocoded_submission_count.short_description = ugettext_lazy("Geocoded Submission Count")
+        return ParsedInstance.objects.filter(
+            instance__in=self.surveys.filter(is_deleted=False),
+            lat__isnull=False).count()
+    geocoded_submission_count.short_description = \
+        ugettext_lazy("Geocoded Submission Count")
 
     def time_of_last_submission(self):
         try:
@@ -187,6 +190,10 @@ class XForm(models.Model):
         else:
             num_submissions = self.submission_count
         return num_submissions == 0
+
+    @classmethod
+    def public_forms(cls):
+        return cls.objects.filter(shared=True)
 
 
 def stats_forms_created(sender, instance, created, **kwargs):

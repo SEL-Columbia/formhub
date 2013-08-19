@@ -3,11 +3,13 @@ from main.models import UserProfile
 from django.core.urlresolvers import reverse
 from main.views import profile_settings
 
+
 class TestUserSettings(MainTestCase):
 
     def setUp(self):
         MainTestCase.setUp(self)
-        self.settings_url = reverse(profile_settings, kwargs={'username': self.user.username})
+        self.settings_url = reverse(
+            profile_settings, kwargs={'username': self.user.username})
 
     def test_render_user_settings(self):
         response = self.client.get(self.settings_url)
@@ -39,8 +41,6 @@ class TestUserSettings(MainTestCase):
                 self.assertEqual(self.user.profile.__dict__[key], value)
             except KeyError, e:
                 if key == 'email':
-                    users = UserProfile.objects.all()
                     self.assertEqual(self.user.__dict__[key], value)
                 else:
                     raise e
-
