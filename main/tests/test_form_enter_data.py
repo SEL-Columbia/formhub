@@ -1,7 +1,9 @@
 import re
+import requests
 
 from urlparse import urlparse
 from time import time
+from httmock import urlmatch, HTTMock
 
 from django.test import RequestFactory
 from django.core.urlresolvers import reverse
@@ -10,10 +12,19 @@ from django.conf import settings
 from nose import SkipTest
 
 from test_base import MainTestCase
-from main.views import set_perm, show
+from main.views import set_perm, show, qrcode
 from main.models import MetaData
 from odk_logger.views import enter_data
 from utils.viewer_tools import enketo_url
+
+
+@urlmatch(netloc=r'(.*\.)?enketo\.formhub\.org$')
+def enketo_error_mock(url, request):
+    response = requests.Response()
+    response.status_code = 201
+    response._content = u'{"message": ' \
+                        u'"no account exists for this OpenRosa server"}'
+    return response
 
 
 class TestFormEnterData(MainTestCase):
@@ -46,6 +57,15 @@ class TestFormEnterData(MainTestCase):
         url = enketo_url(server_url, form_id)
         self.assertIsInstance(url, basestring)
         self.assertIsNone(URLValidator()(url))
+
+    def test_qrcode_view(self):
+        with HTTMock(enketo_error_mock):
+            factory = RequestFactory()
+            request = factory.get('/')
+            request.user = self.user
+            response = qrcode(
+                request, self.user.username, self.xform.id_string)
+            self.assertEqual(response.status_code, 500)
 
     def test_enter_data_redir(self):
         if not self._running_enketo():
