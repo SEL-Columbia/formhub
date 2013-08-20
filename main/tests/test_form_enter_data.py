@@ -21,7 +21,7 @@ from utils.viewer_tools import enketo_url
 @urlmatch(netloc=r'(.*\.)?enketo\.formhub\.org$')
 def enketo_error_mock(url, request):
     response = requests.Response()
-    response.status_code = 201
+    response.status_code = 400
     response._content = u'{"message": ' \
                         u'"no account exists for this OpenRosa server"}'
     return response
@@ -65,7 +65,7 @@ class TestFormEnterData(MainTestCase):
             request.user = self.user
             response = qrcode(
                 request, self.user.username, self.xform.id_string)
-            self.assertEqual(response.status_code, 500)
+            self.assertEqual(response.status_code, 400)
 
     def test_enter_data_redir(self):
         if not self._running_enketo():
