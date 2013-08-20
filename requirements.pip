@@ -11,7 +11,7 @@ django-templated-email==0.4.1
 gdata==2.0.16
 httplib2==0.7.4
 mock==1.0.1
-httmock
+-e git+https://github.com/modilabs/httmock.git#egg=httmock
 modilabs-python-utils==0.1.5
 PIL==1.1.7
 poster==0.8.1
