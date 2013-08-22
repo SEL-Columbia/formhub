@@ -125,6 +125,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.locale.LocaleMiddleware',
     'utils.middleware.LocaleMiddlewareWithTweaks',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
@@ -164,6 +165,7 @@ INSTALLED_APPS = (
     'south',
     'django_nose',
     'django_digest',
+    'corsheaders',
     'rest_framework',
     'rest_framework_swagger',
     'rest_framework.authtoken',
@@ -208,6 +210,12 @@ SWAGGER_SETTINGS = {
         'delete'
     ],
 }
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = (
+    'dev.formhub.org',
+)
 
 USE_THOUSAND_SEPARATOR = True
 
