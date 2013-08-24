@@ -463,6 +463,7 @@ def enter_data(request, username, id_string):
             request, messages.WARNING,
             _("Enketo error: enketo replied %s") % e, fail_silently=True)
         return render_to_response("profile.html", context_instance=context)
+
     return HttpResponseRedirect(reverse('main.views.show',
                                 kwargs={'username': username,
                                         'id_string': id_string}))
