@@ -108,9 +108,6 @@
 <script type="text/javascript" charset="utf-8" src="/static/js/underscore-min.js"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/export_list.js"></script>
 <script type="text/javascript">
-$(document).ready(function(){
-   fhExportList.init('{% url "odk_viewer.views.export_progress" username xform.id_string export_type %}', 8000)
-   setTimeout(fhExportList.autoRefresh, 5000)
-});
+    var progress_url = '{% url "odk_viewer.views.export_progress" username xform.id_string export_type %}';
 </script>
 {% endblock %}

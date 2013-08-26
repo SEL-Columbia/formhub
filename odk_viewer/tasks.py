@@ -113,7 +113,12 @@ def create_csv_export(username, id_string, export_id, query=None,
         gen_export = generate_export(
             Export.CSV_EXPORT, 'csv', username, id_string, export_id, query,
             group_delimiter, split_select_multiples)
-    except (Exception, NoRecordsFoundError) as e:
+    except NoRecordsFoundError:
+        # not much we can do but we don't want to report this as the user
+        # should not even be on this page if the survey has no records
+        export.internal_status = Export.FAILED
+        export.save()
+    except Exception as e:
         export.internal_status = Export.FAILED
         export.save()
         # mail admins
