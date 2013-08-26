@@ -1,16 +1,19 @@
-from test_base import MainTestCase
-from nose import SkipTest
-from odk_logger.views import enter_data
-from django.core.urlresolvers import reverse
-from main.views import set_perm, show
-from main.models import MetaData
-from django.conf import settings
+import re
+
 from urlparse import urlparse
 from time import time
-import re
-import urllib2
-import urllib
-import json
+
+from django.test import RequestFactory
+from django.core.urlresolvers import reverse
+from django.core.validators import URLValidator
+from django.conf import settings
+from nose import SkipTest
+
+from test_base import MainTestCase
+from main.views import set_perm, show
+from main.models import MetaData
+from odk_logger.views import enter_data
+from utils.viewer_tools import enketo_url
 
 
 class TestFormEnterData(MainTestCase):
@@ -35,73 +38,23 @@ class TestFormEnterData(MainTestCase):
             return True
         return False
 
-    def test_enketo_remote_server_responses(self):
-        #just in case if we want to shift the testing back to the main server
-        testing_enketo_url = settings.ENKETO_URL
-        #testing_enketo_url = 'http://enketo-dev.formhub.org'
+    def test_enketo_remote_server(self):
+        if not self._running_enketo():
+            raise SkipTest
+        server_url = 'https://testserver.com/bob'
         form_id = "test_%s" % re.sub(re.compile("\."), "_", str(time()))
-        server_url = "%s/%s" % (self.base_url, self.user.username)
-        enketo_url = '%slaunch/launchSurvey' % testing_enketo_url
-
-        values = {
-            'format': 'json',
-            'form_id': form_id,
-            'server_url': server_url
-        }
-        data = urllib.urlencode(values)
-        req = urllib2.Request(enketo_url, data)
-        try:
-            response = urllib2.urlopen(req)
-            response = json.loads(response.read())
-            success = response['success']
-            if not success and 'reason' in response:
-                fail_msg = "This enketo installation is for use by "\
-                    "formhub.org users only."
-                if response['reason'].startswith(fail_msg):
-                    raise SkipTest
-            return_url = response['url']
-            success = response['success']
-            self.assertTrue(success)
-            enketo_base_url = urlparse(settings.ENKETO_URL).netloc
-            return_base_url = urlparse(return_url).netloc
-            self.assertIn(enketo_base_url, return_base_url)
-        except urllib2.URLError:
-            self.assertTrue(False)
-
-        #second time
-        req2 = urllib2.Request(enketo_url, data)
-        try:
-            response2 = urllib2.urlopen(req2)
-            response2 = json.loads(response2.read())
-            return_url_2 = response2['url']
-            success2 = response2['success']
-            reason2 = response2['reason']
-            self.assertEqual(return_url, return_url_2)
-            self.assertFalse(success2)
-            self.assertEqual(reason2, "existing")
-        except urllib2.URLError:
-            self.assertTrue(False)
-
-        #error message
-        values['server_url'] = ""
-        data = urllib.urlencode(values)
-        req3 = urllib2.Request(enketo_url, data)
-        try:
-            response3 = urllib2.urlopen(req3)
-            response3 = json.loads(response3.read())
-            success3 = response3['success']
-            reason3 = response3['reason']
-            self.assertFalse(success3)
-            self.assertEqual(reason3, "empty")
-        except urllib2.URLError:
-            self.assertTrue(False)
-
-    def test_running_enketo(self):
-        exist = self._running_enketo()
-        self.assertTrue(exist)
+        url = enketo_url(server_url, form_id)
+        self.assertIsInstance(url, basestring)
+        self.assertIsNone(URLValidator()(url))
 
     def test_enter_data_redir(self):
-        response = self.client.get(self.url)
+        if not self._running_enketo():
+            raise SkipTest
+        factory = RequestFactory()
+        request = factory.get('/')
+        request.user = self.user
+        response = enter_data(
+            request, self.user.username, self.xform.id_string)
         #make sure response redirect to an enketo site
         enketo_base_url = urlparse(settings.ENKETO_URL).netloc
         redirected_base_url = urlparse(response['Location']).netloc

@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 from odk_logger.views import download_jsonform
 
+
 class TestMapView(TestCase):
     def test_jsonform_url(self):
         id_string = "tutorial"

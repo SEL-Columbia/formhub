@@ -1,7 +1,6 @@
 import json
 import os
 import tempfile
-import urllib2
 from xml.parsers.expat import ExpatError
 import pytz
 
@@ -24,8 +23,6 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.conf import settings
 from django.utils.translation import ugettext as _
-from poster.encode import multipart_encode
-from poster.streaminghttp import register_openers
 
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound,\
@@ -36,7 +33,7 @@ from main.models import UserProfile, MetaData
 from utils.logger_tools import response_with_mimetype_and_name
 from utils.decorators import is_owner
 from utils.user_auth import helper_auth_helper, has_permission,\
-    has_edit_permission, HttpResponseNotAuthorized
+    has_edit_permission, HttpResponseNotAuthorized, add_cors_headers
 from odk_logger.import_tools import import_instances_from_zip
 from odk_logger.xform_instance_parser import InstanceEmptyError,\
     InstanceInvalidUserError, IsNotCrowdformError, DuplicateInstance
@@ -44,6 +41,7 @@ from odk_logger.models.instance import FormInactiveError
 from odk_logger.models.attachment import Attachment
 from utils.log import audit_log, Actions
 from django_digest import HttpDigestAuthenticator
+from utils.viewer_tools import enketo_url
 
 
 @require_POST
@@ -374,15 +372,22 @@ def download_jsonform(request, username, id_string):
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, user__username=username,
                               id_string=id_string)
+    if request.method == "OPTIONS":
+        response = HttpResponse()
+        add_cors_headers(response)
+        return response
     helper_auth_helper(request)
     if not has_permission(xform, owner, request, xform.shared):
-        return HttpResponseForbidden(_(u'Not shared.'))
+        response = HttpResponseForbidden(_(u'Not shared.'))
+        add_cors_headers(response)
+        return response
     response = response_with_mimetype_and_name('json', id_string,
                                                show_date=False)
     if 'callback' in request.GET and request.GET.get('callback') != '':
         callback = request.GET.get('callback')
         response.content = "%s(%s)" % (callback, xform.json)
     else:
+        add_cors_headers(response)
         response.content = xform.json
     return response
 
@@ -429,29 +434,21 @@ def enter_data(request, username, id_string):
                               id_string=id_string)
     if not has_edit_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden(_(u'Not shared.'))
-    if not hasattr(settings, 'ENKETO_URL'):
-        return HttpResponseRedirect(reverse('main.views.show',
-                                    kwargs={'username': username,
-                                            'id_string': id_string}))
-    url = '%slaunch/launchSurvey' % settings.ENKETO_URL
-    register_openers()
-    response = None
-    # see commit 220f2dad0e for tmp file creation
     try:
         formhub_url = "http://%s/" % request.META['HTTP_HOST']
     except:
         formhub_url = "http://formhub.org/"
-    values = {
-        'format': 'json',
-        'form_id': xform.id_string,
-        'server_url': formhub_url + username
-    }
-    data, headers = multipart_encode(values)
-    headers['User-Agent'] = 'formhub'
-    req = urllib2.Request(url, data, headers)
+    form_url = formhub_url + username
+    if settings.TESTING_MODE:
+        form_url = "https://testserver.com/bob"
     try:
-        response = urllib2.urlopen(req)
-        response = json.loads(response.read())
+        url = enketo_url(form_url, xform.id_string)
+        if not url:
+            return HttpResponseRedirect(reverse('main.views.show',
+                                        kwargs={'username': username,
+                                                'id_string': id_string}))
+        return HttpResponseRedirect(url)
+    except Exception, e:
         context = RequestContext(request)
         owner = User.objects.get(username=username)
         context.profile, created = \
@@ -459,48 +456,20 @@ def enter_data(request, username, id_string):
         context.xform = xform
         context.content_user = owner
         context.form_view = True
-        if 'url' in response:
-            audit = {
-                "xform": xform.id_string
-            }
-            audit_log(
-                Actions.FORM_ENTER_DATA_REQUESTED, request.user, owner,
-                _("Requested enter data url for '%(id_string)s'.") %
-                {
-                    'id_string': xform.id_string,
-                }, audit, request)
-            context.enketo = response['url']
-            #return render_to_response("form_entry.html",
-            #                          context_instance=context)
-            return HttpResponseRedirect(response['url'])
-        else:
-            json_msg = response['reason']
-            """
-            return HttpResponse("<script>$('body')</script>")
-            """
-            context.message = {
-                'type': 'alert-error',
-                'text': "Enketo error, reason: " + (
-                    response['reason'] and "Server not found.")}
-            messages.add_message(request, messages.WARNING, json_msg)
-            return render_to_response("profile.html", context_instance=context)
-
-    except urllib2.URLError:
-        # this will happen if we could not connect to enketo
+        context.message = {
+            'type': 'alert-error',
+            'text': u"Enketo error, reason: %s" % e}
         messages.add_message(
             request, messages.WARNING,
-            _("Enketo error: Unable to open webform url."))
-    except ValueError, e:
-        messages.add_message(
-            request, messages.WARNING,
-            _("Enketo error: enketo replied %s") % e)
-        #TODO: should we throw in another error message here
+            _("Enketo error: enketo replied %s") % e, fail_silently=True)
+        return render_to_response("profile.html", context_instance=context)
     return HttpResponseRedirect(reverse('main.views.show',
                                 kwargs={'username': username,
                                         'id_string': id_string}))
 
 
 def edit_data(request, username, id_string, data_id):
+    context = RequestContext(request)
     owner = User.objects.get(username=username)
     xform = get_object_or_404(
         XForm, user__username=username, id_string=id_string)
@@ -517,79 +486,38 @@ def edit_data(request, username, id_string, data_id):
         )
 
     url = '%sdata/edit_url' % settings.ENKETO_URL
-    register_openers()
-    response = None
     # see commit 220f2dad0e for tmp file creation
     try:
         formhub_url = "http://%s/" % request.META['HTTP_HOST']
     except:
         formhub_url = "http://formhub.org/"
     injected_xml = inject_instanceid(instance.xml, instance.uuid)
-    values = {
-        'format': 'json',
-        'form_id': xform.id_string,
-        'server_url': formhub_url + username,
-        'instance': injected_xml,
-        'instance_id': instance.uuid,
-        'return_url': request.build_absolute_uri(
-            reverse(
-                'odk_viewer.views.instance',
-                kwargs={
-                    'username': username,
-                    'id_string': id_string}
-            ) + "#/" + str(instance.id))
-    }
-    data, headers = multipart_encode(values)
-    headers['User-Agent'] = 'formhub'
-    req = urllib2.Request(url, data, headers)
+    return_url = request.build_absolute_uri(
+        reverse(
+            'odk_viewer.views.instance',
+            kwargs={
+                'username': username,
+                'id_string': id_string}
+        ) + "#/" + str(instance.id))
+    form_url = formhub_url + username
+    if settings.TESTING_MODE:
+        form_url = "https://testserver.com/bob"
     try:
-        response = urllib2.urlopen(req)
-        response = json.loads(response.read())
-        context = RequestContext(request)
-        owner = User.objects.get(username=username)
-        context.profile, created = \
-            UserProfile.objects.get_or_create(user=owner)
-        context.xform = xform
-        context.content_user = owner
-        context.form_view = True
-        if 'edit_url' in response:
-            audit = {
-                "xform": xform.id_string,
-                "data_id": data_id
-            }
-            audit_log(
-                Actions.SUBMISSION_EDIT_REQUESTED, request.user, owner,
-                _("Requested to edit data with id "
-                  "'%(data_id)s' on '%(id_string)s'.") %
-                {
-                    'id_string': xform.id_string,
-                    'data_id': data_id
-                }, audit, request)
-            context.enketo = response['edit_url']
-            return HttpResponseRedirect(response['edit_url'])
-        else:
-            json_msg = response['reason']
-            """
-            return HttpResponse("<script>$('body')</script>")
-            """
-            context.message = {
-                'type': 'alert-error',
-                'text': "Enketo error, reason: " + (
-                    response['reason'] and "Server not found.")
-            }
-            messages.add_message(request, messages.WARNING, json_msg)
-            return render_to_response("profile.html", context_instance=context)
-
-    except urllib2.URLError:
-        # this will happen if we could not connect to enketo
+        url = enketo_url(
+            form_url, xform.id_string, instance_xml=injected_xml,
+            instance_id=instance.uuid, return_url=return_url
+        )
+    except Exception, e:
+        context.message = {
+            'type': 'alert-error',
+            'text': u"Enketo error, reason: %s" % e}
         messages.add_message(
             request, messages.WARNING,
-            _("Enketo error: Unable to open webform url."))
-    except ValueError, e:
-        messages.add_message(
-            request, messages.WARNING,
-            _("Enketo error: enketo replied %s") % e)
-        #TODO: should we throw in another error message here
+            _("Enketo error: enketo replied %s") % e, fail_silently=True)
+    else:
+        if url:
+            context.enketo = url
+            return HttpResponseRedirect(url)
     return HttpResponseRedirect(
         reverse('main.views.show',
                 kwargs={'username': username,
@@ -607,6 +535,8 @@ def view_submission_list(request, username):
     id_string = request.GET.get('formId', None)
     xform = get_object_or_404(
         XForm, id_string=id_string, user__username=username)
+    if not has_permission(xform, form_user, request, xform.shared_data):
+        return HttpResponseForbidden('Not shared.')
     num_entries = request.GET.get('numEntries', None)
     cursor = request.GET.get('cursor', None)
     instances = xform.surveys.all().order_by('pk')
@@ -669,6 +599,9 @@ def view_download_submission(request, username):
     instance = get_object_or_404(
         Instance, xform__id_string=id_string, uuid=uuid,
         user__username=username)
+    xform = instance.xform
+    if not has_permission(xform, form_user, request, xform.shared_data):
+        return HttpResponseForbidden('Not shared.')
     submission_xml_root_node = instance.get_root_node()
     submission_xml_root_node.setAttribute(
         'instanceID', u'uuid:%s' % instance.uuid)
@@ -701,6 +634,10 @@ def form_upload(request, username):
     authenticator = HttpDigestAuthenticator()
     if not authenticator.authenticate(request):
         return authenticator.build_challenge_response()
+    if form_user != request.user:
+        return HttpResponseForbidden(
+            _(u"Not allowed to upload form[s] to %(user)s account." %
+              {'user': form_user}))
     if request.method == 'HEAD':
         response = OpenRosaResponse(status=204)
         response['Location'] = request.build_absolute_uri().replace(

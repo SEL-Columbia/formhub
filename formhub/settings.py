@@ -80,8 +80,11 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 STATIC_URL = '/static/'
 
 #ENKETO URL
-ENKETO_URL = 'http://enketo.formhub.org/'
+ENKETO_URL = 'https://enketo.formhub.org/'
+ENKETO_API_SURVEY_PATH = '/api_v1/survey'
+ENKETO_API_INSTANCE_PATH = '/api_v1/instance'
 ENKETO_PREVIEW_URL = ENKETO_URL + 'webform/preview'
+ENKETO_API_TOKEN = ''
 
 # Login URLs
 LOGIN_URL = '/accounts/login/'
@@ -122,6 +125,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.locale.LocaleMiddleware',
     'utils.middleware.LocaleMiddlewareWithTweaks',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
@@ -160,16 +164,57 @@ INSTALLED_APPS = (
     'registration',
     'south',
     'django_nose',
+    'django_digest',
+    'corsheaders',
+    'rest_framework',
+    'rest_framework_swagger',
+    'rest_framework.authtoken',
     'restservice',
     'main',
     'odk_logger',
     'odk_viewer',
     'staff',
+    'api',
     'guardian',
     'djcelery',
     'stats',
     'sms_support',
-    'django_digest',
+)
+
+REST_FRAMEWORK = {
+    # Use hyperlinked styles by default.
+    # Only used if the `serializer_class` attribute is not set on a view.
+    'DEFAULT_MODEL_SERIALIZER_CLASS':
+    'rest_framework.serializers.HyperlinkedModelSerializer',
+
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        #'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
+
+SWAGGER_SETTINGS = {
+    "exclude_namespaces": [],    # List URL namespaces to ignore
+    "api_version": '1.0',  # Specify your API's version (optional)
+    "enabled_methods": [         # Methods to enable in UI
+        'get',
+        'post',
+        'put',
+        'patch',
+        'delete'
+    ],
+}
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = (
+    'dev.formhub.org',
 )
 
 USE_THOUSAND_SEPARATOR = True
@@ -286,6 +331,9 @@ DEFAULT_CONTENT_LENGTH = 10000000
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--with-fixture-bundling']
+#NOSE_PLUGINS = [
+#    'utils.nose_plugins.SilenceSouth'
+#]
 
 TESTING_MODE = False
 if len(sys.argv) >= 2 and (sys.argv[1] == "test" or sys.argv[1] == "test_all"):
@@ -302,6 +350,7 @@ if TESTING_MODE:
     # to run tasks immediately while testing
     CELERY_ALWAYS_EAGER = True
     BROKER_BACKEND = 'memory'
+    ENKETO_API_TOKEN = 'abc'
     #TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
 else:
     MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media/')

@@ -21,7 +21,7 @@
 
         $(document).on("click", ".showqr", function () {
           div_target = $(this).attr('data-target')
-          url "=" $(this).attr('href')
+          url = $(this).attr('href')
           $(div_target+" .img_holder").load(url)
         
         });
@@ -49,7 +49,7 @@
             link.onclick = function (evt) {
                 evt.preventDefault();
                 evt.stopPropagation();
-                var url "=" $(this).data('url');
+                var url = $(this).data('url');
                 var username = $(this).data('username');
                 var data = {'perm_type': 'remove', 'for_user': username};
                 var remove_permission_xhr = $.post(url, data);

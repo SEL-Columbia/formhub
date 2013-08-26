@@ -1,6 +1,7 @@
 # pybamboo has deps in common but on newer versions.
 # on top so those will be overwritten
 pybamboo==0.5.8.1
+pytz==2013b
 
 Distribute
 Django==1.5.1
@@ -10,20 +11,20 @@ django-templated-email==0.4.1
 gdata==2.0.16
 httplib2==0.7.4
 mock==1.0.1
+httmock
 modilabs-python-utils==0.1.5
 PIL==1.1.7
 poster==0.8.1
 pymongo==2.5.1
 lxml
-#pyxform==0.9.17
--e git+https://github.com/modilabs/pyxform.git@master#egg=pyxform
+pyxform==0.9.18
 South==0.7.6
 xlrd==0.8.0
 xlwt==0.7.2
 openpyxl==1.5.8
 celery==3.0.11
 django-celery==3.0.10
-django-nose
+-e git+https://github.com/jbalogh/django-nose.git#egg=django-nose
 python_digest
 django_digest
 # sql alchemy was used for importing data from phones
@@ -32,7 +33,7 @@ SQLAlchemy==0.7.1
 # new export code relies on
 pandas==0.11.0
 
-requests==0.14
+requests==1.2.3
 
 elaphe==0.5.3
 
@@ -44,7 +45,14 @@ shell_command
 # sms support
 dict2xml
 
+# api support
+djangorestframework==2.3.6
+# cors
+django-cors-headers
+# django-rest-swagger==0.1.3
+https://github.com/modilabs/django-rest-swagger/raw/fhapi/dist/django-rest-swagger-0.1.3.tar.gz
+markdown
+django-filter
 # captcha
 recaptcha-client
-
 unicodecsv
