@@ -98,11 +98,6 @@ class TestDataExportURL(MainTestCase):
     def setUp(self):
         super(TestDataExportURL, self).setUp()
         self._publish_transportation_form()
-        survey = self.surveys[0]
-        self._make_submission(
-            os.path.join(
-                self.this_directory, 'fixtures', 'transportation',
-                'instances', survey, survey + '.xml'))
 
     def _filename_from_disposition(self, content_disposition):
         filename_pos = content_disposition.index('filename=')
@@ -110,6 +105,7 @@ class TestDataExportURL(MainTestCase):
         return content_disposition[filename_pos + len('filename='):]
 
     def test_csv_export_url(self):
+        self._submit_transport_instance()
         url = reverse('csv_export', kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string,
@@ -122,7 +118,18 @@ class TestDataExportURL(MainTestCase):
         basename, ext = os.path.splitext(filename)
         self.assertEqual(ext, '.csv')
 
+    def test_csv_export_url_without_records(self):
+        # csv using the pandas path can throw a NoRecordsFound Exception -
+        # handle it gracefully
+        url = reverse('csv_export', kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+        })
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
     def test_xls_export_url(self):
+        self._submit_transport_instance()
         url = reverse('xls_export', kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string,
@@ -137,6 +144,7 @@ class TestDataExportURL(MainTestCase):
         self.assertEqual(ext, '.xlsx')
 
     def test_csv_zip_export_url(self):
+        self._submit_transport_instance()
         url = reverse('csv_zip_export', kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string,
