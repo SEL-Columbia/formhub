@@ -1,4 +1,5 @@
 # vim: set fileencoding=utf-8
+# this system uses structured settings.py as defined in http://www.slideshare.net/jacobian/the-best-and-worst-of-django
 
 import os
 import subprocess
