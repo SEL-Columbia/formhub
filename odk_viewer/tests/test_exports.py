@@ -1426,7 +1426,7 @@ class TestExportBuilder(MainTestCase):
         # check file's contents
         with open(os.path.join(temp_dir, "children.csv")) as csv_file:
             reader = csv.reader(csv_file)
-            expected_headers = ['children/name', 'children/age',
+            expected_headers = ['children/name.first', 'children/age',
                                 'children/fav_colors',
                                 u'children/fav_colors/red\u2019s',
                                 u'children/fav_colors/blue\u2019s',
