@@ -21,7 +21,7 @@ from common_tags import ID, XFORM_ID_STRING, STATUS, ATTACHMENTS, GEOLOCATION,\
     BAMBOO_DATASET_ID, DELETEDAT, USERFORM_ID, INDEX, PARENT_INDEX,\
     PARENT_TABLE_NAME, SUBMISSION_TIME, UUID
 from odk_viewer.models.parsed_instance import _is_invalid_for_mongo,\
-    _encode_for_mongo, dict_for_mongo
+    _encode_for_mongo, dict_for_mongo, _decode_from_mongo
 
 
 # this is Mongo Collection where we will store the parsed submissions
@@ -201,7 +201,7 @@ class ExportBuilder(object):
                             'type': child.bind.get(u"type")
                         })
 
-                        if _is_invalid_for_mongo(child.name):
+                        if _is_invalid_for_mongo(child_xpath):
                             if current_section_name not in encoded_fields:
                                 encoded_fields[current_section_name] = {}
                             encoded_fields[current_section_name].update(
@@ -301,6 +301,10 @@ class ExportBuilder(object):
         return row
 
     @classmethod
+    def decode_mongo_encoded_section_names(cls, data):
+        return dict([(_decode_from_mongo(k), v) for k, v in data.iteritems()])
+
+    @classmethod
     def convert_type(cls, value, data_type):
         """
         Convert data to its native type e.g. string '1' to int 1
@@ -380,7 +384,9 @@ class ExportBuilder(object):
         indices = {}
         survey_name = self.survey.name
         for d in data:
-            output = dict_to_joined_export(d, index, indices, survey_name)
+            # decode mongo section names
+            output = ExportBuilder.decode_mongo_encoded_section_names(
+                dict_to_joined_export(d, index, indices, survey_name))
             # attach meta fields (index, parent_index, parent_table)
             # output has keys for every section
             if survey_name not in output:
@@ -476,7 +482,8 @@ class ExportBuilder(object):
         indices = {}
         survey_name = self.survey.name
         for d in data:
-            output = dict_to_joined_export(d, index, indices, survey_name)
+            output = ExportBuilder.decode_mongo_encoded_section_names(
+                dict_to_joined_export(d, index, indices, survey_name))
             # attach meta fields (index, parent_index, parent_table)
             # output has keys for every section
             if survey_name not in output:
