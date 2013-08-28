@@ -1,10 +1,10 @@
 # this system uses structured settings.py as defined in http://www.slideshare.net/jacobian/the-best-and-worst-of-django
 #
-# this example third-level staging file overrides some definitions in staging_example.py
-# so that it returns the same definitions as the former localsettings.py.examples in the formhub distribution.
+# this third-level staging file overrides some definitions in staging.py
+# You may wish to alter it to agree with your local environment
 #
 
-from staging_example import *  # get most settings from staging_example.py (which in turn, imports from base.py)
+from staging import *  # get most settings from staging_example.py (which in turn, imports from base.py)
 
 # # # now override the settings which came from staging # # # #
 

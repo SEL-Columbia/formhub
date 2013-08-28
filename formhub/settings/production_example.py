@@ -2,11 +2,13 @@
 
 from base import *
 
+DEBUG = False  # this setting file will not work on "runserver" -- it needs a server for static files
+
 # override to set the actual location for the production static and media directories
 MEDIA_ROOT = '/var/formhub-media'
 STATIC_ROOT = "/srv/formhub-static"
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_PARENT, "static"),
+    os.path.join(PROJECT_ROOT, "static"),
 )
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),

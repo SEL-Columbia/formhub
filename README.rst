@@ -4,6 +4,23 @@ Formhub
 .. image:: https://secure.travis-ci.org/modilabs/formhub.png?branch=master
   :target: http://travis-ci.org/modilabs/formhub
 
+N O T E :  settings.py has been changed
+---------------------------------------
+.. This project uses a structured settings layout: localsettings.py is a thing of the past.
+   Place all of your custom settings files into ./formhub/settings/
+   Near the beginning of each such file, import * from base  #(or from another settings file which does that)
+   Then set your DJANGO_SETTINGS_MODULE environment variable for your chosen custom setting.
+   For example, your development virtual environment lib/postactivate file might look something like this...
+      #!/bin/bash
+      # This hook is run after this virtualenv is activated.
+      export DJANGO_SETTINGS_MODULE=formhub.settings.staging_example
+      export PYTHONPATH=formhub:formhub/formhub:/home/vernon/PycharmProjects/django
+
+   Or use the option of passing your settings preference on the command line:
+   $ python manage.py some_command --settings=formhub.settings.production_example
+
+    The default will be to use formhub/settings/default_settings.py
+
 Installation
 ------------
 
@@ -95,7 +112,8 @@ NOTE: If you inted to use special characters from other languages within your fo
 Create a database and start server:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    create or update your local_settings.py file
+    update your formhub/settings/default_settings.py file
+    or create an alternate settings file and set your DJANGO_SETTINGS_MODULE environment variable to reference it.
 
 .. code-block:: sh
 

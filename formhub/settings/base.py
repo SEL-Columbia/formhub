@@ -1,11 +1,17 @@
 # vim: set fileencoding=utf-8
 # this system uses structured settings.py as defined in http://www.slideshare.net/jacobian/the-best-and-worst-of-django
-
+#
+# this is base.by -- which contains settings common to all implementations of formhub: edit it at last resort
+#
+# local customizations should be done in several files each of which in turn imports this one.
+# The local files should be used as the value for your DJANGO_SETTINGS_FILE environment variable as needed.
+# For example, the bin/postactivate file in your virtual environment might look like:
 import os
 import subprocess
 import sys
 
 from pymongo import MongoClient
+
 
 import djcelery
 djcelery.setup_loader()
@@ -15,10 +21,12 @@ PROJECT_ROOT = os.path.realpath(
     os.path.join(os.path.dirname(CURRENT_FILE), '../../'))
 PRINT_EXCEPTION = False
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/'
+ADMINS = (
+    # ('Your Name', 'your_email@example.com'),
+)
+MANAGERS = ADMINS
 
+TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -33,6 +41,15 @@ LANGUAGES = (
     ('it', u'Italiano'),
     ('km', u'ភាសាខ្មែរ'),
 )
+
+# Local time zone for this installation. Choices can be found here:
+# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+# although not all choices may be available on all operating systems.
+# On Unix systems, a value of None will cause Django to use the same
+# timezone as the operating system.
+# If running in a Windows environment this must be set to the same as your
+# system time zone.
+TIME_ZONE = 'America/New_York'
 
 SITE_ID = 1
 
@@ -293,7 +310,7 @@ CELERY_ALWAYS_EAGER = False
 AUTO_ADD_CROWDFORM = False
 DEFAULT_CROWDFORM = {'xform_username': 'bob', 'xform_id_string': 'transport'}
 
-# duration to keep zip exports before deletio (in seconds)
+# duration to keep zip exports before deletion (in seconds)
 ZIP_EXPORT_COUNTDOWN = 3600  # 1 hour
 
 # default content length for submission requests
@@ -306,27 +323,6 @@ NOSE_ARGS = ['--with-fixture-bundling']
 #]
 
 TESTING_MODE = False
-if len(sys.argv) >= 2 and (sys.argv[1] == "test" or sys.argv[1] == "test_all"):
-    # This trick works only when we run tests from the command line.
-    TESTING_MODE = True
-else:
-    TESTING_MODE = False
-
-if TESTING_MODE:
-    MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'test_media/')
-    subprocess.call(["rm", "-r", MEDIA_ROOT])
-    MONGO_DATABASE['NAME'] = "formhub_test"
-    # need to have CELERY_ALWAYS_EAGER True and BROKER_BACKEND as memory
-    # to run tasks immediately while testing
-    CELERY_ALWAYS_EAGER = True
-    BROKER_BACKEND = 'memory'
-    ENKETO_API_TOKEN = 'abc'
-    #TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
-else:
-    MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media/')
-
-if PRINT_EXCEPTION and DEBUG:
-    MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
 
 # re-captcha in registrations
 REGISTRATION_REQUIRE_CAPTCHA = False
