@@ -385,8 +385,10 @@ class ExportBuilder(object):
         survey_name = self.survey.name
         for d in data:
             # decode mongo section names
+            joined_export = dict_to_joined_export(d, index, indices,
+                                                  survey_name)
             output = ExportBuilder.decode_mongo_encoded_section_names(
-                dict_to_joined_export(d, index, indices, survey_name))
+                joined_export)
             # attach meta fields (index, parent_index, parent_table)
             # output has keys for every section
             if survey_name not in output:
@@ -482,8 +484,10 @@ class ExportBuilder(object):
         indices = {}
         survey_name = self.survey.name
         for d in data:
+            joined_export = dict_to_joined_export(d, index, indices,
+                                                  survey_name)
             output = ExportBuilder.decode_mongo_encoded_section_names(
-                dict_to_joined_export(d, index, indices, survey_name))
+                joined_export)
             # attach meta fields (index, parent_index, parent_table)
             # output has keys for every section
             if survey_name not in output:
