@@ -1299,18 +1299,26 @@ def qrcode(request, username, id_string):
         formhub_url = "http://%s/" % request.META['HTTP_HOST']
     except:
         formhub_url = "http://formhub.org/"
-    formhuburl = formhub_url + username
-    url = enketo_url(formhuburl, id_string)
-    if url:
-        image = generate_qrcode(url)
-        results = """<img class="qrcode" src="%s" alt="%s" />
-                   </br><a href="%s" target="_blank">%s</a>""" \
-            % (image, url, url, url)
-    else:
-        error_msg = _(u"Error Generating QRCODE")
+    formhub_url = formhub_url + username
+    if settings.TESTING_MODE:
+        formhub_url = "https://testserver.com/bob"
+    results = _(u"Unexpected Error occured: No QRCODE generated")
+    status = 200
+    try:
+        url = enketo_url(formhub_url, id_string)
+    except Exception, e:
+        error_msg = _(u"Error Generating QRCODE: %s" % e)
         results = """<div class="alert alert-error">%s</div>""" % error_msg
-
-    return HttpResponse(results, mimetype='text/html')
+        status = 400
+    else:
+        if url:
+            image = generate_qrcode(url)
+            results = """<img class="qrcode" src="%s" alt="%s" />
+                    </br><a href="%s" target="_blank">%s</a>""" \
+                % (image, url, url, url)
+        else:
+            status = 400
+    return HttpResponse(results, mimetype='text/html', status=status)
 
 
 def enketo_preview(request, username, id_string):
