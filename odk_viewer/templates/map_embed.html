@@ -1,0 +1,75 @@
+{% extends 'base_embed.html' %}
+{% load i18n %}
+
+{% block additional-headers %}
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+<link href='//api.tiles.mapbox.com/mapbox.js/v1.2.0/mapbox.css' rel='stylesheet' />
+<link rel="stylesheet" href="/static/css/leaflet.draw.css?v=0.2.0-dev" />
+<!--[if lte IE 8]>
+<link href='//api.tiles.mapbox.com/mapbox.js/v1.2.0/mapbox.ie.css' rel='stylesheet' />
+<![endif]-->
+<link rel="stylesheet" href="/static/css/map_embed.css" />
+
+<script type="text/javascript" src="/static/js/jquery.easyModal.js"></script>
+
+<script src="/static/js/d3.js" type="text/javascript"></script>
+<script src="/static/js/dv.js" type="text/javascript"></script>
+<script src="/static/js/hex.js" type="text/javascript"></script>
+<script src="/static/js/d3.hexbin.js" type="text/javascript"></script>
+
+<script src='//api.tiles.mapbox.com/mapbox.js/v1.2.0/mapbox.js'></script>
+<script type="text/javascript" src="/static/js/leaflet.draw.js?v=0.2.0-dev"></script>
+<script type="text/javascript" src="/static/js/custom-button-leaflet.js"></script>
+<script src="/static/js/underscore-min.js" type="text/javascript"></script>
+
+<script src="https://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
+<script type="text/javascript" src="/static/js/Google.js"></script>
+<script type="text/javascript" src="/static/js/TileLayer.Bing.js"></script>
+
+<script type="text/javascript" src="/static/js/formManagers.js?ts=20130730"></script>
+<script type="text/javascript">
+var center = {{ center|safe }};
+var formJSONUrl = "{{ jsonform_url }}";
+var enketoAddUrl = "{{ enketo_add_url }}";
+var enketoEditUrl = "{{ enketo_edit_url }}";
+enketoEditUrl = enketoEditUrl.slice(0, enketoEditUrl.length -1);
+var mongoAPIUrl = "{{ mongo_api_url }}";
+var deleteAPIUrl = "{{ delete_data_url }}";
+var enketoAddWithUrl = "{{ enketo_add_with_url }}";
+var language_code = "{{LANGUAGE_CODE}}";
+var attachmentsBaseUrl = "{% url "odk_viewer.views.attachment_url" %}";
+var modalVisible = null;
+var idToDelete = null;
+
+var mapUsername = "{{ content_user.username }}";
+var mapIDString = "{{ xform.id_string }}";
+
+var mapTitle = "{{ content_user.username }} / {{ xform.title }}";
+var mapDescription = '<table class="table table-condensed table-striped"><tr><th>Total submissions</th><td>{{ xform.submission_count }}</td></tr><tr><th>Submissions with Points</th><td>{{ xform.geocoded_submission_count }}</td></tr><tr><th>Last submission</th><td>{{ xform.time_of_last_submission|date:"N d, Y" }}</td></tr></table><p>Please refresh this page to be able to click on your newly added points.</p>';
+
+var csv_url = "{% url "csv_export" content_user.username xform.id_string %}";
+var xls_url = "{% url "xls_export" content_user.username xform.id_string %}";
+var kml_url = "{% url "odk_viewer.views.kml_export" content_user.username xform.id_string %}";
+
+$(document).ready(function() {
+    setMapHeight();
+});
+</script>
+{% if mapbox_layer %}
+<script type="text/javascript">
+	var customMapBoxTileLayer = {label: '{{mapbox_layer.map_name}}', url: '{{mapbox_layer.link}}'};
+</script>
+{% endif %}
+<script type="text/javascript" src="/static/js/lightmodal.js?ts=20130730"></script>
+<script src="/static/js/map_embed.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block body %}
+<body onload="initialize_map_embed()">
+	<div id="map_canvas"></div>
+	<div id="content_modal"></div>
+	<div class="delete_modal"></div>
+	<script type="text/javascript">$(window).resize(setMapHeight);</script>
+</body>
+{% endblock %}

@@ -56,3 +56,4 @@ django-filter
 # captcha
 recaptcha-client
 unicodecsv
+dpath

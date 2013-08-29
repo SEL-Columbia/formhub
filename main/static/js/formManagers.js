@@ -150,7 +150,7 @@ FormJSONManager.prototype.getMultilingualLabel = function(question, language)
         if(language && labelProp.hasOwnProperty(language))
             return labelProp[language];
         else // and if the given language isn't present, return the first label
-            return _.values(labelProp)[0]; 
+            return _.values(labelProp)[0];
     // fallback (ie, no label) -- return raw name
     return question[constants.NAME];
 };
@@ -164,13 +164,15 @@ FormResponseManager = function(url, callback)
     this._currentSelectOneQuestionName = null; // name of the currently selected "View By Question if any"
 };
 
-FormResponseManager.prototype.loadResponseData = function(params, start, limit, geoPointField, otherFieldsToLoad)
+FormResponseManager.prototype.loadResponseData = function(params, start, limit, geoPointField, otherFieldsToLoad, rebuildFlag)
 {
     var thisFormResponseMngr = this;
     var urlParams = params, geoParams = {};
     var all_data = [];
     var totalCount, progress = 0;
     var $progressElm = $('#progress-modal');
+    if (rebuildFlag !== true)
+        rebuildFlag = false;
 
     start = parseInt(start,10);
     limit = parseInt(limit, 10);
@@ -179,7 +181,7 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
     // use !isNaN so we also have zeros
     if(!isNaN(start)) urlParams[constants.START] = start;
     if(!isNaN(limit)) urlParams[constants.LIMIT] = limit;
-    
+
     /* TODO: re-enable geo-point pre-population once we work out making the rest of
              the load happen after an asynchronous wait.
        TODO: also make sure that if geoPointField is null / undefined, the call doesn't happen*/
@@ -199,7 +201,7 @@ FormResponseManager.prototype.loadResponseData = function(params, start, limit, 
             }
             thisFormResponseMngr.responses = all_data;
             thisFormResponseMngr.responseCount = data.length;
-            thisFormResponseMngr._toDatavore();
+            thisFormResponseMngr._toDatavore(rebuildFlag);
             thisFormResponseMngr.callback.call(thisFormResponseMngr);
         }
         else
@@ -312,9 +314,9 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
     var latLngArray = [];
     var geopointQuestionName = constants.GEOLOCATION;
     // The following functions needed hexbin-js doesn't deal well with negatives
-    function fixlng(n) { n = parseFloat(n); return (n < 0 ? 360 + n : n); } 
+    function fixlng(n) { n = parseFloat(n); return (n < 0 ? 360 + n : n); }
     function fixlnginv(n) { n = parseFloat(n); return (n > 180 ? n - 360 : n); }
-    function fixlat(n) { n = parseFloat(n); return (n < 0 ? 90 + n : 90 + n); } 
+    function fixlat(n) { n = parseFloat(n); return (n < 0 ? 90 + n : 90 + n); }
     function fixlatinv(n) { n = parseFloat(n); return (n > 90 ? n - 90 : n - 90); }
     _(this.responses).each(function(response) {
         var gps = response[geopointQuestionName];
@@ -332,7 +334,7 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
                 .xValue( function(d) { return d.lng; } )
                 .yValue( function(d) { return d.lat; } )
                 ( latLngArray );
-    } catch (err) { 
+    } catch (err) {
         this.hexGeoJSON = {"type": "FeatureCollection", "features": []};
         this._addMetadataColumn("_id", "hexID", dv.type.nominal, _.map(latLngArray, function(x) { return undefined; }));
         return;
@@ -341,7 +343,7 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
     _.each(hexset, function(hex, idx) {
         if(hex.data.length) {
             hexID = 'HEX: ' + idx;
-            var geometry = {"type":"Polygon", 
+            var geometry = {"type":"Polygon",
                             "coordinates": _(hex.points).map(function(d) {
                                     return [fixlatinv(d.y), fixlnginv(d.x)];
                                     })
@@ -349,10 +351,10 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
             responseIDs = [];
             _(hex.data).each(function(d) {
                 responseIDs.push(d.response_id);
-                hexOfResponseID[d.response_id] = hexID; 
+                hexOfResponseID[d.response_id] = hexID;
             });
-            features.push({"type": "Feature", 
-                           "geometry":geometry, 
+            features.push({"type": "Feature",
+                           "geometry":geometry,
                            "properties": { "id" : hexID, "responseIDs" : responseIDs }
                            });
         }
@@ -360,9 +362,9 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
     this.hexGeoJSON = {"type":"FeatureCollection", "features":features};
     this._addMetadataColumn("_id", "hexID", dv.type.nominal, hexOfResponseID);
 };
-FormResponseManager.prototype.getAsGeoJSON = function()
+FormResponseManager.prototype.getAsGeoJSON = function(rebuildFlag)
 {
-    if(!this.geoJSON)
+    if(!this.geoJSON || rebuildFlag)
         this._toGeoJSON();
 
     return this.geoJSON;
@@ -376,22 +378,24 @@ FormResponseManager.prototype.getAsHexbinGeoJSON = function(latLongFilter)
     return this.hexGeoJSON;
 };
 
-FormResponseManager.prototype.dvQuery = function(dvQueryObj)
+FormResponseManager.prototype.dvQuery = function(dvQueryObj, rebuildFlag)
 {
-    if (!this.dvResponseTable) this._toDatavore();
+    this._toDatavore(rebuildFlag);
     return this.dvResponseTable.query(dvQueryObj);
 };
 
 FormResponseManager.prototype._toDatavore = function(rebuildFlag)
 {
+    // Datavore table should only be built once, unless rebuildFlag is passed in
+    if (this.dvResponseTable && !rebuildFlag) {
+        return;
+    }
     var dvData = {}, qName = '';
     var questions = formJSONMngr.questions;
     var responses = this.responses;
-    // Datavore table should only be built once, unless rebuildFlag is passed in
-    if (this.dvResponseTable && !rebuildFlag) return;
     // CREATE A Datavore table here; the mapping from form types to datavore types
     var typeMap = {"integer" : dv.type.numeric, "decimal" : dv.type.numeric,
-                   "select one" : dv.type.nominal, 
+                   "select one" : dv.type.nominal,
                    "text" : dv.type.unknown, "select multiple" : dv.type.unknown,
                    "_id" : dv.type.unknown };
     // chuck all questions whose type isn't in typeMap; add an _id "question"
