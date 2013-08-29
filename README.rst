@@ -4,9 +4,11 @@ Formhub
 .. image:: https://secure.travis-ci.org/modilabs/formhub.png?branch=master
   :target: http://travis-ci.org/modilabs/formhub
 
-N O T E :  settings.py has been changed
----------------------------------------
-.. This project uses a structured settings layout: localsettings.py is a thing of the past.
+N O T E :  settings.py has been replaced by the /settings directory
+-------------------------------------------------------------------
+.. This project uses a structured settings layout: (localsettings.py is a thing of the past.)
+   You can switch freely between production, staging, and multiple developers without editing Python code.
+
    Place all of your custom settings files into ./formhub/settings/
    Near the beginning of each such file, import * from base  #(or from another settings file which does that)
    Then set your DJANGO_SETTINGS_MODULE environment variable for your chosen custom setting.
@@ -17,7 +19,7 @@ N O T E :  settings.py has been changed
       export PYTHONPATH=formhub:formhub/formhub:/home/vernon/PycharmProjects/django
 
    Or use the option of passing your settings preference on the command line:
-   $ python manage.py some_command --settings=formhub.settings.production_example
+   $ python manage.py some_command --settings=formhub.settings.production
 
     The default will be to use formhub/settings/default_settings.py
 

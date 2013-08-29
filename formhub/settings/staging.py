@@ -24,7 +24,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'formhub_dev',
         'USER': 'formhub_dev',
-        'PASSWORD': '',
+        'PASSWORD': '12345678',
     },
     'gis': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
