@@ -23,13 +23,6 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('api', ['Team'])
 
-        # Adding M2M table for field projects on 'Team'
-        db.create_table('api_team_projects', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('team', models.ForeignKey(orm['api.team'], null=False)),
-            ('project', models.ForeignKey(orm['models.project'], null=False))
-        ))
-        db.create_unique('api_team_projects', ['team_id', 'project_id'])
 
 
     def backwards(self, orm):
@@ -38,9 +31,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'Team'
         db.delete_table('api_team')
-
-        # Removing M2M table for field projects on 'Team'
-        db.delete_table('api_team_projects')
 
 
     models = {
