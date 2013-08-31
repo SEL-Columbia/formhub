@@ -24,18 +24,12 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'formhub_dev',
         'USER': 'formhub_dev',
-        'PASSWORD': '',
-    },
-    'gis': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'phis',
-        'USER': 'nomadstaff',
-        'PASSWORD': 'nopolio',
+        'PASSWORD': '12345678',
         'HOST': 'localhost',
         'OPTIONS': {
-            'autocommit': True,
+            'autocommit': True,  # NOTE: this option becomes obsolete in django 1.6
         }
-    }
+    },
 }
 
 # TIME_ZONE = 'UTC'
