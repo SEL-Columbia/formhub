@@ -161,6 +161,9 @@ And now you should be ready to run the server:
 
     $ python manage.py runserver
 
+(if you get the error "Site matching query does not exist." then follow the advise in
+  http://stackoverflow.com/questions/11476210/getting-site-matching-query-does-not-exist-error-after-creating-django-admin )
+
 Running Tests
 -------------
 
