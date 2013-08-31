@@ -18,8 +18,8 @@ N O T E :  settings.py has been replaced by the /settings directory
       export DJANGO_SETTINGS_MODULE=formhub.settings.staging_example
       export PYTHONPATH=formhub:formhub/formhub:/home/vernon/PycharmProjects/django
 
-   Or use the option of passing your settings preference on the command line:
-   $ python manage.py some_command --settings=formhub.settings.production
+   Or use the option of passing your settings preference on the command line. For example:
+   $ python manage.py test --settings=formhub.settings.mysql_test
 
     The default will be to use formhub/settings/default_settings.py
 
