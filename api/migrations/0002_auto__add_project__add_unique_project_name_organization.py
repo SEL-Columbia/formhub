@@ -22,6 +22,14 @@ class Migration(SchemaMigration):
         # Adding unique constraint on 'Project', fields ['name', 'organization']
         db.create_unique('api_project', ['name', 'organization_id'])
 
+        # Adding M2M table for field projects on 'Team'
+        db.create_table('api_team_projects', (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('team', models.ForeignKey(orm['api.team'], null=False)),
+            ('project', models.ForeignKey(orm['api.project'], null=False))
+        ))
+        db.create_unique('api_team_projects', ['team_id', 'project_id'])
+
 
     def backwards(self, orm):
         # Removing unique constraint on 'Project', fields ['name', 'organization']
@@ -29,6 +37,9 @@ class Migration(SchemaMigration):
 
         # Deleting model 'Project'
         db.delete_table('api_project')
+
+        # Removing M2M table for field projects on 'Team'
+        db.delete_table('api_team_projects')
 
 
     models = {
