@@ -1325,7 +1325,7 @@ def enketo_preview(request, username, id_string):
     xform = get_object_or_404(
         XForm, user__username=username, id_string=id_string)
     owner = xform.user
-    if not has_permission(xform, owner, request):
+    if not has_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden(_(u'Not shared.'))
     enekto_preview_url = \
         "%(enketo_url)s?server=%(profile_url)s&id=%(id_string)s" % {
