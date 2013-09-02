@@ -85,7 +85,7 @@ def check_and_set_form_by_id(pk, request):
 def get_xform_and_perms(username, id_string, request):
     xform = get_object_or_404(
         XForm, user__username=username, id_string=id_string)
-    is_owner = username == request.user.username
+    is_owner = xform.user == request.user
     can_edit = is_owner or\
         request.user.has_perm('odk_logger.change_xform', xform)
     can_view = can_edit or\
