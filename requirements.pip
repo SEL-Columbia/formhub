@@ -13,7 +13,7 @@ httplib2==0.7.4
 mock==1.0.1
 -e git+https://github.com/modilabs/httmock.git#egg=httmock
 modilabs-python-utils==0.1.5
-PIL==1.1.7
+Pillow==2.1.0
 poster==0.8.1
 pymongo==2.5.1
 lxml
