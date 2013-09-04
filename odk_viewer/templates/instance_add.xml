@@ -1,0 +1,1 @@
+<{{ id_string }} id='{{ id_string }}'>{{ xml_content|safe }}</{{ id_string }}>
