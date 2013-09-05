@@ -31,7 +31,7 @@ DATABASES = {
         'NAME': 'phis',
         'USER': 'nomadstaff',
         'PASSWORD': 'nopolio',
-        'HOST': 'localhost',
+        'HOST': 'nomads.eocng.org',
         'OPTIONS': {
             'autocommit': True,
         }
