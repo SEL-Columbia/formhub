@@ -227,6 +227,7 @@
       <tr>
           <th>{%  trans "Name" %}</th>
           <th>{%  trans "Submissions" %}</th>
+          <th>{%  trans "Preview" %}</th>
           <th>{%  trans "View" %}</th>
           <th>{%  trans "Data" %}</th>
           <th>{%  trans "Last Submission" %}</th>
@@ -251,6 +252,11 @@
 
               </td>
               <td class="centered">{{ submission_count|intcomma }}</td>
+          <td class="centered">
+                      <a class="btn btn-info" rel="tooltip" title="{% trans 'Preview Form' %}" href="{% url "main.views.enketo_preview" xform.user.username xform.id_string %}" target="_blank">
+                      <i class="icon-check icon-white"></i> {% trans "Preview Form" %}
+                  </a>
+              </td>
               <td class="centered">
                       {% if not xform.encrypted and has_surveys_with_geopoints %}
                           <a href="{% url "odk_viewer.views.map_view" xform.user.username xform.id_string %}" data-original-title="{% trans 'View Map' %}" rel="tooltip">

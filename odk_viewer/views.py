@@ -92,7 +92,7 @@ def average(values):
     return None
 
 
-def map_view(request, username, id_string):
+def map_view(request, username, id_string, template='map.html'):
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
@@ -123,12 +123,16 @@ def map_view(request, username, id_string):
                                    kwargs={"username": username,
                                            "id_string": id_string})
     context.enketo_edit_url = reverse('edit_data',
-                                   kwargs={"username": username,
-                                           "id_string": id_string,
-                                           "data_id": 0})
+                                      kwargs={"username": username,
+                                              "id_string": id_string,
+                                              "data_id": 0})
     context.enketo_add_url = reverse('enter_data',
-                                   kwargs={"username": username,
-                                           "id_string": id_string})
+                                     kwargs={"username": username,
+                                             "id_string": id_string})
+
+    context.enketo_add_with_url = reverse('add_submission_with',
+                                          kwargs={"username": username,
+                                                  "id_string": id_string})
     context.mongo_api_url = reverse('mongo_view_api',
                                     kwargs={"username": username,
                                             "id_string": id_string})
@@ -142,7 +146,61 @@ def map_view(request, username, id_string):
     audit_log(Actions.FORM_MAP_VIEWED, request.user, owner,
               _("Requested map on '%(id_string)s'.")
               % {'id_string': xform.id_string}, audit, request)
-    return render_to_response('map.html', context_instance=context)
+    return render_to_response(template, context_instance=context)
+
+
+def map_embed_view(request, username, id_string):
+    return map_view(request, username, id_string, template='map_embed.html')
+
+
+def add_submission_with(request, username, id_string):
+
+    import uuid
+    import requests
+
+    from django.conf import settings
+    from django.template import loader, Context
+    from dpath import util as dpath_util
+    from dict2xml import dict2xml
+
+    def geopoint_xpaths(username, id_string):
+        d = DataDictionary.objects.get(user__username=username, id_string=id_string)
+        return [e.get_abbreviated_xpath()
+                for e in d.get_survey_elements()
+                if e.bind.get(u'type') == u'geopoint']
+
+    value = request.GET.get('coordinates')
+    xpaths = geopoint_xpaths(username, id_string)
+    xml_dict = {}
+    for path in xpaths:
+        dpath_util.new(xml_dict, path, value)
+
+    context = {'username': username,
+               'id_string': id_string,
+               'xml_content': dict2xml(xml_dict)}
+    instance_xml = loader.get_template("instance_add.xml").render(Context(context))
+
+    url = settings.ENKETO_API_INSTANCE_IFRAME_URL
+    return_url = reverse('thank_you_submission', kwargs={"username": username,
+                                                         "id_string": id_string})
+    if settings.DEBUG:
+        openrosa_url = "https://dev.formhub.org/{}".format(username)
+    else:
+        openrosa_url = request.build_absolute_uri("/{}".format(username))
+    payload = {'return_url': return_url,
+               'form_id': id_string,
+               'server_url': openrosa_url,
+               'instance': instance_xml,
+               'instance_id': uuid.uuid4().hex}
+
+    r = requests.post(url, data=payload,
+                      auth=(settings.ENKETO_API_TOKEN, ''), verify=False)
+
+    return HttpResponse(r.text, mimetype='application/json')
+
+
+def thank_you_submission(request, username, id_string):
+    return HttpResponse("Thank You")
 
 
 # TODO: do a good job of displaying hierarchical data

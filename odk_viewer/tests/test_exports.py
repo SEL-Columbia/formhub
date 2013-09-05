@@ -98,11 +98,6 @@ class TestDataExportURL(MainTestCase):
     def setUp(self):
         super(TestDataExportURL, self).setUp()
         self._publish_transportation_form()
-        survey = self.surveys[0]
-        self._make_submission(
-            os.path.join(
-                self.this_directory, 'fixtures', 'transportation',
-                'instances', survey, survey + '.xml'))
 
     def _filename_from_disposition(self, content_disposition):
         filename_pos = content_disposition.index('filename=')
@@ -110,6 +105,7 @@ class TestDataExportURL(MainTestCase):
         return content_disposition[filename_pos + len('filename='):]
 
     def test_csv_export_url(self):
+        self._submit_transport_instance()
         url = reverse('csv_export', kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string,
@@ -122,7 +118,18 @@ class TestDataExportURL(MainTestCase):
         basename, ext = os.path.splitext(filename)
         self.assertEqual(ext, '.csv')
 
+    def test_csv_export_url_without_records(self):
+        # csv using the pandas path can throw a NoRecordsFound Exception -
+        # handle it gracefully
+        url = reverse('csv_export', kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string,
+        })
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
     def test_xls_export_url(self):
+        self._submit_transport_instance()
         url = reverse('xls_export', kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string,
@@ -137,6 +144,7 @@ class TestDataExportURL(MainTestCase):
         self.assertEqual(ext, '.xlsx')
 
     def test_csv_zip_export_url(self):
+        self._submit_transport_instance()
         url = reverse('csv_zip_export', kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string,
@@ -1220,22 +1228,22 @@ class TestExportBuilder(MainTestCase):
             'name': 'Abe',
             'age': 35,
             'tel/telLg==office': '020123456',
-            'children':
+            'childrenLg==info':
             [
                 {
-                    'children/name': 'Mike',
-                    'children/age': 5,
-                    'children/fav_colors': u'red\u2019s blue\u2019s',
-                    'children/iceLg==creams': 'vanilla chocolate',
-                    'children/cartoons':
+                    'childrenLg==info/nameLg==first': 'Mike',
+                    'childrenLg==info/age': 5,
+                    'childrenLg==info/fav_colors': u'red\u2019s blue\u2019s',
+                    'childrenLg==info/ice_creams': 'vanilla chocolate',
+                    'childrenLg==info/cartoons':
                     [
                         {
-                            'children/cartoons/name': 'Tom & Jerry',
-                            'children/cartoons/why': 'Tom is silly',
+                            'childrenLg==info/cartoons/name': 'Tom & Jerry',
+                            'childrenLg==info/cartoons/why': 'Tom is silly',
                         },
                         {
-                            'children/cartoons/name': 'Flinstones',
-                            'children/cartoons/why': u"I like bam bam\u0107"
+                            'childrenLg==info/cartoons/name': 'Flinstones',
+                            'childrenLg==info/cartoons/why': u"I like bam bam\u0107"
                             # throw in a unicode character
                         }
                     ]
@@ -1393,6 +1401,20 @@ class TestExportBuilder(MainTestCase):
 
         shutil.rmtree(temp_dir)
 
+    def test_decode_mongo_encoded_section_names(self):
+        data = {
+            'main_section': [1, 2, 3, 4],
+            'sectionLg==1/info': [1, 2, 3, 4],
+            'sectionLg==2/info': [1, 2, 3, 4],
+        }
+        result = ExportBuilder.decode_mongo_encoded_section_names(data)
+        expected_result = {
+            'main_section': [1, 2, 3, 4],
+            'section.1/info': [1, 2, 3, 4],
+            'section.2/info': [1, 2, 3, 4],
+        }
+        self.assertEqual(result, expected_result)
+
     def test_zipped_csv_export_works_with_unicode(self):
         """
         cvs writer doesnt handle unicode we we have to encode to ascii
@@ -1414,19 +1436,20 @@ class TestExportBuilder(MainTestCase):
         # check that the children's file (which has the unicode header) exists
         self.assertTrue(
             os.path.exists(
-                os.path.join(temp_dir, "children.csv")))
+                os.path.join(temp_dir, "children.info.csv")))
         # check file's contents
-        with open(os.path.join(temp_dir, "children.csv")) as csv_file:
+        with open(os.path.join(temp_dir, "children.info.csv")) as csv_file:
             reader = csv.reader(csv_file)
-            expected_headers = ['children/name', 'children/age',
-                                'children/fav_colors',
-                                u'children/fav_colors/red\u2019s',
-                                u'children/fav_colors/blue\u2019s',
-                                u'children/fav_colors/pink\u2019s',
-                                'children/ice_creams',
-                                'children/ice_creams/vanilla',
-                                'children/ice_creams/strawberry',
-                                'children/ice_creams/chocolate', '_id',
+            expected_headers = ['children.info/name.first',
+                                'children.info/age',
+                                'children.info/fav_colors',
+                                u'children.info/fav_colors/red\u2019s',
+                                u'children.info/fav_colors/blue\u2019s',
+                                u'children.info/fav_colors/pink\u2019s',
+                                'children.info/ice_creams',
+                                'children.info/ice_creams/vanilla',
+                                'children.info/ice_creams/strawberry',
+                                'children.info/ice_creams/chocolate', '_id',
                                 '_uuid', '_submission_time', '_index',
                                 '_parent_table_name', '_parent_index']
             rows = [row for row in reader]
@@ -1434,13 +1457,13 @@ class TestExportBuilder(MainTestCase):
             self.assertEqual(sorted(actual_headers), sorted(expected_headers))
             data = dict(zip(rows[0], rows[1]))
             self.assertEqual(
-                data[u'children/fav_colors/red\u2019s'.encode('utf-8')],
+                data[u'children.info/fav_colors/red\u2019s'.encode('utf-8')],
                 'True')
             self.assertEqual(
-                data[u'children/fav_colors/blue\u2019s'.encode('utf-8')],
+                data[u'children.info/fav_colors/blue\u2019s'.encode('utf-8')],
                 'True')
             self.assertEqual(
-                data[u'children/fav_colors/pink\u2019s'.encode('utf-8')],
+                data[u'children.info/fav_colors/pink\u2019s'.encode('utf-8')],
                 'False')
             # check that red and blue are set to true
         shutil.rmtree(temp_dir)
@@ -1457,11 +1480,11 @@ class TestExportBuilder(MainTestCase):
         temp_xls_file.seek(0)
         # check that values for red\u2019s and blue\u2019s are set to true
         wb = load_workbook(temp_xls_file.name)
-        children_sheet = wb.get_sheet_by_name("children")
+        children_sheet = wb.get_sheet_by_name("children.info")
         data = dict([(r[0].value, r[1].value) for r in children_sheet.columns])
-        self.assertTrue(data[u'children/fav_colors/red\u2019s'])
-        self.assertTrue(data[u'children/fav_colors/blue\u2019s'])
-        self.assertFalse(data[u'children/fav_colors/pink\u2019s'])
+        self.assertTrue(data[u'children.info/fav_colors/red\u2019s'])
+        self.assertTrue(data[u'children.info/fav_colors/blue\u2019s'])
+        self.assertFalse(data[u'children.info/fav_colors/pink\u2019s'])
         temp_xls_file.close()
 
     def test_generation_of_multi_selects_works(self):
