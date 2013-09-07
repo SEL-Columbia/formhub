@@ -11,7 +11,7 @@ STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, "static"),
 )
 ADMINS = (
-    # ('Adam Thompson', 'adam@ehealthafrice.org'),
+    # ('Adam Thompson', 'adam@ehealthafrica.org'),
 )
 # your actual production settings go here...,.
 DATABASES = {
