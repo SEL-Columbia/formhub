@@ -11,7 +11,8 @@ django-templated-email==0.4.1
 gdata==2.0.16
 httplib2==0.7.4
 mock==1.0.1
--e git+https://github.com/modilabs/httmock.git#egg=httmock
+# -e git+https://github.com/modilabs/httmock.git#egg=httmock
+httmock
 modilabs-python-utils==0.1.5
 PIL==1.1.7
 poster==0.8.1
@@ -24,12 +25,14 @@ xlwt==0.7.2
 openpyxl==1.5.8
 celery==3.0.11
 django-celery==3.0.10
--e git+https://github.com/jbalogh/django-nose.git#egg=django-nose
+# -e git+https://github.com/jbalogh/django-nose.git#egg=django-nose
+django-nose
 python_digest
 django_digest
 # sql alchemy was used for importing data from phones
 SQLAlchemy==0.7.1
 
+ipdb
 # new export code relies on
 pandas==0.11.0
 

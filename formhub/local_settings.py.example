@@ -1,37 +1,22 @@
-# mysql
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.mysql',
-#        'NAME': 'formhub_dev',
-#        'USER': 'formhub_dev',
-#        'PASSWORD': '',
-#    }
-#}
-
 # postgres
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        'NAME': 'formhub_dev',
-#        'USER': 'formhub_dev',
-#        'PASSWORD': '',
-#    }
-#}
-
-# sqlite
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'aklogbook',
+        'USER': 'aklogbook',
+        'PASSWORD': '',
     }
 }
 
-TOUCHFORMS_URL = 'http://localhost:9000/'
+ENKETO_URL = 'http://enketo/' # TODO
+ENKETO_API_INSTANCE_IFRAME_URL = "https://enketo/api_v1/instance/iframe"
+ENKETO_API_TOKEN = "abcde"
 
 MONGO_DATABASE = {
     'HOST': 'localhost',
     'PORT': 27017,
-    'NAME': 'formhub',
+    'NAME': 'aklogbook',
     'USER': '',
     'PASSWORD': ''
 }
+
