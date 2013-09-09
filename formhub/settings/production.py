@@ -16,16 +16,6 @@ ADMINS = (
 # your actual production settings go here...,.
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'formhub',
-        'USER': 'formhub_prod',
-        'PASSWORD': '7fikxmhf6',
-        'HOST': 'localhost',
-        'OPTIONS': {
-            'autocommit': True,   # note: this option obsolete starting with django 1.6
-        }
-    },
-    'gis': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'phis',
         'USER': 'phis',
