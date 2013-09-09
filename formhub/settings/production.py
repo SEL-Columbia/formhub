@@ -47,6 +47,6 @@ MONGO_DATABASE = {
     'PASSWORD': ''
 }
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'mlfs33^s1l4xf6a36$0#j%dd*sisfo6HOktYXB9y'
+SECRET_KEY = "&!1#=b7b7w*qb$w1nz=b04zwaan@^hi52k_o+^9dy#eb_he1u8"
 
 WSGI_APPLICATION = "formhub.wsgi.application"
