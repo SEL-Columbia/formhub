@@ -49,4 +49,8 @@ MONGO_DATABASE = {
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = "&!1#=b7b7w*qb$w1nz=b04zwaan@^hi52k_o+^9dy#eb_he1u8"
 
+ALLOWED_HOSTS = ['.eocng.org', '.ehealthafrica.org']
+
+INTERNAL_IPS = ('192.168.0.0/16',)
+
 WSGI_APPLICATION = "formhub.wsgi.application"
