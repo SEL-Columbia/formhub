@@ -58,7 +58,6 @@ def import_submission_for_form(request, username, id_string):
                              'text': _(u"`identity` and `message` are "
                                        u"both required and must not be "
                                        u"empty.")})
-
     incomings = [(sms_identity, sms_text)]
     response = process_incoming_smses(username, incomings, id_string)[-1]
 
