@@ -61,7 +61,7 @@ def import_submission(request, username, service):
 def import_submission_for_form(request, username, id_string, service):
     """ Proxy to the service's import_submission_for_form view """
     return PROVIDERS.get(service.lower(), {}) \
-                    .get('imp_form', unknown_service)(request, username, None)
+                    .get('imp_form', unknown_service)(request, username, id_string)
 
 
 def providers_doc(url_root, username, id_string):
