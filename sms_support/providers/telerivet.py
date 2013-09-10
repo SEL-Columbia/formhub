@@ -48,6 +48,8 @@ def autodoc(url_root, username, id_string):
 
 def get_response(data):
 
+    message = data.get('text')
+
     if data.get('code') == SMS_API_ERROR:
         message = None
     elif data.get('code') != SMS_SUBMISSION_ACCEPTED:
