@@ -1335,3 +1335,26 @@ def enketo_preview(request, username, id_string):
             'id_string': xform.id_string
         }
     return HttpResponseRedirect(enekto_preview_url)
+
+
+def logbook_auth(request):
+    '''
+    Auth info for AK Logbook client
+    '''
+    username = None
+    form = None
+    if request.user and request.user.is_authenticated():
+        username = request.user.username
+        form = 'FRP53_survey2'
+        # TODO clone it if form doesn't exist
+
+    if username and form:
+        info = {
+           'username': username,
+           'form': form 
+        }
+        return render_to_response('sessions/auth.js',
+            RequestContext(request, info),
+            mimetype="application/javascript")
+    else:
+        return HttpResponseForbidden("not logged in")
