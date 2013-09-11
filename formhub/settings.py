@@ -88,7 +88,8 @@ ENKETO_API_TOKEN = ''
 
 # Login URLs
 LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/login_redirect/'
+#LOGIN_REDIRECT_URL = '/login_redirect/'
+LOGIN_REDIRECT_URL = '/app/'
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
