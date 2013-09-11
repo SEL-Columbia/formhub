@@ -1346,12 +1346,14 @@ def logbook_auth(request):
     if request.user and request.user.is_authenticated():
         username = request.user.username
         form = 'FRP53_survey2'
+        baseurl = request.get_host()
         # TODO clone it if form doesn't exist
 
     if username and form:
         info = {
            'username': username,
-           'form': form 
+           'form': form,
+           'baseurl': baseurl
         }
         return render_to_response('sessions/auth.js',
             RequestContext(request, info),

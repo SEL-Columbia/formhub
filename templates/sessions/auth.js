@@ -6,4 +6,5 @@
 app.run(function($rootScope){
     $rootScope.userId = '{{username}}';
     $rootScope.formId = '{{form}}';
+    $rootScope.baseUrl = 'http://{{baseurl}}'; // no trailing slash
 });
