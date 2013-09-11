@@ -75,8 +75,9 @@ def auto_add_crowd_form_to_registered_user(sender, **kwargs):
 
 def home(request):
     if request.user.username:
-        return HttpResponseRedirect(
-            reverse(profile, kwargs={'username': request.user.username}))
+        return HttpResponseRedirect('/app/')
+        # return HttpResponseRedirect(
+        #     reverse(profile, kwargs={'username': request.user.username}))
     context = RequestContext(request)
     submission_count = StatsCount.stats.count(GLOBAL_SUBMISSION_STATS)
     if not submission_count:
