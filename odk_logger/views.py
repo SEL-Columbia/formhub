@@ -2,10 +2,10 @@ import json
 import os
 import tempfile
 from xml.parsers.expat import ExpatError
-import pytz
-
 from datetime import datetime
 from itertools import chain
+
+import pytz
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
@@ -23,7 +23,9 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.conf import settings
 from django.utils.translation import ugettext as _
+from django_digest import HttpDigestAuthenticator
 
+from utils import real_time_action
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound,\
     BaseOpenRosaResponse, \
@@ -40,9 +42,8 @@ from odk_logger.xform_instance_parser import InstanceEmptyError,\
 from odk_logger.models.instance import FormInactiveError
 from odk_logger.models.attachment import Attachment
 from utils.log import audit_log, Actions
-from django_digest import HttpDigestAuthenticator
 from utils.viewer_tools import enketo_url
-
+from utils.real_time_action import real_time_action
 
 @require_POST
 @csrf_exempt
@@ -225,6 +226,11 @@ def submission(request, username=None):
         # response as html if posting with a UUID
         if not username and uuid:
             html_response = True
+
+        response = real_time_action(username, xml_file_list, uuid, request)
+        if response:
+            return response
+
         try:
             instance = create_instance(
                 username,
