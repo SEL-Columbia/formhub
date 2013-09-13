@@ -227,7 +227,7 @@ def submission(request, username=None):
         if not username and uuid:
             html_response = True
 
-        response = real_time_action(username, xml_file_list, uuid, request)
+        response = real_time_action(username, xml_file_list[0], uuid, request)
         if response:
             return response
 
