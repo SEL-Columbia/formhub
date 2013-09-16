@@ -164,6 +164,8 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail,
     legal_usernames_re = re.compile("^\w+$")
 
     def clean(self):
+        if not self.REGISTRATION_REQUIRE_CAPTCHA:
+            self.recaptcha_response_field.required = False
         cleaned_data = super(UserProfileFormRegister, self).clean()
 
         # don't check captcha if it's disabled
