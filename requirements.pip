@@ -4,7 +4,7 @@ pybamboo==0.5.8.1
 pytz==2013b
 
 Distribute
-Django==1.5.1
+Django
 django-guardian==1.1.1
 django-registration==1.0
 django-templated-email==0.4.1
