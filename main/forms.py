@@ -165,7 +165,7 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail,
 
     def clean(self):
         if not self.REGISTRATION_REQUIRE_CAPTCHA:
-            self.base_fields['recaptcha_challenge_field'].required = False
+            self.base_fields['recaptcha_response_field'].required = False
         cleaned_data = super(UserProfileFormRegister, self).clean()
 
         # don't check captcha if it's disabled
