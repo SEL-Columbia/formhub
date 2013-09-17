@@ -25,7 +25,7 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 from django_digest import HttpDigestAuthenticator
 
-from utils import real_time_action
+from utils import submission_time_validation
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound,\
     BaseOpenRosaResponse, \
@@ -43,7 +43,7 @@ from odk_logger.models.instance import FormInactiveError
 from odk_logger.models.attachment import Attachment
 from utils.log import audit_log, Actions
 from utils.viewer_tools import enketo_url
-from utils.real_time_action import real_time_action
+from utils.submission_time_validation import Submission_Time_Validations
 
 @require_POST
 @csrf_exempt
@@ -209,6 +209,7 @@ def submission(request, username=None):
     context = RequestContext(request)
     xml_file_list = []
     media_files = []
+    stv = Submission_Time_Validations()  # get any STV definition errors early.
     html_response = False
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
@@ -227,9 +228,12 @@ def submission(request, username=None):
         if not username and uuid:
             html_response = True
 
-        response = real_time_action(username, xml_file_list[0], uuid, request)
-        if response:
-            return response
+        # call for submission time validations, if defined
+        if stv.dispatch:
+            response = stv.handler(username, xml_file_list[0], uuid, request)
+            if response:  # stv will return None if normal, an Exception if bad
+                return response
+            # note that an Error response will inhibit creation of the row instance
 
         try:
             instance = create_instance(
