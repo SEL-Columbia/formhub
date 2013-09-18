@@ -11,21 +11,11 @@ STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, "static"),
 )
 ADMINS = (
-    # ('Adam Thompson', 'adam@ehealthafrice.org'),
+    # ('Adam Thompson', 'adam@ehealthafrica.org'),
 )
 # your actual production settings go here...,.
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'formhub',
-        'USER': 'formhub_prod',
-        'PASSWORD': '7fikxmhf6',
-        'HOST': 'dbserver.yourdomain.org',
-        'OPTIONS': {
-            'autocommit': True,   # note: this option obsolete starting with django 1.6
-        }
-    },
-    'gis': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'phis',
         'USER': 'phis',
@@ -57,4 +47,10 @@ MONGO_DATABASE = {
     'PASSWORD': ''
 }
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'mlfs33^s1l4xf6a36$0#j%dd*sisfo6HOktYXB9y'
+SECRET_KEY = "&!1#=b7b7w*qb$w1nz=b04zwaan@^hi52k_o+^9dy#eb_he1u8"
+
+ALLOWED_HOSTS = ['.eocng.org', '.ehealthafrica.org']
+
+INTERNAL_IPS = ('192.168.0.0/16',)
+
+WSGI_APPLICATION = "formhub.wsgi.application"
