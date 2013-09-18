@@ -14,9 +14,10 @@ def dummy_callable(form_name, xml_root, request, username, uuid):
     print('form_name="%s" username="%s" uuid="%s"' % (form_name, username, uuid))
     for element in xml_root:
         print(element.tag,'=', element.text)  # each field in the X-form will appear here
-    return None
---> return None to continue normal processing,
- or return an utils.logger_tools.OpenRosaResponseNotAcceptable Exception to abort loading the record
+    return True
+--> return True to continue normal processing,
+ or return False to abort record loading silently (perhaps the validation will have saved the record itself)
+ or return an utils.logger_tools.OpenRosaResponseNotAcceptable Exception to abort record loading with a message
 """
 from utils.submission_time_validation import val_patterns, val, dummy_callable
 

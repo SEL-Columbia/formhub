@@ -231,9 +231,11 @@ def submission(request, username=None):
         # call for submission time validations, if defined
         if stv.dispatch:
             response = stv.handler(username, xml_file_list[0], uuid, request)
-            if response:  # stv will return None if normal, an Exception if bad
+                # will return True to continue normal processing,
+                #  False to abort record loading silently (perhaps the validation will have saved the record itself)
+                #  or utils.logger_tools.OpenRosaResponseNotAcceptable to abort record loading with a message
+            if response is not True:
                 return response
-            # note that an Error response will inhibit creation of the row instance
 
         try:
             instance = create_instance(
