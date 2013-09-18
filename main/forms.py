@@ -12,8 +12,7 @@ from django.utils.translation import ugettext as _, ugettext_lazy
 from django.conf import settings
 from recaptcha.client import captcha
 
-from main.models import UserProfile, MetaData
-from odk_logger.models import XForm
+from main.models import UserProfile
 from odk_viewer.models.data_dictionary import upload_to
 from registration.forms import RegistrationFormUniqueEmail
 from registration.models import RegistrationProfile
@@ -168,7 +167,9 @@ class RegistrationFormUserProfile(RegistrationFormUniqueEmail,
         cleaned_data = super(UserProfileFormRegister, self).clean()
 
         # don't check captcha if it's disabled
-        if not settings.REGISTRATION_REQUIRE_CAPTCHA:
+        if not self.REGISTRATION_REQUIRE_CAPTCHA:
+            if 'recaptcha_response_field' in self._errors:
+                del self._errors['recaptcha_response_field']
             return cleaned_data
 
         response = captcha.submit(
