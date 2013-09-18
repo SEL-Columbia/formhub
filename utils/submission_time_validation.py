@@ -66,13 +66,13 @@ class Submission_Time_Validations(object):
         return stv
 
     def handler(self, username, xml_file, uuid, request):
-        print 'two', repr(self.dispatch) ###
-        try:  # (we really need to do our own error processing and not depend on our caller)
+        retval = True  # default to normal operation
+        try:  # catch xml parsing errors
             tree = etree.parse(xml_file)
             root = tree.getroot()
             form_name = root.tag
         except:
-            retval = OpenRosaResponseBadRequest(u'Malformed xml received')
+            retval = OpenRosaResponseBadRequest('Malformed xml received')
         else:
             for valdtr in self.dispatch:  # see if this form has validation defined
                 match = valdtr.regex.match(form_name)

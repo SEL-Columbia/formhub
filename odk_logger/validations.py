@@ -21,7 +21,8 @@ def dummy_callable(form_name, xml_root, request, username, uuid):
 """
 from utils.submission_time_validation import val_patterns, val, dummy_callable
 
+# validation_patterns = []  ## uncomment if extended validations are not used.
+
 validation_patterns = val_patterns(
-    val('x', lambda x: 1),
     val('tutorial+', dummy_callable)
 )
