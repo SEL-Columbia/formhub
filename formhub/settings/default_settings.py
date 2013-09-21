@@ -4,7 +4,7 @@
 # You may wish to alter it to agree with your local environment
 #
 
-from staging import *  # get most settings from staging.py (which in turn, imports from base.py)
+from staging_example import *  # get most settings from staging_example.py (which in turn, imports from base.py)
 
 # # # now override the settings which came from staging # # # #
 
