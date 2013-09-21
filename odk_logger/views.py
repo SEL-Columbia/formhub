@@ -2,10 +2,10 @@ import json
 import os
 import tempfile
 from xml.parsers.expat import ExpatError
-import pytz
-
 from datetime import datetime
 from itertools import chain
+
+import pytz
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
@@ -23,7 +23,9 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.conf import settings
 from django.utils.translation import ugettext as _
+from django_digest import HttpDigestAuthenticator
 
+from utils import submission_time_validation
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound,\
     BaseOpenRosaResponse, \
@@ -40,9 +42,8 @@ from odk_logger.xform_instance_parser import InstanceEmptyError,\
 from odk_logger.models.instance import FormInactiveError
 from odk_logger.models.attachment import Attachment
 from utils.log import audit_log, Actions
-from django_digest import HttpDigestAuthenticator
 from utils.viewer_tools import enketo_url
-
+from utils.submission_time_validation import Submission_Time_Validations
 
 @require_POST
 @csrf_exempt
@@ -208,6 +209,7 @@ def submission(request, username=None):
     context = RequestContext(request)
     xml_file_list = []
     media_files = []
+    stv = Submission_Time_Validations()  # get any STV definition errors early.
     html_response = False
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
@@ -225,54 +227,76 @@ def submission(request, username=None):
         # response as html if posting with a UUID
         if not username and uuid:
             html_response = True
-        try:
-            instance = create_instance(
-                username,
-                xml_file_list[0],
-                media_files,
-                uuid=uuid, request=request
-            )
-        except InstanceInvalidUserError:
-            return OpenRosaResponseBadRequest(_(u"Username or ID required."))
-        except IsNotCrowdformError:
-            return OpenRosaResponseNotAllowed(
-                _(u"Sorry but the crowd form you submitted to is closed.")
-            )
-        except InstanceEmptyError:
-            return OpenRosaResponseBadRequest(
-                _(u"Received empty submission. No instance was created")
-            )
-        except FormInactiveError:
-            return OpenRosaResponseNotAllowed(_(u"Form is not active"))
-        except XForm.DoesNotExist:
-            return OpenRosaResponseNotFound(
-                _(u"Form does not exist on this account")
-            )
-        except ExpatError:
-            return OpenRosaResponseBadRequest(_(u"Improperly formatted XML."))
-        except DuplicateInstance:
-            response = OpenRosaResponse(_(u"Duplicate submission"))
-            response.status_code = 202
-            response['Location'] = request.build_absolute_uri(request.path)
-            return response
-        except PermissionDenied, e:
-            return OpenRosaResponseNotAllowed(e.message)
-        except Exception, e:
-            raise
 
-        if instance is None:
-            return OpenRosaResponseBadRequest(
-                _(u"Unable to create submission."))
+        # call for submission time validations, if defined
+        if stv.dispatch:
+            inhibit = stv.handler(username, xml_file_list[0], uuid, request, media_files)
+                # will return False to continue normal processing,
+                #  True to inhibit record loading (perhaps the validation will have saved the record itself)
+                #  or utils.logger_tools.OpenRosaResponseNotAcceptable to abort record loading with a message
+            if isinstance(inhibit, Exception):
+                return inhibit
+        else:
+            inhibit = False
 
-        audit = {
-            "xform": instance.xform.id_string
-        }
-        audit_log(
-            Actions.SUBMISSION_CREATED, request.user, instance.xform.user,
-            _("Created submission on form %(id_string)s.") %
-            {
-                "id_string": instance.xform.id_string
-            }, audit, request)
+        if inhibit:
+            audit = {
+                "xform": xml_file_list[0]
+            }
+            audit_log(
+                Actions.SUBMISSION_INHIBITED, request.user, None,
+                _("Inhibited submission on form."),
+                audit, request)
+        else:
+            try:
+                instance = create_instance(
+                    username,
+                    xml_file_list[0],
+                    media_files,
+                    uuid=uuid, request=request
+                )
+            except InstanceInvalidUserError:
+                return OpenRosaResponseBadRequest(_(u"Username or ID required."))
+            except IsNotCrowdformError:
+                return OpenRosaResponseNotAllowed(
+                    _(u"Sorry but the crowd form you submitted to is closed.")
+                )
+            except InstanceEmptyError:
+                return OpenRosaResponseBadRequest(
+                    _(u"Received empty submission. No instance was created")
+                )
+            except FormInactiveError:
+                return OpenRosaResponseNotAllowed(_(u"Form is not active"))
+            except XForm.DoesNotExist:
+                return OpenRosaResponseNotFound(
+                    _(u"Form does not exist on this account")
+                )
+            except ExpatError:
+                return OpenRosaResponseBadRequest(_(u"Improperly formatted XML."))
+            except DuplicateInstance:
+                response = OpenRosaResponse(_(u"Duplicate submission"))
+                response.status_code = 202
+                response['Location'] = request.build_absolute_uri(request.path)
+                return response
+            except PermissionDenied, e:
+                return OpenRosaResponseNotAllowed(e.message)
+            except Exception, e:
+                raise
+
+            if instance is None:
+                return OpenRosaResponseBadRequest(
+                    _(u"Unable to create submission."))
+
+            audit = {
+                "xform": instance.xform.id_string
+            }
+            audit_log(
+                Actions.SUBMISSION_CREATED, request.user, instance.xform.user,
+                _("Created submission on form %(id_string)s.") %
+                {
+                    "id_string": instance.xform.id_string
+                }, audit, request)
+
         # ODK needs two things for a form to be considered successful
         # 1) the status code needs to be 201 (created)
         # 2) The location header needs to be set to the host it posted to
@@ -463,6 +487,7 @@ def enter_data(request, username, id_string):
             request, messages.WARNING,
             _("Enketo error: enketo replied %s") % e, fail_silently=True)
         return render_to_response("profile.html", context_instance=context)
+
     return HttpResponseRedirect(reverse('main.views.show',
                                 kwargs={'username': username,
                                         'id_string': id_string}))
