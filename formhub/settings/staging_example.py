@@ -4,7 +4,7 @@ from base import *
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-TEMPLATE_STRING_IF_INVALID = '***Invalid Template String***'
+TEMPLATE_STRING_IF_INVALID = ''
 
 # see: http://docs.djangoproject.com/en/dev/ref/settings/#databases
 
