@@ -17,9 +17,8 @@ said function will be called with an argument list like the following:
 def dummy_callable(form_name, xml_root, request, username, uuid, media_files):
     for element in xml_root:
         pass  # each field in the X-form will appear here
-    return False
---> return False to continue normal processing,
- or return True to inhibit record loading with a success indication
+
+--> return None to continue normal processing,
  or return an utils.logger_tools.OpenRosaResponseNotAcceptable Exception to inhibit record loading with a message
 """
 from utils.submissionTime_validation import val_patterns, val, dummy_callable

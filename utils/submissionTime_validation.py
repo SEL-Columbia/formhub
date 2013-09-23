@@ -17,20 +17,16 @@ def dummy_callable(form_name, xml_root, request, username, uuid, media_files):
     @param username:  the django session user
     @param uuid:
     @param media_files:
-    @return:  False=continue normally, True=inhibit storage of this record in formhub, Exception=make user fix record
+    @return:  None=continue normally,  Exception=make user fix record
     """
     print 'form_name="%s" username="%s" uuid="%s"' % (form_name, username, uuid)
     reject = False
-    inhibit = False
     for element in xml_root:
         print '%s="%s"' % (element.tag, element.text)
         if element.tag == 'reject_this' and element.text == "1":
             reject = True
-        if element.tag == 'inhibit_this' and element.text == "1":
-            inhibit = True
     if reject:
         return OpenRosaResponseNotAcceptable('Record refused because "reject_this" was True.')
-    return inhibit  # If True, the record is not stored in Mongo database
 
 class ValidationNode(object):
     def __init__(self, regex, function):
@@ -61,8 +57,8 @@ def val_patterns(*args):
 # NOTE: this import must be after the definitions of val and val_patterns
 from odk_logger import validations  # sets the value of validations.validation_patterns
 
-class Submission_Time_Validations(object):
-    """  Build a Submission_Time_Validation table -- as a class attribute so that it is only created once. """
+class SubmissionTime_Validations(object):
+    """  Build a SubmissionTime_Validation table -- as a class attribute so that it is only created once. """
 
     def __new__(cls):
         stv = object.__new__(cls)
@@ -86,7 +82,6 @@ class Submission_Time_Validations(object):
         finally:
             xml_file.seek(0)    # reset the file for the next caller
 
-        return inhibit  # --> return True to continue normal processing,
-        # or return False to abort record loading silently (perhaps the validation will have saved the record itself)
+        return inhibit  # --> return None to continue normal processing,
         # or return an utils.logger_tools.OpenRosaResponseNotAcceptable Exception to abort record loading with a message
 
