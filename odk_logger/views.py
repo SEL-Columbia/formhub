@@ -25,7 +25,7 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 from django_digest import HttpDigestAuthenticator
 
-from utils import submission_time_validation
+from utils.submissionTimeValidation import SubmissionTime_validations
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound,\
     BaseOpenRosaResponse, \
@@ -43,7 +43,7 @@ from odk_logger.models.instance import FormInactiveError
 from odk_logger.models.attachment import Attachment
 from utils.log import audit_log, Actions
 from utils.viewer_tools import enketo_url
-from utils.submission_time_validation import Submission_Time_Validations
+from utils.submissionTime_validation import SubmissionTime_Validations
 
 @require_POST
 @csrf_exempt
@@ -209,7 +209,7 @@ def submission(request, username=None):
     context = RequestContext(request)
     xml_file_list = []
     media_files = []
-    stv = Submission_Time_Validations()  # get any STV definition errors early.
+    stv = SubmissionTime_Validations()  # get any STV definition errors early, (using class attributes)
     html_response = False
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
@@ -228,7 +228,7 @@ def submission(request, username=None):
         if not username and uuid:
             html_response = True
 
-        # call for submission time validations, if defined
+        # call for submission-time validations, if defined
         if stv.dispatch:
             inhibit = stv.handler(username, xml_file_list[0], uuid, request, media_files)
                 # will return False to continue normal processing,
