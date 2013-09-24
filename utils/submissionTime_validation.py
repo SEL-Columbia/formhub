@@ -48,25 +48,21 @@ def val(regex, function):
 def val_patterns(*args):
     pattern_list = []
     for t in args:
-        if not isinstance(t, ValidationNode):
-            t = val(*t)
-        pattern_list.append(t)
+        if t:
+            if not isinstance(t, ValidationNode):
+                t = val(*t)
+            pattern_list.append(t)
     return pattern_list
 
 
-# NOTE: this import must be after the definitions of val and val_patterns
-from odk_logger import validations  # sets the value of validations.validation_patterns
-
 class SubmissionTime_Validations(object):
-    """  Build a SubmissionTime_Validation table -- as a class attribute so that it is only created once. """
+    """  Build a SubmissionTime_Validation table """
 
-    def __new__(cls):
-        stv = object.__new__(cls)
-        stv.dispatch = validations.validation_patterns
-        return stv
+    def __init__(self, *args):
+        self.dispatch = val_patterns(*args)
 
     def handler(self, username, xml_file, uuid, request, media_files):
-        inhibit = True  # default to normal operation
+        inhibit = None  # default to normal operation
         try:  # catch xml parsing errors
             tree = etree.parse(xml_file)
             root = tree.getroot()

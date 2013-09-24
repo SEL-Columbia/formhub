@@ -43,7 +43,8 @@ from odk_logger.models.instance import FormInactiveError
 from odk_logger.models.attachment import Attachment
 from utils.log import audit_log, Actions
 from utils.viewer_tools import enketo_url
-from utils.submissionTime_validation import SubmissionTime_Validations
+from odk_logger.validations import validation_patterns
+
 @require_POST
 @csrf_exempt
 def bulksubmission(request, username):
@@ -208,7 +209,7 @@ def submission(request, username=None):
     context = RequestContext(request)
     xml_file_list = []
     media_files = []
-    stv = SubmissionTime_Validations()  # get any STV definition errors early, (using class attributes)
+    ### stv = SubmissionTime_Validations()  # get any STV definition errors early, (using class attributes)
     html_response = False
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
@@ -228,11 +229,11 @@ def submission(request, username=None):
             html_response = True
 
         # call for submission-time validations, if defined
-        if stv.dispatch:
-            inhibit = stv.handler(username, xml_file_list[0], uuid, request, media_files)
+        if validation_patterns.dispatch:
+            inhibit = validation_patterns.handler(username, xml_file_list[0], uuid, request, media_files)
                 # will return None to continue normal processing,
                 #  or utils.logger_tools.OpenRosaResponseNotAcceptable to abort record loading with a message
-            if isinstance(inhibit, Exception):
+            if inhibit:
                 return inhibit
 
         try:

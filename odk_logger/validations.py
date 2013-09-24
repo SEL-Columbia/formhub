@@ -21,10 +21,15 @@ def dummy_callable(form_name, xml_root, request, username, uuid, media_files):
 --> return None to continue normal processing,
  or return an utils.logger_tools.OpenRosaResponseNotAcceptable Exception to inhibit record loading with a message
 """
-from utils.submissionTime_validation import val_patterns, val, dummy_callable
+from utils.submissionTime_validation import val, dummy_callable, SubmissionTime_Validations
+from utils.logger_tools import OpenRosaResponseNotAcceptable
 
-# validation_patterns = []  ## if extended validations are not used, set this to an empty list
 
-validation_patterns = val_patterns(
-    val('s+_t+_validation_x+', dummy_callable)
+def testing_callback(form_name, xml_root, request, username, uuid, media_files):
+    """ callback function used for automatic django testing """
+    if any([element.tag == 'reject_this' and element.text == "1" for element in xml_root]):
+        return OpenRosaResponseNotAcceptable('Record refused because "reject_this" was True.')
+
+validation_patterns = SubmissionTime_Validations(
+    val('s.+ime_validation_x.+', testing_callback),  # Note: this entry is expected by the django testing framework
 )
