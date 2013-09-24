@@ -209,7 +209,6 @@ def submission(request, username=None):
     context = RequestContext(request)
     xml_file_list = []
     media_files = []
-    ### stv = SubmissionTime_Validations()  # get any STV definition errors early, (using class attributes)
     html_response = False
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values

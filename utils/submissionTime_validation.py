@@ -40,7 +40,7 @@ class ValidationNode(object):
             self.callback = get_callable(function)
         except ViewDoesNotExist:
             raise ImproperlyConfigured(
-                'Bad Submission Time Validation: Could not import: %s' % function)
+                'Bad SubmissionTime Validation: Could not import: %s' % function)
 
 def val(regex, function):
     return ValidationNode(regex, function)
