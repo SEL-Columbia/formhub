@@ -48,3 +48,6 @@ MONGO_STRFTIME = '%Y-%m-%dT%H:%M:%S'
 
 # how to represent N/A in exports
 NA_REP = 'n/a'
+
+# hold tags
+TAGS = u"_tags"

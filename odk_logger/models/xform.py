@@ -10,6 +10,8 @@ from django.db.models.signals import post_save
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy, ugettext as _
 
+from taggit.managers import TaggableManager
+
 from odk_logger.xform_instance_parser import XLSFormError
 from utils.stathat_api import stathat_count
 from stats.tasks import stat_log
@@ -66,6 +68,8 @@ class XForm(models.Model):
     uuid_node_location = 2
     uuid_bind_location = 4
     bamboo_dataset = models.CharField(max_length=60, default=u'')
+
+    tags = TaggableManager()
 
     class Meta:
         app_label = 'odk_logger'
