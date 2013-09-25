@@ -382,6 +382,11 @@ Where:
             data = json.loads(self.object.json)
         return Response(data)
 
+    @action(methods=['GET'])
+    def bookmarks(self, request, format=None, **kwargs):
+        data = self.get_object()
+        return Response(list(data.tags.names()))
+
 
 class ProjectViewSet(mixins.MultiLookupMixin,
                      mixins.CreateModelMixin,
@@ -851,8 +856,19 @@ Get a single specific submission json data providing `formid`
                 raise exceptions.PermissionDenied(
                     _("You do not have permission to "
                       "view data from this form."))
+        if xform and dataid and dataid == 'bookmarks':
+            return Response(list(xform.tags.names()))
         if xform and dataid:
             query = json.dumps({'_id': int(dataid)})
+        rquery = request.QUERY_PARAMS.get('query', None)
+        if rquery:
+            rquery = json.loads(rquery)
+            if query:
+                rquery.update(json.loads(query))
+            tags = rquery.get('_tags', None)
+            if tags and isinstance(tags, list):
+                rquery['_tags'] = {'$all': tags}
+            query = json.dumps(rquery)
         if xform:
             data = self._get_form_data(xform, query=query)
         if dataid and len(data):
