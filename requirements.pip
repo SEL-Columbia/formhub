@@ -53,3 +53,6 @@ django-filter
 recaptcha-client
 unicodecsv
 dpath
+
+# tagging
+django-taggit

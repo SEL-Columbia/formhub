@@ -168,6 +168,7 @@ INSTALLED_APPS = (
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
+    'taggit',
     'odk_logger',
     'odk_viewer',
     'main',
