@@ -967,3 +967,27 @@ The `_tags` should be a list, for one item for example
         if dataid and len(data):
             data = data[0]
         return Response(data)
+
+    def post(self, request, owner, formid, dataid, **kwargs):
+        class TagForm(forms.Form):
+            tags = TagField()
+        if owner is None and not request.user.is_anonymous():
+            owner = request.user.username
+        xform = check_and_set_form_by_id(int(formid), request)
+        if not xform:
+            raise exceptions.PermissionDenied(
+                _("You do not have permission to "
+                    "view data from this form."))
+        status = 400
+        instance = get_object_or_404(ParsedInstance, instance__pk=int(dataid))
+        if request.method == 'POST':
+            form = TagForm(request.DATA)
+            if form.is_valid():
+                tags = form.cleaned_data.get('tags', None)
+                if tags:
+                    for tag in tags:
+                        instance.instance.tags.add(tag)
+                    instance.save()
+                    status = 201
+        data = list(instance.instance.tags.names())
+        return Response(data, status=status)
