@@ -369,6 +369,22 @@ Where:
   > Response
   >
   >       ["old", "smart", "clean house"]
+
+## Tag forms
+
+A `POST` payload of parameter `tags` with a comma separated list of tags.
+
+Examples
+
+- `animal fruit denim` - space delimited, no commas
+- `animal, fruit denim` - comma delimited
+
+ <pre class="prettyprint">
+  <b>POST</b> /api/v1/forms/<code>{owner}</code>/<code>{formid}</code>/bookmarks</pre>
+
+Payload
+
+    {"tags": "tag1, tag2"}
     """
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES + [SurveyRenderer]
     queryset = XForm.objects.all()
@@ -895,6 +911,21 @@ The `_tags` should be a list, for one item for example
   >       curl -X GET
   >       https://formhub.org/api/v1/data/modilabs/22845?query={"_tags": ["monthly"]}
 
+## Tag a submission data point
+
+A `POST` payload of parameter `tags` with a comma separated list of tags.
+
+Examples
+
+- `animal fruit denim` - space delimited, no commas
+- `animal, fruit denim` - comma delimited
+
+ <pre class="prettyprint">
+  <b>POST</b> /api/v1/data/<code>{owner}</code>/<code>{formid}</code>/<code>{dataid}</code></pre>
+
+Payload
+
+    {"tags": "tag1, tag2"}
     """
     queryset = Instance.objects.all()
 
