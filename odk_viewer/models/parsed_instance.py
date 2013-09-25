@@ -23,7 +23,7 @@ from django.utils.translation import ugettext as _
 # this is Mongo Collection where we will store the parsed submissions
 xform_instances = settings.MONGO_DB.instances
 key_whitelist = ['$or', '$and', '$exists', '$in', '$gt', '$gte',
-                 '$lt', '$lte', '$regex', '$options']
+                 '$lt', '$lte', '$regex', '$options', '$all']
 GLOBAL_SUBMISSION_STATS = u'global_submission_stats'
 DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
 
