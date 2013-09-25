@@ -1,5 +1,6 @@
 import json
 
+from django import forms
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
@@ -14,6 +15,8 @@ from rest_framework.reverse import reverse
 from rest_framework.decorators import action
 from rest_framework.settings import api_settings
 from rest_framework.renderers import BaseRenderer
+
+from taggit.forms import TagField
 
 from api import serializers as api_serializers
 from api import mixins
@@ -393,10 +396,22 @@ Where:
             data = json.loads(self.object.json)
         return Response(data)
 
-    @action(methods=['GET'])
-    def bookmarks(self, request, format=None, **kwargs):
-        data = self.get_object()
-        return Response(list(data.tags.names()))
+    @action(methods=['GET', 'POST'])
+    def bookmarks(self, request, format='json', **kwargs):
+        class TagForm(forms.Form):
+            tags = TagField()
+        status = 200
+        self.object = self.get_object()
+        if request.method == 'POST':
+            form = TagForm(request.DATA)
+            if form.is_valid():
+                tags = form.cleaned_data.get('tags', None)
+                if tags:
+                    for tag in tags:
+                        self.object.tags.add(tag)
+                    status = 201
+        data = list(self.object.tags.names())
+        return Response(data, status=status)
 
 
 class ProjectViewSet(mixins.MultiLookupMixin,
