@@ -160,6 +160,13 @@ class MultiLookupRouter(routers.DefaultRouter):
             Example using curl:
 
                 curl -X GET https://formhub.org/api/v1 -H "Authorization: Token TOKEN_KEY"
+
+            ### Formhub Tagging API
+
+            * [List Tags for a specific form.](/api/v1/forms#get-list-of-tags-for-a-specific-form)
+            * [Tag Forms.](/api/v1/forms#tag-forms)
+            * [List form data by tag.](/api/v1/data#query-submitted-data-of-a-specific-form-using-tags)
+            * [Tag a specific submission](/api/v1/data#tag-a-submission-data-point)
             """
             _ignore_model_permissions = True
 
