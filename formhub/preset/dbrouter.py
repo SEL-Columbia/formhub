@@ -1,7 +1,6 @@
 """ Database router sending any models listed in "GisTableNames" to the 'gis' database
 
 """
-__author__ = 'vernon'
 
 GisTableNames = {'Data_Load_Log', 'CDC_Data', 'Spell_Correct'}
 

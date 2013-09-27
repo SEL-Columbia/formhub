@@ -1,6 +1,6 @@
 # this system uses structured settings.py as defined in http://www.slideshare.net/jacobian/the-best-and-worst-of-django
 
-from base import *
+from formhub.settings import *
 
 DEBUG = False  # this setting file will not work on "runserver" -- it needs a server for static files
 
@@ -19,8 +19,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'formhub',
         'USER': 'formhub_prod',
-        'PASSWORD': 'reallySetOne',
-        'HOST': 'dbserver.yourdomain.org',
+        'PASSWORD': os.environ['FORMHUB_PROD_PW'],  # the password must be stored in an environment variable
+        'HOST': os.environ.get("FORMHUB_DB_SERVER", 'dbserver.yourdomain.org'), # the server name may be in env
         'OPTIONS': {
             'autocommit': True,   # note: this option obsolete starting with django 1.6
         }
@@ -29,13 +29,15 @@ DATABASES = {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'phis',
         'USER': 'staff',
-        'PASSWORD': 'notverysecret',
+        'PASSWORD': os.environ['PHIS_PW'],  # the password must be stored in an environment variable
         'HOST': 'gisserver.yourdomain.org',
         'OPTIONS': {
             'autocommit': True,
         }
     }
 }
+
+DATABASE_ROUTERS = ['formhub.preset.dbrouter.GisRouter']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
