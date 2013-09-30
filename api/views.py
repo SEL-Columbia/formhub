@@ -361,10 +361,10 @@ Where:
 
 ## Get list of Tags for a specific Form
   <pre class="prettyprint">
-  <b>GET</b> /api/v1/forms/<code>{owner}</code>/<code>{formid}</code>/bookmarks</pre>
+  <b>GET</b> /api/v1/forms/<code>{owner}</code>/<code>{formid}</code>/labels</pre>
   > Request
   >
-  >       curl -X GET https://formhub.org/api/v1/forms/28058/bookmarks
+  >       curl -X GET https://formhub.org/api/v1/forms/28058/labels
 
   > Response
   >
@@ -380,7 +380,7 @@ Examples
 - `animal, fruit denim` - comma delimited
 
  <pre class="prettyprint">
-  <b>POST</b> /api/v1/forms/<code>{owner}</code>/<code>{formid}</code>/bookmarks</pre>
+  <b>POST</b> /api/v1/forms/<code>{owner}</code>/<code>{formid}</code>/labels</pre>
 
 Payload
 
@@ -413,7 +413,7 @@ Payload
         return Response(data)
 
     @action(methods=['GET', 'POST'])
-    def bookmarks(self, request, format='json', **kwargs):
+    def labels(self, request, format='json', **kwargs):
         class TagForm(forms.Form):
             tags = TagField()
         status = 200
@@ -980,7 +980,7 @@ Payload
                 raise exceptions.PermissionDenied(
                     _("You do not have permission to "
                       "view data from this form."))
-        if xform and dataid and dataid == 'bookmarks':
+        if xform and dataid and dataid == 'labels':
             return Response(list(xform.tags.names()))
         if xform and dataid:
             query = json.dumps({'_id': int(dataid)})
