@@ -391,6 +391,8 @@ Payload
     serializer_class = api_serializers.XFormSerializer
     lookup_fields = ('owner', 'pk')
     lookup_field = 'owner'
+    extra_lookup_fields = None
+    permission_classes = [permissions.DjangoModelPermissions, ]
 
     def get_queryset(self):
         user = self.request.user
@@ -412,7 +414,7 @@ Payload
             data = json.loads(self.object.json)
         return Response(data)
 
-    @action(methods=['GET', 'POST'])
+    @action(methods=['GET', 'POST', 'DELETE'], extra_lookup_fields=['label', ])
     def labels(self, request, format='json', **kwargs):
         class TagForm(forms.Form):
             tags = TagField()
@@ -426,7 +428,20 @@ Payload
                     for tag in tags:
                         self.object.tags.add(tag)
                     status = 201
-        data = list(self.object.tags.names())
+        label = kwargs.get('label', None)
+        if request.method == 'GET' and label:
+            data = [
+                i['name']
+                for i in self.object.tags.filter(name=label).values('name')]
+        elif request.method == 'DELETE' and label:
+            count = self.object.tags.count()
+            self.object.tags.remove(label)
+            # Accepted, label does not exist hence nothing removed
+            if count == self.object.tags.count():
+                status = 202
+            data = list(self.object.tags.names())
+        else:
+            data = list(self.object.tags.names())
         return Response(data, status=status)
 
 
