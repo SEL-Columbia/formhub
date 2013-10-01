@@ -84,7 +84,8 @@ class TestFormsAPI(TestAPICase):
         self._publish_xls_form_to_project()
         view = XFormViewSet.as_view({
             'get': 'labels',
-            'post': 'labels'
+            'post': 'labels',
+            'delete': 'labels'
         })
         # no tags
         request = self.factory.get('/', **self.extra)
@@ -93,8 +94,11 @@ class TestFormsAPI(TestAPICase):
         # add tag "hello"
         request = self.factory.post('/', data={"tags": "hello"}, **self.extra)
         response = view(request, owner='bob', pk=1, formid=1)
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data, [u'hello'])
         # remove tag "hello"
-        request = self.factory.delete('/', data={"tags": "hello"}, **self.extra)
-        response = view(request, owner='bob', pk=1, formid=1)
+        request = self.factory.delete('/', data={"tags": "hello"},
+                                      **self.extra)
+        response = view(request, owner='bob', pk=1, formid=1, label='hello')
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, [])
