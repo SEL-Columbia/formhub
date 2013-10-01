@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404
 from guardian.shortcuts import get_perms_for_model, assign_perm
 from main.models import UserProfile
 from odk_logger.models import XForm
-from api.models import Project
+from api.models import Project, Team, OrganizationProfile
 
 
 class HttpResponseNotAuthorized(HttpResponse):
@@ -138,7 +138,7 @@ def add_cors_headers(response):
 
 
 def set_api_permissions_for_user(user):
-    models = [UserProfile, XForm, Project]
+    models = [UserProfile, XForm, Project, Team, OrganizationProfile]
     for model in models:
         for perm in get_perms_for_model(model):
             assign_perm(
