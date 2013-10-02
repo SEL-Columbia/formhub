@@ -251,9 +251,11 @@ class QuickConverterDropboxURL(forms.Form):
     dropbox_xls_url = forms.URLField(
         label=ugettext_lazy('XLS URL'), required=False)
 
+
 class QuickConverterTextXlsForm(forms.Form):
-    text_xls_form = forms.CharField(label=ugettext_lazy('XLSForm Representation'),
-                            required=False)
+    text_xls_form = forms.CharField(
+        label=ugettext_lazy('XLSForm Representation'), required=False)
+
 
 class QuickConverter(QuickConverterFile, QuickConverterURL,
                      QuickConverterDropboxURL, QuickConverterTextXlsForm):
@@ -264,7 +266,8 @@ class QuickConverter(QuickConverterFile, QuickConverterURL,
             # If a text (csv) representation of the xlsform is present,
             # this will save the file and pass it instead of the 'xls_file'
             # field.
-            if 'text_xls_form' in self.cleaned_data:
+            if 'text_xls_form' in self.cleaned_data\
+               and self.cleaned_data['text_xls_form'].strip():
                 csv_data = self.cleaned_data['text_xls_form']
 
                 # assigning the filename to a random string (quick fix)
