@@ -323,7 +323,7 @@ Where:
   <b>GET</b> /api/v1/forms/<code>{owner}</code>/<code>{formid}</code>/form.<code>{format}</code></pre>
   > JSON Example
   >
-  >       curl -X GET https://formhub.org/api/v1/forms/28058/form.json
+  >       curl -X GET https://formhub.org/api/v1/forms/modilabs/28058/form.json
 
   > Response
   >
@@ -385,6 +385,21 @@ Examples
 Payload
 
     {"tags": "tag1, tag2"}
+
+## Delete a specific tag
+
+ <pre class="prettyprint">
+  <b>DELETE</b> /api/v1/forms/<code>{owner}</code>/<code>{formid}</code>/labels/<code>tag_name</code></pre>
+
+  > Request
+  >
+  >       curl -X DELETE https://formhub.org/api/v1/forms/28058/labels/tag1
+  >       # or to delete the tag "hello world"
+  >       curl -X DELETE https://formhub.org/api/v1/forms/28058/labels/hello%20world
+  >
+  > Response
+  >
+  >        HTTP 200 OK
     """
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES + [SurveyRenderer]
     queryset = XForm.objects.all()

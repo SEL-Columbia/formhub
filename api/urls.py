@@ -165,6 +165,7 @@ class MultiLookupRouter(routers.DefaultRouter):
 
             * [List Tags for a specific form.](/api/v1/forms#get-list-of-tags-for-a-specific-form)
             * [Tag Forms.](/api/v1/forms#tag-forms)
+            * [Delete a specific tag.](/api/v1/forms#delete-a-specific-tag)
             * [List form data by tag.](/api/v1/data#query-submitted-data-of-a-specific-form-using-tags)
             * [Tag a specific submission](/api/v1/data#tag-a-submission-data-point)
             """
