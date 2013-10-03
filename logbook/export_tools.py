@@ -1,6 +1,10 @@
 from reportlab.pdfgen import canvas
-import tempfile
 import json
+from pyPdf import PdfFileWriter, PdfFileReader
+import StringIO
+from reportlab.lib.pagesizes import letter
+import os
+
  
 def generate_pdf(id_string, user):
     from odk_viewer.models import ParsedInstance  #, DataDictionary
@@ -17,37 +21,32 @@ def generate_pdf(id_string, user):
        for pi in pis
     ]
 
-    fname = tempfile.NamedTemporaryFile().name
-    can = canvas.Canvas(fname)
-    can.drawString(100,750, json.dumps(data_for_template, indent=2))
+    # Create pdf
+    packet = StringIO.StringIO()
+    can = canvas.Canvas(packet)
+
+    # render a new PDF with Reportlab
+    can = canvas.Canvas(packet, pagesize=letter)
+    can.drawString(10, 100, json.dumps(data_for_template, indent=2))
     can.save()
 
-    result = None
-    with file(fname, "rb") as pdf_file:
-        result = pdf_file.read()
+    #move to the beginning of the StringIO buffer
+    packet.seek(0)
+    new_pdf = PdfFileReader(packet)
 
-    return result
+    # read your existing PDF
+    orig = os.path.join(os.path.dirname(os.path.abspath(__file__)), "original.pdf")
+    existing_pdf = PdfFileReader(file(orig, "rb"))
+    output = PdfFileWriter()
+    # add the "watermark" (which is the new pdf) on the existing page
+    page = existing_pdf.getPage(0)
+    page.mergePage(new_pdf.getPage(0))
+    output.addPage(page)
 
-    # for pi in pis:
-    #     # read the survey instances
-    #     data_for_display = pi.to_dict()
-    #     xpaths = data_for_display.keys()
-    #     xpaths.sort(cmp=pi.data_dictionary.get_xpath_cmp())
-    #     label_value_pairs = [
-    #         (cached_get_labels(xpath),
-    #          data_for_display[xpath]) for xpath in xpaths
-    #         if not xpath.startswith(u"_")]
-    #     table_rows = []
-    #     for key, value in label_value_pairs:
-    #         table_rows.append('<tr><td>%s</td><td>%s</td></tr>' % (key, value))
-    #     img_urls = []
-    #     img_url = ""
-    #     data_for_template.append({
-    #         'name': id_string,
-    #         'id': pi.id,
-    #         'lat': pi.lat,
-    #         'lng': pi.lng,
-    #         'image_urls': img_urls,
-    #         'table': '<table border="1"><a href="#"><img width="210" '
-    #                  'class="thumbnail" src="%s" alt=""></a>%s'
-    #                  '</table>' % (img_url, ''.join(table_rows))})
+    # finally, return output
+    outputStream = StringIO.StringIO()
+    output.write(outputStream)
+
+    final = outputStream.getvalue()
+    outputStream.close()
+    return final
