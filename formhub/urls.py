@@ -102,6 +102,9 @@ urlpatterns = patterns('',
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.csv.zip", 'odk_viewer.views.data_export', name='csv_zip_export', kwargs={'export_type': 'csv_zip'}),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.kml$", 'odk_viewer.views.kml_export'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.zip", 'odk_viewer.views.zip_export'),
+
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/aklogbook\.pdf$", 'logbook.views.pdf_export'),
+
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/gdocs$", 'odk_viewer.views.google_xls_export'),
     url(r"^odk_viewer/survey/(?P<instance_id>\d+)/$", 'odk_viewer.views.survey_responses'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/map_embed", 'odk_viewer.views.map_embed_view'),
