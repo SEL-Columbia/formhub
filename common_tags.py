@@ -35,7 +35,7 @@ USERFORM_ID = u"_userform_id"
 DATE = u"_date"
 GEOLOCATION = u"_geolocation"
 SUBMISSION_TIME = u'_submission_time'
-DELETEDAT = "_deleted_at"  # marker for delete surveys
+DELETEDAT = u"_deleted_at"  # marker for delete surveys
 BAMBOO_DATASET_ID = u"_bamboo_dataset_id"
 
 META_INSTANCE_ID = u"meta/instanceID"
