@@ -393,9 +393,9 @@ Payload
 
   > Request
   >
-  >       curl -X DELETE https://formhub.org/api/v1/forms/28058/labels/tag1
+  >       curl -X DELETE https://formhub.org/api/v1/forms/modilabs/28058/labels/tag1
   >       # or to delete the tag "hello world"
-  >       curl -X DELETE https://formhub.org/api/v1/forms/28058/labels/hello%20world
+  >       curl -X DELETE https://formhub.org/api/v1/forms/modilabs/28058/labels/hello%20world
   >
   > Response
   >
@@ -754,7 +754,7 @@ Shows teams details and the projects the team is assigned to, where:
         return Response(serializer.data)
 
 
-class DataList(APIView):
+class DataViewSet(viewsets.ViewSet):
     """
 This endpoint provides access to submitted data in JSON format. Where:
 
@@ -951,12 +951,32 @@ Examples
 - `animal, fruit denim` - comma delimited
 
  <pre class="prettyprint">
-  <b>POST</b> /api/v1/data/<code>{owner}</code>/<code>{formid}</code>/<code>{dataid}</code></pre>
+  <b>POST</b> /api/v1/data/<code>{owner}</code>/<code>{formid}</code>/<code>{dataid}</code>/labels</pre>
 
 Payload
 
     {"tags": "tag1, tag2"}
+
+## Delete a specific tag from a submission
+
+ <pre class="prettyprint">
+  <b>DELETE</b> /api/v1/data/<code>{owner}</code>/<code>{formid}</code>/<code>dataid</code>/labels/<code>tag_name</code></pre>
+
+  > Request
+  >
+  >       curl -X DELETE https://formhub.org/api/v1/data/modilabs/28058/20/labels/tag1
+  >       # or to delete the tag "hello world"
+  >       curl -X DELETE https://formhub.org/api/v1/data/modilabs/28058/20/labels/hello%20world
+  >
+  > Response
+  >
+  >        HTTP 200 OK
     """
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, ]
+    lookup_field = 'owner'
+    lookup_fields = ('owner', 'formid', 'dataid')
+    extra_lookup_fields = None
+
     queryset = Instance.objects.all()
 
     def _get_formlist_data_points(self, request, owner=None):
@@ -989,14 +1009,7 @@ Payload
         records = list(record for record in cursor)
         return records
 
-    def get(self, request, owner=None, formid=None, dataid=None, **kwargs):
-        """
-        Display submission data.
-        If no parameter is given, it displays a dictionary of public data urls.
-
-        formid - primary key for the form
-        dataid - primary key for the data submission
-        """
+    def list(self, request, owner=None, formid=None, dataid=None, **kwargs):
         data = None
         xform = None
         query = None
@@ -1029,7 +1042,8 @@ Payload
             data = data[0]
         return Response(data)
 
-    def post(self, request, owner, formid, dataid, **kwargs):
+    @action(methods=['GET', 'POST', 'DELETE'], extra_lookup_fields=['label', ])
+    def labels(self, request, owner, formid, dataid, **kwargs):
         class TagForm(forms.Form):
             tags = TagField()
         if owner is None and not request.user.is_anonymous():
@@ -1050,5 +1064,20 @@ Payload
                         instance.instance.tags.add(tag)
                     instance.save()
                     status = 201
-        data = list(instance.instance.tags.names())
+        label = kwargs.get('label', None)
+        if request.method == 'GET' and label:
+            data = [
+                i['name'] for i in
+                instance.instance.tags.filter(name=label).values('name')]
+        elif request.method == 'DELETE' and label:
+            count = instance.instance.tags.count()
+            instance.instance.tags.remove(label)
+            # Accepted, label does not exist hence nothing removed
+            if count == instance.instance.tags.count():
+                status = 202
+            data = list(instance.instance.tags.names())
+        else:
+            data = list(instance.instance.tags.names())
+        if request.method == 'GET':
+            status = 200
         return Response(data, status=status)

@@ -1,7 +1,7 @@
 from django.test import RequestFactory
 from main.tests.test_base import MainTestCase
 
-from api.views import DataList
+from api.views import DataViewSet
 
 
 class TestDataAPI(MainTestCase):
@@ -16,7 +16,7 @@ class TestDataAPI(MainTestCase):
             'HTTP_AUTHORIZATION': 'Token %s' % self.user.auth_token}
 
     def test_form_list(self):
-        view = DataList.as_view()
+        view = DataViewSet.as_view({'get': 'list'})
         request = self.factory.get('/', **self.extra)
         response = view(request)
         self.assertEqual(response.status_code, 200)
