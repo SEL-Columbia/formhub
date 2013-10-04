@@ -506,3 +506,14 @@ class TestSite(MainTestCase):
         calculate_bind_node = calculate_bind_nodes[0]
         self.assertEqual(
             calculate_bind_node.getAttribute("calculate"), "'%s'" % xform.uuid)
+
+    def test_csv_publishing(self):
+        csv_text = 'survey,,\n,type,name,label\n,text,whatsyourname,"What is your name?"\nchoices,,'
+        url = reverse('main.views.profile',
+                      kwargs={'username': self.user.username})
+        num_xforms = XForm.objects.count()
+        params = {
+            'text_xls_form': csv_text
+        }
+        response = self.client.post(url, params)
+        self.assertEqual(XForm.objects.count(), num_xforms + 1)
