@@ -9,7 +9,6 @@ from django.utils.translation import ugettext as _
 from rest_framework import viewsets
 from rest_framework import exceptions
 from rest_framework import permissions
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.decorators import action
@@ -20,6 +19,7 @@ from taggit.forms import TagField
 
 from api import serializers as api_serializers
 from api import mixins
+from api.signals import xform_tags_added
 from api import tools as utils
 
 from utils.user_auth import check_and_set_form_by_id
@@ -442,6 +442,8 @@ Payload
                 if tags:
                     for tag in tags:
                         self.object.tags.add(tag)
+                    xform_tags_added.send(
+                        sender=XForm, xform=self.object, tags=tags)
                     status = 201
         label = kwargs.get('label', None)
         if request.method == 'GET' and label:
