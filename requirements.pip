@@ -60,3 +60,7 @@ django-filter
 recaptcha-client
 unicodecsv
 dpath
+
+# logbook-specific
+reportlab
+pyPdf
