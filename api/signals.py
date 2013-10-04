@@ -2,11 +2,11 @@ import django.dispatch
 
 from odk_logger.models import XForm
 
-xform_tags_added = django.dispatch.Signal(providing_args=['xform', 'tags'])
+xform_tags_add = django.dispatch.Signal(providing_args=['xform', 'tags'])
 
 
-@django.dispatch.receiver(xform_tags_added, sender=XForm)
-def add_tags_to_xform(sender, **kwargs):
+@django.dispatch.receiver(xform_tags_add, sender=XForm)
+def add_tags_to_xform_instances(sender, **kwargs):
     xform = kwargs.get('xform', None)
     tags = kwargs.get('tags', None)
     if isinstance(xform, XForm) and isinstance(tags, list):

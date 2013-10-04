@@ -19,7 +19,7 @@ from taggit.forms import TagField
 
 from api import serializers as api_serializers
 from api import mixins
-from api.signals import xform_tags_added
+from api.signals import xform_tags_add
 from api import tools as utils
 
 from utils.user_auth import check_and_set_form_by_id
@@ -442,7 +442,7 @@ Payload
                 if tags:
                     for tag in tags:
                         self.object.tags.add(tag)
-                    xform_tags_added.send(
+                    xform_tags_add.send(
                         sender=XForm, xform=self.object, tags=tags)
                     status = 201
         label = kwargs.get('label', None)
