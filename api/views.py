@@ -1025,6 +1025,8 @@ Payload
         # list public forms incase anonymous user
         if self.request.user.is_anonymous():
             xforms = XForm.public_forms().order_by('?')[:10]
+            # select only  the random 10, allows chaining later on
+            xforms = XForm.objects.filter(pk__in=[x.pk for x in xforms])
         else:
             xforms = XForm.objects.filter(user__username=owner)
         return xforms.distinct()
