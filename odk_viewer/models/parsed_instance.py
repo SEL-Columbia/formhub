@@ -153,6 +153,51 @@ class ParsedInstance(models.Model):
         cursor.batch_size = cls.DEFAULT_BATCHSIZE
         return cursor
 
+    @classmethod
+    @apply_form_field_names
+    def query_mongo_minimal(
+            cls, query, fields, sort, start=0, limit=DEFAULT_LIMIT,
+            count=False, hide_deleted=True):
+        fields_to_select = {cls.USERFORM_ID: 0}
+        # TODO: give more detailed error messages to 3rd parties
+        # using the API when json.loads fails
+        query = json.loads(
+            query, object_hook=json_util.object_hook) if query else {}
+        query = dict_for_mongo(query)
+        if hide_deleted:
+            #display only active elements
+            deleted_at_query = {
+                "$or": [{"_deleted_at": {"$exists": False}},
+                        {"_deleted_at": None}]}
+            # join existing query with deleted_at_query on an $and
+            query = {"$and": [query, deleted_at_query]}
+        # fields must be a string array i.e. '["name", "age"]'
+        fields = json.loads(
+            fields, object_hook=json_util.object_hook) if fields else []
+        # TODO: current mongo (2.0.4 of this writing)
+        # cant mix including and excluding fields in a single query
+        if type(fields) == list and len(fields) > 0:
+            fields_to_select = dict(
+                [(_encode_for_mongo(field), 1) for field in fields])
+        sort = json.loads(
+            sort, object_hook=json_util.object_hook) if sort else {}
+        cursor = xform_instances.find(query, fields_to_select)
+        if count:
+            return [{"count": cursor.count()}]
+
+        if start < 0 or limit < 0:
+            raise ValueError(_("Invalid start/limit params"))
+
+        cursor.skip(start).limit(limit)
+        if type(sort) == dict and len(sort) == 1:
+            sort_key = sort.keys()[0]
+            #todo: encode sort key if it has dots
+            sort_dir = int(sort[sort_key])  # -1 for desc, 1 for asc
+            cursor.sort(_encode_for_mongo(sort_key), sort_dir)
+        # set batch size
+        cursor.batch_size = cls.DEFAULT_BATCHSIZE
+        return cursor
+
     def to_dict_for_mongo(self):
         d = self.to_dict()
         deleted_at = None
