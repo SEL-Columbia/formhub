@@ -8,7 +8,7 @@ import datetime
 
  
 def generate_pdf(id_string, user):
-    from odk_viewer.models import ParsedInstance  #, DataDictionary
+    from odk_viewer.models import ParsedInstance
 
     #################
     # TODO filter on permit num, geographic location??
@@ -118,4 +118,73 @@ def generate_pdf(id_string, user):
 
     final = outputStream.getvalue()
     outputStream.close()
+    return final
+
+
+def generate_frp_xls(id_string, user):
+    from odk_viewer.models import ParsedInstance
+    import xlrd
+    from xlutils.copy import copy
+
+    #################
+    # TODO filter on permit num
+    pis = ParsedInstance.objects.filter(instance__user=user,
+                                        instance__xform__id_string=id_string,)
+                                        #lat__isnull=False, lng__isnull=False)
+
+    obs_data = [ 
+        {
+          'permit_num': pi.to_dict()['obs_nm'],
+          'species': random.choice(['King Salmon', 'Chum Salmon']),
+          'date': pi.to_dict()['today'],
+          'lat': pi.lat,
+          'lng': pi.lng,
+          'spawning': 2,
+          'rearing': 3,
+          'present': 4,
+          'anadromous': True
+        }
+       for pi in pis
+    ]
+
+    meta = {
+        'region': "Region 1",
+        'quad': "Sneak Peak",
+        'awc_num': '1234',
+        'awc_name': "Salt Creek", 
+        'awc_name_type': random.choice(['USGS', 'local']),
+        'nomination_type': random.choice(['addition', 'deletion', 'correction', 'backup']),
+        'user': user.get_username(),   # TODO lookup full name from the user profile
+        'agency': "Alaska DFG",
+        'addr1': "1255 W 8th St",
+        'addr2': "Juneau, AK 99802",
+        'today': datetime.datetime.now().strftime("%Y-%m-%d")
+    }
+
+    content = StringIO.StringIO()
+
+    # read your existing PDF
+    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                        "frp_original.xls")
+    orig_book = xlrd.open_workbook(file_path, formatting_info=True)
+    wb = copy(orig_book)
+    ws = wb.get_sheet(0)
+    start_row_idx = 4
+
+    # todo assert all have same permit num, probably through ORM filter
+    ws.write(0, 0, "ADF&G permit no. %s" % obs_data[0]['permit_num'])
+
+    for i, obs in enumerate(obs_data):
+        ws.write(start_row_idx + i, 0, obs['permit_num'])
+        ws.write(start_row_idx + i, 1, obs['lat'])
+        ws.write(start_row_idx + i, 2, obs['lng'])
+        ws.write(start_row_idx + i, 3, "WGS84")
+        ws.write(start_row_idx + i, 4, "Mobile GPS")
+        ws.write(start_row_idx + i, 5, "<name>")
+        ws.write(start_row_idx + i, 6, meta['user'])
+        
+    wb.save(content)
+
+    final = content.getvalue() 
+    content.close()
     return final
