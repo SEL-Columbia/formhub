@@ -5,8 +5,9 @@ from django.utils.translation import ugettext_lazy, ugettext as _
 from django.contrib.auth.models import User
 from utils.backup_tools import restore_backup_from_zip
 
+
 class Command(BaseCommand):
-    args = 'username id_string input_file'
+    args = 'username input_file'
     help = ugettext_lazy("Restore a zip backup of a form and all its"
                          " submissions")
 
