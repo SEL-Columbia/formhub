@@ -450,7 +450,7 @@ Payload
         tags = self.request.QUERY_PARAMS.get('tags', None)
         if tags and isinstance(tags, basestring):
             tags = tags.split(',')
-            return queryset.filter(tags__name__in=tags)
+            queryset = queryset.filter(tags__name__in=tags)
         return queryset.distinct()
 
     @action(methods=['GET'])
@@ -1017,15 +1017,24 @@ Payload
 
     queryset = Instance.objects.all()
 
-    def _get_formlist_data_points(self, request, owner=None):
+    def _get_accessible_forms(self, owner=None):
         xforms = []
-        # list public points incase anonymous user
-        if request.user.is_anonymous():
+        # list public forms incase anonymous user
+        if self.request.user.is_anonymous():
             xforms = XForm.public_forms().order_by('?')[:10]
         else:
             xforms = XForm.objects.filter(user__username=owner)
+        return xforms.distinct()
+
+    def _get_formlist_data_points(self, request, owner=None):
+        xforms = self._get_accessible_forms(owner)
+        # filter by tags if available.
+        tags = self.request.QUERY_PARAMS.get('tags', None)
+        if tags and isinstance(tags, basestring):
+            tags = tags.split(',')
+            xforms = xforms.filter(tags__name__in=tags).distinct()
         rs = {}
-        for xform in xforms:
+        for xform in xforms.distinct():
             point = {u"%s" % xform.id_string:
                      reverse("data-list", kwargs={
                              "formid": xform.pk,
@@ -1035,15 +1044,18 @@ Payload
         return rs
 
     def _get_form_data(self, xform, **kwargs):
+        query = kwargs.get('query', {})
+        query = query if query is not None else {}
+        if xform:
+            query[ParsedInstance.USERFORM_ID] =\
+                u'%s_%s' % (xform.user.username, xform.id_string)
+        query = json.dumps(query) if isinstance(query, dict) else query
         margs = {
-            'username': xform.user.username,
-            'id_string': xform.id_string,
-            'query': kwargs.get('query', None),
+            'query': query,
             'fields': kwargs.get('fields', None),
             'sort': kwargs.get('sort', None)
         }
-        # TODO: Possibly add "url" field to all data records
-        cursor = ParsedInstance.query_mongo(**margs)
+        cursor = ParsedInstance.query_mongo_minimal(**margs)
         records = list(record for record in cursor)
         return records
 
@@ -1051,9 +1063,10 @@ Payload
         data = None
         xform = None
         query = None
+        tags = self.request.QUERY_PARAMS.get('tags', None)
         if owner is None and not request.user.is_anonymous():
             owner = request.user.username
-        if not formid and not dataid:
+        if not formid and not dataid and not tags:
             data = self._get_formlist_data_points(request, owner)
         if formid:
             xform = check_and_set_form_by_id(int(formid), request)
@@ -1064,17 +1077,25 @@ Payload
         if xform and dataid and dataid == 'labels':
             return Response(list(xform.tags.names()))
         if xform and dataid:
-            query = json.dumps({'_id': int(dataid)})
+            query = {'_id': int(dataid)}
         rquery = request.QUERY_PARAMS.get('query', None)
         if rquery:
             rquery = json.loads(rquery)
             if query:
                 rquery.update(json.loads(query))
-            tags = rquery.get('_tags', None)
-            if tags and isinstance(tags, list):
-                rquery['_tags'] = {'$all': tags}
-            query = json.dumps(rquery)
+        if tags:
+            query = query if query else {}
+            query['_tags'] = {'$all': tags.split(',')}
         if xform:
+            data = self._get_form_data(xform, query=query)
+        if not xform and not data:
+            xforms = self._get_accessible_forms(owner)
+            query[ParsedInstance.USERFORM_ID] = {
+                '$in': [
+                    u'%s_%s' % (form.user.username, form.id_string)
+                    for form in xforms]
+            }
+            # query['_id'] = {'$in': [form.pk for form in xforms]}
             data = self._get_form_data(xform, query=query)
         if dataid and len(data):
             data = data[0]
