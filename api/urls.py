@@ -180,6 +180,8 @@ class MultiLookupRouter(routers.DefaultRouter):
 
             ### Formhub Tagging API
 
+            * [Filter form list by
+            * tags.](/api/v1/forms#get-list-of-forms-with-specific-tags)
             * [List Tags for a specific form.](/api/v1/forms#get-list-of-tags-for-a-specific-form)
             * [Tag Forms.](/api/v1/forms#tag-forms)
             * [Delete a specific tag.](/api/v1/forms#delete-a-specific-tag)

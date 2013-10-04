@@ -359,6 +359,34 @@ Where:
   >          </h:body>
   >        </h:html>
 
+## Get list of forms with specific tag(s)
+
+Use the `tags` query parameter to filter the list of forms, `tags` should be a
+comma separated list of tags.
+
+  <pre class="prettyprint">
+  <b>GET</b> /api/v1/forms?<code>{tags}</code>=<code>tag1,tag2</code>
+  <b>GET</b> /api/v1/forms/<code>{owner}</code>?<code>{tags}</code>=<code>tag1,tag2</code></pre>
+
+ List forms tagged `smart` or `brand new` or both.
+  > Request
+  >
+  >       curl -X GET https://formhub.org/api/v1/forms?tag=smart,brand+new
+
+> Response
+>        HTTP 200 OK
+>
+>       [{
+>           "url": "https://formhub.org/api/v1/forms/modilabs/28058",
+>           "formid": 28058,
+>           "uuid": "853196d7d0a74bca9ecfadbf7e2f5c1f",
+>           "id_string": "Birds",
+>           "sms_id_string": "Birds",
+>           "title": "Birds",
+>           ...
+>       }, ...]
+
+
 ## Get list of Tags for a specific Form
   <pre class="prettyprint">
   <b>GET</b> /api/v1/forms/<code>{owner}</code>/<code>{formid}</code>/labels</pre>
@@ -394,7 +422,8 @@ Payload
   > Request
   >
   >       curl -X DELETE https://formhub.org/api/v1/forms/modilabs/28058/labels/tag1
-  >       # or to delete the tag "hello world"
+  > or to delete the tag "hello world"
+  >
   >       curl -X DELETE https://formhub.org/api/v1/forms/modilabs/28058/labels/hello%20world
   >
   > Response
@@ -415,8 +444,14 @@ Payload
             user = User.objects.get(pk=-1)
         user_forms = user.xforms.values('pk')
         project_forms = user.projectxform_set.values('xform')
-        return XForm.objects.filter(
+        queryset = XForm.objects.filter(
             Q(pk__in=user_forms) | Q(pk__in=project_forms))
+        # filter by tags if available.
+        tags = self.request.QUERY_PARAMS.get('tags', None)
+        if tags and isinstance(tags, basestring):
+            tags = tags.split(',')
+            return queryset.filter(tags__name__in=tags)
+        return queryset.distinct()
 
     @action(methods=['GET'])
     def form(self, request, format=None, **kwargs):
