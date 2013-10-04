@@ -3,6 +3,8 @@ from rest_framework import routers
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework.views import APIView
+
 from api import views as api_views
 
 
@@ -131,7 +133,7 @@ class MultiLookupRouter(routers.DefaultRouter):
         for prefix, viewset, basename in self.registry:
             api_root_dict[prefix] = list_name.format(basename=basename)
 
-        class FormhubApi(api_views.APIView):
+        class FormhubApi(APIView):
             """
             ## JSON Rest API
 
