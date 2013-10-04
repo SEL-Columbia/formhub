@@ -365,8 +365,8 @@ Use the `tags` query parameter to filter the list of forms, `tags` should be a
 comma separated list of tags.
 
   <pre class="prettyprint">
-  <b>GET</b> /api/v1/forms?<code>{tags}</code>=<code>tag1,tag2</code>
-  <b>GET</b> /api/v1/forms/<code>{owner}</code>?<code>{tags}</code>=<code>tag1,tag2</code></pre>
+  <b>GET</b> /api/v1/forms?<code>tags</code>=<code>tag1,tag2</code>
+  <b>GET</b> /api/v1/forms/<code>{owner}</code>?<code>tags</code>=<code>tag1,tag2</code></pre>
 
  List forms tagged `smart` or `brand new` or both.
   > Request
@@ -967,17 +967,19 @@ API Parameters</a>.
 
 ## Query submitted data of a specific form using Tags
 Provides a list of json submitted data for a specific form matching specific
-tags. Use `query` parameter to apply form data specific. To filter by tags the
-`query` should be `?query={"_tags": ["monthly", "sunny"]}`.
-The `_tags` should be a list, for one item for example
-`?query={"_tags": ["monthly"]}`.
+tags. Use the `tags` query parameter to filter the list of forms, `tags`
+should be a comma separated list of tags.
 
  <pre class="prettyprint">
-  <b>GET</b> /api/v1/data/<code>{owner}</code>/<code>{formid}</code>?query={"_tags":["tag1", "tag2"]}</pre>
+  <b>GET</b> /api/v1/data?<code>tags</code>=<code>tag1,tag2</code></pre>
+ <pre class="prettyprint">
+  <b>GET</b> /api/v1/data/<code>{owner}</code>?<code>tags</code>=<code>tag1,tag2</code></pre>
+ <pre class="prettyprint">
+  <b>GET</b> /api/v1/data/<code>{owner}</code>/<code>{formid}</code>?<code>tags</code>=<code>tag1,tag2</code></pre>
+
   > Example
   >
-  >       curl -X GET
-  >       https://formhub.org/api/v1/data/modilabs/22845?query={"_tags": ["monthly"]}
+  >       curl -X GET https://formhub.org/api/v1/data/modilabs/22845?tags=monthly
 
 ## Tag a submission data point
 
@@ -998,12 +1000,13 @@ Payload
 ## Delete a specific tag from a submission
 
  <pre class="prettyprint">
-  <b>DELETE</b> /api/v1/data/<code>{owner}</code>/<code>{formid}</code>/<code>dataid</code>/labels/<code>tag_name</code></pre>
+  <b>DELETE</b> /api/v1/data/<code>{owner}</code>/<code>{formid}</code>/<code>{dataid}</code>/labels/<code>tag_name</code></pre>
 
   > Request
   >
   >       curl -X DELETE https://formhub.org/api/v1/data/modilabs/28058/20/labels/tag1
-  >       # or to delete the tag "hello world"
+  or to delete the tag "hello world"
+  >
   >       curl -X DELETE https://formhub.org/api/v1/data/modilabs/28058/20/labels/hello%20world
   >
   > Response
