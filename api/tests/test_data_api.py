@@ -1,6 +1,5 @@
 from django.test import RequestFactory
 from main.tests.test_base import MainTestCase
-from odk_logger.models import Instance
 
 from api.views import DataViewSet, XFormViewSet
 
@@ -52,6 +51,7 @@ class TestDataAPI(MainTestCase):
         view = XFormViewSet.as_view({
             'get': 'labels',
             'post': 'labels',
+            'delete': 'labels'
         })
         # no tags
         request = self.factory.get('/', **self.extra)
@@ -64,3 +64,11 @@ class TestDataAPI(MainTestCase):
         self.assertEqual(response.data, [u'hello'])
         for i in self.xform.surveys.all():
             self.assertIn(u'hello', i.tags.names())
+        # remove tag "hello"
+        request = self.factory.delete('/', data={"tags": "hello"},
+                                      **self.extra)
+        response = view(request, owner='bob', pk=1, formid=1, label='hello')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, [])
+        for i in self.xform.surveys.all():
+            self.assertNotIn(u'hello', i.tags.names())

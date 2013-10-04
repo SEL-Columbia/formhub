@@ -19,7 +19,7 @@ from taggit.forms import TagField
 
 from api import serializers as api_serializers
 from api import mixins
-from api.signals import xform_tags_add
+from api.signals import xform_tags_add, xform_tags_delete
 from api import tools as utils
 
 from utils.user_auth import check_and_set_form_by_id
@@ -453,6 +453,7 @@ Payload
         elif request.method == 'DELETE' and label:
             count = self.object.tags.count()
             self.object.tags.remove(label)
+            xform_tags_delete.send(sender=XForm, xform=self.object, tag=label)
             # Accepted, label does not exist hence nothing removed
             if count == self.object.tags.count():
                 status = 202
