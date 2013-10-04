@@ -1,7 +1,8 @@
 from django.test import RequestFactory
 from main.tests.test_base import MainTestCase
+from odk_logger.models import Instance
 
-from api.views import DataViewSet
+from api.views import DataViewSet, XFormViewSet
 
 
 class TestDataAPI(MainTestCase):
@@ -43,3 +44,23 @@ class TestDataAPI(MainTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.data, dict)
         self.assertDictContainsSubset(data, response.data)
+
+    def test_add_form_tag_propagates_to_data_tags(self):
+        """Test that when a tag is applied on an xform,
+        it propagates to the instance submissions
+        """
+        view = XFormViewSet.as_view({
+            'get': 'labels',
+            'post': 'labels',
+        })
+        # no tags
+        request = self.factory.get('/', **self.extra)
+        response = view(request, owner='bob', pk=1, formid=1)
+        self.assertEqual(response.data, [])
+        # add tag "hello"
+        request = self.factory.post('/', data={"tags": "hello"}, **self.extra)
+        response = view(request, owner='bob', pk=1, formid=1)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data, [u'hello'])
+        for i in self.xform.surveys.all():
+            self.assertIn(u'hello', i.tags.names())
