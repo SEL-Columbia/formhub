@@ -136,6 +136,20 @@ class AbstractDataFrameBuilder(object):
             if e.bind.get("type")=="geopoint"]
 
     @classmethod
+    def _tag_edit_string(cls, record):
+        """
+        Turns a list of tags into a string representation.
+        """
+        if '_tags' in record:
+            tags = []
+            for tag in record['_tags']:
+                if ',' in tag and ' ' in tag:
+                    tags.append('"%s"' % tag)
+                else:
+                    tags.append(tag)
+            record.update({'_tags': u', '.join(sorted(tags))})
+
+    @classmethod
     def _split_gps_fields(cls, record, gps_fields):
         updated_gps_fields = {}
         for key, value in record.iteritems():
@@ -536,6 +550,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
             # check for gps and split into components i.e. latitude, longitude,
             # altitude, precision
             self._split_gps_fields(record, self.gps_fields)
+            self._tag_edit_string(record)
             flat_dict = {}
             # re index repeats
             for key, value in record.iteritems():

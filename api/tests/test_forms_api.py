@@ -79,3 +79,26 @@ class TestFormsAPI(TestAPICase):
 
         # check content without UUID
         self.assertEqual(response_doc.toxml(), expected_doc.toxml())
+
+    def test_form_tags(self):
+        self._publish_xls_form_to_project()
+        view = XFormViewSet.as_view({
+            'get': 'labels',
+            'post': 'labels',
+            'delete': 'labels'
+        })
+        # no tags
+        request = self.factory.get('/', **self.extra)
+        response = view(request, owner='bob', pk=1, formid=1)
+        self.assertEqual(response.data, [])
+        # add tag "hello"
+        request = self.factory.post('/', data={"tags": "hello"}, **self.extra)
+        response = view(request, owner='bob', pk=1, formid=1)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data, [u'hello'])
+        # remove tag "hello"
+        request = self.factory.delete('/', data={"tags": "hello"},
+                                      **self.extra)
+        response = view(request, owner='bob', pk=1, formid=1, label='hello')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, [])
