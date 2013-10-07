@@ -5,21 +5,29 @@ from reportlab.lib.pagesizes import letter
 import os
 import random
 import datetime
+from django.http import Http404
 
- 
-def generate_pdf(id_string, user):
+PERMIT_NUM_FIELD = 'obs_nm' 
+
+def generate_pdf(id_string, user, permit_nums):
     from odk_viewer.models import ParsedInstance
 
-    #################
-    # TODO filter on permit num, geographic location??
-    pis = ParsedInstance.objects.filter(instance__user=user,
+    all_instances = ParsedInstance.objects.filter(instance__user=user,
                                         instance__xform__id_string=id_string,)
-                                        #lat__isnull=False, lng__isnull=False)
+
+    # We should probably use the ORM filter for better performance but
+    # I havent yet figured out how to query mongodb via ORM args
+    pis = [x for x in all_instances 
+             if x.to_dict().has_key(PERMIT_NUM_FIELD) and 
+                x.to_dict()[PERMIT_NUM_FIELD] in permit_nums]
+
+    if len(pis) == 0:
+        raise Http404
 
     # TODO lots of mock data, needs to be derived from DB
     obs_data = [ 
         {
-          'permit_num': pi.to_dict()['obs_nm'],
+          'permit_num': pi.to_dict()[PERMIT_NUM_FIELD],
           'species': random.choice(['King Salmon', 'Chum Salmon']),
           'date': pi.to_dict()['today'],
           'lat': pi.lat,
@@ -121,20 +129,26 @@ def generate_pdf(id_string, user):
     return final
 
 
-def generate_frp_xls(id_string, user):
+def generate_frp_xls(id_string, user, permit_nums):
     from odk_viewer.models import ParsedInstance
     import xlrd
     from xlutils.copy import copy
 
-    #################
-    # TODO filter on permit num
-    pis = ParsedInstance.objects.filter(instance__user=user,
+    all_instances = ParsedInstance.objects.filter(instance__user=user,
                                         instance__xform__id_string=id_string,)
-                                        #lat__isnull=False, lng__isnull=False)
+
+    # We should probably use the ORM filter for better performance but
+    # I havent yet figured out how to query mongodb via ORM args
+    pis = [x for x in all_instances 
+             if x.to_dict().has_key(PERMIT_NUM_FIELD) and 
+                x.to_dict()[PERMIT_NUM_FIELD] in permit_nums]
+
+    if len(pis) == 0:
+        raise Http404
 
     obs_data = [ 
         {
-          'permit_num': pi.to_dict()['obs_nm'],
+          'permit_num': pi.to_dict()[PERMIT_NUM_FIELD],
           'species': random.choice(['King Salmon', 'Chum Salmon']),
           'date': pi.to_dict()['today'],
           'lat': pi.lat,
