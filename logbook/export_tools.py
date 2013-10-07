@@ -9,6 +9,25 @@ from django.http import Http404
 
 PERMIT_NUM_FIELD = 'obs_nm' 
 
+
+def get_usgs_quad():
+    # TODO query for intersecting USGS quads
+    return "Sneak Peak"
+
+
+def extend_meta_profile(meta, user):
+    profile = user.get_profile()
+    uname = profile.name
+    if uname == '':
+        uname = user.get_username()
+    meta['user']  = uname
+    meta['agency'] = profile.organization
+    meta['addr1'] = profile.address
+    meta['addr2'] = profile.city  # TODO profile needs state, zip
+    meta['today'] = datetime.datetime.now().strftime("%Y-%m-%d")
+    return meta
+
+
 def generate_pdf(id_string, user, permit_nums):
     from odk_viewer.models import ParsedInstance
 
@@ -42,18 +61,15 @@ def generate_pdf(id_string, user, permit_nums):
 
     meta = {
         'region': "Region 1",
-        'quad': "Sneak Peak",
         'awc_num': '1234',
         'awc_name': "Salt Creek", 
         'awc_name_type': random.choice(['USGS', 'local']),
         'nomination_type': random.choice(['addition', 'deletion', 'correction', 'backup']),
-        'user': user.get_username(),   # TODO lookup full name from the user profile
-        'agency': "Alaska DFG",
-        'addr1': "1255 W 8th St",
-        'addr2': "Juneau, AK 99802",
-        'today': datetime.datetime.now().strftime("%Y-%m-%d")
     }
 
+    meta = extend_meta_profile(meta, user)
+
+    meta['quad'] = get_usgs_quad()
 
     # Create pdf
     packet = StringIO.StringIO()
@@ -168,12 +184,10 @@ def generate_frp_xls(id_string, user, permit_nums):
         'awc_name': "Salt Creek", 
         'awc_name_type': random.choice(['USGS', 'local']),
         'nomination_type': random.choice(['addition', 'deletion', 'correction', 'backup']),
-        'user': user.get_username(),   # TODO lookup full name from the user profile
-        'agency': "Alaska DFG",
-        'addr1': "1255 W 8th St",
-        'addr2': "Juneau, AK 99802",
-        'today': datetime.datetime.now().strftime("%Y-%m-%d")
     }
+
+    meta = extend_meta_profile(meta, user)
+    meta['quad'] = get_usgs_quad()
 
     content = StringIO.StringIO()
 
