@@ -56,3 +56,6 @@ dpath
 
 # tagging
 django-taggit
+
+# oath2 support
+django-oauth-toolkit

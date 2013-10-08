@@ -23,6 +23,9 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
+    # oath2_provider
+    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+
     # google urls
     url(r'^gauthtest/$',
         'main.google_export.google_oauth2_request',

@@ -167,6 +167,7 @@ INSTALLED_APPS = (
     'django_nose',
     'django_digest',
     'corsheaders',
+    'oauth2_provider',
     'rest_framework',
     'rest_framework.authtoken',
     'taggit',
@@ -182,6 +183,14 @@ INSTALLED_APPS = (
     'sms_support',
 )
 
+OAUTH2_PROVIDER = {
+    # this is the list of available scopes
+    'SCOPES': {
+        'read': 'Read scope',
+        'write': 'Write scope',
+        'groups': 'Access to your groups'}
+}
+
 REST_FRAMEWORK = {
     # Use hyperlinked styles by default.
     # Only used if the `serializer_class` attribute is not set on a view.
@@ -195,6 +204,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissions'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
         #'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
@@ -365,7 +375,6 @@ if TESTING_MODE:
     #TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
 else:
     MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media/')
-
 
 try:
     from local_settings import *
