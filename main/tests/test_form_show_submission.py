@@ -2,7 +2,8 @@ from test_base import MainTestCase
 from main.views import home, show_submission
 from odk_viewer.views import survey_responses
 from django.core.urlresolvers import reverse
-from guardian.shortcuts import assign
+from guardian.shortcuts import assign_perm
+
 
 class TestFormShowSubmission(MainTestCase):
 
@@ -17,12 +18,13 @@ class TestFormShowSubmission(MainTestCase):
             'uuid': self.submission.uuid,
         })
         self.survey_url = reverse(survey_responses, kwargs={
-                'instance_id': self.submission.pk })
+                                  'instance_id': self.submission.pk})
 
     def test_get_survey_by_uuid(self):
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, 302)
-        self.assertEquals(self.base_url + self.survey_url, response['Location'])
+        self.assertEquals(self.base_url + self.survey_url,
+                          response['Location'])
 
     def test_no_anon_get_survey_by_uuid(self):
         response = self.anon.get(self.url)
@@ -37,10 +39,11 @@ class TestFormShowSubmission(MainTestCase):
 
     def test_with_perm_get_survey_by_uuid(self):
         self._create_user_and_login('alice', 'alice')
-        assign('view_xform', self.user, self.xform)
+        assign_perm('view_xform', self.user, self.xform)
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, 302)
-        self.assertEquals(self.base_url + self.survey_url, response['Location'])
+        self.assertEquals(self.base_url + self.survey_url,
+                          response['Location'])
 
     def test_get_survey(self):
         response = self.client.get(self.survey_url)
@@ -59,6 +62,6 @@ class TestFormShowSubmission(MainTestCase):
 
     def test_with_perm_get_survey(self):
         self._create_user_and_login('alice', 'alice')
-        assign('view_xform', self.user, self.xform)
+        assign_perm('view_xform', self.user, self.xform)
         response = self.client.get(self.survey_url)
         self.assertEquals(response.status_code, 200)

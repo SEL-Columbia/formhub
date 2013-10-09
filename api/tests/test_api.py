@@ -8,6 +8,8 @@ from django.test import RequestFactory
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
 
+from utils.user_auth import set_api_permissions_for_user
+
 from api.models import OrganizationProfile
 from api.views import OrgProfileViewSet
 from api.views import ProjectViewSet
@@ -54,7 +56,7 @@ class TestAPICase(TestCase):
                                   password='bobbob'))
             self.extra = {
                 'HTTP_AUTHORIZATION': 'Token %s' % self.user.auth_token}
-            self._set_api_permissions(self.user)
+            set_api_permissions_for_user(self.user)
 
     def _org_create(self):
         view = OrgProfileViewSet.as_view({

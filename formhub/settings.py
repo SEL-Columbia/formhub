@@ -85,6 +85,7 @@ ENKETO_API_SURVEY_PATH = '/api_v1/survey'
 ENKETO_API_INSTANCE_PATH = '/api_v1/instance'
 ENKETO_PREVIEW_URL = ENKETO_URL + 'webform/preview'
 ENKETO_API_TOKEN = ''
+ENKETO_API_INSTANCE_IFRAME_URL = ENKETO_URL + "api_v1/instance/iframe"
 
 # Login URLs
 LOGIN_URL = '/accounts/login/'
@@ -167,8 +168,8 @@ INSTALLED_APPS = (
     'django_digest',
     'corsheaders',
     'rest_framework',
-    'rest_framework_swagger',
     'rest_framework.authtoken',
+    'taggit',
     'odk_logger',
     'odk_viewer',
     'main',
@@ -190,7 +191,8 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+        'rest_framework.permissions.DjangoModelPermissions'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         #'rest_framework.authentication.BasicAuthentication',
@@ -335,6 +337,15 @@ NOSE_ARGS = ['--with-fixture-bundling']
 #    'utils.nose_plugins.SilenceSouth'
 #]
 
+if PRINT_EXCEPTION and DEBUG:
+    MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
+
+# re-captcha in registrations
+REGISTRATION_REQUIRE_CAPTCHA = False
+RECAPTCHA_USE_SSL = False
+RECAPTCHA_PRIVATE_KEY = ''
+RECAPTCHA_PUBLIC_KEY = '6Ld52OMSAAAAAJJ4W-0TFDTgbznnWWFf0XuOSaB6'
+
 TESTING_MODE = False
 if len(sys.argv) >= 2 and (sys.argv[1] == "test" or sys.argv[1] == "test_all"):
     # This trick works only when we run tests from the command line.
@@ -355,18 +366,6 @@ if TESTING_MODE:
 else:
     MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media/')
 
-if PRINT_EXCEPTION and DEBUG:
-    MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
-
-# re-captcha in registrations
-REGISTRATION_REQUIRE_CAPTCHA = False
-RECAPTCHA_USE_SSL = False
-RECAPTCHA_PRIVATE_KEY = ''
-RECAPTCHA_PUBLIC_KEY = '6Ld52OMSAAAAAJJ4W-0TFDTgbznnWWFf0XuOSaB6'
-
-
-ENKETO_API_INSTANCE_IFRAME_URL = "https://enketo-dev.formhub.org/api_v1/instance/iframe"
-ENKETO_API_TOKEN = "---"
 
 try:
     from local_settings import *

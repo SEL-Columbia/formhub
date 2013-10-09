@@ -11,6 +11,12 @@ class HyperlinkedMultiIdentityField(serializers.HyperlinkedIdentityField):
 
         super(HyperlinkedMultiIdentityField, self).__init__(*args, **kwargs)
 
+    def field_to_native(self, obj, field_name):
+        if obj is None:
+            return
+        return super(HyperlinkedMultiIdentityField, self).field_to_native(
+            obj, field_name)
+
     def get_url(self, obj, view_name, request, format):
         kwargs = {}
         for slug, field in self.lookup_fields:
