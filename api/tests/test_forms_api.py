@@ -21,6 +21,38 @@ class TestFormsAPI(TestAPICase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, [self.form_data])
 
+    def test_form_list_other_user_access(self):
+        """Test that a different user has no access to bob's form"""
+        self._publish_xls_form_to_project()
+        request = self.factory.get('/', **self.extra)
+        response = self.view(request, owner=self.user.username)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, [self.form_data])
+
+        # test with different user
+        previous_user = self.user
+        alice_data = {'username': 'alice', 'email': 'alice@localhost.com'}
+        self._login_user_and_profile(extra_post_data=alice_data)
+        self.assertEqual(self.user.username, 'alice')
+        self.assertNotEqual(previous_user,  self.user)
+        request = self.factory.get('/', **self.extra)
+        response = self.view(request, owner=previous_user.username)
+        self.assertEqual(response.status_code, 200)
+        # should be empty
+        self.assertEqual(response.data, [])
+
+        # make form public
+        xform = previous_user.xforms.get(id_string=self.form_data['id_string'])
+        xform.shared = True
+        xform.save()
+        self.form_data['public'] = True
+        self.form_data['date_modified'] = xform.date_modified
+        response = self.view(request, owner=previous_user.username)
+        self.assertEqual(response.status_code, 200)
+
+        # other user has access to public form
+        self.assertEqual(response.data, [self.form_data])
+
     def test_form_get(self):
         self._publish_xls_form_to_project()
         view = XFormViewSet.as_view({
