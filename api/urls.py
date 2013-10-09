@@ -195,7 +195,7 @@ class MultiLookupRouter(routers.DefaultRouter):
             ### 1. Register your client application with formhub - [register](/o/applications/register/)
 
             - `name` - name of your application
-            - `client_type` - Client Type: select your confidential
+            - `client_type` - Client Type: select confidential
             - `authorization_grant_type` - Authorization grant type: Authorization code
             - `redirect_uri` - Redirect urls: redirection endpoint
 
