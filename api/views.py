@@ -677,8 +677,9 @@ Where:
         if request.method.upper() == 'POST':
             survey = utils.publish_project_xform(request, project)
             if isinstance(survey, XForm):
+                xform = XForm.objects.get(pk=survey.pk)
                 serializer = api_serializers.XFormSerializer(
-                    survey, context={'request': request})
+                    xform, context={'request': request})
                 return Response(serializer.data, status=201)
             return Response(survey, status=400)
         filter = {'project': project}
