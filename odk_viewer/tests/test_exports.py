@@ -867,7 +867,7 @@ class TestExports(MainTestCase):
         response = self.client.post(create_csv_export_url, custom_params)
         self.assertEqual(response.status_code, 302)
         export = Export.objects.filter(
-            xform=self.xform, export_type='csv').order_by('-pk')[0]
+            xform=self.xform, export_type='csv').latest('created_on')
         self.assertTrue(bool(export.filepath))
         data = self._get_csv_data(export.filepath)
         # transport/available_transportation_types_to_referral_facility/ambulance should not be in its own column
@@ -902,7 +902,7 @@ class TestExports(MainTestCase):
         response = self.client.post(create_xls_export_url, custom_params)
         self.assertEqual(response.status_code, 302)
         export = Export.objects.filter(
-            xform=self.xform, export_type='xls').order_by('-pk')[0]
+            xform=self.xform, export_type='xls').latest('created_on')
         self.assertTrue(bool(export.filepath))
         data = self._get_xls_data(export.filepath)
         # transport/available_transportation_types_to_referral_facility/ambulance should NOT be in its own column
