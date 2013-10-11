@@ -1,22 +1,12 @@
 # this system uses structured settings.py as defined in http://www.slideshare.net/jacobian/the-best-and-worst-of-django
 
-from base import *
+from formhub.settings import *
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-TEMPLATE_STRING_IF_INVALID = '***Invalid Template String***'
+TEMPLATE_STRING_IF_INVALID = ''
 
 # see: http://docs.djangoproject.com/en/dev/ref/settings/#databases
-
-# mysql
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.mysql',
-#        'NAME': 'formhub_dev',
-#        'USER': 'formhub_dev',
-#        'PASSWORD': '',
-#    }
-#}
 
 #postgres
 DATABASES = {
@@ -25,17 +15,11 @@ DATABASES = {
         'NAME': 'formhub_dev',
         'USER': 'formhub_dev',
         'PASSWORD': '12345678',
-    },
-    'gis': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'phis',
-        'USER': 'nomadstaff',
-        'PASSWORD': 'nopolio',
         'HOST': 'localhost',
         'OPTIONS': {
-            'autocommit': True,
+            'autocommit': True,  # NOTE: this option becomes obsolete in django 1.6
         }
-    }
+    },
 }
 
 # TIME_ZONE = 'UTC'
