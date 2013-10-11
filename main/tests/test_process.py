@@ -418,6 +418,10 @@ class TestSite(MainTestCase):
         for i in range(1, actual_sheet.nrows):
             actual_row = actual_sheet.row_values(i)
             expected_row = expected_sheet.row_values(i)
+
+            # remove _id from result set, varies depending on the database
+            del actual_row[22]
+            del expected_row[22]
             self.assertEqual(actual_row, expected_row)
 
     def _check_delete(self):
