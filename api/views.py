@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
+from django.contrib.contenttypes.models import ContentType
 
 from rest_framework import viewsets
 from rest_framework import exceptions
@@ -439,11 +440,27 @@ Payload
     permission_classes = [permissions.DjangoModelPermissions, ]
 
     def get_queryset(self):
+        owner = self.kwargs.get('owner', None)
         user = self.request.user
         if user.is_anonymous():
             user = User.objects.get(pk=-1)
-        user_forms = user.xforms.values('pk')
-        project_forms = user.projectxform_set.values('xform')
+        project_forms = []
+        if owner:
+            owner = get_object_or_404(User, username=owner)
+            if owner != user:
+                xfct = ContentType.objects.get(
+                    app_label='odk_logger', model='xform')
+                xfs = user.userobjectpermission_set.filter(content_type=xfct)
+                user_forms = XForm.objects.filter(
+                    Q(pk__in=[xf.object_pk for xf in xfs]) | Q(shared=True),
+                    user=owner)\
+                    .select_related('user')
+            else:
+                user_forms = owner.xforms.values('pk')
+                project_forms = owner.projectxform_set.values('xform')
+        else:
+            user_forms = user.xforms.values('pk')
+            project_forms = user.projectxform_set.values('xform')
         queryset = XForm.objects.filter(
             Q(pk__in=user_forms) | Q(pk__in=project_forms))
         # filter by tags if available.
