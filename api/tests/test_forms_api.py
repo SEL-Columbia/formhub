@@ -45,6 +45,7 @@ class TestFormsAPI(TestAPICase):
         xform = previous_user.xforms.get(id_string=self.form_data['id_string'])
         xform.shared = True
         xform.save()
+        xform = previous_user.xforms.get(id_string=self.form_data['id_string'])
         self.form_data['public'] = True
         self.form_data['date_modified'] = xform.date_modified
         response = self.view(request, owner=previous_user.username)
