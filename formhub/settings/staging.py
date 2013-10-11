@@ -21,17 +21,11 @@ TEMPLATE_STRING_IF_INVALID = '***Invalid Template String***'
 #postgres
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'formhub_dev',
-        'USER': 'formhub_dev',
-        'PASSWORD': '12345678',
-    },
-    'gis': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'phis',
         'USER': 'nomadstaff',
         'PASSWORD': 'nopolio',
-        'HOST': 'localhost',
+        'HOST': 'nomads.eocng.org',
         'OPTIONS': {
             'autocommit': True,
         }

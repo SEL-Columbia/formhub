@@ -4,7 +4,7 @@ import re
 from functools import wraps
 from django.contrib.auth import authenticate
 from django.http import HttpResponseRedirect, HttpResponse
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from django.contrib.sites.models import Site
 from django.shortcuts import get_object_or_404
 
@@ -133,3 +133,10 @@ def add_cors_headers(response):
                                                 ' Authorization')
     response['Content-Type'] = 'application/json'
     return response
+
+
+def set_api_permissions_for_user(self, user):
+    add_userprofile = Permission.objects.get(
+        content_type__app_label='main', content_type__model='userprofile',
+        codename='add_userprofile')
+    user.user_permissions.add(add_userprofile)
