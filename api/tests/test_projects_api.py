@@ -1,5 +1,3 @@
-import json
-
 from api.tests.test_api import TestAPICase
 from api.views import ProjectViewSet
 
@@ -30,7 +28,7 @@ class TestProjectsAPI(TestAPICase):
         self.assertEqual(response.data,
                          {'detail': 'Expected URL keyword argument `owner`.'})
         request = self.factory.get('/', **self.extra)
-        response = view(request, owner='bob', pk=1)
+        response = view(request, owner='bob', pk=self.project.pk)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, self.project_data)
 
@@ -46,9 +44,10 @@ class TestProjectsAPI(TestAPICase):
             'get': 'forms'
         })
         request = self.factory.get('/', **self.extra)
-        response = view(request, owner='bob', pk=1)
+        response = view(request, owner='bob', pk=self.project.pk)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, [self.form_data])
-        response = view(request, owner='bob', pk=1, formid=1)
+        response = view(request, owner='bob',
+                        pk=self.project.pk, formid=self.xform.pk)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, self.form_data)
