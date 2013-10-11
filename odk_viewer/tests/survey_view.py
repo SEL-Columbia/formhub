@@ -37,7 +37,7 @@ class TestSurveyView(MainTestCase):
 
     def test_survey_view(self):
         url = reverse(survey_responses, kwargs={
-                'instance_id' : self.parsed_instance.id})
+                'instance_id' : self.parsed_instance.instance.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         expected_html = '''
