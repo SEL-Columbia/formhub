@@ -1,7 +1,8 @@
 from django.core.urlresolvers import reverse
 from main.tests.test_base import MainTestCase
 from odk_viewer.views import data_view
-from guardian.shortcuts import assign, remove_perm
+from guardian.shortcuts import assign_perm, remove_perm
+
 
 class TestDataView(MainTestCase):
 
@@ -35,13 +36,13 @@ class TestDataView(MainTestCase):
 
     def test_allow_if_user_given_permission(self):
         self._create_user_and_login('alice')
-        assign('change_xform', self.user, self.xform)
+        assign_perm('change_xform', self.user, self.xform)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
 
     def test_disallow_if_user_permission_revoked(self):
         self._create_user_and_login('alice')
-        assign('change_xform', self.user, self.xform)
+        assign_perm('change_xform', self.user, self.xform)
         response = self.client.get(self.url)
         remove_perm('change_xform', self.user, self.xform)
         response = self.client.get(self.url)

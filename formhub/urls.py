@@ -9,11 +9,11 @@ from django.contrib import admin
 
 admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     # change Language
     (r'^i18n/', include('django.conf.urls.i18n')),
     url('^api/v1/', include(router.urls)),
-    #url(r'^api-docs/', include('rest_framework_swagger.urls', namespace='swagger')),
     url(r'^api-docs/', RedirectView.as_view(url='/api/v1/')),
     url(r'^api/', RedirectView.as_view(url='/api/v1/')),
     url(r'^api/v1', RedirectView.as_view(url='/api/v1/')),
@@ -22,6 +22,9 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('main.registration_urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+
+    # oath2_provider
+    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 
     # google urls
     url(r'^gauthtest/$',
