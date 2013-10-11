@@ -58,13 +58,14 @@ class TestFormsAPI(TestAPICase):
         view = XFormViewSet.as_view({
             'get': 'retrieve'
         })
+        formid = self.xform.pk
         request = self.factory.get('/', **self.extra)
         response = view(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data,
                          {'detail': 'Expected URL keyword argument `owner`.'})
         request = self.factory.get('/', **self.extra)
-        response = view(request, owner='bob', pk=1)
+        response = view(request, owner='bob', pk=formid)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, self.form_data)
 
@@ -73,6 +74,7 @@ class TestFormsAPI(TestAPICase):
         view = XFormViewSet.as_view({
             'get': 'form'
         })
+        formid = self.xform.pk
         data = {
             "name": "transportation",
             "title": "transportation_2011_07_25",
@@ -81,10 +83,10 @@ class TestFormsAPI(TestAPICase):
             "type": "survey",
         }
         request = self.factory.get('/', **self.extra)
-        response = view(request, owner='bob', pk=1, formid=1, format='json')
+        response = view(request, owner='bob', pk=formid, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertDictContainsSubset(data, response.data)
-        response = view(request, owner='bob', pk=1, formid=1, format='xml')
+        response = view(request, owner='bob', pk=formid, format='xml')
         self.assertEqual(response.status_code, 200)
         response_doc = minidom.parseString(response.data)
 
@@ -119,18 +121,19 @@ class TestFormsAPI(TestAPICase):
             'post': 'labels',
             'delete': 'labels'
         })
+        formid = self.xform.pk
         # no tags
         request = self.factory.get('/', **self.extra)
-        response = view(request, owner='bob', pk=1, formid=1)
+        response = view(request, owner='bob', pk=formid)
         self.assertEqual(response.data, [])
         # add tag "hello"
         request = self.factory.post('/', data={"tags": "hello"}, **self.extra)
-        response = view(request, owner='bob', pk=1, formid=1)
+        response = view(request, owner='bob', pk=formid)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data, [u'hello'])
         # remove tag "hello"
         request = self.factory.delete('/', data={"tags": "hello"},
                                       **self.extra)
-        response = view(request, owner='bob', pk=1, formid=1, label='hello')
+        response = view(request, owner='bob', pk=formid, label='hello')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, [])
