@@ -92,7 +92,7 @@ def create_instance(username, xml_file, media_files,
             raise InstanceInvalidUserError()
 
         if uuid:
-            # try find the fomr by its uuid which is the ideal condition
+            # try find the form by its uuid which is the ideal condition
             if XForm.objects.filter(uuid=uuid).count() > 0:
                 xform = XForm.objects.get(uuid=uuid)
                 xform_username = xform.user.username

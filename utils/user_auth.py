@@ -4,12 +4,14 @@ import re
 from functools import wraps
 from django.contrib.auth import authenticate
 from django.http import HttpResponseRedirect, HttpResponse
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.shortcuts import get_object_or_404
 
+from guardian.shortcuts import get_perms_for_model, assign_perm
 from main.models import UserProfile
 from odk_logger.models import XForm
+from api.models import Project, Team, OrganizationProfile
 
 
 class HttpResponseNotAuthorized(HttpResponse):
@@ -85,7 +87,7 @@ def check_and_set_form_by_id(pk, request):
 def get_xform_and_perms(username, id_string, request):
     xform = get_object_or_404(
         XForm, user__username=username, id_string=id_string)
-    is_owner = username == request.user.username
+    is_owner = xform.user == request.user
     can_edit = is_owner or\
         request.user.has_perm('odk_logger.change_xform', xform)
     can_view = can_edit or\
@@ -135,8 +137,9 @@ def add_cors_headers(response):
     return response
 
 
-def set_api_permissions_for_user(self, user):
-    add_userprofile = Permission.objects.get(
-        content_type__app_label='main', content_type__model='userprofile',
-        codename='add_userprofile')
-    user.user_permissions.add(add_userprofile)
+def set_api_permissions_for_user(user):
+    models = [UserProfile, XForm, Project, Team, OrganizationProfile]
+    for model in models:
+        for perm in get_perms_for_model(model):
+            assign_perm(
+                '%s.%s' % (perm.content_type.app_label, perm.codename), user)
