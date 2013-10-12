@@ -95,7 +95,10 @@ NOTE: If you inted to use special characters from other languages within your fo
 Create a database and start server:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    create or update your local_settings.py file
+    update your preset/default_settings.py file,
+    or create a new preset and
+      modify manage.py to import it,
+      or define the environment variable DJANGO_SETTINGS_MODULE to specify it.
 
 .. code-block:: sh
 
