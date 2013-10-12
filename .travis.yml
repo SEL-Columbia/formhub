@@ -9,14 +9,13 @@ before_install:
   -  sudo ln -s /usr/lib/`uname -i`-linux-gnu/libjpeg.so ~/virtualenv/python2.7/lib/
   -  sudo ln -s /usr/lib/`uname -i`-linux-gnu/libz.so ~/virtualenv/python2.7/lib/
 install:
-  - cp formhub/local_settings.py.travis formhub/local_settings.py
   - pip install numpy --use-mirrors
   - pip install -r requirements.pip --use-mirrors
   - pip install -r requirements-mysql.pip --use-mirrors
   - python manage.py syncdb --noinput
   - python manage.py migrate --noinput
 script:
-  - python manage.py test --noinput
+  - python manage.py test --noinput --settings=formhub.preset.travis_test
   - ./js_tests/EnvJasmine/bin/run_all_tests.sh --testDir=../ --configFile=../env_jasmine.conf.js
 notifications:
   irc: "irc.freenode.org#moditest"

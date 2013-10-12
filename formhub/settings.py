@@ -330,8 +330,6 @@ NOSE_ARGS = ['--with-fixture-bundling']
 #    'utils.nose_plugins.SilenceSouth'
 #]
 
-TESTING_MODE = False
-
 # re-captcha in registrations
 REGISTRATION_REQUIRE_CAPTCHA = False
 RECAPTCHA_USE_SSL = False
@@ -340,6 +338,11 @@ RECAPTCHA_PUBLIC_KEY = '6Ld52OMSAAAAAJJ4W-0TFDTgbznnWWFf0XuOSaB6'
 
 ENKETO_API_INSTANCE_IFRAME_URL = "https://enketo-dev.formhub.org/api_v1/instance/iframe"
 ENKETO_API_TOKEN = "---"
+
+try:  # legacy setting for old sites who still use a local_settings.py file and have not updated to presets/
+    from local_settings import *
+except ImportError:
+    pass
 
 # MongoDB
 if MONGO_DATABASE.get('USER') and MONGO_DATABASE.get('PASSWORD'):
