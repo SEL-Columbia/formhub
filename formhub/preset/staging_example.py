@@ -32,6 +32,8 @@ TESTING_MODE = False
 if len(sys.argv) >= 2 and (sys.argv[1] == "test" or sys.argv[1] == "test_all"):
     # This trick works only when we run tests from the command line.
     TESTING_MODE = True
+else:
+    TESTING_MODE = False
 
 if TESTING_MODE:
     MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'test_media/')

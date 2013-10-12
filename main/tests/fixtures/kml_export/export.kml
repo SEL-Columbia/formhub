@@ -29,7 +29,7 @@
 	
 		  
 	    <Placemark>	
-	            <name>Survey Instance: 1</name>
+	            <name>Survey Instance: {{first}}</name>
                 <Snippet> </Snippet>
 		              <description>
 		                 
@@ -44,7 +44,7 @@
         </Placemark>
   
 	    <Placemark>	
-	            <name>Survey Instance: 2</name>
+	            <name>Survey Instance: {{second}}</name>
                 <Snippet> </Snippet>
 		              <description>
 		                 
