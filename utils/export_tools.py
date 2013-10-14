@@ -1,8 +1,10 @@
 import os
 import re
 import csv
-from openpyxl.workbook import Workbook
 import json
+
+from openpyxl.workbook import Workbook
+from openpyxl.shared.date_time import SharedDate
 from bson import json_util
 from datetime import datetime
 from django.conf import settings
@@ -151,12 +153,22 @@ class ExportBuilder(object):
     CONVERT_FUNCS = {
         'int': lambda x: int(x),
         'decimal': lambda x: float(x),
-        'date': lambda x: datetime.strptime(x, '%Y-%m-%d').date(),
-        'dateTime': lambda x: datetime.strptime(
-            x[:19], '%Y-%m-%dT%H:%M:%S')
+        'date': lambda x: ExportBuilder.string_to_date_with_xls_validation(x),
+        'dateTime': lambda x: datetime.strptime(x[:19], '%Y-%m-%dT%H:%M:%S')
     }
 
     XLS_SHEET_NAME_MAX_CHARS = 31
+
+
+    @classmethod
+    def string_to_date_with_xls_validation(cls, date_str):
+        date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
+        try:
+            SharedDate().datetime_to_julian(date_obj)
+        except ValueError:
+            return date_str
+        else:
+            return date_obj
 
     @classmethod
     def format_field_title(cls, abbreviated_xpath, field_delimiter):

@@ -1985,6 +1985,25 @@ class TestExportBuilder(MainTestCase):
         self.assertIsInstance(new_row['amount'], basestring)
         self.assertEqual(new_row['amount'], '')
 
+    def test_xls_convert_dates_before_1900(self):
+        survey = create_survey_from_xls(
+            os.path.join(
+                os.path.abspath('./'), 'odk_viewer', 'tests', 'fixtures',
+                'test_data_types/test_data_types.xls'))
+        export_builder = ExportBuilder()
+        export_builder.set_survey(survey)
+        data = [
+            {
+                'name': 'Abe',
+                'when': '1899-07-03',
+            }
+        ]
+        # create export file
+        temp_xls_file = NamedTemporaryFile(suffix='.xlsx')
+        export_builder.to_xls_export(temp_xls_file.name, data)
+        temp_xls_file.close()
+        # this should error if there is a problem, not sure what to assert
+
     def test_convert_types(self):
         val = '1'
         expected_val = 1
