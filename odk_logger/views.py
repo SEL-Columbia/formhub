@@ -2,10 +2,10 @@ import json
 import os
 import tempfile
 from xml.parsers.expat import ExpatError
+import pytz
+
 from datetime import datetime
 from itertools import chain
-
-import pytz
 
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.http import require_http_methods
@@ -26,7 +26,6 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 from django_digest import HttpDigestAuthenticator
 
-from utils import submission_time_validation
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound,\
     BaseOpenRosaResponse, \
@@ -45,7 +44,6 @@ from odk_logger.models.attachment import Attachment
 from utils.log import audit_log, Actions
 from utils.viewer_tools import enketo_url
 from odk_logger.validations import validation_patterns
-
 
 @require_POST
 @csrf_exempt
@@ -211,7 +209,6 @@ def submission(request, username=None):
     context = RequestContext(request)
     xml_file_list = []
     media_files = []
-    stv = Submission_Time_Validations()  # get any STV definition errors early.
     html_response = False
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
