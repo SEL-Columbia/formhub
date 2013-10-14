@@ -62,8 +62,8 @@ def deploy(deployment_name, branch='master'):
         run("git submodule update")
         run('find . -name "*.pyc" -exec rm -rf {} \;')
     # numpy pip install from requirments file fails
-    run_in_virtualenv("pip install numpy")
-    run_in_virtualenv("pip install -r %s" % env.pip_requirements_file)
+    run_in_virtualenv("pip install numpy --upgrade")
+    run_in_virtualenv("pip install -r %s --upgrade" % env.pip_requirements_file)
     with cd(env.code_src):
         run_in_virtualenv("python manage.py syncdb")
         run_in_virtualenv("python manage.py migrate")

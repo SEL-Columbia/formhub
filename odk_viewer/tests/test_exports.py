@@ -374,6 +374,7 @@ class TestExports(MainTestCase):
         # check that our function knows there are no more submissions
         self.assertFalse(Export.exports_outdated(xform=self.xform,
             export_type=Export.XLS_EXPORT))
+        sleep(1)
         # force new  last submission date on xform
         last_submission = self.xform.surveys.order_by('-date_created')[0]
         last_submission.date_created += datetime.timedelta(hours=1)
@@ -659,6 +660,7 @@ class TestExports(MainTestCase):
         self._publish_transportation_form()
         self._submit_transport_instance()
         self.assertEqual(self.response.status_code, 201)
+        sleep(1)
         self._submit_transport_instance_w_uuid("transport_2011-07-25_19-05-36")
         self.assertEqual(self.response.status_code, 201)
 
@@ -704,6 +706,7 @@ class TestExports(MainTestCase):
             xform=self.xform, export_type=Export.XLS_EXPORT).count()
         self.assertEqual(num_xls_exports, initial_num_xls_exports + 1)
 
+        sleep(1)
         # check that data edits cause a re-generation
         self._submit_transport_instance_w_uuid(
             "transport_2011-07-25_19-05-36-edited")
@@ -715,12 +718,13 @@ class TestExports(MainTestCase):
             xform=self.xform, export_type=Export.CSV_EXPORT).count()
         self.assertEqual(num_csv_exports, initial_num_csv_exports + 2)
 
+        sleep(1)
         # and when we delete
         delete_url = reverse(delete_data, kwargs={
             'username': self.user.username,
             'id_string': self.xform.id_string
         })
-        instance = Instance.objects.latest('date_modified')
+        instance = Instance.objects.filter().order_by('-pk')[0]
         response = self.client.post(delete_url, {'id': instance.id})
         self.assertEqual(response.status_code, 200)
         response = self.client.get(csv_export_url)
@@ -795,6 +799,7 @@ class TestExports(MainTestCase):
         self.assertEqual(
             data['transport/available_transportation_types_to_referral_facility/ambulance'], 'True')
 
+        sleep(1)
         # test csv with dot delimiter
         response = self.client.post(create_csv_export_url, custom_params)
         self.assertEqual(response.status_code, 302)
@@ -826,6 +831,7 @@ class TestExports(MainTestCase):
         self.assertEqual(
             data["transport/available_transportation_types_to_referral_facility/ambulance"], 1)
 
+        sleep(1)
         # test xls with dot delimiter
         response = self.client.post(create_csv_export_url, custom_params)
         self.assertEqual(response.status_code, 302)
@@ -863,6 +869,7 @@ class TestExports(MainTestCase):
             data.has_key(
                 'transport/available_transportation_types_to_referral_facility/ambulance'))
 
+        sleep(1)
         # test csv without default split select multiples
         response = self.client.post(create_csv_export_url, custom_params)
         self.assertEqual(response.status_code, 302)
@@ -898,6 +905,7 @@ class TestExports(MainTestCase):
             data.has_key(
                 'transport/available_transportation_types_to_referral_facility/ambulance'))
 
+        sleep(1)
         # test xls without default split select multiples
         response = self.client.post(create_xls_export_url, custom_params)
         self.assertEqual(response.status_code, 302)
