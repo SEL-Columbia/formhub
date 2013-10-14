@@ -379,6 +379,15 @@ class TestFormShow(MainTestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
 
+    def test_enketo_preview_works_on_shared_forms(self):
+        self.xform.shared = True
+        self.xform.save()
+        url = reverse(
+            enketo_preview, kwargs={'username': self.user.username,
+                                    'id_string': self.xform.id_string})
+        response = self.anon.get(url)
+        self.assertEqual(response.status_code, 302)
+
     def test_form_urls_case_insensitive(self):
         url = reverse(show, kwargs={
             'username': self.user.username.upper(),
