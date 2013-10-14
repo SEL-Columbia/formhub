@@ -1930,7 +1930,7 @@ class TestExportBuilder(MainTestCase):
             "_submission_time": "2013-07-03T08:25:30",
             "age": "107",
             "_uuid": "2a8129f5-3091-44e1-a579-bed2b07a12cf",
-            "when": "1899-07-03",
+            "when": "2013-07-03",
             "_deleted_at": None,
             "amount": "250.0",
             "_geolocation": [
