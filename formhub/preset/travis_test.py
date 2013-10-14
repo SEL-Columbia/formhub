@@ -1,34 +1,22 @@
-# this system uses structured settings.py as defined in http://www.slideshare.net/jacobian/the-best-and-worst-of-django
-
+# this preset is used for automated testing of formhub
+#
 from formhub.settings import *
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-TEMPLATE_STRING_IF_INVALID = ''
-
-# see: http://docs.djangoproject.com/en/dev/ref/settings/#databases
-
-#postgres
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'formhub_dev',
-        'USER': 'formhub_dev',
-        'PASSWORD': '12345678',
-        'HOST': 'localhost',
-        'OPTIONS': {
-            'autocommit': True,  # NOTE: this option becomes obsolete in django 1.6
-        }
-    },
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'formhub_test',
+        'USER': 'travis',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+    }
 }
 
-# TIME_ZONE = 'UTC'
 
-TOUCHFORMS_URL = 'http://localhost:9000/'
+if PRINT_EXCEPTION and DEBUG:
+    MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
 
-SECRET_KEY = 'mlfs33^s1l4xf6a36$0#srgcpj%dd*sisfo6HOktYXB9y'
-
-TESTING_MODE = False
 if len(sys.argv) >= 2 and (sys.argv[1] == "test" or sys.argv[1] == "test_all"):
     # This trick works only when we run tests from the command line.
     TESTING_MODE = True
@@ -48,8 +36,6 @@ if TESTING_MODE:
 else:
     MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media/')
 
-if PRINT_EXCEPTION and DEBUG:
-    MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
 # Clear out the test database
 if TESTING_MODE:
     MONGO_DB.instances.drop()

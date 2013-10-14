@@ -82,6 +82,7 @@ ENKETO_API_SURVEY_PATH = '/api_v1/survey'
 ENKETO_API_INSTANCE_PATH = '/api_v1/instance'
 ENKETO_PREVIEW_URL = ENKETO_URL + 'webform/preview'
 ENKETO_API_TOKEN = ''
+ENKETO_API_INSTANCE_IFRAME_URL = ENKETO_URL + "api_v1/instance/iframe"
 
 # Login URLs
 LOGIN_URL = '/accounts/login/'
@@ -161,9 +162,11 @@ INSTALLED_APPS = (
     'django_nose',
     'django_digest',
     'corsheaders',
+    'oauth2_provider',
     'rest_framework',
     'rest_framework_swagger',
     'rest_framework.authtoken',
+    'taggit',
     'odk_logger',
     'odk_viewer',
     'main',
@@ -175,6 +178,14 @@ INSTALLED_APPS = (
     'stats',
     'sms_support',
 )
+
+OAUTH2_PROVIDER = {
+    # this is the list of available scopes
+    'SCOPES': {
+        'read': 'Read scope',
+        'write': 'Write scope',
+        'groups': 'Access to your groups'}
+}
 
 REST_FRAMEWORK = {
     # Use hyperlinked styles by default.
@@ -330,8 +341,6 @@ NOSE_ARGS = ['--with-fixture-bundling']
 #    'utils.nose_plugins.SilenceSouth'
 #]
 
-TESTING_MODE = False
-
 # re-captcha in registrations
 REGISTRATION_REQUIRE_CAPTCHA = False
 RECAPTCHA_USE_SSL = False
@@ -340,6 +349,11 @@ RECAPTCHA_PUBLIC_KEY = '6Ld52OMSAAAAAJJ4W-0TFDTgbznnWWFf0XuOSaB6'
 
 ENKETO_API_INSTANCE_IFRAME_URL = "https://enketo-dev.formhub.org/api_v1/instance/iframe"
 ENKETO_API_TOKEN = "---"
+
+try:  # legacy setting for old sites who still use a local_settings.py file and have not updated to presets/
+    from local_settings import *
+except ImportError:
+    pass
 
 # MongoDB
 if MONGO_DATABASE.get('USER') and MONGO_DATABASE.get('PASSWORD'):
