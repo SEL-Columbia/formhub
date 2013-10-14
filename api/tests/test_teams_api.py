@@ -19,7 +19,8 @@ class TestTeamsAPI(TestAPICase):
         request = self.factory.get('/', **self.extra)
         response = self.view(request)
         owner_team = {
-            'url': 'http://testserver/api/v1/teams/denoinc/1',
+            'url':
+            'http://testserver/api/v1/teams/denoinc/%s' % self.owner_team.pk,
             'name': u'Owners',
             'organization': 'http://testserver/api/v1/users/denoinc',
             'projects': []}
@@ -52,10 +53,13 @@ class TestTeamsAPI(TestAPICase):
             '/', data=json.dumps(data),
             content_type="application/json", **self.extra)
         response = self.view(request, owner='denoinc')
+        self.assertEqual(response.status_code, 201)
+        self.owner_team = Team.objects.get(
+            organization=self.organization.user,
+            name='%s#Owners' % (self.organization.user.username))
         team = Team.objects.get(
             organization=self.organization.user,
             name='%s#%s' % (self.organization.user.username, data['name']))
-        self.assertEqual(response.status_code, 201)
         data['url'] = 'http://testserver/api/v1/teams/denoinc/%s' % team.pk
         self.assertDictContainsSubset(data, response.data)
         self.team_data = response.data

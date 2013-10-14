@@ -252,13 +252,35 @@ class QuickConverterDropboxURL(forms.Form):
         label=ugettext_lazy('XLS URL'), required=False)
 
 
+class QuickConverterTextXlsForm(forms.Form):
+    text_xls_form = forms.CharField(
+        label=ugettext_lazy('XLSForm Representation'), required=False)
+
+
 class QuickConverter(QuickConverterFile, QuickConverterURL,
-                     QuickConverterDropboxURL):
+                     QuickConverterDropboxURL, QuickConverterTextXlsForm):
     validate = URLValidator()
 
     def publish(self, user, id_string=None):
         if self.is_valid():
-            cleaned_xls_file = self.cleaned_data['xls_file']
+            # If a text (csv) representation of the xlsform is present,
+            # this will save the file and pass it instead of the 'xls_file'
+            # field.
+            if 'text_xls_form' in self.cleaned_data\
+               and self.cleaned_data['text_xls_form'].strip():
+                csv_data = self.cleaned_data['text_xls_form']
+
+                # assigning the filename to a random string (quick fix)
+                import random
+                rand_name = "uploaded_form_%s.csv" % \
+                    ''.join(random.sample("abcdefghijklmnopqrstuvwxyz0123456789", 6))
+
+                cleaned_xls_file = \
+                    default_storage.save(upload_to(None, rand_name, user.username), \
+                        ContentFile(csv_data))
+            else:
+                cleaned_xls_file = self.cleaned_data['xls_file']
+
             if not cleaned_xls_file:
                 cleaned_url = self.cleaned_data['xls_url']
                 if cleaned_url.strip() == u'':

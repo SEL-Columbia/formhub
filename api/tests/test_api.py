@@ -8,9 +8,12 @@ from django.test import RequestFactory
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
 
-from api.models import OrganizationProfile
+from utils.user_auth import set_api_permissions_for_user
+
+from api.models import OrganizationProfile, Project
 from api.views import OrgProfileViewSet
 from api.views import ProjectViewSet
+from api.serializers import ProjectSerializer
 
 
 class TestAPICase(TestCase):
@@ -19,6 +22,7 @@ class TestAPICase(TestCase):
         super(TestAPICase, self).setUp()
         self.factory = RequestFactory()
         self._login_user_and_profile()
+        self.maxDiff = None
 
     def _set_api_permissions(self, user):
         add_userprofile = Permission.objects.get(
@@ -54,7 +58,7 @@ class TestAPICase(TestCase):
                                   password='bobbob'))
             self.extra = {
                 'HTTP_AUTHORIZATION': 'Token %s' % self.user.auth_token}
-            self._set_api_permissions(self.user)
+            set_api_permissions_for_user(self.user)
 
     def _org_create(self):
         view = OrgProfileViewSet.as_view({
@@ -106,18 +110,20 @@ class TestAPICase(TestCase):
             content_type="application/json", **self.extra)
         response = view(request, owner='bob')
         self.assertEqual(response.status_code, 201)
-        data['url'] = 'http://testserver/api/v1/projects/bob/%s' % 1
+        self.project = Project.objects.filter(name=data['name'])[0]
+        data['url'] = 'http://testserver/api/v1/projects/bob/%s'\
+            % self.project.pk
         self.assertDictContainsSubset(data, response.data)
-        self.project_data = response.data
+        self.project_data = ProjectSerializer(
+            self.project, context={'request': request}).data
 
     def _publish_xls_form_to_project(self):
         self._project_create()
         view = ProjectViewSet.as_view({
             'post': 'forms'
         })
+        project_id = self.project.pk
         data = {
-            'url': 'http://testserver/api/v1/forms/bob/1',
-            'formid': 1,
             'owner': 'http://testserver/api/v1/users/bob',
             'public': False,
             'public_data': False,
@@ -137,7 +143,12 @@ class TestAPICase(TestCase):
         with open(path) as xls_file:
             post_data = {'xls_file': xls_file}
             request = self.factory.post('/', data=post_data, **self.extra)
-            response = view(request, owner='bob', pk=1)
+            response = view(request, owner='bob', pk=project_id)
             self.assertEqual(response.status_code, 201)
+            self.xform = self.user.xforms.all()[0]
+            data.update({
+                'url':
+                'http://testserver/api/v1/forms/bob/%s' % self.xform.pk
+            })
             self.assertDictContainsSubset(data, response.data)
             self.form_data = response.data

@@ -33,7 +33,7 @@ class TestFormAPI(MainTestCase):
         d = dict_for_mongo_without_userform_id(
             self.xform.surveys.all()[0].parsed_instance)
         find_d = json.loads(response.content)[0]
-        self.assertEqual(sorted(find_d, key=find_d.get), sorted(d, key=d.get))
+        self.assertEqual(find_d, d)
 
     def test_api_with_query(self):
         # query string
@@ -43,7 +43,7 @@ class TestFormAPI(MainTestCase):
         self.assertEqual(response.status_code, 200)
         d = dict_for_mongo_without_userform_id(self.xform.surveys.all()[0].parsed_instance)
         find_d = json.loads(response.content)[0]
-        self.assertEqual(sorted(find_d, key=find_d.get), sorted(d, key=d.get))
+        self.assertEqual(find_d, d)
 
     def test_api_query_no_records(self):
         # query string
@@ -70,7 +70,7 @@ class TestFormAPI(MainTestCase):
         content = response.content[start: end]
         d = dict_for_mongo_without_userform_id(self.xform.surveys.all()[0].parsed_instance)
         find_d = json.loads(content)[0]
-        self.assertEqual(sorted(find_d, key=find_d.get), sorted(d, key=d.get))
+        self.assertEqual(find_d, d)
 
     def test_api_with_query_start_limit(self):
         # query string
@@ -80,7 +80,7 @@ class TestFormAPI(MainTestCase):
         self.assertEqual(response.status_code, 200)
         d = dict_for_mongo_without_userform_id(self.xform.surveys.all()[0].parsed_instance)
         find_d = json.loads(response.content)[0]
-        self.assertEqual(sorted(find_d, key=find_d.get), sorted(d, key=d.get))
+        self.assertEqual(find_d, d)
 
     def test_api_with_query_invalid_start_limit(self):
         # query string
