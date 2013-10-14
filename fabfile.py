@@ -62,12 +62,12 @@ def deploy(deployment_name, branch='master'):
         run("git submodule update")
         run('find . -name "*.pyc" -exec rm -rf {} \;')
     # numpy pip install from requirments file fails
-    run_in_virtualenv("pip install numpy")
-    run_in_virtualenv("pip install -r %s" % env.pip_requirements_file)
+    run_in_virtualenv("pip install numpy --upgrade")
+    run_in_virtualenv("pip install -r %s --upgrade" % env.pip_requirements_file)
     with cd(env.code_src):
-        run_in_virtualenv("python manage.py syncdb")
-        run_in_virtualenv("python manage.py migrate")
-        run_in_virtualenv("python manage.py collectstatic --noinput")
+        run_in_virtualenv("python manage.py syncdb --settings='formhub.preset.local_settings'")
+        run_in_virtualenv("python manage.py migrate --settings='formhub.preset.local_settings'")
+        run_in_virtualenv("python manage.py collectstatic --settings='formhub.preset.local_settings' --noinput")
     run("sudo /etc/init.d/celeryd restart")
     run("sudo /etc/init.d/celerybeat restart")
     run("sudo reload gunicorn-formhub")

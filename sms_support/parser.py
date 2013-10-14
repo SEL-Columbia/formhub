@@ -265,10 +265,10 @@ def process_incoming_smses(username, incomings,
     def process_incoming(incoming, id_string):
         # assign variables
         if len(incoming) >= 2:
-            identity = incoming[0]
-            text = incoming[1]
+            identity = incoming[0].strip().lower()
+            text = incoming[1].strip().lower()
             # if the tuple contain an id_string, use it, otherwise default
-            if len(incoming) >= 3:
+            if len(incoming) and id_string is None >= 3:
                 id_string = incoming[2]
         else:
             responses.append({'code': SMS_API_ERROR,

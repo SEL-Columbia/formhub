@@ -1,37 +1,8 @@
-# mysql
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.mysql',
-#        'NAME': 'formhub_dev',
-#        'USER': 'formhub_dev',
-#        'PASSWORD': '',
-#    }
-#}
+### This file is now obsolete.....
+#
+# This project has been converted to structured settings
+#
+# refer to ./preset/example_sqlite.py
+#
+# move the things which were in your local_settings.py to ./preset
 
-# postgres
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        'NAME': 'formhub_dev',
-#        'USER': 'formhub_dev',
-#        'PASSWORD': '',
-#    }
-#}
-
-# sqlite
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
-    }
-}
-
-TOUCHFORMS_URL = 'http://localhost:9000/'
-
-MONGO_DATABASE = {
-    'HOST': 'localhost',
-    'PORT': 27017,
-    'NAME': 'formhub',
-    'USER': '',
-    'PASSWORD': ''
-}

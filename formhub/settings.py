@@ -1,35 +1,32 @@
 # vim: set fileencoding=utf-8
-
+# this system uses structured settings as defined in http://www.slideshare.net/jacobian/the-best-and-worst-of-django
+#
+# this is the base settings.py -- which contains settings common to all implementations of formhub: edit it at last resort
+#
+# local customizations should be done in several files each of which in turn imports this one.
+# The local files should be used as the value for your DJANGO_SETTINGS_FILE environment variable as needed.
+# For example, the bin/postactivate file in your virtual environment might look like:
 import os
 import subprocess
 import sys
 
 from pymongo import MongoClient
 
+
 import djcelery
 djcelery.setup_loader()
 
 CURRENT_FILE = os.path.abspath(__file__)
 PROJECT_ROOT = os.path.realpath(
-    os.path.join(os.path.dirname(CURRENT_FILE), '..'))
+    os.path.join(os.path.dirname(CURRENT_FILE), '..//'))
 PRINT_EXCEPTION = False
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/'
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
-
 MANAGERS = ADMINS
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
-    }
-}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -85,6 +82,7 @@ ENKETO_API_SURVEY_PATH = '/api_v1/survey'
 ENKETO_API_INSTANCE_PATH = '/api_v1/instance'
 ENKETO_PREVIEW_URL = ENKETO_URL + 'webform/preview'
 ENKETO_API_TOKEN = ''
+ENKETO_API_INSTANCE_IFRAME_URL = ENKETO_URL + "api_v1/instance/iframe"
 
 # Login URLs
 LOGIN_URL = '/accounts/login/'
@@ -109,8 +107,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'mlfs33^s1l4xf6a36$0#j%dd*sisfoi&)&4s-v=91#^l01v)*j'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -166,9 +162,10 @@ INSTALLED_APPS = (
     'django_nose',
     'django_digest',
     'corsheaders',
+    'oauth2_provider',
     'rest_framework',
-    'rest_framework_swagger',
     'rest_framework.authtoken',
+    'taggit',
     'odk_logger',
     'odk_viewer',
     'main',
@@ -181,6 +178,14 @@ INSTALLED_APPS = (
     'sms_support',
 )
 
+OAUTH2_PROVIDER = {
+    # this is the list of available scopes
+    'SCOPES': {
+        'read': 'Read scope',
+        'write': 'Write scope',
+        'groups': 'Access to your groups'}
+}
+
 REST_FRAMEWORK = {
     # Use hyperlinked styles by default.
     # Only used if the `serializer_class` attribute is not set on a view.
@@ -190,9 +195,11 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+        'rest_framework.permissions.DjangoModelPermissions'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
         #'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
@@ -323,7 +330,7 @@ CELERY_ALWAYS_EAGER = False
 AUTO_ADD_CROWDFORM = False
 DEFAULT_CROWDFORM = {'xform_username': 'bob', 'xform_id_string': 'transport'}
 
-# duration to keep zip exports before deletio (in seconds)
+# duration to keep zip exports before deletion (in seconds)
 ZIP_EXPORT_COUNTDOWN = 3600  # 1 hour
 
 # default content length for submission requests
@@ -335,44 +342,16 @@ NOSE_ARGS = ['--with-fixture-bundling']
 #    'utils.nose_plugins.SilenceSouth'
 #]
 
-TESTING_MODE = False
-if len(sys.argv) >= 2 and (sys.argv[1] == "test" or sys.argv[1] == "test_all"):
-    # This trick works only when we run tests from the command line.
-    TESTING_MODE = True
-else:
-    TESTING_MODE = False
-
-if TESTING_MODE:
-    MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'test_media/')
-    subprocess.call(["rm", "-r", MEDIA_ROOT])
-    MONGO_DATABASE['NAME'] = "formhub_test"
-    # need to have CELERY_ALWAYS_EAGER True and BROKER_BACKEND as memory
-    # to run tasks immediately while testing
-    CELERY_ALWAYS_EAGER = True
-    BROKER_BACKEND = 'memory'
-    ENKETO_API_TOKEN = 'abc'
-    #TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
-else:
-    MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media/')
-
-if PRINT_EXCEPTION and DEBUG:
-    MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
-
 # re-captcha in registrations
 REGISTRATION_REQUIRE_CAPTCHA = False
 RECAPTCHA_USE_SSL = False
 RECAPTCHA_PRIVATE_KEY = ''
 RECAPTCHA_PUBLIC_KEY = '6Ld52OMSAAAAAJJ4W-0TFDTgbznnWWFf0XuOSaB6'
 
-
-ENKETO_API_INSTANCE_IFRAME_URL = "https://enketo-dev.formhub.org/api_v1/instance/iframe"
-ENKETO_API_TOKEN = "---"
-
-try:
+try:  # legacy setting for old sites who still use a local_settings.py file and have not updated to presets/
     from local_settings import *
 except ImportError:
-    print("You can override the default settings by adding a "
-          "local_settings.py file.")
+    pass
 
 # MongoDB
 if MONGO_DATABASE.get('USER') and MONGO_DATABASE.get('PASSWORD'):
@@ -384,7 +363,3 @@ else:
 MONGO_CONNECTION = MongoClient(
     MONGO_CONNECTION_URL, safe=True, j=True, tz_aware=True)
 MONGO_DB = MONGO_CONNECTION[MONGO_DATABASE['NAME']]
-
-# Clear out the test database
-if TESTING_MODE:
-    MONGO_DB.instances.drop()

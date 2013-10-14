@@ -1,22 +1,26 @@
 import json
 
+from django import forms
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
+from django.contrib.contenttypes.models import ContentType
 
 from rest_framework import viewsets
 from rest_framework import exceptions
 from rest_framework import permissions
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.decorators import action
 from rest_framework.settings import api_settings
 from rest_framework.renderers import BaseRenderer
 
+from taggit.forms import TagField
+
 from api import serializers as api_serializers
 from api import mixins
+from api.signals import xform_tags_add, xform_tags_delete
 from api import tools as utils
 
 from utils.user_auth import check_and_set_form_by_id
@@ -320,7 +324,7 @@ Where:
   <b>GET</b> /api/v1/forms/<code>{owner}</code>/<code>{formid}</code>/form.<code>{format}</code></pre>
   > JSON Example
   >
-  >       curl -X GET https://formhub.org/api/v1/forms/28058/form.json
+  >       curl -X GET https://formhub.org/api/v1/forms/modilabs/28058/form.json
 
   > Response
   >
@@ -355,21 +359,116 @@ Where:
   >                 .....
   >          </h:body>
   >        </h:html>
+
+## Get list of forms with specific tag(s)
+
+Use the `tags` query parameter to filter the list of forms, `tags` should be a
+comma separated list of tags.
+
+  <pre class="prettyprint">
+  <b>GET</b> /api/v1/forms?<code>tags</code>=<code>tag1,tag2</code>
+  <b>GET</b> /api/v1/forms/<code>{owner}</code>?<code>tags</code>=<code>tag1,tag2</code></pre>
+
+ List forms tagged `smart` or `brand new` or both.
+  > Request
+  >
+  >       curl -X GET https://formhub.org/api/v1/forms?tag=smart,brand+new
+
+> Response
+>        HTTP 200 OK
+>
+>       [{
+>           "url": "https://formhub.org/api/v1/forms/modilabs/28058",
+>           "formid": 28058,
+>           "uuid": "853196d7d0a74bca9ecfadbf7e2f5c1f",
+>           "id_string": "Birds",
+>           "sms_id_string": "Birds",
+>           "title": "Birds",
+>           ...
+>       }, ...]
+
+
+## Get list of Tags for a specific Form
+  <pre class="prettyprint">
+  <b>GET</b> /api/v1/forms/<code>{owner}</code>/<code>{formid}</code>/labels</pre>
+  > Request
+  >
+  >       curl -X GET https://formhub.org/api/v1/forms/28058/labels
+
+  > Response
+  >
+  >       ["old", "smart", "clean house"]
+
+## Tag forms
+
+A `POST` payload of parameter `tags` with a comma separated list of tags.
+
+Examples
+
+- `animal fruit denim` - space delimited, no commas
+- `animal, fruit denim` - comma delimited
+
+ <pre class="prettyprint">
+  <b>POST</b> /api/v1/forms/<code>{owner}</code>/<code>{formid}</code>/labels</pre>
+
+Payload
+
+    {"tags": "tag1, tag2"}
+
+## Delete a specific tag
+
+ <pre class="prettyprint">
+  <b>DELETE</b> /api/v1/forms/<code>{owner}</code>/<code>{formid}</code>/labels/<code>tag_name</code></pre>
+
+  > Request
+  >
+  >       curl -X DELETE https://formhub.org/api/v1/forms/modilabs/28058/labels/tag1
+  > or to delete the tag "hello world"
+  >
+  >       curl -X DELETE https://formhub.org/api/v1/forms/modilabs/28058/labels/hello%20world
+  >
+  > Response
+  >
+  >        HTTP 200 OK
     """
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES + [SurveyRenderer]
     queryset = XForm.objects.all()
     serializer_class = api_serializers.XFormSerializer
     lookup_fields = ('owner', 'pk')
     lookup_field = 'owner'
+    extra_lookup_fields = None
+    permission_classes = [permissions.DjangoModelPermissions, ]
 
     def get_queryset(self):
+        owner = self.kwargs.get('owner', None)
         user = self.request.user
         if user.is_anonymous():
             user = User.objects.get(pk=-1)
-        user_forms = user.xforms.values('pk')
-        project_forms = user.projectxform_set.values('xform')
-        return XForm.objects.filter(
+        project_forms = []
+        if owner:
+            owner = get_object_or_404(User, username=owner)
+            if owner != user:
+                xfct = ContentType.objects.get(
+                    app_label='odk_logger', model='xform')
+                xfs = user.userobjectpermission_set.filter(content_type=xfct)
+                user_forms = XForm.objects.filter(
+                    Q(pk__in=[xf.object_pk for xf in xfs]) | Q(shared=True),
+                    user=owner)\
+                    .select_related('user')
+            else:
+                user_forms = owner.xforms.values('pk')
+                project_forms = owner.projectxform_set.values('xform')
+        else:
+            user_forms = user.xforms.values('pk')
+            project_forms = user.projectxform_set.values('xform')
+        queryset = XForm.objects.filter(
             Q(pk__in=user_forms) | Q(pk__in=project_forms))
+        # filter by tags if available.
+        tags = self.request.QUERY_PARAMS.get('tags', None)
+        if tags and isinstance(tags, basestring):
+            tags = tags.split(',')
+            queryset = queryset.filter(tags__name__in=tags)
+        return queryset.distinct()
 
     @action(methods=['GET'])
     def form(self, request, format=None, **kwargs):
@@ -381,6 +480,39 @@ Where:
         else:
             data = json.loads(self.object.json)
         return Response(data)
+
+    @action(methods=['GET', 'POST', 'DELETE'], extra_lookup_fields=['label', ])
+    def labels(self, request, format='json', **kwargs):
+        class TagForm(forms.Form):
+            tags = TagField()
+        status = 200
+        self.object = self.get_object()
+        if request.method == 'POST':
+            form = TagForm(request.DATA)
+            if form.is_valid():
+                tags = form.cleaned_data.get('tags', None)
+                if tags:
+                    for tag in tags:
+                        self.object.tags.add(tag)
+                    xform_tags_add.send(
+                        sender=XForm, xform=self.object, tags=tags)
+                    status = 201
+        label = kwargs.get('label', None)
+        if request.method == 'GET' and label:
+            data = [
+                i['name']
+                for i in self.object.tags.filter(name=label).values('name')]
+        elif request.method == 'DELETE' and label:
+            count = self.object.tags.count()
+            self.object.tags.remove(label)
+            xform_tags_delete.send(sender=XForm, xform=self.object, tag=label)
+            # Accepted, label does not exist hence nothing removed
+            if count == self.object.tags.count():
+                status = 202
+            data = list(self.object.tags.names())
+        else:
+            data = list(self.object.tags.names())
+        return Response(data, status=status)
 
 
 class ProjectViewSet(mixins.MultiLookupMixin,
@@ -562,8 +694,9 @@ Where:
         if request.method.upper() == 'POST':
             survey = utils.publish_project_xform(request, project)
             if isinstance(survey, XForm):
+                xform = XForm.objects.get(pk=survey.pk)
                 serializer = api_serializers.XFormSerializer(
-                    survey, context={'request': request})
+                    xform, context={'request': request})
                 return Response(serializer.data, status=201)
             return Response(survey, status=400)
         filter = {'project': project}
@@ -677,7 +810,7 @@ Shows teams details and the projects the team is assigned to, where:
         return Response(serializer.data)
 
 
-class DataList(APIView):
+class DataViewSet(viewsets.ViewSet):
     """
 This endpoint provides access to submitted data in JSON format. Where:
 
@@ -797,18 +930,134 @@ Get a single specific submission json data providing `formid`
   >                "subscriberid": "639027...60317"
   >            }
   >        ]
+
+## Query submitted data of a specific form
+Provides a list of json submitted data for a specific form. Use `query`
+parameter to apply form data specific, see
+<a href="http://www.mongodb.org/display/DOCS/Querying.">
+http://www.mongodb.org/display/DOCS/Querying</a>.
+
+For more details see
+<a href="https://github.com/modilabs/formhub/wiki/Formhub-Access-Points-(API)#api-parameters">
+API Parameters</a>.
+ <pre class="prettyprint">
+  <b>GET</b> /api/v1/data/<code>{owner}</code>/<code>{formid}</code>?query={"field":"value"}</pre>
+  > Example
+  >
+  >       curl -X GET
+  >       https://formhub.org/api/v1/data/modilabs/22845?query={"kind": "monthly"}
+
+  > Response
+  >
+  >        [
+  >            {
+  >                "_id": 4503,
+  >                "_bamboo_dataset_id": "",
+  >                "_deleted_at": null,
+  >                "expense_type": "service",
+  >                "_xform_id_string": "exp",
+  >                "_geolocation": [
+  >                    null,
+  >                    null
+  >                ],
+  >                "end": "2013-01-03T10:26:25.674+03",
+  >                "start": "2013-01-03T10:25:17.409+03",
+  >                "expense_date": "2011-12-23",
+  >                "_status": "submitted_via_web",
+  >                "today": "2013-01-03",
+  >                "_uuid": "2e599f6fe0de42d3a1417fb7d821c859",
+  >                "imei": "351746052013466",
+  >                "formhub/uuid": "46ea15e2b8134624a47e2c4b77eef0d4",
+  >                "kind": "monthly",
+  >                "_submission_time": "2013-01-03T02:27:19",
+  >                "required": "yes",
+  >                "_attachments": [],
+  >                "item": "Rent",
+  >                "amount": "35000.0",
+  >                "deviceid": "351746052013466",
+  >                "subscriberid": "639027...60317"
+  >            },
+  >            {
+  >                ....
+  >                "subscriberid": "639027...60317"
+  >            }
+  >        ]
+
+## Query submitted data of a specific form using Tags
+Provides a list of json submitted data for a specific form matching specific
+tags. Use the `tags` query parameter to filter the list of forms, `tags`
+should be a comma separated list of tags.
+
+ <pre class="prettyprint">
+  <b>GET</b> /api/v1/data?<code>tags</code>=<code>tag1,tag2</code></pre>
+ <pre class="prettyprint">
+  <b>GET</b> /api/v1/data/<code>{owner}</code>?<code>tags</code>=<code>tag1,tag2</code></pre>
+ <pre class="prettyprint">
+  <b>GET</b> /api/v1/data/<code>{owner}</code>/<code>{formid}</code>?<code>tags</code>=<code>tag1,tag2</code></pre>
+
+  > Example
+  >
+  >       curl -X GET https://formhub.org/api/v1/data/modilabs/22845?tags=monthly
+
+## Tag a submission data point
+
+A `POST` payload of parameter `tags` with a comma separated list of tags.
+
+Examples
+
+- `animal fruit denim` - space delimited, no commas
+- `animal, fruit denim` - comma delimited
+
+ <pre class="prettyprint">
+  <b>POST</b> /api/v1/data/<code>{owner}</code>/<code>{formid}</code>/<code>{dataid}</code>/labels</pre>
+
+Payload
+
+    {"tags": "tag1, tag2"}
+
+## Delete a specific tag from a submission
+
+ <pre class="prettyprint">
+  <b>DELETE</b> /api/v1/data/<code>{owner}</code>/<code>{formid}</code>/<code>{dataid}</code>/labels/<code>tag_name</code></pre>
+
+  > Request
+  >
+  >       curl -X DELETE https://formhub.org/api/v1/data/modilabs/28058/20/labels/tag1
+  or to delete the tag "hello world"
+  >
+  >       curl -X DELETE https://formhub.org/api/v1/data/modilabs/28058/20/labels/hello%20world
+  >
+  > Response
+  >
+  >        HTTP 200 OK
     """
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, ]
+    lookup_field = 'owner'
+    lookup_fields = ('owner', 'formid', 'dataid')
+    extra_lookup_fields = None
+
     queryset = Instance.objects.all()
 
-    def _get_formlist_data_points(self, request, owner=None):
+    def _get_accessible_forms(self, owner=None):
         xforms = []
-        # list public points incase anonymous user
-        if request.user.is_anonymous():
+        # list public forms incase anonymous user
+        if self.request.user.is_anonymous():
             xforms = XForm.public_forms().order_by('?')[:10]
+            # select only  the random 10, allows chaining later on
+            xforms = XForm.objects.filter(pk__in=[x.pk for x in xforms])
         else:
             xforms = XForm.objects.filter(user__username=owner)
+        return xforms.distinct()
+
+    def _get_formlist_data_points(self, request, owner=None):
+        xforms = self._get_accessible_forms(owner)
+        # filter by tags if available.
+        tags = self.request.QUERY_PARAMS.get('tags', None)
+        if tags and isinstance(tags, basestring):
+            tags = tags.split(',')
+            xforms = xforms.filter(tags__name__in=tags).distinct()
         rs = {}
-        for xform in xforms:
+        for xform in xforms.distinct():
             point = {u"%s" % xform.id_string:
                      reverse("data-list", kwargs={
                              "formid": xform.pk,
@@ -818,32 +1067,29 @@ Get a single specific submission json data providing `formid`
         return rs
 
     def _get_form_data(self, xform, **kwargs):
+        query = kwargs.get('query', {})
+        query = query if query is not None else {}
+        if xform:
+            query[ParsedInstance.USERFORM_ID] =\
+                u'%s_%s' % (xform.user.username, xform.id_string)
+        query = json.dumps(query) if isinstance(query, dict) else query
         margs = {
-            'username': xform.user.username,
-            'id_string': xform.id_string,
-            'query': kwargs.get('query', None),
+            'query': query,
             'fields': kwargs.get('fields', None),
             'sort': kwargs.get('sort', None)
         }
-        # TODO: Possibly add "url" field to all data records
-        cursor = ParsedInstance.query_mongo(**margs)
+        cursor = ParsedInstance.query_mongo_minimal(**margs)
         records = list(record for record in cursor)
         return records
 
-    def get(self, request, owner=None, formid=None, dataid=None, **kwargs):
-        """
-        Display submission data.
-        If no parameter is given, it displays a dictionary of public data urls.
-
-        formid - primary key for the form
-        dataid - primary key for the data submission
-        """
+    def list(self, request, owner=None, formid=None, dataid=None, **kwargs):
         data = None
         xform = None
         query = None
+        tags = self.request.QUERY_PARAMS.get('tags', None)
         if owner is None and not request.user.is_anonymous():
             owner = request.user.username
-        if not formid and not dataid:
+        if not formid and not dataid and not tags:
             data = self._get_formlist_data_points(request, owner)
         if formid:
             xform = check_and_set_form_by_id(int(formid), request)
@@ -851,10 +1097,69 @@ Get a single specific submission json data providing `formid`
                 raise exceptions.PermissionDenied(
                     _("You do not have permission to "
                       "view data from this form."))
+        if xform and dataid and dataid == 'labels':
+            return Response(list(xform.tags.names()))
         if xform and dataid:
-            query = json.dumps({'_id': int(dataid)})
+            query = {'_id': int(dataid)}
+        rquery = request.QUERY_PARAMS.get('query', None)
+        if rquery:
+            rquery = json.loads(rquery)
+            if query:
+                rquery.update(json.loads(query))
+        if tags:
+            query = query if query else {}
+            query['_tags'] = {'$all': tags.split(',')}
         if xform:
+            data = self._get_form_data(xform, query=query)
+        if not xform and not data:
+            xforms = self._get_accessible_forms(owner)
+            query[ParsedInstance.USERFORM_ID] = {
+                '$in': [
+                    u'%s_%s' % (form.user.username, form.id_string)
+                    for form in xforms]
+            }
+            # query['_id'] = {'$in': [form.pk for form in xforms]}
             data = self._get_form_data(xform, query=query)
         if dataid and len(data):
             data = data[0]
         return Response(data)
+
+    @action(methods=['GET', 'POST', 'DELETE'], extra_lookup_fields=['label', ])
+    def labels(self, request, owner, formid, dataid, **kwargs):
+        class TagForm(forms.Form):
+            tags = TagField()
+        if owner is None and not request.user.is_anonymous():
+            owner = request.user.username
+        xform = check_and_set_form_by_id(int(formid), request)
+        if not xform:
+            raise exceptions.PermissionDenied(
+                _("You do not have permission to "
+                    "view data from this form."))
+        status = 400
+        instance = get_object_or_404(ParsedInstance, instance__pk=int(dataid))
+        if request.method == 'POST':
+            form = TagForm(request.DATA)
+            if form.is_valid():
+                tags = form.cleaned_data.get('tags', None)
+                if tags:
+                    for tag in tags:
+                        instance.instance.tags.add(tag)
+                    instance.save()
+                    status = 201
+        label = kwargs.get('label', None)
+        if request.method == 'GET' and label:
+            data = [
+                i['name'] for i in
+                instance.instance.tags.filter(name=label).values('name')]
+        elif request.method == 'DELETE' and label:
+            count = instance.instance.tags.count()
+            instance.instance.tags.remove(label)
+            # Accepted, label does not exist hence nothing removed
+            if count == instance.instance.tags.count():
+                status = 202
+            data = list(instance.instance.tags.names())
+        else:
+            data = list(instance.instance.tags.names())
+        if request.method == 'GET':
+            status = 200
+        return Response(data, status=status)

@@ -418,6 +418,10 @@ class TestSite(MainTestCase):
         for i in range(1, actual_sheet.nrows):
             actual_row = actual_sheet.row_values(i)
             expected_row = expected_sheet.row_values(i)
+
+            # remove _id from result set, varies depending on the database
+            del actual_row[22]
+            del expected_row[22]
             self.assertEqual(actual_row, expected_row)
 
     def _check_delete(self):
@@ -506,3 +510,14 @@ class TestSite(MainTestCase):
         calculate_bind_node = calculate_bind_nodes[0]
         self.assertEqual(
             calculate_bind_node.getAttribute("calculate"), "'%s'" % xform.uuid)
+
+    def test_csv_publishing(self):
+        csv_text = 'survey,,\n,type,name,label\n,text,whatsyourname,"What is your name?"\nchoices,,'
+        url = reverse('main.views.profile',
+                      kwargs={'username': self.user.username})
+        num_xforms = XForm.objects.count()
+        params = {
+            'text_xls_form': csv_text
+        }
+        response = self.client.post(url, params)
+        self.assertEqual(XForm.objects.count(), num_xforms + 1)

@@ -9,11 +9,11 @@ from django.contrib import admin
 
 admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     # change Language
     (r'^i18n/', include('django.conf.urls.i18n')),
     url('^api/v1/', include(router.urls)),
-    #url(r'^api-docs/', include('rest_framework_swagger.urls', namespace='swagger')),
     url(r'^api-docs/', RedirectView.as_view(url='/api/v1/')),
     url(r'^api/', RedirectView.as_view(url='/api/v1/')),
     url(r'^api/v1', RedirectView.as_view(url='/api/v1/')),
@@ -22,6 +22,9 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('main.registration_urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+
+    # oath2_provider
+    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 
     # google urls
     url(r'^gauthtest/$',
@@ -129,15 +132,12 @@ urlpatterns = patterns('',
     url(r"^(?P<username>\w+)/(?P<id_string>[^/]+)/toggle_downloadable/$", 'odk_logger.views.toggle_downloadable'),
 
     # SMS support
-    url(r"^(?P<username>[^/]+)/sms_submission$", 'sms_support.views.import_submission', name='sms_submission'),
-    url(r"^(?P<username>[^/]+)/sms_multiple_submissions$", 'sms_support.views.import_multiple_submissions', name='sms_submissions'),
-
-    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/sms_submission$', 'sms_support.views.import_submission_for_form', name='sms_submission_form'),
-    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/sms_multiple_submissions$', 'sms_support.views.import_multiple_submissions_for_form', name='sms_submissions_form'),
-
-    # SMS Gateway APIs
-    url(r"^(?P<username>[^/]+)/sms_submission/(?P<service>[a-z]+)/?$", 'sms_support.providers.import_submission', name='sms_submission_api'),
     url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/sms_submission/(?P<service>[a-z]+)/?$', 'sms_support.providers.import_submission_for_form', name='sms_submission_form_api'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/sms_submission$', 'sms_support.views.import_submission_for_form', name='sms_submission_form'),
+    url(r"^(?P<username>[^/]+)/sms_submission/(?P<service>[a-z]+)/?$", 'sms_support.providers.import_submission', name='sms_submission_api'),
+    url(r'^(?P<username>[^/]+)/forms/(?P<id_string>[^/]+)/sms_multiple_submissions$', 'sms_support.views.import_multiple_submissions_for_form', name='sms_submissions_form'),
+    url(r"^(?P<username>[^/]+)/sms_multiple_submissions$", 'sms_support.views.import_multiple_submissions', name='sms_submissions'),
+    url(r"^(?P<username>[^/]+)/sms_submission$", 'sms_support.views.import_submission', name='sms_submission'),
 
     # static media
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',
