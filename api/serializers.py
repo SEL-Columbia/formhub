@@ -4,6 +4,7 @@ from django.forms import widgets
 from django.contrib.auth.models import User
 
 from rest_framework import serializers
+from rest_framework.exceptions import ParseError
 
 from main.models import UserProfile
 from main.forms import UserProfileForm, RegistrationFormUserProfile
@@ -112,6 +113,19 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
         return attrs
 
 
+class TagListSerializer(serializers.WritableField):
+
+    def from_native(self, data):
+        if type(data) is not list:
+            raise ParseError("expected a list of data")
+        return data
+
+    def to_native(self, obj):
+        if type(obj) is not list:
+            return [tag.name for tag in obj.all()]
+        return obj
+
+
 class XFormSerializer(serializers.HyperlinkedModelSerializer):
     url = HyperlinkedMultiIdentityField(
         view_name='xform-detail',
@@ -124,6 +138,7 @@ class XFormSerializer(serializers.HyperlinkedModelSerializer):
         source='shared', widget=widgets.CheckboxInput())
     public_data = serializers.BooleanField(
         source='shared_data')
+    tags = TagListSerializer()
 
     class Meta:
         model = XForm

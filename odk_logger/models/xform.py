@@ -10,6 +10,10 @@ from django.db.models.signals import post_save
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy, ugettext as _
 
+from guardian.shortcuts import assign_perm, get_perms_for_model
+
+from taggit.managers import TaggableManager
+
 from odk_logger.xform_instance_parser import XLSFormError
 from utils.stathat_api import stathat_count
 from stats.tasks import stat_log
@@ -66,6 +70,8 @@ class XForm(models.Model):
     uuid_node_location = 2
     uuid_bind_location = 4
     bamboo_dataset = models.CharField(max_length=60, default=u'')
+
+    tags = TaggableManager()
 
     class Meta:
         app_label = 'odk_logger'
@@ -149,6 +155,8 @@ class XForm(models.Model):
             except:
                 self.sms_id_string = self.id_string
         super(XForm, self).save(*args, **kwargs)
+        for perm in get_perms_for_model(XForm):
+            assign_perm(perm.codename, self.user, self)
 
     def __unicode__(self):
         return getattr(self, "id_string", "")
@@ -200,6 +208,5 @@ def stats_forms_created(sender, instance, created, **kwargs):
     if created:
         stathat_count('formhub-forms-created')
         stat_log.delay('formhub-forms-created', 1)
-
 
 post_save.connect(stats_forms_created, sender=XForm)

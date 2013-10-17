@@ -8,6 +8,7 @@ from odk_logger.xform_instance_parser import XFormInstanceParser, \
 from utils.model_tools import set_uuid
 from utils.stathat_api import stathat_count
 from django.utils.translation import ugettext as _
+from taggit.managers import TaggableManager
 
 
 class FormInactiveError(Exception):
@@ -53,6 +54,8 @@ class Instance(models.Model):
     status = models.CharField(max_length=20,
                               default=u'submitted_via_web')
     uuid = models.CharField(max_length=249, default=u'')
+
+    tags = TaggableManager()
 
     class Meta:
         app_label = 'odk_logger'

@@ -5,4 +5,9 @@
 # refer to ./settings/example.py
 #
 import Error # you have an incorrect set up!   (Use DJANGO_SETTINGS_MODULE=/formhub/settings/example or similar)
+#
+# refer to ./preset/example_sqlite.py
+#
+# move the things which were in your local_settings.py to ./preset
+
 

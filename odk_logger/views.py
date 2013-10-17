@@ -2,10 +2,11 @@ import json
 import os
 import tempfile
 from xml.parsers.expat import ExpatError
+import pytz
+
 from datetime import datetime
 from itertools import chain
 
-import pytz
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
@@ -25,7 +26,6 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 from django_digest import HttpDigestAuthenticator
 
-from utils import submission_time_validation
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound,\
     BaseOpenRosaResponse, \
@@ -43,7 +43,7 @@ from odk_logger.models.instance import FormInactiveError
 from odk_logger.models.attachment import Attachment
 from utils.log import audit_log, Actions
 from utils.viewer_tools import enketo_url
-from utils.submission_time_validation import Submission_Time_Validations
+from odk_logger.validations import validation_patterns
 
 @require_POST
 @csrf_exempt
@@ -209,7 +209,6 @@ def submission(request, username=None):
     context = RequestContext(request)
     xml_file_list = []
     media_files = []
-    stv = Submission_Time_Validations()  # get any STV definition errors early.
     html_response = False
     # request.FILES is a django.utils.datastructures.MultiValueDict
     # for each key we have a list of values
@@ -228,14 +227,13 @@ def submission(request, username=None):
         if not username and uuid:
             html_response = True
 
-        # call for submission time validations, if defined
-        if stv.dispatch:
-            response = stv.handler(username, xml_file_list[0], uuid, request)
-                # will return True to continue normal processing,
-                #  False to abort record loading silently (perhaps the validation will have saved the record itself)
+        # call for submission-time validations, if defined
+        if validation_patterns.dispatch:
+            inhibit = validation_patterns.handler(username, xml_file_list[0], uuid, request, media_files)
+                # will return None to continue normal processing,
                 #  or utils.logger_tools.OpenRosaResponseNotAcceptable to abort record loading with a message
-            if response is not True:
-                return response
+            if inhibit:
+                return inhibit
 
         try:
             instance = create_instance(
@@ -285,6 +283,7 @@ def submission(request, username=None):
             {
                 "id_string": instance.xform.id_string
             }, audit, request)
+
         # ODK needs two things for a form to be considered successful
         # 1) the status code needs to be 201 (created)
         # 2) The location header needs to be set to the host it posted to
