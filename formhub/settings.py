@@ -164,7 +164,6 @@ INSTALLED_APPS = (
     'corsheaders',
     'oauth2_provider',
     'rest_framework',
-    'rest_framework_swagger',
     'rest_framework.authtoken',
     'taggit',
     'odk_logger',
@@ -196,9 +195,11 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+        'rest_framework.permissions.DjangoModelPermissions'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
         #'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
@@ -347,9 +348,6 @@ RECAPTCHA_USE_SSL = False
 RECAPTCHA_PRIVATE_KEY = ''
 RECAPTCHA_PUBLIC_KEY = '6Ld52OMSAAAAAJJ4W-0TFDTgbznnWWFf0XuOSaB6'
 
-ENKETO_API_INSTANCE_IFRAME_URL = "https://enketo-dev.formhub.org/api_v1/instance/iframe"
-ENKETO_API_TOKEN = "---"
-
 try:  # legacy setting for old sites who still use a local_settings.py file and have not updated to presets/
     from local_settings import *
 except ImportError:
@@ -365,4 +363,3 @@ else:
 MONGO_CONNECTION = MongoClient(
     MONGO_CONNECTION_URL, safe=True, j=True, tz_aware=True)
 MONGO_DB = MONGO_CONNECTION[MONGO_DATABASE['NAME']]
-
