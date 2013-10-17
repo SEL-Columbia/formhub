@@ -11,9 +11,9 @@ django-templated-email==0.4.1
 gdata>=2.0.16
 httplib2
 mock>=1.0.1
-httmock>=1.0.4
+httmock>=1.0.6
 modilabs-python-utils>=0.1.5
-PIL>=1.1.7
+Pillow>=2.1.0
 poster>=0.8.1
 pymongo>=2.5.1
 lxml
