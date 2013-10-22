@@ -11,8 +11,14 @@
     <link rel="stylesheet" href="/static/css/leaflet.ie.css?v=0.6.2" />
     <link rel="stylesheet" href="/static/css/leaflet.draw.ie.css?v=0.2.0-dev" />
 <![endif]-->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
 <script type="text/javascript" src="/static/js/json2.js"></script>
-<script type="text/javascript" src="/static/js/leaflet.js?v=0.6.2"></script>
+<script type="text/javascript" src="/static/js/dv.js"></script>
+<script src="/static/js/d3.js" type="text/javascript"></script>
+<script src="/static/js/hex.js" type="text/javascript"></script>
+<script src="/static/js/d3.hexbin.js" type="text/javascript"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.6.4/leaflet.js"></script>
 <script type="text/javascript" src="/static/js/leaflet.draw.js?v=0.2.0-dev"></script>
 <script type="text/javascript" src="/static/js/mapbox.standalone.js?v=1.1.0"></script>
 <script type="text/javascript" src="/static/js/custom-button-leaflet.js"></script>
@@ -20,230 +26,10 @@
 <script type="text/javascript" src="/static/js/Google.js"></script>
 <script type="text/javascript" src="/static/js/wax.leaf.min.js?v=6.4.0"></script>
 <script type="text/javascript" src="/static/js/TileLayer.Bing.js"></script>
-<script type="text/javascript" src="/static/js/formManagers.js?ts=201303251542"></script>
-<script type="text/javascript" src="/static/js/jquery.ba-bbq.min.js"></script>
-<script type="text/javascript">
-	var center = {{ center|safe }};
-	var formJSONUrl = "{{ jsonform_url }}";
-	var enketoAddUrl = "{{ enketo_add_url }}";
-	var enketoEditUrl = "{{ enketo_edit_url }}";
-	enketoEditUrl = enketoEditUrl.slice(0, enketoEditUrl.length -1);
-	var mongoAPIUrl = "{{ mongo_api_url }}";
-	var deleteAPIUrl = "{{ delete_data_url }}";
-    var language_code = "{{LANGUAGE_CODE}}";
-	var attachmentsBaseUrl = "{% url "odk_viewer.views.attachment_url" %}";
-	var modalVisible = null;
-	var idToDelete = null;
-	$('#selectLanguage').live('change', function() {
-	    $('.language').hide();
-	    $('.' + $(this).val()).show();
-	});
-	function setMapHeight(){
-	  var newHeight = $(window).height()-
-	      $('.navbar-inner').height()
-	  $('#map_canvas').height(newHeight);
-	}
-
-	function refreshMap() {
-		return window.location.reload();
-	}
-
-	function highlightRefresh() {
-		var btn = $('.refresh-map');
-		btn.addClass('btn-warning');
-		btn.focus();
-	}
-
-	function cleanUpMap(addedPoint) {
-		// we could be smarter like: remove/re-add the marker layers
-		// and delete the pointer layer
-		// but there is just some much of the UI to change
-		// and progress bar is triggered anyway on .loadFormJSON();
-
-		// seems like modal was exited before submission was completed.
-		//	-> enketo does a redirect in that case.
-		// let's just remove a potential Marker
-		if (modalVisible === null || modalVisible === true) {
-			if (addedPoint === true) {
-				// remove last layer containing an icon.
-				var last_layer = null;
-				$.each(map._layers, function (idx, layer) {
-					last_layer = layer;
-				});
-				if (last_layer._icon !== undefined && last_layer._icon !== null) {
-					map.removeLayer(last_layer);
-				}
-			}
-			return;
-		}
-
-		// data has probably change. Trigger a full reload.
-		// window.location.reload();
-		highlightRefresh();
-	}
-
-	function displayDataModal(feature_id) {
-		var modalElem = $("#enketo-modal");
-
-		// restore non-iframe style
-		modalElem.css('overflow', 'auto');
-
-		// hide modal if exist
-		exitModal(modalElem);
-
-		addModalCloseButton(modalElem);
-
-		// set temporary content
-		var tempContent = $("<h3>Loading...</h3>");
-		modalElem.append(tempContent);
-
-		// launch the modal
-		modalElem.modal();
-
-		// launch data async retrieval
-		$.getJSON(mongoAPIUrl, {'query': '{"_id":' + feature_id + '}'})
-        .done(function(data){
-            var content;
-            if(data.length > 0)
-                content = JSONSurveyToHTML(data[0]);
-            else
-                content = $("<p>An unexpected error occurred</p>");
-            // replace content in modal
-            modalElem.empty();
-            addModalCloseButton(modalElem);
-            modalElem.append(content);
-
-            // click on the Edit button
-            $('button.edit-submission').click(function () {
-                var data_id = $(this).data('id');
-                var url = enketoEditUrl + data_id;
-                displayEnketoModal(url);
-            });
-
-            $('button.del-submission').click(function () {
-                var data_id = $(this).data('id');
-                requestDataDeletion(data_id);
-            });
-        });
-	}
-
-	function getEditUrl(submission_id) {
-		return enketoEditUrl + submission_id;
-	}
-
-	function getAddUrl(latlng) {
-		if (latlng !== undefined && latlng !== null) {
-			var llstr = latlng.toString();
-			var lld = llstr.substr(7, llstr.length - 8).replace(" ", "").split(",");
-			var lat = lld[0];
-			var lng = lld[1];
-			return enketoAddUrl + "?geocode_latitude=" + lat + "&geocode_longitude=" + lng;
-		}
-		return enketoAddUrl;
-	}
-
-	function exitModal(modalElem, addedPoint) {
-		$(modalElem).empty();
-		modalElem.css('overflow', 'auto');
-		$(modalElem).modal('hide');
-		cleanUpMap(addedPoint);
-		modalVisible = null;
-	}
-
-	function addModalCloseButton(modalElem, addedPoint) {
-        var modalHeader = $('<div>').addClass('modal-header').attr('style', 'border-bottom: none');
-    	var closeButton = $("<button />");
-    	closeButton.addClass('close').attr('data-dismiss', 'modal').html('&times;');
-    	closeButton.click(function () {
-    		exitModal($(this).parent(), addedPoint);
-    	});
-        modalHeader.append(closeButton);
-    	modalElem.append(modalHeader);
-	}
-
-	function displayEnketoModal(url, addedPoint) {
-		// small screens (phones) go straight to the target URL.
-		if ($(document).width() < 700) {
-			return window.location = url;
-		}
-
-    	$("#enketo-modal").empty();
-    	$("#enketo-modal").on('hidden', function() {
-    		exitModal($(this), addedPoint);
-    	});
-
-    	var aFrame = $('<iframe />');
-    	aFrame.attr('src', url);
-    	aFrame.attr('scrolling', 'yes');
-    	aFrame.attr('marginwidth', 0);
-    	aFrame.attr('marginheight', 0);
-    	aFrame.attr('frameborder', 0);
-    	aFrame.attr('vspace', 0);
-    	aFrame.attr('hspace', 0);
-
-    	// event fired when src attr changes
-    	aFrame.load(function(){
-    		// first time is the real load.
-			if (modalVisible === null) {
-				modalVisible = true;
-				return;
-			}
-			// second time is the redirect. close the modal
-			if (modalVisible === true) {
-				modalVisible = false;
-				exitModal($("#enketo-modal"), addedPoint);
-				return;
-			}
-		});
-		addModalCloseButton($("#enketo-modal"), addedPoint);
-    	$("#enketo-modal").append(aFrame);
-    	$("#enketo-modal").css('overflow', 'hidden');
-		$("#enketo-modal").modal();
-	}
-
-	function requestDataDeletion(feature_id) {
-		$('#enketo-modal').modal('hide');
-		idToDelete = feature_id;
-		$('#delete-modal').modal();
-	}
-
-	function deleteData(){
-    	$.post(deleteAPIUrl, {'id': idToDelete})
-            .success(function(data){
-            	highlightRefresh();
-            })
-            .error(function(){
-               alert("{% trans 'BAD REQUEST' %}");
-        	});
-        idToDelete = null;
-        $('#delete-modal').modal('hide');
-	}
-
-	$(document).ready(function() {
-	    setMapHeight();
-	    $('#progress-modal').modal({
-	        keyboard: false
-	    });
-
-	    // add a submission button
-	    $('.refresh-map').click(function () {
-	    	$(this).removeClass('btn-warning');
-	    	refreshMap();
-    	});
-	});
-
-	$(window).resize(setMapHeight);
-</script>
-<script src="/static/js/mapview.js?ts=201305301330" type="text/javascript"></script>
-<script src="/static/js/underscore-min.js" type="text/javascript"></script>
-<script src="/static/js/d3.js" type="text/javascript"></script>
-<script src="/static/js/dv.js" type="text/javascript"></script>
-<script src="/static/js/hex.js" type="text/javascript"></script>
-<script src="/static/js/d3.hexbin.js" type="text/javascript"></script>
 {% endblock %}
 
 {% block body %}
-<body onload="initialize()">
+<body>
   {% include "topbar.html" %}
 
   {% if mapbox_layer %}
@@ -271,5 +57,83 @@
 	      <a href="#" onclick="$('#delete-modal').modal('hide');" class="btn secondary">{% trans "Cancel" %}</a>
 	    </div>
 	</div>
+<script src="/static/js/map.js?ts=201310221330" type="text/javascript"></script>
+{% if mapbox_layer %}
+<script type="text/javascript">
+	var customMapBoxTileLayer = {label: '{{mapbox_layer.map_name}}', url: '{{mapbox_layer.link}}'};
+</script>
+{% endif %}
+<script type="text/javascript">
+	var center = {{ center|safe }};
+    var default_zoom = 13;
+	var formJSONUrl = "{{ jsonform_url }}";
+	var enketoAddUrl = "{{ enketo_add_url }}";
+	var enketoEditUrl = "{{ enketo_edit_url }}";
+	enketoEditUrl = enketoEditUrl.slice(0, enketoEditUrl.length - 1);
+	var mongoAPIUrl = "{{ mongo_api_url }}";
+	var deleteAPIUrl = "{{ delete_data_url }}";
+    var language_code = "{{LANGUAGE_CODE}}";
+	var attachmentsBaseUrl = "{% url "odk_viewer.views.attachment_url" %}";
+
+	function setMapHeight(){
+        var newHeight = $(window).height() - $('.navbar-inner').height();
+        $('#map_canvas').height(newHeight);
+	}
+
+    $(document).ready(setMapHeight);
+	$(window).resize(setMapHeight);
+
+    (function(){
+        FHMap.init('map_canvas', {
+            zoom: default_zoom,
+            center: [center.lat, center.lng]
+        });
+
+        var mapbox_layer_configs = [
+            {label: gettext('Mapbox Streets'), user: 'modilabs', map: 'map-iuetkf9u'},
+            {label: gettext('MapBox Streets Light'), user: 'modilabs', map: 'map-p543gvbh'},
+            {label: gettext('MapBox Streets Zenburn'), user: 'modilabs', map: 'map-bjhr55gf'},
+            {label: gettext('Cloudless Earth'), user: 'modilabs', map: 'map-aef58tqo'},
+            {label: gettext("Mapbox Streets (Français)"), user: 'modilabs', map: 'map-vdpjhtgz', lang: 'fr'},
+            {label: gettext("Mapbox Streets (Español)"), user: 'modilabs', map: 'map-5gjzjlah', lang: 'es'}
+        ];
+        var base_layers = [];
+
+        mapbox_layer_configs.forEach(function(layer_config){
+            var layer = new L.TileLayer.MapBox({user: layer_config.user, map: layer_config.map});
+            base_layers.push({
+                title: layer_config.label,
+                layer: layer,
+                lang: layer_config.lang,
+                is_custom: false
+            });
+        });
+
+        // check for a user defined map
+        if (typeof customMapBoxTileLayer !== "undefined" && customMapBoxTileLayer) {
+            base_layers.push({
+                title: customMapBoxTileLayer.label,
+                layer: L.tileLayer(customMapBoxTileLayer.url, {attribution: customMapBoxTileLayer.attribution}),
+                lang: customMapBoxTileLayer.lang,
+                is_custom: true
+            });
+        }
+
+        // add google sat layer
+        base_layers.push({
+            title: gettext("Google Satellite Map"),
+            layer: new L.Google('HYBRID'),
+            is_custom: false
+        });
+
+        // set default layer
+        FHMap.determineDefaultLayer(base_layers, language_code);
+
+        // add base layers
+        base_layers.forEach(function(base_layer){
+           FHMap.addBaseLayer(base_layer.layer, base_layer.title, base_layer.is_default);
+        });
+    })();
+</script>
 </body>
 {% endblock %}
