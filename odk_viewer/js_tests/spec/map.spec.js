@@ -1,13 +1,10 @@
 describe("Formhub Map", function () {
 
-    /*var map_el;
-     beforeEach(function(){
-     $('body').append($('<div id="map"></div>'));
-     });
-
-     it("creates a map on init", function() {
-     FHMap.init('map');
-     });*/
+    describe("Add Form", function(){
+        beforeEach(function () {
+            $('body').append($('<div id="map"></div>'));
+        });
+    });
 
     describe("determineDefaultLayer", function () {
         var predefined_layer_configs = [

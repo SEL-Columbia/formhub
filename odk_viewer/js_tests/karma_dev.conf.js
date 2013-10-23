@@ -14,12 +14,13 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js',
-      'http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js',
-      'http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js',
+      'http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.js',
+      'http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore.js',
+      'http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone.js',
       'http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.6.4/leaflet.js',
       'odk_viewer/static/js/map.js',
-      'odk_viewer/js_tests/spec/*.js'
+      'odk_viewer/static/js/xform.js',
+      'odk_viewer/js_tests/spec/*.spec.js'
     ],
 
 

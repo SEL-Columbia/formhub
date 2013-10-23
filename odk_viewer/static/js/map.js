@@ -1,5 +1,5 @@
 // Leaflet shortcuts for common tile providers - is it worth adding such 1.5kb to Leaflet core?
-
+// https://gist.github.com/mourner/1804938
 L.TileLayer.Common = L.TileLayer.extend({
 	initialize: function (options) {
 		L.TileLayer.prototype.initialize.call(this, this.url, options);
@@ -37,7 +37,6 @@ L.TileLayer.Common = L.TileLayer.extend({
 }());
 
 var FHMap = (function () {
-    var _backbone = Backbone.noConflict();
     var map, layers_control;
 
     var defaults = {
@@ -46,7 +45,9 @@ var FHMap = (function () {
     };
 
     return {
-        init: function (el, options) {
+        leaflet_map: map,
+
+        init: function (el, options){
             options = _.extend(defaults, options)
             map = L.map(el, {
                 zoom: options.zoom,
@@ -83,12 +84,21 @@ var FHMap = (function () {
             first.is_default = true;
         },
 
-        addBaseLayer: function(layer, title, is_default) {
+        addBaseLayer: function(layer, title, is_default){
             layers_control.addBaseLayer(layer, title);
             if(is_default !== undefined && is_default === true)
             {
                 map.addLayer(layer);
             }
+        },
+
+        addForm: function(form_url, data_url){
+            var form = new FHForm({}, {url: form_url});
+            form.init();
+            form.on('load', function(){
+                // get lat/lng fields
+                var geo_questions = form.questionsByType(FHForm.types.GEOLOCATION);
+            });
         }
     }
 })();
