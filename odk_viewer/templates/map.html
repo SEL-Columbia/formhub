@@ -57,7 +57,6 @@
 	      <a href="#" onclick="$('#delete-modal').modal('hide');" class="btn secondary">{% trans "Cancel" %}</a>
 	    </div>
 	</div>
-<script src="/static/js/xform.js?ts=201310231330" type="text/javascript"></script>
 <script src="/static/js/map.js?ts=201310221330" type="text/javascript"></script>
 {% if mapbox_layer %}
 <script type="text/javascript">
@@ -101,11 +100,7 @@
         var base_layers = [];
 
         mapbox_layer_configs.forEach(function(layer_config){
-            var layer = new L.TileLayer.MapBox({
-                user: layer_config.user,
-                map: layer_config.map,
-                attribution: gettext(" Map data (c) OpenStreetMap contributors, CC-BY-SA")
-            });
+            var layer = new L.TileLayer.MapBox({user: layer_config.user, map: layer_config.map});
             base_layers.push({
                 title: layer_config.label,
                 layer: layer,
@@ -138,8 +133,6 @@
         base_layers.forEach(function(base_layer){
            FHMap.addBaseLayer(base_layer.layer, base_layer.title, base_layer.is_default);
         });
-
-        FHMap.addForm(formJSONUrl, mongoAPIUrl);
     })();
 </script>
 </body>

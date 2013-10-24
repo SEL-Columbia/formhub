@@ -19,7 +19,6 @@ module.exports = function(config) {
       'http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js',
       'http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.6.4/leaflet.js',
       'odk_viewer/static/js/map.js',
-      'odk_viewer/static/js/xform.js',
       'odk_viewer/js_tests/spec/*.js'
     ],
 
@@ -32,7 +31,7 @@ module.exports = function(config) {
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['progress', 'coverage'],
+    reporters: ['progress'],
 
 
     // web server port
