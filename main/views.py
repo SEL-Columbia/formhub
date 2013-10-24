@@ -1346,7 +1346,7 @@ def logbook_auth(request):
     form = None
     if request.user and request.user.is_authenticated():
         username = request.user.username
-        form = 'FRP53_survey2'
+        form = settings.AK_LOGBOOK_SURVEY
         baseurl = request.get_host()
         # TODO clone it if form doesn't exist
 

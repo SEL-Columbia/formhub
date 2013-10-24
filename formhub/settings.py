@@ -365,9 +365,15 @@ RECAPTCHA_USE_SSL = False
 RECAPTCHA_PRIVATE_KEY = ''
 RECAPTCHA_PUBLIC_KEY = '6Ld52OMSAAAAAJJ4W-0TFDTgbznnWWFf0XuOSaB6'
 
-
 ENKETO_API_INSTANCE_IFRAME_URL = "https://enketo-dev.formhub.org/api_v1/instance/iframe"
 ENKETO_API_TOKEN = "---"
+
+################################################################################
+# AK Logbook specific settings
+AK_LOGBOOK_SURVEY = "frp_awc_survey"
+PERMIT_NUM_FIELD = "frp/perm_num"
+DATE_FIELD = "general/obs_date"
+################################################################################
 
 try:
     from local_settings import *
