@@ -60,28 +60,20 @@ var FHMap = (function () {
 
         determineDefaultLayer: function(base_layers, language_code){
             var custom_layer = _.find(base_layers, function(layer){
-               return layer.is_custom === true;
+                return layer.is_custom === true;
             });
-
-            if(custom_layer)
-            {
-                custom_layer.is_default = true;
-                return;
-            }
-
             var lang_specific_layer = _.find(base_layers, function(layer){
-               return layer.lang === language_code;
+                return layer.lang === language_code;
             });
 
-            if(lang_specific_layer)
-            {
+            if(custom_layer) {
+                custom_layer.is_default = true;
+            } else if (lang_specific_layer) {
                 lang_specific_layer.is_default = true;
-                return;
+            } else {
+                var first = _.values(base_layers)[0];
+                first.is_default = true;
             }
-
-            // were still here pick the first base layer as the default
-            var first = _.findWhere(base_layers, {is_custom: false, lang: undefined});
-            first.is_default = true;
         },
 
         addBaseLayer: function(layer, title, is_default){
