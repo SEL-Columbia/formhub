@@ -64,3 +64,4 @@ dpath
 # logbook-specific
 reportlab
 pyPdf
+xlutils
