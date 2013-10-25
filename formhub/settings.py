@@ -371,7 +371,7 @@ ENKETO_API_TOKEN = "---"
 ################################################################################
 # AK Logbook specific settings
 AK_LOGBOOK_SURVEY = "frp_awc_survey"
-PERMIT_NUM_FIELD = "frp/perm_num"
+PERMIT_NUM_FIELD = "general/perm_num"
 DATE_FIELD = "general/obs_date"
 ################################################################################
 
