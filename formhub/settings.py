@@ -371,8 +371,30 @@ ENKETO_API_TOKEN = "---"
 ################################################################################
 # AK Logbook specific settings
 AK_LOGBOOK_SURVEY = "frp_awc_survey"
-PERMIT_NUM_FIELD = "general/perm_num"
-DATE_FIELD = "general/obs_date"
+FIELD_MAP = {
+    'date': "general/obs_date",
+    'permit_num': "general/perm_num",
+    'species': "general/sps_name",
+    'species_group': "general/sps_grp",
+    'awc_num': "awc/awc_num",
+    'waterway': "general/wtr_nm",
+    'observation_type': "awc/observ",
+    "fishcollectionmethod": "frp/gear_type",
+    "lifestage": "frp/Lf_stg",
+    "length": "frp/lngth",
+    "lengthmethod": "frp/lngth_md",
+    "weight": "frp/wt",
+    "sex": "frp/sex",
+    "age": "frp/age",
+    "agemethod": "frp/age_md",
+    "gcl": "frp/gcl",
+    "add_cnt1": "frp/add_cnt1",
+    "disp1": "frp/disp1",
+    "add_cnt2": "frp/add_cnt2",
+    "disp2": "frp/disp2",
+    "comments": "frp/frp_comm",
+}
+
 ################################################################################
 
 try:
