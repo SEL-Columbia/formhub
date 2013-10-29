@@ -75,7 +75,7 @@ def get_obs_data(pi):
 
     return data
 
-def generate_pdf(id_string, submission_type, user, permit_nums):
+def generate_pdf(id_string, submission_type, observations, user, permit_nums):
     from odk_viewer.models import ParsedInstance
 
     all_instances = ParsedInstance.objects.filter(instance__user=user,
@@ -84,7 +84,8 @@ def generate_pdf(id_string, submission_type, user, permit_nums):
     # We should probably use the ORM filter for better performance but
     # I havent yet figured out how to query mongodb via ORM args
     pis = [x for x in all_instances 
-              if x.to_dict()[settings.FIELD_MAP['permit_num']] in permit_nums]
+              if x.to_dict()[settings.FIELD_MAP['permit_num']] in permit_nums
+              and x.to_dict()['meta/instanceID'] in observations]
 
     if len(pis) == 0:
         raise Http404
@@ -105,7 +106,6 @@ def generate_pdf(id_string, submission_type, user, permit_nums):
     }
 
     meta = extend_meta_profile(meta, user)
-
 
     # Create pdf
     packet = StringIO.StringIO()

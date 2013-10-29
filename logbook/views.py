@@ -19,9 +19,17 @@ def awc_pdf_export(request, username, id_string):
 
     permit_nums = request.GET.getlist('permit')
     submission_type = request.GET.get('submissionType', '')
+    observations = request.GET.get('observations', None)
+    if observations:
+        observations = ["uuid:" + x for x in observations.strip().split(",")]
+
+    if not observations or len(observations) < 1 or len(observations) > 5:
+        return HttpResponseBadRequest("Provide between 1 and 5 observations")
+
     if len(permit_nums) == 0:
         return HttpResponseBadRequest("Must provide at least one permit")
-    pdf = generate_pdf(id_string, submission_type,
+
+    pdf = generate_pdf(id_string, submission_type, observations,
         user=owner, permit_nums=permit_nums)
     response = HttpResponse(pdf, mimetype="application/pdf")
     response['Content-Disposition'] = disposition_ext_and_date(
