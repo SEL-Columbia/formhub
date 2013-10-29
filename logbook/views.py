@@ -18,9 +18,11 @@ def awc_pdf_export(request, username, id_string):
         return HttpResponseForbidden(_(u'Not shared.'))
 
     permit_nums = request.GET.getlist('permit')
+    submission_type = request.GET.get('submissionType', '')
     if len(permit_nums) == 0:
         return HttpResponseBadRequest("Must provide at least one permit")
-    pdf = generate_pdf(id_string, user=owner, permit_nums=permit_nums)
+    pdf = generate_pdf(id_string, submission_type,
+        user=owner, permit_nums=permit_nums)
     response = HttpResponse(pdf, mimetype="application/pdf")
     response['Content-Disposition'] = disposition_ext_and_date(
         '-'.join(permit_nums), 'pdf')
@@ -34,9 +36,12 @@ def frp_xls_export(request, username, id_string):
         return HttpResponseForbidden(_(u'Not shared.'))
 
     permit_nums = request.GET.getlist('permit')
-    if len(permit_nums) == 0:
-        return HttpResponseBadRequest("Must provide at least one permit")
-    pdf = generate_frp_xls(id_string, user=owner, permit_nums=permit_nums)
+    biol_date = request.GET.get('biologistContactDate', '')
+    if len(permit_nums) != 1:
+        return HttpResponseBadRequest("Must provide a single permit")
+
+    pdf = generate_frp_xls(id_string, biol_date,
+        user=owner, permit_nums=permit_nums)
     response = HttpResponse(pdf, mimetype="application/vnd.ms-excel")
     response['Content-Disposition'] = disposition_ext_and_date(
         '-'.join(permit_nums), 'xls')

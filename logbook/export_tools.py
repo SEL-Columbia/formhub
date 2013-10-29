@@ -73,7 +73,7 @@ def get_obs_data(pi):
 
     return data
 
-def generate_pdf(id_string, user, permit_nums):
+def generate_pdf(id_string, submission_type, user, permit_nums):
     from odk_viewer.models import ParsedInstance
 
     all_instances = ParsedInstance.objects.filter(instance__user=user,
@@ -98,8 +98,8 @@ def generate_pdf(id_string, user, permit_nums):
         'quad': get_usgs_quads(pts),
         'awc_num': awc_num,
         'awc_name': waterway, 
-        'awc_name_type': random.choice(['USGS', 'local']),  # TODO
-        'nomination_type': random.choice(['addition', 'deletion', 'correction', 'backup']),  # TODO 
+        'awc_name_type': 'local',  # TODO
+        'nomination_type': submission_type,
     }
 
     meta = extend_meta_profile(meta, user)
@@ -181,7 +181,7 @@ def generate_pdf(id_string, user, permit_nums):
     return final
 
 
-def generate_frp_xls(id_string, user, permit_nums):
+def generate_frp_xls(id_string, biol_date, user, permit_nums):
     from odk_viewer.models import ParsedInstance
     import xlrd
     from xlutils.copy import copy
@@ -207,7 +207,7 @@ def generate_frp_xls(id_string, user, permit_nums):
     meta = {
         'region': get_adfg_region(pts),
         'quad': get_usgs_quads(pts),
-        'biologist_contact': "1/1/2012"  # TODO
+        'biologist_contact': biol_date
     }
 
     meta = extend_meta_profile(meta, user)
