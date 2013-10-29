@@ -13,7 +13,7 @@ def get_usgs_quads(pts):
     from django.contrib.gis.gdal.datasource import DataSource
 
     shp_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
-                        "quads", 'quadgrid_4326.shp')
+                        "data", 'quadgrid_4326.shp')
     ds = DataSource(shp_path)
     layer = ds[0]
 
@@ -28,14 +28,10 @@ def get_usgs_quads(pts):
 
 
 def get_adfg_region(pts):
-    #
-    # JUST A PLACEHOLDER
-    #
     from django.contrib.gis.gdal.datasource import DataSource
 
     shp_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
-                        "quads", 'quadgrid_4326.shp')
-                        # TODO "quads", 'adfg_regions_4326.shp')
+                        "data", 'adfg_regions_4326.shp')
     ds = DataSource(shp_path)
     layer = ds[0]
 
@@ -44,7 +40,7 @@ def get_adfg_region(pts):
         lng, lat = pt
         buf = 0.00000001
         layer.spatial_filter = (lng - buf, lat - buf, lng + buf, lat + buf)
-        quads.extend([feat.get('Name') for feat in layer])
+        quads.extend([feat.get('REGION') for feat in layer])
 
     return ', '.join(set(quads))
 
