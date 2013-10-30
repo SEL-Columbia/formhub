@@ -395,6 +395,12 @@ FIELD_MAP = {
     "comments": "frp/frp_comm",
 }
 
+IGNORED_OUTPUT_FIELDS = [
+    "formhub/uuid",
+    "meta/instanceID",
+    "_xform_id_string"
+]
+
 ################################################################################
 
 try:

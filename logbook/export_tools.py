@@ -45,7 +45,6 @@ def get_adfg_region(pts):
     return ', '.join(set(quads))
 
 
-
 def extend_meta_profile(meta, user):
     profile = user.get_profile()
     uname = profile.name
@@ -173,6 +172,12 @@ def generate_pdf(id_string, submission_type, observations, user, permit_nums):
     page.mergePage(new_pdf.getPage(0))
     output.addPage(page)
 
+    # Add a page for each observation
+    for pi in pis:
+        obs_packet = get_obs_pdf(pi)
+        obs_pdf = PdfFileReader(obs_packet)
+        output.addPage(obs_pdf.getPage(0))
+
     # finally, return output
     outputStream = StringIO.StringIO()
     output.write(outputStream)
@@ -257,3 +262,80 @@ def generate_frp_xls(id_string, biol_date, user, permit_nums):
     final = content.getvalue() 
     content.close()
     return final
+
+
+def get_obs_pdf(pi):
+    import xhtml2pdf.pisa as pisa
+    import cStringIO as StringIO
+
+    point = {
+      'lat': pi.lat,
+      'lng': pi.lng,
+    }
+
+    # According to https://developers.google.com/maps/documentation/staticmaps/#api_key
+    # "Note that the use of a key is not required, though it is recommended."
+    # ... so we go without a key for simplicity
+    map_template = "http://maps.googleapis.com/maps/api/staticmap?center=%(lat)f,%(lng)f" \
+              "&size=800x600&maptype=terrain" \
+              "&markers=color:blue%%7C%(lat)f,%(lng)f&sensor=false" 
+
+    detail_map = map_template % point + "&zoom=12"
+    overview_map = map_template % point + "&zoom=8"
+
+    pi_dict = pi.to_dict()
+    data_dict = pi.data_dictionary
+
+    rows = ""
+    for key in sorted(pi_dict.keys()):
+        if key in settings.IGNORED_OUTPUT_FIELDS:
+            continue
+        val = pi_dict[key]
+        label = data_dict.get_label(key)
+        rows += """
+                <tr>
+                   <th>%s</th>
+                   <td align="left">%s</td>
+                </tr>
+        """ % (label, val)
+
+    html = """
+    <!-- EWWW table based layout (plays nicer with pisa) -->
+    <style>
+      td {text-align: left; vertical-align:top}
+      th {text-align: right; margin-right:20px}
+    </style>
+
+    <table>
+      <tr>
+        <td align="center" colspan="2">
+           <h2> Observation Summary </h2>
+           <br>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <p> Observation Detail </p>
+            <table>
+            %s
+            </table>
+        </td>
+        <td>
+            <p> Detail Map </p>
+            <img src="%s">  
+            <br>
+            <p> Overview Map </p>
+            <img src="%s">  
+        </td>
+      </tr>
+    </table>
+
+    """ % (rows, detail_map, overview_map)
+
+    result = StringIO.StringIO()
+    pdf = pisa.CreatePDF(html, result)
+    
+    if pdf.err:
+        raise Exception("Pisa failed to create a pdf for observation")
+    else:
+        return result

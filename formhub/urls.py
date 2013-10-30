@@ -103,8 +103,10 @@ urlpatterns = patterns('',
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.kml$", 'odk_viewer.views.kml_export'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/data\.zip", 'odk_viewer.views.zip_export'),
 
+    # Logbook specific views
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/awc\.pdf$", 'logbook.views.awc_pdf_export'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/frp\.xls$", 'logbook.views.frp_xls_export'),
+    url(r"^test.pdf$", 'logbook.views.test_pdf'),
 
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/gdocs$", 'odk_viewer.views.google_xls_export'),
     url(r"^odk_viewer/survey/(?P<instance_id>\d+)/$", 'odk_viewer.views.survey_responses'),

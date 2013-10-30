@@ -65,3 +65,4 @@ dpath
 reportlab
 pyPdf
 xlutils
+xhtml2pdf
