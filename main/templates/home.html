@@ -218,6 +218,12 @@
 <br>
 <br>
 
+{% endblock %}
 
-<script src="/static/js/slideshow.js"></script>
+{% block javascript %}
+
+    {{ block.super }}
+
+    <script src="/static/js/slideshow.js"></script>
+
 {% endblock %}
