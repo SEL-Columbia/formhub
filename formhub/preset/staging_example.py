@@ -6,6 +6,13 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 TEMPLATE_STRING_IF_INVALID = ''
 
+
+ADMINS = (
+    # ('Your Name', 'your_email@example.com'),
+)
+
+MANAGERS = ADMINS
+
 # see: http://docs.djangoproject.com/en/dev/ref/settings/#databases
 
 #postgres

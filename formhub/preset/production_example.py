@@ -4,15 +4,20 @@ from formhub.settings import *
 
 DEBUG = False  # this setting file will not work on "runserver" -- it needs a server for static files
 
+
+ADMINS = (
+    # ('Your Name', 'your_email@example.com'),
+)
+
+MANAGERS = ADMINS
+
 # override to set the actual location for the production static and media directories
 MEDIA_ROOT = '/var/formhub-media'
 STATIC_ROOT = "/srv/formhub-static"
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, "static"),
 )
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
+
 # your actual production settings go here...,.
 DATABASES = {
     'default': {
@@ -37,6 +42,9 @@ DATABASES = {
     }
 }
 
+#
+ALLOWED_HOSTS = ['my.domain.name.com']
+
 DATABASE_ROUTERS = ['formhub.preset.dbrouter.GisRouter']
 
 # Local time zone for this installation. Choices can be found here:
@@ -48,6 +56,44 @@ DATABASE_ROUTERS = ['formhub.preset.dbrouter.GisRouter']
 # system time zone.
 #TIME_ZONE = 'America/New_York'
 TIME_ZONE = 'Africa/Lagos'
+
+#EMAIL_HOST
+#
+#Default: 'localhost'
+#
+#The host to use for sending email.
+#
+#See also EMAIL_PORT.
+#EMAIL_HOST_PASSWORD
+#
+#Default: '' (Empty string)
+#
+#Password to use for the SMTP server defined in EMAIL_HOST. This setting is used in conjunction with EMAIL_HOST_USER when authenticating to the SMTP server. If either of these settings is empty, Django won’t attempt authentication.
+#
+#See also EMAIL_HOST_USER.
+#EMAIL_HOST_USER
+#
+#Default: '' (Empty string)
+#
+#Username to use for the SMTP server defined in EMAIL_HOST. If empty, Django won’t attempt authentication.
+#
+#See also EMAIL_HOST_PASSWORD.
+#EMAIL_PORT
+#
+#Default: 25
+#
+#Port to use for the SMTP server defined in EMAIL_HOST.
+#EMAIL_SUBJECT_PREFIX
+#
+#Default: '[Django] '
+#
+#Subject-line prefix for email messages sent with django.core.mail.mail_admins or django.core.mail.mail_managers. You’ll probably want to include the trailing space.
+#EMAIL_USE_TLS
+#
+#Default: False
+#
+#Whether to use a TLS (secure) connection when talking to the SMTP server. This is used for explicit TLS connections, generally on port 587. If you are experiencing hanging connections, see the implicit TLS setting EMAIL_USE_SSL.
+
 
 TOUCHFORMS_URL = 'http://localhost:9000/'
 
