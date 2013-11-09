@@ -31,7 +31,7 @@ TIME_ZONE = 'Africa/Lagos'
 
 EMAIL_HOST = 'smtp.gmail.com'  #The host to use for sending email.
 
-EMAIL_HOST_PASSWORD = "donotreply12345"
+EMAIL_HOST_PASSWORD = os.environ.get("FORMHUB_EMAIL_PASSWORD", "12345678")
 #Password to use for the SMTP server defined in EMAIL_HOST.
 EMAIL_HOST_USER = 'do.not.reply@ehealthnigeria.org'
 
