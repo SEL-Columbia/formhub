@@ -11,10 +11,6 @@ class Migration(SchemaMigration):
 
         # Changing field 'Attachment.mimetype'
         db.alter_column(u'odk_logger_attachment', 'mimetype', self.gf('django.db.models.fields.CharField')(max_length=50))
-        # Adding field 'XForm.encrypted'
-        db.add_column(u'odk_logger_xform', 'encrypted',
-                      self.gf('django.db.models.fields.BooleanField')(default=False),
-                      keep_default=False)
 
         # Adding field 'XForm.surveys_with_geopoints'
         db.add_column(u'odk_logger_xform', 'surveys_with_geopoints',
@@ -26,8 +22,6 @@ class Migration(SchemaMigration):
 
         # Changing field 'Attachment.mimetype'
         db.alter_column(u'odk_logger_attachment', 'mimetype', self.gf('django.db.models.fields.CharField')(max_length=20))
-        # Deleting field 'XForm.encrypted'
-        db.delete_column(u'odk_logger_xform', 'encrypted')
 
         # Deleting field 'XForm.surveys_with_geopoints'
         db.delete_column(u'odk_logger_xform', 'surveys_with_geopoints')
