@@ -140,6 +140,7 @@ def update_xform_submission_count(sender, instance, created, **kwargs):
     if created:
         xform = XForm.objects.select_for_update().get(pk=instance.xform.pk)
         xform.num_of_submissions += 1
+        xform.last_submission_time = instance.date_created
         xform.save()
 
 post_save.connect(update_xform_submission_count, sender=Instance,

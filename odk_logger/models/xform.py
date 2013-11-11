@@ -60,6 +60,7 @@ class XForm(models.Model):
     title = models.CharField(editable=False, max_length=64)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+    last_submission_time = models.DateTimeField(blank=True, null=True)
     has_start_time = models.BooleanField(default=False)
     uuid = models.CharField(max_length=32, default=u'')
 
@@ -186,11 +187,16 @@ class XForm(models.Model):
         ugettext_lazy("Geocoded Submission Count")
 
     def time_of_last_submission(self):
-        try:
-            return self.surveys.\
-                filter(is_deleted=False).latest("date_created").date_created
-        except ObjectDoesNotExist:
-            pass
+        if self.last_submission_time is None and self.num_of_submissions > 0:
+            try:
+                last_submission = self.surveys.\
+                    filter(is_deleted=False).latest("date_created")
+            except ObjectDoesNotExist:
+                pass
+            else:
+                self.last_submission_time = last_submission.date_created
+                self.save()
+        return self.last_submission_time
 
     def time_of_last_submission_update(self):
         try:
