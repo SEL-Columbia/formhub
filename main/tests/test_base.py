@@ -178,6 +178,7 @@ class MainTestCase(TestCase):
         self.assertEqual(self.xform.surveys.count(), post_count)
         xform = XForm.objects.get(pk=self.xform.pk)
         self.assertEqual(xform.num_of_submissions, post_count)
+        self.assertEqual(self.user.profile.num_of_submissions, post_count)
 
     def _check_url(self, url, timeout=1):
         try:

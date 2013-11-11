@@ -138,10 +138,15 @@ class Instance(models.Model):
 
 def update_xform_submission_count(sender, instance, created, **kwargs):
     if created:
-        xform = XForm.objects.select_for_update().get(pk=instance.xform.pk)
+        xform = XForm.objects.select_related().select_for_update()\
+            .get(pk=instance.xform.pk)
         xform.num_of_submissions += 1
         xform.last_submission_time = instance.date_created
         xform.save()
+        profile = User.profile.get_query_set().select_for_update()\
+            .get(pk=xform.user.profile.pk)
+        profile.num_of_submissions += 1
+        profile.save()
 
 post_save.connect(update_xform_submission_count, sender=Instance,
                   dispatch_uid='update_xform_submission_count')
