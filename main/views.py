@@ -226,40 +226,20 @@ def profile(request, username):
         context.odk_url = request.build_absolute_uri(
             "/%s" % request.user.username)
         xforms = XForm.objects.filter(user=content_user)\
-            .select_related('user')\
-            .extra(
-                select={
-                    'submission_count': 'SELECT COUNT(*) FROM '
-                    'odk_logger_instance WHERE '
-                    'odk_logger_instance.xform_id=odk_logger_xform.id '
-                    'AND odk_logger_instance.is_deleted=\'0\''
-                })
+            .select_related('user')
         context.user_xforms = xforms
         crowdforms = XForm.objects.filter(
             metadata__data_type=MetaData.CROWDFORM_USERS,
             metadata__data_value=username,)\
-            .select_related('user')\
-            .extra(
-                select={
-                    'submission_count': 'SELECT COUNT(*) FROM '
-                    'odk_logger_instance WHERE '
-                    'odk_logger_instance.xform_id=odk_logger_xform.id '
-                    'AND odk_logger_instance.is_deleted=\'0\''
-                })
+            .select_related('user')
         context.crowdforms = crowdforms
         # forms shared with user
         xfct = ContentType.objects.get(app_label='odk_logger', model='xform')
         xfs = content_user.userobjectpermission_set.filter(content_type=xfct)
+        shared_forms_pks = list(set([xf.object_pk for xf in xfs]))
         context.forms_shared_with = XForm.objects.filter(
-            pk__in=[xf.object_pk for xf in xfs])\
-            .select_related('user')\
-            .extra(
-                select={
-                    'submission_count': 'SELECT COUNT(*) FROM '
-                    'odk_logger_instance WHERE '
-                    'odk_logger_instance.xform_id=odk_logger_xform.id '
-                    'AND odk_logger_instance.is_deleted=\'0\''
-                })
+            pk__in=shared_forms_pks)\
+            .select_related('user')
     # for any other user -> profile
     set_profile_data(context, content_user)
     return render_to_response("profile.html", context_instance=context)
