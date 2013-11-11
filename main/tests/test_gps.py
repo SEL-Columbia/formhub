@@ -37,11 +37,6 @@ class TestGPS(MainTestCase):
         dd = DataDictionary.objects.all()[0]
         # should have been saved to dd.surveys_with_geopoints during submission
         self.assertTrue(dd.has_surveys_with_geopoints())
-        # reset to false and check with the query in
-        # dd.has_surveys_with_geopoints
-        dd.surveys_with_geopoints = False
-        dd.save()
-        self.assertTrue(dd.has_surveys_with_geopoints())
 
     def _check_link_to_map_view(self):
         response = self.client.get("/%s/" % self.user.username)
