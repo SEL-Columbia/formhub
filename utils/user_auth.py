@@ -45,9 +45,10 @@ def set_profile_data(context, content_user):
     if context.profile.country:
         if context.profile.city:
             context.location += ", "
-        context.location += content_user.profile.country
+        context.location += context.profile.country
     context.forms = content_user.xforms.filter(shared__exact=1)
     context.num_forms = context.forms.count()
+    context.user_surveys = context.profile.num_of_submissions
     context.home_page = context.profile.home_page
     if context.home_page and re.match("http", context.home_page) is None:
         context.home_page = "http://%s" % context.home_page
