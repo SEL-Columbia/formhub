@@ -71,6 +71,7 @@ class XForm(models.Model):
     uuid_bind_location = 4
     bamboo_dataset = models.CharField(max_length=60, default=u'')
     surveys_with_geopoints = models.BooleanField(default=False)
+    num_of_submissions = models.IntegerField(default=-1)
 
     tags = TaggableManager()
 
@@ -169,7 +170,11 @@ class XForm(models.Model):
         return getattr(self, "id_string", "")
 
     def submission_count(self):
-        return self.surveys.filter(is_deleted=False).count()
+        if self.num_of_submissions == -1:
+            count = self.surveys.filter(is_deleted=False).count()
+            self.num_of_submissions = count
+            self.save()
+        return self.num_of_submissions
     submission_count.short_description = ugettext_lazy("Submission Count")
 
     def geocoded_submission_count(self):
