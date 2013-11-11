@@ -226,7 +226,7 @@ def profile(request, username):
         context.odk_url = request.build_absolute_uri(
             "/%s" % request.user.username)
         xforms = XForm.objects.filter(user=content_user)\
-            .select_related('user')
+            .select_related('user', 'surveys')
         context.user_xforms = xforms
         crowdforms = XForm.objects.filter(
             metadata__data_type=MetaData.CROWDFORM_USERS,
@@ -238,7 +238,7 @@ def profile(request, username):
         xfs = content_user.userobjectpermission_set.filter(content_type=xfct)
         shared_forms_pks = list(set([xf.object_pk for xf in xfs]))
         context.forms_shared_with = XForm.objects.filter(
-            pk__in=shared_forms_pks)\
+            pk__in=shared_forms_pks).exclude(user=content_user)\
             .select_related('user')
     # for any other user -> profile
     set_profile_data(context, content_user)
