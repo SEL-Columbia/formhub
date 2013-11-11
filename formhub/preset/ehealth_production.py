@@ -43,7 +43,7 @@ DATABASES = {
 }
 
 #
-ALLOWED_HOSTS = ['my.domain.name.com']
+ALLOWED_HOSTS = ['.eocng.org', '.eocng.org.', ]
 
 DATABASE_ROUTERS = ['formhub.preset.dbrouter.GisRouter']
 
@@ -57,43 +57,15 @@ DATABASE_ROUTERS = ['formhub.preset.dbrouter.GisRouter']
 #TIME_ZONE = 'America/New_York'
 TIME_ZONE = 'Africa/Lagos'
 
-#EMAIL_HOST
-#
-#Default: 'localhost'
-#
-#The host to use for sending email.
-#
-#See also EMAIL_PORT.
-#EMAIL_HOST_PASSWORD
-#
-#Default: '' (Empty string)
-#
-#Password to use for the SMTP server defined in EMAIL_HOST. This setting is used in conjunction with EMAIL_HOST_USER when authenticating to the SMTP server. If either of these settings is empty, Django won’t attempt authentication.
-#
-#See also EMAIL_HOST_USER.
-#EMAIL_HOST_USER
-#
-#Default: '' (Empty string)
-#
-#Username to use for the SMTP server defined in EMAIL_HOST. If empty, Django won’t attempt authentication.
-#
-#See also EMAIL_HOST_PASSWORD.
-#EMAIL_PORT
-#
-#Default: 25
-#
-#Port to use for the SMTP server defined in EMAIL_HOST.
-#EMAIL_SUBJECT_PREFIX
-#
-#Default: '[Django] '
-#
-#Subject-line prefix for email messages sent with django.core.mail.mail_admins or django.core.mail.mail_managers. You’ll probably want to include the trailing space.
-#EMAIL_USE_TLS
-#
-#Default: False
-#
-#Whether to use a TLS (secure) connection when talking to the SMTP server. This is used for explicit TLS connections, generally on port 587. If you are experiencing hanging connections, see the implicit TLS setting EMAIL_USE_SSL.
+EMAIL_HOST = 'smtp.gmail.com'  #The host to use for sending email.
 
+EMAIL_HOST_PASSWORD = os.environ.get("FORMHUB_EMAIL_PASSWORD", "12345678")
+#Password to use for the SMTP server defined in EMAIL_HOST.
+EMAIL_HOST_USER = 'do.not.reply@ehealthnigeria.org'
+
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "do.not.reply@ehealthnigeria.org"
 
 TOUCHFORMS_URL = 'http://localhost:9000/'
 

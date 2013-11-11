@@ -4,30 +4,28 @@ from formhub.settings import *
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-TEMPLATE_STRING_IF_INVALID = ''
+TEMPLATE_STRING_IF_INVALID = '' # '***Invalid Template String***'
 
-
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
-
-MANAGERS = ADMINS
-
-# see: http://docs.djangoproject.com/en/dev/ref/settings/#databases
-
-#postgres
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'formhub_dev',
-        'USER': 'formhub_dev',
+        'NAME': 'adotest',
+        'USER': 'adotestuser',
         'PASSWORD': '12345678',
-        'HOST': 'localhost',
-        'OPTIONS': {
-            'autocommit': True,  # NOTE: this option becomes obsolete in django 1.6
-        }
     },
+#    'gis': {
+#        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+#        'NAME': 'phis',
+#        'USER': 'nomadstaff',
+#        'PASSWORD': 'nopolio',
+#        'HOST': 'localhost',
+#        'OPTIONS': {
+#            'autocommit': True,
+#        }
+#    }
 }
+
+# DATABASE_ROUTERS = ['formhub.preset.dbrouter.GisRouter']
 
 # TIME_ZONE = 'UTC'
 
@@ -39,8 +37,6 @@ TESTING_MODE = False
 if len(sys.argv) >= 2 and (sys.argv[1] == "test" or sys.argv[1] == "test_all"):
     # This trick works only when we run tests from the command line.
     TESTING_MODE = True
-else:
-    TESTING_MODE = False
 
 if TESTING_MODE:
     MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'test_media/')

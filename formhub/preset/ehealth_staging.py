@@ -4,11 +4,10 @@ from formhub.settings import *
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-TEMPLATE_STRING_IF_INVALID = ''
-
+TEMPLATE_STRING_IF_INVALID = '**invalid template string**'
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('Vernon Cole', 'vernon.cole@ehealthafrica.org'),
 )
 
 MANAGERS = ADMINS
@@ -28,14 +27,22 @@ DATABASES = {
         }
     },
 }
+TIME_ZONE = 'Africa/Lagos'
 
-# TIME_ZONE = 'UTC'
+EMAIL_HOST = 'smtp.gmail.com'  #The host to use for sending email.
+
+EMAIL_HOST_PASSWORD = os.environ.get("FORMHUB_EMAIL_PASSWORD", "12345678")
+#Password to use for the SMTP server defined in EMAIL_HOST.
+EMAIL_HOST_USER = 'do.not.reply@ehealthnigeria.org'
+
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "do.not.reply@ehealthnigeria.org"
 
 TOUCHFORMS_URL = 'http://localhost:9000/'
 
 SECRET_KEY = 'mlfs33^s1l4xf6a36$0#srgcpj%dd*sisfo6HOktYXB9y'
 
-TESTING_MODE = False
 if len(sys.argv) >= 2 and (sys.argv[1] == "test" or sys.argv[1] == "test_all"):
     # This trick works only when we run tests from the command line.
     TESTING_MODE = True
