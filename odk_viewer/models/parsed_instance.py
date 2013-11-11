@@ -309,6 +309,11 @@ class ParsedInstance(models.Model):
         g = self._get_geopoint()
         self.lat = g.get(u'latitude')
         self.lng = g.get(u'longitude')
+        # update xform incase we have a latitude
+        xform = self.instance.xform
+        if self.lat is not None and not xform.surveys_with_geopoints:
+            xform.surveys_with_geopoints = True
+            xform.save()
 
     def save(self, async=False, *args, **kwargs):
         self._set_start_time()
