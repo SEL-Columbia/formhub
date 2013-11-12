@@ -363,10 +363,15 @@ def show(request, username=None, id_string=None, uuid=None):
         context.source_form = SourceForm()
         context.media_form = MediaForm()
         context.mapbox_layer_form = MapboxLayerForm()
-        context.users_with_perms = get_users_with_perms(
-            xform,
-            attach_perms=True
-        ).items()
+        users_with_perms = []
+        for perm in get_users_with_perms(xform, attach_perms=True).items():
+            has_perm = []
+            if 'change_xform' in perm[1]:
+                has_perm.append(_(u"Can Edit"))
+            if 'view_xform' in perm[1]:
+                has_perm.append(_(u"Can View"))
+            users_with_perms.append((perm[0], u" | ".join(has_perm)))
+        context.users_with_perms = users_with_perms
         context.permission_form = PermissionForm(username)
     if xform.allows_sms:
         context.sms_support_doc = get_autodoc_for(xform)
