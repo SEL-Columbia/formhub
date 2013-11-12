@@ -43,7 +43,7 @@ DATABASES = {
 }
 
 #
-ALLOWED_HOSTS = ['.eocng.org', '.eocng.org.', ]
+ALLOWED_HOSTS = ['.eocng.org', '.eocng.org.', 'form.ehealthafrica.org', '']
 
 DATABASE_ROUTERS = ['formhub.preset.dbrouter.GisRouter']
 
