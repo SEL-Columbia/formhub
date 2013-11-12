@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy, ugettext as _
 
@@ -220,3 +220,20 @@ def stats_forms_created(sender, instance, created, **kwargs):
         stat_log.delay('formhub-forms-created', 1)
 
 post_save.connect(stats_forms_created, sender=XForm)
+
+
+def update_profile_num_submissions(sender, instance, **kwargs):
+    profile_qs = User.profile.get_query_set()
+    try:
+        profile = profile_qs.select_for_update()\
+            .get(pk=instance.user.profile.pk)
+    except profile_qs.model.DoesNotExist:
+        pass
+    else:
+        profile.num_of_submissions -= instance.num_of_submissions
+        if profile.num_of_submissions < 0:
+            profile.num_of_submissions = 0
+        profile.save()
+
+post_delete.connect(update_profile_num_submissions, sender=XForm,
+                    dispatch_uid='update_profile_num_submissions')

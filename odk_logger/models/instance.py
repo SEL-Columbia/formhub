@@ -169,6 +169,17 @@ def update_xform_submission_count_delete(sender, instance, **kwargs):
         if xform.num_of_submissions < 0:
             xform.num_of_submissions = 0
         xform.save()
+        profile_qs = User.profile.get_query_set()
+        try:
+            profile = profile_qs.select_for_update()\
+                .get(pk=xform.user.profile.pk)
+        except profile_qs.model.DoesNotExist:
+            pass
+        else:
+            profile.num_of_submissions -= 1
+            if profile.num_of_submissions < 0:
+                profile.num_of_submissions = 0
+            profile.save()
 
 post_delete.connect(update_xform_submission_count_delete, sender=Instance,
                     dispatch_uid='update_xform_submission_count_delete')
