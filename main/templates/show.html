@@ -569,11 +569,12 @@
   {% if user.is_authenticated %}
     <script type="text/javascript" src="/static/js/form_actions.js"></script>
   {% endif %}
-  <script type="text/javascript">
-      $('.btn').tooltip();
 
-			var usernames =  {{ user_json_list|safe }}
-			$('#autocomplete').typeahead({source: usernames})
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+        $('.btn').tooltip();
 
 		// SMS documentation switcher
 		$('#sms_support_api').change(function() {
@@ -583,9 +584,18 @@
 			var selected = $(this).val();
 			$('#sms_support_api_doc_' + selected).toggle(true);
 		});
-  </script>
-        <script type="text/javascript">
-            $(document).ready(function() {
+
+        // Typeahead, fetch usernames for permission assign
+        $('#autocomplete').typeahead(
+            {
+                source: function (query, process){
+                    return $.get('/typeahead_usernames/', {query: query}, function(data){
+                        return process(data);
+                    });
+                }
+            }
+        );
+        //-- end
 
                 $(document).on("click", ".showqr", function () {
                   div_target = $(this).attr('data-target')
@@ -639,12 +649,13 @@
               });
             {% endif %}
             });
+
+        // REST Service
+            $(document).ready(function() {
+                $.get('{% url "restservice.views.add_service" content_user.username xform.id_string %}', function(data){
+                    $('#restservice_tab').html(data);
+                });
+            });
+
         </script>
-                <script type="text/javascript">
-                    $(document).ready(function() {
-                        $.get('{% url "restservice.views.add_service" content_user.username xform.id_string %}', function(data){
-                          $('#restservice_tab').html(data);
-                        });
-                    });
-                 </script>
 {% endblock %}

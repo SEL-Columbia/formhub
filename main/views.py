@@ -375,8 +375,6 @@ def show(request, username=None, id_string=None, uuid=None):
         context.permission_form = PermissionForm(username)
     if xform.allows_sms:
         context.sms_support_doc = get_autodoc_for(xform)
-    user_list = [u.username for u in User.objects.exclude(username=username)]
-    context.user_json_list = json.dumps(user_list)
     return render_to_response("show.html", context_instance=context)
 
 
@@ -1319,3 +1317,15 @@ def enketo_preview(request, username, id_string):
             'id_string': xform.id_string
         }
     return HttpResponseRedirect(enekto_preview_url)
+
+
+@require_GET
+@login_required
+def username_list(request):
+    data = []
+    query = request.GET.get('query', None)
+    if query:
+        users = User.objects.values('username')\
+            .filter(username__startswith=query, is_active=True, pk__gte=0)
+        data = [user['username'] for user in users]
+    return HttpResponse(json.dumps(data), mimetype='application/json')
