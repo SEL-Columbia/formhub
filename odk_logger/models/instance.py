@@ -143,10 +143,15 @@ def update_xform_submission_count(sender, instance, created, **kwargs):
         xform.num_of_submissions += 1
         xform.last_submission_time = instance.date_created
         xform.save()
-        profile = User.profile.get_query_set().select_for_update()\
-            .get(pk=xform.user.profile.pk)
-        profile.num_of_submissions += 1
-        profile.save()
+        profile_qs = User.profile.get_query_set()
+        try:
+            profile = profile_qs.select_for_update()\
+                .get(pk=xform.user.profile.pk)
+        except profile_qs.model.DoesNotExist:
+            pass
+        else:
+            profile.num_of_submissions += 1
+            profile.save()
 
 post_save.connect(update_xform_submission_count, sender=Instance,
                   dispatch_uid='update_xform_submission_count')
