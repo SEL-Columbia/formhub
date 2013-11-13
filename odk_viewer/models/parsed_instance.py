@@ -12,7 +12,7 @@ from restservice.utils import call_service
 from stats.tasks import stat_log
 from utils.decorators import apply_form_field_names
 from utils.model_tools import queryset_iterator
-from odk_logger.models import Instance
+from odk_logger.models import Instance, XForm
 from celery import task
 from common_tags import START_TIME, START, END_TIME, END, ID, UUID,\
     ATTACHMENTS, GEOLOCATION, SUBMISSION_TIME, MONGO_STRFTIME,\
@@ -310,7 +310,8 @@ class ParsedInstance(models.Model):
         self.lat = g.get(u'latitude')
         self.lng = g.get(u'longitude')
         # update xform incase we have a latitude
-        xform = self.instance.xform
+        xform = XForm.objects.select_related().select_for_update()\
+            .get(pk=self.instance.xform.pk)
         if self.lat is not None and not xform.surveys_with_geopoints:
             xform.surveys_with_geopoints = True
             xform.save()
