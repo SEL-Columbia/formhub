@@ -227,7 +227,7 @@ def update_profile_num_submissions(sender, instance, **kwargs):
     try:
         profile = profile_qs.select_for_update()\
             .get(pk=instance.user.profile.pk)
-    except profile_qs.model.DoesNotExist:
+    except ObjectDoesNotExist:
         pass
     else:
         profile.num_of_submissions -= instance.num_of_submissions
