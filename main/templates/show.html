@@ -3,9 +3,6 @@
 {% block content %}
 {% load i18n %}
 
-  {% if user.is_authenticated %}
-    <script type="text/javascript" src="/static/js/form_actions.js"></script>
-  {% endif %}
   <section id="profile">
     <div class="page-header">
       <!-- <img src='{{ content_user.profile.gravatar }}' alt='gravatar' width='40' height='40' style='float:left; padding-right:10px;' /> -->
@@ -268,62 +265,6 @@
           </div>
         <br>
       <div class="span4">
-        <script type="text/javascript">
-            $(document).ready(function() {
-
-                $(document).on("click", ".showqr", function () {
-                  div_target = $(this).attr('data-target')
-                  url = $(this).attr('href')
-                  $(div_target+" .img_holder").load(url)
-
-                });
-
-              {% if xform.shared_data %}
-                $('#data-shared-private').hide();
-              {% else %}
-                $('#data-shared-public').hide();
-              {% endif %}
-              {% if xform.shared %}
-                $('#form-shared-private').hide();
-              {% else %}
-                $('#form-shared-public').hide();
-              {% endif %}
-              {% if not xform.encrypted %}
-                $('#form-encrypted').hide();
-                $('#data-encrypted').hide();
-              {% endif %}
-              $.each(['form-shared', 'data-shared', 'active-form', 'crowd-form'], function(inx, el) {
-                var cb = $('#' + el + ':checkbox');
-                cb.iphoneStyle({
-                  onChange: function() {
-                    // a callback func
-                    var c = function(){}
-                    // if crowdform is toggled, change data and form status
-                    // appropriately
-                    if(el == 'crowd-form' && $('#crowd-form').attr('checked') == 'checked'){
-                        if($('#form-shared:checkbox').attr('checked') == undefined)
-                            $('#form-shared:checkbox').click()
-                        if($('#data-shared:checkbox').attr('checked') == undefined)
-                            $('#data-shared:checkbox').click()
-                    }
-
-                    privacyEdit(cb.data('url'), el.split('-')[0]);
-                    $('#' + el + '-public').toggle();
-                    $('#' + el + '-private').toggle();
-
-                  }
-                });
-              });
-            {% if user.is_authenticated %}
-              // add click event to all public (x)forms
-              $('a.clonexls').click(function(){
-                el = $(this);
-                clone_xlsform(el.data('url'), el.data('username'), el.data('id'));
-                return false;
-              });
-            {% endif %}
-            });
-        </script>
       </div>
     </div>
       <br/>
@@ -380,13 +321,6 @@
         <div class="clearfix bordered">
             <h3 data-toggle="collapse" class="toggler" data-target="#restservice_tab">{% trans "Rest Services" %}</h3>
             <div id='restservice_tab' class="collapse">
-                <script type="text/javascript">
-                    $(document).ready(function() {
-                        $.get('{% url "restservice.views.add_service" content_user.username xform.id_string %}', function(data){
-                          $('#restservice_tab').html(data);
-                        });
-                    });
-                 </script>
             </div>
         </div>
         {% endif %}
@@ -585,7 +519,7 @@
             {% if users_with_perms|length %}
             <ul>
                 {% for user, perms in users_with_perms %}
-                    <li>{{ user }}: {% for perm in perms %}{{ perm }} {% endfor %}</li>
+                <li>{{ user }}: {{ perms }}</li>
                 {% endfor %}
             </ul>
             {% endif %}
@@ -602,21 +536,6 @@
     </div>
     <br/>
   </section>
-  <script type="text/javascript">
-      $('.btn').tooltip();
-
-			var usernames =  {{ user_json_list|safe }}
-			$('#autocomplete').typeahead({source: usernames})
-
-		// SMS documentation switcher
-		$('#sms_support_api').change(function() {
-			$('.sms_support_api_doc').each(function (){
-				$(this).toggle(false);
-			});
-			var selected = $(this).val();
-			$('#sms_support_api_doc_' + selected).toggle(true);
-		});
-  </script>
 
 <div class="modal hide fade" id="popupmodal" style="width: auto; left:36%; margin-left: auto; margin-right: auto;" tabindex="-1" role="dialog">
      <div class="modal-header">
@@ -636,4 +555,107 @@
 
     </div>
 </div>
+{% endblock %}
+
+{% block styles %}
+{{ block.super }}
+ <link href="/static/css/iphone-btn-style.css" rel="stylesheet"/>
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+
+<script type="text/javascript" src="/static/js/iphone-style-checkboxes.js"></script>
+  {% if user.is_authenticated %}
+    <script type="text/javascript" src="/static/js/form_actions.js"></script>
+  {% endif %}
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+        $('.btn').tooltip();
+
+		// SMS documentation switcher
+		$('#sms_support_api').change(function() {
+			$('.sms_support_api_doc').each(function (){
+				$(this).toggle(false);
+			});
+			var selected = $(this).val();
+			$('#sms_support_api_doc_' + selected).toggle(true);
+		});
+
+        // Typeahead, fetch usernames for permission assign
+        $('#autocomplete').typeahead(
+            {
+                source: function (query, process){
+                    return $.get('/typeahead_usernames/', {query: query}, function(data){
+                        return process(data);
+                    });
+                }
+            }
+        );
+        //-- end
+
+                $(document).on("click", ".showqr", function () {
+                  div_target = $(this).attr('data-target')
+                  url = $(this).attr('href')
+                  $(div_target+" .img_holder").load(url)
+
+                });
+
+              {% if xform.shared_data %}
+                $('#data-shared-private').hide();
+              {% else %}
+                $('#data-shared-public').hide();
+              {% endif %}
+              {% if xform.shared %}
+                $('#form-shared-private').hide();
+              {% else %}
+                $('#form-shared-public').hide();
+              {% endif %}
+              {% if not xform.encrypted %}
+                $('#form-encrypted').hide();
+                $('#data-encrypted').hide();
+              {% endif %}
+              $.each(['form-shared', 'data-shared', 'active-form', 'crowd-form'], function(inx, el) {
+                var cb = $('#' + el + ':checkbox');
+                cb.iphoneStyle({
+                  onChange: function() {
+                    // a callback func
+                    var c = function(){}
+                    // if crowdform is toggled, change data and form status
+                    // appropriately
+                    if(el == 'crowd-form' && $('#crowd-form').attr('checked') == 'checked'){
+                        if($('#form-shared:checkbox').attr('checked') == undefined)
+                            $('#form-shared:checkbox').click()
+                        if($('#data-shared:checkbox').attr('checked') == undefined)
+                            $('#data-shared:checkbox').click()
+                    }
+
+                    privacyEdit(cb.data('url'), el.split('-')[0]);
+                    $('#' + el + '-public').toggle();
+                    $('#' + el + '-private').toggle();
+
+                  }
+                });
+              });
+            {% if user.is_authenticated %}
+              // add click event to all public (x)forms
+              $('a.clonexls').click(function(){
+                el = $(this);
+                clone_xlsform(el.data('url'), el.data('username'), el.data('id'));
+                return false;
+              });
+            {% endif %}
+            });
+
+        // REST Service
+            $(document).ready(function() {
+                $.get('{% url "restservice.views.add_service" content_user.username xform.id_string %}', function(data){
+                    $('#restservice_tab').html(data);
+                });
+            });
+
+        </script>
 {% endblock %}

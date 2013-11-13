@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 import odk_viewer
 from utils.logger_tools import round_down_geopoint
 
+
 class TestGPS(MainTestCase):
 
     def test_gps(self):
@@ -18,19 +19,23 @@ class TestGPS(MainTestCase):
 
     def _publish_survey(self):
         self.this_directory = os.path.dirname(__file__)
-        xls_path = os.path.join(self.this_directory, "fixtures", "gps", "gps.xls")
+        xls_path = os.path.join(
+            self.this_directory, "fixtures", "gps", "gps.xls")
         MainTestCase._publish_xls_file(self, xls_path)
 
     def _make_submissions(self):
         surveys = ['gps_1980-01-23_20-52-08',
-                   'gps_1980-01-23_21-21-33',]
+                   'gps_1980-01-23_21-21-33']
         for survey in surveys:
-            path = os.path.join(self.this_directory, 'fixtures', 'gps', 'instances', survey + '.xml')
+            path = os.path.join(
+                self.this_directory,
+                'fixtures', 'gps', 'instances', survey + '.xml')
             self._make_submission(path)
 
     def _check_has_geopoints(self):
         self.assertEqual(DataDictionary.objects.count(), 1)
         dd = DataDictionary.objects.all()[0]
+        # should have been saved to dd.surveys_with_geopoints during submission
         self.assertTrue(dd.has_surveys_with_geopoints())
 
     def _check_link_to_map_view(self):
@@ -40,9 +45,11 @@ class TestGPS(MainTestCase):
 
     def _check_lat_lng(self):
         expected_values = [
-            (round_down_geopoint(40.81101715564728), round_down_geopoint(-73.96446704864502)),
-            (round_down_geopoint(40.811086893081665), round_down_geopoint(-73.96449387073517)),
-            ]
+            (round_down_geopoint(40.81101715564728),
+             round_down_geopoint(-73.96446704864502)),
+            (round_down_geopoint(40.811086893081665),
+             round_down_geopoint(-73.96449387073517)),
+        ]
         for pi, lat_lng in zip(ParsedInstance.objects.all(), expected_values):
             self.assertEquals(round_down_geopoint(pi.lat), lat_lng[0])
             self.assertEquals(round_down_geopoint(pi.lng), lat_lng[1])

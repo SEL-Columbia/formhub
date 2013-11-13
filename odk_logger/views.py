@@ -227,9 +227,7 @@ def submission(request, username=None):
             html_response = True
         try:
             instance = create_instance(
-                username,
-                xml_file_list[0],
-                media_files,
+                username, xml_file_list[0], media_files,
                 uuid=uuid, request=request
             )
         except InstanceInvalidUserError:
