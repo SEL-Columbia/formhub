@@ -13,7 +13,7 @@ from staging_example import *  # get most settings from staging_example.py (whic
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
+        'NAME': 'db.sqlite',
     }
 }
 
