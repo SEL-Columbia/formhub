@@ -37,6 +37,7 @@ class Command(BaseCommand):
             raise CommandError("The user '{}' does not exist.".format(username))
 
         for form in glob.glob( os.path.join(path, "*") ):
+            print('Publishing form "{}"...'.format(form))
             f = open(form)
             xml = f.read()
             id_string = get_id_string_from_xml_str(xml)
@@ -51,7 +52,10 @@ class Command(BaseCommand):
                 else:
                     raise CommandError('form "{}" is already defined, and --replace was not specified.'.format(
                         id_string))
-            survey = create_survey_element_from_xml(xml)
+            try:
+                survey = create_survey_element_from_xml(xml)
+            except AssertionError:
+                raise CommandError('Probable error in xml structure.')
             form_json = survey.to_json()
             XForm.objects.get_or_create(xml=xml, downloadable=True, user=user, id_string=id_string, json=form_json)
             f.close()
