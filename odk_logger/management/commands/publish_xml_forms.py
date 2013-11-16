@@ -55,9 +55,8 @@ class Command(BaseCommand):
                         id_string))
             try:
                 survey = create_survey_element_from_xml(xml)
-            except (AssertionError, TypeError):
-                 e = sys.exc_info()[1]
-                 print(e.args[0])  # pass on the error message (works in Python 2 and 3)
+            except (AssertionError, TypeError) as e:
+                 print(repr(e.args))  # pass on the error message (works in Python 2 and 3)
             else:
                 form_json = survey.to_json()
                 XForm.objects.get_or_create(xml=xml, downloadable=True, user=user, id_string=id_string, json=form_json)
