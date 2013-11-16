@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4 coding=utf-8
+from __future__ import print_function
 
-import os, glob
+import os, glob, sys
 from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
@@ -54,8 +55,12 @@ class Command(BaseCommand):
                         id_string))
             try:
                 survey = create_survey_element_from_xml(xml)
-            except AssertionError:
-                raise CommandError('Probable error in xml structure.')
-            form_json = survey.to_json()
-            XForm.objects.get_or_create(xml=xml, downloadable=True, user=user, id_string=id_string, json=form_json)
+            except (AssertionError, TypeError):
+                 e = sys.exc_info()[1]
+                 print(e.args[0])  # pass on the error message (works in Python 2 and 3)
+            else:
+                form_json = survey.to_json()
+                XForm.objects.get_or_create(xml=xml, downloadable=True, user=user, id_string=id_string, json=form_json)
+                print('  (Done).')
             f.close()
+            print()
