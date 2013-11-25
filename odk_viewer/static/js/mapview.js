@@ -9,7 +9,6 @@ var displayZeroedValues_str = gettext("Display options without data");
 // Global toggle on whether to display question values which have 0 submissions
 var displayZeroedValues = false;
 
-//var centerLatLng = new L.LatLng(!center.lat?0.0:center.lat, !center.lng?0.0:center.lng);
 var centerLatLng = new L.LatLng(0, 0);
 var defaultZoom = 3;
 var mapId = 'map_canvas';

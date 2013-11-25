@@ -24,7 +24,7 @@ from odk_viewer.pandas_mongo_bridge import NoRecordsFoundError
 from utils.image_tools import image_url
 from xls_writer import XlsWriter
 from utils.logger_tools import response_with_mimetype_and_name,\
-    disposition_ext_and_date, round_down_geopoint
+    disposition_ext_and_date
 from utils.viewer_tools import image_urls
 from odk_viewer.tasks import create_async_export
 from utils.user_auth import has_permission, get_xform_and_perms,\
@@ -102,12 +102,6 @@ def map_view(request, username, id_string, template='map.html'):
     context.xform = xform
     context.profile, created = UserProfile.objects.get_or_create(user=owner)
 
-    def round_down_point(p):
-        return {
-            'lat': round_down_geopoint(p['lat']),
-            'lng': round_down_geopoint(p['lng']),
-            'instance': p['instance']
-        }
     context.form_view = True
     context.jsonform_url = reverse(download_jsonform,
                                    kwargs={"username": username,

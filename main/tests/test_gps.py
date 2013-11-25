@@ -3,7 +3,6 @@ import os
 from odk_viewer.models import ParsedInstance, DataDictionary
 from django.core.urlresolvers import reverse
 import odk_viewer
-from utils.logger_tools import round_down_geopoint
 
 
 class TestGPS(MainTestCase):
@@ -42,29 +41,3 @@ class TestGPS(MainTestCase):
         response = self.client.get("/%s/" % self.user.username)
         map_url = 'href="/%s/forms/gps/map"' % self.user.username
         self.assertContains(response, map_url)
-
-    def _check_lat_lng(self):
-        expected_values = [
-            (round_down_geopoint(40.81101715564728),
-             round_down_geopoint(-73.96446704864502)),
-            (round_down_geopoint(40.811086893081665),
-             round_down_geopoint(-73.96449387073517)),
-        ]
-        for pi, lat_lng in zip(ParsedInstance.objects.all(), expected_values):
-            self.assertEquals(round_down_geopoint(pi.lat), lat_lng[0])
-            self.assertEquals(round_down_geopoint(pi.lng), lat_lng[1])
-
-    def _check_map_view(self):
-        map_url = reverse(odk_viewer.views.map_view, kwargs={
-            'username': self.user.username,
-            'id_string': 'gps'
-        })
-        response = self.client.get(map_url)
-        # testing the response context to get a concise notification
-        # if the lat/long values have changed.
-        lat = str(round_down_geopoint(40.811052024364471))
-        lng = str(round_down_geopoint(-73.964480459690094))
-        expected_ll = '{"lat": "%s", "lng": "%s"}' % (lat, lng)
-        for r in response.context:
-            self.assertEqual(expected_ll, r.center)
-        self.assertContains(response, expected_ll)
