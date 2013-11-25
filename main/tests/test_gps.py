@@ -13,8 +13,6 @@ class TestGPS(MainTestCase):
         self._make_submissions()
         self._check_has_geopoints()
         self._check_link_to_map_view()
-        self._check_lat_lng()
-        self._check_map_view()
 
     def _publish_survey(self):
         self.this_directory = os.path.dirname(__file__)
