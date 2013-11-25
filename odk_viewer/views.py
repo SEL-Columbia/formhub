@@ -101,15 +101,6 @@ def map_view(request, username, id_string, template='map.html'):
     context.content_user = owner
     context.xform = xform
     context.profile, created = UserProfile.objects.get_or_create(user=owner)
-    points = ParsedInstance.objects.values('lat', 'lng', 'instance').filter(
-        instance__user=owner,
-        instance__xform__id_string=id_string,
-        lat__isnull=False,
-        lng__isnull=False)
-    center = {
-        'lat': round_down_geopoint(average([p['lat'] for p in points])),
-        'lng': round_down_geopoint(average([p['lng'] for p in points])),
-    }
 
     def round_down_point(p):
         return {
@@ -117,7 +108,6 @@ def map_view(request, username, id_string, template='map.html'):
             'lng': round_down_geopoint(p['lng']),
             'instance': p['instance']
         }
-    context.center = json.dumps(center)
     context.form_view = True
     context.jsonform_url = reverse(download_jsonform,
                                    kwargs={"username": username,
