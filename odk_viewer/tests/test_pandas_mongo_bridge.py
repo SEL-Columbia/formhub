@@ -247,6 +247,10 @@ class TestPandasMongoBridge(MainTestCase):
             u'web_browsers/safari',
         ] + AbstractDataFrameBuilder.ADDITIONAL_COLUMNS +\
                            AbstractDataFrameBuilder.IGNORED_COLUMNS
+        try:
+            expected_columns.remove(u'_deleted_at')
+        except ValueError:
+            pass
         self.maxDiff = None
         self.assertEqual(sorted(expected_columns), sorted(columns))
 
