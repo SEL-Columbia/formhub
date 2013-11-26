@@ -121,12 +121,9 @@ class ParsedInstance(models.Model):
         query[cls.USERFORM_ID] = u'%s_%s' % (username, id_string)
         if hide_deleted:
             #display only active elements
-            deleted_at_query = {
-                "$or": [{"_deleted_at": {"$exists": False}},
-                        {"_deleted_at": None}]}
             # join existing query with deleted_at_query on an $and
-            query = {"$and": [query, deleted_at_query]}
-        # fields must be a string array i.e. '["name", "age"]'
+            query = {"$and": [query, {"_deleted_at": None}]}
+        # fields must be a string array i.e. '["name", "age"]
         fields = json.loads(
             fields, object_hook=json_util.object_hook) if fields else []
         # TODO: current mongo (2.0.4 of this writing)
@@ -166,11 +163,8 @@ class ParsedInstance(models.Model):
         query = dict_for_mongo(query)
         if hide_deleted:
             #display only active elements
-            deleted_at_query = {
-                "$or": [{"_deleted_at": {"$exists": False}},
-                        {"_deleted_at": None}]}
             # join existing query with deleted_at_query on an $and
-            query = {"$and": [query, deleted_at_query]}
+            query = {"$and": [query, {"_deleted_at": None}]}
         # fields must be a string array i.e. '["name", "age"]'
         fields = json.loads(
             fields, object_hook=json_util.object_hook) if fields else []
