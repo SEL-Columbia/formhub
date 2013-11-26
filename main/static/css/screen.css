@@ -690,6 +690,12 @@ a.download:hover {
 	font-weight: 600;
 }
 
+#login_btn {
+  padding: 30px;
+  font-size: 35px;
+  min-width: 115px;
+}
+
 #login_btn, #main-display .btn-info {
   color: #ffffff;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -723,8 +729,9 @@ a.download:hover {
 }
 
 #topbar_login #login_btn {
-	padding-left: 20px;
-	padding-right: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 30%;
 }
 
 #topbar_login .btn-info {
