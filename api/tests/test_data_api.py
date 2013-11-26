@@ -34,7 +34,7 @@ class TestDataAPI(MainTestCase):
 
         data = {
             u'_bamboo_dataset_id': u'',
-            u'_deleted_at': None,
+#            u'_deleted_at': None,
             u'_attachments': [],
             u'_geolocation': [None, None],
             u'_xform_id_string': u'transportation_2011_07_25',
