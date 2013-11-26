@@ -200,27 +200,23 @@ class ParsedInstance(models.Model):
 
     def to_dict_for_mongo(self):
         d = self.to_dict()
-        deleted_at = None
+        data = {
+            UUID: self.instance.uuid,
+            ID: self.instance.id,
+            BAMBOO_DATASET_ID: self.instance.xform.bamboo_dataset,
+            self.USERFORM_ID: u'%s_%s' % (
+                self.instance.user.username,
+                self.instance.xform.id_string),
+            ATTACHMENTS: [a.media_file.name for a in
+                          self.instance.attachments.all()],
+            self.STATUS: self.instance.status,
+            GEOLOCATION: [self.lat, self.lng],
+            SUBMISSION_TIME: self.instance.date_created.strftime(MONGO_STRFTIME),
+            TAGS: list(self.instance.tags.names())
+        }
         if isinstance(self.instance.deleted_at, datetime.datetime):
-            deleted_at = self.instance.deleted_at.strftime(MONGO_STRFTIME)
-        d.update(
-            {
-                UUID: self.instance.uuid,
-                ID: self.instance.id,
-                BAMBOO_DATASET_ID: self.instance.xform.bamboo_dataset,
-                self.USERFORM_ID: u'%s_%s' % (
-                    self.instance.user.username,
-                    self.instance.xform.id_string),
-                ATTACHMENTS: [a.media_file.name for a in
-                              self.instance.attachments.all()],
-                self.STATUS: self.instance.status,
-                GEOLOCATION: [self.lat, self.lng],
-                SUBMISSION_TIME:
-                self.instance.date_created.strftime(MONGO_STRFTIME),
-                DELETEDAT: deleted_at,
-                TAGS: list(self.instance.tags.names())
-            }
-        )
+            data[DELETEDAT] = self.instance.deleted_at.strftime(MONGO_STRFTIME)
+        d.update(data)
         return dict_for_mongo(d)
 
     def update_mongo(self, async=True):
