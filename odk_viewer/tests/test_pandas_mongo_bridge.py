@@ -587,7 +587,7 @@ class TestPandasMongoBridge(MainTestCase):
         expected_data_0 = {
 #            u'_id': 1,
 #            u'_uuid': u'ba6bc9d7-b46a-4d25-955e-99ec94e7b2f6',
-            u'_deleted_at': None,
+#            u'_deleted_at': None,
             u'_xform_id_string': u'groups_in_repeats',
             u'_status': u'submitted_via_web',
             u'_tags': u'',
