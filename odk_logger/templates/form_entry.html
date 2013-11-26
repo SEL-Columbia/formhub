@@ -13,11 +13,14 @@
         <iframe id="touchforms" src="{{ touchforms }}">
         </iframe>
     </div>
+{% block javascript %}
+{{ block.super }}
     <script type="text/javascript">
         $(window).bind('resize', function(){
             $('#touchforms').height($(window).height() - 40);
         });
         $(window).trigger('resize');
     </script>
+{% endblock %}
 </body>
 {% endblock %}

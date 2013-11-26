@@ -9,31 +9,6 @@
     <h1>{% blocktrans %}Form Gallery <small>Shared Forms</small>{% endblocktrans %}</h1>
   </div>
     <div id="mfeedback">&nbsp;</div>
-  <script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
-  <script type="text/javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
-  <script type="text/javascript" src="/static/js/form_actions.js"></script>
-  <script type="text/javascript">
-
-        $.extend( $.fn.dataTableExt.oStdClasses, {
-          "sSortAsc": "header headerSortDown",
-          "sSortDesc": "header headerSortUp",
-          "sSortable": "header",
-          "sWrapper": "dataTables_wrapper form-inline"
-        } );
-
-	$(document).ready(function() {
-	  $('#forms-table').dataTable({
-                  "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
-	          "bPaginate" : true,
-                  "sPaginationType": "bootstrap",// "iDisplayLength": 4, 
-                  "bSort": true, 
-                  "oLanguage": {"sSearch": "Search:"},
-                  "oSearch": {"sSearch": ""},
-      });
-      $('#forms-table_filter').addClass('row');
-      $('#mfeedback').hide();
-	} );
-  </script>
 
   <table id="forms-table" class="table table-bordered table-striped">
     <thead>
@@ -66,7 +41,7 @@
             <a href="{% url "download_xlsform" data_dictionary.user.username data_dictionary.id_string %}" class="btn btn-small btn-success">{% trans "Excel" %}</a>
             {% if not data_dictionary.id_string in cloned %}
                 {% if loggedin_user and data_dictionary.xls|length > 0  and loggedin_user.username != data_dictionary.user.username %}
-                    <a href="" data-url="{% url "main.views.clone_xlsform" data_dictionary.user.username %}" 
+                    <a href="" data-url="{% url "main.views.clone_xlsform" data_dictionary.user.username %}"
                     data-username="{{ data_dictionary.user.username }}" data-id="{{ data_dictionary.id_string }}" class="clonexls btn small" onclick="$(this).hide()">{% trans "Clone" %}</a>
                 {% endif %}
             {% endif %}
@@ -78,4 +53,34 @@
   </table>
 
 </section>
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+
+  <script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
+  <script type="text/javascript" src="/static/js/form_actions.js"></script>
+  <script type="text/javascript">
+
+	$(document).ready(function() {
+        $.extend( $.fn.dataTableExt.oStdClasses, {
+          "sSortAsc": "header headerSortDown",
+          "sSortDesc": "header headerSortUp",
+          "sSortable": "header",
+          "sWrapper": "dataTables_wrapper form-inline"
+        } );
+
+	  $('#forms-table').dataTable({
+                  "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+	          "bPaginate" : true,
+                  "sPaginationType": "bootstrap",// "iDisplayLength": 4,
+                  "bSort": true,
+                  "oLanguage": {"sSearch": "Search:"},
+                  "oSearch": {"sSearch": ""},
+      });
+      $('#forms-table_filter').addClass('row');
+      $('#mfeedback').hide();
+	} );
+  </script>
 {% endblock %}

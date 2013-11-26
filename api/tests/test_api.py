@@ -92,7 +92,7 @@ class TestAPICase(TestCase):
         data['url'] = 'http://testserver/api/v1/orgs/denoinc'
         data['user'] = 'http://testserver/api/v1/users/denoinc'
         data['creator'] = 'http://testserver/api/v1/users/bob'
-        self.assertEqual(response.data, data)
+        self.assertDictContainsSubset(data, response.data)
         self.company_data = response.data
         self.organization = OrganizationProfile.objects.get(
             user__username=data['org'])

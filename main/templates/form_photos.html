@@ -4,9 +4,6 @@
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <link rel="stylesheet" href="/static/galleria/themes/classic/galleria.classic.css">
 <link rel="stylesheet" href="/static/css/form.css">
-
-<script type="text/javascript" src="/static/galleria/galleria-1.2.8.min.js"></script>
-<script type="text/javascript" src="/static/galleria/themes/classic/galleria.classic.min.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -19,6 +16,11 @@
         </a>
     {% endfor %}
     </div>
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript" src="/static/galleria/galleria-1.2.8.min.js"></script>
+<script type="text/javascript" src="/static/galleria/themes/classic/galleria.classic.min.js"></script>
 <script type="text/javascript">
     // Load the classic theme
     // Galleria.loadTheme('/static/galleria/themes/classic/galleria.classic.min.js');
@@ -31,5 +33,6 @@
     // Initialize Galleria
     Galleria.run('#gallery');
 </script>
+{% endblock %}
 </body>
 {% endblock %}

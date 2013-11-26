@@ -2,8 +2,6 @@
 {% load i18n %}
 
 {% block content %}
-  <script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
-  <script type="text/javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
   <div class="page-header">
 <br>
 <h1>{% blocktrans with nb_sub=stats.submission_count.total_submission_count %}Submissions ({{ nb_sub }}){% endblocktrans %}</h1>
@@ -29,21 +27,26 @@
   </table>
 
   <hr />
+{% endblock %}
+{% block javascript %}
+{{ block.super }}
+  <script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
   <script type="text/javascript">
 
+	$(document).ready(function() {
         $.extend( $.fn.dataTableExt.oStdClasses, {
           "sSortAsc": "header headerSortDown",
           "sSortDesc": "header headerSortUp",
           "sSortable": "header"
         } );
 
-	$(document).ready(function() {
 	  $('#stats-table').dataTable({
                   "sDom": "<'row'<'span8'l><'span8'f>r>t<'row'<'span8'i><'span8'p>>",
 	          "bPaginate" : true,
                   "sPaginationType": "bootstrap",
                   "iDisplayLength": 25,
-                  "bSort": true, 
+                  "bSort": true,
                   "oLanguage": {"sSearch": "{% trans 'Search:' %}"},
                   "aoColumns": [null, {"sType": "numeric", "sClass": "right", "sWidth":"100px"}],
                   "oSearch": {"sSearch": ""},
@@ -51,7 +54,5 @@
           });
 	});
   </script>
-
-
-
 {% endblock %}
+
