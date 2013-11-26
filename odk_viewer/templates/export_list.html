@@ -8,9 +8,6 @@
   <div class="page-header">
     <h1>{{ export_type_name|upper }} {% blocktrans %}Exports{% endblocktrans %} (<a href="{% url "main.views.show" username xform.id_string %}">{{ xform.id_string }}</a>)</h1>
   </div>
-  <script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
-  <script type="text/javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
-  <script type="text/javascript" src="/static/js/form_actions.js"></script>
 
     <form action="{% url "odk_viewer.views.create_export" username xform.id_string export_type %}" method="post" enctype="application/x-www-form-urlencoded">
         {% csrf_token %}
@@ -21,7 +18,7 @@
             </div>
             </span>
     </form>
-    
+
     <div id="advanced-export-modal" class="modal hide fade">
       <form action="{% url "odk_viewer.views.create_export" username xform.id_string export_type %}" method="post" enctype="application/x-www-form-urlencoded">
         {% csrf_token %}
@@ -105,6 +102,13 @@
   </table>
 
 </section>
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
+<script type="text/javascript" src="/static/js/form_actions.js"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/underscore-min.js"></script>
 <script type="text/javascript" charset="utf-8" src="/static/js/export_list.js"></script>
 <script type="text/javascript">

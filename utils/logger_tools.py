@@ -209,14 +209,6 @@ def report_exception(subject, info, exc_info=None):
     else:
         mail_admins(subject=subject, message=message)
 
-
-def round_down_geopoint(num):
-    if num:
-        decimal_mult = 1000000
-        return str(decimal.Decimal(int(num * decimal_mult)) / decimal_mult)
-    return None
-
-
 def response_with_mimetype_and_name(
         mimetype, name, extension=None, show_date=True, file_path=None,
         use_local_filesystem=False, full_mime=False):

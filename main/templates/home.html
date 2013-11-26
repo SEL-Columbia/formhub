@@ -115,20 +115,6 @@
 			</div>
 		</div>
 	</div>
-
-	<div class="span12">
-		<div class="formhub-stat">
-			<div class="num">
-				{{ num_forms|intcomma }}
-			</div>forms submitted
-			<div class="num">
-				{{ num_shared_forms|intcomma }}
-			</div>shared forms
-			<div class="num">
-				{{ num_users|intcomma }}
-			</div>formhubbers.
-		</div>
-	</div>
 </div>
 
 <div class = "separator"> </div>
@@ -218,6 +204,12 @@
 <br>
 <br>
 
+{% endblock %}
 
-<script src="/static/js/slideshow.js"></script>
+{% block javascript %}
+
+    {{ block.super }}
+
+    <script src="/static/js/slideshow.js"></script>
+
 {% endblock %}
