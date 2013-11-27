@@ -1931,7 +1931,7 @@ class TestExportBuilder(MainTestCase):
             "age": "107",
             "_uuid": "2a8129f5-3091-44e1-a579-bed2b07a12cf",
             "when": "2013-07-03",
-            "_deleted_at": None,
+#            "_deleted_at": None,
             "amount": "250.0",
             "_geolocation": [
                 "-1.2625482",
@@ -1949,7 +1949,7 @@ class TestExportBuilder(MainTestCase):
             "_submission_time": "2013-07-03T08:26:10",
             "_uuid": "5b4752eb-e13c-483e-87cb-e67ca6bb61e5",
             "_bamboo_dataset_id": "",
-            "_deleted_at": None,
+#            "_deleted_at": None,
             "_xform_id_string": "test_data_types",
             "_userform_id": "larryweya_test_data_types",
             "_status": "submitted_via_web",
