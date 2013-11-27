@@ -53,6 +53,7 @@ urlpatterns = patterns(
     url(r"^attachment/(?P<size>[^/]+)$", 'odk_viewer.views.attachment_url'),
     url(r'^jsi18n/$', 'django.views.i18n.javascript_catalog',
         {'packages': ('main', 'odk_viewer',)}),
+    url(r'^typeahead_usernames', 'main.views.username_list', name='username_list'),
     url(r'^(?P<username>[^/]+)/$', 'main.views.profile', name='user_profile'),
     url(r'^(?P<username>[^/]+)/profile$', 'main.views.public_profile', name='public_profile'),
     url(r'^(?P<username>[^/]+)/settings', 'main.views.profile_settings'),

@@ -18,4 +18,5 @@ CELERYBEAT_USER="www-data"
 CELERYBEAT_GROUP="www-data"
 
 # Name of the projects settings module.
+
 export DJANGO_SETTINGS_MODULE="formhub.preset.production"

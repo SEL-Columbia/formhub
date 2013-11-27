@@ -1,13 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block additional-headers %}
-<script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
-<script type="text/javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
-<script type="text/javascript" charset="utf-8" src="/static/js/sammy-0.7.1.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="/static/js/sammy-plugins/sammy.meld-0.7.1.min.js"></script>
-{% endblock %}
-
 {% block content %}
 <div class="page-header">
     <h1>{% trans "Browse Form Data" %}
@@ -23,6 +16,15 @@
 </div>
 
 <div id="data"></div>
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/sammy-0.7.1.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/js/sammy-plugins/sammy.meld-0.7.1.min.js"></script>
+
 <script type="text/javascript">
 var formJSONUrl = "{% url "odk_logger.views.download_jsonform" username id_string %}";
 var mongoAPIUrl = "{% url "main.views.api" username id_string %}";

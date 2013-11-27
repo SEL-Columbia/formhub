@@ -3,6 +3,7 @@
 from formhub.settings import *
 
 DEBUG = False  # this setting file will not work on "runserver" -- it needs a server for static files
+TESTING_MODE = False  # used by celery startup
 
 
 ADMINS = (
@@ -104,5 +105,6 @@ MONGO_DATABASE = {
     'USER': '',
     'PASSWORD': ''
 }
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'mlfs33^s1l4xf6a36$0#j%dd*sisfo6HOktYXB9y'

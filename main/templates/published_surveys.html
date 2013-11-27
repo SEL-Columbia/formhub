@@ -1,76 +1,12 @@
 {% load humanize %}
 {% load i18n %}
 {% if all_forms or forms_shared_with or crowdforms%}
-<script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
-<script type="text/javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
 
 <section id="published-forms">
   <div class="page-header">
     <h1>{% blocktrans %}Published Forms <small>Export, map, and view submissions.</small>{% endblocktrans %}</h1>
   </div>
-  <script type="text/javascript">
 
-        $.extend( $.fn.dataTableExt.oStdClasses, {
-          "sSortAsc": "header headerSortDown",
-          "sSortDesc": "header headerSortUp",
-          "sSortable": "header"
-        } );
-
-
-	$(document).ready(function() {
-
-        $(document).on("click", ".showqr", function () {
-          div_target = $(this).attr('data-target')
-          url = $(this).attr('href')
-          $(div_target+" .img_holder").load(url)
-        
-        });
-           
-	  var tbl = $('#forms-table').dataTable({
-        "bPaginate": false,
-        "sPaginationType": "bootstrap",
-        "bSort": true,
-        "oLanguage": {"sSearch": "{% trans 'Search:' %}"},
-        "oSearch": {"sSearch": ""},
-        "aoColumnDefs": [
-            { "bVisible": false, "aTargets": [ 6 ] }
-        ]
-      });
-      tbl.fnFilter( 'true', 6, true);
-      var tblFilter = $('#forms-table_filter');
-      tblFilter.addClass('row');
-      tblFilter.prepend('{% trans "Show inactive:" %} <input id="active-select" type="checkbox" />&nbsp;&nbsp;');
-      $('#active-select').change(function() {
-          tbl.fnFilter('(true' + ($(this).is(':checked') ? '|false)' : ')'), 6, true);
-      });
-
-        // remove shared forms
-        $('.remove-shared-form').each(function (index, link) {
-            link.onclick = function (evt) {
-                evt.preventDefault();
-                evt.stopPropagation();
-                var url = $(this).data('url');
-                var username = $(this).data('username');
-                var data = {'perm_type': 'remove', 'for_user': username};
-                var remove_permission_xhr = $.post(url, data);
-                remove_permission_xhr.success(function (data) {
-                    $(link).parents('tr').remove();
-                });
-            };
-        });
-
-      // add datatables to the shared and crowd tables
-        $('#crowdforms-table, #shared-forms-table').dataTable({
-            "bPaginate": false,
-            "sPaginationType": "bootstrap",
-            "bSort": true,
-            "oLanguage": {"sSearch": "{% trans 'Search:' %}"},
-            "oSearch": {"sSearch": ""}
-        });
-        
-
-	});
-  </script>
 {% if message and message.preview_url %}
     <div id="preview-modal" class="modal hide fade">
         <div class="modal-header">
@@ -412,12 +348,12 @@
          <div class="img_holder"/> </div>
     </div>
     <div class="modal-footer" style="text-align: center;">
-        
+
         {%  trans "DOWNLOAD " %}
         <a class="btn" href="http://scan.me/apps/" target="_blank">
-            <i class="icon-qrcode"></i> 
+            <i class="icon-qrcode"></i>
         {%  trans " Scan - QR Reader" %}
         </a>
-        
+
     </div>
 </div>

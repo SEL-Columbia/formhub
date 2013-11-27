@@ -84,28 +84,33 @@ class MainTestCase(TestCase):
         xform.save()
 
     def _publish_transportation_form(self):
-        xls_path = os.path.join(self.this_directory, "fixtures",
-                "transportation", "transportation.xls")
+        xls_path = os.path.join(
+            self.this_directory, "fixtures",
+            "transportation", "transportation.xls")
         count = XForm.objects.count()
-        response = MainTestCase._publish_xls_file(self, xls_path)
+        MainTestCase._publish_xls_file(self, xls_path)
         self.assertEqual(XForm.objects.count(), count + 1)
         self.xform = XForm.objects.order_by('pk').reverse()[0]
 
     def _submit_transport_instance(self, survey_at=0):
         s = self.surveys[survey_at]
-        self._make_submission(os.path.join(self.this_directory, 'fixtures',
-                    'transportation', 'instances', s, s + '.xml'))
+        self._make_submission(os.path.join(
+            self.this_directory, 'fixtures',
+            'transportation', 'instances', s, s + '.xml'))
 
     def _submit_transport_instance_w_uuid(self, name):
-        self._make_submission(os.path.join(self.this_directory, 'fixtures',
+        self._make_submission(os.path.join(
+            self.this_directory, 'fixtures',
             'transportation', 'instances_w_uuid', name, name + '.xml'))
 
     def _submit_transport_instance_w_attachment(self, survey_at=0):
         s = self.surveys[survey_at]
         media_file = "1335783522563.jpg"
-        self._make_submission_w_attachment(os.path.join(self.this_directory, 'fixtures',
-            'transportation', 'instances', s, s + '.xml'), os.path.join(self.this_directory, 'fixtures',
-            'transportation', 'instances', s, media_file))
+        self._make_submission_w_attachment(
+            os.path.join(self.this_directory, 'fixtures',
+                         'transportation', 'instances', s, s + '.xml'),
+            os.path.join(self.this_directory, 'fixtures',
+                         'transportation', 'instances', s, media_file))
         attachment = Attachment.objects.all().reverse()[0]
         self.attachment_media_file = attachment.media_file
 
@@ -140,7 +145,7 @@ class MainTestCase(TestCase):
             if add_uuid and touchforms:
                 post_data['uuid'] = self.xform.uuid
             if touchforms:
-                url ='/submission'  # touchform has no username
+                url = '/submission'  # touchform has no username
             self.response = self.anon.post(url, post_data)
 
         if forced_submission_time:
@@ -159,9 +164,11 @@ class MainTestCase(TestCase):
             url = '/%s/submission' % self.user.username
             self.response = self.anon.post(url, post_data)
 
-    def _make_submissions(self, username=None, add_uuid=False, should_store=True):
-        paths = [os.path.join(self.this_directory, 'fixtures', 'transportation',
-                'instances', s, s + '.xml') for s in self.surveys]
+    def _make_submissions(self, username=None, add_uuid=False,
+                          should_store=True):
+        paths = [os.path.join(
+            self.this_directory, 'fixtures', 'transportation',
+            'instances', s, s + '.xml') for s in self.surveys]
         pre_count = Instance.objects.count()
         for path in paths:
             self._make_submission(path, username, add_uuid)
@@ -169,12 +176,16 @@ class MainTestCase(TestCase):
             else pre_count
         self.assertEqual(Instance.objects.count(), post_count)
         self.assertEqual(self.xform.surveys.count(), post_count)
+        xform = XForm.objects.get(pk=self.xform.pk)
+        self.assertEqual(xform.num_of_submissions, post_count)
+        self.assertEqual(xform.user.profile.num_of_submissions, post_count)
 
     def _check_url(self, url, timeout=1):
         try:
-            response = urllib2.urlopen(url, timeout=timeout)
+            urllib2.urlopen(url, timeout=timeout)
             return True
-        except urllib2.URLError as err: pass
+        except urllib2.URLError:
+            pass
         return False
 
     def _internet_on(self, url='http://74.125.113.99'):
@@ -183,8 +194,9 @@ class MainTestCase(TestCase):
 
     def _set_auth_headers(self, username, password):
         return {
-            'HTTP_AUTHORIZATION': 'Basic ' + base64.b64encode('%s:%s' % (username, password)),
-            }
+            'HTTP_AUTHORIZATION': 'Basic ' +
+            base64.b64encode('%s:%s' % (username, password)),
+        }
 
     def _get_authenticated_client(
             self, url, username='bob', password='bob', extra={}):
