@@ -384,3 +384,5 @@ else:
 MONGO_CONNECTION = MongoClient(
     MONGO_CONNECTION_URL, safe=True, j=True, tz_aware=True)
 MONGO_DB = MONGO_CONNECTION[MONGO_DATABASE['NAME']]
+
+TEMPLATE_DEBUG = True
