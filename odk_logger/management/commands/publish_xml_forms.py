@@ -53,6 +53,8 @@ class Command(BaseCommand):
                 else:
                     raise CommandError('form "{}" is already defined, and --replace was not specified.'.format(
                         id_string))
+                if not XForm.can_be_replaced():
+                    raise CommandError('form "{}" has submissions of file -- cannot replace'.format(id_string))
             try:
                 survey = create_survey_element_from_xml(xml)
             except (AssertionError, TypeError) as e:
