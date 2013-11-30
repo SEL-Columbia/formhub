@@ -25,11 +25,10 @@ class FormInactiveError(Exception):
 # need to establish id_string of the xform before we run get_dict since
 # we now rely on data dictionary to parse the xml
 def get_id_string_from_xml_str(xml_str):
-    match = re.search('id="(.+?)"', xml_str)
-    if match:
-        return match.group(1)
-    #else:
-    raise ValueError('cannot find id= in xml form')
+    xml_obj = clean_and_parse_xml(xml_str)
+    root_node = xml_obj.documentElement
+    return root_node.getAttribute(u"id")
+
 
 class Instance(models.Model):
     # I should rename this model, maybe Survey
