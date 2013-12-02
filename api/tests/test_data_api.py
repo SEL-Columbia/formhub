@@ -49,6 +49,26 @@ class TestDataAPI(MainTestCase):
         self.assertIsInstance(response.data, dict)
         self.assertDictContainsSubset(data, response.data)
 
+    def test_data_with_query_parameter(self):
+        view = DataViewSet.as_view({'get': 'list'})
+        request = self.factory.get('/', **self.extra)
+        formid = self.xform.pk
+        dataid = self.xform.surveys.all()[0].pk
+        response = view(request, owner='bob', formid=formid)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 4)
+        query_str = '{"_id": "%s"}' % dataid
+        request = self.factory.get('/?query=%s' % query_str, **self.extra)
+        response = view(request, owner='bob', formid=formid)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+
+    def test_anon_form_list(self):
+        view = DataViewSet.as_view({'get': 'list'})
+        request = self.factory.get('/')
+        response = view(request)
+        self.assertEqual(response.status_code, 401)
+
     def test_add_form_tag_propagates_to_data_tags(self):
         """Test that when a tag is applied on an xform,
         it propagates to the instance submissions
