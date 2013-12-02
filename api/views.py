@@ -1031,7 +1031,7 @@ Payload
   >
   >        HTTP 200 OK
     """
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, ]
+    permission_classes = [permissions.IsAuthenticated, ]
     lookup_field = 'owner'
     lookup_fields = ('owner', 'formid', 'dataid')
     extra_lookup_fields = None
@@ -1097,15 +1097,24 @@ Payload
                 raise exceptions.PermissionDenied(
                     _("You do not have permission to "
                       "view data from this form."))
+            else:
+                query = {}
+                query[ParsedInstance.USERFORM_ID] = \
+                    u'%s_%s' % (xform.user.username, xform.id_string)
         if xform and dataid and dataid == 'labels':
             return Response(list(xform.tags.names()))
-        if xform and dataid:
-            query = {'_id': int(dataid)}
+        if dataid:
+            if query:
+                query.update({'_id': int(dataid)})
+            else:
+                query = {'_id': int(dataid)}
         rquery = request.QUERY_PARAMS.get('query', None)
         if rquery:
             rquery = json.loads(rquery)
             if query:
-                rquery.update(json.loads(query))
+                query.update(rquery)
+            else:
+                query = rquery
         if tags:
             query = query if query else {}
             query['_tags'] = {'$all': tags.split(',')}
@@ -1113,6 +1122,8 @@ Payload
             data = self._get_form_data(xform, query=query)
         if not xform and not data:
             xforms = self._get_accessible_forms(owner)
+            if not query:
+                query = {}
             query[ParsedInstance.USERFORM_ID] = {
                 '$in': [
                     u'%s_%s' % (form.user.username, form.id_string)
