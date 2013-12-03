@@ -8,7 +8,6 @@ from .survey_type import SurveyType
 from odk_logger.xform_instance_parser import XFormInstanceParser, \
     clean_and_parse_xml, get_uuid_from_xml
 from utils.model_tools import set_uuid
-from utils.stathat_api import stathat_count
 from django.utils.translation import ugettext as _
 from taggit.managers import TaggableManager
 
@@ -183,11 +182,6 @@ def update_xform_submission_count_delete(sender, instance, **kwargs):
 
 post_delete.connect(update_xform_submission_count_delete, sender=Instance,
                     dispatch_uid='update_xform_submission_count_delete')
-
-
-def stathat_form_submission(sender, instance, created, **kwargs):
-    if created:
-        stathat_count('formhub-submissions')
 
 
 class InstanceHistory(models.Model):
