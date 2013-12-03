@@ -122,6 +122,7 @@ COUNTRIES = (
     ('KI', _('Kiribati')),
     ('KP', _('Korea, Democratic People\'s Republic of')),
     ('KR', _('Korea, Republic of')),
+    ('XK', _('Kosovo')), # see http://geonames.wordpress.com/2010/03/08/xk-country-code-for-kosovo/
     ('KW', _('Kuwait')),
     ('KG', _('Kyrgyzstan')),
     ('LA', _('Lao People\'s Democratic Republic')),
