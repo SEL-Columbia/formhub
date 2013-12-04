@@ -1109,9 +1109,9 @@ Payload
             return Response(list(xform.tags.names()))
         if dataid:
             if query:
-                query.update({'_id': int(dataid)})
+                query.update({'_id': dataid})
             else:
-                query = {'_id': int(dataid)}
+                query = {'_id': dataid}
         rquery = request.QUERY_PARAMS.get('query', None)
         if rquery:
             rquery = json.loads(rquery)

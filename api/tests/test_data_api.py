@@ -63,6 +63,22 @@ class TestDataAPI(MainTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
 
+    def test_data_with_dataid_as_string(self):
+        view = DataViewSet.as_view({'get': 'list'})
+        request = self.factory.get('/', **self.extra)
+        formid = self.xform.pk
+        dataid = "random_string"
+        request = self.factory.get('/', **self.extra)
+        response = view(request, owner='bob', formid=formid, dataid=dataid)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 0)
+        dataid = self.xform.surveys.all()[0].pk
+        request = self.factory.get('/', **self.extra)
+        response = view(request, owner='bob', formid=formid, dataid=dataid)
+        self.assertEqual(response.status_code, 200)
+        # a dict object instead of a list
+        self.assertIsInstance(response.data, dict)
+
     def test_data_with_formid_as_string(self):
         view = DataViewSet.as_view({'get': 'list'})
         request = self.factory.get('/', **self.extra)
