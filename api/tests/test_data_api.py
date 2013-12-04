@@ -124,3 +124,14 @@ class TestDataAPI(MainTestCase):
         self.assertEqual(response.data, [])
         for i in self.xform.surveys.all():
             self.assertNotIn(u'hello', i.tags.names())
+        view = DataViewSet.as_view({'get': 'labels'})
+        request = self.factory.get('/', **self.extra)
+        response = view(request, owner='bob', formid="random_string",
+                        dataid=i.pk)
+        self.assertEqual(response.status_code, 404)
+        response = view(request, owner='bob', formid=self.xform.pk,
+                        dataid="random")
+        self.assertEqual(response.status_code, 404)
+        response = view(request, owner='bob', formid=self.xform.pk,
+                        dataid=i.pk)
+        self.assertEqual(response.status_code, 200)

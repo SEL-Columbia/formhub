@@ -2,6 +2,7 @@ import json
 
 from django import forms
 from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
@@ -1155,7 +1156,11 @@ Payload
                 _("You do not have permission to "
                     "view data from this form."))
         status = 400
-        instance = get_object_or_404(ParsedInstance, instance__pk=int(dataid))
+        try:
+            instance = get_object_or_404(
+                ParsedInstance, instance__pk=int(dataid))
+        except ValueError:
+            raise Http404("No data with id %s" % dataid)
         if request.method == 'POST':
             form = TagForm(request.DATA)
             if form.is_valid():
