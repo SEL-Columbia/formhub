@@ -321,6 +321,22 @@ class TestFormShow(MainTestCase):
                                if e.name == u'preferred_means']) > 0
         self.assertTrue(is_updated_form)
 
+    def test_update_form_doesnt_truncate_to_50_chars(self):
+        xform_update_url = reverse(update_xform, kwargs={
+            'username': self.user.username,
+            'id_string': self.xform.id_string
+        })
+        count = XForm.objects.count()
+        xls_path = os.path.join(
+            self.this_directory,
+            "fixtures",
+            "transportation",
+            "transportation_with_long_id_string.xls")
+        with open(xls_path, "r") as xls_file:
+            post_data = {'xls_file': xls_file}
+            self.client.post(xform_update_url, post_data)
+        self.assertEqual(XForm.objects.count(), count + 1)
+
     def test_xform_delete(self):
         id_string = self.xform.id_string
         form_exists = XForm.objects.filter(
