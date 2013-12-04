@@ -34,7 +34,7 @@ class TestDataAPI(MainTestCase):
 
         data = {
             u'_bamboo_dataset_id': u'',
-#            u'_deleted_at': None,
+            # u'_deleted_at': None,
             u'_attachments': [],
             u'_geolocation': [None, None],
             u'_xform_id_string': u'transportation_2011_07_25',
@@ -62,6 +62,17 @@ class TestDataAPI(MainTestCase):
         response = view(request, owner='bob', formid=formid)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
+
+    def test_data_with_formid_as_string(self):
+        view = DataViewSet.as_view({'get': 'list'})
+        request = self.factory.get('/', **self.extra)
+        formid = "random_string"
+        response = view(request, owner='bob', formid=formid)
+        self.assertEqual(response.status_code, 404)
+        formid = self.xform.id_string
+        response = view(request, owner='bob', formid=formid)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 4)
 
     def test_anon_form_list(self):
         view = DataViewSet.as_view({'get': 'list'})

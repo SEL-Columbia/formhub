@@ -23,7 +23,8 @@ from api import mixins
 from api.signals import xform_tags_add, xform_tags_delete
 from api import tools as utils
 
-from utils.user_auth import check_and_set_form_by_id
+from utils.user_auth import check_and_set_form_by_id, \
+    check_and_set_form_by_id_string
 from main.models import UserProfile
 
 from odk_logger.models import XForm, Instance
@@ -1092,7 +1093,10 @@ Payload
         if not formid and not dataid and not tags:
             data = self._get_formlist_data_points(request, owner)
         if formid:
-            xform = check_and_set_form_by_id(int(formid), request)
+            try:
+                xform = check_and_set_form_by_id(int(formid), request)
+            except ValueError:
+                xform = check_and_set_form_by_id_string(formid, request)
             if not xform:
                 raise exceptions.PermissionDenied(
                     _("You do not have permission to "
@@ -1141,7 +1145,11 @@ Payload
             tags = TagField()
         if owner is None and not request.user.is_anonymous():
             owner = request.user.username
-        xform = check_and_set_form_by_id(int(formid), request)
+        xform = None
+        try:
+            xform = check_and_set_form_by_id(int(formid), request)
+        except ValueError:
+            xform = check_and_set_form_by_id_string(formid, request)
         if not xform:
             raise exceptions.PermissionDenied(
                 _("You do not have permission to "
