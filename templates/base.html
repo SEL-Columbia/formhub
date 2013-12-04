@@ -27,6 +27,9 @@
 	{% endif %}
     <link href="/static/css/iphone-btn-style.css" rel="stylesheet">
 
+    <!-- device-size dependant style -->
+    <link rel='stylesheet' media='screen and (max-width: 700px)' href='/static/css/mobile.css'>
+
     <!-- Le javascript -->
 		<script type="text/javascript" src="{% url "django.views.i18n.javascript_catalog" %}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>

@@ -690,12 +690,6 @@ a.download:hover {
 	font-weight: 600;
 }
 
-#login_btn {
-  padding: 25px;
-  font-size: 30px;
-  min-width: 115px;
-}
-
 #login_btn, #main-display .btn-info {
   color: #ffffff;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -714,24 +708,24 @@ a.download:hover {
 }
 
 #main-display .btn-info{
-	-webkit-box-shadow: 0px 1px 4px rgba(50, 50, 50, 0.98);
-	-moz-box-shadow:    0px 1px 4px rgba(50, 50, 50, 0.98);
-	box-shadow:         0px 1px 4px rgba(50, 50, 50, 0.98);
+  -webkit-box-shadow: 0px 1px 4px rgba(50, 50, 50, 0.98);
+  -moz-box-shadow:    0px 1px 4px rgba(50, 50, 50, 0.98);
+  box-shadow:         0px 1px 4px rgba(50, 50, 50, 0.98);
 }
 
 #topbar_login .btn {
-	-webkit-border-radius: 1em;
-	-moz-border-radius: 1em;
-	border-radius: 1em;
-	-webkit-box-shadow: 0px 0px 4px rgba(50, 50, 50, 0.27);
-	-moz-box-shadow:    0px 0px 4px rgba(50, 50, 50, 0.27);
-	box-shadow:         0px 0px 4px rgba(50, 50, 50, 0.27);
+  -webkit-border-radius: 1em;
+  -moz-border-radius: 1em;
+  border-radius: 1em;
+  -webkit-box-shadow: 0px 0px 4px rgba(50, 50, 50, 0.27);
+  -moz-box-shadow:    0px 0px 4px rgba(50, 50, 50, 0.27);
+  box-shadow:         0px 0px 4px rgba(50, 50, 50, 0.27);
 }
 
 #topbar_login #login_btn {
-  padding-left: 20px;
-  padding-right: 20px;
-  width: 30%;
+  padding: 15px;
+  font-size: 18px;
+  min-width: 115px;
 }
 
 #topbar_login .btn-info {
