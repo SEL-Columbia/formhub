@@ -52,8 +52,8 @@ dict2xml
 djangorestframework==2.3.6
 # cors
 django-cors-headers
-# django-rest-swagger==0.1.3
-https://github.com/modilabs/django-rest-swagger/raw/fhapi/dist/django-rest-swagger-0.1.3.tar.gz
+django-rest-swagger==0.1.3
+# https://github.com/modilabs/django-rest-swagger/raw/fhapi/dist/django-rest-swagger-0.1.3.tar.gz
 markdown
 django-filter
 # captcha
