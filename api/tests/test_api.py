@@ -8,8 +8,7 @@ from django.test import RequestFactory
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
 
-from utils.user_auth import set_api_permissions_for_user
-
+from main.models import UserProfile
 from api.models import OrganizationProfile, Project
 from api.views import OrgProfileViewSet
 from api.views import ProjectViewSet
@@ -43,22 +42,25 @@ class TestAPICase(TestCase):
             'home_page': 'bob.com',
             'twitter': 'boberama'
         }
-        url = '/accounts/register/'
         post_data = dict(post_data.items() + extra_post_data.items())
-        self.response = self.client.post(url, post_data)
-        try:
-            self.user = User.objects.get(username=post_data['username'])
-        except User.DoesNotExist:
-            pass
-        else:
-            self.user.is_active = True
-            self.user.save()
-            self.assertTrue(
-                self.client.login(username=self.user.username,
-                                  password='bobbob'))
-            self.extra = {
-                'HTTP_AUTHORIZATION': 'Token %s' % self.user.auth_token}
-            set_api_permissions_for_user(self.user)
+        user, created = User.objects.get_or_create(
+            username=post_data['username'],
+            first_name=post_data['name'],
+            email=post_data['email'])
+        user.set_password(post_data['password1'])
+        user.save()
+        new_profile, created = UserProfile.objects.get_or_create(
+            user=user, name=post_data['name'],
+            city=post_data['city'],
+            country=post_data['country'],
+            organization=post_data['organization'],
+            home_page=post_data['home_page'],
+            twitter=post_data['twitter'])
+        self.user = user
+        self.assertTrue(
+            self.client.login(username=self.user.username, password='bobbob'))
+        self.extra = {
+            'HTTP_AUTHORIZATION': 'Token %s' % self.user.auth_token}
 
     def _org_create(self):
         view = OrgProfileViewSet.as_view({
