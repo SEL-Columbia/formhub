@@ -289,7 +289,12 @@ def publish_form(callback):
             'text': _(u'Form validation timeout, please try again.'),
         }
     except Exception, e:
-        report_exception("ERROR: XLSForm publishing Exception", e)
+        # an exception at this point is not a 500 server error,
+        # it is due instead to a badly-formed excel file by a user,
+        # but since that message is sent to the UI for the user to see,
+        # there is no need to send an email to the admins, which is
+        # what the report_exception() is doing
+        #report_exception("ERROR: XLSForm publishing Exception", e)
         return {
             'type': 'alert-error',
             'text': e
