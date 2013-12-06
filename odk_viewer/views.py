@@ -726,7 +726,9 @@ def attachment_url(request, size='medium'):
 
 
 def instance(request, username, id_string):
-    if '-0.enketo.aklogbook.ecotrust.org/webform/edit' in request.META.get('HTTP_REFERER'):
+    import re
+    if re.match(r'.*-0.enketo.*/webform/edit.*', request.META.get('HTTP_REFERER')):
+    
         return HttpResponseRedirect('/app/')
     xform, is_owner, can_edit, can_view = get_xform_and_perms(
         username, id_string, request)
