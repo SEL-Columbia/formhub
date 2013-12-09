@@ -35,6 +35,8 @@ TOUCHFORMS_URL = 'http://localhost:9000/'
 
 SECRET_KEY = 'mlfs33^s1l4xf6a36$0#srgcpj%dd*sisfo6HOktYXB9y'
 
+
+
 TESTING_MODE = False
 if len(sys.argv) >= 2 and (sys.argv[1] == "test" or sys.argv[1] == "test_all"):
     # This trick works only when we run tests from the command line.
