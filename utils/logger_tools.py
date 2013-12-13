@@ -456,6 +456,19 @@ def update_mongo_for_xform(xform, only_update_missing=True):
 
 
 def mongo_sync_status(remongo=False, update_all=False, user=None, xform=None):
+    """Check the status of records in the mysql db versus mongodb. At a
+    minimum, return a report (string) of the results.
+
+    Optionally, take action to correct the differences, based on these
+    parameters, if present and defined:
+
+    remongo    -> if True, update the records missing in mongodb (default: False)
+    update_all -> if True, update all the relevant records (default: False)
+    user       -> if specified, apply only to the forms for the given user (default: None)
+    xform      -> if specified, apply only to the given form (default: None)
+
+    """
+
     qs = XForm.objects.only('id_string', 'user').select_related('user')
     if user and not xform:
         qs = qs.filter(user=user)
