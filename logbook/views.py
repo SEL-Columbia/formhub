@@ -30,7 +30,7 @@ def awc_pdf_export(request, username, id_string):
         return HttpResponseBadRequest("Must provide at least one permit")
 
     pdf = generate_pdf(id_string, submission_type, observations,
-        user=owner, permit_nums=permit_nums)
+        user=owner, permit_nums=permit_nums)                            #TODO - Get full name. Also, observer or user?
     response = HttpResponse(pdf, mimetype="application/pdf")
     response['Content-Disposition'] = disposition_ext_and_date(
         '-'.join(permit_nums), 'pdf')
