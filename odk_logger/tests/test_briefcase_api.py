@@ -63,6 +63,35 @@ class TestBriefcaseAPI(MainTestCase):
                     '{{resumptionCursor}}', '%s' % last_index)
             self.assertEqual(response.content, expected_submission_list)
 
+    def test_view_submissionlist_w_deleted_submission(self):
+        self._publish_xml_form()
+        self._make_submissions()
+        uuid = 'f3d8dc65-91a6-4d0f-9e97-802128083390'
+        Instance.objects.filter(uuid=uuid).delete()
+        response = self.client.get(
+            self._submission_list_url,
+            data={'formId': self.xform.id_string})
+        self.assertEqual(response.status_code, 200)
+        submission_list_path = os.path.join(
+            self.this_directory, 'fixtures', 'transportation',
+            'view', 'submissionList-4.xml')
+        instances = Instance.objects.filter(xform=self.xform)
+        self.assertTrue(instances.count() > 0)
+        last_index = instances[instances.count() - 1].pk
+        with codecs.open(submission_list_path, 'rb', encoding='utf-8') as f:
+            expected_submission_list = f.read()
+            expected_submission_list = \
+                expected_submission_list.replace(
+                    '{{resumptionCursor}}', '%s' % last_index)
+            self.assertEqual(response.content, expected_submission_list)
+        formId = u'%(formId)s[@version=null and @uiVersion=null]/' \
+                 u'%(formId)s[@key=uuid:%(instanceId)s]' % {
+                     'formId': self.xform.id_string,
+                     'instanceId': uuid}
+        params = {'formId': formId}
+        response = self.client.get(self._download_submission_url, data=params)
+        self.assertTrue(response.status_code, 404)
+
     def test_view_submissionList_OtherUser(self):
         self._publish_xml_form()
         self._make_submissions()
