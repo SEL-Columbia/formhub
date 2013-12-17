@@ -50,7 +50,7 @@ def extend_meta_profile(meta, user):
     profile = user.get_profile()
     uname = profile.name
     if uname == '':
-        uname = user.get_username()
+        uname = user.get_full_name()
     meta['user']  = uname
     meta['agency'] = profile.organization
     meta['addr1'] = profile.address
@@ -115,8 +115,8 @@ def generate_pdf(id_string, submission_type, observations, user, permit_nums):
     hs = [696, 673, 650, 631]
     can.drawString(78, hs[0] , meta['region'])
     can.drawString(342, hs[0], meta['quad'])
-    can.drawString(270, hs[1], meta['awc_num'])
-    can.drawString(160, hs[2], meta['awc_name'])
+    can.drawString(240, hs[1], meta['awc_num'])
+    can.drawString(125, hs[2], meta['awc_name'])
 
     if meta['awc_name_type'] == 'USGS':
         can.drawString(363, hs[2]+3, u"\u2713")
@@ -147,8 +147,8 @@ def generate_pdf(id_string, submission_type, observations, user, permit_nums):
     # render observational data
     for i, sd in enumerate(obs_data):
         height = 422 - 15*i
-        can.drawString(40, height, sd['species'])
-        can.drawString(150, height, sd['date'])
+        can.drawString(35, height, sd['species'])
+        can.drawString(190, height, sd['date'])
         if sd['observation_type'].lower() == "spawning":
             can.drawString(295, height, u"\u2713")
         if sd['observation_type'].lower() == "rearing":

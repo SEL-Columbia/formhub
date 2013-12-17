@@ -398,7 +398,8 @@ FIELD_MAP = {
 IGNORED_OUTPUT_FIELDS = [
     "formhub/uuid",
     "meta/instanceID",
-    "_xform_id_string"
+    "_xform_id_string",
+    "meta/deprecatedID"
 ]
 
 ################################################################################
