@@ -20,3 +20,12 @@ MONGO_DATABASE = {
     'PASSWORD': ''
 }
 
+# ------------------------------------------------------------------------------
+# Email
+# ------------------------------------------------------------------------------
+EMAIL_HOST = 'mailserver.domain.com'
+# EMAIL_PORT = ###
+# EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'email@domain.com'
+DEFAULT_FROM_EMAIL = 'email@domain.com'
+SERVER_EMAIL = 'email@domain.com'

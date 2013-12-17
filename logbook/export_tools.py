@@ -1,6 +1,7 @@
 from reportlab.pdfgen import canvas
 from pyPdf import PdfFileWriter, PdfFileReader
 import StringIO
+from io import BytesIO
 from reportlab.lib.pagesizes import letter
 import os
 import random
@@ -174,16 +175,16 @@ def generate_pdf(id_string, submission_type, observations, user, permit_nums):
 
     # Add a page for each observation
     for pi in pis:
-        obs_packet = get_obs_pdf(pi)
-        obs_pdf = PdfFileReader(obs_packet)
-        output.addPage(obs_pdf.getPage(0))
+        obs_page = get_obs_pdf(pi)
+        output.addPage(obs_page)
 
     # finally, return output
-    outputStream = StringIO.StringIO()
+    outputStream = BytesIO()
     output.write(outputStream)
 
     final = outputStream.getvalue()
     outputStream.close()
+
     return final
 
 
@@ -265,6 +266,7 @@ def generate_frp_xls(id_string, biol_date, user, permit_nums):
 
 
 def get_obs_pdf(pi):
+
     import xhtml2pdf.pisa as pisa
     import cStringIO as StringIO
 
@@ -279,7 +281,7 @@ def get_obs_pdf(pi):
     map_template = "http://maps.googleapis.com/maps/api/staticmap?center=%(lat)f,%(lng)f" \
               "&size=800x600&maptype=terrain" \
               "&markers=color:blue%%7C%(lat)f,%(lng)f&sensor=false" 
-
+                            #TODO - change map size for overview map
     detail_map = map_template % point + "&zoom=12"
     overview_map = map_template % point + "&zoom=8"
 
@@ -338,4 +340,6 @@ def get_obs_pdf(pi):
     if pdf.err:
         raise Exception("Pisa failed to create a pdf for observation")
     else:
-        return result
+        obs_pdf = PdfFileReader(result)
+        obs_page = obs_pdf.getPage(0)
+        return obs_page

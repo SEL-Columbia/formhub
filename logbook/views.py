@@ -34,6 +34,7 @@ def awc_pdf_export(request, username, id_string):
     response = HttpResponse(pdf, mimetype="application/pdf")
     response['Content-Disposition'] = disposition_ext_and_date(
         '-'.join(permit_nums), 'pdf')
+    response['Content-Length'] = len(pdf)
     return response
 
 def frp_xls_export(request, username, id_string):
