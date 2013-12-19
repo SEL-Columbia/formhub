@@ -13,7 +13,9 @@ class Command(BaseCommand):
         qs = XForm.objects.all()
         for form in qs:
             count = form.surveys.filter(is_deleted=False).count()
-            form.num_of_submissions = count if count > 0 else -1
-            form.save()
-            c += 1
+            new_num = count if count > 0 else -1
+            if new_num != form.num_of_submissions:
+                form.num_of_submissions = new_num
+                form.save()
+                c += 1
         print "Updated %d records." % c
