@@ -270,20 +270,19 @@ def get_obs_pdf(pi):
     import xhtml2pdf.pisa as pisa
     import cStringIO as StringIO
 
-    point = {
-      'lat': pi.lat,
-      'lng': pi.lng,
-    }
+    DEFAULT_ZOOM = 12
+    OVERVIEW_ZOOM = 8
+    DEFAULT_WIDTH = 400
+    DEFAULT_HEIGHT = 300
 
-    # According to https://developers.google.com/maps/documentation/staticmaps/#api_key
-    # "Note that the use of a key is not required, though it is recommended."
-    # ... so we go without a key for simplicity
-    map_template = "http://maps.googleapis.com/maps/api/staticmap?center=%(lat)f,%(lng)f" \
-              "&size=800x600&maptype=terrain" \
-              "&markers=color:blue%%7C%(lat)f,%(lng)f&sensor=false" 
-                            #TODO - change map size for overview map
-    detail_map = map_template % point + "&zoom=12"
-    overview_map = map_template % point + "&zoom=8"
+    points = {
+      'lat': pi.lat,            #TODO get observation point if available
+      'lng': pi.lng,
+      'start_lat': None,
+      'start_lng': None,
+      'end_lat': None,
+      'end_lng': None
+    }
 
     pi_dict = pi.to_dict()
     data_dict = pi.data_dictionary
@@ -293,6 +292,14 @@ def get_obs_pdf(pi):
         if key in settings.IGNORED_OUTPUT_FIELDS:
             continue
         val = pi_dict[key]
+        if key == settings.AWC_START_POINT_KEY:
+            val_lst = val.split()
+            points['start_lat'] = float(val_lst[0])
+            points['start_lng'] = float(val_lst[1])
+        if key == settings.AWC_END_POINT_KEY:
+            val_lst = val.split()
+            points['end_lat'] = float(val_lst[0])
+            points['end_lng'] = float(val_lst[1])
         label = data_dict.get_label(key)
         rows += """
                 <tr>
@@ -300,6 +307,38 @@ def get_obs_pdf(pi):
                    <td align="left">%s</td>
                 </tr>
         """ % (label, val)
+
+    bbox = get_bounding_box([[points['lat'],points['lng']],[points['start_lat'],points['start_lng']],[points['end_lat'],points['end_lng']]])
+
+    if bbox:
+        zoom, center = get_zoom_center(bbox, DEFAULT_WIDTH, DEFAULT_HEIGHT)
+        zoom = zoom - 1
+    else:
+        zoom = DEFAULT_ZOOM
+        center = {
+            'lat': point('lat'),
+            'lng': point('lng')
+        }
+
+    # According to https://developers.google.com/maps/documentation/staticmaps/#api_key
+    # "Note that the use of a key is not required, though it is recommended."
+    # ... so we go without a key for simplicity
+    map_template = "http://maps.googleapis.com/maps/api/staticmap?center=" + str(center['lat']) + "," + str(center['lng']) + "&" \
+              "maptype=terrain" \
+              "&markers=color:red%%7C%(start_lat)f,%(start_lng)f%%7C%(end_lat)f,%(end_lng)f&scale=2&sensor=false" 
+    detail_map = map_template % points + "&zoom=" + str(zoom) + "&size=" + str(DEFAULT_WIDTH) + "x" + str(DEFAULT_HEIGHT)
+    if zoom - 2 <= OVERVIEW_ZOOM:
+        if zoom > 3:
+            overzoom = zoom - 3
+        else:
+            overzoom = 0
+    else:
+        overzoom = OVERVIEW_ZOOM
+    print "========================================="
+    print "ZOOM:     " + str(zoom)
+    print "OVERZOOM: " + str(overzoom)
+    print "========================================="
+    overview_map = map_template % points + "&zoom=" + str(overzoom) + "&size=" + str(DEFAULT_WIDTH) + "x" + str(DEFAULT_HEIGHT)
 
     html = """
     <!-- EWWW table based layout (plays nicer with pisa) -->
@@ -343,3 +382,113 @@ def get_obs_pdf(pi):
         obs_pdf = PdfFileReader(result)
         obs_page = obs_pdf.getPage(0)
         return obs_page
+
+def get_bounding_box(points):
+    y_vals = []
+    x_vals = []
+
+    for point in points:
+        if point[0] != None and point[1] != None:
+            y_vals.append(point[0])
+            if point[1] > 0:
+                point[1] = point[1] - 360
+            x_vals.append(point[1])
+
+    bbox = {
+        'sw': {
+            'lat': min(y_vals),
+            'lng': min(x_vals)
+        },
+        'ne': {
+            'lat': max(y_vals),
+            'lng': max(x_vals)
+        }
+    }
+
+    return bbox
+
+def get_zoom_center(bbox, width, height):
+    import numpy        #TODO - use math instead
+
+    sw_x, sw_y = latLonToMeters(bbox['sw']['lat'], bbox['sw']['lng'])
+    sw_point = {
+        'lat': sw_y,
+        'lng': sw_x
+    }
+    ne_x, ne_y = latLonToMeters(bbox['sw']['lat'], bbox['ne']['lng'])
+    ne_point = {
+        'lat': ne_y,
+        'lng': ne_x
+    }
+
+    center = {
+        'lat': numpy.mean([bbox['sw']['lat'], bbox['ne']['lat']]),
+        'lng': numpy.mean([bbox['sw']['lng'], bbox['ne']['lng']])
+    }
+
+    if center['lng'] < -180:
+        center['lng'] = center['lng'] + 360
+
+    x_range = abs(ne_point['lng']-sw_point['lng'])
+    y_range = abs(ne_point['lat']-sw_point['lat'])
+    ratio = max(x_range/width, y_range/height)
+    zoom = get_zoom(center['lat'], ratio)
+
+    return zoom, center
+
+def get_zoom(lat, ratio):
+    import numpy        #TODO - use math instead
+    EARTH_CIRC = 6372798.2          # 6372.7982 km
+    rad_lat = numpy.radians(lat)
+    if ratio != 0 and EARTH_CIRC * numpy.cos(lat) != 0:
+        zoom = numpy.log2((EARTH_CIRC * numpy.cos(rad_lat))/ratio)-5
+    else:
+        return False 
+    return round(zoom)
+    
+
+# The below was taken from globalMapTiles.py:
+
+###############################################################################
+# $Id$
+#
+# Project:  GDAL2Tiles, Google Summer of Code 2007 & 2008
+#           Global Map Tiles Classes
+# Purpose:  Convert a raster into TMS tiles, create KML SuperOverlay EPSG:4326,
+#           generate a simple HTML viewers based on Google Maps and OpenLayers
+# Author:   Klokan Petr Pridal, klokan at klokan dot cz
+# Web:      http://www.klokan.cz/projects/gdal2tiles/
+#
+###############################################################################
+# Copyright (c) 2008 Klokan Petr Pridal. All rights reserved.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
+###############################################################################
+
+
+def latLonToMeters( lat, lon ):
+        "Converts given lat/lon in WGS84 Datum to XY in Spherical Mercator EPSG:900913"
+        import math
+        originShift = 2 * math.pi * 6378137 / 2.0
+
+        mx = lon * originShift / 180.0
+        my = math.log( math.tan((90 + lat) * math.pi / 360.0 )) / (math.pi / 180.0)
+
+        my = my * originShift / 180.0
+        return mx, my

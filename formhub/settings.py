@@ -402,6 +402,10 @@ IGNORED_OUTPUT_FIELDS = [
     "meta/deprecatedID"
 ]
 
+AWC_START_POINT_KEY = 'awc/wtr_st'
+
+AWC_END_POINT_KEY = 'awc/wtr_end'
+
 ################################################################################
 
 try:
