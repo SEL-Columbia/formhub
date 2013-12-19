@@ -6,7 +6,7 @@ from odk_logger.models import XForm
 from odk_logger.models.instance import Instance
 
 class Command(BaseCommand):
-    help = ugettext_lazy('Remove "is_deleted" flag from sql instances')
+    help = ugettext_lazy('Repair submission counts for all users')
 
     def handle(self, *args, **kwargs):
         c = 0
