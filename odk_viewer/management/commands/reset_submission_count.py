@@ -1,9 +1,7 @@
-from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
-from optparse import make_option
-from django.utils.translation import ugettext_lazy, ugettext as _
+from __future__ import print_function
+from django.core.management.base import BaseCommand
+from django.utils.translation import ugettext_lazy
 from odk_logger.models import XForm
-from odk_logger.models.instance import Instance
 
 class Command(BaseCommand):
     help = ugettext_lazy('Repair submission counts for all users')
@@ -18,4 +16,4 @@ class Command(BaseCommand):
                 form.num_of_submissions = new_num
                 form.save()
                 c += 1
-        print "Updated %d records." % c
+        print("Updated %d records." % c)
