@@ -15,7 +15,6 @@ from guardian.shortcuts import assign_perm, get_perms_for_model
 from taggit.managers import TaggableManager
 
 from odk_logger.xform_instance_parser import XLSFormError
-from utils.stathat_api import stathat_count
 from stats.tasks import stat_log
 
 from hashlib import md5
@@ -216,7 +215,6 @@ class XForm(models.Model):
 
 def stats_forms_created(sender, instance, created, **kwargs):
     if created:
-        stathat_count('formhub-forms-created')
         stat_log.delay('formhub-forms-created', 1)
 
 post_save.connect(stats_forms_created, sender=XForm)

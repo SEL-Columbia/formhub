@@ -47,14 +47,6 @@ class UserProfile(models.Model):
     class Meta:
         app_label = 'main'
 
-from utils.stathat_api import stathat_count
-
-
-def stathat_user_signups(sender, instance, created, **kwargs):
-    if created:
-        stathat_count('formhub-signups')
-post_save.connect(stathat_user_signups, sender=UserProfile)
-
 
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
