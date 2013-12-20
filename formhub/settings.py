@@ -51,6 +51,9 @@ LANGUAGES = (
     ('es', u'Español'),
     ('it', u'Italiano'),
     ('km', u'ភាសាខ្មែរ'),
+    ('ne', u'नेपाली'),
+    ('nl', u'Nederlands'),
+    ('zh', u'中文'),
 )
 
 SITE_ID = 1
