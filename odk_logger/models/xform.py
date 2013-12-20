@@ -54,7 +54,7 @@ class XForm(models.Model):
         default=''
     )
     id_string = models.SlugField(
-        editable=False, verbose_name=ugettext_lazy("ID")
+        editable=False, verbose_name=ugettext_lazy("ID"), max_length=100
     )
     title = models.CharField(editable=False, max_length=64)
     date_created = models.DateTimeField(auto_now_add=True)

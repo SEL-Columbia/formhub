@@ -245,33 +245,6 @@ class ParsedInstance(models.Model):
             if type(item) == dict and item.get(u'type') == type_value:
                 return item['name']
 
-    def _set_start_time(self):
-        doc = self.to_dict()
-        start_time_key1 = self._get_name_for_type(START)
-        start_time_key2 = self._get_name_for_type(START_TIME)
-        # if both, can take either
-        start_time_key = start_time_key1 or start_time_key2
-        if start_time_key is not None and start_time_key in doc:
-            date_time_str = doc[start_time_key]
-            self.start_time = datetime_from_str(date_time_str)
-        else:
-            self.start_time = None
-
-    def _set_end_time(self):
-        doc = self.to_dict()
-        # end_time_key1 = self._get_name_for_type(START)
-        # end_time_key2 = self._get_name_for_type(START_TIME)
-        # end_time_key = end_time_key1 or end_time_key2
-
-        if END_TIME in doc:
-            date_time_str = doc[END_TIME]
-            self.end_time = datetime_from_str(date_time_str)
-        elif END in doc:
-            date_time_str = doc[END]
-            self.end_time = datetime_from_str(date_time_str)
-        else:
-            self.end_time = None
-
     def get_data_dictionary(self):
         # todo: import here is a hack to get around a circular import
         from odk_viewer.models import DataDictionary
@@ -307,8 +280,8 @@ class ParsedInstance(models.Model):
             xform.save()
 
     def save(self, async=False, *args, **kwargs):
-        self._set_start_time()
-        self._set_end_time()
+        self.start_time = None  # start/end_time obsolete: originally used to approximate for instanceID,
+        self.end_time = None    # before instanceIDs were implemented
         self._set_geopoint()
         super(ParsedInstance, self).save(*args, **kwargs)
         # insert into Mongo
