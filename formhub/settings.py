@@ -409,6 +409,8 @@ AWC_START_POINT_KEY = 'awc/wtr_st'
 
 AWC_END_POINT_KEY = 'awc/wtr_end'
 
+PHOTO_KEY = 'general/pics'
+
 ################################################################################
 
 try:

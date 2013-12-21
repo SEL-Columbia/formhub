@@ -71,7 +71,7 @@ def get_obs_data(pi):
 
     return data
 
-def generate_pdf(id_string, submission_type, observations, user, permit_nums):
+def generate_pdf(id_string, submission_type, observations, host, user, permit_nums):
     from odk_viewer.models import ParsedInstance
 
     all_instances = ParsedInstance.objects.filter(instance__user=user,
@@ -175,7 +175,7 @@ def generate_pdf(id_string, submission_type, observations, user, permit_nums):
 
     # Add a page for each observation
     for pi in pis:
-        obs_page = get_obs_pdf(pi)
+        obs_page = get_obs_pdf(pi, user.username, host)
         output.addPage(obs_page)
 
     # finally, return output
@@ -265,7 +265,7 @@ def generate_frp_xls(id_string, biol_date, user, permit_nums):
     return final
 
 
-def get_obs_pdf(pi):
+def get_obs_pdf(pi, username, host):
 
     import xhtml2pdf.pisa as pisa
     import cStringIO as StringIO
@@ -283,6 +283,9 @@ def get_obs_pdf(pi):
       'end_lat': None,
       'end_lng': None
     }
+
+    photo_file = None
+    photo_location = None
 
     pi_dict = pi.to_dict()
     data_dict = pi.data_dictionary
@@ -307,6 +310,10 @@ def get_obs_pdf(pi):
                    <td align="left">%s</td>
                 </tr>
         """ % (label, val)
+        if key == settings.PHOTO_KEY:
+            photo_file = str(val)
+            photo_location = host + '/media/' + username + '/attachments/' + photo_file
+
 
     bbox = get_bounding_box([[points['lat'],points['lng']],[points['start_lat'],points['start_lng']],[points['end_lat'],points['end_lng']]])
 
@@ -336,6 +343,16 @@ def get_obs_pdf(pi):
         overzoom = OVERVIEW_ZOOM
     overview_map = map_template % points + "&zoom=" + str(overzoom) + "&size=" + str(DEFAULT_WIDTH) + "x" + str(DEFAULT_HEIGHT) #+ "&scale=2"
 
+    if photo_file and photo_location:
+        photo_html = """
+        <br>
+        <p> %s </p>
+        <img src='%s' style='height:200px;'/>
+
+        """ % (photo_file, photo_location)
+    else:
+        photo_html = ""
+
     html = """
     <!-- EWWW table based layout (plays nicer with pisa) -->
     <style>
@@ -363,11 +380,12 @@ def get_obs_pdf(pi):
             <br>
             <p> Overview Map </p>
             <img src="%s">  
+            %s
         </td>
       </tr>
     </table>
 
-    """ % (rows, detail_map, overview_map)
+    """ % (rows, detail_map, overview_map, photo_html)
 
     result = StringIO.StringIO()
     pdf = pisa.CreatePDF(html, result)
