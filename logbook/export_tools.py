@@ -344,6 +344,9 @@ def get_obs_pdf(pi, username, host):
     overview_map = map_template % points + "&zoom=" + str(overzoom) + "&size=" + str(DEFAULT_WIDTH) + "x" + str(DEFAULT_HEIGHT) #+ "&scale=2"
 
     if photo_file and photo_location:
+
+        photo_location = 'http://upload.wikimedia.org/wikipedia/commons/d/db/Patern_test.jpg'       #TODO: figure out why references to self
+                                                                                                    #   hang the server
         photo_html = """
         <br>
         <p> %s </p>
