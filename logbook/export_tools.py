@@ -147,7 +147,7 @@ def generate_pdf(id_string, submission_type, observations, host, user, permit_nu
     # render observational data
     for i, sd in enumerate(obs_data):
         height = 422 - 15*i
-        can.drawString(35, height, sd['species'])
+        can.drawString(35, height, sd['species'][:17])
         can.drawString(190, height, sd['date'])
         if sd['observation_type'].lower() == "spawning":
             can.drawString(295, height, u"\u2713")
