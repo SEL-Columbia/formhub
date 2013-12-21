@@ -325,8 +325,8 @@ def get_obs_pdf(pi):
     # ... so we go without a key for simplicity
     map_template = "http://maps.googleapis.com/maps/api/staticmap?center=" + str(center['lat']) + "," + str(center['lng']) + "&" \
               "maptype=terrain" \
-              "&markers=color:red%%7C%(start_lat)f,%(start_lng)f%%7C%(end_lat)f,%(end_lng)f&scale=2&sensor=false" 
-    detail_map = map_template % points + "&zoom=" + str(zoom) + "&size=" + str(DEFAULT_WIDTH) + "x" + str(DEFAULT_HEIGHT)
+              "&markers=color:red%%7C%(start_lat)f,%(start_lng)f%%7C%(end_lat)f,%(end_lng)f&sensor=false" 
+    detail_map = map_template % points + "&zoom=" + str(zoom) + "&size=" + str(DEFAULT_WIDTH) + "x" + str(DEFAULT_HEIGHT) #+ "&scale=2"
     if zoom - 2 <= OVERVIEW_ZOOM:
         if zoom > 3:
             overzoom = zoom - 3
@@ -334,11 +334,7 @@ def get_obs_pdf(pi):
             overzoom = 0
     else:
         overzoom = OVERVIEW_ZOOM
-    print "========================================="
-    print "ZOOM:     " + str(zoom)
-    print "OVERZOOM: " + str(overzoom)
-    print "========================================="
-    overview_map = map_template % points + "&zoom=" + str(overzoom) + "&size=" + str(DEFAULT_WIDTH) + "x" + str(DEFAULT_HEIGHT)
+    overview_map = map_template % points + "&zoom=" + str(overzoom) + "&size=" + str(DEFAULT_WIDTH) + "x" + str(DEFAULT_HEIGHT) #+ "&scale=2"
 
     html = """
     <!-- EWWW table based layout (plays nicer with pisa) -->

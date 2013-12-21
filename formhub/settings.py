@@ -399,7 +399,10 @@ IGNORED_OUTPUT_FIELDS = [
     "formhub/uuid",
     "meta/instanceID",
     "_xform_id_string",
-    "meta/deprecatedID"
+    "meta/deprecatedID",
+    "awc/show_awc",
+    "frp/show_frp",
+    "general2/req_edit"
 ]
 
 AWC_START_POINT_KEY = 'awc/wtr_st'
