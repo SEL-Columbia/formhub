@@ -372,6 +372,7 @@ ENKETO_API_TOKEN = "---"
 # AK Logbook specific settings
 AK_LOGBOOK_SURVEY = "frp_awc_survey"
 FIELD_MAP = {
+    'obs_name': "general/obs_nm",
     'date': "general/obs_date",
     'permit_num': "general/perm_num",
     'species': "general/sps_name",
