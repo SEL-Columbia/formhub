@@ -230,7 +230,10 @@ def generate_frp_xls(id_string, biol_date, user, permit_nums):
     start_row_idx = 4
 
     ws.write(0, 0, "ADF&G permit no. %s" % obs_data[0]['permit_num'])
-    ws.write(2, 0, "The area biologist was contacted on: %s" % meta['biologist_contact'])
+
+    # Documentations showed some degree of finickiness with date formats. The preferred format is now enforced.
+    bio_date = meta['biologist_contact'].split('-')
+    ws.write(2, 0, "The area biologist was contacted on: %s/%s/%s" % (bio_date[1], bio_date[2], bio_date[0]))
 
     for i, obs in enumerate(obs_data):
         ws.write(start_row_idx+i,0,obs['permit_num'])
