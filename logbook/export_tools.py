@@ -75,7 +75,7 @@ def generate_pdf(id_string, submission_type, observations, host, user, permit_nu
     from odk_viewer.models import ParsedInstance
 
     all_instances = ParsedInstance.objects.filter(instance__user=user,
-                                        instance__xform__id_string=id_string,)
+                                        instance__xform__id_string=id_string, instance__deleted_at=None)
 
     # We should probably use the ORM filter for better performance but
     # I havent yet figured out how to query mongodb via ORM args
@@ -194,7 +194,7 @@ def generate_frp_xls(id_string, biol_date, user, permit_nums):
     from xlutils.copy import copy
 
     all_instances = ParsedInstance.objects.filter(instance__user=user,
-                                        instance__xform__id_string=id_string,)
+                                        instance__xform__id_string=id_string, instance__deleted_at=None)
 
     # We should probably use the ORM filter for better performance but
     # I havent yet figured out how to query mongodb via ORM args
@@ -202,7 +202,7 @@ def generate_frp_xls(id_string, biol_date, user, permit_nums):
         raise Exception("Only one permit number per FRP export")
 
     pis = [x for x in all_instances 
-              if x.to_dict()[settings.FIELD_MAP['permit_num']] in permit_nums]
+        if x.to_dict()[settings.FIELD_MAP['permit_num']] in permit_nums and x.to_dict().has_key(settings.SHOW_FRP_KEY) and  x.to_dict()[settings.SHOW_FRP_KEY] == 'TRUE']
 
     if len(pis) == 0:
         raise Http404

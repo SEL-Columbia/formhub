@@ -405,6 +405,10 @@ IGNORED_OUTPUT_FIELDS = [
     "general2/req_edit"
 ]
 
+SHOW_FRP_KEY = 'frp/show_frp'
+
+SHOW_AWC_KEY = 'awc/show_awc'
+
 AWC_START_POINT_KEY = 'awc/wtr_st'
 
 AWC_END_POINT_KEY = 'awc/wtr_end'
