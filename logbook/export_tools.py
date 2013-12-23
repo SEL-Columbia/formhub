@@ -94,7 +94,7 @@ def generate_pdf(id_string, submission_type, observations, host, user, permit_nu
 
     meta = {
         'region': get_adfg_region(pts)[:26],
-        'quad': get_usgs_quads(pts),
+        'quad': get_usgs_quads(pts)[:41],
         'awc_num': awc_num,
         'awc_name': waterway, 
         'awc_name_type': 'local',  # TODO
