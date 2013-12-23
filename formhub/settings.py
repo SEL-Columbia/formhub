@@ -410,6 +410,8 @@ SHOW_FRP_KEY = 'frp/show_frp'
 
 SHOW_AWC_KEY = 'awc/show_awc'
 
+FRP_LOCATION_KEY = 'frp/obs_loc'
+
 AWC_START_POINT_KEY = 'awc/wtr_st'
 
 AWC_END_POINT_KEY = 'awc/wtr_end'

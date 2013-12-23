@@ -69,6 +69,14 @@ def get_obs_data(pi):
     for key in settings.FIELD_MAP.keys():
         data[key] = pi.to_dict().get(settings.FIELD_MAP[key], '')
 
+    pi_dict = pi.to_dict()
+    for key in sorted(pi_dict.keys()):
+        if key == settings.FRP_LOCATION_KEY:
+            val = pi_dict[key]
+            val_lst = val.split()
+            data['lat'] = float(val_lst[0])
+            data['lng'] = float(val_lst[1])
+
     return data
 
 def generate_pdf(id_string, submission_type, observations, user, permit_nums):
@@ -299,6 +307,10 @@ def get_obs_pdf(pi, username):
         if key in settings.IGNORED_OUTPUT_FIELDS:
             continue
         val = pi_dict[key]
+        if key == settings.FRP_LOCATION_KEY:
+            val_lst = val.split()
+            points['lat'] = float(val_lst[0])
+            points['lng'] = float(val_lst[1])
         if key == settings.AWC_START_POINT_KEY:
             val_lst = val.split()
             points['start_lat'] = float(val_lst[0])
