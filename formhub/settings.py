@@ -379,6 +379,7 @@ FIELD_MAP = {
     'species_group': "general/sps_grp",
     'awc_num': "awc/awc_num",
     'waterway': "general/wtr_nm",
+    'name_type': "general/name_type",
     'observation_type': "awc/observ",
     "fishcollectionmethod": "frp/gear_type",
     "lifestage": "frp/Lf_stg",

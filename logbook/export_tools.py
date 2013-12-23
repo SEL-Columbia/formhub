@@ -99,13 +99,14 @@ def generate_pdf(id_string, submission_type, observations, user, permit_nums):
     pts = [(x['lng'], x['lat']) for x in obs_data]
     awc_num = ', '.join(set([x['awc_num'] for x in obs_data if x['awc_num']]))
     waterway = ', '.join(set([x['waterway'] for x in obs_data if x['waterway']]))
+    name_type = obs_data[0]['name_type']
 
     meta = {
         'region': get_adfg_region(pts)[:26],
         'quad': get_usgs_quads(pts)[:41],
         'awc_num': awc_num,
         'awc_name': waterway[:41], 
-        'awc_name_type': 'local',  # TODO
+        'awc_name_type': name_type,
         'nomination_type': submission_type,
     }
 
@@ -126,9 +127,9 @@ def generate_pdf(id_string, submission_type, observations, user, permit_nums):
     can.drawString(240, hs[1], meta['awc_num'])
     can.drawString(118, hs[2], meta['awc_name'])
 
-    if meta['awc_name_type'] == 'USGS':
+    if meta['awc_name_type'] == 'usgs name':
         can.drawString(363, hs[2]+3, u"\u2713")
-    elif meta['awc_name_type'] == 'local':
+    elif meta['awc_name_type'] == 'local name':
         can.drawString(466, hs[2]+3, u"\u2713")
 
     if meta['nomination_type'] == 'addition':
