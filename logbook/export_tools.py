@@ -336,7 +336,7 @@ def get_obs_pdf(pi, username):
 
     if bbox:
         zoom, center = get_zoom_center(bbox, DEFAULT_WIDTH, DEFAULT_HEIGHT)
-        zoom = zoom - 1
+        zoom = int(zoom - 1)
     else:
         zoom = DEFAULT_ZOOM
         center = {
