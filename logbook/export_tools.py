@@ -316,7 +316,7 @@ def get_obs_pdf(pi, username, host):
         """ % (label, val)
         if key == settings.PHOTO_KEY:
             photo_file = str(val)
-            photo_location = host + '/media/' + username + '/attachments/' + photo_file
+            photo_location = host + '/usr/local/apps/formhub/media/' + username + '/attachments/' + photo_file
 
 
     bbox = get_bounding_box([[points['lat'],points['lng']],[points['start_lat'],points['start_lng']],[points['end_lat'],points['end_lng']]])
@@ -348,9 +348,6 @@ def get_obs_pdf(pi, username, host):
     overview_map = map_template % points + "&zoom=" + str(overzoom) + "&size=" + str(DEFAULT_WIDTH) + "x" + str(DEFAULT_HEIGHT) #+ "&scale=2"
 
     if photo_file and photo_location:
-
-        photo_location = 'http://upload.wikimedia.org/wikipedia/commons/d/db/Patern_test.jpg'       #TODO: figure out why references to self
-                                                                                                    #   hang the server
         photo_html = """
         <br>
         <p> %s </p>

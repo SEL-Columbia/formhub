@@ -29,7 +29,7 @@ def awc_pdf_export(request, username, id_string):
     if len(permit_nums) == 0:
         return HttpResponseBadRequest("Must provide at least one permit")
 
-    host = request.META['wsgi.url_scheme'] + '://' + request.get_host()
+    host = 'file://' + request.get_host()
     
     pdf = generate_pdf(id_string, submission_type, observations, host,
         user=owner, permit_nums=permit_nums)                            #TODO - Get full name. Also, observer or user?
