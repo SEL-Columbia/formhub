@@ -71,7 +71,7 @@ def get_obs_data(pi):
 
     return data
 
-def generate_pdf(id_string, submission_type, observations, host, user, permit_nums):
+def generate_pdf(id_string, submission_type, observations, user, permit_nums):
     from odk_viewer.models import ParsedInstance
 
     all_instances = ParsedInstance.objects.filter(instance__user=user,
@@ -96,7 +96,7 @@ def generate_pdf(id_string, submission_type, observations, host, user, permit_nu
         'region': get_adfg_region(pts)[:26],
         'quad': get_usgs_quads(pts)[:41],
         'awc_num': awc_num,
-        'awc_name': waterway, 
+        'awc_name': waterway[:41], 
         'awc_name_type': 'local',  # TODO
         'nomination_type': submission_type,
     }
@@ -116,7 +116,7 @@ def generate_pdf(id_string, submission_type, observations, host, user, permit_nu
     can.drawString(78, hs[0] , meta['region'])
     can.drawString(342, hs[0], meta['quad'])
     can.drawString(240, hs[1], meta['awc_num'])
-    can.drawString(125, hs[2], meta['awc_name'])
+    can.drawString(118, hs[2], meta['awc_name'])
 
     if meta['awc_name_type'] == 'USGS':
         can.drawString(363, hs[2]+3, u"\u2713")
@@ -175,7 +175,7 @@ def generate_pdf(id_string, submission_type, observations, host, user, permit_nu
 
     # Add a page for each observation
     for pi in pis:
-        obs_page = get_obs_pdf(pi, user.username, host)
+        obs_page = get_obs_pdf(pi, user.username)
         output.addPage(obs_page)
 
     # finally, return output
@@ -269,7 +269,7 @@ def generate_frp_xls(id_string, biol_date, user, permit_nums):
     return final
 
 
-def get_obs_pdf(pi, username, host):
+def get_obs_pdf(pi, username):
 
     import xhtml2pdf.pisa as pisa
     import cStringIO as StringIO
@@ -316,7 +316,7 @@ def get_obs_pdf(pi, username, host):
         """ % (label, val)
         if key == settings.PHOTO_KEY:
             photo_file = str(val)
-            photo_location = host + '/usr/local/apps/formhub/media/' + username + '/attachments/' + photo_file
+            photo_location = 'file://127.0.0.1/usr/local/apps/formhub/media/' + username + '/attachments/' + photo_file
 
 
     bbox = get_bounding_box([[points['lat'],points['lng']],[points['start_lat'],points['start_lng']],[points['end_lat'],points['end_lng']]])
