@@ -232,14 +232,14 @@ def delete_export(export_id):
 SYNC_MONGO_MANUAL_INSTRUCTIONS = """
 To re-sync manually, ssh into the server and run:
 
-python manage.py sync_mongo -r [username] [id_string]
+python manage.py sync_mongo -r [username] [id_string] --settings='formhub.preset.local_settings'
 
 To force complete delete and re-creation, use the -a option:
 
-python manage.py sync_mongo -ra [username] [id_string]
+python manage.py sync_mongo -ra [username] [id_string] --settings='formhub.preset.local_settings'
 """
 
-REMONGO_PATTERN = re.compile(r'Total # of records to remongo: [1-9]+', re.IGNORECASE)
+REMONGO_PATTERN = re.compile(r'Total # of records to remongo: -?[1-9]+', re.IGNORECASE)
 
 @task()
 def email_mongo_sync_status():
