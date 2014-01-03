@@ -8,8 +8,9 @@ DATABASES = {
     }
 }
 
-ENKETO_URL = 'http://enketo/' # TODO
-ENKETO_API_INSTANCE_IFRAME_URL = "https://enketo/api_v1/instance/iframe"
+PORT = ''   # blank by default, use something like ':8080' if needed
+ENKETO_URL = 'http://enketo%s/' % PORT
+ENKETO_API_INSTANCE_IFRAME_URL = "https://enketo%s/api_v1/instance/iframe" % PORT
 ENKETO_API_TOKEN = "abcde"
 
 MONGO_DATABASE = {

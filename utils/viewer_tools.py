@@ -182,8 +182,10 @@ def enketo_url(form_url, id_string, instance_xml=None,
             pass
         else:
             if 'edit_url' in response:
+                response['edit_url'] = response['edit_url'].replace('enketo', 'enketo%s' % settings.PORT)
                 return response['edit_url']
             if 'url' in response:
+                response['url'] = response['url'].replace('enketo', 'enketo%s' % settings.PORT)
                 return response['url']
     else:
         try:
