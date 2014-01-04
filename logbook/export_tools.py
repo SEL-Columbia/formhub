@@ -355,13 +355,15 @@ def get_obs_pdf(pi, username):
 
     if bbox:
         zoom, center = get_zoom_center(bbox, DEFAULT_WIDTH, DEFAULT_HEIGHT)
-        if zoom > 1:
+        if zoom == False:
+            zoom = MAX_ZOOM
+        if zoom > 2:
             if zoom > MAX_ZOOM:
                 zoom = MAX_ZOOM
             else:
                 zoom = int(zoom - 1)
         else:
-            zoom = 1
+            zoom = 2
     else:
         zoom = DEFAULT_ZOOM
         center = {
@@ -380,7 +382,7 @@ def get_obs_pdf(pi, username):
         if zoom > 4:
             overzoom = zoom - 3
         else:
-            overzoom = 1
+            overzoom = 2
     else:
         overzoom = OVERVIEW_ZOOM
     overview_map = map_template % points + "&zoom=" + str(overzoom) + "&size=" + str(DEFAULT_WIDTH) + "x" + str(DEFAULT_HEIGHT) #+ "&scale=2"
