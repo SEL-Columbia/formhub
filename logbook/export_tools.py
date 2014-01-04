@@ -285,6 +285,7 @@ def get_obs_pdf(pi, username):
 
     DEFAULT_ZOOM = 12
     OVERVIEW_ZOOM = 8
+    MAX_ZOOM = 15
     DEFAULT_WIDTH = 400
     DEFAULT_HEIGHT = 300
 
@@ -337,7 +338,10 @@ def get_obs_pdf(pi, username):
     if bbox:
         zoom, center = get_zoom_center(bbox, DEFAULT_WIDTH, DEFAULT_HEIGHT)
         if zoom > 1:
-            zoom = int(zoom - 1)
+            if zoom > MAX_ZOOM:
+                zoom = MAX_ZOOM
+            else:
+                zoom = int(zoom - 1)
         else:
             zoom = 1
     else:
