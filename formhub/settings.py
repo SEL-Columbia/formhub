@@ -419,6 +419,8 @@ AWC_END_POINT_KEY = 'awc/wtr_end'
 
 PHOTO_KEY = 'general/pics'
 
+COMMENT_KEY = 'awc/awc_comm'
+
 ################################################################################
 
 try:
