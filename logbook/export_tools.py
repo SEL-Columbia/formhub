@@ -97,8 +97,10 @@ def generate_pdf(id_string, submission_type, observations, user, permit_nums):
     obs_data = [ get_obs_data(pi) for pi in pis ]
 
     pts = [(x['lng'], x['lat']) for x in obs_data]
-    awc_num = ', '.join(set([x['awc_num'] for x in obs_data if x['awc_num']]))
-    waterway = ', '.join(set([x['waterway'] for x in obs_data if x['waterway']]))
+    awc_nums = [x['awc_num'] for x in obs_data if x['awc_num']]
+    awc_num = str(awc_nums[0])       # Nominations should only be for one waterway at a time.
+    waterways = [x['waterway'] for x in obs_data if x['waterway']]
+    waterway = str(waterways[0])     # Nominations should only be for one waterway at a time.
     name_type = obs_data[0]['name_type']
 
     meta = {
@@ -124,7 +126,8 @@ def generate_pdf(id_string, submission_type, observations, user, permit_nums):
     hs = [696, 673, 650, 631]
     can.drawString(78, hs[0] , meta['region'])
     can.drawString(342, hs[0], meta['quad'])
-    can.drawString(240, hs[1], meta['awc_num'])
+    if meta['nomination_type'] != 'addition':
+        can.drawString(240, hs[1], meta['awc_num'])
     can.drawString(118, hs[2], meta['awc_name'])
 
     if meta['awc_name_type'] == 'usgs name':
