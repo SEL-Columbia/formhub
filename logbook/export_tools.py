@@ -183,7 +183,7 @@ def generate_pdf(id_string, submission_type, observations, user, permit_nums):
             can.drawString(360, height, u"\u2713")
         if sd['observation_type'].lower() == "present":
             can.drawString(440, height, u"\u2713")
-        if sd['species_group'].lower().startswith("anadromous"):
+        if sd['species_group'].lower().startswith("anadromous") or sd['species_group'].lower().startswith("salmonidae"):
             can.drawString(502, height, u"\u2713")
     can.save()
 
