@@ -433,27 +433,35 @@
         {% if is_owner %}
         <h3>{% trans "Settings" %}</h3>
         <div class="clearfix">
-          <div class="input">
-          <label>{% trans "Form Shared" %}&nbsp;</label>
-            <input id="form-shared" type="checkbox"{% if xform.shared %} checked=""{% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string %}" />
-          </div>
-          <br/>
-          <label>{% trans "Data Shared" %}&nbsp;</label>
-          <div class="input">
-            <input id="data-shared" type="checkbox"{% if xform.shared_data %} checked=""{% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string %}" />
-          </div>
-          <br/>
-          <label>{% trans "Crowdform" %}&nbsp;</label>
-          <div class="input">
-            <input id="crowd-form" type="checkbox" {% if xform.is_crowd_form %}
-            checked="" {% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string  %}" />
-          </div>
-          <br/>
-          <label>{% trans "Form Active" %}&nbsp;</label>
-          <div class="input">
-            <input id="active-form" type="checkbox"{% if xform.downloadable %} checked=""{% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string %}" />
-          </div>
-          <br/>
+          <form action="{% url "main.views.edit" username=user.username id_string=xform.id_string %}" method="post">
+            {% csrf_token %}
+            <div class="input">
+            <input type="hidden" name="settings_form" value="on"/>
+            <label>{% trans "Form Shared" %}&nbsp;</label>
+              <input name="shared" id="form-shared" type="checkbox"{% if xform.shared %} checked=""{% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string %}" />
+            </div>
+            <br/>
+            <label>{% trans "Data Shared" %}&nbsp;</label>
+            <div class="input">
+              <input name="shared_data" id="data-shared" type="checkbox"{% if xform.shared_data %} checked=""{% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string %}" />
+            </div>
+            <br/>
+            <label>{% trans "Crowdform" %}&nbsp;</label>
+            <div class="input">
+              <input name="is_crowd_form" id="crowd-form" type="checkbox" {% if xform.is_crowd_form %}
+              checked="" {% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string  %}" />
+            </div>
+            <br/>
+            <label>{% trans "Form Active" %}&nbsp;</label>
+            <div class="input">
+              <input name="downloadable" id="active-form" type="checkbox"{% if xform.downloadable %} checked=""{% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string %}" />
+            </div>
+            <br/>
+            <label>{% trans "Update" %}</label>
+            <div class="input">
+                <button class="btn btn-primary form-submit">{% trans "Update" %}</button>
+            </div>
+          </form>
           <label>{% trans "Delete Form" %}&nbsp;</label>
         <div class="input">
           <!-- DELETE -->

@@ -695,7 +695,27 @@ def edit(request, username, id_string):
                     'id_string': xform.id_string
                 }, audit, request)
             MetaData.supporting_docs(xform, request.FILES['doc'])
-        xform.update()
+        elif request.POST.get('settings_form'):
+            print request.POST
+            settings = ('shared', 'shared_data', 'downloadable', 'is_crowd_form')
+            for setting in settings:
+                if request.POST.get(setting) == 'on' or not (setting in request.POST and getattr(xform, setting)):
+                    audit = {
+                        'xform': xform.id_string
+                    }
+                    audit_log(
+                        Actions.FORM_UPDATED, request.user, owner,
+                        _("'%(field_name)s' for '%(id_string)s' updated from "
+                            "'%(old_value)s' to '%(new_value)s'.") %
+                        {
+                            'field_name': setting,
+                            'id_string': xform.id_string,
+                            'old_value': xform.downloadable,
+                            'new_value': request.POST.get(setting, False)
+                        }, audit, request)
+                    setattr(xform, setting, request.POST.get(setting, False))
+
+            xform.update()
 
         if request.is_ajax():
             return HttpResponse(_(u'Updated succeeded.'))
