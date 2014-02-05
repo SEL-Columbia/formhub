@@ -696,7 +696,7 @@ def edit(request, username, id_string):
                 }, audit, request)
             MetaData.supporting_docs(xform, request.FILES['doc'])
         elif request.POST.get('settings_form'):
-            print request.POST
+            #white list of fields that can be changed
             settings = ('shared', 'shared_data', 'downloadable', 'is_crowd_form')
             for setting in settings:
                 if request.POST.get(setting) == 'on' or not (setting in request.POST and getattr(xform, setting)):
@@ -718,7 +718,7 @@ def edit(request, username, id_string):
             xform.update()
 
         if request.is_ajax():
-            return HttpResponse(_(u'Updated succeeded.'))
+            return HttpResponse(_(u'Update succeeded.'))
         else:
             return HttpResponseRedirect(reverse(show, kwargs={
                 'username': username,

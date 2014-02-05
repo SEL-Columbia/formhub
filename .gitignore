@@ -41,6 +41,7 @@ mongo_vs_instance_counts_report.txt
 *.pyc
 *.sql
 *.sqlite
+*.sqlite3
 *.tar.gz
 *~
 *orig
