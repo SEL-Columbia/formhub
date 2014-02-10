@@ -92,7 +92,7 @@ def create_instance(username, xml_file, media_files,
             raise InstanceInvalidUserError()
 
         if uuid:
-            # try find the fomr by its uuid which is the ideal condition
+            # try find the form by its uuid which is the ideal condition
             if XForm.objects.filter(uuid=uuid).count() > 0:
                 xform = XForm.objects.get(uuid=uuid)
                 xform_username = xform.user.username
@@ -373,6 +373,8 @@ class OpenRosaResponseBadRequest(OpenRosaResponse):
 class OpenRosaResponseNotAllowed(OpenRosaResponse):
     status_code = 405
 
+class OpenRosaResponseNotAcceptable(OpenRosaResponse):
+    status_code = 406
 
 def inject_instanceid(xml_str, uuid):
     if get_uuid_from_xml(xml_str) is None:
