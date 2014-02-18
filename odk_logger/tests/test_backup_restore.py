@@ -1,13 +1,13 @@
 import os
 
-from onadata.apps.main.tests.test_base import TestBase
-from onadata.libs.utils.backup_tools import (
+from main.tests.test_base import MainTestCase
+from utils.backup_tools import (
     restore_backup_from_xml_file,
     restore_backup_from_path)
-from onadata.apps.logger.models import Instance
+from odk_logger.models import Instance
 
 
-class TestBackupRestore(TestBase):
+class TestBackupRestore(MainTestCase):
     def setUp(self):
         super(TestBackupRestore, self).setUp()
         self._publish_transportation_form()

@@ -8,10 +8,10 @@ import tempfile
 import zipfile
 from time import sleep
 
-from onadata.apps.logger.import_tools import django_file
-from onadata.apps.logger.models import Instance
-from onadata.libs.utils.logger_tools import create_instance
-from onadata.libs.utils.model_tools import queryset_iterator
+from odk_logger.import_tools import django_file
+from odk_logger.models import Instance
+from utils.logger_tools import create_instance
+from utils.model_tools import queryset_iterator
 
 
 DATE_FORMAT = "%Y-%m-%d-%H-%M-%S"
