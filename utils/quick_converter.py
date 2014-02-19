@@ -4,6 +4,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy
 from odk_viewer.models import DataDictionary
 
+
 class QuickConverter(forms.Form):
     xls_file = forms.FileField(label=ugettext_lazy("XLS File"))
 
@@ -12,5 +13,4 @@ class QuickConverter(forms.Form):
             return DataDictionary.objects.create(
                 user=user,
                 xls=self.cleaned_data['xls_file']
-                )
-
+            )
