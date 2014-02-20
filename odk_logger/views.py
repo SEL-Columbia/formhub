@@ -28,7 +28,7 @@ from django_digest import HttpDigestAuthenticator
 
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound,\
-    BaseOpenRosaResponse, \
+    BaseOpenRosaResponse, OpenRosaResponseNotAcceptable, \
     inject_instanceid, remove_xform, publish_xml_form, publish_form
 from models import XForm, Instance
 from main.models import UserProfile, MetaData
@@ -251,7 +251,9 @@ def submission(request, username=None):
                 _(u"Received empty submission. No instance was created")
             )
         except FormInactiveError:
-            return OpenRosaResponseNotAllowed(_(u"Form is not active"))
+            return OpenRosaResponseNotAcceptable(
+                _(u"Sorry, the form you submitted is no longer active.")
+            )
         except XForm.DoesNotExist:
             return OpenRosaResponseNotFound(
                 _(u"Form does not exist on this account")
