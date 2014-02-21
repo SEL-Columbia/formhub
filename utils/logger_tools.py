@@ -29,7 +29,7 @@ import common_tags
 
 from odk_logger.models import Attachment
 from odk_logger.models import Instance
-from odk_logger.models.instance import InstanceHistory
+from odk_logger.models.instance import InstanceHistory, FormInactiveError
 from odk_logger.models.instance import get_id_string_from_xml_str
 from odk_logger.models import XForm
 from odk_logger.models.xform import XLSFormError
@@ -92,7 +92,7 @@ def create_instance(username, xml_file, media_files,
             raise InstanceInvalidUserError()
 
         if uuid:
-            # try find the fomr by its uuid which is the ideal condition
+            # try find the form by its uuid which is the ideal condition
             if XForm.objects.filter(uuid=uuid).count() > 0:
                 xform = XForm.objects.get(uuid=uuid)
                 xform_username = xform.user.username
@@ -108,6 +108,8 @@ def create_instance(username, xml_file, media_files,
             id_string = get_id_string_from_xml_str(xml)
             xform = XForm.objects.get(
                 id_string=id_string, user__username=username)
+            if not xform.downloadable:  # "not downloadable" means "not active" -- badly named field
+                raise FormInactiveError
             if not xform.is_crowd_form and not is_touchform \
                     and xform.user.profile.require_auth \
                     and xform.user != request.user:
@@ -373,6 +375,8 @@ class OpenRosaResponseBadRequest(OpenRosaResponse):
 class OpenRosaResponseNotAllowed(OpenRosaResponse):
     status_code = 405
 
+class OpenRosaResponseNotAcceptable(OpenRosaResponse):
+    status_code = 406
 
 def inject_instanceid(xml_str, uuid):
     if get_uuid_from_xml(xml_str) is None:

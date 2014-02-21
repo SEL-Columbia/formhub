@@ -35,6 +35,7 @@ ve/
 .pydevproject
 .sass-cache
 .settings
+.preset/*_test.py
 mongo_vs_instance_counts_report.txt
 
 *.bak

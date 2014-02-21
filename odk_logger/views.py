@@ -6,6 +6,7 @@ import pytz
 
 from datetime import datetime
 from itertools import chain
+
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
@@ -23,6 +24,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.conf import settings
 from django.utils.translation import ugettext as _
+from django_digest import HttpDigestAuthenticator
 
 from utils.logger_tools import create_instance, OpenRosaResponseBadRequest, \
     OpenRosaResponseNotAllowed, OpenRosaResponse, OpenRosaResponseNotFound,\
@@ -40,7 +42,6 @@ from odk_logger.xform_instance_parser import InstanceEmptyError,\
 from odk_logger.models.instance import FormInactiveError
 from odk_logger.models.attachment import Attachment
 from utils.log import audit_log, Actions
-from django_digest import HttpDigestAuthenticator
 from utils.viewer_tools import enketo_url
 
 
@@ -225,6 +226,7 @@ def submission(request, username=None):
         # response as html if posting with a UUID
         if not username and uuid:
             html_response = True
+
         try:
             instance = create_instance(
                 username, xml_file_list[0], media_files,
@@ -241,7 +243,9 @@ def submission(request, username=None):
                 _(u"Received empty submission. No instance was created")
             )
         except FormInactiveError:
-            return OpenRosaResponseNotAllowed(_(u"Form is not active"))
+            return OpenRosaResponseNotFound(
+                _(u"Sorry, the form you submitted is no longer active.")
+            )
         except XForm.DoesNotExist:
             return OpenRosaResponseNotFound(
                 _(u"Form does not exist on this account")
@@ -271,6 +275,7 @@ def submission(request, username=None):
             {
                 "id_string": instance.xform.id_string
             }, audit, request)
+
         # ODK needs two things for a form to be considered successful
         # 1) the status code needs to be 201 (created)
         # 2) The location header needs to be set to the host it posted to
@@ -461,6 +466,7 @@ def enter_data(request, username, id_string):
             request, messages.WARNING,
             _("Enketo error: enketo replied %s") % e, fail_silently=True)
         return render_to_response("profile.html", context_instance=context)
+
     return HttpResponseRedirect(reverse('main.views.show',
                                 kwargs={'username': username,
                                         'id_string': id_string}))
