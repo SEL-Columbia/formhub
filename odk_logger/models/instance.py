@@ -1,3 +1,4 @@
+import re
 from django.db import models
 from django.db.models.signals import post_save
 from django.db.models.signals import post_delete
