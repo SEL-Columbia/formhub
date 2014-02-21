@@ -15,7 +15,6 @@ from guardian.shortcuts import assign_perm, get_perms_for_model
 from taggit.managers import TaggableManager
 
 from odk_logger.xform_instance_parser import XLSFormError
-from utils.stathat_api import stathat_count
 from stats.tasks import stat_log
 
 from hashlib import md5
@@ -55,7 +54,7 @@ class XForm(models.Model):
         default=''
     )
     id_string = models.SlugField(
-        editable=False, verbose_name=ugettext_lazy("ID")
+        editable=False, verbose_name=ugettext_lazy("ID"), max_length=100
     )
     title = models.CharField(editable=False, max_length=64)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -216,7 +215,6 @@ class XForm(models.Model):
 
 def stats_forms_created(sender, instance, created, **kwargs):
     if created:
-        stathat_count('formhub-forms-created')
         stat_log.delay('formhub-forms-created', 1)
 
 post_save.connect(stats_forms_created, sender=XForm)
