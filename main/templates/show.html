@@ -33,8 +33,8 @@
         {% if can_edit %}
             <h4>{% trans "Form ID:" %} {{ xform.id_string }}</h4>
         {% endif %}
-        <h3>{% trans "Description" %}</h3>
-        <div class="clearfix">
+        <div class="clearfix bordered">
+          <h3>{% trans "Description" %}</h3>
             <div class="input">
             <form>
                 {% csrf_token %}
@@ -46,12 +46,13 @@
             </form>
             </div>
         </div>
+      <br/>
       <div class="bordered">
         <h3>
             {% trans "XLSForm" %}
-            <span id="form-shared-public" class="label label-info">{% trans "PUBLIC" %}</span>
+            <!-- <span id="form-shared-public" class="label label-info">{% trans "PUBLIC" %}</span>
             <span id="form-shared-private" class="label label-warning">{% trans "PRIVATE" %}</span>
-            <span id="form-encrypted" class="label label-important icon-lock label-encrypted">&nbsp;&nbsp;{% trans "ENCRYPTED" %}</span>
+            <span id="form-encrypted" class="label label-important icon-lock label-encrypted">&nbsp;&nbsp;{% trans "ENCRYPTED" %}</span> -->
         </h3>
         <br/>
         <div class="btn-toolbar" style="margin-bottom: 9px">
@@ -118,9 +119,11 @@
       <div class="clearfix bordered">
         <h3>
             {% trans "Form Data" %}
-            <span id="data-shared-public" class="label label-info">{% trans "PUBLIC" %}</span>
+            <!--
+
+             <span id="data-shared-public" class="label label-info">{% trans "PUBLIC" %}</span>
             <span id="data-shared-private" class="label label-warning">{% trans "PRIVATE" %}</span>
-            <span id="data-encrypted" class="label label-important icon-lock label-encrypted">&nbsp;&nbsp;{% trans "ENCRYPTED" %}</span>
+            <span id="data-encrypted" class="label label-important icon-lock label-encrypted">&nbsp;&nbsp;{% trans "ENCRYPTED" %}</span> -->
         </h3>
         {% if xform.shared_data or can_view %}
         {% if not xform.encrypted and xform.submission_count > 0 %}
@@ -489,7 +492,7 @@
         </div>
         </div>
         <br/>
-        <div>
+        <div class="clearfix bordered">
             <h3>{% trans "bamboo" %}</h3>
             {% if xform.bamboo_dataset %}
                 {% blocktrans with dataset=xform.bamboo_dataset %}bamboo dataset: <strong><a href="http://bamboo.io/datasets/{{ dataset }}/info">{{ dataset }}</a></strong>{% endblocktrans %}
@@ -509,7 +512,7 @@
             {% endif %}
         </div>
         <br />
-        <div>
+        <div class="clearfix bordered">
             <h3>{% trans "Sharing" %}</h3>
             {% if public_link %}
             {% url "main.views.show" xform.uuid as form_url %}
