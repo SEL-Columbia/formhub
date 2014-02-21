@@ -251,7 +251,7 @@ def submission(request, username=None):
                 _(u"Received empty submission. No instance was created")
             )
         except FormInactiveError:
-            return OpenRosaResponseNotAcceptable(
+            return OpenRosaResponseNotFound(
                 _(u"Sorry, the form you submitted is no longer active.")
             )
         except XForm.DoesNotExist:
