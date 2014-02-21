@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load humanize %}g
+{% load humanize %}
 {% block content %}
 {% load i18n %}
 
@@ -50,9 +50,11 @@
       <div class="bordered">
         <h3>
             {% trans "XLSForm" %}
-            <!-- <span id="form-shared-public" class="label label-info">{% trans "PUBLIC" %}</span>
+            <!--
+            <span id="form-shared-public" class="label label-info">{% trans "PUBLIC" %}</span>
             <span id="form-shared-private" class="label label-warning">{% trans "PRIVATE" %}</span>
-            <span id="form-encrypted" class="label label-important icon-lock label-encrypted">&nbsp;&nbsp;{% trans "ENCRYPTED" %}</span> -->
+            <span id="form-encrypted" class="label label-important icon-lock label-encrypted">&nbsp;&nbsp;{% trans "ENCRYPTED" %}</span>
+            -->
         </h3>
         <br/>
         <div class="btn-toolbar" style="margin-bottom: 9px">
@@ -120,10 +122,10 @@
         <h3>
             {% trans "Form Data" %}
             <!--
-
              <span id="data-shared-public" class="label label-info">{% trans "PUBLIC" %}</span>
             <span id="data-shared-private" class="label label-warning">{% trans "PRIVATE" %}</span>
-            <span id="data-encrypted" class="label label-important icon-lock label-encrypted">&nbsp;&nbsp;{% trans "ENCRYPTED" %}</span> -->
+            <span id="data-encrypted" class="label label-important icon-lock label-encrypted">&nbsp;&nbsp;{% trans "ENCRYPTED" %}</span>
+             -->
         </h3>
         {% if xform.shared_data or can_view %}
         {% if not xform.encrypted and xform.submission_count > 0 %}
