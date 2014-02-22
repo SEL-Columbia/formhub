@@ -95,22 +95,22 @@ class TestFormEdit(MainTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared, False)
 
-    def test_user_toggle_form_downloadable(self):
-        self.xform.downloadable = False
+    def test_user_toggle_form_form_active(self):
+        self.xform.form_active = False
         self.xform.save()
-        self.assertEqual(self.xform.downloadable, False)
+        self.assertEqual(self.xform.form_active, False)
         response = self.client.post(self.edit_url, {'toggle_shared': 'active'},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(XForm.objects.get(pk=self.xform.pk).downloadable, True)
+        self.assertEqual(XForm.objects.get(pk=self.xform.pk).form_active, True)
 
-    def test_user_toggle_form_downloadable_off(self):
-        self.xform.downloadable = True
+    def test_user_toggle_form_form_active_off(self):
+        self.xform.form_active = True
         self.xform.save()
         response = self.client.post(self.edit_url, {'toggle_shared': 'active'},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(XForm.objects.get(pk=self.xform.pk).downloadable, False)
+        self.assertEqual(XForm.objects.get(pk=self.xform.pk).form_active, False)
 
     def test_delete_404(self):
         bad_delete_url = reverse(delete_xform, kwargs={

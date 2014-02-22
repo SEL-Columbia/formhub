@@ -71,7 +71,7 @@ class TestFormErrors(MainTestCase):
 
     def test_submission_deactivated(self):
         self._create_xform()
-        self.xform.downloadable = False
+        self.xform.form_active = False
         self.xform.save()
         xml_path = os.path.join(self.this_directory, "fixtures",
                 "transportation", "transportation_empty_submission.xml")

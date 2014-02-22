@@ -93,7 +93,7 @@
               {{ time_of_last_submission|date:"N d, Y" }}
           {% endif %}
         </td>
-        <td>{{ xform.downloadable|lower }}</td>
+        <td>{{ xform.form_active|lower }}</td>
         <td>
             {% if submission_count <= 0 %}
             <div class="dropdown">

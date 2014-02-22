@@ -130,7 +130,7 @@ class TestAPICase(TestCase):
             'public': False,
             'public_data': False,
             'description': u'',
-            'downloadable': True,
+            'form_active': True,
             'is_crowd_form': False,
             'allows_sms': False,
             'encrypted': False,

@@ -448,7 +448,7 @@ def public_api(request, username, id_string):
                'bamboo_dataset': xform.bamboo_dataset,
                'shared': xform.shared,
                'shared_data': xform.shared_data,
-               'downloadable': xform.downloadable,
+               'form_active': xform.form_active,
                'is_crowd_form': xform.is_crowd_form,
                'title': xform.title,
                'date_created': xform.date_created.strftime(_DATETIME_FORMAT),
@@ -515,7 +515,7 @@ def edit(request, username, id_string):
             xform.title = request.POST['title']
         elif request.POST.get('settings_form'):
             #white list of fields that can be changed
-            settings = ('shared', 'shared_data', 'downloadable', 'is_crowd_form')
+            settings = ('shared', 'shared_data', 'form_active', 'is_crowd_form')
             for setting in settings:
                 new_state = request.POST.get(setting, 'off') == 'on'
                 old_state = getattr(xform, setting)

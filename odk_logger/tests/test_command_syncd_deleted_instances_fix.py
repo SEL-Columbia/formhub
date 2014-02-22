@@ -58,7 +58,7 @@ class CommandSyncDeletedTests(MainTestCase):
         instance.save()
 
         # make xform inactive
-        self.xform.downloadable = False
+        self.xform.form_active = False
         self.xform.save()
         same_instance = Instance.objects.get(pk=instance.pk)
         self.assertIsNone(same_instance.deleted_at)

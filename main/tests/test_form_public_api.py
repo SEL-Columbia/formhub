@@ -25,7 +25,7 @@ class TestFormPublicAPI(MainTestCase):
         data = json.loads(response.content)
 
         for field in ('username', 'id_string', 'bamboo_dataset', 'shared',
-                      'shared_data', 'downloadable', 'is_crowd_form',
+                      'shared_data', 'form_active', 'is_crowd_form',
                       'title', 'date_created', 'date_modified', 'uuid'):
             self.assertIn(field, data)
 

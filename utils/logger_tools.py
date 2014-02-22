@@ -108,7 +108,7 @@ def create_instance(username, xml_file, media_files,
             id_string = get_id_string_from_xml_str(xml)
             xform = XForm.objects.get(
                 id_string=id_string, user__username=username)
-            if not xform.downloadable:  # "not downloadable" means "not active" -- badly named field
+            if not xform.form_active:  # "form is "not active"
                 raise FormInactiveError
             if not xform.is_crowd_form and not is_touchform \
                     and xform.user.profile.require_auth \

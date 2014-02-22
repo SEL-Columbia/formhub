@@ -98,7 +98,7 @@ class Instance(models.Model):
     def save(self, *args, **kwargs):
         self._set_xform(get_id_string_from_xml_str(self.xml))
         doc = self.get_dict()
-        if self.xform and not self.xform.downloadable:
+        if self.xform and not self.xform.form_active:
             raise FormInactiveError()
         self._set_start_time(doc)
         self._set_date(doc)

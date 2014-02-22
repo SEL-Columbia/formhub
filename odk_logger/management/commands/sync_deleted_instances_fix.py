@@ -16,7 +16,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # Reset all sql deletes to None
         Instance.objects.exclude(
-            deleted_at=None, xform__downloadable=True).update(deleted_at=None)
+            deleted_at=None, xform__form_active=True).update(deleted_at=None)
 
         # Get all mongo deletes
         query = '{"$and": [{"_deleted_at": {"$exists": true}}, ' \
