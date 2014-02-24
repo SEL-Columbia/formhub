@@ -34,11 +34,6 @@ requests==2.0.1
 
 elaphe==0.5.6
 
-# devel only
-twill
-clint
-shell_command
-
 # sms support
 dict2xml==1.1
 

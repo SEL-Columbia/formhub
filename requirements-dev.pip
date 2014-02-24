@@ -5,3 +5,8 @@ statsd
 django-statsd-mozilla
 gunicorn
 fabric
+
+# devel only
+twill
+clint
+shell_command
