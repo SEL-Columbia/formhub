@@ -8,12 +8,23 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Renaming field 'mymodel.old_field_name' to 'mymodel.new_field_name'
-        db.rename_column(u'odk_logger_xform', 'downloadable', 'form_active')
+        # Deleting field 'XForm.downloadable'
+        db.delete_column(u'odk_logger_xform', 'downloadable')
+
+        # Adding field 'XForm.form_active'
+        db.add_column(u'odk_logger_xform', 'form_active',
+                      self.gf('django.db.models.fields.BooleanField')(default=True),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        db.rename_column(u'odk_logger_xform', 'form_active', 'downloadable')
+        # Adding field 'XForm.downloadable'
+        db.add_column(u'odk_logger_xform', 'downloadable',
+                      self.gf('django.db.models.fields.BooleanField')(default=True),
+                      keep_default=False)
+
+        # Deleting field 'XForm.form_active'
+        db.delete_column(u'odk_logger_xform', 'form_active')
 
 
     models = {

@@ -109,7 +109,7 @@ class TestCrowdforms(MainTestCase):
         self.xform.shared_data = False
         self.xform.save()
         response = self.client.post(
-            self.edit_url, {'toggle_shared': 'crowd'},
+            self.edit_url, {'settings_form': '', 'is_crowd_form': 'on'},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         xform = XForm.objects.get(pk=self.xform.pk)
@@ -121,7 +121,7 @@ class TestCrowdforms(MainTestCase):
         self.xform.shared = True
         self.xform.save()
         response = self.client.post(
-            self.edit_url, {'toggle_shared': 'crowd'},
+            self.edit_url, {'settings_form': '', 'shared': 'on'},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         xform = XForm.objects.get(pk=self.xform.pk)
