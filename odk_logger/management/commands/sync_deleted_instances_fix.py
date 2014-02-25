@@ -28,7 +28,7 @@ class Command(BaseCommand):
             # update sql instance with deleted_at datetime from mongo
             try:
                 i = Instance.objects.get(
-                    uuid=record["_uuid"],  xform__downloadable=True)
+                    uuid=record["_uuid"],  xform__form_active=True)
             except Instance.DoesNotExist:
                 continue
             else:

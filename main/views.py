@@ -534,8 +534,8 @@ def edit(request, username, id_string):
                             'new_value': str(new_state)
                         }, audit, request)
                     setattr(xform, setting, new_state)
-                    if setting == 'is_crowd_form' and xform.is_crowd_form:
-                        xform.shared = xform.shared_data = True
+                    if setting == 'is_crowd_form' and new_state:
+                        xform.shared = xform.shared_data = True  # crowd forms must be shared.
 
         elif request.POST.get('form-license'):
             audit = {

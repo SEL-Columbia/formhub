@@ -115,7 +115,7 @@ class TestFormEdit(MainTestCase):
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).form_active, False)
 
     def test_user_set_form_crowd_form(self):
-        self.xform.shared, self.xform.shared_data, self.xform.is_crowd_form = False
+        self.xform.shared = self.xform.shared_data = self.xform.is_crowd_form = False
         self.xform.save()
         self.assertEqual(self.xform.is_crowd_form, False)
         self.assertEqual(self.xform.shared, False)
@@ -132,7 +132,7 @@ class TestFormEdit(MainTestCase):
         response = self.client.post(self.edit_url, {'settings_form': 'active', 'shared': 'on'},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(XForm.objects.get(pk=self.xform.pk).crowd_form, False)
+        self.assertEqual(XForm.objects.get(pk=self.xform.pk).is_crowd_form, False)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared, True)   # does not clear other flag
 
     def test_delete_404(self):
