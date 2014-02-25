@@ -65,52 +65,75 @@ class TestFormEdit(MainTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(MetaData.data_license(self.xform).data_value, desc)
 
-    def test_user_toggle_data_privacy(self):
+    def test_user_set_data_privacy(self):
         self.assertEqual(self.xform.shared, False)
-        response = self.client.post(self.edit_url, {'toggle_shared': 'data'},
+        response = self.client.post(self.edit_url, {'settings_form': 'data', 'shared_data': 'on'},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared_data, True)
 
-    def test_user_toggle_data_privacy_off(self):
+    def test_user_unset_data_privacy_off(self):
         self.xform.shared_data = True
         self.xform.save()
-        response = self.client.post(self.edit_url, {'toggle_shared': 'data'},
+        response = self.client.post(self.edit_url, {'settings_form': 'data', 'shared': 'on'},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared_data, False)
+        self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared, True)   # does not clear other flag
 
-    def test_user_toggle_form_privacy(self):
+    def test_user_set_form_privacy(self):
         self.assertEqual(self.xform.shared, False)
-        response = self.client.post(self.edit_url, {'toggle_shared': 'form'},
+        response = self.client.post(self.edit_url, {'settings_form': 'form', 'shared': 'on'},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared, True)
 
-    def test_user_toggle_form_privacy_off(self):
+    def test_user_unset_form_privacy_off(self):
         self.xform.shared = True
         self.xform.save()
-        response = self.client.post(self.edit_url, {'toggle_shared': 'form'},
+        response = self.client.post(self.edit_url, {'settings_form': 'form', 'shared_data': 'on'},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared, False)
+        self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared_data, True)   # does not clear other flag
 
-    def test_user_toggle_form_form_active(self):
+    def test_user_set_form_form_active(self):
         self.xform.form_active = False
         self.xform.save()
         self.assertEqual(self.xform.form_active, False)
-        response = self.client.post(self.edit_url, {'toggle_shared': 'active'},
+        response = self.client.post(self.edit_url, {'settings_form': 'active', 'form_active': 'on'},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).form_active, True)
 
-    def test_user_toggle_form_form_active_off(self):
+    def test_user_unset_form_form_active_off(self):
         self.xform.form_active = True
         self.xform.save()
-        response = self.client.post(self.edit_url, {'toggle_shared': 'active'},
+        response = self.client.post(self.edit_url, {'settings_form': 'active'},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(XForm.objects.get(pk=self.xform.pk).form_active, False)
+
+    def test_user_set_form_crowd_form(self):
+        self.xform.shared, self.xform.shared_data, self.xform.is_crowd_form = False
+        self.xform.save()
+        self.assertEqual(self.xform.is_crowd_form, False)
+        self.assertEqual(self.xform.shared, False)
+        response = self.client.post(self.edit_url, {'settings_form': 'active', 'is_crowd_form': 'on'},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(XForm.objects.get(pk=self.xform.pk).is_crowd_form, True)
+        self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared, True)       # setting crowd_form also sets shared
+        self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared_data, True)
+
+    def test_user_unset_form_crowd_form_off(self):
+        self.xform.crowd_form = True
+        self.xform.save()
+        response = self.client.post(self.edit_url, {'settings_form': 'active', 'shared': 'on'},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(XForm.objects.get(pk=self.xform.pk).crowd_form, False)
+        self.assertEqual(XForm.objects.get(pk=self.xform.pk).shared, True)   # does not clear other flag
 
     def test_delete_404(self):
         bad_delete_url = reverse(delete_xform, kwargs={

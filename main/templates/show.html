@@ -461,7 +461,7 @@
             <br/>
             <label>{% trans "Form Active" %}&nbsp;</label>
             <div class="input">
-              <input name="downloadable" id="active-form" type="checkbox"{% if xform.downloadable %} checked=""{% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string %}" />
+              <input name="form_active" id="active-form" type="checkbox"{% if xform.form_active %} checked=""{% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string %}" />
             </div>
             <br/>
             <label>{% trans "Update Settings" %}</label>

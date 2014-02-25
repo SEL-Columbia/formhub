@@ -65,6 +65,7 @@
                 {% if  not xform.encrypted and submission_count > 0 %}
                     <a href="{% url "main.views.form_photos" content_user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
                     <i class="icon-camera icon-large"></i>
+                    </a>
                     <a href="{% url "odk_viewer.views.data_view" content_user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
                         <i class="icon-list icon-large inactive"></i>
                     </a>
@@ -204,6 +205,7 @@
                       {% if submission_count > 0 %}
                           <a href="{% url "main.views.form_photos" xform.user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
                           <i class="icon-camera icon-large"></i>
+                          </a>
                           <a href="{% url "odk_viewer.views.data_view" xform.user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
                               <i class="icon-list icon-large inactive"></i>
                           </a>
@@ -293,6 +295,7 @@
                                 {% if submission_count > 0 %}
                                     <a href="{% url "main.views.form_photos" xform.user.username xform.id_string %}" data-original-title="{% trans 'View Photo' %}" rel="tooltip" >
                                     <i class="icon-camera icon-large"></i>
+                                    </a>
                                     <a href="{% url "odk_viewer.views.data_view" xform.user.username xform.id_string %}" data-original-title="{% trans 'View Submitted Data' %}" rel="tooltip">
                                         <i class="icon-list icon-large inactive"></i>
                                     </a>
