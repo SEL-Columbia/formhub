@@ -2,6 +2,7 @@ import base64
 import datetime
 import re
 import json
+import copy
 
 from dateutil import parser
 from bson import json_util
@@ -16,7 +17,7 @@ from odk_logger.models import Instance
 from celery import task
 from common_tags import START_TIME, START, END_TIME, END, ID, UUID,\
     ATTACHMENTS, GEOLOCATION, SUBMISSION_TIME, MONGO_STRFTIME,\
-    BAMBOO_DATASET_ID, DELETEDAT, TAGS
+    BAMBOO_DATASET_ID, DELETEDAT, TAGS, FLATTENED, INSTANCE_ID
 from django.utils.translation import ugettext as _
 
 
@@ -111,14 +112,17 @@ class ParsedInstance(models.Model):
     @classmethod
     @apply_form_field_names
     def query_mongo(cls, username, id_string, query, fields, sort, start=0,
-                    limit=DEFAULT_LIMIT, count=False, hide_deleted=True):
+                    limit=DEFAULT_LIMIT, count=False, hide_deleted=True, flattened=False):
         fields_to_select = {cls.USERFORM_ID: 0}
         # TODO: give more detailed error messages to 3rd parties
         # using the API when json.loads fails
+        print query
         query = json.loads(
             query, object_hook=json_util.object_hook) if query else {}
         query = dict_for_mongo(query)
         query[cls.USERFORM_ID] = u'%s_%s' % (username, id_string)
+        query[u'_flattened'] = flattened
+        print query
         if hide_deleted:
             #display only active elements
             deleted_at_query = {
@@ -136,6 +140,7 @@ class ParsedInstance(models.Model):
                 [(_encode_for_mongo(field), 1) for field in fields])
         sort = json.loads(
             sort, object_hook=json_util.object_hook) if sort else {}
+        print query
         cursor = xform_instances.find(query, fields_to_select)
         if count:
             return [{"count": cursor.count()}]
@@ -198,37 +203,99 @@ class ParsedInstance(models.Model):
         cursor.batch_size = cls.DEFAULT_BATCHSIZE
         return cursor
 
-    def to_dict_for_mongo(self):
-        d = self.to_dict()
-        deleted_at = None
-        if isinstance(self.instance.deleted_at, datetime.datetime):
-            deleted_at = self.instance.deleted_at.strftime(MONGO_STRFTIME)
-        d.update(
-            {
-                UUID: self.instance.uuid,
-                ID: self.instance.id,
-                BAMBOO_DATASET_ID: self.instance.xform.bamboo_dataset,
-                self.USERFORM_ID: u'%s_%s' % (
-                    self.instance.user.username,
-                    self.instance.xform.id_string),
-                ATTACHMENTS: [a.media_file.name for a in
-                              self.instance.attachments.all()],
-                self.STATUS: self.instance.status,
-                GEOLOCATION: [self.lat, self.lng],
-                SUBMISSION_TIME:
-                self.instance.date_created.strftime(MONGO_STRFTIME),
-                DELETEDAT: deleted_at,
-                TAGS: list(self.instance.tags.names())
-            }
-        )
-        return dict_for_mongo(d)
-
-    def update_mongo(self, async=True):
-        d = self.to_dict_for_mongo()
-        if async:
-            update_mongo_instance.apply_async((), {"record": d})
+    def to_dict_for_mongo(self, flattened=False):
+        if flattened:
+            res = []
+            i = 0
+            for d in self.to_flattened_dicts():
+                deleted_at = None
+                if isinstance(self.instance.deleted_at, datetime.datetime):
+                    deleted_at = self.instance.deleted_at.strftime(MONGO_STRFTIME)
+                uuid = self.instance.uuid
+                d.update(
+                    {
+                        UUID: "flattened" +  str(i) + "_" + self.instance.uuid,
+                        BAMBOO_DATASET_ID: self.instance.xform.bamboo_dataset,
+                        self.USERFORM_ID: u'%s_%s' % (
+                            self.instance.user.username,
+                            self.instance.xform.id_string),
+                        ATTACHMENTS: [a.media_file.name for a in
+                                      self.instance.attachments.all()],
+                        self.STATUS: self.instance.status,
+                        GEOLOCATION: [self.lat, self.lng],
+                        SUBMISSION_TIME:
+                        self.instance.date_created.strftime(MONGO_STRFTIME),
+                        DELETEDAT: deleted_at,
+                        TAGS: list(self.instance.tags.names()),
+                        FLATTENED: True,
+                        INSTANCE_ID: self.instance.id
+                    }
+                )
+                res.append(dict_for_mongo(d))
+                i += 1
+            return res
         else:
-            update_mongo_instance(d)
+            d = self.to_dict()
+            deleted_at = None
+            if isinstance(self.instance.deleted_at, datetime.datetime):
+                deleted_at = self.instance.deleted_at.strftime(MONGO_STRFTIME)
+            uuid = self.instance.uuid
+
+            d.update(
+                {
+                    UUID: self.instance.uuid,
+                    ID: self.instance.id,
+                    BAMBOO_DATASET_ID: self.instance.xform.bamboo_dataset,
+                    self.USERFORM_ID: u'%s_%s' % (
+                        self.instance.user.username,
+                        self.instance.xform.id_string),
+                    ATTACHMENTS: [a.media_file.name for a in
+                                  self.instance.attachments.all()],
+                    self.STATUS: self.instance.status,
+                    GEOLOCATION: [self.lat, self.lng],
+                    SUBMISSION_TIME:
+                    self.instance.date_created.strftime(MONGO_STRFTIME),
+                    DELETEDAT: deleted_at,
+                    TAGS: list(self.instance.tags.names()),
+                    FLATTENED: False
+                }
+            )
+            return dict_for_mongo(d)
+
+    def update_mongo(self, async=True, flattened=False):
+        d = self.to_dict_for_mongo(flattened)
+        if flattened:
+            for c in d:
+                if async:
+                    update_mongo_instance.apply_async((), {"record": c})
+                else:
+                    update_mongo_instance(c)
+        else:
+            if async:
+                update_mongo_instance.apply_async((), {"record": d})
+            else:
+                update_mongo_instance(d)
+
+    def to_flattened_dicts(self):
+        dd = self.to_dict()
+        fds = []
+        repeats = [e.get_abbreviated_xpath() for e in self.instance.xform.data_dictionary().get_survey_elements_of_type(u"repeat")]
+        for repeat in repeats:
+            if repeat in dd:
+                rval = dd[repeat]
+                ddc = dd
+                ddc[repeat] = {}
+                for vals in rval:
+                    newd = copy.deepcopy(ddc)
+                    newd[repeat] = []
+                    tmp = {}
+                    for val in vals:
+                        tmp[val] = vals[val]
+                    newd[repeat].append(tmp)
+                    fds.append(newd)
+                    print fds
+        return fds
+
 
     def to_dict(self):
         if not hasattr(self, "_dict_cache"):
@@ -316,7 +383,7 @@ class ParsedInstance(models.Model):
         self._set_geopoint()
         super(ParsedInstance, self).save(*args, **kwargs)
         # insert into Mongo
-        self.update_mongo(async)
+        self.update_mongo(async, flattened=True)
 
 
 def _remove_from_mongo(sender, **kwargs):

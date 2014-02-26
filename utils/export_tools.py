@@ -141,6 +141,7 @@ class ExportBuilder(object):
     EXTRA_FIELDS = [ID, UUID, SUBMISSION_TIME, INDEX, PARENT_TABLE_NAME,
                     PARENT_INDEX]
     SPLIT_SELECT_MULTIPLES = True
+    FLATTEN_DATA = False
 
     # column group delimiters
     GROUP_DELIMITER_SLASH = '/'
@@ -518,13 +519,14 @@ class ExportBuilder(object):
 
         wb.save(filename=path)
 
+
     def to_flat_csv_export(
             self, path, data, username, id_string, filter_query):
         from odk_viewer.pandas_mongo_bridge import CSVDataFrameBuilder
 
         csv_builder = CSVDataFrameBuilder(
             username, id_string, filter_query, self.GROUP_DELIMITER,
-            self.SPLIT_SELECT_MULTIPLES)
+            self.SPLIT_SELECT_MULTIPLES, self.FLATTEN_DATA)
         csv_builder.export_to(path)
 
 
@@ -534,7 +536,7 @@ def dict_to_flat_export(d, parent_index=0):
 
 def generate_export(export_type, extension, username, id_string,
                     export_id=None, filter_query=None, group_delimiter='/',
-                    split_select_multiples=True):
+                    split_select_multiples=True, flatten_data=False):
     """
     Create appropriate export object given the export type
     """
@@ -553,6 +555,7 @@ def generate_export(export_type, extension, username, id_string,
     export_builder = ExportBuilder()
     export_builder.GROUP_DELIMITER = group_delimiter
     export_builder.SPLIT_SELECT_MULTIPLES = split_select_multiples
+    export_builder.FLATTEN_DATA = flatten_data
     export_builder.set_survey(xform.data_dictionary().survey)
 
     temp_file = NamedTemporaryFile(suffix=("." + extension))

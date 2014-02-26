@@ -33,6 +33,8 @@ def create_async_export(xform, export_type, query, force_xlsx, options=None):
         if options and "split_select_multiples" in options:
             arguments["split_select_multiples"] =\
                 options["split_select_multiples"]
+        if options and "flatten_data" in options:
+            arguments["flatten_data"] = options["flatten_data"]
 
         # start async export
         if export_type in [Export.XLS_EXPORT, Export.GDOC_EXPORT]:
@@ -103,7 +105,7 @@ def create_xls_export(username, id_string, export_id, query=None,
 
 @task()
 def create_csv_export(username, id_string, export_id, query=None,
-                      group_delimiter='/', split_select_multiples=True):
+                      group_delimiter='/', split_select_multiples=True, flatten_data=False):
     # we re-query the db instead of passing model objects according to
     # http://docs.celeryproject.org/en/latest/userguide/tasks.html#state
     export = Export.objects.get(id=export_id)
@@ -112,7 +114,7 @@ def create_csv_export(username, id_string, export_id, query=None,
         # catch this since it potentially stops celery
         gen_export = generate_export(
             Export.CSV_EXPORT, 'csv', username, id_string, export_id, query,
-            group_delimiter, split_select_multiples)
+            group_delimiter, split_select_multiples, flatten_data)
     except NoRecordsFoundError:
         # not much we can do but we don't want to report this as the user
         # should not even be on this page if the survey has no records

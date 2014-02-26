@@ -1,4 +1,6 @@
+from xml.dom import minidom, Node
 from django.db import models
+from django.db.models.loading import get_model
 from django.contrib.auth.models import User
 from django.utils import timezone
 from .xform import XForm
@@ -7,9 +9,9 @@ from odk_logger.xform_instance_parser import XFormInstanceParser, \
     clean_and_parse_xml, get_uuid_from_xml
 from utils.model_tools import set_uuid
 from utils.stathat_api import stathat_count
+from celery import task
 from django.utils.translation import ugettext as _
 from taggit.managers import TaggableManager
-
 
 class FormInactiveError(Exception):
     def __unicode__(self):
@@ -18,6 +20,37 @@ class FormInactiveError(Exception):
     def __str__(self):
         return unicode(self).encode('utf-8')
 
+@task
+def create_flattened_instance(instance):
+    doc = minidom.parseString(instance.xml)
+    root_doc = doc.firstChild
+    #the dictionary is just used to find the right repeating group, it's probably possible to remove this
+    dd = instance.get_dict()
+    repeats = [e.get_abbreviated_xpath() for e in instance.xform.data_dictionary().get_survey_elements_of_type(u"repeat")]
+    #for each repeating group...
+    for repeat in repeats:
+        if repeat in dd:
+            #we get the node that contains the targeted repeating group
+            repeat_nodes = doc.getElementsByTagName(repeat)
+            #we clonde each node insisde the repeating group
+            #we need to use cloneNode, otherwise we just get a reference to the node (and we'll lose it on deletion)
+            xml_repeats_clone = [node.cloneNode(True) for node in repeat_nodes if not node.hasAttribute('template') ]
+            #we remove the repeating group of our document, to get the base
+            for r in repeat_nodes:
+                old = doc.firstChild.removeChild(r)
+                old.unlink()
+            #we append ecah repeating group to his own document
+            #and we create an instance of Instance and ParsedInstance with each of these documents
+            for el in xml_repeats_clone:
+                new_doc = root_doc.cloneNode(True)
+                new_doc.appendChild(el)
+                FlattenedInstance = get_model('odk_viewer', 'FlattenedInstance')
+                print new_doc.toprettyxml()
+                FlattenedInstance.objects.create(
+                    xml=new_doc.toxml(),
+                    instance=instance
+                )
+
 
 # need to establish id_string of the xform before we run get_dict since
 # we now rely on data dictionary to parse the xml
@@ -25,7 +58,6 @@ def get_id_string_from_xml_str(xml_str):
     xml_obj = clean_and_parse_xml(xml_str)
     root_node = xml_obj.documentElement
     return root_node.getAttribute(u"id")
-
 
 class Instance(models.Model):
     # I should rename this model, maybe Survey
@@ -76,6 +108,12 @@ class Instance(models.Model):
         self._set_parser()
         return self._parser.get(abbreviated_xpath)
 
+    def get_flattened_instance(self):
+        if not self.flattened_instance:
+            return instance.parsed_instance
+        else:
+            return self.flattened_instance
+
     def _set_survey_type(self, doc):
         self.survey_type, created = \
             SurveyType.objects.get_or_create(slug=self.get_root_node_name())
@@ -104,6 +142,7 @@ class Instance(models.Model):
         self._set_survey_type(doc)
         self._set_uuid()
         super(Instance, self).save(*args, **kwargs)
+        create_flattened_instance(self)
 
     def _set_parser(self):
         if not hasattr(self, "_parser"):
@@ -115,7 +154,7 @@ class Instance(models.Model):
         self._set_parser()
         if flat:
             return self._parser.get_flat_dict_with_attributes()
-        else:
+        else:   
             return self._parser.to_dict()
 
     def set_deleted(self, deleted_at=timezone.now()):

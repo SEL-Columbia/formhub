@@ -11,6 +11,8 @@ PICTURE = u"picture"
 GPS = u"location/gps"
 LGA = u"lga"
 SURVEY_TYPE = u'_survey_type_slug'
+FLATTENED = u"_flattened"
+INSTANCE_ID = u"_instance_id"
 
 # Phone IMEI:
 DEVICE_ID = u"device_id"  # This tag was used in Phase I

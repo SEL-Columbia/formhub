@@ -76,12 +76,13 @@ class AbstractDataFrameBuilder(object):
     Group functionality used by any DataFrameBuilder i.e. XLS, CSV and KML
     """
     def __init__(self, username, id_string, filter_query=None,
-        group_delimiter=DEFAULT_GROUP_DELIMITER, split_select_multiples=True):
+        group_delimiter=DEFAULT_GROUP_DELIMITER, split_select_multiples=True, flatten_data=False):
         self.username = username
         self.id_string = id_string
         self.filter_query = filter_query
         self.group_delimiter = group_delimiter
         self.split_select_multiples = split_select_multiples
+        self.flatten_data = flatten_data
         self._setup()
 
     def _setup(self):
@@ -172,16 +173,19 @@ class AbstractDataFrameBuilder(object):
         record.update(updated_gps_fields)
 
     def _query_mongo(self, query='{}', start=0,
-        limit=ParsedInstance.DEFAULT_LIMIT, fields='[]', count=False):
+        limit=ParsedInstance.DEFAULT_LIMIT, fields='[]', count=False, get_flattened=False):
         # ParsedInstance.query_mongo takes params as json strings
         # so we dumps the fields dictionary
+
+        print get_flattened
         count_args = {
             'username': self.username,
             'id_string': self.id_string,
             'query': query,
             'fields': '[]',
             'sort': '{}',
-            'count': True
+            'count': True,
+            'flattened': get_flattened
         }
         count_object = ParsedInstance.query_mongo(**count_args)
         record_count = count_object[0]["count"]
@@ -196,12 +200,13 @@ class AbstractDataFrameBuilder(object):
                 'id_string': self.id_string,
                 'query': query,
                 'fields': fields,
-                #TODO: we might want to add this in for the user
+                #TODO: we might want t o add this in for the user
                 #to sepcify a sort order
                 'sort': '{}',
                 'start': start,
                 'limit': limit,
-                'count': False
+                'count': False,
+                'flattened': get_flattened
             }
             # use ParsedInstance.query_mongo
             cursor = ParsedInstance.query_mongo(**query_args)
@@ -227,9 +232,10 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
 
     def __init__(self, username, id_string, filter_query=None,
                  group_delimiter=DEFAULT_GROUP_DELIMITER,
-                 split_select_multiples=True):
+                 split_select_multiples=True,
+                 flatten_data=False):
         super(XLSDataFrameBuilder, self).__init__(username, id_string,
-            filter_query, group_delimiter, split_select_multiples)
+            filter_query, group_delimiter, split_select_multiples, flatten_data)
 
     def _setup(self):
         super(XLSDataFrameBuilder, self)._setup()
@@ -249,7 +255,7 @@ class XLSDataFrameBuilder(AbstractDataFrameBuilder):
         header = True
         while start < record_count:
             cursor = self._query_mongo(self.filter_query, start=start,
-                limit=batchsize)
+                limit=batchsize, get_flattened=self.flatten_data)
 
             data = self._format_for_dataframe(cursor)
 
@@ -447,9 +453,10 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
 
     def __init__(self, username, id_string, filter_query=None,
                  group_delimiter=DEFAULT_GROUP_DELIMITER,
-                 split_select_multiples=True):
+                 split_select_multiples=True,
+                 flatten_data=False):
         super(CSVDataFrameBuilder, self).__init__(username,
-            id_string, filter_query, group_delimiter, split_select_multiples)
+            id_string, filter_query, group_delimiter, split_select_multiples, flatten_data)
         self.ordered_columns = OrderedDict()
 
     def _setup(self):
@@ -566,7 +573,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
     def export_to(self, file_or_path, data_frame_max_size=30000):
         from math import ceil
         # get record count
-        record_count = self._query_mongo(query=self.filter_query, count=True)
+        record_count = self._query_mongo(query=self.filter_query, count=True, get_flattened=self.flatten_data)
 
         self.ordered_columns = OrderedDict()
         self._build_ordered_columns(self.dd.survey, self.ordered_columns)
@@ -577,7 +584,7 @@ class CSVDataFrameBuilder(AbstractDataFrameBuilder):
         num_data_frames = int(ceil(float(record_count)/float(data_frame_max_size)))
         for i in range(num_data_frames):
             cursor = self._query_mongo(self.filter_query,
-                start=(i * data_frame_max_size), limit=data_frame_max_size)
+                start=(i * data_frame_max_size), limit=data_frame_max_size, get_flattened=self.flatten_data)
             data = self._format_for_dataframe(cursor)
             datas.append(data)
 

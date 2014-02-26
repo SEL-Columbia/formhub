@@ -351,11 +351,17 @@ def create_export(request, username, id_string, export_type):
     split_select_multiples = request.POST.get(
         "options[dont_split_select_multiples]", "no") == "no"
 
+    #Default to False
+    flatten_data = request.POST.get(
+        "options[flatten_data]", "on") == "no"
+
     options = {
         'group_delimiter': group_delimiter,
-        'split_select_multiples': split_select_multiples
+        'split_select_multiples': split_select_multiples,
+        'flatten_data': flatten_data
     }
-
+    print request.POST.get("options[flatten_data]")
+    print options
     try:
         create_async_export(xform, export_type, query, force_xlsx, options)
     except Export.ExportTypeError:
