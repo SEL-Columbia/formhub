@@ -383,6 +383,7 @@ class ParsedInstance(models.Model):
         self._set_geopoint()
         super(ParsedInstance, self).save(*args, **kwargs)
         # insert into Mongo
+        self.update_mongo(async, flattened=False)
         self.update_mongo(async, flattened=True)
 
 
