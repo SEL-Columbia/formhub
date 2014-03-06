@@ -4,7 +4,13 @@
 # so that it returns the same definitions as the former localsettings.py.examples in the formhub distribution.
 #
 
-from staging_example import *  # get most settings from staging_example.py (which in turn, imports from settings.py)
+try:
+    from staging import *  # get most settings from staging.py (which in turn, imports from settings.py)
+except ImportError:
+    import sys, django
+    django.utils.six.reraise(RuntimeError, *sys.exc_info()[1:])  # use RuntimeError to extend the traceback
+except:
+    raise
 
 # # # now override the settings which came from staging # # # #
 

@@ -14,20 +14,6 @@ TEMPLATE_STRING_IF_INVALID = ''
 
 # see: http://docs.djangoproject.com/en/dev/ref/settings/#databases
 
-#postgres
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'formhub_dev',
-        'USER': 'formhub_dev',
-        'PASSWORD': '12345678',
-        'HOST': 'localhost',
-        'OPTIONS': {
-            'autocommit': True,  # NOTE: this option becomes obsolete in django 1.6
-        }
-    },
-}
-
 # TIME_ZONE = 'UTC'
 
 TOUCHFORMS_URL = 'http://localhost:9000/'

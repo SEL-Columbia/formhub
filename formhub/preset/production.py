@@ -20,30 +20,18 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 # your actual production settings go here...,.
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'formhub',
-        'USER': 'formhub_prod',
-        'PASSWORD': os.environ['FORMHUB_PROD_PW'],  # the password must be stored in an environment variable
-        'HOST': os.environ.get("FORMHUB_DB_SERVER", 'dbserver.yourdomain.org'), # the server name may be in env
-        'OPTIONS': {
-            'autocommit': True,   # note: this option obsolete starting with django 1.6
-        }
-    },
-    'gis': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'phis',
-        'USER': 'staff',
-        'PASSWORD': os.environ['PHIS_PW'],  # the password must be stored in an environment variable
-        'HOST': 'gisserver.yourdomain.org',
-        'OPTIONS': {
-            'autocommit': True,
-        }
-    }
-}
-
-DATABASE_ROUTERS = ['formhub.preset.dbrouter_example.GisRouter']
+# for 12-factor installations, this will be in a URL read by default_settings.py
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'formhub',
+#         'USER': 'formhub_prod',
+#         'PASSWORD': os.environ['FORMHUB_PROD_PW'],  # the password must be stored in an environment variable
+#         'HOST': os.environ.get("FORMHUB_DB_SERVER", 'dbserver.yourdomain.org'), # the server name may be in env
+#         'OPTIONS': {
+#             'autocommit': True,   # note: this option obsolete starting with django 1.6
+#         }
+#     },
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -52,8 +40,8 @@ DATABASE_ROUTERS = ['formhub.preset.dbrouter_example.GisRouter']
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-#TIME_ZONE = 'America/New_York'
-TIME_ZONE = 'Africa/Lagos'
+TIME_ZONE = 'America/New_York'
+#TIME_ZONE = 'Africa/Lagos'
 
 TOUCHFORMS_URL = 'http://localhost:9000/'
 
@@ -65,4 +53,4 @@ MONGO_DATABASE = {
     'PASSWORD': ''
 }
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'mlfs33^s1l4xf6a36$0#j%dd*sisfo6HOktYXB9y'
+SECRET_KEY = 'mlfs33^s1l4xf6a36$0#j%dd*sisfo6HOk3245u3tYXB9y'

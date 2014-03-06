@@ -1,6 +1,12 @@
 # this system uses structured settings.py as defined in http://www.slideshare.net/jacobian/the-best-and-worst-of-django
 
-from formhub.settings import *
+try:
+    from ..settings import *
+except ImportError:
+    import sys, django
+    django.utils.six.reraise(RuntimeError, *sys.exc_info()[1:])  # use RuntimeError to extend the traceback
+except:
+    raise
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG

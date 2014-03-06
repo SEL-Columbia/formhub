@@ -1,8 +1,13 @@
-### This file is now obsolete.....
+### This file, local_settings.py, is now obsolete.....
 #
-# This project has been converted to structured settings
+# This project uses structured settings
 #
-# refer to ./preset/example_sqlite.py
+# the things which, in an older system, were put in this file should now be placed in a preset.
+# please refer to ./preset/local_preset.py for an example.
 #
-# move the things which were in your local_settings.py to ./preset
-
+# But,  after all, in order to avoid breaking older systems,
+#  if this local_settings.py exists, and if you use preset/default_settings.py
+#  (which is what happens if you do not select any other preset)
+#  then _it_ will import this file. (local_settings.py in the project directory)
+#  So the default operation will attempt to emulate a legacy settings.py environment.
+#  But it will emit a warning when it does.

@@ -1,6 +1,12 @@
 # this preset is used for automated testing of formhub
 #
-from formhub.settings import *
+try:
+    from ..settings import *
+except ImportError:
+    import sys, django
+    django.utils.six.reraise(RuntimeError, *sys.exc_info()[1:])  # use RuntimeError to extend the traceback
+except:
+    raise
 
 DATABASES = {
     'default': {
