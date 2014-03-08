@@ -35,7 +35,7 @@ requests==2.0.1
 elaphe==0.5.6
 
 # devel only
-twill
+# twill  #sorry, twill does not support pip install. commenting this out to fix travis test builds -- Vernon Cole
 clint
 shell_command
 
