@@ -41,12 +41,8 @@ _url = os.getenv('DATABASE_URL', '')
 if _url:
     import _database_url
     _dbd, DATABASE_URL_QUERIES = _database_url.config(_url)
-    DATABASES = {'default': _dbd}
     _production = DATABASE_URL_QUERIES.get('production', ['No'])[0].lower() == 'true'
-    try:
-        SECRET_KEY = DATABASE_URL_QUERIES['secret_key'][0]
-    except KeyError:
-        pass
+    DATABASES = {'default': {}}
 
 try:  # we must trap ImportError to get a quality traceback in case of errors in our parent settings files
     if _url:
@@ -54,6 +50,13 @@ try:  # we must trap ImportError to get a quality traceback in case of errors in
             from production import *
         else:
             from staging import *
+
+    # database definition from URL overrides others
+    DATABASES['default'].update(_dbd)
+    try:
+        SECRET_KEY = DATABASE_URL_QUERIES['secret_key'][0]
+    except KeyError:
+        pass
 
 #   if _url was not defined, so we will use the local preset as a default
     else:
