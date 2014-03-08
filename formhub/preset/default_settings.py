@@ -40,11 +40,11 @@ _url = os.getenv('DATABASE_URL', '')
 
 if _url:
     import _database_url
-    _dbd, _switches = _database_url.config(_url)
+    _dbd, DATABASE_URL_QUERIES = _database_url.config(_url)
     DATABASES = {'default': _dbd}
-    _production = _switches.get('production', ['No'])[0].lower() == 'true'
+    _production = DATABASE_URL_QUERIES.get('production', ['No'])[0].lower() == 'true'
     try:
-        SECRET_KEY = _switches['secret_key'][0]
+        SECRET_KEY = DATABASE_URL_QUERIES['secret_key'][0]
     except KeyError:
         pass
 

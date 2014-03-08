@@ -31,7 +31,7 @@ _SCHEMES = {
 
 
 def config(url_string):
-    """Returns configured DATABASE dictionary and switch dictionary from url.
+    """Returns configured DATABASE dictionary and query dictionary from url.
     @param url_string:
    --> {DATABASES_dictionary}, {dictionary of switches}
     """
@@ -61,7 +61,7 @@ def config(url_string):
         except KeyError:
             raise ValueError('Unknown engine name "{}" for DATABASE_URL'.format(url.scheme))
 
-        return config, urlparse.parse_qs(url.query)  # also make a dictionary of any switches
+        return config, urlparse.parse_qs(url.query)  # also make a dictionary of any queries (switches)
 
     else:  # url_string was blank
         return {}, {}

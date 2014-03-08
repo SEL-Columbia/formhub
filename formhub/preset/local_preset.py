@@ -1,21 +1,26 @@
-# this top-level staging file overrides some definitions in staging.py
-
+"""local_preset.py is imported by default_settings.py when no URL environment variable is defined.
+"""
+#
 # Alter this skeleton to agree with the needs of your local environment
 
-# Use it by setting your DJANGO_SETTINGS_MODULE environment variable to this module,
-# using something like: export DJANGO_SETTINGS_MODULE="myproject.preset.local_preset"
-# or select it from the command line like:  python manage.py somecommand --settings=myproject.preset.local_preset
+# Note: if you are using a URL 12-Factor configuration scheme, you will not be using this file
 
-# Note: if you are using a 12-Factor configuration scheme, you very likely should not be using this file
+# important thing we do here is to import all those symbols that are defined in settings.py
+from ..settings import *  # get most settings from ../settings.py
 
-from staging import *  # get most settings from staging.py (which in turn, imports from settings.py)
+# or perhaps you would prefer something like:
+# from staging import *  # which in turn imports ../settings.py 
 
-# # # now you can override the settings which came from staging # # # #
 
-# for axample, choose a different database...
+# # # and now you can override the settings which we just got from settings.py # # # #
+
+# for example, choose a different database...
 #DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.sqlite3',
 #        'NAME': 'db.sqlite',
 #    }
 #}
+# or:
+#DEBUG = True
+
