@@ -16,7 +16,7 @@ Pillow==2.2.1
 poster==0.8.1
 pymongo==2.6.3
 lxml==3.2.4
-pyxform
+pyxform==0.9.20
 South==0.8.2
 xlrd==0.9.2
 xlwt==0.7.5
