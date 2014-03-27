@@ -26,9 +26,9 @@ Fixed a bug, done some refactoring or wrote a new feature? Awesome! File a
 Otherwise, confirm the issue is reproducible, create a [reduced test
 case][] and file a [new issue][] with as much detail as possible.
 
-[GitHub issue tracker]: https://github.com/eHealthAfrica/LMIS-Chrome/search?type=Issues
+[GitHub issue tracker]: https://github.com/eHealthAfrica/formhub/search?type=Issues
 [reduced test case]: http://css-tricks.com/reduced-test-cases
-[new issue]: https://github.com/eHealthAfrica/LMIS-Chrome/issues/new
+[new issue]: https://github.com/eHealthAfrica/formhub/issues/new
 
 ## Pull requests
 
