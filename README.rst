@@ -19,7 +19,7 @@ Contributing
 ------------
 
 If you would like to contribute code please read
-`Contributing Code to Formhub <https://github.com/modilabs/formhub/wiki/Contributing-Code-to-Formhub>`_.
+`Contributing Code to Formhub <https://github.com/eHealthAfrica/formhub/blob/develop/CONTRIBUTING.md>`_.
 
 Code Structure
 --------------
