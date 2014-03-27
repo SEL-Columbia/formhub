@@ -39,8 +39,8 @@ the same)
 1. Clone and fork the project
 
     ```bash
-    git clone eHealthAfrica/LMIS-Chrome
-    cd LMIS-Chrome
+    git clone eHealthAfrica/formhub
+    cd formhub
     git fork
     ```
 
