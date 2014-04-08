@@ -1,0 +1,61 @@
+# pybamboo has deps in common but on newer versions.
+# on top so those will be overwritten
+pybamboo==0.5.8.1
+pytz>=2013b
+
+Distribute
+Django<1.6
+django-guardian>=1.1.1
+django-registration>=1.0
+django-templated-email==0.4.1
+gdata>=2.0.16
+httplib2
+mock>=1.0.1
+httmock>=1.0.6
+modilabs-python-utils>=0.1.5
+Pillow>=2.1.0
+poster>=0.8.1
+pymongo>=2.5.1
+lxml
+pyxform
+South
+xlrd>=0.8.0
+xlwt>=0.7.2
+openpyxl>=1.5.8
+celery>=3.0.11
+django-celery>=3.0.10
+-e git+https://github.com/jbalogh/django-nose.git#egg=django-nose
+python_digest
+django_digest
+
+# new export code relies on
+pandas>=0.11.0
+
+requests
+
+elaphe>=0.5.3
+
+# devel only
+twill
+clint
+shell_command
+
+# sms support
+dict2xml
+
+# api support
+djangorestframework
+# cors
+django-cors-headers
+markdown
+django-filter
+# captcha
+recaptcha-client
+unicodecsv
+dpath
+
+# tagging
+django-taggit
+
+# oath2 support
+django-oauth-toolkit

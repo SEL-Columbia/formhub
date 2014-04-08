@@ -1931,7 +1931,7 @@ class TestExportBuilder(MainTestCase):
             "age": "107",
             "_uuid": "2a8129f5-3091-44e1-a579-bed2b07a12cf",
             "when": "2013-07-03",
-            "_deleted_at": None,
+#            "_deleted_at": None,
             "amount": "250.0",
             "_geolocation": [
                 "-1.2625482",
@@ -1949,7 +1949,7 @@ class TestExportBuilder(MainTestCase):
             "_submission_time": "2013-07-03T08:26:10",
             "_uuid": "5b4752eb-e13c-483e-87cb-e67ca6bb61e5",
             "_bamboo_dataset_id": "",
-            "_deleted_at": None,
+#            "_deleted_at": None,
             "_xform_id_string": "test_data_types",
             "_userform_id": "larryweya_test_data_types",
             "_status": "submitted_via_web",
@@ -1984,6 +1984,25 @@ class TestExportBuilder(MainTestCase):
                                                  export_builder.sections[0])
         self.assertIsInstance(new_row['amount'], basestring)
         self.assertEqual(new_row['amount'], '')
+
+    def test_xls_convert_dates_before_1900(self):
+        survey = create_survey_from_xls(
+            os.path.join(
+                os.path.abspath('./'), 'odk_viewer', 'tests', 'fixtures',
+                'test_data_types/test_data_types.xls'))
+        export_builder = ExportBuilder()
+        export_builder.set_survey(survey)
+        data = [
+            {
+                'name': 'Abe',
+                'when': '1899-07-03',
+            }
+        ]
+        # create export file
+        temp_xls_file = NamedTemporaryFile(suffix='.xlsx')
+        export_builder.to_xls_export(temp_xls_file.name, data)
+        temp_xls_file.close()
+        # this should error if there is a problem, not sure what to assert
 
     def test_convert_types(self):
         val = '1'

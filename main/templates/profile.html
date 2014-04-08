@@ -16,7 +16,6 @@
          {% if is_owner and not profile.gravatar_exists %}
             <span class="small-link">{% trans "change" %}</span>
             </a>
-            <script type="text/javascript">$('#gravatar').tooltip();</script>
          {% endif %}
          {{ content_user.username }}
          {% if profile.name %}
@@ -54,8 +53,8 @@
               {% blocktrans count num_forms=num_forms %}{{ num_forms }} <small>Shared form</small>{% plural %}{{ num_forms }} <small>Shared forms</small>{% endblocktrans %}
             </span>
          </h2>
-       </div>  
-     </div> 
+       </div>
+     </div>
      <hr>
 
      <div class="row">
@@ -138,8 +137,78 @@
     {% else %}
         <h4>{% trans "None public" %}</h4>
     {% endif %}
-    </div> 
+    </div>
   </section>
   {% endif %}
   {% endblock %}
-  
+  {% block javascript %}
+    {{ block.super }}
+
+        <script type="text/javascript">$('#gravatar').tooltip();</script>
+
+        <script type="text/javascript" src="/static/js/jquery.dataTables.js"></script>
+        <script type="text/javascript" src="/static/js/jquery.dataTables.pagination.js"></script>
+          <script type="text/javascript">
+
+        $.extend( $.fn.dataTableExt.oStdClasses, {
+          "sSortAsc": "header headerSortDown",
+          "sSortDesc": "header headerSortUp",
+          "sSortable": "header"
+        } );
+
+
+	$(document).ready(function() {
+
+        $(document).on("click", ".showqr", function () {
+          div_target = $(this).attr('data-target')
+          url = $(this).attr('href')
+          $(div_target+" .img_holder").load(url)
+
+        });
+
+	  var tbl = $('#forms-table').dataTable({
+        "bPaginate": false,
+        "sPaginationType": "bootstrap",
+        "bSort": true,
+        "oLanguage": {"sSearch": "{% trans 'Search:' %}"},
+        "oSearch": {"sSearch": ""},
+        "aoColumnDefs": [
+            { "bVisible": false, "aTargets": [ 6 ] }
+        ]
+      });
+      tbl.fnFilter( 'true', 6, true);
+      var tblFilter = $('#forms-table_filter');
+      tblFilter.addClass('row');
+      tblFilter.prepend('{% trans "Show inactive:" %} <input id="active-select" type="checkbox" />&nbsp;&nbsp;');
+      $('#active-select').change(function() {
+          tbl.fnFilter('(true' + ($(this).is(':checked') ? '|false)' : ')'), 6, true);
+      });
+
+        // remove shared forms
+        $('.remove-shared-form').each(function (index, link) {
+            link.onclick = function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                var url = $(this).data('url');
+                var username = $(this).data('username');
+                var data = {'perm_type': 'remove', 'for_user': username};
+                var remove_permission_xhr = $.post(url, data);
+                remove_permission_xhr.success(function (data) {
+                    $(link).parents('tr').remove();
+                });
+            };
+        });
+
+      // add datatables to the shared and crowd tables
+        $('#crowdforms-table, #shared-forms-table').dataTable({
+            "bPaginate": false,
+            "sPaginationType": "bootstrap",
+            "bSort": true,
+            "oLanguage": {"sSearch": "{% trans 'Search:' %}"},
+            "oSearch": {"sSearch": ""}
+        });
+
+
+	});
+  </script>
+{% endblock %}

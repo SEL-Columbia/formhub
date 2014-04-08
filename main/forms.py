@@ -77,7 +77,7 @@ class PermissionForm(forms.Form):
 class UserProfileForm(ModelForm):
     class Meta:
         model = UserProfile
-        exclude = ('user',)
+        exclude = ('user', 'created_by', 'num_of_submissions')
     email = forms.EmailField(widget=forms.TextInput())
 
 
@@ -272,11 +272,12 @@ class QuickConverter(QuickConverterFile, QuickConverterURL,
 
                 # assigning the filename to a random string (quick fix)
                 import random
-                rand_name = "uploaded_form_%s.csv" % \
-                    ''.join(random.sample("abcdefghijklmnopqrstuvwxyz0123456789", 6))
+                rand_name = "uploaded_form_%s.csv" % ''.join(
+                    random.sample("abcdefghijklmnopqrstuvwxyz0123456789", 6))
 
                 cleaned_xls_file = \
-                    default_storage.save(upload_to(None, rand_name, user.username), \
+                    default_storage.save(
+                        upload_to(None, rand_name, user.username),
                         ContentFile(csv_data))
             else:
                 cleaned_xls_file = self.cleaned_data['xls_file']

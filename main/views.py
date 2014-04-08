@@ -78,13 +78,6 @@ def home(request):
         return HttpResponseRedirect(
             reverse(profile, kwargs={'username': request.user.username}))
     context = RequestContext(request)
-    submission_count = StatsCount.stats.count(GLOBAL_SUBMISSION_STATS)
-    if not submission_count:
-        submission_count = Instance.objects.count()
-        stat_log(GLOBAL_SUBMISSION_STATS, submission_count)
-    context.num_forms = submission_count
-    context.num_users = User.objects.count()
-    context.num_shared_forms = XForm.objects.filter(shared__exact=1).count()
     return render_to_response('home.html', context_instance=context)
 
 
@@ -219,47 +212,26 @@ def profile(request, username):
     # for the same user -> dashboard
     if content_user == request.user:
         context.show_dashboard = True
-        context.user_surveys = content_user.surveys.count()
         context.all_forms = content_user.xforms.count()
         context.form = QuickConverterFile()
         context.form_url = QuickConverterURL()
         context.odk_url = request.build_absolute_uri(
             "/%s" % request.user.username)
         xforms = XForm.objects.filter(user=content_user)\
-            .select_related('user')\
-            .extra(
-                select={
-                    'submission_count': 'SELECT COUNT(*) FROM '
-                    'odk_logger_instance WHERE '
-                    'odk_logger_instance.xform_id=odk_logger_xform.id '
-                    'AND odk_logger_instance.is_deleted=\'0\''
-                })
+            .select_related('user', 'surveys')
         context.user_xforms = xforms
         crowdforms = XForm.objects.filter(
             metadata__data_type=MetaData.CROWDFORM_USERS,
             metadata__data_value=username,)\
-            .select_related('user')\
-            .extra(
-                select={
-                    'submission_count': 'SELECT COUNT(*) FROM '
-                    'odk_logger_instance WHERE '
-                    'odk_logger_instance.xform_id=odk_logger_xform.id '
-                    'AND odk_logger_instance.is_deleted=\'0\''
-                })
+            .select_related('user')
         context.crowdforms = crowdforms
         # forms shared with user
         xfct = ContentType.objects.get(app_label='odk_logger', model='xform')
         xfs = content_user.userobjectpermission_set.filter(content_type=xfct)
+        shared_forms_pks = list(set([xf.object_pk for xf in xfs]))
         context.forms_shared_with = XForm.objects.filter(
-            pk__in=[xf.object_pk for xf in xfs])\
-            .select_related('user')\
-            .extra(
-                select={
-                    'submission_count': 'SELECT COUNT(*) FROM '
-                    'odk_logger_instance WHERE '
-                    'odk_logger_instance.xform_id=odk_logger_xform.id '
-                    'AND odk_logger_instance.is_deleted=\'0\''
-                })
+            pk__in=shared_forms_pks).exclude(user=content_user)\
+            .select_related('user')
     # for any other user -> profile
     set_profile_data(context, content_user)
     return render_to_response("profile.html", context_instance=context)
@@ -384,15 +356,18 @@ def show(request, username=None, id_string=None, uuid=None):
         context.source_form = SourceForm()
         context.media_form = MediaForm()
         context.mapbox_layer_form = MapboxLayerForm()
-        context.users_with_perms = get_users_with_perms(
-            xform,
-            attach_perms=True
-        ).items()
+        users_with_perms = []
+        for perm in get_users_with_perms(xform, attach_perms=True).items():
+            has_perm = []
+            if 'change_xform' in perm[1]:
+                has_perm.append(_(u"Can Edit"))
+            if 'view_xform' in perm[1]:
+                has_perm.append(_(u"Can View"))
+            users_with_perms.append((perm[0], u" | ".join(has_perm)))
+        context.users_with_perms = users_with_perms
         context.permission_form = PermissionForm(username)
     if xform.allows_sms:
         context.sms_support_doc = get_autodoc_for(xform)
-    user_list = [u.username for u in User.objects.exclude(username=username)]
-    context.user_json_list = json.dumps(user_list)
     return render_to_response("show.html", context_instance=context)
 
 
@@ -1325,7 +1300,7 @@ def enketo_preview(request, username, id_string):
     xform = get_object_or_404(
         XForm, user__username=username, id_string=id_string)
     owner = xform.user
-    if not has_permission(xform, owner, request):
+    if not has_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden(_(u'Not shared.'))
     enekto_preview_url = \
         "%(enketo_url)s?server=%(profile_url)s&id=%(id_string)s" % {
@@ -1335,3 +1310,15 @@ def enketo_preview(request, username, id_string):
             'id_string': xform.id_string
         }
     return HttpResponseRedirect(enekto_preview_url)
+
+
+@require_GET
+@login_required
+def username_list(request):
+    data = []
+    query = request.GET.get('query', None)
+    if query:
+        users = User.objects.values('username')\
+            .filter(username__startswith=query, is_active=True, pk__gte=0)
+        data = [user['username'] for user in users]
+    return HttpResponse(json.dumps(data), mimetype='application/json')

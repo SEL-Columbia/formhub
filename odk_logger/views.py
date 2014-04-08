@@ -227,9 +227,7 @@ def submission(request, username=None):
             html_response = True
         try:
             instance = create_instance(
-                username,
-                xml_file_list[0],
-                media_files,
+                username, xml_file_list[0], media_files,
                 uuid=uuid, request=request
             )
         except InstanceInvalidUserError:
@@ -539,7 +537,7 @@ def view_submission_list(request, username):
         return HttpResponseForbidden('Not shared.')
     num_entries = request.GET.get('numEntries', None)
     cursor = request.GET.get('cursor', None)
-    instances = xform.surveys.all().order_by('pk')
+    instances = xform.surveys.filter(deleted_at=None).order_by('pk')
 
     if cursor:
         try:
@@ -598,7 +596,7 @@ def view_download_submission(request, username):
     uuid = extract_uuid(form_id_parts[1])
     instance = get_object_or_404(
         Instance, xform__id_string=id_string, uuid=uuid,
-        user__username=username)
+        user__username=username, deleted_at=None)
     xform = instance.xform
     if not has_permission(xform, form_user, request, xform.shared_data):
         return HttpResponseForbidden('Not shared.')

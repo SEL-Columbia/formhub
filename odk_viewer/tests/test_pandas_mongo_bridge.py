@@ -247,6 +247,10 @@ class TestPandasMongoBridge(MainTestCase):
             u'web_browsers/safari',
         ] + AbstractDataFrameBuilder.ADDITIONAL_COLUMNS +\
                            AbstractDataFrameBuilder.IGNORED_COLUMNS
+        try:
+            expected_columns.remove(u'_deleted_at')
+        except ValueError:
+            pass
         self.maxDiff = None
         self.assertEqual(sorted(expected_columns), sorted(columns))
 
@@ -259,9 +263,11 @@ class TestPandasMongoBridge(MainTestCase):
         data_0 = self._csv_data_for_dataframe()[0]
         # remove AbstractDataFrameBuilder.INTERNAL_FIELDS
         for key in AbstractDataFrameBuilder.IGNORED_COLUMNS:
-            data_0.pop(key)
+            if data_0.has_key(key):
+                data_0.pop(key)
         for key in AbstractDataFrameBuilder.ADDITIONAL_COLUMNS:
-            data_0.pop(key)
+            if data_0.has_key(key):
+                data_0.pop(key)
         expected_data_0 = {
             u'gps': u'-1.2627557 36.7926442 0.0 30.0',
             u'_gps_latitude': u'-1.2627557',
@@ -587,7 +593,7 @@ class TestPandasMongoBridge(MainTestCase):
         expected_data_0 = {
 #            u'_id': 1,
 #            u'_uuid': u'ba6bc9d7-b46a-4d25-955e-99ec94e7b2f6',
-            u'_deleted_at': None,
+#            u'_deleted_at': None,
             u'_xform_id_string': u'groups_in_repeats',
             u'_status': u'submitted_via_web',
             u'_tags': u'',

@@ -12,7 +12,7 @@ from restservice.utils import call_service
 from stats.tasks import stat_log
 from utils.decorators import apply_form_field_names
 from utils.model_tools import queryset_iterator
-from odk_logger.models import Instance
+from odk_logger.models import Instance, XForm
 from celery import task
 from common_tags import START_TIME, START, END_TIME, END, ID, UUID,\
     ATTACHMENTS, GEOLOCATION, SUBMISSION_TIME, MONGO_STRFTIME,\
@@ -121,12 +121,9 @@ class ParsedInstance(models.Model):
         query[cls.USERFORM_ID] = u'%s_%s' % (username, id_string)
         if hide_deleted:
             #display only active elements
-            deleted_at_query = {
-                "$or": [{"_deleted_at": {"$exists": False}},
-                        {"_deleted_at": None}]}
             # join existing query with deleted_at_query on an $and
-            query = {"$and": [query, deleted_at_query]}
-        # fields must be a string array i.e. '["name", "age"]'
+            query = {"$and": [query, {"_deleted_at": None}]}
+        # fields must be a string array i.e. '["name", "age"]
         fields = json.loads(
             fields, object_hook=json_util.object_hook) if fields else []
         # TODO: current mongo (2.0.4 of this writing)
@@ -166,11 +163,8 @@ class ParsedInstance(models.Model):
         query = dict_for_mongo(query)
         if hide_deleted:
             #display only active elements
-            deleted_at_query = {
-                "$or": [{"_deleted_at": {"$exists": False}},
-                        {"_deleted_at": None}]}
             # join existing query with deleted_at_query on an $and
-            query = {"$and": [query, deleted_at_query]}
+            query = {"$and": [query, {"_deleted_at": None}]}
         # fields must be a string array i.e. '["name", "age"]'
         fields = json.loads(
             fields, object_hook=json_util.object_hook) if fields else []
@@ -200,27 +194,23 @@ class ParsedInstance(models.Model):
 
     def to_dict_for_mongo(self):
         d = self.to_dict()
-        deleted_at = None
+        data = {
+            UUID: self.instance.uuid,
+            ID: self.instance.id,
+            BAMBOO_DATASET_ID: self.instance.xform.bamboo_dataset,
+            self.USERFORM_ID: u'%s_%s' % (
+                self.instance.user.username,
+                self.instance.xform.id_string),
+            ATTACHMENTS: [a.media_file.name for a in
+                          self.instance.attachments.all()],
+            self.STATUS: self.instance.status,
+            GEOLOCATION: [self.lat, self.lng],
+            SUBMISSION_TIME: self.instance.date_created.strftime(MONGO_STRFTIME),
+            TAGS: list(self.instance.tags.names())
+        }
         if isinstance(self.instance.deleted_at, datetime.datetime):
-            deleted_at = self.instance.deleted_at.strftime(MONGO_STRFTIME)
-        d.update(
-            {
-                UUID: self.instance.uuid,
-                ID: self.instance.id,
-                BAMBOO_DATASET_ID: self.instance.xform.bamboo_dataset,
-                self.USERFORM_ID: u'%s_%s' % (
-                    self.instance.user.username,
-                    self.instance.xform.id_string),
-                ATTACHMENTS: [a.media_file.name for a in
-                              self.instance.attachments.all()],
-                self.STATUS: self.instance.status,
-                GEOLOCATION: [self.lat, self.lng],
-                SUBMISSION_TIME:
-                self.instance.date_created.strftime(MONGO_STRFTIME),
-                DELETEDAT: deleted_at,
-                TAGS: list(self.instance.tags.names())
-            }
-        )
+            data[DELETEDAT] = self.instance.deleted_at.strftime(MONGO_STRFTIME)
+        d.update(data)
         return dict_for_mongo(d)
 
     def update_mongo(self, async=True):
@@ -255,33 +245,6 @@ class ParsedInstance(models.Model):
             if type(item) == dict and item.get(u'type') == type_value:
                 return item['name']
 
-    def _set_start_time(self):
-        doc = self.to_dict()
-        start_time_key1 = self._get_name_for_type(START)
-        start_time_key2 = self._get_name_for_type(START_TIME)
-        # if both, can take either
-        start_time_key = start_time_key1 or start_time_key2
-        if start_time_key is not None and start_time_key in doc:
-            date_time_str = doc[start_time_key]
-            self.start_time = datetime_from_str(date_time_str)
-        else:
-            self.start_time = None
-
-    def _set_end_time(self):
-        doc = self.to_dict()
-        # end_time_key1 = self._get_name_for_type(START)
-        # end_time_key2 = self._get_name_for_type(START_TIME)
-        # end_time_key = end_time_key1 or end_time_key2
-
-        if END_TIME in doc:
-            date_time_str = doc[END_TIME]
-            self.end_time = datetime_from_str(date_time_str)
-        elif END in doc:
-            date_time_str = doc[END]
-            self.end_time = datetime_from_str(date_time_str)
-        else:
-            self.end_time = None
-
     def get_data_dictionary(self):
         # todo: import here is a hack to get around a circular import
         from odk_viewer.models import DataDictionary
@@ -309,10 +272,16 @@ class ParsedInstance(models.Model):
         g = self._get_geopoint()
         self.lat = g.get(u'latitude')
         self.lng = g.get(u'longitude')
+        # update xform incase we have a latitude
+        xform = XForm.objects.select_related().select_for_update()\
+            .get(pk=self.instance.xform.pk)
+        if self.lat is not None and not xform.surveys_with_geopoints:
+            xform.surveys_with_geopoints = True
+            xform.save()
 
     def save(self, async=False, *args, **kwargs):
-        self._set_start_time()
-        self._set_end_time()
+        self.start_time = None  # start/end_time obsolete: originally used to approximate for instanceID,
+        self.end_time = None    # before instanceIDs were implemented
         self._set_geopoint()
         super(ParsedInstance, self).save(*args, **kwargs)
         # insert into Mongo

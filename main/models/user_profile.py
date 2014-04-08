@@ -25,6 +25,7 @@ class UserProfile(models.Model):
     address = models.CharField(max_length=255, blank=True)
     phonenumber = models.CharField(max_length=30, blank=True)
     created_by = models.ForeignKey(User, null=True, blank=True)
+    num_of_submissions = models.IntegerField(default=0)
 
     def __unicode__(self):
         return u'%s[%s]' % (self.name, self.user.username)
@@ -45,14 +46,6 @@ class UserProfile(models.Model):
 
     class Meta:
         app_label = 'main'
-
-from utils.stathat_api import stathat_count
-
-
-def stathat_user_signups(sender, instance, created, **kwargs):
-    if created:
-        stathat_count('formhub-signups')
-post_save.connect(stathat_user_signups, sender=UserProfile)
 
 
 def create_auth_token(sender, instance=None, created=False, **kwargs):

@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.db.models.signals import post_delete
 from django.contrib.auth.models import User
 from django.utils import timezone
 from .xform import XForm
@@ -6,7 +8,6 @@ from .survey_type import SurveyType
 from odk_logger.xform_instance_parser import XFormInstanceParser, \
     clean_and_parse_xml, get_uuid_from_xml
 from utils.model_tools import set_uuid
-from utils.stathat_api import stathat_count
 from django.utils.translation import ugettext as _
 from taggit.managers import TaggableManager
 
@@ -134,9 +135,53 @@ class Instance(models.Model):
             instance.set_deleted(deleted_at)
 
 
-def stathat_form_submission(sender, instance, created, **kwargs):
+def update_xform_submission_count(sender, instance, created, **kwargs):
     if created:
-        stathat_count('formhub-submissions')
+        xform = XForm.objects.select_related().select_for_update()\
+            .get(pk=instance.xform.pk)
+        if xform.num_of_submissions == -1:
+            xform.num_of_submissions = 0
+        xform.num_of_submissions += 1
+        xform.last_submission_time = instance.date_created
+        xform.save()
+        profile_qs = User.profile.get_query_set()
+        try:
+            profile = profile_qs.select_for_update()\
+                .get(pk=xform.user.profile.pk)
+        except profile_qs.model.DoesNotExist:
+            pass
+        else:
+            profile.num_of_submissions += 1
+            profile.save()
+
+post_save.connect(update_xform_submission_count, sender=Instance,
+                  dispatch_uid='update_xform_submission_count')
+
+
+def update_xform_submission_count_delete(sender, instance, **kwargs):
+    try:
+        xform = XForm.objects.select_for_update().get(pk=instance.xform.pk)
+    except XForm.DoesNotExist:
+        pass
+    else:
+        xform.num_of_submissions -= 1
+        if xform.num_of_submissions < 0:
+            xform.num_of_submissions = 0
+        xform.save()
+        profile_qs = User.profile.get_query_set()
+        try:
+            profile = profile_qs.select_for_update()\
+                .get(pk=xform.user.profile.pk)
+        except profile_qs.model.DoesNotExist:
+            pass
+        else:
+            profile.num_of_submissions -= 1
+            if profile.num_of_submissions < 0:
+                profile.num_of_submissions = 0
+            profile.save()
+
+post_delete.connect(update_xform_submission_count_delete, sender=Instance,
+                    dispatch_uid='update_xform_submission_count_delete')
 
 
 class InstanceHistory(models.Model):

@@ -9,8 +9,8 @@ var displayZeroedValues_str = gettext("Display options without data");
 // Global toggle on whether to display question values which have 0 submissions
 var displayZeroedValues = false;
 
-var centerLatLng = new L.LatLng(!center.lat?0.0:center.lat, !center.lng?0.0:center.lng);
-var defaultZoom = 8;
+var centerLatLng = new L.LatLng(0, 0);
+var defaultZoom = 3;
 var mapId = 'map_canvas';
 var map;
 var layersControl;
@@ -293,6 +293,17 @@ function loadFormJSONCallback()
     formResponseMngr.loadResponseData({}, 0, null, geoField, fields);
 }
 
+// update the number of geo-coded submissions in the top-bar based on geoJSON
+function _updateGeoCodedCount(geoJSON) {
+   var geoCount = geoJSON.features.length;
+   var countDiv = $('#submission_count');
+   var newText = geoCount + " / " + countDiv.text();
+   var newTitle = _.template(countDiv.attr('title'),
+   	{geocoded_submission_count: geoCount})
+   countDiv.attr('title', newTitle);
+   countDiv.text(newText);
+}
+
 // callback called after response data has been loaded via the mongo form API
 function loadResponseDataCallback()
 {
@@ -303,6 +314,7 @@ function loadResponseDataCallback()
     var geoJSON = formResponseMngr.getAsGeoJSON();
 
     _buildMarkerLayer(geoJSON);
+    _updateGeoCodedCount(geoJSON);
 
     // just to make sure the nav container exists
     var navContainer = $(navContainerSelector);

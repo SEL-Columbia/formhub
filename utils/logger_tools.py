@@ -209,14 +209,6 @@ def report_exception(subject, info, exc_info=None):
     else:
         mail_admins(subject=subject, message=message)
 
-
-def round_down_geopoint(num):
-    if num:
-        decimal_mult = 1000000
-        return str(decimal.Decimal(int(num * decimal_mult)) / decimal_mult)
-    return None
-
-
 def response_with_mimetype_and_name(
         mimetype, name, extension=None, show_date=True, file_path=None,
         use_local_filesystem=False, full_mime=False):
@@ -297,7 +289,7 @@ def publish_form(callback):
             'text': _(u'Form validation timeout, please try again.'),
         }
     except Exception, e:
-        report_exception("ERROR: XLSForm publishing Exception", e)
+        # error in the XLS file; show an error to the user
         return {
             'type': 'alert-error',
             'text': e
@@ -464,6 +456,19 @@ def update_mongo_for_xform(xform, only_update_missing=True):
 
 
 def mongo_sync_status(remongo=False, update_all=False, user=None, xform=None):
+    """Check the status of records in the mysql db versus mongodb. At a
+    minimum, return a report (string) of the results.
+
+    Optionally, take action to correct the differences, based on these
+    parameters, if present and defined:
+
+    remongo    -> if True, update the records missing in mongodb (default: False)
+    update_all -> if True, update all the relevant records (default: False)
+    user       -> if specified, apply only to the forms for the given user (default: None)
+    xform      -> if specified, apply only to the given form (default: None)
+
+    """
+
     qs = XForm.objects.only('id_string', 'user').select_related('user')
     if user and not xform:
         qs = qs.filter(user=user)

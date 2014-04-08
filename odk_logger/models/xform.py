@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy, ugettext as _
 
@@ -15,7 +15,6 @@ from guardian.shortcuts import assign_perm, get_perms_for_model
 from taggit.managers import TaggableManager
 
 from odk_logger.xform_instance_parser import XLSFormError
-from utils.stathat_api import stathat_count
 from stats.tasks import stat_log
 
 from hashlib import md5
@@ -55,11 +54,12 @@ class XForm(models.Model):
         default=''
     )
     id_string = models.SlugField(
-        editable=False, verbose_name=ugettext_lazy("ID")
+        editable=False, verbose_name=ugettext_lazy("ID"), max_length=100
     )
     title = models.CharField(editable=False, max_length=64)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+    last_submission_time = models.DateTimeField(blank=True, null=True)
     has_start_time = models.BooleanField(default=False)
     uuid = models.CharField(max_length=32, default=u'')
 
@@ -70,6 +70,8 @@ class XForm(models.Model):
     uuid_node_location = 2
     uuid_bind_location = 4
     bamboo_dataset = models.CharField(max_length=60, default=u'')
+    surveys_with_geopoints = models.BooleanField(default=False)
+    num_of_submissions = models.IntegerField(default=-1)
 
     tags = TaggableManager()
 
@@ -101,9 +103,7 @@ class XForm(models.Model):
 
     @property
     def has_surveys_with_geopoints(self):
-        from odk_viewer.models import ParsedInstance
-        return ParsedInstance.objects.filter(
-            instance__xform=self, lat__isnull=False).count() > 0
+        return self.surveys_with_geopoints
 
     def _set_id_string(self):
         matches = self.instance_id_regex.findall(self.xml)
@@ -162,7 +162,11 @@ class XForm(models.Model):
         return getattr(self, "id_string", "")
 
     def submission_count(self):
-        return self.surveys.filter(is_deleted=False).count()
+        if self.num_of_submissions == -1:
+            count = self.surveys.filter(is_deleted=False).count()
+            self.num_of_submissions = count
+            self.save()
+        return self.num_of_submissions
     submission_count.short_description = ugettext_lazy("Submission Count")
 
     def geocoded_submission_count(self):
@@ -174,11 +178,16 @@ class XForm(models.Model):
         ugettext_lazy("Geocoded Submission Count")
 
     def time_of_last_submission(self):
-        try:
-            return self.surveys.\
-                filter(is_deleted=False).latest("date_created").date_created
-        except ObjectDoesNotExist:
-            pass
+        if self.last_submission_time is None and self.num_of_submissions > 0:
+            try:
+                last_submission = self.surveys.\
+                    filter(is_deleted=False).latest("date_created")
+            except ObjectDoesNotExist:
+                pass
+            else:
+                self.last_submission_time = last_submission.date_created
+                self.save()
+        return self.last_submission_time
 
     def time_of_last_submission_update(self):
         try:
@@ -206,7 +215,23 @@ class XForm(models.Model):
 
 def stats_forms_created(sender, instance, created, **kwargs):
     if created:
-        stathat_count('formhub-forms-created')
         stat_log.delay('formhub-forms-created', 1)
 
 post_save.connect(stats_forms_created, sender=XForm)
+
+
+def update_profile_num_submissions(sender, instance, **kwargs):
+    profile_qs = User.profile.get_query_set()
+    try:
+        profile = profile_qs.select_for_update()\
+            .get(pk=instance.user.profile.pk)
+    except ObjectDoesNotExist:
+        pass
+    else:
+        profile.num_of_submissions -= instance.num_of_submissions
+        if profile.num_of_submissions < 0:
+            profile.num_of_submissions = 0
+        profile.save()
+
+post_delete.connect(update_profile_num_submissions, sender=XForm,
+                    dispatch_uid='update_profile_num_submissions')
