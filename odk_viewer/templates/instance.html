@@ -38,6 +38,7 @@ var cleanReplacement = '_';
 var positionTpl = "{% trans 'Record {pos} of {total}' %}";
 var numRecords = null;
 var browsePos = null;
+var curPage = null;
 
 (function($) {
 
@@ -61,7 +62,7 @@ var browsePos = null;
       this.get('#/:id', function(context) {
           var id = this.params['id'];
           var query = '{"_id": ' + id + '}';
-          _isFirstLoad = false
+          _isFirstLoad = false;
           loadData(context, query);
       });
 
@@ -167,6 +168,8 @@ function loadData(context, query)
 
                 //ADD EDIT AND BUTTON CHECK PERMISSION
                 updateButtons(data[0]);
+
+                console.log(data[0]);
 
                 //alert(data[0]['_id']);
                 // check if we initialised the browsePos
