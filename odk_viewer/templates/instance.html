@@ -113,13 +113,13 @@ var browsePos = null;
   // JMW - 2014-04-17
   // bind clicks on next/prev buttons
   $(document).on('click', '#BrowsePrev', function() {
-    if (curPage !== null && curPage !== 1) {
+    if (browsePos !== null && browsePos > 1) {
       browsePos -= 1;
     }
   });
 
   $(document).on('click', '#BrowseNext', function() {
-    if (curPage !== null && curPage !== numRecords) {
+    if (browsePos !== null && browsePos < numRecords) {
       browsePos += 1;
     }
   });
@@ -189,7 +189,7 @@ function loadData(context, query)
                 if (!browsePos) {
                   $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$lt": ' + data[0]['_id'] +'}}', 'count': 1})
                         .success(function(posData){
-                            curPage = browsePos = posData[0]["count"] + 1;
+                            browsePos = posData[0]["count"] + 1;
                             updatePrevNextControls(data[0]);
                         });
                 } else {
