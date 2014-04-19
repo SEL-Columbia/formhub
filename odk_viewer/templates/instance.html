@@ -61,7 +61,7 @@ var browsePos = null;
       this.get('#/:id', function(context) {
           var id = this.params['id'];
           var query = '{"_id": ' + id + '}';
-          _isFirstLoad = false
+          _isFirstLoad = false;
           loadData(context, query);
       });
 
@@ -108,6 +108,20 @@ var browsePos = null;
           //app.setLocation('#/');
       })
 
+  });
+
+  // JMW - 2014-04-17
+  // bind clicks on next/prev buttons
+  $(document).on('click', '#BrowsePrev', function() {
+    if (browsePos !== null && browsePos > 1) {
+      browsePos -= 1;
+    }
+  });
+
+  $(document).on('click', '#BrowseNext', function() {
+    if (browsePos !== null && browsePos < numRecords) {
+      browsePos += 1;
+    }
   });
 
   /// load form structure
@@ -168,22 +182,18 @@ function loadData(context, query)
                 //ADD EDIT AND BUTTON CHECK PERMISSION
                 updateButtons(data[0]);
 
-                //alert(data[0]['_id']);
-                // check if we initialised the browsePos
-                if(false)//TODO: find a way to increment browsePos client-side
-                {
-                    updatePrevNextControls(data[0]);
-
-                    // update pos status text
-                    updatePosStatus();
-                }
-                else
-                {
-                    $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$lt": ' + data[0]['_id'] +'}}', 'count': 1})
-                            .success(function(posData){
-                                browsePos = posData[0]["count"] + 1;
-                                updatePrevNextControls(data[0]);
-                            });
+                
+                // JMW - 2014-04-17
+                // If the browsePos (i.e. 'Record [browsePos] of [numRecords]') hasn't been set yet, get it's position via this count request
+                // Otherwise, we rely on the click events on the Next/Prev buttons to inc/dec browsePos.
+                if (!browsePos) {
+                  $.getJSON(mongoAPIUrl, {'query': '{"_id": {"$lt": ' + data[0]['_id'] +'}}', 'count': 1})
+                        .success(function(posData){
+                            browsePos = posData[0]["count"] + 1;
+                            updatePrevNextControls(data[0]);
+                        });
+                } else {
+                  updatePrevNextControls(data[0]);
                 }
             })
             .error(function(){
@@ -354,7 +364,9 @@ function createTable()
     var topStatus = $(statusStr);
     topStatusNavRows.append(topStatus);
 
-    var pagerStr = '<div class="span6"><div class="dataTables_paginate paging_bootstrap pagination"><ul><li class="prev disabled"><a href="#">{% trans "← Previous" %}</a></li><li class="next disabled"><a href="#">{% trans "Next →" %} </a></li></ul></div></div>';
+    // JMW - 2014-04-17
+    // Added ids on Next/Prev for click event binding
+    var pagerStr = '<div class="span6"><div class="dataTables_paginate paging_bootstrap pagination"><ul><li class="prev disabled"><a href="#" id="BrowsePrev">{% trans "← Previous" %}</a></li><li class="next disabled"><a href="#" id="BrowseNext">{% trans "Next →" %} </a></li></ul></div></div>';
     var topPager = $(pagerStr);
 
     topStatusNavRows.append(topPager);
