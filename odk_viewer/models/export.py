@@ -157,23 +157,30 @@ class Export(models.Model):
 
     @classmethod
     def exports_outdated(cls, xform, export_type):
-        # get newest export for xform
+        """Return a boolean:
+           True if there has yet to be an export of this XForm in this type
+             or if the most recent export of this XForm in this type was prior to the latest submission
+           False otherwise
+        """
+
+        result = True # default to re-generating the export
+
         try:
-            latest_export = Export.objects.filter(
-                xform=xform, export_type=export_type,
-                internal_status__in=[Export.SUCCESSFUL, Export.PENDING])\
-                .latest('created_on')
-        except cls.DoesNotExist:
-            return True
-        else:
-            if latest_export.time_of_last_submission is not None \
-                    and xform.time_of_last_submission_update() is not None:
-                return latest_export.time_of_last_submission <\
-                    xform.time_of_last_submission_update()
-            else:
-                # return true if we can't determine the status, to force
-                # auto-generation
-                return True
+            latest_export = Export.objects.filter(models.Q(internal_status=Export.SUCCESSFUL) |
+                                                  models.Q(internal_status=Export.PENDING),
+                                                  xform=xform,
+                                                  export_type=export_type).latest('created_on')
+
+            # there exists an export of this XForm for this data type
+            # but has there been an XForm submission since?
+            # (if either of these are None, it triggers a TypeError, caught below)
+
+            result = ( latest_export.time_of_last_submission < xform.time_of_last_submission_update() )
+
+        except (cls.DoesNotExist, TypeError):
+            pass
+
+        return result
 
     @classmethod
     def is_filename_unique(cls, xform, filename):
