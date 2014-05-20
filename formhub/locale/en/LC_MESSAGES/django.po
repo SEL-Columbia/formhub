@@ -621,7 +621,7 @@ msgid "Rest Services"
 msgstr ""
 
 #: main/templates/show.html:343
-msgid "Media &nbsp;<small>jpeg/png/mp3 allowed</small>"
+msgid "Media &nbsp;<small>jpeg/png/mp3/wav/3gp/csv/zip allowed</small>"
 msgstr ""
 
 #: main/templates/show.html:365

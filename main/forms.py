@@ -223,10 +223,11 @@ class MediaForm(forms.Form):
 
     def clean_media(self):
         data_type = self.cleaned_data['media'].content_type
+<<<<<<< HEAD
 
         if not data_type in ['image/jpeg', 'image/png', 'audio/mpeg', 'application/csv', 'application/zip']:
             raise forms.ValidationError('Only these media types are \
-                                        allowed .png .jpg .mp3 .3gp .wav')
+                                        allowed .png .jpg .mp3 .3gp .wav .csv .zip')
 
 
 class MapboxLayerForm(forms.Form):

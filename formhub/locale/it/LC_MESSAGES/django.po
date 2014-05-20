@@ -624,8 +624,8 @@ msgid "Rest Services"
 msgstr "Servizi Rest"
 
 #: main/templates/show.html:343
-msgid "Media &nbsp;<small>jpeg/png/mp3 allowed</small>"
-msgstr "Media &nbsp;<small>jpeg/png/mp3 concessi</small>"
+msgid "Media &nbsp;<small>jpeg/png/mp3/wav/3gp/csv/zip allowed</small>"
+msgstr "Media &nbsp;<small>jpeg/png/mp3/wav/3gp/csv/zip concessi</small>"
 
 #: main/templates/show.html:365
 msgid "Mapbox Layer"

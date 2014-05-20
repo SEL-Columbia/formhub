@@ -623,8 +623,8 @@ msgid "Rest Services"
 msgstr "Reinicializar Servicios"
 
 #: main/templates/show.html:343
-msgid "Media &nbsp;<small>jpeg/png/mp3 allowed</small>"
-msgstr "Archivos multimedia &nbsp;<small>jpeg/png/mp3 permitidos</small>"
+msgid "Media &nbsp;<small>jpeg/png/mp3/wav/3gp/csv/zip allowed</small>"
+msgstr "Archivos multimedia &nbsp;<small>jpeg/png/mp3/wav/3gp/csv/zip permitidos</small>"
 
 #: main/templates/show.html:365
 msgid "Mapbox Layer"
