@@ -628,12 +628,16 @@ def query_mongo(username, id_string, query=None, hide_deleted=True):
 
 
 def should_create_new_export(xform, export_type):
-    from odk_viewer.models import Export
-    if Export.objects.filter(xform=xform, export_type=export_type).count() == 0\
-            or Export.exports_outdated(xform, export_type=export_type):
-        return True
-    return False
+    """Determine whether or not a new export file for this
+    xform and data type should be generated.
 
+    This legacy logic is really ugly: the exports_outdated() really
+    should *not* be a classmethod of Export, but doing it incrementally
+    like this for now, until can do a more thorough overhaul later.
+    """
+
+    from odk_viewer.models import Export # ugly!
+    return Export.exports_outdated(xform, export_type=export_type)
 
 def newset_export_for(xform, export_type):
     """
