@@ -1,10 +1,3 @@
-eHealth Africa
-==============
-this copy of the Formhub software is customized for the use and convenience of https://www.ehealthafrica.org
-and our customers.  More complete documentation is found in the wiki at https://github.com/vernondcole/formhub/wiki
-
-v v v v v v text below this point is unaltered from the original v v v v v v 
-
 Formhub
 =======
 
