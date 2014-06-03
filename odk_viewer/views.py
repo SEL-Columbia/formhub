@@ -23,6 +23,8 @@ from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_viewer.pandas_mongo_bridge import NoRecordsFoundError
 from utils.image_tools import image_url
 from xls_writer import XlsWriter
+from django.core.servers.basehttp import FileWrapper
+# response_with_mimetype_and_name() needs to be put down, and taken out of its misery
 from utils.logger_tools import response_with_mimetype_and_name,\
     disposition_ext_and_date
 from utils.viewer_tools import image_urls
@@ -558,10 +560,8 @@ def zip_export(request, username, id_string):
     helper_auth_helper(request)
     if not has_permission(xform, owner, request):
         return HttpResponseForbidden(_(u'Not shared.'))
-    if request.GET.get('raw'):
-        id_string = None
+
     attachments = Attachment.objects.filter(instance__xform=xform)
-    zip_file = create_attachments_zipfile(attachments)
     audit = {
         "xform": xform.id_string,
         "export_type": Export.ZIP_EXPORT
@@ -579,11 +579,13 @@ def zip_export(request, username, id_string):
         {
             'id_string': xform.id_string,
         }, audit, request)
-    if request.GET.get('raw'):
-        id_string = None
-    response = response_with_mimetype_and_name('zip', id_string,
-                                               file_path=zip_file,
-                                               use_local_filesystem=True)
+
+    # return the HTTP response: the zip file as a raw stream
+    zip_data = create_attachments_zipfile(attachments)
+    response = HttpResponse(FileWrapper(zip_data),
+                            content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename=%s.zip' % xform.id_string
+    response['Content-Length'] = len(zip_data)
     return response
 
 
