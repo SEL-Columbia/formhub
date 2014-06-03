@@ -4,7 +4,7 @@ import requests
 import zipfile
 
 from xml.dom import minidom
-from tempfile import NamedTemporaryFile
+from tempfile import TemporaryFile
 from urlparse import urljoin
 
 from django.conf import settings
@@ -197,8 +197,11 @@ def enketo_url(form_url, id_string, instance_xml=None,
 
 
 def create_attachments_zipfile(attachments):
-    # create zip_file
-    tmp = NamedTemporaryFile(delete=False)
+    """Create a zip file using the list of Attachment objects as the
+    contents, and return the data stream, WITHOUT leaving behind an
+    actual file in the system temp folder that never gets cleaned up"""
+
+    tmp = TemporaryFile()
     z = zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
     for attachment in attachments:
         default_storage = get_storage_class()()
@@ -208,4 +211,5 @@ def create_attachments_zipfile(attachments):
             except Exception, e:
                 report_exception("Create attachment zip exception", e)
     z.close()
-    return tmp.name
+    tmp.seek(0)
+    return tmp.read()
