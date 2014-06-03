@@ -676,37 +676,34 @@ def generate_attachments_zip_export(
 
     xform = XForm.objects.get(user__username=username, id_string=id_string)
     attachments = Attachment.objects.filter(instance__xform=xform)
-    zip_file = create_attachments_zipfile(attachments)
-    basename = "%s_%s" % (id_string,
-                             datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
-    filename = basename + "." + extension
+
+    filename = "%s_%s.%s" % (id_string,
+                             datetime.now().strftime("%Y_%m_%d_%H_%M_%S"),
+                             extension)
+
     file_path = os.path.join(
         username,
         'exports',
         id_string,
-        export_type,
-        filename)
+        export_type)
 
-    storage = get_storage_class()()
-    temp_file = open(zip_file)
-    export_filename = storage.save(
-        file_path,
-        File(temp_file, file_path))
-    temp_file.close()
-
-    dir_name, basename = os.path.split(export_filename)
-
-    # get or create export object
+    # get or create the Export object
     if(export_id):
         export = Export.objects.get(id=export_id)
     else:
         export = Export.objects.create(xform=xform,
             export_type=export_type)
 
-    export.filedir = dir_name
-    export.filename = basename
-    export.internal_status = Export.SUCCESSFUL
+    export.filedir = file_path
+    export.filename = filename
+    try:
+        with open(os.path.join(file_path, filename), 'wb') as f:
+            f.write( create_attachments_zipfile(attachments) )
+        export.internal_status = Export.SUCCESSFUL
+    except IOError:
+        export.internal_status = Export.FAILED
     export.save()
+
     return export
 
 
