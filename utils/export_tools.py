@@ -697,8 +697,10 @@ def generate_attachments_zip_export(
     export.filedir = file_path
     export.filename = filename
     try:
+        zip_data = create_attachments_zipfile(attachments)
+        zip_data.seek(0)
         with open(os.path.join(file_path, filename), 'wb') as f:
-            f.write( create_attachments_zipfile(attachments) )
+            f.write( zip_data.read() )
         export.internal_status = Export.SUCCESSFUL
     except IOError:
         export.internal_status = Export.FAILED
