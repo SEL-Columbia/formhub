@@ -118,7 +118,7 @@ class TestFormExports(MainTestCase):
                 'id_string': self.xform.id_string})
         response = self.client.get(url + '?raw=1')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-Disposition'], 'attachment;')
+        self.assertEqual(response['Content-Disposition'], 'attachment; filename=%s.zip' % self.xform.id_string)
 
     def test_restrict_zip_export_if_not_shared(self):
         url = reverse(zip_export, kwargs={'username': self.user.username,
