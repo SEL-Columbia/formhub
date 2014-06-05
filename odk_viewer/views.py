@@ -585,7 +585,8 @@ def zip_export(request, username, id_string):
     response = HttpResponse(FileWrapper(zip_data),
                             content_type='application/zip')
     response['Content-Disposition'] = 'attachment; filename=%s.zip' % xform.id_string
-    response['Content-Length'] = len(zip_data)
+    response['Content-Length'] = zip_data.tell()
+    zip_data.seek(0)
     return response
 
 
