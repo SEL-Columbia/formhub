@@ -198,8 +198,9 @@ def enketo_url(form_url, id_string, instance_xml=None,
 
 def create_attachments_zipfile(attachments):
     """Create a zip file using the list of Attachment objects as the
-    contents, and return the data stream, WITHOUT leaving behind an
-    actual file in the system temp folder that never gets cleaned up"""
+    contents, and return the file-like object which represents the zipped 
+    file, WITHOUT actually writing a file in the system temp folder that 
+    never gets cleaned up"""
 
     tmp = TemporaryFile()
     z = zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
@@ -211,5 +212,4 @@ def create_attachments_zipfile(attachments):
             except Exception, e:
                 report_exception("Create attachment zip exception", e)
     z.close()
-    tmp.seek(0)
-    return tmp.read()
+    return tmp
