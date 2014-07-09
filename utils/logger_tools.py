@@ -92,8 +92,8 @@ def create_instance(username, xml_file, media_files,
             raise InstanceInvalidUserError()
 
         if uuid:
-            # try find the fomr by its uuid which is the ideal condition
-            if XForm.objects.filter(uuid=uuid).count() > 0:
+            # try find the form by its uuid which is the ideal condition
+            try:
                 xform = XForm.objects.get(uuid=uuid)
                 xform_username = xform.user.username
 
@@ -102,21 +102,26 @@ def create_instance(username, xml_file, media_files,
                     raise IsNotCrowdformError()
 
                 username = xform_username
+                
+            except XForm.DoesNotExist:
+                xform = None
+
         # else, since we have a username, the Instance creation logic will
         # handle checking for the forms existence by its id_string
         if username and request and request.user.is_authenticated():
             id_string = get_id_string_from_xml_str(xml)
-            xform = XForm.objects.get(
-                id_string=id_string, user__username=username)
-            if not xform.is_crowd_form and not is_touchform \
-                    and xform.user.profile.require_auth \
-                    and xform.user != request.user:
-                raise PermissionDenied(
-                    _(u"%(request_user)s is not allowed to make submissions "
-                      u"to %(form_user)s's %(form_title)s form." % {
-                          'request_user': request.user,
-                          'form_user': xform.user,
-                          'form_title': xform.title}))
+            if xform is None:
+                xform = XForm.objects.get(id_string=id_string, user__username=username)
+            if xform is not None:
+                if not xform.is_crowd_form and not is_touchform \
+                        and xform.user.profile.require_auth \
+                        and xform.user != request.user:
+                    raise PermissionDenied(
+                        _(u"%(request_user)s is not allowed to make submissions "
+                          u"to %(form_user)s's %(form_title)s form." % {
+                              'request_user': request.user,
+                              'form_user': xform.user,
+                              'form_title': xform.title}))
 
         user = get_object_or_404(User, username=username)
         existing_instance_count = Instance.objects.filter(
