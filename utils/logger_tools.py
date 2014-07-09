@@ -5,6 +5,7 @@ import pytz
 import re
 import tempfile
 import traceback
+import threading
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -56,6 +57,25 @@ uuid_regex = re.compile(r'<formhub><uuid>([^<]+)</uuid></formhub>',
 
 mongo_instances = settings.MONGO_DB.instances
 
+class SaveAttachments (threading.Thread):
+    """Spawn a thread to save all the attachments for an Instance,
+    so that create_instance() can return quickly, while all the
+    Attachment objects are saved in the background."""
+
+    instance    = None
+    media_files = []
+
+    def __init__ (self, instance, media_files):
+        threading.Thread.__init__(self)
+        self.instance = instance
+        self.media_files = media_files
+
+    def run(self):
+        if self.instance is not None:
+            for f in self.media_files:
+                Attachment.objects.get_or_create(instance=self.instance,
+                                                 media_file=f,
+                                                 mimetype=f.content_type)
 
 def create_instance(username, xml_file, media_files,
                     status=u'submitted_via_web', uuid=None,
@@ -137,10 +157,8 @@ def create_instance(username, xml_file, media_files,
             # new attachments, so save them
             duplicate_instances = Instance.objects.filter(uuid=new_uuid)
             if duplicate_instances:
-                for f in media_files:
-                    Attachment.objects.get_or_create(
-                        instance=duplicate_instances[0],
-                        media_file=f, mimetype=f.content_type)
+                dpi = SaveAttachments(duplicate_instances[0], media_files)
+                dpi.start()
                 raise DuplicateInstance()
 
         # proceed_to_create_instance = True (as per legacy logic)
@@ -185,9 +203,8 @@ def create_instance(username, xml_file, media_files,
         #if not created:
         #    pi.save(async=False)
 
-        for f in media_files:
-            Attachment.objects.get_or_create(
-                instance=instance, media_file=f, mimetype=f.content_type)
+        atta = SaveAttachments(instance, media_files)
+        atta.start()
 
     except IndexError:
         pass
