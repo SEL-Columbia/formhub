@@ -57,7 +57,6 @@ uuid_regex = re.compile(r'<formhub><uuid>([^<]+)</uuid></formhub>',
 mongo_instances = settings.MONGO_DB.instances
 
 
-@transaction.commit_manually
 def create_instance(username, xml_file, media_files,
                     status=u'submitted_via_web', uuid=None,
                     date_created_override=None, request=None):
@@ -71,131 +70,129 @@ def create_instance(username, xml_file, media_files,
         If there is no username and a uuid, submitting a touchform.
         If there is a username and a uuid, submitting a new ODK form.
     """
+
+    instance = None
+
+    if username:
+        username = username.lower()
+    xml = xml_file.read()
+    is_touchform = False
+    # check alternative form submission ids
+    if not uuid:
+        # parse UUID from uploaded XML
+        split_xml = uuid_regex.split(xml)
+
+        # check that xml has UUID, then it is a crowdform
+        if len(split_xml) > 1:
+            uuid = split_xml[1]
+    else:
+        # is a touchform
+        is_touchform = True
+
+    if not username and not uuid:
+        raise InstanceInvalidUserError()
+
+    if uuid:
+        # try find the form by its uuid which is the ideal condition
+        try:
+            xform = XForm.objects.get(uuid=uuid)
+            xform_username = xform.user.username
+
+            if xform_username != username and not xform.is_crowd_form \
+                    and not is_touchform:
+                raise IsNotCrowdformError()
+
+            username = xform_username
+
+        except XForm.DoesNotExist:
+            xform = None
+
+    # else, since we have a username, the Instance creation logic will
+    # handle checking for the forms existence by its id_string
+    if username and request and request.user.is_authenticated():
+        id_string = get_id_string_from_xml_str(xml)
+        if xform is None:
+            xform = XForm.objects.get(id_string=id_string, user__username=username)
+        if xform is not None:
+            if not xform.is_crowd_form and not is_touchform \
+                    and xform.user.profile.require_auth \
+                    and xform.user != request.user:
+                raise PermissionDenied(
+                    _(u"%(request_user)s is not allowed to make submissions "
+                      u"to %(form_user)s's %(form_title)s form." % {
+                          'request_user': request.user,
+                          'form_user': xform.user,
+                          'form_title': xform.title}))
+
+    user = get_object_or_404(User, username=username)
     try:
-        if username:
-            username = username.lower()
-        xml = xml_file.read()
-        is_touchform = False
-        # check alternative form submission ids
-        if not uuid:
-            # parse UUID from uploaded XML
-            split_xml = uuid_regex.split(xml)
-
-            # check that xml has UUID, then it is a crowdform
-            if len(split_xml) > 1:
-                uuid = split_xml[1]
-        else:
-            # is a touchform
-            is_touchform = True
-
-        if not username and not uuid:
-            raise InstanceInvalidUserError()
-
-        if uuid:
-            # try find the form by its uuid which is the ideal condition
-            try:
-                xform = XForm.objects.get(uuid=uuid)
-                xform_username = xform.user.username
-
-                if xform_username != username and not xform.is_crowd_form \
-                        and not is_touchform:
-                    raise IsNotCrowdformError()
-
-                username = xform_username
-                
-            except XForm.DoesNotExist:
-                xform = None
-
-        # else, since we have a username, the Instance creation logic will
-        # handle checking for the forms existence by its id_string
-        if username and request and request.user.is_authenticated():
-            id_string = get_id_string_from_xml_str(xml)
-            if xform is None:
-                xform = XForm.objects.get(id_string=id_string, user__username=username)
-            if xform is not None:
-                if not xform.is_crowd_form and not is_touchform \
-                        and xform.user.profile.require_auth \
-                        and xform.user != request.user:
-                    raise PermissionDenied(
-                        _(u"%(request_user)s is not allowed to make submissions "
-                          u"to %(form_user)s's %(form_title)s form." % {
-                              'request_user': request.user,
-                              'form_user': xform.user,
-                              'form_title': xform.title}))
-
-        user = get_object_or_404(User, username=username)
-        existing_instance_count = Instance.objects.filter(
-            xml=xml, user=user).count()
-
-        if existing_instance_count == 0:
-            proceed_to_create_instance = True
-        else:
-            existing_instance = Instance.objects.filter(xml=xml, user=user)[0]
-            if existing_instance.xform and\
-                    not existing_instance.xform.has_start_time:
-                proceed_to_create_instance = True
-            else:
-                # Ignore submission as a duplicate IFF
-                #  * a submission's XForm collects start time
-                #  * the submitted XML is an exact match with one that
-                #    has already been submitted for that user.
-                proceed_to_create_instance = False
-                raise DuplicateInstance()
-
-        # get new and depracated uuid's
-        new_uuid = get_uuid_from_xml(xml)
-        duplicate_instances = Instance.objects.filter(uuid=new_uuid)
-        if duplicate_instances:
-            for f in media_files:
-                Attachment.objects.get_or_create(
-                    instance=duplicate_instances[0],
-                    media_file=f, mimetype=f.content_type)
-            # ensure we have saved the extra attachments
-            transaction.commit()
+        existing_instance = Instance.objects.filter(xml=xml, user=user)[0]
+        if existing_instance.xform and existing_instance.xform.has_start_time:
             raise DuplicateInstance()
 
-        if proceed_to_create_instance:
-            # check if its an edit submission
-            old_uuid = get_deprecated_uuid_from_xml(xml)
-            instances = Instance.objects.filter(uuid=old_uuid)
-            if not date_created_override:
-                date_created_override = get_submission_date_from_xml(xml)
-            if instances:
-                instance = instances[0]
-                InstanceHistory.objects.create(
-                    xml=instance.xml, xform_instance=instance, uuid=old_uuid)
-                instance.xml = xml
-                instance.uuid = new_uuid
-                instance.save()
-            else:
-                # new submission
-                instance = Instance.objects.create(
-                    xml=xml, user=user, status=status)
-            for f in media_files:
-                Attachment.objects.get_or_create(
-                    instance=instance, media_file=f, mimetype=f.content_type)
+        # get new and deprecated uuids
+        new_uuid = get_uuid_from_xml(xml)
+        if new_uuid is not None:
+            # this xml is a duplicate, however, there may be
+            # new attachments, so save them
+            duplicate_instances = Instance.objects.filter(uuid=new_uuid)
+            if duplicate_instances:
+                for f in media_files:
+                    Attachment.objects.get_or_create(
+                        instance=duplicate_instances[0],
+                        media_file=f, mimetype=f.content_type)
+                raise DuplicateInstance()
 
-            # override date created if required
-            if date_created_override:
-                if not timezone.is_aware(date_created_override):
-                    # default to utc?
-                    date_created_override = timezone.make_aware(
-                        date_created_override, timezone.utc)
-                instance.date_created = date_created_override
-                instance.save()
+        # proceed_to_create_instance = True (as per legacy logic)
 
-            if instance.xform is not None:
-                pi, created = ParsedInstance.objects.get_or_create(
-                    instance=instance)
-            if not created:
-                pi.save(async=False)
-        # commit all changes
-        transaction.commit()
-        return instance
-    except Exception:
-        transaction.rollback()
-        raise
-    return None
+        # check if its an edit submission
+        old_uuid = get_deprecated_uuid_from_xml(xml)
+        if old_uuid is not None:
+            try:
+                instance = Instance.objects.filter(uuid=old_uuid)[0]
+            except IndexError:
+                pass
+
+        if not date_created_override:
+            date_created_override = get_submission_date_from_xml(xml)
+
+        if instance is not None:
+            # this is an edit
+            InstanceHistory.objects.create(
+                xml=instance.xml, xform_instance=instance, uuid=old_uuid)
+            instance.xml = xml
+            instance.uuid = new_uuid
+        else:
+            # new submission
+            instance = Instance.objects.create(
+                xml=xml, user=user, status=status)
+
+        # override date created if required
+        if date_created_override:
+            if not timezone.is_aware(date_created_override):
+                # default to utc?
+                date_created_override = timezone.make_aware(
+                    date_created_override, timezone.utc)
+            instance.date_created = date_created_override
+
+        instance.save()
+
+        if instance.xform is not None:
+            pi, created = ParsedInstance.objects.get_or_create(
+                instance=instance)
+
+        # this seems unnecessary: if pi has been created, it would have been saved
+        #if not created:
+        #    pi.save(async=False)
+
+        for f in media_files:
+            Attachment.objects.get_or_create(
+                instance=instance, media_file=f, mimetype=f.content_type)
+
+    except IndexError:
+        pass
+
+    return instance
 
 
 def report_exception(subject, info, exc_info=None):
