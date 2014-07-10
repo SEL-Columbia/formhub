@@ -92,9 +92,11 @@ def create_instance(username, xml_file, media_files,
     """
 
     instance = None
+    xform    = None
 
     if username:
         username = username.lower()
+
     xml = xml_file.read()
     is_touchform = False
     # check alternative form submission ids
@@ -125,14 +127,17 @@ def create_instance(username, xml_file, media_files,
             username = xform_username
 
         except XForm.DoesNotExist:
-            xform = None
+            pass
 
     # else, since we have a username, the Instance creation logic will
     # handle checking for the forms existence by its id_string
     if username and request and request.user.is_authenticated():
         id_string = get_id_string_from_xml_str(xml)
         if xform is None:
-            xform = XForm.objects.get(id_string=id_string, user__username=username)
+            try:
+                xform = XForm.objects.get(id_string=id_string, user__username=username)
+            except XForm.DoesNotExist:
+                pass
         if xform is not None:
             if not xform.is_crowd_form and not is_touchform \
                     and xform.user.profile.require_auth \
@@ -149,67 +154,66 @@ def create_instance(username, xml_file, media_files,
         existing_instance = Instance.objects.filter(xml=xml, user=user)[0]
         if existing_instance.xform and existing_instance.xform.has_start_time:
             raise DuplicateInstance()
-
-        # get new and deprecated uuids
-        new_uuid = get_uuid_from_xml(xml)
-        if new_uuid is not None:
-            # this xml is a duplicate, however, there may be
-            # new attachments, so save them
-            try:
-                duplicate_instance = Instance.objects.filter(uuid=new_uuid)[0]
-                dpi = SaveAttachments(duplicate_instance, media_files)
-                dpi.start()
-                raise DuplicateInstance()
-            except IndexError:
-                pass
-
-        # proceed_to_create_instance = True (as per legacy logic)
-
-        # check if its an edit submission
-        old_uuid = get_deprecated_uuid_from_xml(xml)
-        if old_uuid is not None:
-            try:
-                instance = Instance.objects.filter(uuid=old_uuid)[0]
-            except IndexError:
-                pass
-
-        if not date_created_override:
-            date_created_override = get_submission_date_from_xml(xml)
-
-        if instance is not None:
-            # this is an edit
-            InstanceHistory.objects.create(
-                xml=instance.xml, xform_instance=instance, uuid=old_uuid)
-            instance.xml = xml
-            instance.uuid = new_uuid
-        else:
-            # new submission
-            instance = Instance.objects.create(
-                xml=xml, user=user, status=status)
-
-        # override date created if required
-        if date_created_override:
-            if not timezone.is_aware(date_created_override):
-                # default to utc?
-                date_created_override = timezone.make_aware(
-                    date_created_override, timezone.utc)
-            instance.date_created = date_created_override
-
-        instance.save()
-
-        if instance.xform is not None:
-            pi, created = ParsedInstance.objects.get_or_create(
-                instance=instance)
-
-        # this seems unnecessary: if pi has been created, it would have been saved
-        #if not created:
-        #    pi.save(async=False)
-
-        atta = SaveAttachments(instance, media_files)
-        atta.start()
-
     except IndexError:
         pass
+
+    # get new and deprecated uuids
+    new_uuid = get_uuid_from_xml(xml)
+    if new_uuid is not None:
+        # this xml is a duplicate, however, there may be
+        # new attachments, so save them
+        try:
+            duplicate_instance = Instance.objects.filter(uuid=new_uuid)[0]
+            dpi = SaveAttachments(duplicate_instance, media_files)
+            dpi.start()
+            raise DuplicateInstance()
+        except IndexError:
+            pass
+
+    # proceed_to_create_instance = True (as per legacy logic)
+
+    # check if its an edit submission
+    old_uuid = get_deprecated_uuid_from_xml(xml)
+    if old_uuid is not None:
+        try:
+            instance = Instance.objects.filter(uuid=old_uuid)[0]
+        except IndexError:
+            pass
+
+    if not date_created_override:
+        date_created_override = get_submission_date_from_xml(xml)
+
+    if instance is not None:
+        # this is an edit
+        InstanceHistory.objects.create(
+            xml=instance.xml, xform_instance=instance, uuid=old_uuid)
+        instance.xml = xml
+        instance.uuid = new_uuid
+    else:
+        # new submission
+        instance = Instance.objects.create(
+            xml=xml, user=user, status=status)
+
+    # override date created if required
+    if date_created_override:
+        if not timezone.is_aware(date_created_override):
+            # default to utc?
+            date_created_override = timezone.make_aware(
+                date_created_override, timezone.utc)
+        instance.date_created = date_created_override
+
+    instance.save()
+
+    if instance.xform is not None:
+        pi, created = ParsedInstance.objects.get_or_create(
+            instance=instance)
+
+    # this seems unnecessary: if pi has been created, it would have been saved
+    #if not created:
+    #    pi.save(async=False)
+
+    atta = SaveAttachments(instance, media_files)
+    atta.start()
 
     return instance
 
