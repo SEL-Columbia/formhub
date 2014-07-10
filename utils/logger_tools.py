@@ -155,11 +155,13 @@ def create_instance(username, xml_file, media_files,
         if new_uuid is not None:
             # this xml is a duplicate, however, there may be
             # new attachments, so save them
-            duplicate_instances = Instance.objects.filter(uuid=new_uuid)
-            if duplicate_instances:
-                dpi = SaveAttachments(duplicate_instances[0], media_files)
+            try:
+                duplicate_instance = Instance.objects.filter(uuid=new_uuid)[0]
+                dpi = SaveAttachments(duplicate_instance, media_files)
                 dpi.start()
                 raise DuplicateInstance()
+            except IndexError:
+                pass
 
         # proceed_to_create_instance = True (as per legacy logic)
 
