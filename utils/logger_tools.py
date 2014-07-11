@@ -70,6 +70,7 @@ class SaveAttachments (threading.Thread):
         self.instance = instance
         self.media_files = media_files
 
+    @transaction.autocommit
     def run(self):
         if self.instance is not None:
             for f in self.media_files:
@@ -77,6 +78,7 @@ class SaveAttachments (threading.Thread):
                                                  media_file=f,
                                                  mimetype=f.content_type)
 
+@transaction.autocommit
 def create_instance(username, xml_file, media_files,
                     status=u'submitted_via_web', uuid=None,
                     date_created_override=None, request=None):
@@ -207,10 +209,8 @@ def create_instance(username, xml_file, media_files,
     if instance.xform is not None:
         pi, created = ParsedInstance.objects.get_or_create(
             instance=instance)
-
-    # this seems unnecessary: if pi has been created, it would have been saved
-    #if not created:
-    #    pi.save(async=False)
+        if not created:
+            pi.save(async=False)
 
     atta = SaveAttachments(instance, media_files)
     atta.start()
