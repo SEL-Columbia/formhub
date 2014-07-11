@@ -10,9 +10,10 @@
 	<h3>
 	  <div style='vertical-align: middle'>
 	  <img src='{{ content_user.profile.gravatar }}' alt='gravatar' width='20' height='20' />
-	  <a href="{% url "user_profile" content_user.username %}">{{ content_user.username }}</a> ({% trans "Owner" %}) /
+	  <a href="{% url "user_profile" content_user.username %}">{{ content_user.username }}</a> ({% trans "Owner" %})
 	  </div>
 	</h3>
+
         <div class="clearfix">
             <div class="input">
             <form>
@@ -25,14 +26,15 @@
             </form>
             </div>
         </div>
+    <a href="{% url "main.views.profile" content_user.username %}" class="btn small">{% trans "Return to main screen" %}</a>
     </div>
     <div class="row">
       <div class="span8">
         {% if can_edit %}
             <h4>{% trans "Form ID:" %} {{ xform.id_string }}</h4>
         {% endif %}
-        <h3>{% trans "Description" %}</h3>
-        <div class="clearfix">
+        <div class="clearfix bordered">
+          <h3>{% trans "Description" %}</h3>
             <div class="input">
             <form>
                 {% csrf_token %}
@@ -44,12 +46,15 @@
             </form>
             </div>
         </div>
+      <br/>
       <div class="bordered">
         <h3>
             {% trans "XLSForm" %}
+            <!--
             <span id="form-shared-public" class="label label-info">{% trans "PUBLIC" %}</span>
             <span id="form-shared-private" class="label label-warning">{% trans "PRIVATE" %}</span>
             <span id="form-encrypted" class="label label-important icon-lock label-encrypted">&nbsp;&nbsp;{% trans "ENCRYPTED" %}</span>
+            -->
         </h3>
         <br/>
         <div class="btn-toolbar" style="margin-bottom: 9px">
@@ -116,9 +121,11 @@
       <div class="clearfix bordered">
         <h3>
             {% trans "Form Data" %}
-            <span id="data-shared-public" class="label label-info">{% trans "PUBLIC" %}</span>
+            <!--
+             <span id="data-shared-public" class="label label-info">{% trans "PUBLIC" %}</span>
             <span id="data-shared-private" class="label label-warning">{% trans "PRIVATE" %}</span>
             <span id="data-encrypted" class="label label-important icon-lock label-encrypted">&nbsp;&nbsp;{% trans "ENCRYPTED" %}</span>
+             -->
         </h3>
         {% if xform.shared_data or can_view %}
         {% if not xform.encrypted and xform.submission_count > 0 %}
@@ -431,29 +438,37 @@
       </div>
       <div class="span4">
         {% if is_owner %}
+        <div class="clearfix bordered">
         <h3>{% trans "Settings" %}</h3>
-        <div class="clearfix">
-          <div class="input">
-          <label>{% trans "Form Shared" %}&nbsp;</label>
-            <input id="form-shared" type="checkbox"{% if xform.shared %} checked=""{% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string %}" />
-          </div>
-          <br/>
-          <label>{% trans "Data Shared" %}&nbsp;</label>
-          <div class="input">
-            <input id="data-shared" type="checkbox"{% if xform.shared_data %} checked=""{% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string %}" />
-          </div>
-          <br/>
-          <label>{% trans "Crowdform" %}&nbsp;</label>
-          <div class="input">
-            <input id="crowd-form" type="checkbox" {% if xform.is_crowd_form %}
-            checked="" {% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string  %}" />
-          </div>
-          <br/>
-          <label>{% trans "Form Active" %}&nbsp;</label>
-          <div class="input">
-            <input id="active-form" type="checkbox"{% if xform.downloadable %} checked=""{% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string %}" />
-          </div>
-          <br/>
+            <form action="{% url "main.views.edit" username=user.username id_string=xform.id_string %}" method="post">
+            {% csrf_token %}
+            <div class="input">
+            <input type="hidden" name="settings_form" value="on"/>
+            <label>{% trans "Form Shared" %}&nbsp;</label>
+              <input name="shared" id="form-shared" type="checkbox"{% if xform.shared %} checked=""{% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string %}" />
+            </div>
+            <br/>
+            <label>{% trans "Data Shared" %}&nbsp;</label>
+            <div class="input">
+              <input name="shared_data" id="data-shared" type="checkbox"{% if xform.shared_data %} checked=""{% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string %}" />
+            </div>
+            <br/>
+            <label>{% trans "Crowdform" %}&nbsp;</label>
+            <div class="input">
+              <input name="is_crowd_form" id="crowd-form" type="checkbox" {% if xform.is_crowd_form %}
+              checked="" {% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string  %}" />
+            </div>
+            <br/>
+            <label>{% trans "Form Active" %}&nbsp;</label>
+            <div class="input">
+              <input name="form_active" id="active-form" type="checkbox"{% if xform.form_active %} checked=""{% endif %} data-url="{% url "main.views.edit" content_user.username xform.id_string %}" />
+            </div>
+            <br/>
+            <label>{% trans "Update Settings" %}</label>
+            <div class="input">
+                <button class="btn btn-primary form-submit">{% trans "Update" %}</button>
+            </div>
+          </form>
           <label>{% trans "Delete Form" %}&nbsp;</label>
         <div class="input">
           <!-- DELETE -->
@@ -479,7 +494,7 @@
         </div>
         </div>
         <br/>
-        <div>
+        <div class="clearfix bordered">
             <h3>{% trans "bamboo" %}</h3>
             {% if xform.bamboo_dataset %}
                 {% blocktrans with dataset=xform.bamboo_dataset %}bamboo dataset: <strong><a href="http://bamboo.io/datasets/{{ dataset }}/info">{{ dataset }}</a></strong>{% endblocktrans %}
@@ -499,7 +514,7 @@
             {% endif %}
         </div>
         <br />
-        <div>
+        <div class="clearfix bordered">
             <h3>{% trans "Sharing" %}</h3>
             {% if public_link %}
             {% url "main.views.show" xform.uuid as form_url %}

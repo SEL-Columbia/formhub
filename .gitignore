@@ -35,12 +35,13 @@ ve/
 .pydevproject
 .sass-cache
 .settings
+.preset/test_*
 mongo_vs_instance_counts_report.txt
 
 *.bak
 *.pyc
 *.sql
-*.sqlite3
+*.sqlite*
 *.tar.gz
 *~
 *orig

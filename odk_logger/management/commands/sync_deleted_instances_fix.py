@@ -16,7 +16,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # Reset all sql deletes to None
         Instance.objects.exclude(
-            deleted_at=None, xform__downloadable=True).update(deleted_at=None)
+            deleted_at=None, xform__form_active=True).update(deleted_at=None)
 
         # Get all mongo deletes
         query = '{"$and": [{"_deleted_at": {"$exists": true}}, ' \
@@ -28,7 +28,7 @@ class Command(BaseCommand):
             # update sql instance with deleted_at datetime from mongo
             try:
                 i = Instance.objects.get(
-                    uuid=record["_uuid"],  xform__downloadable=True)
+                    uuid=record["_uuid"],  xform__form_active=True)
             except Instance.DoesNotExist:
                 continue
             else:

@@ -448,7 +448,7 @@ def public_api(request, username, id_string):
                'bamboo_dataset': xform.bamboo_dataset,
                'shared': xform.shared,
                'shared_data': xform.shared_data,
-               'downloadable': xform.downloadable,
+               'form_active': xform.form_active,
                'is_crowd_form': xform.is_crowd_form,
                'title': xform.title,
                'date_created': xform.date_created.strftime(_DATETIME_FORMAT),
@@ -513,76 +513,30 @@ def edit(request, username, id_string):
                     'new_title': request.POST.get('title')
                 }, audit, request)
             xform.title = request.POST['title']
-        elif request.POST.get('toggle_shared'):
-            if request.POST['toggle_shared'] == 'data':
-                audit = {
-                    'xform': xform.id_string
-                }
-                audit_log(
-                    Actions.FORM_UPDATED, request.user, owner,
-                    _("Data sharing updated for '%(id_string)s' from "
-                        "'%(old_shared)s' to '%(new_shared)s'.") %
-                    {
-                        'id_string': xform.id_string,
-                        'old_shared': _("shared")
-                        if xform.shared_data else _("not shared"),
-                        'new_shared': _("shared")
-                        if not xform.shared_data else _("not shared")
-                    }, audit, request)
-                xform.shared_data = not xform.shared_data
-            elif request.POST['toggle_shared'] == 'form':
-                audit = {
-                    'xform': xform.id_string
-                }
-                audit_log(
-                    Actions.FORM_UPDATED, request.user, owner,
-                    _("Form sharing for '%(id_string)s' updated "
-                        "from '%(old_shared)s' to '%(new_shared)s'.") %
-                    {
-                        'id_string': xform.id_string,
-                        'old_shared': _("shared")
-                        if xform.shared else _("not shared"),
-                        'new_shared': _("shared")
-                        if not xform.shared else _("not shared")
-                    }, audit, request)
-                xform.shared = not xform.shared
-            elif request.POST['toggle_shared'] == 'active':
-                audit = {
-                    'xform': xform.id_string
-                }
-                audit_log(
-                    Actions.FORM_UPDATED, request.user, owner,
-                    _("Active status for '%(id_string)s' updated from "
-                        "'%(old_shared)s' to '%(new_shared)s'.") %
-                    {
-                        'id_string': xform.id_string,
-                        'old_shared': _("shared")
-                        if xform.downloadable else _("not shared"),
-                        'new_shared': _("shared")
-                        if not xform.downloadable else _("not shared")
-                    }, audit, request)
-                xform.downloadable = not xform.downloadable
-            elif request.POST['toggle_shared'] == 'crowd':
-                audit = {
-                    'xform': xform.id_string
-                }
-                audit_log(
-                    Actions.FORM_UPDATED, request.user, owner,
-                    _("Crowdform status for '%(id_string)s' updated from "
-                        "'%(old_status)s' to '%(new_status)s'.") %
-                    {
-                        'id_string': xform.id_string,
-                        'old_status': _("crowdform")
-                        if not xform.is_crowd_form else _("not crowdform"),
-                        'new_status': _("crowdform")
-                        if xform.is_crowd_form else _("not crowdform"),
-                    }, audit, request)
-                if xform.is_crowd_form:
-                    xform.is_crowd_form = False
-                else:
-                    xform.is_crowd_form = True
-                    xform.shared = True
-                    xform.shared_data = True
+        elif request.POST.get('settings_form'):
+            #white list of fields that can be changed
+            settings = ('shared', 'shared_data', 'form_active', 'is_crowd_form')
+            for setting in settings:
+                new_state = request.POST.get(setting, 'off') == 'on'
+                old_state = getattr(xform, setting)
+                if new_state != old_state:
+                    audit = {
+                        'xform': xform.id_string
+                    }
+                    audit_log(
+                        Actions.FORM_UPDATED, request.user, owner,
+                        _("'%(field_name)s' for '%(id_string)s' updated from "
+                            "'%(old_value)s' to '%(new_value)s'.") %
+                        {
+                            'field_name': setting,
+                            'id_string': xform.id_string,
+                            'old_value': str(old_state),
+                            'new_value': str(new_state)
+                        }, audit, request)
+                    setattr(xform, setting, new_state)
+                    if setting == 'is_crowd_form' and new_state:
+                        xform.shared = xform.shared_data = True  # crowd forms must be shared.
+
         elif request.POST.get('form-license'):
             audit = {
                 'xform': xform.id_string
@@ -695,10 +649,11 @@ def edit(request, username, id_string):
                     'id_string': xform.id_string
                 }, audit, request)
             MetaData.supporting_docs(xform, request.FILES['doc'])
+
         xform.update()
 
         if request.is_ajax():
-            return HttpResponse(_(u'Updated succeeded.'))
+            return HttpResponse(_(u'Update succeeded.'))
         else:
             return HttpResponseRedirect(reverse(show, kwargs={
                 'username': username,

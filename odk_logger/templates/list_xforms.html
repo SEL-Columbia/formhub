@@ -14,8 +14,8 @@
     {% for xform in xforms %}
     <tr>
       <td>
-	<a href={% url "odk_logger.views.toggle_downloadable" id_string=xform.id_string %} class="delete">
-	  {% if xform.downloadable %}
+	<a href={% url "odk_logger.views.toggle_form_active" id_string=xform.id_string %} class="delete">
+	  {% if xform.form_active %}
 	  [ {% trans 'yes' %} ]
 	  {% else %}
 	  [ {% trans 'no' %} ]
@@ -37,6 +37,6 @@
 
 <script type="text/javascript">
 <!--
-	$('tr span.downloadable.true').each(function(){$(this).parents('tr').find('td').css({'font-weight':'bold'})})
+	$('tr span.form_active.true').each(function(){$(this).parents('tr').find('td').css({'font-weight':'bold'})})
 -->
 </script>

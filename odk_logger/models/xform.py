@@ -42,7 +42,7 @@ class XForm(models.Model):
     user = models.ForeignKey(User, related_name='xforms', null=True)
     shared = models.BooleanField(default=False)
     shared_data = models.BooleanField(default=False)
-    downloadable = models.BooleanField(default=True)
+    form_active = models.BooleanField(default=True)
     is_crowd_form = models.BooleanField(default=False)
     allows_sms = models.BooleanField(default=False)
     encrypted = models.BooleanField(default=False)
