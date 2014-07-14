@@ -215,6 +215,15 @@ def create_instance(username, xml_file, media_files,
     atta = SaveAttachments(instance.pk, media_files)
     atta.start()
 
+    # just to check about a suspicion about why the tests fail:
+    # the test User is being deleted immeidately after this returns,
+    # while the thread saving attachments may still be working
+    # IRL, this condition would not occur, but just to confirm,
+    # introducing an artificial pause for letting the attachment
+    # saving thread to finish
+    from time import sleep
+    sleep(120) # already more than the uwsgi harakiri limit! should be enough...
+    
     return instance
 
 
