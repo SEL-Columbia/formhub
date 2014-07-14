@@ -78,6 +78,9 @@ class SaveAttachments (threading.Thread):
                                                  media_file=f,
                                                  mimetype=f.content_type)
 
+# just to confirm a theory about the tests...
+from time import sleep
+
 @transaction.autocommit
 def create_instance(username, xml_file, media_files,
                     status=u'submitted_via_web', uuid=None,
@@ -168,6 +171,7 @@ def create_instance(username, xml_file, media_files,
             duplicate_instance = Instance.objects.filter(uuid=new_uuid)[0]
             dpi = SaveAttachments(duplicate_instance.pk, media_files)
             dpi.start()
+            sleep(3) # checking same theory about the tests...
             raise DuplicateInstance()
         except IndexError:
             pass
@@ -221,7 +225,6 @@ def create_instance(username, xml_file, media_files,
     # IRL, this condition would not occur, but just to confirm,
     # introducing an artificial pause for letting the attachment
     # saving thread to finish
-    from time import sleep
     sleep(3)
     
     return instance
