@@ -222,7 +222,7 @@ def create_instance(username, xml_file, media_files,
     # introducing an artificial pause for letting the attachment
     # saving thread to finish
     from time import sleep
-    sleep(120) # already more than the uwsgi harakiri limit! should be enough...
+    sleep(3)
     
     return instance
 
