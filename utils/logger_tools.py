@@ -62,12 +62,12 @@ class SaveAttachments (threading.Thread):
     so that create_instance() can return quickly, while all the
     Attachment objects are saved in the background."""
 
-    instance    = None
-    media_files = []
-
-    def __init__ (self, instance, media_files):
+    def __init__ (self, instance_pk, media_files):
         threading.Thread.__init__(self)
-        self.instance = instance
+        try:
+            self.instance = Instance.objects.get(pk=instance_pk)
+        except Instance.DoesNotExist:
+            self.instance = None
         self.media_files = media_files
 
     @transaction.autocommit
@@ -93,19 +93,6 @@ def create_instance(username, xml_file, media_files,
         If there is a username and a uuid, submitting a new ODK form.
     """
 
-    @transaction.autocommit
-    def _save_attachments (inst):
-        """This is a serial process to save all the media files
-        for a given instance. It's handled, ideally, by using the
-        asynchronous threaded class, above, but returning the instance
-        while its attachments was being created brought up foreign key
-        violations during testing."""
-
-        for f in media_files:
-            Attachment.objects.get_or_create(instance=inst,
-                                             media_file=f,
-                                             mimetype=f.content_type)
-        
     instance = None
     xform    = None
 
@@ -179,9 +166,8 @@ def create_instance(username, xml_file, media_files,
         # new attachments, so save them
         try:
             duplicate_instance = Instance.objects.filter(uuid=new_uuid)[0]
-            #dpi = SaveAttachments(duplicate_instance, media_files)
-            #dpi.start()
-            _save_attachments(duplicate_instance)
+            dpi = SaveAttachments(duplicate_instance.pk, media_files)
+            dpi.start()
             raise DuplicateInstance()
         except IndexError:
             pass
@@ -226,9 +212,8 @@ def create_instance(username, xml_file, media_files,
         if not created:
             pi.save(async=False)
 
-    #atta = SaveAttachments(instance, media_files)
-    #atta.start()
-    _save_attachments(instance)
+    atta = SaveAttachments(instance.pk, media_files)
+    atta.start()
 
     return instance
 
