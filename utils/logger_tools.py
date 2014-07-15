@@ -171,7 +171,7 @@ def create_instance(username, xml_file, media_files,
             duplicate_instance = Instance.objects.filter(uuid=new_uuid)[0]
             dpi = SaveAttachments(duplicate_instance.pk, media_files)
             dpi.start()
-            sleep(3) # checking same theory about the tests...
+            sleep(10) # checking same theory about the tests...
             raise DuplicateInstance()
         except IndexError:
             pass
@@ -225,7 +225,7 @@ def create_instance(username, xml_file, media_files,
     # IRL, this condition would not occur, but just to confirm,
     # introducing an artificial pause for letting the attachment
     # saving thread to finish
-    sleep(3)
+    sleep(10)
     
     return instance
 
