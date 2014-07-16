@@ -78,9 +78,6 @@ class SaveAttachments (threading.Thread):
                                                  media_file=f,
                                                  mimetype=f.content_type)
 
-# just to confirm a theory about the tests...
-from time import sleep
-
 @transaction.autocommit
 def create_instance(username, xml_file, media_files,
                     status=u'submitted_via_web', uuid=None,
@@ -156,9 +153,21 @@ def create_instance(username, xml_file, media_files,
 
     user = get_object_or_404(User, username=username)
     try:
-        existing_instance = Instance.objects.filter(xml=xml, user=user)[0]
-        if existing_instance.xform and existing_instance.xform.has_start_time:
+        # make sure the Instance object doesn't already exist
+        # using good db optimization practices
+        # (https://docs.djangoproject.com/en/1.5/topics/db/optimization/),
+        # there is no need to fetch the whole Instance object, when all
+        # we need to check for is existence and an attribute in the associated XForm object
+
+        # this code is logically-equivalent to, but more efficient than, the legacy code below it
+        xform_pk = Instance.objects.filter(xml=xml, user=user).values_list('xform', flat=True)[0]
+        if XForm.objects.filter(pk=xform_pk).values_list('has_start_time', flat=True)[0]:
             raise DuplicateInstance()
+
+        # don't do it this way, kids, especially with 2.8 million Instances and counting...
+        #existing_instance = Instance.objects.filter(xml=xml, user=user)[0]
+        #if existing_instance.xform and existing_instance.xform.has_start_time:
+            #raise DuplicateInstance()
     except IndexError:
         pass
 
@@ -168,10 +177,11 @@ def create_instance(username, xml_file, media_files,
         # this xml is a duplicate, however, there may be
         # new attachments, so save them
         try:
-            duplicate_instance = Instance.objects.filter(uuid=new_uuid)[0]
-            dpi = SaveAttachments(duplicate_instance.pk, media_files)
+            # here, too, all we need is the pk so don't retrieve the whole object
+            duplicate_instance_pk = Instance.objects.filter(uuid=new_uuid).values_list('pk', flat=True)[0]
+            #duplicate_instance = Instance.objects.filter(uuid=new_uuid)[0]
+            dpi = SaveAttachments(duplicate_instance_pk, media_files)
             dpi.start()
-            sleep(10) # checking same theory about the tests...
             raise DuplicateInstance()
         except IndexError:
             pass
@@ -182,6 +192,7 @@ def create_instance(username, xml_file, media_files,
     old_uuid = get_deprecated_uuid_from_xml(xml)
     if old_uuid is not None:
         try:
+            # here is a case where we do need the whole instance, so stet this code
             instance = Instance.objects.filter(uuid=old_uuid)[0]
         except IndexError:
             pass
@@ -219,14 +230,6 @@ def create_instance(username, xml_file, media_files,
     atta = SaveAttachments(instance.pk, media_files)
     atta.start()
 
-    # just to check about a suspicion about why the tests fail:
-    # the test User is being deleted immeidately after this returns,
-    # while the thread saving attachments may still be working
-    # IRL, this condition would not occur, but just to confirm,
-    # introducing an artificial pause for letting the attachment
-    # saving thread to finish
-    sleep(10)
-    
     return instance
 
 
