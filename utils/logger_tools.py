@@ -100,7 +100,7 @@ def create_instance(username, xml_file, media_files,
 
         try:
             inst = Instance.objects.get(pk=instance_pk)
-            for f in self.media_files:
+            for f in media_files:
                 Attachment.objects.get_or_create(instance=inst,
                                                  media_file=f,
                                                  mimetype=f.content_type)
