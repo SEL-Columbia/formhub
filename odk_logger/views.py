@@ -11,7 +11,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect, HttpResponseForbidden
+    HttpResponseRedirect, HttpResponseForbidden, Http404
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext, loader
 from django.contrib.auth.models import User
@@ -616,7 +616,7 @@ def view_download_submission(request, username):
             'downloadSubmission.xml', context_instance=context,
             mimetype="text/xml; charset=utf-8")
     except IndexError:
-        return HttpResponseBadRequest()
+        raise Http404
 
 
 @require_http_methods(["HEAD", "POST"])
