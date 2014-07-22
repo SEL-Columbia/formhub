@@ -3,7 +3,7 @@ import os
 import tempfile
 from xml.parsers.expat import ExpatError
 import pytz
-
+ 
 from datetime import datetime
 from itertools import chain
 from django.views.decorators.http import require_GET, require_POST
@@ -11,7 +11,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect, HttpResponseForbidden
+    HttpResponseRedirect, HttpResponseForbidden, Http404
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext, loader
 from django.contrib.auth.models import User
@@ -594,25 +594,29 @@ def view_download_submission(request, username):
         return HttpResponseBadRequest()
 
     uuid = extract_uuid(form_id_parts[1])
-    instance = get_object_or_404(
-        Instance, xform__id_string=id_string, uuid=uuid,
-        user__username=username, deleted_at=None)
-    xform = instance.xform
-    if not has_permission(xform, form_user, request, xform.shared_data):
-        return HttpResponseForbidden('Not shared.')
-    submission_xml_root_node = instance.get_root_node()
-    submission_xml_root_node.setAttribute(
-        'instanceID', u'uuid:%s' % instance.uuid)
-    submission_xml_root_node.setAttribute(
-        'submissionDate', instance.date_created.isoformat()
-    )
-    context.submission_data = submission_xml_root_node.toxml()
-    context.media_files = Attachment.objects.filter(instance=instance)
-    context.host = request.build_absolute_uri().replace(
-        request.get_full_path(), '')
-    return render_to_response(
-        'downloadSubmission.xml', context_instance=context,
-        mimetype="text/xml; charset=utf-8")
+    try:
+        instance = Instance.objects.filter(xform__id_string=id_string,
+                                           uuid=uuid,
+                                           user__username=username,
+                                           deleted_at=None)[0]
+        xform = instance.xform
+        if not has_permission(xform, form_user, request, xform.shared_data):
+            return HttpResponseForbidden('Not shared.')
+        submission_xml_root_node = instance.get_root_node()
+        submission_xml_root_node.setAttribute(
+            'instanceID', u'uuid:%s' % instance.uuid)
+        submission_xml_root_node.setAttribute(
+            'submissionDate', instance.date_created.isoformat()
+        )
+        context.submission_data = submission_xml_root_node.toxml()
+        context.media_files = Attachment.objects.filter(instance=instance)
+        context.host = request.build_absolute_uri().replace(
+            request.get_full_path(), '')
+        return render_to_response(
+            'downloadSubmission.xml', context_instance=context,
+            mimetype="text/xml; charset=utf-8")
+    except IndexError:
+        raise Http404
 
 
 @require_http_methods(["HEAD", "POST"])
