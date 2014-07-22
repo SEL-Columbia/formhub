@@ -83,8 +83,7 @@ class TestSite(MainTestCase):
 
     def test_url_upload(self):
         if self._internet_on(url="http://google.com"):
-            xls_url = 'http://formhub.org' \
-                      '/formhub_u/forms/tutorial/form.xls'
+            xls_url = 'https://s3.amazonaws.com/formhub-travis-test/form.xls'
             pre_count = XForm.objects.count()
             response = self.client.post('/%s/' % self.user.username,
                                         {'xls_url': xls_url})
@@ -125,7 +124,7 @@ class TestSite(MainTestCase):
 
     def test_url_upload_non_dot_xls_path(self):
         if self._internet_on():
-            xls_url = 'http://formhub.org/formhub_u/forms/tutorial/form.xls'
+            xls_url = 'https://s3.amazonaws.com/formhub-travis-test/form.xls'
             pre_count = XForm.objects.count()
             response = self.client.post('/%s/' % self.user.username,
                                         {'xls_url': xls_url})
