@@ -124,7 +124,7 @@ def report_exception(subject, info, exc_info=None):
 
 def django_file(path, field_name, content_type):
     # adapted from here:
-    # http://groups.google.com/group/django-users/browse_thread/thread/834f988876ff3c45/
+    # http://groups.google.com/group/django-users/browse_thread/thread/834f988876ff3c45/ #pep8 ignore
     f = open(path)
     return InMemoryUploadedFile(
         file=f,
