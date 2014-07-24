@@ -1,3 +1,10 @@
+eHealth Africa
+==============
+this copy of the Formhub software is customized for the use and convenience of https://www.ehealthafrica.org
+and our customers.  More complete documentation is found in the wiki at https://github.com/vernondcole/formhub/wiki
+
+v v v v v v text below this point is unaltered from the original v v v v v v 
+
 Formhub
 =======
 
@@ -12,7 +19,7 @@ Contributing
 ------------
 
 If you would like to contribute code please read
-`Contributing Code to Formhub <https://github.com/modilabs/formhub/wiki/Contributing-Code-to-Formhub>`_.
+`Contributing Code to Formhub <https://github.com/eHealthAfrica/formhub/blob/develop/CONTRIBUTING.md>`_.
 
 Code Structure
 --------------
