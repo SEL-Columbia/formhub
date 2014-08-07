@@ -7,6 +7,8 @@ import tempfile
 import traceback
 import threading
 
+from celery import task
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -93,6 +95,7 @@ def create_instance(username, xml_file, media_files,
         If there is a username and a uuid, submitting a new ODK form.
     """
 
+    @task
     def _save_attachments (instance_pk):
         """A function to save the media files associated with this Instance,
         unfortunately not as a separate thread, which would allow this to
@@ -197,7 +200,7 @@ def create_instance(username, xml_file, media_files,
             #duplicate_instance = Instance.objects.filter(uuid=new_uuid)[0]
             #dpi = SaveAttachments(duplicate_instance_pk, media_files)
             #dpi.start()
-            _save_attachments(duplicate_instance_pk)
+            _save_attachments.delay(duplicate_instance_pk)
             raise DuplicateInstance()
         except IndexError:
             pass
@@ -245,7 +248,7 @@ def create_instance(username, xml_file, media_files,
 
     #atta = SaveAttachments(instance.pk, media_files)
     #atta.start()
-    _save_attachments(instance.pk)
+    _save_attachments.delay(instance.pk)
 
     return instance
 
