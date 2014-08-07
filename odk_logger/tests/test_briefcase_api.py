@@ -2,7 +2,6 @@ import os
 import codecs
 
 from django.core.urlresolvers import reverse
-from django.test.utils import override_settings
 from django_digest.test import Client as DigestClient
 
 from main.tests.test_base import MainTestCase
@@ -15,7 +14,6 @@ from odk_logger.models import Instance
 from odk_logger.models import XForm
 
 
-@override_settings(TEST_RUNNER='djcelery.contrib.test_runner.CeleryTestSuiteRunner')
 class TestBriefcaseAPI(MainTestCase):
     def _authenticated_client(
             self, url, username='bob', password='bob', extra={}):

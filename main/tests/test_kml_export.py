@@ -1,12 +1,10 @@
 import os
 from django.core.urlresolvers import reverse
-from django.test.utils import override_settings
 from odk_logger.models import Instance
 from odk_viewer.views import kml_export
 from test_base import MainTestCase
 
 
-@override_settings(TEST_RUNNER='djcelery.contrib.test_runner.CeleryTestSuiteRunner')
 class TestKMLExport(MainTestCase):
     def _publish_survey(self):
         self.this_directory = os.path.dirname(__file__)
