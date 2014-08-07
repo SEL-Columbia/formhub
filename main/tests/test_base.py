@@ -8,7 +8,7 @@ from cStringIO import StringIO
 
 from django.contrib.auth.models import User
 from django_digest.test import Client as DigestClient
-from django.test import TransactionTestCase
+from django.test import TestCase, TransactionTestCase
 # from django_nose import FastFixtureTestCase as TestCase
 from django.test.client import Client
 
@@ -16,7 +16,7 @@ from odk_logger.models import XForm, Instance, Attachment
 from django.conf import settings
 
 
-class MainTestCase(TransactionTestCase):
+class MainTestCase(TestCase):
 
     surveys = ['transport_2011-07-25_19-05-49',
                'transport_2011-07-25_19-05-36',
@@ -219,3 +219,7 @@ class MainTestCase(TransactionTestCase):
         else:
             contents = response.content
         return contents
+
+class MainTransactionTestCase(MainTestCase, TransactionTestCase):
+    pass
+

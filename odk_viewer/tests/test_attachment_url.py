@@ -2,12 +2,12 @@ import os
 
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from main.tests.test_base import MainTestCase
+from main.tests.test_base import MainTransactionTestCase
 from odk_logger.models import Attachment
 from odk_viewer.views import attachment_url
 
 
-class TestAttachmentUrl(MainTestCase):
+class TestAttachmentUrl(MainTransactionTestCase):
 
     def setUp(self):
         self.attachment_count = 0

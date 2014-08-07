@@ -4,7 +4,7 @@ import codecs
 from django.core.urlresolvers import reverse
 from django_digest.test import Client as DigestClient
 
-from main.tests.test_base import MainTestCase
+from main.tests.test_base import MainTransactionTestCase
 
 from odk_logger.views import view_submission_list
 from odk_logger.views import view_download_submission
@@ -14,7 +14,7 @@ from odk_logger.models import Instance
 from odk_logger.models import XForm
 
 
-class TestBriefcaseAPI(MainTestCase):
+class TestBriefcaseAPI(MainTransactionTestCase):
     def _authenticated_client(
             self, url, username='bob', password='bob', extra={}):
         client = DigestClient()
