@@ -3,6 +3,7 @@ import os
 
 from django.conf import settings
 from django.test import TestCase, Client
+from django.test.utils import override_settings
 
 import common_tags
 from main.tests.test_base import MainTestCase
@@ -14,6 +15,7 @@ Testing that data in parsed instance's mongo_dict is properly categorized.
 '''
 
 
+@override_settings(TEST_RUNNER='djcelery.contrib.test_runner.CeleryTestSuiteRunner')
 class TestMongoData(MainTestCase):
     def setUp(self):
         MainTestCase.setUp(self)

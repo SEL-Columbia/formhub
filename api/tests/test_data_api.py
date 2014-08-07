@@ -1,9 +1,11 @@
 from django.test import RequestFactory
+from django.test.utils import override_settings
 from main.tests.test_base import MainTestCase
 
 from api.views import DataViewSet, XFormViewSet
 
 
+@override_settings(TEST_RUNNER='djcelery.contrib.test_runner.CeleryTestSuiteRunner')
 class TestDataAPI(MainTestCase):
 
     def setUp(self):

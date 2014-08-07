@@ -1,5 +1,6 @@
 import json
 from django.core.urlresolvers import reverse
+from django.test.utils import override_settings
 
 from test_base import MainTestCase
 from main.views import api
@@ -15,6 +16,7 @@ def dict_for_mongo_without_userform_id(parsed_instance):
     return d
 
 
+@override_settings(TEST_RUNNER='djcelery.contrib.test_runner.CeleryTestSuiteRunner')
 class TestFormAPI(MainTestCase):
 
     def setUp(self):
