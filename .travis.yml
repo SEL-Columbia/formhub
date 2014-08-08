@@ -14,8 +14,8 @@ before_install:
   - ./miniconda.sh -b
   - export PATH=/home/travis/miniconda/bin:$PATH
   - conda update --yes conda
-  - conda create -n condaenv python=2.7
-  - conda install -n condaenv pip
+  - conda create --yes -n condaenv python=2.7
+  - conda install --yes -n condaenv pip
   - source activate condaenv
   - sudo rm -rf /dev/shm
   - sudo ln -s /run/shm /dev/shm
