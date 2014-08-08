@@ -220,6 +220,6 @@ class MainTestCase(TestCase):
             contents = response.content
         return contents
 
-class MainTransactionTestCase(MainTestCase, TransactionTestCase):
+class MainTransactionTestCase(TransactionTestCase, MainTestCase):
     pass
 
