@@ -28,7 +28,7 @@ python-digest==1.7
 django-digest==1.13
 
 # new export code relies on
-pandas==0.12.0
+# pandas==0.12.0
 
 requests==2.0.1
 
