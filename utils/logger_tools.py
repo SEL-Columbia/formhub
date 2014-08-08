@@ -80,6 +80,23 @@ class SaveAttachments (threading.Thread):
                                                  media_file=f,
                                                  mimetype=f.content_type)
 
+
+@task
+def _save_attachments (instance_pk, media_files):
+    """A function to save the media files associated with this Instance,
+    unfortunately not as a separate thread, which would allow this to
+    return faster, but this is the only way the travis tests will pass"""
+
+    try:
+        inst = Instance.objects.get(pk=instance_pk)
+        for f in media_files:
+            Attachment.objects.get_or_create(instance=inst,
+                                             media_file=f,
+                                             mimetype=f.content_type)
+    except Instance.DoesNotExist:
+        pass
+
+
 @transaction.autocommit
 def create_instance(username, xml_file, media_files,
                     status=u'submitted_via_web', uuid=None,
@@ -95,20 +112,20 @@ def create_instance(username, xml_file, media_files,
         If there is a username and a uuid, submitting a new ODK form.
     """
 
-    @task
-    def _save_attachments (instance_pk):
-        """A function to save the media files associated with this Instance,
-        unfortunately not as a separate thread, which would allow this to
-        return faster, but this is the only way the travis tests will pass"""
+    # @task
+    # def _save_attachments (instance_pk):
+    #     """A function to save the media files associated with this Instance,
+    #     unfortunately not as a separate thread, which would allow this to
+    #     return faster, but this is the only way the travis tests will pass"""
 
-        try:
-            inst = Instance.objects.get(pk=instance_pk)
-            for f in media_files:
-                Attachment.objects.get_or_create(instance=inst,
-                                                 media_file=f,
-                                                 mimetype=f.content_type)
-        except Instance.DoesNotExist:
-            pass
+    #     try:
+    #         inst = Instance.objects.get(pk=instance_pk)
+    #         for f in media_files:
+    #             Attachment.objects.get_or_create(instance=inst,
+    #                                              media_file=f,
+    #                                              mimetype=f.content_type)
+    #     except Instance.DoesNotExist:
+    #         pass
 
 
     instance = None
@@ -200,7 +217,7 @@ def create_instance(username, xml_file, media_files,
             #duplicate_instance = Instance.objects.filter(uuid=new_uuid)[0]
             #dpi = SaveAttachments(duplicate_instance_pk, media_files)
             #dpi.start()
-            _save_attachments.delay(duplicate_instance_pk)
+            _save_attachments.delay(duplicate_instance_pk, media_files)
             raise DuplicateInstance()
         except IndexError:
             pass
@@ -248,7 +265,7 @@ def create_instance(username, xml_file, media_files,
 
     #atta = SaveAttachments(instance.pk, media_files)
     #atta.start()
-    _save_attachments.delay(instance.pk)
+    _save_attachments.delay(instance.pk, media_files)
 
     return instance
 
