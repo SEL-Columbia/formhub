@@ -97,9 +97,7 @@ def _save_attachments (instance_pk, media_files):
         pass
 
 
-#@transaction.autocommit
-# see http://celery.readthedocs.org/en/latest/userguide/tasks.html#database-transactions
-@transaction.commit_manually
+@transaction.autocommit
 def create_instance(username, xml_file, media_files,
                     status=u'submitted_via_web', uuid=None,
                     date_created_override=None, request=None):
@@ -245,15 +243,9 @@ def create_instance(username, xml_file, media_files,
         instance.xml = xml
         instance.uuid = new_uuid
     else:
-        try:
-            # new submission
-            instance = Instance.objects.create(
-                xml=xml, user=user, status=status)
-        except:
-            transaction.rollback()
-            raise
-        else:
-            transaction.commit()
+        # new submission
+        instance = Instance.objects.create(
+            xml=xml, user=user, status=status)
 
     # override date created if required
     if date_created_override:
@@ -266,16 +258,10 @@ def create_instance(username, xml_file, media_files,
     instance.save()
 
     if instance.xform is not None:
-        try:
-            pi, created = ParsedInstance.objects.get_or_create(
-                instance=instance)
-            if not created:
-                pi.save(async=False)
-        except:
-            transaction.rollback()
-            raise
-        else:
-            transaction.commit()
+        pi, created = ParsedInstance.objects.get_or_create(
+            instance=instance)
+        if not created:
+            pi.save(async=False)
 
     #atta = SaveAttachments(instance.pk, media_files)
     #atta.start()
