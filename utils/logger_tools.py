@@ -222,7 +222,7 @@ def create_instance(username, xml_file, media_files,
         if not created:
             pi.save(async=False)
 
-    if len(media_media) > 0:
+    if len(media_files) > 0:
         _save_attachments.delay(instance.pk, media_files)
 
     return instance
