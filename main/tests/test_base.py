@@ -4,6 +4,7 @@ import re
 from tempfile import NamedTemporaryFile
 from time import sleep
 import urllib2
+import sys
 
 from cStringIO import StringIO
 
@@ -308,16 +309,22 @@ class MainTransactionTestCase(TransactionTestCase):
             'transportation', 'instances_w_uuid', name, name + '.xml'))
 
     def _submit_transport_instance_w_attachment(self, survey_at=0):
-        s = self.surveys[survey_at]
-        media_file = "1335783522563.jpg"
-        self._make_submission_w_attachment(
-            os.path.join(self.this_directory, 'fixtures',
-                         'transportation', 'instances', s, s + '.xml'),
-            os.path.join(self.this_directory, 'fixtures',
-                         'transportation', 'instances', s, media_file))
-        sleep(60)
-        attachment = Attachment.objects.all().reverse()[0]
-        self.attachment_media_file = attachment.media_file
+        try:
+            s = self.surveys[survey_at]
+            media_file = "1335783522563.jpg"
+            self._make_submission_w_attachment(
+                os.path.join(self.this_directory, 'fixtures',
+                             'transportation', 'instances', s, s + '.xml'),
+                os.path.join(self.this_directory, 'fixtures',
+                             'transportation', 'instances', s, media_file))
+            sleep(60)
+            attachment = Attachment.objects.all().reverse()[0]
+            self.attachment_media_file = attachment.media_file
+        except:
+            print >> sys.stderr, User.objects.all()
+            print >> sys.stderr, Attachment.objects.all()
+            print >> sys.stderr, Instance.objects.all()
+            raise
 
     def _publish_transportation_form_and_submit_instance(self):
         self._publish_transportation_form()
