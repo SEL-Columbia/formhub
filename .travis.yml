@@ -19,7 +19,6 @@ before_install:
 install:
 #  - pip install numpy --use-mirrors
   - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy pandas
-  - python setup.py install
   - pip install -r requirements.pip --use-mirrors
   - pip install -r requirements-mysql.pip --use-mirrors
   - python manage.py syncdb --noinput
