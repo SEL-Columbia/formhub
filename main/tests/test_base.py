@@ -205,7 +205,7 @@ class _MainBase(object):
             contents = response.content
         return contents
 
-class MainTestCase(TestCase, _MainBase):
+class MainTestCase(_MainBase, TestCase):
 
     def _publish_xlsx_file(self):
         path = os.path.join(self.this_directory, 'fixtures', 'exp.xlsx')
@@ -225,7 +225,7 @@ class MainTestCase(TestCase, _MainBase):
         self.xform = XForm.objects.order_by('pk').reverse()[0]
 
 
-class MainTransactionTestCase(TransactionTestCase, _MainBase):
+class MainTransactionTestCase(_MainBase, TransactionTestCase):
 
     def _publish_xlsx_file(self):
         path = os.path.join(self.this_directory, 'fixtures', 'exp.xlsx')
