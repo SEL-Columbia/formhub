@@ -5,6 +5,7 @@ import pytz
 import re
 import tempfile
 import traceback
+import sys
 
 from celery import task
 
@@ -67,9 +68,11 @@ def _save_attachments (instance_pk, media_files):
     try:
         inst = Instance.objects.get(pk=instance_pk)
         for f in media_files:
-            Attachment.objects.get_or_create(instance=inst,
+            attach, created = Attachment.objects.get_or_create(instance=inst,
                                              media_file=f,
                                              mimetype=f.content_type)
+            print >> sys.stderr, "DEBUGGING STATEMENT"
+            print >> sys.stderr, attach.media_file.name, created
     except Instance.DoesNotExist:
         pass
 
