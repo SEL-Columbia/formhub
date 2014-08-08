@@ -2,6 +2,7 @@ import os
 import codecs
 
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from django_digest.test import Client as DigestClient
 
 from main.tests.test_base import MainTransactionTestCase
@@ -24,7 +25,7 @@ class TestBriefcaseAPI(MainTransactionTestCase):
         # apply credentials
         client.set_authorization(username, password, 'Digest')
         return client
-
+    
     def setUp(self):
         super(MainTransactionTestCase, self).setUp()
         self._create_user_and_login()
@@ -42,6 +43,16 @@ class TestBriefcaseAPI(MainTransactionTestCase):
             form_upload, kwargs={'username': self.user.username})
         self.client = self._authenticated_client(self._submission_list_url)
         self.anon = self.client
+
+    def tearDown(self):
+        super(MainTransactionTestCase, self).tearDown()
+        path = os.path.join(settings.MEDIA_ROOT, self.user.username)
+        for root, dirs, files in os.walk(path, topdown=False):
+            for name in files:
+                os.remove(os.path.join(root, name))
+            for name in dirs:
+                os.rmdir(os.path.join(root, name))
+
 
     def test_view_submissionList(self):
         self._publish_xml_form()
