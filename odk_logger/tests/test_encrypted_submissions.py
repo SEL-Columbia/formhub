@@ -1,6 +1,8 @@
 import os
 import codecs
 
+from time import sleep
+
 from django.core.urlresolvers import reverse
 from main.tests.test_base import MainTransactionTestCase
 
@@ -42,6 +44,7 @@ class TestEncryptedForms(MainTransactionTestCase):
                     'xml_submission_file': f,
                     'submission.xml.enc': ef}
                 response = self.client.post(self._submission_url, post_data)
+                sleep(60)
                 self.assertContains(response, message, status_code=201)
                 self.assertEqual(Instance.objects.count(), count + 1)
                 self.assertEqual(Attachment.objects.count(), acount + 1)
