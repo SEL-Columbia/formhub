@@ -25,7 +25,7 @@ class TestBriefcaseAPI(MainTransactionTestCase):
         # apply credentials
         client.set_authorization(username, password, 'Digest')
         return client
-    
+
     def setUp(self):
         super(MainTransactionTestCase, self).setUp()
         self._create_user_and_login()
@@ -52,7 +52,6 @@ class TestBriefcaseAPI(MainTransactionTestCase):
                 os.remove(os.path.join(root, name))
             for name in dirs:
                 os.rmdir(os.path.join(root, name))
-
 
     def test_view_submissionList(self):
         self._publish_xml_form()

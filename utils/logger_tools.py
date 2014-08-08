@@ -5,7 +5,6 @@ import pytz
 import re
 import tempfile
 import traceback
-import sys
 
 from celery import task
 
@@ -61,9 +60,8 @@ mongo_instances = settings.MONGO_DB.instances
 
 @task
 def _save_attachments (instance_pk, media_files):
-    """A function to save the media files associated with this Instance,
-    unfortunately not as a separate thread, which would allow this to
-    return faster, but this is the only way the travis tests will pass"""
+    """A function to save the media files associated with this Instance
+    using a celery task."""
 
     try:
         inst = Instance.objects.get(pk=instance_pk)
@@ -71,8 +69,6 @@ def _save_attachments (instance_pk, media_files):
             attach, created = Attachment.objects.get_or_create(instance=inst,
                                              media_file=f,
                                              mimetype=f.content_type)
-            print >> sys.stderr, "DEBUGGING STATEMENT"
-            print >> sys.stderr, attach.media_file.name, created
     except Instance.DoesNotExist:
         pass
 
@@ -178,7 +174,7 @@ def create_instance(username, xml_file, media_files,
         try:
             # here, too, all we need is the pk so don't retrieve the whole object
             duplicate_instance_pk = Instance.objects.filter(uuid=new_uuid).values_list('pk', flat=True)[0]
-            if len(media_files) > 0:
+            if media_files:
                 _save_attachments.delay(duplicate_instance_pk, media_files)
             raise DuplicateInstance()
         except IndexError:
@@ -225,7 +221,7 @@ def create_instance(username, xml_file, media_files,
         if not created:
             pi.save(async=False)
 
-    if len(media_files) > 0:
+    if media_files:
         _save_attachments.delay(instance.pk, media_files)
 
     return instance
