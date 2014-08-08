@@ -22,7 +22,7 @@ def images_count(username="bob"):
 class TestImportingDatabase(MainTransactionTestCase):
 
     def setUp(self):
-        MainTestCase.setUp(self)
+        MainTransactionTestCase.setUp(self)
         self._publish_xls_file(
             os.path.join(
                 settings.PROJECT_ROOT,

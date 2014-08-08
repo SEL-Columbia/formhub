@@ -11,7 +11,7 @@ class TestAttachmentUrl(MainTransactionTestCase):
 
     def setUp(self):
         self.attachment_count = 0
-        MainTestCase.setUp(self)
+        MainTransactionTestCase.setUp(self)
         self._create_user_and_login()
         self._publish_transportation_form()
         self._submit_transport_instance_w_attachment()

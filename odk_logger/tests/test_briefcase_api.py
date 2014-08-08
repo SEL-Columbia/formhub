@@ -26,7 +26,7 @@ class TestBriefcaseAPI(MainTransactionTestCase):
         return client
 
     def setUp(self):
-        super(MainTestCase, self).setUp()
+        super(MainTransactionTestCase, self).setUp()
         self._create_user_and_login()
         self._logout()
         self.form_def_path = os.path.join(

@@ -13,7 +13,7 @@ from odk_logger.views import submission
 class TestEncryptedForms(MainTransactionTestCase):
 
     def setUp(self):
-        super(MainTestCase, self).setUp()
+        super(MainTransactionTestCase, self).setUp()
         self._create_user_and_login()
         self._submission_url = reverse(
             submission, kwargs={'username': self.user.username})
