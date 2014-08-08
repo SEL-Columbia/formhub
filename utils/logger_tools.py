@@ -99,7 +99,7 @@ def _save_attachments (instance_pk, media_files):
 
 #@transaction.autocommit
 # see http://celery.readthedocs.org/en/latest/userguide/tasks.html#database-transactions
-@transaction.commit_manually
+# @transaction.commit_manually this was swallowing errors
 def create_instance(username, xml_file, media_files,
                     status=u'submitted_via_web', uuid=None,
                     date_created_override=None, request=None):
@@ -166,12 +166,7 @@ def create_instance(username, xml_file, media_files,
             username = xform_username
 
         except XForm.DoesNotExist:
-            transaction.rollback()
-        except:
-            transaction.rollback()
-            raise
-        else:
-            transaction.commit()
+            pass
 
     # else, since we have a username, the Instance creation logic will
     # handle checking for the forms existence by its id_string
@@ -181,12 +176,7 @@ def create_instance(username, xml_file, media_files,
             try:
                 xform = XForm.objects.get(id_string=id_string, user__username=username)
             except XForm.DoesNotExist:
-                transaction.rollback()
-            except:
-                transaction.rollback()
-                raise
-            else:
-                transaction.commit()
+                pass
         if xform is not None:
             if not xform.is_crowd_form and not is_touchform \
                     and xform.user.profile.require_auth \
@@ -198,14 +188,7 @@ def create_instance(username, xml_file, media_files,
                           'form_user': xform.user,
                           'form_title': xform.title}))
 
-    try:
-        user = get_object_or_404(User, username=username)
-    except:
-        transaction.rollback()
-        raise
-    else:
-        transaction.commit()
-        
+    user = get_object_or_404(User, username=username)
     try:
         # make sure the Instance object doesn't already exist
         # using good db optimization practices
@@ -223,13 +206,7 @@ def create_instance(username, xml_file, media_files,
         #if existing_instance.xform and existing_instance.xform.has_start_time:
             #raise DuplicateInstance()
     except IndexError:
-        transaction.rollback()
-    except:
-        transaction.rollback()
-        raise
-    else:
-        transaction.commit()
-    
+        pass
 
     # get new and deprecated uuids
     new_uuid = get_uuid_from_xml(xml)
@@ -238,25 +215,14 @@ def create_instance(username, xml_file, media_files,
         # new attachments, so save them
         try:
             # here, too, all we need is the pk so don't retrieve the whole object
-            try:
-                duplicate_instance_pk = Instance.objects.filter(uuid=new_uuid).values_list('pk', flat=True)[0]
-            except:
-                transaction.rollback()
-                raise
-            else:
-                transaction.commit()
+            duplicate_instance_pk = Instance.objects.filter(uuid=new_uuid).values_list('pk', flat=True)[0]
             #duplicate_instance = Instance.objects.filter(uuid=new_uuid)[0]
             #dpi = SaveAttachments(duplicate_instance_pk, media_files)
             #dpi.start()
             _save_attachments.delay(duplicate_instance_pk, media_files)
             raise DuplicateInstance()
         except IndexError:
-            transaction.rollback()
-        except:
-            transaction.rollback()
-            raise
-        else:
-            transaction.commit()
+            pass
 
     # proceed_to_create_instance = True (as per legacy logic)
 
@@ -267,26 +233,15 @@ def create_instance(username, xml_file, media_files,
             # here is a case where we do need the whole instance, so stet this code
             instance = Instance.objects.filter(uuid=old_uuid)[0]
         except IndexError:
-            transaction.rollback()
-        except:
-            transaction.rollback()
-            raise
-        else:
-            transaction.commit()
+            pass
 
     if not date_created_override:
         date_created_override = get_submission_date_from_xml(xml)
 
     if instance is not None:
         # this is an edit
-        try:
-            InstanceHistory.objects.create(
-                xml=instance.xml, xform_instance=instance, uuid=old_uuid)
-        except:
-            transaction.rollback()
-            raise
-        else:
-            transaction.commit()
+        InstanceHistory.objects.create(
+            xml=instance.xml, xform_instance=instance, uuid=old_uuid)
         instance.xml = xml
         instance.uuid = new_uuid
     else:
@@ -309,7 +264,6 @@ def create_instance(username, xml_file, media_files,
         instance.date_created = date_created_override
 
     instance.save()
-    transaction.commit()
 
     if instance.xform is not None:
         try:
