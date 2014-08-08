@@ -1,6 +1,8 @@
 from main.tests.test_base import MainTransactionTestCase
 #from django.test import TestCase
 from odk_logger.models import Instance
+
+from time import sleep
 import os
 import glob
 
@@ -57,6 +59,8 @@ class TestImportingDatabase(MainTransactionTestCase):
 
         import_instances_from_zip(os.path.join(
             DB_FIXTURES_PATH, "bulk_submission.zip"), self.user)
+
+        sleep(60) # not too sure about this one -- viktor
 
         instance_count = Instance.objects.count()
         image_count = images_count()
