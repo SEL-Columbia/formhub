@@ -99,7 +99,7 @@ def _save_attachments (instance_pk, media_files):
 
 #@transaction.autocommit
 # see http://celery.readthedocs.org/en/latest/userguide/tasks.html#database-transactions
-@transaction.commit_manually
+# @transaction.commit_manually this was swallowing errors
 def create_instance(username, xml_file, media_files,
                     status=u'submitted_via_web', uuid=None,
                     date_created_override=None, request=None):
