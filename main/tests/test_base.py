@@ -2,7 +2,6 @@ import base64
 import os
 import re
 from tempfile import NamedTemporaryFile
-from time import sleep
 import urllib2
 import sys
 
@@ -317,7 +316,6 @@ class MainTransactionTestCase(TransactionTestCase):
                              'transportation', 'instances', s, s + '.xml'),
                 os.path.join(self.this_directory, 'fixtures',
                              'transportation', 'instances', s, media_file))
-            sleep(60)
             attachment = Attachment.objects.all().reverse()[0]
             self.attachment_media_file = attachment.media_file
         except:
