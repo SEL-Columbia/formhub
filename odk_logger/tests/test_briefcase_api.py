@@ -2,9 +2,10 @@ import os
 import codecs
 
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from django_digest.test import Client as DigestClient
 
-from main.tests.test_base import MainTestCase
+from main.tests.test_base import MainTransactionTestCase
 
 from odk_logger.views import view_submission_list
 from odk_logger.views import view_download_submission
@@ -14,7 +15,7 @@ from odk_logger.models import Instance
 from odk_logger.models import XForm
 
 
-class TestBriefcaseAPI(MainTestCase):
+class TestBriefcaseAPI(MainTransactionTestCase):
     def _authenticated_client(
             self, url, username='bob', password='bob', extra={}):
         client = DigestClient()
@@ -26,7 +27,7 @@ class TestBriefcaseAPI(MainTestCase):
         return client
 
     def setUp(self):
-        super(MainTestCase, self).setUp()
+        super(MainTransactionTestCase, self).setUp()
         self._create_user_and_login()
         self._logout()
         self.form_def_path = os.path.join(
@@ -42,6 +43,15 @@ class TestBriefcaseAPI(MainTestCase):
             form_upload, kwargs={'username': self.user.username})
         self.client = self._authenticated_client(self._submission_list_url)
         self.anon = self.client
+
+    def tearDown(self):
+        super(MainTransactionTestCase, self).tearDown()
+        path = os.path.join(settings.MEDIA_ROOT, self.user.username)
+        for root, dirs, files in os.walk(path, topdown=False):
+            for name in files:
+                os.remove(os.path.join(root, name))
+            for name in dirs:
+                os.rmdir(os.path.join(root, name))
 
     def test_view_submissionList(self):
         self._publish_xml_form()
