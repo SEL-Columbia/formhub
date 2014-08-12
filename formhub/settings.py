@@ -163,8 +163,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'registration',
-    'south',
-    'django_nose',
+    'south',_
     'django_digest',
     'corsheaders',
     'oauth2_provider',
@@ -363,12 +362,6 @@ ZIP_EXPORT_COUNTDOWN = 3600  # 1 hour
 
 # default content length for submission requests
 DEFAULT_CONTENT_LENGTH = 10000000
-
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-NOSE_ARGS = ['--with-fixture-bundling']
-#NOSE_PLUGINS = [
-#    'utils.nose_plugins.SilenceSouth'
-#]
 
 # re-captcha in registrations
 REGISTRATION_REQUIRE_CAPTCHA = False

@@ -10,7 +10,6 @@ from cStringIO import StringIO
 from django.contrib.auth.models import User
 from django_digest.test import Client as DigestClient
 from django.test import TestCase, TransactionTestCase
-# from django_nose import FastFixtureTestCase as TestCase
 from django.test.client import Client
 
 from odk_logger.models import XForm, Instance, Attachment
