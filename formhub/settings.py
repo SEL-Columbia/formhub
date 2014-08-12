@@ -163,7 +163,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'registration',
-    'south',_
+    'south',
     'django_digest',
     'corsheaders',
     'oauth2_provider',
