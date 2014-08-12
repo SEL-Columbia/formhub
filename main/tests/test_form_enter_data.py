@@ -10,6 +10,7 @@ from django.test import RequestFactory
 from django.core.urlresolvers import reverse
 from django.core.validators import URLValidator
 from django.conf import settings
+from nose import SkipTest
 
 from test_base import MainTestCase
 from main.views import set_perm, show, qrcode
@@ -59,7 +60,7 @@ class TestFormEnterData(MainTestCase):
 
     def test_enketo_remote_server(self):
         if not self._running_enketo():
-            return
+            raise SkipTest
         server_url = 'https://testserver.com/bob'
         form_id = "test_%s" % re.sub(re.compile("\."), "_", str(time()))
         url = enketo_url(server_url, form_id)
@@ -90,7 +91,7 @@ class TestFormEnterData(MainTestCase):
 
     def test_enter_data_redir(self):
         if not self._running_enketo():
-            return
+            raise SkipTest
         factory = RequestFactory()
         request = factory.get('/')
         request.user = self.user
