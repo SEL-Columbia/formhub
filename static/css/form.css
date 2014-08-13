@@ -1,0 +1,19 @@
+html { 
+	height: 100%; 
+	overflow: hidden 
+}
+
+body { 
+	height: 100%; 
+	margin: 0; 
+	padding: 0;
+}
+
+#gallery { 
+	height: 100% 
+}
+
+#touchforms { 
+	height: 100%; 
+	width: 100%; 
+}
