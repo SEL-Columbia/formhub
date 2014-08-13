@@ -11,16 +11,35 @@
 # and 3rd party private keys, etc., should perhaps be omitted using
 # .gitignore
 
-from settings import *
+from formhub.settings import *
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'FormhubDjangoDB',
-        'USER': 'formhubDjangoApp',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '',                      # Set to empty string for default.
-    }
-}
+# For this example configuration, we are running the server in
+# debug mode, but this should be changed to False for a server
+# in production (changing the value of DEBUG also requires that
+# ALLOWED_HOSTS, below, be defined as well)
+
+DEBUG = True
+
+# Hosts/domain names that aare valid for this site
+# This is required if DEBUG is False, otherwise the serever
+# will respond with 500 errors:
+# https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
+#ALLOWED_HOSTS = ['.example.com']
+
+# In this example we are supplementing the django database
+# definition found in the ../settings.py file with a password
+# (normally we wouldn't check this into source control, but this
+# is here just for illustration, as an example of what's possible)
+
+DATABASES['default']['PASSWORD'] = 'foo'
+# an alternative to hard-coding the password string
+# is to define the db password as an environment variable:
+#DATABASES['default']['password'] = os.environ['FORMHUB_DB_PWD']
+
+# Examples of other over-rides you could do here:
+
+DATABASE_ROUTERS = [] # turn off second database
+
+# Make a unique unique key just for testing, and don't share it with anybody.
+SECRET_KEY = 'mlfss33^s1l4xf6a36$0#j%dd*sisfoi&)&4s-v=91#^l01v)*j'
 

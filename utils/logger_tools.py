@@ -23,7 +23,7 @@ from django.http import HttpResponse, HttpResponseNotFound, \
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.utils import timezone
-from modilabs.utils.subprocess_timeout import ProcessTimedOut
+#from modilabs.utils.subprocess_timeout import ProcessTimedOut
 from pyxform.errors import PyXFormError
 from pyxform.xform2json import create_survey_element_from_xml
 import sys
@@ -316,12 +316,12 @@ def publish_form(callback):
             'type': 'alert-error',
             'text': e
         }
-    except ProcessTimedOut as e:
-        # catch timeout errors
-        return {
-            'type': 'alert-error',
-            'text': _(u'Form validation timeout, please try again.'),
-        }
+#    except ProcessTimedOut as e:
+#        # catch timeout errors
+#        return {
+#            'type': 'alert-error',
+#            'text': _(u'Form validation timeout, please try again.'),
+#        }
     except Exception, e:
         # error in the XLS file; show an error to the user
         return {
