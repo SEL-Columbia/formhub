@@ -11,7 +11,9 @@
 # and 3rd party private keys, etc., should perhaps be omitted using
 # .gitignore
 
-from formhub.settings import *
+# The tests should pass like this...
+from staging_example import *
+# from formhub.settings import *
 
 # For this example configuration, we are running the server in
 # debug mode, but this should be changed to False for a server
