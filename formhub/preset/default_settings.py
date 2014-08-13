@@ -26,34 +26,22 @@ DEBUG = True
 # https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 #ALLOWED_HOSTS = ['.example.com']
 
-# These are necessary for running on Amazon Web Services (AWS)
-# because basic formhub/django functions which rely on email,
-# such as new account registration, will fail
-
-AWS_ACCESS_KEY_ID =     '' # find these in your AWS console
-AWS_SECRET_ACCESS_KEY = ''
-EMAIL_BACKEND = 'django_ses.SESBackend'
-DEFAULT_FROM_EMAIL = '' # e.g., 'no-reply@example.com'
-SERVER_EMAIL = DEFAULT_FROM_EMAIL
-
-# Uncomment the following three lines if you are using
-# an AWS S3 Bucket as the default file store, and define
-# your bucket name in the AWS_STORAGE_BUCKET_NAME variable.
-# This is optional, but strong recommended.
-
-#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-#AWS_STORAGE_BUCKET_NAME = '' # use your S3 Bucket name here
-#AWS_DEFAULT_ACL = 'private'
-
 # In this example we are supplementing the django database
 # definition found in the ../settings.py file with a password
 # (normally we wouldn't check this into source control, but this
 # is here just for illustration, as an example of what's possible)
 
-DATABASES['default']['PASSWORD'] = 'foo'
+#DATABASES['default']['PASSWORD'] = 'foo'
 # an alternative to hard-coding the password string
 # is to define the db password as an environment variable:
 #DATABASES['default']['password'] = os.environ['FORMHUB_DB_PWD']
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
+    }
+}
 
 # Examples of other over-rides you could do here:
 
