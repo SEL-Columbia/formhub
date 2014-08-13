@@ -3,12 +3,11 @@ services:
   - mongodb
 python:
   - "2.7"
-addons:
-  postgresql: "9.1"
 before_install:
-  -  sudo apt-get install -y python-psycopg2
-  -  /usr/lib/postgresql/9.1/bin/createdb formhub_test
+  - mysql -e 'create database formhub_test;'
   -  sudo apt-get install gfortran libatlas-base-dev libjpeg-dev zlib1g-dev
+  -  sudo ln -s /usr/lib/`uname -i`-linux-gnu/libjpeg.so ~/virtualenv/python2.7/lib/
+  -  sudo ln -s /usr/lib/`uname -i`-linux-gnu/libz.so ~/virtualenv/python2.7/lib/
 # See https://gist.github.com/dan-blanchard/7045057
   - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
   - chmod +x miniconda.sh
@@ -21,13 +20,14 @@ before_install:
   - sudo rm -rf /dev/shm
   - sudo ln -s /run/shm /dev/shm
 install:
+#  - pip install numpy --use-mirrors
   - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy pandas=0.12.0
   - pip install -r requirements.pip --use-mirrors
-  - pip install psycopg2
+  - pip install -r requirements-mysql.pip --use-mirrors
   - python manage.py syncdb --noinput
   - python manage.py migrate --noinput
 script:
   - python manage.py test --noinput --settings=formhub.preset.travis_test
   - ./js_tests/EnvJasmine/bin/run_all_tests.sh --testDir=../ --configFile=../env_jasmine.conf.js
 notifications:
-  irc: "irc.freenode.org#sel-columbia"
+  irc: "irc.freenode.org#moditest"
