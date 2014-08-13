@@ -24,6 +24,7 @@ install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy pandas=0.12.0
   - pip install -r requirements.pip --use-mirrors
   - pip install -r requirements-mysql.pip --use-mirrors
+  - pip install psycopg2
   - python manage.py syncdb --noinput
   - python manage.py migrate --noinput
 script:
