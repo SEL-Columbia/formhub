@@ -432,12 +432,13 @@ def enter_data(request, username, id_string):
                               id_string=id_string)
     if not has_edit_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden(_(u'Not shared.'))
-    
-    formhub_url = settings.SERVER_EXTERNAL_URL
+    try:
+        formhub_url = "http://%s/" % request.META['HTTP_HOST']
+    except:
+        formhub_url = "http://formhub.org/"
     form_url = formhub_url + username
     if settings.TESTING_MODE:
-        form_url = "http://example.org/bob"
-
+        form_url = "https://testserver.com/bob"
     try:
         url = enketo_url(form_url, xform.id_string)
         if not url:
@@ -484,8 +485,10 @@ def edit_data(request, username, id_string, data_id):
 
     url = '%sdata/edit_url' % settings.ENKETO_URL
     # see commit 220f2dad0e for tmp file creation
-    formhub_url = settings.SERVER_EXTERNAL_URL
-    
+    try:
+        formhub_url = "http://%s/" % request.META['HTTP_HOST']
+    except:
+        formhub_url = "http://formhub.org/"
     injected_xml = inject_instanceid(instance.xml, instance.uuid)
     return_url = request.build_absolute_uri(
         reverse(
@@ -496,7 +499,7 @@ def edit_data(request, username, id_string, data_id):
         ) + "#/" + str(instance.id))
     form_url = formhub_url + username
     if settings.TESTING_MODE:
-        form_url = "http://example.org/bob"
+        form_url = "https://testserver.com/bob"
     try:
         url = enketo_url(
             form_url, xform.id_string, instance_xml=injected_xml,
