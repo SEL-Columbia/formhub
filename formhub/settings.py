@@ -373,11 +373,6 @@ RECAPTCHA_USE_SSL = False
 RECAPTCHA_PRIVATE_KEY = ''
 RECAPTCHA_PUBLIC_KEY = '6Ld52OMSAAAAAJJ4W-0TFDTgbznnWWFf0XuOSaB6'
 
-try:  # legacy setting for old sites who still use a local_settings.py file and have not updated to presets/
-    from local_settings import *
-except ImportError:
-    pass
-
 # MongoDB
 if MONGO_DATABASE.get('USER') and MONGO_DATABASE.get('PASSWORD'):
     MONGO_CONNECTION_URL = (

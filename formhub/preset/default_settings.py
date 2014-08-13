@@ -1,23 +1,26 @@
-# this system uses structured settings.py as defined in http://www.slideshare.net/jacobian/the-best-and-worst-of-django
-#
-# this third-level staging file overrides some definitions in staging.py
-# You may wish to alter it to agree with your local environment
-#
+# This system uses structured settings.py as defined in the 
+# second from last slide in this presentation:
+# http://www.slideshare.net/jacobian/the-best-and-worst-of-django
 
-from staging_example import *  # get most settings from staging_example.py (which in turn, imports from settings.py)
+# The basic idea is that a file like this, which is referenced when
+# the django app runs, imports from ../settings.py, and over-rides
+# and value there with a value specified here
 
-# # # now override the settings which came from staging # # # #
+# This file is checked into source control as an example, but 
+# your actual production settings, which contain database passwords
+# and 3rd party private keys, etc., should perhaps be omitted using
+# .gitignore
 
-# choose a different database...
-# sqlite
+from settings import *
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'FormhubDjangoDB',
+        'USER': 'formhubDjangoApp',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '',                      # Set to empty string for default.
     }
 }
 
-DATABASE_ROUTERS = []  # turn off second database
-
-# Make a unique unique key just for testing, and don't share it with anybody.
-SECRET_KEY = 'mlfs33^s1l4xf6a36$0#j%dd*sisfoi&)&4s-v=91#^l01v)*j'
