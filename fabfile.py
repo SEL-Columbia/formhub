@@ -9,7 +9,7 @@ DEFAULTS = {
     'repo_name': 'formhub',
     }
 
-DEPLOYMENTS = { # why are these here, in a publically-posted file??
+DEPLOYMENTS = { # why are these here, in a publically-posted file?? 
     'dev': {
         'home': '/home/ubuntu/srv/',
         'host_string': 'ubuntu@23.21.82.214', # TODO: switch to dev.formhub.org
@@ -23,6 +23,7 @@ DEPLOYMENTS = { # why are these here, in a publically-posted file??
         'key_filename': os.path.expanduser('~/.ssh/modilabs.pem'),
     },
 }
+
 
 def check_key_filename(deployment_name):
     if DEPLOYMENTS[deployment_name].has_key('key_filename') and \
