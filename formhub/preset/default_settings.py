@@ -26,6 +26,38 @@ DEBUG = True
 # https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 #ALLOWED_HOSTS = ['.example.com']
 
+# This next line defines the domain name or
+# IP address of the server running this code
+
+SERVER_EXTERNALURL = "https://formhub.org" # replace this with *your* domain or ip
+
+# These are necessary for running on Amazon Web Services (AWS)
+# because basic formhub/django functions which rely on email,
+# such as new account registration, will fail
+
+AWS_ACCESS_KEY_ID =   '' # find these in your AWS console
+AWS_SECRET_ACCESS_KEY ''
+EMAIL_BACKEND = 'django_ses.SESBackend'
+DEFAULT_FROM_EMAIL = '' # e.g., 'no-reply@example.com'
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
+# Uncomment the following three lines if you are using
+# an AWS S3 Bucket as the default file store, and define
+# your bucket name in the AWS_STORAGE_BUCKET_NAME variable.
+# This is optional, but strongly recommended.
+
+#DEFAULT_FILE_STORAGE = 'storage.backends.s3boto.S3BotoStorage'
+#AWS_STORAGE_BUCKET_NAME = '' # use your S3 Bucket name here
+#AWS_DEFAULT_ACL = 'private'
+
+# Uncomment the following four lines if you wish to use Enketo web forms
+# (details and registration at: https://www.enketo.org/)
+
+#ENKETO_URL = 'https://enketo.org/'
+#ENKETO_PREVIEW_URL = ENKETO_URL + 'webform/preview'
+#ENKETO_API_INSTANCE_IFRAME_URL = ENKETO_URL + 'api_v1/instance/iframe'
+#ENKETO_API_TOKEN = '' # use your Enketo API key here
+
 # In this example we are supplementing the django database
 # definition found in the ../settings.py file with a password
 # (normally we wouldn't check this into source control, but this
