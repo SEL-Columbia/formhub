@@ -1,4 +1,3 @@
-import random
 import re
 import urllib2
 from urlparse import urlparse
@@ -281,11 +280,6 @@ class QuickConverter(QuickConverterFile, QuickConverterURL,
                         ContentFile(csv_data))
             else:
                 cleaned_xls_file = self.cleaned_data['xls_file']
-
-                #We need to save it here so if the file already exists we get the _N filename
-                cleaned_xls_file = default_storage.save(\
-                    cleaned_xls_file.name, \
-                    ContentFile(cleaned_xls_file.read()))
 
             if not cleaned_xls_file:
                 cleaned_url = self.cleaned_data['xls_url']
