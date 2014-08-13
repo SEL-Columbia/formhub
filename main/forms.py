@@ -271,6 +271,7 @@ class QuickConverter(QuickConverterFile, QuickConverterURL,
                 csv_data = self.cleaned_data['text_xls_form']
 
                 # assigning the filename to a random string (quick fix)
+                import random
                 rand_name = "uploaded_form_%s.csv" % ''.join(
                     random.sample("abcdefghijklmnopqrstuvwxyz0123456789", 6))
 
