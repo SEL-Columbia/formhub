@@ -1,5 +1,5 @@
 # Where the Django project is.
-CELERYBEAT_CHDIR="/home/fhuser/formhub"
+CELERYBEAT_CHDIR="/home/fhuser/formhub/"
 
 # Path to celerybeat
 CELERYBEAT="/usr/bin/python $CELERYD_CHDIR/manage.py celerybeat"
