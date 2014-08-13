@@ -394,7 +394,3 @@ MONGO_CONNECTION = MongoClient(
     MONGO_CONNECTION_URL, safe=True, j=True, tz_aware=True)
 MONGO_DB = MONGO_CONNECTION[MONGO_DATABASE['NAME']]
 
-# this is rather pointless, currently, given the state of the tests
-# however, some functions require its being defined
-TESTING_MODE = False
-
