@@ -1271,9 +1271,10 @@ def activity_api(request, username):
 
 def qrcode(request, username, id_string):
     formhub_url = settings.SERVER_EXTERNAL_URL
-    formhub_url = formhub_url + username
+    form_url = formhub_url + username
     if settings.TESTING_MODE:
-        form_url = "https://example.org/bob"
+        form_url = "http://example.org/bob"    
+
     results = _(u"Unexpected Error occured: No QRCODE generated")
     status = 200
     try:

@@ -272,7 +272,6 @@ class QuickConverter(QuickConverterFile, QuickConverterURL,
                 csv_data = self.cleaned_data['text_xls_form']
 
                 # assigning the filename to a random string (quick fix)
-                import random
                 rand_name = "uploaded_form_%s.csv" % ''.join(
                     random.sample("abcdefghijklmnopqrstuvwxyz0123456789", 6))
 
@@ -283,7 +282,7 @@ class QuickConverter(QuickConverterFile, QuickConverterURL,
             else:
                 cleaned_xls_file = self.cleaned_data['xls_file']
 
-                # We need to save it here so if the file already exists we get the _N filename
+                #We need to save it here so if the file already exists we get the _N filename
                 cleaned_xls_file = default_storage.save(\
                     cleaned_xls_file.name, \
                     ContentFile(cleaned_xls_file.read()))
