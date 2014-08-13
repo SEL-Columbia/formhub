@@ -2,7 +2,7 @@
 CELERYD_NODES="w1"
 
 # Where to chdir at start.
-CELERYD_CHDIR="/home/fhuser/formhub"
+CELERYD_CHDIR="/home/fhuser/formhub/"
 
 # How to call "manage.py celeryd_multi"
 CELERYD_MULTI="/usr/bin/python $CELERYD_CHDIR/manage.py celeryd_multi"
@@ -28,4 +28,4 @@ CELERYD_GROUP="fhuser"
 PROJET_ENV="PRODUCTION"
 
 # Name of the projects settings module.
-export DJANGO_SETTINGS_MODULEi="formhub.preset.default_settings"
+export DJANGO_SETTINGS_MODULE="formhub.preset.default_settings"
