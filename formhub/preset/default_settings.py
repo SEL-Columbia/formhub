@@ -37,8 +37,8 @@ SERVER_EXTERNALURL = "https://formhub.org" # replace this with *your* domain or 
 # because basic formhub/django functions which rely on email,
 # such as new account registration, will fail
 
-AWS_ACCESS_KEY_ID =   '' # find these in your AWS console
-AWS_SECRET_ACCESS_KEY ''
+AWS_ACCESS_KEY_ID =     '' # find these in your AWS console
+AWS_SECRET_ACCESS_KEY = ''
 EMAIL_BACKEND = 'django_ses.SESBackend'
 DEFAULT_FROM_EMAIL = '' # e.g., 'no-reply@example.com'
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
