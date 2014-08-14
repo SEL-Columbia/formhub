@@ -11,10 +11,7 @@
 # and 3rd party private keys, etc., should perhaps be omitted using
 # .gitignore
 
-# from formhub.settings import *
-# use the staging example for travis
-from staging_example import *  # get most settings from staging_example.py (which in turn, imports from settings.py)
-
+from formhub.settings import *
 
 # For this example configuration, we are running the server in
 # debug mode, but this should be changed to False for a server
