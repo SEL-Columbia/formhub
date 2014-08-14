@@ -24,8 +24,8 @@ install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy pandas=0.12.0
   - pip install -r requirements.pip --use-mirrors
   - pip install -r requirements-mysql.pip --use-mirrors
-  - python manage.py syncdb --noinput
-  - python manage.py migrate --noinput
+  - python manage.py syncdb --noinput --settings=formhub.preset.travis_test
+  - python manage.py migrate --noinput --settings=formhub.preset.travis_test
 script:
   - python manage.py test --noinput --settings=formhub.preset.travis_test
   - ./js_tests/EnvJasmine/bin/run_all_tests.sh --testDir=../ --configFile=../env_jasmine.conf.js

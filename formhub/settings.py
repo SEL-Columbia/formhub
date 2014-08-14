@@ -1,11 +1,33 @@
 # vim: set fileencoding=utf-8
-# this system uses structured settings as defined in http://www.slideshare.net/jacobian/the-best-and-worst-of-django
+# this project uses structured settings.
+#  [see http://www.slideshare.net/jacobian/the-best-and-worst-of-django for an explanation]
 #
-# this is the base settings.py -- which contains settings common to all implementations of formhub: edit it at last resort
+# this file is the base settings.py -- which contains settings common to all implementations of this project.
+# Many of these settings, such as TIME_ZONE and ADMINS, and others, should be overridden in another file.
 #
-# local customizations should be done in several files each of which in turn imports this one.
-# The local files should be used as the value for your DJANGO_SETTINGS_FILE environment variable as needed.
-# For example, the bin/postactivate file in your virtual environment might look like:
+# local customizations should be done in files in the ./preset directory, each of which in turn imports this one.
+# Those files should be used as the target of your DJANGO_SETTINGS_MODULE environment variable as needed.
+#
+# # # 12-Factor Configuration # # #
+#
+# If DJANGO_SETTINGS_MODULE is not defined (and a --settings= command line switch is not used)
+# then the script ./preset/default_settings.py will be used.
+# It will attempt to open a database defined by the environment variable DATABASE_URL, formatted as:
+#     engine//:user:password@host:port/name
+# where "engine" is one of ['postgres', 'postgis', 'mysql', 'mysqlgis', 'spatialite', 'sqlite']
+# [see http://crate.io/packages/dj-database-url]
+#   (the appropriate database modules must be loaded, of course.)
+# default_settings.py will import one of the presets: production.py or staging.py as appropriate --
+#   staging.py will be used if the string  "test" appears anywhere in the URL,
+#    or if the environment variable DJANGO_CONFIGURATION == 'Dev'.
+#
+# # #  Default configuration # # #
+# if there is no URL, default_settings.py will attempt to import local_preset.py.
+# default_settings.py will attempt to import..local_settings.py, and will warn if it _is_ successful.
+# if nothing else is done, you will get an sqlite3 database in the file db.sqlite in the project directory,
+#  and the staging.py preset will have been imported.
+#
+
 import os
 import subprocess
 import sys
