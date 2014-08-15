@@ -28,4 +28,4 @@ script:
   - python manage.py test --noinput --settings=formhub.preset.travis_test
   - ./js_tests/EnvJasmine/bin/run_all_tests.sh --testDir=../ --configFile=../env_jasmine.conf.js
 notifications:
-  irc: "irc.freenode.org#moditest"
+  irc: "irc.freenode.org#sel-columbia"
