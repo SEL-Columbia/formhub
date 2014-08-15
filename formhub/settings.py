@@ -36,7 +36,7 @@ DATABASES = {
         'NAME': 'FormhubDjangoDB',
         'USER': 'formhubDjangoApp',
         'HOST': 'localhost',
-        'PORT': '', # Set to empty string for default.
+        'PORT': '',                      # Set to empty string for default.
     }
 }
 
