@@ -1,40 +1,38 @@
+celery==3.0.23
+dict2xml==1.1
+Distribute
+Django<1.6
+django-celery==3.0.23
+django-cors-headers==0.12
+django-digest==1.13
+django-filter==0.7
+django-guardian>=1.1.1
+django-nose
+django-oauth-toolkit==0.5.0
+django-registration>=1.0
+djangorestframework==2.3.8
+django-taggit==0.10
+django-templated-email==0.4.1
+dpath==1.2-45
+elaphe==0.5.6
+gdata==2.0.18
+httmock==1.0.7
+httplib2==0.8
 lxml==3.2.4
+Markdown==2.3.1
+mock>=1.0.1
+modilabs-python-utils==0.1.5
+openpyxl==1.7.0
+Pillow==2.2.1
+poster>=0.8.1
+pybamboo==0.5.8.1
+pymongo==2.6.3
+python-digest==1.7
+pytz>=2013b
 pyxform==0.9.20
+recaptcha-client==1.0.6
+requests==2.0.1
 South==0.8.2
+unicodecsv==0.9.4
 xlrd==0.9.2
 xlwt==0.7.5
-openpyxl==1.7.0
-celery==3.0.23
-django-celery==3.0.23
--e git+https://github.com/jbalogh/django-nose.git#egg=django-nose
-python-digest==1.7
-django-digest==1.13
-django-guardian>=1.1.1
-django-registration>=1.0
-# new export code relies on
-# pandas==0.12.0
-pymongo==2.6.3
-requests==2.0.1
-elaphe==0.5.6
-# devel only
-twill
-clint
-shell_command
-# sms support
-dict2xml==1.1
-# api support
-djangorestframework==2.3.8
-# cors
-django-cors-headers==0.12
-Markdown==2.3.1
-django-filter==0.7
-# captcha
-recaptcha-client==1.0.6
-unicodecsv==0.9.4
-dpath==1.2-45
-# tagging
-django-taggit==0.10
-# oath2 support
-django-oauth-toolkit==0.5.0
-# tests
-gdata==2.0.18
