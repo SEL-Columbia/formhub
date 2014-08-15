@@ -1270,17 +1270,15 @@ def activity_api(request, username):
 
 
 def qrcode(request, username, id_string):
-    try:
-        formhub_url = "http://%s/" % request.META['HTTP_HOST']
-    except:
-        formhub_url = "http://formhub.org/"
-    formhub_url = formhub_url + username
+    formhub_url = settings.SERVER_EXTERNAL_URL
+    form_url = formhub_url + username
     if settings.TESTING_MODE:
-        formhub_url = "https://testserver.com/bob"
+        form_url = "http://example.org/bob"
+
     results = _(u"Unexpected Error occured: No QRCODE generated")
     status = 200
     try:
-        url = enketo_url(formhub_url, id_string)
+        url = enketo_url(form_url, id_string)
     except Exception, e:
         error_msg = _(u"Error Generating QRCODE: %s" % e)
         results = """<div class="alert alert-error">%s</div>""" % error_msg
