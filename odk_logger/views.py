@@ -439,7 +439,7 @@ def enter_data(request, username, id_string):
         formhub_url = settings.SERVER_EXTERNAL_URL
     form_url = formhub_url + username
     if settings.TESTING_MODE:
-        form_url = "http://example.org/bob"
+        form_url = "https://testserver.com/bob"
 
     try:
         url = enketo_url(form_url, xform.id_string)
@@ -502,7 +502,7 @@ def edit_data(request, username, id_string, data_id):
         ) + "#/" + str(instance.id))
     form_url = formhub_url + username
     if settings.TESTING_MODE:
-        form_url = "http://example.org/bob"
+        form_url = "https://testserver.com/bob"
 
     try:
         url = enketo_url(
