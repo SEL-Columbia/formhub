@@ -14,7 +14,7 @@ DATABASES = {
 }
 
 SECRET_KEY = 'mlfs33^s1l4xf6a36$0#j%dd*sisfoi&)&4s-v=91#^l01v)*j'
-SERVER_EXTERNAL_URL = "https://testserver.com/bob" # replace this with *your* domain or ip
+SERVER_EXTERNAL_URL = "http://formhub.org/" # replace this with *your* domain or ip
 
 if PRINT_EXCEPTION and DEBUG:
     MIDDLEWARE_CLASSES += ('utils.middleware.ExceptionLoggingMiddleware',)
