@@ -1,11 +1,8 @@
 # Where the Django project is.
-CELERYBEAT_CHDIR="/home/<username>/src/formhub-app/formhub/"
-
-# Python interpreter from environment, if using virtualenv
-ENV_PYTHON="/home/<username>/src/formhub-app/project_env/bin/python"
+CELERYBEAT_CHDIR="/home/fhuser/formhub/"
 
 # Path to celerybeat
-CELERYBEAT="$ENV_PYTHON $CELERYD_CHDIR/manage.py celerybeat"
+CELERYBEAT="/usr/bin/python $CELERYD_CHDIR/manage.py celerybeat"
 
 # Extra arguments to celerybeat
 CELERYBEAT_OPTS="--schedule=/var/run/celery/celerybeat-schedule"
@@ -14,8 +11,8 @@ CELERYBEAT_LOG_FILE="/var/log/celery/beat.log"
 CELERYBEAT_PID_FILE="/var/run/celery/beat.pid"
 
 # Workers should run as an unprivileged user.
-CELERYBEAT_USER="<username>"
-CELERYBEAT_GROUP="<username>"
+CELERYBEAT_USER="fhuser"
+CELERYBEAT_GROUP="fhuser"
 
 # Name of the projects settings module.
-export DJANGO_SETTINGS_MODULE="formhub.settings"
+export DJANGO_SETTINGS_MODULE="formhub.preset.default_settings"

@@ -52,5 +52,4 @@ celerybeat-schedule
 
 gunicorn_cfg.py
 run_gunicorn.sh
-static
 celerybeat-schedule

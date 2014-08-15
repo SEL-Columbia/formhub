@@ -30,6 +30,16 @@ ADMINS = (
 )
 MANAGERS = ADMINS
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'FormhubDjangoDB',
+        'USER': 'formhubDjangoApp',
+        'HOST': 'localhost',
+        'PORT': '',                      # Set to empty string for default.
+    }
+}
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -69,7 +79,7 @@ USE_L10N = True
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = 'http://localhost:8000/media/'
+MEDIA_URL = ''
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -366,20 +376,12 @@ DEFAULT_CONTENT_LENGTH = 10000000
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--with-fixture-bundling']
-#NOSE_PLUGINS = [
-#    'utils.nose_plugins.SilenceSouth'
-#]
 
 # re-captcha in registrations
 REGISTRATION_REQUIRE_CAPTCHA = False
 RECAPTCHA_USE_SSL = False
 RECAPTCHA_PRIVATE_KEY = ''
 RECAPTCHA_PUBLIC_KEY = '6Ld52OMSAAAAAJJ4W-0TFDTgbznnWWFf0XuOSaB6'
-
-try:  # legacy setting for old sites who still use a local_settings.py file and have not updated to presets/
-    from local_settings import *
-except ImportError:
-    pass
 
 # MongoDB
 if MONGO_DATABASE.get('USER') and MONGO_DATABASE.get('PASSWORD'):
@@ -391,3 +393,8 @@ else:
 MONGO_CONNECTION = MongoClient(
     MONGO_CONNECTION_URL, safe=True, j=True, tz_aware=True)
 MONGO_DB = MONGO_CONNECTION[MONGO_DATABASE['NAME']]
+
+# this is rather pointless, currently, given the state of the tests
+# however, some functions require its being defined
+TESTING_MODE = False
+
