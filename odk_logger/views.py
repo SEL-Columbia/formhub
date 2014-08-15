@@ -433,7 +433,10 @@ def enter_data(request, username, id_string):
     if not has_edit_permission(xform, owner, request, xform.shared):
         return HttpResponseForbidden(_(u'Not shared.'))
     
-    formhub_url = settings.SERVER_EXTERNAL_URL
+    try:
+        formhub_url = 'http://{}/'.format(request.META['HTTP_POST'])
+    except:
+        formhub_url = settings.SERVER_EXTERNAL_URL
     form_url = formhub_url + username
     if settings.TESTING_MODE:
         form_url = "http://example.org/bob"
@@ -484,7 +487,10 @@ def edit_data(request, username, id_string, data_id):
 
     url = '%sdata/edit_url' % settings.ENKETO_URL
     # see commit 220f2dad0e for tmp file creation
-    formhub_url = settings.SERVER_EXTERNAL_URL
+    try:
+        formhub_url = 'http://{}/'.format(request.META['HTTP_POST'])
+    except:
+        formhub_url = settings.SERVER_EXTERNAL_URL
 
     injected_xml = inject_instanceid(instance.xml, instance.uuid)
     return_url = request.build_absolute_uri(
