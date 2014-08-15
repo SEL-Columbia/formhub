@@ -3,7 +3,6 @@ import os
 import re
 from tempfile import NamedTemporaryFile
 import urllib2
-import sys
 
 from cStringIO import StringIO
 
