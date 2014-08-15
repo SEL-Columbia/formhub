@@ -1270,10 +1270,7 @@ def activity_api(request, username):
 
 
 def qrcode(request, username, id_string):
-    try:
-        formhub_url = 'http://{}/'.format(request.META['HTTP_POST'])
-    except:
-        formhub_url = settings.SERVER_EXTERNAL_URL
+    formhub_url = settings.SERVER_EXTERNAL_URL
     form_url = formhub_url + username
     if settings.TESTING_MODE:
         form_url = "https://testserver.com/bob"
