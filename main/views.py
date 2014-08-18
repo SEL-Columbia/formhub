@@ -24,7 +24,7 @@ from main.forms import UserProfileForm, FormLicenseForm, DataLicenseForm,\
     SourceForm, PermissionForm, MediaForm, MapboxLayerForm, \
     ActivateSMSSupportFom
 from main.models import UserProfile, MetaData
-from odk_logger.models import Instance, XForm
+from odk_logger.models import Instance, XForm, update_xform_submission_count_delete
 from odk_logger.views import enter_data
 from odk_viewer.models import DataDictionary, ParsedInstance
 from odk_viewer.models.data_dictionary import upload_to
@@ -1088,6 +1088,7 @@ def delete_data(request, username=None, id_string=None):
         return HttpResponseBadRequest(_(u"id must be specified"))
 
     Instance.set_deleted_at(data_id)
+    update_xform_submission_count_delete(data_id)
     audit = {
         'xform': xform.id_string
     }

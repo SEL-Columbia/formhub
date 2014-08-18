@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models.signals import post_save
-from django.db.models.signals import post_delete
+#from django.db.models.signals import post_delete
 from django.contrib.auth.models import User
 from django.utils import timezone
 from .xform import XForm
@@ -158,7 +158,13 @@ post_save.connect(update_xform_submission_count, sender=Instance,
                   dispatch_uid='update_xform_submission_count')
 
 
-def update_xform_submission_count_delete(sender, instance, **kwargs):
+#def update_xform_submission_count_delete(sender, instance, **kwargs):
+def update_xform_submission_count_delete(instance_id):
+    try:
+        instance = Instance.objects.get(id=instance_id)
+    except Instance.DoesNotExist:
+        return
+
     try:
         xform = XForm.objects.select_for_update().get(pk=instance.xform.pk)
     except XForm.DoesNotExist:
@@ -180,8 +186,8 @@ def update_xform_submission_count_delete(sender, instance, **kwargs):
                 profile.num_of_submissions = 0
             profile.save()
 
-post_delete.connect(update_xform_submission_count_delete, sender=Instance,
-                    dispatch_uid='update_xform_submission_count_delete')
+#post_delete.connect(update_xform_submission_count_delete, sender=Instance,
+#                    dispatch_uid='update_xform_submission_count_delete')
 
 
 class InstanceHistory(models.Model):
