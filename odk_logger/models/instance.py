@@ -8,6 +8,7 @@ from .survey_type import SurveyType
 from odk_logger.xform_instance_parser import XFormInstanceParser, \
     clean_and_parse_xml, get_uuid_from_xml
 from utils.model_tools import set_uuid
+from utils.log import audit_log, Actions
 from django.utils.translation import ugettext as _
 from taggit.managers import TaggableManager
 
@@ -163,13 +164,14 @@ def update_xform_submission_count_delete(instance_id):
     try:
         instance = Instance.objects.get(id=instance_id)
     except Instance.DoesNotExist:
-        return
+        raise Exception('Instance does not exist!')
 
     try:
         xform = XForm.objects.select_for_update().get(pk=instance.xform.pk)
     except XForm.DoesNotExist:
-        pass
+        raise Exception('XForm does not exist!')
     else:
+        raise Exception('!!!TESTING!!!')
         xform.num_of_submissions -= 1
         if xform.num_of_submissions < 0:
             xform.num_of_submissions = 0
