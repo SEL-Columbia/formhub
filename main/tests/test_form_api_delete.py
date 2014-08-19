@@ -89,6 +89,7 @@ class TestFormAPIDelete(MainTestCase):
     def test_delete_updates_mongo(self):
         count = Instance.objects.filter(
             xform=self.xform, deleted_at=None).count()
+        submission_count = self.xform.submission_count()
         instance = Instance.objects.filter(
             xform=self.xform).latest('date_created')
         # delete
@@ -106,3 +107,5 @@ class TestFormAPIDelete(MainTestCase):
         self.assertEqual(cursor.count(), 1)
         record = cursor.next()
         self.assertIsNotNone(record[common_tags.DELETEDAT])
+        # check that the XForm's num_of_submissions attribute was updated
+        self.assertEqual(self.xform.submission_count(), submission_count - 1)
