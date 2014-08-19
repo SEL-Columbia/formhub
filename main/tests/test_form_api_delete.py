@@ -94,7 +94,7 @@ class TestFormAPIDelete(MainTestCase):
             xform=self.xform, deleted_at=None).count()
         print >> sys.stderr, '\n', '000'
         pprint(vars(self.xform), stream=sys.stderr)
-        for i in self.xform.surveys:
+        for i in self.xform.surveys.all():
             pprint(vars(i), stream=sys.stderr)
         submission_count = self.xform.submission_count()
         instance = Instance.objects.filter(
@@ -105,7 +105,7 @@ class TestFormAPIDelete(MainTestCase):
         
         print >> sys.stderr, '\n', '000'
         pprint(vars(self.xform), stream=sys.stderr)
-        for i in self.xform.surveys:
+        for i in self.xform.surveys.all():
             pprint(vars(i), stream=sys.stderr)
         
         self.assertEqual(response.status_code, 200)
