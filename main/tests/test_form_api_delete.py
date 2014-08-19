@@ -1,3 +1,6 @@
+from pprint import pprint
+import sys
+
 from datetime import datetime
 from django.core.urlresolvers import reverse
 from odk_logger.models.instance import Instance
@@ -89,12 +92,22 @@ class TestFormAPIDelete(MainTestCase):
     def test_delete_updates_mongo(self):
         count = Instance.objects.filter(
             xform=self.xform, deleted_at=None).count()
+        print >> sys.stderr, '\n', '000'
+        pprint(vars(self.xform), stream=sys.stderr)
+        for i in self.xform.surveys:
+            pprint(vars(i), stream=sys.stderr)
         submission_count = self.xform.submission_count()
         instance = Instance.objects.filter(
             xform=self.xform).latest('date_created')
         # delete
         params = {'id': instance.id}
         response = self.client.post(self.delete_url, params)
+        
+        print >> sys.stderr, '\n', '000'
+        pprint(vars(self.xform), stream=sys.stderr)
+        for i in self.xform.surveys:
+            pprint(vars(i), stream=sys.stderr)
+        
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             Instance.objects.filter(
