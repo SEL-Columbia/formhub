@@ -8,15 +8,15 @@ from cStringIO import StringIO
 
 from django.contrib.auth.models import User
 from django_digest.test import Client as DigestClient
-from django.test import TestCase
-# from django_nose import FastFixtureTestCase as TestCase
+from django.test import TestCase, TransactionTestCase
 from django.test.client import Client
 
 from odk_logger.models import XForm, Instance, Attachment
 from django.conf import settings
 
 
-class MainTestCase(TestCase):
+class _MainBase(object):
+    """Hold the common functionality"""
 
     surveys = ['transport_2011-07-25_19-05-49',
                'transport_2011-07-25_19-05-36',
@@ -64,14 +64,6 @@ class MainTestCase(TestCase):
             post_data = {'xls_file': xls_file}
             return self.client.post('/%s/' % self.user.username, post_data)
 
-    def _publish_xlsx_file(self):
-        path = os.path.join(self.this_directory, 'fixtures', 'exp.xlsx')
-        pre_count = XForm.objects.count()
-        response = MainTestCase._publish_xls_file(self, path)
-        # make sure publishing the survey worked
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(XForm.objects.count(), pre_count + 1)
-
     def _publish_xls_file_and_set_xform(self, path):
         count = XForm.objects.count()
         self.response = self._publish_xls_file(path)
@@ -82,15 +74,6 @@ class MainTestCase(TestCase):
         xform = XForm.objects.get(id_string=id_string)
         xform.shared_data = True
         xform.save()
-
-    def _publish_transportation_form(self):
-        xls_path = os.path.join(
-            self.this_directory, "fixtures",
-            "transportation", "transportation.xls")
-        count = XForm.objects.count()
-        MainTestCase._publish_xls_file(self, xls_path)
-        self.assertEqual(XForm.objects.count(), count + 1)
-        self.xform = XForm.objects.order_by('pk').reverse()[0]
 
     def _submit_transport_instance(self, survey_at=0):
         s = self.surveys[survey_at]
@@ -219,3 +202,43 @@ class MainTestCase(TestCase):
         else:
             contents = response.content
         return contents
+
+class MainTestCase(_MainBase, TestCase):
+
+    def _publish_xlsx_file(self):
+        path = os.path.join(self.this_directory, 'fixtures', 'exp.xlsx')
+        pre_count = XForm.objects.count()
+        response = MainTestCase._publish_xls_file(self, path)
+        # make sure publishing the survey worked
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(XForm.objects.count(), pre_count + 1)
+
+    def _publish_transportation_form(self):
+        xls_path = os.path.join(
+            self.this_directory, "fixtures",
+            "transportation", "transportation.xls")
+        count = XForm.objects.count()
+        MainTestCase._publish_xls_file(self, xls_path)
+        self.assertEqual(XForm.objects.count(), count + 1)
+        self.xform = XForm.objects.order_by('pk').reverse()[0]
+
+
+class MainTransactionTestCase(_MainBase, TransactionTestCase):
+
+    def _publish_xlsx_file(self):
+        path = os.path.join(self.this_directory, 'fixtures', 'exp.xlsx')
+        pre_count = XForm.objects.count()
+        response = MainTransactionTestCase._publish_xls_file(self, path)
+        # make sure publishing the survey worked
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(XForm.objects.count(), pre_count + 1)
+
+    def _publish_transportation_form(self):
+        xls_path = os.path.join(
+            self.this_directory, "fixtures",
+            "transportation", "transportation.xls")
+        count = XForm.objects.count()
+        MainTransactionTestCase._publish_xls_file(self, xls_path)
+        self.assertEqual(XForm.objects.count(), count + 1)
+        self.xform = XForm.objects.order_by('pk').reverse()[0]
+

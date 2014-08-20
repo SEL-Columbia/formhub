@@ -1,7 +1,12 @@
+clint
+decorator
 django-extensions
-ipython
-ipdb
-statsd
-django-statsd-mozilla
-gunicorn
 fabric
+ipdb
+ipython
+mock
+mocker
+httmock
+shell_command
+twill
+

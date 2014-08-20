@@ -5,7 +5,8 @@ import pytz
 import re
 import tempfile
 import traceback
-import threading
+
+from celery import task
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -22,7 +23,7 @@ from django.http import HttpResponse, HttpResponseNotFound, \
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.utils import timezone
-from modilabs.utils.subprocess_timeout import ProcessTimedOut
+#from modilabs.utils.subprocess_timeout import ProcessTimedOut
 from pyxform.errors import PyXFormError
 from pyxform.xform2json import create_survey_element_from_xml
 import sys
@@ -57,26 +58,20 @@ uuid_regex = re.compile(r'<formhub><uuid>([^<]+)</uuid></formhub>',
 
 mongo_instances = settings.MONGO_DB.instances
 
-class SaveAttachments (threading.Thread):
-    """Spawn a thread to save all the attachments for an Instance,
-    so that create_instance() can return quickly, while all the
-    Attachment objects are saved in the background."""
+@task
+def _save_attachments (instance_pk, media_files):
+    """A function to save the media files associated with this Instance
+    using a celery task."""
 
-    def __init__ (self, instance_pk, media_files):
-        threading.Thread.__init__(self)
-        try:
-            self.instance = Instance.objects.get(pk=instance_pk)
-        except Instance.DoesNotExist:
-            self.instance = None
-        self.media_files = media_files
+    try:
+        inst = Instance.objects.get(pk=instance_pk)
+        for f in media_files:
+            attach, created = Attachment.objects.get_or_create(instance=inst,
+                                             media_file=f,
+                                             mimetype=f.content_type)
+    except Instance.DoesNotExist:
+        pass
 
-    @transaction.autocommit
-    def run(self):
-        if self.instance is not None:
-            for f in self.media_files:
-                Attachment.objects.get_or_create(instance=self.instance,
-                                                 media_file=f,
-                                                 mimetype=f.content_type)
 
 @transaction.autocommit
 def create_instance(username, xml_file, media_files,
@@ -92,21 +87,6 @@ def create_instance(username, xml_file, media_files,
         If there is no username and a uuid, submitting a touchform.
         If there is a username and a uuid, submitting a new ODK form.
     """
-
-    def _save_attachments (instance_pk):
-        """A function to save the media files associated with this Instance,
-        unfortunately not as a separate thread, which would allow this to
-        return faster, but this is the only way the travis tests will pass"""
-
-        try:
-            inst = Instance.objects.get(pk=instance_pk)
-            for f in media_files:
-                Attachment.objects.get_or_create(instance=inst,
-                                                 media_file=f,
-                                                 mimetype=f.content_type)
-        except Instance.DoesNotExist:
-            pass
-
 
     instance = None
     xform    = None
@@ -194,10 +174,8 @@ def create_instance(username, xml_file, media_files,
         try:
             # here, too, all we need is the pk so don't retrieve the whole object
             duplicate_instance_pk = Instance.objects.filter(uuid=new_uuid).values_list('pk', flat=True)[0]
-            #duplicate_instance = Instance.objects.filter(uuid=new_uuid)[0]
-            #dpi = SaveAttachments(duplicate_instance_pk, media_files)
-            #dpi.start()
-            _save_attachments(duplicate_instance_pk)
+            if media_files:
+                _save_attachments.delay(duplicate_instance_pk, media_files)
             raise DuplicateInstance()
         except IndexError:
             pass
@@ -243,9 +221,8 @@ def create_instance(username, xml_file, media_files,
         if not created:
             pi.save(async=False)
 
-    #atta = SaveAttachments(instance.pk, media_files)
-    #atta.start()
-    _save_attachments(instance.pk)
+    if media_files:
+        _save_attachments.delay(instance.pk, media_files)
 
     return instance
 
@@ -339,12 +316,12 @@ def publish_form(callback):
             'type': 'alert-error',
             'text': e
         }
-    except ProcessTimedOut as e:
-        # catch timeout errors
-        return {
-            'type': 'alert-error',
-            'text': _(u'Form validation timeout, please try again.'),
-        }
+#    except ProcessTimedOut as e:
+#        # catch timeout errors
+#        return {
+#            'type': 'alert-error',
+#            'text': _(u'Form validation timeout, please try again.'),
+#        }
     except Exception, e:
         # error in the XLS file; show an error to the user
         return {

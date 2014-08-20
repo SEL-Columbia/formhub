@@ -2,7 +2,7 @@ import os
 import codecs
 
 from django.core.urlresolvers import reverse
-from main.tests.test_base import MainTestCase
+from main.tests.test_base import MainTransactionTestCase
 
 from odk_logger.models import Attachment
 from odk_logger.models import Instance
@@ -10,10 +10,10 @@ from odk_logger.models import XForm
 from odk_logger.views import submission
 
 
-class TestEncryptedForms(MainTestCase):
+class TestEncryptedForms(MainTransactionTestCase):
 
     def setUp(self):
-        super(MainTestCase, self).setUp()
+        super(MainTransactionTestCase, self).setUp()
         self._create_user_and_login()
         self._submission_url = reverse(
             submission, kwargs={'username': self.user.username})

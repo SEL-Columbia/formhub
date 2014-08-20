@@ -6,8 +6,6 @@ python:
 before_install:
   - mysql -e 'create database formhub_test;'
   -  sudo apt-get install gfortran libatlas-base-dev libjpeg-dev zlib1g-dev
-  -  sudo ln -s /usr/lib/`uname -i`-linux-gnu/libjpeg.so ~/virtualenv/python2.7/lib/
-  -  sudo ln -s /usr/lib/`uname -i`-linux-gnu/libz.so ~/virtualenv/python2.7/lib/
 # See https://gist.github.com/dan-blanchard/7045057
   - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
   - chmod +x miniconda.sh
@@ -30,4 +28,4 @@ script:
   - python manage.py test --noinput --settings=formhub.preset.travis_test
   - ./js_tests/EnvJasmine/bin/run_all_tests.sh --testDir=../ --configFile=../env_jasmine.conf.js
 notifications:
-  irc: "irc.freenode.org#moditest"
+  irc: "irc.freenode.org#sel-columbia"
