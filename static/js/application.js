@@ -162,6 +162,11 @@ $(document).ready(function(){
     $(".modal form").submit(function(){
         $(this).parent(".modal").modal('hide');
     });
+
+    //Reset mobile modals after close
+    $('#popupmodal').on('hidden', function() {
+        $(this).removeData('modal');
+    });
 });
 
 function setHrefFromSelect(id) {
