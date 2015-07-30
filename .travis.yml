@@ -5,7 +5,7 @@ python:
   - "2.7"
 before_install:
   - mysql -e 'create database formhub_test;'
-  -  sudo apt-get install gfortran libatlas-base-dev libjpeg-dev zlib1g-dev
+  - sudo apt-get install gfortran libatlas-base-dev libjpeg-dev zlib1g-dev
 # See https://gist.github.com/dan-blanchard/7045057
   - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
   - chmod +x miniconda.sh
@@ -18,10 +18,9 @@ before_install:
   - sudo rm -rf /dev/shm
   - sudo ln -s /run/shm /dev/shm
 install:
-#  - pip install numpy --use-mirrors
   - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy pandas=0.12.0
-  - pip install -r requirements.pip --use-mirrors
-  - pip install -r requirements-mysql.pip --use-mirrors
+  - pip install -r requirements.pip
+  - pip install -r requirements-mysql.pip
   - python manage.py syncdb --noinput
   - python manage.py migrate --noinput
 script:
