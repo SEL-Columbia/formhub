@@ -619,8 +619,8 @@ msgid "Rest Services"
 msgstr "សេវាកម្ម​នៅ​សល់"
 
 #: main/templates/show.html:343
-msgid "Media &nbsp;<small>jpeg/png/mp3 allowed</small>"
-msgstr "បាន​អនុញ្ញាតមេឌៀ &nbsp;<small>jpeg/png/mp3​</small>"
+msgid "Media &nbsp;<small>jpeg/png/mp3/wav/3gp/csv/zip allowed</small>"
+msgstr "បាន​អនុញ្ញាតមេឌៀ &nbsp;<small>jpeg/png/mp3/wav/3gp/csv/zip</small>"
 
 #: main/templates/show.html:365
 msgid "Mapbox Layer"

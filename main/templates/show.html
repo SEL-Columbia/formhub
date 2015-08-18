@@ -326,7 +326,7 @@
         {% endif %}
         <br/>
         <div class="clearfix bordered">
-            <h3 data-toggle="collapse" class="toggler" data-target="#media_tab">{% blocktrans %}Media &nbsp;<small>jpeg/png/mp3/wav/3gp allowed</small>{% endblocktrans %}</h3>
+            <h3 data-toggle="collapse" class="toggler" data-target="#media_tab">{% blocktrans %}Media &nbsp;<small>jpeg/png/mp3/wav/3gp/csv/zip allowed</small>{% endblocktrans %}</h3>
             <div id='media_tab' class="collapse">
             {% for media in media_upload %}
               <p><a href="{% url "main.views.download_media_data" content_user.username xform.id_string media.id %}">{{ media.data_value }}</a>
