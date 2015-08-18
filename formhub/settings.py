@@ -10,12 +10,15 @@ import os
 import subprocess
 import sys
 
+import logging
 from django.core.exceptions import SuspiciousOperation
-
+from django.utils.log import AdminEmailHandler
+from celery.signals import after_setup_logger
 from pymongo import MongoClient
 
-
 import djcelery
+
+
 djcelery.setup_loader()
 
 CURRENT_FILE = os.path.abspath(__file__)
@@ -336,6 +339,14 @@ LOGGING = {
         }
     }
 }
+
+
+def configure_logging(logger, **kwargs):
+    admin_email_handler = AdminEmailHandler()
+    admin_email_handler.setLevel(logging.ERROR)
+    logger.addHandler(admin_email_handler)
+
+after_setup_logger.connect(configure_logging)
 
 MONGO_DATABASE = {
     'HOST': 'localhost',
