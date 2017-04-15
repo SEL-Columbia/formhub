@@ -92,7 +92,7 @@ def average(values):
     return None
 
 
-def map_view(request, username, id_string, template='map.html'):
+def map_view(request, username, id_string, template='map_embed.html'):
     owner = get_object_or_404(User, username=username)
     xform = get_object_or_404(XForm, id_string=id_string, user=owner)
     if not has_permission(xform, owner, request):
